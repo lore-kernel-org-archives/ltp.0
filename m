@@ -1,22 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NsTTw-0004kG-LV
-	for ltp-list@lists.sourceforge.net; Fri, 19 Mar 2010 04:06:44 +0000
-Received: from mail-iw0-f193.google.com ([209.85.223.193])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NsTTu-000590-Ds
-	for ltp-list@lists.sourceforge.net; Fri, 19 Mar 2010 04:06:44 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NnFvu-0003X3-56
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 18:38:02 +0000
+Received: from mail-pz0-f194.google.com ([209.85.222.194])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnFvt-0004Dy-1A
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 18:38:02 +0000
+Received: by pzk32 with SMTP id 32so837800pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Mar 2010 10:37:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1268965341.12801.38.camel@lishuang-desktop>
-References: <1268903717.12801.30.camel@lishuang-desktop>
-	<20100318132732.GA27760@linux.vnet.ibm.com>
-	<1268965341.12801.38.camel@lishuang-desktop>
-Date: Thu, 18 Mar 2010 21:06:36 -0700
-Message-ID: <364299f41003182106u71a3df3axbc425a29ca1afaae@mail.gmail.com>
+In-Reply-To: <4B8F716E.5070207@cn.fujitsu.com>
+References: <4B7BA24F.2010705@linux.vnet.ibm.com>
+	<364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>
+	<20100218042532.GC13013@rishikesh.in.ibm.com>
+	<4B822F2E.9030609@cn.fujitsu.com>
+	<364299f41002212344v4873843ej986f1b39ec3494df@mail.gmail.com>
+	<4B8333ED.5080709@cn.fujitsu.com>
+	<364299f41002241718g4be216d1pbec918821b7027b0@mail.gmail.com>
+	<4B8F716E.5070207@cn.fujitsu.com>
+Date: Thu, 4 Mar 2010 10:37:55 -0800
+Message-ID: <364299f41003041037s57f1d4bfr98c20ac7736b8905@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP clock_nanosleep01 testcase fail
+Subject: Re: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,251 +34,358 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry xu <feng.xu@windriver.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>, ebiederm@xmission.com
 
-T24gVGh1LCBNYXIgMTgsIDIwMTAgYXQgNzoyMiBQTSwgSGVucnkgeHUgPGZlbmcueHVAd2luZHJp
-dmVyLmNvbT4gd3JvdGU6Cj4g5ZyoIDIwMTAtMDMtMTjlm5vnmoQgMTg6NTcgKzA1MzDvvIxSaXNo
-aWtlc2ggSyBSYWpha+WGmemBk++8mgo+PiBPbiBUaHUsIE1hciAxOCwgMjAxMCBhdCAwNToxNTox
-N1BNICswODAwLCBIZW5yeSB4dSB3cm90ZToKPj4gPiBIaSxhbGwKPj4gPgo+PiA+IHN1bW1hcnk6
-Cj4+ID4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PQo+PiA+IFdoZW4gSSBleGVjdXRlIG5hbm9zbGVlcDAxIHRlc3RjYXNl
-IGluIG1pcHMgYm9hcmQsdGhlIGNhc2UwMSBpcyBmYWlsLgo+Pgo+Pgo+PiBIaSBIZW5yeSwKPj4K
-Pj4gQ2FuIHlvdSBwbGVhc2Ugc2VuZCBtZSB0aGUgc3RyYWNlIG9mIGV4ZWN1dGlvbiBvZiB0aGlz
-IHRlc3RjYXNlID8KPj4KPj4gLVJpc2hpCj4gSGksUmlzaGkKPiBUaGUgbWVzc2FnZSBiZWxvdyBp
-cyBzdHJhY2UgaW5mb21hdGlvbi5JIHRoaW5rIGl0IG1heWJlIGluY29ycmVjdCB1c2FnZQo+IG9m
-ICIKPiBjbG9ja19uYW5vc2xlZXAoQ0xPQ0tfTU9OT1RPTklDLCAwLCB7MCwgNTAwMDAwMDAwfSwg
-MHg3ZjgwODc4YykiIC4KPiBob3cgZG8gSSBjb3JyZWN0IGl0Pwo+Cj4gPT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQo+Cj4gcm9vdEBsb2NhbGhvc3Q6L29wdC9teXRlc3Q+IHN0cmFjZSAuL2Nsb2NrX25hbm9z
-bGVlcDAxCj4gZXhlY3ZlKCIuL2Nsb2NrX25hbm9zbGVlcDAxIiwgWyIuL2Nsb2NrX25hbm9zbGVl
-cDAxIl0sIFsvKiAxMyB2YXJzICovXSkKPiA9IDAKPiBicmsoMCkgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqA9IDB4NDFmMDAwCj4gdW5hbWUoe3N5cz0i
-TGludXgiLCBub2RlPSJsb2NhbGhvc3QiLCAuLi59KSA9IDAKPiBvbGRfbW1hcChOVUxMLCA0MDk2
-LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZBVEV8TUFQX0FOT05ZTU9VUywKPiAtMSwg
-MCkgPSAweDJhYWE4MDAwCj4gYWNjZXNzKCIvZXRjL2xkLnNvLnByZWxvYWQiLCBSX09LKSDCoCDC
-oCDCoD0gLTEgRU5PRU5UIChObyBzdWNoIGZpbGUgb3IKPiBkaXJlY3RvcnkpCj4gb3BlbigiL2V0
-Yy9sZC5zby5jYWNoZSIsIE9fUkRPTkxZKSDCoCDCoCDCoD0gLTEgRU5PRU5UIChObyBzdWNoIGZp
-bGUgb3IKPiBkaXJlY3RvcnkpCj4gb3BlbigiL2xpYi90bHMvbGlicHRocmVhZC5zby4wIiwgT19S
-RE9OTFkpID0gLTEgRU5PRU5UIChObyBzdWNoIGZpbGUgb3IKPiBkaXJlY3RvcnkpCj4gc3RhdDY0
-KDB4N2Y4MDdlNDgsIDB4N2Y4MDdlNzgpIMKgIMKgIMKgIMKgIMKgPSAtMSBFTk9FTlQgKE5vIHN1
-Y2ggZmlsZSBvcgo+IGRpcmVjdG9yeSkKPiBvcGVuKCIvbGliL2xpYnB0aHJlYWQuc28uMCIsIE9f
-UkRPTkxZKSDCoD0gMwo+IHJlYWQoMywgIlwxNzdFTEZcMVwyXDFcMFwwXDBcMFwwXDBcMFwwXDBc
-MFwzXDBcMTBcMFwwXDBcMSxcMzA1SiIuLi4sCj4gNTEyKSA9IDUxMgo+IGxzZWVrKDMsIDY3Niwg
-U0VFS19TRVQpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgID0gNjc2Cj4gcmVhZCgzLCAiXDBcMFww
-XDRcMFwwXDBcMjBcMFwwXDBcMUdOVVwwXDBcMFwwXDBcMFwwXDBcMlwwXDBcMFw2Ii4uLiwgMzIp
-Cj4gPSAzMgo+IGZzdGF0NjQoMywge3N0X21vZGU9U19JRlJFR3wwNzU1LCBzdF9zaXplPTEwNzUw
-OCwgLi4ufSkgPSAwCj4gb2xkX21tYXAoMHgyY2M1MDAwMCwgMTY5MjY0LCBQUk9UX1JFQUR8UFJP
-VF9FWEVDLCBNQVBfUFJJVkFURXwKPiBNQVBfREVOWVdSSVRFLCAzLCAwKSA9IDB4MmNjNTAwMDAK
-PiBtcHJvdGVjdCgweDJjYzY2MDAwLCA2NTUzNiwgUFJPVF9OT05FKSDCoD0gMAo+IG9sZF9tbWFw
-KDB4MmNjNzYwMDAsIDgxOTIsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBf
-RklYRUR8Cj4gTUFQX0RFTllXUklURSwgMywgMHgxNjAwMCkgPSAweDJjYzc2MDAwCj4gb2xkX21t
-YXAoMHgyY2M3ODAwMCwgNTQyNCwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1B
-UF9GSVhFRHwKPiBNQVBfQU5PTllNT1VTLCAtMSwgMCkgPSAweDJjYzc4MDAwCj4gY2xvc2UoMykg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqA9IDAKPiBvcGVu
-KCIvbGliL2xpYnJ0LnNvLjEiLCBPX1JET05MWSkgwqAgwqAgwqAgPSAzCj4gcmVhZCgzLCAiXDE3
-N0VMRlwxXDJcMVwwXDBcMFwwXDBcMFwwXDBcMFwwXDNcMFwxMFwwXDBcMFwxLFwzMjBcMzAiLi4u
-LAo+IDUxMikgPSA1MTIKPiBsc2VlaygzLCA2NzYsIFNFRUtfU0VUKSDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCA9IDY3Ngo+IHJlYWQoMywgIlwwXDBcMFw0XDBcMFwwXDIwXDBcMFwwXDFHTlVcMFww
-XDBcMFwwXDBcMFwwXDJcMFwwXDBcNiIuLi4sIDMyKQo+ID0gMzIKPiBmc3RhdDY0KDMsIHtzdF9t
-b2RlPVNfSUZSRUd8MDc1NSwgc3Rfc2l6ZT0zNTE2MCwgLi4ufSkgPSAwCj4gb2xkX21tYXAoMHgy
-Y2QwMDAwMCwgOTQ4OTYsIFBST1RfUkVBRHxQUk9UX0VYRUMsIE1BUF9QUklWQVRFfAo+IE1BUF9E
-RU5ZV1JJVEUsIDMsIDApID0gMHgyY2QwMDAwMAo+IG1wcm90ZWN0KDB4MmNkMDcwMDAsIDYxNDQw
-LCBQUk9UX05PTkUpIMKgPSAwCj4gb2xkX21tYXAoMHgyY2QxNjAwMCwgODE5MiwgUFJPVF9SRUFE
-fFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9GSVhFRHwKPiBNQVBfREVOWVdSSVRFLCAzLCAw
-eDYwMDApID0gMHgyY2QxNjAwMAo+IGNsb3NlKDMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgPSAwCj4gb3BlbigiL2xpYi9saWJjLnNvLjYiLCBPX1JET05M
-WSkgwqAgwqAgwqAgwqA9IDMKPiByZWFkKDMsICJcMTc3RUxGXDFcMlwxXDBcMFwwXDBcMFwwXDBc
-MFwwXDBcM1wwXDEwXDBcMFwwXDEsXDIzM2oiLi4uLAo+IDUxMikgPSA1MTIKPiBsc2VlaygzLCA2
-OTIsIFNFRUtfU0VUKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCA9IDY5Mgo+IHJlYWQoMywgIlww
-XDBcMFw0XDBcMFwwXDIwXDBcMFwwXDFHTlVcMFwwXDBcMFwwXDBcMFwwXDJcMFwwXDBcNiIuLi4s
-IDMyKQo+ID0gMzIKPiBmc3RhdDY0KDMsIHtzdF9tb2RlPVNfSUZSRUd8MDc1NSwgc3Rfc2l6ZT0x
-NDc0NTQ4LCAuLi59KSA9IDAKPiBvbGRfbW1hcCgweDJjOWEwMDAwLCAxNDUzMjk2LCBQUk9UX1JF
-QUR8UFJPVF9FWEVDLCBNQVBfUFJJVkFURXwKPiBNQVBfREVOWVdSSVRFLCAzLCAwKSA9IDB4MmM5
-YTAwMDAKPiBtcHJvdGVjdCgweDJjYWU3MDAwLCA2MTQ0MCwgUFJPVF9OT05FKSDCoD0gMAo+IG9s
-ZF9tbWFwKDB4MmNhZjYwMDAsIDQwOTYwLCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZB
-VEV8TUFQX0ZJWEVEfAo+IE1BUF9ERU5ZV1JJVEUsIDMsIDB4MTQ2MDAwKSA9IDB4MmNhZjYwMDAK
-PiBvbGRfbW1hcCgweDJjYjAwMDAwLCAxMTUwNCwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1BUF9Q
-UklWQVRFfE1BUF9GSVhFRHwKPiBNQVBfQU5PTllNT1VTLCAtMSwgMCkgPSAweDJjYjAwMDAwCj4g
-Y2xvc2UoMykgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqA9
-IDAKPiBvbGRfbW1hcChOVUxMLCA0MDk2LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZB
-VEV8TUFQX0FOT05ZTU9VUywKPiAtMSwgMCkgPSAweDJhYWE5MDAwCj4gc2V0X3RocmVhZF9hcmVh
-KDB4MmFhYjA4MDApIMKgIMKgIMKgIMKgIMKgIMKgID0gMAo+IG1wcm90ZWN0KDB4MmNhZjYwMDAs
-IDMyNzY4LCBQUk9UX1JFQUQpIMKgPSAwCj4gbXByb3RlY3QoMHgyY2QxNjAwMCwgNDA5NiwgUFJP
-VF9SRUFEKSDCoCA9IDAKPiBtcHJvdGVjdCgweDJjYzc2MDAwLCA0MDk2LCBQUk9UX1JFQUQpIMKg
-ID0gMAo+IG1wcm90ZWN0KDB4MmM5OGUwMDAsIDQwOTYsIFBST1RfUkVBRCkgwqAgPSAwCj4gc2V0
-X3RpZF9hZGRyZXNzKDB4MmFhYTkzZDgpIMKgIMKgIMKgIMKgIMKgIMKgID0gMTk3NTAKPiBTWVNf
-NDMwOSgpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgPSAwCj4g
-ZnV0ZXgoMHg3ZjgwODc2MCwgMHg4MSAvKiBGVVRFWF8/Pz8gKi8sIDEpID0gMAo+IHJ0X3NpZ2Fj
-dGlvbihTSUdSVF8wLCB7MHg4LCBbXSwgU0FfU1RBQ0t8U0FfSU5URVJSVVBUfFNBX05PQ0xEV0FJ
-VHwKPiAweDRjNDQ5YTB9LCBOVUxMLCAxNikgPSAwCj4gcnRfc2lnYWN0aW9uKFNJR1JUXzEsIHsw
-eDEwMDAwMDA4LCBbXSwgU0FfU1RBQ0t8U0FfSU5URVJSVVBUfAo+IFNBX05PQ0xEV0FJVHwweDRj
-NDQ1MjB9LCBOVUxMLCAxNikgPSAwCj4gcnRfc2lncHJvY21hc2soU0lHX1VOQkxPQ0ssIFtSVF8w
-IFJUXzFdLCBOVUxMLCAxNikgPSAwCj4gZ2V0cmxpbWl0KFJMSU1JVF9TVEFDSywge3JsaW1fY3Vy
-PTgxOTIqMTAyNCwgcmxpbV9tYXg9UkxJTV9JTkZJTklUWX0pID0KPiAwCj4gYnJrKDApIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgPSAweDQxZjAwMAo+
-IGJyaygweDQ0MDAwMCkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgPSAw
-eDQ0MDAwMAo+IHJ0X3NpZ2FjdGlvbihTSUdJTlQsIHtTSUdfREZMfSwgTlVMTCwgMTYpID0gMAo+
-IGdldHRpbWVvZmRheSh7NjYzOTY2LCAyMzU2NTl9LCBOVUxMKSDCoCDCoD0gMAo+IG1rZGlyKCIv
-dG1wL2Nsb0VuQmoxcSIsIDA3MDApIMKgIMKgIMKgIMKgIMKgID0gMAo+IGdldGdpZCgpIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgPSAwCj4gY2hvd24oIi90
-bXAvY2xvRW5CajFxIiwgLTEsIDApIMKgIMKgIMKgIMKgIMKgPSAwCj4gY2htb2QoIi90bXAvY2xv
-RW5CajFxIiwgMDc3NykgwqAgwqAgwqAgwqAgwqAgPSAwCj4gY2hkaXIoIi90bXAvY2xvRW5CajFx
-IikgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgPSAwCj4gZnN0YXQ2NCgxLCB7c3RfbW9kZT1TX0lG
-Q0hSfDA2MjAsIHN0X3JkZXY9bWFrZWRldig1LCAxKSwgLi4ufSkgPSAwCj4gaW9jdGwoMSwgVElP
-Q05YQ0wsIHtCMzg0MDAgb3Bvc3QgaXNpZyBpY2Fub24gZWNobyAuLi59KSA9IDAKPiBvbGRfbW1h
-cChOVUxMLCA2NTUzNiwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9BTk9O
-WU1PVVMsCj4gLTEsIDApID0gMHgyYWFhYTAwMAo+IHdyaXRlKDEsICJjbG9ja19uYW5vc2xlZXAw
-MSDCoCDCoDAgwqBUSU5GTyDCoDoiLi4uLCA0OWNsb2NrX25hbm9zbGVlcDAxIMKgIMKgMAo+IFRJ
-TkZPIMKgOiDCoChjYXNlMDApIFNUQVJUCj4gKSA9IDQ5Cj4gY2xvY2tfZ2V0dGltZShDTE9DS19S
-RUFMVElNRSwgezY2Mzk2NywgMjIzOTU2OTUwfSkgPSAwCj4gY2xvY2tfbmFub3NsZWVwKENMT0NL
-X1JFQUxUSU1FLCAwLCB7MCwgNTAwMDAwMDAwfSwgezAsIDIxMzkxMjk3NTJ9KSA9IDAKPiBjbG9j
-a19nZXR0aW1lKENMT0NLX1JFQUxUSU1FLCB7NjYzOTY3LCA3MjQzMjU2MzR9KSA9IDAKPiB3cml0
-ZSgxLCAiLi4uLi4uLi4uLi4uLi4uLi4wIDUwMDAwMDAwMCBjbGsiLi4uLCAxNjUuLi4uLi4uLi4u
-Li4uLi4uLjAKPiA1MDAwMDAwMDAgY2xrX2lkPTAgMCAwIDIyCj4gMTQgLi4uLi4uLi4uLnJjPTAu
-Li4uLi4uLi4uLi4uLi4uY2xvY2tfbmFub3NsZWVwMDEgwqAgwqAwIMKgVElORk8gwqA6IMKgY2hl
-Y2sKPiBzbGVlcCB0aW1lOiAobWluOjQ4MCkgPCA1MDAgPCAobWF4OjUyMCkgKG1zZWMpCj4gKSA9
-IDE2NQo+IHdyaXRlKDIsICJFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPTAiLCAyN0VYUEVDVDog
-cmV0dXJuIHZhbHVlKHJldCk9MCkgPQo+IDI3Cj4gd3JpdGUoMiwgIiBlcnJubz0wIChTdWNjZXNz
-KSIsIDE4IGVycm5vPTAgKFN1Y2Nlc3MpKSDCoCDCoCDCoD0gMTgKPiB3cml0ZSgyLCAiXG4iLCAx
-Cj4gKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCA9IDEKPiB3cml0ZSgyLCAiUkVT
-VUxUOiByZXR1cm4gdmFsdWUocmV0KT0wIiwgMjdSRVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPTAp
-ID0KPiAyNwo+IHdyaXRlKDIsICIgZXJybm89MCAoU3VjY2VzcykiLCAxOCBlcnJubz0wIChTdWNj
-ZXNzKSkgwqAgwqAgwqA9IDE4Cj4gd3JpdGUoMiwgIlxuIiwgMQo+ICkgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgPSAxCj4gd3JpdGUoMSwgImNsb2NrX25hbm9zbGVlcDAxIMKgIMKg
-MCDCoFRJTkZPIMKgOiIuLi4sIDUzY2xvY2tfbmFub3NsZWVwMDEgwqAgwqAwCj4gVElORk8gwqA6
-IMKgKGNhc2UwMCkgRU5EID0+IE9LCj4gKSA9IDUzCj4gd3JpdGUoMSwgImNsb2NrX25hbm9zbGVl
-cDAxIMKgIMKgMCDCoFRJTkZPIMKgOiIuLi4sIDQ5Y2xvY2tfbmFub3NsZWVwMDEgwqAgwqAwCj4g
-VElORk8gwqA6IMKgKGNhc2UwMSkgU1RBUlQKPiApID0gNDkKPiBjbG9ja19nZXR0aW1lKENMT0NL
-X01PTk9UT05JQywgezY2Mzk2NywgNzI2MTc0MDY3fSkgPSAwCj4gY2xvY2tfbmFub3NsZWVwKENM
-T0NLX01PTk9UT05JQywgMCwgezAsIDUwMDAwMDAwMH0sIDB4N2Y4MDg3OGMpID0gLTEKPiBFT1BO
-T1RTVVBQIChPcGVyYXRpb24gbm90IHN1cHBvcnRlZCkKPiB3cml0ZSgyLCAiRVhQRUNUOiByZXR1
-cm4gdmFsdWUocmV0KT0wIiwgMjdFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPTApID0KPiAyNwo+
-IHdyaXRlKDIsICIgZXJybm89MCAoU3VjY2VzcykiLCAxOCBlcnJubz0wIChTdWNjZXNzKSkgwqAg
-wqAgwqA9IDE4Cj4gd3JpdGUoMiwgIlxuIiwgMQo+ICkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgPSAxCj4gd3JpdGUoMiwgIlJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MTIyIiwg
-MjlSRVNVTFQ6IHJldHVybgo+IHZhbHVlKHJldCk9MTIyKSA9IDI5Cj4gd3JpdGUoMiwgIiBlcnJu
-bz0wIChTdWNjZXNzKSIsIDE4IGVycm5vPTAgKFN1Y2Nlc3MpKSDCoCDCoCDCoD0gMTgKPiB3cml0
-ZSgyLCAiXG4iLCAxCj4gKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCA9IDEKPiB3
-cml0ZSgxLCAiLi4uLi4uLi4uLi4uLi4uLi4wIDUwMDAwMDAwMCBjbGsiLi4uLCAxMTMuLi4uLi4u
-Li4uLi4uLi4uLjAKPiA1MDAwMDAwMDAgY2xrX2lkPTEgMCAxMjIgMjIgMTQgLi4uLi4uLi4uLmNs
-b2NrX25hbm9zbGVlcDAxIMKgIMKgMAo+IFRJTkZPIMKgOiDCoChjYXNlMDEpIEVORCA9PiBORwo+
-ICkgPSAxMTMKPiB3cml0ZSgxLCAiY2xvY2tfbmFub3NsZWVwMDEgwqAgwqAwIMKgVElORk8gwqA6
-Ii4uLiwgNDljbG9ja19uYW5vc2xlZXAwMSDCoCDCoDAKPiBUSU5GTyDCoDogwqAoY2FzZTAyKSBT
-VEFSVAo+ICkgPSA0OQo+IGNsb2NrX2dldHRpbWUoQ0xPQ0tfUkVBTFRJTUUsIHs2NjM5NjcsIDcy
-Nzc0NzYxMH0pID0gMAo+IGNsb2NrX25hbm9zbGVlcChDTE9DS19SRUFMVElNRSwgMCwgezAsIDQy
-OTQ5NjcyOTV9LCAweDdmODA4NzhjKSA9IC0xCj4gRUlOVkFMIChJbnZhbGlkIGFyZ3VtZW50KQo+
-IHdyaXRlKDIsICJFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPTIyIiwgMjhFWFBFQ1Q6IHJldHVy
-biB2YWx1ZShyZXQpPTIyKQo+ID0gMjgKPiB3cml0ZSgyLCAiIGVycm5vPTAgKFN1Y2Nlc3MpIiwg
-MTggZXJybm89MCAoU3VjY2VzcykpIMKgIMKgIMKgPSAxOAo+IHdyaXRlKDIsICJcbiIsIDEKPiAp
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgID0gMQo+IHdyaXRlKDIsICJSRVNVTFQ6
-IHJldHVybiB2YWx1ZShyZXQpPTIyIiwgMjhSRVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPTIyKQo+
-ID0gMjgKPiB3cml0ZSgyLCAiIGVycm5vPTAgKFN1Y2Nlc3MpIiwgMTggZXJybm89MCAoU3VjY2Vz
-cykpIMKgIMKgIMKgPSAxOAo+IHdyaXRlKDIsICJcbiIsIDEKPiApIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgID0gMQo+IHdyaXRlKDEsICIuLi4uLi4uLi4uLi4uLi4uLjAgLTEgY2xr
-X2lkPTAgMCIuLi4sIDEwNS4uLi4uLi4uLi4uLi4uLi4uMCAtMQo+IGNsa19pZD0wIDAgMjIgMjIg
-MTQgLi4uLi4uLi4uLmNsb2NrX25hbm9zbGVlcDAxIMKgIMKgMCDCoFRJTkZPIMKgOiDCoChjYXNl
-MDIpCj4gRU5EID0+IE9LCj4gKSA9IDEwNQo+IHdyaXRlKDEsICJjbG9ja19uYW5vc2xlZXAwMSDC
-oCDCoDAgwqBUSU5GTyDCoDoiLi4uLCA0OWNsb2NrX25hbm9zbGVlcDAxIMKgIMKgMAo+IFRJTkZP
-IMKgOiDCoChjYXNlMDMpIFNUQVJUCj4gKSA9IDQ5Cj4gY2xvY2tfZ2V0dGltZShDTE9DS19SRUFM
-VElNRSwgezY2Mzk2NywgNzI5NDAwODYzfSkgPSAwCj4gY2xvY2tfbmFub3NsZWVwKENMT0NLX1JF
-QUxUSU1FLCAwLCB7MCwgMTAwMDAwMDAwMH0sIDB4N2Y4MDg3OGMpID0gLTEKPiBFSU5WQUwgKElu
-dmFsaWQgYXJndW1lbnQpCj4gd3JpdGUoMiwgIkVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9MjIi
-LCAyOEVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9MjIpCj4gPSAyOAo+IHdyaXRlKDIsICIgZXJy
-bm89MCAoU3VjY2VzcykiLCAxOCBlcnJubz0wIChTdWNjZXNzKSkgwqAgwqAgwqA9IDE4Cj4gd3Jp
-dGUoMiwgIlxuIiwgMQo+ICkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgPSAxCj4g
-d3JpdGUoMiwgIlJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MjIiLCAyOFJFU1VMVDogcmV0dXJu
-IHZhbHVlKHJldCk9MjIpCj4gPSAyOAo+IHdyaXRlKDIsICIgZXJybm89MCAoU3VjY2VzcykiLCAx
-OCBlcnJubz0wIChTdWNjZXNzKSkgwqAgwqAgwqA9IDE4Cj4gd3JpdGUoMiwgIlxuIiwgMQo+ICkg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgPSAxCj4gd3JpdGUoMSwgIi4uLi4uLi4u
-Li4uLi4uLi4uMCAxMDAwMDAwMDAwIGNsIi4uLiwgMTEzLi4uLi4uLi4uLi4uLi4uLi4wCj4gMTAw
-MDAwMDAwMCBjbGtfaWQ9MCAwIDIyIDIyIDE0IC4uLi4uLi4uLi5jbG9ja19uYW5vc2xlZXAwMSDC
-oCDCoDAKPiBUSU5GTyDCoDogwqAoY2FzZTAzKSBFTkQgPT4gT0sKPiApID0gMTEzCj4gd3JpdGUo
-MSwgImNsb2NrX25hbm9zbGVlcDAxIMKgIMKgMCDCoFRJTkZPIMKgOiIuLi4sIDQ5Y2xvY2tfbmFu
-b3NsZWVwMDEgwqAgwqAwCj4gVElORk8gwqA6IMKgKGNhc2UwNCkgU1RBUlQKPiApID0gNDkKPiBj
-bG9ja19nZXR0aW1lKDB4MyAvKiBDTE9DS18/Pz8gKi8sIHswLCA4MDAwMDAwfSkgPSAwCj4gd3Jp
-dGUoMiwgIkVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9MjIiLCAyOEVYUEVDVDogcmV0dXJuIHZh
-bHVlKHJldCk9MjIpCj4gPSAyOAo+IHdyaXRlKDIsICIgZXJybm89MCAoU3VjY2VzcykiLCAxOCBl
-cnJubz0wIChTdWNjZXNzKSkgwqAgwqAgwqA9IDE4Cj4gd3JpdGUoMiwgIlxuIiwgMQo+ICkgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgPSAxCj4gd3JpdGUoMiwgIlJFU1VMVDogcmV0
-dXJuIHZhbHVlKHJldCk9MjIiLCAyOFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MjIpCj4gPSAy
-OAo+IHdyaXRlKDIsICIgZXJybm89MCAoU3VjY2VzcykiLCAxOCBlcnJubz0wIChTdWNjZXNzKSkg
-wqAgwqAgwqA9IDE4Cj4gd3JpdGUoMiwgIlxuIiwgMQo+ICkgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgPSAxCj4gd3JpdGUoMSwgIi4uLi4uLi4uLi4uLi4uLi4uMCA1MDAwMDAwMDAg
-Y2xrIi4uLiwgMTEyLi4uLi4uLi4uLi4uLi4uLi4wCj4gNTAwMDAwMDAwIGNsa19pZD0zIDAgMjIg
-MjIgMTQgLi4uLi4uLi4uLmNsb2NrX25hbm9zbGVlcDAxIMKgIMKgMCDCoFRJTkZPIMKgOgo+IChj
-YXNlMDQpIEVORCA9PiBPSwo+ICkgPSAxMTIKPiB3cml0ZSgxLCAiY2xvY2tfbmFub3NsZWVwMDEg
-wqAgwqAwIMKgVElORk8gwqA6Ii4uLiwgNDljbG9ja19uYW5vc2xlZXAwMSDCoCDCoDAKPiBUSU5G
-TyDCoDogwqAoY2FzZTA1KSBTVEFSVAo+ICkgPSA0OQo+IHJ0X3NpZ3Byb2NtYXNrKFNJR19TRVRN
-QVNLLCB+W1JUXzAgUlRfMV0sIFtdLCAxNikgPSAwCj4gY2xvbmUoY2hpbGRfc3RhY2s9MCwgZmxh
-Z3M9Q0xPTkVfQ0hJTERfQ0xFQVJUSUR8Q0xPTkVfQ0hJTERfU0VUVElEfAo+IFNJR0NITEQsIGNo
-aWxkX3RpZHB0cj0weDJhYWE5M2Q4KSA9IDE5NzUxCj4gcnRfc2lncHJvY21hc2soU0lHX1NFVE1B
-U0ssIFtdLCBOVUxMLCAxNikgPSAwCj4gLS0tIFNJR0lOVCAoSW50ZXJydXB0KSBAIDAgKDApIC0t
-LQo+IHJ0X3NpZ3JldHVybigweDIpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgID0g
-MAo+IGNsb2NrX2dldHRpbWUoQ0xPQ0tfUkVBTFRJTUUsIHs2NjM5NjgsIDcxODkxMjA4MX0pID0g
-MAo+IGNsb2NrX25hbm9zbGVlcChDTE9DS19SRUFMVElNRSwgMCwgezEwLCAwfSwgMHg3ZjgwODc4
-YykgPSA/Cj4gRVJFU1RBUlRfUkVTVEFSVEJMT0NLIChUbyBiZSByZXN0YXJ0ZWQpCj4gLS0tIFNJ
-R0lOVCAoSW50ZXJydXB0KSBAIDAgKDApIC0tLQo+IHJ0X3NpZ3JldHVybigweDIpIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgID0gLTEgRUlOVFIgKEludGVycnVwdGVkIHN5c3RlbQo+
-IGNhbGwpCj4gd3JpdGUoMSwgIi4uLi4uLi4uLi4uLi4uLi4uMTAgMCBjbGtfaWQ9MCAwIi4uLiwg
-MTEwLi4uLi4uLi4uLi4uLi4uLi4xMCAwCj4gY2xrX2lkPTAgMCA0IDIyIDE0IC4uLi4uLi4uLi5j
-bG9ja19uYW5vc2xlZXAwMSDCoCDCoDAgwqBUSU5GTyDCoDogwqByZW1haW4KPiB0aW1lOiA5IDk4
-NTY0NDIyMwo+ICkgPSAxMTAKPiB3cml0ZSgyLCAiRVhQRUNUOiByZXR1cm4gdmFsdWUocmV0KT00
-IiwgMjdFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPTQpID0KPiAyNwo+IHdyaXRlKDIsICIgZXJy
-bm89MCAoU3VjY2VzcykiLCAxOCBlcnJubz0wIChTdWNjZXNzKSkgwqAgwqAgwqA9IDE4Cj4gd3Jp
-dGUoMiwgIlxuIiwgMQo+ICkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgPSAxCj4g
-d3JpdGUoMiwgIlJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9NCIsIDI3UkVTVUxUOiByZXR1cm4g
-dmFsdWUocmV0KT00KSA9Cj4gMjcKPiB3cml0ZSgyLCAiIGVycm5vPTAgKFN1Y2Nlc3MpIiwgMTgg
-ZXJybm89MCAoU3VjY2VzcykpIMKgIMKgIMKgPSAxOAo+IHdyaXRlKDIsICJcbiIsIDEKPiApIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgID0gMQo+IGtpbGwoMTk3NTEsIFNJR1RFUk0p
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgPSAwCj4gd2FpdDQoLTEsIFt7V0lGRVhJVEVE
-KHMpICYmIFdFWElUU1RBVFVTKHMpID09IDB9XSwgMCwgTlVMTCkgPSAxOTc1MQo+IC0tLSBTSUdD
-SExEIChDaGlsZCBleGl0ZWQpIEAgMCAoMCkgLS0tCj4gd3JpdGUoMSwgImNsb2NrX25hbm9zbGVl
-cDAxIMKgIMKgMCDCoFRJTkZPIMKgOiIuLi4sIDUzY2xvY2tfbmFub3NsZWVwMDEgwqAgwqAwCj4g
-VElORk8gwqA6IMKgKGNhc2UwNSkgRU5EID0+IE9LCj4gKSA9IDUzCj4gd3JpdGUoMSwgImNsb2Nr
-X25hbm9zbGVlcDAxIMKgIMKgMSDCoFRGQUlMIMKgOiIuLi4sIDU3Y2xvY2tfbmFub3NsZWVwMDEg
-wqAgwqAxCj4gVEZBSUwgwqA6IMKgY2xvY2tfbmFub3NsZWVwIGZhaWxlZAo+ICkgPSA1NwoKICAg
-IExvb2tzIGxpa2UgYSBidWcgd2UgcmFuIGludG8gYSB3aGlsZSBiYWNrIHdpdGggYSBDYXZpdW0g
-aGFja2VkCnZlcnNpb24gb2YgZ2xpYmMgaW4gbXkgcHJldmlvdXMgZ3JvdXAuIE1ha2Ugc3VyZSB0
-aGF0IFdJRkVYSVRFRCBhbmQKdGhlIG90aGVyIHdhaXQgbWFjcm9zIGFyZSBkZWZpbmVkIGFzIHBl
-ciB3YWl0KDIpOgoKICAgICAgICNpbmNsdWRlIDxzeXMvd2FpdC5oPgoKICAgICAgIHBpZF90IHdh
-aXQoaW50ICpzdGF0X2xvYyk7CiAgICAgICBwaWRfdCB3YWl0cGlkKHBpZF90IHBpZCwgaW50ICpz
-dGF0X2xvYywgaW50IG9wdGlvbnMpOwoKLi4uCgogICAgICAgV0lGRVhJVEVEKHN0YXRfdmFsKQoK
-ICAgICAgICAgICAgICBFdmFsdWF0ZXMgIHRvICBhICBub24temVybyB2YWx1ZSBpZiBzdGF0dXMg
-d2FzIHJldHVybmVkCmZvciBhIGNoaWxkIHByb2Nlc3MgdGhhdCB0ZXJtaW5hdGVkCiAgICAgICAg
-ICAgICAgbm9ybWFsbHkuCgogICAgICAgV0VYSVRTVEFUVVMoc3RhdF92YWwpCgogICAgICAgICAg
-ICAgIElmIHRoZSB2YWx1ZSBvZiBXSUZFWElURUQoc3RhdF92YWwpIGlzIG5vbi16ZXJvLCB0aGlz
-Cm1hY3JvIGV2YWx1YXRlcyB0byAgdGhlICBsb3ctb3JkZXIgIDgKICAgICAgICAgICAgICBiaXRz
-ICBvZiAgdGhlICBzdGF0dXMgIGFyZ3VtZW50ICB0aGF0IHRoZSBjaGlsZCBwcm9jZXNzCnBhc3Nl
-ZCB0byBfZXhpdCgpIG9yIGV4aXQoKSwgb3IgdGhlCiAgICAgICAgICAgICAgdmFsdWUgdGhlIGNo
-aWxkIHByb2Nlc3MgcmV0dXJuZWQgZnJvbSBtYWluKCkuCgogICAgICAgV0lGU0lHTkFMRUQoc3Rh
-dF92YWwpCgogICAgICAgICAgICAgIEV2YWx1YXRlcyB0byBhIG5vbi16ZXJvIHZhbHVlIGlmIHN0
-YXR1cyB3YXMgcmV0dXJuZWQgZm9yCmEgY2hpbGQgIHByb2Nlc3MgIHRoYXQgIHRlcm1pbmF0ZWQK
-ICAgICAgICAgICAgICBkdWUgdG8gdGhlIHJlY2VpcHQgb2YgYSBzaWduYWwgdGhhdCB3YXMgbm90
-IGNhdWdodCAoc2VlCjxzaWduYWwuaD4pLgoKICAgICAgIFdURVJNU0lHKHN0YXRfdmFsKQoKICAg
-ICAgICAgICAgICBJZiAgdGhlICB2YWx1ZSAgb2YgV0lGU0lHTkFMRUQoc3RhdF92YWwpIGlzIG5v
-bi16ZXJvLAp0aGlzIG1hY3JvIGV2YWx1YXRlcyB0byB0aGUgbnVtYmVyIG9mCiAgICAgICAgICAg
-ICAgdGhlIHNpZ25hbCB0aGF0IGNhdXNlZCB0aGUgdGVybWluYXRpb24gb2YgdGhlIGNoaWxkIHBy
-b2Nlc3MuCgogICAgICAgV0lGU1RPUFBFRChzdGF0X3ZhbCkKCiAgICAgICAgICAgICAgRXZhbHVh
-dGVzIHRvIGEgbm9uLXplcm8gdmFsdWUgaWYgc3RhdHVzIHdhcyByZXR1cm5lZCBmb3IKYSBjaGls
-ZCBwcm9jZXNzIHRoYXQgaXMgIGN1cnJlbnRseQogICAgICAgICAgICAgIHN0b3BwZWQuCgogICAg
-ICAgV1NUT1BTSUcoc3RhdF92YWwpCgogICAgICAgICAgICAgIElmIHRoZSB2YWx1ZSBvZiBXSUZT
-VE9QUEVEKHN0YXRfdmFsKSBpcyBub24temVybywgdGhpcwptYWNybyBldmFsdWF0ZXMgdG8gdGhl
-IG51bWJlciBvZiB0aGUKICAgICAgICAgICAgICBzaWduYWwgdGhhdCBjYXVzZWQgdGhlIGNoaWxk
-IHByb2Nlc3MgdG8gc3RvcC4KCiAgICAgICBXSUZDT05USU5VRUQoc3RhdF92YWwpCgogICAgICAg
-ICAgICAgIEV2YWx1YXRlcyB0byBhIG5vbi16ZXJvIHZhbHVlIGlmIHN0YXR1cyB3YXMgcmV0dXJu
-ZWQgZm9yCmEgY2hpbGQgcHJvY2VzcyB0aGF0IGhhcyBjb250aW51ZWQKICAgICAgICAgICAgICBm
-cm9tIGEgam9iIGNvbnRyb2wgc3RvcC4KCiAgICBPdGhlcndpc2UgbWFueSBhcHBsaWNhdGlvbnMg
-d2lsbCBkbyBgaW50ZXJlc3RpbmcnIHRoaW5ncywgbGlrZQp3b24ndCB3YWl0IDspLi4uCgpIVEgs
-Ci1HYXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRG93bmxvYWQgSW50ZWwmIzE3NDsgUGFy
-YWxsZWwgU3R1ZGlvIEV2YWwKVHJ5IHRoZSBuZXcgc29mdHdhcmUgdG9vbHMgZm9yIHlvdXJzZWxm
-LiBTcGVlZCBjb21waWxpbmcsIGZpbmQgYnVncwpwcm9hY3RpdmVseSwgYW5kIGZpbmUtdHVuZSBh
-cHBsaWNhdGlvbnMgZm9yIHBhcmFsbGVsIHBlcmZvcm1hbmNlLgpTZWUgd2h5IEludGVsIFBhcmFs
-bGVsIFN0dWRpbyBnb3QgaGlnaCBtYXJrcyBkdXJpbmcgYmV0YS4KaHR0cDovL3Auc2YubmV0L3Nm
-dS9pbnRlbC1zdy1kZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Thu, Mar 4, 2010 at 12:38 AM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+> at 2010-2-25 9:18, Garrett Cooper wrote:
+>> On Mon, Feb 22, 2010 at 5:48 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+>>> at 2010-2-22 15:44, Garrett Cooper wrote:
+>>>> Ok.. one last thing.
+>>>>
+>>>> On Sun, Feb 21, 2010 at 11:15 PM, Shi Weihua <shiwh@cn.fujitsu.com> wr=
+ote:
+>>>>> at 2010-2-18 12:25, Rishikesh K Rajak wrote:
+>>>>>> On Wed, Feb 17, 2010 at 09:10:48AM -0800, Garrett Cooper wrote:
+>>>>>>> On Wed, Feb 17, 2010 at 12:01 AM, Rishikesh <risrajak@linux.vnet.ib=
+m.com> wrote:
+>>>>>>>> Hi Shi,
+>>>>>>>>
+>>>>>>>> Thanks for your patch, still i am finding time to look into your p=
+atch.
+>>>>>>>> Will reply you soon.
+>>>>>>>>
+>>>>>>>> http://marc.info/?l=3Dltp-list&m=3D126502355614857&w=3D2
+>>>>>>>
+>>>>>>> I looked at the patch finally.
+>>>>>>
+>>>>>> Thanks garret.
+>>>>>>>
+>>>>>>> Please use TTERRNO instead of strerror(...) for the reported value.
+>>>>>>> There's no reason why you should use strerror(...) there as that's
+>>>>>>> already done with tst_res(3).
+>>>>>>
+>>>>>> Shi, can you please incorporate changes which garret has suggested a=
+nd
+>>>>>> resend the patch again to ltp-list@ .
+>>>>>
+>>>>> =A0Ok, i recreated the patch based on garret's suggestion.
+>>>>>
+>>>>> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+>>>>> ---
+>>>>> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig =A0 =A02010-02-2=
+2 14:38:26.000000000 -0500
+>>>>> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-22 15:08:03.0=
+00000000 -0500
+>>>>> @@ -22,15 +22,18 @@
+>>>>> =A0* =A0 =A0 sysctl03.c
+>>>>> =A0*
+>>>>> =A0* DESCRIPTION
+>>>>> - * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM corr=
+ectly.
+>>>>> + * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM or E=
+ACCES
+>>>>> + * =A0 =A0 correctly. But it will return EACCES on kernels that are =
+2.6.33-rc1
+>>>>> + * =A0 =A0 and higher.
+>>>>> =A0*
+>>>>> =A0* ALGORITHM
+>>>>> =A0* =A0 =A0 a. =A0 =A0 =A0Call sysctl(2) as a root user, and attempt=
+ to write data
+>>>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table d=
+oes not have write
+>>>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should =
+fail EPERM.
+>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should =
+fail EPERM or EACCES.
+>>>>> =A0* =A0 =A0 b. =A0 =A0 =A0Call sysctl(2) as a non-root user, and att=
+empt to write data
+>>>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table d=
+oes not have write
+>>>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it shoul=
+d fail with EPERM.
+>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it shoul=
+d fail with EPERM
+>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 or EACCES.
+>>>>> =A0*
+>>>>> =A0* USAGE: =A0<for command-line>
+>>>>> =A0* =A0sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+>>>>> @@ -43,6 +46,7 @@
+>>>>> =A0*
+>>>>> =A0* HISTORY
+>>>>> =A0* =A0 =A0 07/2001 Ported by Wayne Boyer
+>>>>> + * =A0 =A0 02/2010 Updated by shiwh@cn.fujitsu.com
+>>>>> =A0*
+>>>>> =A0* RESTRICTIONS
+>>>>> =A0* =A0 =A0 Test must be run as root.
+>>>>> @@ -82,6 +86,7 @@ int main(int ac, char **av)
+>>>>> =A0{
+>>>>> =A0 =A0 =A0 =A0int lc;
+>>>>> =A0 =A0 =A0 =A0char *msg;
+>>>>> + =A0 =A0 =A0 int exp_eno;
+>>>>>
+>>>>> =A0 =A0 =A0 =A0char osname[OSNAMESZ];
+>>>>> =A0 =A0 =A0 =A0int osnamelth, status;
+>>>>> @@ -96,6 +101,13 @@ int main(int ac, char **av)
+>>>>>
+>>>>> =A0 =A0 =A0 =A0setup();
+>>>>>
+>>>>> + =A0 =A0 =A0 if ((tst_kvercmp(2, 6, 32)) <=3D 0){
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_eno =3D EPERM;
+>>>>> + =A0 =A0 =A0 } else {
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_eno =3D EACCES;
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EACCES;
+>>>>> + =A0 =A0 =A0 }
+>>>>> +
+>>>>> =A0 =A0 =A0 =A0TEST_EXP_ENOS(exp_enos);
+>>>>>
+>>>>> =A0 =A0 =A0 =A0/* check looping state if -i option is given */
+>>>>> @@ -114,13 +126,10 @@ int main(int ac, char **av)
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERROR_LOG(TEST_ER=
+RNO);
+>>>>>
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D EPE=
+RM) {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TFAIL,
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0"Expected EPERM (%d), got %d: %s",
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0EPERM, TEST_ERRNO,
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0strerror(TEST_ERRNO));
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D exp=
+_eno) {
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TFAIL|TTERRNO, "Got unxpected error");
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TPASS, "Got expected EPERM error");
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TPASS|TTERRNO, "Got expected error");
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>>
+>>>>> @@ -147,12 +156,10 @@ int main(int ac, char **av)
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_E=
+RROR_LOG(TEST_ERRNO);
+>>>>>
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TES=
+T_ERRNO !=3D EPERM) {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TFAIL, "Expected EPERM, got "
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0"%d", TEST_ERRNO);
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TES=
+T_ERRNO !=3D exp_eno) {
+>>>>
+>>>> Why can't this be exp_enos[0] ?
+>>>
+>>> Using exp_enos[0] is ok. pls check the latest patch in this mail.
+>>>
+>>>>
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TFAIL|TTERRNO, "Got unxpected error");
+>>>>
+>>>> Typo.
+>>>>
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else=
+ {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TPASS, "Got expected EPERM "
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0"error");
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TPASS|TTERRNO, "Got expected error");
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>>
+>>>>>
+>>>>> Thank you.
+>>>>> - Shi Weihua
+>>>>
+>>>> =A0 =A0 It always helps to understand what's expected vs unexpected
+>>>> without having to look at the source code. Could you please revise the
+>>>> tst_resm format strings to be something like the following?
+>>>>
+>>>> tst_resm (TPASS | TERRNO, "Got expected error (errno =3D %d, ret_code =
+=3D
+>>>> %d", exp_errno_blah, exp_ret_code_blah);
+>>>>
+>>>> OR:
+>>>>
+>>>> tst_resm (TPASS | TERRNO, "Got unexpected error (expected errno =3D %d,
+>>>> ret_code =3D %d - got errno =3D %d, ret_code =3D %d", exp_errno_blah,
+>>>> exp_ret_code_blah, errno_blah, ret_code_blah);
+>>>
+>>> ret_code has not been defined in sysctl03.c, i think it's unnecessarily=
+ to
+>>> import a new parameter. maybe, we can use your macro when it created. ;=
+-)
+>>>
+>>> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig =A0 =A02010-02-22 =
+14:38:26.000000000 -0500
+>>> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-23 09:35:20.000=
+000000 -0500
+>>> @@ -22,15 +22,18 @@
+>>> =A0* =A0 =A0 sysctl03.c
+>>> =A0*
+>>> =A0* DESCRIPTION
+>>> - * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM correc=
+tly.
+>>> + * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM or EAC=
+CES
+>>> + * =A0 =A0 correctly. But it will return EACCES on kernels that are 2.=
+6.33-rc1
+>>> + * =A0 =A0 and higher.
+>>> =A0*
+>>> =A0* ALGORITHM
+>>> =A0* =A0 =A0 a. =A0 =A0 =A0Call sysctl(2) as a root user, and attempt t=
+o write data
+>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table doe=
+s not have write
+>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should fa=
+il EPERM.
+>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should fa=
+il EPERM or EACCES.
+>>> =A0* =A0 =A0 b. =A0 =A0 =A0Call sysctl(2) as a non-root user, and attem=
+pt to write data
+>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table doe=
+s not have write
+>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it should =
+fail with EPERM.
+>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it should =
+fail with EPERM
+>>> + * =A0 =A0 =A0 =A0 =A0 =A0 or EACCES.
+>>> =A0*
+>>> =A0* USAGE: =A0<for command-line>
+>>> =A0* =A0sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+>>> @@ -43,6 +46,7 @@
+>>> =A0*
+>>> =A0* HISTORY
+>>> =A0* =A0 =A0 07/2001 Ported by Wayne Boyer
+>>> + * =A0 =A0 02/2010 Updated by shiwh@cn.fujitsu.com
+>>> =A0*
+>>> =A0* RESTRICTIONS
+>>> =A0* =A0 =A0 Test must be run as root.
+>>> @@ -96,6 +100,12 @@ int main(int ac, char **av)
+>>>
+>>> =A0 =A0 =A0 =A0setup();
+>>>
+>>> + =A0 =A0 =A0 if ((tst_kvercmp(2, 6, 32)) <=3D 0){
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EPERM;
+>>> + =A0 =A0 =A0 } else {
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EACCES;
+>>> + =A0 =A0 =A0 }
+>>> +
+>>> =A0 =A0 =A0 =A0TEST_EXP_ENOS(exp_enos);
+>>>
+>>> =A0 =A0 =A0 =A0/* check looping state if -i option is given */
+>>> @@ -114,13 +124,12 @@ int main(int ac, char **av)
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERROR_LOG(TEST_ERRN=
+O);
+>>>
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D EPERM=
+) {
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
+TFAIL,
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0"Expected EPERM (%d), got %d: %s",
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0EPERM, TEST_ERRNO,
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0strerror(TEST_ERRNO));
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D exp_e=
+nos[0]) {
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
+TFAIL|TTERRNO, "Got unxpected error "
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 "(expected error =3D %d)", exp_enos[0]);
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
+TPASS, "Got expected EPERM error");
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
+TPASS|TTERRNO, "Got expected error "
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 "(errno =3D %d)", exp_enos[0]);
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>
+>>> @@ -147,12 +156,12 @@ int main(int ac, char **av)
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERR=
+OR_LOG(TEST_ERRNO);
+>>>
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_=
+ERRNO !=3D EPERM) {
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 tst_resm(TFAIL, "Expected EPERM, got "
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0"%d", TEST_ERRNO);
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_=
+ERRNO !=3D exp_enos[0]) {
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 tst_resm(TFAIL|TTERRNO, "Got unxpected error "
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 "(expected error =3D %d)", exp_enos[0]);
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 tst_resm(TPASS, "Got expected EPERM "
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0"error");
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 tst_resm(TPASS|TTERRNO, "Got expected error "
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0"(errno =3D %d)", =A0exp_enos[0]);
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>
+>> Ok, before I go and commit this, there are two things I need to know
+>> (because trusty Google didn't turn up any results for this behavioral
+>> change):
+>>
+>> 1. The change is legitimate.
+>> 2. The documentation is up to date, or a bug has been filed for the
+>> documentation change.
+>>
+>> If you can provide these two things, I'll commit the change.
+>
+> At this time of day, I can not find any documentation about EPERM->EACCES.
+> But, i caught the kernel commit which caused ltp bug:
+> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dco=
+mmitdiff;h=3D26a7034b40ba80f82f64fa251a2cbf49f9971c6a
+> Maybe it can help you to judge.
+
+Wow... that's a fair amount of code refactoring and additions to the syscal=
+l.
+
+Yes, all of the issues with opening a directory and reading/writing
+now apply to sysctl(2), especially if someone attempts to read from a
+write-only descriptor, or vice versa.
+
+I hate to do this in such a reactive manner as this should have been
+done up front, but the 1) documentation and 2) test need to be
+updated. 1) is more key today because I'm not sure how much testing
+the developer did before he committed to kernel.org, but without
+updated documentation and requirements we can't write proper tests.
+
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
