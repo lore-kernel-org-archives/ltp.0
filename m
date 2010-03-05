@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NotPT-00054H-0t
-	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 06:59:19 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NotPS-0004ps-2o
-	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 06:59:18 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o296pPFC021308
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Mar 2010 23:51:25 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o296x24p113384
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Mar 2010 23:59:02 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o296x1ao009833
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Mar 2010 23:59:01 -0700
-Date: Tue, 9 Mar 2010 12:28:52 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100309065852.GA5875@linux.vnet.ibm.com>
+	(envelope-from <yanegomi@gmail.com>) id 1NnezS-0006GA-D3
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 21:23:22 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnezR-0006PT-H5
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 21:23:22 +0000
+Received: by pwi5 with SMTP id 5so2396407pwi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 05 Mar 2010 13:23:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] Fix for running freezer testcases
+In-Reply-To: <201003051529.20596.vapier@gentoo.org>
+References: <000301cabb68$7fb08c30$7f11a490$@co.jp>
+	<201003051529.20596.vapier@gentoo.org>
+Date: Fri, 5 Mar 2010 13:23:15 -0800
+Message-ID: <364299f41003051323y4c63e0dbx3d721c08296c9524@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Is there another method to download?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,46 +28,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
-Cc: Matt Helsley <matthltc@linux.vnet.ibm.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-commit 58854395050b8a3bb2fa4e5e4401546925f6aad8
-Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Date:   Tue Mar 9 12:24:47 2010 +0530
+On Fri, Mar 5, 2010 at 12:29 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Thursday 04 March 2010 02:01:22 Mitani wrote:
+>> I tried to get source by using GIT.
+>> But It failed with following message:
+>>
+>> ------------
+>> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp-dev
+>> Initialized empty Git repository in /home/mitani/wk/ltp-dev/.git/
+>> fatal: Unable to look up ltp.git.sourceforge.net (port 9418) (Temporary
+>> failure in name resolution)
+>> #
+>> ------------
+>>
+>> It seems to be caused by the fact that port 9418 does not open.
+>> This is a problem by me.
+>> But I think that there are some companies which don't open a port 9418
+>> due to the security. I think that it becomes the problem in those
+>> companies that GIT cannot be used.
+>>
+>> I'm saved very much if there is the method to download via HTTP.
+>
+> we have no control over this. =A0talk to sf.net about the issue.
+>
+> in the meantime, use the gitweb interface to download snapshots.
 
-    Commenting "make all" in run_freezer.sh file as it is stopping to
-run the freezer testcase
-    
+    Can you DNS resolve ltp.git.sourceforge.net from that machine?
+Thanks,
+-Garrett
 
-    Signed-off By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
-
-diff --git a/testcases/kernel/controllers/freezer/run_freezer.sh
-b/testcases/kernel/controllers/freezer/run_freezer.sh
-index 3baf968..f66e321 100755
---- a/testcases/kernel/controllers/freezer/run_freezer.sh
-+++ b/testcases/kernel/controllers/freezer/run_freezer.sh
-@@ -69,7 +69,8 @@ function test_setup()
-        export LTPBIN PATH TCID TST_COUNT TST_TOTAL CGROUPS_TESTROOT
-        tst_resm TINFO "Preparing to run: ${P} $@"
- 
--       make all
-+       # this is not require here
-+       #make all
- }
- 
- function test_prereqs()
-
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
