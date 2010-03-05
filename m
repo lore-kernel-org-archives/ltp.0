@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <y_yao@ryobi.co.jp>) id 1NnTiQ-0005yQ-6L
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 09:21:02 +0000
-Received: from out04.sjc.mx.trendmicro.com ([216.99.131.8])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NnTiO-0006FW-HV
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 09:21:02 +0000
-From: "Yuki Yao" <y_yao@ryobi.co.jp>
-References: <000f01caae08$ce91e640$6bb5b2c0$@co.jp>	
-	<20100217150214.GB9825@rishikesh.in.ibm.com>	
-	<364299f41002170936q1f0c4723qd7ad7f10df6745af@mail.gmail.com>	
-	<001801cab363$9ff5a2d0$dfe0e870$@co.jp>
-	<364299f41002212310r6e8107c4m89d8970fdb8a9553@mail.gmail.com>
-In-Reply-To: <364299f41002212310r6e8107c4m89d8970fdb8a9553@mail.gmail.com>
-Date: Fri, 5 Mar 2010 18:20:45 +0900
-Message-ID: <000801cabc45$2328c440$697a4cc0$@co.jp>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ebiederm@xmission.com>) id 1NnSIm-0005hO-NG
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:50:28 +0000
+Received: from out01.mta.xmission.com ([166.70.13.231])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnSIl-00054r-MH
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:50:28 +0000
+References: <4B7BA24F.2010705@linux.vnet.ibm.com>
+	<364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>
+	<20100218042532.GC13013@rishikesh.in.ibm.com>
+	<4B822F2E.9030609@cn.fujitsu.com>
+	<364299f41002212344v4873843ej986f1b39ec3494df@mail.gmail.com>
+	<4B8333ED.5080709@cn.fujitsu.com>
+	<364299f41002241718g4be216d1pbec918821b7027b0@mail.gmail.com>
+	<4B8F716E.5070207@cn.fujitsu.com>
+	<364299f41003041037s57f1d4bfr98c20ac7736b8905@mail.gmail.com>
+	<m13a0fc11w.fsf@fess.ebiederm.org>
+	<364299f41003042320n7437e4a2j219b32a0a5f8dc50@mail.gmail.com>
+From: ebiederm@xmission.com (Eric W. Biederman)
+Date: Thu, 04 Mar 2010 23:50:05 -0800
+In-Reply-To: <364299f41003042320n7437e4a2j219b32a0a5f8dc50@mail.gmail.com>
+	(Garrett Cooper's message of "Thu\, 4 Mar 2010 23\:20\:52 -0800")
+Message-ID: <m1pr3jky1e.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] "logrotate01" has problem
+Subject: Re: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,261 +35,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Monday, February 22, 2010 4:11 PM
-> To: Yuki Yao
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] "logrotate01" has problem
-> =
-
-> On Sun, Feb 21, 2010 at 6:06 PM, Yuki Yao <y_yao@ryobi.co.jp> wrote:
-> >> -----Original Message-----
-> >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> >> Sent: Thursday, February 18, 2010 2:36 AM
-> >> To: Rishikesh K Rajak
-> >> Cc: Yuki Yao; ltp-list@lists.sourceforge.net
-> >> Subject: Re: [LTP] "logrotate01" has problem
-> >>
-> >> On Wed, Feb 17, 2010 at 7:02 AM, Rishikesh K Rajak
-> >> <risrajak@linux.vnet.ibm.com> wrote:
-> >> > On Mon, Feb 15, 2010 at 03:33:37PM +0900, Yuki Yao wrote:
-> >> >> Hi,
-> >> >>
-> >> >> I contributed following problem previously, but it's not yet
-revised.
-> >> >> So, I contribute this again.
-> >> >>
-> >> >> After "./runltp" execution, all log files such as
-"/var/log/messages*"
-> >> >> disappeared, and there is only new log file created after the test.
-> >> >>
-> >> >> This seems a problem that occurs after the "logrotate01" test.
-> >> >> I found that the past log files were deleted by forcing a
-"logrotate"
-> >> >> (logrotate -fv $LTPTMP/tst_logrotate.conf).
-> >> >>
-> >> >> Besides, logrotate01's shell script "./testcases/commands/logrotate
-> >> >> /logrotate_tests.sh" creats logrotate configuration file ($LTPTMP
-> >> >> /tst_logrotate.conf) for the test, and this configration file
-includes
-> >> >> "/etc/logrotate.d" as follows:
-> >> >>
-> >> >> [ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
-> >> >> ----------
-> >> >> # create config file.
-> >> >> =A0 =A0 =A0 cat >$LTPTMP/tst_logrotate.conf <<-EOF
-> >> >> =A0 =A0 =A0 #****** Begin Config file *******
-> >> >> =A0 =A0 =A0 # create new (empty) log files after rotating old ones
-> >> >> =A0 =A0 =A0 create
-> >> >>
-> >> >> =A0 =A0 =A0 # compress the log files
-> >> >> =A0 =A0 =A0 compress
-> >> >>
-> >> >> =A0 =A0 =A0 # RPM packages drop log rotation information into this
-> directory
-> >> >> =A0 =A0 =A0 include /etc/logrotate.d
-> >> >>
-> >> >> =A0 =A0 =A0 /var/log/tst_logfile {
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 weekly
-> >> >> =A0 =A0 =A0 }
-> >> >> =A0 =A0 =A0 #****** End Config file *******
-> >> >> =A0 =A0 =A0 EOF
-> >> >> ----------
-> >> >>
-> >> >> By This, not only a log file for the test (/var/log/tst_logfile)
-> >> >> but also 30 fies such as "/var/log/messages*" become "logrotate"
-> >> >> command target.
-> >> >> Only a log file for this test must become a target of the forced
-> >> >> execution of "logrotate".
-> >> >>
-> >> >> To resolve this problem, we must change "/logrotate_tests.sh" not
-> to
-> >> >> include "/etc/logrotate.d", I think.
-> >> >>
-> >> >> Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
-> >> >
-> >> > Hello Garret,
-> >> >
-> >> > Any input for this patch ?
-> >> >
-> >> > Thanks
-> >> > -Rishi
-> >> >>
-> >> >> Index: ./testcases/commands/logrotate/logrotate_tests.sh
-> >> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >> >>
-> >>
-> --- ./testcases/commands/logrotate/logrotate_tests.sh.orig =A0 =A02008-10-
-> >> 21
-> >> >> 15:54:15.000000000 +0900
-> >> >> +++ ./testcases/commands/logrotate/logrotate_tests.sh 2010-02-15
-> >> >> 13:32:02.000000000 +0900
-> >> >> @@ -163,7 +163,7 @@
-> >> >> =A0 =A0 =A0 compress
-> >> >>
-> >> >> =A0 =A0 =A0 # RPM packages drop log rotation information into this
-> directory
-> >> >> - =A0 =A0 include /etc/logrotate.d
-> >> >> + =A0 =A0 # include /etc/logrotate.d
-> >> >>
-> >> >> =A0 =A0 =A0 /var/log/tst_logfile {
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
-> >> >> @@ -200,7 +200,7 @@
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if =A0/etc/logrotate.d is inclu=
-ded/
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if 5 rotations are forced.
-> >> >> =A0 =A0 =A0 =A0 =A0# check if compression is done.
-> >> >> - =A0 =A0 =A0 =A0 =A0 =A0 grep "including /etc/logrotate.d"
-> >> $LTPTMP/tst_logrotate.out
-> >> >> \
-> >> >> + =A0 =A0 =A0 =A0 =A0 =A0 # grep "including /etc/logrotate.d"
-> >> >> $LTPTMP/tst_logrotate.out \
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 > $LTPTMP/tst_logrotate=
-.err 2>&1 || RC=3D$?
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 grep "reading config file
-> $LTPTMP/tst_logrotate.conf"
-> >> \
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 $LTPTMP/tst_logrotate.o=
-ut =A0 >
-> >> >> $LTPTMP/tst_logrotate.err 2>&1 || RC=3D$?
-> >> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>
-> >> The problem statement isn't clearly worded, thus I'm confused whether
-> >> or not the patch is fixing a symptom or the root cause itself.
-> >
-> > Hi,
-> >
-> > I want to explain about the problem and patch.
-> >
-> > <About Problem>
-> > After "logrotate01" test, log files (such as "/var/log/messages*")
-> > --which are important to system administration-- are disappeared.
-> >
-> > *** In the following explanation, I will call these important files
-> > =A0 =A0"System-Logs" for convenience.
-> >
-> > The following explain about the problem.
-> > 1. "logrotate01" tests the forced rotation "logrotate -f <config_file>".
-> > =A0 This rotation deletes the past log files which stored until now,
-> > =A0 and creates the new log file.
-> > =A0 The target of this forced rotation is /var/log/tst_logfile which
-> > =A0 created for this test.
-> >
-> > 2. $LTPTMP/tst_logrotate.conf is created as logrotate configuration
-> > =A0 file for this test.
-> > =A0 This config-file includes /etc/logrotate.d, and all files under
-> > =A0 /etc/logrotate.d are loaded.
-> >
-> > 3. In the files under the /etc/logrotate.d, the rotation of
-> > =A0 "System-Logs" are set.
-> >
-> > 4. Because, "System-Logs" also became a target for forced rotation.
-> > =A0 Therefore, after this test, all past "System-Logs" are disappeared.
-> >
-> > Only /var/log/tst_logfile should be the target of this test, I think.
-> > What is the reason why actual "System-Logs" becomes the target?
-> > In a system for exclusive use of the LTP test, this may not be problem.
-> > But, it will be troubled that important logs disappeared when general
-> > users execute runltp in the system which is operating.
-> >
-> > <About Patch>
-> > The contributed patch doesn't load the file under the /etc/logrotate.d
-> > by commenting-out "include /etc/logrotate.d" in
-> $LTPTMP/tst_logrotate.conf.
-> > And it can let only /var/log/tst_logfile be the target of the forced
-> > rotation.
-> =
-
->     So from what you described I see a singular problem: logrotate01
-> should _restore_ a system log as that is a valid feature to test. I
-> don't think that omitting that directive would be a wise idea because
-> you're effectively disabling that functionality.
->     If you can make the test interrupt-resistant under normal
-> conditions and restore on exit, you should be fine (hint... try
-> something like the following)
-> =
-
-> save() {
->     cp "${SYSTEM_LOG}" "${SYSTEM_LOG}.bk"
-> }
-> =
-
-> restore() {
->     # Disable the signal handler.
->     trap "" EXIT
-> =
-
->     # Shouldn't be the case -- if so the test should be rewritten to
-> use a mktemp generated file.
->     if [ "x${SYSTEM_LOG}" =3D "x${TEST_SYSTEM_LOG}" ] ; then
->         cp "${TEST_SYSTEM_LOG}" "${TEST_SYSTEM_LOG}.test"
->         TEST_SYSTEM_LOG=3D"${TEST_SYSTEM_LOG}.test"
->     fi
-> =
-
->     # XXX: Stop syslogd here...
-> =
-
->     mv "${SYSTEM_LOG}.bk" "${SYSTEM_LOG}"
->     cat "${SYSTEM_LOG}.test" >> "${SYSTEM_LOG}"
-> =
-
->     # XXX: Start syslogd again here...
-> =
-
-> }
-> =
-
-> # XXX: in ``main``, swap around the configuration; call save.
-> =
-
-> # Make sure restore will be called at the end of the script's lifetime.
-> trap restore EXIT
-> =
-
-> # Do test stuff here..
-> =
-
-
-Hi, Garrett.
-
-I think my patch (comment out "include") is more adroit process =
-
-than your hint (back up SYSTEM_LOG.bk, and test against all SYSTEM_LOG,
-then restore SYSTEM_LOG).
-
-Because, "include" directive is only reading rotation infomation of =
-
-SYSTEM_LOG which is the target of "logrotate".
-Don't you think that only a rotation infomation of TEST_SYSTEM_LOG =
-
-should be described in "tst_logrotate.conf" to make only TEST_SYSTEM_LOG =
-
-the "logrotate" target?
-
-Thanks, Yuki Yao
-
-> Cheers,
-> -Garrett
-
-
-
----------------------------------------------------------------------------=
----
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+R2FycmV0dCBDb29wZXIgPHlhbmVnb21pQGdtYWlsLmNvbT4gd3JpdGVzOgoKPiBPbiBUaHUsIE1h
+ciA0LCAyMDEwIGF0IDExOjU3IEFNLCBFcmljIFcuIEJpZWRlcm1hbgo+IDxlYmllZGVybUB4bWlz
+c2lvbi5jb20+IHdyb3RlOgo+PiBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlAZ21haWwuY29tPiB3
+cml0ZXM6Cj4+Pgo+Pj4gV293Li4uIHRoYXQncyBhIGZhaXIgYW1vdW50IG9mIGNvZGUgcmVmYWN0
+b3JpbmcgYW5kIGFkZGl0aW9ucyB0byB0aGUgc3lzY2FsbC4KPj4+Cj4+PiBZZXMsIGFsbCBvZiB0
+aGUgaXNzdWVzIHdpdGggb3BlbmluZyBhIGRpcmVjdG9yeSBhbmQgcmVhZGluZy93cml0aW5nCj4+
+PiBub3cgYXBwbHkgdG8gc3lzY3RsKDIpLCBlc3BlY2lhbGx5IGlmIHNvbWVvbmUgYXR0ZW1wdHMg
+dG8gcmVhZCBmcm9tIGEKPj4+IHdyaXRlLW9ubHkgZGVzY3JpcHRvciwgb3IgdmljZSB2ZXJzYS4K
+Pj4KPj4gTm8gbWlzbWF0Y2hlcyBvZiBmaWxlIGRlc2NyaXB0b3IgbW9kZXMgYW5kIGhvdyB0aGUg
+ZGVzY3JpcHRvciBpcwo+PiBhY2Nlc3NlZCBjYW4gbm90IG9jY3VyLiDCoFRoZXJlIGlzIGEgZmls
+ZSBkZXNjcmlwdG9yIGJ1dCB0aGUgZmlsZQo+PiBkZXNjcmlwdG9yIGlzIGNvbXBsZXRlbHkgaW50
+ZXJuYWwgdG8gYmluYXJ5X3N5c2N0bCgpLCBhbmQgaXQgaXMgb3BlbmVkCj4+IHdpdGggdGhlIG1v
+ZGUgb2Ygd2hhdCB3ZSBhcmUgdHJ5aW5nIHRvIHVzZS4gwqBUaGVyZSBhcmUgbm8gdXNlciBzcGFj
+ZQo+PiBjb250cm9sbGFibGUgcGFydHMgdGhlcmUuCj4+Cj4+IExvb2tpbmcgdGhyb3VnaCB0aGUg
+b2xkIHN5c2N0bCBjb2RlIGl0IGFwcGVhcnMgdGhhdCBpdCB3YXMgYSBidWcgdGhhdAo+PiBrZXB0
+IGl0IGZyb20gcmV0dXJuaW5nIEVBQ0NFUy4gwqBUaGUgY29kZSBoYXMgaGFkIHRoaXMgYmVhdXRp
+ZnVsIHNuaXBwZXQKPj4gaW4gaXQgZm9yIGFnZXM6Cj4+Cj4+IHN0YXRpYyBpbnQgdGVzdF9wZXJt
+KGludCBtb2RlLCBpbnQgb3ApCj4+IHsKPj4gwqAgwqAgwqAgwqBpZiAoIWN1cnJlbnQtPmV1aWQp
+Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbW9kZSA+Pj0gNjsKPj4gwqAgwqAgwqAgwqBlbHNl
+IGlmIChpbl9lZ3JvdXBfcCgwKSkKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBtb2RlID4+PSAz
+Owo+PiDCoCDCoCDCoCDCoGlmICgobW9kZSAmIG9wICYgMDAwNykgPT0gb3ApCj4+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgcmV0dXJuIDA7Cj4+IMKgIMKgIMKgIMKgcmV0dXJuIC1FQUNDRVM7Cj4+
+IH0KPgo+ICAgICBXb3cuIFRvb2sgYSBzZWNvbmQgZm9yIG1lIHRvIHN0YXJlIGFuZCBpdCBhbmQg
+c2VlIHdoYXQgeW91IG1lYW4sCj4gYnV0IHllYWggLS0gdGhhdCBpcyBwcmV0dHkgZGFuZyBhd2Vz
+b21lIHRoYXQgaXQgd2FzIGFsd2F5cyBoYXJkd2lyZWQKPiB0byByZXR1cm4gMC4KClNvcnJ5IHRo
+YXQgd2Fzbid0IGNsZWFyIHdpdGhvdXQgY29udGV4dC4gIFdoYXQgdXNlZCB0byBoYXBwZW4Kd2hl
+cmUgYWxsIG9mIHRoZSBjYWxsZXJzIG9mIHRoYXQgZnVuY3Rpb24gZGlkOgppZiAodGVzdF9wZXJt
+KC4uLikpCiAgIHJldHVybiAtRVBFUk07CgpJbnN0ZWFkIG9mIHRoZSBtdWNoIG1vcmUgY29udmVu
+dGlvbmFsOgoKZXJyID0gdGVzdF9wZXJtKCkKaWYgKGVycikKICAgcmV0dXJuIGVycjsKCj4+IEkg
+YWRtaXQgdGhhdCB0aGUgbWFucGFnZSBkb2Vzbid0IGRvY3VtZW50IEVBQ0NFUyBidXQgdGhlIG1h
+bnBhZ2UKPj4gaGFzIGFsd2F5cyBzYWlkIGRvbid0IHVzZSBzeXNjdGwoMikgc28uLi4KPgo+ICAg
+ICBXZWxsLCBpZiBzb21lb25lIGJ1bWJsZXMgYWNyb3NzIHRoaXMgbGF0ZXIsIGl0IHdpbGwgYmUg
+YSBjb25mdXNpbmcKPiBpc3N1ZSB0byB3b3JrIHRocm91Z2guIEl0J3MgYmV0dGVyIHRvIGJlIGRv
+Y3VtZW50ZWQgaW5zdGVhZCBvZgo+IHVuZG9jdW1lbnRlZC4gSSdsbCBmaWxlIHRoZSBidWcgdXBz
+dHJlYW0gdG8gZG9jdW1lbnQgdGhpcywgYnV0IGl0Cj4gd291bGQgYmUgbmljZSB0byBkZXRlcm1p
+bmUgaWYgdGhlcmUgYXJlIGFueSBtb3JlIGltbWVkaWF0ZSBnYXBzIHdoaWNoCj4gbmVlZCB0byBi
+ZSBhZGRyZXNzZWQgaW4gdGhlIGNoYW5nZXMuCgpJIHRoaW5rIHRoZSBsaW51eCB0ZXN0IHByb2pl
+Y3QgbWF5IGJlIG5lYXJseSB0aGUgb25seSBjYWxsZXIgb2Ygc3lzY3RsKDIpCmF0IHRoaXMgcG9p
+bnQuICBBdCBsZWFzdCB1bnRpbCByZWNlbnRseSB0aGVyZSB3YXMgb25lIGNhbGxlciBpbiBhcm0K
+Z2xpYmMuICBCdXQgZmluZGluZyBhbnkgcHJvZ3JhbSB0aGF0IHVzZXMgc3lzY3RsKDIpIGlzIG5l
+YXJseSBpbXBvc3NpYmxlLgoKPj4gWW91IG1heSBzZWUgYSBzbGlnaHRseSBkaWZmZXJlbnQgZXJy
+b3IgY29kZSBmcm9tIHN5c2N0bCgyKSBvbiBmYWlsdXJlCj4+IGJ1dCBvdGhlcndpc2UgwqBzeXNj
+dGwoMikgc2hvdWxkIGJlIHVuY2hhbmdlZCwgYW5kIHllcyBJIGRpZCB0ZXN0IGl0Lgo+PiBPZiBj
+b3Vyc2UgSSB3YXMgbm90IGJlaW5nIHBpY2t5IGFib3V0IHdoaWNoIGVycm9yIGNvZGUgSSBnb3Qg
+b24gZmFpbHVyZS4KPgo+ICAgICBIbW1tLi4gb2suIFdlIGp1c3QgZ2V0IDIwIHF1ZXN0aW9ucyB3
+aGVuIHNvbWV0aGluZyBmYWlscyBhbmQgaXQncwo+IG5vdCBkb2N1bWVudGVkIHdoeSBpdCBzaG91
+bGQgZmFpbCBpbiBhIHBhcnRpY3VsYXIgbWFubmVyIDopLgoKPj4gV2hhdCBleGlzdHMgdG9kYXkg
+aXMgc2ltcGx5IGEgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkgd3JhcHBlciBvZgo+PiBzeXNjdGwo
+MikgYnVpbHQgb24gdG9wIG9mIC9wcm9jL3N5cy4gwqBzeXNjdGwoMikgd2FzIGEgcHJhY3RpY2Fs
+bHkKPj4gdW5tYWludGFpbmVkIGJpdC1yb3R0aW5nIHBpbGUsIHRoYXQgd2FzIG5ldmVyIGFkZXF1
+YXRlbHkgbWFpbnRhaW5lZCBvcgo+PiB0ZXN0ZWQuCj4KPiAgICAgWWVhaCwgeW91J3JlIHByb2Jh
+Ymx5IHJpZ2h0IChlc3BlY2lhbGx5IGJlY2F1c2UgTGludXggdGVuZHMgbm90IHRvCj4gZm9jdXMg
+b24gc3lzY3RsKDMpIGxpa2UgdGhlIEJTRHMgZG8pLgo+Cj4+IEF0IHRoaXMgcG9pbnQgbm90aGlu
+ZyBzaG91bGQgY2hhbmdlIGFnYWluIHVudGlsIHN1Y2ggdGltZSBhcyB0aGUgY29kZQo+PiBpcyBk
+aXNhYmxlZC9yZW1vdmVkIGJ5IGRlZmF1bHQuCj4KPiAgICAgSG1tbS4uLiBvay4gSSBhc3N1bWUg
+dGhhdCBzeXNjdGwoMikgaXMgZ29pbmcgY29tcGxldGVseSBvdXQgdGhlCj4gd2luZG93IGluIHRo
+ZSBmdXR1cmUsIGluIGZhdm9yIG9mIHdoYXQgKGp1c3Qgb3V0IG9mIGN1cmlvc2l0eSk/IDEwMCUK
+PiBzeXNmcyBvbmx5IHR1bmFibGVzIG1heWJlPwoKL3Byb2Mvc3lzIGlzIGdvaW5nIHRvIHN0YXku
+ICBXaGljaCBpcyB3aGF0IHBlb3BsZSBoYXZlIGFjdHVhbGx5IHVzZWQuCkV2ZW4gL3NiaW4vc3lz
+Y3RsIGhhcyBhbHdheXMgdXNlZCAvcHJvYy9zeXMuICBOb3RoaW5nIGFueW9uZSBhY3R1YWxseQp1
+c2VzIGlzIGdvaW5nIHRvIGdvIGF3YXkuICBKdXN0IHRoZSBwcmFjdGljYWxseSBkZWFkIGNvZGUg
+dGhhdCBpcyB0aGUKc3lzY2FsbCBpcyBzbG93bHkgZ29pbmcgYXdheS4gIFNpbmNlIEkgaGF2ZSB3
+cml0dGVuIHRoZSBlbXVsYXRpb24gbGF5ZXIKdGhlIG5lZWQgZm9yIGl0IHRvIGRpc2FwcGVhciBp
+cyBsZXNzIGltbWVkaWF0ZSB0aGFuIGl0IG9uY2Ugd2FzLCBidXQgSSB3aWxsCnN0cm9uZ2x5IGRp
+c2NvdXJhZ2UgYW55b25lIGZyb20gdXNpbmcgaXQuCgpFcmljCgotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KRG93bmxvYWQgSW50ZWwmIzE3NDsgUGFyYWxsZWwgU3R1ZGlvIEV2YWwKVHJ5IHRoZSBuZXcg
+c29mdHdhcmUgdG9vbHMgZm9yIHlvdXJzZWxmLiBTcGVlZCBjb21waWxpbmcsIGZpbmQgYnVncwpw
+cm9hY3RpdmVseSwgYW5kIGZpbmUtdHVuZSBhcHBsaWNhdGlvbnMgZm9yIHBhcmFsbGVsIHBlcmZv
+cm1hbmNlLgpTZWUgd2h5IEludGVsIFBhcmFsbGVsIFN0dWRpbyBnb3QgaGlnaCBtYXJrcyBkdXJp
+bmcgYmV0YS4KaHR0cDovL3Auc2YubmV0L3NmdS9pbnRlbC1zdy1kZXYKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0
+cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
