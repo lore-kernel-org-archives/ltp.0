@@ -1,37 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NmTjF-0000UX-8s
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 15:09:45 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NmTjD-0000xB-1x
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 15:09:45 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o22Ecqs3009611
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 07:38:52 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o22EkKg2055742
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 07:46:23 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o22EkJOX015224
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 07:46:19 -0700
-Date: Tue, 2 Mar 2010 20:16:13 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100302144613.GA8623@linux.vnet.ibm.com>
-References: <4B7BA433.3030206@linux.vnet.ibm.com>
-	<364299f41002170908p302cc665g874c89a109ddfd1f@mail.gmail.com>
-	<20100218035756.GA13013@rishikesh.in.ibm.com>
-	<4B824029.7070609@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NnQnq-0000jo-7A
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 06:14:26 +0000
+Received: from mail-pz0-f194.google.com ([209.85.222.194])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnQnn-00073o-V4
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 06:14:26 +0000
+Received: by pzk32 with SMTP id 32so1186974pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Mar 2010 22:14:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4B824029.7070609@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] mail_tests.sh: fix a version problem of Heirloom
- Mail
+In-Reply-To: <41c7690d1003042154s68cd8416hf6ebf17f96e50a8b@mail.gmail.com>
+References: <41c7690d1003032130i6b61968bjc175698937dc0051@mail.gmail.com>
+	<20100304125514.GA21634@linux.vnet.ibm.com>
+	<41c7690d1003042154s68cd8416hf6ebf17f96e50a8b@mail.gmail.com>
+Date: Thu, 4 Mar 2010 22:14:18 -0800
+Message-ID: <364299f41003042214g5501130bj114db6695e762044@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH-v3] RTC Device Driver Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,86 +29,125 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Silesh C V <saileshcv@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
 
-On Mon, Feb 22, 2010 at 04:28:25PM +0800, Shi Weihua wrote:
-> >> There's a lot of noise in the patch because of if-else behavior in
-> >> trying to determine the mail app. That's why I didn't commit this (it
-> >> requires verification of previous mail applications as well).
-> > 
-> > Thanks Garret, Still i have not committed this to CVS repo.
-> > 
-> > Shi, can you please verify if this patch does not break with any other
-> > mail application.
-> 
->   In fact, i don't know any other mail application.
->   When i tested RHEL's alpha version, this ltp bug catched. so tried to fix it.
->   
->   Maybe, you should knock FOSS community(?).
-Hi Shi,
+On Thu, Mar 4, 2010 at 9:54 PM, Silesh C V <saileshcv@gmail.com> wrote:
+> On 3/4/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
+>>>Rishi,
+>>
+>>>Can you test this patch on the machine on which the tests got stuck
+>>>earlier?
+>>
+>> Yes i tested and found that, it is failing.
+>
+> It is supposed to fail :) . What we =A0wanted was a way to come out of
+> the tests if the
+> alarm fails to ring.
+>
+>
+>>
+>> [root@x335a rtc]# ./rtc-test /dev/rtc
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC READ TEST:
+>> rtc01 =A0 =A0 =A0 1 =A0TPASS =A0: =A0RTC READ TEST Passed
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Current Date/time is =A003/03/10 12=
+:38:26 PM
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC ALARM TEST :
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Alarm time set to 12:38:31.
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Waiting 5 seconds for the alarm...
+>> rtc01 =A0 =A0 =A0 2 =A0TFAIL =A0: =A0Timed out waiting for the alarm
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC UPDATE INTERRUPTS TEST :
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Waiting for =A05 update interrupts.=
+..
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 1
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 2
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 3
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 4
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 5
+>> rtc01 =A0 =A0 =A0 3 =A0TPASS =A0: =A0RTC UPDATE INTERRUPTS TEST Passed
+>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC Tests Done!
+>> [root@x335a rtc]# ls -l /dev/rtc*
+>> crw-r--r-- 1 root root 10, 135 Feb 20 13:51 /dev/rtc
+>> [root@x335a rtc]#
+>>
+>>
+>>
+>> In fact while compiling there is some warning also.
+>> [root@x335a rtc]# make
+>> cc rtc-test.c -O2 -Wall -I ../../../../include/ -L ../../../../lib/
+>> -lltp =A0-o rtc-test
+>> rtc-test.c: In function =91read_alarm_test=92:
+>> rtc-test.c:64: warning: dereferencing type-punned pointer will break
+>> strict-aliasing rules
+>
+> I did not get this warning on gcc-4.3.0 . Anyways I think we can get rid =
+of this
+> warning by using -fno-strict-aliasing option at the cost of some optimiza=
+tions.
+> I will send you another patch.
+>
 
-With Feb release still i am seeing some failure with mail file.
+Or maybe just fix the code to not type-pun by converting everything to
+struct tm on the fly?
 
-cmdline="export TCdat=$LTPROOT/testcases/bin; mail_tests.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mail_tests::setup    0  TINFO  :  INIT: Removing all mails for mail_test
-and root
-mail_tests::mail01    0  TINFO  :  Test #1: mail root@localhost will
-send mail to root
-mail_tests::mail01    0  TINFO  :  Test #1: user on local machine.
-mail_tests::mail01    1  TPASS  :  Test #1: Mail was sent to root & was
-received
-mail_tests::mail02    0  TINFO  :  Test #2: mail user@bad-domain will
-result in failure
-mail_tests::mail02    0  TINFO  :  Test #2: to deliver the mail. Mailer
-daemon should
-mail_tests::mail02    0  TINFO  :  Test #2: report this failure.
-mail_tests::mail02    2  TFAIL  :  Test #2: No new mail for root.
-Reason:
-No mail for root
-mail_tests::mail03    0  TINFO  :  Test #3: mail
-non_existent_user@localhost will fail
-mail_tests::mail03    0  TINFO  :  Test #3: to deliver the mail. Mailer
-daemon should
-mail_tests::mail03    0  TINFO  :  Test #3: report this failure.
-mail_tests::mail03    3  TFAIL  :  Test #3: No new mail for root.
-Reason:
-No mail for root
-mail_tests::mail04    0  TINFO  :  Test #4: Test that mail -c
-user@domain will
-mail_tests::mail04    0  TINFO  :  Test #4: carbon copy user@domain
-mail_tests::mail04    4  TPASS  :  Test #4: Mail was carbon copied to
-user mail_test
-mail_tests::mail05    0  TINFO  :  Test #5: Test that mail -b
-user@domain will
-mail_tests::mail05    0  TINFO  :  Test #5: blind carbon copy
-user@domain
-mail_tests::mail05    5  TPASS  :  Test #5: Mail was carbon copied to
-user mail_test
-mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary files
-from /tmp
-mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary user
-mail_test
-<<<execution_status>>>
+Let's look at the difference between the two structures:
 
-Can you please look into it if possible? I have run this testcase on
-SLES10.SP3GA & RHEL5.4 GA on x86_64 , ppc64 & s390x and everywhere same
-result.
+struct rtc_time {
+        int tm_sec;
+        int tm_min;
+        int tm_hour;
+        int tm_mday;
+        int tm_mon;
+        int tm_year;
+        int tm_wday;
+        int tm_yday;
+        int tm_isdst;
+};
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+struct tm
+{
+  int tm_sec;                   /* Seconds.     [0-60] (1 leap second) */
+  int tm_min;                   /* Minutes.     [0-59] */
+  int tm_hour;                  /* Hours.       [0-23] */
+  int tm_mday;                  /* Day.         [1-31] */
+  int tm_mon;                   /* Month.       [0-11] */
+  int tm_year;                  /* Year - 1900.  */
+  int tm_wday;                  /* Day of week. [0-6] */
+  int tm_yday;                  /* Days in year.[0-365] */
+  int tm_isdst;                 /* DST.         [-1/0/1]*/
 
-------------------------------------------------------------------------------
+#ifdef  __USE_BSD
+  long int tm_gmtoff;           /* Seconds east of UTC.  */
+  __const char *tm_zone;        /* Timezone abbreviation.  */
+#else
+  long int __tm_gmtoff;         /* Seconds east of UTC.  */
+  __const char *__tm_zone;      /* Timezone abbreviation.  */
+#endif
+};
+
+Note the extra fields down below -- they increase the structure size
+by a non-trivial amount (12 bytes on 32-bit, 16 bytes on 64-bit),
+which means that if one of the following two cases are made in
+strftime tomorrow:
+
+1. They use one of the timezone fields and it isn't properly cleared
+(not the case today, but it could be on some older versions of Linux).
+2. They make assumptions about the size of the memory allocated and
+thus go out of bounds.
+
+BOOM! Segfault... could worse happen in this case after the ioctl is
+written out to /dev/rtc ?
+
+>> Please solve these problems and please send me a revised patch.
+
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
