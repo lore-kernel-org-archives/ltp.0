@@ -1,37 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NmhZO-0000lw-3n
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 05:56:30 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NmhZN-0006uq-6R
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 05:56:30 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o235suJ0021618
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 22:54:56 -0700
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o235uNDt117264
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 22:56:23 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o235uMkj002925
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 22:56:23 -0700
-Date: Wed, 3 Mar 2010 11:26:19 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100303055619.GA19084@linux.vnet.ibm.com>
-References: <OF3DD1AE6A.65D45C56-ON652576DA.002F585D-652576DA.00384F54@in.ibm.com>
-	<20100302152135.GA6691@us.ibm.com>
-	<B02F7096-7406-4AAE-8BBF-AD16D5228F47@gmail.com>
-	<20100302173535.GA14556@us.ibm.com>
-	<5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NnRqF-0003RE-BX
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:20:59 +0000
+Received: from mail-px0-f203.google.com ([209.85.216.203])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnRqE-0003LH-Al
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:20:59 +0000
+Received: by pxi41 with SMTP id 41so1307319pxi.23
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Mar 2010 23:20:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
-Subject: Re: [LTP] LTP's filecaps test gives false positive results
+In-Reply-To: <m13a0fc11w.fsf@fess.ebiederm.org>
+References: <4B7BA24F.2010705@linux.vnet.ibm.com>
+	<364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>
+	<20100218042532.GC13013@rishikesh.in.ibm.com>
+	<4B822F2E.9030609@cn.fujitsu.com>
+	<364299f41002212344v4873843ej986f1b39ec3494df@mail.gmail.com>
+	<4B8333ED.5080709@cn.fujitsu.com>
+	<364299f41002241718g4be216d1pbec918821b7027b0@mail.gmail.com>
+	<4B8F716E.5070207@cn.fujitsu.com>
+	<364299f41003041037s57f1d4bfr98c20ac7736b8905@mail.gmail.com>
+	<m13a0fc11w.fsf@fess.ebiederm.org>
+Date: Thu, 4 Mar 2010 23:20:52 -0800
+Message-ID: <364299f41003042320n7437e4a2j219b32a0a5f8dc50@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,111 +36,417 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Iranna D Ankad <iranna.ankad@in.ibm.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
 
-On Tue, Mar 02, 2010 at 10:25:23AM -0800, Garrett Cooper wrote:
-> On Mar 2, 2010, at 9:35 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
-> 
-> > Quoting Garrett Cooper (yanegomi@gmail.com):
-> >>
-> >> That would be from me; I do that via autoconf and they probably
-> >> fubared the headers on Redhat or something... Do you have
-> >
-> > Oh, ok.  Well I suspect we can ditch the check_simple_capset.c
-> > altogether if autoconf is (eventually :) doing the detection for
-> > us.  The only point of check_simple_capset.c was to check whether
-> > libcap is there and whether we should run the real tests.
-> >
-> >> libcap-devel installed?
-> >
-> > yup:
-> >
-> > [root@oracer4b ltp-dev]# rpm -qa|grep libcap
-> > libcap-2.10-2.fc10.x86_64
-> > libcap-devel-2.10-2.fc10.x86_64
-> >
-> > [root@oracer4b ltp-dev]# grep CAP_LIB *
-> > config.log:CAP_LIBS=''
-> > config.status:S["CAP_LIBS"]=""
-> > configure:CAP_LIBS'
-> > configure:                    CAP_LIBS="-lcap"
-> >
-> > so somehow -lcap was not detected by configure?
-> 
-> Well some of the definitions are there but maybe not all of them.  
-> config.log would help...
-> 
+On Thu, Mar 4, 2010 at 11:57 AM, Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+> Garrett Cooper <yanegomi@gmail.com> writes:
+>
+>> On Thu, Mar 4, 2010 at 12:38 AM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+>>> at 2010-2-25 9:18, Garrett Cooper wrote:
+>>>> On Mon, Feb 22, 2010 at 5:48 PM, Shi Weihua <shiwh@cn.fujitsu.com> wro=
+te:
+>>>>> at 2010-2-22 15:44, Garrett Cooper wrote:
+>>>>>> Ok.. one last thing.
+>>>>>>
+>>>>>> On Sun, Feb 21, 2010 at 11:15 PM, Shi Weihua <shiwh@cn.fujitsu.com> =
+wrote:
+>>>>>>> at 2010-2-18 12:25, Rishikesh K Rajak wrote:
+>>>>>>>> On Wed, Feb 17, 2010 at 09:10:48AM -0800, Garrett Cooper wrote:
+>>>>>>>>> On Wed, Feb 17, 2010 at 12:01 AM, Rishikesh <risrajak@linux.vnet.=
+ibm.com> wrote:
+>>>>>>>>>> Hi Shi,
+>>>>>>>>>>
+>>>>>>>>>> Thanks for your patch, still i am finding time to look into your=
+ patch.
+>>>>>>>>>> Will reply you soon.
+>>>>>>>>>>
+>>>>>>>>>> http://marc.info/?l=3Dltp-list&m=3D126502355614857&w=3D2
+>>>>>>>>>
+>>>>>>>>> I looked at the patch finally.
+>>>>>>>>
+>>>>>>>> Thanks garret.
+>>>>>>>>>
+>>>>>>>>> Please use TTERRNO instead of strerror(...) for the reported valu=
+e.
+>>>>>>>>> There's no reason why you should use strerror(...) there as that's
+>>>>>>>>> already done with tst_res(3).
+>>>>>>>>
+>>>>>>>> Shi, can you please incorporate changes which garret has suggested=
+ and
+>>>>>>>> resend the patch again to ltp-list@ .
+>>>>>>>
+>>>>>>> =A0Ok, i recreated the patch based on garret's suggestion.
+>>>>>>>
+>>>>>>> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+>>>>>>> ---
+>>>>>>> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig =A0 =A02010-02=
+-22 14:38:26.000000000 -0500
+>>>>>>> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-22 15:08:03=
+.000000000 -0500
+>>>>>>> @@ -22,15 +22,18 @@
+>>>>>>> =A0* =A0 =A0 sysctl03.c
+>>>>>>> =A0*
+>>>>>>> =A0* DESCRIPTION
+>>>>>>> - * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM co=
+rrectly.
+>>>>>>> + * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM or=
+ EACCES
+>>>>>>> + * =A0 =A0 correctly. But it will return EACCES on kernels that ar=
+e 2.6.33-rc1
+>>>>>>> + * =A0 =A0 and higher.
+>>>>>>> =A0*
+>>>>>>> =A0* ALGORITHM
+>>>>>>> =A0* =A0 =A0 a. =A0 =A0 =A0Call sysctl(2) as a root user, and attem=
+pt to write data
+>>>>>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table=
+ does not have write
+>>>>>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it shoul=
+d fail EPERM.
+>>>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it shoul=
+d fail EPERM or EACCES.
+>>>>>>> =A0* =A0 =A0 b. =A0 =A0 =A0Call sysctl(2) as a non-root user, and a=
+ttempt to write data
+>>>>>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table=
+ does not have write
+>>>>>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it sho=
+uld fail with EPERM.
+>>>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it sho=
+uld fail with EPERM
+>>>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 or EACCES.
+>>>>>>> =A0*
+>>>>>>> =A0* USAGE: =A0<for command-line>
+>>>>>>> =A0* =A0sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+>>>>>>> @@ -43,6 +46,7 @@
+>>>>>>> =A0*
+>>>>>>> =A0* HISTORY
+>>>>>>> =A0* =A0 =A0 07/2001 Ported by Wayne Boyer
+>>>>>>> + * =A0 =A0 02/2010 Updated by shiwh@cn.fujitsu.com
+>>>>>>> =A0*
+>>>>>>> =A0* RESTRICTIONS
+>>>>>>> =A0* =A0 =A0 Test must be run as root.
+>>>>>>> @@ -82,6 +86,7 @@ int main(int ac, char **av)
+>>>>>>> =A0{
+>>>>>>> =A0 =A0 =A0 =A0int lc;
+>>>>>>> =A0 =A0 =A0 =A0char *msg;
+>>>>>>> + =A0 =A0 =A0 int exp_eno;
+>>>>>>>
+>>>>>>> =A0 =A0 =A0 =A0char osname[OSNAMESZ];
+>>>>>>> =A0 =A0 =A0 =A0int osnamelth, status;
+>>>>>>> @@ -96,6 +101,13 @@ int main(int ac, char **av)
+>>>>>>>
+>>>>>>> =A0 =A0 =A0 =A0setup();
+>>>>>>>
+>>>>>>> + =A0 =A0 =A0 if ((tst_kvercmp(2, 6, 32)) <=3D 0){
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_eno =3D EPERM;
+>>>>>>> + =A0 =A0 =A0 } else {
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_eno =3D EACCES;
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EACCES;
+>>>>>>> + =A0 =A0 =A0 }
+>>>>>>> +
+>>>>>>> =A0 =A0 =A0 =A0TEST_EXP_ENOS(exp_enos);
+>>>>>>>
+>>>>>>> =A0 =A0 =A0 =A0/* check looping state if -i option is given */
+>>>>>>> @@ -114,13 +126,10 @@ int main(int ac, char **av)
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERROR_LOG(TEST_=
+ERRNO);
+>>>>>>>
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D E=
+PERM) {
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_r=
+esm(TFAIL,
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0"Expected EPERM (%d), got %d: %s",
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0EPERM, TEST_ERRNO,
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0strerror(TEST_ERRNO));
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D e=
+xp_eno) {
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_r=
+esm(TFAIL|TTERRNO, "Got unxpected error");
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_r=
+esm(TPASS, "Got expected EPERM error");
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_r=
+esm(TPASS|TTERRNO, "Got expected error");
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>>>>
+>>>>>>> @@ -147,12 +156,10 @@ int main(int ac, char **av)
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST=
+_ERROR_LOG(TEST_ERRNO);
+>>>>>>>
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (T=
+EST_ERRNO !=3D EPERM) {
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 tst_resm(TFAIL, "Expected EPERM, got "
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"%d", TEST_ERRNO);
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (T=
+EST_ERRNO !=3D exp_eno) {
+>>>>>>
+>>>>>> Why can't this be exp_enos[0] ?
+>>>>>
+>>>>> Using exp_enos[0] is ok. pls check the latest patch in this mail.
+>>>>>
+>>>>>>
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 tst_resm(TFAIL|TTERRNO, "Got unxpected error");
+>>>>>>
+>>>>>> Typo.
+>>>>>>
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} el=
+se {
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 tst_resm(TPASS, "Got expected EPERM "
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"error");
+>>>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 tst_resm(TPASS|TTERRNO, "Got expected error");
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>>>>
+>>>>>>>
+>>>>>>> Thank you.
+>>>>>>> - Shi Weihua
+>>>>>>
+>>>>>> =A0 =A0 It always helps to understand what's expected vs unexpected
+>>>>>> without having to look at the source code. Could you please revise t=
+he
+>>>>>> tst_resm format strings to be something like the following?
+>>>>>>
+>>>>>> tst_resm (TPASS | TERRNO, "Got expected error (errno =3D %d, ret_cod=
+e =3D
+>>>>>> %d", exp_errno_blah, exp_ret_code_blah);
+>>>>>>
+>>>>>> OR:
+>>>>>>
+>>>>>> tst_resm (TPASS | TERRNO, "Got unexpected error (expected errno =3D =
+%d,
+>>>>>> ret_code =3D %d - got errno =3D %d, ret_code =3D %d", exp_errno_blah,
+>>>>>> exp_ret_code_blah, errno_blah, ret_code_blah);
+>>>>>
+>>>>> ret_code has not been defined in sysctl03.c, i think it's unnecessari=
+ly to
+>>>>> import a new parameter. maybe, we can use your macro when it created.=
+ ;-)
+>>>>>
+>>>>> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig =A0 =A02010-02-2=
+2 14:38:26.000000000 -0500
+>>>>> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-23 09:35:20.0=
+00000000 -0500
+>>>>> @@ -22,15 +22,18 @@
+>>>>> =A0* =A0 =A0 sysctl03.c
+>>>>> =A0*
+>>>>> =A0* DESCRIPTION
+>>>>> - * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM corr=
+ectly.
+>>>>> + * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM or E=
+ACCES
+>>>>> + * =A0 =A0 correctly. But it will return EACCES on kernels that are =
+2.6.33-rc1
+>>>>> + * =A0 =A0 and higher.
+>>>>> =A0*
+>>>>> =A0* ALGORITHM
+>>>>> =A0* =A0 =A0 a. =A0 =A0 =A0Call sysctl(2) as a root user, and attempt=
+ to write data
+>>>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table d=
+oes not have write
+>>>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should =
+fail EPERM.
+>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should =
+fail EPERM or EACCES.
+>>>>> =A0* =A0 =A0 b. =A0 =A0 =A0Call sysctl(2) as a non-root user, and att=
+empt to write data
+>>>>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table d=
+oes not have write
+>>>>> - * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it shoul=
+d fail with EPERM.
+>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it shoul=
+d fail with EPERM
+>>>>> + * =A0 =A0 =A0 =A0 =A0 =A0 or EACCES.
+>>>>> =A0*
+>>>>> =A0* USAGE: =A0<for command-line>
+>>>>> =A0* =A0sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+>>>>> @@ -43,6 +46,7 @@
+>>>>> =A0*
+>>>>> =A0* HISTORY
+>>>>> =A0* =A0 =A0 07/2001 Ported by Wayne Boyer
+>>>>> + * =A0 =A0 02/2010 Updated by shiwh@cn.fujitsu.com
+>>>>> =A0*
+>>>>> =A0* RESTRICTIONS
+>>>>> =A0* =A0 =A0 Test must be run as root.
+>>>>> @@ -96,6 +100,12 @@ int main(int ac, char **av)
+>>>>>
+>>>>> =A0 =A0 =A0 =A0setup();
+>>>>>
+>>>>> + =A0 =A0 =A0 if ((tst_kvercmp(2, 6, 32)) <=3D 0){
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EPERM;
+>>>>> + =A0 =A0 =A0 } else {
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EACCES;
+>>>>> + =A0 =A0 =A0 }
+>>>>> +
+>>>>> =A0 =A0 =A0 =A0TEST_EXP_ENOS(exp_enos);
+>>>>>
+>>>>> =A0 =A0 =A0 =A0/* check looping state if -i option is given */
+>>>>> @@ -114,13 +124,12 @@ int main(int ac, char **av)
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERROR_LOG(TEST_ER=
+RNO);
+>>>>>
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D EPE=
+RM) {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TFAIL,
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0"Expected EPERM (%d), got %d: %s",
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0EPERM, TEST_ERRNO,
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0strerror(TEST_ERRNO));
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D exp=
+_enos[0]) {
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TFAIL|TTERRNO, "Got unxpected error "
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 "(expected error =3D %d)", exp_enos[0]);
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TPASS, "Got expected EPERM error");
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_res=
+m(TPASS|TTERRNO, "Got expected error "
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 "(errno =3D %d)", exp_enos[0]);
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>>
+>>>>> @@ -147,12 +156,12 @@ int main(int ac, char **av)
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_E=
+RROR_LOG(TEST_ERRNO);
+>>>>>
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TES=
+T_ERRNO !=3D EPERM) {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TFAIL, "Expected EPERM, got "
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0"%d", TEST_ERRNO);
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TES=
+T_ERRNO !=3D exp_enos[0]) {
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TFAIL|TTERRNO, "Got unxpected error "
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 "(expected error =3D %d)", exp_enos[0]);
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else=
+ {
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TPASS, "Got expected EPERM "
+>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0"error");
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_resm(TPASS|TTERRNO, "Got expected error "
+>>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0"(errno =3D %d)", =A0exp_enos[0]);
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>>>>
+>>>> Ok, before I go and commit this, there are two things I need to know
+>>>> (because trusty Google didn't turn up any results for this behavioral
+>>>> change):
+>>>>
+>>>> 1. The change is legitimate.
+>>>> 2. The documentation is up to date, or a bug has been filed for the
+>>>> documentation change.
+>>>>
+>>>> If you can provide these two things, I'll commit the change.
+>>>
+>>> At this time of day, I can not find any documentation about EPERM->EACC=
+ES.
+>>> But, i caught the kernel commit which caused ltp bug:
+>>> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3D=
+commitdiff;h=3D26a7034b40ba80f82f64fa251a2cbf49f9971c6a
+>>> Maybe it can help you to judge.
+>>
+>> Wow... that's a fair amount of code refactoring and additions to the sys=
+call.
+>>
+>> Yes, all of the issues with opening a directory and reading/writing
+>> now apply to sysctl(2), especially if someone attempts to read from a
+>> write-only descriptor, or vice versa.
+>
+> No mismatches of file descriptor modes and how the descriptor is
+> accessed can not occur. =A0There is a file descriptor but the file
+> descriptor is completely internal to binary_sysctl(), and it is opened
+> with the mode of what we are trying to use. =A0There are no user space
+> controllable parts there.
+>
+> Looking through the old sysctl code it appears that it was a bug that
+> kept it from returning EACCES. =A0The code has had this beautiful snippet
+> in it for ages:
+>
+> static int test_perm(int mode, int op)
+> {
+> =A0 =A0 =A0 =A0if (!current->euid)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mode >>=3D 6;
+> =A0 =A0 =A0 =A0else if (in_egroup_p(0))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mode >>=3D 3;
+> =A0 =A0 =A0 =A0if ((mode & op & 0007) =3D=3D op)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+> =A0 =A0 =A0 =A0return -EACCES;
+> }
 
-Here is the config.log snapshot, it seems it has some error:
+    Wow. Took a second for me to stare and it and see what you mean,
+but yeah -- that is pretty dang awesome that it was always hardwired
+to return 0.
 
-...
-configure:5543: checking whether CAP_BSET_DROP is declared
-configure:5574: gcc -c -g -O2  conftest.c >&5
-conftest.c: In function 'main':
-conftest.c:38: error: 'CAP_BSET_DROP' undeclared (first use in this
-function)
-conftest.c:38: error: (Each undeclared identifier is reported only once
-conftest.c:38: error: for each function it appears in.)
-configure:5581: $? = 1
-configure: failed program was:
-| /* confdefs.h.  */
-| #define PACKAGE_NAME "ltp"
-| #define PACKAGE_TARNAME "ltp"
-| #define PACKAGE_VERSION "LTP_VERSION"
-| #define PACKAGE_STRING "ltp LTP_VERSION"
-| #define PACKAGE_BUGREPORT "ltp-results@lists.sourceforge.net"
-| #define PACKAGE "ltp"
-| #define VERSION "LTP_VERSION"
-| #define YYTEXT_POINTER 1
-| #define STDC_HEADERS 1
-| #define HAVE_SYS_TYPES_H 1
-| #define HAVE_SYS_STAT_H 1
-| #define HAVE_STDLIB_H 1
-| #define HAVE_STRING_H 1
-| #define HAVE_MEMORY_H 1
-| #define HAVE_STRINGS_H 1
-| #define HAVE_INTTYPES_H 1
-| #define HAVE_STDINT_H 1
-| #define HAVE_UNISTD_H 1
-| #define HAVE_IFADDRS_H 1
-| #define HAVE_PTHREAD_H 1
-| #define HAVE_LINUX_GENETLINK_H 1
-| #define HAVE_LINUX_MEMPOLICY_H 1
-| #define HAVE_LINUX_NETLINK_H 1
-| #define HAVE_SYS_EPOLL_H 1
-| #define HAVE_SYS_INOTIFY_H 1
-| #define HAVE_SYS_PRCTL_H 1
-| #define HAVE_SYS_CAPABILITY_H 1
-| #define HAVE_ATTR_XATTR_H 1
-| /* end confdefs.h.  */
-| #include <sys/capability.h>
-|
-|
-| int
-| main ()
-| {
-| #ifndef CAP_BSET_DROP
-|   (void) CAP_BSET_DROP;
-| #endif
-|
-|   ;
-|   return 0;
-                                                                                                                                                          2879,13
+> I admit that the manpage doesn't document EACCES but the manpage
+> has always said don't use sysctl(2) so...
 
-Which file will contains this macro definition ?
+    Well, if someone bumbles across this later, it will be a confusing
+issue to work through. It's better to be documented instead of
+undocumented. I'll file the bug upstream to document this, but it
+would be nice to determine if there are any more immediate gaps which
+need to be addressed in the changes.
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+>> I hate to do this in such a reactive manner as this should have been
+>> done up front, but the 1) documentation and 2) test need to be
+>> updated. 1) is more key today because I'm not sure how much testing
+>> the developer did before he committed to kernel.org, but without
+>> updated documentation and requirements we can't write proper tests.
+>
+> You may see a slightly different error code from sysctl(2) on failure
+> but otherwise =A0sysctl(2) should be unchanged, and yes I did test it.
+> Of course I was not being picky about which error code I got on failure.
 
-------------------------------------------------------------------------------
+    Hmmm.. ok. We just get 20 questions when something fails and it's
+not documented why it should fail in a particular manner :).
+
+> What exists today is simply a backwards compatibility wrapper of
+> sysctl(2) built on top of /proc/sys. =A0sysctl(2) was a practically
+> unmaintained bit-rotting pile, that was never adequately maintained or
+> tested.
+
+    Yeah, you're probably right (especially because Linux tends not to
+focus on sysctl(3) like the BSDs do).
+
+> At this point nothing should change again until such time as the code
+> is disabled/removed by default.
+
+    Hmmm... ok. I assume that sysctl(2) is going completely out the
+window in the future, in favor of what (just out of curiosity)? 100%
+sysfs only tunables maybe?
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
