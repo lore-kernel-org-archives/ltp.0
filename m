@@ -1,31 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1NmmpD-0001VE-T6
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:33:11 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NmmpB-0001OK-Mf
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:33:11 +0000
-Received: by pwi5 with SMTP id 5so726916pwi.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <saileshcv@gmail.com>) id 1NnRQu-0004cH-0n
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 06:54:48 +0000
+Received: from mail-yx0-f190.google.com ([209.85.210.190])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnRQt-0006QG-4A
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 06:54:47 +0000
+Received: by yxe28 with SMTP id 28so1738119yxe.13
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 03 Mar 2010 03:33:04 -0800 (PST)
+	Thu, 04 Mar 2010 22:54:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20100303094541.GB23601@linux.vnet.ibm.com>
-References: <f5a7b3811002250545x3d5288cfqd114d3bcd79581f2@mail.gmail.com>
-	<20100302085046.GA27023@linux.vnet.ibm.com>
-	<f5a7b3811003020708wdd0710fv4c3e1dcf1992935c@mail.gmail.com>
-	<20100303045624.GB10185@linux.vnet.ibm.com>
-	<f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
-	<20100303070342.GB19084@linux.vnet.ibm.com>
-	<364299f41003030118x6136dda6u7017054febea4b96@mail.gmail.com>
-	<20100303094541.GB23601@linux.vnet.ibm.com>
-Date: Wed, 3 Mar 2010 17:03:03 +0530
-Message-ID: <f5a7b3811003030333n4b0b4045sff5795d99cd7da00@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [PATCH] Synchronization required before release the lock:
-	sem_post/8-1.c
+In-Reply-To: <364299f41003042214g5501130bj114db6695e762044@mail.gmail.com>
+References: <41c7690d1003032130i6b61968bjc175698937dc0051@mail.gmail.com>
+	<20100304125514.GA21634@linux.vnet.ibm.com>
+	<41c7690d1003042154s68cd8416hf6ebf17f96e50a8b@mail.gmail.com>
+	<364299f41003042214g5501130bj114db6695e762044@mail.gmail.com>
+Date: Fri, 5 Mar 2010 12:24:40 +0530
+Message-ID: <41c7690d1003042254w301c8056nd553b46c970ee473@mail.gmail.com>
+From: Silesh C V <saileshcv@gmail.com>
+Subject: Re: [LTP] [PATCH-v3] RTC Device Driver Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,61 +34,127 @@ Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
 
-On Wed, Mar 3, 2010 at 3:15 PM, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote:
-> On Wed, Mar 03, 2010 at 01:18:50AM -0800, Garrett Cooper wrote:
->> Uh, hold on a sec before we call it good...
->
-> oh ok, holiding on for bit.
->
-> Naresh, can you please send a patch with incorporating garret's comment
-> ?
->>>> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
->>>> =A0 =A0 =A0 /* Make sure the two children has been waiting */
->>>> - =A0 =A0 /*do {
->>>> - =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
->>>> + =A0 =A0 do {
->>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 sem_getvalue(sem_1, &val);
->>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 //printf("val =3D %d\n", val);
->>>> =A0 =A0 =A0 } while (val !=3D 1);
->>>> - =A0 =A0 */
+On 3/5/10, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Thu, Mar 4, 2010 at 9:54 PM, Silesh C V <saileshcv@gmail.com> wrote:
+>> On 3/4/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
+>>>>Rishi,
+>>>
+>>>>Can you test this patch on the machine on which the tests got stuck
+>>>>earlier?
+>>>
+>>> Yes i tested and found that, it is failing.
 >>
->> Please provide another patch with a limit to this --
-
-Garrett,
-
-When sem_wait is called 'val' value will be decremented by one.
-To ensure that sem_wait is called, we are checking 'val' value by
-calling sem_getvalue(). in this case we don=92t need to decrement the
-values by --. IIUC.
-(snip)
-OTOH,
->> I get annoyed
->> with tests that have infinite loops in them because the underlying
->> functionality is broken.
-I agree with you, having infinite loops in test case is not a good.
-However, in this patch while loop is not infinite loop. It is a
-conditional loop with finite value.
-
-Please let me know if you have any issues.
-
-Best regards
-Naresh Kamboju
->
-> Thanks
-> Rishi
+>> It is supposed to fail :) . What we  wanted was a way to come out of
+>> the tests if the
+>> alarm fails to ring.
 >>
-> --
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
+>>
+>>>
+>>> [root@x335a rtc]# ./rtc-test /dev/rtc
+>>> rtc01       0  TINFO  :  RTC READ TEST:
+>>> rtc01       1  TPASS  :  RTC READ TEST Passed
+>>> rtc01       0  TINFO  :  Current Date/time is  03/03/10 12:38:26 PM
+>>> rtc01       0  TINFO  :  RTC ALARM TEST :
+>>> rtc01       0  TINFO  :  Alarm time set to 12:38:31.
+>>> rtc01       0  TINFO  :  Waiting 5 seconds for the alarm...
+>>> rtc01       2  TFAIL  :  Timed out waiting for the alarm
+>>> rtc01       0  TINFO  :  RTC UPDATE INTERRUPTS TEST :
+>>> rtc01       0  TINFO  :  Waiting for  5 update interrupts...
+>>> rtc01       0  TINFO  :  Update interrupt 1
+>>> rtc01       0  TINFO  :  Update interrupt 2
+>>> rtc01       0  TINFO  :  Update interrupt 3
+>>> rtc01       0  TINFO  :  Update interrupt 4
+>>> rtc01       0  TINFO  :  Update interrupt 5
+>>> rtc01       3  TPASS  :  RTC UPDATE INTERRUPTS TEST Passed
+>>> rtc01       0  TINFO  :  RTC Tests Done!
+>>> [root@x335a rtc]# ls -l /dev/rtc*
+>>> crw-r--r-- 1 root root 10, 135 Feb 20 13:51 /dev/rtc
+>>> [root@x335a rtc]#
+>>>
+>>>
+>>>
+>>> In fact while compiling there is some warning also.
+>>> [root@x335a rtc]# make
+>>> cc rtc-test.c -O2 -Wall -I ../../../../include/ -L ../../../../lib/
+>>> -lltp  -o rtc-test
+>>> rtc-test.c: In function =91read_alarm_test=92:
+>>> rtc-test.c:64: warning: dereferencing type-punned pointer will break
+>>> strict-aliasing rules
+>>
+>> I did not get this warning on gcc-4.3.0 . Anyways I think we can get rid
+>> of this
+>> warning by using -fno-strict-aliasing option at the cost of some
+>> optimizations.
+>> I will send you another patch.
+>>
 >
->>Thanks,
->>-Garrett
+> Or maybe just fix the code to not type-pun by converting everything to
+> struct tm on the fly?
+>
+> Let's look at the difference between the two structures:
+>
+> struct rtc_time {
+>         int tm_sec;
+>         int tm_min;
+>         int tm_hour;
+>         int tm_mday;
+>         int tm_mon;
+>         int tm_year;
+>         int tm_wday;
+>         int tm_yday;
+>         int tm_isdst;
+> };
+>
+> struct tm
+> {
+>   int tm_sec;                   /* Seconds.     [0-60] (1 leap second) */
+>   int tm_min;                   /* Minutes.     [0-59] */
+>   int tm_hour;                  /* Hours.       [0-23] */
+>   int tm_mday;                  /* Day.         [1-31] */
+>   int tm_mon;                   /* Month.       [0-11] */
+>   int tm_year;                  /* Year - 1900.  */
+>   int tm_wday;                  /* Day of week. [0-6] */
+>   int tm_yday;                  /* Days in year.[0-365] */
+>   int tm_isdst;                 /* DST.         [-1/0/1]*/
+>
+> #ifdef  __USE_BSD
+>   long int tm_gmtoff;           /* Seconds east of UTC.  */
+>   __const char *tm_zone;        /* Timezone abbreviation.  */
+> #else
+>   long int __tm_gmtoff;         /* Seconds east of UTC.  */
+>   __const char *__tm_zone;      /* Timezone abbreviation.  */
+> #endif
+> };
+>
+> Note the extra fields down below -- they increase the structure size
+> by a non-trivial amount (12 bytes on 32-bit, 16 bytes on 64-bit),
+> which means that if one of the following two cases are made in
+> strftime tomorrow:
+>
+> 1. They use one of the timezone fields and it isn't properly cleared
+> (not the case today, but it could be on some older versions of Linux).
+> 2. They make assumptions about the size of the memory allocated and
+> thus go out of bounds.
+>
+> BOOM! Segfault... could worse happen in this case after the ioctl is
+> written out to /dev/rtc ?
+
+OK. Can we drop strftime then ?
+
+
+>
+>>> Please solve these problems and please send me a revised patch.
+>
+> Thanks,
+> -Garrett
+>
+
+
+-- =
+
+Silesh
 
 ---------------------------------------------------------------------------=
 ---
