@@ -1,11 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Date: Mon, 1 Mar 2010 21:09:23 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100301153923.GA16885@linux.vnet.ibm.com>
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NnRaT-0002Oa-MZ
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:04:41 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnRaS-0001OQ-Pw
+	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:04:41 +0000
+Received: by pvf33 with SMTP id 33so967668pvf.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Mar 2010 23:04:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [ANNOUNCEMENT]: The Linux Test Project has been released for
- FEBRUARY 2010
+In-Reply-To: <41c7690d1003042254w301c8056nd553b46c970ee473@mail.gmail.com>
+References: <41c7690d1003032130i6b61968bjc175698937dc0051@mail.gmail.com>
+	<20100304125514.GA21634@linux.vnet.ibm.com>
+	<41c7690d1003042154s68cd8416hf6ebf17f96e50a8b@mail.gmail.com>
+	<364299f41003042214g5501130bj114db6695e762044@mail.gmail.com>
+	<41c7690d1003042254w301c8056nd553b46c970ee473@mail.gmail.com>
+Date: Thu, 4 Mar 2010 23:04:34 -0800
+Message-ID: <364299f41003042304p1ddc6a2cy5769aaaeb7bd729c@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH-v3] RTC Device Driver Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -15,236 +31,152 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, ltp-announce@lists.sourceforge.net, ltp-results@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
+To: Silesh C V <saileshcv@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
 
-Hi All,
+On Thu, Mar 4, 2010 at 10:54 PM, Silesh C V <saileshcv@gmail.com> wrote:
+> On 3/5/10, Garrett Cooper <yanegomi@gmail.com> wrote:
+>> On Thu, Mar 4, 2010 at 9:54 PM, Silesh C V <saileshcv@gmail.com> wrote:
+>>> On 3/4/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
+>>>>>Rishi,
+>>>>
+>>>>>Can you test this patch on the machine on which the tests got stuck
+>>>>>earlier?
+>>>>
+>>>> Yes i tested and found that, it is failing.
+>>>
+>>> It is supposed to fail :) . What we =A0wanted was a way to come out of
+>>> the tests if the
+>>> alarm fails to ring.
+>>>
+>>>
+>>>>
+>>>> [root@x335a rtc]# ./rtc-test /dev/rtc
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC READ TEST:
+>>>> rtc01 =A0 =A0 =A0 1 =A0TPASS =A0: =A0RTC READ TEST Passed
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Current Date/time is =A003/03/10 =
+12:38:26 PM
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC ALARM TEST :
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Alarm time set to 12:38:31.
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Waiting 5 seconds for the alarm...
+>>>> rtc01 =A0 =A0 =A0 2 =A0TFAIL =A0: =A0Timed out waiting for the alarm
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC UPDATE INTERRUPTS TEST :
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Waiting for =A05 update interrupt=
+s...
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 1
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 2
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 3
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 4
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 5
+>>>> rtc01 =A0 =A0 =A0 3 =A0TPASS =A0: =A0RTC UPDATE INTERRUPTS TEST Passed
+>>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC Tests Done!
+>>>> [root@x335a rtc]# ls -l /dev/rtc*
+>>>> crw-r--r-- 1 root root 10, 135 Feb 20 13:51 /dev/rtc
+>>>> [root@x335a rtc]#
+>>>>
+>>>>
+>>>>
+>>>> In fact while compiling there is some warning also.
+>>>> [root@x335a rtc]# make
+>>>> cc rtc-test.c -O2 -Wall -I ../../../../include/ -L ../../../../lib/
+>>>> -lltp =A0-o rtc-test
+>>>> rtc-test.c: In function =91read_alarm_test=92:
+>>>> rtc-test.c:64: warning: dereferencing type-punned pointer will break
+>>>> strict-aliasing rules
+>>>
+>>> I did not get this warning on gcc-4.3.0 . Anyways I think we can get rid
+>>> of this
+>>> warning by using -fno-strict-aliasing option at the cost of some
+>>> optimizations.
+>>> I will send you another patch.
+>>>
+>>
+>> Or maybe just fix the code to not type-pun by converting everything to
+>> struct tm on the fly?
+>>
+>> Let's look at the difference between the two structures:
+>>
+>> struct rtc_time {
+>> =A0 =A0 =A0 =A0 int tm_sec;
+>> =A0 =A0 =A0 =A0 int tm_min;
+>> =A0 =A0 =A0 =A0 int tm_hour;
+>> =A0 =A0 =A0 =A0 int tm_mday;
+>> =A0 =A0 =A0 =A0 int tm_mon;
+>> =A0 =A0 =A0 =A0 int tm_year;
+>> =A0 =A0 =A0 =A0 int tm_wday;
+>> =A0 =A0 =A0 =A0 int tm_yday;
+>> =A0 =A0 =A0 =A0 int tm_isdst;
+>> };
+>>
+>> struct tm
+>> {
+>> =A0 int tm_sec; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Seconds. =A0 =A0 =
+[0-60] (1 leap second) */
+>> =A0 int tm_min; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Minutes. =A0 =A0 =
+[0-59] */
+>> =A0 int tm_hour; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Hours. =A0 =A0 =
+=A0 [0-23] */
+>> =A0 int tm_mday; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Day. =A0 =A0 =A0 =
+=A0 [1-31] */
+>> =A0 int tm_mon; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Month. =A0 =A0 =
+=A0 [0-11] */
+>> =A0 int tm_year; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Year - 1900. =A0*/
+>> =A0 int tm_wday; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Day of week. [0-6=
+] */
+>> =A0 int tm_yday; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Days in year.[0-3=
+65] */
+>> =A0 int tm_isdst; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* DST. =A0 =A0 =A0 =
+=A0 [-1/0/1]*/
+>>
+>> #ifdef =A0__USE_BSD
+>> =A0 long int tm_gmtoff; =A0 =A0 =A0 =A0 =A0 /* Seconds east of UTC. =A0*/
+>> =A0 __const char *tm_zone; =A0 =A0 =A0 =A0/* Timezone abbreviation. =A0*/
+>> #else
+>> =A0 long int __tm_gmtoff; =A0 =A0 =A0 =A0 /* Seconds east of UTC. =A0*/
+>> =A0 __const char *__tm_zone; =A0 =A0 =A0/* Timezone abbreviation. =A0*/
+>> #endif
+>> };
+>>
+>> Note the extra fields down below -- they increase the structure size
+>> by a non-trivial amount (12 bytes on 32-bit, 16 bytes on 64-bit),
+>> which means that if one of the following two cases are made in
+>> strftime tomorrow:
+>>
+>> 1. They use one of the timezone fields and it isn't properly cleared
+>> (not the case today, but it could be on some older versions of Linux).
+>> 2. They make assumptions about the size of the memory allocated and
+>> thus go out of bounds.
+>>
+>> BOOM! Segfault... could worse happen in this case after the ioctl is
+>> written out to /dev/rtc ?
+>
+> OK. Can we drop strftime then ?
 
-The Linux Test Project test suite has been released for the month of
-FEB 2010. Please see ltp/INSTALL file carefully, as, there has
-been multiple changes for building/installing the test suite after the
-recent changes in Makefile infrastructure.
+Why couldn't you memset ( , 0, ) the value and set the individual
+fields? One of the awesome things about strftime is that it's
+localization aware if you use the right format strings (I know -- a
+functional nice to have, not necessarily a need to have).
 
-The latest version of the test-suite contains 3000+ tests for the Linux
-OS and can be found at:
-http://ltp.sourceforge.net/,
-Latest happenings in LTP can also be found at:
-http://ltp.sourceforge.net/wiki/,
-http://ltp.sourceforge.net/wikiArchives.php, and,
-IRC: irc.freenode.org #ltp.
+Unfortunately one of 'em is American friendly only :/ :
 
-========================
-FEBRUARY 2010 Highlights:
-======================== 
-      * Conversion of CVS repository to GIT repository. CVS will be
-freeze from now onwards.
-      * Created four branch for git tree as master, maint, next and pu.
+       %D     Equivalent  to  %m/%d/%y.  (Yecch -- for Americans only.  Ame=
+ri-
+              cans should note that in other countries %d/%m/%y is rather c=
+om-
+              mon.   This  means  that in international context this format=
+ is
+              ambiguous and should not be used.) (SU)
 
-==============================
-FEBRUARY 2010 LTP Contributors:
-============================== 
-     1. Garrett Cooper, 
-     2. liubo,
-     3. Randy Dunlap
-     4. Rishikesh K Rajak
-     5. Subrata Modak
-     6. Jiri Palecek
-     7. Shi Weihua
-------------------------------
+>>>> Please solve these problems and please send me a revised patch.
 
+Thanks,
+-Garrett
 
-==============================
-Note(s) from the Maintainer:
-==============================
-
-http://marc.info/?l=ltp-list&m=126725787515756&w=2
-
-After referring this above link, please try to take advantage of this
-git tree.
-
-git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git .
-
-
-
-We would encourage the community to post results to 
-ltp-results@lists.sf.net,
-patches, new tests, bugs or comments/questions to ltp-list@lists.sf.net,
-http://sourceforge.net/tracker/?func=add&group_id=3382&atid=103382 
-<http://sourceforge.net/tracker/?func=add&group_id=3382&atid=103382>
-(for
-New Bug(s)),
-http://sourceforge.net/tracker/?func=add&group_id=3382&atid=303382 
-<http://sourceforge.net/tracker/?func=add&group_id=3382&atid=303382>
-(for
-New Patch(s)),
-http://sourceforge.net/tracker/?func=add&group_id=3382&atid=353382 
-<http://sourceforge.net/tracker/?func=add&group_id=3382&atid=353382>
-(for
-New Feature Request(s))
-
-Happy Testing !!
-
-Here are the changes file since 6th feb 2010:
-
- INSTALL                                            |   26 +-
- Makefile                                           |    2 +-
- Makefile.release                                   |   46 ++
- README                                             |   10 +-
- TODO                                               |   68 +--
- configure.ac                                       |    1 +
- doc/ltp-run-files.txt                              |    4 +-
- include/ltp_signal.h                               |  131 ++----
- include/mk/automake.mk                             |    2 +-
- include/mk/lib.mk                                  |    4 +-
- lib/Makefile                                       |    2 +
- m4/ltp-time.m4                                     |   35 ++
- runtest/controllers                                |    1 +
- runtest/syscalls                                   |    2 +
- scratch/cache_leak                                 |  174 -------
- scratch/googlemmtest.txt                           |  269 ----------
- scratch/hackbench.c                                |  261 ----------
- scratch/lat-sched.c                                |  346 -------------
- scratch/runltp.orig                                |  541
---------------------
- scratch/runltp.robbie                              |  413
----------------
- testcases/commands/ade/ar/ar01                     |    2 +-
- testcases/commands/ade/ld/ld01                     |    2 +-
- testcases/commands/ade/ldd/ldd01                   |    2 +-
- testcases/commands/ade/nm/nm01                     |    2 +-
- testcases/commands/ade/objdump/objdump01           |    2 +-
- testcases/commands/ade/size/size01                 |    2 +-
- testcases/commands/at/at_allow01                   |    2 +-
- testcases/commands/at/at_deny01                    |    2 +-
- testcases/commands/cron/cron02                     |    2 +-
- testcases/commands/cron/cron03                     |    2 +-
- testcases/commands/cron/cron_allow01               |    2 +-
- testcases/commands/cron/cron_deny01                |    2 +-
- testcases/commands/cron/cron_dirs_checks01         |    2 +-
- testcases/commands/mail/00_Descriptions.txt        |    2 +-
- testcases/commands/mail/mail_tests.sh              |  526
-++++++++++----------
- testcases/commands/su/su01                         |    2 +-
- testcases/commands/su/su01_s1                      |    2 +-
- testcases/kernel/containers/Makefile               |    2 +-
- testcases/kernel/containers/Makefile.inc           |    2 +-
- testcases/kernel/containers/container_test.sh      |   20 +-
- .../kernel/containers/mqns/check_mqns_enabled.c    |   55 ++
- .../kernel/containers/netns/check_netns_enabled.c  |   35 +-
- .../kernel/containers/pidns/check_pidns_enabled.c  |   70 +++
- testcases/kernel/containers/pidns/pidns17.c        |   28 +-
- testcases/kernel/controllers/Makefile              |    2 +-
- testcases/kernel/controllers/Makefile.inc          |    2 +-
- testcases/kernel/controllers/cpuset/Makefile       |    2 +-
- testcases/kernel/controllers/cpuset/Makefile.inc   |    2 +-
- testcases/kernel/controllers/memcg/README          |   10 +
- .../kernel/controllers/memcg/control/Makefile      |   33 ++
- .../kernel/controllers/memcg/control/mem_process.c |  141 +++++
- .../memcg/control/memcg_control_test.sh            |  166 ++++++
- testcases/kernel/fs/acls/acl_test01                |  199 ++++----
- testcases/kernel/fs/ftest/ftest08.c                |   17 +-
- testcases/kernel/fs/ftest/libftest.c               |   21 +-
- testcases/kernel/io/direct_io/README               |    2 +-
- testcases/kernel/io/stress_floppy/Makefile         |    2 +
- testcases/kernel/io/stress_floppy/stress_floppy    |    2 +-
- testcases/kernel/mem/Makefile                      |    2 +-
- testcases/kernel/mem/Makefile.inc                  |    2 +-
- testcases/kernel/mem/hugetlb/Makefile              |    2 +-
- testcases/kernel/mem/hugetlb/Makefile.inc          |    2 +-
- .../kernel/sched/sched_stress/sched_stress.sh      |    2 +-
- .../kernel/security/cap_bound/exec_without_inh.c   |    3 +
- .../integrity/ima/tests/ima_measurements.sh        |    4 +-
- testcases/kernel/syscalls/ipc/Makefile             |    2 +-
- testcases/kernel/syscalls/ipc/Makefile.inc         |    2 +-
- testcases/kernel/syscalls/mbind/mbind01.c          |    1 +
- testcases/kernel/syscalls/mknod/mknod02.c          |    3 +-
- testcases/kernel/syscalls/mq_notify/mq_notify01.c  |   15 +-
- .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |  143 +++---
- testcases/kernel/syscalls/rt_sigprocmask/Makefile  |    1 -
- .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |  211 ++++----
- .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |  281 +++++-----
- testcases/kernel/syscalls/stime/stime01.c          |  114 +++--
- testcases/kernel/syscalls/swapon/swapon03.c        |   97 +++--
- .../kernel/syscalls/utimensat/utimensat_tests.sh   |   30 +-
- testcases/kernel/timers/include/common_timers.h    |   51 +-
- testcases/network/generate.sh                      |    2 +-
- testcases/network/multicast/mc_opts/mc_opts        |    2 +-
- testcases/network/tcp_cmds/Makefile                |    2 +-
- testcases/network/tcp_cmds/Makefile.inc            |    9 +-
- testcases/network/tcp_cmds/arp/arp01               |    2 +-
- testcases/network/tcp_cmds/echo/echo01             |    2 +-
- testcases/network/tcp_cmds/finger/finger01         |    2 +-
- testcases/network/tcp_cmds/ftp/ftp01               |    2 +-
- testcases/network/tcp_cmds/ftp/ftp02               |    2 +-
- testcases/network/tcp_cmds/ftp/ftp02_s1            |    2 +-
- testcases/network/tcp_cmds/ftp/ftp03               |    2 +-
- testcases/network/tcp_cmds/ftp/ftp04               |    2 +-
- testcases/network/tcp_cmds/ftp/ftp05               |    2 +-
- testcases/network/tcp_cmds/host/host01             |    2 +-
- testcases/network/tcp_cmds/netstat/netstat01       |    2 +-
- testcases/network/tcp_cmds/perf_lan/perf_lan       |    2 +-
- testcases/network/tcp_cmds/ping/ping01             |    2 +-
- testcases/network/tcp_cmds/rcp/rcp01               |    2 +-
- testcases/network/tcp_cmds/rdist/rdist01           |    2 +-
- testcases/network/tcp_cmds/rlogin/rlogin01         |    2 +-
- testcases/network/tcp_cmds/rsh/rsh01               |    2 +-
- testcases/network/tcp_cmds/rwho/rwho01             |    2 +-
- testcases/network/tcp_cmds/sendfile/sendfile01     |    2 +-
- testcases/network/tcp_cmds/ssh/ssh01               |    2 +-
- testcases/network/tcp_cmds/ssh/ssh01_s1            |    2 +-
- testcases/network/tcp_cmds/ssh/ssh02               |    2 +-
- testcases/network/tcp_cmds/ssh/ssh02_s1            |    2 +-
- testcases/network/tcp_cmds/ssh/ssh03               |    2 +-
- testcases/network/tcp_cmds/ssh/ssh03_s1            |    2 +-
- testcases/network/tcp_cmds/tcpdump/tcpdump01       |    2 +-
- testcases/network/tcp_cmds/telnet/telnet01         |    2 +-
- testscripts/build/README                           |   19 +
- testscripts/build/build_test_function.sh           |   67 ++-
- testscripts/build/test_install_in_build_tree.sh    |   26 +-
- .../build/test_install_out_of_build_tree.sh        |   26 +-
- testscripts/build/test_out_of_build_tree.sh        |   26 +-
- testscripts/diskio.sh                              |    2 +-
- testscripts/ltp-aiodio.sh                          |   12 +-
- testscripts/ltp-scsi_debug.sh                      |    2 +-
- testscripts/ltpfslvm.sh                            |    4 +-
- testscripts/ltpfsnolvm.sh                          |    4 +-
- testscripts/ltpstress.sh                           |    6 +-
- testscripts/networkstress.sh                       |    4 +-
- testscripts/networktests.sh                        |    4 +-
- testscripts/runEALtests.sh                         |    2 +-
- testscripts/runpan.sh                              |    2 +-
- testscripts/tpm_tools.sh                           |    2 +-
- tools/make-file.sh                                 |    2 +-
- 126 files changed, 1814 insertions(+), 3142 deletions(-)
- create mode 100644 Makefile.release
- create mode 100644 m4/ltp-time.m4
- delete mode 100644 scratch/cache_leak
- delete mode 100644 scratch/googlemmtest.txt
- delete mode 100644 scratch/hackbench.c
- delete mode 100644 scratch/lat-sched.c
- delete mode 100755 scratch/runltp.orig
- delete mode 100755 scratch/runltp.robbie
- create mode 100644
-testcases/kernel/containers/mqns/check_mqns_enabled.c
- create mode 100644
-testcases/kernel/containers/pidns/check_pidns_enabled.c
- create mode 100644 testcases/kernel/controllers/memcg/control/Makefile
- create mode 100644
-testcases/kernel/controllers/memcg/control/mem_process.c
- create mode 100644
-testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
