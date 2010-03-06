@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Ntch0-0001eT-3G
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:08:58 +0000
-Received: from mail-iw0-f195.google.com ([209.85.223.195])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ntcgz-0002ZL-7e
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:08:58 +0000
-Received: by iwn33 with SMTP id 33so4138169iwn.23
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1NnrXw-00085h-V0
+	for ltp-list@lists.sourceforge.net; Sat, 06 Mar 2010 10:47:48 +0000
+Received: from mail-bw0-f219.google.com ([209.85.218.219])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnrXv-0001SU-Qx
+	for ltp-list@lists.sourceforge.net; Sat, 06 Mar 2010 10:47:48 +0000
+Received: by bwz19 with SMTP id 19so1160413bwz.6
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Mar 2010 01:08:52 -0700 (PDT)
+	Sat, 06 Mar 2010 02:47:38 -0800 (PST)
+Message-ID: <4B922D86.70704@petalogix.com>
+Date: Sat, 06 Mar 2010 11:25:10 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <b9d696241003212215y57070683g828dd982d2366872@mail.gmail.com>
-References: <b9d696241003212215y57070683g828dd982d2366872@mail.gmail.com>
-Date: Mon, 22 Mar 2010 01:08:51 -0700
-Message-ID: <364299f41003220108s203f9fcahe5627d156e490744@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] memcg_stress_test.sh hanging system
+References: <20100227075348.GA3077@linux.vnet.ibm.com>
+	<201003051635.50233.vapier@gentoo.org>
+In-Reply-To: <201003051635.50233.vapier@gentoo.org>
+Subject: Re: [LTP] A note from Maintainer
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,38 +32,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "K.D. Lucas" <kdlucas@gmail.com>
-Cc: LTP-ML <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: sachinp@linux.vnet.ibm.com, ltp-list@lists.sourceforge.net, jburke@redhat.com, ambar.seksena@calsoftinc.com, kamaleshb@in.ibm.com, doug.chapman@hp.com, risrajak@in.ibm.com, Cai Qian <qcai@redhat.com>, Khem Raj <kraj@mvista.com>, aneesh.kumar@linux.vnet.ibm.com, carmelo.amoroso@st.com, Nadia Derbey <Nadia.Derbey@bull.net>, Balbir Singh <balbir@linux.vnet.ibm.com>
 
-On Sun, Mar 21, 2010 at 10:15 PM, K.D. Lucas <kdlucas@gmail.com> wrote:
-> I just downloaded the latest LTP, ltp-full-20100228.1
->
-> I'm running it on Linux Mint Helena x64 Edition.
-> Kernel: 2.6.31-14-generic x86_64
->
-> I installed it by running:
->
-> ./configure
-> make
-> sudo make install
->
-> My entire system just hangs when it gets to the memcg_stress_test.sh test.
->
-> I'm running this on an HP Z600 with 12 gb ram and 2 Intel Xeon E5520 2.27
-> ghz cpus. These are quad core CPUs with HyperThreading.
->
-> What I see in /var/log/syslog is:
->
-> Mar 21 20:09:14 daredevil kernel: [17277.016792] Memory cgroup out of
-> memory: kill process 28223 (memcg_process) score 99 or a child
-> Mar 21 20:09:14 daredevil kernel: [17277.016836] Killed process 28223
-> (memcg_process)
->
-> Is anyone else seeing this?
+Mike Frysinger wrote:
+> On Saturday 27 February 2010 02:53:48 Rishikesh K Rajak wrote:
+>> We are in process of changing our sf.net host repository to
+>> GIT from CVS.[ Any input/discussion on this is highly appreciable ].
+> 
+> the authorship info really should be fixed before anything is finalized.  and 
+> a git hook added to reject people pushing patches that lack proper 
+> author/committer fields.  these commits by "root" are a good example of things 
+> that should not be happening.
 
-    +1 with Ubuntu Karmic Koala and an amd64 machine with 8GB of RAM.
-Thanks,
--Garrett
+Agree. Do you know about any manual how to fix it by any script or setup 
+that conversion? I mean to have any convert table where for example will 
+be written conversion:
+vampier -> Mike Frysinger.
+root -> Subrata Modak
+
+Michal
+
+> -mike
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
