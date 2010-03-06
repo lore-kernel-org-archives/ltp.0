@@ -1,32 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nmnvy-0003aY-OB
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 12:44:14 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nmnvx-0003H6-JC
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 12:44:14 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o23CaGwS004522
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 07:36:16 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o23Ci75X1867800
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 07:44:07 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o23Ci6f0008259
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 07:44:07 -0500
-Date: Wed, 3 Mar 2010 18:13:52 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100303124352.GD23601@linux.vnet.ibm.com>
-References: <4B8E3B7F.8050301@calsoftinc.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naufal11@gmail.com>) id 1Nnsur-0004ME-DU
+	for ltp-list@lists.sourceforge.net; Sat, 06 Mar 2010 12:15:33 +0000
+Received: from mail-pz0-f197.google.com ([209.85.222.197])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nnsup-00021Y-B4
+	for ltp-list@lists.sourceforge.net; Sat, 06 Mar 2010 12:15:32 +0000
+Received: by pzk35 with SMTP id 35so619175pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 06 Mar 2010 04:14:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4B8E3B7F.8050301@calsoftinc.com>
-Subject: Re: [LTP] Missing test tools in recent ltp builds
+In-Reply-To: <20100304131834.GB21634@linux.vnet.ibm.com>
+References: <364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
+	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
+	<364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
+	<20100228181445.GB4850@linux.vnet.ibm.com>
+	<d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
+	<20100301052100.GA3860@linux.vnet.ibm.com>
+	<20100301062821.GC3860@linux.vnet.ibm.com>
+	<d270b4401002282340p45597f24tcb61bd3fa9366c31@mail.gmail.com>
+	<20100302120239.GA2845@malik-laptop.in.ibm.com>
+	<20100304131834.GB21634@linux.vnet.ibm.com>
+Date: Sat, 6 Mar 2010 17:44:21 +0530
+Message-ID: <d270b4401003060414u471b4a84s2d8cd918b0fc2d18@mail.gmail.com>
+From: Mohamed Naufal <naufal11@gmail.com>
+Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
+	the topmost memory cgroup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,105 +37,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6615699785839855978=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shwetabh <shwetabh.goel@calsoftinc.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Sudhir Kumar <skumar@linux.vnet.ibm.com>, Mohamed Naufal <naufal11@gmail.com>, ltp-list@lists.sourceforge.net
 
-On Wed, Mar 03, 2010 at 04:05:43PM +0530, Shwetabh wrote:
-> Hi,
-> 
-Hi Shwetabh,
+--===============6615699785839855978==
+Content-Type: multipart/alternative; boundary=0016e648f0d4a52daf048120c502
 
-Few queries:
-    - Tell us the complete steps of execution/compiling
-    - OS version ?
-    - automake & autoconf version ?
-    - Arch ?
+--0016e648f0d4a52daf048120c502
+Content-Type: text/plain; charset=ISO-8859-1
 
-Thanks
--Rishi
+On 4 March 2010 18:48, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>wrote:
 
-> In recent ltp releases, I see quite a few test cases breaking since 
-> their required tools
-> are not being copied over to /opt/ltp/testcases/. I believe this 
-> behaviour started since
-> ltp started compiling and copying the files to /opt/ltp. Here is an example:
-> 
-> ----<<snip>>-----------
-> remove test cases which require the block device.
-> You can specify it with option -b
-> COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 27204     -n 27204  -p  -f 
-> /tmp/ltp-gcfmm27210/alltests -l 
-> /opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log  -C 
-> /opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
-> LOG File: /opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log
-> FAILED COMMAND File: 
-> /opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
-> Running tests.......
-> <<<test_start>>>
-> tag=CPUHOTPLUG stime=1267586681
-> cmdline="(cd $LTPROOT/testcases/kernel/hotplug/cpu_hotplug/; ./runtests.sh)"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> sh: line 0: cd: /opt/ltp/testcases/kernel/hotplug/cpu_hotplug/: No such 
-> file or directory
-> sh: ./runtests.sh: No such file or directory
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: LTP-20100228
-> 
->         ###############################################################"
-> 
->              Done executing testcases."
->              LTP Version:  LTP-20100228
->         ###############################################################"
-> 
-> [root@localhost runtest]# cd /opt/ltp/testcases/
-> [root@localhost testcases]# ls
-> bin  data
-> [root@localhost testcases]# pwd
-> /opt/ltp/testcases
-> [root@localhost testcases]# ls -l
-> total 76
-> drwxr-xr-x 7 root root 69632 Mar  2 22:24 bin
-> drwxr-xr-x 2 root root  4096 Mar  2 22:19 data
-> 
-> --------------------
-> 
-> Please advice if I am doing something wrong here. Do I manually have to 
-> copy the tools from tarballs' testcases/kernel directory?
-> If so, shouldn't this be done by make install?
-> 
-> -- 
-> Regards,
-> Shwetabh
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> On Tue, Mar 02, 2010 at 05:32:39PM +0530, Sudhir Kumar wrote:
+> > On Mon, Mar 01, 2010 at 01:10:31PM +0530, Mohamed Naufal wrote:
+> > > On 1 March 2010 11:58, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+> wrote:
+> >
+> > The patch looks fair enough.
+> > Naufel, good job!
+> > I avoided review and comments as I wanted you to learn the way Linux
+> > community works, yourself. Now you being well faimiliar, we expect
+> > future contribution too :)
+> >
+> > Acked-By: Sudhir Kumar <skumar@linux.vnet.ibm.com>
+> > Thanks Risi, for committing in the next branch.
+>
+>
+> Tested-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+>
+> Merging to maste branch now...
+>
+> Thanks
+> Rishi
+> >
+>
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+[...]
+
+Maybe LTP should apply for Google Summer of Code ;)
+
+Naufal
+
+--0016e648f0d4a52daf048120c502
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<br><br><div class=3D"gmail_quote">On 4 March 2010 18:48, Rishikesh K Rajak=
+ <span dir=3D"ltr">&lt;<a href=3D"mailto:risrajak@linux.vnet.ibm.com">risra=
+jak@linux.vnet.ibm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_=
+quote" style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt =
+0pt 0.8ex; padding-left: 1ex;">
+<div class=3D"im">On Tue, Mar 02, 2010 at 05:32:39PM +0530, Sudhir Kumar wr=
+ote:<br>
+&gt; On Mon, Mar 01, 2010 at 01:10:31PM +0530, Mohamed Naufal wrote:<br>
+</div><div class=3D"im">&gt; &gt; On 1 March 2010 11:58, Rishikesh K Rajak =
+&lt;<a href=3D"mailto:risrajak@linux.vnet.ibm.com">risrajak@linux.vnet.ibm.=
+com</a>&gt; wrote:<br>
+&gt;<br>
+</div>&gt; The patch looks fair enough.<br>
+&gt; Naufel, good job!<br>
+&gt; I avoided review and comments as I wanted you to learn the way Linux<b=
+r>
+&gt; community works, yourself. Now you being well faimiliar, we expect<br>
+&gt; future contribution too :)<br>
+&gt;<br>
+&gt; Acked-By: Sudhir Kumar &lt;<a href=3D"mailto:skumar@linux.vnet.ibm.com=
+">skumar@linux.vnet.ibm.com</a>&gt;<br>
+&gt; Thanks Risi, for committing in the next branch.<br>
+<br>
+<br>
+Tested-By: Rishikesh K Rajak &lt;<a href=3D"mailto:risrajak@linux.vnet.ibm.=
+com">risrajak@linux.vnet.ibm.com</a>&gt;<br>
+<br>
+Merging to maste branch now...<br>
+<br>
+Thanks<br>
+Rishi<br>
+<div><div></div><div class=3D"h5">&gt;<br></div></div></blockquote></div><b=
+r>[...]<br><br>Maybe LTP should apply for Google Summer of Code ;)<br><br>N=
+aufal<br>
+
+--0016e648f0d4a52daf048120c502--
+
+
+--===============6615699785839855978==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -142,7 +133,16 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--===============6615699785839855978==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6615699785839855978==--
+
