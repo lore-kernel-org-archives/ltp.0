@@ -1,35 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <schamart@linux.vnet.ibm.com>) id 1Ntdhb-0007mQ-KR
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 09:13:39 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Ntdha-0006An-CB
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 09:13:39 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id o2M95wlE010895
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:58 +1100
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2M95wDF762020
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:58 +1100
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2M95vo2017789
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:57 +1100
-Received: from localhost (chamarthy.in.ibm.com [9.124.33.99])
-	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o2M95vhl017745
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:57 +1100
-Date: Mon, 22 Mar 2010 14:35:55 +0530
-From: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
-Message-ID: <20100322090555.GA6154@chamarthy>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1NoGwj-0000GX-B1
+	for ltp-list@lists.sourceforge.net; Sun, 07 Mar 2010 13:55:05 +0000
+Received: from mail-bw0-f219.google.com ([209.85.218.219])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NoGwi-0008DV-4Y
+	for ltp-list@lists.sourceforge.net; Sun, 07 Mar 2010 13:55:05 +0000
+Received: by bwz19 with SMTP id 19so1705638bwz.6
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 07 Mar 2010 05:54:57 -0800 (PST)
+Message-ID: <4B93B02B.9090903@petalogix.com>
+Date: Sun, 07 Mar 2010 14:54:51 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
-Subject: [LTP] memcg_function tests failing on s390
+References: <20100227075348.GA3077@linux.vnet.ibm.com>
+	<201003051635.50233.vapier@gentoo.org>
+	<4B922D86.70704@petalogix.com>
+	<201003061633.16026.vapier@gentoo.org>
+In-Reply-To: <201003061633.16026.vapier@gentoo.org>
+Subject: Re: [LTP] A note from Maintainer
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,52 +31,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: sachinp@linux.vnet.ibm.com, ltp-list@lists.sourceforge.net, jburke@redhat.com, ambar.seksena@calsoftinc.com, kamaleshb@in.ibm.com, doug.chapman@hp.com, risrajak@in.ibm.com, Cai Qian <qcai@redhat.com>, Khem Raj <kraj@mvista.com>, aneesh.kumar@linux.vnet.ibm.com, carmelo.amoroso@st.com, Nadia Derbey <Nadia.Derbey@bull.net>, Balbir Singh <balbir@linux.vnet.ibm.com>
 
+Mike Frysinger wrote:
+> On Saturday 06 March 2010 05:25:10 Michal Simek wrote:
+>> Mike Frysinger wrote:
+>>> On Saturday 27 February 2010 02:53:48 Rishikesh K Rajak wrote:
+>>>> We are in process of changing our sf.net host repository to
+>>>> GIT from CVS.[ Any input/discussion on this is highly appreciable ].
+>>> the authorship info really should be fixed before anything is finalized. 
+>>> and a git hook added to reject people pushing patches that lack proper
+>>> author/committer fields.  these commits by "root" are a good example of
+>>> things that should not be happening.
+>> Agree. Do you know about any manual how to fix it by any script or setup
+>> that conversion? I mean to have any convert table where for example will
+>> be written conversion:
+>> vampier -> Mike Frysinger.
+>> root -> Subrata Modak
+> 
+> i use this script:
+> #!/bin/bash
+> 
+> tmp=$(mktemp)
+> cat << \EOF > ${tmp}
+> decode() {
+> 	awk -vid="$1" -vtype="$2" '$1 == id {
+> 		print "export GIT_"type"_NAME='\''" $3 " " $4 "'\'';"
+> 		print "export GIT_"type"_EMAIL='\''" $5 "'\'';"
+> 	}' ${author_file}
+> }
+> EOF
+> 
+> for x in cvs-authors authors ; do
+> 	export author_file=${PWD}/.git/$x
+> 	[ -e ${author_file} ] && break
+> done
+> git filter-branch \
+> 	--env-filter ". ${tmp};"' \
+> 		eval `decode "${GIT_AUTHOR_NAME}" AUTHOR`; \
+> 		eval `decode "${GIT_COMMITTER_NAME}" COMMITTER`; \
+> ' "$@"
+> 
+> rm -f $tmp
+> 
+> use a normal authors file in like .git/authors and run it.  the authors format 
+> looks something like:
+> vapier = Mike Frysinger <vapier@gentoo.org>
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Nice. It is easy to use - there are only 20 people who did commits.
+git shortlog -s | cut -c8-
 
-Hi LTP,
+I see that there are only three problematic names.
+uid311324
+uid52817
+uid59787
 
-The memcg_function tests were failing in s390 as the condition for checking
-support for memory controller is not getting satisfied. Eventhough the cgroup
-memory is enabled, the script comes out saying that the memory support is not
-available in the kernel.
+Thanks for fixing that repo - just use that Mike's script with correct 
+authors file.
 
-This patch changes the condition checking for memory cgroup support in kernel
-in the script memcg_function_test.sh.
+Thanks,
+Michal
+
+> ...
+> -mike
+
 
 -- 
-Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-Linux on System z (RedHat & Novell SuSE) CSVT,
-IBM India Systems & Technology Group/LTC - ISL,
-Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-[ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-
---17pEHd4RhPHOinZp
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="memcg_function_patch.patch"
-
-diff -Naurp memcg_function_test_old.sh memcg_function_test.sh
---- memcg_function_test_old.sh  2010-03-22 09:50:56.000000000 +0100
-+++ memcg_function_test.sh      2010-03-22 09:52:52.000000000 +0100
-@@ -30,7 +30,7 @@ export TCID="memcg_function_test"
- export TST_TOTAL=38
- export TST_COUNT=0
- 
--if [ ! "grep -w memory /proc/cgroups | cut -f4" == "1" ]
-+if [ "$(grep -w memory /proc/cgroups | cut -f4)" != "1" ]
- then
-         echo "WARNING:";
-         echo "Either Kernel does not support for memory resource controller or feature not enabled";
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -92,16 +111,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---17pEHd4RhPHOinZp--
-
