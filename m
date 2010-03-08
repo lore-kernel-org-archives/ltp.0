@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1Nt9gA-0006Vc-V9
-	for ltp-list@lists.sourceforge.net; Sun, 21 Mar 2010 01:10:10 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nt9g9-0005Vv-SP
-	for ltp-list@lists.sourceforge.net; Sun, 21 Mar 2010 01:10:10 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2L14F2A028758
-	for <ltp-list@lists.sourceforge.net>; Sat, 20 Mar 2010 19:04:15 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2L1A4FA127472
-	for <ltp-list@lists.sourceforge.net>; Sat, 20 Mar 2010 19:10:04 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o2KIA3xR030959
-	for <ltp-list@lists.sourceforge.net>; Sat, 20 Mar 2010 12:10:03 -0600
-Date: Sat, 20 Mar 2010 20:10:04 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100321011004.GA28202@us.ibm.com>
+	(envelope-from <chrubis@suse.de>) id 1NofuH-0002kl-Ja
+	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 16:34:13 +0000
+Date: Mon, 8 Mar 2010 17:37:20 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100308163720.GA8744@saboteur.suse.cz>
+References: <20100205172438.GA2333@saboteur.suse.cz>
+	<364299f41002051125x3fe2446dx2d67e5e4f687274f@mail.gmail.com>
+	<20100218175018.GA29671@saboteur.suse.cz>
+	<364299f41002181351s4c815216ld1911f0d6d522064@mail.gmail.com>
+	<20100308144319.GA30879@saboteur.suse.cz>
+	<364299f41003080750i27602084ufed62c929fa149c8@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="X1bOJ3K7DJ5YkBrT"
 Content-Disposition: inline
-Subject: [LTP] [PATCH ltp] fix detection of setcap for filecaps test
+In-Reply-To: <364299f41003080750i27602084ufed62c929fa149c8@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [LTP] [PATCH] fix buffer overflow in sem_getvalue tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,204 +28,439 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Remove the run-time checks and just have autoconf check for
-libcap and setcap presence.
 
-( applies on top of the patch I sent this morning )
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-After this, filecaps tests compile, install, and pass on f10 at least.
+Hi!
+> >> SEM_NAME_MAX (see
+> >> http://publib.boulder.ibm.com/infocenter/iseries/v5r3/topic/apis/ipc=
+semo.htm
+> >> )?
+> >>
+> >> This doesn't appear to exist on older versions of Linux (RHEL 4.6 fo=
+r
+> >> instance...)
+> >>
+> >> The logic required to determine SEM_NAME_MAX should be easy to grab,
+> >> or you could follow the following logic from the sem_open manpage:
+> >>
+> >> =A0 =A0 =A0 =A0ENAMETOOLONG
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 The length of the name argument exceeds =
+{PATH_MAX} or =A0a =A0path-
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 name component is longer than {NAME_MAX}=
+.
+> >
+> > My manual dated as 20-02-2009 says just:
+> >
+> >
+> > ENAMETOOLONG
+> > =A0 =A0 =A0 =A0name was too long.
+> >
+> >
+> > And 'man sem_overview' says we should use NAME_MAX - 4 (as on linux, =
+named
+> > semaphores are files created in /dev/shm/ virtual filesystem that sta=
+rts with
+> > 'sem.' prefix). Is semname declared as 'char semname[NAME_MAX - 4];' =
+okay?
+>=20
 
-Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
----
- m4/ltp-cap.m4                                      |    1 +
- testcases/kernel/security/Makefile                 |    3 +
- .../kernel/security/filecaps/checkforfilecaps.sh   |   40 ------------
- .../kernel/security/filecaps/checkforlibcap.sh     |   66 --------------------
- testcases/kernel/security/filecaps/filecapstest.sh |   16 +-----
- 5 files changed, 5 insertions(+), 121 deletions(-)
- delete mode 100755 testcases/kernel/security/filecaps/checkforfilecaps.sh
- delete mode 100755 testcases/kernel/security/filecaps/checkforlibcap.sh
+Patch attached.
 
-diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
-index 28d998d..caa436f 100644
---- a/m4/ltp-cap.m4
-+++ b/m4/ltp-cap.m4
-@@ -28,6 +28,7 @@ AH_TEMPLATE(HAVE_LIBCAP,
- AC_CHECK_HEADERS(sys/capability.h,[
- 	LTP_CAPABILITY_SUPPORT=yes
- 	AC_CHECK_LIB(cap,cap_compare,[AC_DEFINE(HAVE_LIBCAP) CAP_LIBS="-lcap"], [CAP_LIBS=""])
-+	AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
- ])]
- AC_SUBST(CAP_LIBS)
- )
-diff --git a/testcases/kernel/security/Makefile b/testcases/kernel/security/Makefile
-index a23ce8f..52b8d06 100644
---- a/testcases/kernel/security/Makefile
-+++ b/testcases/kernel/security/Makefile
-@@ -29,6 +29,9 @@ include	$(top_srcdir)/include/mk/env_pre.mk
- ifeq ($(strip $(CAP_LIBS)),)
- FILTER_OUT_DIRS		:= cap_bound filecaps
- endif
-+ifeq ($(HAVE_SETCAP),false)
-+FILTER_OUT_DIRS		+= filecaps
-+endif
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+--=20
+Cyril Hrubis
+chrubis@suse.cz
+
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="sem_getvalue_buffer_overflow.patch"
+
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
+@@ -9,8 +9,7 @@
+ /*
+  * This test case verifies that calling sem_getvalue doesn't change the 
+  * state of the semaphore.
+-*/
+-
++ */
  
- # XXX (garrcoop): avoid compilation failures on RHEL 5.4, as reported by
- # Mitani-san, because of policy versioning issues...
-diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b/testcases/kernel/security/filecaps/checkforfilecaps.sh
-deleted file mode 100755
-index 757d409..0000000
---- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
-+++ /dev/null
-@@ -1,40 +0,0 @@
--#!/bin/sh
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2008                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
--##                                                                            ##
--################################################################################
--
--if ! check_simple_capset; then
--	echo Posix capabilities not compiled into the kernel.  Please
--	echo modprobe capability or recompile your kernel with
--	echo CONFIG_SECURITY_CAPABILITIES=y.
--	exit 1
--fi
--
--touch testme
--setcap cap_sys_admin=ip testme
--ret=$?
--rm -f testme
--if [ $ret -ne 0 ]; then
--	echo File capabilities not compiled into kernel.  Please
--	echo make sure your kernel is compiled with
--	echo CONFIG_SECURITY_FILE_CAPABILITIES=y.
--	exit 1
--fi
--
--exit 0
-diff --git a/testcases/kernel/security/filecaps/checkforlibcap.sh b/testcases/kernel/security/filecaps/checkforlibcap.sh
-deleted file mode 100755
-index cc7642e..0000000
---- a/testcases/kernel/security/filecaps/checkforlibcap.sh
-+++ /dev/null
-@@ -1,66 +0,0 @@
--#!/bin/sh
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2008                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
--##                                                                            ##
--################################################################################
--
--if [ "x$CC" = "x" ]; then
--	export CC=gcc
--fi
--yesno=0
--if [ "$1" = "yesno" ]; then
--	yesno=1
--fi
--
--SETCAP=`which setcap`
--if [ -z "${SETCAP}" ]; then
--    ret=1
--else
--    ret=0
--fi
--
--if [ $ret -eq 0 ]; then
--	#also test for -lcap
--	$CC -o check_simple_capset check_simple_capset.c -lcap \
--         2>/dev/null
--
--	ret=$?
--fi
--
--if [ $ret -eq 0 ]; then
--       #also test for xattr
--       $CC -o check_xattr check_xattr.c
--       ret=$?
--       if [ $ret -ne 0 ]; then
--               echo "Please install xattr headers"
--       fi
--fi
--
--if [ $ret -ne 0 ]; then
--	if [ $yesno -eq 1 ]; then
--		echo no
--	else
--		exit 1
--	fi
--else
--	if [ $yesno -eq 1 ]; then
--		echo yes
--	else
--		exit 0
--	fi
--fi
-diff --git a/testcases/kernel/security/filecaps/filecapstest.sh b/testcases/kernel/security/filecaps/filecapstest.sh
-index 149cbc1..9025b58 100755
---- a/testcases/kernel/security/filecaps/filecapstest.sh
-+++ b/testcases/kernel/security/filecaps/filecapstest.sh
-@@ -19,22 +19,8 @@
- ##                                                                            ##
- ################################################################################
+ #include <stdio.h>
+ #include <errno.h>
+@@ -18,40 +17,40 @@
+ #include <semaphore.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <limits.h>
+ #include "posixtest.h"
  
--checkforlibcap.sh
--ret=$?
--if [ $ret -ne 0 ]; then
--	echo "Filecaps 0 CONF : System doesn't support execution of the test"
--	echo setcap not installed.  Please install libcap-2.11 or newer from
--	echo ftp://ftp.kernel.org/pub/linux/libs/security/linux-privs/libcap2
--	exit 0
--fi
--checkforfilecaps.sh
--ret=$?
--if [ $ret -ne 0 ]; then
--	echo "Filecaps 0 CONF : File capabilities not available"
--	exit 0
--fi
+ #define TEST "5-1"
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
 -
- echo "Running in:"
-+rm -f print_caps
- cp $LTPROOT/testcases/bin/print_caps .
- mkfifo caps_fifo
- chmod 777 caps_fifo
--- 
-1.6.0.6
+-int main() {
+-
+-	char semname[20];
++int main(void)
++{
++	char semname[NAME_MAX - 4];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, sizeof(semname), "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 4);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+ 
+-	if( sem_getvalue(mysemp, &val) == -1 ) {
++	if (sem_getvalue(mysemp, &val) == -1) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+ 
+-	if ( sem_trywait(mysemp) == -1 ) {
++	if (sem_trywait(mysemp) == -1) {
+ 		perror(ERROR_PREFIX "sem_trywait");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) == -1 ) {
++	if (sem_getvalue(mysemp, &val) == -1) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+@@ -60,7 +59,7 @@ int main() {
+ 	printf("Current value is: %d\n", val);
+ 	*/
+ 
+-	if (val == 3 ) {
++	if (val == 3) {
+ 		puts("TEST PASSED");
+ 		sem_close(mysemp);
+ 		sem_unlink(semname);
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
+@@ -10,9 +10,7 @@
+  * This test case will call sem_getvalue to update the location referenced
+  * by the semaphpre without effecting the state of the semaphore.  The 
+  * updated value represents the actual semaphore value when it was called.
+-*/
+-
+-
++ */
+ 
+ #include <stdio.h>
+ #include <errno.h>
+@@ -20,29 +18,29 @@
+ #include <semaphore.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <limits.h>
+ #include "posixtest.h"
+ 
+ #define TEST "1-1"
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+-
+-int main() {
+-
+-	char semname[28];
++int main(void)
++{
++	char semname[NAME_MAX - 4];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, sizeof(semname), "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) == -1 ) {
++	if (sem_getvalue(mysemp, &val) == -1) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+@@ -50,7 +48,8 @@ int main() {
+ 	/*
+ 	printf("Current value is: %d\n", val);
+ 	*/
+-	if (val == 1 ) {
++
++	if (val == 1) {
+ 		puts("TEST PASSED");
+ 		sem_close(mysemp);
+ 		sem_unlink(semname);
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
+@@ -8,8 +8,7 @@
+ 
+ /*
+  * When semaphore is locked, then the value returned by sem_getvalue is zero.
+-*/
+-
++ */
+ 
+ #include <stdio.h>
+ #include <errno.h>
+@@ -17,35 +16,35 @@
+ #include <semaphore.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <limits.h>
+ #include "posixtest.h"
+ 
+ #define TEST "2-1"
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+-
+-int main() {
+-
+-	char semname[28];
++int main(void)
++{
++	char semname[NAME_MAX - 4];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, sizeof(semname), "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+ 	/* Lock Semaphore */
+-	if (sem_trywait(mysemp) == -1 ) {
++	if (sem_trywait(mysemp) == -1) {
+ 		perror(ERROR_PREFIX "trywait");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) < 0 ) {
++	if (sem_getvalue(mysemp, &val) < 0) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
+@@ -83,18 +83,15 @@
+ /***************************    Test case   ***********************************/
+ /******************************************************************************/
+ 
+-void * threaded ( void * arg )
++void *threaded(void * arg)
+ {
+ 	int ret;
+ 
+-	do
+-	{
++	do {
+ 		ret = sem_wait( arg );
+-	}
+-	while ( ( ret != 0 ) && ( errno == EINTR ) );
++	} while (( ret != 0 ) && (errno == EINTR));
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to wait for the semaphore" );
+ 	}
+ 
+@@ -103,7 +100,7 @@ void * threaded ( void * arg )
+ 
+ 
+ /* The main test function. */
+-int main( int argc, char * argv[] )
++int main(int argc, char *argv[])
+ {
+ 	int ret, val;
+ 	sem_t sem;
+@@ -113,71 +110,61 @@ int main( int argc, char * argv[] )
+ 	output_init();
+ 
+ 	/* Initialize semaphore */
+-	ret = sem_init( &sem, 0, 0 );
++	ret = sem_init(&sem, 0, 0);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to init semaphore" );
+ 	}
+ 
+ 	/* Create the thread */
+-	ret = pthread_create( &th, NULL, threaded, &sem );
++	ret = pthread_create(&th, NULL, threaded, &sem);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( ret, "Failed to create the thread" );
+ 	}
+ 
+ 	/* Sleep 1 sec so the thread enters the sem_wait call */
+-	sleep( 1 );
++	sleep(1);
+ 
+ 	/* Check value */
+-	ret = sem_getvalue( &sem, &val );
++	ret = sem_getvalue(&sem, &val);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to get semaphore value" );
+ 	}
+ 
+-	if ( ( val != 0 ) && ( val != -1 ) )
+-	{
+-		output( "Val: %d\n", val );
+-		FAILED( "Semaphore count is neither 0 nor # of waiting processes" );
++	if ((val != 0) && (val != -1)) {
++		output("Val: %d\n", val );
++		FAILED("Semaphore count is neither 0 nor # of waiting processes");
+ 	}
+ 
+ 	/* Post the semaphore */
+-	ret = sem_post( &sem );
++	ret = sem_post(&sem);
+ 
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( errno, "Failed to post the semaphore" );
++	if (ret != 0) {
++		UNRESOLVED(errno, "Failed to post the semaphore");
+ 	}
+ 
+ 	/* Join the thread */
+-	ret = pthread_join( th, NULL );
++	ret = pthread_join(th, NULL);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( ret, "Failed to join the thread" );
+ 	}
+ 
+-
+ 	/* Destroy the semaphore */
+-	ret = sem_destroy( &sem );
++	ret = sem_destroy(&sem);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to sem_destroy" );
+ 	}
+ 
+ 	/* Test passed */
+ #if VERBOSE > 0
+ 
+-	output( "Test passed\n" );
++	output("Test passed\n");
+ 
+ #endif
+ 
+ 	PASSED;
+ }
+-
+-
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
+@@ -9,9 +9,7 @@
+ /*
+  * Upon successful completion of calling sem_getvalue, it shall return a value
+  * of zero.
+-*/
+-
+-
++ */
+ 
+ #include <stdio.h>
+ #include <errno.h>
+@@ -19,29 +17,29 @@
+ #include <semaphore.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <limits.h>
+ #include "posixtest.h"
+ 
+ #define TEST "4-1"
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+-
+-int main() {
+-
+-	char semname[28];
++int main(void)
++{
++	char semname[NAME_MAX - 4];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, sizeof(semname), "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) != 0 ) {
++	if (sem_getvalue(mysemp, &val) != 0) {
+ 		puts("TEST FAILED");
+ 		return PTS_FAIL;
+ 	} else {
 
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -240,7 +468,16 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--X1bOJ3K7DJ5YkBrT--
+
