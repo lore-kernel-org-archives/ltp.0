@@ -1,43 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NnAx5-0000QC-Tw
-	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 13:18:55 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NnAx3-0003qo-Jc
-	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 13:18:55 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o24DD8d4013946
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 06:13:08 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	o24DIlYv252910
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 06:18:47 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o24DIkwN007411
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 06:18:46 -0700
-Date: Thu, 4 Mar 2010 18:48:34 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100304131834.GB21634@linux.vnet.ibm.com>
-References: <364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
-	<d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
-	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
-	<364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
-	<20100228181445.GB4850@linux.vnet.ibm.com>
-	<d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
-	<20100301052100.GA3860@linux.vnet.ibm.com>
-	<20100301062821.GC3860@linux.vnet.ibm.com>
-	<d270b4401002282340p45597f24tcb61bd3fa9366c31@mail.gmail.com>
-	<20100302120239.GA2845@malik-laptop.in.ibm.com>
+	(envelope-from <yanegomi@gmail.com>) id 1NofDD-0005Ya-Hi
+	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 15:49:43 +0000
+Received: from mail-iw0-f195.google.com ([209.85.223.195])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NofDB-0004Lw-Bc
+	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 15:49:43 +0000
+Received: by iwn33 with SMTP id 33so5202361iwn.23
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 08 Mar 2010 07:49:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100302120239.GA2845@malik-laptop.in.ibm.com>
-Subject: Re: [LTP] Testcase to validate the memory usage limit imposed
-	by	the topmost memory cgroup
+In-Reply-To: <007e01cabe99$8669b9f0$933d2dd0$@co.jp>
+References: <007e01cabe99$8669b9f0$933d2dd0$@co.jp>
+Date: Mon, 8 Mar 2010 07:49:35 -0800
+Message-ID: <364299f41003080749i3315b5ek268985acf785fa57@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] mail_tests.sh : a small mistake
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,41 +27,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sudhir Kumar <skumar@linux.vnet.ibm.com>, Mohamed Naufal <naufal11@gmail.com>
+To: Yuki Yao <y_yao@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Mar 02, 2010 at 05:32:39PM +0530, Sudhir Kumar wrote:
-> On Mon, Mar 01, 2010 at 01:10:31PM +0530, Mohamed Naufal wrote:
-> > On 1 March 2010 11:58, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
-> 
-> The patch looks fair enough.
-> Naufel, good job!
-> I avoided review and comments as I wanted you to learn the way Linux
-> community works, yourself. Now you being well faimiliar, we expect
-> future contribution too :)
-> 
-> Acked-By: Sudhir Kumar <skumar@linux.vnet.ibm.com>
-> Thanks Risi, for committing in the next branch.
+On Mon, Mar 8, 2010 at 12:29 AM, Yuki Yao <y_yao@ryobi.co.jp> wrote:
+> Hi,
+>
+> I found a small mistake about "mail" test.
+>
+> When mail reception error occurred in "Test #3", this test displays
+> "Test #2" not "Test #3".
+>
+> Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
+>
+> Index: ./testcases/commands/mail/mail_tests.sh
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> --- ./testcases/commands/mail/mail_tests.sh.orig =A0 =A0 =A0 =A02010-03-08
+> 16:00:56.000000000 +0900
+> +++ ./testcases/commands/mail/mail_tests.sh =A0 =A0 2010-03-08
+> 16:01:34.000000000 +0900
+> @@ -257,7 +257,7 @@
+> =A0 =A0 if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
+> =A0 =A0 then
+> =A0 =A0 =A0 =A0 $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
+> - =A0 =A0 =A0 =A0"Test #2: No new mail for root. Reason:"
+> + =A0 =A0 =A0 =A0"Test #3: No new mail for root. Reason:"
+> =A0 =A0 =A0 =A0 TFAILCNT=3D$(( $TFAILCNT+1 ))
+> =A0 =A0 else
+> =A0 =A0 =A0 =A0 if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -=
+ne 0 ]
 
+This was already fixed on git head.
+Thanks,
+-Garrett
 
-Tested-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-
-Merging to maste branch now...
-
-Thanks
-Rishi
-> 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
