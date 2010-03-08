@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@users.sourceforge.net>) id 1Np2Dx-0003pq-5C
-	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 16:24:01 +0000
-Received: from sfp-scmshell-1.v30.ch3.sourceforge.com ([172.29.30.123])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Np2Dx-0006sf-3D
-	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 16:24:01 +0000
-Received: from localhost ([127.0.0.1]
-	helo=sfp-scmshell-1.v30.ch3.sourceforge.com)
-	by sfp-scmshell-1.v30.ch3.sourceforge.com with smtp (Exim 4.69)
-	(envelope-from <risrajak@users.sourceforge.net>) id 1Np2Dh-0002cm-OF
-	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 16:24:00 +0000
-From: "Rishi kesh K Rajak" <risrajak@linux.vnet.ibm.com>
-Date: Tue,  9 Mar 2010 16:23:44 +0000
-Message-Id: <E1Np2Dh-0002cm-OF@sfp-scmshell-1.v30.ch3.sourceforge.com>
-Subject: [LTP] [Git] ltp updated.
+	(envelope-from <mitani@ryobi.co.jp>) id 1NoX8X-0001up-JR
+	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 07:12:21 +0000
+Received: from out07.sjc.mx.trendmicro.com ([216.99.131.23])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NoX8V-0008UQ-W3
+	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 07:12:21 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000301cabb68$7fb08c30$7f11a490$@co.jp>	
+	<201003051529.20596.vapier@gentoo.org>
+	<364299f41003051323y4c63e0dbx3d721c08296c9524@mail.gmail.com>
+In-Reply-To: <364299f41003051323y4c63e0dbx3d721c08296c9524@mail.gmail.com>
+Date: Mon, 8 Mar 2010 16:12:10 +0900
+Message-ID: <000001cabe8e$ab63ac30$022b0490$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: Re: [LTP] Is there another method to download?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,192 +27,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-The branch, master, has been updated
-       via  c962f51674b971496e14ac4be0cc75da98b75fca (commit)
-       via  17905ceabf2dc20e978dfa4ea3682197ad01bf9a (commit)
-       via  bdfe0b2a9dd720c3013225cc4aa1628e77888b24 (commit)
-       via  716d29883b11107c32313b1836bea447fecbaf1e (commit)
-       via  58854395050b8a3bb2fa4e5e4401546925f6aad8 (commit)
-       via  886918830ae73a7f4b5cc2d9bf8554ee9f393ed8 (commit)
-       via  039e4bbd522168a5145d236faa4e13f402037390 (commit)
-      from  63f0a8f554d28b28b207f41e42182e1b789333b6 (commit)
+To: 'Garrett Cooper' <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
-- Log -----------------------------------------------------------------
-commit c962f51674b971496e14ac4be0cc75da98b75fca
-Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Date:   Tue Mar 9 21:53:25 2010 +0530
 
-    Testing for post-receive-email
-    
-    Signed-off-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Saturday, March 06, 2010 6:23 AM
+> To: Mike Frysinger
+> Cc: ltp-list@lists.sourceforge.net; Mitani
+> Subject: Re: [LTP] Is there another method to download?
+> =
 
-commit 17905ceabf2dc20e978dfa4ea3682197ad01bf9a
-Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Date:   Tue Mar 9 14:11:41 2010 +0530
+> On Fri, Mar 5, 2010 at 12:29 PM, Mike Frysinger <vapier@gentoo.org>
+> wrote:
+> > On Thursday 04 March 2010 02:01:22 Mitani wrote:
+> >> I tried to get source by using GIT.
+> >> But It failed with following message:
+> >>
+> >> ------------
+> >> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git
+> ltp-dev
+> >> Initialized empty Git repository in /home/mitani/wk/ltp-dev/.git/
+> >> fatal: Unable to look up ltp.git.sourceforge.net (port 9418)
+> (Temporary
+> >> failure in name resolution)
+> >> #
+> >> ------------
+> >>
+> >> It seems to be caused by the fact that port 9418 does not open.
+> >> This is a problem by me.
+> >> But I think that there are some companies which don't open a port
+> 9418
+> >> due to the security. I think that it becomes the problem in those
+> >> companies that GIT cannot be used.
+> >>
+> >> I'm saved very much if there is the method to download via HTTP.
+> >
+> > we have no control over this. =A0talk to sf.net about the issue.
+> >
+> > in the meantime, use the gitweb interface to download snapshots.
+> =
 
-    Merge branches 'next' and 'master'
-
------------------------------------------------------------------------
-
-Summary of changes:
- TODO                                               |    2 +-
- testcases/kernel/containers/Makefile               |    2 +
- .../check_netns_enabled.c => check_for_unshare.c}  |   60 +++++++++++---------
- .../kernel/controllers/freezer/run_freezer.sh      |    3 +-
- testcases/kernel/syscalls/libevent/Makefile.in     |    3 +-
- 5 files changed, 40 insertions(+), 30 deletions(-)
- copy testcases/kernel/containers/{netns/check_netns_enabled.c => check_for_unshare.c} (52%)
- 
-diff --git a/TODO b/TODO
-index 9eec828..1756168 100644
---- a/TODO
-+++ b/TODO
-@@ -1,4 +1,4 @@
--The following things need to be rewritten // fixed:
-+The following things need to be rewritten // fixed
- 
- get_mempolicy01 // mbind01: They're using numa v1 calls which means that all
- versions of Linux / numa as of a few years ago aren't compatible with the API
-diff --git a/testcases/kernel/containers/Makefile b/testcases/kernel/containers/Makefile
-index 6a7810e..26f1856 100644
---- a/testcases/kernel/containers/Makefile
-+++ b/testcases/kernel/containers/Makefile
-@@ -26,6 +26,8 @@ FILTER_OUT_DIRS		:= $(LIBDIR)
- 
- LIB			:= $(LIBDIR)/libclone.a
- 
-+LIB			:= -ld
-+
- INSTALL_TARGETS		:= *.sh 
- 
- $(LIBDIR):
-diff --git a/testcases/kernel/containers/netns/check_netns_enabled.c b/testcases/kernel/containers/check_for_unshare.c
-similarity index 52%
-copy from testcases/kernel/containers/netns/check_netns_enabled.c
-copy to testcases/kernel/containers/check_for_unshare.c
-index f6add06..06bdfd7 100644
---- a/testcases/kernel/containers/netns/check_netns_enabled.c
-+++ b/testcases/kernel/containers/check_for_unshare.c
-@@ -13,37 +13,43 @@
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
--* Author: Veerendra C <vechandr@in.ibm.com>
-+**************************************************************************/
-+/*
-+* Description:
-+* This program verifies the kernel version to be no later than 2.6.16
-+* And checks if the unshare() system call is defined using dlsym(),
-+* in the Dynamically Linked Libraries.
- *
--* Net namespaces were introduced around 2.6.25.  Kernels before that,
--* assume they are not enabled.  Kernels after that, check for -EINVAL
--* when trying to use CLONE_NEWNET and CLONE_NEWNS.
--***************************************************************************/
--#include <stdio.h>
--#include <sched.h>
--#include "config.h"
--#include "libclone.h"
--#include "linux_syscall_numbers.h"
--#include "test.h"
-+* Date : 26-11-2008
-+* Author : Veerendra C <vechandr@in.ibm.com>
-+*/
- 
--char *TCID = "check_netns_enabled";
--int TST_COUNT = 1;
--int TST_TOTAL = 1; 
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <dlfcn.h>
-+#include <linux/version.h>
- 
--#ifndef CLONE_NEWNET
--#define CLONE_NEWNET -1
--#endif
-+int main(int argc, char **argv)
-+{
-+	void *handle;
-+	void *ret;
-+	char *error;
-+	if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16))
-+	return 1;
- 
--#ifndef CLONE_NEWNS
--#define CLONE_NEWNS -1
--#endif
-+	handle = dlopen(NULL, RTLD_LAZY);
-+	if (!handle) {
-+		fprintf(stderr, "%s\n", dlerror());
-+		exit(1);
-+	}
- 
--int
--main()
--{
--	/* Checking if the kernel supports unshare with netns capabilities. */
--        if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < 0) {
--		tst_resm (TFAIL | TERRNO, "unshare syscall smoke test failed");
-+	dlerror();    /* Clear any existing error */
-+	ret = dlsym(handle, "unshare");
-+	if ((error = dlerror()) != NULL)  {
-+		fprintf(stderr, "Error: %s\n", error);
-+		exit(1);
- 	}
--	tst_exit();
-+
-+	dlclose(handle);
-+	return 0;
- }
-diff --git a/testcases/kernel/controllers/freezer/run_freezer.sh b/testcases/kernel/controllers/freezer/run_freezer.sh
-index 3baf968..f66e321 100755
---- a/testcases/kernel/controllers/freezer/run_freezer.sh
-+++ b/testcases/kernel/controllers/freezer/run_freezer.sh
-@@ -69,7 +69,8 @@ function test_setup()
- 	export LTPBIN PATH TCID TST_COUNT TST_TOTAL CGROUPS_TESTROOT
- 	tst_resm TINFO "Preparing to run: ${P} $@"
- 
--	make all
-+	# this is not require here
-+	#make all
- }
- 
- function test_prereqs()
-diff --git a/testcases/kernel/syscalls/libevent/Makefile.in b/testcases/kernel/syscalls/libevent/Makefile.in
-index d1d9af7..dd0138d 100644
---- a/testcases/kernel/syscalls/libevent/Makefile.in
-+++ b/testcases/kernel/syscalls/libevent/Makefile.in
-@@ -99,6 +99,7 @@ LIBS = @LIBS@
- libevent_a_DEPENDENCIES =  @LIBOBJS@
- libevent_a_OBJECTS =  event.o buffer.o evbuffer.o
- AR = ar
-+AR_FLAGS = cr
- COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
- CCLD = $(CC)
- LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-@@ -219,7 +220,7 @@ maintainer-clean-compile:
- 
- libevent.a: $(libevent_a_OBJECTS) $(libevent_a_DEPENDENCIES)
- 	-rm -f libevent.a
--	$(AR) cru libevent.a $(libevent_a_OBJECTS) $(libevent_a_LIBADD)
-+	$(AR) $(AR_FLAGS) libevent.a $(libevent_a_OBJECTS) $(libevent_a_LIBADD)
- 	$(RANLIB) libevent.a
- 
- install-man3:
+>     Can you DNS resolve ltp.git.sourceforge.net from that machine?
+> Thanks,
+> -Garrett
 
 
-hooks/post-receive
--- 
-ltp
+I tried and succeeded to get from "ltp.git.sourceforge.net".
 
-------------------------------------------------------------------------------
+Thank you!
+
+-Tomonori MItani
+
+
+
+
+
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
