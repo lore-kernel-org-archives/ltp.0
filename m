@@ -1,19 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Nurd6-0000Mu-Ly
-	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 18:18:04 +0000
-Date: Thu, 25 Mar 2010 19:22:45 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100325182245.GA30410@saboteur.suse.cz>
-References: <b9d696240909211602o51c38c2ei41a8622d3250f06b@mail.gmail.com>
-	<200909241423.45226.jpalecek@web.de>
-	<b9d696240909241155x5be217a3t4564e6b1bb64a9be@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NotPT-00054H-0t
+	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 06:59:19 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NotPS-0004ps-2o
+	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 06:59:18 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o296pPFC021308
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Mar 2010 23:51:25 -0700
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o296x24p113384
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Mar 2010 23:59:02 -0700
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o296x1ao009833
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Mar 2010 23:59:01 -0700
+Date: Tue, 9 Mar 2010 12:28:52 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100309065852.GA5875@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <b9d696240909241155x5be217a3t4564e6b1bb64a9be@mail.gmail.com>
-Subject: Re: [LTP] Buffer Overflow with ftest03 and ftest07
+Subject: [LTP] Fix for running freezer testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,28 +38,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "K.D. Lucas" <kdlucas@gmail.com>
-Cc: Jiri Palecek <jpalecek@web.de>, ltp-list@lists.sourceforge.net
+To: LTP <ltp-list@lists.sourceforge.net>
+Cc: Matt Helsley <matthltc@linux.vnet.ibm.com>
 
-Hi!
-> After that I tested them. Both ftest03.c and ftest07.c passes when run from
-> the command line. But when executed by runltp, they fail with return code
-> 11. This is identical to the behavior without your patch.
+commit 58854395050b8a3bb2fa4e5e4401546925f6aad8
+Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Date:   Tue Mar 9 12:24:47 2010 +0530
 
-Well, they PASS every time when executed by hand, because TDIRECTORY defaults
-to plain "/tmp/" in this case. When executing tests with runltp TDIRECTORY is
-se to something like "/tmp/ltp-qnZVs21494/" and then fuss[] is sometimes not
-big enough to hold the string and this causes the segfault. Try for yourself:
+    Commenting "make all" in run_freezer.sh file as it is stopping to
+run the freezer testcase
+    
 
-TDIRECTORY="/tmp/this_name_is_just_too_long" ./ftest03
+    Signed-off By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
 
-However deleting the code that creates temporary directories works for me, at
-least for ftest03.c. I'll test Jiri's patch asap and try to fix the remaining
-corner cases.
+diff --git a/testcases/kernel/controllers/freezer/run_freezer.sh
+b/testcases/kernel/controllers/freezer/run_freezer.sh
+index 3baf968..f66e321 100755
+--- a/testcases/kernel/controllers/freezer/run_freezer.sh
++++ b/testcases/kernel/controllers/freezer/run_freezer.sh
+@@ -69,7 +69,8 @@ function test_setup()
+        export LTPBIN PATH TCID TST_COUNT TST_TOTAL CGROUPS_TESTROOT
+        tst_resm TINFO "Preparing to run: ${P} $@"
+ 
+-       make all
++       # this is not require here
++       #make all
+ }
+ 
+ function test_prereqs()
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
