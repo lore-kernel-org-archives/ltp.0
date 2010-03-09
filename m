@@ -1,23 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NoX8X-0001up-JR
-	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 07:12:21 +0000
-Received: from out07.sjc.mx.trendmicro.com ([216.99.131.23])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NoX8V-0008UQ-W3
-	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 07:12:21 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000301cabb68$7fb08c30$7f11a490$@co.jp>	
-	<201003051529.20596.vapier@gentoo.org>
-	<364299f41003051323y4c63e0dbx3d721c08296c9524@mail.gmail.com>
-In-Reply-To: <364299f41003051323y4c63e0dbx3d721c08296c9524@mail.gmail.com>
-Date: Mon, 8 Mar 2010 16:12:10 +0900
-Message-ID: <000001cabe8e$ab63ac30$022b0490$@co.jp>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nouyf-0003JF-35
+	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 08:39:45 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nouyb-00062P-Qq
+	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 08:39:45 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o298XrE7030615
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 01:33:53 -0700
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o298dZhl146200
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 01:39:35 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o298dYmn022432
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 01:39:35 -0700
+Date: Tue, 9 Mar 2010 14:09:30 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100309083930.GC5875@linux.vnet.ibm.com>
+References: <4B946761.8030301@cn.fujitsu.com>
+	<364299f41003080753h78ddb8c0uc20027ccf2e3c990@mail.gmail.com>
+	<20100308171707.GA4999@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] Is there another method to download?
+Content-Disposition: inline
+In-Reply-To: <20100308171707.GA4999@linux.vnet.ibm.com>
+Subject: Re: [LTP] [BUG?] container_test.sh: should to delete
+ check_for_unshare's source in cvs/git ?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,69 +40,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
+
+On Mon, Mar 08, 2010 at 10:47:07PM +0530, Rishikesh K Rajak wrote:
+> On Mon, Mar 08, 2010 at 07:53:08AM -0800, Garrett Cooper wrote:
+> > On Sun, Mar 7, 2010 at 6:56 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+> > >
+> > > Now, my question: should to delete check_for_unshare's source in cvs/git ?
+> > 
+> > There was some discussion and the check was reenabled post the February release.
+> 
+> I looked at a glance in sleep mode and found there is something need to
+> be fixed here as i am still not able to find check_for_unshare.c . Well
+> i will look and fix tomorrow.
+
+Hi Shi,
+
+Thanks for reporting this failure. Just now i committed  to next branch.
+
+commit bdfe0b2a9dd720c3013225cc4aa1628e77888b24
+Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Date:   Tue Mar 9 14:05:46 2010 +0530
+
+    Adding check_for_unshare.c file and linking the porper lib.
+    
+    Signed-off-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+    Reported-By: Shi Weihua <shiwh@cn.fujitsu.com>
 
 
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Saturday, March 06, 2010 6:23 AM
-> To: Mike Frysinger
-> Cc: ltp-list@lists.sourceforge.net; Mitani
-> Subject: Re: [LTP] Is there another method to download?
-> =
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
-> On Fri, Mar 5, 2010 at 12:29 PM, Mike Frysinger <vapier@gentoo.org>
-> wrote:
-> > On Thursday 04 March 2010 02:01:22 Mitani wrote:
-> >> I tried to get source by using GIT.
-> >> But It failed with following message:
-> >>
-> >> ------------
-> >> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git
-> ltp-dev
-> >> Initialized empty Git repository in /home/mitani/wk/ltp-dev/.git/
-> >> fatal: Unable to look up ltp.git.sourceforge.net (port 9418)
-> (Temporary
-> >> failure in name resolution)
-> >> #
-> >> ------------
-> >>
-> >> It seems to be caused by the fact that port 9418 does not open.
-> >> This is a problem by me.
-> >> But I think that there are some companies which don't open a port
-> 9418
-> >> due to the security. I think that it becomes the problem in those
-> >> companies that GIT cannot be used.
-> >>
-> >> I'm saved very much if there is the method to download via HTTP.
-> >
-> > we have no control over this. =A0talk to sf.net about the issue.
-> >
-> > in the meantime, use the gitweb interface to download snapshots.
-> =
-
->     Can you DNS resolve ltp.git.sourceforge.net from that machine?
-> Thanks,
-> -Garrett
-
-
-I tried and succeeded to get from "ltp.git.sourceforge.net".
-
-Thank you!
-
--Tomonori MItani
-
-
-
-
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
