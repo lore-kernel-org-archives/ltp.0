@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ebiederm@xmission.com>) id 1NnSIm-0005hO-NG
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:50:28 +0000
-Received: from out01.mta.xmission.com ([166.70.13.231])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NnSIl-00054r-MH
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:50:28 +0000
-References: <4B7BA24F.2010705@linux.vnet.ibm.com>
-	<364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>
-	<20100218042532.GC13013@rishikesh.in.ibm.com>
-	<4B822F2E.9030609@cn.fujitsu.com>
-	<364299f41002212344v4873843ej986f1b39ec3494df@mail.gmail.com>
-	<4B8333ED.5080709@cn.fujitsu.com>
-	<364299f41002241718g4be216d1pbec918821b7027b0@mail.gmail.com>
-	<4B8F716E.5070207@cn.fujitsu.com>
-	<364299f41003041037s57f1d4bfr98c20ac7736b8905@mail.gmail.com>
-	<m13a0fc11w.fsf@fess.ebiederm.org>
-	<364299f41003042320n7437e4a2j219b32a0a5f8dc50@mail.gmail.com>
-From: ebiederm@xmission.com (Eric W. Biederman)
-Date: Thu, 04 Mar 2010 23:50:05 -0800
-In-Reply-To: <364299f41003042320n7437e4a2j219b32a0a5f8dc50@mail.gmail.com>
-	(Garrett Cooper's message of "Thu\, 4 Mar 2010 23\:20\:52 -0800")
-Message-ID: <m1pr3jky1e.fsf@fess.ebiederm.org>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
+	(envelope-from <risrajak@users.sourceforge.net>) id 1NpDZM-0008AF-F1
+	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 04:30:52 +0000
+Received: from sfp-scmshell-2.v30.ch3.sourceforge.com ([172.29.30.124])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NpDZM-0006nM-Cd
+	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 04:30:52 +0000
+Received: from localhost ([127.0.0.1]
+	helo=sfp-scmshell-2.v30.ch3.sourceforge.com)
+	by sfp-scmshell-2.v30.ch3.sourceforge.com with smtp (Exim 4.69)
+	(envelope-from <risrajak@users.sourceforge.net>) id 1NpDZI-0002Ux-VZ
+	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 04:30:51 +0000
+From: "Rishi kesh K Rajak" <risrajak@linux.vnet.ibm.com>
+Date: Wed, 10 Mar 2010 04:30:47 +0000
+Message-Id: <E1NpDZI-0002Ux-VZ@sfp-scmshell-2.v30.ch3.sourceforge.com>
+Subject: [LTP] [Git] ltp updated.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,83 +26,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
+To: ltp-list@lists.sourceforge.net
 
-R2FycmV0dCBDb29wZXIgPHlhbmVnb21pQGdtYWlsLmNvbT4gd3JpdGVzOgoKPiBPbiBUaHUsIE1h
-ciA0LCAyMDEwIGF0IDExOjU3IEFNLCBFcmljIFcuIEJpZWRlcm1hbgo+IDxlYmllZGVybUB4bWlz
-c2lvbi5jb20+IHdyb3RlOgo+PiBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlAZ21haWwuY29tPiB3
-cml0ZXM6Cj4+Pgo+Pj4gV293Li4uIHRoYXQncyBhIGZhaXIgYW1vdW50IG9mIGNvZGUgcmVmYWN0
-b3JpbmcgYW5kIGFkZGl0aW9ucyB0byB0aGUgc3lzY2FsbC4KPj4+Cj4+PiBZZXMsIGFsbCBvZiB0
-aGUgaXNzdWVzIHdpdGggb3BlbmluZyBhIGRpcmVjdG9yeSBhbmQgcmVhZGluZy93cml0aW5nCj4+
-PiBub3cgYXBwbHkgdG8gc3lzY3RsKDIpLCBlc3BlY2lhbGx5IGlmIHNvbWVvbmUgYXR0ZW1wdHMg
-dG8gcmVhZCBmcm9tIGEKPj4+IHdyaXRlLW9ubHkgZGVzY3JpcHRvciwgb3IgdmljZSB2ZXJzYS4K
-Pj4KPj4gTm8gbWlzbWF0Y2hlcyBvZiBmaWxlIGRlc2NyaXB0b3IgbW9kZXMgYW5kIGhvdyB0aGUg
-ZGVzY3JpcHRvciBpcwo+PiBhY2Nlc3NlZCBjYW4gbm90IG9jY3VyLiDCoFRoZXJlIGlzIGEgZmls
-ZSBkZXNjcmlwdG9yIGJ1dCB0aGUgZmlsZQo+PiBkZXNjcmlwdG9yIGlzIGNvbXBsZXRlbHkgaW50
-ZXJuYWwgdG8gYmluYXJ5X3N5c2N0bCgpLCBhbmQgaXQgaXMgb3BlbmVkCj4+IHdpdGggdGhlIG1v
-ZGUgb2Ygd2hhdCB3ZSBhcmUgdHJ5aW5nIHRvIHVzZS4gwqBUaGVyZSBhcmUgbm8gdXNlciBzcGFj
-ZQo+PiBjb250cm9sbGFibGUgcGFydHMgdGhlcmUuCj4+Cj4+IExvb2tpbmcgdGhyb3VnaCB0aGUg
-b2xkIHN5c2N0bCBjb2RlIGl0IGFwcGVhcnMgdGhhdCBpdCB3YXMgYSBidWcgdGhhdAo+PiBrZXB0
-IGl0IGZyb20gcmV0dXJuaW5nIEVBQ0NFUy4gwqBUaGUgY29kZSBoYXMgaGFkIHRoaXMgYmVhdXRp
-ZnVsIHNuaXBwZXQKPj4gaW4gaXQgZm9yIGFnZXM6Cj4+Cj4+IHN0YXRpYyBpbnQgdGVzdF9wZXJt
-KGludCBtb2RlLCBpbnQgb3ApCj4+IHsKPj4gwqAgwqAgwqAgwqBpZiAoIWN1cnJlbnQtPmV1aWQp
-Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbW9kZSA+Pj0gNjsKPj4gwqAgwqAgwqAgwqBlbHNl
-IGlmIChpbl9lZ3JvdXBfcCgwKSkKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBtb2RlID4+PSAz
-Owo+PiDCoCDCoCDCoCDCoGlmICgobW9kZSAmIG9wICYgMDAwNykgPT0gb3ApCj4+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgcmV0dXJuIDA7Cj4+IMKgIMKgIMKgIMKgcmV0dXJuIC1FQUNDRVM7Cj4+
-IH0KPgo+ICAgICBXb3cuIFRvb2sgYSBzZWNvbmQgZm9yIG1lIHRvIHN0YXJlIGFuZCBpdCBhbmQg
-c2VlIHdoYXQgeW91IG1lYW4sCj4gYnV0IHllYWggLS0gdGhhdCBpcyBwcmV0dHkgZGFuZyBhd2Vz
-b21lIHRoYXQgaXQgd2FzIGFsd2F5cyBoYXJkd2lyZWQKPiB0byByZXR1cm4gMC4KClNvcnJ5IHRo
-YXQgd2Fzbid0IGNsZWFyIHdpdGhvdXQgY29udGV4dC4gIFdoYXQgdXNlZCB0byBoYXBwZW4Kd2hl
-cmUgYWxsIG9mIHRoZSBjYWxsZXJzIG9mIHRoYXQgZnVuY3Rpb24gZGlkOgppZiAodGVzdF9wZXJt
-KC4uLikpCiAgIHJldHVybiAtRVBFUk07CgpJbnN0ZWFkIG9mIHRoZSBtdWNoIG1vcmUgY29udmVu
-dGlvbmFsOgoKZXJyID0gdGVzdF9wZXJtKCkKaWYgKGVycikKICAgcmV0dXJuIGVycjsKCj4+IEkg
-YWRtaXQgdGhhdCB0aGUgbWFucGFnZSBkb2Vzbid0IGRvY3VtZW50IEVBQ0NFUyBidXQgdGhlIG1h
-bnBhZ2UKPj4gaGFzIGFsd2F5cyBzYWlkIGRvbid0IHVzZSBzeXNjdGwoMikgc28uLi4KPgo+ICAg
-ICBXZWxsLCBpZiBzb21lb25lIGJ1bWJsZXMgYWNyb3NzIHRoaXMgbGF0ZXIsIGl0IHdpbGwgYmUg
-YSBjb25mdXNpbmcKPiBpc3N1ZSB0byB3b3JrIHRocm91Z2guIEl0J3MgYmV0dGVyIHRvIGJlIGRv
-Y3VtZW50ZWQgaW5zdGVhZCBvZgo+IHVuZG9jdW1lbnRlZC4gSSdsbCBmaWxlIHRoZSBidWcgdXBz
-dHJlYW0gdG8gZG9jdW1lbnQgdGhpcywgYnV0IGl0Cj4gd291bGQgYmUgbmljZSB0byBkZXRlcm1p
-bmUgaWYgdGhlcmUgYXJlIGFueSBtb3JlIGltbWVkaWF0ZSBnYXBzIHdoaWNoCj4gbmVlZCB0byBi
-ZSBhZGRyZXNzZWQgaW4gdGhlIGNoYW5nZXMuCgpJIHRoaW5rIHRoZSBsaW51eCB0ZXN0IHByb2pl
-Y3QgbWF5IGJlIG5lYXJseSB0aGUgb25seSBjYWxsZXIgb2Ygc3lzY3RsKDIpCmF0IHRoaXMgcG9p
-bnQuICBBdCBsZWFzdCB1bnRpbCByZWNlbnRseSB0aGVyZSB3YXMgb25lIGNhbGxlciBpbiBhcm0K
-Z2xpYmMuICBCdXQgZmluZGluZyBhbnkgcHJvZ3JhbSB0aGF0IHVzZXMgc3lzY3RsKDIpIGlzIG5l
-YXJseSBpbXBvc3NpYmxlLgoKPj4gWW91IG1heSBzZWUgYSBzbGlnaHRseSBkaWZmZXJlbnQgZXJy
-b3IgY29kZSBmcm9tIHN5c2N0bCgyKSBvbiBmYWlsdXJlCj4+IGJ1dCBvdGhlcndpc2UgwqBzeXNj
-dGwoMikgc2hvdWxkIGJlIHVuY2hhbmdlZCwgYW5kIHllcyBJIGRpZCB0ZXN0IGl0Lgo+PiBPZiBj
-b3Vyc2UgSSB3YXMgbm90IGJlaW5nIHBpY2t5IGFib3V0IHdoaWNoIGVycm9yIGNvZGUgSSBnb3Qg
-b24gZmFpbHVyZS4KPgo+ICAgICBIbW1tLi4gb2suIFdlIGp1c3QgZ2V0IDIwIHF1ZXN0aW9ucyB3
-aGVuIHNvbWV0aGluZyBmYWlscyBhbmQgaXQncwo+IG5vdCBkb2N1bWVudGVkIHdoeSBpdCBzaG91
-bGQgZmFpbCBpbiBhIHBhcnRpY3VsYXIgbWFubmVyIDopLgoKPj4gV2hhdCBleGlzdHMgdG9kYXkg
-aXMgc2ltcGx5IGEgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkgd3JhcHBlciBvZgo+PiBzeXNjdGwo
-MikgYnVpbHQgb24gdG9wIG9mIC9wcm9jL3N5cy4gwqBzeXNjdGwoMikgd2FzIGEgcHJhY3RpY2Fs
-bHkKPj4gdW5tYWludGFpbmVkIGJpdC1yb3R0aW5nIHBpbGUsIHRoYXQgd2FzIG5ldmVyIGFkZXF1
-YXRlbHkgbWFpbnRhaW5lZCBvcgo+PiB0ZXN0ZWQuCj4KPiAgICAgWWVhaCwgeW91J3JlIHByb2Jh
-Ymx5IHJpZ2h0IChlc3BlY2lhbGx5IGJlY2F1c2UgTGludXggdGVuZHMgbm90IHRvCj4gZm9jdXMg
-b24gc3lzY3RsKDMpIGxpa2UgdGhlIEJTRHMgZG8pLgo+Cj4+IEF0IHRoaXMgcG9pbnQgbm90aGlu
-ZyBzaG91bGQgY2hhbmdlIGFnYWluIHVudGlsIHN1Y2ggdGltZSBhcyB0aGUgY29kZQo+PiBpcyBk
-aXNhYmxlZC9yZW1vdmVkIGJ5IGRlZmF1bHQuCj4KPiAgICAgSG1tbS4uLiBvay4gSSBhc3N1bWUg
-dGhhdCBzeXNjdGwoMikgaXMgZ29pbmcgY29tcGxldGVseSBvdXQgdGhlCj4gd2luZG93IGluIHRo
-ZSBmdXR1cmUsIGluIGZhdm9yIG9mIHdoYXQgKGp1c3Qgb3V0IG9mIGN1cmlvc2l0eSk/IDEwMCUK
-PiBzeXNmcyBvbmx5IHR1bmFibGVzIG1heWJlPwoKL3Byb2Mvc3lzIGlzIGdvaW5nIHRvIHN0YXku
-ICBXaGljaCBpcyB3aGF0IHBlb3BsZSBoYXZlIGFjdHVhbGx5IHVzZWQuCkV2ZW4gL3NiaW4vc3lz
-Y3RsIGhhcyBhbHdheXMgdXNlZCAvcHJvYy9zeXMuICBOb3RoaW5nIGFueW9uZSBhY3R1YWxseQp1
-c2VzIGlzIGdvaW5nIHRvIGdvIGF3YXkuICBKdXN0IHRoZSBwcmFjdGljYWxseSBkZWFkIGNvZGUg
-dGhhdCBpcyB0aGUKc3lzY2FsbCBpcyBzbG93bHkgZ29pbmcgYXdheS4gIFNpbmNlIEkgaGF2ZSB3
-cml0dGVuIHRoZSBlbXVsYXRpb24gbGF5ZXIKdGhlIG5lZWQgZm9yIGl0IHRvIGRpc2FwcGVhciBp
-cyBsZXNzIGltbWVkaWF0ZSB0aGFuIGl0IG9uY2Ugd2FzLCBidXQgSSB3aWxsCnN0cm9uZ2x5IGRp
-c2NvdXJhZ2UgYW55b25lIGZyb20gdXNpbmcgaXQuCgpFcmljCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KRG93bmxvYWQgSW50ZWwmIzE3NDsgUGFyYWxsZWwgU3R1ZGlvIEV2YWwKVHJ5IHRoZSBuZXcg
-c29mdHdhcmUgdG9vbHMgZm9yIHlvdXJzZWxmLiBTcGVlZCBjb21waWxpbmcsIGZpbmQgYnVncwpw
-cm9hY3RpdmVseSwgYW5kIGZpbmUtdHVuZSBhcHBsaWNhdGlvbnMgZm9yIHBhcmFsbGVsIHBlcmZv
-cm1hbmNlLgpTZWUgd2h5IEludGVsIFBhcmFsbGVsIFN0dWRpbyBnb3QgaGlnaCBtYXJrcyBkdXJp
-bmcgYmV0YS4KaHR0cDovL3Auc2YubmV0L3NmdS9pbnRlbC1zdy1kZXYKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0
-cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
-dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+The branch, master, has been updated
+       via  48c52fcd4e7668bc36bbe080f53462d410712b69 (commit)
+      from  c962f51674b971496e14ac4be0cc75da98b75fca (commit)
+
+
+- Log -----------------------------------------------------------------
+commit 48c52fcd4e7668bc36bbe080f53462d410712b69
+Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Date:   Wed Mar 10 10:00:22 2010 +0530
+
+    Instead of LIBS, it should be LDLIBS in container/Makefile
+    
+    Signed-off-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+
+-----------------------------------------------------------------------
+
+Summary of changes:
+ testcases/kernel/containers/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+ 
+diff --git a/testcases/kernel/containers/Makefile b/testcases/kernel/containers/Makefile
+index 26f1856..29394c3 100644
+--- a/testcases/kernel/containers/Makefile
++++ b/testcases/kernel/containers/Makefile
+@@ -26,7 +26,7 @@ FILTER_OUT_DIRS		:= $(LIBDIR)
+ 
+ LIB			:= $(LIBDIR)/libclone.a
+ 
+-LIB			:= -ld
++LDLIB			:= -ldl
+ 
+ INSTALL_TARGETS		:= *.sh 
+ 
+
+
+hooks/post-receive
+-- 
+ltp
+
+------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
