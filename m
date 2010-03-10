@@ -1,33 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naufal11@gmail.com>) id 1Nnsur-0004ME-DU
-	for ltp-list@lists.sourceforge.net; Sat, 06 Mar 2010 12:15:33 +0000
-Received: from mail-pz0-f197.google.com ([209.85.222.197])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nnsup-00021Y-B4
-	for ltp-list@lists.sourceforge.net; Sat, 06 Mar 2010 12:15:32 +0000
-Received: by pzk35 with SMTP id 35so619175pzk.28
+	(envelope-from <mitani@ryobi.co.jp>) id 1NpI4m-0005Yq-NA
+	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 09:19:36 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NpI4k-0005Iu-JS
+	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 09:19:36 +0000
+Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.22])
+	by out03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 0E258211251
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 06 Mar 2010 04:14:21 -0800 (PST)
+	Wed, 10 Mar 2010 09:19:23 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 60EB03DD02B
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Mar 2010 09:19:22 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 18:19:20 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Wed, 10 Mar 2010 18:19:20 +0900
+Message-ID: <000a01cac032$c4126c80$4c374580$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <20100304131834.GB21634@linux.vnet.ibm.com>
-References: <364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
-	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
-	<364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
-	<20100228181445.GB4850@linux.vnet.ibm.com>
-	<d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
-	<20100301052100.GA3860@linux.vnet.ibm.com>
-	<20100301062821.GC3860@linux.vnet.ibm.com>
-	<d270b4401002282340p45597f24tcb61bd3fa9366c31@mail.gmail.com>
-	<20100302120239.GA2845@malik-laptop.in.ibm.com>
-	<20100304131834.GB21634@linux.vnet.ibm.com>
-Date: Sat, 6 Mar 2010 17:44:21 +0530
-Message-ID: <d270b4401003060414u471b4a84s2d8cd918b0fc2d18@mail.gmail.com>
-From: Mohamed Naufal <naufal11@gmail.com>
-Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
-	the topmost memory cgroup
+Content-Language: ja
+Subject: [LTP] "check_for_unshare.c" build failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,95 +35,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6615699785839855978=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sudhir Kumar <skumar@linux.vnet.ibm.com>, Mohamed Naufal <naufal11@gmail.com>, ltp-list@lists.sourceforge.net
-
---===============6615699785839855978==
-Content-Type: multipart/alternative; boundary=0016e648f0d4a52daf048120c502
-
---0016e648f0d4a52daf048120c502
-Content-Type: text/plain; charset=ISO-8859-1
-
-On 4 March 2010 18:48, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>wrote:
-
-> On Tue, Mar 02, 2010 at 05:32:39PM +0530, Sudhir Kumar wrote:
-> > On Mon, Mar 01, 2010 at 01:10:31PM +0530, Mohamed Naufal wrote:
-> > > On 1 March 2010 11:58, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-> wrote:
-> >
-> > The patch looks fair enough.
-> > Naufel, good job!
-> > I avoided review and comments as I wanted you to learn the way Linux
-> > community works, yourself. Now you being well faimiliar, we expect
-> > future contribution too :)
-> >
-> > Acked-By: Sudhir Kumar <skumar@linux.vnet.ibm.com>
-> > Thanks Risi, for committing in the next branch.
->
->
-> Tested-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
->
-> Merging to maste branch now...
->
-> Thanks
-> Rishi
-> >
->
-
-[...]
-
-Maybe LTP should apply for Google Summer of Code ;)
-
-Naufal
-
---0016e648f0d4a52daf048120c502
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<br><br><div class=3D"gmail_quote">On 4 March 2010 18:48, Rishikesh K Rajak=
- <span dir=3D"ltr">&lt;<a href=3D"mailto:risrajak@linux.vnet.ibm.com">risra=
-jak@linux.vnet.ibm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_=
-quote" style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt =
-0pt 0.8ex; padding-left: 1ex;">
-<div class=3D"im">On Tue, Mar 02, 2010 at 05:32:39PM +0530, Sudhir Kumar wr=
-ote:<br>
-&gt; On Mon, Mar 01, 2010 at 01:10:31PM +0530, Mohamed Naufal wrote:<br>
-</div><div class=3D"im">&gt; &gt; On 1 March 2010 11:58, Rishikesh K Rajak =
-&lt;<a href=3D"mailto:risrajak@linux.vnet.ibm.com">risrajak@linux.vnet.ibm.=
-com</a>&gt; wrote:<br>
-&gt;<br>
-</div>&gt; The patch looks fair enough.<br>
-&gt; Naufel, good job!<br>
-&gt; I avoided review and comments as I wanted you to learn the way Linux<b=
-r>
-&gt; community works, yourself. Now you being well faimiliar, we expect<br>
-&gt; future contribution too :)<br>
-&gt;<br>
-&gt; Acked-By: Sudhir Kumar &lt;<a href=3D"mailto:skumar@linux.vnet.ibm.com=
-">skumar@linux.vnet.ibm.com</a>&gt;<br>
-&gt; Thanks Risi, for committing in the next branch.<br>
-<br>
-<br>
-Tested-By: Rishikesh K Rajak &lt;<a href=3D"mailto:risrajak@linux.vnet.ibm.=
-com">risrajak@linux.vnet.ibm.com</a>&gt;<br>
-<br>
-Merging to maste branch now...<br>
-<br>
-Thanks<br>
-Rishi<br>
-<div><div></div><div class=3D"h5">&gt;<br></div></div></blockquote></div><b=
-r>[...]<br><br>Maybe LTP should apply for Google Summer of Code ;)<br><br>N=
-aufal<br>
-
---0016e648f0d4a52daf048120c502--
-
-
---===============6615699785839855978==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi,
+
+
+I tried to build LTP modules from following git:
+
+   "Fix make filed,, reported by Shi Weihua <shiwh@cn.fujitsu.com>"
+   (ltp-dev-c962f51674b971496e14ac4be0cc75da98b75fca.tar.gz)
+
+But I failed to build "check_for_unshare.c" in RHEL5.4 system 
+(2.6.18-164.el5).
+
+------------
+<...>
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../../../include
+-I../../../include   -L../../../lib  check_for_unshare.c   -o
+check_for_unshare
+/tmp/ccWzyOQO.o: In function `main':
+/home/mitani/LTP/ltp-dev-20100310/testcases/kernel/containers/check_for_unsh
+are.c:40: undefined reference to `dlopen'
+/home/mitani/LTP/ltp-dev-20100310/testcases/kernel/containers/check_for_unsh
+are.c:46: undefined reference to `dlerror'
+/home/mitani/LTP/ltp-dev-20100310/testcases/kernel/containers/check_for_unsh
+are.c:47: undefined reference to `dlsym'
+/home/mitani/LTP/ltp-dev-20100310/testcases/kernel/containers/check_for_unsh
+are.c:48: undefined reference to `dlerror'
+/home/mitani/LTP/ltp-dev-20100310/testcases/kernel/containers/check_for_unsh
+are.c:53: undefined reference to `dlclose'
+/home/mitani/LTP/ltp-dev-20100310/testcases/kernel/containers/check_for_unsh
+are.c:42: undefined reference to `dlerror'
+collect2: ld returned 1 exit status
+make[3]: *** [check_for_unshare] Error 1
+<...>
+------------
+
+
+I think that "-ldl" is needed in options.
+I tried to build using "-ldl" option and succeeded.
+
+------------
+[root@RHEL54-INTEL64-GUIDE-APDB2-AP containers]# gcc -g -O2 -g -O2 -ldl
+-fno-strict-aliasi
+ng -pipe -Wall  -I../../../include -I../../../include   -L../../../lib
+check_for_unshare.
+c   -o check_for_unshare
+[root@RHEL54-INTEL64-GUIDE-APDB2-AP containers]# echo $?
+0
+[root@RHEL54-INTEL64-GUIDE-APDB2-AP containers]# ll
+total 60
+-rw-rw-r-- 1 root root  1396 Mar 10 01:23 Makefile
+-rw-rw-r-- 1 root root  1386 Mar 10 01:23 Makefile.inc
+-rw-rw-r-- 1 root root  3286 Mar 10 01:23 README
+-rw-rw-r-- 1 root root  1451 Mar 10 01:23 TEST_PLAN.txt
+-rwxr-xr-x 1 root root 10805 Mar 10 15:18 check_for_unshare
+-rw-rw-r-- 1 root root  1634 Mar 10 01:23 check_for_unshare.c
+-rwxrwxr-x 1 root root  1712 Mar 10 01:23 container_test.sh
+drwxrwxr-x 2 root root  4096 Mar 10 10:42 libclone
+drwxrwxr-x 2 root root  4096 Mar 10 01:23 mqns
+drwxrwxr-x 2 root root  4096 Mar 10 01:23 netns
+drwxrwxr-x 2 root root  4096 Mar 10 01:23 pidns
+drwxrwxr-x 2 root root  4096 Mar 10 01:23 sysvipc
+drwxrwxr-x 2 root root  4096 Mar 10 01:23 utsname
+[root@RHEL54-INTEL64-GUIDE-APDB2-AP containers]#
+------------
+
+
+How about changing Makefile as follows?
+
+============
+--- ./testcases/kernel/containers/Makefile      2010-03-10
+01:23:25.000000000 +0900
++++ ./testcases/kernel/containers/Makefile.new  2010-03-10
+15:27:20.000000000 +0900
+@@ -28,6 +28,8 @@
+
+ LIB                    := -ld
+
++CFLAGS                  += -ldl
++
+ INSTALL_TARGETS                := *.sh
+
+ $(LIBDIR):
+============
+
+
+Regards--
+
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -133,16 +137,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============6615699785839855978==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6615699785839855978==--
-
