@@ -1,43 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nly48-0005gn-1U
-	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 05:21:12 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nly46-0004P8-PJ
-	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 05:21:11 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o215FSDn020720
-	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 22:15:28 -0700
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o215L4IJ150578
-	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 22:21:04 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o215L4nd017827
-	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 22:21:04 -0700
-Date: Mon, 1 Mar 2010 10:51:00 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100301052100.GA3860@linux.vnet.ibm.com>
-References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
-	<20100111162256.GB19010@saboteur.suse.cz>
-	<20100128041619.GB16209@malik-laptop.in.ibm.com>
-	<d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
-	<364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
-	<d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
-	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
-	<364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
-	<20100228181445.GB4850@linux.vnet.ibm.com>
-	<d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NpZoZ-0001Q4-6r
+	for ltp-list@lists.sourceforge.net; Thu, 11 Mar 2010 04:16:03 +0000
+Received: from mail-iw0-f176.google.com ([209.85.223.176])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NpZoW-0000Xf-JA
+	for ltp-list@lists.sourceforge.net; Thu, 11 Mar 2010 04:16:02 +0000
+Received: by iwn6 with SMTP id 6so5638140iwn.4
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Mar 2010 20:15:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
-Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
- the topmost memory cgroup
+In-Reply-To: <4B97AA99.7050406@in.ibm.com>
+References: <4B97AA99.7050406@in.ibm.com>
+Date: Wed, 10 Mar 2010 20:15:55 -0800
+Message-ID: <364299f41003102015j42667189x9adbc23f48121e87@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP Containers netns test failure.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -50,45 +30,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mohamed Naufal <naufal11@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Sachin Sant <sachinp@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, serue@linux.vnet.ibm.com
 
-On Mon, Mar 01, 2010 at 08:07:50AM +0530, Mohamed Naufal wrote:
-> On 28 February 2010 23:44, Rishikesh K Rajak
-> <risrajak@linux.vnet.ibm.com> wrote:
-> >>>Rishi, are we ready=A0for commit?
-> >
-> > Yes committed to next branch, let me test for any regression, and then
-> > will commit to maint/master branch.
-> >
-> >
-> =
+On Wed, Mar 10, 2010 at 6:20 AM, Sachin Sant <sachinp@in.ibm.com> wrote:
+> NETNS tests from containers fails to execute with following
+> message
+>
+> Running netns tests.
+> --: childns.sh '/opt/ltp': No such file or directory
+>
+> Looking at the code the problem could be with create_net_namespace()
+> within netns/common.c
+>
+> If i make the following changes the first subtest works fine but then
+> i ran into other failures related to other sub tests.
+>
+> @@ -92,7 +92,7 @@ int create_net_namespace(char *p1, char
+> =A0 =A0 =A0 }
+>
+> =A0 =A0 =A0 /* We need to pass the child pid to the parentns.sh script */
+> - =A0 =A0 =A0 sprintf(par, "parentns.sh '%s' %s %" PRId32 , ltproot, p1, =
+pid);
+> + =A0 =A0 =A0 sprintf(par, "%s/testcases/bin/parentns.sh %s %" PRId32 , l=
+tproot,
+> p1, pid);
+>
+> =A0 =A0 =A0 ret =3D system(par);
+> =A0 =A0 =A0 status =3D WEXITSTATUS(ret);
+> @@ -141,7 +141,7 @@ int child_fn(void *c1)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit(1);
+> =A0 =A0 =A0 }
+>
+> - =A0 =A0 =A0 sprintf(child, "childns.sh '%s'", ltproot);
+> + =A0 =A0 =A0 sprintf(child, "%s/testcases/bin/childns.sh", ltproot);
+>
+> As i don't know the code too much .. i am not sure how to fix it.
 
-> [...]
-> =
+export PATH=3D$PATH:$LTPROOT/testcases/bin ; parentns.sh ?
 
-> Hi
-> =
+Why are you overcomplicating things by hardcoding the path again?
+That's the exact reason why it was removed in the first place...
 
-> The new source files in my patch doesn't appear in the next branch.
-
-
-Something really has got screwed with your patch can you please resend
-your patch against next branch as attachment ?
-
-Thanks
-Rishi
-> =
-
-> Naufal
-
--- =
-
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
