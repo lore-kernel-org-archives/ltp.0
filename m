@@ -1,34 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Nus5H-0004Ii-IC
-	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 18:47:11 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nus5F-0003WG-5E
-	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 18:47:11 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2PIcQ3d002204
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Mar 2010 14:38:26 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2PIl301147608
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Mar 2010 14:47:03 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2PIl297018235
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Mar 2010 15:47:03 -0300
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f41003241048hecba971td1ed20876a398b59@mail.gmail.com>
-References: <20100324133645.23583.48891.sendpatchset@subratamodak.linux.ibm.com>
-	<364299f41003241048hecba971td1ed20876a398b59@mail.gmail.com>
-Date: Fri, 26 Mar 2010 00:26:05 +0530
-Message-Id: <1269543366.6832.1.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix fallocate() build issue for EXT4
-	Online	Defragmentation Test
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Npy7h-0002bP-Jc
+	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 06:13:25 +0000
+Received: from mail-yx0-f190.google.com ([209.85.210.190])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Npy7g-0002io-La
+	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 06:13:25 +0000
+Received: by yxe28 with SMTP id 28so453529yxe.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Mar 2010 22:13:19 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20100311152430.GA3526@linux.vnet.ibm.com>
+References: <364299f41003102111u7b24fd76i25b97c292d026af1@mail.gmail.com>
+	<1268312580.2518.12.camel@localhost.localdomain>
+	<20100311152430.GA3526@linux.vnet.ibm.com>
+Date: Thu, 11 Mar 2010 22:13:18 -0800
+Message-ID: <364299f41003112213y39b139abr5142ec8d2f1a2964@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Remove libevent?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,57 +29,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Miao Xie <miaox@cn.fujitsu.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: Lucas Meneghel Rodrigues <lmr@redhat.com>, Garrett Cooper <yanegomi@gmail.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-TWlhbywKCk9uIFdlZCwgMjAxMC0wMy0yNCBhdCAxMDo0OCAtMDcwMCwgR2FycmV0dCBDb29wZXIg
-d3JvdGU6Cj4gT24gV2VkLCBNYXIgMjQsIDIwMTAgYXQgNjozNiBBTSwgU3VicmF0YSBNb2Rhawo+
-IDxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gPiBFYXJsaWVyIFN1YmplY3Q6
-IFJlOiBbTFRQXSBleHQ0L2U0ZGVmcmFnLmMgdGVzdGNhc2VzIGNvbXBpbGF0aW9uIGVycm9yLAo+
-ID4KPiA+IEhpIEdhcnJldC9NaWFvLAo+ID4KPiA+IE9uIFBQQyBzeXN0ZW1zLCBmYWxsb2NhdGUo
-KSBzZWVtcyB0byBiZSBhbHJlYWR5IGRlZmluZWQgYXQgL3Vzci9pbmNsdWRlL2JpdHMvZmNudGwu
-aCwKPiA+IHNvIGJ1aWxkaW5nIEVYVDQgdGVzdCBjYXNlcyBvbiBQUEM2NCBtYWNoaW5lcyB3aWxs
-IGNyZWF0ZSBidWlsZCBwcm9ibGVtcyBldmVuIGlmIHRoZQo+ID4gcHJlLXJlcXVpc2l0ZSBwYWNr
-YWdlczoKPiA+Cj4gPiBlMmZzcHJvZ3MqCj4gPiBlMmZzcHJvZ3MtbGlicyoKPiA+IGUyZnNwcm9n
-cy1kZXZlbCoKPiA+Cj4gPiBhcmUgcHJlc2VudC4gU28sIHRoaXMgcGF0Y2ggYWRkcyBhbiBleHRy
-YSBjaGVjay4gUGxlYXNlIGxldCBtZSBrbm93IHlvdXIgdGhvdWdodHMuCj4gPgo+ID4gRXJyb3Jz
-IGJvdW5kIHRvIG9jY3VyOgo+ID4gWwo+ID4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3Qt
-YWxpYXNpbmcgLXBpcGUgLVdhbGwgIC1JL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWRldi90ZXN0Y2Fz
-ZXMva2VybmVsL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4v
-Li4vaW5jbHVkZSAgIC1MLi4vLi4vLi4vLi4vLi4vbGliICBlNGRlZnJhZy5jICAgLWxsdHAgLWxt
-IC1vIGU0ZGVmcmFnCj4gPiBlNGRlZnJhZy5jOjM4ODogZXJyb3I6IGNvbmZsaWN0aW5nIHR5cGVz
-IGZvciDigJhmYWxsb2NhdGXigJkKPiA+IC91c3IvaW5jbHVkZS9iaXRzL2ZjbnRsLmg6MjQwOiBu
-b3RlOiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiDigJhmYWxsb2NhdGXigJkgd2FzIGhlcmUKPiA+
-IG1ha2VbMV06ICoqKiBbZTRkZWZyYWddIEVycm9yIDEKPiA+IF0KPiA+Cj4gPiBTaWduZWQtb2Zm
-LWJ5OiBTdWJyYXRhIE1vZGFrIDxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4KPiA+IC0tLQo+
-ID4KPiA+IC0tLSBsdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMv
-ZXh0NC1vbmxpbmUtZGVmcmFnL2U0ZGVmcmFnLmMgMjAxMC0wMy0xNSAxOTozMjoxMi4wMDAwMDAw
-MDAgKzA1MzAKPiA+ICsrKyBsdHAtZGV2Lm1vZGlmaWVkL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0
-NC1uZXctZmVhdHVyZXMvZXh0NC1vbmxpbmUtZGVmcmFnL2U0ZGVmcmFnLmMgICAgICAgIDIwMTAt
-MDMtMjQgMTg6MDk6MTQuMzM2NzkzNTEzICswNTMwCj4gPiBAQCAtMzgzLDEwICszODMsMTMgQEAg
-aW50IHN5bmNfZmlsZV9yYW5nZShpbnQgZmQsIGxvZmZfdCBvZmZzZQo+ID4gICogQG9mZnNldDog
-ICAgICAgICAgICBmaWxlIG9mZnNldC4KPiA+ICAqIEBsZW46ICAgICAgICAgICAgICAgZmlsZSBz
-aXplLgo+ID4gICovCj4gPiArCj4gPiArI2lmbmRlZiBfX05SX2ZhbGxvY2F0ZQo+ID4gIGludCBm
-YWxsb2NhdGUoaW50IGZkLCBpbnQgbW9kZSwgbG9mZl90IG9mZnNldCwgbG9mZl90IGxlbikKPiA+
-ICB7Cj4gPiAgICAgICAgcmV0dXJuIHN5c2NhbGwoX19OUl9mYWxsb2NhdGUsIGZkLCBtb2RlLCBv
-ZmZzZXQsIGxlbik7Cj4gPiAgfQo+ID4gKyNlbmRpZgo+IAo+ICAgICBJZiBpdCdzIG5vdCBkZWZp
-bmVkLCB5b3UncmUgZGVmaW5pdGVseSBpbiB0cm91YmxlIGJlY2F1c2UgdGhhdAo+IHdpbGwgcmVz
-dWx0IGluIGEgY29tcGlsZSBlcnJvci4gQW4gYXV0b2NvbmYgdGVzdCBzaG91bGQgYmUgYWRkZWQg
-Zm9yCj4gdGhpcyBzeXNjYWxsLCBhbmQvb3IgbGludXhfc3lzY2FsbF9udW1iZXJzLmggc2hvdWxk
-IGJlIGludGVncmF0ZWQgaW50bwo+IHRoaXMgdGVzdC4gVGhhdCBtYXkgYmUgYSBiaXQgaGVhdnkg
-aGFuZGVkIGJlY2F1c2UgdGhhdCB3aWxsIGludGVncmF0ZQo+IHNvbWUgbGlibHRwIHBpZWNlcyBp
-bnRvIHRoZSB0ZXN0cywgYnV0IHRoYXQncyB1cCB0byBNaWFvIHRvIGRlY2lkZS4KCkRpZCB5b3Ug
-Z2V0IGEgY2hhbmNlIHRvIGNoZWNrIHRoaXMgcGF0Y2ggPwoKUmVnYXJkcy0tClN1YnJhdGEKCj4g
-VGhhbmtzLAo+IC1HYXJyZXR0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRvd25sb2FkIEludGVs
-JiMxNzQ7IFBhcmFsbGVsIFN0dWRpbyBFdmFsClRyeSB0aGUgbmV3IHNvZnR3YXJlIHRvb2xzIGZv
-ciB5b3Vyc2VsZi4gU3BlZWQgY29tcGlsaW5nLCBmaW5kIGJ1Z3MKcHJvYWN0aXZlbHksIGFuZCBm
-aW5lLXR1bmUgYXBwbGljYXRpb25zIGZvciBwYXJhbGxlbCBwZXJmb3JtYW5jZS4KU2VlIHdoeSBJ
-bnRlbCBQYXJhbGxlbCBTdHVkaW8gZ290IGhpZ2ggbWFya3MgZHVyaW5nIGJldGEuCmh0dHA6Ly9w
-LnNmLm5ldC9zZnUvaW50ZWwtc3ctZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
-bHRwLWxpc3QK
+On Thu, Mar 11, 2010 at 7:24 AM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Thu, Mar 11, 2010 at 10:03:00AM -0300, Lucas Meneghel Rodrigues wrote:
+>> On Wed, 2010-03-10 at 21:11 -0800, Garrett Cooper wrote:
+>> > Hi all,
+>> > =A0 =A0 I just looked at the latest libevent, and I'm typically not on=
+e to
+>> > suggest this, but because libevent switched over to libtool in the 2.x
+>> > release (which is a pain in the ass to integrate), I think we just
+>> > drop the libevent testcase(s). I assume the maintainers run their
+>> > testcases on a subset of Unix machines, so it would just be an
+>> > annoying earmark that LTP has to maintain a dead // useless version of
+>> > libevent (eventually our version will go out of date and the code that
+>> > we have will bear little relevance and may be more buggy than the
+>> > latest version which should have appropriate tests and be executed and
+>> > triaged appropriately upstream).
+>>
+>> +1. Of course I am not in a position of saying something about what it
+>> should be done, but I totally agree that LTP should strive in keeping
+>> only well maintainted tests. It's harmful to keep unmantained code, it
+>> bitrots and tends to make everyone's life difficult.
+
+bitrot is fine if something is functionally complete; it's of course
+not if it's incomplete or buggy.
+
+> Well said Lucas & garret. We need to really look for some outdated testca=
+se
+> currently existing with LTP. I can look into it incrementally, but like g=
+arret
+> if someone come to know about outdated testcase with LTP or some tetssuit=
+ which
+> need renewal, please let us know. We will work to renew them on high prio=
+rity.
+>
+> Some of the testsuits i am looking are:
+> =A0 =A0- cpu hot plug
+> =A0 =A0- memory hotplug
+
+Removing testcases just because they're old isn't a good idea. We need
+to keep testcases that are still valid on older distros.
+
+I suggested removing libevent's code because they package their own
+set of testcases which are more appropriate to the code under test.
+
+Some other things that probably should be removed (and potentially
+augmented in the upstream projects are):
+
+Under testcases/:
+- ballista - I own developing the code now that I have more spare time
+(to some degree) and I was going to rewrite it from scratch because
+the current code is a mess, uses a lot of non-standard tools (c++
+code, csh, perl, some bourne shell), isn't well designed, not BSD
+licensed, and the previous maintainers no longer maintain the code.
+- commands - there are much more extensive testcases and test suites
+with the implemented command suites themselves; so, why does LTP need
+its own set of tests which will have to fudge for each implementation
+when folks should be investing time in making sure that the issues in
+each of these test suites do conform to the specs (and potentially are
+POSIX compliant)?
+- libaio testscases (testcases out-of-sync with functionality)
+- open_hpi_testcases - why duplicate a stale copy of the test suite in
+the LTP repository, that doesn't necessarily match the copy of
+open_hpi on the box?? What if I don't need to test open_hpi? (majority
+of the folks on here who do embedded or simple validation work, don't
+have to.
+- pounder* - don't use it; it doesn't get compiled, etc
+
+Under tools/:
+top-LTP - doesn't compile; period -- hasn't been updated in years. Not
+even sure what in the heck it does.
+
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
