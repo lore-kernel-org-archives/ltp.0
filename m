@@ -1,30 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NotnY-0003wX-V3
-	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 07:24:12 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NotnU-0001hm-SI
-	for ltp-list@lists.sourceforge.net; Tue, 09 Mar 2010 07:24:12 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o297DaBG027895
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 02:13:36 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o297O3ZV141442
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 02:24:03 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o297O26m019592
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 02:24:02 -0500
-Date: Tue, 9 Mar 2010 12:54:00 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100309072400.GB5875@linux.vnet.ibm.com>
-MIME-Version: 1.0
+	(envelope-from <jmtt@us.ibm.com>) id 1NqH66-00022t-4L
+	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 02:29:02 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NqH65-00062E-5N
+	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 02:29:02 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2D2RPSw031517
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Mar 2010 19:27:25 -0700
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2D2SsXY151138
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Mar 2010 19:28:54 -0700
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2D2SsHX000735
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Mar 2010 19:28:54 -0700
+Received: from taco.beaverton.ibm.com (taco.beaverton.ibm.com [9.47.22.97])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o2D2SrAJ000716
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Mar 2010 19:28:54 -0700
+Resent-Message-ID: <20100313022536.GA29505@us.ibm.com>
+Resent-To: ltp-list@lists.sourceforge.net
+Date: Fri, 12 Mar 2010 10:38:16 -0800
+From: James Takahashi <takahash@us.ibm.com>
+Message-ID: <20100312183816.GA9691@us.ibm.com>
+References: <mailman.93693.1268384199.5237.ltp-list@lists.sourceforge.net>
+Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] Quick fix for build failure with git tree master branch
+In-Reply-To: <mailman.93693.1268384199.5237.ltp-list@lists.sourceforge.net>
+Subject: Re: [LTP] Remove pounder? (was: Remove libevent?)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,65 +43,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Q3VycmVudGx5IGkgYW0gbWVyZ2luZyB0byBuZXh0IGJyYW5jaCwgTGV0J3MgcmV2aWV3IHRoaXMg
-cGF0Y2ggaGVyZSwgaWYKaXQgd2lsbCB0aHJvdWdoIHRoZW4gd2lsbCBtZXJnZSB0byBtYXN0ZXIg
-YnJhbmNoLgoKCgpjb21taXQgNzE2ZDI5ODgzYjExMTA3YzMyMzEzYjE4MzZiZWE0NDdmZWNiYWYx
-ZQpBdXRob3I6IFJpc2hpa2VzaCBLIFJhamFrIDxyaXNyYWpha0BsaW51eC52bmV0LmlibS5jb20+
-CkRhdGU6ICAgVHVlIE1hciA5IDEyOjQ4OjUzIDIwMTAgKzA1MzAKCiAgICBRdWljayBmaXggZm9y
-IGJ1aWxkIGZhaWx1cmUgd2l0aCA4dGggTWFyIG1hc3RlciB0cmVlLgogICAgCiAgICBHZXR0aW5n
-IGNvbXBpbGF0aW9uIGVycm9yIGFzOgogICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgICBidWZmZXIuYzogSW4gZnVu
-Y3Rpb24g4oCYZXZidWZmZXJfYWRkX3ByaW50ZuKAmToKICAgIGJ1ZmZlci5jOjk2OiB3YXJuaW5n
-OiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJh2YXNwcmludGbigJkKICAgIGJ1
-ZmZlci5jOjEwMDogd2FybmluZzogcG9pbnRlciB0YXJnZXRzIGluIHBhc3NpbmcgYXJndW1lbnQg
-MiBvZgrigJhldmJ1ZmZlcl9hZGTigJkgZGlmZmVyIGluIHNpZ25lZG5lc3MKICAgIGdjYyAtREhB
-VkVfQ09ORklHX0ggLUkuIC1JLiAtSS4gLUljb21wYXQgICAgLVdhbGwgLWcgLU8yIC1jCmV2YnVm
-ZmVyLmMKICAgIGdjYyAtREhBVkVfQ09ORklHX0ggLUkuIC1JLiAtSS4gLUljb21wYXQgICAgLVdh
-bGwgLWcgLU8yIC1jIHNlbGVjdC5jCiAgICBnY2MgLURIQVZFX0NPTkZJR19IIC1JLiAtSS4gLUku
-IC1JY29tcGF0ICAgIC1XYWxsIC1nIC1PMiAtYyBwb2xsLmMKICAgIGdjYyAtREhBVkVfQ09ORklH
-X0ggLUkuIC1JLiAtSS4gLUljb21wYXQgICAgLVdhbGwgLWcgLU8yIC1jIGVwb2xsLmMKICAgIGdj
-YyAtREhBVkVfQ09ORklHX0ggLUkuIC1JLiAtSS4gLUljb21wYXQgICAgLVdhbGwgLWcgLU8yIC1j
-IHNpZ25hbC5jCiAgICBybSAtZiBsaWJldmVudC5hCiAgICBhciBjcnUgbGliZXZlbnQuYSBldmVu
-dC5vIGJ1ZmZlci5vIGV2YnVmZmVyLm8gc2VsZWN0Lm8gcG9sbC5vCmVwb2xsLm8gc2lnbmFsLm8K
-ICAgIGFyOiAtdTogKFBST0dSQU0gRVJST1IpIE9wdGlvbiBzaG91bGQgaGF2ZSBiZWVuIHJlY29n
-bml6ZWQhPwogICAgVHJ5IGBhciAtLWhlbHAnIG9yIGBhciAtLXVzYWdlJyBmb3IgbW9yZSBpbmZv
-cm1hdGlvbi4KICAgIG1ha2VbMl06ICoqKiBbbGliZXZlbnQuYV0gRXJyb3IgNjQKICAgIG1ha2Vb
-Ml06IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvbGliZXZlbnQnCiAgICBtYWtlWzFdOiAqKiogW2FsbC1yZWN1cnNpdmVdIEVycm9yIDEK
-ICAgIG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9sdHAtZGV2L3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvbGliZXZlbnQnCiAgICBtYWtlOiAqKiogW2FsbC1yZWN1cnNpdmUtYW1d
-IEVycm9yIDIKICAgIDp+L2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9saWJldmVu
-dCAjCiAgICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PQogICAgCiAgICBTaWduZWQtb2ZmLWJ5OiBSaXNoaWtlc2ggSyBSYWph
-ayA8cmlzcmFqYWtAbGludXgudm5ldC5pYm0uY29tPgoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvbGliZXZlbnQvTWFrZWZpbGUuaW4KYi90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL2xpYmV2ZW50L01ha2VmaWxlLmluCmluZGV4IGQxZDlhZjcuLmRkMDEzOGQgMTAwNjQ0
-Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbGliZXZlbnQvTWFrZWZpbGUuaW4KKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9saWJldmVudC9NYWtlZmlsZS5pbgpAQCAtOTks
-NiArOTksNyBAQCBMSUJTID0gQExJQlNACiBsaWJldmVudF9hX0RFUEVOREVOQ0lFUyA9ICBATElC
-T0JKU0AKIGxpYmV2ZW50X2FfT0JKRUNUUyA9ICBldmVudC5vIGJ1ZmZlci5vIGV2YnVmZmVyLm8K
-IEFSID0gYXIKK0FSX0ZMQUdTID0gY3IKIENPTVBJTEUgPSAkKENDKSAkKERFRlMpICQoSU5DTFVE
-RVMpICQoQU1fQ1BQRkxBR1MpICQoQ1BQRkxBR1MpCiQoQU1fQ0ZMQUdTKSAkKENGTEFHUykKIEND
-TEQgPSAkKENDKQogTElOSyA9ICQoQ0NMRCkgJChBTV9DRkxBR1MpICQoQ0ZMQUdTKSAkKExERkxB
-R1MpIC1vICRACkBAIC0yMTksNyArMjIwLDcgQEAgbWFpbnRhaW5lci1jbGVhbi1jb21waWxlOgog
-CiBsaWJldmVudC5hOiAkKGxpYmV2ZW50X2FfT0JKRUNUUykgJChsaWJldmVudF9hX0RFUEVOREVO
-Q0lFUykKICAgICAgICAtcm0gLWYgbGliZXZlbnQuYQotICAgICAgICQoQVIpIGNydSBsaWJldmVu
-dC5hICQobGliZXZlbnRfYV9PQkpFQ1RTKSAkKGxpYmV2ZW50X2FfTElCQUREKQorICAgICAgICQo
-QVIpICQoQVJfRkxBR1MpIGxpYmV2ZW50LmEgJChsaWJldmVudF9hX09CSkVDVFMpCiQobGliZXZl
-bnRfYV9MSUJBREQpCiAgICAgICAgJChSQU5MSUIpIGxpYmV2ZW50LmEKIAogaW5zdGFsbC1tYW4z
-OgoKLS0gClRoYW5rcyAmIFJlZ2FyZHMKUmlzaGkKTFRQIE1haW50YWluZXIKSUJNLCBMVEMsIEJh
-bmdhbG9yZQpQbGVhc2Ugam9pbiBJUkMgI2x0cCBAIGlyYy5mcmVlbm9kZS5uZXQKCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpEb3dubG9hZCBJbnRlbCYjMTc0OyBQYXJhbGxlbCBTdHVkaW8gRXZhbApU
-cnkgdGhlIG5ldyBzb2Z0d2FyZSB0b29scyBmb3IgeW91cnNlbGYuIFNwZWVkIGNvbXBpbGluZywg
-ZmluZCBidWdzCnByb2FjdGl2ZWx5LCBhbmQgZmluZS10dW5lIGFwcGxpY2F0aW9ucyBmb3IgcGFy
-YWxsZWwgcGVyZm9ybWFuY2UuClNlZSB3aHkgSW50ZWwgUGFyYWxsZWwgU3R1ZGlvIGdvdCBoaWdo
-IG1hcmtzIGR1cmluZyBiZXRhLgpodHRwOi8vcC5zZi5uZXQvc2Z1L2ludGVsLXN3LWRldgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWls
-aW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
-cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Thu, 11 Mar 2010 22:13:18 -0800 Garrett Cooper wrote:
+> 
+> Under testcases/:
+> - pounder* - don't use it; it doesn't get compiled, etc
+> 
+I assume you mean, "you don't use it," as opposed to a warning to others
+to not use pounder.  And that you mean, "it doesn't get compiled by
+default," as opposed to its compilation is broken.
+
+There are at least two teams in IBM that use the pounder framework on a
+regular basis.  We historically had received intermittent requests from
+distro partners for that framework when they would be investigating some
+problem we had hit while running pounder, so some years ago, IBM sought
+and gained approval to keep pounder in the LTP source tree.
+
+In short, please do not remove pounder.
+
+------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
