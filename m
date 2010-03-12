@@ -1,43 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NlxG4-00042Q-Bt
-	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 04:29:28 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NlxG3-0006EO-AS
-	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 04:29:28 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o214QTMC005232
-	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 21:26:29 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o214TKQ6116080
-	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 21:29:20 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o214TKpk030066
-	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 21:29:20 -0700
-Date: Mon, 1 Mar 2010 09:59:18 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100301042918.GA2758@linux.vnet.ibm.com>
-References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
-	<20100111162256.GB19010@saboteur.suse.cz>
-	<20100128041619.GB16209@malik-laptop.in.ibm.com>
-	<d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
-	<364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
-	<d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
-	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
-	<364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
-	<20100228181445.GB4850@linux.vnet.ibm.com>
-	<d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nq7nH-0005Bi-Kw
+	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 16:32:59 +0000
+Received: from mail-iw0-f176.google.com ([209.85.223.176])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nq7nG-0004pd-Rn
+	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 16:32:59 +0000
+Received: by iwn6 with SMTP id 6so912183iwn.4
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 12 Mar 2010 08:32:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
-Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
- the topmost memory cgroup
+In-Reply-To: <4B9A01B8.6040008@in.ibm.com>
+References: <4B97AA99.7050406@in.ibm.com>
+	<364299f41003102015j42667189x9adbc23f48121e87@mail.gmail.com>
+	<4B99CC90.90204@in.ibm.com>
+	<364299f41003112333v3c9e5e7wb6160c2c59395b68@mail.gmail.com>
+	<4B9A01B8.6040008@in.ibm.com>
+Date: Fri, 12 Mar 2010 08:32:53 -0800
+Message-ID: <364299f41003120832g4efc1136sf430dd0bd8f831cd@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP Containers netns test failure.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -50,52 +34,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mohamed Naufal <naufal11@gmail.com>
+To: Sachin Sant <sachinp@in.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Mar 01, 2010 at 08:07:50AM +0530, Mohamed Naufal wrote:
-> On 28 February 2010 23:44, Rishikesh K Rajak
-> <risrajak@linux.vnet.ibm.com> wrote:
-> >>>Rishi, are we ready=A0for commit?
-> >
-> > Yes committed to next branch, let me test for any regression, and then
-> > will commit to maint/master branch.
-> >
-> >
-> =
+On Fri, Mar 12, 2010 at 12:56 AM, Sachin Sant <sachinp@in.ibm.com> wrote:
+> Garrett Cooper wrote:
+>>>
+>>> Hmm .. i am still not able to execute the test even after exporting the
+>>> PATH.
+>>>
+>>> lp5:/opt/ltp # export LTPROOT=3D/opt/ltp
+>>> lp5:/opt/ltp # export PATH=3D$PATH:$LTPROOT/testcases/bin
+>>> lp5:/opt/ltp # ./runltp -f containers
+>>> ........<SNIP>..........
+>>> <<<test_start>>>
+>>> tag=3DContainers stime=3D1268369850
+>>> cmdline=3D"container_test.sh"
+>>> contacts=3D""
+>>> analysis=3Dexit
+>>> <<<test_output>>>
+>>> incrementing stop
+>>> Running netns tests.
+>>> --: childns.sh '/opt/ltp': No such file or directory
+>>>
+>>> I feel the problem is: the code is searching childns.sh in LTPROOT
+>>> directory instead of LTPROOT/testcases/bin
+>>>
+>>
+>> =A0 =A0Please test your claim by calling env in the script -- what happe=
+ns?
+>> =A0 =A0Something doesn't necessarily add up with the claim.
+>>
+>
+> You meant calling env from childns.sh or some other script ?
+>
+> I printed env o/p (just before calling netns tests) from container_test.sh
+>
+> contacts=3D""
+> analysis=3Dexit
+> <<<test_output>>>
+> incrementing stop
+> --- Start env o/p ---
+> LESSKEY=3D/etc/lesskey.bin
+> NNTPSERVER=3Dnews
+> .... SNIP ...
+> MAIL=3D/var/mail/root
+> PATH=3D/sbin:/usr/sbin:/usr/local/sbin:/root/bin:/usr/local/bin:/usr/bin:=
+/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/s=
+bin:/opt/ltp/testcases/bin:/opt/ltp/testcases/bin
+> CPU=3Dppc64
+> _=3D/usr/bin/env
+> SSH_SENDS_LOCALE=3Dyes
+> INPUTRC=3D/etc/inputrc
+> PWD=3D/opt/ltp/testcases/bin
+> LANG=3Den_US.UTF-8
+> PYTHONSTARTUP=3D/etc/pythonstart
+> LTPROOT=3D/opt/ltp
+> .... SNIP ...
+>
+> So the values look okay, but the run still fails.
 
-> [...]
-> =
-
-> Hi
-> =
-
-> The new source files in my patch doesn't appear in the next branch.
-
-HI Naufal,
-
-can you please clone with -b <branchname> ?
-
-e.g: git clone -b next
-git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
-
-And let me know that your patch is in. I can see it as commit:
-3bc8ecdb69b29436e2987173ffdd7244d8897942
-
-Thanks
-Rishi
-
-> =
-
-> Naufal
-
--- =
-
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+    Could you also add a check within childns.sh please?
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
