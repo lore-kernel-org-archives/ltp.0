@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <anthony.ton@ericsson.com>) id 1NuZM3-00059c-Hq
-	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 22:47:15 +0000
-Received: from imr2.ericy.com ([198.24.6.3])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NuZM2-0002Qc-OR
-	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 22:47:15 +0000
-Received: from eusaamw0711.eamcs.ericsson.se ([147.117.20.178])
-	by imr2.ericy.com (8.13.1/8.13.1) with ESMTP id o2OMfuLi029595
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Mar 2010 17:50:30 -0500
-From: Anthony Ton <anthony.ton@ericsson.com>
-Date: Wed, 24 Mar 2010 18:46:59 -0400
-Message-ID: <E0B6230F32558E43951AF1B0DEBF98102119D5A01E@EUSAACMS0714.eamcs.ericsson.se>
-Content-Language: en-US
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NpzN4-0006by-Sj
+	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 07:33:22 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NpzN4-00069a-2j
+	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 07:33:22 +0000
+Received: by gwj23 with SMTP id 23so361223gwj.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Mar 2010 23:33:16 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] Running LTP test suite against modified kernel
+In-Reply-To: <4B99CC90.90204@in.ibm.com>
+References: <4B97AA99.7050406@in.ibm.com>
+	<364299f41003102015j42667189x9adbc23f48121e87@mail.gmail.com>
+	<4B99CC90.90204@in.ibm.com>
+Date: Thu, 11 Mar 2010 23:33:15 -0800
+Message-ID: <364299f41003112333v3c9e5e7wb6160c2c59395b68@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP Containers netns test failure.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,82 +29,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4137680767878891534=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Sachin Sant <sachinp@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
---===============4137680767878891534==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_"
-
---_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hello LTP team,
-Will the compilation of LTP test suites be independent of the OS kernel lib=
-raries?  Basically if I compiled the LTP on standard Linux OS and then run =
-against the modified Linux OS kernel, would LTP test suites be able to run?=
-  Or do I need to compile LTP and link with the modified OS kernel librarie=
-s?
-Thanks,
-Anthony
-
-
---_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+On Thu, Mar 11, 2010 at 9:09 PM, Sachin Sant <sachinp@in.ibm.com> wrote:
+> Garrett Cooper wrote:
+>>
+>> On Wed, Mar 10, 2010 at 6:20 AM, Sachin Sant <sachinp@in.ibm.com> wrote:
+>>
+>>>
+>>> NETNS tests from containers fails to execute with following
+>>> message
+>>>
+>>> Running netns tests.
+>>> --: childns.sh '/opt/ltp': No such file or directory
+>>>
+>>> Looking at the code the problem could be with create_net_namespace()
+>>> within netns/common.c
+>>>
+>>> If i make the following changes the first subtest works fine but then
+>>> i ran into other failures related to other sub tests.
+>>>
+>>> @@ -92,7 +92,7 @@ int create_net_namespace(char *p1, char
+>>> =A0 =A0 =A0}
+>>>
+>>> =A0 =A0 =A0/* We need to pass the child pid to the parentns.sh script */
+>>> - =A0 =A0 =A0 sprintf(par, "parentns.sh '%s' %s %" PRId32 , ltproot, p1=
+, pid);
+>>> + =A0 =A0 =A0 sprintf(par, "%s/testcases/bin/parentns.sh %s %" PRId32 ,
+>>> ltproot,
+>>> p1, pid);
+>>>
+>>> =A0 =A0 =A0ret =3D system(par);
+>>> =A0 =A0 =A0status =3D WEXITSTATUS(ret);
+>>> @@ -141,7 +141,7 @@ int child_fn(void *c1)
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0exit(1);
+>>> =A0 =A0 =A0}
+>>>
+>>> - =A0 =A0 =A0 sprintf(child, "childns.sh '%s'", ltproot);
+>>> + =A0 =A0 =A0 sprintf(child, "%s/testcases/bin/childns.sh", ltproot);
+>>>
+>>> As i don't know the code too much .. i am not sure how to fix it.
+>>>
+>>
+>> export PATH=3D$PATH:$LTPROOT/testcases/bin ; parentns.sh ?
+>>
+>> Why are you overcomplicating things by hardcoding the path again?
+>> That's the exact reason why it was removed in the first place...
+>>
 >
-<meta name=3D"Generator" content=3D"Microsoft Exchange Server">
-<!-- converted from rtf -->
-<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left:=
- #800000 2px solid; } --></style>
-</head>
-<body>
-<font face=3D"Arial, sans-serif" size=3D"2">
-<div>Hello LTP team,</div>
-<div>Will the compilation of LTP test suites be independent of the OS kerne=
-l libraries?&nbsp; Basically if I compiled the LTP on standard Linux OS and=
- then run against the modified Linux OS kernel, would LTP test suites be ab=
-le to run?&nbsp; Or do I need to compile LTP
-and link with the modified OS kernel libraries? </div>
-<div>Thanks,</div>
-<div>Anthony</div>
-<div>&nbsp;</div>
-</font>
-</body>
-</html>
+> Hmm .. i am still not able to execute the test even after exporting the
+> PATH.
+>
+> lp5:/opt/ltp # export LTPROOT=3D/opt/ltp
+> lp5:/opt/ltp # export PATH=3D$PATH:$LTPROOT/testcases/bin
+> lp5:/opt/ltp # ./runltp -f containers
+> ........<SNIP>..........
+> <<<test_start>>>
+> tag=3DContainers stime=3D1268369850
+> cmdline=3D"container_test.sh"
+> contacts=3D""
+> analysis=3Dexit
+> <<<test_output>>>
+> incrementing stop
+> Running netns tests.
+> --: childns.sh '/opt/ltp': No such file or directory
+>
+> I feel the problem is: the code is searching childns.sh in LTPROOT
+> directory instead of LTPROOT/testcases/bin
 
---_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_--
+    Please test your claim by calling env in the script -- what happens?
+    Something doesn't necessarily add up with the claim.
+Thanks,
+-Garrett
 
-
---===============4137680767878891534==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============4137680767878891534==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4137680767878891534==--
-
