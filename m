@@ -1,15 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1Nptv2-0001Kd-59
-	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 01:44:04 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1Nptv1-0002Uk-0S@sfs-web-6.v29.ch3.sourceforge.com>
-Date: Fri, 12 Mar 2010 01:44:03 +0000
-Subject: [LTP] [ ltp-Bugs-2969069 ] lcov: Fix for "WARNING: cannot find an
-	entry for" problem
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NqLXE-0004AQ-BR
+	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 07:13:20 +0000
+Received: from mail-iw0-f176.google.com ([209.85.223.176])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NqLXD-0001sj-52
+	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 07:13:20 +0000
+Received: by iwn6 with SMTP id 6so399578iwn.4
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 12 Mar 2010 23:13:14 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <364299f41003122227w6859d6f3i829466a6fc5099f2@mail.gmail.com>
+References: <4B9B0B3A.3080008@cn.fujitsu.com>
+	<364299f41003122227w6859d6f3i829466a6fc5099f2@mail.gmail.com>
+Date: Fri, 12 Mar 2010 23:13:13 -0800
+Message-ID: <364299f41003122313i47334168u25a6b12c6c64a7d9@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [BUG?] proc01: read /proc/acpi/event failed if acpi
+	daemon stopped
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,42 +29,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Bugs item #2969069, was opened at 2010-03-12 01:44
-Message generated for change (Tracker Item Submitted) made by 
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2969069&group_id=3382
+On Fri, Mar 12, 2010 at 10:27 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Fri, Mar 12, 2010 at 7:49 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+>> An error message occured when i tested proc01.
+>> ---------
+>> proc01 =A0 =A0 =A01 =A0TFAIL =A0: =A0read failed: /proc/acpi/event: errn=
+o=3DEAGAIN(11): Resource temporarily unavailable
+>> ---------
+>>
+>> If "service acpid start", this message will be turned to:
+>> ---------
+>> proc01 =A0 =A0 =A00 =A0TINFO =A0: =A0/proc/acpi/event: known issue: errn=
+o=3DEBUSY(16): Device or resource busy
+>> ---------
+>>
+>> I think we should to add a check of acpi daemon's status in testcases/ke=
+rnel/fs/proc/proc01.c.
+>
+> =A0 =A0No, that's making things too complicated and won't scale as every
+> distro has developed a different means for specifying the status for a
+> service. Why not just add EAGAIN for that /proc node?
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: None
-Group: None
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: https://www.google.com/accounts ()
-Assigned to: Nobody/Anonymous (nobody)
-Summary: lcov: Fix for "WARNING: cannot find an entry for" problem
+    And FWIW the error condition is correct in my opinion if kernel
+acpi hasn't been enabled, which was the case here.
+Thanks,
+-Garrett
 
-Initial Comment:
-match_filename fails when the filenames in @list contain /../ components.  This causes warnings like "geninfo: WARNING: cannot find an entry for ... in .gcno file, skipping file!" and "geninfo: WARNING: no data found for ...".
-
-Patched match_filename to use solve_relative_path to remove the /../ and /./ components of the path before comparing.  It still returns the original "entry", otherwise you still get the "no data found for" failures.
-
-May not be the most elegant fix but it works for me.
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2969069&group_id=3382
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
