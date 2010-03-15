@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <prvs=697c33c7d=sreejithc@tataelxsi.co.in>)
-	id 1NwC75-0005Ia-GY
-	for ltp-list@lists.sourceforge.net; Mon, 29 Mar 2010 10:22:31 +0000
-Received: from smtpin2.mailsecure.in ([121.241.224.3])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NwC71-0005HY-37
-	for ltp-list@lists.sourceforge.net; Mon, 29 Mar 2010 10:22:31 +0000
-Content-class: urn:content-classes:message
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NrEB9-0002PP-1o
+	for ltp-list@lists.sourceforge.net; Mon, 15 Mar 2010 17:34:11 +0000
+Received: from mail-pw0-f46.google.com ([209.85.160.46])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NrEB8-0003DU-1S
+	for ltp-list@lists.sourceforge.net; Mon, 15 Mar 2010 17:34:10 +0000
 MIME-Version: 1.0
-Date: Mon, 29 Mar 2010 15:52:15 +0530
-Message-ID: <9D5E1752379A43408015F7FE98466115061B976F@CHNEXVS01.VSNLXCHANGE.COM>
-From: "Sreejith C" <sreejithc@tataelxsi.co.in>
-Subject: [LTP] mmstress test failing for 9999 NUMPAGES
+In-Reply-To: <1268662482.7496.2.camel@subratamodak.linux.ibm.com>
+References: <1268596049.7567.2.camel@subratamodak.linux.ibm.com>
+	<20100315035918.GA2889@linux.vnet.ibm.com>
+	<1268662482.7496.2.camel@subratamodak.linux.ibm.com>
+Date: Mon, 15 Mar 2010 10:34:03 -0700
+Message-ID: <364299f41003151034q2533add0kb6d10e541fb3804e@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [BUILD FAILURE] cpuset_syscall_test.c fails to build for
+	Feb 2010 release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,109 +27,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1484423631647756745=="
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-This is a multi-part message in MIME format.
+On Mon, Mar 15, 2010 at 7:14 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> On Mon, 2010-03-15 at 09:29 +0530, Rishikesh K Rajak wrote:
+>> Hi Subrata,
+>>
+>> can you confirm if this error still occurs with latest git and also you =
+have
+>> numa-devel package installed ?
+>>
+>> or, just add "numaif.h" to cpuset_syscall_test.c and try to rebuild. Let=
+ us
+>> know the result too.
+>
+> With the latest GIT and installation of NUMA-DEVEL, the said problem
+> seems to go away:
+>
+> # ls -l testcases/kernel/controllers/cpuset/cpuset_syscall_test/
+> total 168
+> -rwxr-xr-x 1 root =A0 =A0 =A0 =A0 root =A0 =A0 =A0 =A0 140039 Mar 15 19:40
+> cpuset_syscall_test
+> -rw-rw-r-- 1 subratamodak subratamodak =A0 6525 Mar 15 19:37
+> cpuset_syscall_test.c
+> -rwxrwxr-x 1 subratamodak subratamodak =A0 9191 Mar 15 19:37
+> cpuset_syscall_testset.sh
+> -rw-rw-r-- 1 subratamodak subratamodak =A0 1073 Mar 15 19:37 Makefile
+>
+> # rpm -qa | grep -i numa
+> numactl-0.9.8-8.el5
+> numactl-devel-0.9.8-8.el5
 
---===============1484423631647756745==
-Content-class: urn:content-classes:message
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01CACF29.B3DDBFC5"
+That isn't even remotely close to the latest version of numa-devel
+(latest version is 2.x).
 
-This is a multi-part message in MIME format.
+> However, a new error is introduced as below:
+>
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_CHECKOUT_DIRECTORY=
+/GIT_CHECKOUT/GIT_DEV_BUILD/testcases/kernel/include -D_GNU_SOURCE -I/home/=
+subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_CHECKOUT_DIRECTORY/GIT_CHECK=
+OUT/GIT_DEV_BUILD/testcases/kernel/hotplug/memory_hotplug -I../../../../inc=
+lude -I../../../../include =A0-c -o commands.o commands.c
+> commands.c:62: error: conflicting types for =91nodemask_isset=92
+> /usr/include/numa.h:55: note: previous definition of =91nodemask_isset=92
+> was here
+> commands.c:72: error: redefinition of =91nodemask_set=92
+> /usr/include/numa.h:44: note: previous definition of =91nodemask_set=92 w=
+as
+> here
+> commands.c: In function =91get_arg_nodeid_list=92:
+> commands.c:396: warning: implicit declaration of function
+> =91numa_get_membind_compat=92
+> commands.c:396: error: incompatible types when assigning to type
+> =91nodemask_t=92 from type =91int=92
+> commands.c: In function =91get_current_nodeid_list=92:
+> commands.c:454: error: incompatible types when assigning to type
+> =91nodemask_t=92 from type =91int=92
+> commands.c: In function =91show_seg=92:
+> commands.c:665: warning: unused variable =91gcp=92
+> commands.c: In function =91anon_seg=92:
+> commands.c:685: warning: unused variable =91gcp=92
+> commands.c: In function =91file_seg=92:
+> commands.c:724: warning: unused variable =91gcp=92
+> commands.c: In function =91remove_seg=92:
+> commands.c:762: warning: unused variable =91gcp=92
+> commands.c: In function =91touch_seg=92:
+> commands.c:785: warning: unused variable =91gcp=92
+> commands.c: In function =91unmap_seg=92:
+> commands.c:820: warning: unused variable =91gcp=92
+> commands.c: In function =91map_seg=92:
+> commands.c:842: warning: unused variable =91gcp=92
+> commands.c: In function =91mbind_seg=92:
+> commands.c:883: warning: unused variable =91gcp=92
+> commands.c: In function =91shmem_seg=92:
+> commands.c:949: warning: unused variable =91gcp=92
+> commands.c: In function =91where_seg=92:
+> commands.c:991: warning: unused variable =91ret=92
+> make[4]: *** [commands.o] Error 1
 
-------_=_NextPart_001_01CACF29.B3DDBFC5
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Yes, and this is because some APIs in numa.h changed between pre-1.x,
+1.x, and 2.x. A config.log for the new workspace would be especially
+helpful.
+Thanks,
+-Garrett
 
-Hi,
-
- Currently I am running LTP on a system(arm) with 128 MB of RAM only. When =
-I run the tests in sequence I have seen oom killer coming on the 3rd test (=
-COW) of mmstess test. As I have reduced the NUMPAGES value to 6000 it was w=
-orking fine. I have seen that about 56MB is free before starting with LTP a=
-nd it reduces to below 17 MB when it comes to mmstress. Can anyone please t=
-ell me what will be the optimum value of NUMPAGES on a system with 128MB of=
- RAM only, I don't want to affect the intention of stress test by just redu=
-cing the NUMPAGES to some value.
-
-Regards=20
-
-Sreejith. C=20
-Emp No:8103
-D& D engineer
-TataElxsi Ltd.
-
-
-
-------_=_NextPart_001_01CACF29.B3DDBFC5
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Diso-8859-=
-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version 6.5.7653.38">
-<TITLE>mmstress test failing for 9999 NUMPAGES</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Hi,<BR>
-<BR>
-&nbsp;Currently I am running LTP on a system(arm) with 128 MB of RAM only. =
-When I run the tests in sequence I have seen oom killer coming on the 3rd t=
-est (COW) of mmstess test. As I have reduced the NUMPAGES value to 6000 it =
-was working fine. I have seen that about 56MB is free before starting with =
-LTP and it reduces to below 17 MB when it comes to mmstress. Can anyone ple=
-ase tell me what will be the optimum value of NUMPAGES on a system with 128=
-MB of RAM only, I don't want to affect the intention of stress test by just=
- reducing the NUMPAGES to some value.<BR>
-<BR>
-Regards<BR>
-<BR>
-Sreejith. C<BR>
-Emp No:8103<BR>
-D&amp; D engineer<BR>
-TataElxsi Ltd.<BR>
-<BR>
-</FONT>
-</P>
-
-<pre>
-</pre></BODY>
-</HTML>
-------_=_NextPart_001_01CACF29.B3DDBFC5--
-
-
-
---===============1484423631647756745==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============1484423631647756745==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1484423631647756745==--
-
-
