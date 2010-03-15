@@ -1,26 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NoVzC-0007nA-10
-	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 05:58:38 +0000
-Received: from mail-iw0-f202.google.com ([209.85.223.202])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NoVzB-0004ID-61
-	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 05:58:37 +0000
-Received: by iwn40 with SMTP id 40so683875iwn.1
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 07 Mar 2010 21:58:31 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sachinp@in.ibm.com>) id 1Nr4LR-0007dW-Iu
+	for ltp-list@lists.sourceforge.net; Mon, 15 Mar 2010 07:04:09 +0000
+Received: from e28smtp02.in.ibm.com ([122.248.162.2])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nr4LP-0001XZ-9u
+	for ltp-list@lists.sourceforge.net; Mon, 15 Mar 2010 07:04:09 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp02.in.ibm.com (8.14.3/8.13.1) with ESMTP id o2F73uKg005895
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Mar 2010 12:33:56 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2F73uog2625588
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Mar 2010 12:33:56 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o2F73um6001520
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Mar 2010 12:33:56 +0530
+Message-ID: <4B9DDBDB.7090801@in.ibm.com>
+Date: Mon, 15 Mar 2010 12:33:55 +0530
+From: Sachin Sant <sachinp@in.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <201003071312.58906.vapier@gentoo.org>
-References: <20100227075348.GA3077@linux.vnet.ibm.com>
-	<201003061633.16026.vapier@gentoo.org>
-	<4B93EBBC.5070004@petalogix.com>
-	<201003071312.58906.vapier@gentoo.org>
-Date: Sun, 7 Mar 2010 21:58:31 -0800
-Message-ID: <364299f41003072158l7e74650r429b4502b07ce570@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] A note from Maintainer
+References: <4B97AA99.7050406@in.ibm.com>
+	<364299f41003102015j42667189x9adbc23f48121e87@mail.gmail.com>
+	<4B99CC90.90204@in.ibm.com>
+	<364299f41003112333v3c9e5e7wb6160c2c59395b68@mail.gmail.com>
+	<4B9A01B8.6040008@in.ibm.com>
+	<364299f41003120832g4efc1136sf430dd0bd8f831cd@mail.gmail.com>
+In-Reply-To: <364299f41003120832g4efc1136sf430dd0bd8f831cd@mail.gmail.com>
+Subject: Re: [LTP] LTP Containers netns test failure.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,24 +43,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: sachinp@linux.vnet.ibm.com, ltp-list@lists.sourceforge.net, ambar.seksena@calsoftinc.com, Cai Qian <qcai@redhat.com>, kamaleshb@in.ibm.com, doug.chapman@hp.com, risrajak@in.ibm.com, Khem Raj <kraj@mvista.com>, aneesh.kumar@linux.vnet.ibm.com, carmelo.amoroso@st.com, jburke@redhat.com, Nadia Derbey <Nadia.Derbey@bull.net>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Sun, Mar 7, 2010 at 10:12 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Sunday 07 March 2010 13:09:00 Michal Simek wrote:
->> Anyway don't you have another script which will check commit message and
->> if is there Signed-off-by line then change author name?
->> There are a lot of commits with that line and will be good to fix this too.
->> Adding some new lines to commit messages (At least before Sign-off-by
->> line) make sense too.
+Garrett Cooper wrote:
+>> contacts=""
+>> analysis=exit
+>> <<<test_output>>>
+>> incrementing stop
+>> --- Start env o/p ---
+>> LESSKEY=/etc/lesskey.bin
+>> NNTPSERVER=news
+>> .... SNIP ...
+>> MAIL=/var/mail/root
+>> PATH=/sbin:/usr/sbin:/usr/local/sbin:/root/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/ltp/testcases/bin:/opt/ltp/testcases/bin
+>> CPU=ppc64
+>> _=/usr/bin/env
+>> SSH_SENDS_LOCALE=yes
+>> INPUTRC=/etc/inputrc
+>> PWD=/opt/ltp/testcases/bin
+>> LANG=en_US.UTF-8
+>> PYTHONSTARTUP=/etc/pythonstart
+>> LTPROOT=/opt/ltp
+>> .... SNIP ...
+>>
+>> So the values look okay, but the run still fails.
+>>     
 >
-> i dont have any such script, and i'm not sure it's a good idea ...
+>     Could you also add a check within childns.sh please?
+>   
+As the LTP framework is unable to locate childns.sh script(as per the error
+message) i cannot print anything from within childns.sh. This script is
+never invoked during the run.
 
-Agreed. I was originally thinking of something similar with the
-committers yesterday and the git config values, but even that's
-overengineered, IMO.
-Thanks,
--Garrett
+Thanks
+-Sachin
+
+> Thanks,
+> -Garrett
+>
+>   
+
+
+-- 
+
+---------------------------------
+Sachin Sant
+IBM Linux Technology Center
+India Systems and Technology Labs
+Bangalore, India
+---------------------------------
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
