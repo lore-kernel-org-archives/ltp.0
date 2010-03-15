@@ -1,29 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sachinp@in.ibm.com>) id 1NpMlr-0003IJ-Eq
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 14:20:23 +0000
-Received: from e28smtp06.in.ibm.com ([122.248.162.6])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NpMlq-0007pi-1K
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 14:20:23 +0000
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by e28smtp06.in.ibm.com (8.14.3/8.13.1) with ESMTP id o2AEKBVZ008848
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 19:50:11 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2AEKBaE3260416
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 19:50:11 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2AEKANl010620
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 19:50:11 +0530
-Message-ID: <4B97AA99.7050406@in.ibm.com>
-Date: Wed, 10 Mar 2010 19:50:09 +0530
-From: Sachin Sant <sachinp@in.ibm.com>
-MIME-Version: 1.0
-Subject: [LTP] LTP Containers netns test failure.
+	(envelope-from <noreply@sourceforge.net>) id 1NrAT3-0001OY-QC
+	for ltp-list@lists.sourceforge.net; Mon, 15 Mar 2010 13:36:25 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
+Mime-Version: 1.0
+Message-Id: <E1NrAT3-0003tS-IU@sfs-web-10.v29.ch3.sourceforge.com>
+Date: Mon, 15 Mar 2010 13:36:25 +0000
+Subject: [LTP] [ ltp-Bugs-2969069 ] lcov: Fix for "WARNING: cannot find an
+	entry for" problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,55 +22,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: serue@linux.vnet.ibm.com
+To: noreply@sourceforge.net
 
-NETNS tests from containers fails to execute with following
-message
+Bugs item #2969069, was opened at 2010-03-11 18:44
+Message generated for change (Settings changed) made by dpfurlani
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2969069&group_id=3382
 
-Running netns tests.
---: childns.sh '/opt/ltp': No such file or directory
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+>Category: Tools
+>Group: Other
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Dan Furlani (dpfurlani)
+Assigned to: Nobody/Anonymous (nobody)
+Summary: lcov: Fix for "WARNING: cannot find an entry for" problem
 
-Looking at the code the problem could be with create_net_namespace()
-within netns/common.c
+Initial Comment:
+match_filename fails when the filenames in @list contain /../ components.  This causes warnings like "geninfo: WARNING: cannot find an entry for ... in .gcno file, skipping file!" and "geninfo: WARNING: no data found for ...".
 
-If i make the following changes the first subtest works fine but then
-i ran into other failures related to other sub tests.
+Patched match_filename to use solve_relative_path to remove the /../ and /./ components of the path before comparing.  It still returns the original "entry", otherwise you still get the "no data found for" failures.
 
-@@ -92,7 +92,7 @@ int create_net_namespace(char *p1, char
-        }
+May not be the most elegant fix but it works for me.
 
-        /* We need to pass the child pid to the parentns.sh script */
--       sprintf(par, "parentns.sh '%s' %s %" PRId32 , ltproot, p1, pid);
-+       sprintf(par, "%s/testcases/bin/parentns.sh %s %" PRId32 , ltproot, p1, pid);
+----------------------------------------------------------------------
 
-        ret = system(par);
-        status = WEXITSTATUS(ret);
-@@ -141,7 +141,7 @@ int child_fn(void *c1)
-                exit(1);
-        }
-
--       sprintf(child, "childns.sh '%s'", ltproot);
-+       sprintf(child, "%s/testcases/bin/childns.sh", ltproot);
-
-As i don't know the code too much .. i am not sure how to fix it.
-
-Any ideas ?
-
-
-Thanks
--Sachin
-
-
--- 
-
----------------------------------
-Sachin Sant
-IBM Linux Technology Center
-India Systems and Technology Labs
-Bangalore, India
----------------------------------
-
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2969069&group_id=3382
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
