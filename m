@@ -1,31 +1,11 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NsLA3-0004mK-DN
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 19:13:39 +0000
-Received: from mail-pz0-f197.google.com ([209.85.222.197])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NsLA2-0003KO-3v
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 19:13:39 +0000
-Received: by pzk35 with SMTP id 35so1877783pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 18 Mar 2010 12:13:31 -0700 (PDT)
+Date: Wed, 17 Mar 2010 15:35:11 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100317100511.GA23956@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20100318145505.GC6287@us.ibm.com>
-References: <OF3DD1AE6A.65D45C56-ON652576DA.002F585D-652576DA.00384F54@in.ibm.com>
-	<20100302152135.GA6691@us.ibm.com>
-	<B02F7096-7406-4AAE-8BBF-AD16D5228F47@gmail.com>
-	<20100302173535.GA14556@us.ibm.com>
-	<5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
-	<20100303055619.GA19084@linux.vnet.ibm.com>
-	<364299f41003030114x30e251d6x7cd7993f8f75792f@mail.gmail.com>
-	<20100318092516.GA16328@linux.vnet.ibm.com>
-	<20100318145505.GC6287@us.ibm.com>
-Date: Thu, 18 Mar 2010 12:13:31 -0700
-Message-ID: <364299f41003181213i7b5bffe3pc1c8ab43fc234ef3@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP's filecaps test gives false positive results
+Content-Disposition: inline
+Subject: [LTP] [ANNOUNCEMENT] February subversion of LTP has been released
+	today
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,64 +15,175 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, Iranna D Ankad <iranna.ankad@in.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-announce@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Mar 18, 2010 at 7:55 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> Quoting Rishikesh K Rajak (risrajak@linux.vnet.ibm.com):
->> On Wed, Mar 03, 2010 at 01:14:12AM -0800, Garrett Cooper wrote:
->> > =A0 =A0 Yes -- and I think this is because the constants no longer have
->> > the same name:
->> >
->> > http://fxr.watson.org/fxr/source/include/linux/prctl.h?v=3Dlinux-2.6#L=
-68
->> >
->> > =A0 =A0 Note -- CAP_BSET_DROP should be: PR_CAPBSET_DROP, etc.
->> >
->> > =A0 =A0 Which is why I stress _not_ putting these hardcoded constants =
-in
->> > test files (POLLHDRDUP -- or whatever it was in ppoll01 -- is the only
->> > real violation I can remember OTOH that I need to clean up
->> > eventually). We need to be consistent with any and all documentation
->> > provided to end-developers or we [LTP] are going to shoot ourselves in
->> > the foot if and when the underlying functionality changes.
->> > =A0 =A0 I'll update the tests this weekend, but I would like it if som=
-eone
->> > test the tests on an outdated distro (RHEL 4.x?) once I provide a
->>
->> Hi Garret,
->>
->> Can you please look this again ?
->
-> Wait, what? =A0Was the original complaint just about a #warning? =A0Note
-> that it will #warn but then go ahead and define it, so there should not
-> be a real problem.
->
-> Anyway I'll try to get time tomorrow to rewrite this to use the constants
-> from the new securebits.h (which may not be in sys/ yet, but is in linux/
-> atm and will show up under sys/ at some point). =A0If Garret could help me
-> with doing an automate thingamagiggy to detect whether prctl(CAP_BSET_DRO=
-P)
-> returns -ENOSYS and not compile/install/run the tests in that case, that'd
-> be great.
->
-> And maybe I'll finally implement some of the new securebits testcases I
-> spelled out a year or two ago.
 
-Hi Serge,
-    AC_RUN_IFELSE is what you want :
-http://www.gnu.org/software/autoconf/manual/autoconf.html#Runtime --
-make sure to write a cross-compile statement with a sensible default
-(enabled?).
-    I'll help you write up a test once you have something to compile :).
-Thanks,
--Garrett
+Hi All,
 
----------------------------------------------------------------------------=
----
+It' great to work with you all. I am seeing little stability in build now with
+latest ltp till today. And all credit goes to ltp community. This month instead
+of releasing intermediate release i want to release a sub version of stable
+release and please use this version in your production environment and post your
+failures and patches to ltp-list.
+
+You can directly download from : http://ltp.sourceforge.net/ under "FEBRUARY 2010
+STABLE" link.
+
+OR, directly from this link:
+https://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20100228.1/ltp-full-20100228.1.tgz/download
+
+I am releasing this as ltp-full-20100228.1 . I will really appreciate if many of
+you will test this on your environment because it has major fixes w.r.t:
+    - cpu hotplug
+    - libevent 
+    - Replace of pushd/popd
+    - Container test
+    - CPU controller testcases
+    - New memory controller testcase (c0b8157365beb18a627fe197be6ab111e8281e86 )
+    - Network test build failure
+    - and many more...
+
+Short summary:
+- Total patches has been applied : 64
+    - Patched which fixes :
+	Build issue : 3
+	Bug : 38
+	Cleanup : 15
+	Documentation:  8
+
+Contributors:
+    - Garrett Cooper
+    - Rishikesh
+    - Subrata
+    - Matt Helsley
+    - Yuki Yao
+    - Shi Weihua
+    - Maxin B. John
+    - Sachin Sant
+    - Naresh Kamboju
+    - Mohamed Naufal Basheer
+
+Let's test this stable tree in different environment and post your all type of
+failures here. So that it can be merged to March mnoth end release.
+
+
+
+ ChangeLog                                          | 1157 +++++++++++++++++++-
+ IDcheck.sh                                         |   35 +-
+ TODO                                               |   31 +-
+ runltp                                             |    4 +-
+ runltplite.sh                                      |    2 +-
+ runtest/controllers                                |    1 +
+ runtest/cpuhotplug                                 |    2 +-
+ runtest/io                                         |    2 +-
+ scripts/git2changelog.sh                           |   28 +
+ testcases/commands/ade/ar/ar01                     |    2 +-
+ testcases/commands/ade/ld/ld01                     |    2 +-
+ testcases/commands/ade/ldd/ldd01                   |    2 +-
+ testcases/commands/ade/nm/nm01                     |    2 +-
+ testcases/commands/ade/objdump/objdump01           |    2 +-
+ testcases/commands/ade/size/size01                 |    2 +-
+ testcases/commands/at/at_allow01                   |    2 +-
+ testcases/commands/at/at_deny01                    |    2 +-
+ testcases/commands/cron/cron02                     |    2 +-
+ testcases/commands/cron/cron03                     |    2 +-
+ testcases/commands/cron/cron_allow01               |    2 +-
+ testcases/commands/cron/cron_deny01                |    2 +-
+ testcases/commands/cron/cron_dirs_checks01         |    2 +-
+ testcases/commands/su/su01                         |    2 +-
+ testcases/commands/su/su01_s1                      |    2 +-
+ testcases/commands/unzip/unzip_tests.sh            |    4 +-
+ testcases/kernel/Makefile                          |   11 +-
+ testcases/kernel/containers/Makefile               |    2 +
+ testcases/kernel/containers/check_for_unshare.c    |   55 +
+ ...{cgroup_fj_testcases => cgroup_fj_testcases.sh} |    0
+ .../kernel/controllers/freezer/libcgroup_freezer   |   73 +-
+ .../kernel/controllers/freezer/run_freezer.sh      |    3 +-
+ testcases/kernel/controllers/memcg/README          |   10 +
+ .../kernel/controllers/memcg/control/Makefile      |   33 +
+ .../kernel/controllers/memcg/control/mem_process.c |  141 +++
+ .../memcg/control/memcg_control_test.sh            |  157 +++
+ .../memcg/functional/memcg_function_test.sh        |    3 +-
+ .../memcg/regression/memcg_regression_test.sh      |    3 +-
+ .../controllers/memcg/stress/memcg_stress_test.sh  |    3 +-
+ testcases/kernel/fs/acls/acl_test01                |    2 +-
+ testcases/kernel/hotplug/cpu_hotplug/Makefile      |   31 +
+ .../hotplug/cpu_hotplug/functional/hotplug01.sh    |  233 +++--
+ .../hotplug/cpu_hotplug/functional/hotplug02.sh    |   80 +-
+ .../hotplug/cpu_hotplug/functional/hotplug03.sh    |  170 ++--
+ .../hotplug/cpu_hotplug/functional/hotplug04.sh    |   98 +-
+ .../cpu_hotplug/functional/hotplug06.sar.sh        |  125 +--
+ .../hotplug/cpu_hotplug/functional/hotplug06.sh    |   22 +-
+ .../cpu_hotplug/functional/hotplug06.top.sh        |   93 +-
+ .../hotplug/cpu_hotplug/functional/hotplug07.sh    |  108 +-
+ .../kernel/hotplug/cpu_hotplug/include/hotplug.fns |    4 +-
+ .../hotplug/cpu_hotplug/include/testsuite.fns      |    2 +-
+ testcases/kernel/hotplug/cpu_hotplug/runtests.sh   |    7 +-
+ .../hotplug/cpu_hotplug/tools/do_disk_write_loop   |   16 +-
+ .../hotplug/cpu_hotplug/tools/do_kcompile_loop     |   14 +-
+ .../kernel/hotplug/cpu_hotplug/tools/do_spin_loop  |    2 +-
+ testcases/kernel/io/aio/aio02/runfstests.sh        |   50 +-
+ testcases/kernel/io/direct_io/README               |    2 +-
+ testcases/kernel/io/stress_floppy/stress_floppy    |    2 +-
+ .../kernel/sched/sched_stress/sched_stress.sh      |    2 +-
+ testcases/kernel/security/filecaps/Makefile        |    2 +-
+ testcases/kernel/syscalls/libevent/Makefile.in     |    3 +-
+ testcases/kernel/syscalls/libevent/buffer.c        |    5 +
+ testcases/kernel/syscalls/link/link06.c            |   18 +-
+ testcases/kernel/syscalls/link/link07.c            |   19 +-
+ testcases/network/generate.sh                      |    2 +-
+ testcases/network/multicast/mc_opts/mc_opts        |    2 +-
+ testcases/network/tcp_cmds/arp/arp01               |    2 +-
+ testcases/network/tcp_cmds/echo/Makefile           |    2 +-
+ testcases/network/tcp_cmds/echo/echo01             |    2 +-
+ testcases/network/tcp_cmds/finger/finger01         |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp01               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp02               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp02_s1            |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp03               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp04               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp05               |    2 +-
+ testcases/network/tcp_cmds/host/host01             |    2 +-
+ testcases/network/tcp_cmds/netstat/netstat01       |    2 +-
+ testcases/network/tcp_cmds/perf_lan/perf_lan       |    2 +-
+ testcases/network/tcp_cmds/ping/ping01             |    2 +-
+ testcases/network/tcp_cmds/rcp/rcp01               |    2 +-
+ testcases/network/tcp_cmds/rdist/rdist01           |    2 +-
+ testcases/network/tcp_cmds/rlogin/rlogin01         |    2 +-
+ testcases/network/tcp_cmds/rsh/rsh01               |    2 +-
+ testcases/network/tcp_cmds/rwho/rwho01             |    2 +-
+ testcases/network/tcp_cmds/sendfile/sendfile01     |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh01               |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh01_s1            |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh02               |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh02_s1            |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh03               |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh03_s1            |    2 +-
+ testcases/network/tcp_cmds/tcpdump/tcpdump01       |    2 +-
+ testcases/network/tcp_cmds/telnet/telnet01         |    2 +-
+ tools/make-file.sh                                 |    2 +-
+ 94 files changed, 2282 insertions(+), 680 deletions(-)
+ create mode 100755 scripts/git2changelog.sh
+ create mode 100644 testcases/kernel/containers/check_for_unshare.c
+ rename testcases/kernel/controllers/cgroup_fj/{cgroup_fj_testcases =>
+cgroup_fj_testcases.sh} (100%)
+ create mode 100644 testcases/kernel/controllers/memcg/control/Makefile
+ create mode 100644 testcases/kernel/controllers/memcg/control/mem_process.c
+ create mode 100644
+testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+ create mode 100644 testcases/kernel/hotplug/cpu_hotplug/Makefile
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
