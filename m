@@ -1,27 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NqLq1-00058p-Sj
-	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 07:32:45 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <saileshcv@gmail.com>) id 1NrrsB-00063R-Ti
+	for ltp-list@lists.sourceforge.net; Wed, 17 Mar 2010 11:57:15 +0000
 Received: from mail-iw0-f176.google.com ([209.85.223.176])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NqLq1-00085t-7M
-	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 07:32:45 +0000
-Received: by iwn6 with SMTP id 6so406562iwn.4
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NrrsB-0005Bs-1i
+	for ltp-list@lists.sourceforge.net; Wed, 17 Mar 2010 11:57:15 +0000
+Received: by iwn6 with SMTP id 6so855957iwn.4
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 12 Mar 2010 23:32:40 -0800 (PST)
+	Wed, 17 Mar 2010 04:57:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4B98AE5B020000E80005FC3D@sinclair.provo.novell.com>
-References: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-	<364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
-	<20100225062615.GB3377@linux.vnet.ibm.com>
-	<20100310121544.GB11404@linux.vnet.ibm.com>
-	<4B98AE5B020000E80005FC3D@sinclair.provo.novell.com>
-Date: Fri, 12 Mar 2010 23:32:39 -0800
-Message-ID: <364299f41003122332u3c4f93a7td3c1f9db1a360bec@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [patch] swapon03 cleanup v2
+In-Reply-To: <20100309045153.GA4075@linux.vnet.ibm.com>
+References: <41c7690d1003052222v3deda36aqe903c981a3ed134b@mail.gmail.com>
+	<20100309045153.GA4075@linux.vnet.ibm.com>
+Date: Wed, 17 Mar 2010 17:27:09 +0530
+Message-ID: <41c7690d1003170457h179a20f5td21c76579d770a6a@mail.gmail.com>
+From: Silesh C V <saileshcv@gmail.com>
+Subject: Re: [LTP] [PATCH-v4]RTC Device Driver Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,92 +28,109 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============8000905839212137184=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Murlin Wenzel <mwenzel@novell.com>
-Cc: ltp-list@lists.sourceforge.net
+To: risrajak@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
 
-On Thu, Mar 11, 2010 at 7:48 AM, Murlin Wenzel <mwenzel@novell.com> wrote:
->>>> On 3/10/2010 at 05:15 AM, in message
-> <20100310121544.GB11404@linux.vnet.ibm.com>, Rishikesh K Rajak
-> <risrajak@linux.vnet.ibm.com> wrote:
->> On Thu, Feb 25, 2010 at 11:56:15AM +0530, Rishikesh K Rajak wrote:
->>> On Wed, Feb 24, 2010 at 05:08:56PM -0800, Garrett Cooper wrote:
->>> > On Wed, Feb 24, 2010 at 3:49 PM, Murlin Wenzel <mwenzel@novell.com> w=
-rote:
->>> > > Added clean_swap() to cleanup routine. =A0This makes sure all lefto=
-ver swap
->> files are removed.
->>> > >
->>> > > Signed-off-By: =A0Murlin Ray Wenzel mwenzel@novell.com
->>> >
->>> > Committed -- thanks!
->>> > -Garrett
->>>
->>> Thanks Garret & Murlin.
->>
->>
->> Hi Murlin,
->>
->> can you please look into this failure as it still fails on my SLES11 &
->> RHEl5.4
->> boxes.
->>
->> [root@mx3455a bin]# ./swapon03
->> swapon03 =A0 =A01 =A0TFAIL =A0: =A0Failed swapon for file swapfile29: er=
-rno=3DEPERM(1):
->> Operation not permitted
->> swapon03 =A0 =A00 =A0TWARN =A0: =A0tst_rmdir(): rmobj(/tmp/swasf2sLb) fa=
-iled:
->> unlink(/tmp/swasf2sLb/swapfile22) failed; errno=3D1: Operation not permi=
-tted
->> swapon03 =A0 =A01 =A0TFAIL =A0: =A0Failed to setup swaps
->>
->> attached is the strace log.
+--===============8000905839212137184==
+Content-Type: multipart/alternative; boundary=001485ea3c1463a5f10481fdd043
+
+--001485ea3c1463a5f10481fdd043
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Tue, Mar 9, 2010 at 10:21 AM, Rishikesh K Rajak <
+risrajak@linux.vnet.ibm.com> wrote:
+
+> On Sat, Mar 06, 2010 at 11:52:04AM +0530, Silesh C V wrote:
+> Hi Silesh,
 >
-> That's the other part of the problem that I'm not sure what to do with ye=
-t. =A0The original test was written entirely based on the assumption that t=
-here were always a max of 30 swap files available. =A0With newer kernels (S=
-LE11 RHEL5.4) the kernel can be configured so that the max could be as low =
-as 29 if not 28. =A0The kernel is doing the right thing returning EPERM, bu=
-t the test needs to be re-worked to deal with new maximum limits/possibilit=
-es.
+> I can devote some time tomorrow , till now let's wait if someone here
+> can Ack your patch.
+>
 
-It should actually be KERNEL_MAX - (CONFIG_MIGRATION enabled ? 2 : 0)
-- used_swap_devices ...
+Hi Rishi,
 
-NOTES
-       The partition or path must be prepared with mkswap(8).
+Any updates on this ?
 
-       There is an upper limit on the number of swap files that may  be  us=
-ed,
-       defined  by  the  kernel constant MAX_SWAPFILES.  Before kernel 2.4.=
-10,
-       MAX_SWAPFILES has the value 8; since kernel 2.4.10, it  has  the  va=
-lue
-       32.  Since kernel 2.6.18, the limit is decreased by 2 (thus: 30) if =
-the
-       kernel is built with the CONFIG_MIGRATION option  (which  reserves  =
-two
-       swap  table  entries  for  the  page migration features of mbind(2) =
-and
-       migrate_pages(2)).
+http://marc.info/?l=ltp-list&m=126785657726916&w=2
 
-    The fun unknown is CONFIG_MIGRATION -- how do you know whether or
-not this is set from userspace? There's too much handwaving in this
-testcase that needs to be fixed.
+
 Thanks,
--Garrett
+Silesh
 
----------------------------------------------------------------------------=
----
+
+
+>
+> --
+> Thanks & Regards
+> Rishi
+> LTP Maintainer
+> IBM, LTC, Bangalore
+> Please join IRC #ltp @ irc.freenode.net
+>
+
+
+
+-- 
+Silesh
+
+--001485ea3c1463a5f10481fdd043
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<br><br><div class=3D"gmail_quote">On Tue, Mar 9, 2010 at 10:21 AM, Rishike=
+sh K Rajak <span dir=3D"ltr">&lt;<a href=3D"mailto:risrajak@linux.vnet.ibm.=
+com">risrajak@linux.vnet.ibm.com</a>&gt;</span> wrote:<br><blockquote class=
+=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, 204, 204); margin=
+: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+On Sat, Mar 06, 2010 at 11:52:04AM +0530, Silesh C V wrote:<br>
+Hi Silesh,<br>
+<br>
+I can devote some time tomorrow , till now let&#39;s wait if someone here<b=
+r>
+can Ack your patch.<br></blockquote><div><br>Hi Rishi,<br><br>Any updates o=
+n this ?<br><br><a href=3D"http://marc.info/?l=3Dltp-list&amp;m=3D126785657=
+726916&amp;w=3D2">http://marc.info/?l=3Dltp-list&amp;m=3D126785657726916&am=
+p;w=3D2</a><br>
+<br><br>Thanks,<br>Silesh<br><br>=A0</div><blockquote class=3D"gmail_quote"=
+ style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.=
+8ex; padding-left: 1ex;">
+<div><div></div><div class=3D"h5"><br>
+--<br>
+Thanks &amp; Regards<br>
+Rishi<br>
+LTP Maintainer<br>
+IBM, LTC, Bangalore<br>
+Please join IRC #ltp @ <a href=3D"http://irc.freenode.net" target=3D"_blank=
+">irc.freenode.net</a><br>
+</div></div></blockquote></div><br><br clear=3D"all"><br>-- <br>Silesh<br>
+
+--001485ea3c1463a5f10481fdd043--
+
+
+--===============8000905839212137184==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--===============8000905839212137184==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8000905839212137184==--
+
