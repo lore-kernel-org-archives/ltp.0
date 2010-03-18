@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NsL5w-0002yV-Gu
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 19:09:24 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NsL5v-0001pB-Ls
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 19:09:24 +0000
-Received: by pvc21 with SMTP id 21so1237677pvc.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NsLA3-0004mK-DN
+	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 19:13:39 +0000
+Received: from mail-pz0-f197.google.com ([209.85.222.197])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NsLA2-0003KO-3v
+	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 19:13:39 +0000
+Received: by pzk35 with SMTP id 35so1877783pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 18 Mar 2010 12:09:18 -0700 (PDT)
+	Thu, 18 Mar 2010 12:13:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <E0B6230F32558E43951AF1B0DEBF98102119D20C9F@EUSAACMS0714.eamcs.ericsson.se>
-References: <E0B6230F32558E43951AF1B0DEBF98102119CEC9EF@EUSAACMS0714.eamcs.ericsson.se>
-	<20100318054409.GA5977@linux.vnet.ibm.com>
-	<E0B6230F32558E43951AF1B0DEBF98102119D20C9F@EUSAACMS0714.eamcs.ericsson.se>
-Date: Thu, 18 Mar 2010 12:09:12 -0700
-Message-ID: <364299f41003181209j23fc077bm8e214346560f0fd5@mail.gmail.com>
+In-Reply-To: <20100318145505.GC6287@us.ibm.com>
+References: <OF3DD1AE6A.65D45C56-ON652576DA.002F585D-652576DA.00384F54@in.ibm.com>
+	<20100302152135.GA6691@us.ibm.com>
+	<B02F7096-7406-4AAE-8BBF-AD16D5228F47@gmail.com>
+	<20100302173535.GA14556@us.ibm.com>
+	<5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
+	<20100303055619.GA19084@linux.vnet.ibm.com>
+	<364299f41003030114x30e251d6x7cd7993f8f75792f@mail.gmail.com>
+	<20100318092516.GA16328@linux.vnet.ibm.com>
+	<20100318145505.GC6287@us.ibm.com>
+Date: Thu, 18 Mar 2010 12:13:31 -0700
+Message-ID: <364299f41003181213i7b5bffe3pc1c8ab43fc234ef3@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] FW: LTP check_mqns_enable.c missing mqueue.h file
+Subject: Re: [LTP] LTP's filecaps test gives false positive results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,116 +38,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anthony Ton <anthony.ton@ericsson.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, Iranna D Ankad <iranna.ankad@in.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Thu, Mar 18, 2010 at 10:44 AM, Anthony Ton <anthony.ton@ericsson.com> wr=
-ote:
-> Hi Rishikesh,
-> I download the version you mentioned; however, the problem still exists.
-> Please see the attached file for trace output.
-> Thanks,
-> Anthony
->
-> -----Original Message-----
-> From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
-> Sent: Wednesday, March 17, 2010 10:44 PM
-> To: Anthony Ton
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] FW: LTP check_mqns_enable.c missing mqueue.h file
->
->
-> Hi Anthony,
->
-> can you please try latest release which has been released yesterday =A0an=
-d let us know the result. Then we can fix this fast if such problem is stil=
-l there.
->
-> You can download it from here:
-> https://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20100228.1/lt=
-p-full-20100228.1.tgz/download
->
-> Or You can clone through git also.
->
-> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp-dev
->
-> Thanks for reporting this failure.
->
-> -Rishi
->>Hi,
+On Thu, Mar 18, 2010 at 7:55 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> Quoting Rishikesh K Rajak (risrajak@linux.vnet.ibm.com):
+>> On Wed, Mar 03, 2010 at 01:14:12AM -0800, Garrett Cooper wrote:
+>> > =A0 =A0 Yes -- and I think this is because the constants no longer have
+>> > the same name:
+>> >
+>> > http://fxr.watson.org/fxr/source/include/linux/prctl.h?v=3Dlinux-2.6#L=
+68
+>> >
+>> > =A0 =A0 Note -- CAP_BSET_DROP should be: PR_CAPBSET_DROP, etc.
+>> >
+>> > =A0 =A0 Which is why I stress _not_ putting these hardcoded constants =
+in
+>> > test files (POLLHDRDUP -- or whatever it was in ppoll01 -- is the only
+>> > real violation I can remember OTOH that I need to clean up
+>> > eventually). We need to be consistent with any and all documentation
+>> > provided to end-developers or we [LTP] are going to shoot ourselves in
+>> > the foot if and when the underlying functionality changes.
+>> > =A0 =A0 I'll update the tests this weekend, but I would like it if som=
+eone
+>> > test the tests on an outdated distro (RHEL 4.x?) once I provide a
 >>
->>I am using the latest version of LTP ltp-full-20100228. =A0During make
->>all, the compile check_mqns_enable.c complains "mqueue.h: No such file or=
- directory."
->>Could you please
->>+tell me how to fix this?
->>I am greatly appreciate your help.
->>>
->>Regards,
->>Anthony Ton
+>> Hi Garret,
 >>
->>Error output:
->>=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>ar -rc "libclone.a" libclone.o
->>ranlib "libclone.a"
->>>make[5]: Leaving directory
-> `/home/etonant/linux-test-project/ltp-full-20100228/testcases/kernel/cont=
-ainers/libclone'
->>>gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->>-I/home/etonant/linux-test-project/ltp-full-20100228/testcases/kernel/i
->>nclude
->>+-I/home/etonant/linux-test-project/ltp-full-20100228/testcases/kernel/
->>+containers/mqns/../libclone
->>-I../../../../include -I../../../../include
->>+-L/home/etonant/linux-test-project/ltp-full-20100228/testcases/kernel/
->>+containers/mqns/../libclone
->>-L../../../../lib =A0check_mqns_enabled.c =A0-lpthread -lrt -lclone -lltp
->>-o
->>>+check_mqns_enabled
->>In file included from check_mqns_enabled.c:25:
->>mqns.h:5:20: mqueue.h: No such file or directory
->>check_mqns_enabled.c: In function `main':
->>check_mqns_enabled.c:35: error: `mqd_t' undeclared (first use in this
->>function)
->>>check_mqns_enabled.c:35: error: (Each undeclared identifier is
->>>reported only
->>once
->>check_mqns_enabled.c:35: error: for each function it appears in.)
->>check_mqns_enabled.c:35: error: syntax error before "mqd"
->>>check_mqns_enabled.c:40: warning: implicit declaration of function `mq_u=
-nlink'
->>check_mqns_enabled.c:41: error: `mqd' undeclared (first use in this
->>function)
->>check_mqns_enabled.c:41: warning: implicit declaration of function `mq_op=
-en'
->>check_mqns_enabled.c:41: error: `O_RDWR' undeclared (first use in this
->>function)
->>check_mqns_enabled.c:41: error: `O_CREAT' undeclared (first use in this
->>function)
->>check_mqns_enabled.c:41: error: `O_EXCL' undeclared (first use in this
->>function)
->>>check_mqns_enabled.c:46: warning: implicit declaration of function `mq_c=
-lose'
->>make[4]: *** [check_mqns_enabled] Error 1
->>make[4]: Leaving directory
->>`/home/etonant/linux-test-project/ltp-full-20100228/testcases/kernel/cont=
-ainers/mqns'
->>make[3]: *** [all] Error 2
->>make[3]: Leaving directory
->>`/home/etonant/linux-test-project/ltp-full-20100228/testcases/kernel/cont=
-ainers'
->>>make[2]: *** [all] Error 2
->>make[2]: Leaving directory
->>`/home/etonant/linux-test-project/ltp-full-20100228/testcases/kernel'
->>make[1]: *** [all] Error 2
->>make[1]: Leaving directory
->>`/home/etonant/linux-test-project/ltp-full-20100228/testcases'
->>make: *** [testcases-all] Error 2
->>etonant@lxlogin-4-300
+>> Can you please look this again ?
+>
+> Wait, what? =A0Was the original complaint just about a #warning? =A0Note
+> that it will #warn but then go ahead and define it, so there should not
+> be a real problem.
+>
+> Anyway I'll try to get time tomorrow to rewrite this to use the constants
+> from the new securebits.h (which may not be in sys/ yet, but is in linux/
+> atm and will show up under sys/ at some point). =A0If Garret could help me
+> with doing an automate thingamagiggy to detect whether prctl(CAP_BSET_DRO=
+P)
+> returns -ENOSYS and not compile/install/run the tests in that case, that'd
+> be great.
+>
+> And maybe I'll finally implement some of the new securebits testcases I
+> spelled out a year or two ago.
 
-As Serge so eloquently put it, the problem is that you don't have your
-glibc headers installed.
-HTH,
+Hi Serge,
+    AC_RUN_IFELSE is what you want :
+http://www.gnu.org/software/autoconf/manual/autoconf.html#Runtime --
+make sure to write a cross-compile statement with a sensible default
+(enabled?).
+    I'll help you write up a test once you have something to compile :).
+Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
