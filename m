@@ -1,22 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Ntcif-0006jO-P8
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:10:41 +0000
-Received: from mail-yw0-f192.google.com ([209.85.211.192])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ntcie-0001jy-6S
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:10:40 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NsByt-0007aw-B9
+	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 09:25:31 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NsBys-0006vA-B2
+	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 09:25:31 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2I9Ip21009056
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Mar 2010 03:18:51 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2I9PMN4068788
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Mar 2010 03:25:23 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2I9PM2b032078
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Mar 2010 03:25:22 -0600
+Date: Thu, 18 Mar 2010 14:55:16 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100318092516.GA16328@linux.vnet.ibm.com>
+References: <OF3DD1AE6A.65D45C56-ON652576DA.002F585D-652576DA.00384F54@in.ibm.com>
+	<20100302152135.GA6691@us.ibm.com>
+	<B02F7096-7406-4AAE-8BBF-AD16D5228F47@gmail.com>
+	<20100302173535.GA14556@us.ibm.com>
+	<5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
+	<20100303055619.GA19084@linux.vnet.ibm.com>
+	<364299f41003030114x30e251d6x7cd7993f8f75792f@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20100322063936.GA20606@linux.vnet.ibm.com>
-References: <1268975755.12801.44.camel@lishuang-desktop>
-	<20100322063936.GA20606@linux.vnet.ibm.com>
-Date: Mon, 22 Mar 2010 01:10:34 -0700
-Message-ID: <364299f41003220110n6d1c0df7jbbc1c78450375980@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] When I execute ppoll01 testcase in mips board,
-	the testcase 	failed.
+Content-Disposition: inline
+In-Reply-To: <364299f41003030114x30e251d6x7cd7993f8f75792f@mail.gmail.com>
+Subject: Re: [LTP] LTP's filecaps test gives false positive results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,96 +43,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry xu <feng.xu@windriver.com>, takahiro.yasui.mp@hitachi.com, yumiko.sugita.yf@hitachi.com, sa-fuji@sdl.hitachi.co.jp, ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Iranna D Ankad <iranna.ankad@in.ibm.com>
 
-On Sun, Mar 21, 2010 at 11:39 PM, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote:
-> On Fri, Mar 19, 2010 at 01:15:55PM +0800, Henry xu wrote:
->> Hi,all
->>
->> summary:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> When I execute ppoll01 testcase in mips board,the testcase failed.
->
-> Again can you send us the strace of this ?
->
-> @All, Let us know if anyone also facing the same problem, i am not having=
- any
-> mips box but may be someone can help here to Henry.
->
-> -Rishi
->>
->> Environment
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> linux version:2.6.27.45
->> hardware platform:mips
->>
->>
->>
->> symptom Details
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> root@localhost:/opt/mytest> ./ppoll01
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) START
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0EXPECT: revents=3D0x0005
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0RESULT: revents=3D0x0005
->> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
->> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) START
->> EXPECT: return value(ret)=3D0 errno=3D0 (Success)
->> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) END =3D> NG
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) START
->> ^CEXPECT: return value(ret)=3D0 errno=3D0 (Success)
->> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) END =3D> NG
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) START
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0EXPECT: revents=3D0x0020
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0RESULT: revents=3D0x0020
->> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
->> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) START
->> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) START
->> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) START
->> EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
->> RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) START
->> EXPECT: return value(ret)=3D-1 errno=3D14 (Bad address)
->> RESULT: return value(ret)=3D-1 errno=3D14 (Bad address)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) END =3D> OK
->> ppoll01 =A0 =A0 1 =A0TFAIL =A0: =A0ppoll01 failed: TEST_ERRNO=3DEFAULT(1=
-4): Bad
->> address
->> NGppoll01 =A0 =A0 0 =A0TWARN =A0: =A0tst_rmdir(): rmobj(/tmp/ppoKT1uvV) =
-failed:
->> unlink(/tmp/ppoKT1uvV/.nfs00000000005bcdac00000035) failed; errno=3D16:
->> Device or resource busy
+On Wed, Mar 03, 2010 at 01:14:12AM -0800, Garrett Cooper wrote:
+>     Yes -- and I think this is because the constants no longer have
+> the same name:
+> 
+> http://fxr.watson.org/fxr/source/include/linux/prctl.h?v=linux-2.6#L68
+> 
+>     Note -- CAP_BSET_DROP should be: PR_CAPBSET_DROP, etc.
+> 
+>     Which is why I stress _not_ putting these hardcoded constants in
+> test files (POLLHDRDUP -- or whatever it was in ppoll01 -- is the only
+> real violation I can remember OTOH that I need to clean up
+> eventually). We need to be consistent with any and all documentation
+> provided to end-developers or we [LTP] are going to shoot ourselves in
+> the foot if and when the underlying functionality changes.
+>     I'll update the tests this weekend, but I would like it if someone
+> test the tests on an outdated distro (RHEL 4.x?) once I provide a
 
-    I was seeing similar back when I had access to Cavium mips
-hardware and worked in my prior group. Neither case is true anymore so
-I can't verify this issue.
-Thanks,
--Garrett
+Hi Garret,
 
----------------------------------------------------------------------------=
----
+Can you please look this again ?
+
+-Rishi
+
+> patch to ensure that nothing's being regressed. Based on some really
+> simple inspection it appears that these tests are compatible only with
+> libcapability 2.x+, but I could be wrong...
+> Thanks,
+> -Garrett
+> 
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
