@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maxin.john@gmail.com>) id 1NmZTL-0001fT-1l
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 21:17:43 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NmZTI-00080v-Rd
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 21:17:43 +0000
-Received: by pwi5 with SMTP id 5so376868pwi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 02 Mar 2010 13:17:35 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NsFlJ-00075r-An
+	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 13:27:45 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NsFlH-0005k8-4R
+	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 13:27:45 +0000
+Date: Thu, 18 Mar 2010 18:57:32 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100318132732.GA27760@linux.vnet.ibm.com>
+References: <1268903717.12801.30.camel@lishuang-desktop>
 MIME-Version: 1.0
-Date: Wed, 3 Mar 2010 02:47:34 +0530
-Message-ID: <9debc4411003021317p4b7a2872lb200d17726df24c4@mail.gmail.com>
-From: Maxin John <maxin.john@gmail.com>
-Content-Type: multipart/mixed; boundary=001636e0ab1afe00970480d7e4f1
-Subject: [LTP] [PATCH] Makefile fix for 'createfile.c' build in
-	network/tcp_cmds/echo
+Content-Disposition: inline
+In-Reply-To: <1268903717.12801.30.camel@lishuang-desktop>
+Subject: Re: [LTP] LTP clock_nanosleep01 testcase fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,44 +25,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---001636e0ab1afe00970480d7e4f1
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-I have observed that the 'createfile.c' in
-testcases/network/tcp_cmds/echo directory is not getting compiled and
-installed during the LTP build. The "echo_createfile.patch" makes the
-necessary changes in the Makefile.
-
-Signed-off-by: Maxin B. John <maxin.john@gmail.com>
-
-Best Regards,
-Maxin B. John
-
---001636e0ab1afe00970480d7e4f1
-Content-Type: text/x-patch; charset=US-ASCII; name="echo_createfile.patch"
-Content-Disposition: attachment; filename="echo_createfile.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g6b6wa980
-
-ZGlmZiAtdU5yIGx0cC1mdWxsLTIwMTAwMjI4LW9yaWcvdGVzdGNhc2VzL25ldHdvcmsvdGNwX2Nt
-ZHMvZWNoby9NYWtlZmlsZSBsdHAtZnVsbC0yMDEwMDIyOC90ZXN0Y2FzZXMvbmV0d29yay90Y3Bf
-Y21kcy9lY2hvL01ha2VmaWxlCi0tLSBsdHAtZnVsbC0yMDEwMDIyOC1vcmlnL3Rlc3RjYXNlcy9u
-ZXR3b3JrL3RjcF9jbWRzL2VjaG8vTWFrZWZpbGUJMjAxMC0wMy0wMSAyMDoyODoyOS4wMDAwMDAw
-MDAgKzA1MzAKKysrIGx0cC1mdWxsLTIwMTAwMjI4L3Rlc3RjYXNlcy9uZXR3b3JrL3RjcF9jbWRz
-L2VjaG8vTWFrZWZpbGUJMjAxMC0wMy0wMyAwMjoyNjo0MC4wMDAwMDAwMDAgKzA1MzAKQEAgLTI4
-LDcgKzI4LDcgQEAKIAogSU5TVEFMTF9UQVJHRVRTCQk6PSBlY2hvMDEKIAotTUFLRV9UQVJHRVRT
-CQk6PSBlY2hvZXMgZWNob2VzNgorTUFLRV9UQVJHRVRTCQk6PSBlY2hvZXMgZWNob2VzNiBjcmVh
-dGVmaWxlCiAKICU2OiBDUFBGTEFHUyArPSAtRElORVQ2CiAK
---001636e0ab1afe00970480d7e4f1
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Henry xu <feng.xu@windriver.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
+
+On Thu, Mar 18, 2010 at 05:15:17PM +0800, Henry xu wrote:
+> Hi,all
+> 
+> summary:
+> ===================================================================
+> When I execute nanosleep01 testcase in mips board,the case01 is fail.
+
+
+Hi Henry,
+
+Can you please send me the strace of execution of this testcase ?
+
+-Rishi
+> 
+> Environment
+> ================================================================
+> linux version:2.6.27.45
+> hardware platform:mips
+> 
+> 
+> 
+> symptom Details
+> =====================================================================
+> clock_nanosleep01    0  TINFO  :  (case00) START
+> clock_nanosleep01    0  TINFO  :  check sleep time: (min:480) < 500 <
+> (max:520) (msec)
+> clock_nanosleep01    0  TINFO  :  remain time: 0 1
+> EXPECT: return value(ret)=0 errno=0 (Success)
+> RESULT: return value(ret)=0 errno=0 (Success)
+> clock_nanosleep01    0  TINFO  :  (case00) END => OK
+> clock_nanosleep01    0  TINFO  :  (case01) START
+> clock_nanosleep01    0  TINFO  :  remain time: 0 1
+> EXPECT: return value(ret)=0 errno=0 (Success)
+> RESULT: return value(ret)=122 errno=0 (Success)
+> clock_nanosleep01    0  TINFO  :  (case01) END => NG
+> clock_nanosleep01    0  TINFO  :  (case02) START
+> clock_nanosleep01    0  TINFO  :  remain time: 0 1
+> EXPECT: return value(ret)=22 errno=0 (Success)
+> RESULT: return value(ret)=22 errno=0 (Success)
+> clock_nanosleep01    0  TINFO  :  (case02) END => OK
+> clock_nanosleep01    0  TINFO  :  (case03) START
+> clock_nanosleep01    0  TINFO  :  remain time: 0 1
+> EXPECT: return value(ret)=22 errno=0 (Success)
+> RESULT: return value(ret)=22 errno=0 (Success)
+> clock_nanosleep01    0  TINFO  :  (case03) END => OK
+> clock_nanosleep01    0  TINFO  :  (case04) START
+> clock_nanosleep01    0  TINFO  :  remain time: 0 1
+> EXPECT: return value(ret)=22 errno=0 (Success)
+> RESULT: return value(ret)=22 errno=0 (Success)
+> clock_nanosleep01    0  TINFO  :  (case04) END => OK
+> clock_nanosleep01    0  TINFO  :  (case05) START
+> clock_nanosleep01    0  TINFO  :  remain time: 9 499708701
+> EXPECT: return value(ret)=4 errno=0 (Success)
+> RESULT: return value(ret)=4 errno=0 (Success)
+> clock_nanosleep01    0  TINFO  :  (case05) END => OK
+> clock_nanosleep01    1  TFAIL  :  clock_nanosleep failed
+> clock_nanosleep01    0  TINFO  :  NG
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -72,16 +115,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---001636e0ab1afe00970480d7e4f1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---001636e0ab1afe00970480d7e4f1--
-
