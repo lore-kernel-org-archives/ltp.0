@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NmklY-0002rt-Bh
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:21:16 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NmklW-0000Wm-1O
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:21:16 +0000
-Received: by pvf33 with SMTP id 33so327699pvf.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 03 Mar 2010 01:21:08 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <9debc4411003021317p4b7a2872lb200d17726df24c4@mail.gmail.com>
-References: <9debc4411003021317p4b7a2872lb200d17726df24c4@mail.gmail.com>
-Date: Wed, 3 Mar 2010 01:21:08 -0800
-Message-ID: <364299f41003030121o634253ahb8ffc008627ef705@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Makefile fix for 'createfile.c' build in
-	network/tcp_cmds/echo
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Feng.Xu@windriver.com>) id 1NsUUw-0000y1-Tu
+	for ltp-list@lists.sourceforge.net; Fri, 19 Mar 2010 05:11:50 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NsUUs-0006VQ-G4
+	for ltp-list@lists.sourceforge.net; Fri, 19 Mar 2010 05:11:50 +0000
+From: Henry xu <feng.xu@windriver.com>
+Date: Fri, 19 Mar 2010 13:15:55 +0800
+Message-Id: <1268975755.12801.44.camel@lishuang-desktop>
+Mime-Version: 1.0
+Subject: [LTP] When I execute ppoll01 testcase in mips board,
+	the testcase failed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,20 +26,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Maxin John <maxin.john@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: takahiro.yasui.mp@hitachi.com, yumiko.sugita.yf@hitachi.com, sa-fuji@sdl.hitachi.co.jp
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, Mar 2, 2010 at 1:17 PM, Maxin John <maxin.john@gmail.com> wrote:
-> Hi,
->
-> I have observed that the 'createfile.c' in
-> testcases/network/tcp_cmds/echo directory is not getting compiled and
-> installed during the LTP build. The "echo_createfile.patch" makes the
-> necessary changes in the Makefile.
+Hi,all
 
-Good catch!
-Thanks,
--Garrett
+summary:
+===================================================================
+When I execute ppoll01 testcase in mips board,the testcase failed.
+
+Environment
+================================================================
+linux version:2.6.27.45
+hardware platform:mips
+
+
+
+symptom Details
+=====================================================================
+root@localhost:/opt/mytest> ./ppoll01
+ppoll01     0  TINFO  :  (case00) START
+ppoll01     0  TINFO  :  EXPECT: revents=0x0005
+ppoll01     0  TINFO  :  RESULT: revents=0x0005
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       1 errno=0 (Success)
+ppoll01     0  TINFO  :  (case00) END => OK
+ppoll01     0  TINFO  :  (case01) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case01) END => NG
+ppoll01     0  TINFO  :  (case02) START
+^CEXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case02) END => NG
+ppoll01     0  TINFO  :  (case03) START
+ppoll01     0  TINFO  :  EXPECT: revents=0x0020
+ppoll01     0  TINFO  :  RESULT: revents=0x0020
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       1 errno=0 (Success)
+ppoll01     0  TINFO  :  (case03) END => OK
+ppoll01     0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=4 (Interrupted system call)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case04) END => OK
+ppoll01     0  TINFO  :  (case05) START
+EXPECT: return value(ret)=-1 errno=4 (Interrupted system call)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case05) END => OK
+ppoll01     0  TINFO  :  (case06) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+ppoll01     0  TINFO  :  (case06) END => OK
+ppoll01     0  TINFO  :  (case07) START
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=14 (Bad address)
+ppoll01     0  TINFO  :  (case07) END => OK
+ppoll01     1  TFAIL  :  ppoll01 failed: TEST_ERRNO=EFAULT(14): Bad
+address
+NGppoll01     0  TWARN  :  tst_rmdir(): rmobj(/tmp/ppoKT1uvV) failed:
+unlink(/tmp/ppoKT1uvV/.nfs00000000005bcdac00000035) failed; errno=16:
+Device or resource busy
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
