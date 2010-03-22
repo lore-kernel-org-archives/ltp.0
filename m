@@ -1,26 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NmWms-0005M0-L4
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 18:25:42 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NmWmr-0008Is-GD
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 18:25:42 +0000
-Received: by pwi5 with SMTP id 5so277378pwi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 02 Mar 2010 10:25:35 -0800 (PST)
-References: <OF3DD1AE6A.65D45C56-ON652576DA.002F585D-652576DA.00384F54@in.ibm.com>
-	<20100302152135.GA6691@us.ibm.com>
-	<B02F7096-7406-4AAE-8BBF-AD16D5228F47@gmail.com>
-	<20100302173535.GA14556@us.ibm.com>
-Message-Id: <5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <20100302173535.GA14556@us.ibm.com>
-Mime-Version: 1.0 (iPhone Mail 7E18)
-Date: Tue, 2 Mar 2010 10:25:23 -0800
-Subject: Re: [LTP] LTP's filecaps test gives false positive results
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NtbKx-0001AZ-Hc
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:42:07 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NtbKv-0000PE-Aj
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:42:07 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2M6V5ZJ003024
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:31:05 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2M6fxva166642
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:41:59 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o2M6fxjt023717
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:41:59 -0400
+Date: Mon, 22 Mar 2010 12:11:57 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100322064157.GB20606@linux.vnet.ibm.com>
+References: <E0B6230F32558E43951AF1B0DEBF98102119D20EDD@EUSAACMS0714.eamcs.ericsson.se>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <E0B6230F32558E43951AF1B0DEBF98102119D20EDD@EUSAACMS0714.eamcs.ericsson.se>
+Subject: Re: [LTP] tcore.exp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,75 +39,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, Iranna D Ankad <iranna.ankad@in.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Anthony Ton <anthony.ton@ericsson.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Mar 2, 2010, at 9:35 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+>It appears that the proc check_fpu in tcore.exp has an error when the expect
+>can't \
+>find the expected string "xmm$num ...".  In the timeout block, the code read
+>
+>fail "fail to check the xmm value(timeout)"
+>
+>In my humble opinion, it should be
+>
+>send_user "fail to check the xmm value(timeout)"
 
-> Quoting Garrett Cooper (yanegomi@gmail.com):
->> Sent from my iPhone
->>
->> On Mar 2, 2010, at 7:21 AM, "Serge E. Hallyn" <serue@us.ibm.com>  
->> wrote:
->>
->>> Quoting Iranna D Ankad (iranna.ankad@in.ibm.com):
->>>> LTP reports setcap is installed, but actually, my system has setcap
->>>> installed, along with all required libcap related rpms.
->>>>
->>>> mx3950:/opt/ltp # setc
->>>> setcap      setconsole  setctsid
->>>> mx3950:/opt/ltp #
->>>>
->>>> mx3950:/opt/ltp # rpm -qa | grep cap
->>>> libcap1-1.10-6.10
->>>> libcap2-2.11-2.15
->>>> libcap-progs-2.11-2.15
->>>> libpcap0-0.9.8-50.4.32
->>>> libcap2-32bit-2.11-2.15
->>>> libcap1-32bit-1.10-6.10
->>>> mx3950:/opt/ltp #
->>>
->>> THere are a bunch of #if directives in there (only looked at
->>> check_simple_capset.c which I assume is where your trouble is) which
->>> are not defined on my fedora 10 test system.  Don't know where they
->>> came from - they predate the git history.
->>>
->>> HAVE_SYS_CAPABILITY_H, HAVE_DECL_CAP_FROM_TEXT, etc.
->>>
->>> -serge
->>
->> That would be from me; I do that via autoconf and they probably
->> fubared the headers on Redhat or something... Do you have
->
-> Oh, ok.  Well I suspect we can ditch the check_simple_capset.c
-> altogether if autoconf is (eventually :) doing the detection for
-> us.  The only point of check_simple_capset.c was to check whether
-> libcap is there and whether we should run the real tests.
->
->> libcap-devel installed?
->
-> yup:
->
-> [root@oracer4b ltp-dev]# rpm -qa|grep libcap
-> libcap-2.10-2.fc10.x86_64
-> libcap-devel-2.10-2.fc10.x86_64
->
-> [root@oracer4b ltp-dev]# grep CAP_LIB *
-> config.log:CAP_LIBS=''
-> config.status:S["CAP_LIBS"]=""
-> configure:CAP_LIBS'
-> configure:                    CAP_LIBS="-lcap"
->
-> so somehow -lcap was not detected by configure?
+Hi Anthony,
 
-Well some of the definitions are there but maybe not all of them.  
-config.log would help...
+Send us a patch with the correct changes and then someone can review here.
 
->> Fwiw, that probably could be grossly simplified at the top of the
->> file or something, do I'll look into doing that later.
-
-Cheers!
--Garrett
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
