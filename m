@@ -1,36 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ljhc@br.ibm.com>) id 1NpQb5-0001Ut-Fh
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 18:25:31 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NpQb4-00034y-Ee
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 18:25:31 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2AI5GZH011435
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 11:05:16 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	o2AIBfco214582
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 11:11:43 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o2AIBYXe024190
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 11:11:34 -0700
-Received: from [9.78.147.133] ([9.78.147.133])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o2AIBXGO024089
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Mar 2010 11:11:33 -0700
-From: Lucio Correia <ljhc@br.ibm.com>
-Content-Type: multipart/mixed; boundary="=-NAEvUKovMFzYDJdWcveD"
-Date: Wed, 10 Mar 2010 15:11:32 -0300
-Message-Id: <1268244692.10784.6.camel@lucio-t400>
-Mime-Version: 1.0
-Subject: [LTP] [patch] Fixing cpuacct_setup.sh script
-Reply-To: ljhc@br.ibm.com
+	(envelope-from <schamart@linux.vnet.ibm.com>) id 1Ntdhb-0007mQ-KR
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 09:13:39 +0000
+Received: from e23smtp09.au.ibm.com ([202.81.31.142])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ntdha-0006An-CB
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 09:13:39 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id o2M95wlE010895
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:58 +1100
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2M95wDF762020
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:58 +1100
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o2M95vo2017789
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:57 +1100
+Received: from localhost (chamarthy.in.ibm.com [9.124.33.99])
+	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o2M95vhl017745
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 20:05:57 +1100
+Date: Mon, 22 Mar 2010 14:35:55 +0530
+From: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
+Message-ID: <20100322090555.GA6154@chamarthy>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
+Content-Disposition: inline
+Subject: [LTP] memcg_function tests failing on s390
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,52 +43,44 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
 
---=-NAEvUKovMFzYDJdWcveD
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes cut command. The output is empty with -f1, it should be -f2.
+Hi LTP,
 
-Signed-off-By: Lucio Correia <ljhc@br.ibm.com>
+The memcg_function tests were failing in s390 as the condition for checking
+support for memory controller is not getting satisfied. Eventhough the cgroup
+memory is enabled, the script comes out saying that the memory support is not
+available in the kernel.
 
-diff -Nurp ltp-full-20100228.orig/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh ltp-full-20100228.new/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
---- ltp-full-20100228.orig/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh	2010-03-01 11:58:28.000000000 -0300
-+++ ltp-full-20100228.new/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh	2010-03-10 14:59:50.000000000 -0300
-@@ -58,7 +58,7 @@ cleanup ()
- }
- task_kill ()
- {
--	for i in `ps -e | grep cpuacct_taski* | cut -d" " -f1`
-+	for i in `ps -e | grep cpuacct_taski* | cut -d" " -f2`
- 	do
- 		kill -SIGUSR1 $i
- 	done
+This patch changes the condition checking for memory cgroup support in kernel
+in the script memcg_function_test.sh.
 
--  
-Lucio Correia
-Software Engineer
-IBM LTC Brazil
+-- 
+Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+Linux on System z (RedHat & Novell SuSE) CSVT,
+IBM India Systems & Technology Group/LTC - ISL,
+Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+[ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
 
+--17pEHd4RhPHOinZp
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="memcg_function_patch.patch"
 
---=-NAEvUKovMFzYDJdWcveD
-Content-Disposition: attachment; filename="cpuacct_setup_fix.patch"
-Content-Type: text/x-patch; name="cpuacct_setup_fix.patch"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-diff -Nurp ltp-full-20100228.orig/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh ltp-full-20100228.new/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
---- ltp-full-20100228.orig/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh	2010-03-01 11:58:28.000000000 -0300
-+++ ltp-full-20100228.new/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh	2010-03-10 14:59:50.000000000 -0300
-@@ -58,7 +58,7 @@ cleanup ()
- }
- task_kill ()
- {
--	for i in `ps -e | grep cpuacct_taski* | cut -d" " -f1`
-+	for i in `ps -e | grep cpuacct_taski* | cut -d" " -f2`
- 	do
- 		kill -SIGUSR1 $i
- 	done
-
---=-NAEvUKovMFzYDJdWcveD
+diff -Naurp memcg_function_test_old.sh memcg_function_test.sh
+--- memcg_function_test_old.sh  2010-03-22 09:50:56.000000000 +0100
++++ memcg_function_test.sh      2010-03-22 09:52:52.000000000 +0100
+@@ -30,7 +30,7 @@ export TCID="memcg_function_test"
+ export TST_TOTAL=38
+ export TST_COUNT=0
+ 
+-if [ ! "grep -w memory /proc/cgroups | cut -f4" == "1" ]
++if [ "$(grep -w memory /proc/cgroups | cut -f4)" != "1" ]
+ then
+         echo "WARNING:";
+         echo "Either Kernel does not support for memory resource controller or feature not enabled";
+--17pEHd4RhPHOinZp
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -101,7 +92,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---=-NAEvUKovMFzYDJdWcveD
+--17pEHd4RhPHOinZp
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -112,6 +103,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---=-NAEvUKovMFzYDJdWcveD--
-
+--17pEHd4RhPHOinZp--
 
