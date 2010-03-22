@@ -1,32 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <saileshcv@gmail.com>) id 1NmOnW-0000Fv-Bf
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 09:53:50 +0000
-Received: from mail-iw0-f195.google.com ([209.85.223.195])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NmOnV-00036C-F8
-	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 09:53:50 +0000
-Received: by iwn33 with SMTP id 33so46017iwn.23
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 02 Mar 2010 01:53:44 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NtbOs-0001OZ-MX
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:46:10 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NtbOr-000236-9s
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:46:10 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2M6fUtP025124
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 00:41:30 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2M6k3BQ145036
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 00:46:03 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2M6k3ld013527
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 00:46:03 -0600
+Date: Mon, 22 Mar 2010 12:16:01 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100322064601.GD20606@linux.vnet.ibm.com>
+References: <20100321011004.GA28202@us.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20100301062917.GD3860@linux.vnet.ibm.com>
-References: <364299f41002242307i6256a0f1v9fbc4a2197049270@mail.gmail.com>
-	<41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
-	<20100225093304.GA23984@linux.vnet.ibm.com>
-	<364299f41002250148q42f2d468y5c21919eeed3ce51@mail.gmail.com>
-	<41c7690d1002251906w7b54d7a8w13fa60dcea22a4b3@mail.gmail.com>
-	<41c7690d1002252055t5956a652ta173641c1860eedd@mail.gmail.com>
-	<20100226053452.GA3800@linux.vnet.ibm.com>
-	<20100226085136.GA9407@linux.vnet.ibm.com>
-	<20100226091119.GB9407@linux.vnet.ibm.com>
-	<20100301062917.GD3860@linux.vnet.ibm.com>
-Date: Tue, 2 Mar 2010 15:17:01 +0530
-Message-ID: <41c7690d1003020147l3811c35dl26306923c3420e18@mail.gmail.com>
-From: Silesh C V <saileshcv@gmail.com>
-Subject: Re: [LTP] [PATCH-v2] RTC Device Driver Tests
+Content-Disposition: inline
+In-Reply-To: <20100321011004.GA28202@us.ibm.com>
+Subject: Re: [LTP] [PATCH ltp] fix detection of setcap for filecaps test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,83 +40,228 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: risrajak@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 3/1/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
-> On Fri, Feb 26, 2010 at 02:41:19PM +0530, Rishikesh K Rajak wrote:
->> On Fri, Feb 26, 2010 at 02:21:36PM +0530, Rishikesh K Rajak wrote:
->> > > >Hi,
->> >
->> > Looks like some issue with your code, can you please relook once again ?
->>
->> I have other system Which has SLES11 and i could see it has
->>
->> mls41:/home/test/ltp-full-20100131/testcases/kernel/device-drivers/rtc #
->> ls -l /dev/rtc*
->> lrwxrwxrwx 1 root root      4 2010-02-26 13:04 /dev/rtc -> rtc0
->> crw-r--r-- 1 root root 252, 0 2010-02-26 13:04 /dev/rtc0
->> mls41:/home/test/ltp-full-20100131/testcases/kernel/device-drivers/rtc #
->>
->> And here testcase passes. So can you check what could be the reason for
->> failing on RHEL5.4 where it has only.
->>
->> [root@mx3655 ~]# ls -l /dev/rtc*
->> crw-r--r-- 1 root root 10, 135 Feb 18 06:42 /dev/rtc
->> [root@mx3655 ~]#
->>
->> Thanks for your support.
->
-> HI Silesh,
->
-> Any input here, so that i can push this to upstream.
+On Sat, Mar 20, 2010 at 08:10:04PM -0500, Serge E. Hallyn wrote:
+> Remove the run-time checks and just have autoconf check for
+> libcap and setcap presence.
+> 
+> ( applies on top of the patch I sent this morning )
+> 
+> After this, filecaps tests compile, install, and pass on f10 at least.
+> 
+> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
 
-Hi Rishi,
+Applied to next. Will merge soon to master once i/someone get a chance to test 
+on multiple boxes.
 
-Sorry for the late reply. I was out of the office for the past few
-days.AFAIK alarm not ringing usually happens because of the absence of
-an IRQ line from the RTC.I should be able to make the test report a
-FAIL when this happens by using select(2) so that a time out occurs. I
-will send another patch soon.
+-Thanks
+Rishi
 
-
-Thanks,
-Silesh.
-
->
-> Thanks
-> Rishi
->
->>
->> --
->> Thanks & Regards
->> Rishi
->> LTP Maintainer
->> IBM, LTC, Bangalore
->> Please join IRC #ltp @ irc.freenode.net
->>
->> ------------------------------------------------------------------------------
->> Download Intel&#174; Parallel Studio Eval
->> Try the new software tools for yourself. Speed compiling, find bugs
->> proactively, and fine-tune applications for parallel performance.
->> See why Intel Parallel Studio got high marks during beta.
->> http://p.sf.net/sfu/intel-sw-dev
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
-> --
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
->
-
+> ---
+>  m4/ltp-cap.m4                                      |    1 +
+>  testcases/kernel/security/Makefile                 |    3 +
+>  .../kernel/security/filecaps/checkforfilecaps.sh   |   40 ------------
+>  .../kernel/security/filecaps/checkforlibcap.sh     |   66 --------------------
+>  testcases/kernel/security/filecaps/filecapstest.sh |   16 +-----
+>  5 files changed, 5 insertions(+), 121 deletions(-)
+>  delete mode 100755 testcases/kernel/security/filecaps/checkforfilecaps.sh
+>  delete mode 100755 testcases/kernel/security/filecaps/checkforlibcap.sh
+> 
+> diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
+> index 28d998d..caa436f 100644
+> --- a/m4/ltp-cap.m4
+> +++ b/m4/ltp-cap.m4
+> @@ -28,6 +28,7 @@ AH_TEMPLATE(HAVE_LIBCAP,
+>  AC_CHECK_HEADERS(sys/capability.h,[
+>  	LTP_CAPABILITY_SUPPORT=yes
+>  	AC_CHECK_LIB(cap,cap_compare,[AC_DEFINE(HAVE_LIBCAP) CAP_LIBS="-lcap"], [CAP_LIBS=""])
+> +	AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
+>  ])]
+>  AC_SUBST(CAP_LIBS)
+>  )
+> diff --git a/testcases/kernel/security/Makefile b/testcases/kernel/security/Makefile
+> index a23ce8f..52b8d06 100644
+> --- a/testcases/kernel/security/Makefile
+> +++ b/testcases/kernel/security/Makefile
+> @@ -29,6 +29,9 @@ include	$(top_srcdir)/include/mk/env_pre.mk
+>  ifeq ($(strip $(CAP_LIBS)),)
+>  FILTER_OUT_DIRS		:= cap_bound filecaps
+>  endif
+> +ifeq ($(HAVE_SETCAP),false)
+> +FILTER_OUT_DIRS		+= filecaps
+> +endif
+> 
+>  # XXX (garrcoop): avoid compilation failures on RHEL 5.4, as reported by
+>  # Mitani-san, because of policy versioning issues...
+> diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b/testcases/kernel/security/filecaps/checkforfilecaps.sh
+> deleted file mode 100755
+> index 757d409..0000000
+> --- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
+> +++ /dev/null
+> @@ -1,40 +0,0 @@
+> -#!/bin/sh
+> -################################################################################
+> -##                                                                            ##
+> -## Copyright (c) International Business Machines  Corp., 2008                 ##
+> -##                                                                            ##
+> -## This program is free software;  you can redistribute it and#or modify      ##
+> -## it under the terms of the GNU General Public License as published by       ##
+> -## the Free Software Foundation; either version 2 of the License, or          ##
+> -## (at your option) any later version.                                        ##
+> -##                                                                            ##
+> -## This program is distributed in the hope that it will be useful, but        ##
+> -## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> -## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> -## for more details.                                                          ##
+> -##                                                                            ##
+> -## You should have received a copy of the GNU General Public License          ##
+> -## along with this program;  if not, write to the Free Software               ##
+> -## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
+> -##                                                                            ##
+> -################################################################################
+> -
+> -if ! check_simple_capset; then
+> -	echo Posix capabilities not compiled into the kernel.  Please
+> -	echo modprobe capability or recompile your kernel with
+> -	echo CONFIG_SECURITY_CAPABILITIES=y.
+> -	exit 1
+> -fi
+> -
+> -touch testme
+> -setcap cap_sys_admin=ip testme
+> -ret=$?
+> -rm -f testme
+> -if [ $ret -ne 0 ]; then
+> -	echo File capabilities not compiled into kernel.  Please
+> -	echo make sure your kernel is compiled with
+> -	echo CONFIG_SECURITY_FILE_CAPABILITIES=y.
+> -	exit 1
+> -fi
+> -
+> -exit 0
+> diff --git a/testcases/kernel/security/filecaps/checkforlibcap.sh b/testcases/kernel/security/filecaps/checkforlibcap.sh
+> deleted file mode 100755
+> index cc7642e..0000000
+> --- a/testcases/kernel/security/filecaps/checkforlibcap.sh
+> +++ /dev/null
+> @@ -1,66 +0,0 @@
+> -#!/bin/sh
+> -################################################################################
+> -##                                                                            ##
+> -## Copyright (c) International Business Machines  Corp., 2008                 ##
+> -##                                                                            ##
+> -## This program is free software;  you can redistribute it and#or modify      ##
+> -## it under the terms of the GNU General Public License as published by       ##
+> -## the Free Software Foundation; either version 2 of the License, or          ##
+> -## (at your option) any later version.                                        ##
+> -##                                                                            ##
+> -## This program is distributed in the hope that it will be useful, but        ##
+> -## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> -## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> -## for more details.                                                          ##
+> -##                                                                            ##
+> -## You should have received a copy of the GNU General Public License          ##
+> -## along with this program;  if not, write to the Free Software               ##
+> -## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
+> -##                                                                            ##
+> -################################################################################
+> -
+> -if [ "x$CC" = "x" ]; then
+> -	export CC=gcc
+> -fi
+> -yesno=0
+> -if [ "$1" = "yesno" ]; then
+> -	yesno=1
+> -fi
+> -
+> -SETCAP=`which setcap`
+> -if [ -z "${SETCAP}" ]; then
+> -    ret=1
+> -else
+> -    ret=0
+> -fi
+> -
+> -if [ $ret -eq 0 ]; then
+> -	#also test for -lcap
+> -	$CC -o check_simple_capset check_simple_capset.c -lcap \
+> -         2>/dev/null
+> -
+> -	ret=$?
+> -fi
+> -
+> -if [ $ret -eq 0 ]; then
+> -       #also test for xattr
+> -       $CC -o check_xattr check_xattr.c
+> -       ret=$?
+> -       if [ $ret -ne 0 ]; then
+> -               echo "Please install xattr headers"
+> -       fi
+> -fi
+> -
+> -if [ $ret -ne 0 ]; then
+> -	if [ $yesno -eq 1 ]; then
+> -		echo no
+> -	else
+> -		exit 1
+> -	fi
+> -else
+> -	if [ $yesno -eq 1 ]; then
+> -		echo yes
+> -	else
+> -		exit 0
+> -	fi
+> -fi
+> diff --git a/testcases/kernel/security/filecaps/filecapstest.sh b/testcases/kernel/security/filecaps/filecapstest.sh
+> index 149cbc1..9025b58 100755
+> --- a/testcases/kernel/security/filecaps/filecapstest.sh
+> +++ b/testcases/kernel/security/filecaps/filecapstest.sh
+> @@ -19,22 +19,8 @@
+>  ##                                                                            ##
+>  ################################################################################
+> 
+> -checkforlibcap.sh
+> -ret=$?
+> -if [ $ret -ne 0 ]; then
+> -	echo "Filecaps 0 CONF : System doesn't support execution of the test"
+> -	echo setcap not installed.  Please install libcap-2.11 or newer from
+> -	echo ftp://ftp.kernel.org/pub/linux/libs/security/linux-privs/libcap2
+> -	exit 0
+> -fi
+> -checkforfilecaps.sh
+> -ret=$?
+> -if [ $ret -ne 0 ]; then
+> -	echo "Filecaps 0 CONF : File capabilities not available"
+> -	exit 0
+> -fi
+> -
+>  echo "Running in:"
+> +rm -f print_caps
+>  cp $LTPROOT/testcases/bin/print_caps .
+>  mkfifo caps_fifo
+>  chmod 777 caps_fifo
+> -- 
+> 1.6.0.6
+> 
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
-Silesh
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
