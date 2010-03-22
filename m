@@ -2,35 +2,33 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nu52e-0002pL-HZ
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:25:12 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nu52c-0001uz-7V
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:25:12 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2NEIF60003003
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 08:18:15 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2NEOjQd089812
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 08:24:48 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o2N7OjxC030175
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 01:24:45 -0600
-Date: Tue, 23 Mar 2010 19:54:39 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100323142439.GB16182@linux.vnet.ibm.com>
-References: <20100323122527.GA6017@chamarthy>
-	<20100323131438.GA16182@linux.vnet.ibm.com>
-	<20100323133224.GB6017@chamarthy> <20100323141040.GC6017@chamarthy>
+	(envelope-from <naresh.kernel@gmail.com>) id 1Ntmi0-0007iB-JD
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 18:50:40 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ntmhz-00041L-KB
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 18:50:40 +0000
+Received: by pwi2 with SMTP id 2so437750pwi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Mar 2010 11:50:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100323141040.GC6017@chamarthy>
-Subject: Re: [LTP] [BUG] cgroup_fj tests fail to run due to missing
- cgroup_fj_testcases
+In-Reply-To: <20100322082528.GF20606@linux.vnet.ibm.com>
+References: <f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
+	<364299f41003030118x6136dda6u7017054febea4b96@mail.gmail.com>
+	<20100303094541.GB23601@linux.vnet.ibm.com>
+	<f5a7b3811003030333n4b0b4045sff5795d99cd7da00@mail.gmail.com>
+	<364299f41003030342m7bf4a44ey897b7d2ca365a318@mail.gmail.com>
+	<f5a7b3811003030349s2d279fcdx8b74cff2e3a875ab@mail.gmail.com>
+	<364299f41003030355y5a921691vdde6baafbe8439cd@mail.gmail.com>
+	<f5a7b3811003030545l30efa927tb377f113da30a0bd@mail.gmail.com>
+	<f5a7b3811003080257n43d1af67o2942f4d8de2dc5b1@mail.gmail.com>
+	<20100322082528.GF20606@linux.vnet.ibm.com>
+Date: Tue, 23 Mar 2010 00:20:33 +0530
+Message-ID: <f5a7b3811003221150w11edbf02xade0f97ecb98a6ff@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0cd13bd4046b3e0482682c4a
+Subject: Re: [LTP] [PATCH] Synchronization required before release the lock:
+	sem_post/8-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,166 +38,257 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Tue, Mar 23, 2010 at 07:40:40PM +0530, Srinivasa R Chamarthy wrote:
-> Hi Rishi,
-> 
-> There seems to be another issue here. There are two files with name as
-> cgroup_fj_testcases. one is the script which already has the suffix as .sh
-> (cgroup_fj_testcases.sh) which is executed by cgroup_fj tests. But there has
-> to be one more file which is bare cgroup_fj_testcases which is having the test
-> configurations that are run by the cgroup_fj_testcases.sh script.
-> 
-> The bare configuration file cgroup_fj_testcases should have the test's to be
-> run configurations (i suppose). The testcase run_cgroup_test_fj.sh is
-> referencing cgroup_fj_testcases file as follows.
-> 
-> nlines=`cat cgroup_fj_testcases | wc -l`
-> 
-> I think this configuration file cgroup_fj_testcases is totally missing out in
-> the head. Let me know if i am correct.
+--000e0cd13bd4046b3e0482682c4a
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Yes you are half correct. Actually the mentioned commit has renamed
-cgroup_fj_testcases with cgroup_fj_testcases.sh . I am not sure why. If we have
-changed the file then corresponding need to be changed in this file
-run_cgroup_test_fj.sh .
+On Mon, Mar 22, 2010 at 1:55 PM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Mon, Mar 08, 2010 at 04:27:36PM +0530, naresh kamboju wrote:
+>> Hi Rishi and Garrett,
+>>
+>> On Wed, Mar 3, 2010 at 7:15 PM, naresh kamboju <naresh.kernel@gmail.com>=
+ wrote:
+>> > On Wed, Mar 3, 2010 at 5:25 PM, Garrett Cooper <yanegomi@gmail.com> wr=
+ote:
+>> >> On Wed, Mar 3, 2010 at 3:49 AM, naresh kamboju <naresh.kernel@gmail.c=
+om> wrote:
+>> >>> On Wed, Mar 3, 2010 at 5:12 PM, Garrett Cooper <yanegomi@gmail.com> =
+wrote:
+>> >>>> On Wed, Mar 3, 2010 at 3:33 AM, naresh kamboju <naresh.kernel@gmail=
+.com> wrote:
+>> >>>>> On Wed, Mar 3, 2010 at 3:15 PM, Rishikesh K Rajak
+>> >>>>> <risrajak@linux.vnet.ibm.com> wrote:
+>> >>>>>> On Wed, Mar 03, 2010 at 01:18:50AM -0800, Garrett Cooper wrote:
+>> >>>>>>> Uh, hold on a sec before we call it good...
+>> >>>>>>
+>> >>>>>> oh ok, holiding on for bit.
+>> >>>>>>
+>> >>>>>> Naresh, can you please send a patch with incorporating garret's c=
+omment
+>> >>>>>> ?
+>> >>>>>>>>> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
+>> >>>>>>>>> =A0 =A0 =A0 /* Make sure the two children has been waiting */
+>> >>>>>>>>> - =A0 =A0 /*do {
+>> >>>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
+>> >>>>>>>>> + =A0 =A0 do {
+>> >>>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 sem_getvalue(sem_1, &val);
+>> >>>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 //printf("val =3D %d\n", val);
+>> >>>>>>>>> =A0 =A0 =A0 } while (val !=3D 1);
+>> >>>>>>>>> - =A0 =A0 */
+>> >>>>>>>
+>> >>>>>>> Please provide another patch with a limit to this --
+>> >>>>>
+>> >>>>> Garrett,
+>> >>>>>
+>> >>>>> When sem_wait is called 'val' value will be decremented by one.
+>> >>>>> To ensure that sem_wait is called, we are checking 'val' value by
+>> >>>>> calling sem_getvalue(). in this case we don=92t need to decrement =
+the
+>> >>>>> values by --. IIUC.
+>> >>>>> (snip)
+>> >>>>> OTOH,
+>> >>>>>>> I get annoyed
+>> >>>>>>> with tests that have infinite loops in them because the underlyi=
+ng
+>> >>>>>>> functionality is broken.
+>> >>>>> I agree with you, having infinite loops in test case is not a good=
+.
+>> >>>>> However, in this patch while loop is not infinite loop. It is a
+>> >>>>> conditional loop with finite value.
+>> >>>>>
+>> >>>>> Please let me know if you have any issues.
+>> >>>>
+>> >>>> =A0 =A0The problem was that it wasn't failing properly as stated in=
+ the
+>> >>>> manpage on mips* (was decrementing past 0) and it was blocking
+>> >>>> indefinitely. Hence I had to yank those tests from the default run.
+>> >>> do you mean, after applying above patch you have noticed these kind =
+of behavior?
+>> >>
+>> >> Not with this patch; I've seen this kind of behavior in general under
+>> >> odd conditions with my former team's embedded setup running tests wit=
+h
+>> >> POSIX semaphores, so I don't doubt that others could run into the
+>> >> similar functional issues given the right conditions.
+>> >
+>> > Hey Garrett,
+>> >
+>> > Thanks for you information :-)
+>> >
+>> > I have tested these on MIPS architecture and =A0reproduced infinite
+>> > waiting situation after applying this patch. (with strace no issue
+>> > found ex: #strace ./8-1.test)
+>> > As you said there may be issues in MIPS-POSIX library. it may take
+>> > some time to fix these issues or may not be fixed.
+>> > However, I=92ll discuss this issue with MIPS folks in different thread=
+.
+>> >
+>> > ATM, my patch is not a good idea for MIPS architectures.
+>> > So, after your comments I have modified my patch and tested.
+>> > Here in this latest patch i did not change any thing regarding while l=
+oop.
+>> > I replaced sleep() in an appropriate place.
+>> > It is working fine on X86, ARM and MIPS.
+>>
+>> please review the patch.
+>> I have tested this patch on X86, ARM and MIPS and results are good.
+>>
+>> If you feel ok. please commit. otherwise give me your comments.
+>
+> Hi Naresh,
+>
+Hi Rishi,
+> can you send your patch against today's git ?
+please find the patch below and attached to this e-mail.
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-I will work tomorrow on this and meanwhile if we can get input from garret too.
+---
+ testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+|   11 	6 +	5 -	0 !
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
--Rishi
+Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1=
+.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+@@ -175,13 +175,13 @@ int main()
+ 	}
+ 	fprintf(stderr, "P: child_2: %d forked\n", c_2);
 
-> 
-> On Tue, Mar 23, 2010 at 07:02:24PM +0530, Srinivasa R Chamarthy wrote:
-> > Hi Rishi,
-> > 
-> > Thanks for the info.
-> > 
-> > On Tue, Mar 23, 2010 at 06:44:38PM +0530, Rishikesh K Rajak wrote:
-> > > On Tue, Mar 23, 2010 at 05:55:27PM +0530, Srinivasa R Chamarthy wrote:
-> > > > Hi LTP,
-> > > > 
-> > > > cgroup_fj tests of controllers is currently failing due to missing file
-> > > > cgroup_fj_testcases after compilation. I see that the file cgroup_fj_testcases
-> > > > is existing in the source but it is not available in /opt/ltp after
-> > > > compilation.
-> > > 
-> > > 
-> > > Hi Srini,
-> > > 
-> > > Thanks for reporting failure.
-> > > 
-> > > Yes, looks like this commit is doing the changes from cgroup_fj_testcases to
-> > > cgroup_fj_testcases.sh .
-> > > 
-> > > commit 223e12ee3f7fdb525746462747954552f0e07538
-> > > Author: Garrett Cooper <yanegomi@gmail.com>
-> > > Date:   Mon Mar 8 07:46:02 2010 -0800
-> > > 
-> > >     Fix install for cgroup_fj_testcases.
-> > >     
-> > >     Turns out this script wasn't being installed properly, and thus its
-> > > testcases were failing; fix by suffixing with .sh
-> > >     
-> > >     Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> > > 
-> > > 
-> > > 
-> > > Let me have a look tomorrow where went wrong.
-> > > -Rishi
-> > > > 
-> > > > FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2010_Mar_23-13h_22m_15s.failed
-> > > > Running tests.......
-> > > > <<<test_start>>>
-> > > > tag=cgroup_fj stime=1269346936
-> > > > cmdline="      run_cgroup_test_fj.sh"
-> > > > contacts=""
-> > > > analysis=exit
-> > > > <<<test_output>>>
-> > > > incrementing stop
-> > > > Now, we start the test for cgroup...
-> > > > cat: cgroup_fj_testcases: No such file or directory
-> > > > <<<execution_status>>>
-> > > > initiation_status="ok"
-> > > > duration=0 termination_type=exited termination_id=0 corefile=no
-> > > > cutime=6 cstime=2
-> > > > <<<test_end>>>
-> > > > INFO: ltp-pan reported all tests PASS
-> > > > LTP Version: LTP-20100228
-> > > > 
-> > > > Eventhough the tests did not run, the results say all tests PASS. :)
-> > > > 
-> > > > -- 
-> > > > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> > > > Linux on System z (RedHat & Novell SuSE) CSVT,
-> > > > IBM India Systems & Technology Group/LTC - ISL,
-> > > > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> > > > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> > > > 
-> > > > ------------------------------------------------------------------------------
-> > > > Download Intel&#174; Parallel Studio Eval
-> > > > Try the new software tools for yourself. Speed compiling, find bugs
-> > > > proactively, and fine-tune applications for parallel performance.
-> > > > See why Intel Parallel Studio got high marks during beta.
-> > > > http://p.sf.net/sfu/intel-sw-dev
-> > > > _______________________________________________
-> > > > Ltp-list mailing list
-> > > > Ltp-list@lists.sourceforge.net
-> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > > 
-> > > -- 
-> > > Thanks & Regards
-> > > Rishi
-> > > LTP Maintainer
-> > > IBM, LTC, Bangalore
-> > > Please join IRC #ltp @ irc.freenode.net
-> > 
-> > -- 
-> > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> > Linux on System z (RedHat & Novell SuSE) CSVT,
-> > IBM India Systems & Technology Group/LTC - ISL,
-> > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> > 
-> > ------------------------------------------------------------------------------
-> > Download Intel&#174; Parallel Studio Eval
-> > Try the new software tools for yourself. Speed compiling, find bugs
-> > proactively, and fine-tune applications for parallel performance.
-> > See why Intel Parallel Studio got high marks during beta.
-> > http://p.sf.net/sfu/intel-sw-dev
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> -- 
-> Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> Linux on System z (RedHat & Novell SuSE) CSVT,
-> IBM India Systems & Technology Group/LTC - ISL,
-> Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+-        /* Step 3 Implementation */
+ 	/* Make sure the two children has been waiting */=09
+-	do {
++	/*do {
++		sleep();
+ 		sem_getvalue(sem_1, &val);
+ 		//printf("val =3D %d\n", val);
+ 	} while (val !=3D 1);
+-
++	*/
+ 	c_3 =3D fork();
+ 	if (c_3 =3D=3D 0)
+ 	{
+@@ -190,12 +190,13 @@ int main()
+ 	}
+ 	fprintf(stderr, "P: child_3: %d forked\n", c_3);
+ =09
+-        /* Step 3 Implementation */
+ 	/* Make sure child 3 has been waiting for the lock */=09
+-	do {
++	/*do {
++		sleep();
+ 		sem_getvalue(sem_1, &val);
+ 		//printf("val =3D %d\n", val);
+ 	} while (val !=3D 0);
++	*/
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+ 	/* Synchronization required before release the lock */
+ 	sleep(1);
+
+
+Best regards
+Naresh Kamboju
+>
+> -Rishi
+>>
+>> Best regards
+>> Naresh Kamboju
+>> >
+>> > Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+>> > ---
+>> > =A0testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.=
+c
+>> > | =A0 =A02 =A01 + =A0 =A0 1 - =A0 =A0 0 !
+>> > =A01 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_pos=
+t/8-1.c
+>> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> > --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8=
+-1.c
+>> > +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8=
+-1.c
+>> > @@ -161,7 +161,6 @@ int main()
+>> > =A0 =A0 =A0 =A0}
+>> > =A0 =A0 =A0 =A0fprintf(stderr, "P: child_1:%d forked\n", c_1);
+>> >
+>> > - =A0 =A0 =A0 sleep(1);
+>> > =A0 =A0 =A0 =A0c_2 =3D fork();
+>> > =A0 =A0 =A0 =A0if (c_2 =3D=3D 0)
+>> > =A0 =A0 =A0 =A0{
+>> > @@ -198,6 +197,7 @@ int main()
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0//printf("val =3D %d\n", val);
+>> > =A0 =A0 =A0 =A0} while (val !=3D 0);
+>> > =A0 =A0 =A0 =A0*/
+>> > + =A0 =A0 =A0 sleep(1);
+>> > =A0 =A0 =A0 =A0/* Ok, let's release the lock */
+>> > =A0 =A0 =A0 =A0fprintf(stderr, "P: release lock\n");
+>> > =A0 =A0 =A0 =A0sem_post(sem);
+>> >
+>> >
+>> > please let me know if you have any issues.
+>> >
+>> > Best regards,
+>> > Naresh Kamboju
+>> >> Thanks,
+>> >> -Garrett
+>> >>
+>> >
+>
+>
+>
+> --
+> Thanks & Regards
+> Rishi
+> LTP Maintainer
+> IBM, LTC, Bangalore
+> Please join IRC #ltp @ irc.freenode.net
+>
+
+--000e0cd13bd4046b3e0482682c4a
+Content-Type: application/octet-stream; 
+	name="reverse-posix-sem-post-unstable-fix.patch"
+Content-Disposition: attachment; 
+	filename="reverse-posix-sem-post-unstable-fix.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g73mrtmo0
+
+LS0tCiB0ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
+cy9zZW1fcG9zdC84LTEuYyB8ICAgMTEgCTYgKwk1IC0JMCAhCiAxIGZpbGUgY2hhbmdlZCwgNiBp
+bnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQoKSW5kZXg6IGIvdGVzdGNhc2VzL29wZW5fcG9z
+aXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvc2VtX3Bvc3QvOC0xLmMKPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PQotLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
+ZXJmYWNlcy9zZW1fcG9zdC84LTEuYworKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
+dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fcG9zdC84LTEuYwpAQCAtMTc1LDEzICsxNzUs
+MTMgQEAgaW50IG1haW4oKSAKIAl9CiAJZnByaW50ZihzdGRlcnIsICJQOiBjaGlsZF8yOiAlZCBm
+b3JrZWRcbiIsIGNfMik7CiAKLSAgICAgICAgLyogU3RlcCAzIEltcGxlbWVudGF0aW9uICovCiAJ
+LyogTWFrZSBzdXJlIHRoZSB0d28gY2hpbGRyZW4gaGFzIGJlZW4gd2FpdGluZyAqLwkKLQlkbyB7
+CisJLypkbyB7CisJCXNsZWVwKCk7CiAJCXNlbV9nZXR2YWx1ZShzZW1fMSwgJnZhbCk7CiAJCS8v
+cHJpbnRmKCJ2YWwgPSAlZFxuIiwgdmFsKTsKIAl9IHdoaWxlICh2YWwgIT0gMSk7Ci0KKwkqLwog
+CWNfMyA9IGZvcmsoKTsKIAlpZiAoY18zID09IDApCiAJewpAQCAtMTkwLDEyICsxOTAsMTMgQEAg
+aW50IG1haW4oKSAKIAl9CiAJZnByaW50ZihzdGRlcnIsICJQOiBjaGlsZF8zOiAlZCBmb3JrZWRc
+biIsIGNfMyk7CiAJCi0gICAgICAgIC8qIFN0ZXAgMyBJbXBsZW1lbnRhdGlvbiAqLwogCS8qIE1h
+a2Ugc3VyZSBjaGlsZCAzIGhhcyBiZWVuIHdhaXRpbmcgZm9yIHRoZSBsb2NrICovCQotCWRvIHsK
+KwkvKmRvIHsKKwkJc2xlZXAoKTsKIAkJc2VtX2dldHZhbHVlKHNlbV8xLCAmdmFsKTsKIAkJLy9w
+cmludGYoInZhbCA9ICVkXG4iLCB2YWwpOwogCX0gd2hpbGUgKHZhbCAhPSAwKTsKKwkqLwogCiAJ
+LyogU3luY2hyb25pemF0aW9uIHJlcXVpcmVkIGJlZm9yZSByZWxlYXNlIHRoZSBsb2NrICovCiAJ
+c2xlZXAoMSk7Cg==
+--000e0cd13bd4046b3e0482682c4a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -207,7 +296,16 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--000e0cd13bd4046b3e0482682c4a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--000e0cd13bd4046b3e0482682c4a--
+
