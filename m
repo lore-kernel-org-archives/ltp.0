@@ -1,25 +1,42 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <avagin@gmail.com>) id 1Nw978-0002S7-5d
-	for ltp-list@lists.sourceforge.net; Mon, 29 Mar 2010 07:10:22 +0000
-Received: from mail-bw0-f218.google.com ([209.85.218.218])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nw975-0004Dy-Tx
-	for ltp-list@lists.sourceforge.net; Mon, 29 Mar 2010 07:10:22 +0000
-Received: by bwz10 with SMTP id 10so13340001bwz.2
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 29 Mar 2010 00:10:13 -0700 (PDT)
-Message-ID: <4BB0524E.7020409@gmail.com>
-Date: Mon, 29 Mar 2010 11:10:06 +0400
-From: "avagin@gmail.com" <avagin@gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Ntcx8-0007J9-4N
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:25:38 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ntcx7-0003k1-1M
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:25:38 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2M8B7FM019559
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 04:11:07 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2M8PVNQ147502
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 04:25:31 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o2M8PVuv025906
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 04:25:31 -0400
+Date: Mon, 22 Mar 2010 13:55:28 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100322082528.GF20606@linux.vnet.ibm.com>
+References: <f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
+	<20100303070342.GB19084@linux.vnet.ibm.com>
+	<364299f41003030118x6136dda6u7017054febea4b96@mail.gmail.com>
+	<20100303094541.GB23601@linux.vnet.ibm.com>
+	<f5a7b3811003030333n4b0b4045sff5795d99cd7da00@mail.gmail.com>
+	<364299f41003030342m7bf4a44ey897b7d2ca365a318@mail.gmail.com>
+	<f5a7b3811003030349s2d279fcdx8b74cff2e3a875ab@mail.gmail.com>
+	<364299f41003030355y5a921691vdde6baafbe8439cd@mail.gmail.com>
+	<f5a7b3811003030545l30efa927tb377f113da30a0bd@mail.gmail.com>
+	<f5a7b3811003080257n43d1af67o2942f4d8de2dc5b1@mail.gmail.com>
 MIME-Version: 1.0
-References: <1269370994-7087-1-git-send-email-dguryanov@parallels.com>
-In-Reply-To: <1269370994-7087-1-git-send-email-dguryanov@parallels.com>
-Subject: Re: [LTP] [PATCH] mmap1: fix race between map_write_unmap and
-	read_mem
-Reply-To: avagin@gmail.com
+Content-Disposition: inline
+In-Reply-To: <f5a7b3811003080257n43d1af67o2942f4d8de2dc5b1@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Synchronization required before release the lock:
+ sem_post/8-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,95 +46,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi, all.
-
-We have seen on this test case in more detail and find some race conditions.
-
-1. the first race between setting & reading & checking & printing value 
-of map_address
-
-This race is reproduced if a reader thread is started before a 
-map_write_unmap thread. I added logging and got follow output:
-
-caught unexpected signal - 11 info->si_addr=(nil) 
-map_address=0x2aaaaaaac000--- exiting
-
-[thread]	:	[operation]
-read_mem	:	if (strncmp((char *)map_address, "a", 1) != 0)
-map_write_unmap	:	map_address = mmap(...)
-read_mem	:	info->si_addr == map_address
-
-2. the second race between memcpy and a check of memory content.
-[thread]	:	[operation]
-map_write_unmap	:	map_address = mmap(...)
-read_mem	:	if (strncmp((char *)map_address, "a", 1) != 0)
-map_write_unmap	:	memset(map_address, 'a', mwuargs[1]);
-
-
-On 03/23/2010 10:03 PM, Dmitry Guryanov wrote:
-> On one of test runs it failed with follwing log:
->
-> mmap1       0  INFO  :  created thread[1093683520]
-> mmap1       0  INFO  :  pid[6430]: map, change contents, unmap files 1000 times
-> mmap1       0  INFO  :  created thread[1109268800]
-> mmap1       0  INFO  :  pid[6430] - read contents of memory (nil) 1000 times
-> mmap1       0  INFO  :  page fault occurred at (nil)
-> mmap1       0  INFO  :  page fault occurred at (nil)
-> ....................
-> mmap1       0  INFO  :  page fault occurred at (nil)
-> caught unexpected signal - 11 --- exiting
->
-> This can happen, if thread map_write_unmap haven't mapped file yet, but
-> thread read_mem already began to read from it (it reads from map_address, which
-> will be NULL in this case).
-
-This testcase tries to handle SIGSEGV:
-in reader thread, it does setjmp(), and in signal handler it does longjmp().
-
->
-> Let's wait, while thread map_write_unmap actually maps file, in read_mem thread
-> and zero map_address each time map_write_unmap unmaps this memory.
-> ---
->   testcases/kernel/mem/mtest06/mmap1.c |    5 +++++
->   1 files changed, 5 insertions(+), 0 deletions(-)
->
-> diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
-> index 47ab49a..28d9e5d 100644
-> --- a/testcases/kernel/mem/mtest06/mmap1.c
-> +++ b/testcases/kernel/mem/mtest06/mmap1.c
-> @@ -331,6 +331,7 @@ map_write_unmap(void *args)	/* file descriptor of the file to be mapped.  */
->               exit_val = MWU_FAIL;
->               pthread_exit((void *)exit_val);
->           }
-> +        map_address = NULL;
->       }
->       exit_val = M_SUCCESS;
->       pthread_exit((void *)exit_val);
-> @@ -358,6 +359,10 @@ read_mem(void *args)		/* number of reads performed		      */
->       long 	*rmargs = args;	/* local pointer to the arguments	      */
->       long exit_val = 0;  /* pthread exit value			      */
->
-> +    /* wait for first thread to map file */
-> +    while(!map_address)
-> +        sched_yield();
-> +
->       tst_resm(TINFO, "pid[%d] - read contents of memory %p %ld times",
->              getpid(), map_address, rmargs[2]);
->       if (verbose_print)
-
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gTW9uLCBNYXIgMDgsIDIwMTAgYXQgMDQ6Mjc6MzZQTSArMDUzMCwgbmFyZXNoIGthbWJvanUg
+d3JvdGU6Cj4gSGkgUmlzaGkgYW5kIEdhcnJldHQsCj4gCj4gT24gV2VkLCBNYXIgMywgMjAxMCBh
+dCA3OjE1IFBNLCBuYXJlc2gga2FtYm9qdSA8bmFyZXNoLmtlcm5lbEBnbWFpbC5jb20+IHdyb3Rl
+Ogo+ID4gT24gV2VkLCBNYXIgMywgMjAxMCBhdCA1OjI1IFBNLCBHYXJyZXR0IENvb3BlciA8eWFu
+ZWdvbWlAZ21haWwuY29tPiB3cm90ZToKPiA+PiBPbiBXZWQsIE1hciAzLCAyMDEwIGF0IDM6NDkg
+QU0sIG5hcmVzaCBrYW1ib2p1IDxuYXJlc2gua2VybmVsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPj4+
+IE9uIFdlZCwgTWFyIDMsIDIwMTAgYXQgNToxMiBQTSwgR2FycmV0dCBDb29wZXIgPHlhbmVnb21p
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gPj4+PiBPbiBXZWQsIE1hciAzLCAyMDEwIGF0IDM6MzMgQU0s
+IG5hcmVzaCBrYW1ib2p1IDxuYXJlc2gua2VybmVsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPj4+Pj4g
+T24gV2VkLCBNYXIgMywgMjAxMCBhdCAzOjE1IFBNLCBSaXNoaWtlc2ggSyBSYWphawo+ID4+Pj4+
+IDxyaXNyYWpha0BsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ID4+Pj4+PiBPbiBXZWQsIE1h
+ciAwMywgMjAxMCBhdCAwMToxODo1MEFNIC0wODAwLCBHYXJyZXR0IENvb3BlciB3cm90ZToKPiA+
+Pj4+Pj4+IFVoLCBob2xkIG9uIGEgc2VjIGJlZm9yZSB3ZSBjYWxsIGl0IGdvb2QuLi4KPiA+Pj4+
+Pj4KPiA+Pj4+Pj4gb2ggb2ssIGhvbGlkaW5nIG9uIGZvciBiaXQuCj4gPj4+Pj4+Cj4gPj4+Pj4+
+IE5hcmVzaCwgY2FuIHlvdSBwbGVhc2Ugc2VuZCBhIHBhdGNoIHdpdGggaW5jb3Jwb3JhdGluZyBn
+YXJyZXQncyBjb21tZW50Cj4gPj4+Pj4+ID8KPiA+Pj4+Pj4+Pj4gKyDCoCDCoCDCoCDCoC8qIFN0
+ZXAgMyBJbXBsZW1lbnRhdGlvbiAqLwo+ID4+Pj4+Pj4+PiDCoCDCoCDCoCAvKiBNYWtlIHN1cmUg
+dGhlIHR3byBjaGlsZHJlbiBoYXMgYmVlbiB3YWl0aW5nICovCj4gPj4+Pj4+Pj4+IC0gwqAgwqAg
+LypkbyB7Cj4gPj4+Pj4+Pj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgc2xlZXAoMSk7Cj4gPj4+Pj4+
+Pj4+ICsgwqAgwqAgZG8gewo+ID4+Pj4+Pj4+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzZW1fZ2V0
+dmFsdWUoc2VtXzEsICZ2YWwpOwo+ID4+Pj4+Pj4+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCAvL3By
+aW50ZigidmFsID0gJWRcbiIsIHZhbCk7Cj4gPj4+Pj4+Pj4+IMKgIMKgIMKgIH0gd2hpbGUgKHZh
+bCAhPSAxKTsKPiA+Pj4+Pj4+Pj4gLSDCoCDCoCAqLwo+ID4+Pj4+Pj4KPiA+Pj4+Pj4+IFBsZWFz
+ZSBwcm92aWRlIGFub3RoZXIgcGF0Y2ggd2l0aCBhIGxpbWl0IHRvIHRoaXMgLS0KPiA+Pj4+Pgo+
+ID4+Pj4+IEdhcnJldHQsCj4gPj4+Pj4KPiA+Pj4+PiBXaGVuIHNlbV93YWl0IGlzIGNhbGxlZCAn
+dmFsJyB2YWx1ZSB3aWxsIGJlIGRlY3JlbWVudGVkIGJ5IG9uZS4KPiA+Pj4+PiBUbyBlbnN1cmUg
+dGhhdCBzZW1fd2FpdCBpcyBjYWxsZWQsIHdlIGFyZSBjaGVja2luZyAndmFsJyB2YWx1ZSBieQo+
+ID4+Pj4+IGNhbGxpbmcgc2VtX2dldHZhbHVlKCkuIGluIHRoaXMgY2FzZSB3ZSBkb27igJl0IG5l
+ZWQgdG8gZGVjcmVtZW50IHRoZQo+ID4+Pj4+IHZhbHVlcyBieSAtLS4gSUlVQy4KPiA+Pj4+PiAo
+c25pcCkKPiA+Pj4+PiBPVE9ILAo+ID4+Pj4+Pj4gSSBnZXQgYW5ub3llZAo+ID4+Pj4+Pj4gd2l0
+aCB0ZXN0cyB0aGF0IGhhdmUgaW5maW5pdGUgbG9vcHMgaW4gdGhlbSBiZWNhdXNlIHRoZSB1bmRl
+cmx5aW5nCj4gPj4+Pj4+PiBmdW5jdGlvbmFsaXR5IGlzIGJyb2tlbi4KPiA+Pj4+PiBJIGFncmVl
+IHdpdGggeW91LCBoYXZpbmcgaW5maW5pdGUgbG9vcHMgaW4gdGVzdCBjYXNlIGlzIG5vdCBhIGdv
+b2QuCj4gPj4+Pj4gSG93ZXZlciwgaW4gdGhpcyBwYXRjaCB3aGlsZSBsb29wIGlzIG5vdCBpbmZp
+bml0ZSBsb29wLiBJdCBpcyBhCj4gPj4+Pj4gY29uZGl0aW9uYWwgbG9vcCB3aXRoIGZpbml0ZSB2
+YWx1ZS4KPiA+Pj4+Pgo+ID4+Pj4+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3UgaGF2ZSBhbnkg
+aXNzdWVzLgo+ID4+Pj4KPiA+Pj4+IMKgIMKgVGhlIHByb2JsZW0gd2FzIHRoYXQgaXQgd2Fzbid0
+IGZhaWxpbmcgcHJvcGVybHkgYXMgc3RhdGVkIGluIHRoZQo+ID4+Pj4gbWFucGFnZSBvbiBtaXBz
+KiAod2FzIGRlY3JlbWVudGluZyBwYXN0IDApIGFuZCBpdCB3YXMgYmxvY2tpbmcKPiA+Pj4+IGlu
+ZGVmaW5pdGVseS4gSGVuY2UgSSBoYWQgdG8geWFuayB0aG9zZSB0ZXN0cyBmcm9tIHRoZSBkZWZh
+dWx0IHJ1bi4KPiA+Pj4gZG8geW91IG1lYW4sIGFmdGVyIGFwcGx5aW5nIGFib3ZlIHBhdGNoIHlv
+dSBoYXZlIG5vdGljZWQgdGhlc2Uga2luZCBvZiBiZWhhdmlvcj8KPiA+Pgo+ID4+IE5vdCB3aXRo
+IHRoaXMgcGF0Y2g7IEkndmUgc2VlbiB0aGlzIGtpbmQgb2YgYmVoYXZpb3IgaW4gZ2VuZXJhbCB1
+bmRlcgo+ID4+IG9kZCBjb25kaXRpb25zIHdpdGggbXkgZm9ybWVyIHRlYW0ncyBlbWJlZGRlZCBz
+ZXR1cCBydW5uaW5nIHRlc3RzIHdpdGgKPiA+PiBQT1NJWCBzZW1hcGhvcmVzLCBzbyBJIGRvbid0
+IGRvdWJ0IHRoYXQgb3RoZXJzIGNvdWxkIHJ1biBpbnRvIHRoZQo+ID4+IHNpbWlsYXIgZnVuY3Rp
+b25hbCBpc3N1ZXMgZ2l2ZW4gdGhlIHJpZ2h0IGNvbmRpdGlvbnMuCj4gPgo+ID4gSGV5IEdhcnJl
+dHQsCj4gPgo+ID4gVGhhbmtzIGZvciB5b3UgaW5mb3JtYXRpb24gOi0pCj4gPgo+ID4gSSBoYXZl
+IHRlc3RlZCB0aGVzZSBvbiBNSVBTIGFyY2hpdGVjdHVyZSBhbmQgwqByZXByb2R1Y2VkIGluZmlu
+aXRlCj4gPiB3YWl0aW5nIHNpdHVhdGlvbiBhZnRlciBhcHBseWluZyB0aGlzIHBhdGNoLiAod2l0
+aCBzdHJhY2Ugbm8gaXNzdWUKPiA+IGZvdW5kIGV4OiAjc3RyYWNlIC4vOC0xLnRlc3QpCj4gPiBB
+cyB5b3Ugc2FpZCB0aGVyZSBtYXkgYmUgaXNzdWVzIGluIE1JUFMtUE9TSVggbGlicmFyeS4gaXQg
+bWF5IHRha2UKPiA+IHNvbWUgdGltZSB0byBmaXggdGhlc2UgaXNzdWVzIG9yIG1heSBub3QgYmUg
+Zml4ZWQuCj4gPiBIb3dldmVyLCBJ4oCZbGwgZGlzY3VzcyB0aGlzIGlzc3VlIHdpdGggTUlQUyBm
+b2xrcyBpbiBkaWZmZXJlbnQgdGhyZWFkLgo+ID4KPiA+IEFUTSwgbXkgcGF0Y2ggaXMgbm90IGEg
+Z29vZCBpZGVhIGZvciBNSVBTIGFyY2hpdGVjdHVyZXMuCj4gPiBTbywgYWZ0ZXIgeW91ciBjb21t
+ZW50cyBJIGhhdmUgbW9kaWZpZWQgbXkgcGF0Y2ggYW5kIHRlc3RlZC4KPiA+IEhlcmUgaW4gdGhp
+cyBsYXRlc3QgcGF0Y2ggaSBkaWQgbm90IGNoYW5nZSBhbnkgdGhpbmcgcmVnYXJkaW5nIHdoaWxl
+IGxvb3AuCj4gPiBJIHJlcGxhY2VkIHNsZWVwKCkgaW4gYW4gYXBwcm9wcmlhdGUgcGxhY2UuCj4g
+PiBJdCBpcyB3b3JraW5nIGZpbmUgb24gWDg2LCBBUk0gYW5kIE1JUFMuCj4gCj4gcGxlYXNlIHJl
+dmlldyB0aGUgcGF0Y2guCj4gSSBoYXZlIHRlc3RlZCB0aGlzIHBhdGNoIG9uIFg4NiwgQVJNIGFu
+ZCBNSVBTIGFuZCByZXN1bHRzIGFyZSBnb29kLgo+IAo+IElmIHlvdSBmZWVsIG9rLiBwbGVhc2Ug
+Y29tbWl0LiBvdGhlcndpc2UgZ2l2ZSBtZSB5b3VyIGNvbW1lbnRzLgoKSGkgTmFyZXNoLAoKY2Fu
+IHlvdSBzZW5kIHlvdXIgcGF0Y2ggYWdhaW5zdCB0b2RheSdzIGdpdCA/CgotUmlzaGkKPiAKPiBC
+ZXN0IHJlZ2FyZHMKPiBOYXJlc2ggS2FtYm9qdQo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IE5hcmVz
+aCBLYW1ib2p1IDwgbmFyZXNoLmtlcm5lbEBnbWFpbC5jb20gPgo+ID4gLS0tCj4gPiDCoHRlc3Rj
+YXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3NlbV9wb3N0
+LzgtMS5jCj4gPiB8IMKgIMKgMiDCoDEgKyDCoCDCoCAxIC0gwqAgwqAgMCAhCj4gPiDCoDEgZmls
+ZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+ID4KPiA+IEluZGV4OiBi
+L3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3Nl
+bV9wb3N0LzgtMS5jCj4gPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4gPiAtLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3Np
+eF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fcG9zdC84LTEuYwo+ID4gKysr
+IGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv
+c2VtX3Bvc3QvOC0xLmMKPiA+IEBAIC0xNjEsNyArMTYxLDYgQEAgaW50IG1haW4oKQo+ID4gwqAg
+wqAgwqAgwqB9Cj4gPiDCoCDCoCDCoCDCoGZwcmludGYoc3RkZXJyLCAiUDogY2hpbGRfMTolZCBm
+b3JrZWRcbiIsIGNfMSk7Cj4gPgo+ID4gLSDCoCDCoCDCoCBzbGVlcCgxKTsKPiA+IMKgIMKgIMKg
+IMKgY18yID0gZm9yaygpOwo+ID4gwqAgwqAgwqAgwqBpZiAoY18yID09IDApCj4gPiDCoCDCoCDC
+oCDCoHsKPiA+IEBAIC0xOTgsNiArMTk3LDcgQEAgaW50IG1haW4oKQo+ID4gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAvL3ByaW50ZigidmFsID0gJWRcbiIsIHZhbCk7Cj4gPiDCoCDCoCDCoCDCoH0g
+d2hpbGUgKHZhbCAhPSAwKTsKPiA+IMKgIMKgIMKgIMKgKi8KPiA+ICsgwqAgwqAgwqAgc2xlZXAo
+MSk7Cj4gPiDCoCDCoCDCoCDCoC8qIE9rLCBsZXQncyByZWxlYXNlIHRoZSBsb2NrICovCj4gPiDC
+oCDCoCDCoCDCoGZwcmludGYoc3RkZXJyLCAiUDogcmVsZWFzZSBsb2NrXG4iKTsKPiA+IMKgIMKg
+IMKgIMKgc2VtX3Bvc3Qoc2VtKTsKPiA+Cj4gPgo+ID4gcGxlYXNlIGxldCBtZSBrbm93IGlmIHlv
+dSBoYXZlIGFueSBpc3N1ZXMuCj4gPgo+ID4gQmVzdCByZWdhcmRzLAo+ID4gTmFyZXNoIEthbWJv
+anUKPiA+PiBUaGFua3MsCj4gPj4gLUdhcnJldHQKPiA+Pgo+ID4KCgoKLS0gClRoYW5rcyAmIFJl
+Z2FyZHMKUmlzaGkKTFRQIE1haW50YWluZXIKSUJNLCBMVEMsIEJhbmdhbG9yZQpQbGVhc2Ugam9p
+biBJUkMgI2x0cCBAIGlyYy5mcmVlbm9kZS5uZXQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb3du
+bG9hZCBJbnRlbCYjMTc0OyBQYXJhbGxlbCBTdHVkaW8gRXZhbApUcnkgdGhlIG5ldyBzb2Z0d2Fy
+ZSB0b29scyBmb3IgeW91cnNlbGYuIFNwZWVkIGNvbXBpbGluZywgZmluZCBidWdzCnByb2FjdGl2
+ZWx5LCBhbmQgZmluZS10dW5lIGFwcGxpY2F0aW9ucyBmb3IgcGFyYWxsZWwgcGVyZm9ybWFuY2Uu
+ClNlZSB3aHkgSW50ZWwgUGFyYWxsZWwgU3R1ZGlvIGdvdCBoaWdoIG1hcmtzIGR1cmluZyBiZXRh
+LgpodHRwOi8vcC5zZi5uZXQvc2Z1L2ludGVsLXN3LWRldgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RA
+bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
+L2xpc3RpbmZvL2x0cC1saXN0Cg==
