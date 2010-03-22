@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1Npkcn-0007aO-75
-	for ltp-list@lists.sourceforge.net; Thu, 11 Mar 2010 15:48:37 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Npkcm-00065O-8f
-	for ltp-list@lists.sourceforge.net; Thu, 11 Mar 2010 15:48:37 +0000
-Message-Id: <4B98AE5B020000E80005FC3D@sinclair.provo.novell.com>
-Date: Thu, 11 Mar 2010 08:48:27 -0700
-From: "Murlin Wenzel" <mwenzel@novell.com>
-References: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-	<364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
-	<20100225062615.GB3377@linux.vnet.ibm.com>
-	<20100310121544.GB11404@linux.vnet.ibm.com>
-In-Reply-To: <20100310121544.GB11404@linux.vnet.ibm.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: Re: [LTP] [patch] swapon03 cleanup v2
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Ntch0-0001eT-3G
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:08:58 +0000
+Received: from mail-iw0-f195.google.com ([209.85.223.195])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ntcgz-0002ZL-7e
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:08:58 +0000
+Received: by iwn33 with SMTP id 33so4138169iwn.23
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Mar 2010 01:08:52 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <b9d696241003212215y57070683g828dd982d2366872@mail.gmail.com>
+References: <b9d696241003212215y57070683g828dd982d2366872@mail.gmail.com>
+Date: Mon, 22 Mar 2010 01:08:51 -0700
+Message-ID: <364299f41003220108s203f9fcahe5627d156e490744@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] memcg_stress_test.sh hanging system
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,47 +30,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net
+To: "K.D. Lucas" <kdlucas@gmail.com>
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
->>> On 3/10/2010 at 05:15 AM, in message
-<20100310121544.GB11404@linux.vnet.ibm.com>, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote: 
-> On Thu, Feb 25, 2010 at 11:56:15AM +0530, Rishikesh K Rajak wrote:
->> On Wed, Feb 24, 2010 at 05:08:56PM -0800, Garrett Cooper wrote:
->> > On Wed, Feb 24, 2010 at 3:49 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
->> > > Added clean_swap() to cleanup routine.  This makes sure all leftover swap 
-> files are removed.
->> > >
->> > > Signed-off-By:  Murlin Ray Wenzel mwenzel@novell.com
->> > 
->> > Committed -- thanks!
->> > -Garrett
->> 
->> Thanks Garret & Murlin.
-> 
-> 
-> Hi Murlin,
-> 
-> can you please look into this failure as it still fails on my SLES11 & 
-> RHEl5.4
-> boxes.
-> 
-> [root@mx3455a bin]# ./swapon03 
-> swapon03    1  TFAIL  :  Failed swapon for file swapfile29: errno=EPERM(1):
-> Operation not permitted
-> swapon03    0  TWARN  :  tst_rmdir(): rmobj(/tmp/swasf2sLb) failed:
-> unlink(/tmp/swasf2sLb/swapfile22) failed; errno=1: Operation not permitted
-> swapon03    1  TFAIL  :  Failed to setup swaps
-> 
-> attached is the strace log.
-> 
-> -Rishi
+On Sun, Mar 21, 2010 at 10:15 PM, K.D. Lucas <kdlucas@gmail.com> wrote:
+> I just downloaded the latest LTP, ltp-full-20100228.1
+>
+> I'm running it on Linux Mint Helena x64 Edition.
+> Kernel: 2.6.31-14-generic x86_64
+>
+> I installed it by running:
+>
+> ./configure
+> make
+> sudo make install
+>
+> My entire system just hangs when it gets to the memcg_stress_test.sh test.
+>
+> I'm running this on an HP Z600 with 12 gb ram and 2 Intel Xeon E5520 2.27
+> ghz cpus. These are quad core CPUs with HyperThreading.
+>
+> What I see in /var/log/syslog is:
+>
+> Mar 21 20:09:14 daredevil kernel: [17277.016792] Memory cgroup out of
+> memory: kill process 28223 (memcg_process) score 99 or a child
+> Mar 21 20:09:14 daredevil kernel: [17277.016836] Killed process 28223
+> (memcg_process)
+>
+> Is anyone else seeing this?
 
-
-That's the other part of the problem that I'm not sure what to do with yet.  The original test was written entirely based on the assumption that there were always a max of 30 swap files available.  With newer kernels (SLE11 RHEL5.4) the kernel can be configured so that the max could be as low as 29 if not 28.  The kernel is doing the right thing returning EPERM, but the test needs to be re-worked to deal with new maximum limits/possibilites.
-
-Murlin
-
+    +1 with Ubuntu Karmic Koala and an amd64 machine with 8GB of RAM.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
