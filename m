@@ -1,42 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nlz7I-0007nt-SV
-	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 06:28:32 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nlz7H-0002Mb-QX
-	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 06:28:32 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o216OM7K002058
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Mar 2010 01:24:22 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o216SQPg1876126
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Mar 2010 01:28:26 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o216SP94024909
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Mar 2010 03:28:25 -0300
-Date: Mon, 1 Mar 2010 11:58:21 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100301062821.GC3860@linux.vnet.ibm.com>
-References: <20100111162256.GB19010@saboteur.suse.cz>
-	<20100128041619.GB16209@malik-laptop.in.ibm.com>
-	<d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
-	<364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
-	<d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
-	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
-	<364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
-	<20100228181445.GB4850@linux.vnet.ibm.com>
-	<d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
-	<20100301052100.GA3860@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Ntcif-0006jO-P8
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:10:41 +0000
+Received: from mail-yw0-f192.google.com ([209.85.211.192])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ntcie-0001jy-6S
+	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 08:10:40 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100301052100.GA3860@linux.vnet.ibm.com>
-Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
- the topmost memory cgroup
+In-Reply-To: <20100322063936.GA20606@linux.vnet.ibm.com>
+References: <1268975755.12801.44.camel@lishuang-desktop>
+	<20100322063936.GA20606@linux.vnet.ibm.com>
+Date: Mon, 22 Mar 2010 01:10:34 -0700
+Message-ID: <364299f41003220110n6d1c0df7jbbc1c78450375980@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] When I execute ppoll01 testcase in mips board,
+	the testcase 	failed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -49,96 +29,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mohamed Naufal <naufal11@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Henry xu <feng.xu@windriver.com>, takahiro.yasui.mp@hitachi.com, yumiko.sugita.yf@hitachi.com, sa-fuji@sdl.hitachi.co.jp, ltp-list <ltp-list@lists.sf.net>
 
-On Mon, Mar 01, 2010 at 10:51:00AM +0530, Rishikesh K Rajak wrote:
-> On Mon, Mar 01, 2010 at 08:07:50AM +0530, Mohamed Naufal wrote:
-> > On 28 February 2010 23:44, Rishikesh K Rajak
-> > <risrajak@linux.vnet.ibm.com> wrote:
-> > >>>Rishi, are we ready=A0for commit?
-> > >
-> > > Yes committed to next branch, let me test for any regression, and then
-> > > will commit to maint/master branch.
-> > >
-> > >
-> > =
-
-> > [...]
-> > =
-
-> > Hi
-> > =
-
-> > The new source files in my patch doesn't appear in the next branch.
-> =
-
-> =
-
-> Something really has got screwed with your patch can you please resend
-> your patch against next branch as attachment ?
-
-ahhh !!! got the problem. Your patch seems to be taken as wrong diff for
-new source file addition, so it will never add the new source file.
-
-For new file it should be always /dev/null , but your patch reflects
-something else as(Here Makefile is newly created by you):
-
+On Sun, Mar 21, 2010 at 11:39 PM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Fri, Mar 19, 2010 at 01:15:55PM +0800, Henry xu wrote:
+>> Hi,all
+>>
+>> summary:
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-diff -Naru ltpv/testcases/kernel/controllers/memcg/control/Makefile
-ltpd/testcases/kernel/controllers/memcg/control/Makefile
---- ltpv/testcases/kernel/controllers/memcg/control/Makefile
-1970-01-01 05:30:00.000000000 +0530
-+++ ltpd/testcases/kernel/controllers/memcg/control/Makefile
-2010-02-27 17:51:10.359555806 +0530
-@@ -0,0 +1,33 @@
-
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> When I execute ppoll01 testcase in mips board,the testcase failed.
+>
+> Again can you send us the strace of this ?
+>
+> @All, Let us know if anyone also facing the same problem, i am not having=
+ any
+> mips box but may be someone can help here to Henry.
+>
+> -Rishi
+>>
+>> Environment
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> linux version:2.6.27.45
+>> hardware platform:mips
+>>
+>>
+>>
+>> symptom Details
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> root@localhost:/opt/mytest> ./ppoll01
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) START
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0EXPECT: revents=3D0x0005
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0RESULT: revents=3D0x0005
+>> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
+>> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) START
+>> EXPECT: return value(ret)=3D0 errno=3D0 (Success)
+>> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) END =3D> NG
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) START
+>> ^CEXPECT: return value(ret)=3D0 errno=3D0 (Success)
+>> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) END =3D> NG
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) START
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0EXPECT: revents=3D0x0020
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0RESULT: revents=3D0x0020
+>> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
+>> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) START
+>> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) START
+>> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) START
+>> EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
+>> RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) START
+>> EXPECT: return value(ret)=3D-1 errno=3D14 (Bad address)
+>> RESULT: return value(ret)=3D-1 errno=3D14 (Bad address)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) END =3D> OK
+>> ppoll01 =A0 =A0 1 =A0TFAIL =A0: =A0ppoll01 failed: TEST_ERRNO=3DEFAULT(1=
+4): Bad
+>> address
+>> NGppoll01 =A0 =A0 0 =A0TWARN =A0: =A0tst_rmdir(): rmobj(/tmp/ppoKT1uvV) =
+failed:
+>> unlink(/tmp/ppoKT1uvV/.nfs00000000005bcdac00000035) failed; errno=3D16:
+>> Device or resource busy
 
-Please create your patch against next tree or attach the source file
-here as text, i will create a patch.
-
-Thanks
-Rishi
-> =
-
-> Thanks
-> Rishi
-> > =
-
-> > Naufal
-> =
-
-> -- =
-
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
-> =
-
-> -------------------------------------------------------------------------=
------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- =
-
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+    I was seeing similar back when I had access to Cavium mips
+hardware and worked in my prior group. Neither case is true anymore so
+I can't verify this issue.
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
