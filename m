@@ -1,29 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NqZJx-0004GK-I9
-	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 21:56:33 +0000
-Received: from mail-iw0-f176.google.com ([209.85.223.176])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NqZJv-0005L8-A0
-	for ltp-list@lists.sourceforge.net; Sat, 13 Mar 2010 21:56:33 +0000
-Received: by iwn6 with SMTP id 6so799347iwn.4
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 13 Mar 2010 13:56:26 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <schamart@linux.vnet.ibm.com>) id 1Nu50x-0006hE-9P
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:23:27 +0000
+Received: from e28smtp08.in.ibm.com ([122.248.162.8])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nu50v-0001WJ-Dz
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:23:27 +0000
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by e28smtp08.in.ibm.com (8.14.3/8.13.1) with ESMTP id o2NDYcIN020099
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 19:04:38 +0530
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2NENFGC3444744
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 19:53:15 +0530
+Received: from d28av04.in.ibm.com (loopback [127.0.0.1])
+	by d28av04.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o2NENFEg005930
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Mar 2010 01:23:15 +1100
+Received: from localhost ([9.124.218.7])
+	by d28av04.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o2NENFW8005902
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Mar 2010 01:23:15 +1100
+Date: Tue, 23 Mar 2010 19:53:14 +0530
+From: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
+Message-ID: <20100323142314.GA11852@chamarthy>
+References: <20100323122527.GA6017@chamarthy>
+	<20100323131438.GA16182@linux.vnet.ibm.com>
+	<20100323133224.GB6017@chamarthy> <20100323141040.GC6017@chamarthy>
 MIME-Version: 1.0
-In-Reply-To: <4B9B684F020000E80005FE67@sinclair.provo.novell.com>
-References: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-	<364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
-	<20100225062615.GB3377@linux.vnet.ibm.com>
-	<20100310121544.GB11404@linux.vnet.ibm.com>
-	<4B98AE5B020000E80005FC3D@sinclair.provo.novell.com>
-	<364299f41003122332u3c4f93a7td3c1f9db1a360bec@mail.gmail.com>
-	<4B9B684F020000E80005FE67@sinclair.provo.novell.com>
-Date: Sat, 13 Mar 2010 13:56:25 -0800
-Message-ID: <364299f41003131356p3ac589b0mcc0ffe22d8e3ec18@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [patch] swapon03 cleanup v2
+Content-Disposition: inline
+In-Reply-To: <20100323141040.GC6017@chamarthy>
+Subject: Re: [LTP] [BUG] cgroup_fj tests fail to run due to missing
+ cgroup_fj_testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,117 +43,162 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Murlin Wenzel <mwenzel@novell.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Sat, Mar 13, 2010 at 9:26 AM, Murlin Wenzel <mwenzel@novell.com> wrote:
->>>> On 3/13/2010 at 12:32 AM, in message
-> <364299f41003122332u3c4f93a7td3c1f9db1a360bec@mail.gmail.com>, Garrett Co=
-oper
-> <yanegomi@gmail.com> wrote:
->> On Thu, Mar 11, 2010 at 7:48 AM, Murlin Wenzel <mwenzel@novell.com> wrot=
-e:
->>>>>> On 3/10/2010 at 05:15 AM, in message
->>> <20100310121544.GB11404@linux.vnet.ibm.com>, Rishikesh K Rajak
->>> <risrajak@linux.vnet.ibm.com> wrote:
->>>> On Thu, Feb 25, 2010 at 11:56:15AM +0530, Rishikesh K Rajak wrote:
->>>>> On Wed, Feb 24, 2010 at 05:08:56PM -0800, Garrett Cooper wrote:
->>>>> > On Wed, Feb 24, 2010 at 3:49 PM, Murlin Wenzel <mwenzel@novell.com>=
- wrote:
->>>>> > > Added clean_swap() to cleanup routine. =A0This makes sure all lef=
-tover swap
->>>> files are removed.
->>>>> > >
->>>>> > > Signed-off-By: =A0Murlin Ray Wenzel mwenzel@novell.com
->>>>> >
->>>>> > Committed -- thanks!
->>>>> > -Garrett
->>>>>
->>>>> Thanks Garret & Murlin.
->>>>
->>>>
->>>> Hi Murlin,
->>>>
->>>> can you please look into this failure as it still fails on my SLES11 &
->>>> RHEl5.4
->>>> boxes.
->>>>
->>>> [root@mx3455a bin]# ./swapon03
->>>> swapon03 =A0 =A01 =A0TFAIL =A0: =A0Failed swapon for file swapfile29: =
-errno=3DEPERM(1):
->>>> Operation not permitted
->>>> swapon03 =A0 =A00 =A0TWARN =A0: =A0tst_rmdir(): rmobj(/tmp/swasf2sLb) =
-failed:
->>>> unlink(/tmp/swasf2sLb/swapfile22) failed; errno=3D1: Operation not per=
-mitted
->>>> swapon03 =A0 =A01 =A0TFAIL =A0: =A0Failed to setup swaps
->>>>
->>>> attached is the strace log.
->>>
->>> That's the other part of the problem that I'm not sure what to do with =
-yet.
->> The original test was written entirely based on the assumption that there
->> were always a max of 30 swap files available. =A0With newer kernels (SLE=
-11
->> RHEL5.4) the kernel can be configured so that the max could be as low as=
- 29
->> if not 28. =A0The kernel is doing the right thing returning EPERM, but t=
-he test
->> needs to be re-worked to deal with new maximum limits/possibilites.
->>
->> It should actually be KERNEL_MAX - (CONFIG_MIGRATION enabled ? 2 : 0)
->> - used_swap_devices ...
->>
->> NOTES
->> =A0 =A0 =A0 =A0The partition or path must be prepared with mkswap(8).
->>
->> =A0 =A0 =A0 =A0There is an upper limit on the number of swap files that =
-may =A0be
->> used,
->> =A0 =A0 =A0 =A0defined =A0by =A0the =A0kernel constant MAX_SWAPFILES. =
-=A0Before kernel
->> 2.4.10,
->> =A0 =A0 =A0 =A0MAX_SWAPFILES has the value 8; since kernel 2.4.10, it =
-=A0has =A0the
->> value
->> =A0 =A0 =A0 =A032. =A0Since kernel 2.6.18, the limit is decreased by 2 (=
-thus: 30) if
->> the
->> =A0 =A0 =A0 =A0kernel is built with the CONFIG_MIGRATION option =A0(whic=
-h =A0reserves
->> two
->> =A0 =A0 =A0 =A0swap =A0table =A0entries =A0for =A0the =A0page migration =
-features of mbind(2)
->> and
->> =A0 =A0 =A0 =A0migrate_pages(2)).
->>
->> =A0 =A0 The fun unknown is CONFIG_MIGRATION -- how do you know whether or
->> not this is set from userspace? There's too much handwaving in this
->> testcase that needs to be fixed.
->
-> That's my point. =A0There are even more config options in newer kernels w=
-hich affect the number of swap files. =A0AFAIK none of that info is availab=
-le to userspace app. =A0The only known is MAX_SWAPFILES which is 32, or 8 o=
-n 2.4 kernels. =A0The current test makes an assumption that there would alw=
-ays be 32 or 30 swapfiles available based on a kernel config at some point =
-in the past. =A0I'm thinking the test should just use MAX_SWAPFILES(32 in t=
-his case), try to create that many until EPERM error is returned, provide t=
-hat TINFO to tester, clean up everything and if that succeeds call the test=
- a pass. =A0It is too ugly trying to start guessing about is 29 ok, or 30 o=
-k or 32 ok with no way of knowing how the kernel was configured.
+Sorry, i meant that the script run_cgroup_test_fj.sh executes another function
+called cgroup_fj_stress.sh with a parameter which is got from parsing the file
+cgroup_fj_testcases which will have test execution methods. The file
+cgroup_fj_testcases is parsed as follows:
 
-    Here's a good question: where is this information stored in the
-kernel? If we can create an ltp test module to export some of this
-data [and extend it to other reporting as necessary] via sysfs
-STRICTLY for testing, it would help determinism a lot.
-Thanks,
--Garrett
+nlines=`cat cgroup_fj_testcases | wc -l`
+for i in `seq 1 $nlines`
+do
+        CASETYPE=`sed -n "$i""p" cgroup_fj_testcases | cut -f1`
+        CASECMD=`sed -n "$i""p" cgroup_fj_testcases | cut -f2`
 
----------------------------------------------------------------------------=
----
+Which thus by CASECMD becomes parameter for cgroup_fj_stress.sh. I do not
+think that cgroup_fj_testcases should have any prefix as .sh as it is not
+meant to be a executable. May be instead of suffixing the file with .sh it
+could be left alone as a bare file without any suffix.
+
+On Tue, Mar 23, 2010 at 07:40:40PM +0530, Srinivasa R Chamarthy wrote:
+> Hi Rishi,
+> 
+> There seems to be another issue here. There are two files with name as
+> cgroup_fj_testcases. one is the script which already has the suffix as .sh
+> (cgroup_fj_testcases.sh) which is executed by cgroup_fj tests. But there has
+> to be one more file which is bare cgroup_fj_testcases which is having the test
+> configurations that are run by the cgroup_fj_testcases.sh script.
+> 
+> The bare configuration file cgroup_fj_testcases should have the test's to be
+> run configurations (i suppose). The testcase run_cgroup_test_fj.sh is
+> referencing cgroup_fj_testcases file as follows.
+> 
+> nlines=`cat cgroup_fj_testcases | wc -l`
+> 
+> I think this configuration file cgroup_fj_testcases is totally missing out in
+> the head. Let me know if i am correct.
+> 
+> On Tue, Mar 23, 2010 at 07:02:24PM +0530, Srinivasa R Chamarthy wrote:
+> > Hi Rishi,
+> > 
+> > Thanks for the info.
+> > 
+> > On Tue, Mar 23, 2010 at 06:44:38PM +0530, Rishikesh K Rajak wrote:
+> > > On Tue, Mar 23, 2010 at 05:55:27PM +0530, Srinivasa R Chamarthy wrote:
+> > > > Hi LTP,
+> > > > 
+> > > > cgroup_fj tests of controllers is currently failing due to missing file
+> > > > cgroup_fj_testcases after compilation. I see that the file cgroup_fj_testcases
+> > > > is existing in the source but it is not available in /opt/ltp after
+> > > > compilation.
+> > > 
+> > > 
+> > > Hi Srini,
+> > > 
+> > > Thanks for reporting failure.
+> > > 
+> > > Yes, looks like this commit is doing the changes from cgroup_fj_testcases to
+> > > cgroup_fj_testcases.sh .
+> > > 
+> > > commit 223e12ee3f7fdb525746462747954552f0e07538
+> > > Author: Garrett Cooper <yanegomi@gmail.com>
+> > > Date:   Mon Mar 8 07:46:02 2010 -0800
+> > > 
+> > >     Fix install for cgroup_fj_testcases.
+> > >     
+> > >     Turns out this script wasn't being installed properly, and thus its
+> > > testcases were failing; fix by suffixing with .sh
+> > >     
+> > >     Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> > > 
+> > > 
+> > > 
+> > > Let me have a look tomorrow where went wrong.
+> > > -Rishi
+> > > > 
+> > > > FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2010_Mar_23-13h_22m_15s.failed
+> > > > Running tests.......
+> > > > <<<test_start>>>
+> > > > tag=cgroup_fj stime=1269346936
+> > > > cmdline="      run_cgroup_test_fj.sh"
+> > > > contacts=""
+> > > > analysis=exit
+> > > > <<<test_output>>>
+> > > > incrementing stop
+> > > > Now, we start the test for cgroup...
+> > > > cat: cgroup_fj_testcases: No such file or directory
+> > > > <<<execution_status>>>
+> > > > initiation_status="ok"
+> > > > duration=0 termination_type=exited termination_id=0 corefile=no
+> > > > cutime=6 cstime=2
+> > > > <<<test_end>>>
+> > > > INFO: ltp-pan reported all tests PASS
+> > > > LTP Version: LTP-20100228
+> > > > 
+> > > > Eventhough the tests did not run, the results say all tests PASS. :)
+> > > > 
+> > > > -- 
+> > > > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> > > > Linux on System z (RedHat & Novell SuSE) CSVT,
+> > > > IBM India Systems & Technology Group/LTC - ISL,
+> > > > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> > > > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> > > > 
+> > > > ------------------------------------------------------------------------------
+> > > > Download Intel&#174; Parallel Studio Eval
+> > > > Try the new software tools for yourself. Speed compiling, find bugs
+> > > > proactively, and fine-tune applications for parallel performance.
+> > > > See why Intel Parallel Studio got high marks during beta.
+> > > > http://p.sf.net/sfu/intel-sw-dev
+> > > > _______________________________________________
+> > > > Ltp-list mailing list
+> > > > Ltp-list@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > > 
+> > > -- 
+> > > Thanks & Regards
+> > > Rishi
+> > > LTP Maintainer
+> > > IBM, LTC, Bangalore
+> > > Please join IRC #ltp @ irc.freenode.net
+> > 
+> > -- 
+> > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> > Linux on System z (RedHat & Novell SuSE) CSVT,
+> > IBM India Systems & Technology Group/LTC - ISL,
+> > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> > 
+> > ------------------------------------------------------------------------------
+> > Download Intel&#174; Parallel Studio Eval
+> > Try the new software tools for yourself. Speed compiling, find bugs
+> > proactively, and fine-tune applications for parallel performance.
+> > See why Intel Parallel Studio got high marks during beta.
+> > http://p.sf.net/sfu/intel-sw-dev
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> -- 
+> Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> Linux on System z (RedHat & Novell SuSE) CSVT,
+> IBM India Systems & Technology Group/LTC - ISL,
+> Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+
+-- 
+Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+Linux on System z (RedHat & Novell SuSE) CSVT,
+IBM India Systems & Technology Group/LTC - ISL,
+Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+[ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
