@@ -1,24 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <saileshcv@gmail.com>) id 1NnQUg-0008WC-U5
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 05:54:38 +0000
-Received: from mail-iw0-f195.google.com ([209.85.223.195])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NnQUg-0003DY-3p
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 05:54:38 +0000
-Received: by iwn33 with SMTP id 33so2503167iwn.23
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 04 Mar 2010 21:54:32 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nu5LG-0003W5-JJ
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:44:26 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nu5LF-0006zv-FK
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:44:26 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2NEZj63024192
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 10:35:45 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2NEiJQD174466
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 10:44:19 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o2NEiJdT027619
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 11:44:19 -0300
+Date: Tue, 23 Mar 2010 20:14:10 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100323144410.GD16182@linux.vnet.ibm.com>
+References: <20100323122527.GA6017@chamarthy>
+	<20100323131438.GA16182@linux.vnet.ibm.com>
+	<20100323133224.GB6017@chamarthy> <20100323141040.GC6017@chamarthy>
+	<20100323142314.GA11852@chamarthy>
 MIME-Version: 1.0
-In-Reply-To: <20100304125514.GA21634@linux.vnet.ibm.com>
-References: <41c7690d1003032130i6b61968bjc175698937dc0051@mail.gmail.com>
-	<20100304125514.GA21634@linux.vnet.ibm.com>
-Date: Fri, 5 Mar 2010 11:24:32 +0530
-Message-ID: <41c7690d1003042154s68cd8416hf6ebf17f96e50a8b@mail.gmail.com>
-From: Silesh C V <saileshcv@gmail.com>
-Subject: Re: [LTP] [PATCH-v3] RTC Device Driver Tests
+Content-Disposition: inline
+In-Reply-To: <20100323142314.GA11852@chamarthy>
+Subject: Re: [LTP] [BUG] cgroup_fj tests fail to run due to missing
+ cgroup_fj_testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,86 +40,186 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, risrajak@linux.vnet.ibm.com
-Cc: Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 3/4/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
->>Rishi,
->
->>Can you test this patch on the machine on which the tests got stuck
->>earlier?
->
-> Yes i tested and found that, it is failing.
+On Tue, Mar 23, 2010 at 07:53:14PM +0530, Srinivasa R Chamarthy wrote:
+> Sorry, i meant that the script run_cgroup_test_fj.sh executes another function
+> called cgroup_fj_stress.sh with a parameter which is got from parsing the file
+> cgroup_fj_testcases which will have test execution methods. The file
+> cgroup_fj_testcases is parsed as follows:
+> 
+> nlines=`cat cgroup_fj_testcases | wc -l`
+> for i in `seq 1 $nlines`
+> do
+>         CASETYPE=`sed -n "$i""p" cgroup_fj_testcases | cut -f1`
+>         CASECMD=`sed -n "$i""p" cgroup_fj_testcases | cut -f2`
+> 
+> Which thus by CASECMD becomes parameter for cgroup_fj_stress.sh. I do not
+> think that cgroup_fj_testcases should have any prefix as .sh as it is not
+> meant to be a executable. May be instead of suffixing the file with .sh it
+> could be left alone as a bare file without any suffix.
 
-It is supposed to fail :) . What we  wanted was a way to come out of
-the tests if the
-alarm fails to ring.
+Yes you are absolutely correct i feel.
 
+-Rishi
+> 
+> On Tue, Mar 23, 2010 at 07:40:40PM +0530, Srinivasa R Chamarthy wrote:
+> > Hi Rishi,
+> > 
+> > There seems to be another issue here. There are two files with name as
+> > cgroup_fj_testcases. one is the script which already has the suffix as .sh
+> > (cgroup_fj_testcases.sh) which is executed by cgroup_fj tests. But there has
+> > to be one more file which is bare cgroup_fj_testcases which is having the test
+> > configurations that are run by the cgroup_fj_testcases.sh script.
+> > 
+> > The bare configuration file cgroup_fj_testcases should have the test's to be
+> > run configurations (i suppose). The testcase run_cgroup_test_fj.sh is
+> > referencing cgroup_fj_testcases file as follows.
+> > 
+> > nlines=`cat cgroup_fj_testcases | wc -l`
+> > 
+> > I think this configuration file cgroup_fj_testcases is totally missing out in
+> > the head. Let me know if i am correct.
+> > 
+> > On Tue, Mar 23, 2010 at 07:02:24PM +0530, Srinivasa R Chamarthy wrote:
+> > > Hi Rishi,
+> > > 
+> > > Thanks for the info.
+> > > 
+> > > On Tue, Mar 23, 2010 at 06:44:38PM +0530, Rishikesh K Rajak wrote:
+> > > > On Tue, Mar 23, 2010 at 05:55:27PM +0530, Srinivasa R Chamarthy wrote:
+> > > > > Hi LTP,
+> > > > > 
+> > > > > cgroup_fj tests of controllers is currently failing due to missing file
+> > > > > cgroup_fj_testcases after compilation. I see that the file cgroup_fj_testcases
+> > > > > is existing in the source but it is not available in /opt/ltp after
+> > > > > compilation.
+> > > > 
+> > > > 
+> > > > Hi Srini,
+> > > > 
+> > > > Thanks for reporting failure.
+> > > > 
+> > > > Yes, looks like this commit is doing the changes from cgroup_fj_testcases to
+> > > > cgroup_fj_testcases.sh .
+> > > > 
+> > > > commit 223e12ee3f7fdb525746462747954552f0e07538
+> > > > Author: Garrett Cooper <yanegomi@gmail.com>
+> > > > Date:   Mon Mar 8 07:46:02 2010 -0800
+> > > > 
+> > > >     Fix install for cgroup_fj_testcases.
+> > > >     
+> > > >     Turns out this script wasn't being installed properly, and thus its
+> > > > testcases were failing; fix by suffixing with .sh
+> > > >     
+> > > >     Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> > > > 
+> > > > 
+> > > > 
+> > > > Let me have a look tomorrow where went wrong.
+> > > > -Rishi
+> > > > > 
+> > > > > FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2010_Mar_23-13h_22m_15s.failed
+> > > > > Running tests.......
+> > > > > <<<test_start>>>
+> > > > > tag=cgroup_fj stime=1269346936
+> > > > > cmdline="      run_cgroup_test_fj.sh"
+> > > > > contacts=""
+> > > > > analysis=exit
+> > > > > <<<test_output>>>
+> > > > > incrementing stop
+> > > > > Now, we start the test for cgroup...
+> > > > > cat: cgroup_fj_testcases: No such file or directory
+> > > > > <<<execution_status>>>
+> > > > > initiation_status="ok"
+> > > > > duration=0 termination_type=exited termination_id=0 corefile=no
+> > > > > cutime=6 cstime=2
+> > > > > <<<test_end>>>
+> > > > > INFO: ltp-pan reported all tests PASS
+> > > > > LTP Version: LTP-20100228
+> > > > > 
+> > > > > Eventhough the tests did not run, the results say all tests PASS. :)
+> > > > > 
+> > > > > -- 
+> > > > > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> > > > > Linux on System z (RedHat & Novell SuSE) CSVT,
+> > > > > IBM India Systems & Technology Group/LTC - ISL,
+> > > > > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> > > > > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> > > > > 
+> > > > > ------------------------------------------------------------------------------
+> > > > > Download Intel&#174; Parallel Studio Eval
+> > > > > Try the new software tools for yourself. Speed compiling, find bugs
+> > > > > proactively, and fine-tune applications for parallel performance.
+> > > > > See why Intel Parallel Studio got high marks during beta.
+> > > > > http://p.sf.net/sfu/intel-sw-dev
+> > > > > _______________________________________________
+> > > > > Ltp-list mailing list
+> > > > > Ltp-list@lists.sourceforge.net
+> > > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > > > 
+> > > > -- 
+> > > > Thanks & Regards
+> > > > Rishi
+> > > > LTP Maintainer
+> > > > IBM, LTC, Bangalore
+> > > > Please join IRC #ltp @ irc.freenode.net
+> > > 
+> > > -- 
+> > > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> > > Linux on System z (RedHat & Novell SuSE) CSVT,
+> > > IBM India Systems & Technology Group/LTC - ISL,
+> > > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> > > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> > > 
+> > > ------------------------------------------------------------------------------
+> > > Download Intel&#174; Parallel Studio Eval
+> > > Try the new software tools for yourself. Speed compiling, find bugs
+> > > proactively, and fine-tune applications for parallel performance.
+> > > See why Intel Parallel Studio got high marks during beta.
+> > > http://p.sf.net/sfu/intel-sw-dev
+> > > _______________________________________________
+> > > Ltp-list mailing list
+> > > Ltp-list@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> > -- 
+> > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> > Linux on System z (RedHat & Novell SuSE) CSVT,
+> > IBM India Systems & Technology Group/LTC - ISL,
+> > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> 
+> -- 
+> Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> Linux on System z (RedHat & Novell SuSE) CSVT,
+> IBM India Systems & Technology Group/LTC - ISL,
+> Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
->
-> [root@x335a rtc]# ./rtc-test /dev/rtc
-> rtc01       0  TINFO  :  RTC READ TEST:
-> rtc01       1  TPASS  :  RTC READ TEST Passed
-> rtc01       0  TINFO  :  Current Date/time is  03/03/10 12:38:26 PM
-> rtc01       0  TINFO  :  RTC ALARM TEST :
-> rtc01       0  TINFO  :  Alarm time set to 12:38:31.
-> rtc01       0  TINFO  :  Waiting 5 seconds for the alarm...
-> rtc01       2  TFAIL  :  Timed out waiting for the alarm
-> rtc01       0  TINFO  :  RTC UPDATE INTERRUPTS TEST :
-> rtc01       0  TINFO  :  Waiting for  5 update interrupts...
-> rtc01       0  TINFO  :  Update interrupt 1
-> rtc01       0  TINFO  :  Update interrupt 2
-> rtc01       0  TINFO  :  Update interrupt 3
-> rtc01       0  TINFO  :  Update interrupt 4
-> rtc01       0  TINFO  :  Update interrupt 5
-> rtc01       3  TPASS  :  RTC UPDATE INTERRUPTS TEST Passed
-> rtc01       0  TINFO  :  RTC Tests Done!
-> [root@x335a rtc]# ls -l /dev/rtc*
-> crw-r--r-- 1 root root 10, 135 Feb 20 13:51 /dev/rtc
-> [root@x335a rtc]#
->
->
->
-> In fact while compiling there is some warning also.
-> [root@x335a rtc]# make
-> cc rtc-test.c -O2 -Wall -I ../../../../include/ -L ../../../../lib/
-> -lltp  -o rtc-test
-> rtc-test.c: In function =91read_alarm_test=92:
-> rtc-test.c:64: warning: dereferencing type-punned pointer will break
-> strict-aliasing rules
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
-I did not get this warning on gcc-4.3.0 . Anyways I think we can get rid of=
- this
-warning by using -fno-strict-aliasing option at the cost of some optimizati=
-ons.
-I will send you another patch.
-
-
-Thanks,
-Silesh
-
-
->
-> Please solve these problems and please send me a revised patch.
->
-> --
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
->
-
-
--- =
-
-Silesh
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
