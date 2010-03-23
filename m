@@ -2,32 +2,33 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nu5HQ-0003GP-KP
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:40:28 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Nu9tP-00071b-Oa
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 19:35:59 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nu5HP-0005zV-20
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:40:28 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2NEZnSa015748
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 10:35:49 -0400
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2NEeHct058528
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 10:40:17 -0400
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o2N7eGE9025085
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 01:40:16 -0600
-Date: Tue, 23 Mar 2010 20:10:13 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100323144012.GC16182@linux.vnet.ibm.com>
-References: <20100323122527.GA6017@chamarthy>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100323122527.GA6017@chamarthy>
-Subject: Re: [LTP] [BUG] cgroup_fj tests fail to run due to missing
- cgroup_fj_testcases
+	(Exim 4.69) id 1Nu9tO-0007RJ-Jr
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 19:35:59 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2NJQmMw004407
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 13:26:48 -0600
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
+	id o2NJZitj107160
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 13:35:47 -0600
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2NJZegZ020943
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 13:35:40 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <364299f41003230941r243483en1c334493cf9ccfb3@mail.gmail.com>
+References: <20100323092022.GD4384@linux.vnet.ibm.com>
+	<364299f41003230941r243483en1c334493cf9ccfb3@mail.gmail.com>
+Date: Wed, 24 Mar 2010 01:14:40 +0530
+Message-Id: <1269373481.5208.4.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] ext4/e4defrag.c testcases compilation error
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,97 +38,205 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Akira Fujita <a-fujita@rs.jp.nec.com>, Miao Xie <miaox@cn.fujitsu.com>, Takashi Sato <t-sato@yk.jp.nec.com>
 
-On Tue, Mar 23, 2010 at 05:55:27PM +0530, Srinivasa R Chamarthy wrote:
-> Hi LTP,
-> 
-> cgroup_fj tests of controllers is currently failing due to missing file
-> cgroup_fj_testcases after compilation. I see that the file cgroup_fj_testcases
-> is existing in the source but it is not available in /opt/ltp after
-> compilation.
-> 
-> FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2010_Mar_23-13h_22m_15s.failed
-> Running tests.......
-> <<<test_start>>>
-> tag=cgroup_fj stime=1269346936
-> cmdline="      run_cgroup_test_fj.sh"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> Now, we start the test for cgroup...
-> cat: cgroup_fj_testcases: No such file or directory
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=0 corefile=no
-> cutime=6 cstime=2
-> <<<test_end>>>
-> INFO: ltp-pan reported all tests PASS
-> LTP Version: LTP-20100228
-> 
-> Eventhough the tests did not run, the results say all tests PASS. :)
-
-For the above report here is the quick fix i can think.
-
-commit 391e757d43b3ac33a4a435e319ee77b1daa6da76
-Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Date:   Tue Mar 23 20:07:34 2010 +0530
-
-    Fix the proper return for testcase.
-    
-    Reported By: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
-    Signed-off By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-
-diff --git a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-index 7445725..672f37c 100755
---- a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-@@ -129,4 +129,4 @@ do
-        fi
- done
- 
--exit 0;
-+exit $ret;
-
-> 
-> -- 
-> Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> Linux on System z (RedHat & Novell SuSE) CSVT,
-> IBM India Systems & Technology Group/LTC - ISL,
-> Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlLCAyMDEwLTAzLTIzIGF0IDA5OjQxIC0wNzAwLCBHYXJyZXR0IENvb3BlciB3cm90ZToK
+PiBPbiBUdWUsIE1hciAyMywgMjAxMCBhdCAyOjIwIEFNLCBSaXNoaWtlc2ggSyBSYWphawo+IDxy
+aXNyYWpha0BsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ID4KPiA+IEhpLAo+ID4KPiA+IFdo
+aWxlIGJ1aWxkaW5nIGV4dDQgdGVzdGNhc2VzIGkgYW0gZ2V0dGluZyBmb2xsb3dpbmcgZXJyb3Is
+IGxldCBtZSBrbm93IGlmCj4gPiBhbnlvbmUgYXdhcmUgYWJvdXQgdGhpcyB3aXRoIGhhbmR5IHNv
+bHV0aW9uLCBlbHNlIHdpbGwgd29yayBsYXRlciB0b2RheSBvbiB0aGlzLgo+ID4KPiA+IGdjYyAt
+ZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsCj4gPiAtSS9yb290
+L2x0cC1kZXYtbmV4dC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi8uLi9p
+bmNsdWRlCj4gPiAtSS4uLy4uLy4uLy4uLy4uL2luY2x1ZGUgICAtTC4uLy4uLy4uLy4uLy4uL2xp
+YiAgZTRkZWZyYWcuYyAgIC1sbHRwIC1sbSAtbwo+ID4gZTRkZWZyYWcKPiA+IGU0ZGVmcmFnLmM6
+MTY1OiBlcnJvcjogZXhwZWN0ZWQgc3BlY2lmaWVyLXF1YWxpZmllci1saXN0IGJlZm9yZSDigJhf
+X3U2NOKAmQo+ID4gZTRkZWZyYWcuYzoxNzk6IGVycm9yOiBleHBlY3RlZCBzcGVjaWZpZXItcXVh
+bGlmaWVyLWxpc3QgYmVmb3JlIOKAmF9fdTY04oCZCj4gPiBlNGRlZnJhZy5jOjE4NTogZXJyb3I6
+IGV4cGVjdGVkIHNwZWNpZmllci1xdWFsaWZpZXItbGlzdCBiZWZvcmUg4oCYX19zMzLigJkKPiA+
+IGU0ZGVmcmFnLmM6MTk0OiBlcnJvcjogZXhwZWN0ZWQgc3BlY2lmaWVyLXF1YWxpZmllci1saXN0
+IGJlZm9yZSDigJhfX3U2NOKAmQo+ID4gZTRkZWZyYWcuYzoyMDY6IGVycm9yOiBleHBlY3RlZCBz
+cGVjaWZpZXItcXVhbGlmaWVyLWxpc3QgYmVmb3JlIOKAmF9fdTY04oCZCj4gPiBlNGRlZnJhZy5j
+OjIyNDogZXJyb3I6IGV4cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKAmGFzbeKA
+mSBvciDigJhfX2F0dHJpYnV0ZV9f4oCZIGJlZm9yZQo+ID4g4oCYX19sZTE24oCZCj4gPiBlNGRl
+ZnJhZy5jOjIyNTogZXJyb3I6IGV4cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKA
+mGFzbeKAmSBvciDigJhfX2F0dHJpYnV0ZV9f4oCZIGJlZm9yZQo+ID4g4oCYX19sZTMy4oCZCj4g
+PiBlNGRlZnJhZy5jOjIyNjogZXJyb3I6IGV4cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvi
+gJksIOKAmGFzbeKAmSBvciDigJhfX2F0dHJpYnV0ZV9f4oCZIGJlZm9yZQo+ID4g4oCYX19sZTY0
+4oCZCj4gPiBlNGRlZnJhZy5jOjIzMjogZXJyb3I6IGV4cGVjdGVkIHNwZWNpZmllci1xdWFsaWZp
+ZXItbGlzdCBiZWZvcmUg4oCYX19sZTMy4oCZCj4gPiBlNGRlZnJhZy5jOjMzMTogZXJyb3I6IGV4
+cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKAmGFzbeKAmSBvciDigJhfX2F0dHJp
+YnV0ZV9f4oCZIGJlZm9yZQo+ID4g4oCYbG9nX2dyb3Vwc19wZXJfZmxleOKAmQo+ID4gZTRkZWZy
+YWcuYzozMzI6IGVycm9yOiBleHBlY3RlZCDigJg94oCZLCDigJgs4oCZLCDigJg74oCZLCDigJhh
+c23igJkgb3Ig4oCYX19hdHRyaWJ1dGVfX+KAmSBiZWZvcmUKPiA+IOKAmGJsb2Nrc19wZXJfZ3Jv
+dXDigJkKPiA+IGU0ZGVmcmFnLmM6MzMzOiBlcnJvcjogZXhwZWN0ZWQg4oCYPeKAmSwg4oCYLOKA
+mSwg4oCYO+KAmSwg4oCYYXNt4oCZIG9yIOKAmF9fYXR0cmlidXRlX1/igJkgYmVmb3JlCj4gPiDi
+gJhmZWF0dXJlX2luY29tcGF04oCZCj4gPiBlNGRlZnJhZy5jOjM0MjogZXJyb3I6IGV4cGVjdGVk
+IOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKAmGFzbeKAmSBvciDigJhfX2F0dHJpYnV0ZV9f
+4oCZIGJlZm9yZQo+ID4g4oCYZXh0MmZzX3N3YWIzMuKAmQo+IAo+ICAgICBfX3U2NCwgZXQgYWxs
+IGFyZSBrZXJuZWwgZGF0YXR5cGVzOyBJJ3ZlIGhhZCBhIGxvdCBvZiBmdW4gdHJ5aW5nCj4gdG8g
+aW50ZWdyYXRlIHRlc3RzIGxpa2UgdGhlc2UsIHNvIEknZCBkZWZpbml0ZWx5IGNvbnRhY3QgdGhl
+Cj4gbWFpbnRhaW5lcnMuCgpHYXJyZXQsCgpPbiBteSBmb2xsb3dpbmcgc3lzdGVtOgoKIyB1bmFt
+ZSAtYQpMaW51eCA8c25pZmY+IDIuNi4zMS41LTEyNy5mYzEyLnBwYzY0ICMxIFNNUCBTYXQgTm92
+IDcgMjA6NTg6MjQgRVNUIDIwMDkKcHBjNjQgcHBjNjQgcHBjNjQgR05VL0xpbnV4CiMgcnBtIC1x
+YSB8IGdyZXAgLWkgZTJmc3Byb2dzCmUyZnNwcm9ncy1kZXZlbC0xLjQxLjktNS5mYzEyLnBwYwpl
+MmZzcHJvZ3MtbGlicy0xLjQxLjktNS5mYzEyLnBwYwplMmZzcHJvZ3MtMS40MS45LTUuZmMxMi5w
+cGMKCkl0IGp1c3QgYnVpbGRzIGZpbmU6CgojIG1ha2UKbWFrZSAtQyBmZnNiLTYuMC1yYzIgLWYK
+Ii9yb290L3N1YnJhdGEvbHRwL2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1m
+ZWF0dXJlcy9mZnNiLTYuMC1yYzIvTWFrZWZpbGUiIGFsbAptYWtlWzFdOiBFbnRlcmluZyBkaXJl
+Y3RvcnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0
+LW5ldy1mZWF0dXJlcy9mZnNiLTYuMC1yYzInCm1ha2UgIGFsbC1hbQptYWtlWzJdOiBFbnRlcmlu
+ZyBkaXJlY3RvcnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9m
+cy9leHQ0LW5ldy1mZWF0dXJlcy9mZnNiLTYuMC1yYzInCmdjYyAtREhBVkVfQ09ORklHX0ggLUku
+ICAgIC1EX0dOVV9TT1VSQ0UgLWcgLU8yIC1EX1JFRU5UUkFOVCAtTVQKZmlsZW9wcy5vIC1NRCAt
+TVAgLU1GIC5kZXBzL2ZpbGVvcHMuVHBvIC1jIC1vIGZpbGVvcHMubyBmaWxlb3BzLmMKbXYgLWYg
+LmRlcHMvZmlsZW9wcy5UcG8gLmRlcHMvZmlsZW9wcy5QbwpnY2MgLURIQVZFX0NPTkZJR19IIC1J
+LiAgICAtRF9HTlVfU09VUkNFIC1nIC1PMiAtRF9SRUVOVFJBTlQgLU1UIHJhbmQubwotTUQgLU1Q
+IC1NRiAuZGVwcy9yYW5kLlRwbyAtYyAtbyByYW5kLm8gcmFuZC5jCm12IC1mIC5kZXBzL3JhbmQu
+VHBvIC5kZXBzL3JhbmQuUG8KZ2NjIC1ESEFWRV9DT05GSUdfSCAtSS4gICAgLURfR05VX1NPVVJD
+RSAtZyAtTzIgLURfUkVFTlRSQU5UIC1NVCBtYWluLm8KLU1EIC1NUCAtTUYgLmRlcHMvbWFpbi5U
+cG8gLWMgLW8gbWFpbi5vIG1haW4uYwptdiAtZiAuZGVwcy9tYWluLlRwbyAuZGVwcy9tYWluLlBv
+CmdjYyAtREhBVkVfQ09ORklHX0ggLUkuICAgIC1EX0dOVV9TT1VSQ0UgLWcgLU8yIC1EX1JFRU5U
+UkFOVCAtTVQgZmgubwotTUQgLU1QIC1NRiAuZGVwcy9maC5UcG8gLWMgLW8gZmgubyBmaC5jCm12
+IC1mIC5kZXBzL2ZoLlRwbyAuZGVwcy9maC5QbwpnY2MgLURIQVZFX0NPTkZJR19IIC1JLiAgICAt
+RF9HTlVfU09VUkNFIC1nIC1PMiAtRF9SRUVOVFJBTlQgLU1UCmZpbGVsaXN0Lm8gLU1EIC1NUCAt
+TUYgLmRlcHMvZmlsZWxpc3QuVHBvIC1jIC1vIGZpbGVsaXN0Lm8gZmlsZWxpc3QuYwptdiAtZiAu
+ZGVwcy9maWxlbGlzdC5UcG8gLmRlcHMvZmlsZWxpc3QuUG8KZ2NjIC1ESEFWRV9DT05GSUdfSCAt
+SS4gICAgLURfR05VX1NPVVJDRSAtZyAtTzIgLURfUkVFTlRSQU5UIC1NVAptZXRhb3BzLm8gLU1E
+IC1NUCAtTUYgLmRlcHMvbWV0YW9wcy5UcG8gLWMgLW8gbWV0YW9wcy5vIG1ldGFvcHMuYwptdiAt
+ZiAuZGVwcy9tZXRhb3BzLlRwbyAuZGVwcy9tZXRhb3BzLlBvCmdjYyAtREhBVkVfQ09ORklHX0gg
+LUkuICAgIC1EX0dOVV9TT1VSQ0UgLWcgLU8yIC1EX1JFRU5UUkFOVCAtTVQKcndsb2NrLm8gLU1E
+IC1NUCAtTUYgLmRlcHMvcndsb2NrLlRwbyAtYyAtbyByd2xvY2subyByd2xvY2suYwptdiAtZiAu
+ZGVwcy9yd2xvY2suVHBvIC5kZXBzL3J3bG9jay5QbwpnY2MgLURIQVZFX0NPTkZJR19IIC1JLiAg
+ICAtRF9HTlVfU09VUkNFIC1nIC1PMiAtRF9SRUVOVFJBTlQgLU1UCmNpcmxpc3QubyAtTUQgLU1Q
+IC1NRiAuZGVwcy9jaXJsaXN0LlRwbyAtYyAtbyBjaXJsaXN0Lm8gY2lybGlzdC5jCm12IC1mIC5k
+ZXBzL2Npcmxpc3QuVHBvIC5kZXBzL2Npcmxpc3QuUG8KZ2NjIC1ESEFWRV9DT05GSUdfSCAtSS4g
+ICAgLURfR05VX1NPVVJDRSAtZyAtTzIgLURfUkVFTlRSQU5UIC1NVCByYnQubwotTUQgLU1QIC1N
+RiAuZGVwcy9yYnQuVHBvIC1jIC1vIHJidC5vIHJidC5jCm12IC1mIC5kZXBzL3JidC5UcG8gLmRl
+cHMvcmJ0LlBvCmdjYyAtREhBVkVfQ09ORklHX0ggLUkuICAgIC1EX0dOVV9TT1VSQ0UgLWcgLU8y
+IC1EX1JFRU5UUkFOVCAtTVQKZmZzYl90Zy5vIC1NRCAtTVAgLU1GIC5kZXBzL2Zmc2JfdGcuVHBv
+IC1jIC1vIGZmc2JfdGcubyBmZnNiX3RnLmMKbXYgLWYgLmRlcHMvZmZzYl90Zy5UcG8gLmRlcHMv
+ZmZzYl90Zy5QbwpnY2MgLURIQVZFX0NPTkZJR19IIC1JLiAgICAtRF9HTlVfU09VUkNFIC1nIC1P
+MiAtRF9SRUVOVFJBTlQgLU1UCmZmc2JfZnMubyAtTUQgLU1QIC1NRiAuZGVwcy9mZnNiX2ZzLlRw
+byAtYyAtbyBmZnNiX2ZzLm8gZmZzYl9mcy5jCm12IC1mIC5kZXBzL2Zmc2JfZnMuVHBvIC5kZXBz
+L2Zmc2JfZnMuUG8KZ2NjIC1ESEFWRV9DT05GSUdfSCAtSS4gICAgLURfR05VX1NPVVJDRSAtZyAt
+TzIgLURfUkVFTlRSQU5UIC1NVApmZnNiX3RocmVhZC5vIC1NRCAtTVAgLU1GIC5kZXBzL2Zmc2Jf
+dGhyZWFkLlRwbyAtYyAtbyBmZnNiX3RocmVhZC5vCmZmc2JfdGhyZWFkLmMKbXYgLWYgLmRlcHMv
+ZmZzYl90aHJlYWQuVHBvIC5kZXBzL2Zmc2JfdGhyZWFkLlBvCmdjYyAtREhBVkVfQ09ORklHX0gg
+LUkuICAgIC1EX0dOVV9TT1VSQ0UgLWcgLU8yIC1EX1JFRU5UUkFOVCAtTVQKZmZzYl9vcC5vIC1N
+RCAtTVAgLU1GIC5kZXBzL2Zmc2Jfb3AuVHBvIC1jIC1vIGZmc2Jfb3AubyBmZnNiX29wLmMKbXYg
+LWYgLmRlcHMvZmZzYl9vcC5UcG8gLmRlcHMvZmZzYl9vcC5QbwpnY2MgLURIQVZFX0NPTkZJR19I
+IC1JLiAgICAtRF9HTlVfU09VUkNFIC1nIC1PMiAtRF9SRUVOVFJBTlQgLU1UIHV0aWwubwotTUQg
+LU1QIC1NRiAuZGVwcy91dGlsLlRwbyAtYyAtbyB1dGlsLm8gdXRpbC5jCm12IC1mIC5kZXBzL3V0
+aWwuVHBvIC5kZXBzL3V0aWwuUG8KZ2NjIC1ESEFWRV9DT05GSUdfSCAtSS4gICAgLURfR05VX1NP
+VVJDRSAtZyAtTzIgLURfUkVFTlRSQU5UIC1NVApwYXJzZXIubyAtTUQgLU1QIC1NRiAuZGVwcy9w
+YXJzZXIuVHBvIC1jIC1vIHBhcnNlci5vIHBhcnNlci5jCm12IC1mIC5kZXBzL3BhcnNlci5UcG8g
+LmRlcHMvcGFyc2VyLlBvCmdjYyAtREhBVkVfQ09ORklHX0ggLUkuICAgIC1EX0dOVV9TT1VSQ0Ug
+LWcgLU8yIC1EX1JFRU5UUkFOVCAtTVQKZmZzYl9mYy5vIC1NRCAtTVAgLU1GIC5kZXBzL2Zmc2Jf
+ZmMuVHBvIC1jIC1vIGZmc2JfZmMubyBmZnNiX2ZjLmMKbXYgLWYgLmRlcHMvZmZzYl9mYy5UcG8g
+LmRlcHMvZmZzYl9mYy5QbwpnY2MgLURIQVZFX0NPTkZJR19IIC1JLiAgICAtRF9HTlVfU09VUkNF
+IC1nIC1PMiAtRF9SRUVOVFJBTlQgLU1UCmZmc2Jfc3RhdHMubyAtTUQgLU1QIC1NRiAuZGVwcy9m
+ZnNiX3N0YXRzLlRwbyAtYyAtbyBmZnNiX3N0YXRzLm8KZmZzYl9zdGF0cy5jCm12IC1mIC5kZXBz
+L2Zmc2Jfc3RhdHMuVHBvIC5kZXBzL2Zmc2Jfc3RhdHMuUG8KZ2NjIC1ESEFWRV9DT05GSUdfSCAt
+SS4gICAgLURfR05VX1NPVVJDRSAtZyAtTzIgLURfUkVFTlRSQU5UIC1NVCBsaXN0Lm8KLU1EIC1N
+UCAtTUYgLmRlcHMvbGlzdC5UcG8gLWMgLW8gbGlzdC5vIGxpc3QuYwptdiAtZiAuZGVwcy9saXN0
+LlRwbyAuZGVwcy9saXN0LlBvCmdjYyAtRF9HTlVfU09VUkNFIC1nIC1PMiAtRF9SRUVOVFJBTlQg
+ICAtbyBmZnNiIGZpbGVvcHMubyByYW5kLm8gbWFpbi5vCmZoLm8gZmlsZWxpc3QubyBtZXRhb3Bz
+Lm8gcndsb2NrLm8gY2lybGlzdC5vIHJidC5vIGZmc2JfdGcubyBmZnNiX2ZzLm8KZmZzYl90aHJl
+YWQubyBmZnNiX29wLm8gdXRpbC5vIHBhcnNlci5vIGZmc2JfZmMubyBmZnNiX3N0YXRzLm8gbGlz
+dC5vCi1scHRocmVhZCAtbG0gCm1ha2VbMl06IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9zdWJy
+YXRhL2x0cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZmZz
+Yi02LjAtcmMyJwptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeQpgL3Jvb3Qvc3VicmF0YS9sdHAv
+bHRwLWRldi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2Zmc2ItNi4wLXJj
+MicKY3AgZmZzYi02LjAtcmMyL2Zmc2IgZmZzYgptYWtlWzFdOiBFbnRlcmluZyBkaXJlY3RvcnkK
+YC9yb290L3N1YnJhdGEvbHRwL2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1m
+ZWF0dXJlcy9leHQ0LWRlbGFsbG9jLW1iYWxsb2MnCm1ha2VbMV06IE5vdGhpbmcgdG8gYmUgZG9u
+ZSBmb3IgYGFsbCcuCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0
+cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1kZWxh
+bGxvYy1tYmFsbG9jJwptYWtlWzFdOiBFbnRlcmluZyBkaXJlY3RvcnkKYC9yb290L3N1YnJhdGEv
+bHRwL2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWZm
+c2ItY29uZmlnJwptYWtlWzFdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLgptYWtlWzFd
+OiBMZWF2aW5nIGRpcmVjdG9yeQpgL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWRldi90ZXN0Y2FzZXMv
+a2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtZmZzYi1jb25maWcnCm1ha2VbMV06IEVu
+dGVyaW5nIGRpcmVjdG9yeQpgL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWRldi90ZXN0Y2FzZXMva2Vy
+bmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbicKZ2NjIC1nIC1PMiAt
+ZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKLUkvcm9vdC9zdWJyYXRhL2x0
+cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQotSS4uLy4uLy4uLy4uLy4uL2luY2x1
+ZGUgLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi8uLi9saWIKZXh0NF90
+ZXN0X2lub2RlX3ZlcnNpb24uYyAgIC1sbHRwIC1sbSAtbyBleHQ0X3Rlc3RfaW5vZGVfdmVyc2lv
+bgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeQpgL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWRldi90
+ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbicK
+bWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0cC9sdHAtZGV2L3Rl
+c3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1qb3VybmFsLWNoZWNrc3Vt
+JwptYWtlWzFdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLgptYWtlWzFdOiBMZWF2aW5n
+IGRpcmVjdG9yeQpgL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWRldi90ZXN0Y2FzZXMva2VybmVsL2Zz
+L2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtam91cm5hbC1jaGVja3N1bScKbWFrZVsxXTogRW50ZXJp
+bmcgZGlyZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwv
+ZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1uc2VjLXRpbWVzdGFtcHMnCmdjYyAtZyAtTzIgLWcg
+LU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsCi1JL3Jvb3Qvc3VicmF0YS9sdHAv
+bHRwLWRldi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUKLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRl
+IC1JLi4vLi4vLi4vLi4vLi4vaW5jbHVkZSAgIC1MLi4vLi4vLi4vLi4vLi4vbGliCmV4dDRfZmls
+ZV90aW1lLmMgICAtbGx0cCAtbG0gLW8gZXh0NF9maWxlX3RpbWUKbWFrZVsxXTogTGVhdmluZyBk
+aXJlY3RvcnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9mcy9l
+eHQ0LW5ldy1mZWF0dXJlcy9leHQ0LW5zZWMtdGltZXN0YW1wcycKbWFrZVsxXTogRW50ZXJpbmcg
+ZGlyZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvZnMv
+ZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1vbmxpbmUtZGVmcmFnJwpnY2MgLWcgLU8yIC1nIC1PMiAt
+Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbAotSS9yb290L3N1YnJhdGEvbHRwL2x0cC1k
+ZXYvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlCi1JLi4vLi4vLi4vLi4vLi4vaW5jbHVkZSAtSS4u
+Ly4uLy4uLy4uLy4uL2luY2x1ZGUgICAtTC4uLy4uLy4uLy4uLy4uL2xpYgplNGRlZnJhZy5jICAg
+LWxsdHAgLWxtIC1vIGU0ZGVmcmFnCmU0ZGVmcmFnLmM6IEluIGZ1bmN0aW9uIOKAmGZpbGVfc3Rh
+dGlzdGlj4oCZOgplNGRlZnJhZy5jOjEyNTA6IHdhcm5pbmc6IOKAmGJlc3RfZXh0X2NvdW504oCZ
+IG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4KdGhpcyBmdW5jdGlvbgplNGRlZnJhZy5jOiBJ
+biBmdW5jdGlvbiDigJhmaWxlX2RlZnJhZ+KAmToKZTRkZWZyYWcuYzoxNTg1OiB3YXJuaW5nOiDi
+gJhkb25vcl9waHlzaWNhbF9jbnTigJkgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZAppbiB0aGlz
+IGZ1bmN0aW9uCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0cC9s
+dHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1vbmxpbmUt
+ZGVmcmFnJwptYWtlWzFdOiBFbnRlcmluZyBkaXJlY3RvcnkKYC9yb290L3N1YnJhdGEvbHRwL2x0
+cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LXBlcnNpc3Qt
+cHJlYWxsb2MnCm1ha2VbMV06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuCm1ha2VbMV06
+IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0cC9sdHAtZGV2L3Rlc3RjYXNlcy9r
+ZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1wZXJzaXN0LXByZWFsbG9jJwptYWtlWzFd
+OiBFbnRlcmluZyBkaXJlY3RvcnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1kZXYvdGVzdGNhc2Vz
+L2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LXN1YmRpci1saW1pdCcKZ2NjIC1nIC1P
+MiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKLUkvcm9vdC9zdWJyYXRh
+L2x0cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQotSS4uLy4uLy4uLy4uLy4uL2lu
+Y2x1ZGUgLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi8uLi9saWIKY3Jl
+YXRlX2xvbmdfZGlycy5jICAgLWxsdHAgLWxtIC1vIGNyZWF0ZV9sb25nX2RpcnMKZ2NjIC1nIC1P
+MiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKLUkvcm9vdC9zdWJyYXRh
+L2x0cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQotSS4uLy4uLy4uLy4uLy4uL2lu
+Y2x1ZGUgLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi8uLi9saWIKY3Jl
+YXRlX3Nob3J0X2RpcnMuYyAgIC1sbHRwIC1sbSAtbyBjcmVhdGVfc2hvcnRfZGlycwptYWtlWzFd
+OiBMZWF2aW5nIGRpcmVjdG9yeQpgL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWRldi90ZXN0Y2FzZXMv
+a2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtc3ViZGlyLWxpbWl0JwptYWtlWzFdOiBF
+bnRlcmluZyBkaXJlY3RvcnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1kZXYvdGVzdGNhc2VzL2tl
+cm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LXVuaW5pdC1ncm91cHMnCm1ha2VbMV06IE5v
+dGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5CmAv
+cm9vdC9zdWJyYXRhL2x0cC9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVh
+dHVyZXMvZXh0NC11bmluaXQtZ3JvdXBzJwojIGVjaG8gJD8KMAoKVGhlIFBhY2thZ2VzIHZlcnNp
+b24gcmVxdWlyZWQgYW5kIGluc3RydWN0aW9ucyBhcmUgbWVudGlvbmVkIGluCnRlc3RjYXNlcy9r
+ZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvUkVBRE1FLiBZZXMsIHNvbWVib2R5IGhhcyB0bwpk
+b3dubG9hZCBhbmQgaW5zdGFsbCB0aG9zZSBwYWNrYWdlcyBmaXJzdC4gTHVja2lseSBpIGhhZCB0
+aGVtIGFsbCBpbiBteQpmZWRvcmExMiBzeXN0ZW0uCgpSZWdhcmRzLS0KU3VicmF0YQoKPiBUaGFu
+a3MsCj4gLUdhcnJldHQKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBEb3dubG9hZCBJbnRl
+bCYjMTc0OyBQYXJhbGxlbCBTdHVkaW8gRXZhbAo+IFRyeSB0aGUgbmV3IHNvZnR3YXJlIHRvb2xz
+IGZvciB5b3Vyc2VsZi4gU3BlZWQgY29tcGlsaW5nLCBmaW5kIGJ1Z3MKPiBwcm9hY3RpdmVseSwg
+YW5kIGZpbmUtdHVuZSBhcHBsaWNhdGlvbnMgZm9yIHBhcmFsbGVsIHBlcmZvcm1hbmNlLgo+IFNl
+ZSB3aHkgSW50ZWwgUGFyYWxsZWwgU3R1ZGlvIGdvdCBoaWdoIG1hcmtzIGR1cmluZyBiZXRhLgo+
+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtc3ctZGV2Cj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAt
+bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb3dubG9h
+ZCBJbnRlbCYjMTc0OyBQYXJhbGxlbCBTdHVkaW8gRXZhbApUcnkgdGhlIG5ldyBzb2Z0d2FyZSB0
+b29scyBmb3IgeW91cnNlbGYuIFNwZWVkIGNvbXBpbGluZywgZmluZCBidWdzCnByb2FjdGl2ZWx5
+LCBhbmQgZmluZS10dW5lIGFwcGxpY2F0aW9ucyBmb3IgcGFyYWxsZWwgcGVyZm9ybWFuY2UuClNl
+ZSB3aHkgSW50ZWwgUGFyYWxsZWwgU3R1ZGlvIGdvdCBoaWdoIG1hcmtzIGR1cmluZyBiZXRhLgpo
+dHRwOi8vcC5zZi5uZXQvc2Z1L2ludGVsLXN3LWRldgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL2x0cC1saXN0Cg==
