@@ -1,33 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Ntauv-0001Sq-1a
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:15:13 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Ntaus-00057H-Fz
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:15:12 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2M63XE8024155
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:03:33 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2M6F4ep167550
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:15:04 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2M6F4TS015398
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:15:04 -0400
-Date: Mon, 22 Mar 2010 11:45:02 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100322061502.GC3359@linux.vnet.ibm.com>
-References: <41c7690d1003052222v3deda36aqe903c981a3ed134b@mail.gmail.com>
-	<20100309045153.GA4075@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NtvFX-0006FS-RG
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 03:57:51 +0000
+Received: from mail-iw0-f176.google.com ([209.85.223.176])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NtvFX-0003sU-1c
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 03:57:51 +0000
+Received: by iwn6 with SMTP id 6so1343390iwn.4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Mar 2010 20:57:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100309045153.GA4075@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH-v4]RTC Device Driver Tests
+In-Reply-To: <4BA74116.9020009@cn.fujitsu.com>
+References: <4B9B0B3A.3080008@cn.fujitsu.com>
+	<364299f41003122227w6859d6f3i829466a6fc5099f2@mail.gmail.com>
+	<364299f41003122313i47334168u25a6b12c6c64a7d9@mail.gmail.com>
+	<4BA74116.9020009@cn.fujitsu.com>
+Date: Mon, 22 Mar 2010 20:57:45 -0700
+Message-ID: <364299f41003222057i6caa2cc8g6b1786f3cee86a74@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [BUG?] proc01: read /proc/acpi/event failed if acpi
+	daemon stopped
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,52 +31,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Silesh C V <saileshcv@gmail.com>, ltp-list@lists.sourceforge.net, Garrett Cooper <yanegomi@gmail.com>, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Tue, Mar 09, 2010 at 10:21:53AM +0530, Rishikesh K Rajak wrote:
-> On Sat, Mar 06, 2010 at 11:52:04AM +0530, Silesh C V wrote:
-> Hi Silesh,
-> 
-> I can devote some time tomorrow , till now let's wait if someone here
-> can Ack your patch.
+On Mon, Mar 22, 2010 at 3:06 AM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+> Hi Garrett
+>
+> at 2010-3-13 15:13, Garrett Cooper wrote:
+>> On Fri, Mar 12, 2010 at 10:27 PM, Garrett Cooper <yanegomi@gmail.com> wr=
+ote:
+>>> On Fri, Mar 12, 2010 at 7:49 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrot=
+e:
+>>>> An error message occured when i tested proc01.
+>>>> ---------
+>>>> proc01 =A0 =A0 =A01 =A0TFAIL =A0: =A0read failed: /proc/acpi/event: er=
+rno=3DEAGAIN(11): Resource temporarily unavailable
+>>>> ---------
+>>>>
+>>>> If "service acpid start", this message will be turned to:
+>>>> ---------
+>>>> proc01 =A0 =A0 =A00 =A0TINFO =A0: =A0/proc/acpi/event: known issue: er=
+rno=3DEBUSY(16): Device or resource busy
+>>>> ---------
+>>>>
+>>>> I think we should to add a check of acpi daemon's status in testcases/=
+kernel/fs/proc/proc01.c.
+>>>
+>>> =A0 =A0No, that's making things too complicated and won't scale as every
+>>> distro has developed a different means for specifying the status for a
+>>> service. Why not just add EAGAIN for that /proc node?
+>>
+>> =A0 =A0 And FWIW the error condition is correct in my opinion if kernel
+>> acpi hasn't been enabled, which was the case here.
+>
+> I think we should to give a warning message to LTP users.
+> How do you think the following patch?
+>
+> diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc=
+/proc01.c
+> index 2d4a5fd..62d44b1 100644
+> --- a/testcases/kernel/fs/proc/proc01.c
+> +++ b/testcases/kernel/fs/proc/proc01.c
+> @@ -101,6 +101,7 @@ const Mapping known_issues[] =3D {
+> =A0 =A0 {"read", "/proc/fs/nfsd/filehandle", EINVAL},
+> =A0 =A0 {"read", "/proc/fs/nfsd/.getfs", EINVAL},
+> =A0 =A0 {"read", "/proc/fs/nfsd/.getfd", EINVAL},
+> + =A0 =A0{"read", "/proc/acpi/event", EAGAIN}, //EAGAIN will be returned =
+if acpi daemon disabled
+> =A0 =A0 {"", "", 0}
+> =A0};
 
-Sorry for delay, as i was struggling with h/w for RHEL5.4 . I tested this now
-and it is fine.
+    Looks good minus the C++ style comment ;).
+Thanks again!
+-Garrett
 
-Tested-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-
-Commit id: e7ed287c04bef2108fa544b0b86629e554403970
--Rishi
-> 
-> -- 
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
