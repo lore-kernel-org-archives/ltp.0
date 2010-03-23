@@ -1,29 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Nu7Db-0005Uo-Ac
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 16:44:39 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nu7Da-0003NC-Ff
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 16:44:39 +0000
-Received: by pwj6 with SMTP id 6so126755pwj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 23 Mar 2010 09:44:32 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nu52e-0002pL-HZ
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:25:12 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nu52c-0001uz-7V
+	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:25:12 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2NEIF60003003
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 08:18:15 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2NEOjQd089812
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 08:24:48 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2N7OjxC030175
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 01:24:45 -0600
+Date: Tue, 23 Mar 2010 19:54:39 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100323142439.GB16182@linux.vnet.ibm.com>
+References: <20100323122527.GA6017@chamarthy>
+	<20100323131438.GA16182@linux.vnet.ibm.com>
+	<20100323133224.GB6017@chamarthy> <20100323141040.GC6017@chamarthy>
 MIME-Version: 1.0
-In-Reply-To: <4BA85020.9040202@cn.fujitsu.com>
-References: <4B9B0B3A.3080008@cn.fujitsu.com>
-	<364299f41003122227w6859d6f3i829466a6fc5099f2@mail.gmail.com>
-	<364299f41003122313i47334168u25a6b12c6c64a7d9@mail.gmail.com>
-	<4BA74116.9020009@cn.fujitsu.com>
-	<364299f41003222057i6caa2cc8g6b1786f3cee86a74@mail.gmail.com>
-	<4BA85020.9040202@cn.fujitsu.com>
-Date: Tue, 23 Mar 2010 09:44:31 -0700
-Message-ID: <364299f41003230944m49f4e729r8e5a664a3b89d3bb@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [BUG?] proc01: read /proc/acpi/event failed if acpi
-	daemon stopped
+Content-Disposition: inline
+In-Reply-To: <20100323141040.GC6017@chamarthy>
+Subject: Re: [LTP] [BUG] cgroup_fj tests fail to run due to missing
+ cgroup_fj_testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,84 +40,168 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Mar 22, 2010 at 10:22 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
-> at 2010-3-23 11:57, Garrett Cooper wrote:
->> On Mon, Mar 22, 2010 at 3:06 AM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
->>> Hi Garrett
->>>
->>> at 2010-3-13 15:13, Garrett Cooper wrote:
->>>> On Fri, Mar 12, 2010 at 10:27 PM, Garrett Cooper <yanegomi@gmail.com> =
-wrote:
->>>>> On Fri, Mar 12, 2010 at 7:49 PM, Shi Weihua <shiwh@cn.fujitsu.com> wr=
-ote:
->>>>>> An error message occured when i tested proc01.
->>>>>> ---------
->>>>>> proc01 =A0 =A0 =A01 =A0TFAIL =A0: =A0read failed: /proc/acpi/event: =
-errno=3DEAGAIN(11): Resource temporarily unavailable
->>>>>> ---------
->>>>>>
->>>>>> If "service acpid start", this message will be turned to:
->>>>>> ---------
->>>>>> proc01 =A0 =A0 =A00 =A0TINFO =A0: =A0/proc/acpi/event: known issue: =
-errno=3DEBUSY(16): Device or resource busy
->>>>>> ---------
->>>>>>
->>>>>> I think we should to add a check of acpi daemon's status in testcase=
-s/kernel/fs/proc/proc01.c.
->>>>>
->>>>> =A0 =A0No, that's making things too complicated and won't scale as ev=
-ery
->>>>> distro has developed a different means for specifying the status for a
->>>>> service. Why not just add EAGAIN for that /proc node?
->>>>
->>>> =A0 =A0 And FWIW the error condition is correct in my opinion if kernel
->>>> acpi hasn't been enabled, which was the case here.
->>>
->>> I think we should to give a warning message to LTP users.
->>> How do you think the following patch?
->>>
->>> diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/pr=
-oc/proc01.c
->>> index 2d4a5fd..62d44b1 100644
->>> --- a/testcases/kernel/fs/proc/proc01.c
->>> +++ b/testcases/kernel/fs/proc/proc01.c
->>> @@ -101,6 +101,7 @@ const Mapping known_issues[] =3D {
->>> =A0 =A0 {"read", "/proc/fs/nfsd/filehandle", EINVAL},
->>> =A0 =A0 {"read", "/proc/fs/nfsd/.getfs", EINVAL},
->>> =A0 =A0 {"read", "/proc/fs/nfsd/.getfd", EINVAL},
->>> + =A0 =A0{"read", "/proc/acpi/event", EAGAIN}, //EAGAIN will be returne=
-d if acpi daemon disabled
->>> =A0 =A0 {"", "", 0}
->>> =A0};
->>
->> =A0 =A0 Looks good minus the C++ style comment ;).
->
-> ok, let's use C style comment.
->
-> diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc=
-/proc01.c
-> index 2d4a5fd..355b7dd 100644
-> --- a/testcases/kernel/fs/proc/proc01.c
-> +++ b/testcases/kernel/fs/proc/proc01.c
-> @@ -101,6 +101,7 @@ const Mapping known_issues[] =3D {
-> =A0 =A0 {"read", "/proc/fs/nfsd/filehandle", EINVAL},
-> =A0 =A0 {"read", "/proc/fs/nfsd/.getfs", EINVAL},
-> =A0 =A0 {"read", "/proc/fs/nfsd/.getfd", EINVAL},
-> + =A0 =A0{"read", "/proc/acpi/event", EAGAIN}, /* EAGAIN will be returned=
- if acpi daemon disabled */
-> =A0 =A0 {"", "", 0}
-> =A0};
+On Tue, Mar 23, 2010 at 07:40:40PM +0530, Srinivasa R Chamarthy wrote:
+> Hi Rishi,
+> 
+> There seems to be another issue here. There are two files with name as
+> cgroup_fj_testcases. one is the script which already has the suffix as .sh
+> (cgroup_fj_testcases.sh) which is executed by cgroup_fj tests. But there has
+> to be one more file which is bare cgroup_fj_testcases which is having the test
+> configurations that are run by the cgroup_fj_testcases.sh script.
+> 
+> The bare configuration file cgroup_fj_testcases should have the test's to be
+> run configurations (i suppose). The testcase run_cgroup_test_fj.sh is
+> referencing cgroup_fj_testcases file as follows.
+> 
+> nlines=`cat cgroup_fj_testcases | wc -l`
+> 
+> I think this configuration file cgroup_fj_testcases is totally missing out in
+> the head. Let me know if i am correct.
 
-Acked-by: Garrett Cooper <yanegomi@gmail.com>
+Yes you are half correct. Actually the mentioned commit has renamed
+cgroup_fj_testcases with cgroup_fj_testcases.sh . I am not sure why. If we have
+changed the file then corresponding need to be changed in this file
+run_cgroup_test_fj.sh .
 
----------------------------------------------------------------------------=
----
+I will work tomorrow on this and meanwhile if we can get input from garret too.
+
+-Rishi
+
+> 
+> On Tue, Mar 23, 2010 at 07:02:24PM +0530, Srinivasa R Chamarthy wrote:
+> > Hi Rishi,
+> > 
+> > Thanks for the info.
+> > 
+> > On Tue, Mar 23, 2010 at 06:44:38PM +0530, Rishikesh K Rajak wrote:
+> > > On Tue, Mar 23, 2010 at 05:55:27PM +0530, Srinivasa R Chamarthy wrote:
+> > > > Hi LTP,
+> > > > 
+> > > > cgroup_fj tests of controllers is currently failing due to missing file
+> > > > cgroup_fj_testcases after compilation. I see that the file cgroup_fj_testcases
+> > > > is existing in the source but it is not available in /opt/ltp after
+> > > > compilation.
+> > > 
+> > > 
+> > > Hi Srini,
+> > > 
+> > > Thanks for reporting failure.
+> > > 
+> > > Yes, looks like this commit is doing the changes from cgroup_fj_testcases to
+> > > cgroup_fj_testcases.sh .
+> > > 
+> > > commit 223e12ee3f7fdb525746462747954552f0e07538
+> > > Author: Garrett Cooper <yanegomi@gmail.com>
+> > > Date:   Mon Mar 8 07:46:02 2010 -0800
+> > > 
+> > >     Fix install for cgroup_fj_testcases.
+> > >     
+> > >     Turns out this script wasn't being installed properly, and thus its
+> > > testcases were failing; fix by suffixing with .sh
+> > >     
+> > >     Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> > > 
+> > > 
+> > > 
+> > > Let me have a look tomorrow where went wrong.
+> > > -Rishi
+> > > > 
+> > > > FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2010_Mar_23-13h_22m_15s.failed
+> > > > Running tests.......
+> > > > <<<test_start>>>
+> > > > tag=cgroup_fj stime=1269346936
+> > > > cmdline="      run_cgroup_test_fj.sh"
+> > > > contacts=""
+> > > > analysis=exit
+> > > > <<<test_output>>>
+> > > > incrementing stop
+> > > > Now, we start the test for cgroup...
+> > > > cat: cgroup_fj_testcases: No such file or directory
+> > > > <<<execution_status>>>
+> > > > initiation_status="ok"
+> > > > duration=0 termination_type=exited termination_id=0 corefile=no
+> > > > cutime=6 cstime=2
+> > > > <<<test_end>>>
+> > > > INFO: ltp-pan reported all tests PASS
+> > > > LTP Version: LTP-20100228
+> > > > 
+> > > > Eventhough the tests did not run, the results say all tests PASS. :)
+> > > > 
+> > > > -- 
+> > > > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> > > > Linux on System z (RedHat & Novell SuSE) CSVT,
+> > > > IBM India Systems & Technology Group/LTC - ISL,
+> > > > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> > > > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> > > > 
+> > > > ------------------------------------------------------------------------------
+> > > > Download Intel&#174; Parallel Studio Eval
+> > > > Try the new software tools for yourself. Speed compiling, find bugs
+> > > > proactively, and fine-tune applications for parallel performance.
+> > > > See why Intel Parallel Studio got high marks during beta.
+> > > > http://p.sf.net/sfu/intel-sw-dev
+> > > > _______________________________________________
+> > > > Ltp-list mailing list
+> > > > Ltp-list@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > > 
+> > > -- 
+> > > Thanks & Regards
+> > > Rishi
+> > > LTP Maintainer
+> > > IBM, LTC, Bangalore
+> > > Please join IRC #ltp @ irc.freenode.net
+> > 
+> > -- 
+> > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> > Linux on System z (RedHat & Novell SuSE) CSVT,
+> > IBM India Systems & Technology Group/LTC - ISL,
+> > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> > 
+> > ------------------------------------------------------------------------------
+> > Download Intel&#174; Parallel Studio Eval
+> > Try the new software tools for yourself. Speed compiling, find bugs
+> > proactively, and fine-tune applications for parallel performance.
+> > See why Intel Parallel Studio got high marks during beta.
+> > http://p.sf.net/sfu/intel-sw-dev
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> -- 
+> Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
+> Linux on System z (RedHat & Novell SuSE) CSVT,
+> IBM India Systems & Technology Group/LTC - ISL,
+> Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
+> [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
