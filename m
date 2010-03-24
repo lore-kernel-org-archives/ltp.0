@@ -2,35 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nu5LG-0003W5-JJ
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:44:26 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nu5LF-0006zv-FK
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 14:44:26 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2NEZj63024192
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 10:35:45 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2NEiJQD174466
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 10:44:19 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2NEiJdT027619
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 11:44:19 -0300
-Date: Tue, 23 Mar 2010 20:14:10 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100323144410.GD16182@linux.vnet.ibm.com>
-References: <20100323122527.GA6017@chamarthy>
-	<20100323131438.GA16182@linux.vnet.ibm.com>
-	<20100323133224.GB6017@chamarthy> <20100323141040.GC6017@chamarthy>
-	<20100323142314.GA11852@chamarthy>
+	(envelope-from <yanegomi@gmail.com>) id 1NuUgm-0000Ay-RT
+	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 17:48:20 +0000
+Received: from mail-pz0-f180.google.com ([209.85.222.180])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NuUgl-0004IM-SA
+	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 17:48:20 +0000
+Received: by pzk10 with SMTP id 10so1210639pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 24 Mar 2010 10:48:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100323142314.GA11852@chamarthy>
-Subject: Re: [LTP] [BUG] cgroup_fj tests fail to run due to missing
- cgroup_fj_testcases
+In-Reply-To: <20100324133645.23583.48891.sendpatchset@subratamodak.linux.ibm.com>
+References: <20100324133645.23583.48891.sendpatchset@subratamodak.linux.ibm.com>
+Date: Wed, 24 Mar 2010 10:48:13 -0700
+Message-ID: <364299f41003241048hecba971td1ed20876a398b59@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix fallocate() build issue for EXT4 Online
+	Defragmentation Test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,186 +28,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Miao Xie <miaox@cn.fujitsu.com>
 
-On Tue, Mar 23, 2010 at 07:53:14PM +0530, Srinivasa R Chamarthy wrote:
-> Sorry, i meant that the script run_cgroup_test_fj.sh executes another function
-> called cgroup_fj_stress.sh with a parameter which is got from parsing the file
-> cgroup_fj_testcases which will have test execution methods. The file
-> cgroup_fj_testcases is parsed as follows:
-> 
-> nlines=`cat cgroup_fj_testcases | wc -l`
-> for i in `seq 1 $nlines`
-> do
->         CASETYPE=`sed -n "$i""p" cgroup_fj_testcases | cut -f1`
->         CASECMD=`sed -n "$i""p" cgroup_fj_testcases | cut -f2`
-> 
-> Which thus by CASECMD becomes parameter for cgroup_fj_stress.sh. I do not
-> think that cgroup_fj_testcases should have any prefix as .sh as it is not
-> meant to be a executable. May be instead of suffixing the file with .sh it
-> could be left alone as a bare file without any suffix.
+On Wed, Mar 24, 2010 at 6:36 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Earlier Subject: Re: [LTP] ext4/e4defrag.c testcases compilation error,
+>
+> Hi Garret/Miao,
+>
+> On PPC systems, fallocate() seems to be already defined at /usr/include/b=
+its/fcntl.h,
+> so building EXT4 test cases on PPC64 machines will create build problems =
+even if the
+> pre-requisite packages:
+>
+> e2fsprogs*
+> e2fsprogs-libs*
+> e2fsprogs-devel*
+>
+> are present. So, this patch adds an extra check. Please let me know your =
+thoughts.
+>
+> Errors bound to occur:
+> [
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I/root/subrata/ltp=
+/ltp-dev/testcases/kernel/include -I../../../../../include -I../../../../..=
+/include =A0 -L../../../../../lib =A0e4defrag.c =A0 -lltp -lm -o e4defrag
+> e4defrag.c:388: error: conflicting types for =91fallocate=92
+> /usr/include/bits/fcntl.h:240: note: previous declaration of =91fallocate=
+=92 was here
+> make[1]: *** [e4defrag] Error 1
+> ]
+>
+> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+> ---
+>
+> --- ltp-dev/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/e4de=
+frag.c 2010-03-15 19:32:12.000000000 +0530
+> +++ ltp-dev.modified/testcases/kernel/fs/ext4-new-features/ext4-online-de=
+frag/e4defrag.c =A0 =A0 =A0 =A02010-03-24 18:09:14.336793513 +0530
+> @@ -383,10 +383,13 @@ int sync_file_range(int fd, loff_t offse
+> =A0* @offset: =A0 =A0 =A0 =A0 =A0 =A0file offset.
+> =A0* @len: =A0 =A0 =A0 =A0 =A0 =A0 =A0 file size.
+> =A0*/
+> +
+> +#ifndef __NR_fallocate
+> =A0int fallocate(int fd, int mode, loff_t offset, loff_t len)
+> =A0{
+> =A0 =A0 =A0 =A0return syscall(__NR_fallocate, fd, mode, offset, len);
+> =A0}
+> +#endif
 
-Yes you are absolutely correct i feel.
+    If it's not defined, you're definitely in trouble because that
+will result in a compile error. An autoconf test should be added for
+this syscall, and/or linux_syscall_numbers.h should be integrated into
+this test. That may be a bit heavy handed because that will integrate
+some libltp pieces into the tests, but that's up to Miao to decide.
+Thanks,
+-Garrett
 
--Rishi
-> 
-> On Tue, Mar 23, 2010 at 07:40:40PM +0530, Srinivasa R Chamarthy wrote:
-> > Hi Rishi,
-> > 
-> > There seems to be another issue here. There are two files with name as
-> > cgroup_fj_testcases. one is the script which already has the suffix as .sh
-> > (cgroup_fj_testcases.sh) which is executed by cgroup_fj tests. But there has
-> > to be one more file which is bare cgroup_fj_testcases which is having the test
-> > configurations that are run by the cgroup_fj_testcases.sh script.
-> > 
-> > The bare configuration file cgroup_fj_testcases should have the test's to be
-> > run configurations (i suppose). The testcase run_cgroup_test_fj.sh is
-> > referencing cgroup_fj_testcases file as follows.
-> > 
-> > nlines=`cat cgroup_fj_testcases | wc -l`
-> > 
-> > I think this configuration file cgroup_fj_testcases is totally missing out in
-> > the head. Let me know if i am correct.
-> > 
-> > On Tue, Mar 23, 2010 at 07:02:24PM +0530, Srinivasa R Chamarthy wrote:
-> > > Hi Rishi,
-> > > 
-> > > Thanks for the info.
-> > > 
-> > > On Tue, Mar 23, 2010 at 06:44:38PM +0530, Rishikesh K Rajak wrote:
-> > > > On Tue, Mar 23, 2010 at 05:55:27PM +0530, Srinivasa R Chamarthy wrote:
-> > > > > Hi LTP,
-> > > > > 
-> > > > > cgroup_fj tests of controllers is currently failing due to missing file
-> > > > > cgroup_fj_testcases after compilation. I see that the file cgroup_fj_testcases
-> > > > > is existing in the source but it is not available in /opt/ltp after
-> > > > > compilation.
-> > > > 
-> > > > 
-> > > > Hi Srini,
-> > > > 
-> > > > Thanks for reporting failure.
-> > > > 
-> > > > Yes, looks like this commit is doing the changes from cgroup_fj_testcases to
-> > > > cgroup_fj_testcases.sh .
-> > > > 
-> > > > commit 223e12ee3f7fdb525746462747954552f0e07538
-> > > > Author: Garrett Cooper <yanegomi@gmail.com>
-> > > > Date:   Mon Mar 8 07:46:02 2010 -0800
-> > > > 
-> > > >     Fix install for cgroup_fj_testcases.
-> > > >     
-> > > >     Turns out this script wasn't being installed properly, and thus its
-> > > > testcases were failing; fix by suffixing with .sh
-> > > >     
-> > > >     Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> > > > 
-> > > > 
-> > > > 
-> > > > Let me have a look tomorrow where went wrong.
-> > > > -Rishi
-> > > > > 
-> > > > > FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2010_Mar_23-13h_22m_15s.failed
-> > > > > Running tests.......
-> > > > > <<<test_start>>>
-> > > > > tag=cgroup_fj stime=1269346936
-> > > > > cmdline="      run_cgroup_test_fj.sh"
-> > > > > contacts=""
-> > > > > analysis=exit
-> > > > > <<<test_output>>>
-> > > > > incrementing stop
-> > > > > Now, we start the test for cgroup...
-> > > > > cat: cgroup_fj_testcases: No such file or directory
-> > > > > <<<execution_status>>>
-> > > > > initiation_status="ok"
-> > > > > duration=0 termination_type=exited termination_id=0 corefile=no
-> > > > > cutime=6 cstime=2
-> > > > > <<<test_end>>>
-> > > > > INFO: ltp-pan reported all tests PASS
-> > > > > LTP Version: LTP-20100228
-> > > > > 
-> > > > > Eventhough the tests did not run, the results say all tests PASS. :)
-> > > > > 
-> > > > > -- 
-> > > > > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> > > > > Linux on System z (RedHat & Novell SuSE) CSVT,
-> > > > > IBM India Systems & Technology Group/LTC - ISL,
-> > > > > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> > > > > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> > > > > 
-> > > > > ------------------------------------------------------------------------------
-> > > > > Download Intel&#174; Parallel Studio Eval
-> > > > > Try the new software tools for yourself. Speed compiling, find bugs
-> > > > > proactively, and fine-tune applications for parallel performance.
-> > > > > See why Intel Parallel Studio got high marks during beta.
-> > > > > http://p.sf.net/sfu/intel-sw-dev
-> > > > > _______________________________________________
-> > > > > Ltp-list mailing list
-> > > > > Ltp-list@lists.sourceforge.net
-> > > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > > > 
-> > > > -- 
-> > > > Thanks & Regards
-> > > > Rishi
-> > > > LTP Maintainer
-> > > > IBM, LTC, Bangalore
-> > > > Please join IRC #ltp @ irc.freenode.net
-> > > 
-> > > -- 
-> > > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> > > Linux on System z (RedHat & Novell SuSE) CSVT,
-> > > IBM India Systems & Technology Group/LTC - ISL,
-> > > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> > > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> > > 
-> > > ------------------------------------------------------------------------------
-> > > Download Intel&#174; Parallel Studio Eval
-> > > Try the new software tools for yourself. Speed compiling, find bugs
-> > > proactively, and fine-tune applications for parallel performance.
-> > > See why Intel Parallel Studio got high marks during beta.
-> > > http://p.sf.net/sfu/intel-sw-dev
-> > > _______________________________________________
-> > > Ltp-list mailing list
-> > > Ltp-list@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
-> > -- 
-> > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> > Linux on System z (RedHat & Novell SuSE) CSVT,
-> > IBM India Systems & Technology Group/LTC - ISL,
-> > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> 
-> -- 
-> Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> Linux on System z (RedHat & Novell SuSE) CSVT,
-> IBM India Systems & Technology Group/LTC - ISL,
-> Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
