@@ -2,24 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1Ntwa2-0002rZ-76
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 05:23:06 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NtwZz-0004tx-Qy
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 05:23:06 +0000
-Message-ID: <4BA85020.9040202@cn.fujitsu.com>
-Date: Tue, 23 Mar 2010 13:22:40 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
+	(envelope-from <anthony.ton@ericsson.com>) id 1NuZM3-00059c-Hq
+	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 22:47:15 +0000
+Received: from imr2.ericy.com ([198.24.6.3])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NuZM2-0002Qc-OR
+	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 22:47:15 +0000
+Received: from eusaamw0711.eamcs.ericsson.se ([147.117.20.178])
+	by imr2.ericy.com (8.13.1/8.13.1) with ESMTP id o2OMfuLi029595
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Mar 2010 17:50:30 -0500
+From: Anthony Ton <anthony.ton@ericsson.com>
+Date: Wed, 24 Mar 2010 18:46:59 -0400
+Message-ID: <E0B6230F32558E43951AF1B0DEBF98102119D5A01E@EUSAACMS0714.eamcs.ericsson.se>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <4B9B0B3A.3080008@cn.fujitsu.com>	
-	<364299f41003122227w6859d6f3i829466a6fc5099f2@mail.gmail.com>	
-	<364299f41003122313i47334168u25a6b12c6c64a7d9@mail.gmail.com>	
-	<4BA74116.9020009@cn.fujitsu.com>
-	<364299f41003222057i6caa2cc8g6b1786f3cee86a74@mail.gmail.com>
-In-Reply-To: <364299f41003222057i6caa2cc8g6b1786f3cee86a74@mail.gmail.com>
-Subject: Re: [LTP] [BUG?] proc01: read /proc/acpi/event failed if acpi
-	daemon stopped
+Subject: [LTP] Running LTP test suite against modified kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,76 +26,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4137680767878891534=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-at 2010-3-23 11:57, Garrett Cooper wrote:
-> On Mon, Mar 22, 2010 at 3:06 AM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
->> Hi Garrett
->>
->> at 2010-3-13 15:13, Garrett Cooper wrote:
->>> On Fri, Mar 12, 2010 at 10:27 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
->>>> On Fri, Mar 12, 2010 at 7:49 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
->>>>> An error message occured when i tested proc01.
->>>>> ---------
->>>>> proc01      1  TFAIL  :  read failed: /proc/acpi/event: errno=EAGAIN(11): Resource temporarily unavailable
->>>>> ---------
->>>>>
->>>>> If "service acpid start", this message will be turned to:
->>>>> ---------
->>>>> proc01      0  TINFO  :  /proc/acpi/event: known issue: errno=EBUSY(16): Device or resource busy
->>>>> ---------
->>>>>
->>>>> I think we should to add a check of acpi daemon's status in testcases/kernel/fs/proc/proc01.c.
->>>>
->>>>    No, that's making things too complicated and won't scale as every
->>>> distro has developed a different means for specifying the status for a
->>>> service. Why not just add EAGAIN for that /proc node?
->>>
->>>     And FWIW the error condition is correct in my opinion if kernel
->>> acpi hasn't been enabled, which was the case here.
->>
->> I think we should to give a warning message to LTP users.
->> How do you think the following patch?
->>
->> diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
->> index 2d4a5fd..62d44b1 100644
->> --- a/testcases/kernel/fs/proc/proc01.c
->> +++ b/testcases/kernel/fs/proc/proc01.c
->> @@ -101,6 +101,7 @@ const Mapping known_issues[] = {
->>     {"read", "/proc/fs/nfsd/filehandle", EINVAL},
->>     {"read", "/proc/fs/nfsd/.getfs", EINVAL},
->>     {"read", "/proc/fs/nfsd/.getfd", EINVAL},
->> +    {"read", "/proc/acpi/event", EAGAIN}, //EAGAIN will be returned if acpi daemon disabled
->>     {"", "", 0}
->>  };
-> 
->     Looks good minus the C++ style comment ;).
+--===============4137680767878891534==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_"
 
-ok, let's use C style comment.
+--_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
-index 2d4a5fd..355b7dd 100644
---- a/testcases/kernel/fs/proc/proc01.c
-+++ b/testcases/kernel/fs/proc/proc01.c
-@@ -101,6 +101,7 @@ const Mapping known_issues[] = {
-     {"read", "/proc/fs/nfsd/filehandle", EINVAL},
-     {"read", "/proc/fs/nfsd/.getfs", EINVAL},
-     {"read", "/proc/fs/nfsd/.getfd", EINVAL},
-+    {"read", "/proc/acpi/event", EAGAIN}, /* EAGAIN will be returned if acpi daemon disabled */
-     {"", "", 0}
- };
- 
-> Thanks again!
-> -Garrett
-> 
-> 
+Hello LTP team,
+Will the compilation of LTP test suites be independent of the OS kernel lib=
+raries?  Basically if I compiled the LTP on standard Linux OS and then run =
+against the modified Linux OS kernel, would LTP test suites be able to run?=
+  Or do I need to compile LTP and link with the modified OS kernel librarie=
+s?
+Thanks,
+Anthony
 
--- 
-Shi Weihua
+
+--_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Exchange Server">
+<!-- converted from rtf -->
+<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left:=
+ #800000 2px solid; } --></style>
+</head>
+<body>
+<font face=3D"Arial, sans-serif" size=3D"2">
+<div>Hello LTP team,</div>
+<div>Will the compilation of LTP test suites be independent of the OS kerne=
+l libraries?&nbsp; Basically if I compiled the LTP on standard Linux OS and=
+ then run against the modified Linux OS kernel, would LTP test suites be ab=
+le to run?&nbsp; Or do I need to compile LTP
+and link with the modified OS kernel libraries? </div>
+<div>Thanks,</div>
+<div>Anthony</div>
+<div>&nbsp;</div>
+</font>
+</body>
+</html>
+
+--_000_E0B6230F32558E43951AF1B0DEBF98102119D5A01EEUSAACMS0714e_--
+
+
+--===============4137680767878891534==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -106,7 +92,16 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--===============4137680767878891534==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4137680767878891534==--
+
