@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1NoT9C-0002GE-Fj
-	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 02:56:46 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NoT9A-0002YB-Sm
-	for ltp-list@lists.sourceforge.net; Mon, 08 Mar 2010 02:56:46 +0000
-Message-ID: <4B946761.8030301@cn.fujitsu.com>
-Date: Mon, 08 Mar 2010 10:56:33 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050500070505030102020201"
-Subject: [LTP] [BUG?] container_test.sh: should to delete
- check_for_unshare's source in cvs/git ?
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Feng.Xu@windriver.com>) id 1Nukd7-0005Ru-LE
+	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 10:49:37 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nukd1-00012a-SB
+	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 10:49:37 +0000
+From: Henry xu <feng.xu@windriver.com>
+In-Reply-To: <1269412945.15210.41.camel@lishuang-desktop>
+References: <1269412945.15210.41.camel@lishuang-desktop>
+Date: Thu, 25 Mar 2010 18:53:29 +0800
+Message-Id: <1269514409.15210.67.camel@lishuang-desktop>
+Mime-Version: 1.0
+Subject: Re: [LTP] ltp clock_nanosleep2 testcase failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,132 +24,131 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, Rishikesh <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sf.net>
 
-This is a multi-part message in MIME format.
---------------050500070505030102020201
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
-
-Tested the latest cvs version (about Mar 1) on my x86_64 (2.6.33).
-The following message occured:
---------------------------------
-<<<test_start>>>
-tag=Containers stime=1267527554
-cmdline="container_test.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-/opt/ltp/testcases/bin/container_test.sh: line 13: check_for_unshare: command not found
-Running utsns tests.
-unshare tests
-test 1 (unshare)
-test 2 (unshare)
-......
---------------------------------
-
-I noticed that check_for_unshare had been deleted in LTP-20091031.
-In ./ChangeLog (from latest cvs version)
-   ...
-   2905	LTP-20091031
-   ...
-   3141 Removed Files:
-   3142 ltp/README.ltp-devel
-   3143 ltp/config.mk.in
-   3144 ltp/ltp-devel.spec
-   3145 ltp/testcases/kernel/containers/check_for_unshare.c
-   ...
-   3997 LTP-20090930
-
-Also, i noticed check_for_unshare commentted in container_test.sh in 
-release version of FEBRUARY 2010. pls check the diff between cvs version 
-and release version of Feb in attached file.
-
-Now, my question: should to delete check_for_unshare's source in cvs/git ?
-
---------------050500070505030102020201
-Content-Type: text/plain;
- name="container_test.sh.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="container_test.sh.diff"
-
---- ltp/testcases/kernel/containers/container_test.sh	2010-02-22 14:21:40.000000000 -0500
-+++ ltp-full-20100228/testcases/kernel/containers/container_test.sh	2010-03-03 11:43:19.000000000 -0500
-@@ -10,11 +10,11 @@
- # any later version.
- 
- #check_utsns_enabled
--check_for_unshare
--if [ $? -eq 1 ]; then
--	echo "Unshare not supported.  Not running container tests"
--	exit 0
--fi
-+#check_for_unshare
-+#if [ $? -eq 1 ]; then
-+#	echo "Unshare not supported.  Not running container tests"
-+#	exit 0
-+#fi
- check_utsns_enabled
- if [ $? -eq 0 ]; then
- 	echo "Running utsns tests."
-@@ -46,11 +46,22 @@ else
- 	echo "ipc namespaces not enabled in kernel.  Not running ipcns tests."
- fi
- 
--echo "Running pidns tests."
--runpidnstest.sh
-+check_pidns_enabled
-+if [ $? -eq 0 ]; then
-+	echo "Running pidns tests."
-+	runpidnstest.sh
-+else
-+	echo "Process id namespaces not enabled in kernel.  Not running pidns tests."
-+fi
- 
--echo "Running POSIX message queue tests."
--runmqnstest.sh
-+check_mqns_enabled
-+if [ $? -eq 0 ]; then
-+    echo "Running POSIX message queue tests."
-+    runmqnstest.sh
-+else
-+    echo "Posix message queues or ipc namespaces not enabled in kernel."
-+    echo "Not running mqns tests."
-+fi
- 
- check_netns_enabled
- if [ $? -eq 0 ]; then
-@@ -59,4 +70,3 @@ if [ $? -eq 0 ]; then
- else
- 	echo "Network namespaces not enabled in kernel.  Not running netns tests."
- fi
--
-
---------------050500070505030102020201
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
---------------050500070505030102020201
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------050500070505030102020201--
-
+5ZyoIDIwMTAtMDMtMjTkuInnmoQgMTQ6NDIgKzA4MDDvvIxIZW5yeSB4deWGmemBk++8mgo+IEhp
+LGFsbAo+IAo+IHN1bW1hcnk6Cj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+IFdoZW4gSSBleGVjdXRlIGNsb2NrX25h
+bm9zbGVlcDIgdGVzdGNhc2UgaW4gbWlwcyBib2FyZCx0aGUgY2FzZSBmYWlsZWQuCj4gCj4gRW52
+aXJvbm1lbnQKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09Cj4gbGludXggdmVyc2lvbjoyLjYuMjcuNDUKPiBoYXJkd2FyZSBw
+bGF0Zm9ybTptaXBzCj4gCj4gCj4gCj4gc3ltcHRvbSBEZXRhaWxzCj4gPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiBy
+b290QGxvY2FsaG9zdDovb3B0L215dGVzdD4gc3RyYWNlIC4vY2xvY2tfbmFub3NsZWVwMl8wMSAK
+PiBleGVjdmUoIi4vY2xvY2tfbmFub3NsZWVwMl8wMSIsIFsiLi9jbG9ja19uYW5vc2xlZXAyXzAx
+Il0sIFsvKiAxMyB2YXJzCj4gKi9dKSA9IDAKPiBicmsoMCkgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgPSAweDQxZDAwMAo+IHVuYW1lKHtzeXM9IkxpbnV4Iiwgbm9kZT0ibG9jYWxo
+b3N0IiwgLi4ufSkgPSAwCj4gb2xkX21tYXAoTlVMTCwgNDA5NiwgUFJPVF9SRUFEfFBST1RfV1JJ
+VEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1PVVMsCj4gLTEsIDApID0gMHgyYWFhODAwMAo+IGFj
+Y2VzcygiL2V0Yy9sZC5zby5wcmVsb2FkIiwgUl9PSykgICAgICA9IC0xIEVOT0VOVCAoTm8gc3Vj
+aCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IG9wZW4oIi9ldGMvbGQuc28uY2FjaGUiLCBPX1JET05M
+WSkgICAgICA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IG9wZW4o
+Ii9saWIvdGxzL2xpYnB0aHJlYWQuc28uMCIsIE9fUkRPTkxZKSA9IC0xIEVOT0VOVCAoTm8gc3Vj
+aCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IHN0YXQ2NCgweDdmZTBhMTc4LCAweDdmZTBhMWE4KSAg
+ICAgICAgICA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IG9wZW4o
+Ii9saWIvbGlicHRocmVhZC5zby4wIiwgT19SRE9OTFkpICA9IDMKPiByZWFkKDMsICJcMTc3RUxG
+XDFcMlwxXDBcMFwwXDBcMFwwXDBcMFwwXDBcM1wwXDEwXDBcMFwwXDEsXDMwNUoiLi4uLAo+IDUx
+MikgPSA1MTIKPiBsc2VlaygzLCA2NzYsIFNFRUtfU0VUKSAgICAgICAgICAgICAgICAgPSA2NzYK
+PiByZWFkKDMsICJcMFwwXDBcNFwwXDBcMFwyMFwwXDBcMFwxR05VXDBcMFwwXDBcMFwwXDBcMFwy
+XDBcMFwwXDYiLi4uLCAzMikKPiA9IDMyCj4gZnN0YXQ2NCgzLCB7c3RfbW9kZT1TX0lGUkVHfDA3
+NTUsIHN0X3NpemU9MTA3NTA4LCAuLi59KSA9IDAKPiBvbGRfbW1hcCgweDJjYzUwMDAwLCAxNjky
+NjQsIFBST1RfUkVBRHxQUk9UX0VYRUMsIE1BUF9QUklWQVRFfAo+IE1BUF9ERU5ZV1JJVEUsIDMs
+IDApID0gMHgyY2M1MDAwMAo+IG1wcm90ZWN0KDB4MmNjNjYwMDAsIDY1NTM2LCBQUk9UX05PTkUp
+ICA9IDAKPiBvbGRfbW1hcCgweDJjYzc2MDAwLCA4MTkyLCBQUk9UX1JFQUR8UFJPVF9XUklURSwg
+TUFQX1BSSVZBVEV8TUFQX0ZJWEVEfAo+IE1BUF9ERU5ZV1JJVEUsIDMsIDB4MTYwMDApID0gMHgy
+Y2M3NjAwMAo+IG9sZF9tbWFwKDB4MmNjNzgwMDAsIDU0MjQsIFBST1RfUkVBRHxQUk9UX1dSSVRF
+LCBNQVBfUFJJVkFURXxNQVBfRklYRUR8Cj4gTUFQX0FOT05ZTU9VUywgLTEsIDApID0gMHgyY2M3
+ODAwMAo+IGNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBvcGVu
+KCIvbGliL2xpYnJ0LnNvLjEiLCBPX1JET05MWSkgICAgICAgPSAzCj4gcmVhZCgzLCAiXDE3N0VM
+RlwxXDJcMVwwXDBcMFwwXDBcMFwwXDBcMFwwXDNcMFwxMFwwXDBcMFwxLFwzMjBcMzAiLi4uLAo+
+IDUxMikgPSA1MTIKPiBsc2VlaygzLCA2NzYsIFNFRUtfU0VUKSAgICAgICAgICAgICAgICAgPSA2
+NzYKPiByZWFkKDMsICJcMFwwXDBcNFwwXDBcMFwyMFwwXDBcMFwxR05VXDBcMFwwXDBcMFwwXDBc
+MFwyXDBcMFwwXDYiLi4uLCAzMikKPiA9IDMyCj4gZnN0YXQ2NCgzLCB7c3RfbW9kZT1TX0lGUkVH
+fDA3NTUsIHN0X3NpemU9MzUxNjAsIC4uLn0pID0gMAo+IG9sZF9tbWFwKDB4MmNkMDAwMDAsIDk0
+ODk2LCBQUk9UX1JFQUR8UFJPVF9FWEVDLCBNQVBfUFJJVkFURXwKPiBNQVBfREVOWVdSSVRFLCAz
+LCAwKSA9IDB4MmNkMDAwMDAKPiBtcHJvdGVjdCgweDJjZDA3MDAwLCA2MTQ0MCwgUFJPVF9OT05F
+KSAgPSAwCj4gb2xkX21tYXAoMHgyY2QxNjAwMCwgODE5MiwgUFJPVF9SRUFEfFBST1RfV1JJVEUs
+IE1BUF9QUklWQVRFfE1BUF9GSVhFRHwKPiBNQVBfREVOWVdSSVRFLCAzLCAweDYwMDApID0gMHgy
+Y2QxNjAwMAo+IGNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBv
+cGVuKCIvbGliL2xpYmMuc28uNiIsIE9fUkRPTkxZKSAgICAgICAgPSAzCj4gcmVhZCgzLCAiXDE3
+N0VMRlwxXDJcMVwwXDBcMFwwXDBcMFwwXDBcMFwwXDNcMFwxMFwwXDBcMFwxLFwyMzNqIi4uLiwK
+PiA1MTIpID0gNTEyCj4gbHNlZWsoMywgNjkyLCBTRUVLX1NFVCkgICAgICAgICAgICAgICAgID0g
+NjkyCj4gcmVhZCgzLCAiXDBcMFwwXDRcMFwwXDBcMjBcMFwwXDBcMUdOVVwwXDBcMFwwXDBcMFww
+XDBcMlwwXDBcMFw2Ii4uLiwgMzIpCj4gPSAzMgo+IGZzdGF0NjQoMywge3N0X21vZGU9U19JRlJF
+R3wwNzU1LCBzdF9zaXplPTE0NzQ1NDgsIC4uLn0pID0gMAo+IG9sZF9tbWFwKDB4MmM5YTAwMDAs
+IDE0NTMyOTYsIFBST1RfUkVBRHxQUk9UX0VYRUMsIE1BUF9QUklWQVRFfAo+IE1BUF9ERU5ZV1JJ
+VEUsIDMsIDApID0gMHgyYzlhMDAwMAo+IG1wcm90ZWN0KDB4MmNhZTcwMDAsIDYxNDQwLCBQUk9U
+X05PTkUpICA9IDAKPiBvbGRfbW1hcCgweDJjYWY2MDAwLCA0MDk2MCwgUFJPVF9SRUFEfFBST1Rf
+V1JJVEUsIE1BUF9QUklWQVRFfE1BUF9GSVhFRHwKPiBNQVBfREVOWVdSSVRFLCAzLCAweDE0NjAw
+MCkgPSAweDJjYWY2MDAwCj4gb2xkX21tYXAoMHgyY2IwMDAwMCwgMTE1MDQsIFBST1RfUkVBRHxQ
+Uk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfRklYRUR8Cj4gTUFQX0FOT05ZTU9VUywgLTEsIDAp
+ID0gMHgyY2IwMDAwMAo+IGNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9
+IDAKPiBvbGRfbW1hcChOVUxMLCA0MDk2LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZB
+VEV8TUFQX0FOT05ZTU9VUywKPiAtMSwgMCkgPSAweDJhYWE5MDAwCj4gc2V0X3RocmVhZF9hcmVh
+KDB4MmFhYjA4MDApICAgICAgICAgICAgID0gMAo+IG1wcm90ZWN0KDB4MmNhZjYwMDAsIDMyNzY4
+LCBQUk9UX1JFQUQpICA9IDAKPiBtcHJvdGVjdCgweDJjZDE2MDAwLCA0MDk2LCBQUk9UX1JFQUQp
+ICAgPSAwCj4gbXByb3RlY3QoMHgyY2M3NjAwMCwgNDA5NiwgUFJPVF9SRUFEKSAgID0gMAo+IG1w
+cm90ZWN0KDB4MmM5OGUwMDAsIDQwOTYsIFBST1RfUkVBRCkgICA9IDAKPiBzZXRfdGlkX2FkZHJl
+c3MoMHgyYWFhOTNkOCkgICAgICAgICAgICAgPSAyNzYzCj4gU1lTXzQzMDkoKSAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgID0gMAo+IGZ1dGV4KDB4N2ZlMGFhOTAsIDB4ODEgLyogRlVURVhf
+Pz8/ICovLCAxKSA9IDAKPiBydF9zaWdhY3Rpb24oU0lHUlRfMCwgezB4OCwgW10sIFNBX1NUQUNL
+fFNBX0lOVEVSUlVQVHxTQV9OT0NMRFdBSVR8Cj4gMHg0YzQ0OWEwfSwgTlVMTCwgMTYpID0gMAo+
+IHJ0X3NpZ2FjdGlvbihTSUdSVF8xLCB7MHgxMDAwMDAwOCwgW10sIFNBX1NUQUNLfFNBX0lOVEVS
+UlVQVHwKPiBTQV9OT0NMRFdBSVR8MHg0YzQ0NTIwfSwgTlVMTCwgMTYpID0gMAo+IHJ0X3NpZ3By
+b2NtYXNrKFNJR19VTkJMT0NLLCBbUlRfMCBSVF8xXSwgTlVMTCwgMTYpID0gMAo+IGdldHJsaW1p
+dChSTElNSVRfU1RBQ0ssIHtybGltX2N1cj04MTkyKjEwMjQsIHJsaW1fbWF4PVJMSU1fSU5GSU5J
+VFl9KSA9Cj4gMAo+IGJyaygwKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDB4
+NDFkMDAwCj4gYnJrKDB4NDNlMDAwKSAgICAgICAgICAgICAgICAgICAgICAgICAgID0gMHg0M2Uw
+MDAKPiBnZXR0aW1lb2ZkYXkoezE1OTIzLCAxNDU5NTh9LCBOVUxMKSAgICAgPSAwCj4gbWtkaXIo
+Ii90bXAvY2xvYzc1dkJrIiwgMDcwMCkgICAgICAgICAgID0gMAo+IGdldGdpZCgpICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBjaG93bigiL3RtcC9jbG9jNzV2QmsiLCAtMSwg
+MCkgICAgICAgICAgPSAwCj4gY2htb2QoIi90bXAvY2xvYzc1dkJrIiwgMDc3NykgICAgICAgICAg
+ID0gMAo+IGNoZGlyKCIvdG1wL2Nsb2M3NXZCayIpICAgICAgICAgICAgICAgICA9IDAKPiBjbG9j
+a19nZXR0aW1lKENMT0NLX01PTk9UT05JQywgezE1OTIzLCAxNDg3NDExOTR9KSA9IDAKPiBzeXNj
+YWxsKDB4MTBhOSwgMHgxLCAweDEsIDB4N2ZlMGFhZjgsIDAsIDB4NDA2MGFjLCAweDNlMzQsIDB4
+OGRkOWM0YSkgPQo+IC0xIEVPUE5PVFNVUFAgKE9wZXJhdGlvbiBub3Qgc3VwcG9ydGVkKQo+IGZz
+dGF0NjQoMSwge3N0X21vZGU9U19JRkNIUnwwNjIwLCBzdF9yZGV2PW1ha2VkZXYoNSwgMSksIC4u
+Ln0pID0gMAo+IGlvY3RsKDEsIFRJT0NOWENMLCB7QjM4NDAwIG9wb3N0IGlzaWcgaWNhbm9uIGVj
+aG8gLi4ufSkgPSAwCj4gb2xkX21tYXAoTlVMTCwgNjU1MzYsIFBST1RfUkVBRHxQUk9UX1dSSVRF
+LCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTLAo+IC0xLCAwKSA9IDB4MmFhYWEwMDAKPiB3cml0
+ZSgxLCAiY2xvY2tfbmFub3NsZWVwMl8wMSAgICAxICBURkFJTCAiLi4uLCAxMDNjbG9ja19uYW5v
+c2xlZXAyXzAxCj4gMSAgVEZBSUwgIDogIGNsb2NrX25hbm9zbGVlcDJfMDEgZmFpbGVkIC0gZXJy
+bm8gPSAxMjIgOiBPcGVyYXRpb24gbm90Cj4gc3VwcG9ydGVkCj4gKSA9IDEwMwo+IGNoZGlyKCIv
+dG1wIikgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBsc3RhdCgiL3RtcC9jbG9jNzV2
+QmsiLCB7c3RfbW9kZT1TX0lGRElSfDA3NzcsIHN0X3NpemU9NDA5NiwgLi4ufSkgPSAwCj4gb3Bl
+bigiL3RtcC9jbG9jNzV2QmsiLCBPX1JET05MWXxPX05PTkJMT0NLfE9fTEFSR0VGSUxFfE9fRElS
+RUNUT1JZfAo+IDB4ODAwMDApID0gMwo+IGZzdGF0NjQoMywge3N0X21vZGU9U19JRkRJUnwwNzc3
+LCBzdF9zaXplPTQwOTYsIC4uLn0pID0gMAo+IGZjbnRsNjQoMywgRl9HRVRGRCkgICAgICAgICAg
+ICAgICAgICAgICA9IDB4MSAoZmxhZ3MgRkRfQ0xPRVhFQykKPiBnZXRkZW50cygzLCAvKiAyIGVu
+dHJpZXMgKi8sIDQwOTYpICAgICAgPSAzMgo+IGdldGRlbnRzKDMsIC8qIDAgZW50cmllcyAqLywg
+NDA5NikgICAgICA9IDAKPiBjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+PSAwCj4gbHN0YXQoIi90bXAvY2xvYzc1dkJrIiwge3N0X21vZGU9U19JRkRJUnwwNzc3LCBzdF9z
+aXplPTQwOTYsIC4uLn0pID0gMAo+IHVubGluaygiL3RtcC9jbG9jNzV2QmsiKSAgICAgICAgICAg
+ICAgICA9IC0xIEVJU0RJUiAoSXMgYSBkaXJlY3RvcnkpCj4gcm1kaXIoIi90bXAvY2xvYzc1dkJr
+IikgICAgICAgICAgICAgICAgID0gMAo+IGV4aXRfZ3JvdXAoMSkgICAgICAgICAgICAgICAgICAg
+ICAgICAgICA9ID8KPiBQcm9jZXNzIDI3NjMgZGV0YWNoZWQKPiAKPiBjb21tZW50czoKd2hldGhl
+ciB0aGUgbWlwcyBhcmNoIGRvZXMgbm90IHN1cHBvcnQgTU9OT1RPTklDIGNsb2NrIG9yIG5vdD8K
+YW5kIEkgZ2V0IHRoZSBzYW1lIHJlc3VsdCB3aGVuIEkgdGVzdCB0aGUgY2FzZSBpbiB4ODYuCkl0
+IHNlZW1zIHRvIHBhc3MgaW4gdGhlIHBwYyBhcmNoLGJ1dCBJIGRvbm5vdCB0ZXN0IGluIHRoaXMg
+YXJjaC4KPiAKPiAKPiAKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBEb3dubG9hZCBJ
+bnRlbCYjMTc0OyBQYXJhbGxlbCBTdHVkaW8gRXZhbAo+IFRyeSB0aGUgbmV3IHNvZnR3YXJlIHRv
+b2xzIGZvciB5b3Vyc2VsZi4gU3BlZWQgY29tcGlsaW5nLCBmaW5kIGJ1Z3MKPiBwcm9hY3RpdmVs
+eSwgYW5kIGZpbmUtdHVuZSBhcHBsaWNhdGlvbnMgZm9yIHBhcmFsbGVsIHBlcmZvcm1hbmNlLgo+
+IFNlZSB3aHkgSW50ZWwgUGFyYWxsZWwgU3R1ZGlvIGdvdCBoaWdoIG1hcmtzIGR1cmluZyBiZXRh
+Lgo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtc3ctZGV2Cj4gX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBM
+dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
+Lm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRvd25s
+b2FkIEludGVsJiMxNzQ7IFBhcmFsbGVsIFN0dWRpbyBFdmFsClRyeSB0aGUgbmV3IHNvZnR3YXJl
+IHRvb2xzIGZvciB5b3Vyc2VsZi4gU3BlZWQgY29tcGlsaW5nLCBmaW5kIGJ1Z3MKcHJvYWN0aXZl
+bHksIGFuZCBmaW5lLXR1bmUgYXBwbGljYXRpb25zIGZvciBwYXJhbGxlbCBwZXJmb3JtYW5jZS4K
+U2VlIHdoeSBJbnRlbCBQYXJhbGxlbCBTdHVkaW8gZ290IGhpZ2ggbWFya3MgZHVyaW5nIGJldGEu
+Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtc3ctZGV2Cl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vbHRwLWxpc3QK
