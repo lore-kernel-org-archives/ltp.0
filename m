@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NtvFX-0006FS-RG
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 03:57:51 +0000
-Received: from mail-iw0-f176.google.com ([209.85.223.176])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NtvFX-0003sU-1c
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 03:57:51 +0000
-Received: by iwn6 with SMTP id 6so1343390iwn.4
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NuuMz-0007rN-C9
+	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 21:13:37 +0000
+Received: from mail-iw0-f195.google.com ([209.85.223.195])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NuuMx-0006Qq-Rd
+	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 21:13:37 +0000
+Received: by iwn33 with SMTP id 33so1361240iwn.23
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Mar 2010 20:57:45 -0700 (PDT)
+	Thu, 25 Mar 2010 14:13:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4BA74116.9020009@cn.fujitsu.com>
-References: <4B9B0B3A.3080008@cn.fujitsu.com>
-	<364299f41003122227w6859d6f3i829466a6fc5099f2@mail.gmail.com>
-	<364299f41003122313i47334168u25a6b12c6c64a7d9@mail.gmail.com>
-	<4BA74116.9020009@cn.fujitsu.com>
-Date: Mon, 22 Mar 2010 20:57:45 -0700
-Message-ID: <364299f41003222057i6caa2cc8g6b1786f3cee86a74@mail.gmail.com>
+In-Reply-To: <1269543366.6832.1.camel@subratamodak.linux.ibm.com>
+References: <20100324133645.23583.48891.sendpatchset@subratamodak.linux.ibm.com>
+	<364299f41003241048hecba971td1ed20876a398b59@mail.gmail.com>
+	<1269543366.6832.1.camel@subratamodak.linux.ibm.com>
+Date: Thu, 25 Mar 2010 14:13:30 -0700
+Message-ID: <364299f41003251413x25751abcp12f0018f77b5279@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [BUG?] proc01: read /proc/acpi/event failed if acpi
-	daemon stopped
+Subject: Re: [LTP] [PATCH] Fix fallocate() build issue for EXT4 Online
+	Defragmentation Test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,61 +30,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Miao Xie <miaox@cn.fujitsu.com>
 
-On Mon, Mar 22, 2010 at 3:06 AM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
-> Hi Garrett
+On Thu, Mar 25, 2010 at 11:56 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Miao,
 >
-> at 2010-3-13 15:13, Garrett Cooper wrote:
->> On Fri, Mar 12, 2010 at 10:27 PM, Garrett Cooper <yanegomi@gmail.com> wr=
-ote:
->>> On Fri, Mar 12, 2010 at 7:49 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrot=
-e:
->>>> An error message occured when i tested proc01.
->>>> ---------
->>>> proc01 =A0 =A0 =A01 =A0TFAIL =A0: =A0read failed: /proc/acpi/event: er=
-rno=3DEAGAIN(11): Resource temporarily unavailable
->>>> ---------
->>>>
->>>> If "service acpid start", this message will be turned to:
->>>> ---------
->>>> proc01 =A0 =A0 =A00 =A0TINFO =A0: =A0/proc/acpi/event: known issue: er=
-rno=3DEBUSY(16): Device or resource busy
->>>> ---------
->>>>
->>>> I think we should to add a check of acpi daemon's status in testcases/=
-kernel/fs/proc/proc01.c.
->>>
->>> =A0 =A0No, that's making things too complicated and won't scale as every
->>> distro has developed a different means for specifying the status for a
->>> service. Why not just add EAGAIN for that /proc node?
+> On Wed, 2010-03-24 at 10:48 -0700, Garrett Cooper wrote:
+>> On Wed, Mar 24, 2010 at 6:36 AM, Subrata Modak
+>> <subrata@linux.vnet.ibm.com> wrote:
+>> > Earlier Subject: Re: [LTP] ext4/e4defrag.c testcases compilation error,
+>> >
+>> > Hi Garret/Miao,
+>> >
+>> > On PPC systems, fallocate() seems to be already defined at /usr/includ=
+e/bits/fcntl.h,
+>> > so building EXT4 test cases on PPC64 machines will create build proble=
+ms even if the
+>> > pre-requisite packages:
+>> >
+>> > e2fsprogs*
+>> > e2fsprogs-libs*
+>> > e2fsprogs-devel*
+>> >
+>> > are present. So, this patch adds an extra check. Please let me know yo=
+ur thoughts.
+>> >
+>> > Errors bound to occur:
+>> > [
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I/root/subrata/=
+ltp/ltp-dev/testcases/kernel/include -I../../../../../include -I../../../..=
+/../include =A0 -L../../../../../lib =A0e4defrag.c =A0 -lltp -lm -o e4defrag
+>> > e4defrag.c:388: error: conflicting types for =91fallocate=92
+>> > /usr/include/bits/fcntl.h:240: note: previous declaration of =91falloc=
+ate=92 was here
+>> > make[1]: *** [e4defrag] Error 1
+>> > ]
+>> >
+>> > Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+>> > ---
+>> >
+>> > --- ltp-dev/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/e=
+4defrag.c 2010-03-15 19:32:12.000000000 +0530
+>> > +++ ltp-dev.modified/testcases/kernel/fs/ext4-new-features/ext4-online=
+-defrag/e4defrag.c =A0 =A0 =A0 =A02010-03-24 18:09:14.336793513 +0530
+>> > @@ -383,10 +383,13 @@ int sync_file_range(int fd, loff_t offse
+>> > =A0* @offset: =A0 =A0 =A0 =A0 =A0 =A0file offset.
+>> > =A0* @len: =A0 =A0 =A0 =A0 =A0 =A0 =A0 file size.
+>> > =A0*/
+>> > +
+>> > +#ifndef __NR_fallocate
+>> > =A0int fallocate(int fd, int mode, loff_t offset, loff_t len)
+>> > =A0{
+>> > =A0 =A0 =A0 =A0return syscall(__NR_fallocate, fd, mode, offset, len);
+>> > =A0}
+>> > +#endif
 >>
->> =A0 =A0 And FWIW the error condition is correct in my opinion if kernel
->> acpi hasn't been enabled, which was the case here.
+>> =A0 =A0 If it's not defined, you're definitely in trouble because that
+>> will result in a compile error. An autoconf test should be added for
+>> this syscall, and/or linux_syscall_numbers.h should be integrated into
+>> this test. That may be a bit heavy handed because that will integrate
+>> some libltp pieces into the tests, but that's up to Miao to decide.
 >
-> I think we should to give a warning message to LTP users.
-> How do you think the following patch?
+> Did you get a chance to check this patch ?
 >
-> diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc=
-/proc01.c
-> index 2d4a5fd..62d44b1 100644
-> --- a/testcases/kernel/fs/proc/proc01.c
-> +++ b/testcases/kernel/fs/proc/proc01.c
-> @@ -101,6 +101,7 @@ const Mapping known_issues[] =3D {
-> =A0 =A0 {"read", "/proc/fs/nfsd/filehandle", EINVAL},
-> =A0 =A0 {"read", "/proc/fs/nfsd/.getfs", EINVAL},
-> =A0 =A0 {"read", "/proc/fs/nfsd/.getfd", EINVAL},
-> + =A0 =A0{"read", "/proc/acpi/event", EAGAIN}, //EAGAIN will be returned =
-if acpi daemon disabled
-> =A0 =A0 {"", "", 0}
-> =A0};
+> Regards--
+> Subrata
 
-    Looks good minus the C++ style comment ;).
-Thanks again!
+    Nope, but my concern still stands unaddressed.
+Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
