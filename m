@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@users.sourceforge.net>) id 1NpEZd-0002BD-RU
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 05:35:13 +0000
-Received: from sfp-scmshell-2.v30.ch3.sourceforge.com ([172.29.30.124])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NpEZd-0000RU-NF
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 05:35:13 +0000
-Received: from localhost ([127.0.0.1]
-	helo=sfp-scmshell-2.v30.ch3.sourceforge.com)
-	by sfp-scmshell-2.v30.ch3.sourceforge.com with smtp (Exim 4.69)
-	(envelope-from <risrajak@users.sourceforge.net>) id 1NpEZZ-0005mI-LI
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 05:35:13 +0000
-From: "Rishi kesh K Rajak" <risrajak@linux.vnet.ibm.com>
-Date: Wed, 10 Mar 2010 05:35:08 +0000
-Message-Id: <E1NpEZZ-0005mI-LI@sfp-scmshell-2.v30.ch3.sourceforge.com>
-Subject: [LTP] [Git] ltp updated.
+	(envelope-from <mitani@ryobi.co.jp>) id 1NwQiN-0001eX-Mx
+	for ltp-list@lists.sourceforge.net; Tue, 30 Mar 2010 01:57:59 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NwQiL-00083o-HY
+	for ltp-list@lists.sourceforge.net; Tue, 30 Mar 2010 01:57:59 +0000
+Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.26])
+	by out03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 8FFC821132A
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Mar 2010 01:57:51 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id EB4773DD022
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Mar 2010 01:57:50 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Mar 2010 10:57:49 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 30 Mar 2010 10:57:49 +0900
+Message-ID: <000301cacfac$6663edf0$332bc9d0$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: [LTP] About mail test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,63 +35,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-The branch, next, has been updated
-       via  ce944320bea9e3d7044a36c64ef2e1719312370d (commit)
-       via  1a5506c97dcfda0bd16f83ca855bb633c47eea4c (commit)
-       via  48c52fcd4e7668bc36bbe080f53462d410712b69 (commit)
-       via  c962f51674b971496e14ac4be0cc75da98b75fca (commit)
-       via  17905ceabf2dc20e978dfa4ea3682197ad01bf9a (commit)
-      from  bdfe0b2a9dd720c3013225cc4aa1628e77888b24 (commit)
+Hi,
+
+I found two problems in mail test.
+(${LTPROOT}/testcases/commands/mail/mail_tests.sh)
+They are simple mistakes, I think.
+
+1) About judgment for making a user name
+In line 80 of "mail_tests.sh", there is following sentence.
+------------
+if id -u mail_test >/dev/null 2>&1; then
+------------
+This control sentence is going to judge whether the result of 
+"id -u mail_test" command is normal or not, I think.
+But this sentence is not effective.
+Therefore the user name "make_test" cannot be made when this user name
+isn't exist.
 
 
-- Log -----------------------------------------------------------------
-commit ce944320bea9e3d7044a36c64ef2e1719312370d
-Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Date:   Wed Mar 10 11:03:42 2010 +0530
-
-    Merge branches 'master' and 'next' into next
-
------------------------------------------------------------------------
-
-Summary of changes:
- TODO                                 |    2 +-
- testcases/kernel/containers/Makefile |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
- 
-diff --git a/TODO b/TODO
-index 9eec828..1756168 100644
---- a/TODO
-+++ b/TODO
-@@ -1,4 +1,4 @@
--The following things need to be rewritten // fixed:
-+The following things need to be rewritten // fixed
- 
- get_mempolicy01 // mbind01: They're using numa v1 calls which means that all
- versions of Linux / numa as of a few years ago aren't compatible with the API
-diff --git a/testcases/kernel/containers/Makefile b/testcases/kernel/containers/Makefile
-index 26f1856..75eda63 100644
---- a/testcases/kernel/containers/Makefile
-+++ b/testcases/kernel/containers/Makefile
-@@ -26,7 +26,7 @@ FILTER_OUT_DIRS		:= $(LIBDIR)
- 
- LIB			:= $(LIBDIR)/libclone.a
- 
--LIB			:= -ld
-+LDLIBS			:= -ldl
- 
- INSTALL_TARGETS		:= *.sh 
- 
+2) About "blind carbon copy" option
+In "mail_tests.sh", there are 5 tests about mail.
+5th is "blind carbon copy" test.
+However, this test doesn't use "-b" option but uses "-c" option.
 
 
-hooks/post-receive
--- 
-ltp
+Please consider the following revision.
+============
+--- ./testcases/commands/mail/mail_tests.sh     2010-03-23
+17:56:21.000000000 +0900
++++ ./testcases/commands/mail/mail_tests.sh.new 2010-03-30
+10:39:40.000000000 +0900
+@@ -77,7 +77,8 @@
+
+ # check if the user mail_test exists on this system.
+ # if not add that user mail_test, will removed before exiting test.
+-if id -u mail_test >/dev/null 2>&1; then
++id -u mail_test >/dev/null 2>&1
++if [ $? -ne 0 ] ; then
+        tst_resm TINFO "INIT: Adding temporary user mail_test"
+        useradd -m -s /sbin/nologin mail_test > $LTPTMP/tst_mail.out 2>&1
+        if [ $? -ne 0 ]; then
+@@ -327,7 +328,7 @@
+ tst_resm TINFO "Test #5: blind carbon copy user@domain"
+
+ # send mail to root and carbon copy mail_test
+-mail -s "Test" root@localhost -c mail_test@localhost < \
++mail -s "Test" root@localhost -b mail_test@localhost < \
+        $LTPTMP/tst_mail.in > $LTPTMP/tst_mail.out 2>&1
+ if [ $? -ne 0 ]; then
+        tst_res TFAIL $LTPTMP/tst_mail.out \
+@@ -344,10 +345,10 @@
+
+        if [ "x$RC1" != x0 -a "x$RC2" != x0 ]; then
+                tst_resm TPASS \
+-                   "Test #5: Mail was carbon copied to user mail_test"
++                   "Test #5: Mail was blind carbon copied to user
+mail_test"
+        else
+                tst_res TFAIL $LTPTMP/tst_mail.res \
+-                   "Test #5: mail failed to carbon copy user mail_test.
+Reason:"
++                   "Test #5: mail failed to blind carbon copy user
+mail_test. Reason:"
+                : $(( TFAILCNT += 1 ))
+        fi
+
+============
+
+
+Thank you--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
