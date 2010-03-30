@@ -1,38 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <schamart@linux.vnet.ibm.com>) id 1Nu4OS-00022W-83
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 13:43:40 +0000
-Received: from e28smtp02.in.ibm.com ([122.248.162.2])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <lina.zhao@windriver.com>) id 1NwYAs-0003Ac-Mz
+	for ltp-list@lists.sourceforge.net; Tue, 30 Mar 2010 09:55:54 +0000
+Received: from mail.windriver.com ([147.11.1.11])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nu4OQ-00029l-Fh
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 13:43:40 +0000
-Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
-	by e28smtp02.in.ibm.com (8.14.3/8.13.1) with ESMTP id o2NDWPma015696
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 19:02:25 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2NDWPIS3072188
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 19:02:25 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2NDWPKH008571
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 19:02:25 +0530
-Received: from localhost ([9.124.218.7])
-	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o2NDWPSK008560
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Mar 2010 19:02:25 +0530
-Date: Tue, 23 Mar 2010 19:02:24 +0530
-From: Srinivasa R Chamarthy <schamart@linux.vnet.ibm.com>
-Message-ID: <20100323133224.GB6017@chamarthy>
-References: <20100323122527.GA6017@chamarthy>
-	<20100323131438.GA16182@linux.vnet.ibm.com>
+	(Exim 4.69) id 1NwYAp-0001dy-Er
+	for ltp-list@lists.sourceforge.net; Tue, 30 Mar 2010 09:55:54 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o2U9tjZx012040
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Mar 2010 02:55:45 -0700 (PDT)
+Message-ID: <4BB1CB41.40805@windriver.com>
+Date: Tue, 30 Mar 2010 17:58:25 +0800
+From: "lina.zhao" <lina.zhao@windriver.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100323131438.GA16182@linux.vnet.ibm.com>
-Subject: Re: [LTP] [BUG] cgroup_fj tests fail to run due to missing
- cgroup_fj_testcases
+Subject: [LTP] about hugetlbfs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,95 +31,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi Rishi,
+Hi all,
 
-Thanks for the info.
+I have some problem about hugetlbfs test.
 
-On Tue, Mar 23, 2010 at 06:44:38PM +0530, Rishikesh K Rajak wrote:
-> On Tue, Mar 23, 2010 at 05:55:27PM +0530, Srinivasa R Chamarthy wrote:
-> > Hi LTP,
-> > 
-> > cgroup_fj tests of controllers is currently failing due to missing file
-> > cgroup_fj_testcases after compilation. I see that the file cgroup_fj_testcases
-> > is existing in the source but it is not available in /opt/ltp after
-> > compilation.
-> 
-> 
-> Hi Srini,
-> 
-> Thanks for reporting failure.
-> 
-> Yes, looks like this commit is doing the changes from cgroup_fj_testcases to
-> cgroup_fj_testcases.sh .
-> 
-> commit 223e12ee3f7fdb525746462747954552f0e07538
-> Author: Garrett Cooper <yanegomi@gmail.com>
-> Date:   Mon Mar 8 07:46:02 2010 -0800
-> 
->     Fix install for cgroup_fj_testcases.
->     
->     Turns out this script wasn't being installed properly, and thus its
-> testcases were failing; fix by suffixing with .sh
->     
->     Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> 
-> 
-> 
-> Let me have a look tomorrow where went wrong.
-> -Rishi
-> > 
-> > FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2010_Mar_23-13h_22m_15s.failed
-> > Running tests.......
-> > <<<test_start>>>
-> > tag=cgroup_fj stime=1269346936
-> > cmdline="      run_cgroup_test_fj.sh"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > incrementing stop
-> > Now, we start the test for cgroup...
-> > cat: cgroup_fj_testcases: No such file or directory
-> > <<<execution_status>>>
-> > initiation_status="ok"
-> > duration=0 termination_type=exited termination_id=0 corefile=no
-> > cutime=6 cstime=2
-> > <<<test_end>>>
-> > INFO: ltp-pan reported all tests PASS
-> > LTP Version: LTP-20100228
-> > 
-> > Eventhough the tests did not run, the results say all tests PASS. :)
-> > 
-> > -- 
-> > Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-> > Linux on System z (RedHat & Novell SuSE) CSVT,
-> > IBM India Systems & Technology Group/LTC - ISL,
-> > Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-> > [ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
-> > 
-> > ------------------------------------------------------------------------------
-> > Download Intel&#174; Parallel Studio Eval
-> > Try the new software tools for yourself. Speed compiling, find bugs
-> > proactively, and fine-tune applications for parallel performance.
-> > See why Intel Parallel Studio got high marks during beta.
-> > http://p.sf.net/sfu/intel-sw-dev
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> -- 
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
+In hugeshmat01.c
+the attach address for shmat is 0x90000eee .
+But for mips32_Linux system ,the user pthread space is 
+0x00000000~0x7fffffff,
+so 0x90000eee exceed the space ,the test will always failed on mips_32.
 
--- 
-Srinivasa R Chamarthy (schamart@linux.vnet.ibm.com)
-Linux on System z (RedHat & Novell SuSE) CSVT,
-IBM India Systems & Technology Group/LTC - ISL,
-Bangalore - 560071, KA, INDIA. Off: +91-80-41776451 
-[ http://www.ibm.com/in/isl | http://www.ibm.com/linux/ltc ]
+In hugemmap02.c
+#define LOW_ADDR2      (void *)(0x90000000)
+#define LOW_ADDR       (void *)(0x80000000)
+addr = mmap(LOW_ADDR, PAGE_SIZE, PROT_READ,
+                            MAP_SHARED | MAP_FIXED, nfildes, 0);
+addr2 = mmap(LOW_ADDR2, MAP_SIZE, PROT_READ | PROT_WRITE,
+                            MAP_SHARED, fildes, 0);
+
+ /* 32-bit process */
+                if (addr2 > 0){
+                        tst_resm(TCONF, "huge mmap() failed to test the 
+scenario");
+                        continue;
+                } else if (addr == 0) {
+                        tst_resm(TPASS, "huge mmap() succeeded for 32-bit");
+                } else {
+                        tst_resm(TFAIL, "huge mmap() unexpectedly failed 
+%s for 32-bit, errno=%d : %s",
+                                TEMPFILE, errno, strerror(errno));
+                }
+
+the 0x90000000  and 0x80000000 also exceed mips32 user pthread space , 
+so I changed them .
+but add2 always return 717225984, no matter what I allocate to LOW_ADDR2.
+at last ,I changed LOW_ADDR2 to NULL, it also returned 717225984.
+
+in the function ,why addr2> 0 then error happens?
+why addr should be 0? it is what exactly the LOW_ADDR assigns.
+
+Thanks and Best Regards,
+Lina
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
