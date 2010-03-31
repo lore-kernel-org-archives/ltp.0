@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Nu75s-0004Qt-Dk
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 16:36:40 +0000
-Received: from mail-px0-f204.google.com ([209.85.216.204])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nu75r-0004Mb-Gt
-	for ltp-list@lists.sourceforge.net; Tue, 23 Mar 2010 16:36:40 +0000
-Received: by pxi42 with SMTP id 42so1498241pxi.24
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 23 Mar 2010 09:36:33 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <anthony.ton@ericsson.com>) id 1NwoGF-00028w-Kc
+	for ltp-list@lists.sourceforge.net; Wed, 31 Mar 2010 03:06:31 +0000
+Received: from imr2.ericy.com ([198.24.6.3])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NwoGE-00012F-HP
+	for ltp-list@lists.sourceforge.net; Wed, 31 Mar 2010 03:06:31 +0000
+Received: from eusaamw0707.eamcs.ericsson.se ([147.117.20.32])
+	by imr2.ericy.com (8.13.1/8.13.1) with ESMTP id o2V3A3AV014383
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Mar 2010 22:10:03 -0500
+From: Anthony Ton <anthony.ton@ericsson.com>
+Date: Tue, 30 Mar 2010 23:06:22 -0400
+Message-ID: <E0B6230F32558E43951AF1B0DEBF98102119DC54EF@EUSAACMS0714.eamcs.ericsson.se>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <20100323132546.GA20611@us.ibm.com>
-References: <20100321011004.GA28202@us.ibm.com>
-	<20100323085352.GC4384@linux.vnet.ibm.com>
-	<20100323132546.GA20611@us.ibm.com>
-Date: Tue, 23 Mar 2010 09:36:33 -0700
-Message-ID: <364299f41003230936gc0c88cas9bc220b0b060c548@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH ltp] fix detection of setcap for filecaps test
+Subject: [LTP] Fcntl16 test case 2 failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,36 +26,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5072415091529063821=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Tue, Mar 23, 2010 at 6:25 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> Quoting Rishikesh K Rajak (risrajak@linux.vnet.ibm.com):
->> Hi Serge,
->>
->> Today we(me & iranna) got a chance to test your patch. Patch worked fine.
->>
->> while running i tried fixing few unwanted messages. You can Ack if it is correct fix.
->>
->> ===== error log =====
->> Running in:
->> cp: cannot stat `/opt/ltp/testcases/bin/print_caps': No such file or directory
->> mkfifo: cannot create fifo `caps_fifo': File exists
->> cap_sys_admin tests
->> ==== error log ======
->>
->> Signed-off by : Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
->
-> I think these should be fine.
->
-> Acked-by: Serge Hallyn <serue@us.ibm.com>
+--===============5072415091529063821==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_E0B6230F32558E43951AF1B0DEBF98102119DC54EFEUSAACMS0714e_"
 
-    If you're commenting out the lines, why not just delete them?
+--_000_E0B6230F32558E43951AF1B0DEBF98102119DC54EFEUSAACMS0714e_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi LTP Team,
+I run test case fcntl16 and get a failure on test case 2 with messages belo=
+w
+
+fcntl16     0  TINFO  :  Entering block 2
+fcntl16     1  TFAIL  :  First parent lock failed
+fcntl16     2  TFAIL  :  Test case 1, errno =3D 37
+fcntl16     0  TINFO  :  Test case 2: with mandatory record locking FAILED
+
+I look into the code and think that it is trying to do a lock on the entire=
+ file with write lock using option F_WRLCK, 0, 0L, 0L, IGNORED.  Is it corr=
+ect?  Can someone elaborate a little more?  What does the errno =3D 37 mean=
+?
+
 Thanks,
--Garrett
+Anthony
+
+
+--_000_E0B6230F32558E43951AF1B0DEBF98102119DC54EFEUSAACMS0714e_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Exchange Server">
+<!-- converted from rtf -->
+<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left:=
+ #800000 2px solid; } --></style>
+</head>
+<body>
+<font face=3D"Arial, sans-serif" size=3D"2">
+<div>Hi LTP Team,</div>
+<div>I run test case fcntl16 and get a failure on test case 2 with messages=
+ below</div>
+<div>&nbsp;</div>
+<div>fcntl16&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp; TINFO&nbsp; :&nbsp; Entering b=
+lock 2</div>
+<div>fcntl16&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp; TFAIL&nbsp; :&nbsp; First pare=
+nt lock failed</div>
+<div>fcntl16&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; TFAIL&nbsp; :&nbsp; Test case =
+1, errno =3D 37</div>
+<div>fcntl16&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp; TINFO&nbsp; :&nbsp; Test case =
+2: with mandatory record locking FAILED</div>
+<div>&nbsp;</div>
+<div>I look into the code and think that it is trying to do a lock on the e=
+ntire file with write lock using option F_WRLCK, 0, 0L, 0L, IGNORED.&nbsp; =
+Is it correct?&nbsp; Can someone elaborate a little more?&nbsp; What does t=
+he errno =3D 37 mean?</div>
+<div>&nbsp;</div>
+<div>Thanks,</div>
+<div>Anthony</div>
+<div>&nbsp;</div>
+</font>
+</body>
+</html>
+
+--_000_E0B6230F32558E43951AF1B0DEBF98102119DC54EFEUSAACMS0714e_--
+
+
+--===============5072415091529063821==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -66,7 +112,16 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--===============5072415091529063821==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5072415091529063821==--
+
