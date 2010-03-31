@@ -1,26 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1Nn6Nv-0007nE-5p
-	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 08:26:19 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nn6Nt-0004P8-6q
-	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 08:26:19 +0000
-Message-ID: <4B8F59FB.3060402@cn.fujitsu.com>
-Date: Thu, 04 Mar 2010 14:58:03 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nwpw2-0007oq-6A
+	for ltp-list@lists.sourceforge.net; Wed, 31 Mar 2010 04:53:46 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nwpvz-0007xB-Es
+	for ltp-list@lists.sourceforge.net; Wed, 31 Mar 2010 04:53:46 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2V4q5Ou011698
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Mar 2010 22:52:05 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2V4rb95136110
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Mar 2010 22:53:37 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2V4rbgI020438
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Mar 2010 22:53:37 -0600
+Date: Wed, 31 Mar 2010 10:23:34 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100331045334.GA3878@linux.vnet.ibm.com>
+References: <E0B6230F32558E43951AF1B0DEBF98102119DC54EF@EUSAACMS0714.eamcs.ericsson.se>
 MIME-Version: 1.0
-References: <4B7BA433.3030206@linux.vnet.ibm.com>
-	<364299f41002170908p302cc665g874c89a109ddfd1f@mail.gmail.com>
-	<20100218035756.GA13013@rishikesh.in.ibm.com>
-	<4B824029.7070609@cn.fujitsu.com>
-	<20100302144613.GA8623@linux.vnet.ibm.com>
-	<6260305A-E6D0-4D10-9627-6D83C022588E@gmail.com>
-In-Reply-To: <6260305A-E6D0-4D10-9627-6D83C022588E@gmail.com>
-Subject: Re: [LTP] [PATCH] mail_tests.sh: fix a version problem of Heirloom
- Mail
+Content-Disposition: inline
+In-Reply-To: <E0B6230F32558E43951AF1B0DEBF98102119DC54EF@EUSAACMS0714.eamcs.ericsson.se>
+Subject: Re: [LTP] Fcntl16 test case 2 failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,96 +40,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Anthony Ton <anthony.ton@ericsson.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-at 2010-3-3 0:19, Garrett Cooper wrote:
-> On Mar 2, 2010, at 6:46 AM, Rishikesh K Rajak
-> <risrajak@linux.vnet.ibm.com> wrote:
-> 
->> On Mon, Feb 22, 2010 at 04:28:25PM +0800, Shi Weihua wrote:
->>>>> There's a lot of noise in the patch because of if-else behavior in
->>>>> trying to determine the mail app. That's why I didn't commit this (it
->>>>> requires verification of previous mail applications as well).
->>>>
->>>> Thanks Garret, Still i have not committed this to CVS repo.
->>>>
->>>> Shi, can you please verify if this patch does not break with any other
->>>> mail application.
->>>
->>>  In fact, i don't know any other mail application.
->>>  When i tested RHEL's alpha version, this ltp bug catched. so tried
->>> to fix it.
->>>
->>>  Maybe, you should knock FOSS community(?).
->> Hi Shi,
->>
->> With Feb release still i am seeing some failure with mail file.
->>
->> cmdline="export TCdat=$LTPROOT/testcases/bin; mail_tests.sh"
->> contacts=""
->> analysis=exit
->> <<<test_output>>>
->> mail_tests::setup    0  TINFO  :  INIT: Removing all mails for mail_test
->> and root
->> mail_tests::mail01    0  TINFO  :  Test #1: mail root@localhost will
->> send mail to root
->> mail_tests::mail01    0  TINFO  :  Test #1: user on local machine.
->> mail_tests::mail01    1  TPASS  :  Test #1: Mail was sent to root & was
->> received
->> mail_tests::mail02    0  TINFO  :  Test #2: mail user@bad-domain will
->> result in failure
->> mail_tests::mail02    0  TINFO  :  Test #2: to deliver the mail. Mailer
->> daemon should
->> mail_tests::mail02    0  TINFO  :  Test #2: report this failure.
->> mail_tests::mail02    2  TFAIL  :  Test #2: No new mail for root.
->> Reason:
->> No mail for root
->> mail_tests::mail03    0  TINFO  :  Test #3: mail
->> non_existent_user@localhost will fail
->> mail_tests::mail03    0  TINFO  :  Test #3: to deliver the mail. Mailer
->> daemon should
->> mail_tests::mail03    0  TINFO  :  Test #3: report this failure.
->> mail_tests::mail03    3  TFAIL  :  Test #3: No new mail for root.
->> Reason:
->> No mail for root
->> mail_tests::mail04    0  TINFO  :  Test #4: Test that mail -c
->> user@domain will
->> mail_tests::mail04    0  TINFO  :  Test #4: carbon copy user@domain
->> mail_tests::mail04    4  TPASS  :  Test #4: Mail was carbon copied to
->> user mail_test
->> mail_tests::mail05    0  TINFO  :  Test #5: Test that mail -b
->> user@domain will
->> mail_tests::mail05    0  TINFO  :  Test #5: blind carbon copy
->> user@domain
->> mail_tests::mail05    5  TPASS  :  Test #5: Mail was carbon copied to
->> user mail_test
->> mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary files
->> from /tmp
->> mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary user
->> mail_test
->> <<<execution_status>>>
->>
->> Can you please look into it if possible? I have run this testcase on
->> SLES10.SP3GA & RHEL5.4 GA on x86_64 , ppc64 & s390x and everywhere same
->> result.
-> 
-> Same here on Gentoo Linux before and after my cleanup to the test.
 
-This fail message is same as my message which outputed on RHEL6alpha3 at 2009.12.
-   >> mail_tests::mail03    3  TFAIL  :  Test #3: No new mail for root.
-   >> Reason:
-   >> No mail for root
-The mailx version on your system is "Heirloom Mail" ? you can get the version by a
-command of echo "d" | mail -u root.
+Hi Anthony,
 
-If it's "Heirloom Mail", you should accept my patch.
-	http://marc.info/?l=ltp-list&m=126440546415559&w=2
+>Hi LTP Team,
+>I run test case fcntl16 and get a failure on test case 2 with messages below
 
-If it's other mailx, please give me the output of echo "d" | mail -u root, let's
-try to fix it.
+I have tested with latest kernel 2.6.32 and i could not face this problem.
 
--Shi Weihua
+Can you let us know about your setup little bit more ?
+
+>
+>fcntl16     0  TINFO  :  Entering block 2
+>fcntl16     1  TFAIL  :  First parent lock failed
+>fcntl16     2  TFAIL  :  Test case 1, errno = 37
+>fcntl16     0  TINFO  :  Test case 2: with mandatory record locking FAILED
+>
+>>I look into the code and think that it is trying to do a lock on the entire file
+>with write lock using option F_WRLCK, 0, 0L, 0L, IGNORED.  Is it correct?  Can
+>someone
+>+elaborate a little more?  What does the errno = 37 mean?
+
+This errno means you are not having any lock available while doing operation
+with fcntl, with F_SETLK .
+
+asm-generic/errno.h:#define	ENOLCK		37	/* No record locks
+available */
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
