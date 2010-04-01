@@ -1,32 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxFs0-0006fU-Op
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 08:35:20 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxDSm-0007lX-8c
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 06:01:08 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
 	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxFry-0004Kd-Ke
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 08:35:20 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o318Nfr4016740
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 04:23:41 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o318ZDCu155032
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 04:35:13 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o318ZCVQ003453
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 05:35:12 -0300
-Date: Thu, 1 Apr 2010 14:05:10 +0530
+	(Exim 4.69) id 1NxDSj-00060L-Aa
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 06:01:08 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o315vwSq020039
+	for <ltp-list@lists.sourceforge.net>; Wed, 31 Mar 2010 23:57:58 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3160klw108462
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 00:00:46 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o3160hMv013110
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 00:00:44 -0600
+Date: Thu, 1 Apr 2010 11:30:20 +0530
 From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100401083510.GD13796@linux.vnet.ibm.com>
-References: <000001cad173$3c32b200$b4981600$@co.jp>
+Message-ID: <20100401060020.GA5009@linux.vnet.ibm.com>
+References: <20100401054249.10197.78829.sendpatchset@localhost.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <000001cad173$3c32b200$b4981600$@co.jp>
-Subject: Re: [LTP] cap_bounds_r.c build failure
+In-Reply-To: <20100401054249.10197.78829.sendpatchset@localhost.localdomain>
+Subject: Re: [LTP] [PATCH] Fix Network Namespace container test scripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,137 +40,103 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: Sachin Sant <sachinp@in.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi  Mitani,
+Tested this patch, it looks fine. Also few problems there which this commit
+resolves.
 
-Can you confirm if you have installed libcap-devel ? As i see this is defined
-under linux/capability.h .
+f50539e0bcb0f9bab88101ce40a8e09a1d76d4a9
 
-#define CAP_MAC_ADMIN        33
-
-#define CAP_LAST_CAP         CAP_MAC_ADMIN
-
-#define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
-
-
-Which unltimately is being called by sys/capability.h .
-
-
-FYI, I did not get any compilation error on SLES11GA where:
-
-libcap2-2.11-2.15
-libcap-devel-2.11-2.15
+Acked & Tested By: Rishikesh K Rajak <risrajak@in.ibm.com>
 
 -Rishi
-
-
-On Thu, Apr 01, 2010 at 05:13:39PM +0900, Mitani wrote:
-> Hi,
+On Thu, Apr 01, 2010 at 11:12:49AM +0530, Sachin Sant wrote:
+> NETNS tests from containers fails to execute with following message
 > 
-> I tried to build by using yesterday's git.
->  (ltp-dev-02719d6f7e5cb252c0fcbfbaf26208d7196e46f2.tar.gz)
-> But build failed in "cap_bounds_r.c" with following message.
+> Running netns tests.
+> --: childns.sh '/opt/ltp': No such file or directory
 > 
-> ------------
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/LTP/ltp-dev-20100401/testcases/kernel/include -I../../../../include
-> -I../../../../include   -L../../../../lib  cap_bounds_r.c   -lltp -lcap -o
-> cap_bounds_r
-> cap_bounds_r.c: In function `main':
-> cap_bounds_r.c:46: error: `CAP_LAST_CAP' undeclared (first use in this
-> function)
-> cap_bounds_r.c:46: error: (Each undeclared identifier is reported only once
-> cap_bounds_r.c:46: error: for each function it appears in.)
-> make[4]: *** [cap_bounds_r] Error 1
-> ------------
+> LTP infrastructure fails to locate the childns.sh script. Fix this.
+> There were few hardcoded paths within various tests which are not available
+> during runtime.
 > 
-> I tried to today's git, but it failed, too.
->  (ltp-dev-44fba94453ca4f446cde4db08b0a760862b55cfa.tar.gz)
+> eg : %s/testcases/kernel/containers/netns/paripv6.sh
 > 
+> Fix those occurences by specifying proper paths (%s/testcases/bin/paripv6.sh)
 > 
-> I referd this source's diff in following URL.
-> http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=commitdiff
-> ;h=6e3dd83d9f575d98d76b8b3f642ad6e8793dbdfc
+> The following patch allows the test to be executed properly on my Fedora 12
+> system.
 > 
-> "CAP_LAST_CAP" definition is deleted with other definitions in this 
-> revision.
-> But "CAP_LAST_CAP" is still used after edited version.
+> Signed-off-by : Sachin Sant <sachinp@in.ibm.com>
+> ---
+> diff -Naurp 1/testcases/kernel/containers/netns/common.c 2/testcases/kernel/containers/netns/common.c
+> --- 1/testcases/kernel/containers/netns/common.c	2010-03-31 14:14:06.000000000 +0530
+> +++ 2/testcases/kernel/containers/netns/common.c	2010-04-01 11:00:15.000000000 +0530
+> @@ -92,7 +92,7 @@ int create_net_namespace(char *p1, char 
+>  	}
 > 
-> "The editor may have deleted too much to make this source simple?"
-> I think. ;-)
+>  	/* We need to pass the child pid to the parentns.sh script */
+> -	sprintf(par, "parentns.sh '%s' %s %" PRId32 , ltproot, p1, pid);
+> +	sprintf(par, "%s/testcases/bin/parentns.sh %s %" PRId32 , ltproot, p1, pid);
 > 
+>  	ret = system(par);
+>  	status = WEXITSTATUS(ret);
+> @@ -141,7 +141,7 @@ int child_fn(void *c1)
+>  		exit(1);
+>  	}
 > 
-> There is same problem in "cap_bounds_rw.c", too.
+> -	sprintf(child, "childns.sh '%s'", ltproot);
+> +	sprintf(child, "%s/testcases/bin/childns.sh", ltproot);
 > 
+>  	/* Unshare the network namespace in the child */
+>  #if HAVE_UNSHARE
+> diff -Naurp 1/testcases/kernel/containers/netns/par_chld_ipv6.c 2/testcases/kernel/containers/netns/par_chld_ipv6.c
+> --- 1/testcases/kernel/containers/netns/par_chld_ipv6.c	2010-03-31 14:14:06.000000000 +0530
+> +++ 2/testcases/kernel/containers/netns/par_chld_ipv6.c	2010-03-31 14:21:54.000000000 +0530
+> @@ -74,10 +74,8 @@ int main()
+>          tst_resm(TFAIL, "error while allocating mem");
+>          exit(1);
+>      }
+> -    sprintf(par, "%s/testcases/kernel/containers/netns/paripv6.sh" ,     \
+> -ltproot);
+> -    sprintf(child, "%s/testcases/kernel/containers/netns/childipv6.sh" , \
+> -ltproot);
+> +    sprintf(par, "%s/testcases/bin/paripv6.sh", ltproot);
+> +    sprintf(child, "%s/testcases/bin/childipv6.sh", ltproot);
 > 
-> How about following patch?
+>      if ((pid = fork()) == 0) {
 > 
+> diff -Naurp 1/testcases/kernel/containers/netns/sysfsview.c 2/testcases/kernel/containers/netns/sysfsview.c
+> --- 1/testcases/kernel/containers/netns/sysfsview.c	2010-03-31 14:14:06.000000000 +0530
+> +++ 2/testcases/kernel/containers/netns/sysfsview.c	2010-03-31 14:22:13.000000000 +0530
+> @@ -56,7 +56,7 @@ int main()
+>          exit(1);
+>      }
 > 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> -    sprintf(script, "%s/testcases/kernel/containers/netns/parent_share.sh" , ltproot);
+> +    sprintf(script, "%s/testcases/bin/parent_share.sh" , ltproot);
 > 
-> Index: ./testcases/kernel/security/cap_bound/cap_bounds_r.c
-> ============
-> --- ./testcases/kernel/security/cap_bound/cap_bounds_r.c        2010-03-31
-> 22:44:52.000000000 +0900
-> +++ ./testcases/kernel/security/cap_bound/cap_bounds_r.c.new    2010-04-01
-> 15:43:01.000000000 +0900
-> @@ -32,6 +32,13 @@
->  #include <sys/prctl.h>
->  #include <test.h>
+>      /* Parent should be able to view child sysfs and vice versa */
+>      ret = system(script);
+> diff -Naurp 1/testcases/kernel/containers/netns/two_children_ns.c 2/testcases/kernel/containers/netns/two_children_ns.c
+> --- 1/testcases/kernel/containers/netns/two_children_ns.c	2010-03-31 14:14:06.000000000 +0530
+> +++ 2/testcases/kernel/containers/netns/two_children_ns.c	2010-03-31 14:20:08.000000000 +0530
+> @@ -85,10 +85,10 @@ int main()
+>          	exit(1);
+>      }
 > 
-> +#if HAVE_SYS_CAPABILITY_H
-> +#ifndef CAP_LAST_CAP
-> +#warning out-of-date capability.h does not define CAP_LAST_CAP
-> +#define CAP_LAST_CAP 28  /* be ultra-conservative */
-> +#endif
-> +#endif
-> +
->  char *TCID = "cap_bounds_r";
->  int TST_TOTAL=1;
+> -    sprintf(child[0], "%s/testcases/kernel/containers/netns/child_1.sh" , ltproot);
+> -    sprintf(child[1], "%s/testcases/kernel/containers/netns/child_2.sh" , ltproot);
+> -    sprintf(par[0], "%s/testcases/kernel/containers/netns/parent_1.sh" , ltproot);
+> -    sprintf(par[1], "%s/testcases/kernel/containers/netns/parent_2.sh" , ltproot);
+> +    sprintf(child[0], "%s/testcases/bin/child_1.sh" , ltproot);
+> +    sprintf(child[1], "%s/testcases/bin/child_2.sh" , ltproot);
+> +    sprintf(par[0], "%s/testcases/bin/parent_1.sh" , ltproot);
+> +    sprintf(par[1], "%s/testcases/bin/parent_2.sh" , ltproot);
 > 
-> ============
-> 
-> Index: ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
-> ============
-> --- ./testcases/kernel/security/cap_bound/cap_bounds_rw.c       2010-03-31
-> 22:44:52.000000000 +0900
-> +++ ./testcases/kernel/security/cap_bound/cap_bounds_rw.c.new   2010-04-01
-> 15:44:39.000000000 +0900
-> @@ -31,6 +31,13 @@
->  #include <sys/prctl.h>
->  #include <test.h>
-> 
-> +#if HAVE_SYS_CAPABILITY_H
-> +#ifndef CAP_LAST_CAP
-> +#warning out-of-date capability.h does not define CAP_LAST_CAP
-> +#define CAP_LAST_CAP 28  /* be ultra-conservative */
-> +#endif
-> +#endif
-> +
->  char *TCID = "cap_bounds_rw";
->  int TST_TOTAL=1;
-> 
-> ============
-> 
-> 
-> Regards--
-> 
-> -Tomonori Mitani
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>      /* Loop for creating two child Network Namespaces */
+>      for(i=0;i<2;i++) {
 
 -- 
 Thanks & Regards
