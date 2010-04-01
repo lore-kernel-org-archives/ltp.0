@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <raahul4321@gmail.com>) id 1O47Qc-0006xD-Tr
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:26 +0000
-Received: from mail-gw0-f47.google.com ([74.125.83.47])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O47QZ-0007Ie-4r
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:26 +0000
-Received: by gwb17 with SMTP id 17so2214018gwb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 19 Apr 2010 23:59:17 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NxIW1-0006XC-VB
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 11:24:49 +0000
+Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NxIVz-0002YP-1Z
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 11:24:49 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000001cad173$3c32b200$b4981600$@co.jp>
+	<20100401083510.GD13796@linux.vnet.ibm.com>
+	<000101cad17c$ee4946d0$cadbd470$@co.jp>
+	<20100401093511.GA25290@linux.vnet.ibm.com>
+In-Reply-To: <20100401093511.GA25290@linux.vnet.ibm.com>
+Date: Thu, 1 Apr 2010 20:24:37 +0900
+Message-ID: <000001cad18d$ea091c60$be1b5520$@co.jp>
 MIME-Version: 1.0
-Date: Tue, 20 Apr 2010 12:29:11 +0530
-Message-ID: <y2j72fb0a5c1004192359ifea04178l1ced518757facae7@mail.gmail.com>
-From: rahul agarwal <raahul4321@gmail.com>
-Subject: [LTP] testcase mm-shmt09 failing on arm . please help
+Content-Language: ja
+Subject: Re: [LTP] cap_bounds_r.c build failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,73 +28,238 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6784801757939266839=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============6784801757939266839==
-Content-Type: multipart/alternative; boundary=001636c5c1866ec2dc0484a59d7e
-
---001636c5c1866ec2dc0484a59d7e
-Content-Type: text/plain; charset=ISO-8859-1
-
-i am getting the following error while executing the mm test :-
-
-<<<test_start>>>
-tag=shmt09 stime=1271762065
-cmdline="shmt09"
-contacts=""
-analysis=exit
-
-<<<test_output>>>
-shmat1: Invalid argument
-shmt09      1  TPASS  :  sbrk, sbrk, shmget, shmat
-shmt09      2  TPASS  :  sbrk, shmat
-shmt09      3  *TFAIL  :  Error: shmat Failed, shmid = 262144, errno = 22*
-**
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=2
-<<<test_end>>>
-
-
-With Regards
-Rahul Agarwal
-
---001636c5c1866ec2dc0484a59d7e
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div>i am getting the following error while executing the mm test :-</div>
-<div>=A0</div>
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dshmt09 stime=3D1271762065<=
-br>cmdline=3D&quot;shmt09&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dex=
-it</div>
-<div><br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>shmat1: Invalid argument<br=
->shmt09=A0=A0=A0=A0=A0 1=A0 TPASS=A0 :=A0 sbrk, sbrk, shmget, shmat<br>shmt=
-09=A0=A0=A0=A0=A0 2=A0 TPASS=A0 :=A0 sbrk, shmat<br>shmt09=A0=A0=A0=A0=A0 3=
-=A0 <strong>TFAIL=A0 :=A0 Error: shmat Failed, shmid =3D 262144, errno =3D =
-22</strong></div>
-
-<div><strong></strong>=A0</div>
-<div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;=
-ok&quot;<br>duration=3D0 termination_type=3Dexited termination_id=3D1 coref=
-ile=3Dno<br>cutime=3D0 cstime=3D2<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>
-<div>=A0</div>
-<div>=A0</div>
-<div>With Regards</div>
-<div>Rahul Agarwal</div>
-<div>=A0</div>
-
---001636c5c1866ec2dc0484a59d7e--
-
-
---===============6784801757939266839==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: 'Rishikesh K Rajak' <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi Rishi,
+
+I installed "libcap-devel", but after configure, build failed, too.
+
+------------
+[root@RHEL4-8 mitani]# rpm -qa | grep libcap
+libcap-devel-1.10-20
+libcap-1.10-20
+[root@RHEL4-8 mitani]#
+------------
+
+"libcap-1.10-20" version is normal version in my system (RHEL4.8 
+2.6.9-89.ELsmp).
+In this version, capability.h doesn't have CAP_LAST_CAP definition.
+I try to upgrade version "2.11".
+
+
+Thanks--
+
+-Tomonori Mitani
+
+
+> -----Original Message-----
+> From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
+> Sent: Thursday, April 01, 2010 6:35 PM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] cap_bounds_r.c build failure
+> 
+> On Thu, Apr 01, 2010 at 06:23:03PM +0900, Mitani wrote:
+> > Hi Rishi,
+> >
+> >
+> > "libcap-devel" was not installed in my system.
+> >
+> > ------------
+> > [root@RHEL4-8 mitani]# rpm -qa | grep libcap
+> > libcap-1.10-20
+> > [root@RHEL4-8 mitani]#
+> > ------------
+> >
+> > I'm trying to install libcap-devel now.
+> 
+> Ok, make sure you configure once again the source code after installing
+> libcap-devel rpm.
+> 
+> -Rishi
+> >
+> >
+> > Thanks--
+> >
+> > -Tomonori Mitani
+> >
+> > > -----Original Message-----
+> > > From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
+> > > Sent: Thursday, April 01, 2010 5:35 PM
+> > > To: Mitani
+> > > Cc: ltp-list@lists.sourceforge.net
+> > > Subject: Re: [LTP] cap_bounds_r.c build failure
+> > >
+> > > Hi  Mitani,
+> > >
+> > > Can you confirm if you have installed libcap-devel ? As i see this
+> is
+> > > defined
+> > > under linux/capability.h .
+> > >
+> > > #define CAP_MAC_ADMIN        33
+> > >
+> > > #define CAP_LAST_CAP         CAP_MAC_ADMIN
+> > >
+> > > #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
+> > >
+> > >
+> > > Which unltimately is being called by sys/capability.h .
+> > >
+> > >
+> > > FYI, I did not get any compilation error on SLES11GA where:
+> > >
+> > > libcap2-2.11-2.15
+> > > libcap-devel-2.11-2.15
+> > >
+> > > -Rishi
+> > >
+> > >
+> > > On Thu, Apr 01, 2010 at 05:13:39PM +0900, Mitani wrote:
+> > > > Hi,
+> > > >
+> > > > I tried to build by using yesterday's git.
+> > > >  (ltp-dev-02719d6f7e5cb252c0fcbfbaf26208d7196e46f2.tar.gz)
+> > > > But build failed in "cap_bounds_r.c" with following message.
+> > > >
+> > > > ------------
+> > > > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> > > > -I/home/LTP/ltp-dev-20100401/testcases/kernel/include
+> > > -I../../../../include
+> > > > -I../../../../include   -L../../../../lib  cap_bounds_r.c
+> > > -lltp -lcap -o
+> > > > cap_bounds_r
+> > > > cap_bounds_r.c: In function `main':
+> > > > cap_bounds_r.c:46: error: `CAP_LAST_CAP' undeclared (first use
+> in
+> > > this
+> > > > function)
+> > > > cap_bounds_r.c:46: error: (Each undeclared identifier is
+> reported
+> > > only once
+> > > > cap_bounds_r.c:46: error: for each function it appears in.)
+> > > > make[4]: *** [cap_bounds_r] Error 1
+> > > > ------------
+> > > >
+> > > > I tried to today's git, but it failed, too.
+> > > >  (ltp-dev-44fba94453ca4f446cde4db08b0a760862b55cfa.tar.gz)
+> > > >
+> > > >
+> > > > I referd this source's diff in following URL.
+> > > >
+> > >
+> http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=
+> > > commitdiff
+> > > > ;h=6e3dd83d9f575d98d76b8b3f642ad6e8793dbdfc
+> > > >
+> > > > "CAP_LAST_CAP" definition is deleted with other definitions in
+> this
+> > > > revision.
+> > > > But "CAP_LAST_CAP" is still used after edited version.
+> > > >
+> > > > "The editor may have deleted too much to make this source simple?"
+> > > > I think. ;-)
+> > > >
+> > > >
+> > > > There is same problem in "cap_bounds_rw.c", too.
+> > > >
+> > > >
+> > > > How about following patch?
+> > > >
+> > > >
+> > > > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> > > >
+> > > > Index: ./testcases/kernel/security/cap_bound/cap_bounds_r.c
+> > > > ============
+> > > > --- ./testcases/kernel/security/cap_bound/cap_bounds_r.c
+> > > 2010-03-31
+> > > > 22:44:52.000000000 +0900
+> > > > +++ ./testcases/kernel/security/cap_bound/cap_bounds_r.c.new
+> > > 2010-04-01
+> > > > 15:43:01.000000000 +0900
+> > > > @@ -32,6 +32,13 @@
+> > > >  #include <sys/prctl.h>
+> > > >  #include <test.h>
+> > > >
+> > > > +#if HAVE_SYS_CAPABILITY_H
+> > > > +#ifndef CAP_LAST_CAP
+> > > > +#warning out-of-date capability.h does not define CAP_LAST_CAP
+> > > > +#define CAP_LAST_CAP 28  /* be ultra-conservative */
+> > > > +#endif
+> > > > +#endif
+> > > > +
+> > > >  char *TCID = "cap_bounds_r";
+> > > >  int TST_TOTAL=1;
+> > > >
+> > > > ============
+> > > >
+> > > > Index: ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
+> > > > ============
+> > > > --- ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
+> > > 2010-03-31
+> > > > 22:44:52.000000000 +0900
+> > > > +++ ./testcases/kernel/security/cap_bound/cap_bounds_rw.c.new
+> > > 2010-04-01
+> > > > 15:44:39.000000000 +0900
+> > > > @@ -31,6 +31,13 @@
+> > > >  #include <sys/prctl.h>
+> > > >  #include <test.h>
+> > > >
+> > > > +#if HAVE_SYS_CAPABILITY_H
+> > > > +#ifndef CAP_LAST_CAP
+> > > > +#warning out-of-date capability.h does not define CAP_LAST_CAP
+> > > > +#define CAP_LAST_CAP 28  /* be ultra-conservative */
+> > > > +#endif
+> > > > +#endif
+> > > > +
+> > > >  char *TCID = "cap_bounds_rw";
+> > > >  int TST_TOTAL=1;
+> > > >
+> > > > ============
+> > > >
+> > > >
+> > > > Regards--
+> > > >
+> > > > -Tomonori Mitani
+> > > >
+> > > >
+> > > >
+> > > >
+> > >
+> ------------------------------------------------------------------
+> > > ------------
+> > > > Download Intel&#174; Parallel Studio Eval
+> > > > Try the new software tools for yourself. Speed compiling, find
+> bugs
+> > > > proactively, and fine-tune applications for parallel
+> performance.
+> > > > See why Intel Parallel Studio got high marks during beta.
+> > > > http://p.sf.net/sfu/intel-sw-dev
+> > > > _______________________________________________
+> > > > Ltp-list mailing list
+> > > > Ltp-list@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > >
+> > > --
+> > > Thanks & Regards
+> > > Rishi
+> > > LTP Maintainer
+> > > IBM, LTC, Bangalore
+> > > Please join IRC #ltp @ irc.freenode.net
+> >
+> 
+> --
+> Thanks & Regards
+> Rishi
+> LTP Maintainer
+> IBM, LTC, Bangalore
+> Please join IRC #ltp @ irc.freenode.net
+
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -99,16 +267,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============6784801757939266839==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6784801757939266839==--
-
