@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NzNqy-00042W-33
-	for ltp-list@lists.sourceforge.net; Wed, 07 Apr 2010 05:31:04 +0000
-Received: from out07.sjc.mx.trendmicro.com ([216.99.131.23])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxEwv-0003zv-7s
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 07:36:21 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NzNqw-0005mi-8P
-	for ltp-list@lists.sourceforge.net; Wed, 07 Apr 2010 05:31:04 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000401cad217$b1382d10$13a88730$@co.jp>
-	<20100405132140.GB32049@us.ibm.com>
-In-Reply-To: <20100405132140.GB32049@us.ibm.com>
-Date: Wed, 7 Apr 2010 14:30:53 +0900
-Message-ID: <000901cad613$7d894030$789bc090$@co.jp>
+	(Exim 4.69) id 1NxEws-0006jQ-Ug
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 07:36:21 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o317BMOO010726
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:11:22 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o317N88f1777804
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:23:08 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o317N7Pp032162
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 04:23:07 -0300
+Date: Thu, 1 Apr 2010 12:53:05 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100401072305.GC13796@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] cap_bset_inh_bounds.c build failure
+Content-Disposition: inline
+Subject: [LTP] [risrajak@linux.vnet.ibm.com: [Ltp-commits] [Git] ltp
+	updated.]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,142 +38,175 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "'Serge E. Hallyn'" <serue@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: sachinp@linux.vnet.ibm.com, iranna.ankad@in.ibm.com, svishuku@in.ibm.com
 
-Hi,
+Hi All,
 
-> -----Original Message-----
-> From: Serge E. Hallyn [mailto:serue@us.ibm.com]
-> Sent: Monday, April 05, 2010 10:22 PM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] cap_bset_inh_bounds.c build failure
-> 
-> Quoting Mitani (mitani@ryobi.co.jp):
-> > Hi,
-> >
-> > I tried to build by using yesterday's git in my system (RHEL4.8 x86).
-> >  (ltp-dev-4837fee8a7c2de6a83c8927a574c792ca6dabe4e.tar.gz)
-> > But build failed in "cap_bset_inh_bounds.c" with following message.
-> > This is different from "cap_bounds_r.c"'s problem (another thread),
-> I think
-> >
-> > ------------
-> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> > -I/home/LTP/ltp-dev-20100401-3/testcases/kernel/include
-> > -I../../../../include -I../../../../include   -L../../../../lib
-> > cap_bset_inh_bounds.c   -lltp -lcap -o cap_bset_inh_bounds
-> > cap_bset_inh_bounds.c:124: error: syntax error before numeric
-> constant
-> > cap_bset_inh_bounds.c:124: warning: type defaults to `int' in
-> declaration of
-> > `tst_resm'
-> > cap_bset_inh_bounds.c:124: error: conflicting types for 'tst_resm'
-> > ../../../../include/test.h:192: error: previous declaration of
-> 'tst_resm'
-> > was here
-> > cap_bset_inh_bounds.c:124: error: conflicting types for 'tst_resm'
-> > ../../../../include/test.h:192: error: previous declaration of
-> 'tst_resm'
-> > was here
-> > cap_bset_inh_bounds.c:124: warning: data definition has no type or
-> storage
-> > class
-> > cap_bset_inh_bounds.c:129: warning: type defaults to `int' in
-> declaration of
-> > `tst_exit'
-> > cap_bset_inh_bounds.c:129: error: conflicting types for 'tst_exit'
-> > ../../../../include/test.h:203: error: previous declaration of
-> 'tst_exit'
-> > was here
-> > cap_bset_inh_bounds.c:129: error: conflicting types for 'tst_exit'
-> > ../../../../include/test.h:203: error: previous declaration of
-> 'tst_exit'
-> > was here
-> > cap_bset_inh_bounds.c:129: warning: data definition has no type or
-> storage
-> > class
-> > cap_bset_inh_bounds.c:130: error: syntax error before '}' token
-> > ------------
-> >
-> > In this source, the pair of "ifdef" start/end and the pair of
-> > main() function's "parenthesis" are alternate, I think.
-> >
-> >
-> > How about following patch?
-> >
-> > Signed-off-by : Tomonori Mitani <mitani@ryobi.co.jp>
-> 
-> Yup - although really the #ifdef HAVE_LIBCAP should be redundant as
-> the testcases/kernel/security/cap_bound/Makefile shouldn't compile
-> cap_bounds at all if HAVE_LIBCAP is not defined.
-> 
+For those who does not subscribed to ltp-commits list.
 
-Yes. - In my system, this source is not problem. Your indication is 
-right. :-)
-But, I manually had updated "libcap2" once. And after "./configure", 
-HAVE_LIBCAP is defined. Therefore, I noticed this error.
+This is the new file which will be updated every month by maintainer. While
+testing during the month if anyone get a chance to test on h/w or distro which i
+could not cover due to time availability please send me a patch will include as
+hotfixes and that can be helpful for each one us during whole month to refer.
 
-The system which updated to "libcap2" will need solution of this 
-problem, I think.
+-Rishi
+
+----- Forwarded message from Rishi kesh K Rajak <risrajak@linux.vnet.ibm.com> -----
+
+Date: Thu,  1 Apr 2010 07:14:26 +0000
+From: Rishi kesh K Rajak <risrajak@linux.vnet.ibm.com>
+To: ltp-commits@lists.sourceforge.net
+Subject: [Ltp-commits] [Git] ltp updated.
+
+The branch, next, has been updated
+       via  aabf191024aacc91784593b0d3f8d5fa37434b25 (commit)
+      from  f50539e0bcb0f9bab88101ce40a8e09a1d76d4a9 (commit)
 
 
-Thank you--
+- Log -----------------------------------------------------------------
+commit aabf191024aacc91784593b0d3f8d5fa37434b25
+Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Date:   Thu Apr 1 12:43:27 2010 +0530
 
--Tomonori Mitani
+    Added a new file called result where maintainer need to provide the result on which he has run before releasing the tar ball for month end release.
+    
+    Signed-off-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+
+-----------------------------------------------------------------------
+
+Summary of changes:
+ result |   96 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 96 insertions(+), 0 deletions(-)
+ create mode 100644 result
+
+diff --git a/result b/result
+new file mode 100644
+index 0000000..78db428
+--- /dev/null
++++ b/result
+@@ -0,0 +1,96 @@
++This file contains for corresponding monthly release results. it will alwats help to refer this file and come to know about known failures.
++
++
++ltp-full-20100331 Result pon various Arch:
++
++On x86_64 machine with RHEL5.4(2.6.18-164.el5):
++*****************************************************
++
++Result Log file:
++===============
++eventfd01                      FAIL       4    
++syslog07                       FAIL       1    
++syslog08                       FAIL       1    
++mtest06                        FAIL       255  
++su01                           FAIL       1    
++hugemmap04                     FAIL       2    
++hugeshmat01                    FAIL       6    
++hugeshmat02                    FAIL       6    
++hugeshmat03                    FAIL       2    
++hugeshmctl01                   FAIL       6    
++hugeshmctl02                   FAIL       6    
++hugeshmctl03                   FAIL       2    
++hugeshmdt01                    FAIL       6    
++hugeshmget01                   FAIL       2    
++hugeshmget02                   FAIL       6    
++hugeshmget03                   FAIL       6    
++hugeshmget05                   FAIL       2    
++mail                           FAIL       2    
++
++
++Result Output file:
++==================
++syslog07    1  TFAIL  :  Higher level messages are not logged.
++check_netns_enabled    1  TFAIL  :  unshare syscall smoke test failed: errno=EINVAL(22): Invalid argument
++mail_tests::mail02    2  TFAIL  :  Test #2: Mailer-Deamon failed to report delivery failure. Reason:
++mail_tests::mail05    5  TFAIL  :  Test #5: mail failed to carbon copy user mail_test. Reason:
++
++
++On ppc64 machine with RHEL5.4(2.6.18-164.el5):
++*****************************************************
++
++Result Log file:
++===============
++cct01                         FAIL       1    
++eventfd01                      FAIL       4    
++fdatasync02                    FAIL       1    
++syslog07                       FAIL       1    
++syslog08                       FAIL       1    
++mtest06                        FAIL       255  
++mmapstress03                   FAIL       1    
++su01                           FAIL       1    
++cron_deny01                    FAIL       1    
++
++
++Result Output file:
++==================
++acct01      1  TFAIL  :  attempting to assign acct file to device: expected failure but got okay return
++fdatasync02    2  TFAIL  :  Unexpected results for file descriptor to a special file ; returned 0 (expected -1), errno 0 (expected 22)
++syslog07    1  TFAIL  :  Higher level messages are not logged.
++mmapstress03    1  TFAIL  :  Test failed
++check_netns_enabled    1  TFAIL  :  unshare syscall smoke test failed: errno=EINVAL(22): Invalid argument
++
++
++
++On s390x machine with RHEL5.4(2.6.18-164.el5):
++*****************************************************
++
++Result Log file:
++===============
++eventfd01                      FAIL       4    
++keyctl01                       FAIL       1    
++rt_sigsuspend01                FAIL       11   
++timer_getoverrun01             FAIL       1    
++timer_gettime01                FAIL       1    
++su01                           FAIL       1    
++cron_allow01                   FAIL       1    
++
++
++
++Result Output file:
++==================
++keyctl01    2  TFAIL  :  KEYCTL_REVOKE got unexpected errno: errno=EINVAL(22): Invalid argument
++timer_getoverrun01    1  TFAIL  :  Block 1: test 0 FAILED... errno = 22 : Invalid argument
++timer_gettime01    1  TFAIL  :  Block 1: test 0 FAILED... errno = 22 : Invalid argument
++check_netns_enabled    1  TFAIL  :  unshare syscall smoke test failed: errno=EINVAL(22): Invalid argument
++
++
++
++On x86_64 machine with SLES11GA(2.6.27.19-5-default):
++*****************************************************
++
++Result Log file:
++===============
++eventfd2_03                    FAIL       1    
++utimensat01                    FAIL       1    
++ftest04                        FAIL       1    
 
 
-> Acked-by: Serge Hallyn <serue@us.ibm.com>
-> 
-> 
-> >
-> Index: ./testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-> > ============
-> > --- ./testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-> 2010-04-01
-> > 16:15:00.000000000 +0900
-> >
-> +++ ./testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c.ne
-> w
-> > 2010-04-01 17:27:23.000000000 +0900
-> > @@ -39,11 +39,11 @@
-> >
-> >  int errno;
-> >
-> > +int main(int argc, char *argv[])
-> > +{
-> >  #if HAVE_SYS_CAPABILITY_H
-> >  #if HAVE_DECL_PR_CAPBSET_READ && HAVE_DECL_PR_CAPBSET_DROP
-> >  #ifdef HAVE_LIBCAP
-> > -int main(int argc, char *argv[])
-> > -{
-> >         int ret = 1;
-> >         cap_value_t v[1];
-> >         cap_flag_value_t f;
-> > ============
-> >
-> >
-> > Thank you--
-> >
-> > -Tomonori Mitani
-> >
-> >
-> >
-> >
-> ------------------------------------------------------------------
-> ------------
-> > Download Intel&#174; Parallel Studio Eval
-> > Try the new software tools for yourself. Speed compiling, find bugs
-> > proactively, and fine-tune applications for parallel performance.
-> > See why Intel Parallel Studio got high marks during beta.
-> > http://p.sf.net/sfu/intel-sw-dev
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+hooks/post-receive
+-- 
+ltp
 
+------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-commits mailing list
+Ltp-commits@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-commits
 
+----- End forwarded message -----
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
