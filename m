@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O7GGl-0008C5-Nv
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 23:02:15 +0000
-Received: from mail-gw0-f47.google.com ([74.125.83.47])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O7GGk-0006AA-Q6
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 23:02:15 +0000
-Received: by gwj15 with SMTP id 15so365730gwj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 28 Apr 2010 16:02:09 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxEKk-0008Kp-IP
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 06:56:54 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NxEKe-0007CA-TL
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 06:56:54 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o316ivUD022395
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 02:44:57 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o316ugM01880228
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 02:56:42 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o316ug2Q004696
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:56:42 -0300
+Date: Thu, 1 Apr 2010 12:26:39 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100401065639.GA13796@linux.vnet.ibm.com>
+References: <000301cacfac$6663edf0$332bc9d0$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <20100428224750.GA25829@us.ibm.com>
-References: <20100428224750.GA25829@us.ibm.com>
-Date: Wed, 28 Apr 2010 16:02:09 -0700
-Message-ID: <x2w364299f41004281602h7256b1b8t9a9554cddee90e5d@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH ltp] make filecaps tests succeed
+Content-Disposition: inline
+In-Reply-To: <000301cacfac$6663edf0$332bc9d0$@co.jp>
+Subject: Re: [LTP] About mail test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,154 +36,118 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Apr 28, 2010 at 3:47 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> Most of these are belated cleanup after the move to using /opt/ltp.
-> Also undoing an ill-advised replacement of return with tst_exit. =A0All
-> filecaps tests now succeed on fedora 10.
->
-> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> ---
-> =A0testcases/kernel/security/filecaps/filecapstest.sh | =A0 =A09 ++++++---
-> =A0testcases/kernel/security/filecaps/print_caps.c =A0 =A0| =A0 =A03 ++-
-> =A0.../kernel/security/filecaps/verify_caps_exec.c =A0 =A0| =A0 19 ++++++=
-++++++++-----
-> =A03 files changed, 22 insertions(+), 9 deletions(-)
->
-> diff --git a/testcases/kernel/security/filecaps/filecapstest.sh b/testcas=
-es/kernel/security/filecaps/filecapstest.sh
-> index 43582dc..6864de4 100755
-> --- a/testcases/kernel/security/filecaps/filecapstest.sh
-> +++ b/testcases/kernel/security/filecaps/filecapstest.sh
-> @@ -22,8 +22,11 @@
-> =A0echo "Running in:"
-> =A0#rm -f print_caps
-> =A0#cp $LTPROOT/testcases/bin/print_caps .
-> -mkfifo caps_fifo
-> -chmod 777 caps_fifo
-> +#FIFOFILE=3D"$LTPROOT/testcases/bin/caps_fifo"
-> +FIFOFILE=3D"/tmp/caps_fifo"
 
-Why not
+Hi Mitani,
 
-TMP=3D${TMP:=3D/tmp}
-$TMP/caps_fifo
+can you please sign off ? And also send me a patch against today's git.
 
-etc? FWIW if you're in $TMP already, a lot of these changes aren't
-required, correct?
+-Rishi
 
-> +rm -f $FIFOFILE
-> +mkfifo $FIFOFILE
-> +chmod 777 $FIFOFILE
-> =A0exit_code=3D0
-> =A0echo "cap_sys_admin tests"
-> =A0verify_caps_exec 0
-> @@ -46,5 +49,5 @@ if [ $tmp -ne 0 ]; then
-> =A0 =A0 =A0 =A0exit_code=3D$tmp
-> =A0fi
->
-> -unlink caps_fifo
-> +unlink $FIFOFILE
-> =A0exit $exit_code
-> diff --git a/testcases/kernel/security/filecaps/print_caps.c b/testcases/=
-kernel/security/filecaps/print_caps.c
-> index f0e9bce..b887738 100644
-> --- a/testcases/kernel/security/filecaps/print_caps.c
-> +++ b/testcases/kernel/security/filecaps/print_caps.c
-> @@ -36,7 +36,7 @@
-> =A0#include <sys/capability.h>
-> =A0#endif
->
-> -#define FIFOFILE "caps_fifo"
-> +#define FIFOFILE "/tmp/caps_fifo"
->
-> =A0int main(int argc, char *argv[])
-> =A0{
-> @@ -68,4 +68,5 @@ int main(int argc, char *argv[])
-> =A0#else
-> =A0 =A0 =A0 =A0return 0;
-> =A0#endif
-> + =A0 =A0 =A0 return 0;
+On Tue, Mar 30, 2010 at 10:57:49AM +0900, Mitani wrote:
+> Hi,
+> 
+> I found two problems in mail test.
+> (${LTPROOT}/testcases/commands/mail/mail_tests.sh)
+> They are simple mistakes, I think.
+> 
+> 1) About judgment for making a user name
+> In line 80 of "mail_tests.sh", there is following sentence.
+> ------------
+> if id -u mail_test >/dev/null 2>&1; then
+> ------------
+> This control sentence is going to judge whether the result of 
+> "id -u mail_test" command is normal or not, I think.
+> But this sentence is not effective.
+> Therefore the user name "make_test" cannot be made when this user name
+> isn't exist.
+> 
+> 
+> 2) About "blind carbon copy" option
+> In "mail_tests.sh", there are 5 tests about mail.
+> 5th is "blind carbon copy" test.
+> However, this test doesn't use "-b" option but uses "-c" option.
+> 
+> 
+> Please consider the following revision.
+> ============
+> --- ./testcases/commands/mail/mail_tests.sh     2010-03-23
+> 17:56:21.000000000 +0900
+> +++ ./testcases/commands/mail/mail_tests.sh.new 2010-03-30
+> 10:39:40.000000000 +0900
+> @@ -77,7 +77,8 @@
+> 
+>  # check if the user mail_test exists on this system.
+>  # if not add that user mail_test, will removed before exiting test.
+> -if id -u mail_test >/dev/null 2>&1; then
+> +id -u mail_test >/dev/null 2>&1
+> +if [ $? -ne 0 ] ; then
+>         tst_resm TINFO "INIT: Adding temporary user mail_test"
+>         useradd -m -s /sbin/nologin mail_test > $LTPTMP/tst_mail.out 2>&1
+>         if [ $? -ne 0 ]; then
+> @@ -327,7 +328,7 @@
+>  tst_resm TINFO "Test #5: blind carbon copy user@domain"
+> 
+>  # send mail to root and carbon copy mail_test
+> -mail -s "Test" root@localhost -c mail_test@localhost < \
+> +mail -s "Test" root@localhost -b mail_test@localhost < \
+>         $LTPTMP/tst_mail.in > $LTPTMP/tst_mail.out 2>&1
+>  if [ $? -ne 0 ]; then
+>         tst_res TFAIL $LTPTMP/tst_mail.out \
+> @@ -344,10 +345,10 @@
+> 
+>         if [ "x$RC1" != x0 -a "x$RC2" != x0 ]; then
+>                 tst_resm TPASS \
+> -                   "Test #5: Mail was carbon copied to user mail_test"
+> +                   "Test #5: Mail was blind carbon copied to user
+> mail_test"
+>         else
+>                 tst_res TFAIL $LTPTMP/tst_mail.res \
+> -                   "Test #5: mail failed to carbon copy user mail_test.
+> Reason:"
+> +                   "Test #5: mail failed to blind carbon copy user
+> mail_test. Reason:"
+>                 : $(( TFAILCNT += 1 ))
+>         fi
+> 
+> ============
+> 
+> 
+> Thank you--
+> 
+> -Tomonori Mitani
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-What's the value returned for #if ..? If it's `return 0', then why not
-just remove the other two references in the preprocessor blocks?
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
-> =A0}
-> diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/test=
-cases/kernel/security/filecaps/verify_caps_exec.c
-> index 5250007..7360d4a 100644
-> --- a/testcases/kernel/security/filecaps/verify_caps_exec.c
-> +++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> @@ -43,7 +43,7 @@
-> =A0#include <sys/prctl.h>
-> =A0#include <test.h>
->
-> -#define TSTPATH "./print_caps"
-> +#define TSTPATH "print_caps"
-
-Ok.
-
-> =A0char *TCID =3D "filecaps";
-> =A0int TST_TOTAL=3D1;
->
-> @@ -70,7 +70,7 @@ void print_my_caps()
-> =A0 =A0 =A0 =A0cap_free(txt);
-> =A0}
->
-> -int drop_root(int keep_perms)
-> +void drop_root(int keep_perms)
-> =A0{
-> =A0 =A0 =A0 =A0int ret;
->
-> @@ -84,10 +84,19 @@ int drop_root(int keep_perms)
-> =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0if (keep_perms) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cap_t cap =3D cap_from_text("=3Deip");
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 cap_set_proc(cap);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int ret;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!cap) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TBROK, "cap_from_t=
-ext failed\n");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D cap_set_proc(cap);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret < 0) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 perror(cap_set_proc);
-
-Why??? This could potentially fubar errno too...
-
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TBROK | TERRNO, "c=
-ap_set_proc failed\n");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
-
-tst_brkm(TBROK | TERRNO, tst_exit, "cap_set..."); is better
-
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cap_free(cap);
-> =A0 =A0 =A0 =A0}
-> - =A0 =A0 =A0 tst_exit();
-> =A0}
->
-> =A0int perms_test(void)
-> @@ -114,7 +123,7 @@ int perms_test(void)
-> =A0 =A0 =A0 =A0return ret;
-> =A0}
->
-> -#define FIFOFILE "caps_fifo"
-> +#define FIFOFILE "/tmp/caps_fifo"
-> =A0void create_fifo(void)
-> =A0{
-> =A0 =A0 =A0 =A0int ret;
-> --
-> 1.6.0.6
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
