@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Nxf2w-0006El-Ox
-	for ltp-list@lists.sourceforge.net; Fri, 02 Apr 2010 11:28:18 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id C32868D893
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  2 Apr 2010 13:28:10 +0200 (CEST)
-Date: Fri, 2 Apr 2010 13:33:41 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100402113341.GA9430@saboteur.suse.cz>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxGoK-0008WS-NT
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 09:35:36 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NxGoG-00012a-Vk
+	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 09:35:36 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o319SXu8004228
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:28:33 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o319ZER4048322
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:35:17 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o319ZEc0028872
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:35:14 -0600
+Date: Thu, 1 Apr 2010 15:05:11 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100401093511.GA25290@linux.vnet.ibm.com>
+References: <000001cad173$3c32b200$b4981600$@co.jp>
+	<20100401083510.GD13796@linux.vnet.ibm.com>
+	<000101cad17c$ee4946d0$cadbd470$@co.jp>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="FCuugMFkClbJLl1L"
 Content-Disposition: inline
-Subject: [LTP] [PATCH] fix ftest03 and ftest07 sefgault
+In-Reply-To: <000101cad17c$ee4946d0$cadbd470$@co.jp>
+Subject: Re: [LTP] cap_bounds_r.c build failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,437 +39,198 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
+On Thu, Apr 01, 2010 at 06:23:03PM +0900, Mitani wrote:
+> Hi Rishi,
+> 
+> 
+> "libcap-devel" was not installed in my system.
+> 
+> ------------
+> [root@RHEL4-8 mitani]# rpm -qa | grep libcap
+> libcap-1.10-20
+> [root@RHEL4-8 mitani]#
+> ------------
+> 
+> I'm trying to install libcap-devel now.
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, make sure you configure once again the source code after installing libcap-devel rpm.
 
-Hi!
-I've been playing with patch from Jiri that attempts to fix ftest03 and ftest07
-segfault and find out that it was correct however was done against some older
-ltp version. Attached patch is rebased against current git repository as well
-as tested to fix this issue on SLES11.
-
-Some background:
-
-The only poissonned line in ftest03.c, respective ftest07.c is:
-
-sprintf(fuss, "%s/ftest03.%d", getcwd(wdbuf, sizeof( wdbuf)), getpid());
-
-Where we are trying to fill path to the current working directory into fuss
-that is declared as 'char fuss[40];'. However it's better to remove all code to
-creates temporary directory from these tests as this is allready done by
-tst_tmpdir(). 
-
-There is still a lot of duplicated/broken code in these tests but for
-simplicity I will address them in separate patches (so that it's easier to
-review them).
-
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+-Rishi
+> 
+> 
+> Thanks--
+> 
+> -Tomonori Mitani
+> 
+> > -----Original Message-----
+> > From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
+> > Sent: Thursday, April 01, 2010 5:35 PM
+> > To: Mitani
+> > Cc: ltp-list@lists.sourceforge.net
+> > Subject: Re: [LTP] cap_bounds_r.c build failure
+> > 
+> > Hi  Mitani,
+> > 
+> > Can you confirm if you have installed libcap-devel ? As i see this is
+> > defined
+> > under linux/capability.h .
+> > 
+> > #define CAP_MAC_ADMIN        33
+> > 
+> > #define CAP_LAST_CAP         CAP_MAC_ADMIN
+> > 
+> > #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
+> > 
+> > 
+> > Which unltimately is being called by sys/capability.h .
+> > 
+> > 
+> > FYI, I did not get any compilation error on SLES11GA where:
+> > 
+> > libcap2-2.11-2.15
+> > libcap-devel-2.11-2.15
+> > 
+> > -Rishi
+> > 
+> > 
+> > On Thu, Apr 01, 2010 at 05:13:39PM +0900, Mitani wrote:
+> > > Hi,
+> > >
+> > > I tried to build by using yesterday's git.
+> > >  (ltp-dev-02719d6f7e5cb252c0fcbfbaf26208d7196e46f2.tar.gz)
+> > > But build failed in "cap_bounds_r.c" with following message.
+> > >
+> > > ------------
+> > > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> > > -I/home/LTP/ltp-dev-20100401/testcases/kernel/include
+> > -I../../../../include
+> > > -I../../../../include   -L../../../../lib  cap_bounds_r.c
+> > -lltp -lcap -o
+> > > cap_bounds_r
+> > > cap_bounds_r.c: In function `main':
+> > > cap_bounds_r.c:46: error: `CAP_LAST_CAP' undeclared (first use in
+> > this
+> > > function)
+> > > cap_bounds_r.c:46: error: (Each undeclared identifier is reported
+> > only once
+> > > cap_bounds_r.c:46: error: for each function it appears in.)
+> > > make[4]: *** [cap_bounds_r] Error 1
+> > > ------------
+> > >
+> > > I tried to today's git, but it failed, too.
+> > >  (ltp-dev-44fba94453ca4f446cde4db08b0a760862b55cfa.tar.gz)
+> > >
+> > >
+> > > I referd this source's diff in following URL.
+> > >
+> > http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=
+> > commitdiff
+> > > ;h=6e3dd83d9f575d98d76b8b3f642ad6e8793dbdfc
+> > >
+> > > "CAP_LAST_CAP" definition is deleted with other definitions in this
+> > > revision.
+> > > But "CAP_LAST_CAP" is still used after edited version.
+> > >
+> > > "The editor may have deleted too much to make this source simple?"
+> > > I think. ;-)
+> > >
+> > >
+> > > There is same problem in "cap_bounds_rw.c", too.
+> > >
+> > >
+> > > How about following patch?
+> > >
+> > >
+> > > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> > >
+> > > Index: ./testcases/kernel/security/cap_bound/cap_bounds_r.c
+> > > ============
+> > > --- ./testcases/kernel/security/cap_bound/cap_bounds_r.c
+> > 2010-03-31
+> > > 22:44:52.000000000 +0900
+> > > +++ ./testcases/kernel/security/cap_bound/cap_bounds_r.c.new
+> > 2010-04-01
+> > > 15:43:01.000000000 +0900
+> > > @@ -32,6 +32,13 @@
+> > >  #include <sys/prctl.h>
+> > >  #include <test.h>
+> > >
+> > > +#if HAVE_SYS_CAPABILITY_H
+> > > +#ifndef CAP_LAST_CAP
+> > > +#warning out-of-date capability.h does not define CAP_LAST_CAP
+> > > +#define CAP_LAST_CAP 28  /* be ultra-conservative */
+> > > +#endif
+> > > +#endif
+> > > +
+> > >  char *TCID = "cap_bounds_r";
+> > >  int TST_TOTAL=1;
+> > >
+> > > ============
+> > >
+> > > Index: ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
+> > > ============
+> > > --- ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
+> > 2010-03-31
+> > > 22:44:52.000000000 +0900
+> > > +++ ./testcases/kernel/security/cap_bound/cap_bounds_rw.c.new
+> > 2010-04-01
+> > > 15:44:39.000000000 +0900
+> > > @@ -31,6 +31,13 @@
+> > >  #include <sys/prctl.h>
+> > >  #include <test.h>
+> > >
+> > > +#if HAVE_SYS_CAPABILITY_H
+> > > +#ifndef CAP_LAST_CAP
+> > > +#warning out-of-date capability.h does not define CAP_LAST_CAP
+> > > +#define CAP_LAST_CAP 28  /* be ultra-conservative */
+> > > +#endif
+> > > +#endif
+> > > +
+> > >  char *TCID = "cap_bounds_rw";
+> > >  int TST_TOTAL=1;
+> > >
+> > > ============
+> > >
+> > >
+> > > Regards--
+> > >
+> > > -Tomonori Mitani
+> > >
+> > >
+> > >
+> > >
+> > ------------------------------------------------------------------
+> > ------------
+> > > Download Intel&#174; Parallel Studio Eval
+> > > Try the new software tools for yourself. Speed compiling, find bugs
+> > > proactively, and fine-tune applications for parallel performance.
+> > > See why Intel Parallel Studio got high marks during beta.
+> > > http://p.sf.net/sfu/intel-sw-dev
+> > > _______________________________________________
+> > > Ltp-list mailing list
+> > > Ltp-list@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> > --
+> > Thanks & Regards
+> > Rishi
+> > LTP Maintainer
+> > IBM, LTC, Bangalore
+> > Please join IRC #ltp @ irc.freenode.net
+> 
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
-
---FCuugMFkClbJLl1L
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="get_rid_of_fuss.patch"
-
-diff --git a/testcases/kernel/fs/ftest/ftest01.c b/testcases/kernel/fs/ftest/ftest01.c
-index c4dc5c8..41b14de 100644
---- a/testcases/kernel/fs/ftest/ftest01.c
-+++ b/testcases/kernel/fs/ftest/ftest01.c
-@@ -90,9 +90,6 @@ static int parent_pid;
- static int pidlist[MAXCHILD];
- static char test_name[2];
- 
--static char fuss[40];         /* directory to do this in */
--static char homedir[200];     /* where we started */
--
- static int local_flag;
- 
- int main(int ac, char *av[])
-@@ -130,18 +127,8 @@ static void setup(void)
- 	 * Save starting directory.
- 	 */
- 	tst_tmpdir();
--	getcwd(homedir, sizeof(homedir));
- 	parent_pid = getpid();
- 
--	if (!fuss[0])
--		sprintf(fuss, "./ftest1.%d", getpid());
--
--	mkdir(fuss, 0755);
--
--	if (chdir(fuss) < 0) {
--		tst_brkm(TBROK,0,"Can't chdir(%s): %s", fuss, strerror(errno));
--	}
--
- 	/*
- 	 * Default values for run conditions.
- 	 */
-@@ -162,16 +149,16 @@ static void setup(void)
- 
- static void runtest(void)
- {
--	int i, pid, child, status, count;
-+	int i, child, status, count;
- 
--	for(i = 0; i < nchild; i++) {
-+	for (i = 0; i < nchild; i++) {
- 
- 		test_name[0] = 'a' + i;
- 		test_name[1] = '\0';
- 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
- 
- 		if (fd < 0)
--			tst_brkm(TBROK,0, "Can't creating %s/%s: %s", fuss, test_name, strerror(errno));
-+			tst_brkm(TBROK,0, "Can't creating %s: %s", test_name, strerror(errno));
- 
- 		if ((child = fork()) == 0) {
- 			dotest(nchild, i, fd);
-@@ -221,29 +208,6 @@ static void runtest(void)
- 	else
- 		tst_resm(TFAIL, "Test failed in fork and wait.");
- 
--	chdir(homedir);
--	pid = fork();
--
--	if (pid < 0) {
--
--		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
--		          " etc are likely to fail.");
--
--		tst_resm(TBROK, "Can not remove '%s' due to inability of fork.",fuss);
--		sync();
--		tst_exit();
--	}
--
--	if (pid == 0) {
--		execl("/bin/rm", "rm", "-rf", fuss, NULL);
--		tst_exit();
--	}
--
--	wait(&status);
--
--	if (status)
--		tst_resm(TINFO, "CAUTION - ftest1, '%s' may not be removed", fuss);
--
- 	sync();
- }
- 
-diff --git a/testcases/kernel/fs/ftest/ftest03.c b/testcases/kernel/fs/ftest/ftest03.c
-index 1cb6d6f..0f0eccc 100644
---- a/testcases/kernel/fs/ftest/ftest03.c
-+++ b/testcases/kernel/fs/ftest/ftest03.c
-@@ -96,12 +96,9 @@ static int parent_pid;
- static int pidlist[MAXCHILD];
- static char test_name[2];     /* childs test directory name */
- 
--static char fuss[40];         /* directory to do this in */
--static char homedir[200];     /* where we started */
--
- static int local_flag;
- 
--int main (int ac, char *av[])
-+int main(int ac, char *av[])
- {
-         int lc;
-         char *msg;
-@@ -138,31 +135,14 @@ int main (int ac, char *av[])
- 
- static void setup(void)
- {
--	char wdbuf[MAXPATHLEN];
--
- 	/*
- 	 * Make a directory to do this in; ignore error if already exists.
- 	 * Save starting directory.
- 	 */
- 	tst_tmpdir();
- 
--	if (getcwd(homedir, sizeof(homedir)) == NULL) {
--		tst_resm(TBROK, "getcwd() failed");
--		tst_exit();
--	}
--
- 	parent_pid = getpid();
- 
--	if (!fuss[0])
--		sprintf(fuss, "%s/ftest03.%d", getcwd(wdbuf, sizeof( wdbuf)), getpid());
--
--	mkdir(fuss, 0755);
--
--	if (chdir(fuss) < 0) {
--		tst_resm(TBROK,"\tCan't chdir(%s), error %d.", fuss, errno);
--		tst_exit() ;
--	}
--
- 	/*
- 	 * Default values for run conditions.
- 	 */
-@@ -181,9 +161,9 @@ static void setup(void)
- 
- static void runtest(void)
- {
--	int i, pid, child, status, count;
-+	int i, child, status, count;
- 
--	for(i = 0; i < nchild; i++) {
-+	for (i = 0; i < nchild; i++) {
- 
- 		test_name[0] = 'a' + i;
- 		test_name[1] = '\0';
-@@ -191,7 +171,7 @@ static void runtest(void)
- 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
- 
- 		if (fd < 0) {
--			tst_resm(TBROK, "\tError %d creating %s/%s.", errno, fuss, test_name);
-+			tst_resm(TBROK, "Error %d creating %s.", errno, test_name);
- 			tst_exit();
- 		}
- 
-@@ -241,30 +221,6 @@ static void runtest(void)
- 		local_flag = FAILED;
- 	}
- 
--	chdir(homedir);
--
--	pid = fork();
--
--	if (pid < 0) {
--		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
--                              " etc are likely to fail.");
--                tst_resm(TBROK, "Test broken due to inability of fork.");
--		sync();
--		tst_exit();
--	}
--
--	if (pid == 0) {
--		execl("/bin/rm", "rm", "-rf", fuss, NULL);
--		tst_exit();
--	} else
--		wait(&status);
--
--	if (status) {
--		tst_resm(TINFO, "CAUTION - ftest03, '%s' may not be removed", fuss);
--		tst_resm(TINFO, "CAUTION - ftest03, '%s' may not be removed",
--		  fuss);
--	}
--
- 	sync();
- }
- 
-diff --git a/testcases/kernel/fs/ftest/ftest05.c b/testcases/kernel/fs/ftest/ftest05.c
-index 220d9fd..3c66ab0 100644
---- a/testcases/kernel/fs/ftest/ftest05.c
-+++ b/testcases/kernel/fs/ftest/ftest05.c
-@@ -94,9 +94,6 @@ static int parent_pid;
- static int pidlist[MAXCHILD];
- static char test_name[2];     /* childs test directory name */
- 
--static char fuss[40];         /* directory to do this in */
--static char homedir[200];     /* where we started */
--
- static int local_flag;
- 
- int main(int ac, char *av[])
-@@ -135,19 +132,9 @@ static void setup(void)
- 	 * Save starting directory.
- 	 */
- 	tst_tmpdir();
--	getcwd(homedir, sizeof (homedir));
-+	
- 	parent_pid = getpid();
- 
--	if (!fuss[0])
--		sprintf(fuss, "./ftest05.%d", getpid());
--
--	mkdir(fuss, 0755);
--
--	if (chdir(fuss) < 0) {
--		tst_resm(TBROK,"\tCan't chdir(%s), error %d.", fuss, errno);
--		tst_exit();
--	}
--
- 	/*
- 	 * Default values for run conditions.
- 	 */
-@@ -167,7 +154,7 @@ static void setup(void)
- 
- static void runtest(void)
- {
--	int i, pid, child, status, count;
-+	int i, child, status, count;
- 
- 	for (i = 0; i < nchild; i++) {
- 		test_name[0] = 'a' + i;
-@@ -175,7 +162,7 @@ static void runtest(void)
- 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
- 
- 		if (fd < 0) {
--			tst_resm(TBROK, "\tError %d creating %s/%s.", errno, fuss, test_name);
-+			tst_resm(TBROK, "Error %d creating %s.", errno, test_name);
- 			tst_exit();
- 		}
- 
-@@ -221,28 +208,6 @@ static void runtest(void)
- 		local_flag = FAILED;
- 	}
- 
--	chdir(homedir);
--	pid = fork();
--
--	if (pid < 0) {
--		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
--                                 " etc are likely to fail.");
--                tst_resm(TBROK, "Test broken due to inability of fork.");
--		sync();
--                tst_exit();
--	}
--
--	if (pid == 0) {
--		execl("/bin/rm", "rm", "-rf", fuss, NULL);
--		tst_exit();
--	}
--
--	wait(&status);
--
--	if (status) {
--		tst_resm(TINFO,"CAUTION - ftest05, '%s' may not be removed", fuss);
--	}
--
- 	sync();
- }
- 
-diff --git a/testcases/kernel/fs/ftest/ftest07.c b/testcases/kernel/fs/ftest/ftest07.c
-index 8cda511..ef42daf 100644
---- a/testcases/kernel/fs/ftest/ftest07.c
-+++ b/testcases/kernel/fs/ftest/ftest07.c
-@@ -86,6 +86,7 @@ int TST_TOTAL = 1;
- #define	MAXIOVCNT	16
- 
- static void setup(void);
-+static void cleanup(void);
- static void runtest(void);
- static void dotest(int, int, int);
- static void domisc(int, int, char*);
-@@ -102,9 +103,6 @@ static int parent_pid;
- static int pidlist[MAXCHILD];
- static char test_name[2];     /* childs test directory name */
- 
--static char fuss[40];         /* directory to do this in */
--static char homedir[200];     /* where we started */
--
- static int local_flag;
- 
- int main(int ac, char *av[])
-@@ -141,58 +139,45 @@ int main(int ac, char *av[])
- 	return 0;
- }
- 
--static void setup(void)
-+static void cleanup(void)
- {
--	char wdbuf[MAXPATHLEN], *cwd;
-+	tst_rmdir();
-+	tst_exit();
-+}
- 
-+static void setup(void)
-+{
- 	/*
- 	 * Make a directory to do this in; ignore error if already exists.
- 	 * Save starting directory.
- 	 */
--	if ((cwd = getcwd(homedir, sizeof (homedir))) == NULL ) {
--		tst_resm(TBROK,"Failed to get corrent directory") ;
--		tst_exit();
--	}
--
- 	parent_pid = getpid();
- 	tst_tmpdir();
--	if (!fuss[0])
--		sprintf(fuss, "%s/ftest07.%d", getcwd(wdbuf, sizeof( wdbuf)), getpid());
--
--	mkdir(fuss, 0755);
--
--	if (chdir(fuss) < 0) {
--		tst_resm(TBROK,"\tCan't chdir(%s), error %d.", fuss, errno);
--		tst_exit() ;
--	}
--
-+	
- 	/*
- 	 * Default values for run conditions.
- 	 */
--
- 	iterations = 10;
- 	nchild = 5;
- 	csize = K_2;		/* should run with 1, 2, and 4 K sizes */
- 	max_size = K_1 * K_1;
- 	misc_intvl = 10;
- 
--	if (sigset(SIGTERM, term) == SIG_ERR) {
--		tst_resm(TBROK, " sigset failed: signo = 15") ;
--		tst_exit() ;
--	}
--
-+	if (sigset(SIGTERM, term) == SIG_ERR)
-+		tst_brkm(TBROK, cleanup,  " sigset failed: signo = 15");
- }
- 
- static void runtest(void)
- {
--	int pid, child, status, count, i;
-+	int child, status, count, i;
- 
- 	for (i = 0; i < nchild; i++) {
- 		test_name[0] = 'a' + i;
- 		test_name[1] = '\0';
- 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
-+		
- 		if (fd < 0) {
--			tst_resm(TBROK, "\tError %d creating %s/%s.", errno, fuss, test_name);
-+			tst_resm(TBROK, "Error %d creating %s.", errno, test_name);
- 			tst_exit();
- 		}
- 
-@@ -241,25 +226,6 @@ static void runtest(void)
- 		local_flag = FAILED;
- 	}
- 
--	chdir(homedir);
--
--	pid = fork();
--	if (pid < 0) {
--		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
--                                    " etc are likely to fail.");
--                tst_resm(TBROK, "Test broken due to inability of fork.");
--                tst_exit();
--	}
--
--	if (pid == 0) {
--		execl("/bin/rm", "rm", "-rf", fuss, NULL);
--			exit(1);
--		} else
--			wait(&status);
--	if (status) {
--		tst_resm(TINFO, "CAUTION - ftest07, '%s' may not be removed", fuss);
--	}
--
- 	sync();
- }
- 
-
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -464,16 +238,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---FCuugMFkClbJLl1L--
-
