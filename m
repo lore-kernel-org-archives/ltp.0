@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1O1yQX-0002qn-Ew
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 08:58:29 +0000
-Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O1yQV-0001ef-Hf
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 08:58:29 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cadad6$c061c590$412550b0$@co.jp>	
-	<4BC487C9.9080300@xenotime.net>	
-	<000901cadb78$a2d05080$e870f180$@co.jp>
-	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
-In-Reply-To: <g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
-Date: Wed, 14 Apr 2010 17:58:17 +0900
-Message-ID: <000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1Nxf2w-0006El-Ox
+	for ltp-list@lists.sourceforge.net; Fri, 02 Apr 2010 11:28:18 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id C32868D893
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  2 Apr 2010 13:28:10 +0200 (CEST)
+Date: Fri, 2 Apr 2010 13:33:41 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100402113341.GA9430@saboteur.suse.cz>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+Content-Type: multipart/mixed; boundary="FCuugMFkClbJLl1L"
+Content-Disposition: inline
+Subject: [LTP] [PATCH] fix ftest03 and ftest07 sefgault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,375 +26,454 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Wednesday, April 14, 2010 3:18 PM
-> To: Mitani
-> Cc: Randy Dunlap; ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
-> =
-
-> On Tue, Apr 13, 2010 at 7:17 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> > Hi Randy,
-> >
-> > I couldn't notice a misspelling. Sorry.
-> > I decided to use "due to" according to your advice.
-> >
-> > May I suggest revised patch?
-> >
-[...]
-> >
-> > Thank you--
-> >
-> > -Tomonori Mitani
-> >
-> >
-> >> -----Original Message-----
-> >> From: Randy Dunlap [mailto:rdunlap@xenotime.net]
-> >> Sent: Wednesday, April 14, 2010 12:04 AM
-> >> To: Mitani
-> >> Cc: ltp-list@lists.sourceforge.net
-> >> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
-> >>
-> >> On 04/12/10 23:58, Mitani wrote:
-> >> > ------------
-> >> > =A0a) All tests:
-> >> > "TBROK =A0: =A0Test cannot be continued owning to sufficient
-> >> availability of
-> >> > Hugepages on the system"
-> >> >
-> >> > =A0b) 2), 3), 5), 6), 8), 10), 11) tests:
-> >> > "TWARN =A0: =A0tst_rmdir(): TESTDIR was NULL; no removal attempted"
-> >> > ------------
-> >> >
-> >> > Both case a) and case b) are caused by the same reason.
-> >> >
-> >> > All of case a) failures occured at the following points (for
-> example
-> >> > hugemmap04):
-> >> > ------------<hugemmap04.c - main()>
-> >> > =A0 =A0 =A0 =A0 /* Check number of hugepages */
-> >> > =A0 =A0 =A0 =A0 if (get_no_of_hugepages() <=3D 0 || hugepages_size()=
- <=3D
-> 0)
-> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test canno=
-t be
-> continued
-> >> owning to
-> >> > \
-> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 suff=
-icient availability of
-> >> Hugepages on the
-> >> > system");
-> >> > ------------
-> >> >
-> >> > I found out that "HugePages_Total" parameter of "/proc/meminfo"
-> file
-> >> > is set to "0". This caused above TBROK failure. It is environment
-> >> problem.
-> >> >
-> >> > But, in this case, tests must not return with TBROK, but with TCONF,
-> >> > I think.
-> >>
-> >> That makes sense to me.
-> >>
-> >> > And, in case b), these tests try to delete "TESTDIR" directory
-> by
-> >> > calling "tst_rmdir()" function in "cleanup()" function.
-> >> > But, "TESTDIR" never set if "tst_tmpdir()" function isn't called.
-> >> > I think that case b)'s tests must not call cleanup() function.
-> >> >
-> >> >
-> >> > I want to suggest following patch.
-> >> >
-> >> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-> >> >
-> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >> > --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-> >> =A0 =A0 =A0 2010-04-01
-> >> > 15:23:09.000000000 +0900
-> >> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-> >> =A0 =A0 =A0 2010-04-13
-> >> > 11:23:33.000000000 +0900
-> >> > @@ -127,7 +127,7 @@
-> >> >
-> >> > =A0 =A0 /* Check number of hugepages */
-> >> > =A0 =A0 if (get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0)
-> >> > - =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be conti=
-nued
-> >> owning to
-> >> > \
-> >> > + =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "Test cannot be conti=
-nued
-> >> owning to
-> >> > \
-> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sufficient a=
-vailability of
-> Hugepages
-> >> on the
-> >> > system");
-> >> >
-> >> > =A0 =A0 /* Perform global setup for test */
-> >>
-> >> Not caused by your patch, but all of those "owning to" should be
-> "owing
-> >> to"
-> >> or even better, "due to".
-> =
-
->     Sorry... it might have been better to say (more succinctly): "Not
-> enough available Hugepages" ?
-> Thanks,
-> -Garrett
+To: ltp-list@lists.sourceforge.net
 
 
-Hi, =
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hi!
+I've been playing with patch from Jiri that attempts to fix ftest03 and ftest07
+segfault and find out that it was correct however was done against some older
+ltp version. Attached patch is rebased against current git repository as well
+as tested to fix this issue on SLES11.
 
-I suggest new patch.
+Some background:
 
-Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+The only poissonned line in ftest03.c, respective ftest07.c is:
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c	2010-04-14
-16:40:25.000000000 +0900
-@@ -127,8 +127,7 @@
- =
+sprintf(fuss, "%s/ftest03.%d", getcwd(wdbuf, sizeof( wdbuf)), getpid());
 
- 	/* Check number of hugepages */
- 	if (get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0)
--		tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-\
--				sufficient availability of Hugepages on the
-system");
-+		tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
- =
+Where we are trying to fill path to the current working directory into fuss
+that is declared as 'char fuss[40];'. However it's better to remove all code to
+creates temporary directory from these tests as this is allready done by
+tst_tmpdir(). 
 
- 	/* Perform global setup for test */
- 	setup();
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c	2010-04-14
-16:48:54.000000000 +0900
-@@ -105,7 +105,7 @@
+There is still a lot of duplicated/broken code in these tests but for
+simplicity I will address them in separate patches (so that it's easier to
+review them).
+
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--FCuugMFkClbJLl1L
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="get_rid_of_fuss.patch"
+
+diff --git a/testcases/kernel/fs/ftest/ftest01.c b/testcases/kernel/fs/ftest/ftest01.c
+index c4dc5c8..41b14de 100644
+--- a/testcases/kernel/fs/ftest/ftest01.c
++++ b/testcases/kernel/fs/ftest/ftest01.c
+@@ -90,9 +90,6 @@ static int parent_pid;
+ static int pidlist[MAXCHILD];
+ static char test_name[2];
+ 
+-static char fuss[40];         /* directory to do this in */
+-static char homedir[200];     /* where we started */
+-
+ static int local_flag;
+ 
+ int main(int ac, char *av[])
+@@ -130,18 +127,8 @@ static void setup(void)
+ 	 * Save starting directory.
+ 	 */
+ 	tst_tmpdir();
+-	getcwd(homedir, sizeof(homedir));
+ 	parent_pid = getpid();
+ 
+-	if (!fuss[0])
+-		sprintf(fuss, "./ftest1.%d", getpid());
+-
+-	mkdir(fuss, 0755);
+-
+-	if (chdir(fuss) < 0) {
+-		tst_brkm(TBROK,0,"Can't chdir(%s): %s", fuss, strerror(errno));
+-	}
+-
+ 	/*
+ 	 * Default values for run conditions.
+ 	 */
+@@ -162,16 +149,16 @@ static void setup(void)
+ 
+ static void runtest(void)
+ {
+-	int i, pid, child, status, count;
++	int i, child, status, count;
+ 
+-	for(i = 0; i < nchild; i++) {
++	for (i = 0; i < nchild; i++) {
+ 
+ 		test_name[0] = 'a' + i;
+ 		test_name[1] = '\0';
+ 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
+ 
+ 		if (fd < 0)
+-			tst_brkm(TBROK,0, "Can't creating %s/%s: %s", fuss, test_name, strerror(errno));
++			tst_brkm(TBROK,0, "Can't creating %s: %s", test_name, strerror(errno));
+ 
+ 		if ((child = fork()) == 0) {
+ 			dotest(nchild, i, fd);
+@@ -221,29 +208,6 @@ static void runtest(void)
+ 	else
+ 		tst_resm(TFAIL, "Test failed in fork and wait.");
+ 
+-	chdir(homedir);
+-	pid = fork();
+-
+-	if (pid < 0) {
+-
+-		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
+-		          " etc are likely to fail.");
+-
+-		tst_resm(TBROK, "Can not remove '%s' due to inability of fork.",fuss);
+-		sync();
+-		tst_exit();
+-	}
+-
+-	if (pid == 0) {
+-		execl("/bin/rm", "rm", "-rf", fuss, NULL);
+-		tst_exit();
+-	}
+-
+-	wait(&status);
+-
+-	if (status)
+-		tst_resm(TINFO, "CAUTION - ftest1, '%s' may not be removed", fuss);
+-
+ 	sync();
+ }
+ 
+diff --git a/testcases/kernel/fs/ftest/ftest03.c b/testcases/kernel/fs/ftest/ftest03.c
+index 1cb6d6f..0f0eccc 100644
+--- a/testcases/kernel/fs/ftest/ftest03.c
++++ b/testcases/kernel/fs/ftest/ftest03.c
+@@ -96,12 +96,9 @@ static int parent_pid;
+ static int pidlist[MAXCHILD];
+ static char test_name[2];     /* childs test directory name */
+ 
+-static char fuss[40];         /* directory to do this in */
+-static char homedir[200];     /* where we started */
+-
+ static int local_flag;
+ 
+-int main (int ac, char *av[])
++int main(int ac, char *av[])
+ {
+         int lc;
+         char *msg;
+@@ -138,31 +135,14 @@ int main (int ac, char *av[])
+ 
+ static void setup(void)
+ {
+-	char wdbuf[MAXPATHLEN];
+-
+ 	/*
+ 	 * Make a directory to do this in; ignore error if already exists.
+ 	 * Save starting directory.
+ 	 */
+ 	tst_tmpdir();
+ 
+-	if (getcwd(homedir, sizeof(homedir)) == NULL) {
+-		tst_resm(TBROK, "getcwd() failed");
+-		tst_exit();
+-	}
+-
+ 	parent_pid = getpid();
+ 
+-	if (!fuss[0])
+-		sprintf(fuss, "%s/ftest03.%d", getcwd(wdbuf, sizeof( wdbuf)), getpid());
+-
+-	mkdir(fuss, 0755);
+-
+-	if (chdir(fuss) < 0) {
+-		tst_resm(TBROK,"\tCan't chdir(%s), error %d.", fuss, errno);
+-		tst_exit() ;
+-	}
+-
+ 	/*
+ 	 * Default values for run conditions.
+ 	 */
+@@ -181,9 +161,9 @@ static void setup(void)
+ 
+ static void runtest(void)
+ {
+-	int i, pid, child, status, count;
++	int i, child, status, count;
+ 
+-	for(i = 0; i < nchild; i++) {
++	for (i = 0; i < nchild; i++) {
+ 
+ 		test_name[0] = 'a' + i;
+ 		test_name[1] = '\0';
+@@ -191,7 +171,7 @@ static void runtest(void)
+ 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
+ 
+ 		if (fd < 0) {
+-			tst_resm(TBROK, "\tError %d creating %s/%s.", errno, fuss, test_name);
++			tst_resm(TBROK, "Error %d creating %s.", errno, test_name);
+ 			tst_exit();
+ 		}
+ 
+@@ -241,30 +221,6 @@ static void runtest(void)
+ 		local_flag = FAILED;
  	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c	2010-04-14
-16:49:15.000000000 +0900
-@@ -102,7 +102,7 @@
+ 
+-	chdir(homedir);
+-
+-	pid = fork();
+-
+-	if (pid < 0) {
+-		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
+-                              " etc are likely to fail.");
+-                tst_resm(TBROK, "Test broken due to inability of fork.");
+-		sync();
+-		tst_exit();
+-	}
+-
+-	if (pid == 0) {
+-		execl("/bin/rm", "rm", "-rf", fuss, NULL);
+-		tst_exit();
+-	} else
+-		wait(&status);
+-
+-	if (status) {
+-		tst_resm(TINFO, "CAUTION - ftest03, '%s' may not be removed", fuss);
+-		tst_resm(TINFO, "CAUTION - ftest03, '%s' may not be removed",
+-		  fuss);
+-	}
+-
+ 	sync();
+ }
+ 
+diff --git a/testcases/kernel/fs/ftest/ftest05.c b/testcases/kernel/fs/ftest/ftest05.c
+index 220d9fd..3c66ab0 100644
+--- a/testcases/kernel/fs/ftest/ftest05.c
++++ b/testcases/kernel/fs/ftest/ftest05.c
+@@ -94,9 +94,6 @@ static int parent_pid;
+ static int pidlist[MAXCHILD];
+ static char test_name[2];     /* childs test directory name */
+ 
+-static char fuss[40];         /* directory to do this in */
+-static char homedir[200];     /* where we started */
+-
+ static int local_flag;
+ 
+ int main(int ac, char *av[])
+@@ -135,19 +132,9 @@ static void setup(void)
+ 	 * Save starting directory.
+ 	 */
+ 	tst_tmpdir();
+-	getcwd(homedir, sizeof (homedir));
++	
+ 	parent_pid = getpid();
+ 
+-	if (!fuss[0])
+-		sprintf(fuss, "./ftest05.%d", getpid());
+-
+-	mkdir(fuss, 0755);
+-
+-	if (chdir(fuss) < 0) {
+-		tst_resm(TBROK,"\tCan't chdir(%s), error %d.", fuss, errno);
+-		tst_exit();
+-	}
+-
+ 	/*
+ 	 * Default values for run conditions.
+ 	 */
+@@ -167,7 +154,7 @@ static void setup(void)
+ 
+ static void runtest(void)
+ {
+-	int i, pid, child, status, count;
++	int i, child, status, count;
+ 
+ 	for (i = 0; i < nchild; i++) {
+ 		test_name[0] = 'a' + i;
+@@ -175,7 +162,7 @@ static void runtest(void)
+ 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
+ 
+ 		if (fd < 0) {
+-			tst_resm(TBROK, "\tError %d creating %s/%s.", errno, fuss, test_name);
++			tst_resm(TBROK, "Error %d creating %s.", errno, test_name);
+ 			tst_exit();
+ 		}
+ 
+@@ -221,28 +208,6 @@ static void runtest(void)
+ 		local_flag = FAILED;
  	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c	2010-04-14
-16:49:31.000000000 +0900
-@@ -86,7 +86,7 @@
+ 
+-	chdir(homedir);
+-	pid = fork();
+-
+-	if (pid < 0) {
+-		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
+-                                 " etc are likely to fail.");
+-                tst_resm(TBROK, "Test broken due to inability of fork.");
+-		sync();
+-                tst_exit();
+-	}
+-
+-	if (pid == 0) {
+-		execl("/bin/rm", "rm", "-rf", fuss, NULL);
+-		tst_exit();
+-	}
+-
+-	wait(&status);
+-
+-	if (status) {
+-		tst_resm(TINFO,"CAUTION - ftest05, '%s' may not be removed", fuss);
+-	}
+-
+ 	sync();
+ }
+ 
+diff --git a/testcases/kernel/fs/ftest/ftest07.c b/testcases/kernel/fs/ftest/ftest07.c
+index 8cda511..ef42daf 100644
+--- a/testcases/kernel/fs/ftest/ftest07.c
++++ b/testcases/kernel/fs/ftest/ftest07.c
+@@ -86,6 +86,7 @@ int TST_TOTAL = 1;
+ #define	MAXIOVCNT	16
+ 
+ static void setup(void);
++static void cleanup(void);
+ static void runtest(void);
+ static void dotest(int, int, int);
+ static void domisc(int, int, char*);
+@@ -102,9 +103,6 @@ static int parent_pid;
+ static int pidlist[MAXCHILD];
+ static char test_name[2];     /* childs test directory name */
+ 
+-static char fuss[40];         /* directory to do this in */
+-static char homedir[200];     /* where we started */
+-
+ static int local_flag;
+ 
+ int main(int ac, char *av[])
+@@ -141,58 +139,45 @@ int main(int ac, char *av[])
+ 	return 0;
+ }
+ 
+-static void setup(void)
++static void cleanup(void)
+ {
+-	char wdbuf[MAXPATHLEN], *cwd;
++	tst_rmdir();
++	tst_exit();
++}
+ 
++static void setup(void)
++{
+ 	/*
+ 	 * Make a directory to do this in; ignore error if already exists.
+ 	 * Save starting directory.
+ 	 */
+-	if ((cwd = getcwd(homedir, sizeof (homedir))) == NULL ) {
+-		tst_resm(TBROK,"Failed to get corrent directory") ;
+-		tst_exit();
+-	}
+-
+ 	parent_pid = getpid();
+ 	tst_tmpdir();
+-	if (!fuss[0])
+-		sprintf(fuss, "%s/ftest07.%d", getcwd(wdbuf, sizeof( wdbuf)), getpid());
+-
+-	mkdir(fuss, 0755);
+-
+-	if (chdir(fuss) < 0) {
+-		tst_resm(TBROK,"\tCan't chdir(%s), error %d.", fuss, errno);
+-		tst_exit() ;
+-	}
+-
++	
+ 	/*
+ 	 * Default values for run conditions.
+ 	 */
+-
+ 	iterations = 10;
+ 	nchild = 5;
+ 	csize = K_2;		/* should run with 1, 2, and 4 K sizes */
+ 	max_size = K_1 * K_1;
+ 	misc_intvl = 10;
+ 
+-	if (sigset(SIGTERM, term) == SIG_ERR) {
+-		tst_resm(TBROK, " sigset failed: signo = 15") ;
+-		tst_exit() ;
+-	}
+-
++	if (sigset(SIGTERM, term) == SIG_ERR)
++		tst_brkm(TBROK, cleanup,  " sigset failed: signo = 15");
+ }
+ 
+ static void runtest(void)
+ {
+-	int pid, child, status, count, i;
++	int child, status, count, i;
+ 
+ 	for (i = 0; i < nchild; i++) {
+ 		test_name[0] = 'a' + i;
+ 		test_name[1] = '\0';
+ 		fd = open(test_name, O_RDWR|O_CREAT|O_TRUNC, 0666);
++		
+ 		if (fd < 0) {
+-			tst_resm(TBROK, "\tError %d creating %s/%s.", errno, fuss, test_name);
++			tst_resm(TBROK, "Error %d creating %s.", errno, test_name);
+ 			tst_exit();
+ 		}
+ 
+@@ -241,25 +226,6 @@ static void runtest(void)
+ 		local_flag = FAILED;
  	}
- =
+ 
+-	chdir(homedir);
+-
+-	pid = fork();
+-	if (pid < 0) {
+-		tst_resm(TINFO, "System resource may be too low, fork() malloc()"
+-                                    " etc are likely to fail.");
+-                tst_resm(TBROK, "Test broken due to inability of fork.");
+-                tst_exit();
+-	}
+-
+-	if (pid == 0) {
+-		execl("/bin/rm", "rm", "-rf", fuss, NULL);
+-			exit(1);
+-		} else
+-			wait(&status);
+-	if (status) {
+-		tst_resm(TINFO, "CAUTION - ftest07, '%s' may not be removed", fuss);
+-	}
+-
+ 	sync();
+ }
+ 
 
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
-         else             =
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c	2010-04-14
-16:50:16.000000000 +0900
-@@ -130,7 +130,7 @@
- 	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c	2010-04-14
-16:50:28.000000000 +0900
-@@ -102,7 +102,7 @@
- 	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c	2010-04-14
-16:50:40.000000000 +0900
-@@ -105,7 +105,7 @@
- 	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c	2010-04-14
-16:51:11.000000000 +0900
-@@ -87,7 +87,7 @@
- 	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-04-14
-16:51:34.000000000 +0900
-@@ -82,7 +82,7 @@
- =
-
- 	/* The following loop checks looping state if -i option given */
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
-         else             =
-
-               huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
-         =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c	2010-04-14
-16:51:45.000000000 +0900
-@@ -84,7 +84,7 @@
- 	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
-   =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c	2010-04-14
-16:51:55.000000000 +0900
-@@ -85,7 +85,7 @@
- =
-
- 	/* The following loop checks looping state if -i option given */
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
- =
-
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c	2010-04-01
-15:23:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c	2010-04-14
-16:52:10.000000000 +0900
-@@ -86,7 +86,7 @@
- 	}
- =
-
-         if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
--             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-+             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
-         else             =
-
-              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
-        =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-Regards--
-
--Tomonori Mitani
-
-
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--FCuugMFkClbJLl1L--
+
