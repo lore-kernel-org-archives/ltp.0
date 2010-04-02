@@ -1,20 +1,10 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1O6fSW-0003kS-2t
-	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 07:43:56 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O6fSU-0001t1-IG
-	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 07:43:56 +0000
-Date: Tue, 27 Apr 2010 03:43:45 -0400 (EDT)
-From: Caspar ZHANG <czhang@redhat.com>
-Message-ID: <1650479488.1039351272354225723.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1762040692.1039311272354116947.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Fri, 2 Apr 2010 10:08:32 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100402043832.GA4224@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] UTIMENSAT test fails hugely
+Content-Disposition: inline
+Subject: [LTP] [ANNOUNCEMENT] LTP for March 2010 has been released
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,1240 +14,330 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-announce@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, linux-kernel@vger.kernel.org, ltp-results@lists.sourceforge.net
 
-
------ "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
-
-> Hi,
-> 
-> Anybody seeing it on their system(s):
-
-+1 :-|
-
-I believe some automated testing systems don't have a tty when
-running tests, so this test can't pass.
-
-There's one line in /etc/sudoers
-
- Defaults    requiretty
-
-Comment this (need logout?) and it may work. But I have tried yet.
-
-Thanks,
-Caspar
-
-> 
-> # head -17514 output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output | tail
-> -956
-> <<<test_start>>>
-> tag=utimensat01 stime=1271853062
-> cmdline="utimensat_tests.sh"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sudo: sorry, you must have a tty to run sudo
-> /opt/ltp/testcases/bin/utimensat_tests.sh: line 252:
-> cd: /tmp/ltp-WvDfUaurtr/utimensat_tests: No such file or directory
-> ============================================================
-> 
-> Testing read-only file, owned by self
-> 
-> ***** Testing times==NULL case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01
-> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 1
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 2
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 3
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 4
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 5
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 6
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 7
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 8
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 9
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  n
-> RESULT:     
-> FAILED test 10
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  n
-> RESULT:     
-> FAILED test 11
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  n
-> RESULT:     
-> FAILED test 12
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  y
-> RESULT:     
-> FAILED test 13
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  y
-> RESULT:     
-> FAILED test 14
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  y
-> RESULT:     
-> FAILED test 15
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ x, y } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 1 1 1 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 16
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 17
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 18
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ============================================================
-> 
-> Testing read-only file, not owned by self
-> 
-> ***** Testing times==NULL case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01
-> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 19
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 20
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 21
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 22
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 23
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 24
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 25
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 26
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 27
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 28
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 29
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 30
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 31
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 32
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 33
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ x, y } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 1 1 1 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 34
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 35
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 36
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ============================================================
-> 
-> Testing writable file, not owned by self
-> 
-> ***** Testing times==NULL case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01
-> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 37
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 38
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 39
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 40
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 41
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 42
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 43
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 44
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 45
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 46
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 47
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 48
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 49
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 50
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 51
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ x, y } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 1 1 1 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 52
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 53
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 54
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ============================================================
-> 
-> Testing append-only file, owned by self
-> 
-> ***** Testing times==NULL case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01
-> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 55
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 56
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 57
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 58
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 59
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS y  y
-> RESULT:     
-> FAILED test 60
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 61
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 62
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 63
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 64
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 65
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 66
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 67
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 68
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 69
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ x, y } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 1 1 1 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 70
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 71
-> 
-> Writable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q -w
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 72
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ============================================================
-> 
-> Testing immutable file, owned by self
-> 
-> ***** Testing times==NULL case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01
-> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 73
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 74
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 75
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 76
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 77
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 78
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 79
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 80
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 81
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 82
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ x, y } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 1 1 1 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 83
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 84
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ============================================================
-> 
-> Testing immutable append-only file, owned by self
-> 
-> ***** Testing times==NULL case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01
-> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 85
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 86
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 87
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EACCES   
-> RESULT:     
-> FAILED test 88
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 89
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: SUCCESS n  n
-> RESULT:     
-> FAILED test 90
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 n 0 o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 91
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
-> o
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 92
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 0 o 0 n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 93
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
-> n
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 94
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ***** Testing times=={ x, y } case *****
-> Pathname test
-> sudo: sorry, you must have a tty to run sudo
-> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
-> same file
-> ./utimensat01 -q
-> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
-> 1 1 1 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 95
-> 
-> Readable file descriptor (futimens(3)) test
-> sudo: sorry, you must have a tty to run sudo
-> ./utimensat01 -q
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
-> 1
-> sudo: sorry, you must have a tty to run sudo
-> EXPECTED: EPERM   
-> RESULT:     
-> FAILED test 96
-> 
-> sudo: sorry, you must have a tty to run sudo
-> sudo: sorry, you must have a tty to run sudo
-> ============================================================
-> 
-> ***** Testing pathname==NULL, dirfd!=AT_FDCWD, flags has
-> AT_SYMLINK_NOFOLLOW *****
-> sudo: sorry, you must have a tty to run sudo
-> utimensat01 -q -n
-> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
-> open: No such file or directory
-> FAILED (bad test setup)
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=3 termination_type=exited termination_id=1 corefile=no
-> cutime=34 cstime=160
-> <<<test_end>>>
-> --------------
-> 
-> # uname -a
-> Linux 2.6.33.1-19.fc13.ppc64 #1 SMP Tue Mar 23 06:32:38 EDT 2010
-> ppc64
-> ppc64 ppc64 GNU/Linux
-> # cat /etc/issue
-> Fedora release 13 (Goddard)
-> Kernel \r on an \m (\l)
-> 
-> Regards--
-> Subrata
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- 
-/---------------------------------------\
-| Name: Caspar Zhang                    |
-| Team: Kernel-QE                       |
-| IRC: caspar @ #kernel-qe, #eng-china  |
-| Phone: +86-10-6260-8150               |
-| Cellphone: +86-1381-073-0090          |
-\---------------------------------------/
-
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkgQWxsLAoKClNvbWUgZmluYWwgbGFzdC1taW51dGUgc21hbGwgZml4ZXMsIGJ1dCBMVFAgKExp
+bnV4IFRlc3QgUHJvamVjdCApdGVzdHN1aXQgaGFzCmJlZW4gcmVsZWFzZWQgZm9yIHRoZSBtb250
+aCBvZiBNYXJjaCAyMDEwLiBUaGlzIHRyZWUgaXMgY2xvbmUgb2YgbWFzdGVyIGJyYW5jaAphbmQg
+dGFnZ2VkIHZlcnNpb24gb2YgMC4zLgoKWW91IGNhbiBkb3dubG9hZCBmcm9tIDoKaHR0cHM6Ly9z
+b3VyY2Vmb3JnZS5uZXQvcHJvamVjdHMvbHRwL2ZpbGVzL0xUUCUyMFNvdXJjZS9sdHAtMjAxMDAz
+MzEvbHRwLWZ1bGwtMjAxMDAzMzEudGd6L2Rvd25sb2FkCgpPciB5b3UgY2FuIGRpcmVjdGx5IGNs
+b25lIGdpdCB2ZXJzaW9uIGFzOgpnaXQgY2xvbmUgZ2l0Oi8vbHRwLmdpdC5zb3VyY2Vmb3JnZS5u
+ZXQvZ2l0cm9vdC9sdHAvbHRwLWRldi5naXQgbHRwCgpBZnRlciBtZXJnaW5nIHRvIEdJVCB0cmVl
+IHdlIGhhdmUgd29ya2VkIG1vc3RseSBvbiBidWlsZCBzdGFiaWxpdHkgb2YgTFRQIGZvcgpkaWZm
+ZXJlbnQgYXJjaGl0ZWN0dXJlLiBBbmQgZm9yIHRoYXQgdmVyeSBjbG9zZSByZXZpZXdlZCBwYXRj
+aGVzIGhhcyBiZWVuIG1lcmdlZAp0aGlzIG1vbnRoJ3MgTFRQLgoKWW91IGNhbiBmaW5kIGNvbXBs
+ZXRlIENoYW5nZUxvZyB3aXRoICRMVFBST09UL0NoYW5nZUxvZyBhcyB3ZWxsIGFzIHdpdGggdGhp
+cwptYWlsIGZvb3RlciBmb3IgcXVpY2sgcmVmZXJlbmNlLgoKVGhlIGxhdGVzdCB2ZXJzaW9uIG9m
+IHRoZSB0ZXN0LXN1aXRlIGNvbnRhaW5zIDMwMDArIHRlc3RzIGZvciB0aGUgTGludXgKT1MgYW5k
+IGNhbiBiZSBmb3VuZCBhdDoKaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5uZXQvLApMYXRlc3QgaGFw
+cGVuaW5ncyBpbiBMVFAgY2FuIGFsc28gYmUgZm91bmQgYXQ6Cmh0dHA6Ly9sdHAuc291cmNlZm9y
+Z2UubmV0L3dpa2kvLApodHRwOi8vbHRwLnNvdXJjZWZvcmdlLm5ldC93aWtpQXJjaGl2ZXMucGhw
+LCBhbmQsCgo9PT09PT09PT09PT09PT09PT09PT09PT0KTUFSQ0ggMjAxMCBIaWdobGlnaHRzOgo9
+PT09PT09PT09PT09PT09PT09PT09PT0gCiAgICAqIEFnYWluIGVuYWJsZWQgbWFueSBmaWxlcyB0
+byBiZSBpbnN0YWxsZWQgaW4gJExUUFJPT1QvdGVzdGNhc2VzL2JpbiBhcyBpdCBoYXMKYmVlbiBt
+aXNzZWQgZHVlIHRvIG1ha2VmaWxlIGluZnJhIGNoYW5nZXMgYnkgUmlzaGlrZXNoCiAgICAqIEFi
+bm9ybWFsIGJlaGF2aW91ciBvZgpvcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRl
+cmZhY2VzL3NlbV9wb3N0LzgtMS5jIGhhcyBiZWVuIGZpeGVkIG5vdyBieQpOYXJlc2ggS2FtYm9q
+dS4KICAgICogQ1BVIGhvdHBsdWcgdGVzdGNhc2UgZml4IGJ5IEdhcnJldAogICAgKiBOZXR3b3Jr
+IG5hbWVzcGFjZSB0ZXN0Y2FzZSBpc3N1ZSBieSBzYWNoaW4vR2FycmV0CiAgICAqIEFkZGVkIHBv
+c3QgcmVjaWV2ZSBtYWlsIGZvciBHSVQgYnkgUmlzaGlrZXNoCiAgICAqIFJld3JpdHRlbiBmaWxl
+Y2FwIHRlc3RjYXNlcyBiYXNlZCB1cG9uIG5ldyBtYWtlZmlsZSBpbmZyYSBjaGFuZ2VzIGJ5ClNl
+cmdlLgogICAgKiBQb3NzaWJsZSBidWZmZXIgb3ZlcmZsb3cgZml4ZXMgZm9yIHNlbV9nZXR2YWx1
+ZSB0ZXN0Y2FzZXMgb2Ygb3Blbl9wb3NpeAp0ZXRzc3VpdHMgYnkgR2FycmV0LgogICAgKiBOZXcg
+ZGV2aWNlIGRyaXZlciB0ZXN0Y2FzZSBmb3IgUlRDIGhhcyBiZWVuIGFkZGVkIGJ5IFNpbGVzaCBm
+cm9tIEwmVApJbmZvdGVjaC4KICAgICogRml4ZXMgZm9yIG1hbnkgYmFzaGlzbSBhbmQgR05VIGNv
+bXBpbGF0aW9uIHNvdXJjZSBieSBHYXJyZXQuCiAgICAqIE1lbW9yeSBjb250cm9sbGVyIHRldHNj
+YXNlcyBmaXggYnkgWXVraSBZYW8uCiAgICAqIExvb2tlZCBmb3IgbWFueSB0ZXN0Y2FzZSByZXR1
+cm5lZCB2YWx1ZSBhbmQgZGlkIGZpeGVzIGZvciB0aG9zZSBieSBSaXNoaQoKPT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09Ck5vdGUocykgZnJvbSB0aGUgTWFpbnRhaW5lcjoKPT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09CgpUaGlzIG1vbnRoIGkgaGF2ZSBhbHNvIGF0dGFjaGVkIGEg
+bmV3IGZpbGUgY2FsbGVkICJyZXN1bHQiIHdpdGggdGhlIHNvdXJjZQpjb2RlIHdoZXJlIHJlc3Vs
+dCBoYXZlIGJlZW4gcHV0IGFmdGVyIGNvbXBpbGUsIGJ1aWxkICYgcnVuIG9uIGRpZmZlcmVudCBm
+b3Igb2xkZXIgCmtlcm5lbCBhcyB3ZWxsIGFzIG5ld2VyIGtlcm5lbCBkaXN0cm9zLiBQbGVhc2Ug
+cmVmZXIgdGhpcyBmaWxlIGZvciB5b3VyIHJlZmVyZW5jZXMgCmFuZCBsZXQgdXMga25vdyBpZiB5
+b3UgZmluZCBzb21lIGRpZmZlcmVuY2VzLiBUaGUgbWFqb3IgaW5kaWNhdGlvbiBmb3IgYWRkaW5n
+IHRob3NlCmZpbGVzIGFyZSB0byBrbm93IGFib3V0IHRoZSBrbm93biBmYWlsdXJlcyBhbmQgaWYg
+c29tZW9uZSB3aWxsaW5nIHRvIGZpeCB0aG9zZQppc3N1ZSB0aGV5IGFyZSBhbHdheXMgd2VsY29t
+ZS4KCkkgYW0gc2VlaW5nIGJ1aWxkIGZhaWx1cmUgcmVwb3J0aW5nIG1haWwgaGFzIGJlZW4gcmVk
+dWNlZCBhbmQgdGhlcmUgY291bGQgYmUgb25lCm9yIHR3byBidWlsZCBwcm9ibGVtIHdpdGggdGhl
+IGluZnJhIGV4aXN0cyBjdXJyZW50bHkuIFNvIHNlZW1zIGxpa2UgMXN0IHBoYXNlIG9mCm15IHRh
+cmdldCBpcyB2ZXJ5IGNsb3NlLiBOb3cgd2Ugc2hvdWxkIHN0YXJ0IHRoaW5raW5nIG9mIGNvdmVy
+YWdlIG9mIHRldHNjYXNlcwp3aGljaCBkb2VzIG5vdCBydW4gYnkgZGVmYXVsdC4KCgpOT1RFOiA9
+PSBJZiB5b3Ugd2FudCB0byBrbm93IG1vcmUgYWJvdXQgY2hhbmdlcyByZWFkIGZ1cnRoZXIgPT0K
+CkhlcmUgaXMgdGhlIHNob3J0IGNoYW5nZWxvZyBmb3IgeW91ciByZWZlcmVuY2UgdGhyb3VnaCB3
+aGljaCB5b3UgY2FuIGtub3cgd2hpY2gKZmlsZSAmIGRpcmVjdG9yeSBoYXMgYmVlbiB0b3VjaGVk
+LiBQbGVhc2UgdGVzdCBmb3IgYW55IHJlZ3Jlc3Npb24gb2YgdGVzdGNhc2VzCm9uIHlvdXIgZW52
+aXJvbm1lbnQgYW5kIHJlcG9ydCB0aGUgZmFpbHVyZSB0byBsdHAtbGlzdEAgLgoKIC5naXRpZ25v
+cmUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyArCiBDaGFu
+Z2VMb2cgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDIzNjcgKysr
+KysrKysrKysrKysrKysrKysKIElEY2hlY2suc2ggICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAzNSArLQogVE9ETyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgIDMxICstCiBjb25maWd1cmUuYWMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKwogZG9jL01haW50Tm90ZXMgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTA3ICsKIG00L2x0cC1jYXAubTQgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxNyArLQogbTQvbHRwLXByY3RsLm00
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDMxICsKIHJlc3VsdCAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA5NiArCiBydW5hbGx0
+ZXN0cy5zaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyNzEgKystLQog
+cnVubHRwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA0
+ICstCiBydW5sdHBsaXRlLnNoICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgIDIgKy0KIHJ1bnRlc3QvY29udHJvbGxlcnMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAgMSArCiBydW50ZXN0L2NwdWhvdHBsdWcgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAgIDIgKy0KIHJ1bnRlc3QvaW8gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAgMiArLQogc2NyaXB0cy9naXQyY2hhbmdlbG9nLnNoICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgIDI4ICsKIHRlc3RjYXNlcy9jb21tYW5kcy91bnppcC91bnpp
+cF90ZXN0cy5zaCAgICAgICAgICAgIHwgICAgNCArLQogdGVzdGNhc2VzL2tlcm5lbC9NYWtlZmls
+ZSAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDExICstCiB0ZXN0Y2FzZXMva2VybmVsL2Nv
+bnRhaW5lcnMvTWFrZWZpbGUgICAgICAgICAgICAgICB8ICAgIDIgKwogdGVzdGNhc2VzL2tlcm5l
+bC9jb250YWluZXJzL2NoZWNrX2Zvcl91bnNoYXJlLmMgICAgfCAgIDU1ICsKIHRlc3RjYXNlcy9r
+ZXJuZWwvY29udGFpbmVycy9uZXRucy9NYWtlZmlsZSAgICAgICAgIHwgICAgMiArLQogdGVzdGNh
+c2VzL2tlcm5lbC9jb250YWluZXJzL25ldG5zL2NvbW1vbi5jICAgICAgICAgfCAgICA0ICstCiB0
+ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbmV0bnMvcGFyX2NobGRfaXB2Ni5jICB8ICAgIDYg
+Ky0KIHRlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9uZXRucy9zeXNmc3ZpZXcuYyAgICAgIHwg
+ICAgMiArLQogLi4uL2tlcm5lbC9jb250YWluZXJzL25ldG5zL3R3b19jaGlsZHJlbl9ucy5jICAg
+ICAgfCAgICA4ICstCiB0ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cF9mai9NYWtl
+ZmlsZSAgICB8ICAgIDIgKy0KIC4uLntjZ3JvdXBfZmpfdGVzdGNhc2VzID0+IGNncm91cF9mal90
+ZXN0Y2FzZXMuc2h9IHwgICAgMAogLi4uL2NvbnRyb2xsZXJzL2Nncm91cF9mai9ydW5fY2dyb3Vw
+X3Rlc3RfZmouc2ggICAgfCAgICAyICstCiAuLi4va2VybmVsL2NvbnRyb2xsZXJzL2ZyZWV6ZXIv
+bGliY2dyb3VwX2ZyZWV6ZXIgICB8ICAgNzMgKy0KIC4uLi9rZXJuZWwvY29udHJvbGxlcnMvZnJl
+ZXplci9ydW5fZnJlZXplci5zaCAgICAgIHwgICAgMyArLQogdGVzdGNhc2VzL2tlcm5lbC9jb250
+cm9sbGVycy9tZW1jZy9SRUFETUUgICAgICAgICAgfCAgIDEwICsKIC4uLi9rZXJuZWwvY29udHJv
+bGxlcnMvbWVtY2cvY29udHJvbC9NYWtlZmlsZSAgICAgIHwgICAzMyArCiAuLi4va2VybmVsL2Nv
+bnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvbWVtX3Byb2Nlc3MuYyB8ICAxNDEgKysKIC4uLi9tZW1j
+Zy9jb250cm9sL21lbWNnX2NvbnRyb2xfdGVzdC5zaCAgICAgICAgICAgIHwgIDE1NyArKwogLi4u
+L21lbWNnL2Z1bmN0aW9uYWwvbWVtY2dfZnVuY3Rpb25fdGVzdC5zaCAgICAgICAgfCAgICAzICst
+CiAuLi4vbWVtY2cvcmVncmVzc2lvbi9tZW1jZ19yZWdyZXNzaW9uX3Rlc3Quc2ggICAgICB8ICAg
+IDMgKy0KIC4uLi9jb250cm9sbGVycy9tZW1jZy9zdHJlc3MvbWVtY2dfc3RyZXNzX3Rlc3Quc2gg
+IHwgICAgMyArLQogdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9ydGMvTWFrZWZpbGUg
+ICAgICAgfCAgIDI5ICsKIHRlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvcnRjL1JFQURN
+RSAgICAgICAgIHwgICAyOSArCiB0ZXN0Y2FzZXMva2VybmVsL2RldmljZS1kcml2ZXJzL3J0Yy9y
+dGMtdGVzdC5jICAgICB8ICAyMTggKysKIHRlc3RjYXNlcy9rZXJuZWwvaG90cGx1Zy9jcHVfaG90
+cGx1Zy9NYWtlZmlsZSAgICAgIHwgICAzMSArCiAuLi4vaG90cGx1Zy9jcHVfaG90cGx1Zy9mdW5j
+dGlvbmFsL2hvdHBsdWcwMS5zaCAgICB8ICAyMzMgKystCiAuLi4vaG90cGx1Zy9jcHVfaG90cGx1
+Zy9mdW5jdGlvbmFsL2hvdHBsdWcwMi5zaCAgICB8ICAgODAgKy0KIC4uLi9ob3RwbHVnL2NwdV9o
+b3RwbHVnL2Z1bmN0aW9uYWwvaG90cGx1ZzAzLnNoICAgIHwgIDE3MCArLQogLi4uL2hvdHBsdWcv
+Y3B1X2hvdHBsdWcvZnVuY3Rpb25hbC9ob3RwbHVnMDQuc2ggICAgfCAgIDk4ICstCiAuLi4vY3B1
+X2hvdHBsdWcvZnVuY3Rpb25hbC9ob3RwbHVnMDYuc2FyLnNoICAgICAgICB8ICAxMjUgKy0KIC4u
+Li9ob3RwbHVnL2NwdV9ob3RwbHVnL2Z1bmN0aW9uYWwvaG90cGx1ZzA2LnNoICAgIHwgICAyMiAr
+LQogLi4uL2NwdV9ob3RwbHVnL2Z1bmN0aW9uYWwvaG90cGx1ZzA2LnRvcC5zaCAgICAgICAgfCAg
+IDkzICstCiAuLi4vaG90cGx1Zy9jcHVfaG90cGx1Zy9mdW5jdGlvbmFsL2hvdHBsdWcwNy5zaCAg
+ICB8ICAxMDggKy0KIC4uLi9rZXJuZWwvaG90cGx1Zy9jcHVfaG90cGx1Zy9pbmNsdWRlL2hvdHBs
+dWcuZm5zIHwgICAgNCArLQogLi4uL2hvdHBsdWcvY3B1X2hvdHBsdWcvaW5jbHVkZS90ZXN0c3Vp
+dGUuZm5zICAgICAgfCAgICAyICstCiB0ZXN0Y2FzZXMva2VybmVsL2hvdHBsdWcvY3B1X2hvdHBs
+dWcvcnVudGVzdHMuc2ggICB8ICAgIDcgKy0KIC4uLi9ob3RwbHVnL2NwdV9ob3RwbHVnL3Rvb2xz
+L2RvX2Rpc2tfd3JpdGVfbG9vcCAgIHwgICAxNiArLQogLi4uL2hvdHBsdWcvY3B1X2hvdHBsdWcv
+dG9vbHMvZG9fa2NvbXBpbGVfbG9vcCAgICAgfCAgIDE0ICstCiAuLi4va2VybmVsL2hvdHBsdWcv
+Y3B1X2hvdHBsdWcvdG9vbHMvZG9fc3Bpbl9sb29wICB8ICAgIDIgKy0KIHRlc3RjYXNlcy9rZXJu
+ZWwvaW8vYWlvL2FpbzAyL3J1bmZzdGVzdHMuc2ggICAgICAgIHwgICA1MCArLQogdGVzdGNhc2Vz
+L2tlcm5lbC9pby9zdHJlc3NfY2Qvc3RyZXNzX2NkLmMgICAgICAgICAgfCAgICAyICstCiB0ZXN0
+Y2FzZXMva2VybmVsL3NlY3VyaXR5L01ha2VmaWxlICAgICAgICAgICAgICAgICB8ICAgIDMgKwog
+dGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9jYXBfYm91bmQvY2FwX2JvdW5kc19yLmMgfCAgIDQ0
+ICstCiAuLi4va2VybmVsL3NlY3VyaXR5L2NhcF9ib3VuZC9jYXBfYm91bmRzX3J3LmMgICAgICB8
+ICAgNTggKy0KIC4uLi9zZWN1cml0eS9jYXBfYm91bmQvY2FwX2JzZXRfaW5oX2JvdW5kcy5jICAg
+ICAgIHwgICA2MSArLQogdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9jYXBfYm91bmQvY2hlY2tf
+cGUuYyAgICAgfCAgIDIwICstCiB0ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L2NhcF9ib3VuZC9k
+dW1teS5jICAgICAgICB8ICAgMjYgKy0KIC4uLi9rZXJuZWwvc2VjdXJpdHkvY2FwX2JvdW5kL2V4
+ZWNfd2l0aF9pbmguYyAgICAgIHwgICAzNCArLQogLi4uL2tlcm5lbC9zZWN1cml0eS9jYXBfYm91
+bmQvZXhlY193aXRob3V0X2luaC5jICAgfCAgIDM1ICstCiB0ZXN0Y2FzZXMva2VybmVsL3NlY3Vy
+aXR5L2ZpbGVjYXBzL01ha2VmaWxlICAgICAgICB8ICAgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwv
+c2VjdXJpdHkvZmlsZWNhcHMvYy5jICAgICAgICAgICAgIHwgICA0NSArCiAuLi4va2VybmVsL3Nl
+Y3VyaXR5L2ZpbGVjYXBzL2NoZWNrX3NpbXBsZV9jYXBzZXQuYyB8ICAgMTEgKy0KIC4uLi9rZXJu
+ZWwvc2VjdXJpdHkvZmlsZWNhcHMvY2hlY2tmb3JmaWxlY2Fwcy5zaCAgIHwgICA0MCAtCiAuLi4v
+a2VybmVsL3NlY3VyaXR5L2ZpbGVjYXBzL2NoZWNrZm9ybGliY2FwLnNoICAgICB8ICAgNjYgLQog
+dGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9maWxlY2Fwcy9maWxlY2Fwc3Rlc3Quc2ggfCAgIDE5
+ICstCiB0ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L2ZpbGVjYXBzL2luaF9jYXBwZWQuYyAgICB8
+ICAgMTIgKy0KIHRlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvZmlsZWNhcHMvcHJpbnRfY2Fwcy5j
+ICAgIHwgICAgMiArLQogLi4uL2tlcm5lbC9zZWN1cml0eS9maWxlY2Fwcy92ZXJpZnlfY2Fwc19l
+eGVjLmMgICAgfCAgIDIxICstCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2xpYmV2ZW50L01h
+a2VmaWxlLmluICAgICB8ICAgIDMgKy0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbGliZXZl
+bnQvYnVmZmVyLmMgICAgICAgIHwgICAgNSArCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2xp
+bmsvbGluazA2LmMgICAgICAgICAgICB8ICAgMTggKy0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvbGluay9saW5rMDcuYyAgICAgICAgICAgIHwgICAxOSArLQogdGVzdGNhc2VzL25ldHdvcmsv
+bXVsdGljYXN0L21jX2NtZHMvbWNfY21kcyAgICAgICAgfCAgICAyICstCiB0ZXN0Y2FzZXMvbmV0
+d29yay90Y3BfY21kcy9lY2hvL01ha2VmaWxlICAgICAgICAgICB8ICAgIDIgKy0KIC4uLi9jb25m
+b3JtYW5jZS9pbnRlcmZhY2VzL3NlbV9nZXR2YWx1ZS8xLTEuYyAgICAgIHwgICAyMSArLQogLi4u
+L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvc2VtX2dldHZhbHVlLzItMS5jICAgICAgfCAgIDE5ICst
+CiAuLi4vY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fZ2V0dmFsdWUvMi0yLmMgICAgICB8ICAg
+NTkgKy0KIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3NlbV9nZXR2YWx1ZS80LTEuYyAgICAg
+IHwgICAxOCArLQogLi4uL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvc2VtX2dldHZhbHVlLzUtMS5j
+ICAgICAgfCAgIDIzICstCiAuLi4vY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fcG9zdC84LTEu
+YyAgICAgICAgICB8ICAgIDQgKy0KIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3NpZ3NldC84
+LTEuYyAgICAgICAgICAgIHwgICAxNCArLQogdGVzdHNjcmlwdHMvTWFrZWZpbGUgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgICAyICstCiA4OCBmaWxlcyBjaGFuZ2VkLCA0Mzc2IGlu
+c2VydGlvbnMoKyksIDExODcgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgZG9jL01h
+aW50Tm90ZXMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBtNC9sdHAtcHJjdGwubTQKIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCByZXN1bHQKIGNyZWF0ZSBtb2RlIDEwMDc1NSBzY3JpcHRzL2dpdDJjaGFuZ2Vsb2cu
+c2gKIGNyZWF0ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvY2hlY2tf
+Zm9yX3Vuc2hhcmUuYwogcmVuYW1lIHRlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3Vw
+X2ZqL3tjZ3JvdXBfZmpfdGVzdGNhc2VzID0+CmNncm91cF9mal90ZXN0Y2FzZXMuc2h9ICgxMDAl
+KQogY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cv
+Y29udHJvbC9NYWtlZmlsZQogY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvY29u
+dHJvbGxlcnMvbWVtY2cvY29udHJvbC9tZW1fcHJvY2Vzcy5jCiBjcmVhdGUgbW9kZSAxMDA2NDQK
+dGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9jb250cm9sL21lbWNnX2NvbnRyb2xf
+dGVzdC5zaAogY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZl
+cnMvcnRjL01ha2VmaWxlCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9kZXZp
+Y2UtZHJpdmVycy9ydGMvUkVBRE1FCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5l
+bC9kZXZpY2UtZHJpdmVycy9ydGMvcnRjLXRlc3QuYwogY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3Rj
+YXNlcy9rZXJuZWwvaG90cGx1Zy9jcHVfaG90cGx1Zy9NYWtlZmlsZQogY3JlYXRlIG1vZGUgMTAw
+NjQ0IHRlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvZmlsZWNhcHMvYy5jCiBkZWxldGUgbW9kZSAx
+MDA3NTUgdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9maWxlY2Fwcy9jaGVja2ZvcmZpbGVjYXBz
+LnNoCiBkZWxldGUgbW9kZSAxMDA3NTUgdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9maWxlY2Fw
+cy9jaGVja2ZvcmxpYmNhcC5zaAoKCkhlcmUgaXMgdGhlIHN1bW1hcnkgb2YgY29tbWl0IHdoaWNo
+IGNhbiBiZSByZWZmZXJlZCBmb3IgZGV0YWlsIGNoYW5nZXMgYW5kIGFsc28KaSB3b3VsZCByZWNv
+bW1lbmQgeW91IHRvIHN1YnNjcmliZSBmb3IgbHRwLWNvbW1pdHNAIGxpc3QgZm9yIGtub3dpbmcg
+d2hhdApjaGFuZ2VzIGFyZSBiZWluZyBkb25lIGluIHRoZSBnaXQgcmVwby4KCkdhcnJldHQgQ29v
+cGVyICg0MSk6CiAgICAgIERvIHNvbWUgbWlub3Igc3ByaW5nIGNsZWFuaW5nIG9uIHRoZSBzY3Jp
+cHQgdG8gaW1wcm92ZSB3aGl0ZXNwYWNlLCBxdW90ZSBhIGZldyBzdHJpbmdzIHBhc3NlZCB0byBl
+Y2hvLCBldGMuCiAgICAgIEluc3BpdGUgb2YgbWVtY2cga2VybmVsIHN1cHBvcnQgYmVpbmcgYXZh
+aWxhYmxlLCBtZW1jZ19bZnVuY3Rpb25hbHxyZWdyZXNzaW9uICAgICB8c3RyZXNzXSB0ZXN0IHNj
+cmlwdCBmYWlscyB0byBleGVjdXRlIHdpdGggbWVzc2FnZQogICAgICBOb3RlIGNhdmVhdCBhYm91
+dCBjcHVfaG90cGx1ZyB0ZXN0IG5lZWRpbmcgdG8gYmUgcnVuIGZyb20gdGhlIHNvdXJjZSB0cmVl
+IGRpcmVjdG9yeS4KICAgICAgR3JhYiBDaGFuZ2VMb2cgc2NyaXB0IGZyb20gaHR0cDovL2dpdGh1
+Yi5jb20vY3J5b3MvYXZvZ2Fkcm8vcmF3L21hc3Rlci9zY3JpcHRzL2dpdGxvZzJjaGFuZ2Vsb2cu
+cHkgLgogICAgICBBZGQgYSBzaW1wbGVyIGdpdCBDaGFuZ2VMb2cgc2NyaXB0LgogICAgICBSZW1v
+dmUgb3Zlcmx5IGNvbXBsaWNhdGVkIGdpdCBsb2cgQ2hhbmdlTG9nIHNjcmlwdC4KICAgICAgVXBk
+YXRlIENoYW5nZUxvZy4KICAgICAgUmVtb3ZlIHVubmVjZXNzYXJ5IHZhcmlhYmxlIHNldDsgYWxs
+IE1BS0VfVEFSR0VUUyBnZXQgYWRkZWQgdG8gSU5TVEFMTF9UQVJHRVRTLgogICAgICBGaXggb3Jk
+ZXIgYnkgcHJvcGVybHkgYWxwaGFiZXRpemluZyBpdCBhZ2Fpbi4KICAgICAgTWFrZSBhbHBoYWJl
+dGljYWwgb3JkZXJpbmcgbW9yZSBhcHBhcmVudCBieSBhZGRpbmcgYSBjb21tZW50LgogICAgICBN
+YWtlIHN1cmUgdGhpcyBjYW4gcnVuIHdoZXJldmVyIC0tIHVwZGF0ZSB0aGUgaW5zdGFsbCBwYXRo
+IGluIHRoZSBydW50ZXN0IGZpbGUgZm9yIGNwdV9ob3RwbHVnLi4uCiAgICAgIEluc3RhbGwgaW4g
+dGVzdGNhc2VzL2Jpbi9jcHVfaG90cGx1ZyB0byBhdm9pZCBjb2xsaXNpb24gd2l0aCBpbnN0YWxs
+ZWQgZmlsZW5hbWVzLgogICAgICBSZW1vdmUgYmFzaGlzbXMuIENsZWFuIHVwLgogICAgICBBbGwg
+Zm9yIHBhcmFtZXRlcml6ZWQgJFRNUC4KICAgICAgUE9TSVhpZnkuCiAgICAgIEZpeCBpbmRlbnRh
+dGlvbi4KICAgICAgMS4gQWRkIGRlZmF1bHQga2VybmVsIHNvdXJjZSBkaXIgYXMgL3Vzci9zcmMv
+bGludXguICAgICAyLiBDbGVhbiB1cCBpbmRlbnRhdGlvbi4KICAgICAgVXBkYXRlIFRPRE8gd2l0
+aCBzb21lIGl0ZW1zIHRoYXQgbmVlZCB0byBiZSByZXdyaXR0ZW4uCiAgICAgIDEuIFBPU0lYaWZ5
+ICAgICAyLiBDbGVhbiB1cCB0ZXN0LiAgICAgMy4gTWFrZSBtb3JlIHBhdGggYWdub3N0aWMuCiAg
+ICAgIDEuIFBPU0lYaWZ5LiAgICAgMi4gQ29udmVydCBvdmVyIHRvIHRzdF9yZXNtKDEpLCBsaWtl
+IGhvdHBsdWcwMS5zaAogICAgICAxLiBQT1NJWGlmeS4gICAgIDIuIENsZWFuIHVwIHdoaXRlc3Bh
+Y2UuICAgICAzLiBNYWtlIG1vcmUgcmVsYXRpdmUtcGF0aCBhZ25vc3RpYy4KICAgICAgMS4gUE9T
+SVhpZnkuICAgICAyLiBDbGVhbnVwIHNwYWNlLgogICAgICAuLi4gRmluaXNoIG9mZiBjbGVhbnVw
+OgogICAgICBDbGVhbiB1cCBzb21lIGxvZ2ljLgogICAgICBSZW1vdmUgLi8gc3VmZml4IGluIHVz
+YWdlIG1lc3NhZ2UgYW5kIGV4YW1wbGVzLgogICAgICBXZWxsIG9idmlvdXNseSB0aGF0IHRlc3Qg
+ZGlkbid0IHRyaWdnZXIgYW55dGhpbmcgd2l0aCB0aGUgcHJlY29tbWl0IGhvb2sgLV8tLi4uCiAg
+ICAgIEhpIEFsbCwKICAgICAgSGkgQWxsLAogICAgICBGaXggc3R5bGUgaW4gcnVuZnN0ZXN0cy5z
+aAogICAgICBSZW1vdmUgdW51c2VkIHZhcmlhYmxlICRzdHIgYmFzZWQgb24gY2xvc2VyIGluc3Bl
+Y3Rpb24gdmlhIGdpdCBjb21taXQgaGlzdG9yeS4KICAgICAgQ29ycmVjdCBzZXR1aWQoKSBsb2dp
+YyBmb3IgIm5vYm9keSIgdWlkLgogICAgICBGaXggbm9ib2R5IGdyb3VwIGNoZWNrIGFuZCBjaGFu
+Z2UgZGVmYXVsdCB1aWQvZ2lkIGZvciBub2JvZHkuCiAgICAgIFJlcGxhY2UgcHVzaGQgLy8gcG9w
+ZCB3aXRoIGNkIGNhbGxzLgogICAgICBGaXggaW5zdGFsbCBmb3IgY2dyb3VwX2ZqX3Rlc3RjYXNl
+cy4KICAgICAgRml4IF9HTlVfU09VUkNFUyBtYWNybyByZXF1aXJlbWVudCBlcnJvci4KICAgICAg
+UmVwbGFjZSBwdXNoZCAvIHBvcGQgd2l0aCBwcm9wZXIgY2QgbG9naWMgYXMgYnVzeWJveCBkb2Vz
+bid0IGhhdmUgcHVzaGQgLyBwb3BkLgogICAgICBVc2UgJFRNUCAod2hpY2ggZGVmYXVsdHMgdG8g
+L3RtcCkgcmF0aGVyIHRoYW4gL3RtcCBhcyAkVE1QIGNhbiBiZSBwYXJhbWV0ZXJpemVkIHZpYSBy
+dW5sdHAsIGV0IGFsbC4KICAgICAgQ2xlYW4gdXAgY29tbWVudCB0byBub3RlIHRoZSBhY3R1YWwg
+cHJvYmxlbS4gSXQgd2FzIGNvbmZ1c2luZyBiZWZvcmUuCiAgICAgIEhpLAogICAgICBVcGRhdGUg
+VE9ETyB3aXRoIG5vdGUgYWJvdXQgbmVlZGluZyB0byByZXBsYWNlIHB1c2hkIGFuZCBwb3BkIGxv
+Z2ljIGluIGEgZmV3IHRlc3RzLgogICAgICBNZXJnZSBicmFuY2ggJ21hc3Rlcicgb2Ygc3NoOi8v
+eWFiZXJhdW5leWFAbHRwLmdpdC5zb3VyY2Vmb3JnZS5uZXQvZ2l0cm9vdC9sdHAvbHRwLWRldgoK
+CgoKUmlzaGlrZXNoIEsgUmFqYWsgKDYzKToKICAgICAgTmV3IHRlc3RjYXNlIGFkZGVkIGJ5IE5h
+dWZhbC4KICAgICAgQ2hhbmdlcyBzaW5jZSA2dGhGZWIgdG8gMjhGZWIgMjAxMC4KICAgICAgTWVy
+Z2Ugc3NoOi8vbHRwLmdpdC5zb3VyY2Vmb3JnZS5uZXQvZ2l0cm9vdC9sdHAvbHRwLWRldgogICAg
+ICBGaXhlZCB0aGUgdHlwbyBpbiBjaGFuZ2Vsb2cKICAgICAgSW5zcGl0ZSBvZiBtZW1jZyBrZXJu
+ZWwgc3VwcG9ydCBiZWluZyBhdmFpbGFibGUsIG1lbWNnX1tmdW5jdGlvbmFsfHJlZ3Jlc3Npb24g
+ICAgIHxzdHJlc3NdIHRlc3Qgc2NyaXB0IGZhaWxzIHRvIGV4ZWN1dGUgd2l0aCBtZXNzYWdlCiAg
+ICAgIE1lcmdlIGJyYW5jaGVzICdtYXN0ZXInIGFuZCAnbmV4dCcgaW50byBuZXh0CiAgICAgIEkg
+aGF2ZSBvYnNlcnZlZCB0aGF0IHRoZSAnY3JlYXRlZmlsZS5jJyBpbiB0ZXN0Y2FzZXMvbmV0d29y
+ay90Y3BfY21kcy9lY2hvIGRpcmVjdG9yeSBpcyBub3QgZ2V0dGluZyBjb21waWxlZCBhbmQgaW5z
+dGFsbGVkIGR1cmluZyB0aGUgTFRQIGJ1aWxkLiBUaGUgImVjaG9fY3JlYXRlZmlsZS5wYXRjaCIg
+bWFrZXMgdGhlIG5lY2Vzc2FyeSBjaGFuZ2VzIGluIHRoZSBNYWtlZmlsZS4KICAgICAgSSBoYXZl
+IGZvdW5kIGFibm9ybWFsIGJlaGF2aW9yIG9mIHNlbV9wb3N0LzgtMS5jIHRlc3QgY2FzZSB1bmRl
+ciBwb3NpeC4gVGhpcyB0ZXN0IGNhc2UgcGFzc2VzIGluIHNvbWUgdGltZXMgYW5kIGZhaWxlZCBp
+biBtYW55IHRpbWVzIDotKAogICAgICBSZXZlcnRpbiB0aGUgY29tbWl0IGQ0MGZkMzJhZjBkMGFk
+NzcxM2IwY2Y2Y2QyM2RhZjFlZTYzOWQ0NzkgZm9yIG5vdy4KICAgICAgTWVyZ2UgYnJhbmNoICdu
+ZXh0JyBvZiBzc2g6Ly9sdHAuZ2l0LnNvdXJjZWZvcmdlLm5ldC9naXRyb290L2x0cC9sdHAtZGV2
+CiAgICAgIChjcHVfaG90cGx1Z2luX21ha2VmaWxlLnBhdGNoKSB0byBleGVjdXRlIGNwdWhvdHBs
+dWdpbiB0ZXN0LiAgICAgSSBoYXZlIG9ic2VydmVkIHRoYXQgdGhlICdob3RwbHVnJyBkaXJlY3Rv
+cnkgaXMgbm90IGluY2x1ZGVkIGluICJ0ZXN0Y2FzZXMva2VybmVsL01ha2VmaWxlIi4gSSBoYXZl
+IGFsc28gICAgIGNyZWF0ZWQgYSBNYWtlZmlsZSBpbiAnaG90cGx1Zy9jcHVfaG90cGx1ZycgZGly
+ZWN0b3J5LgogICAgICBNZXJnZSBicmFuY2hlcyAnbWFzdGVyJyBhbmQgJ25leHQnIGludG8gbmV4
+dAogICAgICBsaWJjZ3JvdXBfZnJlZXplciAsIHB1c2hkL3BvcGQgcmVtb3ZhbC4KICAgICAgTWVy
+Z2UgYnJhbmNoZXMgJ21hc3RlcicgYW5kICdtYWludCcgaW50byBtYWludAogICAgICBNZXJnZSBi
+cmFuY2hlcyAnbWFzdGVyJyBhbmQgJ25leHQnIGludG8gbmV4dAogICAgICBDb21tZW50aW5nICJt
+YWtlIGFsbCIgaW4gcnVuX2ZyZWV6ZXIuc2ggZmlsZSBhcyBpdCBpcyBzdG9wcGluZyB0byBydW4g
+dGhlIGZyZWV6ZXIgdGVzdGNhc2UKICAgICAgUXVpY2sgZml4IGZvciBidWlsZCBmYWlsdXJlIHdp
+dGggOHRoIE1hciBtYXN0ZXIgdHJlZS4KICAgICAgQWRkaW5nIGNoZWNrX2Zvcl91bnNoYXJlLmMg
+ZmlsZSBhbmQgbGlua2luZyB0aGUgcG9ycGVyIGxpYi4KICAgICAgTWVyZ2UgYnJhbmNoZXMgJ25l
+eHQnIGFuZCAnbWFzdGVyJwogICAgICBUZXN0aW5nIGZvciBwb3N0LXJlY2VpdmUtZW1haWwKICAg
+ICAgSW5zdGVhZCBvZiBMSUJTLCBpdCBzaG91bGQgYmUgTERMSUJTIGluIGNvbnRhaW5lci9NYWtl
+ZmlsZQogICAgICBGaXggbWFrZSBmaWxlZCwsIHJlcG9ydGVkIGJ5IFNoaSBXZWlodWEgPHNoaXdo
+QGNuLmZ1aml0c3UuY29tPiAgICAgSXQgd2FzIG15IGJhZCA6KCAuCiAgICAgIE1lcmdlIGJyYW5j
+aGVzICdtYXN0ZXInIGFuZCAnbmV4dCcgaW50byBuZXh0CiAgICAgIE1lcmdlIGJyYW5jaGVzICdt
+YXN0ZXInIGFuZCAnbWFpbnQnIGludG8gbWFpbnQKICAgICAgTWVyZ2UgYnJhbmNoZXMgJ21hc3Rl
+cicgYW5kICdwdScgaW50byBwdQogICAgICBUbyBydW4gZmlsZWNhcCB0ZXN0LCBjaGVja2Zvcmxp
+YmNhcC5zaCBmaWxlIGlzIHJlcXVpcmVkIHRvIGJlIHRoZXJlIGluIC9vcHQvbHRwL3Rlc3RjYXNl
+cy9iaW4KICAgICAgTWVyZ2UgYnJhbmNoZXMgJ25leHQnIGFuZCAnbWFzdGVyJwogICAgICBNZXJn
+ZSBicmFuY2hlcyAnbWFzdGVyJyBhbmQgJ25leHQnIGludG8gbmV4dAogICAgICBNZXJnZSBicmFu
+Y2hlcyAnbWFzdGVyJyBhbmQgJ21haW50JyBpbnRvIG1haW50CiAgICAgIE1lcmdlIGJyYW5jaGVz
+ICdtYXN0ZXInIGFuZCAncHUnIGludG8gcHUKICAgICAgQWRkaW5nIGEgd29yZHkgaW5mb3JtYXRp
+b25pLCAyMDA1IGhlcmUgcmVwcmVzZW50cyBhcyB5ZWFyIG5vdCB2ZXJzaW9uIG9mIGtlcm5lbHMu
+CiAgICAgIE1lcmdlIGJyYW5jaGVzICdwdScgYW5kICdtYWludCcgaW50byBtYWludAogICAgICBU
+aGlzIGNvbW1pdCBjb250YWlucyBMaW51eCBSVEMgZGV2aWNlIGRyaXZlciB0ZXN0IGNhc2VzLiAg
+ICAgQ3VycmVudGx5IFJUQyByZWFkIHRlc3QsIEFsYXJtIHRlc3QgYW5kIFVwZGF0ZSBpbnRlcnJ1
+cHRzICAgICB0ZXN0cyBhcmUgc3VwcG9ydGVkLgogICAgICBNZXJnZSBicmFuY2ggJ25leHQnIG9m
+IHNzaDovL2x0cC5naXQuc291cmNlZm9yZ2UubmV0L2dpdHJvb3QvbHRwL2x0cC1kZXYgaW50byBu
+ZXh0CiAgICAgIEF0dGFjaGVkIHBhdGNoIGZpeGVzIHBvc3NpYmxlIGJ1ZmZlciBvdmVmbG93IGlu
+IHNlbV9nZXR2YWx1ZSB0ZXN0cyAodGhlIGJ1ZmZlciAgICAgb3ZlcmZsb3cgaGFwcGVucyB3aGVu
+IGdldHBpZCgpIHJldHVybnMgbnVtYmVyIHRoYXQgY291bGRuJ3QgZml0IGludG8gYnVmZmVyKSAg
+ICAgYW5kIGFsc28gY2xlYW5zIGNvZGluZyBzdHlsZS4KICAgICAgTWVyZ2UgYnJhbmNoZXMgJ25l
+eHQnIGFuZCAnbWFzdGVyJwogICAgICBIZXJlJ3MgYW4gYXR0ZW1wdCBhdCBmaXhpbmcgdXAgYW5k
+IHNpbXBsaWZ5aW5nIHRoZSBhdXRvY29uZiBmb3IgZGV0ZWN0aW5nIGxpYmNhcCBhbmQgcHJjdGwg
+c3VwcG9ydC4gIEFmdGVyIHRoaXMsIG1ha2UgYXV0b3Rvb2xzICAgICBldGMgd29yayBmaW5lIG9u
+IG15IGYxMiBzeXN0ZW0sIGFuZCBydW5sdHAgLWYgY2FwX2JvdW5kcyBwYXNzZXMuICAgICB0aGUg
+ZmlsZWNhcHMgdGVzdHMgcmVmdXNlIHRvIHJ1biBjbGFpbWluZyB0byBiZSB1bmFibGUgdG8gZmlu
+ZCAgICAgc2V0Y2FwLCB3aGljaCBJJ2xsIHdvcnJ5IGFib3V0IG5leHQgd2Vlay4KICAgICAgQXMg
+cG9pbnRlZCBvdXQgYnkgQ2hlbmcgU2h1biBYaWEgb25lIG9mIG9wZW4gcG9zaXggY29uZm9ybWFj
+ZSB0ZXN0cyBpcyB0ZXN0aW5nICAgICByZXR1cm4gdmFsdWUgZnJvbSBzaWdzZXQoU0lHQ0hMRCwg
+U0lHX0hPTEQpIGFuZCBleHBlY3QgdGhpcyB2YWx1ZSB0byBiZSAgICAgU0lHX0hPTEQsIGhvd2V2
+ZXIgdGhpcyBpcyB0cnVlIG9ubHkgaWYgU0lHQ0hMRCBpcyBhbHJlYWR5IGJsb2NrZWQgc28gd2Ug
+bXVzdCAgICAgZW5zdXJlIHRoYXQuIFBhdGNoIGlzIGF0dGFjaGVkLgogICAgICBSZW1haW5pbmcg
+cGF0Y2ggZm9yIG5ldyBmaWxlIGFkZGl0aW9uIGZvciBjb21taXQ6NmUzZGQ4M2Q5ZjU3NWQ5OGQ3
+NmI4YjNmNjQyYWQ2ZTg3OTNkYmRmYwogICAgICBSZXZlcnQgIkkgaGF2ZSBmb3VuZCBhYm5vcm1h
+bCBiZWhhdmlvciBvZiBzZW1fcG9zdC84LTEuYyB0ZXN0IGNhc2UgdW5kZXIgcG9zaXguIgogICAg
+ICB3aGlsZSBydW5uaW5nIGkgZm91bmQgc29tZSB1bndhbnRlZCBtZXNzYWdlcyBhbmQgZml4ZWQg
+dGhvc2UuIFlvdSBjYW4gQWNrIGlmIGl0IGlzIGNvcnJlY3QgZml4LgogICAgICBJIGhhdmUgdGVz
+dGVkIHRoZXNlIG9uIE1JUFMgYXJjaGl0ZWN0dXJlIGFuZCAgcmVwcm9kdWNlZCBpbmZpbml0ZSB3
+YWl0aW5nIHNpdHVhdGlvbiBhZnRlciBhcHBseWluZyB0aGlzIHBhdGNoLiAod2l0aCBzdHJhY2Ug
+bm8gaXNzdWUgICAgIGZvdW5kIGV4OiAjc3RyYWNlIC4vOC0xLnRlc3QpICAgICBBcyB5b3Ugc2Fp
+ZCB0aGVyZSBtYXkgYmUgaXNzdWVzIGluIE1JUFMtUE9TSVggbGlicmFyeS4gaXQgbWF5IHRha2Ug
+ICAgIHNvbWUgdGltZSB0byBmaXggdGhlc2UgaXNzdWVzIG9yIG1heSBub3QgYmUgZml4ZWQuICAg
+ICBIb3dldmVyLCBJ4oCZbGwgZGlzY3VzcyB0aGlzIGlzc3VlIHdpdGggTUlQUyBmb2xrcyBpbiBk
+aWZmZXJlbnQgdGhyZWFkLgogICAgICBNZXJnZSBicmFuY2hlcyAnbWFpbnQnIGFuZCAnbWFzdGVy
+JwogICAgICBUaGVzZSB3YXJuaW5nIHdpbGwgYXBwZWFyIHdoZW4gSEFWRV9MSUJDQVAgaXMgbm90
+IGRlZmluZWQuCiAgICAgIEZpeCB0aGUgcHJvcGVyIHJldHVybiBmb3IgdGVzdGNhc2UuCiAgICAg
+IE1lcmdlIGNvbW1pdCAnMzkxZTc1N2Q0M2IzYWMzM2E0YTQzNWUzMTllZTc3YjFkYWE2ZGE3NicK
+ICAgICAgY2dyb3VwX2ZqX3JlbGVhc2VfYWdlbnQgaXMgbm90IGdldHRpbmcgaW5zdGFsbGVkIGFz
+IGl0IGRvZXMgbm90IGVuZCB3aXRoICouc2guCiAgICAgIE1lcmdlIGJyYW5jaGVzICdtYWludCcg
+YW5kICdtYXN0ZXInCiAgICAgIE1lcmdlIGJyYW5jaGVzICdtYWludCcgYW5kICduZXh0JyBpbnRv
+IG5leHQKICAgICAgTWVyZ2UgYnJhbmNoZXMgJ21haW50JyBhbmQgJ3B1JyBpbnRvIHB1CiAgICAg
+IC4vcnVubHRwIC1mIGZzX3JlYWRvbmx5IGZhaWxzIHdpdGg6CiAgICAgIE1lcmdlIGJyYW5jaGVz
+ICdwdScgYW5kICduZXh0JyBpbnRvIG5leHQKICAgICAgTWVyZ2UgYnJhbmNoZXMgJ25leHQnIGFu
+ZCAnbWFzdGVyJwogICAgICBVcGRhdGVkIHRoZSBkb2N1bWVudGF0aW9uIGFuZCByZXR1cm4gc2Vu
+c2libGUgbWVzc2FnZSBpZiB0ZXN0Y2FzZSBmYWlsZWQuCiAgICAgIE1lcmdlIGJyYW5jaGVzICdt
+YXN0ZXInIGFuZCAnbmV4dCcgaW50byBuZXh0CiAgICAgIENoYW5nZWxvZyBmcm9tIDIwMTAtMDMt
+MDEgdG8gMjAxMC0wMy0zMQogICAgICBNZXJnZSBicmFuY2hlcyAnbmV4dCcgYW5kICdtYXN0ZXIn
+CiAgICAgIEFkZGVkIE1haW50YWluZXIgTm90ZXMgbmV3IGZpbGUKICAgICAgTkVUTlMgdGVzdHMg
+ZnJvbSBjb250YWluZXJzIGZhaWxzIHRvIGV4ZWN1dGUgd2l0aCBmb2xsb3dpbmcgbWVzc2FnZQog
+ICAgICBNb2RpZmllZCBuZXRzL01ha2VmaWxlIGZvciBhcHBlbmRpbmcgb25lIGZpbGUgd2hpY2gg
+bmVlZHMgaW4gL29wdC9sdHAvdGV0c2Nhc2VzL2JpbiBkaXJlY3Rvcnkgd2hpbGUgaW5zdGFsbC4K
+ICAgICAgTWVyZ2UgYnJhbmNoZXMgJ25leHQnIGFuZCAnbWFzdGVyJwogICAgICBBZGRlZCBhIG5l
+dyBmaWxlIGNhbGxlZCByZXN1bHQgd2hlcmUgbWFpbnRhaW5lciBuZWVkIHRvIHByb3ZpZGUgdGhl
+IHJlc3VsdCBvbiB3aGljaCBoZSBoYXMgcnVuIGJlZm9yZSByZWxlYXNpbmcgdGhlIHRhciBiYWxs
+IGZvciBtb250aCBlbmQgcmVsZWFzZS4KICAgICAgTWVyZ2UgYnJhbmNoZXMgJ25leHQnIGFuZCAn
+bWFzdGVyJwoKCgotLSAKVGhhbmtzICYgUmVnYXJkcwpSaXNoaQpMVFAgTWFpbnRhaW5lcgpJQk0s
+IExUQywgQmFuZ2Fsb3JlClBsZWFzZSBqb2luIElSQyAjbHRwIEAgaXJjLmZyZWVub2RlLm5ldAoK
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRvd25sb2FkIEludGVsJiMxNzQ7IFBhcmFsbGVsIFN0dWRp
+byBFdmFsClRyeSB0aGUgbmV3IHNvZnR3YXJlIHRvb2xzIGZvciB5b3Vyc2VsZi4gU3BlZWQgY29t
+cGlsaW5nLCBmaW5kIGJ1Z3MKcHJvYWN0aXZlbHksIGFuZCBmaW5lLXR1bmUgYXBwbGljYXRpb25z
+IGZvciBwYXJhbGxlbCBwZXJmb3JtYW5jZS4KU2VlIHdoeSBJbnRlbCBQYXJhbGxlbCBTdHVkaW8g
+Z290IGhpZ2ggbWFya3MgZHVyaW5nIGJldGEuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtc3ct
+ZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1s
+aXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
