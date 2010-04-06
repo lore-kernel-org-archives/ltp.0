@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1O4B1T-0007iC-Ri
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 10:49:43 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O4B1S-0008SM-St
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 10:49:43 +0000
-Date: Tue, 20 Apr 2010 06:49:36 -0400 (EDT)
-From: Caspar ZHANG <czhang@redhat.com>
-Message-ID: <2135164550.562871271760576282.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <239293073.562841271760559982.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1Nz6IZ-0003ce-1t
+	for ltp-list@lists.sourceforge.net; Tue, 06 Apr 2010 10:46:23 +0000
+Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nz6IX-00082y-Bl
+	for ltp-list@lists.sourceforge.net; Tue, 06 Apr 2010 10:46:22 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.27])
+	by out01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 08E21239AA5
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  6 Apr 2010 10:46:15 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 539DA95846
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  6 Apr 2010 10:46:14 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Apr 2010 19:46:12 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 6 Apr 2010 19:46:11 +0900
+Message-ID: <000601cad576$5f86fde0$1e94f9a0$@co.jp>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_21910_854512966.1271760576281"
-Subject: Re: [LTP] [PATCH] Fix MSGCTL10() to avoid un-necessary cluttering
- of whole system with all PIDs
+Content-Language: ja
+Subject: [LTP] [PATCH] fix "ar" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,139 +35,122 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
-
-------=_Part_21910_854512966.1271760576281
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-
------ "Rishikesh K Rajak" <risrajak@linux.vnet.ibm.com> wrote:
-
-> On Tue, Apr 20, 2010 at 06:00:13AM -0400, Caspar ZHANG wrote:
-> > 
-> > 
-> > ----- "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
-> > 
-> > > Hi,
-> > > 
-> > > msgctl10() un-necessarily eats up all the PIDs of the system
-> leading
-> > > to
-> > > system becoming un-responsive. The changed no.s would better do
-> the
-> > > job.
-> > 
-> > Hi, I see this patch is not included in ltp-full-20100331, will it
-> be 
-> > accepted in the future? 
-> 
-> Thanks for testing this patch. can you put your Acked-By / Tested-By
-> ?
-> 
-> After that it will be included in master branch immediately.
-
-Sure, add Acked-by info in the attached patch.
-
-Thanks,
-Caspar
-
-> 
-> -Rishi
-> > 
-> > I tested msgctl10 testcase on RHEL5(2.6.18) and RHEL6(>2.6.31),
-> > Since /proc/sys/kernel/msgmni has increased from 10 (RHEL5) to 
-> > thousands (RHEL6), the testing time will be several hours long.
-> > Applied this patch, the testing time can be lowed down to minutes.
-> > 
-> > Thanks,
-> > Caspar
-> > 
-> > > 
-> > > Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>
-> > > ---
-> > > 
-> > > ---
-> > >
-> ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c.orig
-> > > 2010-02-19 17:59:23.000000000 +0530
-> > > +++
-> ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
-> > > 2010-02-19 18:01:13.000000000 +0530
-> > > @@ -65,12 +65,8 @@ extern int Tst_count;		/* Test Case coun
-> > >  
-> > >  int exp_enos[] = { 0 };		/* List must end with 0 */
-> > >  
-> > > -#ifndef CONFIG_COLDFIRE
-> > > -#define MAXNPROCS	1000000	/* This value is set to an arbitrary
-> high
-> > > limit. */
-> > > -#else
-> > > -#define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
-> > > -#endif
-> > > -#define MAXNREPS	100000
-> > > +#define MAXNPROCS	10000 	/*These should be sufficient*/
-> > > +#define MAXNREPS	10000	/*Else they srewup the system
-> > > un-necessarily*/
-> > >  #define FAIL		1
-> > >  #define PASS		0
-> > >  
-> > > 
-> > > ---
-> > > Regards--
-> > > Subrata
-
--- 
-Kernel Associate Quality Engineer
-Red Hat Inc. (Beijing R&D Branch)
-
-Red Hat China R&D Branch Unit 907, North Tower C, 
-  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
-  Haidian District, Beijing 100190
-
-TEL: +86-10-62608150
-Web: http://www.redhat.com/
-
-------=_Part_21910_854512966.1271760576281
-Content-Type: text/x-patch; name=syscalls-msgctl10-decrease-proc-num.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=syscalls-msgctl10-decrease-proc-num.patch
+To: ltp-list@lists.sourceforge.net
 
 Hi,
 
-	msgctl10() un-necessarily eats up all the PIDs of the system leading to
-	system becoming un-responsive. The changed no.s would better do the job.
+  * I don't know whether I can add "[PATCH]" to the title of my 
+    contribution. (Because I'm not maintainer.)
+    If my manners are wrong, I am sorry.
 
-	Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>
-	Acked-by: Caspar Zhang<czhang@redhat.com>
 
 ---
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c	2010-04-15 18:55:19.857267414 +0800
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c	2010-04-15 18:56:53.943358977 +0800
-@@ -65,12 +65,8 @@
- 
- int exp_enos[] = { 0 };		/* List must end with 0 */
- 
--#ifndef CONFIG_COLDFIRE
--#define MAXNPROCS	1000000	/* This value is set to an arbitrary high limit. */
--#else
--#define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
--#endif
--#define MAXNREPS	100000
-+#define MAXNPROCS	10000	/* These should be sufficient */
-+#define MAXNREPS	10000	/* Else they screw up the system un-necessarily */
- #define FAIL		1
- #define PASS		0
- 
 
-------=_Part_21910_854512966.1271760576281
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I found out that "-)20" test of "ar01" failed once in a while.
+Its code is as follows:
+------------
+...
+rm -rf $TCtmp/lib.a;cd $TCdat
+ar -cr $TCtmp/lib.a file0.in file2.in
+crtest
+File1time=`ar -tv $TCtmp/lib.a | grep file0.in | cut -f2 -d: | cut -f1 -d"
+"`
+File2time=`ar -tv $TCtmp/lib.a | grep file2.in | cut -f2 -d: | cut -f1 -d"
+"`
+
+#sleep 5
+touch -c -t 201503030303.55 file0.in
+
+ar -ru $TCtmp/lib.a file0.in file2.in 2>&1 1>/dev/null
+File1time1=`ar -tv $TCtmp/lib.a | grep file0.in | cut -f2 -d: | cut -f1 -d"
+"`
+File2time2=`ar -tv $TCtmp/lib.a | grep file2.in | cut -f2 -d: | cut -f1 -d"
+"`
+
+if [ $File2time = $File2time2 ]
+then
+        if [ $File1time = $File1time1 ]
+        then
+                TCRESULT=20
+                echo "FAIL - ar with -u flag failed"
+        else
+                echo "-)20"
+        fi
+else
+        TCRESULT=20
+        echo "FAIL - ar with -u flag failed"
+fi
+#Reset the timestamp on file0.in to current
+touch file0.in
+...
+------------
+
+"file0.in" and "file2.in" are offered with "ar01" source, and they are 
+copied when "make install" is executed.
+
+In this code, "File1time" and "File1time1" are times of before and 
+after time-stamp changing of "file0.in" by "touch -c -t ..." command.
+But "File1time" and "File1time1" are only minute numbers.
+It's problem, I think.
+
+If installation is at 2010.04.06 XX:03 accidentally, both of 
+"File1time" and "File1time1" are "03".
+And this code ends as "FAIL".
+This happens with a one-60th probability. 
+
+
+Why must not all time informations are compared?
+
+---
+
+How about following patch?
+
+Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+
+============
+--- a/testcases/commands/ade/ar/ar01    2010-04-01 16:15:00.000000000 +0900
++++ b/testcases/commands/ade/ar/ar01    2010-04-06 19:04:44.000000000 +0900
+@@ -519,19 +519,19 @@
+ rm -rf $TCtmp/lib.a;cd $TCdat
+ ar -cr $TCtmp/lib.a file0.in file2.in
+ crtest
+-File1time=`ar -tv $TCtmp/lib.a | grep file0.in | cut -f2 -d: | cut -f1 -d"
+"`
+-File2time=`ar -tv $TCtmp/lib.a | grep file2.in | cut -f2 -d: | cut -f1 -d"
+"`
++File1time=`ar -tv $TCtmp/lib.a | grep file0.in`
++File2time=`ar -tv $TCtmp/lib.a | grep file2.in`
+
+ #sleep 5
+ touch -c -t 201503030303.55 file0.in
+
+ ar -ru $TCtmp/lib.a file0.in file2.in 2>&1 1>/dev/null
+-File1time1=`ar -tv $TCtmp/lib.a | grep file0.in | cut -f2 -d: | cut -f1 -d"
+"`
+-File2time2=`ar -tv $TCtmp/lib.a | grep file2.in | cut -f2 -d: | cut -f1 -d"
+"`
++File1time1=`ar -tv $TCtmp/lib.a | grep file0.in`
++File2time2=`ar -tv $TCtmp/lib.a | grep file2.in`
+
+-if [ $File2time = $File2time2 ]
++if [ "$File2time" = "$File2time2" ]
+ then
+-       if [ $File1time = $File1time1 ]
++       if [ "$File1time" = "$File1time1" ]
+        then
+                TCRESULT=20
+                echo "FAIL - ar with -u flag failed"
+============
+
+
+Thank you--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -167,16 +158,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
-------=_Part_21910_854512966.1271760576281
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_21910_854512966.1271760576281--
-
