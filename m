@@ -1,23 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1O47Qq-0007AJ-GO
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:40 +0000
-Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O47Ql-0007Fp-Pa
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:40 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000601cae050$9f25f1b0$dd71d510$@co.jp>	
-	<w2w364299f41004192344l524ea939z95e529cbcdeeba72@mail.gmail.com>
-	<v2q364299f41004192345l7f5f119bva09c150d69428182@mail.gmail.com>
-In-Reply-To: <v2q364299f41004192345l7f5f119bva09c150d69428182@mail.gmail.com>
-Date: Tue, 20 Apr 2010 15:59:26 +0900
-Message-ID: <000001cae057$042683d0$0c738b70$@co.jp>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1NzVTa-0005ld-Tp
+	for ltp-list@lists.sourceforge.net; Wed, 07 Apr 2010 13:39:26 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NzVTa-0004kv-11
+	for ltp-list@lists.sourceforge.net; Wed, 07 Apr 2010 13:39:26 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o37DRfxL018372
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 Apr 2010 09:27:41 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o37DdKnw181884
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 Apr 2010 09:39:20 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o37DdJEr006242
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 Apr 2010 10:39:20 -0300
+Date: Wed, 7 Apr 2010 08:39:18 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100407133918.GA20569@us.ibm.com>
+References: <000401cad217$b1382d10$13a88730$@co.jp>
+	<20100405132140.GB32049@us.ibm.com>
+	<000901cad613$7d894030$789bc090$@co.jp>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] [PATCH] fix "su01" test
+Content-Disposition: inline
+In-Reply-To: <000901cad613$7d894030$789bc090$@co.jp>
+Subject: Re: [LTP] cap_bset_inh_bounds.c build failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,124 +38,110 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-Sorry.
+Quoting Mitani (mitani@ryobi.co.jp):
+> Hi,
+> 
+> > -----Original Message-----
+> > From: Serge E. Hallyn [mailto:serue@us.ibm.com]
+> > Sent: Monday, April 05, 2010 10:22 PM
+> > To: Mitani
+> > Cc: ltp-list@lists.sourceforge.net
+> > Subject: Re: [LTP] cap_bset_inh_bounds.c build failure
+> > 
+> > Quoting Mitani (mitani@ryobi.co.jp):
+> > > Hi,
+> > >
+> > > I tried to build by using yesterday's git in my system (RHEL4.8 x86).
+> > >  (ltp-dev-4837fee8a7c2de6a83c8927a574c792ca6dabe4e.tar.gz)
+> > > But build failed in "cap_bset_inh_bounds.c" with following message.
+> > > This is different from "cap_bounds_r.c"'s problem (another thread),
+> > I think
+> > >
+> > > ------------
+> > > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> > > -I/home/LTP/ltp-dev-20100401-3/testcases/kernel/include
+> > > -I../../../../include -I../../../../include   -L../../../../lib
+> > > cap_bset_inh_bounds.c   -lltp -lcap -o cap_bset_inh_bounds
+> > > cap_bset_inh_bounds.c:124: error: syntax error before numeric
+> > constant
+> > > cap_bset_inh_bounds.c:124: warning: type defaults to `int' in
+> > declaration of
+> > > `tst_resm'
+> > > cap_bset_inh_bounds.c:124: error: conflicting types for 'tst_resm'
+> > > ../../../../include/test.h:192: error: previous declaration of
+> > 'tst_resm'
+> > > was here
+> > > cap_bset_inh_bounds.c:124: error: conflicting types for 'tst_resm'
+> > > ../../../../include/test.h:192: error: previous declaration of
+> > 'tst_resm'
+> > > was here
+> > > cap_bset_inh_bounds.c:124: warning: data definition has no type or
+> > storage
+> > > class
+> > > cap_bset_inh_bounds.c:129: warning: type defaults to `int' in
+> > declaration of
+> > > `tst_exit'
+> > > cap_bset_inh_bounds.c:129: error: conflicting types for 'tst_exit'
+> > > ../../../../include/test.h:203: error: previous declaration of
+> > 'tst_exit'
+> > > was here
+> > > cap_bset_inh_bounds.c:129: error: conflicting types for 'tst_exit'
+> > > ../../../../include/test.h:203: error: previous declaration of
+> > 'tst_exit'
+> > > was here
+> > > cap_bset_inh_bounds.c:129: warning: data definition has no type or
+> > storage
+> > > class
+> > > cap_bset_inh_bounds.c:130: error: syntax error before '}' token
+> > > ------------
+> > >
+> > > In this source, the pair of "ifdef" start/end and the pair of
+> > > main() function's "parenthesis" are alternate, I think.
+> > >
+> > >
+> > > How about following patch?
+> > >
+> > > Signed-off-by : Tomonori Mitani <mitani@ryobi.co.jp>
+> > 
+> > Yup - although really the #ifdef HAVE_LIBCAP should be redundant as
+> > the testcases/kernel/security/cap_bound/Makefile shouldn't compile
+> > cap_bounds at all if HAVE_LIBCAP is not defined.
+> > 
+> 
+> Yes. - In my system, this source is not problem. Your indication is 
+> right. :-)
+> But, I manually had updated "libcap2" once. And after "./configure", 
+> HAVE_LIBCAP is defined. Therefore, I noticed this error.
+> 
+> The system which updated to "libcap2" will need solution of this 
+> problem, I think.
 
-I understand.
-I was careless.
+Agreed, since this is LTP it's not right to expect "sane"
+userspace-kernel combos.  So we need to check both.  Unfortunately
+I won't have time to work with that this week.
 
+Even if I did, I'd have a guidance question for Garrett:  Do we
+want to assume that people will change kernels, but not libraries,
+between compile/install and run of ltp?  If so, then we can stick
+with the autoconf checks for libraries+includes, and add a check
+at runtime (as I believe was there originally) for the requisite
+kernel support - file capabilities, bounding sets, and 64-bit
+capabilities.
 
-Thank you--
+OTOH if you're ok with assuming kernel is same at ltp configure
+and run, then we can do a test in autoconf which makes for a cleaner
+run.
 
--Tomonori Mitani
+thanks,
+-serge
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Tuesday, April 20, 2010 3:46 PM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net; kamimura@ryobi.co.jp
-> Subject: Re: [LTP] [PATCH] fix "su01" test
-> =
-
-> On Mon, Apr 19, 2010 at 11:44 PM, Garrett Cooper <yanegomi@gmail.com>
-> wrote:
-> > On Mon, Apr 19, 2010 at 11:13 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> >> Hi,
-> >>
-> >> I ran "su01" test.
-> >> This test failed:
-> >> ------------<log>
-> >> userdel: user su_usr1 does not exist
-> >> Creating mailbox file: File exists
-> >> userdel: user su_usr2 does not exist
-> >> Creating mailbox file: File exists
-> >> YOU NEED TO SET ENVIROMENT VARIABLE PASSWD.
-> >> ------------
-> >>
-> >> This failure was caused by "PASSWD" environment variable not being
-> set:
-> >> ------------<su01_s1>
-> >> #Grab input from enviroment
-> >> if [info exists env(PASSWD)] {
-> >> =A0 =A0 =A0 =A0set PASSWD $env(PASSWD)
-> >> } else {
-> >> =A0 =A0 =A0 =A0send_user "YOU NEED TO SET ENVIROMENT VARIABLE PASSWD. =
-\n"
-> >> =A0 =A0 =A0 =A0exit 1
-> >> }
-> >> ------------
-> >>
-> >> According to "su01_s1", this "PASSWD" is the password of "root"
-> user:
-> >> ------------<su01_s1>
-> >> spawn /bin/su -c whoami
-> >> set i_am_root 0
-> >> expect {
-> >> =A0"Password:" {
-> >> =A0 =A0 =A0 =A0send "$PASSWD\r"
-> >> =A0 =A0expect {
-> >> =A0 =A0 =A0"root" { set i_am_root 1
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0set i_can_root 1
-> >> =A0 =A0 =A0 =A0 }
-> >> =A0 =A0}
-> >> =A0}
-> >> }
-> >> ------------
-> >>
-> >> I think whether this test program is unfinished.
-> >> Probably the author of this program thought that there was a problem
-> >> to set a password in the shell, I think.
-> >> Because, the password of root is various by each users who run the
-> test,
-> >> and it cannot be gotten from environment variable or file etc.
-> >>
-> >> So, I suggest that "su01" shell demands root password when it is
-> run.
-> >> But, when user forgot to input, it should return and finish with
-> error.
-> >>
-> >>
-> >> I attach the patch for "su01" file.
-> >
-> > =A0 =A0I don't agree; this item is already mentioned in INSTALL (but
-> I
-> > think that it should probably be moved to a README file or
-> > something... INSTALL doesn't seem intuitive) for another set of
-> tests:
-> >
-> > =A0 =A0iv) Finally, before running the networktests.sh script, two
-> variables must
-> > =A0 =A0 =A0 =A0be set within the script file. =A0The "RHOST" variable s=
-hould
-> be set to
-> > =A0 =A0 =A0 =A0the hostname of the server. =A0The "PASSWD" variable sho=
-uld
-> be set to
-> > =A0 =A0 =A0 =A0root's password on the server machine. =A0This is necess=
-ary
-> for tests
-> > =A0 =A0 =A0 =A0such as telnet01 and ftp01.
-> >
-> > =A0 =A0All of the applications which require $PASSWD need to be
-> > documented though as this is far from intuitive.
-> =
-
->     Also, what you're suggesting would fix _interactive_ tests, not
-> _non-interactive_ tests, where the majority of all users should *not*
-> be running LTP interactively -- thus I don't think that it's a
-> worthwhile addition (sorry :(...).
-> Thanks,
-> -Garrett
-
-
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
