@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <raahul4321@gmail.com>) id 1O1vSa-0005pp-In
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 05:48:24 +0000
-Received: from mail-gx0-f213.google.com ([209.85.217.213])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O1vSZ-0001jE-FG
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 05:48:24 +0000
-Received: by gxk5 with SMTP id 5so2974183gxk.6
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Apr 2010 22:48:18 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1O02Y6-0007PD-Q4
+	for ltp-list@lists.sourceforge.net; Fri, 09 Apr 2010 00:58:18 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O02Y5-000867-8a
+	for ltp-list@lists.sourceforge.net; Fri, 09 Apr 2010 00:58:18 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000301cad6f8$1b9b0c60$52d12520$@co.jp>
+	<D30EE9FA-D2B3-4292-9571-BEF87442BD30@gmail.com>
+In-Reply-To: <D30EE9FA-D2B3-4292-9571-BEF87442BD30@gmail.com>
+Date: Fri, 9 Apr 2010 09:58:08 +0900
+Message-ID: <000001cad77f$b847c490$28d74db0$@co.jp>
 MIME-Version: 1.0
-Date: Wed, 14 Apr 2010 11:18:10 +0530
-Message-ID: <g2k72fb0a5c1004132248q96998dc3u560e90bd448c6041@mail.gmail.com>
-From: rahul agarwal <raahul4321@gmail.com>
-Subject: [LTP] query !!
+Content-Language: ja
+Subject: Re: [LTP] [PATCH] fix "eventfd01" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,53 +26,158 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8462357778267920611=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============8462357778267920611==
-Content-Type: multipart/alternative; boundary=0016e68ba2eb5950ec04842becd3
-
---0016e68ba2eb5950ec04842becd3
-Content-Type: text/plain; charset=ISO-8859-1
-
-I have a query regarding how to compile individual testcase in ltp.
-
-For example:
-fallocate tests inside syscalls are failing and so I want to compile and
-check them seperately after some modifications. But I am facing the problem
-due to various dependencies which are there. And as a result I am not being
-able to isolate the errors which I am facing.
-
-Kindly guide me so that I can overcome such a problem.
-
-With Regards
-Rahul Agarwal
-+91-9999720591
-
---0016e68ba2eb5950ec04842becd3
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div>I have a query regarding how to compile individual testcase in ltp.</d=
-iv>
-<div><br>For example:<br>fallocate tests inside syscalls are failing and so=
- I want to compile and check them seperately after some modifications. But =
-I am facing the problem due to various dependencies which are there. And as=
- a result I am not being able to isolate the errors which I am facing.</div=
->
-
-<div><br>Kindly guide me so that I can overcome such a problem.</div>
-<div><br>With Regards<br>Rahul Agarwal<br>+91-9999720591</div>
-
---0016e68ba2eb5950ec04842becd3--
-
-
---===============8462357778267920611==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: 'Garrett Cooper' <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi Garrett,
+
+
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Friday, April 09, 2010 2:35 AM
+> To: Mitani
+> Cc: <ltp-list@lists.sourceforge.net>
+> Subject: Re: [LTP] [PATCH] fix "eventfd01" test
+> 
+> On Apr 8, 2010, at 1:47 AM, "Mitani" <mitani@ryobi.co.jp> wrote:
+> 
+> > Hi,
+> >
+> >
+> > I tried "eventfd01" test in my system.
+> > This test failed with TWARN (return code:4) :
+> >
+> > ------------
+> >  eventfd01    1  TCONF  :  2.6.22 or greater kernel required
+> >  eventfd01    2  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    3  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    4  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    5  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    6  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    7  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    8  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    9  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01   10  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01   11  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01   12  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01   13  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01   14  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01   15  TCONF  :  Remaining cases not appropriate for
+> > configuration
+> >  eventfd01    0  TWARN  :  tst_rmdir(): TESTDIR was NULL; no
+> removal
+> > attempted
+> > ------------
+> >
+> > My system's kernel level is 2.6.18-164.el5
+> > Therefore this test rejected:
+> >
+> > ------< eventfd01.c - main() >------
+> >        if (tst_kvercmp(2, 6, 22) < 0)
+> >                tst_brkm(TCONF, cleanup, "2.6.22 or greater kernel
+> > required");
+> > ------------
+> >
+> > But, this "tst_brkm()" called "cleanup()".
+> > "tst_rmdir()" is called in "cleanup()", and this checked "TESTDIR":
+> >
+> > ------< tst_tmpdir.c - tst_rmdir() >------
+> >   /*
+> >    * Check that TESTDIR is not NULL.
+> >    */
+> >   if ( TESTDIR == NULL ) {
+> >      tst_resm(TWARN, "%s: TESTDIR was NULL; no removal attempted",
+> >               FN_NAME);
+> >      return;
+> >   }
+> > ------------
+> >
+> > This TWARN caused FAIL.
+> > "TESTDIR" is NULL because the test didn't start.
+> >
+> > I think that "cleanup()" doesn't have to be called in this case.
+> >
+> >
+> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> >
+> > ============
+> > --- a/testcases/kernel/syscalls/eventfd/eventfd01.c
+> 2010-04-01
+> > 15:23:10.000000000 +0900
+> > +++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
+> 2010-04-08
+> > 17:16:35.000000000 +0900
+> > @@ -728,8 +728,10 @@
+> >        /* capture signals */
+> >        tst_sig(FORK, DEF_HANDLER, cleanup);
+> >
+> > -       if (tst_kvercmp(2, 6, 22) < 0)
+> > -               tst_brkm(TCONF, cleanup, "2.6.22 or greater kernel
+> > required");
+> > +       if (tst_kvercmp(2, 6, 22) < 0) {
+> > +               tst_brkm(TCONF, NULL, "2.6.22 or greater kernel
+> > required");
+> > +               tst_exit();
+> > +       }
+> >
+> >        /* Create a temporary directory & chdir there */
+> >        tst_tmpdir();
+> > ============
+> 
+> Try tst_exit instead of NULL.
+> Cheers,
+> -Garrett
+
+
+Oh, I didn't notice it!
+
+I revised my patch by advice of Garrett, and confirmed that it
+worked as I intended.
+I want to suggest patch again.
+
+Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+
+============
+--- a/testcases/kernel/syscalls/eventfd/eventfd01.c     2010-04-01
+15:23:10.000000000 +0900
++++ b/testcases/kernel/syscalls/eventfd/eventfd01.c     2010-04-09
+09:06:48.000000000 +0900
+@@ -729,7 +729,7 @@
+        tst_sig(FORK, DEF_HANDLER, cleanup);
+
+        if (tst_kvercmp(2, 6, 22) < 0)
+-               tst_brkm(TCONF, cleanup, "2.6.22 or greater kernel
+required");
++               tst_brkm(TCONF, tst_exit, "2.6.22 or greater kernel
+required");
+
+        /* Create a temporary directory & chdir there */
+        tst_tmpdir();
+============
+
+
+Thank you--
+
+-Tomonori Mitani
+
+
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -79,16 +185,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============8462357778267920611==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8462357778267920611==--
-
