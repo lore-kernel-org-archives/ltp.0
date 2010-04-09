@@ -1,31 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NxFXC-00060x-JH
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 08:13:50 +0000
-Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxFX9-00078U-Lx
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 08:13:50 +0000
-Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.22])
-	by out01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 507B8239DD9
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  1 Apr 2010 08:13:41 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id A25443DD022
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  1 Apr 2010 08:13:40 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 17:13:39 +0900
+	(envelope-from <mitani@ryobi.co.jp>) id 1O08y4-00074j-3P
+	for ltp-list@lists.sourceforge.net; Fri, 09 Apr 2010 07:49:32 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O08y1-0001HL-PH
+	for ltp-list@lists.sourceforge.net; Fri, 09 Apr 2010 07:49:31 +0000
 From: "Mitani" <mitani@ryobi.co.jp>
-Date: Thu, 1 Apr 2010 17:13:39 +0900
-Message-ID: <000001cad173$3c32b200$b4981600$@co.jp>
+References: <000001cad173$3c32b200$b4981600$@co.jp>
+	<20100401083510.GD13796@linux.vnet.ibm.com>
+	<000101cad17c$ee4946d0$cadbd470$@co.jp>
+	<20100401093511.GA25290@linux.vnet.ibm.com>
+	<000001cad18d$ea091c60$be1b5520$@co.jp>
+	<20100401152647.GH22648@us.ibm.com>
+	<000301cad20b$2269c230$673d4690$@co.jp>
+	<20100405132004.GA32049@us.ibm.com>
+In-Reply-To: <20100405132004.GA32049@us.ibm.com>
+Date: Fri, 9 Apr 2010 16:49:22 +0900
+Message-ID: <000a01cad7b9$2b1be350$8153a9f0$@co.jp>
 MIME-Version: 1.0
 Content-Language: ja
-Subject: [LTP] cap_bounds_r.c build failure
+Subject: Re: [LTP] cap_bounds_r.c build failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,19 +35,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "'Serge E. Hallyn'" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi,
 
-I tried to build by using yesterday's git.
- (ltp-dev-02719d6f7e5cb252c0fcbfbaf26208d7196e46f2.tar.gz)
-But build failed in "cap_bounds_r.c" with following message.
+Thank you for your help.
 
+I tried to "make" with Serge's patch in my system.
+But, sorry, it failed.
+
+
+---
+
+I did with following procedure:
+
+1) I did "make" and "make install" of "libcap-2.11" .
+
+2) I confirmed about following files.
 ------------
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/LTP/ltp-dev-20100401/testcases/kernel/include -I../../../../include
--I../../../../include   -L../../../../lib  cap_bounds_r.c   -lltp -lcap -o
-cap_bounds_r
+[root@RHEL4-8 include]# pwd
+/usr/include
+[root@RHEL4-8 include]# ls -l sys/capability.h
+-rw-r--r--  1 root root 3345 Apr  9 15:44 sys/capability.h
+[root@RHEL4-8 include]# ls -l linux/capability.h
+-rw-r--r--  1 root root 8273 May 14  2008 linux/capability.h
+[root@RHEL4-8 include]#
+------------
+"sys/capability.h" replased by "libcap-2.11" .
+
+3) I applied patch to "m4/ltp-cap.m4", and confirmed it.
+------------
+...
+AC_DEFUN([LTP_CHECK_CAPABILITY_SUPPORT],[
+AH_TEMPLATE(HAVE_LIBCAP,
+[Define to 1 if you have libcap-2 installed.])
+AC_CHECK_HEADERS(sys/capability.h,[
+        LTP_CAPABILITY_SUPPORT=yes
+        AC_CHECK_DECL(VFS_CAP_REVISION_2,[AC_DEFINE(HAVE_LIBCAP)
+CAP_LIBS="-lcap"],[CAP_LIBS=""],[#include "linux/capability.h"])
+        AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
+])]
+AC_SUBST(CAP_LIBS)
+)
+------------
+
+4) I did "./configure", and confirmed "configure.log" .
+------------
+...
+| #define HAVE_SYS_CAPABILITY_H 1
+| #define HAVE_LIBCAP 1
+| #define HAVE_SYS_PRCTL_H 1
+| #define HAVE_DECL_PR_CAPBSET_DROP 0
+| #define HAVE_DECL_PR_CAPBSET_READ 0
+...
+------------
+"HAVE_LIBCAP" define was ON.
+
+5) I tried to "make", but it failed as foliows.
+------------
 cap_bounds_r.c: In function `main':
 cap_bounds_r.c:46: error: `CAP_LAST_CAP' undeclared (first use in this
 function)
@@ -59,78 +102,68 @@ cap_bounds_r.c:46: error: for each function it appears in.)
 make[4]: *** [cap_bounds_r] Error 1
 ------------
 
-I tried to today's git, but it failed, too.
- (ltp-dev-44fba94453ca4f446cde4db08b0a760862b55cfa.tar.gz)
+
+I don't know about configure well, and I examine it.
 
 
-I referd this source's diff in following URL.
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=commitdiff
-;h=6e3dd83d9f575d98d76b8b3f642ad6e8793dbdfc
-
-"CAP_LAST_CAP" definition is deleted with other definitions in this 
-revision.
-But "CAP_LAST_CAP" is still used after edited version.
-
-"The editor may have deleted too much to make this source simple?"
-I think. ;-)
-
-
-There is same problem in "cap_bounds_rw.c", too.
-
-
-How about following patch?
-
-
-Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-
-Index: ./testcases/kernel/security/cap_bound/cap_bounds_r.c
-============
---- ./testcases/kernel/security/cap_bound/cap_bounds_r.c        2010-03-31
-22:44:52.000000000 +0900
-+++ ./testcases/kernel/security/cap_bound/cap_bounds_r.c.new    2010-04-01
-15:43:01.000000000 +0900
-@@ -32,6 +32,13 @@
- #include <sys/prctl.h>
- #include <test.h>
-
-+#if HAVE_SYS_CAPABILITY_H
-+#ifndef CAP_LAST_CAP
-+#warning out-of-date capability.h does not define CAP_LAST_CAP
-+#define CAP_LAST_CAP 28  /* be ultra-conservative */
-+#endif
-+#endif
-+
- char *TCID = "cap_bounds_r";
- int TST_TOTAL=1;
-
-============
-
-Index: ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
-============
---- ./testcases/kernel/security/cap_bound/cap_bounds_rw.c       2010-03-31
-22:44:52.000000000 +0900
-+++ ./testcases/kernel/security/cap_bound/cap_bounds_rw.c.new   2010-04-01
-15:44:39.000000000 +0900
-@@ -31,6 +31,13 @@
- #include <sys/prctl.h>
- #include <test.h>
-
-+#if HAVE_SYS_CAPABILITY_H
-+#ifndef CAP_LAST_CAP
-+#warning out-of-date capability.h does not define CAP_LAST_CAP
-+#define CAP_LAST_CAP 28  /* be ultra-conservative */
-+#endif
-+#endif
-+
- char *TCID = "cap_bounds_rw";
- int TST_TOTAL=1;
-
-============
-
-
-Regards--
+Thank you--
 
 -Tomonori Mitani
+
+
+> -----Original Message-----
+> From: Serge E. Hallyn [mailto:serue@us.ibm.com]
+> Sent: Monday, April 05, 2010 10:20 PM
+> To: Mitani
+> Cc: Rishikesh K Rajak; Andrew Morgan; Garrett Cooper;
+> ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] cap_bounds_r.c build failure
+> 
+> Quoting Mitani (mitani@ryobi.co.jp):
+> > Hi,
+> >
+> >
+> > I tired to upgrade "libcap" from "libcap-1.0-20" to "libcap-2.11".
+> > My system is RHEL4.8 (x86) and kernel version is 2.6.9-89.ELsmp.
+> 
+> Oh, I'm sorry, I misunderstood from the first.  I thought you wanted
+> to test a modern kernel on an older distro.  So the real problem in
+> your original email wasn't that cap_bounds_r.c wouldn't compile, but
+> that it tried to compile.
+> 
+> Maybe the attached ltp patch will do a better job of not trying
+> to compile.  Though I'm not sure what is the best way to detect
+> both 64-bit caps in kernel and libcap2 userspace.
+> 
+> -serge
+> 
+> Date: Mon, 5 Apr 2010 08:17:46 -0500
+> Subject: [PATCH ltp] don't compile cap_bounds on older systems
+> 
+> Only define HAVE_LIBCAP for libcap2 and 64-bit caps.
+> 
+> Signed-off-by: Serge Hallyn <serue@us.ibm.com>
+> ---
+>  m4/ltp-cap.m4 |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
+> index caa436f..6248ff3 100644
+> --- a/m4/ltp-cap.m4
+> +++ b/m4/ltp-cap.m4
+> @@ -27,7 +27,7 @@ AH_TEMPLATE(HAVE_LIBCAP,
+>  [Define to 1 if you have libcap-2 installed.])
+>  AC_CHECK_HEADERS(sys/capability.h,[
+>  	LTP_CAPABILITY_SUPPORT=yes
+> -	AC_CHECK_LIB(cap,cap_compare,[AC_DEFINE(HAVE_LIBCAP)
+> CAP_LIBS="-lcap"], [CAP_LIBS=""])
+> +	AC_CHECK_DECL(VFS_CAP_REVISION_2,[AC_DEFINE(HAVE_LIBCAP)
+> CAP_LIBS="-lcap"],[CAP_LIBS=""],[#include "linux/capability.h"])
+>  	AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
+>  ])]
+>  AC_SUBST(CAP_LIBS)
+> --
+> 1.6.3.3
 
 
 
