@@ -1,28 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1O08y4-00074j-3P
-	for ltp-list@lists.sourceforge.net; Fri, 09 Apr 2010 07:49:32 +0000
-Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O08y1-0001HL-PH
-	for ltp-list@lists.sourceforge.net; Fri, 09 Apr 2010 07:49:31 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cad173$3c32b200$b4981600$@co.jp>
-	<20100401083510.GD13796@linux.vnet.ibm.com>
-	<000101cad17c$ee4946d0$cadbd470$@co.jp>
-	<20100401093511.GA25290@linux.vnet.ibm.com>
-	<000001cad18d$ea091c60$be1b5520$@co.jp>
-	<20100401152647.GH22648@us.ibm.com>
-	<000301cad20b$2269c230$673d4690$@co.jp>
-	<20100405132004.GA32049@us.ibm.com>
-In-Reply-To: <20100405132004.GA32049@us.ibm.com>
-Date: Fri, 9 Apr 2010 16:49:22 +0900
-Message-ID: <000a01cad7b9$2b1be350$8153a9f0$@co.jp>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1O1vv9-0001jH-C0
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:17:55 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O1vv8-0000xq-Bs
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:17:55 +0000
+Received: by gwaa20 with SMTP id a20so1292438gwa.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 Apr 2010 23:17:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] cap_bounds_r.c build failure
+In-Reply-To: <000901cadb78$a2d05080$e870f180$@co.jp>
+References: <000001cadad6$c061c590$412550b0$@co.jp>
+	<4BC487C9.9080300@xenotime.net>
+	<000901cadb78$a2d05080$e870f180$@co.jp>
+Date: Tue, 13 Apr 2010 23:17:48 -0700
+Message-ID: <g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,142 +29,388 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "'Serge E. Hallyn'" <serue@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, Randy Dunlap <rdunlap@xenotime.net>
 
-Hi,
+On Tue, Apr 13, 2010 at 7:17 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi Randy,
+>
+> I couldn't notice a misspelling. Sorry.
+> I decided to use "due to" according to your advice.
+>
+> May I suggest revised patch?
+>
+> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c =A0 =A0 =A0 =A02=
+010-04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c =A0 =A0 =A0 =A02=
+010-04-13
+> 11:23:33.000000000 +0900
+> @@ -127,7 +127,7 @@
+>
+> =A0 =A0 =A0 =A0/* Check number of hugepages */
+> =A0 =A0 =A0 =A0if (get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D =
+0)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be co=
+ntinued owning to
+> \
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "Test cannot be co=
+ntinued due to \
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sufficient=
+ availability of Hugepages on the
+> system");
+>
+> =A0 =A0 =A0 =A0/* Perform global setup for test */
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c =A0 =A0 =A0201=
+0-04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c =A0 =A0 =A0201=
+0-04-13
+> 11:36:25.000000000 +0900
+> @@ -105,7 +105,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, tst_exit, "Test cannot be conti=
+nued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c =A0 =A0 =A0201=
+0-04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c =A0 =A0 =A0201=
+0-04-13
+> 11:37:41.000000000 +0900
+> @@ -102,7 +102,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, tst_exit, "Test cannot be conti=
+nued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c =A0 =A0 =A0201=
+0-04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c =A0 =A0 =A0201=
+0-04-13
+> 11:38:16.000000000 +0900
+> @@ -86,7 +86,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "Test cannot be contin=
+ued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c =A0 =A02010-=
+04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c =A0 =A02010-=
+04-13
+> 11:41:23.000000000 +0900
+> @@ -130,7 +130,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, tst_exit, "Test cannot be conti=
+nued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c =A0 =A02010-=
+04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c =A0 =A02010-=
+04-13
+> 11:41:48.000000000 +0900
+> @@ -102,7 +102,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, tst_exit, "Test cannot be conti=
+nued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c =A0 =A02010-=
+04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c =A0 =A02010-=
+04-13
+> 11:42:10.000000000 +0900
+> @@ -105,7 +105,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "Test cannot be contin=
+ued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c =A0 =A0 =A0201=
+0-04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c =A0 =A0 =A0201=
+0-04-13
+> 11:42:55.000000000 +0900
+> @@ -87,7 +87,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, tst_exit, "Test cannot be conti=
+nued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c =A0 =A02010-=
+04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c =A0 =A02010-=
+04-13
+> 11:43:30.000000000 +0900
+> @@ -82,7 +82,7 @@
+>
+> =A0 =A0 =A0 =A0/* The following loop checks looping state if -i option gi=
+ven */
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "Test cannot be contin=
+ued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 huge_pages_shm_to_be_allocated =3D ( get_no_o=
+f_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c =A0 =A02010-=
+04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c =A0 =A02010-=
+04-13
+> 11:43:51.000000000 +0900
+> @@ -84,7 +84,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, tst_exit, "Test cannot be conti=
+nued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c =A0 =A02010-=
+04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c =A0 =A02010-=
+04-13
+> 11:44:10.000000000 +0900
+> @@ -85,7 +85,7 @@
+>
+> =A0 =A0 =A0 =A0/* The following loop checks looping state if -i option gi=
+ven */
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, tst_exit, "Test cannot be conti=
+nued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c =A0 =A02010-=
+04-01
+> 15:23:09.000000000 +0900
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c =A0 =A02010-=
+04-13
+> 11:44:29.000000000 +0900
+> @@ -86,7 +86,7 @@
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0 )
+> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be contin=
+ued owning to
+> sufficient availability of Hugepages on the system");
+> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "Test cannot be contin=
+ued due to
+> sufficient availability of Hugepages on the system");
+> =A0 =A0 =A0 =A0 else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>
+> Thank you--
+>
+> -Tomonori Mitani
+>
+>
+>> -----Original Message-----
+>> From: Randy Dunlap [mailto:rdunlap@xenotime.net]
+>> Sent: Wednesday, April 14, 2010 12:04 AM
+>> To: Mitani
+>> Cc: ltp-list@lists.sourceforge.net
+>> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>>
+>> On 04/12/10 23:58, Mitani wrote:
+>> > ------------
+>> > =A0a) All tests:
+>> > "TBROK =A0: =A0Test cannot be continued owning to sufficient
+>> availability of
+>> > Hugepages on the system"
+>> >
+>> > =A0b) 2), 3), 5), 6), 8), 10), 11) tests:
+>> > "TWARN =A0: =A0tst_rmdir(): TESTDIR was NULL; no removal attempted"
+>> > ------------
+>> >
+>> > Both case a) and case b) are caused by the same reason.
+>> >
+>> > All of case a) failures occured at the following points (for example
+>> > hugemmap04):
+>> > ------------<hugemmap04.c - main()>
+>> > =A0 =A0 =A0 =A0 /* Check number of hugepages */
+>> > =A0 =A0 =A0 =A0 if (get_no_of_hugepages() <=3D 0 || hugepages_size() <=
+=3D 0)
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot =
+be continued
+>> owning to
+>> > \
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 suffic=
+ient availability of
+>> Hugepages on the
+>> > system");
+>> > ------------
+>> >
+>> > I found out that "HugePages_Total" parameter of "/proc/meminfo" file
+>> > is set to "0". This caused above TBROK failure. It is environment
+>> problem.
+>> >
+>> > But, in this case, tests must not return with TBROK, but with TCONF,
+>> > I think.
+>>
+>> That makes sense to me.
+>>
+>> > And, in case b), these tests try to delete "TESTDIR" directory by
+>> > calling "tst_rmdir()" function in "cleanup()" function.
+>> > But, "TESTDIR" never set if "tst_tmpdir()" function isn't called.
+>> > I think that case b)'s tests must not call cleanup() function.
+>> >
+>> >
+>> > I want to suggest following patch.
+>> >
+>> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>> >
+>> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> > --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+>> =A0 =A0 =A0 2010-04-01
+>> > 15:23:09.000000000 +0900
+>> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+>> =A0 =A0 =A0 2010-04-13
+>> > 11:23:33.000000000 +0900
+>> > @@ -127,7 +127,7 @@
+>> >
+>> > =A0 =A0 /* Check number of hugepages */
+>> > =A0 =A0 if (get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0)
+>> > - =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be continu=
+ed
+>> owning to
+>> > \
+>> > + =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "Test cannot be continu=
+ed
+>> owning to
+>> > \
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sufficient ava=
+ilability of Hugepages
+>> on the
+>> > system");
+>> >
+>> > =A0 =A0 /* Perform global setup for test */
+>>
+>> Not caused by your patch, but all of those "owning to" should be "owing
+>> to"
+>> or even better, "due to".
 
-Thank you for your help.
+    Sorry... it might have been better to say (more succinctly): "Not
+enough available Hugepages" ?
+Thanks,
+-Garrett
 
-I tried to "make" with Serge's patch in my system.
-But, sorry, it failed.
-
-
+---------------------------------------------------------------------------=
 ---
-
-I did with following procedure:
-
-1) I did "make" and "make install" of "libcap-2.11" .
-
-2) I confirmed about following files.
-------------
-[root@RHEL4-8 include]# pwd
-/usr/include
-[root@RHEL4-8 include]# ls -l sys/capability.h
--rw-r--r--  1 root root 3345 Apr  9 15:44 sys/capability.h
-[root@RHEL4-8 include]# ls -l linux/capability.h
--rw-r--r--  1 root root 8273 May 14  2008 linux/capability.h
-[root@RHEL4-8 include]#
-------------
-"sys/capability.h" replased by "libcap-2.11" .
-
-3) I applied patch to "m4/ltp-cap.m4", and confirmed it.
-------------
-...
-AC_DEFUN([LTP_CHECK_CAPABILITY_SUPPORT],[
-AH_TEMPLATE(HAVE_LIBCAP,
-[Define to 1 if you have libcap-2 installed.])
-AC_CHECK_HEADERS(sys/capability.h,[
-        LTP_CAPABILITY_SUPPORT=yes
-        AC_CHECK_DECL(VFS_CAP_REVISION_2,[AC_DEFINE(HAVE_LIBCAP)
-CAP_LIBS="-lcap"],[CAP_LIBS=""],[#include "linux/capability.h"])
-        AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
-])]
-AC_SUBST(CAP_LIBS)
-)
-------------
-
-4) I did "./configure", and confirmed "configure.log" .
-------------
-...
-| #define HAVE_SYS_CAPABILITY_H 1
-| #define HAVE_LIBCAP 1
-| #define HAVE_SYS_PRCTL_H 1
-| #define HAVE_DECL_PR_CAPBSET_DROP 0
-| #define HAVE_DECL_PR_CAPBSET_READ 0
-...
-------------
-"HAVE_LIBCAP" define was ON.
-
-5) I tried to "make", but it failed as foliows.
-------------
-cap_bounds_r.c: In function `main':
-cap_bounds_r.c:46: error: `CAP_LAST_CAP' undeclared (first use in this
-function)
-cap_bounds_r.c:46: error: (Each undeclared identifier is reported only once
-cap_bounds_r.c:46: error: for each function it appears in.)
-make[4]: *** [cap_bounds_r] Error 1
-------------
-
-
-I don't know about configure well, and I examine it.
-
-
-Thank you--
-
--Tomonori Mitani
-
-
-> -----Original Message-----
-> From: Serge E. Hallyn [mailto:serue@us.ibm.com]
-> Sent: Monday, April 05, 2010 10:20 PM
-> To: Mitani
-> Cc: Rishikesh K Rajak; Andrew Morgan; Garrett Cooper;
-> ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] cap_bounds_r.c build failure
-> 
-> Quoting Mitani (mitani@ryobi.co.jp):
-> > Hi,
-> >
-> >
-> > I tired to upgrade "libcap" from "libcap-1.0-20" to "libcap-2.11".
-> > My system is RHEL4.8 (x86) and kernel version is 2.6.9-89.ELsmp.
-> 
-> Oh, I'm sorry, I misunderstood from the first.  I thought you wanted
-> to test a modern kernel on an older distro.  So the real problem in
-> your original email wasn't that cap_bounds_r.c wouldn't compile, but
-> that it tried to compile.
-> 
-> Maybe the attached ltp patch will do a better job of not trying
-> to compile.  Though I'm not sure what is the best way to detect
-> both 64-bit caps in kernel and libcap2 userspace.
-> 
-> -serge
-> 
-> Date: Mon, 5 Apr 2010 08:17:46 -0500
-> Subject: [PATCH ltp] don't compile cap_bounds on older systems
-> 
-> Only define HAVE_LIBCAP for libcap2 and 64-bit caps.
-> 
-> Signed-off-by: Serge Hallyn <serue@us.ibm.com>
-> ---
->  m4/ltp-cap.m4 |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
-> index caa436f..6248ff3 100644
-> --- a/m4/ltp-cap.m4
-> +++ b/m4/ltp-cap.m4
-> @@ -27,7 +27,7 @@ AH_TEMPLATE(HAVE_LIBCAP,
->  [Define to 1 if you have libcap-2 installed.])
->  AC_CHECK_HEADERS(sys/capability.h,[
->  	LTP_CAPABILITY_SUPPORT=yes
-> -	AC_CHECK_LIB(cap,cap_compare,[AC_DEFINE(HAVE_LIBCAP)
-> CAP_LIBS="-lcap"], [CAP_LIBS=""])
-> +	AC_CHECK_DECL(VFS_CAP_REVISION_2,[AC_DEFINE(HAVE_LIBCAP)
-> CAP_LIBS="-lcap"],[CAP_LIBS=""],[#include "linux/capability.h"])
->  	AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
->  ])]
->  AC_SUBST(CAP_LIBS)
-> --
-> 1.6.3.3
-
-
-
-------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
