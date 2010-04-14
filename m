@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1O6Vku-0006OF-05
-	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 21:22:16 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 0EF2C93F19
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Apr 2010 23:22:08 +0200 (CEST)
-Date: Mon, 26 Apr 2010 23:29:49 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100426212949.GA29981@saboteur.suse.cz>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O1wEf-00030J-9x
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:38:05 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O1wEc-0006IB-CI
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:38:03 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3E6Qeda025649
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Apr 2010 02:26:40 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3E6buvf151740
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Apr 2010 02:37:56 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3E6bu7T023594
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Apr 2010 03:37:56 -0300
+Date: Wed, 14 Apr 2010 12:07:37 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100414063736.GA3596@linux.vnet.ibm.com>
+References: <g2k72fb0a5c1004132248q96998dc3u560e90bd448c6041@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="EeQfGwPcQSOJBaQU"
 Content-Disposition: inline
-Subject: [LTP] [PATCH] missing return in fs-bench
+In-Reply-To: <g2k72fb0a5c1004132248q96998dc3u560e90bd448c6041@mail.gmail.com>
+Subject: Re: [LTP] query !!
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,58 +36,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: rahul agarwal <raahul4321@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hello Rahul,
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You need to always run as "./runltp -f syscalls" inside /opt/ltp dir.
 
-Hi!
-Just another problem in fs-bench sources.
+e.g: If you want to run fallocate testcases, please create a file called
+fallocate under /opt/ltp/runtest and run as:
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+# cat /opt/ltp/testcases/runtest/fallocate
+fallocate01 fallocate01
+fallocate02 fallocate02
+fallocate03 fallocate03
+# cd /opt/ltp
+#./runltp -f fallocate
+
+This will run only fallocate testcases.
+
+Before you execute above steps, you need to change your fallocate file and do
+make & make install inside ~/ltp-full-20100331/testcases/kernel/syscalls/fallocate
+
+Let me know if you still face some problem.
+
+-Rishi
+On Wed, Apr 14, 2010 at 11:18:10AM +0530, rahul agarwal wrote:
+> I have a query regarding how to compile individual testcase in ltp.
+> 
+> For example:
+> fallocate tests inside syscalls are failing and so I want to compile and
+> check them seperately after some modifications. But I am facing the problem
+> due to various dependencies which are there. And as a result I am not being
+> able to isolate the errors which I am facing.
+> 
+> Kindly guide me so that I can overcome such a problem.
+> 
+> With Regards
+> Rahul Agarwal
+> +91-9999720591
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
-
---EeQfGwPcQSOJBaQU
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="missing_return_in_fs-bench.patch"
-
-Index: ltp-full-20100228/testcases/kernel/fs/fs-bench/create-files.c
-===================================================================
---- ltp-full-20100228.orig/testcases/kernel/fs/fs-bench/create-files.c
-+++ ltp-full-20100228/testcases/kernel/fs/fs-bench/create-files.c
-@@ -71,6 +71,7 @@ int main(int ac,char *av[])
- end:
-   fprintf(stderr,"\nTotal create files: %d\n",filecount);
-   printf("Done\n");
-+  return 0;
- }
- 
- int showchar[]={124,47,45,92,124,47,45,92};
-
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
-
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---EeQfGwPcQSOJBaQU--
-
