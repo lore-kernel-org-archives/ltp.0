@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1O6TzH-0005Lv-R6
-	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 19:28:59 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 3FFB88D893
+	(envelope-from <yanegomi@gmail.com>) id 1O1wCh-0000zI-Sh
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:36:03 +0000
+Received: from mail-gy0-f175.google.com ([209.85.160.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O1wCf-0005ie-KZ
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:36:03 +0000
+Received: by gya1 with SMTP id 1so3457354gya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Apr 2010 21:28:52 +0200 (CEST)
-Date: Mon, 26 Apr 2010 21:36:33 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100426193633.GA19120@saboteur.suse.cz>
+	Tue, 13 Apr 2010 23:35:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="uAKRQypu60I7Lcqm"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] add missing return into pidns17.c
+In-Reply-To: <s2m72fb0a5c1004132237k447d41f1occ861b51ce40be7@mail.gmail.com>
+References: <s2m72fb0a5c1004132237k447d41f1occ861b51ce40be7@mail.gmail.com>
+Date: Tue, 13 Apr 2010 23:35:56 -0700
+Message-ID: <y2p364299f41004132335za6109aefvb37eadf5b3f4a2c5@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Query
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,72 +27,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-Following patch adds return 0; at the end of main() in the pidns17.c (and also
-removes some spurious code comments). This patch fixes compiler warning which
-some builds systems treats as error and thuss breaks package building.
-
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---uAKRQypu60I7Lcqm
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="missing_return_pidns17.patch"
-
-Index: ltp-full-20100228/testcases/kernel/containers/pidns/pidns17.c
-===================================================================
---- ltp-full-20100228.orig/testcases/kernel/containers/pidns/pidns17.c
-+++ ltp-full-20100228/testcases/kernel/containers/pidns/pidns17.c
-@@ -141,7 +141,9 @@ int main(int argc, char *argv[])
- 
- 	/* cleanup and exit */
- 	CLEANUP();
--}	/* End main */
-+
-+	return 0;
-+}
- 
- /*
-  * cleanup() - performs all ONE TIME cleanup for this test at
-@@ -149,8 +151,6 @@ int main(int argc, char *argv[])
-  */
- void cleanup()
- {
--	/* Clean the test testcase as LTP wants*/
- 	TEST_CLEANUP;
- 	tst_exit();
--	/* NOTREACHED */
- }
-
---uAKRQypu60I7Lcqm
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: rahul agarwal <raahul4321@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On Tue, Apr 13, 2010 at 10:37 PM, rahul agarwal <raahul4321@gmail.com> wrote:
+> I have a query regarding how to compile individual testcase in ltp.
+>
+> For example:
+>
+> fallocate tests inside syscalls are failing and so I want to compile and
+> check them seperately after some modifications. But I am facing the problem
+> due to various dependencies which are there. And as a result I am not being
+> able to isolate the errors which I am facing.
+>
+> Kindly guide me so that I can overcome such a problem.
+
+Hint:
+
+    Files in runtest describe the tests. The format for runtests is:
+
+# This is a call to a program called test-apps with args as the arguments!
+testname1 test-app args
+
+# I am a comment!
+
+# The following is multiple commands strung together -- so I get run in a shell!
+testname2 FOO=1; bar
+
+1. You should export some variables like LTPROOT,  to your ltp
+install, etc, i.e. these variables (clipped from runltp) if you want
+the full experience:
+
+    export LTPROOT=${PWD}
+    export TMPBASE="/tmp"
+    export PATH="${PATH}:${LTPROOT}/testcases/bin"
+    export TMPBASE=`cd \`dirname ${OPTARG}\`; pwd`/`basename ${OPTARG}`
+    export TMPTEMPLATE="${TMPBASE}/ltp-XXXXXXXXXX"
+    export TMP
+    export TMPDIR=$TMP
+    export RHOST=$RHOST
+    export PASSWD=$PASSWD
+
+2. Or you can either pear down the runtest file, or use the
+appropriate blacklist / whitelisting arguments via runltp (runltp
+--help will give you more details).
+
+Happy fishing,
+-Garrett
 
 ------------------------------------------------------------------------------
-
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---uAKRQypu60I7Lcqm--
-
