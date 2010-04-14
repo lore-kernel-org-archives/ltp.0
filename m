@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1O6VpW-0006hT-6Z
-	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 21:27:02 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	by mx2.suse.de (Postfix) with ESMTP id 311D2867E2
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <raahul4321@gmail.com>) id 1O1vA2-0001t9-1X
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 05:29:14 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O1vA1-0004UZ-7q
+	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 05:29:13 +0000
+Received: by gwaa20 with SMTP id a20so1278321gwa.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Apr 2010 23:26:55 +0200 (CEST)
-Date: Mon, 26 Apr 2010 23:34:36 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100426213436.GA30362@saboteur.suse.cz>
-References: <20100426212949.GA29981@saboteur.suse.cz>
+	Tue, 13 Apr 2010 22:29:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
-Content-Disposition: inline
-In-Reply-To: <20100426212949.GA29981@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH] missing return in fs-bench
+Date: Wed, 14 Apr 2010 10:59:07 +0530
+Message-ID: <g2l72fb0a5c1004132229rf11c2de0t38db47e696a343e0@mail.gmail.com>
+From: rahul agarwal <raahul4321@gmail.com>
+Subject: [LTP] query
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,69 +25,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1017902581989009111=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+--===============1017902581989009111==
+Content-Type: multipart/alternative; boundary=0016e68e916838134804842ba88c
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--0016e68e916838134804842ba88c
+Content-Type: text/plain; charset=ISO-8859-1
 
-Hi!
-> Just another problem in fs-bench sources.
+I have a query regarding how to compile individual testcase in ltp.
 
-Missed some in previous patch, now it should be all.
+For example:
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+fallocate tests inside syscalls are failing and so I want to compile and
+check them seperately after some modifications. But I am facing the problem
+due to various dependencies which are there. And as a result I am not being
+able to isolate the errors which I am facing.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kindly guide me so that I can overcome such a problem.
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="missing_return_in_fs-bench_II.patch"
+With Regards
 
-Index: ltp-full-20100228/testcases/kernel/fs/fs-bench/create-files.c
-===================================================================
---- ltp-full-20100228.orig/testcases/kernel/fs/fs-bench/create-files.c
-+++ ltp-full-20100228/testcases/kernel/fs/fs-bench/create-files.c
-@@ -71,6 +71,7 @@ int main(int ac,char *av[])
- end:
-   fprintf(stderr,"\nTotal create files: %d\n",filecount);
-   printf("Done\n");
-+  return 0;
- }
- 
- int showchar[]={124,47,45,92,124,47,45,92};
-Index: ltp-full-20100228/testcases/kernel/fs/fs-bench/random-del-create.c
-===================================================================
---- ltp-full-20100228.orig/testcases/kernel/fs/fs-bench/random-del-create.c
-+++ ltp-full-20100228/testcases/kernel/fs/fs-bench/random-del-create.c
-@@ -111,6 +111,7 @@ int create_file(char *filename)
-   cfilecount++;
-   disk_space_pool -= randomsize;
-   close(fd);
-+  return 0;
- }
- 
- #include <sys/stat.h>
-@@ -131,4 +132,5 @@ int delete_file(char *filename)
-     return(-1);
-   }
-   dfilecount++;
-+  return 0;
- }
+Rahul Agarwal
 
---2oS5YaxWCcQjTEyO
++91-9999720591
+
+--0016e68e916838134804842ba88c
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<span lang=3D"EN">
+<p>I have a query regarding how to compile individual testcase in ltp.</p>
+<p>For example:</p>
+<p>fallocate tests inside syscalls are failing and so I want to compile and=
+ check them seperately after some modifications. But I am facing the proble=
+m due to various dependencies which are there. And as a result I am not bei=
+ng able to isolate the errors which I am facing.</p>
+
+<p>Kindly guide me so that I can overcome such a problem.</p>
+<p>With Regards</p>
+<p>Rahul Agarwal</p>
+<p>+91-9999720591</p></span>
+
+--0016e68e916838134804842ba88c--
+
+
+--===============1017902581989009111==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---2oS5YaxWCcQjTEyO
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+--===============1017902581989009111==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -99,5 +95,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---2oS5YaxWCcQjTEyO--
+--===============1017902581989009111==--
 
