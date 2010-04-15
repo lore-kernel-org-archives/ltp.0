@@ -1,25 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O6JP8-0005I2-UE
-	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 08:10:58 +0000
-Received: from mail-iw0-f177.google.com ([209.85.223.177])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O6JP8-0005oD-4l
-	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 08:10:58 +0000
-Received: by iwn7 with SMTP id 7so1511869iwn.24
+	(envelope-from <yanegomi@gmail.com>) id 1O2Keq-0004Mu-01
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 08:42:44 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O2Kep-00031G-2p
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 08:42:43 +0000
+Received: by gwb17 with SMTP id 17so140602gwb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Apr 2010 01:10:53 -0700 (PDT)
+	Thu, 15 Apr 2010 01:42:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1272262814.5003.0.camel@subratamodak.linux.ibm.com>
-References: <20100421120550.13534.21836.sendpatchset@subratamodak.linux.ibm.com>
-	<1271914527.5122.1.camel@subratamodak.linux.ibm.com>
-	<1272262814.5003.0.camel@subratamodak.linux.ibm.com>
-Date: Mon, 26 Apr 2010 01:10:52 -0700
-Message-ID: <z2w364299f41004260110waf2220a5n8382b2306956b53a@mail.gmail.com>
+In-Reply-To: <20100415065440.GA6261@linux.vnet.ibm.com>
+References: <000001cadad6$c061c590$412550b0$@co.jp>
+	<4BC487C9.9080300@xenotime.net>
+	<000901cadb78$a2d05080$e870f180$@co.jp>
+	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
+	<000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
+	<p2y364299f41004140230u4e312ea7y7623fce2dbfd0ba6@mail.gmail.com>
+	<001301cadc36$77e08cf0$67a1a6d0$@co.jp>
+	<20100415065440.GA6261@linux.vnet.ibm.com>
+Date: Thu, 15 Apr 2010 01:42:35 -0700
+Message-ID: <o2h364299f41004150142r6d8e1a98l6bb591e8d3157c5b@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix Location Of GENHTML Inside RUNLTP
+Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,44 +34,139 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>, Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
 
-T24gU3VuLCBBcHIgMjUsIDIwMTAgYXQgMTE6MjAgUE0sIFN1YnJhdGEgTW9kYWsKPHN1YnJhdGFA
-bGludXgudm5ldC5pYm0uY29tPiB3cm90ZToKPiBPbiBUaHUsIDIwMTAtMDQtMjIgYXQgMTE6MDUg
-KzA1MzAsIFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4+IE9uIFdlZCwgMjAxMC0wNC0yMSBhdCAxNzoz
-NSArMDUzMCwgU3VicmF0YSBNb2RhayB3cm90ZToKPj4gPiBUaGVyZSBhcmUgc29tZSBiaXRzIGFu
-ZCBwaWVjZXMgb2YgcmVzdHJ1Y3R1cmluZyBzdGlsbCBsZWZ0IHRvIGJlIGRvbmUuCj4+ID4gcnVu
-bHRwIGlzIG5vdCBhYmxlIHRvIGNhbGwgZ2VuaHRtbCBwcm9wZXJseSBkdWUgdG8gY2hhbmdlIGlu
-IGxvY2F0aW9uCj4+ID4gb2YgdGhlIHNhbWUgc2NyaXB0LiBUaGUgZm9sbG93aW5nIGVycm9yIHdp
-bGwgb2NjdXI6Cj4+ID4KPj4gPiAuLi4KPj4gPiBHZW5lcmF0aW5nIEhUTUwgT3V0cHV0Li4uLi4h
-IQo+PiA+IENhbid0IG9wZW4gcGVybCBzY3JpcHQgIi9vcHQvbHRwL3Rvb2xzL2dlbmh0bWwucGwi
-OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4+ID4gLi4uCj4+ID4KPj4gPiBGb2xsb3dpbmcg
-cGF0Y2ggZml4ZXMgdGhlIHNhbWUuCj4+ID4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBTdWJyYXRhIE1v
-ZGFrIDxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4KPj4gPiAtLS0KPj4KPj4gRmlyc3Qgb2Yg
-YWxsLCBkb2VzIHRoaXMgcGF0Y2ggc29sdmUgdGhlIGlzc3VlIGF0IGFueWJvZHnFmyBzaWRlID8g
-SWYgeWVzLAo+PiBjYW4gdGhpcyBiZSBpbmNsdWRlZCBpbiBBcHJpbCAyMDEwIHJlbGVhc2UgPwo+
-Cj4gSXMgc29tZWJvZHkgbG9va2luZyBpbnRvIHRoaXMgcGF0Y2ggPwo+Cj4gUmVnYXJkcy0tCj4g
-U3VicmF0YQo+Cj4+Cj4+IFJlZ2FyZHMtLQo+PiBTdWJyYXRhCj4+Cj4+ID4KPj4gPiAtLS0gbHRw
-LWRldi9ydW5sdHAub3JpZyDCoCDCoCAyMDEwLTA0LTIxIDIyOjQ4OjU4LjIyMzY1MTQ0MCArMDUz
-MAo+PiA+ICsrKyBsdHAtZGV2L3J1bmx0cCDCoDIwMTAtMDQtMjEgMjI6NDk6MTAuOTAxNzgzNDQ1
-ICswNTMwCj4+ID4gQEAgLTg0Niw3ICs4NDYsNyBAQCBtYWluKCkKPj4gPiDCoCDCoCDCoCDCoCBl
-eHBvcnQgVEVTVF9PVVRQVVRfRElSRUNUT1JZPSIkTFRQUk9PVC9vdXRwdXQiCj4+ID4gwqAgwqAg
-wqAgwqAgZXhwb3J0IFRFU1RfTE9HU19ESVJFQ1RPUlk9JExPR1NfRElSRUNUT1JZCj4+ID4gwqAg
-wqAgwqAgwqAgZWNobyAiR2VuZXJhdGluZyBIVE1MIE91dHB1dC4uLi4uISEiCj4+ID4gLSDCoCDC
-oCDCoCAoIHBlcmwgJExUUFJPT1QvdG9vbHMvZ2VuaHRtbC5wbCAkTFRQUk9PVC90b29scy9odG1s
-X3JlcG9ydF9oZWFkZXIudHh0IHRlc3Rfc3RhcnQgdGVzdF9lbmQgdGVzdF9vdXRwdXQgZXhlY3V0
-aW9uX3N0YXR1cyAkT1VUUFVUX0RJUkVDVE9SWSDCoD4gJEhUTUxGSUxFOyApCj4+ID4gKyDCoCDC
-oCDCoCAoIHBlcmwgJExUUFJPT1QvYmluL2dlbmh0bWwucGwgJExUUFJPT1QvdG9vbHMvaHRtbF9y
-ZXBvcnRfaGVhZGVyLnR4dCB0ZXN0X3N0YXJ0IHRlc3RfZW5kIHRlc3Rfb3V0cHV0IGV4ZWN1dGlv
-bl9zdGF0dXMgJE9VVFBVVF9ESVJFQ1RPUlkgwqA+ICRIVE1MRklMRTsgKQo+PiA+IMKgIMKgIMKg
-IMKgIGVjaG8gIkdlbmVyYXRlZCBIVE1MIE91dHB1dC4uLi4uISEiCj4+ID4gwqAgwqAgwqAgwqAg
-ZWNobyAiTG9jYXRpb246ICRIVE1MRklMRSI7CgpBY2tlZC1ieTogR2FycmV0dCBDb29wZXIgPHlh
-bmVnb21pQGdtYWlsLmNvbT4KCi1HYXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGlu
-ZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Wed, Apr 14, 2010 at 11:54 PM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Thu, Apr 15, 2010 at 09:56:22AM +0900, Mitani wrote:
+>>
+>> > -----Original Message-----
+>> > From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> > Sent: Wednesday, April 14, 2010 6:31 PM
+>> > To: Mitani
+>> > Cc: ltp-list@lists.sourceforge.net
+>> > Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>> >
+>> > On Wed, Apr 14, 2010 at 1:58 AM, Mitani <mitani@ryobi.co.jp> wrote:
+>> > >> -----Original Message-----
+>> > >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> > >> Sent: Wednesday, April 14, 2010 3:18 PM
+>> > >> To: Mitani
+>> > >> Cc: Randy Dunlap; ltp-list@lists.sourceforge.net
+>> > >> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>> > >>
+>> > >> On Tue, Apr 13, 2010 at 7:17 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> > >> > Hi Randy,
+>> > >> >
+>> > >> > I couldn't notice a misspelling. Sorry.
+>> > >> > I decided to use "due to" according to your advice.
+>> > >> >
+>> > >> > May I suggest revised patch?
+>> > >> >
+>> > > [...]
+>> > >> >
+>> > >> > Thank you--
+>> > >> >
+>> > >> > -Tomonori Mitani
+>> > >> >
+>> > >> >
+>> > >> >> -----Original Message-----
+>> > >> >> From: Randy Dunlap [mailto:rdunlap@xenotime.net]
+>> > >> >> Sent: Wednesday, April 14, 2010 12:04 AM
+>> > >> >> To: Mitani
+>> > >> >> Cc: ltp-list@lists.sourceforge.net
+>> > >> >> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>> > >> >>
+>> > >> >> On 04/12/10 23:58, Mitani wrote:
+>> > >> >> > ------------
+>> > >> >> > =A0a) All tests:
+>> > >> >> > "TBROK =A0: =A0Test cannot be continued owning to sufficient
+>> > >> >> availability of
+>> > >> >> > Hugepages on the system"
+>> > >> >> >
+>> > >> >> > =A0b) 2), 3), 5), 6), 8), 10), 11) tests:
+>> > >> >> > "TWARN =A0: =A0tst_rmdir(): TESTDIR was NULL; no removal
+>> > attempted"
+>> > >> >> > ------------
+>> > >> >> >
+>> > >> >> > Both case a) and case b) are caused by the same reason.
+>> > >> >> >
+>> > >> >> > All of case a) failures occured at the following points (for
+>> > >> example
+>> > >> >> > hugemmap04):
+>> > >> >> > ------------<hugemmap04.c - main()>
+>> > >> >> > =A0 =A0 =A0 =A0 /* Check number of hugepages */
+>> > >> >> > =A0 =A0 =A0 =A0 if (get_no_of_hugepages() <=3D 0 || hugepages_=
+size()
+>> > <=3D
+>> > >> 0)
+>> > >> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test=
+ cannot be
+>> > >> continued
+>> > >> >> owning to
+>> > >> >> > \
+>> > >> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 sufficient availability
+>> > of
+>> > >> >> Hugepages on the
+>> > >> >> > system");
+>> > >> >> > ------------
+>> > >> >> >
+>> > >> >> > I found out that "HugePages_Total" parameter of "/proc/meminfo"
+>> > >> file
+>> > >> >> > is set to "0". This caused above TBROK failure. It is environm=
+ent
+>> > >> >> problem.
+>> > >> >> >
+>> > >> >> > But, in this case, tests must not return with TBROK, but with
+>> > TCONF,
+>> > >> >> > I think.
+>> > >> >>
+>> > >> >> That makes sense to me.
+>> > >> >>
+>> > >> >> > And, in case b), these tests try to delete "TESTDIR" directory
+>> > >> by
+>> > >> >> > calling "tst_rmdir()" function in "cleanup()" function.
+>> > >> >> > But, "TESTDIR" never set if "tst_tmpdir()" function isn't
+>> > called.
+>> > >> >> > I think that case b)'s tests must not call cleanup() function.
+>> > >> >> >
+>> > >> >> >
+>> > >> >> > I want to suggest following patch.
+>> > >> >> >
+>> > >> >> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>> >
+>> > =A0 =A0 Sorry to ask again, but Gmail always mangles patches. Could you
+>> > please attach it as a file?
+>> > Thanks,
+>> > -Garrett
+>>
+>>
+>> Sorry.
+>> I attach a patch file.
+>
+>
+> Applied to next branch. Will wait for someone to Acked/test it before mer=
+ging to
+> master.
+
+    Inspecting the files more closely, here all cases should be
+tst_exit, not cleanup. Otherwise it's going to do some operations not
+required as setup hasn't be run yet.
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
