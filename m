@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1O7UCa-0004fe-3o
-	for ltp-list@lists.sourceforge.net; Thu, 29 Apr 2010 13:54:52 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O7UCZ-0000qW-2T
-	for ltp-list@lists.sourceforge.net; Thu, 29 Apr 2010 13:54:52 +0000
-From: Paul Larson <paul.larson@canonical.com>
-In-Reply-To: <y2j72fb0a5c1004192359ifea04178l1ced518757facae7@mail.gmail.com>
-References: <y2j72fb0a5c1004192359ifea04178l1ced518757facae7@mail.gmail.com>
-Date: Thu, 29 Apr 2010 08:54:42 -0500
-Message-ID: <1272549282.2433.21.camel@plars-t500>
-Mime-Version: 1.0
-Subject: Re: [LTP] testcase mm-shmt09 failing on arm . please help
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1O2KZW-00071K-3I
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 08:37:14 +0000
+Received: from mail-yw0-f190.google.com ([209.85.211.190])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O2KZV-0001l8-6w
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 08:37:14 +0000
+Received: by ywh28 with SMTP id 28so655398ywh.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Apr 2010 01:37:07 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20100415065213.GC4557@linux.vnet.ibm.com>
+References: <000301cad6f8$1b9b0c60$52d12520$@co.jp>
+	<D30EE9FA-D2B3-4292-9571-BEF87442BD30@gmail.com>
+	<003601cadc47$f8724eb0$e956ec10$@co.jp>
+	<20100415065213.GC4557@linux.vnet.ibm.com>
+Date: Thu, 15 Apr 2010 01:37:04 -0700
+Message-ID: <k2r364299f41004150137ue2c76b2cmc49351e6f1f5d417@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix "eventfd01" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,123 +30,176 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5405043290572180169=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rahul agarwal <raahul4321@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
-
---===============5405043290572180169==
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature";
-	boundary="=-0Hwufj8GRCiEB8R8gaEz"
-
-
---=-0Hwufj8GRCiEB8R8gaEz
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>, Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
 
-On Tue, 2010-04-20 at 12:29 +0530, rahul agarwal wrote:
-> i am getting the following error while executing the mm test :-
-> =20
-> <<<test_start>>>
-> tag=3Dshmt09 stime=3D1271762065
-> cmdline=3D"shmt09"
-> contacts=3D""
-> analysis=3Dexit
->=20
-> <<<test_output>>>
-> shmat1: Invalid argument
-> shmt09      1  TPASS  :  sbrk, sbrk, shmget, shmat
-> shmt09      2  TPASS  :  sbrk, shmat
-> shmt09      3  TFAIL  :  Error: shmat Failed, shmid =3D 262144, errno =3D
-> 22
-Hi Rahul, what are you running on?  I don't see shmt09 fail, but on my
-arm boards, I see a few other issues.
+On Wed, Apr 14, 2010 at 11:52 PM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Thu, Apr 15, 2010 at 12:01:40PM +0900, Mitani wrote:
+>>
+>> Sorry.
+>> My patch was destroyed by e-mail.
+>> I attach patch for "eventfd01.c" file.
+>
+> Applied to next branch. Will wait for someone to Acked/test it before mer=
+ging to
+> master.
+>
+> Thanks
+> -Rishi
+>
+>>
+>>
+>> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>>
+>>
+>> Regards--
+>>
+>> -Tomonori Mitani
+>>
+>> > -----Original Message-----
+>> > From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> > Sent: Friday, April 09, 2010 2:35 AM
+>> > To: Mitani
+>> > Cc: <ltp-list@lists.sourceforge.net>
+>> > Subject: Re: [LTP] [PATCH] fix "eventfd01" test
+>> >
+>> > On Apr 8, 2010, at 1:47 AM, "Mitani" <mitani@ryobi.co.jp> wrote:
+>> >
+>> > > Hi,
+>> > >
+>> > >
+>> > > I tried "eventfd01" test in my system.
+>> > > This test failed with TWARN (return code:4) :
+>> > >
+>> > > ------------
+>> > > =A0eventfd01 =A0 =A01 =A0TCONF =A0: =A02.6.22 or greater kernel requ=
+ired
+>> > > =A0eventfd01 =A0 =A02 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A03 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A04 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A05 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A06 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A07 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A08 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A09 =A0TCONF =A0: =A0Remaining cases not appropria=
+te for
+>> > > configuration
+>> > > =A0eventfd01 =A0 10 =A0TCONF =A0: =A0Remaining cases not appropriate=
+ for
+>> > > configuration
+>> > > =A0eventfd01 =A0 11 =A0TCONF =A0: =A0Remaining cases not appropriate=
+ for
+>> > > configuration
+>> > > =A0eventfd01 =A0 12 =A0TCONF =A0: =A0Remaining cases not appropriate=
+ for
+>> > > configuration
+>> > > =A0eventfd01 =A0 13 =A0TCONF =A0: =A0Remaining cases not appropriate=
+ for
+>> > > configuration
+>> > > =A0eventfd01 =A0 14 =A0TCONF =A0: =A0Remaining cases not appropriate=
+ for
+>> > > configuration
+>> > > =A0eventfd01 =A0 15 =A0TCONF =A0: =A0Remaining cases not appropriate=
+ for
+>> > > configuration
+>> > > =A0eventfd01 =A0 =A00 =A0TWARN =A0: =A0tst_rmdir(): TESTDIR was NULL=
+; no
+>> > removal
+>> > > attempted
+>> > > ------------
+>> > >
+>> > > My system's kernel level is 2.6.18-164.el5
+>> > > Therefore this test rejected:
+>> > >
+>> > > ------< eventfd01.c - main() >------
+>> > > =A0 =A0 =A0 =A0if (tst_kvercmp(2, 6, 22) < 0)
+>> > > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_brkm(TCONF, cleanup, "2.6.22 or g=
+reater kernel
+>> > > required");
+>> > > ------------
+>> > >
+>> > > But, this "tst_brkm()" called "cleanup()".
+>> > > "tst_rmdir()" is called in "cleanup()", and this checked "TESTDIR":
+>> > >
+>> > > ------< tst_tmpdir.c - tst_rmdir() >------
+>> > > =A0 /*
+>> > > =A0 =A0* Check that TESTDIR is not NULL.
+>> > > =A0 =A0*/
+>> > > =A0 if ( TESTDIR =3D=3D NULL ) {
+>> > > =A0 =A0 =A0tst_resm(TWARN, "%s: TESTDIR was NULL; no removal attempt=
+ed",
+>> > > =A0 =A0 =A0 =A0 =A0 =A0 =A0 FN_NAME);
+>> > > =A0 =A0 =A0return;
+>> > > =A0 }
+>> > > ------------
+>> > >
+>> > > This TWARN caused FAIL.
+>> > > "TESTDIR" is NULL because the test didn't start.
+>> > >
+>> > > I think that "cleanup()" doesn't have to be called in this case.
+>> > >
+>> > >
+>> > > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>> > >
+>> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> > > --- a/testcases/kernel/syscalls/eventfd/eventfd01.c
+>> > 2010-04-01
+>> > > 15:23:10.000000000 +0900
+>> > > +++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
+>> > 2010-04-08
+>> > > 17:16:35.000000000 +0900
+>> > > @@ -728,8 +728,10 @@
+>> > > =A0 =A0 =A0 =A0/* capture signals */
+>> > > =A0 =A0 =A0 =A0tst_sig(FORK, DEF_HANDLER, cleanup);
+>> > >
+>> > > - =A0 =A0 =A0 if (tst_kvercmp(2, 6, 22) < 0)
+>> > > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "2.6.22 or gr=
+eater kernel
+>> > > required");
+>> > > + =A0 =A0 =A0 if (tst_kvercmp(2, 6, 22) < 0) {
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, NULL, "2.6.22 or great=
+er kernel
+>> > > required");
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
+>> > > + =A0 =A0 =A0 }
+>> > >
+>> > > =A0 =A0 =A0 =A0/* Create a temporary directory & chdir there */
+>> > > =A0 =A0 =A0 =A0tst_tmpdir();
+>> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >
+>> > Try tst_exit instead of NULL.
+>> > Cheers,
+>> > -Garrett
 
-One of the major issues I see is msgctl10.  This test takes WAY too long
-on arm, likely on any lower cpu/memory system.  It's good stress, but
-blacklisting this one test significantly decreases my run time.  It also
-makes the system almost appear hung while it's running.
+Acked-by: Garrett Cooper <yanegomi@gmail.com>
 
-Other than that, I have a handful of fails, most of which I have not had
-time to investigate yet:
-clone02     3  TFAIL  :  Test Failed
-clone03     1  TFAIL  :  Test failed
-clone05     2  TFAIL  :  Test Failed
-clone06     1  TFAIL  :  Test Failed
-fallocate01    1  TFAIL  :  fallocate(5, 0, 49152, 4096) failed:
-TEST_ERRNO=3DEFBIG(27): File too large
-fallocate01    2  TFAIL  :  fallocate(6, 1, 49152, 4096) failed:
-TEST_ERRNO=3DEFBIG(27): File too large
-fallocate02    7  TFAIL  :  fallocate(tfile_write_10893:6, 1, 0, 4096)
-failed, expected errno:0: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    1  TFAIL  :  fallocate(tfile_sparse_10894, 0, 8192, 4096)
-failed: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    2  TFAIL  :  fallocate(tfile_sparse_10894, 0, 49152,
-4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    3  TFAIL  :  fallocate(tfile_sparse_10894, 0, 69632,
-4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    4  TFAIL  :  fallocate(tfile_sparse_10894, 0, 102400,
-4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    5  TFAIL  :  fallocate(tfile_sparse_10894, 1, 8192, 4096)
-failed: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    6  TFAIL  :  fallocate(tfile_sparse_10894, 1, 49152,
-4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    7  TFAIL  :  fallocate(tfile_sparse_10894, 1, 77824,
-4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
-fallocate03    8  TFAIL  :  fallocate(tfile_sparse_10894, 1, 106496,
-4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
-getcontext01    1  TFAIL  :  getcontext - Sanity test :  Fail errno=3D38 :
-Function not implemented
-sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
-sysctl03    2  TFAIL  :  Expected EPERM, got 13
-sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
+-Garrett
 
-This is from a run I did on yesterday's git snapshot, with msgctl10
-blacklisted.  I only ran the syscalls suite.  I'm curious if anyone else
-running on arm also sees these failures.  My current platform is a
-beagleboard, but I've seen these failures on other armv7 devices as
-well.  OS is Ubuntu 10.04.
-
-Thanks,
-Paul Larson
-
---=-0Hwufj8GRCiEB8R8gaEz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAkvZj6AACgkQ3UR7ubYtCO6r1ACgukqCii1MYimk5h2d3pY2zx/x
-a7kAoPSPnnrOemGAr7ggzEg8wUvi5wQI
-=QkLw
------END PGP SIGNATURE-----
-
---=-0Hwufj8GRCiEB8R8gaEz--
-
-
-
---===============5405043290572180169==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
---===============5405043290572180169==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5405043290572180169==--
-
-
