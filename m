@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1O7wDA-0001V6-9w
-	for ltp-list@lists.sourceforge.net; Fri, 30 Apr 2010 19:49:20 +0000
-Received: from mail-px0-f174.google.com ([209.85.212.174])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O7wD8-0003zK-Va
-	for ltp-list@lists.sourceforge.net; Fri, 30 Apr 2010 19:49:19 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O2Ivr-0003Co-46
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:52:11 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O2Ivq-0001nW-7w
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:52:11 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3F6dwlB015497
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 02:39:58 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3F6q4PM053432
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 02:52:04 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3F6q4fm025441
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 03:52:04 -0300
+Date: Thu, 15 Apr 2010 12:22:02 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100415065202.GB4557@linux.vnet.ibm.com>
+References: <003201cadc47$a9bcec80$fd36c580$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
-References: <103530624.1121001272433642504.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<8B8139E0-F07A-433D-B38D-30DAB81E3FF5@gmail.com>
-	<s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
-From: Henry Yei <hyei@mvista.com>
-Date: Fri, 30 Apr 2010 12:27:04 -0700
-Message-ID: <m2z42aa607e1004301227tfec6a200kda741f32b6feeb11@mail.gmail.com>
-Subject: Re: [LTP] UTIMENSAT test fails hugely
+Content-Disposition: inline
+In-Reply-To: <003201cadc47$a9bcec80$fd36c580$@co.jp>
+Subject: Re: [LTP] [PATCH] fix \"ar\" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,51 +39,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list <ltp-list@lists.sf.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
 
-Speaking of the utimesat test and prerequisites, our test systems
-don't have a sudoers file by default, so we have an internal patch to
-utimesat to create a default one if non exist and remove it after the
-test is done. Would that be of interest to LTP?
+On Thu, Apr 15, 2010 at 11:59:28AM +0900, Mitani wrote:
+> Sorry.
+> My patch was destroyed by e-mail.
+> I attach patch for "ar01" file.
 
-Henry Yei <hyei@mvista.com>
+Applied to next branch. Will wait for someone to Acked/test it before merging to 
+master.
+
+Thanks
+-Rishi
+
+> 
+> 
+> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> 
+> 
+> Regards--
+> 
+> -Tomonori Mitani
 
 
-
-
-
-On Tue, Apr 27, 2010 at 11:27 PM, Caspar Zhang <casparant@gmail.com> wrote:
-> On Wed, Apr 28, 2010 at 2:04 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
->> The first item is different from the other two. The first one ignores the
->> signal (SIG_IGN), whereas the latter two cases reset the handler to the
->> default one (SIG_DFL). I prefer the former format, because otherwise the
->> signal handlers become reentrable on accident.
->
-> I see. Thank you.
->
-> The final patch ;-)
->
-> Cheers,
-> -Caspar
->
-> --
-> Tags: Ant, Beijing, BUPT, Caspar, Kernel QA, Linux, Open Source,
-> Photography, Programmer, Red Hat Inc., Zhejianger, etc.
->
-> Current: Kernel Associate Quality Engineer @ Red Hat Inc.
->
-> Home Page: http://www.CasparZhang.com/
->
 > ------------------------------------------------------------------------------
->
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
+
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
