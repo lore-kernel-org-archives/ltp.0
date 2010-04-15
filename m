@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1O2Rrw-0002GL-NO
-	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 16:24:44 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	by mx2.suse.de (Postfix) with ESMTP id 83DF58655F
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 15 Apr 2010 18:24:36 +0200 (CEST)
-Date: Thu, 15 Apr 2010 18:31:18 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100415163118.GB21117@saboteur.suse.cz>
-References: <20100402130502.GA15872@saboteur.suse.cz>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O2Ive-0003AJ-DI
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:51:58 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O2Ivc-0005US-Lk
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:51:58 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3F6hYFv023571
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 00:43:34 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3F6pocd125722
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 00:51:50 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o3F6porJ021690
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 00:51:50 -0600
+Date: Thu, 15 Apr 2010 12:21:47 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100415065147.GA4557@linux.vnet.ibm.com>
+References: <000301cacfac$6663edf0$332bc9d0$@co.jp>
+	<20100401065639.GA13796@linux.vnet.ibm.com>
+	<001e01cadc43$a6d11400$f4733c00$@co.jp>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20100402130502.GA15872@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH] fix utimensat suicide
+In-Reply-To: <001e01cadc43$a6d11400$f4733c00$@co.jp>
+Subject: Re: [LTP] About mail test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,13 +42,149 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
 
-Ping.
+On Thu, Apr 15, 2010 at 11:30:45AM +0900, Mitani wrote:
+> Sorry.
+> My patch was destroyed by e-mail.
+> I attach patch for "mail_tests.sh" file.
+
+Applied to next branch. Will wait for someone to Acked/test it before merging to
+master.
+
+Thanks
+-Rishi
+> 
+> 
+> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> 
+> 
+> Regards--
+> 
+> -Tomonori Mitani
+> 
+> > -----Original Message-----
+> > From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
+> > Sent: Thursday, April 01, 2010 3:57 PM
+> > To: Mitani
+> > Cc: ltp-list@lists.sourceforge.net
+> > Subject: Re: [LTP] About mail test
+> > 
+> > 
+> > Hi Mitani,
+> > 
+> > can you please sign off ? And also send me a patch against today's git.
+> > 
+> > -Rishi
+> > 
+> > On Tue, Mar 30, 2010 at 10:57:49AM +0900, Mitani wrote:
+> > > Hi,
+> > >
+> > > I found two problems in mail test.
+> > > (${LTPROOT}/testcases/commands/mail/mail_tests.sh)
+> > > They are simple mistakes, I think.
+> > >
+> > > 1) About judgment for making a user name
+> > > In line 80 of "mail_tests.sh", there is following sentence.
+> > > ------------
+> > > if id -u mail_test >/dev/null 2>&1; then
+> > > ------------
+> > > This control sentence is going to judge whether the result of
+> > > "id -u mail_test" command is normal or not, I think.
+> > > But this sentence is not effective.
+> > > Therefore the user name "make_test" cannot be made when this user
+> > name
+> > > isn't exist.
+> > >
+> > >
+> > > 2) About "blind carbon copy" option
+> > > In "mail_tests.sh", there are 5 tests about mail.
+> > > 5th is "blind carbon copy" test.
+> > > However, this test doesn't use "-b" option but uses "-c" option.
+> > >
+> > >
+> > > Please consider the following revision.
+> > > ============
+> > > --- ./testcases/commands/mail/mail_tests.sh     2010-03-23
+> > > 17:56:21.000000000 +0900
+> > > +++ ./testcases/commands/mail/mail_tests.sh.new 2010-03-30
+> > > 10:39:40.000000000 +0900
+> > > @@ -77,7 +77,8 @@
+> > >
+> > >  # check if the user mail_test exists on this system.
+> > >  # if not add that user mail_test, will removed before exiting test.
+> > > -if id -u mail_test >/dev/null 2>&1; then
+> > > +id -u mail_test >/dev/null 2>&1
+> > > +if [ $? -ne 0 ] ; then
+> > >         tst_resm TINFO "INIT: Adding temporary user mail_test"
+> > >         useradd -m -s /sbin/nologin mail_test >
+> > $LTPTMP/tst_mail.out 2>&1
+> > >         if [ $? -ne 0 ]; then
+> > > @@ -327,7 +328,7 @@
+> > >  tst_resm TINFO "Test #5: blind carbon copy user@domain"
+> > >
+> > >  # send mail to root and carbon copy mail_test
+> > > -mail -s "Test" root@localhost -c mail_test@localhost < \
+> > > +mail -s "Test" root@localhost -b mail_test@localhost < \
+> > >         $LTPTMP/tst_mail.in > $LTPTMP/tst_mail.out 2>&1
+> > >  if [ $? -ne 0 ]; then
+> > >         tst_res TFAIL $LTPTMP/tst_mail.out \
+> > > @@ -344,10 +345,10 @@
+> > >
+> > >         if [ "x$RC1" != x0 -a "x$RC2" != x0 ]; then
+> > >                 tst_resm TPASS \
+> > > -                   "Test #5: Mail was carbon copied to user
+> > mail_test"
+> > > +                   "Test #5: Mail was blind carbon copied to user
+> > > mail_test"
+> > >         else
+> > >                 tst_res TFAIL $LTPTMP/tst_mail.res \
+> > > -                   "Test #5: mail failed to carbon copy user
+> > mail_test.
+> > > Reason:"
+> > > +                   "Test #5: mail failed to blind carbon copy user
+> > > mail_test. Reason:"
+> > >                 : $(( TFAILCNT += 1 ))
+> > >         fi
+> > >
+> > > ============
+> > >
+> > >
+> > > Thank you--
+> > >
+> > > -Tomonori Mitani
+> > >
+> > >
+> > >
+> > >
+> > ------------------------------------------------------------------
+> > ------------
+> > > Download Intel&#174; Parallel Studio Eval
+> > > Try the new software tools for yourself. Speed compiling, find bugs
+> > > proactively, and fine-tune applications for parallel performance.
+> > > See why Intel Parallel Studio got high marks during beta.
+> > > http://p.sf.net/sfu/intel-sw-dev
+> > > _______________________________________________
+> > > Ltp-list mailing list
+> > > Ltp-list@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> > --
+> > Thanks & Regards
+> > Rishi
+> > LTP Maintainer
+> > IBM, LTC, Bangalore
+> > Please join IRC #ltp @ irc.freenode.net
+
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
