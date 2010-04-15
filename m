@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NxIW1-0006XC-VB
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 11:24:49 +0000
-Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1O2EsB-0000G0-S7
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 02:32:07 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxIVz-0002YP-1Z
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 11:24:49 +0000
+	(Exim 4.69) id 1O2Es8-0007Fq-Ke
+	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 02:32:07 +0000
+Message-ID: <001e01cadc43$a6d11400$f4733c00$@co.jp>
 From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cad173$3c32b200$b4981600$@co.jp>
-	<20100401083510.GD13796@linux.vnet.ibm.com>
-	<000101cad17c$ee4946d0$cadbd470$@co.jp>
-	<20100401093511.GA25290@linux.vnet.ibm.com>
-In-Reply-To: <20100401093511.GA25290@linux.vnet.ibm.com>
-Date: Thu, 1 Apr 2010 20:24:37 +0900
-Message-ID: <000001cad18d$ea091c60$be1b5520$@co.jp>
+Date: Thu, 15 Apr 2010 11:30:45 +0900
 MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--=_NextPart_ST_11_30_46_Thursday_April_15_2010_18669"
+References: <000301cacfac$6663edf0$332bc9d0$@co.jp>
+	<20100401065639.GA13796@linux.vnet.ibm.com>
+In-Reply-To: <20100401065639.GA13796@linux.vnet.ibm.com>
 Content-Language: ja
-Subject: Re: [LTP] cap_bounds_r.c build failure
+Subject: Re: [LTP] About mail test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,229 +28,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: 'Rishikesh K Rajak' <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
 
-Hi Rishi,
+This is a multi-part message in MIME format.
 
-I installed "libcap-devel", but after configure, build failed, too.
+----=_NextPart_ST_11_30_46_Thursday_April_15_2010_18669
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-------------
-[root@RHEL4-8 mitani]# rpm -qa | grep libcap
-libcap-devel-1.10-20
-libcap-1.10-20
-[root@RHEL4-8 mitani]#
-------------
-
-"libcap-1.10-20" version is normal version in my system (RHEL4.8 
-2.6.9-89.ELsmp).
-In this version, capability.h doesn't have CAP_LAST_CAP definition.
-I try to upgrade version "2.11".
+Sorry.
+My patch was destroyed by e-mail.
+I attach patch for "mail_tests.sh" file.
 
 
-Thanks--
+Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+
+
+Regards--
 
 -Tomonori Mitani
 
-
 > -----Original Message-----
 > From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
-> Sent: Thursday, April 01, 2010 6:35 PM
+> Sent: Thursday, April 01, 2010 3:57 PM
 > To: Mitani
 > Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] cap_bounds_r.c build failure
+> Subject: Re: [LTP] About mail test
 > 
-> On Thu, Apr 01, 2010 at 06:23:03PM +0900, Mitani wrote:
-> > Hi Rishi,
-> >
-> >
-> > "libcap-devel" was not installed in my system.
-> >
-> > ------------
-> > [root@RHEL4-8 mitani]# rpm -qa | grep libcap
-> > libcap-1.10-20
-> > [root@RHEL4-8 mitani]#
-> > ------------
-> >
-> > I'm trying to install libcap-devel now.
 > 
-> Ok, make sure you configure once again the source code after installing
-> libcap-devel rpm.
+> Hi Mitani,
+> 
+> can you please sign off ? And also send me a patch against today's git.
 > 
 > -Rishi
+> 
+> On Tue, Mar 30, 2010 at 10:57:49AM +0900, Mitani wrote:
+> > Hi,
+> >
+> > I found two problems in mail test.
+> > (${LTPROOT}/testcases/commands/mail/mail_tests.sh)
+> > They are simple mistakes, I think.
+> >
+> > 1) About judgment for making a user name
+> > In line 80 of "mail_tests.sh", there is following sentence.
+> > ------------
+> > if id -u mail_test >/dev/null 2>&1; then
+> > ------------
+> > This control sentence is going to judge whether the result of
+> > "id -u mail_test" command is normal or not, I think.
+> > But this sentence is not effective.
+> > Therefore the user name "make_test" cannot be made when this user
+> name
+> > isn't exist.
 > >
 > >
-> > Thanks--
+> > 2) About "blind carbon copy" option
+> > In "mail_tests.sh", there are 5 tests about mail.
+> > 5th is "blind carbon copy" test.
+> > However, this test doesn't use "-b" option but uses "-c" option.
+> >
+> >
+> > Please consider the following revision.
+> > ============
+> > --- ./testcases/commands/mail/mail_tests.sh     2010-03-23
+> > 17:56:21.000000000 +0900
+> > +++ ./testcases/commands/mail/mail_tests.sh.new 2010-03-30
+> > 10:39:40.000000000 +0900
+> > @@ -77,7 +77,8 @@
+> >
+> >  # check if the user mail_test exists on this system.
+> >  # if not add that user mail_test, will removed before exiting test.
+> > -if id -u mail_test >/dev/null 2>&1; then
+> > +id -u mail_test >/dev/null 2>&1
+> > +if [ $? -ne 0 ] ; then
+> >         tst_resm TINFO "INIT: Adding temporary user mail_test"
+> >         useradd -m -s /sbin/nologin mail_test >
+> $LTPTMP/tst_mail.out 2>&1
+> >         if [ $? -ne 0 ]; then
+> > @@ -327,7 +328,7 @@
+> >  tst_resm TINFO "Test #5: blind carbon copy user@domain"
+> >
+> >  # send mail to root and carbon copy mail_test
+> > -mail -s "Test" root@localhost -c mail_test@localhost < \
+> > +mail -s "Test" root@localhost -b mail_test@localhost < \
+> >         $LTPTMP/tst_mail.in > $LTPTMP/tst_mail.out 2>&1
+> >  if [ $? -ne 0 ]; then
+> >         tst_res TFAIL $LTPTMP/tst_mail.out \
+> > @@ -344,10 +345,10 @@
+> >
+> >         if [ "x$RC1" != x0 -a "x$RC2" != x0 ]; then
+> >                 tst_resm TPASS \
+> > -                   "Test #5: Mail was carbon copied to user
+> mail_test"
+> > +                   "Test #5: Mail was blind carbon copied to user
+> > mail_test"
+> >         else
+> >                 tst_res TFAIL $LTPTMP/tst_mail.res \
+> > -                   "Test #5: mail failed to carbon copy user
+> mail_test.
+> > Reason:"
+> > +                   "Test #5: mail failed to blind carbon copy user
+> > mail_test. Reason:"
+> >                 : $(( TFAILCNT += 1 ))
+> >         fi
+> >
+> > ============
+> >
+> >
+> > Thank you--
 > >
 > > -Tomonori Mitani
 > >
-> > > -----Original Message-----
-> > > From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
-> > > Sent: Thursday, April 01, 2010 5:35 PM
-> > > To: Mitani
-> > > Cc: ltp-list@lists.sourceforge.net
-> > > Subject: Re: [LTP] cap_bounds_r.c build failure
-> > >
-> > > Hi  Mitani,
-> > >
-> > > Can you confirm if you have installed libcap-devel ? As i see this
-> is
-> > > defined
-> > > under linux/capability.h .
-> > >
-> > > #define CAP_MAC_ADMIN        33
-> > >
-> > > #define CAP_LAST_CAP         CAP_MAC_ADMIN
-> > >
-> > > #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
-> > >
-> > >
-> > > Which unltimately is being called by sys/capability.h .
-> > >
-> > >
-> > > FYI, I did not get any compilation error on SLES11GA where:
-> > >
-> > > libcap2-2.11-2.15
-> > > libcap-devel-2.11-2.15
-> > >
-> > > -Rishi
-> > >
-> > >
-> > > On Thu, Apr 01, 2010 at 05:13:39PM +0900, Mitani wrote:
-> > > > Hi,
-> > > >
-> > > > I tried to build by using yesterday's git.
-> > > >  (ltp-dev-02719d6f7e5cb252c0fcbfbaf26208d7196e46f2.tar.gz)
-> > > > But build failed in "cap_bounds_r.c" with following message.
-> > > >
-> > > > ------------
-> > > > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> > > > -I/home/LTP/ltp-dev-20100401/testcases/kernel/include
-> > > -I../../../../include
-> > > > -I../../../../include   -L../../../../lib  cap_bounds_r.c
-> > > -lltp -lcap -o
-> > > > cap_bounds_r
-> > > > cap_bounds_r.c: In function `main':
-> > > > cap_bounds_r.c:46: error: `CAP_LAST_CAP' undeclared (first use
-> in
-> > > this
-> > > > function)
-> > > > cap_bounds_r.c:46: error: (Each undeclared identifier is
-> reported
-> > > only once
-> > > > cap_bounds_r.c:46: error: for each function it appears in.)
-> > > > make[4]: *** [cap_bounds_r] Error 1
-> > > > ------------
-> > > >
-> > > > I tried to today's git, but it failed, too.
-> > > >  (ltp-dev-44fba94453ca4f446cde4db08b0a760862b55cfa.tar.gz)
-> > > >
-> > > >
-> > > > I referd this source's diff in following URL.
-> > > >
-> > >
-> http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=
-> > > commitdiff
-> > > > ;h=6e3dd83d9f575d98d76b8b3f642ad6e8793dbdfc
-> > > >
-> > > > "CAP_LAST_CAP" definition is deleted with other definitions in
-> this
-> > > > revision.
-> > > > But "CAP_LAST_CAP" is still used after edited version.
-> > > >
-> > > > "The editor may have deleted too much to make this source simple?"
-> > > > I think. ;-)
-> > > >
-> > > >
-> > > > There is same problem in "cap_bounds_rw.c", too.
-> > > >
-> > > >
-> > > > How about following patch?
-> > > >
-> > > >
-> > > > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-> > > >
-> > > > Index: ./testcases/kernel/security/cap_bound/cap_bounds_r.c
-> > > > ============
-> > > > --- ./testcases/kernel/security/cap_bound/cap_bounds_r.c
-> > > 2010-03-31
-> > > > 22:44:52.000000000 +0900
-> > > > +++ ./testcases/kernel/security/cap_bound/cap_bounds_r.c.new
-> > > 2010-04-01
-> > > > 15:43:01.000000000 +0900
-> > > > @@ -32,6 +32,13 @@
-> > > >  #include <sys/prctl.h>
-> > > >  #include <test.h>
-> > > >
-> > > > +#if HAVE_SYS_CAPABILITY_H
-> > > > +#ifndef CAP_LAST_CAP
-> > > > +#warning out-of-date capability.h does not define CAP_LAST_CAP
-> > > > +#define CAP_LAST_CAP 28  /* be ultra-conservative */
-> > > > +#endif
-> > > > +#endif
-> > > > +
-> > > >  char *TCID = "cap_bounds_r";
-> > > >  int TST_TOTAL=1;
-> > > >
-> > > > ============
-> > > >
-> > > > Index: ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
-> > > > ============
-> > > > --- ./testcases/kernel/security/cap_bound/cap_bounds_rw.c
-> > > 2010-03-31
-> > > > 22:44:52.000000000 +0900
-> > > > +++ ./testcases/kernel/security/cap_bound/cap_bounds_rw.c.new
-> > > 2010-04-01
-> > > > 15:44:39.000000000 +0900
-> > > > @@ -31,6 +31,13 @@
-> > > >  #include <sys/prctl.h>
-> > > >  #include <test.h>
-> > > >
-> > > > +#if HAVE_SYS_CAPABILITY_H
-> > > > +#ifndef CAP_LAST_CAP
-> > > > +#warning out-of-date capability.h does not define CAP_LAST_CAP
-> > > > +#define CAP_LAST_CAP 28  /* be ultra-conservative */
-> > > > +#endif
-> > > > +#endif
-> > > > +
-> > > >  char *TCID = "cap_bounds_rw";
-> > > >  int TST_TOTAL=1;
-> > > >
-> > > > ============
-> > > >
-> > > >
-> > > > Regards--
-> > > >
-> > > > -Tomonori Mitani
-> > > >
-> > > >
-> > > >
-> > > >
-> > >
-> ------------------------------------------------------------------
-> > > ------------
-> > > > Download Intel&#174; Parallel Studio Eval
-> > > > Try the new software tools for yourself. Speed compiling, find
-> bugs
-> > > > proactively, and fine-tune applications for parallel
-> performance.
-> > > > See why Intel Parallel Studio got high marks during beta.
-> > > > http://p.sf.net/sfu/intel-sw-dev
-> > > > _______________________________________________
-> > > > Ltp-list mailing list
-> > > > Ltp-list@lists.sourceforge.net
-> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > >
-> > > --
-> > > Thanks & Regards
-> > > Rishi
-> > > LTP Maintainer
-> > > IBM, LTC, Bangalore
-> > > Please join IRC #ltp @ irc.freenode.net
 > >
+> >
+> >
+> ------------------------------------------------------------------
+> ------------
+> > Download Intel&#174; Parallel Studio Eval
+> > Try the new software tools for yourself. Speed compiling, find bugs
+> > proactively, and fine-tune applications for parallel performance.
+> > See why Intel Parallel Studio got high marks during beta.
+> > http://p.sf.net/sfu/intel-sw-dev
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
 > --
 > Thanks & Regards
@@ -259,7 +164,38 @@ Thanks--
 > IBM, LTC, Bangalore
 > Please join IRC #ltp @ irc.freenode.net
 
+----=_NextPart_ST_11_30_46_Thursday_April_15_2010_18669
+Content-Type: application/octet-stream;
+	name="mail_tests.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="mail_tests.patch"
 
+--- a/testcases/commands/mail/mail_tests.sh=092010-04-01 16:15:00.000000000=
+ +0900=0A+++ b/testcases/commands/mail/mail_tests.sh=092010-04-01 20:54:40.=
+000000000 +0900=0A@@ -77,7 +77,8 @@=0A =0A # check if the user mail_test ex=
+ists on this system.=0A # if not add that user mail_test, will removed befo=
+re exiting test.=0A-if id -u mail_test >/dev/null 2>&1; then=0A+id -u mail_=
+test >/dev/null 2>&1=0A+if [ $=3F -ne 0 ] ; then=0A =09tst_resm TINFO "INIT=
+: Adding temporary user mail_test"=0A =09useradd -m -s /sbin/nologin mail_t=
+est > $LTPTMP/tst_mail.out 2>&1=0A =09if [ $=3F -ne 0 ]; then=0A@@ -327,7 +=
+328,7 @@=0A tst_resm TINFO "Test #5: blind carbon copy user@domain"=0A =0A =
+# send mail to root and carbon copy mail_test =0A-mail -s "Test" root@local=
+host -c mail_test@localhost < \=0A+mail -s "Test" root@localhost -b mail_te=
+st@localhost < \=0A =09$LTPTMP/tst_mail.in > $LTPTMP/tst_mail.out 2>&1=0A i=
+f [ $=3F -ne 0 ]; then=0A =09tst_res TFAIL $LTPTMP/tst_mail.out \=0A@@ -344=
+,10 +345,10 @@=0A =0A =09if [ "x$RC1" !=3D x0 -a "x$RC2" !=3D x0 ]; then=0A=
+ =09=09tst_resm TPASS \=0A-=09=09    "Test #5: Mail was carbon copied to us=
+er mail_test"=0A+=09=09    "Test #5: Mail was blind carbon copied to user m=
+ail_test"=0A =09else=0A =09=09tst_res TFAIL $LTPTMP/tst_mail.res \=0A-=09=09=
+    "Test #5: mail failed to carbon copy user mail_test. Reason:"=0A+=09=09=
+    "Test #5: mail failed to blind carbon copy user mail_test. Reason:"=0A =
+=09=09: $(( TFAILCNT +=3D 1 ))=0A =09fi=0A =0A
+----=_NextPart_ST_11_30_46_Thursday_April_15_2010_18669
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -267,7 +203,16 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+----=_NextPart_ST_11_30_46_Thursday_April_15_2010_18669
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+----=_NextPart_ST_11_30_46_Thursday_April_15_2010_18669--
+
