@@ -1,18 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Feng.Xu@windriver.com>) id 1NuKEV-0007xH-Lu
-	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 06:38:27 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NuKET-0002Ah-9M
-	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 06:38:27 +0000
-From: Henry xu <feng.xu@windriver.com>
-Date: Wed, 24 Mar 2010 14:42:25 +0800
-Message-Id: <1269412945.15210.41.camel@lishuang-desktop>
-Mime-Version: 1.0
-Subject: [LTP]  ltp clock_nanosleep2 testcase failed
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1O2av4-0007rZ-33
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 02:04:34 +0000
+Received: from out05.sjc.mx.trendmicro.com ([216.99.131.18])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O2av2-0005vH-HH
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 02:04:33 +0000
+Received: from out04.sjc.mx.trendmicro.com (unknown [216.99.131.8])
+	by out05.sjc.mx.trendmicro.com (Postfix) with ESMTP id 4E06F3C4BA5
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 16 Apr 2010 01:33:15 +0000 (UTC)
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000001cadad6$c061c590$412550b0$@co.jp>	
+	<4BC487C9.9080300@xenotime.net>	
+	<000901cadb78$a2d05080$e870f180$@co.jp>	
+	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>	
+	<000601cadbb0$9fb8b5d0$df2a2170$@co.jp>	
+	<p2y364299f41004140230u4e312ea7y7623fce2dbfd0ba6@mail.gmail.com>	
+	<001301cadc36$77e08cf0$67a1a6d0$@co.jp>	
+	<20100415065440.GA6261@linux.vnet.ibm.com>
+	<o2h364299f41004150142r6d8e1a98l6bb591e8d3157c5b@mail.gmail.com>
+In-Reply-To: <o2h364299f41004150142r6d8e1a98l6bb591e8d3157c5b@mail.gmail.com>
+Date: Fri, 16 Apr 2010 10:33:12 +0900
+Message-ID: <000601cadd04$c7194450$554bccf0$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,142 +37,187 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
-
-Hi,all
-
-summary:
-===================================================================
-When I execute clock_nanosleep2 testcase in mips board,the case failed.
-
-Environment
-================================================================
-linux version:2.6.27.45
-hardware platform:mips
+To: 'Garrett Cooper' <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Thursday, April 15, 2010 5:43 PM
+> To: Mitani; Garrett Cooper; ltp-list@lists.sourceforge.net;
+> kamimura@ryobi.co.jp
+> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+> =
 
-symptom Details
-====================================================================
-root@localhost:/opt/mytest> strace ./clock_nanosleep2_01 
-execve("./clock_nanosleep2_01", ["./clock_nanosleep2_01"], [/* 13 vars
-*/]) = 0
-brk(0)                                  = 0x41d000
-uname({sys="Linux", node="localhost", ...}) = 0
-old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
--1, 0) = 0x2aaa8000
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or
-directory)
-open("/etc/ld.so.cache", O_RDONLY)      = -1 ENOENT (No such file or
-directory)
-open("/lib/tls/libpthread.so.0", O_RDONLY) = -1 ENOENT (No such file or
-directory)
-stat64(0x7fe0a178, 0x7fe0a1a8)          = -1 ENOENT (No such file or
-directory)
-open("/lib/libpthread.so.0", O_RDONLY)  = 3
-read(3, "\177ELF\1\2\1\0\0\0\0\0\0\0\0\0\0\3\0\10\0\0\0\1,\305J"...,
-512) = 512
-lseek(3, 676, SEEK_SET)                 = 676
-read(3, "\0\0\0\4\0\0\0\20\0\0\0\1GNU\0\0\0\0\0\0\0\0\2\0\0\0\6"..., 32)
-= 32
-fstat64(3, {st_mode=S_IFREG|0755, st_size=107508, ...}) = 0
-old_mmap(0x2cc50000, 169264, PROT_READ|PROT_EXEC, MAP_PRIVATE|
-MAP_DENYWRITE, 3, 0) = 0x2cc50000
-mprotect(0x2cc66000, 65536, PROT_NONE)  = 0
-old_mmap(0x2cc76000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
-MAP_DENYWRITE, 3, 0x16000) = 0x2cc76000
-old_mmap(0x2cc78000, 5424, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
-MAP_ANONYMOUS, -1, 0) = 0x2cc78000
-close(3)                                = 0
-open("/lib/librt.so.1", O_RDONLY)       = 3
-read(3, "\177ELF\1\2\1\0\0\0\0\0\0\0\0\0\0\3\0\10\0\0\0\1,\320\30"...,
-512) = 512
-lseek(3, 676, SEEK_SET)                 = 676
-read(3, "\0\0\0\4\0\0\0\20\0\0\0\1GNU\0\0\0\0\0\0\0\0\2\0\0\0\6"..., 32)
-= 32
-fstat64(3, {st_mode=S_IFREG|0755, st_size=35160, ...}) = 0
-old_mmap(0x2cd00000, 94896, PROT_READ|PROT_EXEC, MAP_PRIVATE|
-MAP_DENYWRITE, 3, 0) = 0x2cd00000
-mprotect(0x2cd07000, 61440, PROT_NONE)  = 0
-old_mmap(0x2cd16000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
-MAP_DENYWRITE, 3, 0x6000) = 0x2cd16000
-close(3)                                = 0
-open("/lib/libc.so.6", O_RDONLY)        = 3
-read(3, "\177ELF\1\2\1\0\0\0\0\0\0\0\0\0\0\3\0\10\0\0\0\1,\233j"...,
-512) = 512
-lseek(3, 692, SEEK_SET)                 = 692
-read(3, "\0\0\0\4\0\0\0\20\0\0\0\1GNU\0\0\0\0\0\0\0\0\2\0\0\0\6"..., 32)
-= 32
-fstat64(3, {st_mode=S_IFREG|0755, st_size=1474548, ...}) = 0
-old_mmap(0x2c9a0000, 1453296, PROT_READ|PROT_EXEC, MAP_PRIVATE|
-MAP_DENYWRITE, 3, 0) = 0x2c9a0000
-mprotect(0x2cae7000, 61440, PROT_NONE)  = 0
-old_mmap(0x2caf6000, 40960, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
-MAP_DENYWRITE, 3, 0x146000) = 0x2caf6000
-old_mmap(0x2cb00000, 11504, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
-MAP_ANONYMOUS, -1, 0) = 0x2cb00000
-close(3)                                = 0
-old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
--1, 0) = 0x2aaa9000
-set_thread_area(0x2aab0800)             = 0
-mprotect(0x2caf6000, 32768, PROT_READ)  = 0
-mprotect(0x2cd16000, 4096, PROT_READ)   = 0
-mprotect(0x2cc76000, 4096, PROT_READ)   = 0
-mprotect(0x2c98e000, 4096, PROT_READ)   = 0
-set_tid_address(0x2aaa93d8)             = 2763
-SYS_4309()                              = 0
-futex(0x7fe0aa90, 0x81 /* FUTEX_??? */, 1) = 0
-rt_sigaction(SIGRT_0, {0x8, [], SA_STACK|SA_INTERRUPT|SA_NOCLDWAIT|
-0x4c449a0}, NULL, 16) = 0
-rt_sigaction(SIGRT_1, {0x10000008, [], SA_STACK|SA_INTERRUPT|
-SA_NOCLDWAIT|0x4c44520}, NULL, 16) = 0
-rt_sigprocmask(SIG_UNBLOCK, [RT_0 RT_1], NULL, 16) = 0
-getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM_INFINITY}) =
-0
-brk(0)                                  = 0x41d000
-brk(0x43e000)                           = 0x43e000
-gettimeofday({15923, 145958}, NULL)     = 0
-mkdir("/tmp/cloc75vBk", 0700)           = 0
-getgid()                                = 0
-chown("/tmp/cloc75vBk", -1, 0)          = 0
-chmod("/tmp/cloc75vBk", 0777)           = 0
-chdir("/tmp/cloc75vBk")                 = 0
-clock_gettime(CLOCK_MONOTONIC, {15923, 148741194}) = 0
-syscall(0x10a9, 0x1, 0x1, 0x7fe0aaf8, 0, 0x4060ac, 0x3e34, 0x8dd9c4a) =
--1 EOPNOTSUPP (Operation not supported)
-fstat64(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(5, 1), ...}) = 0
-ioctl(1, TIOCNXCL, {B38400 opost isig icanon echo ...}) = 0
-old_mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
--1, 0) = 0x2aaaa000
-write(1, "clock_nanosleep2_01    1  TFAIL "..., 103clock_nanosleep2_01
-1  TFAIL  :  clock_nanosleep2_01 failed - errno = 122 : Operation not
-supported
-) = 103
-chdir("/tmp")                           = 0
-lstat("/tmp/cloc75vBk", {st_mode=S_IFDIR|0777, st_size=4096, ...}) = 0
-open("/tmp/cloc75vBk", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|
-0x80000) = 3
-fstat64(3, {st_mode=S_IFDIR|0777, st_size=4096, ...}) = 0
-fcntl64(3, F_GETFD)                     = 0x1 (flags FD_CLOEXEC)
-getdents(3, /* 2 entries */, 4096)      = 32
-getdents(3, /* 0 entries */, 4096)      = 0
-close(3)                                = 0
-lstat("/tmp/cloc75vBk", {st_mode=S_IFDIR|0777, st_size=4096, ...}) = 0
-unlink("/tmp/cloc75vBk")                = -1 EISDIR (Is a directory)
-rmdir("/tmp/cloc75vBk")                 = 0
-exit_group(1)                           = ?
-Process 2763 detached
+> On Wed, Apr 14, 2010 at 11:54 PM, Rishikesh K Rajak
+> <risrajak@linux.vnet.ibm.com> wrote:
+> > On Thu, Apr 15, 2010 at 09:56:22AM +0900, Mitani wrote:
+> >>
+> >> > -----Original Message-----
+> >> > From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> >> > Sent: Wednesday, April 14, 2010 6:31 PM
+> >> > To: Mitani
+> >> > Cc: ltp-list@lists.sourceforge.net
+> >> > Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+> >> >
+> >> > On Wed, Apr 14, 2010 at 1:58 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> >> > >> -----Original Message-----
+> >> > >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> >> > >> Sent: Wednesday, April 14, 2010 3:18 PM
+> >> > >> To: Mitani
+> >> > >> Cc: Randy Dunlap; ltp-list@lists.sourceforge.net
+> >> > >> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+> >> > >>
+> >> > >> On Tue, Apr 13, 2010 at 7:17 PM, Mitani <mitani@ryobi.co.jp>
+> wrote:
+> >> > >> > Hi Randy,
+> >> > >> >
+> >> > >> > I couldn't notice a misspelling. Sorry.
+> >> > >> > I decided to use "due to" according to your advice.
+> >> > >> >
+> >> > >> > May I suggest revised patch?
+> >> > >> >
+> >> > > [...]
+> >> > >> >
+> >> > >> > Thank you--
+> >> > >> >
+> >> > >> > -Tomonori Mitani
+> >> > >> >
+> >> > >> >
+> >> > >> >> -----Original Message-----
+> >> > >> >> From: Randy Dunlap [mailto:rdunlap@xenotime.net]
+> >> > >> >> Sent: Wednesday, April 14, 2010 12:04 AM
+> >> > >> >> To: Mitani
+> >> > >> >> Cc: ltp-list@lists.sourceforge.net
+> >> > >> >> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+> >> > >> >>
+> >> > >> >> On 04/12/10 23:58, Mitani wrote:
+> >> > >> >> > ------------
+> >> > >> >> > =A0a) All tests:
+> >> > >> >> > "TBROK =A0: =A0Test cannot be continued owning to sufficient
+> >> > >> >> availability of
+> >> > >> >> > Hugepages on the system"
+> >> > >> >> >
+> >> > >> >> > =A0b) 2), 3), 5), 6), 8), 10), 11) tests:
+> >> > >> >> > "TWARN =A0: =A0tst_rmdir(): TESTDIR was NULL; no removal
+> >> > attempted"
+> >> > >> >> > ------------
+> >> > >> >> >
+> >> > >> >> > Both case a) and case b) are caused by the same reason.
+> >> > >> >> >
+> >> > >> >> > All of case a) failures occured at the following points
+> (for
+> >> > >> example
+> >> > >> >> > hugemmap04):
+> >> > >> >> > ------------<hugemmap04.c - main()>
+> >> > >> >> > =A0 =A0 =A0 =A0 /* Check number of hugepages */
+> >> > >> >> > =A0 =A0 =A0 =A0 if (get_no_of_hugepages() <=3D 0 ||
+> hugepages_size()
+> >> > <=3D
+> >> > >> 0)
+> >> > >> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Te=
+st cannot
+> be
+> >> > >> continued
+> >> > >> >> owning to
+> >> > >> >> > \
+> >> > >> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 sufficient
+> availability
+> >> > of
+> >> > >> >> Hugepages on the
+> >> > >> >> > system");
+> >> > >> >> > ------------
+> >> > >> >> >
+> >> > >> >> > I found out that "HugePages_Total" parameter of
+> "/proc/meminfo"
+> >> > >> file
+> >> > >> >> > is set to "0". This caused above TBROK failure. It is
+> environment
+> >> > >> >> problem.
+> >> > >> >> >
+> >> > >> >> > But, in this case, tests must not return with TBROK, but
+> with
+> >> > TCONF,
+> >> > >> >> > I think.
+> >> > >> >>
+> >> > >> >> That makes sense to me.
+> >> > >> >>
+> >> > >> >> > And, in case b), these tests try to delete "TESTDIR"
+> directory
+> >> > >> by
+> >> > >> >> > calling "tst_rmdir()" function in "cleanup()" function.
+> >> > >> >> > But, "TESTDIR" never set if "tst_tmpdir()" function isn't
+> >> > called.
+> >> > >> >> > I think that case b)'s tests must not call cleanup()
+> function.
+> >> > >> >> >
+> >> > >> >> >
+> >> > >> >> > I want to suggest following patch.
+> >> > >> >> >
+> >> > >> >> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> >> >
+> >> > =A0 =A0 Sorry to ask again, but Gmail always mangles patches. Could
+> you
+> >> > please attach it as a file?
+> >> > Thanks,
+> >> > -Garrett
+> >>
+> >>
+> >> Sorry.
+> >> I attach a patch file.
+> >
+> >
+> > Applied to next branch. Will wait for someone to Acked/test it before
+> merging to
+> > master.
+> =
+
+>     Inspecting the files more closely, here all cases should be
+> tst_exit, not cleanup. Otherwise it's going to do some operations not
+> required as setup hasn't be run yet.
+> Thanks,
+> -Garrett
+
+HI,
+
+There is a problem.
+In hugeshmget01.c, setup() calling is posted before than the judgment =
+
+of hugepages support:
+------------
+        setup();                        /* global setup */
+
+        /* The following loop checks looping state if -i option given */
+        if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D 0 )
+             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
+sufficient avail
+ability of Hugepages on the system");
+        else
+              huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() *
+hugepages_size()
+* 1024) / 2 ;
+------------
+
+Therefore, with this order of processing, clean of setup is necessary, =
+
+I think
+
+Can setup() calling be replaced after the judgment of hugepages support?
+Perhaps, it's OK, I think ...
+
+
+Regards--
+
+-Tomonori Mitani
 
 
 
-
-
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
