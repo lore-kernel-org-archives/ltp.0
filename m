@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NxJQp-0001Fk-HG
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 12:23:31 +0000
-Received: from out04.sjc.mx.trendmicro.com ([216.99.131.8])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxJQl-00089W-Js
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 12:23:31 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000301cacfac$6663edf0$332bc9d0$@co.jp>
-	<20100401065639.GA13796@linux.vnet.ibm.com>
-In-Reply-To: <20100401065639.GA13796@linux.vnet.ibm.com>
-Date: Thu, 1 Apr 2010 21:21:17 +0900
-Message-ID: <000001cad195$d4704420$7d50cc60$@co.jp>
+	(envelope-from <yanegomi@gmail.com>) id 1O2du8-0006Gz-6B
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 05:15:48 +0000
+Received: from mail-gy0-f175.google.com ([209.85.160.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O2du7-0007JJ-8I
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 05:15:48 +0000
+Received: by gya1 with SMTP id 1so1014995gya.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Apr 2010 22:15:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] About mail test
+In-Reply-To: <000601cadd04$c7194450$554bccf0$@co.jp>
+References: <000001cadad6$c061c590$412550b0$@co.jp>
+	<4BC487C9.9080300@xenotime.net>
+	<000901cadb78$a2d05080$e870f180$@co.jp>
+	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
+	<000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
+	<p2y364299f41004140230u4e312ea7y7623fce2dbfd0ba6@mail.gmail.com>
+	<001301cadc36$77e08cf0$67a1a6d0$@co.jp>
+	<20100415065440.GA6261@linux.vnet.ibm.com>
+	<o2h364299f41004150142r6d8e1a98l6bb591e8d3157c5b@mail.gmail.com>
+	<000601cadd04$c7194450$554bccf0$@co.jp>
+Date: Thu, 15 Apr 2010 22:15:41 -0700
+Message-ID: <n2p364299f41004152215ke6caf1bm31aa431db15b128a@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,70 +36,188 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Rishikesh K Rajak' <risrajak@linux.vnet.ibm.com>
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Thu, Apr 15, 2010 at 6:33 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>
+>> -----Original Message-----
+>> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> Sent: Thursday, April 15, 2010 5:43 PM
+>> To: Mitani; Garrett Cooper; ltp-list@lists.sourceforge.net;
+>> kamimura@ryobi.co.jp
+>> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>>
+>> On Wed, Apr 14, 2010 at 11:54 PM, Rishikesh K Rajak
+>> <risrajak@linux.vnet.ibm.com> wrote:
+>> > On Thu, Apr 15, 2010 at 09:56:22AM +0900, Mitani wrote:
+>> >>
+>> >> > -----Original Message-----
+>> >> > From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> >> > Sent: Wednesday, April 14, 2010 6:31 PM
+>> >> > To: Mitani
+>> >> > Cc: ltp-list@lists.sourceforge.net
+>> >> > Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>> >> >
+>> >> > On Wed, Apr 14, 2010 at 1:58 AM, Mitani <mitani@ryobi.co.jp> wrote:
+>> >> > >> -----Original Message-----
+>> >> > >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> >> > >> Sent: Wednesday, April 14, 2010 3:18 PM
+>> >> > >> To: Mitani
+>> >> > >> Cc: Randy Dunlap; ltp-list@lists.sourceforge.net
+>> >> > >> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>> >> > >>
+>> >> > >> On Tue, Apr 13, 2010 at 7:17 PM, Mitani <mitani@ryobi.co.jp>
+>> wrote:
+>> >> > >> > Hi Randy,
+>> >> > >> >
+>> >> > >> > I couldn't notice a misspelling. Sorry.
+>> >> > >> > I decided to use "due to" according to your advice.
+>> >> > >> >
+>> >> > >> > May I suggest revised patch?
+>> >> > >> >
+>> >> > > [...]
+>> >> > >> >
+>> >> > >> > Thank you--
+>> >> > >> >
+>> >> > >> > -Tomonori Mitani
+>> >> > >> >
+>> >> > >> >
+>> >> > >> >> -----Original Message-----
+>> >> > >> >> From: Randy Dunlap [mailto:rdunlap@xenotime.net]
+>> >> > >> >> Sent: Wednesday, April 14, 2010 12:04 AM
+>> >> > >> >> To: Mitani
+>> >> > >> >> Cc: ltp-list@lists.sourceforge.net
+>> >> > >> >> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>> >> > >> >>
+>> >> > >> >> On 04/12/10 23:58, Mitani wrote:
+>> >> > >> >> > ------------
+>> >> > >> >> > =A0a) All tests:
+>> >> > >> >> > "TBROK =A0: =A0Test cannot be continued owning to sufficient
+>> >> > >> >> availability of
+>> >> > >> >> > Hugepages on the system"
+>> >> > >> >> >
+>> >> > >> >> > =A0b) 2), 3), 5), 6), 8), 10), 11) tests:
+>> >> > >> >> > "TWARN =A0: =A0tst_rmdir(): TESTDIR was NULL; no removal
+>> >> > attempted"
+>> >> > >> >> > ------------
+>> >> > >> >> >
+>> >> > >> >> > Both case a) and case b) are caused by the same reason.
+>> >> > >> >> >
+>> >> > >> >> > All of case a) failures occured at the following points
+>> (for
+>> >> > >> example
+>> >> > >> >> > hugemmap04):
+>> >> > >> >> > ------------<hugemmap04.c - main()>
+>> >> > >> >> > =A0 =A0 =A0 =A0 /* Check number of hugepages */
+>> >> > >> >> > =A0 =A0 =A0 =A0 if (get_no_of_hugepages() <=3D 0 ||
+>> hugepages_size()
+>> >> > <=3D
+>> >> > >> 0)
+>> >> > >> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "T=
+est cannot
+>> be
+>> >> > >> continued
+>> >> > >> >> owning to
+>> >> > >> >> > \
+>> >> > >> >> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 sufficient
+>> availability
+>> >> > of
+>> >> > >> >> Hugepages on the
+>> >> > >> >> > system");
+>> >> > >> >> > ------------
+>> >> > >> >> >
+>> >> > >> >> > I found out that "HugePages_Total" parameter of
+>> "/proc/meminfo"
+>> >> > >> file
+>> >> > >> >> > is set to "0". This caused above TBROK failure. It is
+>> environment
+>> >> > >> >> problem.
+>> >> > >> >> >
+>> >> > >> >> > But, in this case, tests must not return with TBROK, but
+>> with
+>> >> > TCONF,
+>> >> > >> >> > I think.
+>> >> > >> >>
+>> >> > >> >> That makes sense to me.
+>> >> > >> >>
+>> >> > >> >> > And, in case b), these tests try to delete "TESTDIR"
+>> directory
+>> >> > >> by
+>> >> > >> >> > calling "tst_rmdir()" function in "cleanup()" function.
+>> >> > >> >> > But, "TESTDIR" never set if "tst_tmpdir()" function isn't
+>> >> > called.
+>> >> > >> >> > I think that case b)'s tests must not call cleanup()
+>> function.
+>> >> > >> >> >
+>> >> > >> >> >
+>> >> > >> >> > I want to suggest following patch.
+>> >> > >> >> >
+>> >> > >> >> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>> >> >
+>> >> > =A0 =A0 Sorry to ask again, but Gmail always mangles patches. Could
+>> you
+>> >> > please attach it as a file?
+>> >> > Thanks,
+>> >> > -Garrett
+>> >>
+>> >>
+>> >> Sorry.
+>> >> I attach a patch file.
+>> >
+>> >
+>> > Applied to next branch. Will wait for someone to Acked/test it before
+>> merging to
+>> > master.
+>>
+>> =A0 =A0 Inspecting the files more closely, here all cases should be
+>> tst_exit, not cleanup. Otherwise it's going to do some operations not
+>> required as setup hasn't be run yet.
+>> Thanks,
+>> -Garrett
+>
+> HI,
+>
+> There is a problem.
+> In hugeshmget01.c, setup() calling is posted before than the judgment
+> of hugepages support:
+> ------------
+> =A0 =A0 =A0 =A0setup(); =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*=
+ global setup */
+>
+> =A0 =A0 =A0 =A0/* The following loop checks looping state if -i option gi=
+ven */
+> =A0 =A0 =A0 =A0if ( get_no_of_hugepages() <=3D 0 || hugepages_size() <=3D=
+ 0 )
+> =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup, "Test cannot be continue=
+d owning to
+> sufficient avail
+> ability of Hugepages on the system");
+> =A0 =A0 =A0 =A0else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0huge_pages_shm_to_be_allocated =3D ( get_no_of=
+_hugepages() *
+> hugepages_size()
+> * 1024) / 2 ;
+> ------------
+>
+> Therefore, with this order of processing, clean of setup is necessary,
+> I think
+>
+> Can setup() calling be replaced after the judgment of hugepages support?
+> Perhaps, it's OK, I think ...
 
-I try to suggest patch again by advice of Rishi.
-This patch is for ltp-dev-4837fee8a7c2de6a83c8927a574c792ca6dabe4e.tar.gz .
+    Problem `solved' :). Could you please change the cleanup calls to
+use setup wherever necessary (or perhaps move the hugepages
+availability check into setup, as it's basically a setup item anyhow)?
+Thanks,
+-Garrett
 
-Signed-off-by : Tomonori Mitani <mitani@ryobi.co.jp>
-
-Index: ./testcases/commands/mail/mail_tests.sh
-============
---- ./testcases/commands/mail/mail_tests.sh     2010-04-01
-16:15:00.000000000 +0900
-+++ ./testcases/commands/mail/mail_tests.sh.new 2010-04-01
-20:54:40.000000000 +0900
-@@ -77,7 +77,8 @@
-
- # check if the user mail_test exists on this system.
- # if not add that user mail_test, will removed before exiting test.
--if id -u mail_test >/dev/null 2>&1; then
-+id -u mail_test >/dev/null 2>&1
-+if [ $? -ne 0 ] ; then
-        tst_resm TINFO "INIT: Adding temporary user mail_test"
-        useradd -m -s /sbin/nologin mail_test > $LTPTMP/tst_mail.out 2>&1
-        if [ $? -ne 0 ]; then
-@@ -327,7 +328,7 @@
- tst_resm TINFO "Test #5: blind carbon copy user@domain"
-
- # send mail to root and carbon copy mail_test
--mail -s "Test" root@localhost -c mail_test@localhost < \
-+mail -s "Test" root@localhost -b mail_test@localhost < \
-        $LTPTMP/tst_mail.in > $LTPTMP/tst_mail.out 2>&1
- if [ $? -ne 0 ]; then
-        tst_res TFAIL $LTPTMP/tst_mail.out \
-@@ -344,10 +345,10 @@
-
-        if [ "x$RC1" != x0 -a "x$RC2" != x0 ]; then
-                tst_resm TPASS \
--                   "Test #5: Mail was carbon copied to user mail_test"
-+                   "Test #5: Mail was blind carbon copied to user
-mail_test"
-        else
-                tst_res TFAIL $LTPTMP/tst_mail.res \
--                   "Test #5: mail failed to carbon copy user mail_test.
-Reason:"
-+                   "Test #5: mail failed to blind carbon copy user
-mail_test. Reason:"
-                : $(( TFAILCNT += 1 ))
-        fi
-
-============
-
-
-Thank you--
-
--Tomonori Mitani
-
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
