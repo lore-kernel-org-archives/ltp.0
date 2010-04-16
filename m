@@ -1,32 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxEKk-0008Kp-IP
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 06:56:54 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxEKe-0007CA-TL
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 06:56:54 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o316ivUD022395
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 02:44:57 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o316ugM01880228
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 02:56:42 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o316ug2Q004696
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:56:42 -0300
-Date: Thu, 1 Apr 2010 12:26:39 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100401065639.GA13796@linux.vnet.ibm.com>
-References: <000301cacfac$6663edf0$332bc9d0$@co.jp>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <000301cacfac$6663edf0$332bc9d0$@co.jp>
-Subject: Re: [LTP] About mail test
+	(envelope-from <rdunlap@xenotime.net>) id 1O2nEA-0002N9-Hv
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 15:13:06 +0000
+Received: from xenotime.net ([72.52.64.118])
+	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1O2nE9-00061o-7j
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 15:13:06 +0000
+Received: from chimera.site ([71.245.98.113]) by xenotime.net for
+	<ltp-list@lists.sourceforge.net>; Fri, 16 Apr 2010 08:12:52 -0700
+Date: Fri, 16 Apr 2010 08:12:52 -0700
+From: Randy Dunlap <rdunlap@xenotime.net>
+Message-Id: <20100416081252.e21dcc7a.rdunlap@xenotime.net>
+In-Reply-To: <000001cadd0e$7b35e250$71a1a6f0$@co.jp>
+References: <000001cadad6$c061c590$412550b0$@co.jp>
+	<4BC487C9.9080300@xenotime.net>
+	<000901cadb78$a2d05080$e870f180$@co.jp>
+	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
+	<000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
+	<20100414081953.7356b407.rdunlap@xenotime.net>
+	<000001cadd0e$7b35e250$71a1a6f0$@co.jp>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,105 +38,52 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
+On Fri, 16 Apr 2010 11:42:39 +0900 Mitani wrote:
 
-Hi Mitani,
-
-can you please sign off ? And also send me a patch against today's git.
-
--Rishi
-
-On Tue, Mar 30, 2010 at 10:57:49AM +0900, Mitani wrote:
-> Hi,
 > 
-> I found two problems in mail test.
-> (${LTPROOT}/testcases/commands/mail/mail_tests.sh)
-> They are simple mistakes, I think.
+> > -----Original Message-----
+> > From: Randy Dunlap [mailto:rdunlap@xenotime.net]
+> > Sent: Thursday, April 15, 2010 12:20 AM
+> > To: Mitani
+> > Cc: 'Garrett Cooper'; ltp-list@lists.sourceforge.net
+> > Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+> > 
+> > On Wed, 14 Apr 2010 17:58:17 +0900 Mitani wrote:
+> > 
+> > > Hi,
+> > >
+> > > I suggest new patch.
+> > >
+> > > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> > 
+> > This one is OK with me also, but...
+> > 
+> > Is it possible to determine the difference between a kernel that does
+> > not support hugepages at all and a kernel that does support hugepages
+> > but just does not have enough of them allocated?
+> > 
+> > or maybe we don't care about this difference.  Do we?
+> > 
 > 
-> 1) About judgment for making a user name
-> In line 80 of "mail_tests.sh", there is following sentence.
+> 
+> I cannot give a good opinion because I'm not a creator of these test 
+> programs, but ...
+> I think that the difference of test refusal reason isn't so important.
+> How about following message? :
 > ------------
-> if id -u mail_test >/dev/null 2>&1; then
+> Not support Hugepages or not enough available Hugepages
 > ------------
-> This control sentence is going to judge whether the result of 
-> "id -u mail_test" command is normal or not, I think.
-> But this sentence is not effective.
-> Therefore the user name "make_test" cannot be made when this user name
-> isn't exist.
 > 
-> 
-> 2) About "blind carbon copy" option
-> In "mail_tests.sh", there are 5 tests about mail.
-> 5th is "blind carbon copy" test.
-> However, this test doesn't use "-b" option but uses "-c" option.
-> 
-> 
-> Please consider the following revision.
-> ============
-> --- ./testcases/commands/mail/mail_tests.sh     2010-03-23
-> 17:56:21.000000000 +0900
-> +++ ./testcases/commands/mail/mail_tests.sh.new 2010-03-30
-> 10:39:40.000000000 +0900
-> @@ -77,7 +77,8 @@
-> 
->  # check if the user mail_test exists on this system.
->  # if not add that user mail_test, will removed before exiting test.
-> -if id -u mail_test >/dev/null 2>&1; then
-> +id -u mail_test >/dev/null 2>&1
-> +if [ $? -ne 0 ] ; then
->         tst_resm TINFO "INIT: Adding temporary user mail_test"
->         useradd -m -s /sbin/nologin mail_test > $LTPTMP/tst_mail.out 2>&1
->         if [ $? -ne 0 ]; then
-> @@ -327,7 +328,7 @@
->  tst_resm TINFO "Test #5: blind carbon copy user@domain"
-> 
->  # send mail to root and carbon copy mail_test
-> -mail -s "Test" root@localhost -c mail_test@localhost < \
-> +mail -s "Test" root@localhost -b mail_test@localhost < \
->         $LTPTMP/tst_mail.in > $LTPTMP/tst_mail.out 2>&1
->  if [ $? -ne 0 ]; then
->         tst_res TFAIL $LTPTMP/tst_mail.out \
-> @@ -344,10 +345,10 @@
-> 
->         if [ "x$RC1" != x0 -a "x$RC2" != x0 ]; then
->                 tst_resm TPASS \
-> -                   "Test #5: Mail was carbon copied to user mail_test"
-> +                   "Test #5: Mail was blind carbon copied to user
-> mail_test"
->         else
->                 tst_res TFAIL $LTPTMP/tst_mail.res \
-> -                   "Test #5: mail failed to carbon copy user mail_test.
-> Reason:"
-> +                   "Test #5: mail failed to blind carbon copy user
-> mail_test. Reason:"
->                 : $(( TFAILCNT += 1 ))
->         fi
-> 
-> ============
-> 
-> 
-> Thank you--
-> 
-> -Tomonori Mitani
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> If users read above message, they will examine a reason by themselves 
+> and will do appropriate measures (set an enough hugepages value or 
+> gave up this test), I think.
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+It's a better message IMO.  If it doesn't cost anything to make the
+error/problem messages better, then please do it.
+
+thanks,
+---
+~Randy
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
