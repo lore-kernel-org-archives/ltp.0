@@ -1,29 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1O4eLB-0001c2-RD
-	for ltp-list@lists.sourceforge.net; Wed, 21 Apr 2010 18:08:01 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O4eLA-0006rq-Mm
-	for ltp-list@lists.sourceforge.net; Wed, 21 Apr 2010 18:08:01 +0000
-Message-Id: <4BCEEA98020000E800062212@sinclair.provo.novell.com>
-Date: Wed, 21 Apr 2010 12:07:52 -0600
-From: "Murlin Wenzel" <mwenzel@novell.com>
-References: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-	<364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
-	<20100225062615.GB3377@linux.vnet.ibm.com>
-	<20100310121544.GB11404@linux.vnet.ibm.com>
-	<4B98AE5B020000E80005FC3D@sinclair.provo.novell.com>
-	<364299f41003122332u3c4f93a7td3c1f9db1a360bec@mail.gmail.com>
-	<4B9B684F020000E80005FE67@sinclair.provo.novell.com>
-	<364299f41003131356p3ac589b0mcc0ffe22d8e3ec18@mail.gmail.com>
-	<20100331092225.GB5048@linux.vnet.ibm.com>
-In-Reply-To: <20100331092225.GB5048@linux.vnet.ibm.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: Re: [LTP] [patch] swapon03 cleanup v2
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1O2dkb-0008Js-7j
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 05:05:57 +0000
+Received: from mail-iw0-f183.google.com ([209.85.223.183])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O2dkZ-0001pa-3A
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 05:05:57 +0000
+Received: by iwn13 with SMTP id 13so1166332iwn.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Apr 2010 22:05:49 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <000001cadd0e$7b35e250$71a1a6f0$@co.jp>
+References: <000001cadad6$c061c590$412550b0$@co.jp>
+	<4BC487C9.9080300@xenotime.net>
+	<000901cadb78$a2d05080$e870f180$@co.jp>
+	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
+	<000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
+	<20100414081953.7356b407.rdunlap@xenotime.net>
+	<000001cadd0e$7b35e250$71a1a6f0$@co.jp>
+Date: Thu, 15 Apr 2010 22:05:49 -0700
+Message-ID: <w2l364299f41004152205ybf7a92eekb87553630949773a@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,29 +33,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, Randy Dunlap <rdunlap@xenotime.net>
 
->>> On 3/31/2010 at 03:22 AM, in message
-<20100331092225.GB5048@linux.vnet.ibm.com>, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote: 
-> Hi Murlin,
-> 
-> Can you please look into this problem again ? It seems you had some 
-> discussion
-> with garret to reach to some conclusion about the reported failure.
+On Thu, Apr 15, 2010 at 7:42 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>
+>> -----Original Message-----
+>> From: Randy Dunlap [mailto:rdunlap@xenotime.net]
+>> Sent: Thursday, April 15, 2010 12:20 AM
+>> To: Mitani
+>> Cc: 'Garrett Cooper'; ltp-list@lists.sourceforge.net
+>> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+>>
+>> On Wed, 14 Apr 2010 17:58:17 +0900 Mitani wrote:
+>>
+>> > Hi,
+>> >
+>> > I suggest new patch.
+>> >
+>> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>>
+>> This one is OK with me also, but...
+>>
+>> Is it possible to determine the difference between a kernel that does
+>> not support hugepages at all and a kernel that does support hugepages
+>> but just does not have enough of them allocated?
+>>
+>> or maybe we don't care about this difference. =A0Do we?
+>
+> I cannot give a good opinion because I'm not a creator of these test
+> programs, but ...
+> I think that the difference of test refusal reason isn't so important.
+> How about following message? :
+> ------------
+> Not support Hugepages or not enough available Hugepages
+> ------------
+>
+> If users read above message, they will examine a reason by themselves
+> and will do appropriate measures (set an enough hugepages value or
+> gave up this test), I think.
 
-I hope to grab a little time to look at this again.  The big problem is the fact that the MAX_SWAPFILES supported by a particular kernel is not an exported variable.  It's a compile time macro defined in a kernel header.  There is nothing to export.  That brings up a question about what constraints LTP should run under.  1.  Can I require kernel headers and the current .config file be present on the build or install system that is going to run LTP?  2.  Is there a common place to find the correct kernel headers and config file?  3.  How hard would it be to use something like autoconf or some other tool to setup the correct define during LTP build?
+    It's fine as-is. `Zero [supported] hugepages' is the same as `not
+enough hugepages'. If people can't read the message, and put together
+the details based on what's in the test output versus the
+documentation and the source code, they quite frankly shouldn't be
+running the tests.
+Thanks,
+-Garrett
 
-The only other option I see at this point is similar to what the current code does.  Start at a given number of swapfiles expected, then start trying to create more one at a time until an error is returned.  That's ugly since the starting point is always subject to change.
-
-Murlin
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
