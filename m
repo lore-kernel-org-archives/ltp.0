@@ -1,35 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O2IwA-0005KZ-BV
-	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:52:30 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O2Iw9-000136-17
-	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:52:30 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3F6nIg1022942
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 00:49:18 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o3F6qGr4126452
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 00:52:16 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o3F6qFJl006979
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 00:52:15 -0600
-Date: Thu, 15 Apr 2010 12:22:13 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100415065213.GC4557@linux.vnet.ibm.com>
-References: <000301cad6f8$1b9b0c60$52d12520$@co.jp>
-	<D30EE9FA-D2B3-4292-9571-BEF87442BD30@gmail.com>
-	<003601cadc47$f8724eb0$e956ec10$@co.jp>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <003601cadc47$f8724eb0$e956ec10$@co.jp>
-Subject: Re: [LTP] [PATCH] fix "eventfd01" test
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1O2qRr-0001Mq-U9
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 18:39:27 +0000
+Received: from mail-pz0-f204.google.com ([209.85.222.204])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O2qRp-0004YS-LD
+	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 18:39:27 +0000
+Received: by pzk42 with SMTP id 42so2206239pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 16 Apr 2010 11:39:20 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1078)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <000a01cad7b9$2b1be350$8153a9f0$@co.jp>
+Date: Fri, 16 Apr 2010 11:39:13 -0700
+Message-Id: <88B386A8-E068-4FDB-A9FD-295BBFEBF0A8@gmail.com>
+References: <000001cad173$3c32b200$b4981600$@co.jp>
+	<20100401083510.GD13796@linux.vnet.ibm.com>
+	<000101cad17c$ee4946d0$cadbd470$@co.jp>
+	<20100401093511.GA25290@linux.vnet.ibm.com>
+	<000001cad18d$ea091c60$be1b5520$@co.jp>
+	<20100401152647.GH22648@us.ibm.com>
+	<000301cad20b$2269c230$673d4690$@co.jp>
+	<20100405132004.GA32049@us.ibm.com>
+	<000a01cad7b9$2b1be350$8153a9f0$@co.jp>
+Subject: Re: [LTP] cap_bounds_r.c build failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,158 +39,141 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Apr 15, 2010 at 12:01:40PM +0900, Mitani wrote:
-> 
-> Sorry.
-> My patch was destroyed by e-mail.
-> I attach patch for "eventfd01.c" file.
+On Apr 9, 2010, at 12:49 AM, Mitani wrote:
 
-Applied to next branch. Will wait for someone to Acked/test it before merging to 
-master.
-
-Thanks
--Rishi
-
+> Hi,
+> 
+> Thank you for your help.
+> 
+> I tried to "make" with Serge's patch in my system.
+> But, sorry, it failed.
 > 
 > 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> ---
+> 
+> I did with following procedure:
+> 
+> 1) I did "make" and "make install" of "libcap-2.11" .
+> 
+> 2) I confirmed about following files.
+> ------------
+> [root@RHEL4-8 include]# pwd
+> /usr/include
+> [root@RHEL4-8 include]# ls -l sys/capability.h
+> -rw-r--r--  1 root root 3345 Apr  9 15:44 sys/capability.h
+> [root@RHEL4-8 include]# ls -l linux/capability.h
+> -rw-r--r--  1 root root 8273 May 14  2008 linux/capability.h
+> [root@RHEL4-8 include]#
+> ------------
+> "sys/capability.h" replased by "libcap-2.11" .
+> 
+> 3) I applied patch to "m4/ltp-cap.m4", and confirmed it.
+> ------------
+> ...
+> AC_DEFUN([LTP_CHECK_CAPABILITY_SUPPORT],[
+> AH_TEMPLATE(HAVE_LIBCAP,
+> [Define to 1 if you have libcap-2 installed.])
+> AC_CHECK_HEADERS(sys/capability.h,[
+>        LTP_CAPABILITY_SUPPORT=yes
+>        AC_CHECK_DECL(VFS_CAP_REVISION_2,[AC_DEFINE(HAVE_LIBCAP)
+> CAP_LIBS="-lcap"],[CAP_LIBS=""],[#include "linux/capability.h"])
+>        AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
+> ])]
+> AC_SUBST(CAP_LIBS)
+> )
+> ------------
+> 
+> 4) I did "./configure", and confirmed "configure.log" .
+> ------------
+> ...
+> | #define HAVE_SYS_CAPABILITY_H 1
+> | #define HAVE_LIBCAP 1
+> | #define HAVE_SYS_PRCTL_H 1
+> | #define HAVE_DECL_PR_CAPBSET_DROP 0
+> | #define HAVE_DECL_PR_CAPBSET_READ 0
+> ...
+> ------------
+> "HAVE_LIBCAP" define was ON.
+> 
+> 5) I tried to "make", but it failed as foliows.
+> ------------
+> cap_bounds_r.c: In function `main':
+> cap_bounds_r.c:46: error: `CAP_LAST_CAP' undeclared (first use in this
+> function)
+> cap_bounds_r.c:46: error: (Each undeclared identifier is reported only once
+> cap_bounds_r.c:46: error: for each function it appears in.)
+> make[4]: *** [cap_bounds_r] Error 1
+> ------------
 > 
 > 
-> Regards--
+> I don't know about configure well, and I examine it.
+> 
+> 
+> Thank you--
 > 
 > -Tomonori Mitani
 > 
-> > -----Original Message-----
-> > From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> > Sent: Friday, April 09, 2010 2:35 AM
-> > To: Mitani
-> > Cc: <ltp-list@lists.sourceforge.net>
-> > Subject: Re: [LTP] [PATCH] fix "eventfd01" test
-> > 
-> > On Apr 8, 2010, at 1:47 AM, "Mitani" <mitani@ryobi.co.jp> wrote:
-> > 
-> > > Hi,
-> > >
-> > >
-> > > I tried "eventfd01" test in my system.
-> > > This test failed with TWARN (return code:4) :
-> > >
-> > > ------------
-> > >  eventfd01    1  TCONF  :  2.6.22 or greater kernel required
-> > >  eventfd01    2  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    3  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    4  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    5  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    6  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    7  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    8  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    9  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01   10  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01   11  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01   12  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01   13  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01   14  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01   15  TCONF  :  Remaining cases not appropriate for
-> > > configuration
-> > >  eventfd01    0  TWARN  :  tst_rmdir(): TESTDIR was NULL; no
-> > removal
-> > > attempted
-> > > ------------
-> > >
-> > > My system's kernel level is 2.6.18-164.el5
-> > > Therefore this test rejected:
-> > >
-> > > ------< eventfd01.c - main() >------
-> > >        if (tst_kvercmp(2, 6, 22) < 0)
-> > >                tst_brkm(TCONF, cleanup, "2.6.22 or greater kernel
-> > > required");
-> > > ------------
-> > >
-> > > But, this "tst_brkm()" called "cleanup()".
-> > > "tst_rmdir()" is called in "cleanup()", and this checked "TESTDIR":
-> > >
-> > > ------< tst_tmpdir.c - tst_rmdir() >------
-> > >   /*
-> > >    * Check that TESTDIR is not NULL.
-> > >    */
-> > >   if ( TESTDIR == NULL ) {
-> > >      tst_resm(TWARN, "%s: TESTDIR was NULL; no removal attempted",
-> > >               FN_NAME);
-> > >      return;
-> > >   }
-> > > ------------
-> > >
-> > > This TWARN caused FAIL.
-> > > "TESTDIR" is NULL because the test didn't start.
-> > >
-> > > I think that "cleanup()" doesn't have to be called in this case.
-> > >
-> > >
-> > > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-> > >
-> > > ============
-> > > --- a/testcases/kernel/syscalls/eventfd/eventfd01.c
-> > 2010-04-01
-> > > 15:23:10.000000000 +0900
-> > > +++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
-> > 2010-04-08
-> > > 17:16:35.000000000 +0900
-> > > @@ -728,8 +728,10 @@
-> > >        /* capture signals */
-> > >        tst_sig(FORK, DEF_HANDLER, cleanup);
-> > >
-> > > -       if (tst_kvercmp(2, 6, 22) < 0)
-> > > -               tst_brkm(TCONF, cleanup, "2.6.22 or greater kernel
-> > > required");
-> > > +       if (tst_kvercmp(2, 6, 22) < 0) {
-> > > +               tst_brkm(TCONF, NULL, "2.6.22 or greater kernel
-> > > required");
-> > > +               tst_exit();
-> > > +       }
-> > >
-> > >        /* Create a temporary directory & chdir there */
-> > >        tst_tmpdir();
-> > > ============
-> > 
-> > Try tst_exit instead of NULL.
-> > Cheers,
-> > -Garrett
+> 
+>> -----Original Message-----
+>> From: Serge E. Hallyn [mailto:serue@us.ibm.com]
+>> Sent: Monday, April 05, 2010 10:20 PM
+>> To: Mitani
+>> Cc: Rishikesh K Rajak; Andrew Morgan; Garrett Cooper;
+>> ltp-list@lists.sourceforge.net
+>> Subject: Re: [LTP] cap_bounds_r.c build failure
+>> 
+>> Quoting Mitani (mitani@ryobi.co.jp):
+>>> Hi,
+>>> 
+>>> 
+>>> I tired to upgrade "libcap" from "libcap-1.0-20" to "libcap-2.11".
+>>> My system is RHEL4.8 (x86) and kernel version is 2.6.9-89.ELsmp.
+>> 
+>> Oh, I'm sorry, I misunderstood from the first.  I thought you wanted
+>> to test a modern kernel on an older distro.  So the real problem in
+>> your original email wasn't that cap_bounds_r.c wouldn't compile, but
+>> that it tried to compile.
+>> 
+>> Maybe the attached ltp patch will do a better job of not trying
+>> to compile.  Though I'm not sure what is the best way to detect
+>> both 64-bit caps in kernel and libcap2 userspace.
+>> 
+>> -serge
+>> 
+>> Date: Mon, 5 Apr 2010 08:17:46 -0500
+>> Subject: [PATCH ltp] don't compile cap_bounds on older systems
+>> 
+>> Only define HAVE_LIBCAP for libcap2 and 64-bit caps.
+>> 
+>> Signed-off-by: Serge Hallyn <serue@us.ibm.com>
+>> ---
+>> m4/ltp-cap.m4 |    2 +-
+>> 1 files changed, 1 insertions(+), 1 deletions(-)
+>> 
+>> diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
+>> index caa436f..6248ff3 100644
+>> --- a/m4/ltp-cap.m4
+>> +++ b/m4/ltp-cap.m4
+>> @@ -27,7 +27,7 @@ AH_TEMPLATE(HAVE_LIBCAP,
+>> [Define to 1 if you have libcap-2 installed.])
+>> AC_CHECK_HEADERS(sys/capability.h,[
+>> 	LTP_CAPABILITY_SUPPORT=yes
+>> -	AC_CHECK_LIB(cap,cap_compare,[AC_DEFINE(HAVE_LIBCAP)
+>> CAP_LIBS="-lcap"], [CAP_LIBS=""])
+>> +	AC_CHECK_DECL(VFS_CAP_REVISION_2,[AC_DEFINE(HAVE_LIBCAP)
+>> CAP_LIBS="-lcap"],[CAP_LIBS=""],[#include "linux/capability.h"])
+>> 	AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
+>> ])]
+>> AC_SUBST(CAP_LIBS)
+>> --
+>> 1.6.3.3
 
+	All of the necessary details are in INSTALL.
+HTH,
+-Garrett
 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
