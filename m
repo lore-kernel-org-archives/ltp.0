@@ -1,36 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O4p4d-0006Cq-Mf
-	for ltp-list@lists.sourceforge.net; Thu, 22 Apr 2010 05:35:39 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O4p4c-0006fv-Kn
-	for ltp-list@lists.sourceforge.net; Thu, 22 Apr 2010 05:35:39 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3M5Ptd0020164
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Apr 2010 01:25:55 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o3M5ZWUM2060542
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Apr 2010 01:35:32 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o3M5ZWLJ028970
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Apr 2010 02:35:32 -0300
-Received: from [9.77.121.81] ([9.77.121.81])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o3M5ZUPo028948
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Apr 2010 02:35:31 -0300
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100421120550.13534.21836.sendpatchset@subratamodak.linux.ibm.com>
-References: <20100421120550.13534.21836.sendpatchset@subratamodak.linux.ibm.com>
-Date: Thu, 22 Apr 2010 11:05:26 +0530
-Message-Id: <1271914527.5122.1.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix Location Of GENHTML Inside RUNLTP
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1O47Bz-0001kz-4t
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:44:19 +0000
+Received: from mail-iw0-f183.google.com ([209.85.223.183])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O47Bw-0003IH-WB
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:44:19 +0000
+Received: by iwn13 with SMTP id 13so4119635iwn.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 19 Apr 2010 23:44:11 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <000601cae050$9f25f1b0$dd71d510$@co.jp>
+References: <000601cae050$9f25f1b0$dd71d510$@co.jp>
+Date: Mon, 19 Apr 2010 23:44:08 -0700
+Message-ID: <w2w364299f41004192344l524ea939z95e529cbcdeeba72@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix "su01" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,37 +27,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
 
-T24gV2VkLCAyMDEwLTA0LTIxIGF0IDE3OjM1ICswNTMwLCBTdWJyYXRhIE1vZGFrIHdyb3RlOgo+
-IFRoZXJlIGFyZSBzb21lIGJpdHMgYW5kIHBpZWNlcyBvZiByZXN0cnVjdHVyaW5nIHN0aWxsIGxl
-ZnQgdG8gYmUgZG9uZS4KPiBydW5sdHAgaXMgbm90IGFibGUgdG8gY2FsbCBnZW5odG1sIHByb3Bl
-cmx5IGR1ZSB0byBjaGFuZ2UgaW4gbG9jYXRpb24KPiBvZiB0aGUgc2FtZSBzY3JpcHQuIFRoZSBm
-b2xsb3dpbmcgZXJyb3Igd2lsbCBvY2N1cjoKPiAKPiAuLi4KPiBHZW5lcmF0aW5nIEhUTUwgT3V0
-cHV0Li4uLi4hIQo+IENhbid0IG9wZW4gcGVybCBzY3JpcHQgIi9vcHQvbHRwL3Rvb2xzL2dlbmh0
-bWwucGwiOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gLi4uCj4gCj4gRm9sbG93aW5nIHBh
-dGNoIGZpeGVzIHRoZSBzYW1lLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFN1YnJhdGEgTW9kYWsgPHN1
-YnJhdGFAbGludXgudm5ldC5pYm0uY29tPgo+IC0tLQoKRmlyc3Qgb2YgYWxsLCBkb2VzIHRoaXMg
-cGF0Y2ggc29sdmUgdGhlIGlzc3VlIGF0IGFueWJvZHnFmyBzaWRlID8gSWYgeWVzLApjYW4gdGhp
-cyBiZSBpbmNsdWRlZCBpbiBBcHJpbCAyMDEwIHJlbGVhc2UgPwoKUmVnYXJkcy0tClN1YnJhdGEK
-Cj4gCj4gLS0tIGx0cC1kZXYvcnVubHRwLm9yaWcJMjAxMC0wNC0yMSAyMjo0ODo1OC4yMjM2NTE0
-NDAgKzA1MzAKPiArKysgbHRwLWRldi9ydW5sdHAJMjAxMC0wNC0yMSAyMjo0OToxMC45MDE3ODM0
-NDUgKzA1MzAKPiBAQCAtODQ2LDcgKzg0Niw3IEBAIG1haW4oKQo+ICAgICAgICAgZXhwb3J0IFRF
-U1RfT1VUUFVUX0RJUkVDVE9SWT0iJExUUFJPT1Qvb3V0cHV0Igo+ICAgICAgICAgZXhwb3J0IFRF
-U1RfTE9HU19ESVJFQ1RPUlk9JExPR1NfRElSRUNUT1JZCj4gICAgICAgICBlY2hvICJHZW5lcmF0
-aW5nIEhUTUwgT3V0cHV0Li4uLi4hISIKPiAtICAgICAgICggcGVybCAkTFRQUk9PVC90b29scy9n
-ZW5odG1sLnBsICRMVFBST09UL3Rvb2xzL2h0bWxfcmVwb3J0X2hlYWRlci50eHQgdGVzdF9zdGFy
-dCB0ZXN0X2VuZCB0ZXN0X291dHB1dCBleGVjdXRpb25fc3RhdHVzICRPVVRQVVRfRElSRUNUT1JZ
-ICA+ICRIVE1MRklMRTsgKSAgIAo+ICsgICAgICAgKCBwZXJsICRMVFBST09UL2Jpbi9nZW5odG1s
-LnBsICRMVFBST09UL3Rvb2xzL2h0bWxfcmVwb3J0X2hlYWRlci50eHQgdGVzdF9zdGFydCB0ZXN0
-X2VuZCB0ZXN0X291dHB1dCBleGVjdXRpb25fc3RhdHVzICRPVVRQVVRfRElSRUNUT1JZICA+ICRI
-VE1MRklMRTsgKSAgIAo+ICAgICAgICAgZWNobyAiR2VuZXJhdGVkIEhUTUwgT3V0cHV0Li4uLi4h
-ISIKPiAgICAgICAgIGVjaG8gIkxvY2F0aW9uOiAkSFRNTEZJTEUiOwo+IAo+IC0tLQo+IFJlZ2Fy
-ZHMtLQo+IFN1YnJhdGEKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0
-cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
-dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Mon, Apr 19, 2010 at 11:13 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
+>
+> I ran "su01" test.
+> This test failed:
+> ------------<log>
+> userdel: user su_usr1 does not exist
+> Creating mailbox file: File exists
+> userdel: user su_usr2 does not exist
+> Creating mailbox file: File exists
+> YOU NEED TO SET ENVIROMENT VARIABLE PASSWD.
+> ------------
+>
+> This failure was caused by "PASSWD" environment variable not being set:
+> ------------<su01_s1>
+> #Grab input from enviroment
+> if [info exists env(PASSWD)] {
+> =A0 =A0 =A0 =A0set PASSWD $env(PASSWD)
+> } else {
+> =A0 =A0 =A0 =A0send_user "YOU NEED TO SET ENVIROMENT VARIABLE PASSWD. \n"
+> =A0 =A0 =A0 =A0exit 1
+> }
+> ------------
+>
+> According to "su01_s1", this "PASSWD" is the password of "root" user:
+> ------------<su01_s1>
+> spawn /bin/su -c whoami
+> set i_am_root 0
+> expect {
+> =A0"Password:" {
+> =A0 =A0 =A0 =A0send "$PASSWD\r"
+> =A0 =A0expect {
+> =A0 =A0 =A0"root" { set i_am_root 1
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0set i_can_root 1
+> =A0 =A0 =A0 =A0 }
+> =A0 =A0}
+> =A0}
+> }
+> ------------
+>
+> I think whether this test program is unfinished.
+> Probably the author of this program thought that there was a problem
+> to set a password in the shell, I think.
+> Because, the password of root is various by each users who run the test,
+> and it cannot be gotten from environment variable or file etc.
+>
+> So, I suggest that "su01" shell demands root password when it is run.
+> But, when user forgot to input, it should return and finish with error.
+>
+>
+> I attach the patch for "su01" file.
+
+    I don't agree; this item is already mentioned in INSTALL (but I
+think that it should probably be moved to a README file or
+something... INSTALL doesn't seem intuitive) for another set of tests:
+
+    iv) Finally, before running the networktests.sh script, two variables m=
+ust
+        be set within the script file.  The "RHOST" variable should be set =
+to
+        the hostname of the server.  The "PASSWD" variable should be set to
+        root's password on the server machine.  This is necessary for tests
+        such as telnet01 and ftp01.
+
+    All of the applications which require $PASSWD need to be
+documented though as this is far from intuitive.
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
