@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O47Bz-0001kz-4t
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:44:19 +0000
-Received: from mail-iw0-f183.google.com ([209.85.223.183])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O47Bw-0003IH-WB
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:44:19 +0000
-Received: by iwn13 with SMTP id 13so4119635iwn.10
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <raahul4321@gmail.com>) id 1O47Qc-0006xD-Tr
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:26 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O47QZ-0007Ie-4r
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:26 +0000
+Received: by gwb17 with SMTP id 17so2214018gwb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 19 Apr 2010 23:44:11 -0700 (PDT)
+	Mon, 19 Apr 2010 23:59:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <000601cae050$9f25f1b0$dd71d510$@co.jp>
-References: <000601cae050$9f25f1b0$dd71d510$@co.jp>
-Date: Mon, 19 Apr 2010 23:44:08 -0700
-Message-ID: <w2w364299f41004192344l524ea939z95e529cbcdeeba72@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix "su01" test
+Date: Tue, 20 Apr 2010 12:29:11 +0530
+Message-ID: <y2j72fb0a5c1004192359ifea04178l1ced518757facae7@mail.gmail.com>
+From: rahul agarwal <raahul4321@gmail.com>
+Subject: [LTP] testcase mm-shmt09 failing on arm . please help
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,89 +25,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6784801757939266839=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
+To: ltp-list@lists.sourceforge.net
 
-On Mon, Apr 19, 2010 at 11:13 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
-> I ran "su01" test.
-> This test failed:
-> ------------<log>
-> userdel: user su_usr1 does not exist
-> Creating mailbox file: File exists
-> userdel: user su_usr2 does not exist
-> Creating mailbox file: File exists
-> YOU NEED TO SET ENVIROMENT VARIABLE PASSWD.
-> ------------
->
-> This failure was caused by "PASSWD" environment variable not being set:
-> ------------<su01_s1>
-> #Grab input from enviroment
-> if [info exists env(PASSWD)] {
-> =A0 =A0 =A0 =A0set PASSWD $env(PASSWD)
-> } else {
-> =A0 =A0 =A0 =A0send_user "YOU NEED TO SET ENVIROMENT VARIABLE PASSWD. \n"
-> =A0 =A0 =A0 =A0exit 1
-> }
-> ------------
->
-> According to "su01_s1", this "PASSWD" is the password of "root" user:
-> ------------<su01_s1>
-> spawn /bin/su -c whoami
-> set i_am_root 0
-> expect {
-> =A0"Password:" {
-> =A0 =A0 =A0 =A0send "$PASSWD\r"
-> =A0 =A0expect {
-> =A0 =A0 =A0"root" { set i_am_root 1
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0set i_can_root 1
-> =A0 =A0 =A0 =A0 }
-> =A0 =A0}
-> =A0}
-> }
-> ------------
->
-> I think whether this test program is unfinished.
-> Probably the author of this program thought that there was a problem
-> to set a password in the shell, I think.
-> Because, the password of root is various by each users who run the test,
-> and it cannot be gotten from environment variable or file etc.
->
-> So, I suggest that "su01" shell demands root password when it is run.
-> But, when user forgot to input, it should return and finish with error.
->
->
-> I attach the patch for "su01" file.
+--===============6784801757939266839==
+Content-Type: multipart/alternative; boundary=001636c5c1866ec2dc0484a59d7e
 
-    I don't agree; this item is already mentioned in INSTALL (but I
-think that it should probably be moved to a README file or
-something... INSTALL doesn't seem intuitive) for another set of tests:
+--001636c5c1866ec2dc0484a59d7e
+Content-Type: text/plain; charset=ISO-8859-1
 
-    iv) Finally, before running the networktests.sh script, two variables m=
-ust
-        be set within the script file.  The "RHOST" variable should be set =
-to
-        the hostname of the server.  The "PASSWD" variable should be set to
-        root's password on the server machine.  This is necessary for tests
-        such as telnet01 and ftp01.
+i am getting the following error while executing the mm test :-
 
-    All of the applications which require $PASSWD need to be
-documented though as this is far from intuitive.
-Thanks,
--Garrett
+<<<test_start>>>
+tag=shmt09 stime=1271762065
+cmdline="shmt09"
+contacts=""
+analysis=exit
 
----------------------------------------------------------------------------=
----
+<<<test_output>>>
+shmat1: Invalid argument
+shmt09      1  TPASS  :  sbrk, sbrk, shmget, shmat
+shmt09      2  TPASS  :  sbrk, shmat
+shmt09      3  *TFAIL  :  Error: shmat Failed, shmid = 262144, errno = 22*
+**
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+
+
+With Regards
+Rahul Agarwal
+
+--001636c5c1866ec2dc0484a59d7e
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>i am getting the following error while executing the mm test :-</div>
+<div>=A0</div>
+<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dshmt09 stime=3D1271762065<=
+br>cmdline=3D&quot;shmt09&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dex=
+it</div>
+<div><br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>shmat1: Invalid argument<br=
+>shmt09=A0=A0=A0=A0=A0 1=A0 TPASS=A0 :=A0 sbrk, sbrk, shmget, shmat<br>shmt=
+09=A0=A0=A0=A0=A0 2=A0 TPASS=A0 :=A0 sbrk, shmat<br>shmt09=A0=A0=A0=A0=A0 3=
+=A0 <strong>TFAIL=A0 :=A0 Error: shmat Failed, shmid =3D 262144, errno =3D =
+22</strong></div>
+
+<div><strong></strong>=A0</div>
+<div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;=
+ok&quot;<br>duration=3D0 termination_type=3Dexited termination_id=3D1 coref=
+ile=3Dno<br>cutime=3D0 cstime=3D2<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>
+<div>=A0</div>
+<div>=A0</div>
+<div>With Regards</div>
+<div>Rahul Agarwal</div>
+<div>=A0</div>
+
+--001636c5c1866ec2dc0484a59d7e--
+
+
+--===============6784801757939266839==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--===============6784801757939266839==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6784801757939266839==--
+
