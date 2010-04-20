@@ -1,22 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1O2bW5-0000c2-Ns
-	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 02:42:49 +0000
-Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O2bW4-00039G-Fa
-	for ltp-list@lists.sourceforge.net; Fri, 16 Apr 2010 02:42:49 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cadad6$c061c590$412550b0$@co.jp>	<4BC487C9.9080300@xenotime.net>	<000901cadb78$a2d05080$e870f180$@co.jp>	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>	<000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
-	<20100414081953.7356b407.rdunlap@xenotime.net>
-In-Reply-To: <20100414081953.7356b407.rdunlap@xenotime.net>
-Date: Fri, 16 Apr 2010 11:42:39 +0900
-Message-ID: <000001cadd0e$7b35e250$71a1a6f0$@co.jp>
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O4Aqv-0003WZ-8B
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 10:38:49 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O4Aqu-0001Vj-0W
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 10:38:49 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3KAXe8c018127
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 06:33:40 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3KAcdq1160650
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 06:38:40 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3KAcddl025310
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 06:38:39 -0400
+Date: Tue, 20 Apr 2010 16:08:25 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100420103825.GA4118@linux.vnet.ibm.com>
+References: <20100219123501.19085.64668.sendpatchset@subratamodak.linux.ibm.com>
+	<1706047941.560391271757613100.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+Content-Disposition: inline
+In-Reply-To: <1706047941.560391271757613100.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] Fix MSGCTL10() to avoid un-necessary cluttering
+ of whole system with all PIDs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,53 +41,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Randy Dunlap' <rdunlap@xenotime.net>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar ZHANG <czhang@redhat.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-
-> -----Original Message-----
-> From: Randy Dunlap [mailto:rdunlap@xenotime.net]
-> Sent: Thursday, April 15, 2010 12:20 AM
-> To: Mitani
-> Cc: 'Garrett Cooper'; ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+On Tue, Apr 20, 2010 at 06:00:13AM -0400, Caspar ZHANG wrote:
 > 
-> On Wed, 14 Apr 2010 17:58:17 +0900 Mitani wrote:
+> 
+> ----- "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
 > 
 > > Hi,
-> >
-> > I suggest new patch.
-> >
-> > Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> > 
+> > msgctl10() un-necessarily eats up all the PIDs of the system leading
+> > to
+> > system becoming un-responsive. The changed no.s would better do the
+> > job.
 > 
-> This one is OK with me also, but...
+> Hi, I see this patch is not included in ltp-full-20100331, will it be 
+> accepted in the future? 
+
+Thanks for testing this patch. can you put your Acked-By / Tested-By ?
+
+After that it will be included in master branch immediately.
+
+-Rishi
 > 
-> Is it possible to determine the difference between a kernel that does
-> not support hugepages at all and a kernel that does support hugepages
-> but just does not have enough of them allocated?
+> I tested msgctl10 testcase on RHEL5(2.6.18) and RHEL6(>2.6.31),
+> Since /proc/sys/kernel/msgmni has increased from 10 (RHEL5) to 
+> thousands (RHEL6), the testing time will be several hours long.
+> Applied this patch, the testing time can be lowed down to minutes.
 > 
-> or maybe we don't care about this difference.  Do we?
+> Thanks,
+> Caspar
 > 
+> > 
+> > Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>
+> > ---
+> > 
+> > ---
+> > ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c.orig
+> > 2010-02-19 17:59:23.000000000 +0530
+> > +++ ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+> > 2010-02-19 18:01:13.000000000 +0530
+> > @@ -65,12 +65,8 @@ extern int Tst_count;		/* Test Case coun
+> >  
+> >  int exp_enos[] = { 0 };		/* List must end with 0 */
+> >  
+> > -#ifndef CONFIG_COLDFIRE
+> > -#define MAXNPROCS	1000000	/* This value is set to an arbitrary high
+> > limit. */
+> > -#else
+> > -#define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
+> > -#endif
+> > -#define MAXNREPS	100000
+> > +#define MAXNPROCS	10000 	/*These should be sufficient*/
+> > +#define MAXNREPS	10000	/*Else they srewup the system
+> > un-necessarily*/
+> >  #define FAIL		1
+> >  #define PASS		0
+> >  
+> > 
+> > ---
+> > Regards--
+> > Subrata
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Download Intel&#174; Parallel Studio Eval
+> > Try the new software tools for yourself. Speed compiling, find bugs
+> > proactively, and fine-tune applications for parallel performance.
+> > See why Intel Parallel Studio got high marks during beta.
+> > http://p.sf.net/sfu/intel-sw-dev
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> -- 
+> /---------------------------------------\
+> | Name: Caspar Zhang                    |
+> | Team: Kernel-QE                       |
+> | IRC: czhang @ #kernel-qe, #eng-china  |
+> | Phone: +86-10-6260-8150               |
+> | Cellphone: +86-1381-073-0090          |
+> \---------------------------------------/
+> 
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-
-I cannot give a good opinion because I'm not a creator of these test 
-programs, but ...
-I think that the difference of test refusal reason isn't so important.
-How about following message? :
-------------
-Not support Hugepages or not enough available Hugepages
-------------
-
-If users read above message, they will examine a reason by themselves 
-and will do appropriate measures (set an enough hugepages value or 
-gave up this test), I think.
-
-
-Regards--
-
--Tomonori Mitani
-
-
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
