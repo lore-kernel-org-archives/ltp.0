@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mukesh.d.tupe@gmail.com>) id 1O70tH-0005hB-O9
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 06:36:59 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O70tH-0007Sw-09
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 06:36:59 +0000
-Received: by pwj5 with SMTP id 5so8818729pwj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 27 Apr 2010 23:36:53 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O4Bva-0006qz-FH
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 11:47:42 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O4BvV-0002My-6O
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 11:47:39 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3KBd9ZH009070
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 05:39:09 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3KBlH0D111746
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 05:47:17 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o3KBlDFF003914
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 05:47:13 -0600
+Date: Tue, 20 Apr 2010 17:17:08 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100420114708.GB4118@linux.vnet.ibm.com>
+References: <239293073.562841271760559982.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<2135164550.562871271760576282.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Date: Wed, 28 Apr 2010 12:06:53 +0530
-Message-ID: <h2we84b0ba81004272336n62d73582y2862b6898fc2f722@mail.gmail.com>
-From: Mukesh Tupe <mukesh.d.tupe@gmail.com>
-Subject: [LTP] Willing to contribute to LTP.
+Content-Disposition: inline
+In-Reply-To: <2135164550.562871271760576282.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] Fix MSGCTL10() to avoid un-necessary cluttering
+ of whole system with all PIDs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,18 +42,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar ZHANG <czhang@redhat.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-Hi,
+On Tue, Apr 20, 2010 at 06:49:36AM -0400, Caspar ZHANG wrote:
+> 
+> ----- "Rishikesh K Rajak" <risrajak@linux.vnet.ibm.com> wrote:
+> 
+> > After that it will be included in master branch immediately.
+> 
+> Sure, add Acked-by info in the attached patch.
 
-I would like to contribute to LTP by fixing bugs in test tools ( c
-programs or shell/perl scripts)  or adding new scripts/ test programs.
-Please let me know how I can contribute?
+Committed
 
-Thanks,
-Mukesh
+Thanks
+> 
+> Thanks,
+> Caspar
+> 
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
