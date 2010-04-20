@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rdunlap@xenotime.net>) id 1O25d3-00030w-Uv
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 16:39:53 +0000
-Received: from xenotime.net ([72.52.64.118])
-	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1O25d2-0007UM-T5
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 16:39:53 +0000
-Received: from chimera.site ([71.245.98.113]) by xenotime.net for
-	<ltp-list@lists.sourceforge.net>; Wed, 14 Apr 2010 08:19:53 -0700
-Date: Wed, 14 Apr 2010 08:19:53 -0700
-From: Randy Dunlap <rdunlap@xenotime.net>
-Message-Id: <20100414081953.7356b407.rdunlap@xenotime.net>
-In-Reply-To: <000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
-References: <000001cadad6$c061c590$412550b0$@co.jp>
-	<4BC487C9.9080300@xenotime.net>
-	<000901cadb78$a2d05080$e870f180$@co.jp>
-	<g2p364299f41004132317v539c2b02g3eea49dc830cea0f@mail.gmail.com>
-	<000601cadbb0$9fb8b5d0$df2a2170$@co.jp>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix "hugetlb" several tests
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1O47Di-0006XY-3t
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:46:06 +0000
+Received: from mail-iw0-f183.google.com ([209.85.223.183])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O47Dh-00086U-Ai
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:46:06 +0000
+Received: by iwn13 with SMTP id 13so4120719iwn.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 19 Apr 2010 23:45:58 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <w2w364299f41004192344l524ea939z95e529cbcdeeba72@mail.gmail.com>
+References: <000601cae050$9f25f1b0$dd71d510$@co.jp>
+	<w2w364299f41004192344l524ea939z95e529cbcdeeba72@mail.gmail.com>
+Date: Mon, 19 Apr 2010 23:45:57 -0700
+Message-ID: <v2q364299f41004192345l7f5f119bva09c150d69428182@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix "su01" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,218 +28,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
 
-On Wed, 14 Apr 2010 17:58:17 +0900 Mitani wrote:
+On Mon, Apr 19, 2010 at 11:44 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Mon, Apr 19, 2010 at 11:13 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> Hi,
+>>
+>> I ran "su01" test.
+>> This test failed:
+>> ------------<log>
+>> userdel: user su_usr1 does not exist
+>> Creating mailbox file: File exists
+>> userdel: user su_usr2 does not exist
+>> Creating mailbox file: File exists
+>> YOU NEED TO SET ENVIROMENT VARIABLE PASSWD.
+>> ------------
+>>
+>> This failure was caused by "PASSWD" environment variable not being set:
+>> ------------<su01_s1>
+>> #Grab input from enviroment
+>> if [info exists env(PASSWD)] {
+>> =A0 =A0 =A0 =A0set PASSWD $env(PASSWD)
+>> } else {
+>> =A0 =A0 =A0 =A0send_user "YOU NEED TO SET ENVIROMENT VARIABLE PASSWD. \n"
+>> =A0 =A0 =A0 =A0exit 1
+>> }
+>> ------------
+>>
+>> According to "su01_s1", this "PASSWD" is the password of "root" user:
+>> ------------<su01_s1>
+>> spawn /bin/su -c whoami
+>> set i_am_root 0
+>> expect {
+>> =A0"Password:" {
+>> =A0 =A0 =A0 =A0send "$PASSWD\r"
+>> =A0 =A0expect {
+>> =A0 =A0 =A0"root" { set i_am_root 1
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0set i_can_root 1
+>> =A0 =A0 =A0 =A0 }
+>> =A0 =A0}
+>> =A0}
+>> }
+>> ------------
+>>
+>> I think whether this test program is unfinished.
+>> Probably the author of this program thought that there was a problem
+>> to set a password in the shell, I think.
+>> Because, the password of root is various by each users who run the test,
+>> and it cannot be gotten from environment variable or file etc.
+>>
+>> So, I suggest that "su01" shell demands root password when it is run.
+>> But, when user forgot to input, it should return and finish with error.
+>>
+>>
+>> I attach the patch for "su01" file.
+>
+> =A0 =A0I don't agree; this item is already mentioned in INSTALL (but I
+> think that it should probably be moved to a README file or
+> something... INSTALL doesn't seem intuitive) for another set of tests:
+>
+> =A0 =A0iv) Finally, before running the networktests.sh script, two variab=
+les must
+> =A0 =A0 =A0 =A0be set within the script file. =A0The "RHOST" variable sho=
+uld be set to
+> =A0 =A0 =A0 =A0the hostname of the server. =A0The "PASSWD" variable shoul=
+d be set to
+> =A0 =A0 =A0 =A0root's password on the server machine. =A0This is necessar=
+y for tests
+> =A0 =A0 =A0 =A0such as telnet01 and ftp01.
+>
+> =A0 =A0All of the applications which require $PASSWD need to be
+> documented though as this is far from intuitive.
 
-> Hi, 
-> 
-> I suggest new patch.
-> 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+    Also, what you're suggesting would fix _interactive_ tests, not
+_non-interactive_ tests, where the majority of all users should *not*
+be running LTP interactively -- thus I don't think that it's a
+worthwhile addition (sorry :(...).
+Thanks,
+-Garrett
 
-This one is OK with me also, but...
-
-Is it possible to determine the difference between a kernel that does
-not support hugepages at all and a kernel that does support hugepages
-but just does not have enough of them allocated?
-
-or maybe we don't care about this difference.  Do we?
-
-
-> ============
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c	2010-04-14
-> 16:40:25.000000000 +0900
-> @@ -127,8 +127,7 @@
->  
->  	/* Check number of hugepages */
->  	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
-> -		tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> \
-> -				sufficient availability of Hugepages on the
-> system");
-> +		tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
->  
->  	/* Perform global setup for test */
->  	setup();
-> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c	2010-04-14
-> 16:48:54.000000000 +0900
-> @@ -105,7 +105,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c	2010-04-14
-> 16:49:15.000000000 +0900
-> @@ -102,7 +102,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c	2010-04-14
-> 16:49:31.000000000 +0900
-> @@ -86,7 +86,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c	2010-04-14
-> 16:50:16.000000000 +0900
-> @@ -130,7 +130,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c	2010-04-14
-> 16:50:28.000000000 +0900
-> @@ -102,7 +102,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c	2010-04-14
-> 16:50:40.000000000 +0900
-> @@ -105,7 +105,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c	2010-04-14
-> 16:51:11.000000000 +0900
-> @@ -87,7 +87,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-04-14
-> 16:51:34.000000000 +0900
-> @@ -82,7 +82,7 @@
->  
->  	/* The following loop checks looping state if -i option given */
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
->          else             
->                huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->          
-> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c	2010-04-14
-> 16:51:45.000000000 +0900
-> @@ -84,7 +84,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->    
-> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c	2010-04-14
-> 16:51:55.000000000 +0900
-> @@ -85,7 +85,7 @@
->  
->  	/* The following loop checks looping state if -i option given */
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->  
-> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c	2010-04-01
-> 15:23:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c	2010-04-14
-> 16:52:10.000000000 +0900
-> @@ -86,7 +86,7 @@
->  	}
->  
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-> sufficient availability of Hugepages on the system");
-> +             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
->          else             
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->         
-> ============
-
-
+---------------------------------------------------------------------------=
 ---
-~Randy
-
-------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
