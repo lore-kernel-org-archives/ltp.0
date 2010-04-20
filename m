@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1O56PZ-0003jT-QM
-	for ltp-list@lists.sourceforge.net; Fri, 23 Apr 2010 00:06:25 +0000
-Received: from mail-qy0-f179.google.com ([209.85.221.179])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O56PY-0008Va-Vg
-	for ltp-list@lists.sourceforge.net; Fri, 23 Apr 2010 00:06:25 +0000
-Received: by qyk9 with SMTP id 9so12160605qyk.1
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 22 Apr 2010 17:06:19 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1O47Qq-0007AJ-GO
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:40 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O47Ql-0007Fp-Pa
+	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 06:59:40 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000601cae050$9f25f1b0$dd71d510$@co.jp>	
+	<w2w364299f41004192344l524ea939z95e529cbcdeeba72@mail.gmail.com>
+	<v2q364299f41004192345l7f5f119bva09c150d69428182@mail.gmail.com>
+In-Reply-To: <v2q364299f41004192345l7f5f119bva09c150d69428182@mail.gmail.com>
+Date: Tue, 20 Apr 2010 15:59:26 +0900
+Message-ID: <000001cae057$042683d0$0c738b70$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <n2wda0c1e761004221440xcdd24149lbfec28b682473d45@mail.gmail.com>
-References: <n2wda0c1e761004221440xcdd24149lbfec28b682473d45@mail.gmail.com>
-From: Henry Yei <hyei@mvista.com>
-Date: Thu, 22 Apr 2010 16:38:12 -0700
-Message-ID: <j2x42aa607e1004221638o1d369793idd2bd41b5da66b1a@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] linkat01: use . instead of /tmp
+Content-Language: ja
+Subject: Re: [LTP] [PATCH] fix "su01" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,67 +30,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bryan Freed <bfreed@google.com>
+To: 'Garrett Cooper' <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Bryan, I've confirmed that the linkat01 test passes with this fix on
-x86 with 2.6.21 kernel and arm on 2.6.33 kernel. Thanks!
+Sorry.
 
-Henry Yei <hyei@mvista.com>
+I understand.
+I was careless.
 
-On Thu, Apr 22, 2010 at 2:40 PM, Bryan Freed <bfreed@google.com> wrote:
-> I have a fix for a failing LTP testcase. =A0Section 6 of the online LTP d=
-oc
-> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_7 says I can
-> request a test be added by sending to this list, and it looks from the
-> archive like the subject line for patches should contain "[LTP][PATCH]", =
-so
-> here goes. =A0There appears to be no standard diff format, so I will use =
-what
-> is convenient...
-> Running the ltp suite on ChromeOS (x86 with a 2.6.32 kernel) fails linkat=
-01
-> testcase 21:
->
-> linkat01 =A0 21 =A0TFAIL =A0: =A0linkat() failed: TEST_ERRNO=3DEXDEV(18):=
- Invalid
-> cross-device link
-> This is probably because my /tmp is mounted from someplace other than the
-> filesystem that contains newdirfd.
-> The goal of testcase 21 is to demonstrate that linking a directory will f=
-ail
-> EPERM. =A0The fix is to use olddir/. instead of /tmp.
-> diff -urN
-> ltp-full-20091231_vanilla/testcases/kernel/syscalls/linkat/linkat01.c
-> ltp-full-20091231/testcases/kernel/syscalls/linkat/linkat01.c
-> --- ltp-full-20091231_vanilla/testcases/kernel/syscalls/linkat/linkat01.c
-> =A0 =A0 2009-11-26 23:43:12.000000000 -0800
-> +++ ltp-full-20091231/testcases/kernel/syscalls/linkat/linkat01.c
-> 2010-04-12 16:28:59.000000000 -0700
-> @@ -158,7 +158,7 @@
-> =A0=A0 =A0 =A0 =A0{ &cwd_fd, "/proc/cpuinfo", &newdirfd, TEST_FILE1, 0,
-> =A0=A0 =A0 =A0 =A0 =A00, 0, EXDEV },
-> =A0=A0 =A0 =A0 =A0/* 21. directory link */
-> - =A0 =A0 =A0 { &cwd_fd, "/tmp", &newdirfd, TEST_FILE1, 0,
-> + =A0 =A0 =A0 { &olddirfd, ".", &newdirfd, TEST_FILE1, 0,
-> =A0=A0 =A0 =A0 =A0 =A00, 0, EPERM },
-> =A0=A0 =A0 =A0 =A0/* 22. invalid flag */
-> =A0=A0 =A0 =A0 =A0{ &olddirfd, TEST_FILE1, &newdirfd, TEST_FILE1, 1,
->
-> Let me know if this is the incorrect process for upstreaming LTP patches.
-> bryan.
-> -------------------------------------------------------------------------=
------
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
+
+Thank you--
+
+-Tomonori Mitani
+
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Tuesday, April 20, 2010 3:46 PM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net; kamimura@ryobi.co.jp
+> Subject: Re: [LTP] [PATCH] fix "su01" test
+> =
+
+> On Mon, Apr 19, 2010 at 11:44 PM, Garrett Cooper <yanegomi@gmail.com>
+> wrote:
+> > On Mon, Apr 19, 2010 at 11:13 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> >> Hi,
+> >>
+> >> I ran "su01" test.
+> >> This test failed:
+> >> ------------<log>
+> >> userdel: user su_usr1 does not exist
+> >> Creating mailbox file: File exists
+> >> userdel: user su_usr2 does not exist
+> >> Creating mailbox file: File exists
+> >> YOU NEED TO SET ENVIROMENT VARIABLE PASSWD.
+> >> ------------
+> >>
+> >> This failure was caused by "PASSWD" environment variable not being
+> set:
+> >> ------------<su01_s1>
+> >> #Grab input from enviroment
+> >> if [info exists env(PASSWD)] {
+> >> =A0 =A0 =A0 =A0set PASSWD $env(PASSWD)
+> >> } else {
+> >> =A0 =A0 =A0 =A0send_user "YOU NEED TO SET ENVIROMENT VARIABLE PASSWD. =
+\n"
+> >> =A0 =A0 =A0 =A0exit 1
+> >> }
+> >> ------------
+> >>
+> >> According to "su01_s1", this "PASSWD" is the password of "root"
+> user:
+> >> ------------<su01_s1>
+> >> spawn /bin/su -c whoami
+> >> set i_am_root 0
+> >> expect {
+> >> =A0"Password:" {
+> >> =A0 =A0 =A0 =A0send "$PASSWD\r"
+> >> =A0 =A0expect {
+> >> =A0 =A0 =A0"root" { set i_am_root 1
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0set i_can_root 1
+> >> =A0 =A0 =A0 =A0 }
+> >> =A0 =A0}
+> >> =A0}
+> >> }
+> >> ------------
+> >>
+> >> I think whether this test program is unfinished.
+> >> Probably the author of this program thought that there was a problem
+> >> to set a password in the shell, I think.
+> >> Because, the password of root is various by each users who run the
+> test,
+> >> and it cannot be gotten from environment variable or file etc.
+> >>
+> >> So, I suggest that "su01" shell demands root password when it is
+> run.
+> >> But, when user forgot to input, it should return and finish with
+> error.
+> >>
+> >>
+> >> I attach the patch for "su01" file.
+> >
+> > =A0 =A0I don't agree; this item is already mentioned in INSTALL (but
+> I
+> > think that it should probably be moved to a README file or
+> > something... INSTALL doesn't seem intuitive) for another set of
+> tests:
+> >
+> > =A0 =A0iv) Finally, before running the networktests.sh script, two
+> variables must
+> > =A0 =A0 =A0 =A0be set within the script file. =A0The "RHOST" variable s=
+hould
+> be set to
+> > =A0 =A0 =A0 =A0the hostname of the server. =A0The "PASSWD" variable sho=
+uld
+> be set to
+> > =A0 =A0 =A0 =A0root's password on the server machine. =A0This is necess=
+ary
+> for tests
+> > =A0 =A0 =A0 =A0such as telnet01 and ftp01.
+> >
+> > =A0 =A0All of the applications which require $PASSWD need to be
+> > documented though as this is far from intuitive.
+> =
+
+>     Also, what you're suggesting would fix _interactive_ tests, not
+> _non-interactive_ tests, where the majority of all users should *not*
+> be running LTP interactively -- thus I don't think that it's a
+> worthwhile addition (sorry :(...).
+> Thanks,
+> -Garrett
+
+
 
 ---------------------------------------------------------------------------=
 ---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
