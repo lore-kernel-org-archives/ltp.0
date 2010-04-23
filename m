@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O73L6-0005Rx-CG
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 09:13:52 +0000
-Received: from mail-iw0-f196.google.com ([209.85.223.196])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O73L5-00087s-JS
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 09:13:52 +0000
-Received: by iwn34 with SMTP id 34so10502290iwn.23
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 28 Apr 2010 02:13:46 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1O5PbP-0003CN-2L
+	for ltp-list@lists.sourceforge.net; Fri, 23 Apr 2010 20:35:55 +0000
+Date: Fri, 23 Apr 2010 22:43:12 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100423204312.GA26503@saboteur.suse.cz>
+References: <20100402185908.GA478@saboteur.suse.cz>
+	<g2x364299f41004021212z6e85833ybccad62e6780ec26@mail.gmail.com>
+	<20100419184131.GA20776@saboteur.suse.cz>
+	<20100423125351.GA24523@saboteur.suse.cz>
+	<n2s364299f41004231253offfe856amfa09260ba50cf18b@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1272444847.5696.9.camel@munipradeep-laptop>
-References: <1272444847.5696.9.camel@munipradeep-laptop>
-Date: Wed, 28 Apr 2010 02:13:46 -0700
-Message-ID: <y2q364299f41004280213xf8326524n9248b16b38d9cac4@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] mqns tests are failing
+Content-Disposition: inline
+In-Reply-To: <n2s364299f41004231253offfe856amfa09260ba50cf18b@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix fs_perms tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,67 +25,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Apr 28, 2010 at 1:54 AM, Munipradeep Beerakam
-<mpradeep@linux.vnet.ibm.com> wrote:
-> Hi,
+Hi!
+> 
+> 2. MAX_PATH should be PATHNAME_MAX.
 >
-> I noticed that mqns test cases are failing. I am using March 2010 LTP.
-> After changing mq_open syscall in mqns_01.c file, test is passing. Same
-> thing is happening w.r.t. other mqns test cases. Below is the change I
-> made.
->
-> Changed
-> =A0 mqd =3D syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL,0777,
-> NULL);
->
-> to
-> =A0 mqd =3D mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0777, NULL);
->
-> Failure output I got is below:
-> # ./mqns_01
-> posixmq_namespace_01 =A0 =A00 =A0TINFO =A0: =A0Testing posix mq namespace=
-s through
-> unshare(2).
->
-> mq_open: Permission denied
-> posixmq_namespace_01 =A0 =A01 =A0TFAIL =A0: =A0mq_open failed
->
-> After changing as above, I got the below output:
-> # ./mqns_01
-> posixmq_namespace_01 =A0 =A00 =A0TINFO =A0: =A0Testing posix mq namespace=
-s through
-> unshare(2).
->
-> posixmq_namespace_01 =A0 =A00 =A0TINFO =A0: =A0Checking namespaces isolat=
-ion from
-> parent to child
->
-> posixmq_namespace_01 =A0 =A01 =A0TPASS =A0: =A0child process didn't find =
-mqueue
->
-> So, my question is that what is the difference between the two, i.e.,
-> the previous one and the changed one. Both are calling the same mq_open
-> system call. But first one is failing whereas the second one is
-> succeeding.
->
-> So, do we need to modify all mqns test cases to the new form?
 
-    Track down the execution path by first starting with glibc. It
-might be a library vs kernel mismatch or a bug. Make sure that the
-syscall number matches per your architecture, determine whether or not
-your architecture has issues executing code in a biarch manner (64-bit
-on 32-bit) if it applies.
-HTH,
--Garrett
+Hmm, could not find PATHNAME_MAX in my /usr/include/ and it seems that posix
+says that this should be determined by fpathconf(). IMHO it is reasonable to
+assume that path to sh is shorter than 1023 bytes as it is defined now.
 
----------------------------------------------------------------------------=
----
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
