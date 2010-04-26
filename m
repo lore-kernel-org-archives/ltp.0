@@ -1,36 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dvhltc@us.ibm.com>) id 1O4gSO-0003ba-6z
-	for ltp-list@lists.sourceforge.net; Wed, 21 Apr 2010 20:23:36 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O4gSL-0003WR-OG
-	for ltp-list@lists.sourceforge.net; Wed, 21 Apr 2010 20:23:36 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3LKDqDY026622
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Apr 2010 14:13:52 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o3LKNNLw034152
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Apr 2010 14:23:24 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o3LKNJ9x019871
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Apr 2010 14:23:19 -0600
-Received: from [9.48.114.117] (sig-9-48-114-117.mts.ibm.com [9.48.114.117])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o3LKNIHl019837
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Apr 2010 14:23:19 -0600
-Message-ID: <4BCF5EB6.1040005@us.ibm.com>
-Date: Wed, 21 Apr 2010 13:23:18 -0700
-From: Darren Hart <dvhltc@us.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1O6Onq-0004yG-DQ
+	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 13:56:50 +0000
+Date: Mon, 26 Apr 2010 16:04:21 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100426140420.GA29365@saboteur.suse.cz>
+References: <20100402185908.GA478@saboteur.suse.cz>
+	<g2x364299f41004021212z6e85833ybccad62e6780ec26@mail.gmail.com>
+	<20100419184131.GA20776@saboteur.suse.cz>
+	<20100423125351.GA24523@saboteur.suse.cz>
+	<n2s364299f41004231253offfe856amfa09260ba50cf18b@mail.gmail.com>
+	<20100423204312.GA26503@saboteur.suse.cz>
+	<m2i364299f41004231439kbe4017dayfc57d5d8b622a744@mail.gmail.com>
+	<20100426130400.GA28340@saboteur.suse.cz>
+	<g2o364299f41004260623kb1627f65ld8765f98d8be1790@mail.gmail.com>
 MIME-Version: 1.0
-References: <4B61E7F7.3000502@us.ibm.com>
-In-Reply-To: <4B61E7F7.3000502@us.ibm.com>
-Subject: Re: [LTP] [PATCH] prio-wake: avoid glibc to kernel sleep race
+Content-Disposition: inline
+In-Reply-To: <g2o364299f41004260623kb1627f65ld8765f98d8be1790@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix fs_perms tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,78 +32,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This patch does not appear in current CVS. Please apply.
+Hi!
+> 2. Why do you feel this is required?
 
-Thanks,
+Well, accordingly to POSIX you can't realy rely on having /bin/sh or even
+/usr/bin/sh. On the other hand I haven't seen any linux system that has no
+/bin/sh. And accordingly to FSH /bin/sh is required to exist. So this really
+depends on how much we want to be compatible with POSIX and strange unixes out
+there (if there are any).
 
-Darren Hart
+* FSH http://www.pathname.com/fhs/
+* POSIX http://www.opengroup.org/onlinepubs/000095399/utilities/sh.html
+        (paragraph "application usage")
 
-Darren Hart wrote:
-> prio-wake: avoid glibc to kernel sleep race
+> 3. This should really be a single snprintf call:
 > 
-> In the unlocked broadcast scenario, there exists a race between when the
-> running_threads variable reaches rt_threads and when the last worker_thread
-> blocks in the kernel after a cond_wait(). It is possible for a thread to miss
-> the broadcast if it fails to sleep before the broadcast is issued.  
+> +		/* copy path */
+> +		for (i = 0; i < buf_len && path[i] != '\0' && path[i] != ':'; i++)
+> +			buf[i] = path[i];
+> +
+> +		/* add slash at the end if needed */
+> +		if (buf[i - 1] != '/')
+> +			buf[i++] = '/';
+> +		/* copy the program name */
+> +		strncpy(buf + i, prog_name, buf_len - i);
 > 
-> The previous code did not guarantee a small window of time to allow the threads
-> to get to sleep.  It also used an unreasonably large sleep time which
-> unnecessarily extended the length of the test run time.  This patch ensures some
-> time is given to the threads to get to sleep and at the same time uses a much
-> shorter (1000x) sleep period which results in a 50-100x reduction in test run
-> time. Lastly, two unecessary loops waiting for the threads to complete were
-> removed, relying on pthread_join() instead to wait for the threads to complete.
+>     similar to the following:
 > 
-> Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
-> Acked-by: Will Schmidt <will_schmidt@vnet.ibm.com>
-> 
-> ---
->  func/prio-wake/prio-wake.c |   10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> Index: realtime/func/prio-wake/prio-wake.c
-> ===================================================================
-> --- realtime.orig/func/prio-wake/prio-wake.c
-> +++ realtime/func/prio-wake/prio-wake.c
-> @@ -108,7 +108,10 @@ void *master_thread(void* arg)
-> 
->  	/* make sure children are started */
->  	while (running_threads < rt_threads)
-> -		sleep(1);
-> +		usleep(1000);
-> +	/* give the worker threads a chance to get to sleep in the kernel
-> +	 * in the unlocked broadcast case. */
-> +	usleep(1000);
-> 
->  	start = rt_gettime() - beginrun;
-> 
-> @@ -120,8 +123,6 @@ void *master_thread(void* arg)
->  	if (locked_broadcast)
->  		rc = pthread_mutex_unlock(&mutex);
-> 
-> -	while (running_threads > 0)
-> -		sleep(1);
->  	return NULL;
->  }
-> 
-> @@ -157,9 +158,6 @@ void *worker_thread(void* arg)
-> 
->  	rc = pthread_mutex_unlock(&mutex);
-> 
-> -	/* wait for all threads to quit */
-> -	while (running_threads > 0)
-> -		sleep(1);
->  	return NULL;
->  }
-> 
+> if (snprintf(buf, buf_len, "%s/%s", path_element, prog_name) > buf_len)
+>     /* error out */
+> else if (file_exist(buf))
+>     return 0; /* etc... */
+> /* ... */
 
+This way I would need either to copy the path element into temporary
+path_element[] array each time before snprintf is called or duplicate the
+string returned by getenv("PATH") so that I could insert '\0' in it.
 
 -- 
-Darren Hart
-IBM Linux Technology Center
-Real-Time Linux Team
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
