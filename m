@@ -1,20 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1O707O-00031t-Pl
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 05:47:30 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O707N-000136-P2
-	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 05:47:30 +0000
-Date: Wed, 28 Apr 2010 01:47:22 -0400 (EDT)
-From: Caspar ZHANG <czhang@redhat.com>
-Message-ID: <103530624.1121001272433642504.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1607411888.1120911272433367028.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@in.ibm.com>) id 1O6J79-0002vJ-Tf
+	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 07:52:23 +0000
+Received: from e28smtp03.in.ibm.com ([122.248.162.3])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O6J78-000156-Hu
+	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 07:52:23 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp03.in.ibm.com (8.14.3/8.13.1) with ESMTP id o3Q7qBUV019826
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Apr 2010 13:22:11 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3Q7qBv83567714
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Apr 2010 13:22:11 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3Q7q9in032369
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Apr 2010 13:22:10 +0530
+In-Reply-To: <4BD53483.9080603@in.ibm.com>
+References: <4BD53483.9080603@in.ibm.com>
+Message-ID: <OFE356C1C8.3AAFB16D-ON65257711.002ACCFE-65257711.002B39D1@in.ibm.com>
+From: Rishikesh K Rajak <risrajak@in.ibm.com>
+Date: Mon, 26 Apr 2010 13:18:31 +0530
 MIME-Version: 1.0
-Subject: Re: [LTP] UTIMENSAT test fails hugely
+Content-type: multipart/mixed; 
+	Boundary="0__=EABBFD82DFB94A6E8f9e8a93df938690918cEABBFD82DFB94A6E"
+Content-Disposition: inline
+Subject: Re: [LTP] PATCH : test_fs_bind testscript for busybox machines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,103 +38,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: suzuki@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
+
+--0__=EABBFD82DFB94A6E8f9e8a93df938690918cEABBFD82DFB94A6E
+Content-type: text/plain; charset=US-ASCII
+
+Looks fine.
+
+Acked-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+
+committed as d9f3d25b9db35073c7104b759d526869d9867692
+
+Thanks
+-Rishi
 
 
------ "Garrett Cooper" <yanegomi@gmail.com> wrote:
-> 
-> Almost there :). Some comments:
-> 
-> +	trap 'trap EXIT; teardown' EXIT
-> 
-> Should be:
-> 
-> +	trap 'trap "" EXIT; teardown' EXIT
 
-Thanks for the tip :-) If I understood correctly, the EXIT 
-signal is triggered when the program terminates(like after an
-`exit' command). I find that resetting the signal to original
-disposition and ignoring the signal have the same effect since
-the program is always ready to terminate after finishing the
-handler execution. Thus I think using `trap EXIT', `trap - EXIT'
-and `trap "" EXIT' all work.
+                                                                           
+             suzuki@linux.vnet                                             
+             .ibm.com                                                      
+                                                                        To 
+             04/26/2010 12:06          Rishikesh K Rajak/India/IBM@IBMIN,  
+             PM                        ltp-list@lists.sourceforge.net      
+                                                                        cc 
+                                       Robert Paulsen                      
+                                       <rpaulsen@us.ibm.com>               
+                                                                   Subject 
+                                       PATCH : test_fs_bind testscript for 
+                                       busybox machines                    
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+                                                                           
 
-Cheers,
-Caspar
 
-> 
-> The double quotes tell the shell to ignore all future signals trapped
-> for the EXIT event (from bash(1)'s trap section, but the same also
-> applies for ash(1), which is the predecessor to dash ):
-> 
-> ...
-> 
-> 									If arg is absent (and  there  is  a
->               single  sigspec)  or  -,  each  specified signal is
-> reset to its
->               original disposition (the value it  had  upon  entrance 
-> to  the
->               shell).   If arg is the null string the signal specified
-> by each
->               sigspec is ignored by the shell and by the commands it 
-> invokes.
-> 
-> ...
-> 
-> The `set' sed could be like this:
-> 
-> 	pattern="[[:space:]]*Defaults[[:space:]]*requiretty.*"
-> 	sed -E -i "" -e "s/^($pattern)/#\1/" /etc/sudoers
-> 
-> The restore sed could be like this:
-> 
-> 	sed -E -i "" -e "s/^#($pattern)/\1/" /etc/sudoers
-> 	# with $pattern being set like before.
-> 
-> Don't forget the ^ anchors and the quoting's important :).
-> 
-> >> 
-> >> 	You may want to execute the handler before the setup call is
-> invoked
-> >> to ensure that everything done is properly undone in the event of
-> a
-> >> failure during setup.
-> >> 	Also, watch out for cases where a user may have done:
-> >> 
-> >> # requiretty
-> >> 
-> >> instead of:
-> >> 
-> >> requiretty
-> >> 
-> >> 	It probably would be wise to preserve all leading and trailing
-> >> characters for teardown to avoid inadvertently enabling requiretty
-> in
-> >> sudo.
-> >> 	The EXIT trap handler isn't 100% foolproof, but it protects
-> against
-> >> all but SIGKILL or SIGSTOP from being executed as they're NMIs.
-> 
-> Cheers,
-> -Garrett
 
--- 
-Kernel Associate Quality Engineer
-Red Hat Inc. (Beijing R&D Branch)
 
-Red Hat China R&D Branch Unit 907, North Tower C, 
-  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
-  Haidian District, Beijing 100190
+Hi,
 
-TEL: +86-10-62608150
-Web: http://www.redhat.com/
+The test_fs_bind testscript hangs indefinitely when run on a machine
+where busybox applets are used.
+
+The test hangs while trying to restore the mounts after a test run.
+
+
+This happens because the "xargs" applet from busybox doesn't understand
+the --max-args=1 option. Thus, the mounts from the test are not removed
+and this goes on in a loop, indefinitely.
+
+This could be avoided by using "-n" option which is supported by both
+the implementations of xargs.
+
+
+Attached the patch here.
+
+Thanks
+
+Suzuki
+(See attached file: fix_fs_bind_tests_for_busybox_machines.diff)
+--0__=EABBFD82DFB94A6E8f9e8a93df938690918cEABBFD82DFB94A6E
+Content-type: application/octet-stream; 
+	name="fix_fs_bind_tests_for_busybox_machines.diff"
+Content-Disposition: attachment;
+	filename="fix_fs_bind_tests_for_busybox_machines.diff"
+Content-transfer-encoding: base64
+
+DQpTaWduZWQtb2ZmLWJ5OiBTdXp1a2kgSyBQIDxzdXp1a2lAaW4uaWJtLmNvbT4NCg0KSW5kZXg6
+IGx0cC90ZXN0c2NyaXB0cy90ZXN0X2ZzX2JpbmQuc2gNCj09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCi0tLSBsdHAub3Jp
+Zy90ZXN0c2NyaXB0cy90ZXN0X2ZzX2JpbmQuc2gJMjAwOS0xMi0yMiAwMzoyODoyNS4wMDAwMDAw
+MDAgKzAwMDANCisrKyBsdHAvdGVzdHNjcmlwdHMvdGVzdF9mc19iaW5kLnNoCTIwMTAtMDQtMjYg
+MDU6NTA6NDEuMDAwMDAwMDAwICswMDAwDQpAQCAtMjM4LDcgKzIzOCw3IEBADQogCSMgbmV3IG1v
+dW50cyBhcm91bmQgYW5kIHdpbGwgbmV2ZXIgcmVtb3ZlIG1vdW50cyBvdXRzaWRlIHRoZSB0ZXN0
+DQogCSMgZGlyZWN0b3J5DQogCSggd2hpbGUgZ3JlcF9wcm9jX21vdW50cyA7IGRvDQotCQlncmVw
+X3Byb2NfbW91bnRzIHwgYXdrICd7cHJpbnQgJDJ9JyB8IHhhcmdzIC1yIC0tbWF4LWFyZ3M9MSB1
+bW91bnQgLWwNCisJCWdyZXBfcHJvY19tb3VudHMgfCBhd2sgJ3twcmludCAkMn0nIHwgeGFyZ3Mg
+LXIgLW4gMSB1bW91bnQgLWwNCiAJZG9uZSApID4mIC9kZXYvbnVsbA0KIAkNCiAJIyBtb3VudCBs
+aXN0IGFuZCBleGl0IHdpdGggMA0K
+
+--0__=EABBFD82DFB94A6E8f9e8a93df938690918cEABBFD82DFB94A6E
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--0__=EABBFD82DFB94A6E8f9e8a93df938690918cEABBFD82DFB94A6E
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0__=EABBFD82DFB94A6E8f9e8a93df938690918cEABBFD82DFB94A6E--
+
+
