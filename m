@@ -2,33 +2,29 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O4Aqv-0003WZ-8B
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 10:38:49 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	(envelope-from <suzuki@in.ibm.com>) id 1O6HwI-0007z5-Ih
+	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 06:37:06 +0000
+Received: from e28smtp08.in.ibm.com ([122.248.162.8])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O4Aqu-0001Vj-0W
-	for ltp-list@lists.sourceforge.net; Tue, 20 Apr 2010 10:38:49 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3KAXe8c018127
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 06:33:40 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o3KAcdq1160650
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 06:38:40 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o3KAcddl025310
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Apr 2010 06:38:39 -0400
-Date: Tue, 20 Apr 2010 16:08:25 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100420103825.GA4118@linux.vnet.ibm.com>
-References: <20100219123501.19085.64668.sendpatchset@subratamodak.linux.ibm.com>
-	<1706047941.560391271757613100.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	(Exim 4.69) id 1O6HwF-0006F7-Hy
+	for ltp-list@lists.sourceforge.net; Mon, 26 Apr 2010 06:37:06 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp08.in.ibm.com (8.14.3/8.13.1) with ESMTP id o3Q5eQuC018332
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Apr 2010 11:10:26 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3Q6aqeK3411986
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Apr 2010 12:06:52 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3Q6aqE2029571
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Apr 2010 12:06:52 +0530
+Message-ID: <4BD53483.9080603@in.ibm.com>
+Date: Mon, 26 Apr 2010 12:06:51 +0530
+From: Suzuki Poulose <suzuki@in.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1706047941.560391271757613100.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] Fix MSGCTL10() to avoid un-necessary cluttering
- of whole system with all PIDs
+Content-Type: multipart/mixed; boundary="------------040208060403040800030709"
+Subject: [LTP] PATCH : test_fs_bind testscript for busybox machines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,119 +34,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar ZHANG <czhang@redhat.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: risrajak@in.ibm.com, ltp-list@lists.sourceforge.net
 
-On Tue, Apr 20, 2010 at 06:00:13AM -0400, Caspar ZHANG wrote:
-> 
-> 
-> ----- "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
-> 
-> > Hi,
-> > 
-> > msgctl10() un-necessarily eats up all the PIDs of the system leading
-> > to
-> > system becoming un-responsive. The changed no.s would better do the
-> > job.
-> 
-> Hi, I see this patch is not included in ltp-full-20100331, will it be 
-> accepted in the future? 
+This is a multi-part message in MIME format.
+--------------040208060403040800030709
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thanks for testing this patch. can you put your Acked-By / Tested-By ?
+Hi,
 
-After that it will be included in master branch immediately.
+The test_fs_bind testscript hangs indefinitely when run on a machine 
+where busybox applets are used.
 
--Rishi
-> 
-> I tested msgctl10 testcase on RHEL5(2.6.18) and RHEL6(>2.6.31),
-> Since /proc/sys/kernel/msgmni has increased from 10 (RHEL5) to 
-> thousands (RHEL6), the testing time will be several hours long.
-> Applied this patch, the testing time can be lowed down to minutes.
-> 
-> Thanks,
-> Caspar
-> 
-> > 
-> > Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>
-> > ---
-> > 
-> > ---
-> > ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c.orig
-> > 2010-02-19 17:59:23.000000000 +0530
-> > +++ ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
-> > 2010-02-19 18:01:13.000000000 +0530
-> > @@ -65,12 +65,8 @@ extern int Tst_count;		/* Test Case coun
-> >  
-> >  int exp_enos[] = { 0 };		/* List must end with 0 */
-> >  
-> > -#ifndef CONFIG_COLDFIRE
-> > -#define MAXNPROCS	1000000	/* This value is set to an arbitrary high
-> > limit. */
-> > -#else
-> > -#define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
-> > -#endif
-> > -#define MAXNREPS	100000
-> > +#define MAXNPROCS	10000 	/*These should be sufficient*/
-> > +#define MAXNREPS	10000	/*Else they srewup the system
-> > un-necessarily*/
-> >  #define FAIL		1
-> >  #define PASS		0
-> >  
-> > 
-> > ---
-> > Regards--
-> > Subrata
-> > 
-> > 
-> > ------------------------------------------------------------------------------
-> > Download Intel&#174; Parallel Studio Eval
-> > Try the new software tools for yourself. Speed compiling, find bugs
-> > proactively, and fine-tune applications for parallel performance.
-> > See why Intel Parallel Studio got high marks during beta.
-> > http://p.sf.net/sfu/intel-sw-dev
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> -- 
-> /---------------------------------------\
-> | Name: Caspar Zhang                    |
-> | Team: Kernel-QE                       |
-> | IRC: czhang @ #kernel-qe, #eng-china  |
-> | Phone: +86-10-6260-8150               |
-> | Cellphone: +86-1381-073-0090          |
-> \---------------------------------------/
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+The test hangs while trying to restore the mounts after a test run.
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+
+This happens because the "xargs" applet from busybox doesn't understand 
+the --max-args=1 option. Thus, the mounts from the test are not removed 
+and this goes on in a loop, indefinitely.
+
+This could be avoided by using "-n" option which is supported by both 
+the implementations of xargs.
+
+
+Attached the patch here.
+
+Thanks
+
+Suzuki
+
+--------------040208060403040800030709
+Content-Type: text/plain;
+ name="fix_fs_bind_tests_for_busybox_machines.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="fix_fs_bind_tests_for_busybox_machines.diff"
+
+
+Signed-off-by: Suzuki K P <suzuki@in.ibm.com>
+
+Index: ltp/testscripts/test_fs_bind.sh
+===================================================================
+--- ltp.orig/testscripts/test_fs_bind.sh	2009-12-22 03:28:25.000000000 +0000
++++ ltp/testscripts/test_fs_bind.sh	2010-04-26 05:50:41.000000000 +0000
+@@ -238,7 +238,7 @@
+ 	# new mounts around and will never remove mounts outside the test
+ 	# directory
+ 	( while grep_proc_mounts ; do
+-		grep_proc_mounts | awk '{print $2}' | xargs -r --max-args=1 umount -l
++		grep_proc_mounts | awk '{print $2}' | xargs -r -n 1 umount -l
+ 	done ) >& /dev/null
+ 	
+ 	# mount list and exit with 0
+
+--------------040208060403040800030709
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+
+--------------040208060403040800030709
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------040208060403040800030709--
+
