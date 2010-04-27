@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <raahul4321@gmail.com>) id 1O1vI2-0002H7-IK
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 05:37:30 +0000
-Received: from mail-gy0-f175.google.com ([209.85.160.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O1vI1-0006gK-NR
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 05:37:30 +0000
-Received: by gya1 with SMTP id 1so3440525gya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Apr 2010 22:37:24 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1O6h1K-0007Rr-73
+	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 09:23:58 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24]
+	helo=mx01.colomx.prod.int.phx2.redhat.com)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O6h1J-0007TZ-8L
+	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 09:23:58 +0000
+Date: Tue, 27 Apr 2010 05:23:50 -0400 (EDT)
+From: Caspar ZHANG <czhang@redhat.com>
+Message-ID: <1982387996.1043141272360230694.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1948733593.1043121272360223401.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Date: Wed, 14 Apr 2010 11:07:23 +0530
-Message-ID: <s2m72fb0a5c1004132237k447d41f1occ861b51ce40be7@mail.gmail.com>
-From: rahul agarwal <raahul4321@gmail.com>
-Subject: [LTP] Query
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_37579_1727994511.1272360230693"
+Subject: Re: [LTP] UTIMENSAT test fails hugely
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,66 +26,156 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0427391941764964797=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
---===============0427391941764964797==
-Content-Type: multipart/alternative; boundary=0016e68e9168cd7fba04842bc531
+------=_Part_37579_1727994511.1272360230693
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
---0016e68e9168cd7fba04842bc531
-Content-Type: text/plain; charset=ISO-8859-1
+attached the patch. (fix the `need a tty to run sudo ' problem)
 
-I have a query regarding how to compile individual testcase in ltp.
+Thanks,
+Caspar
 
-For example:
+----- "Caspar ZHANG" <czhang@redhat.com> wrote:
 
-fallocate tests inside syscalls are failing and so I want to compile and
-check them seperately after some modifications. But I am facing the problem
-due to various dependencies which are there. And as a result I am not being
-able to isolate the errors which I am facing.
+> ----- "Caspar ZHANG" <czhang@redhat.com> wrote:
+> 
+> > ----- "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
+> > 
+> > > Hi,
+> > > 
+> > > Anybody seeing it on their system(s):
+> > 
+> > +1 :-|
+> > 
+> > I believe some automated testing systems don't have a tty when
+> > running tests, so this test can't pass.
+> > 
+> > There's one line in /etc/sudoers
+> > 
+> >  Defaults    requiretty
+> > 
+> > Comment this (need logout?) and it may work. But I have tried yet.
+> 
+> Update: comment or delete this line and the test can work. no need to
+> logout.
+> 
+> But I met the following failure(it seems to be another problem):
+> 
+> <<<test_output>>>
+> ============================================================
+> 
+> Testing read-only file, owned by self
+> 
+> ***** Testing times==NULL case *****
+> Pathname test
+> Owner=nobody; perms=-r--------.; EFAs=Extents
+> ./utimensat01 -q
+> /mnt/testarea/ltp-W0ugFUAL14/utimensat_tests/utimensat.test_file 
+> EXPECTED: SUCCESS y  y
+> RESULT:   SUCCESS 1272358497 1272358497
+> PASSED test 1
+> 
+> Readable file descriptor (futimens(3)) test
+> Owner=nobody; perms=-r--------.; EFAs=Extents
+> ./utimensat01 -q -d
+> /mnt/testarea/ltp-W0ugFUAL14/utimensat_tests/utimensat.test_file NULL
+> 
+> EXPECTED: SUCCESS y  y
+> RESULT:   SUCCESS 1272358497 1272358497
+> PASSED test 2
+> 
+> Writable file descriptor (futimens(3)) test
+> Owner=nobody; perms=-r--------.; EFAs=Extents
+> ./utimensat01 -q -w -d
+> /mnt/testarea/ltp-W0ugFUAL14/utimensat_tests/utimensat.test_file NULL
+> 
+> open: Permission denied
+> FAILED (bad test setup)
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=1 corefile=no
+> cutime=5 cstime=10
+> <<<test_end>>>
+> 
+> Thanks,
+> Caspar
+> 
+> -- 
+> Kernel Associate Quality Engineer
+> Red Hat Inc. (Beijing R&D Branch)
+> 
+> Red Hat China R&D Branch Unit 907, North Tower C, 
+>   Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
+>   Haidian District, Beijing 100190
+> 
+> TEL: +86-10-62608150
+> Web: http://www.redhat.com/
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-Kindly guide me so that I can overcome such a problem.
+-- 
+Kernel Associate Quality Engineer
+Red Hat Inc. (Beijing R&D Branch)
 
-With Regards
+Red Hat China R&D Branch Unit 907, North Tower C, 
+  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
+  Haidian District, Beijing 100190
 
-Rahul Agarwal
+TEL: +86-10-62608150
+Web: http://www.redhat.com/
 
-+91-9999720591
+------=_Part_37579_1727994511.1272360230693
+Content-Type: text/x-patch;
+	name=syscalls-utimensat01-run-sudo-without-tty.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=syscalls-utimensat01-run-sudo-without-tty.patch
 
---0016e68e9168cd7fba04842bc531
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi,
+	Most automated testing systems have no tty when running tests,
+	so the utimensat01 test may fail with the following error msg:
 
-<span lang=3D"EN">
-<p>I have a query regarding how to compile individual testcase in ltp.</p>
-<p>For example:</p>
-<p>fallocate tests inside syscalls are failing and so I want to compile and=
- check them seperately after some modifications. But I am facing the proble=
-m due to various dependencies which are there. And as a result I am not bei=
-ng able to isolate the errors which I am facing.</p>
+	sudo: sorry, you must have a tty to run sudo
 
-<p>Kindly guide me so that I can overcome such a problem.</p>
-<p>With Regards</p>
-<p>Rahul Agarwal</p>
-<p>+91-9999720591</p></span>
+	to avoid this, deleting `Defaults    requiretty' line in
+	/etc/sudoers can make this testcase work.
 
---0016e68e9168cd7fba04842bc531--
+	Signed-off-by: Caspar ZHANG <czhang@redhat.com>
+---
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+index cc136f9..c161476 100644
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+@@ -31,6 +31,11 @@ if tst_kvercmp 2 6 22 ; then
+        exit 0
+ fi
+ 
++# Since some automated testing systems have no tty while testing,
++# delete this line in /etc/sudoers to avoid the error message:
++# `sudo: sorry, you must have a tty to run sudo'
++sed -i "/^Defaults.*requiretty$/d" /etc/sudoers
++
+ RESULT_FILE=$TMPDIR/utimensat.result
+ 
+ TEST_DIR=$TMPDIR/utimensat_tests
 
-
---===============0427391941764964797==
+------=_Part_37579_1727994511.1272360230693
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
---===============0427391941764964797==
+
+------=_Part_37579_1727994511.1272360230693
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -95,5 +186,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============0427391941764964797==--
+------=_Part_37579_1727994511.1272360230693--
 
