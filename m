@@ -1,34 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxCLE-0005EY-Jx
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 04:49:16 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxCLC-00014f-48
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 04:49:16 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o314bkC2024390
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 00:37:46 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o314n8cx148406
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 00:49:08 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o314n7g8017908
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 00:49:07 -0400
-Date: Thu, 1 Apr 2010 10:19:05 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100401044905.GA3379@linux.vnet.ibm.com>
-References: <E0B6230F32558E43951AF1B0DEBF98102119DC54EF@EUSAACMS0714.eamcs.ericsson.se>
-	<20100331045334.GA3878@linux.vnet.ibm.com>
-	<E0B6230F32558E43951AF1B0DEBF98102119DC5AA5@EUSAACMS0714.eamcs.ericsson.se>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1O6fSW-0003kS-2t
+	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 07:43:56 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24]
+	helo=mx01.colomx.prod.int.phx2.redhat.com)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O6fSU-0001t1-IG
+	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 07:43:56 +0000
+Date: Tue, 27 Apr 2010 03:43:45 -0400 (EDT)
+From: Caspar ZHANG <czhang@redhat.com>
+Message-ID: <1650479488.1039351272354225723.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1762040692.1039311272354116947.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <E0B6230F32558E43951AF1B0DEBF98102119DC5AA5@EUSAACMS0714.eamcs.ericsson.se>
-Subject: Re: [LTP] Fcntl16 test case 2 failure
+Subject: Re: [LTP] UTIMENSAT test fails hugely
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,80 +27,1236 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anthony Ton <anthony.ton@ericsson.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Wed, Mar 31, 2010 at 10:39:31PM -0400, Anthony Ton wrote:
-> Hi Rishikesh,
-> My mistake, both of them fail.  But one with error code 5 (runltp), while fcntl16 run by itself with error code 37.
-Ok . /me is seeing some issue or regression here may be.
 
-> I am running against kernel 2.6.27.18.
+----- "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
 
-Will it be possible for you to test with 2.6.33 kernel on the same env ?
-meanwhile i will also spend some time on this early next week.
+> Hi,
+> 
+> Anybody seeing it on their system(s):
 
--Rishi
++1 :-|
 
-> I observe that if I running the test suite using runltp, then fcntl16 passes the test.  However, if I run fcntl16 by itself, I get the TFAIL as mentioned in previous email.  Do you know why the results are different if running fcntl16 from runltp vs. runing fcntl16 by itself?
-> Thanks,
-> Anthony 
+I believe some automated testing systems don't have a tty when
+running tests, so this test can't pass.
+
+There's one line in /etc/sudoers
+
+ Defaults    requiretty
+
+Comment this (need logout?) and it may work. But I have tried yet.
+
+Thanks,
+Caspar
+
 > 
-> -----Original Message-----
-> From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
-> Sent: Tuesday, March 30, 2010 9:54 PM
-> To: Anthony Ton
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] Fcntl16 test case 2 failure
+> # head -17514 output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output | tail
+> -956
+> <<<test_start>>>
+> tag=utimensat01 stime=1271853062
+> cmdline="utimensat_tests.sh"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> sudo: sorry, you must have a tty to run sudo
+> /opt/ltp/testcases/bin/utimensat_tests.sh: line 252:
+> cd: /tmp/ltp-WvDfUaurtr/utimensat_tests: No such file or directory
+> ============================================================
+> 
+> Testing read-only file, owned by self
+> 
+> ***** Testing times==NULL case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01
+> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 1
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 2
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 3
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 4
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 5
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 6
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 7
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 8
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 9
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  n
+> RESULT:     
+> FAILED test 10
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  n
+> RESULT:     
+> FAILED test 11
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  n
+> RESULT:     
+> FAILED test 12
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  y
+> RESULT:     
+> FAILED test 13
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  y
+> RESULT:     
+> FAILED test 14
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  y
+> RESULT:     
+> FAILED test 15
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ x, y } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 1 1 1 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 16
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 17
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 18
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ============================================================
+> 
+> Testing read-only file, not owned by self
+> 
+> ***** Testing times==NULL case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01
+> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 19
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 20
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 21
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 22
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 23
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 24
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 25
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 26
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 27
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 28
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 29
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 30
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 31
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 32
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 33
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ x, y } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 1 1 1 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 34
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 35
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 36
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ============================================================
+> 
+> Testing writable file, not owned by self
+> 
+> ***** Testing times==NULL case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01
+> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 37
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 38
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 39
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 40
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 41
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 42
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 43
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 44
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 45
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 46
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 47
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 48
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 49
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 50
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 51
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ x, y } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 1 1 1 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 52
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 53
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 54
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ============================================================
+> 
+> Testing append-only file, owned by self
+> 
+> ***** Testing times==NULL case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01
+> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 55
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 56
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 57
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 58
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 59
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS y  y
+> RESULT:     
+> FAILED test 60
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 61
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 62
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 63
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 64
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 65
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 66
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 67
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 68
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 69
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ x, y } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 1 1 1 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 70
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 71
+> 
+> Writable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q -w
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 72
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ============================================================
+> 
+> Testing immutable file, owned by self
+> 
+> ***** Testing times==NULL case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01
+> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 73
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 74
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 75
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 76
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 77
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 78
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 79
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 80
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 81
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 82
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ x, y } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 1 1 1 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 83
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 84
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ============================================================
+> 
+> Testing immutable append-only file, owned by self
+> 
+> ***** Testing times==NULL case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01
+> -q /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 85
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 86
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 87
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EACCES   
+> RESULT:     
+> FAILED test 88
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 89
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: SUCCESS n  n
+> RESULT:     
+> FAILED test 90
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 n 0 o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 91
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 n 0
+> o
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 92
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 0 o 0 n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 93
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 0 o 0
+> n
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 94
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ***** Testing times=={ x, y } case *****
+> Pathname test
+> sudo: sorry, you must have a tty to run sudo
+> cp: `/opt/ltp/testcases/bin/utimensat01' and `./utimensat01' are the
+> same file
+> ./utimensat01 -q
+> /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file
+> 1 1 1 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 95
+> 
+> Readable file descriptor (futimens(3)) test
+> sudo: sorry, you must have a tty to run sudo
+> ./utimensat01 -q
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 1 1 1
+> 1
+> sudo: sorry, you must have a tty to run sudo
+> EXPECTED: EPERM   
+> RESULT:     
+> FAILED test 96
+> 
+> sudo: sorry, you must have a tty to run sudo
+> sudo: sorry, you must have a tty to run sudo
+> ============================================================
+> 
+> ***** Testing pathname==NULL, dirfd!=AT_FDCWD, flags has
+> AT_SYMLINK_NOFOLLOW *****
+> sudo: sorry, you must have a tty to run sudo
+> utimensat01 -q -n
+> -d /tmp/ltp-WvDfUaurtr/utimensat_tests/utimensat.test_file NULL 
+> open: No such file or directory
+> FAILED (bad test setup)
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=3 termination_type=exited termination_id=1 corefile=no
+> cutime=34 cstime=160
+> <<<test_end>>>
+> --------------
+> 
+> # uname -a
+> Linux 2.6.33.1-19.fc13.ppc64 #1 SMP Tue Mar 23 06:32:38 EDT 2010
+> ppc64
+> ppc64 ppc64 GNU/Linux
+> # cat /etc/issue
+> Fedora release 13 (Goddard)
+> Kernel \r on an \m (\l)
+> 
+> Regards--
+> Subrata
 > 
 > 
-> Hi Anthony,
 > 
-> >Hi LTP Team,
-> >I run test case fcntl16 and get a failure on test case 2 with messages 
-> >below
-> 
-> I have tested with latest kernel 2.6.32 and i could not face this problem.
-> 
-> Can you let us know about your setup little bit more ?
-> 
-> >
-> >fcntl16     0  TINFO  :  Entering block 2
-> >fcntl16     1  TFAIL  :  First parent lock failed
-> >fcntl16     2  TFAIL  :  Test case 1, errno = 37
-> >fcntl16     0  TINFO  :  Test case 2: with mandatory record locking FAILED
-> >
-> >>I look into the code and think that it is trying to do a lock on the 
-> >>entire file
-> >with write lock using option F_WRLCK, 0, 0L, 0L, IGNORED.  Is it 
-> >correct?  Can someone
-> >+elaborate a little more?  What does the errno = 37 mean?
-> 
-> This errno means you are not having any lock available while doing operation with fcntl, with F_SETLK .
-> 
-> asm-generic/errno.h:#define	ENOLCK		37	/* No record locks
-> available */
-> 
-> --
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+/---------------------------------------\
+| Name: Caspar Zhang                    |
+| Team: Kernel-QE                       |
+| IRC: caspar @ #kernel-qe, #eng-china  |
+| Phone: +86-10-6260-8150               |
+| Cellphone: +86-1381-073-0090          |
+\---------------------------------------/
+
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
