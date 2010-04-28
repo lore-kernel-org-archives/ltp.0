@@ -1,32 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O2Ivr-0003Co-46
-	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:52:11 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O2Ivq-0001nW-7w
-	for ltp-list@lists.sourceforge.net; Thu, 15 Apr 2010 06:52:11 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3F6dwlB015497
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 02:39:58 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o3F6q4PM053432
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 02:52:04 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o3F6q4fm025441
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Apr 2010 03:52:04 -0300
-Date: Thu, 15 Apr 2010 12:22:02 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100415065202.GB4557@linux.vnet.ibm.com>
-References: <003201cadc47$a9bcec80$fd36c580$@co.jp>
+	(envelope-from <serge@us.ibm.com>) id 1O7EW3-0001c5-BW
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 21:09:55 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O7EW2-0006ly-Gq
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 21:09:55 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3SL7awq006927
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 17:07:36 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3SL9m602130164
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 17:09:48 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3SL9lgB032133
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 17:09:48 -0400
+Date: Wed, 28 Apr 2010 16:09:47 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100428210947.GB20642@us.ibm.com>
+References: <20100428210906.GA20572@us.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <003201cadc47$a9bcec80$fd36c580$@co.jp>
-Subject: Re: [LTP] [PATCH] fix \"ar\" test
+In-Reply-To: <20100428210906.GA20572@us.ibm.com>
+Subject: [LTP] [PATCH 3/4] mqns2: fix some error checking and reporting
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,56 +39,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Thu, Apr 15, 2010 at 11:59:28AM +0900, Mitani wrote:
-> Sorry.
-> My patch was destroyed by e-mail.
-> I attach patch for "ar01" file.
+Signed-off-by: Serge Hallyn <serue@us.ibm.com>
+---
+ testcases/kernel/containers/mqns/mqns_02.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-Applied to next branch. Will wait for someone to Acked/test it before merging to 
-master.
-
-Thanks
--Rishi
-
-> 
-> 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-> 
-> 
-> Regards--
-> 
-> -Tomonori Mitani
-
-
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
+diff --git a/testcases/kernel/containers/mqns/mqns_02.c b/testcases/kernel/containers/mqns/mqns_02.c
+index 8f783ba..07ab042 100644
+--- a/testcases/kernel/containers/mqns/mqns_02.c
++++ b/testcases/kernel/containers/mqns/mqns_02.c
+@@ -76,7 +76,7 @@ int check_mqueue(void *vtest)
+ 
+ 			else {
+ 
+-				if (read(p1[0], buf, 5))
++				if (read(p1[0], buf, 5) < 0)
+ 					tst_resm(TBROK | TERRNO,
+ 						"read(p1[0], ..) failed");
+ 				else {
+@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
+ 	}
+ 
+ 	if (read(p2[0], buf, 7) < 0) {
+-		tst_resm(TBROK, "read(p1[0], ..) failed");
++		tst_resm(TBROK, "read(p2[0], ..) failed");
+ 	} else if (!strcmp(buf, "mqfail")) {
+ 		tst_resm(TFAIL, "child process could not create mqueue\n");
+ 		umount(DEV_MQUEUE);
+@@ -160,8 +160,8 @@ int main(int argc, char *argv[])
+ 			tst_resm(TFAIL, "Parent process found mqueue\n");
+ 			mq_close(mqd);
+ 		}
+-		if (write(p1[1], "cont", 5)) {
+-			tst_resm(TBROK, "read(p1[0], ..) failed");
++		if (write(p1[1], "cont", 5) < 0) {
++			tst_resm(TBROK, "write(p1[1], ..) failed");
+ 
+ 		}
+ 	}
 -- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+1.7.0
+
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
