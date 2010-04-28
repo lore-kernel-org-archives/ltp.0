@@ -1,20 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1O6gqe-0006eP-TH
-	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 09:12:56 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25]
-	helo=mx02.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O6gqd-000847-MT
-	for ltp-list@lists.sourceforge.net; Tue, 27 Apr 2010 09:12:56 +0000
-Date: Tue, 27 Apr 2010 05:12:49 -0400 (EDT)
-From: Caspar ZHANG <czhang@redhat.com>
-Message-ID: <328988291.1042731272359569134.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1650479488.1039351272354225723.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1O7EVq-0000g1-PT
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 21:09:42 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O7EVo-0002J2-E4
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 21:09:42 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3SKxh3W024860
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 16:59:43 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3SL9YR1153992
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 17:09:34 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3SL9YKA031111
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 17:09:34 -0400
+Date: Wed, 28 Apr 2010 16:09:36 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100428210936.GA20642@us.ibm.com>
+References: <20100428210906.GA20572@us.ibm.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] UTIMENSAT test fails hugely
+Content-Disposition: inline
+In-Reply-To: <20100428210906.GA20572@us.ibm.com>
+Subject: [LTP] [PATCH 2/4] pidns30: strip leading / from name passed to
+	mq_open
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,77 +40,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
+Signed-off-by: Serge Hallyn <serue@us.ibm.com>
+---
+ testcases/kernel/containers/pidns/pidns30.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
------ "Caspar ZHANG" <czhang@redhat.com> wrote:
-
-> ----- "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
-> 
-> > Hi,
-> > 
-> > Anybody seeing it on their system(s):
-> 
-> +1 :-|
-> 
-> I believe some automated testing systems don't have a tty when
-> running tests, so this test can't pass.
-> 
-> There's one line in /etc/sudoers
-> 
->  Defaults    requiretty
-> 
-> Comment this (need logout?) and it may work. But I have tried yet.
-
-Update: comment or delete this line and the test can work. no need to logout.
-
-But I met the following failure(it seems to be another problem):
-
-<<<test_output>>>
-============================================================
-
-Testing read-only file, owned by self
-
-***** Testing times==NULL case *****
-Pathname test
-Owner=nobody; perms=-r--------.; EFAs=Extents
-./utimensat01 -q /mnt/testarea/ltp-W0ugFUAL14/utimensat_tests/utimensat.test_file 
-EXPECTED: SUCCESS y  y
-RESULT:   SUCCESS 1272358497 1272358497
-PASSED test 1
-
-Readable file descriptor (futimens(3)) test
-Owner=nobody; perms=-r--------.; EFAs=Extents
-./utimensat01 -q -d /mnt/testarea/ltp-W0ugFUAL14/utimensat_tests/utimensat.test_file NULL 
-EXPECTED: SUCCESS y  y
-RESULT:   SUCCESS 1272358497 1272358497
-PASSED test 2
-
-Writable file descriptor (futimens(3)) test
-Owner=nobody; perms=-r--------.; EFAs=Extents
-./utimensat01 -q -w -d /mnt/testarea/ltp-W0ugFUAL14/utimensat_tests/utimensat.test_file NULL 
-open: Permission denied
-FAILED (bad test setup)
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=5 cstime=10
-<<<test_end>>>
-
-Thanks,
-Caspar
-
+diff --git a/testcases/kernel/containers/pidns/pidns30.c b/testcases/kernel/containers/pidns/pidns30.c
+index ea8c54c..5975b53 100644
+--- a/testcases/kernel/containers/pidns/pidns30.c
++++ b/testcases/kernel/containers/pidns/pidns30.c
+@@ -59,7 +59,7 @@
+ char *TCID = "pidns30";
+ int TST_TOTAL = 1;
+ 
+-char *mqname = "/mq1";
++char *mqname = "mq1";
+ int result = TFAIL;
+ 
+ int errno;
 -- 
-Kernel Associate Quality Engineer
-Red Hat Inc. (Beijing R&D Branch)
+1.7.0
 
-Red Hat China R&D Branch Unit 907, North Tower C, 
-  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
-  Haidian District, Beijing 100190
-
-TEL: +86-10-62608150
-Web: http://www.redhat.com/
 
 ------------------------------------------------------------------------------
 _______________________________________________
