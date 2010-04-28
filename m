@@ -1,39 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NymEA-0001wE-9o
-	for ltp-list@lists.sourceforge.net; Mon, 05 Apr 2010 13:20:30 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NymE8-0001iQ-2J
-	for ltp-list@lists.sourceforge.net; Mon, 05 Apr 2010 13:20:30 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o35DAwBH025109
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Apr 2010 07:10:58 -0600
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
-	id o35DK6kY073752
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Apr 2010 07:20:08 -0600
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o35DK5IC005662
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Apr 2010 07:20:06 -0600
-Date: Mon, 5 Apr 2010 08:20:04 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100405132004.GA32049@us.ibm.com>
-References: <000001cad173$3c32b200$b4981600$@co.jp>
-	<20100401083510.GD13796@linux.vnet.ibm.com>
-	<000101cad17c$ee4946d0$cadbd470$@co.jp>
-	<20100401093511.GA25290@linux.vnet.ibm.com>
-	<000001cad18d$ea091c60$be1b5520$@co.jp>
-	<20100401152647.GH22648@us.ibm.com>
-	<000301cad20b$2269c230$673d4690$@co.jp>
+	(envelope-from <yanegomi@gmail.com>) id 1O7GKs-0000MK-G4
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 23:06:30 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O7GKq-0000CW-CF
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 23:06:30 +0000
+Received: by gwj15 with SMTP id 15so367313gwj.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 28 Apr 2010 16:06:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <000301cad20b$2269c230$673d4690$@co.jp>
-Subject: Re: [LTP] cap_bounds_r.c build failure
+In-Reply-To: <h2we84b0ba81004272336n62d73582y2862b6898fc2f722@mail.gmail.com>
+References: <h2we84b0ba81004272336n62d73582y2862b6898fc2f722@mail.gmail.com>
+Date: Wed, 28 Apr 2010 16:06:22 -0700
+Message-ID: <l2j364299f41004281606vc10b831cy4abdfd0efe3e07f0@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Willing to contribute to LTP.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,63 +27,30 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, Andrew Morgan <morgan@kernel.org>
+To: Mukesh Tupe <mukesh.d.tupe@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Mitani (mitani@ryobi.co.jp):
+On Tue, Apr 27, 2010 at 11:36 PM, Mukesh Tupe <mukesh.d.tupe@gmail.com> wro=
+te:
 > Hi,
-> 
-> 
-> I tired to upgrade "libcap" from "libcap-1.0-20" to "libcap-2.11".
-> My system is RHEL4.8 (x86) and kernel version is 2.6.9-89.ELsmp.
+>
+> I would like to contribute to LTP by fixing bugs in test tools ( c
+> programs or shell/perl scripts) =A0or adding new scripts/ test programs.
+> Please let me know how I can contribute?
 
-Oh, I'm sorry, I misunderstood from the first.  I thought you wanted
-to test a modern kernel on an older distro.  So the real problem in
-your original email wasn't that cap_bounds_r.c wouldn't compile, but
-that it tried to compile.
+Hi Mukesh,
+    Just subscribe to the list and provide patches for problematic
+issues that you or others find, or coverage gaps in any existing
+functionality in the kernel, and we'll be more than happy to integrate
+them into LTP if they're sane.
+Thanks!
+-Garrett
 
-Maybe the attached ltp patch will do a better job of not trying
-to compile.  Though I'm not sure what is the best way to detect
-both 64-bit caps in kernel and libcap2 userspace.
-
--serge
-
-Date: Mon, 5 Apr 2010 08:17:46 -0500
-Subject: [PATCH ltp] don't compile cap_bounds on older systems
-
-Only define HAVE_LIBCAP for libcap2 and 64-bit caps.
-
-Signed-off-by: Serge Hallyn <serue@us.ibm.com>
+---------------------------------------------------------------------------=
 ---
- m4/ltp-cap.m4 |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
-index caa436f..6248ff3 100644
---- a/m4/ltp-cap.m4
-+++ b/m4/ltp-cap.m4
-@@ -27,7 +27,7 @@ AH_TEMPLATE(HAVE_LIBCAP,
- [Define to 1 if you have libcap-2 installed.])
- AC_CHECK_HEADERS(sys/capability.h,[
- 	LTP_CAPABILITY_SUPPORT=yes
--	AC_CHECK_LIB(cap,cap_compare,[AC_DEFINE(HAVE_LIBCAP) CAP_LIBS="-lcap"], [CAP_LIBS=""])
-+	AC_CHECK_DECL(VFS_CAP_REVISION_2,[AC_DEFINE(HAVE_LIBCAP) CAP_LIBS="-lcap"],[CAP_LIBS=""],[#include "linux/capability.h"])
- 	AC_CHECK_PROG(HAVE_SETCAP,setcap,setcap,false)
- ])]
- AC_SUBST(CAP_LIBS)
--- 
-1.6.3.3
-
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
