@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NxEwv-0003zv-7s
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 07:36:21 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxEws-0006jQ-Ug
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 07:36:21 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o317BMOO010726
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:11:22 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o317N88f1777804
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 03:23:08 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o317N7Pp032162
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Apr 2010 04:23:07 -0300
-Date: Thu, 1 Apr 2010 12:53:05 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100401072305.GC13796@linux.vnet.ibm.com>
+	(envelope-from <casparant@gmail.com>) id 1O70sG-00052Z-8M
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 06:35:56 +0000
+Received: from mail-pw0-f46.google.com ([209.85.160.46])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O70sF-0002oa-9R
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 06:35:56 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [risrajak@linux.vnet.ibm.com: [Ltp-commits] [Git] ltp
-	updated.]
+In-Reply-To: <8B8139E0-F07A-433D-B38D-30DAB81E3FF5@gmail.com>
+References: <103530624.1121001272433642504.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<8B8139E0-F07A-433D-B38D-30DAB81E3FF5@gmail.com>
+From: Caspar Zhang <casparant@gmail.com>
+Date: Wed, 28 Apr 2010 14:27:57 +0800
+Message-ID: <s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
+Content-Type: multipart/mixed; boundary=00504502c13892382c0485461dd1
+Subject: Re: [LTP] UTIMENSAT test fails hugely
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,186 +26,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: sachinp@linux.vnet.ibm.com, iranna.ankad@in.ibm.com, svishuku@in.ibm.com
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-Hi All,
+--00504502c13892382c0485461dd1
+Content-Type: text/plain; charset=ISO-8859-1
 
-For those who does not subscribed to ltp-commits list.
+On Wed, Apr 28, 2010 at 2:04 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> The first item is different from the other two. The first one ignores the
+> signal (SIG_IGN), whereas the latter two cases reset the handler to the
+> default one (SIG_DFL). I prefer the former format, because otherwise the
+> signal handlers become reentrable on accident.
 
-This is the new file which will be updated every month by maintainer. While
-testing during the month if anyone get a chance to test on h/w or distro which i
-could not cover due to time availability please send me a patch will include as
-hotfixes and that can be helpful for each one us during whole month to refer.
+I see. Thank you.
 
--Rishi
+The final patch ;-)
 
------ Forwarded message from Rishi kesh K Rajak <risrajak@linux.vnet.ibm.com> -----
-
-Date: Thu,  1 Apr 2010 07:14:26 +0000
-From: Rishi kesh K Rajak <risrajak@linux.vnet.ibm.com>
-To: ltp-commits@lists.sourceforge.net
-Subject: [Ltp-commits] [Git] ltp updated.
-
-The branch, next, has been updated
-       via  aabf191024aacc91784593b0d3f8d5fa37434b25 (commit)
-      from  f50539e0bcb0f9bab88101ce40a8e09a1d76d4a9 (commit)
-
-
-- Log -----------------------------------------------------------------
-commit aabf191024aacc91784593b0d3f8d5fa37434b25
-Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Date:   Thu Apr 1 12:43:27 2010 +0530
-
-    Added a new file called result where maintainer need to provide the result on which he has run before releasing the tar ball for month end release.
-    
-    Signed-off-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-
------------------------------------------------------------------------
-
-Summary of changes:
- result |   96 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 96 insertions(+), 0 deletions(-)
- create mode 100644 result
-
-diff --git a/result b/result
-new file mode 100644
-index 0000000..78db428
---- /dev/null
-+++ b/result
-@@ -0,0 +1,96 @@
-+This file contains for corresponding monthly release results. it will alwats help to refer this file and come to know about known failures.
-+
-+
-+ltp-full-20100331 Result pon various Arch:
-+
-+On x86_64 machine with RHEL5.4(2.6.18-164.el5):
-+*****************************************************
-+
-+Result Log file:
-+===============
-+eventfd01                      FAIL       4    
-+syslog07                       FAIL       1    
-+syslog08                       FAIL       1    
-+mtest06                        FAIL       255  
-+su01                           FAIL       1    
-+hugemmap04                     FAIL       2    
-+hugeshmat01                    FAIL       6    
-+hugeshmat02                    FAIL       6    
-+hugeshmat03                    FAIL       2    
-+hugeshmctl01                   FAIL       6    
-+hugeshmctl02                   FAIL       6    
-+hugeshmctl03                   FAIL       2    
-+hugeshmdt01                    FAIL       6    
-+hugeshmget01                   FAIL       2    
-+hugeshmget02                   FAIL       6    
-+hugeshmget03                   FAIL       6    
-+hugeshmget05                   FAIL       2    
-+mail                           FAIL       2    
-+
-+
-+Result Output file:
-+==================
-+syslog07    1  TFAIL  :  Higher level messages are not logged.
-+check_netns_enabled    1  TFAIL  :  unshare syscall smoke test failed: errno=EINVAL(22): Invalid argument
-+mail_tests::mail02    2  TFAIL  :  Test #2: Mailer-Deamon failed to report delivery failure. Reason:
-+mail_tests::mail05    5  TFAIL  :  Test #5: mail failed to carbon copy user mail_test. Reason:
-+
-+
-+On ppc64 machine with RHEL5.4(2.6.18-164.el5):
-+*****************************************************
-+
-+Result Log file:
-+===============
-+cct01                         FAIL       1    
-+eventfd01                      FAIL       4    
-+fdatasync02                    FAIL       1    
-+syslog07                       FAIL       1    
-+syslog08                       FAIL       1    
-+mtest06                        FAIL       255  
-+mmapstress03                   FAIL       1    
-+su01                           FAIL       1    
-+cron_deny01                    FAIL       1    
-+
-+
-+Result Output file:
-+==================
-+acct01      1  TFAIL  :  attempting to assign acct file to device: expected failure but got okay return
-+fdatasync02    2  TFAIL  :  Unexpected results for file descriptor to a special file ; returned 0 (expected -1), errno 0 (expected 22)
-+syslog07    1  TFAIL  :  Higher level messages are not logged.
-+mmapstress03    1  TFAIL  :  Test failed
-+check_netns_enabled    1  TFAIL  :  unshare syscall smoke test failed: errno=EINVAL(22): Invalid argument
-+
-+
-+
-+On s390x machine with RHEL5.4(2.6.18-164.el5):
-+*****************************************************
-+
-+Result Log file:
-+===============
-+eventfd01                      FAIL       4    
-+keyctl01                       FAIL       1    
-+rt_sigsuspend01                FAIL       11   
-+timer_getoverrun01             FAIL       1    
-+timer_gettime01                FAIL       1    
-+su01                           FAIL       1    
-+cron_allow01                   FAIL       1    
-+
-+
-+
-+Result Output file:
-+==================
-+keyctl01    2  TFAIL  :  KEYCTL_REVOKE got unexpected errno: errno=EINVAL(22): Invalid argument
-+timer_getoverrun01    1  TFAIL  :  Block 1: test 0 FAILED... errno = 22 : Invalid argument
-+timer_gettime01    1  TFAIL  :  Block 1: test 0 FAILED... errno = 22 : Invalid argument
-+check_netns_enabled    1  TFAIL  :  unshare syscall smoke test failed: errno=EINVAL(22): Invalid argument
-+
-+
-+
-+On x86_64 machine with SLES11GA(2.6.27.19-5-default):
-+*****************************************************
-+
-+Result Log file:
-+===============
-+eventfd2_03                    FAIL       1    
-+utimensat01                    FAIL       1    
-+ftest04                        FAIL       1    
-
-
-hooks/post-receive
--- 
-ltp
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-Ltp-commits mailing list
-Ltp-commits@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-commits
-
------ End forwarded message -----
+Cheers,
+-Caspar
 
 -- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+Tags: Ant, Beijing, BUPT, Caspar, Kernel QA, Linux, Open Source,
+Photography, Programmer, Red Hat Inc., Zhejianger, etc.
+
+Current: Kernel Associate Quality Engineer @ Red Hat Inc.
+
+Home Page: http://www.CasparZhang.com/
+
+--00504502c13892382c0485461dd1
+Content-Type: text/x-patch; charset=US-ASCII; 
+	name="syscalls-utimensat01-run-sudo-without-tty.patch"
+Content-Disposition: attachment; 
+	filename="syscalls-utimensat01-run-sudo-without-tty.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g8jrnrp80
+
+SGksCglNb3N0IGF1dG9tYXRlZCB0ZXN0aW5nIHN5c3RlbXMgaGF2ZSBubyB0dHkgd2hlbiBydW5u
+aW5nIHRlc3RzLAoJc28gdGhlIHV0aW1lbnNhdDAxIHRlc3QgbWF5IGZhaWwgd2l0aCB0aGUgZm9s
+bG93aW5nIGVycm9yIG1zZzoKCglzdWRvOiBzb3JyeSwgeW91IG11c3QgaGF2ZSBhIHR0eSB0byBy
+dW4gc3VkbwoKCXRvIGF2b2lkIHRoaXMsIGNvbW1lbnRpbmcgYERlZmF1bHRzICAgIHJlcXVpcmV0
+dHknIGxpbmUgaW4KCS9ldGMvc3Vkb2VycyBjYW4gbWFrZSB0aGlzIHRlc3RjYXNlIHdvcmsuIEFm
+dGVyIHRlc3QgZmluaXNoZWQsCglyZXN0b3JlIHRoaXMgbGluZS4KCglTaWduZWQtb2ZmLWJ5OiBD
+YXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQuY29tPgotLS0KZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVuc2F0L3V0aW1lbnNhdF90ZXN0cy5zaCBiL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVuc2F0L3V0aW1lbnNhdF90ZXN0cy5zaAotLS0gYS90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lbnNhdC91dGltZW5zYXRfdGVzdHMuc2gJMjAxMC0w
+NC0wMSAxNDoyMzoxMS4wMDAwMDAwMDAgKzA4MDAKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy91dGltZW5zYXQvdXRpbWVuc2F0X3Rlc3RzLnNoCTIwMTAtMDQtMjggMTQ6MjM6NDIuNTA1
+NDIyMTUyICswODAwCkBAIC00Myw2ICs0MywyMyBAQAogICAgICBleGl0IDE7CiBmaQogCisjIFNp
+bmNlIHNvbWUgYXV0b21hdGVkIHRlc3Rpbmcgc3lzdGVtcyBoYXZlIG5vIHR0eSB3aGlsZSB0ZXN0
+aW5nLAorIyBjb21tZW50IHRoaXMgbGluZSBpbiAvZXRjL3N1ZG9lcnMgdG8gYXZvaWQgdGhlIGVy
+cm9yIG1lc3NhZ2U6CisjIGBzdWRvOiBzb3JyeSwgeW91IG11c3QgaGF2ZSBhIHR0eSB0byBydW4g
+c3VkbycKKyMgVXNlIHRyYXAgdG8gcmVzdG9yZSB0aGlzIGxpbmUgYWZ0ZXIgcHJvZ3JhbSB0ZXJt
+aW5hdGVzLgorcGF0dGVybj0iW1s6c3BhY2U6XV0qRGVmYXVsdHNbWzpzcGFjZTpdXSpyZXF1aXJl
+dHR5LioiCitpZiBncmVwIC1xICJeJHtwYXR0ZXJufSIgL2V0Yy9zdWRvZXJzOyB0aGVuCisJZWNo
+byAiJHtURVNUX1BST0d9IDAgSU5GTyA6IENvbW1lbnQgcmVxdWlyZXR0eSBpbiAvZXRjL3N1ZG9l
+cnMgZm9yIGF1dG9tYXRlZCB0ZXN0aW5nIHN5c3RlbXMiCisJc2VkIC1FIC1pIiIgLWUgInMvXigk
+cGF0dGVybikvI1wxLyIgL2V0Yy9zdWRvZXJzCisJdHJhcCAndHJhcCAiIiBFWElUOyB0ZWFyZG93
+bicgRVhJVAorZmkKKwordGVhcmRvd24oKQoreworCWVjaG8gIiR7VEVTVF9QUk9HfSAwIElORk8g
+OiBSZXN0b3JlIHJlcXVpcmV0dHkgaW4gL2V0Yy9zdWRvZXJzIgorCXNlZCAtRSAtaSIiIC1lICJz
+L14jKCRwYXR0ZXJuKS9cMS8iIC9ldGMvc3Vkb2VycworfQorCiAjIFN1bW1hcnkgY291bnRlcnMg
+b2YgYWxsIHRlc3QgcmVzdWx0cwogCiB0ZXN0X251bT0wCg==
+--00504502c13892382c0485461dd1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+
+--00504502c13892382c0485461dd1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--00504502c13892382c0485461dd1--
+
