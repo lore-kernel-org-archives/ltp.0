@@ -1,22 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liangrenxiu@gmail.com>) id 1Nyy0w-0003Cf-PQ
-	for ltp-list@lists.sourceforge.net; Tue, 06 Apr 2010 01:55:38 +0000
-Received: from mail-pz0-f182.google.com ([209.85.222.182])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nyy0v-0000ZO-Uj
-	for ltp-list@lists.sourceforge.net; Tue, 06 Apr 2010 01:55:38 +0000
-Received: by pzk12 with SMTP id 12so1262779pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 05 Apr 2010 18:55:32 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 6 Apr 2010 09:55:32 +0800
-Message-ID: <g2kd955a1171004051855zca3d16a1p27a4c7adcd3dd91b@mail.gmail.com>
-From: renxiu liang <liangrenxiu@gmail.com>
-Subject: [LTP] mtest06: mmap1 -x 0.05 : how to handle SIGSEGV with
-	"SEGV_ACCERR" si_code value
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1O732B-0008Ff-Bx
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 08:54:19 +0000
+Received: from e28smtp04.in.ibm.com ([122.248.162.4])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O7329-0005lp-RJ
+	for ltp-list@lists.sourceforge.net; Wed, 28 Apr 2010 08:54:19 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp04.in.ibm.com (8.14.3/8.13.1) with ESMTP id o3S8s8HG025425
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 14:24:08 +0530
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3S8s8SZ3141700
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 14:24:08 +0530
+Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
+	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3S8s72C013562
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 18:54:07 +1000
+From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+Date: Wed, 28 Apr 2010 14:24:07 +0530
+Message-ID: <1272444847.5696.9.camel@munipradeep-laptop>
+Mime-Version: 1.0
+Subject: [LTP]  mqns tests are failing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,127 +33,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1154363311195431842=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============1154363311195431842==
-Content-Type: multipart/alternative; boundary=001636b2ac6da133ba048387bdd6
+Hi,
 
---001636b2ac6da133ba048387bdd6
-Content-Type: text/plain; charset=ISO-8859-1
+I noticed that mqns test cases are failing. I am using March 2010 LTP.
+After changing mq_open syscall in mqns_01.c file, test is passing. Same
+thing is happening w.r.t. other mqns test cases. Below is the change I
+made.
 
-Hi All,
+Changed 
+   mqd = syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL,0777,
+NULL);
 
-Recently, we found the default test case mtest06 failed; the test case
-wanted to handle sigal "SIGSEGV", but it only handles when si_code is
-"SEGV_MAPERR";
-the si_code for SIGSEGV signal has two values: SEGV_MAPERR and SEGV_ACCERR;
+to
+   mqd = mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0777, NULL);
 
- static void
- sig_handler(int signal,     /* signal number, set to handle SIGALRM
-*/
-             siginfo_t *info,
-             struct ucontext *ut)/* contains pointer to sigcontext
-structure   */
- {
-     switch (signal)
-     {
-         case SIGALRM:
-              tst_resm(TPASS, "Test ended, success");
-              _exit(0);
+Failure output I got is below:
+# ./mqns_01
+posixmq_namespace_01    0  TINFO  :  Testing posix mq namespaces through
+unshare(2).
 
-         case SIGSEGV:
-              if (info->si_code == SEGV_MAPERR &&
-                       info->si_addr == map_address)
-              {
-                   tst_resm(TINFO,
-                     "page fault occurred at %p",
-                     map_address);
-                   longjmp(jmpbuf, 1);
+mq_open: Permission denied
+posixmq_namespace_01    1  TFAIL  :  mq_open failed
 
-}---------------------------------------------------------------------------------------->>>>>>>
-it doesn't handle when si_code is "SEGV_ACCERR", the test exits with -1;
-this isn't right; there should be some code to process the SEGV_ACCERR type
-sigsegv.
-         default:
-             fprintf(stderr, "caught unexpected signal - %d --- exiting\n",
-                      signal);
-             _exit(-1);
-     }
- }
+After changing as above, I got the below output:
+# ./mqns_01
+posixmq_namespace_01    0  TINFO  :  Testing posix mq namespaces through
+unshare(2).
 
-Please improve the test case for handling sigsegv signal or give advices on
-how to improve it;
+posixmq_namespace_01    0  TINFO  :  Checking namespaces isolation from
+parent to child
 
-thanks,
-best regards,
-renxiu liang
+posixmq_namespace_01    1  TPASS  :  child process didn't find mqueue
 
---001636b2ac6da133ba048387bdd6
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+So, my question is that what is the difference between the two, i.e.,
+the previous one and the changed one. Both are calling the same mq_open
+system call. But first one is failing whereas the second one is
+succeeding.
 
-Hi All,<br><br>Recently, we found the default test case mtest06 failed; the=
- test case wanted to handle sigal &quot;SIGSEGV&quot;, but it only handles =
-when si_code is &quot;SEGV_MAPERR&quot;; <br>the si_code for SIGSEGV signal=
- has two values: SEGV_MAPERR and SEGV_ACCERR; <br>
-<br>=A0static void<br>=A0sig_handler(int signal,=A0=A0=A0=A0 /* signal numb=
-er, set to handle SIGALRM=A0=A0=A0=A0=A0=A0 */<br>=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0 siginfo_t *info,<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struc=
-t ucontext *ut)/* contains pointer to sigcontext structure=A0=A0 */<br>=A0{=
-<br>
-=A0=A0=A0=A0 switch (signal)<br>=A0=A0=A0=A0 {<br>=A0=A0=A0=A0=A0=A0=A0=A0 =
-case SIGALRM:<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_resm(TPASS, &q=
-uot;Test ended, success&quot;);<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
-_exit(0);<br>=A0<br>=A0=A0=A0=A0=A0=A0=A0=A0 case SIGSEGV:<br>=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (info-&gt;si_code =3D=3D SEGV_MAPERR &amp;&a=
-mp;<br>
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info-&gt=
-;si_addr =3D=3D map_address) <br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 {<=
-br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_resm(TINFO,<b=
-r>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &quot;page f=
-ault occurred at %p&quot;,<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0 map_address);<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0 longjmp(jmpbuf, 1);<br>
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }----------------------------------=
-------------------------------------------------------&gt;&gt;&gt;&gt;&gt;&=
-gt;&gt; it doesn&#39;t handle when si_code is &quot;SEGV_ACCERR&quot;, the =
-test exits with -1; this isn&#39;t right; there should be some code to proc=
-ess the SEGV_ACCERR type sigsegv.<br>
-=A0=A0=A0=A0=A0=A0=A0=A0 default:<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 f=
-printf(stderr, &quot;caught unexpected signal - %d --- exiting\n&quot;,<br>=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 signal);<br=
->=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 _exit(-1);=A0 <br>=A0=A0=A0=A0 }<br>=
-=A0}<br><br>Please improve the test case for handling sigsegv signal or giv=
-e advices on how to improve it;<br>
-<br>thanks,<br>best regards,<br>renxiu liang<br><br>
+So, do we need to modify all mqns test cases to the new form?
 
---001636b2ac6da133ba048387bdd6--
+Thanks
+Muni
 
-
---===============1154363311195431842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
---===============1154363311195431842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1154363311195431842==--
-
