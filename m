@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <anthony.ton@ericsson.com>) id 1NxAJp-0007Pt-6t
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 02:39:41 +0000
-Received: from imr2.ericy.com ([198.24.6.3])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxAJm-00015R-Rd
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 02:39:40 +0000
-From: Anthony Ton <anthony.ton@ericsson.com>
-Date: Wed, 31 Mar 2010 22:39:31 -0400
-Message-ID: <E0B6230F32558E43951AF1B0DEBF98102119DC5AA5@EUSAACMS0714.eamcs.ericsson.se>
-References: <E0B6230F32558E43951AF1B0DEBF98102119DC54EF@EUSAACMS0714.eamcs.ericsson.se>
-	<20100331045334.GA3878@linux.vnet.ibm.com> 
-Content-Language: en-US
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1O7JQi-0008CR-4W
+	for ltp-list@lists.sourceforge.net; Thu, 29 Apr 2010 02:24:44 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O7JQf-0005K2-Sr
+	for ltp-list@lists.sourceforge.net; Thu, 29 Apr 2010 02:24:44 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o3T2CAxT024433
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 22:12:10 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o3T2NoSl1708154
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 22:23:50 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o3T2NnVQ011128
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Apr 2010 23:23:50 -0300
+Date: Wed, 28 Apr 2010 19:29:08 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100429002908.GB3923@us.ibm.com>
+References: <20100428210906.GA20572@us.ibm.com>
+	<z2v364299f41004281604g2e044ff2g1c50413684753640@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Fcntl16 test case 2 failure
+Content-Disposition: inline
+In-Reply-To: <z2v364299f41004281604g2e044ff2g1c50413684753640@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 1/4] mqns: strip leading / from mq names
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,78 +37,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-I Rishikesh,
-My mistake, both of them fail.  But one with error code 5 (runltp), while fcntl16 run by itself with error code 37.
-Regards,
-Anthony
+Quoting Garrett Cooper (yanegomi@gmail.com):
+> On Wed, Apr 28, 2010 at 2:09 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> > So the tests can pass
+> >
+> > Signed-off-by: Serge Hallyn <serue@us.ibm.com>
+> > ---
+> > =A0testcases/kernel/containers/mqns/mqns.h =A0 =A0| =A0 =A02 ++
+> > =A0testcases/kernel/containers/mqns/mqns_01.c | =A0 =A08 ++++----
+> > =A0testcases/kernel/containers/mqns/mqns_02.c | =A0 =A08 ++++----
+> > =A0testcases/kernel/containers/mqns/mqns_03.c | =A0 =A02 +-
+> > =A0testcases/kernel/containers/mqns/mqns_04.c | =A0 =A02 +-
+> > =A05 files changed, 12 insertions(+), 10 deletions(-)
+> =
 
------Original Message-----
-From: Anthony Ton 
-Sent: Wednesday, March 31, 2010 7:33 PM
-To: 'Rishikesh K Rajak'
-Cc: ltp-list@lists.sourceforge.net
-Subject: RE: [LTP] Fcntl16 test case 2 failure
+>     Are the SLASH_* equivalents used anywhere still?
+> Thanks,
+> -Garrett
 
-Hi Rishikesh,
-I am running against kernel 2.6.27.18.
-I observe that if I running the test suite using runltp, then fcntl16 passes the test.  However, if I run fcntl16 by itself, I get the TFAIL as mentioned in previous email.  Do you know why the results are different if running fcntl16 from runltp vs. runing fcntl16 by itself?
-Thanks,
-Anthony 
+I don't think so.
 
------Original Message-----
-From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com]
-Sent: Tuesday, March 30, 2010 9:54 PM
-To: Anthony Ton
-Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] Fcntl16 test case 2 failure
+thanks,
+-serge
 
-
-Hi Anthony,
-
->Hi LTP Team,
->I run test case fcntl16 and get a failure on test case 2 with messages 
->below
-
-I have tested with latest kernel 2.6.32 and i could not face this problem.
-
-Can you let us know about your setup little bit more ?
-
->
->fcntl16     0  TINFO  :  Entering block 2
->fcntl16     1  TFAIL  :  First parent lock failed
->fcntl16     2  TFAIL  :  Test case 1, errno = 37
->fcntl16     0  TINFO  :  Test case 2: with mandatory record locking FAILED
->
->>I look into the code and think that it is trying to do a lock on the 
->>entire file
->with write lock using option F_WRLCK, 0, 0L, 0L, IGNORED.  Is it 
->correct?  Can someone
->+elaborate a little more?  What does the errno = 37 mean?
-
-This errno means you are not having any lock available while doing operation with fcntl, with F_SETLK .
-
-asm-generic/errno.h:#define	ENOLCK		37	/* No record locks
-available */
-
---
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
