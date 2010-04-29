@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NztsE-0007Kd-BO
-	for ltp-list@lists.sourceforge.net; Thu, 08 Apr 2010 15:42:30 +0000
-Date: Thu, 8 Apr 2010 17:48:26 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1O7Unm-00080r-1b
+	for ltp-list@lists.sourceforge.net; Thu, 29 Apr 2010 14:33:18 +0000
+Date: Thu, 29 Apr 2010 16:41:03 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100408154826.GA24955@saboteur.suse.cz>
-References: <20100402185908.GA478@saboteur.suse.cz>
-	<g2x364299f41004021212z6e85833ybccad62e6780ec26@mail.gmail.com>
+Message-ID: <20100429144103.GB31732@saboteur.suse.cz>
+References: <20100426184810.GB14970@saboteur.suse.cz>
+	<i2m364299f41004261921o95a78215y24530ea8aaed1d2d@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <g2x364299f41004021212z6e85833ybccad62e6780ec26@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix fs_perms tests
+In-Reply-To: <i2m364299f41004261921o95a78215y24530ea8aaed1d2d@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] add missing include into rpc1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,54 +29,23 @@ To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > #!/bin/true
+> > Following patch adds missing include unistd.h needed for gethostbyname() and
+> > getpid() into rpc1.c.
 > >
-> > Or maybe more robust:
-> >
-> > #!/bin/sh
-> > true
-> >
-> > But I'm not sure if there is always /bin/true (as it's buildin in most of the
-> > shells) or if I it's good idea to add dependecy for /bin/sh. But this would
-> > avoid compiling dummy C program and copying it from $LTPROOT/testcases/bin/.
-> >
-> > Or we could do some trickery to embed the "dummy" binary file into the code as
-> > array.
+> > Signed-off-by: Cyril Hrubis chrubis@suse.cz
 > 
-> It could just be an empty file, or one with just a shebang. Example:
+> I agree with getpid needing unistd.h, but not gethostbyname(3):
 > 
-> [gcooper@bayonetta ~]$ ./bar
-> [gcooper@bayonetta ~]$ echo $?
-> 0
-> [gcooper@bayonetta ~]$ cat bar
-> #!/bin/sh
-> 
-> `:' is an alternative to `true' too.
+> http://linux.die.net/man/3/gethostbyname
 
-I did a little research what is going on when file is executed (and what is
-standardized by POSIX).
-
-Accordingly to posix standard, path to sh cannot be assumed /bin/sh either
-/usr/bin/sh. However when file is executed by execlp() and kernel returns
-ENOEXEC (because no binfmt handler was found for such file) it end up executed
-by sh. So empty file (and wrong path to sh in shebang) should be safe as far as
-kernel returns ENOEXEC (and as far as I understand sys_execve and friends from
-linux/fs/exec.c this is true in case nobody plays with binfmt handlers) and
-maybe may fail in very non standart enviroments. The most robust way seems to
-be to look for sh in $PATH and create shebang accordingly.
-
-Any thoughts?
+You are right, the function I wanted to point out is gethostname(2) and typed
+gethostbyname() accidentally.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
