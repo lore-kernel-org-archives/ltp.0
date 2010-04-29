@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <anthony.ton@ericsson.com>) id 1NxAGo-0000RQ-5l
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 02:36:34 +0000
-Received: from imr2.ericy.com ([198.24.6.3])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NxAGm-0000Up-3L
-	for ltp-list@lists.sourceforge.net; Thu, 01 Apr 2010 02:36:34 +0000
-From: Anthony Ton <anthony.ton@ericsson.com>
-Date: Wed, 31 Mar 2010 22:33:15 -0400
-Message-ID: <E0B6230F32558E43951AF1B0DEBF98102119DC5AA1@EUSAACMS0714.eamcs.ericsson.se>
-References: <E0B6230F32558E43951AF1B0DEBF98102119DC54EF@EUSAACMS0714.eamcs.ericsson.se>
-	<20100331045334.GA3878@linux.vnet.ibm.com>
-In-Reply-To: <20100331045334.GA3878@linux.vnet.ibm.com>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: Re: [LTP] Fcntl16 test case 2 failure
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1O7UCa-0004fe-3o
+	for ltp-list@lists.sourceforge.net; Thu, 29 Apr 2010 13:54:52 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O7UCZ-0000qW-2T
+	for ltp-list@lists.sourceforge.net; Thu, 29 Apr 2010 13:54:52 +0000
+From: Paul Larson <paul.larson@canonical.com>
+In-Reply-To: <y2j72fb0a5c1004192359ifea04178l1ced518757facae7@mail.gmail.com>
+References: <y2j72fb0a5c1004192359ifea04178l1ced518757facae7@mail.gmail.com>
+Date: Thu, 29 Apr 2010 08:54:42 -0500
+Message-ID: <1272549282.2433.21.camel@plars-t500>
+Mime-Version: 1.0
+Subject: Re: [LTP] testcase mm-shmt09 failing on arm . please help
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,67 +24,123 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5405043290572180169=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
-Hi Rishikesh,
-I am running against kernel 2.6.27.18.
-I observe that if I running the test suite using runltp, then fcntl16 passes the test.  However, if I run fcntl16 by itself, I get the TFAIL as mentioned in previous email.  Do you know why the results are different if running fcntl16 from runltp vs. runing fcntl16 by itself?
-Thanks,
-Anthony 
-
------Original Message-----
-From: Rishikesh K Rajak [mailto:risrajak@linux.vnet.ibm.com] 
-Sent: Tuesday, March 30, 2010 9:54 PM
-To: Anthony Ton
+To: rahul agarwal <raahul4321@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] Fcntl16 test case 2 failure
 
 
-Hi Anthony,
+--===============5405043290572180169==
+Content-Type: multipart/signed; micalg="pgp-sha1";
+	protocol="application/pgp-signature";
+	boundary="=-0Hwufj8GRCiEB8R8gaEz"
 
->Hi LTP Team,
->I run test case fcntl16 and get a failure on test case 2 with messages 
->below
 
-I have tested with latest kernel 2.6.32 and i could not face this problem.
+--=-0Hwufj8GRCiEB8R8gaEz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Can you let us know about your setup little bit more ?
+On Tue, 2010-04-20 at 12:29 +0530, rahul agarwal wrote:
+> i am getting the following error while executing the mm test :-
+> =20
+> <<<test_start>>>
+> tag=3Dshmt09 stime=3D1271762065
+> cmdline=3D"shmt09"
+> contacts=3D""
+> analysis=3Dexit
+>=20
+> <<<test_output>>>
+> shmat1: Invalid argument
+> shmt09      1  TPASS  :  sbrk, sbrk, shmget, shmat
+> shmt09      2  TPASS  :  sbrk, shmat
+> shmt09      3  TFAIL  :  Error: shmat Failed, shmid =3D 262144, errno =3D
+> 22
+Hi Rahul, what are you running on?  I don't see shmt09 fail, but on my
+arm boards, I see a few other issues.
 
->
->fcntl16     0  TINFO  :  Entering block 2
->fcntl16     1  TFAIL  :  First parent lock failed
->fcntl16     2  TFAIL  :  Test case 1, errno = 37
->fcntl16     0  TINFO  :  Test case 2: with mandatory record locking FAILED
->
->>I look into the code and think that it is trying to do a lock on the 
->>entire file
->with write lock using option F_WRLCK, 0, 0L, 0L, IGNORED.  Is it 
->correct?  Can someone
->+elaborate a little more?  What does the errno = 37 mean?
+One of the major issues I see is msgctl10.  This test takes WAY too long
+on arm, likely on any lower cpu/memory system.  It's good stress, but
+blacklisting this one test significantly decreases my run time.  It also
+makes the system almost appear hung while it's running.
 
-This errno means you are not having any lock available while doing operation with fcntl, with F_SETLK .
+Other than that, I have a handful of fails, most of which I have not had
+time to investigate yet:
+clone02     3  TFAIL  :  Test Failed
+clone03     1  TFAIL  :  Test failed
+clone05     2  TFAIL  :  Test Failed
+clone06     1  TFAIL  :  Test Failed
+fallocate01    1  TFAIL  :  fallocate(5, 0, 49152, 4096) failed:
+TEST_ERRNO=3DEFBIG(27): File too large
+fallocate01    2  TFAIL  :  fallocate(6, 1, 49152, 4096) failed:
+TEST_ERRNO=3DEFBIG(27): File too large
+fallocate02    7  TFAIL  :  fallocate(tfile_write_10893:6, 1, 0, 4096)
+failed, expected errno:0: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    1  TFAIL  :  fallocate(tfile_sparse_10894, 0, 8192, 4096)
+failed: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    2  TFAIL  :  fallocate(tfile_sparse_10894, 0, 49152,
+4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    3  TFAIL  :  fallocate(tfile_sparse_10894, 0, 69632,
+4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    4  TFAIL  :  fallocate(tfile_sparse_10894, 0, 102400,
+4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    5  TFAIL  :  fallocate(tfile_sparse_10894, 1, 8192, 4096)
+failed: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    6  TFAIL  :  fallocate(tfile_sparse_10894, 1, 49152,
+4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    7  TFAIL  :  fallocate(tfile_sparse_10894, 1, 77824,
+4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
+fallocate03    8  TFAIL  :  fallocate(tfile_sparse_10894, 1, 106496,
+4096) failed: TEST_ERRNO=3DEFBIG(27): File too large
+getcontext01    1  TFAIL  :  getcontext - Sanity test :  Fail errno=3D38 :
+Function not implemented
+sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
+sysctl03    2  TFAIL  :  Expected EPERM, got 13
+sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
 
-asm-generic/errno.h:#define	ENOLCK		37	/* No record locks
-available */
+This is from a run I did on yesterday's git snapshot, with msgctl10
+blacklisted.  I only ran the syscalls suite.  I'm curious if anyone else
+running on arm also sees these failures.  My current platform is a
+beagleboard, but I've seen these failures on other armv7 devices as
+well.  OS is Ubuntu 10.04.
 
---
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+Thanks,
+Paul Larson
+
+--=-0Hwufj8GRCiEB8R8gaEz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEABECAAYFAkvZj6AACgkQ3UR7ubYtCO6r1ACgukqCii1MYimk5h2d3pY2zx/x
+a7kAoPSPnnrOemGAr7ggzEg8wUvi5wQI
+=QkLw
+-----END PGP SIGNATURE-----
+
+--=-0Hwufj8GRCiEB8R8gaEz--
+
+
+
+--===============5405043290572180169==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+
+--===============5405043290572180169==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5405043290572180169==--
+
+
