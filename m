@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O1wCh-0000zI-Sh
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:36:03 +0000
-Received: from mail-gy0-f175.google.com ([209.85.160.175])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O1wCf-0005ie-KZ
-	for ltp-list@lists.sourceforge.net; Wed, 14 Apr 2010 06:36:03 +0000
-Received: by gya1 with SMTP id 1so3457354gya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Apr 2010 23:35:56 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1O7wdw-0002MM-Or
+	for ltp-list@lists.sourceforge.net; Fri, 30 Apr 2010 20:17:00 +0000
+Received: from mail-iw0-f192.google.com ([209.85.223.192])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O7wdv-0003t1-Br
+	for ltp-list@lists.sourceforge.net; Fri, 30 Apr 2010 20:17:00 +0000
 MIME-Version: 1.0
-In-Reply-To: <s2m72fb0a5c1004132237k447d41f1occ861b51ce40be7@mail.gmail.com>
-References: <s2m72fb0a5c1004132237k447d41f1occ861b51ce40be7@mail.gmail.com>
-Date: Tue, 13 Apr 2010 23:35:56 -0700
-Message-ID: <y2p364299f41004132335za6109aefvb37eadf5b3f4a2c5@mail.gmail.com>
+In-Reply-To: <m2z42aa607e1004301227tfec6a200kda741f32b6feeb11@mail.gmail.com>
+References: <103530624.1121001272433642504.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<8B8139E0-F07A-433D-B38D-30DAB81E3FF5@gmail.com>
+	<s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
+	<m2z42aa607e1004301227tfec6a200kda741f32b6feeb11@mail.gmail.com>
+Date: Fri, 30 Apr 2010 13:15:48 -0700
+Message-ID: <x2l364299f41004301315x20fa3ed6u488dc923334fd5d6@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Query
+Subject: Re: [LTP] UTIMENSAT test fails hugely
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,60 +30,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rahul agarwal <raahul4321@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Henry Yei <hyei@mvista.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, Apr 13, 2010 at 10:37 PM, rahul agarwal <raahul4321@gmail.com> wrote:
-> I have a query regarding how to compile individual testcase in ltp.
+On Fri, Apr 30, 2010 at 12:27 PM, Henry Yei <hyei@mvista.com> wrote:
+> Speaking of the utimesat test and prerequisites, our test systems
+> don't have a sudoers file by default, so we have an internal patch to
+> utimesat to create a default one if non exist and remove it after the
+> test is done. Would that be of interest to LTP?
 >
-> For example:
->
-> fallocate tests inside syscalls are failing and so I want to compile and
-> check them seperately after some modifications. But I am facing the problem
-> due to various dependencies which are there. And as a result I am not being
-> able to isolate the errors which I am facing.
->
-> Kindly guide me so that I can overcome such a problem.
+> On Tue, Apr 27, 2010 at 11:27 PM, Caspar Zhang <casparant@gmail.com> wrote:
+>> On Wed, Apr 28, 2010 at 2:04 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+>>> The first item is different from the other two. The first one ignores the
+>>> signal (SIG_IGN), whereas the latter two cases reset the handler to the
+>>> default one (SIG_DFL). I prefer the former format, because otherwise the
+>>> signal handlers become reentrable on accident.
+>>
+>> I see. Thank you.
+>>
+>> The final patch ;-)
 
-Hint:
+If it:
 
-    Files in runtest describe the tests. The format for runtests is:
+1. Works in all cases, i.e. doesn't use version specific constructs
+for sudo (which I haven't seen thus far, but just to be safe).
+2. Is properly reverted when the test is done (which includes the
+following scenarios):
+    a. File already exists. Backup the old file, revert it when the
+test is completed (regardless of whether or not the test passed or the
+test failed properly [*]).
+    b. File doesn't exist. Nuke the file after the test is done.
 
-# This is a call to a program called test-apps with args as the arguments!
-testname1 test-app args
-
-# I am a comment!
-
-# The following is multiple commands strung together -- so I get run in a shell!
-testname2 FOO=1; bar
-
-1. You should export some variables like LTPROOT,  to your ltp
-install, etc, i.e. these variables (clipped from runltp) if you want
-the full experience:
-
-    export LTPROOT=${PWD}
-    export TMPBASE="/tmp"
-    export PATH="${PATH}:${LTPROOT}/testcases/bin"
-    export TMPBASE=`cd \`dirname ${OPTARG}\`; pwd`/`basename ${OPTARG}`
-    export TMPTEMPLATE="${TMPBASE}/ltp-XXXXXXXXXX"
-    export TMP
-    export TMPDIR=$TMP
-    export RHOST=$RHOST
-    export PASSWD=$PASSWD
-
-2. Or you can either pear down the runtest file, or use the
-appropriate blacklist / whitelisting arguments via runltp (runltp
---help will give you more details).
-
-Happy fishing,
+    ... sure.
+Thanks,
 -Garrett
 
+[*] SIGKILL or SIGSTOP can't be avoided, so technically it's a best effort.
+
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
