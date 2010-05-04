@@ -1,25 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1O9fR9-00013X-GS
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 14:18:55 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O9fR7-0004Yj-1N
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 14:18:55 +0000
-Date: Wed, 5 May 2010 09:18:29 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100505141829.GA10714@us.ibm.com>
-References: <1272997208.5342.7.camel@subratamodak.linux.ibm.com>
-	<20100504192248.GA3696@us.ibm.com>
-	<y2l364299f41005041402uce37fd2axc6f1fc7f7df70497@mail.gmail.com>
-	<20100504223315.GA16615@us.ibm.com>
-	<j2u364299f41005042219vfa5c5aa7ld5673a7eba8b6c64@mail.gmail.com>
+	(envelope-from <hyei@mvista.com>) id 1O98bC-0003FV-QL
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 03:15:06 +0000
+Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1O98bB-0005DF-VX
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 03:15:06 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <j2u364299f41005042219vfa5c5aa7ld5673a7eba8b6c64@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Fix FILECAPS test hanging for more than 12 hours
+In-Reply-To: <u2u364299f41004301941pe0e04112u34e7da16e7d1f3df@mail.gmail.com>
+References: <103530624.1121001272433642504.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<8B8139E0-F07A-433D-B38D-30DAB81E3FF5@gmail.com>
+	<s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
+	<m2z42aa607e1004301227tfec6a200kda741f32b6feeb11@mail.gmail.com> 
+	<x2l364299f41004301315x20fa3ed6u488dc923334fd5d6@mail.gmail.com> 
+	<q2w42aa607e1004301556s76e89e8nf68d4bee860da4bd@mail.gmail.com> 
+	<u2u364299f41004301941pe0e04112u34e7da16e7d1f3df@mail.gmail.com>
+From: Henry Yei <hyei@mvista.com>
+Date: Mon, 3 May 2010 20:14:39 -0700
+Message-ID: <x2y42aa607e1005032014se4159c89z95d2b670b7195df5@mail.gmail.com>
+Content-Type: multipart/mixed; boundary=00c09f99e29b55650f0485bc1dbd
+Subject: Re: [LTP] UTIMENSAT test fails hugely
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,94 +31,194 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list <ltp-list@lists.sf.net>
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0p =3D index(buf, '.')+1;
+--00c09f99e29b55650f0485bc1dbd
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Jinkeys!  The intertubes archives insist I wrote that, but I'm finding
-it hard to believe.
+Garrett,
 
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (p=3D=3D(char *)1) {
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL, "got a ba=
-d message from print_caps\n");
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (p=3D=3D(char *)1)
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TFAIL, tst_exit,=
- "got a bad message from print_caps\n");
-> =
+This patch installs the trap for cleanup_test which removes the
+sudoers file only if it was installed by utimensat script, and also
+takes care of detecting whether sudo knows about the -n option.
 
->     This is a really incorrect way to do things. I think that the
-> assumption made was that index(3) would return 0 ('\0') if it fails to
-> find '.'. That's incorrect and would cause a segfault on some systems
-> (does on FreeBSD at least... don't see why it would pass on Linux):
-> =
-
-> $ ~/test_null_inc
-> Segmentation fault: 11 (core dumped)
-> [garrcoop@bioshock ~]$ cat ~/test_null_inc.c
-> #include <stdio.h>
-> int
-> main(void)
-> {
-> 	printf("%s\n", (NULL + 1));
-> 	return 0;
-> }
-
-Well, that's different - you're dereferencing NULL+1, whereas I'm
-just checking the the value of the pointer.  =
+Signed-Off-By: <hyei@mvista.com>
 
 
-Still what I did is darned ugly, cleanup below.
+The patch was generated from ltp-dev git tree.
 
-thanks,
--serge
+I didn't realize Caspar's patch hadn't already been incorporated yet,
+so didn't account for it.
 
->     Could you please change this to check and see whether or not index
-> returns NULL instead of accessing memory like that?
->     Other than that, patch looks good.
-
-From: Serge E. Hallyn <serue@us.ibm.com>
-Date: Wed, 5 May 2010 02:59:05 -0500
-Subject: [PATCH 1/1] check for index(3) returning NULL
-
-Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
----
- .../kernel/security/filecaps/verify_caps_exec.c    |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testca=
-ses/kernel/security/filecaps/verify_caps_exec.c
-index c3f65a9..605f0f6 100644
---- a/testcases/kernel/security/filecaps/verify_caps_exec.c
-+++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
-@@ -182,9 +182,10 @@ int fork_drop_and_exec(int keepperms, cap_t expected_c=
-aps)
- 			tst_resm(TINFO, "got a bad seqno (c=3D%d, s=3D%d, seqno=3D%d)",
- 				c, s, seqno);
- 		}
--		p =3D index(buf, '.')+1;
--		if (p=3D=3D(char *)1)
-+		p =3D index(buf, '.');
-+		if (!p)
- 			tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
-+		p +=3D 1;
- 		actual_caps =3D cap_from_text(p);
- 		if (cap_compare(actual_caps, expected_caps) !=3D 0) {
- 			capstxt =3D cap_to_text(expected_caps, NULL);
--- =
-
-1.6.0.6
+Henry Yei <hyei@mvista.com>
 
 
----------------------------------------------------------------------------=
----
+On Fri, Apr 30, 2010 at 7:41 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Fri, Apr 30, 2010 at 3:56 PM, Henry Yei <hyei@mvista.com> wrote:
+>> If a sudo file exists, the patch doesn't touch it. If it does not, a
+>> sudoers file will be created and then it will remove it afterwards. I
+>> wouldn't feel confortable having a script modify a sudoers file if it
+>> already exists. The sudoers content that it does put in place just
+>> enables the root user to use sudo, which would not give it any more
+>> access than it already has. This text is available in every sudoers
+>> file I've looked at.
+>>
+>>
+>>
+>> While I was testing the patch with the ltp-dev branch, I noticed that
+>> the -n option was put in front of every sudo call in commit
+>> 2aa40f7e10518977881b933cc93b8f50847cf3cf in order to suppress the
+>> interactive password check.
+>>
+>> However, neither sudo 1.6.8p12 from MontaVista Linux 6 or 1.6.9p17
+>> from Ubuntu 9.04 supports the =A0-n option. The patch also removes the
+>> -n option from sudo calls. This option was added in 3/2008.
+>
+> Ugh. The sudo in gentoo did this though and that's the reason why I
+> added it in some scripts -- otherwise the pieces of junk halt waiting
+> for user input and I had manually kill the scripts >:(... I guess a
+> test will need to be added to ensure that sudo _does_ have the -n
+> option beforehand, if it does, add the -n option. Otherwise all people
+> running older versions are kind of SoL.
+>
+> sudo is still a non-standard tool and a pain in the butt to deal with
+> in scripts as it changes from time to time.
+>
+> FWIW your patch only deals with the case when the script `exits
+> cleanly' as there aren't any traps installed for cleanup_test.
+>
+>> On Fri, Apr 30, 2010 at 1:15 PM, Garrett Cooper <yanegomi@gmail.com> wro=
+te:
+>>> On Fri, Apr 30, 2010 at 12:27 PM, Henry Yei <hyei@mvista.com> wrote:
+>>>> Speaking of the utimesat test and prerequisites, our test systems
+>>>> don't have a sudoers file by default, so we have an internal patch to
+>>>> utimesat to create a default one if non exist and remove it after the
+>>>> test is done. Would that be of interest to LTP?
+>>>>
+>>>> On Tue, Apr 27, 2010 at 11:27 PM, Caspar Zhang <casparant@gmail.com> w=
+rote:
+>>>>> On Wed, Apr 28, 2010 at 2:04 PM, Garrett Cooper <yanegomi@gmail.com> =
+wrote:
+>>>>>> The first item is different from the other two. The first one ignore=
+s the
+>>>>>> signal (SIG_IGN), whereas the latter two cases reset the handler to =
+the
+>>>>>> default one (SIG_DFL). I prefer the former format, because otherwise=
+ the
+>>>>>> signal handlers become reentrable on accident.
+>>>>>
+>>>>> I see. Thank you.
+>>>>>
+>>>>> The final patch ;-)
+>>>
+>>> If it:
+>>>
+>>> 1. Works in all cases, i.e. doesn't use version specific constructs
+>>> for sudo (which I haven't seen thus far, but just to be safe).
+>>> 2. Is properly reverted when the test is done (which includes the
+>>> following scenarios):
+>>> =A0 =A0a. File already exists. Backup the old file, revert it when the
+>>> test is completed (regardless of whether or not the test passed or the
+>>> test failed properly [*]).
+>>> =A0 =A0b. File doesn't exist. Nuke the file after the test is done.
+>>>
+>>> =A0 =A0... sure.
+>>> Thanks,
+>>> -Garrett
+>>>
+>>> [*] SIGKILL or SIGSTOP can't be avoided, so technically it's a best eff=
+ort.
+>
+> Thanks,
+> -Garrett
+>
+
+--00c09f99e29b55650f0485bc1dbd
+Content-Type: text/x-patch; charset=US-ASCII; name="utimensat_tests.patch"
+Content-Disposition: attachment; filename="utimensat_tests.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g8s54qca0
+
+LS0tIGx0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZW5zYXQvdXRpbWVuc2F0
+X3Rlc3RzLnNoCTIwMTAtMDQtMzAgMTU6MzM6MTAuNzc5NzAwNDgzIC0wNzAwCisrKyBsdHAtZGV2
+LXdkaXIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZW5zYXQvdXRpbWVuc2F0X3Rlc3Rz
+LnNoCTIwMTAtMDUtMDMgMTk6NTM6NTIuMjcxNjk1Mjg5IC0wNzAwCkBAIC02NCwxMyArNjQsMTMg
+QEAgc2V0dXBfZmlsZSgpCiAgICAgIyBNYWtlIHN1cmUgYW55IG9sZCB2ZXJzaW9uIG9mIGZpbGUg
+aXMgZGVsZXRlZAogCiAgICAgaWYgdGVzdCAtZSAkRklMRTsgdGhlbgotICAgICAgICBzdWRvIC1u
+IGNoYXR0ciAtYWkgJEZJTEUgfHwgcmV0dXJuICQ/Ci0gICAgICAgIHN1ZG8gLW4gcm0gLWYgJEZJ
+TEUgfHwgcmV0dXJuICQ/CisgICAgICAgIHN1ZG8gJHNfYXJnIGNoYXR0ciAtYWkgJEZJTEUgfHwg
+cmV0dXJuICQ/CisgICAgICAgIHN1ZG8gJHNfYXJnIHJtIC1mICRGSUxFIHx8IHJldHVybiAkPwog
+ICAgIGZpCiAKICAgICAjIENyZWF0ZSBmaWxlIGFuZCBtYWtlIGF0aW1lIGFuZCBtdGltZSB6ZXJv
+LgogCi0gICAgc3VkbyAtbiAtdSAkdXNlcl90ZXN0ZXIgdG91Y2ggJEZJTEUgfHwgcmV0dXJuICQ/
+CisgICAgc3VkbyAkc19hcmcgLXUgJHVzZXJfdGVzdGVyIHRvdWNoICRGSUxFIHx8IHJldHVybiAk
+PwogICAgIGlmICEgJFRFU1RfUFJPRyAtcSAkRklMRSAwIDAgMCAwID4gJFJFU1VMVF9GSUxFOyB0
+aGVuCiAgICAgICAgIGVjaG8gIkZhaWxlZCB0byBzZXQgdXAgdGVzdCBmaWxlICRGSUxFIiAxPiYy
+CiAgICAgICAgIGV4aXQgMQpAQCAtODYsMTkgKzg2LDE5IEBAIHNldHVwX2ZpbGUoKQogICAgICMg
+U2V0IG93bmVyLCBwZXJtaXNzaW9ucywgYW5kIEVGQXMgZm9yIGZpbGUuCiAKICAgICBpZiB0ZXN0
+IC1uICIkMiI7IHRoZW4KLSAgICAgICAgc3VkbyAtbiBjaG93biAkMiAkRklMRSB8fCByZXR1cm4g
+JD8KKyAgICAgICAgc3VkbyAkc19hcmcgY2hvd24gJDIgJEZJTEUgfHwgcmV0dXJuICQ/CiAgICAg
+ZmkKIAotICAgIHN1ZG8gLW4gY2htb2QgJDMgJEZJTEUgfHwgcmV0dXJuICQ/CisgICAgc3VkbyAk
+c19hcmcgY2htb2QgJDMgJEZJTEUgfHwgcmV0dXJuICQ/CiAKICAgICBpZiB0ZXN0IC1uICIkNCI7
+IHRoZW4KLSAgICAgICAgc3VkbyAtbiBjaGF0dHIgJDQgJEZJTEUgfHwgcmV0dXJuICQ/CisgICAg
+ICAgIHN1ZG8gJHNfYXJnIGNoYXR0ciAkNCAkRklMRSB8fCByZXR1cm4gJD8KICAgICBmaQogCiAg
+ICAgIyBEaXNwbGF5IGZpbGUgc2V0dXAsIGZvciB2aXN1YWwgdmVyaWZpY2F0aW9uCiAKICAgICBs
+cyAtbCAkRklMRSB8IGF3ayAneyBwcmludGYgIk93bmVyPSVzOyBwZXJtcz0lczsgIiwgJDMsICQx
+fScKLSAgICBpZiAhIHN1ZG8gLW4gbHNhdHRyIC1sICRGSUxFIHwgc2VkICdzLywgLywvZycgfCBh
+d2sgJ3twcmludCAiRUZBcz0iICQyfScKKyAgICBpZiAhIHN1ZG8gJHNfYXJnIGxzYXR0ciAtbCAk
+RklMRSB8IHNlZCAncy8sIC8sL2cnIHwgYXdrICd7cHJpbnQgIkVGQXM9IiAkMn0nCiAgICAgdGhl
+bgogICAgICAgICByZXR1cm4gJD8KICAgICBmaQpAQCAtMjE1LDcgKzIxNSw3IEBAIHJ1bl90ZXN0
+KCkKICAgICBjcCAkTFRQUk9PVC90ZXN0Y2FzZXMvYmluLyRURVNUX1BST0cgLi8KICAgICBDTUQ9
+Ii4vJFRFU1RfUFJPRyAtcSAkRklMRSAkNCIKICAgICBlY2hvICIkQ01EIgotICAgIHN1ZG8gLW4g
+LXUgJHVzZXJfdGVzdGVyICRDTUQgPiAkUkVTVUxUX0ZJTEUKKyAgICBzdWRvICRzX2FyZyAtdSAk
+dXNlcl90ZXN0ZXIgJENNRCA+ICRSRVNVTFRfRklMRQogICAgIGNoZWNrX3Jlc3VsdCAkPyAkNSAk
+NiAkNwogICAgIGVjaG8KIApAQCAtMjI0LDcgKzIyNCw3IEBAIHJ1bl90ZXN0KCkKICAgICAgICAg
+c2V0dXBfZmlsZSAkRklMRSAiJDEiICIkMiIgIiQzIgogICAgICAgICBDTUQ9Ii4vJFRFU1RfUFJP
+RyAtcSAtZCAkRklMRSBOVUxMICQ0IgogICAgICAgICBlY2hvICIkQ01EIgotICAgICAgICBzdWRv
+IC1uIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJFU1VMVF9GSUxFCisgICAgICAgIHN1ZG8gJHNf
+YXJnIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJFU1VMVF9GSUxFCiAgICAgICAgIGNoZWNrX3Jl
+c3VsdCAkPyAkNSAkNiAkNwogICAgICAgICBlY2hvCiAgICAgZmkKQEAgLTIzNywxOCArMjM3LDQz
+IEBAIHJ1bl90ZXN0KCkKICAgICAgICAgc2V0dXBfZmlsZSAkRklMRSAiJDEiICIkMiIgIiQzIgog
+ICAgICAgICBDTUQ9Ii4vJFRFU1RfUFJPRyAtcSAtdyAtZCAkRklMRSBOVUxMICQ0IgogICAgICAg
+ICBlY2hvICIkQ01EIgotICAgICAgICBzdWRvIC1uIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJF
+U1VMVF9GSUxFCisgICAgICAgIHN1ZG8gJHNfYXJnIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJF
+U1VMVF9GSUxFCiAgICAgICAgIGNoZWNrX3Jlc3VsdCAkPyAkNSAkNiAkNwogICAgICAgICBlY2hv
+CiAgICAgZmkKIAotICAgIHN1ZG8gLW4gY2hhdHRyIC1haSAkRklMRQotICAgIHN1ZG8gLW4gcm0g
+LWYgJEZJTEUKKyAgICBzdWRvICRzX2FyZyBjaGF0dHIgLWFpICRGSUxFCisgICAgc3VkbyAkc19h
+cmcgcm0gLWYgJEZJTEUKK30KKworY2xlYW51cF90ZXN0KCkKK3sKKwlpZiB0ZXN0ICRzdWRvZXJz
+X2NsZWFuOyB0aGVuCisJCXN1ZG8gcm0gLWYgJHN1ZG9lcnMKKwlmaQogfQogIz09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQogCiB1c2VyX3Rlc3Rlcj1ub2JvZHkKLXN1ZG8gLW4gLXUgJHVzZXJfdGVzdGVyIG1rZGlyIC1w
+ICRURVNUX0RJUgorZWNobyAidGVzdCBzdWRvIGZvciAtbiBvcHRpb24sIG5vbi1pbnRlcmFjdGl2
+ZSIKK3N1ZG8gLW4gdHJ1ZQoraWYgdGVzdCAkPyAtZXEgMDsgdGhlbgorCXNfYXJnPSItbiIKKwll
+Y2hvICJzdWRvIHN1cHBvcnRzIC1uIgorZWxzZQorCXNfYXJnPQorCWVjaG8gInN1ZG8gZG9lcyBu
+b3Qgc3VwcG9ydCAtbiIKK2ZpCitzdWRvZXJzPS9ldGMvc3Vkb2VycworaWYgdGVzdCAhIC1lICRz
+dWRvZXJzCit0aGVuCisJZWNobyAicm9vdCAgICBBTEw9KEFMTCkgICAgQUxMIiA+ICRzdWRvZXJz
+CisJc3Vkb2Vyc19jbGVhbj0xCisJY2htb2QgNDQwICRzdWRvZXJzCisJdHJhcCAndHJhcCAiIiBF
+WElUOyBjbGVhbnVwX3Rlc3QnIEVYSVQKK2ZpCisKK3N1ZG8gJHNfYXJnIC11ICR1c2VyX3Rlc3Rl
+ciBta2RpciAtcCAkVEVTVF9ESVIKIGNkICRURVNUX0RJUgogY2hvd24gcm9vdCAkTFRQUk9PVC90
+ZXN0Y2FzZXMvYmluLyRURVNUX1BST0cKIGNobW9kIHVnbyt4LHUrcyAkTFRQUk9PVC90ZXN0Y2Fz
+ZXMvYmluLyRURVNUX1BST0cK
+--00c09f99e29b55650f0485bc1dbd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--00c09f99e29b55650f0485bc1dbd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--00c09f99e29b55650f0485bc1dbd--
+
