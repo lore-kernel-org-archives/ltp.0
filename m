@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OAIsC-00058f-2O
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 08:25:28 +0000
-Received: from mail-iw0-f181.google.com ([209.85.223.181])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OAIsA-0007Vt-UK
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 08:25:27 +0000
-MIME-Version: 1.0
-In-Reply-To: <1273220740.26977.156.camel@lishuang-desktop>
-References: <1273137244.26977.134.camel@lishuang-desktop>
-	<n2u364299f41005061040yd280662cy81f31fc580af5a86@mail.gmail.com>
-	<1273212126.26977.150.camel@lishuang-desktop>
-	<j2h364299f41005070005m1b0dd61fi385db5c416c67f94@mail.gmail.com>
-	<1273220740.26977.156.camel@lishuang-desktop>
-Date: Fri, 7 May 2010 01:25:20 -0700
-Message-ID: <n2x364299f41005070125g1d0e85f9sfa0d13c78670f561@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] ltp inotify03 testcase failed in version of 20100228
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9N5U-0006V4-9H
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 18:43:20 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9N5R-0006vF-1J
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 18:43:19 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Content-Type: multipart/mixed; boundary="=-lWu+FR+CDf1VpmH1VOzA"
+Date: Tue, 04 May 2010 23:50:03 +0530
+Message-Id: <1272997208.5342.7.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Fix FILECAPS test hanging for more than 12 hours
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,233 +24,641 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry xu <feng.xu@windriver.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list <ltp-list@lists.sf.net>
+Cc: Serge Hallyn <serue@linux.vnet.ibm.com>
 
-T24gRnJpLCBNYXkgNywgMjAxMCBhdCAxOjI1IEFNLCBIZW5yeSB4dSA8ZmVuZy54dUB3aW5kcml2
-ZXIuY29tPiB3cm90ZToKPiDlnKggMjAxMC0wNS0wN+S6lOeahCAwMDowNSAtMDcwMO+8jEdhcnJl
-dHQgQ29vcGVy5YaZ6YGT77yaCj4+IE9uIFRodSwgTWF5IDYsIDIwMTAgYXQgMTE6MDIgUE0sIEhl
-bnJ5IHh1IDxmZW5nLnh1QHdpbmRyaXZlci5jb20+IHdyb3RlOgo+PiA+IOWcqCAyMDEwLTA1LTA2
-5Zub55qEIDEwOjQwIC0wNzAw77yMR2FycmV0dCBDb29wZXLlhpnpgZPvvJoKPj4gPj4gT24gVGh1
-LCBNYXkgNiwgMjAxMCBhdCAyOjE0IEFNLCBIZW5yeSB4dSA8ZmVuZy54dUB3aW5kcml2ZXIuY29t
-PiB3cm90ZToKPj4gPj4gPiBIaSxhbGwKPj4gPj4gPgo+PiA+PiA+IEkgdGVzdCBpbm90aWZ5MDMg
-aW4gwqBwcGMgcGxhdGZvcm0gYW5kIHByb2R1Y3QgdHdvIGZhaWxzIGFzCj4+ID4+ID4gYmVsb3cu
-Cj4+ID4+ID4gPDw8dGVzdF9zdGFydD4+Pgo+PiA+PiA+IHRhZz1pbm90aWZ5MDMgc3RpbWU9MTI3
-MjYyNjM4MQo+PiA+PiA+IGNtZGxpbmU9Imlub3RpZnkwMyAtRCAvZGV2L2xvb3AwIC1UIGV4dDMi
-Cj4+ID4+ID4gY29udGFjdHM9IiIKPj4gPj4gPiBhbmFseXNpcz1leGl0Cj4+ID4+ID4gPDw8dGVz
-dF9vdXRwdXQ+Pj4KPj4gPj4gPiBpbm90aWZ5MDMgwqAgwqAwIMKgVElORk8gwqA6IMKgbW91bnQg
-L2Rldi9sb29wMCB0byBtbnRfMTgwNjcgZnN0eXBlPWV4dDMKPj4gPj4gPiBpbm90aWZ5MDMgwqAg
-wqAwIMKgVElORk8gwqA6IMKgdW1vdW50IC9kZXYvbG9vcDAKPj4gPj4gPiBpbm90aWZ5MDMgwqAg
-wqAxIMKgVEZBSUwgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9ODAwMCAoZXhwZWN0ZWQgMjAw
-MCkKPj4gPj4gPiBjb29raWU9MCBsZW49MAo+PiA+PiA+IGlub3RpZnkwMyDCoCDCoDIgwqBURkFJ
-TCDCoDogwqBkb24ndCBnZXQgZXZlbnQ6IG1hc2s9ODAwMAo+PiA+PiA+IGlub3RpZnkwMyDCoCDC
-oDMgwqBUUEFTUyDCoDogwqBpbm90aWZ5X3JtX3dhdGNoICg1LCAxKSByZXR1cm4gLTEgZXJybm89
-MjIgOgo+PiA+PiA+IEludmFsaWQgYXJndW1lbnQKPj4gPj4gPgo+PiA+PiA+Cj4+ID4+ID4gd2hl
-biBJIHR5cGUgIi4vcnVubHRwIC1zIGlub3RpZnkiIGZvciBpbm90aWZ5IHRlc3QsIHRoZSBpbm90
-aWZ5MDMgdGVzdAo+PiA+PiA+IGlzIMKgbm90IGJlZW4gZXhlY3V0ZWQuVGhlIGluZm9ybWF0aW9u
-IGlzIGFzIGJlbG93Lgo+PiA+PiA+Cj4+ID4+ID4gSSBsb29rIGludG8gdGhlIGNvZGUgLGhvd2V2
-ZXIgSSBjb3VsZCBub3QgZ2V0IHdoeSBtYXNrIGlzIGVxdWFsIHRvCj4+ID4+ID4gODAwMC5Db3Vs
-ZCBzb21lb25lIGdpdmUgeW91ciBjb21tZW50cyBvbiB0aGlzIGNhc2U/Cj4+ID4+ID4KPj4gPj4g
-PiB0aGFua3MgaW4gYWR2YW5jZSEKPj4gPj4gPgo+PiA+PiA+ID09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4gPj4gPiBZb3Ug
-Y2FuIHNwZWNpZnkgaXQgd2l0aCBvcHRpb24gLWIKPj4gPj4gPiBDT01NQU5EOiDCoCDCoC9vcHQv
-bHRwLWZ1bGwvYmluL2x0cC1wYW4gwqAtZSAtUyDCoCAtYSAyNjY5MiDCoCDCoCAtbiAyNjY5MiDC
-oC1wCj4+ID4+ID4gLWYgL3RtcC9sdHAtclVRVWsyNjY5OC9hbGx0ZXN0cwo+PiA+PiA+IC1sIC9v
-cHQvbHRwLWZ1bGwvcmVzdWx0cy9MVFBfUlVOX09OLTE5NzBfSmFuXzAyLTAyaF81MW1fNTJzLmxv
-Zwo+PiA+PiA+IC1DIC9vcHQvbHRwLWZ1bGwvb3V0cHV0L0xUUF9SVU5fT04tMTk3MF9KYW5fMDIt
-MDJoXzUxbV81MnMuZmFpbGVkCj4+ID4+ID4gSU5GTzogUmVzdHJpY3RlZCB0byBpbm90aWZ5Cj4+
-ID4+ID4gTE9HIEZpbGU6IC9vcHQvbHRwLWZ1bGwvcmVzdWx0cy9MVFBfUlVOX09OLTE5NzBfSmFu
-XzAyLTAyaF81MW1fNTJzLmxvZwo+PiA+PiA+IEZBSUxFRCBDT01NQU5ECj4+ID4+ID4gRmlsZTog
-L29wdC9sdHAtZnVsbC9vdXRwdXQvTFRQX1JVTl9PTi0xOTcwX0phbl8wMi0wMmhfNTFtXzUycy5m
-YWlsZWQKPj4gPj4gPiBSdW5uaW5nIHRlc3RzLi4uLi4uLgo+PiA+PiA+IDw8PHRlc3Rfc3RhcnQ+
-Pj4KPj4gPj4gPiB0YWc9aW5vdGlmeV9pbml0MV8wMSBzdGltZT05NjcxMwo+PiA+PiA+IGNtZGxp
-bmU9Imlub3RpZnlfaW5pdDFfMDEiCj4+ID4+ID4gY29udGFjdHM9IiIKPj4gPj4gPiBhbmFseXNp
-cz1leGl0Cj4+ID4+ID4gPDw8dGVzdF9vdXRwdXQ+Pj4KPj4gPj4gPiBpbm90aWZ5X2luaXQxXzAx
-IMKgIMKgMSDCoFRQQVNTIMKgOiDCoGlub3RpZnlfaW5pdDEoT19DTE9FWEVDKSBQQVNTRUQKPj4g
-Pj4gPiA8PDxleGVjdXRpb25fc3RhdHVzPj4+Cj4+ID4+ID4gaW5pdGlhdGlvbl9zdGF0dXM9Im9r
-Igo+PiA+PiA+IGR1cmF0aW9uPTEgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25f
-aWQ9MCBjb3JlZmlsZT1ubwo+PiA+PiA+IGN1dGltZT0wIGNzdGltZT0wCj4+ID4+ID4gPDw8dGVz
-dF9lbmQ+Pj4KPj4gPj4gPiA8PDx0ZXN0X3N0YXJ0Pj4+Cj4+ID4+ID4gdGFnPWlub3RpZnlfaW5p
-dDFfMDIgc3RpbWU9OTY3MTQKPj4gPj4gPiBjbWRsaW5lPSJpbm90aWZ5X2luaXQxXzAyIgo+PiA+
-PiA+IGNvbnRhY3RzPSIiCj4+ID4+ID4gYW5hbHlzaXM9ZXhpdAo+PiA+PiA+IDw8PHRlc3Rfb3V0
-cHV0Pj4+Cj4+ID4+ID4gaW5vdGlmeV9pbml0MV8wMiDCoCDCoDEgwqBUUEFTUyDCoDogwqBpbm90
-aWZ5X2luaXQxKElOX05PTkJMT0NLKSBQQVNTRUQKPj4gPj4gPiA8PDxleGVjdXRpb25fc3RhdHVz
-Pj4+Cj4+ID4+ID4gaW5pdGlhdGlvbl9zdGF0dXM9Im9rIgo+PiA+PiA+IGR1cmF0aW9uPTAgdGVy
-bWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9MCBjb3JlZmlsZT1ubwo+PiA+PiA+
-IGN1dGltZT0wIGNzdGltZT0wCj4+ID4+ID4gPDw8dGVzdF9lbmQ+Pj4KPj4gPj4gPiA8PDx0ZXN0
-X3N0YXJ0Pj4+Cj4+ID4+ID4gdGFnPWlub3RpZnkwMSBzdGltZT05NjcxNAo+PiA+PiA+IGNtZGxp
-bmU9Imlub3RpZnkwMSIKPj4gPj4gPiBjb250YWN0cz0iIgo+PiA+PiA+IGFuYWx5c2lzPWV4aXQK
-Pj4gPj4gPiA8PDx0ZXN0X291dHB1dD4+Pgo+PiA+PiA+IGlub3RpZnkwMSDCoCDCoDEgwqBUUEFT
-UyDCoDogwqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz00IGNvb2tpZT0wIGxlbj0wCj4+ID4+ID4gaW5v
-dGlmeTAxIMKgIMKgMiDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNrPTIwIGNvb2tp
-ZT0wIGxlbj0wCj4+ID4+ID4gaW5vdGlmeTAxIMKgIMKgMyDCoFRQQVNTIMKgOiDCoGdldCBldmVu
-dDogd2Q9MSBtYXNrPTEgY29va2llPTAgbGVuPTAKPj4gPj4gPiBpbm90aWZ5MDEgwqAgwqA0IMKg
-VFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9MTAgY29va2llPTAgbGVuPTAKPj4gPj4g
-PiBpbm90aWZ5MDEgwqAgwqA1IMKgVFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9MjAg
-Y29va2llPTAgbGVuPTAKPj4gPj4gPiBpbm90aWZ5MDEgwqAgwqA2IMKgVFBBU1MgwqA6IMKgZ2V0
-IGV2ZW50OiB3ZD0xIG1hc2s9MiBjb29raWU9MCBsZW49MAo+PiA+PiA+IGlub3RpZnkwMSDCoCDC
-oDcgwqBUUEFTUyDCoDogwqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz04IGNvb2tpZT0wIGxlbj0wCj4+
-ID4+ID4gPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgo+PiA+PiA+IGluaXRpYXRpb25fc3RhdHVzPSJv
-ayIKPj4gPj4gPiBkdXJhdGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9u
-X2lkPTAgY29yZWZpbGU9bm8KPj4gPj4gPiBjdXRpbWU9MCBjc3RpbWU9MAo+PiA+PiA+IDw8PHRl
-c3RfZW5kPj4+Cj4+ID4+ID4gPDw8dGVzdF9zdGFydD4+Pgo+PiA+PiA+IHRhZz1pbm90aWZ5MDIg
-c3RpbWU9OTY3MTQKPj4gPj4gPiBjbWRsaW5lPSJpbm90aWZ5MDIiCj4+ID4+ID4gY29udGFjdHM9
-IiIKPj4gPj4gPiBhbmFseXNpcz1leGl0Cj4+ID4+ID4gPDw8dGVzdF9vdXRwdXQ+Pj4KPj4gPj4g
-PiBpbm90aWZ5MDIgwqAgwqAxIMKgVFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9NDAw
-MDAwMDQgY29va2llPTAgbGVuPTAKPj4gPj4gPiBuYW1lPSIiCj4+ID4+ID4gaW5vdGlmeTAyIMKg
-IMKgMiDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNrPTEwMCBjb29raWU9MCBsZW49
-MTYKPj4gPj4gPiBuYW1lPSJ0ZXN0X2ZpbGUxIgo+PiA+PiA+IGlub3RpZnkwMiDCoCDCoDMgwqBU
-UEFTUyDCoDogwqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0yMCBjb29raWU9MCBsZW49MTYKPj4gPj4g
-PiBuYW1lPSJ0ZXN0X2ZpbGUxIgo+PiA+PiA+IGlub3RpZnkwMiDCoCDCoDQgwqBUUEFTUyDCoDog
-wqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz04IGNvb2tpZT0wIGxlbj0xNgo+PiA+PiA+IG5hbWU9InRl
-c3RfZmlsZTEiCj4+ID4+ID4gaW5vdGlmeTAyIMKgIMKgNSDCoFRQQVNTIMKgOiDCoGdldCBldmVu
-dDogd2Q9MSBtYXNrPTQwIGNvb2tpZT00NTUzIGxlbj0xNgo+PiA+PiA+IG5hbWU9InRlc3RfZmls
-ZTEiCj4+ID4+ID4gaW5vdGlmeTAyIMKgIMKgNiDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9
-MSBtYXNrPTgwIGNvb2tpZT00NTUzIGxlbj0xNgo+PiA+PiA+IG5hbWU9InRlc3RfZmlsZTIiCj4+
-ID4+ID4gaW5vdGlmeTAyIMKgIMKgNyDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNr
-PTgwMCBjb29raWU9MCBsZW49MAo+PiA+PiA+IG5hbWU9IiIKPj4gPj4gPiBpbm90aWZ5MDIgwqAg
-wqA4IMKgVFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9MjAwIGNvb2tpZT0wIGxlbj0x
-Ngo+PiA+PiA+IG5hbWU9InRlc3RfZmlsZTIiCj4+ID4+ID4gaW5vdGlmeTAyIMKgIMKgOSDCoFRQ
-QVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNrPTgwMCBjb29raWU9MCBsZW49MAo+PiA+PiA+
-IG5hbWU9IiIKPj4gPj4gPiBpbmNyZW1lbnRpbmcgc3RvcAo+PiA+PiA+IDw8PGV4ZWN1dGlvbl9z
-dGF0dXM+Pj4KPj4gPj4gPiBpbml0aWF0aW9uX3N0YXR1cz0ib2siCj4+ID4+ID4gZHVyYXRpb249
-MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0wIGNvcmVmaWxlPW5vCj4+
-ID4+ID4gY3V0aW1lPTAgY3N0aW1lPTAKPj4gPj4gPiA8PDx0ZXN0X2VuZD4+Pgo+PiA+PiA+IElO
-Rk86IGx0cC1wYW4gcmVwb3J0ZWQgYWxsIHRlc3RzIFBBU1MKPj4gPj4gPiBMVFAgVmVyc2lvbjog
-TFRQLTIwMTAwMjI4Cj4+ID4+Cj4+ID4+IMKgIMKgIEkgc2F3IHRoaXMgZmFpbHVyZSBhcyB3ZWxs
-IG9uIHBvd2VycGMgd2l0aCAyLjYuMjQgd2hlbiBJIHdhcwo+PiA+PiBydW5uaW5nIExUUCBvbiBh
-IHJlZ3VsYXIgYmFzaXMuIEkgbmV2ZXIgbG9va2VkIGludG8gd2h5IGl0IHdhcyBhbgo+PiA+PiBp
-c3N1ZSBlaXRoZXIuCj4+ID4+IFRoYW5rcywKPj4gPj4gLUdhcnJldHQKPj4gPgo+PiA+IEkgdXNl
-ICJzdHJhY2UgdG9vbCIgZm9yIHRoZSBjYXNlIHRlc3QsdGhlIGluZm9ybWF0aW9uIGlzIGFzIGJs
-b3cuCj4+ID4KPj4gPiByb290QFNCQzg1NjA6L29wdC9sdHAtZnVsbD4gc3RyYWNlIC4vdGVzdGNh
-c2VzL2Jpbi9pbm90aWZ5MDMKPj4gPiAtRCAvZGV2L2xvb3AwIC1UIGV4dDMKPj4gPiBleGVjdmUo
-Ii4vdGVzdGNhc2VzL2Jpbi9pbm90aWZ5MDMiLCBbIi4vdGVzdGNhc2VzL2Jpbi9pbm90aWZ5MDMi
-LCAiLUQiLAo+PiA+ICIvZGV2L2xvb3AwIiwgIi1UIiwgImV4dDMiXSwgWy8qIDEzIHZhcnMgKi9d
-KSA9IDAKPj4gPiBicmsoMCkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqA9IDB4MTAwMjYwMDAKPj4gPiBhY2Nlc3MoIi9ldGMvbGQuc28ucHJlbG9hZCIs
-IFJfT0spIMKgIMKgIMKgPSAtMSBFTk9FTlQgKE5vIHN1Y2ggZmlsZSBvcgo+PiA+IGRpcmVjdG9y
-eSkKPj4gPiBvcGVuKCIvZXRjL2xkLnNvLmNhY2hlIiwgT19SRE9OTFkpIMKgIMKgIMKgPSAtMSBF
-Tk9FTlQgKE5vIHN1Y2ggZmlsZSBvcgo+PiA+IGRpcmVjdG9yeSkKPj4gPiBvcGVuKCIvbGliL3Rs
-cy9wcGM4NTQwL2xpYmMuc28uNiIsIE9fUkRPTkxZKSA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxl
-Cj4+ID4gb3IgZGlyZWN0b3J5KQo+PiA+IHN0YXQ2NCgiL2xpYi90bHMvcHBjODU0MCIsIDB4YmY5
-NTIwMDgpIMKgPSAtMSBFTk9FTlQgKE5vIHN1Y2ggZmlsZSBvcgo+PiA+IGRpcmVjdG9yeSkKPj4g
-PiBvcGVuKCIvbGliL3Rscy9saWJjLnNvLjYiLCBPX1JET05MWSkgwqAgwqA9IC0xIEVOT0VOVCAo
-Tm8gc3VjaCBmaWxlIG9yCj4+ID4gZGlyZWN0b3J5KQo+PiA+IHN0YXQ2NCgiL2xpYi90bHMiLCAw
-eGJmOTUyMDA4KSDCoCDCoCDCoCDCoCDCoD0gLTEgRU5PRU5UIChObyBzdWNoIGZpbGUgb3IKPj4g
-PiBkaXJlY3RvcnkpCj4+ID4gb3BlbigiL2xpYi9wcGM4NTQwL2xpYmMuc28uNiIsIE9fUkRPTkxZ
-KSA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxlIG9yCj4+ID4gZGlyZWN0b3J5KQo+PiA+IHN0YXQ2
-NCgiL2xpYi9wcGM4NTQwIiwgMHhiZjk1MjAwOCkgwqAgwqAgwqA9IC0xIEVOT0VOVCAoTm8gc3Vj
-aCBmaWxlIG9yCj4+ID4gZGlyZWN0b3J5KQo+PiA+IG9wZW4oIi9saWIvbGliYy5zby42IiwgT19S
-RE9OTFkpIMKgIMKgIMKgIMKgPSAzCj4+ID4gcmVhZCgzLCAiXDE3N0VMRlwxXDJcMVwwXDBcMFww
-XDBcMFwwXDBcMFwwXDNcMFwyNFwwXDBcMFwxXDE3XDM0NVwzNTRcMzE0Cj4+ID4gXDBcMFwwMDA0
-Ii4uLiwgNTEyKSA9IDUxMgo+PiA+IGZzdGF0NjQoMywge3N0X21vZGU9U19JRlJFR3wwNzU1LCBz
-dF9zaXplPTE0NDk2NTIsIC4uLn0pID0gMAo+PiA+IG1tYXAoTlVMTCwgNDA5NiwgUFJPVF9SRUFE
-fFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1PVVMsIC0xLCAwKQo+PiA+ID0gMHg0
-ODAwMDAwMAo+PiA+IG1tYXAoMHhmZTQwMDAwLCAxNTE2MTY4LCBQUk9UX1JFQUR8UFJPVF9FWEVD
-LCBNQVBfUFJJVkFURXxNQVBfREVOWVdSSVRFLAo+PiA+IDMsIDApID0gMHhmZTQwMDAwCj4+ID4g
-bXByb3RlY3QoMHhmZjliMDAwLCA2NTUzNiwgUFJPVF9OT05FKSDCoCA9IDAKPj4gPiBtbWFwKDB4
-ZmZhYjAwMCwgMjA0ODAsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfRklY
-RUR8Cj4+ID4gTUFQX0RFTllXUklURSwgMywgMHgxNWIwMDApID0gMHhmZmFiMDAwCj4+ID4gbW1h
-cCgweGZmYjAwMDAsIDg4NDAsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBf
-RklYRUR8Cj4+ID4gTUFQX0FOT05ZTU9VUywgLTEsIDApID0gMHhmZmIwMDAwCj4+ID4gY2xvc2Uo
-MykgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqA9IDAKPj4g
-PiBtbWFwKE5VTEwsIDQwOTYsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBf
-QU5PTllNT1VTLCAtMSwgMCkKPj4gPiA9IDB4NDgwMDEwMDAKPj4gPiBtcHJvdGVjdCgweGZmYWIw
-MDAsIDE2Mzg0LCBQUk9UX1JFQUQpIMKgID0gMAo+PiA+IG1wcm90ZWN0KDB4ZmZlZTAwMCwgNDA5
-NiwgUFJPVF9SRUFEKSDCoCDCoD0gMAo+PiA+IGJyaygwKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoD0gMHgxMDAyNjAwMAo+PiA+IGJyaygweDEwMDQ3
-MDAwKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCA9IDB4MTAwNDcwMDAKPj4g
-PiBydF9zaWdhY3Rpb24oU0lHSFVQLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lH
-X0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdJTlQsIHsweDEw
-MDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+
-ID4gcnRfc2lnYWN0aW9uKFNJR1FVSVQsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtT
-SUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR0lMTCwgezB4
-MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAK
-Pj4gPiBydF9zaWdhY3Rpb24oU0lHVFJBUCwgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwg
-e1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHQUJSVCwg
-ezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9
-IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHQlVTLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9
-LCB7U0lHX0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdGUEUs
-IHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4g
-PSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1VTUjEsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFS
-VH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1NF
-R1YsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+
-ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1VTUjIsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVT
-VEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJ
-R1BJUEUsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgp
-Cj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR0FMUk0sIHsweDEwMDA0MjI0LCBbXSwgU0Ff
-UkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9u
-KFNJR1RFUk0sIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0s
-IDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1NUS0ZMVCwgezB4MTAwMDQyMjQsIFtd
-LCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwKPj4gPiA4KSA9IDAKPj4gPiBydF9zaWdh
-Y3Rpb24oU0lHQ0hMRCwgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtd
-LCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHVFNUUCwgezB4MTAwMDQyMjQs
-IFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9z
-aWdhY3Rpb24oU0lHVFRJTiwgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkws
-IFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHVFRPVSwgezB4MTAwMDQy
-MjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBy
-dF9zaWdhY3Rpb24oU0lHVVJHLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RG
-TCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdYQ1BVLCB7MHgxMDAw
-NDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+
-IHJ0X3NpZ2FjdGlvbihTSUdYRlNaLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lH
-X0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdWVEFMUk0sIHsw
-eDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sCj4+ID4gOCkgPSAw
-Cj4+ID4gcnRfc2lnYWN0aW9uKFNJR1BST0YsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0s
-IHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1dJTkNI
-LCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LAo+PiA+IDgp
-ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdJTywgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJU
-fSwge1NJR19ERkwsIFtdLCAwfSwgOCkgPQo+PiA+IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHUFdS
-LCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LCA4KQo+PiA+
-ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdTWVMsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFS
-VH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1JU
-XzE2LCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LAo+PiA+
-IDgpID0gMAo+PiA+IGdldHBpZCgpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgPSAyNzQyNgo+PiA+IG1rZGlyKCIvdG1wL2lub1UzWmUwVCIsIDA3MDApIMKg
-IMKgIMKgIMKgIMKgID0gMAo+PiA+IGdldGdpZCgpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgPSAwCj4+ID4gY2hvd24oIi90bXAvaW5vVTNaZTBUIiwgLTEs
-IDApIMKgIMKgIMKgIMKgIMKgPSAwCj4+ID4gY2htb2QoIi90bXAvaW5vVTNaZTBUIiwgMDc3Nykg
-wqAgwqAgwqAgwqAgwqAgPSAwCj4+ID4gY2hkaXIoIi90bXAvaW5vVTNaZTBUIikgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgPSAwCj4+ID4gbWtkaXIoIm1udF8yNzQyNiIsIDA3NTApIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgPSAwCj4+ID4gZnN0YXQ2NCgxLCB7c3RfbW9kZT1TX0lGQ0hSfDA2MjAs
-IHN0X3JkZXY9bWFrZWRldig1LCAxKSwgLi4ufSkgPSAwCj4+ID4gaW9jdGwoMSwgVENHRVRTLCB7
-Qjk2MDAgb3Bvc3QgaXNpZyBpY2Fub24gZWNobyAuLi59KSA9IDAKPj4gPiBtbWFwKE5VTEwsIDQw
-OTYsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTLCAtMSwg
-MCkKPj4gPiA9IDB4NDgwMDIwMDAKPj4gPiB3cml0ZSgxLCAiaW5vdGlmeTAzIMKgIMKgMCDCoElO
-Rk8gwqA6IMKgbW91bnQgLyIuLi4sIDY3aW5vdGlmeTAzIMKgIMKgMAo+PiA+IElORk8gwqA6IMKg
-bW91bnQgL2Rldi9sb29wMCB0byBtbnRfMjc0MjYgZnN0eXBlPWV4dDMKPj4gPiApID0gNjcKPj4g
-PiBtb3VudCgiL2Rldi9sb29wMCIsICJtbnRfMjc0MjYiLCAiZXh0MyIsIDAsIE5VTEwpID0gMAo+
-PiA+IG9wZW4oIm1udF8yNzQyNi90ZmlsZV8yNzQyNiIsIE9fUkRXUnxPX0NSRUFULCAwNzAwKSA9
-IDMKPj4gPiB3cml0ZSgzLCAibSIsIDEpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgPSAxCj4+ID4gY2xvc2UoMykgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqA9IDAKPj4gPiBpbm90aWZ5X2luaXQoKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoD0gMwo+PiA+IGlub3RpZnlfYWRkX3dhdGNoKDMsICJtbnRfMjc0MjYv
-dGZpbGVfMjc0MjYiLCBJTl9BQ0NFU1N8SU5fTU9ESUZZfAo+PiA+IElOX0FUVFJJQnxJTl9DTE9T
-RV9XUklURXxJTl9DTE9TRV9OT1dSSVRFfElOX09QRU58SU5fTU9WRURfRlJPTXwKPj4gPiBJTl9N
-T1ZFRF9UT3xJTl9DUkVBVEV8SU5fREVMRVRFfElOX0RFTEVURV9TRUxGfElOX01PVkVfU0VMRikg
-PSAxCj4+ID4gd3JpdGUoMSwgImlub3RpZnkwMyDCoCDCoDAgwqBJTkZPIMKgOiDCoHVtb3VudCAi
-Li4uLCA0M2lub3RpZnkwMyDCoCDCoDAKPj4gPiBJTkZPIMKgOiDCoHVtb3VudCAvZGV2L2xvb3Aw
-Cj4+ID4gKSA9IDQzCj4+ID4gb2xkdW1vdW50KCJtbnRfMjc0MjYiKSDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoD0gMAo+PiA+IHJlYWQoMywgIlwwXDBcMFwxXDBcMFwyMDBcMFwwXDBcMFwwXDBc
-MFwwXDAiLCAzMjc2OCkgPSAxNgo+PiA+IHdyaXRlKDEsICJpbm90aWZ5MDMgwqAgwqAxIMKgRkFJ
-TCDCoDogwqBnZXQgZXZlIi4uLiwgODJpbm90aWZ5MDMgwqAgwqAxCj4+ID4gRkFJTCDCoDogwqBn
-ZXQgZXZlbnQ6IHdkPTEgbWFzaz04MDAwIChleHBlY3RlZCAyMDAwKSBjb29raWU9MCBsZW49MAo+
-PiA+ICkgPSA4Mgo+Pgo+PiBUaGlzIGlzIHRoZSByb290IGNhdXNlIGZvciB0aGUgZmFpbHVyZS4g
-MHgyMDAwIGNvcnJlc3BvbmRzIHRvOgo+Pgo+PiAjZGVmaW5lIElOX1VOTU9VTlQgwqAgwqAgwqAg
-wqAgwqAgwqAweDAwMDAyMDAwIMKgIMKgIMKgLyogQmFja2luZyBmcyB3YXMgdW5tb3VudGVkICov
-Cj4+Cj4+IFNvLCBpdCdzIGEgcG90ZW50aWFsIGtlcm5lbCBidWcuIE1ha2Ugc3VyZSB0aGF0IElO
-X1VOTU9VTlQgaXMgcHJvcGVybHkKPj4gc2V0IGF0IGFsbCBsZXZlbHMgYmV0d2VlbiB5b3VyIGNv
-cHkgb2YgZ2xpYmMgYW5kIHRoZSBrZXJuZWwuCj4KPiBXaGVuIEkgdGVzdCB0aGlzIGNhc2UgaW4g
-cm9vdGZzIGxvY2F0ZWQgb24gdGhlIGhhcmRkaXNrLHRoZSBjYXNlIGlzCj4gcGFzc2VkLk9idmlv
-dXNseSB0aGUgZmFpbHMgY2F1c2VkIGJ5IG5mcyAuCj4KPiB0aGFua3MgZm9yIHlvdXIgZ29vZCBj
-b21tZW50cyEKCiAgICBUaGlzIGlzIGEgZGVmaW5pdGUgbGltaXRhdGlvbiBvZiBpbm90aWZ5KDcp
-IGFzIGl0IGNhbiBvbmx5CnByb3Blcmx5IHdhdGNoIGNoYW5nZXMgb24gbG9jYWwgZmlsZXN5c3Rl
-bXMgdGhhdCBjYW4ndCBiZSBhdm9pZGVkCnRoZW4uIEludGVyZXN0aW5nIHRvIG5vdGUuLi4KVGhh
-bmtzIC0tIHRoYXQgaGVscGVkIHNvbHZlIG15IG15c3RlcnkgdG9vIDopLAotR2FycmV0dAoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
-aXN0Cg==
+
+--=-lWu+FR+CDf1VpmH1VOzA
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+
+Recently running FILECAPS test on my Fedora system:
+# uname -a
+Linux 2.6.33.1-19.fc13.ppc64 #1 SMP Tue Mar 23 06:32:38 EDT 2010 ppc64
+ppc64 ppc64 GNU/Linux,
+
+I found that the test hangs for more than 12 hours. The following patch
+by Serge fixes the issue. Kindly include it inside LTP.
+
+Tested-by: Subrata Modak <subrata@linux.vnet.ibm.com>,
+
+Serge, please add a Sign-off.
+
+Issue before the patch:
+=============================
+# ./runltp -f filecaps
+<<<test_start>>>
+tag=Filecaps stime=1271951563
+cmdline="filecapstest.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+Running in:
+cap_sys_admin tests
+testing for correct caps
+...
+The test hangs here for more than 12 hours.
+
+Following are various info about the processes running this test:
+# ps ajxf 
+1608  1724  1608  1458 ?           -1 S        0   0:00  \_
+/opt/ltp/bin/ltp-pan -e -S -a 1608 -n 1608 -p -f /tmp/ltp-71wskF3epE/alltests
+-l /opt/ltp/results/LTP_RUN_ON-20
+1724 30311 30311  1458 ?           -1 S        0   0:00      \_ /bin/sh
+/opt/ltp/testcases/bin/filecapstest.sh
+30311 30315 30311  1458 ?           -1 S        0   0:00          \_
+verify_caps_exec 1
+30315 30316 30311  1458 ?           -1 Z     1000   0:00              \_
+[verify_caps_exe] <defunct>
+
+STRACE on the PIDs does not show anything:
+[root@alien5 ltp]# strace -p 30425
+Process 30425 attached - interrupt to quit
+waitpid(-1, ^C <unfinished ...>
+Process 30425 detached
+[root@alien5 ltp]# strace -p 30429
+Process 30429 attached - interrupt to quit
+open("caps_fifo", O_RDONLY^C <unfinished ...>
+Process 30429 detached
+[root@alien5 ltp]# strace -p 30430
+attach: ptrace(PTRACE_ATTACH, ...): Operation not permitted
+
+# getenforce
+Permissive
+[root@alien5 ltp]# tail -f /var/log/messages
+2010-04-21T18:00:15.752320+05:18 alien5 setroubleshoot: SELinux is preventing
+/sbin/rsyslogd access to a leaked
+/opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output file descriptor. For
+complete SELinux messages. run sealert -l 894e0d2d-23c3-45d1-9108-71ad97f5a45e
+2010-04-21T18:00:15.794214+05:18 alien5 setroubleshoot: SELinux is preventing
+/sbin/rsyslogd access to a leaked
+/opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output file descriptor. For
+complete SELinux messages. run sealert -l 894e0d2d-23c3-45d1-9108-71ad97f5a45e
+2010-04-21T18:00:15.823557+05:18 alien5 setroubleshoot: SELinux is preventing
+/sbin/rsyslogd access to a leaked
+/opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output file descriptor. For
+complete SELinux messages. run sealert -l 894e0d2d-23c3-45d1-9108-71ad97f5a45e
+2010-04-21T18:00:17.721361+05:18 alien5 syslogtst: syslogtst:10 error level is
+logged
+Apr 21 18:00:19 alien5 kernel: imklog 4.4.2, log source = /proc/kmsg started.
+Apr 21 18:00:19 alien5 rsyslogd: [origin software="rsyslogd" swVersion="4.4.2"
+x-pid="2165" x-info="http://www.rsyslog.com"] (re)start
+Apr 21 18:00:20 alien5 setroubleshoot: SELinux is preventing /sbin/rsyslogd
+access to a leaked /opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output
+file descriptor. For complete SELinux messages. run sealert -l
+894e0d2d-23c3-45d1-9108-71ad97f5a45e
+Apr 21 18:00:20 alien5 setroubleshoot: SELinux is preventing /sbin/rsyslogd
+access to a leaked /opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output
+file descriptor. For complete SELinux messages. run sealert -l
+894e0d2d-23c3-45d1-9108-71ad97f5a45e
+Apr 21 18:00:20 alien5 setroubleshoot: SELinux is preventing /sbin/rsyslogd
+access to a leaked /opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output
+file descriptor. For complete SELinux messages. run sealert -l
+894e0d2d-23c3-45d1-9108-71ad97f5a45e
+
+So, i executed the following command:
+# sealert -l 894e0d2d-23c3-45d1-9108-71ad97f5a45e
+exception when creating syslog handler: [Errno 2] No such file or directory
+Summary:
+SELinux is preventing /sbin/rsyslogd access to a leaked
+/opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output file descriptor.
+
+Detailed Description:
+
+[rsyslogd has a permissive type (syslogd_t). This access was not denied.]
+
+SELinux denied access requested by the rsyslogd command. It looks like this is
+either a leaked descriptor or rsyslogd output was redirected to a file it is
+not
+allowed to access. Leaks usually can be ignored since SELinux is just closing
+the leak and reporting the error. The application does not use the descriptor,
+so it will run properly. If this is a redirection, you will not get output in
+the /opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output. You should
+generate a bugzilla on selinux-policy, and it will get routed to the
+appropriate
+package. You can safely ignore this avc.
+
+Allowing Access:
+
+You can generate a local policy module to allow this access - see FAQ
+(http://docs.fedoraproject.org/selinux-faq-fc5/#id2961385)
+
+Additional Information:
+
+Source Context                unconfined_u:system_r:syslogd_t:s0
+Target Context                unconfined_u:object_r:usr_t:s0
+Target Objects                /opt/ltp/output/LTP_RUN_ON-
+                              2010_Apr_21-17h_51m_22s.output [ file ]
+Source                        rsyslogd
+Source Path                   /sbin/rsyslogd
+Port                          <Unknown>
+Host                          alien5.ltc.austin.ibm.com
+Source RPM Packages           rsyslog-4.4.2-6.fc13
+Target RPM Packages           
+Policy RPM                    selinux-policy-3.7.15-4.fc13
+Selinux Enabled               True
+Policy Type                   targeted
+Enforcing Mode                Enforcing
+Plugin Name                   leaks
+Host Name                     alien5.ltc.austin.ibm.com
+Platform                      Linux alien5.ltc.austin.ibm.com
+                              2.6.33.1-19.fc13.ppc64 #1 SMP Tue Mar 23 06:32:38
+                              EDT 2010 ppc64 ppc64
+Alert Count                   186
+First Seen                    Tue Apr 20 23:55:40 2010
+Last Seen                     Wed Apr 21 18:00:19 2010
+Local ID                      894e0d2d-23c3-45d1-9108-71ad97f5a45e
+Line Numbers                  
+
+Raw Audit Messages            
+
+node= type=AVC msg=audit(1271853019.957:317): avc: 
+denied  { append } for  pid=2164 comm="rsyslogd"
+path="/opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.output" dev=sda3
+ino=1188363 scontext=unconfined_u:system_r:syslogd_t:s0
+tcontext=unconfined_u:object_r:usr_t:s0 tclass=file
+
+node= type=AVC msg=audit(1271853019.957:317): avc: 
+denied  { append } for  pid=2164 comm="rsyslogd"
+path="/opt/ltp/results/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.log" dev=sda3
+ino=1188362 scontext=unconfined_u:system_r:syslogd_t:s0
+tcontext=unconfined_u:object_r:usr_t:s0 tclass=file
+
+node= type=AVC msg=audit(1271853019.957:317): avc: 
+denied  { append } for  pid=2164 comm="rsyslogd"
+path="/opt/ltp/output/LTP_RUN_ON-2010_Apr_21-17h_51m_22s.failed" dev=sda3
+ino=1188364 scontext=unconfined_u:system_r:syslogd_t:s0
+tcontext=unconfined_u:object_r:usr_t:s0 tclass=file
+
+node= type=SYSCALL msg=audit(1271853019.957:317):
+arch=14 syscall=11 success=yes exit=0 a0=1026c900 a1=1026b5b0 a2=1026b640
+a3=1026b5a8 items=0 ppid=2163 pid=2164 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=(none) ses=22 comm="rsyslogd" exe="/sbin/rsyslogd"
+subj=unconfined_u:system_r:syslogd_t:s0 key=(null)
+=============================
+
+=============================
+Test result after applying the patch
+=============================
+<<<test_start>>>
+tag=Filecaps stime=1272996532
+cmdline="filecapstest.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+Running in:
+cap_sys_admin tests
+filecaps    1  TPASS  :  could not set capabilities as non-root
+
+testing for correct caps
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  
+caps are =
+
+filecaps    0  TINFO  :  0
+
+filecaps    0  TINFO  :  1
+
+filecaps    0  TINFO  :  2
+
+filecaps    0  TINFO  :  3
+
+filecaps    0  TINFO  :  4
+
+filecaps    0  TINFO  :  5
+
+filecaps    0  TINFO  :  6
+
+filecaps    0  TINFO  :  7
+
+filecaps    0  TINFO  :  8
+
+filecaps    0  TINFO  :  9
+
+filecaps    0  TINFO  :  10
+
+filecaps    0  TINFO  :  11
+
+filecaps    0  TINFO  :  12
+
+filecaps    0  TINFO  :  13
+
+filecaps    0  TINFO  :  14
+
+filecaps    0  TINFO  :  15
+
+filecaps    0  TINFO  :  16
+
+filecaps    0  TINFO  :  17
+
+filecaps    0  TINFO  :  18
+
+filecaps    0  TINFO  :  19
+
+filecaps    0  TINFO  :  20
+
+filecaps    0  TINFO  :  21
+
+filecaps    0  TINFO  :  22
+
+filecaps    0  TINFO  :  23
+
+filecaps    0  TINFO  :  24
+
+filecaps    0  TINFO  :  25
+
+filecaps    0  TINFO  :  26
+
+filecaps    0  TINFO  :  27
+
+filecaps    0  TINFO  :  28
+
+filecaps    0  TINFO  :  29
+
+filecaps    0  TINFO  :  30
+
+filecaps    0  TINFO  :  31
+
+filecaps    0  TINFO  :  32
+
+filecaps    0  TINFO  :  33
+
+filecaps    1  TPASS  :  All tests passed
+
+testing for correct pI checks
+filecaps    0  TINFO  :  start
+filecaps    0  TINFO  :  =ep
+filecaps    0  TINFO  :  after raising all caps
+filecaps    0  TINFO  :  =eip
+filecaps    0  TINFO  :  after first drop cap_sys_admin
+filecaps    0  TINFO  :  =eip cap_sys_admin-eip
+filecaps    0  TINFO  :  after first raise cap_sys_admin
+filecaps    0  TINFO  :  =eip cap_sys_admin-ep
+filecaps    0  TINFO  :  after drop cappset
+filecaps    0  TINFO  :  =ip cap_sys_admin-p
+filecaps    0  TINFO  :  after second drop cap_sys_admin
+filecaps    0  TINFO  :  =eip cap_setpcap-e cap_sys_admin-eip
+filecaps    0  TINFO  :  final
+filecaps    0  TINFO  :  =eip cap_setpcap-e cap_sys_admin-eip
+filecaps    1  TPASS  :  pI is properly capped
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=4
+<<<test_end>>>
+=============================
+
+Regards--
+Subrata
+
+
+--=-lWu+FR+CDf1VpmH1VOzA
+Content-Disposition: attachment;
+	filename=0001-make-filecaps-tests-succeed.patch
+Content-Type: application/mbox; name=0001-make-filecaps-tests-succeed.patch
+Content-Transfer-Encoding: 7bit
+
+From 4b368ba90ba282bee61d8bc43fd8c1e178539a5a Mon Sep 17 00:00:00 2001
+From: Serge E. Hallyn <serue@us.ibm.com>
+Date: Wed, 28 Apr 2010 11:26:58 -0500
+Subject: [PATCH 1/1] make filecaps tests succeed
+
+Most of these are belated cleanup after the move to using /opt/ltp.
+Also undoing an ill-advised replacement of return with tst_exit.  All
+filecaps tests now succeed on fedora 10.
+
+Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+---
+ testcases/kernel/security/filecaps/filecapstest.sh |    9 ++++++---
+ testcases/kernel/security/filecaps/print_caps.c    |    3 ++-
+ .../kernel/security/filecaps/verify_caps_exec.c    |   19 ++++++++++++++-----
+ 3 files changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/kernel/security/filecaps/filecapstest.sh b/testcases/kernel/security/filecaps/filecapstest.sh
+index 43582dc..6864de4 100755
+--- a/testcases/kernel/security/filecaps/filecapstest.sh
++++ b/testcases/kernel/security/filecaps/filecapstest.sh
+@@ -22,8 +22,11 @@
+ echo "Running in:"
+ #rm -f print_caps
+ #cp $LTPROOT/testcases/bin/print_caps .
+-mkfifo caps_fifo
+-chmod 777 caps_fifo
++#FIFOFILE="$LTPROOT/testcases/bin/caps_fifo"
++FIFOFILE="/tmp/caps_fifo"
++rm -f $FIFOFILE
++mkfifo $FIFOFILE
++chmod 777 $FIFOFILE
+ exit_code=0
+ echo "cap_sys_admin tests"
+ verify_caps_exec 0
+@@ -46,5 +49,5 @@ if [ $tmp -ne 0 ]; then
+ 	exit_code=$tmp
+ fi
+ 
+-unlink caps_fifo
++unlink $FIFOFILE
+ exit $exit_code
+diff --git a/testcases/kernel/security/filecaps/print_caps.c b/testcases/kernel/security/filecaps/print_caps.c
+index f0e9bce..b887738 100644
+--- a/testcases/kernel/security/filecaps/print_caps.c
++++ b/testcases/kernel/security/filecaps/print_caps.c
+@@ -36,7 +36,7 @@
+ #include <sys/capability.h>
+ #endif
+ 
+-#define FIFOFILE "caps_fifo"
++#define FIFOFILE "/tmp/caps_fifo"
+ 
+ int main(int argc, char *argv[])
+ {
+@@ -68,4 +68,5 @@ int main(int argc, char *argv[])
+ #else
+ 	return 0;
+ #endif
++	return 0;
+ }
+diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testcases/kernel/security/filecaps/verify_caps_exec.c
+index 5250007..7360d4a 100644
+--- a/testcases/kernel/security/filecaps/verify_caps_exec.c
++++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
+@@ -43,7 +43,7 @@
+ #include <sys/prctl.h>
+ #include <test.h>
+ 
+-#define TSTPATH "./print_caps"
++#define TSTPATH "print_caps"
+ char *TCID = "filecaps";
+ int TST_TOTAL=1;
+ 
+@@ -70,7 +70,7 @@ void print_my_caps()
+ 	cap_free(txt);
+ }
+ 
+-int drop_root(int keep_perms)
++void drop_root(int keep_perms)
+ {
+ 	int ret;
+ 
+@@ -84,10 +84,19 @@ int drop_root(int keep_perms)
+ 	}
+ 	if (keep_perms) {
+ 		cap_t cap = cap_from_text("=eip");
+-		cap_set_proc(cap);
++		int ret;
++		if (!cap) {
++			tst_resm(TBROK, "cap_from_text failed\n");
++			tst_exit();
++		}
++		ret = cap_set_proc(cap);
++		if (ret < 0) {
++			perror(cap_set_proc);
++			tst_resm(TBROK | TERRNO, "cap_set_proc failed\n");
++			tst_exit();
++		}
+ 		cap_free(cap);
+ 	}
+-	tst_exit();
+ }
+ 
+ int perms_test(void)
+@@ -114,7 +123,7 @@ int perms_test(void)
+ 	return ret;
+ }
+ 
+-#define FIFOFILE "caps_fifo"
++#define FIFOFILE "/tmp/caps_fifo"
+ void create_fifo(void)
+ {
+ 	int ret;
+-- 
+1.6.0.6
+
+
+--=-lWu+FR+CDf1VpmH1VOzA
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--=-lWu+FR+CDf1VpmH1VOzA
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--=-lWu+FR+CDf1VpmH1VOzA--
+
+
