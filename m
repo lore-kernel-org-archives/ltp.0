@@ -1,30 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OAJle-0005Jk-Sr
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 09:22:46 +0000
-Received: from mail-iw0-f200.google.com ([209.85.223.200])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OAJle-0004oy-5z
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 09:22:46 +0000
-Received: by iwn38 with SMTP id 38so1064042iwn.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 07 May 2010 02:22:41 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1O9AOZ-0007zV-FM
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 05:10:11 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9AOV-0006vr-5G
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 05:10:11 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o4453g4g009076
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 May 2010 23:03:42 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o4459vuc148580
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 May 2010 23:09:57 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o4459uG8013195
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 May 2010 23:09:57 -0600
+Date: Tue, 4 May 2010 10:39:52 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100504050952.GA3685@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20100506183947.GA14900@us.ibm.com>
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065657.23879.72093.sendpatchset@subratamodak.linux.ibm.com>
-	<0B5AF9FC-8DAA-4995-9166-8EB0FE42F98C@gmail.com>
-	<20100506135312.GA12072@us.ibm.com>
-	<j2v364299f41005061038ucdbdaf19hcdad19491344e76d@mail.gmail.com>
-	<20100506175512.GA25514@us.ibm.com>
-	<k2v364299f41005061059rf51273ffk7c8c9755b92427e5@mail.gmail.com>
-	<20100506183947.GA14900@us.ibm.com>
-Date: Fri, 7 May 2010 02:22:40 -0700
-Message-ID: <p2r364299f41005070222t99dbd658l43ba2468382b790e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [04/12 FAILURE] LTP? sysctl03 test fails
+Content-Disposition: inline
+Subject: [LTP] [ANNOUNCEMENT] LTP for APRIL 2010 has been released
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,67 +35,123 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, Michael Kerrisk <mtk.manpages@gmail.com>
+To: ltp-list@lists.sourceforge.net
+Cc: CyrilHrubischrubis@suse.cz
 
-On Thu, May 6, 2010 at 11:39 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> Quoting Garrett Cooper (yanegomi@gmail.com):
->> On Thu, May 6, 2010 at 10:55 AM, Serge E. Hallyn <serue@us.ibm.com> wrot=
-e:
->> > Quoting Garrett Cooper (yanegomi@gmail.com):
->> > So since we're all member of the doc team, send a patch for sysctl(2)
->> > manpage ERRORS section :)
->> >
->> > (mtk cc:d as this is probably news to him)
->>
->> I already have a bug outstanding for it:
->> https://bugzilla.kernel.org/show_bug.cgi?id=3D15446
->
-> That's not what I said :)
+Hi All,
 
-    Yeah, I understand. If you guys agree with the content, I will
-submit a patch. Otherwise, the item will unfortunately remain dead in
-the water :(.
+Finally after rigorous testing and observing testing on multiple platform and
+OS, April month LTP is out now. Good news is that we have also started executing
+LTP testsuits on ChromeOS, which will definitely give a good coverage and fixes
+of LTP and in future we can expect more and more inclusion.
 
->> >> > An LSM could choose to return -EPERM
->> >> > after all, or perhaps even something different. =A0The thing that
->> >> > should scare us is if the call succeeds. =A0If we give any false
->> >> > positives, then true positives will seem less scary.
->> >>
->> >> This will fail on older kernels as sysctl(2) always returned EPERM due
->> >
->> > Sorry - what will fail?
->>
->> Read through the link, and you will understand why your new proposed
->> patch with fail with a false negative.
->
-> I'm not sure that thread means what you think it does.
 
-   Yes, I think it does mean what I think it does. 2.6.32 was
-`corrected' to do a lot more things, one of which was to return EPERM
-in certain cases where it completely bypassed that return code before.
-That's why you're seeing the error now whereas before it was
-completely bypassed :/.
+You can download the tar ball from:
+https://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20100430/ltp-full-20100430.tgz/download
 
-> But look, just trying to help. =A0And no time for it really. =A0I'll drop
-> this.
+Or you can directly clone git version as:
+git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
 
-    I appreciate your help as do a lot of other folks. I'm just trying
-to (in my own pedantic way) be as unflexible as possible because the
-requirements for each function call as per the documentation should be
-crystal clear, as should the testcases. If not, then the developers
-that develop against those requirements won't know what to expect and
-bugs will only be introduced by accident into software. I don't want
-that to happen and that's why I am the way I am.
-Thanks,
--Garrett
+After merging to GIT tree we have worked mostly on build stability of LTP for
+different architecture. And for that very close reviewed patches has been merged
+this month's LTP.
 
----------------------------------------------------------------------------=
----
+You can find complete ChangeLog with $LTPROOT/ChangeLog as well as with this
+mail footer for quick reference.
 
+The latest version of the test-suite contains 3000+ tests for the Linux
+OS and can be found at:
+http://ltp.sourceforge.net/,
+Latest happenings in LTP can also be found at:
+http://ltp.sourceforge.net/wiki/,
+http://ltp.sourceforge.net/wikiArchives.php
+
+Major contributor:
+    - Garret Cooper
+    - Serge E Hallyn
+    - Cyril Hrubis
+    - Bryan Freed
+    - Darren Hart
+
+Notes from Maintainer:
+=====================
+I would like to thanks all the major contributor who is really motivating others
+to include more and more patches to LTP and make LTP more better and stable
+project.
+
+Secondly in the following month now we need to work on testcase stability and i
+request all the contributor to stretch your self as we are really seeing many of
+the unstable/old testcases inside LTP. Please send your patch we will review
+them closely and will test for any regression then we can merge/remove to LTP.
+
+Here is the file changes:
+
+Garrett Cooper (7):
+Rishikesh K Rajak (30):
+
+
+ ChangeLog                                          |  633 ++++++++++++++++++++
+ doc/MaintNotes                                     |  107 ++++
+ include/mk/man.mk                                  |    2 +
+ result                                             |   96 +++
+ runltp                                             |    2 +-
+ testcases/commands/ade/ar/ar01                     |   12 +-
+ testcases/commands/mail/mail_tests.sh              |    2 +-
+ testcases/kernel/containers/mqns/mqns.h            |    2 +
+ testcases/kernel/containers/mqns/mqns_01.c         |    8 +-
+ testcases/kernel/containers/mqns/mqns_02.c         |   16 +-
+ testcases/kernel/containers/mqns/mqns_03.c         |    2 +-
+ testcases/kernel/containers/mqns/mqns_04.c         |    2 +-
+ testcases/kernel/containers/netns/Makefile         |    2 +-
+ testcases/kernel/containers/netns/common.c         |    4 +-
+ testcases/kernel/containers/netns/par_chld_ipv6.c  |    6 +-
+ testcases/kernel/containers/netns/sysfsview.c      |    2 +-
+ .../kernel/containers/netns/two_children_ns.c      |    8 +-
+ testcases/kernel/containers/pidns/pidns30.c        |    2 +-
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |    3 +-
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |    2 +-
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |    2 +-
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |    2 +-
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |    2 +-
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |    2 +-
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   |    2 +-
+ .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c     |    2 +-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |    2 +-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |    2 +-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |    2 +-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   |    2 +-
+ .../security/cap_bound/cap_bset_inh_bounds.c       |    4 +-
+ testcases/kernel/syscalls/eventfd/eventfd01.c      |    2 +-
+ testcases/kernel/syscalls/ipc/msgctl/msgctl10.c    |    8 +-
+ testcases/kernel/syscalls/linkat/linkat01.c        |    2 +-
+ .../kernel/syscalls/utimensat/utimensat_tests.sh   |    2 +-
+ .../conformance/definitions/aio_h/2-1.c            |    1 +
+ .../conformance/definitions/errno_h/3-1.c          |    2 +-
+ .../conformance/definitions/pthread_h/2-2.c        |    9 +
+ .../conformance/interfaces/aio_cancel/3-1.c        |    2 +-
+ .../conformance/interfaces/aio_cancel/4-1.c        |    1 -
+ .../conformance/interfaces/aio_cancel/5-1.c        |    1 -
+ .../conformance/interfaces/aio_cancel/6-1.c        |    1 -
+ .../conformance/interfaces/aio_cancel/7-1.c        |    1 -
+ .../conformance/interfaces/aio_error/2-1.c         |    1 -
+ .../conformance/interfaces/sched_yield/1-1.c       |   14 +-
+ testcases/realtime/func/prio-wake/prio-wake.c      |   11 +-
+ testscripts/test_fs_bind.sh                        |    2 +-
+ 47 files changed, 917 insertions(+), 80 deletions(-)
+ create mode 100644 doc/MaintNotes
+ create mode 100644 result
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
+
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
