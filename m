@@ -1,28 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1OCZ5I-00052u-JQ
-	for ltp-list@lists.sourceforge.net; Thu, 13 May 2010 14:08:20 +0000
-Date: Thu, 13 May 2010 16:17:20 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100513141720.GA17659@saboteur.suse.cz>
-References: <g2x364299f41004021212z6e85833ybccad62e6780ec26@mail.gmail.com>
-	<20100419184131.GA20776@saboteur.suse.cz>
-	<20100423125351.GA24523@saboteur.suse.cz>
-	<n2s364299f41004231253offfe856amfa09260ba50cf18b@mail.gmail.com>
-	<20100423204312.GA26503@saboteur.suse.cz>
-	<m2i364299f41004231439kbe4017dayfc57d5d8b622a744@mail.gmail.com>
-	<20100426130400.GA28340@saboteur.suse.cz>
-	<g2o364299f41004260623kb1627f65ld8765f98d8be1790@mail.gmail.com>
-	<20100426140420.GA29365@saboteur.suse.cz>
-	<u2n364299f41004261925z2722bfb1j62b19d010fd52513@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1O9QgD-0004ys-Cv
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 22:33:29 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9QgA-000531-1Q
+	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 22:33:28 +0000
+Date: Tue, 4 May 2010 17:33:16 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100504223315.GA16615@us.ibm.com>
+References: <1272997208.5342.7.camel@subratamodak.linux.ibm.com>
+	<20100504192248.GA3696@us.ibm.com>
+	<y2l364299f41005041402uce37fd2axc6f1fc7f7df70497@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="sm4nu43k4a2Rpi4c"
 Content-Disposition: inline
-In-Reply-To: <u2n364299f41004261925z2722bfb1j62b19d010fd52513@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-Subject: Re: [LTP] [PATCH] fix fs_perms tests
+In-Reply-To: <y2l364299f41005041402uce37fd2axc6f1fc7f7df70497@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Fix FILECAPS test hanging for more than 12 hours
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,614 +27,225 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list <ltp-list@lists.sf.net>
 
+Quoting Garrett Cooper (yanegomi@gmail.com):
+> On Tue, May 4, 2010 at 12:22 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> > Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> >> Serge, please add a Sign-off.
+> >
+> > It's there in the patch in your attachment...
+> 
+> Serge,
+>     Please address the items in the previous review and we'll get it committed.
+> Thanks,
+> -Garrett
 
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ah, I see.  You only broke the testcase to get my attention so you
+could get me to use more appropriate ltp helpers.  Sneaky!  And since
+I learned some things in the process, great.  Hopefully I'll get them
+right when I submit the next set.
 
-Hi!
-Hope that this version is final. See attached patch.
+From 2077a47e9cd2f85a8e54695c71396a1a8397d3d6 Mon Sep 17 00:00:00 2001
+From: Serge E. Hallyn <serue@us.ibm.com>
+Date: Wed, 28 Apr 2010 11:26:58 -0500
+Subject: [PATCH 1/1] make filecaps tests succeed
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+Most of these are belated cleanup after the move to using /opt/ltp.
+But come on, replacing 'return' with tst_exit(), are you just trying
+to mess with my head?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Changelog: may 4: address Garrett's feedback
+  1. single return 0 in print_caps.c
+  2. use $TMP if defined for location of caps_fifo
+  3. use tst_brkm in place of tst_resm.
 
---sm4nu43k4a2Rpi4c
-Content-Type: text/x-patch; charset=iso-8859-1
-Content-Disposition: attachment; filename="fix_fs_permsIV.patch"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+---
+ testcases/kernel/security/filecaps/filecapstest.sh |   10 +++-
+ testcases/kernel/security/filecaps/print_caps.c    |    5 +-
+ .../kernel/security/filecaps/verify_caps_exec.c    |   48 ++++++++------------
+ 3 files changed, 28 insertions(+), 35 deletions(-)
 
-diff --git a/include/test.h b/include/test.h
-index e291b36..7ac182a 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -262,6 +262,11 @@ int ltp_clone_quick(unsigned long clone_flags, int (=
-*fn)(void *arg),
- char *get_block_device(const char *path);
- char *get_mountpoint(const char *path);
-=20
-+/*
-+ * Function from lib/get_path.c
-+ */
-+int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
-+
- #ifdef TST_USE_COMPAT16_SYSCALL
- #define TCID_BIT_SUFFIX "_16"
- #elif  TST_USE_NEWER64_SYSCALL
-diff --git a/lib/get_path.c b/lib/get_path.c
-new file mode 100644
-index 0000000..89334a8
---- /dev/null
-+++ b/lib/get_path.c
-@@ -0,0 +1,100 @@
-+/*
-+ * Copyright (C) 2010 Cyril Hrubis chrubis@suse.cz
-+ *
-+ * This program is free software; you can redistribute it and/or modify =
-it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it is
-+ * free of the rightful claim of any third person regarding infringement
-+ * or the like.  Any license provided herein, whether implied or
-+ * otherwise, applies only to this software file.  Patent licenses, if
-+ * any, provided herein do not apply to combinations of this program wit=
-h
-+ * other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License alo=
-ng
-+ * with this program; if not, write the Free Software Foundation, Inc., =
-59
-+ */
-+
-+ /*
-+  * Looks for binary prog_name in $PATH.=20
-+  *
-+  * If such file exists and if you are able at least to read it, zero is
-+  * returned and absolute path to the file is filled into buf. In case b=
-uf is
-+  * too short to hold the absolute path + prog_name for the file we are =
-looking
-+  * for -1 is returned as well as when there is no such file in all path=
-s in
-+  * $PATH.
-+  */
-+
-+#include "test.h"
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+
-+#define MIN(a, b) ((a)<(b)?(a):(b))
-+
-+static int file_exist(const char *path)
-+{
-+	struct stat st;
-+
-+	if (!access(path, R_OK) && !stat(path, &st) && S_ISREG(st.st_mode))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+int tst_get_path(const char *prog_name, char *buf, size_t buf_len)
-+{
-+	const char *path =3D (const char*) getenv("PATH");
-+	const char *start =3D path;
-+	const char *end;
-+	size_t size, ret;
-+
-+
-+	if (path =3D=3D NULL)
-+		return -1;
-+
-+	do {
-+		end =3D strchr(start, ':');
-+
-+		if (end !=3D NULL)
-+			snprintf(buf, MIN(buf_len, (size_t)(end - start + 1)), "%s", start);
-+		else
-+			snprintf(buf, buf_len, "%s", start);
-+
-+		size =3D strlen(buf);
-+
-+		/*
-+		 * "::" inside $PATH, $PATH ending with ':' or $PATH strarting
-+		 * with ':' should be expanded into current working directory.
-+		 */
-+		if (size =3D=3D 0) {
-+			snprintf(buf, buf_len, ".");
-+			size =3D strlen(buf);
-+		}
-+
-+		/*
-+		 * If there is no '/' ad the end of path from $PATH add it.
-+		 */
-+		if (buf[size - 1] !=3D '/')
-+			ret =3D snprintf(buf + size, buf_len - size, "/%s", prog_name);
-+		else
-+			ret =3D snprintf(buf + size, buf_len - size, "%s", prog_name);
-+
-+		if (buf_len - size > ret && file_exist(buf))
-+			return 0;
-+
-+		start =3D end + 1;
-+
-+	} while (end !=3D NULL);
-+
-+	return -1;
-+}
-diff --git a/runltp b/runltp
-index 07994e9..7a8ac28 100755
---- a/runltp
-+++ b/runltp
-@@ -570,6 +570,7 @@ main()
-=20
-         for SCENFILES in ${LTPROOT}/runtest/syscalls                \
-                          ${LTPROOT}/runtest/fs                      \
-+                         ${LTPROOT}/runtest/fs_perms_simple         \
-                          ${LTPROOT}/runtest/fsx                     \
-                          ${LTPROOT}/runtest/dio                     \
-                          ${LTPROOT}/runtest/io                      \
-diff --git a/runtest/fs b/runtest/fs
-index 75c5e38..2de871d 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -64,9 +64,6 @@ writetest01	writetest
- #Also run the fs_di (Data Integrity tests)
- fs_di fs_di -d $TMPDIR
-=20
--#Also run the fs_perms (File System Permission Tests)
--fs_perms fs_perms_simpletest.sh
--
- # Read every file in /proc. Not likely to crash, but does enough=20
- # to disturb the kernel. A good kernel latency killer too.
- # Was not sure why it should reside in runtest/crashme and won=B4t get t=
-ested ever
-diff --git a/runtest/fs_perms_simple b/runtest/fs_perms_simple
-new file mode 100644
-index 0000000..cc986bd
---- /dev/null
-+++ b/runtest/fs_perms_simple
-@@ -0,0 +1,26 @@
-+#
-+# These tests are setting file permissions/group/uid and are trying to
-+# open/write/execute the file.
-+#
-+#
-+#
-+# fs_perms file_mode file_uid file_gid test_uid test_gid mode (r|w|x) ex=
-pected_result
-+#
-+fs_perms01 fs_perms 001 99 99 12 100 x 0
-+fs_perms02 fs_perms 010 99 99 200 99 x 0
-+fs_perms03 fs_perms 100 99 99 99 500 x 0
-+fs_perms04 fs_perms 002 99 99 12 100 w 0
-+fs_perms05 fs_perms 020 99 99 200 99 w 0
-+fs_perms06 fs_perms 200 99 99 99 500 w 0
-+fs_perms07 fs_perms 004 99 99 12 100 r 0
-+fs_perms08 fs_perms 040 99 99 200 99 r 0
-+fs_perms09 fs_perms 400 99 99 99 500 r 0
-+fs_perms10 fs_perms 000 99 99 99 99  r 1
-+fs_perms11 fs_perms 000 99 99 99 99  w 1
-+fs_perms12 fs_perms 000 99 99 99 99  x 1
-+fs_perms13 fs_perms 010 99 99 99 500 x 1
-+fs_perms14 fs_perms 100 99 99 200 99 x 1
-+fs_perms15 fs_perms 020 99 99 99 500 w 1
-+fs_perms16 fs_perms 200 99 99 200 99 w 1
-+fs_perms17 fs_perms 040 99 99 99 500 r 1
-+fs_perms18 fs_perms 400 99 99 200 99 r 1
-diff --git a/testcases/kernel/fs/fs_perms/Makefile b/testcases/kernel/fs/=
-fs_perms/Makefile
-index 48aa7d6..c0377cc 100644
---- a/testcases/kernel/fs/fs_perms/Makefile
-+++ b/testcases/kernel/fs/fs_perms/Makefile
-@@ -23,7 +23,4 @@
- top_srcdir			?=3D ../../../..
-=20
- include $(top_srcdir)/include/mk/testcases.mk
--
--INSTALL_TARGETS			:=3D fs_perms_simpletest.sh
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/fs/fs_perms/fs_perms.c b/testcases/kernel/f=
-s/fs_perms/fs_perms.c
-index ad44028..9fbe9ec 100644
---- a/testcases/kernel/fs/fs_perms/fs_perms.c
-+++ b/testcases/kernel/fs/fs_perms/fs_perms.c
-@@ -1,5 +1,6 @@
- /*
-  *   Copyright (c) International Business Machines  Corp., 2000
-+ *   Copyright (c) 2010 Cyril Hrubis chrubis@suse.cz
-  *
-  *   This program is free software;  you can redistribute it and/or modi=
-fy
-  *   it under the terms of the GNU General Public License as published b=
-y
-@@ -25,9 +26,12 @@
-  *     (04/19/01)v1.0  Added test for execute bit.
-  *     (05/23/01)v1.1  Added command line parameter to specify test file=
-.
-  *     (07/12/01)v1.2  Removed conf file and went to command line parame=
-ters.
-+ *     (10/19/04)      Rewritten to fit ltp test interface.
-+ *                     Also now we try to run two different files, one i=
-s executed by execl,
-+ *                     has shebang and should end up executed by kernel,=
- other one is empty
-+ *                     is executed by execlp and should end up executed =
-by libc.
-  */
-=20
--#include <errno.h>
- #include <stdio.h>
- #include <string.h>
- #include <ctype.h>
-@@ -36,117 +40,190 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include <wait.h>
-+#include <linux/limits.h>
-=20
- #include "test.h"
-=20
-+#define TEST_FILE_NAME1 "./test.file1"
-+#define TEST_FILE_NAME2 "./test.file2"
-+
- char *TCID =3D "fs_perms";
- int TST_TOTAL =3D 1;
-=20
--static int testsetup(mode_t mode, int cuserId, int cgroupId)
--{
--	int ret;
--	char cmd_str[256];
--
--	sprintf(cmd_str, "cp %s/testx test.file", getcwd(NULL, 0));
--	tst_tmpdir();
--
--	ret =3D unlink("test.file");
--	if (ret && errno !=3D ENOENT)
--		goto done;
--	ret =3D system(cmd_str);
--	if (ret)
--		goto done;
--	ret =3D chmod("test.file", mode);
--	if (ret)
--		goto done;
--	ret =3D chown("test.file", cuserId, cgroupId);
--
-- done:
--	return ret;
--}
--
--void cleanup(void)
-+static void cleanup(void)
- {
-+	seteuid(0);
-+	setegid(0);
-+=09
- 	tst_rmdir();
- 	tst_exit();
- }
-=20
--static int testfperm(int userId, int groupId, char *fperm)
-+/*
-+ * Create file and set permissions, user id, group id.
-+ *
-+ * If flag is non zero, the file contains #!/PATH/sh shebang otherwise i=
-t's
-+ * empty.
-+ */
-+static void testsetup(const char *file_name, int flag, mode_t mode,=20
-+                      int user_id, int group_id)
- {
--	/* SET CURRENT USER/GROUP PERMISSIONS */
--	if (setegid(groupId)) {
--		tst_brkm(TBROK, cleanup, "could not setegid to %d: %s", groupId, strer=
-ror(errno));
--		seteuid(0);
--		setegid(0);
--		return -1;
--	}
--	if (seteuid(userId)) {
--		tst_brkm(TBROK, cleanup, "could not seteuid to %d: %s", userId, strerr=
-or(errno));
--		seteuid(0);
--		setegid(0);
--		return -1;
-+	FILE *file;
-+
-+	file =3D fopen(file_name, "w");
-+=09
-+	if (file =3D=3D NULL)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+		         "Could not create test file %s.", file_name);
-+=09
-+	/* create file with shebang */
-+	if (flag) {
-+		char buf[PATH_MAX];
-+
-+		if (tst_get_path("sh", buf, PATH_MAX))
-+			tst_brkm(TBROK, cleanup,
-+			         "Could not find path to sh in $PATH.");
-+
-+		if (fprintf(file, "#!%s\n", buf) < 0)
-+			tst_brkm(TBROK, cleanup, "Calling fprintf failed.");
- 	}
-=20
--	switch (tolower(fperm[0])) {
--	case 'x': {
-+	if (fclose(file))
-+		tst_brkm(TBROK | TERRNO, cleanup, "Calling fclose failed.");
-+
-+	if (chmod(file_name, mode))
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+		         "Could not chmod test file %s.", file_name);=20
-+
-+	if (chown(file_name, user_id, group_id))
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+		         "Could not chown test file %s.", file_name);=20
-+}
-+
-+/*
-+ * Test permissions.
-+ */
-+static int testfperm(const char *file_name, int flag, int user_id,
-+                     int group_id, char *fperm)
-+
-+{
-+	FILE *file;
-+	int ret;
-+=09
-+	if (setegid(group_id))
-+		tst_brkm(TBROK | TERRNO, cleanup, "Could not setegid to %d.",
-+		         group_id);
-+
-+	if (seteuid(user_id))
-+		tst_brkm(TBROK | TERRNO, cleanup, "Could not seteuid to %d.",
-+		         user_id);
-+
-+	if (tolower(fperm[0]) =3D=3D 'x') {
- 		int status;
-+	=09
- 		if (fork() =3D=3D 0) {
--			execlp("./test.file", "test.file", NULL);
-+			/*
-+			 * execlp runs file with sh in case kernel has
-+			 * no binmft handler for it, execl does not.
-+			 */
-+			if (flag)
-+				execl(file_name, file_name, NULL);
-+			else
-+				execlp(file_name, "test", NULL);
-+=09
- 			exit(1);
- 		}
-+	=09
- 		wait(&status);
-+	=09
- 		seteuid(0);
- 		setegid(0);
-+	=09
- 		return WEXITSTATUS(status);
- 	}
--	default: {
--		FILE *testfile;
--		if ((testfile =3D fopen("test.file", fperm))) {
--			fclose(testfile);
--			seteuid(0);
--			setegid(0);
--			return 0;
--		} else {
--			seteuid(0);
--			setegid(0);
--			return 1;
--		}
--	}
--	}
-+
-+	if ((file =3D fopen(file_name, fperm)) !=3D NULL) {
-+		fclose(file);
-+		ret =3D 0;
-+	} else
-+		ret =3D 1;
-+
-+	seteuid(0);
-+	setegid(0);
-+
-+	return ret;
-+}
-+
-+static void print_usage(const char *bname)
-+{
-+	char *usage =3D "<file mode> <file UID> <file GID> "
-+                      "<tester UID> <tester GID> <permission "
-+                      "to test r|w|x> <expected result 0|1>";
-+
-+	printf("Usage: %s %s\n", bname, usage);
-+}
-+
-+static long str_to_l(const char *str, const char *name)
-+{
-+	char *end;
-+	long i =3D strtol(str, &end, 10);
-+
-+	if (*end !=3D '\0')
-+		tst_brkm(TBROK, tst_exit, "Invalid parameter '%s' passed. (%s)",
-+		         name, str);
-+
-+	return i;
- }
-=20
+diff --git a/testcases/kernel/security/filecaps/filecapstest.sh b/testcases/kernel/security/filecaps/filecapstest.sh
+index 43582dc..8e2ba11 100755
+--- a/testcases/kernel/security/filecaps/filecapstest.sh
++++ b/testcases/kernel/security/filecaps/filecapstest.sh
+@@ -22,8 +22,12 @@
+ echo "Running in:"
+ #rm -f print_caps
+ #cp $LTPROOT/testcases/bin/print_caps .
+-mkfifo caps_fifo
+-chmod 777 caps_fifo
++#FIFOFILE="$LTPROOT/testcases/bin/caps_fifo"
++TMP=${TMP:=/tmp}
++FIFOFILE="$TMP/caps_fifo"
++rm -f $FIFOFILE
++mkfifo $FIFOFILE
++chmod 777 $FIFOFILE
+ exit_code=0
+ echo "cap_sys_admin tests"
+ verify_caps_exec 0
+@@ -46,5 +50,5 @@ if [ $tmp -ne 0 ]; then
+ 	exit_code=$tmp
+ fi
+ 
+-unlink caps_fifo
++unlink $FIFOFILE
+ exit $exit_code
+diff --git a/testcases/kernel/security/filecaps/print_caps.c b/testcases/kernel/security/filecaps/print_caps.c
+index f0e9bce..1c3fc1b 100644
+--- a/testcases/kernel/security/filecaps/print_caps.c
++++ b/testcases/kernel/security/filecaps/print_caps.c
+@@ -36,7 +36,7 @@
+ #include <sys/capability.h>
+ #endif
+ 
+-#define FIFOFILE "caps_fifo"
++#define FIFOFILE "/tmp/caps_fifo"
+ 
  int main(int argc, char *argv[])
  {
- 	char *fperm;
--	int result, exresult =3D 0, cuserId =3D 0, cgroupId =3D 0, userId =3D 0=
-, groupId =3D 0;
--	mode_t mode;
-+	gid_t fgroup_id, group_id;
-+	uid_t fuser_id, user_id;
-+	mode_t fmode;
-+	int exp_res;
-+	int res1, res2 =3D 1;
-=20
- 	tst_require_root(tst_exit);
-=20
--	switch (argc) {
--	case 8:
--		mode =3D strtol(argv[1], (char **)NULL, 010);
--		cuserId =3D atoi(argv[2]);
--		cgroupId =3D atoi(argv[3]);
--		userId =3D atoi(argv[4]);
--		groupId =3D atoi(argv[5]);
--		fperm =3D argv[6];
--		exresult =3D atoi(argv[7]);
--		break;
--	default:
--		printf("Usage: %s <mode of file> <UID of file> <GID of file> <UID of t=
-ester> <GID of tester> <permission to test r|w|x> <expected result as 0|1=
->\n", argv[0]);
--		return 1;
-+	if (argc !=3D 8) {
-+		print_usage(argv[0]);
-+		tst_exit();
- 	}
-=20
--	result =3D testsetup(mode, cuserId, cgroupId);
--	if (result) {
--		tst_brkm(TBROK, cleanup, "testsetup() failed: %s", strerror(errno));
-+	if (strlen(argv[6]) > 1) {
-+		print_usage(argv[0]);
-+		tst_exit();
- 	}
-=20
--	result =3D testfperm(userId, groupId, fperm);
--	unlink("test.file");
--	tst_resm(exresult =3D=3D result ? TPASS : TFAIL, "%c a %03o file owned =
-by (%d/%d) as user/group(%d/%d)",
--		fperm[0], mode, cuserId, cgroupId, userId, groupId);
--	cleanup();
+@@ -65,7 +65,6 @@ int main(int argc, char *argv[])
+ 	close(fd);
+ 
+ 	cap_free(cap);
+-#else
 -	return 0;
-+	fmode     =3D str_to_l(argv[1], "file mode");
-+	fuser_id  =3D str_to_l(argv[2], "file uid");
-+	fgroup_id =3D str_to_l(argv[3], "file gid");
-+	user_id   =3D str_to_l(argv[4], "tester uid");
-+	group_id  =3D str_to_l(argv[5], "tester gid");
-+	fperm     =3D argv[6];
-+	exp_res   =3D str_to_l(argv[7], "expected result");
-+
-+	tst_tmpdir();
-+	testsetup(TEST_FILE_NAME1, 0, fmode, fuser_id, fgroup_id);
-+=09
-+	/* more tests for 'x' flag */
-+	if (tolower(fperm[0]) =3D=3D 'x') {
-+		testsetup(TEST_FILE_NAME2, 1, fmode, fuser_id, fgroup_id);
-+		res2 =3D testfperm(TEST_FILE_NAME2, 1, user_id, group_id, fperm);
-+
-+		if (res2 =3D=3D exp_res)
-+			res2 =3D 1;
-+		else
-+			res2 =3D 0;
-+	}
-+
-+	res1 =3D testfperm(TEST_FILE_NAME1, 0, user_id, group_id, fperm);
-+
-+	tst_resm((exp_res =3D=3D res1) && res2 ? TPASS : TFAIL,
-+	         "%c a %03o file owned by (%d/%d) as user/group (%d/%d)",
-+	         fperm[0], fmode, fuser_id, fgroup_id, user_id, group_id);
-+
-+	tst_rmdir();
-+	tst_exit();
+ #endif
++	return 0;
  }
-diff --git a/testcases/kernel/fs/fs_perms/fs_perms_simpletest.sh b/testca=
-ses/kernel/fs/fs_perms/fs_perms_simpletest.sh
-deleted file mode 100755
-index 5a8df8b..0000000
---- a/testcases/kernel/fs/fs_perms/fs_perms_simpletest.sh
-+++ /dev/null
-@@ -1,35 +0,0 @@
--#!/bin/sh
--
--Code=3D0
--
--test()
--{
--    arg=3D${1}; shift
--    res=3D${1}
--
--    ./fs_perms ${arg} ${res}
--    if [ $? -ne 0 ]; then
--       Code=3D$((Code + 1))
--    fi
--}
--
--test "001 99 99 12 100 x" 0
--test "010 99 99 200 99 x" 0
--test "100 99 99 99 500 x" 0
--test "002 99 99 12 100 w" 0
--test "020 99 99 200 99 w" 0
--test "200 99 99 99 500 w" 0
--test "004 99 99 12 100 r" 0
--test "040 99 99 200 99 r" 0
--test "400 99 99 99 500 r" 0
--test "000 99 99 99 99 r" 1
--test "000 99 99 99 99 w" 1
--test "000 99 99 99 99 x" 1
--test "010 99 99 99 500 x" 1
--test "100 99 99 200 99 x" 1
--test "020 99 99 99 500 w" 1
--test "200 99 99 200 99 w" 1
--test "040 99 99 99 500 r" 1
--test "400 99 99 200 99 r" 1
--
--exit ${Code}
-diff --git a/testcases/kernel/fs/fs_perms/testx.c b/testcases/kernel/fs/f=
-s_perms/testx.c
-deleted file mode 100644
-index 5944ce0..0000000
---- a/testcases/kernel/fs/fs_perms/testx.c
-+++ /dev/null
-@@ -1,4 +0,0 @@
--#include <stdio.h>
--int main(void) {
--	return 0;
--}
+diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testcases/kernel/security/filecaps/verify_caps_exec.c
+index 5250007..c3f65a9 100644
+--- a/testcases/kernel/security/filecaps/verify_caps_exec.c
++++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
+@@ -43,7 +43,7 @@
+ #include <sys/prctl.h>
+ #include <test.h>
+ 
+-#define TSTPATH "./print_caps"
++#define TSTPATH "print_caps"
+ char *TCID = "filecaps";
+ int TST_TOTAL=1;
+ 
+@@ -70,7 +70,7 @@ void print_my_caps()
+ 	cap_free(txt);
+ }
+ 
+-int drop_root(int keep_perms)
++void drop_root(int keep_perms)
+ {
+ 	int ret;
+ 
+@@ -78,16 +78,19 @@ int drop_root(int keep_perms)
+ 		prctl(PR_SET_KEEPCAPS, 1);
+ 	ret = setresuid(1000, 1000, 1000);
+ 	if (ret) {
+-		perror("setresuid");
+-		tst_resm(TFAIL, "Error dropping root privs\n");
++		tst_brkm(TFAIL | TERRNO, tst_exit, "Error dropping root privs\n");
+ 		tst_exit();
+ 	}
+ 	if (keep_perms) {
+ 		cap_t cap = cap_from_text("=eip");
+-		cap_set_proc(cap);
++		int ret;
++		if (!cap)
++			tst_brkm(TBROK | TERRNO, tst_exit, "cap_from_text failed\n");
++		ret = cap_set_proc(cap);
++		if (ret < 0)
++			tst_brkm(TBROK | TERRNO, tst_exit, "cap_set_proc failed\n");
+ 		cap_free(cap);
+ 	}
+-	tst_exit();
+ }
+ 
+ int perms_test(void)
+@@ -114,17 +117,14 @@ int perms_test(void)
+ 	return ret;
+ }
+ 
+-#define FIFOFILE "caps_fifo"
++#define FIFOFILE "/tmp/caps_fifo"
+ void create_fifo(void)
+ {
+ 	int ret;
+ 
+ 	ret = mkfifo(FIFOFILE, S_IRWXU | S_IRWXG | S_IRWXO);
+-	if (ret == -1 && errno != EEXIST) {
+-		perror("mkfifo");
+-		tst_resm(TFAIL, "failed creating %s\n", FIFOFILE);
+-		tst_exit();
+-	}
++	if (ret == -1 && errno != EEXIST)
++		tst_brkm(TFAIL | TERRNO, tst_exit, "failed creating %s\n", FIFOFILE);
+ }
+ 
+ void write_to_fifo(char *buf)
+@@ -142,11 +142,8 @@ void read_from_fifo(char *buf)
+ 
+ 	memset(buf, 0, 200);
+ 	fd = open(FIFOFILE, O_RDONLY);
+-	if (fd < 0) {
+-		perror("open");
+-		tst_resm(TFAIL, "Failed opening fifo\n");
+-		tst_exit();
+-	}
++	if (fd < 0)
++		tst_brkm(TFAIL | TERRNO, tst_exit, "Failed opening fifo\n");
+ 	read(fd, buf, 199);
+ 	close(fd);
+ }
+@@ -162,23 +159,18 @@ int fork_drop_and_exec(int keepperms, cap_t expected_caps)
+ 	static int seqno = 0;
+ 
+ 	pid = fork();
+-	if (pid < 0) {
+-		perror("fork");
+-		tst_resm(TFAIL, "%s: failed fork\n", __FUNCTION__);
+-		tst_exit();
+-	}
++	if (pid < 0)
++		tst_brkm(TFAIL | TERRNO, tst_exit, "%s: failed fork\n", __FUNCTION__);
+ 	if (pid == 0) {
+ 		drop_root(keepperms);
+ 		print_my_caps();
+ 		sprintf(buf, "%d", seqno);
+ 		ret = execlp(TSTPATH, TSTPATH, buf, NULL);
+-		perror("execl");
+-		tst_resm(TFAIL, "%s: exec failed\n", __FUNCTION__);
+ 		capstxt = cap_to_text(expected_caps, NULL);
+ 		snprintf(buf, 200, "failed to run as %s\n", capstxt);
+ 		cap_free(capstxt);
+ 		write_to_fifo(buf);
+-		tst_exit();
++		tst_brkm(TFAIL, tst_exit, "%s: exec failed\n", __FUNCTION__);
+ 	} else {
+ 		p = buf;
+ 		while (1) {
+@@ -191,10 +183,8 @@ int fork_drop_and_exec(int keepperms, cap_t expected_caps)
+ 				c, s, seqno);
+ 		}
+ 		p = index(buf, '.')+1;
+-		if (p==(char *)1) {
+-			tst_resm(TFAIL, "got a bad message from print_caps\n");
+-			tst_exit();
+-		}
++		if (p==(char *)1)
++			tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
+ 		actual_caps = cap_from_text(p);
+ 		if (cap_compare(actual_caps, expected_caps) != 0) {
+ 			capstxt = cap_to_text(expected_caps, NULL);
+-- 
+1.6.0.6
 
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
-
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---sm4nu43k4a2Rpi4c--
-
