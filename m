@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <danms@us.ibm.com>) id 1OA5p0-0003VQ-AY
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 18:29:18 +0000
-Received: from gw0.danplanet.com ([71.245.107.82] helo=mail.danplanet.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OA5ow-0003GZ-5U
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 18:29:18 +0000
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065729.23879.9995.sendpatchset@subratamodak.linux.ibm.com>
-	<q2z364299f41005061053zcc57d5c4gc5577e9d80ffc8e5@mail.gmail.com>
-From: Dan Smith <danms@us.ibm.com>
-Date: Thu, 06 May 2010 10:59:27 -0700
-In-Reply-To: <q2z364299f41005061053zcc57d5c4gc5577e9d80ffc8e5@mail.gmail.com>
-	(Garrett Cooper's message of "Thu\, 6 May 2010 10\:53\:45 -0700")
-Message-ID: <87d3x8ykqo.fsf@caffeine.danplanet.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [06/12 FAILURE] Many CONTAINER tests of LTP fail
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Feng.Xu@windriver.com>) id 1O9cZN-00076S-Mg
+	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 11:15:13 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9cZM-0005U0-B1
+	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 11:15:13 +0000
+From: Henry xu <feng.xu@windriver.com>
+Date: Wed, 05 May 2010 17:08:16 +0800
+Message-Id: <1273050496.26977.19.camel@lishuang-desktop>
+Mime-Version: 1.0
+Subject: [LTP] ltp sysctl03 testcase failed in version of 20100228
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,25 +22,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, Sachin P Sant <ssant@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
+To: ltp-list <ltp-list@lists.sf.net>
 
-Pj4gY2hpbGRucy5zaCDCoCDCoDAgwqBUSU5GTyDCoDogwqBTdWNjZXNzZnVsbHkgUmVuYW1lZCBk
-ZXZpY2UgdG8gdmV0aDEKPj4gRmlsZXMgL3RtcC9zeXNfYjRfY2hpbGRfa2lsbGVkIGFuZCAvdG1w
-L3N5c19hZnRyX2NoaWxkX2tpbGxlZCBkaWZmZXIKPj4gQ2Fubm90IGZpbmQgZGV2aWNlICJ2ZXRo
-MSIKPj4gY3J0Y2hpbGRfZGVsY2hpbGQ6IFBBU1MKCkdDPiBUaGlzIHNlZW1zIHN1c3BlY3QgZXZl
-biB0aG91Z2ggaXQgc2F5cyBwYXNzZWQuCgpUaGUgbG9naWMgaXMgaW52ZXJ0ZWQgd2hpY2ggY2F1
-c2VzIGl0IHRvIGNvbnRpbnVlIG9ubHkgaWYgdGhlIHNzaGQKZXhlYyBmYWlscy4gIEZpeGVkIGlu
-IG15IHBhdGNoIGFzIHdlbGwuCgpHQz4gT25lIG9mIHRoZSBwcmVyZXFzIGlzIG1pc3NpbmcgcHJv
-YmFibHkgKHNldHVwIGFuIGZ0cCBkYWVtb24KR0M+IC4uLiBtYXliZSB0aGlzIHdhcyBnb2luZyB0
-byBiZSBkb25lIHZpYSBzc2g/KQoKSXQgbG9va3MgdG8gbWUgbGlrZSB0aGUgdGVzdCByZXF1aXJl
-cyBhIChyYXRoZXIgbG9vc2VseS1jb25maWd1cmVkKQpmdHAgZGFlbW9uIHJ1bm5pbmcgaW4gdGhl
-IGluaXQgbmV0bnMgZm9yIHRoaXMgdG8gcGFzcy4KCi0tIApEYW4gU21pdGgKSUJNIExpbnV4IFRl
-Y2hub2xvZ3kgQ2VudGVyCmVtYWlsOiBkYW5tc0B1cy5pYm0uY29tCgotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
-LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
-L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hi,all
+I test sysctl03 in x86 and ppc platform and product the same fails as
+below.
+
+
+root@z530:/opt/ltp-full/testcases/bin> ./sysctl03 
+sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
+sysctl03    2  TFAIL  :  Expected EPERM, got 13
+
+The case expects to return EPERM,however return EACCES.
+
+My kernel version is 2.6.34 .I think it could be caused  by high version
+kernel .Since in the past kernel of 2.6.27,there is not the fail.And I
+find the same issue of the case on the internet.It gives a patch,but I
+find  the patch is not merged in the newest ltp version .
+
+I want to know whether the isuue is known or not.
+
+thanks!
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
