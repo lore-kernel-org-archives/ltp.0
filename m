@@ -1,27 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1OA1Y7-0002mG-95
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 13:55:35 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OA1Y0-0004ld-3I
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 13:55:30 +0000
-Date: Thu, 6 May 2010 08:55:10 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100506135510.GB12072@us.ibm.com>
-References: <1272997208.5342.7.camel@subratamodak.linux.ibm.com>
-	<20100504192248.GA3696@us.ibm.com>
-	<y2l364299f41005041402uce37fd2axc6f1fc7f7df70497@mail.gmail.com>
-	<20100504223315.GA16615@us.ibm.com>
-	<j2u364299f41005042219vfa5c5aa7ld5673a7eba8b6c64@mail.gmail.com>
-	<20100505141829.GA10714@us.ibm.com>
-	<E6FF74A2-EB5B-4D11-A9B8-AA25D426D902@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <E6FF74A2-EB5B-4D11-A9B8-AA25D426D902@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix FILECAPS test hanging for more than 12 hours
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9v1Y-0004Lq-D2
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:57:32 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9v1X-0000AQ-2y
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:57:32 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o466q7A2030278
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 02:52:07 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o466vP4b144696
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 02:57:25 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o466vOcE030354
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 02:57:25 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Thu, 06 May 2010 12:27:15 +0530
+Message-Id: <20100506065713.23879.94813.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [05/12 FAILURE] LTPX proc01 test fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,92 +34,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1510745727651458867=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Linus Test Project <ltp-list@lists.sourceforge.net>
+Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> On May 5, 2010, at 7:18 AM, Serge E. Hallyn wrote:
-> 
-> > Quoting Garrett Cooper (yanegomi@gmail.com):
-> >>>                p = index(buf, '.')+1;
-> > 
-> > Jinkeys!  The intertubes archives insist I wrote that, but I'm finding
-> > it hard to believe.
-> > 
-> >>> -               if (p==(char *)1) {
-> >>> -                       tst_resm(TFAIL, "got a bad message from print_caps\n");
-> >>> -                       tst_exit();
-> >>> -               }
-> >>> +               if (p==(char *)1)
-> >>> +                       tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
-> >> 
-> >>    This is a really incorrect way to do things. I think that the
-> >> assumption made was that index(3) would return 0 ('\0') if it fails to
-> >> find '.'. That's incorrect and would cause a segfault on some systems
-> >> (does on FreeBSD at least... don't see why it would pass on Linux):
-> >> 
-> >> $ ~/test_null_inc
-> >> Segmentation fault: 11 (core dumped)
-> >> [garrcoop@bioshock ~]$ cat ~/test_null_inc.c
-> >> #include <stdio.h>
-> >> int
-> >> main(void)
-> >> {
-> >> 	printf("%s\n", (NULL + 1));
-> >> 	return 0;
-> >> }
-> > 
-> > Well, that's different - you're dereferencing NULL+1, whereas I'm
-> > just checking the the value of the pointer.  
-> > 
-> > Still what I did is darned ugly, cleanup below.
-> > 
-> > thanks,
-> > -serge
-> > 
-> >>    Could you please change this to check and see whether or not index
-> >> returns NULL instead of accessing memory like that?
-> >>    Other than that, patch looks good.
-> > 
-> > From: Serge E. Hallyn <serue@us.ibm.com>
-> > Date: Wed, 5 May 2010 02:59:05 -0500
-> > Subject: [PATCH 1/1] check for index(3) returning NULL
-> > 
-> > Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> > ---
-> > .../kernel/security/filecaps/verify_caps_exec.c    |    5 +++--
-> > 1 files changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> > index c3f65a9..605f0f6 100644
-> > --- a/testcases/kernel/security/filecaps/verify_caps_exec.c
-> > +++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> > @@ -182,9 +182,10 @@ int fork_drop_and_exec(int keepperms, cap_t expected_caps)
-> > 			tst_resm(TINFO, "got a bad seqno (c=%d, s=%d, seqno=%d)",
-> > 				c, s, seqno);
-> > 		}
-> > -		p = index(buf, '.')+1;
-> > -		if (p==(char *)1)
-> > +		p = index(buf, '.');
-> > +		if (!p)
-> > 			tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
-> > +		p += 1;
-> > 		actual_caps = cap_from_text(p);
-> > 		if (cap_compare(actual_caps, expected_caps) != 0) {
-> > 			capstxt = cap_to_text(expected_caps, NULL);
-> 
-> Looks good! If that's the complete diff, then Acked-by: Garrett Cooper <yanegomi@gmail.com>
+--===============1510745727651458867==
 
-Right - that one on top of the previous longer one, please.  (or I can rebase-squash
-them and resend if Subrata prefers)
+Subject: LTP�� proc01 test fail
 
--serge
+Issues Description below:
+====================================
+# ./runltp -s proc01
+
+<<<test_output>>>
+proc01      0  TINFO  :  /proc/sysrq-trigger: is write-only.
+proc01      0  TINFO  :  /proc/kmsg: known issue: errno=EAGAIN(11): Resource
+temporarily unavailable
+proc01      0  TINFO  :  /proc/powerpc/ofdt: is write-only.
+proc01      1  TFAIL  :  read failed: /proc/powerpc/rtas/error_log:
+errno=EINVAL(22): Invalid argument
+proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
+proc01      0  TINFO  :  /proc/self/task/7928/mem: known issue: errno=EIO(5):
+Input/output error
+proc01      0  TINFO  :  /proc/self/task/7928/clear_refs: is write-only.
+proc01      0  TINFO  :  /proc/self/mem: known issue: errno=EIO(5):
+Input/output error
+proc01      0  TINFO  :  /proc/self/clear_refs: is write-only.
+proc01      2  TFAIL  :  readproc() failed with 1 errors.
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=1 corefile=no
+cutime=4 cstime=130
+<<<test_end>>>
+
+Regards--
+Subrata
+
+
+
+--===============1510745727651458867==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============1510745727651458867==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1510745727651458867==--
