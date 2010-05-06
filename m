@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1O9iz3-0004Ut-2I
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 18:06:09 +0000
-Received: from mail-vw0-f46.google.com ([209.85.212.46])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O9iz1-0003ir-TS
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 18:06:09 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OA56P-0007JN-6i
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:43:13 +0000
+Received: from mail-iw0-f200.google.com ([209.85.223.200])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OA56O-0000cM-FL
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:43:13 +0000
+Received: by iwn38 with SMTP id 38so154550iwn.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 May 2010 10:43:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1273050496.26977.19.camel@lishuang-desktop>
-References: <1273050496.26977.19.camel@lishuang-desktop>
-From: Henry Yei <hyei@mvista.com>
-Date: Wed, 5 May 2010 11:00:12 -0700
-Message-ID: <i2y42aa607e1005051100pa03938c4m7e585461ab1207c4@mail.gmail.com>
-Subject: Re: [LTP] ltp sysctl03 testcase failed in version of 20100228
+In-Reply-To: <20100506144556.GA11460@us.ibm.com>
+References: <20100506144556.GA11460@us.ibm.com>
+Date: Thu, 6 May 2010 10:43:07 -0700
+Message-ID: <o2y364299f41005061043yf5044aa0u136c168855622abd@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v2] make filecaps tests succeed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +30,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry xu <feng.xu@windriver.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Subrata Modak1 <subrata.modak@in.ibm.com>
 
-On Wed, May 5, 2010 at 2:08 AM, Henry xu <feng.xu@windriver.com> wrote:
-> Hi,all
-> I test sysctl03 in x86 and ppc platform and product the same fails as
-> below.
+On Thu, May 6, 2010 at 7:45 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> (Garrett I was going to add your ack, but wasn't absolutely sure
+> whether you meant it should apply to the whole thing or not)
 >
+> Most of these are belated cleanup after the move to using /opt/ltp.
+> But come on, replacing 'return' with tst_exit(), are you just trying
+> to mess with my head?
 >
-> root@z530:/opt/ltp-full/testcases/bin> ./sysctl03
-> sysctl03 =A0 =A01 =A0TFAIL =A0: =A0Expected EPERM (1), got 13: Permission=
- denied
-> sysctl03 =A0 =A02 =A0TFAIL =A0: =A0Expected EPERM, got 13
+> Changelog:
+> =A0may 4: address Garrett's feedback
+> =A01. single return 0 in print_caps.c
+> =A02. use $TMP if defined for location of caps_fifo
+> =A03. use tst_brkm in place of tst_resm.
+> =A0may 5: address Garrett's comment:
+> =A0don't add 1 to null pointer and then check for 1
 >
-> The case expects to return EPERM,however return EACCES.
->
-> My kernel version is 2.6.34 .I think it could be caused =A0by high version
-> kernel .Since in the past kernel of 2.6.27,there is not the fail.And I
-> find the same issue of the case on the internet.It gives a patch,but I
-> find =A0the patch is not merged in the newest ltp version .
->
-> I want to know whether the isuue is known or not.
->
-> thanks!
->
+> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
 
-FYI: Your pass on the 2.6.27 kernel may be because default kernel
-config did not have the option CONFIG_SYSCTL_SYSCALL=3Dy, and the tests
-returned a TCONF. This is a known issue. I've been waiting for the
-sysctl interface to be removed from the kernel for years, but it is
-still around.
-
-Henry Yei <hyei@mvista.com>
+Acked-by: Garrett Cooper <yanegomi@gmail.com>
 
 ---------------------------------------------------------------------------=
 ---
