@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OE6Zp-000773-6b
-	for ltp-list@lists.sourceforge.net; Mon, 17 May 2010 20:06:13 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OE6Zm-0000rM-Sp
-	for ltp-list@lists.sourceforge.net; Mon, 17 May 2010 20:06:13 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9v2l-0007hD-Ck
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:47 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9v2k-0001Wj-Bw
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:47 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o466pKL7010358
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:51:20 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o466weWl128858
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:58:40 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o466wdTp002929
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:58:40 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100512212031.GI30926@ghostprotocols.net>
-References: <1273686023.4910.9.camel@subratamodak.linux.ibm.com>
-	<20100512212031.GI30926@ghostprotocols.net>
-Date: Tue, 18 May 2010 01:36:00 +0530
-Message-Id: <1274126761.5106.14.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [RFC] Testcase for recvmmsg(),
-	a syscall for	batching	recvmsg() calls
-Reply-To: subrata@linux.vnet.ibm.com
+Date: Thu, 06 May 2010 12:28:31 +0530
+Message-Id: <20100506065830.23879.79824.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [10/12 FAILURE] LTPX ar01 fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,77 +35,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2811702355751415213=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Linus Test Project <ltp-list@lists.sourceforge.net>
+Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
 
-On Wed, 2010-05-12 at 18:20 -0300, Arnaldo Carvalho de Melo wrote: 
-> Em Wed, May 12, 2010 at 11:10:23PM +0530, Subrata Modak escreveu:
-> > Hello Arnaldo,
-> > 
-> > Your code in 2.6.33 kernel introduced a new system call called
-> > recvmmsg(), a syscall for batching recvmsg() calls. Would you like to
-> > share the set of test cases you used to test this new code with the LTP
-> > community ?
-> 
-> Forgive me my ignorance about the current state of the LTP
-> infrastructure, but does it support requiring multiple clients and a
-> server to test networking calls? Or is everything done over loopback?
+--===============2811702355751415213==
 
-Sorry for the very late reply. No, we also have something called LTP
-network tests, which require a separate server and client, and is
-designed to burn the network wires and not the loopback interface.
+Subject: LTP�� ar01 fails
 
-Your test seems interesting. I will like to integrate the code later in
-our networking tests when i find time. If there is a more active
-volunteer, he is welcome to do it before me ;-)
+Issue Description Below:
+===============================
+# vi runtest/ar01
+ar export TCdat=$LTPROOT/testcases/bin; ar01
+<EOF>
+
+Run LTP with the following command:
+# ./runltp -f ar01
+<<<test_start>>>
+tag=ar stime=1272004502
+cmdline="export TCdat=$LTPROOT/testcases/bin; ar01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+-------System test for ar command, Loop 1----
+-)1
+-)2
+-)3
+-)4
+-)5
+-)6
+-)7
+-)8
+-)9
+-)10
+-)11
+-)12
+-)13
+-)14
+-)15
+-)16
+-)17 SKIPPED due to binutils ar automatically adds a symbol.
+-)18
+-)19 SKIPPED due to binutils ar automatically adds a symbol.
+-)20
+-)21
+4,6c4,6
+< -rwxrwxr-x.;0/0;17;Apr;23;12:05;file1.in
+< -rwxrwxr-x.;0/0;17;Apr;23;12:05;file2.in
+< -rwxrwxr-x.;0/0;19;Apr;23;12:05;file3.in
+---
+> -rwxrwxr-x;0/0;17;Apr;23;12:05;file1.in
+> -rwxrwxr-x;0/0;17;Apr;23;12:05;file2.in
+> -rwxrwxr-x;0/0;19;Apr;23;12:05;file3.in
+FAIL - ar with -v failed to produce a verbose out put
+-)23
+-)24
+-)25
+-)26 SKIPPED UNDER PAN
+ar: creating /tmp/ar01-9909/lib.a
+-)27
+ar: creating /tmp/ar01-9909/lib.a
+-)28
+ar: creating /tmp/ar01-9909/lib.a
+-)29
+ar: creating /tmp/ar01-9909/lib.a
+-)30
+ar: creating /tmp/ar01-9909/lib.a
+-)31
+---------------ar command failed the system test-----------------
+<<<execution_status>>>
+initiation_status="ok"
+duration=6 termination_type=exited termination_id=1 corefile=no
+cutime=8 cstime=50
+<<<test_end>>>
 
 Regards--
 Subrata
 
-> 
-> The tests I did were basically:
-> 
-> On several client machines:
-> 
-> use netcat to continuously send datagrams to a destination machine on
-> a specified port (5001, the ttcp one is used as a default)
-> 
-> On the server:
-> 
-> run the attached testcase, then I was basically visually looking that
-> every batch received packets from multiple clients.
-> 
-> I can envision a test where from the machine chosen to be the server a
-> script like:
-> 
-> #!/bin/sh
-> 
-> ./recvmmsg &
-> 
-> for client in $CLIENTS ; do
-> 	ssh client ./run-netcat-script.sh $SERVER
-> done
-> 
-> # --- end ---
-> 
-> The attached recvmmsg would somehow get the list of clients, check that
-> they are the sendeds in datagrams in the same batch, and if so, woud
-> emit a PASSED as output.
-> 
-> Another question about the LTP infrastructure: Do it already supports
-> collecting measurements in databases, associated to the kernel, libc,
-> etc, versions, so that this can be used to generate plottings of metrics
-> over time/kernel versions?
-> 
-> - Arnaldo
 
+
+--===============2811702355751415213==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============2811702355751415213==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2811702355751415213==--
