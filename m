@@ -1,31 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1OH6Ax-0004TO-NZ
-	for ltp-list@lists.sourceforge.net; Wed, 26 May 2010 02:16:55 +0000
-Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1OA5zR-0004Fb-Rw
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 18:40:05 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
 	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OH6Aw-00013e-7u
-	for ltp-list@lists.sourceforge.net; Wed, 26 May 2010 02:16:55 +0000
-Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.134])
-	by out03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 10F9921132A
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 26 May 2010 02:16:48 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 582951D7844
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 26 May 2010 02:16:47 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 May 2010 11:16:45 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 26 May 2010 11:16:45 +0900
-Message-ID: <000001cafc79$7d23c8e0$776b5aa0$@co.jp>
+	(Exim 4.69) id 1OA5zP-0007io-Kr
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 18:40:05 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o46IcJf5003052
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 12:38:19 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o46IdqLx081090
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 12:39:55 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o46Bdmsn017416
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 05:39:48 -0600
+Date: Thu, 6 May 2010 13:39:47 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100506183947.GA14900@us.ibm.com>
+References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+	<20100506065657.23879.72093.sendpatchset@subratamodak.linux.ibm.com>
+	<0B5AF9FC-8DAA-4995-9166-8EB0FE42F98C@gmail.com>
+	<20100506135312.GA12072@us.ibm.com>
+	<j2v364299f41005061038ucdbdaf19hcdad19491344e76d@mail.gmail.com>
+	<20100506175512.GA25514@us.ibm.com>
+	<k2v364299f41005061059rf51273ffk7c8c9755b92427e5@mail.gmail.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] hugetlb tests failure occurred
+Content-Disposition: inline
+In-Reply-To: <k2v364299f41005061059rf51273ffk7c8c9755b92427e5@mail.gmail.com>
+Subject: Re: [LTP] [04/12 FAILURE] LTP? sysctl03 test fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,108 +43,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, Michael Kerrisk <mtk.manpages@gmail.com>
 
-Hi,
+Quoting Garrett Cooper (yanegomi@gmail.com):
+> On Thu, May 6, 2010 at 10:55 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> > Quoting Garrett Cooper (yanegomi@gmail.com):
+> > So since we're all member of the doc team, send a patch for sysctl(2)
+> > manpage ERRORS section :)
+> >
+> > (mtk cc:d as this is probably news to him)
+> =
 
-I ran "hugeshmdt01" and "hugeshmctl01" tests.
+> I already have a bug outstanding for it:
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D15446
 
-At these tests, I set HugePages_Total:
-------------</proc/meminfo>
-[root@RHEL54-LTP-EM64T ltp]# cat /proc/meminfo
-MemTotal:      2059632 kB
-MemFree:       1392080 kB
-Buffers:        204764 kB
-Cached:         308092 kB
-...
-VmallocTotal: 34359738367 kB
-VmallocUsed:      1012 kB
-VmallocChunk: 34359736951 kB
-HugePages_Total:     2
-HugePages_Free:      2
-HugePages_Rsvd:      0
-Hugepagesize:     2048 kB
-------------
+That's not what I said :)
 
-But these tests failed:
+> >> > An LSM could choose to return -EPERM
+> >> > after all, or perhaps even something different. =A0The thing that
+> >> > should scare us is if the call succeeds. =A0If we give any false
+> >> > positives, then true positives will seem less scary.
+> >>
+> >> This will fail on older kernels as sysctl(2) always returned EPERM due
+> >
+> > Sorry - what will fail?
+> =
 
-------------<log>
-hugeshmctl01    1  TBROK  :  couldn't create the shared memory segment
-hugeshmctl01    2  TBROK  :  Remaining cases broken
-hugeshmctl01    3  TBROK  :  Remaining cases broken
-hugeshmctl01    4  TBROK  :  Remaining cases broken
-hugeshmctl01    0  TINFO  :  received unexpected signal 15
-hugeshmctl01    0  TINFO  :  received unexpected signal 15
-hugeshmctl01    0  TINFO  :  received unexpected signal 15
-hugeshmctl01    0  TINFO  :  received unexpected signal 15
-hugeshmctl02    1  TBROK  :  couldn't create shared memory segment #1 in
-setup()
-hugeshmctl02    2  TBROK  :  Remaining cases broken
-hugeshmctl02    3  TBROK  :  Remaining cases broken
-hugeshmctl02    4  TBROK  :  Remaining cases broken
-hugeshmctl02    1  TBROK  :  couldn't create shared memory segment #1 in
-setup()
-hugeshmctl02    2  TBROK  :  Remaining cases broken
-hugeshmctl02    3  TBROK  :  Remaining cases broken
-hugeshmctl02    4  TBROK  :  Remaining cases broken
-hugeshmctl02    1  TBROK  :  couldn't create shared memory segment #1 in
-setup()
-hugeshmctl02    2  TBROK  :  Remaining cases broken
-hugeshmctl02    3  TBROK  :  Remaining cases broken
-hugeshmctl02    4  TBROK  :  Remaining cases broken
-hugeshmctl01    0  TINFO  :  received unexpected signal 15
-hugeshmctl01    0  TINFO  :  received unexpected signal 15
-hugeshmctl01    0  TINFO  :  received unexpected signal 15
-hugeshmctl03    1  TBROK  :  couldn't create shared memory segment in
-setup()
-hugeshmctl03    2  TBROK  :  Remaining cases broken
-hugeshmctl03    3  TBROK  :  Remaining cases broken
-hugeshmctl03    1  TBROK  :  couldn't create shared memory segment in
-setup()
-hugeshmctl03    2  TBROK  :  Remaining cases broken
-hugeshmctl03    3  TBROK  :  Remaining cases broken
-hugeshmctl03    1  TBROK  :  couldn't create shared memory segment in
-setup()
-hugeshmctl03    2  TBROK  :  Remaining cases broken
-hugeshmctl03    3  TBROK  :  Remaining cases broken
-------------
+> Read through the link, and you will understand why your new proposed
+> patch with fail with a false negative.
 
-All these are failures of shmget() .
+I'm not sure that thread means what you think it does.
 
-My systems are RHEL5.4 and RHEL4.8. Architectures are x86, x86_64, and ia64.
-In all of these environments, above failures occurred.
+But look, just trying to help.  And no time for it really.  I'll drop
+this.
 
-I executed "runltp" once. But these tests are executed several times.
-And shmget() system-call failed with errno=ENOMEM at last in my system.
-In ".../runtest/hugetlb", test commands are as follows:
+-serge
 
-------------<hugetlb>
-hugeshmctl01 hugeshmctl01 -i 5 -c 3
-hugeshmctl02 hugeshmctl02 -i 5 -c 3
-hugeshmctl03 hugeshmctl03 -i 5 -c 3
-
-hugeshmdt01 hugeshmdt01 -I 5 -c10
-------------
-
-If repetition is once, these tests succeed in my system..
-
-
-I'm grad if I can know a reason of these repetition ("-c" option).
-And I want to know whether I can appoint this option freely if machine 
-doesn't have enough memory.
-
-
-Regards--
-
--Tomonori Mitani
-
-
-
-------------------------------------------------------------------------------
-
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
