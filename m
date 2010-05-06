@@ -1,39 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OAJVI-0004QD-GO
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 09:05:52 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OAJVH-0008Na-Hg
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 09:05:52 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o4793ecn002242
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 05:03:40 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o4795jG12085096
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 05:05:45 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o4795i7h022824
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 05:05:45 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100506183947.GA14900@us.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OA5J5-00019q-0d
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:56:19 +0000
+Received: from mail-iw0-f200.google.com ([209.85.223.200])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OA5J4-0007OI-3e
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:56:18 +0000
+Received: by iwn38 with SMTP id 38so169924iwn.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 May 2010 10:56:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20100506065729.23879.9995.sendpatchset@subratamodak.linux.ibm.com>
 References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065657.23879.72093.sendpatchset@subratamodak.linux.ibm.com>
-	<0B5AF9FC-8DAA-4995-9166-8EB0FE42F98C@gmail.com>
-	<20100506135312.GA12072@us.ibm.com>
-	<j2v364299f41005061038ucdbdaf19hcdad19491344e76d@mail.gmail.com>
-	<20100506175512.GA25514@us.ibm.com>
-	<k2v364299f41005061059rf51273ffk7c8c9755b92427e5@mail.gmail.com>
-	<20100506183947.GA14900@us.ibm.com>
-Date: Fri, 07 May 2010 14:35:41 +0530
-Message-Id: <1273223141.6042.6.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [04/12 FAILURE] LTP? sysctl03 test fails
-Reply-To: subrata@linux.vnet.ibm.com
+	<20100506065729.23879.9995.sendpatchset@subratamodak.linux.ibm.com>
+Date: Thu, 6 May 2010 10:53:45 -0700
+Message-ID: <q2z364299f41005061053zcc57d5c4gc5577e9d80ffc8e5@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [06/12 FAILURE] Many CONTAINER tests of LTP fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,52 +28,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>, Garrett Cooper <yanegomi@gmail.com>
-Cc: LinuxTest Project <ltp-list@lists.sourceforge.net>, Michael Kerrisk <mtk.manpages@gmail.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
 
-Hmm, so, where do we need to fix this :-(
+Clipping the output to denote the failures.
 
---Subrata
+On Wed, May 5, 2010 at 11:57 PM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Subject:Many CONTAINER tests of LTP fail
+>
+> I know Serge and Dan is already working on it.
+>
+> Issues Description Below:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> # ./runltp -f containers
+> <<<test_start>>>
 
-On Thu, 2010-05-06 at 13:39 -0500, Serge E. Hallyn wrote:
-> Quoting Garrett Cooper (yanegomi@gmail.com):
-> > On Thu, May 6, 2010 at 10:55 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> > > Quoting Garrett Cooper (yanegomi@gmail.com):
-> > > So since we're all member of the doc team, send a patch for sysctl(2)
-> > > manpage ERRORS section :)
-> > >
-> > > (mtk cc:d as this is probably news to him)
-> > 
-> > I already have a bug outstanding for it:
-> > https://bugzilla.kernel.org/show_bug.cgi?id=15446
-> 
-> That's not what I said :)
-> 
-> > >> > An LSM could choose to return -EPERM
-> > >> > after all, or perhaps even something different.  The thing that
-> > >> > should scare us is if the call succeeds.  If we give any false
-> > >> > positives, then true positives will seem less scary.
-> > >>
-> > >> This will fail on older kernels as sysctl(2) always returned EPERM due
-> > >
-> > > Sorry - what will fail?
-> > 
-> > Read through the link, and you will understand why your new proposed
-> > patch with fail with a false negative.
-> 
-> I'm not sure that thread means what you think it does.
-> 
-> But look, just trying to help.  And no time for it really.  I'll drop
-> this.
-> 
-> -serge
+[...]
 
+> pid_namespace3 =A0 =A01 =A0TFAIL =A0: =A0Failed to open /proc directory
 
-------------------------------------------------------------------------------
+This is interesting... is /proc not mounted in the child container?
 
+> pidns30 =A0 =A0 1 =A0TBROK =A0: =A0parent: mq_open() failed (Permission d=
+enied)
+> pidns31 =A0 =A0 1 =A0TBROK =A0: =A0parent: mq_open() failed (Permission d=
+enied)
+
+Does the queue exist?
+
+> posixmq_namespace_01 =A0 =A01 =A0TFAIL =A0: =A0mq_open failed
+> Running netns tests.
+
+[...]
+
+> netns_2children =A0 =A01 =A0TFAIL =A0: =A0Error while running the scripts
+> two_children_ns: return code is 1 ;
+> sshd re-exec requires execution with an absolute path^M
+
+This was going to be fixed with a patch proposed earlier.
+
+> childns.sh =A0 =A00 =A0TINFO =A0: =A0Successfully Renamed device to veth1
+> Files /tmp/sys_b4_child_killed and /tmp/sys_aftr_child_killed differ
+> Cannot find device "veth1"
+> crtchild_delchild: PASS
+
+This seems suspect even though it says passed.
+
+[...]
+
+> sshd re-exec requires execution with an absolute path^M
+> Error: Can't ftp to 192.168.0.181: Connection refused
+> childns.sh =A0 =A01 =A0TFAIL =A0: =A0ftp failed
+
+One of the prereqs is missing probably (setup an ftp daemon ... maybe
+this was going to be done via ssh?)
+
+[...]
+
+> <<<test_end>>>
+
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
