@@ -1,33 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <suzuki@in.ibm.com>) id 1O9v90-0006Km-O0
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 07:05:14 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O9v8u-0003Wc-M3
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 07:05:14 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id o46751lr011800
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 17:05:01 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o46751gt1826852
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 17:05:01 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o46750dX005545
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 17:05:01 +1000
-Message-ID: <4BE26A1A.1000102@in.ibm.com>
-Date: Thu, 06 May 2010 12:34:58 +0530
-From: Suzuki Poulose <suzuki@in.ibm.com>
-MIME-Version: 1.0
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9v0V-0004H9-6y
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:56:27 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9v0U-0001nT-8X
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:56:27 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o466n0PS007342
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:49:00 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o466uK2C121612
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:56:20 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o466uJLb030326
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:56:20 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Thu, 06 May 2010 12:26:06 +0530
+Message-Id: <20100506065604.23879.86248.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
 References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065801.23879.92449.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20100506065801.23879.92449.sendpatchset@subratamodak.linux.ibm.com>
-Content-Type: multipart/mixed; boundary="------------000306090300040409020709"
-Subject: Re: [LTP] [08/12 FAILURE] LTPE clock gettime03 fails
+Subject: [01/12 FAILURE] LTPX Memory CGROUP test creates Call Trace and Badness at mm/oom_kill.c:393
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,125 +35,275 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============8309139811803070379=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
+To: Linus Test Project <ltp-list@lists.sourceforge.net>
+Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
 
-This is a multi-part message in MIME format.
---------------000306090300040409020709
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by e23smtp09.au.ibm.com id
-	o46751lr011800
+--===============8309139811803070379==
 
-On =E0=B4=B5=E0=B5=8D=E0=B4=AF=E0=B4=BE=E0=B4=B4=E0=B4=82 06 =E0=B4=AE=E0=
-=B5=86=E0=B4=AF=E0=B5=8D 2010 12:28 =E0=B4=B5=E0=B5=88=E0=B4=95=E0=B5=81,=
- Subrata Modak wrote:
-> Subject: LTPE=1B clock_gettime03 fails
->
-> Issue Description below:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> # ./runltp -s clock_gettime03
-> <<<test_output>>>
-> clock_gettime03    1  TPASS  :  got expected failure: TEST_ERRNO=3DEFAU=
-LT(14):
-> Bad address
-> clock_gettime03    2  TPASS  :  got expected failure: TEST_ERRNO=3DEFAU=
-LT(14):
-> Bad address
-> clock_gettime03    3  TFAIL  :  failed to produce expected error [expec=
-ted
-> errno =3D 22 (Invalid argument), TEST_RETURN =3D 0]: TEST_ERRNO=3D???(0=
-): Success
-> clock_gettime03    4  TFAIL  :  failed to produce expected error [expec=
-ted
-> errno =3D 22 (Invalid argument), TEST_RETURN =3D 0]: TEST_ERRNO=3D???(0=
-): Success
-> clock_gettime03    5  TPASS  :  got expected failure: TEST_ERRNO=3DEFAU=
-LT(14):
-> Bad address
-> clock_gettime03    6  TPASS  :  got expected failure: TEST_ERRNO=3DEFAU=
-LT(14):
-> Bad address
-> <<<execution_status>>>
-> initiation_status=3D"ok"
-> duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno
-> cutime=3D0 cstime=3D1
-> <<<test_end>>>
->
-> SUZUKI K. POULOSE gave the following patch already. Not sure if it is
-> discussed in the mailing list:
-> --- include/common_timers.h.orig        2010-04-30 12:39:08.000000000 +=
-0000
-> +++ include/common_timers.h     2010-04-30 12:39:46.000000000 +0000
-> @@ -35,7 +35,8 @@ clock_t clock_list[] =3D {
->          CLOCK_THREAD_CPUTIME_ID,
->          CLOCK_MONOTONIC_RAW,
->   };
-> -#define MAX_CLOCKS (sizeof(clock_list) / sizeof(*clock_list))
-> +// #define MAX_CLOCKS (sizeof(clock_list) / sizeof(*clock_list))
-> +#define MAX_CLOCKS 16
->
->   const char *get_clock_str(const int clock_id)
->   {
->
->
-> The above patch fixes the problem. For more info, see linux/time.h for =
-the
-> MAX_CLOCKS value.
+Subject: LTP�� Memory CGROUP test creates Call Trace & Badness at mm/oom_kill.c:393
 
-The above patch indeed fixes the two issues, but it causes a regression=20
-for timer_create02 testcase. The complete patch is attached with this.
+Issues Description Below:
+===========================
+
+# ./runltp -f memcg_control
+
+You will see the following /var/log/messages entry:
+***********************************************************************************************
+Apr 22 23:16:42 mjs22lp1 kernel: memcg_control_t invoked oom-killer:
+gfp_mask=0xd0, order=0, oom_adj=0
+Apr 22 23:16:42 mjs22lp1 kernel: memcg_control_t invoked oom-killer:
+gfp_mask=0xd0, order=0, oom_adj=0
+Apr 22 23:16:42 mjs22lp1 kernel: memcg_control_t cpuset=/ mems_allowed=0-255
+Apr 22 23:16:42 mjs22lp1 kernel: Call Trace:
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8b520] [c0000000000161c8]
+.show_stack+0xb0/0x1a0
+Apr 22 23:16:42 mjs22lp1 kernel: memcg_control_t cpuset=/ mems_allowed=0-255
+Apr 22 23:16:42 mjs22lp1 kernel: Call Trace:
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83520] [c0000000000161c8]
+.show_stack+0xb0/0x1a0 (unreliable)
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec835e0] [c000000000735358]
+.dump_stack+0x28/0x3c
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83660] [c000000000194700]
+.dump_header+0xa8/0x1e0
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83720] [c0000000001948b8]
+.oom_kill_process+0x80/0x194
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec837e0] [c000000000195348]
+.mem_cgroup_out_of_memory+0x88/0xc0
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83890] [c0000000001ec750]
+.__mem_cgroup_try_charge+0x21c/0x320
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83990] [c0000000001ed258]
+.mem_cgroup_charge_common+0x84/0xd8
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83a60] [c0000000001ed334]
+.mem_cgroup_newpage_charge+0x88/0xbc
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83b00] [c0000000001b57c0]
+.do_wp_page+0x6f8/0x9e4
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83bf0] [c0000000001b77e0]
+.handle_mm_fault+0x834/0x8d8
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83cf0] [c000000000731ce0]
+.do_page_fault+0x434/0x65c
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83e30] [c0000000000056cc]
+handle_page_fault+0x20/0x74
+Apr 22 23:16:42 mjs22lp1 kernel: Task in /1/sub killed as a result of limit of
+/1
+Apr 22 23:16:42 mjs22lp1 kernel: (unreliable)
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8b5e0] [c000000000735358]
+.dump_stack+0x28/0x3c
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8b660] [c000000000194700]
+.dump_header+0xa8/0x1e0
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8b720] [c0000000001948b8]
+.oom_kill_process+0x80/0x194
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8b7e0] [c000000000195348]
+.mem_cgroup_out_of_memory+0x88/0xc0
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8b890] [c0000000001ec750]
+.__mem_cgroup_try_charge+0x21c/0x320
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8b990] [c0000000001ed258]
+.mem_cgroup_charge_common+0x84/0xd8
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8ba60] [c0000000001ed334]
+.mem_cgroup_newpage_charge+0x88/0xbc
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8bb00] [c0000000001b57c0]
+.do_wp_page+0x6f8/0x9e4
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8bbf0] [c0000000001b77e0]
+.handle_mm_fault+0x834/0x8d8
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8bcf0] [c000000000731ce0]
+.do_page_fault+0x434/0x65c
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003eb8be30] [c0000000000056cc]
+handle_page_fault+0x20/0x74
+Apr 22 23:16:42 mjs22lp1 kernel: Task in /1/sub killed as a result of limit of
+/1
+Apr 22 23:16:42 mjs22lp1 kernel: memory: usage 4kB, limit 4kB, failcnt 15
+Apr 22 23:16:42 mjs22lp1 kernel: memory+swap: usage 4kB, limit 4kB, failcnt 0
+Apr 22 23:16:42 mjs22lp1 kernel: Mem-Info:
+Apr 22 23:16:42 mjs22lp1 kernel: Node 0 DMA per-cpu:
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    0: hi:  186, btch:  31 usd:  90
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    1: hi:  186, btch:  31 usd: 109
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    2: hi:  186, btch:  31 usd:  68
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    3: hi:  186, btch:  31 usd: 121
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    4: hi:  186, btch:  31 usd: 134
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    5: hi:  186, btch:  31 usd: 125
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    6: hi:  186, btch:  31 usd: 137
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    7: hi:  186, btch:  31 usd: 104
+Apr 22 23:16:42 mjs22lp1 kernel: Node 1 DMA per-cpu:
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    0: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    1: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    2: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    3: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    4: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    5: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    6: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    7: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: active_anon:4373 inactive_anon:0
+isolated_anon:0
+Apr 22 23:16:42 mjs22lp1 kernel: active_file:28578 inactive_file:22728
+isolated_file:0
+Apr 22 23:16:42 mjs22lp1 kernel: unevictable:0 dirty:11 writeback:0 unstable:0
+Apr 22 23:16:42 mjs22lp1 kernel: free:506114 slab_reclaimable:5173
+slab_unreclaimable:33442
+Apr 22 23:16:42 mjs22lp1 kernel: mapped:4419 shmem:44 pagetables:477 bounce:0
+Apr 22 23:16:42 mjs22lp1 kernel: Node 0 DMA free:761980kB min:3060kB low:3824kB
+high:4588kB active_anon:17492kB inactive_anon:0kB active_file:114312kB
+inactive_file:90912kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+present:1228160kB mlocked:0kB dirty:44kB writeback:0kB mapped:17664kB
+shmem:176kB slab_reclaimable:19604kB slab_unreclaimable:121920kB
+kernel_stack:3312kB pagetables:1908kB unstable:0kB bounce:0kB writeback_tmp:0kB
+pages_scanned:0 all_unreclaimable? no
+Apr 22 23:16:42 mjs22lp1 kernel: lowmem_reserve[]: 0 0 0
+Apr 22 23:16:42 mjs22lp1 kernel: Node 1 DMA free:1262476kB min:3344kB
+low:4180kB high:5016kB active_anon:0kB inactive_anon:0kB active_file:0kB
+inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+present:1340416kB mlocked:0kB dirty:0kB writeback:0kB mapped:12kB shmem:0kB
+slab_reclaimable:1088kB slab_unreclaimable:11848kB kernel_stack:64kB
+pagetables:0kB unstable:0kB bounce:0kB writeback_tmp:0kB pages_scanned:0
+all_unreclaimable? no
+Apr 22 23:16:42 mjs22lp1 kernel: lowmem_reserve[]: 0 0 0
+Apr 22 23:16:42 mjs22lp1 kernel: Node 0 DMA:
+Apr 22 23:16:42 mjs22lp1 kernel: memory: usage 4kB, limit 4kB, failcnt 15
+Apr 22 23:16:42 mjs22lp1 kernel: 6*4kB 7*8kB 3*16kB 2*32kB 1*64kB 7*128kB
+10*256kB 3*512kB 3*1024kB 2*2048kB 3*4096kB 2*8192kB 44*16384kB = 761984kB
+Apr 22 23:16:42 mjs22lp1 kernel: Node 1 DMA: 17*4kB
+Apr 22 23:16:42 mjs22lp1 kernel: memory+swap: usage 4kB, limit 4kB, failcnt 0
+Apr 22 23:16:42 mjs22lp1 kernel: 25*8kB 34*16kB 43*32kB 24*64kB 12*128kB
+11*256kB 12*512kB 9*1024kB 9*2048kB 8*4096kB 5*8192kB 70*16384kB = 1262476kB
+Apr 22 23:16:42 mjs22lp1 kernel: 51349 total pagecache pages
+Apr 22 23:16:42 mjs22lp1 kernel: 0 pages in swap cache
+Apr 22 23:16:42 mjs22lp1 kernel: Swap cache stats: add 0, delete 0, find 0/0
+Apr 22 23:16:42 mjs22lp1 kernel: Free swap  = 9437160kB
+Apr 22 23:16:42 mjs22lp1 kernel: Total swap = 9437160kB
+Apr 22 23:16:42 mjs22lp1 kernel: Mem-Info:
+Apr 22 23:16:42 mjs22lp1 kernel: Node 0 DMA per-cpu:
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    0: hi:  186, btch:  31 usd:  90
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    1: hi:  186, btch:  31 usd: 109
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    2: hi:  186, btch:  31 usd:  68
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    3: hi:  186, btch:  31 usd: 121
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    4: hi:  186, btch:  31 usd: 134
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    5: hi:  186, btch:  31 usd: 125
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    6: hi:  186, btch:  31 usd: 137
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    7: hi:  186, btch:  31 usd: 104
+Apr 22 23:16:42 mjs22lp1 kernel: Node 1 DMA per-cpu:
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    0: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    1: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    2: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    3: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    4: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    5: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    6: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: CPU    7: hi:  186, btch:  31 usd:   0
+Apr 22 23:16:42 mjs22lp1 kernel: active_anon:4373 inactive_anon:0
+isolated_anon:0
+Apr 22 23:16:42 mjs22lp1 kernel: active_file:28578 inactive_file:22728
+isolated_file:0
+Apr 22 23:16:42 mjs22lp1 kernel: unevictable:0 dirty:11 writeback:0 unstable:0
+Apr 22 23:16:42 mjs22lp1 kernel: free:506114 slab_reclaimable:5173
+slab_unreclaimable:33442
+Apr 22 23:16:42 mjs22lp1 kernel: mapped:4419 shmem:44 pagetables:477 bounce:0
+Apr 22 23:16:42 mjs22lp1 kernel: Node 0 DMA free:761980kB min:3060kB low:3824kB
+high:4588kB active_anon:17492kB inactive_anon:0kB active_file:114312kB
+inactive_file:90912kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+present:1228160kB mlocked:0kB dirty:44kB writeback:0kB mapped:17664kB
+shmem:176kB slab_reclaimable:19604kB slab_unreclaimable:121920kB
+kernel_stack:3312kB pagetables:1908kB unstable:0kB bounce:0kB writeback_tmp:0kB
+pages_scanned:0 all_unreclaimable? no
+Apr 22 23:16:42 mjs22lp1 kernel: lowmem_reserve[]: 0 0 0
+Apr 22 23:16:42 mjs22lp1 kernel: Node 1 DMA free:1262476kB min:3344kB
+low:4180kB high:5016kB active_anon:0kB inactive_anon:0kB active_file:0kB
+inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+present:1340416kB mlocked:0kB dirty:0kB writeback:0kB mapped:12kB shmem:0kB
+slab_reclaimable:1088kB slab_unreclaimable:11848kB kernel_stack:64kB
+pagetables:0kB unstable:0kB bounce:0kB writeback_tmp:0kB pages_scanned:0
+all_unreclaimable? no
+Apr 22 23:16:42 mjs22lp1 kernel: lowmem_reserve[]: 0 0 0
+Apr 22 23:16:42 mjs22lp1 kernel: Node 0 DMA: 6*4kB 7*8kB 3*16kB 2*32kB 1*64kB
+7*128kB 10*256kB 3*512kB 3*1024kB 2*2048kB 3*4096kB 2*8192kB 44*16384kB =
+761984kB
+Apr 22 23:16:42 mjs22lp1 kernel: Node 1 DMA: 17*4kB 25*8kB 34*16kB 43*32kB
+24*64kB 12*128kB 11*256kB 12*512kB 9*1024kB 9*2048kB 8*4096kB 5*8192kB
+70*16384kB = 1262476kB
+Apr 22 23:16:42 mjs22lp1 kernel: 51349 total pagecache pages
+Apr 22 23:16:42 mjs22lp1 kernel: 0 pages in swap cache
+Apr 22 23:16:42 mjs22lp1 kernel: Swap cache stats: add 0, delete 0, find 0/0
+Apr 22 23:16:42 mjs22lp1 kernel: Free swap  = 9437160kB
+Apr 22 23:16:42 mjs22lp1 kernel: Total swap = 9437160kB
+Apr 22 23:16:42 mjs22lp1 kernel: 966656 pages RAM
+Apr 22 23:16:42 mjs22lp1 kernel: 33079 pages reserved
+Apr 22 23:16:42 mjs22lp1 kernel: 80979 pages shared
+Apr 22 23:16:42 mjs22lp1 kernel: 170832 pages non-shared
+Apr 22 23:16:42 mjs22lp1 kernel: Memory cgroup out of memory: kill process 1738
+(memcg_control_t) score 131 or a child
+Apr 22 23:16:42 mjs22lp1 kernel: Killed process 1743 (memcg_control_t)
+vsz:5628kB, anon-rss:156kB, file-rss:12kB
+Apr 22 23:16:42 mjs22lp1 kernel: VM: killing process memcg_control_t
+Apr 22 23:16:42 mjs22lp1 kernel: 966656 pages RAM
+Apr 22 23:16:42 mjs22lp1 kernel: 33079 pages reserved
+Apr 22 23:16:42 mjs22lp1 kernel: 80822 pages shared
+Apr 22 23:16:42 mjs22lp1 kernel: 170835 pages non-shared
+Apr 22 23:16:42 mjs22lp1 kernel: ------------[ cut here ]------------
+Apr 22 23:16:42 mjs22lp1 kernel: Badness at mm/oom_kill.c:393
+Apr 22 23:16:42 mjs22lp1 kernel: NIP: c0000000001942f0 LR: c0000000001942e0
+CTR: 0000000000000001
+Apr 22 23:16:42 mjs22lp1 kernel: REGS: c00000003ec83400 TRAP: 0700   Tainted: G
+       W   (2.6.33.1-19.fc13.ppc64)
+Apr 22 23:16:42 mjs22lp1 kernel: MSR: 8000000000029032 <EE,ME,CE,IR,DR>  CR:
+24224422  XER: 00000000
+Apr 22 23:16:42 mjs22lp1 kernel: TASK = c00000004e230000[1743]
+'memcg_control_t' THREAD: c00000003ec80000 CPU: 7
+Apr 22 23:16:42 mjs22lp1 kernel: GPR00: c0000000001942e0 c00000003ec83680
+c000000001329558 0000000000000001
+Apr 22 23:16:42 mjs22lp1 kernel: GPR04: c00000004d8259c8 000000000000000c
+0000000000000000 0000000000000002
+Apr 22 23:16:42 mjs22lp1 kernel: GPR08: 0000000000000000 0000000000000000
+0000000000000934 000000000000079b
+Apr 22 23:16:42 mjs22lp1 kernel: GPR12: 0000000024224484 c00000000135c300
+0000000000000000 00000000100f0000
+Apr 22 23:16:42 mjs22lp1 kernel: GPR16: 00000000100f4a54 0000000046ba0093
+c00000004e0410d8 f000000000cdcaa8
+Apr 22 23:16:42 mjs22lp1 kernel: GPR20: c00000004e041058 c00000004e041068
+c00000003ec83900 0000000000000000
+Apr 22 23:16:42 mjs22lp1 kernel: GPR24: c000000000c7dd10 c00000000095e4aa
+00000000000000d0 0000000000000000
+Apr 22 23:16:42 mjs22lp1 kernel: GPR28: c00000004d8259b0 c00000004d824f80
+c0000000012a4f68 c00000003ec83680
+Apr 22 23:16:42 mjs22lp1 kernel: NIP [c0000000001942f0]
+.__oom_kill_task+0x74/0x15c
+Apr 22 23:16:42 mjs22lp1 kernel: LR [c0000000001942e0]
+.__oom_kill_task+0x64/0x15c
+Apr 22 23:16:42 mjs22lp1 kernel: Call Trace:
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83680] [c0000000001942e0]
+.__oom_kill_task+0x64/0x15c (unreliable)
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83720] [c000000000194940]
+.oom_kill_process+0x108/0x194
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec837e0] [c000000000195348]
+.mem_cgroup_out_of_memory+0x88/0xc0
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83890] [c0000000001ec750]
+.__mem_cgroup_try_charge+0x21c/0x320
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83990] [c0000000001ed258]
+.mem_cgroup_charge_common+0x84/0xd8
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83a60] [c0000000001ed334]
+.mem_cgroup_newpage_charge+0x88/0xbc
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83b00] [c0000000001b57c0]
+.do_wp_page+0x6f8/0x9e4
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83bf0] [c0000000001b77e0]
+.handle_mm_fault+0x834/0x8d8
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83cf0] [c000000000731ce0]
+.do_page_fault+0x434/0x65c
+Apr 22 23:16:42 mjs22lp1 kernel: [c00000003ec83e30] [c0000000000056cc]
+handle_page_fault+0x20/0x74
+Apr 22 23:16:42 mjs22lp1 kernel: Instruction dump:
+Apr 22 23:16:42 mjs22lp1 kernel: 0fe00000 e87e8000 485a1275 60000000 480000e4
+3b9d0a30 7f83e378 4859aa69
+Apr 22 23:16:42 mjs22lp1 kernel: 60000000 e93d0288 2fa90000 40be002c <0fe00000>
+e87e8008 38bd04e8 e89d02b2
+Apr 22 23:16:42 mjs22lp1 kernel: tried to kill an mm-less task 1738
+(memcg_control_t)!
+Apr 22 23:16:42 mjs22lp1 kernel: VM: killing process memcg_control_t
+***********************************************************************************************
+
+Regards--
+Subrata
 
 
->
-> Regards--
-> Subrata
->
 
-
---------------000306090300040409020709
-Content-Type: text/plain;
- name="fix-timer-tests-bad-header.diff"
-Content-Disposition: attachment;
- filename="fix-timer-tests-bad-header.diff"
-Content-Transfer-Encoding: base64
-
-VGhlIE1BWF9DTE9DS1Mgc3VwcG9ydGVkIGJ5IHRoZSBrZXJuZWwgaXMgMTYuIEJ1dCB0aGUg
-a2VybmVsIG1heSBub3QgaGF2ZSBhbGwKdGhlIGNsb2NrIHNvdXJjZXMgZGVmaW5lZCBpbiB0
-aGUgcmFuZ2UgMC0xNS4KCkhlbmNlLCB0byB0ZXN0IHdoZXRoZXIga2VybmVsIHJldHVybnMg
-ZXJyb3IgZm9yIGFuIElOVkFMSUQgY2xvY2sgc291cmNlIGlkLAp3ZSBzaG91bGQgdXNlIHRo
-ZSB1cHBlciBsaW1pdCBNQVhfQ0xPQ0tTICgxNiBhdCB0aGUgbW9tZW50KS4KCkJ1dCB0byB2
-ZXJpZnkgdGhlIHRoZSBkZWZpbmVkIGNsb2NrcyB3b3JrIGZpbmUsIHdlIHNob3VsZCBsb29w
-IHRocm91Z2ggdGhlICJsaXN0IgpvZiBjbG9jayBzb3VyY2VzIGRlZmluZWQgZm9yIHN1cmUu
-IChVc2VkIGFzIENMT0NLU19ERUZJTkVEIGJlbG93KQoKU2lnbmVkLW9mZi1ieTogU3V6dWtp
-IEsgUCA8c3V6dWtpQGluLmlibS5jb20+CgpJbmRleDogbHRwL3Rlc3RjYXNlcy9rZXJuZWwv
-dGltZXJzL2luY2x1ZGUvY29tbW9uX3RpbWVycy5oCj09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGx0cC5v
-cmlnL3Rlc3RjYXNlcy9rZXJuZWwvdGltZXJzL2luY2x1ZGUvY29tbW9uX3RpbWVycy5oCTIw
-MDktMTItMDYgMjA6NTM6NDQuMDAwMDAwMDAwICswMDAwCisrKyBsdHAvdGVzdGNhc2VzL2tl
-cm5lbC90aW1lcnMvaW5jbHVkZS9jb21tb25fdGltZXJzLmgJMjAxMC0wNS0wNSAwOToxNzo1
-OC4wMDAwMDAwMDAgKzAwMDAKQEAgLTM1LDcgKzM1LDEwIEBACiAJQ0xPQ0tfVEhSRUFEX0NQ
-VVRJTUVfSUQsCiAJQ0xPQ0tfTU9OT1RPTklDX1JBVywKIH07Ci0jZGVmaW5lIE1BWF9DTE9D
-S1MgKHNpemVvZihjbG9ja19saXN0KSAvIHNpemVvZigqY2xvY2tfbGlzdCkpCisvKiBDTE9D
-S1NfREVGSU5FRCBpcyB0aGUgbnVtYmVyIG9mIGNsb2NrIHNvdXJjZXMgZGVmaW5lZCBmb3Ig
-c3VyZSAqLworI2RlZmluZSBDTE9DS1NfREVGSU5FRCAoc2l6ZW9mKGNsb2NrX2xpc3QpIC8g
-c2l6ZW9mKCpjbG9ja19saXN0KSkKKy8qIE1BWF9DTE9DS1MgaXMgdGhlIG1heGltdW0gbnVt
-YmVyIG9mIGNsb2NrIHNvdXJjZXMgc3VwcG9ydGVkIGJ5IGtlcm5lbCAqLworI2RlZmluZSBN
-QVhfQ0xPQ0tTIDE2CiAKIGNvbnN0IGNoYXIgKmdldF9jbG9ja19zdHIoY29uc3QgaW50IGNs
-b2NrX2lkKQogewpJbmRleDogbHRwL3Rlc3RjYXNlcy9rZXJuZWwvdGltZXJzL3RpbWVyX2Ny
-ZWF0ZS90aW1lcl9jcmVhdGUwMi5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGx0cC5vcmlnL3Rlc3Rj
-YXNlcy9rZXJuZWwvdGltZXJzL3RpbWVyX2NyZWF0ZS90aW1lcl9jcmVhdGUwMi5jCTIwMTAt
-MDUtMDUgMDk6MTg6MjEuMDAwMDAwMDAwICswMDAwCisrKyBsdHAvdGVzdGNhc2VzL2tlcm5l
-bC90aW1lcnMvdGltZXJfY3JlYXRlL3RpbWVyX2NyZWF0ZTAyLmMJMjAxMC0wNS0wNSAwOTox
-ODozOC4wMDAwMDAwMDAgKzAwMDAKQEAgLTExMyw3ICsxMTMsNyBAQAogCiAJCQlzZXR1cF90
-ZXN0KGkpOwogCi0JCQlmb3IgKGogPSAwOyBqIDwgTUFYX0NMT0NLUzsgKytqKSB7CisJCQlm
-b3IgKGogPSAwOyBqIDwgQ0xPQ0tTX0RFRklORUQ7ICsraikgewogCiAJCQkJaWYgKHN0cnN0
-cihnZXRfY2xvY2tfc3RyKGNsb2NrX2xpc3Rbal0pLAogCQkJCQkJIkNQVVRJTUVfSUQiKSkg
-ewo=
---------------000306090300040409020709
+--===============8309139811803070379==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -163,7 +311,7 @@ Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 
---------------000306090300040409020709
+--===============8309139811803070379==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -174,5 +322,4 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------000306090300040409020709--
-
+--===============8309139811803070379==--
