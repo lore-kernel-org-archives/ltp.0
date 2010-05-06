@@ -1,28 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OA5MH-0008GV-58
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:59:37 +0000
-Received: from mail-iw0-f200.google.com ([209.85.223.200])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OA5ME-0002V5-CP
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:59:37 +0000
-Received: by iwn38 with SMTP id 38so173951iwn.10
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 May 2010 10:59:29 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20100506175512.GA25514@us.ibm.com>
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065657.23879.72093.sendpatchset@subratamodak.linux.ibm.com>
-	<0B5AF9FC-8DAA-4995-9166-8EB0FE42F98C@gmail.com>
-	<20100506135312.GA12072@us.ibm.com>
-	<j2v364299f41005061038ucdbdaf19hcdad19491344e76d@mail.gmail.com>
-	<20100506175512.GA25514@us.ibm.com>
-Date: Thu, 6 May 2010 10:59:28 -0700
-Message-ID: <k2v364299f41005061059rf51273ffk7c8c9755b92427e5@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [04/12 FAILURE] LTP? sysctl03 test fails
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9v0C-0007Wx-EA
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:56:08 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9v0B-0000g7-GT
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:56:08 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o466o7gG023550
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:50:07 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o466u1NX108636
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:56:01 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o466u0Aa028723
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:56:00 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Thu, 06 May 2010 12:25:50 +0530
+Message-Id: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [00/12 FAILURE] Reporting LTP run issues on Fedora 13 ppc6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,87 +33,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, Michael Kerrisk <mtk.manpages@gmail.com>
+To: Linus Test Project <ltp-list@lists.sourceforge.net>
+Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
 
-On Thu, May 6, 2010 at 10:55 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> Quoting Garrett Cooper (yanegomi@gmail.com):
->> On Thu, May 6, 2010 at 6:53 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
->> > Quoting Garrett Cooper (yanegomi@gmail.com):
->> >> On May 5, 2010, at 11:56 PM, Subrata Modak wrote:
->> >>
->> >> > Subject: LTP=B6 sysctl03 test fails
->> >> >
->> >> > Issues Description Below:
->> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> >> > # ./runltp -s sysctl03
->> >> > <<<test_output>>>
->> >> > sysctl03 =A0 =A01 =A0TFAIL =A0: =A0Expected EPERM (1), got 13: Perm=
-ission denied
->> >> > sysctl03 =A0 =A02 =A0TFAIL =A0: =A0Expected EPERM, got 13
->> >> > sysctl03 =A0 =A01 =A0TFAIL =A0: =A0Expected EPERM (1), got 13: Perm=
-ission denied
->> >> > <<<execution_status>>>
->> >> > initiation_status=3D"ok"
->> >> > duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=
-=3Dno
->> >> > cutime=3D0 cstime=3D0
->> >> > <<<test_end>>>
->> >>
->> >> =A0 =A0 =A0 Already known and recently discussed.
->> >
->> > Not only can things move glacially in kernel-land, but decisions not
->> > yet implemented can be changed.
->> >
->> > In the meantime, the sysctl's sit there as a potential subject for
->> > exploitation.
->> >
->> > So not meaning to be argumentative for its own sake, I nevertheless
->> > think it's better to fix the test than either to ignore or remove
->> > it. =A0Two untested patches below - the one just replaces EPERM with
->> > EACCESS. =A0The other removes the (imo misuided) notion that we can
->> > guess at the failing errno.
->>
->> Except that the documentation (manpages) should explicitly state what
->> the failing conditions are for any given libcall and syscall. If not,
->> the Linux kernel devs and documentation team have failed to do their
->> job.
->
-> So since we're all member of the doc team, send a patch for sysctl(2)
-> manpage ERRORS section :)
->
-> (mtk cc:d as this is probably news to him)
+Hi,
 
-I already have a bug outstanding for it:
-https://bugzilla.kernel.org/show_bug.cgi?id=3D15446
+Recently i did a ltprunall on my Fedora 13 system running on PPC64 box,
+and came across some failures/issues. I want to report them to you to
+know whether you also have observed similar issues on either PPC64, or
+systems that matter to you.
 
->> > An LSM could choose to return -EPERM
->> > after all, or perhaps even something different. =A0The thing that
->> > should scare us is if the call succeeds. =A0If we give any false
->> > positives, then true positives will seem less scary.
->>
->> This will fail on older kernels as sysctl(2) always returned EPERM due
->
-> Sorry - what will fail?
+Probably, i am trying to find out whether they are test case issues, or,
+issues with the kernel. If they turn out to be testcase issues, then we
+would need to fix them quit soon :-)
 
-Read through the link, and you will understand why your new proposed
-patch with fail with a false negative.
+Since i was not looking into all LTP mails for the last couple of months,
+may be some of these issues might have been reported and fixed proposed.
+I would apolozise for the noise again.
 
-> I think you're saying the first patch will, and I agree, which is why
-> I advocate the second one i pasted in.
->
->> to the way it was improperly designed. Please see the previous thread
->> for more info: http://lkml.org/lkml/2010/3/4/354
+My system configuration:
+[root@mjs22lp1 ~]# uname -a
+Linux 2.6.33.1-19.fc13.ppc64 #1 SMP Tue Mar 23 06:32:38 EDT 2010 ppc64 ppc64 ppc64 GNU/Linux
+[root@mjs22lp1 ~]# cat /etc/issue
+Fedora release 13 (Goddard)
+Kernel \r on an \m (\l)
 
-Thanks,
--Garrett
+Regards--
+Subrata
 
----------------------------------------------------------------------------=
----
+
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
