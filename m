@@ -2,24 +2,30 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O9vqz-00042H-MN
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 07:50:41 +0000
-Received: from mail-pv0-f174.google.com ([74.125.83.174])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O9vqy-0008Ff-NS
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 07:50:41 +0000
-Mime-Version: 1.0 (Apple Message framework v1078)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <20100505141829.GA10714@us.ibm.com>
-Date: Thu, 6 May 2010 00:50:38 -0700
-Message-Id: <E6FF74A2-EB5B-4D11-A9B8-AA25D426D902@gmail.com>
-References: <1272997208.5342.7.camel@subratamodak.linux.ibm.com>
-	<20100504192248.GA3696@us.ibm.com>
-	<y2l364299f41005041402uce37fd2axc6f1fc7f7df70497@mail.gmail.com>
-	<20100504223315.GA16615@us.ibm.com>
-	<j2u364299f41005042219vfa5c5aa7ld5673a7eba8b6c64@mail.gmail.com>
-	<20100505141829.GA10714@us.ibm.com>
-Subject: Re: [LTP] [PATCH] Fix FILECAPS test hanging for more than 12 hours
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9v25-0000Ji-6A
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:05 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O9v22-0001K0-VG
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:05 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o466q34r026510
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:52:03 -0600
+Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o466vvIl140436
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:57:57 -0600
+Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o4670jIU004716
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 01:00:45 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Thu, 06 May 2010 12:27:48 +0530
+Message-Id: <20100506065747.23879.8338.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [07/12 FAILURE] LTPX MEMORY CGROUP FUNCTION tests fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,85 +35,125 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4384602269070871589=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E.Hallyn" <serue@us.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Linus Test Project <ltp-list@lists.sourceforge.net>
+Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
 
-On May 5, 2010, at 7:18 AM, Serge E. Hallyn wrote:
+--===============4384602269070871589==
 
-> Quoting Garrett Cooper (yanegomi@gmail.com):
->>>                p = index(buf, '.')+1;
-> 
-> Jinkeys!  The intertubes archives insist I wrote that, but I'm finding
-> it hard to believe.
-> 
->>> -               if (p==(char *)1) {
->>> -                       tst_resm(TFAIL, "got a bad message from print_caps\n");
->>> -                       tst_exit();
->>> -               }
->>> +               if (p==(char *)1)
->>> +                       tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
->> 
->>    This is a really incorrect way to do things. I think that the
->> assumption made was that index(3) would return 0 ('\0') if it fails to
->> find '.'. That's incorrect and would cause a segfault on some systems
->> (does on FreeBSD at least... don't see why it would pass on Linux):
->> 
->> $ ~/test_null_inc
->> Segmentation fault: 11 (core dumped)
->> [garrcoop@bioshock ~]$ cat ~/test_null_inc.c
->> #include <stdio.h>
->> int
->> main(void)
->> {
->> 	printf("%s\n", (NULL + 1));
->> 	return 0;
->> }
-> 
-> Well, that's different - you're dereferencing NULL+1, whereas I'm
-> just checking the the value of the pointer.  
-> 
-> Still what I did is darned ugly, cleanup below.
-> 
-> thanks,
-> -serge
-> 
->>    Could you please change this to check and see whether or not index
->> returns NULL instead of accessing memory like that?
->>    Other than that, patch looks good.
-> 
-> From: Serge E. Hallyn <serue@us.ibm.com>
-> Date: Wed, 5 May 2010 02:59:05 -0500
-> Subject: [PATCH 1/1] check for index(3) returning NULL
-> 
-> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> ---
-> .../kernel/security/filecaps/verify_caps_exec.c    |    5 +++--
-> 1 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> index c3f65a9..605f0f6 100644
-> --- a/testcases/kernel/security/filecaps/verify_caps_exec.c
-> +++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> @@ -182,9 +182,10 @@ int fork_drop_and_exec(int keepperms, cap_t expected_caps)
-> 			tst_resm(TINFO, "got a bad seqno (c=%d, s=%d, seqno=%d)",
-> 				c, s, seqno);
-> 		}
-> -		p = index(buf, '.')+1;
-> -		if (p==(char *)1)
-> +		p = index(buf, '.');
-> +		if (!p)
-> 			tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
-> +		p += 1;
-> 		actual_caps = cap_from_text(p);
-> 		if (cap_compare(actual_caps, expected_caps) != 0) {
-> 			capstxt = cap_to_text(expected_caps, NULL);
+Subject: LTP�� MEMORY CGROUP FUNCTION tests fails
 
-Looks good! If that's the complete diff, then Acked-by: Garrett Cooper <yanegomi@gmail.com>
+Issues Description Below:
+==================================
+# vi runtest/memcg_function
+memcg_function          memcg_function_test.sh$PAGESIZE $((PAGESIZE * 2))
+<EOF>
+
+Run LTP with the following command:
+# ./runltp -f memcg_function
+<<<test_start>>>
+tag=memcg_function stime=1271856934
+cmdline="       memcg_function_test.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+memcg_function_test    1  TPASS  :  rss=4096/4096, cache=0/0
+memcg_function_test    2  TPASS  :  rss=0/0, cache=4096/4096
+memcg_function_test    3  TPASS  :  rss=0/0, cache=4096/4096
+memcg_function_test    4  TPASS  :  rss=4096/4096, cache=8192/8192
+memcg_function_test    5  TPASS  :  rss=4096/4096, cache=0/0
+memcg_function_test    6  TPASS  :  rss=4096/4096, cache=0/0
+memcg_function_test    6  TPASS  :  rss=0/0, cache=0/0
+memcg_function_test    7  TPASS  :  rss=0/0, cache=4096/4096
+memcg_function_test    7  TPASS  :  rss=0/0, cache=0/0
+memcg_function_test    8  TPASS  :  rss=0/0, cache=4096/4096
+memcg_function_test    8  TPASS  :  rss=0/0, cache=0/0
+memcg_function_test    9  TFAIL  :  rss=8192/4096, cache=8192/8192
+memcg_function_test    9  TFAIL  :  rss=4096/0, cache=0/0
+memcg_function_test   10  TPASS  :  rss=4096/4096, cache=0/0
+memcg_function_test   10  TPASS  :  rss=0/0, cache=0/0
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 106: 18335 Killed          
+       $TEST_PATH/memcg_process $1 -s $2
+memcg_function_test   11  TPASS  :  failcnt=8
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 106: 18351 Killed          
+       $TEST_PATH/memcg_process $1 -s $2
+memcg_function_test   12  TPASS  :  failcnt=8
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 106: 18367 Killed          
+       $TEST_PATH/memcg_process $1 -s $2
+memcg_function_test   13  TPASS  :  failcnt=8
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18385 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   14  TPASS  :  process 18385 is killed
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18398 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   15  TPASS  :  process 18398 is killed
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18414 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   16  TPASS  :  process 18414 is killed
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18432 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   17  TPASS  :  process 18432 is killed
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18450 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   18  TPASS  :  process 18450 is killed
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18467 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   19  TPASS  :  process 18467 is killed
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18482 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   20  TPASS  :  process 18482 is killed
+/opt/ltp/testcases/bin/memcg_function_test.sh: line 143: 18495 Killed          
+       $TEST_PATH/memcg_process $2 -s $3
+memcg_function_test   21  TPASS  :  process 18495 is killed
+memcg_function_test   22  TPASS  :  input=4095, limit_in_bytes=4096
+memcg_function_test   23  TPASS  :  input=4097, limit_in_bytes=8192
+memcg_function_test   24  TPASS  :  input=1, limit_in_bytes=4096
+memcg_function_test   25  TPASS  :  return value is 0
+memcg_function_test   26  TPASS  :  return value is 1
+memcg_function_test   27  TPASS  :  return value is 1
+memcg_function_test   28  TPASS  :  return value is 1
+memcg_function_test   29  TPASS  :  force memory succeeded
+memcg_function_test   30  TPASS  :  force memory failed as expected
+memcg_function_test   31  TPASS  :  return value is 0
+memcg_function_test   32  TPASS  :  return value is 0
+memcg_function_test   33  TPASS  :  return value is 0
+memcg_function_test   34  TPASS  :  return value is 0
+memcg_function_test   35  TPASS  :  return value is 1
+memcg_function_test   36  TPASS  :  rss=4096/4096, cache=0/0
+memcg_function_test   36  TPASS  :  rss=0/0, cache=0/0
+memcg_function_test   37  TPASS  :  rss=4096/4096, cache=0/0
+memcg_function_test   37  TPASS  :  rss=0/0, cache=0/0
+memcg_function_test   38  TPASS  :  rss=4096/4096, cache=0/0
+memcg_function_test   38  TPASS  :  rss=0/0, cache=0/0
+<<<execution_status>>>
+initiation_status="ok"
+duration=110 termination_type=exited termination_id=1 corefile=no
+cutime=15 cstime=282
+<<<test_end>>>
+
+Regards--
+Subrata
+
+
+
+--===============4384602269070871589==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 ------------------------------------------------------------------------------
+
+--===============4384602269070871589==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4384602269070871589==--
