@@ -1,31 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OHURg-00070Z-0w
-	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:11:48 +0000
-Received: from e28smtp09.in.ibm.com ([122.248.162.9])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OHURb-0006Cg-Mu
-	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:11:47 +0000
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id o4R3D1vg026979
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 08:43:01 +0530
-Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
-	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o4R4BXWx3023042
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 09:41:33 +0530
-Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
-	by d28av02.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o4R4BXOE021301
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 14:11:33 +1000
-From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Date: Thu, 27 May 2010 09:41:24 +0530
-Message-Id: <1274933486-4876-5-git-send-email-gomuthuk@linux.vnet.ibm.com>
-In-Reply-To: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-References: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH 4/6] realtime: use busy_work_ms from librttest to burn
-	cpu cycles
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1OA1WH-0002YP-U5
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 13:53:41 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OA1WC-0000WT-LQ
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 13:53:38 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o46Df9nL006858
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 09:41:09 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o46DrUgi104330
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 09:53:30 -0400
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o46DrDWx023631
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 07:53:15 -0600
+Date: Thu, 6 May 2010 08:53:12 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100506135312.GA12072@us.ibm.com>
+References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+	<20100506065657.23879.72093.sendpatchset@subratamodak.linux.ibm.com>
+	<0B5AF9FC-8DAA-4995-9166-8EB0FE42F98C@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <0B5AF9FC-8DAA-4995-9166-8EB0FE42F98C@gmail.com>
+Subject: Re: [LTP] [04/12 FAILURE] LTP? sysctl03 test fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,177 +38,127 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <ltp-list@lists.sourceforge.net>
-Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, Sachin P Sant <ssant@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
 
-From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
-
-Instead of lock/unlock of mutex to burn cpu cycles, we can use busy_work_ms
-from librttest which is more explicit (burn cycles, not provide some
-synchronization).
-
-Also this patch removes the id increment since it is not used.
-
-Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Acked-by: John Stultz <johnstul@us.ibm.com>
-Acked-by: Darren Hart <dvhltc@us.ibm.com>
----
- testcases/realtime/func/pi-tests/testpi-1.c |   24 ++++++------------------
- testcases/realtime/func/pi-tests/testpi-2.c |   24 ++++++------------------
- 2 files changed, 12 insertions(+), 36 deletions(-)
-
-diff --git a/testcases/realtime/func/pi-tests/testpi-1.c b/testcases/realtime/func/pi-tests/testpi-1.c
-index 25541d7..71b01ec 100644
---- a/testcases/realtime/func/pi-tests/testpi-1.c
-+++ b/testcases/realtime/func/pi-tests/testpi-1.c
-@@ -81,7 +81,7 @@ pthread_mutex_t glob_mutex;
- void *func_nonrt(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int i, j, tid = gettid();
-+	int i, tid = gettid();
- 
- 	printf("Thread %d started running with priority %d\n", tid,\
- 		pthr->priority);
-@@ -97,11 +97,7 @@ void *func_nonrt(void *arg)
- 				tid, i,  pthr->policy, pthr->priority);
- 			fflush(NULL);
- 		}
--		pthr->id++;
--		for (j = 0; j < 5000; j++) {
--			pthread_mutex_lock(&(pthr->mutex));
--			pthread_mutex_unlock(&(pthr->mutex));
--		}
-+		busy_work_ms(1);
- 	}
- 	pthread_mutex_unlock(&glob_mutex);
- 	return NULL;
-@@ -110,7 +106,7 @@ void *func_nonrt(void *arg)
- void *func_rt(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int i, j, tid = gettid();
-+	int i, tid = gettid();
- 
- 	printf("Thread %d started running with prio %d\n", tid, pthr->priority);
- 	pthread_barrier_wait(&barrier);
-@@ -129,11 +125,7 @@ void *func_rt(void *arg)
- 				tid, i, pthr->policy, pthr->priority);
- 			fflush(NULL);
- 		}
--		pthr->id++;
--		for (j = 0; j < 5000; j++) {
--			pthread_mutex_lock(&(pthr->mutex));
--			pthread_mutex_unlock(&(pthr->mutex));
--		}
-+		busy_work_ms(1);
- 	}
- 	pthread_mutex_unlock(&glob_mutex);
- 	return NULL;
-@@ -142,7 +134,7 @@ void *func_rt(void *arg)
- void *func_noise(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int i, j, tid = gettid();
-+	int i, tid = gettid();
- 
- 	printf("Noise Thread %d started running with prio %d\n", tid,
- 		pthr->priority);
-@@ -155,11 +147,7 @@ void *func_noise(void *arg)
- 				pthr->priority);
- 			fflush(NULL);
- 		}
--		pthr->id++;
--		for (j = 0; j < 5000; j++) {
--			pthread_mutex_lock(&(pthr->mutex));
--			pthread_mutex_unlock(&(pthr->mutex));
--		}
-+		busy_work_ms(1);
- 	}
- 	return NULL;
- }
-diff --git a/testcases/realtime/func/pi-tests/testpi-2.c b/testcases/realtime/func/pi-tests/testpi-2.c
-index eb00129..68dde44 100644
---- a/testcases/realtime/func/pi-tests/testpi-2.c
-+++ b/testcases/realtime/func/pi-tests/testpi-2.c
-@@ -83,7 +83,7 @@ pthread_mutex_t glob_mutex;
- void *func_lowrt(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int i, j, tid = gettid();
-+	int i, tid = gettid();
- 
- 	printf("Thread %d started running with priority %d\n", tid,\
- 		pthr->priority);
-@@ -99,11 +99,7 @@ void *func_lowrt(void *arg)
- 				tid, i, pthr->policy, pthr->priority);
- 			fflush(NULL);
- 		}
--		pthr->id++;
--		for (j = 0; j < 5000; j++) {
--			pthread_mutex_lock(&(pthr->mutex));
--			pthread_mutex_unlock(&(pthr->mutex));
--		}
-+		busy_work_ms(1);
- 	}
- 	pthread_mutex_unlock(&glob_mutex);
- 	return NULL;
-@@ -112,7 +108,7 @@ void *func_lowrt(void *arg)
- void *func_rt(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int i, j, tid = gettid();
-+	int i, tid = gettid();
- 
- 	printf("Thread %d started running with prio %d\n", tid, pthr->priority);
- 	pthread_barrier_wait(&barrier);
-@@ -131,11 +127,7 @@ void *func_rt(void *arg)
- 				tid, i, pthr->policy, pthr->priority);
- 			fflush(NULL);
- 		}
--		pthr->id++;
--		for (j = 0; j < 5000; j++) {
--			pthread_mutex_lock(&(pthr->mutex));
--			pthread_mutex_unlock(&(pthr->mutex));
--		}
-+		busy_work_ms(1);
- 	}
- 	pthread_mutex_unlock(&glob_mutex);
- 	return NULL;
-@@ -144,7 +136,7 @@ void *func_rt(void *arg)
- void *func_noise(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int i, j, tid = gettid();
-+	int i, tid = gettid();
- 
- 	printf("Noise Thread %d started running with prio %d\n", tid,\
- 		pthr->priority);
-@@ -157,11 +149,7 @@ void *func_noise(void *arg)
- 				pthr->priority);
- 			fflush(NULL);
- 		}
--		pthr->id++;
--		for (j = 0; j < 5000; j++) {
--			pthread_mutex_lock(&(pthr->mutex));
--			pthread_mutex_unlock(&(pthr->mutex));
--		}
-+		busy_work_ms(1);
- 	}
- 	return NULL;
- }
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+UXVvdGluZyBHYXJyZXR0IENvb3BlciAoeWFuZWdvbWlAZ21haWwuY29tKToKPiBPbiBNYXkgNSwg
+MjAxMCwgYXQgMTE6NTYgUE0sIFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4gCj4gPiBTdWJqZWN0OiBM
+VFDFmyBzeXNjdGwwMyB0ZXN0IGZhaWxzCj4gPiAKPiA+IElzc3VlcyBEZXNjcmlwdGlvbiBCZWxv
+dzoKPiA+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiA+ICMgLi9ydW5s
+dHAgLXMgc3lzY3RsMDMKPiA+IDw8PHRlc3Rfb3V0cHV0Pj4+Cj4gPiBzeXNjdGwwMyAgICAxICBU
+RkFJTCAgOiAgRXhwZWN0ZWQgRVBFUk0gKDEpLCBnb3QgMTM6IFBlcm1pc3Npb24gZGVuaWVkCj4g
+PiBzeXNjdGwwMyAgICAyICBURkFJTCAgOiAgRXhwZWN0ZWQgRVBFUk0sIGdvdCAxMwo+ID4gc3lz
+Y3RsMDMgICAgMSAgVEZBSUwgIDogIEV4cGVjdGVkIEVQRVJNICgxKSwgZ290IDEzOiBQZXJtaXNz
+aW9uIGRlbmllZAo+ID4gPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgo+ID4gaW5pdGlhdGlvbl9zdGF0
+dXM9Im9rIgo+ID4gZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlv
+bl9pZD0xIGNvcmVmaWxlPW5vCj4gPiBjdXRpbWU9MCBjc3RpbWU9MAo+ID4gPDw8dGVzdF9lbmQ+
+Pj4KPiAKPiAJQWxyZWFkeSBrbm93biBhbmQgcmVjZW50bHkgZGlzY3Vzc2VkLgoKTm90IG9ubHkg
+Y2FuIHRoaW5ncyBtb3ZlIGdsYWNpYWxseSBpbiBrZXJuZWwtbGFuZCwgYnV0IGRlY2lzaW9ucyBu
+b3QKeWV0IGltcGxlbWVudGVkIGNhbiBiZSBjaGFuZ2VkLgoKSW4gdGhlIG1lYW50aW1lLCB0aGUg
+c3lzY3RsJ3Mgc2l0IHRoZXJlIGFzIGEgcG90ZW50aWFsIHN1YmplY3QgZm9yCmV4cGxvaXRhdGlv
+bi4KClNvIG5vdCBtZWFuaW5nIHRvIGJlIGFyZ3VtZW50YXRpdmUgZm9yIGl0cyBvd24gc2FrZSwg
+SSBuZXZlcnRoZWxlc3MKdGhpbmsgaXQncyBiZXR0ZXIgdG8gZml4IHRoZSB0ZXN0IHRoYW4gZWl0
+aGVyIHRvIGlnbm9yZSBvciByZW1vdmUKaXQuICBUd28gdW50ZXN0ZWQgcGF0Y2hlcyBiZWxvdyAt
+IHRoZSBvbmUganVzdCByZXBsYWNlcyBFUEVSTSB3aXRoCkVBQ0NFU1MuICBUaGUgb3RoZXIgcmVt
+b3ZlcyB0aGUgKGltbyBtaXN1aWRlZCkgbm90aW9uIHRoYXQgd2UgY2FuCmd1ZXNzIGF0IHRoZSBm
+YWlsaW5nIGVycm5vLiAgQW4gTFNNIGNvdWxkIGNob29zZSB0byByZXR1cm4gLUVQRVJNCmFmdGVy
+IGFsbCwgb3IgcGVyaGFwcyBldmVuIHNvbWV0aGluZyBkaWZmZXJlbnQuICBUaGUgdGhpbmcgdGhh
+dApzaG91bGQgc2NhcmUgdXMgaXMgaWYgdGhlIGNhbGwgc3VjY2VlZHMuICBJZiB3ZSBnaXZlIGFu
+eSBmYWxzZQpwb3NpdGl2ZXMsIHRoZW4gdHJ1ZSBwb3NpdGl2ZXMgd2lsbCBzZWVtIGxlc3Mgc2Nh
+cnkuCgotc2VyZ2UKCkZyb20gMmNmNzc5NzMyOTI3NTEyNmNjM2Y4MGEyNGJmYjhiYjJlM2Y0NDc0
+NyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTogU2VyZ2UgRS4gSGFsbHluIDxzZXJ1ZUB1
+cy5pYm0uY29tPgpEYXRlOiBUaHUsIDYgTWF5IDIwMTAgMDg6MzA6NTIgLTA1MDAKU3ViamVjdDog
+W1BBVENIIDEvMV0gc3lzY3RsOiBjaGVjayBmb3IgRUFDQ0VTCgpTaWduZWQtb2ZmLWJ5OiBTZXJn
+ZSBFLiBIYWxseW4gPHNlcnVlQHVzLmlibS5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zeXNjdGwvc3lzY3RsMDMuYyB8ICAgMjIgKysrKysrKysrKystLS0tLS0tLS0tLQogMSBm
+aWxlcyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
+aXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N5c2N0bC9zeXNjdGwwMy5jIGIvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9zeXNjdGwvc3lzY3RsMDMuYwppbmRleCBmOGU3NDNiLi5lNDQ3
+N2Y3IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N5c2N0bC9zeXNjdGww
+My5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3lzY3RsL3N5c2N0bDAzLmMKQEAg
+LTIyLDE1ICsyMiwxNSBAQAogICoJc3lzY3RsMDMuYwogICoKICAqIERFU0NSSVBUSU9OCi0gKglU
+ZXN0Y2FzZSB0byBjaGVjayB0aGF0IHN5c2N0bCgyKSBzZXRzIGVycm5vIHRvIEVQRVJNIGNvcnJl
+Y3RseS4KKyAqCVRlc3RjYXNlIHRvIGNoZWNrIHRoYXQgc3lzY3RsKDIpIHNldHMgZXJybm8gdG8g
+RUFDQ0VTIGNvcnJlY3RseS4KICAqCiAgKiBBTEdPUklUSE0KICAqCWEuCUNhbGwgc3lzY3RsKDIp
+IGFzIGEgcm9vdCB1c2VyLCBhbmQgYXR0ZW1wdCB0byB3cml0ZSBkYXRhCiAgKgkJdG8gdGhlIGtl
+cm5lbF90YWJsZVtdLiBTaW5jZSB0aGUgdGFibGUgZG9lcyBub3QgaGF2ZSB3cml0ZQotICoJCXBl
+cm1pc3Npb25zIGV2ZW4gZm9yIHRoZSByb290LCBpdCBzaG91bGQgZmFpbCBFUEVSTS4KKyAqCQlw
+ZXJtaXNzaW9ucyBldmVuIGZvciB0aGUgcm9vdCwgaXQgc2hvdWxkIGZhaWwgRUFDQ0VTLgogICoJ
+Yi4JQ2FsbCBzeXNjdGwoMikgYXMgYSBub24tcm9vdCB1c2VyLCBhbmQgYXR0ZW1wdCB0byB3cml0
+ZSBkYXRhCiAgKgkJdG8gdGhlIGtlcm5lbF90YWJsZVtdLiBTaW5jZSB0aGUgdGFibGUgZG9lcyBu
+b3QgaGF2ZSB3cml0ZQotICoJCXBlcm1pc3Npb24gZm9yIHRoZSByZWd1bGFyIHVzZXIsIGl0IHNo
+b3VsZCBmYWlsIHdpdGggRVBFUk0uCisgKgkJcGVybWlzc2lvbiBmb3IgdGhlIHJlZ3VsYXIgdXNl
+ciwgaXQgc2hvdWxkIGZhaWwgd2l0aCBFQUNDRVMuCiAgKgogICogVVNBR0U6ICA8Zm9yIGNvbW1h
+bmQtbGluZT4KICAqICBzeXNjdGwwMyBbLWMgbl0gWy1lXSBbLWkgbl0gWy1JIHhdIFstUCB4XSBb
+LXRdCkBAIC03Niw3ICs3Niw3IEBAIGludCBzeXNjdGwoaW50ICpuYW1lLCBpbnQgbmxlbiwgdm9p
+ZCAqb2xkdmFsLCBzaXplX3QgKiBvbGRsZW5wLAogdm9pZCBzZXR1cCh2b2lkKTsKIHZvaWQgY2xl
+YW51cCh2b2lkKTsKIAotaW50IGV4cF9lbm9zW10gPSB7IEVQRVJNLCAwIH07CitpbnQgZXhwX2Vu
+b3NbXSA9IHsgRUFDQ0VTLCAwIH07CiAKIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQogewpA
+QCAtMTE0LDEzICsxMTQsMTMgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCiAJCX0gZWxz
+ZSB7CiAJCQlURVNUX0VSUk9SX0xPRyhURVNUX0VSUk5PKTsKIAotCQkJaWYgKFRFU1RfRVJSTk8g
+IT0gRVBFUk0pIHsKKwkJCWlmIChURVNUX0VSUk5PICE9IEVBQ0NFUykgewogCQkJCXRzdF9yZXNt
+KFRGQUlMLAotCQkJCQkgIkV4cGVjdGVkIEVQRVJNICglZCksIGdvdCAlZDogJXMiLAotCQkJCQkg
+RVBFUk0sIFRFU1RfRVJSTk8sCisJCQkJCSAiRXhwZWN0ZWQgRUFDQ0VTICglZCksIGdvdCAlZDog
+JXMiLAorCQkJCQkgRUFDQ0VTLCBURVNUX0VSUk5PLAogCQkJCQkgc3RyZXJyb3IoVEVTVF9FUlJO
+TykpOwogCQkJfSBlbHNlIHsKLQkJCQl0c3RfcmVzbShUUEFTUywgIkdvdCBleHBlY3RlZCBFUEVS
+TSBlcnJvciIpOworCQkJCXRzdF9yZXNtKFRQQVNTLCAiR290IGV4cGVjdGVkIEVBQ0NFUyBlcnJv
+ciIpOwogCQkJfQogCQl9CiAKQEAgLTE0NywxMSArMTQ3LDExIEBAIGludCBtYWluKGludCBhYywg
+Y2hhciAqKmF2KQogCQkJfSBlbHNlIHsKIAkJCQlURVNUX0VSUk9SX0xPRyhURVNUX0VSUk5PKTsK
+IAotCQkJCWlmIChURVNUX0VSUk5PICE9IEVQRVJNKSB7Ci0JCQkJCXRzdF9yZXNtKFRGQUlMLCAi
+RXhwZWN0ZWQgRVBFUk0sIGdvdCAiCisJCQkJaWYgKFRFU1RfRVJSTk8gIT0gRUFDQ0VTKSB7CisJ
+CQkJCXRzdF9yZXNtKFRGQUlMLCAiRXhwZWN0ZWQgRUFDQ0VTLCBnb3QgIgogCQkJCQkJICIlZCIs
+IFRFU1RfRVJSTk8pOwogCQkJCX0gZWxzZSB7Ci0JCQkJCXRzdF9yZXNtKFRQQVNTLCAiR290IGV4
+cGVjdGVkIEVQRVJNICIKKwkJCQkJdHN0X3Jlc20oVFBBU1MsICJHb3QgZXhwZWN0ZWQgRUFDQ0VT
+ICIKIAkJCQkJCSAiZXJyb3IiKTsKIAkJCQl9CiAJCQl9Ci0tIAoxLjYuMy4zCgpGcm9tIGMyOTBh
+ZWRhMjA1YWZjNzY0ZjI1NTE1YjBlYWFmOWFlMDVmZTMzNjUgTW9uIFNlcCAxNyAwMDowMDowMCAy
+MDAxCkZyb206IFNlcmdlIEUuIEhhbGx5biA8c2VydWVAdXMuaWJtLmNvbT4KRGF0ZTogVGh1LCA2
+IE1heSAyMDEwIDA4OjUxOjAwIC0wNTAwClN1YmplY3Q6IFtQQVRDSCAxLzFdIGFjY2VwdCBhbnkg
+c3lzY3RsIGZhaWx1cmUKClNpZ25lZC1vZmYtYnk6IFNlcmdlIEUuIEhhbGx5biA8c2VydWVAdXMu
+aWJtLmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N5c2N0bC9zeXNjdGwwMy5j
+IHwgICAyOCArKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCA2IGlu
+c2VydGlvbnMoKyksIDIyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc3lzY3RsL3N5c2N0bDAzLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3N5c2N0bC9zeXNjdGwwMy5jCmluZGV4IGY4ZTc0M2IuLmZjZDg2MzUgMTAwNjQ0Ci0tLSBhL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3lzY3RsL3N5c2N0bDAzLmMKKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9zeXNjdGwvc3lzY3RsMDMuYwpAQCAtMjIsMTUgKzIyLDE1IEBACiAg
+KglzeXNjdGwwMy5jCiAgKgogICogREVTQ1JJUFRJT04KLSAqCVRlc3RjYXNlIHRvIGNoZWNrIHRo
+YXQgc3lzY3RsKDIpIHNldHMgZXJybm8gdG8gRVBFUk0gY29ycmVjdGx5LgorICoJVGVzdGNhc2Ug
+dG8gY2hlY2sgdGhhdCBzeXNjdGwoMikgZmFpbCBjb3JyZWN0bHkuCiAgKgogICogQUxHT1JJVEhN
+CiAgKglhLglDYWxsIHN5c2N0bCgyKSBhcyBhIHJvb3QgdXNlciwgYW5kIGF0dGVtcHQgdG8gd3Jp
+dGUgZGF0YQogICoJCXRvIHRoZSBrZXJuZWxfdGFibGVbXS4gU2luY2UgdGhlIHRhYmxlIGRvZXMg
+bm90IGhhdmUgd3JpdGUKLSAqCQlwZXJtaXNzaW9ucyBldmVuIGZvciB0aGUgcm9vdCwgaXQgc2hv
+dWxkIGZhaWwgRVBFUk0uCisgKgkJcGVybWlzc2lvbnMgZXZlbiBmb3IgdGhlIHJvb3QsIGl0IHNo
+b3VsZCBmYWlsLgogICoJYi4JQ2FsbCBzeXNjdGwoMikgYXMgYSBub24tcm9vdCB1c2VyLCBhbmQg
+YXR0ZW1wdCB0byB3cml0ZSBkYXRhCiAgKgkJdG8gdGhlIGtlcm5lbF90YWJsZVtdLiBTaW5jZSB0
+aGUgdGFibGUgZG9lcyBub3QgaGF2ZSB3cml0ZQotICoJCXBlcm1pc3Npb24gZm9yIHRoZSByZWd1
+bGFyIHVzZXIsIGl0IHNob3VsZCBmYWlsIHdpdGggRVBFUk0uCisgKgkJcGVybWlzc2lvbiBmb3Ig
+dGhlIHJlZ3VsYXIgdXNlciwgaXQgc2hvdWxkIGZhaWwuCiAgKgogICogVVNBR0U6ICA8Zm9yIGNv
+bW1hbmQtbGluZT4KICAqICBzeXNjdGwwMyBbLWMgbl0gWy1lXSBbLWkgbl0gWy1JIHhdIFstUCB4
+XSBbLXRdCkBAIC03Niw3ICs3Niw3IEBAIGludCBzeXNjdGwoaW50ICpuYW1lLCBpbnQgbmxlbiwg
+dm9pZCAqb2xkdmFsLCBzaXplX3QgKiBvbGRsZW5wLAogdm9pZCBzZXR1cCh2b2lkKTsKIHZvaWQg
+Y2xlYW51cCh2b2lkKTsKIAotaW50IGV4cF9lbm9zW10gPSB7IEVQRVJNLCAwIH07CitpbnQgZXhw
+X2Vub3NbXSA9IHsgRVBFUk0sIEVBQ0NFUywgMCB9OwogCiBpbnQgbWFpbihpbnQgYWMsIGNoYXIg
+KiphdikKIHsKQEAgLTExMywxNSArMTEzLDcgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYp
+CiAJCQl0c3RfcmVzbShURkFJTCwgInN5c2N0bCgyKSBzdWNjZWVkZWQgdW5leHBlY3RlZGx5Iik7
+CiAJCX0gZWxzZSB7CiAJCQlURVNUX0VSUk9SX0xPRyhURVNUX0VSUk5PKTsKLQotCQkJaWYgKFRF
+U1RfRVJSTk8gIT0gRVBFUk0pIHsKLQkJCQl0c3RfcmVzbShURkFJTCwKLQkJCQkJICJFeHBlY3Rl
+ZCBFUEVSTSAoJWQpLCBnb3QgJWQ6ICVzIiwKLQkJCQkJIEVQRVJNLCBURVNUX0VSUk5PLAotCQkJ
+CQkgc3RyZXJyb3IoVEVTVF9FUlJOTykpOwotCQkJfSBlbHNlIHsKLQkJCQl0c3RfcmVzbShUUEFT
+UywgIkdvdCBleHBlY3RlZCBFUEVSTSBlcnJvciIpOwotCQkJfQorCQkJdHN0X3Jlc20oVFBBU1Ms
+ICJzeXNjdGwoMikgZmFpbGVkIGFzIGV4cGVjdGVkLiIpOwogCQl9CiAKIAkJb3NuYW1lbHRoID0g
+U0laRShvc25hbWUpOwpAQCAtMTQ1LDE1ICsxMzcsNyBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIg
+KiphdikKIAkJCWlmIChURVNUX1JFVFVSTiAhPSAtMSkgewogCQkJCXRzdF9yZXNtKFRGQUlMLCAi
+Y2FsbCBzdWNjZWVkZWQgdW5leHBlY3RlZGx5Iik7CiAJCQl9IGVsc2UgewotCQkJCVRFU1RfRVJS
+T1JfTE9HKFRFU1RfRVJSTk8pOwotCi0JCQkJaWYgKFRFU1RfRVJSTk8gIT0gRVBFUk0pIHsKLQkJ
+CQkJdHN0X3Jlc20oVEZBSUwsICJFeHBlY3RlZCBFUEVSTSwgZ290ICIKLQkJCQkJCSAiJWQiLCBU
+RVNUX0VSUk5PKTsKLQkJCQl9IGVsc2UgewotCQkJCQl0c3RfcmVzbShUUEFTUywgIkdvdCBleHBl
+Y3RlZCBFUEVSTSAiCi0JCQkJCQkgImVycm9yIik7Ci0JCQkJfQorCQkJCXRzdF9yZXNtKFRQQVNT
+LCAic3lzY3RsIGZhaWxlZCBhcyBleHBlY3RlZCIpOwogCQkJfQogCiAJCQljbGVhbnVwKCk7Ci0t
+IAoxLjYuMy4zCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vbHRwLWxpc3QK
