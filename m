@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OA5J5-00019q-0d
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:56:19 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OA55o-00086b-PO
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:42:36 +0000
 Received: from mail-iw0-f200.google.com ([209.85.223.200])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OA5J4-0007OI-3e
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:56:18 +0000
-Received: by iwn38 with SMTP id 38so169924iwn.10
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OA55o-0005NJ-02
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 17:42:36 +0000
+Received: by iwn38 with SMTP id 38so153782iwn.10
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 May 2010 10:56:13 -0700 (PDT)
+	Thu, 06 May 2010 10:42:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20100506065729.23879.9995.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <4BE285FF.9030104@in.ibm.com>
 References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065729.23879.9995.sendpatchset@subratamodak.linux.ibm.com>
-Date: Thu, 6 May 2010 10:53:45 -0700
-Message-ID: <q2z364299f41005061053zcc57d5c4gc5577e9d80ffc8e5@mail.gmail.com>
+	<20100506065801.23879.92449.sendpatchset@subratamodak.linux.ibm.com>
+	<4BE26A1A.1000102@in.ibm.com>
+	<239C044B-6014-4FA7-AC8B-6D71AFE8FEDA@gmail.com>
+	<4BE285FF.9030104@in.ibm.com>
+Date: Thu, 6 May 2010 10:42:30 -0700
+Message-ID: <q2q364299f41005061042p588281bdoefb81e77aedca964@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [06/12 FAILURE] Many CONTAINER tests of LTP fail
+Subject: Re: [LTP] [08/12 FAILURE] LTPE clock gettime03 fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,74 +31,24 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
+To: Suzuki Poulose <suzuki@in.ibm.com>
+Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
 
-Clipping the output to denote the failures.
-
-On Wed, May 5, 2010 at 11:57 PM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> Subject:Many CONTAINER tests of LTP fail
->
-> I know Serge and Dan is already working on it.
->
-> Issues Description Below:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> # ./runltp -f containers
-> <<<test_start>>>
-
-[...]
-
-> pid_namespace3 =A0 =A01 =A0TFAIL =A0: =A0Failed to open /proc directory
-
-This is interesting... is /proc not mounted in the child container?
-
-> pidns30 =A0 =A0 1 =A0TBROK =A0: =A0parent: mq_open() failed (Permission d=
-enied)
-> pidns31 =A0 =A0 1 =A0TBROK =A0: =A0parent: mq_open() failed (Permission d=
-enied)
-
-Does the queue exist?
-
-> posixmq_namespace_01 =A0 =A01 =A0TFAIL =A0: =A0mq_open failed
-> Running netns tests.
-
-[...]
-
-> netns_2children =A0 =A01 =A0TFAIL =A0: =A0Error while running the scripts
-> two_children_ns: return code is 1 ;
-> sshd re-exec requires execution with an absolute path^M
-
-This was going to be fixed with a patch proposed earlier.
-
-> childns.sh =A0 =A00 =A0TINFO =A0: =A0Successfully Renamed device to veth1
-> Files /tmp/sys_b4_child_killed and /tmp/sys_aftr_child_killed differ
-> Cannot find device "veth1"
-> crtchild_delchild: PASS
-
-This seems suspect even though it says passed.
-
-[...]
-
-> sshd re-exec requires execution with an absolute path^M
-> Error: Can't ftp to 192.168.0.181: Connection refused
-> childns.sh =A0 =A01 =A0TFAIL =A0: =A0ftp failed
-
-One of the prereqs is missing probably (setup an ftp daemon ... maybe
-this was going to be done via ssh?)
-
-[...]
-
-> <<<test_end>>>
-
----------------------------------------------------------------------------=
----
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCBNYXkgNiwgMjAxMCBhdCAyOjAzIEFNLCBTdXp1a2kgUG91bG9zZSA8c3V6dWtpQGlu
+LmlibS5jb20+IHdyb3RlOgo+IE9uIOC0teC1jeC0r+C0vuC0tOC0giAwNiDgtK7gtYbgtK/gtY0g
+MjAxMCAwMToyNSDgtLXgtYjgtJXgtYEsIEdhcnJldHQgQ29vcGVyIHdyb3RlOgo+Pgo+PiBPbiBN
+YXkgNiwgMjAxMCwgYXQgMTI6MDQgQU0sIFN1enVraSBQb3Vsb3NlIHdyb3RlOgo+Pgo+Pj4gPGZp
+eC10aW1lci10ZXN0cy1iYWQtaGVhZGVyLmRpZmY+Cj4+Cj4+IMKgIMKgIMKgIMKgTWF5YmUgYSBi
+ZXR0ZXIgc29sdXRpb24gd291bGQgYmUgdG8gTlVMTCB0ZXJtaW5hdGUgdGhlIGFycmF5ICh3ZWxs
+LAo+PiBvciBkbyBzaW1pbGFyKT8gVXNpbmcgdHdvIHVuaXRzIG9mIG1lYXN1cmVtZW50IGp1c3Qg
+c2VlbXMgbGlrZSBpdCdkCj4+IGNvbXBsaWNhdGUgaG93IHRoaW5ncyBhcmUgYmVpbmcgcGVyZm9y
+bWVkLi4uCj4KPiBVc2VkIE1BWF9DTE9DS1MgdG8gbWFyayB0aGUgZW5kIG9mIGNsb2NrIGxpc3Qg
+YXJyYXkuIFBhdGNoIGF0dGFjaGVkLgoKTG9va3MgZ29vZC4gQWNrZWQtYnk6IEdhcnJldHQgQ29v
+cGVyIDx5YW5lZ29taUBnbWFpbC5jb20+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBs
+aXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
+cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
