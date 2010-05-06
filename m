@@ -1,34 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1OAOfa-00018k-1K
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 14:36:50 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Feng.Xu@windriver.com>) id 1O9x4o-0001Ov-7e
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 09:09:02 +0000
+Received: from mail.windriver.com ([147.11.1.11])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OAOfZ-0006QT-4V
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 14:36:49 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o47ENhWx012454
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 10:23:43 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o47EaYwr1081390
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 10:36:35 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o47EaXhf031471
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 10:36:33 -0400
-Date: Fri, 7 May 2010 09:36:32 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100507143632.GC22099@us.ibm.com>
-References: <1273081434-22034-1-git-send-email-danms@us.ibm.com>
-	<1273225268.6042.8.camel@subratamodak.linux.ibm.com>
-	<877hnfyebf.fsf@caffeine.danplanet.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <877hnfyebf.fsf@caffeine.danplanet.com>
-Subject: Re: [LTP] [PATCH] NetNS test fixes
+	(Exim 4.69) id 1O9x4i-0003Hm-W1
+	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 09:09:02 +0000
+From: Henry xu <feng.xu@windriver.com>
+Date: Thu, 06 May 2010 17:14:04 +0800
+Message-Id: <1273137244.26977.134.camel@lishuang-desktop>
+Mime-Version: 1.0
+Subject: [LTP] ltp inotify03 testcase failed in version of 20100228
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,49 +25,130 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Dan Smith <danms@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
 
-Quoting Dan Smith (danms@us.ibm.com):
-> SM> Can you please ack this patch.
-> 
-> Ack the revised one below instead :)
-> 
-> By the way, these tests appear to start up sshd for no reason other
-> than possibly checking that basic sockets work in the netns.  Given
-> the frailty and required setup of the "ftp" test, I think it would be
-> better to replace it with a test using netcat and then yank the sshd
-> bits from the ping tests.
+Hi,all
 
-Ack that.
+I test inotify03 in  ppc platform and product two fails as
+below.
+<<<test_start>>>
+tag=inotify03 stime=1272626381
+cmdline="inotify03 -D /dev/loop0 -T ext3"
+contacts=""
+analysis=exit
+<<<test_output>>>
+inotify03    0  TINFO  :  mount /dev/loop0 to mnt_18067 fstype=ext3
+inotify03    0  TINFO  :  umount /dev/loop0
+inotify03    1  TFAIL  :  get event: wd=1 mask=8000 (expected 2000)
+cookie=0 len=0
+inotify03    2  TFAIL  :  don't get event: mask=8000
+inotify03    3  TPASS  :  inotify_rm_watch (5, 1) return -1 errno=22 :
+Invalid argument
 
-> Dan Smith
-> IBM Linux Technology Center
-> email: danms@us.ibm.com
-> 
-> NetNS test fixes (v2)
-> 
-> This patch fixes a couple of netns test issues that cause invalid failures
-> relating to exiting with a status variable that doesn't exist.  It also
-> fixes an instance of inverted logic and a failure to exec sshd with the
-> full path (as required).
-> 
-> Additionally, it makes the common child exec function more descriptive of
-> what it tried to do and why it failed to ease debugging.
-> 
-> Changes in v2:
-> - Initialize status=0 at the top of child_1.sh to prevent overshadowing
->   a (meaningless) sshd failure
-> 
-> Signed-off-by: Dan Smith <danms@us.ibm.com>
 
-Acked-by: Serge E. Hallyn <serue@us.ibm.com>
+when I type "./runltp -s inotify" for inotify test, the inotify03 test
+is  not been executed.The information is as below.
 
-thanks,
--serge
+I look into the code ,however I could not get why mask is equal to
+8000.Could someone give your comments on this case?
+
+thanks in advance!
+
+================================================================
+You can specify it with option -b
+COMMAND:    /opt/ltp-full/bin/ltp-pan  -e -S   -a 26692     -n 26692  -p
+-f /tmp/ltp-rUQUk26698/alltests
+-l /opt/ltp-full/results/LTP_RUN_ON-1970_Jan_02-02h_51m_52s.log
+-C /opt/ltp-full/output/LTP_RUN_ON-1970_Jan_02-02h_51m_52s.failed
+INFO: Restricted to inotify
+LOG File: /opt/ltp-full/results/LTP_RUN_ON-1970_Jan_02-02h_51m_52s.log
+FAILED COMMAND
+File: /opt/ltp-full/output/LTP_RUN_ON-1970_Jan_02-02h_51m_52s.failed
+Running tests.......
+<<<test_start>>>
+tag=inotify_init1_01 stime=96713
+cmdline="inotify_init1_01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+inotify_init1_01    1  TPASS  :  inotify_init1(O_CLOEXEC) PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify_init1_02 stime=96714
+cmdline="inotify_init1_02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+inotify_init1_02    1  TPASS  :  inotify_init1(IN_NONBLOCK) PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify01 stime=96714
+cmdline="inotify01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+inotify01    1  TPASS  :  get event: wd=1 mask=4 cookie=0 len=0
+inotify01    2  TPASS  :  get event: wd=1 mask=20 cookie=0 len=0
+inotify01    3  TPASS  :  get event: wd=1 mask=1 cookie=0 len=0
+inotify01    4  TPASS  :  get event: wd=1 mask=10 cookie=0 len=0
+inotify01    5  TPASS  :  get event: wd=1 mask=20 cookie=0 len=0
+inotify01    6  TPASS  :  get event: wd=1 mask=2 cookie=0 len=0
+inotify01    7  TPASS  :  get event: wd=1 mask=8 cookie=0 len=0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify02 stime=96714
+cmdline="inotify02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+inotify02    1  TPASS  :  get event: wd=1 mask=40000004 cookie=0 len=0
+name=""
+inotify02    2  TPASS  :  get event: wd=1 mask=100 cookie=0 len=16
+name="test_file1"
+inotify02    3  TPASS  :  get event: wd=1 mask=20 cookie=0 len=16
+name="test_file1"
+inotify02    4  TPASS  :  get event: wd=1 mask=8 cookie=0 len=16
+name="test_file1"
+inotify02    5  TPASS  :  get event: wd=1 mask=40 cookie=4553 len=16
+name="test_file1"
+inotify02    6  TPASS  :  get event: wd=1 mask=80 cookie=4553 len=16
+name="test_file2"
+inotify02    7  TPASS  :  get event: wd=1 mask=800 cookie=0 len=0
+name=""
+inotify02    8  TPASS  :  get event: wd=1 mask=200 cookie=0 len=16
+name="test_file2"
+inotify02    9  TPASS  :  get event: wd=1 mask=800 cookie=0 len=0
+name=""
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported all tests PASS
+LTP Version: LTP-20100228
+        
+       ###############################################################"
+        
+            Done executing testcases."
+            LTP Version:  LTP-20100228
+       ###############################################################"
+
+=============================================================================
 
 ------------------------------------------------------------------------------
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
