@@ -1,27 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1O98bC-0003FV-QL
-	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 03:15:06 +0000
-Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <danms@us.ibm.com>) id 1OAOZg-0004Om-JL
+	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 14:30:44 +0000
+Received: from gw0.danplanet.com ([71.245.107.82] helo=mail.danplanet.com)
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O98bB-0005DF-VX
-	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 03:15:06 +0000
+	id 1OAOZe-0006bE-5v
+	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 14:30:44 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.danplanet.com (Postfix) with ESMTP id 5126A1C016
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  7 May 2010 07:31:23 -0700 (PDT)
+Received: from mail.danplanet.com ([127.0.0.1])
+	by localhost (imap.danplanet.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Z4tlv+UNswY1 for <ltp-list@lists.sourceforge.net>;
+	Fri,  7 May 2010 07:31:18 -0700 (PDT)
+Received: from caffeine.danplanet.com (unknown [192.168.201.160])
+	by mail.danplanet.com (Postfix) with ESMTP id 04E331C00E
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  7 May 2010 07:31:13 -0700 (PDT)
+References: <1273081434-22034-1-git-send-email-danms@us.ibm.com>
+	<1273225268.6042.8.camel@subratamodak.linux.ibm.com>
+From: Dan Smith <danms@us.ibm.com>
+Date: Fri, 07 May 2010 07:30:28 -0700
+In-Reply-To: <1273225268.6042.8.camel@subratamodak.linux.ibm.com> (Subrata
+	Modak's message of "Fri\, 07 May 2010 15\:11\:08 +0530")
+Message-ID: <877hnfyebf.fsf@caffeine.danplanet.com>
 MIME-Version: 1.0
-In-Reply-To: <u2u364299f41004301941pe0e04112u34e7da16e7d1f3df@mail.gmail.com>
-References: <103530624.1121001272433642504.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<8B8139E0-F07A-433D-B38D-30DAB81E3FF5@gmail.com>
-	<s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
-	<m2z42aa607e1004301227tfec6a200kda741f32b6feeb11@mail.gmail.com> 
-	<x2l364299f41004301315x20fa3ed6u488dc923334fd5d6@mail.gmail.com> 
-	<q2w42aa607e1004301556s76e89e8nf68d4bee860da4bd@mail.gmail.com> 
-	<u2u364299f41004301941pe0e04112u34e7da16e7d1f3df@mail.gmail.com>
-From: Henry Yei <hyei@mvista.com>
-Date: Mon, 3 May 2010 20:14:39 -0700
-Message-ID: <x2y42aa607e1005032014se4159c89z95d2b670b7195df5@mail.gmail.com>
-Content-Type: multipart/mixed; boundary=00c09f99e29b55650f0485bc1dbd
-Subject: Re: [LTP] UTIMENSAT test fails hugely
+Subject: Re: [LTP] [PATCH] NetNS test fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,194 +38,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
-
---00c09f99e29b55650f0485bc1dbd
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Garrett,
-
-This patch installs the trap for cleanup_test which removes the
-sudoers file only if it was installed by utimensat script, and also
-takes care of detecting whether sudo knows about the -n option.
-
-Signed-Off-By: <hyei@mvista.com>
-
-
-The patch was generated from ltp-dev git tree.
-
-I didn't realize Caspar's patch hadn't already been incorporated yet,
-so didn't account for it.
-
-Henry Yei <hyei@mvista.com>
-
-
-On Fri, Apr 30, 2010 at 7:41 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Fri, Apr 30, 2010 at 3:56 PM, Henry Yei <hyei@mvista.com> wrote:
->> If a sudo file exists, the patch doesn't touch it. If it does not, a
->> sudoers file will be created and then it will remove it afterwards. I
->> wouldn't feel confortable having a script modify a sudoers file if it
->> already exists. The sudoers content that it does put in place just
->> enables the root user to use sudo, which would not give it any more
->> access than it already has. This text is available in every sudoers
->> file I've looked at.
->>
->>
->>
->> While I was testing the patch with the ltp-dev branch, I noticed that
->> the -n option was put in front of every sudo call in commit
->> 2aa40f7e10518977881b933cc93b8f50847cf3cf in order to suppress the
->> interactive password check.
->>
->> However, neither sudo 1.6.8p12 from MontaVista Linux 6 or 1.6.9p17
->> from Ubuntu 9.04 supports the =A0-n option. The patch also removes the
->> -n option from sudo calls. This option was added in 3/2008.
->
-> Ugh. The sudo in gentoo did this though and that's the reason why I
-> added it in some scripts -- otherwise the pieces of junk halt waiting
-> for user input and I had manually kill the scripts >:(... I guess a
-> test will need to be added to ensure that sudo _does_ have the -n
-> option beforehand, if it does, add the -n option. Otherwise all people
-> running older versions are kind of SoL.
->
-> sudo is still a non-standard tool and a pain in the butt to deal with
-> in scripts as it changes from time to time.
->
-> FWIW your patch only deals with the case when the script `exits
-> cleanly' as there aren't any traps installed for cleanup_test.
->
->> On Fri, Apr 30, 2010 at 1:15 PM, Garrett Cooper <yanegomi@gmail.com> wro=
-te:
->>> On Fri, Apr 30, 2010 at 12:27 PM, Henry Yei <hyei@mvista.com> wrote:
->>>> Speaking of the utimesat test and prerequisites, our test systems
->>>> don't have a sudoers file by default, so we have an internal patch to
->>>> utimesat to create a default one if non exist and remove it after the
->>>> test is done. Would that be of interest to LTP?
->>>>
->>>> On Tue, Apr 27, 2010 at 11:27 PM, Caspar Zhang <casparant@gmail.com> w=
-rote:
->>>>> On Wed, Apr 28, 2010 at 2:04 PM, Garrett Cooper <yanegomi@gmail.com> =
-wrote:
->>>>>> The first item is different from the other two. The first one ignore=
-s the
->>>>>> signal (SIG_IGN), whereas the latter two cases reset the handler to =
-the
->>>>>> default one (SIG_DFL). I prefer the former format, because otherwise=
- the
->>>>>> signal handlers become reentrable on accident.
->>>>>
->>>>> I see. Thank you.
->>>>>
->>>>> The final patch ;-)
->>>
->>> If it:
->>>
->>> 1. Works in all cases, i.e. doesn't use version specific constructs
->>> for sudo (which I haven't seen thus far, but just to be safe).
->>> 2. Is properly reverted when the test is done (which includes the
->>> following scenarios):
->>> =A0 =A0a. File already exists. Backup the old file, revert it when the
->>> test is completed (regardless of whether or not the test passed or the
->>> test failed properly [*]).
->>> =A0 =A0b. File doesn't exist. Nuke the file after the test is done.
->>>
->>> =A0 =A0... sure.
->>> Thanks,
->>> -Garrett
->>>
->>> [*] SIGKILL or SIGSTOP can't be avoided, so technically it's a best eff=
-ort.
->
-> Thanks,
-> -Garrett
->
-
---00c09f99e29b55650f0485bc1dbd
-Content-Type: text/x-patch; charset=US-ASCII; name="utimensat_tests.patch"
-Content-Disposition: attachment; filename="utimensat_tests.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g8s54qca0
-
-LS0tIGx0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZW5zYXQvdXRpbWVuc2F0
-X3Rlc3RzLnNoCTIwMTAtMDQtMzAgMTU6MzM6MTAuNzc5NzAwNDgzIC0wNzAwCisrKyBsdHAtZGV2
-LXdkaXIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZW5zYXQvdXRpbWVuc2F0X3Rlc3Rz
-LnNoCTIwMTAtMDUtMDMgMTk6NTM6NTIuMjcxNjk1Mjg5IC0wNzAwCkBAIC02NCwxMyArNjQsMTMg
-QEAgc2V0dXBfZmlsZSgpCiAgICAgIyBNYWtlIHN1cmUgYW55IG9sZCB2ZXJzaW9uIG9mIGZpbGUg
-aXMgZGVsZXRlZAogCiAgICAgaWYgdGVzdCAtZSAkRklMRTsgdGhlbgotICAgICAgICBzdWRvIC1u
-IGNoYXR0ciAtYWkgJEZJTEUgfHwgcmV0dXJuICQ/Ci0gICAgICAgIHN1ZG8gLW4gcm0gLWYgJEZJ
-TEUgfHwgcmV0dXJuICQ/CisgICAgICAgIHN1ZG8gJHNfYXJnIGNoYXR0ciAtYWkgJEZJTEUgfHwg
-cmV0dXJuICQ/CisgICAgICAgIHN1ZG8gJHNfYXJnIHJtIC1mICRGSUxFIHx8IHJldHVybiAkPwog
-ICAgIGZpCiAKICAgICAjIENyZWF0ZSBmaWxlIGFuZCBtYWtlIGF0aW1lIGFuZCBtdGltZSB6ZXJv
-LgogCi0gICAgc3VkbyAtbiAtdSAkdXNlcl90ZXN0ZXIgdG91Y2ggJEZJTEUgfHwgcmV0dXJuICQ/
-CisgICAgc3VkbyAkc19hcmcgLXUgJHVzZXJfdGVzdGVyIHRvdWNoICRGSUxFIHx8IHJldHVybiAk
-PwogICAgIGlmICEgJFRFU1RfUFJPRyAtcSAkRklMRSAwIDAgMCAwID4gJFJFU1VMVF9GSUxFOyB0
-aGVuCiAgICAgICAgIGVjaG8gIkZhaWxlZCB0byBzZXQgdXAgdGVzdCBmaWxlICRGSUxFIiAxPiYy
-CiAgICAgICAgIGV4aXQgMQpAQCAtODYsMTkgKzg2LDE5IEBAIHNldHVwX2ZpbGUoKQogICAgICMg
-U2V0IG93bmVyLCBwZXJtaXNzaW9ucywgYW5kIEVGQXMgZm9yIGZpbGUuCiAKICAgICBpZiB0ZXN0
-IC1uICIkMiI7IHRoZW4KLSAgICAgICAgc3VkbyAtbiBjaG93biAkMiAkRklMRSB8fCByZXR1cm4g
-JD8KKyAgICAgICAgc3VkbyAkc19hcmcgY2hvd24gJDIgJEZJTEUgfHwgcmV0dXJuICQ/CiAgICAg
-ZmkKIAotICAgIHN1ZG8gLW4gY2htb2QgJDMgJEZJTEUgfHwgcmV0dXJuICQ/CisgICAgc3VkbyAk
-c19hcmcgY2htb2QgJDMgJEZJTEUgfHwgcmV0dXJuICQ/CiAKICAgICBpZiB0ZXN0IC1uICIkNCI7
-IHRoZW4KLSAgICAgICAgc3VkbyAtbiBjaGF0dHIgJDQgJEZJTEUgfHwgcmV0dXJuICQ/CisgICAg
-ICAgIHN1ZG8gJHNfYXJnIGNoYXR0ciAkNCAkRklMRSB8fCByZXR1cm4gJD8KICAgICBmaQogCiAg
-ICAgIyBEaXNwbGF5IGZpbGUgc2V0dXAsIGZvciB2aXN1YWwgdmVyaWZpY2F0aW9uCiAKICAgICBs
-cyAtbCAkRklMRSB8IGF3ayAneyBwcmludGYgIk93bmVyPSVzOyBwZXJtcz0lczsgIiwgJDMsICQx
-fScKLSAgICBpZiAhIHN1ZG8gLW4gbHNhdHRyIC1sICRGSUxFIHwgc2VkICdzLywgLywvZycgfCBh
-d2sgJ3twcmludCAiRUZBcz0iICQyfScKKyAgICBpZiAhIHN1ZG8gJHNfYXJnIGxzYXR0ciAtbCAk
-RklMRSB8IHNlZCAncy8sIC8sL2cnIHwgYXdrICd7cHJpbnQgIkVGQXM9IiAkMn0nCiAgICAgdGhl
-bgogICAgICAgICByZXR1cm4gJD8KICAgICBmaQpAQCAtMjE1LDcgKzIxNSw3IEBAIHJ1bl90ZXN0
-KCkKICAgICBjcCAkTFRQUk9PVC90ZXN0Y2FzZXMvYmluLyRURVNUX1BST0cgLi8KICAgICBDTUQ9
-Ii4vJFRFU1RfUFJPRyAtcSAkRklMRSAkNCIKICAgICBlY2hvICIkQ01EIgotICAgIHN1ZG8gLW4g
-LXUgJHVzZXJfdGVzdGVyICRDTUQgPiAkUkVTVUxUX0ZJTEUKKyAgICBzdWRvICRzX2FyZyAtdSAk
-dXNlcl90ZXN0ZXIgJENNRCA+ICRSRVNVTFRfRklMRQogICAgIGNoZWNrX3Jlc3VsdCAkPyAkNSAk
-NiAkNwogICAgIGVjaG8KIApAQCAtMjI0LDcgKzIyNCw3IEBAIHJ1bl90ZXN0KCkKICAgICAgICAg
-c2V0dXBfZmlsZSAkRklMRSAiJDEiICIkMiIgIiQzIgogICAgICAgICBDTUQ9Ii4vJFRFU1RfUFJP
-RyAtcSAtZCAkRklMRSBOVUxMICQ0IgogICAgICAgICBlY2hvICIkQ01EIgotICAgICAgICBzdWRv
-IC1uIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJFU1VMVF9GSUxFCisgICAgICAgIHN1ZG8gJHNf
-YXJnIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJFU1VMVF9GSUxFCiAgICAgICAgIGNoZWNrX3Jl
-c3VsdCAkPyAkNSAkNiAkNwogICAgICAgICBlY2hvCiAgICAgZmkKQEAgLTIzNywxOCArMjM3LDQz
-IEBAIHJ1bl90ZXN0KCkKICAgICAgICAgc2V0dXBfZmlsZSAkRklMRSAiJDEiICIkMiIgIiQzIgog
-ICAgICAgICBDTUQ9Ii4vJFRFU1RfUFJPRyAtcSAtdyAtZCAkRklMRSBOVUxMICQ0IgogICAgICAg
-ICBlY2hvICIkQ01EIgotICAgICAgICBzdWRvIC1uIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJF
-U1VMVF9GSUxFCisgICAgICAgIHN1ZG8gJHNfYXJnIC11ICR1c2VyX3Rlc3RlciAkQ01EID4gJFJF
-U1VMVF9GSUxFCiAgICAgICAgIGNoZWNrX3Jlc3VsdCAkPyAkNSAkNiAkNwogICAgICAgICBlY2hv
-CiAgICAgZmkKIAotICAgIHN1ZG8gLW4gY2hhdHRyIC1haSAkRklMRQotICAgIHN1ZG8gLW4gcm0g
-LWYgJEZJTEUKKyAgICBzdWRvICRzX2FyZyBjaGF0dHIgLWFpICRGSUxFCisgICAgc3VkbyAkc19h
-cmcgcm0gLWYgJEZJTEUKK30KKworY2xlYW51cF90ZXN0KCkKK3sKKwlpZiB0ZXN0ICRzdWRvZXJz
-X2NsZWFuOyB0aGVuCisJCXN1ZG8gcm0gLWYgJHN1ZG9lcnMKKwlmaQogfQogIz09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PQogCiB1c2VyX3Rlc3Rlcj1ub2JvZHkKLXN1ZG8gLW4gLXUgJHVzZXJfdGVzdGVyIG1rZGlyIC1w
-ICRURVNUX0RJUgorZWNobyAidGVzdCBzdWRvIGZvciAtbiBvcHRpb24sIG5vbi1pbnRlcmFjdGl2
-ZSIKK3N1ZG8gLW4gdHJ1ZQoraWYgdGVzdCAkPyAtZXEgMDsgdGhlbgorCXNfYXJnPSItbiIKKwll
-Y2hvICJzdWRvIHN1cHBvcnRzIC1uIgorZWxzZQorCXNfYXJnPQorCWVjaG8gInN1ZG8gZG9lcyBu
-b3Qgc3VwcG9ydCAtbiIKK2ZpCitzdWRvZXJzPS9ldGMvc3Vkb2VycworaWYgdGVzdCAhIC1lICRz
-dWRvZXJzCit0aGVuCisJZWNobyAicm9vdCAgICBBTEw9KEFMTCkgICAgQUxMIiA+ICRzdWRvZXJz
-CisJc3Vkb2Vyc19jbGVhbj0xCisJY2htb2QgNDQwICRzdWRvZXJzCisJdHJhcCAndHJhcCAiIiBF
-WElUOyBjbGVhbnVwX3Rlc3QnIEVYSVQKK2ZpCisKK3N1ZG8gJHNfYXJnIC11ICR1c2VyX3Rlc3Rl
-ciBta2RpciAtcCAkVEVTVF9ESVIKIGNkICRURVNUX0RJUgogY2hvd24gcm9vdCAkTFRQUk9PVC90
-ZXN0Y2FzZXMvYmluLyRURVNUX1BST0cKIGNobW9kIHVnbyt4LHUrcyAkTFRQUk9PVC90ZXN0Y2Fz
-ZXMvYmluLyRURVNUX1BST0cK
---00c09f99e29b55650f0485bc1dbd
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, Serge Hallyn <serue@linux.vnet.ibm.com>
+
+SM> Can you please ack this patch.
+
+Ack the revised one below instead :)
+
+By the way, these tests appear to start up sshd for no reason other
+than possibly checking that basic sockets work in the netns.  Given
+the frailty and required setup of the "ftp" test, I think it would be
+better to replace it with a test using netcat and then yank the sshd
+bits from the ping tests.
+
+-- 
+Dan Smith
+IBM Linux Technology Center
+email: danms@us.ibm.com
+
+NetNS test fixes (v2)
+
+This patch fixes a couple of netns test issues that cause invalid failures
+relating to exiting with a status variable that doesn't exist.  It also
+fixes an instance of inverted logic and a failure to exec sshd with the
+full path (as required).
+
+Additionally, it makes the common child exec function more descriptive of
+what it tried to do and why it failed to ease debugging.
+
+Changes in v2:
+- Initialize status=0 at the top of child_1.sh to prevent overshadowing
+  a (meaningless) sshd failure
+
+Signed-off-by: Dan Smith <danms@us.ibm.com>
+
+diff --git a/testcases/kernel/containers/netns/child_1.sh b/testcases/kernel/containers/netns/child_1.sh
+index 1fa71a7..a63e834 100755
+--- a/testcases/kernel/containers/netns/child_1.sh
++++ b/testcases/kernel/containers/netns/child_1.sh
+@@ -30,6 +30,7 @@ export TST_COUNT
+ export TST_TOTAL
+ 
+ . initialize.sh
++status=0
+ 
+     # Writing child PID number into /tmp/FIFO
+     echo $$ > /tmp/FIFO2
+diff --git a/testcases/kernel/containers/netns/childns.sh b/testcases/kernel/containers/netns/childns.sh
+index 3634d81..16fc7e8 100755
+--- a/testcases/kernel/containers/netns/childns.sh
++++ b/testcases/kernel/containers/netns/childns.sh
+@@ -38,6 +38,8 @@ exists awk grep ip ping sshd
+ . initialize.sh
+ status=0
+     
++SSHD=`which sshd`
++
+ if [ $# -eq 1 ] ; then
+     childscrpt=$1
+     debug "INFO: The script to be executed in child NS is $childscrpt"
+@@ -58,7 +60,7 @@ ifconfig lo up
+ sleep 2
+ 
+ #starting the sshd inside the child NS
+-if ! sshd -p $PORT; then
++if $SSHD -p $PORT; then
+     debug "INFO: started the sshd @ port no $PORT"
+     sshpid=`ps -ef | grep "sshd -p $PORT" | grep -v grep | awk '{ print $2 ; exit 0} ' `
+ else
+diff --git a/testcases/kernel/containers/netns/common.c b/testcases/kernel/containers/netns/common.c
+index 22d0e99..6d3b02e 100644
+--- a/testcases/kernel/containers/netns/common.c
++++ b/testcases/kernel/containers/netns/common.c
+@@ -48,8 +48,7 @@ int crtchild(char *s1 , char *s2)
+ {
+ 	char *cmd[] = { "--", s1, s2, (char *)0 };
+ 	execve("/bin/sh", cmd, __environ);
+-	printf("The code would not reach here on success\n");
+-	perror("execve");
++	fprintf(stderr, "Failed to execve(%s, %s): %m\n", s1, s2);
+ 	return 1;
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/par_ftp.sh b/testcases/kernel/containers/netns/par_ftp.sh
+index 3bfb47b..bb65db4 100755
+--- a/testcases/kernel/containers/netns/par_ftp.sh
++++ b/testcases/kernel/containers/netns/par_ftp.sh
+@@ -37,6 +37,7 @@ export TST_TOTAL
+     
+     if [ $? = 0 ] ; then
+         tst_resm TINFO "Pinging ChildNS from ParentNS"
++	status=0
+     else
+         tst_resm TFAIL "Error: Unable to ping ChildNS from ParentNS"
+         status=-1
+@@ -45,3 +46,5 @@ export TST_TOTAL
+     if [ $stat != 0 ] ; then
+         status=$stat
+     fi
++
++    exit $status
+diff --git a/testcases/kernel/containers/netns/parent_1.sh b/testcases/kernel/containers/netns/parent_1.sh
+index 8577bf2..32f1a47 100755
+--- a/testcases/kernel/containers/netns/parent_1.sh
++++ b/testcases/kernel/containers/netns/parent_1.sh
+@@ -55,4 +55,4 @@ export TST_TOTAL
+     echo $vnet1 > /tmp/FIFO1
+ 
+     debug "INFO: PARENT_1: End of $0"
+-    exit $status
++    exit 0
+diff --git a/testcases/kernel/containers/netns/parent_2.sh b/testcases/kernel/containers/netns/parent_2.sh
+index 57d3974..f72c16d 100755
+--- a/testcases/kernel/containers/netns/parent_2.sh
++++ b/testcases/kernel/containers/netns/parent_2.sh
+@@ -51,4 +51,4 @@ export TST_TOTAL
+     echo $vnet3 > /tmp/FIFO3
+ 
+     debug "INFO: PARENT-2: End of $0"
+-    exit $status
++    exit 0
 
 ------------------------------------------------------------------------------
-
---00c09f99e29b55650f0485bc1dbd
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---00c09f99e29b55650f0485bc1dbd--
-
