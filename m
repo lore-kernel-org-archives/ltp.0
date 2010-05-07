@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9v2J-0007d7-M8
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:19 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Feng.Xu@windriver.com>) id 1OACyI-0001k9-RK
+	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 02:07:22 +0000
+Received: from mail.windriver.com ([147.11.1.11])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O9v2I-0001IZ-Bc
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:19 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o466mKEo010124
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:48:20 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o466wCDc145904
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:58:12 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o466wBR3001778
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:58:11 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Thu, 06 May 2010 12:28:02 +0530
-Message-Id: <20100506065801.23879.92449.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+	(Exim 4.69) id 1OACyE-00052k-JQ
+	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 02:07:22 +0000
+From: Henry xu <feng.xu@windriver.com>
+In-Reply-To: <20100506065815.23879.4005.sendpatchset@subratamodak.linux.ibm.com>
 References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [08/12 FAILURE] LTPX clock gettime03 fails
+	<20100506065815.23879.4005.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 07 May 2010 10:12:22 +0800
+Message-Id: <1273198342.26977.140.camel@lishuang-desktop>
+Mime-Version: 1.0
+Subject: Re: [LTP] [09/12 FAILURE] LTP timer create04 fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,78 +25,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5219310779845186545=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linus Test Project <ltp-list@lists.sourceforge.net>
-Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
 
---===============5219310779845186545==
-
-Subject: LTP�� clock_gettime03 fails
-
-Issue Description below:
-=======================================
-# ./runltp -s clock_gettime03
-<<<test_output>>>
-clock_gettime03    1  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14):
-Bad address
-clock_gettime03    2  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14):
-Bad address
-clock_gettime03    3  TFAIL  :  failed to produce expected error [expected
-errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
-clock_gettime03    4  TFAIL  :  failed to produce expected error [expected
-errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
-clock_gettime03    5  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14):
-Bad address
-clock_gettime03    6  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14):
-Bad address
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-
-SUZUKI K. POULOSE gave the following patch already. Not sure if it is
-discussed in the mailing list:
---- include/common_timers.h.orig        2010-04-30 12:39:08.000000000 +0000
-+++ include/common_timers.h     2010-04-30 12:39:46.000000000 +0000
-@@ -35,7 +35,8 @@ clock_t clock_list[] = {
-        CLOCK_THREAD_CPUTIME_ID,
-        CLOCK_MONOTONIC_RAW,
- };
--#define MAX_CLOCKS (sizeof(clock_list) / sizeof(*clock_list))
-+// #define MAX_CLOCKS (sizeof(clock_list) / sizeof(*clock_list))
-+#define MAX_CLOCKS 16
-
- const char *get_clock_str(const int clock_id)
- {
-
-
-The above patch fixes the problem. For more info, see linux/time.h for the
-MAX_CLOCKS value.
-
-Regards--
-Subrata
-
-
-
---===============5219310779845186545==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
---===============5219310779845186545==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5219310779845186545==--
+5ZyoIDIwMTAtMDUtMDblm5vnmoQgMTI6MjggKzA1MzDvvIxTdWJyYXRhIE1vZGFr5YaZ6YGT77ya
+Cj4gU3ViamVjdDogTFRQxZsgdGltZXJfY3JlYXRlMDQgZmFpbHMKPiAKPiBJc3N1ZXMgRGVzY3Jp
+cHRpb24gYmVsb3c6Cj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4g
+IyAuL3J1bmx0cCAtcyB0aW1lcl9jcmVhdGUwNAo+IDw8PHRlc3Rfb3V0cHV0Pj4+Cj4gdGltZXJf
+Y3JlYXRlMDQgICAgMSAgVEZBSUwgIDogIGRpZG4ndCBmYWlsIGFzIGV4cGVjdGVkIFtleHBlY3Rl
+ZCBlcnJubyA9IDIyCj4gKEludmFsaWQgYXJndW1lbnQpXTogVEVTVF9FUlJOTz0/Pz8oOTUpOiBP
+cGVyYXRpb24gbm90IHN1cHBvcnRlZAo+IHRpbWVyX2NyZWF0ZTA0ICAgIDIgIFRGQUlMICA6ICBk
+aWRuJ3QgZmFpbCBhcyBleHBlY3RlZCBbZXhwZWN0ZWQgZXJybm8gPSAyMgo+IChJbnZhbGlkIGFy
+Z3VtZW50KV06IFRFU1RfRVJSTk89Pz8/KDk1KTogT3BlcmF0aW9uIG5vdCBzdXBwb3J0ZWQKCkkg
+dGhpbmsgdGhlIEZBSUxzIGFyZSBjYXVzZWQgYnkgTUFYX0NMT0NLUyBpbiBjb21tb25fdGltZXJz
+Lmggbm90IGVxdWFsCnRvIE1BWF9DTE9DS1MgaW4ga2VybmVsLklmIGVxdWFsaXR5LHRoZSBjYXNl
+IGNhbiBiZSBwYXNzZWQuCgpyZWdhcmRzCgo+IHRpbWVyX2NyZWF0ZTA0ICAgIDMgIFRQQVNTICA6
+ICBmYWlsZWQgYXMgZXhwZWN0ZWQ6IFRFU1RfRVJSTk89RUZBVUxUKDE0KTogQmFkCj4gYWRkcmVz
+cwo+IHRpbWVyX2NyZWF0ZTA0ICAgIDQgIFRQQVNTICA6ICBmYWlsZWQgYXMgZXhwZWN0ZWQ6IFRF
+U1RfRVJSTk89RUZBVUxUKDE0KTogQmFkCj4gYWRkcmVzcwo+IHRpbWVyX2NyZWF0ZTA0ICAgIDUg
+IFRQQVNTICA6ICBmYWlsZWQgYXMgZXhwZWN0ZWQ6IFRFU1RfRVJSTk89RUZBVUxUKDE0KTogQmFk
+Cj4gYWRkcmVzcwo+IHRpbWVyX2NyZWF0ZTA0ICAgIDYgIFRQQVNTICA6ICBmYWlsZWQgYXMgZXhw
+ZWN0ZWQ6IFRFU1RfRVJSTk89RUZBVUxUKDE0KTogQmFkCj4gYWRkcmVzcwo+IDw8PGV4ZWN1dGlv
+bl9zdGF0dXM+Pj4KPiBpbml0aWF0aW9uX3N0YXR1cz0ib2siCj4gZHVyYXRpb249MCB0ZXJtaW5h
+dGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0xIGNvcmVmaWxlPW5vCj4gY3V0aW1lPTAg
+Y3N0aW1lPTAKPiA8PDx0ZXN0X2VuZD4+Pgo+IAo+IFNVWlVLSSBLLiBQT1VMT1NFIHNhaWQgdGhh
+dCB0aGUgc2FtZSBwYXRjaCBmb3IgaXNzdWUgIzggd2lsbCBzb2x2ZSB0aGUgcHJvYmxlbSA6LSkK
+PiAKPiBSZWdhcmRzLS0KPiBTdWJyYXRhCj4gCj4gCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4g
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlz
+dCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczov
+L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
