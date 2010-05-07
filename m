@@ -1,39 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OCF0L-0001On-VN
-	for ltp-list@lists.sourceforge.net; Wed, 12 May 2010 16:41:53 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OCF0K-0003Ow-Q2
-	for ltp-list@lists.sourceforge.net; Wed, 12 May 2010 16:41:53 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o4CGX6x2024767
-	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:33:06 -0600
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	o4CGffHI080862
-	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:41:42 -0600
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o4CGfabf013228
-	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:41:36 -0600
-Received: from [9.124.215.218] ([9.124.215.218])
-	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o4CGfXtR013077
-	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:41:35 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1273597941.4875.3.camel@subratamodak.linux.ibm.com>
-References: <20100509182623.15330.94891.sendpatchset@subratamodak.linux.ibm.com>
-	<1273597941.4875.3.camel@subratamodak.linux.ibm.com>
-Date: Wed, 12 May 2010 22:11:32 +0530
-Message-Id: <1273682492.4910.1.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add an Option '-K' to Create dmesg logs for
-	each	test
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OAIsC-00058f-2O
+	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 08:25:28 +0000
+Received: from mail-iw0-f181.google.com ([209.85.223.181])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OAIsA-0007Vt-UK
+	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 08:25:27 +0000
+MIME-Version: 1.0
+In-Reply-To: <1273220740.26977.156.camel@lishuang-desktop>
+References: <1273137244.26977.134.camel@lishuang-desktop>
+	<n2u364299f41005061040yd280662cy81f31fc580af5a86@mail.gmail.com>
+	<1273212126.26977.150.camel@lishuang-desktop>
+	<j2h364299f41005070005m1b0dd61fi385db5c416c67f94@mail.gmail.com>
+	<1273220740.26977.156.camel@lishuang-desktop>
+Date: Fri, 7 May 2010 01:25:20 -0700
+Message-ID: <n2x364299f41005070125g1d0e85f9sfa0d13c78670f561@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] ltp inotify03 testcase failed in version of 20100228
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,206 +28,233 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <ltp-list@lists.sourceforge.net>
+To: Henry xu <feng.xu@windriver.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, 2010-05-11 at 22:42 +0530, Subrata Modak wrote:
-> On Sun, 2010-05-09 at 23:56 +0530, Subrata Modak wrote:
-> > Hi,
-> > 
-> > Recently while running LTP , i found that the system had generated many
-> > kernel messages worth investigating. However, there was a loose gap to
-> > find out which test exactly was responsible for that message.
-> > 
-> > So, i thought it could be worth to create a framework in LTP to log kernel
-> > messages for each test, to pinpoint exact messages created per test, for
-> > better debugging. The following patch adds a option to LTP and runs a
-> > old style script ;-) to achieve that. All this is done at the runltp level
-> > without any distrubance to ltp-pan. Messages can be logged at:
-> > 1) Absolute path(s) as specified by the user, else
-> > 2) Inside $LTPROOT/output/
-> > 
-> > Comments welcome.
-> > 
-> > Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
-> 
-> Is it that nobody has any objection to this patch ;-)
-
-So, i added this option inside LTP :-)
-
-Regards--
-Subrata
-
-> 
-> Regards--
-> Subrata
-> 
-> > ---
-> > 
-> > --- runltp.orig	2010-05-09 23:15:27.000000000 +0530
-> > +++ runltp	2010-05-09 23:44:53.000000000 +0530
-> > @@ -131,6 +131,8 @@ usage() 
-> >      -h              Help. Prints all available options.
-> >      -i NUM_PROCS    Run LTP under additional background Load on IO Bus
-> >                      [NUM_PROCS   = no. of processes creating IO Bus Load by spinning over sync()]
-> > +    -K DMESG_LOG_DIR
-> > +			Log Kernel messages generated for each test cases inside this directory 
-> >      -l LOGFILE      Log results of test in a logfile.
-> >      -m NUM_PROCS,CHUNKS,BYTES,HANGUP_FLAG
-> >                      Run LTP under additional background Load on Main memory (Seperate by comma)
-> > @@ -178,6 +180,7 @@ main()
-> >      local ALT_DIR_RES=0
-> >      local ALT_HTML_OUT=0
-> >      local ALT_EMAIL_OUT=0
-> > +    local ALT_DMESG_OUT=0
-> >      local RUN_NETEST=0
-> >      local RUN_REPEATED=0
-> >      local QUIET_MODE=""
-> > @@ -198,6 +201,7 @@ main()
-> >      local OUTPUTFILE=""
-> >      local HTMLFILE_NAME=""
-> >      local HTMLFILE=""
-> > +    local DMESG_DIR=""
-> >      local EMAIL_TO=""
-> >      local SCENFILES=""
-> >      local TAG_RESTRICT_STRING=""
-> > @@ -205,7 +209,7 @@ main()
-> >      local DEFAULT_FILE_NAME_GENERATION_TIME=`date +"%Y_%b_%d-%Hh_%Mm_%Ss"`
-> >      version_date=$(cat "$LTPROOT/Version")
-> > 
-> > -    while getopts a:c:C:d:D:f:F:ehi:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B: arg
-> > +    while getopts a:c:C:d:D:f:F:ehi:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B: arg
-> >      do  case $arg in
-> >          a)  EMAIL_TO=$OPTARG
-> >              ALT_EMAIL_OUT=1;;
-> > @@ -308,6 +312,15 @@ main()
-> >              $LTPROOT/testcases/bin/genload --io $NUM_PROCS >/dev/null 2>&1 &
-> >              GENLOAD=1 ;;
-> >      
-> > +        K)  
-> > +	    case $OPTARG in
-> > +        	   /*)
-> > +                	DMESG_DIR="$OPTARG-dmesg-output-`echo $$-``date +%X | tr -d ' '`";;
-> > +	            *)
-> > +        	        DMESG_DIR="$LTPROOT/output/$OPTARG-dmesg-output-`echo $$-``date +%X | tr -d ' '`";;
-> > +	    esac
-> > +            mkdir -p $DMESG_DIR
-> > +            ALT_DMESG_OUT=1;;
-> >          l)      
-> >              LOGFILE_NAME="$OPTARG"
-> >              case $OPTARG in
-> > @@ -821,6 +834,13 @@ main()
-> >  		fi
-> >  	fi
-> > 
-> > +	if [ $ALT_DMESG_OUT -eq 1 ] ; then
-> > +		#We want to print dmesg output for each test,lets do the trick inside the script
-> > +		echo Enabling dmesg output logging for each test...
-> > +		${LTPROOT}/bin/create_dmesg_entries_for_each_test.pl ${TMP}/alltests $DMESG_DIR > ${TMP}/alltests.tmp
-> > +		cp ${TMP}/alltests.tmp ${TMP}/alltests
-> > +		rm -rf ${TMP}/alltests.tmp
-> > +	fi
-> >      # Some tests need to run inside the "bin" directory.
-> >      cd "${LTPROOT}/testcases/bin"
-> >      "${LTPROOT}/bin/ltp-pan" $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE
-> > diff -uprN tools.orig/create_dmesg_entries_for_each_test.pl tools/create_dmesg_entries_for_each_test.pl
-> > --- tools.orig/create_dmesg_entries_for_each_test.pl	1970-01-01 05:30:00.000000000 +0530
-> > +++ tools/create_dmesg_entries_for_each_test.pl	2010-05-09 23:38:10.000000000 +0530
-> > @@ -0,0 +1,74 @@
-> > +#!/usr/bin/perl
-> > +################################################################################
-> > +##                                                                            ##
-> > +## Copyright (c) International Business Machines  Corp., 2010                 ##
-> > +##                                                                            ##
-> > +## This program is free software;  you can redistribute it and/or modify      ##
-> > +## it under the terms of the GNU General Public License as published by       ##
-> > +## the Free Software Foundation; either version 2 of the License, or          ##
-> > +## (at your option) any later version.                                        ##
-> > +##                                                                            ##
-> > +## This program is distributed in the hope that it will be useful, but        ##
-> > +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-> > +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-> > +## for more details.                                                          ##
-> > +##                                                                            ##
-> > +## You should have received a copy of the GNU General Public License          ##
-> > +## along with this program;  if not, write to the Free Software               ##
-> > +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
-> > +##                                                                            ##
-> > +################################################################################
-> > +#                                                                             ##
-> > +# File :        create_dmesg_entries_for_each_test.pl			      ##
-> > +#                                                                             ##
-> > +# Usage:        create_dmesg_entries_for_each_test.pl\			      ##
-> > +#		<LTP_COMMAND_FILE> <DMESG_DIRECTORY>			      ##
-> > +#                                                                             ##
-> > +# Description:  This is a simple perl script which will take ltp command file ##
-> > +#		as input and then create a final command file which will have ##
-> > +#		the following entries for each test tag:		      ##
-> > +#		<tag_name__with_dmesg_entry> <test_binary_name>;\	      ##
-> > +#		<save_dmesg_logs>			      		      ##
-> > +#                                                                             ##
-> > +# Author:       Subrata Modak <subrata@linux.vnet.ibm.com>                    ##
-> > +#                                                                             ##
-> > +# History:      May 09 2010 - Created - Subrata Modak.                        ##
-> > +################################################################################
-> > +
-> > +my $command_file	= shift (@ARGV) || syntax();
-> > +my $dmesg_dir		= shift (@ARGV) || syntax();
-> > +
-> > +sub syntax() {
-> > +	print "syntax: create_dmesg_entries_for_each_test.pl <LTP_COMMAND_FILE> <DMESG_DIRECTORY>\n";
-> > +	exit (1);
-> > +}
-> > +
-> > +
-> > +open (FILE, $command_file) || die "Cannot open file: $command_file\n";
-> > +while ($line = <FILE>) {
-> > +	if ($line =~ /^#/) {
-> > +		print "$line";
-> > +		next;
-> > +	}
-> > +	if ($line =~ /^\n$/) {
-> > +		next;
-> > +	}
-> > +	chomp $line;
-> > +	@tag_and_actual_command = split(/\ /, $line);
-> > +
-> > +	my $token_counter = 0;
-> > +	my $tag_name = "";
-> > +	foreach my $token (@tag_and_actual_command) {
-> > +		if ($token_counter == 0 ) {
-> > +			print $token . "__with_dmesg_entry" . " ";
-> > +			print "dmesg -c 1>/dev/null 2>/dev/null;" . " ";
-> > +			$token_counter++;
-> > +			$tag_name = $token;
-> > +			next;
-> > +		}
-> > +		print " " . $token . " ";
-> > +	}
-> > +	print "; dmesg > $dmesg_dir/$tag_name.dmesg.log \n";
-> > +}
-> > +close (FILE);
-> > +
-> > 
-> > ---
-> > Regards--
-> > Subrata
-> > 
-> 
-> 
-> ------------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCBNYXkgNywgMjAxMCBhdCAxOjI1IEFNLCBIZW5yeSB4dSA8ZmVuZy54dUB3aW5kcml2
+ZXIuY29tPiB3cm90ZToKPiDlnKggMjAxMC0wNS0wN+S6lOeahCAwMDowNSAtMDcwMO+8jEdhcnJl
+dHQgQ29vcGVy5YaZ6YGT77yaCj4+IE9uIFRodSwgTWF5IDYsIDIwMTAgYXQgMTE6MDIgUE0sIEhl
+bnJ5IHh1IDxmZW5nLnh1QHdpbmRyaXZlci5jb20+IHdyb3RlOgo+PiA+IOWcqCAyMDEwLTA1LTA2
+5Zub55qEIDEwOjQwIC0wNzAw77yMR2FycmV0dCBDb29wZXLlhpnpgZPvvJoKPj4gPj4gT24gVGh1
+LCBNYXkgNiwgMjAxMCBhdCAyOjE0IEFNLCBIZW5yeSB4dSA8ZmVuZy54dUB3aW5kcml2ZXIuY29t
+PiB3cm90ZToKPj4gPj4gPiBIaSxhbGwKPj4gPj4gPgo+PiA+PiA+IEkgdGVzdCBpbm90aWZ5MDMg
+aW4gwqBwcGMgcGxhdGZvcm0gYW5kIHByb2R1Y3QgdHdvIGZhaWxzIGFzCj4+ID4+ID4gYmVsb3cu
+Cj4+ID4+ID4gPDw8dGVzdF9zdGFydD4+Pgo+PiA+PiA+IHRhZz1pbm90aWZ5MDMgc3RpbWU9MTI3
+MjYyNjM4MQo+PiA+PiA+IGNtZGxpbmU9Imlub3RpZnkwMyAtRCAvZGV2L2xvb3AwIC1UIGV4dDMi
+Cj4+ID4+ID4gY29udGFjdHM9IiIKPj4gPj4gPiBhbmFseXNpcz1leGl0Cj4+ID4+ID4gPDw8dGVz
+dF9vdXRwdXQ+Pj4KPj4gPj4gPiBpbm90aWZ5MDMgwqAgwqAwIMKgVElORk8gwqA6IMKgbW91bnQg
+L2Rldi9sb29wMCB0byBtbnRfMTgwNjcgZnN0eXBlPWV4dDMKPj4gPj4gPiBpbm90aWZ5MDMgwqAg
+wqAwIMKgVElORk8gwqA6IMKgdW1vdW50IC9kZXYvbG9vcDAKPj4gPj4gPiBpbm90aWZ5MDMgwqAg
+wqAxIMKgVEZBSUwgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9ODAwMCAoZXhwZWN0ZWQgMjAw
+MCkKPj4gPj4gPiBjb29raWU9MCBsZW49MAo+PiA+PiA+IGlub3RpZnkwMyDCoCDCoDIgwqBURkFJ
+TCDCoDogwqBkb24ndCBnZXQgZXZlbnQ6IG1hc2s9ODAwMAo+PiA+PiA+IGlub3RpZnkwMyDCoCDC
+oDMgwqBUUEFTUyDCoDogwqBpbm90aWZ5X3JtX3dhdGNoICg1LCAxKSByZXR1cm4gLTEgZXJybm89
+MjIgOgo+PiA+PiA+IEludmFsaWQgYXJndW1lbnQKPj4gPj4gPgo+PiA+PiA+Cj4+ID4+ID4gd2hl
+biBJIHR5cGUgIi4vcnVubHRwIC1zIGlub3RpZnkiIGZvciBpbm90aWZ5IHRlc3QsIHRoZSBpbm90
+aWZ5MDMgdGVzdAo+PiA+PiA+IGlzIMKgbm90IGJlZW4gZXhlY3V0ZWQuVGhlIGluZm9ybWF0aW9u
+IGlzIGFzIGJlbG93Lgo+PiA+PiA+Cj4+ID4+ID4gSSBsb29rIGludG8gdGhlIGNvZGUgLGhvd2V2
+ZXIgSSBjb3VsZCBub3QgZ2V0IHdoeSBtYXNrIGlzIGVxdWFsIHRvCj4+ID4+ID4gODAwMC5Db3Vs
+ZCBzb21lb25lIGdpdmUgeW91ciBjb21tZW50cyBvbiB0aGlzIGNhc2U/Cj4+ID4+ID4KPj4gPj4g
+PiB0aGFua3MgaW4gYWR2YW5jZSEKPj4gPj4gPgo+PiA+PiA+ID09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4gPj4gPiBZb3Ug
+Y2FuIHNwZWNpZnkgaXQgd2l0aCBvcHRpb24gLWIKPj4gPj4gPiBDT01NQU5EOiDCoCDCoC9vcHQv
+bHRwLWZ1bGwvYmluL2x0cC1wYW4gwqAtZSAtUyDCoCAtYSAyNjY5MiDCoCDCoCAtbiAyNjY5MiDC
+oC1wCj4+ID4+ID4gLWYgL3RtcC9sdHAtclVRVWsyNjY5OC9hbGx0ZXN0cwo+PiA+PiA+IC1sIC9v
+cHQvbHRwLWZ1bGwvcmVzdWx0cy9MVFBfUlVOX09OLTE5NzBfSmFuXzAyLTAyaF81MW1fNTJzLmxv
+Zwo+PiA+PiA+IC1DIC9vcHQvbHRwLWZ1bGwvb3V0cHV0L0xUUF9SVU5fT04tMTk3MF9KYW5fMDIt
+MDJoXzUxbV81MnMuZmFpbGVkCj4+ID4+ID4gSU5GTzogUmVzdHJpY3RlZCB0byBpbm90aWZ5Cj4+
+ID4+ID4gTE9HIEZpbGU6IC9vcHQvbHRwLWZ1bGwvcmVzdWx0cy9MVFBfUlVOX09OLTE5NzBfSmFu
+XzAyLTAyaF81MW1fNTJzLmxvZwo+PiA+PiA+IEZBSUxFRCBDT01NQU5ECj4+ID4+ID4gRmlsZTog
+L29wdC9sdHAtZnVsbC9vdXRwdXQvTFRQX1JVTl9PTi0xOTcwX0phbl8wMi0wMmhfNTFtXzUycy5m
+YWlsZWQKPj4gPj4gPiBSdW5uaW5nIHRlc3RzLi4uLi4uLgo+PiA+PiA+IDw8PHRlc3Rfc3RhcnQ+
+Pj4KPj4gPj4gPiB0YWc9aW5vdGlmeV9pbml0MV8wMSBzdGltZT05NjcxMwo+PiA+PiA+IGNtZGxp
+bmU9Imlub3RpZnlfaW5pdDFfMDEiCj4+ID4+ID4gY29udGFjdHM9IiIKPj4gPj4gPiBhbmFseXNp
+cz1leGl0Cj4+ID4+ID4gPDw8dGVzdF9vdXRwdXQ+Pj4KPj4gPj4gPiBpbm90aWZ5X2luaXQxXzAx
+IMKgIMKgMSDCoFRQQVNTIMKgOiDCoGlub3RpZnlfaW5pdDEoT19DTE9FWEVDKSBQQVNTRUQKPj4g
+Pj4gPiA8PDxleGVjdXRpb25fc3RhdHVzPj4+Cj4+ID4+ID4gaW5pdGlhdGlvbl9zdGF0dXM9Im9r
+Igo+PiA+PiA+IGR1cmF0aW9uPTEgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25f
+aWQ9MCBjb3JlZmlsZT1ubwo+PiA+PiA+IGN1dGltZT0wIGNzdGltZT0wCj4+ID4+ID4gPDw8dGVz
+dF9lbmQ+Pj4KPj4gPj4gPiA8PDx0ZXN0X3N0YXJ0Pj4+Cj4+ID4+ID4gdGFnPWlub3RpZnlfaW5p
+dDFfMDIgc3RpbWU9OTY3MTQKPj4gPj4gPiBjbWRsaW5lPSJpbm90aWZ5X2luaXQxXzAyIgo+PiA+
+PiA+IGNvbnRhY3RzPSIiCj4+ID4+ID4gYW5hbHlzaXM9ZXhpdAo+PiA+PiA+IDw8PHRlc3Rfb3V0
+cHV0Pj4+Cj4+ID4+ID4gaW5vdGlmeV9pbml0MV8wMiDCoCDCoDEgwqBUUEFTUyDCoDogwqBpbm90
+aWZ5X2luaXQxKElOX05PTkJMT0NLKSBQQVNTRUQKPj4gPj4gPiA8PDxleGVjdXRpb25fc3RhdHVz
+Pj4+Cj4+ID4+ID4gaW5pdGlhdGlvbl9zdGF0dXM9Im9rIgo+PiA+PiA+IGR1cmF0aW9uPTAgdGVy
+bWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9MCBjb3JlZmlsZT1ubwo+PiA+PiA+
+IGN1dGltZT0wIGNzdGltZT0wCj4+ID4+ID4gPDw8dGVzdF9lbmQ+Pj4KPj4gPj4gPiA8PDx0ZXN0
+X3N0YXJ0Pj4+Cj4+ID4+ID4gdGFnPWlub3RpZnkwMSBzdGltZT05NjcxNAo+PiA+PiA+IGNtZGxp
+bmU9Imlub3RpZnkwMSIKPj4gPj4gPiBjb250YWN0cz0iIgo+PiA+PiA+IGFuYWx5c2lzPWV4aXQK
+Pj4gPj4gPiA8PDx0ZXN0X291dHB1dD4+Pgo+PiA+PiA+IGlub3RpZnkwMSDCoCDCoDEgwqBUUEFT
+UyDCoDogwqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz00IGNvb2tpZT0wIGxlbj0wCj4+ID4+ID4gaW5v
+dGlmeTAxIMKgIMKgMiDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNrPTIwIGNvb2tp
+ZT0wIGxlbj0wCj4+ID4+ID4gaW5vdGlmeTAxIMKgIMKgMyDCoFRQQVNTIMKgOiDCoGdldCBldmVu
+dDogd2Q9MSBtYXNrPTEgY29va2llPTAgbGVuPTAKPj4gPj4gPiBpbm90aWZ5MDEgwqAgwqA0IMKg
+VFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9MTAgY29va2llPTAgbGVuPTAKPj4gPj4g
+PiBpbm90aWZ5MDEgwqAgwqA1IMKgVFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9MjAg
+Y29va2llPTAgbGVuPTAKPj4gPj4gPiBpbm90aWZ5MDEgwqAgwqA2IMKgVFBBU1MgwqA6IMKgZ2V0
+IGV2ZW50OiB3ZD0xIG1hc2s9MiBjb29raWU9MCBsZW49MAo+PiA+PiA+IGlub3RpZnkwMSDCoCDC
+oDcgwqBUUEFTUyDCoDogwqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz04IGNvb2tpZT0wIGxlbj0wCj4+
+ID4+ID4gPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgo+PiA+PiA+IGluaXRpYXRpb25fc3RhdHVzPSJv
+ayIKPj4gPj4gPiBkdXJhdGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9u
+X2lkPTAgY29yZWZpbGU9bm8KPj4gPj4gPiBjdXRpbWU9MCBjc3RpbWU9MAo+PiA+PiA+IDw8PHRl
+c3RfZW5kPj4+Cj4+ID4+ID4gPDw8dGVzdF9zdGFydD4+Pgo+PiA+PiA+IHRhZz1pbm90aWZ5MDIg
+c3RpbWU9OTY3MTQKPj4gPj4gPiBjbWRsaW5lPSJpbm90aWZ5MDIiCj4+ID4+ID4gY29udGFjdHM9
+IiIKPj4gPj4gPiBhbmFseXNpcz1leGl0Cj4+ID4+ID4gPDw8dGVzdF9vdXRwdXQ+Pj4KPj4gPj4g
+PiBpbm90aWZ5MDIgwqAgwqAxIMKgVFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9NDAw
+MDAwMDQgY29va2llPTAgbGVuPTAKPj4gPj4gPiBuYW1lPSIiCj4+ID4+ID4gaW5vdGlmeTAyIMKg
+IMKgMiDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNrPTEwMCBjb29raWU9MCBsZW49
+MTYKPj4gPj4gPiBuYW1lPSJ0ZXN0X2ZpbGUxIgo+PiA+PiA+IGlub3RpZnkwMiDCoCDCoDMgwqBU
+UEFTUyDCoDogwqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0yMCBjb29raWU9MCBsZW49MTYKPj4gPj4g
+PiBuYW1lPSJ0ZXN0X2ZpbGUxIgo+PiA+PiA+IGlub3RpZnkwMiDCoCDCoDQgwqBUUEFTUyDCoDog
+wqBnZXQgZXZlbnQ6IHdkPTEgbWFzaz04IGNvb2tpZT0wIGxlbj0xNgo+PiA+PiA+IG5hbWU9InRl
+c3RfZmlsZTEiCj4+ID4+ID4gaW5vdGlmeTAyIMKgIMKgNSDCoFRQQVNTIMKgOiDCoGdldCBldmVu
+dDogd2Q9MSBtYXNrPTQwIGNvb2tpZT00NTUzIGxlbj0xNgo+PiA+PiA+IG5hbWU9InRlc3RfZmls
+ZTEiCj4+ID4+ID4gaW5vdGlmeTAyIMKgIMKgNiDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9
+MSBtYXNrPTgwIGNvb2tpZT00NTUzIGxlbj0xNgo+PiA+PiA+IG5hbWU9InRlc3RfZmlsZTIiCj4+
+ID4+ID4gaW5vdGlmeTAyIMKgIMKgNyDCoFRQQVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNr
+PTgwMCBjb29raWU9MCBsZW49MAo+PiA+PiA+IG5hbWU9IiIKPj4gPj4gPiBpbm90aWZ5MDIgwqAg
+wqA4IMKgVFBBU1MgwqA6IMKgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9MjAwIGNvb2tpZT0wIGxlbj0x
+Ngo+PiA+PiA+IG5hbWU9InRlc3RfZmlsZTIiCj4+ID4+ID4gaW5vdGlmeTAyIMKgIMKgOSDCoFRQ
+QVNTIMKgOiDCoGdldCBldmVudDogd2Q9MSBtYXNrPTgwMCBjb29raWU9MCBsZW49MAo+PiA+PiA+
+IG5hbWU9IiIKPj4gPj4gPiBpbmNyZW1lbnRpbmcgc3RvcAo+PiA+PiA+IDw8PGV4ZWN1dGlvbl9z
+dGF0dXM+Pj4KPj4gPj4gPiBpbml0aWF0aW9uX3N0YXR1cz0ib2siCj4+ID4+ID4gZHVyYXRpb249
+MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0wIGNvcmVmaWxlPW5vCj4+
+ID4+ID4gY3V0aW1lPTAgY3N0aW1lPTAKPj4gPj4gPiA8PDx0ZXN0X2VuZD4+Pgo+PiA+PiA+IElO
+Rk86IGx0cC1wYW4gcmVwb3J0ZWQgYWxsIHRlc3RzIFBBU1MKPj4gPj4gPiBMVFAgVmVyc2lvbjog
+TFRQLTIwMTAwMjI4Cj4+ID4+Cj4+ID4+IMKgIMKgIEkgc2F3IHRoaXMgZmFpbHVyZSBhcyB3ZWxs
+IG9uIHBvd2VycGMgd2l0aCAyLjYuMjQgd2hlbiBJIHdhcwo+PiA+PiBydW5uaW5nIExUUCBvbiBh
+IHJlZ3VsYXIgYmFzaXMuIEkgbmV2ZXIgbG9va2VkIGludG8gd2h5IGl0IHdhcyBhbgo+PiA+PiBp
+c3N1ZSBlaXRoZXIuCj4+ID4+IFRoYW5rcywKPj4gPj4gLUdhcnJldHQKPj4gPgo+PiA+IEkgdXNl
+ICJzdHJhY2UgdG9vbCIgZm9yIHRoZSBjYXNlIHRlc3QsdGhlIGluZm9ybWF0aW9uIGlzIGFzIGJs
+b3cuCj4+ID4KPj4gPiByb290QFNCQzg1NjA6L29wdC9sdHAtZnVsbD4gc3RyYWNlIC4vdGVzdGNh
+c2VzL2Jpbi9pbm90aWZ5MDMKPj4gPiAtRCAvZGV2L2xvb3AwIC1UIGV4dDMKPj4gPiBleGVjdmUo
+Ii4vdGVzdGNhc2VzL2Jpbi9pbm90aWZ5MDMiLCBbIi4vdGVzdGNhc2VzL2Jpbi9pbm90aWZ5MDMi
+LCAiLUQiLAo+PiA+ICIvZGV2L2xvb3AwIiwgIi1UIiwgImV4dDMiXSwgWy8qIDEzIHZhcnMgKi9d
+KSA9IDAKPj4gPiBicmsoMCkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqA9IDB4MTAwMjYwMDAKPj4gPiBhY2Nlc3MoIi9ldGMvbGQuc28ucHJlbG9hZCIs
+IFJfT0spIMKgIMKgIMKgPSAtMSBFTk9FTlQgKE5vIHN1Y2ggZmlsZSBvcgo+PiA+IGRpcmVjdG9y
+eSkKPj4gPiBvcGVuKCIvZXRjL2xkLnNvLmNhY2hlIiwgT19SRE9OTFkpIMKgIMKgIMKgPSAtMSBF
+Tk9FTlQgKE5vIHN1Y2ggZmlsZSBvcgo+PiA+IGRpcmVjdG9yeSkKPj4gPiBvcGVuKCIvbGliL3Rs
+cy9wcGM4NTQwL2xpYmMuc28uNiIsIE9fUkRPTkxZKSA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxl
+Cj4+ID4gb3IgZGlyZWN0b3J5KQo+PiA+IHN0YXQ2NCgiL2xpYi90bHMvcHBjODU0MCIsIDB4YmY5
+NTIwMDgpIMKgPSAtMSBFTk9FTlQgKE5vIHN1Y2ggZmlsZSBvcgo+PiA+IGRpcmVjdG9yeSkKPj4g
+PiBvcGVuKCIvbGliL3Rscy9saWJjLnNvLjYiLCBPX1JET05MWSkgwqAgwqA9IC0xIEVOT0VOVCAo
+Tm8gc3VjaCBmaWxlIG9yCj4+ID4gZGlyZWN0b3J5KQo+PiA+IHN0YXQ2NCgiL2xpYi90bHMiLCAw
+eGJmOTUyMDA4KSDCoCDCoCDCoCDCoCDCoD0gLTEgRU5PRU5UIChObyBzdWNoIGZpbGUgb3IKPj4g
+PiBkaXJlY3RvcnkpCj4+ID4gb3BlbigiL2xpYi9wcGM4NTQwL2xpYmMuc28uNiIsIE9fUkRPTkxZ
+KSA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxlIG9yCj4+ID4gZGlyZWN0b3J5KQo+PiA+IHN0YXQ2
+NCgiL2xpYi9wcGM4NTQwIiwgMHhiZjk1MjAwOCkgwqAgwqAgwqA9IC0xIEVOT0VOVCAoTm8gc3Vj
+aCBmaWxlIG9yCj4+ID4gZGlyZWN0b3J5KQo+PiA+IG9wZW4oIi9saWIvbGliYy5zby42IiwgT19S
+RE9OTFkpIMKgIMKgIMKgIMKgPSAzCj4+ID4gcmVhZCgzLCAiXDE3N0VMRlwxXDJcMVwwXDBcMFww
+XDBcMFwwXDBcMFwwXDNcMFwyNFwwXDBcMFwxXDE3XDM0NVwzNTRcMzE0Cj4+ID4gXDBcMFwwMDA0
+Ii4uLiwgNTEyKSA9IDUxMgo+PiA+IGZzdGF0NjQoMywge3N0X21vZGU9U19JRlJFR3wwNzU1LCBz
+dF9zaXplPTE0NDk2NTIsIC4uLn0pID0gMAo+PiA+IG1tYXAoTlVMTCwgNDA5NiwgUFJPVF9SRUFE
+fFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1PVVMsIC0xLCAwKQo+PiA+ID0gMHg0
+ODAwMDAwMAo+PiA+IG1tYXAoMHhmZTQwMDAwLCAxNTE2MTY4LCBQUk9UX1JFQUR8UFJPVF9FWEVD
+LCBNQVBfUFJJVkFURXxNQVBfREVOWVdSSVRFLAo+PiA+IDMsIDApID0gMHhmZTQwMDAwCj4+ID4g
+bXByb3RlY3QoMHhmZjliMDAwLCA2NTUzNiwgUFJPVF9OT05FKSDCoCA9IDAKPj4gPiBtbWFwKDB4
+ZmZhYjAwMCwgMjA0ODAsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfRklY
+RUR8Cj4+ID4gTUFQX0RFTllXUklURSwgMywgMHgxNWIwMDApID0gMHhmZmFiMDAwCj4+ID4gbW1h
+cCgweGZmYjAwMDAsIDg4NDAsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBf
+RklYRUR8Cj4+ID4gTUFQX0FOT05ZTU9VUywgLTEsIDApID0gMHhmZmIwMDAwCj4+ID4gY2xvc2Uo
+MykgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqA9IDAKPj4g
+PiBtbWFwKE5VTEwsIDQwOTYsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBf
+QU5PTllNT1VTLCAtMSwgMCkKPj4gPiA9IDB4NDgwMDEwMDAKPj4gPiBtcHJvdGVjdCgweGZmYWIw
+MDAsIDE2Mzg0LCBQUk9UX1JFQUQpIMKgID0gMAo+PiA+IG1wcm90ZWN0KDB4ZmZlZTAwMCwgNDA5
+NiwgUFJPVF9SRUFEKSDCoCDCoD0gMAo+PiA+IGJyaygwKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoD0gMHgxMDAyNjAwMAo+PiA+IGJyaygweDEwMDQ3
+MDAwKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCA9IDB4MTAwNDcwMDAKPj4g
+PiBydF9zaWdhY3Rpb24oU0lHSFVQLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lH
+X0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdJTlQsIHsweDEw
+MDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+
+ID4gcnRfc2lnYWN0aW9uKFNJR1FVSVQsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtT
+SUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR0lMTCwgezB4
+MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAK
+Pj4gPiBydF9zaWdhY3Rpb24oU0lHVFJBUCwgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwg
+e1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHQUJSVCwg
+ezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9
+IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHQlVTLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9
+LCB7U0lHX0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdGUEUs
+IHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4g
+PSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1VTUjEsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFS
+VH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1NF
+R1YsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+
+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1VTUjIsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVT
+VEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJ
+R1BJUEUsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgp
+Cj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR0FMUk0sIHsweDEwMDA0MjI0LCBbXSwgU0Ff
+UkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9u
+KFNJR1RFUk0sIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0s
+IDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1NUS0ZMVCwgezB4MTAwMDQyMjQsIFtd
+LCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwKPj4gPiA4KSA9IDAKPj4gPiBydF9zaWdh
+Y3Rpb24oU0lHQ0hMRCwgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtd
+LCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHVFNUUCwgezB4MTAwMDQyMjQs
+IFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9z
+aWdhY3Rpb24oU0lHVFRJTiwgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkws
+IFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHVFRPVSwgezB4MTAwMDQy
+MjQsIFtdLCBTQV9SRVNUQVJUfSwge1NJR19ERkwsIFtdLCAwfSwgOCkKPj4gPiA9IDAKPj4gPiBy
+dF9zaWdhY3Rpb24oU0lHVVJHLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RG
+TCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdYQ1BVLCB7MHgxMDAw
+NDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+
+IHJ0X3NpZ2FjdGlvbihTSUdYRlNaLCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lH
+X0RGTCwgW10sIDB9LCA4KQo+PiA+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdWVEFMUk0sIHsw
+eDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0sIHtTSUdfREZMLCBbXSwgMH0sCj4+ID4gOCkgPSAw
+Cj4+ID4gcnRfc2lnYWN0aW9uKFNJR1BST0YsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFSVH0s
+IHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1dJTkNI
+LCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LAo+PiA+IDgp
+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdJTywgezB4MTAwMDQyMjQsIFtdLCBTQV9SRVNUQVJU
+fSwge1NJR19ERkwsIFtdLCAwfSwgOCkgPQo+PiA+IDAKPj4gPiBydF9zaWdhY3Rpb24oU0lHUFdS
+LCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LCA4KQo+PiA+
+ID0gMAo+PiA+IHJ0X3NpZ2FjdGlvbihTSUdTWVMsIHsweDEwMDA0MjI0LCBbXSwgU0FfUkVTVEFS
+VH0sIHtTSUdfREZMLCBbXSwgMH0sIDgpCj4+ID4gPSAwCj4+ID4gcnRfc2lnYWN0aW9uKFNJR1JU
+XzE2LCB7MHgxMDAwNDIyNCwgW10sIFNBX1JFU1RBUlR9LCB7U0lHX0RGTCwgW10sIDB9LAo+PiA+
+IDgpID0gMAo+PiA+IGdldHBpZCgpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgPSAyNzQyNgo+PiA+IG1rZGlyKCIvdG1wL2lub1UzWmUwVCIsIDA3MDApIMKg
+IMKgIMKgIMKgIMKgID0gMAo+PiA+IGdldGdpZCgpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgPSAwCj4+ID4gY2hvd24oIi90bXAvaW5vVTNaZTBUIiwgLTEs
+IDApIMKgIMKgIMKgIMKgIMKgPSAwCj4+ID4gY2htb2QoIi90bXAvaW5vVTNaZTBUIiwgMDc3Nykg
+wqAgwqAgwqAgwqAgwqAgPSAwCj4+ID4gY2hkaXIoIi90bXAvaW5vVTNaZTBUIikgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgPSAwCj4+ID4gbWtkaXIoIm1udF8yNzQyNiIsIDA3NTApIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgPSAwCj4+ID4gZnN0YXQ2NCgxLCB7c3RfbW9kZT1TX0lGQ0hSfDA2MjAs
+IHN0X3JkZXY9bWFrZWRldig1LCAxKSwgLi4ufSkgPSAwCj4+ID4gaW9jdGwoMSwgVENHRVRTLCB7
+Qjk2MDAgb3Bvc3QgaXNpZyBpY2Fub24gZWNobyAuLi59KSA9IDAKPj4gPiBtbWFwKE5VTEwsIDQw
+OTYsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTLCAtMSwg
+MCkKPj4gPiA9IDB4NDgwMDIwMDAKPj4gPiB3cml0ZSgxLCAiaW5vdGlmeTAzIMKgIMKgMCDCoElO
+Rk8gwqA6IMKgbW91bnQgLyIuLi4sIDY3aW5vdGlmeTAzIMKgIMKgMAo+PiA+IElORk8gwqA6IMKg
+bW91bnQgL2Rldi9sb29wMCB0byBtbnRfMjc0MjYgZnN0eXBlPWV4dDMKPj4gPiApID0gNjcKPj4g
+PiBtb3VudCgiL2Rldi9sb29wMCIsICJtbnRfMjc0MjYiLCAiZXh0MyIsIDAsIE5VTEwpID0gMAo+
+PiA+IG9wZW4oIm1udF8yNzQyNi90ZmlsZV8yNzQyNiIsIE9fUkRXUnxPX0NSRUFULCAwNzAwKSA9
+IDMKPj4gPiB3cml0ZSgzLCAibSIsIDEpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgPSAxCj4+ID4gY2xvc2UoMykgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqA9IDAKPj4gPiBpbm90aWZ5X2luaXQoKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoD0gMwo+PiA+IGlub3RpZnlfYWRkX3dhdGNoKDMsICJtbnRfMjc0MjYv
+dGZpbGVfMjc0MjYiLCBJTl9BQ0NFU1N8SU5fTU9ESUZZfAo+PiA+IElOX0FUVFJJQnxJTl9DTE9T
+RV9XUklURXxJTl9DTE9TRV9OT1dSSVRFfElOX09QRU58SU5fTU9WRURfRlJPTXwKPj4gPiBJTl9N
+T1ZFRF9UT3xJTl9DUkVBVEV8SU5fREVMRVRFfElOX0RFTEVURV9TRUxGfElOX01PVkVfU0VMRikg
+PSAxCj4+ID4gd3JpdGUoMSwgImlub3RpZnkwMyDCoCDCoDAgwqBJTkZPIMKgOiDCoHVtb3VudCAi
+Li4uLCA0M2lub3RpZnkwMyDCoCDCoDAKPj4gPiBJTkZPIMKgOiDCoHVtb3VudCAvZGV2L2xvb3Aw
+Cj4+ID4gKSA9IDQzCj4+ID4gb2xkdW1vdW50KCJtbnRfMjc0MjYiKSDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoD0gMAo+PiA+IHJlYWQoMywgIlwwXDBcMFwxXDBcMFwyMDBcMFwwXDBcMFwwXDBc
+MFwwXDAiLCAzMjc2OCkgPSAxNgo+PiA+IHdyaXRlKDEsICJpbm90aWZ5MDMgwqAgwqAxIMKgRkFJ
+TCDCoDogwqBnZXQgZXZlIi4uLiwgODJpbm90aWZ5MDMgwqAgwqAxCj4+ID4gRkFJTCDCoDogwqBn
+ZXQgZXZlbnQ6IHdkPTEgbWFzaz04MDAwIChleHBlY3RlZCAyMDAwKSBjb29raWU9MCBsZW49MAo+
+PiA+ICkgPSA4Mgo+Pgo+PiBUaGlzIGlzIHRoZSByb290IGNhdXNlIGZvciB0aGUgZmFpbHVyZS4g
+MHgyMDAwIGNvcnJlc3BvbmRzIHRvOgo+Pgo+PiAjZGVmaW5lIElOX1VOTU9VTlQgwqAgwqAgwqAg
+wqAgwqAgwqAweDAwMDAyMDAwIMKgIMKgIMKgLyogQmFja2luZyBmcyB3YXMgdW5tb3VudGVkICov
+Cj4+Cj4+IFNvLCBpdCdzIGEgcG90ZW50aWFsIGtlcm5lbCBidWcuIE1ha2Ugc3VyZSB0aGF0IElO
+X1VOTU9VTlQgaXMgcHJvcGVybHkKPj4gc2V0IGF0IGFsbCBsZXZlbHMgYmV0d2VlbiB5b3VyIGNv
+cHkgb2YgZ2xpYmMgYW5kIHRoZSBrZXJuZWwuCj4KPiBXaGVuIEkgdGVzdCB0aGlzIGNhc2UgaW4g
+cm9vdGZzIGxvY2F0ZWQgb24gdGhlIGhhcmRkaXNrLHRoZSBjYXNlIGlzCj4gcGFzc2VkLk9idmlv
+dXNseSB0aGUgZmFpbHMgY2F1c2VkIGJ5IG5mcyAuCj4KPiB0aGFua3MgZm9yIHlvdXIgZ29vZCBj
+b21tZW50cyEKCiAgICBUaGlzIGlzIGEgZGVmaW5pdGUgbGltaXRhdGlvbiBvZiBpbm90aWZ5KDcp
+IGFzIGl0IGNhbiBvbmx5CnByb3Blcmx5IHdhdGNoIGNoYW5nZXMgb24gbG9jYWwgZmlsZXN5c3Rl
+bXMgdGhhdCBjYW4ndCBiZSBhdm9pZGVkCnRoZW4uIEludGVyZXN0aW5nIHRvIG5vdGUuLi4KVGhh
+bmtzIC0tIHRoYXQgaGVscGVkIHNvbHZlIG15IG15c3RlcnkgdG9vIDopLAotR2FycmV0dAoKLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0Cg==
