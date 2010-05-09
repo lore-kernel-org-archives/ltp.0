@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O9vvR-0008Fq-KW
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 07:55:17 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O9vvQ-0005Eh-Q2
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 07:55:17 +0000
-Received: by pwj5 with SMTP id 5so2409001pwj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 May 2010 00:55:11 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1078)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <4BE26A1A.1000102@in.ibm.com>
-Date: Thu, 6 May 2010 00:55:14 -0700
-Message-Id: <239C044B-6014-4FA7-AC8B-6D71AFE8FEDA@gmail.com>
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065801.23879.92449.sendpatchset@subratamodak.linux.ibm.com>
-	<4BE26A1A.1000102@in.ibm.com>
-Subject: Re: [LTP] [08/12 FAILURE] LTPE clock gettime03 fails
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1OBCwq-0002KQ-Ti
+	for ltp-list@lists.sourceforge.net; Sun, 09 May 2010 20:18:00 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OBCwo-0004K1-KX
+	for ltp-list@lists.sourceforge.net; Sun, 09 May 2010 20:18:00 +0000
+Date: Sun, 9 May 2010 15:17:48 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100509201748.GB15769@us.ibm.com>
+References: <1273430222.16443.2.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1273430222.16443.2.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [RFC] New Test Cases has dried up
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,17 +28,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Suzuki Poulose <suzuki@in.ibm.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On May 6, 2010, at 12:04 AM, Suzuki Poulose wrote:
+Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> Hello everybody,
+> 
+> We completed 4 months of 2010, but, i do not find major activity in
+> creating/writing/contributing new tests to LTP. Can we restart
+> contributing new tests to LTP ? I am sure that somebody definitely has
+> something to offer. Expecting your wishes.
 
-> <fix-timer-tests-bad-header.diff>
+I've got a draft of the securebits testcases sitting around
+somewhere, but I think I was waiting for selinux+filecaps+etc
+to calm down before adding new tests.  (Oh yeah, and also for
+/usr/include/linux/securebits.h to magically spread around.)
 
-	Maybe a better solution would be to NULL terminate the array (well, or do similar)? Using two units of measurement just seems like it'd complicate how things are being performed...
-Thanks,
--Garrett
+-serge
+
 ------------------------------------------------------------------------------
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
