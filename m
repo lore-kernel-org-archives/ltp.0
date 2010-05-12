@@ -1,34 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <danms@us.ibm.com>) id 1OAOZg-0004Om-JL
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 14:30:44 +0000
-Received: from gw0.danplanet.com ([71.245.107.82] helo=mail.danplanet.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OAOZe-0006bE-5v
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 14:30:44 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by mail.danplanet.com (Postfix) with ESMTP id 5126A1C016
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  7 May 2010 07:31:23 -0700 (PDT)
-Received: from mail.danplanet.com ([127.0.0.1])
-	by localhost (imap.danplanet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Z4tlv+UNswY1 for <ltp-list@lists.sourceforge.net>;
-	Fri,  7 May 2010 07:31:18 -0700 (PDT)
-Received: from caffeine.danplanet.com (unknown [192.168.201.160])
-	by mail.danplanet.com (Postfix) with ESMTP id 04E331C00E
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  7 May 2010 07:31:13 -0700 (PDT)
-References: <1273081434-22034-1-git-send-email-danms@us.ibm.com>
-	<1273225268.6042.8.camel@subratamodak.linux.ibm.com>
-From: Dan Smith <danms@us.ibm.com>
-Date: Fri, 07 May 2010 07:30:28 -0700
-In-Reply-To: <1273225268.6042.8.camel@subratamodak.linux.ibm.com> (Subrata
-	Modak's message of "Fri\, 07 May 2010 15\:11\:08 +0530")
-Message-ID: <877hnfyebf.fsf@caffeine.danplanet.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] NetNS test fixes
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OCF0L-0001On-VN
+	for ltp-list@lists.sourceforge.net; Wed, 12 May 2010 16:41:53 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OCF0K-0003Ow-Q2
+	for ltp-list@lists.sourceforge.net; Wed, 12 May 2010 16:41:53 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o4CGX6x2024767
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:33:06 -0600
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	o4CGffHI080862
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:41:42 -0600
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o4CGfabf013228
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:41:36 -0600
+Received: from [9.124.215.218] ([9.124.215.218])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o4CGfXtR013077
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 May 2010 10:41:35 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1273597941.4875.3.camel@subratamodak.linux.ibm.com>
+References: <20100509182623.15330.94891.sendpatchset@subratamodak.linux.ibm.com>
+	<1273597941.4875.3.camel@subratamodak.linux.ibm.com>
+Date: Wed, 12 May 2010 22:11:32 +0530
+Message-Id: <1273682492.4910.1.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Add an Option '-K' to Create dmesg logs for
+	each	test
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,126 +46,199 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, Serge Hallyn <serue@linux.vnet.ibm.com>
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
 
-SM> Can you please ack this patch.
+On Tue, 2010-05-11 at 22:42 +0530, Subrata Modak wrote:
+> On Sun, 2010-05-09 at 23:56 +0530, Subrata Modak wrote:
+> > Hi,
+> > 
+> > Recently while running LTP , i found that the system had generated many
+> > kernel messages worth investigating. However, there was a loose gap to
+> > find out which test exactly was responsible for that message.
+> > 
+> > So, i thought it could be worth to create a framework in LTP to log kernel
+> > messages for each test, to pinpoint exact messages created per test, for
+> > better debugging. The following patch adds a option to LTP and runs a
+> > old style script ;-) to achieve that. All this is done at the runltp level
+> > without any distrubance to ltp-pan. Messages can be logged at:
+> > 1) Absolute path(s) as specified by the user, else
+> > 2) Inside $LTPROOT/output/
+> > 
+> > Comments welcome.
+> > 
+> > Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+> 
+> Is it that nobody has any objection to this patch ;-)
 
-Ack the revised one below instead :)
+So, i added this option inside LTP :-)
 
-By the way, these tests appear to start up sshd for no reason other
-than possibly checking that basic sockets work in the netns.  Given
-the frailty and required setup of the "ftp" test, I think it would be
-better to replace it with a test using netcat and then yank the sshd
-bits from the ping tests.
+Regards--
+Subrata
 
--- 
-Dan Smith
-IBM Linux Technology Center
-email: danms@us.ibm.com
+> 
+> Regards--
+> Subrata
+> 
+> > ---
+> > 
+> > --- runltp.orig	2010-05-09 23:15:27.000000000 +0530
+> > +++ runltp	2010-05-09 23:44:53.000000000 +0530
+> > @@ -131,6 +131,8 @@ usage() 
+> >      -h              Help. Prints all available options.
+> >      -i NUM_PROCS    Run LTP under additional background Load on IO Bus
+> >                      [NUM_PROCS   = no. of processes creating IO Bus Load by spinning over sync()]
+> > +    -K DMESG_LOG_DIR
+> > +			Log Kernel messages generated for each test cases inside this directory 
+> >      -l LOGFILE      Log results of test in a logfile.
+> >      -m NUM_PROCS,CHUNKS,BYTES,HANGUP_FLAG
+> >                      Run LTP under additional background Load on Main memory (Seperate by comma)
+> > @@ -178,6 +180,7 @@ main()
+> >      local ALT_DIR_RES=0
+> >      local ALT_HTML_OUT=0
+> >      local ALT_EMAIL_OUT=0
+> > +    local ALT_DMESG_OUT=0
+> >      local RUN_NETEST=0
+> >      local RUN_REPEATED=0
+> >      local QUIET_MODE=""
+> > @@ -198,6 +201,7 @@ main()
+> >      local OUTPUTFILE=""
+> >      local HTMLFILE_NAME=""
+> >      local HTMLFILE=""
+> > +    local DMESG_DIR=""
+> >      local EMAIL_TO=""
+> >      local SCENFILES=""
+> >      local TAG_RESTRICT_STRING=""
+> > @@ -205,7 +209,7 @@ main()
+> >      local DEFAULT_FILE_NAME_GENERATION_TIME=`date +"%Y_%b_%d-%Hh_%Mm_%Ss"`
+> >      version_date=$(cat "$LTPROOT/Version")
+> > 
+> > -    while getopts a:c:C:d:D:f:F:ehi:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B: arg
+> > +    while getopts a:c:C:d:D:f:F:ehi:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B: arg
+> >      do  case $arg in
+> >          a)  EMAIL_TO=$OPTARG
+> >              ALT_EMAIL_OUT=1;;
+> > @@ -308,6 +312,15 @@ main()
+> >              $LTPROOT/testcases/bin/genload --io $NUM_PROCS >/dev/null 2>&1 &
+> >              GENLOAD=1 ;;
+> >      
+> > +        K)  
+> > +	    case $OPTARG in
+> > +        	   /*)
+> > +                	DMESG_DIR="$OPTARG-dmesg-output-`echo $$-``date +%X | tr -d ' '`";;
+> > +	            *)
+> > +        	        DMESG_DIR="$LTPROOT/output/$OPTARG-dmesg-output-`echo $$-``date +%X | tr -d ' '`";;
+> > +	    esac
+> > +            mkdir -p $DMESG_DIR
+> > +            ALT_DMESG_OUT=1;;
+> >          l)      
+> >              LOGFILE_NAME="$OPTARG"
+> >              case $OPTARG in
+> > @@ -821,6 +834,13 @@ main()
+> >  		fi
+> >  	fi
+> > 
+> > +	if [ $ALT_DMESG_OUT -eq 1 ] ; then
+> > +		#We want to print dmesg output for each test,lets do the trick inside the script
+> > +		echo Enabling dmesg output logging for each test...
+> > +		${LTPROOT}/bin/create_dmesg_entries_for_each_test.pl ${TMP}/alltests $DMESG_DIR > ${TMP}/alltests.tmp
+> > +		cp ${TMP}/alltests.tmp ${TMP}/alltests
+> > +		rm -rf ${TMP}/alltests.tmp
+> > +	fi
+> >      # Some tests need to run inside the "bin" directory.
+> >      cd "${LTPROOT}/testcases/bin"
+> >      "${LTPROOT}/bin/ltp-pan" $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE
+> > diff -uprN tools.orig/create_dmesg_entries_for_each_test.pl tools/create_dmesg_entries_for_each_test.pl
+> > --- tools.orig/create_dmesg_entries_for_each_test.pl	1970-01-01 05:30:00.000000000 +0530
+> > +++ tools/create_dmesg_entries_for_each_test.pl	2010-05-09 23:38:10.000000000 +0530
+> > @@ -0,0 +1,74 @@
+> > +#!/usr/bin/perl
+> > +################################################################################
+> > +##                                                                            ##
+> > +## Copyright (c) International Business Machines  Corp., 2010                 ##
+> > +##                                                                            ##
+> > +## This program is free software;  you can redistribute it and/or modify      ##
+> > +## it under the terms of the GNU General Public License as published by       ##
+> > +## the Free Software Foundation; either version 2 of the License, or          ##
+> > +## (at your option) any later version.                                        ##
+> > +##                                                                            ##
+> > +## This program is distributed in the hope that it will be useful, but        ##
+> > +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> > +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> > +## for more details.                                                          ##
+> > +##                                                                            ##
+> > +## You should have received a copy of the GNU General Public License          ##
+> > +## along with this program;  if not, write to the Free Software               ##
+> > +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
+> > +##                                                                            ##
+> > +################################################################################
+> > +#                                                                             ##
+> > +# File :        create_dmesg_entries_for_each_test.pl			      ##
+> > +#                                                                             ##
+> > +# Usage:        create_dmesg_entries_for_each_test.pl\			      ##
+> > +#		<LTP_COMMAND_FILE> <DMESG_DIRECTORY>			      ##
+> > +#                                                                             ##
+> > +# Description:  This is a simple perl script which will take ltp command file ##
+> > +#		as input and then create a final command file which will have ##
+> > +#		the following entries for each test tag:		      ##
+> > +#		<tag_name__with_dmesg_entry> <test_binary_name>;\	      ##
+> > +#		<save_dmesg_logs>			      		      ##
+> > +#                                                                             ##
+> > +# Author:       Subrata Modak <subrata@linux.vnet.ibm.com>                    ##
+> > +#                                                                             ##
+> > +# History:      May 09 2010 - Created - Subrata Modak.                        ##
+> > +################################################################################
+> > +
+> > +my $command_file	= shift (@ARGV) || syntax();
+> > +my $dmesg_dir		= shift (@ARGV) || syntax();
+> > +
+> > +sub syntax() {
+> > +	print "syntax: create_dmesg_entries_for_each_test.pl <LTP_COMMAND_FILE> <DMESG_DIRECTORY>\n";
+> > +	exit (1);
+> > +}
+> > +
+> > +
+> > +open (FILE, $command_file) || die "Cannot open file: $command_file\n";
+> > +while ($line = <FILE>) {
+> > +	if ($line =~ /^#/) {
+> > +		print "$line";
+> > +		next;
+> > +	}
+> > +	if ($line =~ /^\n$/) {
+> > +		next;
+> > +	}
+> > +	chomp $line;
+> > +	@tag_and_actual_command = split(/\ /, $line);
+> > +
+> > +	my $token_counter = 0;
+> > +	my $tag_name = "";
+> > +	foreach my $token (@tag_and_actual_command) {
+> > +		if ($token_counter == 0 ) {
+> > +			print $token . "__with_dmesg_entry" . " ";
+> > +			print "dmesg -c 1>/dev/null 2>/dev/null;" . " ";
+> > +			$token_counter++;
+> > +			$tag_name = $token;
+> > +			next;
+> > +		}
+> > +		print " " . $token . " ";
+> > +	}
+> > +	print "; dmesg > $dmesg_dir/$tag_name.dmesg.log \n";
+> > +}
+> > +close (FILE);
+> > +
+> > 
+> > ---
+> > Regards--
+> > Subrata
+> > 
+> 
+> 
+> ------------------------------------------------------------------------------
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-NetNS test fixes (v2)
-
-This patch fixes a couple of netns test issues that cause invalid failures
-relating to exiting with a status variable that doesn't exist.  It also
-fixes an instance of inverted logic and a failure to exec sshd with the
-full path (as required).
-
-Additionally, it makes the common child exec function more descriptive of
-what it tried to do and why it failed to ease debugging.
-
-Changes in v2:
-- Initialize status=0 at the top of child_1.sh to prevent overshadowing
-  a (meaningless) sshd failure
-
-Signed-off-by: Dan Smith <danms@us.ibm.com>
-
-diff --git a/testcases/kernel/containers/netns/child_1.sh b/testcases/kernel/containers/netns/child_1.sh
-index 1fa71a7..a63e834 100755
---- a/testcases/kernel/containers/netns/child_1.sh
-+++ b/testcases/kernel/containers/netns/child_1.sh
-@@ -30,6 +30,7 @@ export TST_COUNT
- export TST_TOTAL
- 
- . initialize.sh
-+status=0
- 
-     # Writing child PID number into /tmp/FIFO
-     echo $$ > /tmp/FIFO2
-diff --git a/testcases/kernel/containers/netns/childns.sh b/testcases/kernel/containers/netns/childns.sh
-index 3634d81..16fc7e8 100755
---- a/testcases/kernel/containers/netns/childns.sh
-+++ b/testcases/kernel/containers/netns/childns.sh
-@@ -38,6 +38,8 @@ exists awk grep ip ping sshd
- . initialize.sh
- status=0
-     
-+SSHD=`which sshd`
-+
- if [ $# -eq 1 ] ; then
-     childscrpt=$1
-     debug "INFO: The script to be executed in child NS is $childscrpt"
-@@ -58,7 +60,7 @@ ifconfig lo up
- sleep 2
- 
- #starting the sshd inside the child NS
--if ! sshd -p $PORT; then
-+if $SSHD -p $PORT; then
-     debug "INFO: started the sshd @ port no $PORT"
-     sshpid=`ps -ef | grep "sshd -p $PORT" | grep -v grep | awk '{ print $2 ; exit 0} ' `
- else
-diff --git a/testcases/kernel/containers/netns/common.c b/testcases/kernel/containers/netns/common.c
-index 22d0e99..6d3b02e 100644
---- a/testcases/kernel/containers/netns/common.c
-+++ b/testcases/kernel/containers/netns/common.c
-@@ -48,8 +48,7 @@ int crtchild(char *s1 , char *s2)
- {
- 	char *cmd[] = { "--", s1, s2, (char *)0 };
- 	execve("/bin/sh", cmd, __environ);
--	printf("The code would not reach here on success\n");
--	perror("execve");
-+	fprintf(stderr, "Failed to execve(%s, %s): %m\n", s1, s2);
- 	return 1;
- }
- 
-diff --git a/testcases/kernel/containers/netns/par_ftp.sh b/testcases/kernel/containers/netns/par_ftp.sh
-index 3bfb47b..bb65db4 100755
---- a/testcases/kernel/containers/netns/par_ftp.sh
-+++ b/testcases/kernel/containers/netns/par_ftp.sh
-@@ -37,6 +37,7 @@ export TST_TOTAL
-     
-     if [ $? = 0 ] ; then
-         tst_resm TINFO "Pinging ChildNS from ParentNS"
-+	status=0
-     else
-         tst_resm TFAIL "Error: Unable to ping ChildNS from ParentNS"
-         status=-1
-@@ -45,3 +46,5 @@ export TST_TOTAL
-     if [ $stat != 0 ] ; then
-         status=$stat
-     fi
-+
-+    exit $status
-diff --git a/testcases/kernel/containers/netns/parent_1.sh b/testcases/kernel/containers/netns/parent_1.sh
-index 8577bf2..32f1a47 100755
---- a/testcases/kernel/containers/netns/parent_1.sh
-+++ b/testcases/kernel/containers/netns/parent_1.sh
-@@ -55,4 +55,4 @@ export TST_TOTAL
-     echo $vnet1 > /tmp/FIFO1
- 
-     debug "INFO: PARENT_1: End of $0"
--    exit $status
-+    exit 0
-diff --git a/testcases/kernel/containers/netns/parent_2.sh b/testcases/kernel/containers/netns/parent_2.sh
-index 57d3974..f72c16d 100755
---- a/testcases/kernel/containers/netns/parent_2.sh
-+++ b/testcases/kernel/containers/netns/parent_2.sh
-@@ -51,4 +51,4 @@ export TST_TOTAL
-     echo $vnet3 > /tmp/FIFO3
- 
-     debug "INFO: PARENT-2: End of $0"
--    exit $status
-+    exit 0
 
 ------------------------------------------------------------------------------
 
