@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OE6Zu-0007t3-Fz
-	for ltp-list@lists.sourceforge.net; Mon, 17 May 2010 20:06:18 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OE6Zt-0000ta-K3
-	for ltp-list@lists.sourceforge.net; Mon, 17 May 2010 20:06:18 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100509201748.GB15769@us.ibm.com>
-References: <1273430222.16443.2.camel@subratamodak.linux.ibm.com>
-	<20100509201748.GB15769@us.ibm.com>
-Date: Tue, 18 May 2010 01:36:03 +0530
-Message-Id: <1274126763.5106.15.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <njoly@pasteur.fr>) id 1OCCA2-00038Z-5v
+	for ltp-list@lists.sourceforge.net; Wed, 12 May 2010 13:39:42 +0000
+Received: from maroilles.sis.pasteur.fr ([157.99.64.223]
+	helo=mail-interne3.pasteur.fr)
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OCCA0-0005na-Lb
+	for ltp-list@lists.sourceforge.net; Wed, 12 May 2010 13:39:42 +0000
+Date: Wed, 12 May 2010 15:14:26 +0200
+From: Nicolas Joly <njoly@pasteur.fr>
+Message-ID: <20100512131426.GA190127@medusa.sis.pasteur.fr>
 Mime-Version: 1.0
-Subject: Re: [LTP] [RFC] New Test Cases has dried up
-Reply-To: subrata@linux.vnet.ibm.com
+Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
+Content-Disposition: inline
+Subject: [LTP] ftruncate04.c: cleanup mandatory locking check
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +25,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: LTP list <ltp-list@lists.sf.net>
 
-On Sun, 2010-05-09 at 15:17 -0500, Serge E. Hallyn wrote: 
-> Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
-> > Hello everybody,
-> > 
-> > We completed 4 months of 2010, but, i do not find major activity in
-> > creating/writing/contributing new tests to LTP. Can we restart
-> > contributing new tests to LTP ? I am sure that somebody definitely has
-> > something to offer. Expecting your wishes.
-> 
-> I've got a draft of the securebits testcases sitting around
-> somewhere, but I think I was waiting for selinux+filecaps+etc
-> to calm down before adding new tests.  (Oh yeah, and also for
-> /usr/include/linux/securebits.h to magically spread around.)
 
-Eagerly waiting for this to come in.
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards--
-Subrata
 
-> 
-> -serge
+Hi,
 
+The attached patch tries to cleanup the `mandatory locking' check in
+the ftruncate04.c testcase.
+
+The currently test is made with system(2) and involve calling some
+external tools ... to determine if the underlying filesystem has
+`mand' option set. The same result can be easily retrieved with a
+simple statvfs(2) call and examining the mount flags value.
+
+This has been successfully tested on a RHEL5 x86_64 machine.
+
+Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+
+Regards.
+
+-- 
+Nicolas Joly
+
+Biological Software and Databanks.
+Institut Pasteur, Paris.
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ltp-ftruncate04.diff"
+
+diff --git a/testcases/kernel/syscalls/ftruncate/ftruncate04.c b/testcases/kernel/syscalls/ftruncate/ftruncate04.c
+index 324a654..fa1daea 100644
+--- a/testcases/kernel/syscalls/ftruncate/ftruncate04.c
++++ b/testcases/kernel/syscalls/ftruncate/ftruncate04.c
+@@ -66,6 +66,8 @@
+ #include <inttypes.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/mount.h>
++#include <sys/statvfs.h>
+ #include "test.h"
+ #include "usctest.h"
+ #include "libtestsuite.h"
+@@ -285,6 +287,7 @@ int main(int ac, char **av)
+ 	struct sigaction act;
+ 	int lc;			/* loop counter */
+ 	char *msg;		/* message returned from parse_opts */
++	struct statvfs fs;
+ 
+ 	/*
+ 	 * parse standard options
+@@ -300,9 +303,12 @@ int main(int ac, char **av)
+ 
+ 	local_flag = PASSED;
+ 	tst_tmpdir();
+-	if (system
+-	    ("mount | grep `df . | grep ^/ | awk {'print $1'}` | grep mand >/dev/null")
+-	    != 0) {
++	if (statvfs(".", &fs) == -1) {
++		tst_resm(TFAIL|TERRNO, "statvfs failed");
++		tst_rmdir();
++		tst_exit();
++	}
++	if ((fs.f_flag & MS_MANDLOCK) == 0) {
+ 		tst_resm(TCONF,
+ 			 "The filesystem where /tmp is mounted does"
+ 			 " not support mandatory locks. Cannot run this test.");
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--u3/rZRmxL6MmkK24--
+
