@@ -2,22 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O9PDl-0000KD-8b
-	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 21:00:01 +0000
-Received: from mail-iw0-f181.google.com ([209.85.223.181])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O9PDk-0005Og-JG
-	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 21:00:01 +0000
-Received: by iwn11 with SMTP id 11so3942246iwn.11
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 04 May 2010 13:59:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <7023CD936D1501409946F382B52DD7FA0C19A3F9@xmb-sjc-228.amer.cisco.com>
-References: <7023CD936D1501409946F382B52DD7FA0C19A3F9@xmb-sjc-228.amer.cisco.com>
-Date: Tue, 4 May 2010 13:59:55 -0700
-Message-ID: <n2i364299f41005041359u8128d5dbj22055b83e9d18e41@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Intra-process test cases
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OE6Zu-0007t3-Fz
+	for ltp-list@lists.sourceforge.net; Mon, 17 May 2010 20:06:18 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OE6Zt-0000ta-K3
+	for ltp-list@lists.sourceforge.net; Mon, 17 May 2010 20:06:18 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20100509201748.GB15769@us.ibm.com>
+References: <1273430222.16443.2.camel@subratamodak.linux.ibm.com>
+	<20100509201748.GB15769@us.ibm.com>
+Date: Tue, 18 May 2010 01:36:03 +0530
+Message-Id: <1274126763.5106.15.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [RFC] New Test Cases has dried up
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,37 +26,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Lakshmankumar Mukkavilli (lakshman)" <lakshman@cisco.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, May 4, 2010 at 10:57 AM, Lakshmankumar Mukkavilli (lakshman)
-<lakshman@cisco.com> wrote:
-> Hi,
->
->
->
-> I am looking at LTP and I see that the test cases are external to the =A0=
-unit
-> under test(UUT). Tests are in a different address space than the UUT. Am I
-> wrong in this observation?
->
-> Suppose I want to create tests that need to be in the same address space =
-as
-> the UUT what are the recommendations? I want to refer some global variabl=
-es
-> and data structures in the UUT. What are my options?
+On Sun, 2010-05-09 at 15:17 -0500, Serge E. Hallyn wrote: 
+> Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> > Hello everybody,
+> > 
+> > We completed 4 months of 2010, but, i do not find major activity in
+> > creating/writing/contributing new tests to LTP. Can we restart
+> > contributing new tests to LTP ? I am sure that somebody definitely has
+> > something to offer. Expecting your wishes.
+> 
+> I've got a draft of the securebits testcases sitting around
+> somewhere, but I think I was waiting for selinux+filecaps+etc
+> to calm down before adding new tests.  (Oh yeah, and also for
+> /usr/include/linux/securebits.h to magically spread around.)
 
-    This message is noise without context. Define `UUT' and what scope
-it entails (and no, I'm not asking for the definition of UUT, because
-I know it means unit under test).
-Thanks,
--Garrett
+Eagerly waiting for this to come in.
 
----------------------------------------------------------------------------=
----
+Regards--
+Subrata
+
+> 
+> -serge
+
+
+------------------------------------------------------------------------------
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
