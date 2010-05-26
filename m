@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1O9w4g-0003eX-AJ
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 08:04:50 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O9w4e-0003wy-Iq
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 08:04:50 +0000
-Received: by pwj5 with SMTP id 5so2411936pwj.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1OH6Ax-0004TO-NZ
+	for ltp-list@lists.sourceforge.net; Wed, 26 May 2010 02:16:55 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OH6Aw-00013e-7u
+	for ltp-list@lists.sourceforge.net; Wed, 26 May 2010 02:16:55 +0000
+Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.134])
+	by out03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 10F9921132A
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 May 2010 01:04:43 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1078)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <20100506065713.23879.94813.sendpatchset@subratamodak.linux.ibm.com>
-Date: Thu, 6 May 2010 01:04:46 -0700
-Message-Id: <BFAB6806-3BF8-4649-8CBF-B52A51AA4977@gmail.com>
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065713.23879.94813.sendpatchset@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [05/12 FAILURE] LTP? proc01 test fails
+	Wed, 26 May 2010 02:16:48 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 582951D7844
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 26 May 2010 02:16:47 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 May 2010 11:16:45 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Wed, 26 May 2010 11:16:45 +0900
+Message-ID: <000001cafc79$7d23c8e0$776b5aa0$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: [LTP] hugetlb tests failure occurred
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +35,109 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-Ck9uIE1heSA1LCAyMDEwLCBhdCAxMTo1NyBQTSwgU3VicmF0YSBNb2RhayB3cm90ZToKCj4gU3Vi
-amVjdDogTFRQxZsgcHJvYzAxIHRlc3QgZmFpbAo+IAo+IElzc3VlcyBEZXNjcmlwdGlvbiBiZWxv
-dzoKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiAjIC4vcnVubHRwIC1z
-IHByb2MwMQo+IAo+IDw8PHRlc3Rfb3V0cHV0Pj4+Cj4gcHJvYzAxICAgICAgMCAgVElORk8gIDog
-IC9wcm9jL3N5c3JxLXRyaWdnZXI6IGlzIHdyaXRlLW9ubHkuCj4gcHJvYzAxICAgICAgMCAgVElO
-Rk8gIDogIC9wcm9jL2ttc2c6IGtub3duIGlzc3VlOiBlcnJubz1FQUdBSU4oMTEpOiBSZXNvdXJj
-ZQo+IHRlbXBvcmFyaWx5IHVuYXZhaWxhYmxlCj4gcHJvYzAxICAgICAgMCAgVElORk8gIDogIC9w
-cm9jL3Bvd2VycGMvb2ZkdDogaXMgd3JpdGUtb25seS4KPiBwcm9jMDEgICAgICAxICBURkFJTCAg
-OiAgcmVhZCBmYWlsZWQ6IC9wcm9jL3Bvd2VycGMvcnRhcy9lcnJvcl9sb2c6Cj4gZXJybm89RUlO
-VkFMKDIyKTogSW52YWxpZCBhcmd1bWVudAoKCU5vdCBhIGtub3duIGlzc3VlLiBJJ2QgY2hlY2sg
-YW5kIHNlZSB3aGV0aGVyIG9yIG5vdCB0aGlzIGl0ZW0gaXMgdmFsaWQuIFNlZW1zIGxpa2UgYSBm
-dW5reSBlcnJvciBjb2RlIHRob3VnaC4KSFRILAotR2FycmV0dAotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxp
-c3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xp
-c3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hi,
+
+I ran "hugeshmdt01" and "hugeshmctl01" tests.
+
+At these tests, I set HugePages_Total:
+------------</proc/meminfo>
+[root@RHEL54-LTP-EM64T ltp]# cat /proc/meminfo
+MemTotal:      2059632 kB
+MemFree:       1392080 kB
+Buffers:        204764 kB
+Cached:         308092 kB
+...
+VmallocTotal: 34359738367 kB
+VmallocUsed:      1012 kB
+VmallocChunk: 34359736951 kB
+HugePages_Total:     2
+HugePages_Free:      2
+HugePages_Rsvd:      0
+Hugepagesize:     2048 kB
+------------
+
+But these tests failed:
+
+------------<log>
+hugeshmctl01    1  TBROK  :  couldn't create the shared memory segment
+hugeshmctl01    2  TBROK  :  Remaining cases broken
+hugeshmctl01    3  TBROK  :  Remaining cases broken
+hugeshmctl01    4  TBROK  :  Remaining cases broken
+hugeshmctl01    0  TINFO  :  received unexpected signal 15
+hugeshmctl01    0  TINFO  :  received unexpected signal 15
+hugeshmctl01    0  TINFO  :  received unexpected signal 15
+hugeshmctl01    0  TINFO  :  received unexpected signal 15
+hugeshmctl02    1  TBROK  :  couldn't create shared memory segment #1 in
+setup()
+hugeshmctl02    2  TBROK  :  Remaining cases broken
+hugeshmctl02    3  TBROK  :  Remaining cases broken
+hugeshmctl02    4  TBROK  :  Remaining cases broken
+hugeshmctl02    1  TBROK  :  couldn't create shared memory segment #1 in
+setup()
+hugeshmctl02    2  TBROK  :  Remaining cases broken
+hugeshmctl02    3  TBROK  :  Remaining cases broken
+hugeshmctl02    4  TBROK  :  Remaining cases broken
+hugeshmctl02    1  TBROK  :  couldn't create shared memory segment #1 in
+setup()
+hugeshmctl02    2  TBROK  :  Remaining cases broken
+hugeshmctl02    3  TBROK  :  Remaining cases broken
+hugeshmctl02    4  TBROK  :  Remaining cases broken
+hugeshmctl01    0  TINFO  :  received unexpected signal 15
+hugeshmctl01    0  TINFO  :  received unexpected signal 15
+hugeshmctl01    0  TINFO  :  received unexpected signal 15
+hugeshmctl03    1  TBROK  :  couldn't create shared memory segment in
+setup()
+hugeshmctl03    2  TBROK  :  Remaining cases broken
+hugeshmctl03    3  TBROK  :  Remaining cases broken
+hugeshmctl03    1  TBROK  :  couldn't create shared memory segment in
+setup()
+hugeshmctl03    2  TBROK  :  Remaining cases broken
+hugeshmctl03    3  TBROK  :  Remaining cases broken
+hugeshmctl03    1  TBROK  :  couldn't create shared memory segment in
+setup()
+hugeshmctl03    2  TBROK  :  Remaining cases broken
+hugeshmctl03    3  TBROK  :  Remaining cases broken
+------------
+
+All these are failures of shmget() .
+
+My systems are RHEL5.4 and RHEL4.8. Architectures are x86, x86_64, and ia64.
+In all of these environments, above failures occurred.
+
+I executed "runltp" once. But these tests are executed several times.
+And shmget() system-call failed with errno=ENOMEM at last in my system.
+In ".../runtest/hugetlb", test commands are as follows:
+
+------------<hugetlb>
+hugeshmctl01 hugeshmctl01 -i 5 -c 3
+hugeshmctl02 hugeshmctl02 -i 5 -c 3
+hugeshmctl03 hugeshmctl03 -i 5 -c 3
+
+hugeshmdt01 hugeshmdt01 -I 5 -c10
+------------
+
+If repetition is once, these tests succeed in my system..
+
+
+I'm grad if I can know a reason of these repetition ("-c" option).
+And I want to know whether I can appoint this option freely if machine 
+doesn't have enough memory.
+
+
+Regards--
+
+-Tomonori Mitani
+
+
+
+------------------------------------------------------------------------------
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
