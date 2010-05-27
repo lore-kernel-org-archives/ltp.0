@@ -1,28 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OA24m-0000I3-PF
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 14:29:20 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OHUJq-0000TX-B1
+	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:03:42 +0000
+Received: from e28smtp03.in.ibm.com ([122.248.162.3])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OA24k-0003qX-7O
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 14:29:20 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100506135510.GB12072@us.ibm.com>
-References: <1272997208.5342.7.camel@subratamodak.linux.ibm.com>
-	<20100504192248.GA3696@us.ibm.com>
-	<y2l364299f41005041402uce37fd2axc6f1fc7f7df70497@mail.gmail.com>
-	<20100504223315.GA16615@us.ibm.com>
-	<j2u364299f41005042219vfa5c5aa7ld5673a7eba8b6c64@mail.gmail.com>
-	<20100505141829.GA10714@us.ibm.com>
-	<E6FF74A2-EB5B-4D11-A9B8-AA25D426D902@gmail.com>
-	<20100506135510.GB12072@us.ibm.com>
-Date: Thu, 06 May 2010 19:58:40 +0530
-Message-Id: <1273156121.4898.7.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix FILECAPS test hanging for more than 12 hours
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1OHUJo-0003lO-8n
+	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:03:42 +0000
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by e28smtp03.in.ibm.com (8.14.3/8.13.1) with ESMTP id o4R43Vtw004477
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 09:33:31 +0530
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o4R43VCI3354724
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 09:33:31 +0530
+Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
+	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o4R43UJF031898
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 14:03:30 +1000
+From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Date: Thu, 27 May 2010 09:33:23 +0530
+Message-Id: <1274933006-4754-3-git-send-email-gomuthuk@linux.vnet.ibm.com>
+In-Reply-To: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+References: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH 2/5] realtime: code cleanup on pi-test 1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,99 +34,423 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-On Thu, 2010-05-06 at 08:55 -0500, Serge E. Hallyn wrote:
-> Quoting Garrett Cooper (yanegomi@gmail.com):
-> > On May 5, 2010, at 7:18 AM, Serge E. Hallyn wrote:
-> > 
-> > > Quoting Garrett Cooper (yanegomi@gmail.com):
-> > >>>                p = index(buf, '.')+1;
-> > > 
-> > > Jinkeys!  The intertubes archives insist I wrote that, but I'm finding
-> > > it hard to believe.
-> > > 
-> > >>> -               if (p==(char *)1) {
-> > >>> -                       tst_resm(TFAIL, "got a bad message from print_caps\n");
-> > >>> -                       tst_exit();
-> > >>> -               }
-> > >>> +               if (p==(char *)1)
-> > >>> +                       tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
-> > >> 
-> > >>    This is a really incorrect way to do things. I think that the
-> > >> assumption made was that index(3) would return 0 ('\0') if it fails to
-> > >> find '.'. That's incorrect and would cause a segfault on some systems
-> > >> (does on FreeBSD at least... don't see why it would pass on Linux):
-> > >> 
-> > >> $ ~/test_null_inc
-> > >> Segmentation fault: 11 (core dumped)
-> > >> [garrcoop@bioshock ~]$ cat ~/test_null_inc.c
-> > >> #include <stdio.h>
-> > >> int
-> > >> main(void)
-> > >> {
-> > >> 	printf("%s\n", (NULL + 1));
-> > >> 	return 0;
-> > >> }
-> > > 
-> > > Well, that's different - you're dereferencing NULL+1, whereas I'm
-> > > just checking the the value of the pointer.  
-> > > 
-> > > Still what I did is darned ugly, cleanup below.
-> > > 
-> > > thanks,
-> > > -serge
-> > > 
-> > >>    Could you please change this to check and see whether or not index
-> > >> returns NULL instead of accessing memory like that?
-> > >>    Other than that, patch looks good.
-> > > 
-> > > From: Serge E. Hallyn <serue@us.ibm.com>
-> > > Date: Wed, 5 May 2010 02:59:05 -0500
-> > > Subject: [PATCH 1/1] check for index(3) returning NULL
-> > > 
-> > > Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> > > ---
-> > > .../kernel/security/filecaps/verify_caps_exec.c    |    5 +++--
-> > > 1 files changed, 3 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> > > index c3f65a9..605f0f6 100644
-> > > --- a/testcases/kernel/security/filecaps/verify_caps_exec.c
-> > > +++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> > > @@ -182,9 +182,10 @@ int fork_drop_and_exec(int keepperms, cap_t expected_caps)
-> > > 			tst_resm(TINFO, "got a bad seqno (c=%d, s=%d, seqno=%d)",
-> > > 				c, s, seqno);
-> > > 		}
-> > > -		p = index(buf, '.')+1;
-> > > -		if (p==(char *)1)
-> > > +		p = index(buf, '.');
-> > > +		if (!p)
-> > > 			tst_brkm(TFAIL, tst_exit, "got a bad message from print_caps\n");
-> > > +		p += 1;
-> > > 		actual_caps = cap_from_text(p);
-> > > 		if (cap_compare(actual_caps, expected_caps) != 0) {
-> > > 			capstxt = cap_to_text(expected_caps, NULL);
-> > 
-> > Looks good! If that's the complete diff, then Acked-by: Garrett Cooper <yanegomi@gmail.com>
-> 
-> Right - that one on top of the previous longer one, please.  (or I can rebase-squash
-> them and resend if Subrata prefers)
+From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-A resend will be great.
+This patch cleans up the test so as to follow C coding style standards.
 
-Regards--
-Subrata
+Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: John Stultz <johnstul@us.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+---
+ testcases/realtime/func/pi-tests/testpi-1.c |  348 ++++++++++++++-------------
+ 1 files changed, 183 insertions(+), 165 deletions(-)
 
-> 
-> -serge
+diff --git a/testcases/realtime/func/pi-tests/testpi-1.c b/testcases/realtime/func/pi-tests/testpi-1.c
+index dc6081b..b503c0c 100644
+--- a/testcases/realtime/func/pi-tests/testpi-1.c
++++ b/testcases/realtime/func/pi-tests/testpi-1.c
+@@ -30,6 +30,7 @@
+  *
+  *
+  * HISTORY
++ *      2010-04-22 Code cleanup by Gowrishankar
+  *
+  *
+  *****************************************************************************/
+@@ -48,23 +49,22 @@ pthread_barrier_t barrier;
+ 
+ void usage(void)
+ {
+-        rt_help();
+-        printf("testpi-1 specific options:\n");
++	rt_help();
++	printf("testpi-1 specific options:\n");
+ }
+ 
+ int parse_args(int c, char *v)
+ {
+-
+-        int handled = 1;
+-        switch (c) {
+-                case 'h':
+-                        usage();
+-                        exit(0);
+-                default:
+-                        handled = 0;
+-                        break;
+-        }
+-        return handled;
++	int handled = 1;
++	switch (c) {
++	case 'h':
++		usage();
++		exit(0);
++	default:
++		handled = 0;
++		break;
++	}
++	return handled;
+ }
+ 
+ int gettid(void)
+@@ -72,173 +72,191 @@ int gettid(void)
+ 	return syscall(__NR_gettid);
+ }
+ 
+-typedef void* (*entrypoint_t)(void*);
++typedef void *(*entrypoint_t)(void *);
+ 
+ #define THREAD_STOP    1
+ 
+ pthread_mutex_t glob_mutex;
+ 
+-void* func_nonrt(void* arg)
++void *func_nonrt(void *arg)
+ {
+-  struct thread* pthr = (struct thread* )arg;
+-  int rc, i, j, tid = gettid();
+-  cpu_set_t mask;
+-  CPU_ZERO(&mask);
+-  CPU_SET(0, &mask);
+-
+-  rc = sched_setaffinity(0, sizeof(mask), &mask);
+-  if (rc < 0) {
+-     printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
+-     exit(-1);
+-  }
+-
+-  printf("Thread %d started running with priority %d\n", tid, pthr->priority);
+-  pthread_mutex_lock(&glob_mutex);
+-  printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
+-  /* Wait for other RT threads to start up */
+-  pthread_barrier_wait(&barrier);
+-
+-  for (i=0;i<10000;i++) {
+-    if (i%100 == 0) {
+-      printf("Thread %d loop %d pthread pol %d pri %d\n", tid, i,  pthr->policy, pthr->priority);
+-      fflush(NULL);
+-    }
+-    pthr->id++;
+-    for (j=0;j<5000;j++) {
+-      pthread_mutex_lock(&(pthr->mutex));
+-      pthread_mutex_unlock(&(pthr->mutex));
+-    }
+-  }
+-  pthread_mutex_unlock(&glob_mutex);
+-  return NULL;
++	struct thread *pthr = (struct thread *)arg;
++	int rc, i, j, tid = gettid();
++	cpu_set_t mask;
++	CPU_ZERO(&mask);
++	CPU_SET(0, &mask);
++
++	rc = sched_setaffinity(0, sizeof(mask), &mask);
++	if (rc < 0) {
++		printf("Thread %d: Can't set affinity: %d %s\n", tid, rc,\
++			strerror(rc));
++		exit(-1);
++	}
++
++	printf("Thread %d started running with priority %d\n", tid,\
++		pthr->priority);
++	pthread_mutex_lock(&glob_mutex);
++	printf("Thread %d at start pthread pol %d pri %d - Got global lock\n",\
++		tid, pthr->policy, pthr->priority);
++	/* Wait for other RT threads to start up */
++	pthread_barrier_wait(&barrier);
++
++	for (i = 0; i < 10000; i++) {
++		if (i%100 == 0) {
++			printf("Thread %d loop %d pthread pol %d pri %d\n",\
++				tid, i,  pthr->policy, pthr->priority);
++			fflush(NULL);
++		}
++		pthr->id++;
++		for (j = 0; j < 5000; j++) {
++			pthread_mutex_lock(&(pthr->mutex));
++			pthread_mutex_unlock(&(pthr->mutex));
++		}
++	}
++	pthread_mutex_unlock(&glob_mutex);
++	return NULL;
+ }
+ 
+-void* func_rt(void* arg)
++void *func_rt(void *arg)
+ {
+-  struct thread*  pthr = (struct thread* )arg;
+-  int rc, i, j, tid = gettid();
+-  cpu_set_t mask;
+-  CPU_ZERO(&mask);
+-  CPU_SET(0, &mask);
+-
+-  rc = sched_setaffinity(0, sizeof(mask), &mask);
+-  if (rc < 0) {
+-     printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
+-     exit(-1);
+-  }
+-
+-  printf("Thread %d started running with prio %d\n", tid, pthr->priority);
+-  pthread_barrier_wait(&barrier);
+-  pthread_mutex_lock(&glob_mutex);
+-  printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
+-
+-  /* we just use the mutex as something to slow things down */
+-  /* say who we are and then do nothing for a while.  The aim
+-   * of this is to show that high priority threads make more
+-   * progress than lower priority threads..
+-   */
+-  for (i=0;i<1000;i++) {
+-    if (i%100 == 0) {
+-      printf("Thread %d loop %d pthread pol %d pri %d\n", tid, i, pthr->policy, pthr->priority);
+-      fflush(NULL);
+-    }
+-    pthr->id++;
+-    for (j=0;j<5000;j++) {
+-      pthread_mutex_lock(&(pthr->mutex));
+-      pthread_mutex_unlock(&(pthr->mutex));
+-    }
+-  }
+-  pthread_mutex_unlock(&glob_mutex);
+-  return NULL;
++	struct thread *pthr = (struct thread *)arg;
++	int rc, i, j, tid = gettid();
++	cpu_set_t mask;
++	CPU_ZERO(&mask);
++	CPU_SET(0, &mask);
++
++	rc = sched_setaffinity(0, sizeof(mask), &mask);
++	if (rc < 0) {
++		printf("Thread %d: Can't set affinity: %d %s\n", tid,\
++			rc, strerror(rc));
++		exit(-1);
++	}
++
++	printf("Thread %d started running with prio %d\n", tid, pthr->priority);
++	pthread_barrier_wait(&barrier);
++	pthread_mutex_lock(&glob_mutex);
++	printf("Thread %d at start pthread pol %d pri %d - Got global lock\n",
++		tid, pthr->policy, pthr->priority);
++
++	/* We just use the mutex as something to slow things down,
++	 * say who we are and then do nothing for a while.  The aim
++	 * of this is to show that high priority threads make more
++	 * progress than lower priority threads..
++	 */
++	for (i = 0; i < 1000; i++) {
++		if (i%100 == 0) {
++			printf("Thread %d loop %d pthread pol %d pri %d\n",\
++				tid, i, pthr->policy, pthr->priority);
++			fflush(NULL);
++		}
++		pthr->id++;
++		for (j = 0; j < 5000; j++) {
++			pthread_mutex_lock(&(pthr->mutex));
++			pthread_mutex_unlock(&(pthr->mutex));
++		}
++	}
++	pthread_mutex_unlock(&glob_mutex);
++	return NULL;
+ }
+ 
+-void* func_noise(void* arg)
++void *func_noise(void *arg)
+ {
+-  struct thread*  pthr = (struct thread* )arg;
+-  int rc, i, j, tid = gettid();
+-  cpu_set_t mask;
+-  CPU_ZERO(&mask);
+-  CPU_SET(0, &mask);
+-
+-  rc = sched_setaffinity(0, sizeof(mask), &mask);
+-  if (rc < 0) {
+-     printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
+-     exit(-1);
+-  }
+-
+-  printf("Noise Thread %d started running with prio %d\n", tid, pthr->priority);
+-  pthread_barrier_wait(&barrier);
+-
+-  for (i=0;i<10000;i++) {
+-    if (i%100 == 0) {
+-      printf("Noise Thread %d loop %d pthread pol %d pri %d\n", tid, i, pthr->policy, pthr->priority);
+-      fflush(NULL);
+-    }
+-    pthr->id++;
+-    for (j=0;j<5000;j++) {
+-      pthread_mutex_lock(&(pthr->mutex));
+-      pthread_mutex_unlock(&(pthr->mutex));
+-    }
+-  }
+-  return NULL;
++	struct thread *pthr = (struct thread *)arg;
++	int rc, i, j, tid = gettid();
++	cpu_set_t mask;
++	CPU_ZERO(&mask);
++	CPU_SET(0, &mask);
++
++	rc = sched_setaffinity(0, sizeof(mask), &mask);
++	if (rc < 0) {
++		printf("Thread %d: Can't set affinity: %d %s\n", tid, rc,\
++			strerror(rc));
++		exit(-1);
++	}
++
++	printf("Noise Thread %d started running with prio %d\n", tid,
++		pthr->priority);
++	pthread_barrier_wait(&barrier);
++
++	for (i = 0; i < 10000; i++) {
++		if (i%100 == 0) {
++			printf("Noise Thread %d loop %d pthread pol %d "\
++				"pri %d\n", tid, i, pthr->policy,\
++				pthr->priority);
++			fflush(NULL);
++		}
++		pthr->id++;
++		for (j = 0; j < 5000; j++) {
++			pthread_mutex_lock(&(pthr->mutex));
++			pthread_mutex_unlock(&(pthr->mutex));
++		}
++	}
++	return NULL;
+ }
+ 
+ /*
+  * Test pthread creation at different thread priorities.
+  */
+-int main(int argc, char* argv[]) {
+-  pthread_mutexattr_t mutexattr;
+-  int i, retc, protocol, nopi = 0;
+-  cpu_set_t mask;
+-  CPU_ZERO(&mask);
+-  CPU_SET(0, &mask);
+-  setup();
+-  
+-  rt_init("h",parse_args,argc,argv);
+-
+-  if ((retc = pthread_barrier_init(&barrier, NULL, 5))) {
+-    printf("pthread_barrier_init failed: %s\n", strerror(retc));
+-    exit(retc);
+-  }
+-
+-  retc = sched_setaffinity(0, sizeof(mask), &mask);
+-  if (retc < 0) {
+-     printf("Main Thread: Can't set affinity: %d %s\n", retc, strerror(retc));
+-     exit(-1);
+-  }
+-  for (i=0;i<argc;i++) {
+-    if (strcmp(argv[i],"nopi") == 0) nopi = 1;
+-  }
+-
+-  printf("Start %s\n",argv[0]);
+-
+-  if (!nopi) {
+-    if (pthread_mutexattr_init(&mutexattr) != 0) {
+-      printf("Failed to init mutexattr\n");
+-    }
+-    if (pthread_mutexattr_setprotocol(&mutexattr, PTHREAD_PRIO_INHERIT) != 0) {
+-      printf("Can't set protocol prio inherit\n");
+-    }
+-    if (pthread_mutexattr_getprotocol(&mutexattr, &protocol) != 0) {
+-      printf("Can't get mutexattr protocol\n");
+-    } else {
+-      printf("protocol in mutexattr is %d\n", protocol);
+-    }
+-    if ((retc = pthread_mutex_init(&glob_mutex, &mutexattr)) != 0) {
+-      printf("Failed to init mutex: %d\n", retc);
+-    }
+-  }
+-
+-  create_other_thread(func_nonrt,NULL); 
+-  create_rr_thread(func_rt, NULL, 20); 
+-  create_rr_thread(func_rt, NULL, 30); 
+-  create_rr_thread(func_rt, NULL, 40); 
+-  create_rr_thread(func_noise, NULL, 40); 
+-
+-  printf("Joining threads\n");
+-  join_threads();
+-  printf("Done\n");
+-  printf("Criteria:Low Priority Thread should Preempt Higher Priority Noise Thread\n");
+-
+-  return 0;
++int main(int argc, char *argv[])
++{
++	pthread_mutexattr_t mutexattr;
++	int i, retc, protocol, nopi = 0;
++	cpu_set_t mask;
++	CPU_ZERO(&mask);
++	CPU_SET(0, &mask);
++	setup();
++
++	rt_init("h", parse_args, argc, argv);
++
++	retc = pthread_barrier_init(&barrier, NULL, 5);
++	if (retc) {
++		printf("pthread_barrier_init failed: %s\n", strerror(retc));
++		exit(retc);
++	}
++
++	retc = sched_setaffinity(0, sizeof(mask), &mask);
++	if (retc < 0) {
++		printf("Main Thread: Can't set affinity: %d %s\n", retc,\
++			strerror(retc));
++		exit(-1);
++	}
++
++	for (i = 0; i < argc; i++) {
++		if (strcmp(argv[i], "nopi") == 0)
++			nopi = 1;
++	}
++
++	printf("Start %s\n", argv[0]);
++
++	if (!nopi) {
++		if (pthread_mutexattr_init(&mutexattr) != 0)
++			printf("Failed to init mutexattr\n");
++
++		if (pthread_mutexattr_setprotocol(&mutexattr,\
++			 PTHREAD_PRIO_INHERIT) != 0)
++			printf("Can't set protocol prio inherit\n");
++
++		if (pthread_mutexattr_getprotocol(&mutexattr, &protocol) != 0)
++			printf("Can't get mutexattr protocol\n");
++		else
++			printf("protocol in mutexattr is %d\n", protocol);
++
++		retc = pthread_mutex_init(&glob_mutex, &mutexattr);
++		if (retc != 0)
++			printf("Failed to init mutex: %d\n", retc);
++	}
++
++	create_other_thread(func_nonrt, NULL);
++	create_rr_thread(func_rt, NULL, 20);
++	create_rr_thread(func_rt, NULL, 30);
++	create_rr_thread(func_rt, NULL, 40);
++	create_rr_thread(func_noise, NULL, 40);
++
++	printf("Joining threads\n");
++	join_threads();
++	printf("Done\n");
++	printf("Criteria:Low Priority Thread should Preempt Higher Priority "\
++		"Noise Thread\n");
++
++	return 0;
+ }
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
