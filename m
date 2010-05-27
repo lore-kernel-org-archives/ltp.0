@@ -1,31 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9v2a-0007fp-Kp
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:36 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O9v2Z-0001OE-Dg
-	for ltp-list@lists.sourceforge.net; Thu, 06 May 2010 06:58:36 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o466qCUO012530
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:52:12 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o466wRoE087398
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 May 2010 00:58:27 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o45NwPhw006477
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 May 2010 17:58:26 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Thu, 06 May 2010 12:28:17 +0530
-Message-Id: <20100506065815.23879.4005.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [09/12 FAILURE] LTPX timer create04 fails
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OHURg-00070Z-0w
+	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:11:48 +0000
+Received: from e28smtp09.in.ibm.com ([122.248.162.9])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OHURb-0006Cg-Mu
+	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:11:47 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id o4R3D1vg026979
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 08:43:01 +0530
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o4R4BXWx3023042
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 09:41:33 +0530
+Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o4R4BXOE021301
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 14:11:33 +1000
+From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Date: Thu, 27 May 2010 09:41:24 +0530
+Message-Id: <1274933486-4876-5-git-send-email-gomuthuk@linux.vnet.ibm.com>
+In-Reply-To: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+References: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH 4/6] realtime: use busy_work_ms from librttest to burn
+	cpu cycles
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,61 +35,177 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0405714898457694547=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linus Test Project <ltp-list@lists.sourceforge.net>
-Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>
-
---===============0405714898457694547==
-
-Subject: LTP�� timer_create04 fails
-
-Issues Description below:
-=======================================
-# ./runltp -s timer_create04
-<<<test_output>>>
-timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22
-(Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
-timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22
-(Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
-timer_create04    3  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
-address
-timer_create04    4  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
-address
-timer_create04    5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
-address
-timer_create04    6  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
-address
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-
-SUZUKI K. POULOSE said that the same patch for issue #8 will solve the problem :-)
-
-Regards--
-Subrata
-
-
-
---===============0405714898457694547==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+
+From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+
+Instead of lock/unlock of mutex to burn cpu cycles, we can use busy_work_ms
+from librttest which is more explicit (burn cycles, not provide some
+synchronization).
+
+Also this patch removes the id increment since it is not used.
+
+Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: John Stultz <johnstul@us.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+---
+ testcases/realtime/func/pi-tests/testpi-1.c |   24 ++++++------------------
+ testcases/realtime/func/pi-tests/testpi-2.c |   24 ++++++------------------
+ 2 files changed, 12 insertions(+), 36 deletions(-)
+
+diff --git a/testcases/realtime/func/pi-tests/testpi-1.c b/testcases/realtime/func/pi-tests/testpi-1.c
+index 25541d7..71b01ec 100644
+--- a/testcases/realtime/func/pi-tests/testpi-1.c
++++ b/testcases/realtime/func/pi-tests/testpi-1.c
+@@ -81,7 +81,7 @@ pthread_mutex_t glob_mutex;
+ void *func_nonrt(void *arg)
+ {
+ 	struct thread *pthr = (struct thread *)arg;
+-	int i, j, tid = gettid();
++	int i, tid = gettid();
+ 
+ 	printf("Thread %d started running with priority %d\n", tid,\
+ 		pthr->priority);
+@@ -97,11 +97,7 @@ void *func_nonrt(void *arg)
+ 				tid, i,  pthr->policy, pthr->priority);
+ 			fflush(NULL);
+ 		}
+-		pthr->id++;
+-		for (j = 0; j < 5000; j++) {
+-			pthread_mutex_lock(&(pthr->mutex));
+-			pthread_mutex_unlock(&(pthr->mutex));
+-		}
++		busy_work_ms(1);
+ 	}
+ 	pthread_mutex_unlock(&glob_mutex);
+ 	return NULL;
+@@ -110,7 +106,7 @@ void *func_nonrt(void *arg)
+ void *func_rt(void *arg)
+ {
+ 	struct thread *pthr = (struct thread *)arg;
+-	int i, j, tid = gettid();
++	int i, tid = gettid();
+ 
+ 	printf("Thread %d started running with prio %d\n", tid, pthr->priority);
+ 	pthread_barrier_wait(&barrier);
+@@ -129,11 +125,7 @@ void *func_rt(void *arg)
+ 				tid, i, pthr->policy, pthr->priority);
+ 			fflush(NULL);
+ 		}
+-		pthr->id++;
+-		for (j = 0; j < 5000; j++) {
+-			pthread_mutex_lock(&(pthr->mutex));
+-			pthread_mutex_unlock(&(pthr->mutex));
+-		}
++		busy_work_ms(1);
+ 	}
+ 	pthread_mutex_unlock(&glob_mutex);
+ 	return NULL;
+@@ -142,7 +134,7 @@ void *func_rt(void *arg)
+ void *func_noise(void *arg)
+ {
+ 	struct thread *pthr = (struct thread *)arg;
+-	int i, j, tid = gettid();
++	int i, tid = gettid();
+ 
+ 	printf("Noise Thread %d started running with prio %d\n", tid,
+ 		pthr->priority);
+@@ -155,11 +147,7 @@ void *func_noise(void *arg)
+ 				pthr->priority);
+ 			fflush(NULL);
+ 		}
+-		pthr->id++;
+-		for (j = 0; j < 5000; j++) {
+-			pthread_mutex_lock(&(pthr->mutex));
+-			pthread_mutex_unlock(&(pthr->mutex));
+-		}
++		busy_work_ms(1);
+ 	}
+ 	return NULL;
+ }
+diff --git a/testcases/realtime/func/pi-tests/testpi-2.c b/testcases/realtime/func/pi-tests/testpi-2.c
+index eb00129..68dde44 100644
+--- a/testcases/realtime/func/pi-tests/testpi-2.c
++++ b/testcases/realtime/func/pi-tests/testpi-2.c
+@@ -83,7 +83,7 @@ pthread_mutex_t glob_mutex;
+ void *func_lowrt(void *arg)
+ {
+ 	struct thread *pthr = (struct thread *)arg;
+-	int i, j, tid = gettid();
++	int i, tid = gettid();
+ 
+ 	printf("Thread %d started running with priority %d\n", tid,\
+ 		pthr->priority);
+@@ -99,11 +99,7 @@ void *func_lowrt(void *arg)
+ 				tid, i, pthr->policy, pthr->priority);
+ 			fflush(NULL);
+ 		}
+-		pthr->id++;
+-		for (j = 0; j < 5000; j++) {
+-			pthread_mutex_lock(&(pthr->mutex));
+-			pthread_mutex_unlock(&(pthr->mutex));
+-		}
++		busy_work_ms(1);
+ 	}
+ 	pthread_mutex_unlock(&glob_mutex);
+ 	return NULL;
+@@ -112,7 +108,7 @@ void *func_lowrt(void *arg)
+ void *func_rt(void *arg)
+ {
+ 	struct thread *pthr = (struct thread *)arg;
+-	int i, j, tid = gettid();
++	int i, tid = gettid();
+ 
+ 	printf("Thread %d started running with prio %d\n", tid, pthr->priority);
+ 	pthread_barrier_wait(&barrier);
+@@ -131,11 +127,7 @@ void *func_rt(void *arg)
+ 				tid, i, pthr->policy, pthr->priority);
+ 			fflush(NULL);
+ 		}
+-		pthr->id++;
+-		for (j = 0; j < 5000; j++) {
+-			pthread_mutex_lock(&(pthr->mutex));
+-			pthread_mutex_unlock(&(pthr->mutex));
+-		}
++		busy_work_ms(1);
+ 	}
+ 	pthread_mutex_unlock(&glob_mutex);
+ 	return NULL;
+@@ -144,7 +136,7 @@ void *func_rt(void *arg)
+ void *func_noise(void *arg)
+ {
+ 	struct thread *pthr = (struct thread *)arg;
+-	int i, j, tid = gettid();
++	int i, tid = gettid();
+ 
+ 	printf("Noise Thread %d started running with prio %d\n", tid,\
+ 		pthr->priority);
+@@ -157,11 +149,7 @@ void *func_noise(void *arg)
+ 				pthr->priority);
+ 			fflush(NULL);
+ 		}
+-		pthr->id++;
+-		for (j = 0; j < 5000; j++) {
+-			pthread_mutex_lock(&(pthr->mutex));
+-			pthread_mutex_unlock(&(pthr->mutex));
+-		}
++		busy_work_ms(1);
+ 	}
+ 	return NULL;
+ }
+-- 
+1.7.1
+
 
 ------------------------------------------------------------------------------
-
---===============0405714898457694547==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0405714898457694547==--
