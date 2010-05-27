@@ -1,33 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matthltc@us.ibm.com>) id 1O9Qil-00054F-Gn
-	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 22:36:07 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O9Qij-0007OZ-BT
-	for ltp-list@lists.sourceforge.net; Tue, 04 May 2010 22:36:07 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o44MSuoW011714
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 May 2010 16:28:56 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o44MZlAO125012
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 May 2010 16:35:48 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o44MZkmH020234
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 May 2010 16:35:47 -0600
-Date: Tue, 4 May 2010 15:35:45 -0700
-From: Matt Helsley <matthltc@us.ibm.com>
-Message-ID: <20100504223545.GF31830@count0.beaverton.ibm.com>
-References: <4BD53483.9080603@in.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4BD53483.9080603@in.ibm.com>
-Subject: Re: [LTP] PATCH : test_fs_bind testscript for busybox machines
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OHUJt-000458-D5
+	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:03:45 +0000
+Received: from e28smtp05.in.ibm.com ([122.248.162.5])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OHUJq-0003mE-F5
+	for ltp-list@lists.sourceforge.net; Thu, 27 May 2010 04:03:45 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp05.in.ibm.com (8.14.3/8.13.1) with ESMTP id o4R43XJr031916
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 09:33:33 +0530
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o4R43XFR3207228
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 09:33:33 +0530
+Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
+	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o4R43WI7031945
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 May 2010 14:03:33 +1000
+From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Date: Thu, 27 May 2010 09:33:26 +0530
+Message-Id: <1274933006-4754-6-git-send-email-gomuthuk@linux.vnet.ibm.com>
+In-Reply-To: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+References: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH 5/5] realtime: code cleanup on pi-test 6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,65 +34,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Suzuki Poulose <suzuki@in.ibm.com>
-Cc: risrajak@in.ibm.com, ltp-list@lists.sourceforge.net
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-On Mon, Apr 26, 2010 at 12:06:51PM +0530, Suzuki Poulose wrote:
-> Hi,
-> 
-> The test_fs_bind testscript hangs indefinitely when run on a machine
-> where busybox applets are used.
-> 
-> The test hangs while trying to restore the mounts after a test run.
-> 
-> 
-> This happens because the "xargs" applet from busybox doesn't
-> understand the --max-args=1 option. Thus, the mounts from the test
-> are not removed and this goes on in a loop, indefinitely.
-> 
-> This could be avoided by using "-n" option which is supported by
-> both the implementations of xargs.
-> 
-> 
-> Attached the patch here.
-> 
-> Thanks
-> 
-> Suzuki
+From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-Just noticed this thread. Looks good, thanks!
+This patch cleans up the test so as to follow C coding style standards.
 
-Acked-by: Matt Helsley <matthltc@us.ibm.com>
+Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: John Stultz <johnstul@us.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+---
+ testcases/realtime/func/pi-tests/testpi-6.c |   72 ++++++++++++++-------------
+ 1 files changed, 37 insertions(+), 35 deletions(-)
 
-> 
-> Signed-off-by: Suzuki K P <suzuki@in.ibm.com>
-> 
-> Index: ltp/testscripts/test_fs_bind.sh
-> ===================================================================
-> --- ltp.orig/testscripts/test_fs_bind.sh	2009-12-22 03:28:25.000000000 +0000
-> +++ ltp/testscripts/test_fs_bind.sh	2010-04-26 05:50:41.000000000 +0000
-> @@ -238,7 +238,7 @@
->  	# new mounts around and will never remove mounts outside the test
->  	# directory
->  	( while grep_proc_mounts ; do
-> -		grep_proc_mounts | awk '{print $2}' | xargs -r --max-args=1 umount -l
-> +		grep_proc_mounts | awk '{print $2}' | xargs -r -n 1 umount -l
->  	done ) >& /dev/null
->  	
->  	# mount list and exit with 0
-
-> ------------------------------------------------------------------------------
-
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+diff --git a/testcases/realtime/func/pi-tests/testpi-6.c b/testcases/realtime/func/pi-tests/testpi-6.c
+index 560f45f..523ba13 100644
+--- a/testcases/realtime/func/pi-tests/testpi-6.c
++++ b/testcases/realtime/func/pi-tests/testpi-6.c
+@@ -30,6 +30,7 @@
+  *
+  *
+  * HISTORY
++ *      2010-04-22 Code cleanup by Gowrishankar
+  *
+  *
+  *****************************************************************************/
+@@ -39,54 +40,55 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <librttest.h>
+-pthread_mutex_t  child_mutex;
++pthread_mutex_t child_mutex;
+ 
+-void* child_thread (void* arg)
++void *child_thread(void *arg)
+ {
+-    int ret;
++	int ret;
+ 
+-    ret = pthread_mutex_lock(&child_mutex);
+-    if (ret != 0)
+-	printf("child thread: Failed to lock child_mutex: %d\n", ret);
+-    else
+-	printf("child_thread: got lock\n");
++	ret = pthread_mutex_lock(&child_mutex);
++	if (ret != 0)
++		printf("child thread: Failed to lock child_mutex: %d\n", ret);
++	else
++		printf("child_thread: got lock\n");
+ 
+-    sleep(2);
++	sleep(2);
+ 
+-    printf("child_thread: Trying to get lock 2nd time\n");
+-    ret = pthread_mutex_lock(&child_mutex);
+-    if (ret != 0)
+-	printf("child thread: Failed to lock child_mutex: %d\n", ret);
+-    else
+-	printf("child_thread: got lock 2nd time !!\n");
++	printf("child_thread: Trying to get lock 2nd time\n");
++	ret = pthread_mutex_lock(&child_mutex);
++	if (ret != 0)
++		printf("child thread: Failed to lock child_mutex: %d\n", ret);
++	else
++		printf("child_thread: got lock 2nd time !!\n");
+ 
+-    return NULL;
++	return NULL;
+ }
+ 
+ int do_test(int argc, char **argv)
+ {
+-    pthread_mutexattr_t mutexattr;
+-    int retc, robust;
++	pthread_mutexattr_t mutexattr;
++	int retc, robust;
+ 
+-    if (pthread_mutexattr_init(&mutexattr) != 0) {
+-      printf("Failed to init mutexattr\n");
+-    };
+-    if (pthread_mutexattr_setrobust_np(&mutexattr, PTHREAD_MUTEX_ROBUST_NP) != 0) {
+-      printf("Can't set robust mutex\n");
+-    }
+-    if (pthread_mutexattr_getrobust_np(&mutexattr, &robust) != 0) {
+-      printf("Can't get mutexattr protocol\n");
+-    } else {
+-      printf("robust in mutexattr is %d\n", robust);
+-    }
+-    if ((retc = pthread_mutex_init(&child_mutex, &mutexattr)) != 0) {
+-      printf("Failed to init mutex: %d\n", retc);
+-    }
++	if (pthread_mutexattr_init(&mutexattr) != 0)
++		printf("Failed to init mutexattr\n");
+ 
+-    create_other_thread(child_thread, NULL);
+-    join_threads();
++	if (pthread_mutexattr_setrobust_np(&mutexattr,\
++		PTHREAD_MUTEX_ROBUST_NP) != 0)
++		printf("Can't set robust mutex\n");
+ 
+-    return 0;
++	if (pthread_mutexattr_getrobust_np(&mutexattr, &robust) != 0)
++		printf("Can't get mutexattr protocol\n");
++	else
++		printf("robust in mutexattr is %d\n", robust);
++
++	retc = pthread_mutex_init(&child_mutex, &mutexattr);
++	if (retc != 0)
++		printf("Failed to init mutex: %d\n", retc);
++
++	create_other_thread(child_thread, NULL);
++	join_threads();
++
++	return 0;
+ }
+ 
+ #include "test-skeleton.c"
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
