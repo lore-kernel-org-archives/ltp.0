@@ -1,37 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OAJJy-000740-Gv
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 08:54:10 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OIQh7-0002Z4-Bv
+	for ltp-list@lists.sourceforge.net; Sat, 29 May 2010 18:23:37 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OAJJx-00055R-HK
-	for ltp-list@lists.sourceforge.net; Fri, 07 May 2010 08:54:10 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o478kh6h027549
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 02:46:43 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o478s26f177768
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 02:54:02 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o478s2NW014325
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 May 2010 02:54:02 -0600
+	(Exim 4.69) id 1OIQh6-0001hB-CJ
+	for ltp-list@lists.sourceforge.net; Sat, 29 May 2010 18:23:37 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e39.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o4TIEauC002300
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 12:14:36 -0600
+Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o4TINUQ8151046
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 12:23:30 -0600
+Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o4TIQSRp003821
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 12:26:28 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <q2q364299f41005061042p588281bdoefb81e77aedca964@mail.gmail.com>
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065801.23879.92449.sendpatchset@subratamodak.linux.ibm.com>
-	<4BE26A1A.1000102@in.ibm.com>
-	<239C044B-6014-4FA7-AC8B-6D71AFE8FEDA@gmail.com>
-	<4BE285FF.9030104@in.ibm.com>
-	<q2q364299f41005061042p588281bdoefb81e77aedca964@mail.gmail.com>
-Date: Fri, 07 May 2010 14:23:57 +0530
-Message-Id: <1273222437.6042.2.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1274933006-4754-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+References: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+	<1274933006-4754-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Date: Fri, 28 May 2010 13:02:01 +0530
+Message-Id: <1275031934.5418.23.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [08/12 FAILURE] LTPE clock gettime03 fails
+Subject: Re: [LTP] [PATCH 0/5] realtime: code cleanup on pi-tests to adapt
+	C	coding standard
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -42,26 +39,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, Suzuki Poulose <suzuki@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
+To: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Cc: Linux Test Project <ltp-list@lists.sourceforge.net>
 
-T24gVGh1LCAyMDEwLTA1LTA2IGF0IDEwOjQyIC0wNzAwLCBHYXJyZXR0IENvb3BlciB3cm90ZToK
-PiBPbiBUaHUsIE1heSA2LCAyMDEwIGF0IDI6MDMgQU0sIFN1enVraSBQb3Vsb3NlIDxzdXp1a2lA
-aW4uaWJtLmNvbT4gd3JvdGU6Cj4gPiBPbiDgtLXgtY3gtK/gtL7gtLTgtIIgMDYg4LSu4LWG4LSv
-4LWNIDIwMTAgMDE6MjUg4LS14LWI4LSV4LWBLCBHYXJyZXR0IENvb3BlciB3cm90ZToKPiA+Pgo+
-ID4+IE9uIE1heSA2LCAyMDEwLCBhdCAxMjowNCBBTSwgU3V6dWtpIFBvdWxvc2Ugd3JvdGU6Cj4g
-Pj4KPiA+Pj4gPGZpeC10aW1lci10ZXN0cy1iYWQtaGVhZGVyLmRpZmY+Cj4gPj4KPiA+PiAgICAg
-ICAgTWF5YmUgYSBiZXR0ZXIgc29sdXRpb24gd291bGQgYmUgdG8gTlVMTCB0ZXJtaW5hdGUgdGhl
-IGFycmF5ICh3ZWxsLAo+ID4+IG9yIGRvIHNpbWlsYXIpPyBVc2luZyB0d28gdW5pdHMgb2YgbWVh
-c3VyZW1lbnQganVzdCBzZWVtcyBsaWtlIGl0J2QKPiA+PiBjb21wbGljYXRlIGhvdyB0aGluZ3Mg
-YXJlIGJlaW5nIHBlcmZvcm1lZC4uLgo+ID4KPiA+IFVzZWQgTUFYX0NMT0NLUyB0byBtYXJrIHRo
-ZSBlbmQgb2YgY2xvY2sgbGlzdCBhcnJheS4gUGF0Y2ggYXR0YWNoZWQuCj4gCj4gTG9va3MgZ29v
-ZC4gQWNrZWQtYnk6IEdhcnJldHQgQ29vcGVyIDx5YW5lZ29taUBnbWFpbC5jb20+CgpPay4gRG9u
-ZS4KClJlZ2FyZHMtLQpTdWJyYXRhCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBs
-aXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Thu, 2010-05-27 at 09:33 +0530, Gowrishankar wrote: 
+> Following bulk of patches applies the coding style in pi-tests to follow
+> the C coding standard. All are tested and they go in order:
+> 
+> [PATCH 1/5] realtime: code cleanup on pi-test 0
+> [PATCH 2/5] realtime: code cleanup on pi-test 1
+> [PATCH 3/5] realtime: code cleanup on pi-test 2
+> [PATCH 4/5] realtime: code cleanup on pi-test 5
+> [PATCH 5/5] realtime: code cleanup on pi-test 6
+
+Thanks. All checked in for this series.
+
+Regards--
+Subrata
+
+> 
+> Thanks,
+> Gowri
+> 
+
+
+------------------------------------------------------------------------------
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
