@@ -1,18 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Feng.Xu@windriver.com>) id 1O9cZN-00076S-Mg
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 11:15:13 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O9cZM-0005U0-B1
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 11:15:13 +0000
-From: Henry xu <feng.xu@windriver.com>
-Date: Wed, 05 May 2010 17:08:16 +0800
-Message-Id: <1273050496.26977.19.camel@lishuang-desktop>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OIQgv-0002VW-16
+	for ltp-list@lists.sourceforge.net; Sat, 29 May 2010 18:23:25 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OIQgu-0001f1-0r
+	for ltp-list@lists.sourceforge.net; Sat, 29 May 2010 18:23:25 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o4TICIRc029667
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 14:12:18 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o4TINBGl108736
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 14:23:11 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o4TINBpB019749
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 15:23:11 -0300
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1274440972.5471.6.camel@munipradeep-laptop>
+References: <1274440972.5471.6.camel@munipradeep-laptop>
+Date: Fri, 28 May 2010 13:00:47 +0530
+Message-Id: <1275031859.5418.20.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] ltp sysctl03 testcase failed in version of 20100228
+Subject: Re: [LTP] Patch for proc01 testcase
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,29 +39,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,all
-I test sysctl03 in x86 and ppc platform and product the same fails as
-below.
+Thanks Muni.
 
+On Fri, 2010-05-21 at 16:52 +0530, Munipradeep Beerakam wrote: 
+> Hi,
+> 
+> We need to add the below entry 
+> {"read", "/proc/powerpc/rtas/error_log", EINVAL},
+> to the "Mapping known_issues[]" array, as the new kernels are
+> having /proc/powerpc directory along with /proc/ppc64.
+> 
+> Attached the patch to this mail.
+> 
+> Please correct me if any thing is wrong.
 
-root@z530:/opt/ltp-full/testcases/bin> ./sysctl03 
-sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
-sysctl03    2  TFAIL  :  Expected EPERM, got 13
+I will test this soon and let you know.
 
-The case expects to return EPERM,however return EACCES.
+Regards--
+Subrata
 
-My kernel version is 2.6.34 .I think it could be caused  by high version
-kernel .Since in the past kernel of 2.6.27,there is not the fail.And I
-find the same issue of the case on the internet.It gives a patch,but I
-find  the patch is not merged in the newest ltp version .
+> 
+> Thanks
+> Muni
+> ------------------------------------------------------------------------------
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-I want to know whether the isuue is known or not.
-
-thanks!
 
 ------------------------------------------------------------------------------
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
