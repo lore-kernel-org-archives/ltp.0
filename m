@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1O9jAV-0007p1-4v
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 18:17:59 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OIQh1-0002XY-Ro
+	for ltp-list@lists.sourceforge.net; Sat, 29 May 2010 18:23:31 +0000
 Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O9jAU-0007EI-1L
-	for ltp-list@lists.sourceforge.net; Wed, 05 May 2010 18:17:59 +0000
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OIQh1-0007P5-0m
+	for ltp-list@lists.sourceforge.net; Sat, 29 May 2010 18:23:31 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e4.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o4TIAVtJ002127
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 14:10:31 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o4TINPDX136710
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 14:23:25 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o4TINPMf022360
+	for <ltp-list@lists.sourceforge.net>; Sat, 29 May 2010 14:23:25 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100505124335.GA11888@linux.vnet.ibm.com>
-References: <1273050496.26977.19.camel@lishuang-desktop>
-	<20100505124335.GA11888@linux.vnet.ibm.com>
-Date: Wed, 05 May 2010 23:47:44 +0530
-Message-Id: <1273083465.13463.12.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1274933486-4876-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+References: <Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+	<1274933486-4876-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Date: Fri, 28 May 2010 13:01:42 +0530
+Message-Id: <1275031918.5418.22.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] ltp sysctl03 testcase failed in version of 20100228
+Subject: Re: [LTP] [PATCH 0/5] realtime: functional changes improved in
+	pi-tests
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,76 +41,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Cc: Linux Test Project <ltp-list@lists.sourceforge.net>
 
-On Wed, 2010-05-05 at 18:13 +0530, Rishikesh K Rajak wrote:
-> On Wed, May 05, 2010 at 05:08:16PM +0800, Henry xu wrote:
-> > Hi,all
-> > I test sysctl03 in x86 and ppc platform and product the same fails as
-> > below.
-> > 
-> > 
-> > root@z530:/opt/ltp-full/testcases/bin> ./sysctl03 
-> > sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
-> > sysctl03    2  TFAIL  :  Expected EPERM, got 13
-> > 
+On Thu, 2010-05-27 at 09:41 +0530, Gowrishankar wrote: 
+> Following set of patches applies functional changes in pi-tests
+> for better reliability in recent kernels and their order is:
 > 
-> Can you try with latest April month LTP ?
+> [PATCH 1/6] realtime: reuse init_pi_mutex from librttest
+> [PATCH 2/6] realtime: add test descriptions
+> [PATCH 3/6] realtime: threads need not set cpu affinity while main does
+> [PATCH 4/6] realtime: use busy_work_ms from librttest to burn cpu cycles
+> [PATCH 5/6] realtime: remove thread_stop which is not used anywhere
+> [PATCH 6/6] realtime: synchronization fixes for high priority noise thread
+> 
+> All need to be applied in their order on top or code clean up patch series
+> sent previously.
 
-Nothing has changed there either:
-
-<<<test_start>>>
-tag=sysctl03 stime=1273083251
-cmdline="sysctl03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-sysctl03    1  TFAIL  :  Expected EPERM (1), got 13: Permission denied
-sysctl03    2  TFAIL  :  Expected EPERM, got 13
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: LTP-20100430
-        
-       ###############################################################"
-        
-            Done executing testcases."
-            LTP Version:  LTP-20100430
-       ###############################################################"
-       
-# uname -a
-Linux 2.6.33.1-19.fc13.ppc64 #1 SMP Tue Mar 23 06:32:38 EDT 2010 ppc64
-ppc64 ppc64 GNU/Linux
+Thanks.
 
 Regards--
 Subrata
 
 > 
-> > The case expects to return EPERM,however return EACCES.
-> > 
-> > My kernel version is 2.6.34 .I think it could be caused  by high version
-> > kernel .Since in the past kernel of 2.6.27,there is not the fail.And I
-> > find the same issue of the case on the internet.It gives a patch,but I
-> > find  the patch is not merged in the newest ltp version .
-> > 
-> > I want to know whether the isuue is known or not.
-> > 
-> > thanks!
-> > 
-> > ------------------------------------------------------------------------------
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> Thanks,
+> Gowri
+> 
 > 
 
 
 ------------------------------------------------------------------------------
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
