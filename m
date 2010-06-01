@@ -1,29 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1OMcG7-0005c2-SD
-	for ltp-list@lists.sourceforge.net; Thu, 10 Jun 2010 07:33:03 +0000
-Received: from out20.sjc.mx.trendmicro.com ([216.99.131.77])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OMcG3-0004zE-Rg
-	for ltp-list@lists.sourceforge.net; Thu, 10 Jun 2010 07:33:03 +0000
-Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.27])
-	by out20.sjc.mx.trendmicro.com (Postfix) with ESMTP id BDADE980437
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 Jun 2010 07:32:52 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 129863DD01B
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 Jun 2010 07:32:51 +0000 (UTC)
-Message-ID: <000001cb086a$f2fc55d0$d8f50170$@co.jp>
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Thu, 10 Jun 2010 16:02:54 +0900
+	(envelope-from <suzuki@in.ibm.com>) id 1OJTaH-0001Wm-DB
+	for ltp-list@lists.sourceforge.net; Tue, 01 Jun 2010 15:40:53 +0000
+Received: from e23smtp04.au.ibm.com ([202.81.31.146])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OJTaG-0001Zu-7f
+	for ltp-list@lists.sourceforge.net; Tue, 01 Jun 2010 15:40:53 +0000
+Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
+	by e23smtp04.au.ibm.com (8.14.4/8.13.1) with ESMTP id o51FabxJ014213
+	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jun 2010 01:36:37 +1000
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o51Feigp1421556
+	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jun 2010 01:40:44 +1000
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o51Feh7F019249
+	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jun 2010 01:40:44 +1000
+Message-ID: <4C0529F8.8060906@in.ibm.com>
+Date: Tue, 01 Jun 2010 21:10:40 +0530
+From: Suzuki Poulose <suzuki@in.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="--=_NextPart_ST_16_02_55_Thursday_June_10_2010_28441"
-Content-Language: ja
-Subject: [LTP] [PATCH] fix "mail" test
+References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+	<20100506065801.23879.92449.sendpatchset@subratamodak.linux.ibm.com>
+	<4BE26A1A.1000102@in.ibm.com>
+	<239C044B-6014-4FA7-AC8B-6D71AFE8FEDA@gmail.com>
+	<4BE285FF.9030104@in.ibm.com>
+In-Reply-To: <4BE285FF.9030104@in.ibm.com>
+Content-Type: multipart/mixed; boundary="------------020601030509040102090901"
+Subject: Re: [LTP] [08/12 FAILURE] LTPE clock gettime03 fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,142 +41,98 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: kamimura@ryobi.co.jp
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
 
 This is a multi-part message in MIME format.
-
-----=_NextPart_ST_16_02_55_Thursday_June_10_2010_28441
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I want to suggest a patch for #2 test of "mail_tests.sh".
-
-The failure of #2 is as following:
-------------
-mail_tests::mail02    0  TINFO  :  Test #2: mail u...@bad-domain will result
-in failure
-mail_tests::mail02    0  TINFO  :  Test #2: to deliver the mail. Mailer
-daemon should
-mail_tests::mail02    0  TINFO  :  Test #2: report this failure.
-mail_tests::mail02    2  TFAIL  :  Test #2: No new mail for root. Reason:
-No mail for root
-------------
-
-I use RHEL5.4, RHEL4.8 systems and x86, x86_64, ia64 architectures.
-"#2" test failed in all combinations.
-
-At "#2" test, there is "No mail for root" in "tst_mail.res" file.
-I want to add this condition to judgment for "tst_mail.res".
-
-The other day, I made a question  whether #2 test failed or not 
-in other systems. 
- -->http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10184.html
-But I have received no reply yet. Therefore I don't know about other 
-systems, and I made this revision to become effective for only RHEL 
-systems.
-
-
-Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-
-============
---- a/testcases/commands/mail/mail_tests.sh	2010-06-02
-21:46:46.000000000 +0900
-+++ b/testcases/commands/mail/mail_tests.sh	2010-06-09
-15:33:19.000000000 +0900
-@@ -140,14 +140,18 @@
- 
- export TCID=mail_tests::mail02
- export TST_COUNT=2
--RC=0
- RC1=0
- RC2=0
-+RC3=0
-+RC4=0
- 
- tst_resm TINFO "Test #2: mail user@bad-domain will result in failure"
- tst_resm TINFO "Test #2: to deliver the mail. Mailer daemon should"
- tst_resm TINFO "Test #2: report this failure."
- 
-+tvar=${MACHTYPE%-*}
-+tvar=${tvar#*-}
-+
- # Don't use underscores in domain names (they're illegal)...
- mail -s "Test" root@thisdomaindoesnotexist < $LTPTMP/tst_mail.in \
- 	> $LTPTMP/tst_mail.out 2>&1
-@@ -190,9 +194,16 @@
- 		    $LTPTMP/tst_mail.res)
- 	fi
- 	if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]; then
--		tst_res TFAIL $LTPTMP/tst_mail.res \
--		    "Test #2: No new mail for root. Reason:"
--		: $(( TFAILCNT += 1 ))
-+		RC4=$(awk '{print match($1 $2 $3, "Nomailfor")}' \
-+        	    $LTPTMP/tst_mail.res)
-+		if [ \( "$tvar" = "redhat" -o "$tvar" = "redhat-linux" \) -a
--n "$RC4" ]; then
-+			tst_resm TPASS \
-+				"Test #2: No new mail for root as expected"
-+		else
-+			tst_res TFAIL $LTPTMP/tst_mail.res \
-+			    "Test #2: No new mail for root. Reason:"
-+			: $(( TFAILCNT += 1 ))
-+		fi
- 	else
- 
- 		if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne
-0 ]; then
-============
-
-
-
-Regards--
-
--Tomonori Mitani
-
-----=_NextPart_ST_16_02_55_Thursday_June_10_2010_28441
-Content-Type: application/octet-stream;
-	name="mail_tests.sh.patch"
+--------------020601030509040102090901
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="mail_tests.sh.patch"
+X-MIME-Autoconverted: from 8bit to quoted-printable by e23smtp04.au.ibm.com id
+	o51FabxJ014213
 
---- a/testcases/commands/mail/mail_tests.sh=092010-06-02 21:46:46.000000000=
- +0900=0A+++ b/testcases/commands/mail/mail_tests.sh=092010-06-09 15:33:19.=
-000000000 +0900=0A@@ -140,14 +140,18 @@=0A =0A export TCID=3Dmail_tests::ma=
-il02=0A export TST_COUNT=3D2=0A-RC=3D0=0A RC1=3D0=0A RC2=3D0=0A+RC3=3D0=0A+=
-RC4=3D0=0A =0A tst_resm TINFO "Test #2: mail user@bad-domain will result in=
- failure"=0A tst_resm TINFO "Test #2: to deliver the mail. Mailer daemon sh=
-ould"=0A tst_resm TINFO "Test #2: report this failure."=0A =0A+tvar=3D${MAC=
-HTYPE%-*}=0A+tvar=3D${tvar#*-}=0A+=0A # Don't use underscores in domain nam=
-es (they're illegal)...=0A mail -s "Test" root@thisdomaindoesnotexist < $LT=
-PTMP/tst_mail.in \=0A =09> $LTPTMP/tst_mail.out 2>&1=0A@@ -190,9 +194,16 @@=
-=0A =09=09    $LTPTMP/tst_mail.res)=0A =09fi=0A =09if [ -z "$RC1" -a -z "$R=
-C2" -a -z "$RC3" ]; then=0A-=09=09tst_res TFAIL $LTPTMP/tst_mail.res \=0A-=09=
-=09    "Test #2: No new mail for root. Reason:"=0A-=09=09: $(( TFAILCNT +=3D=
- 1 ))=0A+=09=09RC4=3D$(awk '{print match($1 $2 $3, "Nomailfor")}' \=0A+    =
-    =09    $LTPTMP/tst_mail.res)=0A+=09=09if [ \( "$tvar" =3D "redhat" -o "=
-$tvar" =3D "redhat-linux" \) -a -n "$RC4" ]; then=0A+=09=09=09tst_resm TPAS=
-S \=0A+=09=09=09=09"Test #2: No new mail for root as expected"=0A+=09=09els=
-e=0A+=09=09=09tst_res TFAIL $LTPTMP/tst_mail.res \=0A+=09=09=09    "Test #2=
-: No new mail for root. Reason:"=0A+=09=09=09: $(( TFAILCNT +=3D 1 ))=0A+=09=
-=09fi=0A =09else=0A =0A =09=09if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne=
- 0 -a $RC3 -ne 0 ]; then=0A
-----=_NextPart_ST_16_02_55_Thursday_June_10_2010_28441
+On =E0=B4=B5=E0=B5=8D=E0=B4=AF=E0=B4=BE=E0=B4=B4=E0=B4=82 06 =E0=B4=AE=E0=
+=B5=86=E0=B4=AF=E0=B5=8D 2010 02:33 =E0=B4=B5=E0=B5=88=E0=B4=95=E0=B5=81,=
+ Suzuki Poulose wrote:
+> On =E0=B4=B5=E0=B5=8D=E0=B4=AF=E0=B4=BE=E0=B4=B4=E0=B4=82 06 =E0=B4=AE=E0=
+=B5=86=E0=B4=AF=E0=B5=8D 2010 01:25 =E0=B4=B5=E0=B5=88=E0=B4=95=E0=B5=81,=
+ Garrett Cooper wrote:
+>> On May 6, 2010, at 12:04 AM, Suzuki Poulose wrote:
+>>
+>>> <fix-timer-tests-bad-header.diff>
+>>
+>> Maybe a better solution would be to NULL terminate the array (well, or
+>> do similar)? Using two units of measurement just seems like it'd
+>> complicate how things are being performed...
+>
+> Used MAX_CLOCKS to mark the end of clock list array. Patch attached.
+
+Just realized that, I sent the very old patch not the updated one. Here=20
+is the updated one:
+
+
+>
+>
+> Thanks
+>
+> Suzuki
+>> Thanks,
+>> -Garrett
+>
+
+
+--------------020601030509040102090901
+Content-Type: text/plain;
+ name="fix-timer-tests-bad-header.diff"
+Content-Disposition: attachment;
+ filename="fix-timer-tests-bad-header.diff"
+Content-Transfer-Encoding: base64
+
+VGhlIE1BWF9DTE9DS1Mgc3VwcG9ydGVkIGJ5IHRoZSBrZXJuZWwgaXMgMTYuIEJ1dCB0aGUg
+a2VybmVsIG1heSBub3QgaGF2ZSBhbGwKdGhlIGNsb2NrIHNvdXJjZXMgZGVmaW5lZCBpbiB0
+aGUgcmFuZ2UgMC0xNS4KCkhlbmNlLCB0byB0ZXN0IHdoZXRoZXIga2VybmVsIHJldHVybnMg
+ZXJyb3IgZm9yIGFuIElOVkFMSUQgY2xvY2sgc291cmNlIGlkLAp3ZSBzaG91bGQgdXNlIHRo
+ZSB1cHBlciBsaW1pdCBNQVhfQ0xPQ0tTICgxNiBhdCB0aGUgbW9tZW50KS4KCkJ1dCB0byB2
+ZXJpZnkgdGhlIHRoZSBkZWZpbmVkIGNsb2NrcyB3b3JrIGZpbmUsIHdlIHNob3VsZCBsb29w
+IHRocm91Z2ggdGhlICJsaXN0IgpvZiBjbG9jayBzb3VyY2VzIGRlZmluZWQgZm9yIHN1cmUu
+IE1BWF9DTE9DS1MgbWFyc2sgdGhlIGVuZCBvZiB0aGUgY2xvY2sgc291cmNlcyBpbiB0aGUg
+CmFycmF5LgoKU2lnbmVkLW9mZi1ieTogCVN1enVraSBLIFAgPHN1enVraUBpbi5pYm0uY29t
+PgpDYzoJCUdhcnJldHQgQ29vcGVyIDx5YW5lZ29taUBnbWFpbC5jb20+CgpJbmRleDogbHRw
+L3Rlc3RjYXNlcy9rZXJuZWwvdGltZXJzL2luY2x1ZGUvY29tbW9uX3RpbWVycy5oCj09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0KLS0tIGx0cC5vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvdGltZXJzL2luY2x1ZGUv
+Y29tbW9uX3RpbWVycy5oCTIwMTAtMDYtMDEgMTU6Mjg6MDQuMDAwMDAwMDAwICswMDAwCisr
+KyBsdHAvdGVzdGNhc2VzL2tlcm5lbC90aW1lcnMvaW5jbHVkZS9jb21tb25fdGltZXJzLmgJ
+MjAxMC0wNi0wMSAxNTozNDozMy4wMDAwMDAwMDAgKzAwMDAKQEAgLTI4LDE0ICsyOCwxOCBA
+QAogI2lmbmRlZiBDTE9DS19NT05PVE9OSUNfUkFXCiAjZGVmaW5lIENMT0NLX01PTk9UT05J
+Q19SQVcgNAogI2VuZGlmCisKKy8qIE1BWF9DTE9DS1MgaXMgdGhlIG1heGltdW0gbnVtYmVy
+IG9mIGNsb2NrIHNvdXJjZXMgc3VwcG9ydGVkIGJ5IGtlcm5lbCAqLworI2RlZmluZSBNQVhf
+Q0xPQ0tTIDE2CisKIGNsb2NrX3QgY2xvY2tfbGlzdFtdID0gewogCUNMT0NLX1JFQUxUSU1F
+LAogCUNMT0NLX01PTk9UT05JQywKIAlDTE9DS19QUk9DRVNTX0NQVVRJTUVfSUQsCiAJQ0xP
+Q0tfVEhSRUFEX0NQVVRJTUVfSUQsCiAJQ0xPQ0tfTU9OT1RPTklDX1JBVywKKwlNQVhfQ0xP
+Q0tTCiB9OwotI2RlZmluZSBNQVhfQ0xPQ0tTIChzaXplb2YoY2xvY2tfbGlzdCkgLyBzaXpl
+b2YoKmNsb2NrX2xpc3QpKQogCiBjb25zdCBjaGFyICpnZXRfY2xvY2tfc3RyKGNvbnN0IGlu
+dCBjbG9ja19pZCkKIHsKSW5kZXg6IGx0cC90ZXN0Y2FzZXMva2VybmVsL3RpbWVycy90aW1l
+cl9jcmVhdGUvdGltZXJfY3JlYXRlMDIuYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsdHAub3JpZy90
+ZXN0Y2FzZXMva2VybmVsL3RpbWVycy90aW1lcl9jcmVhdGUvdGltZXJfY3JlYXRlMDIuYwky
+MDEwLTA2LTAxIDE1OjI4OjA0LjAwMDAwMDAwMCArMDAwMAorKysgbHRwL3Rlc3RjYXNlcy9r
+ZXJuZWwvdGltZXJzL3RpbWVyX2NyZWF0ZS90aW1lcl9jcmVhdGUwMi5jCTIwMTAtMDYtMDEg
+MTU6MzQ6NTYuMDAwMDAwMDAwICswMDAwCkBAIC0xMTMsNyArMTEzLDcgQEAKIAogCQkJc2V0
+dXBfdGVzdChpKTsKIAotCQkJZm9yIChqID0gMDsgaiA8IE1BWF9DTE9DS1M7ICsraikgewor
+CQkJZm9yIChqID0gMDsgY2xvY2tfbGlzdFtqXSAhPSBNQVhfQ0xPQ0tTOyArK2opIHsKIAog
+CQkJCWlmIChzdHJzdHIoZ2V0X2Nsb2NrX3N0cihjbG9ja19saXN0W2pdKSwKIAkJCQkJCSJD
+UFVUSU1FX0lEIikpIHsK
+--------------020601030509040102090901
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
-----=_NextPart_ST_16_02_55_Thursday_June_10_2010_28441
+
+
+--------------020601030509040102090901
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -180,5 +143,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-----=_NextPart_ST_16_02_55_Thursday_June_10_2010_28441--
+--------------020601030509040102090901--
 
