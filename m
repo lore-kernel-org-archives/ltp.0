@@ -1,32 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OO8sJ-0004Zq-H6
-	for ltp-list@lists.sourceforge.net; Mon, 14 Jun 2010 12:34:47 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <a-fujita@rs.jp.nec.com>) id 1OJjoW-0001jb-E6
+	for ltp-list@lists.sourceforge.net; Wed, 02 Jun 2010 09:00:40 +0000
+Received: from tyo200.gate.nec.co.jp ([202.32.8.215])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OO8sH-0006On-1c
-	for ltp-list@lists.sourceforge.net; Mon, 14 Jun 2010 12:34:47 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e1.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o5ECSNGc005439
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Jun 2010 08:28:23 -0400
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o5ECYPwx113820
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Jun 2010 08:34:25 -0400
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o5ECbPPr015059
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Jun 2010 06:37:25 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1274440972.5471.6.camel@munipradeep-laptop>
-References: <1274440972.5471.6.camel@munipradeep-laptop>
-Date: Mon, 14 Jun 2010 18:04:17 +0530
-Message-Id: <1276518858.4885.6.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Patch for proc01 testcase
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1OJjoT-0000Vg-Ri
+	for ltp-list@lists.sourceforge.net; Wed, 02 Jun 2010 09:00:40 +0000
+Received: from tyo201.gate.nec.co.jp ([10.7.69.201])
+	by tyo200.gate.nec.co.jp (8.13.8/8.13.4) with ESMTP id o528X0PL008926
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 2 Jun 2010 17:33:02 +0900 (JST)
+Message-ID: <4C061631.3090407@rs.jp.nec.com>
+Date: Wed, 02 Jun 2010 17:28:33 +0900
+From: Akira Fujita <a-fujita@rs.jp.nec.com>
+MIME-Version: 1.0
+Subject: [LTP]  [PATCH] Fix ext4_subdir_limit fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,42 +30,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: risrajak@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
 
-On Fri, 2010-05-21 at 16:52 +0530, Munipradeep Beerakam wrote: 
-> Hi,
-> 
-> We need to add the below entry 
-> {"read", "/proc/powerpc/rtas/error_log", EINVAL},
-> to the "Mapping known_issues[]" array, as the new kernels are
-> having /proc/powerpc directory along with /proc/ppc64.
-> 
-> Attached the patch to this mail.
+LTP: Fix ext4_subdir_limit fix
 
-Thanks.
+From: Akira Fujita <a-fujita@rs.jp.nec.com>
 
-Regards--
-Subrata
+We get the following error results since the if condition
+in ext4_subdir_limit_tset.sh does not work fine.  The patch fixes this issue.
 
-> 
-> Please correct me if any thing is wrong.
-> 
-> Thanks
-> Muni
-> ------------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+[root@bsd086 ltp]# ./runltp -f fs_ext4
+
+<snip>
+
+Ext4 subdir limit test
+ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir name len: long name,
+mkdir: No space left on device
+ext4-subdir-limit    2  TFAIL  :  failed to create directories - 19118
+
+<snip>
+
+ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir name len: long name,
+mkdir: No space left on device
+ext4-subdir-limit    4  TFAIL  :  failed to create directories - 19592
+
+Signed-off-by: Akira Fujita <a-fujita@rs.jp.nec.com>
+---
+ ext4_subdir_limit_test.sh |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+index 5631fe5..f0a3b50 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+@@ -152,7 +152,8 @@ for ((i = 0; i < 3; i++))
+ 	{
+ 		for ((k = 0; k < 2; k++))
+ 		{
+-			if [ $i -eq $LONG_DIR -a $k -eq 1024 ]; then
++			if [ ${DIR_LEN[$k]} -eq $LONG_DIR -a \
++				${BLOCK_SIZE[$i]} -eq 1024 ]; then
+ 				continue
+ 			fi
+ 			ext4_run_case 65537 ${DIR_LEN[$k]} ${PARENT_DIR[$j]} \
 
 
 ------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
