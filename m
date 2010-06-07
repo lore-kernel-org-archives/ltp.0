@@ -1,33 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OPUm2-0001rB-Kd
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 06:09:54 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OPUm0-000897-AV
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 06:09:54 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e3.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o5I5u60q028464
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 01:56:06 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o5I69kck1880108
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 02:09:46 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o5I69jBg019879
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 03:09:46 -0300
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1276809176.29789.9.camel@lucio-t400.br.ibm.com>
-References: <1276809176.29789.9.camel@lucio-t400.br.ibm.com>
-Date: Fri, 18 Jun 2010 11:39:38 +0530
-Message-Id: <1276841379.6391.1.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] ffsb failures running ltp-ext4 new features test
-	on	SLES11sp1 PPC
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penguin-kernel@i-love.sakura.ne.jp>)
+	id 1OLWrK-0003ZL-Hc
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 07:34:58 +0000
+Received: from www262.sakura.ne.jp ([202.181.97.72])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OLWrI-0002KK-99
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 07:34:58 +0000
+Message-Id: <201006070651.o576p4S0093912@www262.sakura.ne.jp>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+MIME-Version: 1.0
+Date: Mon, 07 Jun 2010 15:51:04 +0900
+References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
+	<1275834288.7037.3.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1275834288.7037.3.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [linux-2.6.36] TOMOYO Linux update
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,145 +29,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ljhc@br.ibm.com
-Cc: Linux Test Project <ltp-list@lists.sourceforge.net>, Akira Fujita <a-fujita@rs.jp.nec.com>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Lucio,
+Hello.
 
-Till now i did not detect any failure for the sdb2:
+Subrata Modak wrote:
+> > I updated TOMOYO testcases for Linux 2.6.36.
+> > http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.3.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=3740&root=tomoyo
+> > 4425 lines, 141,420 bytes.
+> > MD5: aeb0af73a8f140d50d4ab7435b10de16
+> 
+> Thanks for intimating us the updates about the TOMYO test cases. Would
+> you mind sending us a patch against the LTP git
+> repo(git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev) so that i can
+> push your path against the latest tree.
+> 
+Above one applies against http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=snapshot;h=7f20a3add6c7f2166dbab5a712713ae8b5943448;sf=tgz
 
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
-0, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
-ext4-delalloc-mballoc    1  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
-0, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
-ext4-delalloc-mballoc    2  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
-isDirectIO: 0, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
-ext4-delalloc-mballoc    3  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
-isDirectIO: 0, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
-ext4-delalloc-mballoc    4  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
-1, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
-ext4-delalloc-mballoc    5  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
-1, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
-ext4-delalloc-mballoc    6  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
-isDirectIO: 1, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
-ext4-delalloc-mballoc    7  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
-isDirectIO: 1, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
-ext4-delalloc-mballoc    8  TPASS  :  delalloc/mballoc test pass
-ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
-0, Blocksize: 4096, isAuto_da_alloc: auto_da_alloc=1
+I didn't know ltp moved repository from cvs to git.
+I downloaded files from cvs. Adding some notes on
+http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.2
+might help preventing users from downloading old files.
 
-I will continue to run the tests and update you again.
-
-Regards--
-Subrata
-
-On Thu, 2010-06-17 at 18:12 -0300, Lucio Correia wrote:
-> Hi Akira,
-> 
-> I've found some failures running ext4-newfeat with SLES11sp1 on POWER6.
-> Have you seen that before? 
-> 
-> 
-> 
-> ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
-> 0,
-> Blocksize: 4096, isAuto_da_alloc: auto_da_alloc=1
-> write: No space left on device
-> ext4-delalloc-mballoc    9  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 1, 
-> write: No space left on device
-> write: No space left on device
-> write: No space left on device
-> write: No space left on device
-> ext4-journal-checksum    1  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 100, 
-> write: No space left on device
-> write: No space left on device
-> write: No space left on device
-> ext4-journal-checksum    4  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 1, 
-> write: Success
-> write: Success
-> write: No space left on device
-> ext4-journal-checksum    7  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 100, 
-> write: No space left on device
-> write: No space left on device
-> ext4-journal-checksum   10  TFAIL  :  ffsb returned failure
-> 
-> and so on 13, 16, 19, 22, 25, 28, 31, 34.
-> ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
-> 0,
-> Blocksize: 4096, isAuto_da_alloc: auto_da_alloc=1
-> write: No space left on device
-> ext4-delalloc-mballoc    9  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 1, 
-> write: No space left on device
-> write: No space left on device
-> write: No space left on device
-> write: No space left on device
-> ext4-journal-checksum    1  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 100, 
-> write: No space left on device
-> write: No space left on device
-> write: No space left on device
-> ext4-journal-checksum    4  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 1, 
-> write: Success
-> write: Success
-> write: No space left on device
-> ext4-journal-checksum    7  TFAIL  :  ffsb returned failure
-> 
-> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
-> 100, 
-> write: No space left on device
-> write: No space left on device
-> ext4-journal-checksum   10  TFAIL  :  ffsb returned failure
-> 
-> and so on 13, 16, 19, 22, 25, 28, 31, 34.
-> 
-> 
-> Regards,
-> 
-> 
-> 
-> Lucio Correia
-> --------------
-> Software Engineer
-> IBM LTC
-> 
-> 
-> ------------------------------------------------------------------------------
-> ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-> GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-> lucky parental unit.  See the prize list and enter to win: 
-> http://p.sf.net/sfu/thinkgeek-promo
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+Regards.
 
 ------------------------------------------------------------------------------
 ThinkGeek and WIRED's GeekDad team up for the Ultimate 
