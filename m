@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <aravindjv@motorola.com>) id 1OMFTe-0005bX-B1
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 07:13:30 +0000
-Received: from mail55.messagelabs.com ([216.82.241.163])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OMFTc-0001lx-1z
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 07:13:30 +0000
-Received: from il27exr03.cig.mot.com (il27exr03.mot.com [10.17.196.72])
-	by motgate4.mot.com (8.14.3/8.14.3) with ESMTP id o597DLv8006076
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 9 Jun 2010 00:13:21 -0700 (MST)
-Received: from il27vts03 (il27vts03.cig.mot.com [10.17.196.87])
-	by il27exr03.cig.mot.com (8.13.1/Vontu) with SMTP id o597DLmh009253
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 9 Jun 2010 02:13:21 -0500 (CDT)
-Received: from ZMY16EXM67.ds.mot.com (zmy16exm67.ap.mot.com [10.179.4.27])
-	by il27exr03.cig.mot.com (8.13.1/8.13.0) with ESMTP id o597DJme009224
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 9 Jun 2010 02:13:20 -0500 (CDT)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Wed, 9 Jun 2010 15:12:57 +0800
-Message-ID: <0C2F2C9232E1244BA469CAD31CF5C31608284DA4@ZMY16EXM67.ds.mot.com>
-In-Reply-To: <201006071924.CHE69736.FtHLVMFOFQOJOS@I-love.SAKURA.ne.jp>
-References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp><1275834288.7037.3.camel@subratamodak.linux.ibm.com><201006070651.o576p4S0093912@www262.sakura.ne.jp><1275901898.4851.2.camel@subratamodak.linux.ibm.com>
-	<201006071924.CHE69736.FtHLVMFOFQOJOS@I-love.SAKURA.ne.jp>
-From: "Vinayak Aravind-A20738" <aravindjv@motorola.com>
-Subject: [LTP] Container tests failing on x86_64
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penguin-kernel@I-love.SAKURA.ne.jp>)
+	id 1OLZVH-0004c3-A0
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 10:24:23 +0000
+Received: from wine.ocn.ne.jp ([122.1.235.145] helo=smtp.wine.ocn.ne.jp)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OLZVE-0000hj-Cz
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 10:24:23 +0000
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
+	<1275834288.7037.3.camel@subratamodak.linux.ibm.com>
+	<201006070651.o576p4S0093912@www262.sakura.ne.jp>
+	<1275901898.4851.2.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1275901898.4851.2.camel@subratamodak.linux.ibm.com>
+Message-Id: <201006071924.CHE69736.FtHLVMFOFQOJOS@I-love.SAKURA.ne.jp>
+Date: Mon, 7 Jun 2010 19:24:09 +0900
+Mime-Version: 1.0
+Subject: Re: [LTP] [linux-2.6.36] TOMOYO Linux update
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,44 +31,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
- 
-Hi, 
-Anyone facing this issue with Container tests ? 
+Subrata Modak wrote:
+> However, this patch did not apply as it was not created properly:
+That's strange... I can apply this patch cleanly. What tree should I use?
 
-pidns06     0  TINFO  :  Parent: Passing the pid of the process 11537
-pidns30     0  TINFO  :  parent: successfully created posix mqueue
-pidns30     1  TBROK  :  cinit: mq_open() failed (Bad address)
-pidns30     0  TINFO  :  parent: successfully created posix mqueue
-pidns30     1  TBROK  :  parent: container did not respond!
-pidns31     1  TBROK  :  parent: mq_open() failed (Permission denied)
--------------
--------------
-/opt/ltp/testcases/bin/childipv6.sh: line 72: tst_resm: command not
-found
-paripv6.sh    0  TINFO  :  IPv6: Pinging child from parent: PASS
-par_chld_ipv6: PASS
+[root@tomoyo tmp]# wget 'http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=snapshot;h=7f20a3add6c7f2166dbab5a712713ae8b5943448;s
+f=tgz'
+--2010-06-07 19:19:34--  http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=snapshot;h=7f20a3add6c7f2166dbab5a712713ae8b5943448;sf=tgz
+Resolving ltp.git.sourceforge.net... 216.34.181.91
+Connecting to ltp.git.sourceforge.net|216.34.181.91|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/x-gzip]
+Saving to: `gitweb.cgi?p=ltp%2Fltp-dev.git;a=snapshot;h=7f20a3add6c7f2166dbab5a712713ae8b5943448;sf=tgz'
 
-parentns.sh    0  TINFO  :  Pinging ChildNS from ParentNS
-sshd re-exec requires execution with an absolute path^M
-Error: Can't login to 192.168.0.181:
-ch_ftp.sh: line 40: tst_resm: command not found
-Error while running the script
-two_children_ns: return code is 1 ; par_chld_ftp: FAIL 1 ;
+    [                                                                          <=>                          ] 8,240,148    118K/s   in 77s
 
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=46 termination_type=exited termination_id=1 corefile=no
-cutime=18 cstime=45
-<<<test_end>>>
-initialize.sh: line 83:    44 Terminated              ( ip link delete
-$netdev ) 2> /dev/null
+2010-06-07 19:20:54 (104 KB/s) - `gitweb.cgi?p=ltp%2Fltp-dev.git;a=snapshot;h=7f20a3add6c7f2166dbab5a712713ae8b5943448;sf=tgz' saved [8240148]
 
+[root@tomoyo tmp]# tar -zxf gitweb.cgi\?p\=ltp%2Fltp-dev.git\;a\=snapshot\;h\=7f20a3add6c7f2166dbab5a712713ae8b5943448\;sf\=tgz
+[root@tomoyo tmp]# cd ltp-dev/
+[root@tomoyo ltp-dev]# wget 'http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.3.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=3740&r
+oot=tomoyo'
+--2010-06-07 19:21:31--  http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.3.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=3740&root=tomoyo
+Resolving sourceforge.jp... 202.221.179.21
+Connecting to sourceforge.jp|202.221.179.21|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/unregisterd-mime-type-to-avoid-IE-MIME-sniffing]
+Saving to: `tomoyo-ltp.diff?revision=3740&root=tomoyo'
 
-Thanks,
-Arvind
+    [ <=>                                                                                                   ] 141,420     --.-K/s   in 0.08s
+
+2010-06-07 19:21:31 (1.75 MB/s) - `tomoyo-ltp.diff?revision=3740&root=tomoyo' saved [141420]
+
+[root@tomoyo ltp-dev]# md5sum tomoyo-ltp.diff\?revision\=3740\&root\=tomoyo
+aeb0af73a8f140d50d4ab7435b10de16  tomoyo-ltp.diff?revision=3740&root=tomoyo
+[root@tomoyo ltp-dev]# patch --dry-run -p1 < tomoyo-ltp.diff\?revision\=3740\&root\=tomoyo
+patching file testcases/kernel/security/tomoyo/README
+patching file testcases/kernel/security/tomoyo/include.h
+patching file testcases/kernel/security/tomoyo/newns.c
+patching file testcases/kernel/security/tomoyo/testall.sh
+patching file testcases/kernel/security/tomoyo/tomoyo_accept_test.c
+patching file testcases/kernel/security/tomoyo/tomoyo_file_test.c
+patching file testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c
+patching file testcases/kernel/security/tomoyo/tomoyo_new_file_test.c
+patching file testcases/kernel/security/tomoyo/tomoyo_new_test.c
+patching file testcases/kernel/security/tomoyo/tomoyo_policy_io_test.c
+patching file testcases/kernel/security/tomoyo/tomoyo_policy_memory_test.c
+patching file testcases/kernel/security/tomoyo/tomoyo_rewrite_test.c
+[root@tomoyo ltp-dev]#
 
 ------------------------------------------------------------------------------
 ThinkGeek and WIRED's GeekDad team up for the Ultimate 
