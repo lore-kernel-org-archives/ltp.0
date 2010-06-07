@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OPfef-0001wi-FF
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:47:01 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OPfee-0004vf-Gp
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:47:01 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100618174331.5435.11325.sendpatchset@subratamodak.linux.ibm.com>
-References: <20100618174331.5435.11325.sendpatchset@subratamodak.linux.ibm.com>
-Date: Fri, 18 Jun 2010 23:16:41 +0530
-Message-Id: <1276883202.6391.8.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Updated Information about Linux Test
-	Project	Maintainence
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yaneurabeya@gmail.com>) id 1OLlpL-0007gk-F3
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 23:33:55 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OLlpJ-0002Uw-P6
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 23:33:54 +0000
+Received: by pvh1 with SMTP id 1so1236093pvh.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 07 Jun 2010 16:33:48 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1078)
+From: Garrett Cooper <yaneurabeya@gmail.com>
+In-Reply-To: <201006080628.FEG21384.MtSOFHJOVFFQOL@I-love.SAKURA.ne.jp>
+Date: Mon, 7 Jun 2010 16:33:45 -0700
+Message-Id: <78FE23D8-4925-431C-AB9E-5B2DD445C7FA@gmail.com>
+References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
+	<1275834288.7037.3.camel@subratamodak.linux.ibm.com>
+	<201006070651.o576p4S0093912@www262.sakura.ne.jp>
+	<1275901898.4851.2.camel@subratamodak.linux.ibm.com>
+	<AANLkTilYjsC9C0CcZu6wPAXCHlXsqsjnj6uYlCCFECdc@mail.gmail.com>
+	<201006080628.FEG21384.MtSOFHJOVFFQOL@I-love.SAKURA.ne.jp>
+Subject: Re: [LTP] [linux-2.6.36] TOMOYO Linux update
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +35,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: ltp-list <ltp-list@lists.sf.net>, Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Sudarshan Rao <rsudarsh@in.ibm.com>, Linux Kernel <linux-kernel@vger.kernel.org>, Michael Reed <mreed10@us.ibm.com>, "manoj.iyer" <manoj.iyer@canonical.com>, "paul.larson" <paul.larson@ubuntu.com>
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Sigh !!, i forgot the below one :-(
+On Jun 7, 2010, at 2:28 PM, Tetsuo Handa wrote:
 
-Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>,
-
-Regards--
-Subrata
-
-On Fri, 2010-06-18 at 23:13 +0530, Subrata Modak wrote:
-> --- linux-2.6/MAINTAINERS.orig	2010-06-18 23:08:30.000000000 +0530
-> +++ linux-2.6/MAINTAINERS	2010-06-18 23:09:41.000000000 +0530
-> @@ -3413,9 +3413,10 @@ F:	drivers/scsi/sym53c8xx_2/
->  LTP (Linux Test Project)
->  M:	Subrata Modak <subrata@linux.vnet.ibm.com>
->  M:	Mike Frysinger <vapier@gentoo.org>
-> +M:	Garrett Cooper <yanegomi@gmail.com>
->  L:	ltp-list@lists.sourceforge.net (subscribers-only)
->  W:	http://ltp.sourceforge.net/
-> -T:	git git://git.kernel.org/pub/scm/linux/kernel/git/galak/ltp.git
-> +T:	git git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev
->  S:	Maintained
+> Garrett Cooper wrote:
+>> 2. You might be trying to pull the from the wrong git branch. Try
+>> something like: git clone
+>> git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git next .
 > 
->  M32R ARCHITECTURE
+> Is it possible to use http:// since I can't use git:// due to firewall.
 
+Try and see whether or not it's possible :)...
+-Garrett
 
 ------------------------------------------------------------------------------
 ThinkGeek and WIRED's GeekDad team up for the Ultimate 
