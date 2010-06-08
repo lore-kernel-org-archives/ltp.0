@@ -1,19 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OJnSF-000754-4j
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jun 2010 12:53:55 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OJnSE-0004Ud-2Q
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jun 2010 12:53:54 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Wed, 02 Jun 2010 18:23:40 +0530
-Message-Id: <1275483221.4899.7.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <noreply@sourceforge.net>) id 1OLsKa-0004VJ-VS
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 06:30:36 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
 Mime-Version: 1.0
-Subject: [LTP] LTP will be released every 2 months from now onwards
-Reply-To: subrata@linux.vnet.ibm.com
+Message-Id: <E1OLsKa-0000Lp-1o@sfs-web-8.v29.ch3.sourceforge.com>
+Date: Tue, 08 Jun 2010 06:30:36 +0000
+Subject: [LTP] [ ltp-Feature Requests-3013075 ] lcov: highlight excluded
+	source lines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,20 +22,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
-Cc: Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, "manoj.iyer" <manoj.iyer@ubuntu.com>, "paul.larson" <paul.larson@ubuntu.com>
+To: noreply@sourceforge.net
 
-SGksCgpEdWUgc2ltcGxpZmljYXRpb24gb2YgQ29kZSBNYW5hZ2VtZW50IHByb2Nlc3Mgc2luY2Ug
-aW50cm9kdWN0aW9uIG9mIEdJVAp0byBMVFAsIGV2ZXJ5Ym9keSBjYW4gYWNjZXNzIHRoZSBjb2Rl
-IGRpcmVjdGx5LCBpIGhhdmUgZGVjaWRlZCB0bwpyZWxlYXNlIExUUCBldmVyeSAyIG1vbnRocy4g
-UGxlYXNlIGxldCBtZSBrbm93IGlmIGFueWJvZHkgaGFzIGFueQpjb25jZXJuIGJlY2F1c2Ugb2Yg
-dGhpcyBkZWNpc2lvbi4KCkkgd291bGQgYWxzbyBiZSBjaGVja2luZyBpbiBQYXRjaGVzIGFuZCBk
-b2luZyB0aG9zZSBldmVyeS0yLW1vbnRoCnJlbGVhc2UgYXMgUmlzaGkgaGFzIGRlY2lkZWQgdG8g
-cHVyc3VlIGEgY2FyZWVyIG91dHNpZGUgSUJNLiBBcyB1c3VhbAp5b3VyIGNvbnRyaWJ1dGlvbi9z
-dXBwb3J0IGZvciB0aGlzIHByb2plY3TFmyBncm93dGggaXMgZXNzZW50aWFsIGFuZCB5b3UKd2ls
-bCBmaW5kIGFsbCBzdXBwb3J0IGZyb20gbXkgc2lkZSA6LSkKClJlZ2FyZHMtLQpTdWJyYXRhCgoK
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo=
+RmVhdHVyZSBSZXF1ZXN0cyBpdGVtICMzMDEzMDc1LCB3YXMgb3BlbmVkIGF0IDIwMTAtMDYtMDgg
+MDg6MzAKTWVzc2FnZSBnZW5lcmF0ZWQgZm9yIGNoYW5nZSAoVHJhY2tlciBJdGVtIFN1Ym1pdHRl
+ZCkgbWFkZSBieSBybGllYnNjaGVyCllvdSBjYW4gcmVzcG9uZCBieSB2aXNpdGluZzogCmh0dHBz
+Oi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9ZGV0YWlsJmF0aWQ9MzUzMzgyJmFpZD0z
+MDEzMDc1Jmdyb3VwX2lkPTMzODIKClBsZWFzZSBub3RlIHRoYXQgdGhpcyBtZXNzYWdlIHdpbGwg
+Y29udGFpbiBhIGZ1bGwgY29weSBvZiB0aGUgY29tbWVudCB0aHJlYWQsCmluY2x1ZGluZyB0aGUg
+aW5pdGlhbCBpc3N1ZSBzdWJtaXNzaW9uLCBmb3IgdGhpcyByZXF1ZXN0LApub3QganVzdCB0aGUg
+bGF0ZXN0IHVwZGF0ZS4KQ2F0ZWdvcnk6IFRvb2xzCkdyb3VwOiBOb25lClN0YXR1czogT3BlbgpS
+ZXNvbHV0aW9uOiBOb25lClByaW9yaXR5OiA1ClByaXZhdGU6IE5vClN1Ym1pdHRlZCBCeTogUmVu
+ZSBMaWVic2NoZXIgKHJsaWVic2NoZXIpCkFzc2lnbmVkIHRvOiBOb2JvZHkvQW5vbnltb3VzIChu
+b2JvZHkpClN1bW1hcnk6IGxjb3Y6IGhpZ2hsaWdodCBleGNsdWRlZCBzb3VyY2UgbGluZXMKCklu
+aXRpYWwgQ29tbWVudDoKSGksIAoKdXNpbmcgZXhjbHVzaW9uIG1hcmtlcnMgaXMgYSBmaW5lIHRo
+aW5nLCBpZiBvbmUgaGFzIHNvdXJjZSBsaW5lcyB3aGljaCBjYW4gbmV2ZXIgcmVhY2hlZCBvciBv
+bmx5IGF0IGhhcmR3YXJlIGZhaWx1cmVzIG9yIHNvbWV0aGluZyBzaW1pbGFyLgpCdXQgaW4gdGhl
+IHNvdXJjZSBjb2RlIHZpZXcgKGh0bWwpIHRoZXNlIGxpbmVzIGFyZSBub3QgbWFya2VkIGF0IGFs
+bCwgc28gaXQgaXMgbm90IGVhc3kgdG8gc3BvdCBieSBicm93c2luZyB0aGUgZmlsZSBpZiB0aGVy
+ZSBhcmUgYW55IHJlZ2lvbnMgd2hpY2ggYXJlIGV4Y2x1ZGVkLgpIaWdobGlnaHRpbmcgdGhlc2Ug
+bGluZXMgbWFrZXMgaXQgZWFzaWVyIGlmIHNvbWVvbmUgaGFzIHRvIHZlcmlmeSB5b3VyIHNvZnR3
+YXJlIGFuZCB0ZXN0cyBhbmQgd2FudCB0byBjaGVjayB0aGVtIGlmIG9ubHkgcmVhbGx5IG5lZWRl
+ZCBsaW5lcyBhcmUgZXhjbHVkZWQuCgpBbHNvIGl0IHdvdWxkIGJlIHVzZWZ1bCB0byBoYXZlIGlu
+IHRoZSBzdGF0aXN0aWNzIGFuIG9wdGlvbiB0byBzaG93IHRoZW0gYXMgIjEwMCUgKDk0LjYvNS40
+KSIgd2hpY2ggbWFrZXMgY2xlYXIgaG93IG11Y2ggd2FzIHJlYWNoZWQgYnkgdGVzdGluZy9jb3Zl
+cmFnZSBhbmQgaG93IG11Y2ggd2FzIHJlYWNoZWQgYnkgZXhjbHVkaW5nIHVucmVhY2hhYmxlIGNv
+ZGUuCgpBbm90aGVyIGludGVyZXN0aW5nIHRoaW5nIHdvdWxkIGJlIHRvIGNoZWNrIGlmIGV4Y2x1
+ZGVkIGxpbmVzIHJlYWxseSBoYXZlIGNvdW50ZXJzIHdpdGggdmFsdWUgMC4gSW4gY2FzZSB0aGV5
+IGRvbid0IGhhdmUsIHRoZW4gdGhlcmUgaXMgYSBwcm9ibGVtIHdpdGggeW91ciBzb2Z0d2FyZSwg
+dGVzdHMgb3IgZXhjbHVzaW9ucy4KCkkgZ3Vlc3MgaW5jbHVkaW5nIHRoZSBleGNsdWRlZCBsaW5l
+cyBpbiB0aGUgb3V0cHV0IHdvdWxkIHJlcXVpcmUgdG8gZXh0ZW5kIHRoZSBpbmZvIGZpbGUgZm9y
+bWF0LCBhcyB3ZWxsIGFzIGdlbmluZm8gYW5kIGdlbmh0bWwgdG8gaGFuZGxlIHRoaXMgbmV3IGlu
+Zm9ybWF0aW9uLgoKCktpbmQgcmVnYXJkcwoKUmVuw6kgTGllYnNjaGVyCgoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQoKWW91IGNhbiByZXNwb25kIGJ5IHZpc2l0aW5nOiAKaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQv
+dHJhY2tlci8/ZnVuYz1kZXRhaWwmYXRpZD0zNTMzODImYWlkPTMwMTMwNzUmZ3JvdXBfaWQ9MzM4
+MgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaW5rR2VlayBhbmQgV0lSRUQncyBHZWVrRGFkIHRl
+YW0gdXAgZm9yIHRoZSBVbHRpbWF0ZSAKR2Vla0RhZCBGYXRoZXIncyBEYXkgR2l2ZWF3YXkuIE9O
+RSBNQVNTSVZFIFBSSVpFIHRvIHRoZSAKbHVja3kgcGFyZW50YWwgdW5pdC4gIFNlZSB0aGUgcHJp
+emUgbGlzdCBhbmQgZW50ZXIgdG8gd2luOiAKaHR0cDovL3Auc2YubmV0L3NmdS90aGlua2dlZWst
+cHJvbW8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
+LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
+L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
