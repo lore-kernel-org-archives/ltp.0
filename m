@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <a-fujita@rs.jp.nec.com>) id 1OQylV-0002YU-Nc
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jun 2010 08:23:29 +0000
-Received: from tyo202.gate.nec.co.jp ([202.32.8.206])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OQylT-0005fm-IM
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jun 2010 08:23:29 +0000
-Message-ID: <4C2072D6.7010008@rs.jp.nec.com>
-Date: Tue, 22 Jun 2010 17:22:46 +0900
-From: Akira Fujita <a-fujita@rs.jp.nec.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OM1YC-0001yh-8D
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 16:21:16 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OM1YB-0001m3-Jr
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 16:21:16 +0000
+Received: by iwn6 with SMTP id 6so3596785iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 08 Jun 2010 09:21:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <1276809176.29789.9.camel@lucio-t400.br.ibm.com>	
-	<1276841379.6391.1.camel@subratamodak.linux.ibm.com>	
-	<1276882220.6391.5.camel@subratamodak.linux.ibm.com>	
-	<4C1F21E6.5080503@rs.jp.nec.com>
-	<1277140788.4881.0.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1277140788.4881.0.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] ffsb failures running ltp-ext4 new features test
- on	SLES11sp1 PPC
+In-Reply-To: <1276001198-17532-1-git-send-email-monstr@monstr.eu>
+References: <1276001198-17532-1-git-send-email-monstr@monstr.eu>
+Date: Tue, 8 Jun 2010 09:21:08 -0700
+Message-ID: <AANLkTilzjOK_lLfz_o4KOZgdj9Px2qebOnIIEe_Um1TJ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] syscalls: getdtablesize01 fix for missing
+	/etc/hosts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,186 +28,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: Linux Test Project <ltp-list@lists.sourceforge.net>
+To: monstr@monstr.eu
+Cc: ltp-list@lists.sourceforge.net, michal.simek@petalinux.com.monstr.eu
 
-ID4gSXMgdGhlcmUgYW55IHBhdGNoIHlvdSB3b3VsZCBsaWtlIHRvIFByb3Bvc2UgPwoKSSBkb24n
-dCBoYXZlIGEgcGF0Y2ggZm9yIHRoaXMuCkkgYW0gZ2xhZCBpZiBzb21lb25lIHRha2VzIGNhcmUg
-b2YgdGhpcywgdGhvdWdoLgoKUmVnYXJkcywKQWtpcmEgRnVqaXRhCgooMjAxMC8wNi8yMiAyOjE5
-KSwgU3VicmF0YSBNb2RhayB3cm90ZToKPiBJcyB0aGVyZSBhbnkgcGF0Y2ggeW91IHdvdWxkIGxp
-a2UgdG8gUHJvcG9zZSA/Cj4KPiBSZWdhcmRzLS0KPiBTdWJyYXRhCj4KPiBPbiBNb24sIDIwMTAt
-MDYtMjEgYXQgMTc6MjUgKzA5MDAsIEFraXJhIEZ1aml0YSB3cm90ZToKPj4gSGkgU3VicmF0YSwK
-Pj4KPj4+IEFraXJhLAo+Pj4KPj4+IFByb2JhYmx5IHdlIG5lZWQgdG8gY2hhbmdlIHRoZSB0ZXN0
-cyBjb25kaXRpb25zIHRvIHJlc3RyaWN0IG5vdCB0byBjcm9zcwo+Pj4gdGhlIHNpemUgb2YgcGFy
-dGl0aW9uLiBXZSBjYW4gaGFuZGxlIHRoZSB0ZXN0cyBiZXR0ZXIgaSB0aGluay4gSSBhbSBub3QK
-Pj4+IHN1cmUgaWYgdGhlIGxhc3QgY29tbWl0IGlzIHBsYXlpbmcgZm91bCB3aXRoIHRoZSB0ZXN0
-czoKPj4+Cj4+PiBjb21taXQgN2YyMGEzYWRkNmM3ZjIxNjZkYmFiNWE3MTI3MTNhZThiNTk0MzQ0
-OAo+Pj4gQXV0aG9yOiBTdWJyYXRhIE1vZGFrPHN1YnJhdGFtb2Rha0BzdWJyYXRhbW9kYWsubGlu
-dXguaWJtLmNvbT4KPj4+IERhdGU6ICAgV2VkIEp1biAyIDE4OjE2OjQ2IDIwMTAgKzA1MzAKPj4K
-Pj4gWWVzLCB3ZSBzaG91bGQgY2hlY2sgZXh0NCBwYXJ0aXRpb24gc2l6ZSBhbmQgY29uZmlndXJl
-IGZzc2Igd3JpdGUgc2l6ZQo+PiBiZWZvcmUgdGVzdGluZy4KPj4KPj4gQUZBSUssIGV4dDQtc3Vi
-ZGlyLWxpbWl0IHRlc3QgZG9lcyBub3QgZGVwZW5kIG9uIHBhcnRpdGlvbiBzaXplLAo+PiBhbmQg
-b3ZlciAzMjAwMCBkaXJlY3RvcnkgZmVhdHVyZSBpcyBub3Qgc3VwcG9ydGVkIGluIGNhc2UKPj4g
-MUtCIGJsb2NrIHNpemUgYW5kIGxvbmcgZGlyZWN0b3J5IG5hbWUuCj4+IFNvIEkgdGhpbmsgbXkg
-Zml4IChqdXN0IHNraXAgaW52YWxpZCB0ZXN0IGNhc2UpIGlzIG9rYXkuCj4+Cj4+IFJlZmVyZW5j
-ZTogbGludXgvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9leHQ0LnR4dAo+Pgo+PiAqIGxpZnQg
-MzIwMDAgc3ViZGlyZWN0b3J5IGxpbWl0IGltcG9zZWQgYnkgaV9saW5rc19jb3VudFsxXQo+PiBb
-MV0gRmlsZXN5c3RlbXMgd2l0aCBhIGJsb2NrIHNpemUgb2YgMWsgbWF5IHNlZSBhIGxpbWl0IGlt
-cG9zZWQgYnkgdGhlCj4+IGRpcmVjdG9yeSBoYXNoIHRyZWUgaGF2aW5nIGEgbWF4aW11bSBkZXB0
-aCBvZiB0d28uCj4+Cj4+IFJlZ2FyZHMsCj4+IEFraXJhIEZ1aml0YQo+Pgo+PiAoMjAxMC8wNi8x
-OSAyOjMwKSwgU3VicmF0YSBNb2RhayB3cm90ZToKPj4+IFllcywgaSBmaW5kIG1hbnkgZmFpbHVy
-ZXMgaW4gdGhlIHRlc3RzIGluY2x1ZGluZyBkdW1waW5nIG9mIEJJTkFSWQo+Pj4gY2hhcmFjdGVy
-cyBvbiB0aGlzIHNjcmVlbi4gRm9sbG93aW5nIGFyZSBleGNlcnB0cyBvZiB0aGUgZmFpbHVyZXM6
-Cj4+Pgo+Pj4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDcgIFRGQUlMICA6ICBmZnNiIHJldHVy
-bmVkIGZhaWx1cmUKPj4+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICAwICBUSU5GTyAgOiAgam91
-cm5hbCBtb2RlOiBvcmRlcmVkLCBjb21taXQKPj4+IGludGVydmFsOiAxLAo+Pj4gZXh0NC1qb3Vy
-bmFsLWNoZWNrc3VtICAgIDggIFRQQVNTICA6ICBleHQ0IGpvdXJuYWwgY2hlY2tzdW0gdGVzdCBw
-YXNzCj4+PiBleHQ0LWpvdXJuYWwtY2hlY2tzdW0gICAgMCAgVElORk8gIDogIGpvdXJuYWwgbW9k
-ZTogam91cm5hbCwgY29tbWl0Cj4+PiBpbnRlcnZhbDogMSwKPj4+IGV4dDQtam91cm5hbC1jaGVj
-a3N1bSAgICA5ICBUUEFTUyAgOiAgZXh0NCBqb3VybmFsIGNoZWNrc3VtIHRlc3QgcGFzcwo+Pj4g
-ZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDAgIFRJTkZPICA6ICBqb3VybmFsIG1vZGU6IHdyaXRl
-YmFjaywgY29tbWl0Cj4+PiBpbnRlcnZhbDogMTAwLAo+Pj4gd3JpdGU6IE5vIHNwYWNlIGxlZnQg
-b24gZGV2aWNlCj4+PiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+IHdyaXRlOiBO
-byBzcGFjZSBsZWZ0IG9uIGRldmljZQo+Pj4gEV3vv70w77+977+977+977+977+977+977+977+9
-EV3vv71AEV3vv73vv73vv73vv71PEO+/ve+/ve+/ve+/ve+/vTABAe+/veeimAo+Pj4g77+9cAJB
-77+977+9LO+/vRFd77+9ExFd77+9ExFd77+9ExFd77+9ExFd77+9ExFd77+9ExFd77+9ExFd77+9
-FBFdf1AXEV3vv71w77+977+977+977+977+977+977+977+9EV3vv73vv73vv73vv71OEO+/ve+/
-ve+/ve+/ve+/vTABAe+/ve+/ve+/ve+/ve+/vXACQe+/ve+/vSTvv70RXe+/ve+/vRERXe+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vRFd77+977+977+977+977+977+977+9MO+/vXACQe+/
-ve+/vSTvv70RXe+/ve+/vRIRXe+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vRFd77+977+9
-77+977+977+977+9MO+/vXABd++/vRFdfe+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vRFdfhFd
-f1Dvv73vv70Q77+977+977+977+977+9MAEB77+9776P77+977+9cAJB77+977+9LO+/vRFdf++/
-vRFdf++/vRFdf++/vRFdf++/ve+/ve+/vU8RXX/vv70RXX/vv70RXX/vv70RXX0QFhFd77+9MO+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/vRFd77+9QBFd77+977+977+977+9TxDvv73vv73vv73vv73v
-v70wAQHvv73nopjvv71wAkHvv73vv70s77+9EV3vv70TEV3vv70TEV3vv70TEV3vv70TEV3vv70T
-EV3vv70TEV3vv70TEV3vv70UEV1/UBcRXe+/vXDvv73vv73vv73vv73vv73vv73vv73vv70RXe+/
-ve+/ve+/ve+/vU4Q77+977+977+977+977+9MAEB77+977+977+977+977+9cAJB77+977+9JO+/
-vRFd77+977+9ERFd77+977+977+977+977+977+977+977+977+977+9EV3vv73vv73vv73vv73v
-v73vv73vv70w77+9cAJB77+977+9JO+/vRFd77+977+9EhFd77+977+977+977+977+977+977+9
-77+977+977+9EV3vv73vv73vv73vv73vv73vv70w77+9cAF377+9Cj4+Pgo+Pj4gQWtpcmEsCj4+
-Pgo+Pj4gUHJvYmFibHkgd2UgbmVlZCB0byBjaGFuZ2UgdGhlIHRlc3RzIGNvbmRpdGlvbnMgdG8g
-cmVzdHJpY3Qgbm90IHRvIGNyb3NzCj4+PiB0aGUgc2l6ZSBvZiBwYXJ0aXRpb24uIFdlIGNhbiBo
-YW5kbGUgdGhlIHRlc3RzIGJldHRlciBpIHRoaW5rLiBJIGFtIG5vdAo+Pj4gc3VyZSBpZiB0aGUg
-bGFzdCBjb21taXQgaXMgcGxheWluZyBmb3VsIHdpdGggdGhlIHRlc3RzOgo+Pj4KPj4+IGNvbW1p
-dCA3ZjIwYTNhZGQ2YzdmMjE2NmRiYWI1YTcxMjcxM2FlOGI1OTQzNDQ4Cj4+PiBBdXRob3I6IFN1
-YnJhdGEgTW9kYWs8c3VicmF0YW1vZGFrQHN1YnJhdGFtb2Rhay5saW51eC5pYm0uY29tPgo+Pj4g
-RGF0ZTogICBXZWQgSnVuIDIgMTg6MTY6NDYgMjAxMCArMDUzMAo+Pj4KPj4+IFJlZ2FyZHMtLQo+
-Pj4gU3VicmF0YQo+Pj4KPj4+IE9uIEZyaSwgMjAxMC0wNi0xOCBhdCAxMTozOSArMDUzMCwgU3Vi
-cmF0YSBNb2RhayB3cm90ZToKPj4+PiBIaSBMdWNpbywKPj4+Pgo+Pj4+IFRpbGwgbm93IGkgZGlk
-IG5vdCBkZXRlY3QgYW55IGZhaWx1cmUgZm9yIHRoZSBzZGIyOgo+Pj4+Cj4+Pj4gZXh0NC1kZWxh
-bGxvYy1tYmFsbG9jICAgIDAgIFRJTkZPICA6ICBpc0RlbGFsbG9jOiBkZWxhbGxvYywgaXNEaXJl
-Y3RJTzoKPj4+PiAwLCBCbG9ja3NpemU6IDEwMjQsIGlzQXV0b19kYV9hbGxvYzogYXV0b19kYV9h
-bGxvYz0xCj4+Pj4gZXh0NC1kZWxhbGxvYy1tYmFsbG9jICAgIDEgIFRQQVNTICA6ICBkZWxhbGxv
-Yy9tYmFsbG9jIHRlc3QgcGFzcwo+Pj4+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAwICBUSU5G
-TyAgOiAgaXNEZWxhbGxvYzogZGVsYWxsb2MsIGlzRGlyZWN0SU86Cj4+Pj4gMCwgQmxvY2tzaXpl
-OiAxMDI0LCBpc0F1dG9fZGFfYWxsb2M6IG5vYXV0b19kYV9hbGxvYwo+Pj4+IGV4dDQtZGVsYWxs
-b2MtbWJhbGxvYyAgICAyICBUUEFTUyAgOiAgZGVsYWxsb2MvbWJhbGxvYyB0ZXN0IHBhc3MKPj4+
-PiBleHQ0LWRlbGFsbG9jLW1iYWxsb2MgICAgMCAgVElORk8gIDogIGlzRGVsYWxsb2M6IG5vZGVs
-YWxsb2MsCj4+Pj4gaXNEaXJlY3RJTzogMCwgQmxvY2tzaXplOiAxMDI0LCBpc0F1dG9fZGFfYWxs
-b2M6IGF1dG9fZGFfYWxsb2M9MQo+Pj4+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAzICBUUEFT
-UyAgOiAgZGVsYWxsb2MvbWJhbGxvYyB0ZXN0IHBhc3MKPj4+PiBleHQ0LWRlbGFsbG9jLW1iYWxs
-b2MgICAgMCAgVElORk8gIDogIGlzRGVsYWxsb2M6IG5vZGVsYWxsb2MsCj4+Pj4gaXNEaXJlY3RJ
-TzogMCwgQmxvY2tzaXplOiAxMDI0LCBpc0F1dG9fZGFfYWxsb2M6IG5vYXV0b19kYV9hbGxvYwo+
-Pj4+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICA0ICBUUEFTUyAgOiAgZGVsYWxsb2MvbWJhbGxv
-YyB0ZXN0IHBhc3MKPj4+PiBleHQ0LWRlbGFsbG9jLW1iYWxsb2MgICAgMCAgVElORk8gIDogIGlz
-RGVsYWxsb2M6IGRlbGFsbG9jLCBpc0RpcmVjdElPOgo+Pj4+IDEsIEJsb2Nrc2l6ZTogMTAyNCwg
-aXNBdXRvX2RhX2FsbG9jOiBhdXRvX2RhX2FsbG9jPTEKPj4+PiBleHQ0LWRlbGFsbG9jLW1iYWxs
-b2MgICAgNSAgVFBBU1MgIDogIGRlbGFsbG9jL21iYWxsb2MgdGVzdCBwYXNzCj4+Pj4gZXh0NC1k
-ZWxhbGxvYy1tYmFsbG9jICAgIDAgIFRJTkZPICA6ICBpc0RlbGFsbG9jOiBkZWxhbGxvYywgaXNE
-aXJlY3RJTzoKPj4+PiAxLCBCbG9ja3NpemU6IDEwMjQsIGlzQXV0b19kYV9hbGxvYzogbm9hdXRv
-X2RhX2FsbG9jCj4+Pj4gZXh0NC1kZWxhbGxvYy1tYmFsbG9jICAgIDYgIFRQQVNTICA6ICBkZWxh
-bGxvYy9tYmFsbG9jIHRlc3QgcGFzcwo+Pj4+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAwICBU
-SU5GTyAgOiAgaXNEZWxhbGxvYzogbm9kZWxhbGxvYywKPj4+PiBpc0RpcmVjdElPOiAxLCBCbG9j
-a3NpemU6IDEwMjQsIGlzQXV0b19kYV9hbGxvYzogYXV0b19kYV9hbGxvYz0xCj4+Pj4gZXh0NC1k
-ZWxhbGxvYy1tYmFsbG9jICAgIDcgIFRQQVNTICA6ICBkZWxhbGxvYy9tYmFsbG9jIHRlc3QgcGFz
-cwo+Pj4+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAwICBUSU5GTyAgOiAgaXNEZWxhbGxvYzog
-bm9kZWxhbGxvYywKPj4+PiBpc0RpcmVjdElPOiAxLCBCbG9ja3NpemU6IDEwMjQsIGlzQXV0b19k
-YV9hbGxvYzogbm9hdXRvX2RhX2FsbG9jCj4+Pj4gZXh0NC1kZWxhbGxvYy1tYmFsbG9jICAgIDgg
-IFRQQVNTICA6ICBkZWxhbGxvYy9tYmFsbG9jIHRlc3QgcGFzcwo+Pj4+IGV4dDQtZGVsYWxsb2Mt
-bWJhbGxvYyAgICAwICBUSU5GTyAgOiAgaXNEZWxhbGxvYzogZGVsYWxsb2MsIGlzRGlyZWN0SU86
-Cj4+Pj4gMCwgQmxvY2tzaXplOiA0MDk2LCBpc0F1dG9fZGFfYWxsb2M6IGF1dG9fZGFfYWxsb2M9
-MQo+Pj4+Cj4+Pj4gSSB3aWxsIGNvbnRpbnVlIHRvIHJ1biB0aGUgdGVzdHMgYW5kIHVwZGF0ZSB5
-b3UgYWdhaW4uCj4+Pj4KPj4+PiBSZWdhcmRzLS0KPj4+PiBTdWJyYXRhCj4+Pj4KPj4+PiBPbiBU
-aHUsIDIwMTAtMDYtMTcgYXQgMTg6MTIgLTAzMDAsIEx1Y2lvIENvcnJlaWEgd3JvdGU6Cj4+Pj4+
-IEhpIEFraXJhLAo+Pj4+Pgo+Pj4+PiBJJ3ZlIGZvdW5kIHNvbWUgZmFpbHVyZXMgcnVubmluZyBl
-eHQ0LW5ld2ZlYXQgd2l0aCBTTEVTMTFzcDEgb24gUE9XRVI2Lgo+Pj4+PiBIYXZlIHlvdSBzZWVu
-IHRoYXQgYmVmb3JlPwo+Pj4+Pgo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBleHQ0LWRlbGFsbG9jLW1iYWxs
-b2MgICAgMCAgVElORk8gIDogIGlzRGVsYWxsb2M6IGRlbGFsbG9jLCBpc0RpcmVjdElPOgo+Pj4+
-PiAwLAo+Pj4+PiBCbG9ja3NpemU6IDQwOTYsIGlzQXV0b19kYV9hbGxvYzogYXV0b19kYV9hbGxv
-Yz0xCj4+Pj4+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9uIGRldmljZQo+Pj4+PiBleHQ0LWRlbGFs
-bG9jLW1iYWxsb2MgICAgOSAgVEZBSUwgIDogIGZmc2IgcmV0dXJuZWQgZmFpbHVyZQo+Pj4+Pgo+
-Pj4+PiBleHQ0LWpvdXJuYWwtY2hlY2tzdW0gICAgMCAgVElORk8gIDogIGpvdXJuYWwgbW9kZTog
-d3JpdGViYWNrLCBjb21taXQgaW50ZXJ2YWw6Cj4+Pj4+IDEsCj4+Pj4+IHdyaXRlOiBObyBzcGFj
-ZSBsZWZ0IG9uIGRldmljZQo+Pj4+PiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+
-Pj4gd3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlCj4+Pj4+IHdyaXRlOiBObyBzcGFjZSBs
-ZWZ0IG9uIGRldmljZQo+Pj4+PiBleHQ0LWpvdXJuYWwtY2hlY2tzdW0gICAgMSAgVEZBSUwgIDog
-IGZmc2IgcmV0dXJuZWQgZmFpbHVyZQo+Pj4+Pgo+Pj4+PiBleHQ0LWpvdXJuYWwtY2hlY2tzdW0g
-ICAgMCAgVElORk8gIDogIGpvdXJuYWwgbW9kZTogd3JpdGViYWNrLCBjb21taXQgaW50ZXJ2YWw6
-Cj4+Pj4+IDEwMCwKPj4+Pj4gd3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlCj4+Pj4+IHdy
-aXRlOiBObyBzcGFjZSBsZWZ0IG9uIGRldmljZQo+Pj4+PiB3cml0ZTogTm8gc3BhY2UgbGVmdCBv
-biBkZXZpY2UKPj4+Pj4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDQgIFRGQUlMICA6ICBmZnNi
-IHJldHVybmVkIGZhaWx1cmUKPj4+Pj4KPj4+Pj4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDAg
-IFRJTkZPICA6ICBqb3VybmFsIG1vZGU6IHdyaXRlYmFjaywgY29tbWl0IGludGVydmFsOgo+Pj4+
-PiAxLAo+Pj4+PiB3cml0ZTogU3VjY2Vzcwo+Pj4+PiB3cml0ZTogU3VjY2Vzcwo+Pj4+PiB3cml0
-ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+Pj4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAg
-IDcgIFRGQUlMICA6ICBmZnNiIHJldHVybmVkIGZhaWx1cmUKPj4+Pj4KPj4+Pj4gZXh0NC1qb3Vy
-bmFsLWNoZWNrc3VtICAgIDAgIFRJTkZPICA6ICBqb3VybmFsIG1vZGU6IHdyaXRlYmFjaywgY29t
-bWl0IGludGVydmFsOgo+Pj4+PiAxMDAsCj4+Pj4+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9uIGRl
-dmljZQo+Pj4+PiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+Pj4gZXh0NC1qb3Vy
-bmFsLWNoZWNrc3VtICAgMTAgIFRGQUlMICA6ICBmZnNiIHJldHVybmVkIGZhaWx1cmUKPj4+Pj4K
-Pj4+Pj4gYW5kIHNvIG9uIDEzLCAxNiwgMTksIDIyLCAyNSwgMjgsIDMxLCAzNC4KPj4+Pj4gZXh0
-NC1kZWxhbGxvYy1tYmFsbG9jICAgIDAgIFRJTkZPICA6ICBpc0RlbGFsbG9jOiBkZWxhbGxvYywg
-aXNEaXJlY3RJTzoKPj4+Pj4gMCwKPj4+Pj4gQmxvY2tzaXplOiA0MDk2LCBpc0F1dG9fZGFfYWxs
-b2M6IGF1dG9fZGFfYWxsb2M9MQo+Pj4+PiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UK
-Pj4+Pj4gZXh0NC1kZWxhbGxvYy1tYmFsbG9jICAgIDkgIFRGQUlMICA6ICBmZnNiIHJldHVybmVk
-IGZhaWx1cmUKPj4+Pj4KPj4+Pj4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDAgIFRJTkZPICA6
-ICBqb3VybmFsIG1vZGU6IHdyaXRlYmFjaywgY29tbWl0IGludGVydmFsOgo+Pj4+PiAxLAo+Pj4+
-PiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+Pj4gd3JpdGU6IE5vIHNwYWNlIGxl
-ZnQgb24gZGV2aWNlCj4+Pj4+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9uIGRldmljZQo+Pj4+PiB3
-cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+Pj4gZXh0NC1qb3VybmFsLWNoZWNrc3Vt
-ICAgIDEgIFRGQUlMICA6ICBmZnNiIHJldHVybmVkIGZhaWx1cmUKPj4+Pj4KPj4+Pj4gZXh0NC1q
-b3VybmFsLWNoZWNrc3VtICAgIDAgIFRJTkZPICA6ICBqb3VybmFsIG1vZGU6IHdyaXRlYmFjaywg
-Y29tbWl0IGludGVydmFsOgo+Pj4+PiAxMDAsCj4+Pj4+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9u
-IGRldmljZQo+Pj4+PiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+Pj4gd3JpdGU6
-IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlCj4+Pj4+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICA0
-ICBURkFJTCAgOiAgZmZzYiByZXR1cm5lZCBmYWlsdXJlCj4+Pj4+Cj4+Pj4+IGV4dDQtam91cm5h
-bC1jaGVja3N1bSAgICAwICBUSU5GTyAgOiAgam91cm5hbCBtb2RlOiB3cml0ZWJhY2ssIGNvbW1p
-dCBpbnRlcnZhbDoKPj4+Pj4gMSwKPj4+Pj4gd3JpdGU6IFN1Y2Nlc3MKPj4+Pj4gd3JpdGU6IFN1
-Y2Nlc3MKPj4+Pj4gd3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlCj4+Pj4+IGV4dDQtam91
-cm5hbC1jaGVja3N1bSAgICA3ICBURkFJTCAgOiAgZmZzYiByZXR1cm5lZCBmYWlsdXJlCj4+Pj4+
-Cj4+Pj4+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICAwICBUSU5GTyAgOiAgam91cm5hbCBtb2Rl
-OiB3cml0ZWJhY2ssIGNvbW1pdCBpbnRlcnZhbDoKPj4+Pj4gMTAwLAo+Pj4+PiB3cml0ZTogTm8g
-c3BhY2UgbGVmdCBvbiBkZXZpY2UKPj4+Pj4gd3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNl
-Cj4+Pj4+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgIDEwICBURkFJTCAgOiAgZmZzYiByZXR1cm5l
-ZCBmYWlsdXJlCj4+Pj4+Cj4+Pj4+IGFuZCBzbyBvbiAxMywgMTYsIDE5LCAyMiwgMjUsIDI4LCAz
-MSwgMzQuCj4+Pj4+Cj4+Pj4+Cj4+Pj4+IFJlZ2FyZHMsCj4+Pj4+Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+
-IEx1Y2lvIENvcnJlaWEKPj4+Pj4gLS0tLS0tLS0tLS0tLS0KPj4+Pj4gU29mdHdhcmUgRW5naW5l
-ZXIKPj4+Pj4gSUJNIExUQwo+Pj4+Pgo+Pj4+Pgo+Pj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-Pj4+Pj4gVGhpbmtHZWVrIGFuZCBXSVJFRCdzIEdlZWtEYWQgdGVhbSB1cCBmb3IgdGhlIFVsdGlt
-YXRlCj4+Pj4+IEdlZWtEYWQgRmF0aGVyJ3MgRGF5IEdpdmVhd2F5LiBPTkUgTUFTU0lWRSBQUkla
-RSB0byB0aGUKPj4+Pj4gbHVja3kgcGFyZW50YWwgdW5pdC4gIFNlZSB0aGUgcHJpemUgbGlzdCBh
-bmQgZW50ZXIgdG8gd2luOgo+Pj4+PiBodHRwOi8vcC5zZi5uZXQvc2Z1L3RoaW5rZ2Vlay1wcm9t
-bwo+Pj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-Pj4+PiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPj4+Pj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Cj4+Pj4+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0Cj4+Pj4KPj4+Pgo+Pj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Pj4+IFRoaW5r
-R2VlayBhbmQgV0lSRUQncyBHZWVrRGFkIHRlYW0gdXAgZm9yIHRoZSBVbHRpbWF0ZQo+Pj4+IEdl
-ZWtEYWQgRmF0aGVyJ3MgRGF5IEdpdmVhd2F5LiBPTkUgTUFTU0lWRSBQUklaRSB0byB0aGUKPj4+
-PiBsdWNreSBwYXJlbnRhbCB1bml0LiAgU2VlIHRoZSBwcml6ZSBsaXN0IGFuZCBlbnRlciB0byB3
-aW46Cj4+Pj4gaHR0cDovL3Auc2YubmV0L3NmdS90aGlua2dlZWstcHJvbW8KPj4+PiBfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4+IEx0cC1saXN0IG1h
-aWxpbmcgbGlzdAo+Pj4+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+Pj4+IGh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4+Pgo+Pj4K
-Pj4KPgo+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpbmtHZWVrIGFuZCBXSVJFRCdzIEdlZWtE
-YWQgdGVhbSB1cCBmb3IgdGhlIFVsdGltYXRlIApHZWVrRGFkIEZhdGhlcidzIERheSBHaXZlYXdh
-eS4gT05FIE1BU1NJVkUgUFJJWkUgdG8gdGhlIApsdWNreSBwYXJlbnRhbCB1bml0LiAgU2VlIHRo
-ZSBwcml6ZSBsaXN0IGFuZCBlbnRlciB0byB3aW46IApodHRwOi8vcC5zZi5uZXQvc2Z1L3RoaW5r
-Z2Vlay1wcm9tbwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Tue, Jun 8, 2010 at 5:46 AM,  <monstr@monstr.eu> wrote:
+> From: Michal Simek <monstr@monstr.eu>
+>
+> Embedded systems doesn't need to contain /etc/hosts that's why
+> will be good to create it if doesn't exist. If file doesn't exist
+> then syscall test failed.
+>
+> Error:
+> getdtablesize01 =A0 =A00 =A0TINFO =A0: =A0Maximum number of files a proce=
+ss can have opened is 1024
+> getdtablesize01 =A0 =A00 =A0TINFO =A0: =A0Checking with the value returne=
+d by getrlimit...RLIMIT_NOFILE
+> getdtablesize01 =A0 =A01 =A0TPASS =A0: =A0got correct dtablesize, value i=
+s 1024
+> getdtablesize01 =A0 =A00 =A0TINFO =A0: =A0Checking Max num of files that =
+can be opened by a process.Should be: RLIMIT_NOFILE - 1
+> Opened file num -1
+> getdtablesize01 =A0 =A02 =A0TFAIL =A0: =A00 !=3D 1023
+>
+> Signed-off-by: Michal Simek <monstr@monstr.eu>
+> ---
+> =A0.../syscalls/getdtablesize/getdtablesize01.c =A0 =A0 =A0 | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c b/=
+testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+> index a495501..568e1ad 100644
+> --- a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+> +++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+> @@ -83,7 +83,7 @@ int main()
+> =A0 =A0 =A0 =A0tst_resm(TINFO,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "Checking Max num of files that can be op=
+ened by a process.Should be: RLIMIT_NOFILE - 1");
+> =A0 =A0 =A0 =A0for (loop =3D 1; loop <=3D max_val_opfiles; loop++) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 fd =3D open("/etc/hosts", O_RDONLY);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 fd =3D open("/etc/hosts", O_RDONLY | O_CREA=
+T);
+> =A0#ifdef DEBUG
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("Opened file num %d\n", fd);
+> =A0#endif
+
+No. You need to fix your embedded system to have all of the files on
+it before you try and run LTP. This would regress all sane Linux
+systems running LTP because the file already exists.
+
+I agree that this assumption is broken though; it might be better to
+use a different file, like via mkstemp(3).
+
+Also, leaking file descriptors is silly if getdtablesize(2) is busted,
+or the OS fails to clean up all of the open file descriptors... it
+should cache the opened filehandles if !=3D -1, then close each of them
+one by one.
+
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+ThinkGeek and WIRED's GeekDad team up for the Ultimate =
+
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the =
+
+lucky parental unit.  See the prize list and enter to win: =
+
+http://p.sf.net/sfu/thinkgeek-promo
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
