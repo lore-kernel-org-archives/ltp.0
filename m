@@ -1,29 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OTVIm-0001S2-4L
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jun 2010 07:32:16 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OLqnM-0000Z8-Bb
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 04:52:12 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OTVIk-00056j-O6
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jun 2010 07:32:16 +0000
-Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
-	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id o5T7VsUs018034
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:54 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o5T7Vm3t1245312
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:48 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o5T7VmWY011692
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:48 +1000
-From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Date: Tue, 29 Jun 2010 13:01:46 +0530
-Message-Id: <1277796706-6450-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH] realtime: rearrange the pthread attr functions order
-	in librttest
+	(Exim 4.69) id 1OLqnJ-0006tu-US
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 04:52:12 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e1.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o584k9tv021889
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jun 2010 00:46:09 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o584q4iT129954
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jun 2010 00:52:04 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o584q3uP018175
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jun 2010 01:52:03 -0300
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <AANLkTilYjsC9C0CcZu6wPAXCHlXsqsjnj6uYlCCFECdc@mail.gmail.com>
+References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
+	<1275834288.7037.3.camel@subratamodak.linux.ibm.com>
+	<201006070651.o576p4S0093912@www262.sakura.ne.jp>
+	<1275901898.4851.2.camel@subratamodak.linux.ibm.com>
+	<AANLkTilYjsC9C0CcZu6wPAXCHlXsqsjnj6uYlCCFECdc@mail.gmail.com>
+Date: Tue, 08 Jun 2010 10:22:04 +0530
+Message-Id: <1275972724.4883.1.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [linux-2.6.36] TOMOYO Linux update
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,52 +40,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <ltp-list@lists.sourceforge.net>
-Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, ltp-list@lists.sourceforge.net
 
-From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+On Mon, 2010-06-07 at 09:04 -0700, Garrett Cooper wrote:
+> On Mon, Jun 7, 2010 at 2:11 AM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+> > On Mon, 2010-06-07 at 15:51 +0900, Tetsuo Handa wrote:
+> >> Hello.
+> >>
+> >> Subrata Modak wrote:
+> >> > > I updated TOMOYO testcases for Linux 2.6.36.
+> >> > > http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.3.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=3740&root=tomoyo
+> >> > > 4425 lines, 141,420 bytes.
+> >> > > MD5: aeb0af73a8f140d50d4ab7435b10de16
+> >> >
+> >> > Thanks for intimating us the updates about the TOMYO test cases. Would
+> >> > you mind sending us a patch against the LTP git
+> >> > repo(git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev) so that i can
+> >> > push your path against the latest tree.
+> >> >
+> >> Above one applies against http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=snapshot;h=7f20a3add6c7f2166dbab5a712713ae8b5943448;sf=tgz
+> >>
+> >> I didn't know ltp moved repository from cvs to git.
+> >> I downloaded files from cvs. Adding some notes on
+> >> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.2
+> >> might help preventing users from downloading old files.
+> >
+> > The patch will apply fine with the git tree as well, as, no changes has
+> > gone into the TOMYO tree recently. And git is just a migration from cvs
+> > without harming the code. So, all patches will apply to git as well.
+> > However, this patch did not apply as it was not created properly:
+> >
+> > patching file testcases/kernel/security/tomoyo/README
+> > patching file testcases/kernel/security/tomoyo/include.h
+> > patching file testcases/kernel/security/tomoyo/newns.c
+> > patching file testcases/kernel/security/tomoyo/testall.sh
+> > patching file testcases/kernel/security/tomoyo/tomoyo_accept_test.c
+> > patching file testcases/kernel/security/tomoyo/tomoyo_file_test.c
+> > patching file testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c
+> > patch: **** malformed patch at line 2088:
+> >
+> > Please create it properly and send me.
+> >
+> > Meanwhile i am having trouble logging to the sf.net site. I will change
+> > the documentation accordingly when i get a proper access.
+> 
+> Here's some info that might help:
+> 
+> 1. Rishi tried to get the SF folks to disable the CVS SCM, but it
+> appears that it didn't get pushed through.
+> 2. You might be trying to pull the from the wrong git branch. Try
+> something like: git clone
+> git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git next .
 
-In the recent pthread libraries, order of calling pthread_attr_setschedpolicy
-and pthread_attr_setschedparam plays important role in a way that, former
-should always be called followed by later.
+Good to see your mail after long time. I am hoping that you are not
+vanishing off completely from LTP mailing list ;-)
 
-Otherwise, pthread_attr_setschedparam always ends with error 22 (EINVAL).
-This patch fixes the create_thread() in librttest library.
+I am not having problem with the git. I am having all write access. The
+problem is getting access to their SHELL server to change the
+documentation :-(
 
-Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Acked-by: Will Schmidt <will_schmidt@vnet.ibm.com>
-Acked-by: Darren Hart <dvhltc@us.ibm.com>
----
- testcases/realtime/lib/librttest.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Regards--
+Subrata
 
-diff --git a/testcases/realtime/lib/librttest.c b/testcases/realtime/lib/librttest.c
-index e092f35..49fec29 100644
---- a/testcases/realtime/lib/librttest.c
-+++ b/testcases/realtime/lib/librttest.c
-@@ -295,8 +295,8 @@ int create_thread(void*(*func)(void*), void *arg, int prio, int policy)
- 
- 	pthread_attr_init(&thread->attr);
- 	pthread_attr_setinheritsched(&thread->attr, PTHREAD_EXPLICIT_SCHED);
--	pthread_attr_setschedparam(&thread->attr, &param);
- 	pthread_attr_setschedpolicy(&thread->attr, thread->policy);
-+	pthread_attr_setschedparam(&thread->attr, &param);
- 
- 	if ((ret = pthread_create(&thread->pthread, &thread->attr, func, (void*)thread))) {
- 		printf("pthread_create failed: %d (%s)\n", ret, strerror(ret));
--- 
-1.7.1
+> 
+> HTH,
+> -Garrett
 
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+lucky parental unit.  See the prize list and enter to win: 
+http://p.sf.net/sfu/thinkgeek-promo
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
