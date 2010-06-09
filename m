@@ -1,29 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OTVI3-0000Mv-75
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jun 2010 07:31:31 +0000
-Received: from e23smtp08.au.ibm.com ([202.81.31.141])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OTVI1-0007Dv-SZ
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jun 2010 07:31:31 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp08.au.ibm.com (8.14.4/8.13.1) with ESMTP id o5T7VHK4019525
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:17 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o5T7VIwC1384634
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:18 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o5T7VI7a024798
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:18 +1000
-From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Date: Tue, 29 Jun 2010 13:01:16 +0530
-Message-Id: <1277796676-6407-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH] realtime: fix min and max calculations in matrix
-	multiplication test
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OMPyd-0001VW-TW
+	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 18:26:11 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OMPyc-0000IS-Tw
+	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 18:26:11 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Wed, 09 Jun 2010 23:54:12 +0530
+Message-Id: <20100609182412.23438.97539.sendpatchset@LTC-Desktop>
+Subject: [LTP] Requesting renewed contribution(s) to Linux Test Project
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,52 +25,36 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <ltp-list@lists.sourceforge.net>
-Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: ltp-list@lists.sf.net
 
-From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+Dear Author,
 
-In matrix multiplication test, the min and max calculations are done on
-stats_container_t data with its index field never set to the last
-element position. Due to this min and max are always shown with the
-first record value (as index was initiated with -1).
+It gives me immense happiness to find that you are a regular contributor to
+Linux Test Project (http://ltp.sourceforge.net/) for over a long period.
+Open Source projects like LTP thrive on regular and dedicated work from
+people like you.
 
-Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Acked-by: Will Schmidt <will_schmidt@vnet.ibm.com>
-Acked-by: Darren Hart <dvhltc@us.ibm.com>
+I would just want to know if you would still like to be part of this
+exiting project by sending some patches to enforce quality testcase(s)
+and enlarging the test bucket. In such a case, kindly push your patches
+to LTP list <ltp-list@lists.sf.net>.
+
+Regards--
+Subrata
+
 ---
- testcases/realtime/func/matrix_mult/matrix_mult.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Please note that LTP logs and sources tell me that you have directly/indirectly
+contributed to the following sources:
+-------------------------------------------------------------------------
 
-diff --git a/testcases/realtime/func/matrix_mult/matrix_mult.c b/testcases/realtime/func/matrix_mult/matrix_mult.c
-index 419f697..fa0e352 100644
---- a/testcases/realtime/func/matrix_mult/matrix_mult.c
-+++ b/testcases/realtime/func/matrix_mult/matrix_mult.c
-@@ -222,6 +222,7 @@ void main_thread(void)
- 
- 	/* run matrix mult operation sequentially */
- 	curdat = &sdat;
-+	curdat->index = iterations-1;
- 	printf("\nRunning sequential operations\n");
- 	start = rt_gettime();
- 	for (i = 0; i < iterations; i++)
-@@ -252,6 +253,7 @@ void main_thread(void)
- 	pthread_barrier_init(&mult_start, NULL, numcpus+1);
- 	set_priority(PRIO);
- 	curdat = &cdat;
-+	curdat->index = iterations-1;
- 	online_cpu_id = -1; /* Redispatch cpus */
- 	/* Create numcpus-1 concurrent threads */
- 	for (j = 0; j < numcpus; j++) {
--- 
-1.7.1
-
+http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=blob_plain;f=INSTALL;hb=HEAD
+-------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+lucky parental unit.  See the prize list and enter to win: 
+http://p.sf.net/sfu/thinkgeek-promo
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
