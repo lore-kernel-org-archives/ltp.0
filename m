@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OMEQT-00023f-5n
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 06:06:09 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OMEQS-0003eD-Da
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 06:06:09 +0000
-Received: by iwn6 with SMTP id 6so4633238iwn.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1OND0f-00074T-Cn
+	for ltp-list@lists.sourceforge.net; Fri, 11 Jun 2010 22:47:33 +0000
+Received: from mail-gy0-f175.google.com ([209.85.160.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OND0e-0002jC-GN
+	for ltp-list@lists.sourceforge.net; Fri, 11 Jun 2010 22:47:33 +0000
+Received: by gyg10 with SMTP id 10so1568622gyg.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 08 Jun 2010 23:06:03 -0700 (PDT)
+	Fri, 11 Jun 2010 15:47:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTilyBxgX4Egj5bOlWG84z7O-xW6vvGBGRC5Vv3p5@mail.gmail.com>
-References: <AANLkTilyBxgX4Egj5bOlWG84z7O-xW6vvGBGRC5Vv3p5@mail.gmail.com>
-Date: Tue, 8 Jun 2010 23:06:03 -0700
-Message-ID: <AANLkTinRYEQuXF4i4frV6e8ezh1LaX8jjTJQFgXXH3WJ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Regarding to update LTP package
+In-Reply-To: <AANLkTin508xMLwEI4xIdaXfU2Wc4sHUZtUBqjukLYFCT@mail.gmail.com>
+References: <AANLkTina6_TBV4b6ky66yrw9QgBVwRHYh8WCRhwENLeb@mail.gmail.com> 
+	<AANLkTin508xMLwEI4xIdaXfU2Wc4sHUZtUBqjukLYFCT@mail.gmail.com>
+From: Henry Yei <hyei@mvista.com>
+Date: Fri, 11 Jun 2010 15:40:39 -0700
+Message-ID: <AANLkTik7Ez_k6vndvmd61jVhxlOjFFV8ih590qUtmE-3@mail.gmail.com>
+Content-Type: multipart/mixed; boundary=0016364ecc483d87620488c8d5af
+Subject: Re: [LTP] [PATCH][runtest/fs] fix issue where growfiles tests still
+	not creating temp files in directory specified by TMPDIR as expected
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,30 +30,202 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: sunil kumar <sunilmkr79@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Jun 8, 2010 at 10:32 PM, sunil kumar <sunilmkr79@gmail.com> wrote:
-> Dear all,
+--0016364ecc483d87620488c8d5af
+Content-Type: text/plain; charset=ISO-8859-1
+
+This is an updated patch which changes the arguments for gf12, gf13
+test to use the named pipes created by mkfifo properly, rather then
+the ordinary file created by and incorporates the previous changes.
+Hopefully that catches everything, these fs tests are quite hard to
+interpret.
+
+Henry Yei <hyei@mvista.com>
+
+On Wed, Jun 9, 2010 at 6:32 PM, Henry Yei <hyei@mvista.com> wrote:
+> On Wed, Jun 9, 2010 at 6:30 PM, Henry Yei <hyei@mvista.com> wrote:
+>> Hello,
+>>
+>> A previous patch that attempts to force tests to use the TMPDIR env
+>> variable is incomplete. This patch fixes growfiles test arguments in
+>> the fs scenario.
+>>
+>> Scripts which use growfiles with command-line file names are not performing the
+>> tests in the expected target directory. When file names are provided on the
+>> growfiles command line, they are taken relative to the cwd and not the -d
+>> auto_dir passed on the command line. This renders many of the test scripts in
+>> runtests ineffective in that the tests are not being performed on the expected
+>> filesystem.
+>>
+>> For example, the first line of the fs scenario reads:
+>>
+>> gf01 growfiles -B 800000 -W gf01 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10
+>> glseek20 glseek20.2 -d $TMPDIR
+>>
+>> The -d $TMPDIR construct is almost always used in the scripts to point to the
+>> filesystem under test. However, the presence of the
+>> glseek20 glseek20.2 command line parameters constitute full file names from the
+>> test's view, so they will be used as-is (in the current working directory) as
+>> opposed to $TMPDIR/glseek20 or $TMPDIR/glseek20.2 as expected by the script.
+>>
+>> To get the desired behavior, here are the key switches:
+>>
+>> -f specifies the 'auto_file' which is the base file name (gf is used if it's
+>> missing)
+>>
+>> -d specifies the 'auto_dir' to be used ('.' is used if it's missing)
+>>
+>> -S specifies the number of 'auto seq' files to be used. These files are of the
+>> form: "%s/%s%d" using auto_dir, auto_file, file_number.
+>>
+>>
+>> Signed-off-by: Henry Yei <hyei@mvista.com>
+>>
 >
-> I have been thinking from long time, to get access to LTP bench mark list ,
-> and if any new things comes in my mind I would like to update same thing in
-> the LTP source. I would be very happy if I have that kind of rights. Pls let
-> me know .
-> Waiting for your reply.
+> Patch for review now attached!
+>
+> Henry Yei <hyei@mvista.com>
+>
 
-Err... have you read https://sourceforge.net/scm/?type=git&group_id=3382 ?
--Garrett
+--0016364ecc483d87620488c8d5af
+Content-Type: text/x-patch; charset=UTF-8; name="fs.patch"
+Content-Disposition: attachment; filename="fs.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gabf8fgb1
+
+LS0tIGx0cC1kZXYvcnVudGVzdC9mcwkyMDEwLTA0LTMwIDE0OjU3OjAxLjkwMzY5OTUzMiAtMDcw
+MAorKysgbHRwLWRldi13ZGlyL3J1bnRlc3QvZnMJMjAxMC0wNi0xMSAxMjozMjo1NC4yMzc2NzMx
+MjEgLTA3MDAKQEAgLTEsMzQgKzEsMzQgQEAKICNERVNDUklQVElPTjpGaWxlc3lzdGVtIHN0cmVz
+cyB0ZXN0cwotZ2YwMSBncm93ZmlsZXMgLVcgZ2YwMSAtYiAtZSAxIC11IC1pIDAgLUwgMjAgLXcg
+LUMgMSAtbCAtSSByIC1UIDEwIGdsc2VlazIwIGdsc2VlazIwLjIgLWQgJFRNUERJUgorZ2YwMSBn
+cm93ZmlsZXMgLVcgZ2YwMSAtYiAtZSAxIC11IC1pIDAgLUwgMjAgLXcgLUMgMSAtbCAtSSByIC1U
+IDEwIC1mIGdsc2VlazIwIC1TIDIgLWQgJFRNUERJUgogZ2YwMiBncm93ZmlsZXMgLVcgZ2YwMiAt
+YiAtZSAxIC1MIDEwIC1pIDEwMCAtSSBwIC1TIDIgLXUgLWYgZ2YwM18gLWQgJFRNUERJUgogZ2Yw
+MyBncm93ZmlsZXMgLVcgZ2YwMyAtYiAtZSAxIC1nIDEgLWkgMSAtUyAxNTAgLXUgLWYgZ2YwNV8g
+LWQgJFRNUERJUgogZ2YwNCBncm93ZmlsZXMgLVcgZ2YwNCAtYiAtZSAxIC1nIDQwOTAgLWkgNTAw
+IC10IDM5MDAwIC11IC1mIGdmMDZfIC1kICRUTVBESVIKIGdmMDUgZ3Jvd2ZpbGVzIC1XIGdmMDUg
+LWIgLWUgMSAtZyA1MDAwIC1pIDUwMCAtdCA0OTkwMCAtVDEwIC1jOSAtSSBwIC11IC1mIGdmMDdf
+IC1kICRUTVBESVIKLWdmMDYgZ3Jvd2ZpbGVzIC1XIGdmMDYgLWIgLWUgMSAtdSAtciAxLTUwMDAg
+LVIgMC0tMSAtaSAwIC1MIDMwIC1DIDEgZ19yYW5kMTAgZ19yYW5kMTAuMiAtZCAkVE1QRElSCi1n
+ZjA3IGdyb3dmaWxlcyAtVyBnZjA3IC1iIC1lIDEgLXUgLXIgMS01MDAwIC1SIDAtLTIgLWkgMCAt
+TCAzMCAtQyAxIC1JIHAgZ19yYW5kMTMgZ19yYW5kMTMuMiAtZCAkVE1QRElSCi1nZjA4IGdyb3dm
+aWxlcyAtVyBnZjA4IC1iIC1lIDEgLXUgLXIgMS01MDAwIC1SIDAtLTIgLWkgMCAtTCAzMCAtQyAx
+IGdfcmFuZDExIGdfcmFuZDExLjIgLWQgJFRNUERJUgotZ2YwOSBncm93ZmlsZXMgLVcgZ2YwOSAt
+YiAtZSAxIC11IC1yIDEtNTAwMCAtUiAwLS0xIC1pIDAgLUwgMzAgLUMgMSAtSSBwIGdfcmFuZDEy
+IGdfcmFuZDEyLjIgLWQgJFRNUERJUgotZ2YxMCBncm93ZmlsZXMgLVcgZ2YxMCAtYiAtZSAxIC11
+IC1yIDEtNTAwMCAtaSAwIC1MIDMwIC1DIDEgLUkgbCBnX2xpbzE0IGdfbGlvMTQuMiAtZCAkVE1Q
+RElSCi1nZjExIGdyb3dmaWxlcyAtVyBnZjExIC1iIC1lIDEgLXUgLXIgMS01MDAwIC1pIDAgLUwg
+MzAgLUMgMSAtSSBMIGdfbGlvMTUgZ19saW8xNS4yIC1kICRUTVBESVIKLWdmMTIgbWtmaWZvICRU
+TVBESVIvZ2ZmaWZvMTc7IGdyb3dmaWxlcyAtYiAtVyBnZjEyIC1lIDEgLXUgLWkgMCAtTCAzMCBn
+ZmZpZm8xNyAtZCAkVE1QRElSCi1nZjEzIG1rZmlmbyAkVE1QRElSL2dmZmlmbzE4OyBncm93Zmls
+ZXMgLWIgLVcgZ2YxMyAtZSAxIC11IC1pIDAgLUwgMzAgLUkgciAtciAxLTQwOTYgZ2ZmaWZvMTgg
+LWQgJFRNUERJUgotZ2YxNCBncm93ZmlsZXMgLVcgZ2YxNCAtYiAtZSAxIC11IC1pIDAgLUwgMjAg
+LXcgLWwgLUMgMSAtVCAxMCBnbHNlZWsxOSBnbHNlZWsxOS4yIC1kICRUTVBESVIKLWdmMTUgZ3Jv
+d2ZpbGVzIC1XIGdmMTUgLWIgLWUgMSAtdSAtciAxLTQ5NjAwIC1JIHIgLXUgLWkgMCAtTCAxMjAg
+TGdmaWxlMSAtZCAkVE1QRElSCitnZjA2IGdyb3dmaWxlcyAtVyBnZjA2IC1iIC1lIDEgLXUgLXIg
+MS01MDAwIC1SIDAtLTEgLWkgMCAtTCAzMCAtQyAxIC1mIGdfcmFuZDEwIC1TIDIgLWQgJFRNUERJ
+UgorZ2YwNyBncm93ZmlsZXMgLVcgZ2YwNyAtYiAtZSAxIC11IC1yIDEtNTAwMCAtUiAwLS0yIC1p
+IDAgLUwgMzAgLUMgMSAtSSBwIC1mIGdfcmFuZDEzIC1TIDIgLWQgJFRNUERJUgorZ2YwOCBncm93
+ZmlsZXMgLVcgZ2YwOCAtYiAtZSAxIC11IC1yIDEtNTAwMCAtUiAwLS0yIC1pIDAgLUwgMzAgLUMg
+MSAtZiBnX3JhbmQxMSAtUyAyIC1kICRUTVBESVIKK2dmMDkgZ3Jvd2ZpbGVzIC1XIGdmMDkgLWIg
+LWUgMSAtdSAtciAxLTUwMDAgLVIgMC0tMSAtaSAwIC1MIDMwIC1DIDEgLUkgcCAtZiBnX3JhbmQx
+MiAtUyAyIC1kICRUTVBESVIKK2dmMTAgZ3Jvd2ZpbGVzIC1XIGdmMTAgLWIgLWUgMSAtdSAtciAx
+LTUwMDAgLWkgMCAtTCAzMCAtQyAxIC1JIGwgLWYgZ19saW8xNCAtUyAyIC1kICRUTVBESVIKK2dm
+MTEgZ3Jvd2ZpbGVzIC1XIGdmMTEgLWIgLWUgMSAtdSAtciAxLTUwMDAgLWkgMCAtTCAzMCAtQyAx
+IC1JIEwgLWYgZ19saW8xNSAtUyAyIC1kICRUTVBESVIKK2dmMTIgbWtmaWZvICRUTVBESVIvZ2Zm
+aWZvMTc7IGdyb3dmaWxlcyAtYiAtVyBnZjEyIC1lIDEgLXUgLWkgMCAtTCAzMCAkVE1QRElSL2dm
+ZmlmbzE3CitnZjEzIG1rZmlmbyAkVE1QRElSL2dmZmlmbzE4OyBncm93ZmlsZXMgLWIgLVcgZ2Yx
+MyAtZSAxIC11IC1pIDAgLUwgMzAgLUkgciAtciAxLTQwOTYgJFRNUERJUi9nZmZpZm8xOAorZ2Yx
+NCBncm93ZmlsZXMgLVcgZ2YxNCAtYiAtZSAxIC11IC1pIDAgLUwgMjAgLXcgLWwgLUMgMSAtVCAx
+MCAtZiBnbHNlZWsxOSAtUyAyIC1kICRUTVBESVIKK2dmMTUgZ3Jvd2ZpbGVzIC1XIGdmMTUgLWIg
+LWUgMSAtdSAtciAxLTQ5NjAwIC1JIHIgLXUgLWkgMCAtTCAxMjAgLWYgTGdmaWxlMSAtZCAkVE1Q
+RElSCiBnZjE2IGdyb3dmaWxlcyAtVyBnZjE2IC1iIC1lIDEgLWkgMCAtTCAxMjAgLXUgLWcgNDA5
+MCAtVCAxMDAgLXQgNDA4OTkwIC1sIC1DIDEwIC1jIDEwMDAgLVMgMTAgLWYgTGdmMDJfIC1kICRU
+TVBESVIKIGdmMTcgZ3Jvd2ZpbGVzIC1XIGdmMTcgLWIgLWUgMSAtaSAwIC1MIDEyMCAtdSAtZyA1
+MDAwIC1UIDEwMCAtdCA0OTk5OTAgLWwgLUMgMTAgLWMgMTAwMCAtUyAxMCAtZiBMZ2YwM18gLWQg
+JFRNUERJUgogZ2YxOCBncm93ZmlsZXMgLVcgZ2YxOCAtYiAtZSAxIC1pIDAgLUwgMTIwIC13IC11
+IC1yIDEwLTUwMDAgLUkgciAtbCAtUyAyIC1mIExnZjA0XyAtZCAkVE1QRElSCiBnZjE5IGdyb3dm
+aWxlcyAtVyBnZjE5IC1iIC1lIDEgLWcgNTAwMCAtaSA1MDAgLXQgNDk5MDAgLVQxMCAtYzkgLUkg
+cCAtbyBPX1JEV1IsT19DUkVBVCxPX1RSVU5DIC11IC1mIGdmMDhpXyAtZCAkVE1QRElSCi1nZjIw
+IGdyb3dmaWxlcyAtVyBnZjIwIC1EIDAgLWIgLWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1y
+IDEtMjU2MDAwOjUxMiAtUiA1MTItMjU2MDAwIC1UIDQgZ2ZiaWdpby0kJCAtZCAkVE1QRElSCi1n
+ZjIxIGdyb3dmaWxlcyAtVyBnZjIxIC1EIDAgLWIgLWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAx
+IC1nIDIwNDgwIC1UIDEwIC10IDIwNDgwIGdmLWJsZC0kJCAtZCAkVE1QRElSCi1nZjIyIGdyb3dm
+aWxlcyAtVyBnZjIyIC1EIDAgLWIgLWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1nIDIwNDgw
+IC1UIDEwIC10IDIwNDgwIGdmLWJsZGYtJCQgLWQgJFRNUERJUgotZ2YyMyBncm93ZmlsZXMgLVcg
+Z2YyMyAtRCAwIC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtciA1MTItNjQwMDA6MTAy
+NCAtUiAxLTM4NDAwMCAtVCA0IGdmLWluZi0kJCAtZCAkVE1QRElSCi1nZjI0IGdyb3dmaWxlcyAt
+VyBnZjI0IC1EIDAgLWIgLWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1nIDIwNDgwIGdmLWpi
+bGQtJCQgLWQgJFRNUERJUgotZ2YyNSBncm93ZmlsZXMgLVcgZ2YyNSAtRCAwIC1iIC1pIDAgLUwg
+NjAgLXUgLUIgMTAwMGIgLWUgMSAtciAxMDI0MDAwLTIwNDgwMDA6MjA0OCAtUiA0MDk1LTIwNDgw
+MDAgLVQgMSBnZi1sYXJnZS1ncy0kJCAtZCAkVE1QRElSCi1nZjI2IGdyb3dmaWxlcyAtVyBnZjI2
+IC1EIDAgLWIgLWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1yIDEyOC0zMjc2ODoxMjggLVIg
+NTEyLTY0MDAwIC1UIDQgZ2ZzbWFsbGlvLSQkIC1kICRUTVBESVIKLWdmMjcgZ3Jvd2ZpbGVzIC1X
+IGdmMjcgLWIgLUQgMCAtdyAtZyA4YiAtQyAxIC1iIC1pIDEwMDAgLXUgZ2ZzcGFyc2UtMS0kJCAt
+ZCAkVE1QRElSCi1nZjI4IGdyb3dmaWxlcyAtVyBnZjI4IC1iIC1EIDAgLXcgLWcgMTZiIC1DIDEg
+LWIgLWkgMTAwMCAtdSBnZnNwYXJzZS0yLSQkIC1kICRUTVBESVIKLWdmMjkgZ3Jvd2ZpbGVzIC1X
+IGdmMjkgLWIgLUQgMCAtciAxLTQwOTYgLVIgMC0zMzU1NDQzMiAtaSAwIC1MIDYwIC1DIDEgLXUg
+Z2ZzcGFyc2UtMy0kJCAtZCAkVE1QRElSCi1nZjMwIGdyb3dmaWxlcyAtVyBnZjMwIC1EIDAgLWIg
+LWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1vIE9fUkRXUixPX0NSRUFULE9fU1lOQyAtZyAy
+MDQ4MCAtVCAxMCAtdCAyMDQ4MCBnZi1zeW5jLSQkIC1kICRUTVBESVIKK2dmMjAgZ3Jvd2ZpbGVz
+IC1XIGdmMjAgLUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLXIgMS0yNTYwMDA6
+NTEyIC1SIDUxMi0yNTYwMDAgLVQgNCAtZiBnZmJpZ2lvLSQkIC1kICRUTVBESVIKK2dmMjEgZ3Jv
+d2ZpbGVzIC1XIGdmMjEgLUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLWcgMjA0
+ODAgLVQgMTAgLXQgMjA0ODAgLWYgZ2YtYmxkLSQkIC1kICRUTVBESVIKK2dmMjIgZ3Jvd2ZpbGVz
+IC1XIGdmMjIgLUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLWcgMjA0ODAgLVQg
+MTAgLXQgMjA0ODAgLWYgZ2YtYmxkZi0kJCAtZCAkVE1QRElSCitnZjIzIGdyb3dmaWxlcyAtVyBn
+ZjIzIC1EIDAgLWIgLWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1yIDUxMi02NDAwMDoxMDI0
+IC1SIDEtMzg0MDAwIC1UIDQgLWYgZ2YtaW5mLSQkIC1kICRUTVBESVIKK2dmMjQgZ3Jvd2ZpbGVz
+IC1XIGdmMjQgLUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLWcgMjA0ODAgLWYg
+Z2YtamJsZC0kJCAtZCAkVE1QRElSCitnZjI1IGdyb3dmaWxlcyAtVyBnZjI1IC1EIDAgLWIgLWkg
+MCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1yIDEwMjQwMDAtMjA0ODAwMDoyMDQ4IC1SIDQwOTUt
+MjA0ODAwMCAtVCAxIC1mIGdmLWxhcmdlLWdzLSQkIC1kICRUTVBESVIKK2dmMjYgZ3Jvd2ZpbGVz
+IC1XIGdmMjYgLUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLXIgMTI4LTMyNzY4
+OjEyOCAtUiA1MTItNjQwMDAgLVQgNCAtZiBnZnNtYWxsaW8tJCQgLWQgJFRNUERJUgorZ2YyNyBn
+cm93ZmlsZXMgLVcgZ2YyNyAtYiAtRCAwIC13IC1nIDhiIC1DIDEgLWIgLWkgMTAwMCAtdSAtZiBn
+ZnNwYXJzZS0xLSQkIC1kICRUTVBESVIKK2dmMjggZ3Jvd2ZpbGVzIC1XIGdmMjggLWIgLUQgMCAt
+dyAtZyAxNmIgLUMgMSAtYiAtaSAxMDAwIC11IC1mIGdmc3BhcnNlLTItJCQgLWQgJFRNUERJUgor
+Z2YyOSBncm93ZmlsZXMgLVcgZ2YyOSAtYiAtRCAwIC1yIDEtNDA5NiAtUiAwLTMzNTU0NDMyIC1p
+IDAgLUwgNjAgLUMgMSAtdSAtZiBnZnNwYXJzZS0zLSQkIC1kICRUTVBESVIKK2dmMzAgZ3Jvd2Zp
+bGVzIC1XIGdmMzAgLUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLW8gT19SRFdS
+LE9fQ1JFQVQsT19TWU5DIC1nIDIwNDgwIC1UIDEwIC10IDIwNDgwIC1mIGdmLXN5bmMtJCQgLWQg
+JFRNUERJUgogcnd0ZXN0MDEgZXhwb3J0IExUUFJPT1Q7IHJ3dGVzdCAtTiByd3Rlc3QwMSAtYyAt
+cSAtaSA2MHMgIC1mIHN5bmMgMTAlMjUwMDA6JFRNUERJUi9ydy1zeW5jLSQkCiByd3Rlc3QwMiBl
+eHBvcnQgTFRQUk9PVDsgcnd0ZXN0IC1OIHJ3dGVzdDAyIC1jIC1xIC1pIDYwcyAgLWYgYnVmZmVy
+ZWQgMTAlMjUwMDA6JFRNUERJUi9ydy1idWZmZXJlZC0kJAogcnd0ZXN0MDMgZXhwb3J0IExUUFJP
+T1Q7IHJ3dGVzdCAtTiByd3Rlc3QwMyAtYyAtcSAtaSA2MHMgLW4gMiAgLWYgYnVmZmVyZWQgLXMg
+bW1yZWFkLG1td3JpdGUgLW0gcmFuZG9tIC1EdiAxMCUyNTAwMDokVE1QRElSL21tLWJ1ZmYtJCQK
+QEAgLTY3LDcgKzY3LDcgQEAgZnNfZGkgZnNfZGkgLWQgJFRNUERJUgogI0Fsc28gcnVuIHRoZSBm
+c19wZXJtcyAoRmlsZSBTeXN0ZW0gUGVybWlzc2lvbiBUZXN0cykKIGZzX3Blcm1zIGZzX3Blcm1z
+X3NpbXBsZXRlc3Quc2gKIAotIyBSZWFkIGV2ZXJ5IGZpbGUgaW4gL3Byb2MuIE5vdCBsaWtlbHkg
+dG8gY3Jhc2gsIGJ1dCBkb2VzIGVub3VnaCAKKyMgUmVhZCBldmVyeSBmaWxlIGluIC9wcm9jLiBO
+b3QgbGlrZWx5IHRvIGNyYXNoLCBidXQgZG9lcyBlbm91Z2gKICMgdG8gZGlzdHVyYiB0aGUga2Vy
+bmVsLiBBIGdvb2Qga2VybmVsIGxhdGVuY3kga2lsbGVyIHRvby4KICMgV2FzIG5vdCBzdXJlIHdo
+eSBpdCBzaG91bGQgcmVzaWRlIGluIHJ1bnRlc3QvY3Jhc2htZSBhbmQgd29uwrR0IGdldCB0ZXN0
+ZWQgZXZlcgogcHJvYzAxIHByb2MwMQo=
+--0016364ecc483d87620488c8d5af
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 ThinkGeek and WIRED's GeekDad team up for the Ultimate 
 GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
 lucky parental unit.  See the prize list and enter to win: 
 http://p.sf.net/sfu/thinkgeek-promo
+--0016364ecc483d87620488c8d5af
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016364ecc483d87620488c8d5af--
+
