@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OJnWk-0008Ik-MM
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jun 2010 12:58:34 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OJnWj-00021j-OF
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jun 2010 12:58:34 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e34.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o52CojHr021161
-	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jun 2010 06:50:45 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o52CwHL0105706
-	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jun 2010 06:58:17 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o52CwD2f021177
-	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jun 2010 06:58:13 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4C061631.3090407@rs.jp.nec.com>
-References: <4C061631.3090407@rs.jp.nec.com>
-Date: Wed, 02 Jun 2010 18:28:03 +0530
-Message-Id: <1275483484.4899.10.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix ext4_subdir_limit fix
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ragavendra.bn@gmail.com>) id 1OOmaC-00086C-Cw
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jun 2010 06:58:44 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OOmaA-0007dm-6t
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jun 2010 06:58:44 +0000
+Received: by iwn5 with SMTP id 5so3408025iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 15 Jun 2010 23:58:37 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 16 Jun 2010 12:28:36 +0530
+Message-ID: <AANLkTinGyvAoijU8SQkAVIbNJO2ZOv26R329hB77cbyt@mail.gmail.com>
+From: Ragavendra <ragavendra.bn@gmail.com>
+Subject: [LTP] Contribute for LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,72 +25,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7369743128654865680=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Akira Fujita <a-fujita@rs.jp.nec.com>
-Cc: ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
+To: ltp-list@lists.sourceforge.net
 
-On Wed, 2010-06-02 at 17:28 +0900, Akira Fujita wrote: 
-> LTP: Fix ext4_subdir_limit fix
-> 
-> From: Akira Fujita <a-fujita@rs.jp.nec.com>
+--===============7369743128654865680==
+Content-Type: multipart/alternative; boundary=0016368e2c0d439829048920407c
 
-Thanks.
+--0016368e2c0d439829048920407c
+Content-Type: text/plain; charset=ISO-8859-1
 
-Regards--
-Subrata
+Hi,
+   I would want to contribute to the LTP. I am using Linux since 6 - 10
+years
 
-> 
-> We get the following error results since the if condition
-> in ext4_subdir_limit_tset.sh does not work fine.  The patch fixes this issue.
-> 
-> [root@bsd086 ltp]# ./runltp -f fs_ext4
-> 
-> <snip>
-> 
-> Ext4 subdir limit test
-> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir name len: long name,
-> mkdir: No space left on device
-> ext4-subdir-limit    2  TFAIL  :  failed to create directories - 19118
-> 
-> <snip>
-> 
-> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir name len: long name,
-> mkdir: No space left on device
-> ext4-subdir-limit    4  TFAIL  :  failed to create directories - 19592
-> 
-> Signed-off-by: Akira Fujita <a-fujita@rs.jp.nec.com>
-> ---
->  ext4_subdir_limit_test.sh |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> index 5631fe5..f0a3b50 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> @@ -152,7 +152,8 @@ for ((i = 0; i < 3; i++))
->  	{
->  		for ((k = 0; k < 2; k++))
->  		{
-> -			if [ $i -eq $LONG_DIR -a $k -eq 1024 ]; then
-> +			if [ ${DIR_LEN[$k]} -eq $LONG_DIR -a \
-> +				${BLOCK_SIZE[$i]} -eq 1024 ]; then
->  				continue
->  			fi
->  			ext4_run_case 65537 ${DIR_LEN[$k]} ${PARENT_DIR[$j]} \
-> 
-> 
-> ------------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
+
+
+-- 
+Thanks & Regards,
+Ragavendra BN
+
+--0016368e2c0d439829048920407c
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi,<br>=A0=A0 I would want to contribute to the LTP. I am using Linux since=
+ 6 - 10 years<br><br><br><br clear=3D"all"><br>-- <br>Thanks &amp; Regards,=
+<br>Ragavendra BN<br>
+
+--0016368e2c0d439829048920407c--
+
+
+--===============7369743128654865680==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+lucky parental unit.  See the prize list and enter to win: 
+http://p.sf.net/sfu/thinkgeek-promo
+--===============7369743128654865680==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7369743128654865680==--
+
