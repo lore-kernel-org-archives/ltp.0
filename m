@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OM1YC-0001yh-8D
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 16:21:16 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OM1YB-0001m3-Jr
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 16:21:16 +0000
-Received: by iwn6 with SMTP id 6so3596785iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 08 Jun 2010 09:21:10 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1276001198-17532-1-git-send-email-monstr@monstr.eu>
-References: <1276001198-17532-1-git-send-email-monstr@monstr.eu>
-Date: Tue, 8 Jun 2010 09:21:08 -0700
-Message-ID: <AANLkTilzjOK_lLfz_o4KOZgdj9Px2qebOnIIEe_Um1TJ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls: getdtablesize01 fix for missing
-	/etc/hosts
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OPfef-0001wi-FF
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:47:01 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OPfee-0004vf-Gp
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:47:01 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20100618174331.5435.11325.sendpatchset@subratamodak.linux.ibm.com>
+References: <20100618174331.5435.11325.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 18 Jun 2010 23:16:41 +0530
+Message-Id: <1276883202.6391.8.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Updated Information about Linux Test
+	Project	Maintainence
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,76 +26,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: monstr@monstr.eu
-Cc: ltp-list@lists.sourceforge.net, michal.simek@petalinux.com.monstr.eu
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: ltp-list <ltp-list@lists.sf.net>, Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Sudarshan Rao <rsudarsh@in.ibm.com>, Linux Kernel <linux-kernel@vger.kernel.org>, Michael Reed <mreed10@us.ibm.com>, "manoj.iyer" <manoj.iyer@canonical.com>, "paul.larson" <paul.larson@ubuntu.com>
 
-On Tue, Jun 8, 2010 at 5:46 AM,  <monstr@monstr.eu> wrote:
-> From: Michal Simek <monstr@monstr.eu>
->
-> Embedded systems doesn't need to contain /etc/hosts that's why
-> will be good to create it if doesn't exist. If file doesn't exist
-> then syscall test failed.
->
-> Error:
-> getdtablesize01 =A0 =A00 =A0TINFO =A0: =A0Maximum number of files a proce=
-ss can have opened is 1024
-> getdtablesize01 =A0 =A00 =A0TINFO =A0: =A0Checking with the value returne=
-d by getrlimit...RLIMIT_NOFILE
-> getdtablesize01 =A0 =A01 =A0TPASS =A0: =A0got correct dtablesize, value i=
-s 1024
-> getdtablesize01 =A0 =A00 =A0TINFO =A0: =A0Checking Max num of files that =
-can be opened by a process.Should be: RLIMIT_NOFILE - 1
-> Opened file num -1
-> getdtablesize01 =A0 =A02 =A0TFAIL =A0: =A00 !=3D 1023
->
-> Signed-off-by: Michal Simek <monstr@monstr.eu>
-> ---
-> =A0.../syscalls/getdtablesize/getdtablesize01.c =A0 =A0 =A0 | =A0 =A02 +-
-> =A01 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c b/=
-testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
-> index a495501..568e1ad 100644
-> --- a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
-> +++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
-> @@ -83,7 +83,7 @@ int main()
-> =A0 =A0 =A0 =A0tst_resm(TINFO,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "Checking Max num of files that can be op=
-ened by a process.Should be: RLIMIT_NOFILE - 1");
-> =A0 =A0 =A0 =A0for (loop =3D 1; loop <=3D max_val_opfiles; loop++) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 fd =3D open("/etc/hosts", O_RDONLY);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 fd =3D open("/etc/hosts", O_RDONLY | O_CREA=
-T);
-> =A0#ifdef DEBUG
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("Opened file num %d\n", fd);
-> =A0#endif
+Sigh !!, i forgot the below one :-(
 
-No. You need to fix your embedded system to have all of the files on
-it before you try and run LTP. This would regress all sane Linux
-systems running LTP because the file already exists.
+Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>,
 
-I agree that this assumption is broken though; it might be better to
-use a different file, like via mkstemp(3).
+Regards--
+Subrata
 
-Also, leaking file descriptors is silly if getdtablesize(2) is busted,
-or the OS fails to clean up all of the open file descriptors... it
-should cache the opened filehandles if !=3D -1, then close each of them
-one by one.
+On Fri, 2010-06-18 at 23:13 +0530, Subrata Modak wrote:
+> --- linux-2.6/MAINTAINERS.orig	2010-06-18 23:08:30.000000000 +0530
+> +++ linux-2.6/MAINTAINERS	2010-06-18 23:09:41.000000000 +0530
+> @@ -3413,9 +3413,10 @@ F:	drivers/scsi/sym53c8xx_2/
+>  LTP (Linux Test Project)
+>  M:	Subrata Modak <subrata@linux.vnet.ibm.com>
+>  M:	Mike Frysinger <vapier@gentoo.org>
+> +M:	Garrett Cooper <yanegomi@gmail.com>
+>  L:	ltp-list@lists.sourceforge.net (subscribers-only)
+>  W:	http://ltp.sourceforge.net/
+> -T:	git git://git.kernel.org/pub/scm/linux/kernel/git/galak/ltp.git
+> +T:	git git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev
+>  S:	Maintained
+> 
+>  M32R ARCHITECTURE
 
-Thanks,
--Garrett
 
----------------------------------------------------------------------------=
----
-ThinkGeek and WIRED's GeekDad team up for the Ultimate =
-
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the =
-
-lucky parental unit.  See the prize list and enter to win: =
-
+------------------------------------------------------------------------------
+ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+lucky parental unit.  See the prize list and enter to win: 
 http://p.sf.net/sfu/thinkgeek-promo
 _______________________________________________
 Ltp-list mailing list
