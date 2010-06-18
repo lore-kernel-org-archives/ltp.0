@@ -1,31 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OPfOs-0007mb-9l
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:30:42 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OPfOr-0000DT-4R
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:30:42 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e36.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o5IHREXa003427
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 11:27:14 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o5IHUStv107604
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 11:30:29 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o5IHUR6b031625
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 11:30:28 -0600
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OPUm2-0001rB-Kd
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 06:09:54 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OPUm0-000897-AV
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 06:09:54 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e3.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o5I5u60q028464
+	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 01:56:06 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o5I69kck1880108
+	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 02:09:46 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o5I69jBg019879
+	for <ltp-list@lists.sourceforge.net>; Fri, 18 Jun 2010 03:09:46 -0300
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1276841379.6391.1.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1276809176.29789.9.camel@lucio-t400.br.ibm.com>
 References: <1276809176.29789.9.camel@lucio-t400.br.ibm.com>
-	<1276841379.6391.1.camel@subratamodak.linux.ibm.com>
-Date: Fri, 18 Jun 2010 23:00:19 +0530
-Message-Id: <1276882220.6391.5.camel@subratamodak.linux.ibm.com>
+Date: Fri, 18 Jun 2010 11:39:38 +0530
+Message-Id: <1276841379.6391.1.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
 Subject: Re: [LTP] ffsb failures running ltp-ext4 new features test
 	on	SLES11sp1 PPC
@@ -39,154 +37,155 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ljhc@br.ibm.com
 Cc: Linux Test Project <ltp-list@lists.sourceforge.net>, Akira Fujita <a-fujita@rs.jp.nec.com>
 
-WWVzLCBpIGZpbmQgbWFueSBmYWlsdXJlcyBpbiB0aGUgdGVzdHMgaW5jbHVkaW5nIGR1bXBpbmcg
-b2YgQklOQVJZCmNoYXJhY3RlcnMgb24gdGhpcyBzY3JlZW4uIEZvbGxvd2luZyBhcmUgZXhjZXJw
-dHMgb2YgdGhlIGZhaWx1cmVzOgoKZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDcgIFRGQUlMICA6
-ICBmZnNiIHJldHVybmVkIGZhaWx1cmUKZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDAgIFRJTkZP
-ICA6ICBqb3VybmFsIG1vZGU6IG9yZGVyZWQsIGNvbW1pdAppbnRlcnZhbDogMSwgCmV4dDQtam91
-cm5hbC1jaGVja3N1bSAgICA4ICBUUEFTUyAgOiAgZXh0NCBqb3VybmFsIGNoZWNrc3VtIHRlc3Qg
-cGFzcwpleHQ0LWpvdXJuYWwtY2hlY2tzdW0gICAgMCAgVElORk8gIDogIGpvdXJuYWwgbW9kZTog
-am91cm5hbCwgY29tbWl0CmludGVydmFsOiAxLCAKZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDkg
-IFRQQVNTICA6ICBleHQ0IGpvdXJuYWwgY2hlY2tzdW0gdGVzdCBwYXNzCmV4dDQtam91cm5hbC1j
-aGVja3N1bSAgICAwICBUSU5GTyAgOiAgam91cm5hbCBtb2RlOiB3cml0ZWJhY2ssIGNvbW1pdApp
-bnRlcnZhbDogMTAwLCAKd3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlCndyaXRlOiBObyBz
-cGFjZSBsZWZ0IG9uIGRldmljZQp3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKEV3vv70w
-77+977+977+977+977+977+977+977+9EV3vv71AEV3vv73vv73vv73vv71PEO+/ve+/ve+/ve+/
-ve+/vTABAe+/veeimArvv71wAkHvv73vv70s77+9EV3vv70TEV3vv70TEV3vv70TEV3vv70TEV3v
-v70TEV3vv70TEV3vv70TEV3vv70UEV1/UBcRXe+/vXDvv73vv73vv73vv73vv73vv73vv73vv70R
-Xe+/ve+/ve+/ve+/vU4Q77+977+977+977+977+9MAEB77+977+977+977+977+9cAJB77+977+9
-JO+/vRFd77+977+9ERFd77+977+977+977+977+977+977+977+977+977+9EV3vv73vv73vv73v
-v73vv73vv73vv70w77+9cAJB77+977+9JO+/vRFd77+977+9EhFd77+977+977+977+977+977+9
-77+977+977+977+9EV3vv73vv73vv73vv73vv73vv70w77+9cAF377+9EV1977+977+977+977+9
-77+977+977+977+977+9EV1+EV1/UO+/ve+/vRDvv73vv73vv73vv73vv70wAQHvv73vvo/vv73v
-v71wAkHvv73vv70s77+9EV1/77+9EV1/77+9EV1/77+9EV1/77+977+977+9TxFdf++/vRFdf++/
-vRFdf++/vRFdfRAWEV3vv70w77+977+977+977+977+977+977+977+9EV3vv71AEV3vv73vv73v
-v73vv71PEO+/ve+/ve+/ve+/ve+/vTABAe+/veeimO+/vXACQe+/ve+/vSzvv70RXe+/vRMRXe+/
-vRMRXe+/vRMRXe+/vRMRXe+/vRMRXe+/vRMRXe+/vRMRXe+/vRQRXX9QFxFd77+9cO+/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/vRFd77+977+977+977+9ThDvv73vv73vv73vv73vv70wAQHvv73vv73v
-v73vv73vv71wAkHvv73vv70k77+9EV3vv73vv70REV3vv73vv73vv73vv73vv73vv73vv73vv73v
-v73vv70RXe+/ve+/ve+/ve+/ve+/ve+/ve+/vTDvv71wAkHvv73vv70k77+9EV3vv73vv70SEV3v
-v73vv73vv73vv73vv73vv73vv73vv73vv73vv70RXe+/ve+/ve+/ve+/ve+/ve+/vTDvv71wAXfv
-v70KCkFraXJhLAoKUHJvYmFibHkgd2UgbmVlZCB0byBjaGFuZ2UgdGhlIHRlc3RzIGNvbmRpdGlv
-bnMgdG8gcmVzdHJpY3Qgbm90IHRvIGNyb3NzCnRoZSBzaXplIG9mIHBhcnRpdGlvbi4gV2UgY2Fu
-IGhhbmRsZSB0aGUgdGVzdHMgYmV0dGVyIGkgdGhpbmsuIEkgYW0gbm90CnN1cmUgaWYgdGhlIGxh
-c3QgY29tbWl0IGlzIHBsYXlpbmcgZm91bCB3aXRoIHRoZSB0ZXN0czoKCmNvbW1pdCA3ZjIwYTNh
-ZGQ2YzdmMjE2NmRiYWI1YTcxMjcxM2FlOGI1OTQzNDQ4CkF1dGhvcjogU3VicmF0YSBNb2RhayA8
-c3VicmF0YW1vZGFrQHN1YnJhdGFtb2Rhay5saW51eC5pYm0uY29tPgpEYXRlOiAgIFdlZCBKdW4g
-MiAxODoxNjo0NiAyMDEwICswNTMwCgpSZWdhcmRzLS0KU3VicmF0YQoKT24gRnJpLCAyMDEwLTA2
-LTE4IGF0IDExOjM5ICswNTMwLCBTdWJyYXRhIE1vZGFrIHdyb3RlOgo+IEhpIEx1Y2lvLAo+IAo+
-IFRpbGwgbm93IGkgZGlkIG5vdCBkZXRlY3QgYW55IGZhaWx1cmUgZm9yIHRoZSBzZGIyOgo+IAo+
-IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAwICBUSU5GTyAgOiAgaXNEZWxhbGxvYzogZGVsYWxs
-b2MsIGlzRGlyZWN0SU86Cj4gMCwgQmxvY2tzaXplOiAxMDI0LCBpc0F1dG9fZGFfYWxsb2M6IGF1
-dG9fZGFfYWxsb2M9MQo+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAxICBUUEFTUyAgOiAgZGVs
-YWxsb2MvbWJhbGxvYyB0ZXN0IHBhc3MKPiBleHQ0LWRlbGFsbG9jLW1iYWxsb2MgICAgMCAgVElO
-Rk8gIDogIGlzRGVsYWxsb2M6IGRlbGFsbG9jLCBpc0RpcmVjdElPOgo+IDAsIEJsb2Nrc2l6ZTog
-MTAyNCwgaXNBdXRvX2RhX2FsbG9jOiBub2F1dG9fZGFfYWxsb2MKPiBleHQ0LWRlbGFsbG9jLW1i
-YWxsb2MgICAgMiAgVFBBU1MgIDogIGRlbGFsbG9jL21iYWxsb2MgdGVzdCBwYXNzCj4gZXh0NC1k
-ZWxhbGxvYy1tYmFsbG9jICAgIDAgIFRJTkZPICA6ICBpc0RlbGFsbG9jOiBub2RlbGFsbG9jLAo+
-IGlzRGlyZWN0SU86IDAsIEJsb2Nrc2l6ZTogMTAyNCwgaXNBdXRvX2RhX2FsbG9jOiBhdXRvX2Rh
-X2FsbG9jPTEKPiBleHQ0LWRlbGFsbG9jLW1iYWxsb2MgICAgMyAgVFBBU1MgIDogIGRlbGFsbG9j
-L21iYWxsb2MgdGVzdCBwYXNzCj4gZXh0NC1kZWxhbGxvYy1tYmFsbG9jICAgIDAgIFRJTkZPICA6
-ICBpc0RlbGFsbG9jOiBub2RlbGFsbG9jLAo+IGlzRGlyZWN0SU86IDAsIEJsb2Nrc2l6ZTogMTAy
-NCwgaXNBdXRvX2RhX2FsbG9jOiBub2F1dG9fZGFfYWxsb2MKPiBleHQ0LWRlbGFsbG9jLW1iYWxs
-b2MgICAgNCAgVFBBU1MgIDogIGRlbGFsbG9jL21iYWxsb2MgdGVzdCBwYXNzCj4gZXh0NC1kZWxh
-bGxvYy1tYmFsbG9jICAgIDAgIFRJTkZPICA6ICBpc0RlbGFsbG9jOiBkZWxhbGxvYywgaXNEaXJl
-Y3RJTzoKPiAxLCBCbG9ja3NpemU6IDEwMjQsIGlzQXV0b19kYV9hbGxvYzogYXV0b19kYV9hbGxv
-Yz0xCj4gZXh0NC1kZWxhbGxvYy1tYmFsbG9jICAgIDUgIFRQQVNTICA6ICBkZWxhbGxvYy9tYmFs
-bG9jIHRlc3QgcGFzcwo+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAwICBUSU5GTyAgOiAgaXNE
-ZWxhbGxvYzogZGVsYWxsb2MsIGlzRGlyZWN0SU86Cj4gMSwgQmxvY2tzaXplOiAxMDI0LCBpc0F1
-dG9fZGFfYWxsb2M6IG5vYXV0b19kYV9hbGxvYwo+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICA2
-ICBUUEFTUyAgOiAgZGVsYWxsb2MvbWJhbGxvYyB0ZXN0IHBhc3MKPiBleHQ0LWRlbGFsbG9jLW1i
-YWxsb2MgICAgMCAgVElORk8gIDogIGlzRGVsYWxsb2M6IG5vZGVsYWxsb2MsCj4gaXNEaXJlY3RJ
-TzogMSwgQmxvY2tzaXplOiAxMDI0LCBpc0F1dG9fZGFfYWxsb2M6IGF1dG9fZGFfYWxsb2M9MQo+
-IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICA3ICBUUEFTUyAgOiAgZGVsYWxsb2MvbWJhbGxvYyB0
-ZXN0IHBhc3MKPiBleHQ0LWRlbGFsbG9jLW1iYWxsb2MgICAgMCAgVElORk8gIDogIGlzRGVsYWxs
-b2M6IG5vZGVsYWxsb2MsCj4gaXNEaXJlY3RJTzogMSwgQmxvY2tzaXplOiAxMDI0LCBpc0F1dG9f
-ZGFfYWxsb2M6IG5vYXV0b19kYV9hbGxvYwo+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICA4ICBU
-UEFTUyAgOiAgZGVsYWxsb2MvbWJhbGxvYyB0ZXN0IHBhc3MKPiBleHQ0LWRlbGFsbG9jLW1iYWxs
-b2MgICAgMCAgVElORk8gIDogIGlzRGVsYWxsb2M6IGRlbGFsbG9jLCBpc0RpcmVjdElPOgo+IDAs
-IEJsb2Nrc2l6ZTogNDA5NiwgaXNBdXRvX2RhX2FsbG9jOiBhdXRvX2RhX2FsbG9jPTEKPiAKPiBJ
-IHdpbGwgY29udGludWUgdG8gcnVuIHRoZSB0ZXN0cyBhbmQgdXBkYXRlIHlvdSBhZ2Fpbi4KPiAK
-PiBSZWdhcmRzLS0KPiBTdWJyYXRhCj4gCj4gT24gVGh1LCAyMDEwLTA2LTE3IGF0IDE4OjEyIC0w
-MzAwLCBMdWNpbyBDb3JyZWlhIHdyb3RlOgo+ID4gSGkgQWtpcmEsCj4gPiAKPiA+IEkndmUgZm91
-bmQgc29tZSBmYWlsdXJlcyBydW5uaW5nIGV4dDQtbmV3ZmVhdCB3aXRoIFNMRVMxMXNwMSBvbiBQ
-T1dFUjYuCj4gPiBIYXZlIHlvdSBzZWVuIHRoYXQgYmVmb3JlPyAKPiA+IAo+ID4gCj4gPiAKPiA+
-IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAwICBUSU5GTyAgOiAgaXNEZWxhbGxvYzogZGVsYWxs
-b2MsIGlzRGlyZWN0SU86Cj4gPiAwLAo+ID4gQmxvY2tzaXplOiA0MDk2LCBpc0F1dG9fZGFfYWxs
-b2M6IGF1dG9fZGFfYWxsb2M9MQo+ID4gd3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlCj4g
-PiBleHQ0LWRlbGFsbG9jLW1iYWxsb2MgICAgOSAgVEZBSUwgIDogIGZmc2IgcmV0dXJuZWQgZmFp
-bHVyZQo+ID4gCj4gPiBleHQ0LWpvdXJuYWwtY2hlY2tzdW0gICAgMCAgVElORk8gIDogIGpvdXJu
-YWwgbW9kZTogd3JpdGViYWNrLCBjb21taXQgaW50ZXJ2YWw6Cj4gPiAxLCAKPiA+IHdyaXRlOiBO
-byBzcGFjZSBsZWZ0IG9uIGRldmljZQo+ID4gd3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNl
-Cj4gPiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPiA+IHdyaXRlOiBObyBzcGFjZSBs
-ZWZ0IG9uIGRldmljZQo+ID4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDEgIFRGQUlMICA6ICBm
-ZnNiIHJldHVybmVkIGZhaWx1cmUKPiA+IAo+ID4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDAg
-IFRJTkZPICA6ICBqb3VybmFsIG1vZGU6IHdyaXRlYmFjaywgY29tbWl0IGludGVydmFsOgo+ID4g
-MTAwLCAKPiA+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9uIGRldmljZQo+ID4gd3JpdGU6IE5vIHNw
-YWNlIGxlZnQgb24gZGV2aWNlCj4gPiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPiA+
-IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICA0ICBURkFJTCAgOiAgZmZzYiByZXR1cm5lZCBmYWls
-dXJlCj4gPiAKPiA+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICAwICBUSU5GTyAgOiAgam91cm5h
-bCBtb2RlOiB3cml0ZWJhY2ssIGNvbW1pdCBpbnRlcnZhbDoKPiA+IDEsIAo+ID4gd3JpdGU6IFN1
-Y2Nlc3MKPiA+IHdyaXRlOiBTdWNjZXNzCj4gPiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZp
-Y2UKPiA+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICA3ICBURkFJTCAgOiAgZmZzYiByZXR1cm5l
-ZCBmYWlsdXJlCj4gPiAKPiA+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICAwICBUSU5GTyAgOiAg
-am91cm5hbCBtb2RlOiB3cml0ZWJhY2ssIGNvbW1pdCBpbnRlcnZhbDoKPiA+IDEwMCwgCj4gPiB3
-cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPiA+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9u
-IGRldmljZQo+ID4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgMTAgIFRGQUlMICA6ICBmZnNiIHJl
-dHVybmVkIGZhaWx1cmUKPiA+IAo+ID4gYW5kIHNvIG9uIDEzLCAxNiwgMTksIDIyLCAyNSwgMjgs
-IDMxLCAzNC4KPiA+IGV4dDQtZGVsYWxsb2MtbWJhbGxvYyAgICAwICBUSU5GTyAgOiAgaXNEZWxh
-bGxvYzogZGVsYWxsb2MsIGlzRGlyZWN0SU86Cj4gPiAwLAo+ID4gQmxvY2tzaXplOiA0MDk2LCBp
-c0F1dG9fZGFfYWxsb2M6IGF1dG9fZGFfYWxsb2M9MQo+ID4gd3JpdGU6IE5vIHNwYWNlIGxlZnQg
-b24gZGV2aWNlCj4gPiBleHQ0LWRlbGFsbG9jLW1iYWxsb2MgICAgOSAgVEZBSUwgIDogIGZmc2Ig
-cmV0dXJuZWQgZmFpbHVyZQo+ID4gCj4gPiBleHQ0LWpvdXJuYWwtY2hlY2tzdW0gICAgMCAgVElO
-Rk8gIDogIGpvdXJuYWwgbW9kZTogd3JpdGViYWNrLCBjb21taXQgaW50ZXJ2YWw6Cj4gPiAxLCAK
-PiA+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9uIGRldmljZQo+ID4gd3JpdGU6IE5vIHNwYWNlIGxl
-ZnQgb24gZGV2aWNlCj4gPiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPiA+IHdyaXRl
-OiBObyBzcGFjZSBsZWZ0IG9uIGRldmljZQo+ID4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgIDEg
-IFRGQUlMICA6ICBmZnNiIHJldHVybmVkIGZhaWx1cmUKPiA+IAo+ID4gZXh0NC1qb3VybmFsLWNo
-ZWNrc3VtICAgIDAgIFRJTkZPICA6ICBqb3VybmFsIG1vZGU6IHdyaXRlYmFjaywgY29tbWl0IGlu
-dGVydmFsOgo+ID4gMTAwLCAKPiA+IHdyaXRlOiBObyBzcGFjZSBsZWZ0IG9uIGRldmljZQo+ID4g
-d3JpdGU6IE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlCj4gPiB3cml0ZTogTm8gc3BhY2UgbGVmdCBv
-biBkZXZpY2UKPiA+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICA0ICBURkFJTCAgOiAgZmZzYiBy
-ZXR1cm5lZCBmYWlsdXJlCj4gPiAKPiA+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICAwICBUSU5G
-TyAgOiAgam91cm5hbCBtb2RlOiB3cml0ZWJhY2ssIGNvbW1pdCBpbnRlcnZhbDoKPiA+IDEsIAo+
-ID4gd3JpdGU6IFN1Y2Nlc3MKPiA+IHdyaXRlOiBTdWNjZXNzCj4gPiB3cml0ZTogTm8gc3BhY2Ug
-bGVmdCBvbiBkZXZpY2UKPiA+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICA3ICBURkFJTCAgOiAg
-ZmZzYiByZXR1cm5lZCBmYWlsdXJlCj4gPiAKPiA+IGV4dDQtam91cm5hbC1jaGVja3N1bSAgICAw
-ICBUSU5GTyAgOiAgam91cm5hbCBtb2RlOiB3cml0ZWJhY2ssIGNvbW1pdCBpbnRlcnZhbDoKPiA+
-IDEwMCwgCj4gPiB3cml0ZTogTm8gc3BhY2UgbGVmdCBvbiBkZXZpY2UKPiA+IHdyaXRlOiBObyBz
-cGFjZSBsZWZ0IG9uIGRldmljZQo+ID4gZXh0NC1qb3VybmFsLWNoZWNrc3VtICAgMTAgIFRGQUlM
-ICA6ICBmZnNiIHJldHVybmVkIGZhaWx1cmUKPiA+IAo+ID4gYW5kIHNvIG9uIDEzLCAxNiwgMTks
-IDIyLCAyNSwgMjgsIDMxLCAzNC4KPiA+IAo+ID4gCj4gPiBSZWdhcmRzLAo+ID4gCj4gPiAKPiA+
-IAo+ID4gTHVjaW8gQ29ycmVpYQo+ID4gLS0tLS0tLS0tLS0tLS0KPiA+IFNvZnR3YXJlIEVuZ2lu
-ZWVyCj4gPiBJQk0gTFRDCj4gPiAKPiA+IAo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPiBU
-aGlua0dlZWsgYW5kIFdJUkVEJ3MgR2Vla0RhZCB0ZWFtIHVwIGZvciB0aGUgVWx0aW1hdGUgCj4g
-PiBHZWVrRGFkIEZhdGhlcidzIERheSBHaXZlYXdheS4gT05FIE1BU1NJVkUgUFJJWkUgdG8gdGhl
-IAo+ID4gbHVja3kgcGFyZW50YWwgdW5pdC4gIFNlZSB0aGUgcHJpemUgbGlzdCBhbmQgZW50ZXIg
-dG8gd2luOiAKPiA+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvdGhpbmtnZWVrLXByb21vCj4gPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gTHRwLWxpc3Qg
-bWFpbGluZyBsaXN0Cj4gPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiA+IGh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gCj4gCj4g
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhpbmtHZWVrIGFuZCBXSVJFRCdzIEdlZWtEYWQgdGVh
-bSB1cCBmb3IgdGhlIFVsdGltYXRlIAo+IEdlZWtEYWQgRmF0aGVyJ3MgRGF5IEdpdmVhd2F5LiBP
-TkUgTUFTU0lWRSBQUklaRSB0byB0aGUgCj4gbHVja3kgcGFyZW50YWwgdW5pdC4gIFNlZSB0aGUg
-cHJpemUgbGlzdCBhbmQgZW50ZXIgdG8gd2luOiAKPiBodHRwOi8vcC5zZi5uZXQvc2Z1L3RoaW5r
-Z2Vlay1wcm9tbwo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxp
-c3QKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpbmtHZWVrIGFuZCBXSVJFRCdzIEdlZWtEYWQg
-dGVhbSB1cCBmb3IgdGhlIFVsdGltYXRlIApHZWVrRGFkIEZhdGhlcidzIERheSBHaXZlYXdheS4g
-T05FIE1BU1NJVkUgUFJJWkUgdG8gdGhlIApsdWNreSBwYXJlbnRhbCB1bml0LiAgU2VlIHRoZSBw
-cml6ZSBsaXN0IGFuZCBlbnRlciB0byB3aW46IApodHRwOi8vcC5zZi5uZXQvc2Z1L3RoaW5rZ2Vl
-ay1wcm9tbwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-dHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi Lucio,
+
+Till now i did not detect any failure for the sdb2:
+
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
+0, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
+ext4-delalloc-mballoc    1  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
+0, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
+ext4-delalloc-mballoc    2  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
+isDirectIO: 0, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
+ext4-delalloc-mballoc    3  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
+isDirectIO: 0, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
+ext4-delalloc-mballoc    4  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
+1, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
+ext4-delalloc-mballoc    5  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
+1, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
+ext4-delalloc-mballoc    6  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
+isDirectIO: 1, Blocksize: 1024, isAuto_da_alloc: auto_da_alloc=1
+ext4-delalloc-mballoc    7  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: nodelalloc,
+isDirectIO: 1, Blocksize: 1024, isAuto_da_alloc: noauto_da_alloc
+ext4-delalloc-mballoc    8  TPASS  :  delalloc/mballoc test pass
+ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
+0, Blocksize: 4096, isAuto_da_alloc: auto_da_alloc=1
+
+I will continue to run the tests and update you again.
+
+Regards--
+Subrata
+
+On Thu, 2010-06-17 at 18:12 -0300, Lucio Correia wrote:
+> Hi Akira,
+> 
+> I've found some failures running ext4-newfeat with SLES11sp1 on POWER6.
+> Have you seen that before? 
+> 
+> 
+> 
+> ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
+> 0,
+> Blocksize: 4096, isAuto_da_alloc: auto_da_alloc=1
+> write: No space left on device
+> ext4-delalloc-mballoc    9  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 1, 
+> write: No space left on device
+> write: No space left on device
+> write: No space left on device
+> write: No space left on device
+> ext4-journal-checksum    1  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 100, 
+> write: No space left on device
+> write: No space left on device
+> write: No space left on device
+> ext4-journal-checksum    4  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 1, 
+> write: Success
+> write: Success
+> write: No space left on device
+> ext4-journal-checksum    7  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 100, 
+> write: No space left on device
+> write: No space left on device
+> ext4-journal-checksum   10  TFAIL  :  ffsb returned failure
+> 
+> and so on 13, 16, 19, 22, 25, 28, 31, 34.
+> ext4-delalloc-mballoc    0  TINFO  :  isDelalloc: delalloc, isDirectIO:
+> 0,
+> Blocksize: 4096, isAuto_da_alloc: auto_da_alloc=1
+> write: No space left on device
+> ext4-delalloc-mballoc    9  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 1, 
+> write: No space left on device
+> write: No space left on device
+> write: No space left on device
+> write: No space left on device
+> ext4-journal-checksum    1  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 100, 
+> write: No space left on device
+> write: No space left on device
+> write: No space left on device
+> ext4-journal-checksum    4  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 1, 
+> write: Success
+> write: Success
+> write: No space left on device
+> ext4-journal-checksum    7  TFAIL  :  ffsb returned failure
+> 
+> ext4-journal-checksum    0  TINFO  :  journal mode: writeback, commit interval:
+> 100, 
+> write: No space left on device
+> write: No space left on device
+> ext4-journal-checksum   10  TFAIL  :  ffsb returned failure
+> 
+> and so on 13, 16, 19, 22, 25, 28, 31, 34.
+> 
+> 
+> Regards,
+> 
+> 
+> 
+> Lucio Correia
+> --------------
+> Software Engineer
+> IBM LTC
+> 
+> 
+> ------------------------------------------------------------------------------
+> ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+> GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+> lucky parental unit.  See the prize list and enter to win: 
+> http://p.sf.net/sfu/thinkgeek-promo
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
+ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+lucky parental unit.  See the prize list and enter to win: 
+http://p.sf.net/sfu/thinkgeek-promo
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
