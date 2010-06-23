@@ -1,33 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rpaulsen@us.ibm.com>) id 1OM3xB-0001Vh-Jk
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 18:55:13 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OM3xA-00057j-Lt
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 18:55:13 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e4.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o58Ifxvj021046
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jun 2010 14:41:59 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o58It6BK090276
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jun 2010 14:55:06 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o58Isur0006495
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jun 2010 15:54:57 -0300
-Received: from d01ml072.pok.ibm.com (d01ml072.pok.ibm.com [9.63.10.37])
-	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o58Isuu1006479
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jun 2010 15:54:56 -0300
-Message-ID: <OF936AB387.E41CF8FF-ON8525773C.0066D2F2-8625773C.0067E206@us.ibm.com>
-From: Robert Paulsen <rpaulsen@us.ibm.com>
-Date: Tue, 8 Jun 2010 13:54:54 -0500
-MIME-Version: 1.0
-Subject: [LTP] quotactl01 testcase failure (Apr 2010 LTP)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <noreply@sourceforge.net>) id 1ORKRH-00033D-CQ
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jun 2010 07:32:03 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
+Mime-Version: 1.0
+Message-Id: <E1ORKRG-0000h4-UO@sfs-web-4.v29.ch3.sourceforge.com>
+Date: Wed, 23 Jun 2010 07:32:02 +0000
+Subject: [LTP] [ ltp-Feature Requests-3013075 ] lcov: highlight excluded
+	source lines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,65 +19,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: noreply@sourceforge.net
 
-
-Is the quotactl01 testcase supposed to be working?
-
-I get the following failure (I reformatte the output slightly for clarity):
-
-  # ./quotactl01
-  quotactl01    1  TBROK  :  failed to enable quotas on block device: (null);
-  1. Ensure that the device is mounted with the quota option.
-  2. Check the filesystem status with `quotacheck (null)':
-  errno=EFAULT(14): Bad address
-
-Looking at the code and interpreting the error messages it seems that there is
-a bunch of setup required to get this test to run. I tried the following. It
-gets me a bit further into the code before failing but still does fail:
-
-  # /etc/init.d/quotad start  # makes no difference if I do this or not
-  # dd if=/dev/zero of=image bs=4096 count=128000
-  # mkdir filesys
-  # mke2fs -F image
-  # mount -o loop,usrquota image filesys
-  # quotacheck -cu filesys # creates filesys/aquota.user
-  # ./quotactl01 -b /dev/loop0 -m $PWD/filesys -q aquota.user
-  quotactl01    1  TBROK  :  failed to enable quotas on block device: /dev/loop0;
-  1. Ensure that the device is mounted with the quota option.
-  2. Check the filesystem status with `quotacheck /dev/loop0'
-  errno=ESRCH(3): No such process
-
-Checking status as suggested by above error output:
-
-  # mount
-  /dev/loop0 on /opt/fiv/ltp/testcases/kernel/syscalls/quotactl/filesys type ext2 (rw,usrquota)
-  # quotacheck -v /dev/loop0
-  quotacheck: Scanning /dev/loop0
-  [/opt/fiv/ltp/testcases/kernel/syscalls/quotactl/filesys] done
-  quotacheck: Checked 2 directories and 1 files
-  # echo $?
-  0
-
-So it is mounted with usrquota and "quotacheck /dev/loop0" gives zero rc but the test still fails.
-
-Is there more I should be doing?
-
-Robert Paulsen
-IBM Linux Technology Center, Austin
-rpaulsen@us.ibm.com
-512-468-0565
-
-
-------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+RmVhdHVyZSBSZXF1ZXN0cyBpdGVtICMzMDEzMDc1LCB3YXMgb3BlbmVkIGF0IDIwMTAtMDYtMDgg
+MDg6MzAKTWVzc2FnZSBnZW5lcmF0ZWQgZm9yIGNoYW5nZSAoQ29tbWVudCBhZGRlZCkgbWFkZSBi
+eSBvYmVycGFwcgpZb3UgY2FuIHJlc3BvbmQgYnkgdmlzaXRpbmc6IApodHRwczovL3NvdXJjZWZv
+cmdlLm5ldC90cmFja2VyLz9mdW5jPWRldGFpbCZhdGlkPTM1MzM4MiZhaWQ9MzAxMzA3NSZncm91
+cF9pZD0zMzgyCgpQbGVhc2Ugbm90ZSB0aGF0IHRoaXMgbWVzc2FnZSB3aWxsIGNvbnRhaW4gYSBm
+dWxsIGNvcHkgb2YgdGhlIGNvbW1lbnQgdGhyZWFkLAppbmNsdWRpbmcgdGhlIGluaXRpYWwgaXNz
+dWUgc3VibWlzc2lvbiwgZm9yIHRoaXMgcmVxdWVzdCwKbm90IGp1c3QgdGhlIGxhdGVzdCB1cGRh
+dGUuCkNhdGVnb3J5OiBUb29scwpHcm91cDogTm9uZQpTdGF0dXM6IE9wZW4KUmVzb2x1dGlvbjog
+Tm9uZQpQcmlvcml0eTogNQpQcml2YXRlOiBObwpTdWJtaXR0ZWQgQnk6IFJlbmUgTGllYnNjaGVy
+IChybGllYnNjaGVyKQpBc3NpZ25lZCB0bzogTm9ib2R5L0Fub255bW91cyAobm9ib2R5KQpTdW1t
+YXJ5OiBsY292OiBoaWdobGlnaHQgZXhjbHVkZWQgc291cmNlIGxpbmVzCgpJbml0aWFsIENvbW1l
+bnQ6CkhpLCAKCnVzaW5nIGV4Y2x1c2lvbiBtYXJrZXJzIGlzIGEgZmluZSB0aGluZywgaWYgb25l
+IGhhcyBzb3VyY2UgbGluZXMgd2hpY2ggY2FuIG5ldmVyIHJlYWNoZWQgb3Igb25seSBhdCBoYXJk
+d2FyZSBmYWlsdXJlcyBvciBzb21ldGhpbmcgc2ltaWxhci4KQnV0IGluIHRoZSBzb3VyY2UgY29k
+ZSB2aWV3IChodG1sKSB0aGVzZSBsaW5lcyBhcmUgbm90IG1hcmtlZCBhdCBhbGwsIHNvIGl0IGlz
+IG5vdCBlYXN5IHRvIHNwb3QgYnkgYnJvd3NpbmcgdGhlIGZpbGUgaWYgdGhlcmUgYXJlIGFueSBy
+ZWdpb25zIHdoaWNoIGFyZSBleGNsdWRlZC4KSGlnaGxpZ2h0aW5nIHRoZXNlIGxpbmVzIG1ha2Vz
+IGl0IGVhc2llciBpZiBzb21lb25lIGhhcyB0byB2ZXJpZnkgeW91ciBzb2Z0d2FyZSBhbmQgdGVz
+dHMgYW5kIHdhbnQgdG8gY2hlY2sgdGhlbSBpZiBvbmx5IHJlYWxseSBuZWVkZWQgbGluZXMgYXJl
+IGV4Y2x1ZGVkLgoKQWxzbyBpdCB3b3VsZCBiZSB1c2VmdWwgdG8gaGF2ZSBpbiB0aGUgc3RhdGlz
+dGljcyBhbiBvcHRpb24gdG8gc2hvdyB0aGVtIGFzICIxMDAlICg5NC42LzUuNCkiIHdoaWNoIG1h
+a2VzIGNsZWFyIGhvdyBtdWNoIHdhcyByZWFjaGVkIGJ5IHRlc3RpbmcvY292ZXJhZ2UgYW5kIGhv
+dyBtdWNoIHdhcyByZWFjaGVkIGJ5IGV4Y2x1ZGluZyB1bnJlYWNoYWJsZSBjb2RlLgoKQW5vdGhl
+ciBpbnRlcmVzdGluZyB0aGluZyB3b3VsZCBiZSB0byBjaGVjayBpZiBleGNsdWRlZCBsaW5lcyBy
+ZWFsbHkgaGF2ZSBjb3VudGVycyB3aXRoIHZhbHVlIDAuIEluIGNhc2UgdGhleSBkb24ndCBoYXZl
+LCB0aGVuIHRoZXJlIGlzIGEgcHJvYmxlbSB3aXRoIHlvdXIgc29mdHdhcmUsIHRlc3RzIG9yIGV4
+Y2x1c2lvbnMuCgpJIGd1ZXNzIGluY2x1ZGluZyB0aGUgZXhjbHVkZWQgbGluZXMgaW4gdGhlIG91
+dHB1dCB3b3VsZCByZXF1aXJlIHRvIGV4dGVuZCB0aGUgaW5mbyBmaWxlIGZvcm1hdCwgYXMgd2Vs
+bCBhcyBnZW5pbmZvIGFuZCBnZW5odG1sIHRvIGhhbmRsZSB0aGlzIG5ldyBpbmZvcm1hdGlvbi4K
+CgpLaW5kIHJlZ2FyZHMKClJlbsOpIExpZWJzY2hlcgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCkNvbW1lbnQg
+Qnk6IFBldGVyIE9iZXJwYXJsZWl0ZXIgKG9iZXJwYXByKQpEYXRlOiAyMDEwLTA2LTIzIDA5OjMy
+CgpNZXNzYWdlOgpUaGFua3MgZm9yIHRoZSBpbnB1dC4gVGhlc2Ugc291bmQgbGlrZSB1c2VmdWwg
+ZmVhdHVyZXMgdG8gbWUgLSBJJ2xsIGFkZAp0aGVtIHRvIHRoZSBsaXN0IG9mIHBvc3NpYmxlIGV4
+dGVuc2lvbnMgZm9yIGZ1dHVyZSBsY292IHZlcnNpb25zLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKWW91IGNh
+biByZXNwb25kIGJ5IHZpc2l0aW5nOiAKaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvdHJhY2tlci8/
+ZnVuYz1kZXRhaWwmYXRpZD0zNTMzODImYWlkPTMwMTMwNzUmZ3JvdXBfaWQ9MzM4MgoKLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tClRoaW5rR2VlayBhbmQgV0lSRUQncyBHZWVrRGFkIHRlYW0gdXAgZm9y
+IHRoZSBVbHRpbWF0ZSAKR2Vla0RhZCBGYXRoZXIncyBEYXkgR2l2ZWF3YXkuIE9ORSBNQVNTSVZF
+IFBSSVpFIHRvIHRoZSAKbHVja3kgcGFyZW50YWwgdW5pdC4gIFNlZSB0aGUgcHJpemUgbGlzdCBh
+bmQgZW50ZXIgdG8gd2luOiAKaHR0cDovL3Auc2YubmV0L3NmdS90aGlua2dlZWstcHJvbW8KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFp
+bGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
+dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
