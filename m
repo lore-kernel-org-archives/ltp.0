@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vishwanath.govind@gmail.com>) id 1OTq5k-0001tc-Gs
-	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 05:44:12 +0000
-Received: from mail-qy0-f175.google.com ([209.85.216.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OTq5j-00049Y-BG
-	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 05:44:12 +0000
-Received: by qyk7 with SMTP id 7so178515qyk.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tosubrata@gmail.com>) id 1ORJSk-0007yX-W4
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jun 2010 06:29:31 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1ORJSk-00050f-47
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jun 2010 06:29:30 +0000
+Received: by gwb19 with SMTP id 19so1953372gwb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 29 Jun 2010 22:44:06 -0700 (PDT)
+	Tue, 22 Jun 2010 23:29:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimzGJ2TR5q4WhtPcAlFWHWkGVSB4w2KrJTJKO7h@mail.gmail.com>
-References: <AANLkTilncmIFzbwnHMEJKXsJagIMP9mSicqIZ5dQelLJ@mail.gmail.com>
-	<AANLkTimZ-GQtuu-_1pB_Llzrr46CE0EbEFnd_OnjnjmF@mail.gmail.com>
-	<AANLkTim0JhFpvTVlo-DMkhjdWzcuf1ob3nUWpkK-vT9y@mail.gmail.com>
-	<AANLkTimzGJ2TR5q4WhtPcAlFWHWkGVSB4w2KrJTJKO7h@mail.gmail.com>
-Date: Wed, 30 Jun 2010 11:14:05 +0530
-Message-ID: <AANLkTinpTZskjxRCZ_AZYSZTOcL_2yBz3_4r0ABLM-kL@mail.gmail.com>
-From: Vishwanath Govind <vishwanath.govind@gmail.com>
-Subject: Re: [LTP] Not cloning all the files from ltp-dev
+In-Reply-To: <548e2993aeddacf74f32064f4ea10835.squirrel@webmail.ucalgary.ca>
+References: <548e2993aeddacf74f32064f4ea10835.squirrel@webmail.ucalgary.ca>
+Date: Wed, 23 Jun 2010 11:59:24 +0530
+Message-ID: <AANLkTik9DbJVnEUsaKgNsU9V8rMB88NmexSUNOTjTnqf@mail.gmail.com>
+From: Subrata Modak <tosubrata@gmail.com>
+Subject: Re: [LTP] Linux Distribution for LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,265 +27,146 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9177491497033423137=="
+Content-Type: multipart/mixed; boundary="===============0699338054567251280=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: vvaish@ucalgary.ca
 Cc: ltp-list@lists.sourceforge.net
 
---===============9177491497033423137==
-Content-Type: multipart/alternative; boundary=0016362846388c5b7c048a38d7d9
+--===============0699338054567251280==
+Content-Type: multipart/alternative; boundary=001485f91ee2b72e7d0489aca8a4
 
---0016362846388c5b7c048a38d7d9
-Content-Type: text/plain; charset=ISO-8859-1
+--001485f91ee2b72e7d0489aca8a4
+Content-Type: text/plain; charset=UTF-8
 
-Hi,
-+ I try to make install as non-root user here. Any thoughts?
+On Thu, Jun 10, 2010 at 3:00 AM, <vvaish@ucalgary.ca> wrote:
 
-Regards
-Vishwa
-
-On Tue, Jun 29, 2010 at 5:22 PM, vishwanath govind <
-vishwa.hochihally@gmail.com> wrote:
-
-> Hi,
-> I am facing one more issue now. I am able to build but not able to install
-> properly. Here are my steps. Since I am working on server,  root permisision
-> is restricted and have 777 permission on directory that i am working. There
-> is no autconf/aclocal tools too
+> Hello,
 >
-> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
-> # cd ltp
-> # cp include/config.h.default  include/config.h
-> #cp include/mk/config.mk.default   include/mk/config.mk
-> # Mention the PATH for cross-compiler path for CC, AR, STRIP etc and also
-> prefix(/*home/vgovinda/ltp_install')*
-> # make
-> # make install
->
-> Here it's not able to create `/projects/test/ltp/ltp_install` and why is it
-> creating dir /share instead of /*home/vgovinda/ltp_install/share.*
->
-> =================================================================
->
-> *Makefile:176: warning: overriding commands for target
-> `//home/vgovinda/ltp_install'
-> Makefile:106: warning: ignoring old commands for target
-> `//home/vgovinda/ltp_install'
-> *make: Circular //home/vgovinda/ltp_install <- //home/vgovinda/ltp_install
-> dependency dropped.
-> make -C "doc" \
->                 -f "/projects/test/ltp/doc/Makefile" install
-> make[1]: Entering directory `/projects/test/ltp/doc'
-> make[2]: Entering directory `/projects/test/ltp/doc/man1'
-> ../../include/mk/env_post.mk:91: warning: overriding commands for target
-> `/home/vgovinda/ltp_install'
-> ../../include/mk/env_post.mk:90: warning: ignoring old commands for target
-> `/home/vgovinda/ltp_install'
-> ../../include/mk/env_post.mk:91: warning: overriding commands for target
-> `/home/vgovinda/ltp_install'
-> ../../include/mk/env_post.mk:91: warning: ignoring old commands for target
-> `/home/vgovinda/ltp_install'
-> ../../include/mk/env_post.mk:91: warning: overriding commands for target
-> `/home/vgovinda/ltp_install'
-> ../../include/mk/env_post.mk:91: warning: ignoring old commands for target
-> `/home/vgovinda/ltp_install'
-> ../../include/mk/env_post.mk:91: warning: overriding commands for target
-> `/home/vgovinda/ltp_install'
-> ../../include/mk/env_post.mk:91: warning: ignoring old commands for target
-> `/home/vgovinda/ltp_install'
-> mkdir -p "/share/man/man1"
-> mkdir: cannot create directory `/share': Permission denied
-> ===========================================================================
->
-> Any thoughts on this would be appriciated?
->
-> Regards
-> Vishwa
->
->   On Mon, Jun 28, 2010 at 2:33 PM, vishwanath govind <
-> vishwa.hochihally@gmail.com> wrote:
->
->> Thanks Garrett.
->> Regards
->> Vishwa
->>
->>   On Mon, Jun 28, 2010 at 1:22 PM, Garrett Cooper <yanegomi@gmail.com>wrote:
->>
->>>  On Mon, Jun 28, 2010 at 12:28 AM, vishwanath govind
->>> <vishwa.hochihally@gmail.com> wrote:
->>> > Hi,
->>> >  I have tried to clone the latest LTP source through GIT but missing
->>> > "configure" file in it.
->>> >
->>> > Here are my steps:
->>> >
->>> >   # git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
->>> >
->>> >  # ls ltp
->>> > COPYING  ChangeLog   INSTALL   Makefile.release  README.ltp-devel.in<http://readme.ltp-devel.in/>
->>> > TODO          doc         include  ltp-devel.spec.in  m4   result
->>> > runltp         runtest  testcases    tools  ver_linux
->>> > CREDITS  IDcheck.sh  Makefile  README            README.mk-devel
->>> > configure.ac  execltp.in  lib      ltpmenu            pan
->>> runalltests.sh
->>> > runltplite.sh  scripts  testscripts  utils
->>> > Why is "configure" file is missing here?
->>> >
->>> > Please let me know your thoughts?
->>>
->>> configure should never be checked in to git.
->>>
->>> Read INSTALL for more details on how to generate it.
->>>
->>> Thanks,
->>> -Garrett
->>>
->>
->>
+> I'm a university student trying to do some research into the Linux Test
+> Project. I am required to install Linux on my system. However, I'm not
+> sure which Linux distribution would be appropriate for the same. Could you
+> provide me with a specific Linux distribution that would be suitable for
+> latest test suite.
 >
 
---0016362846388c5b7c048a38d7d9
-Content-Type: text/html; charset=ISO-8859-1
+LTP is meant to test all Linux Distributions and even latest kernel on old
+fidstributions ;-)
+
+
+> Also, could you please tell me where I can download the test suite from.
+>
+
+
+   1. https://sourceforge.net/projects/ltp/, and
+   2. http://ltp.sourceforge.net/
+
+
+Both will point to the same.
+
+Regards--
+Subrata
+
+
+>
+>
+> Thank you,
+> Vrinda Vaish
+> vvaish@ucalgary.ca
+> Software Engineering Student
+> University of Calgary, AB
+>
+>
+>
+>
+> ------------------------------------------------------------------------------
+> ThinkGeek and WIRED's GeekDad team up for the Ultimate
+> GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the
+> lucky parental unit.  See the prize list and enter to win:
+> http://p.sf.net/sfu/thinkgeek-promo
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+
+
+
+-- 
+Regards & Thanks--
+Subrata
+
+--001485f91ee2b72e7d0489aca8a4
+Content-Type: text/html; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-<div>Hi,</div>
-<div>+ I try to make install as non-root user here. Any thoughts?</div>
-<div>=A0</div>
-<div>Regards</div>
-<div>Vishwa<br><br></div>
-<div class=3D"gmail_quote">On Tue, Jun 29, 2010 at 5:22 PM, vishwanath govi=
-nd <span dir=3D"ltr">&lt;<a href=3D"mailto:vishwa.hochihally@gmail.com">vis=
-hwa.hochihally@gmail.com</a>&gt;</span> wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
-px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
-<div>Hi,</div>
-<div>I am facing one more issue now. I am able to build but not able to ins=
-tall properly. Here are my steps. Since=A0I am working on server,=A0 root p=
-ermisision is restricted and=A0have 777 permission on=A0directory that i am=
- working. There is no autconf/aclocal=A0tools too</div>
+<div class=3D"gmail_quote">On Thu, Jun 10, 2010 at 3:00 AM,  <span dir=3D"l=
+tr">&lt;<a href=3D"mailto:vvaish@ucalgary.ca">vvaish@ucalgary.ca</a>&gt;</s=
+pan> wrote:<br><blockquote class=3D"gmail_quote" style=3D"border-left: 1px =
+solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+Hello,<br>
+<br>
+I&#39;m a university student trying to do some research into the Linux Test=
+<br>
+Project. I am required to install Linux on my system. However, I&#39;m not<=
+br>
+sure which Linux distribution would be appropriate for the same. Could you<=
+br>
+provide me with a specific Linux distribution that would be suitable for<br=
+>
+latest test suite.<br></blockquote><div><br>LTP is meant to test all Linux =
+Distributions and even latest kernel on old fidstributions ;-)<br><br></div=
+><blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204,=
+ 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
 
-<div>=A0</div>
-<div># git clone git://<a href=3D"http://ltp.git.sourceforge.net/gitroot/lt=
-p/ltp-dev.git" target=3D"_blank">ltp.git.sourceforge.net/gitroot/ltp/ltp-de=
-v.git</a> ltp</div>
-<div># cd ltp</div>
-<div># cp include/config.h.default=A0 include/config.h<br>#cp include/mk/co=
-nfig.mk.default=A0=A0 include/mk/<a href=3D"http://config.mk/" target=3D"_b=
-lank">config.mk</a></div>
-<div># Mention the PATH for cross-compiler path for CC, AR, STRIP etc and a=
-lso prefix(/<strong>home/vgovinda/ltp_install&#39;)</strong></div>
-<div># make=A0</div>
-<div># make install=A0=A0</div>
-<div>=A0</div>
-<div>Here it&#39;s not able to create `/projects/test/ltp/ltp_install` and =
-why is it creating dir /share instead of /<strong>home/vgovinda/ltp_install=
-/share.</strong></div>
-<div>=A0</div>
-<div>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</div>
-<div>=A0</div>
-<div><strong>Makefile:176: warning: overriding commands for target `//home/=
-vgovinda/ltp_install&#39;<br>Makefile:106: warning: ignoring old commands f=
-or target `//home/vgovinda/ltp_install&#39;<br></strong>make: Circular //ho=
-me/vgovinda/ltp_install &lt;- //home/vgovinda/ltp_install dependency droppe=
-d.<br>
-make -C &quot;doc&quot; \<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
--f &quot;/projects/test/ltp/doc/Makefile&quot; install<br>make[1]: Entering=
- directory `/projects/test/ltp/doc&#39;<br>make[2]: Entering directory `/pr=
-ojects/test/ltp/doc/man1&#39;<br>
-../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
-ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
-install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:90/" target=
-=3D"_blank">env_post.mk:90</a>: warning: ignoring old commands for target `=
-/home/vgovinda/ltp_install&#39;<br>
-../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
-ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
-install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:91/" target=
-=3D"_blank">env_post.mk:91</a>: warning: ignoring old commands for target `=
-/home/vgovinda/ltp_install&#39;<br>
-../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
-ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
-install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:91/" target=
-=3D"_blank">env_post.mk:91</a>: warning: ignoring old commands for target `=
-/home/vgovinda/ltp_install&#39;<br>
-../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
-ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
-install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:91/" target=
-=3D"_blank">env_post.mk:91</a>: warning: ignoring old commands for target `=
-/home/vgovinda/ltp_install&#39;<br>
-mkdir -p &quot;/share/man/man1&quot;<br>mkdir: cannot create directory `/sh=
-are&#39;: Permission denied<br>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</div>
-<div>=A0</div>
-<div>Any thoughts on this would be appriciated?</div>
-<div>=A0</div>
-<div>Regards</div>
-<div>Vishwa<br><br></div>
-<div>
-<div></div>
-<div class=3D"h5">
-<div class=3D"gmail_quote">On Mon, Jun 28, 2010 at 2:33 PM, vishwanath govi=
-nd <span dir=3D"ltr">&lt;<a href=3D"mailto:vishwa.hochihally@gmail.com" tar=
-get=3D"_blank">vishwa.hochihally@gmail.com</a>&gt;</span> wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
-px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
-<div>Thanks Garrett. </div>
-<div>Regards</div>
-<div>Vishwa<br><br></div>
-<div>
-<div></div>
-<div>
-<div class=3D"gmail_quote">On Mon, Jun 28, 2010 at 1:22 PM, Garrett Cooper =
-<span dir=3D"ltr">&lt;<a href=3D"mailto:yanegomi@gmail.com" target=3D"_blan=
-k">yanegomi@gmail.com</a>&gt;</span> wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
-px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
-<div>
-<div></div>
-<div>On Mon, Jun 28, 2010 at 12:28 AM, vishwanath govind<br>&lt;<a href=3D"=
-mailto:vishwa.hochihally@gmail.com" target=3D"_blank">vishwa.hochihally@gma=
-il.com</a>&gt; wrote:<br>&gt; Hi,<br>&gt; =A0I have tried=A0to clone the la=
-test LTP source through GIT but missing<br>
-&gt; &quot;configure&quot; file in it.<br>&gt;<br>&gt; Here are my steps:<b=
-r>&gt;<br>&gt; =A0 # git://<a href=3D"http://ltp.git.sourceforge.net/gitroo=
-t/ltp/ltp-dev.git" target=3D"_blank">ltp.git.sourceforge.net/gitroot/ltp/lt=
-p-dev.git</a> ltp<br>
-&gt;<br>&gt; =A0# ls ltp<br>&gt; COPYING=A0 ChangeLog=A0=A0 INSTALL=A0=A0 M=
-akefile.release=A0 <a href=3D"http://readme.ltp-devel.in/" target=3D"_blank=
-">README.ltp-devel.in</a><br>&gt; TODO=A0=A0=A0=A0=A0=A0=A0=A0=A0 doc=A0=A0=
-=A0=A0=A0=A0=A0=A0 include=A0 <a href=3D"http://ltp-devel.spec.in/" target=
-=3D"_blank">ltp-devel.spec.in</a>=A0 m4=A0=A0 result<br>
-&gt; runltp=A0=A0=A0=A0=A0=A0=A0=A0 runtest=A0 testcases=A0=A0=A0 tools=A0 =
-ver_linux<br>&gt; CREDITS=A0 IDcheck.sh=A0 Makefile=A0 README=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 README.mk-devel<br>&gt; <a href=3D"http://configure.a=
-c/" target=3D"_blank">configure.ac</a>=A0 <a href=3D"http://execltp.in/" ta=
-rget=3D"_blank">execltp.in</a>=A0 lib=A0=A0=A0=A0=A0 ltpmenu=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 pan=A0 runalltests.sh<br>
-&gt; runltplite.sh=A0 scripts=A0 testscripts=A0 utils<br>&gt; Why is &quot;=
-configure&quot; file is missing here?<br>&gt;<br>&gt; Please let me know yo=
-ur thoughts?<br><br></div></div>configure should never be checked in to git=
-.<br>
-<br>Read INSTALL for more details on how to generate it.<br><br>Thanks,<br>=
-<font color=3D"#888888">-Garrett<br></font></blockquote></div><br></div></d=
-iv></blockquote></div><br></div></div></blockquote></div><br>
+<br>
+Also, could you please tell me where I can download the test suite from.<br=
+></blockquote><div><br><ol><li><a href=3D"https://sourceforge.net/projects/=
+ltp/">https://sourceforge.net/projects/ltp/</a>, and</li><li><a href=3D"htt=
+p://ltp.sourceforge.net/">http://ltp.sourceforge.net/</a></li>
+</ol><br>Both will point to the same.<br><br>Regards--<br>Subrata<br>=C2=A0=
+<br></div><blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid=
+ rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<br>
+<br>
+Thank you,<br>
+Vrinda Vaish<br>
+<a href=3D"mailto:vvaish@ucalgary.ca">vvaish@ucalgary.ca</a><br>
+Software Engineering Student<br>
+University of Calgary, AB<br>
+<br>
+<br>
+<br>
+---------------------------------------------------------------------------=
+---<br>
+ThinkGeek and WIRED&#39;s GeekDad team up for the Ultimate<br>
+GeekDad Father&#39;s Day Giveaway. ONE MASSIVE PRIZE to the<br>
+lucky parental unit. =C2=A0See the prize list and enter to win:<br>
+<a href=3D"http://p.sf.net/sfu/thinkgeek-promo" target=3D"_blank">http://p.=
+sf.net/sfu/thinkgeek-promo</a><br>
+_______________________________________________<br>
+Ltp-list mailing list<br>
+<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
+e.net</a><br>
+<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
+"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
+</blockquote></div><br><br clear=3D"all"><br>-- <br>Regards &amp; Thanks--<=
+br>Subrata<br>
 
---0016362846388c5b7c048a38d7d9--
+--001485f91ee2b72e7d0489aca8a4--
 
 
---===============9177491497033423137==
+--===============0699338054567251280==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
---===============9177491497033423137==
+ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+lucky parental unit.  See the prize list and enter to win: 
+http://p.sf.net/sfu/thinkgeek-promo
+--===============0699338054567251280==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -299,5 +177,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============9177491497033423137==--
+--===============0699338054567251280==--
 
