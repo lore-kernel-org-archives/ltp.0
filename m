@@ -1,15 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1OLsKa-0004VJ-VS
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jun 2010 06:30:36 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1OLsKa-0000Lp-1o@sfs-web-8.v29.ch3.sourceforge.com>
-Date: Tue, 08 Jun 2010 06:30:36 +0000
-Subject: [LTP] [ ltp-Feature Requests-3013075 ] lcov: highlight excluded
-	source lines
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tosubrata@gmail.com>) id 1ORJPc-0007iH-7X
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jun 2010 06:26:16 +0000
+Received: from mail-yw0-f198.google.com ([209.85.211.198])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1ORJPb-0005r3-CU
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jun 2010 06:26:16 +0000
+Received: by ywh36 with SMTP id 36so3733780ywh.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 22 Jun 2010 23:26:10 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTinGyvAoijU8SQkAVIbNJO2ZOv26R329hB77cbyt@mail.gmail.com>
+References: <AANLkTinGyvAoijU8SQkAVIbNJO2ZOv26R329hB77cbyt@mail.gmail.com>
+Date: Wed, 23 Jun 2010 11:56:09 +0530
+Message-ID: <AANLkTil082EjRd4pVHRqQZ_t2K5pMyBp8nPVGhXUTloK@mail.gmail.com>
+From: Subrata Modak <tosubrata@gmail.com>
+Subject: Re: [LTP] Contribute for LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,49 +27,115 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0342823289443718571=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Ragavendra <ragavendra.bn@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-RmVhdHVyZSBSZXF1ZXN0cyBpdGVtICMzMDEzMDc1LCB3YXMgb3BlbmVkIGF0IDIwMTAtMDYtMDgg
-MDg6MzAKTWVzc2FnZSBnZW5lcmF0ZWQgZm9yIGNoYW5nZSAoVHJhY2tlciBJdGVtIFN1Ym1pdHRl
-ZCkgbWFkZSBieSBybGllYnNjaGVyCllvdSBjYW4gcmVzcG9uZCBieSB2aXNpdGluZzogCmh0dHBz
-Oi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9ZGV0YWlsJmF0aWQ9MzUzMzgyJmFpZD0z
-MDEzMDc1Jmdyb3VwX2lkPTMzODIKClBsZWFzZSBub3RlIHRoYXQgdGhpcyBtZXNzYWdlIHdpbGwg
-Y29udGFpbiBhIGZ1bGwgY29weSBvZiB0aGUgY29tbWVudCB0aHJlYWQsCmluY2x1ZGluZyB0aGUg
-aW5pdGlhbCBpc3N1ZSBzdWJtaXNzaW9uLCBmb3IgdGhpcyByZXF1ZXN0LApub3QganVzdCB0aGUg
-bGF0ZXN0IHVwZGF0ZS4KQ2F0ZWdvcnk6IFRvb2xzCkdyb3VwOiBOb25lClN0YXR1czogT3BlbgpS
-ZXNvbHV0aW9uOiBOb25lClByaW9yaXR5OiA1ClByaXZhdGU6IE5vClN1Ym1pdHRlZCBCeTogUmVu
-ZSBMaWVic2NoZXIgKHJsaWVic2NoZXIpCkFzc2lnbmVkIHRvOiBOb2JvZHkvQW5vbnltb3VzIChu
-b2JvZHkpClN1bW1hcnk6IGxjb3Y6IGhpZ2hsaWdodCBleGNsdWRlZCBzb3VyY2UgbGluZXMKCklu
-aXRpYWwgQ29tbWVudDoKSGksIAoKdXNpbmcgZXhjbHVzaW9uIG1hcmtlcnMgaXMgYSBmaW5lIHRo
-aW5nLCBpZiBvbmUgaGFzIHNvdXJjZSBsaW5lcyB3aGljaCBjYW4gbmV2ZXIgcmVhY2hlZCBvciBv
-bmx5IGF0IGhhcmR3YXJlIGZhaWx1cmVzIG9yIHNvbWV0aGluZyBzaW1pbGFyLgpCdXQgaW4gdGhl
-IHNvdXJjZSBjb2RlIHZpZXcgKGh0bWwpIHRoZXNlIGxpbmVzIGFyZSBub3QgbWFya2VkIGF0IGFs
-bCwgc28gaXQgaXMgbm90IGVhc3kgdG8gc3BvdCBieSBicm93c2luZyB0aGUgZmlsZSBpZiB0aGVy
-ZSBhcmUgYW55IHJlZ2lvbnMgd2hpY2ggYXJlIGV4Y2x1ZGVkLgpIaWdobGlnaHRpbmcgdGhlc2Ug
-bGluZXMgbWFrZXMgaXQgZWFzaWVyIGlmIHNvbWVvbmUgaGFzIHRvIHZlcmlmeSB5b3VyIHNvZnR3
-YXJlIGFuZCB0ZXN0cyBhbmQgd2FudCB0byBjaGVjayB0aGVtIGlmIG9ubHkgcmVhbGx5IG5lZWRl
-ZCBsaW5lcyBhcmUgZXhjbHVkZWQuCgpBbHNvIGl0IHdvdWxkIGJlIHVzZWZ1bCB0byBoYXZlIGlu
-IHRoZSBzdGF0aXN0aWNzIGFuIG9wdGlvbiB0byBzaG93IHRoZW0gYXMgIjEwMCUgKDk0LjYvNS40
-KSIgd2hpY2ggbWFrZXMgY2xlYXIgaG93IG11Y2ggd2FzIHJlYWNoZWQgYnkgdGVzdGluZy9jb3Zl
-cmFnZSBhbmQgaG93IG11Y2ggd2FzIHJlYWNoZWQgYnkgZXhjbHVkaW5nIHVucmVhY2hhYmxlIGNv
-ZGUuCgpBbm90aGVyIGludGVyZXN0aW5nIHRoaW5nIHdvdWxkIGJlIHRvIGNoZWNrIGlmIGV4Y2x1
-ZGVkIGxpbmVzIHJlYWxseSBoYXZlIGNvdW50ZXJzIHdpdGggdmFsdWUgMC4gSW4gY2FzZSB0aGV5
-IGRvbid0IGhhdmUsIHRoZW4gdGhlcmUgaXMgYSBwcm9ibGVtIHdpdGggeW91ciBzb2Z0d2FyZSwg
-dGVzdHMgb3IgZXhjbHVzaW9ucy4KCkkgZ3Vlc3MgaW5jbHVkaW5nIHRoZSBleGNsdWRlZCBsaW5l
-cyBpbiB0aGUgb3V0cHV0IHdvdWxkIHJlcXVpcmUgdG8gZXh0ZW5kIHRoZSBpbmZvIGZpbGUgZm9y
-bWF0LCBhcyB3ZWxsIGFzIGdlbmluZm8gYW5kIGdlbmh0bWwgdG8gaGFuZGxlIHRoaXMgbmV3IGlu
-Zm9ybWF0aW9uLgoKCktpbmQgcmVnYXJkcwoKUmVuw6kgTGllYnNjaGVyCgoKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQoKWW91IGNhbiByZXNwb25kIGJ5IHZpc2l0aW5nOiAKaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQv
-dHJhY2tlci8/ZnVuYz1kZXRhaWwmYXRpZD0zNTMzODImYWlkPTMwMTMwNzUmZ3JvdXBfaWQ9MzM4
-MgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaW5rR2VlayBhbmQgV0lSRUQncyBHZWVrRGFkIHRl
-YW0gdXAgZm9yIHRoZSBVbHRpbWF0ZSAKR2Vla0RhZCBGYXRoZXIncyBEYXkgR2l2ZWF3YXkuIE9O
-RSBNQVNTSVZFIFBSSVpFIHRvIHRoZSAKbHVja3kgcGFyZW50YWwgdW5pdC4gIFNlZSB0aGUgcHJp
-emUgbGlzdCBhbmQgZW50ZXIgdG8gd2luOiAKaHR0cDovL3Auc2YubmV0L3NmdS90aGlua2dlZWst
-cHJvbW8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
-LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
-L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+--===============0342823289443718571==
+Content-Type: multipart/alternative; boundary=0016e68cc51c191bf90489ac9d81
+
+--0016e68cc51c191bf90489ac9d81
+Content-Type: text/plain; charset=UTF-8
+
+Please start the following:
+
+
+   1. Look into the discussions going on the mailing list, and see if you
+   can provide fixes for them,
+   2. Write new testcases for new features going into the Linux kernel,
+
+
+Regards--
+Subrata
+
+On Wed, Jun 16, 2010 at 12:28 PM, Ragavendra <ragavendra.bn@gmail.com>wrote:
+
+> Hi,
+>    I would want to contribute to the LTP. I am using Linux since 6 - 10
+> years
+>
+>
+>
+>
+> --
+> Thanks & Regards,
+> Ragavendra BN
+>
+>
+> ------------------------------------------------------------------------------
+> ThinkGeek and WIRED's GeekDad team up for the Ultimate
+> GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the
+> lucky parental unit.  See the prize list and enter to win:
+> http://p.sf.net/sfu/thinkgeek-promo
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
+
+
+-- 
+Regards & Thanks--
+Subrata
+
+--0016e68cc51c191bf90489ac9d81
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Please start the following:<br><br><ol><li>Look into the discussions going =
+on the mailing list, and see if you can provide fixes for them,</li><li>Wri=
+te new testcases for new features going into the Linux kernel,</li></ol>
+<br>Regards--<br>Subrata<br><br><div class=3D"gmail_quote">On Wed, Jun 16, =
+2010 at 12:28 PM, Ragavendra <span dir=3D"ltr">&lt;<a href=3D"http://ragave=
+ndra.bn">ragavendra.bn</a>@<a href=3D"http://gmail.com">gmail.com</a>&gt;</=
+span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
+204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">Hi,<br>=C2=A0=C2=
+=A0 I would want to contribute to the LTP. I am using Linux since 6 - 10 ye=
+ars<br><font color=3D"#888888"><br>
+<br><br clear=3D"all"><br>-- <br>Thanks &amp; Regards,<br>Ragavendra BN<br>
+</font><br>----------------------------------------------------------------=
+--------------<br>
+ThinkGeek and WIRED&#39;s GeekDad team up for the Ultimate<br>
+GeekDad Father&#39;s Day Giveaway. ONE MASSIVE PRIZE to the<br>
+lucky parental unit. =C2=A0See the prize list and enter to win:<br>
+<a href=3D"http://p.sf.net/sfu/thinkgeek-promo" target=3D"_blank">http://p.=
+sf.net/sfu/thinkgeek-promo</a><br>_________________________________________=
+______<br>
+Ltp-list mailing list<br>
+<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
+e.net</a><br>
+<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
+"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
+<br></blockquote></div><br><br clear=3D"all"><br>-- <br>Regards &amp; Thank=
+s--<br>Subrata<br>
+
+--0016e68cc51c191bf90489ac9d81--
+
+
+--===============0342823289443718571==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+ThinkGeek and WIRED's GeekDad team up for the Ultimate 
+GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
+lucky parental unit.  See the prize list and enter to win: 
+http://p.sf.net/sfu/thinkgeek-promo
+--===============0342823289443718571==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0342823289443718571==--
+
