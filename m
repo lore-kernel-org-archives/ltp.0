@@ -1,28 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OMPyl-0001Wj-EO
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 18:26:19 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OMPyk-00060J-J1
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 18:26:19 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e9.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o59IBhoe028542
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Jun 2010 14:11:43 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o59IQC3i1327234
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Jun 2010 14:26:12 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o59IQBYE004128
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Jun 2010 15:26:11 -0300
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Wed, 09 Jun 2010 23:54:20 +0530
-Message-Id: <20100609182420.23441.36743.sendpatchset@LTC-Desktop>
-Subject: [LTP] Requesting renewed contribution(s) to Linux Test Project
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1OTKV2-0003jQ-7y
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 20:00:12 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OTKV1-0003HY-8U
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 20:00:12 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 28 Jun 2010 15:52:17 -0400
+References: <20100628115217.23913.32352.sendpatchset@subratamodak.linux.ibm.com>
+	<201006281544.13666.vapier@gentoo.org>
+	<AANLkTinzjwlLcX6zJ30Fxu9UjondsMavX21qXKfov840@mail.gmail.com>
+In-Reply-To: <AANLkTinzjwlLcX6zJ30Fxu9UjondsMavX21qXKfov840@mail.gmail.com>
+MIME-Version: 1.0
+Message-Id: <201006281552.18057.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Remove files which does not have a dmesg entry
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,46 +26,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5836300660772856933=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List Members <ltp-list@lists.sf.net>
 
-Dear Author,
+--===============5836300660772856933==
+Content-Type: multipart/signed; boundary="nextPart2298121.KjHffSfGpA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-It gives me immense happiness to find that you are a regular contributor to
-Linux Test Project (http://ltp.sourceforge.net/) for over a long period.
-Open Source projects like LTP thrive on regular and dedicated work from
-people like you.
+--nextPart2298121.KjHffSfGpA
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I would just want to know if you would still like to be part of this
-exiting project by sending some patches to enforce quality testcase(s)
-and enlarging the test bucket. In such a case, kindly push your patches
-to LTP list <ltp-list@lists.sf.net>.
+On Monday, June 28, 2010 15:47:27 Garrett Cooper wrote:
+> On Mon, Jun 28, 2010 at 12:44 PM, Mike Frysinger <vapier@gentoo.org> wrot=
+e:
+> > On Monday, June 28, 2010 07:52:18 Subrata Modak wrote:
+> >> +     if [ $ALT_DMESG_OUT -eq 1 ] ; then
+> >> +             PWD=3D`pwd`
+> >> +             cd $DMESG_DIR
+> >> +             for dmesg_file in `ls`
+> >> +             do
+> >> +                     dmesg_file_size=3D`wc -c $dmesg_file | cut -d ' '
+> >> -f1 | tr -d
+> >=20
+> > '\n'`
+> >=20
+> >> +                     if [ $dmesg_file_size -eq 0 ]; then
+> >> +                             rm -rf $dmesg_file
+> >> +                     fi
+> >> +             done
+> >> +             cd $PWD
+> >> +     fi
+> >=20
+> > ugh.  what's wrong with simply executing:
+> >        find "$DMESG_DIR" -size 0 -exec rm {} +
+>=20
+> Or find "$DMESG_DIR" -size 0 | xargs rm -f ?
 
-Regards--
-Subrata
+no, because mine handles funky named files while yours does not.  both are=
+=20
+POSIX and handle command line length issues correctly.
+=2Dmike
 
----
-Please note that LTP logs and sources tell me that you have directly/indirectly
-contributed to the following sources:
--------------------------------------------------------------------------
+--nextPart2298121.KjHffSfGpA
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=blob_plain;f=doc/ltp-howto.lyx;hb=HEAD
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=blob_plain;f=doc/ltp-howto.txt;hb=HEAD
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=blob_plain;f=m4/ltp-quota.m4;hb=HEAD
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=blob_plain;f=runltp;hb=HEAD
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=blob_plain;f=testcases/kernel/controllers/cgroup/cgroup_regression_test.sh;hb=HEAD
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=blob_plain;f=testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh;hb=HEAD
--------------------------------------------------------------------------
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
+
+iQIcBAABAgAGBQJMKP1xAAoJEEFjO5/oN/WB/PYQAL9TbokC32vBkEAv7Uw15YFZ
+AzlvUEcjV/1+l3VCGBMsQqbSFoI2QnpaCvxV5BG6uHWENQA3c/xSkYCeTP9hjn+v
+xEDo7i1Eepn0PKs1S4vm8MVnvghHXyOZjpXwG6hGjjqLU1wPq+xmU6DvHIc/17JP
+echQPD52lIySadrzwetVZ1tok0Y2APq5xMMh43pnPrC9HERhQA5c+3EUeOSfpBRL
+43WlbNLjHFfoeDHM1paahUfXqbsl3nW4wqkxrE4JdUhACk126PM++nhpAh1wlhoG
+gtLXXVud7qcR5pL9Hui7GKoFzUXTeAIhck3vcauXvkEHGW7o43IFmoTuHSFD/SZG
+bwUezNcojwnePn8Y075DNLWnf/4Npofk6Izz5xtyvaNzLgBm6whuko92OoMevc0t
+QLYRr5xrV+k6qkVcuH04xE/1JuHtRxhNWfvA02YLkY2sbh6+cI0qB2WvR68XKiZl
+Iw2jDmirqUGLuRF1dOYW2xRz4JnZeXRlvGe0ltqE/E8heRpWAxW1U15QSQ5vrnDl
+4Cc/fTeXYMt6RWYdrbfeXf4ZUfGQD46pJzk9YPmdm0C224a1XUAYCg4z7CDBKOks
+CLcha+nkSlL56TGDznrG3HlcnU3KPkGYWydcZjA0Tj3tP3dGbRBpFVhRA6+BpIZP
+J+J1VS9aGv4Faon01DoU
+=d0Wu
+-----END PGP SIGNATURE-----
+
+--nextPart2298121.KjHffSfGpA--
+
+
+--===============5836300660772856933==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--===============5836300660772856933==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5836300660772856933==--
+
