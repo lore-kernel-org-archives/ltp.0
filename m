@@ -1,29 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1OTpo7-0000i9-Vo
-	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 05:25:59 +0000
-Received: from out21.sjc.mx.trendmicro.com ([216.99.131.78])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OTpo5-0002bx-MZ
-	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 05:25:59 +0000
-Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.5])
-	by out21.sjc.mx.trendmicro.com (Postfix) with ESMTP id 8C75C98041C
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vishwa.hochihally@gmail.com>) id 1OT8ls-0002Wr-8Y
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 07:28:48 +0000
+Received: from mail-px0-f175.google.com ([209.85.212.175])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OT8lq-0002RS-2A
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 07:28:48 +0000
+Received: by pxi20 with SMTP id 20so640836pxi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 30 Jun 2010 05:25:51 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id E69EB1D784A
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 30 Jun 2010 05:25:50 +0000 (UTC)
-Message-ID: <000001cb1810$23753ba0$6a5fb2e0$@co.jp>
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 30 Jun 2010 13:53:10 +0900
+	Mon, 28 Jun 2010 00:28:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="--=_NextPart_ST_13_53_10_Wednesday_June_30_2010_2617"
-Content-Language: ja
-Subject: [LTP] [PATCH] fix hugetlb tests
+Date: Mon, 28 Jun 2010 12:58:35 +0530
+Message-ID: <AANLkTilncmIFzbwnHMEJKXsJagIMP9mSicqIZ5dQelLJ@mail.gmail.com>
+From: vishwanath govind <vishwa.hochihally@gmail.com>
+Subject: [LTP] Not cloning all the files from ltp-dev
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,143 +25,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============4404662530421416604=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: kamimura@ryobi.co.jp
 
-This is a multi-part message in MIME format.
+--===============4404662530421416604==
+Content-Type: multipart/alternative; boundary=0016e64cc488902155048a1211ba
 
-----=_NextPart_ST_13_53_10_Wednesday_June_30_2010_2617
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+--0016e64cc488902155048a1211ba
+Content-Type: text/plain; charset=ISO-8859-1
 
 Hi,
+ I have tried to clone the latest LTP source through GIT but missing
+"configure" file in it.
 
-I want to suggest a patch for hugetlb tests.
+Here are my steps:
 
-There are "-c" options in this "${LTPROOT}/runtest/hugetlb" file:
-------------
-hugeshmat01 hugeshmat01 -i 5
-hugeshmat02 hugeshmat02 -i 5
-hugeshmat03 hugeshmat03 -i 5
+  # git://*ltp*.git.sourceforge.net/gitroot/*ltp*/*ltp*-dev.git *ltp*
 
-hugeshmctl01 hugeshmctl01 -i 5 -c 3
-hugeshmctl02 hugeshmctl02 -i 5 -c 3
-hugeshmctl03 hugeshmctl03 -i 5 -c 3
+* # ls ltp*
+COPYING  ChangeLog   INSTALL   Makefile.release  README.ltp-devel.in
+TODO          doc         include  ltp-devel.spec.in  m4   result
+runltp         runtest  testcases    tools  ver_linux
+CREDITS  IDcheck.sh  Makefile  README            README.mk-devel
+configure.ac  execltp.in  lib      ltpmenu            pan  runalltests.sh
+runltplite.sh  scripts  testscripts  utils
+*Why is "configure" file is missing here?*
 
-hugeshmdt01 hugeshmdt01 -I 5 -c10
+Please let me know your thoughts?
 
-hugeshmget01 hugeshmget01 -c 10 -i 10
-hugeshmget02 hugeshmget02 -c 10 -i 10
-hugeshmget03 hugeshmget03 -c 10 -i 10
-hugeshmget05 hugeshmget05 -c 10 -i 10
+Regards
+Vishwa
 
-------------
-
-But I think that these "-c" options have not important meanings.
-I think that the test for several times may not be necessary.
-For example, the purpose of "hugeshmget02" is the error case test of 
-shmget(). In this case, if the expected failure occurred once, it is 
-enough, and the repetition of test is unnecessary anymore, I think.
-And, depending on a case, there may be a system without enough memory 
-for these repetition tests.
-Therefore I want to suggest reducing the "-c" option.
-
-I got an answer that these "hugetlb" tests were not complete test programs.
---> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10171.html
-Therefore, this revision is a temporary.
-
-
-Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-
-============
---- a/runtest/hugetlb	2010-06-14 21:29:09.000000000 +0900
-+++ b/runtest/hugetlb	2010-06-30 09:32:01.000000000 +0900
-@@ -7,14 +7,14 @@
- hugeshmat02 hugeshmat02 -i 5
- hugeshmat03 hugeshmat03 -i 5
- 
--hugeshmctl01 hugeshmctl01 -i 5 -c 3
--hugeshmctl02 hugeshmctl02 -i 5 -c 3
--hugeshmctl03 hugeshmctl03 -i 5 -c 3
-+hugeshmctl01 hugeshmctl01 -i 5
-+hugeshmctl02 hugeshmctl02 -i 5
-+hugeshmctl03 hugeshmctl03 -i 5
- 
--hugeshmdt01 hugeshmdt01 -I 5 -c10
-+hugeshmdt01 hugeshmdt01 -I 5
- 
--hugeshmget01 hugeshmget01 -c 10 -i 10
--hugeshmget02 hugeshmget02 -c 10 -i 10
--hugeshmget03 hugeshmget03 -c 10 -i 10
--hugeshmget05 hugeshmget05 -c 10 -i 10
-+hugeshmget01 hugeshmget01 -i 10
-+hugeshmget02 hugeshmget02 -i 10
-+hugeshmget03 hugeshmget03 -i 10
-+hugeshmget05 hugeshmget05 -i 10
- 
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-06-14
-21:29:09.000000000 +0900
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-06-30
-09:12:00.000000000 +0900
-@@ -78,14 +78,14 @@
- 		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
- 	}
- 
--	setup();			/* global setup */
--
- 	/* The following loop checks looping state if -i option given */
-         if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-              tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
-         else             
-               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
-         
-+	setup();			/* global setup */
-+
-         for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
-============
-
-
-
-Regards--
-
--Tomonori Mitani
-
-----=_NextPart_ST_13_53_10_Wednesday_June_30_2010_2617
-Content-Type: application/octet-stream;
-	name="hugetlb.patch"
+--0016e64cc488902155048a1211ba
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="hugetlb.patch"
 
---- a/runtest/hugetlb=092010-06-14 21:29:09.000000000 +0900=0A+++ b/runtest=
-/hugetlb=092010-06-30 09:32:01.000000000 +0900=0A@@ -7,14 +7,14 @@=0A huges=
-hmat02 hugeshmat02 -i 5=0A hugeshmat03 hugeshmat03 -i 5=0A =0A-hugeshmctl01=
- hugeshmctl01 -i 5 -c 3=0A-hugeshmctl02 hugeshmctl02 -i 5 -c 3=0A-hugeshmct=
-l03 hugeshmctl03 -i 5 -c 3=0A+hugeshmctl01 hugeshmctl01 -i 5=0A+hugeshmctl0=
-2 hugeshmctl02 -i 5=0A+hugeshmctl03 hugeshmctl03 -i 5=0A =0A-hugeshmdt01 hu=
-geshmdt01 -I 5 -c10=0A+hugeshmdt01 hugeshmdt01 -I 5=0A =0A-hugeshmget01 hug=
-eshmget01 -c 10 -i 10=0A-hugeshmget02 hugeshmget02 -c 10 -i 10=0A-hugeshmge=
-t03 hugeshmget03 -c 10 -i 10=0A-hugeshmget05 hugeshmget05 -c 10 -i 10=0A+hu=
-geshmget01 hugeshmget01 -i 10=0A+hugeshmget02 hugeshmget02 -i 10=0A+hugeshm=
-get03 hugeshmget03 -i 10=0A+hugeshmget05 hugeshmget05 -i 10=0A =0A--- a/tes=
-tcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c=092010-06-14 21:29:09.0=
-00000000 +0900=0A+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01=
-=2Ec=092010-06-30 09:12:00.000000000 +0900=0A@@ -78,14 +78,14 @@=0A =09=09t=
-st_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);=0A =09}=0A =0A-=09=
-setup();=09=09=09/* global setup */=0A-=0A =09/* The following loop checks =
-looping state if -i option given */=0A         if ( get_no_of_hugepages() <=
-=3D 0 || hugepages_size() <=3D 0 )=0A              tst_brkm(TCONF, cleanup,=
- "Not enough available Hugepages");=0A         else             =0A        =
-       huge_pages_shm_to_be_allocated =3D ( get_no_of_hugepages() * hugepag=
-es_size() * 1024) / 2 ;=0A         =0A+=09setup();=09=09=09/* global setup =
-*/=0A+=0A         for (lc =3D 0; TEST_LOOPING(lc); lc++) {=0A =09=09/* rese=
-t Tst_count in case we are looping */=0A =09=09Tst_count =3D 0;=0A
-----=_NextPart_ST_13_53_10_Wednesday_June_30_2010_2617
+<div>Hi,</div>
+<div>=A0I have tried=A0to clone the latest LTP source through GIT but missi=
+ng &quot;configure&quot; file in it.=A0</div>
+<div>=A0</div>
+<div>Here are my steps:</div>
+<div>=A0</div>
+<div>=A0 # git://<b class=3D"highlight">ltp</b>.<a href=3D"http://git.sourc=
+eforge.net/gitroot/">git.sourceforge.net/gitroot/</a><b class=3D"highlight"=
+>ltp</b>/<b class=3D"highlight">ltp</b>-dev.git <b class=3D"highlight">ltp<=
+/b></div>
+
+<div>=A0</div>
+<div><strong>=A0# ls ltp</strong></div>
+<div>COPYING=A0 ChangeLog=A0=A0 INSTALL=A0=A0 Makefile.release=A0 <a href=
+=3D"http://README.ltp-devel.in">README.ltp-devel.in</a>=A0 TODO=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 doc=A0=A0=A0=A0=A0=A0=A0=A0 include=A0 <a href=3D"http://lt=
+p-devel.spec.in">ltp-devel.spec.in</a>=A0 m4=A0=A0 result=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 runltp=A0=A0=A0=A0=A0=A0=A0=A0 runtest=A0 testcases=A0=A0=A0 tool=
+s=A0 ver_linux<br>
+CREDITS=A0 IDcheck.sh=A0 Makefile=A0 README=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 README.mk-devel=A0=A0=A0=A0=A0 <a href=3D"http://configure.ac">configur=
+e.ac</a>=A0 <a href=3D"http://execltp.in">execltp.in</a>=A0 lib=A0=A0=A0=A0=
+=A0 ltpmenu=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 pan=A0 runalltests.sh=A0 runlt=
+plite.sh=A0 scripts=A0 testscripts=A0 utils<br>
+</div>
+<div><strong>Why is &quot;configure&quot; file is missing here?</strong></d=
+iv>
+<div>=A0</div>
+<div>Please let me know your thoughts?</div>
+<div>=A0</div>
+<div>Regards</div>
+<div>Vishwa</div>
+
+--0016e64cc488902155048a1211ba--
+
+
+--===============4404662530421416604==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -179,7 +107,7 @@ Content-Disposition: inline
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-----=_NextPart_ST_13_53_10_Wednesday_June_30_2010_2617
+--===============4404662530421416604==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -190,5 +118,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-----=_NextPart_ST_13_53_10_Wednesday_June_30_2010_2617--
+--===============4404662530421416604==--
 
