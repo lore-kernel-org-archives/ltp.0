@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sunilmkr79@gmail.com>) id 1OMDu8-0008Eb-SD
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 05:32:44 +0000
-Received: from mail-ww0-f47.google.com ([74.125.82.47])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OMDu7-0007af-SH
-	for ltp-list@lists.sourceforge.net; Wed, 09 Jun 2010 05:32:44 +0000
-Received: by wwa36 with SMTP id 36so848898wwa.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OT98x-0003qh-Bc
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 07:52:39 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OT98w-0004ra-5b
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 07:52:39 +0000
+Received: by iwn9 with SMTP id 9so1133385iwn.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 08 Jun 2010 22:32:37 -0700 (PDT)
+	Mon, 28 Jun 2010 00:52:33 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 9 Jun 2010 11:02:37 +0530
-Message-ID: <AANLkTilyBxgX4Egj5bOlWG84z7O-xW6vvGBGRC5Vv3p5@mail.gmail.com>
-From: sunil kumar <sunilmkr79@gmail.com>
-Subject: [LTP] Regarding to update LTP package
+In-Reply-To: <AANLkTilncmIFzbwnHMEJKXsJagIMP9mSicqIZ5dQelLJ@mail.gmail.com>
+References: <AANLkTilncmIFzbwnHMEJKXsJagIMP9mSicqIZ5dQelLJ@mail.gmail.com>
+Date: Mon, 28 Jun 2010 00:52:32 -0700
+Message-ID: <AANLkTimZ-GQtuu-_1pB_Llzrr46CE0EbEFnd_OnjnjmF@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Not cloning all the files from ltp-dev
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,67 +27,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0706301024815148013=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============0706301024815148013==
-Content-Type: multipart/alternative; boundary=0016e65a09c8ddaa620488923bfa
-
---0016e65a09c8ddaa620488923bfa
-Content-Type: text/plain; charset=ISO-8859-1
-
-Dear all,
-
-I have been thinking from long time, to get access to LTP bench mark list ,
-and if any new things comes in my mind I would like to update same thing in
-the LTP source. I would be very happy if I have that kind of rights. Pls let
-me know .
-Waiting for your reply.
-
-Thanks and regards
-kumar.
-
---0016e65a09c8ddaa620488923bfa
-Content-Type: text/html; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: vishwanath govind <vishwa.hochihally@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-<div>Dear all,</div>
-<div>=A0</div>
-<div>I have been thinking from long time, to get access to LTP bench mark l=
-ist , and if any new things comes in my mind I would like to update same th=
-ing in the LTP source. I would be very happy if I have that kind of rights.=
- Pls let me know .</div>
+On Mon, Jun 28, 2010 at 12:28 AM, vishwanath govind
+<vishwa.hochihally@gmail.com> wrote:
+> Hi,
+> =A0I have tried=A0to clone the latest LTP source through GIT but missing
+> "configure" file in it.
+>
+> Here are my steps:
+>
+> =A0 # git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+>
+> =A0# ls ltp
+> COPYING=A0 ChangeLog=A0=A0 INSTALL=A0=A0 Makefile.release=A0 README.ltp-d=
+evel.in
+> TODO=A0=A0=A0=A0=A0=A0=A0=A0=A0 doc=A0=A0=A0=A0=A0=A0=A0=A0 include=A0 lt=
+p-devel.spec.in=A0 m4=A0=A0 result
+> runltp=A0=A0=A0=A0=A0=A0=A0=A0 runtest=A0 testcases=A0=A0=A0 tools=A0 ver=
+_linux
+> CREDITS=A0 IDcheck.sh=A0 Makefile=A0 README=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 README.mk-devel
+> configure.ac=A0 execltp.in=A0 lib=A0=A0=A0=A0=A0 ltpmenu=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 pan=A0 runalltests.sh
+> runltplite.sh=A0 scripts=A0 testscripts=A0 utils
+> Why is "configure" file is missing here?
+>
+> Please let me know your thoughts?
 
-<div>Waiting for your reply.</div>
-<div>=A0</div>
-<div>Thanks and regards</div>
-<div>kumar.</div>
+configure should never be checked in to git.
 
---0016e65a09c8ddaa620488923bfa--
+Read INSTALL for more details on how to generate it.
 
+Thanks,
+-Garrett
 
---===============0706301024815148013==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
---===============0706301024815148013==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+---------------------------------------------------------------------------=
+---
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0706301024815148013==--
-
