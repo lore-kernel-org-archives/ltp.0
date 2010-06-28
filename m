@@ -1,15 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1ORKRH-00033D-CQ
-	for ltp-list@lists.sourceforge.net; Wed, 23 Jun 2010 07:32:03 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1ORKRG-0000h4-UO@sfs-web-4.v29.ch3.sourceforge.com>
-Date: Wed, 23 Jun 2010 07:32:02 +0000
-Subject: [LTP] [ ltp-Feature Requests-3013075 ] lcov: highlight excluded
-	source lines
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1OTKeg-0004fu-Gv
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 20:10:10 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OTKef-0001oZ-Ew
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jun 2010 20:10:10 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 28 Jun 2010 15:44:12 -0400
+References: <20100628115217.23913.32352.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20100628115217.23913.32352.sendpatchset@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Message-Id: <201006281544.13666.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Remove files which does not have a dmesg entry
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,54 +24,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0806999948189148826=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP List Members <ltp-list@lists.sf.net>
 
-RmVhdHVyZSBSZXF1ZXN0cyBpdGVtICMzMDEzMDc1LCB3YXMgb3BlbmVkIGF0IDIwMTAtMDYtMDgg
-MDg6MzAKTWVzc2FnZSBnZW5lcmF0ZWQgZm9yIGNoYW5nZSAoQ29tbWVudCBhZGRlZCkgbWFkZSBi
-eSBvYmVycGFwcgpZb3UgY2FuIHJlc3BvbmQgYnkgdmlzaXRpbmc6IApodHRwczovL3NvdXJjZWZv
-cmdlLm5ldC90cmFja2VyLz9mdW5jPWRldGFpbCZhdGlkPTM1MzM4MiZhaWQ9MzAxMzA3NSZncm91
-cF9pZD0zMzgyCgpQbGVhc2Ugbm90ZSB0aGF0IHRoaXMgbWVzc2FnZSB3aWxsIGNvbnRhaW4gYSBm
-dWxsIGNvcHkgb2YgdGhlIGNvbW1lbnQgdGhyZWFkLAppbmNsdWRpbmcgdGhlIGluaXRpYWwgaXNz
-dWUgc3VibWlzc2lvbiwgZm9yIHRoaXMgcmVxdWVzdCwKbm90IGp1c3QgdGhlIGxhdGVzdCB1cGRh
-dGUuCkNhdGVnb3J5OiBUb29scwpHcm91cDogTm9uZQpTdGF0dXM6IE9wZW4KUmVzb2x1dGlvbjog
-Tm9uZQpQcmlvcml0eTogNQpQcml2YXRlOiBObwpTdWJtaXR0ZWQgQnk6IFJlbmUgTGllYnNjaGVy
-IChybGllYnNjaGVyKQpBc3NpZ25lZCB0bzogTm9ib2R5L0Fub255bW91cyAobm9ib2R5KQpTdW1t
-YXJ5OiBsY292OiBoaWdobGlnaHQgZXhjbHVkZWQgc291cmNlIGxpbmVzCgpJbml0aWFsIENvbW1l
-bnQ6CkhpLCAKCnVzaW5nIGV4Y2x1c2lvbiBtYXJrZXJzIGlzIGEgZmluZSB0aGluZywgaWYgb25l
-IGhhcyBzb3VyY2UgbGluZXMgd2hpY2ggY2FuIG5ldmVyIHJlYWNoZWQgb3Igb25seSBhdCBoYXJk
-d2FyZSBmYWlsdXJlcyBvciBzb21ldGhpbmcgc2ltaWxhci4KQnV0IGluIHRoZSBzb3VyY2UgY29k
-ZSB2aWV3IChodG1sKSB0aGVzZSBsaW5lcyBhcmUgbm90IG1hcmtlZCBhdCBhbGwsIHNvIGl0IGlz
-IG5vdCBlYXN5IHRvIHNwb3QgYnkgYnJvd3NpbmcgdGhlIGZpbGUgaWYgdGhlcmUgYXJlIGFueSBy
-ZWdpb25zIHdoaWNoIGFyZSBleGNsdWRlZC4KSGlnaGxpZ2h0aW5nIHRoZXNlIGxpbmVzIG1ha2Vz
-IGl0IGVhc2llciBpZiBzb21lb25lIGhhcyB0byB2ZXJpZnkgeW91ciBzb2Z0d2FyZSBhbmQgdGVz
-dHMgYW5kIHdhbnQgdG8gY2hlY2sgdGhlbSBpZiBvbmx5IHJlYWxseSBuZWVkZWQgbGluZXMgYXJl
-IGV4Y2x1ZGVkLgoKQWxzbyBpdCB3b3VsZCBiZSB1c2VmdWwgdG8gaGF2ZSBpbiB0aGUgc3RhdGlz
-dGljcyBhbiBvcHRpb24gdG8gc2hvdyB0aGVtIGFzICIxMDAlICg5NC42LzUuNCkiIHdoaWNoIG1h
-a2VzIGNsZWFyIGhvdyBtdWNoIHdhcyByZWFjaGVkIGJ5IHRlc3RpbmcvY292ZXJhZ2UgYW5kIGhv
-dyBtdWNoIHdhcyByZWFjaGVkIGJ5IGV4Y2x1ZGluZyB1bnJlYWNoYWJsZSBjb2RlLgoKQW5vdGhl
-ciBpbnRlcmVzdGluZyB0aGluZyB3b3VsZCBiZSB0byBjaGVjayBpZiBleGNsdWRlZCBsaW5lcyBy
-ZWFsbHkgaGF2ZSBjb3VudGVycyB3aXRoIHZhbHVlIDAuIEluIGNhc2UgdGhleSBkb24ndCBoYXZl
-LCB0aGVuIHRoZXJlIGlzIGEgcHJvYmxlbSB3aXRoIHlvdXIgc29mdHdhcmUsIHRlc3RzIG9yIGV4
-Y2x1c2lvbnMuCgpJIGd1ZXNzIGluY2x1ZGluZyB0aGUgZXhjbHVkZWQgbGluZXMgaW4gdGhlIG91
-dHB1dCB3b3VsZCByZXF1aXJlIHRvIGV4dGVuZCB0aGUgaW5mbyBmaWxlIGZvcm1hdCwgYXMgd2Vs
-bCBhcyBnZW5pbmZvIGFuZCBnZW5odG1sIHRvIGhhbmRsZSB0aGlzIG5ldyBpbmZvcm1hdGlvbi4K
-CgpLaW5kIHJlZ2FyZHMKClJlbsOpIExpZWJzY2hlcgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCkNvbW1lbnQg
-Qnk6IFBldGVyIE9iZXJwYXJsZWl0ZXIgKG9iZXJwYXByKQpEYXRlOiAyMDEwLTA2LTIzIDA5OjMy
-CgpNZXNzYWdlOgpUaGFua3MgZm9yIHRoZSBpbnB1dC4gVGhlc2Ugc291bmQgbGlrZSB1c2VmdWwg
-ZmVhdHVyZXMgdG8gbWUgLSBJJ2xsIGFkZAp0aGVtIHRvIHRoZSBsaXN0IG9mIHBvc3NpYmxlIGV4
-dGVuc2lvbnMgZm9yIGZ1dHVyZSBsY292IHZlcnNpb25zLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKWW91IGNh
-biByZXNwb25kIGJ5IHZpc2l0aW5nOiAKaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvdHJhY2tlci8/
-ZnVuYz1kZXRhaWwmYXRpZD0zNTMzODImYWlkPTMwMTMwNzUmZ3JvdXBfaWQ9MzM4MgoKLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tClRoaW5rR2VlayBhbmQgV0lSRUQncyBHZWVrRGFkIHRlYW0gdXAgZm9y
-IHRoZSBVbHRpbWF0ZSAKR2Vla0RhZCBGYXRoZXIncyBEYXkgR2l2ZWF3YXkuIE9ORSBNQVNTSVZF
-IFBSSVpFIHRvIHRoZSAKbHVja3kgcGFyZW50YWwgdW5pdC4gIFNlZSB0aGUgcHJpemUgbGlzdCBh
-bmQgZW50ZXIgdG8gd2luOiAKaHR0cDovL3Auc2YubmV0L3NmdS90aGlua2dlZWstcHJvbW8KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFp
-bGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
-dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+--===============0806999948189148826==
+Content-Type: multipart/signed; boundary="nextPart14069830.8oetnviXLA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart14069830.8oetnviXLA
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Monday, June 28, 2010 07:52:18 Subrata Modak wrote:
+> +	if [ $ALT_DMESG_OUT -eq 1 ] ; then
+> +		PWD=3D`pwd`
+> +		cd $DMESG_DIR
+> +		for dmesg_file in `ls`
+> +		do
+> +			dmesg_file_size=3D`wc -c $dmesg_file | cut -d ' ' -f1 | tr -d=20
+'\n'`
+> +			if [ $dmesg_file_size -eq 0 ]; then
+> +				rm -rf $dmesg_file
+> +			fi
+> +		done
+> +		cd $PWD
+> +	fi
+
+ugh.  what's wrong with simply executing:
+	find "$DMESG_DIR" -size 0 -exec rm {} +
+
+> +	if [ `ls -l $DMESG_DIR | wc -l` -ge 1 ]; then
+
+if [ -n "$(ls "$DMESG_DIR")" ] ; then
+=2Dmike
+
+--nextPart14069830.8oetnviXLA
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
+
+iQIcBAABAgAGBQJMKPuNAAoJEEFjO5/oN/WBzIUP/1rHaPN8VN6joybpyWoDZsVA
+HIa9ywJTCe/N1EyJ5xM3dMZiuAKIAjnyClOa30I5kv0dq2S5Li/y/oGFQHMIPon0
+t4bVdXUNDPSJlET3cBFRCRD7za99bVmM/w5wppdPXN5pXomYleIbTinm/y6vZi+r
++r0aVQjuvRaI8uyELU1ug0L03bfqCJE05+DhVnDlIw6BcI+e6A3VD+62Uw02W14x
+pcUi4hnxjd57R0DHH/B5wcxW1661b7yEkpslyYenLefm6XDpOx2JckBL4D4FAk/V
+e6Nj2gyp2HAFRhCjOIQk2uj49weguTtLiUqovnKnrpmL+twHlht7lcK5Ltf6NGeI
+2v2K6PUogpkabd43Nc/ImphSS8EtwYw/VGasfgZxLixAB1jaey4PNXNrfnfANQWf
+tEhqyLvLpH5hOr9fofal1dHS+d7ve+zaP7CDzlqyB0AE+q8r9tlZy00+zESH6383
+cwbxrrDsD8HGR0u/2vRn20GNJjP6MMZSf6Pp7EzHwBXXcrczdTZHB0aCQCiROxsO
+IVC7HqppIIYAy6w5THVymYOnkzkppWhBjVCMjtDgUxHgS3JBd5/s2X/yRDiNpQ2F
+OOwBTPp2F/uu1c5Y2jcsi0gfBFzs+MehG9MM2evWaSdXYpAG5pAl3gDjRdqNaNhG
+A18NpCEi3+6k8T9Neu/b
+=ue8e
+-----END PGP SIGNATURE-----
+
+--nextPart14069830.8oetnviXLA--
+
+
+--===============0806999948189148826==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--===============0806999948189148826==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0806999948189148826==--
+
