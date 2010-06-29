@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OTwba-0006PG-SJ
-	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 12:41:30 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OTVI3-0000Mv-75
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jun 2010 07:31:31 +0000
+Received: from e23smtp08.au.ibm.com ([202.81.31.141])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OTwbZ-0002ns-RS
-	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 12:41:30 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100629195210.GA14549@hallyn.com>
-References: <20100629195210.GA14549@hallyn.com>
-Date: Wed, 30 Jun 2010 17:43:24 +0530
-Message-Id: <1277900005.5710.8.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] selinux testsuite
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1OTVI1-0007Dv-SZ
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jun 2010 07:31:31 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp08.au.ibm.com (8.14.4/8.13.1) with ESMTP id o5T7VHK4019525
+	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:17 +1000
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o5T7VIwC1384634
+	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:18 +1000
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o5T7VI7a024798
+	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jun 2010 17:31:18 +1000
+From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Date: Tue, 29 Jun 2010 13:01:16 +0530
+Message-Id: <1277796676-6407-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH] realtime: fix min and max calculations in matrix
+	multiplication test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,53 +33,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: James Morris <jmorris@redhat.com>, ltp-list <ltp-list@lists.sf.net>, Stephen Smalley <sds@epoch.ncsc.mil>, SELinux <selinux@tycho.nsa.gov>, kaigai@ak.jp.nec.com
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-Hi Serge,
+From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-On Tue, 2010-06-29 at 14:52 -0500, Serge E. Hallyn wrote:
-> Just a little note to announce that the selinux testsuite is now up as a
-> git tree at kernel.org.  You can fetch it using
-> 
-> 	git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
+In matrix multiplication test, the min and max calculations are done on
+stats_container_t data with its index field never set to the last
+element position. Due to this min and max are always shown with the
+first record value (as index was initiated with -1).
 
-Great. So, how far does it differ from that we have in LTP ?
-http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=tree;f=testcases/kernel/security/selinux-testsuite;h=066df4cdf2f8a80a0045e338b4bb2bf0f5d37091;hb=HEAD
+Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: Will Schmidt <will_schmidt@vnet.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+---
+ testcases/realtime/func/matrix_mult/matrix_mult.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-As you, Stephen and others in SELinux <selinux@tycho.nsa.gov> were the
-main contributors to the SELinux test(s) in LTP, i guess the next/future
-development for SELinux tests will be happening in the new tree.
-
-So, i would rather keep pulling to LTP from your tree. Now, could you
-please let me know:
-
-     1. Whether the new tree contains all scenarios which is present in
-        LTP. In such a case a complete pruning of LTP SELinux tests can
-        be done and replaced with your tree contents,
-     2. If some of the LTP tests are not there, then i would like to
-        retain them in LTP side-by-side your tree contents,
-
-Regards--
-Subrata
-
-> 
-> The README shows how to run.
-> 
-> Many thanks to Stephen for keeping it running so nicely and allowing me
-> to post it.  I intend to test against Fedora regularly-ish, and to start
-> seeing how best to nudge it to work against Debian and Ubuntu in the next
-> month or so.
-> 
-> -serge
-> 
-> --
-> This message was distributed to subscribers of the selinux mailing list.
-> If you no longer wish to subscribe, send mail to majordomo@tycho.nsa.gov with
-> the words "unsubscribe selinux" without quotes as the message.
+diff --git a/testcases/realtime/func/matrix_mult/matrix_mult.c b/testcases/realtime/func/matrix_mult/matrix_mult.c
+index 419f697..fa0e352 100644
+--- a/testcases/realtime/func/matrix_mult/matrix_mult.c
++++ b/testcases/realtime/func/matrix_mult/matrix_mult.c
+@@ -222,6 +222,7 @@ void main_thread(void)
+ 
+ 	/* run matrix mult operation sequentially */
+ 	curdat = &sdat;
++	curdat->index = iterations-1;
+ 	printf("\nRunning sequential operations\n");
+ 	start = rt_gettime();
+ 	for (i = 0; i < iterations; i++)
+@@ -252,6 +253,7 @@ void main_thread(void)
+ 	pthread_barrier_init(&mult_start, NULL, numcpus+1);
+ 	set_priority(PRIO);
+ 	curdat = &cdat;
++	curdat->index = iterations-1;
+ 	online_cpu_id = -1; /* Redispatch cpus */
+ 	/* Create numcpus-1 concurrent threads */
+ 	for (j = 0; j < numcpus; j++) {
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
