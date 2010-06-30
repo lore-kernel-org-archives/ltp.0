@@ -1,35 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OLYN6-0007y9-4J
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 09:11:52 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OLYN1-0007lm-U0
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jun 2010 09:11:52 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e38.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o57956C2001497
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Jun 2010 03:05:06 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	o579BfmA237032
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Jun 2010 03:11:41 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o579BfdN026956
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Jun 2010 03:11:41 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <201006070651.o576p4S0093912@www262.sakura.ne.jp>
-References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
-	<1275834288.7037.3.camel@subratamodak.linux.ibm.com>
-	<201006070651.o576p4S0093912@www262.sakura.ne.jp>
-Date: Mon, 07 Jun 2010 14:41:38 +0530
-Message-Id: <1275901898.4851.2.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [linux-2.6.36] TOMOYO Linux update
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OTsYB-0005sr-16
+	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 08:21:43 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OTsY8-00018Q-Tl
+	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 08:21:43 +0000
+Received: by iwn34 with SMTP id 34so823854iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 30 Jun 2010 01:21:35 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTinQK4_5EoY7bXLd5tCam-j5NpYAkeZrIhF7J9NJ@mail.gmail.com>
+References: <AANLkTilncmIFzbwnHMEJKXsJagIMP9mSicqIZ5dQelLJ@mail.gmail.com>
+	<AANLkTimZ-GQtuu-_1pB_Llzrr46CE0EbEFnd_OnjnjmF@mail.gmail.com>
+	<AANLkTim0JhFpvTVlo-DMkhjdWzcuf1ob3nUWpkK-vT9y@mail.gmail.com>
+	<AANLkTimzGJ2TR5q4WhtPcAlFWHWkGVSB4w2KrJTJKO7h@mail.gmail.com>
+	<AANLkTinQK4_5EoY7bXLd5tCam-j5NpYAkeZrIhF7J9NJ@mail.gmail.com>
+Date: Wed, 30 Jun 2010 01:21:34 -0700
+Message-ID: <AANLkTimndUHIGEduIFv6gTuucy09-a4cHGxBCoMnltM9@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Not cloning all the files from ltp-dev
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,64 +31,143 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To: vishwanath govind <vishwa.hochihally@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 2010-06-07 at 15:51 +0900, Tetsuo Handa wrote:
-> Hello.
-> 
-> Subrata Modak wrote:
-> > > I updated TOMOYO testcases for Linux 2.6.36.
-> > > http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.3.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=3740&root=tomoyo
-> > > 4425 lines, 141,420 bytes.
-> > > MD5: aeb0af73a8f140d50d4ab7435b10de16
-> > 
-> > Thanks for intimating us the updates about the TOMYO test cases. Would
-> > you mind sending us a patch against the LTP git
-> > repo(git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev) so that i can
-> > push your path against the latest tree.
-> > 
-> Above one applies against http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=snapshot;h=7f20a3add6c7f2166dbab5a712713ae8b5943448;sf=tgz
-> 
-> I didn't know ltp moved repository from cvs to git.
-> I downloaded files from cvs. Adding some notes on
-> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.2
-> might help preventing users from downloading old files.
+On Wed, Jun 30, 2010 at 1:17 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Tue, Jun 29, 2010 at 4:52 AM, vishwanath govind
+> <vishwa.hochihally@gmail.com> wrote:
+>> Hi,
+>> I am facing one more issue now. I am able to build but not able to insta=
+ll
+>> properly. Here are my steps. Since=A0I am working on server,=A0 root per=
+misision
+>> is restricted and=A0have 777 permission on=A0directory that i am working=
+. There
+>> is no autconf/aclocal=A0tools too
+>>
+>> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+>> # cd ltp
+>> # cp include/config.h.default=A0 include/config.h
+>> #cp include/mk/config.mk.default=A0=A0 include/mk/config.mk
+>> # Mention the PATH for cross-compiler path for CC, AR, STRIP etc and also
+>> prefix(/home/vgovinda/ltp_install')
+>> # make
+>> # make install
+>>
+>> Here it's not able to create `/projects/test/ltp/ltp_install` and why is=
+ it
+>> creating dir /share instead of /home/vgovinda/ltp_install/share.
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>> Makefile:176: warning: overriding commands for target
+>> `//home/vgovinda/ltp_install'
+>> Makefile:106: warning: ignoring old commands for target
+>> `//home/vgovinda/ltp_install'
+>> make: Circular //home/vgovinda/ltp_install <- //home/vgovinda/ltp_install
+>> dependency dropped.
+>> make -C "doc" \
+>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -f "/projects/test/ltp/doc=
+/Makefile" install
+>> make[1]: Entering directory `/projects/test/ltp/doc'
+>> make[2]: Entering directory `/projects/test/ltp/doc/man1'
+>> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+>> `/home/vgovinda/ltp_install'
+>> ../../include/mk/env_post.mk:90: warning: ignoring old commands for targ=
+et
+>> `/home/vgovinda/ltp_install'
+>> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+>> `/home/vgovinda/ltp_install'
+>> ../../include/mk/env_post.mk:91: warning: ignoring old commands for targ=
+et
+>> `/home/vgovinda/ltp_install'
+>> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+>> `/home/vgovinda/ltp_install'
+>> ../../include/mk/env_post.mk:91: warning: ignoring old commands for targ=
+et
+>> `/home/vgovinda/ltp_install'
+>> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+>> `/home/vgovinda/ltp_install'
+>> ../../include/mk/env_post.mk:91: warning: ignoring old commands for targ=
+et
+>> `/home/vgovinda/ltp_install'
+>> mkdir -p "/share/man/man1"
+>> mkdir: cannot create directory `/share': Permission denied
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>>
+>> Any thoughts on this would be appriciated?
+>>
+>> Regards
+>> Vishwa
+>>
+>> On Mon, Jun 28, 2010 at 2:33 PM, vishwanath govind
+>> <vishwa.hochihally@gmail.com> wrote:
+>>>
+>>> Thanks Garrett.
+>>> Regards
+>>> Vishwa
+>>>
+>>> On Mon, Jun 28, 2010 at 1:22 PM, Garrett Cooper <yanegomi@gmail.com>
+>>> wrote:
+>>>>
+>>>> On Mon, Jun 28, 2010 at 12:28 AM, vishwanath govind
+>>>> <vishwa.hochihally@gmail.com> wrote:
+>>>> > Hi,
+>>>> > =A0I have tried=A0to clone the latest LTP source through GIT but mis=
+sing
+>>>> > "configure" file in it.
+>>>> >
+>>>> > Here are my steps:
+>>>> >
+>>>> > =A0 # git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+>>>> >
+>>>> > =A0# ls ltp
+>>>> > COPYING=A0 ChangeLog=A0=A0 INSTALL=A0=A0 Makefile.release=A0 README.=
+ltp-devel.in
+>>>> > TODO=A0=A0=A0=A0=A0=A0=A0=A0=A0 doc=A0=A0=A0=A0=A0=A0=A0=A0 include=
+=A0 ltp-devel.spec.in=A0 m4=A0=A0 result
+>>>> > runltp=A0=A0=A0=A0=A0=A0=A0=A0 runtest=A0 testcases=A0=A0=A0 tools=
+=A0 ver_linux
+>>>> > CREDITS=A0 IDcheck.sh=A0 Makefile=A0 README=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 README.mk-devel
+>>>> > configure.ac=A0 execltp.in=A0 lib=A0=A0=A0=A0=A0 ltpmenu=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 pan
+>>>> > runalltests.sh
+>>>> > runltplite.sh=A0 scripts=A0 testscripts=A0 utils
+>>>> > Why is "configure" file is missing here?
+>>>> >
+>>>> > Please let me know your thoughts?
+>>>>
+>>>> configure should never be checked in to git.
+>>>>
+>>>> Read INSTALL for more details on how to generate it.
+>
+> 1. Please bottom post.
+> 2. This looks indicative of one using make 3.80 with older sources of
+> LTP. What happens when you do make all instead of make in the first
+> invocation (sorry.. it's been a while since I've seen this problem, as
+> I fixed it a while ago).
 
-The patch will apply fine with the git tree as well, as, no changes has
-gone into the TOMYO tree recently. And git is just a migration from cvs
-without harming the code. So, all patches will apply to git as well.
-However, this patch did not apply as it was not created properly:
+Nevermind. You're using bogus directions and most likely getting bogus
+results because of it. Please properly read INSTALL and follow the
+directions closely, because it matters.
+Thanks,
+-Garrett
 
-patching file testcases/kernel/security/tomoyo/README
-patching file testcases/kernel/security/tomoyo/include.h
-patching file testcases/kernel/security/tomoyo/newns.c
-patching file testcases/kernel/security/tomoyo/testall.sh
-patching file testcases/kernel/security/tomoyo/tomoyo_accept_test.c
-patching file testcases/kernel/security/tomoyo/tomoyo_file_test.c
-patching file testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c
-patch: **** malformed patch at line 2088: 
-
-Please create it properly and send me.
-
-Meanwhile i am having trouble logging to the sf.net site. I will change
-the documentation accordingly when i get a proper access.
-
-Regards--
-Subrata
-
-> 
-> Regards.
-
-
-------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
+---------------------------------------------------------------------------=
+---
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
