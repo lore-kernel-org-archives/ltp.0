@@ -1,33 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OO9Aj-0006pO-SK
-	for ltp-list@lists.sourceforge.net; Mon, 14 Jun 2010 12:53:49 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OO9Ai-0008L5-RF
-	for ltp-list@lists.sourceforge.net; Mon, 14 Jun 2010 12:53:49 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e38.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o5ECS2pE022863
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Jun 2010 06:28:02 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o5ECYad3035956
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Jun 2010 06:34:37 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o5ECYZjU029094
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Jun 2010 06:34:35 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <000001cb086a$f2fc55d0$d8f50170$@co.jp>
-References: <000001cb086a$f2fc55d0$d8f50170$@co.jp>
-Date: Mon, 14 Jun 2010 18:04:24 +0530
-Message-Id: <1276518865.4885.8.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix "mail" test
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <vishwanath.govind@gmail.com>) id 1OTq5k-0001tc-Gs
+	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 05:44:12 +0000
+Received: from mail-qy0-f175.google.com ([209.85.216.175])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OTq5j-00049Y-BG
+	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 05:44:12 +0000
+Received: by qyk7 with SMTP id 7so178515qyk.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 29 Jun 2010 22:44:06 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTimzGJ2TR5q4WhtPcAlFWHWkGVSB4w2KrJTJKO7h@mail.gmail.com>
+References: <AANLkTilncmIFzbwnHMEJKXsJagIMP9mSicqIZ5dQelLJ@mail.gmail.com>
+	<AANLkTimZ-GQtuu-_1pB_Llzrr46CE0EbEFnd_OnjnjmF@mail.gmail.com>
+	<AANLkTim0JhFpvTVlo-DMkhjdWzcuf1ob3nUWpkK-vT9y@mail.gmail.com>
+	<AANLkTimzGJ2TR5q4WhtPcAlFWHWkGVSB4w2KrJTJKO7h@mail.gmail.com>
+Date: Wed, 30 Jun 2010 11:14:05 +0530
+Message-ID: <AANLkTinpTZskjxRCZ_AZYSZTOcL_2yBz3_4r0ABLM-kL@mail.gmail.com>
+From: Vishwanath Govind <vishwanath.govind@gmail.com>
+Subject: Re: [LTP] Not cloning all the files from ltp-dev
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,117 +30,274 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9177491497033423137=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Thanks.
+--===============9177491497033423137==
+Content-Type: multipart/alternative; boundary=0016362846388c5b7c048a38d7d9
 
-Regards--
-Subrata
+--0016362846388c5b7c048a38d7d9
+Content-Type: text/plain; charset=ISO-8859-1
 
-On Thu, 2010-06-10 at 16:02 +0900, Mitani wrote: 
+Hi,
++ I try to make install as non-root user here. Any thoughts?
+
+Regards
+Vishwa
+
+On Tue, Jun 29, 2010 at 5:22 PM, vishwanath govind <
+vishwa.hochihally@gmail.com> wrote:
+
 > Hi,
-> 
-> I want to suggest a patch for #2 test of "mail_tests.sh".
-> 
-> The failure of #2 is as following:
-> ------------
-> mail_tests::mail02    0  TINFO  :  Test #2: mail u...@bad-domain will result
-> in failure
-> mail_tests::mail02    0  TINFO  :  Test #2: to deliver the mail. Mailer
-> daemon should
-> mail_tests::mail02    0  TINFO  :  Test #2: report this failure.
-> mail_tests::mail02    2  TFAIL  :  Test #2: No new mail for root. Reason:
-> No mail for root
-> ------------
-> 
-> I use RHEL5.4, RHEL4.8 systems and x86, x86_64, ia64 architectures.
-> "#2" test failed in all combinations.
-> 
-> At "#2" test, there is "No mail for root" in "tst_mail.res" file.
-> I want to add this condition to judgment for "tst_mail.res".
-> 
-> The other day, I made a question  whether #2 test failed or not 
-> in other systems. 
->  -->http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10184.html
-> But I have received no reply yet. Therefore I don't know about other 
-> systems, and I made this revision to become effective for only RHEL 
-> systems.
-> 
-> 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-> 
-> ============
-> --- a/testcases/commands/mail/mail_tests.sh	2010-06-02
-> 21:46:46.000000000 +0900
-> +++ b/testcases/commands/mail/mail_tests.sh	2010-06-09
-> 15:33:19.000000000 +0900
-> @@ -140,14 +140,18 @@
-> 
->  export TCID=mail_tests::mail02
->  export TST_COUNT=2
-> -RC=0
->  RC1=0
->  RC2=0
-> +RC3=0
-> +RC4=0
-> 
->  tst_resm TINFO "Test #2: mail user@bad-domain will result in failure"
->  tst_resm TINFO "Test #2: to deliver the mail. Mailer daemon should"
->  tst_resm TINFO "Test #2: report this failure."
-> 
-> +tvar=${MACHTYPE%-*}
-> +tvar=${tvar#*-}
-> +
->  # Don't use underscores in domain names (they're illegal)...
->  mail -s "Test" root@thisdomaindoesnotexist < $LTPTMP/tst_mail.in \
->  	> $LTPTMP/tst_mail.out 2>&1
-> @@ -190,9 +194,16 @@
->  		    $LTPTMP/tst_mail.res)
->  	fi
->  	if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]; then
-> -		tst_res TFAIL $LTPTMP/tst_mail.res \
-> -		    "Test #2: No new mail for root. Reason:"
-> -		: $(( TFAILCNT += 1 ))
-> +		RC4=$(awk '{print match($1 $2 $3, "Nomailfor")}' \
-> +        	    $LTPTMP/tst_mail.res)
-> +		if [ \( "$tvar" = "redhat" -o "$tvar" = "redhat-linux" \) -a
-> -n "$RC4" ]; then
-> +			tst_resm TPASS \
-> +				"Test #2: No new mail for root as expected"
-> +		else
-> +			tst_res TFAIL $LTPTMP/tst_mail.res \
-> +			    "Test #2: No new mail for root. Reason:"
-> +			: $(( TFAILCNT += 1 ))
-> +		fi
->  	else
-> 
->  		if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne
-> 0 ]; then
-> ============
-> 
-> 
-> 
-> Regards--
-> 
-> -Tomonori Mitani
-> ------------------------------------------------------------------------------
-> ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-> GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-> lucky parental unit.  See the prize list and enter to win: 
-> http://p.sf.net/sfu/thinkgeek-promo
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+> I am facing one more issue now. I am able to build but not able to install
+> properly. Here are my steps. Since I am working on server,  root permisision
+> is restricted and have 777 permission on directory that i am working. There
+> is no autconf/aclocal tools too
+>
+> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+> # cd ltp
+> # cp include/config.h.default  include/config.h
+> #cp include/mk/config.mk.default   include/mk/config.mk
+> # Mention the PATH for cross-compiler path for CC, AR, STRIP etc and also
+> prefix(/*home/vgovinda/ltp_install')*
+> # make
+> # make install
+>
+> Here it's not able to create `/projects/test/ltp/ltp_install` and why is it
+> creating dir /share instead of /*home/vgovinda/ltp_install/share.*
+>
+> =================================================================
+>
+> *Makefile:176: warning: overriding commands for target
+> `//home/vgovinda/ltp_install'
+> Makefile:106: warning: ignoring old commands for target
+> `//home/vgovinda/ltp_install'
+> *make: Circular //home/vgovinda/ltp_install <- //home/vgovinda/ltp_install
+> dependency dropped.
+> make -C "doc" \
+>                 -f "/projects/test/ltp/doc/Makefile" install
+> make[1]: Entering directory `/projects/test/ltp/doc'
+> make[2]: Entering directory `/projects/test/ltp/doc/man1'
+> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+> `/home/vgovinda/ltp_install'
+> ../../include/mk/env_post.mk:90: warning: ignoring old commands for target
+> `/home/vgovinda/ltp_install'
+> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+> `/home/vgovinda/ltp_install'
+> ../../include/mk/env_post.mk:91: warning: ignoring old commands for target
+> `/home/vgovinda/ltp_install'
+> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+> `/home/vgovinda/ltp_install'
+> ../../include/mk/env_post.mk:91: warning: ignoring old commands for target
+> `/home/vgovinda/ltp_install'
+> ../../include/mk/env_post.mk:91: warning: overriding commands for target
+> `/home/vgovinda/ltp_install'
+> ../../include/mk/env_post.mk:91: warning: ignoring old commands for target
+> `/home/vgovinda/ltp_install'
+> mkdir -p "/share/man/man1"
+> mkdir: cannot create directory `/share': Permission denied
+> ===========================================================================
+>
+> Any thoughts on this would be appriciated?
+>
+> Regards
+> Vishwa
+>
+>   On Mon, Jun 28, 2010 at 2:33 PM, vishwanath govind <
+> vishwa.hochihally@gmail.com> wrote:
+>
+>> Thanks Garrett.
+>> Regards
+>> Vishwa
+>>
+>>   On Mon, Jun 28, 2010 at 1:22 PM, Garrett Cooper <yanegomi@gmail.com>wrote:
+>>
+>>>  On Mon, Jun 28, 2010 at 12:28 AM, vishwanath govind
+>>> <vishwa.hochihally@gmail.com> wrote:
+>>> > Hi,
+>>> >  I have tried to clone the latest LTP source through GIT but missing
+>>> > "configure" file in it.
+>>> >
+>>> > Here are my steps:
+>>> >
+>>> >   # git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+>>> >
+>>> >  # ls ltp
+>>> > COPYING  ChangeLog   INSTALL   Makefile.release  README.ltp-devel.in<http://readme.ltp-devel.in/>
+>>> > TODO          doc         include  ltp-devel.spec.in  m4   result
+>>> > runltp         runtest  testcases    tools  ver_linux
+>>> > CREDITS  IDcheck.sh  Makefile  README            README.mk-devel
+>>> > configure.ac  execltp.in  lib      ltpmenu            pan
+>>> runalltests.sh
+>>> > runltplite.sh  scripts  testscripts  utils
+>>> > Why is "configure" file is missing here?
+>>> >
+>>> > Please let me know your thoughts?
+>>>
+>>> configure should never be checked in to git.
+>>>
+>>> Read INSTALL for more details on how to generate it.
+>>>
+>>> Thanks,
+>>> -Garrett
+>>>
+>>
+>>
+>
 
+--0016362846388c5b7c048a38d7d9
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>Hi,</div>
+<div>+ I try to make install as non-root user here. Any thoughts?</div>
+<div>=A0</div>
+<div>Regards</div>
+<div>Vishwa<br><br></div>
+<div class=3D"gmail_quote">On Tue, Jun 29, 2010 at 5:22 PM, vishwanath govi=
+nd <span dir=3D"ltr">&lt;<a href=3D"mailto:vishwa.hochihally@gmail.com">vis=
+hwa.hochihally@gmail.com</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
+px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
+<div>Hi,</div>
+<div>I am facing one more issue now. I am able to build but not able to ins=
+tall properly. Here are my steps. Since=A0I am working on server,=A0 root p=
+ermisision is restricted and=A0have 777 permission on=A0directory that i am=
+ working. There is no autconf/aclocal=A0tools too</div>
+
+<div>=A0</div>
+<div># git clone git://<a href=3D"http://ltp.git.sourceforge.net/gitroot/lt=
+p/ltp-dev.git" target=3D"_blank">ltp.git.sourceforge.net/gitroot/ltp/ltp-de=
+v.git</a> ltp</div>
+<div># cd ltp</div>
+<div># cp include/config.h.default=A0 include/config.h<br>#cp include/mk/co=
+nfig.mk.default=A0=A0 include/mk/<a href=3D"http://config.mk/" target=3D"_b=
+lank">config.mk</a></div>
+<div># Mention the PATH for cross-compiler path for CC, AR, STRIP etc and a=
+lso prefix(/<strong>home/vgovinda/ltp_install&#39;)</strong></div>
+<div># make=A0</div>
+<div># make install=A0=A0</div>
+<div>=A0</div>
+<div>Here it&#39;s not able to create `/projects/test/ltp/ltp_install` and =
+why is it creating dir /share instead of /<strong>home/vgovinda/ltp_install=
+/share.</strong></div>
+<div>=A0</div>
+<div>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</div>
+<div>=A0</div>
+<div><strong>Makefile:176: warning: overriding commands for target `//home/=
+vgovinda/ltp_install&#39;<br>Makefile:106: warning: ignoring old commands f=
+or target `//home/vgovinda/ltp_install&#39;<br></strong>make: Circular //ho=
+me/vgovinda/ltp_install &lt;- //home/vgovinda/ltp_install dependency droppe=
+d.<br>
+make -C &quot;doc&quot; \<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+-f &quot;/projects/test/ltp/doc/Makefile&quot; install<br>make[1]: Entering=
+ directory `/projects/test/ltp/doc&#39;<br>make[2]: Entering directory `/pr=
+ojects/test/ltp/doc/man1&#39;<br>
+../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
+ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
+install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:90/" target=
+=3D"_blank">env_post.mk:90</a>: warning: ignoring old commands for target `=
+/home/vgovinda/ltp_install&#39;<br>
+../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
+ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
+install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:91/" target=
+=3D"_blank">env_post.mk:91</a>: warning: ignoring old commands for target `=
+/home/vgovinda/ltp_install&#39;<br>
+../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
+ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
+install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:91/" target=
+=3D"_blank">env_post.mk:91</a>: warning: ignoring old commands for target `=
+/home/vgovinda/ltp_install&#39;<br>
+../../include/mk/<a href=3D"http://env_post.mk:91/" target=3D"_blank">env_p=
+ost.mk:91</a>: warning: overriding commands for target `/home/vgovinda/ltp_=
+install&#39;<br>../../include/mk/<a href=3D"http://env_post.mk:91/" target=
+=3D"_blank">env_post.mk:91</a>: warning: ignoring old commands for target `=
+/home/vgovinda/ltp_install&#39;<br>
+mkdir -p &quot;/share/man/man1&quot;<br>mkdir: cannot create directory `/sh=
+are&#39;: Permission denied<br>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</div>
+<div>=A0</div>
+<div>Any thoughts on this would be appriciated?</div>
+<div>=A0</div>
+<div>Regards</div>
+<div>Vishwa<br><br></div>
+<div>
+<div></div>
+<div class=3D"h5">
+<div class=3D"gmail_quote">On Mon, Jun 28, 2010 at 2:33 PM, vishwanath govi=
+nd <span dir=3D"ltr">&lt;<a href=3D"mailto:vishwa.hochihally@gmail.com" tar=
+get=3D"_blank">vishwa.hochihally@gmail.com</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
+px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
+<div>Thanks Garrett. </div>
+<div>Regards</div>
+<div>Vishwa<br><br></div>
+<div>
+<div></div>
+<div>
+<div class=3D"gmail_quote">On Mon, Jun 28, 2010 at 1:22 PM, Garrett Cooper =
+<span dir=3D"ltr">&lt;<a href=3D"mailto:yanegomi@gmail.com" target=3D"_blan=
+k">yanegomi@gmail.com</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
+px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
+<div>
+<div></div>
+<div>On Mon, Jun 28, 2010 at 12:28 AM, vishwanath govind<br>&lt;<a href=3D"=
+mailto:vishwa.hochihally@gmail.com" target=3D"_blank">vishwa.hochihally@gma=
+il.com</a>&gt; wrote:<br>&gt; Hi,<br>&gt; =A0I have tried=A0to clone the la=
+test LTP source through GIT but missing<br>
+&gt; &quot;configure&quot; file in it.<br>&gt;<br>&gt; Here are my steps:<b=
+r>&gt;<br>&gt; =A0 # git://<a href=3D"http://ltp.git.sourceforge.net/gitroo=
+t/ltp/ltp-dev.git" target=3D"_blank">ltp.git.sourceforge.net/gitroot/ltp/lt=
+p-dev.git</a> ltp<br>
+&gt;<br>&gt; =A0# ls ltp<br>&gt; COPYING=A0 ChangeLog=A0=A0 INSTALL=A0=A0 M=
+akefile.release=A0 <a href=3D"http://readme.ltp-devel.in/" target=3D"_blank=
+">README.ltp-devel.in</a><br>&gt; TODO=A0=A0=A0=A0=A0=A0=A0=A0=A0 doc=A0=A0=
+=A0=A0=A0=A0=A0=A0 include=A0 <a href=3D"http://ltp-devel.spec.in/" target=
+=3D"_blank">ltp-devel.spec.in</a>=A0 m4=A0=A0 result<br>
+&gt; runltp=A0=A0=A0=A0=A0=A0=A0=A0 runtest=A0 testcases=A0=A0=A0 tools=A0 =
+ver_linux<br>&gt; CREDITS=A0 IDcheck.sh=A0 Makefile=A0 README=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 README.mk-devel<br>&gt; <a href=3D"http://configure.a=
+c/" target=3D"_blank">configure.ac</a>=A0 <a href=3D"http://execltp.in/" ta=
+rget=3D"_blank">execltp.in</a>=A0 lib=A0=A0=A0=A0=A0 ltpmenu=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 pan=A0 runalltests.sh<br>
+&gt; runltplite.sh=A0 scripts=A0 testscripts=A0 utils<br>&gt; Why is &quot;=
+configure&quot; file is missing here?<br>&gt;<br>&gt; Please let me know yo=
+ur thoughts?<br><br></div></div>configure should never be checked in to git=
+.<br>
+<br>Read INSTALL for more details on how to generate it.<br><br>Thanks,<br>=
+<font color=3D"#888888">-Garrett<br></font></blockquote></div><br></div></d=
+iv></blockquote></div><br></div></div></blockquote></div><br>
+
+--0016362846388c5b7c048a38d7d9--
+
+
+--===============9177491497033423137==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--===============9177491497033423137==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9177491497033423137==--
+
