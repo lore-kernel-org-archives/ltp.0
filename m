@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OPfbd-0005wF-2p
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:43:53 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1OTqhj-0003Y0-Aq
+	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 06:23:27 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OPfbc-0001vc-2B
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jun 2010 17:43:53 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Fri, 18 Jun 2010 23:13:31 +0530
-Message-Id: <20100618174331.5435.11325.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH] Updated Information about Linux Test Project
-	Maintainence
+	(Exim 4.69) id 1OTqhi-0005uz-9c
+	for ltp-list@lists.sourceforge.net; Wed, 30 Jun 2010 06:23:27 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 30 Jun 2010 02:22:23 -0400
+References: <AANLkTilncmIFzbwnHMEJKXsJagIMP9mSicqIZ5dQelLJ@mail.gmail.com>
+	<AANLkTim0JhFpvTVlo-DMkhjdWzcuf1ob3nUWpkK-vT9y@mail.gmail.com>
+	<AANLkTimzGJ2TR5q4WhtPcAlFWHWkGVSB4w2KrJTJKO7h@mail.gmail.com>
+In-Reply-To: <AANLkTimzGJ2TR5q4WhtPcAlFWHWkGVSB4w2KrJTJKO7h@mail.gmail.com>
+MIME-Version: 1.0
+Message-Id: <201006300222.24447.vapier@gentoo.org>
+Subject: Re: [LTP] Not cloning all the files from ltp-dev
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,34 +26,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9111046130357317785=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel <linux-kernel@vger.kernel.org>
-Cc: ltp-list <ltp-list@lists.sf.net>, Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Sudarshan Rao <rsudarsh@in.ibm.com>, Michael Reed <mreed10@us.ibm.com>, "manoj.iyer" <manoj.iyer@canonical.com>, "paul.larson" <paul.larson@ubuntu.com>
+To: ltp-list@lists.sourceforge.net
+Cc: vishwanath govind <vishwa.hochihally@gmail.com>
 
---- linux-2.6/MAINTAINERS.orig	2010-06-18 23:08:30.000000000 +0530
-+++ linux-2.6/MAINTAINERS	2010-06-18 23:09:41.000000000 +0530
-@@ -3413,9 +3413,10 @@ F:	drivers/scsi/sym53c8xx_2/
- LTP (Linux Test Project)
- M:	Subrata Modak <subrata@linux.vnet.ibm.com>
- M:	Mike Frysinger <vapier@gentoo.org>
-+M:	Garrett Cooper <yanegomi@gmail.com>
- L:	ltp-list@lists.sourceforge.net (subscribers-only)
- W:	http://ltp.sourceforge.net/
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/galak/ltp.git
-+T:	git git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev
- S:	Maintained
- 
- M32R ARCHITECTURE
+--===============9111046130357317785==
+Content-Type: multipart/signed; boundary="nextPart1732413.rCBSUsqLMg";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1732413.rCBSUsqLMg
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tuesday, June 29, 2010 07:52:17 vishwanath govind wrote:
+> Hi,
+> I am facing one more issue now. I am able to build but not able to install
+> properly. Here are my steps. Since I am working on server,  root
+> permisision is restricted and have 777 permission on directory that i am
+> working. There is no autconf/aclocal tools too
+>=20
+> # git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+> # cd ltp
+> # cp include/config.h.default  include/config.h
+> #cp include/mk/config.mk.default   include/mk/config.mk
+
+use proper autotools to create the files and then specify paths
+=2Dmike
+
+--nextPart1732413.rCBSUsqLMg
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
+
+iQIcBAABAgAGBQJMKuKgAAoJEEFjO5/oN/WBNR8P/ROAxXegj/UNMjc+Knc1L/7N
+D/Ujtly2SmlavVtsfYnOjl5zdHF7aKaBSmX5izLUX0sNlP/f+JMezoyVHNQN0SOt
+ErxrC3gF7E2NEjvusCINU1OfDgMGHcjJYkfqmOy/ckx846xMMzkigXg06WMLwU+n
+T/jZchnjaeS73lgDYE/egwYHk/LGdCMoXb8XO1p9JiPYuIoknFJcrnZdIMBdYiwH
+sVjx2qTtXbuGNaD7P9OdBoU4PxduqTQ6ON/x9R1DxesE3Gm6xPSw8FMr3/hxCrYX
+VsWSeJTkcdRdOOk1t0sQNJIuwxfXoV+QMJqGfRizXKGjD/e/B9mSc0RhSwMZx+oD
+0zSNQ87CcVlruCWvypkB5D74sPn2f5o408DNogcqMOndj4b1ZsG650Ihdn4sBsb2
+RFyeJF4bLliIP7KxqazxgPhgtaIh+3Y1XHsBtq9CWes4yBXzzmZeFtykoCTHcdCT
+GABYsX3tFrDx6cOtim7ftIAspP2/2cUAZULMM/iFiZ18bIHRAJFv8Yxu8eOw3jSC
+MUaqhTNVml+FSYF+nJdchINc3aHX6PuazrX9SqIgtkJIBdTA1mPkH0EX/vuSf4y0
+CCJsRfQMTIls4nrlUdc8iztNYrozj45dtYgSHA0WFXUPhD8LizWwSJG37YDN6rD9
+8rV2M9P8pBaz+GR/Q3Xt
+=YUUD
+-----END PGP SIGNATURE-----
+
+--nextPart1732413.rCBSUsqLMg--
+
+
+--===============9111046130357317785==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-ThinkGeek and WIRED's GeekDad team up for the Ultimate 
-GeekDad Father's Day Giveaway. ONE MASSIVE PRIZE to the 
-lucky parental unit.  See the prize list and enter to win: 
-http://p.sf.net/sfu/thinkgeek-promo
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--===============9111046130357317785==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9111046130357317785==--
+
