@@ -1,19 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1OcEwS-00084O-Sy
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 09:53:20 +0000
-Date: Fri, 23 Jul 2010 12:08:42 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100723100842.GA19210@saboteur.suse.cz>
-References: <20100722133111.GA30090@saboteur.suse.cz>
-	<AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <darshaks@linux.vnet.ibm.com>) id 1OUIWc-0003RC-GY
+	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 12:05:50 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OUIWa-000079-6D
+	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 12:05:50 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e2.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o61Bqdbo019404
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 07:52:39 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o61C5gfW127468
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 08:05:42 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o61C5fOE006082
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 09:05:41 -0300
+Received: from darsshah-tp.in.ibm.com (wks211801wss.in.ibm.com [9.182.205.30])
+	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o61C5efR005971
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 09:05:40 -0300
+Message-ID: <4C2C8492.503@linux.vnet.ibm.com>
+Date: Thu, 01 Jul 2010 17:35:38 +0530
+From: Darshak Shah <darshaks@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="VbJkn9YxBvnuCH5J"
-Content-Disposition: inline
-In-Reply-To: <AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix pthread_mutex_getprioceiling testcase
+Subject: [LTP] [PATCH] close file descriptors and munmap pages.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,157 +37,596 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
-
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-> > As pointed out by Cheng Shun Xia <csxia@novell.com> the
-> > pthread_mutex_getprioceiling() works only on mutexes initalized with
-> > PTHREAD_PRIO_PROTECT. Also calling perror() after pthread_* fuctions is
-> > meaningless as they return error number directly, this is common mistake
-> > in pthread tests in openposix testsuite and should go to the ltp TODO.
-> 
-> 1. There are typos in the proposed change (s/Errror/Error/,
-> s/boundry/boundary/).
-
-Should be fixed in attached patch.
-
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---VbJkn9YxBvnuCH5J
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="pthread_mutex_getprioceilingIII.patch"
-
-Index: ltp-next-local/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
-===================================================================
---- ltp-next-local.orig/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
-+++ ltp-next-local/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
-@@ -1,4 +1,4 @@
--/*   
-+/*
-  * Copyright (c) 2002, Intel Corporation. All rights reserved.
-  * Created by:  bing.wei.liu REMOVE-THIS AT intel DOT com
-  * This file is licensed under the GPL license.  For the full content
-@@ -9,7 +9,7 @@
-  *
-  * returns the current prioceiling of the mutex.
-  *
-- * Steps:i
-+ * Steps:
-  * 1.  Initialize a pthread_mutexattr_t object with pthread_mutexattr_init()
-  * 2.  Call pthread_mutex_getprioceiling() to obtain the prioceiling.
-  * 
-@@ -18,42 +18,55 @@
- #include <pthread.h>
- #include <stdio.h>
- #include <sched.h>
-+#include <string.h>
- #include "posixtest.h"
- 
--int main()
-+static void print_error(const char *fname, int ret)
- {
--	
--	/* Make sure there is prioceiling capability. */ 
--	/* #ifndef _POSIX_PRIORITY_SCHEDULING
--	  fprintf(stderr,"prioceiling attribute is not available for testing\n");
--	  return PTS_UNRESOLVED;	
--	#endif */
-+	fprintf(stderr, "Error at %s(): %s\n", fname, strerror(ret));
-+}
- 
-+int main(void)
-+{
-+	pthread_mutexattr_t ma;
- 	pthread_mutex_t mutex;
--	int prioceiling, max_prio, min_prio;
--	
-+	int prioceiling, max_prio, min_prio, ret;
-+
-+	/* Initalize mutex attribut */
-+	if ((ret = pthread_mutexattr_init(&ma)) != 0) {
-+		print_error("pthread_mutexattr_init", ret);
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	/* Initalize mutex protocol */
-+	ret = pthread_mutexattr_setprotocol(&ma, PTHREAD_PRIO_PROTECT);
-+	if (ret != 0) {
-+		print_error("pthread_mutexattr_setprotocol", ret);
-+		return PTS_UNRESOLVED;
-+	}
-+
- 	/* Initialize a mutex object */
--	if(pthread_mutex_init(&mutex, NULL) != 0)
--	{
--		perror("Error at pthread_mutex_init()\n");
-+	if ((ret = pthread_mutex_init(&mutex, &ma)) != 0) {
-+		print_error("pthread_mutex_init", ret);
- 		return PTS_UNRESOLVED;
- 	}
--	
--	/* Get the prioceiling of the mutex. */
--	if(pthread_mutex_getprioceiling(&mutex, &prioceiling) != 0)
--	{
--		printf("Test FAILED: Error obtaining the priority ceiling\n");
-+
-+	/* Get the prioceiling of the mutex */
-+	if ((ret = pthread_mutex_getprioceiling(&mutex, &prioceiling)) != 0) {
-+		fprintf(stderr, "Test FAILED: Error obtaining the priority"
-+		                "ceiling: %s\n", strerror(ret));
- 		return PTS_FAIL;
- 	}
--	
--	/* Get the max and min prio according to SCHED_FIFO (posix scheduling policy) */
-+
-+	/* Get the max and min accordingly to SCHED_FIFO */
- 	max_prio = sched_get_priority_max(SCHED_FIFO);
- 	min_prio = sched_get_priority_min(SCHED_FIFO);
- 
--	/* Make sure that prioceiling is withing the legal SCHED_FIFO boundries. */
--	if((prioceiling < min_prio) || (prioceiling > max_prio))
--	{
--		printf("Test FAILED: Default prioceiling %d is not compliant with SCHED_FIFO boundry. \n", prioceiling);
-+	/* Make sure that prioceiling is in the legal SCHED_FIFO boundaries */
-+	if ((prioceiling < min_prio) || (prioceiling > max_prio)) {
-+		fprintf(stderr, "Test FAILED: Default prioceiling %d is not "
-+		                "compliant with SCHED_FIFO boundary.\n",
-+		                prioceiling);
- 		return PTS_FAIL;
- 	}
- 
-
---VbJkn9YxBvnuCH5J
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi,
+
+While executing the ltp on an nfs root mounted system, I faced a problem 
+with some of the ltp test cases. These tests either did not close their 
+file descriptors or did no unmap the mmaped files. This results in a 
+failures while trying to clean up the temporary directory of the testcase.
+
+Here are the failures I see.
+
+[darshak@darsshah-tp mcp61_ppcnf-197001010022]$ grep TWARN 
+mcp61_ppcnf-197001010022.out |grep rmdir
+open10      0  TWARN  :  rmdir(open10.testdir.A.19588) failed: 
+errno=???(39): Directory not empty
+open10      0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/ope6m8CUb) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/ope6m8CUb/open10.testdir.B.19588/.nfs000000000011ef45000004b0) 
+failed; errno=16: Device or resource busy
+ppoll01     0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/ppo1xLQtp) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/ppo1xLQtp/.nfs000000000011ef4a000004b7) 
+failed; errno=16: Device or resource busy
+splice02    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/splESzJrq) failed: 
+remove(/tmp/ltp-yYmhzAq5ao/splESzJrq) failed; errno=39: Directory not empty
+utimes01    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/utia5lQ1w) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/utia5lQ1w/.nfs0000000000122f28000004ca) 
+failed; errno=16: Device or resource busy
+diotest02    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/dioaaIAuQ) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/dioaaIAuQ/.nfs000000000011ef57000004d3) 
+failed; errno=16: Device or resource busy
+diotest03    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/dioqfwc9n) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/dioqfwc9n/.nfs000000000011ef58000004d4) 
+failed; errno=16: Device or resource busy
+diotest05    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/dioYf4Dai) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/dioYf4Dai/.nfs000000000011ef59000004d5) 
+failed; errno=16: Device or resource busy
+diotest06    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/dioBzOOyB) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/dioBzOOyB/.nfs000000000011ef5a000004d8) 
+failed; errno=16: Device or resource busy
+mmapstress01    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/mmaR0zAez) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/mmaR0zAez/.nfs000000000011ef6e000004f9) 
+failed; errno=16: Device or resource busy
+mmapstress02    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/mmad84xcc) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/mmad84xcc/.nfs000000000011ef6f000004fa) 
+failed; errno=16: Device or resource busy
+mmapstress05    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/mmaOrvt5a) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/mmaOrvt5a/.nfs000000000011ef70000004fc) 
+failed; errno=16: Device or resource busy
+mmapstress10    0  TWARN  :  tst_rmdir(): 
+rmobj(/tmp/ltp-yYmhzAq5ao/mmaBRE9gi) failed: 
+unlink(/tmp/ltp-yYmhzAq5ao/mmaBRE9gi/.nfs000000000011ef71000004fe) 
+failed; errno=16: Device or resource busy
+[darshak@darsshah-tp mcp61_ppcnf-197001010022]$
+
+I have fixed all of the above tests with the following patch.
+
+Signed-off-by: Darshak P Shah<darshaks@linux.vnet.ibm.com>
+
+
+Index: ltp-full-20091231/testcases/kernel/syscalls/open/open10.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/syscalls/open/open10.c
++++ ltp-full-20091231/testcases/kernel/syscalls/open/open10.c
+@@ -282,6 +282,7 @@ int main(int ac, char *av[])
+              tst_resm(TFAIL|TERRNO, "open(%s) failed", nosetgid_A);
+              local_flag = FAILED;
+          }
++        close(ret);
+
+          if ((ret = stat(nosetgid_A, &buf)) < 0) {
+              tst_resm(TFAIL|TERRNO, "stat(%s) failed", nosetgid_A);
+@@ -310,6 +311,7 @@ int main(int ac, char *av[])
+              tst_resm(TFAIL|TERRNO, "open(%s) failed", setgid_A);
+              local_flag = FAILED;
+          }
++        close(ret);
+
+          if ((ret = stat(setgid_A, &buf)) < 0) {
+              tst_resm(TFAIL|TERRNO, "stat(%s) failed", setgid_A);
+@@ -357,6 +359,7 @@ int main(int ac, char *av[])
+              tst_resm(TFAIL|TERRNO, "open(%s) failed", nosetgid_B);
+              local_flag = FAILED;
+          }
++        close(ret);
+
+          if ((ret = stat(nosetgid_B, &buf)) < 0) {
+              tst_resm(TFAIL|TERRNO, "stat(%s) failed", nosetgid_B);
+@@ -386,6 +389,7 @@ int main(int ac, char *av[])
+              tst_resm(TFAIL|TERRNO, "open(%s) failed", setgid_B);
+              local_flag = FAILED;
+          }
++        close(ret);
+
+          if ((ret = stat(setgid_B, &buf)) < 0) {
+              tst_resm(TFAIL|TERRNO, "stat(%s) failed", setgid_B);
+@@ -436,6 +440,7 @@ int main(int ac, char *av[])
+              tst_resm(TFAIL|TERRNO, "open(%s) failed", root_setgid_B);
+              local_flag = FAILED;
+          }
++        close(ret);
+
+          if ((ret = stat(root_setgid_B, &buf)) < 0) {
+              tst_resm(TFAIL|TERRNO, "stat(%s) failed", root_setgid_B);
+Index: ltp-full-20091231/testcases/kernel/syscalls/splice/splice02.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/syscalls/splice/splice02.c
++++ ltp-full-20091231/testcases/kernel/syscalls/splice/splice02.c
+@@ -148,6 +148,7 @@ int main(int ac, char **av) {
+          } else
+              if (TEST_RETURN == 0){
+                              tst_resm(TPASS, "splice() system call 
+Passed");
++        close(fd);
+              cleanup();
+              tst_exit();
+          }
+Index: ltp-full-20091231/testcases/kernel/io/direct_io/diotest2.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/io/direct_io/diotest2.c
++++ ltp-full-20091231/testcases/kernel/io/direct_io/diotest2.c
+@@ -275,6 +275,7 @@ static void setup(void)
+      if ((fd1 = open(filename, O_DIRECT, 0600)) < 0) {
+          tst_brkm(TCONF, cleanup, "O_DIRECT is not supported by this 
+filesystem. %s", strerror(errno));
+      }
++    close(fd1);
+
+  }
+
+Index: ltp-full-20091231/testcases/kernel/io/direct_io/diotest3.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/io/direct_io/diotest3.c
++++ ltp-full-20091231/testcases/kernel/io/direct_io/diotest3.c
+@@ -363,6 +363,7 @@ static void setup(void)
+      if ((fd1 = open(filename, O_DIRECT, 0600)) < 0) {
+          tst_brkm(TCONF, cleanup, "O_DIRECT is not supported by this 
+filesystem. %s", strerror(errno));
+      }
++    close(fd1);
+  }
+
+  static void cleanup(void)
+Index: ltp-full-20091231/testcases/kernel/io/direct_io/diotest5.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/io/direct_io/diotest5.c
++++ ltp-full-20091231/testcases/kernel/io/direct_io/diotest5.c
+@@ -309,6 +309,7 @@ static void setup(void)
+      if ((fd1 = open(filename, O_DIRECT, 0600)) < 0) {
+          tst_brkm(TCONF, cleanup, "O_DIRECT is not supported by this 
+filesystem. %s", strerror(errno));
+      }
++    close(fd1);
+  }
+
+  static void cleanup(void)
+Index: ltp-full-20091231/testcases/kernel/io/direct_io/diotest6.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/io/direct_io/diotest6.c
++++ ltp-full-20091231/testcases/kernel/io/direct_io/diotest6.c
+@@ -387,6 +387,7 @@ static void setup(void)
+      if ((fd1 = open(filename, O_DIRECT, 0600)) < 0) {
+          tst_brkm(TCONF, cleanup, "O_DIRECT is not supported by this 
+filesystem. %s", strerror(errno));
+      }
++    close(fd1);
+  }
+
+  static void cleanup(void)
+Index: ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress02.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/mem/mmapstress/mmapstress02.c
++++ ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress02.c
+@@ -165,6 +165,10 @@ main(int argc, char *argv[]) {
+          CLEANERROR("close failed");
+          anyfail();
+      }
++    if (munmap(mmapaddr, pagesize) == -1) {
++        CLEANERROR("munmap failed");
++        anyfail();
++    }
+      if (unlink(tmpname) == -1) {
+          ERROR("unlink failed");
+          anyfail();
+Index: ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress01.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/mem/mmapstress/mmapstress01.c
++++ ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress01.c
+@@ -590,7 +590,11 @@ child_mapper(char *file, unsigned procno
+              anyfail();
+          }
+      }
+-
++    if (munmap(maddr, mapsize) == -1) {
++        perror("munmap failed");
++        local_flag = FAILED;
++        anyfail();
++    }
+      exit(0);
+  }
+
+@@ -694,6 +698,7 @@ fileokay(char *file, uchar_t *expbuf)
+              }
+          }
+      }
++    close(fd);
+
+      return 1;
+  }
+Index: ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress05.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/mem/mmapstress/mmapstress05.c
++++ ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress05.c
+@@ -61,6 +61,15 @@ void ok_exit();
+  #define ERROR(M)    (void)fprintf(stderr, "%s:  errno = %d; " M "\n", \
+                  progname, errno);
+  #define CLEAN    (void)close(fd); \
++        if (munmap(mmapaddr+pagesize, pagesize) == -1) { \
++            ERROR("munmap failed"); \
++        } \
++        if (munmap(mmapaddr, pagesize) == -1) { \
++            ERROR("munmap failed"); \
++        } \
++        if (munmap(mmapaddr+2*pagesize, pagesize) == -1) { \
++            ERROR("munmap failed"); \
++        } \
+          if (unlink(tmpname)) { \
+              ERROR("couldn't clean up temp file"); \
+          }
+Index: ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress10.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/mem/mmapstress/mmapstress10.c
++++ ltp-full-20091231/testcases/kernel/mem/mmapstress/mmapstress10.c
+@@ -154,6 +154,15 @@ unsigned do_offset = 0;
+  unsigned pattern = 0;
+  char filename[64];
+
++void clean_mapper(int sig);
++void clean_writer(int sig);
++
++int fd_mapper = 0;
++caddr_t maddr_mapper;
++size_t mapsize_mapper;
++
++int fd_writer = 0;
++
+  int
+  main(int argc, char *argv[])
+  {
+@@ -484,8 +493,8 @@ main(int argc, char *argv[])
+
+  cleanup:
+      for (i = 0; i < nprocs; i++)
+-        (void)kill(pidarray[i], SIGKILL);
+-    (void)kill(wr_pid, SIGKILL);
++        (void)kill(pidarray[i], SIGUSR1);
++    (void)kill(wr_pid, SIGUSR1);
+
+      while (wait(&wait_stat) != -1 || errno != ECHILD)
+          continue;
+@@ -531,9 +540,7 @@ child_mapper(char *file, unsigned procno
+      off_t offset;
+  #endif /* LARGE_FILE */
+      size_t validsize;
+-    size_t mapsize;
+-    caddr_t maddr, paddr;
+-    int fd;
++    caddr_t paddr;
+      int pagesize = sysconf(_SC_PAGE_SIZE);
+      unsigned randpage;
+      unsigned int seed;
+@@ -542,25 +549,38 @@ child_mapper(char *file, unsigned procno
+      unsigned mappages;
+      unsigned mapflags;
+      unsigned i;
++    struct sigaction sa_mapper;
+
+      mapflags = MAP_SHARED;
+
+      seed = initrand();        /* initialize random seed */
+
++    sa_mapper.sa_handler = clean_mapper;
++    sa_mapper.sa_flags = 0;
++    if (sigemptyset(&sa_mapper.sa_mask)) {
++        perror("sigempty error");
++                anyfail();
++    }
++
++    if (sigaction(SIGUSR1, &sa_mapper, 0) == -1) {
++        perror("sigaction error SIGUSR1");
++                anyfail();
++    }
++
+
+  #ifdef LARGE_FILE
+-    if ((fd = open64(file, O_RDWR)) == -1) {
++    if ((fd_mapper = open64(file, O_RDWR)) == -1) {
+  #else /* LARGE_FILE */
+-    if ((fd = open(file, O_RDWR)) == -1) {
++    if ((fd_mapper = open(file, O_RDWR)) == -1) {
+  #endif /* LARGE_FILE */
+          perror("open error");
+                  anyfail();
+      }
+
+  #ifdef LARGE_FILE
+-    if (fstat64(fd, &statbuf) == -1) {
++    if (fstat64(fd_mapper, &statbuf) == -1) {
+  #else /* LARGE_FILE */
+-    if (fstat(fd, &statbuf) == -1) {
++    if (fstat(fd_mapper, &statbuf) == -1) {
+  #endif /* LARGE_FILE */
+          perror("stat error");
+                  anyfail();
+@@ -571,29 +591,29 @@ child_mapper(char *file, unsigned procno
+          fprintf(stderr, "size_t overflow when setting up map\n");
+                  anyfail();
+      }
+-    mapsize = (size_t)(statbuf.st_size - sparseoffset);
+-    mappages = roundup(mapsize, pagesize) / pagesize;
++    mapsize_mapper = (size_t)(statbuf.st_size - sparseoffset);
++    mappages = roundup(mapsize_mapper, pagesize) / pagesize;
+      offset = sparseoffset;
+      if (do_offset) {
+          int pageoffset = lrand48() % mappages;
+          int byteoffset = pageoffset * pagesize;
+          offset += byteoffset;
+-        mapsize -= byteoffset;
++        mapsize_mapper -= byteoffset;
+          mappages -= pageoffset;
+      }
+
+  #ifdef LARGE_FILE
+-    if ((maddr = mmap64(0, mapsize, PROT_READ|PROT_WRITE,
+-            mapflags, fd, offset)) == (caddr_t)-1) {
++    if ((maddr_mapper = mmap64(0, mapsize_mapper, PROT_READ|PROT_WRITE,
++            mapflags, fd_mapper, offset)) == (caddr_t)-1) {
+  #else /* LARGE_FILE */
+-    if ((maddr = mmap(0, mapsize, PROT_READ|PROT_WRITE,
+-            mapflags, fd, offset)) == (caddr_t)-1) {
++    if ((maddr_mapper = mmap(0, mapsize_mapper, PROT_READ|PROT_WRITE,
++            mapflags, fd_mapper, offset)) == (caddr_t)-1) {
+  #endif /* LARGE_FILE */
+          perror("mmap error");
+                  anyfail();
+      }
+
+-    (void)close(fd);
++    (void)close(fd_mapper);
+
+      nloops = (randloops) ? (lrand48() % MAXLOOPS) : MAXLOOPS;
+
+@@ -601,12 +621,12 @@ child_mapper(char *file, unsigned procno
+  #ifdef LARGE_FILE
+          (void)printf("child %d (pid %ld): seed %d, fsize %Ld, "
+              "mapsize %d, off %Ld, loop %d\n",
+-            procno, getpid(), seed, filesize, mapsize,
++            procno, getpid(), seed, filesize, mapsize_mapper,
+              offset/pagesize, nloops);
+  #else /* LARGE_FILE */
+          (void)printf("child %d (pid %d): seed %d, fsize %ld, "
+              "mapsize %ld, off %ld, loop %d\n",
+-            procno, getpid(), seed, filesize, (long)mapsize,
++            procno, getpid(), seed, filesize, (long)mapsize_mapper,
+              offset/pagesize, nloops);
+  #endif /* LARGE_FILE */
+      }
+@@ -616,13 +636,13 @@ child_mapper(char *file, unsigned procno
+       */
+      for (loopcnt = 0; loopcnt < nloops; loopcnt++) {
+          randpage = lrand48() % mappages;
+-        paddr = maddr + (randpage * pagesize);     /* page address */
++        paddr = maddr_mapper + (randpage * pagesize);     /* page 
+address */
+
+          if (randpage < mappages - 1
+-            || !(mapsize % pagesize))
++            || !(mapsize_mapper % pagesize))
+              validsize = pagesize;
+          else
+-            validsize = mapsize % pagesize;
++            validsize = mapsize_mapper % pagesize;
+
+          /*
+           * Because one child is mapping file in extend mode,
+@@ -652,14 +672,17 @@ child_mapper(char *file, unsigned procno
+           * Exercise msync() as well!
+           */
+          randpage = lrand48() % mappages;
+-        paddr = maddr + (randpage * pagesize);     /* page address */
++        paddr = maddr_mapper + (randpage * pagesize);     /* page 
+address */
+          if (msync(paddr, (mappages - randpage)*pagesize,
+              MS_SYNC) == -1) {
+              perror("msync error");
+                          anyfail();
+          }
+      }
+-
++    if ( munmap(maddr_mapper,mapsize_mapper) == -1 ) {
++        perror("munmap failed");
++        anyfail();
++    }
+      exit(0);
+  }
+
+@@ -675,7 +698,20 @@ child_mapper(char *file, unsigned procno
+  void
+  child_writer(char *file, uchar_t *buf)    /* buf already set up in main */
+  {
+-    int fd;
++    struct sigaction sa_writer;
++
++    sa_writer.sa_handler = clean_writer;
++    sa_writer.sa_flags = 0;
++    if (sigemptyset(&sa_writer.sa_mask)) {
++        perror("sigempty error");
++                anyfail();
++    }
++
++    if (sigaction(SIGUSR1, &sa_writer, 0) == -1) {
++        perror("sigaction error SIGUSR1");
++                anyfail();
++    }
++
+  #ifdef LARGE_FILE
+      struct stat64 statbuf;
+      off64_t off;
+@@ -688,18 +724,18 @@ child_writer(char *file, uchar_t *buf)    /
+      int cnt;
+
+  #ifdef LARGE_FILE
+-    if ((fd = open64(file, O_RDWR)) == -1) {
++    if ((fd_writer = open64(file, O_RDWR)) == -1) {
+  #else /* LARGE_FILE */
+-    if ((fd = open(file, O_RDWR)) == -1) {
++    if ((fd_writer = open(file, O_RDWR)) == -1) {
+  #endif /* LARGE_FILE */
+          perror("open error");
+                  anyfail();
+      }
+
+  #ifdef LARGE_FILE
+-    if ((off = lseek64(fd, 0, SEEK_END)) == -1) {
++    if ((off = lseek64(fd_writer, 0, SEEK_END)) == -1) {
+  #else /* LARGE_FILE */
+-    if ((off = lseek(fd, 0, SEEK_END)) == -1) {
++    if ((off = lseek(fd_writer, 0, SEEK_END)) == -1) {
+  #endif /* LARGE_FILE */
+          perror("lseek error");
+                  anyfail();
+@@ -708,9 +744,9 @@ child_writer(char *file, uchar_t *buf)    /
+
+      for (;;) {
+  #ifdef LARGE_FILE
+-        if (fstat64(fd, &statbuf) == -1) {
++        if (fstat64(fd_writer, &statbuf) == -1) {
+  #else /* LARGE_FILE */
+-        if (fstat(fd, &statbuf) == -1) {
++        if (fstat(fd_writer, &statbuf) == -1) {
+  #endif /* LARGE_FILE */
+              perror("fstat error");
+                          anyfail();
+@@ -734,7 +770,7 @@ child_writer(char *file, uchar_t *buf)    /
+
+          p = buf + (off % pagesize);
+
+-        if ((cnt = write(fd, p, growsize)) != growsize) {
++        if ((cnt = write(fd_writer, p, growsize)) != growsize) {
+              if (cnt == -1)
+                  perror("write error");
+              else
+@@ -747,12 +783,13 @@ child_writer(char *file, uchar_t *buf)    /
+
+          (void)sleep(sleeptime);
+          if (dosync) {
+-            if (fsync(fd) == -1) {
++            if (fsync(fd_writer) == -1) {
+                  perror("fsync error");
+                                  anyfail();
+              }
+          }
+      }
++    close(fd_writer);
+  }
+
+
+@@ -814,6 +851,7 @@ fileokay(char *file, uchar_t *expbuf)
+          cnt = read(fd, (char *)readbuf, pagesize);
+          if (cnt == -1) {
+              perror("read error");
++            close(fd);
+              return 0;
+          } else if (cnt != pagesize) {
+              /*
+@@ -822,6 +860,7 @@ fileokay(char *file, uchar_t *expbuf)
+              if ((i * pagesize) + cnt != mapsize) {
+                  (void)fprintf(stderr, "read %d of %ld bytes\n",
+                      (i*pagesize)+cnt, (long)mapsize);
++                close(fd);
+                  return 0;
+              }
+          }
+@@ -841,6 +880,7 @@ fileokay(char *file, uchar_t *expbuf)
+                  (void)fprintf(stderr, ", pg %d off %d, "
+                      "(fsize %ld)\n", i, j, statbuf.st_size);
+  #endif /* LARGE_FILE */
++                close(fd);
+                  return 0;
+              }
+          }
+@@ -866,6 +906,21 @@ clean_up_file(int sig)
+      exit(1);
+  }
+
++void clean_mapper(int sig)
++{
++    if (fd_mapper)
++        close(fd_mapper);
++    munmap(maddr_mapper,mapsize_mapper);
++    exit (0);
++}
++
++void clean_writer(int sig)
++{
++    if (fd_writer)
++        close(fd_writer);
++    exit(0);
++}
++
+  unsigned int
+  initrand(void)
+  {
+@@ -887,7 +942,6 @@ initrand(void)
+      return (seed);
+  }
+
+-
+  /*****  LTP Port        *****/
+  void ok_exit()
+  {
+Index: ltp-full-20091231/testcases/kernel/syscalls/ppoll/ppoll01.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ ltp-full-20091231/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -378,8 +378,10 @@ static int do_test(struct test_case *tc)
+      }
+      result |= (sys_errno != tc->err) || !cmp_ok;
+      PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, 
+sys_errno, cmp_ok);
+-    cleanup: if (fd >= 0)
++    cleanup: if (fd >= 0) {
++        close(fd);
+          cleanup_file(fpath);
++    }
+
+      sigemptyset(&sigmask);
+      sigprocmask(SIG_SETMASK, &sigmask, NULL);
+Index: ltp-full-20091231/testcases/kernel/syscalls/utimes/utimes01.c
+===================================================================
+--- ltp-full-20091231.orig/testcases/kernel/syscalls/utimes/utimes01.c
++++ ltp-full-20091231/testcases/kernel/syscalls/utimes/utimes01.c
+@@ -234,6 +234,8 @@ static int do_test(struct test_case *tc)
+          TEST(rc = setup_file(TESTDIR, "test.file", fpath));
+          if (rc < 0)
+                  return 1;
++    /* The test just needs the file, so no need to keep it open. */
++    close(rc);
+
+      /*
+           * Change effective user id
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---VbJkn9YxBvnuCH5J--
-
