@@ -1,23 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yaneurabeya@gmail.com>) id 1Oao61-0000Gi-GE
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 11:01:17 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oao5x-00034P-P2
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 11:01:16 +0000
-Received: by pwi10 with SMTP id 10so1874698pwi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 19 Jul 2010 04:01:08 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1081)
-From: Garrett Cooper <yaneurabeya@gmail.com>
-In-Reply-To: <1736556680.530871279536912040.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Mon, 19 Jul 2010 04:01:05 -0700
-Message-Id: <6A78C8A0-85A2-4985-9E37-2B55BA569961@gmail.com>
-References: <1736556680.530871279536912040.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] Fix utimensat01 testcase
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OUNDx-0001wf-70
+	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:06:53 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OUNDw-0007fR-EP
+	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:06:53 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e37.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o61H4uVd015730
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 11:04:56 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	o61H6bXK243696
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 11:06:42 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o61H6Wkw009351
+	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 11:06:33 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1277796706-6450-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+References: <1277796706-6450-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Date: Thu, 01 Jul 2010 22:36:21 +0530
+Message-Id: <1278003981.21642.6.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] realtime: rearrange the pthread attr functions
+	order	in librttest
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,103 +41,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Cc: Linux Test Project <ltp-list@lists.sourceforge.net>, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-On Jul 19, 2010, at 3:55 AM, Caspar Zhang wrote:
+On Tue, 2010-06-29 at 13:01 +0530, Gowrishankar wrote: 
+> From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+> 
+> In the recent pthread libraries, order of calling pthread_attr_setschedpolicy
+> and pthread_attr_setschedparam plays important role in a way that, former
+> should always be called followed by later.
+> 
+> Otherwise, pthread_attr_setschedparam always ends with error 22 (EINVAL).
+> This patch fixes the create_thread() in librttest library.
+> 
+> Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
 
-> Hi all,
->   I tested this case for many times in RHEL6 on all archs but
->   always got a failure. The error message was:
->   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   open: Permission denied 
->   FAILED (bad test setup)
->   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   when the testcase tried to execute ./utimensat01 <params,...>.
-> 
->   After investigation, I found that the following two parts
->   maybe have wrong RW parameter:
-> 
->   a) Testing read-only file, owned by nobody(self).
->   Since the perm is 400, the user `nobody' itself doesn't have
->   write permission to the testfile, thus, if program executes
->   ./utimensat01 with -w param, `Permission deined' error will
->   occur. So we need to add -W in run_test param to avoid trying
->   writing test.
-> 
->   b) Testing read-only file, owned by root.
->   Since root owns the test file and the perm is still 400,
->   the user `nobody' has neither writing nor reading permission
->   to this file, so -RW param should be both set to run_test
->   function to avoid trying reading & writing test.
-> 
->   Signed-off-by: Caspar Zhang <czhang@redhat.com>
-> 
-> diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> index 4246d1a..a861d61 100644
-> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> @@ -288,22 +288,22 @@ echo "Testing read-only file, owned by self"
-> echo
-> 
-> echo "***** Testing times==NULL case *****"
-> -run_test "" 400 "" "" SUCCESS y y
-> +run_test -W "" 400 "" "" SUCCESS y y
-> 
-> echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
-> -run_test "" 400 "" "0 n 0 n" SUCCESS y y
-> +run_test -W "" 400 "" "0 n 0 n" SUCCESS y y
-> 
-> echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
-> -run_test "" 400 "" "0 o 0 o" SUCCESS n n
-> +run_test -W "" 400 "" "0 o 0 o" SUCCESS n n
-> 
-> echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
-> -run_test "" 400 "" "0 n 0 o" SUCCESS y n
-> +run_test -W "" 400 "" "0 n 0 o" SUCCESS y n
-> 
-> echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
-> -run_test "" 400 "" "0 o 0 n" SUCCESS n y
-> +run_test -W "" 400 "" "0 o 0 n" SUCCESS n y
-> 
-> echo "***** Testing times=={ x, y } case *****"
-> -run_test "" 400 "" "1 1 1 1" SUCCESS y y
-> +run_test -W "" 400 "" "1 1 1 1" SUCCESS y y
-> 
-> echo "============================================================"
-> 
-> @@ -312,22 +312,22 @@ echo "Testing read-only file, not owned by self"
-> echo
-> 
-> echo "***** Testing times==NULL case *****"
-> -run_test root 400 "" "" EACCES
-> +run_test -RW root 400 "" "" EACCES
-> 
-> echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
-> -run_test root 400 "" "0 n 0 n" EACCES
-> +run_test -RW root 400 "" "0 n 0 n" EACCES
-> 
-> echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
-> -run_test root 400 "" "0 o 0 o" SUCCESS n n
-> +run_test -RW root 400 "" "0 o 0 o" SUCCESS n n
-> 
-> echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
-> -run_test root 400 "" "0 n 0 o" EPERM
-> +run_test -RW root 400 "" "0 n 0 o" EPERM
-> 
-> echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
-> -run_test root 400 "" "0 o 0 n" EPERM
-> +run_test -RW root 400 "" "0 o 0 n" EPERM
-> 
-> echo "***** Testing times=={ x, y } case *****"
-> -run_test root 400 "" "1 1 1 1" EPERM
-> +run_test -RW root 400 "" "1 1 1 1" EPERM
-> 
-> echo "============================================================"
+Thanks.
 
-	ACK.
-Thanks!
--Garrett
+Regards--
+Subrata
+
+> Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+> Acked-by: Will Schmidt <will_schmidt@vnet.ibm.com>
+> Acked-by: Darren Hart <dvhltc@us.ibm.com>
+> ---
+>  testcases/realtime/lib/librttest.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/realtime/lib/librttest.c b/testcases/realtime/lib/librttest.c
+> index e092f35..49fec29 100644
+> --- a/testcases/realtime/lib/librttest.c
+> +++ b/testcases/realtime/lib/librttest.c
+> @@ -295,8 +295,8 @@ int create_thread(void*(*func)(void*), void *arg, int prio, int policy)
+> 
+>  	pthread_attr_init(&thread->attr);
+>  	pthread_attr_setinheritsched(&thread->attr, PTHREAD_EXPLICIT_SCHED);
+> -	pthread_attr_setschedparam(&thread->attr, &param);
+>  	pthread_attr_setschedpolicy(&thread->attr, thread->policy);
+> +	pthread_attr_setschedparam(&thread->attr, &param);
+> 
+>  	if ((ret = pthread_create(&thread->pthread, &thread->attr, func, (void*)thread))) {
+>  		printf("pthread_create failed: %d (%s)\n", ret, strerror(ret));
+
+
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
