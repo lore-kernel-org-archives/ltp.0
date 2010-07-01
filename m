@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Oam9H-0002EW-SQ
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 08:56:31 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Oam9G-0007D9-HI
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 08:56:31 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <AANLkTimyS1H-5pxJ25TVNaHdHt71ln6Aqxe38uMdH_HU@mail.gmail.com>
-References: <1278930128.18204.14.camel@subratamodak.linux.ibm.com>
-	<AANLkTinyob2ONZI7W9rnBdZI87D1twZuskEZQaHTK4UA@mail.gmail.com>
-	<AANLkTimyS1H-5pxJ25TVNaHdHt71ln6Aqxe38uMdH_HU@mail.gmail.com>
-Date: Mon, 12 Jul 2010 16:16:13 +0530
-Message-Id: <1278931579.18204.18.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Latest GIT creates install error
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1OUNAR-000826-Gf
+	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:03:15 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OUNAQ-00029W-LS
+	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:03:15 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 1 Jul 2010 13:01:57 -0400
+References: <20100701165206.23119.26070.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20100701165206.23119.26070.sendpatchset@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Message-Id: <201007011301.59073.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v3] Remove files which does not have a dmesg entry
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,62 +24,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4072583600711659889=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP List Members <ltp-list@lists.sf.net>
 
-On Mon, 2010-07-12 at 03:25 -0700, Garrett Cooper wrote:
-> On Mon, Jul 12, 2010 at 3:23 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> > On Mon, Jul 12, 2010 at 3:22 AM, Subrata Modak
-> > <subrata@linux.vnet.ibm.com> wrote:
-> >> Hi Garret,
-> >>
-> >> Latest LTP git creates install error:
-> >>
-> >> make -C open_posix_testsuite
-> >> top_srcdir=/root/ltp-dev/testcases/open_posix_testsuite install
-> >> make[2]: Entering directory
-> >> `/root/ltp-dev/testcases/open_posix_testsuite'
-> >> mkdir -p //opt/openposix_testsuite/bin/.
-> >> make[2]: *** No rule to make target `run.sh', needed by `install'.
-> >> Stop.
-> >> make[2]: Leaving directory
-> >> `/root/ltp-dev/testcases/open_posix_testsuite'
-> >> make[1]: *** [open_posix_testsuite-install] Error 2
-> >> make[1]: Leaving directory `/root/ltp-dev/testcases'
-> >> make: *** [testcases-install] Error 2
-> >
-> > Could you try:
-> >
-> > make -C open_posix_testsuite all
-> >
-> > then
-> >
-> > make -C open_posix_testsuite install
-> >
-> > ?
-> 
-> Better yet, what are the exact steps you took to arrive at that error?
+--===============4072583600711659889==
+Content-Type: multipart/signed; boundary="nextPart6000554.4BgMHRO2n0";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-make autotools
-./configure
-make -j 16
-make install
+--nextPart6000554.4BgMHRO2n0
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Regards--
-Subrata
+On Thursday, July 01, 2010 12:52:07 Subrata Modak wrote:
+> +		if find "$DMESG_DIR" -size 0 -exec rm {} + ; then
+> +			echo "cd to $DMESG_DIR failed: $?"
+> +		fi
 
-> Thanks!
-> -Garrett
+err, sorry, you probably want "! find"
+-mike
 
+--nextPart6000554.4BgMHRO2n0
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
+
+iQIcBAABAgAGBQJMLMoHAAoJEEFjO5/oN/WBQ/wP/0m3+B3E/jvjwo1qZeS+6lUF
+JB6dOZ7NXYGvfu/qywjephc1DzzG/c+dKExsEAI2l7qPcxP40fHdcl5A1IEn7VhC
+7gRnsIM02j44ljMrNbmft2tYwxrdjR5awocRRXgWkXJWvvsFJRXG10GcqShI8ZWQ
+VojO2RNr3M4I944/66xRQvsvIZo5fG3rDfxb/tleKKp64ZhMl3DopdlWEucNzClz
+0jzUtDa8oSTac9vpZK4sjOpAqIuVDsa9EAn1PreXRkavYovyRlB4RNEErZOhZCTA
+/oGvJ3jDA42wmwjBQdJpAKI1LwSIbB+rVFpSIALUZ6vOQ/QryYzdbo7jeiGCn0Dt
+rR0UDJBI78kcc/1DZ8uIvpL4RbBrbd4+2D9qNz/O3uoAo3awtxAPmhSzHdspnIJ1
+bavRTnJKTKbI81sPG/SMXUhfMFZKmB/zBC8bq5xQA/bLpD5QB+yXvXUCartohY0U
+8DcV/2Ns6z2SIMF+TF4alWM4IpX7kkyJTt3HQ/JDTaJnjpfS+zbVENa7SHQ+KCQP
+gABzU+5CUr03yoN6fEuivXAOH0rMaqjO3SaPJQ+N4Xm00k725BBrtJvvClAF2oqo
+tW+Fi+9zTK0iH4wuMSRJ2FtAi11A75wdq69Ge+sr9DWFfwgw1mfMyZ4HbG3eHJmi
+mC5DCJWhih3uedtJkqS7
+=FIwT
+-----END PGP SIGNATURE-----
+
+--nextPart6000554.4BgMHRO2n0--
+
+
+--===============4072583600711659889==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--===============4072583600711659889==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4072583600711659889==--
+
