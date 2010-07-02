@@ -1,31 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OUZh9-0004ZH-Gf
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:51 +0000
-Received: from e28smtp05.in.ibm.com ([122.248.162.5])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OUZh3-0007lK-Ek
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
+Received: from e28smtp08.in.ibm.com ([122.248.162.8])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUZh8-0003yU-89
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:51 +0000
-Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
-	by e28smtp05.in.ibm.com (8.14.4/8.13.1) with ESMTP id o626PcxT004469
-	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:38 +0530
+	(Exim 4.69) id 1OUZh1-0003xd-3G
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp08.in.ibm.com (8.14.4/8.13.1) with ESMTP id o626O1Lv004794
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:54:01 +0530
 Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
-	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o626PYab1130622
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o626PXjL4001854
 	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:34 +0530
 Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
 	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o626PXQB004703
+	o626PX5J004692
 	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 16:25:33 +1000
 From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Date: Fri,  2 Jul 2010 11:55:27 +0530
-Message-Id: <1278051930-4070-5-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Date: Fri,  2 Jul 2010 11:55:25 +0530
+Message-Id: <1278051930-4070-3-git-send-email-gomuthuk@linux.vnet.ibm.com>
 In-Reply-To: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
 References: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH 4/7] realtime/testpi-4: threads need not set cpu
-	affinity while main does
+Subject: [LTP] [PATCH 2/7] realtime/testpi-4: reuse init_pi_mutex from
+	librttest
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,77 +44,56 @@ Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
 From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-Since main() sets the cpu affinity, it is not necessary for the
-spawned threads to do so, as the threads inherit the cpu affinity.
+testpi-4 is initializing mutex step by step which can be done
+by reusing the init_pi_mutex() funtion available in librttest.
 
 Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
 Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
 Acked-by: Darren Hart <dvhltc@us.ibm.com>
 ---
- testcases/realtime/func/pi-tests/testpi-4.c |   36 ++------------------------
- 1 files changed, 3 insertions(+), 33 deletions(-)
+ testcases/realtime/func/pi-tests/testpi-4.c |   22 +++-------------------
+ 1 files changed, 3 insertions(+), 19 deletions(-)
 
 diff --git a/testcases/realtime/func/pi-tests/testpi-4.c b/testcases/realtime/func/pi-tests/testpi-4.c
-index 6a90771..0960c91 100644
+index bde3ded..53b47a8 100644
 --- a/testcases/realtime/func/pi-tests/testpi-4.c
 +++ b/testcases/realtime/func/pi-tests/testpi-4.c
-@@ -81,17 +81,7 @@ pthread_mutex_t *glob_mutex;
- void *func_nonrt(void *arg)
+@@ -199,8 +199,7 @@ void *func_noise(void *arg)
+  */
+ int main(int argc, char *argv[])
  {
- 	struct thread *pthr = (struct thread *)arg;
--	int rc, i, j, tid = gettid();
--	cpu_set_t mask;
--	CPU_ZERO(&mask);
--	CPU_SET(0, &mask);
--
--	rc = sched_setaffinity(0, sizeof(mask), &mask);
--	if (rc < 0) {
--		printf("Thread %d: Can't set affinity: %d %s\n",
--			tid, rc, strerror(rc));
--		exit(-1);
--	}
-+	int i, j, tid = gettid();
+-	pthread_mutexattr_t mutexattr;
+-	int i, retc, protocol, nopi = 0;
++	int i, retc, nopi = 0;
+ 	cpu_set_t mask;
+ 	CPU_ZERO(&mask);
+ 	CPU_SET(0, &mask);
+@@ -233,23 +232,8 @@ int main(int argc, char *argv[])
+ 		exit(errno);
+ 	}
  
- 	printf("Thread %d started running with priority %d\n", tid,
- 		pthr->priority);
-@@ -119,17 +109,7 @@ void *func_nonrt(void *arg)
- void *func_rt(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int rc, i, j, tid = gettid();
--	cpu_set_t mask;
--	CPU_ZERO(&mask);
--	CPU_SET(0, &mask);
+-	if (!nopi) {
+-		if (pthread_mutexattr_init(&mutexattr) != 0)
+-			printf("Failed to init mutexattr\n");
 -
--	rc = sched_setaffinity(0, sizeof(mask), &mask);
--	if (rc < 0) {
--		printf("Thread %d: Can't set affinity: %d %s\n",
--			tid, rc, strerror(rc));
--		exit(-1);
--	}
-+	int i, j, tid = gettid();
- 
- 	printf("Thread %d started running with prio %d\n", tid,
- 		pthr->priority);
-@@ -162,17 +142,7 @@ void *func_rt(void *arg)
- void *func_noise(void *arg)
- {
- 	struct thread *pthr = (struct thread *)arg;
--	int rc, i, j, tid = gettid();
--	cpu_set_t mask;
--	CPU_ZERO(&mask);
--	CPU_SET(0, &mask);
+-		if (pthread_mutexattr_setprotocol(&mutexattr,
+-			 PTHREAD_PRIO_INHERIT) != 0)
+-			printf("Can't set protocol prio inherit\n");
 -
--	rc = sched_setaffinity(0, sizeof(mask), &mask);
--	if (rc < 0) {
--		printf("Thread %d: Can't set affinity: %d %s\n", tid, rc,
--			strerror(rc));
--		exit(-1);
+-		if (pthread_mutexattr_getprotocol(&mutexattr, &protocol) != 0)
+-			printf("Can't get mutexattr protocol\n");
+-		else
+-			printf("protocol in mutexattr is %d\n", protocol);
+-
+-		retc = pthread_mutex_init(glob_mutex, &mutexattr);
+-		if (retc != 0)
+-			printf("Failed to init mutex: %d\n", retc);
 -	}
-+	int i, j, tid = gettid();
++	if (!nopi)
++		init_pi_mutex(glob_mutex);
  
- 	printf("Noise Thread started running with prio %d\n",
- 		pthr->priority);
+ 	create_other_thread(func_nonrt, NULL);
+ 	create_rr_thread(func_rt, NULL, 20);
 -- 
 1.7.1
 
