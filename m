@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sumitbd@linsyssoft.com>) id 1OXxZI-0003OA-Ok
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:31:44 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OXxZE-00071o-SM
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:31:44 +0000
-Received: by pwi10 with SMTP id 10so1607382pwi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 11 Jul 2010 07:31:35 -0700 (PDT)
-From: sumitbd@linsyssoft.com
-Date: Sun, 11 Jul 2010 18:55:32 +0530
-Message-ID: <1278854732.8660.34.camel@sumit>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 1/3] MAKEFILE: testcases/network/Makefile - bug fixing
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OUZh3-0002TD-DO
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
+Received: from e28smtp08.in.ibm.com ([122.248.162.8])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OUZh0-0002Pc-LJ
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp08.in.ibm.com (8.14.4/8.13.1) with ESMTP id o626O2GF004803
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:54:02 +0530
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o626PYCh3535070
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:34 +0530
+Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o626PXk0004695
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 16:25:33 +1000
+From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Date: Fri,  2 Jul 2010 11:55:26 +0530
+Message-Id: <1278051930-4070-4-git-send-email-gomuthuk@linux.vnet.ibm.com>
+In-Reply-To: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+References: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH 3/7] realtime/testpi-4: add test description
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +34,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-Hi,
+From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-Testcase "nfs02" fails as script does not able to find  following files
-ascii.jmb
-ascii.lg
-ascii.med
-ascii.sm
-This is because ltp's testcases/network/Makefile doesn't installed
-those. It is fixed with following patch.
+This patch adds the description to the test testpi-4.
 
-Index: ltp-full-20100630/testcases/network/Makefile
-===================================================================
---- ltp-full-20100630.orig/testcases/network/Makefile
-+++ ltp-full-20100630/testcases/network/Makefile
-@@ -31,6 +31,7 @@ CLEAN_TARGETS		+= $(DIR)
- INSTALL_DIR		:= testcases/bin
- 
- INSTALL_TARGETS		:= $(addprefix $(DIR)/bin.,sm med lg jmb)
-+INSTALL_TARGETS		+= $(addprefix $(DIR)/ascii.,sm med lg jmb)
- 
- RM			+= -r
- 
+Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+---
+ testcases/realtime/func/pi-tests/testpi-4.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks & Regards
-Sumit Dhoot
-System Administrator 
-Linsyssoft Technologies Pvt. Ltd.
-sumitbd@linsyssoft.com
-
-
+diff --git a/testcases/realtime/func/pi-tests/testpi-4.c b/testcases/realtime/func/pi-tests/testpi-4.c
+index 53b47a8..6a90771 100644
+--- a/testcases/realtime/func/pi-tests/testpi-4.c
++++ b/testcases/realtime/func/pi-tests/testpi-4.c
+@@ -20,8 +20,8 @@
+  *      testpi-4.c
+  *
+  * DESCRIPTION
+- *
+- *
++ *     This testcase verifies that the SCHED_OTHER thread can preempt
++ *     the SCHED_RR thread via priority inheritance.
+  *
+  * USAGE:
+  *      Use run_auto.sh script in current directory to build and run test.
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
