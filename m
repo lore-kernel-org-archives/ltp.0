@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OYNoF-0000Oh-UQ
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 18:32:55 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OYNoD-0001LG-3s
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 18:32:55 +0000
-Received: by iwn34 with SMTP id 34so4165955iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 12 Jul 2010 11:32:48 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OUjB4-0006fD-BV
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:33:22 +0000
+Received: from mail-iw0-f174.google.com ([209.85.214.174])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OUjB3-00034z-Cv
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:33:22 +0000
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinztRlk00v7cvOHHhpwuX4sLgVhmRDb3ZBM2wm8@mail.gmail.com>
-References: <52CF90264091A14888078A031D780F4305D0247B@ism-mail03.corp.ad.wrs.com>
-	<AANLkTinztRlk00v7cvOHHhpwuX4sLgVhmRDb3ZBM2wm8@mail.gmail.com>
-Date: Mon, 12 Jul 2010 11:32:47 -0700
-Message-ID: <AANLkTilOAvBQAkAkWMfKDpqr6uO6J0h7H1E0QK4RR2R1@mail.gmail.com>
+In-Reply-To: <1278087148.6654.80.camel@moss-pluto.epoch.ncsc.mil>
+References: <1278087148.6654.80.camel@moss-pluto.epoch.ncsc.mil>
+Date: Fri, 2 Jul 2010 09:33:14 -0700
+Message-ID: <AANLkTinSQUSXGO5Ifu8Z-RVoCvagpFZqZKROWkXAN7SY@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Contribute to LTP
+Subject: Re: [LTP] [PATCH] ima: Fix ima_measure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,37 +24,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <tosubrata@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, "Fu, Yingang" <Yingang.Fu@windriver.com>
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: ltp-list <ltp-list@lists.sf.net>, Mimi Zohar <zohar@us.ibm.com>
 
-On Mon, Jul 12, 2010 at 10:20 AM, Subrata Modak <tosubrata@gmail.com> wrote:
-> Hi,
+On Fri, Jul 2, 2010 at 9:12 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> ima_measure doesn't build correctly. =A0It needs config.h to determine
+> whether openssl headers are present, and verbose needs to be global.
+> Broken by commit ef77253961f909f87e82e6d2b620e87af33e9665.
 >
-> On Mon, Jul 12, 2010 at 1:36 PM, Fu, Yingang <Yingang.Fu@windriver.com>
-> wrote:
->>
->> hi,
->>
->> We have lots of fixes for ltp. What's the process of contribution to it?
->
-> Good to know that you have lot of fixes for LTP. You need to follow the
-> following procedure:
->
-> Subscribe to this list first
-> Send patches to this list with your Sign-off,
-> Also attach supporting test results against your patches,
+> Signed-off-by: =A0Stephen D. Smalley <sds@tycho.nsa.gov>
 
-    Please make sure to pull the git based sources as well, not the
-CVS ones, and be sure to pull the ltp-dev.git git module, not the
-ltp.git one like the directions say up on the git pull page (I really
-need to fix that).
-Thanks!
+I don't remember why I did this originally (might have accidentally
+committed a test version of the program), but the diff looks sane.
+
+Acked-by: Garrett Cooper <yanegomi@gmail.com>
+
+Thanks,
 -Garrett
 
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
