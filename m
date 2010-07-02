@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1OakGK-0003Jn-R5
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 06:55:40 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25]
-	helo=mx02.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OakGI-0007mq-I7
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 06:55:40 +0000
-Date: Mon, 19 Jul 2010 02:55:31 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <717420931.522261279522531955.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1686792840.522211279522425828.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <lliubbo@gmail.com>) id 1OUZ0L-0000tx-1w
+	for Ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 05:41:37 +0000
+Received: from mail-qy0-f182.google.com ([209.85.216.182])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OUZ0K-0002aj-B3
+	for Ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 05:41:37 +0000
+Received: by qyk7 with SMTP id 7so272958qyk.13
+	for <Ltp-list@lists.sourceforge.net>;
+	Thu, 01 Jul 2010 22:41:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_22969_338641583.1279522531954"
-Subject: Re: [LTP] [PATCH] fix false alarm in pselect01
+Date: Fri, 2 Jul 2010 13:41:30 +0800
+Message-ID: <AANLkTikvEYeg8DZfl6Deuge9f9Lk_uhA0MuW_OP4Ve9M@mail.gmail.com>
+From: Bob Liu <lliubbo@gmail.com>
+Subject: [LTP] [Bug Fix]semctl01 and shmctl01 will hang during uClinux test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,125 +25,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Ltp-list@lists.sourceforge.net
 
-------=_Part_22969_338641583.1279522531954
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-
------ "Garrett Cooper" <yanegomi@gmail.com> wrote:
-
-> 
->     The fact that the test is using time(3) to calculate the elapsed
-> period instead of clock_gettime is dubious at best, because the
-> precision of time is in seconds. Maybe it should be converted to
-> clock_gettime calls for improved precision?
-
-Use clock_gettime instead of time(3), patch attached. 
-
-Another question, since POSIX.1-2008 marks gettimeofday() as obsolete
-(man gettimeofday), should the usec test part be changed to
-clock_getime as well?
-
-Thanks,
-Caspar
-
--- 
-/---------------------------------------\
-| Name: Caspar Zhang                    |
-| Team: Kernel-QE                       |
-| IRC: caspar @ #kernel-qe, #eng-china  |
-| Phone: +86-10-6260-8150               |
-| Cellphone: +86-1381-073-0090          |
-\---------------------------------------/
-
-
-------=_Part_22969_338641583.1279522531954
-Content-Type: text/x-patch; name=syscalls-pselect01-fix-false-alarm.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=syscalls-pselect01-fix-false-alarm.patch
-
-Hi all,
-   
-   In my recent tests, not all desired time be equal to exact execution time, 
-   use clock_gettime to improve precision. 
-   
-   Signed-off-by: Caspar Zhang <czhang@redhat.com>
-
---- a/testcases/kernel/syscalls/pselect/Makefile	2010-04-01 14:23:10.000000000 +0800
-+++ b/testcases/kernel/syscalls/pselect/Makefile	2010-07-19 14:54:38.984482305 +0800
-@@ -21,6 +21,7 @@
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../utils/newer_64.mk
- 
-+LDLIBS			+= -lpthread -lrt
- %_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
---- a/testcases/kernel/syscalls/pselect/pselect01.c	2010-04-01 14:23:10.000000000 +0800
-+++ b/testcases/kernel/syscalls/pselect/pselect01.c	2010-07-19 14:25:31.900419665 +0800
-@@ -65,10 +65,8 @@
- 	fd_set readfds;
- 	struct timespec tv;
- 	int retval;
--	time_t t;
--	unsigned start, end;
- 	struct timeval tv_start, tv_end;
--	int real_usec;
-+	int real_usec, real_sec;
- 
- 	setup();
- 
-@@ -103,17 +101,20 @@
- 		tst_resm(TINFO,
- 			 "Testing basic pselect sanity,Sleeping for %jd secs",
- 			 (intmax_t)tv.tv_sec);
--		start = time(&t);
-+		clock_gettime(CLOCK_REALTIME, (struct timespec *)&tv_start);
- 		retval =
- 		    pselect(0, &readfds, NULL, NULL, (struct timespec *)&tv,
- 			    NULL);
--		end = time(&t);
-+		clock_gettime(CLOCK_REALTIME, (struct timespec *)&tv_end);
- 
--		if (((end - start) == total_sec) || ((end - start) == total_sec + 1))
-+		/* do a rounding */
-+		real_sec = (int)(0.5 + (tv_end.tv_sec - tv_start.tv_sec + 
-+				1e-6 * (tv_end.tv_usec - tv_start.tv_usec)));
-+		if (real_sec == total_sec)
- 			tst_resm(TPASS, "Sleep time was correct");
- 		else
- 			tst_resm(TFAIL, "Sleep time was incorrect:%d != %d",
--				 total_sec, (end - start));
-+				 total_sec, real_sec);
- 	}
- 
- #ifdef DEBUG
-
-------=_Part_22969_338641583.1279522531954
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-------=_Part_22969_338641583.1279522531954
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_22969_338641583.1279522531954--
-
+bHRwIHRlc3QgY2FzZSBzaG1jdGwwMSBhbmQgc2VtY3RsMDEgY2FuIG5vdCBleGVjdXRlLiBXaGVu
+IHByZXNzIGN0cmwKYW5kIGMsIGl0IGNhbiBub3QgZXhpc3QuCgotLQpyb290Oi8+IHNobWN0bDAx
+CgoKXkNzaG1jdGwwMSAgICAwICBJTkZPICA6ICByZWNlaXZlZCB1bmV4cGVjdGVkIHNpZ25hbCAy
+Cl5Dc2htY3RsMDEgICAgMCAgSU5GTyAgOiAgcmVjZWl2ZWQgdW5leHBlY3RlZCBzaWduYWwgMgot
+LQoKVGhlIHJlYXNvbiBpcyB0aGUgY2hpbGQgd2lsbCB1bmxpbmsgdGhlIHBpcGUgaWYgcGlwZW5h
+bWUgaXNuJ3QKTlVMTO+8jHdoaWNoIG1heSBtYWtlIHRoZSBwYXJlbnQKd2FpdHRpbmcgZm9yZXZl
+ci4KCgpJbmRleDogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAx
+LmMKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQotLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3Nl
+bWN0bDAxLmMJCisrKyB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3Rs
+MDEuYwkKQEAgLTQwMCw3ICs0MDAsMTEgQEAKIAlpZiAoc3luY19waXBlX25vdGlmeShzeW5jX3Bp
+cGVzKSA9PSAtMSkKIAkJdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJzeW5jX3BpcGVfbm90aWZ5
+IGZhaWxlZCIpOwoKKyNpZmRlZiBVQ0xJTlVYCisJaWYgKHN5bmNfcGlwZV9jbG9zZShzeW5jX3Bp
+cGVzLCBOVUxMKSA9PSAtMSkKKyNlbHNlCiAJaWYgKHN5bmNfcGlwZV9jbG9zZShzeW5jX3BpcGVz
+LCBQSVBFX05BTUUpID09IC0xKQorI2VuZGlmCiAJCXRzdF9icmttKFRCUk9LLCBjbGVhbnVwLCAi
+c3luY19waXBlX2Nsb3NlIGZhaWxlZCIpOwoKIAlzb3BzLnNlbV9udW0gPSBTRU00OwpJbmRleDog
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAxLmMKPT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQotLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAxLmMJCisr
+KyB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1jdGwvc2htY3RsMDEuYwkKQEAgLTMy
+NCw4ICszMjQsMTEgQEAKIAkKIAlpZiAoc3luY19waXBlX25vdGlmeShzeW5jX3BpcGVzKSA9PSAt
+MSkKIAkJdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJzeW5jX3BpcGVfbm90aWZ5IGZhaWxlZCIp
+OwotCisjaWZkZWYgVUNMSU5VWAorCWlmIChzeW5jX3BpcGVfY2xvc2Uoc3luY19waXBlcywgTlVM
+TCkgPT0gLTEpCisjZWxzZQogCWlmIChzeW5jX3BpcGVfY2xvc2Uoc3luY19waXBlcywgUElQRV9O
+QU1FKSA9PSAtMSkKKyNlbmRpZgogCQl0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgInN5bmNfcGlw
+ZV9jbG9zZSBmYWlsZWQiKTsKCiAJLyogZG8gYW4gYXNzaWduZW1lbnQgZm9yIGZ1biAqLwoKLS0g
+ClJlZ2FyZHMsCi0tQm9iCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1haWwg
+aXMgc3BvbnNvcmVkIGJ5IFNwcmludApXaGF0IHdpbGwgeW91IGRvIGZpcnN0IHdpdGggRVZPLCB0
+aGUgZmlyc3QgNEcgcGhvbmU/ClZpc2l0IHNwcmludC5jb20vZmlyc3QgLS0gaHR0cDovL3Auc2Yu
+bmV0L3NmdS9zcHJpbnQtY29tLWZpcnN0Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
+bHRwLWxpc3QK
