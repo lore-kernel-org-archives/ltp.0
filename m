@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sumitbd@linsyssoft.com>) id 1OZeaC-00075L-Al
-	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:39:40 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OZeaB-0006BA-BI
-	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:39:40 +0000
-Received: by pvg13 with SMTP id 13so768732pvg.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 15 Jul 2010 23:39:33 -0700 (PDT)
-From: sumitbd@linsyssoft.com
-Date: Fri, 16 Jul 2010 11:42:08 +0530
-Message-ID: <1279260728.4313.1.camel@sumit>
+	(envelope-from <sds@tycho.nsa.gov>) id 1OUiqx-0005Pt-C8
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:12:35 +0000
+Received: from msux-gh1-uea02.nsa.gov ([63.239.65.40])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OUiqw-0007Hc-Eh
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:12:35 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+Date: Fri, 02 Jul 2010 12:12:28 -0400
+Message-ID: <1278087148.6654.80.camel@moss-pluto.epoch.ncsc.mil>
 Mime-Version: 1.0
-Subject: [LTP] [PATCH 1/2] mc_opts: network/multicast/mc_opts/mc_opts script
- - bug fixing
+Subject: [LTP] [PATCH] ima:  Fix ima_measure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,27 +25,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
+Cc: Mimi Zohar <zohar@us.ibm.com>
 
-Test case "mc_opts" fails as it is not able to install "opts" and
-"opts_e" files at desired location. This is because the path of these
-files mentioned in the "mc_opts" script is incorrect. Following patch
-fixes the above problem.
+ima_measure doesn't build correctly.  It needs config.h to determine
+whether openssl headers are present, and verbose needs to be global.
+Broken by commit ef77253961f909f87e82e6d2b620e87af33e9665.
 
-Signed-off-by:  Sumit Dhoot <sumitbd@linsyssoft.com>
+Signed-off-by:  Stephen D. Smalley <sds@tycho.nsa.gov>
 
-Index: ltp-full-20100630/testcases/network/multicast/mc_opts/mc_opts
-===================================================================
---- ltp-full-20100630.orig/testcases/network/multicast/mc_opts/mc_opts
-+++ ltp-full-20100630/testcases/network/multicast/mc_opts/mc_opts
-@@ -57,7 +57,7 @@ setup()
-   mkdir -p $TCtmp
-   for i in $EXECUTABLES
-   do
--    install -m 0755 "$LTPROOT/$i" "$TCtmp/."
-+    install -m 0755 "$LTPROOT/testcases/bin/$i" "$TCtmp/."
-   done
-} 
+---
+
+diff --git a/testcases/kernel/security/integrity/ima/src/ima_measure.c b/testcases/kernel/security/integrity/ima/src/ima_measure.c
+index dd6b1d0..0484c04 100644
+--- a/testcases/kernel/security/integrity/ima/src/ima_measure.c
++++ b/testcases/kernel/security/integrity/ima/src/ima_measure.c
+@@ -22,7 +22,7 @@
+ #include <fcntl.h>
+ #include <string.h>
+ #include <unistd.h>
+-//#include "config.h"
++#include "config.h"
+ #include "test.h"
+ #if HAVE_OPENSSL_SHA_H
+ #include <openssl/sha.h>
+@@ -33,6 +33,8 @@
+ char *TCID = "ima_measure";
+ int TST_TOTAL = 1;
+ 
++static int verbose;
++
+ #define print_info(format, arg...) \
+ 	if (verbose) \
+ 		printf(format, ##arg)
+@@ -135,9 +137,8 @@ main(int argc, char *argv[])
+ 	FILE *fp;
+ 	struct event template;
+ 	u_int8_t pcr[SHA_DIGEST_LENGTH];
+-	int i, count = 0, len;
++	int i, count = 0;
+ 
+-	int verbose = 0;
+ 	int validate = 0;
+ 	int verify = 0;
+ 
+
+
+-- 
+Stephen Smalley
+National Security Agency
 
 
 ------------------------------------------------------------------------------
