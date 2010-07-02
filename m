@@ -1,35 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Odo7p-00025z-9G
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jul 2010 17:39:33 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Odo7m-0001fx-Vp
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jul 2010 17:39:33 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e34.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o6RHUrfl003454
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Jul 2010 11:30:53 -0600
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
-	id o6RHdAcR031402
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Jul 2010 11:39:10 -0600
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o6RHd8sh000986
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Jul 2010 11:39:08 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <BFAB6806-3BF8-4649-8CBF-B52A51AA4977@gmail.com>
-References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
-	<20100506065713.23879.94813.sendpatchset@subratamodak.linux.ibm.com>
-	<BFAB6806-3BF8-4649-8CBF-B52A51AA4977@gmail.com>
-Date: Tue, 27 Jul 2010 23:08:16 +0530
-Message-Id: <1280252297.7374.2.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [05/12 FAILURE] LTP? proc01 test fails
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OUZh3-0007lP-UL
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
+Received: from e28smtp02.in.ibm.com ([122.248.162.2])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OUZh2-0002Po-F3
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by e28smtp02.in.ibm.com (8.14.4/8.13.1) with ESMTP id o626PZib025898
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:35 +0530
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o626PYJ51310874
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:34 +0530
+Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o626PYj6004757
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 16:25:34 +1000
+From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Date: Fri,  2 Jul 2010 11:55:30 +0530
+Message-Id: <1278051930-4070-8-git-send-email-gomuthuk@linux.vnet.ibm.com>
+In-Reply-To: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+References: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH 7/7] realtime/testpi-4: synchronization fixes for high
+	priority noise thread
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,33 +35,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, Sharyathi Nagesh <sharyath@in.ibm.com>
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-VGhpcyBpcyBmaXhlZCBub3cgaW4gbGF0ZXN0IExUUC4KClJlZ2FyZHMtLQpTdWJyYXRhCgpPbiBU
-aHUsIDIwMTAtMDUtMDYgYXQgMDE6MDQgLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3RlOgo+IE9u
-IE1heSA1LCAyMDEwLCBhdCAxMTo1NyBQTSwgU3VicmF0YSBNb2RhayB3cm90ZToKPiAKPiA+IFN1
-YmplY3Q6IExUUMWbIHByb2MwMSB0ZXN0IGZhaWwKPiA+IAo+ID4gSXNzdWVzIERlc2NyaXB0aW9u
-IGJlbG93Ogo+ID4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4gPiAjIC4v
-cnVubHRwIC1zIHByb2MwMQo+ID4gCj4gPiA8PDx0ZXN0X291dHB1dD4+Pgo+ID4gcHJvYzAxICAg
-ICAgMCAgVElORk8gIDogIC9wcm9jL3N5c3JxLXRyaWdnZXI6IGlzIHdyaXRlLW9ubHkuCj4gPiBw
-cm9jMDEgICAgICAwICBUSU5GTyAgOiAgL3Byb2Mva21zZzoga25vd24gaXNzdWU6IGVycm5vPUVB
-R0FJTigxMSk6IFJlc291cmNlCj4gPiB0ZW1wb3JhcmlseSB1bmF2YWlsYWJsZQo+ID4gcHJvYzAx
-ICAgICAgMCAgVElORk8gIDogIC9wcm9jL3Bvd2VycGMvb2ZkdDogaXMgd3JpdGUtb25seS4KPiA+
-IHByb2MwMSAgICAgIDEgIFRGQUlMICA6ICByZWFkIGZhaWxlZDogL3Byb2MvcG93ZXJwYy9ydGFz
-L2Vycm9yX2xvZzoKPiA+IGVycm5vPUVJTlZBTCgyMik6IEludmFsaWQgYXJndW1lbnQKPiAKPiAJ
-Tm90IGEga25vd24gaXNzdWUuIEknZCBjaGVjayBhbmQgc2VlIHdoZXRoZXIgb3Igbm90IHRoaXMg
-aXRlbSBpcyB2YWxpZC4gU2VlbXMgbGlrZSBhIGZ1bmt5IGVycm9yIGNvZGUgdGhvdWdoLgo+IEhU
-SCwKPiAtR2FycmV0dAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgUGFsbSBQREsgSG90IEFw
-cHMgUHJvZ3JhbSBvZmZlcnMgZGV2ZWxvcGVycyB3aG8gdXNlIHRoZQpQbHVnLUluIERldmVsb3Bt
-ZW50IEtpdCB0byBicmluZyB0aGVpciBDL0MrKyBhcHBzIHRvIFBhbG0gZm9yIGEgc2hhcmUgCm9m
-ICQxIE1pbGxpb24gaW4gY2FzaCBvciBIUCBQcm9kdWN0cy4gVmlzaXQgdXMgaGVyZSBmb3IgbW9y
-ZSBkZXRhaWxzOgpodHRwOi8vYWQuZG91YmxlY2xpY2submV0L2NsazsyMjY4NzkzMzk7MTM1MDMw
-Mzg7bD8KaHR0cDovL2Nsay5hdGRtdC5jb20vQ1JTL2dvLzI0Nzc2NTUzMi9kaXJlY3QvMDEvCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1h
-aWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
-b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+
+In a scenario where a thread other than high priority noise thread is
+scheduled after the barrier, a priority inversion will not occur, defeating
+the purpose of test. We need to tightly synchronize the threads so that the
+noise thread always begins the test and gets preempted by the low prio thread
+through the PI logic.
+
+This change is applied on testpi-4.
+Signed-off-by: Gowrishankar<gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar<gowrishankar.m@in.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+---
+ testcases/realtime/func/pi-tests/testpi-4.c |   24 +++++++++++++++++++++++-
+ 1 files changed, 23 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/realtime/func/pi-tests/testpi-4.c b/testcases/realtime/func/pi-tests/testpi-4.c
+index 3bd5d77..63f8430 100644
+--- a/testcases/realtime/func/pi-tests/testpi-4.c
++++ b/testcases/realtime/func/pi-tests/testpi-4.c
+@@ -30,7 +30,9 @@
+  *
+  *
+  * HISTORY
+- *
++ *      2010-06-29 Thread synchronization changes by using
++ *                 conditional variables by Gowrishankar.
++ *                 by Gowrishankar <gowrishankar.m@in.ibm.com>
+  *
+  *****************************************************************************/
+ 
+@@ -74,6 +76,8 @@ int gettid(void)
+ 
+ typedef void *(*entrypoint_t)(void *);
+ pthread_mutex_t *glob_mutex;
++static pthread_mutex_t cond_mutex = PTHREAD_MUTEX_INITIALIZER;
++static pthread_cond_t cond_var = PTHREAD_COND_INITIALIZER;
+ 
+ void *func_nonrt(void *arg)
+ {
+@@ -85,8 +89,15 @@ void *func_nonrt(void *arg)
+ 	pthread_mutex_lock(glob_mutex);
+ 	printf("Thread %d at start pthread pol %d pri %d - Got global lock\n",
+ 		tid, pthr->policy, pthr->priority);
++
++	/* Wait for other RT threads to start up */
+ 	pthread_barrier_wait(&barrier);
+ 
++	/* Wait for the high priority noise thread to start and signal us */
++	pthread_mutex_lock(&cond_mutex);
++	pthread_cond_wait(&cond_var, &cond_mutex);
++	pthread_mutex_unlock(&cond_mutex);
++
+ 	for (i = 0; i < 10000; i++) {
+ 		if (i%100 == 0) {
+ 			printf("Thread %d loop %d pthread pol %d pri %d\n",
+@@ -137,6 +148,14 @@ void *func_noise(void *arg)
+ 		pthr->priority);
+ 	pthread_barrier_wait(&barrier);
+ 
++	/* Give the other threads time to wait on the condition variable.*/
++	usleep(1000);
++
++	/* Noise thread begins the test */
++	pthread_mutex_lock(&cond_mutex);
++	pthread_cond_broadcast(&cond_var);
++	pthread_mutex_unlock(&cond_mutex);
++
+ 	for (i = 0; i < 10000; i++) {
+ 		if (i%100 == 0) {
+ 			printf("Noise Thread %d loop %d pthread pol %d "\
+@@ -200,5 +219,8 @@ int main(int argc, char *argv[])
+ 	join_threads();
+ 	printf("Done\n");
+ 
++	pthread_mutex_destroy(glob_mutex);
++	pthread_mutex_destroy(&cond_mutex);
++	pthread_cond_destroy(&cond_var);
+ 	return 0;
+ }
+-- 
+1.7.1
+
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
