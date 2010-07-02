@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1ObVW5-0006nk-NR
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 09:23:05 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1ObVW4-0001TL-N0
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 09:23:05 +0000
-Received: by iwn34 with SMTP id 34so9185785iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 21 Jul 2010 02:22:59 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <548688492.713411279697065260.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-References: <1254189541.713331279696879608.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<548688492.713411279697065260.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Wed, 21 Jul 2010 02:22:59 -0700
-Message-ID: <AANLkTilFU1Nq7kvCQnyteDX8Ap5ZfzgO4-FPp3kGAPJP@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [11/12 FAILURE] LTP? file test fails
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OUZh6-0007mH-Hw
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:48 +0000
+Received: from e28smtp08.in.ibm.com ([122.248.162.8])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OUZh2-00007O-9E
+	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:48 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp08.in.ibm.com (8.14.4/8.13.1) with ESMTP id o626O4xR004845
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:54:04 +0530
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o626PY1Y2289846
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:34 +0530
+Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o626PXLO004743
+	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 16:25:34 +1000
+From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Date: Fri,  2 Jul 2010 11:55:29 +0530
+Message-Id: <1278051930-4070-7-git-send-email-gomuthuk@linux.vnet.ibm.com>
+In-Reply-To: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+References: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH 6/7] realtime/testpi-4: remove thread_stop which is
+	not used anywhere
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +35,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: Linus Test Project <ltp-list@lists.sourceforge.net>
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-T24gV2VkLCBKdWwgMjEsIDIwMTAgYXQgMTI6MjQgQU0sIENhc3BhciBaaGFuZyA8Y3poYW5nQHJl
-ZGhhdC5jb20+IHdyb3RlOgo+Cj4gLS0tLS0gIkdhcnJldHQgQ29vcGVyIiA8eWFuZWdvbWlAZ21h
-aWwuY29tPiB3cm90ZToKPj4KPgo+IE9uIE1heSA1LCAyMDEwLCBhdCAxMTo1OCBQTSwgU3VicmF0
-YSBNb2RhayB3cm90ZToKPgo+Cj4KPiBTdWJqZWN0OiBMVFDFmyBmaWxlX3Rlc3QgZmFpbHMKPj4K
-Pj4gSXNzdWVzIERlc2NyaXB0aW9uIGJlbG93Ogo+PiA9PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT0KPj4gIyB2aSBydW50ZXN0L2ZpbGVfdGVzdAo+PiBmaWxlIGV4cG9ydCBUQ2Rh
-dD0kTFRQUk9PVC90ZXN0Y2FzZXMvYmluOyBmaWxlX3Rlc3Quc2gKPj4gPEVPRj4KPj4KPj4gUnVu
-IExUUCB3aXRoIHRoZSBmb2xsb3dpbmcgY29tbWFuZDoKPj4gIyAuL3J1bmx0cCAtZiBmaWxlX3Rl
-c3QKPj4gPDw8dGVzdF9vdXRwdXQ+Pj4KPj4gZmlsZTAxIDAgVElORk8gOiBURVNUICMxOiBmaWxl
-IGNvbW1hbmQgcmVjb2dpemVzIEFTQ0lJIHRleHQgZmlsZXMKPj4gZmlsZTAxIDEgVFBBU1MgOiBm
-aWxlOiBSZWNvZ25pc2VkIEFTQ0lJIGZpbGUgY29ycmVjdGx5Cj4+IGZpbGUwMiAwIFRJTkZPIDog
-VEVTVCAjMjogZmlsZSBjb21tYW5kIHJlY29nbml6ZXMgYmFzaCBzaGVsbCBzY3JpcHRzCj4+IGZp
-bGUwMiAyIFRQQVNTIDogZmlsZTogUmVjb2duaXNlZCBiYXNoIHNoZWxsIHNjcmlwdCBjb3JyZWN0
-bHkKPj4gZmlsZTAzIDAgVElORk8gOiBURVNUICMzOiBmaWxlIGNvbW1hbmQgcmVjb2duaXplcyBr
-b3JuIHNoZWxsIHNjcmlwdHMKPj4gZmlsZTAzIDMgVFBBU1MgOiBmaWxlOiByZWNvZ25pc2VkIGtv
-cm4gc2hlbGwgc2NyaXB0Cj4+IGZpbGUwNCAwIFRJTkZPIDogVEVTVCAjNDogZmlsZSBjb21tYW5k
-IHJlY29nbml6ZXMgQyBzaGVsbCBzY3JpcHRzCj4+IGZpbGUwNCA0IFRQQVNTIDogZmlsZTogUmVj
-b2duaXNlZCBDIHNoZWxsIHNjcmlwdCBjb3JyZWN0bHkKPj4gZmlsZTA1IDAgVElORk8gOiBURVNU
-ICM1OiBmaWxlIGNvbW1hbmQgcmVjb2duaXplcyBDIHByb2dyYW1zIHRleHQKPj4gZmlsZTA1IDUg
-VFBBU1MgOiBmaWxlOiBSZWNvZ25pc2VkIEMgcHJvZ3JhbSB0ZXh0IGNvcnJlY3RseQo+PiBmaWxl
-MDYgMCBUSU5GTyA6IFRFU1QgIzY6IGZpbGUgY29tbWFuZCByZWNvZ25pemVzIEVMRiBleGVjdXRh
-Ymxlcwo+PiBmaWxlMDYgNiBUUEFTUyA6IGZpbGU6IFJlY29nbml6ZWQgRUxGIGJpbmFyeSBleGVj
-dXRhYmxlCj4+IGZpbGUwNyAwIFRJTkZPIDogVEVTVCAjNzogZmlsZSBjb21tYW5kIHJlY29nbml6
-ZXMgdGFyIGZpbGVzLgo+PiBmaWxlMDcgNyBUUEFTUyA6IGZpbGU6IFJlY29nbmlzZWQgdGFyIGZp
-bGVzCj4+IGZpbGUwOCAwIFRJTkZPIDogVEVTVCAjODogZmlsZSBjb21tYW5kIHJlY29nbml6ZXMg
-dGFyIHppcCBmaWxlcwo+PiBmaWxlMDggOCBUUEFTUyA6IGZpbGU6IFJlY29nbmlzZWQgdGFyIHpp
-cCBmaWxlCj4+IGZpbGUwOSAwIFRJTkZPIDogVEVTVCAjOTogZmlsZSBjb21tYW5kIHJlY29nbml6
-ZXMgUlBNIGZpbGVzCj4+IGZpbGUwOSA5IFRGQUlMIDogZmlsZTogRmFpbGVkIHRvIFJlY29nbml6
-ZSBSUE0gZmlsZS4gUmVhc29uOgo+PiAvcm9vdC9ycG1idWlsZC9TUlBNUy9jcHJvZy0wLjAuNy0z
-LnNyYy5ycG06IFJQTSB2My4wIHNyYwo+PiBmaWxlMTAgMCBUSU5GTyA6IFRFU1QgIzEwOiBmaWxl
-IGNvbW1hbmQgcmVjb2duaXplcyB2bWxpbnUgZmlsZQo+PiBmaWxlMTAgMTAgVFBBU1MgOiBmaWxl
-OiBSZWNvZ25pc2VkIHZtbGludSBmaWxlIGNvcnJlY3RseQo+PiA8PDxleGVjdXRpb25fc3RhdHVz
-Pj4+Cj4+IGluaXRpYXRpb25fc3RhdHVzPSJvayIKPj4gZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90
-eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0xIGNvcmVmaWxlPW5vCj4+IGN1dGltZT03IGNzdGlt
-ZT0xOAo+PiA8PDx0ZXN0X2VuZD4+Pgo+Pgo+PiBUaGlzIGlzIHdoeToKPj4gZ3JlcCAiUlBNIHYz
-IHNyYyIgJExUUFRNUC9maWxlLm91dCA+IC9kZXYvbnVsbCAyPiYxCj4+IGNoYW5nZSB0aGF0IHRv
-Cj4+IGVncmVwICJSUE0gdjMoXC4wKT8gc3JjIiAkTFRQVE1QL2ZpbGUub3V0ID4gL2Rldi9udWxs
-IDI+JjEKPj4gLS0gdGhhdCBzaG91bGQgd29yay4KPgo+IEhpIEdhcnJldHQsIHRoaXMgZml4IGRv
-ZXMgd29yay4gSG93ZXZlciBJIGhhdmVuJ3Qgc2VlIGl0IGluIEp1bmUgcmVsZWFzZQo+IG5vciBp
-biBnaXQgcmVwby4KClRoYW5rcyBmb3IgdGhlIHJlbWluZGVyLiBQdXNoZWQgaW50byBnaXQuClRo
-YW5rcywKLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBp
-cyBzcG9uc29yZWQgYnkgU3ByaW50CldoYXQgd2lsbCB5b3UgZG8gZmlyc3Qgd2l0aCBFVk8sIHRo
-ZSBmaXJzdCA0RyBwaG9uZT8KVmlzaXQgc3ByaW50LmNvbS9maXJzdCAtLSBodHRwOi8vcC5zZi5u
-ZXQvc2Z1L3NwcmludC1jb20tZmlyc3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo=
+From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+
+testpi-4 defines THREAD_STOP which is not used anywhere in
+the program.
+
+Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+---
+ testcases/realtime/func/pi-tests/testpi-4.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/realtime/func/pi-tests/testpi-4.c b/testcases/realtime/func/pi-tests/testpi-4.c
+index 5a39701..3bd5d77 100644
+--- a/testcases/realtime/func/pi-tests/testpi-4.c
++++ b/testcases/realtime/func/pi-tests/testpi-4.c
+@@ -73,9 +73,6 @@ int gettid(void)
+ }
+ 
+ typedef void *(*entrypoint_t)(void *);
+-
+-#define THREAD_STOP    1
+-
+ pthread_mutex_t *glob_mutex;
+ 
+ void *func_nonrt(void *arg)
+-- 
+1.7.1
+
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
