@@ -1,20 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1OUNAR-000826-Gf
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:03:15 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUNAQ-00029W-LS
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:03:15 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 1 Jul 2010 13:01:57 -0400
-References: <20100701165206.23119.26070.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20100701165206.23119.26070.sendpatchset@subratamodak.linux.ibm.com>
-MIME-Version: 1.0
-Message-Id: <201007011301.59073.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v3] Remove files which does not have a dmesg entry
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OV71A-0003e4-K9
+	for ltp-list@lists.sourceforge.net; Sat, 03 Jul 2010 18:00:44 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OV719-00031Q-Kh
+	for ltp-list@lists.sourceforge.net; Sat, 03 Jul 2010 18:00:44 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e38.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o63HrjG4012339
+	for <ltp-list@lists.sourceforge.net>; Sat, 3 Jul 2010 11:53:45 -0600
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
+	id o63I0QYK096934
+	for <ltp-list@lists.sourceforge.net>; Sat, 3 Jul 2010 12:00:27 -0600
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o63I0QDE023133
+	for <ltp-list@lists.sourceforge.net>; Sat, 3 Jul 2010 12:00:26 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4C2D92D3.8070001@linux.vnet.ibm.com>
+References: <4C2C8492.503@linux.vnet.ibm.com>
+	<1278003985.21642.7.camel@subratamodak.linux.ibm.com>
+	<4C2D8672.8030406@linux.vnet.ibm.com>
+	<AANLkTiko2hqAdNNyr6RmmE_sQhEmY71PqjdOzSdcoudc@mail.gmail.com>
+	<4C2D92D3.8070001@linux.vnet.ibm.com>
+Date: Sat, 03 Jul 2010 23:30:19 +0530
+Message-Id: <1278180020.7665.17.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] close file descriptors and munmap pages.
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,74 +41,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4072583600711659889=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: LTP List Members <ltp-list@lists.sf.net>
-
---===============4072583600711659889==
-Content-Type: multipart/signed; boundary="nextPart6000554.4BgMHRO2n0";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart6000554.4BgMHRO2n0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
-On Thursday, July 01, 2010 12:52:07 Subrata Modak wrote:
-> +		if find "$DMESG_DIR" -size 0 -exec rm {} + ; then
-> +			echo "cd to $DMESG_DIR failed: $?"
-> +		fi
-
-err, sorry, you probably want "! find"
--mike
-
---nextPart6000554.4BgMHRO2n0
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.15 (GNU/Linux)
-
-iQIcBAABAgAGBQJMLMoHAAoJEEFjO5/oN/WBQ/wP/0m3+B3E/jvjwo1qZeS+6lUF
-JB6dOZ7NXYGvfu/qywjephc1DzzG/c+dKExsEAI2l7qPcxP40fHdcl5A1IEn7VhC
-7gRnsIM02j44ljMrNbmft2tYwxrdjR5awocRRXgWkXJWvvsFJRXG10GcqShI8ZWQ
-VojO2RNr3M4I944/66xRQvsvIZo5fG3rDfxb/tleKKp64ZhMl3DopdlWEucNzClz
-0jzUtDa8oSTac9vpZK4sjOpAqIuVDsa9EAn1PreXRkavYovyRlB4RNEErZOhZCTA
-/oGvJ3jDA42wmwjBQdJpAKI1LwSIbB+rVFpSIALUZ6vOQ/QryYzdbo7jeiGCn0Dt
-rR0UDJBI78kcc/1DZ8uIvpL4RbBrbd4+2D9qNz/O3uoAo3awtxAPmhSzHdspnIJ1
-bavRTnJKTKbI81sPG/SMXUhfMFZKmB/zBC8bq5xQA/bLpD5QB+yXvXUCartohY0U
-8DcV/2Ns6z2SIMF+TF4alWM4IpX7kkyJTt3HQ/JDTaJnjpfS+zbVENa7SHQ+KCQP
-gABzU+5CUr03yoN6fEuivXAOH0rMaqjO3SaPJQ+N4Xm00k725BBrtJvvClAF2oqo
-tW+Fi+9zTK0iH4wuMSRJ2FtAi11A75wdq69Ge+sr9DWFfwgw1mfMyZ4HbG3eHJmi
-mC5DCJWhih3uedtJkqS7
-=FIwT
------END PGP SIGNATURE-----
-
---nextPart6000554.4BgMHRO2n0--
-
-
---===============4072583600711659889==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Darshak Shah <darshaks@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On Fri, 2010-07-02 at 12:48 +0530, Darshak Shah wrote: 
+> On 07/02/2010 12:07 PM, Garrett Cooper wrote:
+> > On Thu, Jul 1, 2010 at 11:25 PM, Darshak Shah
+> > <darshaks@linux.vnet.ibm.com>  wrote:
+> >    
+> >> On 07/01/2010 10:36 PM, Subrata Modak wrote:
+> >>      
+> >>> Probably, you would need to fix these:
+> >>>
+> >>> patching file testcases/kernel/syscalls/open/open10.c
+> >>> Hunk #1 FAILED at 282.
+> >>> Hunk #2 FAILED at 311.
+> >>> Hunk #3 FAILED at 359.
+> >>> Hunk #4 FAILED at 389.
+> >>> Hunk #5 FAILED at 440.
+> >>> 5 out of 5 hunks FAILED -- saving rejects to file
+> >>> testcases/kernel/syscalls/open/open10.c.rej
+> >>> patching file testcases/kernel/syscalls/splice/splice02.c
+> >>> patch: **** malformed patch at line 229: Passed");
+> >>>        
+> >> Dear Subrata,
+> >>
+> >> I downloaded the latest ltp from
+> >> http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=tree
+> >> I used the "snapshot" to download the tgz and patched as following.
+> >>
+> >> The patch seems to apply correctly.
+> >>      
+> >      Please attach the patch as a file as well as inline. Some MTAs and
+> > mail clients (like gmail for me) screw up whitespace and other fuzz in
+> > patches when folks include it inline in email.
+> > Thanks!
+> > -Garrett
+> >    
+> Attached.
+
+Thanks. Applies fine now.
+
+Regards--
+Subrata
+
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
---===============4072583600711659889==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4072583600711659889==--
-
