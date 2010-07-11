@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1OUiqx-0005Pt-C8
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:12:35 +0000
-Received: from msux-gh1-uea02.nsa.gov ([63.239.65.40])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OUiqw-0007Hc-Eh
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:12:35 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-Date: Fri, 02 Jul 2010 12:12:28 -0400
-Message-ID: <1278087148.6654.80.camel@moss-pluto.epoch.ncsc.mil>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sumitbd@linsyssoft.com>) id 1OXxZI-0003OA-Ok
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:31:44 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OXxZE-00071o-SM
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:31:44 +0000
+Received: by pwi10 with SMTP id 10so1607382pwi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 11 Jul 2010 07:31:35 -0700 (PDT)
+From: sumitbd@linsyssoft.com
+Date: Sun, 11 Jul 2010 18:55:32 +0530
+Message-ID: <1278854732.8660.34.camel@sumit>
 Mime-Version: 1.0
-Subject: [LTP] [PATCH] ima:  Fix ima_measure
+Subject: [LTP] [PATCH 1/3] MAKEFILE: testcases/network/Makefile - bug fixing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,55 +28,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
-Cc: Mimi Zohar <zohar@us.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-ima_measure doesn't build correctly.  It needs config.h to determine
-whether openssl headers are present, and verbose needs to be global.
-Broken by commit ef77253961f909f87e82e6d2b620e87af33e9665.
+Hi,
 
-Signed-off-by:  Stephen D. Smalley <sds@tycho.nsa.gov>
+Testcase "nfs02" fails as script does not able to find  following files
+ascii.jmb
+ascii.lg
+ascii.med
+ascii.sm
+This is because ltp's testcases/network/Makefile doesn't installed
+those. It is fixed with following patch.
 
----
-
-diff --git a/testcases/kernel/security/integrity/ima/src/ima_measure.c b/testcases/kernel/security/integrity/ima/src/ima_measure.c
-index dd6b1d0..0484c04 100644
---- a/testcases/kernel/security/integrity/ima/src/ima_measure.c
-+++ b/testcases/kernel/security/integrity/ima/src/ima_measure.c
-@@ -22,7 +22,7 @@
- #include <fcntl.h>
- #include <string.h>
- #include <unistd.h>
--//#include "config.h"
-+#include "config.h"
- #include "test.h"
- #if HAVE_OPENSSL_SHA_H
- #include <openssl/sha.h>
-@@ -33,6 +33,8 @@
- char *TCID = "ima_measure";
- int TST_TOTAL = 1;
+Index: ltp-full-20100630/testcases/network/Makefile
+===================================================================
+--- ltp-full-20100630.orig/testcases/network/Makefile
++++ ltp-full-20100630/testcases/network/Makefile
+@@ -31,6 +31,7 @@ CLEAN_TARGETS		+= $(DIR)
+ INSTALL_DIR		:= testcases/bin
  
-+static int verbose;
-+
- #define print_info(format, arg...) \
- 	if (verbose) \
- 		printf(format, ##arg)
-@@ -135,9 +137,8 @@ main(int argc, char *argv[])
- 	FILE *fp;
- 	struct event template;
- 	u_int8_t pcr[SHA_DIGEST_LENGTH];
--	int i, count = 0, len;
-+	int i, count = 0;
+ INSTALL_TARGETS		:= $(addprefix $(DIR)/bin.,sm med lg jmb)
++INSTALL_TARGETS		+= $(addprefix $(DIR)/ascii.,sm med lg jmb)
  
--	int verbose = 0;
- 	int validate = 0;
- 	int verify = 0;
+ RM			+= -r
  
 
+Thanks & Regards
+Sumit Dhoot
+System Administrator 
+Linsyssoft Technologies Pvt. Ltd.
+sumitbd@linsyssoft.com
 
--- 
-Stephen Smalley
-National Security Agency
+
 
 
 ------------------------------------------------------------------------------
