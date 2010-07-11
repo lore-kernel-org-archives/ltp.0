@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OUMzo-0008MW-RF
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 16:52:16 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUMzn-0006r7-Vf
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 16:52:16 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Thu, 01 Jul 2010 22:22:07 +0530
-Message-Id: <20100701165206.23119.26070.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH v3] Remove files which does not have a dmesg entry
+	(envelope-from <sumitbd@linsyssoft.com>) id 1OXxNI-0002hv-GG
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:19:20 +0000
+Received: from mail-qw0-f47.google.com ([209.85.216.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OXxNH-0005iS-Md
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:19:20 +0000
+Received: by qwg8 with SMTP id 8so54801qwg.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 11 Jul 2010 07:19:14 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1278854732.8660.34.camel@sumit>
+References: <1278854732.8660.34.camel@sumit>
+From: Sumit Dhoot <sumitbd@linsyssoft.com>
+Date: Sun, 11 Jul 2010 19:48:54 +0530
+Message-ID: <AANLkTikm0i8xOwFa040XXamt3MXBSwkhFLBOrMGpwK9o@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 1/3] MAKEFILE: testcases/network/Makefile - bug
+	fixing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,64 +28,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List Members <ltp-list@lists.sf.net>
-Cc: Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net
 
-[PATCH v3] Remove files which does not have a dmesg entry
-
-The recently introduced option:
-
--K DMESG_LOG_DIR
-        Log Kernel messages generated for each test cases inside this directory,
-
-when used will generate huge no. of files inside the DMESG_DIR. Many of
-them will be ZERO size as we do not expect KERNEL MESSAGE to be generated
-against all the LTP TESTS that we will run. It is better to prune them, and
-let only those files exist which will have real entries. The following
-patch fixes the same.
-
-Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>,
----
-
---- ltp/runltp.orig	2010-07-01 20:51:15.000000000 +0530
-+++ ltp/runltp	2010-07-01 22:19:53.000000000 +0530
-@@ -858,6 +858,21 @@ main()
-     cd ..
-     echo "LTP Version: $version_date"
- 
-+	# $DMESG_DIR is used to cache messages obtained from dmesg after a test run.
-+	# Proactively reap all of the 0-byte files in $DMESG_DIR as they have zero value
-+	# and only clutter up the filesystem.
-+
-+	if [ $ALT_DMESG_OUT -eq 1 ] ; then
-+		if find "$DMESG_DIR" -size 0 -exec rm {} + ; then
-+			echo "cd to $DMESG_DIR failed: $?"
-+		fi
-+		if [ -n "$(ls "$DMESG_DIR")" ] ; then
-+			echo "Kernel messages were generated for LTP tests $version_date"
-+		else
-+			echo "No Kernel messages were generated for LTP tests $version_date"
-+		fi
-+	fi
-+
-     if [ "$ALT_HTML_OUT" -eq 1 ] ; then        #User wants the HTML output to be created, it then needs to be generated
-        export LTP_VERSION=$version_date
-        export TEST_START_TIME=$test_start_time
-
----
-Regards--
-Subrata
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkgQWxsLAoKSSBmYWlsZWQgdG8gYWRkICJTaWduZWQtb2ZmLWJ5Ii4gQXBvbG9naWVzIGZvciB0
+aGlzLgoKT24gU3VuLCBKdWwgMTEsIDIwMTAgYXQgNjo1NSBQTSwgIDxzdW1pdGJkQGxpbnN5c3Nv
+ZnQuY29tPiB3cm90ZToKPiBIaSwKPgo+IFRlc3RjYXNlICJuZnMwMiIgZmFpbHMgYXMgc2NyaXB0
+IGRvZXMgbm90IGFibGUgdG8gZmluZCDCoGZvbGxvd2luZyBmaWxlcwo+IGFzY2lpLmptYgo+IGFz
+Y2lpLmxnCj4gYXNjaWkubWVkCj4gYXNjaWkuc20KPiBUaGlzIGlzIGJlY2F1c2UgbHRwJ3MgdGVz
+dGNhc2VzL25ldHdvcmsvTWFrZWZpbGUgZG9lc24ndCBpbnN0YWxsZWQKPiB0aG9zZS4gSXQgaXMg
+Zml4ZWQgd2l0aCBmb2xsb3dpbmcgcGF0Y2guCj4KClNpZ25lZC1vZmYtYnk6ICBTdW1pdCBEaG9v
+dCA8c3VtaXRiZEBsaW5zeXNzb2Z0LmNvbT4KCj09PT09PT09PT09PT09PT0KPiBJbmRleDogbHRw
+LWZ1bGwtMjAxMDA2MzAvdGVzdGNhc2VzL25ldHdvcmsvTWFrZWZpbGUKPiA9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4g
+LS0tIGx0cC1mdWxsLTIwMTAwNjMwLm9yaWcvdGVzdGNhc2VzL25ldHdvcmsvTWFrZWZpbGUKPiAr
+KysgbHRwLWZ1bGwtMjAxMDA2MzAvdGVzdGNhc2VzL25ldHdvcmsvTWFrZWZpbGUKPiBAQCAtMzEs
+NiArMzEsNyBAQCBDTEVBTl9UQVJHRVRTIMKgIMKgIMKgIMKgICs9ICQoRElSKQo+IMKgSU5TVEFM
+TF9ESVIgwqAgwqAgwqAgwqAgwqAgwqA6PSB0ZXN0Y2FzZXMvYmluCj4KPiDCoElOU1RBTExfVEFS
+R0VUUyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDo9ICQoYWRkcHJlZml4ICQoRElSKS9iaW4uLHNt
+IG1lZCBsZyBqbWIpCj4gK0lOU1RBTExfVEFSR0VUUyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCs9
+ICQoYWRkcHJlZml4ICQoRElSKS9hc2NpaS4sc20gbWVkIGxnIGptYikKPgo+IMKgUk0gwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKz0gLXIKCj09PT09PT09PT09PT09PT0KPgo+Cj4gVGhh
+bmtzICYgUmVnYXJkcwo+IFN1bWl0IERob290Cj4gU3lzdGVtIEFkbWluaXN0cmF0b3IKPiBMaW5z
+eXNzb2Z0IFRlY2hub2xvZ2llcyBQdnQuIEx0ZC4KPiBzdW1pdGJkQGxpbnN5c3NvZnQuY29tCj4K
+Pgo+Cj4KCi0tIApUaGFua3MgJiBSZWdhcmRzClN1bWl0IERob290CgotLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IFNwcmludApXaGF0IHdpbGwg
+eW91IGRvIGZpcnN0IHdpdGggRVZPLCB0aGUgZmlyc3QgNEcgcGhvbmU/ClZpc2l0IHNwcmludC5j
+b20vZmlyc3QgLS0gaHR0cDovL3Auc2YubmV0L3NmdS9zcHJpbnQtY29tLWZpcnN0Cl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
+bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
