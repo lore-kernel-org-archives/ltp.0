@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1OaOFr-0006nd-8z
-	for ltp-list@lists.sourceforge.net; Sun, 18 Jul 2010 07:25:43 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25]
-	helo=mx02.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OaOFq-0006mt-7E
-	for ltp-list@lists.sourceforge.net; Sun, 18 Jul 2010 07:25:43 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx02.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
-	o6I7PanC028518
-	for <ltp-list@lists.sourceforge.net>; Sun, 18 Jul 2010 03:25:36 -0400
-Date: Sun, 18 Jul 2010 03:25:36 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1058459861.509021279437936423.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1752311632.509001279437850417.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_22323_267875539.1279437936423"
-Subject: Re: [LTP] [PATCH] fix false alarm in pselect01
+	(envelope-from <sumitbd@linsyssoft.com>) id 1OXwqK-0002pP-14
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 13:45:16 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OXwqJ-0007uD-2f
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 13:45:15 +0000
+Received: by pvg13 with SMTP id 13so1590969pvg.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 11 Jul 2010 06:45:09 -0700 (PDT)
+From: sumitbd@linsyssoft.com
+Date: Sun, 11 Jul 2010 19:08:18 +0530
+Message-ID: <1278855498.8660.48.camel@sumit>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 3/3] runtest/nfs: TCbin path not exported for few tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,107 +25,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-------=_Part_22323_267875539.1279437936423
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-
------ "Caspar Zhang" <czhang@redhat.com> wrote:
-
-> Hi all,
-> 
->    In my recent tests, not all desired time is equal to exact
-> execution time,
->    sometimes it is +/-1s, and in a few times it becomes +/-2s. In most
-> cases,
->    +/-2s is still a valid value between exact execute time and desired
-> time.
-> 
->    Signed-off-by: Caspar Zhang <czhang@redhat.com>
-> 
-> --- a/testcases/kernel/syscalls/pselect/pselect01.c     2010-04-01
-> 14:23:10.000000000 +0800
-> +++ b/testcases/kernel/syscalls/pselect/pselect01.c     2010-07-15
-> 16:03:40.969426078 +0800
-> @@ -109,7 +109,8 @@
->                             NULL);
->                 end = time(&t);
-> 
-> -               if (((end - start) == total_sec) || ((end - start) ==
-> total_sec + 1))
-> +               /* Is it still valid in range -2~2s? */
-> +               if ((end - start - total_sec <= 2) && (end - start -
-> total_sec >= -2))
-
-Sorry for mistake, since end, start are unsigned int, use 
-end-start-total_sec >= -2 will cause error, add (int)before 
-(end-start) instead. New patch attached.
-
-Thanks,
-Caspar
-
-
--- 
-Kernel Associate Quality Engineer
-Red Hat Inc. (Beijing R&D Branch)
-
-Red Hat China R&D Branch Unit 907, North Tower C, 
-  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
-  Haidian District, Beijing 100190
-
-TEL: +86-10-62608150
-Web: http://www.redhat.com/
-
-------=_Part_22323_267875539.1279437936423
-Content-Type: text/x-patch; name=syscalls-pselect01-fix-false-alarm.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=syscalls-pselect01-fix-false-alarm.patch
-
-Hi all,
-   
-   In my recent tests, not all desired time is equal to exact execution time, 
-   sometimes it is +/-1s, and in a few times it becomes +/-2s. In most cases,
-   +/-2s is still a valid value between exact execute time and desired time.
-   
-   Signed-off-by: Caspar Zhang <czhang@redhat.com>
-
---- a/testcases/kernel/syscalls/pselect/pselect01.c	2010-04-01 14:23:10.000000000 +0800
-+++ b/testcases/kernel/syscalls/pselect/pselect01.c	2010-07-15 16:03:40.969426078 +0800
-@@ -109,7 +109,8 @@
- 			    NULL);
- 		end = time(&t);
- 
--		if (((end - start) == total_sec) || ((end - start) == total_sec + 1))
-+		/* Is it still valid in range -2~2s? */
-+		if (((int)(end - start) - total_sec <= 2) && ((int)(end - start) - total_sec >= -2))
- 			tst_resm(TPASS, "Sleep time was correct");
- 		else
- 			tst_resm(TFAIL, "Sleep time was incorrect:%d != %d",
-
-------=_Part_22323_267875539.1279437936423
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi,
+
+While running networktest for nfs; nfsstress &  nfsstat01 test gets
+fail. Because TCbin is not exported with required path. Following
+patch fixed the above problem.
+
+Index: ltp-full-20100630/runtest/nfs
+===================================================================
+--- ltp-full-20100630.orig/runtest/nfs
++++ ltp-full-20100630/runtest/nfs
+@@ -6,10 +6,10 @@ nfs01 export VERSION SOCKET_TYPE; TCbin=
+ nfs02 export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin nfs02
+ nfs03 export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin nfs03
+ nfs04 export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin nfs04
+-nfslock01 export VERSION; nfslock01
++nfslock01 export VERSION; TCbin=$LTPROOT/testcases/bin nfslock01
+ 
+ # This will run 1 thread on 20 directories with 50 files in each.
+-nfsstress export VERSION SOCKET_TYPE; nfsstress 20 50 1
++nfsstress export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin
+nfsstress 20 50 1
+ 
+ nfsstat01 export VERSION; TCbin=$LTPROOT/testcases/bin nfsstat01
+ nfsx-linux export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin
+fsx.sh
+
+
+Thanks & Regards
+Sumit Dhoot
+System Administrator
+Linsyssoft Technologies Pvt. Ltd.
+sumitbd@linsyssoft.com
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-------=_Part_22323_267875539.1279437936423
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_22323_267875539.1279437936423--
-
