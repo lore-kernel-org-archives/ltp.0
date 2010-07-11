@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OZtjt-0007DC-DG
-	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 22:50:41 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OXzyW-0001rc-Of
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 17:05:56 +0000
 Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OZtjs-0005wz-Lj
-	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 22:50:41 +0000
-Received: by mail-iw0-f175.google.com with SMTP id 34so3641795iwn.34
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OXzyU-0000ue-Jc
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 17:05:56 +0000
+Received: by mail-iw0-f175.google.com with SMTP id 34so2820926iwn.34
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 16 Jul 2010 15:50:40 -0700 (PDT)
+	Sun, 11 Jul 2010 10:05:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimgkcie9ze6ge5SmrH8Fe8a1z8RT0FgZMhjExW5@mail.gmail.com>
-References: <000001cb249e$14ed7490$3ec85db0$@co.jp>
-	<AANLkTimgkcie9ze6ge5SmrH8Fe8a1z8RT0FgZMhjExW5@mail.gmail.com>
-Date: Fri, 16 Jul 2010 15:50:40 -0700
-Message-ID: <AANLkTinaYGjU8MGQZ_ccN1bfuduDzs0KsFPXi638278T@mail.gmail.com>
+In-Reply-To: <AANLkTikm0i8xOwFa040XXamt3MXBSwkhFLBOrMGpwK9o@mail.gmail.com>
+References: <1278854732.8660.34.camel@sumit>
+	<AANLkTikm0i8xOwFa040XXamt3MXBSwkhFLBOrMGpwK9o@mail.gmail.com>
+Date: Sun, 11 Jul 2010 10:05:54 -0700
+Message-ID: <AANLkTimLcwtjPp6J7k8hvh5X3Dk4mjxiHv-tLs9Dh5j1@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP]
-	=?utf-8?b?4oCd77yj772P772O772U772B772J772O772F772S772T4oCd?=
-	=?utf-8?q?_test_was_=22TFAIL=22_but_=22PASS=22_is_in_log_results?=
+Subject: Re: [LTP] [PATCH 1/3] MAKEFILE: testcases/network/Makefile - bug
+	fixing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,155 +32,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: Sumit Dhoot <sumitbd@linsyssoft.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Jul 16, 2010 at 3:50 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Thu, Jul 15, 2010 at 9:19 PM, Mitani <mitani@ryobi.co.jp> wrote:
+On Sun, Jul 11, 2010 at 7:18 AM, Sumit Dhoot <sumitbd@linsyssoft.com> wrote:
+> Hi All,
+>
+> I failed to add "Signed-off-by". Apologies for this.
+>
+> On Sun, Jul 11, 2010 at 6:55 PM, =A0<sumitbd@linsyssoft.com> wrote:
 >> Hi,
 >>
->> With RHEL5.4/5.5 systems, I noticed that "Containers" test failed but
->> "Containers" is PASS in log results:
+>> Testcase "nfs02" fails as script does not able to find =A0following files
+>> ascii.jmb
+>> ascii.lg
+>> ascii.med
+>> ascii.sm
+>> This is because ltp's testcases/network/Makefile doesn't installed
+>> those. It is fixed with following patch.
 >>
->> ---<log results file>-------------
->> ...
->> hangup01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 PASS =A0 =A0 =A0 0
->> Containers =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 PASS =A0 =A0 =A0 0
->> BindMounts =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 PASS =A0 =A0 =A0 0
->> ...
->> ----------------
->>
->> ---<detail in redirected file>-------------
->> ...
->> check_netns_enabled =A0 =A01 =A0TFAIL =A0: =A0unshare syscall smoke test=
- failed:
->> errno=3DEINVAL(22): Invalid argument
->> Network namespaces not enabled in kernel. =A0Not running netns tests.
->> ...
->> ----------------
->>
->> The source which returned with "Invalid argument" is
->> "check_netns_enabled.c":
->>
->> ---<check_netns_enabled.c>-------------
->> main()
->> {
->> =A0 =A0 =A0 =A0/* Checking if the kernel supports unshare with netns cap=
-abilities.
->> */
->> =A0 =A0 =A0 =A0if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < 0=
-) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm (TFAIL | TERRNO, "unshare syscal=
-l smoke test
->> failed");
->> =A0 =A0 =A0 =A0}
->> =A0 =A0 =A0 =A0tst_exit();
->> }
->> ----------------
->>
->> In RHEL5.4/5.5 systems, unshare() does not support the argument
->> "CLONE_NEWNET".
->> But I feel strange that log results is "PASS" in spite of "TFAIL" exit.
->>
->> "container_test.sh" which calls "check_netns_enabled.c" is as follows:
->> ---<container_test.sh>-------------
->> ...
->> check_netns_enabled
->> if [ $? -eq 0 ]; then
->> =A0 =A0 =A0 =A0echo "Running netns tests."
->> =A0 =A0 =A0 =A0runnetnstest.sh
->> else
->> =A0 =A0 =A0 =A0echo "Network namespaces not enabled in kernel. =A0Not ru=
-nning netns
->> tests."
->> fi
->> ...
->> ----------------
->>
->> According to above source, "check_netns_enabled.c" is only the judgement
->> whether "runnetnstest.sh" test can be called or not.
->> So, I think that "TFAIL" is not suitable for the test impossibility
->> message.
->> "TCONF" is more suitable for the message than "TFAIL", I think.
->> But, if "TCONF" is used instead of "TFAIL", "tst_exit" returns with 0.
->> And the test shell "runnetnstest.sh" is called against intention.
->>
->>
->> I thought up two ways of solutions.
->> (1) Insert "exit(1)" just after "tst_resm()" of "check_netns_enabled.c"
->> (2) Replace "TFAIL" with "TWARN", instead of "TCONF".
->>
->> But above solutions are both irregular measures, I think.
->>
->> If there are other good measures, please give me advice.
->>
->>
->> In the following, I nominate a temporary patch for an example:
->>
->> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
->>
->> =3D=3D=3D(1)=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- a/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
-7-12
->> 02:01:45.000000000 +0900
->> +++ b/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
-7-16
->> 11:58:14.000000000 +0900
->> @@ -43,7 +43,8 @@
->> =A0{
->> =A0 =A0 =A0 =A0/* Checking if the kernel supports unshare with netns cap=
-abilities.
->> */
->> =A0 =A0 =A0 =A0 if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < =
-0) {
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TFAIL | TERRNO, "unshare syscall=
- smoke test
->> failed");
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TCONF | TERRNO, "unshare syscall=
- smoke test
->> failed");
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit (1);
->> =A0 =A0 =A0 =A0}
->> =A0 =A0 =A0 =A0tst_exit();
->> =A0}
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> =3D=3D=3D(2)=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- a/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
-7-12
->> 02:01:45.000000000 +0900
->> +++ b/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
-7-16
->> 11:56:47.000000000 +0900
->> @@ -43,7 +43,7 @@
->> =A0{
->> =A0 =A0 =A0 =A0/* Checking if the kernel supports unshare with netns cap=
-abilities.
->> */
->> =A0 =A0 =A0 =A0 if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < =
-0) {
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TFAIL | TERRNO, "unshare syscall=
- smoke test
->> failed");
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TWARN | TERRNO, "unshare syscall=
- smoke test
->> failed");
->> =A0 =A0 =A0 =A0}
->> =A0 =A0 =A0 =A0tst_exit();
->> =A0}
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 >
-> Uh, that would introduce a more serious problem because the netns
-> tests are keyed on whether or not that script passes or fails.
+> Signed-off-by: =A0Sumit Dhoot <sumitbd@linsyssoft.com>
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> Index: ltp-full-20100630/testcases/network/Makefile
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- ltp-full-20100630.orig/testcases/network/Makefile
+>> +++ ltp-full-20100630/testcases/network/Makefile
+>> @@ -31,6 +31,7 @@ CLEAN_TARGETS =A0 =A0 =A0 =A0 +=3D $(DIR)
+>> =A0INSTALL_DIR =A0 =A0 =A0 =A0 =A0 =A0:=3D testcases/bin
+>>
+>> =A0INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(addprefix $(DIR=
+)/bin.,sm med lg jmb)
+>> +INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D $(addprefix $(DIR)/=
+ascii.,sm med lg jmb)
+>>
+>> =A0RM =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D -r
 
-s/script/app/
-
-> If you can provide a more stable means of detecting whether or not
-> CLONE_* is available with netns, and integrate that into the tests,
-> that would be a better idea.
-
-Thanks,
--Garrett
+ACK.
 
 ---------------------------------------------------------------------------=
 ---
