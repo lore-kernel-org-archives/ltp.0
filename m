@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OXzyC-00024G-Ne
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 17:05:36 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OXzyB-0000ue-DX
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 17:05:36 +0000
-Received: by mail-iw0-f175.google.com with SMTP id 34so2820926iwn.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sumitbd@linsyssoft.com>) id 1OXxQW-0002uq-JU
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:22:40 +0000
+Received: from mail-vw0-f47.google.com ([209.85.212.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OXxQV-0006Ml-PE
+	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:22:40 +0000
+Received: by vws3 with SMTP id 3so4658299vws.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 11 Jul 2010 10:05:35 -0700 (PDT)
+	Sun, 11 Jul 2010 07:22:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimjpmS4PdPnO6jW7w6qrD7zkKopA4blPZufS_eq@mail.gmail.com>
+In-Reply-To: <1278855498.8660.48.camel@sumit>
 References: <1278855498.8660.48.camel@sumit>
-	<AANLkTimjpmS4PdPnO6jW7w6qrD7zkKopA4blPZufS_eq@mail.gmail.com>
-Date: Sun, 11 Jul 2010 10:05:35 -0700
-Message-ID: <AANLkTikQEi6hJTy2V4AUr0jJVQp52LDVp5RG0DFfsgG4@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
+From: Sumit Dhoot <sumitbd@linsyssoft.com>
+Date: Sun, 11 Jul 2010 19:52:14 +0530
+Message-ID: <AANLkTimjpmS4PdPnO6jW7w6qrD7zkKopA4blPZufS_eq@mail.gmail.com>
 Subject: Re: [LTP] [PATCH 3/3] runtest/nfs: TCbin path not exported for few
 	tests
 List-Id: Linux Test Project General Discussions
@@ -29,58 +28,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sumit Dhoot <sumitbd@linsyssoft.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Sun, Jul 11, 2010 at 7:22 AM, Sumit Dhoot <sumitbd@linsyssoft.com> wrote:
-> Hi All,
->
-> I failed to add "Signed-off-by". Apologies for this.
->
-> On Sun, Jul 11, 2010 at 7:08 PM, =A0<sumitbd@linsyssoft.com> wrote:
->> Hi,
->>
->> While running networktest for nfs; nfsstress & =A0nfsstat01 test gets
->> fail. Because TCbin is not exported with required path. Following
->> patch fixed the above problem.
->>
-> Signed-off-by: =A0Sumit Dhoot <sumitbd@linsyssoft.com>
->
-> =3D=3D=3D=3D=3D=3D=3D
->
->> Index: ltp-full-20100630/runtest/nfs
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- ltp-full-20100630.orig/runtest/nfs
->> +++ ltp-full-20100630/runtest/nfs
->> @@ -6,10 +6,10 @@ nfs01 export VERSION SOCKET_TYPE; TCbin=3D
->> =A0nfs02 export VERSION SOCKET_TYPE; TCbin=3D$LTPROOT/testcases/bin nfs02
->> =A0nfs03 export VERSION SOCKET_TYPE; TCbin=3D$LTPROOT/testcases/bin nfs03
->> =A0nfs04 export VERSION SOCKET_TYPE; TCbin=3D$LTPROOT/testcases/bin nfs04
->> -nfslock01 export VERSION; nfslock01
->> +nfslock01 export VERSION; TCbin=3D$LTPROOT/testcases/bin nfslock01
->>
->> =A0# This will run 1 thread on 20 directories with 50 files in each.
->> -nfsstress export VERSION SOCKET_TYPE; nfsstress 20 50 1
->> +nfsstress export VERSION SOCKET_TYPE; TCbin=3D$LTPROOT/testcases/bin
->> nfsstress 20 50 1
->>
->> =A0nfsstat01 export VERSION; TCbin=3D$LTPROOT/testcases/bin nfsstat01
->> =A0nfsx-linux export VERSION SOCKET_TYPE; TCbin=3D$LTPROOT/testcases/bin
->> fsx.sh
-
-ACK.
-
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkgQWxsLAoKSSBmYWlsZWQgdG8gYWRkICJTaWduZWQtb2ZmLWJ5Ii4gQXBvbG9naWVzIGZvciB0
+aGlzLgoKT24gU3VuLCBKdWwgMTEsIDIwMTAgYXQgNzowOCBQTSwgIDxzdW1pdGJkQGxpbnN5c3Nv
+ZnQuY29tPiB3cm90ZToKPiBIaSwKPgo+IFdoaWxlIHJ1bm5pbmcgbmV0d29ya3Rlc3QgZm9yIG5m
+czsgbmZzc3RyZXNzICYgwqBuZnNzdGF0MDEgdGVzdCBnZXRzCj4gZmFpbC4gQmVjYXVzZSBUQ2Jp
+biBpcyBub3QgZXhwb3J0ZWQgd2l0aCByZXF1aXJlZCBwYXRoLiBGb2xsb3dpbmcKPiBwYXRjaCBm
+aXhlZCB0aGUgYWJvdmUgcHJvYmxlbS4KPgpTaWduZWQtb2ZmLWJ5OiAgU3VtaXQgRGhvb3QgPHN1
+bWl0YmRAbGluc3lzc29mdC5jb20+Cgo9PT09PT09Cgo+IEluZGV4OiBsdHAtZnVsbC0yMDEwMDYz
+MC9ydW50ZXN0L25mcwo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiAtLS0gbHRwLWZ1bGwtMjAxMDA2MzAub3JpZy9y
+dW50ZXN0L25mcwo+ICsrKyBsdHAtZnVsbC0yMDEwMDYzMC9ydW50ZXN0L25mcwo+IEBAIC02LDEw
+ICs2LDEwIEBAIG5mczAxIGV4cG9ydCBWRVJTSU9OIFNPQ0tFVF9UWVBFOyBUQ2Jpbj0KPiDCoG5m
+czAyIGV4cG9ydCBWRVJTSU9OIFNPQ0tFVF9UWVBFOyBUQ2Jpbj0kTFRQUk9PVC90ZXN0Y2FzZXMv
+YmluIG5mczAyCj4gwqBuZnMwMyBleHBvcnQgVkVSU0lPTiBTT0NLRVRfVFlQRTsgVENiaW49JExU
+UFJPT1QvdGVzdGNhc2VzL2JpbiBuZnMwMwo+IMKgbmZzMDQgZXhwb3J0IFZFUlNJT04gU09DS0VU
+X1RZUEU7IFRDYmluPSRMVFBST09UL3Rlc3RjYXNlcy9iaW4gbmZzMDQKPiAtbmZzbG9jazAxIGV4
+cG9ydCBWRVJTSU9OOyBuZnNsb2NrMDEKPiArbmZzbG9jazAxIGV4cG9ydCBWRVJTSU9OOyBUQ2Jp
+bj0kTFRQUk9PVC90ZXN0Y2FzZXMvYmluIG5mc2xvY2swMQo+Cj4gwqAjIFRoaXMgd2lsbCBydW4g
+MSB0aHJlYWQgb24gMjAgZGlyZWN0b3JpZXMgd2l0aCA1MCBmaWxlcyBpbiBlYWNoLgo+IC1uZnNz
+dHJlc3MgZXhwb3J0IFZFUlNJT04gU09DS0VUX1RZUEU7IG5mc3N0cmVzcyAyMCA1MCAxCj4gK25m
+c3N0cmVzcyBleHBvcnQgVkVSU0lPTiBTT0NLRVRfVFlQRTsgVENiaW49JExUUFJPT1QvdGVzdGNh
+c2VzL2Jpbgo+IG5mc3N0cmVzcyAyMCA1MCAxCj4KPiDCoG5mc3N0YXQwMSBleHBvcnQgVkVSU0lP
+TjsgVENiaW49JExUUFJPT1QvdGVzdGNhc2VzL2JpbiBuZnNzdGF0MDEKPiDCoG5mc3gtbGludXgg
+ZXhwb3J0IFZFUlNJT04gU09DS0VUX1RZUEU7IFRDYmluPSRMVFBST09UL3Rlc3RjYXNlcy9iaW4K
+PiBmc3guc2gKPgoKPT09PT09PQo+Cj4gVGhhbmtzICYgUmVnYXJkcwo+IFN1bWl0IERob290Cj4g
+U3lzdGVtIEFkbWluaXN0cmF0b3IKPiBMaW5zeXNzb2Z0IFRlY2hub2xvZ2llcyBQdnQuIEx0ZC4K
+PiBzdW1pdGJkQGxpbnN5c3NvZnQuY29tCj4KPgoKCgotLSAKVGhhbmtzICYgUmVnYXJkcwpTdW1p
+dCBEaG9vdAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNwb25z
+b3JlZCBieSBTcHJpbnQKV2hhdCB3aWxsIHlvdSBkbyBmaXJzdCB3aXRoIEVWTywgdGhlIGZpcnN0
+IDRHIHBob25lPwpWaXNpdCBzcHJpbnQuY29tL2ZpcnN0IC0tIGh0dHA6Ly9wLnNmLm5ldC9zZnUv
+c3ByaW50LWNvbS1maXJzdApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
