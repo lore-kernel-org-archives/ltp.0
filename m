@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OcFTY-0001Dw-02
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 10:27:32 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OcFTV-0007JU-Pv
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 10:27:31 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100711224154.GA496240@medusa.sis.pasteur.fr>
-References: <20100711224154.GA496240@medusa.sis.pasteur.fr>
-Date: Fri, 23 Jul 2010 15:57:10 +0530
-Message-Id: <1279880836.11936.9.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] clock_getres01: remove TERRNO flag for overall test	result
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OYGCf-0002Lv-5y
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:25:37 +0000
+Received: from mail-iw0-f174.google.com ([209.85.214.174])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OYGCe-0006dh-6C
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:25:37 +0000
+MIME-Version: 1.0
+In-Reply-To: <AANLkTinyob2ONZI7W9rnBdZI87D1twZuskEZQaHTK4UA@mail.gmail.com>
+References: <1278930128.18204.14.camel@subratamodak.linux.ibm.com>
+	<AANLkTinyob2ONZI7W9rnBdZI87D1twZuskEZQaHTK4UA@mail.gmail.com>
+Date: Mon, 12 Jul 2010 03:25:30 -0700
+Message-ID: <AANLkTimyS1H-5pxJ25TVNaHdHt71ln6Aqxe38uMdH_HU@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Latest GIT creates install error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,52 +28,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sf.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-Garret,
+On Mon, Jul 12, 2010 at 3:23 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Mon, Jul 12, 2010 at 3:22 AM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+>> Hi Garret,
+>>
+>> Latest LTP git creates install error:
+>>
+>> make -C open_posix_testsuite
+>> top_srcdir=/root/ltp-dev/testcases/open_posix_testsuite install
+>> make[2]: Entering directory
+>> `/root/ltp-dev/testcases/open_posix_testsuite'
+>> mkdir -p //opt/openposix_testsuite/bin/.
+>> make[2]: *** No rule to make target `run.sh', needed by `install'.
+>> Stop.
+>> make[2]: Leaving directory
+>> `/root/ltp-dev/testcases/open_posix_testsuite'
+>> make[1]: *** [open_posix_testsuite-install] Error 2
+>> make[1]: Leaving directory `/root/ltp-dev/testcases'
+>> make: *** [testcases-install] Error 2
+>
+> Could you try:
+>
+> make -C open_posix_testsuite all
+>
+> then
+>
+> make -C open_posix_testsuite install
+>
+> ?
 
-This has not been reviewed/Acked !!
-
-Regards--
-Subrata
-
-On Mon, 2010-07-12 at 00:41 +0200, Nicolas Joly wrote:
-> Hi,
-> 
-> The attached patch remove the TERRNO flag for the overall
-> clock_getres01 test status. It is wrong because, if one of the test
-> fails, the reported errno will always be the one from the last case05
-> test (even 0 if this one was successful).
-> 
-> Upon failure, the output will be:
-> 
-> [...]
-> clock_getres01    0  TINFO  :  (case05) START
-> EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
-> RESULT: return value(ret)=       0 errno=0 (Success)
-> clock_getres01    6  TPASS  :  (case05) END
-> clock_getres01    7  TFAIL  :  clock_getres01 failed
-> 
-> But previously:
-> 
-> [...]
-> clock_getres01    0  TINFO  :  (case05) START
-> EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
-> RESULT: return value(ret)=       0 errno=0 (Success)
-> clock_getres01    6  TPASS  :  (case05) END
-> clock_getres01    7  TFAIL  :  clock_getres01 failed: errno=???(0): Success
-> 
-> Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
-> 
-> Regards.
-> 
-> ------------------------------------------------------------------------------
-> This SF.net email is sponsored by Sprint
-> What will you do first with EVO, the first 4G phone?
-> Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+Better yet, what are the exact steps you took to arrive at that error?
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
