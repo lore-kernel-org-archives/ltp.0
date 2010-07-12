@@ -1,29 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OUZh6-0004Yn-Cr
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:48 +0000
-Received: from e28smtp05.in.ibm.com ([122.248.162.5])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Yingang.Fu@windriver.com>) id 1OYE28-0000vw-8l
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 08:06:36 +0000
+Received: from mail.windriver.com ([147.11.1.11])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUZh5-0002Qc-0a
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:48 +0000
-Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
-	by e28smtp05.in.ibm.com (8.14.4/8.13.1) with ESMTP id o626PcJF004475
-	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:38 +0530
-Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
-	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o626PXk52076810
-	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:33 +0530
-Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
-	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o626PXM6004675
-	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 16:25:33 +1000
-From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Date: Fri,  2 Jul 2010 11:55:23 +0530
-Message-Id: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH 0/7] realtime/testpi-4: code cleanup and functional
-	changes on testpi-4
+	(Exim 4.69) id 1OYE23-00045u-2U
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 08:06:36 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o6C86OGG007686
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 12 Jul 2010 01:06:24 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Mon, 12 Jul 2010 10:06:20 +0200
+Message-ID: <52CF90264091A14888078A031D780F4305D0247B@ism-mail03.corp.ad.wrs.com>
+From: "Fu, Yingang" <Yingang.Fu@windriver.com>
+Subject: [LTP] Contribute to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,37 +27,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5023055582886983669=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Following set of patches applies code cleanup and functional changes
-in LTP realtime pi-test testpi-4. This test was not patched earlier
-when other pi-tests were fixed, with the intension of removing it
-from the suite due to similarity with testpi-1. But we decided to
-keep this test due to dynamically created global mutex lock.
+This is a multi-part message in MIME format.
 
-Order of applying patch is:
+--===============5023055582886983669==
+Content-class: urn:content-classes:message
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01CB2199.1DFFD421"
 
-[PATCH 1/7] realtime/testpi-4: code cleanup on pi-test 4
-[PATCH 2/7] realtime/testpi-4: reuse init_pi_mutex from librttest
-[PATCH 3/7] realtime/testpi-4: add test description
-[PATCH 4/7] realtime/testpi-4: threads need not set cpu affinity while main does
-[PATCH 5/7] realtime/testpi-4: use busy_work_ms from librttest to burn cpu cycles
-[PATCH 6/7] realtime/testpi-4: remove thread_stop which is not used anywhere
-[PATCH 7/7] realtime/testpi-4: synchronization fixes for high priority noise thread
+This is a multi-part message in MIME format.
 
-Thanks,
-Gowri
+------_=_NextPart_001_01CB2199.1DFFD421
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+hi,=20
+=20
+We have lots of fixes for ltp. What's the process of contribution to it?
+=20
+Thanks
+Yingang
+
+------_=_NextPart_001_01CB2199.1DFFD421
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.5969" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D970530408-12072010><FONT face=3DArial size=3D2>hi,=20
+</FONT></SPAN></DIV>
+<DIV><SPAN class=3D970530408-12072010><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D970530408-12072010><FONT face=3DArial size=3D2>We =
+have lots of=20
+fixes for ltp. What's the process of contribution to =
+it?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D970530408-12072010><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D970530408-12072010><FONT face=3DArial=20
+size=3D2>Thanks</FONT></SPAN></DIV>
+<DIV><SPAN class=3D970530408-12072010><FONT face=3DArial=20
+size=3D2>Yingang</FONT></SPAN></DIV></BODY></HTML>
+
+------_=_NextPart_001_01CB2199.1DFFD421--
+
+
+--===============5023055582886983669==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--===============5023055582886983669==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5023055582886983669==--
+
