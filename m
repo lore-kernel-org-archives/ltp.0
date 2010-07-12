@@ -1,33 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OUNE9-0008A4-UC
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:07:05 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUNE9-0004wb-2w
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:07:05 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e36.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o61H3X9k015020
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 11:03:33 -0600
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
-	id o61H6mSP050928
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 11:06:52 -0600
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o61H6i3t032202
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Jul 2010 11:06:44 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <000001cb1810$23753ba0$6a5fb2e0$@co.jp>
-References: <000001cb1810$23753ba0$6a5fb2e0$@co.jp>
-Date: Thu, 01 Jul 2010 22:36:26 +0530
-Message-Id: <1278003986.21642.8.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix hugetlb tests
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yaneurabeya@gmail.com>) id 1OYGzt-0005rm-A4
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 11:16:29 +0000
+Received: from mail-pw0-f46.google.com ([209.85.160.46])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OYGzp-0003Zp-DW
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 11:16:29 +0000
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: Garrett Cooper <yaneurabeya@gmail.com>
+In-Reply-To: <1278930566.18204.16.camel@subratamodak.linux.ibm.com>
+Date: Mon, 12 Jul 2010 03:45:20 -0700
+Message-Id: <F6D1E2CA-8202-4E45-90D0-A789546C32A5@gmail.com>
+References: <1278930128.18204.14.camel@subratamodak.linux.ibm.com>
+	<AANLkTinyob2ONZI7W9rnBdZI87D1twZuskEZQaHTK4UA@mail.gmail.com>
+	<1278930566.18204.16.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Latest GIT creates install error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,117 +29,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Wed, 2010-06-30 at 13:53 +0900, Mitani wrote: 
-> Hi,
-> 
-> I want to suggest a patch for hugetlb tests.
-> 
-> There are "-c" options in this "${LTPROOT}/runtest/hugetlb" file:
-> ------------
-> hugeshmat01 hugeshmat01 -i 5
-> hugeshmat02 hugeshmat02 -i 5
-> hugeshmat03 hugeshmat03 -i 5
-> 
-> hugeshmctl01 hugeshmctl01 -i 5 -c 3
-> hugeshmctl02 hugeshmctl02 -i 5 -c 3
-> hugeshmctl03 hugeshmctl03 -i 5 -c 3
-> 
-> hugeshmdt01 hugeshmdt01 -I 5 -c10
-> 
-> hugeshmget01 hugeshmget01 -c 10 -i 10
-> hugeshmget02 hugeshmget02 -c 10 -i 10
-> hugeshmget03 hugeshmget03 -c 10 -i 10
-> hugeshmget05 hugeshmget05 -c 10 -i 10
-> 
-> ------------
-> 
-> But I think that these "-c" options have not important meanings.
-> I think that the test for several times may not be necessary.
-> For example, the purpose of "hugeshmget02" is the error case test of 
-> shmget(). In this case, if the expected failure occurred once, it is 
-> enough, and the repetition of test is unnecessary anymore, I think.
-> And, depending on a case, there may be a system without enough memory 
-> for these repetition tests.
-> Therefore I want to suggest reducing the "-c" option.
-> 
-> I got an answer that these "hugetlb" tests were not complete test programs.
-> --> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10171.html
-> Therefore, this revision is a temporary.
-> 
-> 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+On Jul 12, 2010, at 3:29 AM, Subrata Modak wrote:
 
-Ok. Thanks.
+> On Mon, 2010-07-12 at 03:23 -0700, Garrett Cooper wrote:
+>> On Mon, Jul 12, 2010 at 3:22 AM, Subrata Modak
+>> <subrata@linux.vnet.ibm.com> wrote:
+>>> Hi Garret,
+>>> 
+>>> Latest LTP git creates install error:
+>>> 
+>>> make -C open_posix_testsuite
+>>> top_srcdir=/root/ltp-dev/testcases/open_posix_testsuite install
+>>> make[2]: Entering directory
+>>> `/root/ltp-dev/testcases/open_posix_testsuite'
+>>> mkdir -p //opt/openposix_testsuite/bin/.
+>>> make[2]: *** No rule to make target `run.sh', needed by `install'.
+>>> Stop.
+>>> make[2]: Leaving directory
+>>> `/root/ltp-dev/testcases/open_posix_testsuite'
+>>> make[1]: *** [open_posix_testsuite-install] Error 2
+>>> make[1]: Leaving directory `/root/ltp-dev/testcases'
+>>> make: *** [testcases-install] Error 2
+>> 
+>> Could you try:
+>> 
+>> make -C open_posix_testsuite all
+>> 
+>> then
+>> 
+>> make -C open_posix_testsuite install
+>> 
+>> ?
+> 
+> [root@mjs22lp4 ltp-dev]# make -C open_posix_testsuite all
+> make: *** open_posix_testsuite: No such file or directory.  Stop.
+> [root@mjs22lp4 ltp-dev]# ls -l testcases/open_posix_testsuite/
+> total 132
+> -rw-r--r--. 1 1000 1000   366 May 31 11:22 AUTHORS
+> drwxr-xr-x. 2 1000 1000  4096 Jul 12 15:41 bin
+> -rw-r--r--. 1 1000 1000  5288 Jul 12 15:24 BUILD
+> -rw-r--r--. 1 1000 1000    55 Jul 12 15:24 CFLAGS
+> -rw-r--r--. 1 1000 1000  6815 Jul 12 15:24 ChangeLog
+> drwxr-xr-x. 5 1000 1000  4096 Jul 12 15:24 conformance
+> -rw-r--r--. 1 1000 1000 19748 Jul 12 15:24 COPYING
+> drwxr-xr-x. 2 1000 1000  4096 Jul 12 15:24 Documentation
+> drwxr-xr-x. 6 1000 1000  4096 Jul 12 15:24 functional
+> drwxr-xr-x. 2 1000 1000  4096 Jul 12 15:24 include
+> -rw-r--r--. 1 1000 1000   229 May 31 11:22 INSTALL
+> -rw-r--r--. 1 1000 1000     0 Jul 12 15:24 LDFLAGS
+> -rw-r--r--. 1 1000 1000     0 Jul 12 15:24 LDLIBS
+> -rw-r--r--. 1 root root 16257 Jul 12 15:41 logfile.conformance-all
+> -rw-r--r--. 1 root root 10425 Jul 12 15:42 logfile.functional-all
+> -rw-r--r--. 1 1000 1000  1142 Jul 12 15:41 Makefile
+> -rw-r--r--. 1 1000 1000  3219 May 31 11:22 NEWS
+> -rw-r--r--. 1 1000 1000  2240 Jul 12 15:24 QUICK-START
+> -rw-r--r--. 1 1000 1000  4475 May 31 11:22 README
+> -rwxr-xr-x. 1 1000 1000  1673 May 31 11:22 run_tests
+> drwxr-xr-x. 2 1000 1000  4096 Jul 12 15:24 scripts
+> drwxr-xr-x. 7 1000 1000  4096 Jul 12 15:24 stress
+> drwxr-xr-x. 2 1000 1000  4096 Jul 12 15:24 tools
+> [root@mjs22lp4 ltp-dev]# make -C open_posix_testsuite install
+> make: *** open_posix_testsuite: No such file or directory.  Stop.
 
-Regards--
-Subrata
-
-> 
-> ============
-> --- a/runtest/hugetlb	2010-06-14 21:29:09.000000000 +0900
-> +++ b/runtest/hugetlb	2010-06-30 09:32:01.000000000 +0900
-> @@ -7,14 +7,14 @@
->  hugeshmat02 hugeshmat02 -i 5
->  hugeshmat03 hugeshmat03 -i 5
-> 
-> -hugeshmctl01 hugeshmctl01 -i 5 -c 3
-> -hugeshmctl02 hugeshmctl02 -i 5 -c 3
-> -hugeshmctl03 hugeshmctl03 -i 5 -c 3
-> +hugeshmctl01 hugeshmctl01 -i 5
-> +hugeshmctl02 hugeshmctl02 -i 5
-> +hugeshmctl03 hugeshmctl03 -i 5
-> 
-> -hugeshmdt01 hugeshmdt01 -I 5 -c10
-> +hugeshmdt01 hugeshmdt01 -I 5
-> 
-> -hugeshmget01 hugeshmget01 -c 10 -i 10
-> -hugeshmget02 hugeshmget02 -c 10 -i 10
-> -hugeshmget03 hugeshmget03 -c 10 -i 10
-> -hugeshmget05 hugeshmget05 -c 10 -i 10
-> +hugeshmget01 hugeshmget01 -i 10
-> +hugeshmget02 hugeshmget02 -i 10
-> +hugeshmget03 hugeshmget03 -i 10
-> +hugeshmget05 hugeshmget05 -i 10
-> 
-> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-06-14
-> 21:29:09.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-06-30
-> 09:12:00.000000000 +0900
-> @@ -78,14 +78,14 @@
->  		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
->  	}
-> 
-> -	setup();			/* global setup */
-> -
->  	/* The following loop checks looping state if -i option given */
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
->               tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
->          else             
->                huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->          
-> +	setup();			/* global setup */
-> +
->          for (lc = 0; TEST_LOOPING(lc); lc++) {
->  		/* reset Tst_count in case we are looping */
->  		Tst_count = 0;
-> ============
-> 
-> 
-> 
-> Regards--
-> 
-> -Tomonori Mitani
-> ------------------------------------------------------------------------------
-> This SF.net email is sponsored by Sprint
-> What will you do first with EVO, the first 4G phone?
-> Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
+	Sorry.. completely forgot that make install isn't ready for open_posix_testsuite yet (had an itchy trigger finger this afternoon). I commented it out for the time being until I've worked out all of the kinks.
+Thanks,
+-Garrett
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
