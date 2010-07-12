@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OYGCf-0002Lv-5y
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:25:37 +0000
+	(envelope-from <yanegomi@gmail.com>) id 1OYGAu-0002F3-0Q
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:23:48 +0000
 Received: from mail-iw0-f174.google.com ([209.85.214.174])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OYGCe-0006dh-6C
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:25:37 +0000
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OYGAt-0003VS-4z
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:23:47 +0000
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinyob2ONZI7W9rnBdZI87D1twZuskEZQaHTK4UA@mail.gmail.com>
+In-Reply-To: <1278930128.18204.14.camel@subratamodak.linux.ibm.com>
 References: <1278930128.18204.14.camel@subratamodak.linux.ibm.com>
-	<AANLkTinyob2ONZI7W9rnBdZI87D1twZuskEZQaHTK4UA@mail.gmail.com>
-Date: Mon, 12 Jul 2010 03:25:30 -0700
-Message-ID: <AANLkTimyS1H-5pxJ25TVNaHdHt71ln6Aqxe38uMdH_HU@mail.gmail.com>
+Date: Mon, 12 Jul 2010 03:23:40 -0700
+Message-ID: <AANLkTinyob2ONZI7W9rnBdZI87D1twZuskEZQaHTK4UA@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
 Subject: Re: [LTP] Latest GIT creates install error
 List-Id: Linux Test Project General Discussions
@@ -31,38 +30,36 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: subrata@linux.vnet.ibm.com
 Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Mon, Jul 12, 2010 at 3:23 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Mon, Jul 12, 2010 at 3:22 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
->> Hi Garret,
->>
->> Latest LTP git creates install error:
->>
->> make -C open_posix_testsuite
->> top_srcdir=/root/ltp-dev/testcases/open_posix_testsuite install
->> make[2]: Entering directory
->> `/root/ltp-dev/testcases/open_posix_testsuite'
->> mkdir -p //opt/openposix_testsuite/bin/.
->> make[2]: *** No rule to make target `run.sh', needed by `install'.
->> Stop.
->> make[2]: Leaving directory
->> `/root/ltp-dev/testcases/open_posix_testsuite'
->> make[1]: *** [open_posix_testsuite-install] Error 2
->> make[1]: Leaving directory `/root/ltp-dev/testcases'
->> make: *** [testcases-install] Error 2
+On Mon, Jul 12, 2010 at 3:22 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Hi Garret,
 >
-> Could you try:
+> Latest LTP git creates install error:
 >
-> make -C open_posix_testsuite all
->
-> then
->
-> make -C open_posix_testsuite install
->
-> ?
+> make -C open_posix_testsuite
+> top_srcdir=/root/ltp-dev/testcases/open_posix_testsuite install
+> make[2]: Entering directory
+> `/root/ltp-dev/testcases/open_posix_testsuite'
+> mkdir -p //opt/openposix_testsuite/bin/.
+> make[2]: *** No rule to make target `run.sh', needed by `install'.
+> Stop.
+> make[2]: Leaving directory
+> `/root/ltp-dev/testcases/open_posix_testsuite'
+> make[1]: *** [open_posix_testsuite-install] Error 2
+> make[1]: Leaving directory `/root/ltp-dev/testcases'
+> make: *** [testcases-install] Error 2
 
-Better yet, what are the exact steps you took to arrive at that error?
-Thanks!
+Could you try:
+
+make -C open_posix_testsuite all
+
+then
+
+make -C open_posix_testsuite install
+
+?
+
+Thanks,
 -Garrett
 
 ------------------------------------------------------------------------------
