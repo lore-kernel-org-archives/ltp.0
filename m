@@ -1,33 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OXfGV-0006Mj-U5
-	for ltp-list@lists.sourceforge.net; Sat, 10 Jul 2010 18:59:07 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OXfGT-0004BH-M5
-	for ltp-list@lists.sourceforge.net; Sat, 10 Jul 2010 18:59:07 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e39.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o6AInSqP026211
-	for <ltp-list@lists.sourceforge.net>; Sat, 10 Jul 2010 12:49:28 -0600
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o6AIwvJ5119544
-	for <ltp-list@lists.sourceforge.net>; Sat, 10 Jul 2010 12:58:57 -0600
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o6AJ2BQN029443
-	for <ltp-list@lists.sourceforge.net>; Sat, 10 Jul 2010 13:02:11 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <000301cb1da6$69538910$3bfa9b30$@co.jp>
-References: <000301cb1da6$69538910$3bfa9b30$@co.jp>
-Date: Sun, 11 Jul 2010 00:28:48 +0530
-Message-Id: <1278788329.8215.7.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mwenzel@novell.com>) id 1OZ3Ks-0000Go-K9
+	for ltp-list@lists.sourceforge.net; Wed, 14 Jul 2010 14:53:22 +0000
+Received: from sinclair.provo.novell.com ([137.65.248.137])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OZ3Kr-0004AK-FA
+	for ltp-list@lists.sourceforge.net; Wed, 14 Jul 2010 14:53:22 +0000
+Message-Id: <4C3D7641020000E8000664BA@sinclair.provo.novell.com>
+Date: Wed, 14 Jul 2010 08:33:05 -0600
+From: "Murlin Wenzel" <mwenzel@novell.com>
+References: <9603429.236361279111653386.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<1263127425.237831279112632038.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1263127425.237831279112632038.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix hugeshmget01
-Reply-To: subrata@linux.vnet.ibm.com
+Content-Disposition: inline
+Subject: Re: [LTP] Is there a good way to check kernel config in LTP?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,85 +29,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, kamimura@ryobi.co.jp
+To: ltp-list <ltp-list@lists.sf.net>, Caspar Zhang <czhang@redhat.com>
 
-On Wed, 2010-07-07 at 16:31 +0900, Mitani wrote: 
-> Hi,
+>>> On 7/14/2010 at 07:03 AM, in message
+<1263127425.237831279112632038.JavaMail.root@zmail04.collab.prod.int.phx2.redhat
+com>, Caspar Zhang <czhang@redhat.com> wrote: 
+> Hi all, I find a FAIL result in syscalls/swapon03 with RHEL6 kernel,
+> on a x86_64 machine, it always fails with the following message:
 > 
+> swapon03    1  TFAIL  :  Failed swapon for file swapfile30: errno=EPERM(1): 
+> Operation not permitted
+> swapon03    1  TFAIL  :  Failed to setup swaps
 > 
-> Sorry!!
+> This is because in some >=2.6.32 kernels, the 
+> CONFIG_MEMORY_FAILURE option is enabled by default in kernel. 
+> As the NOTES in man 2 swapon says:
 > 
-> I mistook to make following patch for hugetlb tests:
-> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10249.html
-> 
-> After the patch was applied, hugeshmget01 test will FAIL under the 
-> condition that hugepages isn't effective.
-> 
-> In this patch, I moved the timing of "setup()" calling after the judgment 
-> of hugepages.
-> ------------
->         if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char
-> *)NULL){
->                 tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
->         }
-> 
->         /* The following loop checks looping state if -i option given */
->         if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
->              tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
->         else
->               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size()
-> * 1024) / 2 ;
-> 
->         setup();                        /* global setup */
-> ------------
-> 
-> At first, the "cleanup()" function was called in exit handling when 
-> hugepages was not effective.
-> But I didn't change "cleanup" into "tst_exit".
-> Therefore, in "cleanup()", exit handling fails to delete a non-existing 
-> temporary directory.
-> 
-> 
-> I maked patch for the latest git.
-> I tested it in both conditions that hugepages is effective/ineffective.
-> 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> "...Since kernel 2.6.32, the limit is decreased by 1 if the kernel is built 
+> with the CONFIG_MEMORY_FAILURE option..."
+>
 
-Thanks.
+That's not the only option that affects MAX_SWAPFILES now.
+ 
+> so MAX_SWAPFILES is not 30 anymore, it's 29. While LTP defines MAX_SWAPFILES
+> to 30 in include/swaponoff.h(hmmm....hardcode, I don't think it's a good 
+> idea :-|).
+> 
+> So the way to solve(maybe) the problem is clear: change MAX_SWAPFILES
+> to 29 when CONFIG_MEMORY_FAILURE is enabled. My question is: is there
+> a good way to check whether a kernel option is enabled or not? I searched
+> in the old discussions in this maillist and found nothing. I want to know if 
+> 
+> the developers have some new ideas? 
+> 
 
-Regards--
-Subrata
+I've seen 28 as the MAX as well, it all depends on the config options.  I've been looking at re-architecting the test to do some sort of repeat test to the max number of successful swap creations and then verifying that the same number is reachable at least 2 times.  MAX_SWAPFILES is never exported to userspace.  It's a compile time #define that depends on the kernel config options.
 
-> 
-> ============
-> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-07-04
-> 03:15:03.000000000 +0900
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c	2010-07-05
-> 16:37:41.000000000 +0900
-> @@ -80,7 +80,7 @@
-> 
->  	/* The following loop checks looping state if -i option given */
->          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-> -             tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
-> +             tst_brkm(TCONF, tst_exit, "Not enough available Hugepages");
->          else             
->                huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-> hugepages_size() * 1024) / 2 ;
->          
-> ============
-> 
-> 
-> 
-> Regards--
-> 
-> -Tomonori Mitani
-> ------------------------------------------------------------------------------
-> This SF.net email is sponsored by Sprint
-> What will you do first with EVO, the first 4G phone?
-> Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+Murlin
+
+
 
 
 ------------------------------------------------------------------------------
