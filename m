@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1Obsc2-00082j-No
-	for ltp-list@lists.sourceforge.net; Thu, 22 Jul 2010 10:02:46 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Obsby-0005sN-Ow
-	for ltp-list@lists.sourceforge.net; Thu, 22 Jul 2010 10:02:46 +0000
-From: Paul Larson <paul.larson@canonical.com>
-In-Reply-To: <AANLkTikq6X_ICkQbfLS9GUSnA3jCUdodxrHkdGYtgZFk@mail.gmail.com>
-References: <AANLkTikq6X_ICkQbfLS9GUSnA3jCUdodxrHkdGYtgZFk@mail.gmail.com>
-Date: Thu, 22 Jul 2010 12:02:31 +0200
-Message-ID: <1279792951.6951.2.camel@plars-t500>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sumitbd@linsyssoft.com>) id 1OZe90-0000E8-3b
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:11:34 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OZe8z-0007Kd-4s
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:11:34 +0000
+Received: by pwi10 with SMTP id 10so762841pwi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Jul 2010 23:11:27 -0700 (PDT)
+From: sumitbd@linsyssoft.com
+Date: Fri, 16 Jul 2010 11:41:40 +0530
+Message-ID: <1279260700.4313.0.camel@sumit>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] ARM: Correct stack size & alignment for clone
- tests
+Subject: [LTP]  [PATCH 0/2] multicasttest: Bug Fixing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,105 +25,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8428419663154958695=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peter Pearse <peter.pearse@linaro.org>
-Cc: ltp-list@lists.sourceforge.net
-
-
---===============8428419663154958695==
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature";
-	boundary="=-rfZUQ8qijYDaOpLY6EXa"
-
-
---=-rfZUQ8qijYDaOpLY6EXa
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-I tried this on my arm boxes and it fixes the clone tests, which were
-previously broken for arm.  Please apply.
-
-Thanks,
-Paul Larson
-
-On Thu, 2010-07-22 at 10:07 +0100, Peter Pearse wrote:
-> An ARM stack must be a multiple of 32 bit words in length, and 32 bit
-> aligned.
->=20
-> Signed-off-by: Peter Pearse <peter.pearse@linaro.org>
->=20
-> ---
-> diff -purN ltp-full-20100630/lib/cloner.c
-> ltp-full-20100630_patched/lib/cloner.c
-> --- ltp-full-20100630/lib/cloner.c      2010-07-03 19:29:04.000000000
-> +0100
-> +++ ltp-full-20100630_patched/lib/cloner.c      2010-07-22
-> 11:36:24.830445453 +0100
-> @@ -59,6 +59,13 @@ ltp_clone(unsigned long clone_flags, int
->         ret =3D clone(fn, stack, clone_flags, arg);
->  #elif defined(__ia64__)
->         ret =3D clone2(fn, stack, stack_size, clone_flags, arg, NULL,
-> NULL, NULL);
-> +#elif defined(__arm__)
-> +       /*
-> +        * Stack size should be a multiple of 32 bit words
-> +        * & stack limit must be aligned to a 32 bit boundary
-> +        */
-> +       ret =3D clone(fn, (stack ? stack + stack_size : NULL),
-> +                       clone_flags, arg);
->  #else
->         ret =3D clone(fn, (stack ? stack + stack_size - 1 : NULL),
->                         clone_flags, arg);
-> ---
->=20
-> -------------------------------------------------------------------------=
------
-> This SF.net email is sponsored by Sprint
-> What will you do first with EVO, the first 4G phone?
-> Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-> _______________________________________________ Ltp-list mailing list Ltp=
--list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/lt=
-p-list
-
-
---=-rfZUQ8qijYDaOpLY6EXa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAkxIFzUACgkQ3UR7ubYtCO6yOACgq4FIltatjzUa9KzTHF+Y6Vh2
-qI4An0oDZmA6zz0WkwKlH8wzjzD4LNT1
-=5EMD
------END PGP SIGNATURE-----
-
---=-rfZUQ8qijYDaOpLY6EXa--
-
-
-
---===============8428419663154958695==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+I am working on LTP-20100630. While doing networktest for multicast, I
+came across to following bugs.
+
+I have fixed these bugs  and created a patch which is I am sending in
+subsequent mail.
+
+[PATCH 1/2] mc_opts: network/multicast/mc_opts/mc_opts script - bug
+fixing
+[PATCH 2/2] runtest/multicast: wrong TCsrc path exported for multicast
+tests
+
+
+Thanks & Regards
+Sumit Dhoot
+Linsyssoft Technologies Pvt. Ltd.
+sumitbd@linsyssoft.com
+
+
+
+
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
---===============8428419663154958695==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8428419663154958695==--
-
-
