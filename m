@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1OcDjd-0002qO-8C
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 08:36:01 +0000
-Date: Fri, 23 Jul 2010 10:51:21 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100723085121.GA15257@saboteur.suse.cz>
-References: <20100722142216.GA3593@saboteur.suse.cz>
-	<AANLkTikxgQkrxYRKgNe_CPrU9-pFKslpstzqMxDMN3pm@mail.gmail.com>
-	<20100722183850.GA18490@saboteur.suse.cz>
-	<AANLkTikuRkjhGOi_Azyb9Ij18ZNCuZhj65hP_fFj5goO@mail.gmail.com>
+	(envelope-from <yanegomi@gmail.com>) id 1OZtjt-0007DC-DG
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 22:50:41 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OZtjs-0005wz-Lj
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 22:50:41 +0000
+Received: by mail-iw0-f175.google.com with SMTP id 34so3641795iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 16 Jul 2010 15:50:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTikuRkjhGOi_Azyb9Ij18ZNCuZhj65hP_fFj5goO@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix make install in ltp/testcacses/realtime/
+In-Reply-To: <AANLkTimgkcie9ze6ge5SmrH8Fe8a1z8RT0FgZMhjExW5@mail.gmail.com>
+References: <000001cb249e$14ed7490$3ec85db0$@co.jp>
+	<AANLkTimgkcie9ze6ge5SmrH8Fe8a1z8RT0FgZMhjExW5@mail.gmail.com>
+Date: Fri, 16 Jul 2010 15:50:40 -0700
+Message-ID: <AANLkTinaYGjU8MGQZ_ccN1bfuduDzs0KsFPXi638278T@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP]
+	=?utf-8?b?4oCd77yj772P772O772U772B772J772O772F772S772T4oCd?=
+	=?utf-8?q?_test_was_=22TFAIL=22_but_=22PASS=22_is_in_log_results?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,63 +30,161 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> > When doing 'make install' in ltp/testcases/realtime/ the process stops
-> >> > because the dummy makefile generated from empty Makefile.am is not
-> >> > correct makefile (has unmakeable targets). This could be easily fixed by
-> >> > adding m4 to FILTER_OUT_DIRS.
-> >> >
-> >> > Patch attached.
-> >>
-> >> I understand the issue that you're trying to address, but have you
-> >> tried to do make distclean from the top and then rerun the build? Does
-> >> it work?
-> >
-> > No, it broke even more, now 'make' doesn't work too. Anyway is there a
-> > point for running Makefile generated from empty Makefile.am?
-> 
->     The process is:
-> 
-> make distclean
-> make autotools
-> ./configure {blah}
-> 
+On Fri, Jul 16, 2010 at 3:50 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Thu, Jul 15, 2010 at 9:19 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> Hi,
+>>
+>> With RHEL5.4/5.5 systems, I noticed that "Containers" test failed but
+>> "Containers" is PASS in log results:
+>>
+>> ---<log results file>-------------
+>> ...
+>> hangup01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 PASS =A0 =A0 =A0 0
+>> Containers =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 PASS =A0 =A0 =A0 0
+>> BindMounts =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 PASS =A0 =A0 =A0 0
+>> ...
+>> ----------------
+>>
+>> ---<detail in redirected file>-------------
+>> ...
+>> check_netns_enabled =A0 =A01 =A0TFAIL =A0: =A0unshare syscall smoke test=
+ failed:
+>> errno=3DEINVAL(22): Invalid argument
+>> Network namespaces not enabled in kernel. =A0Not running netns tests.
+>> ...
+>> ----------------
+>>
+>> The source which returned with "Invalid argument" is
+>> "check_netns_enabled.c":
+>>
+>> ---<check_netns_enabled.c>-------------
+>> main()
+>> {
+>> =A0 =A0 =A0 =A0/* Checking if the kernel supports unshare with netns cap=
+abilities.
+>> */
+>> =A0 =A0 =A0 =A0if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < 0=
+) {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm (TFAIL | TERRNO, "unshare syscal=
+l smoke test
+>> failed");
+>> =A0 =A0 =A0 =A0}
+>> =A0 =A0 =A0 =A0tst_exit();
+>> }
+>> ----------------
+>>
+>> In RHEL5.4/5.5 systems, unshare() does not support the argument
+>> "CLONE_NEWNET".
+>> But I feel strange that log results is "PASS" in spite of "TFAIL" exit.
+>>
+>> "container_test.sh" which calls "check_netns_enabled.c" is as follows:
+>> ---<container_test.sh>-------------
+>> ...
+>> check_netns_enabled
+>> if [ $? -eq 0 ]; then
+>> =A0 =A0 =A0 =A0echo "Running netns tests."
+>> =A0 =A0 =A0 =A0runnetnstest.sh
+>> else
+>> =A0 =A0 =A0 =A0echo "Network namespaces not enabled in kernel. =A0Not ru=
+nning netns
+>> tests."
+>> fi
+>> ...
+>> ----------------
+>>
+>> According to above source, "check_netns_enabled.c" is only the judgement
+>> whether "runnetnstest.sh" test can be called or not.
+>> So, I think that "TFAIL" is not suitable for the test impossibility
+>> message.
+>> "TCONF" is more suitable for the message than "TFAIL", I think.
+>> But, if "TCONF" is used instead of "TFAIL", "tst_exit" returns with 0.
+>> And the test shell "runnetnstest.sh" is called against intention.
+>>
+>>
+>> I thought up two ways of solutions.
+>> (1) Insert "exit(1)" just after "tst_resm()" of "check_netns_enabled.c"
+>> (2) Replace "TFAIL" with "TWARN", instead of "TCONF".
+>>
+>> But above solutions are both irregular measures, I think.
+>>
+>> If there are other good measures, please give me advice.
+>>
+>>
+>> In the following, I nominate a temporary patch for an example:
+>>
+>> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+>>
+>> =3D=3D=3D(1)=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- a/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
+7-12
+>> 02:01:45.000000000 +0900
+>> +++ b/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
+7-16
+>> 11:58:14.000000000 +0900
+>> @@ -43,7 +43,8 @@
+>> =A0{
+>> =A0 =A0 =A0 =A0/* Checking if the kernel supports unshare with netns cap=
+abilities.
+>> */
+>> =A0 =A0 =A0 =A0 if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < =
+0) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TFAIL | TERRNO, "unshare syscall=
+ smoke test
+>> failed");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TCONF | TERRNO, "unshare syscall=
+ smoke test
+>> failed");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit (1);
+>> =A0 =A0 =A0 =A0}
+>> =A0 =A0 =A0 =A0tst_exit();
+>> =A0}
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>> =3D=3D=3D(2)=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- a/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
+7-12
+>> 02:01:45.000000000 +0900
+>> +++ b/testcases/kernel/containers/netns/check_netns_enabled.c =A0 2010-0=
+7-16
+>> 11:56:47.000000000 +0900
+>> @@ -43,7 +43,7 @@
+>> =A0{
+>> =A0 =A0 =A0 =A0/* Checking if the kernel supports unshare with netns cap=
+abilities.
+>> */
+>> =A0 =A0 =A0 =A0 if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < =
+0) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TFAIL | TERRNO, "unshare syscall=
+ smoke test
+>> failed");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm (TWARN | TERRNO, "unshare syscall=
+ smoke test
+>> failed");
+>> =A0 =A0 =A0 =A0}
+>> =A0 =A0 =A0 =A0tst_exit();
+>> =A0}
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Uh, that would introduce a more serious problem because the netns
+> tests are keyed on whether or not that script passes or fails.
 
-git clone ltp-next
-make distclean
-make autotools
-./configure
-cd testcases/realtime/
-make
-DESTDIR=/tmp/ make install
+s/script/app/
 
----- snip ----
-make[2]: Entering directory
-`/home/metan/Work/git/ltp-next-local/testcases/realtime/m4'
-make[2]: *** No rule to make target `install-exec-am'.  Stop.
-make[2]: Leaving directory
-`/home/metan/Work/git/ltp-next-local/testcases/realtime/m4'
-make[1]: *** [install-am] Error 2
-make[1]: Leaving directory
-`/home/metan/Work/git/ltp-next-local/testcases/realtime/m4'
-make: *** [install] Error 2
+> If you can provide a more stable means of detecting whether or not
+> CLONE_* is available with netns, and integrate that into the tests,
+> that would be a better idea.
 
+Thanks,
+-Garrett
 
-automake (GNU automake) 1.11.1
-autoconf (GNU Autoconf) 2.65
-make GNU Make 3.81
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
