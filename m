@@ -2,18 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OYG9n-0005CA-Sg
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:22:39 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OYG9j-0006t0-MJ
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jul 2010 10:22:39 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Mon, 12 Jul 2010 15:52:07 +0530
-Message-Id: <1278930128.18204.14.camel@subratamodak.linux.ibm.com>
+	(envelope-from <sumitbd@linsyssoft.com>) id 1OZe8v-0006fy-CN
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:11:29 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OZe8t-00085E-QI
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:11:29 +0000
+Received: by pwi10 with SMTP id 10so762813pwi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Jul 2010 23:11:21 -0700 (PDT)
+From: sumitbd@linsyssoft.com
+Date: Fri, 16 Jul 2010 11:39:20 +0530
+Message-ID: <1279260560.2855.33.camel@sumit>
 Mime-Version: 1.0
-Subject: [LTP] Latest GIT creates install error
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: [LTP]  [PATCH 0/2] multicasttest: Bug Fixing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,28 +28,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi Garret,
+I am working on LTP-20100630. While doing networktest for multicast, I
+came across to following bugs.
 
-Latest LTP git creates install error:
+I have fixed these bugs  and created a patch which is I am sending in
+subsequent mail.
 
-make -C open_posix_testsuite
-top_srcdir=/root/ltp-dev/testcases/open_posix_testsuite install
-make[2]: Entering directory
-`/root/ltp-dev/testcases/open_posix_testsuite'
-mkdir -p //opt/openposix_testsuite/bin/.
-make[2]: *** No rule to make target `run.sh', needed by `install'.
-Stop.
-make[2]: Leaving directory
-`/root/ltp-dev/testcases/open_posix_testsuite'
-make[1]: *** [open_posix_testsuite-install] Error 2
-make[1]: Leaving directory `/root/ltp-dev/testcases'
-make: *** [testcases-install] Error 2
+[PATCH 1/2] mc_opts: network/multicast/mc_opts/mc_opts script - bug
+fixing
+[PATCH 2/2] runtest/multicast: wrong TCsrc path exported for multicast
+tests
 
-Regards--
-Subrata
+
+Thanks & Regards
+Sumit Dhoot
+Linsyssoft Technologies Pvt. Ltd.
+sumitbd@linsyssoft.com
+
+
+
 
 
 
