@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Odo76-0005Bi-Vc
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jul 2010 17:38:48 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Odo75-0000Xk-Vw
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jul 2010 17:38:48 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Tue, 27 Jul 2010 18:26:39 +0530
-Message-Id: <1280235406.5076.4.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sumitbd@linsyssoft.com>) id 1OZeaC-00075L-Al
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:39:40 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OZeaB-0006BA-BI
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jul 2010 06:39:40 +0000
+Received: by pvg13 with SMTP id 13so768732pvg.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Jul 2010 23:39:33 -0700 (PDT)
+From: sumitbd@linsyssoft.com
+Date: Fri, 16 Jul 2010 11:42:08 +0530
+Message-ID: <1279260728.4313.1.camel@sumit>
 Mime-Version: 1.0
-Subject: [LTP] LTP Build also compiling OPEN_POSIX !!
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: [LTP] [PATCH 1/2] mc_opts: network/multicast/mc_opts/mc_opts script
+ - bug fixing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,27 +29,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-Garrett,
+Test case "mc_opts" fails as it is not able to install "opts" and
+"opts_e" files at desired location. This is because the path of these
+files mentioned in the "mc_opts" script is incorrect. Following patch
+fixes the above problem.
 
-LTP Build is also compiling OPEN_POSIX_TESTSUITE. I think it is better
-to put it outside the purview of Default LTP build. Let it be built
-standalone as and when required by user. The Open_Posix build is taking
-much time to complete and hence delaying other LTP builds :-(
+Signed-off-by:  Sumit Dhoot <sumitbd@linsyssoft.com>
 
-Regards--
-Subrata
-
+Index: ltp-full-20100630/testcases/network/multicast/mc_opts/mc_opts
+===================================================================
+--- ltp-full-20100630.orig/testcases/network/multicast/mc_opts/mc_opts
++++ ltp-full-20100630/testcases/network/multicast/mc_opts/mc_opts
+@@ -57,7 +57,7 @@ setup()
+   mkdir -p $TCtmp
+   for i in $EXECUTABLES
+   do
+-    install -m 0755 "$LTPROOT/$i" "$TCtmp/."
++    install -m 0755 "$LTPROOT/testcases/bin/$i" "$TCtmp/."
+   done
+} 
 
 
 ------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share 
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://ad.doubleclick.net/clk;226879339;13503038;l?
-http://clk.atdmt.com/CRS/go/247765532/direct/01/
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
