@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@hallyn.com>) id 1Oe6v8-0008Ui-FK
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 13:43:42 +0000
-Received: from hrndva-omtalb.mail.rr.com ([71.74.56.125])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oe6v5-0001pD-Eu
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 13:43:42 +0000
-Date: Wed, 28 Jul 2010 08:16:14 -0500
-From: "Serge E. Hallyn" <serge@hallyn.com>
-Message-ID: <20100728131614.GA6367@hallyn.com>
-References: <1273430222.16443.2.camel@subratamodak.linux.ibm.com>
-	<20100509201748.GB15769@us.ibm.com>
-	<1274126763.5106.15.camel@subratamodak.linux.ibm.com>
-	<1280320721.9598.0.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1OaOFr-0006nd-8z
+	for ltp-list@lists.sourceforge.net; Sun, 18 Jul 2010 07:25:43 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25]
+	helo=mx02.colomx.prod.int.phx2.redhat.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OaOFq-0006mt-7E
+	for ltp-list@lists.sourceforge.net; Sun, 18 Jul 2010 07:25:43 +0000
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by mx02.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
+	o6I7PanC028518
+	for <ltp-list@lists.sourceforge.net>; Sun, 18 Jul 2010 03:25:36 -0400
+Date: Sun, 18 Jul 2010 03:25:36 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1058459861.509021279437936423.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1752311632.509001279437850417.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1280320721.9598.0.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [RFC] New Test Cases has dried up
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_22323_267875539.1279437936423"
+Subject: Re: [LTP] [PATCH] fix false alarm in pselect01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,61 +31,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Yes, I do.
+------=_Part_22323_267875539.1279437936423
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Maybe I'll port them at the airport during travel to linuxcon.
 
--serge
+----- "Caspar Zhang" <czhang@redhat.com> wrote:
 
-Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
-> Do you intend to submit the testcases still ??
+> Hi all,
 > 
-> Regards--
-> Subrata
+>    In my recent tests, not all desired time is equal to exact
+> execution time,
+>    sometimes it is +/-1s, and in a few times it becomes +/-2s. In most
+> cases,
+>    +/-2s is still a valid value between exact execute time and desired
+> time.
 > 
-> On Tue, 2010-05-18 at 01:36 +0530, Subrata Modak wrote:
-> > On Sun, 2010-05-09 at 15:17 -0500, Serge E. Hallyn wrote: 
-> > > Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
-> > > > Hello everybody,
-> > > > 
-> > > > We completed 4 months of 2010, but, i do not find major activity in
-> > > > creating/writing/contributing new tests to LTP. Can we restart
-> > > > contributing new tests to LTP ? I am sure that somebody definitely has
-> > > > something to offer. Expecting your wishes.
-> > > 
-> > > I've got a draft of the securebits testcases sitting around
-> > > somewhere, but I think I was waiting for selinux+filecaps+etc
-> > > to calm down before adding new tests.  (Oh yeah, and also for
-> > > /usr/include/linux/securebits.h to magically spread around.)
-> > 
-> > Eagerly waiting for this to come in.
-> > 
-> > Regards--
-> > Subrata
-> > 
-> > > 
-> > > -serge
-> > 
-> > 
-> > ------------------------------------------------------------------------------
-> > 
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+>    Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> 
+> --- a/testcases/kernel/syscalls/pselect/pselect01.c     2010-04-01
+> 14:23:10.000000000 +0800
+> +++ b/testcases/kernel/syscalls/pselect/pselect01.c     2010-07-15
+> 16:03:40.969426078 +0800
+> @@ -109,7 +109,8 @@
+>                             NULL);
+>                 end = time(&t);
+> 
+> -               if (((end - start) == total_sec) || ((end - start) ==
+> total_sec + 1))
+> +               /* Is it still valid in range -2~2s? */
+> +               if ((end - start - total_sec <= 2) && (end - start -
+> total_sec >= -2))
+
+Sorry for mistake, since end, start are unsigned int, use 
+end-start-total_sec >= -2 will cause error, add (int)before 
+(end-start) instead. New patch attached.
+
+Thanks,
+Caspar
+
+
+-- 
+Kernel Associate Quality Engineer
+Red Hat Inc. (Beijing R&D Branch)
+
+Red Hat China R&D Branch Unit 907, North Tower C, 
+  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
+  Haidian District, Beijing 100190
+
+TEL: +86-10-62608150
+Web: http://www.redhat.com/
+
+------=_Part_22323_267875539.1279437936423
+Content-Type: text/x-patch; name=syscalls-pselect01-fix-false-alarm.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=syscalls-pselect01-fix-false-alarm.patch
+
+Hi all,
+   
+   In my recent tests, not all desired time is equal to exact execution time, 
+   sometimes it is +/-1s, and in a few times it becomes +/-2s. In most cases,
+   +/-2s is still a valid value between exact execute time and desired time.
+   
+   Signed-off-by: Caspar Zhang <czhang@redhat.com>
+
+--- a/testcases/kernel/syscalls/pselect/pselect01.c	2010-04-01 14:23:10.000000000 +0800
++++ b/testcases/kernel/syscalls/pselect/pselect01.c	2010-07-15 16:03:40.969426078 +0800
+@@ -109,7 +109,8 @@
+ 			    NULL);
+ 		end = time(&t);
+ 
+-		if (((end - start) == total_sec) || ((end - start) == total_sec + 1))
++		/* Is it still valid in range -2~2s? */
++		if (((int)(end - start) - total_sec <= 2) && ((int)(end - start) - total_sec >= -2))
+ 			tst_resm(TPASS, "Sleep time was correct");
+ 		else
+ 			tst_resm(TFAIL, "Sleep time was incorrect:%d != %d",
+
+------=_Part_22323_267875539.1279437936423
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+------=_Part_22323_267875539.1279437936423
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_22323_267875539.1279437936423--
+
