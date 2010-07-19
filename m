@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1Ob9lK-0004An-9l
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jul 2010 10:09:22 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ob9lJ-00011m-6M
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jul 2010 10:09:22 +0000
-Date: Tue, 20 Jul 2010 06:09:04 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <64178004.628581279620544764.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1854762285.628181279620112974.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Oakf1-0000Am-FI
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 07:21:11 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oakf0-0002Na-CS
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 07:21:11 +0000
+Received: by iwn34 with SMTP id 34so5956600iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 19 Jul 2010 00:21:05 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] =?utf-8?q?=5B12/12_FAILURE=5D_LTP=C3=85_cron_tests_fails?=
+In-Reply-To: <717420931.522261279522531955.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <1686792840.522211279522425828.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<717420931.522261279522531955.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Mon, 19 Jul 2010 00:21:05 -0700
+Message-ID: <AANLkTilfXhCYO63J-Seg_hE8ln_pFY1eFawYHv1RiZyT@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix false alarm in pselect01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,75 +28,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, Linus Test Project <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Ci0tLS0tICJTdWJyYXRhIE1vZGFrIiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3Rl
-OgoKPiBTdWJqZWN0OiBMVFDFmyBjcm9uX3Rlc3RzIGZhaWxzCj4gCj4gSXNzdWVzIERlc2NyaXB0
-aW9uIEJlbG93Ogo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiAj
-IHZpIHJ1bnRlc3QvY3Jvbl90ZXN0cwo+IGNyb25fdGVzdHMgZXhwb3J0IFRDZGF0PSRMVFBST09U
-L3Rlc3RjYXNlcy9iaW47IGNyb25fdGVzdHMuc2gKPiA8RU9GPgo+IAo+IFJ1biBMVFAgd2l0aCB0
-aGUgZm9sbG93aW5nIGNvbW1hbmQ6Cj4gIyAuL3J1bmx0cCAtZiBjcm9uX3Rlc3RzCj4gPDw8dGVz
-dF9zdGFydD4+Pgo+IHRhZz1jcm9uIHN0aW1lPTEyNzIwMDQ1MTAKPiBjbWRsaW5lPSJleHBvcnQg
-VENkYXQ9JExUUFJPT1QvdGVzdGNhc2VzL2JpbjsgY3Jvbl90ZXN0cy5zaCIKPiBjb250YWN0cz0i
-Igo+IGFuYWx5c2lzPWV4aXQKPiA8PDx0ZXN0X291dHB1dD4+Pgo+IGNyb24wMSAgICAgIDAgIFRJ
-TkZPICA6ICBUZXN0ICMxOiBjcm9udGFiIDxmaWxlbmFtZT4gaW5zdGFsbHMgdGhlCj4gY3JvbnRh
-YiBmaWxlCj4gY3JvbjAxICAgICAgMCAgVElORk8gIDogIFRlc3QgIzE6IGNyb24gc2NoZWR1bGVz
-IHRoZSBqb2IgbGlzdGVkIGluCj4gY3JvbnRhYgo+IGZpbGUuCj4gY3JvbjAxICAgICAgMCAgVElO
-Rk8gIDogIFRlc3QgIzE6IEluc3RhbGxpbmcgY3JvbiBqb2IgLi4uCj4gY3JvbjAxICAgICAgMCAg
-VElORk8gIDogIFRlc3QgIzE6IENyb25qb2IgaW5zdGFsbGVkIHN1Y2Nlc3NmdWxseQo+IGNyb24w
-MSAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMxOiAvdmFyL2xvZy9jcm9uOiBUcnlpbmcgYWx0ZW5h
-dGUKPiBsb2cuLi4KPiBjcm9uMDEgICAgICAxICBURkFJTCAgOiAgVGVzdCAjMTogY3JvbnRhYiBh
-Y3Rpdml0eSBub3QgcmVjb3JkZWQgaW4KPiAvdmFyL2xvZy9tZXNzYWdlcy4KPiBjcm9uMDEgICAg
-ICAwICBUSU5GTyAgOiAgVGVzdCAjMTogVmFsdWVzIGFyZSBnb29kOgo+ICAgICBFeHBlY3RlZCA4
-OyAgICAgUmVjZWl2ZWQgOAo+IGNyb24wMSAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMxOiBWYWx1
-ZXMgYXJlIGdvb2Q6Cj4gICAgIEV4cGVjdGVkIDk7ICAgICBSZWNlaXZlZCA5Cj4gY3JvbjAxICAg
-ICAgMCAgVElORk8gIDogIFRlc3QgIzE6IFZhbHVlcyBhcmUgZ29vZDoKPiAgICAgRXhwZWN0ZWQg
-MTA7ICAgICBSZWNlaXZlZCAxMAo+IGNyb24wMSAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMxOiBW
-YWx1ZXMgYXJlIGdvb2Q6Cj4gICAgIEV4cGVjdGVkIDExOyAgICAgUmVjZWl2ZWQgMTEKPiBjcm9u
-MDEgICAgICAwICBUSU5GTyAgOiAgVGVzdCAjMTogVmFsdWVzIGFyZSBnb29kOgo+ICAgICBFeHBl
-Y3RlZCAxMjsgICAgIFJlY2VpdmVkIDEyCj4gY3JvbjAxICAgICAgMCAgVElORk8gIDogIFRlc3Qg
-IzE6IC92YXIvbG9nL2Nyb246IGFsdGVybmF0ZS4uLgo+IGNyb24wMSAgICAgIDEgIFRGQUlMICA6
-ICBUZXN0ICMxOiBUZXN0IGZhaWxlZC4gUmVhc29uOgo+IGNyb24wMiAgICAgIDAgIFRJTkZPICA6
-ICBUZXN0ICMyOiBjcm9udGFiIC1yIHJlbW92ZXMgdGhlIGNyb250YWIKPiBmaWxlLgo+IGNyb24w
-MiAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMyOiBpbnN0YWxsaW5nIGNyb250YWIgZmlsZS4KPiBj
-cm9uMDIgICAgICAwICBUSU5GTyAgOiAgVGVzdCAjMTogL3Zhci9sb2cvY3JvbjogYWx0ZXJuYXRl
-Li4uCj4gY3JvbjAyICAgICAgMiAgVEZBSUwgIDogIFRlc3QgIzI6IGNyb250YWIgYWN0aXZpdHkg
-bm90IHJlY29yZGVkIGluCj4gdmFyL2xvZy9tZXNzYWdlcy4KPiBjcm9uMDIgICAgICAwICBUSU5G
-TyAgOiAgVGVzdCAjMjogdW5pbnN0YWxsaW5nIGNyb250YWIgZmlsZS4KPiBjcm9uMDIgICAgICAw
-ICBUSU5GTyAgOiAgVGVzdCAjMTogL3Zhci9sb2cvY3JvbjogYWx0ZXJuYXRlLi4uCj4gY3JvbjAy
-ICAgICAgMiAgVEZBSUwgIDogIFRlc3QgIzI6IGNyb250YWIgYWN0aXZpdHkgbm90IHJlY29yZGVk
-IGluCj4gdmFyL2xvZy9tZXNzYWdlcy4KPiBjcm9uMDMgICAgICAwICBUSU5GTyAgOiAgVGVzdCAj
-MzogY3JvbnRhYiAtbCBsaXN0cyB0aGUgY3JvbmpvYnMKPiBpbnN0YWxsZWQKPiBjcm9uMDMgICAg
-ICAwICBUSU5GTyAgOiAgVGVzdCAjMzogaW5zdGFsbGluZyBjcm9udGFiIGZpbGUgLi4uCj4gY3Jv
-bjAzICAgICAgMCAgVElORk8gIDogIFRlc3QgIzM6IENyb24gam9iIGluc3RhbGxlZC4KPiBjcm9u
-MDMgICAgICAwICBUSU5GTyAgOiAgVGVzdCAjMzogY3JvbnRhYiAtbCBsaXN0ZWQgY3JvbmpvYgo+
-IHRzdDJfY3JvbnByZy5zaAo+IGNyb24wMyAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMzOiB1bmlu
-c3RhbGxpbmcgY3JvbnRhYiBmaWxlLgo+IGNyb24wMyAgICAgIDAgIFRJTkZPICA6ICBjcm9udGFi
-IHVuaW5zdGFsbGVkIGFsbCBqb2JzIGZvciB1c2VyCj4gY3JvbjAzICAgICAgMyAgVFBBU1MgIDog
-IGNyb250YWIgZGlkIG5vdCBsaXN0IGFueSBjcm9uam9icwo+IDw8PGV4ZWN1dGlvbl9zdGF0dXM+
-Pj4KPiBpbml0aWF0aW9uX3N0YXR1cz0ib2siCj4gZHVyYXRpb249NDM0IHRlcm1pbmF0aW9uX3R5
-cGU9ZXhpdGVkIHRlcm1pbmF0aW9uX2lkPTQgY29yZWZpbGU9bm8KPiBjdXRpbWU9MyBjc3RpbWU9
-MjIKPiA8PDx0ZXN0X2VuZD4+PgoKSGksIAoKSSBhbHNvIHRyaWdnZXJlZCB0aGlzIGZhaWx1cmUg
-b24gYSBSSEVMNiBtYWNoaW5lLCB3aXRoIHJzeXNsb2cgaW5zdGFsbGVkLgoKVGhlIGZhaWx1cmUg
-b2NjdXJzIGJlY2F1c2UgbG9nIGZpbGUgcmVjb3JkZWQgbmVpdGhlciBpbiAvdmFyL2xvZy9jcm9u
-Cm5vciBpbiAvdmFyL2xvZy9tZXNzYWdlLiBTbyBpdCdzIGVhc3kgdG8gc29sdmUgdGhpcyBwcm9i
-bGVtOiBtYWtlIHN1cmUgCmNvcnJlc3BvbmRpbmcgY3JvbiBsb2dnaW5nIGl0ZW0gaW4gL2V0Yy9y
-c3lzbG9nLmNvbmYgZXhpc3RzIGFuZCBzdGFydApyc3lzbG9nIHNlcnZpY2UuCgpTaW5jZSB5b3Ug
-bWF5IHVzZSBhIGRpZmZlcmVudCBzeXNsb2cgc2VydmljZSwgaXQncyBoYXJkIHRvIHdyaXRlIGEg
-cGF0Y2ggdG8KdGhpcyBjYXNlLiBCdXQgdGhlIHNvbHV0aW9uIHRvIHRoaXMgaXNzdWUgaXMgc2lt
-aWxhciBhYm92ZS4KClRoYW5rcywKQ2FzcGFyCgotLSAKS2VybmVsIEFzc29jaWF0ZSBRdWFsaXR5
-IEVuZ2luZWVyClJlZCBIYXQgSW5jLiAoQmVpamluZyBSJkQgQnJhbmNoKQoKUmVkIEhhdCBDaGlu
-YSBSJkQgQnJhbmNoIFVuaXQgOTA3LCBOb3J0aCBUb3dlciBDLCAKICBSYXljb20gSW5mb3RlY2gg
-UGFyaywgTm8uMiBLZXh1ZXl1YW4gTmFubHUsIAogIEhhaWRpYW4gRGlzdHJpY3QsIEJlaWppbmcg
-MTAwMTkwCgpURUw6ICs4Ni0xMC02MjYwODE1MApXZWI6IGh0dHA6Ly93d3cucmVkaGF0LmNvbS8K
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkg
-U3ByaW50CldoYXQgd2lsbCB5b3UgZG8gZmlyc3Qgd2l0aCBFVk8sIHRoZSBmaXJzdCA0RyBwaG9u
-ZT8KVmlzaXQgc3ByaW50LmNvbS9maXJzdCAtLSBodHRwOi8vcC5zZi5uZXQvc2Z1L3NwcmludC1j
-b20tZmlyc3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Sun, Jul 18, 2010 at 11:55 PM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+>
+>>
+>> =A0 =A0 The fact that the test is using time(3) to calculate the elapsed
+>> period instead of clock_gettime is dubious at best, because the
+>> precision of time is in seconds. Maybe it should be converted to
+>> clock_gettime calls for improved precision?
+>
+> Use clock_gettime instead of time(3), patch attached.
+
+Looks better, but being strict it's still buggy. POSIX defines struct
+timespec as:
+
+The <time.h> header shall declare the structure timespec, which has at
+least the following members:
+
+time_t  tv_sec    Seconds.
+long    tv_nsec   Nanoseconds.
+
+So you're losing precision in one case, and time_t can be variable
+(the spec for types.h is rather fluid):
+
+time_t and clock_t shall be integer or real-floating types.
+
+The (struct timeval *) casts are also unnecessary because you're
+getting the address of a struct timeval object (which is in both cases
+struct timeval*).
+
+> Another question, since POSIX.1-2008 marks gettimeofday() as obsolete
+> (man gettimeofday), should the usec test part be changed to
+> clock_getime as well?
+
+Sure, if you want.
+
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
