@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OcMUc-00037f-04
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 17:57:06 +0000
-Received: from mail-gw0-f46.google.com ([74.125.83.46])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1OakGK-0003Jn-R5
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 06:55:40 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25]
+	helo=mx02.colomx.prod.int.phx2.redhat.com)
 	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OcMUb-000696-6E
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 17:57:05 +0000
+	id 1OakGI-0007mq-I7
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 06:55:40 +0000
+Date: Mon, 19 Jul 2010 02:55:31 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <717420931.522261279522531955.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1686792840.522211279522425828.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20100723171717.GA54890@medusa.sis.pasteur.fr>
-References: <20100723171717.GA54890@medusa.sis.pasteur.fr>
-Date: Fri, 23 Jul 2010 10:56:58 -0700
-Message-ID: <AANLkTik=DJ+0NsMoD-ucZZtVrsaiBHeVEMmh-3GEixD+@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] abort01 testcase cleanup
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_22969_338641583.1279522531954"
+Subject: Re: [LTP] [PATCH] fix false alarm in pselect01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,44 +26,125 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nicolas Joly <njoly@pasteur.fr>
-Cc: LTP list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Fri, Jul 23, 2010 at 10:17 AM, Nicolas Joly <njoly@pasteur.fr> wrote:
->
-> Hi,
->
-> The attached patch do some cleanup in the abort01 testcase ...
->
-> 1) The attempt to remove the generated core is wrong. The hard-coded
-> =A0 `core' name is bad and the test temporary directory removal already
-> =A0 take care of this.
->
-> 2) Make the test fail gracefully if the running environment does not
-> =A0 allow generating core files.
->
-> njoly@lanfeust [syscalls/abort]> ./abort01
-> abort01 =A0 =A0 1 =A0TPASS =A0: =A0Test passed
-> njoly@lanfeust [syscalls/abort]> (ulimit -c 0 && ./abort01)
-> abort01 =A0 =A0 1 =A0TCONF =A0: =A0core file size limit must be greater t=
-han 0.
->
-> Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+------=_Part_22969_338641583.1279522531954
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Looks ok, but is there any particular reason why you removed the unlink(2) =
-call?
+
+----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+
+> 
+>     The fact that the test is using time(3) to calculate the elapsed
+> period instead of clock_gettime is dubious at best, because the
+> precision of time is in seconds. Maybe it should be converted to
+> clock_gettime calls for improved precision?
+
+Use clock_gettime instead of time(3), patch attached. 
+
+Another question, since POSIX.1-2008 marks gettimeofday() as obsolete
+(man gettimeofday), should the usec test part be changed to
+clock_getime as well?
+
 Thanks,
--Garrett
+Caspar
 
----------------------------------------------------------------------------=
----
+-- 
+/---------------------------------------\
+| Name: Caspar Zhang                    |
+| Team: Kernel-QE                       |
+| IRC: caspar @ #kernel-qe, #eng-china  |
+| Phone: +86-10-6260-8150               |
+| Cellphone: +86-1381-073-0090          |
+\---------------------------------------/
+
+
+------=_Part_22969_338641583.1279522531954
+Content-Type: text/x-patch; name=syscalls-pselect01-fix-false-alarm.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=syscalls-pselect01-fix-false-alarm.patch
+
+Hi all,
+   
+   In my recent tests, not all desired time be equal to exact execution time, 
+   use clock_gettime to improve precision. 
+   
+   Signed-off-by: Caspar Zhang <czhang@redhat.com>
+
+--- a/testcases/kernel/syscalls/pselect/Makefile	2010-04-01 14:23:10.000000000 +0800
++++ b/testcases/kernel/syscalls/pselect/Makefile	2010-07-19 14:54:38.984482305 +0800
+@@ -21,6 +21,7 @@
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../utils/newer_64.mk
+ 
++LDLIBS			+= -lpthread -lrt
+ %_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+--- a/testcases/kernel/syscalls/pselect/pselect01.c	2010-04-01 14:23:10.000000000 +0800
++++ b/testcases/kernel/syscalls/pselect/pselect01.c	2010-07-19 14:25:31.900419665 +0800
+@@ -65,10 +65,8 @@
+ 	fd_set readfds;
+ 	struct timespec tv;
+ 	int retval;
+-	time_t t;
+-	unsigned start, end;
+ 	struct timeval tv_start, tv_end;
+-	int real_usec;
++	int real_usec, real_sec;
+ 
+ 	setup();
+ 
+@@ -103,17 +101,20 @@
+ 		tst_resm(TINFO,
+ 			 "Testing basic pselect sanity,Sleeping for %jd secs",
+ 			 (intmax_t)tv.tv_sec);
+-		start = time(&t);
++		clock_gettime(CLOCK_REALTIME, (struct timespec *)&tv_start);
+ 		retval =
+ 		    pselect(0, &readfds, NULL, NULL, (struct timespec *)&tv,
+ 			    NULL);
+-		end = time(&t);
++		clock_gettime(CLOCK_REALTIME, (struct timespec *)&tv_end);
+ 
+-		if (((end - start) == total_sec) || ((end - start) == total_sec + 1))
++		/* do a rounding */
++		real_sec = (int)(0.5 + (tv_end.tv_sec - tv_start.tv_sec + 
++				1e-6 * (tv_end.tv_usec - tv_start.tv_usec)));
++		if (real_sec == total_sec)
+ 			tst_resm(TPASS, "Sleep time was correct");
+ 		else
+ 			tst_resm(TFAIL, "Sleep time was incorrect:%d != %d",
+-				 total_sec, (end - start));
++				 total_sec, real_sec);
+ 	}
+ 
+ #ifdef DEBUG
+
+------=_Part_22969_338641583.1279522531954
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+------=_Part_22969_338641583.1279522531954
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_22969_338641583.1279522531954--
+
