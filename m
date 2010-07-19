@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1OZ3Ks-0000Go-K9
-	for ltp-list@lists.sourceforge.net; Wed, 14 Jul 2010 14:53:22 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OZ3Kr-0004AK-FA
-	for ltp-list@lists.sourceforge.net; Wed, 14 Jul 2010 14:53:22 +0000
-Message-Id: <4C3D7641020000E8000664BA@sinclair.provo.novell.com>
-Date: Wed, 14 Jul 2010 08:33:05 -0600
-From: "Murlin Wenzel" <mwenzel@novell.com>
-References: <9603429.236361279111653386.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<1263127425.237831279112632038.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1263127425.237831279112632038.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: Re: [LTP] Is there a good way to check kernel config in LTP?
+	(envelope-from <czhang@redhat.com>) id 1Oao0G-0008Tj-8s
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 10:55:20 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24]
+	helo=mx01.colomx.prod.int.phx2.redhat.com)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oao0E-0006Ll-P0
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 10:55:20 +0000
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by mx01.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
+	o6JAtCDD010965
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jul 2010 06:55:12 -0400
+Date: Mon, 19 Jul 2010 06:55:12 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1736556680.530871279536912040.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <183137942.530851279536896429.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_23332_2060190123.1279536912039"
+Subject: [LTP] [PATCH] Fix utimensat01 testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,55 +31,232 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>, Caspar Zhang <czhang@redhat.com>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
->>> On 7/14/2010 at 07:03 AM, in message
-<1263127425.237831279112632038.JavaMail.root@zmail04.collab.prod.int.phx2.redhat
-com>, Caspar Zhang <czhang@redhat.com> wrote: 
-> Hi all, I find a FAIL result in syscalls/swapon03 with RHEL6 kernel,
-> on a x86_64 machine, it always fails with the following message:
-> 
-> swapon03    1  TFAIL  :  Failed swapon for file swapfile30: errno=EPERM(1): 
-> Operation not permitted
-> swapon03    1  TFAIL  :  Failed to setup swaps
-> 
-> This is because in some >=2.6.32 kernels, the 
-> CONFIG_MEMORY_FAILURE option is enabled by default in kernel. 
-> As the NOTES in man 2 swapon says:
-> 
-> "...Since kernel 2.6.32, the limit is decreased by 1 if the kernel is built 
-> with the CONFIG_MEMORY_FAILURE option..."
->
+------=_Part_23332_2060190123.1279536912039
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-That's not the only option that affects MAX_SWAPFILES now.
+Hi all,
+   I tested this case for many times in RHEL6 on all archs but
+   always got a failure. The error message was:
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   open: Permission denied 
+   FAILED (bad test setup)
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   when the testcase tried to execute ./utimensat01 <params,...>.
+
+   After investigation, I found that the following two parts
+   maybe have wrong RW parameter:
+
+   a) Testing read-only file, owned by nobody(self).
+   Since the perm is 400, the user `nobody' itself doesn't have
+   write permission to the testfile, thus, if program executes
+   ./utimensat01 with -w param, `Permission deined' error will
+   occur. So we need to add -W in run_test param to avoid trying
+   writing test.
+
+   b) Testing read-only file, owned by root.
+   Since root owns the test file and the perm is still 400,
+   the user `nobody' has neither writing nor reading permission
+   to this file, so -RW param should be both set to run_test
+   function to avoid trying reading & writing test.
+
+   Signed-off-by: Caspar Zhang <czhang@redhat.com>
+
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+index 4246d1a..a861d61 100644
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+@@ -288,22 +288,22 @@ echo "Testing read-only file, owned by self"
+ echo
  
-> so MAX_SWAPFILES is not 30 anymore, it's 29. While LTP defines MAX_SWAPFILES
-> to 30 in include/swaponoff.h(hmmm....hardcode, I don't think it's a good 
-> idea :-|).
-> 
-> So the way to solve(maybe) the problem is clear: change MAX_SWAPFILES
-> to 29 when CONFIG_MEMORY_FAILURE is enabled. My question is: is there
-> a good way to check whether a kernel option is enabled or not? I searched
-> in the old discussions in this maillist and found nothing. I want to know if 
-> 
-> the developers have some new ideas? 
-> 
+ echo "***** Testing times==NULL case *****"
+-run_test "" 400 "" "" SUCCESS y y
++run_test -W "" 400 "" "" SUCCESS y y
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test "" 400 "" "0 n 0 n" SUCCESS y y
++run_test -W "" 400 "" "0 n 0 n" SUCCESS y y
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+-run_test "" 400 "" "0 o 0 o" SUCCESS n n
++run_test -W "" 400 "" "0 o 0 o" SUCCESS n n
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
+-run_test "" 400 "" "0 n 0 o" SUCCESS y n
++run_test -W "" 400 "" "0 n 0 o" SUCCESS y n
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
+-run_test "" 400 "" "0 o 0 n" SUCCESS n y
++run_test -W "" 400 "" "0 o 0 n" SUCCESS n y
+ 
+ echo "***** Testing times=={ x, y } case *****"
+-run_test "" 400 "" "1 1 1 1" SUCCESS y y
++run_test -W "" 400 "" "1 1 1 1" SUCCESS y y
+ 
+ echo "============================================================"
+ 
+@@ -312,22 +312,22 @@ echo "Testing read-only file, not owned by self"
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test root 400 "" "" EACCES
++run_test -RW root 400 "" "" EACCES
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test root 400 "" "0 n 0 n" EACCES
++run_test -RW root 400 "" "0 n 0 n" EACCES
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+-run_test root 400 "" "0 o 0 o" SUCCESS n n
++run_test -RW root 400 "" "0 o 0 o" SUCCESS n n
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
+-run_test root 400 "" "0 n 0 o" EPERM
++run_test -RW root 400 "" "0 n 0 o" EPERM
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
+-run_test root 400 "" "0 o 0 n" EPERM
++run_test -RW root 400 "" "0 o 0 n" EPERM
+ 
+ echo "***** Testing times=={ x, y } case *****"
+-run_test root 400 "" "1 1 1 1" EPERM
++run_test -RW root 400 "" "1 1 1 1" EPERM
+ 
+ echo "============================================================"
 
-I've seen 28 as the MAX as well, it all depends on the config options.  I've been looking at re-architecting the test to do some sort of repeat test to the max number of successful swap creations and then verifying that the same number is reachable at least 2 times.  MAX_SWAPFILES is never exported to userspace.  It's a compile time #define that depends on the kernel config options.
+Thanks,
+Caspar
 
-Murlin
+-- 
+Kernel Associate Quality Engineer
+Red Hat Inc. (Beijing R&D Branch)
 
+Red Hat China R&D Branch Unit 907, North Tower C, 
+  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
+  Haidian District, Beijing 100190
 
+TEL: +86-10-62608150
+Web: http://www.redhat.com/
 
+------=_Part_23332_2060190123.1279536912039
+Content-Type: text/x-patch; name=syscalls-utimensat01-fix-perm-denied.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=syscalls-utimensat01-fix-perm-denied.patch
+
+Hi all,
+   I tested this case for many times in RHEL6 on all archs but
+   always got a failure. The error message was:
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   open: Permission denied 
+   FAILED (bad test setup)
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   when the testcase tried to execute ./utimensat01 <params,...>.
+
+   After investigation, I found that the following two parts
+   maybe have wrong RW parameters:
+
+   a) Testing read-only file, owned by nobody(self).
+   Since the perm is 400, the user `nobody' itself doesn't have
+   write permission to the testfile, thus, if program executes
+   ./utimensat01 with -w param, `Permission deined' error will
+   occur. So we need to add -W in run_test param to avoid trying
+   writing test.
+
+   b) Testing read-only file, owned by root.
+   Since root owns the test file and the perm is still 400,
+   the user `nobody' has neither writing nor reading permission
+   to this file, so -RW param should be both set to run_test
+   function to avoid trying reading & writing test.
+
+   Signed-off-by: Caspar Zhang <czhang@redhat.com>
+
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+index 4246d1a..a861d61 100644
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+@@ -288,22 +288,22 @@ echo "Testing read-only file, owned by self"
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test "" 400 "" "" SUCCESS y y
++run_test -W "" 400 "" "" SUCCESS y y
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test "" 400 "" "0 n 0 n" SUCCESS y y
++run_test -W "" 400 "" "0 n 0 n" SUCCESS y y
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+-run_test "" 400 "" "0 o 0 o" SUCCESS n n
++run_test -W "" 400 "" "0 o 0 o" SUCCESS n n
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
+-run_test "" 400 "" "0 n 0 o" SUCCESS y n
++run_test -W "" 400 "" "0 n 0 o" SUCCESS y n
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
+-run_test "" 400 "" "0 o 0 n" SUCCESS n y
++run_test -W "" 400 "" "0 o 0 n" SUCCESS n y
+ 
+ echo "***** Testing times=={ x, y } case *****"
+-run_test "" 400 "" "1 1 1 1" SUCCESS y y
++run_test -W "" 400 "" "1 1 1 1" SUCCESS y y
+ 
+ echo "============================================================"
+ 
+@@ -312,22 +312,22 @@ echo "Testing read-only file, not owned by self"
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test root 400 "" "" EACCES
++run_test -RW root 400 "" "" EACCES
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test root 400 "" "0 n 0 n" EACCES
++run_test -RW root 400 "" "0 n 0 n" EACCES
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+-run_test root 400 "" "0 o 0 o" SUCCESS n n
++run_test -RW root 400 "" "0 o 0 o" SUCCESS n n
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
+-run_test root 400 "" "0 n 0 o" EPERM
++run_test -RW root 400 "" "0 n 0 o" EPERM
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
+-run_test root 400 "" "0 o 0 n" EPERM
++run_test -RW root 400 "" "0 o 0 n" EPERM
+ 
+ echo "***** Testing times=={ x, y } case *****"
+-run_test root 400 "" "1 1 1 1" EPERM
++run_test -RW root 400 "" "1 1 1 1" EPERM
+ 
+ echo "============================================================"
+ 
+
+------=_Part_23332_2060190123.1279536912039
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+------=_Part_23332_2060190123.1279536912039
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_23332_2060190123.1279536912039--
+
