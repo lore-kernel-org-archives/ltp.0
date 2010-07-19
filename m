@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1OdOiO-0001GC-IJ
-	for ltp-list@lists.sourceforge.net; Mon, 26 Jul 2010 14:31:36 +0000
-Date: Mon, 26 Jul 2010 16:27:15 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100726142715.GA18910@saboteur.suse.cz>
-References: <20100722133111.GA30090@saboteur.suse.cz>
-	<AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
-	<20100722181736.GA5936@saboteur.suse.cz>
-	<AANLkTikTXuwc4hGrLRqkcoE12_6RMhNP7fW2oBLHafA0@mail.gmail.com>
-	<20100723101338.GB19210@saboteur.suse.cz>
-	<AANLkTim+_Ue6Vp4z-0KCFnzvJG4nvG0qO9fN73xG6WMe@mail.gmail.com>
-	<20100726095517.GB4609@saboteur.suse.cz>
-	<AANLkTikBASNfcrhisVrkd6K_sMc-soWbkWJ7j5G4UGXk@mail.gmail.com>
+	(envelope-from <czhang@redhat.com>) id 1Oakdy-0008RV-Tt
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 07:20:06 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25]
+	helo=mx02.colomx.prod.int.phx2.redhat.com)
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oakdx-00068F-Py
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 07:20:06 +0000
+Date: Mon, 19 Jul 2010 03:19:56 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <605927762.522681279523996466.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1727427203.522661279523956538.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTikBASNfcrhisVrkd6K_sMc-soWbkWJ7j5G4UGXk@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix pthread_mutex_getprioceiling testcase
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_22981_1267545886.1279523996465"
+Subject: Re: [LTP] [PATCH] fix false alarm in pselect01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,53 +26,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> >> =A0 =A0 I just now noticed the PTHREAD_PRIO_PROTECT portion of the pat=
-ch.
-> >> The testcase passes now (I can vouch for it passing on FreeBSD), but
-> >> none of the POSIX specs I read mention anything about this being a
-> >> hard requirement. So something needs to be figured out as far as
-> >> whether or not the specs are broken, or this an issue with the
-> >> pthreads implementation on both FreeBSD and Linux.
+------=_Part_22981_1267545886.1279523996465
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+
+----- "Caspar Zhang" <czhang@redhat.com> wrote:
+
+> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+> 
 > >
-> > Yes, I was unable to find this in the posix too. I consulted our glibc
-> > maintainer and all I've got was "it doesn't work without
-> > PTHREAD_PRIO_PROTECT". And even free pages from O'Reilly "A POSIX
-> > Standart for Better Mutiprocessing" seems to suggest that. I'll try to
-> > get that book as it seems to be only source of documentation for
-> > realtime threads I know about. Anyway it does make sense to return
-> > priority only for mutexes that can be prioritized.
-> =
+> >     The fact that the test is using time(3) to calculate the elapsed
+> > period instead of clock_gettime is dubious at best, because the
+> > precision of time is in seconds. Maybe it should be converted to
+> > clock_gettime calls for improved precision?
 
->     I just committed a slightly modified version of your III patch.
-> I'll have to chase down the POSIX people about this discrepancy...
+s/1e-6/1e-9 in the patch, my typo :-|
 
-Okay ;).
+Thanks,
+Caspar
 
-Still there are other pthread tests to fix. May be we sould make the
-function print_pthread_error() library call so that it could be used
-from other openposix pthread tests.
+> 
+> Use clock_gettime instead of time(3), patch attached.
+> 
+> Another question, since POSIX.1-2008 marks gettimeofday() as obsolete
+> (man gettimeofday), should the usec test part be changed to
+> clock_getime as well?
+> 
 
--- =
 
-Cyril Hrubis
-chrubis@suse.cz
+-- 
+Kernel Associate Quality Engineer
+Red Hat Inc. (Beijing R&D Branch)
 
----------------------------------------------------------------------------=
----
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share =
+Red Hat China R&D Branch Unit 907, North Tower C, 
+  Raycom Infotech Park, No.2 Kexueyuan Nanlu, 
+  Haidian District, Beijing 100190
 
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://ad.doubleclick.net/clk;226879339;13503038;l?
-http://clk.atdmt.com/CRS/go/247765532/direct/01/
+TEL: +86-10-62608150
+Web: http://www.redhat.com/
+
+------=_Part_22981_1267545886.1279523996465
+Content-Type: text/x-patch; name=syscalls-pselect01-fix-false-alarm.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=syscalls-pselect01-fix-false-alarm.patch
+
+Hi all,
+   
+   In my recent tests, not all desired time be equal to exact execution time, 
+   use clock_gettime to improve precision. 
+   
+   Signed-off-by: Caspar Zhang <czhang@redhat.com>
+
+--- a/testcases/kernel/syscalls/pselect/Makefile	2010-04-01 14:23:10.000000000 +0800
++++ b/testcases/kernel/syscalls/pselect/Makefile	2010-07-19 14:54:38.984482305 +0800
+@@ -21,6 +21,7 @@
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../utils/newer_64.mk
+ 
++LDLIBS			+= -lpthread -lrt
+ %_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+--- a/testcases/kernel/syscalls/pselect/pselect01.c	2010-04-01 14:23:10.000000000 +0800
++++ b/testcases/kernel/syscalls/pselect/pselect01.c	2010-07-19 15:04:24.175607371 +0800
+@@ -65,10 +65,9 @@
+ 	fd_set readfds;
+ 	struct timespec tv;
+ 	int retval;
+-	time_t t;
+-	unsigned start, end;
++	struct timespec tp_start, tp_end;
+ 	struct timeval tv_start, tv_end;
+-	int real_usec;
++	int real_usec, real_sec;
+ 
+ 	setup();
+ 
+@@ -103,17 +102,20 @@
+ 		tst_resm(TINFO,
+ 			 "Testing basic pselect sanity,Sleeping for %jd secs",
+ 			 (intmax_t)tv.tv_sec);
+-		start = time(&t);
++		clock_gettime(CLOCK_REALTIME, &tp_start);
+ 		retval =
+ 		    pselect(0, &readfds, NULL, NULL, (struct timespec *)&tv,
+ 			    NULL);
+-		end = time(&t);
++		clock_gettime(CLOCK_REALTIME, &tp_end);
+ 
+-		if (((end - start) == total_sec) || ((end - start) == total_sec + 1))
++		/* do a rounding */
++		real_sec = (int)(0.5 + (tp_end.tv_sec - tp_start.tv_sec + 
++				1e-9 * (tp_end.tv_nsec - tp_start.tv_nsec)));
++		if (real_sec == total_sec)
+ 			tst_resm(TPASS, "Sleep time was correct");
+ 		else
+ 			tst_resm(TFAIL, "Sleep time was incorrect:%d != %d",
+-				 total_sec, (end - start));
++				 total_sec, real_sec);
+ 	}
+ 
+ #ifdef DEBUG
+
+------=_Part_22981_1267545886.1279523996465
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+------=_Part_22981_1267545886.1279523996465
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_22981_1267545886.1279523996465--
+
