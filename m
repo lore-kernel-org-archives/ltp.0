@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OV75D-0004Aa-IN
-	for ltp-list@lists.sourceforge.net; Sat, 03 Jul 2010 18:04:55 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OV75B-0003fs-Ao
-	for ltp-list@lists.sourceforge.net; Sat, 03 Jul 2010 18:04:55 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <201007011301.59073.vapier@gentoo.org>
-References: <20100701165206.23119.26070.sendpatchset@subratamodak.linux.ibm.com>
-	<201007011301.59073.vapier@gentoo.org>
-Date: Sat, 03 Jul 2010 23:20:55 +0530
-Message-Id: <1278179456.7665.9.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH v3] Remove files which does not have a dmesg entry
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1Oaj7D-0004R6-A3
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 05:42:11 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25]
+	helo=mx02.colomx.prod.int.phx2.redhat.com)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oaj7B-0001Mk-1T
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jul 2010 05:42:11 +0000
+Date: Mon, 19 Jul 2010 01:42:02 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <831884622.521441279518122195.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <2068958398.521421279518073695.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] Is there a good way to check kernel config in LTP?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,33 +24,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP List Members <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Thu, 2010-07-01 at 13:01 -0400, Mike Frysinger wrote:
-> On Thursday, July 01, 2010 12:52:07 Subrata Modak wrote:
-> > +		if find "$DMESG_DIR" -size 0 -exec rm {} + ; then
-> > +			echo "cd to $DMESG_DIR failed: $?"
-> > +		fi
-> 
-> err, sorry, you probably want "! find"
-
-True. Resending ;-)
-
-Regards--
-Subrata
-
-> -mike
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Ci0tLS0tICJHYXJyZXR0IENvb3BlciIgPHlhbmVnb21pQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IE9u
+IFdlZCwgSnVsIDE0LCAyMDEwIGF0IDc6MzMgQU0sIE11cmxpbiBXZW56ZWwgPG13ZW56ZWxAbm92
+ZWxsLmNvbT4KPiB3cm90ZToKPiA+Pj4+IE9uIDcvMTQvMjAxMCBhdCAwNzowMyBBTSwgaW4gbWVz
+c2FnZQo+ID4KPiA8MTI2MzEyNzQyNS4yMzc4MzEyNzkxMTI2MzIwMzguSmF2YU1haWwucm9vdEB6
+bWFpbDA0LmNvbGxhYi5wcm9kLmludC5waHgyLnJlZGhhdAo+ID4gY29tPiwgQ2FzcGFyIFpoYW5n
+IDxjemhhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cj4gPj4gSGkgYWxsLCBJIGZpbmQgYSBGQUlMIHJl
+c3VsdCBpbiBzeXNjYWxscy9zd2Fwb24wMyB3aXRoIFJIRUw2Cj4ga2VybmVsLAo+ID4+IG9uIGEg
+eDg2XzY0IG1hY2hpbmUsIGl0IGFsd2F5cyBmYWlscyB3aXRoIHRoZSBmb2xsb3dpbmcgbWVzc2Fn
+ZToKPiA+Pgo+ID4+IHN3YXBvbjAzIMKgIMKgMSDCoFRGQUlMIMKgOiDCoEZhaWxlZCBzd2Fwb24g
+Zm9yIGZpbGUgc3dhcGZpbGUzMDoKPiBlcnJubz1FUEVSTSgxKToKPiA+PiBPcGVyYXRpb24gbm90
+IHBlcm1pdHRlZAo+ID4+IHN3YXBvbjAzIMKgIMKgMSDCoFRGQUlMIMKgOiDCoEZhaWxlZCB0byBz
+ZXR1cCBzd2Fwcwo+ID4+Cj4gPj4gVGhpcyBpcyBiZWNhdXNlIGluIHNvbWUgPj0yLjYuMzIga2Vy
+bmVscywgdGhlCj4gPj4gQ09ORklHX01FTU9SWV9GQUlMVVJFIG9wdGlvbiBpcyBlbmFibGVkIGJ5
+IGRlZmF1bHQgaW4ga2VybmVsLgo+ID4+IEFzIHRoZSBOT1RFUyBpbiBtYW4gMiBzd2Fwb24gc2F5
+czoKPiA+Pgo+ID4+ICIuLi5TaW5jZSBrZXJuZWwgMi42LjMyLCB0aGUgbGltaXQgaXMgZGVjcmVh
+c2VkIGJ5IDEgaWYgdGhlIGtlcm5lbAo+IGlzIGJ1aWx0Cj4gPj4gd2l0aCB0aGUgQ09ORklHX01F
+TU9SWV9GQUlMVVJFIG9wdGlvbi4uLiIKPiA+Pgo+ID4KPiA+IFRoYXQncyBub3QgdGhlIG9ubHkg
+b3B0aW9uIHRoYXQgYWZmZWN0cyBNQVhfU1dBUEZJTEVTIG5vdy4KPiA+Cj4gPj4gc28gTUFYX1NX
+QVBGSUxFUyBpcyBub3QgMzAgYW55bW9yZSwgaXQncyAyOS4gV2hpbGUgTFRQIGRlZmluZXMKPiBN
+QVhfU1dBUEZJTEVTCj4gPj4gdG8gMzAgaW4gaW5jbHVkZS9zd2Fwb25vZmYuaChobW1tLi4uLmhh
+cmRjb2RlLCBJIGRvbid0IHRoaW5rIGl0J3MgYQo+IGdvb2QKPiA+PiBpZGVhIDotfCkuCj4gPj4K
+PiA+PiBTbyB0aGUgd2F5IHRvIHNvbHZlKG1heWJlKSB0aGUgcHJvYmxlbSBpcyBjbGVhcjogY2hh
+bmdlCj4gTUFYX1NXQVBGSUxFUwo+ID4+IHRvIDI5IHdoZW4gQ09ORklHX01FTU9SWV9GQUlMVVJF
+IGlzIGVuYWJsZWQuIE15IHF1ZXN0aW9uIGlzOiBpcwo+IHRoZXJlCj4gPj4gYSBnb29kIHdheSB0
+byBjaGVjayB3aGV0aGVyIGEga2VybmVsIG9wdGlvbiBpcyBlbmFibGVkIG9yIG5vdD8gSQo+IHNl
+YXJjaGVkCj4gPj4gaW4gdGhlIG9sZCBkaXNjdXNzaW9ucyBpbiB0aGlzIG1haWxsaXN0IGFuZCBm
+b3VuZCBub3RoaW5nLiBJIHdhbnQKPiB0byBrbm93IGlmCj4gPj4KPiA+PiB0aGUgZGV2ZWxvcGVy
+cyBoYXZlIHNvbWUgbmV3IGlkZWFzPwo+ID4+Cj4gPgo+ID4gSSd2ZSBzZWVuIDI4IGFzIHRoZSBN
+QVggYXMgd2VsbCwgaXQgYWxsIGRlcGVuZHMgb24gdGhlIGNvbmZpZwo+IG9wdGlvbnMuIMKgSSd2
+ZSBiZWVuIGxvb2tpbmcgYXQgcmUtYXJjaGl0ZWN0aW5nIHRoZSB0ZXN0IHRvIGRvIHNvbWUKPiBz
+b3J0IG9mIHJlcGVhdCB0ZXN0IHRvIHRoZSBtYXggbnVtYmVyIG9mIHN1Y2Nlc3NmdWwgc3dhcCBj
+cmVhdGlvbnMgYW5kCj4gdGhlbiB2ZXJpZnlpbmcgdGhhdCB0aGUgc2FtZSBudW1iZXIgaXMgcmVh
+Y2hhYmxlIGF0IGxlYXN0IDIgdGltZXMuCj4gwqBNQVhfU1dBUEZJTEVTIGlzIG5ldmVyIGV4cG9y
+dGVkIHRvIHVzZXJzcGFjZS4gwqBJdCdzIGEgY29tcGlsZSB0aW1lCj4gI2RlZmluZSB0aGF0IGRl
+cGVuZHMgb24gdGhlIGtlcm5lbCBjb25maWcgb3B0aW9ucy4KPiAKPiAgICAgV2hhdCBhYm91dCAv
+cHJvYy9jb25maWcuZ3ogKG9yIHNvbWV0aGluZyBzaW1pbGFyKT8gU2VlbXMgbGlrZSBhCj4gc2lt
+cGxlIGVub3VnaCB0aGluZyB0byBjaGVjayBmb3IgYWJzb2x1dGUgY2xhcml0eS4uLiBkb24ndCBy
+ZW1lbWJlcgo+IHRoZSBrZXJuZWwgb3B0aW9uIGZvciB0aGF0IHRob3VnaC4KCi9wcm9jL2NvbmZp
+Zy5neiBkb2Vzbid0IGV4aXN0ZWQgb24gc29tZSBwbGF0Zm9ybXMod2hpY2ggZG9lc24ndCBlbmFi
+bGUKY29ycmVzcG9uZGluZyBrZXJuZWwgb3B0aW9uKSwgYXMgd2VsbCBhcyAvYm9vdC9jb25maWct
+YHVuYW1lIC1yYC4gCkl0J3Mgbm90IGEgc2FmZSB3YXkgdG8gZmluZCBrZXJuZWwgb3B0aW9uIGJ5
+IHNlYXJjaCB0aGUgY29uZmlnIGZpbGUuIAoKVGhhbmtzLApDYXNwYXIKCi0tIApLZXJuZWwgQXNz
+b2NpYXRlIFF1YWxpdHkgRW5naW5lZXIKUmVkIEhhdCBJbmMuIChCZWlqaW5nIFImRCBCcmFuY2gp
+CgpSZWQgSGF0IENoaW5hIFImRCBCcmFuY2ggVW5pdCA5MDcsIE5vcnRoIFRvd2VyIEMsIAogIFJh
+eWNvbSBJbmZvdGVjaCBQYXJrLCBOby4yIEtleHVleXVhbiBOYW5sdSwgCiAgSGFpZGlhbiBEaXN0
+cmljdCwgQmVpamluZyAxMDAxOTAKClRFTDogKzg2LTEwLTYyNjA4MTUwCldlYjogaHR0cDovL3d3
+dy5yZWRoYXQuY29tLwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlz
+IHNwb25zb3JlZCBieSBTcHJpbnQKV2hhdCB3aWxsIHlvdSBkbyBmaXJzdCB3aXRoIEVWTywgdGhl
+IGZpcnN0IDRHIHBob25lPwpWaXNpdCBzcHJpbnQuY29tL2ZpcnN0IC0tIGh0dHA6Ly9wLnNmLm5l
+dC9zZnUvc3ByaW50LWNvbS1maXJzdApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
