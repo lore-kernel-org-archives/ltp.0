@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1OUMtc-0005AX-Lb
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 16:45:52 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUMtb-0006TT-Id
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 16:45:52 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 1 Jul 2010 12:44:34 -0400
-References: <20100701153446.16085.3341.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20100701153446.16085.3341.sendpatchset@subratamodak.linux.ibm.com>
+	(envelope-from <czhang@redhat.com>) id 1Ob9lK-0004An-9l
+	for ltp-list@lists.sourceforge.net; Tue, 20 Jul 2010 10:09:22 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24]
+	helo=mx01.colomx.prod.int.phx2.redhat.com)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ob9lJ-00011m-6M
+	for ltp-list@lists.sourceforge.net; Tue, 20 Jul 2010 10:09:22 +0000
+Date: Tue, 20 Jul 2010 06:09:04 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <64178004.628581279620544764.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1854762285.628181279620112974.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Message-Id: <201007011244.37145.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] Remove files which does not have a dmesg entry
+Subject: Re: [LTP] =?utf-8?q?=5B12/12_FAILURE=5D_LTP=C3=85_cron_tests_fails?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,81 +24,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8074444188103049107=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: LTP List Members <ltp-list@lists.sf.net>
+Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>, Linus Test Project <ltp-list@lists.sourceforge.net>
 
---===============8074444188103049107==
-Content-Type: multipart/signed; boundary="nextPart5398334.RVWiYSMidD";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart5398334.RVWiYSMidD
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
-On Thursday, July 01, 2010 11:34:47 Subrata Modak wrote:
-> +		PREVIOUS_TO_DMESG_DIR=`pwd`
-> +		cd $DMESG_DIR
-> +		if [ $? -eq 0 ] ; then
-> +			find . -size 0 -exec rm {} +
-> +		else
-> +			echo "cd to $DMESG_DIR failed: $?"
-> +		fi
-> +		cd $PREVIOUS_TO_DMESG_DIR
-
-		if find "$DMESG_DIR" -size 0 -exec rm {} + ; then
-			echo "cd to $DMESG_DIR failed: $?"
-		fi
--mike
-
---nextPart5398334.RVWiYSMidD
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.15 (GNU/Linux)
-
-iQIcBAABAgAGBQJMLMX1AAoJEEFjO5/oN/WBXE4P/280JQj4DtwP1ALBdc2OLdbC
-hy/pwkoECauyD4aum73PSdKdt7sJsdLe+2IK8wR+z081eA62BeaIuojhOfnJ0kvV
-rSvcYzVty5ua5m9s/a2OxzzFghYxlZQFyCF0Ya6LUDCwdJAWpXfY7KLHzgD11s1q
-UXAV2Qyaj3xfoggrpBfrXxNa2+CBjMMDvZpb26RvrguRTFus62IQcpVKeQHdBJj4
-tmIWvhV6jp60qms9Jyz1tTFPKEQ6aF+p7iG45wt2qdslHM/NZbjGkW1ow63NB8jw
-1RsaexwwML9Fpwt+32vteu8IkEdxka2VkaUkVM1hEpYdJaFqzc0Hi7xZpUPDc/4L
-0t51shq1Pc0AMHStHtK80NvMnUy8xdINgUPIKdEZWWjJZeg2hdC+hA+sND0mf5Mp
-NkTe9YbfDasBQPz+Pq06CjQdL/RraNkUg80rlmSce5xzciH1J28ABtRwxaWam+tm
-3Cn5Hb8IPG32JYAyyFI8UCDYhetJI8ZchueljILVkQRLzcugZc9tipKtWsJRLnES
-cQB0Qrm9tTAzJ51F8AIMtMFWRxVxC2bs+0ZWdxISZU8tuDJlSr4Ey9EHunJ9dACU
-qBhqtQkOIHwmYvWynF6r12UjyMA/lsQs7xVtaRbRo1Irg4DcctzVTNaH8apVwW5D
-CH9m0SeRRO/k7Ku36reG
-=WnIN
------END PGP SIGNATURE-----
-
---nextPart5398334.RVWiYSMidD--
-
-
---===============8074444188103049107==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
---===============8074444188103049107==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8074444188103049107==--
-
+Ci0tLS0tICJTdWJyYXRhIE1vZGFrIiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3Rl
+OgoKPiBTdWJqZWN0OiBMVFDFmyBjcm9uX3Rlc3RzIGZhaWxzCj4gCj4gSXNzdWVzIERlc2NyaXB0
+aW9uIEJlbG93Ogo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiAj
+IHZpIHJ1bnRlc3QvY3Jvbl90ZXN0cwo+IGNyb25fdGVzdHMgZXhwb3J0IFRDZGF0PSRMVFBST09U
+L3Rlc3RjYXNlcy9iaW47IGNyb25fdGVzdHMuc2gKPiA8RU9GPgo+IAo+IFJ1biBMVFAgd2l0aCB0
+aGUgZm9sbG93aW5nIGNvbW1hbmQ6Cj4gIyAuL3J1bmx0cCAtZiBjcm9uX3Rlc3RzCj4gPDw8dGVz
+dF9zdGFydD4+Pgo+IHRhZz1jcm9uIHN0aW1lPTEyNzIwMDQ1MTAKPiBjbWRsaW5lPSJleHBvcnQg
+VENkYXQ9JExUUFJPT1QvdGVzdGNhc2VzL2JpbjsgY3Jvbl90ZXN0cy5zaCIKPiBjb250YWN0cz0i
+Igo+IGFuYWx5c2lzPWV4aXQKPiA8PDx0ZXN0X291dHB1dD4+Pgo+IGNyb24wMSAgICAgIDAgIFRJ
+TkZPICA6ICBUZXN0ICMxOiBjcm9udGFiIDxmaWxlbmFtZT4gaW5zdGFsbHMgdGhlCj4gY3JvbnRh
+YiBmaWxlCj4gY3JvbjAxICAgICAgMCAgVElORk8gIDogIFRlc3QgIzE6IGNyb24gc2NoZWR1bGVz
+IHRoZSBqb2IgbGlzdGVkIGluCj4gY3JvbnRhYgo+IGZpbGUuCj4gY3JvbjAxICAgICAgMCAgVElO
+Rk8gIDogIFRlc3QgIzE6IEluc3RhbGxpbmcgY3JvbiBqb2IgLi4uCj4gY3JvbjAxICAgICAgMCAg
+VElORk8gIDogIFRlc3QgIzE6IENyb25qb2IgaW5zdGFsbGVkIHN1Y2Nlc3NmdWxseQo+IGNyb24w
+MSAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMxOiAvdmFyL2xvZy9jcm9uOiBUcnlpbmcgYWx0ZW5h
+dGUKPiBsb2cuLi4KPiBjcm9uMDEgICAgICAxICBURkFJTCAgOiAgVGVzdCAjMTogY3JvbnRhYiBh
+Y3Rpdml0eSBub3QgcmVjb3JkZWQgaW4KPiAvdmFyL2xvZy9tZXNzYWdlcy4KPiBjcm9uMDEgICAg
+ICAwICBUSU5GTyAgOiAgVGVzdCAjMTogVmFsdWVzIGFyZSBnb29kOgo+ICAgICBFeHBlY3RlZCA4
+OyAgICAgUmVjZWl2ZWQgOAo+IGNyb24wMSAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMxOiBWYWx1
+ZXMgYXJlIGdvb2Q6Cj4gICAgIEV4cGVjdGVkIDk7ICAgICBSZWNlaXZlZCA5Cj4gY3JvbjAxICAg
+ICAgMCAgVElORk8gIDogIFRlc3QgIzE6IFZhbHVlcyBhcmUgZ29vZDoKPiAgICAgRXhwZWN0ZWQg
+MTA7ICAgICBSZWNlaXZlZCAxMAo+IGNyb24wMSAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMxOiBW
+YWx1ZXMgYXJlIGdvb2Q6Cj4gICAgIEV4cGVjdGVkIDExOyAgICAgUmVjZWl2ZWQgMTEKPiBjcm9u
+MDEgICAgICAwICBUSU5GTyAgOiAgVGVzdCAjMTogVmFsdWVzIGFyZSBnb29kOgo+ICAgICBFeHBl
+Y3RlZCAxMjsgICAgIFJlY2VpdmVkIDEyCj4gY3JvbjAxICAgICAgMCAgVElORk8gIDogIFRlc3Qg
+IzE6IC92YXIvbG9nL2Nyb246IGFsdGVybmF0ZS4uLgo+IGNyb24wMSAgICAgIDEgIFRGQUlMICA6
+ICBUZXN0ICMxOiBUZXN0IGZhaWxlZC4gUmVhc29uOgo+IGNyb24wMiAgICAgIDAgIFRJTkZPICA6
+ICBUZXN0ICMyOiBjcm9udGFiIC1yIHJlbW92ZXMgdGhlIGNyb250YWIKPiBmaWxlLgo+IGNyb24w
+MiAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMyOiBpbnN0YWxsaW5nIGNyb250YWIgZmlsZS4KPiBj
+cm9uMDIgICAgICAwICBUSU5GTyAgOiAgVGVzdCAjMTogL3Zhci9sb2cvY3JvbjogYWx0ZXJuYXRl
+Li4uCj4gY3JvbjAyICAgICAgMiAgVEZBSUwgIDogIFRlc3QgIzI6IGNyb250YWIgYWN0aXZpdHkg
+bm90IHJlY29yZGVkIGluCj4gdmFyL2xvZy9tZXNzYWdlcy4KPiBjcm9uMDIgICAgICAwICBUSU5G
+TyAgOiAgVGVzdCAjMjogdW5pbnN0YWxsaW5nIGNyb250YWIgZmlsZS4KPiBjcm9uMDIgICAgICAw
+ICBUSU5GTyAgOiAgVGVzdCAjMTogL3Zhci9sb2cvY3JvbjogYWx0ZXJuYXRlLi4uCj4gY3JvbjAy
+ICAgICAgMiAgVEZBSUwgIDogIFRlc3QgIzI6IGNyb250YWIgYWN0aXZpdHkgbm90IHJlY29yZGVk
+IGluCj4gdmFyL2xvZy9tZXNzYWdlcy4KPiBjcm9uMDMgICAgICAwICBUSU5GTyAgOiAgVGVzdCAj
+MzogY3JvbnRhYiAtbCBsaXN0cyB0aGUgY3JvbmpvYnMKPiBpbnN0YWxsZWQKPiBjcm9uMDMgICAg
+ICAwICBUSU5GTyAgOiAgVGVzdCAjMzogaW5zdGFsbGluZyBjcm9udGFiIGZpbGUgLi4uCj4gY3Jv
+bjAzICAgICAgMCAgVElORk8gIDogIFRlc3QgIzM6IENyb24gam9iIGluc3RhbGxlZC4KPiBjcm9u
+MDMgICAgICAwICBUSU5GTyAgOiAgVGVzdCAjMzogY3JvbnRhYiAtbCBsaXN0ZWQgY3JvbmpvYgo+
+IHRzdDJfY3JvbnByZy5zaAo+IGNyb24wMyAgICAgIDAgIFRJTkZPICA6ICBUZXN0ICMzOiB1bmlu
+c3RhbGxpbmcgY3JvbnRhYiBmaWxlLgo+IGNyb24wMyAgICAgIDAgIFRJTkZPICA6ICBjcm9udGFi
+IHVuaW5zdGFsbGVkIGFsbCBqb2JzIGZvciB1c2VyCj4gY3JvbjAzICAgICAgMyAgVFBBU1MgIDog
+IGNyb250YWIgZGlkIG5vdCBsaXN0IGFueSBjcm9uam9icwo+IDw8PGV4ZWN1dGlvbl9zdGF0dXM+
+Pj4KPiBpbml0aWF0aW9uX3N0YXR1cz0ib2siCj4gZHVyYXRpb249NDM0IHRlcm1pbmF0aW9uX3R5
+cGU9ZXhpdGVkIHRlcm1pbmF0aW9uX2lkPTQgY29yZWZpbGU9bm8KPiBjdXRpbWU9MyBjc3RpbWU9
+MjIKPiA8PDx0ZXN0X2VuZD4+PgoKSGksIAoKSSBhbHNvIHRyaWdnZXJlZCB0aGlzIGZhaWx1cmUg
+b24gYSBSSEVMNiBtYWNoaW5lLCB3aXRoIHJzeXNsb2cgaW5zdGFsbGVkLgoKVGhlIGZhaWx1cmUg
+b2NjdXJzIGJlY2F1c2UgbG9nIGZpbGUgcmVjb3JkZWQgbmVpdGhlciBpbiAvdmFyL2xvZy9jcm9u
+Cm5vciBpbiAvdmFyL2xvZy9tZXNzYWdlLiBTbyBpdCdzIGVhc3kgdG8gc29sdmUgdGhpcyBwcm9i
+bGVtOiBtYWtlIHN1cmUgCmNvcnJlc3BvbmRpbmcgY3JvbiBsb2dnaW5nIGl0ZW0gaW4gL2V0Yy9y
+c3lzbG9nLmNvbmYgZXhpc3RzIGFuZCBzdGFydApyc3lzbG9nIHNlcnZpY2UuCgpTaW5jZSB5b3Ug
+bWF5IHVzZSBhIGRpZmZlcmVudCBzeXNsb2cgc2VydmljZSwgaXQncyBoYXJkIHRvIHdyaXRlIGEg
+cGF0Y2ggdG8KdGhpcyBjYXNlLiBCdXQgdGhlIHNvbHV0aW9uIHRvIHRoaXMgaXNzdWUgaXMgc2lt
+aWxhciBhYm92ZS4KClRoYW5rcywKQ2FzcGFyCgotLSAKS2VybmVsIEFzc29jaWF0ZSBRdWFsaXR5
+IEVuZ2luZWVyClJlZCBIYXQgSW5jLiAoQmVpamluZyBSJkQgQnJhbmNoKQoKUmVkIEhhdCBDaGlu
+YSBSJkQgQnJhbmNoIFVuaXQgOTA3LCBOb3J0aCBUb3dlciBDLCAKICBSYXljb20gSW5mb3RlY2gg
+UGFyaywgTm8uMiBLZXh1ZXl1YW4gTmFubHUsIAogIEhhaWRpYW4gRGlzdHJpY3QsIEJlaWppbmcg
+MTAwMTkwCgpURUw6ICs4Ni0xMC02MjYwODE1MApXZWI6IGh0dHA6Ly93d3cucmVkaGF0LmNvbS8K
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkg
+U3ByaW50CldoYXQgd2lsbCB5b3UgZG8gZmlyc3Qgd2l0aCBFVk8sIHRoZSBmaXJzdCA0RyBwaG9u
+ZT8KVmlzaXQgc3ByaW50LmNvbS9maXJzdCAtLSBodHRwOi8vcC5zZi5uZXQvc2Z1L3NwcmludC1j
+b20tZmlyc3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
