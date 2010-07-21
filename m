@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1OdzQY-0005UQ-CS
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 05:43:38 +0000
-Received: from out09.sjc.mx.trendmicro.com ([216.99.131.46])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OdzQW-0004pj-R6
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 05:43:38 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000a01cb2dfa$1ab62650$502272f0$@co.jp>
-	<AANLkTinA23XVdCGPffiRqVsNGHHCCje4PLcuvBg1sYTE@mail.gmail.com>
-In-Reply-To: <AANLkTinA23XVdCGPffiRqVsNGHHCCje4PLcuvBg1sYTE@mail.gmail.com>
-Date: Wed, 28 Jul 2010 14:43:27 +0900
-Message-ID: <000301cb2e17$cdb444e0$691ccea0$@co.jp>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1ObVW5-0006nk-NR
+	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 09:23:05 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1ObVW4-0001TL-N0
+	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 09:23:05 +0000
+Received: by iwn34 with SMTP id 34so9185785iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 21 Jul 2010 02:22:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] How to run "conformance" tests?
+In-Reply-To: <548688492.713411279697065260.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <1254189541.713331279696879608.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<548688492.713411279697065260.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Wed, 21 Jul 2010 02:22:59 -0700
+Message-ID: <AANLkTilFU1Nq7kvCQnyteDX8Ap5ZfzgO4-FPp3kGAPJP@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [11/12 FAILURE] LTP? file test fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,122 +28,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: Linus Test Project <ltp-list@lists.sourceforge.net>
 
-Hi,
-
-
-I executed "make distclean" from "testcases/open_posix_testsuite" directory,
-
-and it secceeded.
-I executed "make all", but it failed:
-
-------------
-[...]
-make[2]: Entering directory
-`/home/LTP/ltp-dev-20100727/testcases/open_posix_testsuite/str
-ess'
-make[2]: Leaving directory
-`/home/LTP/ltp-dev-20100727/testcases/open_posix_testsuite/stre
-ss'
-Generating buildonly Makefiles
-sed: invalid option -- E
-Usage: sed [OPTION]... {script-only-if-no-other-script} [input-file]...
-
-  -n, --quiet, --silent
-                 suppress automatic printing of pattern space
-  -e script, --expression=3Dscript
-                 add the script to the commands to be executed
-[...]
-If no -e, --expression, -f, or --file option is given, then the first
-non-option argument is taken as the sed script to interpret.  All
-remaining arguments are names of input files; if no input files are
-specified, then the standard input is read.
-
-E-mail bug reports to: bonzini@gnu.org .
-Be sure to include the word ``sed'' somewhere in the ``Subject:'' field.
-sed: invalid option -- E
-Usage: sed [OPTION]... {script-only-if-no-other-script} [input-file]...
-[...]
-------------
-
-In this time, I used latest git
-"ltp-dev-3393cd192002793080aba661054d54a8a06f25c2.tar.gz"
-
-
-> Your make version would help too.
-
-My make version is 3.81.
-Gcc version is 4.1.2.
-
-
-Regards--
-
--Tomonori Mitani
-
-
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Wednesday, July 28, 2010 11:38 AM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] How to run "conformance" tests?
-> =
-
-> On Tue, Jul 27, 2010 at 7:10 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> > Hi,
-> >
-> >
-> > I want to run "conformance" testcases in "open_posix_testsuite".
-> > But I couldn't run it without manually copying.
-> >
-> > I used "ltp-dev-a4e64cb8bb97d09b5695151106946a76984b330a.tar.gz"
-> git.
-> > Environment is RHEL5.5 and x86_64 architecture.
-> >
-> > First, I executed following commands.
-> > =A0make autotools
-> > =A0configure
-> > =A0make
-> > =A0make install
-> > And I confirmed that those commands succeeded.
-> > And I could see "logfile.conformance-all" file in
-> "${LTPROOT}/testcases
-> > /open_posix_testsuite" directory.
-> >
-> > I ran "make conformance-test" command. But it failed as follows:
-> =
-
-> Can you try running the following please from
-> testcases/open_posix_testsuite?
-> =
-
-> make distclean
-> make all
-> make test
-> =
-
-> Your make version would help too.
-> =
-
-> Thanks!
-> -Garrett
-
-
-
----------------------------------------------------------------------------=
----
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share =
-
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://ad.doubleclick.net/clk;226879339;13503038;l?
-http://clk.atdmt.com/CRS/go/247765532/direct/01/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gV2VkLCBKdWwgMjEsIDIwMTAgYXQgMTI6MjQgQU0sIENhc3BhciBaaGFuZyA8Y3poYW5nQHJl
+ZGhhdC5jb20+IHdyb3RlOgo+Cj4gLS0tLS0gIkdhcnJldHQgQ29vcGVyIiA8eWFuZWdvbWlAZ21h
+aWwuY29tPiB3cm90ZToKPj4KPgo+IE9uIE1heSA1LCAyMDEwLCBhdCAxMTo1OCBQTSwgU3VicmF0
+YSBNb2RhayB3cm90ZToKPgo+Cj4KPiBTdWJqZWN0OiBMVFDFmyBmaWxlX3Rlc3QgZmFpbHMKPj4K
+Pj4gSXNzdWVzIERlc2NyaXB0aW9uIGJlbG93Ogo+PiA9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT0KPj4gIyB2aSBydW50ZXN0L2ZpbGVfdGVzdAo+PiBmaWxlIGV4cG9ydCBUQ2Rh
+dD0kTFRQUk9PVC90ZXN0Y2FzZXMvYmluOyBmaWxlX3Rlc3Quc2gKPj4gPEVPRj4KPj4KPj4gUnVu
+IExUUCB3aXRoIHRoZSBmb2xsb3dpbmcgY29tbWFuZDoKPj4gIyAuL3J1bmx0cCAtZiBmaWxlX3Rl
+c3QKPj4gPDw8dGVzdF9vdXRwdXQ+Pj4KPj4gZmlsZTAxIDAgVElORk8gOiBURVNUICMxOiBmaWxl
+IGNvbW1hbmQgcmVjb2dpemVzIEFTQ0lJIHRleHQgZmlsZXMKPj4gZmlsZTAxIDEgVFBBU1MgOiBm
+aWxlOiBSZWNvZ25pc2VkIEFTQ0lJIGZpbGUgY29ycmVjdGx5Cj4+IGZpbGUwMiAwIFRJTkZPIDog
+VEVTVCAjMjogZmlsZSBjb21tYW5kIHJlY29nbml6ZXMgYmFzaCBzaGVsbCBzY3JpcHRzCj4+IGZp
+bGUwMiAyIFRQQVNTIDogZmlsZTogUmVjb2duaXNlZCBiYXNoIHNoZWxsIHNjcmlwdCBjb3JyZWN0
+bHkKPj4gZmlsZTAzIDAgVElORk8gOiBURVNUICMzOiBmaWxlIGNvbW1hbmQgcmVjb2duaXplcyBr
+b3JuIHNoZWxsIHNjcmlwdHMKPj4gZmlsZTAzIDMgVFBBU1MgOiBmaWxlOiByZWNvZ25pc2VkIGtv
+cm4gc2hlbGwgc2NyaXB0Cj4+IGZpbGUwNCAwIFRJTkZPIDogVEVTVCAjNDogZmlsZSBjb21tYW5k
+IHJlY29nbml6ZXMgQyBzaGVsbCBzY3JpcHRzCj4+IGZpbGUwNCA0IFRQQVNTIDogZmlsZTogUmVj
+b2duaXNlZCBDIHNoZWxsIHNjcmlwdCBjb3JyZWN0bHkKPj4gZmlsZTA1IDAgVElORk8gOiBURVNU
+ICM1OiBmaWxlIGNvbW1hbmQgcmVjb2duaXplcyBDIHByb2dyYW1zIHRleHQKPj4gZmlsZTA1IDUg
+VFBBU1MgOiBmaWxlOiBSZWNvZ25pc2VkIEMgcHJvZ3JhbSB0ZXh0IGNvcnJlY3RseQo+PiBmaWxl
+MDYgMCBUSU5GTyA6IFRFU1QgIzY6IGZpbGUgY29tbWFuZCByZWNvZ25pemVzIEVMRiBleGVjdXRh
+Ymxlcwo+PiBmaWxlMDYgNiBUUEFTUyA6IGZpbGU6IFJlY29nbml6ZWQgRUxGIGJpbmFyeSBleGVj
+dXRhYmxlCj4+IGZpbGUwNyAwIFRJTkZPIDogVEVTVCAjNzogZmlsZSBjb21tYW5kIHJlY29nbml6
+ZXMgdGFyIGZpbGVzLgo+PiBmaWxlMDcgNyBUUEFTUyA6IGZpbGU6IFJlY29nbmlzZWQgdGFyIGZp
+bGVzCj4+IGZpbGUwOCAwIFRJTkZPIDogVEVTVCAjODogZmlsZSBjb21tYW5kIHJlY29nbml6ZXMg
+dGFyIHppcCBmaWxlcwo+PiBmaWxlMDggOCBUUEFTUyA6IGZpbGU6IFJlY29nbmlzZWQgdGFyIHpp
+cCBmaWxlCj4+IGZpbGUwOSAwIFRJTkZPIDogVEVTVCAjOTogZmlsZSBjb21tYW5kIHJlY29nbml6
+ZXMgUlBNIGZpbGVzCj4+IGZpbGUwOSA5IFRGQUlMIDogZmlsZTogRmFpbGVkIHRvIFJlY29nbml6
+ZSBSUE0gZmlsZS4gUmVhc29uOgo+PiAvcm9vdC9ycG1idWlsZC9TUlBNUy9jcHJvZy0wLjAuNy0z
+LnNyYy5ycG06IFJQTSB2My4wIHNyYwo+PiBmaWxlMTAgMCBUSU5GTyA6IFRFU1QgIzEwOiBmaWxl
+IGNvbW1hbmQgcmVjb2duaXplcyB2bWxpbnUgZmlsZQo+PiBmaWxlMTAgMTAgVFBBU1MgOiBmaWxl
+OiBSZWNvZ25pc2VkIHZtbGludSBmaWxlIGNvcnJlY3RseQo+PiA8PDxleGVjdXRpb25fc3RhdHVz
+Pj4+Cj4+IGluaXRpYXRpb25fc3RhdHVzPSJvayIKPj4gZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90
+eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0xIGNvcmVmaWxlPW5vCj4+IGN1dGltZT03IGNzdGlt
+ZT0xOAo+PiA8PDx0ZXN0X2VuZD4+Pgo+Pgo+PiBUaGlzIGlzIHdoeToKPj4gZ3JlcCAiUlBNIHYz
+IHNyYyIgJExUUFRNUC9maWxlLm91dCA+IC9kZXYvbnVsbCAyPiYxCj4+IGNoYW5nZSB0aGF0IHRv
+Cj4+IGVncmVwICJSUE0gdjMoXC4wKT8gc3JjIiAkTFRQVE1QL2ZpbGUub3V0ID4gL2Rldi9udWxs
+IDI+JjEKPj4gLS0gdGhhdCBzaG91bGQgd29yay4KPgo+IEhpIEdhcnJldHQsIHRoaXMgZml4IGRv
+ZXMgd29yay4gSG93ZXZlciBJIGhhdmVuJ3Qgc2VlIGl0IGluIEp1bmUgcmVsZWFzZQo+IG5vciBp
+biBnaXQgcmVwby4KClRoYW5rcyBmb3IgdGhlIHJlbWluZGVyLiBQdXNoZWQgaW50byBnaXQuClRo
+YW5rcywKLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBp
+cyBzcG9uc29yZWQgYnkgU3ByaW50CldoYXQgd2lsbCB5b3UgZG8gZmlyc3Qgd2l0aCBFVk8sIHRo
+ZSBmaXJzdCA0RyBwaG9uZT8KVmlzaXQgc3ByaW50LmNvbS9maXJzdCAtLSBodHRwOi8vcC5zZi5u
+ZXQvc2Z1L3NwcmludC1jb20tZmlyc3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
+dHAtbGlzdAo=
