@@ -2,22 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1OUORj-0003Fz-Tb
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 18:25:11 +0000
-Received: from msux-gh1-uea01.nsa.gov ([63.239.65.39])
+	(envelope-from <yanegomi@gmail.com>) id 1ObW0n-0004gj-H0
+	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 09:54:49 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OUORh-0004jg-Js
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 18:25:11 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <1278003976.21642.4.camel@subratamodak.linux.ibm.com>
-References: <20100629195210.GA14549@hallyn.com>
-	<1277900005.5710.8.camel@subratamodak.linux.ibm.com>
-	<1277909544.21903.142.camel@moss-pluto.epoch.ncsc.mil>
-	<1278003976.21642.4.camel@subratamodak.linux.ibm.com>
-Date: Thu, 01 Jul 2010 14:24:59 -0400
-Message-ID: <1278008699.15753.195.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] selinux testsuite
+	id 1ObW0m-0005bR-LJ
+	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 09:54:49 +0000
+Received: by iwn34 with SMTP id 34so9210477iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 21 Jul 2010 02:54:43 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <925081811.719281279705249668.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <234306554.719221279705061623.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<925081811.719281279705249668.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Wed, 21 Jul 2010 02:54:43 -0700
+Message-ID: <AANLkTikQtSJ3O2zHkcwWD5alvtyMaz16yK0jqSa2lk3l@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix false alarm in pselect01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,66 +28,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, James Morris <jmorris@redhat.com>, kaigai@ak.jp.nec.com, SELinux <selinux@tycho.nsa.gov>, "Serge E. Hallyn" <serge@hallyn.com>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Thu, 2010-07-01 at 22:36 +0530, Subrata Modak wrote:
-> On Wed, 2010-06-30 at 10:52 -0400, Stephen Smalley wrote: 
-> > On Wed, 2010-06-30 at 17:43 +0530, Subrata Modak wrote:
-> > > Hi Serge,
-> > > 
-> > > On Tue, 2010-06-29 at 14:52 -0500, Serge E. Hallyn wrote:
-> > > > Just a little note to announce that the selinux testsuite is now up as a
-> > > > git tree at kernel.org.  You can fetch it using
-> > > > 
-> > > > 	git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
-> > > 
-> > > Great. So, how far does it differ from that we have in LTP ?
-> > > http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=tree;f=testcases/kernel/security/selinux-testsuite;h=066df4cdf2f8a80a0045e338b4bb2bf0f5d37091;hb=HEAD
-> > > 
-> > > As you, Stephen and others in SELinux <selinux@tycho.nsa.gov> were the
-> > > main contributors to the SELinux test(s) in LTP, i guess the next/future
-> > > development for SELinux tests will be happening in the new tree.
-> > > 
-> > > So, i would rather keep pulling to LTP from your tree. Now, could you
-> > > please let me know:
-> > > 
-> > >      1. Whether the new tree contains all scenarios which is present in
-> > >         LTP. In such a case a complete pruning of LTP SELinux tests can
-> > >         be done and replaced with your tree contents,
-> > >      2. If some of the LTP tests are not there, then i would like to
-> > >         retain them in LTP side-by-side your tree contents,
-> > 
-> > The new tree contains all of the selinux tests present in the LTP.  You
-> > cannot however simply replace the ltp version of the tests with this
-> > tree, as this tree is a standalone testsuite and will not run within the
-> > ltp test harness. This testsuite is based on the original standalone
-> > selinux testsuite that was contributed by us to IBM to port to the LTP.
-> > We have internally maintained this testsuite in parallel to the ltp
-> > version as we have found it easier to set up, use, debug, and maintain.
-> 
-> Thanks Stephen. Since you have maintained the Original-One Internally
-> and have simultaneously contributed changes to the LTP-version of
-> SELinux, i am depending on you/Serge/SELinux-Mailing-List-members to
-> keep sending patches to LTP to update the LTP-version at regular
-> intervals (off-course at your convenience ;-))
+On Wed, Jul 21, 2010 at 2:40 AM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+>
+>> ACK (and thanks for the hard work)!
+>> -Garrett
+>
+> Hi Garrett, I tested my patch yesterday but the result
+> is not so good. After 1000 times running, the fix:
+>
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* do a rounding */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 real_sec =3D (int)(0.5 + (tv_end.tv_sec - t=
+v_start.tv_sec +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 1e-9 * (tv_=
+end.tv_nsec - tv_start.tv_nsec)));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (real_sec =3D=3D total_sec)
+>
+> got failed for once. so I set the allowed error to 20%(see the
+> attached patch). Then re-ran it for over 5000 times, without
+> a failure.
+>
+> Then the nsec part, 10% allowed error seems not enough,
+> the test failed for twice among 1000 times. So I set the
+> range to 20%, too.
 
-I think that will depend on whether there is some benefit to maintaining
-the ltp version.  We might derive some benefit if the ltp selinux
-testsuite were better integrated (e.g. tests run by default if SELinux
-is enabled on the host) and if the tests got some regular attention from
-the ltp maintainers.  Otherwise, it may be better to just remove the
-tests from the ltp and point people to the standalone version.
+Fair enough... change committed.
+Thanks!
+-Garrett
 
--- 
-Stephen Smalley
-National Security Agency
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
