@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <njoly@pasteur.fr>) id 1OcNIR-0005gs-HJ
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 18:48:35 +0000
-Received: from mail-interne3.pasteur.fr ([157.99.64.82])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OcNIQ-0005SE-68
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 18:48:35 +0000
-Date: Fri, 23 Jul 2010 20:48:24 +0200
-From: Nicolas Joly <njoly@pasteur.fr>
-Message-ID: <20100723184824.GA55142@medusa.sis.pasteur.fr>
-References: <20100723171717.GA54890@medusa.sis.pasteur.fr>
-	<AANLkTik=DJ+0NsMoD-ucZZtVrsaiBHeVEMmh-3GEixD+@mail.gmail.com>
-Mime-Version: 1.0
+	(envelope-from <chrubis@suse.de>) id 1ObwQQ-0007VT-42
+	for ltp-list@lists.sourceforge.net; Thu, 22 Jul 2010 14:07:02 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	by mx2.suse.de (Postfix) with ESMTP id 0AB3C867E2
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 22 Jul 2010 16:06:52 +0200 (CEST)
+Date: Thu, 22 Jul 2010 16:22:16 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100722142216.GA3593@saboteur.suse.cz>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="jRHKVT23PllUwdXP"
 Content-Disposition: inline
-In-Reply-To: <AANLkTik=DJ+0NsMoD-ucZZtVrsaiBHeVEMmh-3GEixD+@mail.gmail.com>
-Subject: Re: [LTP] abort01 testcase cleanup
+Subject: [LTP] [PATCH] fix make install in ltp/testcacses/realtime/
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,43 +24,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso8859-1"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-T24gRnJpLCBKdWwgMjMsIDIwMTAgYXQgMTA6NTY6NThBTSAtMDcwMCwgR2FycmV0dCBDb29wZXIg
-d3JvdGU6Cj4gT24gRnJpLCBKdWwgMjMsIDIwMTAgYXQgMTA6MTcgQU0sIE5pY29sYXMgSm9seSA8
-bmpvbHlAcGFzdGV1ci5mcj4gd3JvdGU6Cj4gPgo+ID4gSGksCj4gPgo+ID4gVGhlIGF0dGFjaGVk
-IHBhdGNoIGRvIHNvbWUgY2xlYW51cCBpbiB0aGUgYWJvcnQwMSB0ZXN0Y2FzZSAuLi4KPiA+Cj4g
-PiAxKSBUaGUgYXR0ZW1wdCB0byByZW1vdmUgdGhlIGdlbmVyYXRlZCBjb3JlIGlzIHdyb25nLiBU
-aGUgaGFyZC1jb2RlZAo+ID4goCBgY29yZScgbmFtZSBpcyBiYWQgYW5kIHRoZSB0ZXN0IHRlbXBv
-cmFyeSBkaXJlY3RvcnkgcmVtb3ZhbCBhbHJlYWR5Cj4gPiCgIHRha2UgY2FyZSBvZiB0aGlzLgo+
-ID4KPiA+IDIpIE1ha2UgdGhlIHRlc3QgZmFpbCBncmFjZWZ1bGx5IGlmIHRoZSBydW5uaW5nIGVu
-dmlyb25tZW50IGRvZXMgbm90Cj4gPiCgIGFsbG93IGdlbmVyYXRpbmcgY29yZSBmaWxlcy4KPiA+
-Cj4gPiBuam9seUBsYW5mZXVzdCBbc3lzY2FsbHMvYWJvcnRdPiAuL2Fib3J0MDEKPiA+IGFib3J0
-MDEgoCCgIDEgoFRQQVNTIKA6IKBUZXN0IHBhc3NlZAo+ID4gbmpvbHlAbGFuZmV1c3QgW3N5c2Nh
-bGxzL2Fib3J0XT4gKHVsaW1pdCAtYyAwICYmIC4vYWJvcnQwMSkKPiA+IGFib3J0MDEgoCCgIDEg
-oFRDT05GIKA6IKBjb3JlIGZpbGUgc2l6ZSBsaW1pdCBtdXN0IGJlIGdyZWF0ZXIgdGhhbiAwLgo+
-ID4KPiA+IFNpZ25lZC1vZmYtYnk6IE5pY29sYXMgSm9seSA8bmpvbHlAcGFzdGV1ci5mcj4KPiAK
-PiBMb29rcyBvaywgYnV0IGlzIHRoZXJlIGFueSBwYXJ0aWN1bGFyIHJlYXNvbiB3aHkgeW91IHJl
-bW92ZWQgdGhlIHVubGluaygyKSBjYWxsPwoKVGhlIGB1bmxpbmsoImNvcmUiKScgb25lID8KCldl
-bGwsIGF0IGxlYXN0IFJIRUwgZG8gdXNlIGBwcm9jLjxwaWQ+JyB3aGVuIGdlbmVyYXRpbmcgY29y
-ZSBmaWxlCm5hbWVzIC4uLiBOb3Qgc3BlYWtpbmcgYWJvdXQgYWRtaW5zIHRoYXQgbWlnaHQgaGF2
-ZSBjb25maWd1cmVkIGl0IHRvCnVzZSBhbm90aGVyIHNjaGVtZS4KCklNTywgcmVseWluZyBvbiBh
-IHNwZWNpZmljIG5hbWUsIGZvciBhIGNvbmZpZ3VyYWJsZSBzeXN0ZW0sIGlzIGEgYmFkCmlkZWE7
-IGFuZCBjYW4gb25seSBsZWFkIHRvIHByb2JsZW1zLgoKQnkgZXhhbXBsZSwgdGhpcyB0ZXN0IGZy
-b20gbWtkaXIwOS5jIGNhbm5vdCBzdWNjZWVkIG9uIG1vc3QgUkhFTApzeXN0ZW1zOgoKICAgICAg
-ICAvKiBDaGVjayBmb3IgY29yZSBmaWxlIGluIHRlc3QgZGlyZWN0b3J5LiAqLwogICAgICAgIGlm
-IChhY2Nlc3MoImNvcmUiLCAwKSA9PSAwKSB7CiAgICAgICAgICAgICAgICB0c3RfcmVzbShUV0FS
-TiwgIlx0Q29yZSBmaWxlIGZvdW5kIGluIHRlc3QgZGlyZWN0b3J5LiIpOwogICAgICAgICAgICAg
-ICAgdHN0X2V4aXQoKTsKICAgICAgICB9CgotLSAKTmljb2xhcyBKb2x5CgpCaW9sb2dpY2FsIFNv
-ZnR3YXJlIGFuZCBEYXRhYmFua3MuCkluc3RpdHV0IFBhc3RldXIsIFBhcmlzLgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSBTcHJpbnQKV2hh
-dCB3aWxsIHlvdSBkbyBmaXJzdCB3aXRoIEVWTywgdGhlIGZpcnN0IDRHIHBob25lPwpWaXNpdCBz
-cHJpbnQuY29tL2ZpcnN0IC0tIGh0dHA6Ly9wLnNmLm5ldC9zZnUvc3ByaW50LWNvbS1maXJzdApf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
-YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+When doing 'make install' in ltp/testcases/realtime/ the process stops
+because the dummy makefile generated from empty Makefile.am is not
+correct makefile (has unmakeable targets). This could be easily fixed by
+adding m4 to FILTER_OUT_DIRS.
+
+Patch attached.
+
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--jRHKVT23PllUwdXP
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="realtime_makefile.patch"
+
+Index: ltp-full-20100630/testcases/realtime/Makefile
+===================================================================
+--- ltp-full-20100630.orig/testcases/realtime/Makefile
++++ ltp-full-20100630/testcases/realtime/Makefile
+@@ -38,7 +38,7 @@ include $(abs_srcdir)/config.mk
+ endif
+ 
+ LIBDIR			:= lib
+-FILTER_OUT_DIRS		:= $(LIBDIR)
++FILTER_OUT_DIRS		:= $(LIBDIR) m4
+ LIB			:= $(LIBDIR)/librealtime.a
+ 
+ # START autotools junk
+
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--jRHKVT23PllUwdXP--
+
