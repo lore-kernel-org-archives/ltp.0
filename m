@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lliubbo@gmail.com>) id 1OUZ0L-0000tx-1w
-	for Ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 05:41:37 +0000
-Received: from mail-qy0-f182.google.com ([209.85.216.182])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OUZ0K-0002aj-B3
-	for Ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 05:41:37 +0000
-Received: by qyk7 with SMTP id 7so272958qyk.13
-	for <Ltp-list@lists.sourceforge.net>;
-	Thu, 01 Jul 2010 22:41:31 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1Oc067-000676-NS
+	for ltp-list@lists.sourceforge.net; Thu, 22 Jul 2010 18:02:19 +0000
+Date: Thu, 22 Jul 2010 20:17:36 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100722181736.GA5936@saboteur.suse.cz>
+References: <20100722133111.GA30090@saboteur.suse.cz>
+	<AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
 MIME-Version: 1.0
-Date: Fri, 2 Jul 2010 13:41:30 +0800
-Message-ID: <AANLkTikvEYeg8DZfl6Deuge9f9Lk_uhA0MuW_OP4Ve9M@mail.gmail.com>
-From: Bob Liu <lliubbo@gmail.com>
-Subject: [LTP] [Bug Fix]semctl01 and shmctl01 will hang during uClinux test
+Content-Disposition: inline
+In-Reply-To: <AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix pthread_mutex_getprioceiling testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,42 +22,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-bHRwIHRlc3QgY2FzZSBzaG1jdGwwMSBhbmQgc2VtY3RsMDEgY2FuIG5vdCBleGVjdXRlLiBXaGVu
-IHByZXNzIGN0cmwKYW5kIGMsIGl0IGNhbiBub3QgZXhpc3QuCgotLQpyb290Oi8+IHNobWN0bDAx
-CgoKXkNzaG1jdGwwMSAgICAwICBJTkZPICA6ICByZWNlaXZlZCB1bmV4cGVjdGVkIHNpZ25hbCAy
-Cl5Dc2htY3RsMDEgICAgMCAgSU5GTyAgOiAgcmVjZWl2ZWQgdW5leHBlY3RlZCBzaWduYWwgMgot
-LQoKVGhlIHJlYXNvbiBpcyB0aGUgY2hpbGQgd2lsbCB1bmxpbmsgdGhlIHBpcGUgaWYgcGlwZW5h
-bWUgaXNuJ3QKTlVMTO+8jHdoaWNoIG1heSBtYWtlIHRoZSBwYXJlbnQKd2FpdHRpbmcgZm9yZXZl
-ci4KCgpJbmRleDogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAx
-LmMKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PQotLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3Nl
-bWN0bDAxLmMJCisrKyB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3Rs
-MDEuYwkKQEAgLTQwMCw3ICs0MDAsMTEgQEAKIAlpZiAoc3luY19waXBlX25vdGlmeShzeW5jX3Bp
-cGVzKSA9PSAtMSkKIAkJdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJzeW5jX3BpcGVfbm90aWZ5
-IGZhaWxlZCIpOwoKKyNpZmRlZiBVQ0xJTlVYCisJaWYgKHN5bmNfcGlwZV9jbG9zZShzeW5jX3Bp
-cGVzLCBOVUxMKSA9PSAtMSkKKyNlbHNlCiAJaWYgKHN5bmNfcGlwZV9jbG9zZShzeW5jX3BpcGVz
-LCBQSVBFX05BTUUpID09IC0xKQorI2VuZGlmCiAJCXRzdF9icmttKFRCUk9LLCBjbGVhbnVwLCAi
-c3luY19waXBlX2Nsb3NlIGZhaWxlZCIpOwoKIAlzb3BzLnNlbV9udW0gPSBTRU00OwpJbmRleDog
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAxLmMKPT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PQotLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAxLmMJCisr
-KyB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1jdGwvc2htY3RsMDEuYwkKQEAgLTMy
-NCw4ICszMjQsMTEgQEAKIAkKIAlpZiAoc3luY19waXBlX25vdGlmeShzeW5jX3BpcGVzKSA9PSAt
-MSkKIAkJdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJzeW5jX3BpcGVfbm90aWZ5IGZhaWxlZCIp
-OwotCisjaWZkZWYgVUNMSU5VWAorCWlmIChzeW5jX3BpcGVfY2xvc2Uoc3luY19waXBlcywgTlVM
-TCkgPT0gLTEpCisjZWxzZQogCWlmIChzeW5jX3BpcGVfY2xvc2Uoc3luY19waXBlcywgUElQRV9O
-QU1FKSA9PSAtMSkKKyNlbmRpZgogCQl0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgInN5bmNfcGlw
-ZV9jbG9zZSBmYWlsZWQiKTsKCiAJLyogZG8gYW4gYXNzaWduZW1lbnQgZm9yIGZ1biAqLwoKLS0g
-ClJlZ2FyZHMsCi0tQm9iCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1haWwg
-aXMgc3BvbnNvcmVkIGJ5IFNwcmludApXaGF0IHdpbGwgeW91IGRvIGZpcnN0IHdpdGggRVZPLCB0
-aGUgZmlyc3QgNEcgcGhvbmU/ClZpc2l0IHNwcmludC5jb20vZmlyc3QgLS0gaHR0cDovL3Auc2Yu
-bmV0L3NmdS9zcHJpbnQtY29tLWZpcnN0Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
-bHRwLWxpc3QK
+Hi!
+> 2. So you're saying that none of the pthread(5) functions provide
+> useful diagnostics, even though the manpages claim they should (in
+> many cases)? That seems like a bug with the pthreads implementation to
+> me...
+
+Not at all, as far as I understand this they just return error as
+integer value from function to indicate the error, most likely due to
+problems with errno and race conditions as program runs in more threads,
+so they are not touching errno that is later picked up by perror() call.
+So you would get:
+
+"pthread_xxx_xxx() failed: Success"
+
+or any previous errno that was there instead of:
+
+"pthread_xxx_xxx() failed: Invalid value"
+
+I'm just saying that you should not use perror() for pthread functions
+but rather use value returned from such function.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
