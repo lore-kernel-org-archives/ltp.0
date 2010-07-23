@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OUjB4-0006fD-BV
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:33:22 +0000
-Received: from mail-iw0-f174.google.com ([209.85.214.174])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OUjB3-00034z-Cv
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 16:33:22 +0000
-MIME-Version: 1.0
-In-Reply-To: <1278087148.6654.80.camel@moss-pluto.epoch.ncsc.mil>
-References: <1278087148.6654.80.camel@moss-pluto.epoch.ncsc.mil>
-Date: Fri, 2 Jul 2010 09:33:14 -0700
-Message-ID: <AANLkTinSQUSXGO5Ifu8Z-RVoCvagpFZqZKROWkXAN7SY@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] ima: Fix ima_measure
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <njoly@pasteur.fr>) id 1OcNIR-0005gs-HJ
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 18:48:35 +0000
+Received: from mail-interne3.pasteur.fr ([157.99.64.82])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OcNIQ-0005SE-68
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 18:48:35 +0000
+Date: Fri, 23 Jul 2010 20:48:24 +0200
+From: Nicolas Joly <njoly@pasteur.fr>
+Message-ID: <20100723184824.GA55142@medusa.sis.pasteur.fr>
+References: <20100723171717.GA54890@medusa.sis.pasteur.fr>
+	<AANLkTik=DJ+0NsMoD-ucZZtVrsaiBHeVEMmh-3GEixD+@mail.gmail.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <AANLkTik=DJ+0NsMoD-ucZZtVrsaiBHeVEMmh-3GEixD+@mail.gmail.com>
+Subject: Re: [LTP] abort01 testcase cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,33 +26,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso8859-1"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list <ltp-list@lists.sf.net>, Mimi Zohar <zohar@us.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sf.net>
 
-On Fri, Jul 2, 2010 at 9:12 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> ima_measure doesn't build correctly. =A0It needs config.h to determine
-> whether openssl headers are present, and verbose needs to be global.
-> Broken by commit ef77253961f909f87e82e6d2b620e87af33e9665.
->
-> Signed-off-by: =A0Stephen D. Smalley <sds@tycho.nsa.gov>
-
-I don't remember why I did this originally (might have accidentally
-committed a test version of the program), but the diff looks sane.
-
-Acked-by: Garrett Cooper <yanegomi@gmail.com>
-
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCBKdWwgMjMsIDIwMTAgYXQgMTA6NTY6NThBTSAtMDcwMCwgR2FycmV0dCBDb29wZXIg
+d3JvdGU6Cj4gT24gRnJpLCBKdWwgMjMsIDIwMTAgYXQgMTA6MTcgQU0sIE5pY29sYXMgSm9seSA8
+bmpvbHlAcGFzdGV1ci5mcj4gd3JvdGU6Cj4gPgo+ID4gSGksCj4gPgo+ID4gVGhlIGF0dGFjaGVk
+IHBhdGNoIGRvIHNvbWUgY2xlYW51cCBpbiB0aGUgYWJvcnQwMSB0ZXN0Y2FzZSAuLi4KPiA+Cj4g
+PiAxKSBUaGUgYXR0ZW1wdCB0byByZW1vdmUgdGhlIGdlbmVyYXRlZCBjb3JlIGlzIHdyb25nLiBU
+aGUgaGFyZC1jb2RlZAo+ID4goCBgY29yZScgbmFtZSBpcyBiYWQgYW5kIHRoZSB0ZXN0IHRlbXBv
+cmFyeSBkaXJlY3RvcnkgcmVtb3ZhbCBhbHJlYWR5Cj4gPiCgIHRha2UgY2FyZSBvZiB0aGlzLgo+
+ID4KPiA+IDIpIE1ha2UgdGhlIHRlc3QgZmFpbCBncmFjZWZ1bGx5IGlmIHRoZSBydW5uaW5nIGVu
+dmlyb25tZW50IGRvZXMgbm90Cj4gPiCgIGFsbG93IGdlbmVyYXRpbmcgY29yZSBmaWxlcy4KPiA+
+Cj4gPiBuam9seUBsYW5mZXVzdCBbc3lzY2FsbHMvYWJvcnRdPiAuL2Fib3J0MDEKPiA+IGFib3J0
+MDEgoCCgIDEgoFRQQVNTIKA6IKBUZXN0IHBhc3NlZAo+ID4gbmpvbHlAbGFuZmV1c3QgW3N5c2Nh
+bGxzL2Fib3J0XT4gKHVsaW1pdCAtYyAwICYmIC4vYWJvcnQwMSkKPiA+IGFib3J0MDEgoCCgIDEg
+oFRDT05GIKA6IKBjb3JlIGZpbGUgc2l6ZSBsaW1pdCBtdXN0IGJlIGdyZWF0ZXIgdGhhbiAwLgo+
+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IE5pY29sYXMgSm9seSA8bmpvbHlAcGFzdGV1ci5mcj4KPiAK
+PiBMb29rcyBvaywgYnV0IGlzIHRoZXJlIGFueSBwYXJ0aWN1bGFyIHJlYXNvbiB3aHkgeW91IHJl
+bW92ZWQgdGhlIHVubGluaygyKSBjYWxsPwoKVGhlIGB1bmxpbmsoImNvcmUiKScgb25lID8KCldl
+bGwsIGF0IGxlYXN0IFJIRUwgZG8gdXNlIGBwcm9jLjxwaWQ+JyB3aGVuIGdlbmVyYXRpbmcgY29y
+ZSBmaWxlCm5hbWVzIC4uLiBOb3Qgc3BlYWtpbmcgYWJvdXQgYWRtaW5zIHRoYXQgbWlnaHQgaGF2
+ZSBjb25maWd1cmVkIGl0IHRvCnVzZSBhbm90aGVyIHNjaGVtZS4KCklNTywgcmVseWluZyBvbiBh
+IHNwZWNpZmljIG5hbWUsIGZvciBhIGNvbmZpZ3VyYWJsZSBzeXN0ZW0sIGlzIGEgYmFkCmlkZWE7
+IGFuZCBjYW4gb25seSBsZWFkIHRvIHByb2JsZW1zLgoKQnkgZXhhbXBsZSwgdGhpcyB0ZXN0IGZy
+b20gbWtkaXIwOS5jIGNhbm5vdCBzdWNjZWVkIG9uIG1vc3QgUkhFTApzeXN0ZW1zOgoKICAgICAg
+ICAvKiBDaGVjayBmb3IgY29yZSBmaWxlIGluIHRlc3QgZGlyZWN0b3J5LiAqLwogICAgICAgIGlm
+IChhY2Nlc3MoImNvcmUiLCAwKSA9PSAwKSB7CiAgICAgICAgICAgICAgICB0c3RfcmVzbShUV0FS
+TiwgIlx0Q29yZSBmaWxlIGZvdW5kIGluIHRlc3QgZGlyZWN0b3J5LiIpOwogICAgICAgICAgICAg
+ICAgdHN0X2V4aXQoKTsKICAgICAgICB9CgotLSAKTmljb2xhcyBKb2x5CgpCaW9sb2dpY2FsIFNv
+ZnR3YXJlIGFuZCBEYXRhYmFua3MuCkluc3RpdHV0IFBhc3RldXIsIFBhcmlzLgoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSBTcHJpbnQKV2hh
+dCB3aWxsIHlvdSBkbyBmaXJzdCB3aXRoIEVWTywgdGhlIGZpcnN0IDRHIHBob25lPwpWaXNpdCBz
+cHJpbnQuY29tL2ZpcnN0IC0tIGh0dHA6Ly9wLnNmLm5ldC9zZnUvc3ByaW50LWNvbS1maXJzdApf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
