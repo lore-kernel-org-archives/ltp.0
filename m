@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OUZsB-0000IX-QD
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:37:15 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OcMUc-00037f-04
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 17:57:06 +0000
+Received: from mail-gw0-f46.google.com ([74.125.83.46])
 	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OUZsA-0001Qy-Va
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:37:15 +0000
-Received: by iwn34 with SMTP id 34so4013830iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 01 Jul 2010 23:37:09 -0700 (PDT)
+	id 1OcMUb-000696-6E
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 17:57:05 +0000
 MIME-Version: 1.0
-In-Reply-To: <4C2D8672.8030406@linux.vnet.ibm.com>
-References: <4C2C8492.503@linux.vnet.ibm.com>
-	<1278003985.21642.7.camel@subratamodak.linux.ibm.com>
-	<4C2D8672.8030406@linux.vnet.ibm.com>
-Date: Thu, 1 Jul 2010 23:37:09 -0700
-Message-ID: <AANLkTiko2hqAdNNyr6RmmE_sQhEmY71PqjdOzSdcoudc@mail.gmail.com>
+In-Reply-To: <20100723171717.GA54890@medusa.sis.pasteur.fr>
+References: <20100723171717.GA54890@medusa.sis.pasteur.fr>
+Date: Fri, 23 Jul 2010 10:56:58 -0700
+Message-ID: <AANLkTik=DJ+0NsMoD-ucZZtVrsaiBHeVEMmh-3GEixD+@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] close file descriptors and munmap pages.
+Subject: Re: [LTP] abort01 testcase cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,43 +24,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Darshak Shah <darshaks@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Nicolas Joly <njoly@pasteur.fr>
+Cc: LTP list <ltp-list@lists.sf.net>
 
-On Thu, Jul 1, 2010 at 11:25 PM, Darshak Shah
-<darshaks@linux.vnet.ibm.com> wrote:
-> On 07/01/2010 10:36 PM, Subrata Modak wrote:
->> Probably, you would need to fix these:
->>
->> patching file testcases/kernel/syscalls/open/open10.c
->> Hunk #1 FAILED at 282.
->> Hunk #2 FAILED at 311.
->> Hunk #3 FAILED at 359.
->> Hunk #4 FAILED at 389.
->> Hunk #5 FAILED at 440.
->> 5 out of 5 hunks FAILED -- saving rejects to file
->> testcases/kernel/syscalls/open/open10.c.rej
->> patching file testcases/kernel/syscalls/splice/splice02.c
->> patch: **** malformed patch at line 229: Passed");
+On Fri, Jul 23, 2010 at 10:17 AM, Nicolas Joly <njoly@pasteur.fr> wrote:
 >
-> Dear Subrata,
+> Hi,
 >
-> I downloaded the latest ltp from
-> http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=tree
-> I used the "snapshot" to download the tgz and patched as following.
+> The attached patch do some cleanup in the abort01 testcase ...
 >
-> The patch seems to apply correctly.
+> 1) The attempt to remove the generated core is wrong. The hard-coded
+> =A0 `core' name is bad and the test temporary directory removal already
+> =A0 take care of this.
+>
+> 2) Make the test fail gracefully if the running environment does not
+> =A0 allow generating core files.
+>
+> njoly@lanfeust [syscalls/abort]> ./abort01
+> abort01 =A0 =A0 1 =A0TPASS =A0: =A0Test passed
+> njoly@lanfeust [syscalls/abort]> (ulimit -c 0 && ./abort01)
+> abort01 =A0 =A0 1 =A0TCONF =A0: =A0core file size limit must be greater t=
+han 0.
+>
+> Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
 
-    Please attach the patch as a file as well as inline. Some MTAs and
-mail clients (like gmail for me) screw up whitespace and other fuzz in
-patches when folks include it inline in email.
-Thanks!
+Looks ok, but is there any particular reason why you removed the unlink(2) =
+call?
+Thanks,
 -Garrett
 
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
