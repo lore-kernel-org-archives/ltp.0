@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Oby1K-0006gD-L6
-	for ltp-list@lists.sourceforge.net; Thu, 22 Jul 2010 15:49:14 +0000
-Received: from mail-px0-f175.google.com ([209.85.212.175])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oby1J-0004Bz-67
-	for ltp-list@lists.sourceforge.net; Thu, 22 Jul 2010 15:49:14 +0000
-Received: by pxi12 with SMTP id 12so4023116pxi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 22 Jul 2010 08:49:07 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1OcF1G-0008Oj-CE
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 09:58:18 +0000
+Date: Fri, 23 Jul 2010 12:13:38 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100723101338.GB19210@saboteur.suse.cz>
+References: <20100722133111.GA30090@saboteur.suse.cz>
+	<AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
+	<20100722181736.GA5936@saboteur.suse.cz>
+	<AANLkTikTXuwc4hGrLRqkcoE12_6RMhNP7fW2oBLHafA0@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1279792951.6951.2.camel@plars-t500>
-References: <AANLkTikq6X_ICkQbfLS9GUSnA3jCUdodxrHkdGYtgZFk@mail.gmail.com>
-	<1279792951.6951.2.camel@plars-t500>
-Date: Thu, 22 Jul 2010 08:48:37 -0700
-Message-ID: <AANLkTink8cgb9mCKSoGJdDvv9QanhqupCwXNd-qoJ1sX@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] ARM: Correct stack size & alignment for clone
-	tests
+Content-Disposition: inline
+In-Reply-To: <AANLkTikTXuwc4hGrLRqkcoE12_6RMhNP7fW2oBLHafA0@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix pthread_mutex_getprioceiling testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,30 +24,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jul 22, 2010 at 3:02 AM, Paul Larson <paul.larson@canonical.com> wr=
-ote:
-> I tried this on my arm boxes and it fixes the clone tests, which were
-> previously broken for arm. =A0Please apply.
->
-> Thanks,
-> Paul Larson
->
-> On Thu, 2010-07-22 at 10:07 +0100, Peter Pearse wrote:
->> An ARM stack must be a multiple of 32 bit words in length, and 32 bit
->> aligned.
->>
->> Signed-off-by: Peter Pearse <peter.pearse@linaro.org>
+Hi!
+> >> 2. So you're saying that none of the pthread(5) functions provide
+> >> useful diagnostics, even though the manpages claim they should (in
+> >> many cases)? That seems like a bug with the pthreads implementation to
+> >> me...
+> >
+> > Not at all, as far as I understand this they just return error as
+> > integer value from function to indicate the error, most likely due to
+> > problems with errno and race conditions as program runs in more threads,
+> > so they are not touching errno that is later picked up by perror() call.
+> > So you would get:
+> >
+> > "pthread_xxx_xxx() failed: Success"
+> >
+> > or any previous errno that was there instead of:
+> >
+> > "pthread_xxx_xxx() failed: Invalid value"
+> >
+> > I'm just saying that you should not use perror() for pthread functions
+> > but rather use value returned from such function.
+> 
+>     Good point. We probably should save the errno, then quickly print
+> out the resulting error.
 
-ACK.
+That's what print_error() function in that patch does. ;)
 
----------------------------------------------------------------------------=
----
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
