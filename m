@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OY1hy-00062j-8Y
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 18:56:58 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OY1hx-0008RS-F3
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 18:56:58 +0000
-Received: by iwn34 with SMTP id 34so2892286iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 11 Jul 2010 11:56:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1278853007.8660.7.camel@sumit>
-References: <1278853007.8660.7.camel@sumit>
-Date: Sun, 11 Jul 2010 11:56:51 -0700
-Message-ID: <AANLkTiksBkRDAMLVKlj4U3N6scjkBWYZdFLPDL4PdOwd@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 0/3] nfstests: Bug Fixing
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yaneurabeya@gmail.com>) id 1OcQLR-00029v-L7
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 22:03:53 +0000
+Received: from mail-px0-f174.google.com ([209.85.212.174])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OcQLQ-0000Cp-Oh
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 22:03:53 +0000
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: Garrett Cooper <yaneurabeya@gmail.com>
+In-Reply-To: <20100723184824.GA55142@medusa.sis.pasteur.fr>
+Date: Fri, 23 Jul 2010 15:03:45 -0700
+Message-Id: <FE807C4F-FBEF-4F35-A53D-95290C6B0CC9@gmail.com>
+References: <20100723171717.GA54890@medusa.sis.pasteur.fr>
+	<AANLkTik=DJ+0NsMoD-ucZZtVrsaiBHeVEMmh-3GEixD+@mail.gmail.com>
+	<20100723184824.GA55142@medusa.sis.pasteur.fr>
+Subject: Re: [LTP] abort01 testcase cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,32 +26,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: sumitbd@linsyssoft.com
-Cc: ltp-list@lists.sourceforge.net
+To: Nicolas Joly <njoly@pasteur.fr>
+Cc: LTP list <ltp-list@lists.sf.net>
 
-On Sun, Jul 11, 2010 at 5:56 AM,  <sumitbd@linsyssoft.com> wrote:
-> Hi,
->
-> I am working on LTP-20100630. While doing networktest for nfs, I came
-> across to following bugs.
-> I have fixed these bugs =A0and created a patch which is I am sending in
-> subsequent mail.
->
-> [PATCH 1/3] MAKEFILE: testcases/network/Makefile - bug fixing
-> [PATCH 2/3] nfs02: testcases/network/nfs/nfs02/nfs02 script - bug fixing
-> [PATCH 3/3] runtest/nfs: TCbin path not exported for few tests
-> After applying above patches networktest for nfs completed successfully.
+On Jul 23, 2010, at 11:48 AM, Nicolas Joly wrote:
 
-Thanks for the patches :).
+> On Fri, Jul 23, 2010 at 10:56:58AM -0700, Garrett Cooper wrote:
+>> On Fri, Jul 23, 2010 at 10:17 AM, Nicolas Joly <njoly@pasteur.fr> wrote:
+>>> 
+>>> Hi,
+>>> 
+>>> The attached patch do some cleanup in the abort01 testcase ...
+>>> 
+>>> 1) The attempt to remove the generated core is wrong. The hard-coded
+>>>   `core' name is bad and the test temporary directory removal already
+>>>   take care of this.
+>>> 
+>>> 2) Make the test fail gracefully if the running environment does not
+>>>   allow generating core files.
+>>> 
+>>> njoly@lanfeust [syscalls/abort]> ./abort01
+>>> abort01     1  TPASS  :  Test passed
+>>> njoly@lanfeust [syscalls/abort]> (ulimit -c 0 && ./abort01)
+>>> abort01     1  TCONF  :  core file size limit must be greater than 0.
+>>> 
+>>> Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+>> 
+>> Looks ok, but is there any particular reason why you removed the unlink(2) call?
+> 
+> The `unlink("core")' one ?
+> 
+> Well, at least RHEL do use `proc.<pid>' when generating core file
+> names ... Not speaking about admins that might have configured it to
+> use another scheme.
+> 
+> IMO, relying on a specific name, for a configurable system, is a bad
+> idea; and can only lead to problems.
+> 
+> By example, this test from mkdir09.c cannot succeed on most RHEL
+> systems:
+> 
+>        /* Check for core file in test directory. */
+>        if (access("core", 0) == 0) {
+>                tst_resm(TWARN, "\tCore file found in test directory.");
+>                tst_exit();
+>        }
 
-Take care,
+Yeah. Perhaps it might be a good idea to integrate a tool into LTP which detects corefile names, like what's described here: http://aplawrence.com/Linux/limit_core_files.html .
+Cheers,
 -Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 This SF.net email is sponsored by Sprint
 What will you do first with EVO, the first 4G phone?
 Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
