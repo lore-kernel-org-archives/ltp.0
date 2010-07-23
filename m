@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sumitbd@linsyssoft.com>) id 1OXxPK-0000Oi-QN
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:21:26 +0000
-Received: from mail-vw0-f47.google.com ([209.85.212.47])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OXxPJ-00014Y-Ta
-	for ltp-list@lists.sourceforge.net; Sun, 11 Jul 2010 14:21:26 +0000
-Received: by vws3 with SMTP id 3so4657392vws.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 11 Jul 2010 07:21:18 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1OcEwS-00084O-Sy
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jul 2010 09:53:20 +0000
+Date: Fri, 23 Jul 2010 12:08:42 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100723100842.GA19210@saboteur.suse.cz>
+References: <20100722133111.GA30090@saboteur.suse.cz>
+	<AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1278855268.8660.44.camel@sumit>
-References: <1278855268.8660.44.camel@sumit>
-From: Sumit Dhoot <sumitbd@linsyssoft.com>
-Date: Sun, 11 Jul 2010 19:50:58 +0530
-Message-ID: <AANLkTikfCl19jt_BQyJWXGvF-nrjaWW4Wk7QGAPb5zYq@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 2/3] nfs02: testcases/network/nfs/nfs02/nfs02
-	script - bug fixing
+Content-Type: multipart/mixed; boundary="VbJkn9YxBvnuCH5J"
+Content-Disposition: inline
+In-Reply-To: <AANLkTimAD6agCAWt4g3R1V0jvAKvTMe7wgOvDZ7cCH8v@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix pthread_mutex_getprioceiling testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,39 +23,157 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-SGkgQWxsLAoKSSBmYWlsZWQgdG8gYWRkICJTaWduZWQtb2ZmLWJ5Ii4gQXBvbG9naWVzIGZvciB0
-aGlzLgoKT24gU3VuLCBKdWwgMTEsIDIwMTAgYXQgNzowNCBQTSwgIDxzdW1pdGJkQGxpbnN5c3Nv
-ZnQuY29tPiB3cm90ZToKPgo+IEhpLAo+Cj4gVGVzdGNhc2UgIm5mczAyIiBmYWlscyB3aXRoIGZv
-bGxvd2luZyBtZXNzYWdlCj4gIlRlc3QgRmFpbGVkOiBSZW1vdmFsIG9mIHdyaXRlIHBlcm1pc3Np
-b25zIG5vdCBob25vcmVkIG9uIGFzY2lpLnNtIgo+IFRoaXMgaXMgYmVjYXVzZSBhc2NpaS5zbSBo
-YXMgYSByd3ggZmlsZSBwZXJtaXNzaW9uIGZvciBvdGhlcnMgd2hlbiBJdAo+IGdvdCBpbnN0YWxs
-ZWQuIFRoZSBzY3JpcHQgZmlyc3QgdHJpZWQgdG8gcmVtb3ZlIG9ubHkgd3JpdGUgcGVybWlzc2lv
-bgo+IGZvciBvdGhlcnMgYW5kIHRoZW4gaXQgdGVzdHMgaXQgd2l0aCB0aGUgci0tIHBlcm1pc3Np
-b24gc28gdGVzdCBnZXQKPiBmYWlscyBhcyBpdCBoYXMgci14IHBlcm1pc3Npb24gZm9yIG90aGVy
-cy4KPgo+IFRoaXMgaXMgZml4ZWQgd2l0aCBmb2xsb3dpbmcgcGF0Y2guCj4KU2lnbmVkLW9mZi1i
-eTogIFN1bWl0IERob290IDxzdW1pdGJkQGxpbnN5c3NvZnQuY29tPgoKPT09PT09Cgo+IEluZGV4
-OiBsdHAtZnVsbC0yMDEwMDYzMC90ZXN0Y2FzZXMvbmV0d29yay9uZnMvbmZzMDIvbmZzMDIKPiA9
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09Cj4gLS0tIGx0cC1mdWxsLTIwMTAwNjMwLm9yaWcvdGVzdGNhc2VzL25ldHdvcmsv
-bmZzL25mczAyL25mczAyCj4gKysrIGx0cC1mdWxsLTIwMTAwNjMwL3Rlc3RjYXNlcy9uZXR3b3Jr
-L25mcy9uZnMwMi9uZnMwMgo+IEBAIC0xNzksNyArMTc5LDcgQEAgZG9fdGVzdDMoKQo+IMKgewo+
-IMKgJHRyYWNlX2xvZ2ljCj4gwqAgwqBlY2hvICJkb190ZXN0MyAkVEMgIgo+IC0gwqAgY2htb2Qg
-YS13ICRUQ3RtcC9hc2NpaS5zbSAmCj4gKyDCoCBjaG1vZCBhLXd4ICRUQ3RtcC9hc2NpaS5zbSAm
-Cj4gwqAgwqB3YWl0ICQhCj4gwqAgwqBscyAtbCAkVEN0bXAvYXNjaWkuc20gfCBncmVwICJyLS0i
-Cj4gwqAgwqBbICQ/IC1lcSAwIF0gfHwgZW5kX3Rlc3RjYXNlICJSZW1vdmFsIG9mIHdyaXRlIHBl
-cm1pc3Npb25zIG5vdAo+IGhvbm9yZWQgb24gYXNjaWkuc20iCj4KPgo9PT09PT0KCj4gVGhhbmtz
-ICYgUmVnYXJkcwo+IFN1bWl0IERob290Cj4gU3lzdGVtIEFkbWluaXN0cmF0b3IKPiBMaW5zeXNz
-b2Z0IFRlY2hub2xvZ2llcyBQdnQuIEx0ZC4KPiBzdW1pdGJkQGxpbnN5c3NvZnQuY29tCj4KPgo+
-CgoKCi0tIApUaGFua3MgJiBSZWdhcmRzClN1bWl0IERob290CgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IFNwcmludApXaGF0IHdpbGwgeW91
-IGRvIGZpcnN0IHdpdGggRVZPLCB0aGUgZmlyc3QgNEcgcGhvbmU/ClZpc2l0IHNwcmludC5jb20v
-Zmlyc3QgLS0gaHR0cDovL3Auc2YubmV0L3NmdS9zcHJpbnQtY29tLWZpcnN0Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
-dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+> > As pointed out by Cheng Shun Xia <csxia@novell.com> the
+> > pthread_mutex_getprioceiling() works only on mutexes initalized with
+> > PTHREAD_PRIO_PROTECT. Also calling perror() after pthread_* fuctions is
+> > meaningless as they return error number directly, this is common mistake
+> > in pthread tests in openposix testsuite and should go to the ltp TODO.
+> 
+> 1. There are typos in the proposed change (s/Errror/Error/,
+> s/boundry/boundary/).
+
+Should be fixed in attached patch.
+
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--VbJkn9YxBvnuCH5J
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment;
+	filename="pthread_mutex_getprioceilingIII.patch"
+
+Index: ltp-next-local/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
+===================================================================
+--- ltp-next-local.orig/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
++++ ltp-next-local/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
+@@ -1,4 +1,4 @@
+-/*   
++/*
+  * Copyright (c) 2002, Intel Corporation. All rights reserved.
+  * Created by:  bing.wei.liu REMOVE-THIS AT intel DOT com
+  * This file is licensed under the GPL license.  For the full content
+@@ -9,7 +9,7 @@
+  *
+  * returns the current prioceiling of the mutex.
+  *
+- * Steps:i
++ * Steps:
+  * 1.  Initialize a pthread_mutexattr_t object with pthread_mutexattr_init()
+  * 2.  Call pthread_mutex_getprioceiling() to obtain the prioceiling.
+  * 
+@@ -18,42 +18,55 @@
+ #include <pthread.h>
+ #include <stdio.h>
+ #include <sched.h>
++#include <string.h>
+ #include "posixtest.h"
+ 
+-int main()
++static void print_error(const char *fname, int ret)
+ {
+-	
+-	/* Make sure there is prioceiling capability. */ 
+-	/* #ifndef _POSIX_PRIORITY_SCHEDULING
+-	  fprintf(stderr,"prioceiling attribute is not available for testing\n");
+-	  return PTS_UNRESOLVED;	
+-	#endif */
++	fprintf(stderr, "Error at %s(): %s\n", fname, strerror(ret));
++}
+ 
++int main(void)
++{
++	pthread_mutexattr_t ma;
+ 	pthread_mutex_t mutex;
+-	int prioceiling, max_prio, min_prio;
+-	
++	int prioceiling, max_prio, min_prio, ret;
++
++	/* Initalize mutex attribut */
++	if ((ret = pthread_mutexattr_init(&ma)) != 0) {
++		print_error("pthread_mutexattr_init", ret);
++		return PTS_UNRESOLVED;
++	}
++
++	/* Initalize mutex protocol */
++	ret = pthread_mutexattr_setprotocol(&ma, PTHREAD_PRIO_PROTECT);
++	if (ret != 0) {
++		print_error("pthread_mutexattr_setprotocol", ret);
++		return PTS_UNRESOLVED;
++	}
++
+ 	/* Initialize a mutex object */
+-	if(pthread_mutex_init(&mutex, NULL) != 0)
+-	{
+-		perror("Error at pthread_mutex_init()\n");
++	if ((ret = pthread_mutex_init(&mutex, &ma)) != 0) {
++		print_error("pthread_mutex_init", ret);
+ 		return PTS_UNRESOLVED;
+ 	}
+-	
+-	/* Get the prioceiling of the mutex. */
+-	if(pthread_mutex_getprioceiling(&mutex, &prioceiling) != 0)
+-	{
+-		printf("Test FAILED: Error obtaining the priority ceiling\n");
++
++	/* Get the prioceiling of the mutex */
++	if ((ret = pthread_mutex_getprioceiling(&mutex, &prioceiling)) != 0) {
++		fprintf(stderr, "Test FAILED: Error obtaining the priority"
++		                "ceiling: %s\n", strerror(ret));
+ 		return PTS_FAIL;
+ 	}
+-	
+-	/* Get the max and min prio according to SCHED_FIFO (posix scheduling policy) */
++
++	/* Get the max and min accordingly to SCHED_FIFO */
+ 	max_prio = sched_get_priority_max(SCHED_FIFO);
+ 	min_prio = sched_get_priority_min(SCHED_FIFO);
+ 
+-	/* Make sure that prioceiling is withing the legal SCHED_FIFO boundries. */
+-	if((prioceiling < min_prio) || (prioceiling > max_prio))
+-	{
+-		printf("Test FAILED: Default prioceiling %d is not compliant with SCHED_FIFO boundry. \n", prioceiling);
++	/* Make sure that prioceiling is in the legal SCHED_FIFO boundaries */
++	if ((prioceiling < min_prio) || (prioceiling > max_prio)) {
++		fprintf(stderr, "Test FAILED: Default prioceiling %d is not "
++		                "compliant with SCHED_FIFO boundary.\n",
++		                prioceiling);
+ 		return PTS_FAIL;
+ 	}
+ 
+
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Sprint
+What will you do first with EVO, the first 4G phone?
+Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--VbJkn9YxBvnuCH5J--
+
