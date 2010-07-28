@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OdwWf-00038Y-Sa
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 02:37:45 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OdwWf-0005ov-7j
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 02:37:45 +0000
-Received: by iwn34 with SMTP id 34so5741783iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 27 Jul 2010 19:37:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <000a01cb2dfa$1ab62650$502272f0$@co.jp>
-References: <000a01cb2dfa$1ab62650$502272f0$@co.jp>
-Date: Tue, 27 Jul 2010 19:37:39 -0700
-Message-ID: <AANLkTinA23XVdCGPffiRqVsNGHHCCje4PLcuvBg1sYTE@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] How to run "conformance" tests?
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Oe62u-0005Pt-3H
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 12:47:40 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Oe62t-0004Vp-02
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 12:47:40 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e5.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o6SCTJEt026779
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Jul 2010 08:29:19 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o6SClVwM343728
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Jul 2010 08:47:31 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o6SClUj5022267
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Jul 2010 08:47:30 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20100506065815.23879.4005.sendpatchset@subratamodak.linux.ibm.com>
+References: <20100506065548.23879.63131.sendpatchset@subratamodak.linux.ibm.com>
+	<20100506065815.23879.4005.sendpatchset@subratamodak.linux.ibm.com>
+Date: Wed, 28 Jul 2010 18:16:58 +0530
+Message-Id: <1280321227.9598.2.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [09/12 FAILURE] LTPE timer create04 fails
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,50 +37,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: Linus Test Project <ltp-list@lists.sourceforge.net>
+Cc: Sharyathi Nagesh <sharyath@in.ibm.com>, B N Poornima <bnpoorni@in.ibm.com>, Sachin P Sant <ssant@in.ibm.com>, "SUZUKI K. POULOSE" <suzuki@in.ibm.com>
 
-On Tue, Jul 27, 2010 at 7:10 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
->
-> I want to run "conformance" testcases in "open_posix_testsuite".
-> But I couldn't run it without manually copying.
->
-> I used "ltp-dev-a4e64cb8bb97d09b5695151106946a76984b330a.tar.gz" git.
-> Environment is RHEL5.5 and x86_64 architecture.
->
-> First, I executed following commands.
-> =A0make autotools
-> =A0configure
-> =A0make
-> =A0make install
-> And I confirmed that those commands succeeded.
-> And I could see "logfile.conformance-all" file in "${LTPROOT}/testcases
-> /open_posix_testsuite" directory.
->
-> I ran "make conformance-test" command. But it failed as follows:
+Fixed now with Latest LTP.
 
-Can you try running the following please from testcases/open_posix_testsuit=
-e?
+Regards--
+Subrata
 
-make distclean
-make all
-make test
+On Thu, 2010-05-06 at 12:28 +0530, Subrata Modak wrote:
+> Subject: LTPE timer_create04 fails
+> 
+> Issues Description below:
+> =======================================
+> # ./runltp -s timer_create04
+> <<<test_output>>>
+> timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22
+> (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+> timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22
+> (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+> timer_create04    3  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
+> address
+> timer_create04    4  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
+> address
+> timer_create04    5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
+> address
+> timer_create04    6  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad
+> address
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=1 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>>
+> 
+> SUZUKI K. POULOSE said that the same patch for issue #8 will solve the problem :-)
+> 
+> Regards--
+> Subrata
+> 
 
-Your make version would help too.
 
-Thanks!
--Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share =
-
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share 
 of $1 Million in cash or HP Products. Visit us here for more details:
 http://ad.doubleclick.net/clk;226879339;13503038;l?
 http://clk.atdmt.com/CRS/go/247765532/direct/01/
