@@ -1,30 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1OUZh3-0002TD-DO
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
-Received: from e28smtp08.in.ibm.com ([122.248.162.8])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUZh0-0002Pc-LJ
-	for ltp-list@lists.sourceforge.net; Fri, 02 Jul 2010 06:25:45 +0000
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by e28smtp08.in.ibm.com (8.14.4/8.13.1) with ESMTP id o626O2GF004803
-	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:54:02 +0530
-Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
-	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o626PYCh3535070
-	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 11:55:34 +0530
-Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
-	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o626PXk0004695
-	for <ltp-list@lists.sourceforge.net>; Fri, 2 Jul 2010 16:25:33 +1000
-From: Gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Date: Fri,  2 Jul 2010 11:55:26 +0530
-Message-Id: <1278051930-4070-4-git-send-email-gomuthuk@linux.vnet.ibm.com>
-In-Reply-To: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
-References: <1278051930-4070-1-git-send-email-gomuthuk@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH 3/7] realtime/testpi-4: add test description
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1OdzQY-0005UQ-CS
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 05:43:38 +0000
+Received: from out09.sjc.mx.trendmicro.com ([216.99.131.46])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OdzQW-0004pj-R6
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 05:43:38 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000a01cb2dfa$1ab62650$502272f0$@co.jp>
+	<AANLkTinA23XVdCGPffiRqVsNGHHCCje4PLcuvBg1sYTE@mail.gmail.com>
+In-Reply-To: <AANLkTinA23XVdCGPffiRqVsNGHHCCje4PLcuvBg1sYTE@mail.gmail.com>
+Date: Wed, 28 Jul 2010 14:43:27 +0900
+Message-ID: <000301cb2e17$cdb444e0$691ccea0$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: Re: [LTP] How to run "conformance" tests?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,47 +26,121 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <ltp-list@lists.sourceforge.net>
-Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: 'Garrett Cooper' <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+Hi,
 
-This patch adds the description to the test testpi-4.
 
-Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Acked-by: Darren Hart <dvhltc@us.ibm.com>
+I executed "make distclean" from "testcases/open_posix_testsuite" directory,
+
+and it secceeded.
+I executed "make all", but it failed:
+
+------------
+[...]
+make[2]: Entering directory
+`/home/LTP/ltp-dev-20100727/testcases/open_posix_testsuite/str
+ess'
+make[2]: Leaving directory
+`/home/LTP/ltp-dev-20100727/testcases/open_posix_testsuite/stre
+ss'
+Generating buildonly Makefiles
+sed: invalid option -- E
+Usage: sed [OPTION]... {script-only-if-no-other-script} [input-file]...
+
+  -n, --quiet, --silent
+                 suppress automatic printing of pattern space
+  -e script, --expression=3Dscript
+                 add the script to the commands to be executed
+[...]
+If no -e, --expression, -f, or --file option is given, then the first
+non-option argument is taken as the sed script to interpret.  All
+remaining arguments are names of input files; if no input files are
+specified, then the standard input is read.
+
+E-mail bug reports to: bonzini@gnu.org .
+Be sure to include the word ``sed'' somewhere in the ``Subject:'' field.
+sed: invalid option -- E
+Usage: sed [OPTION]... {script-only-if-no-other-script} [input-file]...
+[...]
+------------
+
+In this time, I used latest git
+"ltp-dev-3393cd192002793080aba661054d54a8a06f25c2.tar.gz"
+
+
+> Your make version would help too.
+
+My make version is 3.81.
+Gcc version is 4.1.2.
+
+
+Regards--
+
+-Tomonori Mitani
+
+
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Wednesday, July 28, 2010 11:38 AM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] How to run "conformance" tests?
+> =
+
+> On Tue, Jul 27, 2010 at 7:10 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> > Hi,
+> >
+> >
+> > I want to run "conformance" testcases in "open_posix_testsuite".
+> > But I couldn't run it without manually copying.
+> >
+> > I used "ltp-dev-a4e64cb8bb97d09b5695151106946a76984b330a.tar.gz"
+> git.
+> > Environment is RHEL5.5 and x86_64 architecture.
+> >
+> > First, I executed following commands.
+> > =A0make autotools
+> > =A0configure
+> > =A0make
+> > =A0make install
+> > And I confirmed that those commands succeeded.
+> > And I could see "logfile.conformance-all" file in
+> "${LTPROOT}/testcases
+> > /open_posix_testsuite" directory.
+> >
+> > I ran "make conformance-test" command. But it failed as follows:
+> =
+
+> Can you try running the following please from
+> testcases/open_posix_testsuite?
+> =
+
+> make distclean
+> make all
+> make test
+> =
+
+> Your make version would help too.
+> =
+
+> Thanks!
+> -Garrett
+
+
+
+---------------------------------------------------------------------------=
 ---
- testcases/realtime/func/pi-tests/testpi-4.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share =
 
-diff --git a/testcases/realtime/func/pi-tests/testpi-4.c b/testcases/realtime/func/pi-tests/testpi-4.c
-index 53b47a8..6a90771 100644
---- a/testcases/realtime/func/pi-tests/testpi-4.c
-+++ b/testcases/realtime/func/pi-tests/testpi-4.c
-@@ -20,8 +20,8 @@
-  *      testpi-4.c
-  *
-  * DESCRIPTION
-- *
-- *
-+ *     This testcase verifies that the SCHED_OTHER thread can preempt
-+ *     the SCHED_RR thread via priority inheritance.
-  *
-  * USAGE:
-  *      Use run_auto.sh script in current directory to build and run test.
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://ad.doubleclick.net/clk;226879339;13503038;l?
+http://clk.atdmt.com/CRS/go/247765532/direct/01/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
