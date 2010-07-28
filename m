@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1ObQAZ-0005n1-Dl
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 03:40:31 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1ObQAY-00064m-Du
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jul 2010 03:40:31 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx01.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
-	o6L3eOgQ003455
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Jul 2010 23:40:24 -0400
-Date: Tue, 20 Jul 2010 23:40:24 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1012448207.707951279683624684.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1072286102.707931279683604082.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OdwWf-00038Y-Sa
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 02:37:45 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OdwWf-0005ov-7j
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jul 2010 02:37:45 +0000
+Received: by iwn34 with SMTP id 34so5741783iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 27 Jul 2010 19:37:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_30820_1457437594.1279683624683"
-Subject: [LTP] [PATCH] fix mail test
+In-Reply-To: <000a01cb2dfa$1ab62650$502272f0$@co.jp>
+References: <000a01cb2dfa$1ab62650$502272f0$@co.jp>
+Date: Tue, 27 Jul 2010 19:37:39 -0700
+Message-ID: <AANLkTinA23XVdCGPffiRqVsNGHHCCje4PLcuvBg1sYTE@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] How to run "conformance" tests?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,185 +27,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-------=_Part_30820_1457437594.1279683624683
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+On Tue, Jul 27, 2010 at 7:10 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
+>
+>
+> I want to run "conformance" testcases in "open_posix_testsuite".
+> But I couldn't run it without manually copying.
+>
+> I used "ltp-dev-a4e64cb8bb97d09b5695151106946a76984b330a.tar.gz" git.
+> Environment is RHEL5.5 and x86_64 architecture.
+>
+> First, I executed following commands.
+> =A0make autotools
+> =A0configure
+> =A0make
+> =A0make install
+> And I confirmed that those commands succeeded.
+> And I could see "logfile.conformance-all" file in "${LTPROOT}/testcases
+> /open_posix_testsuite" directory.
+>
+> I ran "make conformance-test" command. But it failed as follows:
 
-Hi all,
-   In latest RHEL6, the mail format sometimes becomes "...Mail 
-   Delivery System..." instead of "...Mail Delivery Subsys...".
-   This patch fixes this problem. Plus, corrected misspelling.
+Can you try running the following please from testcases/open_posix_testsuit=
+e?
 
-   Signed-off-by: Caspar Zhang <czhang@redhat.com>
+make distclean
+make all
+make test
 
-diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
-index 53a5d90..2aaf764 100755
---- a/testcases/commands/mail/mail_tests.sh
-+++ b/testcases/commands/mail/mail_tests.sh
-@@ -160,7 +160,7 @@ if [ $? -ne 0 ]; then
-            "Test #2: mail command failed. Reason:"
-        : $(( TFAILCNT += 1 ))
- else
--       # check if Mailer-Deamon reported any delivery failure.
-+       # check if Mailer-Daemon reported any delivery failure.
-        # but wait for the mail to arrive first, sleep 5.
-        sleep 5
-        echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
-@@ -169,7 +169,7 @@ else
-                RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \                                                                                 
-                    $LTPTMP/tst_mail.res)                                                                                                                            
-        else                                                                                                                                                         
--               RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDeliverySubsys")}' \                                                                      
-+               RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDelivery(Subsys|System)")}' \                                                             
-                    $LTPTMP/tst_mail.res)                                                                                                                            
-        fi                                                                                                                                                           
- 
-@@ -208,10 +208,10 @@ else
- 
-                if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]; then
-                        tst_resm TPASS \
--                               "Test #2: Mailer-Deamon reported delivery failure"
-+                               "Test #2: Mailer-Daemon reported delivery failure"
-                else
-                        tst_res TFAIL $LTPTMP/tst_mail.res \
--                       "Test #2: Mailer-Deamon failed to report delivery failure. Reason:"
-+                       "Test #2: Mailer-Daemon failed to report delivery failure. Reason:"
-                        : $(( TFAILCNT += 1 ))
-                fi
- 
-@@ -222,7 +222,7 @@ fi
- 
- # Test #3
- # Test that mail non_existent_user@localhost will result in delivery failure.
--# Mailer-Deamon will report this failure.
-+# Mailer-Daemon will report this failure.
- 
- export TCID=mail_tests::mail03
- export TST_COUNT=3
-@@ -241,7 +241,7 @@ if [ $? -ne 0 ]; then
-            "Test #3: mail command failed. Reason: "
-        : $(( TFAILCNT += 1 ))
- else
--       # check if Mailer-Deamon reported any delivery failure.
-+       # check if Mailer-Daemon reported any delivery failure.
-        # but wait for the mail to arrive first, sleep 5.
-        sleep 5
-        echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
-@@ -250,7 +250,7 @@ else
-                RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
-                    $LTPTMP/tst_mail.res)
-        else
--               RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDeliverySubsys")}' \
-+               RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDelivery(Subsys|System)")}' \
-                    $LTPTMP/tst_mail.res)
-        fi
-        ##################################################################
+Your make version would help too.
 
--- 
-Quality Assurance Associate (Kernel) in
-Red Hat Inc. (Beijing R&D Branch)
+Thanks!
+-Garrett
 
-TEL: +86-10-62608150
-Web: http://www.redhat.com/
+---------------------------------------------------------------------------=
+---
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share =
 
-------=_Part_30820_1457437594.1279683624683
-Content-Type: text/x-patch; name=commands-mail.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=commands-mail.patch
-
-Hi all,
-   In latest RHEL6, the mail format sometimes becomes "...Mail 
-   Delivery System..." instead of "...Mail Delivery Subsys...".
-   This patch fixes this problem. Plus, corrected misspelling.
-
-   Signed-off-by: Caspar Zhang <czhang@redhat.com>
-
-diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
-index 53a5d90..2aaf764 100755
---- a/testcases/commands/mail/mail_tests.sh
-+++ b/testcases/commands/mail/mail_tests.sh
-@@ -160,7 +160,7 @@ if [ $? -ne 0 ]; then
- 	    "Test #2: mail command failed. Reason:"
- 	: $(( TFAILCNT += 1 ))
- else
--	# check if Mailer-Deamon reported any delivery failure.	
-+	# check if Mailer-Daemon reported any delivery failure.	
- 	# but wait for the mail to arrive first, sleep 5.
- 	sleep 5
- 	echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
-@@ -169,7 +169,7 @@ else
- 		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
- 		    $LTPTMP/tst_mail.res)
- 	else
--		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDeliverySubsys")}' \
-+		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDelivery(Subsys|System)")}' \
- 		    $LTPTMP/tst_mail.res)
- 	fi
- 
-@@ -208,10 +208,10 @@ else
- 
- 		if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]; then
- 			tst_resm TPASS \
--				"Test #2: Mailer-Deamon reported delivery failure"
-+				"Test #2: Mailer-Daemon reported delivery failure"
- 		else
- 			tst_res TFAIL $LTPTMP/tst_mail.res \
--			"Test #2: Mailer-Deamon failed to report delivery failure. Reason:"
-+			"Test #2: Mailer-Daemon failed to report delivery failure. Reason:"
- 			: $(( TFAILCNT += 1 ))
- 		fi
- 
-@@ -222,7 +222,7 @@ fi
- 
- # Test #3
- # Test that mail non_existent_user@localhost will result in delivery failure.
--# Mailer-Deamon will report this failure.
-+# Mailer-Daemon will report this failure.
- 
- export TCID=mail_tests::mail03
- export TST_COUNT=3
-@@ -241,7 +241,7 @@ if [ $? -ne 0 ]; then
- 	    "Test #3: mail command failed. Reason: "
- 	: $(( TFAILCNT += 1 ))
- else
--	# check if Mailer-Deamon reported any delivery failure.	
-+	# check if Mailer-Daemon reported any delivery failure.	
- 	# but wait for the mail to arrive first, sleep 5.
- 	sleep 5
- 	echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
-@@ -250,7 +250,7 @@ else
- 		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
- 		    $LTPTMP/tst_mail.res)
- 	else
--		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDeliverySubsys")}' \
-+		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDelivery(Subsys|System)")}' \
- 		    $LTPTMP/tst_mail.res)
- 	fi
- 	##################################################################
-
-------=_Part_30820_1457437594.1279683624683
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
-------=_Part_30820_1457437594.1279683624683
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://ad.doubleclick.net/clk;226879339;13503038;l?
+http://clk.atdmt.com/CRS/go/247765532/direct/01/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_30820_1457437594.1279683624683--
-
