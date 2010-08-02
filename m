@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Ol278-000630-4K
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 16:00:42 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ol276-0002Ws-V9
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 16:00:42 +0000
-Received: by bwz12 with SMTP id 12so2677271bwz.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OfpEp-0000KX-4C
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 07:15:07 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OfpEn-0005Mk-Vs
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 07:15:07 +0000
+Received: by iwn34 with SMTP id 34so4994365iwn.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 16 Aug 2010 09:00:35 -0700 (PDT)
+	Mon, 02 Aug 2010 00:15:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4C68F324.30108@windriver.com>
-References: <4C63AD3C.2090909@windriver.com>
-	<AANLkTin5XdJw7Vwc2NK8trJ2-vaYuC90s6dk9KhodFBu@mail.gmail.com>
-	<4C68F324.30108@windriver.com>
-Date: Mon, 16 Aug 2010 09:00:34 -0700
-Message-ID: <AANLkTimcw8Qi4P5Y1Ba0OTbyzU_E8GK4sLf2Z20rPSFA@mail.gmail.com>
+In-Reply-To: <4C566914.6070205@oracle.com>
+References: <4C56646B.2060702@oracle.com>
+	<AANLkTinw4gJOzmkxf=0WVGGekfzecmW8CkwbKrKaad_o@mail.gmail.com>
+	<4C566914.6070205@oracle.com>
+Date: Mon, 2 Aug 2010 00:15:00 -0700
+Message-ID: <AANLkTik5-mTC+1iSB8u9ouvOs_7CJTMuPoWQYhvVbnN0@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [patch]hugeshmat issue
+Subject: Re: [LTP] LTP-20100630:tcore.sh test fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,40 +32,200 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "lina.zhao" <lina.zhao@windriver.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Gurudas Pai <gurudas.pai@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Aug 16, 2010 at 1:13 AM, lina.zhao <lina.zhao@windriver.com> wrote:
-> See Mips run(2nd edition): 14.4 :MIPS/Linux system address transfer: linux
-> address map:see the attachment
+On Sun, Aug 1, 2010 at 11:43 PM, Gurudas Pai <gurudas.pai@oracle.com> wrote:
+>> Try this:
 >>
->> On Thu, Aug 12, 2010 at 1:13 AM, lina.zhao <lina.zhao@windriver.com>
->> wrote:
->>
->>>
->>> Hi,
->>>
->>> In hugeshmat01 and hugeshmat02, the attach address for shard memory is
->>> 0x90000eee.
->>> For 32bits mips/Linux system, user space is under 0x7FFFFFFF,
->>> 0x90000eee is too big. The new address 0x60000eee has been tested
->>> on mips and other arch systems, it hasn't caused a issue yet.
->>>
->>
->> =A0 =A0Interesting. Do you have documentation to back up your claim?
+>> index 1b68291..7f1dc9f 100644
+>> --- a/testcases/misc/tcore_patch_test_suites/tcore.exp
+>> +++ b/testcases/misc/tcore_patch_test_suites/tcore.exp
+>> @@ -43,7 +43,7 @@ proc check_threads {} {
+>> =A0 =A0 =A0 =A0set buf $expect_out(0,string)
+>> =A0 =A0 =A0 =A0}
+>> =A0 =A0 =A0 =A0timeout {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 fail "timeout while =A0run info threads"
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 puts stderr "timeout while =A0run info thr=
+eads"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 1
+>> =A0 =A0 =A0 =A0}
+>> =A0 =A0 }
+>> @@ -111,7 +111,7 @@ proc check_fpu {num} {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0set buf $expect_out(0,str=
+ing)
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0timeout {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 fail "fail to check the xmm value(=
+timeout)"
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 puts stderr "fail to check the xmm=
+ value(timeout)"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 1
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>> =A0 =A0 =A0 =A0}
+>
+> Hi Garrett,
+>
+> Thanks for the patch !
+>
+>
+> Running tests.......
+> <<<test_start>>>
+> tag=3Dtcore stime=3D1280710300
+> cmdline=3D"tcore.sh"
+> contacts=3D""
+> analysis=3Dexit
+> <<<test_output>>>
+> incrementing stop
+> Test Tcore patch
+> /tmp/ltp-bNMTB13033/tmp.elSZn13135
+> Test whether we can generate the needed core file
+> PASS
+> /tmp/ltp-bNMTB13033/tmp.elSZn13135
+> Test whether the core support bt,fpu and threads commands
+> spawn gdb ./tcore ./corefile
+>
+> info register
+>
+> GNU gdb (GDB) Red Hat Enterprise Linux (7.0.1-23.el5)
+> Copyright (C) 2009 Free Software Foundation, Inc.
+> License GPLv3+: GNU GPL version 3 or later
+> <http://gnu.org/licenses/gpl.html>
+> This is free software: you are free to change and redistribute it.
+> There is NO WARRANTY, to the extent permitted by law. =A0Type "show copyi=
+ng"
+> and "show warranty" for details.
+> This GDB was configured as "x86_64-redhat-linux-gnu".
+> For bug reporting instructions, please see:
+> <http://www.gnu.org/software/gdb/bugs/>...
+> ./tcore: No such file or directory.
+> [New Thread 13143]
+> [New Thread 13139]
+> Core was generated by `/opt/ltp/testcases/bin//tcore'.
+> Program terminated with signal 11, Segmentation fault.
+> #0 =A00x000000000040129d in ?? ()
+> (gdb)
+> (gdb) info register
+> rax =A0 =A0 =A0 =A0 =A0 =A00xc =A0 =A0 =A012
+> rbx =A0 =A0 =A0 =A0 =A0 =A00x1e08 =A0 7688
+> rcx =A0 =A0 =A0 =A0 =A0 =A00x41776ee0 =A0 =A0 =A0 1098346208
+> rdx =A0 =A0 =A0 =A0 =A0 =A00xc =A0 =A0 =A012
+> rsi =A0 =A0 =A0 =A0 =A0 =A00x402b39 4205369
+> rdi =A0 =A0 =A0 =A0 =A0 =A00x41776ee0 =A0 =A0 =A0 1098346208
+> rbp =A0 =A0 =A0 =A0 =A0 =A00x3353 =A0 0x3353
+> rsp =A0 =A0 =A0 =A0 =A0 =A00x417770e0 =A0 =A0 =A0 0x417770e0
+> r8 =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> r9 =A0 =A0 =A0 =A0 =A0 =A0 0x41776658 =A0 =A0 =A0 1098344024
+> r10 =A0 =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> r11 =A0 =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> r12 =A0 =A0 =A0 =A0 =A0 =A00x41777100 =A0 =A0 =A0 1098346752
+> r13 =A0 =A0 =A0 =A0 =A0 =A00x417770f0 =A0 =A0 =A0 1098346736
+> r14 =A0 =A0 =A0 =A0 =A0 =A00x41778000 =A0 =A0 =A0 1098350592
+> r15 =A0 =A0 =A0 =A0 =A0 =A00x1000 =A0 4096
+> rip =A0 =A0 =A0 =A0 =A0 =A00x40129d 0x40129d
+> eflags =A0 =A0 =A0 =A0 0x10206 =A0[ PF IF RF ]
+> cs =A0 =A0 =A0 =A0 =A0 =A0 0x33 =A0 =A0 51
+> ss =A0 =A0 =A0 =A0 =A0 =A0 0x2b =A0 =A0 43
+> ds =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> es =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> fs =A0 =A0 =A0 =A0 =A0 =A0 0x63 =A0 =A0 99
+> gs =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> fctrl =A0 =A0 =A0 =A0 =A00x37f =A0 =A0895
+> fstat =A0 =A0 =A0 =A0 =A00x20 =A0 =A0 32
+> ftag =A0 =A0 =A0 =A0 =A0 0xffff =A0 65535
+> fiseg =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> fioff =A0 =A0 =A0 =A0 =A00x40128b 4199051
+> foseg =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> fooff =A0 =A0 =A0 =A0 =A00x417770e0 =A0 =A0 =A0 1098346720
+> fop =A0 =A0 =A0 =A0 =A0 =A00x33c =A0 =A0828
+> mxcsr =A0 =A0 =A0 =A0 =A00x1f80 =A0 [ IM DM ZM OM UM PM ]
+> (gdb)
+> rax =A0 =A0 =A0 =A0 =A0 =A00xc =A0 =A0 =A012
+> rbx =A0 =A0 =A0 =A0 =A0 =A00x1e08 =A0 7688
+> rcx =A0 =A0 =A0 =A0 =A0 =A00x41776ee0 =A0 =A0 =A0 1098346208
+> rdx =A0 =A0 =A0 =A0 =A0 =A00xc =A0 =A0 =A012
+> rsi =A0 =A0 =A0 =A0 =A0 =A00x402b39 4205369
+> rdi =A0 =A0 =A0 =A0 =A0 =A00x41776ee0 =A0 =A0 =A0 1098346208
+> rbp =A0 =A0 =A0 =A0 =A0 =A00x3353 =A0 0x3353
+> rsp =A0 =A0 =A0 =A0 =A0 =A00x417770e0 =A0 =A0 =A0 0x417770e0
+> r8 =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> r9 =A0 =A0 =A0 =A0 =A0 =A0 0x41776658 =A0 =A0 =A0 1098344024
+> r10 =A0 =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> r11 =A0 =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> r12 =A0 =A0 =A0 =A0 =A0 =A00x41777100 =A0 =A0 =A0 1098346752
+> r13 =A0 =A0 =A0 =A0 =A0 =A00x417770f0 =A0 =A0 =A0 1098346736
+> r14 =A0 =A0 =A0 =A0 =A0 =A00x41778000 =A0 =A0 =A0 1098350592
+> r15 =A0 =A0 =A0 =A0 =A0 =A00x1000 =A0 4096
+> rip =A0 =A0 =A0 =A0 =A0 =A00x40129d 0x40129d
+> eflags =A0 =A0 =A0 =A0 0x10206 =A0[ PF IF RF ]
+> cs =A0 =A0 =A0 =A0 =A0 =A0 0x33 =A0 =A0 51
+> ss =A0 =A0 =A0 =A0 =A0 =A0 0x2b =A0 =A0 43
+> ds =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> es =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> fs =A0 =A0 =A0 =A0 =A0 =A0 0x63 =A0 =A0 99
+> gs =A0 =A0 =A0 =A0 =A0 =A0 0x0 =A0 =A0 =A00
+> fctrl =A0 =A0 =A0 =A0 =A00x37f =A0 =A0895
+> fstat =A0 =A0 =A0 =A0 =A00x20 =A0 =A0 32
+> ftag =A0 =A0 =A0 =A0 =A0 0xffff =A0 65535
+> fiseg =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> fioff =A0 =A0 =A0 =A0 =A00x40128b 4199051
+> foseg =A0 =A0 =A0 =A0 =A00x0 =A0 =A0 =A00
+> fooff =A0 =A0 =A0 =A0 =A00x417770e0 =A0 =A0 =A0 1098346720
+> fop =A0 =A0 =A0 =A0 =A0 =A00x33c =A0 =A0828
+> mxcsr =A0 =A0 =A0 =A0 =A00x1f80 =A0 [ IM DM ZM OM UM PM ]
+> (gdb) fail to check the xmm value(timeout)
+> spawn gdb ./tcore ./corefile
+> info threads
+> GNU gdb (GDB) Red Hat Enterprise Linux (7.0.1-23.el5)
+> Copyright (C) 2009 Free Software Foundation, Inc.
+> License GPLv3+: GNU GPL version 3 or later
+> <http://gnu.org/licenses/gpl.html>
+> This is free software: you are free to change and redistribute it.
+> There is NO WARRANTY, to the extent permitted by law. =A0Type "show copyi=
+ng"
+> and "show warranty" for details.
+> This GDB was configured as "x86_64-redhat-linux-gnu".
+> For bug reporting instructions, please see:
+> <http://www.gnu.org/software/gdb/bugs/>...
+> ./tcore: No such file or directory.
+> [New Thread 13143]
+> [New Thread 13139]
+> Core was generated by `/opt/ltp/testcases/bin//tcore'.
+> Program terminated with signal 11, Segmentation fault.
+> #0 =A00x000000000040129d in ?? ()
+> (gdb) info threads
+> =A03 Thread 13139 =A00x0000003fc2807b35 in ?? ()
+> =A02 Thread 13143 =A00x0000003fc280aee9 in ?? ()
+> * 1 Thread 13144 =A00x000000000040129d in ?? ()
+> (gdb) timeout while =A0run info threads
+> spawn gdb ./tcore ./corefile
+> check bt in coredump successfully<<<execution_status>>>
+> initiation_status=3D"ok"
+> duration=3D23 termination_type=3Dexited termination_id=3D3 corefile=3Dno
+> cutime=3D6 cstime=3D12
+> <<<test_end>>>
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: LTP-20100630
+>
+>
+>
+> Test is still failing , do you think this is an os issue ?
 
-Thanks for the info -- committed!
+Don't know. Some more digging would need to be done in terms of
+whether or not the binary is properly SSE compiled (because XMM
+appears to be an SSE register according to a quick google search), and
+you should probably check with the binutils/gdb/redhat folks for more
+details about changes to the binutils, gdb, and/or libelf packages.
+
+HTH,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-This SF.net email is sponsored by =
-
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev =
-
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
