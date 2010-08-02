@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Og1gM-0007ee-9O
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 20:32:22 +0000
-Received: from mail-iw0-f174.google.com ([209.85.214.174])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Og1gL-0000WU-Kv
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 20:32:22 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gurudas.pai@oracle.com>) id 1Ofolx-0007kp-4K
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:45:17 +0000
+Received: from rcsinet10.oracle.com ([148.87.113.121])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ofolw-0004MP-8j
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:45:17 +0000
+Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
+	by rcsinet10.oracle.com (Switch-3.4.2/Switch-3.4.2) with ESMTP id
+	o726j92T001669
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Aug 2010 06:45:10 GMT
+Received: from acsmt354.oracle.com (acsmt354.oracle.com [141.146.40.154])
+	by acsinet15.oracle.com (Switch-3.4.2/Switch-3.4.1) with ESMTP id
+	o7242Krn013554
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Aug 2010 06:45:04 GMT
+Message-ID: <4C5666AC.60308@oracle.com>
+Date: Mon, 02 Aug 2010 12:03:16 +0530
+From: Gurudas Pai <gurudas.pai@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <4C56CAAF020000E800067098@sinclair.provo.novell.com>
-References: <4C56CAAF020000E800067098@sinclair.provo.novell.com>
-Date: Mon, 2 Aug 2010 13:32:16 -0700
-Message-ID: <AANLkTi=3XNgjeGbrb=quAggkSoOuop3krk+LLauR5AdU@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [Patch] Allow swapon03 test to pass with unknown
-	max_swapfiles
+Subject: [LTP]  LTP-20100630:quota_remount_test01.sh test fails.
+Reply-To: gurudas.pai@oracle.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,38 +32,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Murlin Wenzel <mwenzel@novell.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, Aug 2, 2010 at 12:39 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
-> This patch will allow swapon03 test case to pass even when max_swapfiles =
-is not known. =A0Create maximum possible number of swapfiles during setup, =
-then verify that attempting to create one more swapfile will return EPERM. =
-=A0This is meant to change as little as possible of the existing code.
->
-> Signed-off-by: Murlin Ray Wenzel mwenzel@novell.com
+Hi,
 
-ACK.
+quota_remount_test01.sh test fails.
 
-This seems like a decent compromise because the point where this could
-fail is after the first iteration and we already check for root, which
-means that the first clause (CAP_SYS_ADMIN) of EPERM is caught:
+<<<test_start>>>
+tag=quota_remount_test01 stime=1280709472
+cmdline="quota_remount_test01.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+quota_remount_test01    0  TINFO  :  Successfully mounted the File System
+quota_remount_test01    0  TINFO  :  Successfully Created Quota Files
+quota_remount_test01    0  TINFO  :  Successfully Turned on Quota
+quota_remount_test01    0  TINFO  :  Successfully wrote to the filesystem
+quota: invalid option -- f
+quota: Usage: quota [-guqxvs] [-l | -Q] [-i] [-F quotaformat]
+         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -u username ...
+         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -g groupname ...
+Bugs to: mvw@planets.elm.net, jack@suse.cz
+quota_remount_test01    0  TINFO  :  Successfully Remounted Read-Only FS
+quota_remount_test01    0  TINFO  :  Successfully Remounted Read-Write FS
+quota: invalid option -- f
+quota: Usage: quota [-guqxvs] [-l | -Q] [-i] [-F quotaformat]
+         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -u username ...
+         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -g groupname ...
+Bugs to: mvw@planets.elm.net, jack@suse.cz
+Usage did not change after remount
+quota_remount_test01    1  TFAIL  :  Quota on Remount Failed
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=1 cstime=20
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20100630
 
-EPERM
-    The caller does not have the CAP_SYS_ADMIN capability or the
-maximal number of swap files has been reached. (The maximum is
-MAX_SWAPFILES-2(30) if CONFIG_MIGRATION is enabled, MAX_SWAPFILES (32)
-otherwise. In Linux kernel versions prior to 2.4.10, the maximum was
-always MAX_SWAPFILES, which was 8.
 
-Thanks!
--Garrett
+Thanks,
+-Guru
 
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 The Palm PDK Hot Apps Program offers developers who use the
 Plug-In Development Kit to bring their C/C++ apps to Palm for a share
 of $1 Million in cash or HP Products. Visit us here for more details:
