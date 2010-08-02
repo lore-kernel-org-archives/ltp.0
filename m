@@ -2,24 +2,26 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OlSQ5-0005jA-N3
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:06:01 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OlSQ4-0007fC-Ur
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:06:01 +0000
-Received: by bwz12 with SMTP id 12so4095426bwz.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 17 Aug 2010 13:05:55 -0700 (PDT)
+	(envelope-from <gurudas.pai@oracle.com>) id 1Ofocg-0006jf-M7
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:35:42 +0000
+Received: from rcsinet10.oracle.com ([148.87.113.121])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ofocf-0001A3-M1
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:35:42 +0000
+Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
+	by rcsinet10.oracle.com (Switch-3.4.2/Switch-3.4.2) with ESMTP id
+	o726ZYw5002479
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Aug 2010 06:35:36 GMT
+Received: from acsmt355.oracle.com (acsmt355.oracle.com [141.146.40.155])
+	by acsinet15.oracle.com (Switch-3.4.2/Switch-3.4.1) with ESMTP id
+	o71MQwFc026062
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Aug 2010 06:35:30 GMT
+Message-ID: <4C56646B.2060702@oracle.com>
+Date: Mon, 02 Aug 2010 11:53:39 +0530
+From: Gurudas Pai <gurudas.pai@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinneeNUA0NJwh3v_Lhjx=YSHm6dfXNpxVoJHCS=@mail.gmail.com>
-References: <4C6AD534.2020109@redhat.com>
-	<AANLkTimPmB9fNdv2f+zS42Y_+T+6_4y1enDv=K_sHkY=@mail.gmail.com>
-	<AANLkTinneeNUA0NJwh3v_Lhjx=YSHm6dfXNpxVoJHCS=@mail.gmail.com>
-Date: Tue, 17 Aug 2010 13:05:54 -0700
-Message-ID: <AANLkTinF=7RB+U6aexwoRzvxnHLMgz73U8U6CVGXD7tj@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] problems building mallopt01.c for uClinux
+Subject: [LTP] LTP-20100630:tcore.sh test fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,43 +31,162 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: dmarlin@redhat.com, LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 17, 2010 at 1:00 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Tue, Aug 17, 2010 at 3:47 PM, Garrett Cooper wrote:
->> On Tue, Aug 17, 2010 at 11:30 AM, David Marlin wrote:
->>> The testcase mallopt01 skips performing the test when UCLINUX=3D1, but =
-the
->>> mallinfo structure is defined outside the #if !defined(UCLINUX) block.
->>>
->>> Attached is a patch to move the mallinfo structure definition inside the
->>> #if !defined(UCLINUX) block.
->>
->> ACK.
->
-> meaning you're going to merge it ? ;) =A0this change looks fine of course.
-
-Yeah. ACK -> all's good, I'm going to commit later. I kind of adopted
-it after looking at the yum list, because it's a lot quicker to say
-and less redundant than:
-
-Acked-by: Garrett Cooper <yanegomi@gmail.com>
-
-;)...
-
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by =
+Hi,
+tcore.sh test fails , this looks more like testcase issue rather than os 
+issue.
 
 
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev =
+  Running tests.......
+@ <<<test_start>>>
+@ tag=tcore stime=1280375961
+@ cmdline="tcore.sh"
+@ contacts=""
+@ analysis=exit
+@ <<<test_output>>>
+@ incrementing stop
+@ Test Tcore patch
+@ /tmp/ltp-IdAZW16626/tmp.JZuvu16728
+@ Test whether we can generate the needed core file
+@ PASS
+@ /tmp/ltp-IdAZW16626/tmp.JZuvu16728
+@ Test whether the core support bt,fpu and threads commands
+@ spawn gdb ./tcore ./corefile
+@ .
+@ info register
+@ .
+@ GNU gdb (GDB) Red Hat Enterprise Linux (7.0.1-23.el5)
+@ Copyright (C) 2009 Free Software Foundation, Inc.
+@ License GPLv3+: GNU GPL version 3 or later 
+<http://gnu.org/licenses/gpl.html>This is free software: you are free to 
+change and redistribute it.
+@ There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+@ and "show warranty" for details.
+@ This GDB was configured as "x86_64-redhat-linux-gnu".
+@ For bug reporting instructions, please see:
+@ <http://www.gnu.org/software/gdb/bugs/>...
+@ ./tcore: No such file or directory.
+@ [New Thread 16736]
+@ [New Thread 16732]
+@ Core was generated by `/opt/ltp/testcases/bin//tcore'.
+@ Program terminated with signal 11, Segmentation fault.
+@ #0  0x000000000040129d in ?? ()
+@ (gdb)
+@ (gdb) info register
+@ rax            0xc      12
+@ rbx            0x1e08   7688
+@ rcx            0x41ae8ee0       1101958880
+@ rdx            0xc      12
+@ rsi            0x402b39 4205369
+@ rdi            0x41ae8ee0       1101958880
+@ rbp            0x415c   0x415c
+@ rsp            0x41ae90e0       0x41ae90e0
+@ r8             0x0      0
+@ r9             0x41ae8658       1101956696
+@ r10            0x0      0
+@ r11            0x0      0
+@ r12            0x41ae9100       1101959424
+@ r13            0x41ae90f0       1101959408
+@ r14            0x41aea000       1101963264
+@ r15            0x1000   4096
+@ rip            0x40129d 0x40129d
+@ eflags         0x10206  [ PF IF RF ]
+@ cs             0x33     51
+@ ss             0x2b     43
+@ ds             0x0      0
+@ es             0x0      0
+@ fs             0x63     99
+@ gs             0x0      0
+@ fctrl          0x37f    895
+@ fstat          0x20     32
+@ ftag           0xffff   65535
+@ fiseg          0x0      0
+@ fioff          0x40128b 4199051
+@ foseg          0x0      0
+@ fooff          0x41ae90e0       1101959392
+@ fop            0x33c    828
+@ mxcsr          0x1f80   [ IM DM ZM OM UM PM ]
+@ (gdb)
+@ rax            0xc      12
+@ rbx            0x1e08   7688
+@ rcx            0x41ae8ee0       1101958880
+@ rdx            0xc      12
+@ rsi            0x402b39 4205369
+@ rdi            0x41ae8ee0       1101958880
+@ rbp            0x415c   0x415c
+@ rsp            0x41ae90e0       0x41ae90e0
+@ r8             0x0      0
+@ r9             0x41ae8658       1101956696
+@ r10            0x0      0
+@ r11            0x0      0
+@ r12            0x41ae9100       1101959424
+@ r13            0x41ae90f0       1101959408
+@ r14            0x41aea000       1101963264
+@ r15            0x1000   4096
+@ rip            0x40129d 0x40129d
+@ eflags         0x10206  [ PF IF RF ]
+@ cs             0x33     51
+@ ss             0x2b     43
+@ ds             0x0      0
+@ es             0x0      0
+@ fs             0x63     99
+@ gs             0x0      0
+@ fctrl          0x37f    895
+@ fstat          0x20     32
+@ ftag           0xffff   65535
+@ fiseg          0x0      0
+@ fioff          0x40128b 4199051
+@ foseg          0x0      0
+@ fooff          0x41ae90e0       1101959392
+@ fop            0x33c    828
+@ mxcsr          0x1f80   [ IM DM ZM OM UM PM ]
+@ (gdb) invalid command name "fail"
+@     while executing
+@ "fail "fail to check the xmm value(timeout)""
+@     invoked from within
+@ "expect -nobrace -re {xmm5[      ]+{f = .*}+[    ]+{f = .*}} {
+@                         set buf $expect_out(0,string)
+@                 } timeout {
+@                     fail "fail to check the xmm value(..."
+@     invoked from within
+@ "expect {
+@                 -re "xmm$num\[\t \]+\{f \= .*\}+\[\t \]+\{f \= .*\}" {
+@                         set buf $expect_out(0,string)
+@                 }
+@                 timeout {
+@                     fail "fail to check t..."
+@     (procedure "check_fpu" line 7)
+@     invoked from within
+@ "check_fpu 5"
+@     (file "/opt/ltp/testcases/bin//tcore.exp" line 137)
+@ <<<execution_status>>>
+@ initiation_status="ok"
+@ duration=18 termination_type=exited termination_id=3 corefile=no
+@ cutime=8 cstime=634
+@ <<<test_end>>>
+@ INFO: ltp-pan reported some tests FAIL
+@ LTP Version: LTP-20100630
 
+
+
+  dmesg:
+  tcore[16737]: segfault at 0 ip 000000000040129d sp 0000000041ae90e0 
+error 6
+
+
+
+Thanks,
+-Guru
+
+------------------------------------------------------------------------------
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
