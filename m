@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sukadev@linux.vnet.ibm.com>) id 1OgpPk-0004D4-SA
-	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 01:38:32 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OgpPi-0003EE-Kx
-	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 01:38:32 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e32.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o751UJ5c029642
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Aug 2010 19:30:19 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o751cOrd165690
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Aug 2010 19:38:24 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o751cOGp002789
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Aug 2010 19:38:24 -0600
-Date: Wed, 4 Aug 2010 18:43:58 -0700
-From: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Message-ID: <20100805014358.GA14122@us.ibm.com>
-References: <20100804235206.GA1388@us.ibm.com>
-	<AANLkTin5Eyx=SgLNRDzzBe+LAW35FCz=vVxgwun0BGNk@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Og1gM-0007ee-9O
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 20:32:22 +0000
+Received: from mail-iw0-f174.google.com ([209.85.214.174])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Og1gL-0000WU-Kv
+	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 20:32:22 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTin5Eyx=SgLNRDzzBe+LAW35FCz=vVxgwun0BGNk@mail.gmail.com>
-Subject: Re: [LTP] pidns31: fix EACCESS error in mq_open()
+In-Reply-To: <4C56CAAF020000E800067098@sinclair.provo.novell.com>
+References: <4C56CAAF020000E800067098@sinclair.provo.novell.com>
+Date: Mon, 2 Aug 2010 13:32:16 -0700
+Message-ID: <AANLkTi=3XNgjeGbrb=quAggkSoOuop3krk+LLauR5AdU@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [Patch] Allow swapon03 test to pass with unknown
+	max_swapfiles
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,78 +28,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Murlin Wenzel <mwenzel@novell.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-Garrett Cooper [yanegomi@gmail.com] wrote:
-| On Wed, Aug 4, 2010 at 4:52 PM, Sukadev Bhattiprolu
-| <sukadev@linux.vnet.ibm.com> wrote:
-| >
-| > pidns31: mq_open() fails with EACCESS.
-| >
-| > pidns31 test case fails with EACCESS - due to the leading '/' in
-| > mqname. See comments in the patch below for details.
-| >
-| > Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-| > ---
-| > Index: testcases/kernel/containers/pidns/pidns31.c
-| > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-| > RCS file: /cvsroot/ltp/ltp/testcases/kernel/containers/pidns/pidns31.c,v
-| > retrieving revision 1.6
-| > diff -u -p -r1.6 pidns31.c
-| > --- testcases/kernel/containers/pidns/pidns31.c 14 Nov 2009 23:58:26 -0=
-000 =A0 =A0 =A01.6
-| > +++ testcases/kernel/containers/pidns/pidns31.c 4 Aug 2010 23:24:54 -00=
-00
-| > @@ -61,7 +61,14 @@
-| > =A0char *TCID =3D "pidns31";
-| > =A0int TST_TOTAL =3D 1;
-| >
-| > -char *mqname =3D "/mq1";
-| > +
-| > +/*
-| > + * NOTE: The mq_open() interface in glibc requires mqname to start wit=
-h a '/'
-| > + * =A0 =A0 =A0and the glibc call skips the leading '/' when invoking t=
-he system
-| > + * =A0 =A0 =A0call. Since we bypass the glibc mq_open() (and use sysca=
-ll()) we
-| > + * =A0 =A0 =A0define mqname without the leading '/'.
-| > + */
-| > +char *mqname =3D "mq1";
-| > =A0int result =3D TFAIL;
-| >
-| > =A0int errno;
-| > @@ -264,6 +271,7 @@ int main(int argc, char *argv[])
-| > =A0 =A0 =A0 =A0}
-| >
-| > =A0 =A0 =A0 =A0syscall(__NR_mq_unlink, mqname);
-| > +
-| > =A0 =A0 =A0 =A0mqd =3D syscall(__NR_mq_open, mqname, O_RDWR|O_CREAT|O_E=
-XCL, 0777, NULL);
-| > =A0 =A0 =A0 =A0if (mqd =3D=3D (mqd_t)-1) {
-| > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TBROK, "parent: mq_open() faile=
-d (%s)",
-| =
+On Mon, Aug 2, 2010 at 12:39 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
+> This patch will allow swapon03 test case to pass even when max_swapfiles =
+is not known. =A0Create maximum possible number of swapfiles during setup, =
+then verify that attempting to create one more swapfile will return EPERM. =
+=A0This is meant to change as little as possible of the existing code.
+>
+> Signed-off-by: Murlin Ray Wenzel mwenzel@novell.com
 
-| Did Linux become non-POSIX compliant :) (from
-| <http://www.opengroup.org/onlinepubs/000095399/functions/mq_open.html>)?
+ACK.
 
-Heh. Good question but I think the mq_open() from glibc is compliant
-with this. I am just not sure if the call via syscall() needs to be
-compliant.
+This seems like a decent compromise because the point where this could
+fail is after the first iteration and we already check for root, which
+means that the first clause (CAP_SYS_ADMIN) of EPERM is caught:
 
-But if that is a concern, we need a separate a test case for that -
-pidns31 is using mq_* to test an unrelated feature. I think would
-make sense to apply this fix, allowing LTP to test the feature even
-on older distros.
+EPERM
+    The caller does not have the CAP_SYS_ADMIN capability or the
+maximal number of swap files has been reached. (The maximum is
+MAX_SWAPFILES-2(30) if CONFIG_MIGRATION is enabled, MAX_SWAPFILES (32)
+otherwise. In Linux kernel versions prior to 2.4.10, the maximum was
+always MAX_SWAPFILES, which was 8.
 
-Or pidns31 can go back to using the library interface and we could
-skip the test on old distros.
-
-Sukadev.
+Thanks!
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
