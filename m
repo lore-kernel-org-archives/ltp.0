@@ -1,32 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OkzQn-00035X-4n
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 13:08:49 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OkzQh-0002FF-Ae
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 13:08:49 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e6.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o7GD85Qb019503
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 09:08:05 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o7GD8XCZ391102
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 09:08:33 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o7GD8Vtu030467
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 09:08:32 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4C692CBD.1030105@linux.vnet.ibm.com>
-References: <4C692CBD.1030105@linux.vnet.ibm.com>
-Date: Mon, 16 Aug 2010 18:38:28 +0530
-Message-Id: <1281964108.5120.2.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Project admin
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OgKNF-0002Tt-C4
+	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 16:29:53 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OgKND-0002IF-70
+	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 16:29:53 +0000
+Received: by iwn34 with SMTP id 34so6678330iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Aug 2010 09:29:46 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB64D@me-ex1.ctsl.cubic.cub>
+References: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB64D@me-ex1.ctsl.cubic.cub>
+Date: Tue, 3 Aug 2010 09:29:43 -0700
+Message-ID: <AANLkTinLtbSnwJiCM0=6cPePYrD29xpzm_JyYX37Egwn@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Install failure when cross compiling for ARM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,38 +27,127 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+To: "Boari, Doug" <Doug.Boari@cubic.com>
 Cc: ltp-list@lists.sourceforge.net
 
-I am pretty inside office right now. Was busy in some schedules and was
-not able to look into your request. Consider it done by tomorrow EOD :-)
-Sorry for the delay.
+On Tue, Aug 3, 2010 at 8:56 AM, Boari, Doug <Doug.Boari@cubic.com> wrote:
+> Hi All,
+>
+>
+>
+> I=92ve just found LTP and it looks to be exactly what we need to stress t=
+est a
+> PXA320 board we=92re working on. Great!
+>
+> I=92m cross-compiling to ARM on Ubuntu 8.04LTS
+>
+>
+>
+> I have successfully built the tools using the lines:
+>
+> ./configure CFLAGS=3D-fno-short-enums --target=3Darm-iwmmxt-linux-gnueabi
+> --host=3Darm-iwmmxt-linux-gnueabi
+>
+> make all
+>
+>
+>
+> I then tried to install using:
+>
+>
+>
+> make DESTDIR=3D/home/mm6/LTP/arm-install SKIP_IDCHECK=3D1 install
+>
+>
+>
+> and it chugs along until finally bombing with:
+>
+>
+>
+> make[3]: Entering directory
+> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4'
+>
+> make[4]: Entering directory
+> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4/acl'
+>
+> ../../../../include/mk/env_post.mk:90: warning: overriding commands for
+> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin'
+>
+> ../../../../include/mk/env_post.mk:90: warning: ignoring old commands for
+> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin'
+>
+> ../../../../include/mk/env_post.mk:92: warning: overriding commands for
+> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma'
+>
+> ../../../../include/mk/env_post.mk:92: warning: ignoring old commands for
+> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma'
+>
+> install -m 00775 "/testgamma"
+> "/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma"
+>
+> install: cannot stat `/testgamma': No such file or directory
+>
+> make[4]: *** [/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma]
+> Error 1
+>
+> make[4]: Leaving directory
+> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4/acl'
+>
+> make[3]: *** [install] Error 2
+>
+> make[3]: Leaving directory
+> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4'
+>
+> make[2]: *** [install] Error 2
+>
+> make[2]: Leaving directory
+> `/home/mm6/LTP/ltp-full-20100630/testcases/network'
+>
+> make[1]: *** [install] Error 2
+>
+> make[1]: Leaving directory `/home/mm6/LTP/ltp-full-20100630/testcases'
+>
+> make: *** [testcases-install] Error 2
+>
+>
+>
+> Now I can see from the error that somewhere something has gotten confused
+> and it is looking for /testgamma, but I can=92t find any other reference =
+to
+> this anywhere in the LTP build tree.
+>
+> I=92m afraid I don=92t really know where to look to remove this reference=
+. If
+> anyone has any suggestions I=92d appreciate it as a search of the mail li=
+st
+> found nothing.
+>
+> I=92ve include the config.h, config.mk and config.log files as per the IN=
+STALL
+> file.
+>
+>
+>
+> If anyone has experience in building for an ARM board, I=92d appreciate a=
+ny
+> pointers on what I might be doing wrong, and also what tests might not
+> function correctly.
 
-Regards--
-Subrata
+Hi Doug,
+    First off, could you please provide the output of `make --version'
+and your config.log ?
+Thanks,
+-Garrett
 
-On Mon, 2010-08-16 at 14:19 +0200, Peter Oberparleiter wrote:
-> Hi,
-> 
-> I'd like to release a new version of the LCOV package but it appears 
-> that Subrata Modak (who usually handles this) is currently out of office 
-> and I'm wondering if anybody else can upload files to the LTP project site.
-> 
-> 
-> Regards,
->    Peter Oberparleiter
-> 
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by 
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
+---------------------------------------------------------------------------=
+---
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
