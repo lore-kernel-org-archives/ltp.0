@@ -1,18 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Oh0D5-0003na-VS
-	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 13:10:11 +0000
-Date: Thu, 5 Aug 2010 15:26:42 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100805132641.GA18296@saboteur.suse.cz>
-References: <20100805100954.GB11402@saboteur.suse.cz>
-	<CCCBABDC-C276-4064-982D-179B86A30991@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CCCBABDC-C276-4064-982D-179B86A30991@gmail.com>
-Subject: Re: [LTP] just another make-3.80 bug
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <harsh@linux.vnet.ibm.com>) id 1OgEMZ-0003nZ-7b
+	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 10:04:47 +0000
+Received: from e28smtp03.in.ibm.com ([122.248.162.3])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OgEMX-0002Y8-L1
+	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 10:04:47 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp03.in.ibm.com (8.14.4/8.13.1) with ESMTP id o73A4VCP013331
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Aug 2010 15:34:31 +0530
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o73A4VtO2854944
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Aug 2010 15:34:31 +0530
+Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o73A4UVu002206
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Aug 2010 20:04:31 +1000
+From: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
+Date: Tue,  3 Aug 2010 15:34:28 +0530
+Message-Id: <1280829868-10286-1-git-send-email-harsh@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH] setrlimit testcase fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,53 +32,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yaneurabeya@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > When trying to build ltp from tarball (ltp-full-20100630.bz2) using
-> > make-3.80 for some reason automake rules kicks in so you need either
-> > comment out some rules from include/mk/automake.mk or compile autotools
-> > by hand (there is no recent automake on system with make-3.80).
-> > 
-> > # cat /etc/SuSE-release 
-> > SUSE Linux Enterprise Server 10 (x86_64)
-> > VERSION = 10
-> > PATCHLEVEL = 2
-> > 
-> > # make -v
-> > GNU Make 3.80
-> > Copyright (C) 2002  Free Software Foundation, Inc.
-> > This is free software; see the source for copying conditions.
-> > There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
-> > PARTICULAR PURPOSE.
-> > 
-> > # tar xjf ltp-full-20100630.bz2 
-> > # cd ltp-full-20100630/
-> > # ./configure
-> > ...
-> > 
-> > # make
-> > make -C testcases/realtime autotools
-> > make[1]: Entering directory `/root/ltp-full-20100630/testcases/realtime'
-> > autoheader
-> > make[1]: autoheader: Command not found
-> > make[1]: *** [autoheader] Error 127
-> > make[1]: Leaving directory `/root/ltp-full-20100630/testcases/realtime'
-> > make: *** [testcases/realtime/configure] Error 2
-> 
-> 	You're missing some autotools commands on the box (in this case autoheader). Make sure that autoconf is installed and/or all of the directions were followed as per INSTALL.
+Current testcase for setrlimit for parameter RLIMIT_FSIZE
+does not convey the number of bytes actually written from
+child process to parent, as the child process writes to its
+own copy of global variable. This patch introduces a pipe
+to send the information from child to the parent process.
 
-That's not the problem, see the second mail in this thread, make-3.80
-seems to be picking wrong default target (even when autotools are
-installed running 'make' just remakes autools related stuff.)
+Signed-off-by: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
+---
+ testcases/kernel/syscalls/setrlimit/setrlimit01.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index 6952eb3..d8949c6 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -156,7 +156,12 @@ void test2()
+ 	 * an wired value!  So, it is essential to fflush the parent's
+ 	 * write buffer HERE
+ 	 */
++	int pipefd[2];
+ 	fflush(stdout);
++	if (pipe(pipefd) == -1) {
++		perror("pipe");
++		exit(EXIT_FAILURE);
++	}
+ 
+ 	/*
+ 	 * Spawn a child process, and reduce the filesize to
+@@ -170,6 +175,7 @@ void test2()
+ 	}
+ 
+ 	if (pid == 0) {
++		close(pipefd[0]); /* close unused read end */
+ 		rlim.rlim_cur = 10;
+ 		rlim.rlim_max = 10;
+ 		if ((setrlimit(RLIMIT_FSIZE, &rlim)) == -1) {
+@@ -181,6 +187,8 @@ void test2()
+ 		}
+ 
+ 		if ((bytes = write(fd, buf, 26)) != 10) {
++			write(pipefd[1], &bytes, sizeof(bytes));
++			close(pipefd[1]); /* EOF */
+ 			exit(3);
+ 		}
+ 		exit(0);	/* success */
+@@ -202,6 +210,9 @@ void test2()
+ 		tst_resm(TFAIL, "creating testfile failed");
+ 		break;
+ 	case 3:
++		close(pipefd[1]); /* close unused write end */
++		read(pipefd[0], &bytes, sizeof(bytes));
++		close(pipefd[0]);
+ 		tst_resm(TFAIL, "setrlimit failed, expected "
+ 			 "10 got %d", bytes);
+ 		break;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1.1
+
 
 ------------------------------------------------------------------------------
 The Palm PDK Hot Apps Program offers developers who use the
