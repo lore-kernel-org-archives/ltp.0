@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OgKNF-0002Tt-C4
-	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 16:29:53 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OgKND-0002IF-70
-	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 16:29:53 +0000
-Received: by iwn34 with SMTP id 34so6678330iwn.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1Og9ED-0000Im-VQ
+	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 04:35:49 +0000
+Received: from out20.sjc.mx.trendmicro.com ([216.99.131.77])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Og9EC-0004I8-Je
+	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 04:35:49 +0000
+Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.25])
+	by out20.sjc.mx.trendmicro.com (Postfix) with ESMTP id C257B98043E
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Aug 2010 09:29:46 -0700 (PDT)
+	Tue,  3 Aug 2010 04:35:42 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 1AB54114B838
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  3 Aug 2010 04:35:41 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Aug 2010 13:35:39 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 3 Aug 2010 13:35:39 +0900
+Message-ID: <000e01cb32c5$52f62400$f8e26c00$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB64D@me-ex1.ctsl.cubic.cub>
-References: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB64D@me-ex1.ctsl.cubic.cub>
-Date: Tue, 3 Aug 2010 09:29:43 -0700
-Message-ID: <AANLkTinLtbSnwJiCM0=6cPePYrD29xpzm_JyYX37Egwn@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Install failure when cross compiling for ARM
+Content-Language: ja
+Subject: [LTP] OPEN_POSIX "lio_listio" build failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,123 +35,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Boari, Doug" <Doug.Boari@cubic.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 3, 2010 at 8:56 AM, Boari, Doug <Doug.Boari@cubic.com> wrote:
-> Hi All,
->
->
->
-> I=92ve just found LTP and it looks to be exactly what we need to stress t=
-est a
-> PXA320 board we=92re working on. Great!
->
-> I=92m cross-compiling to ARM on Ubuntu 8.04LTS
->
->
->
-> I have successfully built the tools using the lines:
->
-> ./configure CFLAGS=3D-fno-short-enums --target=3Darm-iwmmxt-linux-gnueabi
-> --host=3Darm-iwmmxt-linux-gnueabi
->
-> make all
->
->
->
-> I then tried to install using:
->
->
->
-> make DESTDIR=3D/home/mm6/LTP/arm-install SKIP_IDCHECK=3D1 install
->
->
->
-> and it chugs along until finally bombing with:
->
->
->
-> make[3]: Entering directory
-> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4'
->
-> make[4]: Entering directory
-> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4/acl'
->
-> ../../../../include/mk/env_post.mk:90: warning: overriding commands for
-> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin'
->
-> ../../../../include/mk/env_post.mk:90: warning: ignoring old commands for
-> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin'
->
-> ../../../../include/mk/env_post.mk:92: warning: overriding commands for
-> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma'
->
-> ../../../../include/mk/env_post.mk:92: warning: ignoring old commands for
-> target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma'
->
-> install -m 00775 "/testgamma"
-> "/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma"
->
-> install: cannot stat `/testgamma': No such file or directory
->
-> make[4]: *** [/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma]
-> Error 1
->
-> make[4]: Leaving directory
-> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4/acl'
->
-> make[3]: *** [install] Error 2
->
-> make[3]: Leaving directory
-> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4'
->
-> make[2]: *** [install] Error 2
->
-> make[2]: Leaving directory
-> `/home/mm6/LTP/ltp-full-20100630/testcases/network'
->
-> make[1]: *** [install] Error 2
->
-> make[1]: Leaving directory `/home/mm6/LTP/ltp-full-20100630/testcases'
->
-> make: *** [testcases-install] Error 2
->
->
->
-> Now I can see from the error that somewhere something has gotten confused
-> and it is looking for /testgamma, but I can=92t find any other reference =
-to
-> this anywhere in the LTP build tree.
->
-> I=92m afraid I don=92t really know where to look to remove this reference=
-. If
-> anyone has any suggestions I=92d appreciate it as a search of the mail li=
-st
-> found nothing.
->
-> I=92ve include the config.h, config.mk and config.log files as per the IN=
-STALL
-> file.
->
->
->
-> If anyone has experience in building for an ARM board, I=92d appreciate a=
-ny
-> pointers on what I might be doing wrong, and also what tests might not
-> function correctly.
+Hi,
 
-Hi Doug,
-    First off, could you please provide the output of `make --version'
-and your config.log ?
-Thanks,
--Garrett
+I tried to build open_posix_testsuite testcases:
 
----------------------------------------------------------------------------=
+   make distclean
+   make all
+
+But several testcases failed to build.
+I paid attention to some of build-failed testcases. They are in 
+"lio_listio" directory.
+------------
+conformance/interfaces/lio_listio/1-1 compile FAILED
+/tmp/ccaX2A2v.o: In function `main':
+1-1.c:(.text+0x316): undefined reference to `lio_listio'
+1-1.c:(.text+0x472): undefined reference to `aio_error'
+1-1.c:(.text+0x48a): undefined reference to `aio_return'
+collect2: ld returned 1 exit status
+conformance/interfaces/lio_listio/10-1 compile FAILED
+/tmp/ccIj5aUK.o: In function `main':
+10-1.c:(.text+0x2ee): undefined reference to `lio_listio'
+10-1.c:(.text+0x38e): undefined reference to `aio_error'
+10-1.c:(.text+0x3a3): undefined reference to `aio_return'
+collect2: ld returned 1 exit status
+conformance/interfaces/lio_listio/11-1 compile FAILED
+/tmp/cccIltt0.o: In function `main':
+11-1.c:(.text+0x30a): undefined reference to `lio_listio'
+11-1.c:(.text+0x3eb): undefined reference to `aio_error'
+11-1.c:(.text+0x400): undefined reference to `aio_return'
+collect2: ld returned 1 exit status
+[...]
+------------
+
+I edited their Makefile as follows for trial:
+============
 ---
+a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/Makefile
+2010-08-02 14:10:31.000000000 +0900
++++
+b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/Makefile
+2010-08-03 09:33:08.000000000 +0900
+@@ -30,7 +30,7 @@
+ # Submake make definitions.
+ CFLAGS+=		
+ LDFLAGS+=		
+-LDLIBS+=		
++LDLIBS+=		-lrt
+ 
+ INSTALL_TARGETS+=	1-1.run-test 10-1.run-test 11-1.run-test
+12-1.run-test 13-1.run-test 14-1.run-test 15-1.run-test 16-1.run-test
+17-1.run-test 18-1.run-test 19-1.run-test 2-1.run-test 20-1.run-test
+21-1.run-test 22-1.run-test 23-1.run-test 24-1.run-test 25-1.run-test
+3-1.run-test 4-1.run-test 5-1.run-test 6-1.run-test 7-1.run-test
+8-1.run-test 9-1.run-test
+ MAKE_TARGETS+=		1-1.run-test 10-1.run-test 11-1.run-test
+12-1.run-test 13-1.run-test 14-1.run-test 15-1.run-test 16-1.run-test
+17-1.run-test 18-1.run-test 19-1.run-test 2-1.run-test 20-1.run-test
+21-1.run-test 22-1.run-test 23-1.run-test 24-1.run-test 25-1.run-test
+3-1.run-test 4-1.run-test 5-1.run-test 6-1.run-test 7-1.run-test
+8-1.run-test 9-1.run-test
+
+============
+
+After that, they succeeded to build.
+
+But this Makefile cannot be edited because it is generated when "make all".
+I think that "LDLIBS" file is necessary in "lio_listio" directory.
+
+
+Regards--
+
+
+-Tomonori Mitani
+
+
+
+------------------------------------------------------------------------------
 The Palm PDK Hot Apps Program offers developers who use the
 Plug-In Development Kit to bring their C/C++ apps to Palm for a share
 of $1 Million in cash or HP Products. Visit us here for more details:
