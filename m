@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OjnWk-0000Px-2J
-	for ltp-list@lists.sourceforge.net; Fri, 13 Aug 2010 06:14:02 +0000
-Received: from mail-fx0-f47.google.com ([209.85.161.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OjnWi-0002sl-FQ
-	for ltp-list@lists.sourceforge.net; Fri, 13 Aug 2010 06:14:02 +0000
-Received: by mail-fx0-f47.google.com with SMTP id 6so1727353fxm.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 12 Aug 2010 23:14:00 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1OgDWF-00012g-NI
+	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 09:10:43 +0000
+Date: Tue, 3 Aug 2010 11:27:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100803092704.GA29069@saboteur.suse.cz>
+References: <20100802155347.GA1878@saboteur.suse.cz>
+	<AANLkTi=x46Wh1U_byaw-9mBkkYoMZvTeFnOWsAVEQni0@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4C63ADC4.3030100@windriver.com>
-References: <4C63ADC4.3030100@windriver.com>
-Date: Thu, 12 Aug 2010 23:13:59 -0700
-Message-ID: <AANLkTiku9JvJ9YkmEz7NVp_FaL2at=_AcCCOzv4UAOE2@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [patch]rt_sigprocmask01 issue
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=x46Wh1U_byaw-9mBkkYoMZvTeFnOWsAVEQni0@mail.gmail.com>
+Subject: Re: [LTP] ltp buildsystem bugreport
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,51 +22,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "lina.zhao" <lina.zhao@windriver.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Aug 12, 2010 at 1:16 AM, lina.zhao <lina.zhao@windriver.com> wrote:
-> Hi,
->
-> In rt_sigprocmask01.c:
->
-> TEST(syscall(__NR_rt_sigpending, &oset,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SIGSETSIZE));
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0if (TEST_RETURN =3D=3D -1) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_brkm(TFAIL|TTERRNO, cleanup,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"rt_sigpending call failed");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(sigismember(&oset, TEST_SIG));
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0if (TEST_RETURN =3D=3D 0) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_brkm(TFAIL|TTERRNO,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"sigismember call failed");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0/* call rt_sigprocmask() to unblock
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 * signal#TEST_SIG */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(syscall(__NR_rt_sigprocmask,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SIG_UNBLOCK, &set, &oset, 8));
->
-> on most of the arch,the SIGSETSIZE is 8, but it is 16 for mips, so in
-> sigprocmask,
-> the last parameter should be SIGSETSIZE too, not 8.
+Hi!
+> "Don't expect a project that uses Makefiles to function properly with
+> paths that have colons, spaces, etc to function properly". Keep things
+> as simple as possible and you won't have issues with building LTP :).
 
-Committed. Please provide a signed-off-by line next time.
-Thanks,
--Garrett
+Okay, at least add this into the INSTALL file so that other people
+doesn't get confused as I did.
 
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by =
+And now I need to figure out workaround for our friendly buildservice
+that creates paths with colons by default...
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev =
-
+------------------------------------------------------------------------------
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
