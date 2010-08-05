@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapierfilter@gmail.com>) id 1OlSL6-0005Lh-7b
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:00:52 +0000
-Received: from mail-fx0-f47.google.com ([209.85.161.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OlSL5-0006TM-Bh
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:00:52 +0000
-Received: by fxm6 with SMTP id 6so4746456fxm.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 17 Aug 2010 13:00:45 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1Ogxg6-00082c-EY
+	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 10:27:58 +0000
+Date: Thu, 5 Aug 2010 12:44:29 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100805104429.GA13500@saboteur.suse.cz>
+References: <20100802155347.GA1878@saboteur.suse.cz>
+	<AANLkTi=x46Wh1U_byaw-9mBkkYoMZvTeFnOWsAVEQni0@mail.gmail.com>
+	<20100803092704.GA29069@saboteur.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimPmB9fNdv2f+zS42Y_+T+6_4y1enDv=K_sHkY=@mail.gmail.com>
-References: <4C6AD534.2020109@redhat.com>
-	<AANLkTimPmB9fNdv2f+zS42Y_+T+6_4y1enDv=K_sHkY=@mail.gmail.com>
-Date: Tue, 17 Aug 2010 16:00:45 -0400
-Message-ID: <AANLkTinneeNUA0NJwh3v_Lhjx=YSHm6dfXNpxVoJHCS=@mail.gmail.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [LTP] problems building mallopt01.c for uClinux
+Content-Type: multipart/mixed; boundary="ZPt4rx8FFjLCG7dd"
+Content-Disposition: inline
+In-Reply-To: <20100803092704.GA29069@saboteur.suse.cz>
+Subject: Re: [LTP] ltp buildsystem bugreport
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,32 +24,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: dmarlin@redhat.com, LTP list <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 17, 2010 at 3:47 PM, Garrett Cooper wrote:
-> On Tue, Aug 17, 2010 at 11:30 AM, David Marlin wrote:
->> The testcase mallopt01 skips performing the test when UCLINUX=1, but the
->> mallinfo structure is defined outside the #if !defined(UCLINUX) block.
->>
->> Attached is a patch to move the mallinfo structure definition inside the
->> #if !defined(UCLINUX) block.
->
-> ACK.
 
-meaning you're going to merge it ? ;)  this change looks fine of course.
--mike
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+> > "Don't expect a project that uses Makefiles to function properly with
+> > paths that have colons, spaces, etc to function properly". Keep things
+> > as simple as possible and you won't have issues with building LTP :).
+> 
+> Okay, at least add this into the INSTALL file so that other people
+> doesn't get confused as I did.
+> 
+
+Here is a patch for that, hope you don't mind I've quoted your mail
+reply in it :).
+
+Hmm and there is still Rishkesh K Rajak as main LTP maintainer in
+README.
+
+And CREDITS file seems to be pretty old too.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="INSTALL.patch"
+
+Index: ltp-dev-local/INSTALL
+===================================================================
+--- ltp-dev-local.orig/INSTALL
++++ ltp-dev-local/INSTALL
+@@ -65,6 +65,12 @@ what to do next...
+ Compiling LTP
+ -------------------
+ 
++Prerequisites
++-------------------
++Don't expect LTP to build properly with paths that have colons, spaces,
++semicolons and other strange characters in. Keep things as simple as possible
++and you won't have issues with building LTP :).
++
+ In-build-tree
+ -------------------
+ In-build-tree support is when you build binaries (applications, binary objects)
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by 
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--ZPt4rx8FFjLCG7dd--
+
