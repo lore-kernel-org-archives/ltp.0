@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <godwin.gao@hotmail.com>) id 1OnT6c-0001es-2P
-	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 09:14:14 +0000
-Received: from snt0-omc4-s45.snt0.hotmail.com ([65.54.51.96])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OnT6a-0005WG-WE
-	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 09:14:14 +0000
-Message-ID: <SNT119-W194FB25225A64DF37C926C94820@phx.gbl>
-From: Godwin Gao <godwin.gao@hotmail.com>
-Date: Mon, 23 Aug 2010 17:14:07 +0800
-In-Reply-To: <AANLkTinL-auVn5Mm2=mc261LYkjiZYbGm_kABJCnqYG=@mail.gmail.com>
-References: <SNT119-W3821029ADE3BBEE190C837949F0@phx.gbl>,
-	<D2E04B18-BD6D-458D-A41E-BD8BC095E9F1@gmail.com>,
-	<SNT119-W322DCC7E0FF2E9370D214E94820@phx.gbl>,
-	<AANLkTinL-auVn5Mm2=mc261LYkjiZYbGm_kABJCnqYG=@mail.gmail.com>
-MIME-Version: 1.0
-Subject: Re: [LTP]
- =?windows-1256?q?=5BPATCH=5Dfix_the_at=5Fdeny01_failure=FE?=
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yaneurabeya@gmail.com>) id 1Oh07h-0003I3-9q
+	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 13:04:37 +0000
+Received: from mail-px0-f175.google.com ([209.85.212.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oh07g-0007hq-Dy
+	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 13:04:37 +0000
+Received: by pxi16 with SMTP id 16so288564pxi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 05 Aug 2010 06:04:30 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: Garrett Cooper <yaneurabeya@gmail.com>
+In-Reply-To: <4C5A8B95.9020709@linux.vnet.ibm.com>
+Date: Thu, 5 Aug 2010 06:04:26 -0700
+Message-Id: <26A1127D-4C27-470E-B338-082790313597@gmail.com>
+References: <1280829868-10286-1-git-send-email-harsh@linux.vnet.ibm.com>
+	<AANLkTikOv_F0fVP2xqxJL1wz1zOrmpZiCXrcET8KZMe0@mail.gmail.com>
+	<4C5A8B95.9020709@linux.vnet.ibm.com>
+Subject: Re: [LTP] [PATCH] setrlimit testcase fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,136 +29,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6285392894050178663=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
+To: Harsh Bora <harsh@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
---===============6285392894050178663==
-Content-Type: multipart/alternative;
-	boundary="_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_"
+On Aug 5, 2010, at 2:59 AM, Harsh Bora wrote:
 
---_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_
-Content-Type: text/plain; charset="windows-1256"
-Content-Transfer-Encoding: base64
+> On 08/03/2010 09:56 PM, Garrett Cooper wrote:
+>> On Tue, Aug 3, 2010 at 3:04 AM, Harsh Prateek Bora
+>> <harsh@linux.vnet.ibm.com>  wrote:
+>>   
+>>> Current testcase for setrlimit for parameter RLIMIT_FSIZE
+>>> does not convey the number of bytes actually written from
+>>> child process to parent, as the child process writes to its
+>>> own copy of global variable. This patch introduces a pipe
+>>> to send the information from child to the parent process.
+>>>     
+>> 1. The style's a bit wonky, but that might be the fault with how the
+>> original test was written.
+>>   
+> So, what change do you suggest in the style? Can you be precise?
 
-CiBDb21iaW5pbmcgdGhlIHBhdGNoIGZvciBpc3N1ZSAxLCB0aGlzIHBhdGNoIGlzIGZpbmUuCgoK
-VGhhbmtzLApHb2R3aW4gR2FvCgo+IERhdGU6IE1vbiwgMjMgQXVnIDIwMTAgMDE6MTc6MDMgLTA3
-MDAKPiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENIXWZpeCB0aGUgYXRfZGVueTAxIGZhaWx1cmX+
-Cj4gRnJvbTogeWFuZWdvbWlAZ21haWwuY29tCj4gVG86IGdvZHdpbi5nYW9AaG90bWFpbC5jb20K
-PiBDQzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gCj4gMjAxMC84LzIzIEdvZHdp
-biBHYW8gPGdvZHdpbi5nYW9AaG90bWFpbC5jb20+Ogo+ID4gUmV0ZXN0ZWQgdGhlIGF0X2Rlbnkw
-MSBjYXNlLCBhbmQgZm91bmQgdGhlIHNhbWUgaXNzdWVbMl0uIFRoZSBiZWxvdyBpcyB0aGUKPiA+
-IHRlc3Qgc3RlcHMsIGlmIHNvbWV0aGluZyB3cm9uZywgcGxlYXNlIG5vdGUgbWUuCj4gPgo+ID4g
-MS4gY3JlYXRlIGEgcnVudGVzdC9hdCBmaWxlCj4gPiByb290QGdvZHdpbi1kZXNrdG9wOi9ob21l
-L2dvZHdpbi9MVFBfTmV3L2x0cC1mdWxsLTIwMTAwNjMwIyBjYXQgcnVudGVzdC9hdAo+ID4gYXRf
-ZGVueTAxICAgIGF0X2RlbnkwMQo+ID4gMi4gZml4ZWQgdGhlIGlzc3VlWzFdCj4gPiAzLiAuL3J1
-bmx0cCAtcCAtbCBhLnR4dCAtZiBhdAo+ID4KPiA+IFNlZW1zIGl0IGlzIGEgZW52aXJvbm1lbnQg
-c2V0dXAgaXNzdWUsIHRlc3RfdXNlcl8xIGRvZXMgbm90IGhhdmUgdGhlCj4gPiAke0xUUFJPT1R9
-L3Rlc3RjYXNlcy9iaW4gaW4gaXRzIFBBVEguCj4gPiBBdHRhY2hlZCB0aGUgbG9nCj4gCj4gICAg
-IE9rLCBJIHNlZSB0aGUgaXNzdWUgbm93Ogo+IAo+IJEtkgo+IJEtbJIKPiCRLS1sb2dpbpIKPiAg
-ICAgTWFrZSB0aGUgc2hlbGwgYSBsb2dpbiBzaGVsbC4gVGhpcyBtZWFucyB0aGUgZm9sbG93aW5n
-LiBVbnNldCBhbGwKPiBlbnZpcm9ubWVudCB2YXJpYWJsZXMgZXhjZXB0IFRFUk0sIEhPTUUsIGFu
-ZCBTSEVMTCAod2hpY2ggYXJlIHNldCBhcwo+IGRlc2NyaWJlZCBhYm92ZSksIGFuZCBVU0VSIGFu
-ZCBMT0dOQU1FICh3aGljaCBhcmUgc2V0LCBldmVuIGZvciB0aGUKPiBzdXBlci11c2VyLCBhcyBk
-ZXNjcmliZWQgYWJvdmUpLCBhbmQgc2V0IFBBVEggdG8gYSBjb21waWxlZC1pbiBkZWZhdWx0Cj4g
-dmFsdWUuIENoYW5nZSB0byB1c2VyJ3MgaG9tZSBkaXJlY3RvcnkuIFByZXBlbmQgkS2SIHRvIHRo
-ZSBzaGVsbCdzCj4gbmFtZSwgaW50ZW5kZWQgdG8gbWFrZSBpdCByZWFkIGl0cyBsb2dpbiBzdGFy
-dHVwIGZpbGUocykuCj4gCj4gICAgIE5vdGUgdGhhdCBpdCdzIGEgYHByZWNvbXBpbGVkJyBwYXRo
-IChCU0QgZXhwbGljaXRseSBjYWxscyB0aGlzIG91dAo+IGFzIC9iaW46L3Vzci9iaW4sIGJ1dCB3
-aG8ga25vd3Mgd2hhdCBMaW51eCBzZXRzIHRoaXMgYXMpLgo+ICAgICBIZXJlJ3MgYSBxdWljayBw
-YXRjaCBmb3IgdGhpcyBpdGVtOyBwbGVhc2UgbGV0IG1lIGtub3cgaG93IGl0Cj4gd29ya3MgaW4g
-dGhlIG5lZ2F0aXZlIGNhc2UuCj4gVGhhbmtzLAo+IC1HYXJyZXR0Cj4gCj4gUFMgVGhlIHJlYXNv
-biB3aHkgSSBkaWQgdGhpcyB3YXMgdG8gYXZvaWQgZW52aXJvbm1lbnQgdGFpbnRpbmcgYXMKPiBz
-ZXR1cF90ZXN0IHNheXM6Cj4gCj4gICAgICAgICAjIFRoaXMgaXMgdGhlIHdvcmthcm91bmQgZm9y
-IGEgcG90ZW50aWFsIGJ1Zy4KPiAgICAgICAgICMgW0J1ZyA0NjgzMzddIEF0IFJlZnVzZSB0byBX
-b3JrIHdpdGggTm9uLWxvZ2luIFNoZWxsCj4gICAgICAgICAjIGh0dHBzOi8vYnVnemlsbGEucmVk
-aGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9NDY4MzM3Cj4gICAgICAgICAjIEFzIHdlIGFyZSBydW5u
-aW5nIGluIG5vbi1sb2dpbiBzaGVsbCBub3csIHdlIGNhbm5vdCBydW4gdGhlIHNjcmlwdAo+ICAg
-ICAgICAgIyBieSBzaW1wbHkgZ2l2ZW4gaXQgYSByZWxhdGl2ZSBwYXRoLiBUaGVyZWZvcmUsIHdl
-IGNvcHkgaXQgdG8gdGVzdAo+ICAgICAgICAgIyB1c2VycycgaG9tZSBkaXJlY3RvcmllcywgYW5k
-IHJ1biBpdCBmcm9tIHRoZXJlLgo+IAo+IGJlY2F1c2UgLW0vLXAgd291bGQgaGF2ZSBkb25lIGp1
-c3QgdGhhdCAoYmVzaWRlcy4uLiBlbnZpcm9ubWVudAo+IHRhaW50aW5nIGp1c3QgbWFrZXMgY3J1
-ZCBub24tZGV0ZXJtaW5pc3RpYy4uLikuCiAJCSAJICAgCQkgIA==
+Sorry... there's a mixture of tabs and spaces (based on the patch provided) and we need to use straight tabs like Linux does.
 
---_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_
-Content-Type: text/html; charset="windows-1256"
-Content-Transfer-Encoding: base64
+>> 2. You aren't checking how many bytes are actually being read/written
+>> in your patch but assuming that the stream `bytes' is correctly
+>> written each time ;)...
+>>   
+> I hope you are talking about verifying expected number of bytes after reading/writing from pipe, shall do that.
 
-PGh0bWw+CjxoZWFkPgo8c3R5bGU+PCEtLQouaG1tZXNzYWdlIFAKewptYXJnaW46MHB4OwpwYWRk
-aW5nOjBweAp9CmJvZHkuaG1tZXNzYWdlCnsKZm9udC1zaXplOiAxMHB0Owpmb250LWZhbWlseTpU
-YWhvbWEKfQotLT48L3N0eWxlPgo8L2hlYWQ+Cjxib2R5IGNsYXNzPSdobW1lc3NhZ2UnPgombmJz
-cDtDb21iaW5pbmcgdGhlIHBhdGNoIGZvciBpc3N1ZSAxLCB0aGlzIHBhdGNoIGlzIGZpbmUuPGJy
-Pjxicj48YnI+VGhhbmtzLDxicj5Hb2R3aW4gR2FvPGJyPjxicj4mZ3Q7IERhdGU6IE1vbiwgMjMg
-QXVnIDIwMTAgMDE6MTc6MDMgLTA3MDA8YnI+Jmd0OyBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENI
-XWZpeCB0aGUgYXRfZGVueTAxIGZhaWx1cmX+PGJyPiZndDsgRnJvbTogeWFuZWdvbWlAZ21haWwu
-Y29tPGJyPiZndDsgVG86IGdvZHdpbi5nYW9AaG90bWFpbC5jb208YnI+Jmd0OyBDQzogbHRwLWxp
-c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0PGJyPiZndDsgPGJyPiZndDsgMjAxMC84LzIzIEdvZHdp
-biBHYW8gJmx0O2dvZHdpbi5nYW9AaG90bWFpbC5jb20mZ3Q7Ojxicj4mZ3Q7ICZndDsgUmV0ZXN0
-ZWQgdGhlIGF0X2RlbnkwMSBjYXNlLCBhbmQgZm91bmQgdGhlIHNhbWUgaXNzdWVbMl0uIFRoZSBi
-ZWxvdyBpcyB0aGU8YnI+Jmd0OyAmZ3Q7IHRlc3Qgc3RlcHMsIGlmIHNvbWV0aGluZyB3cm9uZywg
-cGxlYXNlIG5vdGUgbWUuPGJyPiZndDsgJmd0Ozxicj4mZ3Q7ICZndDsgMS4gY3JlYXRlIGEgcnVu
-dGVzdC9hdCBmaWxlPGJyPiZndDsgJmd0OyByb290QGdvZHdpbi1kZXNrdG9wOi9ob21lL2dvZHdp
-bi9MVFBfTmV3L2x0cC1mdWxsLTIwMTAwNjMwIyBjYXQgcnVudGVzdC9hdDxicj4mZ3Q7ICZndDsg
-YXRfZGVueTAxJm5ic3A7Jm5ic3A7Jm5ic3A7IGF0X2RlbnkwMTxicj4mZ3Q7ICZndDsgMi4gZml4
-ZWQgdGhlIGlzc3VlWzFdPGJyPiZndDsgJmd0OyAzLiAuL3J1bmx0cCAtcCAtbCBhLnR4dCAtZiBh
-dDxicj4mZ3Q7ICZndDs8YnI+Jmd0OyAmZ3Q7IFNlZW1zIGl0IGlzIGEgZW52aXJvbm1lbnQgc2V0
-dXAgaXNzdWUsIHRlc3RfdXNlcl8xIGRvZXMgbm90IGhhdmUgdGhlPGJyPiZndDsgJmd0OyAke0xU
-UFJPT1R9L3Rlc3RjYXNlcy9iaW4gaW4gaXRzIFBBVEguPGJyPiZndDsgJmd0OyBBdHRhY2hlZCB0
-aGUgbG9nPGJyPiZndDsgPGIKIHI+Jmd0OyAgICAgT2ssIEkgc2VlIHRoZSBpc3N1ZSBub3c6PGJy
-PiZndDsgPGJyPiZndDsgkS2SPGJyPiZndDsgkS1skjxicj4mZ3Q7IJEtLWxvZ2lukjxicj4mZ3Q7
-ICAgICBNYWtlIHRoZSBzaGVsbCBhIGxvZ2luIHNoZWxsLiBUaGlzIG1lYW5zIHRoZSBmb2xsb3dp
-bmcuIFVuc2V0IGFsbDxicj4mZ3Q7IGVudmlyb25tZW50IHZhcmlhYmxlcyBleGNlcHQgVEVSTSwg
-SE9NRSwgYW5kIFNIRUxMICh3aGljaCBhcmUgc2V0IGFzPGJyPiZndDsgZGVzY3JpYmVkIGFib3Zl
-KSwgYW5kIFVTRVIgYW5kIExPR05BTUUgKHdoaWNoIGFyZSBzZXQsIGV2ZW4gZm9yIHRoZTxicj4m
-Z3Q7IHN1cGVyLXVzZXIsIGFzIGRlc2NyaWJlZCBhYm92ZSksIGFuZCBzZXQgUEFUSCB0byBhIGNv
-bXBpbGVkLWluIGRlZmF1bHQ8YnI+Jmd0OyB2YWx1ZS4gQ2hhbmdlIHRvIHVzZXIncyBob21lIGRp
-cmVjdG9yeS4gUHJlcGVuZCCRLZIgdG8gdGhlIHNoZWxsJ3M8YnI+Jmd0OyBuYW1lLCBpbnRlbmRl
-ZCB0byBtYWtlIGl0IHJlYWQgaXRzIGxvZ2luIHN0YXJ0dXAgZmlsZShzKS48YnI+Jmd0OyA8YnI+
-Jmd0OyAgICAgTm90ZSB0aGF0IGl0J3MgYSBgcHJlY29tcGlsZWQnIHBhdGggKEJTRCBleHBsaWNp
-dGx5IGNhbGxzIHRoaXMgb3V0PGJyPiZndDsgYXMgL2JpbjovdXNyL2JpbiwgYnV0IHdobyBrbm93
-cyB3aGF0IExpbnV4IHNldHMgdGhpcyBhcykuPGJyPiZndDsgICAgIEhlcmUncyBhIHF1aWNrIHBh
-dGNoIGZvciB0aGlzIGl0ZW07IHBsZWFzZSBsZXQgbWUga25vdyBob3cgaXQ8YnI+Jmd0OyB3b3Jr
-cyBpbiB0aGUgbmVnYXRpdmUgY2FzZS48YnI+Jmd0OyBUaGFua3MsPGJyPiZndDsgLUdhcnJldHQ8
-YnI+Jmd0OyA8YnI+Jmd0OyBQUyBUaGUgcmVhc29uIHdoeSBJIGRpZCB0aGlzIHdhcyB0byBhdm9p
-ZCBlbnZpcm9ubWVudCB0YWludGluZyBhczxicj4mZ3Q7IHNldHVwX3Rlc3Qgc2F5czo8YnI+Jmd0
-OyA8YnI+Jmd0OyAgICAgICAgICMgVGhpcyBpcyB0aGUgd29ya2FyCiBvdW5kIGZvciBhIHBvdGVu
-dGlhbCBidWcuPGJyPiZndDsgICAgICAgICAjIFtCdWcgNDY4MzM3XSBBdCBSZWZ1c2UgdG8gV29y
-ayB3aXRoIE5vbi1sb2dpbiBTaGVsbDxicj4mZ3Q7ICAgICAgICAgIyBodHRwczovL2J1Z3ppbGxh
-LnJlZGhhdC5jb20vc2hvd19idWcuY2dpP2lkPTQ2ODMzNzxicj4mZ3Q7ICAgICAgICAgIyBBcyB3
-ZSBhcmUgcnVubmluZyBpbiBub24tbG9naW4gc2hlbGwgbm93LCB3ZSBjYW5ub3QgcnVuIHRoZSBz
-Y3JpcHQ8YnI+Jmd0OyAgICAgICAgICMgYnkgc2ltcGx5IGdpdmVuIGl0IGEgcmVsYXRpdmUgcGF0
-aC4gVGhlcmVmb3JlLCB3ZSBjb3B5IGl0IHRvIHRlc3Q8YnI+Jmd0OyAgICAgICAgICMgdXNlcnMn
-IGhvbWUgZGlyZWN0b3JpZXMsIGFuZCBydW4gaXQgZnJvbSB0aGVyZS48YnI+Jmd0OyA8YnI+Jmd0
-OyBiZWNhdXNlIC1tLy1wIHdvdWxkIGhhdmUgZG9uZSBqdXN0IHRoYXQgKGJlc2lkZXMuLi4gZW52
-aXJvbm1lbnQ8YnI+Jmd0OyB0YWludGluZyBqdXN0IG1ha2VzIGNydWQgbm9uLWRldGVybWluaXN0
-aWMuLi4pLjxicj4gCQkgCSAgIAkJICA8L2JvZHk+CjwvaHRtbD4=
+Yes. read(2) and write(2) pass back the number of bytes read and written from a file descriptor. It's a common mistake that others have made in many LTP testcases, assuming that alll reads and writes will be successful...
 
---_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_--
-
-
---===============6285392894050178663==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Thanks!
+-Garrett
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by 
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
---===============6285392894050178663==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6285392894050178663==--
-
