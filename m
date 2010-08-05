@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OjnrV-0003ro-7l
-	for ltp-list@lists.sourceforge.net; Fri, 13 Aug 2010 06:35:29 +0000
-Received: from mail-fx0-f47.google.com ([209.85.161.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OjnrR-0002c6-0O
-	for ltp-list@lists.sourceforge.net; Fri, 13 Aug 2010 06:35:29 +0000
-Received: by fxm6 with SMTP id 6so1743010fxm.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 12 Aug 2010 23:35:19 -0700 (PDT)
+	(envelope-from <harsh@linux.vnet.ibm.com>) id 1OgxF4-0005qP-Lo
+	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 10:00:02 +0000
+Received: from e23smtp02.au.ibm.com ([202.81.31.144])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OgxF2-0005VD-2J
+	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 10:00:02 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp02.au.ibm.com (8.14.4/8.13.1) with ESMTP id o759tmE4028194
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Aug 2010 19:55:48 +1000
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o759xqCr1233054
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Aug 2010 19:59:52 +1000
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o759xp9c020826
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Aug 2010 19:59:52 +1000
+Message-ID: <4C5A8B95.9020709@linux.vnet.ibm.com>
+Date: Thu, 05 Aug 2010 15:29:49 +0530
+From: Harsh Bora <harsh@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <000001cb3834$4969dac0$dc3d9040$@co.jp>
-References: <000001cb3834$4969dac0$dc3d9040$@co.jp>
-Date: Thu, 12 Aug 2010 23:35:19 -0700
-Message-ID: <AANLkTikOLq=3jQ61cdu3+__d8wJ9vNUxWn6_cYCNVb_d@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix "hugeshmat01" test
+References: <1280829868-10286-1-git-send-email-harsh@linux.vnet.ibm.com>
+	<AANLkTikOv_F0fVP2xqxJL1wz1zOrmpZiCXrcET8KZMe0@mail.gmail.com>
+In-Reply-To: <AANLkTikOv_F0fVP2xqxJL1wz1zOrmpZiCXrcET8KZMe0@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] setrlimit testcase fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,82 +36,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, =?Big5?B?t+2ueSCwt6Wr?= <toza@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-2010/8/9 Mitani <mitani@ryobi.co.jp>:
-> Hi,
->
-> I tried to run hugeshmat01 testcase, but it failed.
-> This testcase failed in following systems.
-> =A0 - RHEL5.5-ia64
-> =A0 - RHEL4.8-x86_64
-> =A0 - RHEL4.8-ia64
->
-> I used latest git:
-> =A0 ltp-dev-7c67a09a10268b5f9f503e0254f1f0f9f5ac2b69.tar.gz
-> This testcase failed also in previous gits.
->
->
-> RHEL5.5-ia64 log:
-> ------------
-> hugeshmat01 =A0 =A01 =A0TPASS =A0: =A0conditions and functionality are co=
-rrect
-> hugeshmat01 =A0 =A02 =A0TFAIL =A0: =A0hugeshmat01 call failed - errno =3D=
- 22 : Invalid
-> argument
-> hugeshmat01 =A0 =A03 =A0TBROK =A0: =A0Remaining cases broken
-> ------------
->
-> It is caused by "EINVAL" failure of shmat().
->
-> ---(hugeshmat01.c)---------
-> [...]
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0for (i=3D0; i<TST_TOTAL; i++) {
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * Use TEST macro to make =
-the call
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0errno =3D 0;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0addr =3D shmat(*(TC[i].shm=
-id), (void *)(TC[i].addr),
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TC[i]=
-.flags);
-> [...]
-> ------------
->
-> In second loop (i=3D1), arguments of shemat() are followings:
->
-> =A0 shmat(id, 0x10000000eee, SHM_RND)
->
-> This test expects that the return value of shmat() is rounded down to
-> a multiple of SHMLBA.
-> But shmat() failed in some systems.
-> I deduced that "0x10000000eee" address may be outside of hugepages area.
->
-> So I used the return value of first loop's shmat() instead of fixed
-> address ("0x10000000eee").
-> And the test succeeded.
-
-The question I have to pose is: why would it do this if the other
-address was deallocated?
-
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by =
+On 08/03/2010 09:56 PM, Garrett Cooper wrote:
+> On Tue, Aug 3, 2010 at 3:04 AM, Harsh Prateek Bora
+> <harsh@linux.vnet.ibm.com>  wrote:
+>    
+>> Current testcase for setrlimit for parameter RLIMIT_FSIZE
+>> does not convey the number of bytes actually written from
+>> child process to parent, as the child process writes to its
+>> own copy of global variable. This patch introduces a pipe
+>> to send the information from child to the parent process.
+>>      
+> 1. The style's a bit wonky, but that might be the fault with how the
+> original test was written.
+>    
+So, what change do you suggest in the style? Can you be precise?
+> 2. You aren't checking how many bytes are actually being read/written
+> in your patch but assuming that the stream `bytes' is correctly
+> written each time ;)...
+>    
+I hope you are talking about verifying expected number of bytes after 
+reading/writing from pipe, shall do that.
+> Thanks,
+> -Garrett
+>    
 
 
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev =
-
+------------------------------------------------------------------------------
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
