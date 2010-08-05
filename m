@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OlSFj-0004x8-NG
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 19:55:19 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OlSFi-00050C-Rw
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 19:55:19 +0000
-Received: by bwz12 with SMTP id 12so4084774bwz.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 17 Aug 2010 12:55:13 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1Oh0D5-0003na-VS
+	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 13:10:11 +0000
+Date: Thu, 5 Aug 2010 15:26:42 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100805132641.GA18296@saboteur.suse.cz>
+References: <20100805100954.GB11402@saboteur.suse.cz>
+	<CCCBABDC-C276-4064-982D-179B86A30991@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4C6AD62B.2010905@redhat.com>
-References: <4C6AD62B.2010905@redhat.com>
-Date: Tue, 17 Aug 2010 12:50:06 -0700
-Message-ID: <AANLkTimTbSmbAf+sVJz6KsMxcYsg0Em6+1jrgcNLuDcF@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] problems building lchown02.c for uClinux
+Content-Disposition: inline
+In-Reply-To: <CCCBABDC-C276-4064-982D-179B86A30991@gmail.com>
+Subject: Re: [LTP] just another make-3.80 bug
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,31 +25,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: dmarlin@redhat.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yaneurabeya@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 17, 2010 at 11:34 AM, David Marlin <dmarlin@redhat.com> wrote:
->
-> 'lchown02.c' does not build properly due to calls to mmap and
-> get_high_address (which references sbrk) when UCLINUX=1 is defined.
->
-> Attached is a patch to skip those sections of the test when building for
-> uClinux.
+Hi!
+> > When trying to build ltp from tarball (ltp-full-20100630.bz2) using
+> > make-3.80 for some reason automake rules kicks in so you need either
+> > comment out some rules from include/mk/automake.mk or compile autotools
+> > by hand (there is no recent automake on system with make-3.80).
+> > 
+> > # cat /etc/SuSE-release 
+> > SUSE Linux Enterprise Server 10 (x86_64)
+> > VERSION = 10
+> > PATCHLEVEL = 2
+> > 
+> > # make -v
+> > GNU Make 3.80
+> > Copyright (C) 2002  Free Software Foundation, Inc.
+> > This is free software; see the source for copying conditions.
+> > There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+> > PARTICULAR PURPOSE.
+> > 
+> > # tar xjf ltp-full-20100630.bz2 
+> > # cd ltp-full-20100630/
+> > # ./configure
+> > ...
+> > 
+> > # make
+> > make -C testcases/realtime autotools
+> > make[1]: Entering directory `/root/ltp-full-20100630/testcases/realtime'
+> > autoheader
+> > make[1]: autoheader: Command not found
+> > make[1]: *** [autoheader] Error 127
+> > make[1]: Leaving directory `/root/ltp-full-20100630/testcases/realtime'
+> > make: *** [testcases/realtime/configure] Error 2
+> 
+> 	You're missing some autotools commands on the box (in this case autoheader). Make sure that autoconf is installed and/or all of the directions were followed as per INSTALL.
 
-    I understand the mmap(2) part, but couldn't the get_high_address
-portion be done in the LTP headers and library files? It would help if
-there was a breakdown of what functionality is and isn't available in
-uclinux that's gating builds / testing (I honestly don't know right
-offhand what those pieces are).
-Thanks!
--Garrett
+That's not the problem, see the second mail in this thread, make-3.80
+seems to be picking wrong default target (even when autotools are
+installed running 'make' just remakes autools related stuff.)
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by 
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
