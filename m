@@ -1,23 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Oglx8-0000FU-1j
-	for ltp-list@lists.sourceforge.net; Wed, 04 Aug 2010 21:56:46 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oglx7-0003tE-0e
-	for ltp-list@lists.sourceforge.net; Wed, 04 Aug 2010 21:56:46 +0000
-Received: by yxi11 with SMTP id 11so2842643yxi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Aug 2010 14:56:39 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tyrlik@us.ibm.com>) id 1OhtNi-0004OS-IG
+	for ltp-list@lists.sourceforge.net; Sun, 08 Aug 2010 00:04:50 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OhtNf-0006l3-Qa
+	for ltp-list@lists.sourceforge.net; Sun, 08 Aug 2010 00:04:50 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e31.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o77Nr9sg024105
+	for <ltp-list@lists.sourceforge.net>; Sat, 7 Aug 2010 17:53:09 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o7804Zdi077342
+	for <ltp-list@lists.sourceforge.net>; Sat, 7 Aug 2010 18:04:36 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o7804ZDm005353
+	for <ltp-list@lists.sourceforge.net>; Sat, 7 Aug 2010 18:04:35 -0600
+Received: from d03nm126.boulder.ibm.com (d03nm126.boulder.ibm.com
+	[9.17.195.152])
+	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o7804ZOR005339
+	for <ltp-list@lists.sourceforge.net>; Sat, 7 Aug 2010 18:04:35 -0600
+From: Matt Tyrlik <tyrlik@us.ibm.com>
+Message-ID: <OF628AE2DC.DA257B06-ON87257779.00006B41-87257779.00006B42@us.ibm.com>
+Date: Sat, 7 Aug 2010 18:04:34 -0600
 MIME-Version: 1.0
-In-Reply-To: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB652@me-ex1.ctsl.cubic.cub>
-References: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB652@me-ex1.ctsl.cubic.cub>
-Date: Wed, 4 Aug 2010 14:56:39 -0700
-Message-ID: <AANLkTinmH4_cho+2CGekNFa1=b24wbXvmd6n_3NbBne1@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Install failure when cross compiling for ARM
+Subject: [LTP] AUTO: Matt Tyrlik/Raleigh/IBM is out of the office until
+ 08/08/2002. (returning 08/08/2010)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,57 +40,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0748630665476344518=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Boari, Doug" <Doug.Boari@cubic.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Aug 4, 2010 at 3:04 AM, Boari, Doug <Doug.Boari@cubic.com> wrote:
-> Hi Garrett,
->
-> Sorry I forgot to attach the zip (now enclosed)
->
-> Here is the make --version:
->
-> GNU Make 3.81
-> Copyright (C) 2006 =A0Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.
-> There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
-> PARTICULAR PURPOSE.
-> This program built for i486-pc-linux-gnu
->
-> Hmmmmm After poking around a bit, I'm thinking that maybe LTP may not be
-> suitable for our board after all...
-> I was reading through some of the test_realtime scripts and it looks
-> like the tests need to build libs before running. Unfortunately we have
-> no on-board compiler, everything is cross compiled on a separate PC. Is
-> there anyway round this? I'm especially interested in the scheduling
-> sub-set of tests.
+--===============0748630665476344518==
+Content-type: multipart/alternative; 
+	Boundary="0__=08BBFDEADF93EDD18f9e8a93df938690918c08BBFDEADF93EDD1"
+Content-Disposition: inline
 
-Here's your problem:
+--0__=08BBFDEADF93EDD18f9e8a93df938690918c08BBFDEADF93EDD1
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
 
-configure:7160: running /bin/bash ./configure
---disable-option-checking '--prefix=3D/opt/ltp'
-'CFLAGS=3D-fno-short-enums' '--target=3Darm-iwmmxt-linux-gnueabi'
-'--host=3Darm-iwmmxt-linux-gnueabi'
-'host_alias=3Darm-iwmmxt-linux-gnueabi'
-'target_alias=3Darm-iwmmxt-linux-gnueabi' --cache-file=3D/dev/null
---srcdir=3D.
 
-Don't specify --srcdir=3D. and things should work a lot better (I'm not
-sure why anal retentive autotools didn't whine about that like it
-usually does.
 
--Garrett
+I am out of the office until 08/08/2010.
 
----------------------------------------------------------------------------=
----
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+Vacation returning 08/08/2010
+
+
+Note: This is an automated response to your message  "Ltp-list Digest, =
+Vol
+51, Issue 1" sent on 8/2/10 0:32:02.
+
+This is the only notification you will receive while this person is awa=
+y.=
+
+--0__=08BBFDEADF93EDD18f9e8a93df938690918c08BBFDEADF93EDD1
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p><font size=3D"2">I am out of the office until 08/08/2010.<br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2">Vacation returning 08/08/2010<br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2" color=3D"#808080">Note: This is an automated re=
+sponse to your message  &quot;</font><b><font size=3D"2">Ltp-list Diges=
+t, Vol 51, Issue 1&quot;</font></b><font size=3D"2" color=3D"#808080"> =
+sent on </font><b><font size=3D"2">8/2/10 0:32:02</font></b><font size=3D=
+"2" color=3D"#808080">. <br>
+</font><font size=3D"2" color=3D"#808080"><br>
+</font><font size=3D"2" color=3D"#808080">This is the only notification=
+ you will receive while this person is away.</font></body></html>=
+
+--0__=08BBFDEADF93EDD18f9e8a93df938690918c08BBFDEADF93EDD1--
+
+
+
+--===============0748630665476344518==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by 
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
+--===============0748630665476344518==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0748630665476344518==--
+
+
