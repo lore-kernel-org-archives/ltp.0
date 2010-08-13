@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1Ol6Yz-0008DV-1N
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 20:45:45 +0000
-Received: from mail-qw0-f47.google.com ([209.85.216.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ol6Yy-00081Q-5W
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 20:45:45 +0000
-Received: by qwi2 with SMTP id 2so398213qwi.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OjnTB-0002OZ-EX
+	for ltp-list@lists.sourceforge.net; Fri, 13 Aug 2010 06:10:21 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OjnTA-0002Cn-HH
+	for ltp-list@lists.sourceforge.net; Fri, 13 Aug 2010 06:10:21 +0000
+Received: by fxm6 with SMTP id 6so1725054fxm.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 16 Aug 2010 13:45:38 -0700 (PDT)
+	Thu, 12 Aug 2010 23:10:14 -0700 (PDT)
 MIME-Version: 1.0
-From: Henry Yei <hyei@mvista.com>
-Date: Mon, 16 Aug 2010 13:45:18 -0700
-Message-ID: <AANLkTinN_yVXA1FtbDmwPVf4S+m0OHKxH4SNiJmJx9Sh@mail.gmail.com>
-Content-Type: multipart/mixed; boundary=0016363b87023ea909048df6ea62
-Subject: [LTP] [PATCH] fix iogen01 test arguments to generate tmp files in
- TMPDIR in fs runtest file
+In-Reply-To: <52CF90264091A14888078A031D780F4306444AA6@ism-mail03.corp.ad.wrs.com>
+References: <52CF90264091A14888078A031D780F4306444AA6@ism-mail03.corp.ad.wrs.com>
+Date: Thu, 12 Aug 2010 23:10:14 -0700
+Message-ID: <AANLkTintD8gsCzNEA-7VDa_0YKh+21D__kw6m9ABTvsJ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] rt_sigsuspend01 caused segment fault on x86
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,61 +27,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Fu, Yingang" <Yingang.Fu@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
---0016363b87023ea909048df6ea62
-Content-Type: text/plain; charset=ISO-8859-1
+On Thu, Aug 12, 2010 at 11:02 PM, Fu, Yingang <Yingang.Fu@windriver.com> wr=
+ote:
+> hi, Garrett
+>
+> Following are test log on x86:
+> ----------------------------------------------------------
+>
+> root@d610-2:/opt/ltp-full/testcases/bin> ./rt_sigsuspend01 Segmentation
+> fault
+>
+> and messages of rt_sigsuspend01 when dmesg:
+>
+> root@d610-2:/opt/ltp-full/testcases/bin> dmesg | tail
+>
+> VFS: Mounted root (nfs filesystem) on device 0:13.
+> Freeing unused kernel memory: 344k freed
+> intel_rng: FWH not detected
+> ip_tables: (C) 2000-2006 Netfilter Core Team
+> NET: Registered protocol family 10
+> SCTP: Hash tables configured (established 16384 bind 32768)
+> eth0: no IPv6 routers present
+>
+> ***rt_sigsuspend01[865] general protection ip:bfa8b780 sp:bfa8b120 error:0
+>
+>
+> After apply the patch:
+>
+> root@d610-2:/opt/ltp-full/testcases/bin> ./rt_sigsuspend01
+> rt_sigsuspend01=A0=A0=A0 1=A0 TPASS=A0 :=A0 rt_sigsuspend PASSED
 
-This patch updates the fs runtest file with arguments for the iogen01
-test to honor the tmp directory set by runltp. Without this patch, the
-tmp files are written to <ltp install dir>/testcases/bin.
+Committed; please provide a signed-off-by line next time.
+Thanks,
+-Garrett
 
+---------------------------------------------------------------------------=
+---
+This SF.net email is sponsored by =
 
-Signed-off-by: Henry Yei <hyei@mvista.com>
-
-
-Henry Yei <hyei@mvista.com>
-
---0016363b87023ea909048df6ea62
-Content-Type: text/x-patch; charset=US-ASCII; name="fs.pn2.patch"
-Content-Disposition: attachment; filename="fs.pn2.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gcxsgrg40
-
-LS0tIGx0cC1kZXYvcnVudGVzdC9mcwkyMDEwLTA4LTAzIDE2OjQ5OjQ0Ljc0OTQ4MTQ4MiAtMDcw
-MAorKysgbHRwLWRldi13ZGlyL3J1bnRlc3QvZnMJMjAxMC0wOC0xMyAxNDo1NjowNi45NjU5Nzky
-NDIgLTA3MDAKQEAgLTM3LDcgKzM3LDcgQEAgcnd0ZXN0MDUgZXhwb3J0IExUUFJPT1Q7IHJ3dGVz
-dCAtTiByd3RlcwogCiAjbXVzdCBiZSBydW4gYXMgcm9vdAogI2lvZ2VuMDEgaW9nZW4gLWkgMTIw
-cyAtcyByZWFkLHdyaXRlIDUwMGI6ZG9pby5mMS4kJCAxMDAwYjpkb2lvLmYyLiQkIHwgZG9pbyAt
-YWt2IC1uIDIKLWlvZ2VuMDEgZXhwb3J0IExUUFJPT1Q7IHJ3dGVzdCAtTiBpb2dlbjAxIC1pIDEy
-MHMgLXMgcmVhZCx3cml0ZSAtRGEgLUR2IC1uIDIgNTAwYjpkb2lvLmYxLiQkIDEwMDBiOmRvaW8u
-ZjIuJCQKK2lvZ2VuMDEgZXhwb3J0IExUUFJPT1Q7IHJ3dGVzdCAtTiBpb2dlbjAxIC1pIDEyMHMg
-LXMgcmVhZCx3cml0ZSAtRGEgLUR2IC1uIDIgNTAwYjokVE1QRElSL2RvaW8uZjEuJCQgMTAwMGI6
-JFRNUERJUi9kb2lvLmYyLiQkCiAKIGZzX2lub2QwMSBmc19pbm9kICRUTVAgMTAgMTAgMTAKIGxp
-bmtlcjAxIGxpbmt0ZXN0LnNoIDEwMDAgMTAwMAo=
---0016363b87023ea909048df6ea62
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by 
 
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
---0016363b87023ea909048df6ea62
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://p.sf.net/sfu/RIM-dev2dev =
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016363b87023ea909048df6ea62--
-
