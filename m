@@ -2,24 +2,27 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yaneurabeya@gmail.com>) id 1OmTLM-00064Q-Eb
-	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 15:17:20 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OmTLL-0003jB-CB
-	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 15:17:20 +0000
-Received: by pzk2 with SMTP id 2so1387584pzk.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 20 Aug 2010 08:17:13 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1081)
-From: Garrett Cooper <yaneurabeya@gmail.com>
-In-Reply-To: <2019808896.1617958.1282317142128.JavaMail.fmail@mwmweb057>
-Date: Fri, 20 Aug 2010 08:17:11 -0700
-Message-Id: <48A67539-19CF-4E77-893F-266617B8C429@gmail.com>
-References: <1618109809.1627285.1282314318024.JavaMail.fmail@mwmweb060>,
-	<BA0785CB-50D5-4D23-B37E-8B171B5021D8@gmail.com>
-	<2019808896.1617958.1282317142128.JavaMail.fmail@mwmweb057>
-Subject: Re: [LTP] Reboot during LTP?
+	(envelope-from <harsh@linux.vnet.ibm.com>) id 1OkxyH-0001Ue-Um
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 11:35:17 +0000
+Received: from e23smtp07.au.ibm.com ([202.81.31.140])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OkxyC-0003Cp-Am
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 11:35:17 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id o7GBZ4eK016867
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 21:35:04 +1000
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o7GBZ4481741002
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 21:35:04 +1000
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o7GBZ4EG023241
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 21:35:04 +1000
+From: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
+Date: Mon, 16 Aug 2010 17:05:01 +0530
+Message-Id: <1281958501-17087-1-git-send-email-harsh@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH] ltp setrlimit testcase patch for RLIMIT_FSIZE resource
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,152 +32,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7087419929794929649=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: missgrass@email.de
-Cc: ltp-list@lists.sourceforge.net
-
-
---===============7087419929794929649==
-Content-Type: multipart/alternative; boundary=Apple-Mail-3--932446556
-
-
---Apple-Mail-3--932446556
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-	Yes, it's possible to do a lot of things. Should it be done? =
-Maybe, maybe not... unless you have a compelling reason to do this, I =
-would say that having a testcase which runs separately from the standard =
-herd is the way to go (i.e. if you're trying to test reboot(2) for =
-instance).
-Cheers,
--Garrett
-
-On Aug 20, 2010, at 8:12 AM, missgrass@email.de wrote:
-
-> isnt it possible to save the state, for example in a file?
->=20
-> Von: Garrett Cooper <yaneurabeya@gmail.com>
-> Gesendet: 20.08.2010 16:26:44
-> An: missgrass@email.de
-> Betreff: Re: [LTP] Reboot during LTP?
->=20
->  No. You'd lose all state with the running tests.
-> -Garrett
->=20
-> On Aug 20, 2010, at 7:25 AM, missgrass@email.de wrote:
->=20
->  Hi,
->=20
-> i wanna know if it is possible to make a reboot during the LTP. That =
-means in one case i start an application-tag with intern reboot, is that =
-possible? And the other case, to make a reboot with LTP an return to the =
-last state? an continue with test...
-> =
---------------------------------------------------------------------------=
-----
-> This SF.net email is sponsored by=20
->=20
-> Make an app they can't live without
-> Enter the BlackBerry Developer Challenge
-> http://p.sf.net/sfu/RIM-dev2dev =
-_______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
---Apple-Mail-3--932446556
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/html;
-	charset=us-ascii
-
-<html><head></head><body style=3D"word-wrap: break-word; =
--webkit-nbsp-mode: space; -webkit-line-break: after-white-space; =
-"><div><span class=3D"Apple-tab-span" style=3D"white-space:pre">	=
-</span>Yes, it's possible to do a lot of things. Should it be done? =
-Maybe, maybe not... unless you have a compelling reason to do this, I =
-would say that having a testcase which runs separately from the standard =
-herd is the way to go (i.e. if you're trying to test reboot(2) for =
-instance).</div><div>Cheers,</div><div>-Garrett</div><br><div><div>On =
-Aug 20, 2010, at 8:12 AM, <a =
-href=3D"mailto:missgrass@email.de">missgrass@email.de</a> =
-wrote:</div><br class=3D"Apple-interchange-newline"><blockquote =
-type=3D"cite"><div>isnt it possible to save the state, for example in a =
-file?<span style=3D"font-size: 9pt;"><span style=3D"font-family: =
-verdana,geneva;"><span style=3D"background-color: transparent;"><span =
-style=3D"color: #000000;"><span style=3D"color: =
-#000000;"><br></span></span></span></span></span><span style=3D"font-size:=
- 9pt;"><span style=3D"font-family: verdana,geneva;"><span =
-style=3D"background-color: transparent;"><span style=3D"color: =
-#000000;"><span style=3D"color: =
-#000000;"><br></span></span></span></span></span><span style=3D"font-size:=
- 9pt;"><span style=3D"font-family: verdana,geneva;"><span =
-style=3D"background-color: transparent;"><span style=3D"color: =
-#000000;"><span style=3D"color: #000000;">
-<blockquote style=3D"border-left: 2px solid blue; margin-left: 5px; =
-padding-left: 5px; padding-top: 5px;">
-<hr>
-<b>Von:</b> Garrett Cooper &lt;<a =
-href=3D"mailto:yaneurabeya@gmail.com">yaneurabeya@gmail.com</a>&gt;<br><b>=
-Gesendet:</b> 20.08.2010 16:26:44<br><b>An:</b> <a =
-href=3D"mailto:missgrass@email.de">missgrass@email.de</a><br><b>Betreff:</=
-b> Re: [LTP] Reboot during LTP?<br><br>
-<div style=3D"word-wrap: break-word; -webkit-nbsp-mode: space; =
--webkit-line-break: after-white-space;"><span class=3D"Apple-tab-span" =
-style=3D"white-space: pre;"> </span>No. You'd lose all state with the =
-running tests.
-<div>-Garrett</div>
-<div><br>
-<div>
-<div>On Aug 20, 2010, at 7:25 AM, <a =
-href=3D"mailto:missgrass@email.de">missgrass@email.de</a> wrote:</div>
-<br class=3D"Apple-interchange-newline">
-<blockquote>
-<div class=3D"bgRepeatYes" style=3D"background-repeat: repeat; =
-background-color: #ffffff; color: #000000; font-family: verdana,geneva; =
-font-size: 9pt; padding-left: 0px;">
-<div style=3D"min-height: 200px; background-image: =
-url(https://img.web.de/v/p.gif); background-color: #ffffff; font-family: =
-verdana, geneva; font-size: 9pt; padding-left: 0px; position: static; =
-z-index: auto; background-repeat: repeat repeat;"><span =
-style=3D"font-size: 9pt;"><span style=3D"font-family: =
-verdana,geneva;"><span style=3D"background-color: transparent;"><span =
-style=3D"color: #000000;"><span style=3D"color: =
-#000000;">&nbsp;Hi,<br><br>i wanna know if it is possible to make a =
-reboot during the LTP. That means in one case i start an application-tag =
-with intern reboot, is that possible? And the other case, to make a =
-reboot with LTP an return to the last state? an continue with =
-test...</span></span></span></span></span></div>
-</div>
-</blockquote>
-</div>
-</div>
-</div>
-</blockquote>
-=
-</span></span></span></span></span></div>---------------------------------=
----------------------------------------------<br>This <a =
-href=3D"http://SF.net">SF.net</a> email is sponsored by <br><br>Make an =
-app they can't live without<br>Enter the BlackBerry Developer =
-Challenge<br><a =
-href=3D"http://p.sf.net/sfu/RIM-dev2dev">http://p.sf.net/sfu/RIM-dev2dev</=
-a> _______________________________________________<br>Ltp-list mailing =
-list<br><a =
-href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.=
-net</a><br>https://lists.sourceforge.net/lists/listinfo/ltp-list<br></bloc=
-kquote></div><br></body></html>=
-
---Apple-Mail-3--932446556--
-
-
---===============7087419929794929649==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Current testcase for setrlimit resource RLIMIT_FSIZE
+is using a global integer variable to communicate the number of
+bytes from child to parent which is incorrect. This
+has been corrected by introducing a pipe to transfer
+this information from child to parent process.
+
+Signed-off-by: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
+---
+ testcases/kernel/syscalls/setrlimit/setrlimit01.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index 6952eb3..2bb1e9d 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -156,7 +156,11 @@ void test2()
+ 	 * an wired value!  So, it is essential to fflush the parent's
+ 	 * write buffer HERE
+ 	 */
++	int pipefd[2];
+ 	fflush(stdout);
++	if (pipe(pipefd) == -1) {
++		tst_brkm(TBROK | TERRNO, NULL, "pipe creation failed");
++	}
+ 
+ 	/*
+ 	 * Spawn a child process, and reduce the filesize to
+@@ -170,6 +174,7 @@ void test2()
+ 	}
+ 
+ 	if (pid == 0) {
++		close(pipefd[0]); /* close unused read end */
+ 		rlim.rlim_cur = 10;
+ 		rlim.rlim_max = 10;
+ 		if ((setrlimit(RLIMIT_FSIZE, &rlim)) == -1) {
+@@ -181,6 +186,11 @@ void test2()
+ 		}
+ 
+ 		if ((bytes = write(fd, buf, 26)) != 10) {
++			if (write(pipefd[1], &bytes, sizeof(bytes))
++				< sizeof(bytes)) {
++				perror("child: write to pipe failed");
++			}
++			close(pipefd[1]); /* EOF */
+ 			exit(3);
+ 		}
+ 		exit(0);	/* success */
+@@ -202,6 +212,11 @@ void test2()
+ 		tst_resm(TFAIL, "creating testfile failed");
+ 		break;
+ 	case 3:
++		close(pipefd[1]); /* close unused write end */
++		if (read(pipefd[0], &bytes, sizeof(bytes)) < sizeof(bytes)) {
++			tst_resm(TFAIL, "parent: reading pipe failed");
++		}
++		close(pipefd[0]);
+ 		tst_resm(TFAIL, "setrlimit failed, expected "
+ 			 "10 got %d", bytes);
+ 		break;
+-- 
+1.7.1.1
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by 
@@ -182,16 +107,7 @@ This SF.net email is sponsored by
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
 http://p.sf.net/sfu/RIM-dev2dev 
---===============7087419929794929649==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7087419929794929649==--
-
