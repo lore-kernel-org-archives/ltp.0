@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OlSC4-0003GD-Bz
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 19:51:32 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Ol278-000630-4K
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 16:00:42 +0000
 Received: from mail-bw0-f47.google.com ([209.85.214.47])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OlSC3-0003tn-Dm
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 19:51:32 +0000
-Received: by bwz12 with SMTP id 12so4080880bwz.34
+	id 1Ol276-0002Ws-V9
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 16:00:42 +0000
+Received: by bwz12 with SMTP id 12so2677271bwz.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 17 Aug 2010 12:51:25 -0700 (PDT)
+	Mon, 16 Aug 2010 09:00:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTikdoWmHJT0-J_tSEar1698-_pO9mepCZp27ZWnZ@mail.gmail.com>
-References: <4C6AB19B.6060706@redhat.com>
-	<AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
-	<AANLkTikdoWmHJT0-J_tSEar1698-_pO9mepCZp27ZWnZ@mail.gmail.com>
-Date: Tue, 17 Aug 2010 12:51:25 -0700
-Message-ID: <AANLkTikeApsK=CMUjO6B26GDZmWkFWTWwBn0RUE9bPC3@mail.gmail.com>
+In-Reply-To: <4C68F324.30108@windriver.com>
+References: <4C63AD3C.2090909@windriver.com>
+	<AANLkTin5XdJw7Vwc2NK8trJ2-vaYuC90s6dk9KhodFBu@mail.gmail.com>
+	<4C68F324.30108@windriver.com>
+Date: Mon, 16 Aug 2010 09:00:34 -0700
+Message-ID: <AANLkTimcw8Qi4P5Y1Ba0OTbyzU_E8GK4sLf2Z20rPSFA@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] running LTP on uClinux
+Subject: Re: [LTP] [patch]hugeshmat issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,30 +32,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: dmarlin@redhat.com, ltp-list <ltp-list@lists.sourceforge.net>
+To: "lina.zhao" <lina.zhao@windriver.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Aug 17, 2010 at 9:42 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Tue, Aug 17, 2010 at 12:31 PM, Garrett Cooper wrote:
->> It should be CPPFLAGS, and the definition should be in env_post.mk; I
->> never had a UCLINUX infrastructure to test with, so this might have
->> fallen between the cracks by accident about 8 months ago.
->
-> building for a nommu target should work even when you're running a mmu
-> toolchain for an mmu target. =A0the testcases simply assume things like
-> fork() wont work and so fall back to ones that work in both places
-> (like vfork). =A0the tests should be able to run & pass even with a mmu.
+On Mon, Aug 16, 2010 at 1:13 AM, lina.zhao <lina.zhao@windriver.com> wrote:
+> See Mips run(2nd edition): 14.4 :MIPS/Linux system address transfer: linux
+> address map:see the attachment
+>>
+>> On Thu, Aug 12, 2010 at 1:13 AM, lina.zhao <lina.zhao@windriver.com>
+>> wrote:
+>>
+>>>
+>>> Hi,
+>>>
+>>> In hugeshmat01 and hugeshmat02, the attach address for shard memory is
+>>> 0x90000eee.
+>>> For 32bits mips/Linux system, user space is under 0x7FFFFFFF,
+>>> 0x90000eee is too big. The new address 0x60000eee has been tested
+>>> on mips and other arch systems, it hasn't caused a issue yet.
+>>>
+>>
+>> =A0 =A0Interesting. Do you have documentation to back up your claim?
 
-Ok.
-
->> Let me know how this patch works for you.
->
-> the logic in lib/Makefile should be unified with this
-
-lib.mk picks up env_post.mk, so it's already caught there. Or are you
-referring to how libltp is built and what headers are picked up from
-include/ ?
-Thanks!
+Thanks for the info -- committed!
 -Garrett
 
 ---------------------------------------------------------------------------=
