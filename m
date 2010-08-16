@@ -1,28 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OfoZ7-0006Jj-I2
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:32:01 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OfoZ6-0007kj-4l
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:32:01 +0000
-Received: by iwn34 with SMTP id 34so4958790iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 01 Aug 2010 23:31:54 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dmarlin@redhat.com>) id 1Ol3FE-0004ta-MW
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 17:13:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ol3FD-00067n-Gc
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 17:13:08 +0000
+Received: from int-mx08.intmail.prod.int.phx2.redhat.com
+	(int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id o7GHD175029801
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 13:13:01 -0400
+Received: from dmarlin.csb (dhcp-224-3.tha.redhat.com [10.15.224.3])
+	by int-mx08.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id o7GHCxjq004495
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 13:13:00 -0400
+Message-ID: <4C69719A.3050507@redhat.com>
+Date: Mon, 16 Aug 2010 12:12:58 -0500
+From: David Marlin <dmarlin@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <000601cb31fc$50629a30$f127ce90$@co.jp>
-References: <000001cb249e$14ed7490$3ec85db0$@co.jp>
-	<AANLkTimgkcie9ze6ge5SmrH8Fe8a1z8RT0FgZMhjExW5@mail.gmail.com>
-	<AANLkTinaYGjU8MGQZ_ccN1bfuduDzs0KsFPXi638278T@mail.gmail.com>
-	<000601cb31fc$50629a30$f127ce90$@co.jp>
-Date: Sun, 1 Aug 2010 23:31:54 -0700
-Message-ID: <AANLkTimAk6k7YG6jTNbf3SE7zu0xF3Npqz-iFpNa3LLL@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP]
-	=?utf-8?b?4oCd77yj772P772O772U772B772J772O772F772S772T4oCd?=
-	=?utf-8?q?_test_was_=22TFAIL=22_but_=22PASS=22_is_in_log_results?=
+Content-Type: multipart/mixed; boundary="------------010801000908090301010303"
+Subject: [LTP] redefinition of errno in some syscalls tests
+Reply-To: dmarlin@redhat.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,139 +33,137 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, =?Big5?B?t+2ueSCwt6Wr?= <toza@ryobi.co.jp>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-T24gU3VuLCBBdWcgMSwgMjAxMCBhdCA5OjM2IFBNLCBNaXRhbmkgPG1pdGFuaUByeW9iaS5jby5q
-cD4gd3JvdGU6Cj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IEdhcnJldHQg
-Q29vcGVyIFttYWlsdG86eWFuZWdvbWlAZ21haWwuY29tXQo+PiBTZW50OiBTYXR1cmRheSwgSnVs
-eSAxNywgMjAxMCA3OjUxIEFNCj4+IFRvOiBNaXRhbmkKPj4gQ2M6IGx0cC1saXN0QGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldAo+PiBTdWJqZWN0OiBSZTogW0xUUF0g4oCd77yj772P772O772U772B772J
-772O772F772S772T4oCdIHRlc3Qgd2FzICJURkFJTCIgYnV0ICJQQVNTIgo+PiBpcyBpbiBsb2cg
-cmVzdWx0cwo+Pgo+PiBPbiBGcmksIEp1bCAxNiwgMjAxMCBhdCAzOjUwIFBNLCBHYXJyZXR0IENv
-b3BlciA8eWFuZWdvbWlAZ21haWwuY29tPgo+PiB3cm90ZToKPj4gPiBPbiBUaHUsIEp1bCAxNSwg
-MjAxMCBhdCA5OjE5IFBNLCBNaXRhbmkgPG1pdGFuaUByeW9iaS5jby5qcD4gd3JvdGU6Cj4+ID4+
-IEhpLAo+PiA+Pgo+PiA+PiBXaXRoIFJIRUw1LjQvNS41IHN5c3RlbXMsIEkgbm90aWNlZCB0aGF0
-ICJDb250YWluZXJzIiB0ZXN0IGZhaWxlZAo+PiBidXQKPj4gPj4gIkNvbnRhaW5lcnMiIGlzIFBB
-U1MgaW4gbG9nIHJlc3VsdHM6Cj4+ID4+Cj4+ID4+IC0tLTxsb2cgcmVzdWx0cyBmaWxlPi0tLS0t
-LS0tLS0tLS0KPj4gPj4gLi4uCj4+ID4+IGhhbmd1cDAxIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIFBBU1MgwqAgwqAgwqAgMAo+PiA+PiBDb250YWluZXJzIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIFBBU1MgwqAgwqAgwqAgMAo+PiA+PiBCaW5kTW91bnRzIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIFBBU1MgwqAgwqAgwqAgMAo+PiA+PiAuLi4KPj4gPj4gLS0t
-LS0tLS0tLS0tLS0tLQo+PiA+Pgo+PiA+PiAtLS08ZGV0YWlsIGluIHJlZGlyZWN0ZWQgZmlsZT4t
-LS0tLS0tLS0tLS0tCj4+ID4+IC4uLgo+PiA+PiBjaGVja19uZXRuc19lbmFibGVkIMKgIMKgMSDC
-oFRGQUlMIMKgOiDCoHVuc2hhcmUgc3lzY2FsbCBzbW9rZSB0ZXN0Cj4+IGZhaWxlZDoKPj4gPj4g
-ZXJybm89RUlOVkFMKDIyKTogSW52YWxpZCBhcmd1bWVudAo+PiA+PiBOZXR3b3JrIG5hbWVzcGFj
-ZXMgbm90IGVuYWJsZWQgaW4ga2VybmVsLiDCoE5vdCBydW5uaW5nIG5ldG5zIHRlc3RzLgo+PiA+
-PiAuLi4KPj4gPj4gLS0tLS0tLS0tLS0tLS0tLQo+PiA+Pgo+PiA+PiBUaGUgc291cmNlIHdoaWNo
-IHJldHVybmVkIHdpdGggIkludmFsaWQgYXJndW1lbnQiIGlzCj4+ID4+ICJjaGVja19uZXRuc19l
-bmFibGVkLmMiOgo+PiA+Pgo+PiA+PiAtLS08Y2hlY2tfbmV0bnNfZW5hYmxlZC5jPi0tLS0tLS0t
-LS0tLS0KPj4gPj4gbWFpbigpCj4+ID4+IHsKPj4gPj4gwqAgwqAgwqAgwqAvKiBDaGVja2luZyBp
-ZiB0aGUga2VybmVsIHN1cHBvcnRzIHVuc2hhcmUgd2l0aCBuZXRucwo+PiBjYXBhYmlsaXRpZXMu
-Cj4+ID4+ICovCj4+ID4+IMKgIMKgIMKgIMKgaWYgKHN5c2NhbGwoX19OUl91bnNoYXJlLCBDTE9O
-RV9ORVdORVQgfCBDTE9ORV9ORVdOUykgPCAwKQo+PiB7Cj4+ID4+IMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgdHN0X3Jlc20gKFRGQUlMIHwgVEVSUk5PLCAidW5zaGFyZSBzeXNjYWxsIHNtb2tlCj4+
-IHRlc3QKPj4gPj4gZmFpbGVkIik7Cj4+ID4+IMKgIMKgIMKgIMKgfQo+PiA+PiDCoCDCoCDCoCDC
-oHRzdF9leGl0KCk7Cj4+ID4+IH0KPj4gPj4gLS0tLS0tLS0tLS0tLS0tLQo+PiA+Pgo+PiA+PiBJ
-biBSSEVMNS40LzUuNSBzeXN0ZW1zLCB1bnNoYXJlKCkgZG9lcyBub3Qgc3VwcG9ydCB0aGUgYXJn
-dW1lbnQKPj4gPj4gIkNMT05FX05FV05FVCIuCj4+ID4+IEJ1dCBJIGZlZWwgc3RyYW5nZSB0aGF0
-IGxvZyByZXN1bHRzIGlzICJQQVNTIiBpbiBzcGl0ZSBvZiAiVEZBSUwiCj4+IGV4aXQuCj4+ID4+
-Cj4+ID4+ICJjb250YWluZXJfdGVzdC5zaCIgd2hpY2ggY2FsbHMgImNoZWNrX25ldG5zX2VuYWJs
-ZWQuYyIgaXMgYXMKPj4gZm9sbG93czoKPj4gPj4gLS0tPGNvbnRhaW5lcl90ZXN0LnNoPi0tLS0t
-LS0tLS0tLS0KPj4gPj4gLi4uCj4+ID4+IGNoZWNrX25ldG5zX2VuYWJsZWQKPj4gPj4gaWYgWyAk
-PyAtZXEgMCBdOyB0aGVuCj4+ID4+IMKgIMKgIMKgIMKgZWNobyAiUnVubmluZyBuZXRucyB0ZXN0
-cy4iCj4+ID4+IMKgIMKgIMKgIMKgcnVubmV0bnN0ZXN0LnNoCj4+ID4+IGVsc2UKPj4gPj4gwqAg
-wqAgwqAgwqBlY2hvICJOZXR3b3JrIG5hbWVzcGFjZXMgbm90IGVuYWJsZWQgaW4ga2VybmVsLiDC
-oE5vdAo+PiBydW5uaW5nIG5ldG5zCj4+ID4+IHRlc3RzLiIKPj4gPj4gZmkKPj4gPj4gLi4uCj4+
-ID4+IC0tLS0tLS0tLS0tLS0tLS0KPj4gPj4KPj4gPj4gQWNjb3JkaW5nIHRvIGFib3ZlIHNvdXJj
-ZSwgImNoZWNrX25ldG5zX2VuYWJsZWQuYyIgaXMgb25seSB0aGUKPj4ganVkZ2VtZW50Cj4+ID4+
-IHdoZXRoZXIgInJ1bm5ldG5zdGVzdC5zaCIgdGVzdCBjYW4gYmUgY2FsbGVkIG9yIG5vdC4KPj4g
-Pj4gU28sIEkgdGhpbmsgdGhhdCAiVEZBSUwiIGlzIG5vdCBzdWl0YWJsZSBmb3IgdGhlIHRlc3Qg
-aW1wb3NzaWJpbGl0eQo+PiA+PiBtZXNzYWdlLgo+PiA+PiAiVENPTkYiIGlzIG1vcmUgc3VpdGFi
-bGUgZm9yIHRoZSBtZXNzYWdlIHRoYW4gIlRGQUlMIiwgSSB0aGluay4KPj4gPj4gQnV0LCBpZiAi
-VENPTkYiIGlzIHVzZWQgaW5zdGVhZCBvZiAiVEZBSUwiLCAidHN0X2V4aXQiIHJldHVybnMgd2l0
-aAo+PiAwLgo+PiA+PiBBbmQgdGhlIHRlc3Qgc2hlbGwgInJ1bm5ldG5zdGVzdC5zaCIgaXMgY2Fs
-bGVkIGFnYWluc3QgaW50ZW50aW9uLgo+PiA+Pgo+PiA+Pgo+PiA+PiBJIHRob3VnaHQgdXAgdHdv
-IHdheXMgb2Ygc29sdXRpb25zLgo+PiA+PiAoMSkgSW5zZXJ0ICJleGl0KDEpIiBqdXN0IGFmdGVy
-ICJ0c3RfcmVzbSgpIiBvZgo+PiAiY2hlY2tfbmV0bnNfZW5hYmxlZC5jIgo+PiA+PiAoMikgUmVw
-bGFjZSAiVEZBSUwiIHdpdGggIlRXQVJOIiwgaW5zdGVhZCBvZiAiVENPTkYiLgo+PiA+Pgo+PiA+
-PiBCdXQgYWJvdmUgc29sdXRpb25zIGFyZSBib3RoIGlycmVndWxhciBtZWFzdXJlcywgSSB0aGlu
-ay4KPj4gPj4KPj4gPj4gSWYgdGhlcmUgYXJlIG90aGVyIGdvb2QgbWVhc3VyZXMsIHBsZWFzZSBn
-aXZlIG1lIGFkdmljZS4KPj4gPj4KPj4gPj4KPj4gPj4gSW4gdGhlIGZvbGxvd2luZywgSSBub21p
-bmF0ZSBhIHRlbXBvcmFyeSBwYXRjaCBmb3IgYW4gZXhhbXBsZToKPj4gPj4KPj4gPj4gU2lnbmVk
-LW9mZi1ieTogVG9tb25vcmkgTWl0YW5pIDxtaXRhbmlAcnlvYmkuY28uanA+Cj4+ID4+Cj4+ID4+
-ID09PSgxKT09PT09PT09PQo+PiA+PiAtLS0KPj4gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5l
-cnMvbmV0bnMvY2hlY2tfbmV0bnNfZW5hYmxlZC5jIMKgIDIwMTAtCj4+IDA3LTEyCj4+ID4+IDAy
-OjAxOjQ1LjAwMDAwMDAwMCArMDkwMAo+PiA+PiArKysKPj4gYi90ZXN0Y2FzZXMva2VybmVsL2Nv
-bnRhaW5lcnMvbmV0bnMvY2hlY2tfbmV0bnNfZW5hYmxlZC5jIMKgIDIwMTAtCj4+IDA3LTE2Cj4+
-ID4+IDExOjU4OjE0LjAwMDAwMDAwMCArMDkwMAo+PiA+PiBAQCAtNDMsNyArNDMsOCBAQAo+PiA+
-PiDCoHsKPj4gPj4gwqAgwqAgwqAgwqAvKiBDaGVja2luZyBpZiB0aGUga2VybmVsIHN1cHBvcnRz
-IHVuc2hhcmUgd2l0aCBuZXRucwo+PiBjYXBhYmlsaXRpZXMuCj4+ID4+ICovCj4+ID4+IMKgIMKg
-IMKgIMKgIGlmIChzeXNjYWxsKF9fTlJfdW5zaGFyZSwgQ0xPTkVfTkVXTkVUIHwgQ0xPTkVfTkVX
-TlMpIDwKPj4gMCkgewo+PiA+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9yZXNtIChURkFJ
-TCB8IFRFUlJOTywgInVuc2hhcmUgc3lzY2FsbCBzbW9rZQo+PiB0ZXN0Cj4+ID4+IGZhaWxlZCIp
-Owo+PiA+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9yZXNtIChUQ09ORiB8IFRFUlJOTywg
-InVuc2hhcmUgc3lzY2FsbCBzbW9rZQo+PiB0ZXN0Cj4+ID4+IGZhaWxlZCIpOwo+PiA+PiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIGV4aXQgKDEpOwo+PiA+PiDCoCDCoCDCoCDCoH0KPj4gPj4gwqAg
-wqAgwqAgwqB0c3RfZXhpdCgpOwo+PiA+PiDCoH0KPj4gPj4gPT09PT09PT09PT09Cj4+ID4+Cj4+
-ID4+ID09PSgyKT09PT09PT09PQo+PiA+PiAtLS0KPj4gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRh
-aW5lcnMvbmV0bnMvY2hlY2tfbmV0bnNfZW5hYmxlZC5jIMKgIDIwMTAtCj4+IDA3LTEyCj4+ID4+
-IDAyOjAxOjQ1LjAwMDAwMDAwMCArMDkwMAo+PiA+PiArKysKPj4gYi90ZXN0Y2FzZXMva2VybmVs
-L2NvbnRhaW5lcnMvbmV0bnMvY2hlY2tfbmV0bnNfZW5hYmxlZC5jIMKgIDIwMTAtCj4+IDA3LTE2
-Cj4+ID4+IDExOjU2OjQ3LjAwMDAwMDAwMCArMDkwMAo+PiA+PiBAQCAtNDMsNyArNDMsNyBAQAo+
-PiA+PiDCoHsKPj4gPj4gwqAgwqAgwqAgwqAvKiBDaGVja2luZyBpZiB0aGUga2VybmVsIHN1cHBv
-cnRzIHVuc2hhcmUgd2l0aCBuZXRucwo+PiBjYXBhYmlsaXRpZXMuCj4+ID4+ICovCj4+ID4+IMKg
-IMKgIMKgIMKgIGlmIChzeXNjYWxsKF9fTlJfdW5zaGFyZSwgQ0xPTkVfTkVXTkVUIHwgQ0xPTkVf
-TkVXTlMpIDwKPj4gMCkgewo+PiA+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9yZXNtIChU
-RkFJTCB8IFRFUlJOTywgInVuc2hhcmUgc3lzY2FsbCBzbW9rZQo+PiB0ZXN0Cj4+ID4+IGZhaWxl
-ZCIpOwo+PiA+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9yZXNtIChUV0FSTiB8IFRFUlJO
-TywgInVuc2hhcmUgc3lzY2FsbCBzbW9rZQo+PiB0ZXN0Cj4+ID4+IGZhaWxlZCIpOwo+PiA+PiDC
-oCDCoCDCoCDCoH0KPj4gPj4gwqAgwqAgwqAgwqB0c3RfZXhpdCgpOwo+PiA+PiDCoH0KPj4gPj4g
-PT09PT09PT09PT09Cj4+ID4KPj4gPiBVaCwgdGhhdCB3b3VsZCBpbnRyb2R1Y2UgYSBtb3JlIHNl
-cmlvdXMgcHJvYmxlbSBiZWNhdXNlIHRoZSBuZXRucwo+PiA+IHRlc3RzIGFyZSBrZXllZCBvbiB3
-aGV0aGVyIG9yIG5vdCB0aGF0IHNjcmlwdCBwYXNzZXMgb3IgZmFpbHMuCj4+Cj4+IHMvc2NyaXB0
-L2FwcC8KPj4KPj4gPiBJZiB5b3UgY2FuIHByb3ZpZGUgYSBtb3JlIHN0YWJsZSBtZWFucyBvZiBk
-ZXRlY3Rpbmcgd2hldGhlciBvciBub3QKPj4gPiBDTE9ORV8qIGlzIGF2YWlsYWJsZSB3aXRoIG5l
-dG5zLCBhbmQgaW50ZWdyYXRlIHRoYXQgaW50byB0aGUgdGVzdHMsCj4+ID4gdGhhdCB3b3VsZCBi
-ZSBhIGJldHRlciBpZGVhLgo+Pgo+PiBUaGFua3MsCj4+IC1HYXJyZXR0Cj4KPgo+IFNvcnJ5IGZv
-ciBteSBsYXRlIGFuc3dlci4KPgo+IEkgY29uc2lkZXJlZCBob3cgdG8ganVkZ2UgZGV0ZWN0aW5n
-IHdoZXRoZXIgb3Igbm90IENMT05FXyogaXMgYXZhaWxhYmxlLgo+IEhvd2V2ZXIsIEkgaGl0IG9u
-bHkgYWJvdXQgZXJybm8ganVkZ21lbnQuCj4KPiBTaWduZWQtb2ZmLWJ5OiBUb21vbm9yaSBNaXRh
-bmkgPG1pdGFuaUByeW9iaS5jby5qcD4KPgo+ID09PT09PT09PT09PQo+IC0tLSBhL3Rlc3RjYXNl
-cy9rZXJuZWwvY29udGFpbmVycy9uZXRucy9jaGVja19uZXRuc19lbmFibGVkLmMgwqAgMjAxMC0w
-Ny0zMCAwMjoyMzozMi4wMDAwMDAwMDAgKzA5MDAKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2Nv
-bnRhaW5lcnMvbmV0bnMvY2hlY2tfbmV0bnNfZW5hYmxlZC5jIMKgIDIwMTAtMDgtMDIgMTA6Mzg6
-MzEuMDAwMDAwMDAwICswOTAwCj4gQEAgLTQyLDggKzQyLDEyIEBACj4gwqBtYWluKCkKPiDCoHsK
-PiDCoCDCoCDCoCDCoC8qIENoZWNraW5nIGlmIHRoZSBrZXJuZWwgc3VwcG9ydHMgdW5zaGFyZSB3
-aXRoIG5ldG5zIGNhcGFiaWxpdGllcy4gKi8KPiAtIMKgIMKgIMKgIMKgaWYgKHN5c2NhbGwoX19O
-Ul91bnNoYXJlLCBDTE9ORV9ORVdORVQgfCBDTE9ORV9ORVdOUykgPCAwKSB7Cj4gLSDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCB0c3RfcmVzbSAoVEZBSUwgfCBURVJSTk8sICJ1bnNoYXJlIHN5c2NhbGwg
-c21va2UgdGVzdCBmYWlsZWQiKTsKPiArIMKgIMKgIMKgIGlmIChzeXNjYWxsKF9fTlJfdW5zaGFy
-ZSwgQ0xPTkVfTkVXTkVUIHwgQ0xPTkVfTkVXTlMpIDwgMCkgewo+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgaWYgKGVycm5vID09IEVJTlZBTCkgewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgdHN0X3Jlc20gKFRXQVJOIHwgVEVSUk5PLCAidW5zaGFyZSBzeXNjYWxsIG5vdCBz
-dXBwb3J0IENMT05FX05FV05FVCBvciBDTE9ORV9ORVdOUyIpOwo+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgfSBlbHNlIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9y
-ZXNtIChURkFJTCB8IFRFUlJOTywgInVuc2hhcmUgc3lzY2FsbCBzbW9rZSB0ZXN0IGZhaWxlZCIp
-Owo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+IMKgIMKgIMKgIMKgfQo+IMKgIMKgIMKgIMKg
-dHN0X2V4aXQoKTsKPiDCoH0KClRoZXJlIGFyZSBvbmx5IDMgZXJyb3JzIGFsbG93ZWQgZm9yIHVu
-c2hhcmUoMiksIGFjY29yZGluZyB0byB0aGUgbWFucGFnZToKCkVQRVJNCgpmbGFncyBzcGVjaWZp
-ZWQgQ0xPTkVfTkVXTlMgYnV0IHRoZSBjYWxsaW5nIHByb2Nlc3Mgd2FzIG5vdCBwcml2aWxlZ2Vk
-CihkaWQgbm90IGhhdmUgdGhlIENBUF9TWVNfQURNSU4gY2FwYWJpbGl0eSkuCgpFTk9NRU0KCkNh
-bm5vdCBhbGxvY2F0ZSBzdWZmaWNpZW50IG1lbW9yeSB0byBjb3B5IHBhcnRzIG9mIGNhbGxlcidz
-IGNvbnRleHQKdGhhdCBuZWVkIHRvIGJlIHVuc2hhcmVkLgoKRUlOVkFMCgpBbiBpbnZhbGlkIGJp
-dCB3YXMgc3BlY2lmaWVkIGluIGZsYWdzLgoKR2l2ZW4gdGhhdCBUV0FSTiB3aWxsIHNob3cgdXAg
-YXMgYW4gZXJyb3IsIEkgc3VwcG9zZSB0aGlzIGlzIG9rLi4gYnV0Cml0IHNlZW1zIHNpbGx5IHRv
-IHNpbmdsZSBvdXQgb25seSB0aGF0IGNhc2UuCgpDb21taXR0ZWQgYW55aG93IDpQLgotR2FycmV0
-dAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoZSBQYWxtIFBESyBIb3QgQXBwcyBQcm9ncmFtIG9m
-ZmVycyBkZXZlbG9wZXJzIHdobyB1c2UgdGhlClBsdWctSW4gRGV2ZWxvcG1lbnQgS2l0IHRvIGJy
-aW5nIHRoZWlyIEMvQysrIGFwcHMgdG8gUGFsbSBmb3IgYSBzaGFyZQpvZiAkMSBNaWxsaW9uIGlu
-IGNhc2ggb3IgSFAgUHJvZHVjdHMuIFZpc2l0IHVzIGhlcmUgZm9yIG1vcmUgZGV0YWlsczoKaHR0
-cDovL3Auc2YubmV0L3NmdS9kZXYyZGV2LXBhbG0KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3Rz
-LnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
-aW5mby9sdHAtbGlzdAo=
+This is a multi-part message in MIME format.
+--------------010801000908090301010303
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+I found that some of the testcases in kernel/syscalls redefine 'errno' 
+as 'int':
+
+   int errno;
+
+'errno' is normally in errno.h as a #define to a function returning a 
+pointer, i.e.,
+
+   extern int *__errno_location (void)  . . .
+
+
+Attached is a patch to remove the redefinition from the following files:
+
+   testcases/kernel/syscalls/mallopt/mallopt01.c
+   testcases/kernel/syscalls/memcmp/memcmp01.c
+   testcases/kernel/syscalls/memcpy/memcpy01.c
+   testcases/kernel/syscalls/memset/memset01.c
+   testcases/kernel/syscalls/syscall/syscall01.c
+   testcases/kernel/syscalls/string/string01.c
+
+
+Signed-off-by: d.marlin <dmarlin@redhat.com>
+
+
+--------------010801000908090301010303
+Content-Type: text/x-patch;
+ name="errno.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="errno.patch"
+
+--- testcases/kernel/syscalls/mallopt/mallopt01.c.orig	2010-07-03 13:29:23.000000000 -0500
++++ testcases/kernel/syscalls/mallopt/mallopt01.c	2010-08-13 10:28:12.318231274 -0500
+@@ -51,7 +51,6 @@
+ 
+ char *TCID = "mallopt01";
+ int block_number;
+-int errno;
+ FILE *temp;
+ int TST_TOTAL = 1;
+ extern int Tst_COUNT;		/* Test Case counter for tst_routines */
+--- testcases/kernel/syscalls/memcmp/memcmp01.c.orig	2010-07-20 17:40:58.107370000 -0500
++++ testcases/kernel/syscalls/memcmp/memcmp01.c	2010-07-20 16:51:07.468426000 -0500
+@@ -57,7 +57,6 @@
+ /*****	LTP Port	*****/
+ int local_flag = PASSED;
+ int block_number;
+-int errno;
+ FILE *temp;
+ int TST_TOTAL = 2;
+ int anyfail();
+--- testcases/kernel/syscalls/memcpy/memcpy01.c.orig	2010-07-20 17:40:58.116371000 -0500
++++ testcases/kernel/syscalls/memcpy/memcpy01.c	2010-07-20 16:51:10.206237000 -0500
+@@ -61,7 +61,6 @@
+ /*****	LTP Port	*****/
+ int local_flag = PASSED;
+ int block_number;
+-int errno;
+ FILE *temp;
+ int TST_TOTAL = 1;
+ /*****	**	**	*****/
+--- testcases/kernel/syscalls/memset/memset01.c.orig	2010-07-20 17:40:58.127370000 -0500
++++ testcases/kernel/syscalls/memset/memset01.c	2010-07-20 16:51:13.531048000 -0500
+@@ -57,7 +57,6 @@
+ /*****	LTP Port	*****/
+ int local_flag = PASSED;
+ int block_number;
+-int errno;
+ int TST_TOTAL = 1;
+ 
+ extern int Tst_count;
+--- testcases/kernel/syscalls/syscall/syscall01.c.orig	2010-07-20 17:40:58.136370000 -0500
++++ testcases/kernel/syscalls/syscall/syscall01.c	2010-07-20 16:51:18.080796000 -0500
+@@ -52,7 +52,6 @@
+ char *TCID = "syscall01";
+ int local_flag = PASSED;
+ int block_number;
+-int errno;
+ FILE *temp;
+ int TST_TOTAL = 1;
+ extern int Tst_count;
+@@ -63,7 +62,6 @@
+ #define ITER		500
+ 
+ int t_flag;
+-int errno;
+ 
+ /*****	LTP Port	*****/
+ void setup();
+--- testcases/kernel/syscalls/string/string01.c.orig	2010-08-09 15:56:12.859181562 -0500
++++ testcases/kernel/syscalls/string/string01.c	2010-08-09 15:58:32.475110931 -0500
+@@ -52,7 +52,6 @@
+ 
+ int local_flag = PASSED;
+ int block_number;
+-int errno;
+ FILE *temp;
+ int TST_TOTAL = 1;
+ extern int Tst_count;
+
+--------------010801000908090301010303
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by 
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
+--------------010801000908090301010303
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------010801000908090301010303--
+
