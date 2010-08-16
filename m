@@ -1,65 +1,107 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OnQcI-0002Wm-Fv
-	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 06:34:46 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OnQcG-0004wl-5l
-	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 06:34:46 +0000
-Received: by bwz12 with SMTP id 12so5116710bwz.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 22 Aug 2010 23:34:38 -0700 (PDT)
+Subject: The results of your email commands
+From: ltp-list-bounces@lists.sourceforge.net
 MIME-Version: 1.0
-In-Reply-To: <AANLkTin9YCLhTWcn96SMm5RyLQ7cW-Hrei_Y8stV+ZCi@mail.gmail.com>
-References: <AANLkTimVca4Gf2k5aozW-U9REeOd1uynqbE2_MDmDY6T@mail.gmail.com>
-	<AANLkTin9YCLhTWcn96SMm5RyLQ7cW-Hrei_Y8stV+ZCi@mail.gmail.com>
-Date: Sun, 22 Aug 2010 23:34:38 -0700
-Message-ID: <AANLkTinybX+Ou3oFNG27Q54Oz4a7z_F-t7ZSV_5sb4ap@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Help...
+Content-Type: multipart/mixed; boundary="===============6273273659159998852=="
+Message-ID: <mailman.62257.1281964534.4910.ltp-list@lists.sourceforge.net>
+Date: Mon, 16 Aug 2010 13:15:34 +0000
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
-List-Post: <mailto:ltp-list@lists.sourceforge.net>
-List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: chrubis@suse.cz
+
+--===============6273273659159998852==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+The results of your email command are provided below. Attached is your
+original message.
+
+
+- Unprocessed:
+    > please help me by telling that how to disable the function "tst_rmdir()" in
+    > LTP.
+    > this function is causing lots of failures in many testcases.
+    > mainly tests in dio testcase are failing because of some error in this
+    > function.
+    > i tried lots of things,like made the function "tst_rmdir()" to skip. Bt
+    > still there is same error.
+    > the error is like dat-----     "Tst_rmdir():failed:errno=16: device or
+    > resource busy."
+    > please help me out as soon as possible.
+    > 
+    Function tst_rmdir() does cleanup of temporary directories used for
+    testing, when it's failing either you test setup or system is broken.
+    Hmm errno 16 says that someone is still using these directories when
+    test is going to delete them and exit. You could try to track this down
+    with lsof and fuser.
+    -- 
+    Cyril Hrubis
+    chrubis@suse.cz
+
+- Done.
+
+
+--===============6273273659159998852==
+Content-Type: message/rfc822
+MIME-Version: 1.0
+
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>)
+	id 1OkzXJ-0003ah-HD; Mon, 16 Aug 2010 13:15:33 +0000
+X-ACL-Warn: 
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OkzXD-0003oY-Bn; Mon, 16 Aug 2010 13:15:33 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	by mx2.suse.de (Postfix) with ESMTP id 93D7588B6C;
+	Mon, 16 Aug 2010 15:15:21 +0200 (CEST)
+Date: Mon, 16 Aug 2010 15:33:00 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: ARJIT SHARMA <joyarjit@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net,
+	Ltp-list-request@lists.sourceforge.net
+Subject: Re: [LTP] Help....
+Message-ID: <20100816133300.GA26474@saboteur.suse.cz>
+References: <AANLkTi=xTEhb3pOfzMv5-GE6uT8iQa6xTRWHVY050t39@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=xTEhb3pOfzMv5-GE6uT8iQa6xTRWHVY050t39@mail.gmail.com>
+User-Agent: Mutt/1.5.20 (2009-06-14)
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam Filtering performed by mx.sourceforge.net.
+	See http://spamassassin.org/tag/ for more details.
+	-0.0 T_RP_MATCHES_RCVD Envelope sender domain matches handover relay
+	domain 0.0 AWL AWL: From: address is in the auto white-list
+X-Headers-End: 1OkzXD-0003oY-Bn
 
-On Sun, Aug 22, 2010 at 11:33 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Sun, Aug 22, 2010 at 11:17 PM, ARJIT SHARMA <joyarjit@gmail.com> wrote:
->> please help me in getting short discriptions about the testscases used in
->> ltp, and what they do....
->
-> 1. Use a pertinent subject line so others know what to expect and it's
-> searchable by subject in the archives.
-> 2. Read doc/testcases, for one, and also browse the files under
-> runtest for more details.
-> 3. Read doc/ltp-howto.txt for an overview of LTP.
+Hi!
+> please help me by telling that how to disable the function "tst_rmdir()" in
+> LTP.
+> this function is causing lots of failures in many testcases.
+> mainly tests in dio testcase are failing because of some error in this
+> function.
+> i tried lots of things,like made the function "tst_rmdir()" to skip. Bt
+> still there is same error.
+> the error is like dat-----     "Tst_rmdir():failed:errno=16: device or
+> resource busy."
+> please help me out as soon as possible.
+> 
 
-Almost forgot...
+Function tst_rmdir() does cleanup of temporary directories used for
+testing, when it's failing either you test setup or system is broken.
 
-4. Do not CC ltp-list-request@ please. It's completely unnecessary and
-no one will reply to the email there.
+Hmm errno 16 says that someone is still using these directories when
+test is going to delete them and exit. You could try to track this down
+with lsof and fuser.
 
-Thanks,
--Garrett
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-------------------------------------------------------------------------------
-This SF.net email is sponsored by 
 
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+--===============6273273659159998852==--
