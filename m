@@ -1,26 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Oh3T9-0003dM-Fl
-	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 16:38:59 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oh3T7-0005Po-BK
-	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 16:38:59 +0000
-Received: by yxi11 with SMTP id 11so3297999yxi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 05 Aug 2010 09:38:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201008051157.26183.vapier@gentoo.org>
-References: <20100805100954.GB11402@saboteur.suse.cz>
-	<20100805135324.GB18296@saboteur.suse.cz>
-	<D150E027-5380-4B94-A64C-3FD7C8146334@gmail.com>
-	<201008051157.26183.vapier@gentoo.org>
-Date: Thu, 5 Aug 2010 09:38:51 -0700
-Message-ID: <AANLkTikZrHrFS6NiS+JXyThPjti0JqaJ5kYSdkeQh1xH@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] just another make-3.80 bug
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Ol0sG-0001aE-KH
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 14:41:16 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ol0sE-0001UF-DV
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 14:41:16 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e39.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o7GEV9Cq009809
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 08:31:09 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o7GEf7eM177506
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 08:41:08 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o7GEf7pP006292
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 08:41:07 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20100806000058.GA15483@us.ibm.com>
+References: <20100806000058.GA15483@us.ibm.com>
+Date: Mon, 16 Aug 2010 20:11:03 +0530
+Message-Id: <1281969663.5120.15.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] : drop test pidns03 ?
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,63 +40,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Garrett Cooper <yaneurabeya@gmail.com>
+To: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+Cc: subrata@vnet.linux.ibm.com, ltp-list@lists.sourceforge.net
 
-On Thu, Aug 5, 2010 at 8:57 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Thursday, August 05, 2010 09:54:50 Garrett Cooper wrote:
->> On Aug 5, 2010, at 6:53 AM, Cyril Hrubis wrote:
->> >> BTW... calling 1make' bareword never worked with 3.80; all of the the
->> >> directions in INSTALL say use make all [...]; make install. The reason
->> >> being is that make 3.80 didn't have a functional .DEFAULT_GOAL
->> >> equivalent until sometime around midway between make 3.80 and make
->> >> 3.81; so assuming that `make' will function the same as `make all'
->> >> isn't a good assumption to make :).
->> >
->> > So ltp buildsystem is kind of a mine field ;). Anyway as make picks up
->> > first target and makes it default adding "default: all" to the beginning
->> > of env_pre.mk seems to fix that problem for me.
->>
->> Seems like a decent workaround for cases when env_pre.mk is used, but this
->> isn't possible with 3rd party Makefiles, so it might be kind of a moot
->> point.
->>
->> Just to be safe I'd stick with the directions unless you want to submit
->> patches to fix every issue in the source tree :)...
->
-> tweaking the top level makefile so the standard `./configure && make` works
-> without having to read directions would be nice
+Dropped.
 
-    Ok, fair enough :)... please try the attached patch, and if it
-works for you I'll commit it. File bugs or send patches if you find
-any issues beyond the top-level Makefile.
-Thanks,
--Garrett
+Regards--
+Subrata
 
-diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
-index 4444124..17a91fa 100644
---- a/include/mk/env_pre.mk
-+++ b/include/mk/env_pre.mk
-@@ -124,8 +124,13 @@ BUILD_TREE_STATE           := $(BUILD_TREE_NONSRCDIR_INSTAL
- endif
- endif
+commit b47b875e00fbea4bb3398ac2f3ef4b4dd32826f0
+Author: Subrata Modak <subratamodak@subratamodak.linux.ibm.com>
+Date:   Mon Aug 16 20:08:51 2010 +0530
 
--# make 3.80 called it .DEFAULT_TARGET.
-+ifeq ($(MAKE_3_80_COMPAT),1
-+# Trick make 3.80 into thinking that the default goal is all.
-+.PHONY: default
-+default: all
-+else
- .DEFAULT_GOAL                  := all
-+endif
+On Thu, 2010-08-05 at 17:00 -0700, Sukadev Bhattiprolu wrote:
+> I am not sure about the original intent of pidns03 test case but I think
+> the test is expected to fail :-(
+> 
+> The header for this test says:
+> 
+> 	* Verify that:
+> 	* 1. When parent, clone a process with flag CLONE_NEWPID, see the
+> 	* process id of the parent is existing after mounting /proc
+> 
+> The test passes in the parent-pid from init-pid-ns and looks for that
+> pid in the child's mount of /proc.
+> 
+> But for the CLONE_NEWPID child, parent process should appear to have a
+> pid == 0. The pid of the parent in the initial pid namespace must NOT
+> be visible to the child - in fact a different process can have that pid.
+> 
+> I am not surprised the test fails - I am curious to know the version of
+> the kernel when this test reliably passed - if at all. I tried this on
+> 2.6.29 and 2.6.34-rc5 and it fails reliably.
+> 
+> I dug through my history and see that this test was part of a 6-patch set,
+> We did have some comments on the coding style on the set, but we seem to
+> have missed the intent of this test :-(.
+> 
+> Do we have any other history of this test ? If not, I think we should either
+> drop the test or modify the test to verify the opposite (i.e.  verify that
+> the opendir() in the test fails with ENOENT).
+> 
+> Sukadev
+> 
+> ------------------------------------------------------------------------------
+> This SF.net email is sponsored by 
+> 
+> Make an app they can't live without
+> Enter the BlackBerry Developer Challenge
+> http://p.sf.net/sfu/RIM-dev2dev 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
- endif  # END autotools, *clean...
 
 ------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+This SF.net email is sponsored by 
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
