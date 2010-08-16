@@ -1,22 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dthite@mvista.com>) id 1OqNR8-0000Y7-5h
-	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 09:47:26 +0000
-Received: from mail-qy0-f175.google.com ([209.85.216.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OqNR7-0005zc-8S
-	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 09:47:26 +0000
-Received: by qyk31 with SMTP id 31so728318qyk.13
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 31 Aug 2010 02:47:19 -0700 (PDT)
+	(envelope-from <dmarlin@redhat.com>) id 1Ol4MJ-0000Tz-Mb
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 18:24:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ol4MI-0006Ds-Ho
+	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 18:24:31 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id o7GIOOxd019749
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 14:24:24 -0400
+Received: from dmarlin.csb (dhcp-224-3.tha.redhat.com [10.15.224.3])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id o7GIONpa010375
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 14:24:24 -0400
+Message-ID: <4C698256.4010804@redhat.com>
+Date: Mon, 16 Aug 2010 13:24:22 -0500
+From: David Marlin <dmarlin@redhat.com>
 MIME-Version: 1.0
-Date: Tue, 31 Aug 2010 15:17:16 +0530
-Message-ID: <AANLkTi=ShuJOPjaywptWgDaFFG9zhb_uk=_42bpwSavA@mail.gmail.com>
-From: Deepti Thite <dthite@in.mvista.com>
-Content-Type: multipart/mixed; boundary=000feaf115116640e5048f1b77a5
-Subject: [LTP]  [PATCH] ld01
+Content-Type: multipart/mixed; boundary="------------040006040401050403040104"
+Subject: [LTP] warning when building pread01.c
+Reply-To: dmarlin@redhat.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,113 +34,65 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
---000feaf115116640e5048f1b77a5
-Content-Type: multipart/alternative; boundary=000feaf115116640db048f1b77a3
-
---000feaf115116640db048f1b77a3
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-ld01 test fails as native compilers don=92t match in the expected and outpu=
-t
-file.
-
-The attached patch will grep expected results from the output file generate=
-d
-and will not create an expected results file.
+This is a multi-part message in MIME format.
+--------------040006040401050403040104
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
+Function compare_bufers in pread01.c does not expect any arguments, but 
+the reference to compare_bufers passes two arguments:
+
+     compare_bufers(write_buf, read_buf);
+
+
+Within the function compare_bufers, write_buf and read_buf are accessed 
+via their global definitions.  These variables are also accessed via the 
+global definitions in other functions in this testcase.
+
+Attached is a patch to remove the unnecessary arguments from the 
+compare_bufers function reference.
+
+
+Signed-off-by: d.marlin <dmarlin@redhat.com>
 
 
 
-Signed-off: Deepti Thite
+--------------040006040401050403040104
+Content-Type: text/x-patch;
+ name="pread01.c.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="pread01.c.patch"
 
---000feaf115116640db048f1b77a3
-Content-Type: text/html; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+--- testcases/kernel/syscalls/pread/pread01.c.orig	2010-04-01 01:23:10.000000000 -0500
++++ testcases/kernel/syscalls/pread/pread01.c	2010-07-07 19:07:30.375647906 -0500
+@@ -183,7 +183,7 @@
+ 			 * with the data written to write buffer
+ 			 * in the setup.
+ 			 */
+-			compare_bufers(write_buf, read_buf);
++			compare_bufers();
+ 		} else {
+ 			tst_resm(TPASS, "calls to pread() succeeded");
+ 		}
 
-<p class=3D"MsoNormal"><span style=3D"font-size: 10pt; font-family: Arial;"=
->ld01 test
-fails as native compilers don=92t match in the expected and output file.</s=
-pan></p>
 
-<p class=3D"MsoNormal"><span style=3D"font-size: 10pt; font-family: Arial;"=
->The
-attached patch will grep expected results from the output file generated an=
-d
-will not create an expected results file.</span></p>
-
-<p class=3D"MsoNormal"><span style=3D"font-size: 10pt; font-family: Arial;"=
->=A0</span></p>
-
-<p class=3D"MsoNormal"><span style=3D"font-size: 10pt; font-family: Arial;"=
->=A0</span></p>
-
-<p class=3D"MsoNormal"><span style=3D"font-size: 10pt; font-family: Arial;"=
->Signed-off</span><code><span style=3D"font-size: 10pt;">: </span></code><s=
-pan style=3D"font-size: 10pt; font-family: Arial;">Deepti Thite</span></p>
-
---000feaf115116640db048f1b77a3--
-
---000feaf115116640e5048f1b77a5
-Content-Type: application/octet-stream; name="ld01.patch"
-Content-Disposition: attachment; filename="ld01.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gdikqsyx0
-
-LS0tIGxkMDEgICAgICAgIDIwMTAtMDctMDMgMjM6NTk6MDYuMDAwMDAwMDAwICswNTMwDQorKysg
-L21udC9ib3NjaC9vcHQvc3VpdGVzL2x0cC9sdHAtZnVsbC0yMDEwMDYzMC90ZXN0Y2FzZXMvY29t
-bWFuZHMvYWRlL2xkL2xkMDEgIDIwMTAtMDgtMzEgMTI6MzU6MTYuMDAwMDAwMDAwICswNTMwDQpA
-QCAtNzMsMTYgKzczLDI3IEBADQogI0NPREUNCiBlY2hvICJBc3NlcnRpb24gMiAuLi4uLi4uLi4u
-Li4uLi4uLi4iDQogJENDIHgub2JqIHkub2JqIDI+ICRUQ3RtcC9lcnJtc2cub3V0DQotY2F0IDw8
-RU9GID4gJFRDdG1wL2Vycm1zZy5leHANCi0kQ0M6IHgub2JqOiBObyBzdWNoIGZpbGUgb3IgZGly
-ZWN0b3J5DQotJENDOiB5Lm9iajogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQ0KLSRDQzogTm8g
-aW5wdXQgZmlsZXMNCi1FT0YNCg0KLWRpZmYgLWl3ICRUQ3RtcC9lcnJtc2cub3V0ICRUQ3RtcC9l
-cnJtc2cuZXhwDQorZ3JlcCAiJENDOiIgJFRDdG1wL2Vycm1zZy5vdXQgfCBncmVwIHgub2JqIHwg
-Z3JlcCAtcSAiTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeSINCiBpZiBbICQ/IC1lcSAwIF0NCiB0
-aGVuDQotICAgICAgIGVjaG8gICItKSINCisgICAgICAgZ3JlcCAiJENDOiIgJFRDdG1wL2Vycm1z
-Zy5vdXQgfCBncmVwIHkub2JqIHwgZ3JlcCAtcSAiTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeSIN
-CisgICAgICAgaWYgWyAkPyAtZXEgMCBdDQorICAgICAgIHRoZW4NCisgICAgICAgICAgICAgICBn
-cmVwICIkQ0M6IiAkVEN0bXAvZXJybXNnLm91dCB8IGdyZXAgLXEgIm5vIGlucHV0IGZpbGVzIg0K
-KyAgICAgICAgICAgICAgIGlmIFsgJD8gLWVxIDAgXQ0KKyAgICAgICAgICAgICAgIHRoZW4NCisg
-ICAgICAgICAgICAgICAgICAgICAgIGVjaG8gICItKSINCisgICAgICAgICAgICAgICBlbHNlDQor
-ICAgICAgICAgICAgICAgICAgICAgICBlY2hvICJGQUlMIC0gIGxkIGZhaWxlZCB0byBnaXZlIGV4
-cGVjdGVkIGVycm9yIG1zZyINCisgICAgICAgICAgICAgICAgICAgICAgIGRvX2NsZWFudXANCisg
-ICAgICAgICAgICAgICAgICAgICAgIGV4aXQgMQ0KKyAgICAgICAgICAgICAgIGZpDQorICAgICAg
-IGVsc2UNCisgICAgICAgICAgICAgICBlY2hvICJGQUlMIC0gIGxkIGZhaWxlZCB0byBnaXZlIGV4
-cGVjdGVkIGVycm9yIG1zZyINCisgICAgICAgICAgICAgICAgICAgICAgIGRvX2NsZWFudXANCisg
-ICAgICAgICAgICAgICBleGl0IDENCisgICAgICAgZmkNCiBlbHNlDQogICAgICAgIGVjaG8gIkZB
-SUwgLSAgbGQgZmFpbGVkIHRvIGdpdmUgZXhwZWN0ZWQgZXJyb3IgbXNnIg0KICAgICAgICBkb19j
-bGVhbnVwDQpAQCAtMTIwLDE1ICsxMzEsMTkgQEANCiAjQ09ERQ0KICAgICAgICBlY2hvICJBc3Nl
-cnRpb24gNCAuLi4uLi4uLi4uLi4uLi4uLi4iDQogICAgICAgICRDQyBiYWQveC5vYmogMj4gJFRD
-dG1wL2Vycm1zZy5vdXQNCi1jYXQgPDxFT0YgPiAkVEN0bXAvZXJybXNnLmV4cA0KLSRDQzogYmFk
-L3gub2JqOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5DQotJENDOiBObyBpbnB1dCBmaWxlcw0K
-LUVPRg0KDQotZGlmZiAtaXcgICRUQ3RtcC9lcnJtc2cub3V0ICRUQ3RtcC9lcnJtc2cuZXhwDQor
-Y2F0ICRUQ3RtcC9lcnJtc2cub3V0IHwgZ3JlcCAiJENDOiIgfCBncmVwICJiYWQvW3h5XS5vYmo6
-IiB8IGdyZXAgLXEgIk5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkiDQogaWYgWyAkPyAtZXEgMCBd
-DQogdGhlbg0KLSAgICAgICBlY2hvICAiLSkiDQorICAgICAgIGNhdCAkVEN0bXAvZXJybXNnLm91
-dCB8IGdyZXAgIiRDQzoiIHwgZ3JlcCAtcSAibm8gaW5wdXQgZmlsZXMiDQorICAgICAgIGlmIFsg
-JD8gLWVxIDAgXQ0KKyAgICAgICB0aGVuDQorICAgICAgICAgICAgICAgZWNobyAgIi0pIg0KKyAg
-ICAgICBlbHNlDQorICAgICAgICAgICAgICAgZWNobyAiRkFJTCAtICBsZCBmYWlsZWQgdG8gZ2l2
-ZSBleHBlY3RlZCBlcnJvciBtc2ciDQorICAgICAgICAgICAgICAgZG9fY2xlYW51cA0KKyAgICAg
-ICAgICAgICAgIGV4aXQgMQ0KKyAgICAgICBmaQ0KIGVsc2UNCiAgICAgICAgZWNobyAiRkFJTCAt
-ICBsZCBmYWlsZWQgdG8gZ2l2ZSBleHBlY3RlZCBlcnJvciBtc2ciDQogICAgICAgIGRvX2NsZWFu
-dXANCg0K
---000feaf115116640e5048f1b77a5
+--------------040006040401050403040104
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
+This SF.net email is sponsored by 
 
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
---000feaf115116640e5048f1b77a5
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
+--------------040006040401050403040104
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -144,5 +103,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---000feaf115116640e5048f1b77a5--
+--------------040006040401050403040104--
 
