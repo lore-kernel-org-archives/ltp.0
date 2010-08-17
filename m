@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gurudas.pai@oracle.com>) id 1OfoXf-00080t-RY
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:30:31 +0000
-Received: from rcsinet10.oracle.com ([148.87.113.121])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OfoXe-0004fw-V2
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:30:31 +0000
-Message-ID: <4C56636B.50907@oracle.com>
-Date: Mon, 02 Aug 2010 11:49:23 +0530
-From: Gurudas Pai <gurudas.pai@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapierfilter@gmail.com>) id 1OlPFA-00008h-Sx
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 16:42:32 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlPF8-0002AC-Kv
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 16:42:32 +0000
+Received: by fxm6 with SMTP id 6so4588145fxm.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 17 Aug 2010 09:42:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <4C5267A2.1070800@oracle.com>	<AANLkTik3dhWhOCBRKMJv2MkUt8P616044akbCwCUspCE@mail.gmail.com>
-	<AANLkTimGEsbJwtLqEpkCJw+=AwcyweVJge4ntfFzGsAZ@mail.gmail.com>
-In-Reply-To: <AANLkTimGEsbJwtLqEpkCJw+=AwcyweVJge4ntfFzGsAZ@mail.gmail.com>
-Subject: Re: [LTP] LTP-20100630:POWER_MANAGEMENT runpwtests.sh fails.
+In-Reply-To: <AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
+References: <4C6AB19B.6060706@redhat.com>
+	<AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
+Date: Tue, 17 Aug 2010 12:42:24 -0400
+Message-ID: <AANLkTikdoWmHJT0-J_tSEar1698-_pO9mepCZp27ZWnZ@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [LTP] running LTP on uClinux
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,50 +32,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: dmarlin@redhat.com, ltp-list <ltp-list@lists.sourceforge.net>
 
+On Tue, Aug 17, 2010 at 12:31 PM, Garrett Cooper wrote:
+> It should be CPPFLAGS, and the definition should be in env_post.mk; I
+> never had a UCLINUX infrastructure to test with, so this might have
+> fallen between the cracks by accident about 8 months ago.
 
+building for a nommu target should work even when you're running a mmu
+toolchain for an mmu target.  the testcases simply assume things like
+fork() wont work and so fall back to ones that work in both places
+(like vfork).  the tests should be able to run & pass even with a mmu.
 
-Garrett Cooper wrote:
-> On Sun, Aug 1, 2010 at 11:17 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
->> On Thu, Jul 29, 2010 at 10:48 PM, Gurudas Pai <gurudas.pai@oracle.com> wrote:
->>> Hi There,
->>>
->>> I am using LTP-20100630 , and while running POWER_MANAGEMENT test
->>> I get following errors,
->>>
->>> /opt/ltp/testcases/bin/runpwtests.sh: line 201: get_sched_values:
->>> command not found
->>>
->>>
->>> Change log shows get_sched_values.c is removed.
->>>
->>> 92) Log Message:
->>> 1. Remove the .c files and all calls in runpwtests.sh because we can
->>> achieve the same thing through additional shell test logic.
->>> 2. Add the apicmds dependency.
->> File restored.
-> 
-> Except the file already existed... did you run make in the directory?
+> Let me know how this patch works for you.
 
-I ran make under ltp-full-20100630 directory, and not specifically under
-testcases/kernel/power_management.
-
-
- >> File restored.
-
-Where can i get this file ? I couldn't find it under
-http://sourceforge.net/projects/ltp/files/
-
-
-Thanks,
--Guru
+the logic in lib/Makefile should be unified with this
+-mike
 
 ------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+This SF.net email is sponsored by 
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
