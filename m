@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lina.zhao@windriver.com>) id 1Oj5i8-0006uE-6m
-	for ltp-list@lists.sourceforge.net; Wed, 11 Aug 2010 07:26:52 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Oj5i4-0007d9-S0
-	for ltp-list@lists.sourceforge.net; Wed, 11 Aug 2010 07:26:52 +0000
-Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o7B7QfQs021271
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 11 Aug 2010 00:26:41 -0700 (PDT)
-Message-ID: <4C6250A7.1060200@windriver.com>
-Date: Wed, 11 Aug 2010 15:26:31 +0800
-From: "lina.zhao" <lina.zhao@windriver.com>
+	(envelope-from <dmarlin@redhat.com>) id 1OlQtE-0006Ds-Es
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 18:28:00 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlQtB-0000p9-1L
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 18:28:00 +0000
+Message-ID: <4C6AD4A3.50505@redhat.com>
+Date: Tue, 17 Aug 2010 13:27:47 -0500
+From: David Marlin <dmarlin@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [ltp]rt_sigprocmask01.c issue
+References: <4C6AB19B.6060706@redhat.com>
+	<AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
+In-Reply-To: <AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
+Subject: Re: [LTP] running LTP on uClinux
+Reply-To: dmarlin@redhat.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,36 +29,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi,
 
-In rt_sigprocmask01.c:
+Garrett Cooper wrote:
+> On Tue, Aug 17, 2010 at 8:58 AM, David Marlin <dmarlin@redhat.com> wrote:
+>> I was building LTP to test a uClinux system, but encountered some
+>> problems.  As far as I could tell UCLINUX=1 is not being passed to all
+>> testcases when defined at the top level before running make.
+>>
+>>   export UCLINUX=1
+>>   make
+>>
+>>
+>> I modified the following file and the build proceeded as expected:
+>>
+>> --- include/mk/testcases.mk.orig     2010-04-01 01:23:08.000000000 -0500
+>> +++ include/mk/testcases.mk     2010-07-01 17:38:10.240628708 -0500
+>> @@ -53,3 +53,8 @@
+>>
+>>  $(APICMDS_DIR) $(LIBLTP_DIR) $(abs_top_builddir)/$(TKI_DIR): %:
+>>         mkdir -p "$@"
+>> +
+>> +ifeq ($(UCLINUX),1)
+>> +CFLAGS                  += -D__UCLIBC__ -DUCLINUX
+>> +endif
+>>
+>>
+>> Has anyone else had to make similar changes in order to build LTP for
+>> uClinux?
+> 
+> It should be CPPFLAGS, and the definition should be in env_post.mk; I
+> never had a UCLINUX infrastructure to test with, so this might have
+> fallen between the cracks by accident about 8 months ago.
+> 
+> Let me know how this patch works for you.
 
- TEST(syscall(__NR_rt_sigpending, &oset,
-                    SIGSETSIZE));
-                if (TEST_RETURN == -1) {
-                    tst_brkm(TFAIL|TTERRNO, cleanup,
-                        "rt_sigpending call failed");
-                }
-                TEST(sigismember(&oset, TEST_SIG));
-                if (TEST_RETURN == 0) {
-                    tst_brkm(TFAIL|TTERRNO,
-                        cleanup,
-                        "sigismember call failed");
-                }
-                /* call rt_sigprocmask() to unblock
-                 * signal#TEST_SIG */
-                TEST(syscall(__NR_rt_sigprocmask,
-                    SIG_UNBLOCK, &set, &oset, 8));
+The patch works for me.  Thank you.
 
-the SIGSETSIZE is 16 for mips, so in sigprocmask, the last parameter 
-should be SIGSETSIZE too, not 8.
+I am now seeing some other UCLINUX related problems/questions with 
+individual testcases, but will follow up in separate emails on those.
 
-Regards,
 
-Lina Zhao
+Thanks again,
 
+d.marlin
+==========
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by 
