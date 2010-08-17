@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OUNDn-0001vZ-5R
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:06:43 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OUNDm-0007cI-Cb
-	for ltp-list@lists.sourceforge.net; Thu, 01 Jul 2010 17:06:43 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1277909544.21903.142.camel@moss-pluto.epoch.ncsc.mil>
-References: <20100629195210.GA14549@hallyn.com>
-	<1277900005.5710.8.camel@subratamodak.linux.ibm.com>
-	<1277909544.21903.142.camel@moss-pluto.epoch.ncsc.mil>
-Date: Thu, 01 Jul 2010 22:36:15 +0530
-Message-Id: <1278003976.21642.4.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] selinux testsuite
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapierfilter@gmail.com>) id 1OlSTE-0006wj-5U
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:09:16 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlSTD-00082R-9N
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:09:16 +0000
+Received: by fxm6 with SMTP id 6so4753127fxm.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 17 Aug 2010 13:09:09 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTinF=7RB+U6aexwoRzvxnHLMgz73U8U6CVGXD7tj@mail.gmail.com>
+References: <4C6AD534.2020109@redhat.com>
+	<AANLkTimPmB9fNdv2f+zS42Y_+T+6_4y1enDv=K_sHkY=@mail.gmail.com>
+	<AANLkTinneeNUA0NJwh3v_Lhjx=YSHm6dfXNpxVoJHCS=@mail.gmail.com>
+	<AANLkTinF=7RB+U6aexwoRzvxnHLMgz73U8U6CVGXD7tj@mail.gmail.com>
+Date: Tue, 17 Aug 2010 16:09:09 -0400
+Message-ID: <AANLkTi=q=WXuPOqBB7nadhu8iO+tDdM02yGTPi9zykoR@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [LTP] problems building mallopt01.c for uClinux
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,62 +30,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list <ltp-list@lists.sf.net>, James Morris <jmorris@redhat.com>, kaigai@ak.jp.nec.com, SELinux <selinux@tycho.nsa.gov>, "Serge E. Hallyn" <serge@hallyn.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: dmarlin@redhat.com, LTP list <ltp-list@lists.sourceforge.net>
 
-On Wed, 2010-06-30 at 10:52 -0400, Stephen Smalley wrote: 
-> On Wed, 2010-06-30 at 17:43 +0530, Subrata Modak wrote:
-> > Hi Serge,
-> > 
-> > On Tue, 2010-06-29 at 14:52 -0500, Serge E. Hallyn wrote:
-> > > Just a little note to announce that the selinux testsuite is now up as a
-> > > git tree at kernel.org.  You can fetch it using
-> > > 
-> > > 	git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
-> > 
-> > Great. So, how far does it differ from that we have in LTP ?
-> > http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp-dev.git;a=tree;f=testcases/kernel/security/selinux-testsuite;h=066df4cdf2f8a80a0045e338b4bb2bf0f5d37091;hb=HEAD
-> > 
-> > As you, Stephen and others in SELinux <selinux@tycho.nsa.gov> were the
-> > main contributors to the SELinux test(s) in LTP, i guess the next/future
-> > development for SELinux tests will be happening in the new tree.
-> > 
-> > So, i would rather keep pulling to LTP from your tree. Now, could you
-> > please let me know:
-> > 
-> >      1. Whether the new tree contains all scenarios which is present in
-> >         LTP. In such a case a complete pruning of LTP SELinux tests can
-> >         be done and replaced with your tree contents,
-> >      2. If some of the LTP tests are not there, then i would like to
-> >         retain them in LTP side-by-side your tree contents,
-> 
-> The new tree contains all of the selinux tests present in the LTP.  You
-> cannot however simply replace the ltp version of the tests with this
-> tree, as this tree is a standalone testsuite and will not run within the
-> ltp test harness. This testsuite is based on the original standalone
-> selinux testsuite that was contributed by us to IBM to port to the LTP.
-> We have internally maintained this testsuite in parallel to the ltp
-> version as we have found it easier to set up, use, debug, and maintain.
+On Tue, Aug 17, 2010 at 4:05 PM, Garrett Cooper wrote:
+> On Tue, Aug 17, 2010 at 1:00 PM, Mike Frysinger wrote:
+>> On Tue, Aug 17, 2010 at 3:47 PM, Garrett Cooper wrote:
+>>> On Tue, Aug 17, 2010 at 11:30 AM, David Marlin wrote:
+>>>> The testcase mallopt01 skips performing the test when UCLINUX=3D1, but=
+ the
+>>>> mallinfo structure is defined outside the #if !defined(UCLINUX) block.
+>>>>
+>>>> Attached is a patch to move the mallinfo structure definition inside t=
+he
+>>>> #if !defined(UCLINUX) block.
+>>>
+>>> ACK.
+>>
+>> meaning you're going to merge it ? ;) =A0this change looks fine of cours=
+e.
+>
+> Yeah. ACK -> all's good, I'm going to commit later. I kind of adopted
+> it after looking at the yum list, because it's a lot quicker to say
+> and less redundant than:
+>
+> Acked-by: Garrett Cooper <yanegomi@gmail.com>
 
-Thanks Stephen. Since you have maintained the Original-One Internally
-and have simultaneously contributed changes to the LTP-version of
-SELinux, i am depending on you/Serge/SELinux-Mailing-List-members to
-keep sending patches to LTP to update the LTP-version at regular
-intervals (off-course at your convenience ;-))
+ok, but following the original LKML style, people who ACK usually
+arent the ones who actually pick up & merge
+-mike
 
-Regards--
-Subrata
-
-> 
+---------------------------------------------------------------------------=
+---
+This SF.net email is sponsored by =
 
 
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Sprint
-What will you do first with EVO, the first 4G phone?
-Visit sprint.com/first -- http://p.sf.net/sfu/sprint-com-first
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
