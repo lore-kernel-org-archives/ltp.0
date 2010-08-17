@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Ol8dX-0006C9-Fz
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 22:58:35 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ol8dW-0005ug-JF
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 22:58:35 +0000
-Received: by bwz12 with SMTP id 12so3068709bwz.34
+	(envelope-from <vapierfilter@gmail.com>) id 1OlSIt-0006Hz-Ss
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 19:58:35 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlSIs-0005ik-Vq
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 19:58:35 +0000
+Received: by fxm6 with SMTP id 6so4744740fxm.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 16 Aug 2010 15:58:28 -0700 (PDT)
+	Tue, 17 Aug 2010 12:58:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinxT2tjOu_uxNTLxyuYEFSV_ypjM5wZQbKsiy7B@mail.gmail.com>
-References: <AANLkTinxT2tjOu_uxNTLxyuYEFSV_ypjM5wZQbKsiy7B@mail.gmail.com>
-Date: Mon, 16 Aug 2010 15:58:28 -0700
-Message-ID: <AANLkTi=H4jm4Y-6=hwNjsHGTf64omsJPktrUZOvpmjkW@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH][ftests] use MAXPATHLEN for all character arrays
- that hold path/file names
+In-Reply-To: <AANLkTikeApsK=CMUjO6B26GDZmWkFWTWwBn0RUE9bPC3@mail.gmail.com>
+References: <4C6AB19B.6060706@redhat.com>
+	<AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
+	<AANLkTikdoWmHJT0-J_tSEar1698-_pO9mepCZp27ZWnZ@mail.gmail.com>
+	<AANLkTikeApsK=CMUjO6B26GDZmWkFWTWwBn0RUE9bPC3@mail.gmail.com>
+Date: Tue, 17 Aug 2010 15:58:29 -0400
+Message-ID: <AANLkTin4Fcwsf6dQU6mSmBJgGhGWpWXntVtQQ4sk157K@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [LTP] running LTP on uClinux
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,41 +30,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: dmarlin@redhat.com, ltp-list <ltp-list@lists.sourceforge.net>
 
-On Mon, Aug 16, 2010 at 2:13 PM, Henry Yei <hyei@mvista.com> wrote:
-> This patch modifies all tests in the ftest directory to =A0use
-> MAXPATHLEN on all character arrays that store path/file names rather
-> than arbitrarily sized arrays. This corrects issues where there was
-> truncation happening when copying a path from one array to another if
-> the path was long enough. The ftest code may delete the tmp directory
-> instead of the tmp file due to truncation, and cause LTP to report a
-> failure/warning when the tmp directory disappears. We saw this in
-> ftest03,07 where it was trying to copy wdbuf[MAXPATHLEN] into fuss[40]
-> here:
+On Tue, Aug 17, 2010 at 3:51 PM, Garrett Cooper wrote:
+> On Tue, Aug 17, 2010 at 9:42 AM, Mike Frysinger wrote:
+>> On Tue, Aug 17, 2010 at 12:31 PM, Garrett Cooper wrote:
+>>> Let me know how this patch works for you.
+>>
+>> the logic in lib/Makefile should be unified with this
 >
-> =A0 =A0sprintf(fuss, "%s/ftest03.%d", getcwd(wdbuf, sizeof( wdbuf)), getp=
-id());
->
-> and then attempting to delete the file but instead got the directory here:
->
-> =A0 =A0execl("/bin/rm", "rm", "-rf", fuss, NULL);
+> lib.mk picks up env_post.mk, so it's already caught there. Or are you
+> referring to how libltp is built and what headers are picked up from
+> include/ ?
 
-ACK.
+i mean there should not be more than one place in the whole tree which
+adds -DUCLINUX/etc...  if we merge your patch, there will be.  i'm not
+saying your patch is wrong, just that something needs fixing to avoid
+the aforementioned scenario.
+-mike
 
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by =
-
+------------------------------------------------------------------------------
+This SF.net email is sponsored by 
 
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev =
-
+http://p.sf.net/sfu/RIM-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
