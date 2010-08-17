@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Oo5vR-0004UO-T9
-	for ltp-list@lists.sourceforge.net; Wed, 25 Aug 2010 02:41:17 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oo5vP-0003ze-BC
-	for ltp-list@lists.sourceforge.net; Wed, 25 Aug 2010 02:41:17 +0000
-Received: by bwz12 with SMTP id 12so348232bwz.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapierfilter@gmail.com>) id 1OlSS8-0006sH-TQ
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:08:08 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlSS8-00088J-2H
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:08:08 +0000
+Received: by fxm6 with SMTP id 6so4752291fxm.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 24 Aug 2010 19:41:09 -0700 (PDT)
+	Tue, 17 Aug 2010 13:08:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4C7470FC.4090800@cn.fujitsu.com>
-References: <4C73452A.3020006@cn.fujitsu.com>
-	<1282647771.4833.10.camel@subratamodak.linux.ibm.com>
-	<4C7470FC.4090800@cn.fujitsu.com>
-Date: Tue, 24 Aug 2010 19:41:09 -0700
-Message-ID: <AANLkTi=+8rsbAtHg=N+RCBqDH2W6xD+NVWdXScyJH2Mc@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Add ftrace-stress-test to LTP
+Date: Tue, 17 Aug 2010 16:08:02 -0400
+Message-ID: <AANLkTik=eFF+crCzH5o55YwVp+wNUZttg=wqZwE-WiEp@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [LTP] weird indentation in INSTALL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,41 +25,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Zefan <lizf@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Frederic Weisbecker <fweisbec@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Eugene Teo <eugene@redhat.com>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 24, 2010 at 6:25 PM, Li Zefan <lizf@cn.fujitsu.com> wrote:
-> Subrata Modak wrote:
->> Thanks. I need to test this on a suitable kernel. But doubtful if i can
->> add in the default run.
->>
->
-> Why? Because it costs 90 secs? This is configurable, and some other
-> test suites like cpuctl cost more time.
->
-> If a test suite is not run by default, I guess people won't know its
-> existence, probably.
+i'm looking at the top level INSTALL and cannot figure out what is
+going on with the whitespace usage in indenting things.  is it just a
+matter of people are using tab stops of 8 spaces and thus dont notice
+the random mix of spaces and tabs ?
 
-I think that more of the concern stems from the fact that it's a
-performance test, and a lot of people complain if and when their test
-machines slow down to a halt (take hackbench, proc01, for example).
+specifically ("=B7" is a space while "=BB" is a tab):
+Using=B7autoconf:
+=B7=B7=B7=B7=B7=B7=B7=B7$=B7make=B7autotools=B7#=B7This=B7must=B7be=B7run=
+=B7from=B7"$TOP_SRCDIR"!
+=BB   $=B7test=B7-d=B7"$TOP_BUILDDIR"=B7||=B7mkdir=B7-p=B7"$TOP_BUILDDIR"
+=B7=B7=B7=B7=B7=B7=B7=B7$=B7cd=B7"$TOP_BUILDDIR"=B7&&=B7"$TOP_SRCDIR/config=
+ure"=B7\
+=BB   =B7=B7#=B7[configure=B7args=B7go=B7here,=B7e.g.=B7CC=3D$CC,=B7LDFLAGS=
+=3D$LDFLAGS,=B7etc]
 
-There are issues with the code, but it's dealing with the fact that
-it's not really written in a portable way. Give me a bit of time and
-I'll comment on what needs to be changed.
+Not=B7using=B7autoconf:
 
-Thanks,
--Garrett
+=BB   $=B7test=B7-d=B7"$TOP_BUILDDIR"=B7||=B7mkdir=B7-p=B7"$TOP_BUILDDIR"
+=B7=B7=B7=B7=B7=B7=B7=B7$=B7cp=B7"$TOP_SRCDIR/include/config.h.default"=B7\
+=BB   =B7=B7=B7=B7=B7"$TOP_BUILDDIR/include/config.h"
+=B7=B7=B7=B7=B7=B7=B7=B7$=B7cp=B7"$TOP_SRCDIR/include/mk/config.mk.default"=
+=B7\
+=BB   =B7=B7=B7=B7=B7"$TOP_BUILDDIR/include/mk/config.mk"
 
-------------------------------------------------------------------------------
-Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
-Be part of this innovative community and reach millions of netbook users 
-worldwide. Take advantage of special opportunities to increase revenue and 
-speed time-to-market. Join now, and jumpstart your future.
-http://p.sf.net/sfu/intel-atom-d2d
+=B7=B7=B7=B7=B7=B7=B7=B7#=B7Fire=B7up=B7your=B7favorite=B7editor=B7and=B7se=
+t=B7each=B7value=B7appropriately=B7in
+=B7=B7=B7=B7=B7=B7=B7=B7#=B7include/mk/config.mk.=B7Uncomment=B7all=B7value=
+s=B7commented=B7out,=B7such=B7as
+=BB   #=B7NUMA_LIBS,=B7etc,=B7but=B7only=B7if=B7you're=B7sure=B7that=B7the=
+=B7libraries=B7exist=B7and
+=BB   #=B7can=B7be=B7linked=B7on=B7your=B7system.
+.......
+=B7=B7=B7=B7=B7=B7=B7=B7$=B7make=B7all
+=B7=B7=B7=B7=B7=B7=B7=B7$=B7make=B7\
+=BB   =B7=B7"DESTDIR=3D$SYSROOT"=B7\
+=BB   =B7=B7SKIP_IDCHECK=3D[0|1]=B7\
+=BB   =B7=B7install
+-mike
+
+---------------------------------------------------------------------------=
+---
+This SF.net email is sponsored by =
+
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
