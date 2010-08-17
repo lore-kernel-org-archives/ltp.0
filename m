@@ -1,28 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <harsh@linux.vnet.ibm.com>) id 1OkxyH-0001Ue-Um
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 11:35:17 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OkxyC-0003Cp-Am
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 11:35:17 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id o7GBZ4eK016867
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 21:35:04 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o7GBZ4481741002
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 21:35:04 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o7GBZ4EG023241
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 21:35:04 +1000
-From: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
-Date: Mon, 16 Aug 2010 17:05:01 +0530
-Message-Id: <1281958501-17087-1-git-send-email-harsh@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH] ltp setrlimit testcase patch for RLIMIT_FSIZE resource
+	(envelope-from <vapierfilter@gmail.com>) id 1OlSXr-0007KA-C5
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:14:03 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlSXq-0000vU-Hl
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:14:03 +0000
+Received: by fxm6 with SMTP id 6so4756494fxm.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 17 Aug 2010 13:13:56 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4C6AEA91.6080004@redhat.com>
+References: <4C6AD62B.2010905@redhat.com>
+	<AANLkTimTbSmbAf+sVJz6KsMxcYsg0Em6+1jrgcNLuDcF@mail.gmail.com>
+	<4C6AEA91.6080004@redhat.com>
+Date: Tue, 17 Aug 2010 16:13:56 -0400
+Message-ID: <AANLkTinJH+UFWiEH4gOfDzNanfRqArGEjvkx-JK7Y7yr@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [LTP] problems building lchown02.c for uClinux
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,81 +29,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: dmarlin@redhat.com
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Current testcase for setrlimit resource RLIMIT_FSIZE
-is using a global integer variable to communicate the number of
-bytes from child to parent which is incorrect. This
-has been corrected by introducing a pipe to transfer
-this information from child to parent process.
+On Tue, Aug 17, 2010 at 4:01 PM, David Marlin wrote:
+> Garrett Cooper wrote:
+>> It would help if
+>> there was a breakdown of what functionality is and isn't available in
+>> uclinux that's gating builds / testing (I honestly don't know right
+>> offhand what those pieces are).
+>
+> Me either. =A0I'm just using trial and error at the moment (see what
+> works). =A0Many (most) syscalls tests have code to skip unsupported
+> functions based on UCLINUX=3D1, but a few seem to be missing that test.
 
-Signed-off-by: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
+there are some which shouldnt be skipped any more, so i wouldnt use
+the existence of UCLINUX code as a clear indicator that something is
+"OK"
+-mike
+
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/syscalls/setrlimit/setrlimit01.c |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+This SF.net email is sponsored by =
 
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-index 6952eb3..2bb1e9d 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-@@ -156,7 +156,11 @@ void test2()
- 	 * an wired value!  So, it is essential to fflush the parent's
- 	 * write buffer HERE
- 	 */
-+	int pipefd[2];
- 	fflush(stdout);
-+	if (pipe(pipefd) == -1) {
-+		tst_brkm(TBROK | TERRNO, NULL, "pipe creation failed");
-+	}
- 
- 	/*
- 	 * Spawn a child process, and reduce the filesize to
-@@ -170,6 +174,7 @@ void test2()
- 	}
- 
- 	if (pid == 0) {
-+		close(pipefd[0]); /* close unused read end */
- 		rlim.rlim_cur = 10;
- 		rlim.rlim_max = 10;
- 		if ((setrlimit(RLIMIT_FSIZE, &rlim)) == -1) {
-@@ -181,6 +186,11 @@ void test2()
- 		}
- 
- 		if ((bytes = write(fd, buf, 26)) != 10) {
-+			if (write(pipefd[1], &bytes, sizeof(bytes))
-+				< sizeof(bytes)) {
-+				perror("child: write to pipe failed");
-+			}
-+			close(pipefd[1]); /* EOF */
- 			exit(3);
- 		}
- 		exit(0);	/* success */
-@@ -202,6 +212,11 @@ void test2()
- 		tst_resm(TFAIL, "creating testfile failed");
- 		break;
- 	case 3:
-+		close(pipefd[1]); /* close unused write end */
-+		if (read(pipefd[0], &bytes, sizeof(bytes)) < sizeof(bytes)) {
-+			tst_resm(TFAIL, "parent: reading pipe failed");
-+		}
-+		close(pipefd[0]);
- 		tst_resm(TFAIL, "setrlimit failed, expected "
- 			 "10 got %d", bytes);
- 		break;
--- 
-1.7.1.1
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by 
 
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
+http://p.sf.net/sfu/RIM-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
