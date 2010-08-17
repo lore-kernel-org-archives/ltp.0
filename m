@@ -1,32 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OnrHB-0006FG-Qd
-	for ltp-list@lists.sourceforge.net; Tue, 24 Aug 2010 11:02:45 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OnrHA-0006K6-E0
-	for ltp-list@lists.sourceforge.net; Tue, 24 Aug 2010 11:02:45 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o7OAiliQ009200
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Aug 2010 06:44:47 -0400
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o7OB2cSY441958
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Aug 2010 07:02:38 -0400
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o7OB697M005729
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Aug 2010 05:06:10 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <52CF90264091A14888078A031D780F43064456F9@ism-mail03.corp.ad.wrs.com>
-References: <52CF90264091A14888078A031D780F43064456F9@ism-mail03.corp.ad.wrs.com>
-Date: Tue, 24 Aug 2010 16:32:37 +0530
-Message-Id: <1282647757.4833.7.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Rt_sigprocmask01 test case caused "segment fault" on x86
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OlSQr-0004Gd-Oz
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:06:49 +0000
+Received: from mail-bw0-f47.google.com ([209.85.214.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlSQq-0007Oa-So
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:06:49 +0000
+Received: by bwz12 with SMTP id 12so4096234bwz.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 17 Aug 2010 13:06:43 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTin4Fcwsf6dQU6mSmBJgGhGWpWXntVtQQ4sk157K@mail.gmail.com>
+References: <4C6AB19B.6060706@redhat.com>
+	<AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
+	<AANLkTikdoWmHJT0-J_tSEar1698-_pO9mepCZp27ZWnZ@mail.gmail.com>
+	<AANLkTikeApsK=CMUjO6B26GDZmWkFWTWwBn0RUE9bPC3@mail.gmail.com>
+	<AANLkTin4Fcwsf6dQU6mSmBJgGhGWpWXntVtQQ4sk157K@mail.gmail.com>
+Date: Tue, 17 Aug 2010 13:06:42 -0700
+Message-ID: <AANLkTinG4UpHN01dd+d=LGCeqQBFCX1kZ1t=goPKwr_q@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] running LTP on uClinux
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,52 +31,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Fu, Yingang" <Yingang.Fu@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: dmarlin@redhat.com, ltp-list <ltp-list@lists.sourceforge.net>
 
-On Wed, 2010-08-18 at 13:22 +0200, Fu, Yingang wrote: 
-> hi, Garrett
->  
-> This is a similar problem as rt_sigsuspend01 which has been fix
-> before.
->  
-> Failed log:
-> 
-> root@Congatec:/opt/ltp-full> ./testcases/bin/rt_sigprocmask01
-> Segmentation fault
-> 
-> After apply the patch:
-> root@Congatec:/opt/ltp-full> ./testcases/bin/rt_sigprocmask01
-> rt_sigprocmask01    1  TPASS  :  rt_sigprocmask functionality passed
-> 
-> Signed-off-by: Yingang Fu <yingang.fu@windriver.com>
+On Tue, Aug 17, 2010 at 12:58 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Tue, Aug 17, 2010 at 3:51 PM, Garrett Cooper wrote:
+>> On Tue, Aug 17, 2010 at 9:42 AM, Mike Frysinger wrote:
+>>> On Tue, Aug 17, 2010 at 12:31 PM, Garrett Cooper wrote:
+>>>> Let me know how this patch works for you.
+>>>
+>>> the logic in lib/Makefile should be unified with this
+>>
+>> lib.mk picks up env_post.mk, so it's already caught there. Or are you
+>> referring to how libltp is built and what headers are picked up from
+>> include/ ?
+>
+> i mean there should not be more than one place in the whole tree which
+> adds -DUCLINUX/etc... =A0if we merge your patch, there will be. =A0i'm not
+> saying your patch is wrong, just that something needs fixing to avoid
+> the aforementioned scenario.
 
-Thanks. Applied.
+Sure. I had forgotten whether or not there was still a reference to
+UCLINUX in lib/Makefile. Thanks for the reminder :).
+-Garrett
 
-Regards--
-Subrata
-
->  
-> Thanks
-> Yingang
-> ------------------------------------------------------------------------------
-> This SF.net email is sponsored by 
-> 
-> Make an app they can't live without
-> Enter the BlackBerry Developer Challenge
-> http://p.sf.net/sfu/RIM-dev2dev 
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+---------------------------------------------------------------------------=
+---
+This SF.net email is sponsored by =
 
 
-------------------------------------------------------------------------------
-Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
-Be part of this innovative community and reach millions of netbook users 
-worldwide. Take advantage of special opportunities to increase revenue and 
-speed time-to-market. Join now, and jumpstart your future.
-http://p.sf.net/sfu/intel-atom-d2d
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
