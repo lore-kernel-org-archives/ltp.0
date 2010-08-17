@@ -2,22 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Ogyk6-0002j3-No
-	for ltp-list@lists.sourceforge.net; Thu, 05 Aug 2010 11:36:10 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 3075690975
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  5 Aug 2010 13:36:03 +0200 (CEST)
-Date: Thu, 5 Aug 2010 13:52:37 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100805115237.GA14063@saboteur.suse.cz>
-References: <20100805100954.GB11402@saboteur.suse.cz>
+	(envelope-from <dmarlin@redhat.com>) id 1OlQvX-0001Ce-Fv
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 18:30:23 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OlQvV-0005UT-7s
+	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 18:30:23 +0000
+Received: from int-mx04.intmail.prod.int.phx2.redhat.com
+	(int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.17])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id o7HIUFL9013131
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Aug 2010 14:30:15 -0400
+Received: from dmarlin.csb (dhcp-224-3.tha.redhat.com [10.15.224.3])
+	by int-mx04.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id o7HIUDxF002428
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Aug 2010 14:30:14 -0400
+Message-ID: <4C6AD534.2020109@redhat.com>
+Date: Tue, 17 Aug 2010 13:30:12 -0500
+From: David Marlin <dmarlin@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100805100954.GB11402@saboteur.suse.cz>
-Subject: Re: [LTP] just another make-3.80 bug
+Content-Type: multipart/mixed; boundary="------------060305020001090102070503"
+Subject: [LTP] problems building mallopt01.c for uClinux
+Reply-To: dmarlin@redhat.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,56 +33,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-> When trying to build ltp from tarball (ltp-full-20100630.bz2) using
-> make-3.80 for some reason automake rules kicks in so you need either
-> comment out some rules from include/mk/automake.mk or compile autotools
-> by hand (there is no recent automake on system with make-3.80).
-> 
-> # cat /etc/SuSE-release 
-> SUSE Linux Enterprise Server 10 (x86_64)
-> VERSION = 10
-> PATCHLEVEL = 2
-> 
-> # make -v
-> GNU Make 3.80
-> Copyright (C) 2002  Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.
-> There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
-> PARTICULAR PURPOSE.
-> 
-> # tar xjf ltp-full-20100630.bz2 
-> # cd ltp-full-20100630/
-> # ./configure
-> ...
+This is a multi-part message in MIME format.
+--------------060305020001090102070503
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hmm, "make all" seems to work here, so it looks like make-3.80 is
-picking up wrong default target here. And the same stands for
-testcases/realtime/Makefile.
 
-> # make
-> make -C testcases/realtime autotools
-> make[1]: Entering directory `/root/ltp-full-20100630/testcases/realtime'
-> autoheader
-> make[1]: autoheader: Command not found
-> make[1]: *** [autoheader] Error 127
-> make[1]: Leaving directory `/root/ltp-full-20100630/testcases/realtime'
-> make: *** [testcases/realtime/configure] Error 2
+The testcase mallopt01 skips performing the test when UCLINUX=1, but the
+mallinfo structure is defined outside the #if !defined(UCLINUX) block.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Attached is a patch to move the mallinfo structure definition inside the
+#if !defined(UCLINUX) block.
+
+
+Signed-off-by: d.marlin <dmarlin@redhat.com>
+
+
+
+
+--------------060305020001090102070503
+Content-Type: text/x-patch;
+ name="mallopt01.c.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mallopt01.c.patch"
+
+--- testcases/kernel/syscalls/mallopt/mallopt01.c.orig2	2010-08-13 10:28:12.318231000 -0500
++++ testcases/kernel/syscalls/mallopt/mallopt01.c	2010-08-13 10:44:06.279068760 -0500
+@@ -56,10 +56,10 @@
+ extern int Tst_COUNT;		/* Test Case counter for tst_routines */
+ 
+ void printinfo();
+-/*****	*	*	*****/
+-struct mallinfo info;
+ 
+ #if !defined(UCLINUX)
++/*****	*	*	*****/
++struct mallinfo info;
+ 
+ /*--------------------------------------------------------------*/
+ int main(int argc, char *argv[])
+
+--------------060305020001090102070503
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+This SF.net email is sponsored by 
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
+--------------060305020001090102070503
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------060305020001090102070503--
+
