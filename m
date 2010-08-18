@@ -1,28 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <harsh@linux.vnet.ibm.com>) id 1OjQBI-0008O2-WD
-	for ltp-list@lists.sourceforge.net; Thu, 12 Aug 2010 05:18:21 +0000
-Received: from e23smtp01.au.ibm.com ([202.81.31.143])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OjQBH-0002x2-8J
-	for ltp-list@lists.sourceforge.net; Thu, 12 Aug 2010 05:18:20 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp01.au.ibm.com (8.14.4/8.13.1) with ESMTP id o7C5FOUw026716
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Aug 2010 15:15:24 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o7C5IB2x1323078
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Aug 2010 15:18:11 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o7C5IB0l028814
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Aug 2010 15:18:11 +1000
-From: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
-Date: Thu, 12 Aug 2010 10:48:06 +0530
-Message-Id: <1281590286-11833-1-git-send-email-harsh@linux.vnet.ibm.com>
-Subject: [LTP] [PATCH] fs/9p: setrlimit testcase fix for RLIMIT_FSIZE
+	(envelope-from <Yingang.Fu@windriver.com>) id 1Olgj5-00056J-7H
+	for ltp-list@lists.sourceforge.net; Wed, 18 Aug 2010 11:22:35 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Olgj0-0000Qq-MD
+	for ltp-list@lists.sourceforge.net; Wed, 18 Aug 2010 11:22:35 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CB3EC7.9FD6C579"
+Date: Wed, 18 Aug 2010 13:22:18 +0200
+Message-ID: <52CF90264091A14888078A031D780F43064456F9@ism-mail03.corp.ad.wrs.com>
+From: "Fu, Yingang" <Yingang.Fu@windriver.com>
+Subject: [LTP] Rt_sigprocmask01 test case caused "segment fault" on x86
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,75 +24,113 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: yanegomi@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-Current testcase for setrlimit for parameter RLIMIT_FSIZE
-does not convey the number of bytes actually written from
-child process to parent, as the child process writes to its
-own copy of global variable. This patch introduces a pipe
-to send the information from child to the parent process.
+This is a multi-part message in MIME format.
 
-Signed-off-by: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
----
- testcases/kernel/syscalls/setrlimit/setrlimit01.c |   16 ++++++++++++++++
- 1 files changed, 16 insertions(+), 0 deletions(-)
+------_=_NextPart_001_01CB3EC7.9FD6C579
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_002_01CB3EC7.9FD6C579"
 
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-index 6952eb3..d9ff1de 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-@@ -156,7 +156,12 @@ void test2()
- 	 * an wired value!  So, it is essential to fflush the parent's
- 	 * write buffer HERE
- 	 */
-+	int pipefd[2];
- 	fflush(stdout);
-+	if (pipe(pipefd) == -1) {
-+		perror("pipe");
-+		exit(EXIT_FAILURE);
-+	}
- 
- 	/*
- 	 * Spawn a child process, and reduce the filesize to
-@@ -170,6 +175,7 @@ void test2()
- 	}
- 
- 	if (pid == 0) {
-+		close(pipefd[0]); /* close unused read end */
- 		rlim.rlim_cur = 10;
- 		rlim.rlim_max = 10;
- 		if ((setrlimit(RLIMIT_FSIZE, &rlim)) == -1) {
-@@ -181,6 +187,11 @@ void test2()
- 		}
- 
- 		if ((bytes = write(fd, buf, 26)) != 10) {
-+			if (write(pipefd[1], &bytes, sizeof(bytes))
-+				< sizeof(bytes)) {
-+				perror("child: writing pipe failed\n");
-+			}
-+			close(pipefd[1]); /* EOF */
- 			exit(3);
- 		}
- 		exit(0);	/* success */
-@@ -202,6 +213,11 @@ void test2()
- 		tst_resm(TFAIL, "creating testfile failed");
- 		break;
- 	case 3:
-+		close(pipefd[1]); /* close unused write end */
-+		if (read(pipefd[0], &bytes, sizeof(bytes)) < sizeof(bytes)) {
-+			perror("parent: reading pipe failed\n");
-+		}
-+		close(pipefd[0]);
- 		tst_resm(TFAIL, "setrlimit failed, expected "
- 			 "10 got %d", bytes);
- 		break;
--- 
-1.7.1.1
 
+------_=_NextPart_002_01CB3EC7.9FD6C579
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+hi, Garrett
+=20
+This is a similar problem as rt_sigsuspend01 which has been fix before.
+=20
+Failed log:
+
+root@Congatec:/opt/ltp-full> ./testcases/bin/rt_sigprocmask01
+Segmentation fault
+
+After apply the patch:
+root@Congatec:/opt/ltp-full> ./testcases/bin/rt_sigprocmask01
+rt_sigprocmask01    1  TPASS  :  rt_sigprocmask functionality passed
+
+Signed-off-by: Yingang Fu <yingang.fu@windriver.com>
+=20
+Thanks
+Yingang
+
+------_=_NextPart_002_01CB3EC7.9FD6C579
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.5969" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D930445305-13082010>hi,=20
+Garrett</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D930445305-13082010></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D930445305-13082010>This =
+is a similar=20
+problem as rt_sigsuspend01 which has been fix =
+before.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D930445305-13082010>&nbsp;</DIV>
+<DIV>Failed log:</DIV>
+<DIV><BR><A=20
+href=3D"mailto:root@Congatec:/opt/ltp-full">root@Congatec:/opt/ltp-full</=
+A>&gt;=20
+./testcases/bin/rt_sigprocmask01<BR>Segmentation fault<BR></DIV>
+<DIV>After apply the patch:</DIV>
+<DIV><A=20
+href=3D"mailto:root@Congatec:/opt/ltp-full">root@Congatec:/opt/ltp-full</=
+A>&gt;=20
+./testcases/bin/rt_sigprocmask01<BR>rt_sigprocmask01&nbsp;&nbsp;&nbsp; =
+1&nbsp;=20
+TPASS&nbsp; :&nbsp; rt_sigprocmask functionality passed<BR></DIV>
+<DIV>Signed-off-by: Yingang Fu &lt;<A=20
+href=3D"mailto:yingang.fu@windriver.com">yingang.fu@windriver.com</A>&gt;=
+</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks</DIV>
+<DIV>Yingang</DIV></SPAN></FONT></BODY></HTML>
+
+------_=_NextPart_002_01CB3EC7.9FD6C579--
+
+------_=_NextPart_001_01CB3EC7.9FD6C579
+Content-Type: application/octet-stream;
+	name="0001-sigaction-variables-must-be-initialized-before-using.patch"
+Content-Transfer-Encoding: base64
+Content-Description: 0001-sigaction-variables-must-be-initialized-before-using.patch
+Content-Disposition: attachment;
+	filename="0001-sigaction-variables-must-be-initialized-before-using.patch"
+
+RnJvbSBlY2E1Yzg1ZTU5YmY5MmNiZDQ5MjcyYzNkYzBhYjI1ZDYzYmMxZThkIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBZaW5nYW5nIEZ1IDx5aW5nYW5nLmZ1QHdpbmRyaXZlci5jb20+
+CkRhdGU6IFdlZCwgMTggQXVnIDIwMTAgMTk6MDY6NTYgKzA4MDAKU3ViamVjdDogW1BBVENIXSBz
+aWdhY3Rpb24gdmFyaWFibGVzIG11c3QgYmUgaW5pdGlhbGl6ZWQgYmVmb3JlIHVzaW5nIHRoZW0u
+IE90aGVyd2lzZSx3aWxsCiBjYXVzZSAic2VnbWVudCBmYXVsdCIgb24geDg2IHBsYXRmb3JtCgot
+LS0KIC4uLi9zeXNjYWxscy9ydF9zaWdwcm9jbWFzay9ydF9zaWdwcm9jbWFzazAxLmMgICAgIHwg
+ICAgMiArKwogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0p
+CgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWdwcm9jbWFzay9y
+dF9zaWdwcm9jbWFzazAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3Byb2Nt
+YXNrL3J0X3NpZ3Byb2NtYXNrMDEuYwppbmRleCBlMTAwNTYxLi4zMzIwMmYxIDEwMDY0NAotLS0g
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3Byb2NtYXNrL3J0X3NpZ3Byb2NtYXNr
+MDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3Byb2NtYXNrL3J0X3Np
+Z3Byb2NtYXNrMDEuYwpAQCAtMTQyLDYgKzE0Miw4IEBAIGludCBtYWluKGludCBhYywgY2hhciAq
+KmF2KSB7CiAJYWN0Lmtfc2FfaGFuZGxlciA9IHNpZ19oYW5kbGVyOwogI2Vsc2UKIAlzdHJ1Y3Qg
+c2lnYWN0aW9uIGFjdCwgb2FjdDsKKwltZW1zZXQoJmFjdCwwLHNpemVvZihhY3QpKTsKKwltZW1z
+ZXQoJm9hY3QsMCxzaXplb2Yob2FjdCkpOwogCWFjdC5zYV9oYW5kbGVyID0gc2lnX2hhbmRsZXI7
+CiAjZW5kaWYKIAlzaWdzZXRfdCBzZXQsIG9zZXQ7Ci0tIAoxLjcuMC41Cgo=
+
+------_=_NextPart_001_01CB3EC7.9FD6C579
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by 
@@ -108,7 +138,16 @@ This SF.net email is sponsored by
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
 http://p.sf.net/sfu/RIM-dev2dev 
+------_=_NextPart_001_01CB3EC7.9FD6C579
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01CB3EC7.9FD6C579--
+
