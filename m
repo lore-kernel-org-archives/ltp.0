@@ -1,9 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1Om23S-0004dD-Ly
+	for ltp-list@lists.sourceforge.net; Thu, 19 Aug 2010 10:09:02 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id AE70795A49
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 19 Aug 2010 12:08:51 +0200 (CEST)
+Date: Thu, 19 Aug 2010 12:26:46 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100819102646.GA25990@saboteur.suse.cz>
 MIME-Version: 1.0
-Date: Mon, 16 Aug 2010 14:16:44 +0530
-Message-ID: <AANLkTi=xTEhb3pOfzMv5-GE6uT8iQa6xTRWHVY050t39@mail.gmail.com>
-From: ARJIT SHARMA <joyarjit@gmail.com>
-Subject: [LTP] Help....
+Content-Type: multipart/mixed; boundary="k+w/mQv8wyuph6w0"
+Content-Disposition: inline
+Subject: [LTP] [PATCH] fix tst_unzip_file.zip permissions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -13,50 +26,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7184590135260235210=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, Ltp-list-request@lists.sourceforge.net
-
---===============7184590135260235210==
-Content-Type: multipart/alternative; boundary=001485f6cc904a5ff0048decdf6b
-
---001485f6cc904a5ff0048decdf6b
-Content-Type: text/plain; charset=ISO-8859-1
-
-please help me by telling that how to disable the function "tst_rmdir()" in
-LTP.
-this function is causing lots of failures in many testcases.
-mainly tests in dio testcase are failing because of some error in this
-function.
-i tried lots of things,like made the function "tst_rmdir()" to skip. Bt
-still there is same error.
-the error is like dat-----     "Tst_rmdir():failed:errno=16: device or
-resource busy."
-please help me out as soon as possible.
-
-warm regards.
-Arjit........
-
---001485f6cc904a5ff0048decdf6b
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div>please help me by telling that how to disable the function &quot;tst_r=
-mdir()&quot; in LTP.</div>
-<div>this function is causing lots of failures in many=A0testcases.</div>
-<div>mainly tests in dio testcase are failing because of some error in this=
- function.</div>
-<div>i tried lots of things,like made the function &quot;tst_rmdir()&quot; =
-to skip. Bt still there is same error.</div>
-<div>the error is like dat-----=A0=A0=A0=A0 &quot;Tst_rmdir():failed:errno=
-=3D16: device or resource busy.&quot;</div>
-<div>please help me out as soon as possible.</div>
-<div><br clear=3D"all">warm regards.<br>Arjit........ </div>
-
---001485f6cc904a5ff0048decdf6b--
+To: ltp-list@lists.sourceforge.net
 
 
---===============7184590135260235210==
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+When creating package, the buildsysem freaks out on file
+tst_unzip_file.zip because it has world writeable permission, however
+this is not necessary for the test itself to work. Patch attached.
+
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--k+w/mQv8wyuph6w0
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="commands_unzip_makefile.patch"
+
+Index: ltp-full-20100630/testcases/commands/unzip/Makefile
+===================================================================
+--- ltp-full-20100630.orig/testcases/commands/unzip/Makefile
++++ ltp-full-20100630/testcases/commands/unzip/Makefile
+@@ -47,7 +47,7 @@ $(TESTCASES_DATA_DIR):
+ 
+ $(ZIPFILE): | $(TESTCASES_DATA_DIR) $(DIR)
+ 	zip -r "$@" $(DIR)
+-	chmod 00666 "$@"
++	chmod 00644 "$@"
+ 
+ # This target should be auto-removed by Make
+ $(DIR): $(abs_srcdir)/unzip_genfile.sh
+
+--k+w/mQv8wyuph6w0
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -68,7 +75,7 @@ This SF.net email is sponsored by
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
 http://p.sf.net/sfu/RIM-dev2dev 
---===============7184590135260235210==
+--k+w/mQv8wyuph6w0
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -79,5 +86,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============7184590135260235210==--
+--k+w/mQv8wyuph6w0--
 
