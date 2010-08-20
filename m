@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Om23S-0004dD-Ly
-	for ltp-list@lists.sourceforge.net; Thu, 19 Aug 2010 10:09:02 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id AE70795A49
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <missgrass@email.de>) id 1OmSX7-0001TX-BK
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 14:25:25 +0000
+Received: from fmmailgate06.web.de ([217.72.192.247])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OmSX5-0007Hl-Sl
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 14:25:25 +0000
+Received: from mwmweb060  ( [172.20.18.69])
+	by fmmailgate06.web.de (Postfix) with ESMTP id 0841949CC85
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 19 Aug 2010 12:08:51 +0200 (CEST)
-Date: Thu, 19 Aug 2010 12:26:46 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100819102646.GA25990@saboteur.suse.cz>
+	Fri, 20 Aug 2010 16:25:18 +0200 (CEST)
+Date: Fri, 20 Aug 2010 16:25:18 +0200 (CEST)
+From: missgrass@email.de
+Message-ID: <1618109809.1627285.1282314318024.JavaMail.fmail@mwmweb060>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix tst_unzip_file.zip permissions
+Subject: [LTP] Reboot during LTP?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,44 +26,18 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============7018345558795998041=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+--===============7018345558795998041==
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+<body bgcolor="#ffffff" background="https://img.web.de/v/p.gif" class="bgRepeatYes" style="background-repeat: repeat;  background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); font-family: verdana,geneva; font-size: 9pt; padding-left: 0px;"><div style="min-height: 200px; background-image: url(https://img.web.de/v/p.gif); background-repeat: repeat; background-color: #ffffff; font-family: verdana,geneva; font-size: 9pt; padding-left: 0px;"><span style="font-size: 9pt;"><span style="font-family: verdana,geneva;"><span style="background-color: transparent;"><span style="color: #000000;"><span style="color: #000000;">&nbsp;Hi,<br /><br />i wanna know if it is possible to make a reboot during the LTP. That means in one case i start an application-tag with intern reboot, is that possible? And the other case, to make a reboot with LTP an return to the last state? an continue with test...<br /><br />greetings<br /><br />Erika<br /></span></span></span></span></span></div></body>
 
-Hi!
-When creating package, the buildsysem freaks out on file
-tst_unzip_file.zip because it has world writeable permission, however
-this is not necessary for the test itself to work. Patch attached.
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---k+w/mQv8wyuph6w0
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="commands_unzip_makefile.patch"
-
-Index: ltp-full-20100630/testcases/commands/unzip/Makefile
-===================================================================
---- ltp-full-20100630.orig/testcases/commands/unzip/Makefile
-+++ ltp-full-20100630/testcases/commands/unzip/Makefile
-@@ -47,7 +47,7 @@ $(TESTCASES_DATA_DIR):
- 
- $(ZIPFILE): | $(TESTCASES_DATA_DIR) $(DIR)
- 	zip -r "$@" $(DIR)
--	chmod 00666 "$@"
-+	chmod 00644 "$@"
- 
- # This target should be auto-removed by Make
- $(DIR): $(abs_srcdir)/unzip_genfile.sh
-
---k+w/mQv8wyuph6w0
+--===============7018345558795998041==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -75,7 +49,7 @@ This SF.net email is sponsored by
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
 http://p.sf.net/sfu/RIM-dev2dev 
---k+w/mQv8wyuph6w0
+--===============7018345558795998041==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -86,5 +60,4 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---k+w/mQv8wyuph6w0--
-
+--===============7018345558795998041==--
