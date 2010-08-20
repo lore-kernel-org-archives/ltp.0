@@ -2,23 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Ooqxb-0003yI-Mw
-	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 04:54:39 +0000
-Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	(envelope-from <yaneurabeya@gmail.com>) id 1OmTLM-00064Q-Eb
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 15:17:20 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OoqxZ-0002Ql-GG
-	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 04:54:39 +0000
-Received: by gwb1 with SMTP id 1so1079343gwb.34
+	id 1OmTLL-0003jB-CB
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 15:17:20 +0000
+Received: by pzk2 with SMTP id 2so1387584pzk.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 26 Aug 2010 21:54:32 -0700 (PDT)
+	Fri, 20 Aug 2010 08:17:13 -0700 (PDT)
 Mime-Version: 1.0 (Apple Message framework v1081)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <001301cb4594$6e7d4190$4b77c4b0$@co.jp>
-Date: Thu, 26 Aug 2010 21:54:28 -0700
-Message-Id: <1B9B8FA5-4113-480C-BBDB-4CF300D631B1@gmail.com>
-References: <001301cb4594$6e7d4190$4b77c4b0$@co.jp>
-Subject: Re: [LTP] Build of test cases using
-	"pthread_barrierattr_getpshared" failed.
+From: Garrett Cooper <yaneurabeya@gmail.com>
+In-Reply-To: <2019808896.1617958.1282317142128.JavaMail.fmail@mwmweb057>
+Date: Fri, 20 Aug 2010 08:17:11 -0700
+Message-Id: <48A67539-19CF-4E77-893F-266617B8C429@gmail.com>
+References: <1618109809.1627285.1282314318024.JavaMail.fmail@mwmweb060>,
+	<BA0785CB-50D5-4D23-B37E-8B171B5021D8@gmail.com>
+	<2019808896.1617958.1282317142128.JavaMail.fmail@mwmweb057>
+Subject: Re: [LTP] Reboot during LTP?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,130 +29,169 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7087419929794929649=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: missgrass@email.de
 Cc: ltp-list@lists.sourceforge.net
 
-On Aug 26, 2010, at 8:03 PM, Mitani wrote:
 
-> Hi,
-> 
-> 
-> I tried to build open_posix_testsuite test cases.
-> But, in RHEL4.8 systems (x86, x86_64, ia64), some test cases failed to 
-> build as follows:
-> ------------
-> [...]
-> conformance/interfaces/pthread_barrierattr_getpshared/1-1 compile FAILED
-> /tmp/cceTtlYC.o(.text+0x5c): In function `main':
-> : undefined reference to `pthread_barrierattr_getpshared'
-> collect2: ld returned 1 exit status
-> conformance/interfaces/pthread_barrierattr_getpshared/2-1 compile FAILED
-> /tmp/ccMhUJvM.o(.text+0x125): In function `main':
-> : undefined reference to `pthread_barrierattr_getpshared'
-> collect2: ld returned 1 exit status
-> conformance/interfaces/pthread_barrierattr_init/1-1 compile FAILED
-> /tmp/cc6vNdZV.o(.text+0x5c): In function `main':
-> : undefined reference to `pthread_barrierattr_getpshared'
-> collect2: ld returned 1 exit status
-> conformance/interfaces/pthread_barrierattr_init/2-1 compile PASSED
-> conformance/interfaces/pthread_barrierattr_setpshared/1-1 compile FAILED
-> /tmp/cc2gjFbd.o(.text+0x9c): In function `main':
-> : undefined reference to `pthread_barrierattr_getpshared'
-> /tmp/cc2gjFbd.o(.text+0x128): In function `main':
-> : undefined reference to `pthread_barrierattr_getpshared'
-> collect2: ld returned 1 exit status
-> conformance/interfaces/pthread_barrierattr_setpshared/2-1 compile PASSED
-> [...]
-> ------------
-> 
-> These errors are linkage error about "pthread_barrierattr_getpshared".
-> 
-> I searched "pthread_barrierattr_getpshared" in libraries (*.a, *.o, *.so*).
-> I found it in "/usr/lib64/libpthread.a", but the name is 
-> "__pthread_barrierattr_getpshared":
-> ------------
-> [root@RHEL48-LTP-EM64T pthread_barrierattr_getpshared]# find / -name \*.a
-> -print | xargs n
-> m -o | grep pthread_barrierattr_getpshared
-> nm: fromhost.o: no symbols
-> nm: tli.o: no symbols
-> nm: myvsyslog.o: no symbols
-> nm: mcst_grp.o: no symbols
-> [...]
-> nm: liblua_la-ltests.o: no symbols
-> nm: ptlongjmp.o: no symbols
-> nm: oldsemaphore.o: no symbols
-> /usr/lib64/libpthread.a:barrier.o:0000000000000150 T
-> __pthread_barrierattr_getpshared
-> nm: libc-tls-loc.o: no symbols
-> nm: ptw-lseek.o: no symbols
-> nm: ptw-lseek64.o: no symbols
-> [...]
-> nm: apptype.o: no symbols
-> nm: fromhost.o: no symbols
-> nm: tli.o: no symbols
-> nm: myvsyslog.o: no symbols
-> [root@RHEL48-LTP-EM64T pthread_barrierattr_getpshared]#
-> ------------
-> 
-> This name includes "__" for prefix.
-> I think it is strange.
-> 
-> On the other hand, as indicated above, "conformance/interfaces/
-> pthread_barrierattr_setpshared/2-1" succeeded to build. 
-> This test case uses "pthread_barrierattr_setpshared", and does not use 
-> "pthread_barrierattr_getpshared".
-> I searched "pthread_barrierattr_getpshared" just in case:
-> ------------
-> [root@RHEL48-LTP-EM64T pthread_barrierattr_getpshared]# find / -name \*.a
-> -print | xargs n
-> m -o | grep pthread_barrierattr_setpshared
-> nm: fromhost.o: no symbols
-> nm: tli.o: no symbols
-> nm: myvsyslog.o: no symbols
-> nm: mcst_grp.o: no symbols
-> nm: ibmcgrp.o: no symbols
-> [...]
-> nm: ptlongjmp.o: no symbols
-> nm: oldsemaphore.o: no symbols
-> nm: libc-tls-loc.o: no symbols
-> /usr/lib64/libpthread.a:barrier.o:0000000000000160 T
-> pthread_barrierattr_setpshared
-> nm: ptw-lseek.o: no symbols
-> nm: ptw-lseek64.o: no symbols
-> nm: ptw-pread64.o: no symbols
-> [...]
-> nm: apptype.o: no symbols
-> nm: fromhost.o: no symbols
-> nm: tli.o: no symbols
-> nm: myvsyslog.o: no symbols
-> [root@RHEL48-LTP-EM64T pthread_barrierattr_getpshared]#
-> ------------
-> 
-> This name does not include prefix "__".
-> 
-> 
-> I think that this linkage error of "pthread_barrierattr_getpshared" is 
-> caused by the malfunction of RHEL4.8.
-> 
-> Therefore, "SKIPPED" is necessary for the compilation of such above 
-> test case, I think.
-> But "SKIPPED" was deleted from last month git.
-> Can "SKIPPED" be displayed again as before?
+--===============7087419929794929649==
+Content-Type: multipart/alternative; boundary=Apple-Mail-3--932446556
 
-What does the manpage say is required for the API?
+
+--Apple-Mail-3--932446556
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+	Yes, it's possible to do a lot of things. Should it be done? =
+Maybe, maybe not... unless you have a compelling reason to do this, I =
+would say that having a testcase which runs separately from the standard =
+herd is the way to go (i.e. if you're trying to test reboot(2) for =
+instance).
+Cheers,
 -Garrett
 
+On Aug 20, 2010, at 8:12 AM, missgrass@email.de wrote:
+
+> isnt it possible to save the state, for example in a file?
+>=20
+> Von: Garrett Cooper <yaneurabeya@gmail.com>
+> Gesendet: 20.08.2010 16:26:44
+> An: missgrass@email.de
+> Betreff: Re: [LTP] Reboot during LTP?
+>=20
+>  No. You'd lose all state with the running tests.
+> -Garrett
+>=20
+> On Aug 20, 2010, at 7:25 AM, missgrass@email.de wrote:
+>=20
+>  Hi,
+>=20
+> i wanna know if it is possible to make a reboot during the LTP. That =
+means in one case i start an application-tag with intern reboot, is that =
+possible? And the other case, to make a reboot with LTP an return to the =
+last state? an continue with test...
+> =
+--------------------------------------------------------------------------=
+----
+> This SF.net email is sponsored by=20
+>=20
+> Make an app they can't live without
+> Enter the BlackBerry Developer Challenge
+> http://p.sf.net/sfu/RIM-dev2dev =
+_______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+--Apple-Mail-3--932446556
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=us-ascii
+
+<html><head></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space; =
+"><div><span class=3D"Apple-tab-span" style=3D"white-space:pre">	=
+</span>Yes, it's possible to do a lot of things. Should it be done? =
+Maybe, maybe not... unless you have a compelling reason to do this, I =
+would say that having a testcase which runs separately from the standard =
+herd is the way to go (i.e. if you're trying to test reboot(2) for =
+instance).</div><div>Cheers,</div><div>-Garrett</div><br><div><div>On =
+Aug 20, 2010, at 8:12 AM, <a =
+href=3D"mailto:missgrass@email.de">missgrass@email.de</a> =
+wrote:</div><br class=3D"Apple-interchange-newline"><blockquote =
+type=3D"cite"><div>isnt it possible to save the state, for example in a =
+file?<span style=3D"font-size: 9pt;"><span style=3D"font-family: =
+verdana,geneva;"><span style=3D"background-color: transparent;"><span =
+style=3D"color: #000000;"><span style=3D"color: =
+#000000;"><br></span></span></span></span></span><span style=3D"font-size:=
+ 9pt;"><span style=3D"font-family: verdana,geneva;"><span =
+style=3D"background-color: transparent;"><span style=3D"color: =
+#000000;"><span style=3D"color: =
+#000000;"><br></span></span></span></span></span><span style=3D"font-size:=
+ 9pt;"><span style=3D"font-family: verdana,geneva;"><span =
+style=3D"background-color: transparent;"><span style=3D"color: =
+#000000;"><span style=3D"color: #000000;">
+<blockquote style=3D"border-left: 2px solid blue; margin-left: 5px; =
+padding-left: 5px; padding-top: 5px;">
+<hr>
+<b>Von:</b> Garrett Cooper &lt;<a =
+href=3D"mailto:yaneurabeya@gmail.com">yaneurabeya@gmail.com</a>&gt;<br><b>=
+Gesendet:</b> 20.08.2010 16:26:44<br><b>An:</b> <a =
+href=3D"mailto:missgrass@email.de">missgrass@email.de</a><br><b>Betreff:</=
+b> Re: [LTP] Reboot during LTP?<br><br>
+<div style=3D"word-wrap: break-word; -webkit-nbsp-mode: space; =
+-webkit-line-break: after-white-space;"><span class=3D"Apple-tab-span" =
+style=3D"white-space: pre;"> </span>No. You'd lose all state with the =
+running tests.
+<div>-Garrett</div>
+<div><br>
+<div>
+<div>On Aug 20, 2010, at 7:25 AM, <a =
+href=3D"mailto:missgrass@email.de">missgrass@email.de</a> wrote:</div>
+<br class=3D"Apple-interchange-newline">
+<blockquote>
+<div class=3D"bgRepeatYes" style=3D"background-repeat: repeat; =
+background-color: #ffffff; color: #000000; font-family: verdana,geneva; =
+font-size: 9pt; padding-left: 0px;">
+<div style=3D"min-height: 200px; background-image: =
+url(https://img.web.de/v/p.gif); background-color: #ffffff; font-family: =
+verdana, geneva; font-size: 9pt; padding-left: 0px; position: static; =
+z-index: auto; background-repeat: repeat repeat;"><span =
+style=3D"font-size: 9pt;"><span style=3D"font-family: =
+verdana,geneva;"><span style=3D"background-color: transparent;"><span =
+style=3D"color: #000000;"><span style=3D"color: =
+#000000;">&nbsp;Hi,<br><br>i wanna know if it is possible to make a =
+reboot during the LTP. That means in one case i start an application-tag =
+with intern reboot, is that possible? And the other case, to make a =
+reboot with LTP an return to the last state? an continue with =
+test...</span></span></span></span></span></div>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+</blockquote>
+=
+</span></span></span></span></span></div>---------------------------------=
+---------------------------------------------<br>This <a =
+href=3D"http://SF.net">SF.net</a> email is sponsored by <br><br>Make an =
+app they can't live without<br>Enter the BlackBerry Developer =
+Challenge<br><a =
+href=3D"http://p.sf.net/sfu/RIM-dev2dev">http://p.sf.net/sfu/RIM-dev2dev</=
+a> _______________________________________________<br>Ltp-list mailing =
+list<br><a =
+href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.=
+net</a><br>https://lists.sourceforge.net/lists/listinfo/ltp-list<br></bloc=
+kquote></div><br></body></html>=
+
+--Apple-Mail-3--932446556--
+
+
+--===============7087419929794929649==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 ------------------------------------------------------------------------------
-Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
-Be part of this innovative community and reach millions of netbook users 
-worldwide. Take advantage of special opportunities to increase revenue and 
-speed time-to-market. Join now, and jumpstart your future.
-http://p.sf.net/sfu/intel-atom-d2d
+This SF.net email is sponsored by 
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
+--===============7087419929794929649==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7087419929794929649==--
+
