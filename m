@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dmarlin@redhat.com>) id 1OlQtE-0006Ds-Es
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 18:28:00 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OlQtB-0000p9-1L
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 18:28:00 +0000
-Message-ID: <4C6AD4A3.50505@redhat.com>
-Date: Tue, 17 Aug 2010 13:27:47 -0500
-From: David Marlin <dmarlin@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1OmLY3-0004wD-R4
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 06:57:55 +0000
+Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OmLY2-0006Rs-77
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 06:57:55 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000001cb3834$4969dac0$dc3d9040$@co.jp>
+	<AANLkTikOLq=3jQ61cdu3+__d8wJ9vNUxWn6_cYCNVb_d@mail.gmail.com>
+In-Reply-To: <AANLkTikOLq=3jQ61cdu3+__d8wJ9vNUxWn6_cYCNVb_d@mail.gmail.com>
+Date: Fri, 20 Aug 2010 15:57:39 +0900
+Message-ID: <001001cb4034$fadcea10$f096be30$@co.jp>
 MIME-Version: 1.0
-References: <4C6AB19B.6060706@redhat.com>
-	<AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
-In-Reply-To: <AANLkTimurpbzZtn50_UNh0SRWsBPNWDcCYpbinNPH4Gj@mail.gmail.com>
-Subject: Re: [LTP] running LTP on uClinux
-Reply-To: dmarlin@redhat.com
+Content-Language: ja
+Subject: Re: [LTP] [PATCH] fix "hugeshmat01" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,64 +26,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: 'Garrett Cooper' <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-Garrett Cooper wrote:
-> On Tue, Aug 17, 2010 at 8:58 AM, David Marlin <dmarlin@redhat.com> wrote:
->> I was building LTP to test a uClinux system, but encountered some
->> problems.  As far as I could tell UCLINUX=1 is not being passed to all
->> testcases when defined at the top level before running make.
->>
->>   export UCLINUX=1
->>   make
->>
->>
->> I modified the following file and the build proceeded as expected:
->>
->> --- include/mk/testcases.mk.orig     2010-04-01 01:23:08.000000000 -0500
->> +++ include/mk/testcases.mk     2010-07-01 17:38:10.240628708 -0500
->> @@ -53,3 +53,8 @@
->>
->>  $(APICMDS_DIR) $(LIBLTP_DIR) $(abs_top_builddir)/$(TKI_DIR): %:
->>         mkdir -p "$@"
->> +
->> +ifeq ($(UCLINUX),1)
->> +CFLAGS                  += -D__UCLIBC__ -DUCLINUX
->> +endif
->>
->>
->> Has anyone else had to make similar changes in order to build LTP for
->> uClinux?
-> 
-> It should be CPPFLAGS, and the definition should be in env_post.mk; I
-> never had a UCLINUX infrastructure to test with, so this might have
-> fallen between the cracks by accident about 8 months ago.
-> 
-> Let me know how this patch works for you.
-
-The patch works for me.  Thank you.
-
-I am now seeing some other UCLINUX related problems/questions with 
-individual testcases, but will follow up in separate emails on those.
-
-
-Thanks again,
-
-d.marlin
-==========
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by 
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IEdhcnJldHQgQ29vcGVyIFttYWls
+dG86eWFuZWdvbWlAZ21haWwuY29tXQo+IFNlbnQ6IEZyaWRheSwgQXVndXN0IDEzLCAyMDEwIDM6
+MzUgUE0KPiBUbzogTWl0YW5pCj4gQ2M6IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldDsg
+55W25bqnIOWBpeW4ggo+IFN1YmplY3Q6IFJlOiBbTFRQXSBbUEFUQ0hdIGZpeCAiaHVnZXNobWF0
+MDEiIHRlc3QKPiAKPiAyMDEwLzgvOSBNaXRhbmkgPG1pdGFuaUByeW9iaS5jby5qcD46Cj4gPiBI
+aSwKPiA+Cj4gPiBJIHRyaWVkIHRvIHJ1biBodWdlc2htYXQwMSB0ZXN0Y2FzZSwgYnV0IGl0IGZh
+aWxlZC4KPiA+IFRoaXMgdGVzdGNhc2UgZmFpbGVkIGluIGZvbGxvd2luZyBzeXN0ZW1zLgo+ID4g
+ICAtIFJIRUw1LjUtaWE2NAo+ID4gICAtIFJIRUw0LjgteDg2XzY0Cj4gPiAgIC0gUkhFTDQuOC1p
+YTY0Cj4gPgo+ID4gSSB1c2VkIGxhdGVzdCBnaXQ6Cj4gPiAgIGx0cC1kZXYtN2M2N2EwOWExMDI2
+OGI1ZjlmNTAzZTAyNTRmMWYwZjlmNWFjMmI2OS50YXIuZ3oKPiA+IFRoaXMgdGVzdGNhc2UgZmFp
+bGVkIGFsc28gaW4gcHJldmlvdXMgZ2l0cy4KPiA+Cj4gPgo+ID4gUkhFTDUuNS1pYTY0IGxvZzoK
+PiA+IC0tLS0tLS0tLS0tLQo+ID4gaHVnZXNobWF0MDEgICAgMSAgVFBBU1MgIDogIGNvbmRpdGlv
+bnMgYW5kIGZ1bmN0aW9uYWxpdHkgYXJlCj4gY29ycmVjdAo+ID4gaHVnZXNobWF0MDEgICAgMiAg
+VEZBSUwgIDogIGh1Z2VzaG1hdDAxIGNhbGwgZmFpbGVkIC0gZXJybm8gPSAyMiA6Cj4gSW52YWxp
+ZAo+ID4gYXJndW1lbnQKPiA+IGh1Z2VzaG1hdDAxICAgIDMgIFRCUk9LICA6ICBSZW1haW5pbmcg
+Y2FzZXMgYnJva2VuCj4gPiAtLS0tLS0tLS0tLS0KPiA+Cj4gPiBJdCBpcyBjYXVzZWQgYnkgIkVJ
+TlZBTCIgZmFpbHVyZSBvZiBzaG1hdCgpLgo+ID4KPiA+IC0tLShodWdlc2htYXQwMS5jKS0tLS0t
+LS0tLQo+ID4gWy4uLl0KPiA+ICAgICAgICAgICAgICAgIGZvciAoaT0wOyBpPFRTVF9UT1RBTDsg
+aSsrKSB7Cj4gPgo+ID4gICAgICAgICAgICAgICAgICAgICAgICAvKgo+ID4gICAgICAgICAgICAg
+ICAgICAgICAgICAgKiBVc2UgVEVTVCBtYWNybyB0byBtYWtlIHRoZSBjYWxsCj4gPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAqLwo+ID4gICAgICAgICAgICAgICAgICAgICAgICBlcnJubyA9IDA7
+Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgIGFkZHIgPSBzaG1hdCgqKFRDW2ldLnNobWlkKSwg
+KHZvaWQKPiAqKShUQ1tpXS5hZGRyKSwKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBUQ1tpXS5mbGFncyk7Cj4gPiBbLi4uXQo+ID4gLS0tLS0tLS0tLS0tCj4gPgo+ID4gSW4g
+c2Vjb25kIGxvb3AgKGk9MSksIGFyZ3VtZW50cyBvZiBzaGVtYXQoKSBhcmUgZm9sbG93aW5nczoK
+PiA+Cj4gPiAgIHNobWF0KGlkLCAweDEwMDAwMDAwZWVlLCBTSE1fUk5EKQo+ID4KPiA+IFRoaXMg
+dGVzdCBleHBlY3RzIHRoYXQgdGhlIHJldHVybiB2YWx1ZSBvZiBzaG1hdCgpIGlzIHJvdW5kZWQg
+ZG93bgo+IHRvCj4gPiBhIG11bHRpcGxlIG9mIFNITUxCQS4KPiA+IEJ1dCBzaG1hdCgpIGZhaWxl
+ZCBpbiBzb21lIHN5c3RlbXMuCj4gPiBJIGRlZHVjZWQgdGhhdCAiMHgxMDAwMDAwMGVlZSIgYWRk
+cmVzcyBtYXkgYmUgb3V0c2lkZSBvZiBodWdlcGFnZXMKPiBhcmVhLgo+ID4KPiA+IFNvIEkgdXNl
+ZCB0aGUgcmV0dXJuIHZhbHVlIG9mIGZpcnN0IGxvb3AncyBzaG1hdCgpIGluc3RlYWQgb2YgZml4
+ZWQKPiA+IGFkZHJlc3MgKCIweDEwMDAwMDAwZWVlIikuCj4gPiBBbmQgdGhlIHRlc3Qgc3VjY2Vl
+ZGVkLgo+IAo+IFRoZSBxdWVzdGlvbiBJIGhhdmUgdG8gcG9zZSBpczogd2h5IHdvdWxkIGl0IGRv
+IHRoaXMgaWYgdGhlIG90aGVyCj4gYWRkcmVzcyB3YXMgZGVhbGxvY2F0ZWQ/Cj4gCj4gVGhhbmtz
+LAo+IC1HYXJyZXR0CgpIaSwKCiJodWdlc2htYXQwMSIgdGVzdCBoYXMgdGhyZWUgZmFzZSB0ZXN0
+cy4KSW4gdGhlc2UgdGVzdHMsIHNlY29uZCBvbmUgZmFpbGVkIGluIG15IHNldmVyYWwgeDY0XzY0
+IGFuZCBpYTY0IAphcmNoaXRlY3R1cmUgbWFjaGluZXMuCgpUaGUgZmlyc3QgaXMgdGhlIHRlc3Qg
+Zm9yIHNobWF0KCkgd2l0aCAwIGFkZHJlc3MgaW4gMm5kIGFyZ3VtZW50LgpUaGUgc2Vjb25kIGlz
+IHRoZSB0ZXN0IGZvciBzaG1hdCgpIHdpdGggdW5hbGlnbmVkIGFkZHJlc3MgaW4gMm5kIGFyZ3Vt
+ZW50LgoKSW4gdGhlIGZpcnN0IHRlc3QsIGl0IGlzIGV4cGVjdGVkIHRoYXQgMCBhZGRyZXNzZWQg
+c2htYXQoKSByZXR1cm5zIAp3aXRoIG5ldyBhbGlnbmVkIGFkZHJlc3MuCkluIHRoZSBzZWNvbmQg
+dGVzdCwgaXQgaXMgZXhwZWN0ZWQgdGhhdCB1bmFsaWduZWQgYWRkcmVzc2VkIHNobWF0KCkKcmV0
+dXJucyB3aXRoIGFsaWduZWQgYWRkcmVzcy4KClRoaXMgc2Vjb25kIHRlc3QgdXNlcyB0aGUgZml4
+ZWQgYWRkcmVzcyAiMHgxMDAwMDAwMGVlZSIgZm9yIHVuYWxpZ25lZCAKYWRkcmVzcy4KV2hlbiBh
+IGZpeGVkIGFkZHJlc3Mgd2FzIHNwZWNpZmllZCwgdGhpcyBhZGRyZXNzIG1heSBiZSB0aGUgYWRk
+cmVzcyAKd2hpY2ggb3RoZXIgcHJvY2Vzc2VzIHVzZSBkZXBlbmRpbmcgb24gYSBjYXNlLiBUaGlz
+IG1heSBiZSBvdXQgb2YgCnVzZXIgc3BhY2UuCgpUaGUgZHluYW1pYyBhZGRyZXNzIGdvdHRlbiBi
+eSB0aGUgZmlyc3QgdGVzdCdzIHNobWdldCgpIGlzIHRoZSBhZGRyZXNzIAp3aXRob3V0IHN1Y2gg
+YSByaXNrLCBJIHRoaW5rLgpJIHBlcmZvcm1lZCB0aGlzIHJldmlzaW9uIHRvIHJlZHVjZSB0aGUg
+cmlzayBvZiB0aGUgc2Vjb25kIHRlc3QgCmJ5IHJldXNpbmcgYSBhZGRyZXNzIGdvdHRlbiBieSB0
+aGUgZmlyc3QgdGVzdC4KCgpUaGFuayB5b3UtLQoKLVRvbW9ub3JpIE1pdGFuaQoKCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IAoKTWFrZSBh
+biBhcHAgdGhleSBjYW4ndCBsaXZlIHdpdGhvdXQKRW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxv
+cGVyIENoYWxsZW5nZQpodHRwOi8vcC5zZi5uZXQvc2Z1L1JJTS1kZXYyZGV2IApfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxp
+c3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
+Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
