@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1Ogl10-0005Y9-Aj
-	for ltp-list@lists.sourceforge.net; Wed, 04 Aug 2010 20:56:42 +0000
-Received: from mail-qw0-f47.google.com ([209.85.216.47])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yaneurabeya@gmail.com>) id 1OmSYY-0003BY-My
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 14:26:54 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ogl0w-0005GA-4p
-	for ltp-list@lists.sourceforge.net; Wed, 04 Aug 2010 20:56:42 +0000
-Received: by qwg8 with SMTP id 8so4469012qwg.34
+	id 1OmSYX-0001pc-K6
+	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 14:26:54 +0000
+Received: by pvg6 with SMTP id 6so1343800pvg.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Aug 2010 13:56:32 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB652@me-ex1.ctsl.cubic.cub>
-References: <6A4A1EB0E8FDFB46AC5D6C392E82277006AAB652@me-ex1.ctsl.cubic.cub>
-From: Henry Yei <hyei@mvista.com>
-Date: Wed, 4 Aug 2010 13:26:01 -0700
-Message-ID: <AANLkTikn1tx4Lz7SWAzyp0diKTiPyztgxSoMgvyj2Hq7@mail.gmail.com>
-Subject: Re: [LTP] Install failure when cross compiling for ARM
+	Fri, 20 Aug 2010 07:26:48 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: Garrett Cooper <yaneurabeya@gmail.com>
+In-Reply-To: <1618109809.1627285.1282314318024.JavaMail.fmail@mwmweb060>
+Date: Fri, 20 Aug 2010 07:26:44 -0700
+Message-Id: <BA0785CB-50D5-4D23-B37E-8B171B5021D8@gmail.com>
+References: <1618109809.1627285.1282314318024.JavaMail.fmail@mwmweb060>
+Subject: Re: [LTP] Reboot during LTP?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,232 +27,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============2036571971855110616=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Boari, Doug" <Doug.Boari@cubic.com>
+To: missgrass@email.de
 Cc: ltp-list@lists.sourceforge.net
 
-Doug,
 
-I was just able to cross compile ltp-20100630 the other day on our arm
-toolchain and did not see that error. This was using a MontaVista
-toolchain on Red Hat 5.5 (64).
-
-Our steps to cross compile are:
-
-./configure --oldincludedir=3D${IncludePath} --host=3Darm-montavista-linux-=
-gnueabi
-
-# where ${IncludePath} points to the headers installed on the target
-root filesystem.
-
-export SKIP_IDCHECK=3D1
-make -k
-make install
+--===============2036571971855110616==
+Content-Type: multipart/alternative; boundary=Apple-Mail-2--935473564
 
 
+--Apple-Mail-2--935473564
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Henry Yei <hyei@mvista.com>
+	No. You'd lose all state with the running tests.
+-Garrett
+
+On Aug 20, 2010, at 7:25 AM, missgrass@email.de wrote:
+
+>  Hi,
+>=20
+> i wanna know if it is possible to make a reboot during the LTP. That =
+means in one case i start an application-tag with intern reboot, is that =
+possible? And the other case, to make a reboot with LTP an return to the =
+last state? an continue with test...
+
+--Apple-Mail-2--935473564
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=us-ascii
+
+<html><head></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space; "><span =
+class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>No. You'd =
+lose all state with the running =
+tests.<div>-Garrett</div><div><br><div><div>On Aug 20, 2010, at 7:25 AM, =
+<a href=3D"mailto:missgrass@email.de">missgrass@email.de</a> =
+wrote:</div><br class=3D"Apple-interchange-newline"><blockquote =
+type=3D"cite"><div bgcolor=3D"#ffffff" =
+background=3D"https://img.web.de/v/p.gif" class=3D"bgRepeatYes" =
+style=3D"background-repeat: repeat;  background-color: rgb(255, 255, =
+255); color: rgb(0, 0, 0); font-family: verdana,geneva; font-size: 9pt; =
+padding-left: 0px;"><div style=3D"min-height: 200px; background-image: =
+url(https://img.web.de/v/p.gif); background-color: rgb(255, 255, 255); =
+font-family: verdana, geneva; font-size: 9pt; padding-left: 0px; =
+position: static; z-index: auto; background-repeat: repeat repeat; =
+"><span style=3D"font-size: 9pt;"><span style=3D"font-family: =
+verdana,geneva;"><span style=3D"background-color: transparent;"><span =
+style=3D"color: #000000;"><span style=3D"color: =
+#000000;">&nbsp;Hi,<br><br>i wanna know if it is possible to make a =
+reboot during the LTP. That means in one case i start an application-tag =
+with intern reboot, is that possible? And the other case, to make a =
+reboot with LTP an return to the last state? an continue with =
+test...</span></span></span></span></span></div></div></blockquote></div><=
+/div></body></html>=
+
+--Apple-Mail-2--935473564--
 
 
+--===============2036571971855110616==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+------------------------------------------------------------------------------
+This SF.net email is sponsored by 
 
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
+--===============2036571971855110616==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-On Wed, Aug 4, 2010 at 3:04 AM, Boari, Doug <Doug.Boari@cubic.com> wrote:
-> Hi Garrett,
->
-> Sorry I forgot to attach the zip (now enclosed)
->
-> Here is the make --version:
->
-> GNU Make 3.81
-> Copyright (C) 2006 =A0Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.
-> There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
-> PARTICULAR PURPOSE.
-> This program built for i486-pc-linux-gnu
->
-> Hmmmmm After poking around a bit, I'm thinking that maybe LTP may not be
-> suitable for our board after all...
-> I was reading through some of the test_realtime scripts and it looks
-> like the tests need to build libs before running. Unfortunately we have
-> no on-board compiler, everything is cross compiled on a separate PC. Is
-> there anyway round this? I'm especially interested in the scheduling
-> sub-set of tests.
->
-> Thanks a lot for any advice.
->
-> Kind regards
-> Doug
->
->
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: 03 August 2010 17:30
-> To: Boari, Doug
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] Install failure when cross compiling for ARM
->
-> On Tue, Aug 3, 2010 at 8:56 AM, Boari, Doug <Doug.Boari@cubic.com>
-> wrote:
->> Hi All,
->>
->>
->>
->> I've just found LTP and it looks to be exactly what we need to stress
->> test a PXA320 board we're working on. Great!
->>
->> I'm cross-compiling to ARM on Ubuntu 8.04LTS
->>
->>
->>
->> I have successfully built the tools using the lines:
->>
->> ./configure CFLAGS=3D-fno-short-enums --target=3Darm-iwmmxt-linux-gnueabi
->> --host=3Darm-iwmmxt-linux-gnueabi
->>
->> make all
->>
->>
->>
->> I then tried to install using:
->>
->>
->>
->> make DESTDIR=3D/home/mm6/LTP/arm-install SKIP_IDCHECK=3D1 install
->>
->>
->>
->> and it chugs along until finally bombing with:
->>
->>
->>
->> make[3]: Entering directory
->> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4'
->>
->> make[4]: Entering directory
->> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4/acl'
->>
->> ../../../../include/mk/env_post.mk:90: warning: overriding commands
->> for target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin'
->>
->> ../../../../include/mk/env_post.mk:90: warning: ignoring old commands
->> for target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin'
->>
->> ../../../../include/mk/env_post.mk:92: warning: overriding commands
->> for target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma'
->>
->> ../../../../include/mk/env_post.mk:92: warning: ignoring old commands
->> for target `/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma'
->>
->> install -m 00775 "/testgamma"
->> "/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma"
->>
->> install: cannot stat `/testgamma': No such file or directory
->>
->> make[4]: ***
->> [/home/mm6/LTP/arm-install/opt/ltp/testcases/bin/testgamma]
->> Error 1
->>
->> make[4]: Leaving directory
->> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4/acl'
->>
->> make[3]: *** [install] Error 2
->>
->> make[3]: Leaving directory
->> `/home/mm6/LTP/ltp-full-20100630/testcases/network/nfsv4'
->>
->> make[2]: *** [install] Error 2
->>
->> make[2]: Leaving directory
->> `/home/mm6/LTP/ltp-full-20100630/testcases/network'
->>
->> make[1]: *** [install] Error 2
->>
->> make[1]: Leaving directory `/home/mm6/LTP/ltp-full-20100630/testcases'
->>
->> make: *** [testcases-install] Error 2
->>
->>
->>
->> Now I can see from the error that somewhere something has gotten
->> confused and it is looking for /testgamma, but I can't find any other
->> reference to this anywhere in the LTP build tree.
->>
->> I'm afraid I don't really know where to look to remove this reference.
->
->> If anyone has any suggestions I'd appreciate it as a search of the
->> mail list found nothing.
->>
->> I've include the config.h, config.mk and config.log files as per the
->> INSTALL file.
->>
->>
->>
->> If anyone has experience in building for an ARM board, I'd appreciate
->> any pointers on what I might be doing wrong, and also what tests might
->
->> not function correctly.
->
-> Hi Doug,
-> =A0 =A0First off, could you please provide the output of `make --version'
-> and your config.log ?
-> Thanks,
-> -Garrett
-> **********************************************************************
->
-> This document is intended for, and should only be read by,
-> those persons to whom it is addressed. Its contents are
-> confidential and if you have received this message in error,
-> please delete it. Any form of reproduction, dissemination,
-> copying, disclosure, modification, distribution and / or
-> publication of this message without our prior written
-> consent is strictly prohibited.
->
-> Any views expressed in this message are those of the
-> individual sender, and do not necessarily represent the
-> position of CTSL. Furthermore CTSL does not authorise
-> or use e-mail for official contractual correspondence.
-> Nothing received in e-mail has any contractual validity.
->
-> CTSL and each legal entity in Cubic Corporation reserve
-> the right to monitor all e-mail communications through
-> its networks.
->
-> Registered Office:
-> Cubic Transportation Systems Ltd
-> AFC House
-> Honeycrock Lane
-> Salfords
-> Surrey
-> RH1 5LA
-> United Kingdom
->
-> Registered in England under number 01381707
-> **********************************************************************
->
->
-> -------------------------------------------------------------------------=
------
-> The Palm PDK Hot Apps Program offers developers who use the
-> Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-> of $1 Million in cash or HP Products. Visit us here for more details:
-> http://p.sf.net/sfu/dev2dev-palm
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
-
----------------------------------------------------------------------------=
----
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2036571971855110616==--
+
