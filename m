@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <missgrass@email.de>) id 1OmSX7-0001TX-BK
-	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 14:25:25 +0000
-Received: from fmmailgate06.web.de ([217.72.192.247])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OmSX5-0007Hl-Sl
-	for ltp-list@lists.sourceforge.net; Fri, 20 Aug 2010 14:25:25 +0000
-Received: from mwmweb060  ( [172.20.18.69])
-	by fmmailgate06.web.de (Postfix) with ESMTP id 0841949CC85
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 20 Aug 2010 16:25:18 +0200 (CEST)
-Date: Fri, 20 Aug 2010 16:25:18 +0200 (CEST)
-From: missgrass@email.de
-Message-ID: <1618109809.1627285.1282314318024.JavaMail.fmail@mwmweb060>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <socketcan@hartkopp.net>) id 1Onc4R-0007WR-Td
+	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 18:48:35 +0000
+Received: from mo-p00-ob.rzone.de ([81.169.146.161])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Onc4N-00073V-8O
+	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 18:48:35 +0000
+Message-ID: <4C72BC94.1090608@hartkopp.net>
+Date: Mon, 23 Aug 2010 20:23:16 +0200
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 MIME-Version: 1.0
-Subject: [LTP] Reboot during LTP?
+Subject: [LTP] New LTP test for CAN packet flow
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +22,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7018345558795998041=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============7018345558795998041==
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-<body bgcolor="#ffffff" background="https://img.web.de/v/p.gif" class="bgRepeatYes" style="background-repeat: repeat;  background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); font-family: verdana,geneva; font-size: 9pt; padding-left: 0px;"><div style="min-height: 200px; background-image: url(https://img.web.de/v/p.gif); background-repeat: repeat; background-color: #ffffff; font-family: verdana,geneva; font-size: 9pt; padding-left: 0px;"><span style="font-size: 9pt;"><span style="font-family: verdana,geneva;"><span style="background-color: transparent;"><span style="color: #000000;"><span style="color: #000000;">&nbsp;Hi,<br /><br />i wanna know if it is possible to make a reboot during the LTP. That means in one case i start an application-tag with intern reboot, is that possible? And the other case, to make a reboot with LTP an return to the last state? an continue with test...<br /><br />greetings<br /><br />Erika<br /></span></span></span></span></span></div></body>
-
-
---===============7018345558795998041==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: SocketCAN Core Mailing List <socketcan-core@lists.berlios.de>, ltp-list <ltp-list@lists.sf.net>
+
+Dear Subrata,
+
+long time - no update ;-)
+
+But now i created a test that's able to detect a corrupt CAN frame flow inside
+the Kernel. So far the correct IFF_ECHO functionality has been accidentally
+removed by netdev patches two times.
+
+The latest fix was here:
+
+http://git.kernel.org/?p=linux/kernel/git/davem/net-2.6.git;a=commitdiff;h=cff0d6e6edac7672b3f915bb4fb59f279243b7f9
+
+To perform the local echo of CAN frames, the reference to the originating sock
+struct has to be passed to the netdevice without orphan of the socketbuffer.
+
+The new test tool 'tst-rcv-own-msgs' can check the correct packet flow by
+creating two can-raw sockets.
+
+To extend your test-script in
+
+    network/can/filter-tests/run_ltp-can_tests.sh
+
+the modprobe of the vcan driver needs an additional parameter 'echo=1', which
+configures the driver to perform the CAN frame echo on driver level.
+
+This 'echo=1' setting does not have any impact to the filtertest performed in
+your script.
+
+The new tool 'tst-rcv-own-msgs' can be found in the same directory in the
+SocketCAN SVN where the current 'tst-filter-server' and 'tst-filter-master'
+tools are located too.
+
+I'll send the latest fix (see above) to the stable tree, as 2.6.35.3 currently
+still *has* this problem.
+
+On 2.6.35.3 you can see 'tst-rcv-own-msgs' ...
+
+   - work correctly when echo=0
+   - will fail when echo=1
+
+On 2.6.36-rc1 'tst-rcv-own-msgs' runs successfully regardless of the 'echo'
+setting of the vcan driver.
+
+Please give me feedback, if there are still open questions.
+
+Many thanks for your work & best regards,
+Oliver
+
+
+---
+
+Load vcan module with commandline parameter echo=1 :
+
+root@host:~# modprobe vcan echo=1
+root@host:~# ip link add dev vcan0 type vcan
+root@host:~# ip link set vcan0 up
+
+---
+
+When the test is successful, it looks like this:
+
+user@host:~$ socketcan/trunk/test/tst-rcv-own-msgs vcan0
+Starting PF_CAN frame flow test.
+checking socket default settings ... ok.
+check loopback 0 recv_own_msgs 0 ... ok.
+check loopback 0 recv_own_msgs 1 ... ok.
+check loopback 1 recv_own_msgs 0 ... ok.
+check loopback 1 recv_own_msgs 1 ... ok.
+PF_CAN frame flow test was successful.
+user@host:~$ echo $?
+0
+user@host:~$
+
+---
+
+When the test fails, it looks like this:
+
+user@host:~$ socketcan/trunk/test/tst-rcv-own-msgs vcan0
+Starting PF_CAN frame flow test.
+checking socket default settings ... failure!
+user@host:~$ echo $?
+1
+user@host:~$
+
+---
+
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by 
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
---===============7018345558795998041==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
+Be part of this innovative community and reach millions of netbook users 
+worldwide. Take advantage of special opportunities to increase revenue and 
+speed time-to-market. Join now, and jumpstart your future.
+http://p.sf.net/sfu/intel-atom-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7018345558795998041==--
