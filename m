@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Oljlv-0006dk-B3
-	for ltp-list@lists.sourceforge.net; Wed, 18 Aug 2010 14:37:43 +0000
-Date: Wed, 18 Aug 2010 16:55:24 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100818145524.GA3183@saboteur.suse.cz>
-References: <20100805100954.GB11402@saboteur.suse.cz>
-	<20100805135324.GB18296@saboteur.suse.cz>
-	<D150E027-5380-4B94-A64C-3FD7C8146334@gmail.com>
-	<201008051157.26183.vapier@gentoo.org>
-	<AANLkTikZrHrFS6NiS+JXyThPjti0JqaJ5kYSdkeQh1xH@mail.gmail.com>
-	<AANLkTi=zBqte75f6=2meSrtrv+mYbSbag7udZcR2jR-n@mail.gmail.com>
-	<20100818135008.GB475@saboteur.suse.cz>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <godwin.gao@hotmail.com>) id 1OnT6c-0001es-2P
+	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 09:14:14 +0000
+Received: from snt0-omc4-s45.snt0.hotmail.com ([65.54.51.96])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OnT6a-0005WG-WE
+	for ltp-list@lists.sourceforge.net; Mon, 23 Aug 2010 09:14:14 +0000
+Message-ID: <SNT119-W194FB25225A64DF37C926C94820@phx.gbl>
+From: Godwin Gao <godwin.gao@hotmail.com>
+Date: Mon, 23 Aug 2010 17:14:07 +0800
+In-Reply-To: <AANLkTinL-auVn5Mm2=mc261LYkjiZYbGm_kABJCnqYG=@mail.gmail.com>
+References: <SNT119-W3821029ADE3BBEE190C837949F0@phx.gbl>,
+	<D2E04B18-BD6D-458D-A41E-BD8BC095E9F1@gmail.com>,
+	<SNT119-W322DCC7E0FF2E9370D214E94820@phx.gbl>,
+	<AANLkTinL-auVn5Mm2=mc261LYkjiZYbGm_kABJCnqYG=@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100818135008.GB475@saboteur.suse.cz>
-Subject: Re: [LTP] just another make-3.80 bug
+Subject: Re: [LTP]
+ =?windows-1256?q?=5BPATCH=5Dfix_the_at=5Fdeny01_failure=FE?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,64 +28,136 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6285392894050178663=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: yanegomi@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > > diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
-> > > index 4444124..17a91fa 100644
-> > > --- a/include/mk/env_pre.mk
-> > > +++ b/include/mk/env_pre.mk
-> > > @@ -124,8 +124,13 @@ BUILD_TREE_STATE =A0 =A0 =A0 =A0 =A0 :=3D $(BUIL=
-D_TREE_NONSRCDIR_INSTAL
-> > > =A0endif
-> > > =A0endif
-> > >
-> > > -# make 3.80 called it .DEFAULT_TARGET.
-> > > +ifeq ($(MAKE_3_80_COMPAT),1
-> > > +# Trick make 3.80 into thinking that the default goal is all.
-> > > +.PHONY: default
-> > > +default: all
-> > > +else
-> > > =A0.DEFAULT_GOAL =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D all
-> > > +endif
-> > >
-> > > =A0endif =A0# END autotools, *clean...
-> > =
+--===============6285392894050178663==
+Content-Type: multipart/alternative;
+	boundary="_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_"
 
-> >     I committed the patch to HEAD. Let me know whether or not it
-> > works; it might not work because `include' creates a pseudo target,
-> > but please let me know if it works or not.
-> =
+--_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_
+Content-Type: text/plain; charset="windows-1256"
+Content-Transfer-Encoding: base64
 
-> You are missing ) at the end of ifeq line, but otherwise seems to work
-> fine. I'll check once more when the compilation finishes.
-> =
+CiBDb21iaW5pbmcgdGhlIHBhdGNoIGZvciBpc3N1ZSAxLCB0aGlzIHBhdGNoIGlzIGZpbmUuCgoK
+VGhhbmtzLApHb2R3aW4gR2FvCgo+IERhdGU6IE1vbiwgMjMgQXVnIDIwMTAgMDE6MTc6MDMgLTA3
+MDAKPiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENIXWZpeCB0aGUgYXRfZGVueTAxIGZhaWx1cmX+
+Cj4gRnJvbTogeWFuZWdvbWlAZ21haWwuY29tCj4gVG86IGdvZHdpbi5nYW9AaG90bWFpbC5jb20K
+PiBDQzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gCj4gMjAxMC84LzIzIEdvZHdp
+biBHYW8gPGdvZHdpbi5nYW9AaG90bWFpbC5jb20+Ogo+ID4gUmV0ZXN0ZWQgdGhlIGF0X2Rlbnkw
+MSBjYXNlLCBhbmQgZm91bmQgdGhlIHNhbWUgaXNzdWVbMl0uIFRoZSBiZWxvdyBpcyB0aGUKPiA+
+IHRlc3Qgc3RlcHMsIGlmIHNvbWV0aGluZyB3cm9uZywgcGxlYXNlIG5vdGUgbWUuCj4gPgo+ID4g
+MS4gY3JlYXRlIGEgcnVudGVzdC9hdCBmaWxlCj4gPiByb290QGdvZHdpbi1kZXNrdG9wOi9ob21l
+L2dvZHdpbi9MVFBfTmV3L2x0cC1mdWxsLTIwMTAwNjMwIyBjYXQgcnVudGVzdC9hdAo+ID4gYXRf
+ZGVueTAxICAgIGF0X2RlbnkwMQo+ID4gMi4gZml4ZWQgdGhlIGlzc3VlWzFdCj4gPiAzLiAuL3J1
+bmx0cCAtcCAtbCBhLnR4dCAtZiBhdAo+ID4KPiA+IFNlZW1zIGl0IGlzIGEgZW52aXJvbm1lbnQg
+c2V0dXAgaXNzdWUsIHRlc3RfdXNlcl8xIGRvZXMgbm90IGhhdmUgdGhlCj4gPiAke0xUUFJPT1R9
+L3Rlc3RjYXNlcy9iaW4gaW4gaXRzIFBBVEguCj4gPiBBdHRhY2hlZCB0aGUgbG9nCj4gCj4gICAg
+IE9rLCBJIHNlZSB0aGUgaXNzdWUgbm93Ogo+IAo+IJEtkgo+IJEtbJIKPiCRLS1sb2dpbpIKPiAg
+ICAgTWFrZSB0aGUgc2hlbGwgYSBsb2dpbiBzaGVsbC4gVGhpcyBtZWFucyB0aGUgZm9sbG93aW5n
+LiBVbnNldCBhbGwKPiBlbnZpcm9ubWVudCB2YXJpYWJsZXMgZXhjZXB0IFRFUk0sIEhPTUUsIGFu
+ZCBTSEVMTCAod2hpY2ggYXJlIHNldCBhcwo+IGRlc2NyaWJlZCBhYm92ZSksIGFuZCBVU0VSIGFu
+ZCBMT0dOQU1FICh3aGljaCBhcmUgc2V0LCBldmVuIGZvciB0aGUKPiBzdXBlci11c2VyLCBhcyBk
+ZXNjcmliZWQgYWJvdmUpLCBhbmQgc2V0IFBBVEggdG8gYSBjb21waWxlZC1pbiBkZWZhdWx0Cj4g
+dmFsdWUuIENoYW5nZSB0byB1c2VyJ3MgaG9tZSBkaXJlY3RvcnkuIFByZXBlbmQgkS2SIHRvIHRo
+ZSBzaGVsbCdzCj4gbmFtZSwgaW50ZW5kZWQgdG8gbWFrZSBpdCByZWFkIGl0cyBsb2dpbiBzdGFy
+dHVwIGZpbGUocykuCj4gCj4gICAgIE5vdGUgdGhhdCBpdCdzIGEgYHByZWNvbXBpbGVkJyBwYXRo
+IChCU0QgZXhwbGljaXRseSBjYWxscyB0aGlzIG91dAo+IGFzIC9iaW46L3Vzci9iaW4sIGJ1dCB3
+aG8ga25vd3Mgd2hhdCBMaW51eCBzZXRzIHRoaXMgYXMpLgo+ICAgICBIZXJlJ3MgYSBxdWljayBw
+YXRjaCBmb3IgdGhpcyBpdGVtOyBwbGVhc2UgbGV0IG1lIGtub3cgaG93IGl0Cj4gd29ya3MgaW4g
+dGhlIG5lZ2F0aXZlIGNhc2UuCj4gVGhhbmtzLAo+IC1HYXJyZXR0Cj4gCj4gUFMgVGhlIHJlYXNv
+biB3aHkgSSBkaWQgdGhpcyB3YXMgdG8gYXZvaWQgZW52aXJvbm1lbnQgdGFpbnRpbmcgYXMKPiBz
+ZXR1cF90ZXN0IHNheXM6Cj4gCj4gICAgICAgICAjIFRoaXMgaXMgdGhlIHdvcmthcm91bmQgZm9y
+IGEgcG90ZW50aWFsIGJ1Zy4KPiAgICAgICAgICMgW0J1ZyA0NjgzMzddIEF0IFJlZnVzZSB0byBX
+b3JrIHdpdGggTm9uLWxvZ2luIFNoZWxsCj4gICAgICAgICAjIGh0dHBzOi8vYnVnemlsbGEucmVk
+aGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9NDY4MzM3Cj4gICAgICAgICAjIEFzIHdlIGFyZSBydW5u
+aW5nIGluIG5vbi1sb2dpbiBzaGVsbCBub3csIHdlIGNhbm5vdCBydW4gdGhlIHNjcmlwdAo+ICAg
+ICAgICAgIyBieSBzaW1wbHkgZ2l2ZW4gaXQgYSByZWxhdGl2ZSBwYXRoLiBUaGVyZWZvcmUsIHdl
+IGNvcHkgaXQgdG8gdGVzdAo+ICAgICAgICAgIyB1c2VycycgaG9tZSBkaXJlY3RvcmllcywgYW5k
+IHJ1biBpdCBmcm9tIHRoZXJlLgo+IAo+IGJlY2F1c2UgLW0vLXAgd291bGQgaGF2ZSBkb25lIGp1
+c3QgdGhhdCAoYmVzaWRlcy4uLiBlbnZpcm9ubWVudAo+IHRhaW50aW5nIGp1c3QgbWFrZXMgY3J1
+ZCBub24tZGV0ZXJtaW5pc3RpYy4uLikuCiAJCSAJICAgCQkgIA==
+
+--_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_
+Content-Type: text/html; charset="windows-1256"
+Content-Transfer-Encoding: base64
+
+PGh0bWw+CjxoZWFkPgo8c3R5bGU+PCEtLQouaG1tZXNzYWdlIFAKewptYXJnaW46MHB4OwpwYWRk
+aW5nOjBweAp9CmJvZHkuaG1tZXNzYWdlCnsKZm9udC1zaXplOiAxMHB0Owpmb250LWZhbWlseTpU
+YWhvbWEKfQotLT48L3N0eWxlPgo8L2hlYWQ+Cjxib2R5IGNsYXNzPSdobW1lc3NhZ2UnPgombmJz
+cDtDb21iaW5pbmcgdGhlIHBhdGNoIGZvciBpc3N1ZSAxLCB0aGlzIHBhdGNoIGlzIGZpbmUuPGJy
+Pjxicj48YnI+VGhhbmtzLDxicj5Hb2R3aW4gR2FvPGJyPjxicj4mZ3Q7IERhdGU6IE1vbiwgMjMg
+QXVnIDIwMTAgMDE6MTc6MDMgLTA3MDA8YnI+Jmd0OyBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENI
+XWZpeCB0aGUgYXRfZGVueTAxIGZhaWx1cmX+PGJyPiZndDsgRnJvbTogeWFuZWdvbWlAZ21haWwu
+Y29tPGJyPiZndDsgVG86IGdvZHdpbi5nYW9AaG90bWFpbC5jb208YnI+Jmd0OyBDQzogbHRwLWxp
+c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0PGJyPiZndDsgPGJyPiZndDsgMjAxMC84LzIzIEdvZHdp
+biBHYW8gJmx0O2dvZHdpbi5nYW9AaG90bWFpbC5jb20mZ3Q7Ojxicj4mZ3Q7ICZndDsgUmV0ZXN0
+ZWQgdGhlIGF0X2RlbnkwMSBjYXNlLCBhbmQgZm91bmQgdGhlIHNhbWUgaXNzdWVbMl0uIFRoZSBi
+ZWxvdyBpcyB0aGU8YnI+Jmd0OyAmZ3Q7IHRlc3Qgc3RlcHMsIGlmIHNvbWV0aGluZyB3cm9uZywg
+cGxlYXNlIG5vdGUgbWUuPGJyPiZndDsgJmd0Ozxicj4mZ3Q7ICZndDsgMS4gY3JlYXRlIGEgcnVu
+dGVzdC9hdCBmaWxlPGJyPiZndDsgJmd0OyByb290QGdvZHdpbi1kZXNrdG9wOi9ob21lL2dvZHdp
+bi9MVFBfTmV3L2x0cC1mdWxsLTIwMTAwNjMwIyBjYXQgcnVudGVzdC9hdDxicj4mZ3Q7ICZndDsg
+YXRfZGVueTAxJm5ic3A7Jm5ic3A7Jm5ic3A7IGF0X2RlbnkwMTxicj4mZ3Q7ICZndDsgMi4gZml4
+ZWQgdGhlIGlzc3VlWzFdPGJyPiZndDsgJmd0OyAzLiAuL3J1bmx0cCAtcCAtbCBhLnR4dCAtZiBh
+dDxicj4mZ3Q7ICZndDs8YnI+Jmd0OyAmZ3Q7IFNlZW1zIGl0IGlzIGEgZW52aXJvbm1lbnQgc2V0
+dXAgaXNzdWUsIHRlc3RfdXNlcl8xIGRvZXMgbm90IGhhdmUgdGhlPGJyPiZndDsgJmd0OyAke0xU
+UFJPT1R9L3Rlc3RjYXNlcy9iaW4gaW4gaXRzIFBBVEguPGJyPiZndDsgJmd0OyBBdHRhY2hlZCB0
+aGUgbG9nPGJyPiZndDsgPGIKIHI+Jmd0OyAgICAgT2ssIEkgc2VlIHRoZSBpc3N1ZSBub3c6PGJy
+PiZndDsgPGJyPiZndDsgkS2SPGJyPiZndDsgkS1skjxicj4mZ3Q7IJEtLWxvZ2lukjxicj4mZ3Q7
+ICAgICBNYWtlIHRoZSBzaGVsbCBhIGxvZ2luIHNoZWxsLiBUaGlzIG1lYW5zIHRoZSBmb2xsb3dp
+bmcuIFVuc2V0IGFsbDxicj4mZ3Q7IGVudmlyb25tZW50IHZhcmlhYmxlcyBleGNlcHQgVEVSTSwg
+SE9NRSwgYW5kIFNIRUxMICh3aGljaCBhcmUgc2V0IGFzPGJyPiZndDsgZGVzY3JpYmVkIGFib3Zl
+KSwgYW5kIFVTRVIgYW5kIExPR05BTUUgKHdoaWNoIGFyZSBzZXQsIGV2ZW4gZm9yIHRoZTxicj4m
+Z3Q7IHN1cGVyLXVzZXIsIGFzIGRlc2NyaWJlZCBhYm92ZSksIGFuZCBzZXQgUEFUSCB0byBhIGNv
+bXBpbGVkLWluIGRlZmF1bHQ8YnI+Jmd0OyB2YWx1ZS4gQ2hhbmdlIHRvIHVzZXIncyBob21lIGRp
+cmVjdG9yeS4gUHJlcGVuZCCRLZIgdG8gdGhlIHNoZWxsJ3M8YnI+Jmd0OyBuYW1lLCBpbnRlbmRl
+ZCB0byBtYWtlIGl0IHJlYWQgaXRzIGxvZ2luIHN0YXJ0dXAgZmlsZShzKS48YnI+Jmd0OyA8YnI+
+Jmd0OyAgICAgTm90ZSB0aGF0IGl0J3MgYSBgcHJlY29tcGlsZWQnIHBhdGggKEJTRCBleHBsaWNp
+dGx5IGNhbGxzIHRoaXMgb3V0PGJyPiZndDsgYXMgL2JpbjovdXNyL2JpbiwgYnV0IHdobyBrbm93
+cyB3aGF0IExpbnV4IHNldHMgdGhpcyBhcykuPGJyPiZndDsgICAgIEhlcmUncyBhIHF1aWNrIHBh
+dGNoIGZvciB0aGlzIGl0ZW07IHBsZWFzZSBsZXQgbWUga25vdyBob3cgaXQ8YnI+Jmd0OyB3b3Jr
+cyBpbiB0aGUgbmVnYXRpdmUgY2FzZS48YnI+Jmd0OyBUaGFua3MsPGJyPiZndDsgLUdhcnJldHQ8
+YnI+Jmd0OyA8YnI+Jmd0OyBQUyBUaGUgcmVhc29uIHdoeSBJIGRpZCB0aGlzIHdhcyB0byBhdm9p
+ZCBlbnZpcm9ubWVudCB0YWludGluZyBhczxicj4mZ3Q7IHNldHVwX3Rlc3Qgc2F5czo8YnI+Jmd0
+OyA8YnI+Jmd0OyAgICAgICAgICMgVGhpcyBpcyB0aGUgd29ya2FyCiBvdW5kIGZvciBhIHBvdGVu
+dGlhbCBidWcuPGJyPiZndDsgICAgICAgICAjIFtCdWcgNDY4MzM3XSBBdCBSZWZ1c2UgdG8gV29y
+ayB3aXRoIE5vbi1sb2dpbiBTaGVsbDxicj4mZ3Q7ICAgICAgICAgIyBodHRwczovL2J1Z3ppbGxh
+LnJlZGhhdC5jb20vc2hvd19idWcuY2dpP2lkPTQ2ODMzNzxicj4mZ3Q7ICAgICAgICAgIyBBcyB3
+ZSBhcmUgcnVubmluZyBpbiBub24tbG9naW4gc2hlbGwgbm93LCB3ZSBjYW5ub3QgcnVuIHRoZSBz
+Y3JpcHQ8YnI+Jmd0OyAgICAgICAgICMgYnkgc2ltcGx5IGdpdmVuIGl0IGEgcmVsYXRpdmUgcGF0
+aC4gVGhlcmVmb3JlLCB3ZSBjb3B5IGl0IHRvIHRlc3Q8YnI+Jmd0OyAgICAgICAgICMgdXNlcnMn
+IGhvbWUgZGlyZWN0b3JpZXMsIGFuZCBydW4gaXQgZnJvbSB0aGVyZS48YnI+Jmd0OyA8YnI+Jmd0
+OyBiZWNhdXNlIC1tLy1wIHdvdWxkIGhhdmUgZG9uZSBqdXN0IHRoYXQgKGJlc2lkZXMuLi4gZW52
+aXJvbm1lbnQ8YnI+Jmd0OyB0YWludGluZyBqdXN0IG1ha2VzIGNydWQgbm9uLWRldGVybWluaXN0
+aWMuLi4pLjxicj4gCQkgCSAgIAkJICA8L2JvZHk+CjwvaHRtbD4=
+
+--_6adadf6a-fdfb-4580-af75-f9d9cb2daab4_--
 
 
-Okay I did compilation with make-3.80 (started by 'make autotools;
-./configure; make') and the same with make-3.81 and then compared
-created the trees if there are any files missing in the tree compiled
-with 3.80 and found no such files.
+--===============6285392894050178663==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
-
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by =
-
+------------------------------------------------------------------------------
+This SF.net email is sponsored by 
 
 Make an app they can't live without
 Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev =
+http://p.sf.net/sfu/RIM-dev2dev 
+--===============6285392894050178663==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6285392894050178663==--
+
