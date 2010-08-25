@@ -1,29 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dmarlin@redhat.com>) id 1Ol4MJ-0000Tz-Mb
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 18:24:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Oo5vR-0004UO-T9
+	for ltp-list@lists.sourceforge.net; Wed, 25 Aug 2010 02:41:17 +0000
+Received: from mail-bw0-f47.google.com ([209.85.214.47])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ol4MI-0006Ds-Ho
-	for ltp-list@lists.sourceforge.net; Mon, 16 Aug 2010 18:24:31 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id o7GIOOxd019749
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 14:24:24 -0400
-Received: from dmarlin.csb (dhcp-224-3.tha.redhat.com [10.15.224.3])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id o7GIONpa010375
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Aug 2010 14:24:24 -0400
-Message-ID: <4C698256.4010804@redhat.com>
-Date: Mon, 16 Aug 2010 13:24:22 -0500
-From: David Marlin <dmarlin@redhat.com>
+	id 1Oo5vP-0003ze-BC
+	for ltp-list@lists.sourceforge.net; Wed, 25 Aug 2010 02:41:17 +0000
+Received: by bwz12 with SMTP id 12so348232bwz.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 24 Aug 2010 19:41:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040006040401050403040104"
-Subject: [LTP] warning when building pread01.c
-Reply-To: dmarlin@redhat.com
+In-Reply-To: <4C7470FC.4090800@cn.fujitsu.com>
+References: <4C73452A.3020006@cn.fujitsu.com>
+	<1282647771.4833.10.camel@subratamodak.linux.ibm.com>
+	<4C7470FC.4090800@cn.fujitsu.com>
+Date: Tue, 24 Aug 2010 19:41:09 -0700
+Message-ID: <AANLkTi=+8rsbAtHg=N+RCBqDH2W6xD+NVWdXScyJH2Mc@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Add ftrace-stress-test to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,75 +29,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------040006040401050403040104
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-Function compare_bufers in pread01.c does not expect any arguments, but 
-the reference to compare_bufers passes two arguments:
-
-     compare_bufers(write_buf, read_buf);
-
-
-Within the function compare_bufers, write_buf and read_buf are accessed 
-via their global definitions.  These variables are also accessed via the 
-global definitions in other functions in this testcase.
-
-Attached is a patch to remove the unnecessary arguments from the 
-compare_bufers function reference.
-
-
-Signed-off-by: d.marlin <dmarlin@redhat.com>
-
-
-
---------------040006040401050403040104
-Content-Type: text/x-patch;
- name="pread01.c.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="pread01.c.patch"
-
---- testcases/kernel/syscalls/pread/pread01.c.orig	2010-04-01 01:23:10.000000000 -0500
-+++ testcases/kernel/syscalls/pread/pread01.c	2010-07-07 19:07:30.375647906 -0500
-@@ -183,7 +183,7 @@
- 			 * with the data written to write buffer
- 			 * in the setup.
- 			 */
--			compare_bufers(write_buf, read_buf);
-+			compare_bufers();
- 		} else {
- 			tst_resm(TPASS, "calls to pread() succeeded");
- 		}
-
-
---------------040006040401050403040104
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Li Zefan <lizf@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Frederic Weisbecker <fweisbec@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Eugene Teo <eugene@redhat.com>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>
+
+On Tue, Aug 24, 2010 at 6:25 PM, Li Zefan <lizf@cn.fujitsu.com> wrote:
+> Subrata Modak wrote:
+>> Thanks. I need to test this on a suitable kernel. But doubtful if i can
+>> add in the default run.
+>>
+>
+> Why? Because it costs 90 secs? This is configurable, and some other
+> test suites like cpuctl cost more time.
+>
+> If a test suite is not run by default, I guess people won't know its
+> existence, probably.
+
+I think that more of the concern stems from the fact that it's a
+performance test, and a lot of people complain if and when their test
+machines slow down to a halt (take hackbench, proc01, for example).
+
+There are issues with the code, but it's dealing with the fact that
+it's not really written in a portable way. Give me a bit of time and
+I'll comment on what needs to be changed.
+
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by 
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
---------------040006040401050403040104
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
+Be part of this innovative community and reach millions of netbook users 
+worldwide. Take advantage of special opportunities to increase revenue and 
+speed time-to-market. Join now, and jumpstart your future.
+http://p.sf.net/sfu/intel-atom-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------040006040401050403040104--
-
