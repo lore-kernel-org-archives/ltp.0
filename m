@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapierfilter@gmail.com>) id 1OlSTE-0006wj-5U
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:09:16 +0000
-Received: from mail-fx0-f47.google.com ([209.85.161.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OlSTD-00082R-9N
-	for ltp-list@lists.sourceforge.net; Tue, 17 Aug 2010 20:09:16 +0000
-Received: by fxm6 with SMTP id 6so4753127fxm.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 17 Aug 2010 13:09:09 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1Op7SV-0007dy-9S
+	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 22:31:39 +0000
+Received: from mail-qy0-f174.google.com ([209.85.216.174])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Op7SS-0004cR-Td
+	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 22:31:39 +0000
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinF=7RB+U6aexwoRzvxnHLMgz73U8U6CVGXD7tj@mail.gmail.com>
-References: <4C6AD534.2020109@redhat.com>
-	<AANLkTimPmB9fNdv2f+zS42Y_+T+6_4y1enDv=K_sHkY=@mail.gmail.com>
-	<AANLkTinneeNUA0NJwh3v_Lhjx=YSHm6dfXNpxVoJHCS=@mail.gmail.com>
-	<AANLkTinF=7RB+U6aexwoRzvxnHLMgz73U8U6CVGXD7tj@mail.gmail.com>
-Date: Tue, 17 Aug 2010 16:09:09 -0400
-Message-ID: <AANLkTi=q=WXuPOqBB7nadhu8iO+tDdM02yGTPi9zykoR@mail.gmail.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [LTP] problems building mallopt01.c for uClinux
+From: Henry Yei <hyei@mvista.com>
+Date: Fri, 27 Aug 2010 15:05:06 -0700
+Message-ID: <AANLkTi==cD1PmyzusPB-8_Bfj2fy2WoSFgpdSFm_BgdQ@mail.gmail.com>
+Content-Type: multipart/mixed; boundary=0016e68ce6f2e10874048ed54fd1
+Subject: [LTP] [PATCH] [commands] apply relevant fixes to at_deny01 to
+ at_allow01 script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,49 +24,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: dmarlin@redhat.com, LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, Aug 17, 2010 at 4:05 PM, Garrett Cooper wrote:
-> On Tue, Aug 17, 2010 at 1:00 PM, Mike Frysinger wrote:
->> On Tue, Aug 17, 2010 at 3:47 PM, Garrett Cooper wrote:
->>> On Tue, Aug 17, 2010 at 11:30 AM, David Marlin wrote:
->>>> The testcase mallopt01 skips performing the test when UCLINUX=3D1, but=
- the
->>>> mallinfo structure is defined outside the #if !defined(UCLINUX) block.
->>>>
->>>> Attached is a patch to move the mallinfo structure definition inside t=
-he
->>>> #if !defined(UCLINUX) block.
->>>
->>> ACK.
->>
->> meaning you're going to merge it ? ;) =A0this change looks fine of cours=
-e.
->
-> Yeah. ACK -> all's good, I'm going to commit later. I kind of adopted
-> it after looking at the yum list, because it's a lot quicker to say
-> and less redundant than:
->
-> Acked-by: Garrett Cooper <yanegomi@gmail.com>
+--0016e68ce6f2e10874048ed54fd1
+Content-Type: text/plain; charset=ISO-8859-1
 
-ok, but following the original LKML style, people who ACK usually
-arent the ones who actually pick up & merge
--mike
+I've prepared a patch for at_allow01 that essentially duplicates the
+fixes that were checked in for at_deny01. This fixes the script to
+actually run the test when the at utility in stead of returning TCONF,
+correcting test environment, and let the script run normally without
+changing the password. See commit
+a589d12b0b49287d10f43b1a1fb72950819588eb for more details.
 
----------------------------------------------------------------------------=
----
-This SF.net email is sponsored by =
+Signed-off-by: Henry Yei <hyei@mvista.com>
 
+Henry Yei <hyei@mvista.com>
 
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev =
+--0016e68ce6f2e10874048ed54fd1
+Content-Type: text/x-patch; charset=US-ASCII; name="at_allow01.patch"
+Content-Disposition: attachment; filename="at_allow01.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gddkby260
+
+LS0tIGx0cC1kZXYvdGVzdGNhc2VzL2NvbW1hbmRzL2F0L2F0X2FsbG93MDEJMjAxMC0wNC0zMCAx
+NTozMzoxMC4wMDAwMDAwMDAgLTA3MDAKKysrIGx0cC1kZXYtd2Rpci90ZXN0Y2FzZXMvY29tbWFu
+ZHMvYXQvYXRfYWxsb3cwMQkyMDEwLTA4LTI2IDE5OjM4OjA1Ljk2MDQ0MDQwMSAtMDcwMApAQCAt
+NzMsNiArNzMsMTIgQEAgZG9fc2V0dXAoKQogCSMgdXNlcnMnIGhvbWUgZGlyZWN0b3JpZXMsIGFu
+ZCBydW4gaXQgZnJvbSB0aGVyZS4KIAljcCAiJDAiICIke3Rlc3RfdXNlcjFfaG9tZX0vLiIKIAlj
+cCAiJDAiICIke3Rlc3RfdXNlcjJfaG9tZX0vLiIKKwllY2hvICJleHBvcnQgTFRQUk9PVD0nJExU
+UFJPT1QnIiA+ICIke3Rlc3RfdXNlcjFfaG9tZX0vY2FjaGVkX2x0cHJvb3QiCisJZWNobyAiZXhw
+b3J0IExUUFJPT1Q9JyRMVFBST09UJyIgPiAiJHt0ZXN0X3VzZXIyX2hvbWV9L2NhY2hlZF9sdHBy
+b290IgorCWlmIFsgJD8gLW5lIDAgXTsgdGhlbgorCQl0c3RfcmVzbSBUQlJPSyAiQ291bGRuJ3Qg
+Y29weSBvdmVyIHJlcSdkIGZpbGVzIGZvciB0ZXN0IHVzZXJzIgorCQlleGl0IDEKKwlmaQkKIAog
+CSMgUmVzdGFydCBhdGQgZGFlbW9uLgogCS9ldGMvaW5pdC5kL2F0ZCByZXN0YXJ0CkBAIC05OCw3
+ICsxMDQsMTAgQEAgZG9fY2xlYW51cCgpCiAjLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIHJ1bl90ZXN0KCkKIHsK
+LQlpZiBbICQod2hvYW1pKSA9ICIke3Rlc3RfdXNlcjF9IiBdOyB0aGVuIAorCWlmIFsgJCh3aG9h
+bWkpID0gIiR7dGVzdF91c2VyMX0iIF07IHRoZW4KKwkJLiAiJHt0ZXN0X3VzZXIxX2hvbWV9L2Nh
+Y2hlZF9sdHByb290IiB8fCBleGl0IDEKKwkJZXhwb3J0IFBBVEg9IiRQQVRIOiRMVFBST09UL3Rl
+c3RjYXNlcy9iaW4iCisKIAkJZWNobyAiVEVTVDogJGFsbG93IHNob3VsZCBhbGxvdyBvbmx5IHRo
+b3NlIHdobyBpbiB0aGUgZmlsZSB0byBydW4gam9icy4iCiAJCWVjaG8gIigxKSBURVNUIFRIQVQg
+UEVSU09OIElOICR7YWxsb3d9IElTIEFCTEUgVE8gUlVOIEpPQi4iCiAJCWVjaG8gImVjaG8gJ1RF
+U1QgSk9CIFJBTicgPj5cIiR7dG1wZmlsZX1cIiAyPiYxIiB8CkBAIC0xMjEsNiArMTMwLDEwIEBA
+IHJ1bl90ZXN0KCkKIAkJZXhpdCAke2V4aXRfY29kZX0KIAogCWVsaWYgWyAkKHdob2FtaSkgPSAi
+JHt0ZXN0X3VzZXIyfSIgXTsgdGhlbgorCisJCS4gIiR7dGVzdF91c2VyMl9ob21lfS9jYWNoZWRf
+bHRwcm9vdCIgfHwgZXhpdCAxCisJCWV4cG9ydCBQQVRIPSIkUEFUSDokTFRQUk9PVC90ZXN0Y2Fz
+ZXMvYmluIgorCiAJCWVjaG8gIigyKSBURVNUIFBFUlNPTiBUSEFUIElTIE5PVCBJTiAke2FsbG93
+fSBJUyBOT1QgQUJMRSBUTyBSVU4gSk9CLiIKIAkJZWNobyAiZWNobyAnVEVTVCBKT0IgUkFOJyA+
+PlwiJHt0bXBmaWxlfVwiIDI+JjEiIHwKIAkJaWYgISBhdCAtbSBub3cgKyAxIG1pbnV0ZXM7IHRo
+ZW4KQEAgLTE0NSw3ICsxNTgsNyBAQCBydW5fdGVzdCgpCiAjLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICMgRlVO
+Q1RJT046IG1haW4KICMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQotaWYgdHlwZSBhdCA+IC9kZXYvbnVsbDsgdGhl
+bgoraWYgISB0eXBlIGF0ID4gL2Rldi9udWxsOyB0aGVuCiAJdHN0X3Jlc20gVENPTkYgImF0IGNv
+bW1hbmQgbm90IGZvdW5kIG9uIHN5c3RlbSIKIGVsaWYgWyAiJChpZCAtcnUpIiA9IDAgXTsgdGhl
+bgogCWlmIGRvX3NldHVwOyB0aGVuCg==
+--0016e68ce6f2e10874048ed54fd1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
+Be part of this innovative community and reach millions of netbook users 
+worldwide. Take advantage of special opportunities to increase revenue and 
+speed time-to-market. Join now, and jumpstart your future.
+http://p.sf.net/sfu/intel-atom-d2d
+--0016e68ce6f2e10874048ed54fd1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e68ce6f2e10874048ed54fd1--
+
