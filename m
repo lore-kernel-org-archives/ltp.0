@@ -1,31 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1Og9ED-0000Im-VQ
-	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 04:35:49 +0000
-Received: from out20.sjc.mx.trendmicro.com ([216.99.131.77])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Og9EC-0004I8-Je
-	for ltp-list@lists.sourceforge.net; Tue, 03 Aug 2010 04:35:49 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.25])
-	by out20.sjc.mx.trendmicro.com (Postfix) with ESMTP id C257B98043E
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Jacky.Malcles@bull.net>) id 1OowsA-000303-Hz
+	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 11:13:26 +0000
+Received: from ecfrec.frec.bull.fr ([129.183.4.8])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oows5-0001mS-No
+	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 11:13:26 +0000
+Received: from cyclope.frec.bull.fr (cyclope.frec.bull.fr [129.183.4.9])
+	by ecfrec.frec.bull.fr (Postfix) with ESMTP id B532F6FA1D
 	for <ltp-list@lists.sourceforge.net>;
-	Tue,  3 Aug 2010 04:35:42 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 1AB54114B838
+	Fri, 27 Aug 2010 12:43:23 +0200 (CEST)
+Received: from [129.183.160.80] (b015470.frec.bull.fr [129.183.160.80])
+	by cyclope.frec.bull.fr (Postfix) with ESMTP id 3BB282728D
 	for <ltp-list@lists.sourceforge.net>;
-	Tue,  3 Aug 2010 04:35:41 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Aug 2010 13:35:39 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Tue, 3 Aug 2010 13:35:39 +0900
-Message-ID: <000e01cb32c5$52f62400$f8e26c00$@co.jp>
+	Fri, 27 Aug 2010 12:43:21 +0200 (CEST)
+Message-ID: <4C77999B.1070804@bull.net>
+Date: Fri, 27 Aug 2010 12:55:23 +0200
+From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] OPEN_POSIX "lio_listio" build failed
+Subject: [LTP] ltp-aiodio.sh script failed to find aio-stress testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,85 +36,60 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
 Hi,
+ltp-aiodio.sh script failed to find aio-stress testcase
 
-I tried to build open_posix_testsuite testcases:
+it failed as follows:
+initiation_status="pan(ltp-aiostresspart1): execvp of 'aio-stress' (tag 
+ADS1044) failed.  errno:2  No such file or directory"
+duration=0 termination_type=exited termination_id=2 corefile=no
+...
 
-   make distclean
-   make all
+I just added a line to ltp-aiodio.sh script and then it finds aio-stress TC.
 
-But several testcases failed to build.
-I paid attention to some of build-failed testcases. They are in 
-"lio_listio" directory.
-------------
-conformance/interfaces/lio_listio/1-1 compile FAILED
-/tmp/ccaX2A2v.o: In function `main':
-1-1.c:(.text+0x316): undefined reference to `lio_listio'
-1-1.c:(.text+0x472): undefined reference to `aio_error'
-1-1.c:(.text+0x48a): undefined reference to `aio_return'
-collect2: ld returned 1 exit status
-conformance/interfaces/lio_listio/10-1 compile FAILED
-/tmp/ccIj5aUK.o: In function `main':
-10-1.c:(.text+0x2ee): undefined reference to `lio_listio'
-10-1.c:(.text+0x38e): undefined reference to `aio_error'
-10-1.c:(.text+0x3a3): undefined reference to `aio_return'
-collect2: ld returned 1 exit status
-conformance/interfaces/lio_listio/11-1 compile FAILED
-/tmp/cccIltt0.o: In function `main':
-11-1.c:(.text+0x30a): undefined reference to `lio_listio'
-11-1.c:(.text+0x3eb): undefined reference to `aio_error'
-11-1.c:(.text+0x400): undefined reference to `aio_return'
-collect2: ld returned 1 exit status
-[...]
-------------
+[root@xena5 testscripts]# diff -ru ltp-aiodio.sh.ori ltp-aiodio.sh
+--- ltp-aiodio.sh.ori   2010-08-27 11:05:52.000000000 +0200
++++ ltp-aiodio.sh       2010-08-27 08:26:44.000000000 +0200
+@@ -16,6 +16,7 @@
+  cd ..
+  export LTPROOT=${PWD}
+ fi
++export PATH=$LTPROOT/testcases/bin:$PATH
 
-I edited their Makefile as follows for trial:
-============
----
-a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/Makefile
-2010-08-02 14:10:31.000000000 +0900
-+++
-b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/Makefile
-2010-08-03 09:33:08.000000000 +0900
-@@ -30,7 +30,7 @@
- # Submake make definitions.
- CFLAGS+=		
- LDFLAGS+=		
--LDLIBS+=		
-+LDLIBS+=		-lrt
- 
- INSTALL_TARGETS+=	1-1.run-test 10-1.run-test 11-1.run-test
-12-1.run-test 13-1.run-test 14-1.run-test 15-1.run-test 16-1.run-test
-17-1.run-test 18-1.run-test 19-1.run-test 2-1.run-test 20-1.run-test
-21-1.run-test 22-1.run-test 23-1.run-test 24-1.run-test 25-1.run-test
-3-1.run-test 4-1.run-test 5-1.run-test 6-1.run-test 7-1.run-test
-8-1.run-test 9-1.run-test
- MAKE_TARGETS+=		1-1.run-test 10-1.run-test 11-1.run-test
-12-1.run-test 13-1.run-test 14-1.run-test 15-1.run-test 16-1.run-test
-17-1.run-test 18-1.run-test 19-1.run-test 2-1.run-test 20-1.run-test
-21-1.run-test 22-1.run-test 23-1.run-test 24-1.run-test 25-1.run-test
-3-1.run-test 4-1.run-test 5-1.run-test 6-1.run-test 7-1.run-test
-8-1.run-test 9-1.run-test
+ run0=0
+ runTest=0
+[root@xena5 testscripts]#
 
-============
+now it works for me.
+..
+tag=ADS1044 stime=1282901877
+cmdline="aio-stress -I500  -o1 -O -r4    -t4   /test/aiodio/junkfile 
+/test/aiodio/file2        /test/aiodio/file7  
+/test/aiodio/file8                                                                               
+"
+contacts=""
+analysis=exit
+<<<test_output>>>
+adding stage read
+starting with read
+file size 1024MB, record size 4KB, depth 64, ios per iteration 8
+max io_submit 32, buffer alignment set to 4KB
+...etc
 
-After that, they succeeded to build.
+please could you fixed this up,
+regards,
 
-But this Makefile cannot be edited because it is generated when "make all".
-I think that "LDLIBS" file is necessary in "lio_listio" directory.
-
-
-Regards--
-
-
--Tomonori Mitani
-
+-- 
+ Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
+ Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
+ Tel : 04.76.29.73.14
 
 
 ------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
+Be part of this innovative community and reach millions of netbook users 
+worldwide. Take advantage of special opportunities to increase revenue and 
+speed time-to-market. Join now, and jumpstart your future.
+http://p.sf.net/sfu/intel-atom-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
