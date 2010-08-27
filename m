@@ -1,28 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gurudas.pai@oracle.com>) id 1Ofolx-0007kp-4K
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:45:17 +0000
-Received: from rcsinet10.oracle.com ([148.87.113.121])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Ofolw-0004MP-8j
-	for ltp-list@lists.sourceforge.net; Mon, 02 Aug 2010 06:45:17 +0000
-Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
-	by rcsinet10.oracle.com (Switch-3.4.2/Switch-3.4.2) with ESMTP id
-	o726j92T001669
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Aug 2010 06:45:10 GMT
-Received: from acsmt354.oracle.com (acsmt354.oracle.com [141.146.40.154])
-	by acsinet15.oracle.com (Switch-3.4.2/Switch-3.4.1) with ESMTP id
-	o7242Krn013554
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Aug 2010 06:45:04 GMT
-Message-ID: <4C5666AC.60308@oracle.com>
-Date: Mon, 02 Aug 2010 12:03:16 +0530
-From: Gurudas Pai <gurudas.pai@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Feng.Gao@windriver.com>) id 1Oov4L-0000BP-9u
+	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 09:17:53 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Oov4I-0006It-TL
+	for ltp-list@lists.sourceforge.net; Fri, 27 Aug 2010 09:17:53 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o7R9Hjsw007330
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 27 Aug 2010 02:17:45 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: [LTP]  LTP-20100630:quota_remount_test01.sh test fails.
-Reply-To: gurudas.pai@oracle.com
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CB45C8.B3A9AAF6"
+Date: Fri, 27 Aug 2010 11:15:52 +0200
+Message-ID: <52CF90264091A14888078A031D780F430111B8DB@ism-mail03.corp.ad.wrs.com>
+References: <52CF90264091A14888078A031D780F430111B8DA@ism-mail03.corp.ad.wrs.com>
+From: "Gao, Feng" <Feng.Gao@windriver.com>
+Subject: Re: [LTP] About the cacheflush01 testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,58 +29,326 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01CB45C8.B3A9AAF6
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_002_01CB45C8.B3A9AAF6"
+
+
+------_=_NextPart_002_01CB45C8.B3A9AAF6
+Content-Type: text/plain;
+	charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+
+Attach the patch.
+
+BR,
+Feng Gao
+
+
+-----Original Message-----
+From: Gao, Feng
+Sent: 2010-8-27 16:32
+To: ltp-list
+Cc: fgao0@windriver.com
+Subject: [LTP]About the cacheflush01 testcase
+=20
 Hi,
-
-quota_remount_test01.sh test fails.
-
-<<<test_start>>>
-tag=quota_remount_test01 stime=1280709472
-cmdline="quota_remount_test01.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-quota_remount_test01    0  TINFO  :  Successfully mounted the File System
-quota_remount_test01    0  TINFO  :  Successfully Created Quota Files
-quota_remount_test01    0  TINFO  :  Successfully Turned on Quota
-quota_remount_test01    0  TINFO  :  Successfully wrote to the filesystem
-quota: invalid option -- f
-quota: Usage: quota [-guqxvs] [-l | -Q] [-i] [-F quotaformat]
-         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -u username ...
-         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -g groupname ...
-Bugs to: mvw@planets.elm.net, jack@suse.cz
-quota_remount_test01    0  TINFO  :  Successfully Remounted Read-Only FS
-quota_remount_test01    0  TINFO  :  Successfully Remounted Read-Write FS
-quota: invalid option -- f
-quota: Usage: quota [-guqxvs] [-l | -Q] [-i] [-F quotaformat]
-         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -u username ...
-         quota [-qxvs] [-l | -Q] [-i] [-F quotaformat] -g groupname ...
-Bugs to: mvw@planets.elm.net, jack@suse.cz
-Usage did not change after remount
-quota_remount_test01    1  TFAIL  :  Quota on Remount Failed
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=1 corefile=no
-cutime=1 cstime=20
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: LTP-20100630
-
-
+=20
+In the cacheflush01 testcase, it will check if the return value is =
+EINVAL when the argument cache is not one of ICACHE, BCACHE or DCACHE.
+=20
+But in the latest kernel, the return values of function cacheflush do =
+NOT have EINVAL,  it is no consistent with the linux manual.
+A related patch about the cacheflush function:
+http://lkml.org/lkml/2009/4/9/203
+But Ralf had refused this patch:
+http://www.spinics.net/lists/linux-man/msg00906.html
+=20
+When run the ltp, cacheflush01 will fail at MIPS boards. So advice to =
+delete the cacheflush01 case.
+=20
 Thanks,
--Guru
+Feng Gao
+
+
+
+------_=_NextPart_002_01CB45C8.B3A9AAF6
+Content-Type: text/html;
+	charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dgb2312">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7654.12">
+<TITLE>RE: [LTP]About the cacheflush01 testcase</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>Attach the patch.<BR>
+<BR>
+BR,<BR>
+Feng Gao<BR>
+<BR>
+<BR>
+-----Original Message-----<BR>
+From: Gao, Feng<BR>
+Sent: 2010-8-27 16:32<BR>
+To: ltp-list<BR>
+Cc: fgao0@windriver.com<BR>
+Subject: [LTP]About the cacheflush01 testcase<BR>
+<BR>
+Hi,<BR>
+<BR>
+In the cacheflush01 testcase, it will check if the return value is =
+EINVAL when the argument cache is not one of ICACHE, BCACHE or =
+DCACHE.<BR>
+<BR>
+But in the latest kernel, the return values of function cacheflush do =
+NOT have EINVAL,&nbsp; it is no consistent with the linux manual.<BR>
+A related patch about the cacheflush function:<BR>
+<A =
+HREF=3D"http://lkml.org/lkml/2009/4/9/203">http://lkml.org/lkml/2009/4/9/=
+203</A><BR>
+But Ralf had refused this patch:<BR>
+<A =
+HREF=3D"http://www.spinics.net/lists/linux-man/msg00906.html">http://www.=
+spinics.net/lists/linux-man/msg00906.html</A><BR>
+<BR>
+When run the ltp, cacheflush01 will fail at MIPS boards. So advice to =
+delete the cacheflush01 case.<BR>
+<BR>
+Thanks,<BR>
+Feng Gao<BR>
+<BR>
+<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_002_01CB45C8.B3A9AAF6--
+
+------_=_NextPart_001_01CB45C8.B3A9AAF6
+Content-Type: text/x-diff;
+	name="cacheflush01.diff"
+Content-Transfer-Encoding: base64
+Content-Description: cacheflush01.diff
+Content-Disposition: attachment;
+	filename="cacheflush01.diff"
+
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2FjaGVmbHVzaC9NYWtlZmls
+ZSBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2FjaGVmbHVzaC9NYWtlZmlsZQpkZWxldGVk
+IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMmVmODZmMC4uMDAwMDAwMAotLS0gYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2NhY2hlZmx1c2gvTWFrZWZpbGUKKysrIC9kZXYvbnVsbApAQCAtMSwy
+MyArMCwwIEBACi0jCi0jICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFj
+aGluZXMgIENvcnAuLCAyMDA5Ci0jCi0jICBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsg
+IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKLSMgIGl0IHVuZGVyIHRoZSB0
+ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Ci0j
+ICB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBM
+aWNlbnNlLCBvcgotIyAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KLSMKLSMg
+IFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUg
+dXNlZnVsLAotIyAgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBp
+bXBsaWVkIHdhcnJhbnR5IG9mCi0jICBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQ
+QVJUSUNVTEFSIFBVUlBPU0UuICBTZWUKLSMgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5z
+ZSBmb3IgbW9yZSBkZXRhaWxzLgotIwotIyAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29w
+eSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKLSMgIGFsb25nIHdpdGggdGhpcyBw
+cm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQotIyAgRm91bmRhdGlv
+biwgSW5jLiwgNTEgRnJhbmtsaW4gU3QsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BICAwMjExMC0x
+MzAxICBVU0EKLSMKLQotdG9wX3NyY2RpcgkJPz0gLi4vLi4vLi4vLi4KLQotaW5jbHVkZSAkKHRv
+cF9zcmNkaXIpL2luY2x1ZGUvbWsvdGVzdGNhc2VzLm1rCi0KLWluY2x1ZGUgJCh0b3Bfc3JjZGly
+KS9pbmNsdWRlL21rL2dlbmVyaWNfbGVhZl90YXJnZXQubWsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvY2FjaGVmbHVzaC9jYWNoZWZsdXNoMDEuYyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvY2FjaGVmbHVzaC9jYWNoZWZsdXNoMDEuYwpkZWxldGVkIGZpbGUgbW9k
+ZSAxMDA2NDQKaW5kZXggY2NlMGI3MC4uMDAwMDAwMAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2NhY2hlZmx1c2gvY2FjaGVmbHVzaDAxLmMKKysrIC9kZXYvbnVsbApAQCAtMSwxNzEg
+KzAsMCBAQAotLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KLS8qIENvcHlyaWdodCAoYykgTWF4aW4g
+Sm9obiA8bWF4aW4uam9obkBnbWFpbC5jb20+LCAyMDA5ICAgICAgICAgICAgICAgICAgICAgICov
+Ci0vKiBMS01MIFJlZmVyZW5jZTogaHR0cDovL2xrbWwub3JnL2xrbWwvMjAwOS80LzkvMjAzICAg
+ICAgICAgICAgICAgICAgICAgICAgICAqLwotLyogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdh
+cmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5ICAgICAgKi8KLS8qIGl0
+IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVi
+bGlzaGVkIGJ5ICAgICAgICovCi0vKiB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRo
+ZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvciAgICAgICAgICAqLwotLyogKGF0IHlvdXIg
+b3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKi8KLS8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKiBUaGlzIHByb2dyYW0gaXMg
+ZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgICAgICAgICAg
+ICAqLwotLyogYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBs
+aWVkIHdhcnJhbnR5IG9mICAgICAgICAgICAgKi8KLS8qIE1FUkNIQU5UQUJJTElUWSBvciBGSVRO
+RVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSAgICAgICAgICAgICAgICAgICovCi0v
+KiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAqLwotLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qIFlvdSBz
+aG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNl
+bnNlICAgICAgICAgICovCi0vKiBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbTsgIGlmIG5vdCwgd3Jp
+dGUgdG8gdGhlIEZyZWUgU29mdHdhcmUgICAgICAgICAgICAgICAqLwotLyogRm91bmRhdGlvbiwg
+SW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBV
+U0EgICAgKi8KLS8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+LwotLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKi8KLS8qICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKiBG
+aWxlOiAgICAgICAgY2FjaGVmbHVzaDAxLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAqLwotLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qIERlc2NyaXB0
+aW9uOiBUaGUgY2FjaGVmbHVzaF9jaGVjaygpIHN5c2NhbGwgICAgICAgICAgICAgICAgICAgICAJ
+ICAgICAgKi8JCi0vKgkJVGVzdHMgRUlOVkFMIGVycm9yIG9mIGNhY2hlZmx1c2ggc3lzdGVtIGNh
+bGwuCQkgICAgICAqLwkJCi0vKiAJCUl0cyBleHBlY3RlZCBiZWhhdmlvdXIgaXMgY2FjaGVmbHVz
+aCgpIHNob3VsZCByZXR1cm4gLUVJTlZBTCAgKi8KLS8qCQl3aGVuIGNhY2hlIHBhcmFtZXRlciBp
+cyBub3Qgb25lIG9mIElDQUNIRSwgRENBQ0hFLCBvciBCQ0FDSEUuICovCi0vKiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAqLwotLyogVXNhZ2U6ICA8Zm9yIGNvbW1hbmQtbGluZT4gICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qIGNhY2hlZmx1c2gwMSBbLWMg
+bl0gWy1lXVstaSBuXSBbLUkgeF0gWy1wIHhdIFstdF0gICAgICAgICAgICAgICAgICAgICAgICAg
+ICovCi0vKiAgICAgIHdoZXJlLCAgLWMgbiA6IFJ1biBuIGNvcGllcyBjb25jdXJyZW50bHkuICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAqLwotLyogICAgICAgICAgICAgIC1lICAgOiBUdXJu
+IG9uIGVycm5vIGxvZ2dpbmcuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8q
+ICAgICAgICAgICAgICAtaSBuIDogRXhlY3V0ZSB0ZXN0IG4gdGltZXMuICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICovCi0vKiAgICAgICAgICAgICAgLUkgeCA6IEV4ZWN1dGUgdGVz
+dCBmb3IgeCBzZWNvbmRzLiAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwotLyogICAgICAg
+ICAgICAgIC1QIHggOiBQYXVzZSBmb3IgeCBzZWNvbmRzIGJldHdlZW4gaXRlcmF0aW9ucy4gICAg
+ICAgICAgICAgICAgKi8KLS8qICAgICAgICAgICAgICAtdCAgIDogVHVybiBvbiBzeXNjYWxsIHRp
+bWluZy4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAqLwotLyogVG90YWwgVGVzdHM6IDEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICov
+Ci0vKiBUZXN0IE5hbWU6ICAgY2FjaGVmbHVzaDAxICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAqLwotLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KLQotI2lu
+Y2x1ZGUgPHVuaXN0ZC5oPgotI2luY2x1ZGUgPHN0ZGlvLmg+Ci0jaW5jbHVkZSA8c3RkbGliLmg+
+Ci0jaW5jbHVkZSA8ZXJybm8uaD4KLQotLyogY2FjaGVmbHVzaCBtYW4gcGFnZSBzdGF0ZXMgdGhh
+dCBjYWNoZWZsdXNoKCkgaXMgb25seSBhcHBsaWNhYmxlIHRvCi0gKiBNSVBTIGFyY2hpdGVjdHVy
+ZSAtLSByZWdhcmRsZXNzLCBpdCdzIGEgZ29vZCBuZWdhdGl2ZSB0ZXN0Li4gKi8KLQotI2lmbmRl
+ZiAgIElDQUNIRQotI2RlZmluZSAgIElDQUNIRSAgICgxPDwwKQkJLyogZmx1c2ggaW5zdHJ1Y3Rp
+b24gY2FjaGUgICAgICAgICovCi0jZW5kaWYKLSNpZm5kZWYgICBEQ0FDSEUKLSNkZWZpbmUgICBE
+Q0FDSEUgICAoMTw8MSkJCS8qIHdyaXRlYmFjayBhbmQgZmx1c2ggZGF0YSBjYWNoZSAqLwotI2Vu
+ZGlmCi0jaWZuZGVmICAgQkNBQ0hFCi0jZGVmaW5lICAgQkNBQ0hFICAgKElDQUNIRXxEQ0FDSEUp
+CS8qIGZsdXNoIGJvdGggY2FjaGVzICAgICAgICAgICAgICAqLwotI2VuZGlmCi0KLS8qIEhhcm5l
+c3MgU3BlY2lmaWMgSW5jbnVkZSBGaWxlcy4gKi8KLSNpbmNsdWRlICJ0ZXN0LmgiCi0jaW5jbHVk
+ZSAidXNjdGVzdC5oIgotI2luY2x1ZGUgImxpbnV4X3N5c2NhbGxfbnVtYmVycy5oIgotCi0vKiBj
+YWNoZWZsdXNoIG1hbiBwYWdlIHN0YXRlcyB0aGF0IGNhY2hlZmx1c2goKSBpcyBvbmx5IGFwcGxp
+Y2FibGUgdG8KLSAqIE1JUFMgYXJjaGl0ZWN0dXJlIC0tIHJlZ2FyZGxlc3MsIGl0J3MgYSBnb29k
+IG5lZ2F0aXZlIHRlc3QuLiAqLwotI2lmIGRlZmluZWQgX19taXBzX18KLSNpbmNsdWRlIDxhc20v
+Y2FjaGVjdGwuaD4KLSNkZWZpbmUgX19OUl9jYWNoZWZsdXNoCQkoX19OUl9MaW51eCArIDE5NykK
+LSNlbHNlCi0vKiBGYWtlIGxpbnV4X3N5c2NhbGxfbnVtYmVycy5oICovCi0jZGVmaW5lIF9fTlJf
+Y2FjaGVmbHVzaAkJMAotI2VuZGlmCi0KLS8qIEV4dGVybiBHbG9iYWwgVmFyaWFibGVzICovCi1l
+eHRlcm4gaW50IFRzdF9jb3VudDsgICAgICAgICAgIC8qIGNvdW50ZXIgZm9yIHRzdF94eHggcm91
+dGluZXMuICAgICAgICAgKi8KLWV4dGVybiBjaGFyICpURVNURElSOyAgICAgICAgICAgLyogdGVt
+cG9yYXJ5IGRpciBjcmVhdGVkIGJ5IHRzdF90bXBkaXIoKSAqLwotCi0vKiBHbG9iYWwgVmFyaWFi
+bGVzICovCi1jaGFyICpUQ0lEID0gImNhY2hlZmx1c2gwMSI7CS8qIFRlc3QgcHJvZ3JhbSBpZGVu
+dGlmaWVyLiovCi1pbnQgIFRTVF9UT1RBTCA9IDE7CQkvKiB0b3RhbCBudW1iZXIgb2YgdGVzdHMg
+aW4gdGhpcyBmaWxlLiAgICovCi0KLS8qIEV4dGVybiBHbG9iYWwgRnVuY3Rpb25zICovCi0vKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqLwotLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qIEZ1bmN0aW9u
+OiAgICBjbGVhbnVwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICovCi0vKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwotLyogRGVzY3JpcHRpb246IFBl
+cmZvcm1zIGFsbCBvbmUgdGltZSBjbGVhbiB1cCBmb3IgdGhpcyB0ZXN0IG9uIHN1Y2Nlc3NmdWwg
+ICAgKi8KLS8qICAgICAgICAgICAgICBjb21wbGV0aW9uLCAgcHJlbWF0dXJlIGV4aXQgb3IgIGZh
+aWx1cmUuIENsb3NlcyBhbGwgdGVtcG9yYXJ5ICovCi0vKiAgICAgICAgICAgICAgZmlsZXMsIHJl
+bW92ZXMgYWxsIHRlbXBvcmFyeSBkaXJlY3RvcmllcyBleGl0cyB0aGUgdGVzdCB3aXRoICAqLwot
+LyogICAgICAgICAgICAgIGFwcHJvcHJpYXRlIHJldHVybiBjb2RlIGJ5IGNhbGxpbmcgdHN0X2V4
+aXQoKSBmdW5jdGlvbi4gICAgICAgKi8KLS8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKiBJbnB1
+dDogICAgICAgTm9uZS4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAqLwotLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qIE91dHB1dDogICAg
+ICBOb25lLiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICovCi0vKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwotLyogUmV0dXJuOiAgICAgIE9uIGZh
+aWx1cmUgLSBFeGl0cyBjYWxsaW5nIHRzdF9leGl0KCkuIE5vbiAnMCcgcmV0dXJuIGNvZGUuICAg
+Ki8KLS8qICAgICAgICAgICAgICBPbiBzdWNjZXNzIC0gRXhpdHMgY2FsbGluZyB0c3RfZXhpdCgp
+LiBXaXRoICcwJyByZXR1cm4gY29kZS4gICovCi0vKiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwotLyoq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKi8KLWV4dGVybiB2b2lkIGNsZWFudXAoKSB7Ci0gICAgICAgIC8q
+IFJlbW92ZSB0bXAgZGlyIGFuZCBhbGwgZmlsZXMgaW4gaXQgKi8KLSAgICAgICAgVEVTVF9DTEVB
+TlVQOwotICAgICAgICB0c3Rfcm1kaXIoKTsKLX0KLQotLyogTG9jYWwgIEZ1bmN0aW9ucyAqLwot
+LyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKi8KLS8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKiBGdW5j
+dGlvbjogICAgc2V0dXAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAqLwotLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qIERlc2NyaXB0aW9u
+OiBQZXJmb3JtcyBhbGwgb25lIHRpbWUgc2V0dXAgZm9yIHRoaXMgdGVzdC4gVGhpcyBmdW5jdGlv
+biBpcyAgICovCi0vKiAgICAgICAgICAgICAgdHlwaWNhbGx5IHVzZWQgdG8gY2FwdHVyZSBzaWdu
+YWxzLCBjcmVhdGUgdGVtcG9yYXJ5IGRpcnMgICAgICAqLwotLyogICAgICAgICAgICAgIGFuZCB0
+ZW1wb3JhcnkgZmlsZXMgdGhhdCBtYXkgYmUgdXNlZCBpbiB0aGUgY291cnNlIG9mIHRoaXMgICAg
+Ki8KLS8qICAgICAgICAgICAgICB0ZXN0LiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwotLyog
+SW5wdXQ6ICAgICAgIE5vbmUuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKi8KLS8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCi0vKiBPdXRwdXQ6
+ICAgICAgTm9uZS4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAqLwotLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLS8qIFJldHVybjogICAgICBP
+biBmYWlsdXJlIC0gRXhpdHMgYnkgY2FsbGluZyBjbGVhbnVwKCkuICAgICAgICAgICAgICAgICAg
+ICAgICovCi0vKiAgICAgICAgICAgICAgT24gc3VjY2VzcyAtIHJldHVybnMgMC4gICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwotLyogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8K
+LS8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKiovCi12b2lkIHNldHVwKCkgewotICAgICAgICAvKiBDYXB0
+dXJlIHNpZ25hbHMgaWYgYW55ICovCi0gICAgICAgIC8qIENyZWF0ZSB0ZW1wb3JhcnkgZGlyZWN0
+b3JpZXMgKi8KLSAgICAgICAgVEVTVF9QQVVTRTsKLSAgICAgICAgdHN0X3RtcGRpcigpOwotfQot
+Ci1pbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKLXsKLQotCWNoYXIgKmFkZHIgPSBOVUxMOwot
+ICAgICAgICBjaGFyICptc2c7ICAgICAgICAgICAgICAvKiBtZXNzYWdlIHJldHVybmVkIGZyb20g
+cGFyc2Vfb3B0cyAqLwotCQotICAgICAgICAvKiBwYXJzZSBzdGFuZGFyZCBvcHRpb25zICovCi0g
+ICAgICAgIGlmICgobXNnID0gcGFyc2Vfb3B0cyhhYywgYXYsIChvcHRpb25fdCAqKU5VTEwsIE5V
+TEwpKSAhPSAoY2hhciAqKU5VTEwpewotCQl0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgIk9QVElP
+TiBQQVJTSU5HIEVSUk9SIC0gJXMiLCBtc2cpOwotCQl0c3RfZXhpdCgpOwotICAgICAgICB9Ci0K
+LSAgICAgICAgc2V0dXAoKTsKLQotCVRzdF9jb3VudCA9IDA7Ci0JLyogQ3JlYXRlIHNvbWUgdXNl
+ciBhZGRyZXNzIHJhbmdlICovCi0JYWRkciA9IG1hbGxvYyhnZXRwYWdlc2l6ZSgpKTsKLQlpZiAo
+YWRkciA9PSBOVUxMKSB7Ci0JCXRzdF9icmttKFRGQUlMIHwgVFRFUlJOTywgY2xlYW51cCwgIm1h
+bGxvYyBmYWlsZWQiKTsKLQl9Ci0KLQkvKiBJbnZva2VzIGNhY2hlZmx1c2goKSB3aXRoIHByb3Bl
+ciBwYXJhbWV0ZXJzICovCi0JVEVTVChzeXNjYWxsKF9fTlJfY2FjaGVmbHVzaCwgYWRkciwgZ2V0
+cGFnZXNpemUoKSwgSUNBQ0hFKSk7Ci0JVEVTVChzeXNjYWxsKF9fTlJfY2FjaGVmbHVzaCwgYWRk
+ciwgZ2V0cGFnZXNpemUoKSwgRENBQ0hFKSk7Ci0JVEVTVChzeXNjYWxsKF9fTlJfY2FjaGVmbHVz
+aCwgYWRkciwgZ2V0cGFnZXNpemUoKSwgQkNBQ0hFKSk7Ci0KLQkvKiBUZXN0cyB3aGV0aGVyIGNh
+Y2hlZmx1c2goKSByZXR1cm5zIC1FSU5WQUwgKi8KLQlURVNUKHN5c2NhbGwoX19OUl9jYWNoZWZs
+dXNoLCBhZGRyLCBnZXRwYWdlc2l6ZSgpLCAwKSk7Ci0JaWYgKFRFU1RfUkVUVVJOIDwgMCkgewot
+CQlpZiAoVEVTVF9FUlJOTyA9PSBFSU5WQUwpIHsKLQkJCXRzdF9yZXNtKFRQQVNTIHwgVFRFUlJO
+TywgInBhc3NlZCB3aXRoIGV4cGVjdGVkIGVycm5vIik7Ci0JCX0gZWxzZSB7Ci0JCQl0c3RfcmVz
+bShURkFJTCB8IFRURVJSTk8sICJmYWlsZWQgd2l0aCB1bmV4cGVjdGVkIGVycm5vIik7Ci0JCX0J
+CQotCX0gZWxzZSB7Ci0JICAgICAgICB0c3RfcmVzbShURkFJTCwgInBhc3NlZCB1bmV4cGVjdGVk
+bHkiKTsKLSAgICAgICAgfQotCWNsZWFudXAoKTsgCi0gICAgICAgIHRzdF9leGl0KCk7Ci19Cg==
+
+------_=_NextPart_001_01CB45C8.B3A9AAF6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
+Be part of this innovative community and reach millions of netbook users 
+worldwide. Take advantage of special opportunities to increase revenue and 
+speed time-to-market. Join now, and jumpstart your future.
+http://p.sf.net/sfu/intel-atom-d2d
+------_=_NextPart_001_01CB45C8.B3A9AAF6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01CB45C8.B3A9AAF6--
+
