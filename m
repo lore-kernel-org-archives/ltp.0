@@ -1,28 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OwJsO-00007G-HJ
-	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 19:12:08 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OwJsN-0004Ow-Ok
-	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 19:12:08 +0000
-Received: by iwn2 with SMTP id 2so1620406iwn.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <wyang@windriver.com>) id 1OqO5M-0002h0-IH
+	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 10:29:00 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OqO5L-00078u-1s
+	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 10:29:00 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o7VASrQN008777
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 16 Sep 2010 12:12:02 -0700 (PDT)
+	Tue, 31 Aug 2010 03:28:53 -0700 (PDT)
+Message-ID: <4C7CDA7E.2020505@windriver.com>
+Date: Tue, 31 Aug 2010 18:33:34 +0800
+From: yangzi <wyang@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <20100916190023.GA11397@hannu-ubuntu>
-References: <000401cb53c6$d7a16620$86e43260$@co.jp>
-	<20100915134318.GD24784@hannu-debian.research.nokia.com>
-	<AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
-	<20100915182052.GA2750@hannu-ubuntu>
-	<AANLkTik5HT2tDzaCfAU+7kgcsUNucrL6zPLZ3xdBF+kW@mail.gmail.com>
-	<20100916190023.GA11397@hannu-ubuntu>
-Date: Thu, 16 Sep 2010 12:12:02 -0700
-Message-ID: <AANLkTi=tsb1E2nW3ZmRdMrSZ6WftPRCe3RJf90Ts3rJw@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
+Content-Type: multipart/mixed; boundary="------------030505070506090200050602"
+Subject: [LTP] [PATCH] Probe an bigger linear available address to
+	attachment.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,61 +28,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hannu Heikkinen <hannuxx@iki.fi>
-Cc: ext Mitani <mitani@ryobi.co.jp>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Thu, Sep 16, 2010 at 12:00 PM, Hannu Heikkinen <hannuxx@iki.fi> wrote:
-> On 15/09/10 12:01 -0700, Garrett Cooper wrote:
->> >
->> > Should this posixtest.h be kind of a must include for all test cases?
->> > Currently not all cases include this.
->>
->> =A0 =A0 Well, every affected testcase should include this :). Not all
->> files need to include this (there are a number of applications that
->> don't need what's defined here) -- so there's no sense in generating
->> more work than necessary :).
->> Thanks,
->> -Garrett
->
-> I must have been hald asleep writing that prev email. I meant that posixt=
-est
-> cases should include that, and of course not all LTP cases.
+This is a multi-part message in MIME format.
+--------------030505070506090200050602
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I must have doubly been so because I didn't catch that either :).
+Hi
 
-> Might be a consideration for having global ltp header file for all C test
-> cases
-> so that generic functionality could be better tweaked by changing certain
-> defines. Of course that needs more discussion and analysis, thoug.
+When running shmat01 on some platforms, it fails on
+"addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
+with a INVAL error. Look at codes in "setup()", it probes
+an available address and align the address to SHMLBA. After
+alignment, the new address is no guarantee to be available
+any more. Here a bigger size is used to probe so that it's
+still valid address after alignment.Pertaining to the function 
+setup_tc(lc, &tc) ,when it outside of "for (i = 0; i < TST_TOTAL; 
+i++)",and printf the tc.offset value is always 0,add correct a mistake
+of original codes to move "setup_tc()" to right place.
 
-Already done:
+Signed-off-by: Yang Wei <wei.yang@windriver.com>
 
-include/: http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.git=
-;a=3Dtree;f=3Dinclude;h=3D93d0ff91530c366d3af0cfc0c6b4f27c779cb866;hb=3DHEAD
-lib/: http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.git;a=
-=3Dtree;f=3Dlib;h=3D85556e60de93da651c3ffbab56eeef2b3a68c8bf;hb=3DHEAD
+wei yang
+BR
 
-The above changes mentioned only affect the open posix testsuite
-(http://sf.net/projects/posixtest/), which is a component completely
-orthogonal to the rest of the code in the LTP sourcebase, so these
-changes are only required for that section of the codebase. However,
-certain tunable features can be added in the LTP buildsystem and the
-open posix testsuite to support automatic `developer mode' if you
-will. This will take a while to do properly though.
+--------------030505070506090200050602
+Content-Type: text/x-patch;
+	name="0001-Probe-an-bigger-linear-available-address-to-attachme.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename*0="0001-Probe-an-bigger-linear-available-address-to-attachme.pa";
+	filename*1="tch"
 
-Thanks,
--Garrett
+From 22b24a3d16a751f6512a7691abc46f9d744c091a Mon Sep 17 00:00:00 2001
+From: Yang Wei <wyang@windriver.com>
+Date: Tue, 31 Aug 2010 18:02:16 +0800
+Subject: [PATCH] Probe an bigger linear available address to attachment.
 
----------------------------------------------------------------------------=
+When running shmat01 on some platforms, it fails on
+"addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
+with a EINVAL error. Look at codes in "setup()", it probes
+an available address and align the address to SHMLBA. After
+alignment, the new address is no guarantee to be available
+any more. Here a bigger size is used to probe so that it's
+still valid address after alignment.And correct a mistake
+of original codes to move "setup_tc()" to right place.
+
+Signed-off-by: Yang Wei <wei.yang@windriver.com>
 ---
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+ testcases/kernel/syscalls/ipc/shmat/shmat01.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+index 4cb5eaf..ec6ae89 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+@@ -120,11 +120,12 @@ int main(int ac, char **av)
+ 		/* reset Tst_count in case we are looping */
+ 		Tst_count = 0;
+ 
+-		/* setup test case paremeters */
+-		setup_tc(lc, &tc);
+ 
+ 		/* loop through the test cases */
+ 		for (i = 0; i < TST_TOTAL; i++) {
++		
++			/* setup test case paremeters */
++			setup_tc(i, &tc);
+ 
+ 			/*
+ 			 * Use TEST macro to make the call
+@@ -246,6 +247,8 @@ void check_functionality(int i)
+  */
+ void setup(void)
+ {
++	int shm_id_2;
++
+ 	/* capture signals */
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+@@ -270,12 +273,18 @@ void setup(void)
+ 	}
+ 
+ 	/* Probe an available linear address for attachment */
+-	if ((base_addr = shmat(shm_id_1, NULL, 0)) == (void *)-1) {
++	if ((shm_id_2 = shmget(shmkey++, SHMLBA + INT_SIZE, SHM_RW | IPC_CREAT |
++			       IPC_EXCL)) == -1) {
++		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
++			 "resource 1 in setup()");
++	}
++	if ((base_addr = shmat(shm_id_2, NULL, 0)) == (void *)-1) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
+ 	}
+ 	if (shmdt((const void *)base_addr) == -1) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
+ 	}
++	rm_shm(shm_id_2);
+ 
+ 	/* some architectures (e.g. parisc) are strange, so better always align to
+ 	 * next SHMLBA address. */
+-- 
+1.6.0.4
+
+
+--------------030505070506090200050602
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
+--------------030505070506090200050602
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030505070506090200050602--
+
