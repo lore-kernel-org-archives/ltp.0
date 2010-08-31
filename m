@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1OxfLQ-0008RC-FW
-	for ltp-list@lists.sourceforge.net; Mon, 20 Sep 2010 12:19:40 +0000
-Date: Mon, 20 Sep 2010 14:40:09 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100920124009.GB29485@saboteur.suse.cz>
-References: <20100902144720.GA16059@saboteur.suse.cz>
-	<1283789797.4947.18.camel@subratamodak.linux.ibm.com>
-	<4C851BAD.9080207@linux.vnet.ibm.com>
-	<1284020387.29634.4.camel@subratamodak.linux.ibm.com>
-	<4C88F433.80301@linux.vnet.ibm.com>
-	<1284443154.5001.8.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1Oqahl-0005up-G3
+	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 23:57:29 +0000
+Received: from mail-qy0-f175.google.com ([209.85.216.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oqahk-0003RL-It
+	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 23:57:29 +0000
+Received: by qyk31 with SMTP id 31so50839qyk.13
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 31 Aug 2010 16:57:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1284443154.5001.8.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH] fix realtime atomic_add() inline asm
+From: Henry Yei <hyei@mvista.com>
+Date: Tue, 31 Aug 2010 16:57:03 -0700
+Message-ID: <AANLkTikan_6LjsZeG0E2pohutyxmx+WtKM6M-J3e=A4=@mail.gmail.com>
+Subject: [LTP] [PATCH] [commands] apply relevant fixes from at_deny01 to
+ at_allow01 script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,37 +29,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>, darren@dvhart.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > Hi Cyril,
-> > Do you wish to ack my patch ?
-> 
-> Cyril,
-> 
-> Waiting for your endorsement/rejection !!
+I've prepared a patch for at_allow01 that essentially duplicates the
+fixes that were checked in for at_deny01. This fixes the script to
+actually run the test when the at utility in stead of returning TCONF,
+correcting test environment, and let the script run normally without
+changing the password. See commit
+a589d12b0b49287d10f43b1a1fb72950819588eb for more details.
 
-Sorry, I've been out of the office for some time.
-
-Using __sync_add_and_fetch() is better solution as far as we use gcc
-(1), but we were using gcc extended assembler (2) before, so we should
-be safe here. You can add my ack to previous patch.
-
-
-1) http://gcc.gnu.org/onlinedocs/gcc-4.3.2/gcc/Atomic-Builtins.html
-
-2) http://gcc.gnu.org/onlinedocs/gcc-4.3.2/gcc/Extended-Asm.html#Extended-Asm
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Henry Yei <hyei@mvista.com>
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
