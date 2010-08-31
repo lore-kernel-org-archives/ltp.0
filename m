@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <romansc@us.ibm.com>) id 1OvFEk-0003kK-5L
-	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 20:02:46 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OvFEh-00006Y-4l
-	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 20:02:44 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e9.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8DJhmZR014368
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 15:43:48 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o8DK2PTo1360054
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 16:02:25 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o8DK2Omf024277
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 17:02:25 -0300
-Received: from d01ml605.pok.ibm.com (d01ml605.pok.ibm.com [9.56.227.91])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o8DK2Osb024253
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 17:02:24 -0300
-Message-ID: <OFF1F0C1E2.5151E428-ON8525779D.006DDE26-8525779D.006E152F@us.ibm.com>
-From: Scott Romanowski <romansc@us.ibm.com>
-Date: Mon, 13 Sep 2010 16:02:23 -0400
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <wyang@windriver.com>) id 1OqNOq-0007QM-Id
+	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 09:45:04 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OqNOm-0005Mw-NX
+	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 09:45:04 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o7V9isR6029733
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 31 Aug 2010 02:44:54 -0700 (PDT)
+Message-ID: <4C7CD031.6060906@windriver.com>
+Date: Tue, 31 Aug 2010 17:49:37 +0800
+From: yangzi <wyang@windriver.com>
 MIME-Version: 1.0
-Subject: [LTP] 20100831 bug and patch in
-	testcases/kernel/syscalls/lchown/lchown02.c
+Content-Type: multipart/mixed; boundary="------------030805010508010901070901"
+Subject: [LTP] [PATCH] [PATCH] Probe an bigger linear available address to
+ attachment.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,77 +28,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8611882152915701128=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============8611882152915701128==
-Content-type: multipart/alternative; 
-	Boundary="0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6"
-Content-Disposition: inline
+This is a multi-part message in MIME format.
+--------------030805010508010901070901
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
---0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6
-Content-type: text/plain; charset=US-ASCII
+Hi
+
+When running shmat01 on some platforms, it fails on
+"addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
+with a INVAL error. Look at codes in "setup()", it probes
+an available address and align the address to SHMLBA. After
+alignment, the new address is no guarantee to be available
+any more. Here a bigger size is used to probe so that it's
+still valid address after alignment.Pertaining to the function 
+setup_tc(lc, &tc) ,when it outside of "for (i = 0; i < TST_TOTAL; 
+i++)",and printf the tc.offset value is always 0,add correct a mistake
+of original codes to move "setup_tc()" to right place.
+
+Signed-off-by: Yang Wei <wei.yang@windriver.com>
+
+wei yang
+BR
+
+--------------030805010508010901070901
+Content-Type: text/x-patch;
+	name="0001-Probe-an-bigger-linear-address-to-be-available-for-a.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename*0="0001-Probe-an-bigger-linear-address-to-be-available-for-a.pa";
+	filename*1="tch"
+
+From 13b73dc0cdd614273463959f6c6bbf460629168b Mon Sep 17 00:00:00 2001
+From: Yang Wei <wyang@windriver.com>
+Date: Tue, 31 Aug 2010 17:03:38 +0800
+Subject: [PATCH] Probe an bigger linear available address to attachment.
+
+When running shmat01 on some platforms, it fails on
+"addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
+with a EINVAL error. Look at codes in "setup()", it probes
+an available address and align the address to SHMLBA. After
+alignment, the new address is no guarantee to be available
+any more. Here a bigger size is used to probe so that it's
+still valid address after alignment.Add correct a mistake
+of original codes to move "setup_tc()" to right place.
+
+Signed-off-by: Yang Wei <wei.yang@windriver.com>
+---
+ testcases/kernel/syscalls/ipc/shmat/shmat01.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+index 4cb5eaf..f3bfe9d 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+@@ -120,11 +120,12 @@ int main(int ac, char **av)
+ 		/* reset Tst_count in case we are looping */
+ 		Tst_count = 0;
+ 
+-		/* setup test case paremeters */
+-		setup_tc(lc, &tc);
+ 
+ 		/* loop through the test cases */
+ 		for (i = 0; i < TST_TOTAL; i++) {
++		
++			/* setup test case paremeters */
++			setup_tc(i, &tc);
+ 
+ 			/*
+ 			 * Use TEST macro to make the call
+@@ -246,6 +247,8 @@ void check_functionality(int i)
+  */
+ void setup(void)
+ {
++	int shm_id_2;
++
+ 	/* capture signals */
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+@@ -270,12 +273,18 @@ void setup(void)
+ 	}
+ 
+ 	/* Probe an available linear address for attachment */
+-	if ((base_addr = shmat(shm_id_1, NULL, 0)) == (void *)-1) {
++	if ((shm_id_2 = shmget(shmkey++, INT_SIZE, SHM_RW | IPC_CREAT |
++			       IPC_EXCL)) == -1) {
++		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
++			 "resource 1 in setup()");
++	}
++	if ((base_addr = shmat(shm_id_2, NULL, 0)) == (void *)-1) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
+ 	}
+ 	if (shmdt((const void *)base_addr) == -1) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
+ 	}
++	rm_shm(shm_id_2);
+ 
+ 	/* some architectures (e.g. parisc) are strange, so better always align to
+ 	 * next SHMLBA address. */
+-- 
+1.6.0.4
 
 
-The contents of an unitialized automatic array are undefined, so start
-copying string to it with strcpy() not strcat().
-
-diff testcases/kernel/syscalls/lchown/lchown02.c
---- a/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 14:51:41
-2010 -0400
-+++ b/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 15:59:04
-2010 -0400
-@@ -343,7 +343,7 @@
- 	strcat(Path_name, "/" TEST_FILE1);
-
- 	/* Get the command name to be executed as setuid to root */
--	strcat((char *)Cmd_buffer, main_test_dir);
-+	strcpy((char *)Cmd_buffer, main_test_dir);
- 	strcat((char *)Cmd_buffer, (const char *)"/create_link ");
- 	strcat((char *)Cmd_buffer, Path_name);
-
---
-Scott Romanowski
---0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6
-Content-type: text/html; charset=US-ASCII
-Content-Disposition: inline
-
-<html><body>
-<p>The contents of an unitialized automatic array are undefined, so start copying string to it with strcpy() not strcat().<br>
-<br>
-diff testcases/kernel/syscalls/lchown/lchown02.c<br>
---- a/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 14:51:41 2010 -0400<br>
-+++ b/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 15:59:04 2010 -0400<br>
-@@ -343,7 +343,7 @@<br>
- 	strcat(Path_name, &quot;/&quot; TEST_FILE1);<br>
- <br>
- 	/* Get the command name to be executed as setuid to root */<br>
--	strcat((char *)Cmd_buffer, main_test_dir);<br>
-+	strcpy((char *)Cmd_buffer, main_test_dir);<br>
- 	strcat((char *)Cmd_buffer, (const char *)&quot;/create_link &quot;);<br>
- 	strcat((char *)Cmd_buffer, Path_name);<br>
- <br>
---<br>
-Scott Romanowski<br>
-</body></html>
---0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6--
-
-
-
---===============8611882152915701128==
+--------------030805010508010901070901
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
 
---===============8611882152915701128==
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
+--------------030805010508010901070901
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -119,6 +156,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============8611882152915701128==--
-
+--------------030805010508010901070901--
 
