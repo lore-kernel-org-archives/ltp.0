@@ -2,23 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OvYbq-0003hy-VA
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 16:43:54 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OvYbp-0005P8-87
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 16:43:54 +0000
-Received: by iwn2 with SMTP id 2so7624612iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Sep 2010 09:43:48 -0700 (PDT)
+	(envelope-from <Wei.Yang@windriver.com>) id 1OqhH9-0003en-7R
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 06:58:27 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OqhH4-0002NK-Rn
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 06:58:27 +0000
+Message-ID: <4C7DFAAB.9060704@windriver.com>
+Date: Wed, 01 Sep 2010 15:03:07 +0800
+From: yangzi <wei.yang@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <OFD6B689AE.1AE38E72-ON8525779D.0054A722-8525779E.0049DA86@us.ibm.com>
-References: <OFD6B689AE.1AE38E72-ON8525779D.0054A722-8525779E.0049DA86@us.ibm.com>
-Date: Tue, 14 Sep 2010 09:43:47 -0700
-Message-ID: <AANLkTimGFWgvZcinBK-SHkY2H-Ew6D+x=L2EyedRQKn4@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] 20100831 release hugetlb tests bug and patch (re-post
- with sign-off line)
+References: <4C7CDA7E.2020505@windriver.com>	<52CF90264091A14888078A031D780F430D093D@ism-mail03.corp.ad.wrs.com>
+	<AANLkTimHJjRYxkLSgr3kBQHD5Lu3=zwx0YR4PGX3KR01@mail.gmail.com>
+In-Reply-To: <AANLkTimHJjRYxkLSgr3kBQHD5Lu3=zwx0YR4PGX3KR01@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Probe an bigger linear available address to
+	attachment.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,140 +29,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Scott Romanowski <romansc@us.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Sep 14, 2010 at 6:26 AM, Scott Romanowski <romansc@us.ibm.com> wrote:
-> The various hugetlb tests don't check to see if they are trying to allocate
->> SHMMAX memory, nor do they try to compensate for multiple processes --
-> each process will try to get half of memory, so eventually a request will
-> fail.
->
-> I suggest adding a function to lib/system_specific_hugepages_info.c and
-> include/system_specific_hugepages_info.h, and replacing the existing
-> calculation with a call to the new function in
-> testcases\kernel\mem\hugetlb\hugeshmat\hugeshmat01.c
-> testcases\kernel\mem\hugetlb\hugeshmat\hugeshmat02.c
-> testcases\kernel\mem\hugetlb\hugeshmat\hugeshmat03.c
-> testcases\kernel\mem\hugetlb\hugeshmctl\hugeshmctl01.c
-> testcases\kernel\mem\hugetlb\hugeshmctl\hugeshmctl02.c
-> testcases\kernel\mem\hugetlb\hugeshmctl\hugeshmctl03.c
-> testcases\kernel\mem\hugetlb\hugeshmdt\hugeshmdt01.c
-> testcases\kernel\mem\hugetlb\hugeshmget\hugeshmget01.c
-> testcases\kernel\mem\hugetlb\hugeshmget\hugeshmget02.c
-> testcases\kernel\mem\hugetlb\hugeshmget\hugeshmget03.c
-> testcases\kernel\mem\hugetlb\hugeshmget\hugeshmget05.c
->
-> With this change you can run all the tests with multiple forked processes,
-> except hugeshmget02 and hugeshmget03.
->
-> hugeshmget02 creates a large shared memory segment, then loops, trying to
-> shmget() it in various invalid ways. Once it has finished looping, it
-> deletes the segment. If you run it with multiple parallel processes, once
-> one process finishes its loop and deletes the segment, the others fail.
->
-> hugeshmget03 allocates all of the available huge memory, then loops, trying
-> to allocate one more chunk and expecting an error. It finally deallocates
-> all the memory. However, running this test in multiple parallel processes
-> can cause false errors as follows:
-> - The numerous processes allocate all of huge memory.
-> - process 1 tries to allocate more. It fails, finishes its loops, and then
-> releases all the memory it allocated.
-> - process 2, which hasn't finished all its loops then tries to allocate
-> more, and succeeds, which is a failure.
->
->
-> The patches:
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> diff -r 90778db5a87c include/system_specific_hugepages_info.h
-> --- a/include/system_specific_hugepages_info.h Mon Sep 13 11:19:49 2010
-> -0400
-> +++ b/include/system_specific_hugepages_info.h Mon Sep 13 14:51:14 2010
-> -0400
-> @@ -24,5 +24,13 @@
-> int get_no_of_hugepages(void);
-> /*Returns Hugepages Size from /proc/meminfo*/
-> int hugepages_size(void);
-> +
-> +/* Returns number of bytes to allocate, based on total huge memory,
-> + a fraction, SHMMAX, and the number of parallel processes that will be
-> + allocating memory. fraction is the fraction of total memory to use.
-> + E.g., a fraction of 0.5 will allocate from 1/2 the total, 0.333 would use
-> 1/3.
-> + A fraction of 1 would allocate from all the huge memory.
-> +*/
-> +size_t calculate_huge_pages_shm_to_be_allocated( double fraction );
-> #endif
->
-> diff -r 90778db5a87c lib/system_specific_hugepages_info.c
-> --- a/lib/system_specific_hugepages_info.c Mon Sep 13 11:19:49 2010 -0400
-> +++ b/lib/system_specific_hugepages_info.c Mon Sep 13 14:51:14 2010 -0400
-> @@ -26,8 +26,10 @@
-> */
->
-> #include <fcntl.h>
-> +#include <linux/shm.h>
-> #include <sys/types.h>
-> #include <test.h>
-> +#include "usctest.h"
->
-> #define BUFSIZE 512
->
-> @@ -76,3 +78,29 @@
-> #endif
-> }
->
-> +/* Calculate how much memory to allocate based on the available huge memory
-> and
-> + how many parallel processes are going to allocate it.
-> +*/
-> +size_t calculate_huge_pages_shm_to_be_allocated( double fraction )
-> +{
-> +#ifdef __linux__
-> + size_t bytes_to_allocate;
-> +
-> + bytes_to_allocate = (size_t)(fraction * (double)get_no_of_hugepages() *
-> (double)hugepages_size() * 1024.0);
-> +
-> + /* Now divide that up amongst the processes */
-> + if( STD_COPIES > 1 )
-> + bytes_to_allocate /= (size_t)STD_COPIES;
-> + /* and limit to SHMMAX */
-> + if( bytes_to_allocate > SHMMAX )
-> + bytes_to_allocate = (size_t)SHMMAX;
-> +
-> + #ifdef DEBUG
-> + printf( "calculate_huge_pages_shm_to_be_allocated(%lf) returns %lu\n",
-> divider, (unsigned long)bytes_to_allocate );
-> + #endif
-> +
-> + return bytes_to_allocate;
-> +#else
-> + return (size_t)-1;
-> +#endif
-> +}
+Hi
+It failed on the first sub-testcase and on the mips architecture.
+Thanks
+wei.yang
 
-1. It doesn't make sense why you're doing this, unless you're
-purposely trying to impose a limit to get the consumer to fail on the
-next round. What happens if you make this 0 instead?
-2. Also, have you tried inverting the logic to test out whether or not
-this case functions as expected (i.e. #ifndef __linux__ ... #else
-return (size_t) -1; #endif)?
-3. This also exposes type bugs in the tests; example:
-
-unsigned long huge_pages_shm_to_be_allocated;
-
-Note that the above is unsigned long, not size_t. This logic is
-present in a handful of the hugetlb testcases.
-
-Thanks,
--Garrett
+Garrett Cooper wrote:
+> 2010/8/31 Yang, Wei <Wei.Yang@windriver.com>:
+>> Hi
+>>
+>> When running shmat01 on some platforms, it fails on
+>> "addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
+>> with a INVAL error. Look at codes in "setup()", it probes
+>> an available address and align the address to SHMLBA. After
+>> alignment, the new address is no guarantee to be available
+>> any more. Here a bigger size is used to probe so that it's
+>> still valid address after alignment.Pertaining to the function
+>> setup_tc(lc, &tc) ,when it outside of "for (i = 0; i < TST_TOTAL;
+>> i++)",and printf the tc.offset value is always 0,add correct a mistake
+>> of original codes to move "setup_tc()" to right place.
+> 
+> Which of the sub-testcases fail and on which architecture(s)?
+> Thanks,
+> -Garrett
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
