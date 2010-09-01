@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Jacky.Malcles@bull.net>) id 1OvPIo-0004vu-3Z
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:47:38 +0000
-Received: from ecfrec.frec.bull.fr ([129.183.4.8])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OvPIg-0005h8-Tg
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:47:38 +0000
-Message-ID: <4C8F1D3D.6080208@bull.net>
-Date: Tue, 14 Sep 2010 08:59:09 +0200
-From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
+	(envelope-from <yanegomi@gmail.com>) id 1Oqb08-0004jI-GK
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 00:16:28 +0000
+Received: from mail-bw0-f47.google.com ([209.85.214.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Oqb07-0004qf-GY
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 00:16:28 +0000
+Received: by bwz12 with SMTP id 12so6321574bwz.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 31 Aug 2010 17:16:21 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] ltp-aiodio.part4 updated and verified
+In-Reply-To: <AANLkTikan_6LjsZeG0E2pohutyxmx+WtKM6M-J3e=A4=@mail.gmail.com>
+References: <AANLkTikan_6LjsZeG0E2pohutyxmx+WtKM6M-J3e=A4=@mail.gmail.com>
+Date: Tue, 31 Aug 2010 17:16:21 -0700
+Message-ID: <AANLkTimiTWpkR70c1aoH_AS34StmgebeB6Vvx7JPSiya@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] [commands] apply relevant fixes from at_deny01 to
+ at_allow01 script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,77 +31,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
+To: Henry Yei <hyei@mvista.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Garret,
-with the following update all went well, no error;
-tail -f ltpaiodio4.logfile
-ADI005                         PASS       0   
-DIO06                          PASS       0   
+On Tue, Aug 31, 2010 at 4:57 PM, Henry Yei <hyei@mvista.com> wrote:
+> I've prepared a patch for at_allow01 that essentially duplicates the
+> fixes that were checked in for at_deny01. This fixes the script to
+> actually run the test when the at utility in stead of returning TCONF,
+> correcting test environment, and let the script run normally without
+> changing the password. See commit
+> a589d12b0b49287d10f43b1a1fb72950819588eb for more details.
+>
+> Signed-off-by: Henry Yei <hyei@mvista.com>
 
------------------------------------------------
-Total Tests: 57
-Total Failures: 0
-
-regards,
-Jacky
-
---- ltp-aiodio.part4.original    2010-09-13 13:22:05.000000000 +0200
-+++ ltp-aiodio.part4    2010-09-13 13:23:10.000000000 +0200
-@@ -34,16 +34,16 @@ DIO07 dio_sparse
- DIO08 dio_sparse
- DIO09 dio_sparse
- #Running aiodio_append
--AD000 aiodio_append $TMPDIR/aiodio.$$/file2
--AD001 aiodio_append $TMPDIR/aiodio.$$/file2
--AD002 aiodio_append $TMPDIR/aiodio.$$/file2
--AD003 aiodio_append $TMPDIR/aiodio.$$/file2
--AD004 aiodio_append $TMPDIR/aiodio.$$/file2
--AD005 aiodio_append $TMPDIR/aiodio.$$/file2
--AD006 aiodio_append $TMPDIR/aiodio.$$/file2
--AD007 aiodio_append $TMPDIR/aiodio.$$/file2
--AD008 aiodio_append $TMPDIR/aiodio.$$/file2
--AD009 aiodio_append $TMPDIR/aiodio.$$/file2
-+AD000 aiodio_append $TMP/aiodio/file2
-+AD001 aiodio_append $TMP/aiodio/file2
-+AD002 aiodio_append $TMP/aiodio/file2
-+AD003 aiodio_append $TMP/aiodio/file2
-+AD004 aiodio_append $TMP/aiodio/file2
-+AD005 aiodio_append $TMP/aiodio/file2
-+AD006 aiodio_append $TMP/aiodio/file2
-+AD007 aiodio_append $TMP/aiodio/file2
-+AD008 aiodio_append $TMP/aiodio/file2
-+AD009 aiodio_append $TMP/aiodio/file2
- #Running dio_append
- ADI000 dio_append
- ADI001 dio_append
-@@ -62,7 +62,7 @@ DIT002 dio_truncate
- #Running read_checkzero
- #gread_checkzero
- #Running ltp-diorh
--DOR000 ltp-diorh $TMPDIR/aiodio.$$/file2
--DOR001 ltp-diorh $TMPDIR/aiodio.$$/file3
--DOR002 ltp-diorh $TMPDIR/aiodio.$$/file4
--DOR003 ltp-diorh $TMPDIR/aiodio.$$/file5
-+DOR000 ltp-diorh $TMP/aiodio/file2
-+DOR001 ltp-diorh $TMP/aiodio/file3
-+DOR002 ltp-diorh $TMP/aiodio/file4
-+DOR003 ltp-diorh $TMP/aiodio/file5
-
-
-
--- 
- Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
- Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
- Tel : 04.76.29.73.14
-
+Sorry for screwing up the signed-off-by line -_-...
+-Garrett
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
