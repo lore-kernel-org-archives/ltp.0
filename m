@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Otb0L-0003AV-C8
-	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 06:53:05 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Otb0K-0006YO-IL
-	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 06:53:05 +0000
-Received: by pvg6 with SMTP id 6so425299pvg.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Sep 2010 23:52:59 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1081)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <4C887D32.60608@windriver.com>
-Date: Wed, 8 Sep 2010 23:52:53 -0700
-Message-Id: <6AA0EB8D-1C22-4BFD-BC94-BB687B5C08CD@gmail.com>
-References: <4C887D32.60608@windriver.com>
-Subject: Re: [LTP] [PATCH]mktemp command in runltp version issue
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Feng.Gao@windriver.com>) id 1OqfUT-0002CU-4y
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 05:04:05 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OqfUP-0005cG-NJ
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 05:04:05 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Wed, 1 Sep 2010 07:03:51 +0200
+Message-ID: <52CF90264091A14888078A031D780F430111B8E7@ism-mail03.corp.ad.wrs.com>
+References: <52CF90264091A14888078A031D780F430111B8E4@ism-mail03.corp.ad.wrs.com>
+	<AANLkTi=RhCp1zfX4=CcONBysQ2O04gMakYiJpXZi_9RU@mail.gmail.com>
+From: "Gao, Feng" <Feng.Gao@windriver.com>
+Subject: Re: [LTP] [PATCH]Modify the cacheflush01 test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,76 +25,196 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1826234934089025009=="
+Content-Type: multipart/mixed; boundary="===============0479114828357191821=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "lina.zhao" <lina.zhao@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
+This is a multi-part message in MIME format.
 
---===============1826234934089025009==
-Content-Type: multipart/alternative; boundary=Apple-Mail-9-765295582
+--===============0479114828357191821==
+Content-class: urn:content-classes:message
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01CB4993.117A6D85"
 
+This is a multi-part message in MIME format.
 
---Apple-Mail-9-765295582
-Content-Transfer-Encoding: quoted-printable
+------_=_NextPart_001_01CB4993.117A6D85
 Content-Type: text/plain;
-	charset=us-ascii
+	charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
 
-On Sep 8, 2010, at 11:22 PM, lina.zhao wrote:
+Hi,
 
+I have tested cacheflush01 testcase in Linux 2.6.27.45 kernel, if the =
+cache of sys_cacheflush is 0, return value also is Success. It is same =
+with the Linux 2.6.34.1.
+
+I have check the kernel code, from the Linux 2.6.11, sys_cacheflush =
+function began to ignore the cache argument and never return EINVAL.
+The function of cacheflush01 is checking if the sys_cacheflush's return =
+value is correct. if there is no EINVAL as the return value in the =
+kernel code, it is unnecessary to checking it. Otherwise the case will =
+fail, tester will waste time to recheck this case and sys_cacheflush =
+function.
+
+BR,
+Feng Gao
+
+-----Original Message-----
+From: Garrett Cooper [mailto:yanegomi@gmail.com]
+Sent: 2010-8-31  23:46
+To: Gao, Feng
+Cc: ltp-list
+Subject: Re: [LTP] [PATCH]Modify the cacheflush01 test case
+=20
+2010/8/31 Gao, Feng <Feng.Gao@windriver.com>:
 > Hi,
->=20
-> In runltp:
->=20
-> if [ -n "$DEVICE" ]; then
->      mnt_pnt=3D`mktemp -d --tmpdir=3D${TMP} mnt_pnt.XXXXXX`
->=20
-> --tmpdir is a invalid option for mktemp version 1.5, which is used
-> widely. The valid option to specify a directory for version 1.5 is
-> -p directory.
+>
+> The cacheflush system call does not return EINVAL in the latest Linux
+> kernel. see the link:
+> A related patch about the cacheflush function:
+> http://lkml.org/lkml/2009/4/9/203
+> But Ralf had refused this patch:
+> http://www.spinics.net/lists/linux-man/msg00906.html
+> cacheflush01 testcase checks if the return value is EINVAL when the =
+cache
+> argument is not one of ICACHE, BCACHE or DCACHE. So it will fail in =
+all
+> boards.
+>
+> In this modification, checking return value SUCCESS will be added, =
+instead
+> of checking EINVAL
 
-Or just remove --tmpdir=3D<blah> altogether? If $TMPDIR is defined in =
-the environment, then it is the fallback if --tmpdir / -p isn't =
-specified (please see the manpage for more details)... OR... just do:
+I got the first email :).
 
-mnt_pnt=3D`mktemp -d $TMP/mnt_pnt.XXXXXX`
+I am always hesitant committing patches like these because unless
+there is documentation that clearly states "these are the requirements
+for syscall/libcall foo", it can change at a later day without notice
+and we'll work ourselves into this funk again.
 
-The same change will probably need to be applied to the runltp lite =
-script.
+Also, what happens when you execute this code on earlier kernels? I
+hate getting emails from other users stating "the commit you did for
+the test is broke my architecture foo on distro bar -- here's a patch
+to fix it!".
 
-Cheers,
+The syscall needs to be fixed. If the cache argument is ignored, it
+needs to be removed. Period. And the syscall needs to be renamed to
+something else to avoid breaking backwards compatibility (which is
+essentially what happened here).
+
+FWIW we lack positive tests for this syscall, and we really should
+have some (other than just nuking the entire contents of the syscall
+directory).
+
+Thanks,
 -Garrett
 
 
---Apple-Mail-9-765295582
-Content-Transfer-Encoding: quoted-printable
+------_=_NextPart_001_01CB4993.117A6D85
 Content-Type: text/html;
-	charset=us-ascii
+	charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
 
-<html><head></head><body style=3D"word-wrap: break-word; =
--webkit-nbsp-mode: space; -webkit-line-break: after-white-space; =
-"><div><div>On Sep 8, 2010, at 11:22 PM, lina.zhao wrote:</div><br =
-class=3D"Apple-interchange-newline"><blockquote =
-type=3D"cite">Hi,<br><br>In runltp:<br><br>if [ -n "$DEVICE" ]; then<br> =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mnt_pnt=3D`mktemp -d --tmpdir=3D${TMP} =
-mnt_pnt.XXXXXX`<br><br>--tmpdir is a invalid option for mktemp version =
-1.5, which is used<br>widely. The valid option to specify a directory =
-for version 1.5 is<br>-p directory.<font class=3D"Apple-style-span" =
-color=3D"#000000"><font class=3D"Apple-style-span" =
-color=3D"#144FAE"><br></font></font></blockquote><br></div><div>Or just =
-remove --tmpdir=3D&lt;blah&gt; altogether? If $TMPDIR is defined in the =
-environment, then it is the fallback if --tmpdir / -p isn't specified =
-(please see the manpage for more details)... OR... just =
-do:</div><div><br></div><div>mnt_pnt=3D`mktemp -d =
-$TMP/mnt_pnt.XXXXXX`</div><div><br></div><div>The same change will =
-probably need to be applied to the runltp lite =
-script.</div><div><br></div><div>Cheers,</div><div>-Garrett</div><br></bod=
-y></html>=
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dgb2312">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7654.12">
+<TITLE>RE: [LTP] [PATCH]Modify the cacheflush01 test case</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
 
---Apple-Mail-9-765295582--
+<P><FONT SIZE=3D2>Hi,<BR>
+<BR>
+I have tested cacheflush01 testcase in Linux 2.6.27.45 kernel, if the =
+cache of sys_cacheflush is 0, return value also is Success. It is same =
+with the Linux 2.6.34.1.<BR>
+<BR>
+I have check the kernel code, from the Linux 2.6.11, sys_cacheflush =
+function began to ignore the cache argument and never return EINVAL.<BR>
+The function of cacheflush01 is checking if the sys_cacheflush's return =
+value is correct. if there is no EINVAL as the return value in the =
+kernel code, it is unnecessary to checking it. Otherwise the case will =
+fail, tester will waste time to recheck this case and sys_cacheflush =
+function.<BR>
+<BR>
+BR,<BR>
+Feng Gao<BR>
+<BR>
+-----Original Message-----<BR>
+From: Garrett Cooper [<A =
+HREF=3D"mailto:yanegomi@gmail.com">mailto:yanegomi@gmail.com</A>]<BR>
+Sent: 2010-8-31&nbsp; 23:46<BR>
+To: Gao, Feng<BR>
+Cc: ltp-list<BR>
+Subject: Re: [LTP] [PATCH]Modify the cacheflush01 test case<BR>
+<BR>
+2010/8/31 Gao, Feng &lt;Feng.Gao@windriver.com&gt;:<BR>
+&gt; Hi,<BR>
+&gt;<BR>
+&gt; The cacheflush system call does not return EINVAL in the latest =
+Linux<BR>
+&gt; kernel. see the link:<BR>
+&gt; A related patch about the cacheflush function:<BR>
+&gt; <A =
+HREF=3D"http://lkml.org/lkml/2009/4/9/203">http://lkml.org/lkml/2009/4/9/=
+203</A><BR>
+&gt; But Ralf had refused this patch:<BR>
+&gt; <A =
+HREF=3D"http://www.spinics.net/lists/linux-man/msg00906.html">http://www.=
+spinics.net/lists/linux-man/msg00906.html</A><BR>
+&gt; cacheflush01 testcase checks if the return value is EINVAL when the =
+cache<BR>
+&gt; argument is not one of ICACHE, BCACHE or DCACHE. So it will fail in =
+all<BR>
+&gt; boards.<BR>
+&gt;<BR>
+&gt; In this modification, checking return value SUCCESS will be added, =
+instead<BR>
+&gt; of checking EINVAL<BR>
+<BR>
+I got the first email :).<BR>
+<BR>
+I am always hesitant committing patches like these because unless<BR>
+there is documentation that clearly states &quot;these are the =
+requirements<BR>
+for syscall/libcall foo&quot;, it can change at a later day without =
+notice<BR>
+and we'll work ourselves into this funk again.<BR>
+<BR>
+Also, what happens when you execute this code on earlier kernels? I<BR>
+hate getting emails from other users stating &quot;the commit you did =
+for<BR>
+the test is broke my architecture foo on distro bar -- here's a =
+patch<BR>
+to fix it!&quot;.<BR>
+<BR>
+The syscall needs to be fixed. If the cache argument is ignored, it<BR>
+needs to be removed. Period. And the syscall needs to be renamed to<BR>
+something else to avoid breaking backwards compatibility (which is<BR>
+essentially what happened here).<BR>
+<BR>
+FWIW we lack positive tests for this syscall, and we really should<BR>
+have some (other than just nuking the entire contents of the syscall<BR>
+directory).<BR>
+<BR>
+Thanks,<BR>
+-Garrett<BR>
+<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01CB4993.117A6D85--
 
 
---===============1826234934089025009==
+--===============0479114828357191821==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -108,7 +226,7 @@ This SF.net Dev2Dev email is sponsored by:
 Show off your parallel programming skills.
 Enter the Intel(R) Threading Challenge 2010.
 http://p.sf.net/sfu/intel-thread-sfd
---===============1826234934089025009==
+--===============0479114828357191821==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -119,5 +237,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============1826234934089025009==--
+--===============0479114828357191821==--
 
