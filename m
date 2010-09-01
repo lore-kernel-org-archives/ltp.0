@@ -1,28 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1OypTS-0008RM-0q
-	for ltp-list@lists.sourceforge.net; Thu, 23 Sep 2010 17:20:46 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25]
-	helo=mx02.colomx.prod.int.phx2.redhat.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OypTN-00037I-K4
-	for ltp-list@lists.sourceforge.net; Thu, 23 Sep 2010 17:20:45 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx02.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
-	o8NHKZTj028931
-	for <ltp-list@lists.sourceforge.net>; Thu, 23 Sep 2010 13:20:35 -0400
-Date: Thu, 23 Sep 2010 13:20:35 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1320440485.401261285262435919.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <117605613.400901285262212547.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OqhjK-0005Nb-Mw
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 07:27:34 +0000
+Received: from mail-bw0-f46.google.com ([209.85.214.46])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OqhjJ-0001kP-Ro
+	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 07:27:34 +0000
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_18327_282087822.1285262435917"
-Subject: [LTP] [PATCH] Re: fix incorrect parsing of df command in
-	ftruncate04.sh
+In-Reply-To: <AANLkTin=MTu4QGB-+zyYQh=qMLprgjx6txisF4r_5xPT@mail.gmail.com>
+References: <1282116783.4855.8.camel@PEK-RLIANG-D1>
+	<AANLkTikrFeTSbiWY4EhotU7siB_vw8hVF_FWtSNREr8x@mail.gmail.com>
+	<1283219506.1778.2.camel@PEK-RLIANG-D1>
+	<AANLkTin=MTu4QGB-+zyYQh=qMLprgjx6txisF4r_5xPT@mail.gmail.com>
+Date: Wed, 1 Sep 2010 00:27:27 -0700
+Message-ID: <AANLkTikH16Evfuj0RXkYLUYy6msPf2DcwD+zXzhhFV_+@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [Patch] Fix mtest06 failure: caught unexpected signal -
+ 11 --- exiting
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,158 +28,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: renxiu liang <renxiu.liang@windriver.com>
+Cc: ltp-list@lists.sf.net, Suzuki Poulose <suzuki@in.ibm.com>
 
-------=_Part_18327_282087822.1285262435917
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+On Wed, Sep 1, 2010 at 12:26 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Mon, Aug 30, 2010 at 6:51 PM, renxiu liang
+> <renxiu.liang@windriver.com> wrote:
+>> On Wed, 2010-08-25 at 20:36 -0700, Garrett Cooper wrote:
+>>> On Wed, Aug 18, 2010 at 12:33 AM, renxiu liang
+>>> <renxiu.liang@windriver.com> wrote:
+>>> > Hi,
+>>> >
+>>> > We met the mtest06 failure several times; this is because in
+>>> > mtest06/mmap1.c, when handling the signal 11 in sig_handler, it doesn=
+'t
+>>> > cover another two race conditions:
+>>> > one is si_code equals "SEGV_MAPERR" but si_address does not equal to
+>>> > map_address; and one is si_code equals to "SEGV_ACCERR";
+>>> >
+>>> > see below error log:
+>>> >
+>>> > <<<test_start>>>
+>>> > tag=3Dmtest06 stime=3D1270902396
+>>> > cmdline=3D" =A0mmap1 -x 0.05"
+>>> > contacts=3D""
+>>> > analysis=3Dexit
+>>> > initiation_status=3D"ok"
+>>> > <<<test_output>>>
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0pid[5456]: map, change contents, =
+unmap files
+>>> > 1000 times
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0created thread[1216369840]
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0pid[5456] - read contents of memo=
+ry 0x48002000
+>>> > 1000 times
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
+>>> > ......
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
+>>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
+>>> > caught unexpected signal - 11 --- exiting
+>>> > <<<execution_status>>>
+>>> > duration=3D1 termination_type=3Dexited termination_id=3D255 corefile=
+=3Dno
+>>> > cutime=3D0 cstime=3D4
+>>> > <<<test_end>>>
+>>> >
+>>> > I made a patch to cover all the three race conditions in one case in
+>>> > sig_handler(),
+>>> > then run mtest06 repeatedly on different archs, test will not fail by
+>>> > catching signal 11.
+>>>
+>>> Could you print out what the value of info->si_code and info->si_addr
+>>> are at the time of the fault? Also, which architecture(s) are you
+>>> running into this issue on?
+>> Hi Garrett,
+>>
+>> Sorry for the late reply; See attached mtest06 logs, I printed out the
+>> values of si_code, si_addr, map_address;
+>> it is reproducible on arm, x86, ppc and mips; though it is not
+>> reproducible every time, but can be reproducible if run the case
+>> repeatedly.
+>
+> Nothing is jumping out at me as being incorrect, so I think it's best
+> that I bring in a better pair of eyes, just in case.
+>
+> Suzuki-san,
+> =A0 =A0Could you please help review this patch?
 
-Sorry for missing [PATCH] tag, now added.
+CCing Suzuki-san...
+-Garrett
 
-Thanks,
-Caspar
------ "Caspar Zhang" <czhang@redhat.com> wrote:
+---------------------------------------------------------------------------=
+---
+This SF.net Dev2Dev email is sponsored by:
 
-> Hi all, an error in ftruncate04 test is found,
-> The problem I see is due to incorrect parsing
-> of `df` command output:
-> 
-> <<<test_start>>>
-> tag=ftruncate04 stime=1284729392
-> cmdline="ftruncate04.sh"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> DEV:         /dev/mapper/vg_rhel6beta-lv_root
-> MOUNT_POINT: /dev/mapper/vg_rhel6beta-lv_root
-> FLAG:        rw,mand
-> ftruncate04    1  TPASS  :  Test passed.
-> mount: you must specify the filesystem type
-> ftruncate04.sh : ERROR : mounting /dev/mapper/vg_rhel6beta-lv_root
-> remount,rw,mand failed
-> incrementing stop
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=0 corefile=no
-> cutime=1 cstime=7
-> <<<test_end>>>
-> 
-> # mount | head -1
-> /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw,mand)
-> 
-> # df .
-> Filesystem           1K-blocks      Used Available Use% Mounted on
-> /dev/mapper/vg_rhel6beta-lv_root
->                        2523808   2436384         0 100% /
-> 
-> A patch is attached to fix this problem. After applied the patch,
-> the failure gone:
-> 
-> <<<test_start>>>
-> tag=ftruncate04 stime=1284729277
-> cmdline="ftruncate04.sh"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> DEV:         /dev/mapper/vg_rhel6beta-lv_root
-> MOUNT_POINT: /
-> FLAG:        rw,mand
-> ftruncate04    1  TPASS  :  Test passed.
-> incrementing stop
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=0 corefile=no
-> cutime=1 cstime=9
-> <<<test_end>>>
-> 
-> # mount | head -1
-> /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw)
-> # df -P .
-> Filesystem         1024-blocks      Used Available Capacity Mounted on
-> /dev/mapper/vg_rhel6beta-lv_root   2523808   2436380         0    
-> 100% /
-> 
-> So the test without the patch leaves the system in inconsistent state
-> (mand option is kept for the filesystem) which is bad.
-> 
-> Signed-off-by: Caspar Zhang <czhang@redhat.com>
-> 
-> ---
-> ltp-full-20100331.old/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
-> 2010-09-17 15:06:44.292158981 +0200
-> +++
-> ltp-full-20100331/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
-> 2010-09-17 15:10:26.646160911 +0200
-> @@ -18,7 +18,7 @@
->      export TST_TOTAL=1
->  fi
->  cd ${TMPDIR:=/tmp}
-> -set -- $(df . | awk '/^\// { print $1, $NF }')
-> +set -- $(df -P . | awk '/^\// { print $1, $NF }')
->  DEV=$1; MOUNT_POINT=$2
->  if [ "x$DEV" = x -o "x$MOUNT_POINT" = x ] ; then
->      tst_resm TCONF "backend mountpoint for $TMPDIR does not
-> correspond to a real device:"
-> 
-> 
-> Thanks,
-> Caspar
-> 
-> --
-> Quality Assurance Associate (Kernel) in
-> Red Hat Inc. (Beijing R&D Branch)
-> 
-> TEL: +86-10-62608150
-> Web: http://www.redhat.com/
-
--- 
-Quality Assurance Associate (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-
-TEL: +86-10-62608150
-WEB: http://www.redhat.com/
-
-------=_Part_18327_282087822.1285262435917
-Content-Type: text/x-patch; name=syscalls-ftruncate04-fix-df-param.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=syscalls-ftruncate04-fix-df-param.patch
-
---- ltp-full-20100331.old/testcases/kernel/syscalls/ftruncate/ftruncate04.sh	2010-09-17 15:06:44.292158981 +0200
-+++ ltp-full-20100331/testcases/kernel/syscalls/ftruncate/ftruncate04.sh	2010-09-17 15:10:26.646160911 +0200
-@@ -18,7 +18,7 @@
-     export TST_TOTAL=1
- fi
- cd ${TMPDIR:=/tmp}
--set -- $(df . | awk '/^\// { print $1, $NF }')
-+set -- $(df -P . | awk '/^\// { print $1, $NF }')
- DEV=$1; MOUNT_POINT=$2
- if [ "x$DEV" = x -o "x$MOUNT_POINT" = x ] ; then
-     tst_resm TCONF "backend mountpoint for $TMPDIR does not correspond to a real device:"
-
-------=_Part_18327_282087822.1285262435917
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
-------=_Part_18327_282087822.1285262435917
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_18327_282087822.1285262435917--
-
