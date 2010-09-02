@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Jacky.Malcles@bull.net>) id 1Ou1Ac-00012N-PD
-	for ltp-list@lists.sourceforge.net; Fri, 10 Sep 2010 10:49:26 +0000
-Received: from ecfrec.frec.bull.fr ([129.183.4.8])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ou1AX-0000m2-2H
-	for ltp-list@lists.sourceforge.net; Fri, 10 Sep 2010 10:49:26 +0000
-Message-ID: <4C8A0FEC.4010108@bull.net>
-Date: Fri, 10 Sep 2010 13:01:00 +0200
-From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <lizf@cn.fujitsu.com>) id 1OqyD0-0008HQ-Lb
+	for ltp-list@lists.sourceforge.net; Thu, 02 Sep 2010 01:03:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OqyCy-0003a6-Ui
+	for ltp-list@lists.sourceforge.net; Thu, 02 Sep 2010 01:03:18 +0000
+Message-ID: <4C7EF8FD.6070005@cn.fujitsu.com>
+Date: Thu, 02 Sep 2010 09:08:13 +0800
+From: Li Zefan <lizf@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] ltp-aiodio.part3 is the last scenario around aio which is not
- working properly
+References: <4C73452A.3020006@cn.fujitsu.com>
+	<AANLkTi=Dky57c3S+NS_adO9Z-Tytp0d0hcyxPJA_DqrM@mail.gmail.com>
+In-Reply-To: <AANLkTi=Dky57c3S+NS_adO9Z-Tytp0d0hcyxPJA_DqrM@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Add ftrace-stress-test to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,182 +28,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Frederic Weisbecker <fweisbec@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Eugene Teo <eugene@redhat.com>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>
 
-Hi Garet,
+>> --- /dev/null
+>> +++ b/testcases/kernel/tracing/ftrace_stress_test/ftrace_kvercmp.c
+>> @@ -0,0 +1,37 @@
+>> +#include <unistd.h>
+>> +#include <stdlib.h>
+>> +#include <stdio.h>
+>> +#include <string.h>
+>> +#include <sys/utsname.h>
+>> +
+>> +int main(int argc, char **argv)
+>> +{
+>> +       struct utsname uval;
+>> +       int k1, k2, k3;
+>> +       int a1, a2, a3;
+>> +       unsigned long r1, r2;
+>> +
+>> +       if (argc != 4) {
+>> +               fprintf(stderr, "Wrong arguments!\n");
+>> +               return -1;
+>> +       }
+>> +
+>> +       a1 = strtol(argv[1], NULL, 10);
+>> +       a2 = strtol(argv[2], NULL, 10);
+>> +       a3 = strtol(argv[3], NULL, 10);
+>> +
+>> +       uname(&uval);
+>> +
+>> +       sscanf(uval.release, "%d.%d.%d", &k1, &k2, &k3);
+>> +
+>> +       r1 = (a1 << 16) + (a2 << 8) + a3;
+>> +       r2 = (k1 << 16) + (k2 << 8) + k3;
+>> +
+>> +       if (r1 > r2)
+>> +               return 0;
+>> +       else if (r1 == r2)
+>> +               return 1;
+>> +       else
+>> +               return 2;
+>> +}
+> 
+> This application could be replaced with tst_kvercmp out of the box;
+> there's no reason why another program needs to be created for this.
+> 
 
-I checked, running them, all the scenarios related to aio and there is 
-now only ltp-aiodio.part3 that does not work properly;
-so, if you agree, I suggest the following patch, this allows us to have 
-a set of working testcases while waiting for a cleaner solution,
-many thanks,
+This stress test was not written for LTP originally, so I had to write
+this ftrace_kvercmp.
 
---- runtest/ltp-aiodio.part3.original    2010-09-10 09:04:17.000000000 +0200
-+++ runtest/ltp-aiodio.part3    2010-09-10 11:17:17.000000000 +0200
-@@ -1,51 +1,51 @@
- #           fname:  this filename is Required (no default)
- #
- #
--FSX032 fsx-linux -d  -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 
-$TMPDIR/aiodio.$$/junkfile
--FSX033 fsx-linux -d  -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 
-$TMPDIR/aiodio.$$/junkfile
--FSX034 fsx-linux -d  -l 500000 -r 4096 -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX035 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX036 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX037 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX038 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX039 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX040 fsx-linux -N 10000 -o 1024 $TMPDIR/aiodio.$$/junkfile
--FSX041 fsx-linux -N 10000 -o 2048 $TMPDIR/aiodio.$$/junkfile
--FSX042 fsx-linux -N 10000 -o 4096 $TMPDIR/aiodio.$$/junkfile
--FSX043 fsx-linux -N 10000 -o 8192 $TMPDIR/aiodio.$$/junkfile
--FSX044 fsx-linux -N 10000 -o 16384 $TMPDIR/aiodio.$$/junkfile
--FSX045 fsx-linux -N 10000 -o 32768 $TMPDIR/aiodio.$$/junkfile
--FSX046 fsx-linux -N 10000 -o 128000 $TMPDIR/aiodio.$$/junkfile
--FSX047 fsx-linux -N 10000 -o 1024 $TMPDIR/aiodio.$$/junkfile
--FSX048 fsx-linux -N 10000 -o 2048 $TMPDIR/aiodio.$$/junkfile
--FSX049 fsx-linux -N 10000 -o 4096 $TMPDIR/aiodio.$$/junkfile
--FSX050 fsx-linux -N 10000 -o 8192 $TMPDIR/aiodio.$$/junkfile
--FSX051 fsx-linux -N 10000 -o 16384 $TMPDIR/aiodio.$$/junkfile
--FSX052 fsx-linux -N 10000 -o 32768 $TMPDIR/aiodio.$$/junkfile
--FSX053 fsx-linux -N 10000 -o 128000 $TMPDIR/aiodio.$$/junkfile
--FSX054 fsx-linux -N 10000  -o 1024 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX055 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile
--FSX056 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX057 fsx-linux -N 10000  -o 8192 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile
--FSX058 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX059 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile
--FSX060 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX061 fsx-linux -N 10000 -o 32768 
-$TMPDIR/aiodio.$$/junkfile                                         
--FSX062 fsx-linux -N 10000 -o 128000 
-$TMPDIR/aiodio.$$/junkfile                                        
--FSX063 fsx-linux -N 10000  -o 1024  -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX064 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile  
--FSX065 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX066 fsx-linux -N 10000  -o 8192  -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile   
--FSX067 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX068 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile  
--FSX069 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile 
--FSX070 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX071 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-$TMPDIR/aiodio.$$/junkfile1
--FSX072 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-$TMPDIR/aiodio.$$/junkfile2
--FSX073 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile3
--FSX074 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-$TMPDIR/aiodio.$$/junkfile4
--FSX075 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-$TMPDIR/aiodio.$$/junkfile5
--FSX076 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile6
--FSX077 fsx-linux -N 10000   $TMPDIR/aiodio.$$/junkfile7
--FSX078 fsx-linux -N 100000  $TMPDIR/aiodio.$$/junkfile8
--FSX079 fsx-linux -N 100000  $TMPDIR/aiodio.$$/junkfile9
-+FSX032 fsx-linux -d  -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 
-/test/aiodio/junkfile
-+FSX033 fsx-linux -d  -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 
-/test/aiodio/junkfile
-+FSX034 fsx-linux -d  -l 500000 -r 4096 -N 10000 /test/aiodio/junkfile
-+FSX035 fsx-linux -d  -N 10000 /test/aiodio/junkfile
-+FSX036 fsx-linux -d  -N 10000 /test/aiodio/junkfile
-+FSX037 fsx-linux -d  -N 10000 /test/aiodio/junkfile
-+FSX038 fsx-linux -d  -N 10000 /test/aiodio/junkfile
-+FSX039 fsx-linux -d  -N 10000 /test/aiodio/junkfile
-+FSX040 fsx-linux -N 10000 -o 1024 /test/aiodio/junkfile
-+FSX041 fsx-linux -N 10000 -o 2048 /test/aiodio/junkfile
-+FSX042 fsx-linux -N 10000 -o 4096 /test/aiodio/junkfile
-+FSX043 fsx-linux -N 10000 -o 8192 /test/aiodio/junkfile
-+FSX044 fsx-linux -N 10000 -o 16384 /test/aiodio/junkfile
-+FSX045 fsx-linux -N 10000 -o 32768 /test/aiodio/junkfile
-+FSX046 fsx-linux -N 10000 -o 128000 /test/aiodio/junkfile
-+FSX047 fsx-linux -N 10000 -o 1024 /test/aiodio/junkfile
-+FSX048 fsx-linux -N 10000 -o 2048 /test/aiodio/junkfile
-+FSX049 fsx-linux -N 10000 -o 4096 /test/aiodio/junkfile
-+FSX050 fsx-linux -N 10000 -o 8192 /test/aiodio/junkfile
-+FSX051 fsx-linux -N 10000 -o 16384 /test/aiodio/junkfile
-+FSX052 fsx-linux -N 10000 -o 32768 /test/aiodio/junkfile
-+FSX053 fsx-linux -N 10000 -o 128000 /test/aiodio/junkfile
-+FSX054 fsx-linux -N 10000  -o 1024 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile
-+FSX055 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-/test/aiodio/junkfile
-+FSX056 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile
-+FSX057 fsx-linux -N 10000  -o 8192 -l 500000 -r 4096 -t 2048 -w 2048 
-/test/aiodio/junkfile
-+FSX058 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile
-+FSX059 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-/test/aiodio/junkfile
-+FSX060 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile
-+FSX061 fsx-linux -N 10000 -o 32768 
-/test/aiodio/junkfile                                         
-+FSX062 fsx-linux -N 10000 -o 128000 
-/test/aiodio/junkfile                                        
-+FSX063 fsx-linux -N 10000  -o 1024  -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile  
-+FSX064 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-/test/aiodio/junkfile  
-+FSX065 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile  
-+FSX066 fsx-linux -N 10000  -o 8192  -l 500000 -r 4096 -t 2048 -w 2048 
-/test/aiodio/junkfile   
-+FSX067 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile  
-+FSX068 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-/test/aiodio/junkfile  
-+FSX069 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile 
-+FSX070 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile  
-+FSX071 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-/test/aiodio/junkfile1
-+FSX072 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-/test/aiodio/junkfile2
-+FSX073 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile3
-+FSX074 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-/test/aiodio/junkfile4
-+FSX075 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-/test/aiodio/junkfile5
-+FSX076 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-/test/aiodio/junkfile6
-+FSX077 fsx-linux -N 10000   /test/aiodio/junkfile7
-+FSX078 fsx-linux -N 100000  /test/aiodio/junkfile8
-+FSX079 fsx-linux -N 100000  /test/aiodio/junkfile9
+But I do have a reason to keep this. That is, using tst_kvercmp will
+make it harder to run this test without LTP.
 
--- 
- Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
- Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
- Tel : 04.76.29.73.14
-
+Anyway I'll remove it.
 
 ------------------------------------------------------------------------------
-Automate Storage Tiering Simply
-Optimize IT performance and efficiency through flexible, powerful, 
-automated storage tiering capabilities. View this brief to learn how
-you can reduce costs and improve performance. 
-http://p.sf.net/sfu/dell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
