@@ -1,22 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1OsZkj-0002vs-5C
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 11:20:45 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OsZke-0000DB-Ku
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 11:20:45 +0000
-Date: Mon, 6 Sep 2010 06:12:53 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <391164506.177201283767973568.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_8669_714914153.1283767973567"
-Subject: Re: [LTP] UTIMENSAT test fails hugely
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OseNl-0001T3-97
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:21 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OseNk-00051L-Ag
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:21 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o86G1YBD023241
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 12:01:34 -0400
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o86GHE4U091346
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 12:17:14 -0400
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o86GHD8t003729
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 10:17:13 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <52CF90264091A14888078A031D780F430D093D@ism-mail03.corp.ad.wrs.com>
+References: <4C7CDA7E.2020505@windriver.com>
+	<52CF90264091A14888078A031D780F430D093D@ism-mail03.corp.ad.wrs.com>
+Date: Mon, 06 Sep 2010 21:46:49 +0530
+Message-Id: <1283789810.4947.21.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Probe an bigger linear available
+	address	to	attachment.
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,108 +38,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <casparant@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
-
-------=_Part_8669_714914153.1283767973567
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-This patch seemed not included in latest release?
-
-Thanks,
-Caspar
-
------ "Caspar Zhang" <casparant@gmail.com> wrote:
-
-> On Wed, Apr 28, 2010 at 2:04 PM, Garrett Cooper <yanegomi@gmail.com>
-> wrote:
-> > The first item is different from the other two. The first one
-> ignores the
-> > signal (SIG_IGN), whereas the latter two cases reset the handler to
-> the
-> > default one (SIG_DFL). I prefer the former format, because otherwise
-> the
-> > signal handlers become reentrable on accident.
-> 
-> I see. Thank you.
-> 
-> The final patch ;-)
-> 
-> Cheers,
-> -Caspar
-> 
-> -- 
-> Tags: Ant, Beijing, BUPT, Caspar, Kernel QA, Linux, Open Source,
-> Photography, Programmer, Red Hat Inc., Zhejianger, etc.
-> 
-> Current: Kernel Associate Quality Engineer @ Red Hat Inc.
-> 
-> Home Page: http://www.CasparZhang.com/
-
--- 
-/---------------------------------------\
-| Name: Caspar Zhang                    |
-| Team: Kernel-QE                       |
-| Timezone: GMT+0800 (Asia/Shanghai)    |
-| IRC: caspar @ #kernel-qe, #eng-china  |
-| Phone: +86-10-6260-8150               |
-| Cellphone: +86-1381-073-0090          |
-\---------------------------------------/
-
-------=_Part_8669_714914153.1283767973567
-Content-Type: text/x-patch; charset=US-ASCII;
-	name=syscalls-utimensat01-run-sudo-without-tty.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=syscalls-utimensat01-run-sudo-without-tty.patch
-
-Hi,
-	Most automated testing systems have no tty when running tests,
-	so the utimensat01 test may fail with the following error msg:
-
-	sudo: sorry, you must have a tty to run sudo
-
-	to avoid this, commenting `Defaults    requiretty' line in
-	/etc/sudoers can make this testcase work. After test finished,
-	restore this line.
-
-	Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
---- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh	2010-04-01 14:23:11.000000000 +0800
-+++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh	2010-04-28 14:23:42.505422152 +0800
-@@ -43,6 +43,23 @@
-      exit 1;
- fi
- 
-+# Since some automated testing systems have no tty while testing,
-+# comment this line in /etc/sudoers to avoid the error message:
-+# `sudo: sorry, you must have a tty to run sudo'
-+# Use trap to restore this line after program terminates.
-+pattern="[[:space:]]*Defaults[[:space:]]*requiretty.*"
-+if grep -q "^${pattern}" /etc/sudoers; then
-+	echo "${TEST_PROG} 0 INFO : Comment requiretty in /etc/sudoers for automated testing systems"
-+	sed -E -i"" -e "s/^($pattern)/#\1/" /etc/sudoers
-+	trap 'trap "" EXIT; teardown' EXIT
-+fi
-+
-+teardown()
-+{
-+	echo "${TEST_PROG} 0 INFO : Restore requiretty in /etc/sudoers"
-+	sed -E -i"" -e "s/^#($pattern)/\1/" /etc/sudoers
-+}
-+
- # Summary counters of all test results
- 
- test_num=0
-
-------=_Part_8669_714914153.1283767973567
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, "Yang, Wei" <Wei.Yang@windriver.com>
+
+Garret, this patch ?
+
+Regards--
+Subrata
+
+On Tue, 2010-08-31 at 12:36 +0200, Yang, Wei wrote:
+> Hi
+> 
+> When running shmat01 on some platforms, it fails on
+> "addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
+> with a INVAL error. Look at codes in "setup()", it probes
+> an available address and align the address to SHMLBA. After
+> alignment, the new address is no guarantee to be available
+> any more. Here a bigger size is used to probe so that it's
+> still valid address after alignment.Pertaining to the function
+> setup_tc(lc, &tc) ,when it outside of "for (i = 0; i < TST_TOTAL;
+> i++)",and printf the tc.offset value is always 0,add correct a mistake
+> of original codes to move "setup_tc()" to right place.
+> 
+> Signed-off-by: Yang Wei <wei.yang@windriver.com>
+> 
+> wei yang
+> BR
+> 
+> 
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> This SF.net Dev2Dev email is sponsored by:
+> 
+> Show off your parallel programming skills.
+> Enter the Intel(R) Threading Challenge 2010.
+> http://p.sf.net/sfu/intel-thread-sfd
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 This SF.net Dev2Dev email is sponsored by:
@@ -135,16 +88,7 @@ This SF.net Dev2Dev email is sponsored by:
 Show off your parallel programming skills.
 Enter the Intel(R) Threading Challenge 2010.
 http://p.sf.net/sfu/intel-thread-sfd
-------=_Part_8669_714914153.1283767973567
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_8669_714914153.1283767973567--
-
