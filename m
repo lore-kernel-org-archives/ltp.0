@@ -1,25 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Ot5CA-0000PT-8U
-	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 20:55:10 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ot5C7-0003Po-V5
-	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 20:55:10 +0000
-Received: by bwz12 with SMTP id 12so5891111bwz.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 07 Sep 2010 13:55:02 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <471750147.260021283872436687.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-References: <AANLkTikGbs8NvSSvt6WabaS9=QsPsj1rDXmBuiT8EP-6@mail.gmail.com>
-	<471750147.260021283872436687.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Tue, 7 Sep 2010 13:55:02 -0700
-Message-ID: <AANLkTinHYtJbvz-2d=ivRMz=ryuuYEeirDm9x6Em2Mtq@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] buffered I/O causes testcases/network/nfs/nfsstress
-	failure
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OseOK-0000LN-GZ
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:56 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OseOE-00056U-S3
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:56 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e5.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o86FwLad004096
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 11:58:21 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o86GHjik2367630
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 12:17:45 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o86GHieL008313
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 13:17:45 -0300
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4C77999B.1070804@bull.net>
+References: <4C77999B.1070804@bull.net>
+Date: Mon, 06 Sep 2010 21:47:03 +0530
+Message-Id: <1283789825.4947.25.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] ltp-aiodio.sh script failed to find aio-stress testcase
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,57 +36,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: "Jacky.Malcles" <Jacky.Malcles@bull.net>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Sep 7, 2010 at 8:13 AM, Caspar Zhang <czhang@redhat.com> wrote:
->
-> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
->
->> On Tue, Sep 7, 2010 at 5:18 AM, Caspar Zhang <czhang@redhat.com>
->> wrote:
->> > Hi all,
->> > =A0When I run testcases/network/nfs/nfsstress/ test, I found sometimes
->> the
->> > test failed due to buffered I/O, in detail, for example, there are
->> the following
->> > lines in make_tree.c :
->> >
->> > 544 =A0 =A0 numchar[0] =3D sprintf(prog_buf,
->> > 545 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "main()\n{\n\t printf(\"hello worl=
-d\");\n}\n");
->> >
->> > sometimes the generated .c file will be:
->> > ^@ain() // <- strange ASCII char '^@' appears instead of 'm'
->> > {
->> > =A0 =A0 =A0 =A0printf("hello world");
->> > }
->> >
->> > And running with this .c file will cause error.
->> >
->> > That is to say, string 'prog_buf' gets a mistake during sprintf. And
->> there're
->> > somewhere else using buffered I/O in this test as well. Do we have
->> an
->> > unbuffered solution to this test?
->>
->> That seems a bit odd. Is the NFS mount/server TCP or UDP?
->
-> Hi Garrett, it's UDP.
+Can you please send off a patch for this ?
 
-    Ok. Something else that might be good to note is whether or not
-it's v2, v3, or v4 on the client and server side.
-    Could you please try with TCP and see whether or not the issue
-persists? I'm just curious if it's a potentially real issue with NFS
-code in the kernel, random networking infrastructure issues, etc.
-Thanks,
--Garrett
+Regards--
+Subrata
 
----------------------------------------------------------------------------=
----
+On Fri, 2010-08-27 at 12:55 +0200, Jacky.Malcles wrote: 
+> Hi,
+> ltp-aiodio.sh script failed to find aio-stress testcase
+> 
+> it failed as follows:
+> initiation_status="pan(ltp-aiostresspart1): execvp of 'aio-stress' (tag 
+> ADS1044) failed.  errno:2  No such file or directory"
+> duration=0 termination_type=exited termination_id=2 corefile=no
+> ...
+> 
+> I just added a line to ltp-aiodio.sh script and then it finds aio-stress TC.
+> 
+> [root@xena5 testscripts]# diff -ru ltp-aiodio.sh.ori ltp-aiodio.sh
+> --- ltp-aiodio.sh.ori   2010-08-27 11:05:52.000000000 +0200
+> +++ ltp-aiodio.sh       2010-08-27 08:26:44.000000000 +0200
+> @@ -16,6 +16,7 @@
+>   cd ..
+>   export LTPROOT=${PWD}
+>  fi
+> +export PATH=$LTPROOT/testcases/bin:$PATH
+> 
+>  run0=0
+>  runTest=0
+> [root@xena5 testscripts]#
+> 
+> now it works for me.
+> ..
+> tag=ADS1044 stime=1282901877
+> cmdline="aio-stress -I500  -o1 -O -r4    -t4   /test/aiodio/junkfile 
+> /test/aiodio/file2        /test/aiodio/file7  
+> /test/aiodio/file8                                                                               
+> "
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> adding stage read
+> starting with read
+> file size 1024MB, record size 4KB, depth 64, ios per iteration 8
+> max io_submit 32, buffer alignment set to 4KB
+> ...etc
+> 
+> please could you fixed this up,
+> regards,
+> 
+
+
+------------------------------------------------------------------------------
 This SF.net Dev2Dev email is sponsored by:
 
 Show off your parallel programming skills.
