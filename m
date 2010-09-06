@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <wyang@windriver.com>) id 1OqNjw-0001fe-C5
-	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 10:06:52 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OqNjv-00022X-Fx
-	for ltp-list@lists.sourceforge.net; Tue, 31 Aug 2010 10:06:52 +0000
-Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o7VA6jDG004940
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 31 Aug 2010 03:06:45 -0700 (PDT)
-Message-ID: <4C7CD550.60508@windriver.com>
-Date: Tue, 31 Aug 2010 18:11:28 +0800
-From: yangzi <wyang@windriver.com>
+	(envelope-from <czhang@redhat.com>) id 1OsZkj-0002vs-5C
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 11:20:45 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24]
+	helo=mx01.colomx.prod.int.phx2.redhat.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OsZke-0000DB-Ku
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 11:20:45 +0000
+Date: Mon, 6 Sep 2010 06:12:53 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <391164506.177201283767973568.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <s2r700385ec1004272327n8b26491bt3609f8877b71a385@mail.gmail.com>
 MIME-Version: 1.0
-References: <4C7CD031.6060906@windriver.com>
-In-Reply-To: <4C7CD031.6060906@windriver.com>
-Content-Type: multipart/mixed; boundary="------------070907040402020600070809"
-Subject: Re: [LTP] [PATCH] [PATCH] Probe an bigger linear available address
- to attachment.
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_8669_714914153.1283767973567"
+Subject: Re: [LTP] UTIMENSAT test fails hugely
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,117 +27,103 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <casparant@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-This is a multi-part message in MIME format.
---------------070907040402020600070809
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+------=_Part_8669_714914153.1283767973567
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Hi
-Update the old patch,and the new patch is in the attachment,and please 
-review this one.
+This patch seemed not included in latest release?
 
-yangzi wrote:
-> Hi
+Thanks,
+Caspar
+
+----- "Caspar Zhang" <casparant@gmail.com> wrote:
+
+> On Wed, Apr 28, 2010 at 2:04 PM, Garrett Cooper <yanegomi@gmail.com>
+> wrote:
+> > The first item is different from the other two. The first one
+> ignores the
+> > signal (SIG_IGN), whereas the latter two cases reset the handler to
+> the
+> > default one (SIG_DFL). I prefer the former format, because otherwise
+> the
+> > signal handlers become reentrable on accident.
 > 
-> When running shmat01 on some platforms, it fails on
-> "addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
-> with a INVAL error. Look at codes in "setup()", it probes
-> an available address and align the address to SHMLBA. After
-> alignment, the new address is no guarantee to be available
-> any more. Here a bigger size is used to probe so that it's
-> still valid address after alignment.Pertaining to the function 
-> setup_tc(lc, &tc) ,when it outside of "for (i = 0; i < TST_TOTAL; 
-> i++)",and printf the tc.offset value is always 0,and correct a mistake
-> of original codes to move "setup_tc()" to right place.
+> I see. Thank you.
 > 
-> Signed-off-by: Yang Wei <wei.yang@windriver.com>
+> The final patch ;-)
 > 
-> wei yang
-> BR
+> Cheers,
+> -Caspar
 > 
+> -- 
+> Tags: Ant, Beijing, BUPT, Caspar, Kernel QA, Linux, Open Source,
+> Photography, Programmer, Red Hat Inc., Zhejianger, etc.
+> 
+> Current: Kernel Associate Quality Engineer @ Red Hat Inc.
+> 
+> Home Page: http://www.CasparZhang.com/
 
---------------070907040402020600070809
-Content-Type: text/x-patch;
-	name="0001-Probe-an-bigger-linear-available-address-to-attachme.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename*0="0001-Probe-an-bigger-linear-available-address-to-attachme.pa";
-	filename*1="tch"
-
-From 22b24a3d16a751f6512a7691abc46f9d744c091a Mon Sep 17 00:00:00 2001
-From: Yang Wei <wyang@windriver.com>
-Date: Tue, 31 Aug 2010 18:02:16 +0800
-Subject: [PATCH] Probe an bigger linear available address to attachment.
-
-When running shmat01 on some platforms, it fails on
-"addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
-with a EINVAL error. Look at codes in "setup()", it probes
-an available address and align the address to SHMLBA. After
-alignment, the new address is no guarantee to be available
-any more. Here a bigger size is used to probe so that it's
-still valid address after alignment.And correct a mistake
-of original codes to move "setup_tc()" to right place.
-
-Signed-off-by: Yang Wei <wei.yang@windriver.com>
----
- testcases/kernel/syscalls/ipc/shmat/shmat01.c |   15 ++++++++++++---
- 1 files changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index 4cb5eaf..ec6ae89 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -120,11 +120,12 @@ int main(int ac, char **av)
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
- 
--		/* setup test case paremeters */
--		setup_tc(lc, &tc);
- 
- 		/* loop through the test cases */
- 		for (i = 0; i < TST_TOTAL; i++) {
-+		
-+			/* setup test case paremeters */
-+			setup_tc(i, &tc);
- 
- 			/*
- 			 * Use TEST macro to make the call
-@@ -246,6 +247,8 @@ void check_functionality(int i)
-  */
- void setup(void)
- {
-+	int shm_id_2;
-+
- 	/* capture signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-@@ -270,12 +273,18 @@ void setup(void)
- 	}
- 
- 	/* Probe an available linear address for attachment */
--	if ((base_addr = shmat(shm_id_1, NULL, 0)) == (void *)-1) {
-+	if ((shm_id_2 = shmget(shmkey++, SHMLBA + INT_SIZE, SHM_RW | IPC_CREAT |
-+			       IPC_EXCL)) == -1) {
-+		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
-+			 "resource 1 in setup()");
-+	}
-+	if ((base_addr = shmat(shm_id_2, NULL, 0)) == (void *)-1) {
- 		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
- 	}
- 	if (shmdt((const void *)base_addr) == -1) {
- 		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
- 	}
-+	rm_shm(shm_id_2);
- 
- 	/* some architectures (e.g. parisc) are strange, so better always align to
- 	 * next SHMLBA address. */
 -- 
-1.6.0.4
+/---------------------------------------\
+| Name: Caspar Zhang                    |
+| Team: Kernel-QE                       |
+| Timezone: GMT+0800 (Asia/Shanghai)    |
+| IRC: caspar @ #kernel-qe, #eng-china  |
+| Phone: +86-10-6260-8150               |
+| Cellphone: +86-1381-073-0090          |
+\---------------------------------------/
 
+------=_Part_8669_714914153.1283767973567
+Content-Type: text/x-patch; charset=US-ASCII;
+	name=syscalls-utimensat01-run-sudo-without-tty.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=syscalls-utimensat01-run-sudo-without-tty.patch
 
---------------070907040402020600070809
+Hi,
+	Most automated testing systems have no tty when running tests,
+	so the utimensat01 test may fail with the following error msg:
+
+	sudo: sorry, you must have a tty to run sudo
+
+	to avoid this, commenting `Defaults    requiretty' line in
+	/etc/sudoers can make this testcase work. After test finished,
+	restore this line.
+
+	Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh	2010-04-01 14:23:11.000000000 +0800
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh	2010-04-28 14:23:42.505422152 +0800
+@@ -43,6 +43,23 @@
+      exit 1;
+ fi
+ 
++# Since some automated testing systems have no tty while testing,
++# comment this line in /etc/sudoers to avoid the error message:
++# `sudo: sorry, you must have a tty to run sudo'
++# Use trap to restore this line after program terminates.
++pattern="[[:space:]]*Defaults[[:space:]]*requiretty.*"
++if grep -q "^${pattern}" /etc/sudoers; then
++	echo "${TEST_PROG} 0 INFO : Comment requiretty in /etc/sudoers for automated testing systems"
++	sed -E -i"" -e "s/^($pattern)/#\1/" /etc/sudoers
++	trap 'trap "" EXIT; teardown' EXIT
++fi
++
++teardown()
++{
++	echo "${TEST_PROG} 0 INFO : Restore requiretty in /etc/sudoers"
++	sed -E -i"" -e "s/^#($pattern)/\1/" /etc/sudoers
++}
++
+ # Summary counters of all test results
+ 
+ test_num=0
+
+------=_Part_8669_714914153.1283767973567
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -153,7 +135,7 @@ This SF.net Dev2Dev email is sponsored by:
 Show off your parallel programming skills.
 Enter the Intel(R) Threading Challenge 2010.
 http://p.sf.net/sfu/intel-thread-sfd
---------------070907040402020600070809
+------=_Part_8669_714914153.1283767973567
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -164,5 +146,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------070907040402020600070809--
+------=_Part_8669_714914153.1283767973567--
 
