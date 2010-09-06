@@ -1,22 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jtluka@redhat.com>) id 1P0CMF-0004dZ-9T
-	for ltp-list@lists.sourceforge.net; Mon, 27 Sep 2010 11:58:59 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P0CME-00065E-47
-	for ltp-list@lists.sourceforge.net; Mon, 27 Sep 2010 11:58:59 +0000
-Date: Mon, 27 Sep 2010 13:58:49 +0200
-From: Jan Tluka <jtluka@redhat.com>
-Message-ID: <20100927115849.GA22015@dhcp-27-142.brq.redhat.com>
-References: <20100924130014.GB7889@dhcp-27-139.brq.redhat.com>
-	<20100924132104.GC7889@dhcp-27-139.brq.redhat.com>
-	<AANLkTin2=Hcf-FLqJ=1DFmQg1x+T1o84JH-LkAWXQcRK@mail.gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <AANLkTin2=Hcf-FLqJ=1DFmQg1x+T1o84JH-LkAWXQcRK@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix incorrect cleanup after hugeshmget05 test
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OseNY-0003m1-8q
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:08 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OseNT-0004xq-7y
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:08 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e31.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o86G4tBC021019
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 10:04:55 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o86GGvZk212642
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 10:16:57 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o86GGu1T003230
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 10:16:57 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <AANLkTi=+8rsbAtHg=N+RCBqDH2W6xD+NVWdXScyJH2Mc@mail.gmail.com>
+References: <4C73452A.3020006@cn.fujitsu.com>
+	<1282647771.4833.10.camel@subratamodak.linux.ibm.com>
+	<4C7470FC.4090800@cn.fujitsu.com>
+	<AANLkTi=+8rsbAtHg=N+RCBqDH2W6xD+NVWdXScyJH2Mc@mail.gmail.com>
+Date: Mon, 06 Sep 2010 21:46:40 +0530
+Message-Id: <1283789802.4947.19.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Add ftrace-stress-test to LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,230 +40,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2132944108626190361=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, Frederic Weisbecker <fweisbec@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Eugene Teo <eugene@redhat.com>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>
 
+Garret,
 
---===============2132944108626190361==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-Content-Disposition: inline
+Did you get a chance to review these tests further ?
 
+Regards--
+Subrata
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2010-08-24 at 19:41 -0700, Garrett Cooper wrote: 
+> On Tue, Aug 24, 2010 at 6:25 PM, Li Zefan <lizf@cn.fujitsu.com> wrote:
+> > Subrata Modak wrote:
+> >> Thanks. I need to test this on a suitable kernel. But doubtful if i can
+> >> add in the default run.
+> >>
+> >
+> > Why? Because it costs 90 secs? This is configurable, and some other
+> > test suites like cpuctl cost more time.
+> >
+> > If a test suite is not run by default, I guess people won't know its
+> > existence, probably.
+> 
+> I think that more of the concern stems from the fact that it's a
+> performance test, and a lot of people complain if and when their test
+> machines slow down to a halt (take hackbench, proc01, for example).
+> 
+> There are issues with the code, but it's dealing with the fact that
+> it's not really written in a portable way. Give me a bit of time and
+> I'll comment on what needs to be changed.
+> 
+> Thanks,
+> -Garrett
 
-Sat, Sep 25, 2010 at 06:56:44AM CEST, yanegomi@gmail.com wrote:
->On Fri, Sep 24, 2010 at 6:21 AM, Jan Tluka <jtluka@redhat.com> wrote:
->> Resending ...
->>
->> I've noticed that in some cases the hugeshmget05 testcase is not
->> cleaning up properly after itself. It leaves hugepages reserved and
->> does not free them. This could break further test runs.
->>
->> I think the problem is with signal handling. The testcase will do
->> rm_shm() only if it ends up properly. In case it's being killed by
->> SIGTERM signal (as seen from the testlog) the cleanup() function does
->> not return shared memory.
->>
->> Without the patch I have to use ipcrm to remove all hugepages reserved
->> and not returned.
->>
->> # grep -i unexpected RHEL-hugepage.run.log
->> hugeshmget05 =A0 =A01 =A0TBROK =A0: =A0Unexpected signal 15 received.
->> # ipcs -m
->> ------ Shared Memory Segments --------
->> key =A0 =A0 =A0 =A0shmid =A0 =A0 =A0owner =A0 =A0 =A0perms =A0 =A0 =A0by=
-tes =A0 =A0 =A0nattch =A0 =A0 status
->> 0x7400ee08 3932160 =A0 =A0root =A0 =A0 =A0600 =A0 =A0 =A0 =A04 =A0 =A0 =
-=A0 =A0 =A00
->> 0x7400edde 4620289 =A0 =A0root =A0 =A0 =A0600 =A0 =A0 =A0 =A04 =A0 =A0 =
-=A0 =A0 =A00
->> 0x00000000 4980738 =A0 =A0gdm =A0 =A0 =A0 600 =A0 =A0 =A0 =A0393216 =A0 =
-=A0 2 =A0 =A0 =A0 =A0 =A0dest
->> 0x7400eddd 4587523 =A0 =A0root =A0 =A0 =A0600 =A0 =A0 =A0 =A04 =A0 =A0 =
-=A0 =A0 =A00
->> 0x78002a3b 64552964 =A0 root =A0 =A0 =A0600 =A0 =A0 =A0 =A0209715200 =A00
->> 0x78002a38 64520197 =A0 root =A0 =A0 =A0600 =A0 =A0 =A0 =A0209715200 =A00
->> # ipcrm -m 64552964 -m 64520197
->>
->> With the patch the test returns hugepages back to the system even if it
->> gets signal 15.
->>
->> Checked on RHEL5.5.
->>
->> Thanks, Jan
->>
->>
->> The patch follows,
->>
->>
->> --- ltp-full-20100831/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget=
-05.c =A0 =A02010-09-14 13:04:33.000000000 +0200
->> +++ ltp-full-20100831.new/testcases/kernel/mem/hugetlb/hugeshmget/hugesh=
-mget05.c =A0 =A0 =A0 =A02010-09-24 13:47:19.413177300 +0200
->> @@ -105,7 +105,6 @@
->>
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0do_child();
->>
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 cleanup();
->>
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*NOTREACHED*/
->> =A0 =A0 =A0 =A0} else { =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* parent */
->> @@ -114,11 +113,10 @@
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_brkm(TBROK, cleanup, =
-"waitpid failed");
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->>
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* if it exists, remove the shared memory =
-resource */
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 rm_shm(shm_id_1);
->> -
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Remove the temporary directory */
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_rmdir();
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 cleanup();
->> =A0 =A0 =A0 =A0}
->> =A0 =A0 =A0 =A0return 0;
->> =A0}
->> @@ -209,6 +207,9 @@
->> =A0void
->> =A0cleanup(void)
->> =A0{
->> + =A0 =A0 =A0 /* if it exists, remove the shared memory resource */
->> + =A0 =A0 =A0 rm_shm(shm_id_1);
->> +
->> =A0 =A0 =A0 =A0/*
->> =A0 =A0 =A0 =A0 * print timing stats if that option was specified.
->> =A0 =A0 =A0 =A0 * print errno log if that option was specified.
->
->Hi Jan,
->    I spotted some other potential issues with the test. Please try
->this patch and let me know whether or not it works for you .
->Cheers,
->-Garrett
-
-Hi Garrett, I ran the hugeshmget05 test with your patch applied and=20
-it works fine. Did 100 loops with no issues observed.
-
-Thanks.
-
->diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/test=
-cases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
->index bc4bd2c..3e9e26a 100644
->--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
->+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
->@@ -77,7 +77,8 @@ char *ltp_user =3D "nobody";
-> int main(int ac, char **av)
-> {
-> 	char *msg;			/* message returned from parse_opts */
->-	int pid;
->+	pid_t pid;
->+	int status;
-> 	void do_child(void);
->=20
-> 	/* parse standard options */
->@@ -105,21 +106,22 @@ int main(int ac, char **av)
->=20
-> 		do_child();
->=20
->-		cleanup();
->-
->+		tst_exit();
-> 		/*NOTREACHED*/
-> 	} else {		/* parent */
-> 		/* wait for the child to return */
->-		if (waitpid(pid, NULL, 0) =3D=3D -1) {
->-			tst_brkm(TBROK, cleanup, "waitpid failed");
->+		if (waitpid(pid, &status, 0) =3D=3D -1) {
->+			tst_resm(TBROK, "waitpid failed");
->+		}
->+		else if (status !=3D 0) {
->+			tst_resm(TFAIL,	"child process failed to exit cleanly "
->+				"(exit status =3D %d)", status);
-> 		}
->+	}
->=20
->-		/* if it exists, remove the shared memory resource */
->-		rm_shm(shm_id_1);
->+	cleanup();
->=20
->-		/* Remove the temporary directory */
->-		tst_rmdir();
->-	}
->+	/* NOTREACHED */
-> 	return 0;
-> }
->=20
->@@ -152,13 +154,11 @@ do_child()
->=20
-> 		switch(TEST_ERRNO) {
-> 		case EACCES:
->-			tst_resm(TPASS, "expected failure - errno =3D "
->-				 "%d : %s", TEST_ERRNO, strerror(TEST_ERRNO));
->+			tst_resm(TPASS|TTERRNO, "expected failure");
-> 			break;
-> 		default:
->-			tst_resm(TFAIL, "call failed with an "
->-				 "unexpected error - %d : %s",
->-				 TEST_ERRNO, strerror(TEST_ERRNO));
->+			tst_resm(TFAIL|TTERRNO, "call failed with an "
->+				 "unexpected error");
-> 			break;
-> 		}	=09
-> 	}
->@@ -209,6 +209,9 @@ setup(void)
-> void
-> cleanup(void)
-> {
->+	/* if it exists, remove the shared memory resource */
->+	rm_shm(shm_id_1);
->+
-> 	/*
-> 	 * print timing stats if that option was specified.
-> 	 * print errno log if that option was specified.
-
-
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkyghvkACgkQLlTqDvSoCHhlyQCfRX5T/MqObJv5pUhhqTCbXAT5
-rKUAn3dodi74TiSts0yZDG0ovhGy1kDP
-=4ndI
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
-
-
---===============2132944108626190361==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
---===============2132944108626190361==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This SF.net Dev2Dev email is sponsored by:
 
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2132944108626190361==--
-
