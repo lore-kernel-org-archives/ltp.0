@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OvxEi-0006yi-1o
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 19:01:40 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OvxEh-0006rD-0O
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 19:01:40 +0000
-Received: by iwn2 with SMTP id 2so425282iwn.34
+	(envelope-from <yanegomi@gmail.com>) id 1Osh3J-0007gn-95
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 19:08:25 +0000
+Received: from mail-bw0-f47.google.com ([209.85.214.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Osh3I-0004sB-D5
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 19:08:25 +0000
+Received: by bwz12 with SMTP id 12so4614176bwz.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 15 Sep 2010 12:01:33 -0700 (PDT)
+	Mon, 06 Sep 2010 12:08:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20100915182052.GA2750@hannu-ubuntu>
-References: <000401cb53c6$d7a16620$86e43260$@co.jp>
-	<20100915134318.GD24784@hannu-debian.research.nokia.com>
-	<AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
-	<20100915182052.GA2750@hannu-ubuntu>
-Date: Wed, 15 Sep 2010 12:01:33 -0700
-Message-ID: <AANLkTik5HT2tDzaCfAU+7kgcsUNucrL6zPLZ3xdBF+kW@mail.gmail.com>
+In-Reply-To: <AANLkTinAQARYsEWv6jbezg=-J=xBZM3UXnWfOSz++Lto@mail.gmail.com>
+References: <AANLkTi=ShuJOPjaywptWgDaFFG9zhb_uk=_42bpwSavA@mail.gmail.com>
+	<AANLkTi=9PFi3k0eEyYO_SvwBsOK77CBECXkrWLy7rkhY@mail.gmail.com>
+	<AANLkTinAQARYsEWv6jbezg=-J=xBZM3UXnWfOSz++Lto@mail.gmail.com>
+Date: Mon, 6 Sep 2010 12:08:15 -0700
+Message-ID: <AANLkTinDeS1ODKGwEtwRed0H57e3vyzjqQB8nnv_Cn4G@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
+Subject: Re: [LTP] [PATCH] ld01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,69 +29,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hannu Heikkinen <hannuxx@iki.fi>
-Cc: ext Mitani <mitani@ryobi.co.jp>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Deepti Thite <dthite@in.mvista.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Wed, Sep 15, 2010 at 11:20 AM, Hannu Heikkinen <hannuxx@iki.fi> wrote:
-> On 15/09/10 09:18 -0700, Garrett Cooper wrote:
->> That seems like a reasonable thing to do, but here's an alternative
->> way to do this (less variables):
->>
->> --- a/testcases/open_posix_testsuite/include/posixtest.h
->> +++ b/testcases/open_posix_testsuite/include/posixtest.h
->> @@ -10,10 +10,24 @@
->> =A0 * return codes
->> =A0 */
->>
->> +/*
->> + * Define PTS_DEVELOPER_MODE if you want to compile for developer scena=
-rios,
->> + * including reporting errors (as opposed to warnings), when compiling =
-some
->> + * test programs.
->> + */
->> +
->> =A0#if defined(_GNU_SOURCE)
->> +#if defined(PTS_DEVELOPER_MODE)
->> =A0#error "Contains GNU-isms that need fixing."
->> +#else
->> +#warning "Contains GNU-isms that need fixing."
->> +#endif
->> =A0#elif defined(_BSD_SOURCE)
->> +#if defined(PTS_DEVELOPER_MODE)
->> =A0#error "Contains BSD-isms that need fixing."
->> +#else
->> +#warning "Contains BSD-isms that need fixing."
->> +#endif
->> =A0#endif
->>
->> =A0#define PTS_PASS =A0 =A0 =A0 =A00
->>
->> Thanks for the idea Hannu :),
->> -Garrett
->>
+On Wed, Sep 1, 2010 at 2:49 AM, Deepti Thite <dthite@in.mvista.com> wrote:
+> Hi Garrett,
 >
-> Ok, even better, less is always good! Developer mode sounds good.
+> The actual error messages which I got were:
 >
-> Should this posixtest.h be kind of a must include for all test cases?
-> Currently not all cases include this.
+> + diff -iw /tmp/ld-6569/errmsg.out /tmp/ld-6569/errmsg.exp
+> --- /tmp/ld-6569/errmsg.out     Fri Aug 27 15:42:16 2010
+>
+> +++ /tmp/ld-6569/errmsg.exp     Fri Aug 27 15:42:16 2010
+> @@ -1,3 +1,3 @@
+> -arm-none-linux-gnueabi-gcc: x.obj: No such file or directory
+> -arm-none-linux-gnueabi-gcc: y.obj: No such file or directory
+> -arm-none-linux-gnueabi-gcc: no input files
+>
+> +gcc: x.obj: No such file or directory
+> +gcc: y.obj: No such file or directory
+> +gcc: No input files
+> + [ 1 -eq 0 ]
+> + echo FAIL -  ld failed to give expected error msg
+> FAIL -  ld failed to give expected error msg
+>
+> We are getting this issue as the native gcc is actually a shell script wh=
+ich
+> calls
+> arm-none-linux-gnueabi-gcc with compiler flags.
+> So we are getting the actual output but as the two files dont match ld01
+> fails.
+> The patch attached in previous mail will not compare two files but will g=
+rep
+> the expected output.
+>
+> Regards
+> Deepti Thite <dthite@mvista.com>
+>
+> On Tue, Aug 31, 2010 at 9:18 PM, Garrett Cooper <yanegomi@gmail.com> wrot=
+e:
+>>
+>> On Tue, Aug 31, 2010 at 2:47 AM, Deepti Thite <dthite@in.mvista.com>
+>> wrote:
+>> > ld01 test fails as native compilers don=92t match in the expected and
+>> > output
+>> > file.
+>> >
+>> > The attached patch will grep expected results from the output file
+>> > generated
+>> > and will not create an expected results file.
+>>
+>> What is the actual error message that gets printed out by ld(1)?
+>> Thanks,
 
-    Well, every affected testcase should include this :). Not all
-files need to include this (there are a number of applications that
-don't need what's defined here) -- so there's no sense in generating
-more work than necessary :).
+Here's a solution that doesn't require any change:
+
+export CC=3D'absolute-path-to-gcc'
+export LD=3D'absolute-path-to-ld'
+runltp # ...
+
+this equals zero change in our code, and ensures that the absolute
+name for the compiler is correct.
+
 Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
