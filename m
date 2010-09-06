@@ -1,24 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Ovuge-0003wS-3g
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 16:18:20 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ovuga-0007SQ-6D
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 16:18:20 +0000
-Received: by iwn2 with SMTP id 2so310435iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 15 Sep 2010 09:18:11 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20100915134318.GD24784@hannu-debian.research.nokia.com>
-References: <000401cb53c6$d7a16620$86e43260$@co.jp>
-	<20100915134318.GD24784@hannu-debian.research.nokia.com>
-Date: Wed, 15 Sep 2010 09:18:10 -0700
-Message-ID: <AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OseNx-00085X-1M
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:33 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OseNs-0006rU-OA
+	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:33 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o86G2mWQ013991
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 12:02:48 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o86GHMr9482758
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 12:17:22 -0400
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o86GHMxu003413
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 10:17:22 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <AANLkTi=9PFi3k0eEyYO_SvwBsOK77CBECXkrWLy7rkhY@mail.gmail.com>
+References: <AANLkTi=ShuJOPjaywptWgDaFFG9zhb_uk=_42bpwSavA@mail.gmail.com>
+	<AANLkTi=9PFi3k0eEyYO_SvwBsOK77CBECXkrWLy7rkhY@mail.gmail.com>
+Date: Mon, 06 Sep 2010 21:46:53 +0530
+Message-Id: <1283789814.4947.22.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] ld01
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,114 +37,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, ext Mitani <mitani@ryobi.co.jp>
+To: Deepti Thite <dthite@in.mvista.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Sep 15, 2010 at 6:43 AM, Hannu Heikkinen
-<ext-hannu.m.heikkinen@nokia.com> wrote:
-> On 14/09/10 06:39 +0200, ext Mitani wrote:
->> Hi,
->>
->> POSIX "open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c"
->> build failed in RHEL4.8 (x86, x86_64, ia64):
->> ------------
->> conformance/interfaces/sched_yield/1-1 compile FAILED; SKIPPING In file
->> included from ../../../conformance/interfaces/sched_yield/1-1.c:35:
->> ../../../include/posixtest.h:14:2: #error "Contains GNU-isms that need
->> fixing."
->> ../../../conformance/interfaces/sched_yield/1-1.c: In function
->> `set_thread_affinity':
->> ../../../conformance/interfaces/sched_yield/1-1.c:91: warning: implicit
->> declaration of function `pthread_setaffinity_np'
->> ------------
->>
->> This testset seems to test "sched_yield()", and uses "sched_setafinity()"
->> for CPU fixing.
->> I tried to remove "_GNU_SOURCE" definition from "sched_yield/1-1.c".
->> But "sched_setafinity()" needs "_GNU_SOURCE".
->> "sched_setafinity()" is necessary for this testset, and I considered the
->> substitution for "sched_setafinity()".
->> But I don't have any ideas. There is no function to be substitute for
->> "sched_setafinity()" by POSIX conformity, I think.
->>
->>
->> Regards--
->>
->> -Tomonori Mitani
->>
->
-> Hi,
->
-> could try this out?
->
-> --- include/posixtest.h 2010-09-14 14:05:21.000000000 +0000
-> +++ fixing/posixtest.h =A02010-09-14 19:01:02.000000000 +0000
-> @@ -11,8 +11,16 @@
-> =A0*/
->
-> =A0#if defined(_GNU_SOURCE)
-> +#if defined (PTS_GNU_SOURCE_WARNING)
-> +#warning "Contains GNU-isms that need fixing."
-> +#else
-> =A0#error "Contains GNU-isms that need fixing."
-> +#endif
-> +
-> =A0#elif defined(_BSD_SOURCE)
-> +#if defined (PTS_BSD_SOURCE_WARNING)
-> +#warning "Contains BSD-isms that need fixing."
-> +#else
-> =A0#error "Contains BSD-isms that need fixing."
-> =A0#endif
->
->
-> Add to yr source #define PTS_GNU_SOURCE_WARNING 1
-> and compile, or define in posixtest.h and include that hdr.
-
-That seems like a reasonable thing to do, but here's an alternative
-way to do this (less variables):
-
---- a/testcases/open_posix_testsuite/include/posixtest.h
-+++ b/testcases/open_posix_testsuite/include/posixtest.h
-@@ -10,10 +10,24 @@
-  * return codes
-  */
-
-+/*
-+ * Define PTS_DEVELOPER_MODE if you want to compile for developer scenario=
-s,
-+ * including reporting errors (as opposed to warnings), when compiling some
-+ * test programs.
-+ */
-+
- #if defined(_GNU_SOURCE)
-+#if defined(PTS_DEVELOPER_MODE)
- #error "Contains GNU-isms that need fixing."
-+#else
-+#warning "Contains GNU-isms that need fixing."
-+#endif
- #elif defined(_BSD_SOURCE)
-+#if defined(PTS_DEVELOPER_MODE)
- #error "Contains BSD-isms that need fixing."
-+#else
-+#warning "Contains BSD-isms that need fixing."
-+#endif
- #endif
-
- #define PTS_PASS        0
-
-Thanks for the idea Hannu :),
--Garrett
-
----------------------------------------------------------------------------=
----
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlIDIwMTAtMDgtMzEgYXQgMDg6NDggLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3RlOiAK
+PiBPbiBUdWUsIEF1ZyAzMSwgMjAxMCBhdCAyOjQ3IEFNLCBEZWVwdGkgVGhpdGUgPGR0aGl0ZUBp
+bi5tdmlzdGEuY29tPiB3cm90ZToKPiA+IGxkMDEgdGVzdCBmYWlscyBhcyBuYXRpdmUgY29tcGls
+ZXJzIGRvbuKAmXQgbWF0Y2ggaW4gdGhlIGV4cGVjdGVkIGFuZCBvdXRwdXQKPiA+IGZpbGUuCj4g
+Pgo+ID4gVGhlIGF0dGFjaGVkIHBhdGNoIHdpbGwgZ3JlcCBleHBlY3RlZCByZXN1bHRzIGZyb20g
+dGhlIG91dHB1dCBmaWxlIGdlbmVyYXRlZAo+ID4gYW5kIHdpbGwgbm90IGNyZWF0ZSBhbiBleHBl
+Y3RlZCByZXN1bHRzIGZpbGUuCj4gCj4gV2hhdCBpcyB0aGUgYWN0dWFsIGVycm9yIG1lc3NhZ2Ug
+dGhhdCBnZXRzIHByaW50ZWQgb3V0IGJ5IGxkKDEpPwoKRGVlcHRpLAoKS2luZGx5IHByb3ZpZGUg
+dGhlIGluZm8gcmVxdWVzdGVkIGJ5IEdhcnJldC4KClJlZ2FyZHMtLQpTdWJyYXRhCgo+IFRoYW5r
+cywKPiAtR2FycmV0dAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IFRoaXMgU0YubmV0IERl
+djJEZXYgZW1haWwgaXMgc3BvbnNvcmVkIGJ5Ogo+IAo+IFNob3cgb2ZmIHlvdXIgcGFyYWxsZWwg
+cHJvZ3JhbW1pbmcgc2tpbGxzLgo+IEVudGVyIHRoZSBJbnRlbChSKSBUaHJlYWRpbmcgQ2hhbGxl
+bmdlIDIwMTAuCj4gaHR0cDovL3Auc2YubmV0L3NmdS9pbnRlbC10aHJlYWQtc2ZkCj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWls
+aW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3Rz
+LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQpUaGlzIFNGLm5ldCBEZXYyRGV2IGVtYWlsIGlzIHNwb25zb3JlZCBieToKClNob3cg
+b2ZmIHlvdXIgcGFyYWxsZWwgcHJvZ3JhbW1pbmcgc2tpbGxzLgpFbnRlciB0aGUgSW50ZWwoUikg
+VGhyZWFkaW5nIENoYWxsZW5nZSAyMDEwLgpodHRwOi8vcC5zZi5uZXQvc2Z1L2ludGVsLXRocmVh
+ZC1zZmQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
+LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
+L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
