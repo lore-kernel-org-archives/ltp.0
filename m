@@ -1,9 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1Oss3Y-0000bt-6D
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 06:53:24 +0000
+Received: from out04.sjc.mx.trendmicro.com ([216.99.131.8])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Oss3W-0004Yn-OR
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 06:53:24 +0000
+Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.78])
+	by out04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 2DCE758C566
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  7 Sep 2010 06:53:16 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 852EE1D7835
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  7 Sep 2010 06:53:15 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Sep 2010 15:53:13 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 7 Sep 2010 15:53:13 +0900
+Message-ID: <000001cb4e59$573184b0$05948e10$@co.jp>
 MIME-Version: 1.0
-Date: Mon, 13 Sep 2010 15:58:30 +0530
-Message-ID: <AANLkTimrd5AYD5EnAQGVRcUS04DM6ecfPOACpv2RDyDa@mail.gmail.com>
-From: ARJIT SHARMA <joyarjit@gmail.com>
-Subject: [LTP] hugeshmat
+Content-Language: ja
+Subject: [LTP] About "hugeshmat01" and "humeshmget03" testsets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -13,68 +35,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4405706705041433732=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, Ltp-list-request@lists.sourceforge.net
-
---===============4405706705041433732==
-Content-Type: multipart/alternative; boundary=0016e64c2ddcc3f5a60490218ea6
-
---0016e64c2ddcc3f5a60490218ea6
-Content-Type: text/plain; charset=ISO-8859-1
-
-hi,
-    I am getting error in hugetlb testcase, most of the tests are failing
-because of the following error:-
-
-"could not read hugepages from /proc/meminfo"
-hugeshmat tests are having this error.
-please help me as how to resolve this error.
-
--- 
-Regards,
-Arjit Sharma.
-
---0016e64c2ddcc3f5a60490218ea6
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div>hi,</div>
-<div>=A0=A0=A0=A0I am getting error in hugetlb testcase, most of the tests =
-are failing because of the=A0following error:-</div>
-<div>=A0=A0=A0=A0 </div>
-<div>&quot;could not read hugepages from /proc/meminfo&quot;=A0</div>
-<div>hugeshmat tests are having this error.</div>
-<div>please help me as how to resolve this error.<br clear=3D"all"><br>-- <=
-br></div>
-<div>Regards,</div>
-<div>Arjit Sharma.</div><br>
-
---0016e64c2ddcc3f5a60490218ea6--
-
-
---===============4405706705041433732==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi,
+
+I sent patches of "hugeshmat01" and "humeshmget03" testsets to mailing-list 
+in the middle of August, but they aren't updated.
+Would you teach me what kind of situation they are?
+
+  hugeshmat01:
+    http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10448.html
+  humeshmget03:
+    http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10467.html
+  
+  (The "humeshmat01" was revised on August 16, but same failure has 
+   occurred in my system.)
+
+I am glad if I can get some information about the patch.
+I'm looking forward to reply:-)
+
+
+Thank you--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
 
---===============4405706705041433732==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4405706705041433732==--
-
