@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Jacky.Malcles@bull.net>) id 1OvP4t-00072I-6D
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:33:15 +0000
-Received: from ecfrec.frec.bull.fr ([129.183.4.8])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OvP4n-0005CK-Lc
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:33:15 +0000
-Message-ID: <4C8F19DF.6020403@bull.net>
-Date: Tue, 14 Sep 2010 08:44:47 +0200
-From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dthite@mvista.com>) id 1OspR5-0001mj-Tp
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 04:05:31 +0000
+Received: from mail-qw0-f47.google.com ([209.85.216.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OspR1-0003nb-P8
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 04:05:31 +0000
+Received: by mail-qw0-f47.google.com with SMTP id 26so4912418qwa.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Sep 2010 21:05:27 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] ltp-aiodio.part3 scenario updated
+In-Reply-To: <AANLkTinDeS1ODKGwEtwRed0H57e3vyzjqQB8nnv_Cn4G@mail.gmail.com>
+References: <AANLkTi=ShuJOPjaywptWgDaFFG9zhb_uk=_42bpwSavA@mail.gmail.com>
+	<AANLkTi=9PFi3k0eEyYO_SvwBsOK77CBECXkrWLy7rkhY@mail.gmail.com>
+	<AANLkTinAQARYsEWv6jbezg=-J=xBZM3UXnWfOSz++Lto@mail.gmail.com>
+	<AANLkTinDeS1ODKGwEtwRed0H57e3vyzjqQB8nnv_Cn4G@mail.gmail.com>
+Date: Tue, 7 Sep 2010 09:35:27 +0530
+Message-ID: <AANLkTimtsukr=vdq9TRL62LUdfdcy2k79cTvEJQ1xmi+@mail.gmail.com>
+From: Deepti Thite <dthite@in.mvista.com>
+Subject: Re: [LTP] [PATCH] ld01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,193 +30,205 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1622623144414066333=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi Garret,
+--===============1622623144414066333==
+Content-Type: multipart/alternative; boundary=000feaf013add2c54c048fa38162
 
-according to your last ltp-aiodio.sh script from git I have updtated and 
-tested this scenario,
-it works fine:
-tail -f ltpaiodio3.logfile
-FSX069                         PASS       0   
-FSX057                         PASS       0   
+--000feaf013add2c54c048fa38162
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
------------------------------------------------
-Total Tests: 48
-Total Failures: 0
+Hi Garrett,
 
-many thanks,
+We execute ltp tests on different architectures like arm, mips, etc., hence
+hardcoding the absolute path  will not work on all  architectures. So I cam=
+e
+up with the patch as a generic solution to it.
 
---- ltp-aiodio.part3.original    2010-09-13 12:45:24.000000000 +0200
-+++ ltp-aiodio.part3    2010-09-13 12:47:22.000000000 +0200
-@@ -1,51 +1,51 @@
- #           fname:  this filename is Required (no default)
- #
- #
--FSX032 fsx-linux -d  -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 
-$TMPDIR/aiodio.$$/junkfile
--FSX033 fsx-linux -d  -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 
-$TMPDIR/aiodio.$$/junkfile
--FSX034 fsx-linux -d  -l 500000 -r 4096 -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX035 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX036 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX037 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX038 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX039 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
--FSX040 fsx-linux -N 10000 -o 1024 $TMPDIR/aiodio.$$/junkfile
--FSX041 fsx-linux -N 10000 -o 2048 $TMPDIR/aiodio.$$/junkfile
--FSX042 fsx-linux -N 10000 -o 4096 $TMPDIR/aiodio.$$/junkfile
--FSX043 fsx-linux -N 10000 -o 8192 $TMPDIR/aiodio.$$/junkfile
--FSX044 fsx-linux -N 10000 -o 16384 $TMPDIR/aiodio.$$/junkfile
--FSX045 fsx-linux -N 10000 -o 32768 $TMPDIR/aiodio.$$/junkfile
--FSX046 fsx-linux -N 10000 -o 128000 $TMPDIR/aiodio.$$/junkfile
--FSX047 fsx-linux -N 10000 -o 1024 $TMPDIR/aiodio.$$/junkfile
--FSX048 fsx-linux -N 10000 -o 2048 $TMPDIR/aiodio.$$/junkfile
--FSX049 fsx-linux -N 10000 -o 4096 $TMPDIR/aiodio.$$/junkfile
--FSX050 fsx-linux -N 10000 -o 8192 $TMPDIR/aiodio.$$/junkfile
--FSX051 fsx-linux -N 10000 -o 16384 $TMPDIR/aiodio.$$/junkfile
--FSX052 fsx-linux -N 10000 -o 32768 $TMPDIR/aiodio.$$/junkfile
--FSX053 fsx-linux -N 10000 -o 128000 $TMPDIR/aiodio.$$/junkfile
--FSX054 fsx-linux -N 10000  -o 1024 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX055 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile
--FSX056 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX057 fsx-linux -N 10000  -o 8192 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile
--FSX058 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX059 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile
--FSX060 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile
--FSX061 fsx-linux -N 10000 -o 32768 
-$TMPDIR/aiodio.$$/junkfile                                         
--FSX062 fsx-linux -N 10000 -o 128000 
-$TMPDIR/aiodio.$$/junkfile                                        
--FSX063 fsx-linux -N 10000  -o 1024  -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX064 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile  
--FSX065 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX066 fsx-linux -N 10000  -o 8192  -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile   
--FSX067 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX068 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMPDIR/aiodio.$$/junkfile  
--FSX069 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile 
--FSX070 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile  
--FSX071 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-$TMPDIR/aiodio.$$/junkfile1
--FSX072 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-$TMPDIR/aiodio.$$/junkfile2
--FSX073 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile3
--FSX074 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-$TMPDIR/aiodio.$$/junkfile4
--FSX075 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-$TMPDIR/aiodio.$$/junkfile5
--FSX076 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMPDIR/aiodio.$$/junkfile6
--FSX077 fsx-linux -N 10000   $TMPDIR/aiodio.$$/junkfile7
--FSX078 fsx-linux -N 100000  $TMPDIR/aiodio.$$/junkfile8
--FSX079 fsx-linux -N 100000  $TMPDIR/aiodio.$$/junkfile9
-+FSX032 fsx-linux -d  -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 
-$TMP/aiodio/junkfile
-+FSX033 fsx-linux -d  -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 
-$TMP/aiodio/junkfile
-+FSX034 fsx-linux -d  -l 500000 -r 4096 -N 10000 $TMP/aiodio/junkfile
-+FSX035 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
-+FSX036 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
-+FSX037 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
-+FSX038 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
-+FSX039 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
-+FSX040 fsx-linux -N 10000 -o 1024 $TMP/aiodio/junkfile
-+FSX041 fsx-linux -N 10000 -o 2048 $TMP/aiodio/junkfile
-+FSX042 fsx-linux -N 10000 -o 4096 $TMP/aiodio/junkfile
-+FSX043 fsx-linux -N 10000 -o 8192 $TMP/aiodio/junkfile
-+FSX044 fsx-linux -N 10000 -o 16384 $TMP/aiodio/junkfile
-+FSX045 fsx-linux -N 10000 -o 32768 $TMP/aiodio/junkfile
-+FSX046 fsx-linux -N 10000 -o 128000 $TMP/aiodio/junkfile
-+FSX047 fsx-linux -N 10000 -o 1024 $TMP/aiodio/junkfile
-+FSX048 fsx-linux -N 10000 -o 2048 $TMP/aiodio/junkfile
-+FSX049 fsx-linux -N 10000 -o 4096 $TMP/aiodio/junkfile
-+FSX050 fsx-linux -N 10000 -o 8192 $TMP/aiodio/junkfile
-+FSX051 fsx-linux -N 10000 -o 16384 $TMP/aiodio/junkfile
-+FSX052 fsx-linux -N 10000 -o 32768 $TMP/aiodio/junkfile
-+FSX053 fsx-linux -N 10000 -o 128000 $TMP/aiodio/junkfile
-+FSX054 fsx-linux -N 10000  -o 1024 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile
-+FSX055 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMP/aiodio/junkfile
-+FSX056 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile
-+FSX057 fsx-linux -N 10000  -o 8192 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMP/aiodio/junkfile
-+FSX058 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile
-+FSX059 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMP/aiodio/junkfile
-+FSX060 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile
-+FSX061 fsx-linux -N 10000 -o 32768 
-$TMP/aiodio/junkfile                                         
-+FSX062 fsx-linux -N 10000 -o 128000 
-$TMP/aiodio/junkfile                                        
-+FSX063 fsx-linux -N 10000  -o 1024  -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile  
-+FSX064 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMP/aiodio/junkfile  
-+FSX065 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile  
-+FSX066 fsx-linux -N 10000  -o 8192  -l 500000 -r 4096 -t 2048 -w 2048 
-$TMP/aiodio/junkfile   
-+FSX067 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile  
-+FSX068 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
-$TMP/aiodio/junkfile  
-+FSX069 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile 
-+FSX070 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile  
-+FSX071 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-$TMP/aiodio/junkfile1
-+FSX072 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-$TMP/aiodio/junkfile2
-+FSX073 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile3
-+FSX074 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
-$TMP/aiodio/junkfile4
-+FSX075 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
-$TMP/aiodio/junkfile5
-+FSX076 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
-$TMP/aiodio/junkfile6
-+FSX077 fsx-linux -N 10000   $TMP/aiodio/junkfile7
-+FSX078 fsx-linux -N 100000  $TMP/aiodio/junkfile8
-+FSX079 fsx-linux -N 100000  $TMP/aiodio/junkfile9
+Regards
+Deepti
+
+On Tue, Sep 7, 2010 at 12:38 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+
+> On Wed, Sep 1, 2010 at 2:49 AM, Deepti Thite <dthite@in.mvista.com> wrote=
+:
+> > Hi Garrett,
+> >
+> > The actual error messages which I got were:
+> >
+> > + diff -iw /tmp/ld-6569/errmsg.out /tmp/ld-6569/errmsg.exp
+> > --- /tmp/ld-6569/errmsg.out     Fri Aug 27 15:42:16 2010
+> >
+> > +++ /tmp/ld-6569/errmsg.exp     Fri Aug 27 15:42:16 2010
+> > @@ -1,3 +1,3 @@
+> > -arm-none-linux-gnueabi-gcc: x.obj: No such file or directory
+> > -arm-none-linux-gnueabi-gcc: y.obj: No such file or directory
+> > -arm-none-linux-gnueabi-gcc: no input files
+> >
+> > +gcc: x.obj: No such file or directory
+> > +gcc: y.obj: No such file or directory
+> > +gcc: No input files
+> > + [ 1 -eq 0 ]
+> > + echo FAIL -  ld failed to give expected error msg
+> > FAIL -  ld failed to give expected error msg
+> >
+> > We are getting this issue as the native gcc is actually a shell script
+> which
+> > calls
+> > arm-none-linux-gnueabi-gcc with compiler flags.
+> > So we are getting the actual output but as the two files dont match ld0=
+1
+> > fails.
+> > The patch attached in previous mail will not compare two files but will
+> grep
+> > the expected output.
+> >
+> > Regards
+> > Deepti Thite <dthite@mvista.com>
+> >
+> > On Tue, Aug 31, 2010 at 9:18 PM, Garrett Cooper <yanegomi@gmail.com>
+> wrote:
+> >>
+> >> On Tue, Aug 31, 2010 at 2:47 AM, Deepti Thite <dthite@in.mvista.com>
+> >> wrote:
+> >> > ld01 test fails as native compilers don=92t match in the expected an=
+d
+> >> > output
+> >> > file.
+> >> >
+> >> > The attached patch will grep expected results from the output file
+> >> > generated
+> >> > and will not create an expected results file.
+> >>
+> >> What is the actual error message that gets printed out by ld(1)?
+> >> Thanks,
+>
+> Here's a solution that doesn't require any change:
+>
+> export CC=3D'absolute-path-to-gcc'
+> export LD=3D'absolute-path-to-ld'
+> runltp # ...
+>
+> this equals zero change in our code, and ensures that the absolute
+> name for the compiler is correct.
+>
+> Thanks,
+> -Garrett
+>
+
+--000feaf013add2c54c048fa38162
+Content-Type: text/html; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+
+Hi Garrett,<br><br>We execute ltp tests on different architectures like arm=
+, mips, etc., hence hardcoding the absolute path=A0 will not work on all=A0=
+ architectures. So I came up with the patch as a generic solution to it.<br=
+>
+<br>Regards <br>Deepti<br><br><div class=3D"gmail_quote">On Tue, Sep 7, 201=
+0 at 12:38 AM, Garrett Cooper <span dir=3D"ltr">&lt;<a href=3D"mailto:yaneg=
+omi@gmail.com">yanegomi@gmail.com</a>&gt;</span> wrote:<br><blockquote clas=
+s=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, 204, 204); margi=
+n: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<div><div></div><div class=3D"h5">On Wed, Sep 1, 2010 at 2:49 AM, Deepti Th=
+ite &lt;<a href=3D"mailto:dthite@in.mvista.com">dthite@in.mvista.com</a>&gt=
+; wrote:<br>
+&gt; Hi Garrett,<br>
+&gt;<br>
+&gt; The actual error messages which I got were:<br>
+&gt;<br>
+&gt; + diff -iw /tmp/ld-6569/errmsg.out /tmp/ld-6569/errmsg.exp<br>
+&gt; --- /tmp/ld-6569/errmsg.out =A0 =A0 Fri Aug 27 15:42:16 2010<br>
+&gt;<br>
+&gt; +++ /tmp/ld-6569/errmsg.exp =A0 =A0 Fri Aug 27 15:42:16 2010<br>
+&gt; @@ -1,3 +1,3 @@<br>
+&gt; -arm-none-linux-gnueabi-gcc: x.obj: No such file or directory<br>
+&gt; -arm-none-linux-gnueabi-gcc: y.obj: No such file or directory<br>
+&gt; -arm-none-linux-gnueabi-gcc: no input files<br>
+&gt;<br>
+&gt; +gcc: x.obj: No such file or directory<br>
+&gt; +gcc: y.obj: No such file or directory<br>
+&gt; +gcc: No input files<br>
+&gt; + [ 1 -eq 0 ]<br>
+&gt; + echo FAIL - =A0ld failed to give expected error msg<br>
+&gt; FAIL - =A0ld failed to give expected error msg<br>
+&gt;<br>
+&gt; We are getting this issue as the native gcc is actually a shell script=
+ which<br>
+&gt; calls<br>
+&gt; arm-none-linux-gnueabi-gcc with compiler flags.<br>
+&gt; So we are getting the actual output but as the two files dont match ld=
+01<br>
+&gt; fails.<br>
+&gt; The patch attached in previous mail will not compare two files but wil=
+l grep<br>
+&gt; the expected output.<br>
+&gt;<br>
+&gt; Regards<br>
+&gt; Deepti Thite &lt;<a href=3D"mailto:dthite@mvista.com">dthite@mvista.co=
+m</a>&gt;<br>
+&gt;<br>
+&gt; On Tue, Aug 31, 2010 at 9:18 PM, Garrett Cooper &lt;<a href=3D"mailto:=
+yanegomi@gmail.com">yanegomi@gmail.com</a>&gt; wrote:<br>
+&gt;&gt;<br>
+&gt;&gt; On Tue, Aug 31, 2010 at 2:47 AM, Deepti Thite &lt;<a href=3D"mailt=
+o:dthite@in.mvista.com">dthite@in.mvista.com</a>&gt;<br>
+&gt;&gt; wrote:<br>
+&gt;&gt; &gt; ld01 test fails as native compilers don=92t match in the expe=
+cted and<br>
+&gt;&gt; &gt; output<br>
+&gt;&gt; &gt; file.<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; The attached patch will grep expected results from the output=
+ file<br>
+&gt;&gt; &gt; generated<br>
+&gt;&gt; &gt; and will not create an expected results file.<br>
+&gt;&gt;<br>
+&gt;&gt; What is the actual error message that gets printed out by ld(1)?<b=
+r>
+&gt;&gt; Thanks,<br>
+<br>
+</div></div>Here&#39;s a solution that doesn&#39;t require any change:<br>
+<br>
+export CC=3D&#39;absolute-path-to-gcc&#39;<br>
+export LD=3D&#39;absolute-path-to-ld&#39;<br>
+runltp # ...<br>
+<br>
+this equals zero change in our code, and ensures that the absolute<br>
+name for the compiler is correct.<br>
+<br>
+Thanks,<br>
+<font color=3D"#888888">-Garrett<br>
+</font></blockquote></div><br>
+
+--000feaf013add2c54c048fa38162--
 
 
--- 
- Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
- Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
- Tel : 04.76.29.73.14
-
+--===============1622623144414066333==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
+--===============1622623144414066333==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1622623144414066333==--
+
