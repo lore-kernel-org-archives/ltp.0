@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1P0oSh-0003q5-Fb
-	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 04:40:11 +0000
-Received: from out04.sjc.mx.trendmicro.com ([216.99.131.8])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P0oSf-0008Nz-Vz
-	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 04:40:11 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cb4e59$573184b0$05948e10$@co.jp>
-	<AANLkTi=FA6Ojf2=B5w60e5F4y=E_n6nkPRE9seE4kyPn@mail.gmail.com>
-In-Reply-To: <AANLkTi=FA6Ojf2=B5w60e5F4y=E_n6nkPRE9seE4kyPn@mail.gmail.com>
-Date: Wed, 29 Sep 2010 13:40:00 +0900
-Message-ID: <000001cb5f90$60970370$21c50a50$@co.jp>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1Osx8X-0004L5-1z
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 12:18:53 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24]
+	helo=mx01.colomx.prod.int.phx2.redhat.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Osx8U-0001kT-OA
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 12:18:53 +0000
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by mx01.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
+	o87CIjfE003255
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Sep 2010 08:18:45 -0400
+Date: Tue, 7 Sep 2010 08:18:45 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1916720720.235131283861925077.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1491422708.234901283861656504.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
+Subject: [LTP] buffered I/O causes testcases/network/nfs/nfsstress failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,64 +29,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Tuesday, September 07, 2010 4:04 PM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
-> =
+Hi all,
+  When I run testcases/network/nfs/nfsstress/ test, I found sometimes the
+test failed due to buffered I/O, in detail, for example, there are the following
+lines in make_tree.c :
 
-> On Mon, Sep 6, 2010 at 11:53 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> > Hi,
-> >
-> > I sent patches of "hugeshmat01" and "humeshmget03" testsets to
-> mailing-list
-> > in the middle of August, but they aren't updated.
-> > Would you teach me what kind of situation they are?
-> >
-> > =A0hugeshmat01:
-> > =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/m
-> sg10448.html
-> > =A0humeshmget03:
-> > =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/m
-> sg10467.html
-> >
-> > =A0(The "humeshmat01" was revised on August 16, but same failure has
-> > =A0 occurred in my system.)
-> >
-> > I am glad if I can get some information about the patch.
-> > I'm looking forward to reply:-)
-> =
+544     numchar[0] = sprintf(prog_buf,
+545                 "main()\n{\n\t printf(\"hello world\");\n}\n");
 
->     Sorry... another item I forgot to follow up on. I'll look into
-> this over the next couple of days and provide feedback about this.
-> Thanks,
-> -Garrett
+sometimes the generated .c file will be:
+^@ain() // <- strange ASCII char '^@' appears instead of 'm'
+{
+        printf("hello world");
+}
 
-Were my revisions OK? =
+And running with this .c file will cause error.
 
-I am glad if you consider about these patches when you are free.
+That is to say, string 'prog_buf' gets a mistake during sprintf. And there're
+somewhere else using buffered I/O in this test as well. Do we have an 
+unbuffered solution to this test?
 
-Regards--
+Thanks,
+Caspar
 
--Tomonori Mitani
+-- 
+Quality Assurance Associate (Kernel) in
+Red Hat Inc. (Beijing R&D Branch)
 
+TEL: +86-10-62608150
+Web: http://www.redhat.com/
 
+------------------------------------------------------------------------------
+This SF.net Dev2Dev email is sponsored by:
 
-
----------------------------------------------------------------------------=
----
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
