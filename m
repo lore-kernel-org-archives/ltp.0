@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Wei.Yang@windriver.com>) id 1OqhH9-0003en-7R
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 06:58:27 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OqhH4-0002NK-Rn
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 06:58:27 +0000
-Message-ID: <4C7DFAAB.9060704@windriver.com>
-Date: Wed, 01 Sep 2010 15:03:07 +0800
-From: yangzi <wei.yang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OssE5-0007NV-QI
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 07:04:17 +0000
+Received: from mail-bw0-f47.google.com ([209.85.214.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OssE4-0001Vf-Lc
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 07:04:17 +0000
+Received: by bwz12 with SMTP id 12so5027817bwz.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 07 Sep 2010 00:04:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <4C7CDA7E.2020505@windriver.com>	<52CF90264091A14888078A031D780F430D093D@ism-mail03.corp.ad.wrs.com>
-	<AANLkTimHJjRYxkLSgr3kBQHD5Lu3=zwx0YR4PGX3KR01@mail.gmail.com>
-In-Reply-To: <AANLkTimHJjRYxkLSgr3kBQHD5Lu3=zwx0YR4PGX3KR01@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Probe an bigger linear available address to
-	attachment.
+In-Reply-To: <000001cb4e59$573184b0$05948e10$@co.jp>
+References: <000001cb4e59$573184b0$05948e10$@co.jp>
+Date: Tue, 7 Sep 2010 00:04:10 -0700
+Message-ID: <AANLkTi=FA6Ojf2=B5w60e5F4y=E_n6nkPRE9seE4kyPn@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,37 +27,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi
-It failed on the first sub-testcase and on the mips architecture.
-Thanks
-wei.yang
+On Mon, Sep 6, 2010 at 11:53 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
+>
+> I sent patches of "hugeshmat01" and "humeshmget03" testsets to mailing-li=
+st
+> in the middle of August, but they aren't updated.
+> Would you teach me what kind of situation they are?
+>
+> =A0hugeshmat01:
+> =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg1044=
+8.html
+> =A0humeshmget03:
+> =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg1046=
+7.html
+>
+> =A0(The "humeshmat01" was revised on August 16, but same failure has
+> =A0 occurred in my system.)
+>
+> I am glad if I can get some information about the patch.
+> I'm looking forward to reply:-)
 
-Garrett Cooper wrote:
-> 2010/8/31 Yang, Wei <Wei.Yang@windriver.com>:
->> Hi
->>
->> When running shmat01 on some platforms, it fails on
->> "addr = shmat(*(tc.shmid), base_addr + tc.offset,tc.flags);"
->> with a INVAL error. Look at codes in "setup()", it probes
->> an available address and align the address to SHMLBA. After
->> alignment, the new address is no guarantee to be available
->> any more. Here a bigger size is used to probe so that it's
->> still valid address after alignment.Pertaining to the function
->> setup_tc(lc, &tc) ,when it outside of "for (i = 0; i < TST_TOTAL;
->> i++)",and printf the tc.offset value is always 0,add correct a mistake
->> of original codes to move "setup_tc()" to right place.
-> 
-> Which of the sub-testcases fail and on which architecture(s)?
-> Thanks,
-> -Garrett
+    Sorry... another item I forgot to follow up on. I'll look into
+this over the next couple of days and provide feedback about this.
+Thanks,
+-Garrett
 
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.net Dev2Dev email is sponsored by:
 
 Show off your parallel programming skills.
