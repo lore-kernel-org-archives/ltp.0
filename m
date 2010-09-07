@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hannuxx@gmail.com>) id 1OvwbQ-000105-21
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 18:21:04 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Ot5CA-0000PT-8U
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 20:55:10 +0000
 Received: from mail-bw0-f47.google.com ([209.85.214.47])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OvwbP-0004N4-1y
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 18:21:04 +0000
-Received: by bwz2 with SMTP id 2so1117215bwz.34
+	id 1Ot5C7-0003Po-V5
+	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 20:55:10 +0000
+Received: by bwz12 with SMTP id 12so5891111bwz.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 15 Sep 2010 11:20:57 -0700 (PDT)
-Date: Wed, 15 Sep 2010 21:20:52 +0300
-From: Hannu Heikkinen <hannuxx@iki.fi>
-Message-ID: <20100915182052.GA2750@hannu-ubuntu>
-References: <000401cb53c6$d7a16620$86e43260$@co.jp>
-	<20100915134318.GD24784@hannu-debian.research.nokia.com>
-	<AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
+	Tue, 07 Sep 2010 13:55:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
-Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
+In-Reply-To: <471750147.260021283872436687.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <AANLkTikGbs8NvSSvt6WabaS9=QsPsj1rDXmBuiT8EP-6@mail.gmail.com>
+	<471750147.260021283872436687.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Tue, 7 Sep 2010 13:55:02 -0700
+Message-ID: <AANLkTinHYtJbvz-2d=ivRMz=ryuuYEeirDm9x6Em2Mtq@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] buffered I/O causes testcases/network/nfs/nfsstress
+	failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,61 +29,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ext Mitani <mitani@ryobi.co.jp>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 15/09/10 09:18 -0700, Garrett Cooper wrote:
-> That seems like a reasonable thing to do, but here's an alternative
-> way to do this (less variables):
-> 
-> --- a/testcases/open_posix_testsuite/include/posixtest.h
-> +++ b/testcases/open_posix_testsuite/include/posixtest.h
-> @@ -10,10 +10,24 @@
->   * return codes
->   */
-> 
-> +/*
-> + * Define PTS_DEVELOPER_MODE if you want to compile for developer scenarios,
-> + * including reporting errors (as opposed to warnings), when compiling some
-> + * test programs.
-> + */
-> +
->  #if defined(_GNU_SOURCE)
-> +#if defined(PTS_DEVELOPER_MODE)
->  #error "Contains GNU-isms that need fixing."
-> +#else
-> +#warning "Contains GNU-isms that need fixing."
-> +#endif
->  #elif defined(_BSD_SOURCE)
-> +#if defined(PTS_DEVELOPER_MODE)
->  #error "Contains BSD-isms that need fixing."
-> +#else
-> +#warning "Contains BSD-isms that need fixing."
-> +#endif
->  #endif
-> 
->  #define PTS_PASS        0
-> 
-> Thanks for the idea Hannu :),
-> -Garrett
-> 
+On Tue, Sep 7, 2010 at 8:13 AM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+>
+>> On Tue, Sep 7, 2010 at 5:18 AM, Caspar Zhang <czhang@redhat.com>
+>> wrote:
+>> > Hi all,
+>> > =A0When I run testcases/network/nfs/nfsstress/ test, I found sometimes
+>> the
+>> > test failed due to buffered I/O, in detail, for example, there are
+>> the following
+>> > lines in make_tree.c :
+>> >
+>> > 544 =A0 =A0 numchar[0] =3D sprintf(prog_buf,
+>> > 545 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "main()\n{\n\t printf(\"hello worl=
+d\");\n}\n");
+>> >
+>> > sometimes the generated .c file will be:
+>> > ^@ain() // <- strange ASCII char '^@' appears instead of 'm'
+>> > {
+>> > =A0 =A0 =A0 =A0printf("hello world");
+>> > }
+>> >
+>> > And running with this .c file will cause error.
+>> >
+>> > That is to say, string 'prog_buf' gets a mistake during sprintf. And
+>> there're
+>> > somewhere else using buffered I/O in this test as well. Do we have
+>> an
+>> > unbuffered solution to this test?
+>>
+>> That seems a bit odd. Is the NFS mount/server TCP or UDP?
+>
+> Hi Garrett, it's UDP.
 
-Ok, even better, less is always good! Developer mode sounds good. 
+    Ok. Something else that might be good to note is whether or not
+it's v2, v3, or v4 on the client and server side.
+    Could you please try with TCP and see whether or not the issue
+persists? I'm just curious if it's a potentially real issue with NFS
+code in the kernel, random networking infrastructure issues, etc.
+Thanks,
+-Garrett
 
-Should this posixtest.h be kind of a must include for all test cases?
-Currently not all cases include this. 
+---------------------------------------------------------------------------=
+---
+This SF.net Dev2Dev email is sponsored by:
 
-br,
-Hannu
-
-------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
