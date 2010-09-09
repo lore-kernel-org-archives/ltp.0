@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ext-hannu.m.heikkinen@nokia.com>) id 1OvpUJ-0002Vz-4q
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 10:45:15 +0000
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OvpUG-0003aT-M0
-	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 10:45:15 +0000
-Date: Wed, 15 Sep 2010 13:43:18 +0000
-From: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-Message-ID: <20100915134318.GD24784@hannu-debian.research.nokia.com>
-References: <000401cb53c6$d7a16620$86e43260$@co.jp>
+	(envelope-from <Jacky.Malcles@bull.net>) id 1Othzm-0003jy-Kq
+	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 14:20:58 +0000
+Received: from ecfrec.frec.bull.fr ([129.183.4.8])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Othzf-0008EC-KT
+	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 14:20:58 +0000
+Message-ID: <4C88EFFF.8020607@bull.net>
+Date: Thu, 09 Sep 2010 16:32:31 +0200
+From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <000401cb53c6$d7a16620$86e43260$@co.jp>
-Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
+Subject: [LTP] a few failures Running dio_sparse & miscellaneous tests using
+ ltp-aiodio.part4 scenario
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,79 +26,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ext Mitani <mitani@ryobi.co.jp>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: yanegomi@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-On 14/09/10 06:39 +0200, ext Mitani wrote:
-> Hi,
-> 
-> POSIX "open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c" 
-> build failed in RHEL4.8 (x86, x86_64, ia64):
-> ------------
-> conformance/interfaces/sched_yield/1-1 compile FAILED; SKIPPING In file
-> included from ../../../conformance/interfaces/sched_yield/1-1.c:35:
-> ../../../include/posixtest.h:14:2: #error "Contains GNU-isms that need
-> fixing."
-> ../../../conformance/interfaces/sched_yield/1-1.c: In function
-> `set_thread_affinity':
-> ../../../conformance/interfaces/sched_yield/1-1.c:91: warning: implicit
-> declaration of function `pthread_setaffinity_np'
-> ------------
-> 
-> This testset seems to test "sched_yield()", and uses "sched_setafinity()" 
-> for CPU fixing.
-> I tried to remove "_GNU_SOURCE" definition from "sched_yield/1-1.c".
-> But "sched_setafinity()" needs "_GNU_SOURCE".
-> "sched_setafinity()" is necessary for this testset, and I considered the
-> substitution for "sched_setafinity()".
-> But I don't have any ideas. There is no function to be substitute for
-> "sched_setafinity()" by POSIX conformity, I think.
-> 
-> 
-> Regards--
-> 
-> -Tomonori Mitani
-> 
+Hi Garet,
 
-Hi,
+Running dio_sparse & miscellaneous tests we get a few failures:
+Testcase                       Result     Exit Value
+--------                       ------     ----------
+AD007                          PASS       0
+DIO00                          PASS       0
+DI009                          PASS       0
+DOR000                         FAIL       1
+...etc
 
-could try this out?
+detail:
+tag=DOR000 stime=1284029770
+cmdline="ltp-diorh $TMPDIR/aiodio.$$/file2"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open: No such file or directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
 
---- include/posixtest.h	2010-09-14 14:05:21.000000000 +0000
-+++ fixing/posixtest.h	2010-09-14 19:01:02.000000000 +0000
-@@ -11,8 +11,16 @@
-  */
- 
- #if defined(_GNU_SOURCE)
-+#if defined (PTS_GNU_SOURCE_WARNING)
-+#warning "Contains GNU-isms that need fixing."
-+#else
- #error "Contains GNU-isms that need fixing."
-+#endif
-+
- #elif defined(_BSD_SOURCE)
-+#if defined (PTS_BSD_SOURCE_WARNING)
-+#warning "Contains BSD-isms that need fixing."
-+#else
- #error "Contains BSD-isms that need fixing."
- #endif
+we still do have data files location difficulties, so, if you agree I 
+suggest the folling change,
+(note: in the coming days I should be able to check the 2 remaining 
+scenarios)
+
+many thanks,
 
 
-Add to yr source #define PTS_GNU_SOURCE_WARNING 1
-and compile, or define in posixtest.h and include that hdr.
+--- ltp-aiodio.part4.original    2010-09-09 13:15:53.000000000 +0200
++++ ltp-aiodio.part4    2010-09-09 13:18:57.000000000 +0200
+@@ -34,16 +34,16 @@ DIO07 dio_sparse
+ DIO08 dio_sparse
+ DIO09 dio_sparse
+ #Running aiodio_append
+-AD000 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD001 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD002 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD003 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD004 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD005 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD006 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD007 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD008 aiodio_append $TMPDIR/aiodio.$$/file2
+-AD009 aiodio_append $TMPDIR/aiodio.$$/file2
++AD000 aiodio_append /test/aiodio/file2
++AD001 aiodio_append /test/aiodio/file2
++AD002 aiodio_append /test/aiodio/file2
++AD003 aiodio_append /test/aiodio/file2
++AD004 aiodio_append /test/aiodio/file2
++AD005 aiodio_append /test/aiodio/file2
++AD006 aiodio_append /test/aiodio/file2
++AD007 aiodio_append /test/aiodio/file2
++AD008 aiodio_append /test/aiodio/file2
++AD009 aiodio_append /test/aiodio/file2
+ #Running dio_append
+ ADI000 dio_append
+ ADI001 dio_append
+@@ -62,7 +62,7 @@ DIT002 dio_truncate
+ #Running read_checkzero
+ #gread_checkzero
+ #Running ltp-diorh
+-DOR000 ltp-diorh $TMPDIR/aiodio.$$/file2
+-DOR001 ltp-diorh $TMPDIR/aiodio.$$/file3
+-DOR002 ltp-diorh $TMPDIR/aiodio.$$/file4
+-DOR003 ltp-diorh $TMPDIR/aiodio.$$/file5
++DOR000 ltp-diorh /test/aiodio/file2
++DOR001 ltp-diorh /test/aiodio/file3
++DOR002 ltp-diorh /test/aiodio/file4
++DOR003 ltp-diorh /test/aiodio/file5
 
-br,
-Hannu
 
 -- 
-Hannu Heikkinen
-http://www.nixu.com
+ Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
+ Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
+ Tel : 04.76.29.73.14
+
 
 ------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+This SF.net Dev2Dev email is sponsored by:
+
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
