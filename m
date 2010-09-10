@@ -1,27 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ext-hannu.m.heikkinen@nokia.com>) id 1OwbKi-0003bL-AM
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 13:50:32 +0000
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OwbKd-0006z8-Mo
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 13:50:32 +0000
-Date: Fri, 17 Sep 2010 16:47:45 +0000
-From: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-Message-ID: <20100917164745.GA20627@hannu-debian.research.nokia.com>
-References: <000401cb53c6$d7a16620$86e43260$@co.jp>
-	<20100915134318.GD24784@hannu-debian.research.nokia.com>
-	<AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
-	<20100915182052.GA2750@hannu-ubuntu>
-	<AANLkTik5HT2tDzaCfAU+7kgcsUNucrL6zPLZ3xdBF+kW@mail.gmail.com>
-	<20100916190023.GA11397@hannu-ubuntu>
-	<AANLkTi=tsb1E2nW3ZmRdMrSZ6WftPRCe3RJf90Ts3rJw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=tsb1E2nW3ZmRdMrSZ6WftPRCe3RJf90Ts3rJw@mail.gmail.com>
-Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Otrpg-0005NI-Jr
+	for ltp-list@lists.sourceforge.net; Fri, 10 Sep 2010 00:51:12 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Otrpf-0000nQ-Qs
+	for ltp-list@lists.sourceforge.net; Fri, 10 Sep 2010 00:51:12 +0000
+Received: by yxg6 with SMTP id 6so503925yxg.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 09 Sep 2010 17:51:06 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <AANLkTi=ufkOGaSbHpXfwC3sxCw8VwV+5-=ucGcDV8330@mail.gmail.com>
+Date: Thu, 9 Sep 2010 17:51:01 -0700
+Message-Id: <F0FA14BB-292E-4F75-9B7D-DD327C631007@gmail.com>
+References: <AANLkTi=ufkOGaSbHpXfwC3sxCw8VwV+5-=ucGcDV8330@mail.gmail.com>
+Subject: Re: [LTP] wrong description in LTP HowTo section: 3.3 Compiling the
+	test suite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,82 +28,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ext Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, ext Mitani <mitani@ryobi.co.jp>
+To: shenghui <crosslonelyover@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 16/09/10 21:12 +0200, ext Garrett Cooper wrote:
-> On Thu, Sep 16, 2010 at 12:00 PM, Hannu Heikkinen <hannuxx@iki.fi> wrote:
-> > On 15/09/10 12:01 -0700, Garrett Cooper wrote:
-> >> >
-> >> > Should this posixtest.h be kind of a must include for all test cases?
-> >> > Currently not all cases include this.
-> >>
-> >> =A0 =A0 Well, every affected testcase should include this :). Not all
-> >> files need to include this (there are a number of applications that
-> >> don't need what's defined here) -- so there's no sense in generating
-> >> more work than necessary :).
-> >> Thanks,
-> >> -Garrett
-> >
-> > I must have been hald asleep writing that prev email. I meant that posi=
-xtest
-> > cases should include that, and of course not all LTP cases.
-> =
+On Sep 9, 2010, at 4:52 PM, shenghui wrote:
 
-> I must have doubly been so because I didn't catch that either :).
-> =
+> Hi,
+> 
+> I followed the description in LTP HowTo 3.3 section
+>               http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.3
+> to install LTP, and found that some description is wrong:
+> 
+> "This will create symbolic links of the executable to corresponding
+> files in ltp-yyyymmdd/ test-cases/bin directory."
+> 
+> I checked the executables under [install_dir]/testcases/bin, and
+> noticed that they are all executables, not symbolic links. I think
+> we'd better correct the description.
 
-> > Might be a consideration for having global ltp header file for all C te=
-st
-> > cases
-> > so that generic functionality could be better tweaked by changing certa=
-in
-> > defines. Of course that needs more discussion and analysis, thoug.
-> =
-
-> Already done:
-> =
-
-> include/: http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.g=
-it;a=3Dtree;f=3Dinclude;h=3D93d0ff91530c366d3af0cfc0c6b4f27c779cb866;hb=3DH=
-EAD
-> lib/: http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.git;a=
-=3Dtree;f=3Dlib;h=3D85556e60de93da651c3ffbab56eeef2b3a68c8bf;hb=3DHEAD
-> =
-
-> The above changes mentioned only affect the open posix testsuite
-> (http://sf.net/projects/posixtest/), which is a component completely
-> orthogonal to the rest of the code in the LTP sourcebase, so these
-> changes are only required for that section of the codebase. However,
-> certain tunable features can be added in the LTP buildsystem and the
-> open posix testsuite to support automatic `developer mode' if you
-> will. This will take a while to do properly though.
-> =
-
-> Thanks,
-> -Garrett
-
-
-Thanks for the info! That's good news!
-
-br,
-Hannu
-
--- =
-
-Hannu Heikkinen
-+358-40-1586858
-http://www.nixu.com
-
----------------------------------------------------------------------------=
----
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+	Yeah, the documentation really needs cleanup. I need to do a single pass over it because I was the dude that worked on the system last :).
+	The original setup was actually hardlinks though, and not symlinks, so I think the documentation has been incorrect for a while now..
+Thanks for the heads up!
+-Garrett
+------------------------------------------------------------------------------
+Automate Storage Tiering Simply
+Optimize IT performance and efficiency through flexible, powerful, 
+automated storage tiering capabilities. View this brief to learn how
+you can reduce costs and improve performance. 
+http://p.sf.net/sfu/dell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
