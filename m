@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Jacky.Malcles@bull.net>) id 1Othzm-0003jy-Kq
-	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 14:20:58 +0000
+	(envelope-from <Jacky.Malcles@bull.net>) id 1Ov8M6-0004tt-5X
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 12:41:54 +0000
 Received: from ecfrec.frec.bull.fr ([129.183.4.8])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Othzf-0008EC-KT
-	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 14:20:58 +0000
-Message-ID: <4C88EFFF.8020607@bull.net>
-Date: Thu, 09 Sep 2010 16:32:31 +0200
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ov8Lw-0006Fy-BJ
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 12:41:54 +0000
+Message-ID: <4C8E1EC2.1060803@bull.net>
+Date: Mon, 13 Sep 2010 14:53:22 +0200
 From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
 MIME-Version: 1.0
-Subject: [LTP] a few failures Running dio_sparse & miscellaneous tests using
- ltp-aiodio.part4 scenario
+Subject: [LTP] ltp-aio-stress.part2 modified (and tested)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,80 +25,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garet,
+Garret,
+ changed and tested according to your entries:
 
-Running dio_sparse & miscellaneous tests we get a few failures:
-Testcase                       Result     Exit Value
---------                       ------     ----------
-AD007                          PASS       0
-DIO00                          PASS       0
-DI009                          PASS       0
-DOR000                         FAIL       1
-...etc
-
-detail:
-tag=DOR000 stime=1284029770
-cmdline="ltp-diorh $TMPDIR/aiodio.$$/file2"
-contacts=""
-analysis=exit
-<<<test_output>>>
-open: No such file or directory
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-
-we still do have data files location difficulties, so, if you agree I 
-suggest the folling change,
-(note: in the coming days I should be able to check the 2 remaining 
-scenarios)
-
-many thanks,
-
-
---- ltp-aiodio.part4.original    2010-09-09 13:15:53.000000000 +0200
-+++ ltp-aiodio.part4    2010-09-09 13:18:57.000000000 +0200
-@@ -34,16 +34,16 @@ DIO07 dio_sparse
- DIO08 dio_sparse
- DIO09 dio_sparse
- #Running aiodio_append
--AD000 aiodio_append $TMPDIR/aiodio.$$/file2
--AD001 aiodio_append $TMPDIR/aiodio.$$/file2
--AD002 aiodio_append $TMPDIR/aiodio.$$/file2
--AD003 aiodio_append $TMPDIR/aiodio.$$/file2
--AD004 aiodio_append $TMPDIR/aiodio.$$/file2
--AD005 aiodio_append $TMPDIR/aiodio.$$/file2
--AD006 aiodio_append $TMPDIR/aiodio.$$/file2
--AD007 aiodio_append $TMPDIR/aiodio.$$/file2
--AD008 aiodio_append $TMPDIR/aiodio.$$/file2
--AD009 aiodio_append $TMPDIR/aiodio.$$/file2
-+AD000 aiodio_append /test/aiodio/file2
-+AD001 aiodio_append /test/aiodio/file2
-+AD002 aiodio_append /test/aiodio/file2
-+AD003 aiodio_append /test/aiodio/file2
-+AD004 aiodio_append /test/aiodio/file2
-+AD005 aiodio_append /test/aiodio/file2
-+AD006 aiodio_append /test/aiodio/file2
-+AD007 aiodio_append /test/aiodio/file2
-+AD008 aiodio_append /test/aiodio/file2
-+AD009 aiodio_append /test/aiodio/file2
- #Running dio_append
- ADI000 dio_append
- ADI001 dio_append
-@@ -62,7 +62,7 @@ DIT002 dio_truncate
- #Running read_checkzero
- #gread_checkzero
- #Running ltp-diorh
--DOR000 ltp-diorh $TMPDIR/aiodio.$$/file2
--DOR001 ltp-diorh $TMPDIR/aiodio.$$/file3
--DOR002 ltp-diorh $TMPDIR/aiodio.$$/file4
--DOR003 ltp-diorh $TMPDIR/aiodio.$$/file5
-+DOR000 ltp-diorh /test/aiodio/file2
-+DOR001 ltp-diorh /test/aiodio/file3
-+DOR002 ltp-diorh /test/aiodio/file4
-+DOR003 ltp-diorh /test/aiodio/file5
+--- ltp-aio-stress.part2.original    2010-09-13 11:12:54.000000000 +0200
++++ ltp-aio-stress.part2    2010-09-13 11:14:07.000000000 +0200
+@@ -2,7 +2,7 @@
+ #
+ # aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
+ #                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
+-#                 file1 [/test/aiodio/file2 ...]
++#                 file1 [$TMP/aiodio/file2 ...]
+ #       -a size in KB at which to align buffers
+ #       -b max number of iocbs to give io_submit at once
+ #       -c number of io contexts per file
+@@ -26,13 +26,13 @@
+ #       -x turn off thread stonewalling
+ #       -h this message
+ #
+-ADS2001 aio-stress -I500  -o2 -S -r32  -t2  /test/aiodio/junkfile 
+/test/aiodio2/file2
+-ADS2002 aio-stress -I500  -o3 -S -r8   -t2  /test/aiodio/junkfile 
+/test/aiodio2/file2
+-ADS2003 aio-stress -I500  -o3 -S -r16  -t2  /test/aiodio/junkfile 
+/test/aiodio2/file2
+-ADS2004 aio-stress -I500  -o3 -S -r32  -t4  /test/aiodio/junkfile 
+/test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
+-ADS2005 aio-stress -I500  -o3 -S -r64  -t4  /test/aiodio/junkfile 
+/test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
+-ADS2006 aio-stress -I500  -o2 -O -r32  -t2  /test/aiodio/junkfile 
+/test/aiodio2/file2
+-ADS2007 aio-stress -I500  -o3 -O -r8   -t2  /test/aiodio/junkfile 
+/test/aiodio2/file2
+-ADS2008 aio-stress -I500  -o3 -O -r16  -t2  /test/aiodio/junkfile 
+/test/aiodio2/file2
+-ADS2009 aio-stress -I500  -o3 -O -r32  -t4  /test/aiodio/junkfile 
+/test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
+-ADS2010 aio-stress -I500  -o3 -O -r64  -t4  /test/aiodio/junkfile 
+/test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
++ADS2001 aio-stress -I500  -o2 -S -r32  -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2
++ADS2002 aio-stress -I500  -o3 -S -r8   -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2
++ADS2003 aio-stress -I500  -o3 -S -r16  -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2
++ADS2004 aio-stress -I500  -o3 -S -r32  -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2 $TMP/aiodio/file3 $TMP/aiodio2/file4
++ADS2005 aio-stress -I500  -o3 -S -r64  -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2 $TMP/aiodio/file3 $TMP/aiodio2/file4
++ADS2006 aio-stress -I500  -o2 -O -r32  -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2
++ADS2007 aio-stress -I500  -o3 -O -r8   -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2
++ADS2008 aio-stress -I500  -o3 -O -r16  -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2
++ADS2009 aio-stress -I500  -o3 -O -r32  -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2 $TMP/aiodio/file3 $TMP/aiodio2/file4
++ADS2010 aio-stress -I500  -o3 -O -r64  -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio2/file2 $TMP/aiodio/file3 $TMP/aiodio2/file4
 
 
 -- 
@@ -109,11 +95,10 @@ many thanks,
 
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
