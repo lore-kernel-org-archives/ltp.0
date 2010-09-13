@@ -1,31 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1Oss3Y-0000bt-6D
-	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 06:53:24 +0000
-Received: from out04.sjc.mx.trendmicro.com ([216.99.131.8])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Oss3W-0004Yn-OR
-	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 06:53:24 +0000
-Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.78])
-	by out04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 2DCE758C566
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  7 Sep 2010 06:53:16 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 852EE1D7835
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  7 Sep 2010 06:53:15 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Sep 2010 15:53:13 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Tue, 7 Sep 2010 15:53:13 +0900
-Message-ID: <000001cb4e59$573184b0$05948e10$@co.jp>
+	(envelope-from <yxu@suse.de>) id 1OvAM9-0000Xj-CA
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 14:50:05 +0000
+Message-ID: <4C8E3A14.8090106@suse.de>
+Date: Mon, 13 Sep 2010 16:49:56 +0200
+From: Yi Xu <yxu@suse.de>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] About "hugeshmat01" and "humeshmget03" testsets
+References: <4C8E224C.7060204@suse.de>
+	<20100913165854.GA28597@hannu-debian.research.nokia.com>
+In-Reply-To: <20100913165854.GA28597@hannu-debian.research.nokia.com>
+Subject: Re: [LTP] no configure file in source
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,38 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi,
+thanks a lot. :)
 
-I sent patches of "hugeshmat01" and "humeshmget03" testsets to mailing-list 
-in the middle of August, but they aren't updated.
-Would you teach me what kind of situation they are?
+On 09/13/2010 06:58 PM, Hannu Heikkinen wrote:
+> make autotools
 
-  hugeshmat01:
-    http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10448.html
-  humeshmget03:
-    http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10467.html
-  
-  (The "humeshmat01" was revised on August 16, but same failure has 
-   occurred in my system.)
+-- 
+Yi Xu                           yxu@suse.de
+SUSE LINUX Products GmbH        R&D-OPS-QA
+Maxfeldstr. 5                   +49 (0)911-74053 - 607
+D-90409 Nuernberg               http://www.suse.de
 
-I am glad if I can get some information about the patch.
-I'm looking forward to reply:-)
-
-
-Thank you--
-
--Tomonori Mitani
-
-
+SUSE LINUX Products GmbH, GF: Markus Rex, HRB 16746 (AG Nuernberg)
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
