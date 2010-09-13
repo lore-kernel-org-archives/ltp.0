@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1P1D5k-0001C9-GP
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 06:58:08 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P1D5j-0006gQ-FC
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 06:58:08 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx01.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
-	o8U6w1kb020230
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Sep 2010 02:58:01 -0400
-Date: Thu, 30 Sep 2010 02:58:01 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1386780373.997641285829881764.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1320440485.401261285262435919.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Jacky.Malcles@bull.net>) id 1Ov5Pp-00038U-2S
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 09:33:33 +0000
+Received: from ecfrec.frec.bull.fr ([129.183.4.8])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ov5Pk-0001Ac-4g
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 09:33:32 +0000
+Message-ID: <4C8DF2A2.2070301@bull.net>
+Date: Mon, 13 Sep 2010 11:45:06 +0200
+From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Re: fix incorrect parsing of df command in
- ftruncate04.sh
+Subject: [LTP] ltp-aio-stress.part1 updating
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,121 +25,294 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Garret,
 
------ "Caspar Zhang" <czhang@redhat.com> wrote:
+according to your new scripts, locations ...$TMP ...
+if you agree I suggest the following new version, I can test and prepare 
+all the scenarios,
+let me know,
+thanks
 
-> Sorry for missing [PATCH] tag, now added.
-> 
-> Thanks,
-> Caspar
-> ----- "Caspar Zhang" <czhang@redhat.com> wrote:
-> 
-> > Hi all, an error in ftruncate04 test is found,
-> > The problem I see is due to incorrect parsing
-> > of `df` command output:
-> >
-> > <<<test_start>>>
-> > tag=ftruncate04 stime=1284729392
-> > cmdline="ftruncate04.sh"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > DEV:         /dev/mapper/vg_rhel6beta-lv_root
-> > MOUNT_POINT: /dev/mapper/vg_rhel6beta-lv_root
-> > FLAG:        rw,mand
-> > ftruncate04    1  TPASS  :  Test passed.
-> > mount: you must specify the filesystem type
-> > ftruncate04.sh : ERROR : mounting /dev/mapper/vg_rhel6beta-lv_root
-> > remount,rw,mand failed
-> > incrementing stop
-> > <<<execution_status>>>
-> > initiation_status="ok"
-> > duration=0 termination_type=exited termination_id=0 corefile=no
-> > cutime=1 cstime=7
-> > <<<test_end>>>
-> >
-> > # mount | head -1
-> > /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw,mand)
-> >
-> > # df .
-> > Filesystem           1K-blocks      Used Available Use% Mounted on
-> > /dev/mapper/vg_rhel6beta-lv_root
-> >                        2523808   2436384         0 100% /
-> >
-> > A patch is attached to fix this problem. After applied the patch,
-> > the failure gone:
-> >
-> > <<<test_start>>>
-> > tag=ftruncate04 stime=1284729277
-> > cmdline="ftruncate04.sh"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > DEV:         /dev/mapper/vg_rhel6beta-lv_root
-> > MOUNT_POINT: /
-> > FLAG:        rw,mand
-> > ftruncate04    1  TPASS  :  Test passed.
-> > incrementing stop
-> > <<<execution_status>>>
-> > initiation_status="ok"
-> > duration=0 termination_type=exited termination_id=0 corefile=no
-> > cutime=1 cstime=9
-> > <<<test_end>>>
-> >
-> > # mount | head -1
-> > /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw)
-> > # df -P .
-> > Filesystem         1024-blocks      Used Available Capacity Mounted
-> on
-> > /dev/mapper/vg_rhel6beta-lv_root   2523808   2436380         0
-> > 100% /
-> >
-> > So the test without the patch leaves the system in inconsistent
-> state
-> > (mand option is kept for the filesystem) which is bad.
-> >
-> > Signed-off-by: Caspar Zhang <czhang@redhat.com>
-> >
-> > ---
-> >
-> ltp-full-20100331.old/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
-> > 2010-09-17 15:06:44.292158981 +0200
-> > +++
-> > ltp-full-20100331/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
-> > 2010-09-17 15:10:26.646160911 +0200
-> > @@ -18,7 +18,7 @@
-> >      export TST_TOTAL=1
-> >  fi
-> >  cd ${TMPDIR:=/tmp}
-> > -set -- $(df . | awk '/^\// { print $1, $NF }')
-> > +set -- $(df -P . | awk '/^\// { print $1, $NF }')
-> >  DEV=$1; MOUNT_POINT=$2
-> >  if [ "x$DEV" = x -o "x$MOUNT_POINT" = x ] ; then
-> >      tst_resm TCONF "backend mountpoint for $TMPDIR does not
-> > correspond to a real device:"
-> >
-> >
-> > Thanks,
-> > Caspar
+--- ltp-aio-stress.part1.original    2010-09-13 10:55:54.000000000 +0200
++++ ltp-aio-stress.part1    2010-09-13 11:04:42.000000000 +0200
+@@ -2,7 +2,7 @@
+ #
+ # aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
+ #                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
+-#                 file1 [/test/aiodio/file2 ...]
++#                 file1 [$TMP/aiodio/file2 ...]
+ #       -a size in KB at which to align buffers
+ #       -b max number of iocbs to give io_submit at once
+ #       -c number of io contexts per file
+@@ -26,54 +26,54 @@
+ #       -x turn off thread stonewalling
+ #       -h this message
+ #
+-ADS1000 aio-stress -I500  -o2 -S -r4   /test/aiodio/file1
+-ADS1001 aio-stress -I500  -o2 -S -r8   /test/aiodio/file1
+-ADS1002 aio-stress -I500  -o2 -S -r16  /test/aiodio/file1
+-ADS1003 aio-stress -I500  -o2 -S -r32  -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1004 aio-stress -I500  -o2 -S -r64   /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1005 aio-stress -I500  -o3 -S -r4    /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1006 aio-stress -I500  -o3 -S -r8   -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1007 aio-stress -I500  -o3 -S -r16  -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1008 aio-stress -I500  -o3 -S -r32  -t4  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4
+-ADS1009 aio-stress -I500  -o3 -S -r64  -t4  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4
+-ADS1010 aio-stress -I500  -o3 -S -r128 -t4  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4
+-ADS1011 aio-stress -I500  -o3 -S -r256 -t8  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4 
+/test/aiodio/file5  /test/aiodio/file6 /test/aiodio/file7  
+/test/aiodio/file8
+-ADS1012 aio-stress -I500  -o3 -S -r512 -t8  /test/aiodio/junkfile 
+/test/aiodio/file2 /test/aiodio/file3  /test/aiodio/file4 
+/test/aiodio/file5  /test/aiodio/file6 /test/aiodio/file7  
+/test/aiodio/file8
+-ADS1013 aio-stress -I500  -o2 -O -r4    -t8  /test/aiodio/junkfile 
+/test/aiodio/file2 /test/aiodio/file3  /test/aiodio/file4 
+/test/aiodio/file5  /test/aiodio/file6 /test/aiodio/file7  
+/test/aiodio/file8
+-ADS1014 aio-stress -I500  -o2 -O -r8         /test/aiodio/file1 
+/test/aiodio/file2
+-ADS1015 aio-stress -I500  -o2 -O -r16        /test/aiodio/file1 
+/test/aiodio/file2
+-ADS1016 aio-stress -I500  -o2 -O -r32   -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1017 aio-stress -I500  -o2 -O -r64   -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1018 aio-stress -I500  -o3 -O -r4    -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1019 aio-stress -I500  -o3 -O -r8    -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1020 aio-stress -I500  -o3 -O -r16   -t2  /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1021 aio-stress -I500  -o3 -O -r32   -t4  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
+-ADS1022 aio-stress -I500  -o3 -O -r64   -t4  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
+-ADS1023 aio-stress -I500  -o3 -O -r128  -t4  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
+-ADS1024 aio-stress -I500  -o3 -O -r256  -t8  /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file4  /test/aiodio/file3  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1025 aio-stress -I500  -o3 -O -r512  -t8  /test/aiodio/junkfile 
+/test/aiodio/file2 /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1026 aio-stress -I500  -o0 -S -r4    -t8  /test/aiodio/junkfile 
+/test/aiodio/file2       /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1027 aio-stress -I500  -o0 -S -r8           /test/aiodio/file2
+-ADS1028 aio-stress -I500  -o0 -S -r16          /test/aiodio/file2
+-ADS1029 aio-stress -I500  -o0 -S -r32   -t2    /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1030 aio-stress -I500  -o0 -S -r64   -t2    /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1031 aio-stress -I500  -o1 -S -r4    -t2    /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1032 aio-stress -I500  -o1 -S -r8    -t2    /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1033 aio-stress -I500  -o1 -S -r16   -t2    /test/aiodio/junkfile 
+/test/aiodio/file2
+-ADS1034 aio-stress -I500  -o1 -S -r32   -t4    /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
+-ADS1035 aio-stress -I500  -o1 -S -r64   -t4    /test/aiodio/junkfile 
+/test/aiodio/file2     /test/aiodio/file7  
+/test/aiodio/file8                                                                               
 
-Hi, any comments on this?
+-ADS1036 aio-stress -I500  -o1 -S -r128  -t4    /test/aiodio/junkfile 
+/test/aiodio/file2     /test/aiodio/file7  
+/test/aiodio/file8                                                                               
 
-Thanks,
-Caspar
+-ADS1037 aio-stress -I500  -o1 -S -r256  -t8  /test/aiodio/junkfile 
+/test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file4  /test/aiodio/file3  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1038 aio-stress -I500  -o1 -S -r512  -t8  -x /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1039 aio-stress -I500  -o1 -O -r4    -t8  -x  /test/aiodio/junkfile 
+/test/aiodio/file2        /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1040 aio-stress -I500  -o1 -O -r8    -t2  -x /test/aiodio/junkfile 
+/test/aiodio/file2        
+-ADS1041 aio-stress -I500  -o1 -O -r16   -t2  -x  /test/aiodio/junkfile 
+/test/aiodio/file2        
+-ADS1042 aio-stress -I500  -o1 -O -r32   -t2   /test/aiodio/junkfile 
+/test/aiodio/file2     
+-ADS1043 aio-stress -I500  -o1 -O -r64   -t2   /test/aiodio/junkfile 
+/test/aiodio/file2     
+-ADS1044 aio-stress -I500  -o1 -O -r4    -t4   /test/aiodio/junkfile 
+/test/aiodio/file2        /test/aiodio/file7  
+/test/aiodio/file8                                                                               
+
+-ADS1045 aio-stress -I500  -o1 -O -r8    -t4   /test/aiodio/junkfile 
+/test/aiodio/file2     /test/aiodio/file7  
+/test/aiodio/file8                                                                               
+
+-ADS1046 aio-stress -I500  -o1 -O -r16   -t4   /test/aiodio/junkfile 
+/test/aiodio/file2     /test/aiodio/file7  
+/test/aiodio/file8                                                                               
+
+-ADS1047 aio-stress -I500  -o1 -O -r32   -t8   /test/aiodio/junkfile 
+/test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file4  /test/aiodio/file3  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1048 aio-stress -I500  -o1 -O -r64   -t8   /test/aiodio/junkfile 
+/test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1049 aio-stress -I500  -o1 -O -r128  -t8   /test/aiodio/junkfile 
+/test/aiodio/file2        /test/aiodio/file7  /test/aiodio/file8 
+/test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  
+/test/aiodio/file6
+-ADS1050 aio-stress -I500  -o1 -O -r256  -t2   /test/aiodio/junkfile 
+/test/aiodio/file2
++ADS1000 aio-stress -I500  -o2 -S -r4   $TMP/aiodio/file1
++ADS1001 aio-stress -I500  -o2 -S -r8   $TMP/aiodio/file1
++ADS1002 aio-stress -I500  -o2 -S -r16  $TMP/aiodio/file1
++ADS1003 aio-stress -I500  -o2 -S -r32  -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1004 aio-stress -I500  -o2 -S -r64   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1005 aio-stress -I500  -o3 -S -r4    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1006 aio-stress -I500  -o3 -S -r8   -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1007 aio-stress -I500  -o3 -S -r16  -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1008 aio-stress -I500  -o3 -S -r32  -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file3  $TMP/aiodio/file4
++ADS1009 aio-stress -I500  -o3 -S -r64  -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file3  $TMP/aiodio/file4
++ADS1010 aio-stress -I500  -o3 -S -r128 -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file3  $TMP/aiodio/file4
++ADS1011 aio-stress -I500  -o3 -S -r256 -t8  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file3  $TMP/aiodio/file4 
+$TMP/aiodio/file5  $TMP/aiodio/file6 $TMP/aiodio/file7  $TMP/aiodio/file8
++ADS1012 aio-stress -I500  -o3 -S -r512 -t8  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2 $TMP/aiodio/file3  $TMP/aiodio/file4 
+$TMP/aiodio/file5  $TMP/aiodio/file6 $TMP/aiodio/file7  $TMP/aiodio/file8
++ADS1013 aio-stress -I500  -o2 -O -r4    -t8  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2 $TMP/aiodio/file3  $TMP/aiodio/file4 
+$TMP/aiodio/file5  $TMP/aiodio/file6 $TMP/aiodio/file7  $TMP/aiodio/file8
++ADS1014 aio-stress -I500  -o2 -O -r8         $TMP/aiodio/file1 
+$TMP/aiodio/file2
++ADS1015 aio-stress -I500  -o2 -O -r16        $TMP/aiodio/file1 
+$TMP/aiodio/file2
++ADS1016 aio-stress -I500  -o2 -O -r32   -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1017 aio-stress -I500  -o2 -O -r64   -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1018 aio-stress -I500  -o3 -O -r4    -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1019 aio-stress -I500  -o3 -O -r8    -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1020 aio-stress -I500  -o3 -O -r16   -t2  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1021 aio-stress -I500  -o3 -O -r32   -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file7  $TMP/aiodio/file8
++ADS1022 aio-stress -I500  -o3 -O -r64   -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file7  $TMP/aiodio/file8
++ADS1023 aio-stress -I500  -o3 -O -r128  -t4  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file7  $TMP/aiodio/file8
++ADS1024 aio-stress -I500  -o3 -O -r256  -t8  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file4  $TMP/aiodio/file3  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1025 aio-stress -I500  -o3 -O -r512  -t8  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2 $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file3  $TMP/aiodio/file4  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1026 aio-stress -I500  -o0 -S -r4    -t8  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2       $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file3  $TMP/aiodio/file4  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1027 aio-stress -I500  -o0 -S -r8           $TMP/aiodio/file2
++ADS1028 aio-stress -I500  -o0 -S -r16          $TMP/aiodio/file2
++ADS1029 aio-stress -I500  -o0 -S -r32   -t2    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1030 aio-stress -I500  -o0 -S -r64   -t2    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1031 aio-stress -I500  -o1 -S -r4    -t2    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1032 aio-stress -I500  -o1 -S -r8    -t2    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1033 aio-stress -I500  -o1 -S -r16   -t2    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
++ADS1034 aio-stress -I500  -o1 -S -r32   -t4    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file7  $TMP/aiodio/file8
++ADS1035 aio-stress -I500  -o1 -S -r64   -t4    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     $TMP/aiodio/file7  
+$TMP/aiodio/file8                                                                               
+
++ADS1036 aio-stress -I500  -o1 -S -r128  -t4    $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     $TMP/aiodio/file7  
+$TMP/aiodio/file8                                                                               
+
++ADS1037 aio-stress -I500  -o1 -S -r256  -t8  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file4  $TMP/aiodio/file3  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1038 aio-stress -I500  -o1 -S -r512  -t8  -x $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file3  $TMP/aiodio/file4  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1039 aio-stress -I500  -o1 -O -r4    -t8  -x  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2        $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file3  $TMP/aiodio/file4  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1040 aio-stress -I500  -o1 -O -r8    -t2  -x $TMP/aiodio/junkfile 
+$TMP/aiodio/file2        
++ADS1041 aio-stress -I500  -o1 -O -r16   -t2  -x  $TMP/aiodio/junkfile 
+$TMP/aiodio/file2        
++ADS1042 aio-stress -I500  -o1 -O -r32   -t2   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     
++ADS1043 aio-stress -I500  -o1 -O -r64   -t2   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     
++ADS1044 aio-stress -I500  -o1 -O -r4    -t4   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2        $TMP/aiodio/file7  
+$TMP/aiodio/file8                                                                               
+
++ADS1045 aio-stress -I500  -o1 -O -r8    -t4   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     $TMP/aiodio/file7  
+$TMP/aiodio/file8                                                                               
+
++ADS1046 aio-stress -I500  -o1 -O -r16   -t4   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     $TMP/aiodio/file7  
+$TMP/aiodio/file8                                                                               
+
++ADS1047 aio-stress -I500  -o1 -O -r32   -t8   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2     $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file4  $TMP/aiodio/file3  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1048 aio-stress -I500  -o1 -O -r64   -t8   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2  $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file3  $TMP/aiodio/file4  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1049 aio-stress -I500  -o1 -O -r128  -t8   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2        $TMP/aiodio/file7  $TMP/aiodio/file8 
+$TMP/aiodio/file3  $TMP/aiodio/file4  $TMP/aiodio/file5  $TMP/aiodio/file6
++ADS1050 aio-stress -I500  -o1 -O -r256  -t2   $TMP/aiodio/junkfile 
+$TMP/aiodio/file2
+
 
 -- 
-Quality Assurance Associate (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
+ Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
+ Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
+ Tel : 04.76.29.73.14
 
-TEL: +86-10-62608150
-WEB: http://www.redhat.com/
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
+accelerate your shift to cloud computing
 http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
