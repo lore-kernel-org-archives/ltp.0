@@ -1,19 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1Owgs8-0005A2-BH
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 19:45:24 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Owgs7-0002cP-Ai
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 19:45:24 +0000
-Message-Id: <4C936C31020000E800068DF2@sinclair.provo.novell.com>
-Date: Fri, 17 Sep 2010 13:25:05 -0600
-From: "Murlin Wenzel" <mwenzel@novell.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=__PartF6DB2481.0__="
-Subject: [LTP] [Patch] enable hyperthreading tests
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <romansc@us.ibm.com>) id 1OvDFb-0003X5-O1
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 17:55:31 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvDFa-0001yU-RK
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 17:55:31 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8DHaqek020251
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 13:36:52 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o8DHt8qL1290478
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 13:55:09 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o8DHt88b032183
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 13:55:08 -0400
+Received: from d01ml605.pok.ibm.com (d01ml605.pok.ibm.com [9.56.227.91])
+	by d01av04.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o8DHt73A032153
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 13:55:07 -0400
+Message-ID: <OF2051634D.461B535C-ON8525779D.0061808E-8525779D.00626E02@us.ibm.com>
+From: Scott Romanowski <romansc@us.ibm.com>
+Date: Mon, 13 Sep 2010 13:55:06 -0400
+MIME-Version: 1.0
+Subject: Re: [LTP] hugeshmat
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,88 +37,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============6396821030928879119=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
---=__PartF6DB2481.0__=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+--===============6396821030928879119==
+Content-type: multipart/alternative; 
+	Boundary="0__=0ABBFD0EDFF2061E8f9e8a93df938690918c0ABBFD0EDFF2061E"
 Content-Disposition: inline
 
-Currently the hyperthreading tests will only run on 32bit (i386) os =
-versions.  HT is also supported on x86_64, so I changed defines to allow =
-either os version.
-
-Signed-off-by: Murlin Ray Wenzel <mwenzel@novell.com>
+--0__=0ABBFD0EDFF2061E8f9e8a93df938690918c0ABBFD0EDFF2061E
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
 
 
---=__PartF6DB2481.0__=
-Content-Type: text/plain; name="enable_ht.PATCH"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="enable_ht.PATCH"
 
-diff -urN ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_affin=
-ity/ht_affinity.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreadi=
-ng//ht_affinity/ht_affinity.c=0A--- ltp-full-20100831/testcases/kernel/sche=
-d/hyperthreading//ht_affinity/ht_affinity.c	2010-09-14 05:04:34.0000000=
-00 -0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading/=
-/ht_affinity/ht_affinity.c	2010-09-17 11:07:50.000000000 -0600=0A@@ =
--233,7 +233,7 @@=0A int main(int argc, char *argv[])=0A {=0A =0A-#ifndef =
-__i386__=0A+#if (!defined __i386__ && !defined __x86_64__)=0A 	tst_brkm(TC=
-ONF, NULL, "This test suite can only execute on i386 architecture.");=0A =
-#else=0A 	if (!check_ht_capability())=0Adiff -urN ltp-full-20100831/t=
-estcases/kernel/sched/hyperthreading//ht_affinity/ht_utils.c ltp-full-20100=
-831.mrw/testcases/kernel/sched/hyperthreading//ht_affinity/ht_utils.c=0A---=
- ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_affinity/ht_ut=
-ils.c	2010-09-14 05:04:34.000000000 -0600=0A+++ ltp-full-20100831.mrw/tes=
-tcases/kernel/sched/hyperthreading//ht_affinity/ht_utils.c	2010-09-17 =
-11:08:44.000000000 -0600=0A@@ -17,7 +17,7 @@=0A =0A inline void cpuid(int =
-op, int *eax, int *ebx, int *ecx, int *edx)=0A {=0A-#ifndef __i386__=0A+#if=
- (!defined __i386__ && !defined __x86_64__)=0A 	return;=0A #else=0A 	=
-__asm__("cpuid"=0Adiff -urN ltp-full-20100831/testcases/kernel/sched/hypert=
-hreading//ht_enabled/ht_enabled.c ltp-full-20100831.mrw/testcases/kernel/sc=
-hed/hyperthreading//ht_enabled/ht_enabled.c=0A--- ltp-full-20100831/testcas=
-es/kernel/sched/hyperthreading//ht_enabled/ht_enabled.c	2010-09-14 =
-05:04:34.000000000 -0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched=
-/hyperthreading//ht_enabled/ht_enabled.c	2010-09-17 10:59:00.0000000=
-00 -0600=0A@@ -22,7 +22,7 @@=0A int main(int argc, char *argv[])=0A {=0A 	=
-int ret_val =3D 1;=0A-#ifndef __i386__=0A+#if  (!defined __x86_64__ && =
-!defined __i386__)=0A 	tst_brkm(TCONF, NULL, "This test suite can only =
-execute on i386 architecture.");=0A #else=0A 		ret_val =3D =
-check_ht_capability();=0Adiff -urN ltp-full-20100831/testcases/kernel/sched=
-/hyperthreading//ht_enabled/ht_utils.c ltp-full-20100831.mrw/testcases/kern=
-el/sched/hyperthreading//ht_enabled/ht_utils.c=0A--- ltp-full-20100831/test=
-cases/kernel/sched/hyperthreading//ht_enabled/ht_utils.c	2010-09-14 =
-05:04:34.000000000 -0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched=
-/hyperthreading//ht_enabled/ht_utils.c	2010-09-17 11:06:02.000000000 =
--0600=0A@@ -20,7 +20,7 @@=0A =0A inline void cpuid(int op, int *eax, int =
-*ebx, int *ecx, int *edx)=0A {=0A-#ifndef __i386__=0A+#if (!defined =
-__i386__ && !defined __x86_64__)=0A 	return;=0A #else=0A 	__asm__("cp=
-uid"=0A@@ -47,8 +47,7 @@=0A 		/*printf("The processor in this =
-system supports HT\n");*/=0A 		return 1;=0A 	} else {=0A-		=
-/*printf("The processor in this system does not support=0A-		* =
-HT\n");*/=0A+		/*printf("The processor in this system does not =
-support HT\n");*/=0A 		return 0;=0A 	}=0A }=0Adiff -urN =
-ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_interrupt/ht_in=
-terrupt.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_i=
-nterrupt/ht_interrupt.c=0A--- ltp-full-20100831/testcases/kernel/sched/hype=
-rthreading//ht_interrupt/ht_interrupt.c	2010-09-14 05:04:34.000000000 =
--0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht=
-_interrupt/ht_interrupt.c	2010-09-17 11:10:08.000000000 -0600=0A@@ =
--111,7 +111,7 @@=0A {=0A 	tst_resm(TINFO, "Begin: HyperThreading =
-Interrupt");=0A =0A-#ifndef __i386__=0A+#if (!defined __i386__ && !defined =
-__x86_64__)=0A 	tst_brkm(TCONF, NULL, "This test suite can only execute on =
-i386 architecture.");=0A #else=0A 	if (!check_ht_capability())=0Adiff =
--urN ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_interrupt/=
-ht_utils.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_=
-interrupt/ht_utils.c=0A--- ltp-full-20100831/testcases/kernel/sched/hyperth=
-reading//ht_interrupt/ht_utils.c	2010-09-14 05:04:34.000000000 =
--0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht=
-_interrupt/ht_utils.c	2010-09-17 11:10:58.000000000 -0600=0A@@ -60,7 =
-+60,7 @@=0A =0A inline void cpuid(int op, int *eax, int *ebx, int *ecx, =
-int *edx)=0A {=0A-#ifndef __i386__=0A+#if (!defined __i386__ && !defined =
-__x86_64__)=0A 	return;=0A #else=0A 	__asm__("cpuid"=0A
---=__PartF6DB2481.0__=
+>hi,
+>    I am getting error in hugetlb testcase, most of the tests are fail=
+ing
+>because of the following error:-
+>
+>"could not read hugepages from /proc/meminfo"
+>hugeshmat tests are having this error.
+>please help me as how to resolve this error.
+>
+>--
+>Regards,
+>Arjit Sharma.
+
+I could not find that specific error in either the 20100228 or 20100831=
+
+releases.  There are similar ones in lib/system_specific_hugepages_info=
+.c
+though, in get_no_of_hugepages() and hugepages_size().  If you
+cat /proc/meminfo, do you see any lines for hugepages?  For example:
+
+HugePages_Total:    10
+HugePages_Free:     10
+HugePages_Rsvd:      0
+Hugepagesize:     2048 kB
+
+If the first and last lines are not there, you would get an error messa=
+ge
+like what you see.
+
+--
+Scott Romanowski
+978-899-5384
+BG125C=
+
+--0__=0ABBFD0EDFF2061E8f9e8a93df938690918c0ABBFD0EDFF2061E
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p>&gt;hi,<br>
+&gt;    I am getting error in hugetlb testcase, most of the tests are f=
+ailing<br>
+&gt;because of the following error:-<br>
+&gt;<br>
+&gt;&quot;could not read hugepages from /proc/meminfo&quot;<br>
+&gt;hugeshmat tests are having this error.<br>
+&gt;please help me as how to resolve this error.<br>
+&gt;<br>
+&gt;-- <br>
+&gt;Regards,<br>
+&gt;Arjit Sharma.<br>
+<br>
+I could not find that specific error in either the 20100228 or 20100831=
+ releases.  There are similar ones in lib/system_specific_hugepages_inf=
+o.c though, in get_no_of_hugepages() and hugepages_size().  If you cat =
+/proc/meminfo, do you see any lines for hugepages?  For example:<br>
+<br>
+HugePages_Total:    10<br>
+HugePages_Free:     10<br>
+HugePages_Rsvd:      0<br>
+Hugepagesize:     2048 kB<br>
+<br>
+If the first and last lines are not there, you would get an error messa=
+ge like what you see.<br>
+<br>
+--<br>
+Scott Romanowski<br>
+978-899-5384<br>
+BG125C</body></html>=
+
+--0__=0ABBFD0EDFF2061E8f9e8a93df938690918c0ABBFD0EDFF2061E--
+
+
+
+--===============6396821030928879119==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -113,9 +136,10 @@ Content-Disposition: inline
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
+accelerate your shift to cloud computing
 http://p.sf.net/sfu/novell-sfdev2dev
---=__PartF6DB2481.0__=
+
+--===============6396821030928879119==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -126,5 +150,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---=__PartF6DB2481.0__=--
+--===============6396821030928879119==--
+
 
