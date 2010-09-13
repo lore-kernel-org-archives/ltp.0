@@ -1,24 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OvP77-00049u-Sh
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:35:33 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OvP75-00030f-Mv
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:35:33 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <FABBC0A4-D041-407C-BFBB-2E6F626B5B56@gmail.com>
-References: <1283625550.5303.5.camel@subratamodak.linux.ibm.com>
-	<1284418964.3415.10.camel@plars-t500>
-	<FABBC0A4-D041-407C-BFBB-2E6F626B5B56@gmail.com>
-Date: Tue, 14 Sep 2010 12:05:22 +0530
-Message-Id: <1284446122.5001.16.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [ANNOUNCE] Linux Test Project for AUGUST 2010 has
-	been	released
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <romansc@us.ibm.com>) id 1OvFEk-0003kK-5L
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 20:02:46 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvFEh-00006Y-4l
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 20:02:44 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e9.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8DJhmZR014368
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 15:43:48 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o8DK2PTo1360054
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 16:02:25 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o8DK2Omf024277
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 17:02:25 -0300
+Received: from d01ml605.pok.ibm.com (d01ml605.pok.ibm.com [9.56.227.91])
+	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o8DK2Osb024253
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 17:02:24 -0300
+Message-ID: <OFF1F0C1E2.5151E428-ON8525779D.006DDE26-8525779D.006E152F@us.ibm.com>
+From: Scott Romanowski <romansc@us.ibm.com>
+Date: Mon, 13 Sep 2010 16:02:23 -0400
+MIME-Version: 1.0
+Subject: [LTP] 20100831 bug and patch in
+	testcases/kernel/syscalls/lchown/lchown02.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,58 +38,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8611882152915701128=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, 2010-09-13 at 18:45 -0700, Garrett Cooper wrote:
-> On Sep 13, 2010, at 4:02 PM, Paul Larson wrote:
-> 
-> > On Sun, 2010-09-05 at 00:09 +0530, Subrata Modak wrote:
-> >> Hi,
-> >> 
-> >> LTP for August 2010 has been released. Please pick your copy from:
-> >> http://ltp.sourceforge.net/,
-> > Do we have a well-defined release process that is happening for each
-> > release?  There were a few problems and differences with the August
-> > release.  None of these are really huge, but they do tend to break
-> > things for people that rely on the release tarballs for automated tests.
-> > The fact that LTP has gone to releasing once every two months also makes
-> > it more of a problem, since those affected will either need to make
-> > changes that they'll likely need to roll back in two months, or roll
-> > their own tarball.
-> > 
-> > The fact that make autotools had not been run has already been pointed
-> > out.  The release was also done only as a .tgz rather than bzip2 like
-> > the previous release.  I don't really care so much on that, but
-> > consistency would be good.  Also the .git directory was left behind,
-> > making the download size much larger than it should have been.
+--===============8611882152915701128==
+Content-type: multipart/alternative; 
+	Boundary="0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6"
+Content-Disposition: inline
 
-Hmm. My mistake. I will following the bzip2 pattern and remove the .git
-and make sure than make autotools is done for this release.
+--0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6
+Content-type: text/plain; charset=US-ASCII
 
-> > 
-> > Any chance there might be an interim release to correct these?
 
-I will try for this in another day or 2.
+The contents of an unitialized automatic array are undefined, so start
+copying string to it with strcpy() not strcat().
 
-Regards--
-Subrata
+diff testcases/kernel/syscalls/lchown/lchown02.c
+--- a/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 14:51:41
+2010 -0400
++++ b/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 15:59:04
+2010 -0400
+@@ -343,7 +343,7 @@
+ 	strcat(Path_name, "/" TEST_FILE1);
 
-> 
-> 	I'll create the necessary Makefile targets for this. Subrata needs to handle the rest.
-> Thanks,
-> -Garrett
+ 	/* Get the command name to be executed as setuid to root */
+-	strcat((char *)Cmd_buffer, main_test_dir);
++	strcpy((char *)Cmd_buffer, main_test_dir);
+ 	strcat((char *)Cmd_buffer, (const char *)"/create_link ");
+ 	strcat((char *)Cmd_buffer, Path_name);
 
+--
+Scott Romanowski
+--0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+
+<html><body>
+<p>The contents of an unitialized automatic array are undefined, so start copying string to it with strcpy() not strcat().<br>
+<br>
+diff testcases/kernel/syscalls/lchown/lchown02.c<br>
+--- a/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 14:51:41 2010 -0400<br>
++++ b/testcases/kernel/syscalls/lchown/lchown02.c	Mon Sep 13 15:59:04 2010 -0400<br>
+@@ -343,7 +343,7 @@<br>
+ 	strcat(Path_name, &quot;/&quot; TEST_FILE1);<br>
+ <br>
+ 	/* Get the command name to be executed as setuid to root */<br>
+-	strcat((char *)Cmd_buffer, main_test_dir);<br>
++	strcpy((char *)Cmd_buffer, main_test_dir);<br>
+ 	strcat((char *)Cmd_buffer, (const char *)&quot;/create_link &quot;);<br>
+ 	strcat((char *)Cmd_buffer, Path_name);<br>
+ <br>
+--<br>
+Scott Romanowski<br>
+</body></html>
+--0__=0ABBFD0EDFFE58B68f9e8a93df938690918c0ABBFD0EDFFE58B6--
+
+
+
+--===============8611882152915701128==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
+accelerate your shift to cloud computing
 http://p.sf.net/sfu/novell-sfdev2dev
+
+--===============8611882152915701128==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8611882152915701128==--
+
+
