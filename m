@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lizf@cn.fujitsu.com>) id 1OqyD0-0008HQ-Lb
-	for ltp-list@lists.sourceforge.net; Thu, 02 Sep 2010 01:03:18 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OvDNV-0004CV-2f
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 18:03:41 +0000
+Received: from mail-px0-f175.google.com ([209.85.212.175])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OqyCy-0003a6-Ui
-	for ltp-list@lists.sourceforge.net; Thu, 02 Sep 2010 01:03:18 +0000
-Message-ID: <4C7EF8FD.6070005@cn.fujitsu.com>
-Date: Thu, 02 Sep 2010 09:08:13 +0800
-From: Li Zefan <lizf@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4C73452A.3020006@cn.fujitsu.com>
-	<AANLkTi=Dky57c3S+NS_adO9Z-Tytp0d0hcyxPJA_DqrM@mail.gmail.com>
-In-Reply-To: <AANLkTi=Dky57c3S+NS_adO9Z-Tytp0d0hcyxPJA_DqrM@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Add ftrace-stress-test to LTP
+	id 1OvDNS-0003NB-R1
+	for ltp-list@lists.sourceforge.net; Mon, 13 Sep 2010 18:03:41 +0000
+Received: by pxi11 with SMTP id 11so2498644pxi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 13 Sep 2010 11:03:33 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <4C8E3A14.8090106@suse.de>
+Date: Mon, 13 Sep 2010 11:03:30 -0700
+Message-Id: <273E6FBC-D212-4715-BDF0-B3F1E60540AC@gmail.com>
+References: <4C8E224C.7060204@suse.de>
+	<20100913165854.GA28597@hannu-debian.research.nokia.com>
+	<4C8E3A14.8090106@suse.de>
+Subject: Re: [LTP] no configure file in source
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,67 +32,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Frederic Weisbecker <fweisbec@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Eugene Teo <eugene@redhat.com>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>
+To: Yi Xu <yxu@suse.de>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
->> --- /dev/null
->> +++ b/testcases/kernel/tracing/ftrace_stress_test/ftrace_kvercmp.c
->> @@ -0,0 +1,37 @@
->> +#include <unistd.h>
->> +#include <stdlib.h>
->> +#include <stdio.h>
->> +#include <string.h>
->> +#include <sys/utsname.h>
->> +
->> +int main(int argc, char **argv)
->> +{
->> +       struct utsname uval;
->> +       int k1, k2, k3;
->> +       int a1, a2, a3;
->> +       unsigned long r1, r2;
->> +
->> +       if (argc != 4) {
->> +               fprintf(stderr, "Wrong arguments!\n");
->> +               return -1;
->> +       }
->> +
->> +       a1 = strtol(argv[1], NULL, 10);
->> +       a2 = strtol(argv[2], NULL, 10);
->> +       a3 = strtol(argv[3], NULL, 10);
->> +
->> +       uname(&uval);
->> +
->> +       sscanf(uval.release, "%d.%d.%d", &k1, &k2, &k3);
->> +
->> +       r1 = (a1 << 16) + (a2 << 8) + a3;
->> +       r2 = (k1 << 16) + (k2 << 8) + k3;
->> +
->> +       if (r1 > r2)
->> +               return 0;
->> +       else if (r1 == r2)
->> +               return 1;
->> +       else
->> +               return 2;
->> +}
+On Sep 13, 2010, at 7:49 AM, Yi Xu wrote:
+
+> thanks a lot. :)
 > 
-> This application could be replaced with tst_kvercmp out of the box;
-> there's no reason why another program needs to be created for this.
-> 
+> On 09/13/2010 06:58 PM, Hannu Heikkinen wrote:
+>> make autotools
 
-This stress test was not written for LTP originally, so I had to write
-this ftrace_kvercmp.
-
-But I do have a reason to keep this. That is, using tst_kvercmp will
-make it harder to run this test without LTP.
-
-Anyway I'll remove it.
+Read INSTALL.
+-Garrett
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
