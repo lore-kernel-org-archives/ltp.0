@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1OxhAX-0005nl-4m
-	for ltp-list@lists.sourceforge.net; Mon, 20 Sep 2010 14:16:33 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OxhAT-0005Qs-UZ
-	for ltp-list@lists.sourceforge.net; Mon, 20 Sep 2010 14:16:31 +0000
-Message-Id: <4C971855020000E800068F16@sinclair.provo.novell.com>
-Date: Mon, 20 Sep 2010 08:16:21 -0600
-From: "Murlin Wenzel" <mwenzel@novell.com>
-References: <4C936C31020000E800068DF2@sinclair.provo.novell.com>
-	<AANLkTimUonwvA6PRiTzM01aC6EUf3SMp+ACfG0TJci2S@mail.gmail.com>
-In-Reply-To: <AANLkTimUonwvA6PRiTzM01aC6EUf3SMp+ACfG0TJci2S@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=__Part7A57ACA5.1__="
-Subject: Re: [LTP] [Patch] enable hyperthreading tests
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OvOtl-0006Jc-By
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:21:45 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OvOtk-0003Ni-J1
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:21:45 +0000
+Received: by iwn2 with SMTP id 2so7164345iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 13 Sep 2010 23:21:39 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1284443060.5001.6.camel@subratamodak.linux.ibm.com>
+References: <000001cb50aa$ddf34080$99d9c180$@co.jp>
+	<1284443060.5001.6.camel@subratamodak.linux.ibm.com>
+Date: Mon, 13 Sep 2010 23:21:39 -0700
+Message-ID: <AANLkTikd6rPuh8ti4iSQcf4ks1J4J+RuL=ZnkraCHOxg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] About "pthread_attr_setstack/2-1" and
+ "pthread_attr_setstacksize/2-1" testsets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,132 +29,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list <ltp-list@lists.sf.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
---=__Part7A57ACA5.1__=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Mon, Sep 13, 2010 at 10:44 PM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> I see the following commits already:
+>
+> 414747ced26d943a22a3f767deb7f5b4658adb6e
+> =A0 =A0 =A0 =A0Date: =A0 Sun Aug 29 03:32:18 2010 -0700
+>
+> and
+>
+> 228b250d23f36ddc95cb25179441420bea9b8bdd
+> =A0 =A0 =A0 =A0Date: =A0 Sun Aug 22 15:02:43 2010 -0700
 
->>> On 9/17/2010 at 03:22 PM, in message
-<AANLkTimUonwvA6PRiTzM01aC6EUf3SMp+ACfG0TJci2S@mail.gmail.com>, Garrett =
-Cooper
-<yanegomi@gmail.com> wrote:=20
-> On Fri, Sep 17, 2010 at 12:25 PM, Murlin Wenzel <mwenzel@novell.com> =
-wrote:
->> Currently the hyperthreading tests will only run on 32bit (i386) os=20
-> versions.  HT is also supported on x86_64, so I changed defines to =
-allow=20
-> either os version.
->>
->> Signed-off-by: Murlin Ray Wenzel <mwenzel@novell.com>
->=20
-> Seems sane. Could you change `i386 architecture' to `x86 architecture'=20=
+    Following up on this, I've requested that POSIX add this
+functionality to BASE, but it's fallen on deaf ears. I need to attend
+the thursday 8am meetings in order to become more influential in this
+area.
+Thanks,
+-Garrett
 
-> please?
-> Thanks,
-> -Garrett
-
-Added requested change from i386 to x86 in print statements.
-
-Murlin
-
-
-
-
---=__Part7A57ACA5.1__=
-Content-Type: text/plain; name="enable_ht.PATCH"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="enable_ht.PATCH"
-
-diff -urN ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_affin=
-ity/ht_affinity.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreadi=
-ng//ht_affinity/ht_affinity.c=0A--- ltp-full-20100831/testcases/kernel/sche=
-d/hyperthreading//ht_affinity/ht_affinity.c	2010-09-14 05:04:34.0000000=
-00 -0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading/=
-/ht_affinity/ht_affinity.c	2010-09-20 08:09:29.000000000 -0600=0A@@ =
--233,8 +233,8 @@=0A int main(int argc, char *argv[])=0A {=0A =0A-#ifndef =
-__i386__=0A-	tst_brkm(TCONF, NULL, "This test suite can only execute on =
-i386 architecture.");=0A+#if (!defined __i386__ && !defined __x86_64__)=0A+=
-	tst_brkm(TCONF, NULL, "This test suite can only execute on x86 =
-architecture.");=0A #else=0A 	if (!check_ht_capability())=0A 	{=0Adiff =
--urN ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_affinity/h=
-t_utils.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_a=
-ffinity/ht_utils.c=0A--- ltp-full-20100831/testcases/kernel/sched/hyperthre=
-ading//ht_affinity/ht_utils.c	2010-09-14 05:04:34.000000000 -0600=0A+++ =
-ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_affinity/ht=
-_utils.c	2010-09-17 11:08:44.000000000 -0600=0A@@ -17,7 +17,7 @@=0A =
-=0A inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx)=0A =
-{=0A-#ifndef __i386__=0A+#if (!defined __i386__ && !defined __x86_64__)=0A =
-	return;=0A #else=0A 	__asm__("cpuid"=0Adiff -urN ltp-full-201008=
-31/testcases/kernel/sched/hyperthreading//ht_enabled/ht_enabled.c =
-ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_enabled/ht_=
-enabled.c=0A--- ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht=
-_enabled/ht_enabled.c	2010-09-14 05:04:34.000000000 -0600=0A+++ =
-ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_enabled/ht_=
-enabled.c	2010-09-20 08:10:44.000000000 -0600=0A@@ -22,8 +22,8 @@=0A =
-int main(int argc, char *argv[])=0A {=0A 	int ret_val =3D 1;=0A-#ifnd=
-ef __i386__=0A-	tst_brkm(TCONF, NULL, "This test suite can only execute on =
-i386 architecture.");=0A+#if  (!defined __x86_64__ && !defined __i386__)=0A=
-+	tst_brkm(TCONF, NULL, "This test suite can only execute on x86 =
-architecture.");=0A #else=0A 		ret_val =3D check_ht_capability();=
-=0A #endif=0Adiff -urN ltp-full-20100831/testcases/kernel/sched/hyperthread=
-ing//ht_enabled/ht_utils.c ltp-full-20100831.mrw/testcases/kernel/sched/hyp=
-erthreading//ht_enabled/ht_utils.c=0A--- ltp-full-20100831/testcases/kernel=
-/sched/hyperthreading//ht_enabled/ht_utils.c	2010-09-14 05:04:34.0000000=
-00 -0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading/=
-/ht_enabled/ht_utils.c	2010-09-17 11:06:02.000000000 -0600=0A@@ -20,7 =
-+20,7 @@=0A =0A inline void cpuid(int op, int *eax, int *ebx, int *ecx, =
-int *edx)=0A {=0A-#ifndef __i386__=0A+#if (!defined __i386__ && !defined =
-__x86_64__)=0A 	return;=0A #else=0A 	__asm__("cpuid"=0A@@ -47,8 +47,7 =
-@@=0A 		/*printf("The processor in this system supports =
-HT\n");*/=0A 		return 1;=0A 	} else {=0A-		/*printf("T=
-he processor in this system does not support=0A-		* =
-HT\n");*/=0A+		/*printf("The processor in this system does not =
-support HT\n");*/=0A 		return 0;=0A 	}=0A }=0Adiff -urN =
-ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_interrupt/ht_in=
-terrupt.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_i=
-nterrupt/ht_interrupt.c=0A--- ltp-full-20100831/testcases/kernel/sched/hype=
-rthreading//ht_interrupt/ht_interrupt.c	2010-09-14 05:04:34.000000000 =
--0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht=
-_interrupt/ht_interrupt.c	2010-09-20 08:11:40.000000000 -0600=0A@@ =
--111,8 +111,8 @@=0A {=0A 	tst_resm(TINFO, "Begin: HyperThreading =
-Interrupt");=0A =0A-#ifndef __i386__=0A-	tst_brkm(TCONF, NULL, =
-"This test suite can only execute on i386 architecture.");=0A+#if =
-(!defined __i386__ && !defined __x86_64__)=0A+	tst_brkm(TCONF, NULL, =
-"This test suite can only execute on x86 architecture.");=0A #else=0A 	if =
-(!check_ht_capability())=0A 	{=0Adiff -urN ltp-full-20100831/testcases/k=
-ernel/sched/hyperthreading//ht_interrupt/ht_utils.c ltp-full-20100831.mrw/t=
-estcases/kernel/sched/hyperthreading//ht_interrupt/ht_utils.c=0A--- =
-ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_interrupt/ht_ut=
-ils.c	2010-09-14 05:04:34.000000000 -0600=0A+++ ltp-full-20100831.mrw/tes=
-tcases/kernel/sched/hyperthreading//ht_interrupt/ht_utils.c	2010-09-17 =
-11:10:58.000000000 -0600=0A@@ -60,7 +60,7 @@=0A =0A inline void cpuid(int =
-op, int *eax, int *ebx, int *ecx, int *edx)=0A {=0A-#ifndef __i386__=0A+#if=
- (!defined __i386__ && !defined __x86_64__)=0A 	return;=0A #else=0A 	=
-__asm__("cpuid"=0A
---=__Part7A57ACA5.1__=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
---=__Part7A57ACA5.1__=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---=__Part7A57ACA5.1__=--
-
