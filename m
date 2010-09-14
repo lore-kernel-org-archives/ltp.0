@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Feng.Gao@windriver.com>) id 1OqfUT-0002CU-4y
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 05:04:05 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OqfUP-0005cG-NJ
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 05:04:05 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Wed, 1 Sep 2010 07:03:51 +0200
-Message-ID: <52CF90264091A14888078A031D780F430111B8E7@ism-mail03.corp.ad.wrs.com>
-References: <52CF90264091A14888078A031D780F430111B8E4@ism-mail03.corp.ad.wrs.com>
-	<AANLkTi=RhCp1zfX4=CcONBysQ2O04gMakYiJpXZi_9RU@mail.gmail.com>
-From: "Gao, Feng" <Feng.Gao@windriver.com>
-Subject: Re: [LTP] [PATCH]Modify the cacheflush01 test case
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OvKac-0003aG-Lt
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 01:45:42 +0000
+Received: from mail-gx0-f174.google.com ([209.85.161.174])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OvKab-00037D-OQ
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 01:45:42 +0000
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <1284418964.3415.10.camel@plars-t500>
+Date: Mon, 13 Sep 2010 18:45:32 -0700
+Message-Id: <FABBC0A4-D041-407C-BFBB-2E6F626B5B56@gmail.com>
+References: <1283625550.5303.5.camel@subratamodak.linux.ibm.com>
+	<1284418964.3415.10.camel@plars-t500>
+Subject: Re: [LTP] [ANNOUNCE] Linux Test Project for AUGUST 2010 has been
+	released
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,217 +26,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0479114828357191821=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Paul Larson <paul.larson@canonical.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-This is a multi-part message in MIME format.
+On Sep 13, 2010, at 4:02 PM, Paul Larson wrote:
 
---===============0479114828357191821==
-Content-class: urn:content-classes:message
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01CB4993.117A6D85"
+> On Sun, 2010-09-05 at 00:09 +0530, Subrata Modak wrote:
+>> Hi,
+>> 
+>> LTP for August 2010 has been released. Please pick your copy from:
+>> http://ltp.sourceforge.net/,
+> Do we have a well-defined release process that is happening for each
+> release?  There were a few problems and differences with the August
+> release.  None of these are really huge, but they do tend to break
+> things for people that rely on the release tarballs for automated tests.
+> The fact that LTP has gone to releasing once every two months also makes
+> it more of a problem, since those affected will either need to make
+> changes that they'll likely need to roll back in two months, or roll
+> their own tarball.
+> 
+> The fact that make autotools had not been run has already been pointed
+> out.  The release was also done only as a .tgz rather than bzip2 like
+> the previous release.  I don't really care so much on that, but
+> consistency would be good.  Also the .git directory was left behind,
+> making the download size much larger than it should have been.
+> 
+> Any chance there might be an interim release to correct these?
 
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CB4993.117A6D85
-Content-Type: text/plain;
-	charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-I have tested cacheflush01 testcase in Linux 2.6.27.45 kernel, if the =
-cache of sys_cacheflush is 0, return value also is Success. It is same =
-with the Linux 2.6.34.1.
-
-I have check the kernel code, from the Linux 2.6.11, sys_cacheflush =
-function began to ignore the cache argument and never return EINVAL.
-The function of cacheflush01 is checking if the sys_cacheflush's return =
-value is correct. if there is no EINVAL as the return value in the =
-kernel code, it is unnecessary to checking it. Otherwise the case will =
-fail, tester will waste time to recheck this case and sys_cacheflush =
-function.
-
-BR,
-Feng Gao
-
------Original Message-----
-From: Garrett Cooper [mailto:yanegomi@gmail.com]
-Sent: 2010-8-31  23:46
-To: Gao, Feng
-Cc: ltp-list
-Subject: Re: [LTP] [PATCH]Modify the cacheflush01 test case
-=20
-2010/8/31 Gao, Feng <Feng.Gao@windriver.com>:
-> Hi,
->
-> The cacheflush system call does not return EINVAL in the latest Linux
-> kernel. see the link:
-> A related patch about the cacheflush function:
-> http://lkml.org/lkml/2009/4/9/203
-> But Ralf had refused this patch:
-> http://www.spinics.net/lists/linux-man/msg00906.html
-> cacheflush01 testcase checks if the return value is EINVAL when the =
-cache
-> argument is not one of ICACHE, BCACHE or DCACHE. So it will fail in =
-all
-> boards.
->
-> In this modification, checking return value SUCCESS will be added, =
-instead
-> of checking EINVAL
-
-I got the first email :).
-
-I am always hesitant committing patches like these because unless
-there is documentation that clearly states "these are the requirements
-for syscall/libcall foo", it can change at a later day without notice
-and we'll work ourselves into this funk again.
-
-Also, what happens when you execute this code on earlier kernels? I
-hate getting emails from other users stating "the commit you did for
-the test is broke my architecture foo on distro bar -- here's a patch
-to fix it!".
-
-The syscall needs to be fixed. If the cache argument is ignored, it
-needs to be removed. Period. And the syscall needs to be renamed to
-something else to avoid breaking backwards compatibility (which is
-essentially what happened here).
-
-FWIW we lack positive tests for this syscall, and we really should
-have some (other than just nuking the entire contents of the syscall
-directory).
-
+	I'll create the necessary Makefile targets for this. Subrata needs to handle the rest.
 Thanks,
 -Garrett
-
-
-------_=_NextPart_001_01CB4993.117A6D85
-Content-Type: text/html;
-	charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dgb2312">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7654.12">
-<TITLE>RE: [LTP] [PATCH]Modify the cacheflush01 test case</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Hi,<BR>
-<BR>
-I have tested cacheflush01 testcase in Linux 2.6.27.45 kernel, if the =
-cache of sys_cacheflush is 0, return value also is Success. It is same =
-with the Linux 2.6.34.1.<BR>
-<BR>
-I have check the kernel code, from the Linux 2.6.11, sys_cacheflush =
-function began to ignore the cache argument and never return EINVAL.<BR>
-The function of cacheflush01 is checking if the sys_cacheflush's return =
-value is correct. if there is no EINVAL as the return value in the =
-kernel code, it is unnecessary to checking it. Otherwise the case will =
-fail, tester will waste time to recheck this case and sys_cacheflush =
-function.<BR>
-<BR>
-BR,<BR>
-Feng Gao<BR>
-<BR>
------Original Message-----<BR>
-From: Garrett Cooper [<A =
-HREF=3D"mailto:yanegomi@gmail.com">mailto:yanegomi@gmail.com</A>]<BR>
-Sent: 2010-8-31&nbsp; 23:46<BR>
-To: Gao, Feng<BR>
-Cc: ltp-list<BR>
-Subject: Re: [LTP] [PATCH]Modify the cacheflush01 test case<BR>
-<BR>
-2010/8/31 Gao, Feng &lt;Feng.Gao@windriver.com&gt;:<BR>
-&gt; Hi,<BR>
-&gt;<BR>
-&gt; The cacheflush system call does not return EINVAL in the latest =
-Linux<BR>
-&gt; kernel. see the link:<BR>
-&gt; A related patch about the cacheflush function:<BR>
-&gt; <A =
-HREF=3D"http://lkml.org/lkml/2009/4/9/203">http://lkml.org/lkml/2009/4/9/=
-203</A><BR>
-&gt; But Ralf had refused this patch:<BR>
-&gt; <A =
-HREF=3D"http://www.spinics.net/lists/linux-man/msg00906.html">http://www.=
-spinics.net/lists/linux-man/msg00906.html</A><BR>
-&gt; cacheflush01 testcase checks if the return value is EINVAL when the =
-cache<BR>
-&gt; argument is not one of ICACHE, BCACHE or DCACHE. So it will fail in =
-all<BR>
-&gt; boards.<BR>
-&gt;<BR>
-&gt; In this modification, checking return value SUCCESS will be added, =
-instead<BR>
-&gt; of checking EINVAL<BR>
-<BR>
-I got the first email :).<BR>
-<BR>
-I am always hesitant committing patches like these because unless<BR>
-there is documentation that clearly states &quot;these are the =
-requirements<BR>
-for syscall/libcall foo&quot;, it can change at a later day without =
-notice<BR>
-and we'll work ourselves into this funk again.<BR>
-<BR>
-Also, what happens when you execute this code on earlier kernels? I<BR>
-hate getting emails from other users stating &quot;the commit you did =
-for<BR>
-the test is broke my architecture foo on distro bar -- here's a =
-patch<BR>
-to fix it!&quot;.<BR>
-<BR>
-The syscall needs to be fixed. If the cache argument is ignored, it<BR>
-needs to be removed. Period. And the syscall needs to be renamed to<BR>
-something else to avoid breaking backwards compatibility (which is<BR>
-essentially what happened here).<BR>
-<BR>
-FWIW we lack positive tests for this syscall, and we really should<BR>
-have some (other than just nuking the entire contents of the syscall<BR>
-directory).<BR>
-<BR>
-Thanks,<BR>
--Garrett<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01CB4993.117A6D85--
-
-
---===============0479114828357191821==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
---===============0479114828357191821==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0479114828357191821==--
-
