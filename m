@@ -1,26 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dthite@mvista.com>) id 1OspR5-0001mj-Tp
-	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 04:05:31 +0000
-Received: from mail-qw0-f47.google.com ([209.85.216.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OspR1-0003nb-P8
-	for ltp-list@lists.sourceforge.net; Tue, 07 Sep 2010 04:05:31 +0000
-Received: by mail-qw0-f47.google.com with SMTP id 26so4912418qwa.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Sep 2010 21:05:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTinDeS1ODKGwEtwRed0H57e3vyzjqQB8nnv_Cn4G@mail.gmail.com>
-References: <AANLkTi=ShuJOPjaywptWgDaFFG9zhb_uk=_42bpwSavA@mail.gmail.com>
-	<AANLkTi=9PFi3k0eEyYO_SvwBsOK77CBECXkrWLy7rkhY@mail.gmail.com>
-	<AANLkTinAQARYsEWv6jbezg=-J=xBZM3UXnWfOSz++Lto@mail.gmail.com>
-	<AANLkTinDeS1ODKGwEtwRed0H57e3vyzjqQB8nnv_Cn4G@mail.gmail.com>
-Date: Tue, 7 Sep 2010 09:35:27 +0530
-Message-ID: <AANLkTimtsukr=vdq9TRL62LUdfdcy2k79cTvEJQ1xmi+@mail.gmail.com>
-From: Deepti Thite <dthite@in.mvista.com>
-Subject: Re: [LTP] [PATCH] ld01
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OvOF6-0003Qs-5K
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:39:44 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvOF5-0004Ew-2c
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:39:44 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e33.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8E5YYKZ015830
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 23:34:34 -0600
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
+	id o8E5db0k217602
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 23:39:37 -0600
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o8E5dbHV025137
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 23:39:37 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1284442695.5001.0.camel@subratamodak.linux.ibm.com>
+References: <OF5A6A8369.7F81ED8A-ON8525779D.0052192C-8525779D.0053C7E9@us.ibm.com>
+	<1284442695.5001.0.camel@subratamodak.linux.ibm.com>
+Date: Tue, 14 Sep 2010 11:09:34 +0530
+Message-Id: <1284442774.5001.2.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] 20100831 release msgctl10.c bug and patch
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,205 +38,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1622623144414066333=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
-
---===============1622623144414066333==
-Content-Type: multipart/alternative; boundary=000feaf013add2c54c048fa38162
-
---000feaf013add2c54c048fa38162
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-Hi Garrett,
-
-We execute ltp tests on different architectures like arm, mips, etc., hence
-hardcoding the absolute path  will not work on all  architectures. So I cam=
-e
-up with the patch as a generic solution to it.
-
-Regards
-Deepti
-
-On Tue, Sep 7, 2010 at 12:38 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-
-> On Wed, Sep 1, 2010 at 2:49 AM, Deepti Thite <dthite@in.mvista.com> wrote=
-:
-> > Hi Garrett,
-> >
-> > The actual error messages which I got were:
-> >
-> > + diff -iw /tmp/ld-6569/errmsg.out /tmp/ld-6569/errmsg.exp
-> > --- /tmp/ld-6569/errmsg.out     Fri Aug 27 15:42:16 2010
-> >
-> > +++ /tmp/ld-6569/errmsg.exp     Fri Aug 27 15:42:16 2010
-> > @@ -1,3 +1,3 @@
-> > -arm-none-linux-gnueabi-gcc: x.obj: No such file or directory
-> > -arm-none-linux-gnueabi-gcc: y.obj: No such file or directory
-> > -arm-none-linux-gnueabi-gcc: no input files
-> >
-> > +gcc: x.obj: No such file or directory
-> > +gcc: y.obj: No such file or directory
-> > +gcc: No input files
-> > + [ 1 -eq 0 ]
-> > + echo FAIL -  ld failed to give expected error msg
-> > FAIL -  ld failed to give expected error msg
-> >
-> > We are getting this issue as the native gcc is actually a shell script
-> which
-> > calls
-> > arm-none-linux-gnueabi-gcc with compiler flags.
-> > So we are getting the actual output but as the two files dont match ld0=
-1
-> > fails.
-> > The patch attached in previous mail will not compare two files but will
-> grep
-> > the expected output.
-> >
-> > Regards
-> > Deepti Thite <dthite@mvista.com>
-> >
-> > On Tue, Aug 31, 2010 at 9:18 PM, Garrett Cooper <yanegomi@gmail.com>
-> wrote:
-> >>
-> >> On Tue, Aug 31, 2010 at 2:47 AM, Deepti Thite <dthite@in.mvista.com>
-> >> wrote:
-> >> > ld01 test fails as native compilers don=92t match in the expected an=
-d
-> >> > output
-> >> > file.
-> >> >
-> >> > The attached patch will grep expected results from the output file
-> >> > generated
-> >> > and will not create an expected results file.
-> >>
-> >> What is the actual error message that gets printed out by ld(1)?
-> >> Thanks,
->
-> Here's a solution that doesn't require any change:
->
-> export CC=3D'absolute-path-to-gcc'
-> export LD=3D'absolute-path-to-ld'
-> runltp # ...
->
-> this equals zero change in our code, and ensures that the absolute
-> name for the compiler is correct.
->
-> Thanks,
-> -Garrett
->
-
---000feaf013add2c54c048fa38162
-Content-Type: text/html; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-Hi Garrett,<br><br>We execute ltp tests on different architectures like arm=
-, mips, etc., hence hardcoding the absolute path=A0 will not work on all=A0=
- architectures. So I came up with the patch as a generic solution to it.<br=
->
-<br>Regards <br>Deepti<br><br><div class=3D"gmail_quote">On Tue, Sep 7, 201=
-0 at 12:38 AM, Garrett Cooper <span dir=3D"ltr">&lt;<a href=3D"mailto:yaneg=
-omi@gmail.com">yanegomi@gmail.com</a>&gt;</span> wrote:<br><blockquote clas=
-s=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, 204, 204); margi=
-n: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-<div><div></div><div class=3D"h5">On Wed, Sep 1, 2010 at 2:49 AM, Deepti Th=
-ite &lt;<a href=3D"mailto:dthite@in.mvista.com">dthite@in.mvista.com</a>&gt=
-; wrote:<br>
-&gt; Hi Garrett,<br>
-&gt;<br>
-&gt; The actual error messages which I got were:<br>
-&gt;<br>
-&gt; + diff -iw /tmp/ld-6569/errmsg.out /tmp/ld-6569/errmsg.exp<br>
-&gt; --- /tmp/ld-6569/errmsg.out =A0 =A0 Fri Aug 27 15:42:16 2010<br>
-&gt;<br>
-&gt; +++ /tmp/ld-6569/errmsg.exp =A0 =A0 Fri Aug 27 15:42:16 2010<br>
-&gt; @@ -1,3 +1,3 @@<br>
-&gt; -arm-none-linux-gnueabi-gcc: x.obj: No such file or directory<br>
-&gt; -arm-none-linux-gnueabi-gcc: y.obj: No such file or directory<br>
-&gt; -arm-none-linux-gnueabi-gcc: no input files<br>
-&gt;<br>
-&gt; +gcc: x.obj: No such file or directory<br>
-&gt; +gcc: y.obj: No such file or directory<br>
-&gt; +gcc: No input files<br>
-&gt; + [ 1 -eq 0 ]<br>
-&gt; + echo FAIL - =A0ld failed to give expected error msg<br>
-&gt; FAIL - =A0ld failed to give expected error msg<br>
-&gt;<br>
-&gt; We are getting this issue as the native gcc is actually a shell script=
- which<br>
-&gt; calls<br>
-&gt; arm-none-linux-gnueabi-gcc with compiler flags.<br>
-&gt; So we are getting the actual output but as the two files dont match ld=
-01<br>
-&gt; fails.<br>
-&gt; The patch attached in previous mail will not compare two files but wil=
-l grep<br>
-&gt; the expected output.<br>
-&gt;<br>
-&gt; Regards<br>
-&gt; Deepti Thite &lt;<a href=3D"mailto:dthite@mvista.com">dthite@mvista.co=
-m</a>&gt;<br>
-&gt;<br>
-&gt; On Tue, Aug 31, 2010 at 9:18 PM, Garrett Cooper &lt;<a href=3D"mailto:=
-yanegomi@gmail.com">yanegomi@gmail.com</a>&gt; wrote:<br>
-&gt;&gt;<br>
-&gt;&gt; On Tue, Aug 31, 2010 at 2:47 AM, Deepti Thite &lt;<a href=3D"mailt=
-o:dthite@in.mvista.com">dthite@in.mvista.com</a>&gt;<br>
-&gt;&gt; wrote:<br>
-&gt;&gt; &gt; ld01 test fails as native compilers don=92t match in the expe=
-cted and<br>
-&gt;&gt; &gt; output<br>
-&gt;&gt; &gt; file.<br>
-&gt;&gt; &gt;<br>
-&gt;&gt; &gt; The attached patch will grep expected results from the output=
- file<br>
-&gt;&gt; &gt; generated<br>
-&gt;&gt; &gt; and will not create an expected results file.<br>
-&gt;&gt;<br>
-&gt;&gt; What is the actual error message that gets printed out by ld(1)?<b=
-r>
-&gt;&gt; Thanks,<br>
-<br>
-</div></div>Here&#39;s a solution that doesn&#39;t require any change:<br>
-<br>
-export CC=3D&#39;absolute-path-to-gcc&#39;<br>
-export LD=3D&#39;absolute-path-to-ld&#39;<br>
-runltp # ...<br>
-<br>
-this equals zero change in our code, and ensures that the absolute<br>
-name for the compiler is correct.<br>
-<br>
-Thanks,<br>
-<font color=3D"#888888">-Garrett<br>
-</font></blockquote></div><br>
-
---000feaf013add2c54c048fa38162--
-
-
---===============1622623144414066333==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Scott Romanowski <romansc@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
+
+And for all future patches kindly provide as DCP signoff liike:
+
+Signed-off-by: Scott Romanowski <romansc@us.ibm.com>,
+
+Regards--
+Subrata
+
+On Tue, 2010-09-14 at 11:08 +0530, Subrata Modak wrote:
+> Thanks Scott. There was a problem in creating this patch:
+> 
+> patching file testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+> Hunk #1 succeeded at 452 with fuzz 1.
+> patching file testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+> Hunk #1 FAILED at 452.
+> 1 out of 1 hunk FAILED -- saving rejects to file
+> testcases/kernel/syscalls/ipc/msgctl/msgctl10.c.rej
+> 
+> However due to a trivial patch i could make the changes.
+> 
+> Regards--
+> Subrata
+> 
+> On Mon, 2010-09-13 at 11:15 -0400, Scott Romanowski wrote:
+> > Hi,
+> > MSGMNI should be limited to MAXNPROCS, since keyarray[] only has
+> > MAXNPROCS entries. Without this, the loop at lines 177-181
+> > for (i = 0; i < nprocs; i++) {
+> > ok = 1;
+> > do {
+> > /* Get random key */
+> > keyarray[i] = (key_t) rand();
+> > 
+> > can write past the end of keyarray[] if there are > MAXNPROCS free
+> > message queues.
+> > 
+> > The patch:
+> > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > diff -r 15082dabc40b testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+> > --- a/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c Mon Sep 13
+> > 10:38:06 2010 -0400
+> > +++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c Mon Sep 13
+> > 10:53:32 2010 -0400
+> > @@ -452,6 +452,8 @@
+> > cleanup();
+> > 
+> > MSGMNI = nr_msgqs - get_used_msgqueues();
+> > + if( MSGMNI > MAXNPROCS )
+> > + MSGMNI = MAXNPROCS;
+> > if (MSGMNI <= 0) {
+> > tst_resm(TBROK,
+> > "Max number of message queues already used, cannot create more.");
+> > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > --
+> > Scott Romanowski
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Start uncovering the many advantages of virtual appliances
+> > and start using them to simplify application deployment and
+> > accelerate your shift to cloud computing
+> > http://p.sf.net/sfu/novell-sfdev2dev
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
---===============1622623144414066333==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1622623144414066333==--
-
