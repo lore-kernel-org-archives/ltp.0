@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1P1CqK-00040A-VS
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 06:42:12 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P1CqF-0007sr-Vq
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 06:42:12 +0000
-Date: Thu, 30 Sep 2010 02:42:01 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1083549076.997191285828921616.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <587303608.585691285347829006.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1OvOqO-00066J-Fa
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:18:16 +0000
+Received: from e23smtp07.au.ibm.com ([202.81.31.140])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvOqK-0008Hd-TA
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:18:15 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id o8E6I56K018478
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 16:18:05 +1000
+Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o8E6I3Ka479242
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 16:18:05 +1000
+Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
+	by d23av01.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o8E6I36K024327
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 16:18:03 +1000
+Message-ID: <4C8F1399.7080203@linux.vnet.ibm.com>
+Date: Tue, 14 Sep 2010 11:48:01 +0530
+From: Shubham <shubham@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] buffered I/O causes testcases/network/nfs/nfsstress
- failure
+References: <4C874E4F.7080506@linux.vnet.ibm.com>
+	<1284444086.5001.13.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1284444086.5001.13.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Patch suggested inside LTP memcg stress test case
+	'memcg_stress_test.sh'.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,76 +37,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, "iranna.ankad" <iranna.ankad@in.ibm.com>
 
-Ci0tLS0tICJDYXNwYXIgWmhhbmciIDxjemhhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cgo+IC0tLS0t
-ICJHYXJyZXR0IENvb3BlciIgPHlhbmVnb21pQGdtYWlsLmNvbT4gd3JvdGU6Cj4gCj4gPiBPbiBU
-dWUsIFNlcCA3LCAyMDEwIGF0IDg6MTMgQU0sIENhc3BhciBaaGFuZyA8Y3poYW5nQHJlZGhhdC5j
-b20+Cj4gPiB3cm90ZToKPiA+ID4KPiA+ID4gLS0tLS0gIkdhcnJldHQgQ29vcGVyIiA8eWFuZWdv
-bWlAZ21haWwuY29tPiB3cm90ZToKPiA+ID4KPiA+ID4+IE9uIFR1ZSwgU2VwIDcsIDIwMTAgYXQg
-NToxOCBBTSwgQ2FzcGFyIFpoYW5nIDxjemhhbmdAcmVkaGF0LmNvbT4KPiA+ID4+IHdyb3RlOgo+
-ID4gPj4gPiBIaSBhbGwsCj4gPiA+PiA+IMKgV2hlbiBJIHJ1biB0ZXN0Y2FzZXMvbmV0d29yay9u
-ZnMvbmZzc3RyZXNzLyB0ZXN0LCBJIGZvdW5kCj4gPiBzb21ldGltZXMKPiA+ID4+IHRoZQo+ID4g
-Pj4gPiB0ZXN0IGZhaWxlZCBkdWUgdG8gYnVmZmVyZWQgSS9PLCBpbiBkZXRhaWwsIGZvciBleGFt
-cGxlLCB0aGVyZQo+ID4gYXJlCj4gPiA+PiB0aGUgZm9sbG93aW5nCj4gPiA+PiA+IGxpbmVzIGlu
-IG1ha2VfdHJlZS5jIDoKPiA+ID4+ID4KPiA+ID4+ID4gNTQ0IMKgIMKgIG51bWNoYXJbMF0gPSBz
-cHJpbnRmKHByb2dfYnVmLAo+ID4gPj4gPiA1NDUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgIm1h
-aW4oKVxue1xuXHQgcHJpbnRmKFwiaGVsbG8KPiA+IHdvcmxkXCIpO1xufVxuIik7Cj4gPiA+PiA+
-Cj4gPiA+PiA+IHNvbWV0aW1lcyB0aGUgZ2VuZXJhdGVkIC5jIGZpbGUgd2lsbCBiZToKPiA+ID4+
-ID4gXkBhaW4oKSAvLyA8LSBzdHJhbmdlIEFTQ0lJIGNoYXIgJ15AJyBhcHBlYXJzIGluc3RlYWQg
-b2YgJ20nCj4gPiA+PiA+IHsKPiA+ID4+ID4gwqAgwqAgwqAgwqBwcmludGYoImhlbGxvIHdvcmxk
-Iik7Cj4gPiA+PiA+IH0KPiA+ID4+ID4KPiA+ID4+ID4gQW5kIHJ1bm5pbmcgd2l0aCB0aGlzIC5j
-IGZpbGUgd2lsbCBjYXVzZSBlcnJvci4KPiA+ID4+ID4KPiA+ID4+ID4gVGhhdCBpcyB0byBzYXks
-IHN0cmluZyAncHJvZ19idWYnIGdldHMgYSBtaXN0YWtlIGR1cmluZwo+IHNwcmludGYuCj4gPiBB
-bmQKPiA+ID4+IHRoZXJlJ3JlCj4gPiA+PiA+IHNvbWV3aGVyZSBlbHNlIHVzaW5nIGJ1ZmZlcmVk
-IEkvTyBpbiB0aGlzIHRlc3QgYXMgd2VsbC4gRG8gd2UKPiA+IGhhdmUKPiA+ID4+IGFuCj4gPiA+
-PiA+IHVuYnVmZmVyZWQgc29sdXRpb24gdG8gdGhpcyB0ZXN0Pwo+ID4gPj4KPiA+ID4+IFRoYXQg
-c2VlbXMgYSBiaXQgb2RkLiBJcyB0aGUgTkZTIG1vdW50L3NlcnZlciBUQ1Agb3IgVURQPwo+ID4g
-Pgo+ID4gPiBIaSBHYXJyZXR0LCBpdCdzIFVEUC4KPiA+IAo+ID4gICAgIE9rLiBTb21ldGhpbmcg
-ZWxzZSB0aGF0IG1pZ2h0IGJlIGdvb2QgdG8gbm90ZSBpcyB3aGV0aGVyIG9yIG5vdAo+ID4gaXQn
-cyB2MiwgdjMsIG9yIHY0IG9uIHRoZSBjbGllbnQgYW5kIHNlcnZlciBzaWRlLgo+ID4gICAgIENv
-dWxkIHlvdSBwbGVhc2UgdHJ5IHdpdGggVENQIGFuZCBzZWUgd2hldGhlciBvciBub3QgdGhlIGlz
-c3VlCj4gPiBwZXJzaXN0cz8gSSdtIGp1c3QgY3VyaW91cyBpZiBpdCdzIGEgcG90ZW50aWFsbHkg
-cmVhbCBpc3N1ZSB3aXRoCj4gTkZTCj4gPiBjb2RlIGluIHRoZSBrZXJuZWwsIHJhbmRvbSBuZXR3
-b3JraW5nIGluZnJhc3RydWN0dXJlIGlzc3VlcywgZXRjLgo+ID4gVGhhbmtzLAo+IAo+IEhpIEdh
-cnJldHQsIHNvcnJ5IGZvciBsYXRlIHJlcGx5LiBJIHRyaWVkIGFsbCBjb21iaW5hdGlvbnMgb2Yg
-VENQL1VEUAo+IAo+IGFuZCB2Mi92My92NCBidXQgdGhlIGVycm9yIHN0aWxsIGV4aXN0ZWQuIEkg
-d3JvdGUgYSB3b3JrYXJvdW5kIHBhdGNoCj4gYW5kIHJlLXRlc3RlZCB3aXRoIHRoZSBjb21iaW5h
-dGlvbnMgYWJvdmUsIHRoZSBpc3N1ZSBzZWVtZWQgdG8gYmUKPiBzb2x2ZWQuCj4gCj4gVGhpcyBw
-YXRjaCBoYXZlIDIgZml4ZXM6Cj4gCj4gYSkgZXh0ZW5kIG1hbGxvYyBsZW5ndGggZnJvbSAxMDI0
-IHRvIDIwNDguIElmIHdlIGtlZXAgYm90aCBkZWZhdWx0IGRpcgo+IG51bQo+IGFuZCBmaWxlIG51
-bSBhcyAxMDAsIHRoZSBzdHJpbmcgbGVuZ3RoIG9mIGRpcm5hbWUvZmlsZW5hbWUgbGVuZ3RoIHdp
-bGwKPiBiZSAKPiBlYXNpbHkgPiAxMDI0IGJ5dGVzLiBUaGlzIHdpbGwgY2F1c2Ugc3RyaW5nIGJ1
-ZmZlciBvdmVyZmxvdyBhbmQgdGhlCj4gbWFpbi5jIAo+IG1heSBiZSBmaWxsZWQgd2l0aCBzdWNo
-IHdyb25nIGNoYXJzOgo+ICcxOTEyMy45Ny8xOTEyMy45OC8xOTEyMy45OS8xOTEyMy45OS4wLmNt
-YWluKCkuLi4nCj4gCj4gYikgYWRkIHRtcGRpcm5hbWUgdmFyIGluIHNvbWUgc3ByaW50ZiBzZW50
-ZW5jZXMuIEFjY29yZGluZyB0aGUgbWFuCj4gcGFnZSBvZgo+IHNwcmludGY6Cj4gCj4gTk9URVMK
-PiAgICAgICAgU29tZSBwcm9ncmFtcyBpbXBydWRlbnRseSByZWx5IG9uIGNvZGUgc3VjaCBhcyB0
-aGUgZm9sbG93aW5nCj4gICAgICAgICAgICBzcHJpbnRmKGJ1ZiwgIiVzIHNvbWUgZnVydGhlciB0
-ZXh0IiwgYnVmKTsKPiAgICAgICAgdG8gYXBwZW5kIHRleHQgdG8gYnVmLiAgSG93ZXZlciwgdGhl
-IHN0YW5kYXJkcyBleHBsaWNpdGx5IG5vdGUKPiAgdGhhdCB0aGUgcmVzdWx0cyBhcmUgdW5kZWZp
-bmVkIGlmIHNvdXJjZSAgYW5kICBkZXN0aW5hdGlvbiBidWZmZXJzICAKPiAgb3ZlcmxhcCAgd2hl
-biAgY2FsbGluZyAgc3ByaW50ZigpLCAgc25wcmludGYoKSwgdnNwcmludGYoKSwgYW5kIAo+ICB2
-c25wcmludGYoKS4gIERlcGVuZGluZyBvbiB0aGUgdmVyc2lvbiBvZiBnY2MoMSkgdXNlZCwgYW5k
-IHRoZSAKPiAgY29tcGlsZXIgb3B0aW9ucyBlbXBsb3llZCwgY2FsbHMgc3VjaCBhcyB0aGUgYWJv
-dmUgd2lsbCBub3QgcHJvZHVjZSAKPiAgdGhlIGV4cGVjdGVkIHJlc3VsdHMuCj4gCj4gU2lnbmVk
-LW9mZi1ieTogQ2FzcGFyIFpoYW5nIDxjemhhbmdAcmVkaGF0LmNvbT4KCkhpIGFsbCwgYW55IGNv
-bW1lbnRzIG9uIHRoaXM/CgpQYXRjaCB3YXMgdGVzdGVkIHVuZGVyIFJIRUw1IGFuZCBSSEVMNiBh
-bmQgcGFzc2VkLgoKVGhhbmtzLApDYXNwYXIKCj4gCj4gVGhhbmtzLAo+IENhc3Bhcgo+IAo+IC0t
-IAo+IFF1YWxpdHkgQXNzdXJhbmNlIEFzc29jaWF0ZSAoS2VybmVsKSBpbgo+IFJlZCBIYXQgU29m
-dHdhcmUgKEJlaWppbmcpIENvLiwgUiZEIEJyYW5jaAo+IAo+IFRFTDogKzg2LTEwLTYyNjA4MTUw
-Cj4gV0VCOiBodHRwOi8vd3d3LnJlZGhhdC5jb20vCgotLSAKUXVhbGl0eSBBc3N1cmFuY2UgQXNz
-b2NpYXRlIChLZXJuZWwpIGluClJlZCBIYXQgU29mdHdhcmUgKEJlaWppbmcpIENvLiwgUiZEIEJy
-YW5jaAoKVEVMOiArODYtMTAtNjI2MDgxNTAKV0VCOiBodHRwOi8vd3d3LnJlZGhhdC5jb20vCgot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KU3RhcnQgdW5jb3ZlcmluZyB0aGUgbWFueSBhZHZhbnRhZ2Vz
-IG9mIHZpcnR1YWwgYXBwbGlhbmNlcwphbmQgc3RhcnQgdXNpbmcgdGhlbSB0byBzaW1wbGlmeSBh
-cHBsaWNhdGlvbiBkZXBsb3ltZW50IGFuZAphY2NlbGVyYXRlIHlvdXIgc2hpZnQgdG8gY2xvdWQg
-Y29tcHV0aW5nLgpodHRwOi8vcC5zZi5uZXQvc2Z1L25vdmVsbC1zZmRldjJkZXYKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBs
-aXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+  Thanks Subrata,
+                            I will take care of below mentioned points 
+in future.
+
+Regards
+--Shubham
+
+On Tuesday 14 September 2010 11:31 AM, Subrata Modak wrote:
+> Thanks. I have merged your patch. However you need to address the
+> following things in future:
+>
+>       1. All patches need to have a DCO signoff like: Signed-off-by:
+>          Shubham<shubham@linux.vnet.ibm.com>,
+>       2. Create all your patches from LTP root: like:
+> diff -uprN ltp-*/testcases/*..*/file.orig ltp-*/testcases/*..*/file
+>
+> Regards--
+> Subrata
+>
+> On Wed, 2010-09-08 at 14:20 +0530, Shubham wrote:
+>> Hi,
+>>       We have found out a cgroup test case issue with
+>> 'ltp-full-20100331/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh'. The sniff of test case function is as below:-
+>>
+>> Note: - Below code sniff is taken from latest LTP August month
+>> release.
+>>
+>> run_stress()
+>> {
+>>          do_mount;
+>>
+>>          for i in $(seq 0 $(($1-1)))
+>>          do
+>>                  mkdir /dev/memcg/$i 2>  /dev/null
+>>                  ./memcg_process_stress $2 $3&
+>>                  eval pid$i=$!
+>>
+>>                  eval echo \$pid$i>  /dev/memcg/$i/tasks
+>>          done
+>>
+>>          for i in $(seq 0 $(($1-1)))
+>>          do
+>>                  eval /bin/kill -s SIGUSR1 \$pid$i 2>  /dev/null
+>>          done
+>>
+>>          sleep $4
+>>
+>>          for i in $(seq 0 $(($1-1)))
+>>          do
+>>                  eval /bin/kill -s SIGINT \$pid$i 2>  /dev/null
+>> <----send  SIGINT signal for a pid
+>>                  eval wait \$pid$i
+>>
+>>                  rmdir /dev/memcg/$i 2>  /dev/null
+>>          done
+>>
+>>          cleanup;
+>> }
+>>
+>>
+>> Basically, the test case is not doing a proper cleanup using SIGINT.It
+>> seems that the current test runs for much longer time than expected,
+>> thus affecting test performance. During this course of time, other
+>> dependent tests were also not proceeding further and system seemed to
+>> be in a process hang state. However we have found that SIGKILL does a
+>> better cleanup job compared to SIGINT, to overcome this situation.
+>>
+>> So, I have created a patch to fix above test case issue. Kindly review
+>> this patch and acknowledge. I think this patch can be merged into
+>> latest LTP code to avoid this problem.
+>>
+>> Please let me know if you need any clarifications.
+>>
+>> Regards,
+>> Shubham
+>>
+>> ------------------------------------------------------------------------------
+>> This SF.net Dev2Dev email is sponsored by:
+>>
+>> Show off your parallel programming skills.
+>> Enter the Intel(R) Threading Challenge 2010.
+>> http://p.sf.net/sfu/intel-thread-sfd
+>> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
