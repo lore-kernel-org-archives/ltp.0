@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Otrpg-0005NI-Jr
-	for ltp-list@lists.sourceforge.net; Fri, 10 Sep 2010 00:51:12 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Otrpf-0000nQ-Qs
-	for ltp-list@lists.sourceforge.net; Fri, 10 Sep 2010 00:51:12 +0000
-Received: by yxg6 with SMTP id 6so503925yxg.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Sep 2010 17:51:06 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1081)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <AANLkTi=ufkOGaSbHpXfwC3sxCw8VwV+5-=ucGcDV8330@mail.gmail.com>
-Date: Thu, 9 Sep 2010 17:51:01 -0700
-Message-Id: <F0FA14BB-292E-4F75-9B7D-DD327C631007@gmail.com>
-References: <AANLkTi=ufkOGaSbHpXfwC3sxCw8VwV+5-=ucGcDV8330@mail.gmail.com>
-Subject: Re: [LTP] wrong description in LTP HowTo section: 3.3 Compiling the
-	test suite
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OvODq-0004dB-KF
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:38:26 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvODp-0008M1-IQ
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:38:26 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8E5cIDX015292
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 01:38:18 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o8E5cJr6346908
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 01:38:19 -0400
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o8E5cJSV029744
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 23:38:19 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <OF5A6A8369.7F81ED8A-ON8525779D.0052192C-8525779D.0053C7E9@us.ibm.com>
+References: <OF5A6A8369.7F81ED8A-ON8525779D.0052192C-8525779D.0053C7E9@us.ibm.com>
+Date: Tue, 14 Sep 2010 11:08:15 +0530
+Message-Id: <1284442695.5001.0.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] 20100831 release msgctl10.c bug and patch
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,34 +39,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shenghui <crosslonelyover@gmail.com>
+To: Scott Romanowski <romansc@us.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Sep 9, 2010, at 4:52 PM, shenghui wrote:
+Thanks Scott. There was a problem in creating this patch:
 
+patching file testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+Hunk #1 succeeded at 452 with fuzz 1.
+patching file testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+Hunk #1 FAILED at 452.
+1 out of 1 hunk FAILED -- saving rejects to file
+testcases/kernel/syscalls/ipc/msgctl/msgctl10.c.rej
+
+However due to a trivial patch i could make the changes.
+
+Regards--
+Subrata
+
+On Mon, 2010-09-13 at 11:15 -0400, Scott Romanowski wrote:
 > Hi,
+> MSGMNI should be limited to MAXNPROCS, since keyarray[] only has
+> MAXNPROCS entries. Without this, the loop at lines 177-181
+> for (i = 0; i < nprocs; i++) {
+> ok = 1;
+> do {
+> /* Get random key */
+> keyarray[i] = (key_t) rand();
 > 
-> I followed the description in LTP HowTo 3.3 section
->               http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.3
-> to install LTP, and found that some description is wrong:
+> can write past the end of keyarray[] if there are > MAXNPROCS free
+> message queues.
 > 
-> "This will create symbolic links of the executable to corresponding
-> files in ltp-yyyymmdd/ test-cases/bin directory."
+> The patch:
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> diff -r 15082dabc40b testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+> --- a/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c Mon Sep 13
+> 10:38:06 2010 -0400
+> +++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c Mon Sep 13
+> 10:53:32 2010 -0400
+> @@ -452,6 +452,8 @@
+> cleanup();
 > 
-> I checked the executables under [install_dir]/testcases/bin, and
-> noticed that they are all executables, not symbolic links. I think
-> we'd better correct the description.
+> MSGMNI = nr_msgqs - get_used_msgqueues();
+> + if( MSGMNI > MAXNPROCS )
+> + MSGMNI = MAXNPROCS;
+> if (MSGMNI <= 0) {
+> tst_resm(TBROK,
+> "Max number of message queues already used, cannot create more.");
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> --
+> Scott Romanowski
+> 
+> 
+> ------------------------------------------------------------------------------
+> Start uncovering the many advantages of virtual appliances
+> and start using them to simplify application deployment and
+> accelerate your shift to cloud computing
+> http://p.sf.net/sfu/novell-sfdev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-	Yeah, the documentation really needs cleanup. I need to do a single pass over it because I was the dude that worked on the system last :).
-	The original setup was actually hardlinks though, and not symlinks, so I think the documentation has been incorrect for a while now..
-Thanks for the heads up!
--Garrett
+
 ------------------------------------------------------------------------------
-Automate Storage Tiering Simply
-Optimize IT performance and efficiency through flexible, powerful, 
-automated storage tiering capabilities. View this brief to learn how
-you can reduce costs and improve performance. 
-http://p.sf.net/sfu/dell-sfdev2dev
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
