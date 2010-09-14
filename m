@@ -1,33 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OvOJo-00037u-HF
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:44:36 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OvOJl-00047L-Ix
-	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:44:36 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e9.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8E5PY1u017031
-	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 01:25:34 -0400
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o8E5iN8n458578
-	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 01:44:24 -0400
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o8E5iN6I003878
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 23:44:23 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <000001cb50aa$ddf34080$99d9c180$@co.jp>
-References: <000001cb50aa$ddf34080$99d9c180$@co.jp>
-Date: Tue, 14 Sep 2010 11:14:20 +0530
-Message-Id: <1284443060.5001.6.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] About "pthread_attr_setstack/2-1"
-	and	"pthread_attr_setstacksize/2-1" testsets
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Jacky.Malcles@bull.net>) id 1OvP4t-00072I-6D
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:33:15 +0000
+Received: from ecfrec.frec.bull.fr ([129.183.4.8])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OvP4n-0005CK-Lc
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:33:15 +0000
+Message-ID: <4C8F19DF.6020403@bull.net>
+Date: Tue, 14 Sep 2010 08:44:47 +0200
+From: "Jacky.Malcles" <Jacky.Malcles@bull.net>
+MIME-Version: 1.0
+Subject: [LTP] ltp-aiodio.part3 scenario updated
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,51 +25,182 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-I see the following commits already:
+Hi Garret,
 
-414747ced26d943a22a3f767deb7f5b4658adb6e
-	Date:   Sun Aug 29 03:32:18 2010 -0700
+according to your last ltp-aiodio.sh script from git I have updtated and 
+tested this scenario,
+it works fine:
+tail -f ltpaiodio3.logfile
+FSX069                         PASS       0   
+FSX057                         PASS       0   
 
-and
+-----------------------------------------------
+Total Tests: 48
+Total Failures: 0
 
-228b250d23f36ddc95cb25179441420bea9b8bdd
-	Date:   Sun Aug 22 15:02:43 2010 -0700
+many thanks,
 
-Regards--
-Subrata
+--- ltp-aiodio.part3.original    2010-09-13 12:45:24.000000000 +0200
++++ ltp-aiodio.part3    2010-09-13 12:47:22.000000000 +0200
+@@ -1,51 +1,51 @@
+ #           fname:  this filename is Required (no default)
+ #
+ #
+-FSX032 fsx-linux -d  -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 
+$TMPDIR/aiodio.$$/junkfile
+-FSX033 fsx-linux -d  -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 
+$TMPDIR/aiodio.$$/junkfile
+-FSX034 fsx-linux -d  -l 500000 -r 4096 -N 10000 $TMPDIR/aiodio.$$/junkfile
+-FSX035 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
+-FSX036 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
+-FSX037 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
+-FSX038 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
+-FSX039 fsx-linux -d  -N 10000 $TMPDIR/aiodio.$$/junkfile
+-FSX040 fsx-linux -N 10000 -o 1024 $TMPDIR/aiodio.$$/junkfile
+-FSX041 fsx-linux -N 10000 -o 2048 $TMPDIR/aiodio.$$/junkfile
+-FSX042 fsx-linux -N 10000 -o 4096 $TMPDIR/aiodio.$$/junkfile
+-FSX043 fsx-linux -N 10000 -o 8192 $TMPDIR/aiodio.$$/junkfile
+-FSX044 fsx-linux -N 10000 -o 16384 $TMPDIR/aiodio.$$/junkfile
+-FSX045 fsx-linux -N 10000 -o 32768 $TMPDIR/aiodio.$$/junkfile
+-FSX046 fsx-linux -N 10000 -o 128000 $TMPDIR/aiodio.$$/junkfile
+-FSX047 fsx-linux -N 10000 -o 1024 $TMPDIR/aiodio.$$/junkfile
+-FSX048 fsx-linux -N 10000 -o 2048 $TMPDIR/aiodio.$$/junkfile
+-FSX049 fsx-linux -N 10000 -o 4096 $TMPDIR/aiodio.$$/junkfile
+-FSX050 fsx-linux -N 10000 -o 8192 $TMPDIR/aiodio.$$/junkfile
+-FSX051 fsx-linux -N 10000 -o 16384 $TMPDIR/aiodio.$$/junkfile
+-FSX052 fsx-linux -N 10000 -o 32768 $TMPDIR/aiodio.$$/junkfile
+-FSX053 fsx-linux -N 10000 -o 128000 $TMPDIR/aiodio.$$/junkfile
+-FSX054 fsx-linux -N 10000  -o 1024 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile
+-FSX055 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMPDIR/aiodio.$$/junkfile
+-FSX056 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile
+-FSX057 fsx-linux -N 10000  -o 8192 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMPDIR/aiodio.$$/junkfile
+-FSX058 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile
+-FSX059 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMPDIR/aiodio.$$/junkfile
+-FSX060 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile
+-FSX061 fsx-linux -N 10000 -o 32768 
+$TMPDIR/aiodio.$$/junkfile                                         
+-FSX062 fsx-linux -N 10000 -o 128000 
+$TMPDIR/aiodio.$$/junkfile                                        
+-FSX063 fsx-linux -N 10000  -o 1024  -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile  
+-FSX064 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMPDIR/aiodio.$$/junkfile  
+-FSX065 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile  
+-FSX066 fsx-linux -N 10000  -o 8192  -l 500000 -r 4096 -t 2048 -w 2048 
+$TMPDIR/aiodio.$$/junkfile   
+-FSX067 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile  
+-FSX068 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMPDIR/aiodio.$$/junkfile  
+-FSX069 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile 
+-FSX070 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile  
+-FSX071 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
+$TMPDIR/aiodio.$$/junkfile1
+-FSX072 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
+$TMPDIR/aiodio.$$/junkfile2
+-FSX073 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile3
+-FSX074 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
+$TMPDIR/aiodio.$$/junkfile4
+-FSX075 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
+$TMPDIR/aiodio.$$/junkfile5
+-FSX076 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMPDIR/aiodio.$$/junkfile6
+-FSX077 fsx-linux -N 10000   $TMPDIR/aiodio.$$/junkfile7
+-FSX078 fsx-linux -N 100000  $TMPDIR/aiodio.$$/junkfile8
+-FSX079 fsx-linux -N 100000  $TMPDIR/aiodio.$$/junkfile9
++FSX032 fsx-linux -d  -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 
+$TMP/aiodio/junkfile
++FSX033 fsx-linux -d  -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 
+$TMP/aiodio/junkfile
++FSX034 fsx-linux -d  -l 500000 -r 4096 -N 10000 $TMP/aiodio/junkfile
++FSX035 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
++FSX036 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
++FSX037 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
++FSX038 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
++FSX039 fsx-linux -d  -N 10000 $TMP/aiodio/junkfile
++FSX040 fsx-linux -N 10000 -o 1024 $TMP/aiodio/junkfile
++FSX041 fsx-linux -N 10000 -o 2048 $TMP/aiodio/junkfile
++FSX042 fsx-linux -N 10000 -o 4096 $TMP/aiodio/junkfile
++FSX043 fsx-linux -N 10000 -o 8192 $TMP/aiodio/junkfile
++FSX044 fsx-linux -N 10000 -o 16384 $TMP/aiodio/junkfile
++FSX045 fsx-linux -N 10000 -o 32768 $TMP/aiodio/junkfile
++FSX046 fsx-linux -N 10000 -o 128000 $TMP/aiodio/junkfile
++FSX047 fsx-linux -N 10000 -o 1024 $TMP/aiodio/junkfile
++FSX048 fsx-linux -N 10000 -o 2048 $TMP/aiodio/junkfile
++FSX049 fsx-linux -N 10000 -o 4096 $TMP/aiodio/junkfile
++FSX050 fsx-linux -N 10000 -o 8192 $TMP/aiodio/junkfile
++FSX051 fsx-linux -N 10000 -o 16384 $TMP/aiodio/junkfile
++FSX052 fsx-linux -N 10000 -o 32768 $TMP/aiodio/junkfile
++FSX053 fsx-linux -N 10000 -o 128000 $TMP/aiodio/junkfile
++FSX054 fsx-linux -N 10000  -o 1024 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile
++FSX055 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMP/aiodio/junkfile
++FSX056 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile
++FSX057 fsx-linux -N 10000  -o 8192 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMP/aiodio/junkfile
++FSX058 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile
++FSX059 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMP/aiodio/junkfile
++FSX060 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile
++FSX061 fsx-linux -N 10000 -o 32768 
+$TMP/aiodio/junkfile                                         
++FSX062 fsx-linux -N 10000 -o 128000 
+$TMP/aiodio/junkfile                                        
++FSX063 fsx-linux -N 10000  -o 1024  -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile  
++FSX064 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMP/aiodio/junkfile  
++FSX065 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile  
++FSX066 fsx-linux -N 10000  -o 8192  -l 500000 -r 4096 -t 2048 -w 2048 
+$TMP/aiodio/junkfile   
++FSX067 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile  
++FSX068 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048 
+$TMP/aiodio/junkfile  
++FSX069 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile 
++FSX070 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile  
++FSX071 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
+$TMP/aiodio/junkfile1
++FSX072 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
+$TMP/aiodio/junkfile2
++FSX073 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile3
++FSX074 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096   
+$TMP/aiodio/junkfile4
++FSX075 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048   
+$TMP/aiodio/junkfile5
++FSX076 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096 
+$TMP/aiodio/junkfile6
++FSX077 fsx-linux -N 10000   $TMP/aiodio/junkfile7
++FSX078 fsx-linux -N 100000  $TMP/aiodio/junkfile8
++FSX079 fsx-linux -N 100000  $TMP/aiodio/junkfile9
 
-On Fri, 2010-09-10 at 14:41 +0900, Mitani wrote:
-> Hi,
-> 
-> I sent patches of two POSIX testsets "pthread_attr_setstack/2-1.c" and 
-> "pthread_attr_setstacksize/2-1.c" to mailing-list last month, but I 
-> have no information of their situations.
-> I am glad if I can get some information about the patch.
-> 
->     http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10551.html
-> 
-> 
-> 
-> 
-> Thank you--
-> 
-> -Tomonori Mitani
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Automate Storage Tiering Simply
-> Optimize IT performance and efficiency through flexible, powerful, 
-> automated storage tiering capabilities. View this brief to learn how
-> you can reduce costs and improve performance. 
-> http://p.sf.net/sfu/dell-sfdev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+-- 
+ Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
+ Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
+ Tel : 04.76.29.73.14
 
 
 ------------------------------------------------------------------------------
