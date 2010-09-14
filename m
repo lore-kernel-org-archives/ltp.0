@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Oqb08-0004jI-GK
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 00:16:28 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oqb07-0004qf-GY
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 00:16:28 +0000
-Received: by bwz12 with SMTP id 12so6321574bwz.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 31 Aug 2010 17:16:21 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTikan_6LjsZeG0E2pohutyxmx+WtKM6M-J3e=A4=@mail.gmail.com>
-References: <AANLkTikan_6LjsZeG0E2pohutyxmx+WtKM6M-J3e=A4=@mail.gmail.com>
-Date: Tue, 31 Aug 2010 17:16:21 -0700
-Message-ID: <AANLkTimiTWpkR70c1aoH_AS34StmgebeB6Vvx7JPSiya@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] [commands] apply relevant fixes from at_deny01 to
- at_allow01 script
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OvOH3-00030a-0H
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:41:45 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvOH0-0005CS-ON
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 05:41:44 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e2.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8E5Qqc0026294
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 01:26:52 -0400
+Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o8E5fajc105612
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 01:41:37 -0400
+Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o8E5jGY1028601
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Sep 2010 23:45:16 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <OF2051634D.461B535C-ON8525779D.0061808E-8525779D.00626E02@us.ibm.com>
+References: <OF2051634D.461B535C-ON8525779D.0061808E-8525779D.00626E02@us.ibm.com>
+Date: Tue, 14 Sep 2010 11:11:33 +0530
+Message-Id: <1284442893.5001.4.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] hugeshmat
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,28 +39,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
+To: Scott Romanowski <romansc@us.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 31, 2010 at 4:57 PM, Henry Yei <hyei@mvista.com> wrote:
-> I've prepared a patch for at_allow01 that essentially duplicates the
-> fixes that were checked in for at_deny01. This fixes the script to
-> actually run the test when the at utility in stead of returning TCONF,
-> correcting test environment, and let the script run normally without
-> changing the password. See commit
-> a589d12b0b49287d10f43b1a1fb72950819588eb for more details.
->
-> Signed-off-by: Henry Yei <hyei@mvista.com>
+Scott,
 
-Sorry for screwing up the signed-off-by line -_-...
--Garrett
+Are you contemplating in submitting some patches for the HUGETLB tests
+in LTP ?
+
+Regards--
+Subrata
+
+On Mon, 2010-09-13 at 13:55 -0400, Scott Romanowski wrote:
+> >hi,
+> > I am getting error in hugetlb testcase, most of the tests are
+> failing
+> >because of the following error:-
+> >
+> >"could not read hugepages from /proc/meminfo"
+> >hugeshmat tests are having this error.
+> >please help me as how to resolve this error.
+> >
+> >-- 
+> >Regards,
+> >Arjit Sharma.
+> 
+> I could not find that specific error in either the 20100228 or
+> 20100831 releases. There are similar ones in
+> lib/system_specific_hugepages_info.c though, in get_no_of_hugepages()
+> and hugepages_size(). If you cat /proc/meminfo, do you see any lines
+> for hugepages? For example:
+> 
+> HugePages_Total: 10
+> HugePages_Free: 10
+> HugePages_Rsvd: 0
+> Hugepagesize: 2048 kB
+> 
+> If the first and last lines are not there, you would get an error
+> message like what you see.
+> 
+> --
+> Scott Romanowski
+> 978-899-5384
+> BG125C
+> 
+> ------------------------------------------------------------------------------
+> Start uncovering the many advantages of virtual appliances
+> and start using them to simplify application deployment and
+> accelerate your shift to cloud computing
+> http://p.sf.net/sfu/novell-sfdev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
