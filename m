@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Osh3J-0007gn-95
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 19:08:25 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Osh3I-0004sB-D5
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 19:08:25 +0000
-Received: by bwz12 with SMTP id 12so4614176bwz.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1OvNJ7-0002na-Da
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 04:39:49 +0000
+Received: from out19.sjc.mx.trendmicro.com ([216.99.131.76])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvNJ5-00063U-TW
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 04:39:49 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.24])
+	by out19.sjc.mx.trendmicro.com (Postfix) with ESMTP id 9BC7598046B
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Sep 2010 12:08:15 -0700 (PDT)
+	Tue, 14 Sep 2010 04:39:41 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 2AA899585D
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 14 Sep 2010 04:39:40 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 13:39:39 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 14 Sep 2010 13:39:39 +0900
+Message-ID: <000401cb53c6$d7a16620$86e43260$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinAQARYsEWv6jbezg=-J=xBZM3UXnWfOSz++Lto@mail.gmail.com>
-References: <AANLkTi=ShuJOPjaywptWgDaFFG9zhb_uk=_42bpwSavA@mail.gmail.com>
-	<AANLkTi=9PFi3k0eEyYO_SvwBsOK77CBECXkrWLy7rkhY@mail.gmail.com>
-	<AANLkTinAQARYsEWv6jbezg=-J=xBZM3UXnWfOSz++Lto@mail.gmail.com>
-Date: Mon, 6 Sep 2010 12:08:15 -0700
-Message-ID: <AANLkTinDeS1ODKGwEtwRed0H57e3vyzjqQB8nnv_Cn4G@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] ld01
+Content-Language: ja
+Subject: [LTP] POSIX "sched_yield/1-1.c" build failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,81 +35,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Deepti Thite <dthite@in.mvista.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Sep 1, 2010 at 2:49 AM, Deepti Thite <dthite@in.mvista.com> wrote:
-> Hi Garrett,
->
-> The actual error messages which I got were:
->
-> + diff -iw /tmp/ld-6569/errmsg.out /tmp/ld-6569/errmsg.exp
-> --- /tmp/ld-6569/errmsg.out     Fri Aug 27 15:42:16 2010
->
-> +++ /tmp/ld-6569/errmsg.exp     Fri Aug 27 15:42:16 2010
-> @@ -1,3 +1,3 @@
-> -arm-none-linux-gnueabi-gcc: x.obj: No such file or directory
-> -arm-none-linux-gnueabi-gcc: y.obj: No such file or directory
-> -arm-none-linux-gnueabi-gcc: no input files
->
-> +gcc: x.obj: No such file or directory
-> +gcc: y.obj: No such file or directory
-> +gcc: No input files
-> + [ 1 -eq 0 ]
-> + echo FAIL -  ld failed to give expected error msg
-> FAIL -  ld failed to give expected error msg
->
-> We are getting this issue as the native gcc is actually a shell script wh=
-ich
-> calls
-> arm-none-linux-gnueabi-gcc with compiler flags.
-> So we are getting the actual output but as the two files dont match ld01
-> fails.
-> The patch attached in previous mail will not compare two files but will g=
-rep
-> the expected output.
->
-> Regards
-> Deepti Thite <dthite@mvista.com>
->
-> On Tue, Aug 31, 2010 at 9:18 PM, Garrett Cooper <yanegomi@gmail.com> wrot=
-e:
->>
->> On Tue, Aug 31, 2010 at 2:47 AM, Deepti Thite <dthite@in.mvista.com>
->> wrote:
->> > ld01 test fails as native compilers don=92t match in the expected and
->> > output
->> > file.
->> >
->> > The attached patch will grep expected results from the output file
->> > generated
->> > and will not create an expected results file.
->>
->> What is the actual error message that gets printed out by ld(1)?
->> Thanks,
+Hi,
 
-Here's a solution that doesn't require any change:
+POSIX "open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c" 
+build failed in RHEL4.8 (x86, x86_64, ia64):
+------------
+conformance/interfaces/sched_yield/1-1 compile FAILED; SKIPPING In file
+included from ../../../conformance/interfaces/sched_yield/1-1.c:35:
+../../../include/posixtest.h:14:2: #error "Contains GNU-isms that need
+fixing."
+../../../conformance/interfaces/sched_yield/1-1.c: In function
+`set_thread_affinity':
+../../../conformance/interfaces/sched_yield/1-1.c:91: warning: implicit
+declaration of function `pthread_setaffinity_np'
+------------
 
-export CC=3D'absolute-path-to-gcc'
-export LD=3D'absolute-path-to-ld'
-runltp # ...
+This testset seems to test "sched_yield()", and uses "sched_setafinity()" 
+for CPU fixing.
+I tried to remove "_GNU_SOURCE" definition from "sched_yield/1-1.c".
+But "sched_setafinity()" needs "_GNU_SOURCE".
+"sched_setafinity()" is necessary for this testset, and I considered the
+substitution for "sched_setafinity()".
+But I don't have any ideas. There is no function to be substitute for
+"sched_setafinity()" by POSIX conformity, I think.
 
-this equals zero change in our code, and ensures that the absolute
-name for the compiler is correct.
 
-Thanks,
--Garrett
+Regards--
 
----------------------------------------------------------------------------=
----
-This SF.net Dev2Dev email is sponsored by:
+-Tomonori Mitani
 
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+
+
+------------------------------------------------------------------------------
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
