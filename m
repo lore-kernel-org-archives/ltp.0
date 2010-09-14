@@ -2,20 +2,31 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <carmelo.amoroso@st.com>) id 1P1Gbc-0005rw-Sx
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 10:43:16 +0000
-Received: from eu1sys200aog115.obsmtp.com ([207.126.144.139])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P1Gbb-0000GV-H4
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 10:43:16 +0000
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Date: Thu, 30 Sep 2010 12:42:40 +0200
-Message-ID: <4CA469A0.5090700@st.com>
-References: <4CA09D4D.6050708@st.com> <4CA34070.9070505@st.com>
-	<20100930133120.GA4070@hannu-debian.research.nokia.com>
-In-Reply-To: <20100930133120.GA4070@hannu-debian.research.nokia.com>
+	(envelope-from <romansc@us.ibm.com>) id 1OvVUw-00087s-SN
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 13:24:34 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvVUv-0000sn-2e
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 13:24:34 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e1.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8EDHqpq027587
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 09:17:52 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o8EDOQRp136034
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 09:24:26 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o8EDOQ3D032207
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 10:24:26 -0300
+In-Reply-To: <1284442893.5001.4.camel@subratamodak.linux.ibm.com>
+References: <OF2051634D.461B535C-ON8525779D.0061808E-8525779D.00626E02@us.ibm.com>
+	<1284442893.5001.4.camel@subratamodak.linux.ibm.com>
+Message-ID: <OF395BC0E4.7461CC78-ON8525779E.004990AC-8525779E.0049A3FC@us.ibm.com>
+From: Scott Romanowski <romansc@us.ibm.com>
+Date: Tue, 14 Sep 2010 09:24:20 -0400
 MIME-Version: 1.0
-Subject: Re: [LTP] ltp_clone alignment issues.
+Subject: Re: [LTP] hugeshmat
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,116 +36,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6175886335353601536=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+--===============6175886335353601536==
+Content-type: multipart/alternative; 
+	Boundary="0__=0ABBFD0DDFDA163C8f9e8a93df938690918c0ABBFD0DDFDA163C"
+Content-Disposition: inline
 
-On 9/30/2010 3:31 PM, Hannu Heikkinen wrote:
-> On 29/09/10 15:34 +0200, ext Carmelo AMOROSO wrote:
->  > -----BEGIN PGP SIGNED MESSAGE-----
->  > Hash: SHA1
->  >
->  > On 9/27/2010 3:34 PM, Carmelo AMOROSO wrote:
->  > > Folks,
->  > > I want to reopen an old discussion on ltp_clone and stack alignment
->  > > issue (see
->  > > 
-> http://sourceforge.net/mailarchive/message.php?msg_name=4B421480.1040400%40petalogix.com).
->  > > Indeed recently a commit has partially fixed a problem on ARM
->  > > (0056e395170eb8fc3ffbb22d7bd364fe47c2013e), but I think this should be
->  > > extended to all archs that have stack that grows downwards.
->  > >
->  > > Indeed, as Jiri replied in that old thread, the value passed to clone as
->  > > child stack should be never accessed, because it is the topmost address
->  > > of the memory allocated for the child process (it's the previous stack
->  > > pointer).
->  > >
->  > > So, in archs that do not like unaligned stack, using (stack - size - 1 )
->  > > will cause the process to be killed by a SIGBUS, on other archs, we are
->  > > just wasting one byte of the malloc-ed stack.
->  > >
->  > > On my SH4 arch, the stack must be 4byte aligned (as in ARM).
->  > >
->  > > Please, find attached a patch against master branch
->  > >
->  > > Best regards,
->  > > Carmelo
->  >
->  > Hi,
->  > any feedback on this ?
->  >
->  > Cheers,
->  > Carmelo
-> 
->  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-> Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
-> ---
-> lib/cloner.c | 9 +++------
-> 1 files changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/lib/cloner.c b/lib/cloner.c
-> index 6ad4a00..e53c9cf 100644
-> --- a/lib/cloner.c
-> +++ b/lib/cloner.c
-> @@ -59,16 +59,13 @@ ltp_clone(unsigned long clone_flags, int (*fn)(void
-> *arg), void *arg,
-> ret = clone(fn, stack, clone_flags, arg);
-> #elif defined(__ia64__)
-> ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
-> NULL);
-> -#elif defined(__arm__)
-> +#else
-> /*
-> - * Stack size should be a multiple of 32 bit words
-> - * & stack limit must be aligned to a 32 bit boundary
-> + * For archs where stack grows downwards, stack points to the topmost
-> address
-> + * of the memory space set up for the child stack.
-> */
-> ret = clone(fn, (stack ? stack + stack_size : NULL),
-> clone_flags, arg);
-> -#else
-> - ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
-> - clone_flags, arg);
-> #endif
-> 
-> return ret;
-> --
-> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-> 
-> Hi,
-> 
-> Acked-by Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-> 
-> Br,
-> Hannu
-> 
-> --
-> Hannu Heikkinen
-> http://www.nixu.com
-> 
+--0__=0ABBFD0DDFDA163C8f9e8a93df938690918c0ABBFD0DDFDA163C
+Content-type: text/plain; charset=US-ASCII
 
-Thanks, Hannu
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Yes, I emailed them but I forgot to put the sign-off line.  I'll re-post.
+--
+Scott Romanowski
+--0__=0ABBFD0DDFDA163C8f9e8a93df938690918c0ABBFD0DDFDA163C
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
 
-iEYEARECAAYFAkykaaAACgkQoRq/3BrK1s9XQQCgqFuIf0UtZVE2cIY07ZY+6PrN
-pmwAnRP5T4nCrFDwre+9VEwJ7WB6r0em
-=w2Z8
------END PGP SIGNATURE-----
+<html><body>
+<p>Yes, I emailed them but I forgot to put the sign-off line.  I'll re-post.<br>
+--<br>
+Scott Romanowski<br>
+</body></html>
+--0__=0ABBFD0DDFDA163C8f9e8a93df938690918c0ABBFD0DDFDA163C--
+
+
+
+--===============6175886335353601536==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
+--===============6175886335353601536==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6175886335353601536==--
+
+
