@@ -1,27 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata.modak@in.ibm.com>) id 1P0xc5-0004wp-Al
-	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 14:26:29 +0000
-Received: from e28smtp07.in.ibm.com ([122.248.162.7])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P0xc3-0008Uy-DI
-	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 14:26:29 +0000
-In-Reply-To: <20100929141051.GB4620@hallyn.com>
-References: <20100924100303.5709.80714.sendpatchset@sravan-laptop>
-	<20100927142304.GA23119@hallyn.com>
-	<4CA0AEB7.7080701@linux.vnet.ibm.com>
-	<20100927180239.GA15486@hallyn.com>
-	<4CA1ADB0.7070908@linux.vnet.ibm.com>
-	<20100928213611.GA1046@hallyn.com>
-	<4CA31140.4000805@linux.vnet.ibm.com>
-	<20100929141051.GB4620@hallyn.com>
-Message-ID: <OFA3C42AE5.7F12F4DF-ON652577AD.004DA114-652577AD.004DCA76@in.ibm.com>
-From: Subrata Modak1 <subrata.modak@in.ibm.com>
-Date: Wed, 29 Sep 2010 19:39:02 +0530
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Compilation Error Fixed in filecaps.
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OvOaH-0002ys-Sa
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:01:37 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OvOaH-0000lS-01
+	for ltp-list@lists.sourceforge.net; Tue, 14 Sep 2010 06:01:37 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o8E5gvRb001358
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 01:42:57 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o8E61Vi5363420
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 02:01:31 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o8E61Tu3010466
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Sep 2010 03:01:31 -0300
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4C874E4F.7080506@linux.vnet.ibm.com>
+References: <4C874E4F.7080506@linux.vnet.ibm.com>
+Date: Tue, 14 Sep 2010 11:31:26 +0530
+Message-Id: <1284444086.5001.13.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Patch suggested inside LTP memcg stress test
+	case	'memcg_stress_test.sh'.
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,52 +40,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Serge Hallyn <serge.hallyn@canonical.com>, ltp-list@lists.sf.net
-Cc: sravan <sravan@linux.vnet.ibm.com>
+To: Shubham <shubham@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, "iranna.ankad" <iranna.ankad@in.ibm.com>
 
-Serge Hallyn <serge.hallyn@canonical.com> wrote on 09/29/2010 07:40:51 PM:
->
-> Quoting sravan (sravan@linux.vnet.ibm.com):
-> >  Sorry for the confusion Serge.
-> > I have taken the "c.c" file from the latest ltp release and found
-> > that it is not compiling.
-> >
-> > The same file is not compiling in the earlier release of ltp also.
-> > To resolve the compilation issue I have added the following
-> > flag(HAVE_SYS_CAPABILITY_H).
-> > The same flag is also used in
-ltp-full-20100831/testcases/kernel/security/
-> filecaps/verify_caps_exec.c
-> > file.
-> >
-> > #if HAVE_SYS_CAPABILITY_H            //Added by Sravan
-> > #include <sys/capability.h>
-> > #endif                                              // Added by Sravan
-> >
-> > Please let me know if this is the correct approach.
->
-> Well, the better approach would be to install the libcap-dev
-> package (or whatever it is called on your distro)  :)  But so
-> long as you're just getting your own compile working, whatever
-> gets you a working build is fine.
->
-> What worries me, though, is the thought that the official
-> 20100831 release has the wrong files in it!  Can you follow
-> up on that with Subrata?  In particular, the c.c file is
-> different from the one in ltp.git.  Something is going very
-> wrong!
+Thanks. I have merged your patch. However you need to address the
+following things in future:
 
-Garret,
-
-Did we miss/drop something during our migration from ltp-dev.git to
-ltp.git ?
+     1. All patches need to have a DCO signoff like: Signed-off-by:
+        Shubham <shubham@linux.vnet.ibm.com>,
+     2. Create all your patches from LTP root: like:
+diff -uprN ltp-*/testcases/*..*/file.orig ltp-*/testcases/*..*/file
 
 Regards--
 Subrata
 
->
-> thanks,
-> -serge
+On Wed, 2010-09-08 at 14:20 +0530, Shubham wrote:
+> Hi,
+>      We have found out a cgroup test case issue with
+> 'ltp-full-20100331/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh'. The sniff of test case function is as below:-
+> 
+> Note: - Below code sniff is taken from latest LTP August month
+> release.
+> 
+> run_stress()
+> {
+>         do_mount;
+> 
+>         for i in $(seq 0 $(($1-1)))
+>         do
+>                 mkdir /dev/memcg/$i 2> /dev/null
+>                 ./memcg_process_stress $2 $3 &
+>                 eval pid$i=$!
+> 
+>                 eval echo \$pid$i > /dev/memcg/$i/tasks
+>         done
+> 
+>         for i in $(seq 0 $(($1-1)))
+>         do
+>                 eval /bin/kill -s SIGUSR1 \$pid$i 2> /dev/null
+>         done
+> 
+>         sleep $4
+> 
+>         for i in $(seq 0 $(($1-1)))
+>         do
+>                 eval /bin/kill -s SIGINT \$pid$i 2> /dev/null
+> <----send  SIGINT signal for a pid 
+>                 eval wait \$pid$i
+> 
+>                 rmdir /dev/memcg/$i 2> /dev/null
+>         done
+> 
+>         cleanup;
+> }
+> 
+> 
+> Basically, the test case is not doing a proper cleanup using SIGINT.It
+> seems that the current test runs for much longer time than expected,
+> thus affecting test performance. During this course of time, other
+> dependent tests were also not proceeding further and system seemed to
+> be in a process hang state. However we have found that SIGKILL does a
+> better cleanup job compared to SIGINT, to overcome this situation.
+> 
+> So, I have created a patch to fix above test case issue. Kindly review
+> this patch and acknowledge. I think this patch can be merged into
+> latest LTP code to avoid this problem. 
+> 
+> Please let me know if you need any clarifications.
+> 
+> Regards,
+> Shubham
+> 
+> ------------------------------------------------------------------------------
+> This SF.net Dev2Dev email is sponsored by:
+> 
+> Show off your parallel programming skills.
+> Enter the Intel(R) Threading Challenge 2010.
+> http://p.sf.net/sfu/intel-thread-sfd
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
