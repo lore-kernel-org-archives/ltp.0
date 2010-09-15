@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Oy4zg-00022Q-HX
-	for ltp-list@lists.sourceforge.net; Tue, 21 Sep 2010 15:42:56 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oy4zf-0008F2-Aq
-	for ltp-list@lists.sourceforge.net; Tue, 21 Sep 2010 15:42:56 +0000
-Received: by yxg6 with SMTP id 6so2288699yxg.34
+	(envelope-from <hannuxx@gmail.com>) id 1OvwbQ-000105-21
+	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 18:21:04 +0000
+Received: from mail-bw0-f47.google.com ([209.85.214.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OvwbP-0004N4-1y
+	for ltp-list@lists.sourceforge.net; Wed, 15 Sep 2010 18:21:04 +0000
+Received: by bwz2 with SMTP id 2so1117215bwz.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 21 Sep 2010 08:42:50 -0700 (PDT)
+	Wed, 15 Sep 2010 11:20:57 -0700 (PDT)
+Date: Wed, 15 Sep 2010 21:20:52 +0300
+From: Hannu Heikkinen <hannuxx@iki.fi>
+Message-ID: <20100915182052.GA2750@hannu-ubuntu>
+References: <000401cb53c6$d7a16620$86e43260$@co.jp>
+	<20100915134318.GD24784@hannu-debian.research.nokia.com>
+	<AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <000101cb5956$14a99a30$3dfcce90$@co.jp>
-References: <000101cb5956$14a99a30$3dfcce90$@co.jp>
-Date: Tue, 21 Sep 2010 08:42:49 -0700
-Message-ID: <AANLkTinw+GczTRmptpcBHh4WabOKqAdFCGL0Tdk5K6wW@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix "sysctl03" test
+Content-Disposition: inline
+In-Reply-To: <AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
+Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,18 +33,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ext Mitani <mitani@ryobi.co.jp>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Mon, Sep 20, 2010 at 11:27 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
-> I noticed that "sysctl03" failed from about August 17.
-> "PASS" is indicated in the log file of "runltp -l", but "TFAIL" is
-> indicated in console log:
+On 15/09/10 09:18 -0700, Garrett Cooper wrote:
+> That seems like a reasonable thing to do, but here's an alternative
+> way to do this (less variables):
+> 
+> --- a/testcases/open_posix_testsuite/include/posixtest.h
+> +++ b/testcases/open_posix_testsuite/include/posixtest.h
+> @@ -10,10 +10,24 @@
+>   * return codes
+>   */
+> 
+> +/*
+> + * Define PTS_DEVELOPER_MODE if you want to compile for developer scenarios,
+> + * including reporting errors (as opposed to warnings), when compiling some
+> + * test programs.
+> + */
+> +
+>  #if defined(_GNU_SOURCE)
+> +#if defined(PTS_DEVELOPER_MODE)
+>  #error "Contains GNU-isms that need fixing."
+> +#else
+> +#warning "Contains GNU-isms that need fixing."
+> +#endif
+>  #elif defined(_BSD_SOURCE)
+> +#if defined(PTS_DEVELOPER_MODE)
+>  #error "Contains BSD-isms that need fixing."
+> +#else
+> +#warning "Contains BSD-isms that need fixing."
+> +#endif
+>  #endif
+> 
+>  #define PTS_PASS        0
+> 
+> Thanks for the idea Hannu :),
+> -Garrett
+> 
 
-Thanks for the keen eye and sorry for getting this backwards :/.
--Garrett
+Ok, even better, less is always good! Developer mode sounds good. 
+
+Should this posixtest.h be kind of a must include for all test cases?
+Currently not all cases include this. 
+
+br,
+Hannu
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
