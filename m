@@ -1,34 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1Or4kL-0008CW-H1
-	for ltp-list@lists.sourceforge.net; Thu, 02 Sep 2010 08:02:09 +0000
-Received: from mtagate3.uk.ibm.com ([194.196.100.163])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Or4kI-0001Lf-1r
-	for ltp-list@lists.sourceforge.net; Thu, 02 Sep 2010 08:02:09 +0000
-Received: from d06nrmr1707.portsmouth.uk.ibm.com
-	(d06nrmr1707.portsmouth.uk.ibm.com [9.149.39.225])
-	by mtagate3.uk.ibm.com (8.13.1/8.13.1) with ESMTP id o8281nTc024694
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Sep 2010 08:01:49 GMT
-Received: from d06av02.portsmouth.uk.ibm.com (d06av02.portsmouth.uk.ibm.com
-	[9.149.37.228])
-	by d06nrmr1707.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v10.0) with
-	ESMTP id o8281mQ93506384
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Sep 2010 09:01:48 +0100
-Received: from d06av02.portsmouth.uk.ibm.com (loopback [127.0.0.1])
-	by d06av02.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id o8281mgD016584
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Sep 2010 09:01:48 +0100
-Message-ID: <4C7F59E3.7030303@linux.vnet.ibm.com>
-Date: Thu, 02 Sep 2010 10:01:39 +0200
-From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <lina.zhao@windriver.com>) id 1Ow6RE-0002bv-Vx
+	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 04:51:12 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ow6RB-0005G3-ML
+	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 04:51:12 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o8G4p3FT009961
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 15 Sep 2010 21:51:03 -0700 (PDT)
+Message-ID: <4C91A23E.6080506@windriver.com>
+Date: Thu, 16 Sep 2010 12:51:10 +0800
+From: "lina.zhao" <lina.zhao@windriver.com>
 MIME-Version: 1.0
-References: <8125057B1DA5D840B2E9D872C051E768307DF41DE3@cnbjmbx02.corpusers.net>
-In-Reply-To: <8125057B1DA5D840B2E9D872C051E768307DF41DE3@cnbjmbx02.corpusers.net>
-Subject: Re: [LTP] [Ltp-coverage] Here comes a new comer to LTP with some
-	questions.
+Content-Type: multipart/mixed; boundary="------------060702000101060505070702"
+Subject: [LTP] [patch] change user password usable time
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,51 +27,179 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Ren, Guangyin 2" <Guangyin2.Ren@sonyericsson.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-SGVsbG8sCgpxdWVzdGlvbnMgYWJvdXQgTFRQIGluIGdlbmVyYWwgYXJlIGJlc3QgYXNrZWQgb24g
-dGhlIGx0cC1saXN0IChvbiBDQykuCgoKUmVnYXJkcywKICAgUGV0ZXIgT2JlcnBhcmxlaXRlcgoK
-Ck9uIDAyLjA5LjIwMTAgMDM6MzQsIFJlbiwgR3Vhbmd5aW4gMiB3cm90ZToKPiBEZWFyIGFsbCwK
-Pgo+IEkgYW0gYSBuZXcgY29tZXIgdG8gTFRQLCBpbiB0aGUgcGFzdCB5ZWFycyBJIGRpZCBhIGVt
-YmVkZGVkIGRldmVsb3BlciBvbiBTeW1iaWFuIFM2MC9VSVEgYW5kIExpbnV4IFF0LiA6KQo+IE5v
-dywgSSBoYXZlIGEgY2hhbmNlIHRvIGdldCBpbiB0byBBbmRyb2lkIHBsYXRmb3JtIHdoaWNoIGJh
-c2VkIG9uIExpbnV4IE9TLgo+Cj4gU28gSSBzdHVkeSBMVFAgZm9yIG15IHRlc3RpbmcsIGRvIHRo
-ZSBMaW51eCBrZXJuZWwgc3RyZXNzIHRlc3RpbmcuCj4KPiBSZWNlbnRseSwgSSBoYXZlIGEgcXVl
-c3Rpb24sIGNhbiBMVFAgYmUgdXNlZCBmb3IgdGVzdGluZyBkZXZpY2UgZHJpdmVyIG9uIGVtYmVk
-ZGVkIGVxdWlwbWVudD8gRS5nLiBhbiBBbmRyb2lkIHBob25lLgo+Cj4gQXMgeW91IG1pZ2h0IGtu
-b3csIHNvbWUgSFcgd2lsbCBiZSBjaGFuZ2VkIGJldHdlZW4gZGlmZmVyZW50IHByb2R1Y3RzLCBz
-byB3ZSBuZWVkIHRvIHdyaXRlIHNvbWUgd2hpdGUtYm94IHRlc3Qgc2NyaXB0cyB0byB2ZXJpZnkg
-dGhhdCB0aGUgcmVsYXRlZCBkcml2ZXIgc2hvdWxkIHdvcmsgd2VsbC4gRS5nLiBCbHVldG9vdGgs
-IGNhbWVyYSBzZW5zb3IsIGtleXBhZCBhbmQgc29tZSBvdGhlciBjaGlwc2V0Lgo+Cj4gVG8gTGlu
-dXggT1MsIEkgbmVlZCBtdWNoIG1vcmUga25vd2xlZGdlLiA6KQo+Cj4gRm9yIG15IHF1ZXN0aW9u
-IG9yIExpbnV4IE9TLCBJIHdlbGNvbWUgYW55IHN1Z2dlc3Rpb24gYW5kIGFkdmljZSEKPgo+IFRo
-YW5rIHlvdSBpbiBhZHZhbmNlIGFuZCBsb29rIGZvcndhcmQgdG8geW91ciBmZWVkYmFjayEKPgo+
-Cj4gW2NpZDppbWFnZTAwMS5naWZAMDFDQjRBODEuQjc4NzExMzBdCj4KPgo+IEJlc3QgcmVnYXJk
-cywKPgo+IFJlbiBHdWFuZ3lpbgo+IFBMRCBCZWlqaW5nIFNXIFZlcmlmaWNhdGlvbgo+Cj4gU29u
-eSBFcmljc3Nvbgo+IE1vYmlsZSBDb21tdW5pY2F0aW9ucwo+IFRlbDogKzg2IDEwIDU4NjUgOTI0
-MQo+IE1vYmlsZTogKzg2IDEzODEwNDM3MjcyCj4gRW1haWw6IGd1YW5neWluMi5yZW5Ac29ueWVy
-aWNzc29uLmNvbTxtYWlsdG86Z3Vhbmd5aW4yLnJlbkBzb255ZXJpY3Nzb24uY29tPgo+IHNvbnll
-cmljc3Nvbi5jb208aHR0cDovL3d3dy5zb255ZXJpY3Nzb24uY29tLz4KPgo+IDEwRiwgU29ueSBF
-cmljc3NvbiBCdWlsaWRuZywgTm8uMTYsIEd1YW5nc2h1biBTb3V0aCBTdHJlZXQsIENoYW95YW5n
-IERpc3RyaWN0LCBCZWlqaW5nIFAuUi5DaGluYSAoUG9zdCBjb2RlOiAxMDAxMDIpCj4g5YyX5Lqs
-5pyd6Ziz5Yy65bm/6aG65Y2X5aSn6KGXMTblj7fntKLlsLzniLHnq4vkv6HlpKfljqYo5Lic54WM
-5aSn5Y6mKSAxMOWxggo+Cj4KPgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhpcyBTRi5u
-ZXQgRGV2MkRldiBlbWFpbCBpcyBzcG9uc29yZWQgYnk6Cj4KPiBTaG93IG9mZiB5b3VyIHBhcmFs
-bGVsIHByb2dyYW1taW5nIHNraWxscy4KPiBFbnRlciB0aGUgSW50ZWwoUikgVGhyZWFkaW5nIENo
-YWxsZW5nZSAyMDEwLgo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtdGhyZWFkLXNmZAo+Cj4K
-Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRw
-LWNvdmVyYWdlIG1haWxpbmcgbGlzdAo+IEx0cC1jb3ZlcmFnZUBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtY292
-ZXJhZ2UKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgRGV2MkRldiBlbWFpbCBp
-cyBzcG9uc29yZWQgYnk6CgpTaG93IG9mZiB5b3VyIHBhcmFsbGVsIHByb2dyYW1taW5nIHNraWxs
-cy4KRW50ZXIgdGhlIEludGVsKFIpIFRocmVhZGluZyBDaGFsbGVuZ2UgMjAxMC4KaHR0cDovL3Au
-c2YubmV0L3NmdS9pbnRlbC10aHJlYWQtc2ZkCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QK
+This is a multi-part message in MIME format.
+--------------060702000101060505070702
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+Some board do not have a RTC, then when it boot up, the time is 1970.1.1.
+
+if Linux finds 'last password change date' of an account = 1/1/1970 , it 
+forces password change on next login.
+if the systems' date is like that and you change (as required) the 
+password, each time you login on the same day it will require you to 
+change password.
+
+So in the target whose boot up time is 1/1/1970 and use the 'su' 
+command, there will be 'You are required to change your password 
+immediately (root enforced)' informations and stop the testing.
+
+chage -d 10 userName will let the userName is usable in the next 10 days.
+
+Thanks,
+
+Lina
+
+--------------060702000101060505070702
+Content-Type: text/x-diff; name="0001-change-user-password-expiry-time.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="0001-change-user-password-expiry-time.patch"
+
+From a76578071c5319f47420777fc349c470dcd198aa Mon Sep 17 00:00:00 2001
+From: Lina Zhao <lina.zhao@windriver.com>
+Date: Thu, 16 Sep 2010 11:17:33 +0800
+Subject: [PATCH] change user password expiry time
+
+Some board do not have a RTC, then when it boot up, the time is 1970.1.1.
+if Linux finds 'last password change date' of an account = 1/1/1970 ,
+it forces password change on next login.
+So in the target whose boot up time is 1/1/1970 and use the 'su' command,
+there will be 'You are required to change your password.
+informations and stop the testing.
+
+chage -d 10 userName will let the userName is usable in the next 10 days.
+
+Signed-off-by: Lina Zhao < lina.zhao@windriver.com >
+---
+ testcases/commands/at/at_deny01      |    2 ++
+ testcases/commands/cron/cron02       |    1 +
+ testcases/commands/cron/cron_allow01 |    2 ++
+ testcases/commands/cron/cron_deny01  |    2 ++
+ testcases/commands/su/su01           |    2 ++
+ 5 files changed, 9 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/commands/at/at_deny01 b/testcases/commands/at/at_deny01
+index 9f9f433..3a0a711 100755
+--- a/testcases/commands/at/at_deny01
++++ b/testcases/commands/at/at_deny01
+@@ -64,12 +64,14 @@ do_setup()
+ 		echo "Could not add test user ${test_user1} to system."
+ 		exit 1
+ 	fi
++   chage -d 10 ${test_user1}
+ 
+ 	# Create the 2nd user.
+ 	if ! useradd -g users -d "${test_user2_home}" -m "${test_user2}"; then
+ 		echo "Could not add test user ${test_user2} to system."
+ 		exit 1
+ 	fi
++   chage -d 10 ${test_user2}
+ 
+ 	# This is the workaround for a potential bug.
+ 	# [Bug 468337] At Refuse to Work with Non-login Shell
+diff --git a/testcases/commands/cron/cron02 b/testcases/commands/cron/cron02
+index 0c05c95..2ca2d88 100755
+--- a/testcases/commands/cron/cron02
++++ b/testcases/commands/cron/cron02
+@@ -51,6 +51,7 @@ do_setup(){
+                 exit 1
+         }
+         fi
++        chage -d 10 $TEST_USER
+ 
+ 	# restart cron daemon
+ 	# Red Hat uses crond, SuSE/Other uses cron.
+diff --git a/testcases/commands/cron/cron_allow01 b/testcases/commands/cron/cron_allow01
+index ffecf68..86c5296 100755
+--- a/testcases/commands/cron/cron_allow01
++++ b/testcases/commands/cron/cron_allow01
+@@ -68,6 +68,7 @@ do_setup() {
+         exit 1
+     }
+     fi
++    chage -d 10 $TEST_USER1
+ 
+ #create 2nd user	
+ 	useradd -m -g users $TEST_USER2
+@@ -77,6 +78,7 @@ do_setup() {
+         exit 1
+     }
+     fi
++    chage -d 10 $TEST_USER2
+ }
+ 
+ #-----------------------------------------------------------------------
+diff --git a/testcases/commands/cron/cron_deny01 b/testcases/commands/cron/cron_deny01
+index 957529b..b1f8263 100755
+--- a/testcases/commands/cron/cron_deny01
++++ b/testcases/commands/cron/cron_deny01
+@@ -72,6 +72,7 @@ do_setup() {
+         exit 1
+     }
+     fi
++    chage -d 10 $TEST_USER1
+ 
+ #create 2nd user	
+ 	useradd -m -g users $TEST_USER2
+@@ -81,6 +82,7 @@ do_setup() {
+         exit 1
+     }
+     fi
++    chage -d 10 $TEST_USER2
+ }
+ 
+ #-----------------------------------------------------------------------
+diff --git a/testcases/commands/su/su01 b/testcases/commands/su/su01
+index 0a99514..d589365 100755
+--- a/testcases/commands/su/su01
++++ b/testcases/commands/su/su01
+@@ -115,6 +115,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
+                 exit 1
+         }
+         fi
++        chage -d 10 $TEST_USER1
+ 
+ #Create 2nd test user
+ 	#erase user if he may exist , so we can have a clean en
+@@ -151,6 +152,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
+                 exit 1
+         }
+         fi
++        chage -d 10 $TEST_USER2
+ }
+ 
+ 
+-- 
+1.6.3.1
+
+
+--------------060702000101060505070702
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
+--------------060702000101060505070702
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------060702000101060505070702--
+
