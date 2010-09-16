@@ -1,24 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OqhjK-0005Nb-Mw
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 07:27:34 +0000
-Received: from mail-bw0-f46.google.com ([209.85.214.46])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OqhjJ-0001kP-Ro
-	for ltp-list@lists.sourceforge.net; Wed, 01 Sep 2010 07:27:34 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OwJsO-00007G-HJ
+	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 19:12:08 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OwJsN-0004Ow-Ok
+	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 19:12:08 +0000
+Received: by iwn2 with SMTP id 2so1620406iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 16 Sep 2010 12:12:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTin=MTu4QGB-+zyYQh=qMLprgjx6txisF4r_5xPT@mail.gmail.com>
-References: <1282116783.4855.8.camel@PEK-RLIANG-D1>
-	<AANLkTikrFeTSbiWY4EhotU7siB_vw8hVF_FWtSNREr8x@mail.gmail.com>
-	<1283219506.1778.2.camel@PEK-RLIANG-D1>
-	<AANLkTin=MTu4QGB-+zyYQh=qMLprgjx6txisF4r_5xPT@mail.gmail.com>
-Date: Wed, 1 Sep 2010 00:27:27 -0700
-Message-ID: <AANLkTikH16Evfuj0RXkYLUYy6msPf2DcwD+zXzhhFV_+@mail.gmail.com>
+In-Reply-To: <20100916190023.GA11397@hannu-ubuntu>
+References: <000401cb53c6$d7a16620$86e43260$@co.jp>
+	<20100915134318.GD24784@hannu-debian.research.nokia.com>
+	<AANLkTikYz9ppRN1FZBSnpyePoMV79GDWNA4umS7NLUn_@mail.gmail.com>
+	<20100915182052.GA2750@hannu-ubuntu>
+	<AANLkTik5HT2tDzaCfAU+7kgcsUNucrL6zPLZ3xdBF+kW@mail.gmail.com>
+	<20100916190023.GA11397@hannu-ubuntu>
+Date: Thu, 16 Sep 2010 12:12:02 -0700
+Message-ID: <AANLkTi=tsb1E2nW3ZmRdMrSZ6WftPRCe3RJf90Ts3rJw@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [Patch] Fix mtest06 failure: caught unexpected signal -
- 11 --- exiting
+Subject: Re: [LTP] POSIX "sched_yield/1-1.c" build failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,86 +35,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: renxiu liang <renxiu.liang@windriver.com>
-Cc: ltp-list@lists.sf.net, Suzuki Poulose <suzuki@in.ibm.com>
+To: Hannu Heikkinen <hannuxx@iki.fi>
+Cc: ext Mitani <mitani@ryobi.co.jp>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Wed, Sep 1, 2010 at 12:26 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Mon, Aug 30, 2010 at 6:51 PM, renxiu liang
-> <renxiu.liang@windriver.com> wrote:
->> On Wed, 2010-08-25 at 20:36 -0700, Garrett Cooper wrote:
->>> On Wed, Aug 18, 2010 at 12:33 AM, renxiu liang
->>> <renxiu.liang@windriver.com> wrote:
->>> > Hi,
->>> >
->>> > We met the mtest06 failure several times; this is because in
->>> > mtest06/mmap1.c, when handling the signal 11 in sig_handler, it doesn=
-'t
->>> > cover another two race conditions:
->>> > one is si_code equals "SEGV_MAPERR" but si_address does not equal to
->>> > map_address; and one is si_code equals to "SEGV_ACCERR";
->>> >
->>> > see below error log:
->>> >
->>> > <<<test_start>>>
->>> > tag=3Dmtest06 stime=3D1270902396
->>> > cmdline=3D" =A0mmap1 -x 0.05"
->>> > contacts=3D""
->>> > analysis=3Dexit
->>> > initiation_status=3D"ok"
->>> > <<<test_output>>>
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0pid[5456]: map, change contents, =
-unmap files
->>> > 1000 times
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0created thread[1216369840]
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0pid[5456] - read contents of memo=
-ry 0x48002000
->>> > 1000 times
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
->>> > ......
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
->>> > mmap1 =A0 =A0 =A0 0 =A0INFO =A0: =A0page fault occurred at 0x48002000
->>> > caught unexpected signal - 11 --- exiting
->>> > <<<execution_status>>>
->>> > duration=3D1 termination_type=3Dexited termination_id=3D255 corefile=
-=3Dno
->>> > cutime=3D0 cstime=3D4
->>> > <<<test_end>>>
->>> >
->>> > I made a patch to cover all the three race conditions in one case in
->>> > sig_handler(),
->>> > then run mtest06 repeatedly on different archs, test will not fail by
->>> > catching signal 11.
->>>
->>> Could you print out what the value of info->si_code and info->si_addr
->>> are at the time of the fault? Also, which architecture(s) are you
->>> running into this issue on?
->> Hi Garrett,
+On Thu, Sep 16, 2010 at 12:00 PM, Hannu Heikkinen <hannuxx@iki.fi> wrote:
+> On 15/09/10 12:01 -0700, Garrett Cooper wrote:
+>> >
+>> > Should this posixtest.h be kind of a must include for all test cases?
+>> > Currently not all cases include this.
 >>
->> Sorry for the late reply; See attached mtest06 logs, I printed out the
->> values of si_code, si_addr, map_address;
->> it is reproducible on arm, x86, ppc and mips; though it is not
->> reproducible every time, but can be reproducible if run the case
->> repeatedly.
+>> =A0 =A0 Well, every affected testcase should include this :). Not all
+>> files need to include this (there are a number of applications that
+>> don't need what's defined here) -- so there's no sense in generating
+>> more work than necessary :).
+>> Thanks,
+>> -Garrett
 >
-> Nothing is jumping out at me as being incorrect, so I think it's best
-> that I bring in a better pair of eyes, just in case.
->
-> Suzuki-san,
-> =A0 =A0Could you please help review this patch?
+> I must have been hald asleep writing that prev email. I meant that posixt=
+est
+> cases should include that, and of course not all LTP cases.
 
-CCing Suzuki-san...
+I must have doubly been so because I didn't catch that either :).
+
+> Might be a consideration for having global ltp header file for all C test
+> cases
+> so that generic functionality could be better tweaked by changing certain
+> defines. Of course that needs more discussion and analysis, thoug.
+
+Already done:
+
+include/: http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.git=
+;a=3Dtree;f=3Dinclude;h=3D93d0ff91530c366d3af0cfc0c6b4f27c779cb866;hb=3DHEAD
+lib/: http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.git;a=
+=3Dtree;f=3Dlib;h=3D85556e60de93da651c3ffbab56eeef2b3a68c8bf;hb=3DHEAD
+
+The above changes mentioned only affect the open posix testsuite
+(http://sf.net/projects/posixtest/), which is a component completely
+orthogonal to the rest of the code in the LTP sourcebase, so these
+changes are only required for that section of the codebase. However,
+certain tunable features can be added in the LTP buildsystem and the
+open posix testsuite to support automatic `developer mode' if you
+will. This will take a while to do properly though.
+
+Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
