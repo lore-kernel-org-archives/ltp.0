@@ -1,21 +1,12 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lina.zhao@windriver.com>) id 1OtcBY-00034p-To
-	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 08:08:44 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OtcBS-0006yT-88
-	for ltp-list@lists.sourceforge.net; Thu, 09 Sep 2010 08:08:44 +0000
-Message-ID: <4C8895FD.5010809@windriver.com>
-Date: Thu, 09 Sep 2010 16:08:29 +0800
-From: "lina.zhao" <lina.zhao@windriver.com>
+Date: Thu, 16 Sep 2010 21:53:31 +0300
+From: Hannu Heikkinen <hannuxx@iki.fi>
+Message-ID: <20100916185331.GA1541@hannu-ubuntu>
+References: <AANLkTim+EuMGgPZWxoZjAX0-4Mmrvfm_Jb_MpW3Y6QM+@mail.gmail.com>
 MIME-Version: 1.0
-References: <4C887D32.60608@windriver.com>
-	<6AA0EB8D-1C22-4BFD-BC94-BB687B5C08CD@gmail.com>
-In-Reply-To: <6AA0EB8D-1C22-4BFD-BC94-BB687B5C08CD@gmail.com>
-Subject: Re: [LTP] [PATCH]mktemp command in runltp version issue
+Content-Disposition: inline
+In-Reply-To: <AANLkTim+EuMGgPZWxoZjAX0-4Mmrvfm_Jb_MpW3Y6QM+@mail.gmail.com>
+Subject: Re: [LTP] rwtest03,rwtest04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,56 +19,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ARJIT SHARMA <joyarjit@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Ltp-list-request@lists.sourceforge.net
 
-but $TMPDIR may not be defined in the environment, so we need --tmpdir / 
--p to specify the directory
--p is support on most of versions.
+On 16/09/10 14:24 +0530, ARJIT SHARMA wrote:
+> hello...
+>          I am facing the error in rwtest03 and rwtest04, both of them are
+> failing due to some data comparison error.
+> 
+>          Please help me out to sove this error, i am running LTP om ARM
+> architechture...
+> -- 
+> Regards,
+> Arjit Sharma.
 
-mnt_pnt=`mktemp -d $TMP/mnt_pnt.XXXXXX` doesn't work well
+Hi,
 
-lina@lina-desktop:~$  export TMP=/home/lina/tmp/
-lina@lina-desktop:~$ mktemp -d $TMP/mnt_pnt.XXXXXX
-/home/lina/tmp//mnt_pnt.i12144
-lina@lina-desktop:~$ mktemp -d -p $TMP mnt_pnt.XXXXXX
-/home/lina/tmp/mnt_pnt.Q12146
+please include relevant parts from your logfiles.
 
-if $TMP include / in end, then there will be 2 // for the temp file
+> cd $LTPROOT
+> ./runltp > your.log
+> head -n 115 your.log
+> grep FAILED result/LTP_RUN_ON-<your-run-date>.log
 
-> On Sep 8, 2010, at 11:22 PM, lina.zhao wrote:
->
->> Hi,
->>
->> In runltp:
->>
->> if [ -n "$DEVICE" ]; then
->>      mnt_pnt=`mktemp -d --tmpdir=${TMP} mnt_pnt.XXXXXX`
->>
->> --tmpdir is a invalid option for mktemp version 1.5, which is used
->> widely. The valid option to specify a directory for version 1.5 is
->> -p directory.
->
-> Or just remove --tmpdir=<blah> altogether? If $TMPDIR is defined in 
-> the environment, then it is the fallback if --tmpdir / -p isn't 
-> specified (please see the manpage for more details)... OR... just do:
->
-> mnt_pnt=`mktemp -d $TMP/mnt_pnt.XXXXXX`
->
-> The same change will probably need to be applied to the runltp lite 
-> script.
->
-> Cheers,
-> -Garrett
->
+And dig also the few lines from and below those FAILED lines.
+
+> failing due to some data comparison error.
+
+br,
+Hannu
+
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
