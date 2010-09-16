@@ -1,25 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OzMod-0002IQ-4E
-	for ltp-list@lists.sourceforge.net; Sat, 25 Sep 2010 04:56:51 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OzMoc-0005Tk-6i
-	for ltp-list@lists.sourceforge.net; Sat, 25 Sep 2010 04:56:51 +0000
-Received: by iwn2 with SMTP id 2so3778245iwn.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Ow8kf-0001up-2g
+	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 07:19:25 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ow8ke-0002Nh-A2
+	for ltp-list@lists.sourceforge.net; Thu, 16 Sep 2010 07:19:25 +0000
+Received: by pzk37 with SMTP id 37so335569pzk.34
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Sep 2010 21:56:45 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20100924132104.GC7889@dhcp-27-139.brq.redhat.com>
-References: <20100924130014.GB7889@dhcp-27-139.brq.redhat.com>
-	<20100924132104.GC7889@dhcp-27-139.brq.redhat.com>
-Date: Fri, 24 Sep 2010 21:56:44 -0700
-Message-ID: <AANLkTin2=Hcf-FLqJ=1DFmQg1x+T1o84JH-LkAWXQcRK@mail.gmail.com>
+	Thu, 16 Sep 2010 00:19:18 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1081)
 From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016e644df0a68073a04910e52b2
-Subject: Re: [LTP] [PATCH] fix incorrect cleanup after hugeshmget05 test
+In-Reply-To: <AANLkTikYoJgSuX1e_=bUe2HHv68nT4so7vc0FEAZ8DDU@mail.gmail.com>
+Date: Thu, 16 Sep 2010 00:19:16 -0700
+Message-Id: <B7D4B536-ECC3-4367-B154-CD90019F3B4D@gmail.com>
+References: <20100902144720.GA16059@saboteur.suse.cz>
+	<1283789797.4947.18.camel@subratamodak.linux.ibm.com>
+	<4C851BAD.9080207@linux.vnet.ibm.com>
+	<1284020387.29634.4.camel@subratamodak.linux.ibm.com>
+	<4C88F433.80301@linux.vnet.ibm.com>
+	<1284443154.5001.8.camel@subratamodak.linux.ibm.com>
+	<AANLkTikYoJgSuX1e_=bUe2HHv68nT4so7vc0FEAZ8DDU@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix realtime atomic_add() inline asm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,165 +33,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Tluka <jtluka@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Darren Hart <darren@dvhart.com>
+Cc: ltp-list@lists.sourceforge.net, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
---0016e644df0a68073a04910e52b2
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Sep 14, 2010, at 6:30 PM, Darren Hart wrote:
 
-On Fri, Sep 24, 2010 at 6:21 AM, Jan Tluka <jtluka@redhat.com> wrote:
-> Resending ...
->
-> I've noticed that in some cases the hugeshmget05 testcase is not
-> cleaning up properly after itself. It leaves hugepages reserved and
-> does not free them. This could break further test runs.
->
-> I think the problem is with signal handling. The testcase will do
-> rm_shm() only if it ends up properly. In case it's being killed by
-> SIGTERM signal (as seen from the testlog) the cleanup() function does
-> not return shared memory.
->
-> Without the patch I have to use ipcrm to remove all hugepages reserved
-> and not returned.
->
-> # grep -i unexpected RHEL-hugepage.run.log
-> hugeshmget05 =A0 =A01 =A0TBROK =A0: =A0Unexpected signal 15 received.
-> # ipcs -m
-> ------ Shared Memory Segments --------
-> key =A0 =A0 =A0 =A0shmid =A0 =A0 =A0owner =A0 =A0 =A0perms =A0 =A0 =A0byt=
-es =A0 =A0 =A0nattch =A0 =A0 status
-> 0x7400ee08 3932160 =A0 =A0root =A0 =A0 =A0600 =A0 =A0 =A0 =A04 =A0 =A0 =
-=A0 =A0 =A00
-> 0x7400edde 4620289 =A0 =A0root =A0 =A0 =A0600 =A0 =A0 =A0 =A04 =A0 =A0 =
-=A0 =A0 =A00
-> 0x00000000 4980738 =A0 =A0gdm =A0 =A0 =A0 600 =A0 =A0 =A0 =A0393216 =A0 =
-=A0 2 =A0 =A0 =A0 =A0 =A0dest
-> 0x7400eddd 4587523 =A0 =A0root =A0 =A0 =A0600 =A0 =A0 =A0 =A04 =A0 =A0 =
-=A0 =A0 =A00
-> 0x78002a3b 64552964 =A0 root =A0 =A0 =A0600 =A0 =A0 =A0 =A0209715200 =A00
-> 0x78002a38 64520197 =A0 root =A0 =A0 =A0600 =A0 =A0 =A0 =A0209715200 =A00
-> # ipcrm -m 64552964 -m 64520197
->
-> With the patch the test returns hugepages back to the system even if it
-> gets signal 15.
->
-> Checked on RHEL5.5.
->
-> Thanks, Jan
->
->
-> The patch follows,
->
->
-> --- ltp-full-20100831/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget0=
-5.c =A0 =A02010-09-14 13:04:33.000000000 +0200
-> +++ ltp-full-20100831.new/testcases/kernel/mem/hugetlb/hugeshmget/hugeshm=
-get05.c =A0 =A0 =A0 =A02010-09-24 13:47:19.413177300 +0200
-> @@ -105,7 +105,6 @@
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0do_child();
->
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 cleanup();
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*NOTREACHED*/
-> =A0 =A0 =A0 =A0} else { =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* parent */
-> @@ -114,11 +113,10 @@
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_brkm(TBROK, cleanup, "=
-waitpid failed");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* if it exists, remove the shared memory r=
-esource */
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 rm_shm(shm_id_1);
-> -
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Remove the temporary directory */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_rmdir();
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 cleanup();
-> =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0return 0;
-> =A0}
-> @@ -209,6 +207,9 @@
-> =A0void
-> =A0cleanup(void)
-> =A0{
-> + =A0 =A0 =A0 /* if it exists, remove the shared memory resource */
-> + =A0 =A0 =A0 rm_shm(shm_id_1);
-> +
-> =A0 =A0 =A0 =A0/*
-> =A0 =A0 =A0 =A0 * print timing stats if that option was specified.
-> =A0 =A0 =A0 =A0 * print errno log if that option was specified.
+> For what it's worth, I think the bug that Cyril found just further
+> supports Gowri's patch to get rid of the asm altogether and go with
+> the glibc built-ins. This keeps all these sorts of low-level details
+> in one place and avoids duplication. My two cents.
+> 
+> --
+> Darren Hart
+> 
+> On Mon, Sep 13, 2010 at 10:45 PM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+>> On Thu, 2010-09-09 at 20:20 +0530, gowrishankar wrote:
+>>> Hi Cyril,
+>>> Do you wish to ack my patch ?
+>> 
+>> Cyril,
+>> 
+>> Waiting for your endorsement/rejection !!
+>> 
+>> Regards--
+>> Subrata
+>> 
+>>> 
+>>> Thanks,
+>>> Gowrishankar
+>>> 
+>>> On Thursday 09 September 2010 01:49 PM, Subrata Modak wrote:
+>>>> Can both of you agree to send a single patch ?
+>>>> 
+>>>> Regards--
+>>>> Subrata
+>>>> 
+>>>> On Mon, 2010-09-06 at 22:19 +0530, gowrishankar wrote:
+>>>> 
+>>>>> On Monday 06 September 2010 09:46 PM, Subrata Modak wrote:
+>>>>> 
+>>>>>> Darren/Gowri,
+>>>>>> 
+>>>>>> Are you aware of this patch ? Can you please provide your comments ?
+>>>>>> 
+>>>>>> 
+>>>>>> 
+>>>>> Subrata/Cyril,
+>>>>> Apologies that I tagged this mail, but somehow forgot to reply
+>>>>> immediately.
+>>>>> 
+>>>>> I had already prepared a patch (before Cyril shared his part) to make
+>>>>> atomic_add much more maintenance free and sharing with you guys now.
+>>>>> Please find it attached.
+>>>>> 
+>>>>> Thanks,
+>>>>> Gowrishankar
+>>>>> 
+>>>>> 
+>>>>>> Regards--
+>>>>>> Subrata
+>>>>>> 
+>>>>>> On Thu, 2010-09-02 at 16:47 +0200, Cyril Hrubis wrote:
+>>>>>> 
+>>>>>> 
+>>>>>>> Hi!
+>>>>>>> The atomic_add() assembler for x86 is missing hint for gcc that value of
+>>>>>>> v->counter is being modified by xaddl instruction and as this variable
+>>>>>>> is changed only from this asm runtime, some combination of gcc
+>>>>>>> optimalizations allows for this value to be placed in binary .rodata
+>>>>>>> section resulting in realtime tests segfaulting when trying to do
+>>>>>>> atomic_add(). It's reproducible on SLES11 (gcc 4.3.2) with -O2.
+>>>>>>> 
+>>>>>>> Patch attached.
+>>>>>>> 
+>>>>>>> Signed-off-by: Cyril Hrubis chrubis@suse.cz
 
-Hi Jan,
-    I spotted some other potential issues with the test. Please try
-this patch and let me know whether or not it works for you .
-Cheers,
+	Agreed. In this particular case (IMO) LTP doesn't need to reimplement the atomic functions, because it's probably less tested and more buggy than the glibc equivalents.
+	I'm [almost] always in favor of removing unnecessary duplication. This is one of the cases that I fully support.
+Thanks,
 -Garrett
 
---0016e644df0a68073a04910e52b2
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="fix-rmshm-hugeshmget05.patch"
-Content-Disposition: attachment; filename="fix-rmshm-hugeshmget05.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gei0c2db0
-
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobWdldC9odWdl
-c2htZ2V0MDUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobWdldC9odWdl
-c2htZ2V0MDUuYwppbmRleCBiYzRiZDJjLi4zZTllMjZhIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMv
-a2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1nZXQvaHVnZXNobWdldDA1LmMKKysrIGIvdGVzdGNh
-c2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlc2htZ2V0L2h1Z2VzaG1nZXQwNS5jCkBAIC03Nyw3
-ICs3Nyw4IEBAIGNoYXIgKmx0cF91c2VyID0gIm5vYm9keSI7CiBpbnQgbWFpbihpbnQgYWMsIGNo
-YXIgKiphdikKIHsKIAljaGFyICptc2c7CQkJLyogbWVzc2FnZSByZXR1cm5lZCBmcm9tIHBhcnNl
-X29wdHMgKi8KLQlpbnQgcGlkOworCXBpZF90IHBpZDsKKwlpbnQgc3RhdHVzOwogCXZvaWQgZG9f
-Y2hpbGQodm9pZCk7CiAKIAkvKiBwYXJzZSBzdGFuZGFyZCBvcHRpb25zICovCkBAIC0xMDUsMjEg
-KzEwNiwyMiBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKIAogCQlkb19jaGlsZCgpOwog
-Ci0JCWNsZWFudXAoKTsKLQorCQl0c3RfZXhpdCgpOwogCQkvKk5PVFJFQUNIRUQqLwogCX0gZWxz
-ZSB7CQkvKiBwYXJlbnQgKi8KIAkJLyogd2FpdCBmb3IgdGhlIGNoaWxkIHRvIHJldHVybiAqLwot
-CQlpZiAod2FpdHBpZChwaWQsIE5VTEwsIDApID09IC0xKSB7Ci0JCQl0c3RfYnJrbShUQlJPSywg
-Y2xlYW51cCwgIndhaXRwaWQgZmFpbGVkIik7CisJCWlmICh3YWl0cGlkKHBpZCwgJnN0YXR1cywg
-MCkgPT0gLTEpIHsKKwkJCXRzdF9yZXNtKFRCUk9LLCAid2FpdHBpZCBmYWlsZWQiKTsKKwkJfQor
-CQllbHNlIGlmIChzdGF0dXMgIT0gMCkgeworCQkJdHN0X3Jlc20oVEZBSUwsCSJjaGlsZCBwcm9j
-ZXNzIGZhaWxlZCB0byBleGl0IGNsZWFubHkgIgorCQkJCSIoZXhpdCBzdGF0dXMgPSAlZCkiLCBz
-dGF0dXMpOwogCQl9CisJfQogCi0JCS8qIGlmIGl0IGV4aXN0cywgcmVtb3ZlIHRoZSBzaGFyZWQg
-bWVtb3J5IHJlc291cmNlICovCi0JCXJtX3NobShzaG1faWRfMSk7CisJY2xlYW51cCgpOwogCi0J
-CS8qIFJlbW92ZSB0aGUgdGVtcG9yYXJ5IGRpcmVjdG9yeSAqLwotCQl0c3Rfcm1kaXIoKTsKLQl9
-CisJLyogTk9UUkVBQ0hFRCAqLwogCXJldHVybiAwOwogfQogCkBAIC0xNTIsMTMgKzE1NCwxMSBA
-QCBkb19jaGlsZCgpCiAKIAkJc3dpdGNoKFRFU1RfRVJSTk8pIHsKIAkJY2FzZSBFQUNDRVM6Ci0J
-CQl0c3RfcmVzbShUUEFTUywgImV4cGVjdGVkIGZhaWx1cmUgLSBlcnJubyA9ICIKLQkJCQkgIiVk
-IDogJXMiLCBURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VSUk5PKSk7CisJCQl0c3RfcmVzbShU
-UEFTU3xUVEVSUk5PLCAiZXhwZWN0ZWQgZmFpbHVyZSIpOwogCQkJYnJlYWs7CiAJCWRlZmF1bHQ6
-Ci0JCQl0c3RfcmVzbShURkFJTCwgImNhbGwgZmFpbGVkIHdpdGggYW4gIgotCQkJCSAidW5leHBl
-Y3RlZCBlcnJvciAtICVkIDogJXMiLAotCQkJCSBURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VS
-Uk5PKSk7CisJCQl0c3RfcmVzbShURkFJTHxUVEVSUk5PLCAiY2FsbCBmYWlsZWQgd2l0aCBhbiAi
-CisJCQkJICJ1bmV4cGVjdGVkIGVycm9yIik7CiAJCQlicmVhazsKIAkJfQkJCiAJfQpAQCAtMjA5
-LDYgKzIwOSw5IEBAIHNldHVwKHZvaWQpCiB2b2lkCiBjbGVhbnVwKHZvaWQpCiB7CisJLyogaWYg
-aXQgZXhpc3RzLCByZW1vdmUgdGhlIHNoYXJlZCBtZW1vcnkgcmVzb3VyY2UgKi8KKwlybV9zaG0o
-c2htX2lkXzEpOworCiAJLyoKIAkgKiBwcmludCB0aW1pbmcgc3RhdHMgaWYgdGhhdCBvcHRpb24g
-d2FzIHNwZWNpZmllZC4KIAkgKiBwcmludCBlcnJubyBsb2cgaWYgdGhhdCBvcHRpb24gd2FzIHNw
-ZWNpZmllZC4K
---0016e644df0a68073a04910e52b2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
---0016e644df0a68073a04910e52b2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016e644df0a68073a04910e52b2--
-
