@@ -1,41 +1,47 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <suzuki@in.ibm.com>) id 1OxE9Y-0001IM-Pr
-	for ltp-list@lists.sourceforge.net; Sun, 19 Sep 2010 07:17:36 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OxE9X-0008VG-2f
-	for ltp-list@lists.sourceforge.net; Sun, 19 Sep 2010 07:17:36 +0000
-Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
-	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id o8J7HRb7021360
-	for <ltp-list@lists.sourceforge.net>; Sun, 19 Sep 2010 17:17:27 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o8J7HRAB2408686
-	for <ltp-list@lists.sourceforge.net>; Sun, 19 Sep 2010 17:17:27 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o8J7HQo9020581
-	for <ltp-list@lists.sourceforge.net>; Sun, 19 Sep 2010 17:17:26 +1000
-Message-ID: <4C95B904.3070404@in.ibm.com>
-Date: Sun, 19 Sep 2010 12:47:24 +0530
-From: Suzuki Poulose <suzuki@in.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <eramoto.masaya@jp.fujitsu.com>) id 1OwSOL-0005lO-CE
+	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 04:17:41 +0000
+Received: from fgwmail6.fujitsu.co.jp ([192.51.44.36])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OwSOJ-0003wX-IM
+	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 04:17:41 +0000
+Received: from m6.gw.fujitsu.co.jp ([10.0.50.76])
+	by fgwmail6.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	o8H4HWd6026339 for <ltp-list@lists.sourceforge.net> (envelope-from
+	eramoto.masaya@jp.fujitsu.com); Fri, 17 Sep 2010 13:17:32 +0900
+Received: from smail (m6 [127.0.0.1])
+	by outgoing.m6.gw.fujitsu.co.jp (Postfix) with ESMTP id 3CD3145DD71
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Sep 2010 13:17:32 +0900 (JST)
+Received: from s6.gw.fujitsu.co.jp (s6.gw.fujitsu.co.jp [10.0.50.96])
+	by m6.gw.fujitsu.co.jp (Postfix) with ESMTP id 1BDB045DE4F
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Sep 2010 13:17:32 +0900 (JST)
+Received: from s6.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s6.gw.fujitsu.co.jp (Postfix) with ESMTP id F2E7F1DB8015
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Sep 2010 13:17:31 +0900 (JST)
+Received: from ml14.s.css.fujitsu.com (ml14.s.css.fujitsu.com [10.249.87.104])
+	by s6.gw.fujitsu.co.jp (Postfix) with ESMTP id A83C21DB8013
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Sep 2010 13:17:31 +0900 (JST)
+Received: from ml14.css.fujitsu.com (ml14 [127.0.0.1])
+	by ml14.s.css.fujitsu.com (Postfix) with ESMTP id 831BA9F6A84
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Sep 2010 13:17:31 +0900 (JST)
+Received: from [127.0.0.1] (unknown [10.124.101.175])
+	by ml14.s.css.fujitsu.com (Postfix) with ESMTP id 26C319F6A7F
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Sep 2010 13:17:31 +0900 (JST)
+Message-ID: <4C92EBBE.8090108@jp.fujitsu.com>
+Date: Fri, 17 Sep 2010 13:17:02 +0900
+From: ERAMOTO Masaya <eramoto.masaya@jp.fujitsu.com>
 MIME-Version: 1.0
-References: <1282116783.4855.8.camel@PEK-RLIANG-D1>
-	<AANLkTikrFeTSbiWY4EhotU7siB_vw8hVF_FWtSNREr8x@mail.gmail.com>
-	<1283219506.1778.2.camel@PEK-RLIANG-D1>
-	<AANLkTin=MTu4QGB-+zyYQh=qMLprgjx6txisF4r_5xPT@mail.gmail.com>
-	<AANLkTikH16Evfuj0RXkYLUYy6msPf2DcwD+zXzhhFV_+@mail.gmail.com>
-	<1284874992.12271.5.camel@PEK-RLIANG-D1>
-	<4C95AF8A.8000803@in.ibm.com>
-	<1284878205.12271.9.camel@PEK-RLIANG-D1>
-	<4C95B7D9.5060801@in.ibm.com>
-In-Reply-To: <4C95B7D9.5060801@in.ibm.com>
-Content-Type: multipart/mixed; boundary="------------080400010603080109040008"
-Subject: Re: [LTP] [Patch] Fix mtest06 failure: caught unexpected signal -
- 11 --- exiting
+Content-Type: multipart/mixed; boundary="------------050104020401090501080207"
+Subject: [LTP] Fix warning at cpuset_syscall_test.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,202 +52,69 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: renxiu liang <renxiu.liang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
 This is a multi-part message in MIME format.
---------------080400010603080109040008
-Content-Type: text/plain; charset=UTF-8; format=flowed
+--------------050104020401090501080207
+Content-Type: text/plain; charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
 
-Here is a patch which I had, sometime back. It is on an older version of 
-LTP.
+Hi,
 
-Cheers
+I found the following warning at cpuset_syscall_test.c.
 
-Suzuki
+===============
+make[5]: Entering directory `/root/ltp/ltp-old/testcases/kernel/controllers/cpuset/cpuset_syscall_test'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/root/ltp/ltp-old/testcases/kernel/include -I../../../../../include -I../../../../../include
+-L/root/ltp/ltp-old/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_lib
+-L/root/ltp/ltp-old/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../../libcontrollers -L../../../../../lib  cpuset_syscall_test.c   -lltp -lcpu_set
+-lcontrollers -lltp -o cpuset_syscall_test
+cpuset_syscall_test.c: In function 'main':
+cpuset_syscall_test.c:254: warning: control reaches end of non-void function
+make[5]: Leaving directory `/root/ltp/ltp-old/testcases/kernel/controllers/cpuset/cpuset_syscall_test'
+===============
 
+This warning appears because it doesn't have "return <num>" in main().
+The attached patch will fix it.
 
-, Suzuki Poulose wrote:
-> , renxiu liang wrote:
->> On Sun, 2010-09-19 at 12:06 +0530, Suzuki Poulose wrote:
->>> Hello Renxiu,
->>>
->>> Sorry for the late reply. Could you please resend the patch ? I don't
->>> find the patch in the e-mail.
->>>
->> Hi Suzuki
->>
->> attached failure logs on different archs and patch for you.
->
-> I don't understand why there should be ACCERR. The mmap is done with
-> PROT_WRIT|PROT_READ. Could we get more info on which condition triggers
-> this ?
->
-> You may use GDB to break for the ACCERR case and take a look at the
-> instruction which triggers this.
->
-> Coming back to your patch :
->
-> I think we should ensure the si_addr is within the map. (map_address,
-> map_address+mapsize-1) ? We should not let the other SIGSEGVs go through.
->
-> It may be like :
->
-> case SIGSEGV:
-> if ((si_addr >= map_address) &&
-> (si_addr < (map_address + map_size) ) {
-> ...
-> ..
-> }
->
->
-> Thanks
->
-> Suzuki
->
->
->
->
->>
->> thanks for help review this.
->>
->> BR
->> Renxiu
->>> Thanks
->>>
->>> Suzuki
->>> , renxiu liang wrote:
->>>> On Wed, 2010-09-01 at 00:27 -0700, Garrett Cooper wrote:
->>>>> On Wed, Sep 1, 2010 at 12:26 AM, Garrett Cooper<yanegomi@gmail.com>
->>>>> wrote:
->>>>>> On Mon, Aug 30, 2010 at 6:51 PM, renxiu liang
->>>>>> <renxiu.liang@windriver.com> wrote:
->>>>>>> On Wed, 2010-08-25 at 20:36 -0700, Garrett Cooper wrote:
->>>>>>>> On Wed, Aug 18, 2010 at 12:33 AM, renxiu liang
->>>>>>>> <renxiu.liang@windriver.com> wrote:
->>>>>>>>> Hi,
->>>>>>>>>
->>>>>>>>> We met the mtest06 failure several times; this is because in
->>>>>>>>> mtest06/mmap1.c, when handling the signal 11 in sig_handler, it
->>>>>>>>> doesn't
->>>>>>>>> cover another two race conditions:
->>>>>>>>> one is si_code equals "SEGV_MAPERR" but si_address does not
->>>>>>>>> equal to
->>>>>>>>> map_address; and one is si_code equals to "SEGV_ACCERR";
->>>>>>>>>
->>>>>>>>> see below error log:
->>>>>>>>>
->>>>>>>>> <<<test_start>>>
->>>>>>>>> tag=mtest06 stime=1270902396
->>>>>>>>> cmdline=" mmap1 -x 0.05"
->>>>>>>>> contacts=""
->>>>>>>>> analysis=exit
->>>>>>>>> initiation_status="ok"
->>>>>>>>> <<<test_output>>>
->>>>>>>>> mmap1 0 INFO : pid[5456]: map, change contents, unmap files
->>>>>>>>> 1000 times
->>>>>>>>> mmap1 0 INFO : created thread[1216369840]
->>>>>>>>> mmap1 0 INFO : pid[5456] - read contents of memory 0x48002000
->>>>>>>>> 1000 times
->>>>>>>>> mmap1 0 INFO : page fault occurred at 0x48002000
->>>>>>>>> mmap1 0 INFO : page fault occurred at 0x48002000
->>>>>>>>> mmap1 0 INFO : page fault occurred at 0x48002000
->>>>>>>>> mmap1 0 INFO : page fault occurred at 0x48002000
->>>>>>>>> ......
->>>>>>>>> mmap1 0 INFO : page fault occurred at 0x48002000
->>>>>>>>> mmap1 0 INFO : page fault occurred at 0x48002000
->>>>>>>>> caught unexpected signal - 11 --- exiting
->>>>>>>>> <<<execution_status>>>
->>>>>>>>> duration=1 termination_type=exited termination_id=255 corefile=no
->>>>>>>>> cutime=0 cstime=4
->>>>>>>>> <<<test_end>>>
->>>>>>>>>
->>>>>>>>> I made a patch to cover all the three race conditions in one
->>>>>>>>> case in
->>>>>>>>> sig_handler(),
->>>>>>>>> then run mtest06 repeatedly on different archs, test will not
->>>>>>>>> fail by
->>>>>>>>> catching signal 11.
->>>>>>>>
->>>>>>>> Could you print out what the value of info->si_code and
->>>>>>>> info->si_addr
->>>>>>>> are at the time of the fault? Also, which architecture(s) are you
->>>>>>>> running into this issue on?
->>>>>>> Hi Garrett,
->>>>>>>
->>>>>>> Sorry for the late reply; See attached mtest06 logs, I printed
->>>>>>> out the
->>>>>>> values of si_code, si_addr, map_address;
->>>>>>> it is reproducible on arm, x86, ppc and mips; though it is not
->>>>>>> reproducible every time, but can be reproducible if run the case
->>>>>>> repeatedly.
->>>>>>
->>>>>> Nothing is jumping out at me as being incorrect, so I think it's best
->>>>>> that I bring in a better pair of eyes, just in case.
->>>>>>
->>>>>> Suzuki-san,
->>>>>> Could you please help review this patch?
->>>>>
->>>> Hi Garrett,
->>>> No reply from Suzuki-san after almost three weeks; I'm afraid
->>>> Suzuki-san
->>>> didn't catch the mail, could you find someone else to review the patch?
->>>> thanks!
->>>>
->>>> BR,
->>>> Renxiu
->>>>
->>>>> CCing Suzuki-san...
->>>>> -Garrett
->>>>
->>>
->>
->
+Signed-off-by: ERAMOTO Masaya <eramoto.masaya@jp.fujitsu.com>
+===============
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+index 961d0f9..0d4fe87 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+@@ -251,5 +251,6 @@ int main(int argc, char *argv[])
+ #else
+ int main (void) {
+ 	printf("System doesn't have required mempolicy support\n");
++	return -1;
+ }
+ #endif
+===============
+
+Thanks,
+ERAMOTO
 
 
---------------080400010603080109040008
+--------------050104020401090501080207
 Content-Type: text/plain;
- name="mtest06-mmap1.diff"
+ name="fix_warning_at_cpuset_syscall_test.c.patch"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment;
- filename="mtest06-mmap1.diff"
+	filename="fix_warning_at_cpuset_syscall_test.c.patch"
 
-ZGlmZiAtTmF1ciBsdHAtZnVsbC0yMDA5MTIzMS5vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvbWVt
-L210ZXN0MDYvbW1hcDEuYyBsdHAtZnVsbC0yMDA5MTIzMS90ZXN0Y2FzZXMva2VybmVsL21l
-bS9tdGVzdDA2L21tYXAxLmMKLS0tIGx0cC1mdWxsLTIwMDkxMjMxLm9yaWcvdGVzdGNhc2Vz
-L2tlcm5lbC9tZW0vbXRlc3QwNi9tbWFwMS5jCTIwMDktMTAtMTMgMTk6MzA6NDYuMDAwMDAw
-MDAwICswNTMwCisrKyBsdHAtZnVsbC0yMDA5MTIzMS90ZXN0Y2FzZXMva2VybmVsL21lbS9t
-dGVzdDA2L21tYXAxLmMJMjAxMC0wMy0xNSAxNjozMDozMy4wMDAwMDAwMDAgKzA1MzAKQEAg
-LTEzOCw2ICsxMzgsNyBAQAogaW50IAkgICB2ZXJib3NlX3ByaW50ID0gRkFMU0U7Lyogd2hl
-biBjYWxsZWQgd2l0aCAtdiBwcmludCBtb3JlIGluZm8gICAgICAgKi8KIGNhZGRyX3QgICAg
-Km1hcF9hZGRyZXNzOwkvKiBhZGRyZXNzIG9mIHRoZSBmaWxlIG1hcHBlZC4JICAgICAgICAg
-ICAgICAqLwogc2lnam1wX2J1ZiBqbXBidWY7CQkvKiBhcmd1bWVudCB0byBzaWdzZXRqbXAg
-YW5kIHNpZ2xvbmdqbXAgICAgICAgKi8KK2xvbmcJICAgbWFwX2xlbjsKIAogY2hhciAqVENJ
-RCA9ICJtbWFwMSI7CiBpbnQgVFNUX1RPVEFMID0gMTsKQEAgLTE2OCwxNCArMTY5LDIyIEBA
-CiAgICAgICAgICAgICAgX2V4aXQoMCk7CiAKICAgICAgICAgY2FzZSBTSUdTRUdWOgotICAg
-ICAgICAgICAgIGlmIChpbmZvLT5zaV9jb2RlID09IFNFR1ZfTUFQRVJSICYmCi0gICAgICAg
-ICAgICAgICAgICAgICAgaW5mby0+c2lfYWRkciA9PSBtYXBfYWRkcmVzcykKKyAgICAgICAg
-ICAgICBpZiAoIGluZm8tPnNpX2FkZHIgPT0gbWFwX2FkZHJlc3MgfHwKKwkJIChtYXBfYWRk
-cmVzcyAmJiAoaW5mby0+c2lfYWRkciA+PSAodm9pZCopIG1hcF9hZGRyZXNzICYmCisJCQkJ
-IGluZm8tPnNpX2FkZHIgPCAodm9pZCAqKSgobG9uZyltYXBfYWRkcmVzcyArIG1hcF9sZW4p
-KQorCQkgICkKKwkJKQogICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgIHRzdF9y
-ZXNtKFRJTkZPLAogICAgICAgICAgICAgICAgICAgICAicGFnZSBmYXVsdCBvY2N1cnJlZCBh
-dCAlcCIsCiAgICAgICAgICAgICAgICAgICAgIG1hcF9hZGRyZXNzKTsKICAgICAgICAgICAg
-ICAgICAgIGxvbmdqbXAoam1wYnVmLCAxKTsKLSAgICAgICAgICAgICB9CisgICAgICAgICAg
-ICAgfSBlbHNlIHsKKyAgICAgICAgICAgIAkgIGZwcmludGYoc3RkZXJyLCAiY2F1Z2h0IFNJ
-R1NFR1YgYXQgJXAgd2hpbGUgbW1hcCBpcyAoJXAsJXApIC0gIGV4aXRpbmdcbiIsCisJCQkJ
-aW5mby0+c2lfYWRkciwgbWFwX2FkZHJlc3MsICh2b2lkKikoKGxvbmcpbWFwX2FkZHJlc3Mg
-KyBtYXBfbGVuKSk7CisJCSAgX2V4aXQoLTEpOworCSAgICAgfQorCQkKICAgICAgICAgZGVm
-YXVsdDoKICAgICAgICAgICAgIGZwcmludGYoc3RkZXJyLCAiY2F1Z2h0IHVuZXhwZWN0ZWQg
-c2lnbmFsIC0gJWQgLS0tIGV4aXRpbmdcbiIsCiAgICAgICAgICAgICAgICAgICAgICBzaWdu
-YWwpOwpAQCAtMjkzLDYgKzMwMiw5IEBACiAJCSAgICAgICAobG9uZyAqKWFyZ3M7CiAgICAg
-bG9uZyBleGl0X3ZhbCA9IDA7ICAvKiBleGl0IHZhbHVlIG9mIHRoZSBwdGhyZWFkCQkgICAg
-ICAqLwogCisgICAgLyogVGhlIHNpemUgb2YgdGhlIG1hcCAqLworICAgIG1hcF9sZW4gPSBt
-d3VhcmdzWzFdOworCiAgICAgdHN0X3Jlc20oVElORk8sICJwaWRbJWRdOiBtYXAsIGNoYW5n
-ZSBjb250ZW50cywgdW5tYXAgZmlsZXMgJWQgdGltZXMiLAogCQlnZXRwaWQoKSwgKGludClt
-d3VhcmdzWzJdKTsKICAgICBpZiAodmVyYm9zZV9wcmludCkK
---------------080400010603080109040008
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0L2NwdXNl
+dF9zeXNjYWxsX3Rlc3QvY3B1c2V0X3N5c2NhbGxfdGVzdC5jIGIvdGVzdGNhc2VzL2tlcm5l
+bC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRfc3lzY2Fs
+bF90ZXN0LmMKaW5kZXggOTYxZDBmOS4uMGQ0ZmU4NyAxMDA2NDQKLS0tIGEvdGVzdGNhc2Vz
+L2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRf
+c3lzY2FsbF90ZXN0LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVz
+ZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRfc3lzY2FsbF90ZXN0LmMKQEAgLTI1MSw1
+ICsyNTEsNiBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogI2Vsc2UKIGlu
+dCBtYWluICh2b2lkKSB7CiAJcHJpbnRmKCJTeXN0ZW0gZG9lc24ndCBoYXZlIHJlcXVpcmVk
+IG1lbXBvbGljeSBzdXBwb3J0XG4iKTsKKwlyZXR1cm4gLTE7CiB9CiAjZW5kaWYK
+--------------050104020401090501080207
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -252,7 +125,7 @@ Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
---------------080400010603080109040008
+--------------050104020401090501080207
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -263,5 +136,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------080400010603080109040008--
+--------------050104020401090501080207--
+
 
