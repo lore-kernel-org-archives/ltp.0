@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OwSqw-000407-Cs
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 04:47:14 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OwSqv-0007rm-KI
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 04:47:14 +0000
-Received: by yxg6 with SMTP id 6so849570yxg.34
+	(envelope-from <Feng.Gao@windriver.com>) id 1OwQ9y-0007Wf-QC
+	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 01:54:42 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1OwQ9x-0000jy-Bk
+	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 01:54:42 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o8H1sZlm005506
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 16 Sep 2010 21:47:08 -0700 (PDT)
+	Thu, 16 Sep 2010 18:54:35 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <4C92EBBE.8090108@jp.fujitsu.com>
-References: <4C92EBBE.8090108@jp.fujitsu.com>
-Date: Thu, 16 Sep 2010 21:47:07 -0700
-Message-ID: <AANLkTin9tmLMZQyvBh898Z7pYAAn_BzVZEYkGZjCJNv-@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Fix warning at cpuset_syscall_test.c
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CB560B.45542BB9"
+Date: Fri, 17 Sep 2010 03:52:37 +0200
+Message-ID: <52CF90264091A14888078A031D780F4306901E9A@ism-mail03.corp.ad.wrs.com>
+From: "Gao, Feng" <Feng.Gao@windriver.com>
+Subject: [LTP] [PATCH]Mdify the __NR_cacheflush value in the cacheflush01
+	case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,74 +29,125 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ERAMOTO Masaya <eramoto.masaya@jp.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-2010/9/16 ERAMOTO Masaya <eramoto.masaya@jp.fujitsu.com>:
-> Hi,
->
-> I found the following warning at cpuset_syscall_test.c.
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> make[5]: Entering directory `/root/ltp/ltp-old/testcases/kernel/controlle=
-rs/cpuset/cpuset_syscall_test'
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I/root/ltp/ltp-old=
-/testcases/kernel/include -I../../../../../include -I../../../../../include
-> -L/root/ltp/ltp-old/testcases/kernel/controllers/cpuset/cpuset_syscall_te=
-st/../cpuset_lib
-> -L/root/ltp/ltp-old/testcases/kernel/controllers/cpuset/cpuset_syscall_te=
-st/../../libcontrollers -L../../../../../lib =A0cpuset_syscall_test.c =A0 -=
-lltp -lcpu_set
-> -lcontrollers -lltp -o cpuset_syscall_test
-> cpuset_syscall_test.c: In function 'main':
-> cpuset_syscall_test.c:254: warning: control reaches end of non-void funct=
-ion
-> make[5]: Leaving directory `/root/ltp/ltp-old/testcases/kernel/controller=
-s/cpuset/cpuset_syscall_test'
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> This warning appears because it doesn't have "return <num>" in main().
-> The attached patch will fix it.
->
-> Signed-off-by: ERAMOTO Masaya <eramoto.masaya@jp.fujitsu.com>
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpus=
-et_syscall_test.c
-> b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_=
-test.c
-> index 961d0f9..0d4fe87 100644
-> --- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_sysc=
-all_test.c
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_sysc=
-all_test.c
-> @@ -251,5 +251,6 @@ int main(int argc, char *argv[])
-> =A0#else
-> =A0int main (void) {
-> =A0 =A0 =A0 =A0printf("System doesn't have required mempolicy support\n");
-> + =A0 =A0 =A0 return -1;
-> =A0}
-> =A0#endif
+This is a multi-part message in MIME format.
 
-1. Negative return values from main are bad.
-2. 0 would be better, otherwise it's going to cause more churn on the
-list because people without the support are going to start asking the
-question: "why is this testcase failing"?
+------_=_NextPart_001_01CB560B.45542BB9
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_002_01CB560B.45542BB9"
 
-I'll implement return 0 instead.
 
-Thanks for the heads up!
--Garrett
+------_=_NextPart_002_01CB560B.45542BB9
+Content-Type: text/plain;
+	charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
 
----------------------------------------------------------------------------=
----
+Hi,
+
+In the cacheflush01.c, it re-defines the __NR_cacheflush to __NR_Linux + =
+197. But the operation is not alway correct.
+If _MIPS_SIM is _MIPS_SIM_ABI32, Linux will use o32 style syscalls are =
+in the range from 4000 to 4999.
+The __NR_cacheflush is __NR_Linux + 147.
+
+Patch attached.
+
+Signed-off-by: Feng Gao <feng.gao@windriver.com>
+
+BR,
+Feng Gao
+
+------_=_NextPart_002_01CB560B.45542BB9
+Content-Type: text/html;
+	charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dgb2312">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7654.12">
+<TITLE>[LTP][PATCH]Mdify the __NR_cacheflush value in the cacheflush01 =
+case</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>Hi,<BR>
+<BR>
+In the cacheflush01.c, it re-defines the __NR_cacheflush to __NR_Linux + =
+197. But the operation is not alway correct.<BR>
+If _MIPS_SIM is _MIPS_SIM_ABI32, Linux will use o32 style syscalls are =
+in the range from 4000 to 4999.<BR>
+The __NR_cacheflush is __NR_Linux + 147.<BR>
+<BR>
+Patch attached.<BR>
+<BR>
+Signed-off-by: Feng Gao &lt;feng.gao@windriver.com&gt;<BR>
+<BR>
+BR,<BR>
+Feng Gao<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_002_01CB560B.45542BB9--
+
+------_=_NextPart_001_01CB560B.45542BB9
+Content-Type: text/x-diff;
+	name="0001-Modified-the-__NR_cacheflush-in-the-cacheflush01.c.patch"
+Content-Transfer-Encoding: base64
+Content-Description: 0001-Modified-the-__NR_cacheflush-in-the-cacheflush01.c.patch
+Content-Disposition: attachment;
+	filename="0001-Modified-the-__NR_cacheflush-in-the-cacheflush01.c.patch"
+
+RnJvbSA4Y2NmN2VmZjkwMzVkYTEzMDg4ZWVmNTBmYjc3M2FmMTAwYjUzZjc3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBGZW5nIEdhbyA8ZmVuZy5nYW9Ad2luZHJpdmVyLmNvbT4KRGF0
+ZTogRnJpLCAxNyBTZXAgMjAxMCAwOTo0NzozMiArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIE1vZGlm
+aWVkIHRoZSBfX05SX2NhY2hlZmx1c2ggaW4gdGhlIGNhY2hlZmx1c2gwMS5jCgpJbiB0aGUgY2Fj
+aGVmbHVzaDAxLmMsIGl0IHJlLWRlZmluZXMgdGhlIF9fTlJfY2FjaGVmbHVzaCB0byBfX05SX0xp
+bnV4ICsgMTk3LgpCdXQgdGhlIG9wZXJhdGlvbiBpcyBub3QgYWx3YXkgY29ycmVjdC4gSXQgU2hv
+dWxkIGJlIHRoZSB2YWx1ZSBpbiB0aGUgdW5pc3RkLmguCgpTaWduZWQtb2ZmLWJ5OiBGZW5nIEdh
+byA8ZmVuZy5nYW9Ad2luZHJpdmVyLmNvbT4KLS0tCiAuLi4va2VybmVsL3N5c2NhbGxzL2NhY2hl
+Zmx1c2gvY2FjaGVmbHVzaDAxLmMgICAgICB8ICAgIDIgKysKIDEgZmlsZXMgY2hhbmdlZCwgMiBp
+bnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvY2FjaGVmbHVzaC9jYWNoZWZsdXNoMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvY2FjaGVmbHVzaC9jYWNoZWZsdXNoMDEuYwppbmRleCBkMGE0YjFmLi5iYjIwMDY0
+IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2NhY2hlZmx1c2gvY2FjaGVm
+bHVzaDAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jYWNoZWZsdXNoL2NhY2hl
+Zmx1c2gwMS5jCkBAIC02Niw3ICs2Niw5IEBACiAgKiBNSVBTIGFyY2hpdGVjdHVyZSAtLSByZWdh
+cmRsZXNzLCBpdCdzIGEgZ29vZCBuZWdhdGl2ZSB0ZXN0Li4gKi8KICNpZiBkZWZpbmVkIF9fbWlw
+c19fCiAjaW5jbHVkZSA8YXNtL2NhY2hlY3RsLmg+CisjaWZuZGVmIF9fTlJfY2FjaGVmbHVzaAog
+I2RlZmluZSBfX05SX2NhY2hlZmx1c2gJCShfX05SX0xpbnV4ICsgMTk3KQorI2VuZGlmCiAjZWxz
+ZQogLyogRmFrZSBsaW51eF9zeXNjYWxsX251bWJlcnMuaCAqLwogI2RlZmluZSBfX05SX2NhY2hl
+Zmx1c2gJCTAKLS0gCjEuNS42LjMKCg==
+
+------_=_NextPart_001_01CB560B.45542BB9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
+------_=_NextPart_001_01CB560B.45542BB9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01CB560B.45542BB9--
+
