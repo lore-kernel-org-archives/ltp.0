@@ -1,21 +1,9 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Oxuyk-0008MR-V0
-	for ltp-list@lists.sourceforge.net; Tue, 21 Sep 2010 05:01:18 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Oxuyk-0003Pa-76
-	for ltp-list@lists.sourceforge.net; Tue, 21 Sep 2010 05:01:18 +0000
-Received: by yxg6 with SMTP id 6so2092260yxg.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 20 Sep 2010 22:01:13 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 20 Sep 2010 22:01:12 -0700
-Message-ID: <AANLkTimKw8yZyXbzoWqTXx4A=bWab7EHD7Axqu+FnKjO@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] ltp-dev.git is being moved to ltp.git
+Date: Mon, 20 Sep 2010 11:16:22 +0530
+Message-ID: <AANLkTimuf2u6_X1J4fb+Ds3EY2emb01WQ41p6Y9yb4At@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] nfs testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,31 +13,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5191210454991505481=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net, Ltp-list-request@lists.sourceforge.net
 
-    So, finally got the SF folks to help us fix some stuff and now all
-of the ltp-dev.git content has been pushed out to ltp.git . I'm
-letting people know in advance because no more commits *should* go to
-ltp-dev.git from here on out, and after a few weeks the ltp-dev.git
-repository is going to be removed.
-    This transition was warranted by the fact that when Rishi and I
-first setup the git repository we screwed up and in order to `get
-things to work' Rishi used ltp-dev.git, which is unfortunately
-confusing to newcomers because the directions state ltp.git, not
-ltp-dev.git up on the SF site.
-    Anyhow, sorry for the transition, but it's for the best.
-Thanks,
--Garrett
+--===============5191210454991505481==
+Content-Type: multipart/alternative; boundary=0016367fa2d0afc3210490aa6ef1
+
+--0016367fa2d0afc3210490aa6ef1
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi,
+
+      while running NFS testcase in LTP, i am getting a diffent kind of
+error.
+      5 out of 8 testcases are failing due to same kind of error as
+explained below:--
+
+      Testcases are failing because instead of looking for 'nfs02', it is
+looking for 'nfs028153' inside opt/ltp/testcases/bin, and this is not found.
+Similar is the case with nfs03,nfs04,nfsstress etc.
+      please tell why it is looking for some file which does not exist, and
+how to rectify this problem.
+
+-- 
+Regards,
+Arjit Sharma.
+
+--0016367fa2d0afc3210490aa6ef1
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>Hi,</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0 while running NFS testcase in LTP, i am getting a diff=
+ent kind of error.</div>
+<div>=A0=A0=A0=A0=A0=A05 out of 8 testcases are failing due to same kind of=
+ error as explained below:--</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0Testcases are failing because instead of looking for=
+ &#39;nfs02&#39;, it is looking for &#39;nfs028153&#39; inside opt/ltp/test=
+cases/bin, and this is not=A0found. Similar is the case with nfs03,nfs04,nf=
+sstress etc.=A0=A0=A0=A0</div>
+
+<div>=A0=A0=A0=A0=A0 please tell why it is looking for some file which does=
+ not exist, and how to rectify this problem.=A0=A0=A0 <br clear=3D"all"><br=
+>-- <br></div>
+<div>Regards,</div>
+<div>Arjit Sharma.</div><br>
+
+--0016367fa2d0afc3210490aa6ef1--
+
+
+--===============5191210454991505481==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
+--===============5191210454991505481==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5191210454991505481==--
+
