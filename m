@@ -1,29 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1P1By7-0002QQ-Bc
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 05:46:11 +0000
-Received: from out21.sjc.mx.trendmicro.com ([216.99.131.78])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P1By5-0002Mf-Op
-	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 05:46:11 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.23])
-	by out21.sjc.mx.trendmicro.com (Postfix) with ESMTP id B30B1980468
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 30 Sep 2010 05:46:03 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 15D8E114B835
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 30 Sep 2010 05:46:02 +0000 (UTC)
-Message-ID: <000b01cb6062$9848f210$c8dad630$@co.jp>
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Thu, 30 Sep 2010 14:44:48 +0900
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="--=_NextPart_ST_14_44_51_Thursday_September_30_2010_31630"
-Content-Language: ja
-Subject: [LTP] [PATCH] fix "aio_error" test
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mwenzel@novell.com>) id 1OxhAX-0005nl-4m
+	for ltp-list@lists.sourceforge.net; Mon, 20 Sep 2010 14:16:33 +0000
+Received: from sinclair.provo.novell.com ([137.65.248.137])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OxhAT-0005Qs-UZ
+	for ltp-list@lists.sourceforge.net; Mon, 20 Sep 2010 14:16:31 +0000
+Message-Id: <4C971855020000E800068F16@sinclair.provo.novell.com>
+Date: Mon, 20 Sep 2010 08:16:21 -0600
+From: "Murlin Wenzel" <mwenzel@novell.com>
+References: <4C936C31020000E800068DF2@sinclair.provo.novell.com>
+	<AANLkTimUonwvA6PRiTzM01aC6EUf3SMp+ACfG0TJci2S@mail.gmail.com>
+In-Reply-To: <AANLkTimUonwvA6PRiTzM01aC6EUf3SMp+ACfG0TJci2S@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=__Part7A57ACA5.1__="
+Subject: Re: [LTP] [Patch] enable hyperthreading tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,163 +27,111 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: =?iso-2022-jp?B?GyRCYUQ6QhsoQiAbJEI3cjtUGyhC?= <toza@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list <ltp-list@lists.sf.net>
 
-This is a multi-part message in MIME format.
-
-----=_NextPart_ST_14_44_51_Thursday_September_30_2010_31630
-Content-Type: text/plain;
-	charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-
-"conformance/interfaces/aio_error/3-1" failed with following message:
-------------
-conformance/interfaces/aio_error/3-1: execution: FAILED: Output: 
-aio_error/3-1.c bad aio_read return value()
-------------
-
-This testset seems to be the error root test for "aio_error()".
-Therefore, "aio_error()" must be called after failure of "aio_write()", 
-I think.
-But, "exit()" is called when expected failure of "aio_write()" occurred:
-------------(3-1.c)
-        if (aio_write(&aiocb) != 0)
- {
-                printf(TNAME " bad aio_read return value()\n");
-                exit(PTS_FAIL);
- }
-------------
-
-I think that "exit()" must be called when "aio_write()" succeeded.
-
-And the message of unexpected movement of "aio_write()" is 
-"aio_read()"'s one.
-And the indent of this program "3-1.c" seems to include both space and tab.
-I want to revise them, too.
-
-
-Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-============
----
-a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c	2010
--09-22 22:31:24.000000000 +0900
-+++
-b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c	2010
--09-30 09:51:42.000000000 +0900
-@@ -36,42 +36,41 @@
- 
- int main()
- {
--
--        char tmpfname[256];
-+	char tmpfname[256];
- #define BUF_SIZE 512
--        char buf[BUF_SIZE];
--        int fd;
--        struct aiocb aiocb;
-+	char buf[BUF_SIZE];
-+	int fd;
-+	struct aiocb aiocb;
- 	int ret=0;
- 
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
- 		return PTS_UNSUPPORTED;
- 
--        snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_error_3_1_%d",
--                  getpid());
--        unlink(tmpfname);
--        fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
--                  S_IRUSR | S_IWUSR);
--        if (fd == -1)
--        {
--                printf(TNAME " Error at open(): %s\n",
--                       strerror(errno));
--                exit(PTS_UNRESOLVED);
--        }
-+	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_error_3_1_%d",
-+			 getpid());
-+	unlink(tmpfname);
-+	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
-+			  S_IRUSR | S_IWUSR);
-+	if (fd == -1)
-+	{
-+		printf(TNAME " Error at open(): %s\n",
-+			   strerror(errno));
-+		exit(PTS_UNRESOLVED);
-+	}
- 
--        unlink(tmpfname);
-+	unlink(tmpfname);
- 
- 	memset (&aiocb, 0, sizeof (struct aiocb));
- 
--        aiocb.aio_fildes = fd;
--        aiocb.aio_buf = buf;
--        aiocb.aio_reqprio = -1;
--        aiocb.aio_nbytes = BUF_SIZE;
-+	aiocb.aio_fildes = fd;
-+	aiocb.aio_buf = buf;
-+	aiocb.aio_reqprio = -1;
-+	aiocb.aio_nbytes = BUF_SIZE;
- 
--        if (aio_write(&aiocb) != 0)
-+	if (aio_write(&aiocb) == 0)
- 	{
--                printf(TNAME " bad aio_read return value()\n");
--                exit(PTS_FAIL);
-+		printf(TNAME " bad aio_write return value()\n");
-+		exit(PTS_FAIL);
- 	}
- 
- 	while (aio_error (&aiocb) == EINPROGRESS);
-============
-
-
-Regards--
-
--Tomonori Mitani
-
-----=_NextPart_ST_14_44_51_Thursday_September_30_2010_31630
-Content-Type: application/octet-stream;
-	name="3-1.patch"
+--=__Part7A57ACA5.1__=
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="3-1.patch"
+Content-Disposition: inline
 
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c=
-=092010-09-22 22:31:24.000000000 +0900=0A+++ b/testcases/open_posix_testsui=
-te/conformance/interfaces/aio_error/3-1.c=092010-09-30 09:51:42.000000000 +=
-0900=0A@@ -36,42 +36,41 @@=0A =0A int main()=0A {=0A-=0A-        char tmpfn=
-ame[256];=0A+=09char tmpfname[256];=0A #define BUF_SIZE 512=0A-        char=
- buf[BUF_SIZE];=0A-        int fd;=0A-        struct aiocb aiocb;=0A+=09cha=
-r buf[BUF_SIZE];=0A+=09int fd;=0A+=09struct aiocb aiocb;=0A =09int ret=3D0;=
-=0A =0A =09if (sysconf(_SC_ASYNCHRONOUS_IO) !=3D 200112L)=0A =09=09return P=
-TS_UNSUPPORTED;=0A =0A-        snprintf(tmpfname, sizeof(tmpfname), "/tmp/p=
-ts_aio_error_3_1_%d",=0A-                  getpid());=0A-        unlink(tmp=
-fname);=0A-        fd =3D open(tmpfname, O_CREAT | O_RDWR | O_EXCL,=0A-    =
-              S_IRUSR | S_IWUSR);=0A-        if (fd =3D=3D -1)=0A-        {=
-=0A-                printf(TNAME " Error at open(): %s\n",=0A-             =
-          strerror(errno));=0A-                exit(PTS_UNRESOLVED);=0A-   =
-     }=0A+=09snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_error_3_1_%=
-d",=0A+=09=09=09 getpid());=0A+=09unlink(tmpfname);=0A+=09fd =3D open(tmpfn=
-ame, O_CREAT | O_RDWR | O_EXCL,=0A+=09=09=09  S_IRUSR | S_IWUSR);=0A+=09if =
-(fd =3D=3D -1)=0A+=09{=0A+=09=09printf(TNAME " Error at open(): %s\n",=0A+=09=
-=09=09   strerror(errno));=0A+=09=09exit(PTS_UNRESOLVED);=0A+=09}=0A =0A-  =
-      unlink(tmpfname);=0A+=09unlink(tmpfname);=0A =0A =09memset (&aiocb, 0=
-, sizeof (struct aiocb));=0A =0A-        aiocb.aio_fildes =3D fd;=0A-      =
-  aiocb.aio_buf =3D buf;=0A-        aiocb.aio_reqprio =3D -1;=0A-        ai=
-ocb.aio_nbytes =3D BUF_SIZE;=0A+=09aiocb.aio_fildes =3D fd;=0A+=09aiocb.aio=
-_buf =3D buf;=0A+=09aiocb.aio_reqprio =3D -1;=0A+=09aiocb.aio_nbytes =3D BU=
-F_SIZE;=0A =0A-        if (aio_write(&aiocb) !=3D 0)=0A+=09if (aio_write(&a=
-iocb) =3D=3D 0)=0A =09{=0A-                printf(TNAME " bad aio_read retu=
-rn value()\n");=0A-                exit(PTS_FAIL);=0A+=09=09printf(TNAME " =
-bad aio_write return value()\n");=0A+=09=09exit(PTS_FAIL);=0A =09}=0A =0A =09=
-while (aio_error (&aiocb) =3D=3D EINPROGRESS);=0A
-----=_NextPart_ST_14_44_51_Thursday_September_30_2010_31630
+>>> On 9/17/2010 at 03:22 PM, in message
+<AANLkTimUonwvA6PRiTzM01aC6EUf3SMp+ACfG0TJci2S@mail.gmail.com>, Garrett =
+Cooper
+<yanegomi@gmail.com> wrote:=20
+> On Fri, Sep 17, 2010 at 12:25 PM, Murlin Wenzel <mwenzel@novell.com> =
+wrote:
+>> Currently the hyperthreading tests will only run on 32bit (i386) os=20
+> versions.  HT is also supported on x86_64, so I changed defines to =
+allow=20
+> either os version.
+>>
+>> Signed-off-by: Murlin Ray Wenzel <mwenzel@novell.com>
+>=20
+> Seems sane. Could you change `i386 architecture' to `x86 architecture'=20=
+
+> please?
+> Thanks,
+> -Garrett
+
+Added requested change from i386 to x86 in print statements.
+
+Murlin
+
+
+
+
+--=__Part7A57ACA5.1__=
+Content-Type: text/plain; name="enable_ht.PATCH"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename="enable_ht.PATCH"
+
+diff -urN ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_affin=
+ity/ht_affinity.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreadi=
+ng//ht_affinity/ht_affinity.c=0A--- ltp-full-20100831/testcases/kernel/sche=
+d/hyperthreading//ht_affinity/ht_affinity.c	2010-09-14 05:04:34.0000000=
+00 -0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading/=
+/ht_affinity/ht_affinity.c	2010-09-20 08:09:29.000000000 -0600=0A@@ =
+-233,8 +233,8 @@=0A int main(int argc, char *argv[])=0A {=0A =0A-#ifndef =
+__i386__=0A-	tst_brkm(TCONF, NULL, "This test suite can only execute on =
+i386 architecture.");=0A+#if (!defined __i386__ && !defined __x86_64__)=0A+=
+	tst_brkm(TCONF, NULL, "This test suite can only execute on x86 =
+architecture.");=0A #else=0A 	if (!check_ht_capability())=0A 	{=0Adiff =
+-urN ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_affinity/h=
+t_utils.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_a=
+ffinity/ht_utils.c=0A--- ltp-full-20100831/testcases/kernel/sched/hyperthre=
+ading//ht_affinity/ht_utils.c	2010-09-14 05:04:34.000000000 -0600=0A+++ =
+ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_affinity/ht=
+_utils.c	2010-09-17 11:08:44.000000000 -0600=0A@@ -17,7 +17,7 @@=0A =
+=0A inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx)=0A =
+{=0A-#ifndef __i386__=0A+#if (!defined __i386__ && !defined __x86_64__)=0A =
+	return;=0A #else=0A 	__asm__("cpuid"=0Adiff -urN ltp-full-201008=
+31/testcases/kernel/sched/hyperthreading//ht_enabled/ht_enabled.c =
+ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_enabled/ht_=
+enabled.c=0A--- ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht=
+_enabled/ht_enabled.c	2010-09-14 05:04:34.000000000 -0600=0A+++ =
+ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_enabled/ht_=
+enabled.c	2010-09-20 08:10:44.000000000 -0600=0A@@ -22,8 +22,8 @@=0A =
+int main(int argc, char *argv[])=0A {=0A 	int ret_val =3D 1;=0A-#ifnd=
+ef __i386__=0A-	tst_brkm(TCONF, NULL, "This test suite can only execute on =
+i386 architecture.");=0A+#if  (!defined __x86_64__ && !defined __i386__)=0A=
++	tst_brkm(TCONF, NULL, "This test suite can only execute on x86 =
+architecture.");=0A #else=0A 		ret_val =3D check_ht_capability();=
+=0A #endif=0Adiff -urN ltp-full-20100831/testcases/kernel/sched/hyperthread=
+ing//ht_enabled/ht_utils.c ltp-full-20100831.mrw/testcases/kernel/sched/hyp=
+erthreading//ht_enabled/ht_utils.c=0A--- ltp-full-20100831/testcases/kernel=
+/sched/hyperthreading//ht_enabled/ht_utils.c	2010-09-14 05:04:34.0000000=
+00 -0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading/=
+/ht_enabled/ht_utils.c	2010-09-17 11:06:02.000000000 -0600=0A@@ -20,7 =
++20,7 @@=0A =0A inline void cpuid(int op, int *eax, int *ebx, int *ecx, =
+int *edx)=0A {=0A-#ifndef __i386__=0A+#if (!defined __i386__ && !defined =
+__x86_64__)=0A 	return;=0A #else=0A 	__asm__("cpuid"=0A@@ -47,8 +47,7 =
+@@=0A 		/*printf("The processor in this system supports =
+HT\n");*/=0A 		return 1;=0A 	} else {=0A-		/*printf("T=
+he processor in this system does not support=0A-		* =
+HT\n");*/=0A+		/*printf("The processor in this system does not =
+support HT\n");*/=0A 		return 0;=0A 	}=0A }=0Adiff -urN =
+ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_interrupt/ht_in=
+terrupt.c ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht_i=
+nterrupt/ht_interrupt.c=0A--- ltp-full-20100831/testcases/kernel/sched/hype=
+rthreading//ht_interrupt/ht_interrupt.c	2010-09-14 05:04:34.000000000 =
+-0600=0A+++ ltp-full-20100831.mrw/testcases/kernel/sched/hyperthreading//ht=
+_interrupt/ht_interrupt.c	2010-09-20 08:11:40.000000000 -0600=0A@@ =
+-111,8 +111,8 @@=0A {=0A 	tst_resm(TINFO, "Begin: HyperThreading =
+Interrupt");=0A =0A-#ifndef __i386__=0A-	tst_brkm(TCONF, NULL, =
+"This test suite can only execute on i386 architecture.");=0A+#if =
+(!defined __i386__ && !defined __x86_64__)=0A+	tst_brkm(TCONF, NULL, =
+"This test suite can only execute on x86 architecture.");=0A #else=0A 	if =
+(!check_ht_capability())=0A 	{=0Adiff -urN ltp-full-20100831/testcases/k=
+ernel/sched/hyperthreading//ht_interrupt/ht_utils.c ltp-full-20100831.mrw/t=
+estcases/kernel/sched/hyperthreading//ht_interrupt/ht_utils.c=0A--- =
+ltp-full-20100831/testcases/kernel/sched/hyperthreading//ht_interrupt/ht_ut=
+ils.c	2010-09-14 05:04:34.000000000 -0600=0A+++ ltp-full-20100831.mrw/tes=
+tcases/kernel/sched/hyperthreading//ht_interrupt/ht_utils.c	2010-09-17 =
+11:10:58.000000000 -0600=0A@@ -60,7 +60,7 @@=0A =0A inline void cpuid(int =
+op, int *eax, int *ebx, int *ecx, int *edx)=0A {=0A-#ifndef __i386__=0A+#if=
+ (!defined __i386__ && !defined __x86_64__)=0A 	return;=0A #else=0A 	=
+__asm__("cpuid"=0A
+--=__Part7A57ACA5.1__=
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -201,7 +142,7 @@ Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
-----=_NextPart_ST_14_44_51_Thursday_September_30_2010_31630
+--=__Part7A57ACA5.1__=
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -212,5 +153,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-----=_NextPart_ST_14_44_51_Thursday_September_30_2010_31630--
+--=__Part7A57ACA5.1__=--
 
