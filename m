@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Feng.Gao@windriver.com>) id 1OwQ9y-0007Wf-QC
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 01:54:42 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OwQ9x-0000jy-Bk
-	for ltp-list@lists.sourceforge.net; Fri, 17 Sep 2010 01:54:42 +0000
-Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id o8H1sZlm005506
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1OyPU1-0006FP-NJ
+	for ltp-list@lists.sourceforge.net; Wed, 22 Sep 2010 13:35:37 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OyPU0-0006n8-SE
+	for ltp-list@lists.sourceforge.net; Wed, 22 Sep 2010 13:35:37 +0000
+Received: by iwn2 with SMTP id 2so661146iwn.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 16 Sep 2010 18:54:35 -0700 (PDT)
-Content-class: urn:content-classes:message
+	Wed, 22 Sep 2010 06:35:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CB560B.45542BB9"
-Date: Fri, 17 Sep 2010 03:52:37 +0200
-Message-ID: <52CF90264091A14888078A031D780F4306901E9A@ism-mail03.corp.ad.wrs.com>
-From: "Gao, Feng" <Feng.Gao@windriver.com>
-Subject: [LTP] [PATCH]Mdify the __NR_cacheflush value in the cacheflush01
-	case
+In-Reply-To: <000601cb5a30$d47c0a20$7d741e60$@co.jp>
+References: <000601cb5a30$d47c0a20$7d741e60$@co.jp>
+Date: Wed, 22 Sep 2010 06:35:31 -0700
+Message-ID: <AANLkTinfWCkP34A1QDU6LP+amyYHu3e3zviqdvNcDcs3@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix "memcg_stress" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,125 +27,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CB560B.45542BB9
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_002_01CB560B.45542BB9"
-
-
-------_=_NextPart_002_01CB560B.45542BB9
-Content-Type: text/plain;
-	charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-In the cacheflush01.c, it re-defines the __NR_cacheflush to __NR_Linux + =
-197. But the operation is not alway correct.
-If _MIPS_SIM is _MIPS_SIM_ABI32, Linux will use o32 style syscalls are =
-in the range from 4000 to 4999.
-The __NR_cacheflush is __NR_Linux + 147.
-
-Patch attached.
-
-Signed-off-by: Feng Gao <feng.gao@windriver.com>
-
-BR,
-Feng Gao
-
-------_=_NextPart_002_01CB560B.45542BB9
-Content-Type: text/html;
-	charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dgb2312">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7654.12">
-<TITLE>[LTP][PATCH]Mdify the __NR_cacheflush value in the cacheflush01 =
-case</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Hi,<BR>
-<BR>
-In the cacheflush01.c, it re-defines the __NR_cacheflush to __NR_Linux + =
-197. But the operation is not alway correct.<BR>
-If _MIPS_SIM is _MIPS_SIM_ABI32, Linux will use o32 style syscalls are =
-in the range from 4000 to 4999.<BR>
-The __NR_cacheflush is __NR_Linux + 147.<BR>
-<BR>
-Patch attached.<BR>
-<BR>
-Signed-off-by: Feng Gao &lt;feng.gao@windriver.com&gt;<BR>
-<BR>
-BR,<BR>
-Feng Gao<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_002_01CB560B.45542BB9--
-
-------_=_NextPart_001_01CB560B.45542BB9
-Content-Type: text/x-diff;
-	name="0001-Modified-the-__NR_cacheflush-in-the-cacheflush01.c.patch"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Description: 0001-Modified-the-__NR_cacheflush-in-the-cacheflush01.c.patch
-Content-Disposition: attachment;
-	filename="0001-Modified-the-__NR_cacheflush-in-the-cacheflush01.c.patch"
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, shubham@linux.vnet.ibm.com, =?Big5?B?t+2ueSCwt6Wr?= <toza@ryobi.co.jp>
 
-RnJvbSA4Y2NmN2VmZjkwMzVkYTEzMDg4ZWVmNTBmYjc3M2FmMTAwYjUzZjc3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBGZW5nIEdhbyA8ZmVuZy5nYW9Ad2luZHJpdmVyLmNvbT4KRGF0
-ZTogRnJpLCAxNyBTZXAgMjAxMCAwOTo0NzozMiArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIE1vZGlm
-aWVkIHRoZSBfX05SX2NhY2hlZmx1c2ggaW4gdGhlIGNhY2hlZmx1c2gwMS5jCgpJbiB0aGUgY2Fj
-aGVmbHVzaDAxLmMsIGl0IHJlLWRlZmluZXMgdGhlIF9fTlJfY2FjaGVmbHVzaCB0byBfX05SX0xp
-bnV4ICsgMTk3LgpCdXQgdGhlIG9wZXJhdGlvbiBpcyBub3QgYWx3YXkgY29ycmVjdC4gSXQgU2hv
-dWxkIGJlIHRoZSB2YWx1ZSBpbiB0aGUgdW5pc3RkLmguCgpTaWduZWQtb2ZmLWJ5OiBGZW5nIEdh
-byA8ZmVuZy5nYW9Ad2luZHJpdmVyLmNvbT4KLS0tCiAuLi4va2VybmVsL3N5c2NhbGxzL2NhY2hl
-Zmx1c2gvY2FjaGVmbHVzaDAxLmMgICAgICB8ICAgIDIgKysKIDEgZmlsZXMgY2hhbmdlZCwgMiBp
-bnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvY2FjaGVmbHVzaC9jYWNoZWZsdXNoMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvY2FjaGVmbHVzaC9jYWNoZWZsdXNoMDEuYwppbmRleCBkMGE0YjFmLi5iYjIwMDY0
-IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2NhY2hlZmx1c2gvY2FjaGVm
-bHVzaDAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jYWNoZWZsdXNoL2NhY2hl
-Zmx1c2gwMS5jCkBAIC02Niw3ICs2Niw5IEBACiAgKiBNSVBTIGFyY2hpdGVjdHVyZSAtLSByZWdh
-cmRsZXNzLCBpdCdzIGEgZ29vZCBuZWdhdGl2ZSB0ZXN0Li4gKi8KICNpZiBkZWZpbmVkIF9fbWlw
-c19fCiAjaW5jbHVkZSA8YXNtL2NhY2hlY3RsLmg+CisjaWZuZGVmIF9fTlJfY2FjaGVmbHVzaAog
-I2RlZmluZSBfX05SX2NhY2hlZmx1c2gJCShfX05SX0xpbnV4ICsgMTk3KQorI2VuZGlmCiAjZWxz
-ZQogLyogRmFrZSBsaW51eF9zeXNjYWxsX251bWJlcnMuaCAqLwogI2RlZmluZSBfX05SX2NhY2hl
-Zmx1c2gJCTAKLS0gCjEuNS42LjMKCg==
-
-------_=_NextPart_001_01CB560B.45542BB9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
-------_=_NextPart_001_01CB560B.45542BB9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01CB560B.45542BB9--
-
+MjAxMC85LzIyIE1pdGFuaSA8bWl0YW5pQHJ5b2JpLmNvLmpwPjoKPiBJIG5vdGljZWQgdGhhdCAi
+bWVtY2dfc3RyZXNzIiB0ZXN0IGZhaWxlZCBpbiBteSBSSEVMNS41L1JIRUw0Ljggc3lzdGVtczoK
+PiAtLS0tLS0tLS0tLS0oUkhFTDQuOCkKPiBjZ3JvdXBfcmVncmVzc2lvbl90ZXN0IMKgIDEwIMKg
+VENPTkYgwqA6IMKgUmVtYWluaW5nIGNhc2VzIG5vdCBhcHByb3ByaWF0ZSBmb3IKPiBjb25maWd1
+cmF0aW9uCj4gZ3JlcDogL3Byb2MvY2dyb3VwczogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+
+IG1lbWNnX3JlZ3Jlc3Npb25fdGVzdCDCoCDCoDEgwqBUQ09ORiDCoDogwqBFaXRoZXIgbWVtb3J5
+IHJlc291cmNlIGNvbnRyb2xsZXIKPiBrZXJuZWwgc3VwcG9ydCBhYnNlbnQKPiBtZW1jZ19yZWdy
+ZXNzaW9uX3Rlc3QgwqAgwqAxIMKgVENPTkYgwqA6IMKgb3IgZmVhdHVyZSBpcyBub3QgZW5hYmxl
+ZDsgc2tpcHBpbmcKPiBhbGwgbWVtY2dyb3VwIHRlc3RjYXNlcy4KPiBncmVwOiAvcHJvYy9jZ3Jv
+dXBzOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gV0FSTklORzoKPiBFaXRoZXIgS2VybmVs
+IGRvZXMgbm90IHN1cHBvcnQgZm9yIG1lbW9yeSByZXNvdXJjZSBjb250cm9sbGVyIG9yIGZlYXR1
+cmUgbm90Cj4gZW5hYmxlZAo+IFNraXBwaW5nIGFsbCBtZW1jZ3JvdXAgdGVzdGNhc2VzLi4uLgo+
+IC9vcHQvbHRwL3Rlc3RjYXNlcy9iaW4vbWVtY2dfc3RyZXNzX3Rlc3Quc2g6Cj4gL29wdC9sdHAv
+dGVzdGNhc2VzL2Jpbi9tZW1jZ19zdHJlc3NfdGVzdC5zaDogY2Fubm90IGV4ZWN1dGUgYmluYXJ5
+IGZpbGUKPiBncmVwOiAvcHJvYy9jZ3JvdXBzOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4g
+V0FSTklORzoKPiBFaXRoZXIga2VybmVsIGRvZXMgbm90IHN1cHBvcnQgbWVtb3J5IHJlc291cmNl
+IGNvbnRyb2xsZXIgb3IgZmVhdHVyZSBub3QKPiBlbmFibGVkCj4gU2tpcHBpbmcgYWxsIG1lbWNn
+X2NvbnRyb2wgdGVzdGNhc2VzLi4uLgo+IC0tLS0tLS0tLS0tLQo+Cj4gLS0tLS0tLS0tLS0tKFJI
+RUw1LjUpCj4gY2dyb3VwX3JlZ3Jlc3Npb25fdGVzdCDCoCAxMCDCoFRDT05GIMKgOiDCoFJlbWFp
+bmluZyBjYXNlcyBub3QgYXBwcm9wcmlhdGUgZm9yCj4gY29uZmlndXJhdGlvbgo+IGdyZXA6IC9w
+cm9jL2Nncm91cHM6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKPiBtZW1jZ19yZWdyZXNzaW9u
+X3Rlc3QgwqAgwqAxIMKgVENPTkYgwqA6IMKgRWl0aGVyIG1lbW9yeSByZXNvdXJjZSBjb250cm9s
+bGVyCj4ga2VybmVsIHN1cHBvcnQgYWJzZW50Cj4gbWVtY2dfcmVncmVzc2lvbl90ZXN0IMKgIMKg
+MSDCoFRDT05GIMKgOiDCoG9yIGZlYXR1cmUgaXMgbm90IGVuYWJsZWQ7IHNraXBwaW5nCj4gYWxs
+IG1lbWNncm91cCB0ZXN0Y2FzZXMuCj4gZ3JlcDogL3Byb2MvY2dyb3VwczogTm8gc3VjaCBmaWxl
+IG9yIGRpcmVjdG9yeQo+IFdBUk5JTkc6Cj4gRWl0aGVyIEtlcm5lbCBkb2VzIG5vdCBzdXBwb3J0
+IGZvciBtZW1vcnkgcmVzb3VyY2UgY29udHJvbGxlciBvciBmZWF0dXJlIG5vdAo+IGVuYWJsZWQK
+PiBTa2lwcGluZyBhbGwgbWVtY2dyb3VwIHRlc3RjYXNlcy4uLi4KPiDimIUvb3B0L2x0cC90ZXN0
+Y2FzZXMvYmluL21lbWNnX3N0cmVzc190ZXN0LnNoOiBsaW5lIDE6IOODu+OCvSMhOiBjb21tYW5k
+IG5vdAo+IGZvdW5kCj4gZ3JlcDogL3Byb2MvY2dyb3VwczogTm8gc3VjaCBmaWxlIG9yIGRpcmVj
+dG9yeQo+IFdBUk5JTkc6Cj4gRWl0aGVyIEtlcm5lbCBkb2VzIG5vdCBzdXBwb3J0IGZvciBtZW1v
+cnkgcmVzb3VyY2UgY29udHJvbGxlciBvciBmZWF0dXJlIG5vdAo+IGVuYWJsZWQKPiBTa2lwcGlu
+ZyBhbGwgbWVtY2dyb3VwIHRlc3RjYXNlcy4uLi4KPiBncmVwOiAvcHJvYy9jZ3JvdXBzOiBObyBz
+dWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gV0FSTklORzoKPiBFaXRoZXIga2VybmVsIGRvZXMgbm90
+IHN1cHBvcnQgbWVtb3J5IHJlc291cmNlIGNvbnRyb2xsZXIgb3IgZmVhdHVyZSBub3QKPiBlbmFi
+bGVkCj4gU2tpcHBpbmcgYWxsIG1lbWNnX2NvbnRyb2wgdGVzdGNhc2VzLi4uLgo+IC0tLS0tLS0t
+LS0tLQo+Cj4gSW4gUkhFTDQuOCwgdGhlIHNoZWxsIGZpbGUgaXMgcmVjb2duaXplZCBhcyBiaW5h
+cnkgZmlsZS4KPiBJbiBSSEVMNS41LCB0aGUgZmlyc3QgY29tbWFuZCBsaW5lIG9mIHRoZSBzaGVs
+bCBjYW5ubnQgYmUgcmVjb2duaXplZC4KPgo+IEJ5IGZvbGxvd2luZyBwYXRjaCwgQk9NIChCeXRl
+IE9yZGVyIE1hcmspIHdhcyBzZXQgdG8gIm1lbWNnX3N0cmVzc190ZXN0LnNoIjoKPiBodHRwOi8v
+bHRwLmdpdC5zb3VyY2Vmb3JnZS5uZXQvZ2l0L2dpdHdlYi5jZ2k/cD1sdHAvbHRwLWRldi5naXQ7
+YT1jb21taXRkaWZmCj4gO2g9OWI5YTZiYjEwMjU4YmM5NzViZDE3MDdiNDE4Njk5MjY0ZDNiZGNl
+ZiNwYXRjaDEKPgo+IEkgbm90aWNlZCBCT00gaW4gdGhlIHNoZWxsIGJ5IHVzaW5nICJsZXNzIG1l
+bWNnX3N0cmVzc190ZXN0LnNoIiBjb21tYW5kLgo+Cj4gSSByZW1vdmVkIHRoaXMgQk9NIGFuZCB0
+aGlzIHRlc3QgcGFzc2VkLgo+Cj4gU2lnbmVkLW9mZi1ieTogVG9tb25vcmkgTWl0YW5pIDxtaXRh
+bmlAcnlvYmkuY28uanA+Cj4gPT09PT09PT09PT09Cj4gLS0tCj4gYS90ZXN0Y2FzZXMva2VybmVs
+L2NvbnRyb2xsZXJzL21lbWNnL3N0cmVzcy9tZW1jZ19zdHJlc3NfdGVzdC5zaCDCoCDCoCDCoCDC
+oDIwMTAKPiAtMDktMjAgMjM6MjI6MzQuMDAwMDAwMDAwICswOTAwCj4gKysrCj4gYi90ZXN0Y2Fz
+ZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL3N0cmVzcy9tZW1jZ19zdHJlc3NfdGVzdC5zaCDC
+oCDCoCDCoCDCoDIwMTAKPiAtMDktMjIgMTA6MzA6NTAuMDAwMDAwMDAwICswOTAwCj4gQEAgLTEs
+NCArMSw0IEBACj4gLeODu+OCvSMhIC9iaW4vc2gKPiArIyEgL2Jpbi9zaAo+Cj4KPiAjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjCj4gIyMjIwo+IMKgIyMKPiAjIwo+ID09PT09PT09PT09PQoKICAgIEZpeGVk
+IGluIGx0cC5naXQuCkNoZWVycywKLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpTdGFy
+dCB1bmNvdmVyaW5nIHRoZSBtYW55IGFkdmFudGFnZXMgb2YgdmlydHVhbCBhcHBsaWFuY2VzCmFu
+ZCBzdGFydCB1c2luZyB0aGVtIHRvIHNpbXBsaWZ5IGFwcGxpY2F0aW9uIGRlcGxveW1lbnQgYW5k
+CmFjY2VsZXJhdGUgeW91ciBzaGlmdCB0byBjbG91ZCBjb21wdXRpbmcuCmh0dHA6Ly9wLnNmLm5l
+dC9zZnUvbm92ZWxsLXNmZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
