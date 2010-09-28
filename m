@@ -1,21 +1,9 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P0yB9-0006Fy-7R
-	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 15:02:43 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P0yB6-0001aM-Py
-	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 15:02:43 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20100929135647.GA4587@hallyn.com>
-References: <20100929135647.GA4587@hallyn.com>
-Date: Wed, 29 Sep 2010 20:32:20 +0530
-Message-Id: <1285772543.17329.2.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] securebits: add secure_keepcaps testcases
-Reply-To: subrata@linux.vnet.ibm.com
+MIME-Version: 1.0
+Date: Tue, 28 Sep 2010 09:44:46 +0530
+Message-ID: <AANLkTinH_rH7iU4efFX8Bw9PUU_5DgMwR3q6p-bMZrOp@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] LHOST_HWADDR
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,372 +13,490 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5337290470363352876=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: ltp-list@lists.sf.net
+To: Ltp-list-request@lists.sourceforge.net, ltp-list@lists.sourceforge.net
 
-On Wed, 2010-09-29 at 08:56 -0500, Serge E. Hallyn wrote:
-> This adds basic tests of the keepcaps securebits settings.
-> 
-> Lots more securebits tests to come (see my email from one
-> or 1.5 years ago, and, heck, write them if you have time :).
-> 
-> Signed-off-by: Serge E. Hallyn <serge.hallyn@canonical.com>
+--===============5337290470363352876==
+Content-Type: multipart/alternative; boundary=0016364c743bd5256104914a15f6
 
-Great, i get the following output on my machine:
+--0016364c743bd5256104914a15f6
+Content-Type: text/plain; charset=ISO-8859-1
 
-# uname -a 
-Linux 2.6.35.4 #2 SMP Tue Sep 28 16:07:27 IST 2010 ppc64 ppc64 ppc64
-GNU/Linux
+Hi
 
-# cat /etc/issue
-Fedora release 13 (Goddard)
+     During the execution of network related tests i am getting the error as
+"environment variable LHOST_HWADDR not set"
+     i tried solving this problem even by given static hwaddr in the
+testscript "networkstress.sh" but same error is coming.
+     i am runnning LTP on armv7 architechture.
+     Here i am also sending you the log file, please help me out to solve
+this problem.
 
-# ./runltp -f securebits
 
+                 INFO: creating /opt/ltp/results directory
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+
+Linux 192.168.1.10 2.6.32 #2 SMP Fri Aug 27 12:31:08 IST 2010 armv7l unknown
+unknown GNU/Linux
+
+Gnu C                  gcc (GCC) 4.5.0
+Gnu make               3.81
+util-linux             ng 2.16.1)
+mount                  ng 2.16.1 (with libblkid support)
+modutils               3.1
+e2fsprogs              1.41.9
+PPP                    2.4.4
+Linux C Library        2.10.1
+Dynamic linker (ldd)   2.10.1
+Linux C++ Library      6.0.14
+Procps                 3.2.7
+Net-tools              1.60
+iproute2              iproute2-ss100224
+Console-tools          0.2.3
+Sh-utils               5.2.1
+Modules Loaded
+free reports:
+             total       used       free     shared    buffers     cached
+Mem:        255556      24508     231048          0          0      14620
+-/+ buffers/cache:       9888     245668
+Swap:            0          0          0
+/proc/cpuinfo
+Processor : ARMv7 Processor rev 1 (v7l)
+processor : 0
+BogoMIPS : 996.14
+processor : 1
+BogoMIPS : 996.14
+Features : swp half thumb fastmult vfp edsp vfpv3 vfpv3d16
+CPU implementer : 0x41
+CPU architecture: 7
+CPU variant : 0x1
+CPU part : 0xc09
+CPU revision : 1
+Hardware : ST-SPEAR1300-EVB
+Revision : 0000
+Serial  : 0000000000000000
+remove test cases which require the block device.
+You can specify it with option -b
+COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 12621     -n 12621  -p  -f
+/tmp/ltp-isNlo12627/alltests -l
+/opt/ltp/results/network_stress.broken_ip.result  -C
+/opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed
+LOG File: /opt/ltp/results/network_stress.broken_ip.result
+FAILED COMMAND File:
+/opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed
 Running tests.......
 <<<test_start>>>
-tag=Securebits stime=1285772204
-cmdline="run_securebits.sh"
+tag=broken_ip4-version stime=351622598
+cmdline="broken_ip4-version"
 contacts=""
 analysis=exit
 <<<test_output>>>
-incrementing stop
-testing keepcaps
-keepcaps    1  TPASS  :  dropped privs as expected
-keepcaps    1  TPASS  :  kept privs as expected
-keepcaps    1  TPASS  :  kept privs as expected
+broken_ip4-version01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in
+version field.
+broken_ip4-version01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
 <<<execution_status>>>
 initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=3 cstime=10
 <<<test_end>>>
-INFO: ltp-pan reported all tests PASS
-LTP Version: LTP-20100831
-        
+<<<test_start>>>
+tag=broken_ip4-ihl stime=351622598
+cmdline="broken_ip4-ihl"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-ihl01    0  TINFO  :  Verify that the kernel is not crashed with
+receiving a large number of IPv4 packets that have wrong value in the header
+length field.
+broken_ip4-ihl01    1  TBROK  :  Environment variable LHOST_HWADDRS is not
+set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=3 cstime=7
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-totlen stime=351622598
+cmdline="broken_ip4-totlen"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-totlen01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in the
+total length field.
+broken_ip4-totlen01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=7 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-fragment stime=351622598
+cmdline="broken_ip4-fragment"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-fragment01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong fragment
+information
+broken_ip4-fragment01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=2 cstime=13
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-protcol stime=351622598
+cmdline="broken_ip4-protcol"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-protocol01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in the
+protocol field
+broken_ip4-protocol01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=4 cstime=8
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-checksum stime=351622598
+cmdline="broken_ip4-checksum"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-checksum01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in the
+checksum field
+broken_ip4-checksum01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=5 cstime=7
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-dstaddr stime=351622598
+cmdline="broken_ip4-dstaddr"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-dstaddr01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets whose destination address is
+wrong (destination MAC address is correct)
+broken_ip4-dstaddr01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=3 cstime=9
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-dstaddr stime=351622599
+cmdline="broken_ip6-dstaddr"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-dstaddr01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv6 packets whose destination address is
+wrong (destination MAC address is correct)
+broken_ip6-dstaddr01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=1 cstime=12
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-nexthdr stime=351622599
+cmdline="broken_ip6-nexthdr"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-nexthdr01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv6 packets that have wrong value in the
+next header field.
+broken_ip6-nexthdr01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=7 cstime=7
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-plen stime=351622599
+cmdline="broken_ip6-plen"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-plen01    0  TINFO  :  Verify that the kernel is not crashed with
+receiving a large number of IPv6 packets that have wrong value in the
+payload length field.
+broken_ip6-plen01    1  TBROK  :  Environment variable LHOST_HWADDRS is not
+set.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=2 cstime=9
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-version stime=351622599
+cmdline="broken_ip6-version"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-version01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv6 packets that have wrong value in
+version field.
+broken_ip6-version01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+not set.
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=3 cstime=7
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20100131
+
        ###############################################################"
-        
+
             Done executing testcases."
-            LTP Version:  LTP-20100831
+            LTP Version:  LTP-20100131
        ###############################################################"
 
-Looks fine to be,i just need a little documentation file which would
-say:
-	What securebits is all about (some pointers/links)? Any specific
-configuration required to run these tests, etc ?
 
-Regards--
-Subrata
 
-> ---
->  m4/ltp-securebits.m4                               |   24 +++
->  runtest/securebits                                 |    2 +
->  testcases/kernel/security/Makefile                 |    5 +-
->  testcases/kernel/security/securebits/Makefile      |   28 ++++
->  .../kernel/security/securebits/check_keepcaps.c    |  161 ++++++++++++++++++++
->  .../kernel/security/securebits/run_securebits.sh   |   20 +++
->  6 files changed, 239 insertions(+), 1 deletions(-)
->  create mode 100644 m4/ltp-securebits.m4
->  create mode 100644 runtest/securebits
->  create mode 100644 testcases/kernel/security/securebits/Makefile
->  create mode 100644 testcases/kernel/security/securebits/check_keepcaps.c
->  create mode 100644 testcases/kernel/security/securebits/run_securebits.sh
-> 
-> diff --git a/m4/ltp-securebits.m4 b/m4/ltp-securebits.m4
-> new file mode 100644
-> index 0000000..6407eb8
-> --- /dev/null
-> +++ b/m4/ltp-securebits.m4
-> @@ -0,0 +1,24 @@
-> +dnl
-> +dnl Copyright (c) Serge Hallyn (2010)
-> +dnl
-> +dnl This program is free software;  you can redistribute it and/or modify
-> +dnl it under the terms of the GNU General Public License as published by
-> +dnl the Free Software Foundation; either version 2 of the License, or
-> +dnl (at your option) any later version.
-> +dnl
-> +dnl This program is distributed in the hope that it will be useful,
-> +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +dnl the GNU General Public License for more details.
-> +dnl
-> +dnl You should have received a copy of the GNU General Public License
-> +dnl along with this program;  if not, write to the Free Software
-> +dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-> +dnl
-> +
-> +
-> +AC_DEFUN([LTP_CHECK_SECUREBITS],
-> +AC_CHECK_HEADERS(linux/securebits.h,[
-> +	LTP_SECUREBITS=yes
-> +])
-> +)
-> diff --git a/runtest/securebits b/runtest/securebits
-> new file mode 100644
-> index 0000000..d78a66f
-> --- /dev/null
-> +++ b/runtest/securebits
-> @@ -0,0 +1,2 @@
-> +#DESCRIPTION:securebits tests
-> +Securebits	run_securebits.sh
-> diff --git a/testcases/kernel/security/Makefile b/testcases/kernel/security/Makefile
-> index 52b8d06..a877836 100644
-> --- a/testcases/kernel/security/Makefile
-> +++ b/testcases/kernel/security/Makefile
-> @@ -27,11 +27,14 @@ include	$(top_srcdir)/include/mk/env_pre.mk
->  # For broken compilers and toolchains, like Montavista, that improperly detect
->  # system headers when running autoconf -_-... bleh.
->  ifeq ($(strip $(CAP_LIBS)),)
-> -FILTER_OUT_DIRS		:= cap_bound filecaps
-> +FILTER_OUT_DIRS		:= cap_bound filecaps securebits
->  endif
->  ifeq ($(HAVE_SETCAP),false)
->  FILTER_OUT_DIRS		+= filecaps
->  endif
-> +ifeq ($(LTP_SECUREBITS),false)
-> +FILTER_OUT_DIRS		+= securebits
-> +endif
-> 
->  # XXX (garrcoop): avoid compilation failures on RHEL 5.4, as reported by
->  # Mitani-san, because of policy versioning issues...
-> diff --git a/testcases/kernel/security/securebits/Makefile b/testcases/kernel/security/securebits/Makefile
-> new file mode 100644
-> index 0000000..a76f2e0
-> --- /dev/null
-> +++ b/testcases/kernel/security/securebits/Makefile
-> @@ -0,0 +1,28 @@
-> +################################################################################
-> +##                                                                            ##
-> +## Copyright (c) International Business Machines  Corp., 2009                 ##
-> +##                                                                            ##
-> +## This program is free software;  you can redistribute it and#or modify      ##
-> +## it under the terms of the GNU General Public License as published by       ##
-> +## the Free Software Foundation; either version 2 of the License, or          ## ## (at your option) any later version.                                        ##
-> +##                                                                            ##
-> +## This program is distributed in the hope that it will be useful, but        ##
-> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-> +## for more details.                                                          ##
-> +##                                                                            ##
-> +## You should have received a copy of the GNU General Public License          ##
-> +## along with this program;  if not, write to the Free Software               ##
-> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
-> +##                                                                            ##
-> +################################################################################
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +LDLIBS			+= $(CAP_LIBS)
-> +
-> +INSTALL_TARGETS		:= *.sh
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
-> new file mode 100644
-> index 0000000..e969ae4
-> --- /dev/null
-> +++ b/testcases/kernel/security/securebits/check_keepcaps.c
-> @@ -0,0 +1,161 @@
-> +#include <errno.h>
-> +#include "config.h"
-> +#if HAVE_SYS_CAPABILITY_H
-> +#include <sys/capability.h>
-> +#endif
-> +#include <sys/prctl.h>
-> +#include <linux/securebits.h>
-> +#include <test.h>
-> +
-> +int errno;
-> +
-> +/* Tests:
-> +	1. drop capabilities at setuid if KEEPCAPS is not set and
-> +	   new user is nonroot
-> +	2. keep capabilities if set and new user is nonroot
-> +	   a. do with prctl(PR_SET_KEEPCAPS)
-> +	   (call this test 2)
-> +	   b. do with prctl(PR_SET_SECUREBITS, SECURE_KEEP_CAPS)
-> +	   (call this test 3)
-> +   TODO: test that exec clears KEEPCAPS
-> +   	(just create a simple executable that checks PR_GET_KEEPCAPS
-> +	 results, and execute that as test 4 after doing PR_SET_KEEPCAPS).
-> +   TODO: all of the other securebits tests.
-> + */
-> +
-> +char *TCID = "keepcaps";
-> +int TST_TOTAL=1;
-> +
-> +#ifdef HAVE_LIBCAP
-> +static int eff_caps_empty(cap_t c)
-> +{
-> +	int i, ret, v, empty=1;
-> +
-> +	for (i = 0; i < CAP_LAST_CAP; i++) {
-> +		ret = cap_get_flag(c, i, CAP_PERMITTED, &v);
-> +		if (ret || v)
-> +			empty = 0;
-> +	}
-> +
-> +	return empty;
-> +}
-> +
-> +static int am_privileged(void)
-> +{
-> +	int am_privileged = 1;
-> +
-> +	cap_t cap = cap_get_proc();
-> +	if (eff_caps_empty(cap))
-> +		am_privileged = 0;
-> +	cap_free(cap);
-> +
-> +	return am_privileged;
-> +}
-> +#else
-> +static int am_privileged(void)
-> +{
-> +	tst_resm(TBROK, "libcap not installed.");
-> +	tst_exit();
-> +}
-> +#endif
-> +
-> +#define EXPECT_NOPRIVS 0
-> +#define EXPECT_PRIVS 1
-> +static void do_setuid(int expect_privs)
-> +{
-> +	int ret;
-> +	int have_privs;
-> +
-> +	ret = setuid(1000);
-> +	if (ret) {
-> +		tst_resm(TERRNO | TFAIL, "setuid failed");
-> +		tst_exit();
-> +	}
-> +
-> +	have_privs = am_privileged();
-> +	if (have_privs && expect_privs == EXPECT_PRIVS) {
-> +		tst_resm(TPASS, "kept privs as expected");
-> +		tst_exit();
-> +	}
-> +	if (!have_privs && expect_privs == EXPECT_PRIVS) {
-> +		tst_resm(TFAIL, "expected to keep privs but did not");
-> +		tst_exit();
-> +	}
-> +	if (!have_privs && expect_privs == EXPECT_NOPRIVS) {
-> +		tst_resm(TPASS, "dropped privs as expected");
-> +		tst_exit();
-> +	}
-> +
-> +	/* have_privs && EXPECT_NOPRIVS */
-> +	tst_resm(TFAIL, "expected to drop privs but did not");
-> +	tst_exit();
-> +}
-> +
-> +static int am_root(void)
-> +{
-> +	uid_t uid = getuid();
-> +	if (uid != 0)
-> +		return 0;
-> +	if (!am_privileged())
-> +		return 0;
-> +	return 1;
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int ret, whichtest;
-> +
-> +	ret = prctl(PR_GET_KEEPCAPS);
-> +	if (ret) {
-> +		tst_resm(TBROK, "keepcaps was already set?\n");
-> +		tst_exit();
-> +	}
-> +	if (!am_root()) {
-> +		tst_resm(TBROK, "Run me as root and privileged\n");
-> +		tst_exit();
-> +	}
-> +
-> +	if (argc < 2) {
-> +		tst_resm(TBROK, "Usage: %s <tescase_num>", argv[0]);
-> +		tst_exit();
-> +	}
-> +	whichtest = atoi(argv[1]);
-> +	if (whichtest < 1 || whichtest > 3) {
-> +		tst_resm(TFAIL, "Valid tests are 1-3\n");
-> +		tst_exit();
-> +	}
-> +	switch(whichtest) {
-> +	case 1:
-> +		do_setuid(EXPECT_NOPRIVS); /* does not return */
-> +	case 2:
-> +		ret = prctl(PR_SET_KEEPCAPS, 1);
-> +		if (ret == -1) {
-> +			tst_resm(TFAIL|TERRNO, "PR_SET_KEEPCAPS failed\n");
-> +			tst_exit();
-> +		}
-> +		ret = prctl(PR_GET_KEEPCAPS);
-> +		if (!ret) {
-> +			tst_resm(TFAIL|TERRNO, "PR_SET_KEEPCAPS did not set keepcaps\n");
-> +			tst_exit();
-> +		}
-> +		do_setuid(EXPECT_PRIVS); /* does not return */
-> +	case 3:
-> +		ret = prctl(PR_GET_SECUREBITS);
-> +		ret = prctl(PR_SET_SECUREBITS, ret | SECBIT_KEEP_CAPS);
-> +		if (ret == -1) {
-> +			tst_resm(TFAIL|TERRNO, "PR_SET_SECUREBITS failed\n");
-> +			tst_exit();
-> +		}
-> +		ret = prctl(PR_GET_KEEPCAPS);
-> +		if (!ret) {
-> +			tst_resm(TFAIL|TERRNO, "PR_SET_SECUREBITS did not set keepcaps\n");
-> +			tst_exit();
-> +		}
-> +		do_setuid(EXPECT_PRIVS); /* does not return */
-> +	default:
-> +		tst_resm(TFAIL, "should not reach here\n");
-> +		tst_exit();
-> +	}
-> +	tst_resm(TFAIL, "should not reach here\n");
-> +	tst_exit();
-> +}
-> diff --git a/testcases/kernel/security/securebits/run_securebits.sh b/testcases/kernel/security/securebits/run_securebits.sh
-> new file mode 100644
-> index 0000000..4d9e272
-> --- /dev/null
-> +++ b/testcases/kernel/security/securebits/run_securebits.sh
-> @@ -0,0 +1,20 @@
-> +#!/bin/sh
-> +
-> +echo "testing keepcaps"
-> +check_keepcaps 1
-> +tmp=$?
-> +if [ $tmp -ne 0 ]; then
-> +	exit_code=$tmp
-> +fi
-> +check_keepcaps 2
-> +tmp=$?
-> +if [ $tmp -ne 0 ]; then
-> +	exit_code=$tmp
-> +fi
-> +check_keepcaps 3
-> +tmp=$?
-> +if [ $tmp -ne 0 ]; then
-> +	exit_code=$tmp
-> +fi
-> +
-> +exit $exit_code
+-- 
+Regards,
+Arjit Sharma.
 
+--0016364c743bd5256104914a15f6
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div><br clear=3D"all">Hi</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 During the execution of network related tests i am gettin=
+g the error as &quot;environment variable LHOST_HWADDR not set&quot;</div>
+<div>=A0=A0=A0=A0=A0i tried solving this problem even by given static=A0hwa=
+ddr in the testscript &quot;networkstress.sh&quot; but same error is coming=
+.</div>
+<div>=A0=A0=A0=A0=A0i am=A0runnning LTP on armv7 architechture.</div>
+<div>=A0=A0=A0=A0 Here i=A0am also=A0sending you the log file, please=A0hel=
+p me out to solve this problem.</div>
+<div>=A0</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 INFO: creating /opt/l=
+tp/results directory<br>If some fields are empty or look unusual you may ha=
+ve an old version.<br>Compare to the current minimal requirements in Docume=
+ntation/Changes.<br>=A0<br>Linux 192.168.1.10 2.6.32 #2 SMP Fri Aug 27 12:3=
+1:08 IST 2010 armv7l unknown unknown GNU/Linux<br>
+=A0<br>Gnu C=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 gcc (GCC) 4=
+.5.0<br>Gnu make=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 3.81<br>util-lin=
+ux=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ng 2.16.1)<br>mount=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ng 2.16.1 (with libblkid support)<br>m=
+odutils=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 3.1<br>e2fsprogs=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1.41.9<br>
+PPP=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 2.4.4<br>Linux=
+ C Library=A0=A0=A0=A0=A0=A0=A0 2.10.1<br>Dynamic linker (ldd)=A0=A0 2.10.1=
+<br>Linux C++ Library=A0=A0=A0=A0=A0 6.0.14<br>Procps=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 3.2.7<br>Net-tools=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0 1.60<br>iproute2=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 iprout=
+e2-ss100224<br>
+Console-tools=A0=A0=A0=A0=A0=A0=A0=A0=A0 0.2.3<br>Sh-utils=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 5.2.1<br>Modules Loaded=A0=A0=A0=A0=A0=A0=A0=A0=
+ </div>
+<div>free reports:<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 total=A0=A0=A0=
+=A0=A0=A0 used=A0=A0=A0=A0=A0=A0 free=A0=A0=A0=A0 shared=A0=A0=A0 buffers=
+=A0=A0=A0=A0 cached<br>Mem:=A0=A0=A0=A0=A0=A0=A0 255556=A0=A0=A0=A0=A0 2450=
+8=A0=A0=A0=A0 231048=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 0=A0=A0=A0=A0=A0 14620<br>-/+ buffers/cache:=A0=A0=A0=A0=A0=A0 9888=A0=
+=A0=A0=A0 245668<br>
+Swap:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 0</div>
+<div>/proc/cpuinfo<br>Processor=A0: ARMv7 Processor rev 1 (v7l)<br>processo=
+r=A0: 0<br>BogoMIPS=A0: 996.14</div>
+<div>processor=A0: 1<br>BogoMIPS=A0: 996.14</div>
+<div>Features=A0: swp half thumb fastmult vfp edsp vfpv3 vfpv3d16 <br>CPU i=
+mplementer=A0: 0x41<br>CPU architecture: 7<br>CPU variant=A0: 0x1<br>CPU pa=
+rt=A0: 0xc09<br>CPU revision=A0: 1</div>
+<div>Hardware=A0: ST-SPEAR1300-EVB<br>Revision=A0: 0000<br>Serial=A0=A0: 00=
+00000000000000<br>remove test cases which require the block device.<br>You =
+can specify it with option -b<br>COMMAND:=A0=A0=A0 /opt/ltp/bin/ltp-pan=A0 =
+-e -S=A0=A0 -a 12621=A0=A0=A0=A0 -n 12621=A0 -p=A0 -f /tmp/ltp-isNlo12627/a=
+lltests -l /opt/ltp/results/network_stress.broken_ip.result=A0 -C /opt/ltp/=
+output/LTP_RUN_ON-network_stress.broken_ip.result.failed<br>
+LOG File: /opt/ltp/results/network_stress.broken_ip.result<br>FAILED COMMAN=
+D File: /opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed<b=
+r>Running tests.......<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip4-version stime=3D351622598<br>
+cmdline=3D&quot;broken_ip4-version&quot;<br>contacts=3D&quot;&quot;<br>anal=
+ysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-version01=
+=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with rec=
+eiving a large number of IPv4 packets that have wrong value in version fiel=
+d.<br>
+broken_ip4-version01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST=
+_HWADDRS is not set.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiat=
+ion_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited termi=
+nation_id=3D1 corefile=3Dno<br>
+cutime=3D3 cstime=3D10<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;t=
+est_start&gt;&gt;&gt;<br>tag=3Dbroken_ip4-ihl stime=3D351622598<br>cmdline=
+=3D&quot;broken_ip4-ihl&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit=
+<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+broken_ip4-ihl01=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not =
+crashed with receiving a large number of IPv4 packets that have wrong value=
+ in the header length field.<br>broken_ip4-ihl01=A0=A0=A0 1=A0 TBROK=A0 :=
+=A0 Environment variable LHOST_HWADDRS is not set.<br>
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;ok&qu=
+ot;<br>duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=
+=3Dno<br>cutime=3D3 cstime=3D7<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&=
+lt;&lt;test_start&gt;&gt;&gt;<br>
+tag=3Dbroken_ip4-totlen stime=3D351622598<br>cmdline=3D&quot;broken_ip4-tot=
+len&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;test=
+_output&gt;&gt;&gt;<br>broken_ip4-totlen01=A0=A0=A0 0=A0 TINFO=A0 :=A0 Veri=
+fy that the kernel is not crashed with receiving a large number of IPv4 pac=
+kets that have wrong value in the total length field.<br>
+broken_ip4-totlen01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST_=
+HWADDRS is not set.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiati=
+on_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited termin=
+ation_id=3D1 corefile=3Dno<br>
+cutime=3D7 cstime=3D5<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dbroken_ip4-fragment stime=3D351622598<br>cmdl=
+ine=3D&quot;broken_ip4-fragment&quot;<br>contacts=3D&quot;&quot;<br>analysi=
+s=3Dexit<br>
+&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-fragment01=A0=A0=A0 0=A0 =
+TINFO=A0 :=A0 Verify that the kernel is not crashed with receiving a large =
+number of IPv4 packets that have wrong fragment information<br>broken_ip4-f=
+ragment01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST_HWADDRS is=
+ not set.<br>
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;ok&qu=
+ot;<br>duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=
+=3Dno<br>cutime=3D2 cstime=3D13<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;=
+&lt;&lt;test_start&gt;&gt;&gt;<br>
+tag=3Dbroken_ip4-protcol stime=3D351622598<br>cmdline=3D&quot;broken_ip4-pr=
+otcol&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;te=
+st_output&gt;&gt;&gt;<br>broken_ip4-protocol01=A0=A0=A0 0=A0 TINFO=A0 :=A0 =
+Verify that the kernel is not crashed with receiving a large number of IPv4=
+ packets that have wrong value in the protocol field<br>
+broken_ip4-protocol01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOS=
+T_HWADDRS is not set.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initia=
+tion_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited term=
+ination_id=3D1 corefile=3Dno<br>
+cutime=3D4 cstime=3D8<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dbroken_ip4-checksum stime=3D351622598<br>cmdl=
+ine=3D&quot;broken_ip4-checksum&quot;<br>contacts=3D&quot;&quot;<br>analysi=
+s=3Dexit<br>
+&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-checksum01=A0=A0=A0 0=A0 =
+TINFO=A0 :=A0 Verify that the kernel is not crashed with receiving a large =
+number of IPv4 packets that have wrong value in the checksum field<br>broke=
+n_ip4-checksum01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST_HWA=
+DDRS is not set.<br>
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;ok&qu=
+ot;<br>duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=
+=3Dno<br>cutime=3D5 cstime=3D7<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&=
+lt;&lt;test_start&gt;&gt;&gt;<br>
+tag=3Dbroken_ip4-dstaddr stime=3D351622598<br>cmdline=3D&quot;broken_ip4-ds=
+taddr&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;te=
+st_output&gt;&gt;&gt;<br>broken_ip4-dstaddr01=A0=A0=A0 0=A0 TINFO=A0 :=A0 V=
+erify that the kernel is not crashed with receiving a large number of IPv4 =
+packets whose destination address is wrong (destination MAC address is corr=
+ect)<br>
+broken_ip4-dstaddr01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST=
+_HWADDRS is not set.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiat=
+ion_status=3D&quot;ok&quot;<br>duration=3D1 termination_type=3Dexited termi=
+nation_id=3D1 corefile=3Dno<br>
+cutime=3D3 cstime=3D9<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dbroken_ip6-dstaddr stime=3D351622599<br>cmdli=
+ne=3D&quot;broken_ip6-dstaddr&quot;<br>contacts=3D&quot;&quot;<br>analysis=
+=3Dexit<br>
+&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip6-dstaddr01=A0=A0=A0 0=A0 T=
+INFO=A0 :=A0 Verify that the kernel is not crashed with receiving a large n=
+umber of IPv6 packets whose destination address is wrong (destination MAC a=
+ddress is correct)<br>
+broken_ip6-dstaddr01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST=
+_HWADDRS is not set.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiat=
+ion_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited termi=
+nation_id=3D1 corefile=3Dno<br>
+cutime=3D1 cstime=3D12<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;t=
+est_start&gt;&gt;&gt;<br>tag=3Dbroken_ip6-nexthdr stime=3D351622599<br>cmdl=
+ine=3D&quot;broken_ip6-nexthdr&quot;<br>contacts=3D&quot;&quot;<br>analysis=
+=3Dexit<br>
+&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip6-nexthdr01=A0=A0=A0 0=A0 T=
+INFO=A0 :=A0 Verify that the kernel is not crashed with receiving a large n=
+umber of IPv6 packets that have wrong value in the next header field.<br>br=
+oken_ip6-nexthdr01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST_H=
+WADDRS is not set.<br>
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;ok&qu=
+ot;<br>duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=
+=3Dno<br>cutime=3D7 cstime=3D7<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&=
+lt;&lt;test_start&gt;&gt;&gt;<br>
+tag=3Dbroken_ip6-plen stime=3D351622599<br>cmdline=3D&quot;broken_ip6-plen&=
+quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;test_out=
+put&gt;&gt;&gt;<br>broken_ip6-plen01=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify tha=
+t the kernel is not crashed with receiving a large number of IPv6 packets t=
+hat have wrong value in the payload length field.<br>
+broken_ip6-plen01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST_HW=
+ADDRS is not set.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation=
+_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited terminat=
+ion_id=3D1 corefile=3Dno<br>
+cutime=3D2 cstime=3D9<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dbroken_ip6-version stime=3D351622599<br>cmdli=
+ne=3D&quot;broken_ip6-version&quot;<br>contacts=3D&quot;&quot;<br>analysis=
+=3Dexit<br>
+&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip6-version01=A0=A0=A0 0=A0 T=
+INFO=A0 :=A0 Verify that the kernel is not crashed with receiving a large n=
+umber of IPv6 packets that have wrong value in version field.<br>broken_ip6=
+-version01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Environment variable LHOST_HWADDRS i=
+s not set.<br>
+incrementing stop<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation=
+_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited terminat=
+ion_id=3D1 corefile=3Dno<br>cutime=3D3 cstime=3D7<br>&lt;&lt;&lt;test_end&g=
+t;&gt;&gt;<br>
+INFO: ltp-pan reported some tests FAIL<br>LTP Version: LTP-20100131<br>=A0=
+=A0=A0=A0=A0=A0=A0 <br>=A0=A0=A0=A0=A0=A0 #################################=
+##############################&quot;<br>=A0=A0=A0=A0=A0=A0=A0 <br>=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0 Done executing testcases.&quot;<br>
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LTP Version:=A0 LTP-20100131<br>=A0=A0=A0=
+=A0=A0=A0 ###############################################################&q=
+uot;<br>=A0=A0=A0=A0=A0=A0 <br></div>
+<div>=A0</div>
+<div>=A0<br>-- <br></div>
+<div>Regards,</div>
+<div>Arjit Sharma.</div><br>
+
+--0016364c743bd5256104914a15f6--
+
+
+--===============5337290470363352876==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
+--===============5337290470363352876==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5337290470363352876==--
+
