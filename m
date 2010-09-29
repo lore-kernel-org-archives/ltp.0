@@ -1,31 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sukadev@linux.vnet.ibm.com>) id 1Ognfa-0006iM-B8
-	for ltp-list@lists.sourceforge.net; Wed, 04 Aug 2010 23:46:46 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OgnfZ-0004O4-6a
-	for ltp-list@lists.sourceforge.net; Wed, 04 Aug 2010 23:46:46 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e37.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o74Nihpu019213
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Aug 2010 17:44:43 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o74NkXJ1045040
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Aug 2010 17:46:35 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o74NkXjv018520
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Aug 2010 17:46:33 -0600
-Date: Wed, 4 Aug 2010 16:52:06 -0700
-From: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Message-ID: <20100804235206.GA1388@us.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P0yOO-0006QO-7o
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 15:16:24 +0000
+Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P0yON-0005NH-An
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 15:16:24 +0000
+Received: by gxk10 with SMTP id 10so389563gxk.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Sep 2010 08:16:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] pidns31: fix EACCESS error in mq_open()
+In-Reply-To: <000001cb5fa4$3def0160$b9cd0420$@co.jp>
+References: <000001cb5fa4$3def0160$b9cd0420$@co.jp>
+Date: Wed, 29 Sep 2010 08:16:17 -0700
+Message-ID: <AANLkTikD7h4KtrtUkCkOWciQ9EKG5eL6g-dj_5=Ode62@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] POSIX some testsets failed by permission error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,57 +27,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
+On Wed, Sep 29, 2010 at 12:02 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
+>
+>
+> I noticed that following POSIX testsets failed with "Permission denied".
+> =A0- pthread_attr_getschedparam/2-1
+> =A0- pthread_attr_setschedparam/2-1
+> =A0- pthread_rwlock_destroy/2-1
+>
+> ------------
+> conformance/interfaces/pthread_attr_getschedparam/2-1: execution: FAILED:
+> Output:
+> Unable to run child application: Permission denied
+> [...]
+> conformance/interfaces/pthread_attr_setschedparam/2-1: execution: FAILED:
+> Output:
+> Unable to run child application: Permission denied
+> [...]
+> conformance/interfaces/pthread_rwlock_destroy/2-1: execution: FAILED:
+> Output:
+> Unable to run child application: Permission denied
+> ------------
+>
+> They are shell scripts, but they weren't given rights of execution.
+>
+> It is necessary to give them rights of execution and to make them
+> into package, I think.
 
-pidns31: mq_open() fails with EACCESS.
+How did you execute the tests?
+-Garrett
 
-pidns31 test case fails with EACCESS - due to the leading '/' in
-mqname. See comments in the patch below for details.
-
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+---------------------------------------------------------------------------=
 ---
-Index: testcases/kernel/containers/pidns/pidns31.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/containers/pidns/pidns31.c,v
-retrieving revision 1.6
-diff -u -p -r1.6 pidns31.c
---- testcases/kernel/containers/pidns/pidns31.c	14 Nov 2009 23:58:26 -0000	1.6
-+++ testcases/kernel/containers/pidns/pidns31.c	4 Aug 2010 23:24:54 -0000
-@@ -61,7 +61,14 @@
- char *TCID = "pidns31";
- int TST_TOTAL = 1;
- 
--char *mqname = "/mq1";
-+
-+/*
-+ * NOTE: The mq_open() interface in glibc requires mqname to start with a '/' 
-+ * 	 and the glibc call skips the leading '/' when invoking the system
-+ * 	 call. Since we bypass the glibc mq_open() (and use syscall()) we
-+ * 	 define mqname without the leading '/'.
-+ */
-+char *mqname = "mq1";
- int result = TFAIL;
- 
- int errno;
-@@ -264,6 +271,7 @@ int main(int argc, char *argv[])
- 	}
- 
- 	syscall(__NR_mq_unlink, mqname);
-+
- 	mqd = syscall(__NR_mq_open, mqname, O_RDWR|O_CREAT|O_EXCL, 0777, NULL);
- 	if (mqd == (mqd_t)-1) {
- 		tst_resm(TBROK, "parent: mq_open() failed (%s)",
-
-------------------------------------------------------------------------------
-The Palm PDK Hot Apps Program offers developers who use the
-Plug-In Development Kit to bring their C/C++ apps to Palm for a share
-of $1 Million in cash or HP Products. Visit us here for more details:
-http://p.sf.net/sfu/dev2dev-palm
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
