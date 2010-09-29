@@ -1,33 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OseOB-0000JV-IT
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:47 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OseO7-0006ue-86
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:47 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e3.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o86G1vbp023567
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 12:01:57 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o86GHbeg354490
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 12:17:37 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o86GHbvN027123
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Sep 2010 13:17:37 -0300
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P0yB9-0006Fy-7R
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 15:02:43 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P0yB6-0001aM-Py
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 15:02:43 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <AANLkTik8Vy691CGvtyK-MEwdFxLeNotdkpXkgOVP51W6@mail.gmail.com>
-References: <AANLkTimbmgK15xY-3d-S4GHpKVMEjXpzbkUdMS-aTGZn@mail.gmail.com>
-	<AANLkTik8Vy691CGvtyK-MEwdFxLeNotdkpXkgOVP51W6@mail.gmail.com>
-Date: Mon, 06 Sep 2010 21:47:00 +0530
-Message-Id: <1283789822.4947.24.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20100929135647.GA4587@hallyn.com>
+References: <20100929135647.GA4587@hallyn.com>
+Date: Wed, 29 Sep 2010 20:32:20 +0530
+Message-Id: <1285772543.17329.2.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] {kernel/syscalls] fix signalfd4 tests to
-	use	SIGSETSIZE instead of 8
+Subject: Re: [LTP] [PATCH] securebits: add secure_keepcaps testcases
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -41,50 +28,368 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: ltp-list@lists.sf.net
 
-On Fri, 2010-08-27 at 19:49 -0700, Henry Yei wrote: 
-> Please ignore the last patch. I attached an earlier incomplete version).
-> Here is an updated patch which has the necessary  ltp_signal.h include
-> file for the SIGSETSIZE definition.
+On Wed, 2010-09-29 at 08:56 -0500, Serge E. Hallyn wrote:
+> This adds basic tests of the keepcaps securebits settings.
+> 
+> Lots more securebits tests to come (see my email from one
+> or 1.5 years ago, and, heck, write them if you have time :).
+> 
+> Signed-off-by: Serge E. Hallyn <serge.hallyn@canonical.com>
 
-Garret,
+Great, i get the following output on my machine:
 
-Can you please review and apply this as well ?
+# uname -a 
+Linux 2.6.35.4 #2 SMP Tue Sep 28 16:07:27 IST 2010 ppc64 ppc64 ppc64
+GNU/Linux
+
+# cat /etc/issue
+Fedora release 13 (Goddard)
+
+# ./runltp -f securebits
+
+Running tests.......
+<<<test_start>>>
+tag=Securebits stime=1285772204
+cmdline="run_securebits.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+testing keepcaps
+keepcaps    1  TPASS  :  dropped privs as expected
+keepcaps    1  TPASS  :  kept privs as expected
+keepcaps    1  TPASS  :  kept privs as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported all tests PASS
+LTP Version: LTP-20100831
+        
+       ###############################################################"
+        
+            Done executing testcases."
+            LTP Version:  LTP-20100831
+       ###############################################################"
+
+Looks fine to be,i just need a little documentation file which would
+say:
+	What securebits is all about (some pointers/links)? Any specific
+configuration required to run these tests, etc ?
 
 Regards--
 Subrata
 
+> ---
+>  m4/ltp-securebits.m4                               |   24 +++
+>  runtest/securebits                                 |    2 +
+>  testcases/kernel/security/Makefile                 |    5 +-
+>  testcases/kernel/security/securebits/Makefile      |   28 ++++
+>  .../kernel/security/securebits/check_keepcaps.c    |  161 ++++++++++++++++++++
+>  .../kernel/security/securebits/run_securebits.sh   |   20 +++
+>  6 files changed, 239 insertions(+), 1 deletions(-)
+>  create mode 100644 m4/ltp-securebits.m4
+>  create mode 100644 runtest/securebits
+>  create mode 100644 testcases/kernel/security/securebits/Makefile
+>  create mode 100644 testcases/kernel/security/securebits/check_keepcaps.c
+>  create mode 100644 testcases/kernel/security/securebits/run_securebits.sh
 > 
-> Henry Yei <hyei@mvista.com>
+> diff --git a/m4/ltp-securebits.m4 b/m4/ltp-securebits.m4
+> new file mode 100644
+> index 0000000..6407eb8
+> --- /dev/null
+> +++ b/m4/ltp-securebits.m4
+> @@ -0,0 +1,24 @@
+> +dnl
+> +dnl Copyright (c) Serge Hallyn (2010)
+> +dnl
+> +dnl This program is free software;  you can redistribute it and/or modify
+> +dnl it under the terms of the GNU General Public License as published by
+> +dnl the Free Software Foundation; either version 2 of the License, or
+> +dnl (at your option) any later version.
+> +dnl
+> +dnl This program is distributed in the hope that it will be useful,
+> +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +dnl the GNU General Public License for more details.
+> +dnl
+> +dnl You should have received a copy of the GNU General Public License
+> +dnl along with this program;  if not, write to the Free Software
+> +dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> +dnl
+> +
+> +
+> +AC_DEFUN([LTP_CHECK_SECUREBITS],
+> +AC_CHECK_HEADERS(linux/securebits.h,[
+> +	LTP_SECUREBITS=yes
+> +])
+> +)
+> diff --git a/runtest/securebits b/runtest/securebits
+> new file mode 100644
+> index 0000000..d78a66f
+> --- /dev/null
+> +++ b/runtest/securebits
+> @@ -0,0 +1,2 @@
+> +#DESCRIPTION:securebits tests
+> +Securebits	run_securebits.sh
+> diff --git a/testcases/kernel/security/Makefile b/testcases/kernel/security/Makefile
+> index 52b8d06..a877836 100644
+> --- a/testcases/kernel/security/Makefile
+> +++ b/testcases/kernel/security/Makefile
+> @@ -27,11 +27,14 @@ include	$(top_srcdir)/include/mk/env_pre.mk
+>  # For broken compilers and toolchains, like Montavista, that improperly detect
+>  # system headers when running autoconf -_-... bleh.
+>  ifeq ($(strip $(CAP_LIBS)),)
+> -FILTER_OUT_DIRS		:= cap_bound filecaps
+> +FILTER_OUT_DIRS		:= cap_bound filecaps securebits
+>  endif
+>  ifeq ($(HAVE_SETCAP),false)
+>  FILTER_OUT_DIRS		+= filecaps
+>  endif
+> +ifeq ($(LTP_SECUREBITS),false)
+> +FILTER_OUT_DIRS		+= securebits
+> +endif
 > 
-> 
-> 
-> 
-> 
-> On Fri, Aug 27, 2010 at 7:31 PM, Henry Yei <hyei@mvista.com> wrote:
-> > The signalfd4 tests have a hardcoded value of 8 instead of using SIGSETSIZE.
-> >
-> > Signed-off-by: Henry Yei <hyei@mvista.com>
-> >
-> > Henry Yei <hyei@mvista.com>
-> >
-> ------------------------------------------------------------------------------
-> Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
-> Be part of this innovative community and reach millions of netbook users 
-> worldwide. Take advantage of special opportunities to increase revenue and 
-> speed time-to-market. Join now, and jumpstart your future.
-> http://p.sf.net/sfu/intel-atom-d2d
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+>  # XXX (garrcoop): avoid compilation failures on RHEL 5.4, as reported by
+>  # Mitani-san, because of policy versioning issues...
+> diff --git a/testcases/kernel/security/securebits/Makefile b/testcases/kernel/security/securebits/Makefile
+> new file mode 100644
+> index 0000000..a76f2e0
+> --- /dev/null
+> +++ b/testcases/kernel/security/securebits/Makefile
+> @@ -0,0 +1,28 @@
+> +################################################################################
+> +##                                                                            ##
+> +## Copyright (c) International Business Machines  Corp., 2009                 ##
+> +##                                                                            ##
+> +## This program is free software;  you can redistribute it and#or modify      ##
+> +## it under the terms of the GNU General Public License as published by       ##
+> +## the Free Software Foundation; either version 2 of the License, or          ## ## (at your option) any later version.                                        ##
+> +##                                                                            ##
+> +## This program is distributed in the hope that it will be useful, but        ##
+> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> +## for more details.                                                          ##
+> +##                                                                            ##
+> +## You should have received a copy of the GNU General Public License          ##
+> +## along with this program;  if not, write to the Free Software               ##
+> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
+> +##                                                                            ##
+> +################################################################################
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +LDLIBS			+= $(CAP_LIBS)
+> +
+> +INSTALL_TARGETS		:= *.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
+> new file mode 100644
+> index 0000000..e969ae4
+> --- /dev/null
+> +++ b/testcases/kernel/security/securebits/check_keepcaps.c
+> @@ -0,0 +1,161 @@
+> +#include <errno.h>
+> +#include "config.h"
+> +#if HAVE_SYS_CAPABILITY_H
+> +#include <sys/capability.h>
+> +#endif
+> +#include <sys/prctl.h>
+> +#include <linux/securebits.h>
+> +#include <test.h>
+> +
+> +int errno;
+> +
+> +/* Tests:
+> +	1. drop capabilities at setuid if KEEPCAPS is not set and
+> +	   new user is nonroot
+> +	2. keep capabilities if set and new user is nonroot
+> +	   a. do with prctl(PR_SET_KEEPCAPS)
+> +	   (call this test 2)
+> +	   b. do with prctl(PR_SET_SECUREBITS, SECURE_KEEP_CAPS)
+> +	   (call this test 3)
+> +   TODO: test that exec clears KEEPCAPS
+> +   	(just create a simple executable that checks PR_GET_KEEPCAPS
+> +	 results, and execute that as test 4 after doing PR_SET_KEEPCAPS).
+> +   TODO: all of the other securebits tests.
+> + */
+> +
+> +char *TCID = "keepcaps";
+> +int TST_TOTAL=1;
+> +
+> +#ifdef HAVE_LIBCAP
+> +static int eff_caps_empty(cap_t c)
+> +{
+> +	int i, ret, v, empty=1;
+> +
+> +	for (i = 0; i < CAP_LAST_CAP; i++) {
+> +		ret = cap_get_flag(c, i, CAP_PERMITTED, &v);
+> +		if (ret || v)
+> +			empty = 0;
+> +	}
+> +
+> +	return empty;
+> +}
+> +
+> +static int am_privileged(void)
+> +{
+> +	int am_privileged = 1;
+> +
+> +	cap_t cap = cap_get_proc();
+> +	if (eff_caps_empty(cap))
+> +		am_privileged = 0;
+> +	cap_free(cap);
+> +
+> +	return am_privileged;
+> +}
+> +#else
+> +static int am_privileged(void)
+> +{
+> +	tst_resm(TBROK, "libcap not installed.");
+> +	tst_exit();
+> +}
+> +#endif
+> +
+> +#define EXPECT_NOPRIVS 0
+> +#define EXPECT_PRIVS 1
+> +static void do_setuid(int expect_privs)
+> +{
+> +	int ret;
+> +	int have_privs;
+> +
+> +	ret = setuid(1000);
+> +	if (ret) {
+> +		tst_resm(TERRNO | TFAIL, "setuid failed");
+> +		tst_exit();
+> +	}
+> +
+> +	have_privs = am_privileged();
+> +	if (have_privs && expect_privs == EXPECT_PRIVS) {
+> +		tst_resm(TPASS, "kept privs as expected");
+> +		tst_exit();
+> +	}
+> +	if (!have_privs && expect_privs == EXPECT_PRIVS) {
+> +		tst_resm(TFAIL, "expected to keep privs but did not");
+> +		tst_exit();
+> +	}
+> +	if (!have_privs && expect_privs == EXPECT_NOPRIVS) {
+> +		tst_resm(TPASS, "dropped privs as expected");
+> +		tst_exit();
+> +	}
+> +
+> +	/* have_privs && EXPECT_NOPRIVS */
+> +	tst_resm(TFAIL, "expected to drop privs but did not");
+> +	tst_exit();
+> +}
+> +
+> +static int am_root(void)
+> +{
+> +	uid_t uid = getuid();
+> +	if (uid != 0)
+> +		return 0;
+> +	if (!am_privileged())
+> +		return 0;
+> +	return 1;
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int ret, whichtest;
+> +
+> +	ret = prctl(PR_GET_KEEPCAPS);
+> +	if (ret) {
+> +		tst_resm(TBROK, "keepcaps was already set?\n");
+> +		tst_exit();
+> +	}
+> +	if (!am_root()) {
+> +		tst_resm(TBROK, "Run me as root and privileged\n");
+> +		tst_exit();
+> +	}
+> +
+> +	if (argc < 2) {
+> +		tst_resm(TBROK, "Usage: %s <tescase_num>", argv[0]);
+> +		tst_exit();
+> +	}
+> +	whichtest = atoi(argv[1]);
+> +	if (whichtest < 1 || whichtest > 3) {
+> +		tst_resm(TFAIL, "Valid tests are 1-3\n");
+> +		tst_exit();
+> +	}
+> +	switch(whichtest) {
+> +	case 1:
+> +		do_setuid(EXPECT_NOPRIVS); /* does not return */
+> +	case 2:
+> +		ret = prctl(PR_SET_KEEPCAPS, 1);
+> +		if (ret == -1) {
+> +			tst_resm(TFAIL|TERRNO, "PR_SET_KEEPCAPS failed\n");
+> +			tst_exit();
+> +		}
+> +		ret = prctl(PR_GET_KEEPCAPS);
+> +		if (!ret) {
+> +			tst_resm(TFAIL|TERRNO, "PR_SET_KEEPCAPS did not set keepcaps\n");
+> +			tst_exit();
+> +		}
+> +		do_setuid(EXPECT_PRIVS); /* does not return */
+> +	case 3:
+> +		ret = prctl(PR_GET_SECUREBITS);
+> +		ret = prctl(PR_SET_SECUREBITS, ret | SECBIT_KEEP_CAPS);
+> +		if (ret == -1) {
+> +			tst_resm(TFAIL|TERRNO, "PR_SET_SECUREBITS failed\n");
+> +			tst_exit();
+> +		}
+> +		ret = prctl(PR_GET_KEEPCAPS);
+> +		if (!ret) {
+> +			tst_resm(TFAIL|TERRNO, "PR_SET_SECUREBITS did not set keepcaps\n");
+> +			tst_exit();
+> +		}
+> +		do_setuid(EXPECT_PRIVS); /* does not return */
+> +	default:
+> +		tst_resm(TFAIL, "should not reach here\n");
+> +		tst_exit();
+> +	}
+> +	tst_resm(TFAIL, "should not reach here\n");
+> +	tst_exit();
+> +}
+> diff --git a/testcases/kernel/security/securebits/run_securebits.sh b/testcases/kernel/security/securebits/run_securebits.sh
+> new file mode 100644
+> index 0000000..4d9e272
+> --- /dev/null
+> +++ b/testcases/kernel/security/securebits/run_securebits.sh
+> @@ -0,0 +1,20 @@
+> +#!/bin/sh
+> +
+> +echo "testing keepcaps"
+> +check_keepcaps 1
+> +tmp=$?
+> +if [ $tmp -ne 0 ]; then
+> +	exit_code=$tmp
+> +fi
+> +check_keepcaps 2
+> +tmp=$?
+> +if [ $tmp -ne 0 ]; then
+> +	exit_code=$tmp
+> +fi
+> +check_keepcaps 3
+> +tmp=$?
+> +if [ $tmp -ne 0 ]; then
+> +	exit_code=$tmp
+> +fi
+> +
+> +exit $exit_code
 
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
