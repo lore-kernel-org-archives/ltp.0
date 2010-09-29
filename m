@@ -1,27 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1OxcsE-0002Fi-VL
-	for ltp-list@lists.sourceforge.net; Mon, 20 Sep 2010 09:41:22 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25]
-	helo=mx02.colomx.prod.int.phx2.redhat.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OxcsD-0001Hu-VR
-	for ltp-list@lists.sourceforge.net; Mon, 20 Sep 2010 09:41:22 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx02.colomx.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id
-	o8K9fGqu014052
-	for <ltp-list@lists.sourceforge.net>; Mon, 20 Sep 2010 05:41:16 -0400
-Date: Mon, 20 Sep 2010 05:41:14 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1845836354.4061284975674598.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <379495247.3991284975549292.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata.modak@in.ibm.com>) id 1P0xc5-0004wp-Al
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 14:26:29 +0000
+Received: from e28smtp07.in.ibm.com ([122.248.162.7])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P0xc3-0008Uy-DI
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 14:26:29 +0000
+In-Reply-To: <20100929141051.GB4620@hallyn.com>
+References: <20100924100303.5709.80714.sendpatchset@sravan-laptop>
+	<20100927142304.GA23119@hallyn.com>
+	<4CA0AEB7.7080701@linux.vnet.ibm.com>
+	<20100927180239.GA15486@hallyn.com>
+	<4CA1ADB0.7070908@linux.vnet.ibm.com>
+	<20100928213611.GA1046@hallyn.com>
+	<4CA31140.4000805@linux.vnet.ibm.com>
+	<20100929141051.GB4620@hallyn.com>
+Message-ID: <OFA3C42AE5.7F12F4DF-ON652577AD.004DA114-652577AD.004DCA76@in.ibm.com>
+From: Subrata Modak1 <subrata.modak@in.ibm.com>
+Date: Wed, 29 Sep 2010 19:39:02 +0530
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_171_85334529.1284975674597"
-Subject: [LTP] fix incorrect parsing of df command in ftruncate04.sh
+Subject: Re: [LTP] [PATCH] Compilation Error Fixed in filecaps.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,138 +31,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-------=_Part_171_85334529.1284975674597
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-Hi all, an error in ftruncate04 test is found, 
-The problem I see is due to incorrect parsing 
-of `df` command output:
-
-<<<test_start>>>
-tag=ftruncate04 stime=1284729392
-cmdline="ftruncate04.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-DEV:         /dev/mapper/vg_rhel6beta-lv_root
-MOUNT_POINT: /dev/mapper/vg_rhel6beta-lv_root
-FLAG:        rw,mand
-ftruncate04    1  TPASS  :  Test passed.
-mount: you must specify the filesystem type
-ftruncate04.sh : ERROR : mounting /dev/mapper/vg_rhel6beta-lv_root
-remount,rw,mand failed
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=7
-<<<test_end>>>
-
-# mount | head -1
-/dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw,mand)
-
-# df .
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/mapper/vg_rhel6beta-lv_root
-                       2523808   2436384         0 100% /
-
-A patch is attached to fix this problem. After applied the patch, 
-the failure gone:
-
-<<<test_start>>>
-tag=ftruncate04 stime=1284729277
-cmdline="ftruncate04.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-DEV:         /dev/mapper/vg_rhel6beta-lv_root
-MOUNT_POINT: /
-FLAG:        rw,mand
-ftruncate04    1  TPASS  :  Test passed.
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=9
-<<<test_end>>>
-
-# mount | head -1
-/dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw)
-# df -P .
-Filesystem         1024-blocks      Used Available Capacity Mounted on
-/dev/mapper/vg_rhel6beta-lv_root   2523808   2436380         0     100% /
-
-So the test without the patch leaves the system in inconsistent state
-(mand option is kept for the filesystem) which is bad.
-
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
-
---- ltp-full-20100331.old/testcases/kernel/syscalls/ftruncate/ftruncate04.sh	2010-09-17 15:06:44.292158981 +0200
-+++ ltp-full-20100331/testcases/kernel/syscalls/ftruncate/ftruncate04.sh	2010-09-17 15:10:26.646160911 +0200
-@@ -18,7 +18,7 @@
-     export TST_TOTAL=1
- fi
- cd ${TMPDIR:=/tmp}
--set -- $(df . | awk '/^\// { print $1, $NF }')
-+set -- $(df -P . | awk '/^\// { print $1, $NF }')
- DEV=$1; MOUNT_POINT=$2
- if [ "x$DEV" = x -o "x$MOUNT_POINT" = x ] ; then
-     tst_resm TCONF "backend mountpoint for $TMPDIR does not correspond to a real device:"
-
-
-Thanks,
-Caspar
-
--- 
-Quality Assurance Associate (Kernel) in
-Red Hat Inc. (Beijing R&D Branch)
-
-TEL: +86-10-62608150
-Web: http://www.redhat.com/
-
-------=_Part_171_85334529.1284975674597
-Content-Type: text/x-patch; name=syscalls-ftruncate04-fix-df-param.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=syscalls-ftruncate04-fix-df-param.patch
-
---- ltp-full-20100331.old/testcases/kernel/syscalls/ftruncate/ftruncate04.sh	2010-09-17 15:06:44.292158981 +0200
-+++ ltp-full-20100331/testcases/kernel/syscalls/ftruncate/ftruncate04.sh	2010-09-17 15:10:26.646160911 +0200
-@@ -18,7 +18,7 @@
-     export TST_TOTAL=1
- fi
- cd ${TMPDIR:=/tmp}
--set -- $(df . | awk '/^\// { print $1, $NF }')
-+set -- $(df -P . | awk '/^\// { print $1, $NF }')
- DEV=$1; MOUNT_POINT=$2
- if [ "x$DEV" = x -o "x$MOUNT_POINT" = x ] ; then
-     tst_resm TCONF "backend mountpoint for $TMPDIR does not correspond to a real device:"
-
-------=_Part_171_85334529.1284975674597
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Serge Hallyn <serge.hallyn@canonical.com>, ltp-list@lists.sf.net
+Cc: sravan <sravan@linux.vnet.ibm.com>
+
+Serge Hallyn <serge.hallyn@canonical.com> wrote on 09/29/2010 07:40:51 PM:
+>
+> Quoting sravan (sravan@linux.vnet.ibm.com):
+> >  Sorry for the confusion Serge.
+> > I have taken the "c.c" file from the latest ltp release and found
+> > that it is not compiling.
+> >
+> > The same file is not compiling in the earlier release of ltp also.
+> > To resolve the compilation issue I have added the following
+> > flag(HAVE_SYS_CAPABILITY_H).
+> > The same flag is also used in
+ltp-full-20100831/testcases/kernel/security/
+> filecaps/verify_caps_exec.c
+> > file.
+> >
+> > #if HAVE_SYS_CAPABILITY_H            //Added by Sravan
+> > #include <sys/capability.h>
+> > #endif                                              // Added by Sravan
+> >
+> > Please let me know if this is the correct approach.
+>
+> Well, the better approach would be to install the libcap-dev
+> package (or whatever it is called on your distro)  :)  But so
+> long as you're just getting your own compile working, whatever
+> gets you a working build is fine.
+>
+> What worries me, though, is the thought that the official
+> 20100831 release has the wrong files in it!  Can you follow
+> up on that with Subrata?  In particular, the c.c file is
+> different from the one in ltp.git.  Something is going very
+> wrong!
+
+Garret,
+
+Did we miss/drop something during our migration from ltp-dev.git to
+ltp.git ?
+
+Regards--
+Subrata
+
+>
+> thanks,
+> -serge
+
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
-------=_Part_171_85334529.1284975674597
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_171_85334529.1284975674597--
-
