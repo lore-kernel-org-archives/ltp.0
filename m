@@ -1,20 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1OseNf-0001S5-5e
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:15 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1OseNa-0001YG-Us
-	for ltp-list@lists.sourceforge.net; Mon, 06 Sep 2010 16:17:13 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Mon, 06 Sep 2010 21:46:45 +0530
-Message-Id: <1283789806.4947.20.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Patch] Fix mtest06 failure: caught unexpected signal
-	-	11 --- exiting
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1P0qgK-0001hP-6o
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 07:02:24 +0000
+Received: from out22.sjc.mx.trendmicro.com ([216.99.131.79])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P0qgI-0007H3-0O
+	for ltp-list@lists.sourceforge.net; Wed, 29 Sep 2010 07:02:24 +0000
+Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.130])
+	by out22.sjc.mx.trendmicro.com (Postfix) with ESMTP id E66B7980427
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Sep 2010 07:02:15 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 46DAA1D784E
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Sep 2010 07:02:15 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Wed, 29 Sep 2010 16:02:12 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Wed, 29 Sep 2010 16:02:12 +0900
+Message-ID: <000001cb5fa4$3def0160$b9cd0420$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: [LTP] POSIX some testsets failed by permission error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,102 +38,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: suzuki <suzuki@in.ibm.con>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-Suzuki,
+Hi,
 
-Can you please review this patch ?
+
+I noticed that following POSIX testsets failed with "Permission denied".
+  - pthread_attr_getschedparam/2-1
+  - pthread_attr_setschedparam/2-1
+  - pthread_rwlock_destroy/2-1
+
+------------
+conformance/interfaces/pthread_attr_getschedparam/2-1: execution: FAILED:
+Output: 
+Unable to run child application: Permission denied
+[...]
+conformance/interfaces/pthread_attr_setschedparam/2-1: execution: FAILED:
+Output: 
+Unable to run child application: Permission denied
+[...]
+conformance/interfaces/pthread_rwlock_destroy/2-1: execution: FAILED:
+Output: 
+Unable to run child application: Permission denied
+------------
+
+They are shell scripts, but they weren't given rights of execution.
+
+It is necessary to give them rights of execution and to make them 
+into package, I think.
+
 
 Regards--
-Subrata
 
--------- Forwarded Message --------
-From: Garrett Cooper <yanegomi@gmail.com>
-To: renxiu liang <renxiu.liang@windriver.com>
-Cc: ltp-list@lists.sf.net
-Subject: Re: [LTP] [Patch] Fix mtest06 failure: caught unexpected signal
-- 11 --- exiting
-Date: Wed, 1 Sep 2010 00:26:47 -0700
+-Tomonori Mitani
 
-On Mon, Aug 30, 2010 at 6:51 PM, renxiu liang
-<renxiu.liang@windriver.com> wrote:
-> On Wed, 2010-08-25 at 20:36 -0700, Garrett Cooper wrote:
->> On Wed, Aug 18, 2010 at 12:33 AM, renxiu liang
->> <renxiu.liang@windriver.com> wrote:
->> > Hi,
->> >
->> > We met the mtest06 failure several times; this is because in
->> > mtest06/mmap1.c, when handling the signal 11 in sig_handler, it doesn't
->> > cover another two race conditions:
->> > one is si_code equals "SEGV_MAPERR" but si_address does not equal to
->> > map_address; and one is si_code equals to "SEGV_ACCERR";
->> >
->> > see below error log:
->> >
->> > <<<test_start>>>
->> > tag=mtest06 stime=1270902396
->> > cmdline="  mmap1 -x 0.05"
->> > contacts=""
->> > analysis=exit
->> > initiation_status="ok"
->> > <<<test_output>>>
->> > mmap1       0  INFO  :  pid[5456]: map, change contents, unmap files
->> > 1000 times
->> > mmap1       0  INFO  :  created thread[1216369840]
->> > mmap1       0  INFO  :  pid[5456] - read contents of memory 0x48002000
->> > 1000 times
->> > mmap1       0  INFO  :  page fault occurred at 0x48002000
->> > mmap1       0  INFO  :  page fault occurred at 0x48002000
->> > mmap1       0  INFO  :  page fault occurred at 0x48002000
->> > mmap1       0  INFO  :  page fault occurred at 0x48002000
->> > ......
->> > mmap1       0  INFO  :  page fault occurred at 0x48002000
->> > mmap1       0  INFO  :  page fault occurred at 0x48002000
->> > caught unexpected signal - 11 --- exiting
->> > <<<execution_status>>>
->> > duration=1 termination_type=exited termination_id=255 corefile=no
->> > cutime=0 cstime=4
->> > <<<test_end>>>
->> >
->> > I made a patch to cover all the three race conditions in one case in
->> > sig_handler(),
->> > then run mtest06 repeatedly on different archs, test will not fail by
->> > catching signal 11.
->>
->> Could you print out what the value of info->si_code and info->si_addr
->> are at the time of the fault? Also, which architecture(s) are you
->> running into this issue on?
-> Hi Garrett,
->
-> Sorry for the late reply; See attached mtest06 logs, I printed out the
-> values of si_code, si_addr, map_address;
-> it is reproducible on arm, x86, ppc and mips; though it is not
-> reproducible every time, but can be reproducible if run the case
-> repeatedly.
-
-Nothing is jumping out at me as being incorrect, so I think it's best
-that I bring in a better pair of eyes, just in case.
-
-Suzuki-san,
-    Could you please help review this patch?
-Thanks!
--Garrett
-------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
-_______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
