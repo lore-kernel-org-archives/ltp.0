@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1OzBgi-0001qn-W8
-	for ltp-list@lists.sourceforge.net; Fri, 24 Sep 2010 17:03:56 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OzBgh-0005BH-Mj
-	for ltp-list@lists.sourceforge.net; Fri, 24 Sep 2010 17:03:56 +0000
-Date: Fri, 24 Sep 2010 13:03:49 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <587303608.585691285347829006.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <622595573.585371285347722630.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <joyarjit@gmail.com>) id 1P1AGY-00021g-Gg
+	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 03:57:06 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P1AGW-0004vM-Pm
+	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 03:57:06 +0000
+Received: by wwi18 with SMTP id 18so30873wwi.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Sep 2010 20:56:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_28797_1932476348.1285347829005"
-Subject: Re: [LTP] buffered I/O causes testcases/network/nfs/nfsstress
- failure
+In-Reply-To: <20100929174258.GA4493@hannu-ubuntu>
+References: <AANLkTinH_rH7iU4efFX8Bw9PUU_5DgMwR3q6p-bMZrOp@mail.gmail.com>
+	<AANLkTin18VbZ7bO6++nPd_Fz1J4FHQRn4akkqTDLYeT5@mail.gmail.com>
+	<20100929174258.GA4493@hannu-ubuntu>
+Date: Thu, 30 Sep 2010 09:26:55 +0530
+Message-ID: <AANLkTi=8QDOYT9bR+aQSWcDdMRvUx+FbqydU-CD-3Zpb@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: Re: [LTP] LHOST_HWADDR
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,306 +29,569 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============4257293672943464139=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-------=_Part_28797_1932476348.1285347829005
-Content-Type: text/plain; charset=utf-8
+--===============4257293672943464139==
+Content-Type: multipart/alternative; boundary=0016364d281fad9221049172111c
+
+--0016364d281fad9221049172111c
+Content-Type: text/plain; charset=ISO-8859-1
+
+Thanxxx.....  Hannu....
+
+i'll try it, wheather these network stress cases pass on my architechture or
+not......
+
+On Wed, Sep 29, 2010 at 11:12 PM, Hannu Heikkinen <hannuxx@iki.fi> wrote:
+
+> Hi,
+>
+> Sorry about top posting, but I just briefly mention that please read
+> <ltp-source-dir>/testcases/network/stress/README file. U have to setup
+> values
+> for RHOST etc env vars found in testscripts/networkstress.sh.
+>
+> br,
+> Hannu
+>
+> On 28/09/10 10:09 +0530, ARJIT SHARMA wrote:
+> > Hi
+> >
+> >      During the execution of network related tests i am getting the error
+> as
+> > "environment variable LHOST_HWADDR not set"
+> >      i tried solving this problem even by given static hwaddr in the
+> > testscript "networkstress.sh" but same error is coming.
+> >      i am runnning LTP on armv7 architechture.
+> >      Here i am also sending you the log file, please help me out to solve
+> > this problem.
+> >
+> >
+> >                  INFO: creating /opt/ltp/results directory
+> > If some fields are empty or look unusual you may have an old version.
+> > Compare to the current minimal requirements in Documentation/Changes.
+> >
+> > Linux 192.168.1.10 2.6.32 #2 SMP Fri Aug 27 12:31:08 IST 2010 armv7l
+> unknown
+> > unknown GNU/Linux
+> >
+> > Gnu C                  gcc (GCC) 4.5.0
+> > Gnu make               3.81
+> > util-linux             ng 2.16.1)
+> > mount                  ng 2.16.1 (with libblkid support)
+> > modutils               3.1
+> > e2fsprogs              1.41.9
+> > PPP                    2.4.4
+> > Linux C Library        2.10.1
+> > Dynamic linker (ldd)   2.10.1
+> > Linux C++ Library      6.0.14
+> > Procps                 3.2.7
+> > Net-tools              1.60
+> > iproute2              iproute2-ss100224
+> > Console-tools          0.2.3
+> > Sh-utils               5.2.1
+> > Modules Loaded
+> > free reports:
+> >              total       used       free     shared    buffers     cached
+> > Mem:        255556      24508     231048          0          0      14620
+> > -/+ buffers/cache:       9888     245668
+> > Swap:            0          0          0
+> > /proc/cpuinfo
+> > Processor : ARMv7 Processor rev 1 (v7l)
+> > processor : 0
+> > BogoMIPS : 996.14
+> > processor : 1
+> > BogoMIPS : 996.14
+> > Features : swp half thumb fastmult vfp edsp vfpv3 vfpv3d16
+> > CPU implementer : 0x41
+> > CPU architecture: 7
+> > CPU variant : 0x1
+> > CPU part : 0xc09
+> > CPU revision : 1
+> > Hardware : ST-SPEAR1300-EVB
+> > Revision : 0000
+> > Serial  : 0000000000000000
+> > remove test cases which require the block device.
+> > You can specify it with option -b
+> > COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 12621     -n 12621  -p  -f
+> > /tmp/ltp-isNlo12627/alltests -l
+> > /opt/ltp/results/network_stress.broken_ip.result  -C
+> > /opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed
+> > LOG File: /opt/ltp/results/network_stress.broken_ip.result
+> > FAILED COMMAND File:
+> > /opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed
+> > Running tests.......
+> > <<<test_start>>>
+> > tag=broken_ip4-version stime=351622598
+> > cmdline="broken_ip4-version"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip4-version01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv4 packets that have wrong value in
+> > version field.
+> > broken_ip4-version01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=3 cstime=10
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip4-ihl stime=351622598
+> > cmdline="broken_ip4-ihl"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip4-ihl01    0  TINFO  :  Verify that the kernel is not crashed
+> with
+> > receiving a large number of IPv4 packets that have wrong value in the
+> header
+> > length field.
+> > broken_ip4-ihl01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+> not
+> > set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=3 cstime=7
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip4-totlen stime=351622598
+> > cmdline="broken_ip4-totlen"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip4-totlen01    0  TINFO  :  Verify that the kernel is not crashed
+> > with receiving a large number of IPv4 packets that have wrong value in
+> the
+> > total length field.
+> > broken_ip4-totlen01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=7 cstime=5
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip4-fragment stime=351622598
+> > cmdline="broken_ip4-fragment"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip4-fragment01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv4 packets that have wrong fragment
+> > information
+> > broken_ip4-fragment01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=2 cstime=13
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip4-protcol stime=351622598
+> > cmdline="broken_ip4-protcol"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip4-protocol01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv4 packets that have wrong value in
+> the
+> > protocol field
+> > broken_ip4-protocol01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=4 cstime=8
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip4-checksum stime=351622598
+> > cmdline="broken_ip4-checksum"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip4-checksum01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv4 packets that have wrong value in
+> the
+> > checksum field
+> > broken_ip4-checksum01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=5 cstime=7
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip4-dstaddr stime=351622598
+> > cmdline="broken_ip4-dstaddr"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip4-dstaddr01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv4 packets whose destination address
+> is
+> > wrong (destination MAC address is correct)
+> > broken_ip4-dstaddr01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=1 termination_type=exited termination_id=1 corefile=no
+> > cutime=3 cstime=9
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip6-dstaddr stime=351622599
+> > cmdline="broken_ip6-dstaddr"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip6-dstaddr01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv6 packets whose destination address
+> is
+> > wrong (destination MAC address is correct)
+> > broken_ip6-dstaddr01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=1 cstime=12
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip6-nexthdr stime=351622599
+> > cmdline="broken_ip6-nexthdr"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip6-nexthdr01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv6 packets that have wrong value in
+> the
+> > next header field.
+> > broken_ip6-nexthdr01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=7 cstime=7
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip6-plen stime=351622599
+> > cmdline="broken_ip6-plen"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip6-plen01    0  TINFO  :  Verify that the kernel is not crashed
+> with
+> > receiving a large number of IPv6 packets that have wrong value in the
+> > payload length field.
+> > broken_ip6-plen01    1  TBROK  :  Environment variable LHOST_HWADDRS is
+> not
+> > set.
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=2 cstime=9
+> > <<<test_end>>>
+> > <<<test_start>>>
+> > tag=broken_ip6-version stime=351622599
+> > cmdline="broken_ip6-version"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > broken_ip6-version01    0  TINFO  :  Verify that the kernel is not
+> crashed
+> > with receiving a large number of IPv6 packets that have wrong value in
+> > version field.
+> > broken_ip6-version01    1  TBROK  :  Environment variable LHOST_HWADDRS
+> is
+> > not set.
+> > incrementing stop
+> > <<<execution_status>>>
+> > initiation_status="ok"
+> > duration=0 termination_type=exited termination_id=1 corefile=no
+> > cutime=3 cstime=7
+> > <<<test_end>>>
+> > INFO: ltp-pan reported some tests FAIL
+> > LTP Version: LTP-20100131
+> >
+> >        ###############################################################"
+> >
+> >             Done executing testcases."
+> >             LTP Version:  LTP-20100131
+> >        ###############################################################"
+> >
+> >
+> >
+> >
+> > --
+> > Regards,
+> > Arjit Sharma.
+>
+> >
+> ------------------------------------------------------------------------------
+> > Start uncovering the many advantages of virtual appliances
+> > and start using them to simplify application deployment and
+> > accelerate your shift to cloud computing.
+> > http://p.sf.net/sfu/novell-sfdev2dev
+>
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
+
+
+-- 
+Regards,
+Arjit Sharma.
+
+--0016364d281fad9221049172111c
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
+<div>Thanxxx.....=A0 Hannu....</div>
+<div>=A0</div>
+<div>i&#39;ll try it, wheather these network stress cases pass on my archit=
+echture or not......<br><br></div>
+<div class=3D"gmail_quote">On Wed, Sep 29, 2010 at 11:12 PM, Hannu Heikkine=
+n <span dir=3D"ltr">&lt;<a href=3D"mailto:hannuxx@iki.fi">hannuxx@iki.fi</a=
+>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
+px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">Hi,<br><br>Sorry about top posti=
+ng, but I just briefly mention that please read<br>&lt;ltp-source-dir&gt;/t=
+estcases/network/stress/README file. U have to setup values<br>
+for RHOST etc env vars found in testscripts/networkstress.sh.<br><br>br,<br=
+>Hannu<br>
+<div>
+<div></div>
+<div class=3D"h5"><br>On 28/09/10 10:09 +0530, ARJIT SHARMA wrote:<br>&gt; =
+Hi<br>&gt;<br>&gt; =A0 =A0 =A0During the execution of network related tests=
+ i am getting the error as<br>&gt; &quot;environment variable LHOST_HWADDR =
+not set&quot;<br>
+&gt; =A0 =A0 =A0i tried solving this problem even by given static hwaddr in=
+ the<br>&gt; testscript &quot;networkstress.sh&quot; but same error is comi=
+ng.<br>&gt; =A0 =A0 =A0i am runnning LTP on armv7 architechture.<br>&gt; =
+=A0 =A0 =A0Here i am also sending you the log file, please help me out to s=
+olve<br>
+&gt; this problem.<br>&gt;<br>&gt;<br>&gt; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0INFO: creating /opt/ltp/results directory<br>&gt; If some fields are emp=
+ty or look unusual you may have an old version.<br>&gt; Compare to the curr=
+ent minimal requirements in Documentation/Changes.<br>
+&gt;<br>&gt; Linux 192.168.1.10 2.6.32 #2 SMP Fri Aug 27 12:31:08 IST 2010 =
+armv7l unknown<br>&gt; unknown GNU/Linux<br>&gt;<br>&gt; Gnu C =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0gcc (GCC) 4.5.0<br>&gt; Gnu make =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 3.81<br>&gt; util-linux =A0 =A0 =A0 =A0 =A0 =A0 ng 2.16.1)<br>
+&gt; mount =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ng 2.16.1 (with libblkid supp=
+ort)<br>&gt; modutils =A0 =A0 =A0 =A0 =A0 =A0 =A0 3.1<br>&gt; e2fsprogs =A0=
+ =A0 =A0 =A0 =A0 =A0 =A01.41.9<br>&gt; PPP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A02.4.4<br>&gt; Linux C Library =A0 =A0 =A0 =A02.10.1<br>&gt; Dynamic =
+linker (ldd) =A0 2.10.1<br>
+&gt; Linux C++ Library =A0 =A0 =A06.0.14<br>&gt; Procps =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 3.2.7<br>&gt; Net-tools =A0 =A0 =A0 =A0 =A0 =A0 =A01.60<br>&gt=
+; iproute2 =A0 =A0 =A0 =A0 =A0 =A0 =A0iproute2-ss100224<br>&gt; Console-too=
+ls =A0 =A0 =A0 =A0 =A00.2.3<br>&gt; Sh-utils =A0 =A0 =A0 =A0 =A0 =A0 =A0 5.=
+2.1<br>
+&gt; Modules Loaded<br>&gt; free reports:<br>&gt; =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0total =A0 =A0 =A0 used =A0 =A0 =A0 free =A0 =A0 shared =A0 =A0buffers =
+=A0 =A0 cached<br>&gt; Mem: =A0 =A0 =A0 =A0255556 =A0 =A0 =A024508 =A0 =A0 =
+231048 =A0 =A0 =A0 =A0 =A00 =A0 =A0 =A0 =A0 =A00 =A0 =A0 =A014620<br>&gt; -=
+/+ buffers/cache: =A0 =A0 =A0 9888 =A0 =A0 245668<br>
+&gt; Swap: =A0 =A0 =A0 =A0 =A0 =A00 =A0 =A0 =A0 =A0 =A00 =A0 =A0 =A0 =A0 =
+=A00<br>&gt; /proc/cpuinfo<br>&gt; Processor : ARMv7 Processor rev 1 (v7l)<=
+br>&gt; processor : 0<br>&gt; BogoMIPS : 996.14<br>&gt; processor : 1<br>&g=
+t; BogoMIPS : 996.14<br>&gt; Features : swp half thumb fastmult vfp edsp vf=
+pv3 vfpv3d16<br>
+&gt; CPU implementer : 0x41<br>&gt; CPU architecture: 7<br>&gt; CPU variant=
+ : 0x1<br>&gt; CPU part : 0xc09<br>&gt; CPU revision : 1<br>&gt; Hardware :=
+ ST-SPEAR1300-EVB<br>&gt; Revision : 0000<br>&gt; Serial =A0: 0000000000000=
+000<br>
+&gt; remove test cases which require the block device.<br>&gt; You can spec=
+ify it with option -b<br>&gt; COMMAND: =A0 =A0/opt/ltp/bin/ltp-pan =A0-e -S=
+ =A0 -a 12621 =A0 =A0 -n 12621 =A0-p =A0-f<br>&gt; /tmp/ltp-isNlo12627/allt=
+ests -l<br>&gt; /opt/ltp/results/network_stress.broken_ip.result =A0-C<br>
+&gt; /opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed<br>&=
+gt; LOG File: /opt/ltp/results/network_stress.broken_ip.result<br>&gt; FAIL=
+ED COMMAND File:<br>&gt; /opt/ltp/output/LTP_RUN_ON-network_stress.broken_i=
+p.result.failed<br>
+&gt; Running tests.......<br>&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt=
+; tag=3Dbroken_ip4-version stime=3D351622598<br>&gt; cmdline=3D&quot;broken=
+_ip4-version&quot;<br>&gt; contacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<=
+br>&gt; &lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+&gt; broken_ip4-version01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel =
+is not crashed<br>&gt; with receiving a large number of IPv4 packets that h=
+ave wrong value in<br>&gt; version field.<br>&gt; broken_ip4-version01 =A0 =
+=A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D3 cstime=3D10<br>&gt; =
+&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip4-ihl stime=
+=3D351622598<br>&gt; cmdline=3D&quot;broken_ip4-ihl&quot;<br>&gt; contacts=
+=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_output&gt;=
+&gt;&gt;<br>
+&gt; broken_ip4-ihl01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel is n=
+ot crashed with<br>&gt; receiving a large number of IPv4 packets that have =
+wrong value in the header<br>&gt; length field.<br>&gt; broken_ip4-ihl01 =
+=A0 =A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is not<br>
+&gt; set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; initiati=
+on_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexited t=
+ermination_id=3D1 corefile=3Dno<br>&gt; cutime=3D3 cstime=3D7<br>&gt; &lt;&=
+lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip4-totlen sti=
+me=3D351622598<br>&gt; cmdline=3D&quot;broken_ip4-totlen&quot;<br>&gt; cont=
+acts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_output=
+&gt;&gt;&gt;<br>
+&gt; broken_ip4-totlen01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel i=
+s not crashed<br>&gt; with receiving a large number of IPv4 packets that ha=
+ve wrong value in the<br>&gt; total length field.<br>&gt; broken_ip4-totlen=
+01 =A0 =A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D7 cstime=3D5<br>&gt; &=
+lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip4-fragment s=
+time=3D351622598<br>&gt; cmdline=3D&quot;broken_ip4-fragment&quot;<br>&gt; =
+contacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_ou=
+tput&gt;&gt;&gt;<br>
+&gt; broken_ip4-fragment01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel=
+ is not crashed<br>&gt; with receiving a large number of IPv4 packets that =
+have wrong fragment<br>&gt; information<br>&gt; broken_ip4-fragment01 =A0 =
+=A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D2 cstime=3D13<br>&gt; =
+&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip4-protcol st=
+ime=3D351622598<br>&gt; cmdline=3D&quot;broken_ip4-protcol&quot;<br>&gt; co=
+ntacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_outp=
+ut&gt;&gt;&gt;<br>
+&gt; broken_ip4-protocol01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel=
+ is not crashed<br>&gt; with receiving a large number of IPv4 packets that =
+have wrong value in the<br>&gt; protocol field<br>&gt; broken_ip4-protocol0=
+1 =A0 =A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D4 cstime=3D8<br>&gt; &=
+lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip4-checksum s=
+time=3D351622598<br>&gt; cmdline=3D&quot;broken_ip4-checksum&quot;<br>&gt; =
+contacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_ou=
+tput&gt;&gt;&gt;<br>
+&gt; broken_ip4-checksum01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel=
+ is not crashed<br>&gt; with receiving a large number of IPv4 packets that =
+have wrong value in the<br>&gt; checksum field<br>&gt; broken_ip4-checksum0=
+1 =A0 =A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D5 cstime=3D7<br>&gt; &=
+lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip4-dstaddr st=
+ime=3D351622598<br>&gt; cmdline=3D&quot;broken_ip4-dstaddr&quot;<br>&gt; co=
+ntacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_outp=
+ut&gt;&gt;&gt;<br>
+&gt; broken_ip4-dstaddr01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel =
+is not crashed<br>&gt; with receiving a large number of IPv4 packets whose =
+destination address is<br>&gt; wrong (destination MAC address is correct)<b=
+r>&gt; broken_ip4-dstaddr01 =A0 =A01 =A0TBROK =A0: =A0Environment variable =
+LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D1 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D3 cstime=3D9<br>&gt; &=
+lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip6-dstaddr st=
+ime=3D351622599<br>&gt; cmdline=3D&quot;broken_ip6-dstaddr&quot;<br>&gt; co=
+ntacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_outp=
+ut&gt;&gt;&gt;<br>
+&gt; broken_ip6-dstaddr01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel =
+is not crashed<br>&gt; with receiving a large number of IPv6 packets whose =
+destination address is<br>&gt; wrong (destination MAC address is correct)<b=
+r>&gt; broken_ip6-dstaddr01 =A0 =A01 =A0TBROK =A0: =A0Environment variable =
+LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D1 cstime=3D12<br>&gt; =
+&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip6-nexthdr st=
+ime=3D351622599<br>&gt; cmdline=3D&quot;broken_ip6-nexthdr&quot;<br>&gt; co=
+ntacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_outp=
+ut&gt;&gt;&gt;<br>
+&gt; broken_ip6-nexthdr01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel =
+is not crashed<br>&gt; with receiving a large number of IPv6 packets that h=
+ave wrong value in the<br>&gt; next header field.<br>&gt; broken_ip6-nexthd=
+r01 =A0 =A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; init=
+iation_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexit=
+ed termination_id=3D1 corefile=3Dno<br>&gt; cutime=3D7 cstime=3D7<br>&gt; &=
+lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip6-plen stime=
+=3D351622599<br>&gt; cmdline=3D&quot;broken_ip6-plen&quot;<br>&gt; contacts=
+=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_output&gt;=
+&gt;&gt;<br>
+&gt; broken_ip6-plen01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel is =
+not crashed with<br>&gt; receiving a large number of IPv6 packets that have=
+ wrong value in the<br>&gt; payload length field.<br>&gt; broken_ip6-plen01=
+ =A0 =A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is not<br>
+&gt; set.<br>&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>&gt; initiati=
+on_status=3D&quot;ok&quot;<br>&gt; duration=3D0 termination_type=3Dexited t=
+ermination_id=3D1 corefile=3Dno<br>&gt; cutime=3D2 cstime=3D9<br>&gt; &lt;&=
+lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>&gt; tag=3Dbroken_ip6-version st=
+ime=3D351622599<br>&gt; cmdline=3D&quot;broken_ip6-version&quot;<br>&gt; co=
+ntacts=3D&quot;&quot;<br>&gt; analysis=3Dexit<br>&gt; &lt;&lt;&lt;test_outp=
+ut&gt;&gt;&gt;<br>
+&gt; broken_ip6-version01 =A0 =A00 =A0TINFO =A0: =A0Verify that the kernel =
+is not crashed<br>&gt; with receiving a large number of IPv6 packets that h=
+ave wrong value in<br>&gt; version field.<br>&gt; broken_ip6-version01 =A0 =
+=A01 =A0TBROK =A0: =A0Environment variable LHOST_HWADDRS is<br>
+&gt; not set.<br>&gt; incrementing stop<br>&gt; &lt;&lt;&lt;execution_statu=
+s&gt;&gt;&gt;<br>&gt; initiation_status=3D&quot;ok&quot;<br>&gt; duration=
+=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno<br>&gt; cut=
+ime=3D3 cstime=3D7<br>
+&gt; &lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&gt; INFO: ltp-pan reported some t=
+ests FAIL<br>&gt; LTP Version: LTP-20100131<br>&gt;<br>&gt; =A0 =A0 =A0 =A0=
+###############################################################&quot;<br>&g=
+t;<br>
+&gt; =A0 =A0 =A0 =A0 =A0 =A0 Done executing testcases.&quot;<br>&gt; =A0 =
+=A0 =A0 =A0 =A0 =A0 LTP Version: =A0LTP-20100131<br>&gt; =A0 =A0 =A0 =A0###=
+############################################################&quot;<br>&gt;<=
+br>&gt;<br>&gt;<br>&gt;<br>&gt; --<br>
+&gt; Regards,<br>&gt; Arjit Sharma.<br><br></div></div>&gt; ---------------=
+---------------------------------------------------------------<br>&gt; Sta=
+rt uncovering the many advantages of virtual appliances<br>&gt; and start u=
+sing them to simplify application deployment and<br>
+&gt; accelerate your shift to cloud computing.<br>&gt; <a href=3D"http://p.=
+sf.net/sfu/novell-sfdev2dev" target=3D"_blank">http://p.sf.net/sfu/novell-s=
+fdev2dev</a><br><br>&gt; _______________________________________________<br=
+>
+&gt; Ltp-list mailing list<br>&gt; <a href=3D"mailto:Ltp-list@lists.sourcef=
+orge.net">Ltp-list@lists.sourceforge.net</a><br>&gt; <a href=3D"https://lis=
+ts.sourceforge.net/lists/listinfo/ltp-list" target=3D"_blank">https://lists=
+.sourceforge.net/lists/listinfo/ltp-list</a><br>
+<br></blockquote></div><br><br clear=3D"all"><br>-- <br>
+<div>Regards,</div>
+<div>Arjit Sharma.</div><br>
 
------ "Garrett Cooper" <yanegomi@gmail.com> wrote:
+--0016364d281fad9221049172111c--
 
-> On Tue, Sep 7, 2010 at 8:13 AM, Caspar Zhang <czhang@redhat.com>
-> wrote:
-> >
-> > ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
-> >
-> >> On Tue, Sep 7, 2010 at 5:18 AM, Caspar Zhang <czhang@redhat.com>
-> >> wrote:
-> >> > Hi all,
-> >> > =C2=A0When I run testcases/network/nfs/nfsstress/ test, I found
-> sometimes
-> >> the
-> >> > test failed due to buffered I/O, in detail, for example, there
-> are
-> >> the following
-> >> > lines in make_tree.c :
-> >> >
-> >> > 544 =C2=A0 =C2=A0 numchar[0] =3D sprintf(prog_buf,
-> >> > 545 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 "main()\=
-n{\n\t printf(\"hello
-> world\");\n}\n");
-> >> >
-> >> > sometimes the generated .c file will be:
-> >> > ^@ain() // <- strange ASCII char '^@' appears instead of 'm'
-> >> > {
-> >> > =C2=A0 =C2=A0 =C2=A0 =C2=A0printf("hello world");
-> >> > }
-> >> >
-> >> > And running with this .c file will cause error.
-> >> >
-> >> > That is to say, string 'prog_buf' gets a mistake during sprintf.
-> And
-> >> there're
-> >> > somewhere else using buffered I/O in this test as well. Do we
-> have
-> >> an
-> >> > unbuffered solution to this test?
-> >>
-> >> That seems a bit odd. Is the NFS mount/server TCP or UDP?
-> >
-> > Hi Garrett, it's UDP.
->=20
->     Ok. Something else that might be good to note is whether or not
-> it's v2, v3, or v4 on the client and server side.
->     Could you please try with TCP and see whether or not the issue
-> persists? I'm just curious if it's a potentially real issue with NFS
-> code in the kernel, random networking infrastructure issues, etc.
-> Thanks,
 
-Hi Garrett, sorry for late reply. I tried all combinations of TCP/UDP=20
-and v2/v3/v4 but the error still existed. I wrote a workaround patch
-and re-tested with the combinations above, the issue seemed to be solved.
-
-This patch have 2 fixes:
-
-a) extend malloc length from 1024 to 2048. If we keep both default dir num
-and file num as 100, the string length of dirname/filename length will be=
-=20
-easily > 1024 bytes. This will cause string buffer overflow and the main.c=
-=20
-may be filled with such wrong chars: '19123.97/19123.98/19123.99/19123.99.0=
-.cmain()...'
-
-b) add tmpdirname var in some sprintf sentences. According the man page of
-sprintf:
-
-NOTES
-       Some programs imprudently rely on code such as the following
-           sprintf(buf, "%s some further text", buf);
-       to append text to buf.  However, the standards explicitly note
- that the results are undefined if source  and  destination buffers =20
- overlap  when  calling  sprintf(),  snprintf(), vsprintf(), and=20
- vsnprintf().  Depending on the version of gcc(1) used, and the=20
- compiler options employed, calls such as the above will not produce=20
- the expected results.
-
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
-
-Thanks,
-Caspar
-
---=20
-Quality Assurance Associate (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-
-TEL: +86-10-62608150
-WEB: http://www.redhat.com/
-
-------=_Part_28797_1932476348.1285347829005
-Content-Type: text/x-patch; name=network-nfsstress-buffered-io-string.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=network-nfsstress-buffered-io-string.patch
-
---- a/testcases/network/nfs/nfsstress/make_tree.c	2010-04-01 14:23:11.000000000 +0800
-+++ b/testcases/network/nfs/nfsstress/make_tree.c	2010-09-25 00:43:37.470000001 +0800
-@@ -266,13 +266,13 @@
-     char	*dirname;	/* location where compile is initated         */
-     char	*command;	/* make or make clean command.                */
- 
--    if ((dirname = malloc(sizeof(char) * 1024)) == NULL) /* just paranoid */
-+    if ((dirname = malloc(sizeof(char) * 2048)) == NULL) /* just paranoid */
-     {
-         perror("init_compile(): dirname malloc()");
-         return 1;
-     }
- 
--    if ((command = malloc(1024)) == NULL) 		/* just paranoid */
-+    if ((command = malloc(sizeof(char) * 1024)) == NULL) /* just paranoid */
-     {
-         perror("init_compile(): dirname malloc()");
-         return 1;
-@@ -364,23 +364,29 @@
-     int		dircnt;		        /* index into directory tree          */
-     int		sindex = numsdir;       /* num subdirectory tree to remove    */
-     char	*dirname;		/* name of the directory to chdir()   */
-+    char	*tmpdirname;		/* temp name for directory, for swap  */
-     char	*filename;		/* name of the cfile to remove        */
-     char	*subdir;		/* name of the sub dir to remove      */
- 
--    if ((dirname = malloc(sizeof(char) * 1024)) == NULL) /* just paranoid */
-+    if ((dirname = malloc(sizeof(char) * 2048)) == NULL) /* just paranoid */
-     {
-         perror("crte_mk_rm(): dirname malloc()");
- 	return 1;
-     }
-     
-+    if ((tmpdirname = malloc(sizeof(char) * 2048)) == NULL) /* just paranoid */
-+    {
-+        perror("crte_mk_rm(): tmpdirname malloc()");
-+	return 1;
-+    }
- 
--    if ((filename = malloc(sizeof(char) * 1024)) == NULL) /* just paranoid */
-+    if ((filename = malloc(sizeof(char) * 2048)) == NULL) /* just paranoid */
-     {
-         perror("crte_mk_rm(): filename malloc()");
- 	return 1;
-     }
- 
--    if ((subdir = malloc(sizeof(char) * 1024)) == NULL) /* just paranoid */
-+    if ((subdir = malloc(sizeof(char) * 2048)) == NULL) /* just paranoid */
-     {
-         perror("crte_mk_rm(): subdir malloc()");
- 	return 1;
-@@ -391,9 +397,16 @@
-     {
-         /* get the name of the last directory created. */
-         for (dircnt = 0; dircnt < sindex; dircnt++)
--            (dircnt == 0) ? 
--	       sprintf(dirname, "%s/%s.%ld", base_dir, hname, gettid()) :
--               sprintf(dirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+        {
-+            if (dircnt == 0)
-+                sprintf(dirname, "%s/%s.%ld", base_dir, hname, gettid());
-+            else
-+            {
-+                 sprintf(tmpdirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+                 sprintf(dirname, "%s", tmpdirname);
-+            }
-+            sync;
-+        }
- 
-         dprt("pid[%d]: cd'ing to last created dir: %s\n", gettid(), dirname);
- 
-@@ -410,6 +423,7 @@
-             {
-                 dprt("pid[%d]: failed removing file: %s\n", gettid(), filename);
-                 perror("rm_file_dir(): unlink()");
-+                free(tmpdirname);
-                 free(dirname);
-                 free(filename);
-                 free(subdir);
-@@ -423,6 +437,7 @@
-         if (unlink(filename))
-         {
-             perror("rm_file_dir() cound not remove makefile unlink()");
-+            free(tmpdirname);
-             free(dirname);
-             free(filename);
-             free(subdir);
-@@ -442,6 +457,7 @@
-             if (rmdir(subdir) == -1)
-             {
-                 perror("rm_file_dir() rmdir()");
-+                free(tmpdirname);
-                 free(dirname);
-                 free(filename);
-                 free(subdir);
-@@ -451,6 +467,7 @@
-         }
-     }
- 
-+    free(tmpdirname);
-     free(dirname);
-     free(filename);
-     free(subdir);
-@@ -484,6 +501,7 @@
-     int		filecnt;	/* index to the number of ".c" files created  */
-     int		numchar[2];	/* number of characters written to buffer     */
-     char 	*dirname;	/* name of the directory/idirectory tree      */
-+    char 	*tmpdirname;	/* name of a temporary directory, for swaping */
-     char	*cfilename;     /* name of the ".c" file created	      */
-     char	*mkfilename;	/* name of the makefile - which is "makefile" */
-     char	*hostname;	/* hostname of the client machine             */
-@@ -494,19 +512,25 @@
-                              (long *)args; 
-     volatile int exit_val = 0;  /* exit value of the pthreads		      */
- 
--    if ((dirname = malloc(sizeof(char) * 1024)) == NULL) /* just paranoid */
-+    if ((dirname = malloc(sizeof(char) * 2048)) == NULL) /* just paranoid */
-     {
-         perror("crte_mk_rm(): dirname malloc()");
- 	PTHREAD_EXIT(-1);
-     }
- 
--    if ((cfilename = malloc(sizeof(char) * 1024)) == NULL)
-+    if ((tmpdirname = malloc(sizeof(char) * 2048)) == NULL)
-+    {
-+        perror("crte_mk_rm(): tmpdirname malloc()");
-+	PTHREAD_EXIT(-1);
-+    }
-+
-+    if ((cfilename = malloc(sizeof(char) * 2048)) == NULL)
-     {
-         perror("crte_mk_rm(): cfilename malloc()");
- 	PTHREAD_EXIT(-1);
-     }
- 
--    if ((mkfilename = malloc(sizeof(char) * 1024)) == NULL)
-+    if ((mkfilename = malloc(sizeof(char) * 2048)) == NULL)
-     {
-         perror("crte_mk_rm(): mkfilename malloc()");
- 	PTHREAD_EXIT(-1);
-@@ -547,9 +571,14 @@
-     for (dircnt = 0; dircnt < (int)locargptr[0]; dircnt++)
-     {
-         /* First create the base directory, then create the subdirectories   */
--        (dircnt == 0) ?
--	    sprintf(dirname, "%s.%ld", hostname, gettid()):
--            sprintf(dirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+        if (dircnt == 0)
-+            sprintf(dirname, "%s.%ld", hostname, gettid());
-+        else
-+        {
-+            sprintf(tmpdirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+            sprintf(dirname, "%s", tmpdirname);
-+        }
-+        sync();
-           
-         dprt("pid[%d] creating directory: %s\n", gettid(), dirname); 
-         if (mkdir(dirname, 0777) == -1)
-@@ -563,9 +592,14 @@
-     usleep(10);
-     for (dircnt = 0; dircnt < (int)locargptr[0]; dircnt++)
-     {
--        (dircnt == 0) ?
--	    sprintf(dirname, "%s/%s.%ld", pwd, hostname, gettid()):
--            sprintf(dirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+        if (dircnt == 0)
-+            sprintf(dirname, "%s/%s.%ld", pwd, hostname, gettid());
-+        else
-+        {
-+            sprintf(tmpdirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+            sprintf(dirname, "%s", tmpdirname);
-+        }
-+        sync();
-         if ((make_buf = malloc(sizeof(char) * 4096)) == NULL)
-         {
-             perror("crte_mk_rm(): make_buf malloc()");
-@@ -641,9 +675,14 @@
- 
-     for (dircnt = 0; dircnt < (int)locargptr[0]; dircnt++)
-     {
--        (dircnt == 0) ?
--	    sprintf(dirname, "%s/%s.%ld", pwd, hostname, gettid()):
--            sprintf(dirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+        if (dircnt == 0)
-+            sprintf(dirname, "%s/%s.%ld", pwd, hostname, gettid());
-+        else
-+        {
-+            sprintf(tmpdirname, "%s/%ld.%d", dirname, gettid(), dircnt);
-+            sprintf(dirname, "%s", tmpdirname);
-+        }
-+        sync();
-         /* In each directory create N ".c" files and a makefile. */
-         for (filecnt = 0; filecnt < (int)locargptr[1]; filecnt++)
-         {
-
-------=_Part_28797_1932476348.1285347829005
+--===============4257293672943464139==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -337,7 +602,7 @@ Start uncovering the many advantages of virtual appliances
 and start using them to simplify application deployment and
 accelerate your shift to cloud computing.
 http://p.sf.net/sfu/novell-sfdev2dev
-------=_Part_28797_1932476348.1285347829005
+--===============4257293672943464139==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -348,5 +613,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_28797_1932476348.1285347829005--
+--===============4257293672943464139==--
 
