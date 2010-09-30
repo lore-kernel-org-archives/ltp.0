@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1OyPU1-0006FP-NJ
-	for ltp-list@lists.sourceforge.net; Wed, 22 Sep 2010 13:35:37 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <joyarjit@gmail.com>) id 1P1F0u-0004zK-BN
+	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 09:01:16 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OyPU0-0006n8-SE
-	for ltp-list@lists.sourceforge.net; Wed, 22 Sep 2010 13:35:37 +0000
-Received: by iwn2 with SMTP id 2so661146iwn.34
+	id 1P1F0q-0004ef-DQ
+	for ltp-list@lists.sourceforge.net; Thu, 30 Sep 2010 09:01:16 +0000
+Received: by wyb35 with SMTP id 35so2180542wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 22 Sep 2010 06:35:31 -0700 (PDT)
+	Thu, 30 Sep 2010 02:01:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <000601cb5a30$d47c0a20$7d741e60$@co.jp>
-References: <000601cb5a30$d47c0a20$7d741e60$@co.jp>
-Date: Wed, 22 Sep 2010 06:35:31 -0700
-Message-ID: <AANLkTinfWCkP34A1QDU6LP+amyYHu3e3zviqdvNcDcs3@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix "memcg_stress" test
+Date: Thu, 30 Sep 2010 14:31:06 +0530
+Message-ID: <AANLkTinKSwfEcD87tMphHGn4O_QFx0-25QvcZz4v7fuZ@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] rlogind, rshd, finger...
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,71 +25,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0734839469189315328=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, shubham@linux.vnet.ibm.com, =?Big5?B?t+2ueSCwt6Wr?= <toza@ryobi.co.jp>
+To: ltp-list@lists.sourceforge.net
 
-MjAxMC85LzIyIE1pdGFuaSA8bWl0YW5pQHJ5b2JpLmNvLmpwPjoKPiBJIG5vdGljZWQgdGhhdCAi
-bWVtY2dfc3RyZXNzIiB0ZXN0IGZhaWxlZCBpbiBteSBSSEVMNS41L1JIRUw0Ljggc3lzdGVtczoK
-PiAtLS0tLS0tLS0tLS0oUkhFTDQuOCkKPiBjZ3JvdXBfcmVncmVzc2lvbl90ZXN0IMKgIDEwIMKg
-VENPTkYgwqA6IMKgUmVtYWluaW5nIGNhc2VzIG5vdCBhcHByb3ByaWF0ZSBmb3IKPiBjb25maWd1
-cmF0aW9uCj4gZ3JlcDogL3Byb2MvY2dyb3VwczogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+
-IG1lbWNnX3JlZ3Jlc3Npb25fdGVzdCDCoCDCoDEgwqBUQ09ORiDCoDogwqBFaXRoZXIgbWVtb3J5
-IHJlc291cmNlIGNvbnRyb2xsZXIKPiBrZXJuZWwgc3VwcG9ydCBhYnNlbnQKPiBtZW1jZ19yZWdy
-ZXNzaW9uX3Rlc3QgwqAgwqAxIMKgVENPTkYgwqA6IMKgb3IgZmVhdHVyZSBpcyBub3QgZW5hYmxl
-ZDsgc2tpcHBpbmcKPiBhbGwgbWVtY2dyb3VwIHRlc3RjYXNlcy4KPiBncmVwOiAvcHJvYy9jZ3Jv
-dXBzOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gV0FSTklORzoKPiBFaXRoZXIgS2VybmVs
-IGRvZXMgbm90IHN1cHBvcnQgZm9yIG1lbW9yeSByZXNvdXJjZSBjb250cm9sbGVyIG9yIGZlYXR1
-cmUgbm90Cj4gZW5hYmxlZAo+IFNraXBwaW5nIGFsbCBtZW1jZ3JvdXAgdGVzdGNhc2VzLi4uLgo+
-IC9vcHQvbHRwL3Rlc3RjYXNlcy9iaW4vbWVtY2dfc3RyZXNzX3Rlc3Quc2g6Cj4gL29wdC9sdHAv
-dGVzdGNhc2VzL2Jpbi9tZW1jZ19zdHJlc3NfdGVzdC5zaDogY2Fubm90IGV4ZWN1dGUgYmluYXJ5
-IGZpbGUKPiBncmVwOiAvcHJvYy9jZ3JvdXBzOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4g
-V0FSTklORzoKPiBFaXRoZXIga2VybmVsIGRvZXMgbm90IHN1cHBvcnQgbWVtb3J5IHJlc291cmNl
-IGNvbnRyb2xsZXIgb3IgZmVhdHVyZSBub3QKPiBlbmFibGVkCj4gU2tpcHBpbmcgYWxsIG1lbWNn
-X2NvbnRyb2wgdGVzdGNhc2VzLi4uLgo+IC0tLS0tLS0tLS0tLQo+Cj4gLS0tLS0tLS0tLS0tKFJI
-RUw1LjUpCj4gY2dyb3VwX3JlZ3Jlc3Npb25fdGVzdCDCoCAxMCDCoFRDT05GIMKgOiDCoFJlbWFp
-bmluZyBjYXNlcyBub3QgYXBwcm9wcmlhdGUgZm9yCj4gY29uZmlndXJhdGlvbgo+IGdyZXA6IC9w
-cm9jL2Nncm91cHM6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKPiBtZW1jZ19yZWdyZXNzaW9u
-X3Rlc3QgwqAgwqAxIMKgVENPTkYgwqA6IMKgRWl0aGVyIG1lbW9yeSByZXNvdXJjZSBjb250cm9s
-bGVyCj4ga2VybmVsIHN1cHBvcnQgYWJzZW50Cj4gbWVtY2dfcmVncmVzc2lvbl90ZXN0IMKgIMKg
-MSDCoFRDT05GIMKgOiDCoG9yIGZlYXR1cmUgaXMgbm90IGVuYWJsZWQ7IHNraXBwaW5nCj4gYWxs
-IG1lbWNncm91cCB0ZXN0Y2FzZXMuCj4gZ3JlcDogL3Byb2MvY2dyb3VwczogTm8gc3VjaCBmaWxl
-IG9yIGRpcmVjdG9yeQo+IFdBUk5JTkc6Cj4gRWl0aGVyIEtlcm5lbCBkb2VzIG5vdCBzdXBwb3J0
-IGZvciBtZW1vcnkgcmVzb3VyY2UgY29udHJvbGxlciBvciBmZWF0dXJlIG5vdAo+IGVuYWJsZWQK
-PiBTa2lwcGluZyBhbGwgbWVtY2dyb3VwIHRlc3RjYXNlcy4uLi4KPiDimIUvb3B0L2x0cC90ZXN0
-Y2FzZXMvYmluL21lbWNnX3N0cmVzc190ZXN0LnNoOiBsaW5lIDE6IOODu+OCvSMhOiBjb21tYW5k
-IG5vdAo+IGZvdW5kCj4gZ3JlcDogL3Byb2MvY2dyb3VwczogTm8gc3VjaCBmaWxlIG9yIGRpcmVj
-dG9yeQo+IFdBUk5JTkc6Cj4gRWl0aGVyIEtlcm5lbCBkb2VzIG5vdCBzdXBwb3J0IGZvciBtZW1v
-cnkgcmVzb3VyY2UgY29udHJvbGxlciBvciBmZWF0dXJlIG5vdAo+IGVuYWJsZWQKPiBTa2lwcGlu
-ZyBhbGwgbWVtY2dyb3VwIHRlc3RjYXNlcy4uLi4KPiBncmVwOiAvcHJvYy9jZ3JvdXBzOiBObyBz
-dWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gV0FSTklORzoKPiBFaXRoZXIga2VybmVsIGRvZXMgbm90
-IHN1cHBvcnQgbWVtb3J5IHJlc291cmNlIGNvbnRyb2xsZXIgb3IgZmVhdHVyZSBub3QKPiBlbmFi
-bGVkCj4gU2tpcHBpbmcgYWxsIG1lbWNnX2NvbnRyb2wgdGVzdGNhc2VzLi4uLgo+IC0tLS0tLS0t
-LS0tLQo+Cj4gSW4gUkhFTDQuOCwgdGhlIHNoZWxsIGZpbGUgaXMgcmVjb2duaXplZCBhcyBiaW5h
-cnkgZmlsZS4KPiBJbiBSSEVMNS41LCB0aGUgZmlyc3QgY29tbWFuZCBsaW5lIG9mIHRoZSBzaGVs
-bCBjYW5ubnQgYmUgcmVjb2duaXplZC4KPgo+IEJ5IGZvbGxvd2luZyBwYXRjaCwgQk9NIChCeXRl
-IE9yZGVyIE1hcmspIHdhcyBzZXQgdG8gIm1lbWNnX3N0cmVzc190ZXN0LnNoIjoKPiBodHRwOi8v
-bHRwLmdpdC5zb3VyY2Vmb3JnZS5uZXQvZ2l0L2dpdHdlYi5jZ2k/cD1sdHAvbHRwLWRldi5naXQ7
-YT1jb21taXRkaWZmCj4gO2g9OWI5YTZiYjEwMjU4YmM5NzViZDE3MDdiNDE4Njk5MjY0ZDNiZGNl
-ZiNwYXRjaDEKPgo+IEkgbm90aWNlZCBCT00gaW4gdGhlIHNoZWxsIGJ5IHVzaW5nICJsZXNzIG1l
-bWNnX3N0cmVzc190ZXN0LnNoIiBjb21tYW5kLgo+Cj4gSSByZW1vdmVkIHRoaXMgQk9NIGFuZCB0
-aGlzIHRlc3QgcGFzc2VkLgo+Cj4gU2lnbmVkLW9mZi1ieTogVG9tb25vcmkgTWl0YW5pIDxtaXRh
-bmlAcnlvYmkuY28uanA+Cj4gPT09PT09PT09PT09Cj4gLS0tCj4gYS90ZXN0Y2FzZXMva2VybmVs
-L2NvbnRyb2xsZXJzL21lbWNnL3N0cmVzcy9tZW1jZ19zdHJlc3NfdGVzdC5zaCDCoCDCoCDCoCDC
-oDIwMTAKPiAtMDktMjAgMjM6MjI6MzQuMDAwMDAwMDAwICswOTAwCj4gKysrCj4gYi90ZXN0Y2Fz
-ZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL3N0cmVzcy9tZW1jZ19zdHJlc3NfdGVzdC5zaCDC
-oCDCoCDCoCDCoDIwMTAKPiAtMDktMjIgMTA6MzA6NTAuMDAwMDAwMDAwICswOTAwCj4gQEAgLTEs
-NCArMSw0IEBACj4gLeODu+OCvSMhIC9iaW4vc2gKPiArIyEgL2Jpbi9zaAo+Cj4KPiAjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjCj4gIyMjIwo+IMKgIyMKPiAjIwo+ID09PT09PT09PT09PQoKICAgIEZpeGVk
-IGluIGx0cC5naXQuCkNoZWVycywKLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpTdGFy
-dCB1bmNvdmVyaW5nIHRoZSBtYW55IGFkdmFudGFnZXMgb2YgdmlydHVhbCBhcHBsaWFuY2VzCmFu
-ZCBzdGFydCB1c2luZyB0aGVtIHRvIHNpbXBsaWZ5IGFwcGxpY2F0aW9uIGRlcGxveW1lbnQgYW5k
-CmFjY2VsZXJhdGUgeW91ciBzaGlmdCB0byBjbG91ZCBjb21wdXRpbmcuCmh0dHA6Ly9wLnNmLm5l
-dC9zZnUvbm92ZWxsLXNmZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+--===============0734839469189315328==
+Content-Type: multipart/alternative; boundary=001636498a67841062049176514e
+
+--001636498a67841062049176514e
+Content-Type: text/plain; charset=ISO-8859-1
+
+hi
+
+       As to run network stress testcases we need to activate some services
+as "rlogind" , "rshd" , fingerd...  etc.
+
+        but these services are not present on my PC.
+
+        do i need to install any packages for them?
+
+        or what else u suggest, because inside /etc/xinetd.d/
+rlogind,rshd,fingerd are not present.
+
+
+Regards,
+Arjit Sharma.
+
+--001636498a67841062049176514e
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>hi </div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0 As to run network stress testcases we need to activ=
+ate some services as &quot;rlogind&quot; , &quot;rshd&quot; , fingerd...=A0=
+ etc.</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0=A0 but these services are not present on my PC.</di=
+v>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0=A0 do i need to install any packages for them?</div=
+>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0=A0 or what else u suggest, because inside /etc/xine=
+td.d/=A0=A0=A0=A0 rlogind,rshd,fingerd are not present.<br clear=3D"all"><b=
+r><br></div>
+<div>Regards,</div>
+<div>Arjit Sharma.</div><br>
+
+--001636498a67841062049176514e--
+
+
+--===============0734839469189315328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
+--===============0734839469189315328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0734839469189315328==--
+
