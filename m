@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <anton@samba.org>) id 1P8t41-0002ES-DH
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 11:12:05 +0000
-Received: from ozlabs.org ([203.10.76.45])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P8t3z-0000Fw-ON
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 11:12:05 +0000
-Date: Thu, 21 Oct 2010 21:52:12 +1100
-From: Anton Blanchard <anton@samba.org>
-Message-ID: <20101021215212.4a982c85@kryten>
-In-Reply-To: <4CBBBCB0.8070406@cn.fujitsu.com>
-References: <4C85A88D.10700@cn.fujitsu.com>
-	<1285689961.11429.12.camel@subratamodak.linux.ibm.com>
-	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>
-	<4CB55FE6.6000604@cn.fujitsu.com> <4CB5615C.4070406@cn.fujitsu.com>
-	<4CB59825.7060504@cn.fujitsu.com>
-	<1286995066.4893.17.camel@subratamodak.linux.ibm.com>
-	<4CBBBCB0.8070406@cn.fujitsu.com>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] powerpc: Fix hcall tracepoint recursion
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P2CgL-0002Px-PI
+	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 00:44:01 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P2CgK-000770-MJ
+	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 00:44:01 +0000
+Received: by iwn2 with SMTP id 2so7044002iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 02 Oct 2010 17:43:55 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1386780373.997641285829881764.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <1320440485.401261285262435919.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<1386780373.997641285829881764.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Sat, 2 Oct 2010 17:43:53 -0700
+Message-ID: <AANLkTi=zDi8xfWBL5EsP6T82WXp3Yi=0-k+G1HsvONEE@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Re: fix incorrect parsing of df command in
+	ftruncate04.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,110 +29,132 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Zefan <lizf@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>, Rostedt <rostedt@goodmis.org>, Paul Mackerras <paulus@samba.org>, Steven@suse.de, Ingo Molnar <mingo@elte.hu>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
+On Wed, Sep 29, 2010 at 11:58 PM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> ----- "Caspar Zhang" <czhang@redhat.com> wrote:
+>
+>> Sorry for missing [PATCH] tag, now added.
+>>
+>> Thanks,
+>> Caspar
+>> ----- "Caspar Zhang" <czhang@redhat.com> wrote:
+>>
+>> > Hi all, an error in ftruncate04 test is found,
+>> > The problem I see is due to incorrect parsing
+>> > of `df` command output:
+>> >
+>> > <<<test_start>>>
+>> > tag=3Dftruncate04 stime=3D1284729392
+>> > cmdline=3D"ftruncate04.sh"
+>> > contacts=3D""
+>> > analysis=3Dexit
+>> > <<<test_output>>>
+>> > DEV: =A0 =A0 =A0 =A0 /dev/mapper/vg_rhel6beta-lv_root
+>> > MOUNT_POINT: /dev/mapper/vg_rhel6beta-lv_root
+>> > FLAG: =A0 =A0 =A0 =A0rw,mand
+>> > ftruncate04 =A0 =A01 =A0TPASS =A0: =A0Test passed.
+>> > mount: you must specify the filesystem type
+>> > ftruncate04.sh : ERROR : mounting /dev/mapper/vg_rhel6beta-lv_root
+>> > remount,rw,mand failed
+>> > incrementing stop
+>> > <<<execution_status>>>
+>> > initiation_status=3D"ok"
+>> > duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+>> > cutime=3D1 cstime=3D7
+>> > <<<test_end>>>
+>> >
+>> > # mount | head -1
+>> > /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw,mand)
+>> >
+>> > # df .
+>> > Filesystem =A0 =A0 =A0 =A0 =A0 1K-blocks =A0 =A0 =A0Used Available Use=
+% Mounted on
+>> > /dev/mapper/vg_rhel6beta-lv_root
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A02523808 =A0 2436384 =A0=
+ =A0 =A0 =A0 0 100% /
+>> >
+>> > A patch is attached to fix this problem. After applied the patch,
+>> > the failure gone:
+>> >
+>> > <<<test_start>>>
+>> > tag=3Dftruncate04 stime=3D1284729277
+>> > cmdline=3D"ftruncate04.sh"
+>> > contacts=3D""
+>> > analysis=3Dexit
+>> > <<<test_output>>>
+>> > DEV: =A0 =A0 =A0 =A0 /dev/mapper/vg_rhel6beta-lv_root
+>> > MOUNT_POINT: /
+>> > FLAG: =A0 =A0 =A0 =A0rw,mand
+>> > ftruncate04 =A0 =A01 =A0TPASS =A0: =A0Test passed.
+>> > incrementing stop
+>> > <<<execution_status>>>
+>> > initiation_status=3D"ok"
+>> > duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+>> > cutime=3D1 cstime=3D9
+>> > <<<test_end>>>
+>> >
+>> > # mount | head -1
+>> > /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw)
+>> > # df -P .
+>> > Filesystem =A0 =A0 =A0 =A0 1024-blocks =A0 =A0 =A0Used Available Capac=
+ity Mounted
+>> on
+>> > /dev/mapper/vg_rhel6beta-lv_root =A0 2523808 =A0 2436380 =A0 =A0 =A0 =
+=A0 0
+>> > 100% /
+>> >
+>> > So the test without the patch leaves the system in inconsistent
+>> state
+>> > (mand option is kept for the filesystem) which is bad.
+>> >
+>> > Signed-off-by: Caspar Zhang <czhang@redhat.com>
+>> >
+>> > ---
+>> >
+>> ltp-full-20100331.old/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
+>> > 2010-09-17 15:06:44.292158981 +0200
+>> > +++
+>> > ltp-full-20100331/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
+>> > 2010-09-17 15:10:26.646160911 +0200
+>> > @@ -18,7 +18,7 @@
+>> > =A0 =A0 =A0export TST_TOTAL=3D1
+>> > =A0fi
+>> > =A0cd ${TMPDIR:=3D/tmp}
+>> > -set -- $(df . | awk '/^\// { print $1, $NF }')
+>> > +set -- $(df -P . | awk '/^\// { print $1, $NF }')
+>> > =A0DEV=3D$1; MOUNT_POINT=3D$2
+>> > =A0if [ "x$DEV" =3D x -o "x$MOUNT_POINT" =3D x ] ; then
+>> > =A0 =A0 =A0tst_resm TCONF "backend mountpoint for $TMPDIR does not
+>> > correspond to a real device:"
+>> >
+>> >
+>> > Thanks,
+>> > Caspar
+>
+> Hi, any comments on this?
+>
+> Thanks,
+> Caspar
 
-Hi,
+    Looks fine (portable on Fedora 13 and FreeBSD at least), and it's
+standard as per the opengroup SUS page (
+http://www.opengroup.org/onlinepubs/009695399/utilities/df.html ).
+Committed.
+Thanks!
+-Garrett
 
-> This is a dead loop:
-> 
-> trace_hcall_entry() -> trace_clock_global() -> trace_hcall_entry() ..
-> 
-> And this is a PPC specific bug. Hope some ppc guys will fix it?
-> Or we kill trace_clock_global() if no one actually uses it..
-
-Nasty! How does the patch below look? I had to disable irqs otherwise
-we would sometimes drop valid events (if we take an interrupt anywhere
-in the region where depth is elevated, then the entire interrupt will
-be blocked from calling hcall tracepoints.
-
-Anton
---
-
-Subject: [PATCH] powerpc: Fix hcall tracepoint recursion
-
-Spinlocks on shared processor partitions use H_YIELD to notify the
-hypervisor we are waiting on another virtual CPU. Unfortunately this means
-the hcall tracepoints can recurse.
-
-The patch below adds a percpu depth and checks it on both the entry and
-exit hcall tracepoints.
-
-Signed-off-by: Anton Blanchard <anton@samba.org>
+---------------------------------------------------------------------------=
 ---
-
-Index: powerpc.git/arch/powerpc/platforms/pseries/lpar.c
-===================================================================
---- powerpc.git.orig/arch/powerpc/platforms/pseries/lpar.c	2010-10-21 17:32:00.980003644 +1100
-+++ powerpc.git/arch/powerpc/platforms/pseries/lpar.c	2010-10-21 17:34:54.942681273 +1100
-@@ -701,6 +701,13 @@ EXPORT_SYMBOL(arch_free_page);
- /* NB: reg/unreg are called while guarded with the tracepoints_mutex */
- extern long hcall_tracepoint_refcount;
- 
-+/* 
-+ * Since the tracing code might execute hcalls we need to guard against
-+ * recursion. One example of this are spinlocks calling H_YIELD on
-+ * shared processor partitions.
-+ */
-+static DEFINE_PER_CPU(unsigned int, hcall_trace_depth);
-+
- void hcall_tracepoint_regfunc(void)
- {
- 	hcall_tracepoint_refcount++;
-@@ -713,12 +720,42 @@ void hcall_tracepoint_unregfunc(void)
- 
- void __trace_hcall_entry(unsigned long opcode, unsigned long *args)
- {
-+	unsigned long flags;
-+	unsigned int *depth;
-+
-+	local_irq_save(flags);
-+
-+	depth = &__get_cpu_var(hcall_trace_depth);
-+
-+	if (*depth)
-+		goto out;
-+
-+	(*depth)++;
- 	trace_hcall_entry(opcode, args);
-+	(*depth)--;
-+
-+out:
-+	local_irq_restore(flags);
- }
- 
- void __trace_hcall_exit(long opcode, unsigned long retval,
- 			unsigned long *retbuf)
- {
-+	unsigned long flags;
-+	unsigned int *depth;
-+
-+	local_irq_save(flags);
-+
-+	depth = &__get_cpu_var(hcall_trace_depth);
-+
-+	if (*depth)
-+		goto out;
-+
-+	(*depth)++;
- 	trace_hcall_exit(opcode, retval, retbuf);
-+	(*depth)--;
-+
-+out:
-+	local_irq_restore(flags);
- }
- #endif
-
-------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
