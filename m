@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hakehuang@gmail.com>) id 1P5vRJ-0007VB-5H
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:07:53 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge.hallyn@canonical.com>) id 1P2lgp-00044G-TK
+	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 14:06:51 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5vRI-0002fo-9Q
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:07:53 +0000
-Received: by gxk22 with SMTP id 22so80698gxk.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Oct 2010 00:07:47 -0700 (PDT)
+	id 1P2lgo-0003kV-U7
+	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 14:06:51 +0000
+Date: Mon, 4 Oct 2010 09:06:51 -0500
+From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
+Message-ID: <20101004140650.GG19814@hallyn.com>
+References: <20100929135647.GA4587@hallyn.com>
+	<AANLkTikGmyHTu8ncUROKraoSffkbHqeNOAe7U3nAkU65@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1286953506.4893.11.camel@subratamodak.linux.ibm.com>
-References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-	<AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
-	<AANLkTin4N8BpJ5xXs8TAV+1xQNjTEO+KzO6h=ZJVjv08@mail.gmail.com>
-	<1286952767.4893.3.camel@subratamodak.linux.ibm.com>
-	<1286952965.4893.6.camel@subratamodak.linux.ibm.com>
-	<AANLkTikgZ=32o_QmBk5FTfOQfVGUYpjxtCbvAqxQFbYk@mail.gmail.com>
-	<1286953506.4893.11.camel@subratamodak.linux.ibm.com>
-Date: Wed, 13 Oct 2010 15:07:46 +0800
-Message-ID: <AANLkTimwSx9TQ8sofFvBTh_nLAwgdiR4qhkgZdj7i-GO@mail.gmail.com>
-From: hake huang <hakehuang@gmail.com>
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Content-Disposition: inline
+In-Reply-To: <AANLkTikGmyHTu8ncUROKraoSffkbHqeNOAe7U3nAkU65@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] securebits: add secure_keepcaps testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,165 +29,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sf.net, Subrata Modak1 <subrata.modak@in.ibm.com>
 
-very clear thanks.
+Quoting Garrett Cooper (yanegomi@gmail.com):
+> Hi Serge,
+>     Some comments about your provided code.
 
-2010/10/13 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> On Wed, 2010-10-13 at 15:00 +0800, hake huang wrote:
->> Hi Subrata,
->>
->> one question:
->> -K will only record all kernel message, but can not match each testcase,=
- right?
->
-> It will record kernel messages for each individual test case by
-> recording it inside ltp*/output/<DMESG_DIR_NAME>/<testname>.dmeg
->
-> Once test run is over it will delete all .dmeg* files of zero size and
-> will retain only those having real entries. So, you will get exactly
-> which tests generated kernel messages and what the messages exactly are
-> for each individual test.
->
-> Regards--
-> Subrata
->
->>
->> Regards,
->>
->> Hake
->>
->> 2010/10/13 Subrata Modak <subrata@linux.vnet.ibm.com>:
->> > On Wed, 2010-10-13 at 12:22 +0530, Subrata Modak wrote:
->> >> On Wed, 2010-10-13 at 13:30 +0800, hake huang wrote:
->> >> > 2010/10/13 Garrett Cooper <yanegomi@gmail.com>
->> >> > >
->> >> > > On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com>=
- wrote:
->> >> > > > Hi
->> >> > > >
->> >> > > > I see this simple solution is no quite fit. But the kernel dump=
- message for
->> >> > > > each test case is necessary for analysing. I can work on this f=
-urther, with
->> >> > > > below help:
->> >> > > > 1. Where can I find the reason for the IIRC break?
->> >> > >
->> >> > > IIRC -> If I remember correctly.
->> >> > so I need ask Subrata about this problem, right? what is the existi=
-ng
->> >> > functionality?
->> >>
->> >> I believe the functionality your original patch was proposing is alre=
-ady
->> >> in LTP . I guess they will solve your problem. See the following
->> >> commits:
->> >>
->> >> git show e3bc3758d3e4d17a0e04009ef873df53819b9ec6
->> >> git show bd9d440be1da8020c93ac92e497e3a16e66e9fa3
->> >>
->> >> Just use:
->> >>
->> >> ./runltp -K <DMESG_DIRECTORY_NAME>
->> >
->> > Basically, its a choice given to users who would like to record the
->> > kernel messages, and not forcing recording all kernel messages which
->> > your original patch is proposing :-)
->> >
->> > Regards--
->> > Subrata
->> >
->> >>
->> >> option while running ltp.
->> >>
->> >> Regards--
->> >> Subrata
->> >>
->> >> > >
->> >> > > > 2. Can it =A0be an option to avoid the size limitation on some =
-embedded
->> >> > > > system?
->> >> > >
->> >> > > No. This is outside the realm of LTP, but we must remain consciou=
-s of
->> >> > > the fact that there are folks running LTP on cellphones, etc, whe=
-re
->> >> > > space is very much a luxury.
->> >> > I see. but why can't they run in quit_mode?
->> >> > >
->> >> > > > 3. =A0A kind of seperating tag is needed for kernel message, ri=
-ght? e.g
->> >> > > > <kernel_dump_start>dump message<kernel_dump_end>
->> >> > >
->> >> > > I think that adding an optional capture feature might be worthwhi=
-le,
->> >> > > but you'll no doubt quickly find with some processes that the dme=
-sg
->> >> > > buffer will fill up quickly.
->> >> > I have seen such events, and such cases need to be checked manually.
->> >> > >
->> >> > > > 4. =A0I see in ltp-pan.c the file descriptors, terminals are ch=
-anged in child
->> >> > > > process. if the system(3) has problem, the worst cases is there=
- are no
->> >> > > > kernel messge output in parent process, but the pan can still f=
-unction well.
->> >> > >
->> >> > > Can you say that with 100% certainty? One of the potential proble=
-ms
->> >> > > with system is the fact that it allocates a shell and depending o=
-n how
->> >> > > processes are executed and how file descriptors are cleaned up,
->> >> > >
->> >> > > Actually, pan makes zero attempts at closing open file descriptor=
-s and
->> >> > > the like, so the problem is still very much with pan.
->> >> > >
->> >> > So your concerns is about file descriptors which open in ltp proces=
-s,
->> >> > I think this is an existing problem. I mean maybe pan need to attem=
-pt
->> >> > to close open file descriptors. system(3) only increases the change=
- of
->> >> > occurrence caused by this problem, right?
->> >> > > > if not use system(3), can you give your suggestion on this, exe=
-c(3) seems to
->> >> > > > have the same problem as system(3)?
->> >> > >
->> >> > > Yes and no. In this case the problems that exist with open file
->> >> > > descriptor inheritance, etc are unfortunately no worse from that
->> >> > > perspective than your proposed code would do, but there are still
->> >> > > other problems that need to be resolved with your proposed change
->> >> > > anyhow that are much more pressing.
->> >> > >
->> >> > > -Garrett
->> >>
->> >>
->> >> ---------------------------------------------------------------------=
----------
->> >> Beautiful is writing same markup. Internet Explorer 9 supports
->> >> standards for HTML5, CSS3, SVG 1.1, =A0ECMAScript5, and DOM L2 & L3.
->> >> Spend less time writing and =A0rewriting code and more time creating =
-great
->> >> experiences on the web. Be a part of the beta today.
->> >> http://p.sf.net/sfu/beautyoftheweb
->> >> _______________________________________________
->> >> Ltp-list mailing list
->> >> Ltp-list@lists.sourceforge.net
->> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
->> >
->> >
->
->
+Thanks.
+
+> > +AC_DEFUN([LTP_CHECK_SECUREBITS],
+> > +AC_CHECK_HEADERS(linux/securebits.h,[
+> > + =A0 =A0 =A0 LTP_SECUREBITS=3Dyes
+> > +])
+> > +)
+> =
+
+> Some checks should probably be added for versioning as well as symbols
+> that get passed to prctl(2) (I'm not sure if checking for the symbols
+> that get passed to prctl(2) here is the correct way to go about things
+> though).
+
+Not sure how we would check the versioning, bc there is no versioning
+info in the interface.
+
+...
+
+> > + =A0 =A0 =A0 case 3:
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D prctl(PR_GET_SECUREBITS);
+> =
+
+> What if this call fails?
+
+It doesn't pass or fail.  The return value is simply the current
+securebits.
+
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D prctl(PR_SET_SECUREBITS, ret | SE=
+CBIT_KEEP_CAPS);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret =3D=3D -1) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL|TERRNO, "P=
+R_SET_SECUREBITS failed\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+
+> > +#!/bin/sh
+> > +
+> > +echo "testing keepcaps"
+> > +check_keepcaps 1
+> > +tmp=3D$?
+> > +if [ $tmp -ne 0 ]; then
+> > + =A0 =A0 =A0 exit_code=3D$tmp
+> > +fi
+> > +check_keepcaps 2
+> > +tmp=3D$?
+> > +if [ $tmp -ne 0 ]; then
+> > + =A0 =A0 =A0 exit_code=3D$tmp
+> > +fi
+> > +check_keepcaps 3
+> > +tmp=3D$?
+> > +if [ $tmp -ne 0 ]; then
+> > + =A0 =A0 =A0 exit_code=3D$tmp
+> > +fi
+> > +
+> > +exit $exit_code
+> =
+
+> What if (for instance) test 1 fails, and tests 2 or 3 pass?
+
+Yeah, I didn't do that right, and maybe it would be best
+to just shortcut on the first failure anyway.
+
+thanks,
+-serge
 
 ---------------------------------------------------------------------------=
 ---
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+Virtualization is moving to the mainstream and overtaking non-virtualized
+environment for deploying applications. Does it make network security =
+
+easier or more difficult to achieve? Read this whitepaper to separate the =
+
+two and get a better understanding.
+http://p.sf.net/sfu/hp-phase2-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
