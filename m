@@ -2,20 +2,29 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hakehuang@gmail.com>) id 1P5ePD-0005xu-IG
-	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 12:56:35 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
+	(envelope-from <serge.hallyn@canonical.com>) id 1P2kQR-00025w-4z
+	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 12:45:51 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5ePC-0000bw-Ju
-	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 12:56:35 +0000
-Received: by ywl5 with SMTP id 5so1734616ywl.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Oct 2010 05:56:29 -0700 (PDT)
+	id 1P2kQQ-0000GX-7O
+	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 12:45:51 +0000
+Date: Mon, 4 Oct 2010 07:45:51 -0500
+From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
+Message-ID: <20101004124551.GA19814@hallyn.com>
+References: <20100927142304.GA23119@hallyn.com>
+	<4CA0AEB7.7080701@linux.vnet.ibm.com>
+	<20100927180239.GA15486@hallyn.com>
+	<4CA1ADB0.7070908@linux.vnet.ibm.com>
+	<20100928213611.GA1046@hallyn.com>
+	<4CA31140.4000805@linux.vnet.ibm.com>
+	<20100929141051.GB4620@hallyn.com>
+	<OFA3C42AE5.7F12F4DF-ON652577AD.004DA114-652577AD.004DCA76@in.ibm.com>
+	<AANLkTi=woCpWexWHWTcojN7U_UQZEszEvVXEaPDiDpLQ@mail.gmail.com>
+	<AANLkTinjEdCxD5E0BfniymiHHLmF4S_ocsawTdHpfr_2@mail.gmail.com>
 MIME-Version: 1.0
-Date: Tue, 12 Oct 2010 20:56:28 +0800
-Message-ID: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-From: hake huang <hakehuang@gmail.com>
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Content-Disposition: inline
+In-Reply-To: <AANLkTinjEdCxD5E0BfniymiHHLmF4S_ocsawTdHpfr_2@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Compilation Error Fixed in filecaps.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,79 +34,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3835913898554092723=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============3835913898554092723==
-Content-Type: multipart/alternative; boundary=000e0cd48b58532d2f04926b0168
-
---000e0cd48b58532d2f04926b0168
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-I wnat LTP to record the kernel dump message during each test case, and I
-make a patch for this. Any comments?
-
-
-@@ -1238,6 +1242,7 @@ write_test_end(struct tag_pgrp *running, const char
-*init_status,
-                int term_id, struct tms *tms1, struct tms *tms2)
- {
-     if (!strcmp(reporttype, "rts")) {
-+       system("/bin/dmesg -c");
-        printf("%s\ninitiation_status=\"%s\"\nduration=%ld
-termination_type=%s "
-                "termination_id=%d corefile=%s\ncutime=%d cstime=%d\n%s\n",
-                        "<<<execution_status>>>", init_status,
-
-Regards,
-
-Hake
-
---000e0cd48b58532d2f04926b0168
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi,<br><br>I wnat LTP to record the kernel dump message during each test ca=
-se, and I make a patch for this. Any comments?<br><br><br>@@ -1238,6 +1242,=
-7 @@ write_test_end(struct tag_pgrp *running, const char *init_status,<br>
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 int term_id, struct tms *tms1=
-, struct tms *tms2)<br>=A0{<br>=A0=A0=A0=A0 if (!strcmp(reporttype, &quot;r=
-ts&quot;)) {<br>+=A0=A0=A0=A0=A0=A0 system(&quot;/bin/dmesg -c&quot;);<br>=
-=A0=A0=A0=A0=A0=A0=A0 printf(&quot;%s\ninitiation_status=3D\&quot;%s\&quot;=
-\nduration=3D%ld termination_type=3D%s &quot;<br>
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &quot;termination_id=3D%d cor=
-efile=3D%s\ncutime=3D%d cstime=3D%d\n%s\n&quot;,<br>=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &quot;&lt;&lt;&lt;executio=
-n_status&gt;&gt;&gt;&quot;, init_status,<br><br>Regards,<br><br>Hake<br>
-
---000e0cd48b58532d2f04926b0168--
-
-
---===============3835913898554092723==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Subrata Modak1 <subrata.modak@in.ibm.com>, sravan <sravan@linux.vnet.ibm.com>, ltp-list@lists.sf.net
+
+Quoting Garrett Cooper (yanegomi@gmail.com):
+>     So I'm not sure what Serge was looking at...
+
+Not me.
+
+-serge
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
---===============3835913898554092723==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Virtualization is moving to the mainstream and overtaking non-virtualized
+environment for deploying applications. Does it make network security 
+easier or more difficult to achieve? Read this whitepaper to separate the 
+two and get a better understanding.
+http://p.sf.net/sfu/hp-phase2-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3835913898554092723==--
-
