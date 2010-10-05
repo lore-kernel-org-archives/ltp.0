@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge.hallyn@canonical.com>) id 1P2lgp-00044G-TK
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 14:06:51 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2lgo-0003kV-U7
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 14:06:51 +0000
-Date: Mon, 4 Oct 2010 09:06:51 -0500
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20101004140650.GG19814@hallyn.com>
-References: <20100929135647.GA4587@hallyn.com>
-	<AANLkTikGmyHTu8ncUROKraoSffkbHqeNOAe7U3nAkU65@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <joyarjit@gmail.com>) id 1P30JW-0004rf-Es
+	for ltp-list@lists.sourceforge.net; Tue, 05 Oct 2010 05:43:46 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P30JV-00062z-A8
+	for ltp-list@lists.sourceforge.net; Tue, 05 Oct 2010 05:43:46 +0000
+Received: by wwc33 with SMTP id 33so1011780wwc.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 04 Oct 2010 22:43:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTikGmyHTu8ncUROKraoSffkbHqeNOAe7U3nAkU65@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] securebits: add secure_keepcaps testcases
+Date: Tue, 5 Oct 2010 11:13:36 +0530
+Message-ID: <AANLkTi=QWUtS1Y9Ynaa1RkBTud4nKrCe9=WRfMX1wpX5@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] network-stress tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,92 +25,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3628542463437733593=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sf.net, Subrata Modak1 <subrata.modak@in.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> Hi Serge,
->     Some comments about your provided code.
+--===============3628542463437733593==
+Content-Type: multipart/alternative; boundary=0016e65b5eb86cf0860491d8246b
 
-Thanks.
+--0016e65b5eb86cf0860491d8246b
+Content-Type: text/plain; charset=ISO-8859-1
 
-> > +AC_DEFUN([LTP_CHECK_SECUREBITS],
-> > +AC_CHECK_HEADERS(linux/securebits.h,[
-> > + =A0 =A0 =A0 LTP_SECUREBITS=3Dyes
-> > +])
-> > +)
-> =
+Hi,
 
-> Some checks should probably be added for versioning as well as symbols
-> that get passed to prctl(2) (I'm not sure if checking for the symbols
-> that get passed to prctl(2) here is the correct way to go about things
-> though).
+     I m  running LTP on arm armv7 architechture.
+     I have configured my system acoording to the requiremeints of
+network-stress testcases as mentioned in README and INSTALL(section 6)
+files.
 
-Not sure how we would check the versioning, bc there is no versioning
-info in the interface.
+     but still the problem in same ie. LHOST_HWADDRS is not set.  :(
 
-...
+     please tell me why this is happening, is there any way to make
+them pass....?
 
-> > + =A0 =A0 =A0 case 3:
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D prctl(PR_GET_SECUREBITS);
-> =
+-- 
+Regards,
+Arjit Sharma.
 
-> What if this call fails?
+--0016e65b5eb86cf0860491d8246b
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-It doesn't pass or fail.  The return value is simply the current
-securebits.
+<div>Hi,</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0I m=A0 running LTP on arm armv7 architechture.</div>
+<div>=A0=A0=A0=A0 I have configured my system acoording to the requiremeint=
+s of network-stress testcases as mentioned in README and INSTALL(section 6)=
+ files.</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 but still the problem in same ie. LHOST_HWADDRS is not se=
+t.=A0 :(</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 please tell me why this is happening,=A0is there any way =
+to make them=A0pass....?=A0<br clear=3D"all"><br>-- <br></div>
+<div>Regards,</div>
+<div>Arjit Sharma.</div><br>
 
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D prctl(PR_SET_SECUREBITS, ret | SE=
-CBIT_KEEP_CAPS);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret =3D=3D -1) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL|TERRNO, "P=
-R_SET_SECUREBITS failed\n");
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+--0016e65b5eb86cf0860491d8246b--
 
-> > +#!/bin/sh
-> > +
-> > +echo "testing keepcaps"
-> > +check_keepcaps 1
-> > +tmp=3D$?
-> > +if [ $tmp -ne 0 ]; then
-> > + =A0 =A0 =A0 exit_code=3D$tmp
-> > +fi
-> > +check_keepcaps 2
-> > +tmp=3D$?
-> > +if [ $tmp -ne 0 ]; then
-> > + =A0 =A0 =A0 exit_code=3D$tmp
-> > +fi
-> > +check_keepcaps 3
-> > +tmp=3D$?
-> > +if [ $tmp -ne 0 ]; then
-> > + =A0 =A0 =A0 exit_code=3D$tmp
-> > +fi
-> > +
-> > +exit $exit_code
-> =
 
-> What if (for instance) test 1 fails, and tests 2 or 3 pass?
+--===============3628542463437733593==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Yeah, I didn't do that right, and maybe it would be best
-to just shortcut on the first failure anyway.
+------------------------------------------------------------------------------
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
+--===============3628542463437733593==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-thanks,
--serge
-
----------------------------------------------------------------------------=
----
-Virtualization is moving to the mainstream and overtaking non-virtualized
-environment for deploying applications. Does it make network security =
-
-easier or more difficult to achieve? Read this whitepaper to separate the =
-
-two and get a better understanding.
-http://p.sf.net/sfu/hp-phase2-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3628542463437733593==--
+
