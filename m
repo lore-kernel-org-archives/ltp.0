@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PB3y1-0001wl-F1
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:14:53 +0000
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PB3y0-0000YP-Jj
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:14:53 +0000
-Received: by wwb17 with SMTP id 17so2607739wwb.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Oct 2010 04:14:46 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P3X4u-0005If-D1
+	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 16:42:52 +0000
+Received: from mail-gw0-f46.google.com ([74.125.83.46])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P3X4t-0005CS-6r
+	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 16:42:52 +0000
 MIME-Version: 1.0
-In-Reply-To: <AANLkTim=Q-2z4Ms4fZhaFReVJWnmnRg0+eZWBKfaoJXZ@mail.gmail.com>
-References: <AANLkTim=Q-2z4Ms4fZhaFReVJWnmnRg0+eZWBKfaoJXZ@mail.gmail.com>
-Date: Wed, 27 Oct 2010 04:14:46 -0700
-Message-ID: <AANLkTimdbXkhGdrauwbV43Z7qkNMk7rWLjc0KQjY0Ckb@mail.gmail.com>
+In-Reply-To: <4CAC2D03.3040001@suse.de>
+References: <4CA9D1B2.7070107@suse.de>
+	<AANLkTinZCKnwAofMwYU9iVsVog8K4TFxLttsfH5QL2e1@mail.gmail.com>
+	<4CAC2D03.3040001@suse.de>
+Date: Wed, 6 Oct 2010 09:42:36 -0700
+Message-ID: <AANLkTimFKeLh8Sg8-NMXsSW_oaznb_xsJ3Bxd17AEVse@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP on embedded systems re-visited
+Subject: Re: [LTP] patch to define PTRACE_KILL and PTRACE_CONT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,46 +29,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: David Peverley <pev@sketchymonkey.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Yi Xu <yxu@suse.de>
+Cc: ltp-list@lists.sf.net
 
-On Wed, Oct 27, 2010 at 3:44 AM, David Peverley <pev@sketchymonkey.com> wrote:
-> Hi all,
+On Wed, Oct 6, 2010 at 1:02 AM, Yi Xu <yxu@suse.de> wrote:
+> Hi,
 >
-> Sorry I just realised I posted the previous message without a proper
-> introduction email! So, Hello! I'm running LTP on an embedded ARM
-> target and thought it would be worth bringing up what looks like an
-> occasional on-off discussion for this list!
->
-> I've got quite a lot of interesting discussion points but
-> fundamentally I think there's a reasonable case for writing an
-> "embedded LTP HOWTO" separate to the current HOWTO. This is to cover
-> the differences in cross compiling environment, running remotely,
-> busybox compat, test subset configuration etc. Is it worth me spending
-> some time collating my notes from current experiences into a doc to
-> submit? Looking in the archives, in 2008 Shane Volpe was looking into
-> doing something similar but I couldn't find any eventual output from
-> this?
+> I couldn't reproduce it. :(
+> You could ignore the patch.
 
-    Sure. Multiple folks run LTP on embedded platforms on the list (I
-used to run it on MIPS and PowerPC, but no longer work with the group
-that developed on Linux, so I don't have access to that hardware), but
-no one that I know of who uses busybox on the list (or at least hasn't
-spoken up about using it recently).
-    There are issues with shell portability and utilities that once
-upon a time some folks who actively developed on the list (Cyril,
-Mike, me) tried to track down and fix, but interest seems to have
-waned. If you find any issues, please point them out and I'll try to
-resolve them one at a time.
-Thanks!
+Ok -- thanks for the feedback.
+Cheers,
 -Garrett
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
