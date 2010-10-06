@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1PAfQZ-0004SU-8V
-	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 09:02:43 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <joyarjit@gmail.com>) id 1P3PCd-0005aH-Ft
+	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 08:18:19 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PAfQY-0000U6-6L
-	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 09:02:43 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9Q92a98020118
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Oct 2010 05:02:36 -0400
-Date: Tue, 26 Oct 2010 05:02:36 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1140423440.1496611288083756370.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	id 1P3PCc-0005ri-Kz
+	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 08:18:19 +0000
+Received: by wwc33 with SMTP id 33so2368811wwc.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 06 Oct 2010 01:18:13 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] fix keyctl01 revoke argument on s390x
+In-Reply-To: <AANLkTi=QWUtS1Y9Ynaa1RkBTud4nKrCe9=WRfMX1wpX5@mail.gmail.com>
+References: <AANLkTi=QWUtS1Y9Ynaa1RkBTud4nKrCe9=WRfMX1wpX5@mail.gmail.com>
+Date: Wed, 6 Oct 2010 13:48:12 +0530
+Message-ID: <AANLkTimkwUYy1izPS_NU8mhqw-ZOYetNG-4gsHEs7AG4@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: Re: [LTP] network-stress tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,90 +27,96 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1511673812638487156=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-From 1101aa2287f761df5cfab29806baf49fadd80c34 Mon Sep 17 00:00:00 2001
-From: Caspar Zhang <casparant@gmail.com>
-Date: Tue, 26 Oct 2010 16:54:13 +0800
-Subject: [PATCH] fix keyctl revoke argument
+--===============1511673812638487156==
+Content-Type: multipart/alternative; boundary=00504502caa528ae6b0491ee6b36
 
-add some codes to find an unused id instead of
-using #define directly.
+--00504502caa528ae6b0491ee6b36
+Content-Type: text/plain; charset=ISO-8859-1
 
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
+please send me some reply to solve my problem........   :(
 
----
- testcases/kernel/syscalls/keyctl/keyctl01.c |   15 +++++++++++++--
- 1 files changed, 13 insertions(+), 2 deletions(-)
+On Tue, Oct 5, 2010 at 11:13 AM, ARJIT SHARMA <joyarjit@gmail.com> wrote:
 
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl01.c b/testcases/kernel/syscalls/keyctl/keyctl01.c
-index 292e573..57f334f 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl01.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl01.c
-@@ -40,6 +40,7 @@
- 
- #include <stdio.h>
- #include <errno.h>
-+#include <stdint.h>
- #include <linux/keyctl.h>
- /* Harness Specific Include Files. */
- #include "test.h"
-@@ -110,6 +111,7 @@ void setup() {
- int main(int ac, char **av) {
- 	int ret;
- 	int lc;		/* loop counter */
-+	int i, nonexist_key;
- 	char *msg;	/* message returned from parse_opts */
- 
- 	/* parse standard options */
-@@ -126,7 +128,7 @@ int main(int ac, char **av) {
- 		Tst_count = 0;
- 
- 		for (testno = 1; testno < TST_TOTAL; ++testno) {
--	
-+
- 			/* Call keyctl() and ask for a keyring's ID. */
- 			ret = syscall(__NR_keyctl, KEYCTL_GET_KEYRING_ID,
- 					KEY_SPEC_USER_SESSION_KEYRING);
-@@ -136,8 +138,17 @@ int main(int ac, char **av) {
- 		 		tst_resm(TFAIL | TERRNO, "KEYCTL_GET_KEYRING_ID");
- 			}
- 
-+			/* find a non-existed key */
-+			for (i = INT32_MAX; i > -INT32_MAX; --i)
-+			{
-+				ret = syscall(__NR_keyctl, KEYCTL_READ, i);
-+				if (ret == -1 && errno == ENOKEY)
-+					break;
-+			}
-+			nonexist_key = i;
-+
- 			/* Call keyctl. */
--			ret = syscall(__NR_keyctl, KEYCTL_REVOKE, "MyKey");
-+			ret = syscall(__NR_keyctl, KEYCTL_REVOKE, nonexist_key);
- 			if (ret != -1) {
- 				tst_resm(TFAIL | TERRNO, "KEYCTL_REVOKE succeeded unexpectly");
- 			} else {
--- 
-1.7.3.1
+> Hi,
+>
+>      I m  running LTP on arm armv7 architechture.
+>      I have configured my system acoording to the requiremeints of
+> network-stress testcases as mentioned in README and INSTALL(section 6)
+> files.
+>
+>      but still the problem in same ie. LHOST_HWADDRS is not set.  :(
+>
+>      please tell me why this is happening, is there any way to make
+> them pass....?
+>
+> --
+> Regards,
+> Arjit Sharma.
+>
+>
+
 
 -- 
-Quality Assurance Associate (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
+Regards,
+Arjit Sharma.
 
-TEL: +86-10-62608150
-WEB: http://www.redhat.com/
+--00504502caa528ae6b0491ee6b36
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+please send me some reply to solve my problem........=A0=A0 :(<br><br>
+<div class=3D"gmail_quote">On Tue, Oct 5, 2010 at 11:13 AM, ARJIT SHARMA <s=
+pan dir=3D"ltr">&lt;<a href=3D"mailto:joyarjit@gmail.com">joyarjit@gmail.co=
+m</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
+px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
+<div>Hi,</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0I m=A0 running LTP on arm armv7 architechture.</div>
+<div>=A0=A0=A0=A0 I have configured my system acoording to the requiremeint=
+s of network-stress testcases as mentioned in README and INSTALL(section 6)=
+ files.</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 but still the problem in same ie. LHOST_HWADDRS is not se=
+t.=A0 :(</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 please tell me why this is happening,=A0is there any way =
+to make them=A0pass....?=A0<br clear=3D"all"><br>-- <br></div>
+<div>Regards,</div>
+<div>Arjit Sharma.</div><font color=3D"#888888"><br></font></blockquote></d=
+iv><br><br clear=3D"all"><br>-- <br>
+<div>Regards,</div>
+<div>Arjit Sharma.</div><br>
+
+--00504502caa528ae6b0491ee6b36--
+
+
+--===============1511673812638487156==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
+--===============1511673812638487156==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1511673812638487156==--
+
