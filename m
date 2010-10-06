@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hakehuang@gmail.com>) id 1P5tun-0006eu-MO
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 05:30:13 +0000
-Received: from mail-gy0-f175.google.com ([209.85.160.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5tum-0007n3-P4
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 05:30:13 +0000
-Received: by gya1 with SMTP id 1so985098gya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Oct 2010 22:30:07 -0700 (PDT)
+	(envelope-from <serge.hallyn@canonical.com>) id 1P3b5g-0007Rd-18
+	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 20:59:56 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P3b5e-0004wY-Bt
+	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 20:59:56 +0000
+Date: Wed, 6 Oct 2010 15:59:49 -0500
+From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
+Message-ID: <20101006205949.GA28624@hallyn.com>
+References: <1229185166.1336871286396286678.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
+	<1001719682.1339131286397104227.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
-References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-	<AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
-Date: Wed, 13 Oct 2010 13:30:07 +0800
-Message-ID: <AANLkTin4N8BpJ5xXs8TAV+1xQNjTEO+KzO6h=ZJVjv08@mail.gmail.com>
-From: hake huang <hakehuang@gmail.com>
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Content-Disposition: inline
+In-Reply-To: <1001719682.1339131286397104227.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] Current state of the selinux tests in ltp-full-20100831
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,75 +26,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jeffrey Burke <jburke@redhat.com>
+Cc: ltp-list@lists.sf.net, sds@tycho.nsa.gov
 
-2010/10/13 Garrett Cooper <yanegomi@gmail.com>
->
-> On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wrote:
-> > Hi
-> >
-> > I see this simple solution is no quite fit. But the kernel dump message=
- for
-> > each test case is necessary for analysing. I can work on this further, =
-with
-> > below help:
-> > 1. Where can I find the reason for the IIRC break?
->
-> IIRC -> If I remember correctly.
-so I need ask Subrata about this problem, right? what is the existing
-functionality?
->
-> > 2. Can it=A0 be an option to avoid the size limitation on some embedded
-> > system?
->
-> No. This is outside the realm of LTP, but we must remain conscious of
-> the fact that there are folks running LTP on cellphones, etc, where
-> space is very much a luxury.
-I see. but why can't they run in quit_mode?
->
-> > 3.=A0 A kind of seperating tag is needed for kernel message, right? e.g
-> > <kernel_dump_start>dump message<kernel_dump_end>
->
-> I think that adding an optional capture feature might be worthwhile,
-> but you'll no doubt quickly find with some processes that the dmesg
-> buffer will fill up quickly.
-I have seen such events, and such cases need to be checked manually.
->
-> > 4.=A0 I see in ltp-pan.c the file descriptors, terminals are changed in=
- child
-> > process. if the system(3) has problem, the worst cases is there are no
-> > kernel messge output in parent process, but the pan can still function =
-well.
->
-> Can you say that with 100% certainty? One of the potential problems
-> with system is the fact that it allocates a shell and depending on how
-> processes are executed and how file descriptors are cleaned up,
->
-> Actually, pan makes zero attempts at closing open file descriptors and
-> the like, so the problem is still very much with pan.
->
-So your concerns is about file descriptors which open in ltp process,
-I think this is an existing problem. I mean maybe pan need to attempt
-to close open file descriptors. system(3) only increases the change of
-occurrence caused by this problem, right?
-> > if not use system(3), can you give your suggestion on this, exec(3) see=
-ms to
-> > have the same problem as system(3)?
->
-> Yes and no. In this case the problems that exist with open file
-> descriptor inheritance, etc are unfortunately no worse from that
-> perspective than your proposed code would do, but there are still
-> other problems that need to be resolved with your proposed change
-> anyhow that are much more pressing.
->
-> -Garrett
+Quoting Jeffrey Burke (jburke@redhat.com):
+> Folks,
+>  It has been a while since I update LTP for selinux testing. I am currently trying to use ltp-full-20100831 on RHEL5.6. I don't believe the procedure has changed at least according to the README. But here are the steps I followed.
+> 
+> 1.) tar -xvf ltp-full-20100831.tar
+> 2.) pushd ltp-full-20100831; ./configure; popd
+> 3.) make -C ltp-full-20100831 all
+> 4.) make -C ltp-full-20100831 install
+> 5.) pushd; make ltp-full-20100831/testcases/kernel/security/selinux-testsuite/tests; popd
+> 6.) pushd ltp-full-20100831/testcases/kernel/security/selinux-testsuite/tests; make install; popd
 
----------------------------------------------------------------------------=
----
+I don't have ltp source in front of me, but I think there are two
+problems here.  The first is that you don't make policy, as you do
+below with the kernel.org git tree.
+
+> 7.) cd ./ltp-full-20100831
+> 8.) ./testscripts/test_selinux.sh
+
+The second is that you're executing the test out of the source dir.  LTP
+now runs out of /opt/ltp.  I *think* the same is also true for the selinux
+testsuite.
+
+So can you do:
+
+	pushd ltp-full-20100831/testcases/kernel/security/selinux-testsuite/policy
+	make && make install
+	popd
+	cd /opt/ltp
+	./testscripts/test_selinux.sh
+
+?
+
+-serge
+
+------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
 standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
 Spend less time writing and  rewriting code and more time creating great
