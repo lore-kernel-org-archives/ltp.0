@@ -1,19 +1,48 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PBdWb-0005Ay-7k
-	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 01:12:57 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PBdWZ-0001YE-3w
-	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 01:12:57 +0000
-Message-ID: <4CCA1F3E.5000202@cn.fujitsu.com>
-Date: Fri, 29 Oct 2010 09:11:26 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <eramoto.masaya@jp.fujitsu.com>) id 1P3mxo-0003U3-2U
+	for ltp-list@lists.sourceforge.net; Thu, 07 Oct 2010 09:40:36 +0000
+Received: from fgwmail6.fujitsu.co.jp ([192.51.44.36])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P3mxl-0005Pa-Pp
+	for ltp-list@lists.sourceforge.net; Thu, 07 Oct 2010 09:40:36 +0000
+Received: from m6.gw.fujitsu.co.jp ([10.0.50.76])
+	by fgwmail6.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	o979eR8v022939 for <ltp-list@lists.sourceforge.net> (envelope-from
+	eramoto.masaya@jp.fujitsu.com); Thu, 7 Oct 2010 18:40:27 +0900
+Received: from smail (m6 [127.0.0.1])
+	by outgoing.m6.gw.fujitsu.co.jp (Postfix) with ESMTP id C56FE45DE4F
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  7 Oct 2010 18:40:26 +0900 (JST)
+Received: from s6.gw.fujitsu.co.jp (s6.gw.fujitsu.co.jp [10.0.50.96])
+	by m6.gw.fujitsu.co.jp (Postfix) with ESMTP id 924A045DE4C
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  7 Oct 2010 18:40:26 +0900 (JST)
+Received: from s6.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s6.gw.fujitsu.co.jp (Postfix) with ESMTP id 756BB1DB8015
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  7 Oct 2010 18:40:26 +0900 (JST)
+Received: from m108.s.css.fujitsu.com (m108.s.css.fujitsu.com [10.249.87.108])
+	by s6.gw.fujitsu.co.jp (Postfix) with ESMTP id 1602F1DB8013
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  7 Oct 2010 18:40:23 +0900 (JST)
+Received: from m108.css.fujitsu.com (m108 [127.0.0.1])
+	by m108.s.css.fujitsu.com (Postfix) with ESMTP id DE0C4B68002
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  7 Oct 2010 18:40:22 +0900 (JST)
+Received: from [127.0.0.1] (unknown [10.124.101.142])
+	by m108.s.css.fujitsu.com (Postfix) with ESMTP id 7E028428052
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  7 Oct 2010 18:40:22 +0900 (JST)
+Message-ID: <4CAD957D.4060900@jp.fujitsu.com>
+Date: Thu, 07 Oct 2010 18:40:13 +0900
+From: ERAMOTO Masaya <eramoto.masaya@jp.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [POSIX][PATCH]A awaited IO request completion signal can case
- lio_listio return EINTR.
+Content-Type: multipart/mixed; boundary="------------060507060408030401060708"
+Subject: [LTP] [PATCH] fix typo of $PROG_SCRIPT in
+	run-all-posix-option-group-tests.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,125 +52,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Open posix documents point lio_listio may return EINTR caused by a awaited I/O requst
-completion signal. 
+This is a multi-part message in MIME format.
+--------------060507060408030401060708
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
 
-[EINTR]
-    A signal was delivered while waiting for all I/O requests to complete during an
-    LIO_WAIT operation. Note that, since each I/O operation invoked by lio_listio()
-    may possibly provoke a signal when it completes, this error return may be caused
-    by the completion of one (or more) of the very I/O operations being awaited.
-    Outstanding I/O requests are not canceled, and the application shall examine each
-    list element to determine whether the request was initiated, canceled, or completed.
+Hi,
 
-So it's unnecessary to setup handler for IO operation completion, we just need check
-the aio_error and aio_return for each request, it has same effect on checking
-received_selected.
+I found a tiny typo of $PROG_SCRIPT in run-all-posix-option-group-tests.sh.
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+Because of this typo, this shell script doesn't run the test of open_posix_testsuite at all.
+It output the following message:
+===============
+# ./bin/run-all-posix-option-group-tests.sh
+./bin/run-all-posix-option-group-tests.sh: line 14: AIO: command not found
+./bin/run-all-posix-option-group-tests.sh: line 14: MEM: command not found
+./bin/run-all-posix-option-group-tests.sh: line 14: MSG: command not found
+./bin/run-all-posix-option-group-tests.sh: line 14: SEM: command not found
+./bin/run-all-posix-option-group-tests.sh: line 14: SIG: command not found
+./bin/run-all-posix-option-group-tests.sh: line 14: THR: command not found
+./bin/run-all-posix-option-group-tests.sh: line 14: TMR: command not found
+./bin/run-all-posix-option-group-tests.sh: line 14: TPS: command not found
+===============
 
----
- .../conformance/interfaces/lio_listio/1-1.c        |   35 ++------------------
- 1 files changed, 3 insertions(+), 32 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c
-index f19fcd3..5e4d16a 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c
-@@ -38,18 +38,11 @@
- #define NUM_AIOCBS	10
- #define BUF_SIZE	1024*1024
- 
--int received_selected	= 0;
- int received_all	= 0;
- 
- void
- sigrt1_handler(int signum, siginfo_t *info, void *context)
- {
--	received_selected = info->si_value.sival_int;
--}
--
--void
--sigrt2_handler(int signum, siginfo_t *info, void *context)
--{
- 	received_all = 1;
- }
- 
-@@ -105,30 +98,19 @@ int main()
- 		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
- 		aiocbs[i]->aio_nbytes = BUF_SIZE;
- 		aiocbs[i]->aio_lio_opcode = LIO_WRITE;
--
--		/* Use SIRTMIN+1 for individual completions */
--		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
--		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
--		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
- 	}
- 
--	/* Use SIGRTMIN+2 for list completion */
-+	/* Use SIGRTMIN+1 for list completion */
- 	event.sigev_notify = SIGEV_SIGNAL;
--	event.sigev_signo = SIGRTMIN+2;
-+	event.sigev_signo = SIGRTMIN+1;
- 	event.sigev_value.sival_ptr = NULL;
- 
--	/* Setup handler for individual operation completion */
-+	/* Setup handler for list completion */
- 	action.sa_sigaction = sigrt1_handler;
- 	sigemptyset(&action.sa_mask);
- 	action.sa_flags = SA_SIGINFO|SA_RESTART;
- 	sigaction(SIGRTMIN+1, &action, NULL);
- 
--	/* Setup handler for list completion */
--	action.sa_sigaction = sigrt2_handler;
--	sigemptyset(&action.sa_mask);
--	action.sa_flags = SA_SIGINFO|SA_RESTART;
--	sigaction(SIGRTMIN+2, &action, NULL);
--
- 	/* Submit request list */
- 	ret = lio_listio(LIO_WAIT, aiocbs, NUM_AIOCBS, &event);
- 
-@@ -142,17 +124,6 @@ int main()
- 		exit (PTS_FAIL);
- 	}
- 
--	if (received_selected != NUM_AIOCBS-1)
--	{
--		printf(TNAME " lio_listio() did not wait\n");
--		for (i=0; i<NUM_AIOCBS; i++)
--			free (aiocbs[i]);
--		free (bufs);
--		free (aiocbs);
--		close (fd);
--		exit (PTS_FAIL);
--	}
--
- 	if (received_all != 0)
- 	{
- 		printf(TNAME " lio_listio() did not ignore the sig argument\n");
--- 
-1.7.0.4
+The attached patch will fix it.
 
 
+Signed-off-by: ERAMOTO Masaya <eramoto.masaya@jp.fujitsu.com>
+===============
+diff --git a/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh b/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
+index a9b2c05..39ff989 100755
+--- a/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
++++ b/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
+@@ -8,7 +8,7 @@
+ #
 
--- 
-Regards
-Bian Naimeng
+ FAILED=0
+-RPOG_SCRIPT="$(dirname "$0")/run-posix-option-group-test.sh"
++PROG_SCRIPT="$(dirname "$0")/run-posix-option-group-test.sh"
 
+ for option_group in AIO MEM MSG SEM SIG THR TMR TPS; do
+        if ! $PROG_SCRIPT $option_group; then
+===============
+
+Thanks,
+ERAMOTO
+
+--------------060507060408030401060708
+Content-Type: text/plain;
+	name="posix-fix-typo-of-PROG_SCRIPT-in-run-all-posix-option-group-tests.sh.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename*0="posix-fix-typo-of-PROG_SCRIPT-in-run-all-posix-option-group-";
+	filename*1="tests.sh.patch"
+
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9iaW4vcnVuLWFs
+bC1wb3NpeC1vcHRpb24tZ3JvdXAtdGVzdHMuc2ggYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90
+ZXN0c3VpdGUvYmluL3J1bi1hbGwtcG9zaXgtb3B0aW9uLWdyb3VwLXRlc3RzLnNoCmluZGV4
+IGE5YjJjMDUuLjM5ZmY5ODkgMTAwNzU1Ci0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rl
+c3RzdWl0ZS9iaW4vcnVuLWFsbC1wb3NpeC1vcHRpb24tZ3JvdXAtdGVzdHMuc2gKKysrIGIv
+dGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2Jpbi9ydW4tYWxsLXBvc2l4LW9wdGlv
+bi1ncm91cC10ZXN0cy5zaApAQCAtOCw3ICs4LDcgQEAKICMKIAogRkFJTEVEPTAKLVJQT0df
+U0NSSVBUPSIkKGRpcm5hbWUgIiQwIikvcnVuLXBvc2l4LW9wdGlvbi1ncm91cC10ZXN0LnNo
+IgorUFJPR19TQ1JJUFQ9IiQoZGlybmFtZSAiJDAiKS9ydW4tcG9zaXgtb3B0aW9uLWdyb3Vw
+LXRlc3Quc2giCiAKIGZvciBvcHRpb25fZ3JvdXAgaW4gQUlPIE1FTSBNU0cgU0VNIFNJRyBU
+SFIgVE1SIFRQUzsgZG8KIAlpZiAhICRQUk9HX1NDUklQVCAkb3B0aW9uX2dyb3VwOyB0aGVu
+Cg==
+--------------060507060408030401060708
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
+--------------060507060408030401060708
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------060507060408030401060708--
+
+
