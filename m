@@ -1,18 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PB4KO-0003aN-95
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:38:00 +0000
-Date: Wed, 27 Oct 2010 13:47:56 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101027114756.GA4999@saboteur.suse.cz>
-References: <AANLkTimHeBQkYhnPpAiOJx2R8Y1xznHffWYhAtBR=iCF@mail.gmail.com>
-	<AANLkTi=zZud=H52Q5pE00gERVi6MfVF9QV7_C66W=CEP@mail.gmail.com>
+	(envelope-from <mitani@ryobi.co.jp>) id 1P45WE-0002D7-0h
+	for ltp-list@lists.sourceforge.net; Fri, 08 Oct 2010 05:29:22 +0000
+Received: from out20.sjc.mx.trendmicro.com ([216.99.131.77])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P45WC-00049F-Ik
+	for ltp-list@lists.sourceforge.net; Fri, 08 Oct 2010 05:29:21 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.133])
+	by out20.sjc.mx.trendmicro.com (Postfix) with ESMTP id 684CC980470
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  8 Oct 2010 05:29:14 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id D5C359583F
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  8 Oct 2010 05:29:08 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Oct 2010 14:29:06 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 8 Oct 2010 14:29:08 +0900
+Message-ID: <000001cb66a9$bb3c52b0$31b4f810$@co.jp>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=zZud=H52Q5pE00gERVi6MfVF9QV7_C66W=CEP@mail.gmail.com>
-Subject: Re: [LTP] Realtime tests on ARM
+Content-Language: ja
+Subject: [LTP] POSIX "aio_return/2-1" failed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,129 +35,117 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: gowrishankar.m@in.ibm.com, ltp-list@lists.sourceforge.net, David Peverley <pev@sketchymonkey.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > The realtime tests aren't compiled for ARM currently as there's no
-> > implementation of atomic_add() in :
-> > =A0 testcases/realtime/include/librttest.h
-> >
-> > As a side note - in this function can we change the #error to not be
-> > blank and read something along the lines of =A0:
-> > =A0#error ERROR: atomic_add: Architecture not supported for compilation
-> >
-> > Anyway, the existing function here supports three architectures and
-> > lifts the implementations as follows :
-> > =A0__x86_64__ || =A0__i386__
-> > =A0 =A0arch/x86/include/asm/atomic_32.h
-> > =A0__powerpc__
-> > =A0 =A0arch/powerpc/include/asm/atomic.h (might need review!)
-> > =A0__sh__
-> > =A0 =A0arch/sh/include/asm/atomic-llsc.h (might need review!)
-> >
-> > Logically we can add an ARM case following the same logic. Looking in :
-> > =A0 arch/arm/include/asm/atomic.h
-> >
-> > We can implement this easily for v6+ architectures. The case for
-> > atomic_add in librttest.h would look something like :
-> > =A0#elif defined(__arm__) && (__LINUX_ARM_ARCH__ >=3D 6)
-> > =A0 =A0 =A0 unsigned long tmp;
-> > =A0 =A0 =A0 int result;
-> >
-> > =A0 =A0 =A0 __asm__ __volatile__(
-> > =A0 "1: ldrex =A0 %0, [%2]\n"
-> > =A0 " =A0 add =A0 =A0 %0, %0, %3\n"
-> > =A0 " =A0 strex =A0 %1, %0, [%2]\n"
-> > =A0 " =A0 teq =A0 =A0 %1, #0\n"
-> > =A0 " =A0 bne =A0 =A0 1b"
-> > =A0 =A0 =A0 : "=3D&r" (result), "=3D&r" (tmp)
-> > =A0 =A0 =A0 : "r" (&v->counter), "Ir" (i)
-> > =A0 =A0 =A0 : "cc");
-> >
-> > =A0 =A0 =A0 return result;
-> >
-> > For < v6 architectures this isn't easy as they don't implement
-> > ldrex/strex. The atomic.h implementation won't work as it's a kernel
-> > only implementation using local_irq_save() and local_irq_restore() so
-> > obviously no use for userspace atomic add.
-> >
-> > After reading up for a while I've come across a very cunning trick in
-> > the kernel where an atomic compare/exchange is implemented in
-> > __kuser_cmpxchg. This is implemented in :
-> > =A0 arch/arm/kernel/entry-armv.S
-> >
-> > This tantalisingly comments :
-> > =A0 /*
-> > =A0 =A0* For example, a user space atomic_add implementation could look=
- like this:
-> > =A0 =A0*
-> > =A0 =A0* #define atomic_add(ptr, val) \
-> > =A0 =A0* =A0 =A0 =A0({ register unsigned int *__ptr asm("r2") =3D (ptr)=
-; \
-> > =A0 =A0* =A0 =A0 =A0 =A0 register unsigned int __result asm("r1"); \
-> > =A0 =A0* =A0 =A0 =A0 =A0 asm volatile ( \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "1: @ atomic_add\n\t" \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "ldr =A0 =A0 r0, [r2]\n\t" \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "mov =A0 =A0 r3, #0xffff0fff\n\t" \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 lr, pc, #4\n\t" \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 r1, r0, %2\n\t" \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 pc, r3, #(0xffff0fc0 - 0x=
-ffff0fff)\n\t" \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "bcc =A0 =A0 1b" \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "=3D&r" (__result) \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "r" (__ptr), "rIL" (val) \
-> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "r0","r3","ip","lr","cc","memory" );=
- \
-> > =A0 =A0* =A0 =A0 =A0 =A0 __result; })
-> > =A0 =A0*/
-> >
-> > So translating this into librttest.h format gives :
-> > =A0 #elif defined(__arm__) && (__LINUX_ARM_ARCH__ < 6)
-> > =A0 =A0 =A0 register unsigned int result asm("r1");
-> >
-> > =A0 =A0 =A0 /* See, arm/kernel/entry-armv.S:__kernel_cmpxchg() */
-> > =A0 =A0 =A0 __asm__ __volatile__ (
-> > =A0 "1: ldr =A0 =A0 r0, [r2]\n\t"
-> > =A0 " =A0 mov =A0 =A0 r3, #0xffff0fff\n\t"
-> > =A0 " =A0 add =A0 =A0 lr, pc, #4\n\t"
-> > =A0 " =A0 add =A0 =A0 r1, r0, %2\n\t"
-> > =A0 " =A0 add =A0 =A0 pc, r3, #(0xffff0fc0 - 0xffff0fff)\n\t"
-> > =A0 " =A0 bcc =A0 =A0 1b"
-> > =A0 =A0 =A0 : "=3D&r" (result)
-> > =A0 =A0 =A0 : "r" (&v->counter), "rIL" (i)
-> > =A0 =A0 =A0 : "r0","r3","ip","lr","cc","memory" );
-> >
-> > =A0 =A0 =A0 return result;
-> >
-> > Does this look reasonable to you guys?
-> =
+Hi,
 
->     CCing Gowrishankar from IBM.
 
-We recently agreed to use gcc buildins as the inline assembler was
-broken anyway. But it seems that this patch hasn't made it into git.
+"conformance/interfaces/aio_return/2-1" failed with following message:
+------------
+conformance/interfaces/aio_return/2-1: execution: FAILED: Output: 
+aio_return/2-1.c Second call to aio_return() should return -1 : 111
+------------
 
-Garret could you please commit patch from Gowrishankar from thread
-"[PATCH] fix realtime atomic_add() inline asm". It basically removes all the
-inline assembler in favor of __sync_add_and_fetch().
+Same problem occurs in "aio_return/3-2.c" and "aio_return/4-1".
 
--- =
+Environment is as follows:
+  - RHEL5.5 --- (x86, x86_64, ia64)
+  - RHEL4.8 --- (x86, x86_64, ia64)
 
-Cyril Hrubis
-chrubis@suse.cz
 
----------------------------------------------------------------------------=
----
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
+This testset seems to be the error root test for "aio_return()".
 
-http://p.sf.net/sfu/nokia-dev2dev
+First "aio_return()" returned with 111. This return value is the length 
+of buffer of "aio_write()".
+But second "aio_return()" returned with 111, too. It's unexpected 
+result for this test set.
+Therefore, this test failed.
+
+Man page says that 
+"This function should be called only once for any given request,  after
+aio_error(2) returns something other than EINPROGRESS.":
+------------
+# LANG=C man 3 aio_return
+
+AIO_RETURN(3)                  Linux Programmer's Manual
+AIO_RETURN(3)
+
+NAME
+       aio_return - get return status of asynchronous I/O operation
+
+SYNOPSIS
+       #include <aio.h>
+
+       ssize_t aio_return(struct aiocb *aiocbp);
+
+DESCRIPTION
+       The aio_return function returns the final return status for the
+asynchronous I/O
+       request with control block pointed to by aiocbp.
+
+       This  function  should  be  called  only  once  for  any  given
+request,  after
+       aio_error(2) returns something other than EINPROGRESS.
+
+RETURN VALUE
+       If the asynchronous I/O operation has completed, this function
+returns the value
+       that would have been returned in case of a synchronous  read,  write,
+or  fsync
+       request.  Otherwise the return value is undefined.  On error, the
+error value is
+       returned.
+
+ERRORS
+       EINVAL aiocbp does not point at a control block for an asynchronous
+I/O  request
+              of which the return status has not been retrieved yet.
+
+CONFORMING TO
+       POSIX 1003.1-2003
+
+SEE ALSO
+       aio_cancel(3),    aio_error(3),   aio_fsync(3),   aio_read(3),
+aio_suspend(3),
+       aio_write(3)
+
+                                       2003-11-14
+AIO_RETURN(3)
+#
+------------
+
+And, it says that 
+"If the asynchronous I/O operation has completed, this function returns
+the value that would have been returned in case of a synchronous read,
+write, or fsync request.  Otherwise the return value is undefined.  On
+error, the error value is returned.".
+
+
+It can be supposed that the return value of second "aio_return()" is 
+undefined.
+Therefore, it is not mistake that return value of the second "aio_return()" 
+is one at success, I think.
+And, I think that "UNTESTED" or "UNRESOLVED" may be is more appropriate 
+for this test.
+
+How does that look?
+
+
+Regards--
+
+-Tomonori Mitani
+
+
+
+------------------------------------------------------------------------------
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
