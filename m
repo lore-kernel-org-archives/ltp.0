@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1P7msc-0006IH-LN
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 10:23:46 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P7msb-000298-8H
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 10:23:46 +0000
-Message-ID: <4CBC2044.3040202@cn.fujitsu.com>
-Date: Mon, 18 Oct 2010 18:24:04 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1P5kM8-0005b9-Th
+	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 19:17:48 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P5kM7-0000rj-Qg
+	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 19:17:48 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 12 Oct 2010 15:15:06 -0400
+References: <63954223.194911286892436382.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <63954223.194911286892436382.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-References: <4CBC1431.1080808@cn.fujitsu.com>
-	<AANLkTinQjHvu=F1rnB19Bzv4g27anHt4QM9JJJAh_bBA@mail.gmail.com>
-In-Reply-To: <AANLkTinQjHvu=F1rnB19Bzv4g27anHt4QM9JJJAh_bBA@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] open_posix_testsuite: Fix variable type error
+Message-Id: <201010121515.07416.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,56 +24,142 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6568240308859840118=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: CAI Qian <caiqian@redhat.com>
 
-Garrett Cooper wrote:
-> On Mon, Oct 18, 2010 at 2:32 AM, Gui Jianfeng
-> <guijianfeng@cn.fujitsu.com> wrote:
->> Hi
->>
->> Currently, the variable "timeout" type is int, We should make it to be "unsigned long".
->> Otherwise, we'll get an unexpected value in thread function, consequently, test fails.
->>
->> Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
->> ---
->>  .../functional/threads/pi_test/pitest-1.c          |    2 +-
->>  1 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/testcases/ /functional/threads/pi_test/pitest-1.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
->> index b8969a8..9fac992 100644
->> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
->> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
->> @@ -296,7 +296,7 @@ int main(int argc, char **argv)
->>
->>        /* Start TB thread (boosting thread) */
->>        DPRINTF(stderr,"Main Thread: start TB thread\n");
->> -       int timeout = multiplier * 20;
->> +       unsigned long timeout = multiplier * 20;
->>        rc = pthread_create(&threadtb, &threadattr, thread_tb,
->>                            &timeout);
->>         if (rc != 0) {
-> 
->     Please try this patch out instead and let me know how it goes.
+--===============6568240308859840118==
+Content-Type: multipart/signed; boundary="nextPart4086147.BxpzpKYFZv";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Works good for me.
+--nextPart4086147.BxpzpKYFZv
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Gui
+On Tuesday, October 12, 2010 10:07:16 CAI Qian wrote:
+> +/* main setup function of test */
+> +void setup();
+> +/* cleanup function for the test */
+> +void cleanup();
+> +int mmapzero();
 
-> Thanks,
-> -Garrett
+functins that take no args should be "(void)" and not "()"
 
+> +int main(int ac, char **av)
+
+use consistent style.  this should be "int argc" and "char *argv[]".
+
+> +	if (msg !=3D (char *)NULL) {
+
+useless cast
+
+> +		if(TEST_RETURN !=3D 0)
+
+need a space before the "("
+
+> +	 x =3D mmap("/dev/zero", SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
+> +		 MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+
+uhh, have you even checked this test ?  this mmap() makes absolutely no sen=
+se=20
+on so many levels.
+
+> +	 if (x =3D=3D MAP_FAILED) {
+> +		 perror("error");
+
+make this perror() slightly less useless by replacing "error" with "mmap". =
+=20
+although, i wonder why you cant use any of the ltp helper functions for err=
+or=20
+reporting ... tests rarely (if ever) should be writing to stdout/stderr=20
+themselves.
+
+> +	 if (!fork()) {
+> +		 munmap(x + SIZE+4096, SIZE-4096*2);
+> +		 _exit(0);
+> +	 }
+> +	 if (!fork()) {
+> +		 if (!fork()) {
+> +			 munmap(x + SIZE+4096, SIZE-4096*2);
+> +			 _exit(0);
+> +		 }
+> +		 munmap(x + SIZE+4096, SIZE-4096*2);
+> +		 _exit(0);
+> +	 }
+> +	 munmap(x, SIZE+SIZE-4096);
+
+fork() returns -1 on error which means this code misbehaves.
+
+why are you using _exit() ?
+
+munmap() returns a value you shouldbe checking.  blindly calling funcs does=
+nt=20
+accomplish much.
+
+> + void cleanup()
+> + {
+> +	 /*
+> +	  * remove the tmp directory and exit
+> +	  */
+> +	 TEST_CLEANUP;
+> +	 tst_rmdir();
+> +	 tst_exit();
+> +
+> + }
+
+useless newline before the closing brace
+=2Dmike
+
+--nextPart4086147.BxpzpKYFZv
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iQIcBAABAgAGBQJMtLO7AAoJEEFjO5/oN/WBoDgP/2NNcIE/th1w+bInwC+vgUMQ
+sXz3fTt5Nz/PrlMCOJHxOY3CWBBHsZKCWmV6MO8NEOcwvVrLlPkh7qotOon+6e/0
+HWKZnLs5vn13C9TSRLvkhZgl0Q2nzUuzJ+br1H+IIvz9dZQyURqsMHoSbOdEbP47
+LdIXCYFoE41cIhZ3uz+T6roEm7jh8RFsMNPbkRTi5S6UejnuIVyAy7tBE+2/PK30
+TvVgJLoEhmPLJCw3rv633SzNac6m9JmHYD5nSCrzIEiL5tWfygAHfeqMnOiKDzbP
+Uj80r1Xb1PcC8nyS5Jwsev6j2xZ21u5X9ZOY8aa+KUmg8W+87eZgIdyyKlz+CJej
+HF4DXO2GbDJ9+ov6jvEYv4hdB5Z2cQeOGSdRhgfBD6q70n/BngSLfgxgtunRvLv0
+CmpF1b5hNzxmiIgfryAW/cRR1rIoR+TVjVkUsih4MFnldW8PSdNxuTo0qhfXkkzn
+ZhK4vk5F1caw+h9tE6Cre6AVmPgqdIqRww3IsOVjlFBBYxgZRmFvZgu3TsLPzKf8
+q2V1mIaSym7JoHqAmQhekHX2dkN1tWLhr329OZFvJRBi0HE6pXsyT2MSyjw2LBk5
+5FyaP2Js7l1XIsmZxK3YUQ7AWFO1nudNQ6b5atzgi3u0vYTtQxScyyBPgsrxlwH/
+FyA/3YIIOhQHSS+ccQcB
+=xwgz
+-----END PGP SIGNATURE-----
+
+--nextPart4086147.BxpzpKYFZv--
+
+
+--===============6568240308859840118==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
+--===============6568240308859840118==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6568240308859840118==--
+
