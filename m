@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lizf@cn.fujitsu.com>) id 1P8qs7-0004iy-7N
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 08:51:39 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1P5fVk-0002MB-66
+	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 14:07:24 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8qs5-0006E5-B8
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 08:51:39 +0000
-Message-ID: <4CBFFF43.2010100@cn.fujitsu.com>
-Date: Thu, 21 Oct 2010 16:52:19 +0800
-From: Li Zefan <lizf@cn.fujitsu.com>
+	id 1P5fVi-0007Pf-LL
+	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 14:07:23 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9CE7GjN011875
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 Oct 2010 10:07:16 -0400
+Date: Tue, 12 Oct 2010 10:07:16 -0400 (EDT)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <63954223.194911286892436382.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-References: <1286998463.4893.26.camel@subratamodak.linux.ibm.com>
-	<1287649998.22128.1.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1287649998.22128.1.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [2.6.36-rc7,
- Power6] LTP Ftrace Stress tests causes KERNEL	PANIC and brings the
- system to xmon
+Subject: [LTP] [PATCH] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,65 +26,157 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Peter Zijlstra <a.p.zijlstra@chello.nl>, Peter Zijlstra <peterz@infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, rostedt <rostedt@goodmis.org>, Linuxppc-dev <Linuxppc-dev@ozlabs.org>
+To: ltp-list@lists.sourceforge.net
 
-KEkgZ3Vlc3MgeW91IGRpZG4ndCBub3RpY2UgSSd2ZSBhbHNvIGZvcndhcmRlZCB0aGUgYnVnIHJl
-cG9ydCB0byBMS01MPwogaHR0cDovL21hcmMuaW5mby8/bD1saW51eC1rZXJuZWwmbT0xMjg3Mzcx
-OTM5MTk1MDAmdz0yKQoKU3VicmF0YSBNb2RhayB3cm90ZToKPiBTdGVmZW4sCj4gCj4gQ2FuIHlv
-dSBwbGVhc2Uga25vdyB5b3VyIHRob3VnaHRzIG9uIHRoaXMgaXNzdWUgPwo+IAoKU3RlZmVuPyBT
-dGV2ZW4/IDopCgo+IFJlZ2FyZHMtLQo+IFN1YnJhdGEKPiAKPiBPbiBUaHUsIDIwMTAtMTAtMTQg
-YXQgMDE6MDQgKzA1MzAsIFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4+IEhpLAo+Pgo+PiBFeGVjdXRp
-bmcgTFRQIEZ0cmFjZSBTdHJlc3MgdGVzdHMgb24gMi42LjM2LXJjNywgUG93ZXI2IGNyZWF0ZXMg
-a2VybmVsCj4+IFBhbmljIGFuZCB4bW9uIGlzIGludm9rZWQ6Cj4+CgouLi4KCj4+Cj4+IEhvd2V2
-ZXIgUGV0ZXIgWmlqbHN0cmHFmyBwcm9wb3NlZCBwYXRjaCBkaWQgbm90IGZpeCB0aGlzIGlzc3Vl
-LiBUaGUgcGF0Y2gKPj4gd2FzCj4+IHBvc3RlZCB0byBMVFA6Cj4+IGh0dHA6Ly9tYXJjLmluZm8v
-P2w9bHRwLWxpc3QmbT0xMjg2OTY5NDI0MzI2Njkmdz0yCj4+Cj4+IFRoZSBLZXJuZWwgcGFuaWtl
-ZCBldmVuIGFmdGVyIHRoZSBwYXRjaC4gSG93ZXZlciB0aGlzIHRpbWUgdGggbWVzc2FnZSB3YXMK
-Pj4gZGlmZmVyZW50LiBPdGhlciB4bW9uIG91dHB1dCBpcyBhbHNvIHNob3duIGJlbG93Ogo+PgoK
-U28gdGhleSBhcmUgMiBkaWZmZXJlbnQgYnVncywgYW5kIFBldGVyJ3MgcGF0Y2ggZml4ZWQgdGhl
-IGZpcnN0IG9uZS4KQnV0IHRoYXQgcGF0Y2ggaXMgdG9vIGJ1ZyBmb3IgLjM2Li4KCkZvciB0aGUg
-c2Vjb25kIGJ1ZywgYXMgSSBzYWlkLCBpdCdzIGEgZGVhZCBsb29wLCBhbmQgaXQncyBQb3dlclBD
-IHNwZWNpZmljLApzbyBiZXR0ZXIgaGF2ZSBzb21lb25lIGluIFBQQyBmaXhlZCBpdCwgYW5kIFN0
-ZXZlbiBoYXMgcHJvcG9zZWQgdG8gYWRkCnJlY3Vyc2l2ZSBjaGVjay4KCi4uLgoKPj4gIHBpZCAg
-ID0gMTY2OCwgY2MwMDAwMDAwMDAyMjI2YjAgLnJiX3Jlc2VydmVfbmV4dF9ldmVudCsweDIwYy8w
-eDgwNAo+PiBbYzAwMDAwMDBkOWY4YjliMF0gYzAwMDAwMDAwMDIyMzE3OCAucmluZ19idWZmZXJf
-bG9ja19yZXNlcnZlKzB4MjRjLzB4MmE0Cj4+IFtjMDAwMDAwMGQ5ZjhiYTQwXSBjMDAwMDAwMDAw
-MjJkNmY0IC50cmFjZV9idWZmZXJfbG9ja19yZXNlcnZlKzB4NTgvMHhlNAo+PiBbYzAwMDAwMDBk
-OWY4YmFmMF0gYzAwMDAwMDAwMDIyZWM5Ywo+PiAudHJhY2VfY3VycmVudF9idWZmZXJfbG9ja19y
-ZXNlcnZlKzB4NDQvMHg2Ywo+PiBbYzAwMDAwMDBkOWY4YmI4MF0gYzAwMDAwMDAwMDAxMWM1YyAu
-ZnRyYWNlX3Jhd19ldmVudF9oY2FsbF9lbnRyeSsweDdjLzB4MTQ0Cj4+IFtjMDAwMDAwMGQ5Zjhi
-YzQwXSBjMDAwMDAwMDAwMDk2NjI0IC5fX3RyYWNlX2hjYWxsX2VudHJ5KzB4YTAvMHhlYwo+PiBb
-YzAwMDAwMDBkOWY4YmNkMF0gYzAwMDAwMDAwMDA5Nzg2YyAucGxwYXJfaGNhbGxfbm9yZXRzKzB4
-NTAvMHhkMAo+PiBbYzAwMDAwMDBkOWY4YmQ0MF0gYzAwMDAwMDAwMDA3NDljOCAuX19zcGluX3lp
-ZWxkKzB4MTMwLzB4MTVjCj4+IFtjMDAwMDAwMGQ5ZjhiZGQwXSBjMDAwMDAwMDAwMjEzNDU4IC50
-cmFjZV9jbG9ja19nbG9iYWwrMHgxMWMvMHgyYTAKPj4gW2MwMDAwMDAwZDlmOGJlOTBdIGMwMDAw
-MDAwMDAyMjI2YjAgLnJiX3Jlc2VydmVfbmV4dF9ldmVudCsweDIwYy8weDgwNAo+PiBbYzAwMDAw
-MDBkOWY4YmZhMF0gYzAwMDAwMDAwMDIyMzE3OCAucmluZ19idWZmZXJfbG9ja19yZXNlcnZlKzB4
-MjRjLzB4MmE0Cj4+IFtjMDAwMDAwMGQ5ZjhjMDMwXSBjMDAwMDAwMDAwMjJkNmY0IC50cmFjZV9i
-dWZmZXJfbG9ja19yZXNlcnZlKzB4NTgvMHhlNAo+PiBbYzAwMDAwMDBkOWY4YzBlMF0gYzAwMDAw
-MDAwMDIyZWM5Ywo+PiAudHJhY2VfY3VycmVudF9idWZmZXJfbG9ja19yZXNlcnZlKzB4NDQvMHg2
-Ywo+PiBbYzAwMDAwMDBkOWY4YzE3MF0gYzAwMDAwMDAwMDAxMWM1YyAuZnRyYWNlX3Jhd19ldmVu
-dF9oY2FsbF9lbnRyeSsweDdjLzB4MTQ0Cj4+IFtjMDAwMDAwMGQ5ZjhjMjMwXSBjMDAwMDAwMDAw
-MDk2NjI0IC5fX3RyYWNlX2hjYWxsX2VudHJ5KzB4YTAvMHhlYwo+PiBbYzAwMDAwMDBkOWY4YzJj
-MF0gYzAwMDAwMDAwMDA5Nzg2YyAucGxwYXJfaGNhbGxfbm9yZXRzKzB4NTAvMHhkMAo+PiBbYzAw
-MDAwMDBkOWY4YzMzMF0gYzAwMDAwMDAwMDA3NDljOCAuX19zcGluX3lpZWxkKzB4MTMwLzB4MTVj
-Cj4+IFtjMDAwMDAwMGQ5ZjhjM2MwXSBjMDAwMDAwMDAwMjEzNDU4IC50cmFjZV9jbG9ja19nbG9i
-YWwrMHgxMWMvMHgyYTAKPj4gW2MwMDAwMDAwZDlmOGM0ODBdIGMwMDAwMDAwMDAyMjI2YjAgLnJi
-X3Jlc2VydmVfbmV4dF9ldmVudCsweDIwYy8weDgwNAo+PiBbYzAwMDAwMDBkOWY4YzU5MF0gYzAw
-MDAwMDAwMDIyMzE3OCAucmluZ19idWZmZXJfbG9ja19yZXNlcnZlKzB4MjRjLzB4MmE0Cj4+IFtj
-MDAwMDAwMGQ5ZjhjNjIwXSBjMDAwMDAwMDAwMjJkNmY0IC50cmFjZV9idWZmZXJfbG9ja19yZXNl
-cnZlKzB4NTgvMHhlNAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk5va2lhIGFuZCBBVCZUIHByZXNl
-bnQgdGhlIDIwMTAgQ2FsbGluZyBBbGwgSW5ub3ZhdG9ycy1Ob3J0aCBBbWVyaWNhIGNvbnRlc3QK
-Q3JlYXRlIG5ldyBhcHBzICYgZ2FtZXMgZm9yIHRoZSBOb2tpYSBOOCBmb3IgY29uc3VtZXJzIGlu
-ICBVLlMuIGFuZCBDYW5hZGEKJDEwIG1pbGxpb24gdG90YWwgaW4gcHJpemVzIC0gJDRNIGNhc2gs
-IDUwMCBkZXZpY2VzLCBuZWFybHkgJDZNIGluIG1hcmtldGluZwpEZXZlbG9wIHdpdGggTm9raWEg
-UXQgU0RLLCBXZWIgUnVudGltZSwgb3IgSmF2YSBhbmQgUHVibGlzaCB0byBPdmkgU3RvcmUgCmh0
-dHA6Ly9wLnNmLm5ldC9zZnUvbm9raWEtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL2x0cC1saXN0Cg==
+Add a new test to mmap/munmap /dev/zero.
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -0,0 +1,131 @@
++/*
++ * mmap/munmap /dev/zero
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#include "test.h"
++#include "usctest.h"
++#include <errno.h>
++#include <sys/mman.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <sys/wait.h>
++#include <stdio.h>
++
++#define SIZE (5*1024*1024)
++
++char *TCID = "mmap10";
++int TST_TOTAL = 1;
++extern int Tst_count;
++
++/* main setup function of test */
++void setup();
++/* cleanup function for the test */
++void cleanup();
++int mmapzero();
++
++
++int main(int ac, char **av)
++{
++	/* loop counter */
++	int lc;
++	/* message returned from parse_opts */
++	char *msg;
++
++	msg = parse_opts(ac, av, (option_t *) NULL, NULL);
++	if (msg != (char *)NULL) {
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++		tst_exit();
++	}
++
++	/* Perform global setup for test */
++	setup();
++
++	/* Check looping state if -i option given */
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* Reset Tst_count in case we are looping. */
++		Tst_count = 0;
++
++		TEST(mmapzero());
++
++		if(TEST_RETURN != 0)
++			tst_resm(TFAIL, "mmapzero() failed with %ld.",
++				TEST_RETURN);
++		else
++			tst_resm(TPASS, "mmapzero() completed successfully.");
++	 }
++
++	 cleanup();
++	 return 0;
++ }
++
++ int mmapzero()
++ {
++	 char *x;
++
++	 x = mmap("/dev/zero", SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++		 MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
++	 if (x == MAP_FAILED) {
++		 perror("error");
++		 return 1;
++	 }
++	 x[SIZE] = 0;
++	 if (!fork()) {
++		 munmap(x + SIZE+4096, SIZE-4096*2);
++		 _exit(0);
++	 }
++	 if (!fork()) {
++		 if (!fork()) {
++			 munmap(x + SIZE+4096, SIZE-4096*2);
++			 _exit(0);
++		 }
++		 munmap(x + SIZE+4096, SIZE-4096*2);
++		 _exit(0);
++	 }
++	 munmap(x, SIZE+SIZE-4096);
++	 while (waitpid(-1, NULL, WNOHANG) > 0);
++	 return 0;
++ }
++
++ void cleanup()
++ {
++	 /*
++	  * remove the tmp directory and exit
++	  */
++	 TEST_CLEANUP;
++	 tst_rmdir();
++	 tst_exit();
++
++ }
++
++
++void setup()
++{
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++	tst_tmpdir();
++}
+
+------------------------------------------------------------------------------
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
