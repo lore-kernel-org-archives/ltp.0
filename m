@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge.hallyn@canonical.com>) id 1P8YfM-0005if-JG
-	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 13:25:16 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8YfI-00056K-Pr
-	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 13:25:16 +0000
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1P8YfD-000807-CV
-	for <ltp-list@lists.sourceforge.net>; Wed, 20 Oct 2010 14:25:07 +0100
-Received: from cpe-66-68-83-102.austin.res.rr.com ([66.68.83.102]
-	helo=sergelap) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <serge.hallyn@canonical.com>) id 1P8YfD-00085t-6V
-	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 14:25:07 +0100
-Date: Wed, 20 Oct 2010 08:25:05 -0500
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20101020132505.GA5985@hallyn.com>
+	(envelope-from <hakehuang@gmail.com>) id 1P5ePD-0005xu-IG
+	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 12:56:35 +0000
+Received: from mail-yw0-f47.google.com ([209.85.213.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P5ePC-0000bw-Ju
+	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 12:56:35 +0000
+Received: by ywl5 with SMTP id 5so1734616ywl.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 12 Oct 2010 05:56:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH 1/1] securebits: fix running of testcases
+Date: Tue, 12 Oct 2010 20:56:28 +0800
+Message-ID: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
+From: hake huang <hakehuang@gmail.com>
+Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,60 +25,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3835913898554092723=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Exit as soon as one breaks.  Heck, clean it up by letting
-set -e do it for me.
+--===============3835913898554092723==
+Content-Type: multipart/alternative; boundary=000e0cd48b58532d2f04926b0168
 
-Signed-off-by: Serge Hallyn <serge.hallyn@canonical.com>
----
- .../kernel/security/securebits/run_securebits.sh   |   18 +++++-------------
- 1 files changed, 5 insertions(+), 13 deletions(-)
+--000e0cd48b58532d2f04926b0168
+Content-Type: text/plain; charset=ISO-8859-1
 
-diff --git a/testcases/kernel/security/securebits/run_securebits.sh b/testcases/kernel/security/securebits/run_securebits.sh
-index 4d9e272..19df70c 100644
---- a/testcases/kernel/security/securebits/run_securebits.sh
-+++ b/testcases/kernel/security/securebits/run_securebits.sh
-@@ -1,20 +1,12 @@
- #!/bin/sh
- 
-+set -e
-+
- echo "testing keepcaps"
- check_keepcaps 1
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
-+
- check_keepcaps 2
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
-+
- check_keepcaps 3
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
- 
--exit $exit_code
-+exit 0
--- 
-1.7.1
+Hi,
 
+I wnat LTP to record the kernel dump message during each test case, and I
+make a patch for this. Any comments?
+
+
+@@ -1238,6 +1242,7 @@ write_test_end(struct tag_pgrp *running, const char
+*init_status,
+                int term_id, struct tms *tms1, struct tms *tms2)
+ {
+     if (!strcmp(reporttype, "rts")) {
++       system("/bin/dmesg -c");
+        printf("%s\ninitiation_status=\"%s\"\nduration=%ld
+termination_type=%s "
+                "termination_id=%d corefile=%s\ncutime=%d cstime=%d\n%s\n",
+                        "<<<execution_status>>>", init_status,
+
+Regards,
+
+Hake
+
+--000e0cd48b58532d2f04926b0168
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi,<br><br>I wnat LTP to record the kernel dump message during each test ca=
+se, and I make a patch for this. Any comments?<br><br><br>@@ -1238,6 +1242,=
+7 @@ write_test_end(struct tag_pgrp *running, const char *init_status,<br>
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 int term_id, struct tms *tms1=
+, struct tms *tms2)<br>=A0{<br>=A0=A0=A0=A0 if (!strcmp(reporttype, &quot;r=
+ts&quot;)) {<br>+=A0=A0=A0=A0=A0=A0 system(&quot;/bin/dmesg -c&quot;);<br>=
+=A0=A0=A0=A0=A0=A0=A0 printf(&quot;%s\ninitiation_status=3D\&quot;%s\&quot;=
+\nduration=3D%ld termination_type=3D%s &quot;<br>
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &quot;termination_id=3D%d cor=
+efile=3D%s\ncutime=3D%d cstime=3D%d\n%s\n&quot;,<br>=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &quot;&lt;&lt;&lt;executio=
+n_status&gt;&gt;&gt;&quot;, init_status,<br><br>Regards,<br><br>Hake<br>
+
+--000e0cd48b58532d2f04926b0168--
+
+
+--===============3835913898554092723==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
+--===============3835913898554092723==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3835913898554092723==--
+
