@@ -1,21 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lizf@cn.fujitsu.com>) id 1P5zWI-0000RG-Qy
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 11:29:18 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5zWD-0003ps-3U
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 11:29:18 +0000
-Message-ID: <4CB59825.7060504@cn.fujitsu.com>
-Date: Wed, 13 Oct 2010 19:29:41 +0800
-From: Li Zefan <lizf@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4C85A88D.10700@cn.fujitsu.com>		<1285689961.11429.12.camel@subratamodak.linux.ibm.com>	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>	<4CB55FE6.6000604@cn.fujitsu.com>
-	<4CB5615C.4070406@cn.fujitsu.com>
-In-Reply-To: <4CB5615C.4070406@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] Add ftrace-stress-test to LTP
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P5vP6-0003OG-2m
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:05:36 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P5vP3-0004ZX-NT
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:05:36 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e4.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o9D6nWhd027053
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 02:49:32 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o9D75SKV323158
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 03:05:28 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o9D75Rh1000540
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 03:05:28 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <AANLkTikgZ=32o_QmBk5FTfOQfVGUYpjxtCbvAqxQFbYk@mail.gmail.com>
+References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
+	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
+	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
+	<AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
+	<AANLkTin4N8BpJ5xXs8TAV+1xQNjTEO+KzO6h=ZJVjv08@mail.gmail.com>
+	<1286952767.4893.3.camel@subratamodak.linux.ibm.com>
+	<1286952965.4893.6.camel@subratamodak.linux.ibm.com>
+	<AANLkTikgZ=32o_QmBk5FTfOQfVGUYpjxtCbvAqxQFbYk@mail.gmail.com>
+Date: Wed, 13 Oct 2010 12:34:56 +0530
+Message-Id: <1286953506.4893.11.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,327 +46,128 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: hake huang <hakehuang@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Li Zefan wrote:
-> Li Zefan wrote:
->> Subrata Modak wrote:
->>> Li,
->>>
->>> Can you kindly fix the below issues and send me a new patch ?
->>>
->> Sure, I will.
->>
+On Wed, 2010-10-13 at 15:00 +0800, hake huang wrote:
+> Hi Subrata,
 > 
-> At a first glance, the kernel bug doesn't seem to come from ftrace,
-> at least not directly from it.
+> one question:
+> -K will only record all kernel message, but can not match each testcase, right?
+
+It will record kernel messages for each individual test case by
+recording it inside ltp*/output/<DMESG_DIR_NAME>/<testname>.dmeg
+
+Once test run is over it will delete all .dmeg* files of zero size and
+will retain only those having real entries. So, you will get exactly
+which tests generated kernel messages and what the messages exactly are
+for each individual test.
+
+Regards--
+Subrata
+
 > 
-> Question:
+> Regards,
 > 
-> Can you trigger this bug in latest kernel (2.6.36-rc7)? If you
-> haven't tried it, could you test it? Thanks!
+> Hake
 > 
-
-I got a patch from Peter, though he's not sure about the bug yet.
-So could you try this?
-
-Note, I don't know if this patch can be applied to 2.6.35-4..
-
-======================
-
-(From Peter)
-
-Hrmm, not something I've seen before.. but since the migration thread
-and stop_machine are involved, does the below patch which rewrites the
-migration-thread/stop_macehine/scheduler interaction cure this?
-
-This patch is probably .37 fodder, but who knows..
-
----
-Subject: sched: Create special class for stop/migrate work
-From: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Date: Wed Sep 22 13:53:15 CEST 2010
-
-In order to separate the stop/migrate work thread from the SCHED_FIFO
-implementation, create a special class for it that is of higher priority
-than SCHED_FIFO itself.
-
-This currently solves a problem where cpu-hotplug consumes so much cpu-time
-that the SCHED_FIFO class gets throttled, but has the bandwidth replenishment
-timer pending on the now dead cpu.
-
-It is also required for when we add the planned deadline scheduling class
-above SCHED_FIFO, as the stop/migrate thread still needs to transcent those
-tasks.
-
-Tested-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-LKML-Reference: <1285165776.2275.1022.camel@laptop>
----
- kernel/sched.c          |   54 ++++++++++++++++++++----
- kernel/sched_stoptask.c |  108 ++++++++++++++++++++++++++++++++++++++++++++++++
- kernel/stop_machine.c   |    8 ++-
- 3 files changed, 158 insertions(+), 12 deletions(-)
-
-Index: linux-2.6/kernel/sched.c
-===================================================================
---- linux-2.6.orig/kernel/sched.c
-+++ linux-2.6/kernel/sched.c
-@@ -486,7 +486,7 @@ struct rq {
- 	 */
- 	unsigned long nr_uninterruptible;
- 
--	struct task_struct *curr, *idle;
-+	struct task_struct *curr, *idle, *stop;
- 	unsigned long next_balance;
- 	struct mm_struct *prev_mm;
- 
-@@ -1837,7 +1837,7 @@ static inline void __set_task_cpu(struct
- 
- static const struct sched_class rt_sched_class;
- 
--#define sched_class_highest (&rt_sched_class)
-+#define sched_class_highest (&stop_sched_class)
- #define for_each_class(class) \
-    for (class = sched_class_highest; class; class = class->next)
- 
-@@ -1917,10 +1917,41 @@ static void deactivate_task(struct rq *r
- #include "sched_idletask.c"
- #include "sched_fair.c"
- #include "sched_rt.c"
-+#include "sched_stoptask.c"
- #ifdef CONFIG_SCHED_DEBUG
- # include "sched_debug.c"
- #endif
- 
-+void sched_set_stop_task(int cpu, struct task_struct *stop)
-+{
-+	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
-+	struct task_struct *old_stop = cpu_rq(cpu)->stop;
-+
-+	if (stop) {
-+		/*
-+		 * Make it appear like a SCHED_FIFO task, its something
-+		 * userspace knows about and won't get confused about.
-+		 *
-+		 * Also, it will make PI more or less work without too
-+		 * much confusion -- but then, stop work should not
-+		 * rely on PI working anyway.
-+		 */
-+		sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
-+
-+		stop->sched_class = &stop_sched_class;
-+	}
-+
-+	cpu_rq(cpu)->stop = stop;
-+
-+	if (old_stop) {
-+		/*
-+		 * Reset it back to a normal scheduling class so that
-+		 * it can die in pieces.
-+		 */
-+		old_stop->sched_class = &rt_sched_class;
-+	}
-+}
-+
- /*
-  * __normal_prio - return the priority that is based on the static prio
-  */
-@@ -3720,17 +3751,13 @@ pick_next_task(struct rq *rq)
- 			return p;
- 	}
- 
--	class = sched_class_highest;
--	for ( ; ; ) {
-+	for_each_class(class) {
- 		p = class->pick_next_task(rq);
- 		if (p)
- 			return p;
--		/*
--		 * Will never be NULL as the idle class always
--		 * returns a non-NULL p:
--		 */
--		class = class->next;
- 	}
-+
-+	BUG(); /* the idle class will always have a runnable task */
- }
- 
- /*
-@@ -4659,6 +4686,15 @@ static int __sched_setscheduler(struct t
- 	 */
- 	rq = __task_rq_lock(p);
- 
-+	/*
-+	 * Changing the policy of the stop threads its a very bad idea
-+	 */
-+	if (p == rq->stop) {
-+		__task_rq_unlock(rq);
-+		raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-+		return -EINVAL;
-+	}
-+
- #ifdef CONFIG_RT_GROUP_SCHED
- 	if (user) {
- 		/*
-Index: linux-2.6/kernel/stop_machine.c
-===================================================================
---- linux-2.6.orig/kernel/stop_machine.c
-+++ linux-2.6/kernel/stop_machine.c
-@@ -287,11 +287,12 @@ static int cpu_stopper_thread(void *data
- 	goto repeat;
- }
- 
-+extern void sched_set_stop_task(int cpu, struct task_struct *stop);
-+
- /* manage stopper for a cpu, mostly lifted from sched migration thread mgmt */
- static int __cpuinit cpu_stop_cpu_callback(struct notifier_block *nfb,
- 					   unsigned long action, void *hcpu)
- {
--	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
- 	unsigned int cpu = (unsigned long)hcpu;
- 	struct cpu_stopper *stopper = &per_cpu(cpu_stopper, cpu);
- 	struct task_struct *p;
-@@ -304,13 +305,13 @@ static int __cpuinit cpu_stop_cpu_callba
- 				   cpu);
- 		if (IS_ERR(p))
- 			return NOTIFY_BAD;
--		sched_setscheduler_nocheck(p, SCHED_FIFO, &param);
- 		get_task_struct(p);
-+		kthread_bind(p, cpu);
-+		sched_set_stop_task(cpu, p);
- 		stopper->thread = p;
- 		break;
- 
- 	case CPU_ONLINE:
--		kthread_bind(stopper->thread, cpu);
- 		/* strictly unnecessary, as first user will wake it */
- 		wake_up_process(stopper->thread);
- 		/* mark enabled */
-@@ -325,6 +326,7 @@ static int __cpuinit cpu_stop_cpu_callba
- 	{
- 		struct cpu_stop_work *work;
- 
-+		sched_set_stop_task(cpu, NULL);
- 		/* kill the stopper */
- 		kthread_stop(stopper->thread);
- 		/* drain remaining works */
-Index: linux-2.6/kernel/sched_stoptask.c
-===================================================================
---- /dev/null
-+++ linux-2.6/kernel/sched_stoptask.c
-@@ -0,0 +1,108 @@
-+/*
-+ * stop-task scheduling class.
-+ *
-+ * The stop task is the highest priority task in the system, it preempts
-+ * everything and will be preempted by nothing.
-+ *
-+ * See kernel/stop_machine.c
-+ */
-+
-+#ifdef CONFIG_SMP
-+static int
-+select_task_rq_stop(struct rq *rq, struct task_struct *p,
-+		    int sd_flag, int flags)
-+{
-+	return task_cpu(p); /* stop tasks as never migrate */
-+}
-+#endif /* CONFIG_SMP */
-+
-+static void
-+check_preempt_curr_stop(struct rq *rq, struct task_struct *p, int flags)
-+{
-+	resched_task(rq->curr); /* we preempt everything */
-+}
-+
-+static struct task_struct *pick_next_task_stop(struct rq *rq)
-+{
-+	struct task_struct *stop = rq->stop;
-+
-+	if (stop && stop->state == TASK_RUNNING)
-+		return stop;
-+
-+	return NULL;
-+}
-+
-+static void
-+enqueue_task_stop(struct rq *rq, struct task_struct *p, int flags)
-+{
-+}
-+
-+static void
-+dequeue_task_stop(struct rq *rq, struct task_struct *p, int flags)
-+{
-+}
-+
-+static void yield_task_stop(struct rq *rq)
-+{
-+	BUG(); /* the stop task should never yield, its pointless. */
-+}
-+
-+static void put_prev_task_stop(struct rq *rq, struct task_struct *prev)
-+{
-+}
-+
-+static void task_tick_stop(struct rq *rq, struct task_struct *curr, int queued)
-+{
-+}
-+
-+static void set_curr_task_stop(struct rq *rq)
-+{
-+}
-+
-+static void switched_to_stop(struct rq *rq, struct task_struct *p,
-+			     int running)
-+{
-+	BUG(); /* its impossible to change to this class */
-+}
-+
-+static void prio_changed_stop(struct rq *rq, struct task_struct *p,
-+			      int oldprio, int running)
-+{
-+	BUG(); /* how!?, what priority? */
-+}
-+
-+static unsigned int
-+get_rr_interval_stop(struct rq *rq, struct task_struct *task)
-+{
-+	return 0;
-+}
-+
-+/*
-+ * Simple, special scheduling class for the per-CPU stop tasks:
-+ */
-+static const struct sched_class stop_sched_class = {
-+	.next			= &rt_sched_class,
-+
-+	.enqueue_task		= enqueue_task_stop,
-+	.dequeue_task		= dequeue_task_stop,
-+	.yield_task		= yield_task_stop,
-+
-+	.check_preempt_curr	= check_preempt_curr_stop,
-+
-+	.pick_next_task		= pick_next_task_stop,
-+	.put_prev_task		= put_prev_task_stop,
-+
-+#ifdef CONFIG_SMP
-+	.select_task_rq		= select_task_rq_stop,
-+#endif
-+
-+	.set_curr_task          = set_curr_task_stop,
-+	.task_tick		= task_tick_stop,
-+
-+	.get_rr_interval	= get_rr_interval_stop,
-+
-+	.prio_changed		= prio_changed_stop,
-+	.switched_to		= switched_to_stop,
-+
-+	/* no .task_new for stop tasks */
-+};
-
-
+> 2010/10/13 Subrata Modak <subrata@linux.vnet.ibm.com>:
+> > On Wed, 2010-10-13 at 12:22 +0530, Subrata Modak wrote:
+> >> On Wed, 2010-10-13 at 13:30 +0800, hake huang wrote:
+> >> > 2010/10/13 Garrett Cooper <yanegomi@gmail.com>
+> >> > >
+> >> > > On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wrote:
+> >> > > > Hi
+> >> > > >
+> >> > > > I see this simple solution is no quite fit. But the kernel dump message for
+> >> > > > each test case is necessary for analysing. I can work on this further, with
+> >> > > > below help:
+> >> > > > 1. Where can I find the reason for the IIRC break?
+> >> > >
+> >> > > IIRC -> If I remember correctly.
+> >> > so I need ask Subrata about this problem, right? what is the existing
+> >> > functionality?
+> >>
+> >> I believe the functionality your original patch was proposing is already
+> >> in LTP . I guess they will solve your problem. See the following
+> >> commits:
+> >>
+> >> git show e3bc3758d3e4d17a0e04009ef873df53819b9ec6
+> >> git show bd9d440be1da8020c93ac92e497e3a16e66e9fa3
+> >>
+> >> Just use:
+> >>
+> >> ./runltp -K <DMESG_DIRECTORY_NAME>
+> >
+> > Basically, its a choice given to users who would like to record the
+> > kernel messages, and not forcing recording all kernel messages which
+> > your original patch is proposing :-)
+> >
+> > Regards--
+> > Subrata
+> >
+> >>
+> >> option while running ltp.
+> >>
+> >> Regards--
+> >> Subrata
+> >>
+> >> > >
+> >> > > > 2. Can it  be an option to avoid the size limitation on some embedded
+> >> > > > system?
+> >> > >
+> >> > > No. This is outside the realm of LTP, but we must remain conscious of
+> >> > > the fact that there are folks running LTP on cellphones, etc, where
+> >> > > space is very much a luxury.
+> >> > I see. but why can't they run in quit_mode?
+> >> > >
+> >> > > > 3.  A kind of seperating tag is needed for kernel message, right? e.g
+> >> > > > <kernel_dump_start>dump message<kernel_dump_end>
+> >> > >
+> >> > > I think that adding an optional capture feature might be worthwhile,
+> >> > > but you'll no doubt quickly find with some processes that the dmesg
+> >> > > buffer will fill up quickly.
+> >> > I have seen such events, and such cases need to be checked manually.
+> >> > >
+> >> > > > 4.  I see in ltp-pan.c the file descriptors, terminals are changed in child
+> >> > > > process. if the system(3) has problem, the worst cases is there are no
+> >> > > > kernel messge output in parent process, but the pan can still function well.
+> >> > >
+> >> > > Can you say that with 100% certainty? One of the potential problems
+> >> > > with system is the fact that it allocates a shell and depending on how
+> >> > > processes are executed and how file descriptors are cleaned up,
+> >> > >
+> >> > > Actually, pan makes zero attempts at closing open file descriptors and
+> >> > > the like, so the problem is still very much with pan.
+> >> > >
+> >> > So your concerns is about file descriptors which open in ltp process,
+> >> > I think this is an existing problem. I mean maybe pan need to attempt
+> >> > to close open file descriptors. system(3) only increases the change of
+> >> > occurrence caused by this problem, right?
+> >> > > > if not use system(3), can you give your suggestion on this, exec(3) seems to
+> >> > > > have the same problem as system(3)?
+> >> > >
+> >> > > Yes and no. In this case the problems that exist with open file
+> >> > > descriptor inheritance, etc are unfortunately no worse from that
+> >> > > perspective than your proposed code would do, but there are still
+> >> > > other problems that need to be resolved with your proposed change
+> >> > > anyhow that are much more pressing.
+> >> > >
+> >> > > -Garrett
+> >>
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Beautiful is writing same markup. Internet Explorer 9 supports
+> >> standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+> >> Spend less time writing and  rewriting code and more time creating great
+> >> experiences on the web. Be a part of the beta today.
+> >> http://p.sf.net/sfu/beautyoftheweb
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >
+> >
 
 
 ------------------------------------------------------------------------------
