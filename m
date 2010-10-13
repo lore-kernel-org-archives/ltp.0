@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <kamezawa.hiroyu@jp.fujitsu.com>) id 1PAuQg-0002Y6-8o
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 01:03:50 +0000
-Received: from fgwmail8.fujitsu.co.jp ([192.51.44.38])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PAuQe-0006gF-Jj
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 01:03:50 +0000
-Date: Wed, 27 Oct 2010 09:45:02 +0900
-From: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
-Message-Id: <20101027094502.208c1207.kamezawa.hiroyu@jp.fujitsu.com>
-In-Reply-To: <1288089237.5010.9.camel@subratamodak.linux.ibm.com>
-References: <1288089237.5010.9.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [linux-2.6.36-git7: Power7] LTP Memory CGROUP Controller
- functional test creates Backtrace,
- OOMKill & rcu_sched_state detected stall jiffies
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1P5sqo-0001ND-Ul
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:22:02 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P5sqn-0008Ov-Oh
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:22:02 +0000
+Date: Wed, 13 Oct 2010 00:21:53 -0400 (EDT)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1943942543.271131286943713942.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTincW00Z7y+9j9PeYFN9nPs2VqrFHGLHGaEa29zd@mail.gmail.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,59 +23,145 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: Linuxppc-dev <Linuxppc-dev@ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>, ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Tue, 26 Oct 2010 16:03:56 +0530
-Subrata Modak <subrata@linux.vnet.ibm.com> wrote:
-
-> If you run LTP Memory CGROUP Controller functional test on
-> linux-2.6.36-git7, the following Backtrace, OOMKill & rcu_sched_state
-> detected stall jiffies are created. The machine is not reachable
-> thereafter. Ways to reproduce this problem:
-> 
-> 1) Build and boot kernel 2.6.36-git7 on Power7 machine with attached
-> config file,
-> 2) Fetch, build and install LTP:
-> 	git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
-> 	cd ltp
-> 	./configure
-> 	make
-> 	make install
-> 3) Create a LTP runtest file /opt/ltp/runtest/memcg_function_test with
-> the following entry:
-> memcg_function          memcg_function_test.sh
-> <<EOF>>
-> 	cd /opt/ltp
-> 	./runltp -f memcg_function_test
-> 
-
-IIUC, memcg test includes intentional OOM-Kill test by setting the limit to 0.
-And it has another test to set the limit to PAGE_SIZE.
-
-In your environemnt, I think page size is 64kb...right ?
-
-About rcu_sched_state()....I have no idea at this stage. I reviewed memcontrol.c
-and oom_kill.c again and coundn't found anything in quick review.
-
-Could you try again after -rc1 shipped ?
-I think Andrew Morton sent some amount of updates for oom_kill and memcg, vmscan
-to Linus, today.
-
-Thanks,
--Kame
-
-
-------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Ci0tLS0tICJHYXJyZXR0IENvb3BlciIgPHlhbmVnb21pQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IFlv
+dSd2ZSBmaWxsZWQgaW4gc29tZSBvZiB0aGUgYmxhbmtzLCBidXQgdGhlcmUgYXJlIHNvbWUgdGhh
+dCBhcmUKPiBzdGlsbAo+IG1pc3NpbmcuLi4KPiAKPiBPbiBUdWUsIE9jdCAxMiwgMjAxMCBhdCA3
+OjAyIFBNLCAgPGNhaXFpYW5AcmVkaGF0LmNvbT4gd3JvdGU6Cj4gPiB2MjogaW5jb3Jwb3JhdGUg
+Y29tbWVudHMgZnJvbSBNaWtlIGFuZCBHYXJyZXR0Lgo+ID4KPiA+IEFkZCBhIG5ldyB0ZXN0IHRv
+IG1tYXAvbXVubWFwIC9kZXYvemVyby4gQSBjb21tb24gd2F5IG9mCj4gbWFsbG9jKCkvZnJlZSgp
+IGFub255bW91cyBtZW1vcnkgb24gU29sYXJpcy4KPiAKPiBUaGUgZmlyc3Qgc2VudGVuY2Ugc2hv
+dWxkIHN0YW5kYWxvbmUgYXMgdGhlIHN1bW1hcnksIGxpa2U6Cj4gCj4gQWRkIGEgbmV3IHRlc3Qg
+dG8gbW1hcC9tdW5tYXAgL2Rldi96ZXJvIFtmaWxsIGluIHJlYXNvbiB3aHkgaXQncwo+IGJlaW5n
+Cj4gdGVzdGVkIC0tIHRyeSB0byBzdW1tYXJpemUgaW4gbGVzcyB0aGFuIDgwIGNvbHVtbnNdLgo+
+IAo+IFJpZ2h0IG5vdyBpdCdzIGEgZGFuZ2xpbmcgbW9kaWZpZXIKSXQgaXMgaW1wb3J0YW50IHRv
+IHRlc3QgdGhpcyBzY2VuYXJpb3MgYmVjYXVzZSBpdCBpcyBhIGNvbW1vbiB3YXkgb2YgbWFsbG9j
+KCkvZnJlZSgpIGFub255bW91cyBtZW1vcnkgb24gU29sYXJpcy4KPiAKPiBUaGUgc2Vjb25kIHNl
+bnRlbmNlIGlzIGEgZnJhZ21lbnQ7IHlvdSBhcmUgZGVzY3JpYmluZyB0aGUgcHJvY2VzcywKPiBi
+dXQKPiBub3QgZGVzY3JpYmluZyB0aGUgaW1wb3J0YW50IGFjdG9ycyBvciBpbnZvbHZlZCBwYXJ0
+aWVzIGluIHRoZQo+IHByb2Nlc3MKPiAoaW4gcGFydGljdWxhciBvbiB0aGUgTGludXggc2lkZSku
+Cj4gCj4gVGhlcmUncyBhbHNvIGxpdHRsZSBjb250ZXh0IGJldHdlZW4gdGhlIHR3byBzZW50ZW5j
+ZXMsIHNvIGl0J3MKPiBjb25mdXNpbmcgdG8gdGhlIGVuZCByZWFkZXIuCj4gCj4gPiBBbnl3YXks
+Cj4gCj4gWW91IGNhbiByZW1vdmUgQW55d2F5LAo+IAo+ID4gbW1hcCgpCj4gCj4gbWVtb3J5IG1h
+cHBpbmcKPiAKPiA+IG9mCj4gCj4gdW5uZWNlc3NhcnkgcGFydGljbGUuCj4gCj4gPiAvZGV2L3pl
+cm8gcmVzdWx0cyBpbiBjYWxsaW5nIG1hcF96ZXJvKCkgd2hpY2ggb24gUkhFTDUgbWFwcyB0aGUK
+PiBaRVJPX1BBR0UgaW4gZXZlcnkgcHRlIHdpdGhpbiB0aGF0IHZpcnR1YWwgYWRkcmVzcyByYW5n
+ZS4KPiAKPiBQVEUgaXMgYW4gYWNyb255bSAocGxlYXNlIGNhcGl0YWxpemUpLgo+IAo+ID4gU2lu
+Y2UgYSBhcHBsaWNhdGlvbiBpcyBhbHNvIG11bHRpLXRocmVhZGVkIHRoZSBzdWJzZXF1ZW50IG11
+bm1hcCgpCj4gb2YgL2Rldi96ZXJvIHJlc3VsdHMgaXMgVExCIHNob290ZG93bnMgdG8gYWxsIG90
+aGVyIENQVXMuCj4gCj4gV2h5IGlzbid0IHRoZSB0ZXN0IG11bHRpdGhyZWFkZWQgdGhlbj8gSG93
+IGRvIHlvdSBtZWFzdXJlIHRoZSBwb29yCj4gcGVyZm9ybWFuY2UgcmVzdWx0aW5nIGZyb20gYWxs
+IG9mIHRoZSBhbm9ueW1vdXMgcGFnZSBUTEIgc2hvb3Rkb3ducz8KPiAKPiA+IFdoZW4gdGhpcyBo
+YXBwZW5zIHRob3VzYW5kcyBvciBtaWxsaW9ucyBvZiB0aW1lcyB0aGUgYXBwbGljYXRpb24KPiBw
+ZXJmb3JtYW5jZSBpcyB0ZXJyaWJsZS4KPiAKPiBXZWxsLCBUTEIgc2hvb3Rkb3duIGh1cnRzIG5v
+IG1hdHRlciBob3cgbWFueSB0aW1lcyBpdCBvY2N1cnMsIHNvIEkKPiB3b3VsZG4ndCBkb3VidCB0
+aGF0IHRob3VzYW5kcyBvciBtaWxsaW9ucyBvciB0aW1lcyB3b3VsZCBodXJ0IG1vcmUuCj4gCj4g
+PiBUaGUgbWFwcGluZyBaRVJPX1BBR0UgaW4gZXZlcnkgcHRlIHdpdGhpbiB0aGF0IHZpcnR1YWwg
+YWRkcmVzcyByYW5nZQo+IHdhcyBhbiBvcHRpbWl6YXRpb24gdG8gbWFrZSB0aGUgc3Vic2VxdWVu
+dCBwYWdlZmF1bHQKPiAKPiBPay4gSSB0aGluayBJIGhhdmUgYW4gaWRlYSBvZiB3aGF0IHlvdSdy
+ZSB0cnlpbmcgdG8gYWNoaWV2ZSBiYXNlZCBvbgo+IHRoaXMgc3RhdGVtZW50LCBidXQgSSdtIG5v
+dCBxdWl0ZSBzdXJlLiBBcmUgeW91IHNheWluZyB0aGF0IGFub255bW91cwo+IG1hcHBlZCBwYWdl
+cyB3aXRob3V0IGRhdGEgc2hvdWxkIGhhdmUgYW4gZXF1aXZhbGVudCBhZGRyZXNzIHRvIGEKPiBz
+aGFyZWQgemVyb2VkIG91dCBwYWdlPyBJZiBzbyBob3cgZG8geW91IGtub3cgd2hhdCB0aGUgbWFz
+dGVyIHplcm9lZAo+IG91dCBwYWdlIGlzPyBXaHkgYXJlbid0IGFueSBtZW1vcnkgYWRkcmVzcyBj
+b21wYXJpc29ucyBiZWluZwo+IHBlcmZvcm1lZAo+IGJlbG93PyBXaGVyZSdzIHRoZSBwZXJmb3Jt
+YW5jZSB0cmVuZCBkYXRhIHRvIHByb3ZlIHRoYXQgdGhlIGZlYXR1cmUKPiBkZWxpdmVycyBhcyBw
+ZXIgaXRzIGNsYWltZWQgcGVyZm9ybWFuY2UgYmVuZWZpdHM/Cj4gCj4gPiB0aW1lcyBmYXN0ZXIg
+b24gUkhFTDUgdGhhdC4KPiAKPiBIb3cgbXVjaCBmYXN0ZXI/Cj4gCj4gPiBoYXMgYmVlbiByZW1v
+dmVkL2NoYW5nZWQgdXBzdHJlYW0uCj4gCj4gUmVmZXJlbmNlPwo+IAo+ID4gU2lnbmVkLW9mZi1i
+eTogQ0FJIFFpYW4gPGNhaXFpYW5AcmVkaGF0LmNvbT4KPiAKPiAuLi4KPiAKPiA+ICsjaW5jbHVk
+ZSAidGVzdC5oIgo+ID4gKyNpbmNsdWRlICJ1c2N0ZXN0LmgiCj4gPiArI2luY2x1ZGUgPGVycm5v
+Lmg+Cj4gPiArI2luY2x1ZGUgPHN5cy9tbWFuLmg+Cj4gPiArI2luY2x1ZGUgPHVuaXN0ZC5oPgo+
+ID4gKyNpbmNsdWRlIDxzdGRsaWIuaD4KPiA+ICsjaW5jbHVkZSA8c3lzL3dhaXQuaD4KPiA+ICsj
+aW5jbHVkZSA8c3RkaW8uaD4KPiAKPiBJdCdzIG5vdCBsaW51eCBzdHlsZSAoQlNEIHN0eWxlKDkp
+IHRvIGJlIGV4YWN0KSwgYnV0IGNvdWxkIHlvdSBhdAo+IGxlYXN0IHNvcnQgdGhlIGhlYWRlcnMg
+Ynk6Cj4gCj4gc3lzLyBzeXN0ZW0gaGVhZGVycyAtPiBub24tc3lzLyBzeXN0ZW0gaGVhZGVycyAt
+PiBgdXNlciBkZWZpbmVkJwo+IGhlYWRlcnMKPiAKPiBpbiBhbHBoYWJldGljYWwgb3JkZXIuLi4/
+IGl0J3MgbXVjaCBlYXNpZXIgdG8gcmVhZC4KPiAKPiA+ICsjZGVmaW5lIFNJWkUgKDUqMTAyNCox
+MDI0KQo+IAo+IFdoeSA1TUI/Cj4gCj4gPiArY2hhciAqVENJRCA9ICJtbWFwMTAiOwo+ID4gK2lu
+dCBUU1RfVE9UQUwgPSAxOwo+ID4gK2V4dGVybiBpbnQgVHN0X2NvdW50Owo+ID4gKwo+ID4gKy8q
+IG1haW4gc2V0dXAgZnVuY3Rpb24gb2YgdGVzdCAqLwo+ID4gK3ZvaWQgc2V0dXAodm9pZCk7Cj4g
+PiArLyogY2xlYW51cCBmdW5jdGlvbiBmb3IgdGhlIHRlc3QgKi8KPiA+ICt2b2lkIGNsZWFudXAo
+dm9pZCk7Cj4gPiAraW50IG1tYXB6ZXJvKHZvaWQpOwo+ID4gKwo+ID4gK2ludCBtYWluKGludCBh
+cmdjLCBjaGFyICphcmd2W10pCj4gPiArewo+ID4gKyDCoCDCoCDCoCAvKiBsb29wIGNvdW50ZXIg
+Ki8KPiA+ICsgwqAgwqAgwqAgaW50IGxjOwo+ID4gKyDCoCDCoCDCoCAvKiBtZXNzYWdlIHJldHVy
+bmVkIGZyb20gcGFyc2Vfb3B0cyAqLwo+ID4gKyDCoCDCoCDCoCBjaGFyICptc2c7Cj4gPiArCj4g
+PiArIMKgIMKgIMKgIG1zZyA9IHBhcnNlX29wdHMoYXJnYywgYXJndiwgKG9wdGlvbl90ICopIE5V
+TEwsIE5VTEwpOwo+ID4gKyDCoCDCoCDCoCBpZiAobXNnICE9IE5VTEwpIHsKPiA+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgdHN0X2Jya20oVEJST0ssIE5VTEwsICJPUFRJT04gUEFSU0lORyBFUlJP
+UiAtICVzIiwKPiBtc2cpOwo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfZXhpdCgpOwo+
+ID4gKyDCoCDCoCDCoCB9Cj4gPiArCj4gPiArIMKgIMKgIMKgIC8qIFBlcmZvcm0gZ2xvYmFsIHNl
+dHVwIGZvciB0ZXN0ICovCj4gPiArIMKgIMKgIMKgIHNldHVwKCk7Cj4gPiArCj4gPiArIMKgIMKg
+IMKgIC8qIENoZWNrIGxvb3Bpbmcgc3RhdGUgaWYgLWkgb3B0aW9uIGdpdmVuICovCj4gPiArIMKg
+IMKgIMKgIGZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyBsYysrKSB7Cj4gPiArIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIC8qIFJlc2V0IFRzdF9jb3VudCBpbiBjYXNlIHdlIGFyZSBsb29waW5n
+LiAqLwo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBUc3RfY291bnQgPSAwOwo+ID4gKwo+ID4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBURVNUKG1tYXB6ZXJvKCkpOwo+ID4gKwo+ID4gKyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCBpZiAoVEVTVF9SRVRVUk4gIT0gMCkKPiA+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X3Jlc20oVEZBSUwsICJtbWFwemVybygpIGZhaWxlZCB3
+aXRoCj4gJWxkLiIsCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIFRFU1RfUkVUVVJOKTsKPiAKPiBURVNUX1JFVFVSTiBpcyBhbiBpbnRlZ2VyLCBub3Qg
+YSBsb25nIGludGVnZXIsIGNvcnJlY3QgKGhlbmNlIHRoZSAlbGQKPiBjb3VsZCBiZSBhICVkKT8K
+T0ssIEkgYW0gbm90IGZhbWlsaWFyIHdpdGggdGhpcyBpbnRlcm5hbCB2YXJpYWJsZS4KPiAKPiA+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZWxzZQo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCB0c3RfcmVzbShUUEFTUywgIm1tYXB6ZXJvKCkgY29tcGxldGVkCj4gc3VjY2Vz
+c2Z1bGx5LiIpOwo+ID4gKyDCoCDCoCDCoCB9Cj4gPiArCj4gPiArIMKgIMKgIMKgIGNsZWFudXAo
+KTsKPiA+ICsgwqAgwqAgwqAgcmV0dXJuIDA7Cj4gPiArfQo+ID4gKwo+ID4gK2ludCBtbWFwemVy
+byh2b2lkKQo+ID4gK3sKPiA+ICsgwqAgwqAgwqAgY2hhciAqeDsKPiA+ICsgwqAgwqAgwqAgaW50
+IG47Cj4gPiArCj4gPiArIMKgIMKgIMKgIHggPSBtbWFwKCIvZGV2L3plcm8iLCBTSVpFK1NJWkUt
+NDA5NiwgUFJPVF9SRUFEfFBST1RfV1JJVEUsCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIE1B
+UF9QUklWQVRFfE1BUF9BTk9OWU1PVVMsIC0xLCAwKTsKPiA+ICsgwqAgwqAgwqAgaWYgKHggPT0g
+TUFQX0ZBSUxFRCkgewo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfcmVzbShURkFJTCwg
+Im1tYXA6ICVzIiwgc3RyZXJyb3IoZXJybm8pKTsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+cmV0dXJuIDE7Cj4gPiArIMKgIMKgIMKgIH0KPiA+ICsgwqAgwqAgwqAgeFtTSVpFXSA9IDA7Cj4g
+PiArIMKgIMKgIMKgIG4gPSBmb3JrKCk7Cj4gPiArIMKgIMKgIMKgIGlmIChuID09IC0xKQo+ID4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgImZvcms6ICVz
+IiwKPiBzdHJlcnJvcihlcnJubykpOwo+IAo+IHRzdF9icmttKFRCUk9LfFRFUlJOTywgY2xlYW51
+cCwgImZvcmsgZmFpbGVkIik7Cj4gCj4gZXRjLCB3b3VsZCBiZSBiZXR0ZXIgdGhhbiB1c2luZyB0
+c3RfYnJrbSB3aXRoIHN0cmVycm9yLgpPSy4KPiAKPiA+ICsgwqAgwqAgwqAgZWxzZSBpZiAobiA9
+PSAwKSB7Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmIChtdW5tYXAoeCArIFNJWkUrNDA5
+NiwgU0laRS00MDk2KjIpID09IC0xKQo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCB0c3RfcmVzbShURkFJTCwgIm11bm1hcDogJXMiLAo+IHN0cmVycm9yKGVycm5vKSk7Cj4g
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIF9leGl0KDApOwo+ID4gKyDCoCDCoCDCoCB9Cj4gPiAr
+IMKgIMKgIMKgIG4gPSBmb3JrKCk7Cj4gPiArIMKgIMKgIMKgIGlmIChuID09IC0xKQo+ID4gKyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgImZvcms6ICVzIiwK
+PiBzdHJlcnJvcihlcnJubykpOwo+ID4gKyDCoCDCoCDCoCBlbHNlIGlmIChuID09IDApIHsKPiA+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKG11bm1hcCh4ICsgU0laRSs0MDk2LCBTSVpFLTQw
+OTYqMikgPT0gLTEpCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9y
+ZXNtKFRGQUlMLCAibXVubWFwOiAlcyIsCj4gc3RyZXJyb3IoZXJybm8pKTsKPiA+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgX2V4aXQoMCk7Cj4gCj4gICAgIFdoYXQgYXJlIHlvdSB0cnlpbmcgdG8g
+YWNoaWV2ZSBieSBtdW5tYXAnaW5nIHRoZSBzYW1lIHNlY3Rpb24gb2YKPiBtZW1vcnkgaW4gYSBm
+b3JrZWQgcHJvY2VzcyBbdHdpY2VdIGFuZCB0aGUgcGFyZW50IHByb2Nlc3MgaW4gdGhlIGVuZD8K
+PiBUaGV5J3JlIDMgYW5vbnltb3VzIENPVyBiYWNrZWQgcGFnZXMgYmVjYXVzZSB5b3Ugc3BlY2lm
+aWVkCj4gTUFQX1BSSVZBVEUKPiB8IE1BUF9BTk9OWU1PVVMgLi4uCkknbGwgZXhwbGFpbiBpbiB2
+NC4KPiAKPiA+ICsgwqAgwqAgwqAgfSBlbHNlIHsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+biA9IGZvcmsoKTsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKG4gPT0gLTEpCj4gPiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9icmttKFRCUk9LLCBjbGVhbnVw
+LCAiZm9yazogJXMiLAo+IHN0cmVycm9yKGVycm5vKSk7Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIGVsc2UgaWYgKG4gPT0gMCkgewo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCBpZiAobXVubWFwKHggKyBTSVpFKzQwOTYsIFNJWkUtNDA5NioyKSA9PQo+IC0xKQo+ID4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfcmVzbShU
+RkFJTCwgIm11bm1hcDogJXMiLAo+IHN0cmVycm9yKGVycm5vKSk7Cj4gPiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIF9leGl0KDApOwo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCB9Cj4gPiArIMKgIMKgIMKgIH0KPiA+ICsgwqAgwqAgwqAgaWYgKG11bm1hcCh4LCBTSVpFK1NJ
+WkUtNDA5NikgPT0gLTEpCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9yZXNtKFRGQUlM
+LCAibXVubWFwOiAlcyIsIHN0cmVycm9yKGVycm5vKSk7Cj4gPiArIMKgIMKgIMKgIHdoaWxlICh3
+YWl0cGlkKC0xLCBOVUxMLCBXTk9IQU5HKSA+IDApOwo+ID4gKyDCoCDCoCDCoCByZXR1cm4gMDsK
+PiAKPiAgICAgVGhpcyB0ZXN0IGlzbid0IHdyaXR0ZW4gYWNjb3JkaW5nIHRvIHRoZSBkZXNjcmlw
+dGlvbi4gUGxlYXNlCj4gYmV0dGVyIGFkZHJlc3Mgd2hhdCB5b3UncmUgdHJ5aW5nIHRvIGFjaGll
+dmUgc28gdGhhdCB3ZSBtaWdodCBiZSBhYmxlCj4gdG8gaGVscCB5b3UgcmVhY2ggYSBjb25jbHVz
+aW9uLgp2NCBmb2xsb3dlZC4KPiBUaGFua3MsCj4gLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpCZWF1dGlmdWwgaXMgd3JpdGluZyBzYW1lIG1hcmt1cC4gSW50ZXJuZXQgRXhwbG9yZXIg
+OSBzdXBwb3J0cwpzdGFuZGFyZHMgZm9yIEhUTUw1LCBDU1MzLCBTVkcgMS4xLCAgRUNNQVNjcmlw
+dDUsIGFuZCBET00gTDIgJiBMMy4KU3BlbmQgbGVzcyB0aW1lIHdyaXRpbmcgYW5kICByZXdyaXRp
+bmcgY29kZSBhbmQgbW9yZSB0aW1lIGNyZWF0aW5nIGdyZWF0CmV4cGVyaWVuY2VzIG9uIHRoZSB3
+ZWIuIEJlIGEgcGFydCBvZiB0aGUgYmV0YSB0b2RheS4KaHR0cDovL3Auc2YubmV0L3NmdS9iZWF1
+dHlvZnRoZXdlYgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
