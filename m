@@ -1,39 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P5vP6-0003OG-2m
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:05:36 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P5vP3-0004ZX-NT
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:05:36 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e4.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id o9D6nWhd027053
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 02:49:32 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o9D75SKV323158
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 03:05:28 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o9D75Rh1000540
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 03:05:28 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <AANLkTikgZ=32o_QmBk5FTfOQfVGUYpjxtCbvAqxQFbYk@mail.gmail.com>
-References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-	<AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
-	<AANLkTin4N8BpJ5xXs8TAV+1xQNjTEO+KzO6h=ZJVjv08@mail.gmail.com>
-	<1286952767.4893.3.camel@subratamodak.linux.ibm.com>
-	<1286952965.4893.6.camel@subratamodak.linux.ibm.com>
-	<AANLkTikgZ=32o_QmBk5FTfOQfVGUYpjxtCbvAqxQFbYk@mail.gmail.com>
-Date: Wed, 13 Oct 2010 12:34:56 +0530
-Message-Id: <1286953506.4893.11.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1P5qk4-0007U7-1X
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:06:56 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P5qk3-000839-6i
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:06:56 +0000
+Date: Tue, 12 Oct 2010 22:06:47 -0400 (EDT)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <792541009.267551286935607117.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTikTpZrSUarHhWS3_QJO+Psw4LkHWd7XrA8b3mPg@mail.gmail.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,129 +26,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hake huang <hakehuang@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-On Wed, 2010-10-13 at 15:00 +0800, hake huang wrote:
-> Hi Subrata,
+
+----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+
+> On Tue, Oct 12, 2010 at 12:15 PM, Mike Frysinger <vapier@gentoo.org>
+> wrote:
+> > On Tuesday, October 12, 2010 10:07:16 CAI Qian wrote:
+> >> +/* main setup function of test */
+> >> +void setup();
+> >> +/* cleanup function for the test */
+> >> +void cleanup();
+> >> +int mmapzero();
 > 
-> one question:
-> -K will only record all kernel message, but can not match each testcase, right?
-
-It will record kernel messages for each individual test case by
-recording it inside ltp*/output/<DMESG_DIR_NAME>/<testname>.dmeg
-
-Once test run is over it will delete all .dmeg* files of zero size and
-will retain only those having real entries. So, you will get exactly
-which tests generated kernel messages and what the messages exactly are
-for each individual test.
-
-Regards--
-Subrata
-
+> ...
 > 
-> Regards,
-> 
-> Hake
-> 
-> 2010/10/13 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> > On Wed, 2010-10-13 at 12:22 +0530, Subrata Modak wrote:
-> >> On Wed, 2010-10-13 at 13:30 +0800, hake huang wrote:
-> >> > 2010/10/13 Garrett Cooper <yanegomi@gmail.com>
-> >> > >
-> >> > > On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wrote:
-> >> > > > Hi
-> >> > > >
-> >> > > > I see this simple solution is no quite fit. But the kernel dump message for
-> >> > > > each test case is necessary for analysing. I can work on this further, with
-> >> > > > below help:
-> >> > > > 1. Where can I find the reason for the IIRC break?
-> >> > >
-> >> > > IIRC -> If I remember correctly.
-> >> > so I need ask Subrata about this problem, right? what is the existing
-> >> > functionality?
-> >>
-> >> I believe the functionality your original patch was proposing is already
-> >> in LTP . I guess they will solve your problem. See the following
-> >> commits:
-> >>
-> >> git show e3bc3758d3e4d17a0e04009ef873df53819b9ec6
-> >> git show bd9d440be1da8020c93ac92e497e3a16e66e9fa3
-> >>
-> >> Just use:
-> >>
-> >> ./runltp -K <DMESG_DIRECTORY_NAME>
-> >
-> > Basically, its a choice given to users who would like to record the
-> > kernel messages, and not forcing recording all kernel messages which
-> > your original patch is proposing :-)
-> >
-> > Regards--
-> > Subrata
-> >
-> >>
-> >> option while running ltp.
-> >>
-> >> Regards--
-> >> Subrata
-> >>
-> >> > >
-> >> > > > 2. Can it  be an option to avoid the size limitation on some embedded
-> >> > > > system?
-> >> > >
-> >> > > No. This is outside the realm of LTP, but we must remain conscious of
-> >> > > the fact that there are folks running LTP on cellphones, etc, where
-> >> > > space is very much a luxury.
-> >> > I see. but why can't they run in quit_mode?
-> >> > >
-> >> > > > 3.  A kind of seperating tag is needed for kernel message, right? e.g
-> >> > > > <kernel_dump_start>dump message<kernel_dump_end>
-> >> > >
-> >> > > I think that adding an optional capture feature might be worthwhile,
-> >> > > but you'll no doubt quickly find with some processes that the dmesg
-> >> > > buffer will fill up quickly.
-> >> > I have seen such events, and such cases need to be checked manually.
-> >> > >
-> >> > > > 4.  I see in ltp-pan.c the file descriptors, terminals are changed in child
-> >> > > > process. if the system(3) has problem, the worst cases is there are no
-> >> > > > kernel messge output in parent process, but the pan can still function well.
-> >> > >
-> >> > > Can you say that with 100% certainty? One of the potential problems
-> >> > > with system is the fact that it allocates a shell and depending on how
-> >> > > processes are executed and how file descriptors are cleaned up,
-> >> > >
-> >> > > Actually, pan makes zero attempts at closing open file descriptors and
-> >> > > the like, so the problem is still very much with pan.
-> >> > >
-> >> > So your concerns is about file descriptors which open in ltp process,
-> >> > I think this is an existing problem. I mean maybe pan need to attempt
-> >> > to close open file descriptors. system(3) only increases the change of
-> >> > occurrence caused by this problem, right?
-> >> > > > if not use system(3), can you give your suggestion on this, exec(3) seems to
-> >> > > > have the same problem as system(3)?
-> >> > >
-> >> > > Yes and no. In this case the problems that exist with open file
-> >> > > descriptor inheritance, etc are unfortunately no worse from that
-> >> > > perspective than your proposed code would do, but there are still
-> >> > > other problems that need to be resolved with your proposed change
-> >> > > anyhow that are much more pressing.
-> >> > >
-> >> > > -Garrett
-> >>
-> >>
-> >> ------------------------------------------------------------------------------
-> >> Beautiful is writing same markup. Internet Explorer 9 supports
-> >> standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-> >> Spend less time writing and  rewriting code and more time creating great
-> >> experiences on the web. Be a part of the beta today.
-> >> http://p.sf.net/sfu/beautyoftheweb
-> >> _______________________________________________
-> >> Ltp-list mailing list
-> >> Ltp-list@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >
-> >
-
+>     +1 to what Mike said, but in all actually what is the purpose of
+> this test? There isn't a description either in the commit message or
+> the code itself that mentions what this code should functionally do.
+> We need both in order for the code to be committed (otherwise folks
+> will play the "WTF does this code do?" game when semantics change a
+> few years later in the GNU/Linux world).
+> Thanks,
+Fixed in v2.
+> -Garrett
 
 ------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
