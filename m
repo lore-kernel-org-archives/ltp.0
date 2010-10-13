@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hannuxx@gmail.com>) id 1P1Wt5-0006OV-T1
-	for ltp-list@lists.sourceforge.net; Fri, 01 Oct 2010 04:06:23 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P1Wt4-0000Ur-FK
-	for ltp-list@lists.sourceforge.net; Fri, 01 Oct 2010 04:06:23 +0000
-Received: by bwz2 with SMTP id 2so2745121bwz.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P5tPp-0002Uo-8v
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:58:13 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P5tPo-0007qH-Im
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:58:13 +0000
+Received: by iwn2 with SMTP id 2so2653594iwn.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 30 Sep 2010 21:06:15 -0700 (PDT)
-Date: Fri, 1 Oct 2010 07:06:09 +0300
-From: Hannu Heikkinen <hannuxx@iki.fi>
-Message-ID: <20101001040609.GA2090@hannu-ubuntu>
-References: <4CA09D4D.6050708@st.com> <4CA34070.9070505@st.com>
-	<20100930133120.GA4070@hannu-debian.research.nokia.com>
-	<4CA469A0.5090700@st.com>
+	Tue, 12 Oct 2010 21:58:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CA469A0.5090700@st.com>
-Subject: Re: [LTP] ltp_clone alignment issues.
+In-Reply-To: <AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
+References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
+	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
+	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
+Date: Tue, 12 Oct 2010 21:58:07 -0700
+Message-ID: <AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,161 +29,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: hake huang <hakehuang@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 30/09/10 12:42 +0200, Carmelo AMOROSO wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> On 9/30/2010 3:31 PM, Hannu Heikkinen wrote:
-> > On 29/09/10 15:34 +0200, ext Carmelo AMOROSO wrote:
-> >  > -----BEGIN PGP SIGNED MESSAGE-----
-> >  > Hash: SHA1
-> >  >
-> >  > On 9/27/2010 3:34 PM, Carmelo AMOROSO wrote:
-> >  > > Folks,
-> >  > > I want to reopen an old discussion on ltp_clone and stack alignment
-> >  > > issue (see
-> >  > > 
-> > http://sourceforge.net/mailarchive/message.php?msg_name=4B421480.1040400%40petalogix.com).
-> >  > > Indeed recently a commit has partially fixed a problem on ARM
-> >  > > (0056e395170eb8fc3ffbb22d7bd364fe47c2013e), but I think this should be
-> >  > > extended to all archs that have stack that grows downwards.
-> >  > >
-> >  > > Indeed, as Jiri replied in that old thread, the value passed to clone as
-> >  > > child stack should be never accessed, because it is the topmost address
-> >  > > of the memory allocated for the child process (it's the previous stack
-> >  > > pointer).
-> >  > >
-> >  > > So, in archs that do not like unaligned stack, using (stack - size - 1 )
-> >  > > will cause the process to be killed by a SIGBUS, on other archs, we are
-> >  > > just wasting one byte of the malloc-ed stack.
-> >  > >
-> >  > > On my SH4 arch, the stack must be 4byte aligned (as in ARM).
-> >  > >
-> >  > > Please, find attached a patch against master branch
-> >  > >
-> >  > > Best regards,
-> >  > > Carmelo
-> >  >
-> >  > Hi,
-> >  > any feedback on this ?
-> >  >
-> >  > Cheers,
-> >  > Carmelo
-> > 
-> >  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-> > Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
-> > ---
-> > lib/cloner.c | 9 +++------
-> > 1 files changed, 3 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/lib/cloner.c b/lib/cloner.c
-> > index 6ad4a00..e53c9cf 100644
-> > --- a/lib/cloner.c
-> > +++ b/lib/cloner.c
-> > @@ -59,16 +59,13 @@ ltp_clone(unsigned long clone_flags, int (*fn)(void
-> > *arg), void *arg,
-> > ret = clone(fn, stack, clone_flags, arg);
-> > #elif defined(__ia64__)
-> > ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
-> > NULL);
-> > -#elif defined(__arm__)
-> > +#else
-> > /*
-> > - * Stack size should be a multiple of 32 bit words
-> > - * & stack limit must be aligned to a 32 bit boundary
-> > + * For archs where stack grows downwards, stack points to the topmost
-> > address
-> > + * of the memory space set up for the child stack.
-> > */
-> > ret = clone(fn, (stack ? stack + stack_size : NULL),
-> > clone_flags, arg);
-> > -#else
-> > - ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
-> > - clone_flags, arg);
-> > #endif
-> > 
-> > return ret;
-> > --
-> > <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-> > 
-> > Hi,
-> > 
-> > Acked-by Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-> > 
-> > Br,
-> > Hannu
-> > 
-> > --
-> > Hannu Heikkinen
-> > http://www.nixu.com
-> > 
-> 
-> Thanks, Hannu
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.10 (MingW32)
-> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-> 
-> iEYEARECAAYFAkykaaAACgkQoRq/3BrK1s9XQQCgqFuIf0UtZVE2cIY07ZY+6PrN
-> pmwAnRP5T4nCrFDwre+9VEwJ7WB6r0em
-> =w2Z8
-> -----END PGP SIGNATURE-----
+On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wrote:
+> Hi
+>
+> I see this simple solution is no quite fit. But the kernel dump message f=
+or
+> each test case is necessary for analysing. I can work on this further, wi=
+th
+> below help:
+> 1. Where can I find the reason for the IIRC break?
 
-Hi,
+IIRC -> If I remember correctly.
 
-I was thinking your patch once again, and I think it would be wiser if 
-we would have something like:
+> 2. Can it=A0 be an option to avoid the size limitation on some embedded
+> system?
 
---- ../tmp2/ltp-full-20100630/lib/cloner.c      2010-07-03 21:29:04.000000000
-+0300
-+++ lib/cloner.c        2010-09-03 14:48:20.000000000 +0300
-@@ -43,6 +43,16 @@
-                pid_t *parent_tid, void *tls, pid_t *child_tid);
- #endif
- 
-+/*
-+ * Most arch really want to have stack aligned to some sane boundary.
-+ */
-+#ifdef __arm__
-+#define ALIGN_STACK(stack) \
-+       ((void *)(((unsigned long)stack) & ~((sizeof(void *)) - 1)))
-+#else
-+#define ALIGN_STACK(stack)     (stack)
-+#endif
-+
- /***********************************************************************
-  * ltp_clone: wrapper for clone to hide the architecture dependencies.
-  *   1. hppa takes bottom of stack and no stacksize (stack grows up)
-@@ -60,7 +70,7 @@
- #elif defined(__ia64__)
-        ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
-NULL);
- #else
--       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
-+       ret = clone(fn, (stack ? ALIGN_STACK(stack + stack_size - 1) : NULL),
-                        clone_flags, arg);
- #endif
+No. This is outside the realm of LTP, but we must remain conscious of
+the fact that there are folks running LTP on cellphones, etc, where
+space is very much a luxury.
 
+> 3.=A0 A kind of seperating tag is needed for kernel message, right? e.g
+> <kernel_dump_start>dump message<kernel_dump_end>
 
-The above patch iis in use in our ARM based LTP test suite. Note that -1 is
-needed for not clobbering eg possibly malloced area after child stack.
-Could u please change that prev patch a bit, for ensuring that child stack
-is in proper size etc. Above patch is not sufficient, because ALIGN_STACK
-in that is only used for arm archs.
+I think that adding an optional capture feature might be worthwhile,
+but you'll no doubt quickly find with some processes that the dmesg
+buffer will fill up quickly.
 
-br,
-Hannu
+> 4.=A0 I see in ltp-pan.c the file descriptors, terminals are changed in c=
+hild
+> process. if the system(3) has problem, the worst cases is there are no
+> kernel messge output in parent process, but the pan can still function we=
+ll.
 
-------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+Can you say that with 100% certainty? One of the potential problems
+with system is the fact that it allocates a shell and depending on how
+processes are executed and how file descriptors are cleaned up,
+
+Actually, pan makes zero attempts at closing open file descriptors and
+the like, so the problem is still very much with pan.
+
+> if not use system(3), can you give your suggestion on this, exec(3) seems=
+ to
+> have the same problem as system(3)?
+
+Yes and no. In this case the problems that exist with open file
+descriptor inheritance, etc are unfortunately no worse from that
+perspective than your proposed code would do, but there are still
+other problems that need to be resolved with your proposed change
+anyhow that are much more pressing.
+
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
