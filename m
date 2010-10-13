@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1P8tfZ-0008E4-Es
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 11:50:53 +0000
-Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P8tfX-0008Qc-KB
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 11:50:53 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cb66a9$bb3c52b0$31b4f810$@co.jp>	<AANLkTimwwvYMxECHENzqo6tb4iVU+VCbT12aWhUagppF@mail.gmail.com>
-	<AANLkTikxqHqzGGcASkgMLq2BAWxLGHxjgvSbtsguXDzb@mail.gmail.com>
-In-Reply-To: <AANLkTikxqHqzGGcASkgMLq2BAWxLGHxjgvSbtsguXDzb@mail.gmail.com>
-Date: Thu, 21 Oct 2010 20:50:42 +0900
-Message-ID: <000001cb7116$30633ba0$9129b2e0$@co.jp>
+	(envelope-from <qcai@redhat.com>) id 1P5tYJ-0004xe-FX
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 05:06:59 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P5tYI-0006we-BP
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 05:06:59 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9D56qij001277
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 01:06:52 -0400
+Date: Wed, 13 Oct 2010 01:06:52 -0400 (EDT)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1212411782.273291286946412604.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <732341917.269331286940006222.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] POSIX "aio_return/2-1" failed.
+Subject: [LTP] [PATCH v4] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,191 +27,241 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Thursday, October 21, 2010 6:42 PM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] POSIX "aio_return/2-1" failed.
-> =
+mmap/munmap /dev/zero: a common way of malloc()/free() anonymous memory
+on Solaris.
 
-> On Mon, Oct 18, 2010 at 5:00 AM, Garrett Cooper <yanegomi@gmail.com>
-> wrote:
-> > On Thu, Oct 7, 2010 at 10:29 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> >> Hi,
-> >>
-> >>
-> >> "conformance/interfaces/aio_return/2-1" failed with following
-> message:
-> >> ------------
-> >> conformance/interfaces/aio_return/2-1: execution: FAILED: Output:
-> >> aio_return/2-1.c Second call to aio_return() should return -1 : 111
-> >> ------------
-> >>
-> >> Same problem occurs in "aio_return/3-2.c" and "aio_return/4-1".
-> >>
-> >> Environment is as follows:
-> >> =A0- RHEL5.5 --- (x86, x86_64, ia64)
-> >> =A0- RHEL4.8 --- (x86, x86_64, ia64)
-> >>
-> >>
-> >> This testset seems to be the error root test for "aio_return()".
-> >>
-> >> First "aio_return()" returned with 111. This return value is the
-> >> length of buffer of "aio_write()".
-> >> But second "aio_return()" returned with 111, too. It's unexpected
-> >> result for this test set.
-> >> Therefore, this test failed.
-> >>
-> >> Man page says that
-> >> "This function should be called only once for any given request,
-> >> after
-> >> aio_error(2) returns something other than EINPROGRESS.":
-> >> ------------
-> >> # LANG=3DC man 3 aio_return
-> >>
-> >> AIO_RETURN(3) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Linux Programmer's Ma=
-nual
-> >> AIO_RETURN(3)
-> >>
-> >> NAME
-> >> =A0 =A0 =A0 aio_return - get return status of asynchronous I/O operati=
-on
-> >>
-> >> SYNOPSIS
-> >> =A0 =A0 =A0 #include <aio.h>
-> >>
-> >> =A0 =A0 =A0 ssize_t aio_return(struct aiocb *aiocbp);
-> >>
-> >> DESCRIPTION
-> >> =A0 =A0 =A0 The aio_return function returns the final return status for
-> the
-> >> asynchronous I/O
-> >> =A0 =A0 =A0 request with control block pointed to by aiocbp.
-> >>
-> >> =A0 =A0 =A0 This =A0function =A0should =A0be =A0called =A0only =A0once=
- =A0for =A0an
-> y =A0given
-> >> request, =A0after
-> >> =A0 =A0 =A0 aio_error(2) returns something other than EINPROGRESS.
-> >>
-> >> RETURN VALUE
-> >> =A0 =A0 =A0 If the asynchronous I/O operation has completed, this
-> function
-> >> returns the value
-> >> =A0 =A0 =A0 that would have been returned in case of a
-> synchronous =A0read,
-> >> write, or =A0fsync
-> >> =A0 =A0 =A0 request. =A0Otherwise the return value is undefined. =A0On
-> error,
-> >> the error value is
-> >> =A0 =A0 =A0 returned.
-> >>
-> >> ERRORS
-> >> =A0 =A0 =A0 EINVAL aiocbp does not point at a control block for an
-> >> asynchronous I/O =A0request
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0of which the return status has not been ret=
-rieved
-> yet.
-> >>
-> >> CONFORMING TO
-> >> =A0 =A0 =A0 POSIX 1003.1-2003
-> >>
-> >> SEE ALSO
-> >> =A0 =A0 =A0 aio_cancel(3), =A0 =A0aio_error(3), =A0 aio_fsync(3), =A0 =
-aio_r
-> ead(3),
-> >> aio_suspend(3),
-> >> =A0 =A0 =A0 aio_write(3)
-> >>
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 2003-11-14
-> >> AIO_RETURN(3)
-> >> #
-> >> ------------
-> >>
-> >> And, it says that
-> >> "If the asynchronous I/O operation has completed, this function
-> >> returns the value that would have been returned in case of a
-> >> synchronous read, write, or fsync request. =A0Otherwise the return
-> >> value is undefined. =A0On error, the error value is returned.".
-> >>
-> >>
-> >> It can be supposed that the return value of second "aio_return()"
-> is
-> >> undefined.
-> >> Therefore, it is not mistake that return value of the second
-> "aio_return()"
-> >> is one at success, I think.
-> >> And, I think that "UNTESTED" or "UNRESOLVED" may be is more
-> >> appropriate for this test.
-> >
-> > =A0 =A0No. POSIX clearly states:
-> >
-> > "If the asynchronous I/O operation has completed, then the return
-> > status, as described for read(), write(), and fsync(), shall be
-> > returned. If the asynchronous I/O operation has not yet completed,
-> the
-> > results of aio_return() are undefined.
-> >
-> > If the aio_return() function fails, it shall return -1 and set errno
-> > to indicate the error."
-> >
-> > ERRORS
-> >
-> > "The aio_return() function may fail if:
-> >
-> > [EINVAL]
-> > =A0 =A0The aiocbp argument does not refer to an asynchronous operation
-> > whose return status has not yet been retrieved."
-> >
-> > =A0 =A0What the test implementers were looking to do was test out that
-> -1
-> > / EINVAL were returned, and maybe that fact that they were testing
-> was
-> > in fact implementation defined, as opposed to what's stated in the
-> > standard, as the spec doesn't state that the behavior for aio_return
-> > would be s.t. the state of the AIO stream is reset when aio_return
-> is
-> > called.
-> > =A0 =A0So yes, I agree this should be fixed, but let me check with the
-> > POSIX folks what the best course of action is.
-> =
+The basic purpose of this is a to test if it is possible to map and
+unmap /dev/zero, and to read and write the mapping. Being inspired by two
+bugs in the past, the design of the test was added some variations based
+on the reproducers for them.
 
->     I've read into this a bit more, and I think that the aio_return
-> testcases were written incorrectly. Please try out this testcase...
-> if it works for you, then I'll apply necessary logic to other testcases
-> as well.
->     It worked for me at least on FreeBSD.
-> Thanks,
-> -Garrett
+One is to trigger panic with transparent hugepage feature that
+split_huge_page is very strict in checking the rmap walk was perfect.
+Keep it strict because if page_mapcount isn't stable and just right, the
+__split_huge_page_refcount that follows the rmap walk could lead to
+erratic page_count()s for the subpages. The bug in fork lead to the rmap
+walk finding the parent huge-pmd twice instead of just one, because the
+anon_vma_chain objects of the child vma still point to the vma->vm_mm of
+the parent. That trips on the split_huge_page mapcount vs page_mapcount
+check leading to a BUG_ON.
 
+The other bug is mmap() of /dev/zero results in calling map_zero() which
+on RHEL5 maps the ZERO_PAGE in every PTE within that virtual address
+range. Since the application which maps a region from 5M to 16M in size
+is also multi-threaded the subsequent munmap() of /dev/zero results is
+TLB shootdowns to all other CPUs. When this happens thousands or
+millions of times the application performance is terrible. The mapping
+ZERO_PAGE in every pte within that virtual address range was an
+optimization to make the subsequent pagefault times faster on RHEL5 that
+has been removed/changed upstream.
 
-I confirmed that your revision worked in my environment.
-I also look forward to other testcases (2-1, 3-2, 4-1) being revised.
-
-
-Thank you--
-
--Tomonori Mitani
-
-
-
-
----------------------------------------------------------------------------=
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
+v4: comment fix; code cleanup.
 
-http://p.sf.net/sfu/nokia-dev2dev
+v3: really mmap /dev/zero; replace _exit() with exit(); fix patch
+    format.
+
+v2: incorporate comments from Mike and Garrett.
+
+ testcases/kernel/syscalls/mmap/mmap10.c |  177 +++++++++++++++++++++++++++++++
+ 1 files changed, 177 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+new file mode 100644
+index 0000000..309a961
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -0,0 +1,177 @@
++/*
++ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
++ * memory on Solaris.
++ *
++ * The basic purpose of this is a to test if it is possible to map and
++ * unmap /dev/zero, and to read and write the mapping. Being inspired
++ * by two bugs in the past, the design of the test was added some
++ * variations based on the reproducers for them.
++ *
++ * One is to trigger panic with transparent hugepage feature that
++ * split_huge_page is very strict in checking the rmap walk was
++ * perfect. Keep it strict because if page_mapcount isn't stable and
++ * just right, the __split_huge_page_refcount that follows the rmap
++ * walk could lead to erratic page_count()s for the subpages. The bug
++ * in fork lead to the rmap walk finding the parent huge-pmd twice
++ * instead of just one, because the anon_vma_chain objects of the
++ * child vma still point to the vma->vm_mm of the parent. That trips
++ * on the split_huge_page mapcount vs page_mapcount check leading to a
++ * BUG_ON.
++ *
++ * The other bug is mmap() of /dev/zero results in calling map_zero()
++ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
++ * address range. Since the application which maps a region from 5M to
++ * 16M in size is also multi-threaded the subsequent munmap() of
++ * /dev/zero results is TLB shootdowns to all other CPUs. When this
++ * happens thousands or millions of times the application performance
++ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
++ * address range was an optimization to make the subsequent pagefault
++ * times faster on RHEL5 that has been removed/changed upstream.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <fcntl.h>
++#include "test.h"
++#include "usctest.h"
++
++#define SIZE (5*1024*1024)
++
++char *TCID = "mmap10";
++int TST_TOTAL = 1;
++extern int Tst_count;
++
++/* main setup function of test */
++void setup(void);
++/* cleanup function for the test */
++void cleanup(void);
++int mmapzero(void);
++
++int main(int argc, char *argv[])
++{
++	/* loop counter */
++	int lc;
++	/* message returned from parse_opts */
++	char *msg;
++
++	msg = parse_opts(argc, argv, (option_t *) NULL, NULL);
++	if (msg != NULL) {
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++		tst_exit();
++	}
++
++	/* Perform global setup for test */
++	setup();
++
++	/* Check looping state if -i option given */
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* Reset Tst_count in case we are looping. */
++		Tst_count = 0;
++
++		TEST(mmapzero());
++
++		if (TEST_RETURN != 0)
++			tst_resm(TFAIL, "mmapzero() failed with %ld.",
++				TEST_RETURN);
++		else
++			tst_resm(TPASS, "mmapzero() completed successfully.");
++	}
++
++	cleanup();
++	return 0;
++}
++
++int mmapzero(void)
++{
++	char *x;
++	int n, fd;
++
++	if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++
++	x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++		MAP_PRIVATE, fd, 0);
++	if (x == MAP_FAILED) {
++		tst_resm(TFAIL|TERRNO, "mmap");
++		return 1;
++	}
++	x[SIZE] = 0;
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL|TERRNO, "munmap");
++		exit(0);
++	}
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL|TERRNO, "munmap");
++		exit(0);
++	} else {
++		n = fork();
++		if (n == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		else if (n == 0) {
++			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++				tst_resm(TFAIL|TERRNO, "munmap");
++			exit(0);
++		}
++	}
++	if (munmap(x, SIZE+SIZE-4096) == -1)
++		tst_resm(TFAIL|TERRNO, "munmap");
++	while (waitpid(-1, NULL, WNOHANG) > 0);
++	return 0;
++}
++
++void cleanup(void)
++{
++	/*
++	 * remove the tmp directory and exit
++	 */
++	TEST_CLEANUP;
++	tst_rmdir();
++	tst_exit();
++}
++
++
++void setup(void)
++{
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++	tst_tmpdir();
++}
+
+------------------------------------------------------------------------------
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
