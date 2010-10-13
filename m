@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jburke@redhat.com>) id 1P3aeW-0005K3-55
-	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 20:31:52 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24]
-	helo=mx01.colomx.prod.int.phx2.redhat.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P3aeU-0007DG-Dn
-	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 20:31:52 +0000
-Date: Wed, 6 Oct 2010 16:31:44 -0400 (EDT)
-From: Jeffrey Burke <jburke@redhat.com>
-Message-ID: <1001719682.1339131286397104227.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1229185166.1336871286396286678.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1P5qfr-00059b-2t
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:02:35 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P5qfq-0007ub-1b
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:02:35 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9D22SvR015027
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 Oct 2010 22:02:28 -0400
+Date: Tue, 12 Oct 2010 22:02:28 -0400 (EDT)
+From: caiqian@redhat.com
+Message-ID: <92362031.267291286935348328.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <50821116.267171286935261958.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] Current state of the selinux tests in ltp-full-20100831
+Subject: [LTP] [PATCH v2] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,44 +30,173 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
-Cc: sds@tycho.nsa.gov
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Folks,
- It has been a while since I update LTP for selinux testing. I am currently trying to use ltp-full-20100831 on RHEL5.6. I don't believe the procedure has changed at least according to the README. But here are the steps I followed.
+v2: incorporate comments from Mike and Garrett.
 
-1.) tar -xvf ltp-full-20100831.tar
-2.) pushd ltp-full-20100831; ./configure; popd
-3.) make -C ltp-full-20100831 all
-4.) make -C ltp-full-20100831 install
-5.) pushd; make ltp-full-20100831/testcases/kernel/security/selinux-testsuite/tests; popd
-6.) pushd ltp-full-20100831/testcases/kernel/security/selinux-testsuite/tests; make install; popd
-7.) cd ./ltp-full-20100831
-8.) ./testscripts/test_selinux.sh
+Add a new test to mmap/munmap /dev/zero. A common way of malloc()/free() anonymous memory on Solaris. Anyway, mmap() of /dev/zero results in calling map_zero() which on RHEL5 maps the ZERO_PAGE in every pte within that virtual address range. Since a application is also multi-threaded the subsequent munmap() of /dev/zero results is TLB shootdowns to all other CPUs.  When this happens thousands or millions of times the application performance is terrible. The mapping ZERO_PAGE in every pte within that virtual address range was an optimization to make the subsequent pagefault times faster on RHEL5 that has been removed/changed upstream.
 
-Here is the error:
-# ./testscripts/test_selinux.sh 
-Running with security context=root:system_r:unconfined_t:SystemLow-SystemHigh
-allow_domain_fd_use --> off
-allow_domain_fd_use exists setting
-Installing test_policy module...
-semodule:  Could not read file '/mnt/tests/kernel/distribution/ltp/20100831/ltp-full-20100831/testcases/kernel/security/selinux-testsuite/refpolicy/test_policy.pp': No such file or directory
-Failed to install test_policy module, aborting test run.
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 
-Is anyone using this version on RHEL5 successfully?
-Am I missing an important step that will allow us to use the test_selinux.sh in this LTP version?
+ testcases/kernel/syscalls/mmap/mmap10.c |  153 +++++++++++++++++++++++++++++++
+ 1 files changed, 153 insertions(+), 0 deletions(-)
 
-I did see the thread:
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10290.html
-Using the GIT version and following these steps:
- - git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
- - make -C policy load
- - make -C tests test
- - make -C policy unload
-Does work fine.
-
-Thanks in advance.
-Jeff
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -0,0 +1,153 @@
++/*
++ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
++ * memory on Solaris. Anyway, mmap() of /dev/zero results in calling
++ * map_zero() which on RHEL5 maps the ZERO_PAGE in every pte within
++ * that virtual address range. Since a application is also
++ * multi-threaded the subsequent munmap() of /dev/zero results is TLB
++ * shootdowns to all other CPUs. When this happens thousands or
++ * millions of times the application performance is terrible. The
++ * mapping ZERO_PAGE in every pte within that virtual address range
++ * was an optimization to make the subsequent pagefault times faster
++ * on RHEL5 that has been removed/changed upstream.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#include "test.h"
++#include "usctest.h"
++#include <errno.h>
++#include <sys/mman.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <sys/wait.h>
++#include <stdio.h>
++
++#define SIZE (5*1024*1024)
++
++char *TCID = "mmap10";
++int TST_TOTAL = 1;
++extern int Tst_count;
++
++/* main setup function of test */
++void setup(void);
++/* cleanup function for the test */
++void cleanup(void);
++int mmapzero(void);
++
++int main(int argc, char *argv[])
++{
++	/* loop counter */
++	int lc;
++	/* message returned from parse_opts */
++	char *msg;
++
++	msg = parse_opts(argc, argv, (option_t *) NULL, NULL);
++	if (msg != NULL) {
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++		tst_exit();
++	}
++
++	/* Perform global setup for test */
++	setup();
++
++	/* Check looping state if -i option given */
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* Reset Tst_count in case we are looping. */
++		Tst_count = 0;
++
++		TEST(mmapzero());
++
++		if (TEST_RETURN != 0)
++			tst_resm(TFAIL, "mmapzero() failed with %ld.",
++				TEST_RETURN);
++		else
++			tst_resm(TPASS, "mmapzero() completed successfully.");
++	}
++
++	cleanup();
++	return 0;
++}
++
++int mmapzero(void)
++{
++	char *x;
++	int n;
++
++	x = mmap("/dev/zero", SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++		MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
++	if (x == MAP_FAILED) {
++		tst_resm(TFAIL, "mmap: %s", strerror(errno));
++		return 1;
++	}
++	x[SIZE] = 0;
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK, cleanup, "fork: %s", strerror(errno));
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL, "munmap: %s", strerror(errno));
++		_exit(0);
++	}
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK, cleanup, "fork: %s", strerror(errno));
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL, "munmap: %s", strerror(errno));
++		_exit(0);
++	} else {
++		n = fork();
++		if (n == -1)
++			tst_brkm(TBROK, cleanup, "fork: %s", strerror(errno));
++		else if (n == 0) {
++			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++				tst_resm(TFAIL, "munmap: %s", strerror(errno));
++			_exit(0);
++		}
++	}
++	if (munmap(x, SIZE+SIZE-4096) == -1)
++		tst_resm(TFAIL, "munmap: %s", strerror(errno));
++	while (waitpid(-1, NULL, WNOHANG) > 0);
++	return 0;
++}
++
++void cleanup(void)
++{
++	/*
++	 * remove the tmp directory and exit
++	 */
++	TEST_CLEANUP;
++	tst_rmdir();
++	tst_exit();
++}
++
++
++void setup(void)
++{
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++	tst_tmpdir();
++}
 
 ------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
