@@ -1,29 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hannuxx@gmail.com>) id 1P2rDK-0002FS-CR
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 20:00:46 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2rDJ-0005Je-66
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 20:00:46 +0000
-Received: by bwz2 with SMTP id 2so5538513bwz.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 04 Oct 2010 13:00:39 -0700 (PDT)
-Date: Mon, 4 Oct 2010 23:00:37 +0300
-From: Hannu Heikkinen <hannuxx@iki.fi>
-Message-ID: <20101004200037.GC997@debian-master.elisa-laajakaista.fi>
-References: <4CA09D4D.6050708@st.com> <4CA34070.9070505@st.com>
-	<20100930133120.GA4070@hannu-debian.research.nokia.com>
-	<4CA469A0.5090700@st.com> <20101001040609.GA2090@hannu-ubuntu>
-	<4CA9D0EB.5090309@st.com>
-	<AANLkTim_Ay4yjdBfm8tzEiK_z4JzQyg6RRsR3E1tCH9h@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1P5rDf-0006Ut-Pb
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:37:31 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P5rDd-0000Kq-L1
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:37:31 +0000
+Date: Tue, 12 Oct 2010 22:37:21 -0400 (EDT)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1374795441.268351286937441344.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <201010122228.51488.vapier@gentoo.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="WIyZ46R2i8wDzkSu"
-Content-Disposition: inline
-In-Reply-To: <AANLkTim_Ay4yjdBfm8tzEiK_z4JzQyg6RRsR3E1tCH9h@mail.gmail.com>
-Subject: Re: [LTP] ltp_clone alignment issues.
+Subject: Re: [LTP] [PATCH] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,180 +23,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
-
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On 04/10/10 06:28 -0700, Garrett Cooper wrote:
-> 
->     I believe this is already handled to some degree with the clone
-> testcases. If not that should be added and I'll review patches which
-> add this testing to LTP.
->     On a semi-unrelated note could you guys please test out the
-> attached patch to make sure that there isn't a functional difference
-> if you have access to ia64, s390, etc?
-> Thanks,
-> -Garrett
-
-Hi,
-
-after that CHILD_STACK_SIZE (def for as it has been 16384) tests passed in
-AMD64 - Debian 64-bit and BeagleBoard 32-bit ARM (std linux-2.6 with
-omap3_defconfig).
-
-Test files are attached. I ran clones in /opt/ltp/testcases/bin straight.
-
-br,
-Hannu
-
-
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=clone-test-amd64
-
-[hannu-debian:~:] uname -a
-Linux hannu-debian 2.6.32-5-amd64 #1 SMP Fri Sep 17 21:50:19 UTC 2010 x86_64 GNU/Linux
-
-root@hannu-debian:/opt/ltp/testcases/bin# cat /proc/cpuinfo 
-processor	: 0
-vendor_id	: AuthenticAMD
-cpu family	: 15
-model		: 107
-model name	: AMD Athlon(tm) 64 X2 Dual Core Processor 4000+
-stepping	: 1
-cpu MHz		: 2099.700
-cache size	: 512 KB
-physical id	: 0
-siblings	: 2
-core id		: 0
-cpu cores	: 2
-apicid		: 0
-initial apicid	: 0
-fpu		: yes
-fpu_exception	: yes
-cpuid level	: 1
-wp		: yes
-flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt rdtscp lm 3dnowext 3dnow rep_good extd_apicid pni cx16 lahf_lm cmp_legacy svm extapic cr8_legacy 3dnowprefetch
-bogomips	: 4199.40
-TLB size	: 1024 4K pages
-clflush size	: 64
-cache_alignment	: 64
-address sizes	: 40 bits physical, 48 bits virtual
-power management: ts fid vid ttp tm stc 100mhzsteps
-
-processor	: 1
-vendor_id	: AuthenticAMD
-cpu family	: 15
-model		: 107
-model name	: AMD Athlon(tm) 64 X2 Dual Core Processor 4000+
-stepping	: 1
-cpu MHz		: 2099.700
-cache size	: 512 KB
-physical id	: 0
-siblings	: 2
-core id		: 1
-cpu cores	: 2
-apicid		: 1
-initial apicid	: 1
-fpu		: yes
-fpu_exception	: yes
-cpuid level	: 1
-wp		: yes
-flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt rdtscp lm 3dnowext 3dnow rep_good extd_apicid pni cx16 lahf_lm cmp_legacy svm extapic cr8_legacy 3dnowprefetch
-bogomips	: 4199.99
-TLB size	: 1024 4K pages
-clflush size	: 64
-cache_alignment	: 64
-address sizes	: 40 bits physical, 48 bits virtual
-power management: ts fid vid ttp tm stc 100mhzsteps
-
-
-root@hannu-debian:/opt/ltp/testcases/bin# ./clone01
-clone01     1  TPASS  :  clone() returned 7639
-root@hannu-debian:/opt/ltp/testcases/bin# ./clone02
-clone02     1  TPASS  :  Test Passed
-clone02     2  TPASS  :  Test Passed
-root@hannu-debian:/opt/ltp/testcases/bin# ./clone03
-clone03     1  TPASS  :  Test passed
-root@hannu-debian:/opt/ltp/testcases/bin# ./clone04
-clone04     1  TPASS  :  expected failure; Got EINVAL
-root@hannu-debian:/opt/ltp/testcases/bin# ./clone05
-clone05     1  TPASS  :  Test Passed
-root@hannu-debian:/opt/ltp/testcases/bin# ./clone06
-clone06     1  TPASS  :  Test Passed
-root@hannu-debian:/opt/ltp/testcases/bin# ./clone07
-clone07     1  TPASS  :  Use of return() in child did not cause SIGSEGV
-
-
-
-
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=clone-test-arm32
-
-#1 Test BeagleBoard:
-
-root@beagleboard:/opt/ltp/testcases/bin# uname -a
-Linux beagleboard 2.6.36-rc4-08510-g0cbe681-dirty #2 Sat Sep 18 12:54:00 EEST 2010 armv7l unknown
-
-root@beagleboard:/opt/ltp/testcases/bin# cat /proc/cpuinfo
-Processor       : ARMv7 Processor rev 3 (v7l)
-BogoMIPS        : 482.11
-Features        : swp half thumb fastmult vfp edsp thumbee neon vfpv3
-CPU implementer : 0x41
-CPU architecture: 7
-CPU variant     : 0x1
-CPU part        : 0xc08
-CPU revision    : 3
-
-Hardware        : OMAP3 Beagle Board
-Revision        : 0020
-Serial          : 0000000000000000
-root@beagleboard:/opt/ltp/testcases/bin# ./clone01
-clone01     1  TPASS  :  clone() returned 1957
-root@beagleboard:/opt/ltp/testcases/bin# ./clone02
-clone02     1  TPASS  :  Test Passed
-clone02     2  TPASS  :  Test Passed
-root@beagleboard:/opt/ltp/testcases/bin# ./clone03
-clone03     1  TPASS  :  Test passed
-root@beagleboard:/opt/ltp/testcases/bin# ./clone04
-clone04     1  TPASS  :  expected failure; Got EINVAL
-root@beagleboard:/opt/ltp/testcases/bin# ./clone05
-clone05     1  TPASS  :  Test Passed
-root@beagleboard:/opt/ltp/testcases/bin# ./clone06
-clone06     1  TPASS  :  Test Passed
-root@beagleboard:/opt/ltp/testcases/bin# ./clone07
-clone07     1  TPASS  :  Use of return() in child did not cause SIGSEGV
-
-
-
---WIyZ46R2i8wDzkSu
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
+
+
+----- "Mike Frysinger" <vapier@gentoo.org> wrote:
+
+> On Tuesday, October 12, 2010 22:06:29 CAI Qian wrote:
+> > ----- "Mike Frysinger" wrote:
+> > > On Tuesday, October 12, 2010 10:07:16 CAI Qian wrote:
+> > > > +	 x = mmap("/dev/zero", SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
+> > > > +		 MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+> > > 
+> > > uhh, have you even checked this test ?  this mmap() makes
+> absolutely
+> > > no sense on so many levels.
+> > 
+> > Can you elaborate?
+> 
+> so you havent actually looked at the syscalls made by the application
+> and the 
+> memory maps created nor used mmap() in detail before ?  well, let's
+> start with 
+> the mmap() man page:
+> 
+> 	void *mmap(void *addr, size_t length, int prot, int flags,
+> 		int fd, off_t offset);
+> 
+> "addr" doesnt sound like "file name" to me, and the description
+> agrees:
+> 
+> 	If addr is not NULL, then the kernel takes it as a hint about where
+> to
+> 	place the mapping; on Linux, the mapping will be created at a nearby
+> page
+> 	boundary.  The address of the new mapping is returned as the result
+> of
+> 	the call.
+> 
+> so basically you told the kernel to create a mapping in/near your
+> .rodata 
+> section (since that is the address of the constant string
+> "/dev/zero").  the 
+> contents of that pointer (which is not of type "char *") have
+> absolutely no 
+> meaning to the kernel.
+> 
+> then there are the flags you're using:
+> 
+> 	MAP_ANONYMOUS
+> 		The mapping is not backed by any file; its contents are initialized
+> 		to zero.  The fd and offset arguments are ignored; however, some
+> 		implementations require fd to be -1 if MAP_ANONYMOUS (or MAP_ANON)
+> 		is specified, and portable applications should ensure this.
+> 
+> so not only are you not getting a mapping from /dev/zero, you're just
+> 
+> allocating a random piece of memory that the kernel has guaranteed
+> will be 
+> zeroed out for you.  so any attempts to verify the contents are zero
+> *because 
+> the data came from /dev/zero* fail.
+> 
+> finally, there's the fd which you're passing as "-1":
+> 
+> 	The contents of a file mapping (as opposed to an anonymous mapping;
+> see
+> 	MAP_ANONYMOUS below), are initialized using length bytes starting at
+> 	offset "offset" in the file (or other object) referred to by the
+> file
+> 	descriptor "fd".
+> 
+> "-1" is not a valid fd, so there's no way it could possibly be from
+> /dev/zero.
+> 
+> so we're back where we started: this test makes no sense as written
+> and you 
+> apparently havent verified it "works" beyond "is the exit status 0
+> when it 
+> finished".
+I see. MAP_ANONYMOUS is not needed. It certainly want to use int fd. v3 followed.
+> 
+> > > why are you using _exit() ?
+> > 
+> > It is used to terminate a child.
+> 
+> i meant why arent you using exit() ?  why do you need _exit()
+> semantics ?
+I don't think that too much. I think it can use exit() too.
+> -mike
 
 ------------------------------------------------------------------------------
-Virtualization is moving to the mainstream and overtaking non-virtualized
-environment for deploying applications. Does it make network security 
-easier or more difficult to achieve? Read this whitepaper to separate the 
-two and get a better understanding.
-http://p.sf.net/sfu/hp-phase2-d2d
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---WIyZ46R2i8wDzkSu--
-
