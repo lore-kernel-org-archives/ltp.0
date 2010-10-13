@@ -2,22 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <joyarjit@gmail.com>) id 1P5Vqy-0001zG-6q
-	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 03:48:40 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5Vqx-00068Z-Cn
-	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 03:48:40 +0000
-Received: by wwc33 with SMTP id 33so3737668wwc.10
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 11 Oct 2010 20:48:33 -0700 (PDT)
+	(envelope-from <vapier@gentoo.org>) id 1P5rAN-0001kZ-Lc
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:34:07 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P5rAL-0007zz-AI
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 02:34:07 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 12 Oct 2010 22:31:20 -0400
+References: <92362031.267291286935348328.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <92362031.267291286935348328.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinq1A3-ds3uVRUoZDoyi0e2zQy=hgxC_8RmQvhz@mail.gmail.com>
-References: <AANLkTinq1A3-ds3uVRUoZDoyi0e2zQy=hgxC_8RmQvhz@mail.gmail.com>
-Date: Tue, 12 Oct 2010 09:18:33 +0530
-Message-ID: <AANLkTikEJnef6DinmaEv6TVs4zBhrVPziLg9nwDdkYe=@mail.gmail.com>
-From: ARJIT SHARMA <joyarjit@gmail.com>
-Subject: [LTP] Fwd: SMACK
+Message-Id: <201010122231.21412.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,64 +24,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2226346548814017518=="
+Content-Type: multipart/mixed; boundary="===============7504224607822153463=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: caiqian@redhat.com
 
---===============2226346548814017518==
-Content-Type: multipart/alternative; boundary=0016e649c80cd4cde50492635943
+--===============7504224607822153463==
+Content-Type: multipart/signed; boundary="nextPart1529471.69oF0qaFxE";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
---0016e649c80cd4cde50492635943
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-  running SMACK tests, after configuring the kernel accordingly error is
-coming as follows  :--
-
-      The smack label reported for /smack/onlycap is "", not the expected ""
-.
-
-what is the problem here?  I am using arm architechture, please tell me
-about this error....   :(
-
--- 
-Best Regards,
-Arjit Sharma.
-
-
-
-
--- 
-Best Regards,
-Arjit Sharma.
-
---0016e649c80cd4cde50492635943
-Content-Type: text/html; charset=ISO-8859-1
+--nextPart1529471.69oF0qaFxE
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<br><br>
-<div class=3D"gmail_quote"><br>
-<div>Hi, </div>
-<div>=A0</div>
-<div>=A0 running SMACK tests, after configuring the kernel accordingly erro=
-r is coming as follows=A0 :--</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0=A0=A0The smack label reported for /smack/onlycap is &quot=
-;&quot;, not the expected &quot;&quot; .</div>
-<div>=A0</div>
-<div>what is the problem here?=A0 I=A0am using arm architechture, please=A0=
-tell me about this error.... =A0 :(<br clear=3D"all"><br>-- <br></div>
-<div>Best Regards,</div>
-<div>Arjit Sharma.</div><font color=3D"#888888"><br></font></div><br><br cl=
-ear=3D"all"><br>-- <br>
-<div>Best Regards,</div>
-<div>Arjit Sharma.</div><br>
+On Tuesday, October 12, 2010 22:02:28 caiqian@redhat.com wrote:
+> Add a new test to mmap/munmap /dev/zero. A common way of malloc()/free()
+> anonymous memory on Solaris. Anyway, mmap() of /dev/zero results in
+> calling map_zero() which on RHEL5 maps the ZERO_PAGE in every pte within
+> that virtual address range. Since a application is also multi-threaded the
+> subsequent munmap() of /dev/zero results is TLB shootdowns to all other
+> CPUs.  When this happens thousands or millions of times the application
+> performance is terrible. The mapping ZERO_PAGE in every pte within that
+> virtual address range was an optimization to make the subsequent pagefault
+> times faster on RHEL5 that has been removed/changed upstream.
 
---0016e649c80cd4cde50492635943--
+you need to fix your mailer and/or use `git send-email`.  changelogs must b=
+e=20
+line wrapped to the standard e-mail length (or even a few chars shorter).
+
+further, your e-mail lacks the marker "---" which tells git where the=20
+changelog ends.  `git send-email` takes care of this for you too.
+
+patch changelogs (i.e. what changed in v2, v3, ....) should be below the "-=
+=2D-"=20
+marker or at the end of the changelog (not the start).  personally, i prefe=
+r=20
+the "---" system.
+=2Dmike
+
+--nextPart1529471.69oF0qaFxE
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iQIcBAABAgAGBQJMtRn5AAoJEEFjO5/oN/WBnUgP/3+PIbmFslp+fiBG0Ft1nrh0
+S2MA12MYm6qHiF3ZcuJ7fcutBLUJQpJGvx80vf6yP0u/cWS+GdguUtkjc6RdY6Ia
+SdPsOriJoKY9iiD/LwGB/dE90vNzgB6AVBc8dZmtOl8pqc/iPcCrwnKMNgjECmIL
+PzQpNw6dNTCwQmXexWZ8dmBYaWTYna+kH6XYaFAw3ijxYleA99B9lbISSUeyXDRs
+XuJqNWDTSIZikhS9iNWwptK4cy2f6RJuJ1b6ZekDPHdB2WBVuWVBO/YMkJ0Grgpu
+AUXPiSqKIsAiu8FdAQf3mO1WH5Rx6ezXIMo+gMCsUt7ByzLsLiyReqe1Kh9JGrOU
+NhYrcWiWSv2kGjyW416cBLzNuZD8VkApLFBrtUU7B5TfUM3vblnT69ZBo5iaLpBx
+Ba7ezqJtFkYfL1YCALjtFjTMDvl1SQKpOg1YWQL45QT/u7k6QUguZPwdnVVPUAZU
+eFklxuDY4xvl/l7V8HhC3rT8kfN5dhksVM1Fe0TnHXECu9hd8Z0frPMCaV8ZHsLA
+UONFt5Ui5VFKJalh9T8LjJW//KLbfQTRxDqssB8Ihi2aRZf+lldAJlFNtHYpnT1a
+EjMWkcARGtJR4VGs16ZCeTtaaSFViCFF7F1jGt+dxCnQRlEia9zxZV2XTWjz8kxj
+mEF0ay/er1ziSHr9RiTV
+=tv44
+-----END PGP SIGNATURE-----
+
+--nextPart1529471.69oF0qaFxE--
 
 
---===============2226346548814017518==
+--===============7504224607822153463==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -96,7 +101,7 @@ standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
 Spend less time writing and  rewriting code and more time creating great
 experiences on the web. Be a part of the beta today.
 http://p.sf.net/sfu/beautyoftheweb
---===============2226346548814017518==
+--===============7504224607822153463==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -107,5 +112,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============2226346548814017518==--
+--===============7504224607822153463==--
 
