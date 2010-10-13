@@ -1,20 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1P61z3-0003mz-Jx
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 14:07:09 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P61yz-0004HJ-QT
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 14:07:09 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 13 Oct 2010 10:04:19 -0400
-References: <1764805928.303201286974287503.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1764805928.303201286974287503.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-MIME-Version: 1.0
-Message-Id: <201010131004.20059.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v5] mmap/munmap /dev/zero
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P5vGA-0000z5-7S
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 06:56:22 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P5vG8-0005vX-Ni
+	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 06:56:22 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e32.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o9D6lMNi018948
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 00:47:22 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o9D6uFPm174430
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 00:56:15 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o9D6uEXB005209
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 00:56:14 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1286952767.4893.3.camel@subratamodak.linux.ibm.com>
+References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
+	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
+	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
+	<AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
+	<AANLkTin4N8BpJ5xXs8TAV+1xQNjTEO+KzO6h=ZJVjv08@mail.gmail.com>
+	<1286952767.4893.3.camel@subratamodak.linux.ibm.com>
+Date: Wed, 13 Oct 2010 12:26:03 +0530
+Message-Id: <1286952965.4893.6.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,79 +42,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5921185898715850448=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: CAI Qian <caiqian@redhat.com>
-
---===============5921185898715850448==
-Content-Type: multipart/signed; boundary="nextPart1320222.rY8IDNpPWo";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1320222.rY8IDNpPWo
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday, October 13, 2010 08:51:27 CAI Qian wrote:
-> mmap/munmap /dev/zero: a common way of malloc()/free() anonymous memory
-> on Solaris.
-
-what Garrett meant is that this is the subject, not the second line of the=
-=20
-changelog.  are you actually using git here, or just fudging the details an=
-d=20
-hoping people wont notice ?  your e-mails are not directly usable by git wh=
-ich=20
-means if we want to apply your patch, we need to screw around with it first=
-=2E =20
-please fix your git flow.
-
-> +option_t options[] =3D {
-
-needs at least static, and be nice if it were const too
-
-> +	while (waitpid(-1, NULL, WNOHANG) > 0);
-
-shouldnt you be checking the exit status of the children ?  otherwise, a=20
-tst_brkm() call by them wont be noticed.  and why are you using WNOHANG ?  =
-if=20
-the parent happens to hit this point before some children exit, you basical=
-ly=20
-ignore them too.
-=2Dmike
-
---nextPart1320222.rY8IDNpPWo
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
-
-iQIcBAABAgAGBQJMtbxjAAoJEEFjO5/oN/WB9kEP/iY2NXokO8cjEmEL3KUkpmRs
-+58Mqatw/l0gYrTbh5AzOptGvDEjaBGRURR1WZVjlbqxG/zAQ0A+bpHRWn13D9oO
-E6HyyUPrvBEpT1hdMS+SxdccHip1ZmP0kuKMzUfbihRoNTcjhnfLXNlfkj3tAuZU
-pkUAN5wpK8dIpxCQI/UM0vRfOWUZ8jmibm3yOWxIAqDcmL6ERVCA6sRi3CSC8G91
-60R/PXfVsP2xjeU3SM//JJ/0ISMYpyU/0vwPUTyXBHAIguzzEwZd9w0PcoHq9Wqi
-EHAV9tHpjg4mcxSvna4Vy9+4pgeWme6EnESt0Kn8DN/pAp5Up7fQZFRxjE6bddnH
-orhhDV/YTONvPsLSGfH2bke0O8BWGSY9E7wk7OdQkd7tBj3Q4a2+XK/lHq4mXvtL
-hYCfY3wNDCiDbUbxhd2101bruirVq9rAnEZyb1QwiCVcR1s876lJFswlxt+jk5rV
-amt8k4YTVYi04vtHn5XeVhrHyGLVXldac7aFSDAOiYx8layG3WeYLlEh1O+gRTuA
-zt+u4VqIaruTvwTIA6rdDsnlur+yx23seVJJ2XDOS+HENeLaX2W7T6qu4WMzcULS
-4QOTRsISnLlTalvlpoqEVP4r18UbZzhNivj9y/qrJaV43l8TeIhMnvse+ymZ5ceZ
-1wQxl+KEj9GJz/iB3rpJ
-=AWwW
------END PGP SIGNATURE-----
-
---nextPart1320222.rY8IDNpPWo--
-
-
---===============5921185898715850448==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: hake huang <hakehuang@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On Wed, 2010-10-13 at 12:22 +0530, Subrata Modak wrote:
+> On Wed, 2010-10-13 at 13:30 +0800, hake huang wrote:
+> > 2010/10/13 Garrett Cooper <yanegomi@gmail.com>
+> > >
+> > > On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wrote:
+> > > > Hi
+> > > >
+> > > > I see this simple solution is no quite fit. But the kernel dump message for
+> > > > each test case is necessary for analysing. I can work on this further, with
+> > > > below help:
+> > > > 1. Where can I find the reason for the IIRC break?
+> > >
+> > > IIRC -> If I remember correctly.
+> > so I need ask Subrata about this problem, right? what is the existing
+> > functionality?
+> 
+> I believe the functionality your original patch was proposing is already
+> in LTP . I guess they will solve your problem. See the following
+> commits:
+> 
+> git show e3bc3758d3e4d17a0e04009ef873df53819b9ec6
+> git show bd9d440be1da8020c93ac92e497e3a16e66e9fa3
+> 
+> Just use:
+> 
+> ./runltp -K <DMESG_DIRECTORY_NAME>
+
+Basically, its a choice given to users who would like to record the
+kernel messages, and not forcing recording all kernel messages which
+your original patch is proposing :-)
+
+Regards--
+Subrata
+
+> 
+> option while running ltp.
+> 
+> Regards--
+> Subrata
+> 
+> > >
+> > > > 2. Can it  be an option to avoid the size limitation on some embedded
+> > > > system?
+> > >
+> > > No. This is outside the realm of LTP, but we must remain conscious of
+> > > the fact that there are folks running LTP on cellphones, etc, where
+> > > space is very much a luxury.
+> > I see. but why can't they run in quit_mode?
+> > >
+> > > > 3.  A kind of seperating tag is needed for kernel message, right? e.g
+> > > > <kernel_dump_start>dump message<kernel_dump_end>
+> > >
+> > > I think that adding an optional capture feature might be worthwhile,
+> > > but you'll no doubt quickly find with some processes that the dmesg
+> > > buffer will fill up quickly.
+> > I have seen such events, and such cases need to be checked manually.
+> > >
+> > > > 4.  I see in ltp-pan.c the file descriptors, terminals are changed in child
+> > > > process. if the system(3) has problem, the worst cases is there are no
+> > > > kernel messge output in parent process, but the pan can still function well.
+> > >
+> > > Can you say that with 100% certainty? One of the potential problems
+> > > with system is the fact that it allocates a shell and depending on how
+> > > processes are executed and how file descriptors are cleaned up,
+> > >
+> > > Actually, pan makes zero attempts at closing open file descriptors and
+> > > the like, so the problem is still very much with pan.
+> > >
+> > So your concerns is about file descriptors which open in ltp process,
+> > I think this is an existing problem. I mean maybe pan need to attempt
+> > to close open file descriptors. system(3) only increases the change of
+> > occurrence caused by this problem, right?
+> > > > if not use system(3), can you give your suggestion on this, exec(3) seems to
+> > > > have the same problem as system(3)?
+> > >
+> > > Yes and no. In this case the problems that exist with open file
+> > > descriptor inheritance, etc are unfortunately no worse from that
+> > > perspective than your proposed code would do, but there are still
+> > > other problems that need to be resolved with your proposed change
+> > > anyhow that are much more pressing.
+> > >
+> > > -Garrett
+> 
+> 
+> ------------------------------------------------------------------------------
+> Beautiful is writing same markup. Internet Explorer 9 supports
+> standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+> Spend less time writing and  rewriting code and more time creating great
+> experiences on the web. Be a part of the beta today.
+> http://p.sf.net/sfu/beautyoftheweb
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
@@ -104,16 +150,7 @@ standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
 Spend less time writing and  rewriting code and more time creating great
 experiences on the web. Be a part of the beta today.
 http://p.sf.net/sfu/beautyoftheweb
---===============5921185898715850448==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5921185898715850448==--
-
