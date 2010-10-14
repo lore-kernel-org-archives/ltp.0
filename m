@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P5tPp-0002Uo-8v
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:58:13 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5tPo-0007qH-Im
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:58:13 +0000
-Received: by iwn2 with SMTP id 2so2653594iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Oct 2010 21:58:07 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1P6Eil-0006cA-8t
+	for ltp-list@lists.sourceforge.net; Thu, 14 Oct 2010 03:43:11 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P6Eik-0003Mc-4S
+	for ltp-list@lists.sourceforge.net; Thu, 14 Oct 2010 03:43:11 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 13 Oct 2010 23:42:48 -0400
+References: <450673838.432411287026581092.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <450673838.432411287026581092.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-Date: Tue, 12 Oct 2010 21:58:07 -0700
-Message-ID: <AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Message-Id: <201010132342.48804.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v6] mmap/munmap /dev/zero: a common way of
+	malloc()/free() anonymous memory on Solaris
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,71 +25,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============1415403806271294293=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hake huang <hakehuang@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: CAI Qian <caiqian@redhat.com>
 
-On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wrote:
-> Hi
->
-> I see this simple solution is no quite fit. But the kernel dump message f=
-or
-> each test case is necessary for analysing. I can work on this further, wi=
-th
-> below help:
-> 1. Where can I find the reason for the IIRC break?
+--===============1415403806271294293==
+Content-Type: multipart/signed; boundary="nextPart2751338.yeyjprNb7m";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-IIRC -> If I remember correctly.
+--nextPart2751338.yeyjprNb7m
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-> 2. Can it=A0 be an option to avoid the size limitation on some embedded
-> system?
+On Wednesday, October 13, 2010 23:23:01 CAI Qian wrote:
+> +void help()
 
-No. This is outside the realm of LTP, but we must remain conscious of
-the fact that there are folks running LTP on cellphones, etc, where
-space is very much a luxury.
+another "(void)" fix
 
-> 3.=A0 A kind of seperating tag is needed for kernel message, right? e.g
-> <kernel_dump_start>dump message<kernel_dump_end>
+otherwise, assuming it does as you intended, i have no complaints left ;)
+-mike
 
-I think that adding an optional capture feature might be worthwhile,
-but you'll no doubt quickly find with some processes that the dmesg
-buffer will fill up quickly.
+--nextPart2751338.yeyjprNb7m
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-> 4.=A0 I see in ltp-pan.c the file descriptors, terminals are changed in c=
-hild
-> process. if the system(3) has problem, the worst cases is there are no
-> kernel messge output in parent process, but the pan can still function we=
-ll.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
 
-Can you say that with 100% certainty? One of the potential problems
-with system is the fact that it allocates a shell and depending on how
-processes are executed and how file descriptors are cleaned up,
+iQIcBAABAgAGBQJMtnw4AAoJEEFjO5/oN/WBkZcP/jZDcJD8c/ChQ0VYg/FVL4qV
+YkIploVr+54Zqzf/B5FV8WD6OzW4bBry/wWqkkUjATZW0lFlVu0cEfhiMHVMJqqO
+6Uko9E38TuwUxHBEXQ8VMSdOeeMlM6SZfTOPW7KGxqmU1GezS/OUPz8NbIiWYSmZ
+GWqlk1C98JuwRCfHHrShjLEH2LgK8Rrv6kScUMa3L1gvL1syxFV37ltkyLfOes2c
+vFwWMcxWsclCvdsz1sE8es2zZxlHvmRiVKEHVHkB37pX/wczJffizzzoCpfH421X
+vLARMGD1AFdpx5DozSk8mr8RTuW5h7lqqoG+hDbkKoi9kghdgLGhb06ldd8DfnY6
+ZtveWZSkd79NAYVJUPFTGLuvoWIp+/vcNKZQFMK0/Twk3Lj6KB9iCq0kpNIXZB1N
+s7AfHa01aFMOk0fVqHisix+hJg8zjxWxvEnGdD+tTnUA/IafIo/LMu32Ej0kKzQG
+Soiu0thYRZUwp5BoOVDaLjRAto9QXaTcsouNib1L+6hTerwIA+WsuN1lCGWVcgiO
+kVT8IoOUkXqn26zMMUn4qvUtW8TDz0Tx8y7J2i88iDypjBrvT5/8+JxwVPTBwqcK
+pPOiKCJqup/1+BGigXBlDEb57RczErkTAH8uydZj4if6xPZLqEHYijTzEi2fPRSg
+ULkXAS3zexR6Wn/Sr3Za
+=P1ZW
+-----END PGP SIGNATURE-----
 
-Actually, pan makes zero attempts at closing open file descriptors and
-the like, so the problem is still very much with pan.
+--nextPart2751338.yeyjprNb7m--
 
-> if not use system(3), can you give your suggestion on this, exec(3) seems=
- to
-> have the same problem as system(3)?
 
-Yes and no. In this case the problems that exist with open file
-descriptor inheritance, etc are unfortunately no worse from that
-perspective than your proposed code would do, but there are still
-other problems that need to be resolved with your proposed change
-anyhow that are much more pressing.
+--===============1415403806271294293==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
 standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
 Spend less time writing and  rewriting code and more time creating great
 experiences on the web. Be a part of the beta today.
 http://p.sf.net/sfu/beautyoftheweb
+--===============1415403806271294293==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1415403806271294293==--
+
