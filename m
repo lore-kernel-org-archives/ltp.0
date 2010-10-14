@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge.hallyn@canonical.com>) id 1P2mG2-0005c1-Ci
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 14:43:14 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2mG1-0005Ak-43
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 14:43:14 +0000
-Date: Mon, 4 Oct 2010 09:43:11 -0500
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20101004144311.GA24722@hallyn.com>
-References: <20100929135647.GA4587@hallyn.com>
-	<AANLkTikGmyHTu8ncUROKraoSffkbHqeNOAe7U3nAkU65@mail.gmail.com>
-	<20101004140650.GG19814@hallyn.com>
-	<AANLkTik7CE9J7GGBpUyTG6ijRrVo-iCLVvJAqzXZ4GSt@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1P6EPM-0008JK-Lu
+	for ltp-list@lists.sourceforge.net; Thu, 14 Oct 2010 03:23:08 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P6EPL-0004hV-0m
+	for ltp-list@lists.sourceforge.net; Thu, 14 Oct 2010 03:23:08 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9E3N1BT012518
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 23:23:01 -0400
+Date: Wed, 13 Oct 2010 23:23:01 -0400 (EDT)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <450673838.432411287026581092.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTik7CE9J7GGBpUyTG6ijRrVo-iCLVvJAqzXZ4GSt@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] securebits: add secure_keepcaps testcases
+Subject: [LTP] [PATCH v6] mmap/munmap /dev/zero: a common way of
+ malloc()/free() anonymous memory on Solaris
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,134 +27,263 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Subrata Modak1 <subrata.modak@in.ibm.com>, ltp-list@lists.sf.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> On Mon, Oct 4, 2010 at 7:06 AM, Serge E. Hallyn
-> <serge.hallyn@canonical.com> wrote:
-> > Quoting Garrett Cooper (yanegomi@gmail.com):
-> >> Hi Serge,
-> >> =A0 =A0 Some comments about your provided code.
-> >
-> > Thanks.
-> >
-> >> > +AC_DEFUN([LTP_CHECK_SECUREBITS],
-> >> > +AC_CHECK_HEADERS(linux/securebits.h,[
-> >> > + =A0 =A0 =A0 LTP_SECUREBITS=3Dyes
-> >> > +])
-> >> > +)
-> >>
-> >> Some checks should probably be added for versioning as well as symbols
-> >> that get passed to prctl(2) (I'm not sure if checking for the symbols
-> >> that get passed to prctl(2) here is the correct way to go about things
-> >> though).
-> >
-> > Not sure how we would check the versioning, bc there is no versioning
-> > info in the interface.
-> =
+The basic purpose of this is a to test if it is possible to map and
+unmap /dev/zero, and to read and write the mapping. Being inspired by
+two bugs in the past, the design of the test was added some variations
+based on the reproducers for them. It also accept an option to
+mmap/munmap anonymous pages.
 
-> Just checking for the symbols used with an autoconf test would be ok,
-> because according to the kernel.org manpage [1] some of these symbols
-> have only existed for the past year or two
+One is to trigger panic with transparent hugepage feature that
+split_huge_page is very strict in checking the rmap walk was
+perfect. Keep it strict because if page_mapcount isn't stable and just
+right, the __split_huge_page_refcount that follows the rmap walk could
+lead to erratic page_count()s for the subpages. The bug in fork lead
+to the rmap walk finding the parent huge-pmd twice instead of just
+one, because the anon_vma_chain objects of the child vma still point
+to the vma->vm_mm of the parent. That trips on the split_huge_page
+mapcount vs page_mapcount check leading to a BUG_ON.
 
-Right, but before that the header file wouldn't have existed.  The
-symbols appeared with the header file's creation.
+The other bug is mmap() of /dev/zero results in calling map_zero()
+which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
+address range. Since the application which maps a region from 5M to
+16M in size is also multi-threaded the subsequent munmap() of
+/dev/zero results is TLB shootdowns to all other CPUs. When this
+happens thousands or millions of times the application performance is
+terrible. The mapping ZERO_PAGE in every pte within that virtual
+address range was an optimization to make the subsequent pagefault
+times faster on RHEL5 that has been removed/changed upstream.
 
-Of course someone can shoot himself in the foot with older kernel on
-newer userspace.  I don't mind doing the extra checks, it'll just take
-me a few weeks to get the chance.  The tests aren't going to go stale
-in the meantime, so no big whoop.
-
-> (and thus someone like
-> Mitani-san will come on the list and say that RHEL 4.x or 5.x compiles
-> are broken by the new test :)).
-
-My theory is that this test will suffice for older RHEL :)  but
-not for more experimental chaps, I guess.
-
-> > ...
-> >
-> >> > + =A0 =A0 =A0 case 3:
-> >> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D prctl(PR_GET_SECUREBITS);
-> >>
-> >> What if this call fails?
-> >
-> > It doesn't pass or fail. =A0The return value is simply the current
-> > securebits.
-> =
-
-> According to the manpage [1], this syscall can fail.
-
-I don't actually see where the syscall says it can fail (it says that
-for CAPBSET_READ, but not for GET_SECUREBITS.  So it can only fail
-if the capability module's prctl() isn't called.  I know of no ways
-that can happen with current upstream, bc smack, selinux, apparmor
-and tomoyo all do not define security_prctl(), which means that the
-capability one will be called.
-
-But there's really nothing preventing that situation in the future.
-In which case right now we'll cache the error when SET_SECUREBITS
-either returns -ENOSYS or returns an error bc of invalid bits.
-
-In any case, an extra check won't hurt.  I just felt the need to
-double-check my original thinking :)
-
-> >> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D prctl(PR_SET_SECUREBITS, ret |=
- SECBIT_KEEP_CAPS);
-> >> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret =3D=3D -1) {
-> >> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL|TERRNO,=
- "PR_SET_SECUREBITS failed\n");
-> >> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
-> >> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> >
-> >> > +#!/bin/sh
-> >> > +
-> >> > +echo "testing keepcaps"
-> >> > +check_keepcaps 1
-> >> > +tmp=3D$?
-> >> > +if [ $tmp -ne 0 ]; then
-> >> > + =A0 =A0 =A0 exit_code=3D$tmp
-> >> > +fi
-> >> > +check_keepcaps 2
-> >> > +tmp=3D$?
-> >> > +if [ $tmp -ne 0 ]; then
-> >> > + =A0 =A0 =A0 exit_code=3D$tmp
-> >> > +fi
-> >> > +check_keepcaps 3
-> >> > +tmp=3D$?
-> >> > +if [ $tmp -ne 0 ]; then
-> >> > + =A0 =A0 =A0 exit_code=3D$tmp
-> >> > +fi
-> >> > +
-> >> > +exit $exit_code
-> >>
-> >> What if (for instance) test 1 fails, and tests 2 or 3 pass?
-> >
-> > Yeah, I didn't do that right, and maybe it would be best
-> > to just shortcut on the first failure anyway.
-> =
-
-> That's what I thought. The only thing you lose is coverage potentially
-> if one of the tests is broken :/.
-
-Yup, which is probably fine - if any one of these breaks, it'll
-be a huge deal imo.
-
--serge
-
----------------------------------------------------------------------------=
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
-Virtualization is moving to the mainstream and overtaking non-virtualized
-environment for deploying applications. Does it make network security =
+v6: really use git format; check return from children; cleanup.
+v5: add an option to test anonymous pages; move open() into setup().
+v4: comment fix; code cleanup.
+v3: really mmap /dev/zero; replace _exit() with exit(); fix patch
+    format.
+v2: incorporate comments from Mike and Garrett.
 
-easier or more difficult to achieve? Read this whitepaper to separate the =
+ testcases/kernel/syscalls/mmap/mmap10.c |  198 +++++++++++++++++++++++++++++++
+ 1 files changed, 198 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap10.c
 
-two and get a better understanding.
-http://p.sf.net/sfu/hp-phase2-d2d
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+new file mode 100644
+index 0000000..356b937
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -0,0 +1,198 @@
++/*
++ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
++ * memory on Solaris.
++ *
++ * The basic purpose of this is a to test if it is possible to map and
++ * unmap /dev/zero, and to read and write the mapping. Being inspired
++ * by two bugs in the past, the design of the test was added some
++ * variations based on the reproducers for them. It also accept an
++ * option to mmap/munmap anonymous pages.
++ *
++ * One is to trigger panic with transparent hugepage feature that
++ * split_huge_page is very strict in checking the rmap walk was
++ * perfect. Keep it strict because if page_mapcount isn't stable and
++ * just right, the __split_huge_page_refcount that follows the rmap
++ * walk could lead to erratic page_count()s for the subpages. The bug
++ * in fork lead to the rmap walk finding the parent huge-pmd twice
++ * instead of just one, because the anon_vma_chain objects of the
++ * child vma still point to the vma->vm_mm of the parent. That trips
++ * on the split_huge_page mapcount vs page_mapcount check leading to a
++ * BUG_ON.
++ *
++ * The other bug is mmap() of /dev/zero results in calling map_zero()
++ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
++ * address range. Since the application which maps a region from 5M to
++ * 16M in size is also multi-threaded the subsequent munmap() of
++ * /dev/zero results is TLB shootdowns to all other CPUs. When this
++ * happens thousands or millions of times the application performance
++ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
++ * address range was an optimization to make the subsequent pagefault
++ * times faster on RHEL5 that has been removed/changed upstream.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <fcntl.h>
++#include "test.h"
++#include "usctest.h"
++
++#define SIZE (5*1024*1024)
++
++char *TCID = "mmap10";
++int TST_TOTAL = 1;
++extern int Tst_count;
++static int fd, opt_anon;
++
++/* main setup function of test */
++void setup(void);
++/* cleanup function for the test */
++void cleanup(void);
++int mmapzero(void);
++void help(void);
++
++static option_t options[] = {
++	{ "a", &opt_anon,   NULL},
++	{ NULL, NULL,       NULL}
++};
++
++int main(int argc, char *argv[])
++{
++	/* loop counter */
++	int lc;
++	/* message returned from parse_opts */
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, help);
++	if (msg != NULL) {
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++		tst_exit();
++	}
++
++	/* Perform global setup for test */
++	setup();
++
++	/* Check looping state if -i option given */
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* Reset Tst_count in case we are looping. */
++		Tst_count = 0;
++
++		TEST(mmapzero());
++
++		if (TEST_RETURN != 0)
++			tst_resm(TFAIL, "mmapzero() failed with %ld.",
++				TEST_RETURN);
++		else
++			tst_resm(TPASS, "mmapzero() completed "
++				"successfully.");
++	}
++
++	cleanup();
++	return 0;
++}
++
++int mmapzero(void)
++{
++	char *x;
++	int n;
++
++	if (opt_anon)
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
++	else
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE, fd, 0);
++	if (x == MAP_FAILED) {
++		tst_resm(TFAIL|TERRNO, "mmap");
++		return 1;
++	}
++	x[SIZE] = 0;
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL|TERRNO, "munmap");
++		exit(0);
++	}
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL|TERRNO, "munmap");
++		exit(0);
++	} else {
++		n = fork();
++		if (n == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		else if (n == 0) {
++			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++				tst_resm(TFAIL|TERRNO, "munmap");
++			exit(0);
++		}
++	}
++	if (munmap(x, SIZE+SIZE-4096) == -1)
++		tst_resm(TFAIL|TERRNO, "munmap");
++	while (waitpid(-1, &n, WUNTRACED | WCONTINUED) > 0) {
++		if (WEXITSTATUS(n) != 0)
++			return 1;
++	}
++	return 0;
++}
++
++void cleanup(void)
++{
++	/*
++	 * remove the tmp directory and exit
++	 */
++	TEST_CLEANUP;
++	tst_rmdir();
++	tst_exit();
++}
++
++
++void setup(void)
++{
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++	tst_tmpdir();
++
++	if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++}
++
++void help()
++{
++	printf("  -a      Test anonymous pages\n");
++}
+-- 
+1.7.1
+
+------------------------------------------------------------------------------
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today.
+http://p.sf.net/sfu/beautyoftheweb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
