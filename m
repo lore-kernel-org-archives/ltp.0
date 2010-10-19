@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PBHko-00032A-J8
-	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 01:58:10 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PBHkm-0000HQ-8r
-	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 01:58:10 +0000
-Message-ID: <4CC8D859.4010701@cn.fujitsu.com>
-Date: Thu, 28 Oct 2010 09:56:41 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P88Ev-0004qC-AC
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 09:12:13 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P88Eu-0006bU-GS
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 09:12:13 +0000
+Received: by gwb17 with SMTP id 17so1129239gwb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 19 Oct 2010 02:12:07 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [POSIX][PATCH]Some building error at pi_test cases.
+In-Reply-To: <20101019120040.GA6687@hannu-debian.research.nokia.com>
+References: <AANLkTinU5f4fco7BGZ0GiQoWVZNtGam7xZaT6gYTspML@mail.gmail.com>
+	<20101019120040.GA6687@hannu-debian.research.nokia.com>
+Date: Tue, 19 Oct 2010 02:12:06 -0700
+Message-ID: <AANLkTi=m7BBJUb_nA8myRr9xag5E0H6z5iETjhidZxOB@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] PTY
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,110 +28,111 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Commit 5f2ba92bdbef089bad74906fd8a86b54617f7878 make some building error.
+On Tue, Oct 19, 2010 at 5:00 AM, Hannu Heikkinen
+<ext-hannu.m.heikkinen@nokia.com> wrote:
+> On 18/10/10 08:56 +0200, ext ARJIT SHARMA wrote:
+>>
+>> Hi
+>>
+>>
+>> =A0 =A0 =A0 this is the log of PTY testcase i am getting...
+>>
+>> =A0 =A0 =A0 all 3 tests ie. "pty01,ptem01 and hangup01"
+>>
+>> =A0 =A0 =A0 failing because ptsname() function call failed.....
+>>
+>>
+>>
+>> INFO: creating /opt/ltp/results directory
+>> If some fields are empty or look unusual you may have an old version.
+>> Compare to the current minimal requirements in Documentation/Changes.
+>>
+>> Linux 192.168.1.10 2.6.32 #1 SMP Fri Oct 8 16:13:17 IST 2010 armv7l unkn=
+own unknown GNU/Linux
+>>
+>> Gnu C =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0gcc (GCC) 4.5.0
+>> Gnu make =A0 =A0 =A0 =A0 =A0 =A0 =A0 3.81
+>> util-linux =A0 =A0 =A0 =A0 =A0 =A0 ng 2.16.1)
+>> mount =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ng 2.16.1 (with libblkid suppor=
+t)
+>> modutils =A0 =A0 =A0 =A0 =A0 =A0 =A0 3.1
+>> e2fsprogs =A0 =A0 =A0 =A0 =A0 =A0 =A01.41.9
+>> PPP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A02.4.4
+>> Linux C Library =A0 =A0 =A0 =A02.10.1
+>> Dynamic linker (ldd) =A0 2.10.1
+>> Linux C++ Library =A0 =A0 =A06.0.14
+>> Procps =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 3.2.7
+>> Net-tools =A0 =A0 =A0 =A0 =A0 =A0 =A01.60
+>> iproute2 =A0 =A0 =A0 =A0 =A0 =A0 =A0iproute2-ss100224
+>> Console-tools =A0 =A0 =A0 =A0 =A00.2.3
+>> Sh-utils =A0 =A0 =A0 =A0 =A0 =A0 =A0 5.2.1
+>> Modules Loaded
+>>
+>> free reports:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0total =A0 =A0 =A0 used =A0 =A0 =A0 free =A0 =
+=A0 shared =A0 =A0buffers =A0 =A0 cached
+>> Mem: =A0 =A0 =A0 =A0255252 =A0 =A0 =A028548 =A0 =A0 226704 =A0 =A0 =A0 =
+=A0 =A00 =A0 =A0 =A0 =A0 =A00 =A0 =A0 =A018124
+>> -/+ buffers/cache: =A0 =A0 =A010424 =A0 =A0 244828
+>> Swap: =A0 =A0 =A0 =A0 =A0 =A00 =A0 =A0 =A0 =A0 =A00 =A0 =A0 =A0 =A0 =A00
+>>
+>> /proc/cpuinfo
+>> Processor =A0 =A0 =A0 =A0 =A0 =A0 =A0: ARMv7 Processor rev 1 (v7l)
+>> processor =A0 =A0 =A0 =A0 =A0 =A0 =A0: 0
+>> BogoMIPS =A0 =A0 =A0 =A0 =A0 =A0: 996.14
+>>
+>> processor =A0 =A0 =A0 =A0 =A0 =A0 =A0: 1
+>> BogoMIPS =A0 =A0 =A0 =A0 =A0 =A0: 996.14
+>>
+>> Features : swp half thumb fastmult vfp edsp vfpv3 vfpv3d16
+>> CPU implementer =A0: 0x41
+>> CPU architecture: 7
+>> CPU variant =A0 =A0 =A0 =A0 =A0 : 0x1
+>> CPU part =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: 0xc09
+>> CPU revision =A0 =A0 =A0 =A0 : 1
+>>
+>> Hardware =A0 =A0 =A0 =A0 =A0 =A0 =A0 : ST-SPEAR1300-EVB
+>> Revision =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: 0000
+>> Serial =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: 0000000000000000
+>
+> -clip-
+>> <<<test_output>>>
+>> pty01 =A0 =A0 =A0 1 =A0TBROK =A0: =A0ptsname() call failed
+> -clip-
+>> ptem01 =A0 =A0 =A01 =A0TBROK =A0: =A0ptsname() call failed
+> -clip-
+>> hangup01 =A0 =A01 =A0TBROK =A0: =A0ptsname
+> -clip-
+>
+> I guess u should run:
+>
+> # strace -f <testcase-bin>
+>
+> for having more detailed info regarding problem.
+>
+> What does
+> # cat /proc/sys/kernel/pty/max
+> say? If it is utterly small value, let's say 2..8, change it to eg:
+> # echo 100 > /proc/sys/kernel/pty/max
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+Please try with the latest sources; the diagnostic messages should be
+considerably better now.
+-Garrett
 
+---------------------------------------------------------------------------=
 ---
- .../functional/threads/pi_test/pitest-2.c          |    2 +-
- .../functional/threads/pi_test/pitest-3.c          |    4 ++--
- .../functional/threads/pi_test/pitest-4.c          |    4 ++--
- .../functional/threads/pi_test/pitest-6.c          |    4 ++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
+Download new Adobe(R) Flash(R) Builder(TM) 4
+The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly =
 
-diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
-index 62f1f45..0a96377 100644
---- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
-+++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
-@@ -235,7 +235,7 @@ void *thread_tb2(void *arg)
- 	DPRINTF(stdout, "#EVENT %f TB2 Thread Started\n",
- 		seconds_read() - base_time); 
- 	
--	boost_time.tv_sec = time(NULL) + *(time_t*)timeoutsec;
-+	boost_time.tv_sec = time(NULL) + *(time_t*)arg;
- 	boost_time.tv_nsec = 0;
- 
- 	t0 = seconds_read();
-diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
-index fe0c886..58d7a4a 100644
---- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
-+++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
-@@ -219,7 +219,7 @@ void *thread_tb1(void *arg)
- 	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n", 
- 		seconds_read() - base_time);
- 
--	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-+	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
- 	boost_time.tv_nsec = 0;
- 
- 	t0 = seconds_read();
-@@ -247,7 +247,7 @@ void *thread_tb2(void *arg)
- 	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n", 
- 		seconds_read() - base_time);
- 
--	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-+	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
- 	boost_time.tv_nsec = 0;
- 	t0 = seconds_read();
- 	rc = pthread_mutex_timedlock(&mutex2, &boost_time);	
-diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-index a042dbf..077f966 100644
---- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-+++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-@@ -187,7 +187,7 @@ void *thread_tb1(void *arg)
- 
- 	pthread_mutex_lock(&mutex2);
-  
--	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-+	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
- 	boost_time.tv_nsec = 0;
- 	t0 = seconds_read();
- 	rc = pthread_mutex_timedlock(&mutex1, &boost_time);	
-@@ -218,7 +218,7 @@ void *thread_tb2(void *arg)
- 	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n", 
- 		seconds_read() - base_time);
- 
--	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-+	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
- 	boost_time.tv_nsec = 0;
- 
- 	t0 = seconds_read();
-diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
-index 6ebb003..2f2272b 100644
---- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
-+++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
-@@ -204,9 +204,9 @@ void *thread_tb(void *arg)
- 	DPRINTF(stderr,"Thread TB: started\n");
- 	
- 	DPRINTF(stdout, "#EVENT %f TB Started, waiting for mutex for %lu s\n", 
--		seconds_read() - base_time, timeoutsec);
-+		seconds_read() - base_time, *(unsigned long*)arg);
- 
--	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-+	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
- 	boost_time.tv_nsec = 0;
- 
- 	t0 = seconds_read();
--- 
-1.7.0.4
-
-
-
-
-
-
-------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Flex(R) Builder(TM)) enable the development of rich applications that run
+across multiple browsers and platforms. Download your free trials today!
+http://p.sf.net/sfu/adobe-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
