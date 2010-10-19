@@ -1,19 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PBesf-0002L0-SP
-	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 02:39:49 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <lizf@cn.fujitsu.com>) id 1P80O5-0001eO-S5
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 00:49:09 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PBesd-0002uR-TR
-	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 02:39:49 +0000
-Message-ID: <4CCA33F8.6020104@cn.fujitsu.com>
-Date: Fri, 29 Oct 2010 10:39:52 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P80O3-0001HM-PO
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 00:49:09 +0000
+Message-ID: <4CBCEB1D.7010101@cn.fujitsu.com>
+Date: Tue, 19 Oct 2010 08:49:33 +0800
+From: Li Zefan <lizf@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] open_posix_testsuite: Don't use clock_settime() to
- reset a CPU-time Clock
+References: <4C85A88D.10700@cn.fujitsu.com>	
+	<1285689961.11429.12.camel@subratamodak.linux.ibm.com>	
+	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>	
+	<4CB55FE6.6000604@cn.fujitsu.com>
+	<4CB5615C.4070406@cn.fujitsu.com>	
+	<4CB59825.7060504@cn.fujitsu.com>	
+	<1286995066.4893.17.camel@subratamodak.linux.ibm.com>	
+	<4CBBBCB0.8070406@cn.fujitsu.com>
+	<1287411903.16971.275.camel@gandalf.stny.rr.com>
+In-Reply-To: <1287411903.16971.275.camel@gandalf.stny.rr.com>
+Subject: Re: [LTP] BUG: dead loop in PowerPC hcall tracepoint (Was: [PATCH
+ v2] Add ftrace-stress-test to LTP)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,132 +36,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: ltp-list@lists.sourceforge.net, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>, Paul Mackerras <paulus@samba.org>, Anton Blanchard <anton@samba.org>, Ingo Molnar <mingo@elte.hu>
 
-This case is trying to set CPU-time clock(ID is returned by clock_getcpuclockid()) of
-a specific process by calling clock_settime(). But Linux kernel doesn't allow to reset
-a CPU-time clock of a specific process. Kernel returns -EPERM. So test fails.
+Steven Rostedt wrote:
+> On Mon, 2010-10-18 at 11:19 +0800, Li Zefan wrote:
+> 
+>> This is a dead loop:
+>>
+>> trace_hcall_entry() -> trace_clock_global() -> trace_hcall_entry() ..
+>>
+>> And this is a PPC specific bug. Hope some ppc guys will fix it?
+>> Or we kill trace_clock_global() if no one actually uses it..
+> 
+> trace_clock_global() is used by many. I use it (and recommend using it)
+> on boxes where the TSC is horribly out of sync, and the trace needs
+> synchronization between CPUs.
+> 
+> The trace_hcall_entry and exit has wrappers already. Just add recursion
+> protection there.
+> 
 
-In "IEEE Std 1003.1, 2004 Edition", It's said as following:
-If _POSIX_CPUTIME is defined, implementations shall support clock ID values obtained by
-invoking clock_getcpuclockid(), which represent the CPU-time clock of a given process.
-Implementations shall also support the special clockid_t value CLOCK_PROCESS_CPUTIME_ID,
-which represents the CPU-time clock of the calling process when invoking one of the 
-clock_*() or timer_*() functions. For these clock IDs, the values returned by 
-clock_gettime() and specified by clock_settime() represent the amount of execution time
-of the process associated with the clock. Changing the value of a CPU-time clock via
-clock_settime() shall have no effect on the behavior of the sporadic server scheduling
-policy. 
+Right, I thought of this. But as I have no machine to test, I'll leave
+this to others.
 
-So the behaviour when changing the value of a CPU-time clock via clock_settime() is
-operating system specific. 
-
-We may change the test progress to stop using clock_settime(). Now, We just make use
-of clock_gettime() instead to achieve the same test purpose.
-
-Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
----
- .../interfaces/clock_getcpuclockid/2-1.c           |   67 ++++++++++----------
- 1 files changed, 33 insertions(+), 34 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
-index edeb397..52240df 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
-@@ -23,48 +23,47 @@ int main(int argc, char *argv[])
-         printf("_POSIX_CPUTIME unsupported\n");
-         return PTS_UNSUPPORTED;
- #else
--	unsigned long time_to_set;	
- 	clockid_t clockid_1, clockid_2;
- 	struct timespec tp1, tp2;
-+	int i;
- 
- 	if (sysconf(_SC_CPUTIME) == -1) {
- 		printf("_POSIX_CPUTIME unsupported\n");
- 		return PTS_UNSUPPORTED;
- 	}
- 
--	if (clock_getcpuclockid(getpid(), &clockid_1) != 0) {
--		printf("clock_getcpuclockid(getpid(), ) failed\n");
--		return PTS_FAIL;
--	}
--	
--	if (clock_getcpuclockid(0, &clockid_2) != 0) {
--		printf("clock_getcpuclockid(0, ) failed\n");
--		return PTS_FAIL;
--	}
-+        for (i = 0; i < 10; i++) {
-+                if (clock_getcpuclockid(getpid(), &clockid_1) != 0) {
-+                        printf("clock_getcpuclockid(getpid(), ) failed\n");
-+                        return PTS_FAIL;
-+                }
- 
--	/* Set clockid_1 as a random value from 1 sec to 10 sec */
--	srand((unsigned long)time(NULL));
--	time_to_set = rand() * 10.0 / RAND_MAX + 1;
--	tp1.tv_sec = time_to_set;
--	tp1.tv_nsec = 0;	 
--	if (clock_settime(clockid_1, &tp1) != 0) {
--		printf("clock_getcpuclockid() returned an invalid clockid_t: "
--			"%d\n", clockid_1);
--		return PTS_FAIL;
--	}
--	/* Get the time of clockid_2, should almost the same as clockid_1 */
--	if (clock_gettime(clockid_2, &tp2) != 0) {
--		printf("clock_getcpuclockid() returned an invalid clockid_t: "
--			"%d\n", clockid_2);
--		return PTS_FAIL;
--	}
--	if (tp1.tv_sec == tp2.tv_sec)	
--	{
--		printf("Test PASSED\n");
--		return PTS_PASS;
--	}
--	printf("Test FAILED\n");
--	return PTS_FAIL;
--	
-+                if (clock_getcpuclockid(0, &clockid_2) != 0) {
-+                        printf("clock_getcpuclockid(0, ) failed\n");
-+                        return PTS_FAIL;
-+                }
-+
-+                /* Get the time of clockid_1 */
-+                if (clock_gettime(clockid_1, &tp1) != 0) {
-+                        printf("clock_getcpuclockid() returned an invalid clockid_t: "
-+                               "%d\n", clockid_1);
-+                        return PTS_FAIL;
-+                }
-+
-+                /* Get the time of clockid_2, should almost the same as clockid_1 */
-+                if (clock_gettime(clockid_2, &tp2) != 0) {
-+                        printf("clock_getcpuclockid() returned an invalid clockid_t: "
-+                               "%d\n", clockid_2);
-+                        return PTS_FAIL;
-+                }
-+
-+                if (tp1.tv_sec != tp2.tv_sec) {
-+                        printf("Test FAILED\n");
-+                        return PTS_FAIL;
-+                }
-+        }
-+
-+        printf("Test PASSED\n");
-+        return PTS_PASS;
- #endif
- }
--- 
-1.7.0.4
-
-
+> Perhaps something like this:
+> 
+> (Not compiled nor ran)
+> 
+> +static DEFINE_PER_CPU(hcall_trace_disable);
+> +
+>  void hcall_tracepoint_regfunc(void)
+>  {
+>  	hcall_tracepoint_refcount++;
+>  }
+> 
+>  void hcall_tracepoint_unregfunc(void)
+>  {
+>  	hcall_tracepoint_refcount--;
+>  }
+> 
+> +int __trace_disable_check(void)
+> +{
+> +	if (!hcall_tracepoint_refcount)
+> +		return 1;
+> +
+> +	if (get_cpu_var(hcall_trace_disable)) {
+> +		put_cpu_var(hcall_trace_disable);
+> +		return 1;
+> +	}
+> +
+> +	__get_cpu_var(hcall_trace_disable)++;
+> +
+> +	return 0;
+> +}
+> +
+> +void __trace_disable_put(void)
+> +{
+> +	__get_cpu_var(hcall_trace_disable)--;
+> +	put_cpu_var(hcall_trace_disable);
+> +}
+> +
+>  void __trace_hcall_entry(unsigned long opcode, unsigned long *args)
+>  {
+> +	int trace_disable;
+> +
+> +	if (__trace_disable_check())
+> +		return;
+> +
+>  	trace_hcall_entry(opcode, args);
+> +	__trace_disable_put();
+>  }
+> 
+>  void __trace_hcall_exit(long opcode, unsigned long retval,
+>  			unsigned long *retbuf)
+>  {
+> +	if (__trace_disable_check())
+> +		return;
+> +
+>  	trace_hcall_exit(opcode, retval, retbuf);
+> +	__trace_disable_put();
+>  }
+> 
+> -- Steve
+> 
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Download new Adobe(R) Flash(R) Builder(TM) 4
+The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
+Flex(R) Builder(TM)) enable the development of rich applications that run
+across multiple browsers and platforms. Download your free trials today!
+http://p.sf.net/sfu/adobe-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
