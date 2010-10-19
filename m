@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1P8pog-0006tl-3P
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 07:44:02 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8poe-0000z1-V7
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 07:44:02 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9L7hsH4001257
-	for <ltp-list@lists.sourceforge.net>; Thu, 21 Oct 2010 03:43:55 -0400
-Date: Thu, 21 Oct 2010 03:43:54 -0400 (EDT)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <122866027.1125401287647034456.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <761398766.1125341287646854846.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ext-hannu.m.heikkinen@nokia.com>) id 1P889G-0006S2-Mk
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 09:06:22 +0000
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P889E-0001Pe-T8
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 09:06:22 +0000
+Date: Tue, 19 Oct 2010 12:00:41 +0000
+From: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
+Message-ID: <20101019120040.GA6687@hannu-debian.research.nokia.com>
+References: <AANLkTinU5f4fco7BGZ0GiQoWVZNtGam7xZaT6gYTspML@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fix sched_getaffinity01 failure
+Content-Disposition: inline
+In-Reply-To: <AANLkTinU5f4fco7BGZ0GiQoWVZNtGam7xZaT6gYTspML@mail.gmail.com>
+Subject: Re: [LTP] PTY
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,75 +28,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ext ARJIT SHARMA <joyarjit@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi all, when I'm using LTP, sometimes the
-test syscalls/sched_getaffinity01 fails by
-giving the following output:
+On 18/10/10 08:56 +0200, ext ARJIT SHARMA wrote:
+> 
+> Hi
+> 
+> 
+>       this is the log of PTY testcase i am getting...
+> 
+>       all 3 tests ie. "pty01,ptem01 and hangup01"
+> 
+>       failing because ptsname() function call failed.....
+> 
+> 
+> 
+> INFO: creating /opt/ltp/results directory
+> If some fields are empty or look unusual you may have an old version.
+> Compare to the current minimal requirements in Documentation/Changes.
+> 
+> Linux 192.168.1.10 2.6.32 #1 SMP Fri Oct 8 16:13:17 IST 2010 armv7l unknown unknown GNU/Linux
+> 
+> Gnu C                  gcc (GCC) 4.5.0
+> Gnu make               3.81
+> util-linux             ng 2.16.1)
+> mount                  ng 2.16.1 (with libblkid support)
+> modutils               3.1
+> e2fsprogs              1.41.9
+> PPP                    2.4.4
+> Linux C Library        2.10.1
+> Dynamic linker (ldd)   2.10.1
+> Linux C++ Library      6.0.14
+> Procps                 3.2.7
+> Net-tools              1.60
+> iproute2              iproute2-ss100224
+> Console-tools          0.2.3
+> Sh-utils               5.2.1
+> Modules Loaded
+> 
+> free reports:
+>              total       used       free     shared    buffers     cached
+> Mem:        255252      28548     226704          0          0      18124
+> -/+ buffers/cache:      10424     244828
+> Swap:            0          0          0
+> 
+> /proc/cpuinfo
+> Processor              : ARMv7 Processor rev 1 (v7l)
+> processor              : 0
+> BogoMIPS            : 996.14
+> 
+> processor              : 1
+> BogoMIPS            : 996.14
+> 
+> Features : swp half thumb fastmult vfp edsp vfpv3 vfpv3d16
+> CPU implementer  : 0x41
+> CPU architecture: 7
+> CPU variant           : 0x1
+> CPU part                : 0xc09
+> CPU revision         : 1
+> 
+> Hardware               : ST-SPEAR1300-EVB
+> Revision                : 0000
+> Serial                      : 0000000000000000
 
-sched_getaffinity01    0  TINFO  :  system has 4 processor(s).
-sched_getaffinity01    0  TINFO  :  cpusetsize is 128
-sched_getaffinity01    0  TINFO  :  mask.__bits[0] = 15 
-sched_getaffinity01    1  TPASS  :  sched_getaffinity() succeed ,this process 29494 is running processor: 0
-sched_getaffinity01    2  TPASS  :  sched_getaffinity() succeed ,this process 29494 is running processor: 1
-sched_getaffinity01    3  TPASS  :  sched_getaffinity() succeed ,this process 29494 is running processor: 2
-sched_getaffinity01    4  TPASS  :  sched_getaffinity() succeed ,this process 29494 is running processor: 3
-sched_getaffinity01    5  TPASS  :  sched_getaffinity(0, len, (cpu_set_t *)-1): TEST_ERRNO=EFAULT(14): Bad address
-sched_getaffinity01    6  TPASS  :  sched_getaffinity(0, 0, mask): TEST_ERRNO=EINVAL(22): Invalid argument
-sched_getaffinity01    7  TFAIL  :  sched_getaffinity(getpid() + 1, len, mask): TEST_ERRNO=???(0): Success
+-clip-
+> <<<test_output>>>
+> pty01       1  TBROK  :  ptsname() call failed
+-clip-
+> ptem01      1  TBROK  :  ptsname() call failed
+-clip-
+> hangup01    1  TBROK  :  ptsname
+-clip-
 
-Seems that using ``getpid() + 1'' is not
-always correct, so I use another non-existed
-pid to replace ``getpid() + ''. 
+I guess u should run:
 
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
+# strace -f <testcase-bin>
 
----
- .../sched_getaffinity/sched_getaffinity01.c        |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+for having more detailed info regarding problem.
 
-diff --git a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
-index 7dfb0ec..aaa646d 100644
---- a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
-+++ b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
-@@ -41,7 +41,7 @@
- #include<stdio.h>
- #include<sys/types.h>
- #include<unistd.h>
--#define _GNU_SOURCE 
-+#define _GNU_SOURCE
- #define __USE_GNU
- #include<sched.h>
- #include<string.h>
-@@ -201,11 +201,10 @@ realloc:
- #endif
-                      QUICK_TEST(sched_getaffinity(0, len, (cpu_set_t *)-1));
-                      QUICK_TEST(sched_getaffinity(0, 0, mask));
--                     QUICK_TEST(sched_getaffinity(getpid() + 1, len, mask));
-+                     QUICK_TEST(sched_getaffinity(65535, len, mask));
- 		     CPU_FREE(mask);
-                 }
- 	}
-         cleanup();
- 	tst_exit();
- }
--
--- 
-1.7.3.1
+What does 
+# cat /proc/sys/kernel/pty/max
+say? If it is utterly small value, let's say 2..8, change it to eg:
+# echo 100 > /proc/sys/kernel/pty/max
 
--- 
-Quality Assurance Associate (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-
-TEL: +86-10-62608150
-WEB: http://www.redhat.com/
+br,
+Hannu
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Download new Adobe(R) Flash(R) Builder(TM) 4
+The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
+Flex(R) Builder(TM)) enable the development of rich applications that run
+across multiple browsers and platforms. Download your free trials today!
+http://p.sf.net/sfu/adobe-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
