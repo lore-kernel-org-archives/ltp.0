@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P8rU6-0005LJ-Kh
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 09:30:54 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8rU5-0005QK-L5
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 09:30:54 +0000
-Received: by wyb40 with SMTP id 40so4798973wyb.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P85oo-0003rx-EV
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 06:37:06 +0000
+Received: from mail-yw0-f47.google.com ([209.85.213.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P85on-00032y-1g
+	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 06:37:06 +0000
+Received: by ywl5 with SMTP id 5so1059360ywl.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 21 Oct 2010 02:30:47 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <122866027.1125401287647034456.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-References: <761398766.1125341287646854846.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<122866027.1125401287647034456.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Thu, 21 Oct 2010 02:30:47 -0700
-Message-ID: <AANLkTimCsPK0qPNnWwbi3uUDuBSebD=XTVGWa12J_ZHo@mail.gmail.com>
+	Mon, 18 Oct 2010 23:36:59 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1081)
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix sched_getaffinity01 failure
+In-Reply-To: <4CBD28A3.5000709@windriver.com>
+Date: Mon, 18 Oct 2010 23:36:55 -0700
+Message-Id: <5D6F1275-BDFB-4A5F-A313-5ECE5752028F@gmail.com>
+References: <4CBBAD30.6070403@windriver.com>
+	<AANLkTi=aC63h6rTNsqJ5tJ22FOuAR9+SLyp-vTW9KYDK@mail.gmail.com>
+	<4CBD28A3.5000709@windriver.com>
+Subject: Re: [LTP] [patch] sync_file_range01 change for arm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,89 +29,144 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: "lina.zhao" <lina.zhao@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Oct 21, 2010 at 12:43 AM, Caspar Zhang <czhang@redhat.com> wrote:
-> Hi all, when I'm using LTP, sometimes the
-> test syscalls/sched_getaffinity01 fails by
-> giving the following output:
->
-> sched_getaffinity01 =A0 =A00 =A0TINFO =A0: =A0system has 4 processor(s).
-> sched_getaffinity01 =A0 =A00 =A0TINFO =A0: =A0cpusetsize is 128
-> sched_getaffinity01 =A0 =A00 =A0TINFO =A0: =A0mask.__bits[0] =3D 15
-> sched_getaffinity01 =A0 =A01 =A0TPASS =A0: =A0sched_getaffinity() succeed=
- ,this process 29494 is running processor: 0
-> sched_getaffinity01 =A0 =A02 =A0TPASS =A0: =A0sched_getaffinity() succeed=
- ,this process 29494 is running processor: 1
-> sched_getaffinity01 =A0 =A03 =A0TPASS =A0: =A0sched_getaffinity() succeed=
- ,this process 29494 is running processor: 2
-> sched_getaffinity01 =A0 =A04 =A0TPASS =A0: =A0sched_getaffinity() succeed=
- ,this process 29494 is running processor: 3
-> sched_getaffinity01 =A0 =A05 =A0TPASS =A0: =A0sched_getaffinity(0, len, (=
-cpu_set_t *)-1): TEST_ERRNO=3DEFAULT(14): Bad address
-> sched_getaffinity01 =A0 =A06 =A0TPASS =A0: =A0sched_getaffinity(0, 0, mas=
-k): TEST_ERRNO=3DEINVAL(22): Invalid argument
-> sched_getaffinity01 =A0 =A07 =A0TFAIL =A0: =A0sched_getaffinity(getpid() =
-+ 1, len, mask): TEST_ERRNO=3D???(0): Success
->
-> Seems that using ``getpid() + 1'' is not
-> always correct, so I use another non-existed
-> pid to replace ``getpid() + ''.
->
-> Signed-off-by: Caspar Zhang <czhang@redhat.com>
->
+On Oct 18, 2010, at 10:12 PM, lina.zhao wrote:
+
+> now endianness has been checked! see the patch
+>> On Sun, Oct 17, 2010 at 7:13 PM, lina.zhao <lina.zhao@windriver.com> wrote:
+>>  
+>>> Hi,
+>>> 
+>>> arm use __NR_sync_file_range2 not __NR_sync_file_range for system call.
+>>> the test casecheck __NR_sync_file_range for arm,
+>>> So test react "System doesn't support" for arm.
+>>> but actually arm use __NR_sync_file_range2 to support the system call.
+>>> 
+>>> powerpc is big endian, arm is small endian, so the parameter dealing is
+>>> different.
+>>>    
+>> 
+>>    Not true. ARM can be biendian, just like MIPS...
+>>    A better test needs to be derived for endianness than this.
+>> -Garrett
+>> 
+>>  
+> 
+> From cc07d890ae71837512731a0bf31006db8d717f8a Mon Sep 17 00:00:00 2001
+> From: Lina Zhao <lina.zhao@windriver.com>
+> Date: Tue, 19 Oct 2010 10:44:39 +0800
+> Subject: [PATCH] sync_file_rang01.c changed for arm
+> 
 > ---
-> =A0.../sched_getaffinity/sched_getaffinity01.c =A0 =A0 =A0 =A0| =A0 =A05 =
-++---
-> =A01 files changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinit=
-y01.c b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
-> index 7dfb0ec..aaa646d 100644
-> --- a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
-> +++ b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
-> @@ -41,7 +41,7 @@
-> =A0#include<stdio.h>
-> =A0#include<sys/types.h>
-> =A0#include<unistd.h>
-> -#define _GNU_SOURCE
-> +#define _GNU_SOURCE
-> =A0#define __USE_GNU
-> =A0#include<sched.h>
-> =A0#include<string.h>
-> @@ -201,11 +201,10 @@ realloc:
-> =A0#endif
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0QUICK_TEST(sched_getaffinity(0=
-, len, (cpu_set_t *)-1));
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0QUICK_TEST(sched_getaffinity(0=
-, 0, mask));
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 QUICK_TEST(sched_getaffinity(ge=
-tpid() + 1, len, mask));
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 QUICK_TEST(sched_getaffinity(65=
-535, len, mask));
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 CPU_FREE(mask);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0 cleanup();
-> =A0 =A0 =A0 =A0tst_exit();
-> =A0}
+> .../syscalls/sync_file_range/sync_file_range01.c   |   36 ++++++++++++++------
+> 1 files changed, 25 insertions(+), 11 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
+> index 53619b5..a66ce85 100644
+> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
+> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
+> @@ -96,12 +96,13 @@
+> #include "usctest.h"
+> #include "linux_syscall_numbers.h"
+> 
+> -#if defined(__powerpc__) || defined(__powerpc64__)
+> +#if defined(__powerpc__) || defined(__powerpc64__)|| defined(__arm__)
+> #ifndef __NR_sync_file_range2
+> #define __NR_sync_file_range2 -1	//DUMMY VALUE
+> int arch_support = 0;		//Architecure is not supported
+> #else
+> int arch_support = 1;		//Architecture is supported
+> +char call_num = 1;		//Use __NR_sync_file_range2 as syscall
+> #endif
+> #else
+> #ifndef __NR_sync_file_range
+> @@ -109,6 +110,7 @@ int arch_support = 1;		//Architecture is supported
+> int arch_support = 0;
+> #else
+> int arch_support = 1;
+> +char call_num = 0;
+> #endif
+> #endif
+> 
+> @@ -139,7 +141,7 @@ struct test_data_t {
+> 	int error;
+> } test_data[] = {
+> 	{
+> 	&bfd, 0, 1, SYNC_FILE_RANGE_WRITE, EBADF}, {
+> 	&sfd, 0, 1, SYNC_FILE_RANGE_WAIT_AFTER, ESPIPE}, {
+> 	&filed, -1, 1, SYNC_FILE_RANGE_WAIT_BEFORE, EINVAL}, {
+> 	&filed, 0, -1, SYNC_FILE_RANGE_WRITE, EINVAL}, {
+> @@ -238,22 +240,33 @@ static inline long syncfilerange(int fd, off64_t offset, off64_t nbytes,
+> 				 unsigned int flags)
+> {
+> 
+> -#if (defined(__powerpc64__) || defined(__powerpc__)) && (__WORDSIZE==32)
+> +	if (call_num){
+> +#if (__WORDSIZE==64)
+> 
+> -	return syscall(__NR_sync_file_range2, fd, flags, (int)(offset >> 32),
+> -		       (int)offset, (int)(nbytes >> 32), (int)nbytes);
+> +	return syscall(__NR_sync_file_range2, fd, flags, offset, nbytes);
+> 
+> -#elif (defined(__powerpc64__) || defined(__powerpc__)) && (__WORDSIZE==64)
+> +#elif (__WORDSIZE==32)
+> 
+> -	return syscall(__NR_sync_file_range2, fd, flags, offset, nbytes);
+> -#else
+> +	if (check_endian())	//little_endian 
+> +		return syscall(__NR_sync_file_range2, fd, flags,(int)offset,
+> +                	(int)(offset >> 32),(int)nbytes,(int)(nbytes >> 32));
+> +	else			//big_endian
+> +		return syscall(__NR_sync_file_range2, fd, flags, (int)(offset >> 32),
+> +			(int)offset, (int)(nbytes >> 32), (int)nbytes);
+> +#endif
+> +	else
+> 
+> 	return syscall(__NR_sync_file_range, fd, offset, nbytes, flags);
+> -#endif
+> 
+> -	return 0;
+> }
+> 
+> +static int check_endian( void )
+> +{
+> +	int x = 1;
+> +	return ((char)(x) == x);
+> +}
+> +
+> +
+> /******************************************************************************/
+> /*                                                                            */
+> /* Function:    main                                                          */
+> @@ -294,7 +307,8 @@ int main(int ac,		/* number of command line parameters                      */
+> 	}
+> #else
+> 	/* For other archs, need kernel version > 2.6.16 */
+> -
+> +	if (arch_support)printf("arch supported!\n");
+> +	if (tst_kvercmp(2, 6, 17) < 0)printf("kernel cmp fail\n");
+> 	if (!arch_support || (tst_kvercmp(2, 6, 17) < 0)) {
+> 		tst_resm(TCONF, "System doesn't support execution of the test");
+> 		tst_exit();
 
-    Please try the modified version on git HEAD.
+	Close... here's one solution I've seen:
+
+http://c-faq.com/misc/endiantest.html
+
+	And FWIW this should be available as a generalized function / macro in include / lib .
 Cheers,
 -Garrett
-
----------------------------------------------------------------------------=
----
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
-
-http://p.sf.net/sfu/nokia-dev2dev
+------------------------------------------------------------------------------
+Download new Adobe(R) Flash(R) Builder(TM) 4
+The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
+Flex(R) Builder(TM)) enable the development of rich applications that run
+across multiple browsers and platforms. Download your free trials today!
+http://p.sf.net/sfu/adobe-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
