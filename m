@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PAYc0-0003Sk-DS
-	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 01:46:04 +0000
-Received: from out22.sjc.mx.trendmicro.com ([216.99.131.79])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PAYbx-0000KH-84
-	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 01:46:04 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.23])
-	by out22.sjc.mx.trendmicro.com (Postfix) with ESMTP id 4B49798041C
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <joyarjit@gmail.com>) id 1P8Rit-0003S9-FM
+	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 06:00:27 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P8Riq-0004j9-UT
+	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 06:00:27 +0000
+Received: by wyb40 with SMTP id 40so3348209wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 26 Oct 2010 01:45:54 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id CB868114B85B
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 26 Oct 2010 01:45:53 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Oct 2010 10:45:51 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Tue, 26 Oct 2010 10:45:53 +0900
-Message-ID: <000001cb74af$8658b390$930a1ab0$@co.jp>
+	Tue, 19 Oct 2010 23:00:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] About POSIX "sched_yield/1-1.c" buld failure
+Date: Wed, 20 Oct 2010 11:30:19 +0530
+Message-ID: <AANLkTinR7pDvxfq32hkVSFq-wrkiJk-9O1JPkehpKQw-@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] smack testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,210 +25,389 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3863610932828769689=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, Garrett Cooper <yanegomi@gmail.com>
+
+--===============3863610932828769689==
+Content-Type: multipart/alternative; boundary=001636416b97c876130493061ff5
+
+--001636416b97c876130493061ff5
+Content-Type: text/plain; charset=ISO-8859-1
 
 Hi,
 
-I reported that build failure of POSIX test set "conformance/interfaces/
-sched_yield/1-1" was still left in RHEL4.8 system:
+     Inside the smack testcase, the sript "smack_common.sh" has a function
+named "check_onlycap()" , please tell me its functionality  as every time
+this function is reporting that   onlycap is "" not the expected "".
 
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10713.html
-
-In addition, build of the following tests failed by the reason of 
-"undefined reference":
-------------
-conformance/interfaces/pthread_barrierattr_getpshared/1-1
-conformance/interfaces/pthread_barrierattr_getpshared/2-1
-conformance/interfaces/pthread_barrierattr_init/1-1
-conformance/interfaces/pthread_barrierattr_setpshared/1-1
-conformance/interfaces/pthread_cond_broadcast/1-2
-conformance/interfaces/pthread_cond_broadcast/2-3
-conformance/interfaces/pthread_cond_destroy/2-1
-conformance/interfaces/pthread_cond_init/1-2
-conformance/interfaces/pthread_cond_init/2-2
-conformance/interfaces/pthread_cond_init/4-1
-conformance/interfaces/pthread_cond_init/4-2
-conformance/interfaces/pthread_cond_signal/1-2
-conformance/interfaces/pthread_cond_timedwait/2-4
-conformance/interfaces/pthread_cond_timedwait/2-5
-conformance/interfaces/pthread_cond_timedwait/2-6
-conformance/interfaces/pthread_cond_timedwait/2-7
-conformance/interfaces/pthread_cond_timedwait/4-2
-conformance/interfaces/pthread_cond_wait/2-2
-conformance/interfaces/pthread_cond_wait/2-3
-conformance/interfaces/pthread_condattr_getclock/1-1
-conformance/interfaces/pthread_condattr_getclock/1-2
-conformance/interfaces/pthread_condattr_setclock/1-1
-conformance/interfaces/pthread_condattr_setclock/1-2
-conformance/interfaces/pthread_condattr_setclock/1-3
-conformance/interfaces/pthread_condattr_setclock/2-1
-conformance/interfaces/pthread_getschedparam/1-3
-conformance/interfaces/pthread_mutex_getprioceiling/1-1
-conformance/interfaces/pthread_mutexattr_getprioceiling/1-1
-conformance/interfaces/pthread_mutexattr_getprioceiling/1-2
-conformance/interfaces/pthread_mutexattr_getprioceiling/3-1
-conformance/interfaces/pthread_mutexattr_getprotocol/1-1
-conformance/interfaces/pthread_mutexattr_getprotocol/1-2
-conformance/interfaces/pthread_mutexattr_setprioceiling/1-1
-conformance/interfaces/pthread_mutexattr_setprioceiling/3-1
-conformance/interfaces/pthread_mutexattr_setprioceiling/3-2
-conformance/interfaces/pthread_mutexattr_setprotocol/1-1
-conformance/interfaces/pthread_mutexattr_setprotocol/3-1
-conformance/interfaces/pthread_mutexattr_setprotocol/3-2
-conformance/interfaces/pthread_setschedprio/1-1
-conformance/interfaces/sched_yield/1-1
-------------
-
-The environment is as follows:
-  - RHEL4.8 --- (x86, x86_64, ia64)
-  - kernel  --- kernel-2.6.9-89.EL
-  - glibc   --- glibc-2.3.4-2.43
-
-
-But I found out a method of avoidance of some of these failures.
-And I succeeded to build "conformance/interfaces/sched_yield/1-1".
-
-
-
-For example, the log of "conformance/interfaces/
-pthread_barrierattr_getpshared/1-1" is as follows:
-------------
-conformance/interfaces/pthread_barrierattr_getpshared/1-1 compile FAILED;
-SKIPPING
-/tmp/cc8gB5Qj.o(.text+0x3e): In function `main':
-: undefined reference to `pthread_barrierattr_getpshared'
-collect2: ld returned 1 exit status
-------------
-
-I extracted insufficient functions from these logs:
-------------
-pthread_barrierattr_getpshared
-pthread_condattr_getclock
-pthread_condattr_setcloc
-pthread_condattr_setclock
-pthread_mutex_getprioceiling
-pthread_mutexattr_getprioceiling
-pthread_mutexattr_getprotocol
-pthread_mutexattr_setprioceiling
-pthread_mutexattr_setprotocol
-pthread_setaffinity_np
-pthread_setschedprio
-------------
-
-In RHEL3.x/RHEL4.x systems, some of these functions were included in 
-nptl-devel package.
-
-I did the followings:
-  1. Installed nptl-devel package.
-
-  2. Exported LIBRARY_PATH:
-       export LIBRARY_PATH=/usr/lib/nptl
-       export LIBRARY_PATH=/usr/lib64/nptl       ---(in x86_64)
-
-  3. Added "-lpthread" to "conformance/interfaces/lio_listio/LDLIBS" file.
-
-
-Is the method mentioned above right?
+the log of the testcase is as follows---
 
 
 
 
+INFO: creating /opt/ltp/results directory
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+
+Linux 192.168.1.10 2.6.32 #2 SMP Tue Oct 19 17:34:35 IST 2010 armv7l unknown
+unknown GNU/Linux
+
+Gnu C                  gcc (GCC) 4.5.0
+Gnu make               3.81
+util-linux             ng 2.16.1)
+mount                  ng 2.16.1 (with libblkid support)
+modutils               3.1
+e2fsprogs              1.41.9
+PPP                    2.4.4
+Linux C Library        2.10.1
+Dynamic linker (ldd)   2.10.1
+Linux C++ Library      6.0.14
+Procps                 3.2.7
+Net-tools              1.60
+iproute2              iproute2-ss100224
+Console-tools          0.2.3
+Sh-utils               5.2.1
+Modules Loaded
+free reports:
+             total       used       free     shared    buffers     cached
+Mem:        255368      21240     234128          0          0      11764
+-/+ buffers/cache:       9476     245892
+Swap:            0          0          0
+/proc/cpuinfo
+Processor : ARMv7 Processor rev 1 (v7l)
+processor : 0
+BogoMIPS : 996.14
+processor : 1
+BogoMIPS : 996.14
+Features : swp half thumb fastmult vfp edsp vfpv3 vfpv3d16
+CPU implementer : 0x41
+CPU architecture: 7
+CPU variant : 0x1
+CPU part : 0xc09
+CPU revision : 1
+Hardware : ST-SPEAR1300-EVB
+Revision : 0000
+Serial  : 0000000000000000
+remove test cases which require the block device.
+You can specify it with option -b
+COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 1255     -n 1255  -p  -f
+/tmp/ltp-MqPLzA1261/alltests -l /opt/ltp/results/smack.result  -C
+/opt/ltp/output/LTP_RUN_ON-smack.result.failed
+LOG File: /opt/ltp/results/smack.result
+FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-smack.result.failed
+Running tests.......
+<<<test_start>>>
+tag=smack_set_ambient stime=618
+cmdline="smack_set_ambient.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=1 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_current stime=618
+cmdline="smack_set_current.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=1 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_doi stime=619
+cmdline=" smack_set_doi.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=2 cstime=6
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_netlabel stime=619
+cmdline="smack_set_netlabel.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=3 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_socket_labels stime=619
+cmdline="smack_set_socket_labels"
+contacts=""
+analysis=exit
+<<<test_output>>>
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_cipso stime=619
+cmdline=" smack_set_cipso.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=2 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_direct stime=619
+cmdline="smack_set_direct.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_load stime=619
+cmdline=" smack_set_load.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=1 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_set_onlycap stime=619
+cmdline="smack_set_onlycap.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=6
+<<<test_end>>>
+<<<test_start>>>
+tag=smack_file_access stime=619
+cmdline="smack_file_access.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+The smack label reported for /smack/onlycap is "", not the expected "".
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=1 cstime=6
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20100131
+
+       ###############################################################"
+
+            Done executing testcases."
+            LTP Version:  LTP-20100131
+       ###############################################################"
 
 
 
----
-postscript:
 
-Now, build of the following tests failed even if I took the method 
-mentioned above:
-------------
-conformance/interfaces/pthread_mutex_getprioceiling/1-1
-conformance/interfaces/pthread_mutexattr_getprioceiling/1-1
-conformance/interfaces/pthread_mutexattr_getprioceiling/1-2
-conformance/interfaces/pthread_mutexattr_getprioceiling/3-1
-conformance/interfaces/pthread_mutexattr_getprotocol/1-1
-conformance/interfaces/pthread_mutexattr_getprotocol/1-2
-conformance/interfaces/pthread_mutexattr_setprioceiling/1-1
-conformance/interfaces/pthread_mutexattr_setprioceiling/3-1
-conformance/interfaces/pthread_mutexattr_setprioceiling/3-2
-conformance/interfaces/pthread_mutexattr_setprotocol/1-1
-conformance/interfaces/pthread_mutexattr_setprotocol/3-1
-conformance/interfaces/pthread_mutexattr_setprotocol/3-2
-------------
+-- 
+Best Regards,
+Arjit Sharma.
 
-The insufficient functions are as follows:
-------------
-pthread_mutex_getprioceiling
-pthread_mutexattr_getprotocol
-pthread_mutexattr_getprioceiling
-pthread_mutexattr_setprioceiling
-------------
+--001636416b97c876130493061ff5
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-The man-page of these functions exist, but the definitions don't exist 
-in header files.
-------------
-[root@RHEL48-LTP-EM64T ~]# grep -r pthread_mutex_getprioceiling /usr/include
-[root@RHEL48-LTP-EM64T ~]# grep -r pthread_mutexattr_getprotocol
-/usr/include
-[root@RHEL48-LTP-EM64T ~]# grep -r pthread_mutexattr_getprioceiling
-/usr/include
-[root@RHEL48-LTP-EM64T ~]# grep -r pthread_mutexattr_setprioceiling
-/usr/include
-[root@RHEL48-LTP-EM64T ~]# 
-------------
+<div>Hi,</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 Inside the smack testcase, the sript &quot;smack_common.s=
+h&quot; has a function named &quot;check_onlycap()&quot; , please tell me i=
+ts functionality=A0 as every time this function is reporting=A0that=A0=A0 o=
+nlycap is &quot;&quot; not the expected &quot;&quot;.</div>
 
-And there aren't these functions in libraries.
-------------
-[root@RHEL48-LTP-EM64T ~]# nm /usr/lib/*.a | grep pthread_mutex
-nm: vsnprintf_nonpic.o: no symbols
-nm: mt_support.o: no symbols
-nm: snprintf.o: no symbols
-[...]
-nm: strtol.o: no symbols
-nm: strtoul.o: no symbols
-nm: cmu_compat.o: no symbols
+<div>=A0</div>
+<div>the log of the testcase is as follows---</div>
+<div>=A0</div>
+<div>=A0</div>
+<div>=A0</div>
+<div>=A0</div>
+<div>INFO: creating /opt/ltp/results directory<br>If some fields are empty =
+or look unusual you may have an old version.<br>Compare to the current mini=
+mal requirements in Documentation/Changes.<br>=A0<br>Linux 192.168.1.10 2.6=
+.32 #2 SMP Tue Oct 19 17:34:35 IST 2010 armv7l unknown unknown GNU/Linux<br=
+>
+=A0<br>Gnu C=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 gcc (GCC) 4=
+.5.0<br>Gnu make=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 3.81<br>util-lin=
+ux=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ng 2.16.1)<br>mount=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ng 2.16.1 (with libblkid support)<br>m=
+odutils=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 3.1<br>e2fsprogs=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1.41.9<br>
+PPP=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 2.4.4<br>Linux=
+ C Library=A0=A0=A0=A0=A0=A0=A0 2.10.1<br>Dynamic linker (ldd)=A0=A0 2.10.1=
+<br>Linux C++ Library=A0=A0=A0=A0=A0 6.0.14<br>Procps=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 3.2.7<br>Net-tools=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0 1.60<br>iproute2=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 iprout=
+e2-ss100224<br>
+Console-tools=A0=A0=A0=A0=A0=A0=A0=A0=A0 0.2.3<br>Sh-utils=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 5.2.1<br>Modules Loaded=A0=A0=A0=A0=A0=A0=A0=A0=
+ </div>
+<div>free reports:<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 total=A0=A0=A0=
+=A0=A0=A0 used=A0=A0=A0=A0=A0=A0 free=A0=A0=A0=A0 shared=A0=A0=A0 buffers=
+=A0=A0=A0=A0 cached<br>Mem:=A0=A0=A0=A0=A0=A0=A0 255368=A0=A0=A0=A0=A0 2124=
+0=A0=A0=A0=A0 234128=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 0=A0=A0=A0=A0=A0 11764<br>-/+ buffers/cache:=A0=A0=A0=A0=A0=A0 9476=A0=
+=A0=A0=A0 245892<br>
+Swap:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 0</div>
+<div>/proc/cpuinfo<br>Processor=A0: ARMv7 Processor rev 1 (v7l)<br>processo=
+r=A0: 0<br>BogoMIPS=A0: 996.14</div>
+<div>processor=A0: 1<br>BogoMIPS=A0: 996.14</div>
+<div>Features=A0: swp half thumb fastmult vfp edsp vfpv3 vfpv3d16 <br>CPU i=
+mplementer=A0: 0x41<br>CPU architecture: 7<br>CPU variant=A0: 0x1<br>CPU pa=
+rt=A0: 0xc09<br>CPU revision=A0: 1</div>
+<div>Hardware=A0: ST-SPEAR1300-EVB<br>Revision=A0: 0000<br>Serial=A0=A0: 00=
+00000000000000<br>remove test cases which require the block device.<br>You =
+can specify it with option -b<br>COMMAND:=A0=A0=A0 /opt/ltp/bin/ltp-pan=A0 =
+-e -S=A0=A0 -a 1255=A0=A0=A0=A0 -n 1255=A0 -p=A0 -f /tmp/ltp-MqPLzA1261/all=
+tests -l /opt/ltp/results/smack.result=A0 -C /opt/ltp/output/LTP_RUN_ON-sma=
+ck.result.failed<br>
+LOG File: /opt/ltp/results/smack.result<br>FAILED COMMAND File: /opt/ltp/ou=
+tput/LTP_RUN_ON-smack.result.failed<br>Running tests.......<br>&lt;&lt;&lt;=
+test_start&gt;&gt;&gt;<br>tag=3Dsmack_set_ambient stime=3D618<br>cmdline=3D=
+&quot;smack_set_ambient.sh&quot;<br>
+contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&g=
+t;&gt;<br>The smack label reported for /smack/onlycap is &quot;&quot;, not =
+the expected &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>i=
+nitiation_status=3D&quot;ok&quot;<br>
+duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno<br>=
+cutime=3D1 cstime=3D5<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_current stime=3D618<br>cmdline=3D&q=
+uot;smack_set_current.sh&quot;<br>
+contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&g=
+t;&gt;<br>The smack label reported for /smack/onlycap is &quot;&quot;, not =
+the expected &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>i=
+nitiation_status=3D&quot;ok&quot;<br>
+duration=3D1 termination_type=3Dexited termination_id=3D1 corefile=3Dno<br>=
+cutime=3D1 cstime=3D5<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_doi stime=3D619<br>cmdline=3D&quot;=
+=A0smack_set_doi.sh&quot;<br>
+contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&g=
+t;&gt;<br>The smack label reported for /smack/onlycap is &quot;&quot;, not =
+the expected &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>i=
+nitiation_status=3D&quot;ok&quot;<br>
+duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno<br>=
+cutime=3D2 cstime=3D6<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_netlabel stime=3D619<br>cmdline=3D&=
+quot;smack_set_netlabel.sh&quot;<br>
+contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&g=
+t;&gt;<br>The smack label reported for /smack/onlycap is &quot;&quot;, not =
+the expected &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>i=
+nitiation_status=3D&quot;ok&quot;<br>
+duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno<br>=
+cutime=3D3 cstime=3D3<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_socket_labels stime=3D619<br>cmdlin=
+e=3D&quot;smack_set_socket_labels&quot;<br>
+contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&g=
+t;&gt;<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&=
+quot;ok&quot;<br>duration=3D0 termination_type=3Dexited termination_id=3D0 =
+corefile=3Dno<br>
+cutime=3D0 cstime=3D0<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_cipso stime=3D619<br>cmdline=3D&quo=
+t;=A0smack_set_cipso.sh&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit=
+<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+The smack label reported for /smack/onlycap is &quot;&quot;, not the expect=
+ed &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_=
+status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited terminati=
+on_id=3D1 corefile=3Dno<br>
+cutime=3D2 cstime=3D4<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_direct stime=3D619<br>cmdline=3D&qu=
+ot;smack_set_direct.sh&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit<=
+br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+The smack label reported for /smack/onlycap is &quot;&quot;, not the expect=
+ed &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_=
+status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited terminati=
+on_id=3D1 corefile=3Dno<br>
+cutime=3D0 cstime=3D4<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_load stime=3D619<br>cmdline=3D&quot=
+;=A0smack_set_load.sh&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit<b=
+r>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+The smack label reported for /smack/onlycap is &quot;&quot;, not the expect=
+ed &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_=
+status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited terminati=
+on_id=3D1 corefile=3Dno<br>
+cutime=3D1 cstime=3D5<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_set_onlycap stime=3D619<br>cmdline=3D&q=
+uot;smack_set_onlycap.sh&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexi=
+t<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+The smack label reported for /smack/onlycap is &quot;&quot;, not the expect=
+ed &quot;&quot;.<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_=
+status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexited terminati=
+on_id=3D1 corefile=3Dno<br>
+cutime=3D0 cstime=3D6<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;te=
+st_start&gt;&gt;&gt;<br>tag=3Dsmack_file_access stime=3D619<br>cmdline=3D&q=
+uot;smack_file_access.sh&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexi=
+t<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+The smack label reported for /smack/onlycap is &quot;&quot;, not the expect=
+ed &quot;&quot;.<br>incrementing stop<br>&lt;&lt;&lt;execution_status&gt;&g=
+t;&gt;<br>initiation_status=3D&quot;ok&quot;<br>duration=3D0 termination_ty=
+pe=3Dexited termination_id=3D1 corefile=3Dno<br>
+cutime=3D1 cstime=3D6<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>INFO: ltp-pan =
+reported some tests FAIL<br>LTP Version: LTP-20100131<br>=A0=A0=A0=A0=A0=A0=
+=A0 <br>=A0=A0=A0=A0=A0=A0 ################################################=
+###############&quot;<br>=A0=A0=A0=A0=A0=A0=A0 <br>
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Done executing testcases.&quot;<br>=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 LTP Version:=A0 LTP-20100131<br>=A0=A0=A0=A0=A0=
+=A0 ###############################################################&quot;<b=
+r>=A0=A0=A0=A0=A0=A0 <br></div>
+<div>=A0</div>
+<div><br clear=3D"all"><br>-- <br></div>
+<div>Best Regards,</div>
+<div>Arjit Sharma.</div><br>
 
-[root@RHEL48-LTP-EM64T ~]# nm /usr/lib64/*.a | grep
-pthread_mutexattr_getprotocol
-nm: getopt.o: no symbols
-nm: getopt1.o: no symbols
-nm: aesopt.o: no symbols
-[...]
-nm: strtol.o: no symbols
-nm: strtoul.o: no symbols
-nm: cmu_compat.o: no symbols
-
-[root@RHEL48-LTP-EM64T ~]# nm /usr/lib64/nptl/*.a | grep
-pthread_mutex_getprioceiling
-nm: old_atexit.o: no symbols
-nm: strtoll.o: no symbols
-nm: strtoull.o: no symbols
-[...]
-nm: ptw-pwrite64.o: no symbols
-nm: pthread_kill_other_threads.o: no symbols
-nm: shm_unlink.o: no symbols
-------------
-
-I think that I have to investigate about these a little more.
+--001636416b97c876130493061ff5--
 
 
-
-Regards--
-
--Tomonori Mitani
-
-
+--===============3863610932828769689==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Download new Adobe(R) Flash(R) Builder(TM) 4
+The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
+Flex(R) Builder(TM)) enable the development of rich applications that run
+across multiple browsers and platforms. Download your free trials today!
+http://p.sf.net/sfu/adobe-dev2dev
+--===============3863610932828769689==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3863610932828769689==--
+
