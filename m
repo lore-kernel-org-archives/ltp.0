@@ -1,14 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1P9Cff-00047A-G7
-	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 08:08:15 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1P9Cff-0005SL-8v@sfs-web-6.v29.ch3.sourceforge.com>
-Date: Fri, 22 Oct 2010 08:08:15 +0000
-Subject: [LTP] [ ltp-Patches-3092794 ] genpow: array index overrun
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1P8UUm-0006BH-47
+	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 08:58:04 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P8UUk-0006yB-BV
+	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 08:58:03 +0000
+Message-ID: <4CBEAF2A.1070101@cn.fujitsu.com>
+Date: Wed, 20 Oct 2010 16:58:18 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] About LTP open_posix_testsuite/functional/threads/robust_test
+	cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,41 +26,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
-Patches item #3092794, was opened at 2010-10-22 12:08
-Message generated for change (Tracker Item Submitted) made by yustasswamp
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3092794&group_id=3382
+Hi Garrett
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Testcases
-Group: Miscellaneous
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Alexey Makhalov (yustasswamp)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: genpow: array index overrun
+In open_posix_testsuite/functional/threads/robust_test category,
+all test cases don't follow the POSIX standard. They call many 
+functions that glibc doesn't even support. I wonder why not just
+get rid of these test cases.
 
-Initial Comment:
-genpow.c:110 
-create_Data_file function
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3092794&group_id=3382
+-- 
+Regards
+Gui Jianfeng
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Download new Adobe(R) Flash(R) Builder(TM) 4
+The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
+Flex(R) Builder(TM)) enable the development of rich applications that run
+across multiple browsers and platforms. Download your free trials today!
+http://p.sf.net/sfu/adobe-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
