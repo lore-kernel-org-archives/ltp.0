@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <benh@kernel.crashing.org>) id 1P7mbz-0000LL-EK
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 10:06:35 +0000
-Received: from gate.crashing.org ([63.228.1.57])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P7mbx-000773-KC
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 10:06:35 +0000
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-In-Reply-To: <4CBBBCB0.8070406@cn.fujitsu.com>
-References: <4C85A88D.10700@cn.fujitsu.com>
-	<1285689961.11429.12.camel@subratamodak.linux.ibm.com>
-	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>
-	<4CB55FE6.6000604@cn.fujitsu.com> <4CB5615C.4070406@cn.fujitsu.com>
-	<4CB59825.7060504@cn.fujitsu.com>
-	<1286995066.4893.17.camel@subratamodak.linux.ibm.com>
-	<4CBBBCB0.8070406@cn.fujitsu.com>
-Date: Mon, 18 Oct 2010 21:05:44 +1100
-Message-ID: <1287396344.2341.6.camel@pasglop>
-Mime-Version: 1.0
-Subject: Re: [LTP] BUG: dead loop in PowerPC hcall tracepoint (Was: [PATCH
- v2] Add ftrace-stress-test to LTP)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <joyarjit@gmail.com>) id 1P8sBD-0001AD-85
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 10:15:27 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P8sBA-000664-Mg
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 10:15:27 +0000
+Received: by wwb17 with SMTP id 17so3696452wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Oct 2010 03:15:18 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 21 Oct 2010 15:45:18 +0530
+Message-ID: <AANLkTintyGapn9bbw+hVXbvo7veQhJVmxLgssyWhKOpJ@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] Network_stress
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,497 +25,560 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1237361820011671946=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Zefan <lizf@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Paul Mackerras <paulus@samba.org>, Anton Blanchard <anton@samba.org>, Ingo Molnar <mingo@elte.hu>, Peter@suse.de
+To: ltp-list@lists.sourceforge.net, Garrett Cooper <yanegomi@gmail.com>
+Cc: ajay.khandelwal@st.com
 
-On Mon, 2010-10-18 at 11:19 +0800, Li Zefan wrote:
-> Cc: Steven
-> Cc: Ingo
-> Cc: Peter
-> Cc: Anton Blanchard <anton@samba.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> 
-> For those Cced, More information here:
-> 
-> http://marc.info/?l=ltp-list&m=128569007015044&w=2
-> http://marc.info/?l=ltp-list&m=128696942432669&w=2
+--===============1237361820011671946==
+Content-Type: multipart/alternative; boundary=001636498bb98a95d704931dcd74
 
-Hrm... that's nasty...
+--001636498bb98a95d704931dcd74
+Content-Type: text/plain; charset=ISO-8859-1
 
-Should we have some kind of flag to avoid spin_yield() calling H_CEDE
-(or whatever it calls) when tracing an hcall to prevent that ? Anton,
-Paulus, any other smart idea ? A TLF_ would do...
+Hi,
 
-Cheers,
-Ben.
+     During the execution of network_stress tests, after configuring the
+kernel and all of the services as required.
 
-> 02:37, Subrata Modak wrote:
-> > I get a bigger trace with this patch:
-> > 
-> > Unable to handle kernel paging request for data at address 0x00000000
-> > Faulting instruction address: 0xc0000000002133f0
-> > cpu 0x2: Vector: 300 (Data Access) at [c0000000d9f8b560]
-> >     pc: c0000000002133f0: .trace_clock_global+0xb4/0x2a0
-> >     lr: c000000000213458: .trace_clock_global+0x11c/0x2a0
-> >     sp: c0000000d9f8b7e0
-> >    msr: 800000000200b032
-> >    dar: 0
-> >  dsisr: 40000000
-> >   current = 0xc0000000d9f7d100
-> >   paca    = 0xc000000007fc8e00
-> >     pid   = 1667, comm = ftrace_stack_tr
-> > Unrecoverable FP Unavailable Exception 800 at c0000000016a9540
-> > cpu 0x0: Vector: 8Unable to handle0 kernel paging r0 equest for data (at
-> > address 0xbffFffffe0175b688
-> > PU UnavaFaulting instruciltion address: 0xac0000000001017fcb
-> > le) at [c0000000d9f8a6a0]
-> > p   pc: c0000000016a9540: etnetre r?  ?f ofro rh ehlepl
-> > 
-> > 
-> >     lr: [c000000000016a9540: key_type_dns_resolver+0x15110/0x365f8
-> >     sp: c0000000018804e8
-> >    msr: 8000000000001032
-> >   current = 0xc0000000d838d100
-> >   paca    = 0xc000000007fc8000
-> >     pid   = 1668, comm = ftrace_stack_ma
-> >  pid   = 1668, cc0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > [c0000000d9f8b9b0] c000000000223178 .ring_buffer_lock_reserve
-> > +0x24c/0x2a4
-> > [c0000000d9f8ba40] c00000000022d6f4 .trace_buffer_lock_reserve+0x58/0xe4
-> > [c0000000d9f8baf0] c00000000022ec9c .trace_current_buffer_lock_reserve
-> > +0x44/0x6c
-> > [c0000000d9f8bb80] c000000000011c5c .ftrace_raw_event_hcall_entry
-> > +0x7c/0x144
-> > [c0000000d9f8bc40] c000000000096624 .__trace_hcall_entry+0xa0/0xec
-> > [c0000000d9f8bcd0] c00000000009786c .plpar_hcall_norets+0x50/0xd0
-> > [c0000000d9f8bd40] c0000000000749c8 .__spin_yield+0x130/0x15c
-> > [c0000000d9f8bdd0] c000000000213458 .trace_clock_global+0x11c/0x2a0
-> 
-> This is a dead loop:
-> 
-> trace_hcall_entry() -> trace_clock_global() -> trace_hcall_entry() ..
-> 
-> And this is a PPC specific bug. Hope some ppc guys will fix it?
-> Or we kill trace_clock_global() if no one actually uses it..
-> 
-> --
-> Li Zefan
-> 
-> > [c0000000d9f8be90] c0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > [c0000000d9f8bfa0] c000000000223178 .ring_buffer_lock_reserve
-> > +0x24c/0x2a4
-> > [c0000000d9f8c030] c00000000022d6f4 .trace_buffer_lock_reserve+0x58/0xe4
-> > [c0000000d9f8c0e0] c00000000022ec9c .trace_current_buffer_lock_reserve
-> > +0x44/0x6c
-> > [c0000000d9f8c170] c000000000011c5c .ftrace_raw_event_hcall_entry
-> > +0x7c/0x144
-> > [c0000000d9f8c230] c000000000096624 .__trace_hcall_entry+0xa0/0xec
-> > [c0000000d9f8c2c0] c00000000009786c .plpar_hcall_norets+0x50/0xd0
-> > [c0000000d9f8c330] c0000000000749c8 .__spin_yield+0x130/0x15c
-> > [c0000000d9f8c3c0] c000000000213458 .trace_clock_global+0x11c/0x2a0
-> > [c0000000d9f8c480] c0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > [c0000000d9f8c590] c000000000223178 .ring_buffer_lock_reserve
-> > +0x24c/0x2a4
-> > [c0000000d9f8c620] c00000000022d6f4 .trace_buffer_lock_reserve+0x58/0xe4
-> > [c0000000d9f8c6d0] c00000000022ec9c .trace_current_buffer_lock_reserve
-> > +0x44/0x6c
-> > [c0000000d9f8c760] c000000000011c5c .ftrace_raw_event_hcall_entry
-> > +0x7c/0x144
-> > [c0000000d9f8c820] c000000000096624 .__trace_hcall_entry+0xa0/0xec
-> > [c0000000d9f8c8b0] c00000000009786c .plpar_hcall_norets+0x50/0xd0
-> > [c0000000d9f8c920] c0000000000749c8 .__spin_yield+0x130/0x15c
-> > [c0000000d9f8c9b0] c000000000213458 .trace_clock_global+0x11c/0x2a0
-> > [c0000000d9f8ca70] c0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > [c0000000d9f8cb80] c000000000223178 .ring_buffer_lock_reserve
-> > +0x24c/0x2a4
-> > [c0000000d9f8cc10] c00000000022d6f4 .trace_buffer_lock_reserve+0x58/0xe4
-> > [c0000000d9f8ccc0] c00000000022ec9c .trace_current_buffer_lock_reserve
-> > +0x44/0x6c
-> > [c0000000d9f8cd50] c000000000011c5c .ftrace_raw_event_hcall_entry
-> > +0x7c/0x144
-> > [c0000000d9f8ce10] c000000000096624 .__trace_hcall_entry+0xa0/0xec
-> > [c0000000d9f8cea0] c00000000009786c .plpar_hcall_norets+0x50/0xd0
-> > [c0000000d9f8cf10] c0000000000749c8 .__spin_yield+0x130/0x15c
-> > [c0000000d9f8cfa0] c000000000213458 .trace_clock_global+0x11c/0x2a0
-> > [c0000000d9f8d060] c0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > [c0000000d9f8d170] c000000000223178 .ring_buffer_lock_reserve
-> > +0x24c/0x2a4
-> > [c0000000d9f8d200] c00000000022d6f4 .trace_buffer_lock_reserve+0x58/0xe4
-> > [c0000000d9f8d2b0] c00000000022ec9c .trace_current_buffer_lock_reserve
-> > +0x44/0x6c
-> > [c0000000d9f8d340] c000000000011c5c .ftrace_raw_event_hcall_entry
-> > +0x7c/0x144
-> > [c0000000d9f8d400] c000000000096624 .__trace_hcall_entry+0xa0/0xec
-> > [c0000000d9f8d490] c00000000009786c .plpar_hcall_norets+0x50/0xd0
-> > [c0000000d9f8d500] c0000000000749c8 .__spin_yield+0x130/0x15c
-> > [c0000000d9f8d590] c000000000213458 .trace_clock_global+0x11c/0x2a0
-> > [c0000000d9f8d650] c0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > [c0000000d9f8d760] c000000000223178 .ring_buffer_lock_reserve
-> > +0x24c/0x2a4
-> > [c0000000d9f8d7f0] c00000000022d6f4 .trace_buffer_lock_reserve+0x58/0xe4
-> > [c0000000d9f8d8a0] c00000000022ec9c .trace_current_buffer_lock_reserve
-> > +0x44/0x6c
-> > [c0000000d9f8d930] c000000000011c5c .ftrace_raw_event_hcall_entry
-> > +0x7c/0x144
-> > [c0000000d9f8d9f0] c000000000096624 .__trace_hcall_entry+0xa0/0xec
-> > [c0000000d9f8da80] c00000000009786c .plpar_hcall_norets+0x50/0xd0
-> > [c0000000d9f8daf0] c0000000000749c8 .__spin_yield+0x130/0x15c
-> > [c0000000d9f8db80] c000000000213458 .trace_clock_global+0x11c/0x2a0
-> > [c0000000d9f8dc40] c0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > [c0000000d9f8dd50] c000000000223178 .ring_buffer_lock_reserve
-> > +0x24c/0x2a4
-> > [c0000000d9f8dde0] c00000000022d6f4 .trace_buffer_lock_reserve+0x58/0xe4
-> > [c0000000d9f8de90] c00000000022ec9c .trace_current_buffer_lock_reserve
-> > +0x44/0x6c
-> > [c0000000d9f8df20] c000000000011c5c .ftrace_raw_event_hcall_entry
-> > +0x7c/0x144
-> > [c0000000d9f8dfe0] c000000000096624 .__trace_hcall_entry+0xa0/0xec
-> > [c0000000d9f8e070] c00000000009786c .plpar_hcall_norets+0x50/0xd0
-> > [c0000000d9f8e0e0] c0000000000749c8 .__spin_yield+0x130/0x15c
-> > [c0000000d9f8e170] c000000000213458 .trace_clock_global+0x11c/0x2a0
-> > [c0000000d9f8e230] c0000000002226b0 .rb_reserve_next_event+0x20c/0x804
-> > 
-> > Regards--
-> > Subrata
-> > 
-> > On Wed, 2010-10-13 at 19:29 +0800, Li Zefan wrote:
-> >> Li Zefan wrote:
-> >>> Li Zefan wrote:
-> >>>> Subrata Modak wrote:
-> >>>>> Li,
-> >>>>>
-> >>>>> Can you kindly fix the below issues and send me a new patch ?
-> >>>>>
-> >>>> Sure, I will.
-> >>>>
-> >>> At a first glance, the kernel bug doesn't seem to come from ftrace,
-> >>> at least not directly from it.
-> >>>
-> >>> Question:
-> >>>
-> >>> Can you trigger this bug in latest kernel (2.6.36-rc7)? If you
-> >>> haven't tried it, could you test it? Thanks!
-> >>>
-> >> I got a patch from Peter, though he's not sure about the bug yet.
-> >> So could you try this?
-> >>
-> >> Note, I don't know if this patch can be applied to 2.6.35-4..
-> >>
-> >> ======================
-> >>
-> >> (From Peter)
-> >>
-> >> Hrmm, not something I've seen before.. but since the migration thread
-> >> and stop_machine are involved, does the below patch which rewrites the
-> >> migration-thread/stop_macehine/scheduler interaction cure this?
-> >>
-> >> This patch is probably .37 fodder, but who knows..
-> >>
-> >> ---
-> >> Subject: sched: Create special class for stop/migrate work
-> >> From: Peter Zijlstra <a.p.zijlstra@chello.nl>
-> >> Date: Wed Sep 22 13:53:15 CEST 2010
-> >>
-> >> In order to separate the stop/migrate work thread from the SCHED_FIFO
-> >> implementation, create a special class for it that is of higher priority
-> >> than SCHED_FIFO itself.
-> >>
-> >> This currently solves a problem where cpu-hotplug consumes so much cpu-time
-> >> that the SCHED_FIFO class gets throttled, but has the bandwidth replenishment
-> >> timer pending on the now dead cpu.
-> >>
-> >> It is also required for when we add the planned deadline scheduling class
-> >> above SCHED_FIFO, as the stop/migrate thread still needs to transcent those
-> >> tasks.
-> >>
-> >> Tested-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-> >> Signed-off-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-> >> LKML-Reference: <1285165776.2275.1022.camel@laptop>
-> >> ---
-> >>  kernel/sched.c          |   54 ++++++++++++++++++++----
-> >>  kernel/sched_stoptask.c |  108 ++++++++++++++++++++++++++++++++++++++++++++++++
-> >>  kernel/stop_machine.c   |    8 ++-
-> >>  3 files changed, 158 insertions(+), 12 deletions(-)
-> >>
-> >> Index: linux-2.6/kernel/sched.c
-> >> ===================================================================
-> >> --- linux-2.6.orig/kernel/sched.c
-> >> +++ linux-2.6/kernel/sched.c
-> >> @@ -486,7 +486,7 @@ struct rq {
-> >>  	 */
-> >>  	unsigned long nr_uninterruptible;
-> >>
-> >> -	struct task_struct *curr, *idle;
-> >> +	struct task_struct *curr, *idle, *stop;
-> >>  	unsigned long next_balance;
-> >>  	struct mm_struct *prev_mm;
-> >>
-> >> @@ -1837,7 +1837,7 @@ static inline void __set_task_cpu(struct
-> >>
-> >>  static const struct sched_class rt_sched_class;
-> >>
-> >> -#define sched_class_highest (&rt_sched_class)
-> >> +#define sched_class_highest (&stop_sched_class)
-> >>  #define for_each_class(class) \
-> >>     for (class = sched_class_highest; class; class = class->next)
-> >>
-> >> @@ -1917,10 +1917,41 @@ static void deactivate_task(struct rq *r
-> >>  #include "sched_idletask.c"
-> >>  #include "sched_fair.c"
-> >>  #include "sched_rt.c"
-> >> +#include "sched_stoptask.c"
-> >>  #ifdef CONFIG_SCHED_DEBUG
-> >>  # include "sched_debug.c"
-> >>  #endif
-> >>
-> >> +void sched_set_stop_task(int cpu, struct task_struct *stop)
-> >> +{
-> >> +	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
-> >> +	struct task_struct *old_stop = cpu_rq(cpu)->stop;
-> >> +
-> >> +	if (stop) {
-> >> +		/*
-> >> +		 * Make it appear like a SCHED_FIFO task, its something
-> >> +		 * userspace knows about and won't get confused about.
-> >> +		 *
-> >> +		 * Also, it will make PI more or less work without too
-> >> +		 * much confusion -- but then, stop work should not
-> >> +		 * rely on PI working anyway.
-> >> +		 */
-> >> +		sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
-> >> +
-> >> +		stop->sched_class = &stop_sched_class;
-> >> +	}
-> >> +
-> >> +	cpu_rq(cpu)->stop = stop;
-> >> +
-> >> +	if (old_stop) {
-> >> +		/*
-> >> +		 * Reset it back to a normal scheduling class so that
-> >> +		 * it can die in pieces.
-> >> +		 */
-> >> +		old_stop->sched_class = &rt_sched_class;
-> >> +	}
-> >> +}
-> >> +
-> >>  /*
-> >>   * __normal_prio - return the priority that is based on the static prio
-> >>   */
-> >> @@ -3720,17 +3751,13 @@ pick_next_task(struct rq *rq)
-> >>  			return p;
-> >>  	}
-> >>
-> >> -	class = sched_class_highest;
-> >> -	for ( ; ; ) {
-> >> +	for_each_class(class) {
-> >>  		p = class->pick_next_task(rq);
-> >>  		if (p)
-> >>  			return p;
-> >> -		/*
-> >> -		 * Will never be NULL as the idle class always
-> >> -		 * returns a non-NULL p:
-> >> -		 */
-> >> -		class = class->next;
-> >>  	}
-> >> +
-> >> +	BUG(); /* the idle class will always have a runnable task */
-> >>  }
-> >>
-> >>  /*
-> >> @@ -4659,6 +4686,15 @@ static int __sched_setscheduler(struct t
-> >>  	 */
-> >>  	rq = __task_rq_lock(p);
-> >>
-> >> +	/*
-> >> +	 * Changing the policy of the stop threads its a very bad idea
-> >> +	 */
-> >> +	if (p == rq->stop) {
-> >> +		__task_rq_unlock(rq);
-> >> +		raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-> >> +		return -EINVAL;
-> >> +	}
-> >> +
-> >>  #ifdef CONFIG_RT_GROUP_SCHED
-> >>  	if (user) {
-> >>  		/*
-> >> Index: linux-2.6/kernel/stop_machine.c
-> >> ===================================================================
-> >> --- linux-2.6.orig/kernel/stop_machine.c
-> >> +++ linux-2.6/kernel/stop_machine.c
-> >> @@ -287,11 +287,12 @@ static int cpu_stopper_thread(void *data
-> >>  	goto repeat;
-> >>  }
-> >>
-> >> +extern void sched_set_stop_task(int cpu, struct task_struct *stop);
-> >> +
-> >>  /* manage stopper for a cpu, mostly lifted from sched migration thread mgmt */
-> >>  static int __cpuinit cpu_stop_cpu_callback(struct notifier_block *nfb,
-> >>  					   unsigned long action, void *hcpu)
-> >>  {
-> >> -	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
-> >>  	unsigned int cpu = (unsigned long)hcpu;
-> >>  	struct cpu_stopper *stopper = &per_cpu(cpu_stopper, cpu);
-> >>  	struct task_struct *p;
-> >> @@ -304,13 +305,13 @@ static int __cpuinit cpu_stop_cpu_callba
-> >>  				   cpu);
-> >>  		if (IS_ERR(p))
-> >>  			return NOTIFY_BAD;
-> >> -		sched_setscheduler_nocheck(p, SCHED_FIFO, &param);
-> >>  		get_task_struct(p);
-> >> +		kthread_bind(p, cpu);
-> >> +		sched_set_stop_task(cpu, p);
-> >>  		stopper->thread = p;
-> >>  		break;
-> >>
-> >>  	case CPU_ONLINE:
-> >> -		kthread_bind(stopper->thread, cpu);
-> >>  		/* strictly unnecessary, as first user will wake it */
-> >>  		wake_up_process(stopper->thread);
-> >>  		/* mark enabled */
-> >> @@ -325,6 +326,7 @@ static int __cpuinit cpu_stop_cpu_callba
-> >>  	{
-> >>  		struct cpu_stop_work *work;
-> >>
-> >> +		sched_set_stop_task(cpu, NULL);
-> >>  		/* kill the stopper */
-> >>  		kthread_stop(stopper->thread);
-> >>  		/* drain remaining works */
-> >> Index: linux-2.6/kernel/sched_stoptask.c
-> >> ===================================================================
-> >> --- /dev/null
-> >> +++ linux-2.6/kernel/sched_stoptask.c
-> >> @@ -0,0 +1,108 @@
-> >> +/*
-> >> + * stop-task scheduling class.
-> >> + *
-> >> + * The stop task is the highest priority task in the system, it preempts
-> >> + * everything and will be preempted by nothing.
-> >> + *
-> >> + * See kernel/stop_machine.c
-> >> + */
-> >> +
-> >> +#ifdef CONFIG_SMP
-> >> +static int
-> >> +select_task_rq_stop(struct rq *rq, struct task_struct *p,
-> >> +		    int sd_flag, int flags)
-> >> +{
-> >> +	return task_cpu(p); /* stop tasks as never migrate */
-> >> +}
-> >> +#endif /* CONFIG_SMP */
-> >> +
-> >> +static void
-> >> +check_preempt_curr_stop(struct rq *rq, struct task_struct *p, int flags)
-> >> +{
-> >> +	resched_task(rq->curr); /* we preempt everything */
-> >> +}
-> >> +
-> >> +static struct task_struct *pick_next_task_stop(struct rq *rq)
-> >> +{
-> >> +	struct task_struct *stop = rq->stop;
-> >> +
-> >> +	if (stop && stop->state == TASK_RUNNING)
-> >> +		return stop;
-> >> +
-> >> +	return NULL;
-> >> +}
-> >> +
-> >> +static void
-> >> +enqueue_task_stop(struct rq *rq, struct task_struct *p, int flags)
-> >> +{
-> >> +}
-> >> +
-> >> +static void
-> >> +dequeue_task_stop(struct rq *rq, struct task_struct *p, int flags)
-> >> +{
-> >> +}
-> >> +
-> >> +static void yield_task_stop(struct rq *rq)
-> >> +{
-> >> +	BUG(); /* the stop task should never yield, its pointless. */
-> >> +}
-> >> +
-> >> +static void put_prev_task_stop(struct rq *rq, struct task_struct *prev)
-> >> +{
-> >> +}
-> >> +
-> >> +static void task_tick_stop(struct rq *rq, struct task_struct *curr, int queued)
-> >> +{
-> >> +}
-> >> +
-> >> +static void set_curr_task_stop(struct rq *rq)
-> >> +{
-> >> +}
-> >> +
-> >> +static void switched_to_stop(struct rq *rq, struct task_struct *p,
-> >> +			     int running)
-> >> +{
-> >> +	BUG(); /* its impossible to change to this class */
-> >> +}
-> >> +
-> >> +static void prio_changed_stop(struct rq *rq, struct task_struct *p,
-> >> +			      int oldprio, int running)
-> >> +{
-> >> +	BUG(); /* how!?, what priority? */
-> >> +}
-> >> +
-> >> +static unsigned int
-> >> +get_rr_interval_stop(struct rq *rq, struct task_struct *task)
-> >> +{
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +/*
-> >> + * Simple, special scheduling class for the per-CPU stop tasks:
-> >> + */
-> >> +static const struct sched_class stop_sched_class = {
-> >> +	.next			= &rt_sched_class,
-> >> +
-> >> +	.enqueue_task		= enqueue_task_stop,
-> >> +	.dequeue_task		= dequeue_task_stop,
-> >> +	.yield_task		= yield_task_stop,
-> >> +
-> >> +	.check_preempt_curr	= check_preempt_curr_stop,
-> >> +
-> >> +	.pick_next_task		= pick_next_task_stop,
-> >> +	.put_prev_task		= put_prev_task_stop,
-> >> +
-> >> +#ifdef CONFIG_SMP
-> >> +	.select_task_rq		= select_task_rq_stop,
-> >> +#endif
-> >> +
-> >> +	.set_curr_task          = set_curr_task_stop,
-> >> +	.task_tick		= task_tick_stop,
-> >> +
-> >> +	.get_rr_interval	= get_rr_interval_stop,
-> >> +
-> >> +	.prio_changed		= prio_changed_stop,
-> >> +	.switched_to		= switched_to_stop,
-> >> +
-> >> +	/* no .task_new for stop tasks */
-> >> +};
-> >>
-> >>
-> >>
-> > 
-> > 
-> > 
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/linuxppc-dev
+     there is an error that "failed to get the interface name at the remote
+host"
+
+     actually it is not able to find the interface.
+
+     please suggest me how can i overcome this problem......////
 
 
+Ltp version             >>              Ltp-intermediate-20100228
+
+Processor              >>              armv7 processor
+
+Kernel version        >>              2.6.32 (LSP3.0-alpha)
+
+     # Log of the testcase is as follows:--
+
+
+
+INFO: creating /opt/ltp/results directory
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+
+Linux 192.168.1.10 2.6.32 #2 SMP Tue Oct 19 17:34:35 IST 2010 armv7l unknown
+unknown GNU/Linux
+
+Gnu C                  gcc (GCC) 4.5.0
+Gnu make               3.81
+util-linux             ng 2.16.1)
+mount                  ng 2.16.1 (with libblkid support)
+modutils               3.1
+e2fsprogs              1.41.9
+PPP                    2.4.4
+Linux C Library        2.10.1
+Dynamic linker (ldd)   2.10.1
+Linux C++ Library      6.0.14
+Procps                 3.2.7
+Net-tools              1.60
+iproute2              iproute2-ss100224
+Console-tools          0.2.3
+Sh-utils               5.2.1
+Modules Loaded
+free reports:
+             total       used       free     shared    buffers     cached
+Mem:        255368      21968     233400          0          0      11872
+-/+ buffers/cache:      10096     245272
+Swap:            0          0          0
+/proc/cpuinfo
+Processor : ARMv7 Processor rev 1 (v7l)
+processor : 0
+BogoMIPS : 996.14
+processor : 1
+BogoMIPS : 996.14
+Features : swp half thumb fastmult vfp edsp vfpv3 vfpv3d16
+CPU implementer : 0x41
+CPU architecture: 7
+CPU variant : 0x1
+CPU part : 0xc09
+CPU revision : 1
+Hardware : ST-SPEAR1310-EVB
+Revision : 0000
+Serial  : 0000000000000000
+remove test cases which require the block device.
+You can specify it with option -b
+COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 2130     -n 2130  -p  -f
+/tmp/ltp-QKJGLA2136/alltests -l
+/opt/ltp/results/network_stress.broken_ip.result  -C
+/opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed
+LOG File: /opt/ltp/results/network_stress.broken_ip.result
+FAILED COMMAND File:
+/opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed
+Running tests.......
+<<<test_start>>>
+tag=broken_ip4-version stime=339
+cmdline="broken_ip4-version"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-version01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in
+version field.
+broken_ip4-version01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip4-version01    1  TBROK  :  Failed to get the interface name at the
+remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=12 cstime=28
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-ihl stime=339
+cmdline="broken_ip4-ihl"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-ihl01    0  TINFO  :  Verify that the kernel is not crashed with
+receiving a large number of IPv4 packets that have wrong value in the header
+length field.
+broken_ip4-ihl01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip4-ihl01    1  TBROK  :  Failed to get the interface name at the
+remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=10 cstime=23
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-totlen stime=340
+cmdline="broken_ip4-totlen"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-totlen01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in the
+total length field.
+broken_ip4-totlen01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip4-totlen01    1  TBROK  :  Failed to get the interface name at the
+remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=11 cstime=31
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-fragment stime=340
+cmdline="broken_ip4-fragment"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-fragment01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong fragment
+information
+broken_ip4-fragment01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip4-fragment01    1  TBROK  :  Failed to get the interface name at
+the remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=7 cstime=39
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-protcol stime=341
+cmdline="broken_ip4-protcol"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-protocol01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in the
+protocol field
+broken_ip4-protocol01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip4-protocol01    1  TBROK  :  Failed to get the interface name at
+the remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=17 cstime=27
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-checksum stime=341
+cmdline="broken_ip4-checksum"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-checksum01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets that have wrong value in the
+checksum field
+broken_ip4-checksum01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip4-checksum01    1  TBROK  :  Failed to get the interface name at
+the remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=9 cstime=29
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip4-dstaddr stime=341
+cmdline="broken_ip4-dstaddr"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip4-dstaddr01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv4 packets whose destination address is
+wrong (destination MAC address is correct)
+broken_ip4-dstaddr01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip4-dstaddr01    1  TBROK  :  Failed to get the interface name at the
+remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=15 cstime=31
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-dstaddr stime=342
+cmdline="broken_ip6-dstaddr"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-dstaddr01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv6 packets whose destination address is
+wrong (destination MAC address is correct)
+broken_ip6-dstaddr01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip6-dstaddr01    1  TBROK  :  Failed to get the interface name at the
+remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=12 cstime=26
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-nexthdr stime=342
+cmdline="broken_ip6-nexthdr"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-nexthdr01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv6 packets that have wrong value in the
+next header field.
+broken_ip6-nexthdr01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip6-nexthdr01    1  TBROK  :  Failed to get the interface name at the
+remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=8 cstime=30
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-plen stime=343
+cmdline="broken_ip6-plen"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-plen01    0  TINFO  :  Verify that the kernel is not crashed with
+receiving a large number of IPv6 packets that have wrong value in the
+payload length field.
+broken_ip6-plen01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip6-plen01    1  TBROK  :  Failed to get the interface name at the
+remote host
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=10 cstime=24
+<<<test_end>>>
+<<<test_start>>>
+tag=broken_ip6-version stime=343
+cmdline="broken_ip6-version"
+contacts=""
+analysis=exit
+<<<test_output>>>
+broken_ip6-version01    0  TINFO  :  Verify that the kernel is not crashed
+with receiving a large number of IPv6 packets that have wrong value in
+version field.
+broken_ip6-version01    0  TINFO  :  - Test duration is 3600 [sec]
+Interface which has 00:04:23:21:93:70 is not found.
+broken_ip6-version01    1  TBROK  :  Failed to get the interface name at the
+remote host
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=11 cstime=32
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20100131
+
+       ###############################################################"
+
+            Done executing testcases."
+            LTP Version:  LTP-20100131
+       ###############################################################"
+
+
+
+-- 
+Best Regards,
+Arjit Sharma.
+
+--001636498bb98a95d704931dcd74
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>Hi,</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 During the execution of network_stress tests, after confi=
+guring the kernel and=A0all of the services as required.</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 there is an error that &quot;failed to get the interface =
+name at the remote host&quot; </div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 actually it is not able to find the interface.</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0please suggest me how can i overcome this problem......=
+////</div>
+<div>=A0</div>
+<div>=A0</div>
+<div>Ltp version=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &gt;&gt;=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 Ltp-intermediate-20100228<br>=A0<br>Processor=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &gt;&gt;=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0 armv7 processor<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 <br>Kernel v=
+ersion=A0=A0=A0=A0=A0=A0=A0 &gt;&gt;=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 2.6.32 (LSP3.0-alpha)</div>
+
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0#=A0Log of the testcase is as follows:--</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 </div>
+<div>=A0</div>
+<div>INFO: creating /opt/ltp/results directory<br>If some fields are empty =
+or look unusual you may have an old version.<br>Compare to the current mini=
+mal requirements in Documentation/Changes.<br>=A0<br></div>
+<div>Linux 192.168.1.10 2.6.32 #2 SMP Tue Oct 19 17:34:35 IST 2010 armv7l u=
+nknown unknown GNU/Linux<br>=A0<br>Gnu C=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 gcc (GCC) 4.5.0<br>Gnu make=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 3.81<br>util-linux=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ng 2=
+.16.1)<br>mount=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ng 2.16.=
+1 (with libblkid support)<br>
+modutils=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 3.1<br>e2fsprogs=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1.41.9<br>PPP=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 2.4.4<br>Linux C Library=A0=A0=A0=A0=A0=A0=
+=A0 2.10.1<br>Dynamic linker (ldd)=A0=A0 2.10.1<br>Linux C++ Library=A0=A0=
+=A0=A0=A0 6.0.14<br>Procps=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+3.2.7<br>
+Net-tools=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1.60<br>iproute2=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 iproute2-ss100224<br>Console-tools=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 0.2.3<br>Sh-utils=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 5.2.1<br>Modules Loaded=A0=A0=A0=A0=A0=A0=A0=A0 </div>
+<div>free reports:<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 total=A0=A0=A0=
+=A0=A0=A0 used=A0=A0=A0=A0=A0=A0 free=A0=A0=A0=A0 shared=A0=A0=A0 buffers=
+=A0=A0=A0=A0 cached<br>Mem:=A0=A0=A0=A0=A0=A0=A0 255368=A0=A0=A0=A0=A0 2196=
+8=A0=A0=A0=A0 233400=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 0=A0=A0=A0=A0=A0 11872<br>-/+ buffers/cache:=A0=A0=A0=A0=A0 10096=A0=A0=
+=A0=A0 245272<br>
+Swap:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 0</div>
+<div>/proc/cpuinfo<br>Processor=A0: ARMv7 Processor rev 1 (v7l)<br>processo=
+r=A0: 0<br>BogoMIPS=A0: 996.14</div>
+<div>processor=A0: 1<br>BogoMIPS=A0: 996.14</div>
+<div>Features=A0: swp half thumb fastmult vfp edsp vfpv3 vfpv3d16 <br>CPU i=
+mplementer=A0: 0x41<br>CPU architecture: 7<br>CPU variant=A0: 0x1<br>CPU pa=
+rt=A0: 0xc09<br>CPU revision=A0: 1</div>
+<div>Hardware=A0: ST-SPEAR1310-EVB<br>Revision=A0: 0000<br>Serial=A0=A0: 00=
+00000000000000<br>remove test cases which require the block device.<br>You =
+can specify it with option -b<br>COMMAND:=A0=A0=A0 /opt/ltp/bin/ltp-pan=A0 =
+-e -S=A0=A0 -a 2130=A0=A0=A0=A0 -n 2130=A0 -p=A0 -f /tmp/ltp-QKJGLA2136/all=
+tests -l /opt/ltp/results/network_stress.broken_ip.result=A0 -C /opt/ltp/ou=
+tput/LTP_RUN_ON-network_stress.broken_ip.result.failed<br>
+LOG File: /opt/ltp/results/network_stress.broken_ip.result<br>FAILED COMMAN=
+D File: /opt/ltp/output/LTP_RUN_ON-network_stress.broken_ip.result.failed<b=
+r>Running tests.......<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip4-version stime=3D339<br>
+cmdline=3D&quot;broken_ip4-version&quot;<br>contacts=3D&quot;&quot;<br>anal=
+ysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-version01=
+=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with rec=
+eiving a large number of IPv4 packets that have wrong value in version fiel=
+d.<br>
+broken_ip4-version01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [s=
+ec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip4-ve=
+rsion01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the=
+ remote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D12 cstime=3D28<br>&lt;&lt;&l=
+t;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip4-ihl stime=3D339<br>
+cmdline=3D&quot;broken_ip4-ihl&quot;<br>contacts=3D&quot;&quot;<br>analysis=
+=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-ihl01=A0=A0=A0=
+ 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with receiving a =
+large number of IPv4 packets that have wrong value in the header length fie=
+ld.<br>
+broken_ip4-ihl01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [sec]<=
+br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip4-ihl01=
+=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the remote=
+ host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D1 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D10 cstime=3D23<br>&lt;&lt;&l=
+t;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip4-totlen stime=3D340<br>
+cmdline=3D&quot;broken_ip4-totlen&quot;<br>contacts=3D&quot;&quot;<br>analy=
+sis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-totlen01=A0=
+=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with receiv=
+ing a large number of IPv4 packets that have wrong value in the total lengt=
+h field.<br>
+broken_ip4-totlen01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [se=
+c]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip4-tot=
+len01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the r=
+emote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D11 cstime=3D31<br>&lt;&lt;&l=
+t;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip4-fragment stime=3D340<br>
+cmdline=3D&quot;broken_ip4-fragment&quot;<br>contacts=3D&quot;&quot;<br>ana=
+lysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-fragment0=
+1=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with re=
+ceiving a large number of IPv4 packets that have wrong fragment information=
+<br>
+broken_ip4-fragment01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [=
+sec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip4-f=
+ragment01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at t=
+he remote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D1 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D7 cstime=3D39<br>&lt;&lt;&lt=
+;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroken=
+_ip4-protcol stime=3D341<br>
+cmdline=3D&quot;broken_ip4-protcol&quot;<br>contacts=3D&quot;&quot;<br>anal=
+ysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-protocol01=
+=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with rec=
+eiving a large number of IPv4 packets that have wrong value in the protocol=
+ field<br>
+broken_ip4-protocol01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [=
+sec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip4-p=
+rotocol01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at t=
+he remote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D17 cstime=3D27<br>&lt;&lt;&l=
+t;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip4-checksum stime=3D341<br>
+cmdline=3D&quot;broken_ip4-checksum&quot;<br>contacts=3D&quot;&quot;<br>ana=
+lysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-checksum0=
+1=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with re=
+ceiving a large number of IPv4 packets that have wrong value in the checksu=
+m field<br>
+broken_ip4-checksum01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [=
+sec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip4-c=
+hecksum01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at t=
+he remote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D9 cstime=3D29<br>&lt;&lt;&lt=
+;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroken=
+_ip4-dstaddr stime=3D341<br>
+cmdline=3D&quot;broken_ip4-dstaddr&quot;<br>contacts=3D&quot;&quot;<br>anal=
+ysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip4-dstaddr01=
+=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with rec=
+eiving a large number of IPv4 packets whose destination address is wrong (d=
+estination MAC address is correct)<br>
+broken_ip4-dstaddr01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [s=
+ec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip4-ds=
+taddr01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the=
+ remote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D1 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D15 cstime=3D31<br>&lt;&lt;&l=
+t;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip6-dstaddr stime=3D342<br>
+cmdline=3D&quot;broken_ip6-dstaddr&quot;<br>contacts=3D&quot;&quot;<br>anal=
+ysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip6-dstaddr01=
+=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with rec=
+eiving a large number of IPv6 packets whose destination address is wrong (d=
+estination MAC address is correct)<br>
+broken_ip6-dstaddr01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [s=
+ec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip6-ds=
+taddr01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the=
+ remote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D12 cstime=3D26<br>&lt;&lt;&l=
+t;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip6-nexthdr stime=3D342<br>
+cmdline=3D&quot;broken_ip6-nexthdr&quot;<br>contacts=3D&quot;&quot;<br>anal=
+ysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip6-nexthdr01=
+=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with rec=
+eiving a large number of IPv6 packets that have wrong value in the next hea=
+der field.<br>
+broken_ip6-nexthdr01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [s=
+ec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip6-ne=
+xthdr01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the=
+ remote host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D1 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D8 cstime=3D30<br>&lt;&lt;&lt=
+;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroken=
+_ip6-plen stime=3D343<br>
+cmdline=3D&quot;broken_ip6-plen&quot;<br>contacts=3D&quot;&quot;<br>analysi=
+s=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip6-plen01=A0=A0=
+=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with receiving=
+ a large number of IPv6 packets that have wrong value in the payload length=
+ field.<br>
+broken_ip6-plen01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [sec]=
+<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip6-plen0=
+1=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the remot=
+e host<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+initiation_status=3D&quot;ok&quot;<br>duration=3D0 termination_type=3Dexite=
+d termination_id=3D1 corefile=3Dno<br>cutime=3D10 cstime=3D24<br>&lt;&lt;&l=
+t;test_end&gt;&gt;&gt;<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dbroke=
+n_ip6-version stime=3D343<br>
+cmdline=3D&quot;broken_ip6-version&quot;<br>contacts=3D&quot;&quot;<br>anal=
+ysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>broken_ip6-version01=
+=A0=A0=A0 0=A0 TINFO=A0 :=A0 Verify that the kernel is not crashed with rec=
+eiving a large number of IPv6 packets that have wrong value in version fiel=
+d.<br>
+broken_ip6-version01=A0=A0=A0 0=A0 TINFO=A0 :=A0 - Test duration is 3600 [s=
+ec]<br>Interface which has 00:04:23:21:93:70 is not found.<br>broken_ip6-ve=
+rsion01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interface name at the=
+ remote host<br>incrementing stop<br>
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;ok&qu=
+ot;<br>duration=3D1 termination_type=3Dexited termination_id=3D1 corefile=
+=3Dno<br>cutime=3D11 cstime=3D32<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>INF=
+O: ltp-pan reported some tests FAIL<br>
+LTP Version: LTP-20100131<br>=A0=A0=A0=A0=A0=A0=A0 <br>=A0=A0=A0=A0=A0=A0 #=
+##############################################################&quot;<br>=A0=
+=A0=A0=A0=A0=A0=A0 <br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Done executing tes=
+tcases.&quot;<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LTP Version:=A0 LTP-2010=
+0131<br>
+=A0=A0=A0=A0=A0=A0 ########################################################=
+#######&quot;<br>=A0=A0=A0=A0=A0=A0 <br></div>
+<div>=A0=A0=A0=A0=A0=A0=A0=A0 =A0</div>
+<div>=A0=A0=A0=A0 <br>-- <br></div>
+<div>Best Regards,</div>
+<div>Arjit Sharma.</div><br>
+
+--001636498bb98a95d704931dcd74--
+
+
+--===============1237361820011671946==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
+--===============1237361820011671946==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1237361820011671946==--
+
