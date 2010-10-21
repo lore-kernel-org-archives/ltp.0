@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <carmelo.amoroso@st.com>) id 1P2kjI-000361-Bk
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 13:05:20 +0000
-Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P2kjG-0004ps-Kj
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 13:05:20 +0000
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Date: Mon, 4 Oct 2010 15:04:43 +0200
-Message-ID: <4CA9D0EB.5090309@st.com>
-References: <4CA09D4D.6050708@st.com> <4CA34070.9070505@st.com>
-	<20100930133120.GA4070@hannu-debian.research.nokia.com>
-	<4CA469A0.5090700@st.com> <20101001040609.GA2090@hannu-ubuntu>
-In-Reply-To: <20101001040609.GA2090@hannu-ubuntu>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P8rU6-0005LJ-Kh
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 09:30:54 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P8rU5-0005QK-L5
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 09:30:54 +0000
+Received: by wyb40 with SMTP id 40so4798973wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Oct 2010 02:30:47 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] ltp_clone alignment issues.
+In-Reply-To: <122866027.1125401287647034456.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <761398766.1125341287646854846.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<122866027.1125401287647034456.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Thu, 21 Oct 2010 02:30:47 -0700
+Message-ID: <AANLkTimCsPK0qPNnWwbi3uUDuBSebD=XTVGWa12J_ZHo@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix sched_getaffinity01 failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,182 +28,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hannu Heikkinen <hannuxx@iki.fi>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, Oct 21, 2010 at 12:43 AM, Caspar Zhang <czhang@redhat.com> wrote:
+> Hi all, when I'm using LTP, sometimes the
+> test syscalls/sched_getaffinity01 fails by
+> giving the following output:
+>
+> sched_getaffinity01 =A0 =A00 =A0TINFO =A0: =A0system has 4 processor(s).
+> sched_getaffinity01 =A0 =A00 =A0TINFO =A0: =A0cpusetsize is 128
+> sched_getaffinity01 =A0 =A00 =A0TINFO =A0: =A0mask.__bits[0] =3D 15
+> sched_getaffinity01 =A0 =A01 =A0TPASS =A0: =A0sched_getaffinity() succeed=
+ ,this process 29494 is running processor: 0
+> sched_getaffinity01 =A0 =A02 =A0TPASS =A0: =A0sched_getaffinity() succeed=
+ ,this process 29494 is running processor: 1
+> sched_getaffinity01 =A0 =A03 =A0TPASS =A0: =A0sched_getaffinity() succeed=
+ ,this process 29494 is running processor: 2
+> sched_getaffinity01 =A0 =A04 =A0TPASS =A0: =A0sched_getaffinity() succeed=
+ ,this process 29494 is running processor: 3
+> sched_getaffinity01 =A0 =A05 =A0TPASS =A0: =A0sched_getaffinity(0, len, (=
+cpu_set_t *)-1): TEST_ERRNO=3DEFAULT(14): Bad address
+> sched_getaffinity01 =A0 =A06 =A0TPASS =A0: =A0sched_getaffinity(0, 0, mas=
+k): TEST_ERRNO=3DEINVAL(22): Invalid argument
+> sched_getaffinity01 =A0 =A07 =A0TFAIL =A0: =A0sched_getaffinity(getpid() =
++ 1, len, mask): TEST_ERRNO=3D???(0): Success
+>
+> Seems that using ``getpid() + 1'' is not
+> always correct, so I use another non-existed
+> pid to replace ``getpid() + ''.
+>
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+>
+> ---
+> =A0.../sched_getaffinity/sched_getaffinity01.c =A0 =A0 =A0 =A0| =A0 =A05 =
+++---
+> =A01 files changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinit=
+y01.c b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+> index 7dfb0ec..aaa646d 100644
+> --- a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+> +++ b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+> @@ -41,7 +41,7 @@
+> =A0#include<stdio.h>
+> =A0#include<sys/types.h>
+> =A0#include<unistd.h>
+> -#define _GNU_SOURCE
+> +#define _GNU_SOURCE
+> =A0#define __USE_GNU
+> =A0#include<sched.h>
+> =A0#include<string.h>
+> @@ -201,11 +201,10 @@ realloc:
+> =A0#endif
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0QUICK_TEST(sched_getaffinity(0=
+, len, (cpu_set_t *)-1));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0QUICK_TEST(sched_getaffinity(0=
+, 0, mask));
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 QUICK_TEST(sched_getaffinity(ge=
+tpid() + 1, len, mask));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 QUICK_TEST(sched_getaffinity(65=
+535, len, mask));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 CPU_FREE(mask);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0 cleanup();
+> =A0 =A0 =A0 =A0tst_exit();
+> =A0}
 
-On 10/1/2010 6:06 AM, Hannu Heikkinen wrote:
-> On 30/09/10 12:42 +0200, Carmelo AMOROSO wrote:
-> On 9/30/2010 3:31 PM, Hannu Heikkinen wrote:
->> On 29/09/10 15:34 +0200, ext Carmelo AMOROSO wrote:
->> > -----BEGIN PGP SIGNED MESSAGE-----
->> > Hash: SHA1
->> >
->> > On 9/27/2010 3:34 PM, Carmelo AMOROSO wrote:
->> > > Folks,
->> > > I want to reopen an old discussion on ltp_clone and stack alignment
->> > > issue (see
->> > >
-> 
->> http://sourceforge.net/mailarchive/message.php?msg_name=4B421480.1040400%40petalogix.com).
->> > > Indeed recently a commit has partially fixed a problem on ARM
->> > > (0056e395170eb8fc3ffbb22d7bd364fe47c2013e), but I think this should be
->> > > extended to all archs that have stack that grows downwards.
->> > >
->> > > Indeed, as Jiri replied in that old thread, the value passed to clone as
->> > > child stack should be never accessed, because it is the topmost address
->> > > of the memory allocated for the child process (it's the previous stack
->> > > pointer).
->> > >
->> > > So, in archs that do not like unaligned stack, using (stack - size - 1 )
->> > > will cause the process to be killed by a SIGBUS, on other archs, we are
->> > > just wasting one byte of the malloc-ed stack.
->> > >
->> > > On my SH4 arch, the stack must be 4byte aligned (as in ARM).
->> > >
->> > > Please, find attached a patch against master branch
->> > >
->> > > Best regards,
->> > > Carmelo
->> >
->> > Hi,
->> > any feedback on this ?
->> >
->> > Cheers,
->> > Carmelo
-> 
->> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->> Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
->> ---
->> lib/cloner.c | 9 +++------
->> 1 files changed, 3 insertions(+), 6 deletions(-)
-> 
->> diff --git a/lib/cloner.c b/lib/cloner.c
->> index 6ad4a00..e53c9cf 100644
->> --- a/lib/cloner.c
->> +++ b/lib/cloner.c
->> @@ -59,16 +59,13 @@ ltp_clone(unsigned long clone_flags, int (*fn)(void
->> *arg), void *arg,
->> ret = clone(fn, stack, clone_flags, arg);
->> #elif defined(__ia64__)
->> ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
->> NULL);
->> -#elif defined(__arm__)
->> +#else
->> /*
->> - * Stack size should be a multiple of 32 bit words
->> - * & stack limit must be aligned to a 32 bit boundary
->> + * For archs where stack grows downwards, stack points to the topmost
->> address
->> + * of the memory space set up for the child stack.
->> */
->> ret = clone(fn, (stack ? stack + stack_size : NULL),
->> clone_flags, arg);
->> -#else
->> - ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
->> - clone_flags, arg);
->> #endif
-> 
->> return ret;
->> --
->> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-> 
->> Hi,
-> 
->> Acked-by Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-> 
->> Br,
->> Hannu
-> 
->> --
->> Hannu Heikkinen
->> http://www.nixu.com
-> 
-> 
-> Thanks, Hannu
+    Please try the modified version on git HEAD.
+Cheers,
+-Garrett
 
-> Hi,
+---------------------------------------------------------------------------=
+---
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
-> I was thinking your patch once again, and I think it would be wiser if
-> we would have something like:
-
-> --- ../tmp2/ltp-full-20100630/lib/cloner.c 2010-07-03 21:29:04.000000000
-> +0300
-> +++ lib/cloner.c 2010-09-03 14:48:20.000000000 +0300
-> @@ -43,6 +43,16 @@
-> pid_t *parent_tid, void *tls, pid_t *child_tid);
-> #endif
-
-> +/*
-> + * Most arch really want to have stack aligned to some sane boundary.
-> + */
-> +#ifdef __arm__
-> +#define ALIGN_STACK(stack) \
-> + ((void *)(((unsigned long)stack) & ~((sizeof(void *)) - 1)))
-> +#else
-> +#define ALIGN_STACK(stack) (stack)
-> +#endif
-> +
-> /***********************************************************************
-> * ltp_clone: wrapper for clone to hide the architecture dependencies.
-> * 1. hppa takes bottom of stack and no stacksize (stack grows up)
-> @@ -60,7 +70,7 @@
-> #elif defined(__ia64__)
-> ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
-> NULL);
-> #else
-> - ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
-> + ret = clone(fn, (stack ? ALIGN_STACK(stack + stack_size - 1) : NULL),
-> clone_flags, arg);
-> #endif
-
-
-> The above patch iis in use in our ARM based LTP test suite. Note that -1 is
-> needed for not clobbering eg possibly malloced area after child stack.
-> Could u please change that prev patch a bit, for ensuring that child stack
-> is in proper size etc. Above patch is not sufficient, because ALIGN_STACK
-> in that is only used for arm archs.
-
-> br,
-> Hannu
-
-
-Hannu,
-I don't think that it is a good to force the alignment; we could need to
-write a test case that calls LTP_clone with an unaligned stack just to
-test the behavior of the clone implementation.
-
-Likely, it should be useful to add a check inside the C lib clone
-implementation (arch specific) to protect against unaligned stack, but
-this is a different matter.
-
-I would just leave the LTP_clone passing the argument to the clone as
-they came from the caller.
-
-Regards,
-Carmelo
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAkyp0OsACgkQoRq/3BrK1s+TPwCgnoZlDNW0yMjfLZAu6gKzywP7
-Bp4AoLpYpxtqjtd+tL4+ZpxNhnQv7fpF
-=VGJo
------END PGP SIGNATURE-----
-
-------------------------------------------------------------------------------
-Virtualization is moving to the mainstream and overtaking non-virtualized
-environment for deploying applications. Does it make network security 
-easier or more difficult to achieve? Read this whitepaper to separate the 
-two and get a better understanding.
-http://p.sf.net/sfu/hp-phase2-d2d
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
