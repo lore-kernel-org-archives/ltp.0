@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1P3Kel-00075g-QD
-	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 03:27:03 +0000
-Received: from out19.sjc.mx.trendmicro.com ([216.99.131.76])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P3Kek-0006j9-23
-	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 03:27:03 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cb4e59$573184b0$05948e10$@co.jp>	<AANLkTi=FA6Ojf2=B5w60e5F4y=E_n6nkPRE9seE4kyPn@mail.gmail.com>	<000001cb5f90$60970370$21c50a50$@co.jp>
-	<AANLkTi=s14JAEQJ-ZE08qNvj0XMLyOnZ3L3=yzQpLto2@mail.gmail.com>
-In-Reply-To: <AANLkTi=s14JAEQJ-ZE08qNvj0XMLyOnZ3L3=yzQpLto2@mail.gmail.com>
-Date: Wed, 6 Oct 2010 12:26:52 +0900
-Message-ID: <000601cb6506$51bcadc0$f5360940$@co.jp>
+	(envelope-from <lizf@cn.fujitsu.com>) id 1P8qs7-0004iy-7N
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 08:51:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P8qs5-0006E5-B8
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 08:51:39 +0000
+Message-ID: <4CBFFF43.2010100@cn.fujitsu.com>
+Date: Thu, 21 Oct 2010 16:52:19 +0800
+From: Li Zefan <lizf@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
+References: <1286998463.4893.26.camel@subratamodak.linux.ibm.com>
+	<1287649998.22128.1.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1287649998.22128.1.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [2.6.36-rc7,
+ Power6] LTP Ftrace Stress tests causes KERNEL	PANIC and brings the
+ system to xmon
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,159 +27,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Peter Zijlstra <a.p.zijlstra@chello.nl>, Peter Zijlstra <peterz@infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, rostedt <rostedt@goodmis.org>, Linuxppc-dev <Linuxppc-dev@ozlabs.org>
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Sunday, October 03, 2010 10:02 AM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
-> =
-
-> On Tue, Sep 28, 2010 at 9:40 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> >> -----Original Message-----
-> >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> >> Sent: Tuesday, September 07, 2010 4:04 PM
-> >> To: Mitani
-> >> Cc: ltp-list@lists.sourceforge.net
-> >> Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
-> >>
-> >> On Mon, Sep 6, 2010 at 11:53 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> >> > Hi,
-> >> >
-> >> > I sent patches of "hugeshmat01" and "humeshmget03" testsets to
-> >> mailing-list
-> >> > in the middle of August, but they aren't updated.
-> >> > Would you teach me what kind of situation they are?
-> >> >
-> >> > =A0hugeshmat01:
-> >>
-> > =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/m
-> >> sg10448.html
-> >> > =A0humeshmget03:
-> >>
-> > =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/m
-> >> sg10467.html
-> >> >
-> >> > =A0(The "humeshmat01" was revised on August 16, but same failure
-> has
-> >> > =A0 occurred in my system.)
-> >> >
-> >> > I am glad if I can get some information about the patch.
-> >> > I'm looking forward to reply:-)
-> >>
-> >> =A0 =A0 Sorry... another item I forgot to follow up on. I'll look into
-> >> this over the next couple of days and provide feedback about this.
-> >> Thanks,
-> >> -Garrett
-> >
-> > Were my revisions OK?
-> > I am glad if you consider about these patches when you are free.
-> =
-
-> 1. Where's the requirement noted that you added the code for in
-> hugeshmget03 ?
-> 2. How do you know the value added to hugeshmat01 isn't page aligned?
-> Why not get the page size from sysconf and subtract the value from
-> one, and add _that_ value?
-> =
-
-> Thanks,
-> -Garrett
-
-
->1. Where's the requirement noted that you added the code for in
-hugeshmget03 ?
-
-It is in follwing URL in August 13:
-  http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10467.html
-
-
->2. How do you know the value added to hugeshmat01 isn't page aligned?
-
-It is in follwing URL in August 09:
-  http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10448.html
-  http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10532.html
-
-The reason that hugeshmat01 isn't page aligned is from the shmat()'s =
-
-error code 22 (EINVAL). =
-
-shmat()'s man page says about this error code:
-------------
-       EINVAL The value of shmid is not a valid shared memory identifier,
-the  shmaddr
-              is  not  a  null  pointer, and the value of (shmaddr
--((uintptr_t)shmaddr
-              %SHMLBA)) is an illegal address  for  attaching  shared
-memory;  or  the
-              shmaddr  is  not a null pointer, (shmflg &SHM_RND) is 0, and
-the value of
-              shmaddr is an illegal address for attaching shared memory.
-------------
-
-The failure occurred in following shmat():
----(hugeshmat01.c)---------
-[...]
-                for (i=3D0; i<TST_TOTAL; i++) {
-
-                        /*
-                         * Use TEST macro to make the call
-                         */
-                        errno =3D 0;
-                        addr =3D shmat(*(TC[i].shmid), (void *)(TC[i].addr),
-                                   TC[i].flags);
-[...]
-------------
-
-This failure occurred in second loop (i=3D1), and arguments of shmat() =
-
-are as follows:
-------------
-   shmat(id, 0x10000000eee, SHM_RND)
-------------
-
-"shmaddr" argument (second argument) of shmat() is not NULL. Therefore =
-
-I thought that page aligned occurred.
-
-
->Why not get the page size from sysconf and subtract the value from one, and
-add _that_ value?
-
-This value is dynamic address, and this is the value which the first shmat()
-returned. =
-
-This is the value with achievement in the each users system at least.
-When a fixed address ("0x10000000eee" or "0x60000eee") was specified, =
-
-depending on a case, this address may be the address which other processes
-use.
-I thought that this method of using dynamic address is better than =
-
-using fixed value to "shmaddr" argument.
-
-
-
-Thank you--
-
--Tomonori Mitani
-
-
-
----------------------------------------------------------------------------=
----
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+KEkgZ3Vlc3MgeW91IGRpZG4ndCBub3RpY2UgSSd2ZSBhbHNvIGZvcndhcmRlZCB0aGUgYnVnIHJl
+cG9ydCB0byBMS01MPwogaHR0cDovL21hcmMuaW5mby8/bD1saW51eC1rZXJuZWwmbT0xMjg3Mzcx
+OTM5MTk1MDAmdz0yKQoKU3VicmF0YSBNb2RhayB3cm90ZToKPiBTdGVmZW4sCj4gCj4gQ2FuIHlv
+dSBwbGVhc2Uga25vdyB5b3VyIHRob3VnaHRzIG9uIHRoaXMgaXNzdWUgPwo+IAoKU3RlZmVuPyBT
+dGV2ZW4/IDopCgo+IFJlZ2FyZHMtLQo+IFN1YnJhdGEKPiAKPiBPbiBUaHUsIDIwMTAtMTAtMTQg
+YXQgMDE6MDQgKzA1MzAsIFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4+IEhpLAo+Pgo+PiBFeGVjdXRp
+bmcgTFRQIEZ0cmFjZSBTdHJlc3MgdGVzdHMgb24gMi42LjM2LXJjNywgUG93ZXI2IGNyZWF0ZXMg
+a2VybmVsCj4+IFBhbmljIGFuZCB4bW9uIGlzIGludm9rZWQ6Cj4+CgouLi4KCj4+Cj4+IEhvd2V2
+ZXIgUGV0ZXIgWmlqbHN0cmHFmyBwcm9wb3NlZCBwYXRjaCBkaWQgbm90IGZpeCB0aGlzIGlzc3Vl
+LiBUaGUgcGF0Y2gKPj4gd2FzCj4+IHBvc3RlZCB0byBMVFA6Cj4+IGh0dHA6Ly9tYXJjLmluZm8v
+P2w9bHRwLWxpc3QmbT0xMjg2OTY5NDI0MzI2Njkmdz0yCj4+Cj4+IFRoZSBLZXJuZWwgcGFuaWtl
+ZCBldmVuIGFmdGVyIHRoZSBwYXRjaC4gSG93ZXZlciB0aGlzIHRpbWUgdGggbWVzc2FnZSB3YXMK
+Pj4gZGlmZmVyZW50LiBPdGhlciB4bW9uIG91dHB1dCBpcyBhbHNvIHNob3duIGJlbG93Ogo+PgoK
+U28gdGhleSBhcmUgMiBkaWZmZXJlbnQgYnVncywgYW5kIFBldGVyJ3MgcGF0Y2ggZml4ZWQgdGhl
+IGZpcnN0IG9uZS4KQnV0IHRoYXQgcGF0Y2ggaXMgdG9vIGJ1ZyBmb3IgLjM2Li4KCkZvciB0aGUg
+c2Vjb25kIGJ1ZywgYXMgSSBzYWlkLCBpdCdzIGEgZGVhZCBsb29wLCBhbmQgaXQncyBQb3dlclBD
+IHNwZWNpZmljLApzbyBiZXR0ZXIgaGF2ZSBzb21lb25lIGluIFBQQyBmaXhlZCBpdCwgYW5kIFN0
+ZXZlbiBoYXMgcHJvcG9zZWQgdG8gYWRkCnJlY3Vyc2l2ZSBjaGVjay4KCi4uLgoKPj4gIHBpZCAg
+ID0gMTY2OCwgY2MwMDAwMDAwMDAyMjI2YjAgLnJiX3Jlc2VydmVfbmV4dF9ldmVudCsweDIwYy8w
+eDgwNAo+PiBbYzAwMDAwMDBkOWY4YjliMF0gYzAwMDAwMDAwMDIyMzE3OCAucmluZ19idWZmZXJf
+bG9ja19yZXNlcnZlKzB4MjRjLzB4MmE0Cj4+IFtjMDAwMDAwMGQ5ZjhiYTQwXSBjMDAwMDAwMDAw
+MjJkNmY0IC50cmFjZV9idWZmZXJfbG9ja19yZXNlcnZlKzB4NTgvMHhlNAo+PiBbYzAwMDAwMDBk
+OWY4YmFmMF0gYzAwMDAwMDAwMDIyZWM5Ywo+PiAudHJhY2VfY3VycmVudF9idWZmZXJfbG9ja19y
+ZXNlcnZlKzB4NDQvMHg2Ywo+PiBbYzAwMDAwMDBkOWY4YmI4MF0gYzAwMDAwMDAwMDAxMWM1YyAu
+ZnRyYWNlX3Jhd19ldmVudF9oY2FsbF9lbnRyeSsweDdjLzB4MTQ0Cj4+IFtjMDAwMDAwMGQ5Zjhi
+YzQwXSBjMDAwMDAwMDAwMDk2NjI0IC5fX3RyYWNlX2hjYWxsX2VudHJ5KzB4YTAvMHhlYwo+PiBb
+YzAwMDAwMDBkOWY4YmNkMF0gYzAwMDAwMDAwMDA5Nzg2YyAucGxwYXJfaGNhbGxfbm9yZXRzKzB4
+NTAvMHhkMAo+PiBbYzAwMDAwMDBkOWY4YmQ0MF0gYzAwMDAwMDAwMDA3NDljOCAuX19zcGluX3lp
+ZWxkKzB4MTMwLzB4MTVjCj4+IFtjMDAwMDAwMGQ5ZjhiZGQwXSBjMDAwMDAwMDAwMjEzNDU4IC50
+cmFjZV9jbG9ja19nbG9iYWwrMHgxMWMvMHgyYTAKPj4gW2MwMDAwMDAwZDlmOGJlOTBdIGMwMDAw
+MDAwMDAyMjI2YjAgLnJiX3Jlc2VydmVfbmV4dF9ldmVudCsweDIwYy8weDgwNAo+PiBbYzAwMDAw
+MDBkOWY4YmZhMF0gYzAwMDAwMDAwMDIyMzE3OCAucmluZ19idWZmZXJfbG9ja19yZXNlcnZlKzB4
+MjRjLzB4MmE0Cj4+IFtjMDAwMDAwMGQ5ZjhjMDMwXSBjMDAwMDAwMDAwMjJkNmY0IC50cmFjZV9i
+dWZmZXJfbG9ja19yZXNlcnZlKzB4NTgvMHhlNAo+PiBbYzAwMDAwMDBkOWY4YzBlMF0gYzAwMDAw
+MDAwMDIyZWM5Ywo+PiAudHJhY2VfY3VycmVudF9idWZmZXJfbG9ja19yZXNlcnZlKzB4NDQvMHg2
+Ywo+PiBbYzAwMDAwMDBkOWY4YzE3MF0gYzAwMDAwMDAwMDAxMWM1YyAuZnRyYWNlX3Jhd19ldmVu
+dF9oY2FsbF9lbnRyeSsweDdjLzB4MTQ0Cj4+IFtjMDAwMDAwMGQ5ZjhjMjMwXSBjMDAwMDAwMDAw
+MDk2NjI0IC5fX3RyYWNlX2hjYWxsX2VudHJ5KzB4YTAvMHhlYwo+PiBbYzAwMDAwMDBkOWY4YzJj
+MF0gYzAwMDAwMDAwMDA5Nzg2YyAucGxwYXJfaGNhbGxfbm9yZXRzKzB4NTAvMHhkMAo+PiBbYzAw
+MDAwMDBkOWY4YzMzMF0gYzAwMDAwMDAwMDA3NDljOCAuX19zcGluX3lpZWxkKzB4MTMwLzB4MTVj
+Cj4+IFtjMDAwMDAwMGQ5ZjhjM2MwXSBjMDAwMDAwMDAwMjEzNDU4IC50cmFjZV9jbG9ja19nbG9i
+YWwrMHgxMWMvMHgyYTAKPj4gW2MwMDAwMDAwZDlmOGM0ODBdIGMwMDAwMDAwMDAyMjI2YjAgLnJi
+X3Jlc2VydmVfbmV4dF9ldmVudCsweDIwYy8weDgwNAo+PiBbYzAwMDAwMDBkOWY4YzU5MF0gYzAw
+MDAwMDAwMDIyMzE3OCAucmluZ19idWZmZXJfbG9ja19yZXNlcnZlKzB4MjRjLzB4MmE0Cj4+IFtj
+MDAwMDAwMGQ5ZjhjNjIwXSBjMDAwMDAwMDAwMjJkNmY0IC50cmFjZV9idWZmZXJfbG9ja19yZXNl
+cnZlKzB4NTgvMHhlNAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk5va2lhIGFuZCBBVCZUIHByZXNl
+bnQgdGhlIDIwMTAgQ2FsbGluZyBBbGwgSW5ub3ZhdG9ycy1Ob3J0aCBBbWVyaWNhIGNvbnRlc3QK
+Q3JlYXRlIG5ldyBhcHBzICYgZ2FtZXMgZm9yIHRoZSBOb2tpYSBOOCBmb3IgY29uc3VtZXJzIGlu
+ICBVLlMuIGFuZCBDYW5hZGEKJDEwIG1pbGxpb24gdG90YWwgaW4gcHJpemVzIC0gJDRNIGNhc2gs
+IDUwMCBkZXZpY2VzLCBuZWFybHkgJDZNIGluIG1hcmtldGluZwpEZXZlbG9wIHdpdGggTm9raWEg
+UXQgU0RLLCBXZWIgUnVudGltZSwgb3IgSmF2YSBhbmQgUHVibGlzaCB0byBPdmkgU3RvcmUgCmh0
+dHA6Ly9wLnNmLm5ldC9zZnUvbm9raWEtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL2x0cC1saXN0Cg==
