@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1P8O9o-0006pF-Os
-	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 02:12:00 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8O9n-000444-Ey
-	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 02:12:00 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9K2BrnR022400
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Oct 2010 22:11:53 -0400
-Date: Tue, 19 Oct 2010 22:11:53 -0400 (EDT)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1605030489.949971287540713741.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1P8red-00063X-Hn
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 09:41:47 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P8rec-0007pY-AV
+	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 09:41:47 +0000
+Received: by wwb17 with SMTP id 17so3667137wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Oct 2010 02:41:40 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] functional testing for Kernel Samepage Merging
-	(KSM)
+In-Reply-To: <AANLkTimwwvYMxECHENzqo6tb4iVU+VCbT12aWhUagppF@mail.gmail.com>
+References: <000001cb66a9$bb3c52b0$31b4f810$@co.jp>
+	<AANLkTimwwvYMxECHENzqo6tb4iVU+VCbT12aWhUagppF@mail.gmail.com>
+Date: Thu, 21 Oct 2010 02:41:40 -0700
+Message-ID: <AANLkTikxqHqzGGcASkgMLq2BAWxLGHxjgvSbtsguXDzb@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=0016e64967c841af4b04931d553c
+Subject: Re: [LTP] POSIX "aio_return/2-1" failed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,511 +29,206 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Basic tests were to start several programs with same and different
-memory contents and ensure only to merge the ones with the same
-contents. When changed the content of one of merged pages in a
-process and to the mode "unmerging", it should discard all merged
-pages there. Also tested it is possible to disable KSM. There are
-also command-line options to specify the memory allocation size, and
-number of processes have same memory contents so it is possible to
-test more advanced things like KSM + OOM etc. KSM statistics numbers
-look like hard to predict, so only check the ranges.
+--0016e64967c841af4b04931d553c
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Oct 18, 2010 at 5:00 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Thu, Oct 7, 2010 at 10:29 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> Hi,
+>>
+>>
+>> "conformance/interfaces/aio_return/2-1" failed with following message:
+>> ------------
+>> conformance/interfaces/aio_return/2-1: execution: FAILED: Output:
+>> aio_return/2-1.c Second call to aio_return() should return -1 : 111
+>> ------------
+>>
+>> Same problem occurs in "aio_return/3-2.c" and "aio_return/4-1".
+>>
+>> Environment is as follows:
+>> =A0- RHEL5.5 --- (x86, x86_64, ia64)
+>> =A0- RHEL4.8 --- (x86, x86_64, ia64)
+>>
+>>
+>> This testset seems to be the error root test for "aio_return()".
+>>
+>> First "aio_return()" returned with 111. This return value is the length
+>> of buffer of "aio_write()".
+>> But second "aio_return()" returned with 111, too. It's unexpected
+>> result for this test set.
+>> Therefore, this test failed.
+>>
+>> Man page says that
+>> "This function should be called only once for any given request, =A0afte=
+r
+>> aio_error(2) returns something other than EINPROGRESS.":
+>> ------------
+>> # LANG=3DC man 3 aio_return
+>>
+>> AIO_RETURN(3) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Linux Programmer's Manu=
+al
+>> AIO_RETURN(3)
+>>
+>> NAME
+>> =A0 =A0 =A0 aio_return - get return status of asynchronous I/O operation
+>>
+>> SYNOPSIS
+>> =A0 =A0 =A0 #include <aio.h>
+>>
+>> =A0 =A0 =A0 ssize_t aio_return(struct aiocb *aiocbp);
+>>
+>> DESCRIPTION
+>> =A0 =A0 =A0 The aio_return function returns the final return status for =
+the
+>> asynchronous I/O
+>> =A0 =A0 =A0 request with control block pointed to by aiocbp.
+>>
+>> =A0 =A0 =A0 This =A0function =A0should =A0be =A0called =A0only =A0once =
+=A0for =A0any =A0given
+>> request, =A0after
+>> =A0 =A0 =A0 aio_error(2) returns something other than EINPROGRESS.
+>>
+>> RETURN VALUE
+>> =A0 =A0 =A0 If the asynchronous I/O operation has completed, this functi=
+on
+>> returns the value
+>> =A0 =A0 =A0 that would have been returned in case of a synchronous =A0re=
+ad, =A0write,
+>> or =A0fsync
+>> =A0 =A0 =A0 request. =A0Otherwise the return value is undefined. =A0On e=
+rror, the
+>> error value is
+>> =A0 =A0 =A0 returned.
+>>
+>> ERRORS
+>> =A0 =A0 =A0 EINVAL aiocbp does not point at a control block for an async=
+hronous
+>> I/O =A0request
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0of which the return status has not been retri=
+eved yet.
+>>
+>> CONFORMING TO
+>> =A0 =A0 =A0 POSIX 1003.1-2003
+>>
+>> SEE ALSO
+>> =A0 =A0 =A0 aio_cancel(3), =A0 =A0aio_error(3), =A0 aio_fsync(3), =A0 ai=
+o_read(3),
+>> aio_suspend(3),
+>> =A0 =A0 =A0 aio_write(3)
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 2003-11-14
+>> AIO_RETURN(3)
+>> #
+>> ------------
+>>
+>> And, it says that
+>> "If the asynchronous I/O operation has completed, this function returns
+>> the value that would have been returned in case of a synchronous read,
+>> write, or fsync request. =A0Otherwise the return value is undefined. =A0=
+On
+>> error, the error value is returned.".
+>>
+>>
+>> It can be supposed that the return value of second "aio_return()" is
+>> undefined.
+>> Therefore, it is not mistake that return value of the second "aio_return=
+()"
+>> is one at success, I think.
+>> And, I think that "UNTESTED" or "UNRESOLVED" may be is more appropriate
+>> for this test.
+>
+> =A0 =A0No. POSIX clearly states:
+>
+> "If the asynchronous I/O operation has completed, then the return
+> status, as described for read(), write(), and fsync(), shall be
+> returned. If the asynchronous I/O operation has not yet completed, the
+> results of aio_return() are undefined.
+>
+> If the aio_return() function fails, it shall return -1 and set errno
+> to indicate the error."
+>
+> ERRORS
+>
+> "The aio_return() function may fail if:
+>
+> [EINVAL]
+> =A0 =A0The aiocbp argument does not refer to an asynchronous operation
+> whose return status has not yet been retrieved."
+>
+> =A0 =A0What the test implementers were looking to do was test out that -1
+> / EINVAL were returned, and maybe that fact that they were testing was
+> in fact implementation defined, as opposed to what's stated in the
+> standard, as the spec doesn't state that the behavior for aio_return
+> would be s.t. the state of the AIO stream is reset when aio_return is
+> called.
+> =A0 =A0So yes, I agree this should be fixed, but let me check with the
+> POSIX folks what the best course of action is.
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
-v2: fixed stupid mistakes about memory content assignment.
+    I've read into this a bit more, and I think that the aio_return
+testcases were written incorrectly. Please try out this testcase... if
+it works for you, then I'll apply necessary logic to other testcases
+as well.
+    It worked for me at least on FreeBSD.
+Thanks,
+-Garrett
 
- testcases/kernel/mem/ksm/Makefile |   22 ++
- testcases/kernel/mem/ksm/ksm01.c  |  435 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 457 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/ksm/Makefile
- create mode 100644 testcases/kernel/mem/ksm/ksm01.c
+--0016e64967c841af4b04931d553c
+Content-Type: application/octet-stream; name="fixup-aio_return-1-1.diff"
+Content-Disposition: attachment; filename="fixup-aio_return-1-1.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gfjfxmb10
 
-diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm/Makefile
-new file mode 100644
-index 0000000..d3eb6ef
---- /dev/null
-+++ b/testcases/kernel/mem/ksm/Makefile
-@@ -0,0 +1,22 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2001
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-+#
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/ksm/ksm01.c b/testcases/kernel/mem/ksm/ksm01.c
-new file mode 100644
-index 0000000..82c1cd6
---- /dev/null
-+++ b/testcases/kernel/mem/ksm/ksm01.c
-@@ -0,0 +1,435 @@
-+/*
-+ * functional testing for Kernel Samepage Merging (KSM)
-+ *
-+ * Basic tests were to start several programs with same and different
-+ * memory contents and ensure only to merge the ones with the same
-+ * contents. When changed the content of one of merged pages in a
-+ * process and to the mode "unmerging", it should discard all merged
-+ * pages there. Also tested it is possible to disable KSM. There are
-+ * also command-line options to specify the memory allocation size, and
-+ * number of processes have same memory contents so it is possible to
-+ * test more advanced things like KSM + OOM etc. KSM statistics numbers
-+ * look like hard to predict, so only check the ranges.
-+ *
-+ * Prerequisites:
-+ *
-+ * 1) ksm and ksmtuned daemons need to be disabled. Otherwise, it could
-+ *    distrub the testing as they also change some ksm tunables depends
-+ *    on current workloads.
-+ *
-+ * The test steps are:
-+ * 01) check ksm feature and backup current run setting.
-+ * 02) change run setting to 1 - merging.
-+ * 03) 3 memory allocation programs have the memory contents that 2 of
-+ *     them are all 'a' and one is all 'b'.
-+ * 04) check ksm statistics.
-+ * 05) 1 program changes the memory content from all 'a' to all 'b'.
-+ * 06) check ksm statistics.
-+ * 07) all programs change the memory content to all 'd'.
-+ * 08) check ksm statistics.
-+ * 09) change run setting to 2 - unmerging.
-+ * 10) check ksm statistics.
-+ * 11) change run setting to 0 - stop.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#include <sys/stat.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+#define _PATH_KSM	"/sys/kernel/mm/ksm/"
-+#define MB		(1024 * 1024)
-+
-+char *TCID = "ksm01";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+static int opt_num, opt_size;
-+static char *opt_numstr, *opt_sizestr;
-+static char ***memory;
-+
-+/* main setup function of test */
-+void setup(void);
-+/* cleanup function for the test */
-+void cleanup(void);
-+int ksmtest(void);
-+void help(void);
-+void check(char *path, long int value);
-+
-+static option_t options[] = {
-+	{ "n:", &opt_num,	&opt_numstr},
-+	{ "s:", &opt_size,	&opt_sizestr},
-+	{ NULL, NULL,		NULL}
-+};
-+
-+int main(int argc, char *argv[])
-+{
-+	/* loop counter */
-+	int lc;
-+	/* message returned from parse_opts */
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, options, help);
-+	if (msg != (char *)NULL) {
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+		tst_exit();
-+	}
-+	/* Perform global setup for test */
-+	setup();
-+
-+	/* Check looping state if -i option given */
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		/* Reset Tst_count in case we are looping. */
-+		Tst_count = 0;
-+
-+		TEST(ksmtest());
-+
-+		if (TEST_RETURN != 0)
-+			tst_resm(TFAIL, "ksmtest() failed with %ld.",
-+				TEST_RETURN);
-+		else
-+			tst_resm(TPASS, "ksmtest() completed "
-+				"successfully.");
-+	}
-+	cleanup();
-+	return 0;
-+}
-+
-+int ksmtest(void)
-+{
-+	char buf[BUFSIZ], buf2[BUFSIZ];
-+	int i, j, status, k, fd, *child;
-+	int size = 128;
-+	int num = 3;
-+
-+	if (opt_size) {
-+		size = atoi(opt_sizestr);
-+		if (size < 1)
-+			tst_brkm(TBROK, cleanup,
-+				"size cannot be less than 1.");
-+	}
-+	if (opt_num) {
-+		num = atoi(opt_numstr);
-+		if (num < 3)
-+			tst_brkm(TBROK, cleanup,
-+				"process number cannot be less 3.");
-+	}
-+	child = malloc(num);
-+	if (child == NULL)
-+		tst_brkm(TBROK, cleanup, "malloc");
-+
-+	memory = malloc(num * sizeof(**memory));
-+	if (memory == NULL)
-+		tst_brkm(TBROK, cleanup, "malloc");
-+
-+	if ((child[0] = fork()) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	else if (child[0] == 0) {
-+		/* Avoid THP allocation which can't ksm ATM. */
-+		tst_resm(TINFO,
-+			"child 0 allocates %d MB filled with 'c'.",
-+			size);
-+
-+		memory[0] = malloc(size * sizeof(*memory));
-+		if (memory[0] == NULL)
-+			tst_brkm(TBROK|TERRNO, cleanup, "malloc");
-+
-+		for (j = 0; j < size; j++) {
-+			memory[0][j] = malloc(MB);
-+			if (memory[0][j] == NULL)
-+				tst_brkm(TBROK|TERRNO, cleanup,
-+					"malloc");
-+
-+			madvise((char *)(((long)memory[0][j]>>12)<<12),
-+				MB, MADV_MERGEABLE);
-+			for (i = 0; i < MB; i++)
-+				memory[0][j][i] = 'a';
-+		}
-+		if (raise(SIGSTOP) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "kill");
-+
-+		tst_resm(TINFO, "child 0 continues...");
-+		tst_resm(TINFO, "child 0 changes memory content to 'd'.");
-+
-+		for (j = 0; j < size; j++) {
-+			for (i = 0; i < MB; i++)
-+				memory[0][j][i] = 'd';
-+		}
-+		exit(1);
-+	}
-+	if ((child[1] = fork()) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	else if (child[1] == 0) {
-+		tst_resm(TINFO,
-+			"child 1 allocates %d MB filled with 'a'.",
-+			size);
-+
-+		memory[1] = malloc(size * sizeof(*memory));
-+		if (memory[1] == NULL)
-+			tst_brkm(TBROK|TERRNO, cleanup, "malloc");
-+
-+		for (j = 0; j < size; j++) {
-+			memory[1][j] = malloc(MB);
-+			if (memory[1][j] == NULL)
-+				tst_brkm(TBROK|TERRNO, cleanup,
-+					"malloc");
-+
-+			madvise((char *)(((long)memory[1][j]>>12)<<12),
-+				MB, MADV_MERGEABLE);
-+			for (i = 0; i < MB; i++)
-+				memory[1][j][i] = 'a';
-+		}
-+		if (raise(SIGSTOP) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "kill");
-+
-+		tst_resm(TINFO, "child 1 continues...");
-+		tst_resm(TINFO, "child 1 changes memory content to 'b'.");
-+
-+		for (j = 0; j < size; j++) {
-+			for (i = 0; i < MB; i++)
-+				memory[1][j][i] = 'b';
-+		}
-+		if (raise(SIGSTOP) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "kill");
-+
-+		tst_resm(TINFO, "child 1 continues...");
-+		tst_resm(TINFO, "child 1 changes memory content to 'd'");
-+
-+		for (j = 0; j < size; j++) {
-+			for (i = 0; i < MB; i++)
-+				memory[1][j][i] = 'd';
-+		}
-+		exit(1);
-+	}
-+
-+	for (k = 2; k < num; k++) {
-+		if ((child[k] = fork()) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		else if (child[k] == 0) {
-+			tst_resm(TINFO,
-+				"child %d allocates %d MB filled with "
-+				"'a'.", k, size);
-+
-+			memory[k] = malloc(size * sizeof(*memory));
-+			if (memory[k] == NULL)
-+				tst_brkm(TBROK|TERRNO, cleanup, "malloc");
-+
-+			for (j = 0; j < size; j++) {
-+				memory[k][j] = malloc(MB);
-+				if (memory[k][j] == NULL)
-+					tst_brkm(TBROK|TERRNO, cleanup,
-+						"malloc");
-+
-+				madvise((char *)(((long)memory[k][j]>>12)<<12),
-+					MB, MADV_MERGEABLE);
-+				for (i = 0; i < MB; i++)
-+					memory[k][j][i] = 'a';
-+			}
-+			if (raise(SIGSTOP) == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "kill");
-+
-+			tst_resm(TINFO, "child %d continues...", k);
-+			tst_resm(TINFO, "child %d changes memory "
-+				"content to 'd'", k);
-+
-+			for (j = 0; j < size; j++) {
-+				for (i = 0; i < MB; i++)
-+					memory[k][j][i] = 'd';
-+			}
-+			exit(1);
-+		}
-+	}
-+	tst_resm(TINFO, "KSM merging...");
-+	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
-+	fd = open(buf, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, "1", 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+
-+	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "pages_to_scan");
-+	snprintf(buf2, BUFSIZ, "%d", size * 256 * num);
-+	fd = open(buf, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, buf2, strlen(buf2)) != strlen(buf2))
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+
-+	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "sleep_millisecs");
-+	fd = open(buf, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, "0", 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+
-+	sleep(5);
-+	tst_resm(TINFO, "check!");
-+	check("run", 1);
-+	check("pages_shared", size * 256);
-+	check("pages_sharing", size * (num - 2) * 256);
-+	/* One child has different memory content. */
-+	check("pages_unshared", size * 256);
-+
-+	for (k = 0; k < num; k++) {
-+		if (waitpid(child[k], &status, WUNTRACED) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+		if (!WIFSTOPPED(status))
-+			tst_brkm(TBROK, cleanup,
-+				"child was not stopped.");
-+	}
-+	if (kill(child[1], SIGCONT) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "kill");
-+
-+	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
-+	fd = open(buf, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, "1", 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+
-+	sleep(5);
-+	tst_resm(TINFO, "check!");
-+	check("run", 1);
-+	check("pages_shared", 0);
-+	check("pages_sharing", 0);
-+	check("pages_unshared", size * num * 256);
-+
-+	for (k = 0; k < num; k++) {
-+		if (kill(child[k], SIGCONT) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup,
-+				"kill child[%d]", k);
-+	}
-+	sleep(5);
-+	tst_resm(TINFO, "check!");
-+	check("run", 1);
-+	check("pages_shared", size * 256);
-+	check("pages_sharing", size * (num - 1) * 256);
-+	check("pages_unshared", 0);
-+
-+	tst_resm(TINFO, "KSM unmerging...");
-+	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
-+	fd = open(buf, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, "2", 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+
-+	sleep(5);
-+	tst_resm(TINFO, "check!");
-+	check("run", 2);
-+	check("pages_shared", 0);
-+	check("pages_sharing", 0);
-+	check("pages_unshared", 0);
-+
-+	tst_resm(TINFO, "stop KSM.");
-+	if (lseek(fd, 0, SEEK_SET) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-+	if (write(fd, "0", 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+
-+	sleep(5);
-+	tst_resm(TINFO, "check!");
-+	check("run", 0);
-+	check("pages_shared", 0);
-+	check("pages_sharing", 0);
-+	check("pages_unshared", 0);
-+
-+	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0) {
-+		if (WEXITSTATUS(status) != 0)
-+			return 1;
-+	}
-+	return 0;
-+}
-+
-+void cleanup(void)
-+{
-+	/*
-+	 * remove the tmp directory and exit
-+	 */
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	char buf[BUFSIZ];
-+	struct stat new;
-+
-+	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
-+	if (stat(buf, &new) == -1) {
-+		if (errno == ENOENT)
-+			tst_brkm(TCONF, NULL, "no KSM.");
-+		else
-+			tst_brkm(TBROK, NULL, "stat");
-+	}
-+
-+	/*
-+	 * setup a default signal hander and a
-+	 * temporary working directory.
-+	 */
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+	tst_tmpdir();
-+}
-+
-+void help(void)
-+{
-+	printf("  -n      Number of process has same "
-+		"memory content\n");
-+	printf("  -s      Memory allocation size in MB\n");
-+}
-+
-+void check(char *path, long int value)
-+{
-+	FILE *fp;
-+	char buf[BUFSIZ];
-+
-+	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, path);
-+	fp = fopen(buf, "r");
-+	if (fp == NULL)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-+	if (fgets(buf, BUFSIZ, fp) == NULL)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fgets");
-+	fclose(fp);
-+
-+	tst_resm(TINFO, "%s is %ld.", path, atol(buf));
-+
-+	if ((atol(buf) != value))
-+		tst_resm(TFAIL, "%s is not %ld.", path, value);
-+}
--- 
-1.7.1
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9p
+bnRlcmZhY2VzL2Fpb19yZXR1cm4vMS0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
+dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fcmV0dXJuLzEtMS5jCmluZGV4IGJmYzhlMTIu
+LjA5MDM4N2MgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25m
+b3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19yZXR1cm4vMS0xLmMKKysrIGIvdGVzdGNhc2VzL29wZW5f
+cG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3JldHVybi8xLTEuYwpA
+QCAtNDMsOCArNDMsMTAgQEAgaW50IG1haW4odm9pZCkKIAlzdHJ1Y3QgYWlvY2IgYWlvY2I7CiAJ
+aW50IGZkLCByZXR2YWw7CiAKKyNpZiAwCiAJaWYgKHN5c2NvbmYoX1NDX0FTWU5DSFJPTk9VU19J
+TykgIT0gMjAwMTEyTCkKIAkJcmV0dXJuIFBUU19VTlNVUFBPUlRFRDsKKyNlbmRpZgogCiAJc25w
+cmludGYodG1wZm5hbWUsIHNpemVvZih0bXBmbmFtZSksICIvdG1wL3B0c19haW9fcmV0dXJuXzFf
+MV8lZCIsIAogCQkgIGdldHBpZCgpKTsKQEAgLTczLDI2ICs3NSwxOCBAQCBpbnQgbWFpbih2b2lk
+KQogCQlleGl0KFBUU19GQUlMKTsKIAl9CiAKLQlkbyB7Ci0JCXJldHZhbCA9IGFpb19lcnJvcigm
+YWlvY2IpOwotCQlpZiAocmV0dmFsID09IC0xKSB7Ci0JCQljbG9zZShmZCk7Ci0JCQlwcmludGYo
+VE5BTUUgIiBFcnJvciBhdCBhaW9fZXJyb3IoKTogJXNcbiIsCi0JCQkJc3RyZXJyb3IoZXJybm8p
+KTsKLQkJCWV4aXQoUFRTX0ZBSUwpOwotCQl9Ci0JfSB3aGlsZSAocmV0dmFsID09IEVJTlBST0dS
+RVNTKTsKLQorCXdoaWxlIChhaW9fZXJyb3IoJmFpb2NiKSA9PSBFSU5QUk9HUkVTUykKKwkJc2xl
+ZXAoMSk7CiAJcmV0dmFsID0gYWlvX3JldHVybigmYWlvY2IpOwogCi0JaWYgKHJldHZhbCAhPSBC
+VUZfU0laRSkgewotCQljbG9zZShmZCk7CisJaWYgKHJldHZhbCA9PSAtMSkgewogCQlwcmludGYo
+VE5BTUUgIiBFcnJvciBhdCBhaW9fcmV0dXJuKCk6ICVzXG4iLAotCQkgICAgICAgc3RyZXJyb3Io
+ZXJybm8pKTsKKwkJICAgICAgIHN0cmVycm9yKGFpb19lcnJvcigmYWlvY2IpKSk7CiAJCWV4aXQo
+UFRTX0ZBSUwpOwogCX0KLQkKKwogCWNsb3NlKGZkKTsKKwlwcmludGYoImFpb19yZXR1cm4oJmFp
+b2NiKSA9ICVkXG4iLCByZXR2YWwpOwogCXByaW50ZigiVGVzdCBQQVNTRURcbiIpOwogCWV4aXQo
+UFRTX1BBU1MpOwogfQo=
+--0016e64967c841af4b04931d553c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
+--0016e64967c841af4b04931d553c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e64967c841af4b04931d553c--
+
