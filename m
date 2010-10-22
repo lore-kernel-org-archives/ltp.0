@@ -1,27 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <pev@sketchymonkey.com>) id 1PBRZ2-0001GJ-Gq
-	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 12:26:40 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PBRZ0-0001zg-TJ
-	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 12:26:40 +0000
-Received: by ywo32 with SMTP id 32so1246498ywo.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 28 Oct 2010 05:26:33 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1P9GtL-000315-2A
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 12:38:39 +0000
+Date: Fri, 22 Oct 2010 14:47:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101022124750.GB19229@saboteur.suse.cz>
+References: <4CBBAD30.6070403@windriver.com>
+	<AANLkTi=aC63h6rTNsqJ5tJ22FOuAR9+SLyp-vTW9KYDK@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=qMFhKNeBQaWWDP7h9UF77e_hJKT+jTzL=55Fd@mail.gmail.com>
-References: <AANLkTinKu3Kx0FMdgvvG34rc6tcv4Wt5qV1jaAnGzHnv@mail.gmail.com>
-	<4CC8464F.80605@linux.vnet.ibm.com>
-	<AANLkTikAcaMa0zZ_pfrW_W8H=VqhCvMge8wm+AFbpSEs@mail.gmail.com>
-	<4CC96358.1000108@linux.vnet.ibm.com>
-	<AANLkTi=qMFhKNeBQaWWDP7h9UF77e_hJKT+jTzL=55Fd@mail.gmail.com>
-Date: Thu, 28 Oct 2010 13:26:33 +0100
-Message-ID: <AANLkTino9kmXCtJJOK=bNySpEsUsUNDMYHtjBtbKEXy_@mail.gmail.com>
-From: David Peverley <pev@sketchymonkey.com>
-Subject: Re: [LTP] Realtime tests on embedded target
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=aC63h6rTNsqJ5tJ22FOuAR9+SLyp-vTW9KYDK@mail.gmail.com>
+Subject: Re: [LTP] [patch] sync_file_range01 change for arm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,21 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 28 October 2010 13:10, David Peverley <pev@sketchymonkey.com> wrote:
-> However, all the scripts for realtime tests are similarly named...! To
-> end up in the bin dir they need to be unique so I'd rename along the
-> lines of :
-..
-> I'll take a stab at this this afternoon and submit a patch back if I'm
-> successful.
-Except typically it's not that simple as the execution scripts rely on
-directory traversal rather than scripts under runtest - somewhat more
-of a change than expected!
+Hi!
+> > arm use __NR_sync_file_range2 not __NR_sync_file_range for system call.
+> > the test casecheck __NR_sync_file_range for arm,
+> > So test react "System doesn't support" for arm.
+> > but actually arm use __NR_sync_file_range2 to support the system call.
+> >
+> > powerpc is big endian, arm is small endian, so the parameter dealing is
+> > different.
+> 
+>     Not true. ARM can be biendian, just like MIPS...
+>     A better test needs to be derived for endianness than this.
 
-~Pev
+Actually there seems to be some little endian PPC machines out there,
+see: http://lwn.net/Articles/408340/
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
