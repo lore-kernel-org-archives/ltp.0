@@ -1,29 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lizf@cn.fujitsu.com>) id 1P80O5-0001eO-S5
-	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 00:49:09 +0000
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1P98TX-0004yd-Jd
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 03:39:27 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P80O3-0001HM-PO
-	for ltp-list@lists.sourceforge.net; Tue, 19 Oct 2010 00:49:09 +0000
-Message-ID: <4CBCEB1D.7010101@cn.fujitsu.com>
-Date: Tue, 19 Oct 2010 08:49:33 +0800
-From: Li Zefan <lizf@cn.fujitsu.com>
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P98TW-0005Qo-11
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 03:39:27 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 86D2617096A
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 22 Oct 2010 11:39:22 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id o9M3ZFlp001189
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Oct 2010 11:35:15 +0800
+Received: from [10.167.225.71] (unknown [10.167.225.71])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id E622614C06D
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 22 Oct 2010 11:40:55 +0800 (CST)
+Message-ID: <4CC1077D.4040509@cn.fujitsu.com>
+Date: Fri, 22 Oct 2010 11:39:41 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4C85A88D.10700@cn.fujitsu.com>	
-	<1285689961.11429.12.camel@subratamodak.linux.ibm.com>	
-	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>	
-	<4CB55FE6.6000604@cn.fujitsu.com>
-	<4CB5615C.4070406@cn.fujitsu.com>	
-	<4CB59825.7060504@cn.fujitsu.com>	
-	<1286995066.4893.17.camel@subratamodak.linux.ibm.com>	
-	<4CBBBCB0.8070406@cn.fujitsu.com>
-	<1287411903.16971.275.camel@gandalf.stny.rr.com>
-In-Reply-To: <1287411903.16971.275.camel@gandalf.stny.rr.com>
-Subject: Re: [LTP] BUG: dead loop in PowerPC hcall tracepoint (Was: [PATCH
- v2] Add ftrace-stress-test to LTP)
+Subject: [LTP] [PATCH 3/3] pitest-4: Use time_t instead of unsigned long /
+	int.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,100 +37,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: ltp-list@lists.sourceforge.net, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>, Paul Mackerras <paulus@samba.org>, Anton Blanchard <anton@samba.org>, Ingo Molnar <mingo@elte.hu>
+To: ltp-list@lists.sourceforge.net
 
-Steven Rostedt wrote:
-> On Mon, 2010-10-18 at 11:19 +0800, Li Zefan wrote:
-> 
->> This is a dead loop:
->>
->> trace_hcall_entry() -> trace_clock_global() -> trace_hcall_entry() ..
->>
->> And this is a PPC specific bug. Hope some ppc guys will fix it?
->> Or we kill trace_clock_global() if no one actually uses it..
-> 
-> trace_clock_global() is used by many. I use it (and recommend using it)
-> on boxes where the TSC is horribly out of sync, and the trace needs
-> synchronization between CPUs.
-> 
-> The trace_hcall_entry and exit has wrappers already. Just add recursion
-> protection there.
-> 
+The test was using a mish-mash of unsigned long and int types to pass
+data between the thread and evaluate values, so the problem lied in
+potential truncation of data.
 
-Right, I thought of this. But as I have no machine to test, I'll leave
-this to others.
+time_t is a 32-bit type or 64-bit type on some OSes, so it's best to
+remain consistent with a single fixed data type instead of moving
+between int (which can be 32-bit or 64-bit, depending on the OS and
+architecture) and unsigned long (which can be 32-bit or 64-bit,
+depending on the OS and architecture).
 
-> Perhaps something like this:
-> 
-> (Not compiled nor ran)
-> 
-> +static DEFINE_PER_CPU(hcall_trace_disable);
-> +
->  void hcall_tracepoint_regfunc(void)
->  {
->  	hcall_tracepoint_refcount++;
->  }
-> 
->  void hcall_tracepoint_unregfunc(void)
->  {
->  	hcall_tracepoint_refcount--;
->  }
-> 
-> +int __trace_disable_check(void)
-> +{
-> +	if (!hcall_tracepoint_refcount)
-> +		return 1;
-> +
-> +	if (get_cpu_var(hcall_trace_disable)) {
-> +		put_cpu_var(hcall_trace_disable);
-> +		return 1;
-> +	}
-> +
-> +	__get_cpu_var(hcall_trace_disable)++;
-> +
-> +	return 0;
-> +}
-> +
-> +void __trace_disable_put(void)
-> +{
-> +	__get_cpu_var(hcall_trace_disable)--;
-> +	put_cpu_var(hcall_trace_disable);
-> +}
-> +
->  void __trace_hcall_entry(unsigned long opcode, unsigned long *args)
->  {
-> +	int trace_disable;
-> +
-> +	if (__trace_disable_check())
-> +		return;
-> +
->  	trace_hcall_entry(opcode, args);
-> +	__trace_disable_put();
->  }
-> 
->  void __trace_hcall_exit(long opcode, unsigned long retval,
->  			unsigned long *retbuf)
->  {
-> +	if (__trace_disable_check())
-> +		return;
-> +
->  	trace_hcall_exit(opcode, retval, retbuf);
-> +	__trace_disable_put();
->  }
-> 
-> -- Steve
-> 
-> 
-> 
-> 
+Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+---
+ .../functional/threads/pi_test/pitest-4.c          |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+index e6bff3f..12c9092 100644
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
++++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+@@ -176,7 +176,6 @@ void *thread_sample(void *arg)
+ 
+ void *thread_tb1(void *arg)
+ {
+-	unsigned long timeoutsec; 
+ 	struct timespec boost_time;
+ 	double t0, t1;
+ 	int rc;
+@@ -188,8 +187,7 @@ void *thread_tb1(void *arg)
+ 
+ 	pthread_mutex_lock(&mutex2);
+  
+-	timeoutsec = *(unsigned long*) arg;
+-	boost_time.tv_sec = time(NULL) + (time_t)timeoutsec;
++	boost_time.tv_sec = time(NULL) + *(unsigned long*) arg;
+ 	boost_time.tv_nsec = 0;
+ 	t0 = seconds_read();
+ 	rc = pthread_mutex_timedlock(&mutex1, &boost_time);	
+@@ -217,7 +215,6 @@ void *thread_tb1(void *arg)
+ 
+ void *thread_tb2(void *arg)
+ {
+-	unsigned long timeoutsec; 
+ 	struct timespec boost_time;
+ 	double t0, t1;
+ 	int rc;
+@@ -227,8 +224,7 @@ void *thread_tb2(void *arg)
+ 	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n", 
+ 		seconds_read() - base_time);
+ 
+-	timeoutsec = *(unsigned long*) arg;
+-	boost_time.tv_sec = time(NULL) + (time_t)timeoutsec;
++	boost_time.tv_sec = time(NULL) + *(unsigned long*) arg;
+ 	boost_time.tv_nsec = 0;
+ 
+ 	t0 = seconds_read();
+@@ -319,7 +315,7 @@ int main(int argc, char **argv)
+ 	sleep(base_time + multiplier * 30 - seconds_read());
+ 
+ 	/* Start TB1 thread (the lowest priority thread) */
+-	int timeout = multiplier * 40;
++	time_t timeout = multiplier * 40;
+ 	rc = pthread_create(&threadtb1, &threadattr, thread_tb1, 
+ 			    &timeout);
+         if (rc != 0) {
+-- 
+1.7.0.4
+
 
 ------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
