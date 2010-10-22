@@ -1,21 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <pev@sketchymonkey.com>) id 1PB4Ae-0006y2-Gk
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:27:56 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PB4Ad-0004iY-BG
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:27:56 +0000
-Received: by yxe42 with SMTP id 42so299520yxe.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Oct 2010 04:27:50 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 27 Oct 2010 12:27:49 +0100
-Message-ID: <AANLkTi=4D4yhyXoH4XWvi9NWjrZS9gaDeW+YcedHb5Mp@mail.gmail.com>
-From: David Peverley <pev@sketchymonkey.com>
-Subject: [LTP] realtime test use of hostname with busybox
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <noreply@sourceforge.net>) id 1P9Cff-00047A-G7
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 08:08:15 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
+Mime-Version: 1.0
+Message-Id: <E1P9Cff-0005SL-8v@sfs-web-6.v29.ch3.sourceforge.com>
+Date: Fri, 22 Oct 2010 08:08:15 +0000
+Subject: [LTP] [ ltp-Patches-3092794 ] genpow: array index overrun
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,21 +21,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: noreply@sourceforge.net
 
-Hi all,
+Patches item #3092794, was opened at 2010-10-22 12:08
+Message generated for change (Tracker Item Submitted) made by yustasswamp
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3092794&group_id=3382
 
-Another one... The realtime test script :
-   testcases/realtime/scripts/setenv.sh
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: Testcases
+Group: Miscellaneous
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Alexey Makhalov (yustasswamp)
+Assigned to: Nobody/Anonymous (nobody)
+Summary: genpow: array index overrun
 
-uses "hostname --short" which isn't supported by busybox. "hostname
--s" is supported but gives "hostname: unknown host". Given that every
-other script uses "hostname" as-is I reckon it would be reasonable to
-match that usage in this script too?
+Initial Comment:
+genpow.c:110 
+create_Data_file function
 
-Cheers,
+----------------------------------------------------------------------
 
-~Pev
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3092794&group_id=3382
 
 ------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
