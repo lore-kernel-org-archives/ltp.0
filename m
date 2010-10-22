@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1P5rt0-00011B-54
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 03:20:14 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5rsx-0003jd-SK
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 03:20:14 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9D3K6J9023281
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 Oct 2010 23:20:06 -0400
-Date: Tue, 12 Oct 2010 23:20:06 -0400 (EDT)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <732341917.269331286940006222.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1P97sw-0001xD-K9
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 03:01:38 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P97su-0007Bk-Vj
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 03:01:38 +0000
+Message-ID: <4CC0FE9C.9040006@cn.fujitsu.com>
+Date: Fri, 22 Oct 2010 11:01:48 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3] mmap/munmap /dev/zero
+Subject: [LTP] [PATCH 2/3] pitest-3: Use time_t instead of unsigned long /
+	int.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,201 +26,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Add a new test to mmap/munmap /dev/zero. A common way of malloc()/free()
-anonymous memory on Solaris. Anyway, mmap() of /dev/zero results in
-calling map_zero() which on RHEL5 maps the ZERO_PAGE in every pte within
-that virtual address range. Since a application is also multi-threaded
-the subsequent munmap() of /dev/zero results is TLB shootdowns to all
-other CPUs.  When this happens thousands or millions of times the
-application performance is terrible. The mapping ZERO_PAGE in every pte
-within that virtual address range was an optimization to make the
-subsequent pagefault times faster on RHEL5 that has been removed/changed
-upstream.
+The test was using a mish-mash of unsigned long and int types to pass
+data between the thread and evaluate values, so the problem lied in
+potential truncation of data.
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
+time_t is a 32-bit type or 64-bit type on some OSes, so it's best to
+remain consistent with a single fixed data type instead of moving
+between int (which can be 32-bit or 64-bit, depending on the OS and
+architecture) and unsigned long (which can be 32-bit or 64-bit,
+depending on the OS and architecture).
+
+Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 ---
-v3: really mmap /dev/zero; replace _exit() with exit(); fix patch
-    format.
+ .../functional/threads/pi_test/pitest-3.c          |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
 
-v2: incorporate comments from Mike and Garrett.
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
+index 0826a55..07b3bb8 100644
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
++++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
+@@ -210,7 +210,6 @@ void *thread_sample(void *arg)
+ 
+ void *thread_tb1(void *arg)
+ {
+-	unsigned long timeoutsec; 
+ 	struct timespec boost_time;
+ 	double t0, t1;
+ 	int rc;
+@@ -220,8 +219,7 @@ void *thread_tb1(void *arg)
+ 	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n", 
+ 		seconds_read() - base_time);
+ 
+-	timeoutsec = *(unsigned long*) arg;
+-	boost_time.tv_sec = time(NULL) + (time_t )timeoutsec;
++	boost_time.tv_sec = time(NULL) + *(unsigned long*) arg;
+ 	boost_time.tv_nsec = 0;
+ 
+ 	t0 = seconds_read();
+@@ -240,7 +238,6 @@ void *thread_tb1(void *arg)
+ 
+ void *thread_tb2(void *arg)
+ {
+-	unsigned long timeoutsec;
+ 	struct timespec boost_time;
+ 	double t0, t1;
+ 	int rc;
+@@ -250,8 +247,7 @@ void *thread_tb2(void *arg)
+ 	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n", 
+ 		seconds_read() - base_time);
+ 
+-	timeoutsec = *(unsigned long*) arg;	
+-	boost_time.tv_sec = time(NULL) + (time_t)timeoutsec;
++	boost_time.tv_sec = time(NULL) + *(time_t*) arg;
+ 	boost_time.tv_nsec = 0;
+ 	t0 = seconds_read();
+ 	rc = pthread_mutex_timedlock(&mutex2, &boost_time);	
+@@ -339,7 +335,7 @@ int main(int argc, char **argv)
+ 	sleep(base_time + multiplier * 30 - seconds_read());
+ 
+ 	/* Start TB1 thread (boosting thread) */
+-	int timeout = multiplier * 20;
++	time_t timeout = multiplier * 20;
+ 	rc = pthread_create(&threadtb1, &threadattr, thread_tb1, 
+ 			    &timeout);
+         if (rc != 0) {
+-- 
+1.7.0.4
 
- testcases/kernel/syscalls/mmap/mmap10.c |  159 +++++++++++++++++++++++++++++++
- 1 files changed, 159 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
-new file mode 100644
-index 0000000..d7185ee
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap10.c
-@@ -0,0 +1,159 @@
-+/*
-+ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
-+ * memory on Solaris. Anyway, mmap() of /dev/zero results in calling
-+ * map_zero() which on RHEL5 maps the ZERO_PAGE in every pte within
-+ * that virtual address range.  Since the application is also
-+ * multi-threaded the subsequest munmap() of /dev/zero results is TLB
-+ * shootdowns to all other CPUs.  When this happens thousands or
-+ * millions of times the application performance is terrible. The
-+ * mapping ZERO_PAGE in every pte within that virtual address range
-+ * was an optimization to make the subsequent pagefault times faster
-+ * on RHEL5 that has been removed/changed upstream.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include <errno.h>
-+#include <sys/mman.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <sys/wait.h>
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+
-+#define SIZE (5*1024*1024)
-+
-+char *TCID = "mmap10";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+
-+/* main setup function of test */
-+void setup(void);
-+/* cleanup function for the test */
-+void cleanup(void);
-+int mmapzero(void);
-+
-+int main(int argc, char *argv[])
-+{
-+	/* loop counter */
-+	int lc;
-+	/* message returned from parse_opts */
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, (option_t *) NULL, NULL);
-+	if (msg != NULL) {
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+		tst_exit();
-+	}
-+
-+	/* Perform global setup for test */
-+	setup();
-+
-+	/* Check looping state if -i option given */
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		/* Reset Tst_count in case we are looping. */
-+		Tst_count = 0;
-+
-+		TEST(mmapzero());
-+
-+		if (TEST_RETURN != 0)
-+			tst_resm(TFAIL, "mmapzero() failed with %ld.",
-+				TEST_RETURN);
-+		else
-+			tst_resm(TPASS, "mmapzero() completed successfully.");
-+	}
-+
-+	cleanup();
-+	return 0;
-+}
-+
-+int mmapzero(void)
-+{
-+	char *x;
-+	int n, fd;
-+
-+	if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
-+		tst_brkm(TBROK, cleanup, "open: %s", strerror(errno));
-+
-+	x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
-+		MAP_PRIVATE, fd, 0);
-+	if (x == MAP_FAILED) {
-+		tst_resm(TFAIL, "mmap: %s", strerror(errno));
-+		return 1;
-+	}
-+	x[SIZE] = 0;
-+	n = fork();
-+	if (n == -1)
-+		tst_brkm(TBROK, cleanup, "fork: %s", strerror(errno));
-+	else if (n == 0) {
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_resm(TFAIL, "munmap: %s", strerror(errno));
-+		exit(0);
-+	}
-+	n = fork();
-+	if (n == -1)
-+		tst_brkm(TBROK, cleanup, "fork: %s", strerror(errno));
-+	else if (n == 0) {
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_resm(TFAIL, "munmap: %s", strerror(errno));
-+		exit(0);
-+	} else {
-+		n = fork();
-+		if (n == -1)
-+			tst_brkm(TBROK, cleanup, "fork: %s", strerror(errno));
-+		else if (n == 0) {
-+			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+				tst_resm(TFAIL, "munmap: %s", strerror(errno));
-+			exit(0);
-+		}
-+	}
-+	if (munmap(x, SIZE+SIZE-4096) == -1)
-+		tst_resm(TFAIL, "munmap: %s", strerror(errno));
-+	while (waitpid(-1, NULL, WNOHANG) > 0);
-+	return 0;
-+}
-+
-+void cleanup(void)
-+{
-+	/*
-+	 * remove the tmp directory and exit
-+	 */
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+	tst_exit();
-+}
-+
-+
-+void setup(void)
-+{
-+	/*
-+	 * setup a default signal hander and a
-+	 * temporary working directory.
-+	 */
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+	tst_tmpdir();
-+}
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
