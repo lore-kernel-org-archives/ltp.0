@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lizf@cn.fujitsu.com>) id 1P9Bwm-0004vv-0F
-	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 07:21:52 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P9Bwk-0007df-0D
-	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 07:21:51 +0000
-Message-ID: <4CC13BB8.7090003@cn.fujitsu.com>
-Date: Fri, 22 Oct 2010 15:22:32 +0800
-From: Li Zefan <lizf@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4C85A88D.10700@cn.fujitsu.com>	<1285689961.11429.12.camel@subratamodak.linux.ibm.com>	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>	<4CB55FE6.6000604@cn.fujitsu.com>	<4CB5615C.4070406@cn.fujitsu.com>	<4CB59825.7060504@cn.fujitsu.com>	<1286995066.4893.17.camel@subratamodak.linux.ibm.com>	<4CBBBCB0.8070406@cn.fujitsu.com>
-	<20101021215212.4a982c85@kryten>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rostedt@goodmis.org>) id 1P9IO4-0004zA-8i
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 14:14:28 +0000
+Received: from hrndva-omtalb.mail.rr.com ([71.74.56.122])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P9IO0-00084R-Ut
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 14:14:26 +0000
+From: Steven Rostedt <rostedt@goodmis.org>
 In-Reply-To: <20101021215212.4a982c85@kryten>
+References: <4C85A88D.10700@cn.fujitsu.com>
+	<1285689961.11429.12.camel@subratamodak.linux.ibm.com>
+	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>
+	<4CB55FE6.6000604@cn.fujitsu.com> <4CB5615C.4070406@cn.fujitsu.com>
+	<4CB59825.7060504@cn.fujitsu.com>
+	<1286995066.4893.17.camel@subratamodak.linux.ibm.com>
+	<4CBBBCB0.8070406@cn.fujitsu.com>  <20101021215212.4a982c85@kryten>
+Date: Fri, 22 Oct 2010 10:14:16 -0400
+Message-ID: <1287756856.16971.637.camel@gandalf.stny.rr.com>
+Mime-Version: 1.0
 Subject: Re: [LTP] [PATCH] powerpc: Fix hcall tracepoint recursion
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,28 +33,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anton Blanchard <anton@samba.org>, subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, Peter Zijlstra <peterz@infradead.org>, LKML <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@elte.hu>, linuxppc-dev@lists.ozlabs.org
+To: Anton Blanchard <anton@samba.org>
+Cc: ltp-list@lists.sourceforge.net, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>, Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@elte.hu>
 
-Anton Blanchard wrote:
-> Hi,
-> 
->> This is a dead loop:
->>
->> trace_hcall_entry() -> trace_clock_global() -> trace_hcall_entry() ..
->>
->> And this is a PPC specific bug. Hope some ppc guys will fix it?
->> Or we kill trace_clock_global() if no one actually uses it..
-> 
-> Nasty! How does the patch below look? I had to disable irqs otherwise
-> we would sometimes drop valid events (if we take an interrupt anywhere
-> in the region where depth is elevated, then the entire interrupt will
-> be blocked from calling hcall tracepoints.
-> 
-
-Thanks!
-
-Subrata, could you test the patch below?
+On Thu, 2010-10-21 at 21:52 +1100, Anton Blanchard wrote:
 
 > Anton
 > --
@@ -127,8 +114,15 @@ Subrata, could you test the patch below?
 > +	local_irq_restore(flags);
 >  }
 >  #endif
-> 
-> 
+
+That's similar to the example that I wrote, but without the encapsulated
+code and with disabling interrupts for the reasons you gave.
+
+Acked-by: Steven Rostedt <rostedt@goodmis.org>
+
+-- Steve
+
+
 
 ------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
