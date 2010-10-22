@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P2CgL-0002Px-PI
-	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 00:44:01 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2CgK-000770-MJ
-	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 00:44:01 +0000
-Received: by iwn2 with SMTP id 2so7044002iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 02 Oct 2010 17:43:55 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1P97sT-0001vT-6h
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 03:01:09 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P97sP-00074l-FZ
+	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 03:01:09 +0000
+Message-ID: <4CC0FE7B.3020001@cn.fujitsu.com>
+Date: Fri, 22 Oct 2010 11:01:15 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1386780373.997641285829881764.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-References: <1320440485.401261285262435919.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<1386780373.997641285829881764.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Sat, 2 Oct 2010 17:43:53 -0700
-Message-ID: <AANLkTi=zDi8xfWBL5EsP6T82WXp3Yi=0-k+G1HsvONEE@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Re: fix incorrect parsing of df command in
-	ftruncate04.sh
+Subject: [LTP] [PATCH 1/3] pitest-2: Use time_t instead of unsigned long /
+	int.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,132 +23,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Sep 29, 2010 at 11:58 PM, Caspar Zhang <czhang@redhat.com> wrote:
->
-> ----- "Caspar Zhang" <czhang@redhat.com> wrote:
->
->> Sorry for missing [PATCH] tag, now added.
->>
->> Thanks,
->> Caspar
->> ----- "Caspar Zhang" <czhang@redhat.com> wrote:
->>
->> > Hi all, an error in ftruncate04 test is found,
->> > The problem I see is due to incorrect parsing
->> > of `df` command output:
->> >
->> > <<<test_start>>>
->> > tag=3Dftruncate04 stime=3D1284729392
->> > cmdline=3D"ftruncate04.sh"
->> > contacts=3D""
->> > analysis=3Dexit
->> > <<<test_output>>>
->> > DEV: =A0 =A0 =A0 =A0 /dev/mapper/vg_rhel6beta-lv_root
->> > MOUNT_POINT: /dev/mapper/vg_rhel6beta-lv_root
->> > FLAG: =A0 =A0 =A0 =A0rw,mand
->> > ftruncate04 =A0 =A01 =A0TPASS =A0: =A0Test passed.
->> > mount: you must specify the filesystem type
->> > ftruncate04.sh : ERROR : mounting /dev/mapper/vg_rhel6beta-lv_root
->> > remount,rw,mand failed
->> > incrementing stop
->> > <<<execution_status>>>
->> > initiation_status=3D"ok"
->> > duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
->> > cutime=3D1 cstime=3D7
->> > <<<test_end>>>
->> >
->> > # mount | head -1
->> > /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw,mand)
->> >
->> > # df .
->> > Filesystem =A0 =A0 =A0 =A0 =A0 1K-blocks =A0 =A0 =A0Used Available Use=
-% Mounted on
->> > /dev/mapper/vg_rhel6beta-lv_root
->> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A02523808 =A0 2436384 =A0=
- =A0 =A0 =A0 0 100% /
->> >
->> > A patch is attached to fix this problem. After applied the patch,
->> > the failure gone:
->> >
->> > <<<test_start>>>
->> > tag=3Dftruncate04 stime=3D1284729277
->> > cmdline=3D"ftruncate04.sh"
->> > contacts=3D""
->> > analysis=3Dexit
->> > <<<test_output>>>
->> > DEV: =A0 =A0 =A0 =A0 /dev/mapper/vg_rhel6beta-lv_root
->> > MOUNT_POINT: /
->> > FLAG: =A0 =A0 =A0 =A0rw,mand
->> > ftruncate04 =A0 =A01 =A0TPASS =A0: =A0Test passed.
->> > incrementing stop
->> > <<<execution_status>>>
->> > initiation_status=3D"ok"
->> > duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
->> > cutime=3D1 cstime=3D9
->> > <<<test_end>>>
->> >
->> > # mount | head -1
->> > /dev/mapper/vg_rhel6beta-lv_root on / type ext4 (rw)
->> > # df -P .
->> > Filesystem =A0 =A0 =A0 =A0 1024-blocks =A0 =A0 =A0Used Available Capac=
-ity Mounted
->> on
->> > /dev/mapper/vg_rhel6beta-lv_root =A0 2523808 =A0 2436380 =A0 =A0 =A0 =
-=A0 0
->> > 100% /
->> >
->> > So the test without the patch leaves the system in inconsistent
->> state
->> > (mand option is kept for the filesystem) which is bad.
->> >
->> > Signed-off-by: Caspar Zhang <czhang@redhat.com>
->> >
->> > ---
->> >
->> ltp-full-20100331.old/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
->> > 2010-09-17 15:06:44.292158981 +0200
->> > +++
->> > ltp-full-20100331/testcases/kernel/syscalls/ftruncate/ftruncate04.sh
->> > 2010-09-17 15:10:26.646160911 +0200
->> > @@ -18,7 +18,7 @@
->> > =A0 =A0 =A0export TST_TOTAL=3D1
->> > =A0fi
->> > =A0cd ${TMPDIR:=3D/tmp}
->> > -set -- $(df . | awk '/^\// { print $1, $NF }')
->> > +set -- $(df -P . | awk '/^\// { print $1, $NF }')
->> > =A0DEV=3D$1; MOUNT_POINT=3D$2
->> > =A0if [ "x$DEV" =3D x -o "x$MOUNT_POINT" =3D x ] ; then
->> > =A0 =A0 =A0tst_resm TCONF "backend mountpoint for $TMPDIR does not
->> > correspond to a real device:"
->> >
->> >
->> > Thanks,
->> > Caspar
->
-> Hi, any comments on this?
->
-> Thanks,
-> Caspar
+The test was using a mish-mash of unsigned long and int types to pass
+data between the thread and evaluate values, so the problem lied in
+potential truncation of data.
 
-    Looks fine (portable on Fedora 13 and FreeBSD at least), and it's
-standard as per the opengroup SUS page (
-http://www.opengroup.org/onlinepubs/009695399/utilities/df.html ).
-Committed.
-Thanks!
--Garrett
+time_t is a 32-bit type or 64-bit type on some OSes, so it's best to
+remain consistent with a single fixed data type instead of moving
+between int (which can be 32-bit or 64-bit, depending on the OS and
+architecture) and unsigned long (which can be 32-bit or 64-bit,
+depending on the OS and architecture).
 
----------------------------------------------------------------------------=
+Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 ---
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+ .../functional/threads/pi_test/pitest-2.c          |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
+index 47b8591..3598021 100644
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
++++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
+@@ -196,7 +196,6 @@ void *thread_sample(void *arg)
+ }
+ void *thread_tb1(void *arg)
+ {
+-	unsigned long timeoutsec;
+ 	struct timespec boost_time;
+ 	double t0, t1;
+ 	int rc;
+@@ -207,8 +206,7 @@ void *thread_tb1(void *arg)
+ 	DPRINTF(stdout, "#EVENT %f TB1 Thread Started\n",
+ 		seconds_read() - base_time); 
+ 	
+-	timeoutsec = *(unsigned long*) arg;
+-	boost_time.tv_sec = time(NULL) + (time_t)timeoutsec;
++	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+ 	boost_time.tv_nsec = 0;
+ 	
+ 	t0 = seconds_read();
+@@ -227,7 +225,6 @@ void *thread_tb1(void *arg)
+ 
+ void *thread_tb2(void *arg)
+ {
+-	unsigned long timeoutsec;
+ 	struct timespec boost_time;
+ 	double t0, t1;
+ 	int rc;
+@@ -238,8 +235,7 @@ void *thread_tb2(void *arg)
+ 	DPRINTF(stdout, "#EVENT %f TB2 Thread Started\n",
+ 		seconds_read() - base_time); 
+ 	
+-	timeoutsec = *(unsigned long*) arg;
+-	boost_time.tv_sec = time(NULL) + (time_t)timeoutsec;
++	boost_time.tv_sec = time(NULL) + *(time_t*) arg;
+ 	boost_time.tv_nsec = 0;
+ 
+ 	t0 = seconds_read();
+@@ -323,7 +319,7 @@ int main(int argc, char **argv)
+ 	sleep(base_time + multiplier * 30 - seconds_read());
+ 
+ 	/* Start TB1 thread (boosting thread) */
+-	int timeout = multiplier * 20;
++	time_t timeout = multiplier * 20;
+ 	rc = pthread_create(&threadtb1, &threadattr, thread_tb1, 
+ 			    &timeout);
+         if (rc != 0) {
+-- 
+1.7.0.4
+
+
+------------------------------------------------------------------------------
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
