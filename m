@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1P7m4q-0005ai-R6
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 09:32:20 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P7m4o-00051N-Vf
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 09:32:20 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 7911B170B45
+	(envelope-from <yanegomi@gmail.com>) id 1PAeha-0001bC-Ky
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 08:16:14 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PAehZ-0000RA-LQ
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 08:16:14 +0000
+Received: by wya21 with SMTP id 21so4215420wya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 18 Oct 2010 17:32:07 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id o9I9S55V029457
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Oct 2010 17:28:05 +0800
-Received: from [10.167.225.71] (unknown [10.167.225.71])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 370BD10C202
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 18 Oct 2010 17:33:39 +0800 (CST)
-Message-ID: <4CBC1431.1080808@cn.fujitsu.com>
-Date: Mon, 18 Oct 2010 17:32:33 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+	Tue, 26 Oct 2010 01:16:08 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] open_posix_testsuite: Fix variable type error
+In-Reply-To: <2034750582.1493141288080254753.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <1870824414.1492961288080127619.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<2034750582.1493141288080254753.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Tue, 26 Oct 2010 01:16:06 -0700
+Message-ID: <AANLkTikZ4ct8be_ROsUHrbGygH61sgq5FS6dqPJO0-ps@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix keyctl01 testcase on s390x systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,44 +28,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi
+On Tue, Oct 26, 2010 at 1:04 AM, Caspar Zhang <czhang@redhat.com> wrote:
+> Hi all,
+>
+> on s390x systems, a string like "MyKey" is not a valid argument
+> for keyctl syscall function, I substitute the string by number
+> to make keyctl testcase work on s390x systems.
+>
+> use "MyKey":
+>
+> keyctl01 =A0 =A01 =A0TPASS =A0: =A0KEYCTL_GET_KEYRING_ID succeeded
+> keyctl01 =A0 =A02 =A0TFAIL =A0: =A0KEYCTL_REVOKE got unexpected errno: er=
+rno=3DEINVAL(22): Invalid argument
+>
+> use a number:
+>
+> keyctl01 =A0 =A01 =A0TPASS =A0: =A0KEYCTL_GET_KEYRING_ID succeeded
+> keyctl01 =A0 =A02 =A0TPASS =A0: =A0KEYCTL_REVOKE got expected errno: errn=
+o=3D???(126): Required key not available
+>
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
 
-Currently, the variable "timeout" type is int, We should make it to be "unsigned long". 
-Otherwise, we'll get an unexpected value in thread function, consequently, test fails.
+    Looks like a kernel bug to me:
+http://manpages.ubuntu.com/manpages/lucid/man3/keyctl_revoke.3.html .
+EINVAL isn't listed in the manpage.
+Thanks,
+-Garrett
 
-Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+---------------------------------------------------------------------------=
 ---
- .../functional/threads/pi_test/pitest-1.c          |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
-diff --git a/testcases/	/functional/threads/pi_test/pitest-1.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
-index b8969a8..9fac992 100644
---- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
-+++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
-@@ -296,7 +296,7 @@ int main(int argc, char **argv)
- 
- 	/* Start TB thread (boosting thread) */
- 	DPRINTF(stderr,"Main Thread: start TB thread\n");
--	int timeout = multiplier * 20;
-+	unsigned long timeout = multiplier * 20;
- 	rc = pthread_create(&threadtb, &threadattr, thread_tb, 
- 			    &timeout);
-         if (rc != 0) {
--- 
-1.7.0.4
-
-
-------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
