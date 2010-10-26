@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P2Cxu-0002lC-Sd
-	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 01:02:11 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2Cxt-0004J9-SD
-	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 01:02:10 +0000
-Received: by iwn2 with SMTP id 2so7056466iwn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 02 Oct 2010 18:02:04 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1PAm2k-0000NO-NL
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 16:06:34 +0000
+Date: Tue, 26 Oct 2010 18:16:24 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101026161624.GA15489@saboteur.suse.cz>
+References: <20101025205915.GD3003@saboteur.suse.cz>
+	<AANLkTinUHQ6EUWi3ZhkuO0Ccd2FSSsLm6DiQpM=bZKcB@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <000001cb5f90$60970370$21c50a50$@co.jp>
-References: <000001cb4e59$573184b0$05948e10$@co.jp>
-	<AANLkTi=FA6Ojf2=B5w60e5F4y=E_n6nkPRE9seE4kyPn@mail.gmail.com>
-	<000001cb5f90$60970370$21c50a50$@co.jp>
-Date: Sat, 2 Oct 2010 18:02:04 -0700
-Message-ID: <AANLkTi=s14JAEQJ-ZE08qNvj0XMLyOnZ3L3=yzQpLto2@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
+Content-Disposition: inline
+In-Reply-To: <AANLkTinUHQ6EUWi3ZhkuO0Ccd2FSSsLm6DiQpM=bZKcB@mail.gmail.com>
+Subject: Re: [LTP] aio_error/3-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,61 +25,116 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Sep 28, 2010 at 9:40 PM, Mitani <mitani@ryobi.co.jp> wrote:
->> -----Original Message-----
->> From: Garrett Cooper [mailto:yanegomi@gmail.com]
->> Sent: Tuesday, September 07, 2010 4:04 PM
->> To: Mitani
->> Cc: ltp-list@lists.sourceforge.net
->> Subject: Re: [LTP] About "hugeshmat01" and "humeshmget03" testsets
->>
->> On Mon, Sep 6, 2010 at 11:53 PM, Mitani <mitani@ryobi.co.jp> wrote:
->> > Hi,
->> >
->> > I sent patches of "hugeshmat01" and "humeshmget03" testsets to
->> mailing-list
->> > in the middle of August, but they aren't updated.
->> > Would you teach me what kind of situation they are?
->> >
->> > =A0hugeshmat01:
->> > =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/m
->> sg10448.html
->> > =A0humeshmget03:
->> > =A0 =A0http://www.mail-archive.com/ltp-list@lists.sourceforge.net/m
->> sg10467.html
->> >
->> > =A0(The "humeshmat01" was revised on August 16, but same failure has
->> > =A0 occurred in my system.)
->> >
->> > I am glad if I can get some information about the patch.
->> > I'm looking forward to reply:-)
->>
->> =A0 =A0 Sorry... another item I forgot to follow up on. I'll look into
->> this over the next couple of days and provide feedback about this.
->> Thanks,
->> -Garrett
->
-> Were my revisions OK?
-> I am glad if you consider about these patches when you are free.
+Hi!
+> > I've been reading POSIX documentation for some time now and even reading
+> > glibc source code and the result is that aio_error/3-1.c doesn't test
+> > anyting and should be removed.
+> >
+> > The test is trying to assert EINVAL from aio_error accordingly to:
+> >
+> > http://www.opengroup.org/onlinepubs/009695399/functions/aio_error.html
+> >
+> > ...
+> >
+> > The aio_error() function may fail if:
+> >
+> > =A0 =A0 =A0 =A0[EINVAL]
+> > =A0 =A0 =A0 =A0 =A0 =A0The aiocbp argument does not refer to an asynchr=
+onous
+> > =A0 =A0 =A0 =A0 =A0 =A0operation whose return status has not yet been r=
+etrieved.
+> >
+> > ...
+> >
+> >
+> > As far as I understand this, it's says you may get EINVAL if you call
+> > aio_error() on finished aiocb second (and more) times.
+> >
+> > This is implemented on linux as "return aiocb->__error_code" so IMHO
+> > there is no way to test this.
+> =
 
-1. Where's the requirement noted that you added the code for in hugeshmget0=
-3 ?
-2. How do you know the value added to hugeshmat01 isn't page aligned?
-Why not get the page size from sysconf and subtract the value from
-one, and add _that_ value?
+>     I think that the original developers misinterpreted the test
+> requirements. aio_error is _always_ supposed to return errno values,
+> not -1 and set the global errno. Otherwise it wouldn't make sense
+> because asynchronous I/O would be more synchronous than anything else.
 
-Thanks,
--Garrett
+This is not the only problem here. Accordinly to POSIX aio_error() output is
+defined only when you pass correct aiocb (that means struct aiocb that is
+already used for some aio_{write,read,fsync,...}) and the value may not be
+stored pernamently, so if you read it once, it could return EINVAL second t=
+ime.
+
+
+...
+
+memset (&aiocb, 0, sizeof (struct aiocb));
+
+aiocb.aio_fildes =3D fd;
+aiocb.aio_buf =3D buf;
+aiocb.aio_reqprio =3D -1;
+aiocb.aio_nbytes =3D BUF_SIZE;
+
+/*
+ * Here return from aio_error() is not defined as
+ * there was no aio operation done on aiocb.
+ *
+ * On linux you get value that is stored in struct aiocb->__error_code
+ * and as aiocb is filled with zeroes on the beginning, this
+ * returns also zero. =
+
+ */
+ret =3D aio_error(&aiocb);
+
+if (aio_write(&aiocb) =3D=3D -1) {
+	/* quening write operation has failed */
+	return 1;
+}
+
+/*
+ * Wait for completion.
+ */
+while ((ret =3D aio_error(&aiocb)) =3D=3D EINPROGRESS)
+	sleep(1);
+
+/* Here we have status from aio_write in ret */
+
+/*
+ * And here we may get EINVAL instead of status from previous
+ * aio_write()
+ */
+ret =3D aio_error(&aiocb);
+
+
+So what I'm saying is that if you really want to write correct test for 3-1=
+.c
+you need to:
+
+1. Create aio data transfer
+2. Wait for completion
+3. Get aio return status by aio_error()
+4. Get it once more and it should either be EINVAL or same value that you g=
+ot first time.
+
+Which seems to be a little dumb to test to me, so I vote for removing 3-1.c=
+ from ltp.
+
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
 
 ---------------------------------------------------------------------------=
 ---
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
+
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
