@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1P60ny-00053w-TB
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 12:51:38 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PAbWT-0004hB-Tb
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 04:52:33 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P60ns-0006xl-V6
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 12:51:38 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9DCpRxd025807
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 08:51:27 -0400
-Date: Wed, 13 Oct 2010 08:51:27 -0400 (EDT)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1764805928.303201286974287503.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	id 1PAbWT-00062e-0O
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 04:52:33 +0000
+Received: by wwb31 with SMTP id 31so4082555wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 25 Oct 2010 21:52:27 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v5] mmap/munmap /dev/zero
+In-Reply-To: <AANLkTik9B1N5cLoETVev_OnrUogvqV8StLgia4RYJDvq@mail.gmail.com>
+References: <AANLkTik9B1N5cLoETVev_OnrUogvqV8StLgia4RYJDvq@mail.gmail.com>
+Date: Mon, 25 Oct 2010 21:52:27 -0700
+Message-ID: <AANLkTi=SEqhn78Znw+_9UywNMpf=hqS__vWGOM=Z4_3W@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] unbound vriable error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,262 +27,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ARJIT SHARMA <joyarjit@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, hannuxx@gmail.com
 
-mmap/munmap /dev/zero: a common way of malloc()/free() anonymous memory
-on Solaris.
+On Mon, Oct 25, 2010 at 9:07 PM, ARJIT SHARMA <joyarjit@gmail.com> wrote:
+> Hi,
+>
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 In network stress tests
+>
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0 following error is coming,=A0it is not able t=
+o get value of
+> field=A0variable.
+>
+> ""
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0 /opt/ltp/testcases/bin/get_ifname: line 79: f=
+ield: unbound
+> variable
+> broken_ip6-version01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the interf=
+ace name at the
+> remote host
+> ""
+>
+> how to resolve this error??
 
-The basic purpose of this is a to test if it is possible to map and
-unmap /dev/zero, and to read and write the mapping. Being inspired by
-two bugs in the past, the design of the test was added some variations
-based on the reproducers for them. It also accept an option to
-mmap/munmap anonymous pages.
+    Might be a shell bug because I'm not sure how this could be unset
+(the error is coming from set -u -- I did that to catch potential bugs
+in cmdlib.sh):
 
-One is to trigger panic with transparent hugepage feature that
-split_huge_page is very strict in checking the rmap walk was perfect.
-Keep it strict because if page_mapcount isn't stable and just right, the
-__split_huge_page_refcount that follows the rmap walk could lead to
-erratic page_count()s for the subpages. The bug in fork lead to the rmap
-walk finding the parent huge-pmd twice instead of just one, because the
-anon_vma_chain objects of the child vma still point to the vma->vm_mm of
-the parent. That trips on the split_huge_page mapcount vs page_mapcount
-check leading to a BUG_ON.
+ 78 # Pick HWaddr from HWaddr list
+ 79 field=3D`expr $link_num + 1`
+ 80 hwaddr=3D`echo $hwaddrs | cut -d ' ' -f $field`
+ 81 if [ x${hwaddr} =3D x ]; then
+ 82     echo "HWaddr list ($hwaddrs) is something wrong." >&2
+ 83     exit 1
+ 84 fi
 
-The other bug is mmap() of /dev/zero results in calling map_zero() which
-on RHEL5 maps the ZERO_PAGE in every PTE within that virtual address
-range. Since the application which maps a region from 5M to 16M in size
-is also multi-threaded the subsequent munmap() of /dev/zero results is
-TLB shootdowns to all other CPUs. When this happens thousands or
-millions of times the application performance is terrible. The mapping
-ZERO_PAGE in every pte within that virtual address range was an
-optimization to make the subsequent pagefault times faster on RHEL5 that
-has been removed/changed upstream.
+Thanks,
+-Garrett
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
+---------------------------------------------------------------------------=
 ---
-v5: add an option to test anonymous pages; move open() into setup();
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
-v4: comment fix; code cleanup.
-
-v3: really mmap /dev/zero; replace _exit() with exit(); fix patch
-    format.
-
-v2: incorporate comments from Mike and Garrett.
-
- testcases/kernel/syscalls/mmap/mmap10.c |  195 +++++++++++++++++++++++++++++++
- 1 files changed, 195 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
-new file mode 100644
-index 0000000..fb5065a
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap10.c
-@@ -0,0 +1,195 @@
-+/*
-+ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
-+ * memory on Solaris.
-+ *
-+ * The basic purpose of this is a to test if it is possible to map and
-+ * unmap /dev/zero, and to read and write the mapping. Being inpired
-+ * by two bugs in the past, the design of the test was added some
-+ * varitions based on the reproducers for them. It also accept an
-+ * option to mmap/munmap anonymous pages.
-+ *
-+ * One is to trigger panic with transparent hugepage feature that
-+ * split_huge_page is very strict in checking the rmap walk was
-+ * perfect. Keep it strict because if page_mapcount isn't stable and
-+ * just right, the __split_huge_page_refcount that follows the rmap
-+ * walk could lead to erratic page_count()s for the subpages. The bug
-+ * in fork lead to the rmap walk finding the parent huge-pmd twice
-+ * instead of just one, because the anon_vma_chain objects of the
-+ * child vma still point to the vma->vm_mm of the parent. That trips
-+ * on the split_huge_page mapcount vs page_mapcount check leading to a
-+ * BUG_ON.
-+ *
-+ * The other bug is mmap() of /dev/zero results in calling map_zero()
-+ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
-+ * address range. Since the application which maps a region from 5M to
-+ * 16M in size is also multi-threaded the subsequest munmap() of
-+ * /dev/zero results is TLB shootdowns to all other CPUs. When this
-+ * happens thousands or millions of times the application performance
-+ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
-+ * address range was an optimization to make the subsequent pagefault
-+ * times faster on RHEL5 that has been removed/changed upstream.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <sys/mman.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+#define SIZE (5*1024*1024)
-+
-+char *TCID = "mmap10";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+static int fd, opt_anon;
-+
-+/* main setup function of test */
-+void setup(void);
-+/* cleanup function for the test */
-+void cleanup(void);
-+int mmapzero(void);
-+void help(void);
-+
-+option_t options[] = {
-+	{ "a", &opt_anon,   NULL},
-+	{ NULL, NULL,       NULL}
-+};
-+
-+int main(int argc, char *argv[])
-+{
-+	/* loop counter */
-+	int lc;
-+	/* message returned from parse_opts */
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, options, help);
-+	if (msg != NULL) {
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+		tst_exit();
-+	}
-+
-+	/* Perform global setup for test */
-+	setup();
-+
-+	/* Check looping state if -i option given */
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		/* Reset Tst_count in case we are looping. */
-+		Tst_count = 0;
-+
-+		TEST(mmapzero());
-+
-+		if (TEST_RETURN != 0)
-+			tst_resm(TFAIL, "mmapzero() failed with %ld.",
-+				TEST_RETURN);
-+		else
-+			tst_resm(TPASS, "mmapzero() completed "
-+				"successfully.");
-+	}
-+
-+	cleanup();
-+	return 0;
-+}
-+
-+int mmapzero(void)
-+{
-+	char *x;
-+	int n;
-+
-+	if (opt_anon)
-+		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
-+			MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-+	else
-+		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
-+			MAP_PRIVATE, fd, 0);
-+	if (x == MAP_FAILED) {
-+		tst_resm(TFAIL|TERRNO, "mmap");
-+		return 1;
-+	}
-+	x[SIZE] = 0;
-+	n = fork();
-+	if (n == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	else if (n == 0) {
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_resm(TFAIL|TERRNO, "munmap");
-+		exit(0);
-+	}
-+	n = fork();
-+	if (n == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	else if (n == 0) {
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_resm(TFAIL|TERRNO, "munmap");
-+		exit(0);
-+	} else {
-+		n = fork();
-+		if (n == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		else if (n == 0) {
-+			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+				tst_resm(TFAIL|TERRNO, "munmap");
-+			exit(0);
-+		}
-+	}
-+	if (munmap(x, SIZE+SIZE-4096) == -1)
-+		tst_resm(TFAIL|TERRNO, "munmap");
-+	while (waitpid(-1, NULL, WNOHANG) > 0);
-+	return 0;
-+}
-+
-+void cleanup(void)
-+{
-+	/*
-+	 * remove the tmp directory and exit
-+	 */
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+	tst_exit();
-+}
-+
-+
-+void setup(void)
-+{
-+	/*
-+	 * setup a default signal hander and a
-+	 * temporary working directory.
-+	 */
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+	tst_tmpdir();
-+
-+	if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+}
-+
-+void help()
-+{
-+	printf("  -a      Test anonymous pages\n");
-+}
-
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
