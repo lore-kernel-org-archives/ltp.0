@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PBh44-00011i-S1
-	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 04:59:44 +0000
-Received: from out18.sjc.mx.trendmicro.com ([216.99.131.75])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PBh43-0007Sm-CV
-	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 04:59:44 +0000
-Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.6])
-	by out18.sjc.mx.trendmicro.com (Postfix) with ESMTP id 594E598043E
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <joyarjit@gmail.com>) id 1PAap6-0003GQ-2W
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 04:07:44 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PAap5-0006Vz-2S
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 04:07:43 +0000
+Received: by mail-ww0-f53.google.com with SMTP id 31so4056851wwb.10
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 29 Oct 2010 04:59:37 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id E931D95852
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 29 Oct 2010 04:59:36 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Oct 2010 13:59:35 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Fri, 29 Oct 2010 13:59:33 +0900
-Message-ID: <000001cb7726$14164ee0$3c42eca0$@co.jp>
+	Mon, 25 Oct 2010 21:07:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] About configuration failure
+Date: Tue, 26 Oct 2010 09:37:42 +0530
+Message-ID: <AANLkTik9B1N5cLoETVev_OnrUogvqV8StLgia4RYJDvq@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] unbound vriable error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,58 +25,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8836205292928519037=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net, hannuxx@gmail.com
+
+--===============8836205292928519037==
+Content-Type: multipart/alternative; boundary=0016e6db68051db3d004937d400c
+
+--0016e6db68051db3d004937d400c
+Content-Type: text/plain; charset=ISO-8859-1
 
 Hi,
 
-With recent git "ltp-43b57db.tar.gz", configuration failed:
-------------
-[...]
-checking for gcj... no
-checking for guavac... no
-checking for jikes... no
-checking for javac... no
-configure: error: no acceptable Java compiler found in $PATH
-------------
+           In network stress tests
 
-Java compiler isn't installed in my systems.
+          following error is coming, it is not able to get value of
+field variable.
 
+""
+          /opt/ltp/testcases/bin/get_ifname: line 79: field: unbound
+variable
 
-From yesterday, Java compiler has been necessary.
-The Java compiler is necessary for a compilation of "DOTS", I think.
+broken_ip6-version01    1  TBROK  :  Failed to get the interface name at the
+remote host
+""
 
-In the recent revision of "testcases/Makefile", if java compiler 
-isn't found, "DOTS" will be worn a filter:
-------------
---- a/testcases/Makefile
-+++ b/testcases/Makefile
-@@ -38,7 +38,12 @@ FILTER_OUT_DIRS              := ballista kdump mce-test
-open% pounder21
- # XXX (garrcoop): kdump was in this list.
- # XXX (garrcoop): open_hpi_testsuite was in this list.
- ifeq ($(UCLINUX),1)
--FILTER_OUT_DIRS                += DOTS realtime
-+FILTER_OUT_DIRS                += realtime+endif
-+
-+# DOTS requires javac
-+ifeq ($(strip $(JAVAC)),)
-+FILTER_OUT_DIRS                += DOTS
- endif
-------------
-
-But, the configuration fails by the lack of the Java compiler earlier 
-than the making.
+how to resolve this error??
 
 
+Best Regards,
+Arjit Sharma.
 
-Regards--
+--0016e6db68051db3d004937d400c
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
--Tomonori Mitani
+<div>Hi,=A0</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 In network stress tests</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0=A0=A0=A0 following error is coming,=A0it is not abl=
+e to get value of field=A0variable.</div>
+<div>=A0</div>
+<div>&quot;&quot;</div>
+<div>=A0=A0=A0=A0=A0=A0=A0=A0=A0 /opt/ltp/testcases/bin/get_ifname: line 79=
+: field: unbound variable</div>
+<div><br>broken_ip6-version01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the=
+ interface name at the remote host<br></div>
+<div>&quot;&quot;</div>
+<div>=A0</div>
+<div>how to resolve this error??</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0=A0 </div>
+<div>Best Regards,</div>
+<div>Arjit Sharma.</div><br>
+
+--0016e6db68051db3d004937d400c--
 
 
+--===============8836205292928519037==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
@@ -94,7 +95,16 @@ Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
 $10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
 Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
 http://p.sf.net/sfu/nokia-dev2dev
+--===============8836205292928519037==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8836205292928519037==--
+
