@@ -1,38 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P5vGA-0000z5-7S
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 06:56:22 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P5vG8-0005vX-Ni
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 06:56:22 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e32.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o9D6lMNi018948
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 00:47:22 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o9D6uFPm174430
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 00:56:15 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o9D6uEXB005209
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Oct 2010 00:56:14 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1286952767.4893.3.camel@subratamodak.linux.ibm.com>
-References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-	<AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
-	<AANLkTin4N8BpJ5xXs8TAV+1xQNjTEO+KzO6h=ZJVjv08@mail.gmail.com>
-	<1286952767.4893.3.camel@subratamodak.linux.ibm.com>
-Date: Wed, 13 Oct 2010 12:26:03 +0530
-Message-Id: <1286952965.4893.6.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <czhang@redhat.com>) id 1PAeW6-0000oI-92
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 08:04:22 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PAeW4-0007ph-It
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 08:04:22 +0000
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id o9Q84EEK009195
+	for <ltp-list@lists.sourceforge.net>; Tue, 26 Oct 2010 04:04:14 -0400
+Date: Tue, 26 Oct 2010 04:04:14 -0400 (EDT)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <2034750582.1493141288080254753.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1870824414.1492961288080127619.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] fix keyctl01 testcase on s390x systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,111 +30,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hake huang <hakehuang@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wed, 2010-10-13 at 12:22 +0530, Subrata Modak wrote:
-> On Wed, 2010-10-13 at 13:30 +0800, hake huang wrote:
-> > 2010/10/13 Garrett Cooper <yanegomi@gmail.com>
-> > >
-> > > On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wrote:
-> > > > Hi
-> > > >
-> > > > I see this simple solution is no quite fit. But the kernel dump message for
-> > > > each test case is necessary for analysing. I can work on this further, with
-> > > > below help:
-> > > > 1. Where can I find the reason for the IIRC break?
-> > >
-> > > IIRC -> If I remember correctly.
-> > so I need ask Subrata about this problem, right? what is the existing
-> > functionality?
-> 
-> I believe the functionality your original patch was proposing is already
-> in LTP . I guess they will solve your problem. See the following
-> commits:
-> 
-> git show e3bc3758d3e4d17a0e04009ef873df53819b9ec6
-> git show bd9d440be1da8020c93ac92e497e3a16e66e9fa3
-> 
-> Just use:
-> 
-> ./runltp -K <DMESG_DIRECTORY_NAME>
+Hi all,
 
-Basically, its a choice given to users who would like to record the
-kernel messages, and not forcing recording all kernel messages which
-your original patch is proposing :-)
+on s390x systems, a string like "MyKey" is not a valid argument
+for keyctl syscall function, I substitute the string by number 
+to make keyctl testcase work on s390x systems.
 
-Regards--
-Subrata
+use "MyKey":
 
-> 
-> option while running ltp.
-> 
-> Regards--
-> Subrata
-> 
-> > >
-> > > > 2. Can it  be an option to avoid the size limitation on some embedded
-> > > > system?
-> > >
-> > > No. This is outside the realm of LTP, but we must remain conscious of
-> > > the fact that there are folks running LTP on cellphones, etc, where
-> > > space is very much a luxury.
-> > I see. but why can't they run in quit_mode?
-> > >
-> > > > 3.  A kind of seperating tag is needed for kernel message, right? e.g
-> > > > <kernel_dump_start>dump message<kernel_dump_end>
-> > >
-> > > I think that adding an optional capture feature might be worthwhile,
-> > > but you'll no doubt quickly find with some processes that the dmesg
-> > > buffer will fill up quickly.
-> > I have seen such events, and such cases need to be checked manually.
-> > >
-> > > > 4.  I see in ltp-pan.c the file descriptors, terminals are changed in child
-> > > > process. if the system(3) has problem, the worst cases is there are no
-> > > > kernel messge output in parent process, but the pan can still function well.
-> > >
-> > > Can you say that with 100% certainty? One of the potential problems
-> > > with system is the fact that it allocates a shell and depending on how
-> > > processes are executed and how file descriptors are cleaned up,
-> > >
-> > > Actually, pan makes zero attempts at closing open file descriptors and
-> > > the like, so the problem is still very much with pan.
-> > >
-> > So your concerns is about file descriptors which open in ltp process,
-> > I think this is an existing problem. I mean maybe pan need to attempt
-> > to close open file descriptors. system(3) only increases the change of
-> > occurrence caused by this problem, right?
-> > > > if not use system(3), can you give your suggestion on this, exec(3) seems to
-> > > > have the same problem as system(3)?
-> > >
-> > > Yes and no. In this case the problems that exist with open file
-> > > descriptor inheritance, etc are unfortunately no worse from that
-> > > perspective than your proposed code would do, but there are still
-> > > other problems that need to be resolved with your proposed change
-> > > anyhow that are much more pressing.
-> > >
-> > > -Garrett
-> 
-> 
-> ------------------------------------------------------------------------------
-> Beautiful is writing same markup. Internet Explorer 9 supports
-> standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-> Spend less time writing and  rewriting code and more time creating great
-> experiences on the web. Be a part of the beta today.
-> http://p.sf.net/sfu/beautyoftheweb
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+keyctl01    1  TPASS  :  KEYCTL_GET_KEYRING_ID succeeded
+keyctl01    2  TFAIL  :  KEYCTL_REVOKE got unexpected errno: errno=EINVAL(22): Invalid argument
 
+use a number:
+
+keyctl01    1  TPASS  :  KEYCTL_GET_KEYRING_ID succeeded
+keyctl01    2  TPASS  :  KEYCTL_REVOKE got expected errno: errno=???(126): Required key not available
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+
+---
+ testcases/kernel/syscalls/keyctl/keyctl01.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl01.c b/testcases/kernel/syscalls/keyctl/keyctl01.c
+index 292e573..179fcb7 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl01.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl01.c
+@@ -46,6 +46,9 @@
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
+ 
++/* define a non-exist key */
++#define NONEXIST_KEY 65535
++
+ /* Extern Global Variables */
+ extern int Tst_count;	/* counter for tst_xxx routines.	 */
+ extern char *TESTDIR;	/* temporary dir created by tst_tmpdir() */
+@@ -126,7 +129,7 @@ int main(int ac, char **av) {
+ 		Tst_count = 0;
+ 
+ 		for (testno = 1; testno < TST_TOTAL; ++testno) {
+-	
++
+ 			/* Call keyctl() and ask for a keyring's ID. */
+ 			ret = syscall(__NR_keyctl, KEYCTL_GET_KEYRING_ID,
+ 					KEY_SPEC_USER_SESSION_KEYRING);
+@@ -137,7 +140,7 @@ int main(int ac, char **av) {
+ 			}
+ 
+ 			/* Call keyctl. */
+-			ret = syscall(__NR_keyctl, KEYCTL_REVOKE, "MyKey");
++			ret = syscall(__NR_keyctl, KEYCTL_REVOKE, NONEXIST_KEY);
+ 			if (ret != -1) {
+ 				tst_resm(TFAIL | TERRNO, "KEYCTL_REVOKE succeeded unexpectly");
+ 			} else {
+-- 
+1.7.3.1
+
+
+
+-- 
+/---------------------------------------\
+| Name: Caspar Zhang                    |
+| Team: Kernel-QE                       |
+| Timezone: GMT+0800 (Asia/Shanghai)    |
+| IRC: caspar @ #kernel-qe, #eng-china  |
+| Phone: +86-10-6260-8150               |
+| Cellphone: +86-1381-073-0090          |
+\---------------------------------------/
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
