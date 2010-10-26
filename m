@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PB4Gw-0003Lh-TI
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:34:26 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PAerr-00080e-60
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 08:26:51 +0000
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PB4Gr-0007yh-GV
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:34:26 +0000
-Received: by wya21 with SMTP id 21so571156wya.34
+	id 1PAero-0004Yz-VS
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 08:26:51 +0000
+Received: by wwb17 with SMTP id 17so1102873wwb.4
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Oct 2010 04:34:15 -0700 (PDT)
+	Tue, 26 Oct 2010 01:26:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimEXJFo6vDOxKb_Q=_F92Rcr_xU289N18M6khVu@mail.gmail.com>
-References: <AANLkTimEXJFo6vDOxKb_Q=_F92Rcr_xU289N18M6khVu@mail.gmail.com>
-Date: Wed, 27 Oct 2010 04:34:14 -0700
-Message-ID: <AANLkTimC09CBkscKJvpFTRhs2GuXc0MwiV9GLLVZEb5p@mail.gmail.com>
+In-Reply-To: <AANLkTikZ4ct8be_ROsUHrbGygH61sgq5FS6dqPJO0-ps@mail.gmail.com>
+References: <1870824414.1492961288080127619.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<2034750582.1493141288080254753.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<AANLkTikZ4ct8be_ROsUHrbGygH61sgq5FS6dqPJO0-ps@mail.gmail.com>
+Date: Tue, 26 Oct 2010 01:26:43 -0700
+Message-ID: <AANLkTikk=cGee7xyhzi3mFmVoQYk64Ha1x6Z5D0QYfyo@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Shell usage on embedded targets
+Subject: Re: [LTP] [PATCH] fix keyctl01 testcase on s390x systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,49 +32,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: David Peverley <pev@sketchymonkey.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wed, Oct 27, 2010 at 4:24 AM, David Peverley <pev@sketchymonkey.com> wro=
-te:
-> Hi all,
+On Tue, Oct 26, 2010 at 1:16 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Tue, Oct 26, 2010 at 1:04 AM, Caspar Zhang <czhang@redhat.com> wrote:
+>> Hi all,
+>>
+>> on s390x systems, a string like "MyKey" is not a valid argument
+>> for keyctl syscall function, I substitute the string by number
+>> to make keyctl testcase work on s390x systems.
+>>
+>> use "MyKey":
+>>
+>> keyctl01 =A0 =A01 =A0TPASS =A0: =A0KEYCTL_GET_KEYRING_ID succeeded
+>> keyctl01 =A0 =A02 =A0TFAIL =A0: =A0KEYCTL_REVOKE got unexpected errno: e=
+rrno=3DEINVAL(22): Invalid argument
+>>
+>> use a number:
+>>
+>> keyctl01 =A0 =A01 =A0TPASS =A0: =A0KEYCTL_GET_KEYRING_ID succeeded
+>> keyctl01 =A0 =A02 =A0TPASS =A0: =A0KEYCTL_REVOKE got expected errno: err=
+no=3D???(126): Required key not available
+>>
+>> Signed-off-by: Caspar Zhang <czhang@redhat.com>
 >
-> In our embedded rootfs we have both /bin/sh provided by busybox (i.e.
-> a true sh) and also a /bin/bash compiled from bash.
+> =A0 =A0Looks like a kernel bug to me:
+> http://manpages.ubuntu.com/manpages/lucid/man3/keyctl_revoke.3.html .
+> EINVAL isn't listed in the manpage.
 
-    busybox sh is based off ash (which forked off BSD's /bin/sh,
-IIRC), but it looks like they stripped away a lot of effective
-features in /bin/sh, in an effort to try and trim down the size of the
-rootfs. Pity, because it cripples the shell interpreter.
-    Who knows if they've been trying to import bugfixes or make it
-POSIX compliant either.
+    FWIW though, the testcase is sort of bogus anyhow by sending in a
+pointer to a static char buffer instead of int32_t...
 
-> This causes a pain as typically full systems use a symlink from sh to
-> bash.
+(see http://linux.die.net/man/3/keyctl_revoke )
 
-   Actually it's hardlinked in proper configurations that I've run
-into. Symlinking allows for naughtiness.
+include/linux/key.h:typedef int32_t key_serial_t;
+include/linux/key.h:	key_serial_t		serial;		/* key serial number */
+include/linux/key.h:extern struct key *key_lookup(key_serial_t id);
+include/linux/key.h:static inline key_serial_t key_serial(struct key *key)
+include/linux/lsm_audit.h:			key_serial_t key;
+include/linux/syscalls.h:			    key_serial_t destringid);
+include/linux/syscalls.h:				key_serial_t destringid);
 
-> This breaks runltp (and probably other scritps) as they use
-> getopts which I *think* is technically a bash-only builtin?
-
-   Wrong. It's a POSIX shell built-in:
-http://www.opengroup.org/onlinepubs/009695399/utilities/getopts.html .
-
-> I've currently re-written the hashbangs before copying to the system. For
-> those googling I did :
-> =A0 find . -type f | xargs perl -pi -e 's/bin\/sh/bin\/bash/g'
->
-> I can't get my head around what a 'neat' solution would be other than
-> rewriting all to bash but I'm guessing that isn't a favoured choice
-> for most people? I would expect a fair response would be "don't do odd
-> things with your target" ;-)
-
-   Or maybe you should just hardlink /bin/bash to /bin/sh like most
-Linux targets (or spoof a non-Busybox based environment with a
-chrooted env with /bin/bash setup as /bin/sh)? This isn't ideal, but
-unless you have access to a /bin/sh that's can do POSIX compliant
-shell constructs you're kind of SoL with LTP.
+    So there are two bugs here. The most futureproof way to fix this
+is to do do linear probing with something like keyctl(KEYCTL_UNLINK,
+i) until you find a value i that isn't already allocated; it might be
+wise to linearly probe backwards from INT32_MAX.
 Thanks,
 -Garrett
 
