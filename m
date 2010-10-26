@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P2CtT-0004Id-JG
-	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 00:57:35 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2CtR-0008Kp-2k
-	for ltp-list@lists.sourceforge.net; Sun, 03 Oct 2010 00:57:35 +0000
-Received: by iwn2 with SMTP id 2so7053226iwn.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PAcuu-0003Uo-OA
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 06:21:52 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PAcut-0007cL-E3
+	for ltp-list@lists.sourceforge.net; Tue, 26 Oct 2010 06:21:52 +0000
+Received: by wya21 with SMTP id 21so4133446wya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 02 Oct 2010 17:57:27 -0700 (PDT)
+	Mon, 25 Oct 2010 23:21:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4C8F8691.3050808@bull.net>
-References: <4C8F8691.3050808@bull.net>
-Date: Sat, 2 Oct 2010 17:57:27 -0700
-Message-ID: <AANLkTimqhHtNiB3M4UphD0a_czp_e+_h56VUy18tn8VZ@mail.gmail.com>
+In-Reply-To: <4CC63440.8000808@cn.fujitsu.com>
+References: <4CA4029D.1080304@cn.fujitsu.com> <4CC63440.8000808@cn.fujitsu.com>
+Date: Mon, 25 Oct 2010 23:21:45 -0700
+Message-ID: <AANLkTimv8RtWmpeWHdi3cMTpY6_kkeyyyom0Z6V5OxnS@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] acltest01 Failed to find an available loopback device
+Subject: Re: [LTP] [PATCH][open_posix] Use default number of threads when
+ it's not be specified
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,66 +28,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Jacky.Malcles" <Jacky.Malcles@bull.net>
-Cc: ltp-list@lists.sourceforge.net
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Sep 14, 2010 at 7:28 AM, Jacky.Malcles <Jacky.Malcles@bull.net> wro=
-te:
-> hi garret,
->
-> I get this when running acltest01:
->
-> tag=3Dacl_test01 stime=3D1284123525
-> cmdline=3D"export TCbin=3D$LTPROOT/testcases/bin;acl_test01"
-> contacts=3D""
-> analysis=3Dexit
-> <<<test_output>>>
-> 10240+0 records in
-> 10240+0 records out
-> 10485760 bytes (10 MB) copied, 0.037594 seconds, 279 MB/s
-> /opt/ltp/testcases/bin/acl_test01: line 128: loop_dev: command not found
-> acltest01 =A0 =A01 =A0TCONF =A0: =A0[ losetup.1 ] Failed to find an avail=
-able loopback
-> device -- is the required support compiled in your kernel?
-> <<<execution_status>>>
-> ...
->
->
-> So, if you agree, I suggest the following change,
-> thanks,
-> Jacky
->
-> --- acl_test01.original 2010-09-14 14:49:48.000000000 +0200
-> +++ acl_test01 =A02010-09-14 14:50:15.000000000 +0200
-> @@ -125,7 +125,7 @@ else
->
-> =A0 =A0 =A0 # Avoid hardcoded loopback device values (-f tries to find th=
-e first
-> =A0 =A0 =A0 # available loopback device name)!
-> - =A0 =A0 =A0 if ! (LOOP_DEV=3D$(loop_dev -f) && [ "x$LOOP_DEV" =3D x ]);=
- then
-> + =A0 =A0 =A0 if ! (LOOP_DEV=3D$(losetup -f) && [ "x$LOOP_DEV" =3D x ]); =
-then
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm TCONF "[ losetup.1 ] Failed to find =
-an available
-> loopback device -- is the required support compiled in your kernel?"
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit 0
-> =A0 =A0 =A0 fi
-
-    Committed. Please provide a signed-off-by line next time.
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+MjAxMC8xMC8yNSBCaWFuIE5haW1lbmcgPGJpYW5ubUBjbi5mdWppdHN1LmNvbT46Cj4gSGkgR2Fy
+cmV0dCwKPgo+IMKgSSBrbm93IHlvdSBhcmUgYnVzeSwgaSdtIHNvcnJ5IHRvIHRyb3VibGUgeW91
+Lgo+IMKgd2hhdCBkbyB5b3UgdGhpbmsgYWJvdXQgdGhpcy4KCi4uLgoKPiBCaWFuIE5haW1lbmcg
+5YaZ6YGTOgo+PiBTb21lIHN0cmVzcyB0ZXN0IGNhc2VzIGFsd2F5cyBmYWlsLCBiZWNhdXNlIHJ1
+bi5zaCBzY3JpcHQgbG9zZSB0byBnaXZlCj4+IHBhcmFtZXRlciB0aGF0IHNwZWNpZmllcyB0aGUg
+bnVtYmVyIG9mIHRocmVhZHMuCj4+Cj4+IFNvLCBmaXggdGhlIHRlc3QgcHJvZ3JhbSB0aGF0IHVz
+ZSBkZWZhdWx0IG51bWJlciBvZiB0aHJlYWRzIHdoZW4gaXQncwo+PiBub3QgYmUgc3BlY2lmaWVk
+Cj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEJpYW4gTmFpbWVuZyA8Ymlhbm5tQGNuLmZ1aml0c3UuY29t
+Pgo+Pgo+PiAtLS0KPj4gwqAuLi4vc3RyZXNzL21xdWV1ZXMvbXVsdGlfc2VuZF9yZXZfMS5jIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxMyArKysrKysrKystLS0tCj4+IMKgLi4uL3N0cmVzcy9t
+cXVldWVzL211bHRpX3NlbmRfcmV2XzIuYyDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgMTIgKysr
+KysrKystLS0tCj4+IMKgMiBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCA4IGRlbGV0
+aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
+L3N0cmVzcy9tcXVldWVzL211bHRpX3NlbmRfcmV2XzEuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4
+X3Rlc3RzdWl0ZS9zdHJlc3MvbXF1ZXVlcy9tdWx0aV9zZW5kX3Jldl8xLmMKPj4gaW5kZXggZWZh
+OTNhNy4uZmUwYThkMCAxMDA2NDQKPj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1
+aXRlL3N0cmVzcy9tcXVldWVzL211bHRpX3NlbmRfcmV2XzEuYwo+PiArKysgYi90ZXN0Y2FzZXMv
+b3Blbl9wb3NpeF90ZXN0c3VpdGUvc3RyZXNzL21xdWV1ZXMvbXVsdGlfc2VuZF9yZXZfMS5jCj4+
+IEBAIC04OCwxMSArODgsMTYgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPj4g
+wqAgwqAgwqAgcHJpbnRmKCJfUE9TSVhfTUVTU0FHRV9QQVNTSU5HIGlzIG5vdCBkZWZpbmVkIFxu
+Iik7Cj4+IMKgIMKgIMKgIHJldHVybiBQVFNfVU5SRVNPTFZFRDsKPj4gwqAjZW5kaWYgKi8KPj4g
+LSDCoCDCoCBpZiAoICgyICE9IGFyZ2MpIHx8ICgoIG51bSA9IGF0b2koYXJndlsxXSkpIDw9IDAp
+KSB7Cj4+ICsKPj4gKyDCoCDCoCBpZiAoICgyIDwgYXJnYykgfHwgKDIgPT0gYXJnYyAmJiAoIG51
+bSA9IGF0b2koYXJndlsxXSkpIDw9IDApKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGZwcmlu
+dGYoc3RkZXJyLCAiVXNhZ2U6ICVzIG51bWJlcl9vZl90aHJlYWRzXG4iLCBhcmd2WzBdKTsKPj4g
+LSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiBQVFNfRkFJTDsKPj4gLSDCoCDCoCDCoCDC
+oH0KPj4gLSDCoCDCoCBpZiAobnVtID4gTWF4X1RocmVhZHMpIHsKPj4gKyDCoCDCoCDCoCDCoCDC
+oCDCoCByZXR1cm4gUFRTX0ZBSUw7Cj4+ICsgwqAgwqAgfQo+PiArCj4+ICsgwqAgwqAgaWYgKDIg
+PiBhcmdjKSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRmKCJUaGUgbnVtIG9mIHRocmVh
+ZHMgZG9lcyBub3QgYmUgc3BlY2lmaWVkLiBTZXQgdG8gJWRcbiIsIE1heF9UaHJlYWRzKTsKPj4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCBudW0gPSBNYXhfVGhyZWFkczsKPj4gKyDCoCDCoCB9IGVsc2Ug
+aWYgKG51bSA+IE1heF9UaHJlYWRzKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50Zigi
+VGhlIG51bSBvZiB0aHJlYWRzIGFyZSB0b28gbGFyZ2UuIMKgUmVzZXQgdG8gJWRcbiIsIE1heF9U
+aHJlYWRzKTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgbnVtID0gTWF4X1RocmVhZHM7Cj4+IMKg
+IMKgIMKgIH0KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9z
+dHJlc3MvbXF1ZXVlcy9tdWx0aV9zZW5kX3Jldl8yLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90
+ZXN0c3VpdGUvc3RyZXNzL21xdWV1ZXMvbXVsdGlfc2VuZF9yZXZfMi5jCj4+IGluZGV4IDc1YmM4
+OGIuLmVkYTRhOWUgMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0
+ZS9zdHJlc3MvbXF1ZXVlcy9tdWx0aV9zZW5kX3Jldl8yLmMKPj4gKysrIGIvdGVzdGNhc2VzL29w
+ZW5fcG9zaXhfdGVzdHN1aXRlL3N0cmVzcy9tcXVldWVzL211bHRpX3NlbmRfcmV2XzIuYwo+PiBA
+QCAtNzksMTEgKzc5LDE1IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCj4+IMKg
+IMKgIMKgIHByaW50ZigiX1BPU0lYX01FU1NBR0VfUEFTU0lORyBpcyBub3QgZGVmaW5lZCBcbiIp
+Owo+PiDCoCDCoCDCoCByZXR1cm4gUFRTX1VOUkVTT0xWRUQ7Cj4+IMKgI2VuZGlmICovCj4+IC0g
+wqAgwqAgaWYgKCAoMiAhPSBhcmdjKSB8fCAoKCBudW0gPSBhdG9pKGFyZ3ZbMV0pKSA8PSAwKSkg
+ewo+PiArIMKgIMKgIGlmICggKDIgPCBhcmdjKSB8fCAoMiA9PSBhcmdjICYmICggbnVtID0gYXRv
+aShhcmd2WzFdKSkgPD0gMCkpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgZnByaW50ZihzdGRl
+cnIsICJVc2FnZTogJXMgbnVtYmVyX29mX3RocmVhZHNcbiIsIGFyZ3ZbMF0pOwo+PiAtIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJuIFBUU19GQUlMOwo+PiAtIMKgIMKgIMKgIMKgfQo+PiAt
+IMKgIMKgIGlmIChudW0gPiBNYXhfVGhyZWFkcykgewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJl
+dHVybiBQVFNfRkFJTDsKPj4gKyDCoCDCoCB9Cj4+ICsKPj4gKyDCoCDCoCBpZiAoMiA+IGFyZ2Mp
+IHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGYoIlRoZSBudW0gb2YgdGhyZWFkcyBkb2Vz
+IG5vdCBiZSBzcGVjaWZpZWQuIFNldCB0byAlZFxuIiwgTWF4X1RocmVhZHMpOwo+PiArIMKgIMKg
+IMKgIMKgIMKgIMKgIG51bSA9IE1heF9UaHJlYWRzOwo+PiArIMKgIMKgIH0gZWxzZSBpZiAobnVt
+ID4gTWF4X1RocmVhZHMpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRmKCJUaGUgbnVt
+IG9mIHRocmVhZHMgYXJlIHRvbyBsYXJnZS4gwqBSZXNldCB0byAlZFxuIiwgTWF4X1RocmVhZHMp
+Owo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBudW0gPSBNYXhfVGhyZWFkczsKPj4gwqAgwqAgwqAg
+fQoKICAgIFRoYW5rcyBmb3IgdGhlIHJlbWluZGVyLiBJIGp1c3QgcmVzb2x2ZWQgdGhlIGlzc3Vl
+IHdpdGggYW5vdGhlcgptZXRob2QgKGFkZGVkIGZ1bmN0aW9uYWxpdHkgdG8gYSAuYXJncyBmaWxl
+IHdpdGggdGhlIHNhbWUgYmFzZW5hbWUKbWludXMgdGhlIGV4dGVuc2lvbiwgaS5lLiBtdWx0aV9z
+ZW5kX3Jldl8yLmFyZ3MpLiBJdCdzIGN1cnJlbnRseSBzZXQKdG8gMSwgYnV0IHdlIGNhbiB0dW5l
+IGl0IGxhdGVyLgpUaGFua3MsCi1HYXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTm9raWEg
+YW5kIEFUJlQgcHJlc2VudCB0aGUgMjAxMCBDYWxsaW5nIEFsbCBJbm5vdmF0b3JzLU5vcnRoIEFt
+ZXJpY2EgY29udGVzdApDcmVhdGUgbmV3IGFwcHMgJiBnYW1lcyBmb3IgdGhlIE5va2lhIE44IGZv
+ciBjb25zdW1lcnMgaW4gIFUuUy4gYW5kIENhbmFkYQokMTAgbWlsbGlvbiB0b3RhbCBpbiBwcml6
+ZXMgLSAkNE0gY2FzaCwgNTAwIGRldmljZXMsIG5lYXJseSAkNk0gaW4gbWFya2V0aW5nCkRldmVs
+b3Agd2l0aCBOb2tpYSBRdCBTREssIFdlYiBSdW50aW1lLCBvciBKYXZhIGFuZCBQdWJsaXNoIHRv
+IE92aSBTdG9yZSAKaHR0cDovL3Auc2YubmV0L3NmdS9ub2tpYS1kZXYyZGV2Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
+dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
