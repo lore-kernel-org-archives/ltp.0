@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PB0sg-0001Wp-NY
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 07:57:10 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <pev@sketchymonkey.com>) id 1PB4Pt-0007fi-1x
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:43:41 +0000
+Received: from mail-yw0-f47.google.com ([209.85.213.47])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PB0sd-0002O3-Mb
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 07:57:10 +0000
-Message-ID: <4CC7DAFD.3090005@cn.fujitsu.com>
-Date: Wed, 27 Oct 2010 15:55:41 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	id 1PB4Ps-0007U9-9k
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:43:41 +0000
+Received: by ywo32 with SMTP id 32so310624ywo.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 27 Oct 2010 04:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [POSIX]aio_suspend-4: we just need care the selected request.
+Date: Wed, 27 Oct 2010 12:43:34 +0100
+Message-ID: <AANLkTim5HeA2TKJnUXXWu8B7NCd_MxkUfzNoUtRCMK_-@mail.gmail.com>
+From: David Peverley <pev@sketchymonkey.com>
+Subject: [LTP] IDCheck.sh during make install
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,77 +28,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-At linux, the aio_suspend tests report following error:
-  aio_suspend/4-1.c aio_suspend() should set errno to EAGAIN: 4 (Interrupted system call)
+Hi all,
 
-Man page said:
-  The  aio_suspend()  function  suspends  the calling process until at least one of the asynchronous
-  I/O requests in the list cblist of length n have completed, a signal is delivered, or timeout is
-  not NULL and the time interval it indicates has passed.
+When you "make install" the makefile runs IDCheck.sh. For
+cross-compiled targets this is only valid if you're installing
+directly to the actual filesystem which will be used on the embedded
+target. Would it be worth forcing SKIP_IDCHECK=1if in a cross-compile
+environment? Configure deduces this from whether "build_alias" !"=
+"host_alias". I suspect this ought to be a run-time test - especially
+given that I missed this on my first run and had lots of errors as a
+result which wasn't clear :-D Is there any kind of validation for
+system build (or kernel config!) prerequisites before running tests?
+Would be sensible to do this before running tests rather than running
+them and failing as a result (also relevent in the case of
+memory-constrained tests that fail on embedded targets)
 
-When  a signal is delivered, whether should aio_suspend return immediately although 
-we have set a SA_RESTART flag for this signal action?
+Side-note : I suspect there may be a cross-compile related error in
+configure in "ltp-full-20100831". I've never dug deeply into configure
+scripts but this looks inverted based on other similar parts of
+configure :
+    if test x$cross_compiling = xyes; then
+     CROSS_COMPILATION_TRUE=
+     CROSS_COMPILATION_FALSE='#'
+   else
+     CROSS_COMPILATION_TRUE='#'
+     CROSS_COMPILATION_FALSE=
+   fi
 
-Maybe the followed path is necessary.
-------------------------------------------------------------------------------------------------------
-We just care the selected IO request, and set a little timeout.
+Cheers,
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-
----
- conformance/interfaces/aio_suspend/4-1.c |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/conformance/interfaces/aio_suspend/4-1.c b/conformance/interfaces/aio_suspend/4-1.c
-index 260c26a..dd8e5f0 100644
---- a/conformance/interfaces/aio_suspend/4-1.c
-+++ b/conformance/interfaces/aio_suspend/4-1.c
-@@ -47,8 +47,7 @@ int received_all	= 0;
- void
- sigrt1_handler(int signum, siginfo_t *info, void *context)
- {
--	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
--		received_selected = 1;
-+	received_selected = 1;
- }
- 
- void
-@@ -68,7 +67,7 @@ main ()
- 	char *bufs;
- 	struct sigaction action;
- 	struct sigevent event;
--	struct timespec ts = {0, 10000000}; /* 10 ms */
-+	struct timespec ts = {0, 1000}; /* 1 us */
- 	int errors = 0;
- 	int ret;
- 	int err;
-@@ -123,9 +122,11 @@ main ()
- 		aiocbs[i]->aio_lio_opcode = LIO_READ;
- 
- 		/* Use SIRTMIN+1 for individual completions */
--		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
--		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
--		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
-+		if (i == WAIT_FOR_AIOCB) {
-+			aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-+			aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
-+			aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
-+		}
- 	}
- 
- 	/* Use SIGRTMIN+2 for list completion */
--- 
-1.7.0.4
-
-
-
--- 
-Regards
-Bian Naimeng
-
+~Pev
 
 ------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
