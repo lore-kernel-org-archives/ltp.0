@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge.hallyn@canonical.com>) id 1P8YCo-0004yD-FO
-	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 12:55:46 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8YCn-0006Wq-F2
-	for ltp-list@lists.sourceforge.net; Wed, 20 Oct 2010 12:55:46 +0000
-Date: Wed, 20 Oct 2010 07:55:37 -0500
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20101020125537.GA3623@hallyn.com>
-References: <AANLkTinR7pDvxfq32hkVSFq-wrkiJk-9O1JPkehpKQw-@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PB5Pq-0007zt-Lx
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:47:42 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PB5Po-0005G2-Eb
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:47:42 +0000
+Received: by wya21 with SMTP id 21so643310wya.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 27 Oct 2010 05:47:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTinR7pDvxfq32hkVSFq-wrkiJk-9O1JPkehpKQw-@mail.gmail.com>
-Subject: Re: [LTP] smack testcase
+In-Reply-To: <AANLkTinKu3Kx0FMdgvvG34rc6tcv4Wt5qV1jaAnGzHnv@mail.gmail.com>
+References: <AANLkTinKu3Kx0FMdgvvG34rc6tcv4Wt5qV1jaAnGzHnv@mail.gmail.com>
+Date: Wed, 27 Oct 2010 05:47:34 -0700
+Message-ID: <AANLkTi=KU=BgHcGhQGLJKJzmgE9u3hKCL32Xz8mkDC2Q@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Realtime tests on embedded target
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,53 +30,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ARJIT SHARMA <joyarjit@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: David Peverley <pev@sketchymonkey.com>
+Cc: ltp-list@lists.sourceforge.net, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-Quoting ARJIT SHARMA (joyarjit@gmail.com):
-> Hi,
-> 
->      Inside the smack testcase, the sript "smack_common.sh" has a function
-> named "check_onlycap()" , please tell me its functionality  as every time
-> this function is reporting that   onlycap is "" not the expected "".
-> 
-> the log of the testcase is as follows---
+On Wed, Oct 27, 2010 at 5:43 AM, David Peverley <pev@sketchymonkey.com> wrote:
+> Hi all,
+>
+> I've managed to get to the point where I should be able to run the
+> realtime tests on my target but there are a few issues :
+>
+> 1) The run script "testscripts/test_realtime.sh" sources
+> "$LTPROOT/testcases/realtime/scripts/setenv.sh" - this isn't copied by
+> make install.
+>
+> 2) After manually copying in, "setenv.sh" sets up paths to use test
+> definitions under "$LTPROOT/testcases/realtime/" - these aren't copied
+> by make install either.
+>
+> 3 ) Generally we now have a bit of a pain as various scripts now try
+> to invoke "make" - I think this should really only be a build-time
+> thing and not part of the test run scritps? Is this actually necessary
+> as most embedded targets aren't likely to have local make/gcc! I've
+> commented them out for now for initial testing...
+>
+> 4) After copying in the whole of "testcases/realtime" I run a
+> run_auto.sh script (sched_jitter/run_auto.sh) this fails as it's
+> looking for the executable in its working dir (I guess where the
+> scripts make pass would have put it). However, the previous build and
+> make install put all the executables in $LTPROOT/testcases/bin as
+> you'd expect.
+>
+> I'd be happy to address & submit changes but these are significant
+> changes to make so it would make sense to check with stake-holders
+> first if anyone's aware or looking at this actively?
 
-Yeah the check seems backward.  Does this patch help?
-
-From efe6116a6b284bb409b7fe9946cf990092183650 Mon Sep 17 00:00:00 2001
-From: Serge Hallyn <serge.hallyn@canonical.com>
-Date: Wed, 20 Oct 2010 07:54:21 -0500
-Subject: [PATCH 1/1] Fix inverted logic testing for string which is NOT empty
-
-Signed-off-by: Serge Hallyn <serge.hallyn@canonical.com>
----
- testcases/kernel/security/smack/smack_common.sh |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/security/smack/smack_common.sh b/testcases/kernel/security/smack/smack_common.sh
-index eb339f3..25405fe 100755
---- a/testcases/kernel/security/smack/smack_common.sh
-+++ b/testcases/kernel/security/smack/smack_common.sh
-@@ -36,7 +36,7 @@ check_mounted() {
- 
- check_onlycap() {
- 	onlycap=`cat "$smackfsdir/onlycap" 2>/dev/null`
--	if [ -z "$onlycap" ]; then
-+	if [ ! -z "$onlycap" ]; then
- 		cat <<EOM
- The smack label reported for $smackfsdir/onlycap is "$onlycap", not the expected "".
- EOM
--- 
-1.7.1
-
+    Gowrishankar's the primary stakeholder in this area, but I'm the
+`Makefile consultant' for the project.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
