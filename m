@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PATyx-0005fX-W2
-	for ltp-list@lists.sourceforge.net; Mon, 25 Oct 2010 20:49:27 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id DBA9194393
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PB3v7-0002Ao-Qc
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:11:53 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PB3v5-00006m-J7
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:11:53 +0000
+Received: by wwb31 with SMTP id 31so543878wwb.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 25 Oct 2010 22:49:19 +0200 (CEST)
-Date: Mon, 25 Oct 2010 22:59:15 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101025205915.GD3003@saboteur.suse.cz>
+	Wed, 27 Oct 2010 04:11:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] aio_error/3-1.c
+In-Reply-To: <AANLkTinxTr-HLLpjNUw9tdoMy0oY6EUxSDMc_bBGS+gr@mail.gmail.com>
+References: <AANLkTinxTr-HLLpjNUw9tdoMy0oY6EUxSDMc_bBGS+gr@mail.gmail.com>
+Date: Wed, 27 Oct 2010 04:11:43 -0700
+Message-ID: <AANLkTikRZj7AwTwoRbF=-4MtSdP5gn3ns-oJq4GqU_OY@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP GIT access
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,46 +27,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: David Peverley <pev@sketchymonkey.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-I've been reading POSIX documentation for some time now and even reading
-glibc source code and the result is that aio_error/3-1.c doesn't test
-anyting and should be removed.
+On Wed, Oct 27, 2010 at 3:32 AM, David Peverley <pev@sketchymonkey.com> wro=
+te:
+> Hi All,
+>
+> I'm just kicking into gear looking at using LTP with an embedded
+> target. I've pulled down and run ltp-full-20100831which is going OK -
+> however I'd like to pull down the latest from RC to work against and
+> so I can re-submit patches. AFAICT The repo I should be looking at is
+> :
+> =A0 http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp.git
+>
+> Looking at the sf.net project page :
+> =A0 http://sourceforge.net/projects/ltp/develop/
+>
+> It states that I should be able to do a :
+> =A0 git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
+>
+> We're behind a proxy here so I normally GIT with an http access type
+> but this gives me :
+> =A0 bob:ltp-git $ git clone http://ltp.git.sourceforge.net/gitroot/ltp/ltp
+> =A0 Initialized empty Git repository in /home/pev/src/ltp-git/ltp/.git/
+> =A0 fatal: http://ltp.git.sourceforge.net/gitroot/ltp/ltp/info/refs?servi=
+ce=3Dgit-upload-pack
+> not found: did you run git update-server-info on the server?
+>
+> Is this something that could possibly be fixed? I know I can download
+> tgz snapshots but obbviously this isn't ideal!
 
-The test is trying to assert EINVAL from aio_error accordingly to:
+I honestly don't know if it's supported; you should probably get in
+touch with sourceforge about this.
+Thanks,
+-Garrett
 
-http://www.opengroup.org/onlinepubs/009695399/functions/aio_error.html
-
-...
-
-The aio_error() function may fail if:
-
-	[EINVAL]
-            The aiocbp argument does not refer to an asynchronous
-	    operation whose return status has not yet been retrieved.
-
-...
-
-
-As far as I understand this, it's says you may get EINVAL if you call
-aio_error() on finished aiocb second (and more) times.
-
-This is implemented on linux as "return aiocb->__error_code" so IMHO
-there is no way to test this.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
 Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
 $10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
+
 http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
