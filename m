@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P8toU-0000Yj-RH
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 12:00:06 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8toT-00029r-Ki
-	for ltp-list@lists.sourceforge.net; Thu, 21 Oct 2010 12:00:06 +0000
-Received: by wwb17 with SMTP id 17so3792479wwb.10
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PB4Gw-0003Lh-TI
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:34:26 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PB4Gr-0007yh-GV
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:34:26 +0000
+Received: by wya21 with SMTP id 21so571156wya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 21 Oct 2010 05:00:00 -0700 (PDT)
+	Wed, 27 Oct 2010 04:34:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <000001cb7116$30633ba0$9129b2e0$@co.jp>
-References: <000001cb66a9$bb3c52b0$31b4f810$@co.jp>
-	<AANLkTimwwvYMxECHENzqo6tb4iVU+VCbT12aWhUagppF@mail.gmail.com>
-	<AANLkTikxqHqzGGcASkgMLq2BAWxLGHxjgvSbtsguXDzb@mail.gmail.com>
-	<000001cb7116$30633ba0$9129b2e0$@co.jp>
-Date: Thu, 21 Oct 2010 04:59:59 -0700
-Message-ID: <AANLkTimDETzyfPgE7R_6ee1GF5_aJSL6xuBpAtXRwv6f@mail.gmail.com>
+In-Reply-To: <AANLkTimEXJFo6vDOxKb_Q=_F92Rcr_xU289N18M6khVu@mail.gmail.com>
+References: <AANLkTimEXJFo6vDOxKb_Q=_F92Rcr_xU289N18M6khVu@mail.gmail.com>
+Date: Wed, 27 Oct 2010 04:34:14 -0700
+Message-ID: <AANLkTimC09CBkscKJvpFTRhs2GuXc0MwiV9GLLVZEb5p@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] POSIX "aio_return/2-1" failed.
+Subject: Re: [LTP] Shell usage on embedded targets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,175 +30,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: David Peverley <pev@sketchymonkey.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Oct 21, 2010 at 4:50 AM, Mitani <mitani@ryobi.co.jp> wrote:
->> -----Original Message-----
->> From: Garrett Cooper [mailto:yanegomi@gmail.com]
->> Sent: Thursday, October 21, 2010 6:42 PM
->> To: Mitani
->> Cc: ltp-list@lists.sourceforge.net
->> Subject: Re: [LTP] POSIX "aio_return/2-1" failed.
->>
->> On Mon, Oct 18, 2010 at 5:00 AM, Garrett Cooper <yanegomi@gmail.com>
->> wrote:
->> > On Thu, Oct 7, 2010 at 10:29 PM, Mitani <mitani@ryobi.co.jp> wrote:
->> >> Hi,
->> >>
->> >>
->> >> "conformance/interfaces/aio_return/2-1" failed with following
->> message:
->> >> ------------
->> >> conformance/interfaces/aio_return/2-1: execution: FAILED: Output:
->> >> aio_return/2-1.c Second call to aio_return() should return -1 : 111
->> >> ------------
->> >>
->> >> Same problem occurs in "aio_return/3-2.c" and "aio_return/4-1".
->> >>
->> >> Environment is as follows:
->> >> =A0- RHEL5.5 --- (x86, x86_64, ia64)
->> >> =A0- RHEL4.8 --- (x86, x86_64, ia64)
->> >>
->> >>
->> >> This testset seems to be the error root test for "aio_return()".
->> >>
->> >> First "aio_return()" returned with 111. This return value is the
->> >> length of buffer of "aio_write()".
->> >> But second "aio_return()" returned with 111, too. It's unexpected
->> >> result for this test set.
->> >> Therefore, this test failed.
->> >>
->> >> Man page says that
->> >> "This function should be called only once for any given request,
->> >> after
->> >> aio_error(2) returns something other than EINPROGRESS.":
->> >> ------------
->> >> # LANG=3DC man 3 aio_return
->> >>
->> >> AIO_RETURN(3) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Linux Programmer's M=
-anual
->> >> AIO_RETURN(3)
->> >>
->> >> NAME
->> >> =A0 =A0 =A0 aio_return - get return status of asynchronous I/O operat=
-ion
->> >>
->> >> SYNOPSIS
->> >> =A0 =A0 =A0 #include <aio.h>
->> >>
->> >> =A0 =A0 =A0 ssize_t aio_return(struct aiocb *aiocbp);
->> >>
->> >> DESCRIPTION
->> >> =A0 =A0 =A0 The aio_return function returns the final return status f=
-or
->> the
->> >> asynchronous I/O
->> >> =A0 =A0 =A0 request with control block pointed to by aiocbp.
->> >>
->> >> =A0 =A0 =A0 This =A0function =A0should =A0be =A0called =A0only =A0onc=
-e =A0for =A0an
->> y =A0given
->> >> request, =A0after
->> >> =A0 =A0 =A0 aio_error(2) returns something other than EINPROGRESS.
->> >>
->> >> RETURN VALUE
->> >> =A0 =A0 =A0 If the asynchronous I/O operation has completed, this
->> function
->> >> returns the value
->> >> =A0 =A0 =A0 that would have been returned in case of a
->> synchronous =A0read,
->> >> write, or =A0fsync
->> >> =A0 =A0 =A0 request. =A0Otherwise the return value is undefined. =A0On
->> error,
->> >> the error value is
->> >> =A0 =A0 =A0 returned.
->> >>
->> >> ERRORS
->> >> =A0 =A0 =A0 EINVAL aiocbp does not point at a control block for an
->> >> asynchronous I/O =A0request
->> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0of which the return status has not been re=
-trieved
->> yet.
->> >>
->> >> CONFORMING TO
->> >> =A0 =A0 =A0 POSIX 1003.1-2003
->> >>
->> >> SEE ALSO
->> >> =A0 =A0 =A0 aio_cancel(3), =A0 =A0aio_error(3), =A0 aio_fsync(3), =A0=
- aio_r
->> ead(3),
->> >> aio_suspend(3),
->> >> =A0 =A0 =A0 aio_write(3)
->> >>
->> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 2003-11-14
->> >> AIO_RETURN(3)
->> >> #
->> >> ------------
->> >>
->> >> And, it says that
->> >> "If the asynchronous I/O operation has completed, this function
->> >> returns the value that would have been returned in case of a
->> >> synchronous read, write, or fsync request. =A0Otherwise the return
->> >> value is undefined. =A0On error, the error value is returned.".
->> >>
->> >>
->> >> It can be supposed that the return value of second "aio_return()"
->> is
->> >> undefined.
->> >> Therefore, it is not mistake that return value of the second
->> "aio_return()"
->> >> is one at success, I think.
->> >> And, I think that "UNTESTED" or "UNRESOLVED" may be is more
->> >> appropriate for this test.
->> >
->> > =A0 =A0No. POSIX clearly states:
->> >
->> > "If the asynchronous I/O operation has completed, then the return
->> > status, as described for read(), write(), and fsync(), shall be
->> > returned. If the asynchronous I/O operation has not yet completed,
->> the
->> > results of aio_return() are undefined.
->> >
->> > If the aio_return() function fails, it shall return -1 and set errno
->> > to indicate the error."
->> >
->> > ERRORS
->> >
->> > "The aio_return() function may fail if:
->> >
->> > [EINVAL]
->> > =A0 =A0The aiocbp argument does not refer to an asynchronous operation
->> > whose return status has not yet been retrieved."
->> >
->> > =A0 =A0What the test implementers were looking to do was test out that
->> -1
->> > / EINVAL were returned, and maybe that fact that they were testing
->> was
->> > in fact implementation defined, as opposed to what's stated in the
->> > standard, as the spec doesn't state that the behavior for aio_return
->> > would be s.t. the state of the AIO stream is reset when aio_return
->> is
->> > called.
->> > =A0 =A0So yes, I agree this should be fixed, but let me check with the
->> > POSIX folks what the best course of action is.
->>
->> =A0 =A0 I've read into this a bit more, and I think that the aio_return
->> testcases were written incorrectly. Please try out this testcase...
->> if it works for you, then I'll apply necessary logic to other testcases
->> as well.
->> =A0 =A0 It worked for me at least on FreeBSD.
->> Thanks,
->> -Garrett
+On Wed, Oct 27, 2010 at 4:24 AM, David Peverley <pev@sketchymonkey.com> wro=
+te:
+> Hi all,
 >
->
-> I confirmed that your revision worked in my environment.
-> I also look forward to other testcases (2-1, 3-2, 4-1) being revised.
+> In our embedded rootfs we have both /bin/sh provided by busybox (i.e.
+> a true sh) and also a /bin/bash compiled from bash.
 
-    Please update your git, rebuild, and test :).
-    Let me know if you run into any issues.
-Cheers,
+    busybox sh is based off ash (which forked off BSD's /bin/sh,
+IIRC), but it looks like they stripped away a lot of effective
+features in /bin/sh, in an effort to try and trim down the size of the
+rootfs. Pity, because it cripples the shell interpreter.
+    Who knows if they've been trying to import bugfixes or make it
+POSIX compliant either.
+
+> This causes a pain as typically full systems use a symlink from sh to
+> bash.
+
+   Actually it's hardlinked in proper configurations that I've run
+into. Symlinking allows for naughtiness.
+
+> This breaks runltp (and probably other scritps) as they use
+> getopts which I *think* is technically a bash-only builtin?
+
+   Wrong. It's a POSIX shell built-in:
+http://www.opengroup.org/onlinepubs/009695399/utilities/getopts.html .
+
+> I've currently re-written the hashbangs before copying to the system. For
+> those googling I did :
+> =A0 find . -type f | xargs perl -pi -e 's/bin\/sh/bin\/bash/g'
+>
+> I can't get my head around what a 'neat' solution would be other than
+> rewriting all to bash but I'm guessing that isn't a favoured choice
+> for most people? I would expect a fair response would be "don't do odd
+> things with your target" ;-)
+
+   Or maybe you should just hardlink /bin/bash to /bin/sh like most
+Linux targets (or spoof a non-Busybox based environment with a
+chrooted env with /bin/bash setup as /bin/sh)? This isn't ideal, but
+unless you have access to a /bin/sh that's can do POSIX compliant
+shell constructs you're kind of SoL with LTP.
+Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
