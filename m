@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <joyarjit@gmail.com>) id 1P6HGY-0005vm-VQ
-	for ltp-list@lists.sourceforge.net; Thu, 14 Oct 2010 06:26:14 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P6HGY-0005VO-4W
-	for ltp-list@lists.sourceforge.net; Thu, 14 Oct 2010 06:26:14 +0000
-Received: by wyb40 with SMTP id 40so2656226wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Oct 2010 23:26:08 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PB4o5-0001V2-Jr
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:08:41 +0000
+Date: Wed, 27 Oct 2010 14:18:37 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101027121837.GC4999@saboteur.suse.cz>
+References: <AANLkTimHeBQkYhnPpAiOJx2R8Y1xznHffWYhAtBR=iCF@mail.gmail.com>
+	<AANLkTi=zZud=H52Q5pE00gERVi6MfVF9QV7_C66W=CEP@mail.gmail.com>
+	<20101027114756.GA4999@saboteur.suse.cz>
+	<AANLkTinnQiYVwK5X9v2Ggg582yUaKS_iAE1JT5QnGi8v@mail.gmail.com>
+	<20101027121005.GB4999@saboteur.suse.cz>
+	<AANLkTinqoZDqBkGY79u1AHXMD_HAk+RKGGGrToLaz-Cr@mail.gmail.com>
 MIME-Version: 1.0
-Date: Thu, 14 Oct 2010 11:56:08 +0530
-Message-ID: <AANLkTikQh4d58rgjQNH=UfyVHEvzC+v-FNiFeEKhFrai@mail.gmail.com>
-From: ARJIT SHARMA <joyarjit@gmail.com>
-Subject: [LTP] PTY testcase
+Content-Disposition: inline
+In-Reply-To: <AANLkTinqoZDqBkGY79u1AHXMD_HAk+RKGGGrToLaz-Cr@mail.gmail.com>
+Subject: Re: [LTP] Realtime tests on ARM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,69 +26,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8366691012559630294=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: David Peverley <pev@sketchymonkey.com>
+Cc: gowrishankar.m@in.ibm.com, ltp-list@lists.sourceforge.net
 
---===============8366691012559630294==
-Content-Type: multipart/alternative; boundary=00163646d5fa11466b04928dc90e
+Hi!
+> 
+> Was your change to modify librttest.h as follows :
+>    /* atomic_add - add integer to atomic variable and returns a value.
+>     * i: integer value to add
+>     * v: pointer of type atomic_t
+>     */
+>    static inline void atomic_add( int i, atomic_t *v )
+>    {
+>             (void)__sync_add_and_fetch(&v->counter, i);
+>    }
+> 
+>    /* atomic_inc: atomically increment the integer passed by reference
+>     */
+>    static inline int atomic_inc(atomic_t *v)
+>    {
+>        return (int)__sync_add_and_fetch(&v->counter, 1);
+>    }
 
---00163646d5fa11466b04928dc90e
-Content-Type: text/plain; charset=ISO-8859-1
+No. I send a patch to fix inline assembler for x86 machine. But
+Gowrishankar send a better patch that replaces inline assembler with gcc
+builins. So I agreed that this is a better solution and acked his patch.
 
-Hi,
-
-     PTY tests are failing.....
-     giving the error as    "TBROK: ptsname() call failed"
-
-     i tried correcting it but doesnt worked out.
-     So please tell me the cause...
+Anyway casts to (void) and (int) are useless here as the compiler
+figures out this itself. And also atomic_add() is unused function after
+this change as atomic_inc() was previously implemented as atomic_add(1, v)
+and atomic_add() was used only to implement atomic_inc().
 
 -- 
-Best Regards,
-Arjit Sharma.
-
---00163646d5fa11466b04928dc90e
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div>Hi,</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0 PTY tests are failing.....</div>
-<div>=A0=A0=A0=A0 giving the error as=A0=A0=A0 &quot;TBROK: ptsname() call =
-failed&quot;</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0 i tried correcting it but doesnt worked out.</div>
-<div>=A0=A0=A0=A0 So please tell me the cause...<br clear=3D"all"><br>-- <b=
-r></div>
-<div>Best Regards,</div>
-<div>Arjit Sharma.</div><br>
-
---00163646d5fa11466b04928dc90e--
-
-
---===============8366691012559630294==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
---===============8366691012559630294==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8366691012559630294==--
-
