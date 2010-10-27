@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <joyarjit@gmail.com>) id 1P3PCd-0005aH-Ft
-	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 08:18:19 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P3PCc-0005ri-Kz
-	for ltp-list@lists.sourceforge.net; Wed, 06 Oct 2010 08:18:19 +0000
-Received: by wwc33 with SMTP id 33so2368811wwc.10
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PB3th-0005pi-Fz
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:10:25 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PB3tg-0004Sv-BM
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:10:25 +0000
+Received: by wya21 with SMTP id 21so549466wya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 06 Oct 2010 01:18:13 -0700 (PDT)
+	Wed, 27 Oct 2010 04:10:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=QWUtS1Y9Ynaa1RkBTud4nKrCe9=WRfMX1wpX5@mail.gmail.com>
-References: <AANLkTi=QWUtS1Y9Ynaa1RkBTud4nKrCe9=WRfMX1wpX5@mail.gmail.com>
-Date: Wed, 6 Oct 2010 13:48:12 +0530
-Message-ID: <AANLkTimkwUYy1izPS_NU8mhqw-ZOYetNG-4gsHEs7AG4@mail.gmail.com>
-From: ARJIT SHARMA <joyarjit@gmail.com>
-Subject: Re: [LTP] network-stress tests
+In-Reply-To: <AANLkTikbzi44SibVCGa_yJZ0LryqzhiebgxVmPjLAbDb@mail.gmail.com>
+References: <AANLkTikbzi44SibVCGa_yJZ0LryqzhiebgxVmPjLAbDb@mail.gmail.com>
+Date: Wed, 27 Oct 2010 04:10:18 -0700
+Message-ID: <AANLkTik65oonTaya93P59johGHbrtaMZS-+Mq6YtwQXL@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Realtime test filtered out
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,96 +27,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1511673812638487156=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============1511673812638487156==
-Content-Type: multipart/alternative; boundary=00504502caa528ae6b0491ee6b36
-
---00504502caa528ae6b0491ee6b36
-Content-Type: text/plain; charset=ISO-8859-1
-
-please send me some reply to solve my problem........   :(
-
-On Tue, Oct 5, 2010 at 11:13 AM, ARJIT SHARMA <joyarjit@gmail.com> wrote:
-
-> Hi,
->
->      I m  running LTP on arm armv7 architechture.
->      I have configured my system acoording to the requiremeints of
-> network-stress testcases as mentioned in README and INSTALL(section 6)
-> files.
->
->      but still the problem in same ie. LHOST_HWADDRS is not set.  :(
->
->      please tell me why this is happening, is there any way to make
-> them pass....?
->
-> --
-> Regards,
-> Arjit Sharma.
->
->
-
-
--- 
-Regards,
-Arjit Sharma.
-
---00504502caa528ae6b0491ee6b36
-Content-Type: text/html; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: David Peverley <pev@sketchymonkey.com>
+Cc: ltp-list@lists.sourceforge.net
 
-please send me some reply to solve my problem........=A0=A0 :(<br><br>
-<div class=3D"gmail_quote">On Tue, Oct 5, 2010 at 11:13 AM, ARJIT SHARMA <s=
-pan dir=3D"ltr">&lt;<a href=3D"mailto:joyarjit@gmail.com">joyarjit@gmail.co=
-m</a>&gt;</span> wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
-px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
-<div>Hi,</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0=A0I m=A0 running LTP on arm armv7 architechture.</div>
-<div>=A0=A0=A0=A0 I have configured my system acoording to the requiremeint=
-s of network-stress testcases as mentioned in README and INSTALL(section 6)=
- files.</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0 but still the problem in same ie. LHOST_HWADDRS is not se=
-t.=A0 :(</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0 please tell me why this is happening,=A0is there any way =
-to make them=A0pass....?=A0<br clear=3D"all"><br>-- <br></div>
-<div>Regards,</div>
-<div>Arjit Sharma.</div><font color=3D"#888888"><br></font></blockquote></d=
-iv><br><br clear=3D"all"><br>-- <br>
-<div>Regards,</div>
-<div>Arjit Sharma.</div><br>
+On Wed, Oct 27, 2010 at 3:52 AM, David Peverley <pev@sketchymonkey.com> wro=
+te:
+> Hi all,
+>
+> In the ltp-full-20100831 release the realtime test is filtered out.
+> This comes from the code in testcases/Makefile. This looks like :
+> =A0 # XXX (garrcoop): Not sure why realtime is still in this list; this w=
+as the
+> =A0 # original list of disabled items...
+> =A0 # XXX (garrcoop): kdump was in this list.
+> =A0 # XXX (garrcoop): open_hpi_testsuite was in this list.
+> =A0 ifneq ($(UCLINUX),1)
+> =A0 FILTER_OUT_DIRS =A0 =A0 =A0 =A0 +=3D audit-test DOTS realtime
+> =A0 endif
+>
+> This is filtering out the tests if NOT a uclinux build. Is this
+> correct or inverted? I'd assume realtime tests would be built as
+> standard but maybe not for uclinux? Also, I can't find the audit-tests
+> dir so I'm guessing this may be deprecated?
 
---00504502caa528ae6b0491ee6b36--
+Commit fixing this will be incoming shortly.
+Thanks!
+-Garrett
 
+---------------------------------------------------------------------------=
+---
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
---===============1511673812638487156==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
---===============1511673812638487156==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1511673812638487156==--
-
