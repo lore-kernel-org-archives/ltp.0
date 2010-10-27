@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hannuxx@gmail.com>) id 1P6qgd-0001Sd-LT
-	for ltp-list@lists.sourceforge.net; Fri, 15 Oct 2010 20:15:31 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P6qgc-0001E4-Kg
-	for ltp-list@lists.sourceforge.net; Fri, 15 Oct 2010 20:15:31 +0000
-Received: by bwz9 with SMTP id 9so2031764bwz.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 15 Oct 2010 13:15:24 -0700 (PDT)
-Date: Fri, 15 Oct 2010 23:15:32 +0300
-From: Hannu Heikkinen <hannuxx@iki.fi>
-Message-ID: <20101015201532.GB2940@debian-master.elisa-laajakaista.fi>
-References: <AANLkTikQh4d58rgjQNH=UfyVHEvzC+v-FNiFeEKhFrai@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTikQh4d58rgjQNH=UfyVHEvzC+v-FNiFeEKhFrai@mail.gmail.com>
-Subject: Re: [LTP] PTY testcase
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <kamezawa.hiroyu@jp.fujitsu.com>) id 1PAuQg-0002Y6-8o
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 01:03:50 +0000
+Received: from fgwmail8.fujitsu.co.jp ([192.51.44.38])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PAuQe-0006gF-Jj
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 01:03:50 +0000
+Date: Wed, 27 Oct 2010 09:45:02 +0900
+From: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Message-Id: <20101027094502.208c1207.kamezawa.hiroyu@jp.fujitsu.com>
+In-Reply-To: <1288089237.5010.9.camel@subratamodak.linux.ibm.com>
+References: <1288089237.5010.9.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [linux-2.6.36-git7: Power7] LTP Memory CGROUP Controller
+ functional test creates Backtrace,
+ OOMKill & rcu_sched_state detected stall jiffies
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,51 +29,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ARJIT SHARMA <joyarjit@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: Linuxppc-dev <Linuxppc-dev@ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>, ltp-list <ltp-list@lists.sf.net>
 
-On 14/10/10 11:56 +0530, ARJIT SHARMA wrote:
-> Hi,
+On Tue, 26 Oct 2010 16:03:56 +0530
+Subrata Modak <subrata@linux.vnet.ibm.com> wrote:
+
+> If you run LTP Memory CGROUP Controller functional test on
+> linux-2.6.36-git7, the following Backtrace, OOMKill & rcu_sched_state
+> detected stall jiffies are created. The machine is not reachable
+> thereafter. Ways to reproduce this problem:
 > 
->      PTY tests are failing.....
->      giving the error as    "TBROK: ptsname() call failed"
+> 1) Build and boot kernel 2.6.36-git7 on Power7 machine with attached
+> config file,
+> 2) Fetch, build and install LTP:
+> 	git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
+> 	cd ltp
+> 	./configure
+> 	make
+> 	make install
+> 3) Create a LTP runtest file /opt/ltp/runtest/memcg_function_test with
+> the following entry:
+> memcg_function          memcg_function_test.sh
+> <<EOF>>
+> 	cd /opt/ltp
+> 	./runltp -f memcg_function_test
 > 
->      i tried correcting it but doesnt worked out.
->      So please tell me the cause...
-> 
-> -- 
-> Best Regards,
-> Arjit Sharma.
 
-Hi,
+IIUC, memcg test includes intentional OOM-Kill test by setting the limit to 0.
+And it has another test to set the limit to PAGE_SIZE.
 
-can u please send strace -f <your-ltp-run> over here?
--f gives log for childs also.
+In your environemnt, I think page size is 64kb...right ?
 
-And also, please give exact info, which test case, what are all the lines,
-etc.
+About rcu_sched_state()....I have no idea at this stage. I reviewed memcontrol.c
+and oom_kill.c again and coundn't found anything in quick review.
 
-What command:
-# cat /proc/sys/kernel/pty/max
+Could you try again after -rc1 shipped ?
+I think Andrew Morton sent some amount of updates for oom_kill and memcg, vmscan
+to Linus, today.
 
-says?
-
-br,
-Hannu
-
-
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Thanks,
+-Kame
 
 
 ------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
