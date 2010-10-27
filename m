@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <carmelo.amoroso@st.com>) id 1P30fQ-0002v6-Ev
-	for ltp-list@lists.sourceforge.net; Tue, 05 Oct 2010 06:06:24 +0000
-Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141])
-	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P30fO-0002is-Jr
-	for ltp-list@lists.sourceforge.net; Tue, 05 Oct 2010 06:06:24 +0000
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Date: Tue, 5 Oct 2010 08:05:42 +0200
-Message-ID: <4CAAC036.4080505@st.com>
-References: <4CA09D4D.6050708@st.com>	<4CA34070.9070505@st.com>
-	<20100930133120.GA4070@hannu-debian.research.nokia.com>
-	<4CA469A0.5090700@st.com>	<20101001040609.GA2090@hannu-ubuntu>
-	<4CA9D0EB.5090309@st.com>
-	<AANLkTim_Ay4yjdBfm8tzEiK_z4JzQyg6RRsR3E1tCH9h@mail.gmail.com>
-In-Reply-To: <AANLkTim_Ay4yjdBfm8tzEiK_z4JzQyg6RRsR3E1tCH9h@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PB0sg-0001Wp-NY
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 07:57:10 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PB0sd-0002O3-Mb
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 07:57:10 +0000
+Message-ID: <4CC7DAFD.3090005@cn.fujitsu.com>
+Date: Wed, 27 Oct 2010 15:55:41 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] ltp_clone alignment issues.
+Subject: [LTP] [POSIX]aio_suspend-4: we just need care the selected request.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,194 +25,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: yanegomi@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+At linux, the aio_suspend tests report following error:
+  aio_suspend/4-1.c aio_suspend() should set errno to EAGAIN: 4 (Interrupted system call)
 
-On 10/4/2010 3:28 PM, Garrett Cooper wrote:
-> On Mon, Oct 4, 2010 at 6:04 AM, Carmelo AMOROSO <carmelo.amoroso@st.com> wrote:
->  > -----BEGIN PGP SIGNED MESSAGE-----
->  > Hash: SHA1
->  >
->  > On 10/1/2010 6:06 AM, Hannu Heikkinen wrote:
->  >> On 30/09/10 12:42 +0200, Carmelo AMOROSO wrote:
->  >> On 9/30/2010 3:31 PM, Hannu Heikkinen wrote:
->  >>> On 29/09/10 15:34 +0200, ext Carmelo AMOROSO wrote:
->  >>> > -----BEGIN PGP SIGNED MESSAGE-----
->  >>> > Hash: SHA1
->  >>> >
->  >>> > On 9/27/2010 3:34 PM, Carmelo AMOROSO wrote:
->  >>> > > Folks,
->  >>> > > I want to reopen an old discussion on ltp_clone and stack alignment
->  >>> > > issue (see
->  >>> > >
->  >>
->  >>> 
-> http://sourceforge.net/mailarchive/message.php?msg_name=4B421480.1040400%40petalogix.com).
->  >>> > > Indeed recently a commit has partially fixed a problem on ARM
->  >>> > > (0056e395170eb8fc3ffbb22d7bd364fe47c2013e), but I think this should be
->  >>> > > extended to all archs that have stack that grows downwards.
->  >>> > >
->  >>> > > Indeed, as Jiri replied in that old thread, the value passed to clone as
->  >>> > > child stack should be never accessed, because it is the topmost address
->  >>> > > of the memory allocated for the child process (it's the previous stack
->  >>> > > pointer).
->  >>> > >
->  >>> > > So, in archs that do not like unaligned stack, using (stack - size - 1 )
->  >>> > > will cause the process to be killed by a SIGBUS, on other archs, we are
->  >>> > > just wasting one byte of the malloc-ed stack.
->  >>> > >
->  >>> > > On my SH4 arch, the stack must be 4byte aligned (as in ARM).
->  >>> > >
->  >>> > > Please, find attached a patch against master branch
->  >>> > >
->  >>> > > Best regards,
->  >>> > > Carmelo
->  >>> >
->  >>> > Hi,
->  >>> > any feedback on this ?
->  >>> >
->  >>> > Cheers,
->  >>> > Carmelo
->  >>
->  >>> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->  >>> Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
->  >>> ---
->  >>> lib/cloner.c | 9 +++------
->  >>> 1 files changed, 3 insertions(+), 6 deletions(-)
->  >>
->  >>> diff --git a/lib/cloner.c b/lib/cloner.c
->  >>> index 6ad4a00..e53c9cf 100644
->  >>> --- a/lib/cloner.c
->  >>> +++ b/lib/cloner.c
->  >>> @@ -59,16 +59,13 @@ ltp_clone(unsigned long clone_flags, int (*fn)(void
->  >>> *arg), void *arg,
->  >>> ret = clone(fn, stack, clone_flags, arg);
->  >>> #elif defined(__ia64__)
->  >>> ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
->  >>> NULL);
->  >>> -#elif defined(__arm__)
->  >>> +#else
->  >>> /*
->  >>> - * Stack size should be a multiple of 32 bit words
->  >>> - * & stack limit must be aligned to a 32 bit boundary
->  >>> + * For archs where stack grows downwards, stack points to the topmost
->  >>> address
->  >>> + * of the memory space set up for the child stack.
->  >>> */
->  >>> ret = clone(fn, (stack ? stack + stack_size : NULL),
->  >>> clone_flags, arg);
->  >>> -#else
->  >>> - ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
->  >>> - clone_flags, arg);
->  >>> #endif
->  >>
->  >>> return ret;
->  >>> --
->  >>> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
->  >>
->  >>> Hi,
->  >>
->  >>> Acked-by Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
->  >>
->  >>> Br,
->  >>> Hannu
->  >>
->  >>> --
->  >>> Hannu Heikkinen
->  >>> http://www.nixu.com
->  >>
->  >>
->  >> Thanks, Hannu
->  >
->  >> Hi,
->  >
->  >> I was thinking your patch once again, and I think it would be wiser if
->  >> we would have something like:
->  >
->  >> --- ../tmp2/ltp-full-20100630/lib/cloner.c 2010-07-03 21:29:04.000000000
->  >> +0300
->  >> +++ lib/cloner.c 2010-09-03 14:48:20.000000000 +0300
->  >> @@ -43,6 +43,16 @@
->  >> pid_t *parent_tid, void *tls, pid_t *child_tid);
->  >> #endif
->  >
->  >> +/*
->  >> + * Most arch really want to have stack aligned to some sane boundary.
->  >> + */
->  >> +#ifdef __arm__
->  >> +#define ALIGN_STACK(stack) \
->  >> + ((void *)(((unsigned long)stack) & ~((sizeof(void *)) - 1)))
->  >> +#else
->  >> +#define ALIGN_STACK(stack) (stack)
->  >> +#endif
->  >> +
->  >> /***********************************************************************
->  >> * ltp_clone: wrapper for clone to hide the architecture dependencies.
->  >> * 1. hppa takes bottom of stack and no stacksize (stack grows up)
->  >> @@ -60,7 +70,7 @@
->  >> #elif defined(__ia64__)
->  >> ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
->  >> NULL);
->  >> #else
->  >> - ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
->  >> + ret = clone(fn, (stack ? ALIGN_STACK(stack + stack_size - 1) : NULL),
->  >> clone_flags, arg);
->  >> #endif
->  >
->  >
->  >> The above patch iis in use in our ARM based LTP test suite. Note that -1 is
->  >> needed for not clobbering eg possibly malloced area after child stack.
->  >> Could u please change that prev patch a bit, for ensuring that child stack
->  >> is in proper size etc. Above patch is not sufficient, because ALIGN_STACK
->  >> in that is only used for arm archs.
->  >
->  >> br,
->  >> Hannu
->  >
->  >
->  > Hannu,
->  > I don't think that it is a good to force the alignment; we could need to
->  > write a test case that calls LTP_clone with an unaligned stack just to
->  > test the behavior of the clone implementation.
->  >
->  > Likely, it should be useful to add a check inside the C lib clone
->  > implementation (arch specific) to protect against unaligned stack, but
->  > this is a different matter.
->  >
->  > I would just leave the LTP_clone passing the argument to the clone as
->  > they came from the caller.
-> 
-> I believe this is already handled to some degree with the clone
-> testcases. If not that should be added and I'll review patches which
-> add this testing to LTP.
+Man page said:
+  The  aio_suspend()  function  suspends  the calling process until at least one of the asynchronous
+  I/O requests in the list cblist of length n have completed, a signal is delivered, or timeout is
+  not NULL and the time interval it indicates has passed.
 
-No it doesn't, otherwise those tests would have failed on SH and ARM
-that do not accept unaligned stack, instead they were all failing just
-because in all cases the stack argument was unaligned due to - 1.
+When  a signal is delivered, whether should aio_suspend return immediately although 
+we have set a SA_RESTART flag for this signal action?
 
-I will think again if it's worth to add a check in clone code to
-protected against unaligned stack forcing the clone to fail... not sure
-what all other cpu are actually doing.
+Maybe the followed path is necessary.
+------------------------------------------------------------------------------------------------------
+We just care the selected IO request, and set a little timeout.
 
-Carmelo
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-iEYEARECAAYFAkyqwDYACgkQoRq/3BrK1s8UBQCfU5i7oyJD5/qZukRXKDGLjZ1x
-I+AAoNyn0mUvSL6ZhH5HsAeLQM0uX2Td
-=DYlP
------END PGP SIGNATURE-----
+---
+ conformance/interfaces/aio_suspend/4-1.c |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/conformance/interfaces/aio_suspend/4-1.c b/conformance/interfaces/aio_suspend/4-1.c
+index 260c26a..dd8e5f0 100644
+--- a/conformance/interfaces/aio_suspend/4-1.c
++++ b/conformance/interfaces/aio_suspend/4-1.c
+@@ -47,8 +47,7 @@ int received_all	= 0;
+ void
+ sigrt1_handler(int signum, siginfo_t *info, void *context)
+ {
+-	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
+-		received_selected = 1;
++	received_selected = 1;
+ }
+ 
+ void
+@@ -68,7 +67,7 @@ main ()
+ 	char *bufs;
+ 	struct sigaction action;
+ 	struct sigevent event;
+-	struct timespec ts = {0, 10000000}; /* 10 ms */
++	struct timespec ts = {0, 1000}; /* 1 us */
+ 	int errors = 0;
+ 	int ret;
+ 	int err;
+@@ -123,9 +122,11 @@ main ()
+ 		aiocbs[i]->aio_lio_opcode = LIO_READ;
+ 
+ 		/* Use SIRTMIN+1 for individual completions */
+-		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+-		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
+-		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
++		if (i == WAIT_FOR_AIOCB) {
++			aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
++			aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
++			aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
++		}
+ 	}
+ 
+ 	/* Use SIGRTMIN+2 for list completion */
+-- 
+1.7.0.4
+
+
+
+-- 
+Regards
+Bian Naimeng
+
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
