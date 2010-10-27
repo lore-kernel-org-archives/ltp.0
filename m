@@ -1,28 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P2c49-0001vB-Po
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 03:50:17 +0000
-Received: from mail-iw0-f174.google.com ([209.85.214.174])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2c49-000430-1M
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 03:50:17 +0000
+	(envelope-from <chrubis@suse.de>) id 1PB4KO-0003aN-95
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:38:00 +0000
+Date: Wed, 27 Oct 2010 13:47:56 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101027114756.GA4999@saboteur.suse.cz>
+References: <AANLkTimHeBQkYhnPpAiOJx2R8Y1xznHffWYhAtBR=iCF@mail.gmail.com>
+	<AANLkTi=zZud=H52Q5pE00gERVi6MfVF9QV7_C66W=CEP@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <OFA3C42AE5.7F12F4DF-ON652577AD.004DA114-652577AD.004DCA76@in.ibm.com>
-References: <20100924100303.5709.80714.sendpatchset@sravan-laptop>
-	<20100927142304.GA23119@hallyn.com>
-	<4CA0AEB7.7080701@linux.vnet.ibm.com>
-	<20100927180239.GA15486@hallyn.com>
-	<4CA1ADB0.7070908@linux.vnet.ibm.com>
-	<20100928213611.GA1046@hallyn.com>
-	<4CA31140.4000805@linux.vnet.ibm.com>
-	<20100929141051.GB4620@hallyn.com>
-	<OFA3C42AE5.7F12F4DF-ON652577AD.004DA114-652577AD.004DCA76@in.ibm.com>
-Date: Sun, 3 Oct 2010 20:50:11 -0700
-Message-ID: <AANLkTi=woCpWexWHWTcojN7U_UQZEszEvVXEaPDiDpLQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Compilation Error Fixed in filecaps.
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=zZud=H52Q5pE00gERVi6MfVF9QV7_C66W=CEP@mail.gmail.com>
+Subject: Re: [LTP] Realtime tests on ARM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,62 +25,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak1 <subrata.modak@in.ibm.com>
-Cc: sravan <sravan@linux.vnet.ibm.com>, ltp-list@lists.sf.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: gowrishankar.m@in.ibm.com, ltp-list@lists.sourceforge.net, David Peverley <pev@sketchymonkey.com>
 
-On Wed, Sep 29, 2010 at 7:09 AM, Subrata Modak1
-<subrata.modak@in.ibm.com> wrote:
-> Serge Hallyn <serge.hallyn@canonical.com> wrote on 09/29/2010 07:40:51 PM:
->>
->> Quoting sravan (sravan@linux.vnet.ibm.com):
->> > =A0Sorry for the confusion Serge.
->> > I have taken the "c.c" file from the latest ltp release and found
->> > that it is not compiling.
->> >
->> > The same file is not compiling in the earlier release of ltp also.
->> > To resolve the compilation issue I have added the following
->> > flag(HAVE_SYS_CAPABILITY_H).
->> > The same flag is also used in
-> ltp-full-20100831/testcases/kernel/security/
->> filecaps/verify_caps_exec.c
->> > file.
->> >
->> > #if HAVE_SYS_CAPABILITY_H =A0 =A0 =A0 =A0 =A0 =A0//Added by Sravan
->> > #include <sys/capability.h>
->> > #endif =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0// Added by Sravan
->> >
->> > Please let me know if this is the correct approach.
->>
->> Well, the better approach would be to install the libcap-dev
->> package (or whatever it is called on your distro) =A0:) =A0But so
->> long as you're just getting your own compile working, whatever
->> gets you a working build is fine.
->>
->> What worries me, though, is the thought that the official
->> 20100831 release has the wrong files in it! =A0Can you follow
->> up on that with Subrata? =A0In particular, the c.c file is
->> different from the one in ltp.git. =A0Something is going very
->> wrong!
->
-> Garret,
->
-> Did we miss/drop something during our migration from ltp-dev.git to
-> ltp.git ?
+Hi!
+> > The realtime tests aren't compiled for ARM currently as there's no
+> > implementation of atomic_add() in :
+> > =A0 testcases/realtime/include/librttest.h
+> >
+> > As a side note - in this function can we change the #error to not be
+> > blank and read something along the lines of =A0:
+> > =A0#error ERROR: atomic_add: Architecture not supported for compilation
+> >
+> > Anyway, the existing function here supports three architectures and
+> > lifts the implementations as follows :
+> > =A0__x86_64__ || =A0__i386__
+> > =A0 =A0arch/x86/include/asm/atomic_32.h
+> > =A0__powerpc__
+> > =A0 =A0arch/powerpc/include/asm/atomic.h (might need review!)
+> > =A0__sh__
+> > =A0 =A0arch/sh/include/asm/atomic-llsc.h (might need review!)
+> >
+> > Logically we can add an ARM case following the same logic. Looking in :
+> > =A0 arch/arm/include/asm/atomic.h
+> >
+> > We can implement this easily for v6+ architectures. The case for
+> > atomic_add in librttest.h would look something like :
+> > =A0#elif defined(__arm__) && (__LINUX_ARM_ARCH__ >=3D 6)
+> > =A0 =A0 =A0 unsigned long tmp;
+> > =A0 =A0 =A0 int result;
+> >
+> > =A0 =A0 =A0 __asm__ __volatile__(
+> > =A0 "1: ldrex =A0 %0, [%2]\n"
+> > =A0 " =A0 add =A0 =A0 %0, %0, %3\n"
+> > =A0 " =A0 strex =A0 %1, %0, [%2]\n"
+> > =A0 " =A0 teq =A0 =A0 %1, #0\n"
+> > =A0 " =A0 bne =A0 =A0 1b"
+> > =A0 =A0 =A0 : "=3D&r" (result), "=3D&r" (tmp)
+> > =A0 =A0 =A0 : "r" (&v->counter), "Ir" (i)
+> > =A0 =A0 =A0 : "cc");
+> >
+> > =A0 =A0 =A0 return result;
+> >
+> > For < v6 architectures this isn't easy as they don't implement
+> > ldrex/strex. The atomic.h implementation won't work as it's a kernel
+> > only implementation using local_irq_save() and local_irq_restore() so
+> > obviously no use for userspace atomic add.
+> >
+> > After reading up for a while I've come across a very cunning trick in
+> > the kernel where an atomic compare/exchange is implemented in
+> > __kuser_cmpxchg. This is implemented in :
+> > =A0 arch/arm/kernel/entry-armv.S
+> >
+> > This tantalisingly comments :
+> > =A0 /*
+> > =A0 =A0* For example, a user space atomic_add implementation could look=
+ like this:
+> > =A0 =A0*
+> > =A0 =A0* #define atomic_add(ptr, val) \
+> > =A0 =A0* =A0 =A0 =A0({ register unsigned int *__ptr asm("r2") =3D (ptr)=
+; \
+> > =A0 =A0* =A0 =A0 =A0 =A0 register unsigned int __result asm("r1"); \
+> > =A0 =A0* =A0 =A0 =A0 =A0 asm volatile ( \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "1: @ atomic_add\n\t" \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "ldr =A0 =A0 r0, [r2]\n\t" \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "mov =A0 =A0 r3, #0xffff0fff\n\t" \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 lr, pc, #4\n\t" \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 r1, r0, %2\n\t" \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 pc, r3, #(0xffff0fc0 - 0x=
+ffff0fff)\n\t" \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "bcc =A0 =A0 1b" \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "=3D&r" (__result) \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "r" (__ptr), "rIL" (val) \
+> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "r0","r3","ip","lr","cc","memory" );=
+ \
+> > =A0 =A0* =A0 =A0 =A0 =A0 __result; })
+> > =A0 =A0*/
+> >
+> > So translating this into librttest.h format gives :
+> > =A0 #elif defined(__arm__) && (__LINUX_ARM_ARCH__ < 6)
+> > =A0 =A0 =A0 register unsigned int result asm("r1");
+> >
+> > =A0 =A0 =A0 /* See, arm/kernel/entry-armv.S:__kernel_cmpxchg() */
+> > =A0 =A0 =A0 __asm__ __volatile__ (
+> > =A0 "1: ldr =A0 =A0 r0, [r2]\n\t"
+> > =A0 " =A0 mov =A0 =A0 r3, #0xffff0fff\n\t"
+> > =A0 " =A0 add =A0 =A0 lr, pc, #4\n\t"
+> > =A0 " =A0 add =A0 =A0 r1, r0, %2\n\t"
+> > =A0 " =A0 add =A0 =A0 pc, r3, #(0xffff0fc0 - 0xffff0fff)\n\t"
+> > =A0 " =A0 bcc =A0 =A0 1b"
+> > =A0 =A0 =A0 : "=3D&r" (result)
+> > =A0 =A0 =A0 : "r" (&v->counter), "rIL" (i)
+> > =A0 =A0 =A0 : "r0","r3","ip","lr","cc","memory" );
+> >
+> > =A0 =A0 =A0 return result;
+> >
+> > Does this look reasonable to you guys?
+> =
 
-    No... I pushed all of the content from ltp-dev.git up to ltp.git.
-Thanks,
--Garrett
+>     CCing Gowrishankar from IBM.
+
+We recently agreed to use gcc buildins as the inline assembler was
+broken anyway. But it seems that this patch hasn't made it into git.
+
+Garret could you please commit patch from Gowrishankar from thread
+"[PATCH] fix realtime atomic_add() inline asm". It basically removes all the
+inline assembler in favor of __sync_add_and_fetch().
+
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
 
 ---------------------------------------------------------------------------=
 ---
-Virtualization is moving to the mainstream and overtaking non-virtualized
-environment for deploying applications. Does it make network security =
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
-easier or more difficult to achieve? Read this whitepaper to separate the =
-
-two and get a better understanding.
-http://p.sf.net/sfu/hp-phase2-d2d
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
