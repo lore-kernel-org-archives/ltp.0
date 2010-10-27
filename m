@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PBIU1-00058t-3T
-	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 02:44:53 +0000
-Received: from out17.sjc.mx.trendmicro.com ([216.99.131.74])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PBITz-0007kH-GW
-	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 02:44:53 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cb74af$8658b390$930a1ab0$@co.jp>
-	<AANLkTimQc+8+ytEWT3zXVE1dCf-SKZp-hrt7RRkXUDX4@mail.gmail.com>
-In-Reply-To: <AANLkTimQc+8+ytEWT3zXVE1dCf-SKZp-hrt7RRkXUDX4@mail.gmail.com>
-Date: Thu, 28 Oct 2010 11:44:42 +0900
-Message-ID: <000b01cb764a$12ae2050$380a60f0$@co.jp>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <pev@sketchymonkey.com>) id 1PB40Z-0006Lw-6m
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:17:31 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PB40Y-00011r-Dl
+	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 11:17:31 +0000
+Received: by gwaa11 with SMTP id a11so292381gwa.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 27 Oct 2010 04:17:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
+Date: Wed, 27 Oct 2010 12:17:24 +0100
+Message-ID: <AANLkTimHeBQkYhnPpAiOJx2R8Y1xznHffWYhAtBR=iCF@mail.gmail.com>
+From: David Peverley <pev@sketchymonkey.com>
+Subject: [LTP] Realtime tests on ARM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,49 +28,102 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Tuesday, October 26, 2010 3:57 PM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
-> 
-> On Mon, Oct 25, 2010 at 6:45 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> > Hi,
-> >
-> > I reported that build failure of POSIX test set
-> "conformance/interfaces/
-> > sched_yield/1-1" was still left in RHEL4.8 system:
-> >
-> >
-> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg1071
-> 3.html
-> >
-> > In addition, build of the following tests failed by the reason of
-> > "undefined reference":
-> 
->     Some versions of gcc didn't function properly with -lpthread; try
-> -pthread instead at the top-level LDLIBS file and see whether or not
-> it works for you.
-> HTH,
-> -Garrett
+Hi all,
 
-Hi,
+The realtime tests aren't compiled for ARM currently as there's no
+implementation of atomic_add() in :
+   testcases/realtime/include/librttest.h
 
-I tried to use "-pthread" instead of "-lpthread".
-But "sched_yield/1-1" failed in my all archtectures (RHEL4.8-x86, x86_64,
-ia64).
-Other 27 tests, too.
+As a side note - in this function can we change the #error to not be
+blank and read something along the lines of  :
+  #error ERROR: atomic_add: Architecture not supported for compilation
 
+Anyway, the existing function here supports three architectures and
+lifts the implementations as follows :
+ __x86_64__ ||  __i386__
+    arch/x86/include/asm/atomic_32.h
+ __powerpc__
+    arch/powerpc/include/asm/atomic.h (might need review!)
+ __sh__
+    arch/sh/include/asm/atomic-llsc.h (might need review!)
 
-Thanks--
+Logically we can add an ARM case following the same logic. Looking in :
+   arch/arm/include/asm/atomic.h
 
--Tomonori Mitani
+We can implement this easily for v6+ architectures. The case for
+atomic_add in librttest.h would look something like :
+ #elif defined(__arm__) && (__LINUX_ARM_ARCH__ >= 6)
+       unsigned long tmp;
+       int result;
 
+       __asm__ __volatile__(
+   "1: ldrex   %0, [%2]\n"
+   "   add     %0, %0, %3\n"
+   "   strex   %1, %0, [%2]\n"
+   "   teq     %1, #0\n"
+   "   bne     1b"
+       : "=&r" (result), "=&r" (tmp)
+       : "r" (&v->counter), "Ir" (i)
+       : "cc");
 
+       return result;
+
+For < v6 architectures this isn't easy as they don't implement
+ldrex/strex. The atomic.h implementation won't work as it's a kernel
+only implementation using local_irq_save() and local_irq_restore() so
+obviously no use for userspace atomic add.
+
+After reading up for a while I've come across a very cunning trick in
+the kernel where an atomic compare/exchange is implemented in
+__kuser_cmpxchg. This is implemented in :
+   arch/arm/kernel/entry-armv.S
+
+This tantalisingly comments :
+   /*
+    * For example, a user space atomic_add implementation could look like this:
+    *
+    * #define atomic_add(ptr, val) \
+    *      ({ register unsigned int *__ptr asm("r2") = (ptr); \
+    *         register unsigned int __result asm("r1"); \
+    *         asm volatile ( \
+    *             "1: @ atomic_add\n\t" \
+    *             "ldr     r0, [r2]\n\t" \
+    *             "mov     r3, #0xffff0fff\n\t" \
+    *             "add     lr, pc, #4\n\t" \
+    *             "add     r1, r0, %2\n\t" \
+    *             "add     pc, r3, #(0xffff0fc0 - 0xffff0fff)\n\t" \
+    *             "bcc     1b" \
+    *             : "=&r" (__result) \
+    *             : "r" (__ptr), "rIL" (val) \
+    *             : "r0","r3","ip","lr","cc","memory" ); \
+    *         __result; })
+    */
+
+So translating this into librttest.h format gives :
+   #elif defined(__arm__) && (__LINUX_ARM_ARCH__ < 6)
+       register unsigned int result asm("r1");
+
+       /* See, arm/kernel/entry-armv.S:__kernel_cmpxchg() */
+       __asm__ __volatile__ (
+   "1: ldr     r0, [r2]\n\t"
+   "   mov     r3, #0xffff0fff\n\t"
+   "   add     lr, pc, #4\n\t"
+   "   add     r1, r0, %2\n\t"
+   "   add     pc, r3, #(0xffff0fc0 - 0xffff0fff)\n\t"
+   "   bcc     1b"
+       : "=&r" (result)
+       : "r" (&v->counter), "rIL" (i)
+       : "r0","r3","ip","lr","cc","memory" );
+
+       return result;
+
+Does this look reasonable to you guys?
+
+Cheers,
+
+~Pev
 
 ------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
