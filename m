@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P5vcd-00042Y-SQ
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:19:35 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P5vcd-00061R-2Q
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:19:35 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20101004130404.GC19814@hallyn.com>
-References: <20100929135647.GA4587@hallyn.com>
-	<1285772543.17329.2.camel@subratamodak.linux.ibm.com>
-	<1286176414.4882.2.camel@subratamodak.linux.ibm.com>
-	<20101004130404.GC19814@hallyn.com>
-Date: Wed, 13 Oct 2010 12:49:03 +0530
-Message-Id: <1286954346.4893.13.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] securebits: add secure_keepcaps testcases
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PBVlK-0004f3-OG
+	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 16:55:38 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PBVlJ-0000nZ-Gw
+	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 16:55:38 +0000
+Received: by fxm3 with SMTP id 3so2181751fxm.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Oct 2010 09:55:31 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <000a01cb7649$81dee5f0$859cb1d0$@co.jp>
+References: <4CC8D7DE.9060700@cn.fujitsu.com>
+	<000a01cb7649$81dee5f0$859cb1d0$@co.jp>
+Date: Thu, 28 Oct 2010 09:55:31 -0700
+Message-ID: <AANLkTikcco_LCUZQyunWNwWA3g_11ZD-sBpaWtvXj_+r@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix all tests pass error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,55 +28,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Cc: ltp-list@lists.sf.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 2010-10-04 at 08:04 -0500, Serge E. Hallyn wrote:
-> Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
-> > > Looks fine to be,i just need a little documentation file which would
-> > > say:
-> > > 	What securebits is all about (some pointers/links)? Any specific
-> > > configuration required to run these tests, etc ?
-> > 
-> > Serge,
-> > 
-> > Can you also provide me this ?
-> 
-> I don't know where you'd want that documentation file, but for contents
-> I think it should just read:
-> 
-> ====
-> For more information on securebits, see the capabilities.7 manpage,
-> specifically the section entitled
-> 
-> 	The "securebits" flags: establishing a capabilities-only environment
-> 
-> To run these tests there are no kernel configuration requirements, but
-> your kernel must be at least Linux 2.6.32-rc7, and you must have a
-> /usr/include/linux/securebits.h which defines SECBIT_NOROOT.  You also
-> need the libcap v2 development libraries installed.
-> ====
+On Wed, Oct 27, 2010 at 7:40 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> -----Original Message-----
+>> From: Gui Jianfeng [mailto:guijianfeng@cn.fujitsu.com]
+>> Sent: Thursday, October 28, 2010 10:55 AM
+>> To: Garrett Cooper
+>> Cc: mitani@ryobi.co.jp; ltp-list@lists.sourceforge.net
+>> Subject: [PATCH] Fix all tests pass error
+>>
+>> ret_code comes from "set +x" which always return 0, this makes all tests
+>> PASS.
+>> Actually, "set +x" isn't needed here, just get rid of it.
+>>
+>> Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+>> ---
+>> =A0testcases/open_posix_testsuite/bin/run-tests.sh | =A0 =A02 --
+>> =A01 files changed, 0 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/bin/run-tests.sh
+>> b/testcases/open_posix_testsuite/bin/run-tests.sh
+>> index 6a03856..04a39dd 100755
+>> --- a/testcases/open_posix_testsuite/bin/run-tests.sh
+>> +++ b/testcases/open_posix_testsuite/bin/run-tests.sh
+>> @@ -48,8 +48,6 @@ run_test() {
+>>
+>> =A0 =A0 =A0 sh -c "$SCRIPT_DIR/t0 $TIMEOUT_VAL ./$1 $(cat ./$(echo "$1"
+>> | sed 's,\.[^\.]*,,').args 2>/dev/null)" > $complog 2>&1
+>>
+>> - =A0 =A0 set +x
+>> -
+>> =A0 =A0 =A0 ret_code=3D$?
+>>
+>> =A0 =A0 =A0 if [ "$ret_code" =3D "0" ]; then
+>> --
+>> 1.7.0.4
+>
+>
+> Great!
+>
+> I was forestalled :)
+> I have the same opinion, too.
 
-Thanks. I added this documentation and the tests to LTP. Sorry for being
-late.
+Fixed -- thanks :/...
+-Garrett
 
-Regards--
-Subrata
+---------------------------------------------------------------------------=
+---
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
-> 
-> thanks,
-> -serge
-
-
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
