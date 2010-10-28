@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P7mi4-0000kJ-Ct
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 10:12:52 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P7mi3-00085h-Js
-	for ltp-list@lists.sourceforge.net; Mon, 18 Oct 2010 10:12:52 +0000
-Received: by iwn2 with SMTP id 2so1121494iwn.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1PBGuU-0008OB-Ac
+	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 01:04:06 +0000
+Received: from out12.sjc.mx.trendmicro.com ([216.99.131.49])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PBGuS-0007Mr-Qj
+	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 01:04:06 +0000
+Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.129])
+	by out12.sjc.mx.trendmicro.com (Postfix) with ESMTP id E021998045E
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 18 Oct 2010 03:12:46 -0700 (PDT)
+	Thu, 28 Oct 2010 01:03:58 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 27926114B858
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Oct 2010 01:03:58 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Oct 2010 10:03:56 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Thu, 28 Oct 2010 10:03:56 +0900
+Message-ID: <000901cb763b$ff0644a0$fd12cde0$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <231814590.568741287143700402.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <231814590.568741287143700402.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Mon, 18 Oct 2010 03:12:42 -0700
-Message-ID: <AANLkTinGU2YA=E3_+fYn6ChUeCF9MkxfDAvDFhg9qMpF@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] overcommit libhugetlbfs and check the statistics
+Content-Language: ja
+Subject: [LTP] About results of POSIX tests in recent git
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,31 +35,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Fri, Oct 15, 2010 at 4:55 AM, CAI Qian <caiqian@redhat.com> wrote:
-> =A0First, it resets nr_hugepages and nr_overcommit_hugepages. Then, set
-> =A0both to 128 and reserve 192 hugepages. Finally, it reads and writes
-> =A0every page. There are command options to choose either to manage
-> =A0hugepages from sysfs or procfs, and reserve them by mmap or shmget.
+Hi,
 
-    Just like before, you're specifying the how and the what, but not
-the why behind the test. Please describe why you are doing this.
-Thanks,
--Garrett
+Yesterday, I tried POSIX tests with "ltp-7e2cbbd.tar.gz".
+But all of testsets passed in my all systems.
+Recent version git "ltp-332cdb8.tar.gz" too.
 
----------------------------------------------------------------------------=
----
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly =
+Environment is as follows:
+  - RHEL4.8 --- (x86, x86_64, ia64)
+  - RHEL5.5 --- (x86, x86_64, ia64)
+  - kernel  --- kernel-2.6.9-89.EL
+  - glibc   --- glibc-2.3.4-2.43
 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
+This phenomenon is mysterious because about fifty failures occurred 
+in former version gits in my systems.
+
+
+Regards--
+
+-Tomonori Mitani
+
+
+
+------------------------------------------------------------------------------
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
