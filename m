@@ -1,40 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1P9C0l-0005Dj-3U
-	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 07:25:59 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P9C0k-0008Re-1v
-	for ltp-list@lists.sourceforge.net; Fri, 22 Oct 2010 07:25:59 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e39.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id o9M7Evis020802
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Oct 2010 01:14:57 -0600
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
-	id o9M7PqJ0168058
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Oct 2010 01:25:52 -0600
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o9M7PpbT016755
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Oct 2010 01:25:52 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4CC13BB8.7090003@cn.fujitsu.com>
-References: <4C85A88D.10700@cn.fujitsu.com>
-	<1285689961.11429.12.camel@subratamodak.linux.ibm.com>
-	<1286954486.4893.15.camel@subratamodak.linux.ibm.com>
-	<4CB55FE6.6000604@cn.fujitsu.com>	<4CB5615C.4070406@cn.fujitsu.com>
-	<4CB59825.7060504@cn.fujitsu.com>
-	<1286995066.4893.17.camel@subratamodak.linux.ibm.com>
-	<4CBBBCB0.8070406@cn.fujitsu.com> <20101021215212.4a982c85@kryten>
-	<4CC13BB8.7090003@cn.fujitsu.com>
-Date: Fri, 22 Oct 2010 12:55:50 +0530
-Message-Id: <1287732351.4949.0.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] powerpc: Fix hcall tracepoint recursion
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <mitani@ryobi.co.jp>) id 1PBMSq-00073V-7n
+	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 06:59:56 +0000
+Received: from out13.sjc.mx.trendmicro.com ([216.99.131.50])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PBMSo-00030U-Pb
+	for ltp-list@lists.sourceforge.net; Thu, 28 Oct 2010 06:59:56 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.129])
+	by out13.sjc.mx.trendmicro.com (Postfix) with ESMTP id 5BBDD98041E
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Oct 2010 06:59:48 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id A0B1B95810
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Oct 2010 06:59:47 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Oct 2010 15:59:45 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Thu, 28 Oct 2010 15:59:45 +0900
+Message-ID: <000001cb766d$b3f5bbd0$1be13370$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: [LTP] LTP make failed in recent git
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,114 +38,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Zefan <lizf@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Peter Zijlstra <peterz@infradead.org>, LKML <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Paul Mackerras <paulus@samba.org>, Anton Blanchard <anton@samba.org>, Ingo Molnar <mingo@elte.hu>, linuxppc-dev@lists.ozlabs.org
+To: ltp-list@lists.sourceforge.net
 
-On Fri, 2010-10-22 at 15:22 +0800, Li Zefan wrote:
-> Anton Blanchard wrote:
-> > Hi,
-> > 
-> >> This is a dead loop:
-> >>
-> >> trace_hcall_entry() -> trace_clock_global() -> trace_hcall_entry() ..
-> >>
-> >> And this is a PPC specific bug. Hope some ppc guys will fix it?
-> >> Or we kill trace_clock_global() if no one actually uses it..
-> > 
-> > Nasty! How does the patch below look? I had to disable irqs otherwise
-> > we would sometimes drop valid events (if we take an interrupt anywhere
-> > in the region where depth is elevated, then the entire interrupt will
-> > be blocked from calling hcall tracepoints.
-> > 
-> 
-> Thanks!
-> 
-> Subrata, could you test the patch below?
+Hi,
 
-Yes, definitely. Givmme some time.
+
+I found that "make" of LTP failed with recent git "ltp-332cdb8.tar.gz".
+------------
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../../../include
+-I../../../include   -L../../../lib  ebizzy.c   -lpthread -o ebizzy
+make[3]: Leaving directory
+`/home/LTP/ltp-dev-20101027/utils/benchmark/ebizzy-0.3'
+make[3]: Entering directory
+`/home/LTP/ltp-dev-20101027/utils/benchmark/kernbench-0.42'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory
+`/home/LTP/ltp-dev-20101027/utils/benchmark/kernbench-0.42'
+make[2]: Leaving directory `/home/LTP/ltp-dev-20101027/utils/benchmark'
+make[1]: Leaving directory `/home/LTP/ltp-dev-20101027/utils'
+make -C "testcases" \
+		-f "/home/LTP/ltp-dev-20101027/testcases/Makefile" all
+make[1]: Entering directory `/home/LTP/ltp-dev-20101027/testcases'
+make[2]: Entering directory `/home/LTP/ltp-dev-20101027/testcases/DOTS'
+cd src;make
+make[3]: Entering directory `/home/LTP/ltp-dev-20101027/testcases/DOTS/src'
+mkdir -p ../classes/dots/framework
+cd dots/framework;make
+make[4]: Entering directory
+`/home/LTP/ltp-dev-20101027/testcases/DOTS/src/dots/framework'
+javac -d ../../../classes -classpath ../../../classes DotsConfig.java
+make[4]: javac: Command not found
+make[4]: *** [all] Error 127
+make[4]: Leaving directory
+`/home/LTP/ltp-dev-20101027/testcases/DOTS/src/dots/framework'
+make[3]: *** [framework] Error 2
+make[3]: Leaving directory `/home/LTP/ltp-dev-20101027/testcases/DOTS/src'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/home/LTP/ltp-dev-20101027/testcases/DOTS'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/LTP/ltp-dev-20101027/testcases'
+make: *** [testcases-all] Error 2
+
+------------
+
+The new directory "DOTS" is going to be compiled, but "java" compiler 
+not installed.
+
+Perhaps, following revision caused this failure, I think:
+
+http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp.git;a=blobdiff;f=tes
+tcases/Makefile;h=f74de50bcd73321a950004027ca1e508ecc07c1b;hp=37c448f12a529e
+155abca2d3c4a820a8b10f60a3;hb=6278b69ea79287a1a0d89593b4902aaf2c8c0016;hpb=7
+e2cbbd9e762bee21a500ef7afdecec321f3f1cf
+
+------------
+-ifneq ($(UCLINUX),1)
+-FILTER_OUT_DIRS                += audit-test DOTS realtime
++ifeq ($(UCLINUX),1)
++FILTER_OUT_DIRS                += DOTS realtime
+------------
+
+I don't know right way, but...
+In the third line, isn't "+ifneq ($(UCLINUX),1)" right?
+Or is it a more right method to install JAVA?
+
 
 Regards--
-Subrata
 
-> 
-> > Anton
-> > --
-> > 
-> > Subject: [PATCH] powerpc: Fix hcall tracepoint recursion
-> > 
-> > Spinlocks on shared processor partitions use H_YIELD to notify the
-> > hypervisor we are waiting on another virtual CPU. Unfortunately this means
-> > the hcall tracepoints can recurse.
-> > 
-> > The patch below adds a percpu depth and checks it on both the entry and
-> > exit hcall tracepoints.
-> > 
-> > Signed-off-by: Anton Blanchard <anton@samba.org>
-> > ---
-> > 
-> > Index: powerpc.git/arch/powerpc/platforms/pseries/lpar.c
-> > ===================================================================
-> > --- powerpc.git.orig/arch/powerpc/platforms/pseries/lpar.c	2010-10-21 17:32:00.980003644 +1100
-> > +++ powerpc.git/arch/powerpc/platforms/pseries/lpar.c	2010-10-21 17:34:54.942681273 +1100
-> > @@ -701,6 +701,13 @@ EXPORT_SYMBOL(arch_free_page);
-> >  /* NB: reg/unreg are called while guarded with the tracepoints_mutex */
-> >  extern long hcall_tracepoint_refcount;
-> >  
-> > +/* 
-> > + * Since the tracing code might execute hcalls we need to guard against
-> > + * recursion. One example of this are spinlocks calling H_YIELD on
-> > + * shared processor partitions.
-> > + */
-> > +static DEFINE_PER_CPU(unsigned int, hcall_trace_depth);
-> > +
-> >  void hcall_tracepoint_regfunc(void)
-> >  {
-> >  	hcall_tracepoint_refcount++;
-> > @@ -713,12 +720,42 @@ void hcall_tracepoint_unregfunc(void)
-> >  
-> >  void __trace_hcall_entry(unsigned long opcode, unsigned long *args)
-> >  {
-> > +	unsigned long flags;
-> > +	unsigned int *depth;
-> > +
-> > +	local_irq_save(flags);
-> > +
-> > +	depth = &__get_cpu_var(hcall_trace_depth);
-> > +
-> > +	if (*depth)
-> > +		goto out;
-> > +
-> > +	(*depth)++;
-> >  	trace_hcall_entry(opcode, args);
-> > +	(*depth)--;
-> > +
-> > +out:
-> > +	local_irq_restore(flags);
-> >  }
-> >  
-> >  void __trace_hcall_exit(long opcode, unsigned long retval,
-> >  			unsigned long *retbuf)
-> >  {
-> > +	unsigned long flags;
-> > +	unsigned int *depth;
-> > +
-> > +	local_irq_save(flags);
-> > +
-> > +	depth = &__get_cpu_var(hcall_trace_depth);
-> > +
-> > +	if (*depth)
-> > +		goto out;
-> > +
-> > +	(*depth)++;
-> >  	trace_hcall_exit(opcode, retval, retbuf);
-> > +	(*depth)--;
-> > +
-> > +out:
-> > +	local_irq_restore(flags);
-> >  }
-> >  #endif
-> > 
-> > 
+-Tomonori Mitani
+
 
 
 ------------------------------------------------------------------------------
