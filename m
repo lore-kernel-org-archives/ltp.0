@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PB5Pq-0007zt-Lx
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:47:42 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PB5Po-0005G2-Eb
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:47:42 +0000
-Received: by wya21 with SMTP id 21so643310wya.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PBu2j-0006qq-9H
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 18:51:13 +0000
+Received: from mail-ey0-f175.google.com ([209.85.215.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PBu2g-0001pa-St
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 18:51:13 +0000
+Received: by eya28 with SMTP id 28so1963199eya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Oct 2010 05:47:34 -0700 (PDT)
+	Fri, 29 Oct 2010 11:51:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinKu3Kx0FMdgvvG34rc6tcv4Wt5qV1jaAnGzHnv@mail.gmail.com>
-References: <AANLkTinKu3Kx0FMdgvvG34rc6tcv4Wt5qV1jaAnGzHnv@mail.gmail.com>
-Date: Wed, 27 Oct 2010 05:47:34 -0700
-Message-ID: <AANLkTi=KU=BgHcGhQGLJKJzmgE9u3hKCL32Xz8mkDC2Q@mail.gmail.com>
+In-Reply-To: <D943D2E3-F6CB-46BF-98F5-96585390926E@sketchymonkey.com>
+References: <AANLkTimdQrrOveqUDGo8yY+a9O=uAQ3VtfKLehQ6Bmgi@mail.gmail.com>
+	<AANLkTi=haZnJtS-WiUr+=bLNuwywLinSdSm7Ok+=p8d5@mail.gmail.com>
+	<D943D2E3-F6CB-46BF-98F5-96585390926E@sketchymonkey.com>
+Date: Fri, 29 Oct 2010 11:51:04 -0700
+Message-ID: <AANLkTin4uxLebTz=jVFbHmxyeVAXpKhBZCAkF1LXLPVs@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Realtime tests on embedded target
+Subject: Re: [LTP] PASS or WARN?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,41 +33,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: David Peverley <pev@sketchymonkey.com>
-Cc: ltp-list@lists.sourceforge.net, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Oct 27, 2010 at 5:43 AM, David Peverley <pev@sketchymonkey.com> wrote:
-> Hi all,
+On Fri, Oct 29, 2010 at 10:58 AM, David Peverley <pev@sketchymonkey.com> wrote:
+> On 29 Oct 2010, at 18:04, Garrett Cooper wrote:
+>>> On my board, if I run an unsupported test (e.g. one where the kernel
+>>> has not been configured) I get the following :
+> ...
 >
-> I've managed to get to the point where I should be able to run the
-> realtime tests on my target but there are a few issues :
+>>> Connectors 0 CONF : system doesn't support execution of the test
+> ...
 >
-> 1) The run script "testscripts/test_realtime.sh" sources
-> "$LTPROOT/testcases/realtime/scripts/setenv.sh" - this isn't copied by
-> make install.
+>>> INFO: ltp-pan reported all tests PASS
+>>> LTP Version: LTP-20100831
+>> CONF -> expected failure due to lack of support -> ok to ignore if
+>> your system doesn't meet the preconditions :). tst_res(3) (yes,
+>> there's a manpage) describes this in more detail, as well as a few
+>> documents in LTP; they might be a bit stale though.
+> Hi Garett - not quite what I was wondering about! I understand the result of CONF which is expected. However this is reported by ltp-pan as a PASS at the end of the test as quoted above (as well as in the results/LTP_xxxxxxx log file). From my understanding and what bits of other peoples logs I could find via google this should also be logged as a CONF or a WARN?
 >
-> 2) After manually copying in, "setenv.sh" sets up paths to use test
-> definitions under "$LTPROOT/testcases/realtime/" - these aren't copied
-> by make install either.
->
-> 3 ) Generally we now have a bit of a pain as various scripts now try
-> to invoke "make" - I think this should really only be a build-time
-> thing and not part of the test run scritps? Is this actually necessary
-> as most embedded targets aren't likely to have local make/gcc! I've
-> commented them out for now for initial testing...
->
-> 4) After copying in the whole of "testcases/realtime" I run a
-> run_auto.sh script (sched_jitter/run_auto.sh) this fails as it's
-> looking for the executable in its working dir (I guess where the
-> scripts make pass would have put it). However, the previous build and
-> make install put all the executables in $LTPROOT/testcases/bin as
-> you'd expect.
->
-> I'd be happy to address & submit changes but these are significant
-> changes to make so it would make sense to check with stake-holders
-> first if anyone's aware or looking at this actively?
+> I also noticed some other tests that failed as some scripts that were depended on weren't present and these were being represented as a PASS in the results too...
 
-    Gowrishankar's the primary stakeholder in this area, but I'm the
-`Makefile consultant' for the project.
+    The only thing that is reported as "errors" at the top-level
+runltp scripts are TFAIL and TBROK. Everything else passes (because if
+you dig through lib/tst_res.c you'll soon discover that the exit code
+that's used in tst_exit is dependent on those inputs). This is by
+design.
+    If people abused the APIs, then the API calls need to be fixed.
 Thanks,
 -Garrett
 
