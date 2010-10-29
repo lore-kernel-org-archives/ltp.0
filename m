@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1P5lNs-0006Uy-2i
-	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 20:23:40 +0000
-Received: from mail-gy0-f175.google.com ([209.85.160.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5lNr-0000HI-14
-	for ltp-list@lists.sourceforge.net; Tue, 12 Oct 2010 20:23:40 +0000
-Received: by gya1 with SMTP id 1so815851gya.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PBsNI-0006IU-CJ
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 17:04:20 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PBsNG-0000Jp-3C
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 17:04:20 +0000
+Received: by wya21 with SMTP id 21so3298997wya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Oct 2010 13:23:33 -0700 (PDT)
+	Fri, 29 Oct 2010 10:04:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <000001cb66a9$bb3c52b0$31b4f810$@co.jp>
-References: <ActmqbqJnH8VAq0bTbe+8e3aEkHF9Q==>
-	<000001cb66a9$bb3c52b0$31b4f810$@co.jp>
-Date: Tue, 12 Oct 2010 13:23:33 -0700
-Message-ID: <AANLkTinpiv11=xQjFue=1-N_NdqDUPD_uQ1w=owBhWJ_@mail.gmail.com>
+In-Reply-To: <AANLkTimdQrrOveqUDGo8yY+a9O=uAQ3VtfKLehQ6Bmgi@mail.gmail.com>
+References: <AANLkTimdQrrOveqUDGo8yY+a9O=uAQ3VtfKLehQ6Bmgi@mail.gmail.com>
+Date: Fri, 29 Oct 2010 10:04:11 -0700
+Message-ID: <AANLkTi=haZnJtS-WiUr+=bLNuwywLinSdSm7Ok+=p8d5@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] POSIX "aio_return/2-1" failed.
+Subject: Re: [LTP] PASS or WARN?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,125 +27,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: David Peverley <pev@sketchymonkey.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Oct 7, 2010 at 10:29 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
+On Fri, Oct 29, 2010 at 9:17 AM, David Peverley <pev@sketchymonkey.com> wrote:
+> Hi all,
 >
+> On my board, if I run an unsupported test (e.g. one where the kernel
+> has not been configured) I get the following :
 >
-> "conformance/interfaces/aio_return/2-1" failed with following message:
-> ------------
-> conformance/interfaces/aio_return/2-1: execution: FAILED: Output:
-> aio_return/2-1.c Second call to aio_return() should return -1 : 111
-> ------------
->
-> Same problem occurs in "aio_return/3-2.c" and "aio_return/4-1".
->
-> Environment is as follows:
-> =A0- RHEL5.5 --- (x86, x86_64, ia64)
-> =A0- RHEL4.8 --- (x86, x86_64, ia64)
->
->
-> This testset seems to be the error root test for "aio_return()".
->
-> First "aio_return()" returned with 111. This return value is the length
-> of buffer of "aio_write()".
-> But second "aio_return()" returned with 111, too. It's unexpected
-> result for this test set.
-> Therefore, this test failed.
->
-> Man page says that
-> "This function should be called only once for any given request, =A0after
-> aio_error(2) returns something other than EINPROGRESS.":
-> ------------
-> # LANG=3DC man 3 aio_return
->
-> AIO_RETURN(3) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Linux Programmer's Manual
-> AIO_RETURN(3)
->
-> NAME
-> =A0 =A0 =A0 aio_return - get return status of asynchronous I/O operation
->
-> SYNOPSIS
-> =A0 =A0 =A0 #include <aio.h>
->
-> =A0 =A0 =A0 ssize_t aio_return(struct aiocb *aiocbp);
->
-> DESCRIPTION
-> =A0 =A0 =A0 The aio_return function returns the final return status for t=
-he
-> asynchronous I/O
-> =A0 =A0 =A0 request with control block pointed to by aiocbp.
->
-> =A0 =A0 =A0 This =A0function =A0should =A0be =A0called =A0only =A0once =
-=A0for =A0any =A0given
-> request, =A0after
-> =A0 =A0 =A0 aio_error(2) returns something other than EINPROGRESS.
->
-> RETURN VALUE
-> =A0 =A0 =A0 If the asynchronous I/O operation has completed, this function
-> returns the value
-> =A0 =A0 =A0 that would have been returned in case of a synchronous =A0rea=
-d, =A0write,
-> or =A0fsync
-> =A0 =A0 =A0 request. =A0Otherwise the return value is undefined. =A0On er=
-ror, the
-> error value is
-> =A0 =A0 =A0 returned.
->
-> ERRORS
-> =A0 =A0 =A0 EINVAL aiocbp does not point at a control block for an asynch=
-ronous
-> I/O =A0request
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0of which the return status has not been retrie=
-ved yet.
->
-> CONFORMING TO
-> =A0 =A0 =A0 POSIX 1003.1-2003
->
-> SEE ALSO
-> =A0 =A0 =A0 aio_cancel(3), =A0 =A0aio_error(3), =A0 aio_fsync(3), =A0 aio=
-_read(3),
-> aio_suspend(3),
-> =A0 =A0 =A0 aio_write(3)
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 2003-11-14
-> AIO_RETURN(3)
-> #
-> ------------
->
-> And, it says that
-> "If the asynchronous I/O operation has completed, this function returns
-> the value that would have been returned in case of a synchronous read,
-> write, or fsync request. =A0Otherwise the return value is undefined. =A0On
-> error, the error value is returned.".
->
->
-> It can be supposed that the return value of second "aio_return()" is
-> undefined.
-> Therefore, it is not mistake that return value of the second "aio_return(=
-)"
-> is one at success, I think.
-> And, I think that "UNTESTED" or "UNRESOLVED" may be is more appropriate
-> for this test.
+> Running tests.......
+> <<<test_start>>>
+> tag=Connectors stime=1288368730
+> cmdline="connector_test.sh"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
+> Connectors 0 CONF : system doesn't support execution of the test
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=1 termination_type=exited termination_id=0 corefile=no
+> cutime=3 cstime=3
+> <<<test_end>>>
+> INFO: ltp-pan reported all tests PASS
+> LTP Version: LTP-20100831
 
-    I'll respond to this sometime in the next couple of days after I
-do some more investigation on the issue.
-Thanks,
+CONF -> expected failure due to lack of support -> ok to ignore if
+your system doesn't meet the preconditions :). tst_res(3) (yes,
+there's a manpage) describes this in more detail, as well as a few
+documents in LTP; they might be a bit stale though.
+HTH,
 -Garrett
 
----------------------------------------------------------------------------=
----
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+------------------------------------------------------------------------------
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
