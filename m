@@ -1,29 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hakehuang@gmail.com>) id 1P5vJw-00016x-Mn
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:00:16 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5vJu-0006lK-IU
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 07:00:16 +0000
-Received: by ywl5 with SMTP id 5so2174406ywl.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Oct 2010 00:00:09 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PBesf-0002L0-SP
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 02:39:49 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PBesd-0002uR-TR
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 02:39:49 +0000
+Message-ID: <4CCA33F8.6020104@cn.fujitsu.com>
+Date: Fri, 29 Oct 2010 10:39:52 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1286952965.4893.6.camel@subratamodak.linux.ibm.com>
-References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-	<AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-	<AANLkTi=-CoyH2++-d45KaWq0ZzUsxaQUXN4g4q-vQYrb@mail.gmail.com>
-	<AANLkTin4N8BpJ5xXs8TAV+1xQNjTEO+KzO6h=ZJVjv08@mail.gmail.com>
-	<1286952767.4893.3.camel@subratamodak.linux.ibm.com>
-	<1286952965.4893.6.camel@subratamodak.linux.ibm.com>
-Date: Wed, 13 Oct 2010 15:00:08 +0800
-Message-ID: <AANLkTikgZ=32o_QmBk5FTfOQfVGUYpjxtCbvAqxQFbYk@mail.gmail.com>
-From: hake huang <hakehuang@gmail.com>
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Subject: [LTP] [PATCH] open_posix_testsuite: Don't use clock_settime() to
+ reset a CPU-time Clock
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,140 +23,135 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Subrata,
+This case is trying to set CPU-time clock(ID is returned by clock_getcpuclockid()) of
+a specific process by calling clock_settime(). But Linux kernel doesn't allow to reset
+a CPU-time clock of a specific process. Kernel returns -EPERM. So test fails.
 
-one question:
--K will only record all kernel message, but can not match each testcase, ri=
-ght?
+In "IEEE Std 1003.1, 2004 Edition", It's said as following:
+If _POSIX_CPUTIME is defined, implementations shall support clock ID values obtained by
+invoking clock_getcpuclockid(), which represent the CPU-time clock of a given process.
+Implementations shall also support the special clockid_t value CLOCK_PROCESS_CPUTIME_ID,
+which represents the CPU-time clock of the calling process when invoking one of the 
+clock_*() or timer_*() functions. For these clock IDs, the values returned by 
+clock_gettime() and specified by clock_settime() represent the amount of execution time
+of the process associated with the clock. Changing the value of a CPU-time clock via
+clock_settime() shall have no effect on the behavior of the sporadic server scheduling
+policy. 
 
-Regards,
+So the behaviour when changing the value of a CPU-time clock via clock_settime() is
+operating system specific. 
 
-Hake
+We may change the test progress to stop using clock_settime(). Now, We just make use
+of clock_gettime() instead to achieve the same test purpose.
 
-2010/10/13 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> On Wed, 2010-10-13 at 12:22 +0530, Subrata Modak wrote:
->> On Wed, 2010-10-13 at 13:30 +0800, hake huang wrote:
->> > 2010/10/13 Garrett Cooper <yanegomi@gmail.com>
->> > >
->> > > On Tue, Oct 12, 2010 at 9:38 PM, hake huang <hakehuang@gmail.com> wr=
-ote:
->> > > > Hi
->> > > >
->> > > > I see this simple solution is no quite fit. But the kernel dump me=
-ssage for
->> > > > each test case is necessary for analysing. I can work on this furt=
-her, with
->> > > > below help:
->> > > > 1. Where can I find the reason for the IIRC break?
->> > >
->> > > IIRC -> If I remember correctly.
->> > so I need ask Subrata about this problem, right? what is the existing
->> > functionality?
->>
->> I believe the functionality your original patch was proposing is already
->> in LTP . I guess they will solve your problem. See the following
->> commits:
->>
->> git show e3bc3758d3e4d17a0e04009ef873df53819b9ec6
->> git show bd9d440be1da8020c93ac92e497e3a16e66e9fa3
->>
->> Just use:
->>
->> ./runltp -K <DMESG_DIRECTORY_NAME>
->
-> Basically, its a choice given to users who would like to record the
-> kernel messages, and not forcing recording all kernel messages which
-> your original patch is proposing :-)
->
-> Regards--
-> Subrata
->
->>
->> option while running ltp.
->>
->> Regards--
->> Subrata
->>
->> > >
->> > > > 2. Can it =A0be an option to avoid the size limitation on some emb=
-edded
->> > > > system?
->> > >
->> > > No. This is outside the realm of LTP, but we must remain conscious of
->> > > the fact that there are folks running LTP on cellphones, etc, where
->> > > space is very much a luxury.
->> > I see. but why can't they run in quit_mode?
->> > >
->> > > > 3. =A0A kind of seperating tag is needed for kernel message, right=
-? e.g
->> > > > <kernel_dump_start>dump message<kernel_dump_end>
->> > >
->> > > I think that adding an optional capture feature might be worthwhile,
->> > > but you'll no doubt quickly find with some processes that the dmesg
->> > > buffer will fill up quickly.
->> > I have seen such events, and such cases need to be checked manually.
->> > >
->> > > > 4. =A0I see in ltp-pan.c the file descriptors, terminals are chang=
-ed in child
->> > > > process. if the system(3) has problem, the worst cases is there ar=
-e no
->> > > > kernel messge output in parent process, but the pan can still func=
-tion well.
->> > >
->> > > Can you say that with 100% certainty? One of the potential problems
->> > > with system is the fact that it allocates a shell and depending on h=
-ow
->> > > processes are executed and how file descriptors are cleaned up,
->> > >
->> > > Actually, pan makes zero attempts at closing open file descriptors a=
-nd
->> > > the like, so the problem is still very much with pan.
->> > >
->> > So your concerns is about file descriptors which open in ltp process,
->> > I think this is an existing problem. I mean maybe pan need to attempt
->> > to close open file descriptors. system(3) only increases the change of
->> > occurrence caused by this problem, right?
->> > > > if not use system(3), can you give your suggestion on this, exec(3=
-) seems to
->> > > > have the same problem as system(3)?
->> > >
->> > > Yes and no. In this case the problems that exist with open file
->> > > descriptor inheritance, etc are unfortunately no worse from that
->> > > perspective than your proposed code would do, but there are still
->> > > other problems that need to be resolved with your proposed change
->> > > anyhow that are much more pressing.
->> > >
->> > > -Garrett
->>
->>
->> ------------------------------------------------------------------------=
-------
->> Beautiful is writing same markup. Internet Explorer 9 supports
->> standards for HTML5, CSS3, SVG 1.1, =A0ECMAScript5, and DOM L2 & L3.
->> Spend less time writing and =A0rewriting code and more time creating gre=
-at
->> experiences on the web. Be a part of the beta today.
->> http://p.sf.net/sfu/beautyoftheweb
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
-
----------------------------------------------------------------------------=
+Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 ---
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
+ .../interfaces/clock_getcpuclockid/2-1.c           |   67 ++++++++++----------
+ 1 files changed, 33 insertions(+), 34 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
+index edeb397..52240df 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
+@@ -23,48 +23,47 @@ int main(int argc, char *argv[])
+         printf("_POSIX_CPUTIME unsupported\n");
+         return PTS_UNSUPPORTED;
+ #else
+-	unsigned long time_to_set;	
+ 	clockid_t clockid_1, clockid_2;
+ 	struct timespec tp1, tp2;
++	int i;
+ 
+ 	if (sysconf(_SC_CPUTIME) == -1) {
+ 		printf("_POSIX_CPUTIME unsupported\n");
+ 		return PTS_UNSUPPORTED;
+ 	}
+ 
+-	if (clock_getcpuclockid(getpid(), &clockid_1) != 0) {
+-		printf("clock_getcpuclockid(getpid(), ) failed\n");
+-		return PTS_FAIL;
+-	}
+-	
+-	if (clock_getcpuclockid(0, &clockid_2) != 0) {
+-		printf("clock_getcpuclockid(0, ) failed\n");
+-		return PTS_FAIL;
+-	}
++        for (i = 0; i < 10; i++) {
++                if (clock_getcpuclockid(getpid(), &clockid_1) != 0) {
++                        printf("clock_getcpuclockid(getpid(), ) failed\n");
++                        return PTS_FAIL;
++                }
+ 
+-	/* Set clockid_1 as a random value from 1 sec to 10 sec */
+-	srand((unsigned long)time(NULL));
+-	time_to_set = rand() * 10.0 / RAND_MAX + 1;
+-	tp1.tv_sec = time_to_set;
+-	tp1.tv_nsec = 0;	 
+-	if (clock_settime(clockid_1, &tp1) != 0) {
+-		printf("clock_getcpuclockid() returned an invalid clockid_t: "
+-			"%d\n", clockid_1);
+-		return PTS_FAIL;
+-	}
+-	/* Get the time of clockid_2, should almost the same as clockid_1 */
+-	if (clock_gettime(clockid_2, &tp2) != 0) {
+-		printf("clock_getcpuclockid() returned an invalid clockid_t: "
+-			"%d\n", clockid_2);
+-		return PTS_FAIL;
+-	}
+-	if (tp1.tv_sec == tp2.tv_sec)	
+-	{
+-		printf("Test PASSED\n");
+-		return PTS_PASS;
+-	}
+-	printf("Test FAILED\n");
+-	return PTS_FAIL;
+-	
++                if (clock_getcpuclockid(0, &clockid_2) != 0) {
++                        printf("clock_getcpuclockid(0, ) failed\n");
++                        return PTS_FAIL;
++                }
++
++                /* Get the time of clockid_1 */
++                if (clock_gettime(clockid_1, &tp1) != 0) {
++                        printf("clock_getcpuclockid() returned an invalid clockid_t: "
++                               "%d\n", clockid_1);
++                        return PTS_FAIL;
++                }
++
++                /* Get the time of clockid_2, should almost the same as clockid_1 */
++                if (clock_gettime(clockid_2, &tp2) != 0) {
++                        printf("clock_getcpuclockid() returned an invalid clockid_t: "
++                               "%d\n", clockid_2);
++                        return PTS_FAIL;
++                }
++
++                if (tp1.tv_sec != tp2.tv_sec) {
++                        printf("Test FAILED\n");
++                        return PTS_FAIL;
++                }
++        }
++
++        printf("Test PASSED\n");
++        return PTS_PASS;
+ #endif
+ }
+-- 
+1.7.0.4
+
+
+
+------------------------------------------------------------------------------
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
