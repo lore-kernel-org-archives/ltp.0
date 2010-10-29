@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PB4fo-00055A-Jk
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:00:08 +0000
-Date: Wed, 27 Oct 2010 14:10:05 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101027121005.GB4999@saboteur.suse.cz>
-References: <AANLkTimHeBQkYhnPpAiOJx2R8Y1xznHffWYhAtBR=iCF@mail.gmail.com>
-	<AANLkTi=zZud=H52Q5pE00gERVi6MfVF9QV7_C66W=CEP@mail.gmail.com>
-	<20101027114756.GA4999@saboteur.suse.cz>
-	<AANLkTinnQiYVwK5X9v2Ggg582yUaKS_iAE1JT5QnGi8v@mail.gmail.com>
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PBdWb-0005Ay-7k
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 01:12:57 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PBdWZ-0001YE-3w
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 01:12:57 +0000
+Message-ID: <4CCA1F3E.5000202@cn.fujitsu.com>
+Date: Fri, 29 Oct 2010 09:11:26 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTinnQiYVwK5X9v2Ggg582yUaKS_iAE1JT5QnGi8v@mail.gmail.com>
-Subject: Re: [LTP] Realtime tests on ARM
+Subject: [LTP] [POSIX][PATCH]A awaited IO request completion signal can case
+ lio_listio return EINTR.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,137 +23,123 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: gowrishankar.m@in.ibm.com, ltp-list@lists.sourceforge.net, David Peverley <pev@sketchymonkey.com>
+To: yanegomi@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> > The realtime tests aren't compiled for ARM currently as there's no
-> >> > implementation of atomic_add() in :
-> >> > =A0 testcases/realtime/include/librttest.h
-> >> >
-> >> > As a side note - in this function can we change the #error to not be
-> >> > blank and read something along the lines of =A0:
-> >> > =A0#error ERROR: atomic_add: Architecture not supported for compilat=
-ion
-> >> >
-> >> > Anyway, the existing function here supports three architectures and
-> >> > lifts the implementations as follows :
-> >> > =A0__x86_64__ || =A0__i386__
-> >> > =A0 =A0arch/x86/include/asm/atomic_32.h
-> >> > =A0__powerpc__
-> >> > =A0 =A0arch/powerpc/include/asm/atomic.h (might need review!)
-> >> > =A0__sh__
-> >> > =A0 =A0arch/sh/include/asm/atomic-llsc.h (might need review!)
-> >> >
-> >> > Logically we can add an ARM case following the same logic. Looking i=
-n :
-> >> > =A0 arch/arm/include/asm/atomic.h
-> >> >
-> >> > We can implement this easily for v6+ architectures. The case for
-> >> > atomic_add in librttest.h would look something like :
-> >> > =A0#elif defined(__arm__) && (__LINUX_ARM_ARCH__ >=3D 6)
-> >> > =A0 =A0 =A0 unsigned long tmp;
-> >> > =A0 =A0 =A0 int result;
-> >> >
-> >> > =A0 =A0 =A0 __asm__ __volatile__(
-> >> > =A0 "1: ldrex =A0 %0, [%2]\n"
-> >> > =A0 " =A0 add =A0 =A0 %0, %0, %3\n"
-> >> > =A0 " =A0 strex =A0 %1, %0, [%2]\n"
-> >> > =A0 " =A0 teq =A0 =A0 %1, #0\n"
-> >> > =A0 " =A0 bne =A0 =A0 1b"
-> >> > =A0 =A0 =A0 : "=3D&r" (result), "=3D&r" (tmp)
-> >> > =A0 =A0 =A0 : "r" (&v->counter), "Ir" (i)
-> >> > =A0 =A0 =A0 : "cc");
-> >> >
-> >> > =A0 =A0 =A0 return result;
-> >> >
-> >> > For < v6 architectures this isn't easy as they don't implement
-> >> > ldrex/strex. The atomic.h implementation won't work as it's a kernel
-> >> > only implementation using local_irq_save() and local_irq_restore() so
-> >> > obviously no use for userspace atomic add.
-> >> >
-> >> > After reading up for a while I've come across a very cunning trick in
-> >> > the kernel where an atomic compare/exchange is implemented in
-> >> > __kuser_cmpxchg. This is implemented in :
-> >> > =A0 arch/arm/kernel/entry-armv.S
-> >> >
-> >> > This tantalisingly comments :
-> >> > =A0 /*
-> >> > =A0 =A0* For example, a user space atomic_add implementation could l=
-ook like this:
-> >> > =A0 =A0*
-> >> > =A0 =A0* #define atomic_add(ptr, val) \
-> >> > =A0 =A0* =A0 =A0 =A0({ register unsigned int *__ptr asm("r2") =3D (p=
-tr); \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 register unsigned int __result asm("r1"); \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 asm volatile ( \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "1: @ atomic_add\n\t" \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "ldr =A0 =A0 r0, [r2]\n\t" \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "mov =A0 =A0 r3, #0xffff0fff\n\t" \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 lr, pc, #4\n\t" \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 r1, r0, %2\n\t" \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "add =A0 =A0 pc, r3, #(0xffff0fc0 -=
- 0xffff0fff)\n\t" \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 "bcc =A0 =A0 1b" \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "=3D&r" (__result) \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "r" (__ptr), "rIL" (val) \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 =A0 =A0 : "r0","r3","ip","lr","cc","memory"=
- ); \
-> >> > =A0 =A0* =A0 =A0 =A0 =A0 __result; })
-> >> > =A0 =A0*/
-> >> >
-> >> > So translating this into librttest.h format gives :
-> >> > =A0 #elif defined(__arm__) && (__LINUX_ARM_ARCH__ < 6)
-> >> > =A0 =A0 =A0 register unsigned int result asm("r1");
-> >> >
-> >> > =A0 =A0 =A0 /* See, arm/kernel/entry-armv.S:__kernel_cmpxchg() */
-> >> > =A0 =A0 =A0 __asm__ __volatile__ (
-> >> > =A0 "1: ldr =A0 =A0 r0, [r2]\n\t"
-> >> > =A0 " =A0 mov =A0 =A0 r3, #0xffff0fff\n\t"
-> >> > =A0 " =A0 add =A0 =A0 lr, pc, #4\n\t"
-> >> > =A0 " =A0 add =A0 =A0 r1, r0, %2\n\t"
-> >> > =A0 " =A0 add =A0 =A0 pc, r3, #(0xffff0fc0 - 0xffff0fff)\n\t"
-> >> > =A0 " =A0 bcc =A0 =A0 1b"
-> >> > =A0 =A0 =A0 : "=3D&r" (result)
-> >> > =A0 =A0 =A0 : "r" (&v->counter), "rIL" (i)
-> >> > =A0 =A0 =A0 : "r0","r3","ip","lr","cc","memory" );
-> >> >
-> >> > =A0 =A0 =A0 return result;
-> >> >
-> >> > Does this look reasonable to you guys?
-> >>
-> >> =A0 =A0 CCing Gowrishankar from IBM.
-> >
-> > We recently agreed to use gcc buildins as the inline assembler was
-> > broken anyway. But it seems that this patch hasn't made it into git.
-> >
-> > Garret could you please commit patch from Gowrishankar from thread
-> > "[PATCH] fix realtime atomic_add() inline asm". It basically removes al=
-l the
-> > inline assembler in favor of __sync_add_and_fetch().
-> =
+Open posix documents point lio_listio may return EINTR caused by a awaited I/O requst
+completion signal. 
 
-> Hmmm... did we reach closure on that issue? I thought it was still
-> outstanding...
+[EINTR]
+    A signal was delivered while waiting for all I/O requests to complete during an
+    LIO_WAIT operation. Note that, since each I/O operation invoked by lio_listio()
+    may possibly provoke a signal when it completes, this error return may be caused
+    by the completion of one (or more) of the very I/O operations being awaited.
+    Outstanding I/O requests are not canceled, and the application shall examine each
+    list element to determine whether the request was initiated, canceled, or completed.
 
-Well it seems, at least to me, that everybody agreed for that change. I
-personally checked that this change works for me and gave my ack.
+So it's unnecessary to setup handler for IO operation completion, we just need check
+the aio_error and aio_return for each request, it has same effect on checking
+received_selected.
 
--- =
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-Cyril Hrubis
-chrubis@suse.cz
-
----------------------------------------------------------------------------=
 ---
+ .../conformance/interfaces/lio_listio/1-1.c        |   35 ++------------------
+ 1 files changed, 3 insertions(+), 32 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c
+index f19fcd3..5e4d16a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/1-1.c
+@@ -38,18 +38,11 @@
+ #define NUM_AIOCBS	10
+ #define BUF_SIZE	1024*1024
+ 
+-int received_selected	= 0;
+ int received_all	= 0;
+ 
+ void
+ sigrt1_handler(int signum, siginfo_t *info, void *context)
+ {
+-	received_selected = info->si_value.sival_int;
+-}
+-
+-void
+-sigrt2_handler(int signum, siginfo_t *info, void *context)
+-{
+ 	received_all = 1;
+ }
+ 
+@@ -105,30 +98,19 @@ int main()
+ 		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
+ 		aiocbs[i]->aio_nbytes = BUF_SIZE;
+ 		aiocbs[i]->aio_lio_opcode = LIO_WRITE;
+-
+-		/* Use SIRTMIN+1 for individual completions */
+-		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+-		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
+-		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
+ 	}
+ 
+-	/* Use SIGRTMIN+2 for list completion */
++	/* Use SIGRTMIN+1 for list completion */
+ 	event.sigev_notify = SIGEV_SIGNAL;
+-	event.sigev_signo = SIGRTMIN+2;
++	event.sigev_signo = SIGRTMIN+1;
+ 	event.sigev_value.sival_ptr = NULL;
+ 
+-	/* Setup handler for individual operation completion */
++	/* Setup handler for list completion */
+ 	action.sa_sigaction = sigrt1_handler;
+ 	sigemptyset(&action.sa_mask);
+ 	action.sa_flags = SA_SIGINFO|SA_RESTART;
+ 	sigaction(SIGRTMIN+1, &action, NULL);
+ 
+-	/* Setup handler for list completion */
+-	action.sa_sigaction = sigrt2_handler;
+-	sigemptyset(&action.sa_mask);
+-	action.sa_flags = SA_SIGINFO|SA_RESTART;
+-	sigaction(SIGRTMIN+2, &action, NULL);
+-
+ 	/* Submit request list */
+ 	ret = lio_listio(LIO_WAIT, aiocbs, NUM_AIOCBS, &event);
+ 
+@@ -142,17 +124,6 @@ int main()
+ 		exit (PTS_FAIL);
+ 	}
+ 
+-	if (received_selected != NUM_AIOCBS-1)
+-	{
+-		printf(TNAME " lio_listio() did not wait\n");
+-		for (i=0; i<NUM_AIOCBS; i++)
+-			free (aiocbs[i]);
+-		free (bufs);
+-		free (aiocbs);
+-		close (fd);
+-		exit (PTS_FAIL);
+-	}
+-
+ 	if (received_all != 0)
+ 	{
+ 		printf(TNAME " lio_listio() did not ignore the sig argument\n");
+-- 
+1.7.0.4
+
+
+
+-- 
+Regards
+Bian Naimeng
+
+
+------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
 Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
 $10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
-
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
 http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
