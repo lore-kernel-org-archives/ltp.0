@@ -1,21 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <pev@sketchymonkey.com>) id 1PB5Li-0007rk-Eu
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:43:26 +0000
-Received: from mail-gw0-f47.google.com ([74.125.83.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PB5Le-0000Wh-8F
-	for ltp-list@lists.sourceforge.net; Wed, 27 Oct 2010 12:43:24 +0000
-Received: by gwaa11 with SMTP id a11so345113gwa.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1PBh44-00011i-S1
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 04:59:44 +0000
+Received: from out18.sjc.mx.trendmicro.com ([216.99.131.75])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PBh43-0007Sm-CV
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 04:59:44 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.6])
+	by out18.sjc.mx.trendmicro.com (Postfix) with ESMTP id 594E598043E
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Oct 2010 05:43:17 -0700 (PDT)
+	Fri, 29 Oct 2010 04:59:37 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id E931D95852
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 29 Oct 2010 04:59:36 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Oct 2010 13:59:35 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 29 Oct 2010 13:59:33 +0900
+Message-ID: <000001cb7726$14164ee0$3c42eca0$@co.jp>
 MIME-Version: 1.0
-Date: Wed, 27 Oct 2010 13:43:16 +0100
-Message-ID: <AANLkTinKu3Kx0FMdgvvG34rc6tcv4Wt5qV1jaAnGzHnv@mail.gmail.com>
-From: David Peverley <pev@sketchymonkey.com>
-Subject: [LTP] Realtime tests on embedded target
+Content-Language: ja
+Subject: [LTP] About configuration failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,39 +40,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi all,
+Hi,
 
-I've managed to get to the point where I should be able to run the
-realtime tests on my target but there are a few issues :
+With recent git "ltp-43b57db.tar.gz", configuration failed:
+------------
+[...]
+checking for gcj... no
+checking for guavac... no
+checking for jikes... no
+checking for javac... no
+configure: error: no acceptable Java compiler found in $PATH
+------------
 
-1) The run script "testscripts/test_realtime.sh" sources
-"$LTPROOT/testcases/realtime/scripts/setenv.sh" - this isn't copied by
-make install.
+Java compiler isn't installed in my systems.
 
-2) After manually copying in, "setenv.sh" sets up paths to use test
-definitions under "$LTPROOT/testcases/realtime/" - these aren't copied
-by make install either.
 
-3 ) Generally we now have a bit of a pain as various scripts now try
-to invoke "make" - I think this should really only be a build-time
-thing and not part of the test run scritps? Is this actually necessary
-as most embedded targets aren't likely to have local make/gcc! I've
-commented them out for now for initial testing...
+From yesterday, Java compiler has been necessary.
+The Java compiler is necessary for a compilation of "DOTS", I think.
 
-4) After copying in the whole of "testcases/realtime" I run a
-run_auto.sh script (sched_jitter/run_auto.sh) this fails as it's
-looking for the executable in its working dir (I guess where the
-scripts make pass would have put it). However, the previous build and
-make install put all the executables in $LTPROOT/testcases/bin as
-you'd expect.
+In the recent revision of "testcases/Makefile", if java compiler 
+isn't found, "DOTS" will be worn a filter:
+------------
+--- a/testcases/Makefile
++++ b/testcases/Makefile
+@@ -38,7 +38,12 @@ FILTER_OUT_DIRS              := ballista kdump mce-test
+open% pounder21
+ # XXX (garrcoop): kdump was in this list.
+ # XXX (garrcoop): open_hpi_testsuite was in this list.
+ ifeq ($(UCLINUX),1)
+-FILTER_OUT_DIRS                += DOTS realtime
++FILTER_OUT_DIRS                += realtime+endif
++
++# DOTS requires javac
++ifeq ($(strip $(JAVAC)),)
++FILTER_OUT_DIRS                += DOTS
+ endif
+------------
 
-I'd be happy to address & submit changes but these are significant
-changes to make so it would make sense to check with stake-holders
-first if anyone's aware or looking at this actively?
+But, the configuration fails by the lack of the Java compiler earlier 
+than the making.
 
-Cheers,
 
-~Pev
+
+Regards--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
 Nokia and AT&T present the 2010 Calling All Innovators-North America contest
