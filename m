@@ -1,30 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge.hallyn@canonical.com>) id 1P2kQR-00025w-4z
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 12:45:51 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P2kQQ-0000GX-7O
-	for ltp-list@lists.sourceforge.net; Mon, 04 Oct 2010 12:45:51 +0000
-Date: Mon, 4 Oct 2010 07:45:51 -0500
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20101004124551.GA19814@hallyn.com>
-References: <20100927142304.GA23119@hallyn.com>
-	<4CA0AEB7.7080701@linux.vnet.ibm.com>
-	<20100927180239.GA15486@hallyn.com>
-	<4CA1ADB0.7070908@linux.vnet.ibm.com>
-	<20100928213611.GA1046@hallyn.com>
-	<4CA31140.4000805@linux.vnet.ibm.com>
-	<20100929141051.GB4620@hallyn.com>
-	<OFA3C42AE5.7F12F4DF-ON652577AD.004DA114-652577AD.004DCA76@in.ibm.com>
-	<AANLkTi=woCpWexWHWTcojN7U_UQZEszEvVXEaPDiDpLQ@mail.gmail.com>
-	<AANLkTinjEdCxD5E0BfniymiHHLmF4S_ocsawTdHpfr_2@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTinjEdCxD5E0BfniymiHHLmF4S_ocsawTdHpfr_2@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Compilation Error Fixed in filecaps.
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <pev@sketchymonkey.com>) id 1PBtf1-0005Os-UA
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 18:26:43 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PBtf1-0004Wu-16
+	for ltp-list@lists.sourceforge.net; Fri, 29 Oct 2010 18:26:43 +0000
+Received: by wwb31 with SMTP id 31so3407436wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 29 Oct 2010 11:26:37 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1081)
+From: David Peverley <pev@sketchymonkey.com>
+In-Reply-To: <AANLkTi=haZnJtS-WiUr+=bLNuwywLinSdSm7Ok+=p8d5@mail.gmail.com>
+Date: Fri, 29 Oct 2010 18:58:01 +0100
+Message-Id: <D943D2E3-F6CB-46BF-98F5-96585390926E@sketchymonkey.com>
+References: <AANLkTimdQrrOveqUDGo8yY+a9O=uAQ3VtfKLehQ6Bmgi@mail.gmail.com>
+	<AANLkTi=haZnJtS-WiUr+=bLNuwywLinSdSm7Ok+=p8d5@mail.gmail.com>
+Subject: Re: [LTP] PASS or WARN?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,21 +32,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Subrata Modak1 <subrata.modak@in.ibm.com>, sravan <sravan@linux.vnet.ibm.com>, ltp-list@lists.sf.net
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
->     So I'm not sure what Serge was looking at...
+On 29 Oct 2010, at 18:04, Garrett Cooper wrote:
+>> On my board, if I run an unsupported test (e.g. one where the kernel
+>> has not been configured) I get the following :
+...
 
-Not me.
+>> Connectors 0 CONF : system doesn't support execution of the test
+...
 
--serge
+>> INFO: ltp-pan reported all tests PASS
+>> LTP Version: LTP-20100831
+> CONF -> expected failure due to lack of support -> ok to ignore if
+> your system doesn't meet the preconditions :). tst_res(3) (yes,
+> there's a manpage) describes this in more detail, as well as a few
+> documents in LTP; they might be a bit stale though.
+Hi Garett - not quite what I was wondering about! I understand the result of CONF which is expected. However this is reported by ltp-pan as a PASS at the end of the test as quoted above (as well as in the results/LTP_xxxxxxx log file). From my understanding and what bits of other peoples logs I could find via google this should also be logged as a CONF or a WARN? 
+
+I also noticed some other tests that failed as some scripts that were depended on weren't present and these were being represented as a PASS in the results too... 
+
+~Pev
+
 
 ------------------------------------------------------------------------------
-Virtualization is moving to the mainstream and overtaking non-virtualized
-environment for deploying applications. Does it make network security 
-easier or more difficult to achieve? Read this whitepaper to separate the 
-two and get a better understanding.
-http://p.sf.net/sfu/hp-phase2-d2d
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
