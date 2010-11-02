@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PLXWg-0002VW-Cj
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 08:49:58 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PD6F1-0007ah-MY
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:04:51 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PLXWe-0007W8-0q
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 08:49:58 +0000
-Message-ID: <4CEE2299.1080605@cn.fujitsu.com>
-Date: Thu, 25 Nov 2010 16:47:21 +0800
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PD6F0-000343-9s
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:04:51 +0000
+Message-ID: <4CCF7166.1050105@cn.fujitsu.com>
+Date: Tue, 02 Nov 2010 10:03:18 +0800
 From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [RFC][POSIX][PATCH]Get rid of the test of
-	pthread_mutex_getprioceiling
+References: <4CCF6B53.5050109@cn.fujitsu.com>
+	<AANLkTimZFKMZ3YYjr7k3gkjagZUXwwWyjw5YjTfVLURO@mail.gmail.com>
+In-Reply-To: <AANLkTimZFKMZ3YYjr7k3gkjagZUXwwWyjw5YjTfVLURO@mail.gmail.com>
+Subject: Re: [LTP] [POSIX][PATCH]Cleanup the test shm_open/2-1 to make a
+ good format
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,124 +32,35 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+>> ---
+>>  .../conformance/interfaces/shm_open/2-1.c          |    4 +++-
+>>  1 files changed, 3 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
+>> index f4bab48..b0adce6 100644
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
+>> @@ -17,7 +17,9 @@
+>>
+>>  int main()
+>>  {
+>> -        printf("Will not test that the shm_open() function create an open file description\nthat refers to the shared memory object and a file descriptor that refers to\nthat open file description.");
+>> +        printf("Will not test that the shm_open() function create an open file"
+>> +              "description that refers to the shared memory object and a file"
+>> +              "descriptor that refers to that open file description.\n");
+>>         return PTS_UNTESTED;
+>>  }
+> 
+>     Actually, that will look a lot worse because you just removed some
+> spaces in areas. description should be descriptor, etc.
 
-  The 1-1 and 3-3 do the same test, but they expect different result.
-I do not know why?
+  Yes, it's my mistake. Thank you for pointing out it. ^_^
 
-However, i think we should get rid of 3-3. Because it looks like not a POSIX
-compliant case.
-
----------------------------------------------------------------
-
-Get rid of the test pthread_mutex_getprioceiling 3-3.
-
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-
----
- .../interfaces/pthread_mutex_getprioceiling/3-3.c  |   88 --------------------
- 1 files changed, 0 insertions(+), 88 deletions(-)
- delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
-deleted file mode 100644
-index 4aa6b1c..0000000
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
-+++ /dev/null
-@@ -1,88 +0,0 @@
--/*   
-- * Copyright (c) 2010, Garrett Cooper.
-- *
-- * Test that pthread_mutex_getprioceiling() fails because:
-- *
-- * [EINVAL]
-- *     The protocol attribute of mutex is PTHREAD_PRIO_NONE.
-- *
-- * by explicitly specifying the protocol as PTHREAD_PRIO_NONE.
-- *
-- * Steps:
-- * 1.  Initialize a pthread_mutexattr_t object with pthread_mutexattr_init()
-- * 2.  Explicitly set the protocol using PTHREAD_PRIO_NONE.
-- * 3.  Call pthread_mutex_getprioceiling() to obtain the prioceiling.
-- * 
-- */
--
--#include <pthread.h>
--#include <errno.h>
--#include <pwd.h>
--#include <sched.h>
--#include <stdio.h>
--#include <string.h>
--#include <unistd.h>
--#include "posixtest.h"
--
--int
--main(void)
--{
--#if defined(_SC_PRIORITY_SCHEDULING)
--
--	if (sysconf(_SC_PRIORITY_SCHEDULING) == -1) {
--		printf("PRIORITY_SCHEDULING not supported\n");
--		return PTS_UNSUPPORTED;
--	}
--
--	pthread_mutexattr_t mutex_attr;
--	pthread_mutex_t mutex;
--	int error, prioceiling;
--
--	error = pthread_mutexattr_init(&mutex_attr);
--	if (error) {
--		printf("pthread_mutexattr_init failed: %s\n", strerror(error));
--		return PTS_UNRESOLVED;
--	}
--
--	/* 
--	 * The default protocol is PTHREAD_PRIO_NONE according to
--	 * pthread_mutexattr_getprotocol.
--	 */
--	error = pthread_mutexattr_setprotocol(&mutex_attr,
--		PTHREAD_PRIO_INHERIT);
--	if (error) {
--		printf("pthread_mutexattr_setprotocol failed: %s\n",
--			strerror(error));
--		return PTS_UNRESOLVED;
--	}
--
--	/* Initialize a mutex object */
--	error = pthread_mutex_init(&mutex, &mutex_attr);
--	if (error) {
--		printf("pthread_mutex_init failed: %s\n", strerror(error));
--		return PTS_UNRESOLVED;
--	}
--
--	/* Get the prioceiling of the mutex. */
--	error = pthread_mutex_getprioceiling(&mutex, &prioceiling);
--	if (error) {
--		if (error == EINVAL) {
--			printf("pthread_mutex_getprioceiling failed as "
--				"expected\n");
--		} else {
--			printf("pthread_mutex_getprioceiling did not fail as "
--				"expected: %s\n", strerror(error));
--		}
--	} else
--		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
--
--	(void) pthread_mutexattr_destroy(&mutex_attr);
--	(void) pthread_mutex_destroy(&mutex);
--
--	return (error == EINVAL ? PTS_PASS : PTS_UNRESOLVED);
--#else
--	printf("pthread_mutex_getprioceiling not supported");
--	return PTS_UNSUPPORTED;
--#endif
--
--}
--- 
-1.7.0.4
-
-
-
+> Thanks,
+> -Garrett
+> 
+> 
+> 
 
 -- 
 Regards
@@ -154,11 +68,11 @@ Bian Naimeng
 
 
 ------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
