@@ -2,21 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PHpcx-0004uO-Tr
-	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 03:21:07 +0000
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PDBZh-00033C-R5
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 07:46:33 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PHpct-0006yG-Ii
-	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 03:21:07 +0000
-Message-ID: <4CE0A713.5010401@cn.fujitsu.com>
-Date: Mon, 15 Nov 2010 11:20:51 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+	id 1PDBZd-00089Z-QK
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 07:46:33 +0000
+Message-ID: <4CCFC177.8070102@cn.fujitsu.com>
+Date: Tue, 02 Nov 2010 15:44:55 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4CCA33F8.6020104@cn.fujitsu.com>	<4CD777DE.7040302@cn.fujitsu.com>	<AANLkTikkEAuO5jPXExneKC7OHbOViTErs_Fu_XasYma4@mail.gmail.com>
-	<4CD796BD.6050303@cn.fujitsu.com>
-In-Reply-To: <4CD796BD.6050303@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] open_posix_testsuite: Don't use clock_settime()
- to reset a CPU-time Clock
+Subject: [LTP] [POSIX][PATCH] Remove POSIX non-compliant API
+	pthread_getattr_np
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,93 +29,75 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Gui Jianfeng wrote:
-> Garrett Cooper wrote:
->> On Sun, Nov 7, 2010 at 8:09 PM, Gui Jianfeng <guijianfeng@cn.fujitsu.com> wrote:
->>> Gui Jianfeng wrote:
->>>> This case is trying to set CPU-time clock(ID is returned by clock_getcpuclockid()) of
->>>> a specific process by calling clock_settime(). But Linux kernel doesn't allow to reset
->>>> a CPU-time clock of a specific process. Kernel returns -EPERM. So test fails.
->>>>
->>>> In "IEEE Std 1003.1, 2004 Edition", It's said as following:
->>>> If _POSIX_CPUTIME is defined, implementations shall support clock ID values obtained by
->>>> invoking clock_getcpuclockid(), which represent the CPU-time clock of a given process.
->>>> Implementations shall also support the special clockid_t value CLOCK_PROCESS_CPUTIME_ID,
->>>> which represents the CPU-time clock of the calling process when invoking one of the
->>>> clock_*() or timer_*() functions. For these clock IDs, the values returned by
->>>> clock_gettime() and specified by clock_settime() represent the amount of execution time
->>>> of the process associated with the clock. Changing the value of a CPU-time clock via
->>>> clock_settime() shall have no effect on the behavior of the sporadic server scheduling
->>>> policy.
->>>>
->>>> So the behaviour when changing the value of a CPU-time clock via clock_settime() is
->>>> operating system specific.
->>>>
->>>> We may change the test progress to stop using clock_settime(). Now, We just make use
->>>> of clock_gettime() instead to achieve the same test purpose.
->>>>
->>>> Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
->>> Hi Garrett,
->>>
->>> How do you think this fix?
->> The tort is the same in POSIX 2008.1. Taking out the chaff...
->>
->> a. If _POSIX_CPUTIME is defined, implementations shall support clock
->> ID values obtained by invoking clock_getcpuclockid(), which represent
->> the CPU-time clock of a given process.
->> b. Implementations shall also support the special clockid_t value
->> CLOCK_PROCESS_CPUTIME_ID, which represents the CPU-time clock of the
->> calling process when invoking one of the clock_*() or timer_*()
->> functions.
->> c. For these clock IDs, the values returned by clock_gettime() and
->> specified by clock_settime() represent the amount of execution time of
->> the process associated with the clock.
->>
->> Nowhere does it say that you can't set that clock. Try running the
->> test as root to see what you can do... if the test fails (even as
->> root), then Linux needs to be fixed to conform to POSIX.
-> 
-> POSIX also says that:
->   Changing the value of a CPU-time clock via clock_settime() shall have no effect 
->   on the behavior of the sporadic server scheduling policy.
-> 
-> IMHO, this means clock_settime() implementation is OS specific, is it?
-> So, even if Linux fails to set this clock, it's just fine. Am i missing something?
+The pthread_getattr_np is not a POSIX compliant API, it's unnecessary to test it.
 
-Hi Garrett,
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-If you don't object, would you apply this patch?
+---
+ .../interfaces/pthread_attr_setstacksize/2-1.c     |   17 ++++-------------
+ 1 files changed, 4 insertions(+), 13 deletions(-)
 
-Gui
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/2-1.c
+index 668fd96..c91c946 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/2-1.c
+@@ -14,7 +14,6 @@
+  * 4.  In the created thread, read stacksize
+  */
+ 
+-/* For pthread_getattr_np(3) -- not a POSIX compliant API */
+ #ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
+ #endif
+@@ -35,21 +34,13 @@
+ size_t stack_size;
+ void *stack_addr;
+ 
+-void *thread_func()
++void *thread_func(void *arg)
+ {
+-	pthread_attr_t attr;
++	pthread_attr_t *pattr = (pthread_attr_t *)arg;
+ 	size_t ssize;
+ 	int rc;
+ 
+-	if ((rc = pthread_getattr_np(pthread_self(), &attr)) != 0) {
+-		printf(ERROR_PREFIX "pthread_getattr_np: %s\n", strerror(rc));
+-		exit(PTS_FAIL);
+-	}
+-	if ((rc = pthread_attr_init(&attr)) != 0) {
+-		printf(ERROR_PREFIX "pthread_attr_init: %s\n", strerror(rc));
+-		exit(PTS_FAIL);
+-	}
+-	if ((rc = pthread_attr_getstacksize(&attr, &ssize)) != 0) {
++	if ((rc = pthread_attr_getstacksize(pattr, &ssize)) != 0) {
+ 		printf(ERROR_PREFIX "pthread_attr_getstacksize: %s\n",
+ 			strerror(rc));
+ 		exit(PTS_FAIL);
+@@ -106,7 +97,7 @@ int main()
+                 exit(PTS_UNRESOLVED);
+         }
+ 
+-	rc = pthread_create(&new_th, &attr, thread_func, NULL);
++	rc = pthread_create(&new_th, &attr, thread_func, &attr);
+ 	if (rc != 0) {
+                 printf(ERROR_PREFIX "pthread_create: %s\n", strerror(rc));
+                 exit(PTS_FAIL);
+-- 
+1.7.0.4
 
-> 
-> Gui
-> 
->> Also, try running the other tests I just added to see whether or not
->> the function call fails per POSIX's requirements.
->>
->> Thanks!
->> -Garrett
->>
-> 
-> ------------------------------------------------------------------------------
-> The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-> David G. Thomson, author of the best-selling book "Blueprint to a 
-> Billion" shares his insights and actions to help propel your 
-> business during the next growth cycle. Listen Now!
-> http://p.sf.net/sfu/SAP-dev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+
+-- 
+Regards
+Bian Naimeng
+
 
 ------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
