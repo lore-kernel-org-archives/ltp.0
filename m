@@ -1,27 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PFZFf-00029N-Nc
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:27:43 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PFZFe-00018m-DZ
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:27:43 +0000
-Received: by wye20 with SMTP id 20so242839wye.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 08 Nov 2010 13:27:36 -0800 (PST)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PD5pz-0006Fj-Nw
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 01:38:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PD5pv-0005Pi-Ly
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 01:38:59 +0000
+Message-ID: <4CCF6B53.5050109@cn.fujitsu.com>
+Date: Tue, 02 Nov 2010 09:37:23 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <000001cb7ce8$d8c95080$8a5bf180$@co.jp>
-References: <000001cb74af$8658b390$930a1ab0$@co.jp>
-	<AANLkTimQc+8+ytEWT3zXVE1dCf-SKZp-hrt7RRkXUDX4@mail.gmail.com>
-	<000b01cb764a$12ae2050$380a60f0$@co.jp>
-	<AANLkTikYjD9UT5Tw7rkY9QJcN1kgKwu21wv6+6CORfVK@mail.gmail.com>
-	<000001cb7ce8$d8c95080$8a5bf180$@co.jp>
-Date: Mon, 8 Nov 2010 13:27:35 -0800
-Message-ID: <AANLkTin1JCcuvaX+6M4LxBJea14DWYoU4Tyq++N7gEr+@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
+Subject: [LTP] [POSIX][PATCH]Cleanup the test shm_open/2-1 to make a good
+	format
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,96 +23,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: yanegomi@gmail.com
 Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Nov 5, 2010 at 5:56 AM, Mitani <mitani@ryobi.co.jp> wrote:
->> -----Original Message-----
->> From: Garrett Cooper [mailto:yanegomi@gmail.com]
->> Sent: Tuesday, November 02, 2010 3:43 PM
->> To: Mitani
->> Cc: ltp-list@lists.sourceforge.net
->> Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
->>
->> On Wed, Oct 27, 2010 at 7:44 PM, Mitani <mitani@ryobi.co.jp> wrote:
->> >> -----Original Message-----
->> >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
->> >> Sent: Tuesday, October 26, 2010 3:57 PM
->> >> To: Mitani
->> >> Cc: ltp-list@lists.sourceforge.net
->> >> Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
->> >>
->> >> On Mon, Oct 25, 2010 at 6:45 PM, Mitani <mitani@ryobi.co.jp> wrote:
->> >> > Hi,
->> >> >
->> >> > I reported that build failure of POSIX test set
->> >> "conformance/interfaces/
->> >> > sched_yield/1-1" was still left in RHEL4.8 system:
->> >> >
->> >> >
->> >>
->> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg1071
->> >> 3.html
->> >> >
->> >> > In addition, build of the following tests failed by the reason
->> of
->> >> > "undefined reference":
->> >>
->> >> =A0 =A0 Some versions of gcc didn't function properly with -lpthread;
->> try
->> >> -pthread instead at the top-level LDLIBS file and see whether or
->> not
->> >> it works for you.
->> >> HTH,
->> >> -Garrett
->> >
->> > Hi,
->> >
->> > I tried to use "-pthread" instead of "-lpthread".
->> > But "sched_yield/1-1" failed in my all archtectures (RHEL4.8-x86,
->> x86_64,
->> > ia64).
->> > Other 27 tests, too.
->>
->> What does `man pthread_barrierattr_getpshared' say?
+Although it's not important, but it makes a noise in the log.
 
-...
+----------------------------------------------------------------
+Cleanup the test shm_open/2-1 to make a good format.
 
-> "man pthread_barrierattr_getpshared" in my system "RHEL4.8-x86_64".
->
-> ------------
-> [root@RHEL48-LTP-EM64T make]# man pthread_barrierattr_getpshared
-> PTHREAD_BARRIERATTR_GETPSHARED(P)
-> PTHREAD_BARRIERATTR_GETPSHARED(P)
->
-> NAME
-> =A0 =A0 =A0 pthread_barrierattr_getpshared, pthread_barrierattr_setpshare=
-d - get
-> and set the
-> =A0 =A0 =A0 process-shared attribute of the barrier =A0attributes =A0obje=
-ct
-> (ADVANCED =A0REALTIME
-> =A0 =A0 =A0 THREADS)
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-RHEL sucks for compiling stuff (I remember because it used to be a
-reference platform when I was doing the Makefile work). Try swapping
-around -lrt and -lpthread in the LDLIBS file and see whether or not
-things work. If not, then I'd talk to Redhat and figure out what it
-doesn't work.
--Garrett
-
----------------------------------------------------------------------------=
 ---
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a =
+ .../conformance/interfaces/shm_open/2-1.c          |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-Billion" shares his insights and actions to help propel your =
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
+index f4bab48..b0adce6 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
+@@ -17,7 +17,9 @@
+ 
+ int main()
+ {
+-        printf("Will not test that the shm_open() function create an open file description\nthat refers to the shared memory object and a file descriptor that refers to\nthat open file description.");
++        printf("Will not test that the shm_open() function create an open file"
++	       "description that refers to the shared memory object and a file"
++	       "descriptor that refers to that open file description.\n");
+         return PTS_UNTESTED;
+ }
+ 
+-- 
+1.7.0.4
 
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
+
+
+-- 
+Regards
+Bian Naimeng
+
+
+------------------------------------------------------------------------------
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
