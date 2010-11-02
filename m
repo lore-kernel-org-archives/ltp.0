@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <joyarjit@gmail.com>) id 1PFfVQ-0002ly-2K
-	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 04:08:24 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PFfVP-0001X5-01
-	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 04:08:24 +0000
-Received: by wye20 with SMTP id 20so616494wye.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 08 Nov 2010 20:08:17 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PDCrQ-00027n-OW
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 09:08:56 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PDCrO-0008CZ-Qw
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 09:08:56 +0000
+Message-ID: <4CCFD4C8.8060007@cn.fujitsu.com>
+Date: Tue, 02 Nov 2010 17:07:20 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Tue, 9 Nov 2010 09:38:17 +0530
-Message-ID: <AANLkTin8=LUDM5aE4Di8MLf-ELLfu6hyGbZJ+a2Vnw5N@mail.gmail.com>
-From: ARJIT SHARMA <joyarjit@gmail.com>
-Subject: [LTP] failed to get interface name
+Subject: [LTP] [POSIX][PATCH]pthread_mutex_getprioceiling should return
+ EINVAl when mutex's protocol is PTHREAD_PRIO_NONE.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,69 +23,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5019174340268980250=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
-Cc: ajay.khandelwal@st.com
-
---===============5019174340268980250==
-Content-Type: multipart/alternative; boundary=0016367fb4b7f25a7a049496e38a
-
---0016367fb4b7f25a7a049496e38a
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-      During the execution of networkstress tests i am getting this error:-
-
-       "Failed to get the interface name at the remote host"
-       though every thing is correct, and i have configured all services
-according to the README and INSTALL file.
--- 
-Best Regards,
-Arjit Sharma.
-
---0016367fb4b7f25a7a049496e38a
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div>Hi,</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0=A0 During the execution of networkstress tests i am getti=
-ng this error:-</div>
-<div>=A0</div>
-<div>=A0=A0=A0=A0=A0=A0=A0&quot;Failed to get the interface name at the rem=
-ote host&quot;<br clear=3D"all"></div>
-<div>=A0=A0=A0=A0=A0=A0 though every thing is correct, and=A0i have configu=
-red all services according to the README and INSTALL file.<br>-- <br></div>
-<div>Best Regards,</div>
-<div>Arjit Sharma.</div><br>
-
---0016367fb4b7f25a7a049496e38a--
-
-
---===============5019174340268980250==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+The default value of the mutex's protocol shall be PTHREAD_PRIO_NONE, 
+so pthread_mutex_getprioceiling should return EINVAL.
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+---
+ .../interfaces/pthread_mutex_getprioceiling/1-1.c  |   30 ++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
+index d9251e6..65c8c6b 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
+@@ -18,6 +18,7 @@
+ #include <pthread.h>
+ #include <stdio.h>
+ #include <sched.h>
++#include <errno.h>
+ #include "posixtest.h"
+ 
+ int main()
+@@ -29,6 +30,7 @@ int main()
+ 	  return PTS_UNRESOLVED;	
+ 	#endif */
+ 
++	pthread_mutexattr_t mattr;
+ 	pthread_mutex_t mutex;
+ 	int prioceiling, max_prio, min_prio;
+ 	
+@@ -40,6 +42,34 @@ int main()
+ 	}
+ 	
+ 	/* Get the prioceiling of the mutex. */
++	if(pthread_mutex_getprioceiling(&mutex, &prioceiling) != EINVAL)
++	{
++		printf("Test FAILED: Default, the protocol attribute of mutex "
++		       "is PTHREAD_PRIO_NONE, so pthread_mutex_getprioceiling "
++		       "should return EINVAL\n");
++		return PTS_FAIL;
++	}
++
++	if (pthread_mutexattr_init(&mattr) != 0)
++	{
++		perror("Error at pthread_mutexattr_init()\n");
++		return PTS_UNRESOLVED;
++	}
++
++	if (pthread_mutexattr_setprotocol(&mattr, PTHREAD_PRIO_PROTECT) != 0)
++	{
++		perror("Error at pthread_mutexattr_setprotocol()\n");
++		return PTS_UNRESOLVED;
++	}
++
++	/* Initialize a mutex object */
++	if(pthread_mutex_init(&mutex, &mattr) != 0)
++	{
++		perror("Error at pthread_mutex_init()\n");
++		return PTS_UNRESOLVED;
++	}
++	
++	/* Get the prioceiling of the mutex. */
+ 	if(pthread_mutex_getprioceiling(&mutex, &prioceiling) != 0)
+ 	{
+ 		printf("Test FAILED: Error obtaining the priority ceiling\n");
+-- 
+1.7.0.4
+
+
+
+-- 
+Regards
+Bian Naimeng
+
 
 ------------------------------------------------------------------------------
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a 
-Billion" shares his insights and actions to help propel your 
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
---===============5019174340268980250==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5019174340268980250==--
-
