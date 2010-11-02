@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PGYSS-0004QZ-HZ
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 14:49:00 +0000
-Date: Thu, 11 Nov 2010 16:00:12 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101111150012.GC24599@saboteur.suse.cz>
-References: <4CDB5E53.6070604@cn.fujitsu.com>
- <4CDB609E.105@cn.fujitsu.com>
+	(envelope-from <yanegomi@gmail.com>) id 1PD6BV-0003eD-OL
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:01:13 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PD6BU-0000IP-FA
+	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:01:13 +0000
+Received: by wwb31 with SMTP id 31so6252084wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 01 Nov 2010 19:01:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CDB609E.105@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH 2/2]Use aio_error instead signal hander at
- aio_suspend/4-1
+In-Reply-To: <4CCF64E0.4060909@cn.fujitsu.com>
+References: <4CC8D859.4010701@cn.fujitsu.com> <4CCF64E0.4060909@cn.fujitsu.com>
+Date: Mon, 1 Nov 2010 19:00:52 -0700
+Message-ID: <AANLkTikoFVWxMxx07EEGxsRuiWowrkr+_M3UCHnjPZrT@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [POSIX][PATCH]Some building error at pi_test cases.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,182 +27,145 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Bian Naimeng <biannm@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> aio_suspend may be interrupted by IO request's completion signal, so we
-> should use aio_error instead signal hander to check whether this request
-> has complete.
-> 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-> 
-> ---
->  .../conformance/interfaces/aio_suspend/4-1.c       |   65 +++++++-------------
->  1 files changed, 23 insertions(+), 42 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-> index 260c26a..6699ab4 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-> @@ -41,18 +41,24 @@
->  #define BUF_SIZE	1024*1024
->  #define WAIT_FOR_AIOCB	6
->  
-> -int received_selected	= 0;
->  int received_all	= 0;
->  
-> -void
-> -sigrt1_handler(int signum, siginfo_t *info, void *context)
-> +int
-> +selected_request_status(struct aiocb *paiocb, int expect)
->  {
-> -	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
-> -		received_selected = 1;
-> +	int err = aio_error(paiocb);
-> +
-> +	if (err != expect) {
-> +		printf (TNAME " Selected request expect %d[%s], not %d[%s]\n",
-> +			expect, strerror(expect), err, strerror(err));
-> +		return 0;
-> +	}
-> +
-> +	return 1;
->  }
->  
->  void
-> -sigrt2_handler(int signum, siginfo_t *info, void *context)
-> +sigrt1_handler(int signum, siginfo_t *info, void *context)
->  {
->  	received_all = 1;
->  }
-> @@ -68,7 +74,7 @@ main ()
->  	char *bufs;
->  	struct sigaction action;
->  	struct sigevent event;
-> -	struct timespec ts = {0, 10000000}; /* 10 ms */
-> +	struct timespec ts = {0, 1000}; /* 1 us */
->  	int errors = 0;
->  	int ret;
->  	int err;
-> @@ -121,39 +127,28 @@ main ()
->  		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
->  		aiocbs[i]->aio_nbytes = BUF_SIZE;
->  		aiocbs[i]->aio_lio_opcode = LIO_READ;
-> -
-> -		/* Use SIRTMIN+1 for individual completions */
-> -		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
-> -		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
->  	}
->  
->  	/* Use SIGRTMIN+2 for list completion */
->  	event.sigev_notify = SIGEV_SIGNAL;
-> -	event.sigev_signo = SIGRTMIN+2;
-> +	event.sigev_signo = SIGRTMIN+1;
->  	event.sigev_value.sival_ptr = NULL;
+    Will be committed momentarily.
+Thanks!
+-Garrett
 
-Same here.
+On Mon, Nov 1, 2010 at 6:09 PM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+> Hi Garrett,
+>
+> =A0Would you like to pick up this patch? =A0^_^
+>
+> Best Regards
+> =A0Bian
+>
+>> Commit 5f2ba92bdbef089bad74906fd8a86b54617f7878 make some building error.
+>>
+>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>>
+>> ---
+>> =A0.../functional/threads/pi_test/pitest-2.c =A0 =A0 =A0 =A0 =A0| =A0 =
+=A02 +-
+>> =A0.../functional/threads/pi_test/pitest-3.c =A0 =A0 =A0 =A0 =A0| =A0 =
+=A04 ++--
+>> =A0.../functional/threads/pi_test/pitest-4.c =A0 =A0 =A0 =A0 =A0| =A0 =
+=A04 ++--
+>> =A0.../functional/threads/pi_test/pitest-6.c =A0 =A0 =A0 =A0 =A0| =A0 =
+=A04 ++--
+>> =A04 files changed, 7 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/p=
+itest-2.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pites=
+t-2.c
+>> index 62f1f45..0a96377 100644
+>> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2=
+.c
+>> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2=
+.c
+>> @@ -235,7 +235,7 @@ void *thread_tb2(void *arg)
+>> =A0 =A0 =A0 DPRINTF(stdout, "#EVENT %f TB2 Thread Started\n",
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 seconds_read() - base_time);
+>>
+>> - =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t*)timeoutsec;
+>> + =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t*)arg;
+>> =A0 =A0 =A0 boost_time.tv_nsec =3D 0;
+>>
+>> =A0 =A0 =A0 t0 =3D seconds_read();
+>> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/p=
+itest-3.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pites=
+t-3.c
+>> index fe0c886..58d7a4a 100644
+>> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3=
+.c
+>> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3=
+.c
+>> @@ -219,7 +219,7 @@ void *thread_tb1(void *arg)
+>> =A0 =A0 =A0 DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n",
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 seconds_read() - base_time);
+>>
+>> - =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)timeoutsec;
+>> + =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)arg;
+>> =A0 =A0 =A0 boost_time.tv_nsec =3D 0;
+>>
+>> =A0 =A0 =A0 t0 =3D seconds_read();
+>> @@ -247,7 +247,7 @@ void *thread_tb2(void *arg)
+>> =A0 =A0 =A0 DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 seconds_read() - base_time);
+>>
+>> - =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)timeoutsec;
+>> + =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)arg;
+>> =A0 =A0 =A0 boost_time.tv_nsec =3D 0;
+>> =A0 =A0 =A0 t0 =3D seconds_read();
+>> =A0 =A0 =A0 rc =3D pthread_mutex_timedlock(&mutex2, &boost_time);
+>> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/p=
+itest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pites=
+t-4.c
+>> index a042dbf..077f966 100644
+>> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4=
+.c
+>> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4=
+.c
+>> @@ -187,7 +187,7 @@ void *thread_tb1(void *arg)
+>>
+>> =A0 =A0 =A0 pthread_mutex_lock(&mutex2);
+>>
+>> - =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)timeoutsec;
+>> + =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)arg;
+>> =A0 =A0 =A0 boost_time.tv_nsec =3D 0;
+>> =A0 =A0 =A0 t0 =3D seconds_read();
+>> =A0 =A0 =A0 rc =3D pthread_mutex_timedlock(&mutex1, &boost_time);
+>> @@ -218,7 +218,7 @@ void *thread_tb2(void *arg)
+>> =A0 =A0 =A0 DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 seconds_read() - base_time);
+>>
+>> - =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)timeoutsec;
+>> + =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)arg;
+>> =A0 =A0 =A0 boost_time.tv_nsec =3D 0;
+>>
+>> =A0 =A0 =A0 t0 =3D seconds_read();
+>> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/p=
+itest-6.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pites=
+t-6.c
+>> index 6ebb003..2f2272b 100644
+>> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6=
+.c
+>> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6=
+.c
+>> @@ -204,9 +204,9 @@ void *thread_tb(void *arg)
+>> =A0 =A0 =A0 DPRINTF(stderr,"Thread TB: started\n");
+>>
+>> =A0 =A0 =A0 DPRINTF(stdout, "#EVENT %f TB Started, waiting for mutex for=
+ %lu s\n",
+>> - =A0 =A0 =A0 =A0 =A0 =A0 seconds_read() - base_time, timeoutsec);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 seconds_read() - base_time, *(unsigned long*)a=
+rg);
+>>
+>> - =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)timeoutsec;
+>> + =A0 =A0 boost_time.tv_sec =3D time(NULL) + *(time_t *)arg;
+>> =A0 =A0 =A0 boost_time.tv_nsec =3D 0;
+>>
+>> =A0 =A0 =A0 t0 =3D seconds_read();
+>
+> --
+> Regards
+> Bian Naimeng
+>
+>
 
-> -	/* Setup handler for individual operation completion */
-> +	/* Setup handler for list completion */
->  	action.sa_sigaction = sigrt1_handler;
->  	sigemptyset(&action.sa_mask);
->  	action.sa_flags = SA_SIGINFO|SA_RESTART;
->  	sigaction(SIGRTMIN+1, &action, NULL);
->  
-> -	/* Setup handler for list completion */
-> -	action.sa_sigaction = sigrt2_handler;
-> -	sigemptyset(&action.sa_mask);
-> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
-> -	sigaction(SIGRTMIN+2, &action, NULL);
-> -
->  	/* Setup suspend list */
->  	plist[0] = NULL;
->  	plist[1] = aiocbs[WAIT_FOR_AIOCB];
->  
->  	/* Submit request list */
->  	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
-> -
+---------------------------------------------------------------------------=
+---
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
-Here.
-
->  	if (ret) {
-> -		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
-> +		printf (TNAME " Error at lio_listio() %d: %s\n",
-> +			errno, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-> @@ -163,9 +158,7 @@ main ()
->  	}
->  
->  	/* Check selected request has not completed yet */
-> -	if (received_selected) {
-> -		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
-> -			WAIT_FOR_AIOCB);
-> +	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-
-And here.
-
-> @@ -177,21 +170,10 @@ main ()
->  	/* Suspend on selected request */
->  	ret = aio_suspend((const struct aiocb **)plist, 2, &ts);
-
-Useless cast (and I've missed it in comments for previous patch).
-  
-> -	/* Check selected request has not completed */
-> -	if (received_selected) {
-> -		printf (TNAME " Error : AIOCB %d should not have completed after timed out suspend\n",
-> -			WAIT_FOR_AIOCB);
-> -		for (i=0; i<NUM_AIOCBS; i++)
-> -			free (aiocbs[i]);
-> -		free (bufs);
-> -		free (aiocbs);
-> -		close (fd);
-> -		exit (PTS_FAIL);
-> -	}
-> -
->  	/* timed out aio_suspend should return -1 and set errno to EAGAIN */
-> -	if (ret != -1) {
-> -		printf (TNAME " aio_suspend() should return -1\n");
-> +	if (ret != -1 || errno != EAGAIN) {
-> +		printf (TNAME " aio_suspend() should return -1 and set errno "
-> +			"to EAGAIN: %d, %s\n", ret, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-> @@ -200,9 +182,8 @@ main ()
->  		exit (PTS_FAIL);
->  	}
->  
-> -	if (errno != EAGAIN) {
-> -		printf (TNAME " aio_suspend() should set errno to EAGAIN: %d (%s)\n",
-> -			errno, strerror (errno));
-> +	/* Check selected request has not completed */
-> +	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-
-I think we should print here, why the test has failed.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+http://p.sf.net/sfu/nokia-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
