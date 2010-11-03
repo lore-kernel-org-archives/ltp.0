@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PI1RI-0003UQ-NI
-	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 15:57:52 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PI1RD-0002ND-RV
-	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 15:57:52 +0000
-Received: by wyb34 with SMTP id 34so109484wyb.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PDh28-0007MW-5t
+	for ltp-list@lists.sourceforge.net; Wed, 03 Nov 2010 17:22:00 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PDh27-0007Wm-1J
+	for ltp-list@lists.sourceforge.net; Wed, 03 Nov 2010 17:22:00 +0000
+Received: by wwb31 with SMTP id 31so869640wwb.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 15 Nov 2010 07:57:42 -0800 (PST)
+	Wed, 03 Nov 2010 10:21:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <001501cb848e$7e894960$7b9bdc20$@co.jp>
-References: <000001cb8470$6662ddb0$33289910$@co.jp>
-	<AANLkTimGi4v_OHzZAD8BbyGKsuVzpBcokEECezPeTC8e@mail.gmail.com>
-	<000b01cb8481$c3c9a1d0$4b5ce570$@co.jp>
-	<AANLkTim3wqv3fS8Sg9TNvZ=nDuXGcTB4GmPcH4d9pEee@mail.gmail.com>
-	<001501cb848e$7e894960$7b9bdc20$@co.jp>
-Date: Mon, 15 Nov 2010 07:57:40 -0800
-Message-ID: <AANLkTi=2ZMmCCHYFjX3ZK203hTHE9W=QTUZgDzkLyB=e@mail.gmail.com>
+In-Reply-To: <4CD1952A.2000604@linux.vnet.ibm.com>
+References: <4CD1952A.2000604@linux.vnet.ibm.com>
+Date: Wed, 3 Nov 2010 10:21:52 -0700
+Message-ID: <AANLkTimc93rVnn6XY=yB3HN_SectB-jORgSG__2_2AY5@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Realtime test failure
+Subject: Re: [LTP] [Fwd: Query regarding termination_id=4 in LTP.]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,197 +27,191 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1274232594904025217=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-T24gU3VuLCBOb3YgMTQsIDIwMTAgYXQgMTA6MjkgUE0sIE1pdGFuaSA8bWl0YW5pQHJ5b2JpLmNv
-LmpwPiB3cm90ZToKPgo+Cj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IEdh
-cnJldHQgQ29vcGVyIFttYWlsdG86eWFuZWdvbWlAZ21haWwuY29tXQo+PiBTZW50OiBNb25kYXks
-IE5vdmVtYmVyIDE1LCAyMDEwIDI6MjAgUE0KPj4gVG86IE1pdGFuaQo+PiBDYzogbHRwLWxpc3RA
-bGlzdHMuc291cmNlZm9yZ2UubmV0OyDnlbbluqcg5YGl5biCCj4+IFN1YmplY3Q6IFJlOiBbTFRQ
-XSBSZWFsdGltZSB0ZXN0IGZhaWx1cmUKPj4KPj4gMjAxMC8xMS8xNCBNaXRhbmkgPG1pdGFuaUBy
-eW9iaS5jby5qcD46Cj4+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+ID4+IEZyb206
-IEdhcnJldHQgQ29vcGVyIFttYWlsdG86eWFuZWdvbWlAZ21haWwuY29tXQo+PiA+PiBTZW50OiBN
-b25kYXksIE5vdmVtYmVyIDE1LCAyMDEwIDEyOjAzIFBNCj4+ID4+IFRvOiBNaXRhbmkKPj4gPj4g
-U3ViamVjdDogUmU6IFtMVFBdIFJlYWx0aW1lIHRlc3QgZmFpbHVyZQo+PiA+Pgo+PiA+PiBPbiBT
-dW4sIE5vdiAxNCwgMjAxMCBhdCA2OjU0IFBNLCBNaXRhbmkgPG1pdGFuaUByeW9iaS5jby5qcD4g
-d3JvdGU6Cj4+ID4+ID4gSGksCj4+ID4+ID4KPj4gPj4gPiAicmVhbHRpbWUiIGJ1aWxkIGZhaWxl
-ZCBpbiBteSBzeXN0ZW0gd2l0aCBnaXQgImx0cC1mMzg4ZDMzLnRhci5neiI6Cj4+ID4+ID4gLS0t
-LS0tLS0tLS0tPFJIRUw0LjggLSB4ODY+Cj4+ID4+ID4gbWFrZVsyXTogRW50ZXJpbmcgZGlyZWN0
-b3J5Cj4+ID4+IGAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUn
-Cj4+ID4+ID4gbWFrZSAtQyBsaWIgLWYKPj4gPj4gIi9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEy
-L3Rlc3RjYXNlcy9yZWFsdGltZS9saWIvTWFrZWZpbGUiCj4+ID4+ID4gYWxsCj4+ID4+ID4gbWFr
-ZVszXTogRW50ZXJpbmcgZGlyZWN0b3J5Cj4+ID4+ID4gYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAx
-MTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWInCj4+ID4+ID4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZu
-by1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgLURfR05VX1NPVVJDRQo+PiA+PiA+IC1JL2hv
-bWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi8uLi9pbmNsdWRl
-Cj4+ID4+ID4gLUkuLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vaW5jbHVkZSDCoC1jIC1vIGxp
-YnJ0dGVzdC5vCj4+IGxpYnJ0dGVzdC5jCj4+ID4+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGxp
-YnJ0dGVzdC5jOjQzOgo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEy
-L3Rlc3RjYXNlcy9yZWFsdGltZS9saWIvLi4vaW5jbHVkZS9saWJydHRlCj4+ID4+IHN0Lmg6IElu
-Cj4+ID4+ID4gZnVuY3Rpb24gYGF0b21pY19hZGQnOgo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xU
-UC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWIvLi4vaW5jbHVkZS9saWJy
-dHRlCj4+ID4+IHN0Lmg6MTE5Cj4+ID4+ID4gOiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlv
-biBvZiBmdW5jdGlvbiBgX19zeW5jX2FkZF9hbmRfZmV0Y2gnCj4+ID4+ID4gZ2NjIC1nIC1PMiAt
-ZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgLURfR05VX1NPVVJDRQo+PiA+
-PiA+IC1JL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi8u
-Li9pbmNsdWRlCj4+ID4+ID4gLUkuLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vaW5jbHVkZSDC
-oC1jIC1vIGxpYnN0YXRzLm8gbGlic3RhdHMuYwo+PiA+PiA+IEluIGZpbGUgaW5jbHVkZWQgZnJv
-bSBsaWJzdGF0cy5jOjQ3Ogo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xUUC9sdHAtZGV2LTIwMTAx
-MTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWIvLi4vaW5jbHVkZS9saWJydHRlCj4+ID4+IHN0Lmg6
-IEluCj4+ID4+ID4gZnVuY3Rpb24gYGF0b21pY19hZGQnOgo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21l
-L0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWIvLi4vaW5jbHVkZS9s
-aWJydHRlCj4+ID4+IHN0Lmg6MTE5Cj4+ID4+ID4gOiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJh
-dGlvbiBvZiBmdW5jdGlvbiBgX19zeW5jX2FkZF9hbmRfZmV0Y2gnCj4+ID4+ID4gaWYgWyAteiAi
-bGlicnR0ZXN0Lm8gbGlic3RhdHMubyIgXSA7IHRoZW4gXAo+PiA+PiA+IMKgIMKgIMKgIMKgZWNo
-byAiQ293YXJkbHkgcmVmdXNpbmcgdG8gY3JlYXRlIGVtcHR5IGFyY2hpdmUiOyBcCj4+ID4+ID4g
-wqAgwqAgwqAgwqBleGl0IDE7IFwKPj4gPj4gPiBmaQo+PiA+PiA+IGFyIC1yYyAibGlicmVhbHRp
-bWUuYSIgbGlicnR0ZXN0Lm8gbGlic3RhdHMubwo+PiA+PiA+IHJhbmxpYiAibGlicmVhbHRpbWUu
-YSIKPj4gPj4gPiBtYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeQo+PiA+PiA+IGAvaG9tZS9MVFAv
-bHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvbGliJwo+PiA+PiA+IG1ha2VbM106
-IEVudGVyaW5nIGRpcmVjdG9yeQo+PiA+PiA+IGAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90
-ZXN0Y2FzZXMvcmVhbHRpbWUvZnVuYycKPj4gPj4gPiBtYWtlWzRdOiBFbnRlcmluZyBkaXJlY3Rv
-cnkKPj4gPj4gPgo+PiBgL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0
-aW1lL2Z1bmMvYXN5bmNfaGFuZGxlcicKPj4gPj4gPiBnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0
-cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRF9HTlVfU09VUkNFCj4+ID4+ID4gLUkvaG9tZS9M
-VFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVkZQo+PiA+PiA+IC1J
-Li4vLi4vLi4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPj4gPj4gPiAtTC9ob21l
-L0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWIKPj4gPj4gLUwuLi8u
-Li8uLi8uLi9saWIKPj4gPj4gPiBhc3luY19oYW5kbGVyLmMgwqAgLWxyZWFsdGltZSAtbHB0aHJl
-YWQgLWxydCAtbG0gLW8gYXN5bmNfaGFuZGxlcgo+PiA+PiA+IEluIGZpbGUgaW5jbHVkZWQgZnJv
-bSBhc3luY19oYW5kbGVyLmM6NDI6Cj4+ID4+ID4KPj4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDEx
-MTIvdGVzdGNhc2VzL3JlYWx0aW1lL2luY2x1ZGUvbGlicnR0ZXN0Lmg6Cj4+ID4+IEluCj4+ID4+
-ID4gZnVuY3Rpb24gYGF0b21pY19hZGQnOgo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xUUC9sdHAt
-ZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9pbmNsdWRlL2xpYnJ0dGVzdC5oOjExCj4+
-ID4+IDk6Cj4+ID4+ID4gd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g
-YF9fc3luY19hZGRfYW5kX2ZldGNoJwo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xUUC9sdHAtZGV2
-LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWIvbGlicmVhbHRpbWUuYShsaWJyCj4+ID4+
-IHR0ZXN0Lm8pCj4+ID4+ID4gKC50ZXh0KzB4MWE3KTogSW4gZnVuY3Rpb24gYGNyZWF0ZV90aHJl
-YWQnOgo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNl
-cy9yZWFsdGltZS9saWIvLi4vaW5jbHVkZS9saWJydHRlCj4+ID4+IHN0Lmg6MTE5Cj4+ID4+ID4g
-OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPj4gPj4gPiBj
-b2xsZWN0MjogbGQgcmV0dXJuZWQgMSBleGl0IHN0YXR1cwo+PiA+PiA+IG1ha2VbNF06ICoqKiBb
-YXN5bmNfaGFuZGxlcl0gRXJyb3IgMQo+PiA+PiA+IG1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5
-Cj4+ID4+ID4KPj4gYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGlt
-ZS9mdW5jL2FzeW5jX2hhbmRsZXInCj4+ID4+ID4gbWFrZVszXTogKioqIFthbGxdIEVycm9yIDIK
-Pj4gPj4gPiBtYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeQo+PiA+PiA+IGAvaG9tZS9MVFAvbHRw
-LWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvZnVuYycKPj4gPj4gPiBtYWtlWzJdOiAq
-KiogW2FsbF0gRXJyb3IgMgo+PiA+PiA+IG1ha2VbMl06IExlYXZpbmcgZGlyZWN0b3J5Cj4+ID4+
-IGAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUnCj4+ID4+ID4g
-bWFrZVsxXTogKioqIFthbGxdIEVycm9yIDIKPj4gPj4gPiBtYWtlWzFdOiBMZWF2aW5nIGRpcmVj
-dG9yeSBgL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzJwo+PiA+PiA+IG1ha2U6
-ICoqKiBbdGVzdGNhc2VzLWFsbF0gRXJyb3IgMgo+PiA+PiA+IC0tLS0tLS0tLS0tLQo+PiA+PiA+
-Cj4+ID4+ID4gInJlYWx0aW1lIiBidWlsZCBmYWlsZWQgaW46Cj4+ID4+ID4gLS0tLS0tLS0tLS0t
-Cj4+ID4+ID4gUkhFTDQuOCAtLSB4ODYsIHg4Nl82NCwgaWE2NAo+PiA+PiA+IFJIRUw1LjQgLS0g
-eDg2Cj4+ID4+ID4gLS0tLS0tLS0tLS0tCj4+ID4+ID4KPj4gPj4gPiAicmVhbHRpbWUiIGJ1aWxk
-IHN1Y2NlZWRlZCBpbjoKPj4gPj4gPiAtLS0tLS0tLS0tLS0KPj4gPj4gPiBSSEVMNS40IC0tIHg4
-Nl82NCwgaWE2NAo+PiA+PiA+IC0tLS0tLS0tLS0tLQo+PiA+PiA+Cj4+ID4+ID4gSXQgaXMgY2F1
-c2VkIGJ5ICJfX3N5bmNfYWRkX2FuZF9mZXRjaCIuCj4+ID4+ID4KPj4gPj4gPiBJbiBmb2xsb3dp
-bmcgVVJMLCAiX19zeW5jX2FkZF9hbmRfZmV0Y2giIGlzICJidWlsdC1pbiBmdW5jdGlvbnMgZm9y
-Cj4+ID4+ID4gYXRvbWljIG1lbW9yeSBhY2Nlc3MiLiBBbmQgSXQgaXMgcHJvdmlkZWQgaW4gImdj
-YyI6Cj4+ID4+Cj4+ID4gwqAgaHR0cDovL2djYy5nbnUub3JnL29ubGluZWRvY3MvZ2NjLTQuNC4w
-L2djYy9BdG9taWMtQnVpbHRpbnMuaHRtbAo+PiA+PiA+Cj4+ID4+ID4gVGhlcmUgaXMgIl9fc3lu
-Y19hZGRfYW5kX2ZldGNoIiBpbiBnY2M0LjEuMiAoSXQgaXMgdGhlIGdjYyBvZiBSSEVMNS4xCj4+
-ID4+IC0KPj4gPj4gPiBSSEVMNS40KS4KPj4gPj4gPiBBbmQgdGhlcmUgaXMgbm90ICJfX3N5bmNf
-YWRkX2FuZF9mZXRjaCIgaW4gZ2NjMy40LjYgKEl0IGlzIHRoZSBnY2MKPj4gb2YKPj4gPj4gPiBS
-SEVMNC44KQo+PiA+PiA+Cj4+ID4+ID4gSW4gYWRkaXRpb24sICJfX3N5bmNfYWRkX2FuZF9mZXRj
-aCIgaXMgZm9yIDY0IGJpdCBlbnZpcm9ubWVudC4KPj4gPj4gPgo+PiA+PiA+Cj4+ID4+Cj4+IGh0
-dHA6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTMwNzQwL2xpbmstZXJyb3Itd2hlbi1j
-b21waWxpbmctCj4+ID4+IGdjYy1hdG9tCj4+ID4+ID4gaWMtb3BlcmF0aW9uLWluLTMyLWJpdC1t
-b2RlCj4+ID4+ID4KPj4gPj4gPiDCoCBodHRwOi8vZ2NjLmdudS5vcmcvd2lraS9BdG9taWMKPj4g
-Pj4gPgo+PiA+PiA+IFBlcmhhcHMsIHRoZSBqdWRnbWVudCB0aGF0ICJyZWFsdGltZSIgbXVzdCBi
-ZSBidWlsdCBvciBub3QgZGVwZW5kcwo+PiBvbgo+PiA+PiA+IGdjYydzIHZlcnNpb24gKD4gNC4w
-KSBhbmQgNjQgYml0cyBlbnZpcm9ubWVudCwgSSB0aGluay4KPj4gPj4KPj4gPj4gQ291bGQgeW91
-IHBsZWFzZSBhdHRhY2ggeW91ciB0ZXN0Y2FzZXMvcmVhbHRpbWUvY29uZmlnLmxvZyBhbmQKPj4g
-Pj4gdGVzdGNhc2VzL3JlYWx0aW1lL2luY2x1ZGUvcmVhbHRpbWVfY29uZmlnLmggPwo+PiA+PiBU
-aGFua3MsCj4+ID4+IC1HYXJyZXR0Cj4+ID4KPj4gPgo+PiA+IEkgdW5kZXJzdG9vZC4KPj4gPiBU
-aGFuayB5b3UgYW5kIHNvcnJ5IGZvciBteSBpbnN1ZmZpY2llbnQgaW5mb3JtYXRpb24uCj4+ID4K
-Pj4gPiBJIGF0dGFjaCBmb2xsb3dpbmcgZmlsZXM6Cj4+ID4gwqAgLSBjb25maWcubG9nIMKgIMKg
-IMKgIMKgKFJIRUw0LjgteDg2KQo+PiA+IMKgIC0gcmVhbHRpbWVfY29uZmlnLmggKFJIRUw0Ljgt
-eDg2KQo+PiA+IMKgIC0gY29uZmlnLmxvZyDCoCDCoCDCoCDCoChSSEVMNS41LXg4NikKPj4gPiDC
-oCAtIHJlYWx0aW1lX2NvbmZpZy5oIChSSEVMNS41LXg4NikKPj4KPj4gwqAgwqAgQ291bGQgeW91
-IHBsZWFzZSB0cnkgY29tcGlsaW5nIHRoZSBmb2xsb3dpbmcgQyBzb3VyY2VzIGluIGJvdGgKPj4g
-c2NlbmFyaW9zPwo+PiBUaGFua3MsCj4+IC1HYXJyZXR0Cj4+Cj4+ICNpZm5kZWYgX0dOVV9TT1VS
-Q0UKPj4gI2RlZmluZSBfR05VX1NPVVJDRQo+PiAjZW5kaWYKPj4gI2luY2x1ZGUgPHN0ZGxpYi5o
-Pgo+PiBpbnQgbWFpbih2b2lkKSB7Cj4+IMKgIMKgIMKgIMKgIGNoYXIgKmM7Cj4+IMKgIMKgIMKg
-IMKgIHJldHVybiBfX3N5bmNfYWRkX2FuZF9mZXRjaChjLCAxKTsKPj4gfQo+Cj4KPiBJIHdhcyBn
-b2luZyB0byBjb21waWxlIHRoZSBzZW50IHNvdXJjZSBpbiBSSEVMNC44LzUuNS14ODYsIGJ1dCBm
-YWlsZWQuCj4KPiAtLS0tLS0tLS0tLS08UkhFTDQuOC14ODY+Cj4gW3Jvb3RAUkhFTDQ4LUxUUC14
-ODYgYXN5bmNfaGFuZGxlcl0jIGNhdCByZWFsdGltZS10ZXN0LmMKPiAjaWZuZGVmIF9HTlVfU09V
-UkNFCj4gI2RlZmluZSBfR05VX1NPVVJDRQo+ICNlbmRpZgo+ICNpbmNsdWRlIDxzdGRsaWIuaD4K
-PiBpbnQgbWFpbih2b2lkKSB7Cj4gwqAgwqAgwqAgwqBjaGFyICpjOwo+IMKgIMKgIMKgIMKgcmV0
-dXJuIF9fc3luY19hZGRfYW5kX2ZldGNoKGMsIDEpOyB9Cj4KPiBbcm9vdEBSSEVMNDgtTFRQLXg4
-NiBhc3luY19oYW5kbGVyXSMgZ2NjIHJlYWx0aW1lLXRlc3QuYyAtbyByZWFsdGltZS10ZXN0Cj4g
-L3RtcC9jY2lIVng4Yi5vKC50ZXh0KzB4MjUpOiBJbiBmdW5jdGlvbiBgbWFpbic6Cj4gOiB1bmRl
-ZmluZWQgcmVmZXJlbmNlIHRvIGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPiBjb2xsZWN0MjogbGQg
-cmV0dXJuZWQgMSBleGl0IHN0YXR1cwo+IFtyb290QFJIRUw0OC1MVFAteDg2IGFzeW5jX2hhbmRs
-ZXJdIwo+IFtyb290QFJIRUw0OC1MVFAteDg2IGFzeW5jX2hhbmRsZXJdIyBnY2MgLWcgLU8yIC1n
-IC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRAo+IF9HTlVfU09VUkNFIMKg
-LUkvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVkZSAt
-SS4uLy4uLy4uLy4uL2luY2x1ZGUKPiDCoC1JLi4vLi4vLi4vLi4vaW5jbHVkZSDCoCAtTC9ob21l
-L0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWIgLUwuLi8uLi8uLi8u
-Lgo+IC9saWIgwqByZWFsdGltZS10ZXN0LmMgwqAgLWxyZWFsdGltZSAtbHB0aHJlYWQgLWxydCAt
-bG0gLW8gcmVhbHRpbWUtdGVzdAo+IHJlYWx0aW1lLXRlc3QuYzogSW4gZnVuY3Rpb24gYG1haW4n
-Ogo+IHJlYWx0aW1lLXRlc3QuYzo3OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBm
-dW5jdGlvbiBgX19zeW5jX2FkZF9hbmRfZmV0Y2gnCj4gcmVhbHRpbWUtdGVzdC5jOjY6IHdhcm5p
-bmc6ICdjJyBtaWdodCBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgo+IC90
-bXAvY2NJRGNrTGsubygudGV4dCsweDEwKTogSW4gZnVuY3Rpb24gYG1haW4nOgo+IC9ob21lL0xU
-UC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9mdW5jL2FzeW5jX2hhbmRsZXIv
-cmVhbHRpbWUtdGVzdC5jOjc6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYF9fc3luY19hZGRfYW5k
-X2ZldGNoJwo+IGNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4gW3Jvb3RAUkhF
-TDQ4LUxUUC14ODYgYXN5bmNfaGFuZGxlcl0jCj4gLS0tLS0tLS0tLS0tCj4KPiAtLS0tLS0tLS0t
-LS08UkhFTDUuNS14ODY+Cj4gW3Jvb3RAUkhFTDU1LUxUUC14ODYgYXN5bmNfaGFuZGxlcl0jIGNh
-dCByZWFsdGltZS10ZXN0LmMKPiAjaWZuZGVmIF9HTlVfU09VUkNFCj4gI2RlZmluZSBfR05VX1NP
-VVJDRQo+ICNlbmRpZgo+ICNpbmNsdWRlIDxzdGRsaWIuaD4KPiBpbnQgbWFpbih2b2lkKSB7Cj4g
-wqAgwqAgwqAgwqBjaGFyICpjOwo+IMKgIMKgIMKgIMKgcmV0dXJuIF9fc3luY19hZGRfYW5kX2Zl
-dGNoKGMsIDEpOyB9Cj4KPiBbcm9vdEBSSEVMNTUtTFRQLXg4NiBhc3luY19oYW5kbGVyXSMgZ2Nj
-IHJlYWx0aW1lLXRlc3QuYyAtbyByZWFsdGltZS10ZXN0Cj4gL3RtcC9jY0s4aG1Qcy5vOiBJbiBm
-dW5jdGlvbiBgbWFpbic6Cj4gcmVhbHRpbWUtdGVzdC5jOigudGV4dCsweDIwKTogdW5kZWZpbmVk
-IHJlZmVyZW5jZSB0byBgX19zeW5jX2FkZF9hbmRfZmV0Y2hfMScKPiBjb2xsZWN0MjogbGQgcmV0
-dXJuZWQgMSBleGl0IHN0YXR1cwo+IFtyb290QFJIRUw1NS1MVFAteDg2IGFzeW5jX2hhbmRsZXJd
-IyBnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRAo+
-IF9HTlVfU09VUkNFIMKgLUkvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVh
-bHRpbWUvaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPiDCoC1JLi4vLi4vLi4vLi4vaW5j
-bHVkZSDCoCAtTC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9s
-aWIgLUwuLi8uLi8uLi8uLgo+IC9saWIgwqByZWFsdGltZS10ZXN0LmMgwqAgLWxyZWFsdGltZSAt
-bHB0aHJlYWQgLWxydCAtbG0gLW8gcmVhbHRpbWUtdGVzdAo+IHJlYWx0aW1lLXRlc3QuYzogSW4g
-ZnVuY3Rpb24gJ21haW4nOgo+IHJlYWx0aW1lLXRlc3QuYzo3OiB3YXJuaW5nOiAnYycgaXMgdXNl
-ZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24KPiAvdG1wL2NjS1Vub2NCLm86IEluIGZ1
-bmN0aW9uIGBtYWluJzoKPiAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVh
-bHRpbWUvZnVuYy9hc3luY19oYW5kbGVyL3JlYWx0aW1lLXRlc3QuYzo3OiB1bmRlZmluZWQgcmVm
-ZXJlbmNlIHRvIGBfX3N5bmNfYWRkX2FuZF9mZXRjaF8xJwo+IGNvbGxlY3QyOiBsZCByZXR1cm5l
-ZCAxIGV4aXQgc3RhdHVzCj4gW3Jvb3RAUkhFTDU1LUxUUC14ODYgYXN5bmNfaGFuZGxlcl0jCgog
-ICAgTm90IHN1cmUgd2h5IGJ1dCBpdCBpbmNvcnJlY3RseSBwYXNzZWQgb24geW91ciBtYWNoaW5l
-OgoKY29uZmlndXJlOjUxODY6IGNoZWNraW5nIENoZWNraW5nIGZvciBfX3N5bmNfYWRkX2FuZF9m
-ZXRjaCBnY2MgYnVpbHRpbiBmdW5jdGlvbgpjb25maWd1cmU6NTIxNjogZ2NjIC1jIC1nIC1PMiAg
-Y29uZnRlc3QuYyA+JjUKY29uZmlndXJlOjUyMjI6ICQ/ID0gMAoKMjMgQUNfTVNHX0NIRUNLSU5H
-KFtDaGVja2luZyBmb3IgX19zeW5jX2FkZF9hbmRfZmV0Y2ggZ2NjIGJ1aWx0aW4gZnVuY3Rpb25d
-KQoyNCBBQ19UUllfQ09NUElMRShbCjI1ICNpZm5kZWYgX0dOVV9TT1VSQ0UKMjYgI2RlZmluZSBf
-R05VX1NPVVJDRQoyNyAjZW5kaWYKMjggI2luY2x1ZGUgPHN0ZGxpYi5oPl0sW2ludCBtYWluKHZv
-aWQpIHsKMjkgICAgICAgICBjaGFyICpjOwozMCAgICAgICAgIHJldHVybiBfX3N5bmNfYWRkX2Fu
-ZF9mZXRjaChjLCAxKTsKMzEgfV0sW2hhc19fX3N5bmNfYWRkX2FuZF9mZXRjaD15ZXNdKQozMiBp
-ZiB0ZXN0ICJ4JGhhc19fX3N5bmNfYWRkX2FuZF9mZXRjaCIgPSB4eWVzOyB0aGVuCjMzICAgICAg
-ICAgQUNfREVGSU5FKEhBVkVfX19TWU5DX0FERF9BTkRfRkVUQ0gsMSxbRGVmaW5lIHRvIDEgaWYg
-eW91CmhhdmUgdGhlIF9fICAgc3luY19hZGRfYW5kX2ZldGNoIGdjYyBidWlsdGluIGZ1bmN0aW9u
-XSkKMzQgICAgICAgICBBQ19NU0dfUkVTVUxUKHllcykKMzUgZWxzZQozNiAgICAgICAgIEFDX01T
-R19SRVNVTFQobm8pCjM3IGZpCgogICAgV2hlcmVhcyBpdCBkaWRuJ3Qgb24gbWluZToKCjI0OCBj
-b25maWd1cmU6NDc3NzogY2hlY2tpbmcgQ2hlY2tpbmcgZm9yIF9fc3luY19hZGRfYW5kX2ZldGNo
-IGdjYwpidWlsdGluIGZ1bmN0ICAgIGlvbgoyNDkgY29uZmlndXJlOjQ3OTc6IGdjYyAtYyAtZyAt
-TzIgIGNvbmZ0ZXN0LmMgPiY1CjI1MCBjb25maWd1cmU6NDc5NzogJD8gPSAwCgogICAgVGhlcmUg
-d2FzIGEgcG90ZW50aWFsIHByb2JsZW0gd2l0aCB0aGUgbWFjcm8gdGhvdWdoIChJIGtlZXAgb24K
-Zm9yZ2V0dGluZyB0aGF0IEFDX1RSWV9DT01QSUxFIGFuZCBBQ19DT01QSUxFX0lGRUxTRSB3b3Jr
-IHByZWRlZmluZQptYWluKCkgd2l0aCB0aGUgYmxvY2sgb2YgY29kZSBwcm92aWRlZCksIHNvIHBs
-ZWFzZSBsZXQgbWUga25vdyBpZgp0aGluZ3Mgd29yayBmb3IgeW91LgpUaGFua3MsCi1HYXJyZXR0
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ2VudHJhbGl6ZWQgRGVza3RvcCBEZWxpdmVyeTogRGVs
-bCBhbmQgVk13YXJlIFJlZmVyZW5jZSBBcmNoaXRlY3R1cmUKU2ltcGxpZnlpbmcgZW50ZXJwcmlz
-ZSBkZXNrdG9wIGRlcGxveW1lbnQgYW5kIG1hbmFnZW1lbnQgdXNpbmcKRGVsbCBFcXVhbExvZ2lj
-IHN0b3JhZ2UgYW5kIFZNd2FyZSBWaWV3OiBBIGhpZ2hseSBzY2FsYWJsZSwgZW5kLXRvLWVuZApj
-bGllbnQgdmlydHVhbGl6YXRpb24gZnJhbWV3b3JrLiBSZWFkIG1vcmUhCmh0dHA6Ly9wLnNmLm5l
-dC9zZnUvZGVsbC1lcWwtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+--===============1274232594904025217==
+Content-Type: multipart/alternative; boundary=0016364c7576fc250c0494294675
+
+--0016364c7576fc250c0494294675
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Wed, Nov 3, 2010 at 10:00 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com>wrote:
+
+>  FYI...!!
+>
+> -------- Original Message --------  Subject: Query regarding
+> termination_id=4 in LTP.  Date: Wed, 3 Nov 2010 12:08:56 +0530  From:
+> naren.mehra@gmail.com  To: manojo@austin.ibm.com  CC:
+> subrata@linux.vnet.ibm.com
+>
+> Hi,
+>
+> I am not sure whom to ask this question so putting it here.
+> I am trying to run LTP on my arm based board and in some of the tests like
+> shm_test01 and mtest05
+> I am getting termination_id=4.
+>
+> So, I am stuck as theres no other information as to why these 2 tests failed.
+> Could you help me out and tell me what does "termination_id=4" suggests ??
+>
+> Log Snippet:
+> 1) shm_test01 :
+> <<<test_start>>>
+> tag=stime=3934
+> cmdline="shm_test -l 10 -t 2"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=1 termination_type=signaled termination_id=4 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>>
+>
+> 2) mtest05
+> <<<test_start>>>
+> tag=mtest05 stime=3930
+> cmdline="  mmstress"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> mmstress    0  TINFO  :  run mmstress -h for all options
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=signaled termination_id=4 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>
+>
+>
+    No idea (could have exited with signal = 4, which is SIGILL, but I'm
+looking at the BSD signals manpage). This could suggest a number of issues
+with how the tests are being executed on the board. strace'ing the tests and
+providing the board details would be a helpful start -- otherwise we can't
+help the end-user.
+Thanks,
+-Garrett
+
+--0016364c7576fc250c0494294675
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div class=3D"gmail_quote">On Wed, Nov 3, 2010 at 10:00 AM, Subrata Modak <=
+span dir=3D"ltr">&lt;<a href=3D"mailto:subrata@linux.vnet.ibm.com">subrata@=
+linux.vnet.ibm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quot=
+e" style=3D"margin: 0pt 0pt 0pt 0.8ex; border-left: 1px solid rgb(204, 204,=
+ 204); padding-left: 1ex;">
+
+
+
+
+<div bgcolor=3D"#ffffff" text=3D"#000000">
+FYI...!!<br>
+<br>
+-------- Original Message --------
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+  <tbody>
+    <tr>
+      <th align=3D"right" nowrap valign=3D"baseline">Subject: </th>
+      <td>Query regarding termination_id=3D4 in LTP.</td>
+    </tr>
+    <tr>
+      <th align=3D"right" nowrap valign=3D"baseline">Date: </th>
+      <td>Wed, 3 Nov 2010 12:08:56 +0530</td>
+    </tr>
+    <tr>
+      <th align=3D"right" nowrap valign=3D"baseline">From: </th>
+      <td><a href=3D"mailto:naren.mehra@gmail.com" target=3D"_blank">naren.=
+mehra@gmail.com</a></td>
+    </tr>
+    <tr>
+      <th align=3D"right" nowrap valign=3D"baseline">To: </th>
+      <td><a href=3D"mailto:manojo@austin.ibm.com" target=3D"_blank">manojo=
+@austin.ibm.com</a></td>
+    </tr>
+    <tr>
+      <th align=3D"right" nowrap valign=3D"baseline">CC: </th>
+      <td><a href=3D"mailto:subrata@linux.vnet.ibm.com" target=3D"_blank">s=
+ubrata@linux.vnet.ibm.com</a></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<pre>Hi,
+
+I am not sure whom to ask this question so putting it here.
+I am trying to run LTP on my arm based board and in some of the tests like
+shm_test01 and mtest05
+I am getting termination_id=3D4.
+
+So, I am stuck as theres no other information as to why these 2 tests faile=
+d.
+Could you help me out and tell me what does &quot;termination_id=3D4&quot; =
+suggests ??
+
+Log Snippet:
+1) shm_test01 :
+&lt;&lt;&lt;test_start&gt;&gt;&gt;
+tag=3Dstime=3D3934
+cmdline=3D&quot;shm_test -l 10 -t 2&quot;
+contacts=3D&quot;&quot;
+analysis=3Dexit
+&lt;&lt;&lt;test_output&gt;&gt;&gt;
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;
+initiation_status=3D&quot;ok&quot;
+duration=3D1 termination_type=3Dsignaled termination_id=3D4 corefile=3Dno
+cutime=3D0 cstime=3D0
+&lt;&lt;&lt;test_end&gt;&gt;&gt;
+
+2) mtest05
+&lt;&lt;&lt;test_start&gt;&gt;&gt;
+tag=3Dmtest05 stime=3D3930
+cmdline=3D&quot;  mmstress&quot;
+contacts=3D&quot;&quot;
+analysis=3Dexit
+&lt;&lt;&lt;test_output&gt;&gt;&gt;
+mmstress    0  TINFO  :  run mmstress -h for all options
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;
+initiation_status=3D&quot;ok&quot;
+duration=3D0 termination_type=3Dsignaled termination_id=3D4 corefile=3Dno
+cutime=3D0 cstime=3D0
+&lt;&lt;&lt;test_end&gt;&gt;<br></pre></div></blockquote><div><br>=A0=A0=A0=
+ No idea (could have exited with signal =3D 4, which is SIGILL, but I&#39;m=
+ looking at the BSD signals manpage). This could suggest a number of issues=
+ with how the tests are being executed on the board. strace&#39;ing the tes=
+ts and providing the board details would be a helpful start -- otherwise we=
+ can&#39;t help the end-user.<br>
+Thanks,<br>-Garrett<br></div></div>
+
+--0016364c7576fc250c0494294675--
+
+
+--===============1274232594904025217==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Achieve Improved Network Security with IP and DNS Reputation.
+Defend against bad network traffic, including botnets, malware, 
+phishing sites, and compromised hosts - saving your company time, 
+money, and embarrassment.   Learn More! 
+http://p.sf.net/sfu/hpdev2dev-nov
+--===============1274232594904025217==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1274232594904025217==--
+
