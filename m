@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PFKqt-0000JX-Qi
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 06:05:11 +0000
+	(envelope-from <yanegomi@gmail.com>) id 1PDr5G-0000lS-Gc
+	for ltp-list@lists.sourceforge.net; Thu, 04 Nov 2010 04:05:54 +0000
 Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PFKqt-0006ik-1l
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 06:05:11 +0000
-Received: by wya21 with SMTP id 21so5125568wya.34
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PDr5F-0004jC-HQ
+	for ltp-list@lists.sourceforge.net; Thu, 04 Nov 2010 04:05:54 +0000
+Received: by wya21 with SMTP id 21so1455538wya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 07 Nov 2010 22:05:05 -0800 (PST)
+	Wed, 03 Nov 2010 21:05:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <957775683.1389581288853739343.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <1747284477.1389541288853682476.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<957775683.1389581288853739343.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Sun, 7 Nov 2010 22:05:04 -0800
-Message-ID: <AANLkTi=4eSqeEqJz84s2ThkKd2+BMtngT4_14Fd6bX5f@mail.gmail.com>
+In-Reply-To: <AANLkTi=xfASFpmmRWFGMPofEBU+Uzp+TQ4OZ-vw2C_83@mail.gmail.com>
+References: <AANLkTi=xfASFpmmRWFGMPofEBU+Uzp+TQ4OZ-vw2C_83@mail.gmail.com>
+Date: Wed, 3 Nov 2010 21:05:47 -0700
+Message-ID: <AANLkTinkWbgq9A4=qJkqs6xNfxWgPwkRzUm45bdOLWtx@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v8] mmap/munmap /dev/zero: a common way of
- malloc()/free() anonymous memory on Solaris
+Subject: Re: [LTP] keyutils.h not exist when cross compile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,51 +30,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: caiqian@redhat.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: hake huang <hakehuang@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Nov 3, 2010 at 11:55 PM,  <caiqian@redhat.com> wrote:
-> The basic purpose of this is a to test if it is possible to map and
-> unmap /dev/zero, and to read and write the mapping. Being inspired by
-> two bugs in the past, the design of the test was added some variations
-> based on the reproducers for them. It also accept an option to
-> mmap/munmap anonymous pages.
+On Wed, Nov 3, 2010 at 4:31 AM, hake huang <hakehuang@gmail.com> wrote:
+> Hi,
 >
-> One is to trigger panic with transparent hugepage feature that
-> split_huge_page is very strict in checking the rmap walk was
-> perfect. Keep it strict because if page_mapcount isn't stable and just
-> right, the __split_huge_page_refcount that follows the rmap walk could
-> lead to erratic page_count()s for the subpages. The bug in fork lead
-> to the rmap walk finding the parent huge-pmd twice instead of just
-> one, because the anon_vma_chain objects of the child vma still point
-> to the vma->vm_mm of the parent. That trips on the split_huge_page
-> mapcount vs page_mapcount check leading to a BUG_ON.
+> when I try to cross compile the ltp
+> git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
+> make autotools
+> ./configure --host=3Darm-none-linux-gnueabi
+> make
 >
-> The other bug is mmap() of /dev/zero results in calling map_zero()
-> which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
-> address range. Since the application which maps a region from 5M to
-> 16M in size is also multi-threaded the subsequent munmap() of
-> /dev/zero results is TLB shootdowns to all other CPUs. When this
-> happens thousands or millions of times the application performance is
-> terrible. The mapping ZERO_PAGE in every pte within that virtual
-> address range was an optimization to make the subsequent pagefault
-> times faster on RHEL5 that has been removed/changed upstream.
->
-> Signed-off-by: CAI Qian <caiqian@redhat.com>
-> ---
-> v8: add an option to utilize KSM; no need to open /dev/zero for
-> =A0 =A0anonymous page testing.
-> v7: another "(void)" fix
-> v6: really use git format; check return from children; cleanup.
-> v5: add an option to test anonymous pages; move open() into setup().
-> v4: comment fix; code cleanup.
-> v3: really mmap /dev/zero; replace _exit() with exit(); fix patch
-> =A0 =A0format.
-> v2: incorporate comments from Mike and Garrett.
+> the build stops at keyctrl, below is the log, it looks like the ltp
+> now depend on the libkeyutils-dev package, should we avoid this
+> dependency?
+> /usr/local/gcc-4.4.4-glibc-2.11.1-multilib-1.0/arm-fsl-linux-gnueabi/bin/=
+arm-none-linux-gnueabi-gcc
+> -DFSL_ARM=3D1 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/home/smb/vte/testcases/kernel/include -I../../../../include
+> -I../../../../include =A0 -L../../../../lib =A0keyctl01.c =A0 -lltp -o
+> keyctl01
+> keyctl01.c:44:22: error: keyutils.h: No such file or directory
+> keyctl01.c: In function 'main':
+> keyctl01.c:117: error: 'key_serial_t' undeclared (first use in this funct=
+ion)
+> keyctl01.c:117: error: (Each undeclared identifier is reported only once
+> keyctl01.c:117: error: for each function it appears in.)
+> keyctl01.c:117: error: expected ';' before 'ne_key'
+> keyctl01.c:144: error: 'ne_key' undeclared (first use in this function)
+> keyctl01.c:144: error: 'INT32_MAX' undeclared (first use in this function)
+> keyctl01.c:144: error: 'INT32_MIN' undeclared (first use in this function)
+> make[4]: *** [keyctl01] Error 1
+> make[4]: Leaving directory `/home/smb/vte/testcases/kernel/syscalls/keyct=
+l'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory `/home/smb/vte/testcases/kernel/syscalls'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/home/smb/vte/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/home/smb/vte/testcases'
+> make: *** [testcases-all] Error 2
 
-Looks fine. Please attach the file as a patch and also add a necessary
-entry in one of the runtest files. If it looks ok Subrata, please
-commit.
+    It's fixed now.
 Thanks,
 -Garrett
 
