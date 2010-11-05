@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PK0kC-0003yz-CG
-	for ltp-list@lists.sourceforge.net; Sun, 21 Nov 2010 03:37:36 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PK0kB-0005pn-IQ
-	for ltp-list@lists.sourceforge.net; Sun, 21 Nov 2010 03:37:36 +0000
-Received: by wyb34 with SMTP id 34so1301679wyb.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PEQPt-0002bO-Cw
+	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 17:49:33 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PEQPp-0002jx-5q
+	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 17:49:31 +0000
+Received: by pzk34 with SMTP id 34so597157pzk.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 20 Nov 2010 19:37:29 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <0A8C979C21B8D745A471962AD91DBAD844DD247AA3@SAFEX1MAIL4.st.com>
-References: <0A8C979C21B8D745A471962AD91DBAD844DD247AA3@SAFEX1MAIL4.st.com>
-Date: Sat, 20 Nov 2010 19:37:29 -0800
-Message-ID: <AANLkTi=z3xG7Rrs8DTk89_QxvhYG9NQkgKvKKDAM5xj5@mail.gmail.com>
+	Fri, 05 Nov 2010 10:49:23 -0700 (PDT)
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] FW: Removed unused variables on getdelay.c file
+Date: Fri, 5 Nov 2010 10:49:19 -0700
+Message-Id: <B9AFF03C-2075-420E-B99A-E9487463A58B@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1081)
+Subject: [LTP] [RFC] Remove testcases/kernel/syscalls/pcllib
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +28,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net List" <ltp-list@lists.sourceforge.net>
 
-On Sun, Nov 14, 2010 at 11:42 PM, Francesco RUNDO
-<francesco.rundo@st.com> wrote:
-> Any updates about the issue related to getdelays.c file ?
->
-> Subrata,
->
-> Please, can you send me your feedback about the patch I want to submit for
-> fixing the getdelays issue ?
-
-Please provide a signed-off-by next time.
+	Turns out it wasn't being compiled and was broken to begin with (I'm going to commit the bits shortly to disable it from the build). Does anyone object if it remove it?
+	I'm game to removing other components if requested.
 Thanks,
 -Garrett
-
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
