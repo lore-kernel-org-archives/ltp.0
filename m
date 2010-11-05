@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PJPmr-00039i-Cm
-	for ltp-list@lists.sourceforge.net; Fri, 19 Nov 2010 12:09:53 +0000
-Date: Fri, 19 Nov 2010 13:21:45 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101119122145.GB19564@saboteur.suse.cz>
-References: <4CE61F95.0@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PEAuH-00038f-Jc
+	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 01:15:53 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PEAuG-0006IH-5u
+	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 01:15:53 +0000
+Received: by wya21 with SMTP id 21so2534363wya.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Nov 2010 18:15:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CE61F95.0@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH]Instead sem_wait by fcntl for sigaction
- test.
+In-Reply-To: <000001cb7c0a$343bc2c0$9cb34840$@co.jp>
+References: <000001cb7c0a$343bc2c0$9cb34840$@co.jp>
+Date: Thu, 4 Nov 2010 18:15:45 -0700
+Message-ID: <AANLkTi=3PpaGkchzV7Zw282=+nRjtLjBqHug+cVQAywq@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] About "make autotools" failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,48 +27,111 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Some days before, mitani-san reported some sigaction test failed at linux,
-> http://sourceforge.net/mailarchive/message.php?msg_id=000001cb798d%241aaa0210%244ffe0630%24%40co.jp
-> 
-> As Garrett said, add Linux-isms is not advisably. So i want try to fix it by another method.
-> 
-> I have seen the assertions.xml, these tests want to test sigaction with SA_RESTART
-> not sem_wait(it looks like there's a bug at older linux kernel), so i suggest to
-> instead sem_wait by fcntl.
-> 
-> What about this one?  If you agree with me, i will post other patchs.
+On Thu, Nov 4, 2010 at 3:22 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
+>
+>
+> I tried to build LTP with today's git "ltp-40be648.tar.gz".
+> But "make autotools" failed in my all systems.
+>
+> ------------
+> sed -n '1{s:LTP-:m4_define([LTP_VERSION],[:;s:$:]):;p;q}' ChangeLog >
+> m4/ltp-version.m4
+> aclocal -I m4
+> autoconf
+> autoheader
+> automake -c -a
+> configure.ac:18: installing `./config.guess'
+> configure.ac:18: installing `./config.sub'
+> configure.ac:4: installing `./install-sh'
+> configure.ac:4: installing `./missing'
+> set -x; \
+> =A0 =A0 =A0 =A0cd testcases/kernel/syscalls/pcllib && \
+> =A0 =A0 =A0 =A0aclocal && \
+> =A0 =A0 =A0 =A0autoconf && \
+> =A0 =A0 =A0 =A0autoheader && \
+> =A0 =A0 =A0 =A0automake --add-missing
+> + cd testcases/kernel/syscalls/pcllib
+> + aclocal
+> + autoconf
+> configure.in:11: error: possibly undefined macro: AC_PROG_LIBTOOL
+> =A0 =A0 =A0If this token and others are legitimate, please use m4_pattern=
+_allow.
+> =A0 =A0 =A0See the Autoconf documentation.
+> make: *** [testcases/kernel/syscalls/pcllib/configure] Error 1
+> ------------
+>
+> The environments of my systems are as follows:
+> =A0- RHEL4.8 (kernel version 2.6.9-89) =A0 --- (x86, x86_64, ia64)
+> =A0- RHEL5.5 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
+>
+>
+> I use "automake", "autoconf" and "m4" whose versions are same as
+> written in "INSTALL" file:
+> ------------
+> [root@RHEL55-64-LTP ~]# automake --version
+> automake (GNU automake) 1.10.2
+> Copyright (C) 2008 Free Software Foundation, Inc.
+> License GPLv2+: GNU GPL version 2 or later
+> <http://gnu.org/licenses/gpl.html>
+> This is free software: you are free to change and redistribute it.
+> There is NO WARRANTY, to the extent permitted by law.
+>
+> Written by Tom Tromey <tromey@redhat.com>
+> =A0 =A0 =A0 and Alexandre Duret-Lutz <adl@gnu.org>.
+> [root@RHEL55-64-LTP ~]# autoconf --version
+> autoconf (GNU Autoconf) 2.61
+> Copyright (C) 2006 Free Software Foundation, Inc.
+> This is free software. =A0You may redistribute copies of it under the ter=
+ms of
+> the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.
+> There is NO WARRANTY, to the extent permitted by law.
+>
+> Written by David J. MacKenzie and Akim Demaille.
+> [root@RHEL55-64-LTP ~]# m4 --version
+> GNU M4 1.4.7
+> Copyright (C) 2006 Free Software Foundation, Inc.
+> This is free software; see the source for copying conditions. =A0There is=
+ NO
+> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOS=
+E.
+>
+> Written by Rene' Seindal.
+> [root@RHEL55-64-LTP ~]#
+> ------------
+>
+>
+>
+> By the way, in today's git "ltp-40be648.tar.gz", "${LTPROOT}/testcases/
+> kernel/syscalls/pcllib/aclocal.m4" is overwritten after failure of
+> "make autotools" command.
+> But, in older gits "ltp-7e2cbbd", "${LTPROOT}/testcases/kernel/
+> syscalls/pcllib/aclocal.m4" is not overwritten after success of
+> "make autotools" command.
+> Why?
 
-As far as I understand this, you are trying to avoid a fact, that older
-kernels are not comforming to the POSIX specification. This is a case
-where the test is failing for a good reason, all we could do here is
-print message like:
+    I was trying to get rid of autogenerated files, but unfortunately
+I was only half successful. I'll restore the original files if I can't
+get the whole thing to work tonight (please try installing the libtool
+package to see if the problem goes away though first).
+Thanks and sorry for the inconvenience,
+-Garrett
 
-"this test is known to fail on linux kernel < 2.6.22"
+---------------------------------------------------------------------------=
+---
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
 
-Before the test reports failure.
+Billion" shares his insights and actions to help propel your =
 
-
-On the other end I do not object to adding test for file locks with
-SA_RESTART. But you should not remove the sem_lock() test (as it's not
-broken).
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
