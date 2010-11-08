@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PDh28-0007MW-5t
-	for ltp-list@lists.sourceforge.net; Wed, 03 Nov 2010 17:22:00 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PDh27-0007Wm-1J
-	for ltp-list@lists.sourceforge.net; Wed, 03 Nov 2010 17:22:00 +0000
-Received: by wwb31 with SMTP id 31so869640wwb.10
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PFZDi-0007GP-TQ
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:25:42 +0000
+Received: from mail-ey0-f175.google.com ([209.85.215.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFZDh-0000uc-NJ
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:25:42 +0000
+Received: by mail-ey0-f175.google.com with SMTP id 28so3081283eya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 03 Nov 2010 10:21:53 -0700 (PDT)
+	Mon, 08 Nov 2010 13:25:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4CD1952A.2000604@linux.vnet.ibm.com>
-References: <4CD1952A.2000604@linux.vnet.ibm.com>
-Date: Wed, 3 Nov 2010 10:21:52 -0700
-Message-ID: <AANLkTimc93rVnn6XY=yB3HN_SectB-jORgSG__2_2AY5@mail.gmail.com>
+In-Reply-To: <4CCFC531.9090509@cn.fujitsu.com>
+References: <4CCFC177.8070102@cn.fujitsu.com> <4CCFC531.9090509@cn.fujitsu.com>
+Date: Mon, 8 Nov 2010 13:25:41 -0800
+Message-ID: <AANLkTikSEryW9jCDcKA9q0bq_7fRE8L+PMvL1ioiG8Xk@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [Fwd: Query regarding termination_id=4 in LTP.]
+Subject: Re: [LTP] [POSIX][PATCH] Remove POSIX non-compliant API
+	pthread_getattr_np
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,191 +28,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1274232594904025217=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
---===============1274232594904025217==
-Content-Type: multipart/alternative; boundary=0016364c7576fc250c0494294675
+On Tue, Nov 2, 2010 at 1:00 AM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+> Sorry to make a noise, please ignore this patch.
+> However, maybe PTS_UNRESOLVED is better if "ssize !=3D stacksize" at the =
+child thread.
+>
+> Bian Naimeng wrote:
+>> The pthread_getattr_np is not a POSIX compliant API, it's unnecessary to=
+ test it.
+>>
+>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>>
+>> ---
+>> =A0.../interfaces/pthread_attr_setstacksize/2-1.c =A0 =A0 | =A0 17 ++++-=
+------------
+>> =A01 files changed, 4 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthre=
+ad_attr_setstacksize/2-1.c b/testcases/open_posix_testsuite/conformance/int=
+erfaces/pthread_attr_setstacksize/2-1.c
+>> index 668fd96..c91c946 100644
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr=
+_setstacksize/2-1.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr=
+_setstacksize/2-1.c
+>> @@ -14,7 +14,6 @@
+>> =A0 * 4. =A0In the created thread, read stacksize
+>> =A0 */
+>>
+>> -/* For pthread_getattr_np(3) -- not a POSIX compliant API */
+>> =A0#ifndef _GNU_SOURCE
+>> =A0#define _GNU_SOURCE
+>> =A0#endif
+>> @@ -35,21 +34,13 @@
+>> =A0size_t stack_size;
+>> =A0void *stack_addr;
+>>
+>> -void *thread_func()
+>> +void *thread_func(void *arg)
+>> =A0{
+>> - =A0 =A0 pthread_attr_t attr;
+>> + =A0 =A0 pthread_attr_t *pattr =3D (pthread_attr_t *)arg;
+>> =A0 =A0 =A0 size_t ssize;
+>> =A0 =A0 =A0 int rc;
+>>
+>> - =A0 =A0 if ((rc =3D pthread_getattr_np(pthread_self(), &attr)) !=3D 0)=
+ {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 printf(ERROR_PREFIX "pthread_getattr_np: %s\n"=
+, strerror(rc));
+>> - =A0 =A0 =A0 =A0 =A0 =A0 exit(PTS_FAIL);
+>> - =A0 =A0 }
+>> - =A0 =A0 if ((rc =3D pthread_attr_init(&attr)) !=3D 0) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 printf(ERROR_PREFIX "pthread_attr_init: %s\n",=
+ strerror(rc));
+>> - =A0 =A0 =A0 =A0 =A0 =A0 exit(PTS_FAIL);
+>> - =A0 =A0 }
+>> - =A0 =A0 if ((rc =3D pthread_attr_getstacksize(&attr, &ssize)) !=3D 0) {
+>> + =A0 =A0 if ((rc =3D pthread_attr_getstacksize(pattr, &ssize)) !=3D 0) {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf(ERROR_PREFIX "pthread_attr_getstacksi=
+ze: %s\n",
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 strerror(rc));
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit(PTS_FAIL);
+>> @@ -106,7 +97,7 @@ int main()
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0exit(PTS_UNRESOLVED);
+>> =A0 =A0 =A0 =A0 =A0}
+>>
+>> - =A0 =A0 rc =3D pthread_create(&new_th, &attr, thread_func, NULL);
+>> + =A0 =A0 rc =3D pthread_create(&new_th, &attr, thread_func, &attr);
+>> =A0 =A0 =A0 if (rc !=3D 0) {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf(ERROR_PREFIX "pthread_create: =
+%s\n", strerror(rc));
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0exit(PTS_FAIL);
 
---0016364c7576fc250c0494294675
-Content-Type: text/plain; charset=ISO-8859-1
-
-On Wed, Nov 3, 2010 at 10:00 AM, Subrata Modak
-<subrata@linux.vnet.ibm.com>wrote:
-
->  FYI...!!
->
-> -------- Original Message --------  Subject: Query regarding
-> termination_id=4 in LTP.  Date: Wed, 3 Nov 2010 12:08:56 +0530  From:
-> naren.mehra@gmail.com  To: manojo@austin.ibm.com  CC:
-> subrata@linux.vnet.ibm.com
->
-> Hi,
->
-> I am not sure whom to ask this question so putting it here.
-> I am trying to run LTP on my arm based board and in some of the tests like
-> shm_test01 and mtest05
-> I am getting termination_id=4.
->
-> So, I am stuck as theres no other information as to why these 2 tests failed.
-> Could you help me out and tell me what does "termination_id=4" suggests ??
->
-> Log Snippet:
-> 1) shm_test01 :
-> <<<test_start>>>
-> tag=stime=3934
-> cmdline="shm_test -l 10 -t 2"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=1 termination_type=signaled termination_id=4 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
->
-> 2) mtest05
-> <<<test_start>>>
-> tag=mtest05 stime=3930
-> cmdline="  mmstress"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> mmstress    0  TINFO  :  run mmstress -h for all options
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=signaled termination_id=4 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>
->
->
-    No idea (could have exited with signal = 4, which is SIGILL, but I'm
-looking at the BSD signals manpage). This could suggest a number of issues
-with how the tests are being executed on the board. strace'ing the tests and
-providing the board details would be a helpful start -- otherwise we can't
-help the end-user.
-Thanks,
+Possibly, but the only problem with that is that there really needs to
+be a means to sample the current thread stack size. That's what's
+missing that needs to go into the POSIX spec.
 -Garrett
 
---0016364c7576fc250c0494294675
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+---------------------------------------------------------------------------=
+---
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
 
-<div class=3D"gmail_quote">On Wed, Nov 3, 2010 at 10:00 AM, Subrata Modak <=
-span dir=3D"ltr">&lt;<a href=3D"mailto:subrata@linux.vnet.ibm.com">subrata@=
-linux.vnet.ibm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quot=
-e" style=3D"margin: 0pt 0pt 0pt 0.8ex; border-left: 1px solid rgb(204, 204,=
- 204); padding-left: 1ex;">
+Billion" shares his insights and actions to help propel your =
 
-
-
-
-<div bgcolor=3D"#ffffff" text=3D"#000000">
-FYI...!!<br>
-<br>
--------- Original Message --------
-<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
-  <tbody>
-    <tr>
-      <th align=3D"right" nowrap valign=3D"baseline">Subject: </th>
-      <td>Query regarding termination_id=3D4 in LTP.</td>
-    </tr>
-    <tr>
-      <th align=3D"right" nowrap valign=3D"baseline">Date: </th>
-      <td>Wed, 3 Nov 2010 12:08:56 +0530</td>
-    </tr>
-    <tr>
-      <th align=3D"right" nowrap valign=3D"baseline">From: </th>
-      <td><a href=3D"mailto:naren.mehra@gmail.com" target=3D"_blank">naren.=
-mehra@gmail.com</a></td>
-    </tr>
-    <tr>
-      <th align=3D"right" nowrap valign=3D"baseline">To: </th>
-      <td><a href=3D"mailto:manojo@austin.ibm.com" target=3D"_blank">manojo=
-@austin.ibm.com</a></td>
-    </tr>
-    <tr>
-      <th align=3D"right" nowrap valign=3D"baseline">CC: </th>
-      <td><a href=3D"mailto:subrata@linux.vnet.ibm.com" target=3D"_blank">s=
-ubrata@linux.vnet.ibm.com</a></td>
-    </tr>
-  </tbody>
-</table>
-<br>
-<br>
-<pre>Hi,
-
-I am not sure whom to ask this question so putting it here.
-I am trying to run LTP on my arm based board and in some of the tests like
-shm_test01 and mtest05
-I am getting termination_id=3D4.
-
-So, I am stuck as theres no other information as to why these 2 tests faile=
-d.
-Could you help me out and tell me what does &quot;termination_id=3D4&quot; =
-suggests ??
-
-Log Snippet:
-1) shm_test01 :
-&lt;&lt;&lt;test_start&gt;&gt;&gt;
-tag=3Dstime=3D3934
-cmdline=3D&quot;shm_test -l 10 -t 2&quot;
-contacts=3D&quot;&quot;
-analysis=3Dexit
-&lt;&lt;&lt;test_output&gt;&gt;&gt;
-&lt;&lt;&lt;execution_status&gt;&gt;&gt;
-initiation_status=3D&quot;ok&quot;
-duration=3D1 termination_type=3Dsignaled termination_id=3D4 corefile=3Dno
-cutime=3D0 cstime=3D0
-&lt;&lt;&lt;test_end&gt;&gt;&gt;
-
-2) mtest05
-&lt;&lt;&lt;test_start&gt;&gt;&gt;
-tag=3Dmtest05 stime=3D3930
-cmdline=3D&quot;  mmstress&quot;
-contacts=3D&quot;&quot;
-analysis=3Dexit
-&lt;&lt;&lt;test_output&gt;&gt;&gt;
-mmstress    0  TINFO  :  run mmstress -h for all options
-&lt;&lt;&lt;execution_status&gt;&gt;&gt;
-initiation_status=3D&quot;ok&quot;
-duration=3D0 termination_type=3Dsignaled termination_id=3D4 corefile=3Dno
-cutime=3D0 cstime=3D0
-&lt;&lt;&lt;test_end&gt;&gt;<br></pre></div></blockquote><div><br>=A0=A0=A0=
- No idea (could have exited with signal =3D 4, which is SIGILL, but I&#39;m=
- looking at the BSD signals manpage). This could suggest a number of issues=
- with how the tests are being executed on the board. strace&#39;ing the tes=
-ts and providing the board details would be a helpful start -- otherwise we=
- can&#39;t help the end-user.<br>
-Thanks,<br>-Garrett<br></div></div>
-
---0016364c7576fc250c0494294675--
-
-
---===============1274232594904025217==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Achieve Improved Network Security with IP and DNS Reputation.
-Defend against bad network traffic, including botnets, malware, 
-phishing sites, and compromised hosts - saving your company time, 
-money, and embarrassment.   Learn More! 
-http://p.sf.net/sfu/hpdev2dev-nov
---===============1274232594904025217==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1274232594904025217==--
-
