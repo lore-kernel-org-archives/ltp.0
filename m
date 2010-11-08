@@ -2,22 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PFXHh-0002NK-CI
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 19:21:41 +0000
-Date: Mon, 8 Nov 2010 20:32:40 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101108193240.GD21681@saboteur.suse.cz>
-References: <20101108175836.GA20774@saboteur.suse.cz>
-	<AANLkTin1gbGLq=eoyBkLTycX-LxyNtUJQJv1jdnqdXtA@mail.gmail.com>
-	<20101108182555.GA21681@saboteur.suse.cz>
-	<20101108185223.GB21681@saboteur.suse.cz>
-	<AANLkTin_Ufopsjacwr4+nMhLg-6UMtfPO0geeq5+-Y2W@mail.gmail.com>
-	<20101108192524.GC21681@saboteur.suse.cz>
-	<AANLkTinXqYi7iHTPyMCNOt=kHNeRKAS6btL8aVcj23Tk@mail.gmail.com>
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PFMFS-0007XP-6v
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 07:34:38 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFMFQ-0003CX-4P
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 07:34:38 +0000
+Message-ID: <4CD7A81E.1020603@cn.fujitsu.com>
+Date: Mon, 08 Nov 2010 15:34:54 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTinXqYi7iHTPyMCNOt=kHNeRKAS6btL8aVcj23Tk@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix obvious compilation problems in cap_bounds
+Subject: [LTP] [RFC][PATCH]Skip DOTS category always
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,68 +22,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> >> > > Following patch fixes obvious problems with cap_bounds compilat=
-ion
-> >> >> > >
-> >> >> > > * CAP_LAST_CAP is defined in linux/capability.h =3D> include it
-> >> >> > >
-> >> >> > > * remove int errno; definition
-> >> >> > >
-> >> >> > > * move #ifdef HAVE_SYS_CAPABILITY_H after int main(int argc, ch=
-ar *argv[])
-> >> >> > > =A0in check_pe.c
-> >> >> > >
-> >> >> > > * small typos and coding style
-> >> >> >
-> >> >> > Hi Cyril!
-> >> >> > =A0 =A0 Quick question -- why doesn't sys/capability.h build on
-> >> >> > linux/capability.h (in particular what OS did you run into this i=
-ssue
-> >> >> > on)?
-> >> >>
-> >> >> You are right, the problem is that HAVE_SYS_CAPABILITY_H is not in
-> >> >> config.h even when libcap-devel is installed and headers are found
-> >> >> (there is only #define HAVE_LIBCAP 1).
-> >> >>
-> >> >
-> >> > Hmm, adding sys/capability.h into AC_CHECK_HEADERS() in configure.ac
-> >> > seem to fixed this. Still I have no idea why AC_CHECK_HEADER() in
-> >> > m4/ltp-cap.m4 hasn't exported HAVE_SYS_CAPABILITY_H.
-> >>
-> >> =A0 =A0 Probably because I forgot to remove the square brackets; give =
-the
-> >> patch attached a shot and let me know how it goes...
-> >
-> > Nope, it looks like AC_CHECK_HEADER() does not set HAVE_* at all(1). =
-=A0So
-> > we need to change AC_HECK_HEADER() to AC_CHECK_HEADERS() in
-> > m4/ltp-cap.m4.
-> =
+After applied commit 43b57dbb4b959203bda5743ee7ff36c627e0911c, some error are caught
+when install test suite.
 
->     That's kind of lame :/... Could you try this patch instead please?
+make[2]: Entering directory `/home/biannm/ltp-882ad81/testcases/DOTS'
+make[2]: *** No rule to make target `install'.  Stop.
+make[2]: Leaving directory `/home/biannm/ltp-882ad81/testcases/DOTS'
+make[1]: *** [install] Error 2
+make[1]: Leaving directory `/home/biannm/ltp-882ad81/testcases'
+make: *** [testcases-install] Error 2
 
-Yes, this works regardless if there are square braces around
-sys/capability.h or not.
+The commit 43b57dbb4b959203bda5743ee7ff36c627e0911c looks to fix some configure error
+reported by mitani-san. But at the older LTP, Dots is be filtered out always, why we
+add a checking, it looks unnecessary.
 
--- =
+------
+Dots need be skip always.
 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
----------------------------------------------------------------------------=
 ---
+ testcases/Makefile |    7 +------
+ 1 files changed, 1 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/Makefile b/testcases/Makefile
+index b30d6d4..4792811 100644
+--- a/testcases/Makefile
++++ b/testcases/Makefile
+@@ -31,7 +31,7 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ #    run).
+ # 3. mce-test doesn't fit cleanly in the build, yet.
+ # 4. pounder21 is just broken.
+-FILTER_OUT_DIRS		:= ballista kdump mce-test open% pounder21
++FILTER_OUT_DIRS		:= DOTS ballista kdump mce-test open% pounder21
+ 
+ # XXX (garrcoop): Not sure why realtime is still in this list; this was the
+ # original list of disabled items...
+@@ -41,11 +41,6 @@ ifeq ($(UCLINUX),1)
+ FILTER_OUT_DIRS		+= realtime
+ endif
+ 
+-# DOTS requires javac
+-ifeq ($(strip $(JAVAC)),)
+-FILTER_OUT_DIRS		+= DOTS
+-endif
+-
+ #
+ # XXX (garrcoop): disabling the open_posix_testsuite by request from Subrata
+ # due to build times (open_posix_testsuite runs serially by design to
+-- 
+1.7.0.4
+
+
+
+
+-- 
+Regards
+Bian Naimeng
+
+
+------------------------------------------------------------------------------
 The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a =
-
-Billion" shares his insights and actions to help propel your =
-
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
 business during the next growth cycle. Listen Now!
 http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
