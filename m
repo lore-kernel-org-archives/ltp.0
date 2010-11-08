@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PNLMO-0003Nf-Pv
-	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 08:14:48 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PFLXO-00027Y-Gn
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 06:49:06 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PNLMM-0002NU-O0
-	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 08:14:48 +0000
-Message-ID: <4CF4B26F.3030000@cn.fujitsu.com>
-Date: Tue, 30 Nov 2010 16:14:39 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	id 1PFLXM-00046O-RN
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 06:49:06 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oA86mwtP008573
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Nov 2010 01:48:59 -0500
+Date: Mon, 8 Nov 2010 01:48:58 -0500 (EST)
+From: caiqian@redhat.com
+Message-ID: <905221418.1813101289198938904.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1222818984.1813081289198905327.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [POSIX[PATCH]Fix the bug of generate-makefiles.sh
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_107209_1903874074.1289198938903"
+Subject: [LTP] [PATCH v9] mmap/munmap /dev/zero: a common way of
+ malloc()/free() anonymous memory on Solaris
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,76 +30,313 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Script generate-makefiles.sh has a bug, it can cause run.sh miss some tests.
-For exemple, this is the makefile of conformance/interfaces/sched_getparam:
+------=_Part_107209_1903874074.1289198938903
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-INSTALL_TARGETS+=       4-1.run-test 5-1.sh
-MAKE_TARGETS+=          4-1.run-test
+The basic purpose of this is a to test if it is possible to map and
+unmap /dev/zero, and to read and write the mapping. Being inspired by
+two bugs in the past, the design of the test was added some variations
+based on the reproducers for them. It also accept an option to
+mmap/munmap anonymous pages.
 
-INSTALL_TARGETS+=       2-1.run-test 1-1.run-test 3-1.run-test 6-1.run-test
-MAKE_TARGETS+=          2-1.run-test 1-1.run-test 3-1.run-test 6-1.run-test
+One is to trigger panic with transparent hugepage feature that
+split_huge_page is very strict in checking the rmap walk was
+perfect. Keep it strict because if page_mapcount isn't stable and just
+right, the __split_huge_page_refcount that follows the rmap walk could
+lead to erratic page_count()s for the subpages. The bug in fork lead
+to the rmap walk finding the parent huge-pmd twice instead of just
+one, because the anon_vma_chain objects of the child vma still point
+to the vma->vm_mm of the parent. That trips on the split_huge_page
+mapcount vs page_mapcount check leading to a BUG_ON.
 
-... snip ...
+The other bug is mmap() of /dev/zero results in calling map_zero()
+which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
+address range. Since the application which maps a region from 5M to
+16M in size is also multi-threaded the subsequent munmap() of
+/dev/zero results is TLB shootdowns to all other CPUs. When this
+happens thousands or millions of times the application performance is
+terrible. The mapping ZERO_PAGE in every pte within that virtual
+address range was an optimization to make the subsequent pagefault
+times faster on RHEL5 that has been removed/changed upstream.
 
-run.sh:
-        @echo '#/bin/sh' > $@
-        @echo "$(top_srcdir)/bin/run-tests.sh $(subdir) 4-1.run-test 5-1.sh" >> $@
-        @chmod +x run.sh
-
-So what about the following patch?
-
-----------------------------------------------------------------------------------
-
-If there are some source files at the child directory, generate_makefile will
-be invoked twice, then run.sh will miss some tests.
-
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
- .../scripts/generate-makefiles.sh                  |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+v9: add the tests to runtest/mm.
+v8: add an option to utilize KSM; no need to open /dev/zero for
+    anonymous page testing.
+v7: another "(void)" fix
+v6: really use git format; check return from children; cleanup.
+v5: add an option to test anonymous pages; move open() into setup().
+v4: comment fix; code cleanup.
+v3: really mmap /dev/zero; replace _exit() with exit(); fix patch
+    format.
+v2: incorporate comments from Mike and Garrett.
 
-diff --git a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-index 536d407..ed6406f 100755
---- a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-+++ b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-@@ -152,11 +152,11 @@ EOF
+------=_Part_107209_1903874074.1289198938903
+Content-Type: text/x-patch;
+	name=0001-PATCH-v9-mmap-munmap-dev-zero-a-common-way-of-malloc.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=0001-PATCH-v9-mmap-munmap-dev-zero-a-common-way-of-malloc.patch
+
+ runtest/mm                              |    5 +
+ testcases/kernel/syscalls/mmap/mmap10.c |  204 +++++++++++++++++++++++++++++++
+ 2 files changed, 209 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap10.c
+
+diff --git a/runtest/mm b/runtest/mm
+index 2f3f407..36550d2 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -54,3 +54,8 @@ mmapstress08 mmapstress08
+ mmapstress09 mmapstress09 -p 20 -t 0.2
+ mmapstress10 mmapstress10 -p 20 -t 0.2
  
- 	fi
- 
--	if [ "$tests" != "" ] && ! grep -q '^run.sh' "$makefile.3"; then
-+	if ! grep -q '^run.sh' "$makefile.3"; then
- 		cat >> "$makefile.3" <<EOF
- run.sh:
- 	@echo '#/bin/sh' > \$@
--	@echo "\$(top_srcdir)/bin/run-tests.sh \$(subdir) $tests" >> \$@
-+	@echo "\$(top_srcdir)/bin/run-tests.sh \$(subdir) \$(INSTALL_TARGETS)" >> \$@
- 	@chmod +x run.sh
- 
- EOF
++mmap10 mmap10
++mmap10_1 mmap10 -a
++mmap10_2 mmap10 -s
++mmap10_3 mmap10 -a -s
++mmap10_4 mmap10 -a -s -c 60
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+new file mode 100644
+index 0000000..2060ad0
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -0,0 +1,204 @@
++/*
++ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
++ * memory on Solaris.
++ *
++ * The basic purpose of this is a to test if it is possible to map and
++ * unmap /dev/zero, and to read and write the mapping. Being inspired
++ * by two bugs in the past, the design of the test was added some
++ * variations based on the reproducers for them. It also accept an
++ * option to mmap/munmap anonymous pages.
++ *
++ * One is to trigger panic with transparent hugepage feature that
++ * split_huge_page is very strict in checking the rmap walk was
++ * perfect. Keep it strict because if page_mapcount isn't stable and
++ * just right, the __split_huge_page_refcount that follows the rmap
++ * walk could lead to erratic page_count()s for the subpages. The bug
++ * in fork lead to the rmap walk finding the parent huge-pmd twice
++ * instead of just one, because the anon_vma_chain objects of the
++ * child vma still point to the vma->vm_mm of the parent. That trips
++ * on the split_huge_page mapcount vs page_mapcount check leading to a
++ * BUG_ON.
++ *
++ * The other bug is mmap() of /dev/zero results in calling map_zero()
++ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
++ * address range. Since the application which maps a region from 5M to
++ * 16M in size is also multi-threaded the subsequent munmap() of
++ * /dev/zero results is TLB shootdowns to all other CPUs. When this
++ * happens thousands or millions of times the application performance
++ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
++ * address range was an optimization to make the subsequent pagefault
++ * times faster on RHEL5 that has been removed/changed upstream.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <fcntl.h>
++#include "test.h"
++#include "usctest.h"
++
++#define SIZE (5*1024*1024)
++
++char *TCID = "mmap10";
++int TST_TOTAL = 1;
++extern int Tst_count;
++static int fd, opt_anon, opt_ksm;
++
++/* main setup function of test */
++void setup(void);
++/* cleanup function for the test */
++void cleanup(void);
++int mmapzero(void);
++void help(void);
++
++static option_t options[] = {
++	{ "a", &opt_anon,   NULL},
++	{ "s", &opt_ksm,    NULL},
++	{ NULL, NULL,       NULL}
++};
++
++int main(int argc, char *argv[])
++{
++	/* loop counter */
++	int lc;
++	/* message returned from parse_opts */
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, help);
++	if (msg != NULL) {
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++		tst_exit();
++	}
++
++	/* Perform global setup for test */
++	setup();
++
++	/* Check looping state if -i option given */
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* Reset Tst_count in case we are looping. */
++		Tst_count = 0;
++
++		TEST(mmapzero());
++
++		if (TEST_RETURN != 0)
++			tst_resm(TFAIL, "mmapzero() failed with %ld.",
++				TEST_RETURN);
++		else
++			tst_resm(TPASS, "mmapzero() completed "
++				"successfully.");
++	}
++
++	cleanup();
++	return 0;
++}
++
++int mmapzero(void)
++{
++	char *x;
++	int n;
++
++	if (opt_anon)
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
++	else {
++		if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
++			tst_brkm(TBROK|TERRNO, cleanup, "open");
++
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE, fd, 0);
++	}
++	if (x == MAP_FAILED) {
++		tst_resm(TFAIL|TERRNO, "mmap");
++		return 1;
++	}
++	if (opt_ksm)
++		if (madvise(x, SIZE+SIZE-4096, MADV_MERGEABLE) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++	x[SIZE] = 0;
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL|TERRNO, "munmap");
++		exit(0);
++	}
++	n = fork();
++	if (n == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	else if (n == 0) {
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_resm(TFAIL|TERRNO, "munmap");
++		exit(0);
++	} else {
++		n = fork();
++		if (n == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		else if (n == 0) {
++			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++				tst_resm(TFAIL|TERRNO, "munmap");
++			exit(0);
++		}
++	}
++	if (munmap(x, SIZE+SIZE-4096) == -1)
++		tst_resm(TFAIL|TERRNO, "munmap");
++	while (waitpid(-1, &n, WUNTRACED | WCONTINUED) > 0) {
++		if (WEXITSTATUS(n) != 0)
++			return 1;
++	}
++	return 0;
++}
++
++void cleanup(void)
++{
++	/*
++	 * remove the tmp directory and exit
++	 */
++	TEST_CLEANUP;
++	tst_rmdir();
++	tst_exit();
++}
++
++
++void setup(void)
++{
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++	tst_tmpdir();
++}
++
++void help(void)
++{
++	printf("  -a      Test anonymous pages\n");
++	printf("  -s      Add to KSM regions\n");
++}
 -- 
-1.7.0.4
+1.7.1
 
 
-
--- 
-Regards
-Bian Naimeng
-
+------=_Part_107209_1903874074.1289198938903
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
+------=_Part_107209_1903874074.1289198938903
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_107209_1903874074.1289198938903--
+
