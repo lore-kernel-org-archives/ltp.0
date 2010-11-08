@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PFZbG-0000VD-Kh
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:50:02 +0000
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PFZbF-00031B-KZ
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:50:02 +0000
-Received: by wwb39 with SMTP id 39so432381wwb.4
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PFZdL-0000Fc-IN
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:52:11 +0000
+Received: from mail-ew0-f47.google.com ([209.85.215.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFZdK-0004GA-LC
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:52:11 +0000
+Received: by ewy2 with SMTP id 2so3165151ewy.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 08 Nov 2010 13:49:56 -0800 (PST)
+	Mon, 08 Nov 2010 13:52:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4CD7A289.8020002@cn.fujitsu.com>
-References: <4CCA1F3E.5000202@cn.fujitsu.com> <4CD7A289.8020002@cn.fujitsu.com>
-Date: Mon, 8 Nov 2010 13:49:55 -0800
-Message-ID: <AANLkTikTMn2iK9dNk4btxidwvsKvG9Z7Sd27C78qFssq@mail.gmail.com>
+In-Reply-To: <AANLkTi=P==nQsPTma87Nk3OvwFPoPTaMe7z+t-d+vPbX@mail.gmail.com>
+References: <B9AFF03C-2075-420E-B99A-E9487463A58B@gmail.com>
+	<AANLkTi=P==nQsPTma87Nk3OvwFPoPTaMe7z+t-d+vPbX@mail.gmail.com>
+Date: Mon, 8 Nov 2010 13:52:04 -0800
+Message-ID: <AANLkTik_Pws5E6cJDDYfNV0dLppX=wmZZxvw5AMksb_M@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [POSIX][PATCH]A awaited IO request completion signal can
- case lio_listio return EINTR.
+Subject: Re: [LTP] [RFC] Remove testcases/kernel/syscalls/pcllib
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,46 +31,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net List" <ltp-list@lists.sourceforge.net>
 
-On Sun, Nov 7, 2010 at 11:11 PM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
-> Bian Naimeng wrote:
->> Open posix documents point lio_listio may return EINTR caused by a await=
-ed I/O requst
->> completion signal.
->>
->> [EINTR]
->> =A0 =A0 A signal was delivered while waiting for all I/O requests to com=
-plete during an
->> =A0 =A0 LIO_WAIT operation. Note that, since each I/O operation invoked =
-by lio_listio()
->> =A0 =A0 may possibly provoke a signal when it completes, this error retu=
-rn may be caused
->> =A0 =A0 by the completion of one (or more) of the very I/O operations be=
-ing awaited.
->> =A0 =A0 Outstanding I/O requests are not canceled, and the application s=
-hall examine each
->> =A0 =A0 list element to determine whether the request was initiated, can=
-celed, or completed.
->>
->> So it's unnecessary to setup handler for IO operation completion, we jus=
-t need check
->> the aio_error and aio_return for each request, it has same effect on che=
-cking
->> received_selected.
->>
->> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
->>
+On Sun, Nov 7, 2010 at 10:59 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Fri, Nov 5, 2010 at 10:49 AM, Garrett Cooper <yanegomi@gmail.com> wrot=
+e:
+>> =A0 =A0 =A0 =A0Turns out it wasn't being compiled and was broken to begi=
+n with (I'm going to commit the bits shortly to disable it from the build).=
+ Does anyone object if it remove it?
+>> =A0 =A0 =A0 =A0I'm game to removing other components if requested.
 >
-> =A0Hi Garrett,
->
-> =A0 =A0Would you like to pick up this patch? =A0Any reply is helpful to m=
-e, so please let me
-> =A0know what's your opinion if you are free. ^_^
+> Going twice...
 
-I have some potential concerns with the above patch. Let me fully
-digest it and I'll get back to you.
+GONE!
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
