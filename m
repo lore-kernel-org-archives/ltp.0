@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PEQPt-0002bO-Cw
-	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 17:49:33 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PFPNV-0001Pb-FD
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 10:55:09 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PEQPp-0002jx-5q
-	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 17:49:31 +0000
-Received: by pzk34 with SMTP id 34so597157pzk.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 05 Nov 2010 10:49:23 -0700 (PDT)
-From: Garrett Cooper <yanegomi@gmail.com>
-Date: Fri, 5 Nov 2010 10:49:19 -0700
-Message-Id: <B9AFF03C-2075-420E-B99A-E9487463A58B@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v1081)
-Subject: [LTP] [RFC] Remove testcases/kernel/syscalls/pcllib
+	id 1PFPNT-0007hu-Ly
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 10:55:09 +0000
+Message-ID: <4CD7D71B.1000605@cn.fujitsu.com>
+Date: Mon, 08 Nov 2010 18:55:23 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <4CCFD4C8.8060007@cn.fujitsu.com>
+	<AANLkTi=ma-dX1YAJgc5sesDx67G75eOMGEUA3+uxOQsu@mail.gmail.com>
+In-Reply-To: <AANLkTi=ma-dX1YAJgc5sesDx67G75eOMGEUA3+uxOQsu@mail.gmail.com>
+Subject: Re: [LTP] [POSIX][PATCH]pthread_mutex_getprioceiling should return
+ EINVAl when mutex's protocol is PTHREAD_PRIO_NONE.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,12 +29,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net List" <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-	Turns out it wasn't being compiled and was broken to begin with (I'm going to commit the bits shortly to disable it from the build). Does anyone object if it remove it?
-	I'm game to removing other components if requested.
-Thanks,
--Garrett
+
+
+Garrett Cooper wrote:
+> On Tue, Nov 2, 2010 at 2:07 AM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+>> The default value of the mutex's protocol shall be PTHREAD_PRIO_NONE,
+>> so pthread_mutex_getprioceiling should return EINVAL.
+>>
+>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>>
+>> ---
+>>  .../interfaces/pthread_mutex_getprioceiling/1-1.c  |   30 ++++++++++++++++++++
+>>  1 files changed, 30 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
+>> index d9251e6..65c8c6b 100644
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
+>> @@ -18,6 +18,7 @@
+>>  #include <pthread.h>
+>>  #include <stdio.h>
+>>  #include <sched.h>
+>> +#include <errno.h>
+>>  #include "posixtest.h"
+>>
+>>  int main()
+>> @@ -29,6 +30,7 @@ int main()
+>>          return PTS_UNRESOLVED;
+>>        #endif */
+>>
+>> +       pthread_mutexattr_t mattr;
+>>        pthread_mutex_t mutex;
+
+  ... snip ...
+
+
+>> +
+>> +       /* Get the prioceiling of the mutex. */
+>>        if(pthread_mutex_getprioceiling(&mutex, &prioceiling) != 0)
+>>        {
+>>                printf("Test FAILED: Error obtaining the priority ceiling\n");
+> 
+>     A patch similar to this will be committed soon. The above patch
+> has several correctness issues with perror (you have to capture the
+> error and play it back via strerror), and the original test author
+> accidentally mixed up one of the requirements between
+> pthread_mutex_getprioceiling and pthread_mutexattr_getprioceiling as
+> well by accident. This helped unroot a requirements issue on FreeBSD
+> with PTHREAD_PRIO_INHERIT, and it might so similar on Linux.
+
+  OK. I think it's better if you can send your patch at this thread. ^_^
+
+>     Partial credit will be `awarded' for having keen eyes on this
+> issue though :).
+
+  Thanks very much. ^_^
+
+> Thanks,
+> -Garrett
+> 
+> 
+
+-- 
+Regards
+Bian Naimeng
+
+
 ------------------------------------------------------------------------------
 The Next 800 Companies to Lead America's Growth: New Video Whitepaper
 David G. Thomson, author of the best-selling book "Blueprint to a 
