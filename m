@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <zliu@redhat.com>) id 1PLY3e-0002XU-DQ
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 09:24:02 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PLY3d-0007dN-88
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 09:24:02 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oAP9Nt06023000
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Nov 2010 04:23:55 -0500
-Date: Thu, 25 Nov 2010 04:23:55 -0500 (EST)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1193684080.447321290677035326.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <177873625.447271290676929182.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	(envelope-from <chrubis@suse.de>) id 1PFVof-00013T-U6
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 17:47:37 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 0AFBD90847
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Nov 2010 18:47:30 +0100 (CET)
+Date: Mon, 8 Nov 2010 18:58:36 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101108175836.GA20774@saboteur.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_24698_348469051.1290677035324"
-Subject: [LTP] [PATCH v2]extend the -I option value
+Content-Type: multipart/mixed; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
+Subject: [LTP] [PATCH] fix obvious compilation problems in cap_bounds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,113 +29,192 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-------=_Part_24698_348469051.1290677035324
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_24699_531434788.1290677035324"
 
-------=_Part_24699_531434788.1290677035324
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi,all 
-I found it just support a small value for -I option. 
-when I run '#./hugemmap04 -I 3600 -H /var/hugetlbfs',the test returned immediately. 
-the -I option details : 
--I x Execute test for x seconds 
-And if you give a much bigger value to -I option such as 3600 or larger, you will find the -I option disabled, 
-so I changed the lib/parse_opts.c file, and just modified the stop_time variable type from 'int' to 'double', 
-after changed, it can support a very bigger value for -I option. 
+Hi!
+Following patch fixes obvious problems with cap_bounds compilation
 
+* CAP_LAST_CAP is defined in linux/capability.h => include it
 
-v2: modified the patch's format 
+* remove int errno; definition
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com> 
---- 
+* move #ifdef HAVE_SYS_CAPABILITY_H after int main(int argc, char *argv[])
+  in check_pe.c
 
+* small typos and coding style
 
-------=_Part_24699_531434788.1290677035324
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
 
-<html><head><style type='text/css'>p { margin: 0; }</style></head><body><div style='font-family: Times New Roman; font-size: 12pt; color: #000000'>Hi,all <br>
-I found it just support a small value for -I option. <br>
-when I run '#./hugemmap04 -I 3600 -H /var/hugetlbfs',the test returned immediately. <br>
-the -I option details : <br>
--I x Execute test for x seconds <br>
-And if you give a much bigger value to -I option such as 3600 or larger, you will find the -I option disabled, <br>
-so I changed the lib/parse_opts.c file, and just modified the stop_time variable type from 'int' to 'double', <br>
-after changed, it can support a very bigger value for -I option. <br><br><br>
-v2: modified the patch's format<br>
-<br>
-Signed-off-by: Zhouping Liu &lt;zliu@redhat.com&gt;<br>
----<br>
-<br></div></body></html>
-------=_Part_24699_531434788.1290677035324--
-
-------=_Part_24698_348469051.1290677035324
-Content-Type: text/x-patch; name=0001-extend-the-I-options-value.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=0001-extend-the-I-options-value.patch
-
-From 509e6f97180ce0702112d201af58e85142f9a20f Mon Sep 17 00:00:00 2001
-From: Zhouping Liu <zliu@redhat.com>
-Date: Thu, 25 Nov 2010 17:00:17 +0800
-Subject: [PATCH] extend the I options value
-
-
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- lib/parse_opts.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/lib/parse_opts.c b/lib/parse_opts.c
-index e4de709..da75df5 100644
---- a/lib/parse_opts.c
-+++ b/lib/parse_opts.c
-@@ -699,7 +699,7 @@ usc_test_looping(counter)
- int counter;
- {
-     static int first_time = 1;
--    static int stop_time = 0;	/* stop time in rtc or usecs */
-+    static double stop_time = 0;	/* stop time in rtc or usecs */
-     static int delay;		/* delay in clocks or usecs  */
-     int hertz=0;			/* clocks per second or usecs per second */
-     int ct, end;		/* current time, end delay time */
-@@ -724,7 +724,7 @@ int counter;
- 
- 	if ( STD_LOOP_DURATION) {
- 	    ct=get_current_time();
--	    stop_time=(int)((float)hertz * STD_LOOP_DURATION) + ct;
-+	    stop_time = (double)hertz * (double)STD_LOOP_DURATION + (double)ct;
- 	}
- 
- 	/*
-@@ -769,7 +769,7 @@ int counter;
- 	keepgoing++;
-     }
- 
--    if ( STD_LOOP_DURATION != 0.0 && get_current_time() < stop_time ) {
-+    if ( STD_LOOP_DURATION != 0.0 && (double)get_current_time() < stop_time ) {
- 	keepgoing++;
-     }
- 
 -- 
-1.7.2.3
+Cyril Hrubis
+chrubis@suse.cz
 
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="cap_bounds.patch"
 
-------=_Part_24698_348469051.1290677035324
+diff --git a/testcases/kernel/security/cap_bound/cap_bounds_r.c b/testcases/kernel/security/cap_bound/cap_bounds_r.c
+index 0b1c5b3..13c5400 100644
+--- a/testcases/kernel/security/cap_bound/cap_bounds_r.c
++++ b/testcases/kernel/security/cap_bound/cap_bounds_r.c
+@@ -29,14 +29,13 @@
+ #if HAVE_SYS_CAPABILITY_H
+ #include <sys/capability.h>
+ #endif
++#include <linux/capability.h>
+ #include <sys/prctl.h>
+ #include <test.h>
+ 
+ char *TCID = "cap_bounds_r";
+ int TST_TOTAL=1;
+ 
+-int errno;
+-
+ int main(int argc, char *argv[])
+ {
+ #if HAVE_SYS_CAPABILITY_H
+diff --git a/testcases/kernel/security/cap_bound/cap_bounds_rw.c b/testcases/kernel/security/cap_bound/cap_bounds_rw.c
+index 827a305..c23c598 100644
+--- a/testcases/kernel/security/cap_bound/cap_bounds_rw.c
++++ b/testcases/kernel/security/cap_bound/cap_bounds_rw.c
+@@ -28,20 +28,19 @@
+ #if HAVE_SYS_CAPABILITY_H
+ #include <sys/capability.h>
+ #endif
++#include <linux/capability.h>
+ #include <sys/prctl.h>
+ #include <test.h>
+ 
+ char *TCID = "cap_bounds_rw";
+ int TST_TOTAL=1;
+ 
+-int errno;
+-
+ int check_remaining_caps(int lastdropped)
+ {
+ 	int i;
+ 	int ret;
+ 
+-	for (i=0; i <= lastdropped; i++) {
++	for (i = 0; i <= lastdropped; i++) {
+ #if HAVE_DECL_PR_CAPBSET_READ
+ 		ret = prctl(PR_CAPBSET_READ, i);
+ #else
+@@ -57,7 +56,7 @@ int check_remaining_caps(int lastdropped)
+ 			return i;
+ 		}
+ 	}
+-	for (; i<=CAP_LAST_CAP; i++) {
++	for (; i <= CAP_LAST_CAP; i++) {
+ #if HAVE_DECL_PR_CAPBSET_READ
+ 		ret = prctl(PR_CAPBSET_READ, i);
+ #else
+@@ -108,7 +107,7 @@ int main(int argc, char *argv[])
+ 		tst_resm(TINFO, " %d is should not exist\n", max(INSANE, CAP_LAST_CAP+1));
+ 		tst_exit();
+ 	}
+-	for (i=0; i<=CAP_LAST_CAP; i++) {
++	for (i = 0; i <= CAP_LAST_CAP; i++) {
+ #if HAVE_DECL_PR_CAPBSET_DROP
+ 		ret = prctl(PR_CAPBSET_DROP, i);
+ #else
+diff --git a/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c b/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
+index 7033a37..1f3634b 100644
+--- a/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
++++ b/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
+@@ -37,8 +37,6 @@
+ char *TCID = "cap_bounds_r";
+ int TST_TOTAL=2;
+ 
+-int errno;
+-
+ int main(int argc, char *argv[])
+ {
+ #if HAVE_SYS_CAPABILITY_H
+diff --git a/testcases/kernel/security/cap_bound/check_pe.c b/testcases/kernel/security/cap_bound/check_pe.c
+index f621e70..2f5aec9 100644
+--- a/testcases/kernel/security/cap_bound/check_pe.c
++++ b/testcases/kernel/security/cap_bound/check_pe.c
+@@ -38,12 +38,10 @@
+ char *TCID = "check_pe";
+ int TST_TOTAL=1;
+ 
+-int errno;
+-
+-#if HAVE_SYS_CAPABILITY_H
+-#ifdef HAVE_LIBCAP
+ int main(int argc, char *argv[])
+ {
++#ifdef HAVE_SYS_CAPABILITY_H
++#ifdef HAVE_LIBCAP
+ 	int ret = 1;
+ 	cap_flag_value_t f;
+ 	cap_t cur;
+@@ -72,7 +70,7 @@ int main(int argc, char *argv[])
+ 			tst_resm(TPASS, "cap is in pE\n");
+ 			tst_exit();
+ 		}
+-		tst_resm(TFAIL, "Cap is not in pE\n");
++		tst_resm(TFAIL, "cap is not in pE\n");
+ 		tst_exit();
+ 	}
+ 	if (f == CAP_CLEAR) {
+diff --git a/testcases/kernel/security/cap_bound/dummy.c b/testcases/kernel/security/cap_bound/dummy.c
+index e882940..3ee7c9b 100644
+--- a/testcases/kernel/security/cap_bound/dummy.c
++++ b/testcases/kernel/security/cap_bound/dummy.c
+@@ -5,7 +5,7 @@
+ #include <sys/capability.h>
+ #endif
+ 
+-int main()
++int main(void)
+ {
+ #if HAVE_SYS_CAPABILITY_H
+ #ifdef HAVE_LIBCAP
+diff --git a/testcases/kernel/security/cap_bound/exec_with_inh.c b/testcases/kernel/security/cap_bound/exec_with_inh.c
+index 123f665..dc18b63 100644
+--- a/testcases/kernel/security/cap_bound/exec_with_inh.c
++++ b/testcases/kernel/security/cap_bound/exec_with_inh.c
+@@ -37,8 +37,6 @@
+ char *TCID = "exec_with_inh";
+ int TST_TOTAL=1;
+ 
+-int errno;
+-
+ int main(int argc, char *argv[])
+ {
+ #if HAVE_SYS_CAPABILITY_H
+diff --git a/testcases/kernel/security/cap_bound/exec_without_inh.c b/testcases/kernel/security/cap_bound/exec_without_inh.c
+index df3c4d9..8d99883 100644
+--- a/testcases/kernel/security/cap_bound/exec_without_inh.c
++++ b/testcases/kernel/security/cap_bound/exec_without_inh.c
+@@ -37,8 +37,6 @@
+ char *TCID = "exec_without_inh";
+ int TST_TOTAL=1;
+ 
+-int errno;
+-
+ int main(int argc, char *argv[])
+ {
+ #if HAVE_SYS_CAPABILITY_H
+
+--NzB8fVQJ5HfG6fxh
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
-------=_Part_24698_348469051.1290677035324
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
+--NzB8fVQJ5HfG6fxh
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -149,5 +225,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_24698_348469051.1290677035324--
+--NzB8fVQJ5HfG6fxh--
 
