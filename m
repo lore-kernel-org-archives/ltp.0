@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PGOX0-0003Ml-VV
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 04:13:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PGOWv-0001NO-Uf
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 04:13:02 +0000
-Message-ID: <4CDB6D54.1000605@cn.fujitsu.com>
-Date: Thu, 11 Nov 2010 12:13:08 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1PFNs8-0002Xy-No
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 09:18:40 +0000
+Received: from out20.sjc.mx.trendmicro.com ([216.99.131.77])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PFNs7-0004o3-1t
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 09:18:40 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000001cb7c0a$343bc2c0$9cb34840$@co.jp>
+	<AANLkTi=3PpaGkchzV7Zw282=+nRjtLjBqHug+cVQAywq@mail.gmail.com>
+In-Reply-To: <AANLkTi=3PpaGkchzV7Zw282=+nRjtLjBqHug+cVQAywq@mail.gmail.com>
+Date: Mon, 8 Nov 2010 18:18:27 +0900
+Message-ID: <000001cb7f25$e73440f0$b59cc2d0$@co.jp>
 MIME-Version: 1.0
-References: <4CDB6AEC.9090604@cn.fujitsu.com>
-In-Reply-To: <4CDB6AEC.9090604@cn.fujitsu.com>
-Subject: [LTP]  [POSIX][PATCH 3/4]Get rid of aio_suspend/8-1
+Content-Language: ja
+Subject: Re: [LTP] About "make autotools" failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,281 +26,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: 'Garrett Cooper' <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-If following patch be applied, aio_suspend/8-1 is same as 1-1, i suggest to remove it.
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Friday, November 05, 2010 10:16 AM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] About "make autotools" failure
+> =
 
-http://sourceforge.net/mailarchive/forum.php?thread_name=4CDB5E53.6070604%40cn.fujitsu.com&forum_name=ltp-list
+> On Thu, Nov 4, 2010 at 3:22 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> > Hi,
+> >
+> >
+> > I tried to build LTP with today's git "ltp-40be648.tar.gz".
+> > But "make autotools" failed in my all systems.
+> >
+> > ------------
+> > sed -n '1{s:LTP-:m4_define([LTP_VERSION],[:;s:$:]):;p;q}'
+> ChangeLog >
+> > m4/ltp-version.m4
+> > aclocal -I m4
+> > autoconf
+> > autoheader
+> > automake -c -a
+> > configure.ac:18: installing `./config.guess'
+> > configure.ac:18: installing `./config.sub'
+> > configure.ac:4: installing `./install-sh'
+> > configure.ac:4: installing `./missing'
+> > set -x; \
+> > =A0 =A0 =A0 =A0cd testcases/kernel/syscalls/pcllib && \
+> > =A0 =A0 =A0 =A0aclocal && \
+> > =A0 =A0 =A0 =A0autoconf && \
+> > =A0 =A0 =A0 =A0autoheader && \
+> > =A0 =A0 =A0 =A0automake --add-missing
+> > + cd testcases/kernel/syscalls/pcllib
+> > + aclocal
+> > + autoconf
+> > configure.in:11: error: possibly undefined macro: AC_PROG_LIBTOOL
+> > =A0 =A0 =A0If this token and others are legitimate, please use
+> m4_pattern_allow.
+> > =A0 =A0 =A0See the Autoconf documentation.
+> > make: *** [testcases/kernel/syscalls/pcllib/configure] Error 1
+> > ------------
+> >
+> > The environments of my systems are as follows:
+> > =A0- RHEL4.8 (kernel version 2.6.9-89) =A0 --- (x86, x86_64, ia64)
+> > =A0- RHEL5.5 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
+> >
+> >
+> > I use "automake", "autoconf" and "m4" whose versions are same as
+> > written in "INSTALL" file:
+> > ------------
+> > [root@RHEL55-64-LTP ~]# automake --version
+> > automake (GNU automake) 1.10.2
+> > Copyright (C) 2008 Free Software Foundation, Inc.
+> > License GPLv2+: GNU GPL version 2 or later
+> > <http://gnu.org/licenses/gpl.html>
+> > This is free software: you are free to change and redistribute it.
+> > There is NO WARRANTY, to the extent permitted by law.
+> >
+> > Written by Tom Tromey <tromey@redhat.com>
+> > =A0 =A0 =A0 and Alexandre Duret-Lutz <adl@gnu.org>.
+> > [root@RHEL55-64-LTP ~]# autoconf --version
+> > autoconf (GNU Autoconf) 2.61
+> > Copyright (C) 2006 Free Software Foundation, Inc.
+> > This is free software. =A0You may redistribute copies of it under the
+> terms of
+> > the GNU General Public License
+> <http://www.gnu.org/licenses/gpl.html>.
+> > There is NO WARRANTY, to the extent permitted by law.
+> >
+> > Written by David J. MacKenzie and Akim Demaille.
+> > [root@RHEL55-64-LTP ~]# m4 --version
+> > GNU M4 1.4.7
+> > Copyright (C) 2006 Free Software Foundation, Inc.
+> > This is free software; see the source for copying conditions. =A0There
+> is NO
+> > warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
+> PURPOSE.
+> >
+> > Written by Rene' Seindal.
+> > [root@RHEL55-64-LTP ~]#
+> > ------------
+> >
+> >
+> >
+> > By the way, in today's git "ltp-40be648.tar.gz",
+> "${LTPROOT}/testcases/
+> > kernel/syscalls/pcllib/aclocal.m4" is overwritten after failure of
+> > "make autotools" command.
+> > But, in older gits "ltp-7e2cbbd", "${LTPROOT}/testcases/kernel/
+> > syscalls/pcllib/aclocal.m4" is not overwritten after success of
+> > "make autotools" command.
+> > Why?
+> =
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>     I was trying to get rid of autogenerated files, but unfortunately
+> I was only half successful. I'll restore the original files if I can't
+> get the whole thing to work tonight (please try installing the libtool
+> package to see if the problem goes away though first).
+> Thanks and sorry for the inconvenience,
+> -Garrett
 
+
+I'm sorry for late reply.
+I succeeded "make autotools" with today's git "ltp-882ad81.tar.gz".
+
+Thank you--
+
+-Tomonori Mitani
+
+
+
+---------------------------------------------------------------------------=
 ---
- .../conformance/interfaces/aio_suspend/8-1.c       |  240 --------------------
- 1 files changed, 0 insertions(+), 240 deletions(-)
- delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-deleted file mode 100644
-index 0023520..0000000
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-+++ /dev/null
-@@ -1,240 +0,0 @@
--/*
-- * Copyright (c) 2004, Bull SA. All rights reserved.
-- * Created by:  Laurent.Vivier@bull.net
-- * This file is licensed under the GPL license.  For the full content
-- * of this license, see the COPYING file at the top level of this 
-- * source tree.
-- */
--
--/*
-- * assertion:
-- *
-- *	The aio_suspend() function shall suspend the calling thread until at
-- *	least one of the asynchronous I/O operations referenced by the list
-- *	argument has completed, until a signal interrupts the function, or,
-- *	if timeout is not NULL, until the time interval specified by timeout
-- *	has passed.
-- *
-- * method: Testing for a NULL timeout
-- *
-- *	- write to a file
-- *	- submit a list of read requests
-- *	- check that the selected request has not completed
-- *	- suspend on selected request
-- *	- check that the selected request has completed using aio_error and
-- *	  aio_return
-- *
-- */
--
--#define _XOPEN_SOURCE 600
--#include <sys/stat.h>
--#include <aio.h>
--#include <errno.h>
--#include <fcntl.h>
--#include <signal.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <unistd.h>
--
--#include "posixtest.h"
--
--#define TNAME "aio_suspend/8-1.c"
--
--#define NUM_AIOCBS	10
--#define BUF_SIZE	1024*1024
--#define WAIT_FOR_AIOCB	6
--
--int received_selected	= 0;
--int received_all	= 0;
--
--void
--sigrt1_handler(int signum, siginfo_t *info, void *context)
--{
--	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
--		received_selected = 1;
--}
--
--void
--sigrt2_handler(int signum, siginfo_t *info, void *context)
--{
--	received_all = 1;
--}
--
--int
--main ()
--{
--	char tmpfname[256];
--	int fd;
--
--	struct aiocb **aiocbs;
--	struct aiocb *plist[2];
--	char *bufs;
--	struct sigaction action;
--	struct sigevent event;
--	int errors = 0;
--	int ret;
--	int err;
--	int i;
--
--	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
--		return PTS_UNSUPPORTED;
--
--	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_suspend_8_1_%d", 
--		  getpid());
--	unlink(tmpfname);
--
--	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
--
--	if (fd == -1) {
--		printf(TNAME " Error at open(): %s\n",
--		       strerror(errno));
--		exit(PTS_UNRESOLVED);
--	}
--
--	unlink(tmpfname);
--
--	bufs = (char *) malloc (NUM_AIOCBS*BUF_SIZE);
--
--	if (bufs == NULL) {
--		printf (TNAME " Error at malloc(): %s\n", strerror (errno));
--		close (fd);
--		exit(PTS_UNRESOLVED);
--	}
--
--	if (write (fd, bufs, NUM_AIOCBS*BUF_SIZE) != (NUM_AIOCBS*BUF_SIZE)) {
--		printf(TNAME " Error at write(): %s\n", strerror(errno));
--		free (bufs);
--		close (fd);
--		exit(PTS_UNRESOLVED);
--	}
--
--
--
--	aiocbs = (struct aiocb**)malloc(sizeof(struct aiocb *) * NUM_AIOCBS);
--
--	/* Queue up a bunch of aio reads */
--	for (i = 0; i < NUM_AIOCBS; i++) {
--
--		aiocbs[i] = (struct aiocb*)malloc(sizeof(struct aiocb));
--		memset(aiocbs[i], 0, sizeof(struct aiocb));
--
--		aiocbs[i]->aio_fildes = fd;
--		aiocbs[i]->aio_offset = i * BUF_SIZE;
--		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
--		aiocbs[i]->aio_nbytes = BUF_SIZE;
--		aiocbs[i]->aio_lio_opcode = LIO_READ;
--
--		/* Use SIRTMIN+1 for individual completions */
--		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
--		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
--		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
--	}
--
--	/* Use SIGRTMIN+2 for list completion */
--	event.sigev_notify = SIGEV_SIGNAL;
--	event.sigev_signo = SIGRTMIN+2;
--	event.sigev_value.sival_ptr = NULL;
--
--	/* Setup handler for individual operation completion */
--	action.sa_sigaction = sigrt1_handler;
--	sigemptyset(&action.sa_mask);
--	action.sa_flags = SA_SIGINFO|SA_RESTART;
--	sigaction(SIGRTMIN+1, &action, NULL);
--
--	/* Setup handler for list completion */
--	action.sa_sigaction = sigrt2_handler;
--	sigemptyset(&action.sa_mask);
--	action.sa_flags = SA_SIGINFO|SA_RESTART;
--	sigaction(SIGRTMIN+2, &action, NULL);
--
--	/* Setup suspend list */
--	plist[0] = NULL;
--	plist[1] = aiocbs[WAIT_FOR_AIOCB];
--
--	/* Submit request list */
--	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
--
--	if (ret) {
--		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
--		for (i=0; i<NUM_AIOCBS; i++)
--			free (aiocbs[i]);
--		free (bufs);
--		free (aiocbs);
--		close (fd);
--		exit (PTS_UNRESOLVED);
--	}
--
--	/* Check selected request has not completed yet */
--	if (received_selected) {
--		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
--			WAIT_FOR_AIOCB);
--		for (i=0; i<NUM_AIOCBS; i++)
--			free (aiocbs[i]);
--		free (bufs);
--		free (aiocbs);
--		close (fd);
--		exit (PTS_FAIL);
--	}
--
--	/* Suspend on selected request */
--	ret = aio_suspend((const struct aiocb **)plist, 2, NULL);
--
--	if (ret) {
--		printf (TNAME " Error at aio_suspend() %d: %s\n", errno, strerror (errno));
--		for (i=0; i<NUM_AIOCBS; i++)
--			free (aiocbs[i]);
--		free (bufs);
--		free (aiocbs);
--		close (fd);
--		exit (PTS_FAIL);
--	}
--
--	/* Check selected request has completed */
--	err = aio_error (aiocbs[WAIT_FOR_AIOCB]);
--	ret = aio_return (aiocbs[WAIT_FOR_AIOCB]);
--	
--	if ((err != 0) && (ret !=  BUF_SIZE)) {
--		printf (TNAME " Error : AIOCB %d should have completed after suspend\n",
--			WAIT_FOR_AIOCB);
--		for (i=0; i<NUM_AIOCBS; i++)
--			free (aiocbs[i]);
--		free (bufs);
--		free (aiocbs);
--		close (fd);
--		exit (PTS_FAIL);
--	}
--
--
--	/* Wait for list processing completion */
--	while (!received_all)
--		sleep (1);
--
--	/* Check return code and free things */
--	for (i = 0; i < NUM_AIOCBS; i++) {
--		if (i == WAIT_FOR_AIOCB)
--			continue;
--
--	  	err = aio_error(aiocbs[i]);
--		ret = aio_return(aiocbs[i]);
--
--		if ((err != 0) && (ret != BUF_SIZE)) {
--			printf(TNAME " req %d: error = %d - return = %d\n", i, err, ret);
--			errors++;
--		}
--
--		free (aiocbs[i]);
--	}
--
--	free (bufs);
--	free (aiocbs);
--
--	close(fd);
--
--	if (errors != 0)
--		exit (PTS_FAIL);
--
--	printf (TNAME " PASSED\n");
--
--	return PTS_PASS;
--}
--- 
-1.7.0.4
+Billion" shares his insights and actions to help propel your =
 
-
-
-
-------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
