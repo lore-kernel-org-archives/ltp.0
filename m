@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PD67d-0007F2-Ce
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 01:57:13 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PD67c-00087y-7Q
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 01:57:13 +0000
-Received: by wwb31 with SMTP id 31so6249775wwb.10
+	(envelope-from <yanegomi@gmail.com>) id 1PFZcZ-0003r3-A5
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:51:23 +0000
+Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFZcY-0004Oi-5r
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:51:23 +0000
+Received: by gxk7 with SMTP id 7so2382gxk.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 01 Nov 2010 18:57:06 -0700 (PDT)
+	Mon, 08 Nov 2010 13:51:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4CCF6B53.5050109@cn.fujitsu.com>
-References: <4CCF6B53.5050109@cn.fujitsu.com>
-Date: Mon, 1 Nov 2010 18:57:06 -0700
-Message-ID: <AANLkTimZFKMZ3YYjr7k3gkjagZUXwwWyjw5YjTfVLURO@mail.gmail.com>
+In-Reply-To: <000001cb773b$ce4f9950$6aeecbf0$@co.jp>
+References: <Act3O838preomyfuTIOsmPN0ITLHHQ==>
+	<000001cb773b$ce4f9950$6aeecbf0$@co.jp>
+Date: Mon, 8 Nov 2010 13:51:15 -0800
+Message-ID: <AANLkTinebjz8OJ+7ajN3W5-EqW54SYUMYBF5J6OxnGvc@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [POSIX][PATCH]Cleanup the test shm_open/2-1 to make a
-	good format
+Subject: Re: [LTP] About "realtime" build failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,58 +31,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Nov 1, 2010 at 6:37 PM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
-> Although it's not important, but it makes a noise in the log.
+On Fri, Oct 29, 2010 at 12:35 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
 >
-> ----------------------------------------------------------------
-> Cleanup the test shm_open/2-1 to make a good format.
+> I applied patches which are the effort of various people.
+> And I could overcome configuration error and keyctl01's build error.
+> (Thanks!!)
+> After that, librttest.c build failed:
+> ------------
+> make[3]: Leaving directory
+> `/home/LTP/ltp-dev-20101028/testcases/network/xinetd'
+> make[2]: Leaving directory `/home/LTP/ltp-dev-20101028/testcases/network'
+> make[2]: Entering directory `/home/LTP/ltp-dev-20101028/testcases/realtim=
+e'
+> make -C lib -f "/home/LTP/ltp-dev-20101028/testcases/realtime/lib/Makefil=
+e"
+> all
+> make[3]: Entering directory
+> `/home/LTP/ltp-dev-20101028/testcases/realtime/lib'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
+> -I/home/LTP/ltp-dev-20101028/testcases/realtime/lib/../include
+> -I../../../include -I../../../include =A0-c -o librttest.o librttest.c
+> librttest.c: In function `init_pi_mutex':
+> librttest.c:569: warning: implicit declaration of function
+> `pthread_mutexattr_setprotocol'
+> librttest.c:569: error: `PTHREAD_PRIO_INHERIT' undeclared (first use in t=
+his
+> function)
+> librttest.c:569: error: (Each undeclared identifier is reported only once
+> librttest.c:569: error: for each function it appears in.)
+> librttest.c:572: warning: implicit declaration of function
+> `pthread_mutexattr_getprotocol'
+> make[3]: *** [librttest.o] Error 1
+> make[3]: Leaving directory
+> `/home/LTP/ltp-dev-20101028/testcases/realtime/lib'
+> make[2]: *** [lib/librealtime.a] Error 2
+> make[2]: Leaving directory `/home/LTP/ltp-dev-20101028/testcases/realtime'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/home/LTP/ltp-dev-20101028/testcases'
+> make: *** [testcases-all] Error 2
+> ------------
 >
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> "realtime" became to be build by the patch of Makefile:
+> ------------
+> --- a/testcases/Makefile
+> +++ b/testcases/Makefile
+> =A0@@ -38,7 +38,12 @@ FILTER_OUT_DIRS =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D bal=
+lista kdump mce-test
+> open% pounder21
+> =A0# XXX (garrcoop): kdump was in this list.
+> =A0# XXX (garrcoop): open_hpi_testsuite was in this list.
+> =A0ifeq ($(UCLINUX),1)
+> =A0-FILTER_OUT_DIRS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D DOTS realtime
+> =A0+FILTER_OUT_DIRS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D realtime
+> =A0+endif
+> =A0+
+> =A0+# DOTS requires javac
+> =A0+ifeq ($(strip $(JAVAC)),)
+> =A0+FILTER_OUT_DIRS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D DOTS
+> =A0endif
 >
-> ---
-> =A0.../conformance/interfaces/shm_open/2-1.c =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-4 +++-
-> =A01 files changed, 3 insertions(+), 1 deletions(-)
+> =A0#
+> ------------
 >
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_op=
-en/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2=
--1.c
-> index f4bab48..b0adce6 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
-> @@ -17,7 +17,9 @@
->
-> =A0int main()
-> =A0{
-> - =A0 =A0 =A0 =A0printf("Will not test that the shm_open() function creat=
-e an open file description\nthat refers to the shared memory object and a f=
-ile descriptor that refers to\nthat open file description.");
-> + =A0 =A0 =A0 =A0printf("Will not test that the shm_open() function creat=
-e an open file"
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0"description that refers to the shared memor=
-y object and a file"
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0"descriptor that refers to that open file de=
-scription.\n");
-> =A0 =A0 =A0 =A0 return PTS_UNTESTED;
-> =A0}
+> "realtime" added to build.
+> Perhaps this revision caused this failure, I think.
 
-    Actually, that will look a lot worse because you just removed some
-spaces in areas. description should be descriptor, etc.
-    I'll fix this up and give you credit for the note :).
+    DOTS is garbage, bitrotted code. If no one has any opposes the
+change, then I'll remove it from LTP in 3 days time.
 Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
 
-http://p.sf.net/sfu/nokia-dev2dev
+Billion" shares his insights and actions to help propel your =
+
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
