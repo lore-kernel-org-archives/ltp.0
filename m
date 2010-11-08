@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PJOvX-000714-M6
-	for ltp-list@lists.sourceforge.net; Fri, 19 Nov 2010 11:14:47 +0000
-Date: Fri, 19 Nov 2010 12:26:39 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101119112639.GA19564@saboteur.suse.cz>
-References: <1691765853.2903721289826691589.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<183370222.2903761289826709572.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PFLbc-0002JI-9Q
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 06:53:28 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFLbZ-0004sI-TX
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 06:53:28 +0000
+Received: by wwb31 with SMTP id 31so5181729wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 07 Nov 2010 22:53:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <183370222.2903761289826709572.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] Out Of Memory when changing cpuset's mems on NUMA
+In-Reply-To: <47150598.1390531288856558142.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <47150598.1390531288856558142.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Sun, 7 Nov 2010 22:53:19 -0800
+Message-ID: <AANLkTimppURk7sj=OMSuDz2rqzk1BpSjNy8hkghYZo6_@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v3] overcommit libhugetlbfs and check the
+	statistics
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,486 +28,346 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: caiqian@redhat.com
+To: CAI Qian <caiqian@redhat.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-Here comes a few notes about the code.
-
-> There was a problem reported upstream that the allocator may see an
-> empty nodemask when changing cpuset's mems.
-> 
-> http://lkml.org/lkml/2010/5/4/77
-> http://lkml.org/lkml/2010/5/4/79
-> http://lkml.org/lkml/2010/5/4/80
-> 
-> This test is based on the reproducers for the above issue.
-> 
+On Thu, Nov 4, 2010 at 12:42 AM, CAI Qian <caiqian@redhat.com> wrote:
+> libhugetlbfs allows to overcommit hugepages and there are tunables in
+> sysfs and procfs. The test here want to ensure it is possible to
+> overcommit by either mmap or shared memory. Also ensure those
+> reservation can be read/write, and several statistics work correctly.
+>
+> First, it resets nr_hugepages and nr_overcommit_hugepages. Then, set
+> both to a specify value - N, and allocate N + %50 x N hugepages.
+> Finally, it reads and writes every page. There are command options to
+> choose either to manage hugepages from sysfs or procfs, and reserve them
+> by mmap or shmget.
+>
 > Signed-off-by: CAI Qian <caiqian@redhat.com>
 > ---
+> v3: fix -a option description; fix a nasty bug with tst_exit which skips
+> =A0 =A0cleanup at the end of the test; add more information to assist test
+> =A0 =A0debug.
 
->  runtest/mm                             |    3 +
->  testcases/kernel/mem/cpuset/Makefile   |   25 ++
->  testcases/kernel/mem/cpuset/cpuset01.c |  375 ++++++++++++++++++++++++++++++++
->  3 files changed, 403 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/mem/cpuset/Makefile
->  create mode 100644 testcases/kernel/mem/cpuset/cpuset01.c
-> 
-> diff --git a/runtest/mm b/runtest/mm
-> index 2f3f407..f6cedbd 100644
-> --- a/runtest/mm
-> +++ b/runtest/mm
-> @@ -54,3 +54,6 @@ mmapstress08 mmapstress08
->  mmapstress09 mmapstress09 -p 20 -t 0.2
->  mmapstress10 mmapstress10 -p 20 -t 0.2
->  
-> +ksm01 ksm01
-> +
-> +cpuset01 cpuset01 -I 3600
-> \ No newline at end of file
-> diff --git a/testcases/kernel/mem/cpuset/Makefile b/testcases/kernel/mem/cpuset/Makefile
+No... you just didn't understand the API :)... if the cleanup function
+is NULL, tst_exit is automatically used; otherwise, the function is
+called, and cleanup is assumed to be called.
+
+> v2: add more explanation and a command-line option to specify memory
+> =A0 =A0allocation size.
+>
+> =A0testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | =A0487 ++++++++++=
+++++++++++
+> =A01 files changed, 487 insertions(+), 0 deletions(-)
+> =A0create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+>
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcas=
+es/kernel/mem/hugetlb/hugemmap/hugemmap05.c
 > new file mode 100644
-> index 0000000..65d3aab
+> index 0000000..770f664
 > --- /dev/null
-> +++ b/testcases/kernel/mem/cpuset/Makefile
-> @@ -0,0 +1,25 @@
-> +#
-> +#  Copyright (C) 2010  Red Hat, Inc.
-> +#
-> +#  This program is free software; you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or (at
-> +#  your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful, but
-> +#  WITHOUT ANY WARRANTY; without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> +#  General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program; if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> +#  02110-1301, USA.
-> +#
-> +
-> +top_srcdir              ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +
-> +LDLIBS 			+= -lnuma -lm
-> diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
-> new file mode 100644
-> index 0000000..0b22940
-> --- /dev/null
-> +++ b/testcases/kernel/mem/cpuset/cpuset01.c
-> @@ -0,0 +1,375 @@
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+> @@ -0,0 +1,487 @@
 > +/*
-> + * Out Of Memory when changing cpuset's mems on NUMA. There was a
-> + * problem reported upstream that the allocator may see an empty
-> + * nodemask when changing cpuset's mems.
-> + * http://lkml.org/lkml/2010/5/4/77
-> + * http://lkml.org/lkml/2010/5/4/79
-> + * http://lkml.org/lkml/2010/5/4/80
-> + * This test is based on the reproducers for the above issue.
+> + * overcommit libhugetlbfs and check the statistics.
 > + *
-> + * Copyright (C) 2010  Red Hat, Inc.
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
+> + * libhugetlbfs allows to overcommit hugepages and there are tunables in
+> + * sysfs and procfs. The test here want to ensure it is possible to
+> + * overcommit by either mmap or shared memory. Also ensure those
+> + * reservation can be read/write, and several statistics work correctly.
+
+Is there a document that describes this behavior?
+
+> + * First, it resets nr_hugepages and nr_overcommit_hugepages. Then, set
+> + * both to a specify value - N, and allocate N + %50 x N hugepages.
+> + * Finally, it reads and writes every page. There are command options to
+> + * choose either to manage hugepages from sysfs or procfs, and reserve
+> + * them by mmap or shmget.
+
+What happens when you overcommit and meet this maximum though?
+
+...
+
+> +#define PROTECTION =A0 =A0 =A0 =A0 =A0 =A0 (PROT_READ | PROT_WRITE)
+> +#define _PATH_MEMINFO =A0 =A0 =A0 =A0 =A0"/proc/meminfo"
+> +#define _PATH_SYS_HUGE =A0 =A0 =A0 =A0 "/sys/kernel/mm/hugepages"
+> +#define _PATH_SYS_2M =A0 =A0 =A0 =A0 =A0 _PATH_SYS_HUGE "/hugepages-2048=
+kB/"
+> +#define _PATH_SYS_2M_OVER =A0 =A0 =A0_PATH_SYS_2M "nr_overcommit_hugepag=
+es"
+> +#define _PATH_SYS_2M_FREE =A0 =A0 =A0_PATH_SYS_2M "free_hugepages"
+> +#define _PATH_SYS_2M_RESV =A0 =A0 =A0_PATH_SYS_2M "resv_hugepages"
+> +#define _PATH_SYS_2M_SURP =A0 =A0 =A0_PATH_SYS_2M "surplus_hugepages"
+> +#define _PATH_SYS_2M_HUGE =A0 =A0 =A0_PATH_SYS_2M "nr_hugepages"
+> +#define _PATH_PROC_VM =A0 =A0 =A0 =A0 =A0"/proc/sys/vm/"
+> +#define _PATH_PROC_OVER =A0 =A0 =A0 =A0_PATH_PROC_VM "nr_overcommit_huge=
+pages"
+> +#define _PATH_PROC_HUGE =A0 =A0 =A0 =A0_PATH_PROC_VM "nr_hugepages"
+> +#define _PATH_SHMMAX =A0 =A0 =A0 =A0 =A0 "/proc/sys/kernel/shmmax"
+> +#define NEED_RESTORE =A0 =A0 =A0 =A0 =A0 2
+
+Just make this a boolean type, i.e.:
+
+int restore_shmmax;
+
+...
+
+/* cleanup */
+    if (need_shmmax) {
+    /* ... */
+    }
+
+    /* ... */
+    need_shmmax =3D 1;
+
 > +
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <sys/mman.h>
-> +#include <sys/mount.h>
-> +#include <numaif.h>
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <fcntl.h>
-> +#include <ctype.h>
-> +#include <err.h>
-> +#include <math.h>
-> +#include <signal.h>
-> +#include <stdarg.h>
-> +#include "test.h"
-> +#include "usctest.h"
+> +/* Only ia64 requires this */
+
+Why only ia64?
+
+> +#ifdef __ia64__
+> +#define ADDR (void *)(0x8000000000000000UL)
+> +#define FLAGS (MAP_SHARED | MAP_FIXED)
+> +#define SHMAT_FLAGS (SHM_RND)
+> +#else
+> +#define ADDR (void *)(0x0UL)
+> +#define FLAGS (MAP_SHARED)
+> +#define SHMAT_FLAGS (0)
+> +#endif
 > +
-> +#define MAXNODES		512
-> +#define CPATH			"/dev/cpuset"
-> +#define CPATH_NEW		"/dev/cpuset/1"
-> +#define UNUSED			__attribute__ ((unused))
-> +#define _PATH_SYS_SYSTEM	"/sys/devices/system"
+> +#ifndef SHM_HUGETLB
+> +#define SHM_HUGETLB 04000
+> +#endif
 > +
-> +char *TCID = "mmap10";
-> +int TST_TOTAL = 1;
+> +char *TCID =3D "hugemmap05";
+> +int TST_TOTAL =3D 1;
 > +extern int Tst_count;
-> +static char pathbuf[PATH_MAX];
-> +static pid_t *pids;
-> +volatile int end;
-> +
-> +/* main setup function of test */
-> +void setup(void);
-> +/* cleanup function for the test */
-> +void __attribute__ ((noreturn)) cleanup(void);
+> +extern char *TESTDIR;
+> +static char nr_hugepages[BUFSIZ], nr_overcommit_hugepages[BUFSIZ];
+> +static char shmmax[BUFSIZ], *opt_allocstr;
+> +static char buf[BUFSIZ], line[BUFSIZ], path[BUFSIZ], pathover[BUFSIZ];
+> +static int opt_sysfs, opt_shmget, opt_alloc, size =3D 128, length =3D 38=
+4;
 
-There is LTP_ATTRIBUTE_NORETURN defined in standart test headers so this
-could be turned on/off in one place. See include/compiler.h that is
-included in include/test.h
+length and size should be size_t. Also, instead of having opt_shmget
+as a separate variable, why not just test for shmid > 0 (below in the
+relevant code block, etc)?
 
-> +static int testcpuset(void);
-> +void help(void);
-> +static void sighandler(UNUSED int signo);
+...
 
-Same here, use LTP_ATTRIBUTE_UNUSED.
+> +static void checksys(char *path, char *pattern, int value);
 
-> +static int mem_hog(void);
-> +long count_numa(void);
-> +long count_cpu(void);
-> +static int path_exist(const char *path, ...);
-> +int mem_hog_cpuset(int ntasks);
-> +static const char *path_vcreate(const char *path, va_list ap);
+The value of pattern is going to generate more harm than good because
+they're currently /proc analogs. Please better humanize the value (or
+point to relevant documentation in the source stating what the tunable
+/sys nodes do.
 
-You could omit these by shifting functions to their right place. For
-example moving main at the end of file would save a few of them.
+...
 
-> +int main(int argc, char *argv[])
-> +{
-> +	/* message returned from parse_opts */
-> +	char *msg;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL) {
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +		tst_exit();
-> +	}
-> +
-> +	/* Perform global setup for test */
-> +	setup();
-> +
-> +	TEST(testcpuset());
-> +
-> +	if (TEST_RETURN != 0)
-> +		tst_resm(TFAIL, "testcpuset() failed with %ld.",
-> +			TEST_RETURN);
-> +	else
-> +		tst_resm(TPASS, "testcpuset() completed "
-> +			"successfully.");
-> +	cleanup();
-> +}
-> +
-> +int testcpuset(void)
-> +{
-> +	/* loop counter */
-> +	int lc;
-> +	FILE *fp;
-> +	char buf[BUFSIZ], value[BUFSIZ];
-> +	int fd, child, i, status;
-> +	unsigned long nnodes = 1, nmask = 0, ncpus = 1;
-> +
-> +	nnodes = count_numa();
-> +	ncpus = count_cpu();
-> +
-> +	snprintf(buf, BUFSIZ, "%s/cpus", CPATH);
-> +	fp = fopen(buf, "r");
-> +	if (fp == NULL)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-> +	if (fgets(value, BUFSIZ, fp) == NULL)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fgets");
-> +	fclose(fp);
-> +
-> +	/* Remove the trailing newline. */
-> +	value[strlen(value) - 1] = '\0';
-> +	snprintf(buf, BUFSIZ, "%s/cpus", CPATH_NEW);
-> +	fd = open(buf, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (write(fd, value, strlen(value)) != strlen(value))
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	close(fd);
-> +
-> +	snprintf(buf, BUFSIZ, "%s/mems", CPATH);
-> +	fp = fopen(buf, "r");
-> +	if (fp == NULL)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-> +	if (fgets(value, BUFSIZ, fp) == NULL)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fgets");
-> +	fclose(fp);
-> +
-> +	snprintf(buf, BUFSIZ, "%s/mems", CPATH_NEW);
-> +	fd = open(buf, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (write(fd, value, strlen(value)) != strlen(value))
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	close(fd);
-> +
-> +	snprintf(buf, BUFSIZ, "%s/tasks", CPATH_NEW);
-> +	fd = open(buf, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	snprintf(buf, BUFSIZ, "%d", getpid());
-> +	if (write(fd, buf, strlen(buf)) != strlen(buf))
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	close(fd);
-> +
-> +	pids = malloc(nnodes * sizeof(pid_t));
-> +	if (!pids)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "malloc");
-> +
-> +	switch (child = fork()) {
-> +        case -1:
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +        case 0:
-> +		for (i = 0; i < nnodes; i++)
-> +			nmask += exp2f(i); 
-> +
-> +		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
-> +			tst_resm(TBROK|TERRNO, "set_mempolicy");
-> +			exit(1);
-> +		}
-> +		mem_hog_cpuset(ncpus > 1 ? ncpus : 1);
-> +		exit(0);
-> +	}
-> +	snprintf(buf, BUFSIZ, "%s/mems", CPATH_NEW);
-> +	fd = open(buf, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +
-> +	/* Check looping state if -i option given */
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		/* Reset Tst_count in case we are looping. */
-> +		Tst_count = 0;
-> +
-> +		if (write(fd, "0", 1) != 1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +
-> +		if (lseek(fd, 0, SEEK_SET) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-> +
-> +		if (write(fd, "1", 1) != 1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	}
-> +	close(fd);
-> +
-> +	if (waitpid(child, &status, WUNTRACED | WCONTINUED) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +	if (WEXITSTATUS(status) != 0)
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +void setup(void)
-> +{
-> +	if (count_numa() == 1) {
-> +		tst_resm(TCONF, "required a NUMA system.");
-> +		tst_exit();
-> +	}
-> +
-> +	/*
-> +	 * setup a default signal hander and a
-> +	 * temporary working directory.
-> +	 */
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +	tst_tmpdir();
-> +
-> +	if (mkdir(CPATH, 0777) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir");
-> +	if (mount("cpuset", CPATH, "cpuset", 0, NULL) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mount");
-> +	if (mkdir(CPATH_NEW, 0777) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir");
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	FILE *fp;
-> +	int fd;
-> +	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
-> +
-> +	/* Move all processes in task to its parent cpuset node. */
-> +	snprintf(s, BUFSIZ, "%s/tasks", CPATH);
-> +	fd = open(s, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_resm(TWARN|TERRNO, "open");
-> +
-> +	snprintf(s_new, BUFSIZ, "%s/tasks", CPATH_NEW);
-> +	fp = fopen(s_new, "r");
-> +	if (fp == NULL)
-> +		tst_resm(TWARN|TERRNO, "fopen");
-> +
-> +	if ((fd != -1) && (fp != NULL)) {
-> +		while (fgets(value, BUFSIZ, fp) != NULL)
-> +			if (write(fd, value, strlen(value) - 1)
-> +				!= strlen(value) - 1)
-> +				tst_resm(TWARN|TERRNO, "write");
-> +	}
-> +	if (fd != -1)
-> +		close(fd);
-> +	if (fp != NULL)
-> +		fclose(fp);
-> +	if (rmdir(CPATH_NEW) == -1)
-> +		tst_resm(TWARN|TERRNO, "rmdir");
-> +	if (umount(CPATH) == -1)
-> +		tst_resm(TWARN|TERRNO, "umount");
-> +	if (rmdir(CPATH) == -1)
-> +		tst_resm(TWARN|TERRNO, "rmdir");
-> +
-> +	/*
-> +	 * remove the tmp directory and exit
-> +	 */
-> +	TEST_CLEANUP;
-> +	tst_rmdir();
-> +	tst_exit();
-> +}
-> +
-> +void sighandler(UNUSED int signo)
-> +{
-> +	end = 1;
-> +}
-> +
-> +int mem_hog(void)
-> +{
-> +	long pagesize;
-> +	unsigned long *addr;
-> +	int ret = 0;
-> +
-> +	pagesize = getpagesize();
-> +	while (!end) {
-> +		addr = mmap(NULL, pagesize * 10, PROT_READ | PROT_WRITE,
-> +			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +		if (addr == MAP_FAILED) {
-> +			ret = 1;
-> +			tst_resm(TFAIL|TERRNO, "mmap");
-> +			break;
-> +		}
-> +		memset(addr, 0xF7, pagesize * 10);
-> +		munmap(addr, pagesize * 10);
-> +	}
-> +	return ret;
-> +}
-> +
-> +int mem_hog_cpuset(int ntasks)
-> +{
-> +	int i, pid, status, ret = 0;
-> +	struct sigaction sa;
-> +
-> +	if (ntasks <= 0) {
-> +		tst_resm(TBROK|TERRNO, "ntasks is small.");
-> +		return 1;
-> +	}
-> +	sa.sa_handler = sighandler;
-> +	if (sigemptyset(&sa.sa_mask) < 0) {
-> +		tst_resm(TBROK|TERRNO, "sigemptyset");
-> +		return 1;
-> +	}
-> +	sa.sa_flags = 0;
-> +	if (sigaction(SIGUSR1, &sa, NULL) < 0) {
-> +		tst_resm(TBROK|TERRNO, "sigaction");
-> +		return 1;
-> +	}
-> +	for (i = 0; i < ntasks; i++) {
-> +		switch (pid = fork()) {
-> +		case -1:
-> +			tst_resm(TFAIL|TERRNO, "fork");
-> +			ret = 1;
-> +			break;
-> +		case 0:
-> +			ret = mem_hog();
-> +			exit(ret);
-> +		default:
-> +			if (kill(pid, SIGUSR1) == -1) {
-> +				tst_resm(TINFO|TERRNO, "kill");
-> +				ret = 1;
-> +			}
-> +			break;
-> +		}
-> +	}
-> +	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0) {
-> +		if (WEXITSTATUS(status) != 0)
-> +			ret = 1;
-> +	}
-> +	return ret;
-> +}
-> +
-> +long count_numa(void)
-> +{
-> +	int nnodes = 0;
-> +
-> +	while(path_exist(_PATH_SYS_SYSTEM "/node/node%d", nnodes))
-> +		nnodes++;
-> +
-> +	return nnodes;
-> +}
-> +
-> +long count_cpu(void)
-> +{
-> +	int ncpus = 0;
-> +
-> +	while(path_exist(_PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
-> +		ncpus++;
-> +
-> +	return ncpus;
-> +}
-> +
-> +static int path_exist(const char *path, ...)
-> +{
-> +	va_list ap;
-> +	const char *p;
-> +
-> +	va_start(ap, path);
-> +	p = path_vcreate(path, ap);
-> +	va_end(ap);
-> +
-> +	return access(p, F_OK) == 0;
-> +}
-> +
-> +static const char *path_vcreate(const char *path, va_list ap)
-> +{
-> +	vsnprintf(pathbuf, sizeof(pathbuf), path, ap);
-> +	return pathbuf;
-> +}
+> + =A0 =A0 =A0 if (opt_alloc) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 size =3D atoi(opt_allocstr);
 
-You are returning pointer to global variable here. That's just too
-confusing.
+What happens if size <=3D 0? atoi is probably not what you want to use anyh=
+ow...
 
-I would merge the path_exist and path_vcreate functions into one so that
-you could declare pathbuf as local variable.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 length =3D (int)(size + size * 0.5) * 2;
+> + =A0 =A0 =A0 }
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+...
 
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+> +               if(TEST_RETURN !=3D 0)
+> +                       tst_resm(TFAIL, "overcommit() failed with %ld.",
+> +                               TEST_RETURN);
+
+No reason in outputting the return value (it's not like you don't have
+any control over what it is).
+
+...
+
+> + =A0 =A0 =A0 cleanup();
+              /* NOTREACHED */ // -- just to be pedantic.
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +int overcommit(void)
+> +{
+> + =A0 =A0 =A0 void *addr =3D NULL;
+> + =A0 =A0 =A0 int fd =3D -1, shmid =3D -1;
+> + =A0 =A0 =A0 char s[BUFSIZ];
+> + =A0 =A0 =A0 FILE *fp;
+> + =A0 =A0 =A0 =A0unsigned long i;
+> + =A0 =A0 =A0 =A0char *shmaddr =3D NULL;
+> +
+> + =A0 =A0 =A0 if (opt_shmget) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if ((shmid =3D shmget(2, (long)(length * 10=
+24 * 1024),
+
+So you're going to stomp all over someone else's shm key potentially?
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SHM_HUGETLB | IPC_CREAT | SHM_R =
+| SHM_W)) < 0)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK|TERRNO, clea=
+nup, "shmget");
+> + =A0 =A0 =A0 } else {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 snprintf(s, strlen(TESTDIR) + 17, "%s/hugem=
+map05/file",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TESTDIR);
+
+YAY! A magic number (-_-)!
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 fd =3D open(s, O_CREAT | O_RDWR, 0755);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (fd < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL|TERRNO, "ope=
+n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 1;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 addr =3D mmap(ADDR, (long)(length * 1024 * =
+1024),
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 PROTECTION, FLAGS, fd, 0);
+
+Why do you have to specify an ADDR? Why not let the OS do this for you?
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (addr =3D=3D MAP_FAILED)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK|TERRNO, clea=
+nup, "mmap");
+
+...
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TINFO|TERRNO, "shm=
+at");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 shmctl(shmid, IPC_RMID, NUL=
+L);
+
+Why not just add this to cleanup, and merge the tst_resm and tst_brkm calls?
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, cleanup,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "shared mem=
+ory attach failure");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TINFO, "shmaddr: %p", shmaddr);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TINFO, "starting the writes...");
+
+This could be one line.
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (i =3D 0; i < (long)(length * 1024 * 10=
+24); i++)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 shmaddr[i] =3D (char)(i);
+
+NO. NO. NO. NO. NO. void* !=3D char !!!
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TINFO, "starting the check...");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (i =3D 0; i < (long)(length * 1024 * 10=
+24); i++)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (shmaddr[i] !=3D (char)i)
+
+NO. NO. NO. NO. NO. void* !=3D char !!!
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TI=
+NFO, "index %lu mismatched",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 i);
+
+...
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 shmctl(shmid, IPC_RMID, NULL);
+
+Writing the same instruction twice screams "put me in cleanup!".
+
+...
+
+> +}
+> +
+> +static void check_bytes(char *addr)
+
+Huh? What purpose does this really serve in the overall scheme of
+things, point being, having a function call to alias tst_resm(TINFO,
+...) in only two spots in the code seems kind of silly, as the
+function declaration and body is longer than the 2 times tst_resm is
+invoked...).
+
+> +{
+> + =A0 =A0 =A0 tst_resm(TINFO, "First hex is %x", *((unsigned int *)addr));
+> +}
+> +
+> +static void write_bytes(char *addr)
+> +{
+> + =A0 =A0 =A0 unsigned long i;
+> +
+> + =A0 =A0 =A0 for (i =3D 0; i < (long)(length * 1024 * 1024); i++)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *(addr + i) =3D (char)i;
+
+NO. NO. NO. NO. NO. void* !=3D char !!! Pointer arithmetic can be bad as we=
+ll...
+
+> +}
+> +
+> +static void read_bytes(char *addr)
+> +{
+> + =A0 =A0 =A0 unsigned long i;
+
+Oops... overflow?
+
+> +
+> + =A0 =A0 =A0 check_bytes(addr);
+> + =A0 =A0 =A0 for (i =3D 0; i < (long)(length * 1024 * 1024); i++)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (*(addr + i) !=3D (char)i) {
+
+Please see above.
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL, "mismatch a=
+t %lu\n", i);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> +}
+> +
+> +/* Lookup a pattern and get the value from file*/
+> +int lookup (char *line, char *pattern)
+> +{
+> + =A0 =A0 =A0 char buf2[BUFSIZ];
+> +
+> + =A0 =A0 =A0 /* empty line */
+> + =A0 =A0 =A0 if (line[0] =3D=3D '\0')
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+> +
+> + =A0 =A0 =A0 snprintf(buf2, BUFSIZ, "%s: %%s", pattern);
+> + =A0 =A0 =A0 if (sscanf(line, buf2, buf) !=3D 1)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+
+That ain't gonna work so well with variable whitespace.
+
+> + =A0 =A0 =A0 return 1;
+> +}
+> +
+> +void help(void)
+
+usage is more standard than help.
+
+...
+
+> +void checkproc(FILE *fp, char *pattern, int value)
+> +{
+> + =A0 =A0 =A0 memset(buf, -1, BUFSIZ);
+> + =A0 =A0 =A0 rewind(fp);
+> + =A0 =A0 =A0 while (fgets(line, BUFSIZ, fp) !=3D NULL)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (lookup(line, pattern))
+
+If you're just looking for a string, why not strstr the line?
+
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
+
+Billion" shares his insights and actions to help propel your =
+
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
