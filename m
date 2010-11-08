@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PG1nb-0007ZB-NB
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:56:39 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PG1nZ-0007Ny-Eb
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:56:39 +0000
-Received: by wyb34 with SMTP id 34so217173wyb.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PFZbG-0000VD-Kh
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:50:02 +0000
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFZbF-00031B-KZ
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 21:50:02 +0000
+Received: by wwb39 with SMTP id 39so432381wwb.4
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 09 Nov 2010 19:56:31 -0800 (PST)
+	Mon, 08 Nov 2010 13:49:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1206967940.2804651289359947848.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-References: <1824167242.2804331289359263862.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<1206967940.2804651289359947848.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Tue, 9 Nov 2010 19:56:30 -0800
-Message-ID: <AANLkTikvbUkjbvVSHQKcn+4AcxGFYBAx436GpRLoadS+@mail.gmail.com>
+In-Reply-To: <4CD7A289.8020002@cn.fujitsu.com>
+References: <4CCA1F3E.5000202@cn.fujitsu.com> <4CD7A289.8020002@cn.fujitsu.com>
+Date: Mon, 8 Nov 2010 13:49:55 -0800
+Message-ID: <AANLkTikTMn2iK9dNk4btxidwvsKvG9Z7Sd27C78qFssq@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix sysconf failure in RHEL4
+Subject: Re: [LTP] [POSIX][PATCH]A awaited IO request completion signal can
+ case lio_listio return EINTR.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,101 +31,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Nov 9, 2010 at 7:32 PM, Caspar Zhang <czhang@redhat.com> wrote:
-> Hi all,
+On Sun, Nov 7, 2010 at 11:11 PM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+> Bian Naimeng wrote:
+>> Open posix documents point lio_listio may return EINTR caused by a await=
+ed I/O requst
+>> completion signal.
+>>
+>> [EINTR]
+>> =A0 =A0 A signal was delivered while waiting for all I/O requests to com=
+plete during an
+>> =A0 =A0 LIO_WAIT operation. Note that, since each I/O operation invoked =
+by lio_listio()
+>> =A0 =A0 may possibly provoke a signal when it completes, this error retu=
+rn may be caused
+>> =A0 =A0 by the completion of one (or more) of the very I/O operations be=
+ing awaited.
+>> =A0 =A0 Outstanding I/O requests are not canceled, and the application s=
+hall examine each
+>> =A0 =A0 list element to determine whether the request was initiated, can=
+celed, or completed.
+>>
+>> So it's unnecessary to setup handler for IO operation completion, we jus=
+t need check
+>> the aio_error and aio_return for each request, it has same effect on che=
+cking
+>> received_selected.
+>>
+>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>>
 >
-> I met a strange error (only) in RHEL4, syscalls/sysconf
-> failed the last test case because of the variable `actual'
-> was not evaluated by `errno':
+> =A0Hi Garrett,
 >
-> sysconf01 =A0 56 =A0TFAIL =A0: =A0sysconf correctly failed, but expected =
-errno (22) !=3D actual (0)
->
-> I remov the var `actual' and use `errno' directly, seems it
-> works. Re-test under RHEL4/5/6 and all of them pass the test.
->
-> I have no idea why errno value couldn't be assigned to
-> `actual', either not sure whether my patch works on other
-> non-Red Hat distos. Please have a look at this patch if
-> you want, thanks.
->
-> Signed-off-by: Caspar Zhang <czhang@redhat.com>
->
-> ---
-> =A0testcases/kernel/syscalls/sysconf/sysconf01.c | =A0 =A09 ++++-----
-> =A01 files changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/sysconf/sysconf01.c b/testcases/ke=
-rnel/syscalls/sysconf/sysconf01.c
-> index 783c6f5..42246f0 100644
-> --- a/testcases/kernel/syscalls/sysconf/sysconf01.c
-> +++ b/testcases/kernel/syscalls/sysconf/sysconf01.c
-> @@ -153,19 +153,18 @@ int main()
->
-> =A0 =A0 =A0 =A0/* 56 */
-> =A0 =A0 =A0 =A0{
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 int retval, actual;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int retval;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0errno =3D 0;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0retval =3D sysconf(INVAL_FLAG);
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 actual =3D errno;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (retval !=3D -1) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "sysconf =
-succeeded for invalid flag (%i), "
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 " retval=
-=3D%d errno=3D%d: %s",
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0INVAL_FL=
-AG, retval, actual, strerror(actual));
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else if (actual !=3D EINVAL) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0INVAL_FL=
-AG, retval, errno, strerror(errno));
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else if (errno !=3D EINVAL) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "sysconf =
-correctly failed, but expected "
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"errno (=
-%i) !=3D actual (%i)", EINVAL, actual);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"errno (=
-%i) !=3D actual (%i)", EINVAL, errno);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TPASS, "The inval=
-id sysconf key was trapped "
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0"appropriately");
+> =A0 =A0Would you like to pick up this patch? =A0Any reply is helpful to m=
+e, so please let me
+> =A0know what's your opinion if you are free. ^_^
 
-Hmmm... well, for starters the definitions aren't the same:
-
-           extern int * __error();
-           #define errno (* __error())
-
-I wonder if that has to do something with it... try out the following progr=
-am:
-
-#define _GNU_SOURCE 1
-#include <errno.h>
-#include <stdio.h>
-
-int
-main(void)
-{
-    open(NULL, 0);
-    int actual =3D errno;
-    printf("%i %d %i %d\n", actual, actual, errno, errno);
-    return (0);
-}
-
-It spit out this on FreeBSD at least:
-
-$ gcc -Wall -o test_errno_assignment test_errno_assignment.c
-$ ./test_errno_assignment
-14 14 14 14
-
-HTH,
--Garrett
+I have some potential concerns with the above patch. Let me fully
+digest it and I'll get back to you.
 
 ---------------------------------------------------------------------------=
 ---
