@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PHpDF-0003UJ-7v
-	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 02:54:33 +0000
-Received: from out16.sjc.mx.trendmicro.com ([216.99.131.73])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PHpDB-0005yO-17
-	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 02:54:33 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.134])
-	by out16.sjc.mx.trendmicro.com (Postfix) with ESMTP id 93D25980422
+	(envelope-from <yanegomi@gmail.com>) id 1PFOJL-0002gA-De
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 09:46:47 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFOJK-0000i8-3y
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 09:46:47 +0000
+Received: by wya21 with SMTP id 21so5267533wya.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 15 Nov 2010 02:54:22 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id E9588114B839
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 15 Nov 2010 02:54:21 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Nov 2010 11:54:19 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Mon, 15 Nov 2010 11:54:19 +0900
-Message-ID: <000001cb8470$6662ddb0$33289910$@co.jp>
+	Mon, 08 Nov 2010 01:46:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP]  Realtime test failure
+In-Reply-To: <4CCFD4C8.8060007@cn.fujitsu.com>
+References: <4CCFD4C8.8060007@cn.fujitsu.com>
+Date: Mon, 8 Nov 2010 01:46:40 -0800
+Message-ID: <AANLkTi=ma-dX1YAJgc5sesDx67G75eOMGEUA3+uxOQsu@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [POSIX][PATCH]pthread_mutex_getprioceiling should return
+ EINVAl when mutex's protocol is PTHREAD_PRIO_NONE.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,122 +28,112 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Tue, Nov 2, 2010 at 2:07 AM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+> The default value of the mutex's protocol shall be PTHREAD_PRIO_NONE,
+> so pthread_mutex_getprioceiling should return EINVAL.
+>
+> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>
+> ---
+> =A0.../interfaces/pthread_mutex_getprioceiling/1-1.c =A0| =A0 30 ++++++++=
+++++++++++++
+> =A01 files changed, 30 insertions(+), 0 deletions(-)
+>
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthrea=
+d_mutex_getprioceiling/1-1.c b/testcases/open_posix_testsuite/conformance/i=
+nterfaces/pthread_mutex_getprioceiling/1-1.c
+> index d9251e6..65c8c6b 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex=
+_getprioceiling/1-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex=
+_getprioceiling/1-1.c
+> @@ -18,6 +18,7 @@
+> =A0#include <pthread.h>
+> =A0#include <stdio.h>
+> =A0#include <sched.h>
+> +#include <errno.h>
+> =A0#include "posixtest.h"
+>
+> =A0int main()
+> @@ -29,6 +30,7 @@ int main()
+> =A0 =A0 =A0 =A0 =A0return PTS_UNRESOLVED;
+> =A0 =A0 =A0 =A0#endif */
+>
+> + =A0 =A0 =A0 pthread_mutexattr_t mattr;
+> =A0 =A0 =A0 =A0pthread_mutex_t mutex;
+> =A0 =A0 =A0 =A0int prioceiling, max_prio, min_prio;
+>
+> @@ -40,6 +42,34 @@ int main()
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0/* Get the prioceiling of the mutex. */
+> + =A0 =A0 =A0 if(pthread_mutex_getprioceiling(&mutex, &prioceiling) !=3D =
+EINVAL)
+> + =A0 =A0 =A0 {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("Test FAILED: Default, the protocol =
+attribute of mutex "
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"is PTHREAD_PRIO_NONE, so pt=
+hread_mutex_getprioceiling "
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"should return EINVAL\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return PTS_FAIL;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 if (pthread_mutexattr_init(&mattr) !=3D 0)
+> + =A0 =A0 =A0 {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 perror("Error at pthread_mutexattr_init()\n=
+");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return PTS_UNRESOLVED;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 if (pthread_mutexattr_setprotocol(&mattr, PTHREAD_PRIO_PROT=
+ECT) !=3D 0)
+> + =A0 =A0 =A0 {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 perror("Error at pthread_mutexattr_setproto=
+col()\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return PTS_UNRESOLVED;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* Initialize a mutex object */
+> + =A0 =A0 =A0 if(pthread_mutex_init(&mutex, &mattr) !=3D 0)
+> + =A0 =A0 =A0 {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 perror("Error at pthread_mutex_init()\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return PTS_UNRESOLVED;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* Get the prioceiling of the mutex. */
+> =A0 =A0 =A0 =A0if(pthread_mutex_getprioceiling(&mutex, &prioceiling) !=3D=
+ 0)
+> =A0 =A0 =A0 =A0{
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("Test FAILED: Error obtaining the p=
+riority ceiling\n");
 
-"realtime" build failed in my system with git "ltp-f388d33.tar.gz":
-------------<RHEL4.8 - x86>
-make[2]: Entering directory `/home/LTP/ltp-dev-20101112/testcases/realtime'
-make -C lib -f "/home/LTP/ltp-dev-20101112/testcases/realtime/lib/Makefile"
-all
-make[3]: Entering directory
-`/home/LTP/ltp-dev-20101112/testcases/realtime/lib'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
--I/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include
--I../../../include -I../../../include  -c -o librttest.o librttest.c
-In file included from librttest.c:43:
-/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librttest.h: In
-function `atomic_add':
-/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librttest.h:119
-: warning: implicit declaration of function `__sync_add_and_fetch'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
--I/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include
--I../../../include -I../../../include  -c -o libstats.o libstats.c
-In file included from libstats.c:47:
-/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librttest.h: In
-function `atomic_add':
-/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librttest.h:119
-: warning: implicit declaration of function `__sync_add_and_fetch'
-if [ -z "librttest.o libstats.o" ] ; then \
-	echo "Cowardly refusing to create empty archive"; \
-	exit 1; \
-fi
-ar -rc "librealtime.a" librttest.o libstats.o
-ranlib "librealtime.a"
-make[3]: Leaving directory
-`/home/LTP/ltp-dev-20101112/testcases/realtime/lib'
-make[3]: Entering directory
-`/home/LTP/ltp-dev-20101112/testcases/realtime/func'
-make[4]: Entering directory
-`/home/LTP/ltp-dev-20101112/testcases/realtime/func/async_handler'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
--I/home/LTP/ltp-dev-20101112/testcases/realtime/include
--I../../../../include -I../../../../include
--L/home/LTP/ltp-dev-20101112/testcases/realtime/lib -L../../../../lib
-async_handler.c   -lrealtime -lpthread -lrt -lm -o async_handler
-In file included from async_handler.c:42:
-/home/LTP/ltp-dev-20101112/testcases/realtime/include/librttest.h: In
-function `atomic_add':
-/home/LTP/ltp-dev-20101112/testcases/realtime/include/librttest.h:119:
-warning: implicit declaration of function `__sync_add_and_fetch'
-/home/LTP/ltp-dev-20101112/testcases/realtime/lib/librealtime.a(librttest.o)
-(.text+0x1a7): In function `create_thread':
-/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librttest.h:119
-: undefined reference to `__sync_add_and_fetch'
-collect2: ld returned 1 exit status
-make[4]: *** [async_handler] Error 1
-make[4]: Leaving directory
-`/home/LTP/ltp-dev-20101112/testcases/realtime/func/async_handler'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory
-`/home/LTP/ltp-dev-20101112/testcases/realtime/func'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/LTP/ltp-dev-20101112/testcases/realtime'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/LTP/ltp-dev-20101112/testcases'
-make: *** [testcases-all] Error 2
-------------
+    A patch similar to this will be committed soon. The above patch
+has several correctness issues with perror (you have to capture the
+error and play it back via strerror), and the original test author
+accidentally mixed up one of the requirements between
+pthread_mutex_getprioceiling and pthread_mutexattr_getprioceiling as
+well by accident. This helped unroot a requirements issue on FreeBSD
+with PTHREAD_PRIO_INHERIT, and it might so similar on Linux.
+    Partial credit will be `awarded' for having keen eyes on this
+issue though :).
+Thanks,
+-Garrett
 
-"realtime" build failed in:
-------------
-RHEL4.8 -- x86, x86_64, ia64
-RHEL5.4 -- x86
-------------
+---------------------------------------------------------------------------=
+---
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
 
-"realtime" build succeeded in:
-------------
-RHEL5.4 -- x86_64, ia64
-------------
+Billion" shares his insights and actions to help propel your =
 
-It is caused by "__sync_add_and_fetch".
-
-In following URL, "__sync_add_and_fetch" is "built-in functions for 
-atomic memory access". And It is provided in "gcc":
-   http://gcc.gnu.org/onlinedocs/gcc-4.4.0/gcc/Atomic-Builtins.html
-
-There is "__sync_add_and_fetch" in gcc4.1.2 (It is the gcc of RHEL5.1 -
-RHEL5.4).
-And there is not "__sync_add_and_fetch" in gcc3.4.6 (It is the gcc of
-RHEL4.8)
-
-In addition, "__sync_add_and_fetch" is for 64 bit environment.
- 
-http://stackoverflow.com/questions/130740/link-error-when-compiling-gcc-atom
-ic-operation-in-32-bit-mode
-
-   http://gcc.gnu.org/wiki/Atomic
-
-Perhaps, the judgment that "realtime" must be built or not depends on 
-gcc's version (> 4.0) and 64 bits environment, I think.
-
-
-
-Regards--
-
--Tomonori Mitani
-
-
-
-------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
