@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PKPob-00036V-Pw
-	for ltp-list@lists.sourceforge.net; Mon, 22 Nov 2010 06:23:49 +0000
-Received: from out16.sjc.mx.trendmicro.com ([216.99.131.73])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PKPoa-0003N2-6B
-	for ltp-list@lists.sourceforge.net; Mon, 22 Nov 2010 06:23:49 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.26])
-	by out16.sjc.mx.trendmicro.com (Postfix) with ESMTP id AEE63980415
+	(envelope-from <joyarjit@gmail.com>) id 1PFKSF-0008Fa-4j
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 05:39:43 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFKSE-0003Ws-BY
+	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 05:39:43 +0000
+Received: by wwb31 with SMTP id 31so5144125wwb.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Nov 2010 06:23:41 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 09FDA114B83F
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Nov 2010 06:23:40 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Nov 2010 15:23:39 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Mon, 22 Nov 2010 15:23:39 +0900
-Message-ID: <000001cb8a0d$cd4fad30$67ef0790$@co.jp>
+	Sun, 07 Nov 2010 21:39:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] About "configure" failure
+Date: Mon, 8 Nov 2010 11:09:35 +0530
+Message-ID: <AANLkTikamfd=umjY0fmGAjzkrQy1vMYJjKhbkyyZzs0a@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] unbond variable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,106 +25,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2772776064658761598=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, hannuxx@gmail.com, ltp-list@lists.sourceforge.net
+Cc: ajay.khandelwal@st.com
+
+--===============2772776064658761598==
+Content-Type: multipart/alternative; boundary=0016367fb4b7a6992f0494840ceb
+
+--0016367fb4b7a6992f0494840ceb
+Content-Type: text/plain; charset=ISO-8859-1
 
 Hi,
 
-I reported failure of "configure" on the other day.
-    http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg11137.html
+           In network stress tests
 
-But I think that it's hard to notice because my report is contributed to 
-the report of "realtime" failure. It's my clumsiness.
-Therefore, I report about "configure" again with  the recent git.
+          following error is coming, it is not able to get value of field
+variable.
 
+""
+          /opt/ltp/testcases/bin/get_ifname: line 79: field: unbound
+variable
 
----
+broken_ip6-version01    1  TBROK  :  Failed to get the interface name at the
+remote host
+""
 
-"configure" failed with git "ltp-7d2055e.tar.gz":
-------------<RHEL4.8 - x86>
-./configure: line 8228: syntax error near unexpected token `elif'
-./configure: line 8228: `elif test "x$has_quotav2" = "xyes"; then'
-------------
+why the variable is unbound, i tried to correct this but same error is
+coming.
 
-Environmants are RHEL5.5/4.8 -- x86/x86_64/ia64.
+how to resolve this error??
 
+-- 
+Best Regards,
+Arjit Sharma.
 
-"${LTPROOT}/configure" file of "ltp-7d2055e.tar.gz" is following:
+--0016367fb4b7a6992f0494840ceb
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-------------< RHEL4.8 - x86>
-[...]
+<p>Hi, <br>=A0<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 In network stress tests<br=
+>=A0<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0 following error is coming, it is not ab=
+le to get value of field variable.<br>=A0<br>&quot;&quot;<br>=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 /opt/ltp/testcases/bin/get_ifname: line 79: field: unbound =
+variable</p>
 
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF						---
-LINE 8210
-/* end confdefs.h.  */
+<p>broken_ip6-version01=A0=A0=A0 1=A0 TBROK=A0 :=A0 Failed to get the inter=
+face name at the remote host</p>
+<div>&quot;&quot;</div>
+<div>=A0</div>
+<div>why the variable is unbound, i tried to=A0correct this but same error =
+is coming.<br>=A0<br>how to resolve this error??<br clear=3D"all"><br>-- <b=
+r></div>
+<div>Best Regards,</div>
+<div>Arjit Sharma.</div><br>
 
-#define _LINUX_QUOTA_VERSION 2
-#include <sys/types.h>
-#include <sys/quota.h>
-#include <unistd.h>
-int main(void) {
-        struct dqblk dq;
-        return quotactl(QCMD(Q_GETINFO, USRQUOTA), (const char *)
-"/dev/null",
-                        geteuid(), (caddr_t) &dq);
-}
---- LINE 8221
-if test "x$has_quotav1" = "xyes"; then
-
-cat >>confdefs.h <<\_ACEOF
---- LINE 8224
-#define HAVE_QUOTAV1 1
-_ACEOF
-
-elif test "x$has_quotav2" = "xyes"; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_QUOTAV2 1
-_ACEOF
-
-fi
-
-_ACEOF
---- LINE 8236
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-[...]
-------------
+--0016367fb4b7a6992f0494840ceb--
 
 
-The line 8210 ("  8210  cat >>conftest.$ac_ext <<_ACEOF") is the "here
-document".
-First "_ACEOF" which appears after this line is the line 8224.
-But the line 8224 is "here document", too.
-
-I think that it is syntax error.
-
-In the line 8236, there is "_ACEOF".
-This "_ACEOF" may be just after line 8221, I think.
-
-I tried to execute "configure" after above revision, and it succeeded.
-After this, "make" and "make install" succeeded, too.
-
-
-Regards--
-
--Tomonori Mitani
-
-
+--===============2772776064658761598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
+--===============2772776064658761598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2772776064658761598==--
+
