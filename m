@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PLiE4-0000Ii-Ty
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 20:15:28 +0000
-Date: Thu, 25 Nov 2010 21:27:51 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101125202751.GB11386@saboteur.suse.cz>
-References: <AANLkTi=+oxNMPd_J8w46xXM8nwiNet9dLKHK-rLq94Ft@mail.gmail.com>
+	(envelope-from <joyarjit@gmail.com>) id 1PFhst-0002vT-F9
+	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 06:40:47 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFhss-0005iO-JM
+	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 06:40:47 +0000
+Received: by wwb29 with SMTP id 29so1021192wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 08 Nov 2010 22:40:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=+oxNMPd_J8w46xXM8nwiNet9dLKHK-rLq94Ft@mail.gmail.com>
-Subject: Re: [LTP] [RFC] Remove dumb LTP tst_res APIs and improve others
+Date: Tue, 9 Nov 2010 12:10:40 +0530
+Message-ID: <AANLkTi=XWVK8k0kB1XU8n70adHcbVvHsY-w3GCOzK8kN@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] check_onlycap()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,92 +25,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============1263670857241437631=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>, hannuxx@gmail.com, ltp-list@lists.sourceforge.net
+Cc: ajay.khandelwal@st.com
 
-Hi!
-> >>>
-> >>> ...
-> >>>
-> >>> > You should use tst_brkm(TBROK|TERRNO, tst_exit, "mmap") here. As
-> >>> > tst_brkm() exits when pointer to cleanup is not NULL.
-> >>>
-> >>> Actually, the exit should be dropped and the tst_brkm invocation
-> >>> should be left alone. When NULL is specified as the second argument to
-> >>> tst_brkm, it automatically calls tst_exit.
-> >>
-> >> I would disagree here.
-> >>
-> >> man tst_res
-> >>
-> >> ...
-> >>
-> >> If func is NULL, tst_brk() and tst_brkm return to the caller after all
-> >> results have been printed.
-> >>
-> >> ...
-> >>
-> >>
-> >>
-> >> And the corresponding code in the lib/tst_res.c is
-> >>
-> >> ...
-> >>
-> >> =A0 =A0 =A0 =A0if (func !=3D NULL) {
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(*func)();
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
-> >> =A0 =A0 =A0 =A0}
-> >>
-> >> }
-> >>
-> >>
-> >> Which seems like a dump interface to me, but once used this way in who=
-le
-> >> LTP, we cannot easily change that.
-> >
-> > !!!
-> >
-> > Crap. I've somehow gotten it backwards this entire time >:(...
-> =
+--===============1263670857241437631==
+Content-Type: multipart/alternative; boundary=0016364c7b59f2969d04949904b1
 
->     I took a quick look around the sourcebase and there are a number
-> of ways where this is done incorrectly. I know it's an API change, but
-> does it make sense just to call tst_exit() at the end of tst_brkm?
->     Also, tst_brkloop* is completely unused. I vote for that to be
-> removed as well.
+--0016364c7b59f2969d04949904b1
+Content-Type: text/plain; charset=ISO-8859-1
 
-I'm pretty sure that this is misused in many places, as a matter of
-fact, I could not remember single test that played 100% nice with the
-LTP api.
+HI,
 
-This however needs extensive testing. Ideally each tests gets reviewed,
-but I'm pretty sure we are lacking manpower for this. =
+     Inside ltp/testcases/kernel/security/smack there is a shell named
+smack_common.sh, inside this script there is a function "check_onlycap"
+which is giving error as :---
+
+The smack label reported for /smack/onlycap is "", not the expected ""
+why there is such problem and how can i overcome this?
+
+i made a little change in the code but still the error is same:--
+
+i wrote
+             if [ !z "$onlycap" ];
+
+instead of
+                 if [ -z "$onlycap" ];
+
+inside check_onlycap() function.
 
 
-Still I vote for that change. Good luck with testing. ;)
+Best Regards,
+Arjit Sharma.
 
-PS: don't forget to change the docs
+--0016364c7b59f2969d04949904b1
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>HI,</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0 Inside ltp/testcases/kernel/security/smack there is a she=
+ll named smack_common.sh, inside this script there is a function &quot;chec=
+k_onlycap&quot;=A0 which is giving error as :---</div>
+<div>=A0</div>
+<div>The smack label reported for /smack/onlycap is &quot;&quot;, not the e=
+xpected &quot;&quot;=A0<br clear=3D"all"></div>
+<div>why there is such problem and how can i overcome this?</div>
+<div>=A0</div>
+<div>i made a little change in the code but still the error is same:--</div=
+>
+<div>=A0</div>
+<div>i wrote=A0=A0=A0 </div>
+<div>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if [ !z &quot;$onlycap&quot; ]; <=
+/div>
+<div>=A0</div>
+<div>instead of</div>
+<div>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if [ -z &quot;$onlyca=
+p&quot; ]; </div>
+<div>=A0</div>
+<div>inside check_onlycap() function.</div>
+<div><br>=A0</div>
+<div>Best Regards,</div>
+<div>Arjit Sharma.</div><br>
+
+--0016364c7b59f2969d04949904b1--
 
 
-And when we are at it, we should consider removing unused (and sometimes
-broken) functionality from include/usctest.h
+--===============1263670857241437631==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- =
+------------------------------------------------------------------------------
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
+--===============1263670857241437631==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Cyril Hrubis
-chrubis@suse.cz
-
----------------------------------------------------------------------------=
----
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1263670857241437631==--
+
