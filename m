@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hakehuang@gmail.com>) id 1P5t6l-00045V-Qo
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:38:31 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P5t6k-0001rr-Ty
-	for ltp-list@lists.sourceforge.net; Wed, 13 Oct 2010 04:38:31 +0000
-Received: by ywl5 with SMTP id 5so2144698ywl.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Oct 2010 21:38:25 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PFl4T-0008N4-C6
+	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 10:04:57 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PFl4Q-0007V3-EX
+	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 10:04:57 +0000
+Date: Tue, 9 Nov 2010 05:04:47 -0500 (EST)
+From: caiqian@redhat.com
+Message-ID: <1836124113.2028671289297087168.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <809670218.2025881289295453223.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-References: <AANLkTimb=F0NaS+Sipp8EzrbRUqPqRf+9-nBZQMPpD=w@mail.gmail.com>
-	<AANLkTimhAOpaWN7KDwg_PCQ=_j81A1fddRe5_KaB+RLY@mail.gmail.com>
-Date: Wed, 13 Oct 2010 12:38:25 +0800
-Message-ID: <AANLkTinOLVvd1B90s3Hn735YqH+Ku=BmUwyu-w1yZK_Y@mail.gmail.com>
-From: hake huang <hakehuang@gmail.com>
-Subject: Re: [LTP] Patch to record kernel dump message to each testcases log
+Subject: Re: [LTP] [PATCH v3] functional testing for Kernel Samepage Merging
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,149 +23,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5108539047975861885=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
---===============5108539047975861885==
-Content-Type: multipart/alternative; boundary=0016e684c2fc02ad7d0492782a29
-
---0016e684c2fc02ad7d0492782a29
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi
-
-I see this simple solution is no quite fit. But the kernel dump message for
-each test case is necessary for analysing. I can work on this further, with
-below help:
-1. Where can I find the reason for the IIRC break?
-2. Can it  be an option to avoid the size limitation on some embedded
-system?
-3.  A kind of seperating tag is needed for kernel message, right? e.g
-<kernel_dump_start>dump message<kernel_dump_end>
-4.  I see in ltp-pan.c the file descriptors, terminals are changed in child
-process. if the system(3) has problem, the worst cases is there are no
-kernel messge output in parent process, but the pan can still function well.
-
-if not use system(3), can you give your suggestion on this, exec(3) seems to
-have the same problem as system(3)?
-
-Regards,
-
-Hake
-
-2010/10/13 Garrett Cooper <yanegomi@gmail.com>
-
-> On Tue, Oct 12, 2010 at 5:56 AM, hake huang <hakehuang@gmail.com> wrote:
-> > Hi,
-> >
-> > I wnat LTP to record the kernel dump message during each test case, and I
-> > make a patch for this. Any comments?
->
-> Low:
-> 1. This will break existing functionality (IIRC) with runltp provided
-> by Subrata (CCed for comment).
->
-> Medium:
-> 2. It will bloat logs output on embedded systems / systems with limited
-> space.
-> 3. It could have other potential unwanted side-effects with tests
-> and/or system services (in particular because some people on the list
-> have been executing LTP on production systems, not testbed machines...
-> even though I argue that's their mistake).
->
-> High:
-> 4. The change would confuse end-users.
-> 5. The change would break scripts which parse the output in different
-> ways from what you intend.
-> 6. Using system(3) to execute a program could yield some unintended
-> side-effects with file descriptors, terminal handling, process
-> wait(2)ing, etc.
->
-> Thanks,
-> -Garrett
->
-
---0016e684c2fc02ad7d0492782a29
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi<br><br>I see this simple solution is no quite fit. But the kernel dump m=
-essage for each test case is necessary for analysing. I can work on this fu=
-rther, with below help: <br>1. Where can I find the reason for the IIRC bre=
-ak? <br>
-2. Can it=A0 be an option to avoid the size limitation on some embedded sys=
-tem?<br>3.=A0 A kind of seperating tag is needed for kernel message, right?=
- e.g &lt;kernel_dump_start&gt;dump message&lt;kernel_dump_end&gt;<br>4.=A0 =
-I see in ltp-pan.c the file descriptors, terminals are changed in child pro=
-cess. if the system(3) has problem, the worst cases is there are no kernel =
-messge output in parent process, but the pan can still function well.<br>
-<br>if not use system(3), can you give your suggestion on this, exec(3) see=
-ms to have the same problem as system(3)?<br><br>Regards,<br><br>Hake<br><b=
-r><div class=3D"gmail_quote">2010/10/13 Garrett Cooper <span dir=3D"ltr">&l=
-t;<a href=3D"mailto:yanegomi@gmail.com">yanegomi@gmail.com</a>&gt;</span><b=
-r>
-<blockquote class=3D"gmail_quote" style=3D"margin: 0pt 0pt 0pt 0.8ex; borde=
-r-left: 1px solid rgb(204, 204, 204); padding-left: 1ex;"><div class=3D"im"=
->On Tue, Oct 12, 2010 at 5:56 AM, hake huang &lt;<a href=3D"mailto:hakehuan=
-g@gmail.com">hakehuang@gmail.com</a>&gt; wrote:<br>
-
-&gt; Hi,<br>
-&gt;<br>
-&gt; I wnat LTP to record the kernel dump message during each test case, an=
-d I<br>
-&gt; make a patch for this. Any comments?<br>
-<br>
-</div>Low:<br>
-1. This will break existing functionality (IIRC) with runltp provided<br>
-by Subrata (CCed for comment).<br>
-<br>
-Medium:<br>
-2. It will bloat logs output on embedded systems / systems with limited spa=
-ce.<br>
-3. It could have other potential unwanted side-effects with tests<br>
-and/or system services (in particular because some people on the list<br>
-have been executing LTP on production systems, not testbed machines...<br>
-even though I argue that&#39;s their mistake).<br>
-<br>
-High:<br>
-4. The change would confuse end-users.<br>
-5. The change would break scripts which parse the output in different<br>
-ways from what you intend.<br>
-6. Using system(3) to execute a program could yield some unintended<br>
-side-effects with file descriptors, terminal handling, process<br>
-wait(2)ing, etc.<br>
-<br>
-Thanks,<br>
-<font color=3D"#888888">-Garrett<br>
-</font></blockquote></div><br>
-
---0016e684c2fc02ad7d0492782a29--
-
-
---===============5108539047975861885==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
---===============5108539047975861885==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5108539047975861885==--
-
+Cj4gQ2FuIHlvdSBwcm92aWRlIGRvY3VtZW50YXRpb24gdGhhdCBkZXNjcmliZXMgdGhlIGZ1bmN0
+aW9uYWxpdHkgdW5kZXIKPiB0ZXN0PwpJbiBrZXJuZWwgZG9jcywKaHR0cDovL2x4ci5saW51eC5u
+by8jbGludXgrdjIuNi4zNS9Eb2N1bWVudGF0aW9uL3ZtL2tzbS50eHQKCj4gSG93IGRvZXMgb25l
+IGRvIHRoaXMgbWFudWFsbHk/IERvY3VtZW50YXRpb24/CkluIEZlZG9yYSBvciBzaW1pbGFyIHN5
+c3RlbXMsIGRvLAojIHNlcnZpY2VzIGtzbSBzdG9wCiMgc2VydmljZSBrc210dW5lZCBzdG9wCgo+
+IFRoZXJlJ3Mgbm8gc2Vuc2UgaW4gcnVubmluZyB0aGlzIHRocm91Z2ggdGhlIFRFU1QgbWFjcm8g
+aWYgeW91IGFyZW4ndAo+IGdvaW5nIHRvIHVzZSBURVNUX1JFVFVSTiBvciBURVNUX0VSUk5PLgpP
+Sy4KCgo+ID4gKyDCoCDCoCDCoCBtZW1vcnkgPSBtYWxsb2MobnVtICogc2l6ZW9mKCoqbWVtb3J5
+KSk7Cj4gCj4gV2h5IGFyZSB5b3UgcmVmZXJlbmNpbmcgbWVtb3J5IHR3aWNlIGFuZCB0aGVuIGFs
+bG9jYXRpbmcgaGVhcCBtZW1vcnkKPiB0byB0aGUgcG9pbnRlciB0byBtZW1vcnk/IFNlZW1zIHJl
+YWxseSBsZWFreS4KVGhpcyBpcyBhIG1lbW9yeSBwb2ludGVyIHRvIGlkZW50aWZ5IHBlciBwcm9j
+ZXNzLCBNQiwgYW5kIGJ5dGUgbGlrZSBtZW1vcnlbcHJvY2VzcyBOby5dW01CIE5vLl1bYnl0ZSBO
+by5dLiBIZXJlLCBpdCBpcyB0byBhbGxvY2F0ZSB0aGUgbWVtb3J5IChtZW1vcnlbTUIgTm8uXVti
+eXRlIE5vLl0pIGZvciB0b3RhbCBudW1iZXIgb2YgcHJvY2Vzc2VzLiBUaGVuLCBpdCB3aWxsIGFs
+bG9jYXRlIG1lbW9yeSBmb3IgTm8uIG9mIE1CIHBlciBwcm9jZXNzIGFuZCBOby4gb2YgYnl0ZXMg
+cGVyIE1CLiBJdCBpcyBhbiBpbmRleCB0byBmaW5kIG91dCBhIHNpbmdsZSBieXRlIG9mIG1lbW9y
+eSBjb250ZW50IGZvciBhIGdpdmVuIHByb2Nlc3MsIHNvIGl0IGlzIHBvc3NpYmxlIHRvIG1vZGlm
+eSBhbnkgc2luZ2xlIGJ5dGUuCgo+IAo+ID4gKyDCoCDCoCDCoCBpZiAobWVtb3J5ID09IE5VTEwp
+Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9icmttKFRCUk9LLCBjbGVhbnVwLCAibWFs
+bG9jIik7Cj4gPiArCj4gPiArIMKgIMKgIMKgIGlmICgoY2hpbGRbMF0gPSBmb3JrKCkpID09IC0x
+KQo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfYnJrbShUQlJPS3xURVJSTk8sIGNsZWFu
+dXAsICJmb3JrIik7Cj4gPiArIMKgIMKgIMKgIGVsc2UgaWYgKGNoaWxkWzBdID09IDApIHsKPiA+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X3Jlc20oVElORk8sICJjaGlsZCAwIHN0b3BzLiIp
+Owo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmFpc2UoU0lHU1RPUCkgPT0gLTEpCj4g
+Cj4gYS4KPiAKPiBzd2l0Y2ggKChjaGlsZFswXSA9IGZvcmsoKSkgewo+IGNhc2UgLTE6Cj4gICAg
+IC8qIEJVU1RFRCAqLwo+ICAgICBicmVhazsKPiBjYXNlIDA6Cj4gICAgIC8qIENISUxEICovCj4g
+ICAgIGJyZWFrOwo+IGRlZmF1bHQ6Cj4gICAgIC8qIFBBUkVOVCAqLwo+ICAgICBicmVhazsKPiB9
+Cj4gCj4gICAgIElzIGdlbmVyYWxseSBhIGJpdCBlYXNpZXIgdG8gZm9sbG93LgpPSy4KCj4gYi4g
+V2h5IG5vdCB1c2Uga2lsbCgyKT8KcmFpc2UoKSBpcyBzaW1wZXIuIERvZXMgaXQgbWF0dGVyPwoK
+PiAKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X2Jya20oVEJST0t8
+VEVSUk5PLCBjbGVhbnVwLCAia2lsbCIpOwo+ID4gKwo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCB0c3RfcmVzbShUSU5GTywgImNoaWxkIDAgY29udGludWVzLi4uIik7Cj4gPiArCj4gPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIC8qIEF2b2lkIFRIUCBhbGxvY2F0aW9uIHdoaWNoIGNhbid0IGtz
+bSBBVE0uICovCj4gCj4gV2hhdCBkb2VzIFRIUCBtZWFuIGFuZCB3aHkgbm90IGp1c3Qgc3BlbGwg
+b3V0IEFUTSBhcyAiYXQgdGhlIG1vbWVudCI/Cj4gTGVzcyBhY3JvbnltcyAtPiBsZXNzIGNvbmZ1
+c2lvbiA6KS4KT0suIFRIUCBpcyBUcmFuc3BhcmVudEh1Z2VQYWdlLApodHRwOi8vbHduLm5ldC9B
+cnRpY2xlcy80MTMwODMvCgo+IAo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfcmVzbShU
+SU5GTywKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgImNoaWxkIDAgYWxs
+b2NhdGVzICVkIE1CIGZpbGxlZCB3aXRoICdjJy4iLAo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBzaXplKTsKPiA+ICsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgbWVt
+b3J5WzBdID0gbWFsbG9jKHNpemUgKiBzaXplb2YoKm1lbW9yeSkpOwo+IAo+IE1vcmUgbGVha3kg
+bWVtb3J5PwpBcyBtZW50aW9uZWQgYWJvdmUsIHRoaXMgaXMgdGhlIGluZGV4IGZvciBwcm9jZXNz
+IDAgd2l0aCBOby4gb2YgTUIuCgo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAobWVtb3J5
+WzBdID09IE5VTEwpCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9i
+cmttKFRCUk9LfFRFUlJOTywgY2xlYW51cCwgIm1hbGxvYyIpOwo+ID4gKwo+ID4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBmb3IgKGogPSAwOyBqIDwgc2l6ZTsgaisrKSB7Cj4gPiArIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIG1lbW9yeVswXVtqXSA9IG1tYXAoTlVMTCwgTUIsCj4g
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIFBST1RfUkVBRHxQUk9UX1dSSVRFLAo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBNQVBfQU5PTllNT1VTfE1BUF9QUklWQVRF
+LAo+IC0xLCAwKTsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKG1l
+bW9yeVswXVtqXSA9PSBOVUxMKQpPSwoKPiAKPiBJIHRoaW5rIHlvdSBtZWFudCBNQVBfRkFJTEVE
+LCBub3QgTlVMTC4KWWVzLgoKPiAKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgdHN0X2Jya20oVEJST0t8VEVSUk5PLCBjbGVhbnVwLAo+ICJtbWFwIik7
+Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmIChtYWR2aXNlKG1lbW9y
+eVswXVtqXSwgTUIsCj4gTUFEVl9NRVJHRUFCTEUpCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgID09IC0xKQo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfYnJrbShUQlJPS3xURVJSTk8sIGNsZWFudXAs
+Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgICJtYWR2aXNlIik7Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IGZvciAoaSA9IDA7IGkgPCBNQjsgaSsrKQo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCBtZW1vcnlbMF1bal1baV0gPSAnYyc7Cj4gCj4gWW91IGNvdWxk
+IGp1c3QgdXNlIG1lbXNldC4KSXQgbWlnaHQgYmUgYmV0dGVyIHRvIGJlIGNvbnNpc3RlbnQgaGVy
+ZSwgc2luY2UgdGhlcmUgYXJlIHRpbWVzIGFzIHlvdSBjYW4gc2VlIGluIHRoZSBsYXRlciBwYXJ0
+IG9mIGNvZGUgdG8gY2hhbmdlIHRoZSBsYXN0IGJ5dGUgd2hpY2ggbWlnaHQgc3RpbGwgbmVlZCB0
+aGUgZGlyZWN0IG1vZGlmaWNhdGlvbiBoZXJlLiBJbiBhZGRpdGlvbiwgbWVtc2V0KCkgaXMgbGlr
+ZWx5IHRvIGFkZCBtb3JlIGNvZGUgaW5jbHVkaW5nIHJldHVybiBjb2RlIGNoZWNraW5nIGFuZCBn
+cmF0ZWZ1bCBleGl0IGV0Yy4KCj4gCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0KPiA+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X3Jlc20oVElORk8sICJjaGlsZCAwIHN0b3BzLiIpOwo+
+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmFpc2UoU0lHU1RPUCkgPT0gLTEpCj4gPiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9icmttKFRCUk9LfFRFUlJOTywg
+Y2xlYW51cCwgImtpbGwiKTsKPiA+ICsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X3Jl
+c20oVElORk8sICJjaGlsZCAwIGNvbnRpbnVlcy4uLiIpOwo+ID4gKyDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCB2ZXJpZnkoJ2MnLCAwLCAwLCBzaXplLCAwLCBNQik7Cj4gPiArIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIHRzdF9yZXNtKFRJTkZPLAo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCAiY2hpbGQgMCBjaGFuZ2VzIG1lbW9yeSBjb250ZW50IHRvICdkJy4iKTsKPiA+ICsKPiA+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZm9yIChqID0gMDsgaiA8IHNpemU7IGorKykgewo+ID4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBmb3IgKGkgPSAwOyBpIDwgTUI7IGkr
+KykKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgbWVt
+b3J5WzBdW2pdW2ldID0gJ2QnOwo+IAo+IG1lbXNldCBoZXJlIHRvby4KUmVhc29ucyBnaXZlbiBh
+Ym92ZS4KCj4gCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0KPiA+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgLyogVW5tZXJnZS4gKi8KPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X3Jl
+c20oVElORk8sICJjaGlsZCAwIHN0b3BzLiIpOwo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBp
+ZiAocmFpc2UoU0lHU1RPUCkgPT0gLTEpCj4gCj4ga2lsbD8gaGVyZSB0b28uClJlYXNvbiBnaXZl
+biBhYm92ZS4KCj4gCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9i
+cmttKFRCUk9LfFRFUlJOTywgY2xlYW51cCwgImtpbGwiKTsKPiA+ICsKPiA+ICsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgdHN0X3Jlc20oVElORk8sICJjaGlsZCAwIGNvbnRpbnVlcy4uLiIpOwo+ID4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB2ZXJpZnkoJ2QnLCAwLCAwLCBzaXplLCAwLCBNQik7Cj4g
+PiArCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIC8qIFN0b3AuICovCj4gPiArIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIHRzdF9yZXNtKFRJTkZPLCAiY2hpbGQgMCBzdG9wcy4iKTsKPiA+ICsgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgaWYgKHJhaXNlKFNJR1NUT1ApID09IC0xKQo+IAo+IGtpbGw/IGhl
+cmUgdG9vLgpTYW1lIGhlcmUuCgo+IAo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCB0c3RfYnJrbShUQlJPS3xURVJSTk8sIGNsZWFudXAsICJraWxsIik7Cj4gPiArCj4gPiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9yZXNtKFRJTkZPLCAiY2hpbGQgMCBjb250aW51ZXMu
+Li4iKTsKPiA+ICsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZXhpdCgwKTsKPiA+ICsgwqAg
+wqAgwqAgfQo+ID4gKyDCoCDCoCDCoCBpZiAoKGNoaWxkWzFdID0gZm9yaygpKSA9PSAtMSkKPiA+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X2Jya20oVEJST0t8VEVSUk5PLCBjbGVhbnVwLCAi
+Zm9yayIpOwo+ID4gKyDCoCDCoCDCoCBlbHNlIGlmIChjaGlsZFsxXSA9PSAwKSB7Cj4gPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHRzdF9yZXNtKFRJTkZPLCAiY2hpbGQgMSBzdG9wcy4iKTsKPiA+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHJhaXNlKFNJR1NUT1ApID09IC0xKQo+IAo+IFNh
+bWUgY29tbWVudHMgYXMgYWJvdmUgYWJvdXQga2lsbCBhbmQgZm9yay1zd2l0Y2guClllcywgd2ls
+bCBmaXggZm9yay1zd2l0Y2guCgo+IC4uLgo+IAo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBp
+ZiAod2FpdHBpZChjaGlsZFtrXSwgJnN0YXR1cywgV1VOVFJBQ0VEKSA9PSAtMSkKPiAKPiBEbyBX
+VU5UUkFDRUQgfCBXTk9IQU5HIGFuZCBzbGVlcCBlYWNoIGl0ZXJhdGlvbiBpbiB0aGUgbG9vcCB0
+byBhdm9pZAo+IGNoZXdpbmcgdXAgdGhlIENQVT8KSG1tLCBub3Qgc3VyZSBhYm91dCBXTk9IQU5H
+LiBUaGUgcHVycG9zZSBoZXJlIGlzIHRvIHdhaXQgZm9yIGV2ZXJ5IGNoaWxkIHRvIGNvbXBsZXRl
+LCBzbyBpdCB3b24ndCBicmVhayB0aGUgcGF0ZW50L2NoaWxkIHByb2Nlc3Npbmcgb3JkZXJpbmcg
+dGhhdCB0aGUgdGVzdCBkZXBlbmRzIG9uLiBUaGUgdGVzdCBjb2RlIHdhcyBkZXNpZ25lZCwgaWYg
+dGhlcmUgd2FzIGEgY2hpbGQgbm90IGV4aXQgZm9yIHNvbWUgcmVhc29ucywgaXQgbmVlZHMgdG8g
+ZnVydGhlciBkZWJ1Z2dpbmcgdG8gZmluZCBvdXQgd2h5LgoKPiA+ICsgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgdHN0X2Jya20oVEJST0t8VEVSUk5PLCBjbGVhbnVwLCAid2FpdHBp
+ZCIpOwo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoIVdJRlNUT1BQRUQoc3RhdHVzKSkK
+PiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X2Jya20oVEJST0ssIGNs
+ZWFudXAsCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+ICJjaGlsZCAlZCB3YXMgbm90IHN0b3BwZWQuIiwgayk7Cj4gPiArIMKgIMKgIMKgIH0KPiA+ICsK
+PiA+ICsgwqAgwqAgwqAgdHN0X3Jlc20oVElORk8sICJyZXN1bWUgYWxsIGNoaWxkcmVuLiIpOwo+
+ID4gKyDCoCDCoCDCoCBmb3IgKGsgPSAwOyBrIDwgbnVtOyBrKyspIHsKPiA+ICsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgaWYgKGtpbGwoY2hpbGRba10sIFNJR0NPTlQpID09IC0xKQo+ID4gKyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0c3RfYnJrbShUQlJPS3xURVJSTk8sIGNsZWFu
+dXAsCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICJr
+aWxsIGNoaWxkWyVkXSIsIGspOwo+ID4gKyDCoCDCoCDCoCB9Cj4gPiArIMKgIMKgIMKgIHNsZWVw
+KDUpOwo+ID4gKyDCoCDCoCDCoCB0c3RfcmVzbShUSU5GTywgImNoZWNrISIpOwo+ID4gKyDCoCDC
+oCDCoCBjaGVjaygicnVuIiwgTlVMTCwgMSk7Cj4gPiArIMKgIMKgIMKgIGNoZWNrKCJwYWdlc19z
+aGFyZWQiLCBOVUxMLCAyKTsKPiA+ICsgwqAgwqAgwqAgY2hlY2soInBhZ2VzX3NoYXJpbmciLCAi
+cGFnZXNfdm9sYXRpbGUiLCBzaXplICogbnVtICogMjU2IC0KPiAyKTsKPiA+ICsgwqAgwqAgwqAg
+Y2hlY2soInBhZ2VzX3Vuc2hhcmVkIiwgTlVMTCwgMCk7Cj4gPiArIMKgIMKgIMKgIGNoZWNrKCJz
+bGVlcF9taWxsaXNlY3MiLCBOVUxMLCAwKTsKPiA+ICsgwqAgwqAgwqAgY2hlY2soInBhZ2VzX3Rv
+X3NjYW4iLCBOVUxMLCBzaXplICogMjU2ICogbnVtKTsKPiAKPiBBIGxvdCBvZiB0aGlzIGxvZ2lj
+IGlzIHVubmVjZXNzYXJpbHkgZHVwbGljYXRlZCBiZWxvdzsgcGxlYXNlIG1vdmUgaXQKPiBvdXQg
+aW50byBhIGZ1bmN0aW9uLgpPSy4KCj4gCj4gLi4uCj4gCj4gPiArIMKgIMKgIMKgIFRFU1RfQ0xF
+QU5VUDsKPiA+ICsgwqAgwqAgwqAgdHN0X3JtZGlyKCk7Cj4gCj4gRG8geW91IHJlYWxseSBuZWVk
+IGEgdGVtcG9yYXJ5IHRlc3QgZGlyZWN0b3J5PyBJZiBub3QsIEknZCBqdXN0IGRyb3AKPiBjbGVh
+bnVwIGFuZCBzZXQgYWxsIHJlZmVyZW5jZXMgdG8gaXQgaW4gdHN0X2Jya20gdG8gTlVMTC4KT0su
+Cgo+IAo+ID4gKyDCoCDCoCDCoCB0c3RfZXhpdCgpOwo+ID4gK30KPiAKPiAuLi4KPiAKPiA+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdHN0X2Jya20oVEJST0ssIE5VTEwsICJz
+dGF0Iik7Cj4gCj4gVEJST0sgfCBURVJSTk8gcGxlYXNlLgpPSy4KCj4gCj4gLi4uCj4gCj4gPiAr
+IMKgIMKgIMKgIHRzdF9yZXNtKFRJTkZPLCAiY2hpbGQgJWQgdmVyaWZpZXMgbWVtb3J5IGNvbnRl
+bnQuIiwgcHJvYyk7Cj4gPiArIMKgIMKgIMKgIGZvciAoaiA9IHN0YXJ0OyBqIDwgZW5kOyBqKysp
+Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGZvciAoaSA9IHN0YXJ0MjsgaSA8IGVuZDI7IGkr
+KykKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKG1lbW9yeVtwcm9j
+XVtqXVtpXSAhPSB2YWx1ZSkKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgdHN0X3Jlc20oVEZBSUwsCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICJjaGlsZCAlZCBoYXMgJWMgYXQKPiAl
+ZCwlZCwlZC4iLAo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCBwcm9jLCBtZW1vcnlbcHJvY11bal1baV0sCj4gcHJvYywKPiA+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+aiwgaSk7Cj4gCj4gbWVtY21wJ2luZyBhIGZpeGVkIGJ1ZmZlciBzaG91bGQgYmUgY29uc2lkZXJh
+Ymx5IGZhc3RlciB2ZXJpZnlpbmcKPiB2YWx1ZXMgYnl0ZSBieSBieXRlLgpPSy4gVGhhbmtzLgoK
+Q0FJIFFpYW4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgTmV4dCA4MDAgQ29tcGFuaWVzIHRv
+IExlYWQgQW1lcmljYSdzIEdyb3d0aDogTmV3IFZpZGVvIFdoaXRlcGFwZXIKRGF2aWQgRy4gVGhv
+bXNvbiwgYXV0aG9yIG9mIHRoZSBiZXN0LXNlbGxpbmcgYm9vayAiQmx1ZXByaW50IHRvIGEgCkJp
+bGxpb24iIHNoYXJlcyBoaXMgaW5zaWdodHMgYW5kIGFjdGlvbnMgdG8gaGVscCBwcm9wZWwgeW91
+ciAKYnVzaW5lc3MgZHVyaW5nIHRoZSBuZXh0IGdyb3d0aCBjeWNsZS4gTGlzdGVuIE5vdyEKaHR0
+cDovL3Auc2YubmV0L3NmdS9TQVAtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
+c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
+bmZvL2x0cC1saXN0Cg==
