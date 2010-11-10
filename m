@@ -1,15 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1PG4vW-0005nh-HX
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 07:17:02 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mwenzel@novell.com>) id 1PGHfX-0004KY-Hf
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 20:53:23 +0000
+Received: from novprvoes0310.provo.novell.com ([137.65.248.74])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PGHfW-0000e9-De
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 20:53:23 +0000
+Message-Id: <4CDAA3CA020000E80006AF93@novprvoes0310.provo.novell.com>
+Date: Wed, 10 Nov 2010 13:53:14 -0700
+From: "Murlin Wenzel" <mwenzel@novell.com>
+References: <AANLkTik8zF-X21KAUjYWeB2FhNVX61oc5ptMffXBnukJ@mail.gmail.com>
+	<AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com>
+In-Reply-To: <AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com>
 Mime-Version: 1.0
-Message-Id: <E1PG4vW-0002Qv-5s@sfs-web-5.v29.ch3.sourceforge.com>
-Date: Wed, 10 Nov 2010 07:17:02 +0000
-Subject: [LTP] [ ltp-Bugs-3103118 ] ftest01, 03,
-	04 fail if executed more than once
+Content-Disposition: inline
+Subject: Re: [LTP] [RFC] Remove testcases/pounder21
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,78 +29,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-Bugs item #3103118, was opened at 2010-11-04 12:34
-Message generated for change (Comment added) made by yaberauneya
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3103118&group_id=3382
+>>> On 11/10/2010 at 01:28 PM, in message
+<AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com>, Garrett Cooper
+<yanegomi@gmail.com> wrote: 
+> On Mon, Nov 8, 2010 at 1:57 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+>>    Hasn't compiled for a while, and looks pretty broken. If no one
+>> objects to me removing it in 3 days I'll get rid of it.
+> 
+> (retroactively as of yesterday)
+> Going twice...
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Testcases
-Group: Filesystems
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Tim Wright (timw)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: ftest01, 03, 04 fail if executed more than once
+I thought this was still being used by IBM in particular.  I know for a fact it has multiple issues with file versions, missing/changed updates etc.  Are you talking about removing the whole pounder tree?
 
-Initial Comment:
-Attempts to run ftest01 with '-i N' for N >=2 fail for the second and subsequent tests.
-This is because nwait is declared static, but never assigned and so is not reset to zero at the start of each test run.
-The fix is trivial. nwait should be zeroed at the head of runtest().
+Murlin
 
-
-----------------------------------------------------------------------
-
->Comment By: Garrett Cooper (yaberauneya)
-Date: 2010-11-09 23:17
-
-Message:
-Please try git HEAD and let me know how things go for you.
-
-I'll be making some minor adjustments from here on out, but the changes
-should be relatively transparent.
-
-----------------------------------------------------------------------
-
-Comment By: Tim Wright (timw)
-Date: 2010-11-04 12:56
-
-Message:
-Same issue applies to ftests 05, 07 and 08.
-
-----------------------------------------------------------------------
-
-Comment By: Tim Wright (timw)
-Date: 2010-11-04 12:51
-
-Message:
-applies to multiple of these tests.
-
-----------------------------------------------------------------------
-
-Comment By: Tim Wright (timw)
-Date: 2010-11-04 12:46
-
-Message:
-Same problem in ftest03.
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3103118&group_id=3382
 
 ------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
