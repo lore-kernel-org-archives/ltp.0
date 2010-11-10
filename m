@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge.hallyn@canonical.com>) id 1PN3vC-00036Q-EE
-	for ltp-list@lists.sourceforge.net; Mon, 29 Nov 2010 13:37:34 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PN3vB-0006nW-AG
-	for ltp-list@lists.sourceforge.net; Mon, 29 Nov 2010 13:37:34 +0000
-Date: Mon, 29 Nov 2010 07:37:24 -0600
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20101129133724.GA4065@hallyn.com>
-References: <AANLkTinw1Yc+QGtMuKH=xep4VGjusBdO2+mQeQhmM15K@mail.gmail.com>
+	(envelope-from <czhang@redhat.com>) id 1PG2Vb-0000Si-J5
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 04:42:07 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PG2Va-0004iS-73
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 04:42:07 +0000
+Date: Tue, 9 Nov 2010 23:41:58 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <301067296.2805821289364118545.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1330306945.2805781289363614408.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTinw1Yc+QGtMuKH=xep4VGjusBdO2+mQeQhmM15K@mail.gmail.com>
-Subject: Re: [LTP] networkstress tests
+Subject: Re: [LTP] [PATCH] fix sysconf failure in RHEL4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +23,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ARJIT SHARMA <joyarjit@gmail.com>
-Cc: ajay.khandelwal@st.com, hannuxx@gmail.com, ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Quoting ARJIT SHARMA (joyarjit@gmail.com):
->  Hi,
-> 
->       I was trying to run network stress tests on my side, but none of them
-> is passing.
-> 
->       it is not able to find the harware address at remote host, altough the
-> settings and configurations are as required and as mentioned in README and
-> INSTALL files.
-> 
->       So can u please tell me that whether these stress tests are meant to
-> be run on embedded boards, do they always cause problems, if u have executed
-> them?
-
-Which tests exactly are failing?  (You say network stress tests, but cc:d
-me implying you meant netns netsts)  Can you send us the relevant logs?
-
-------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Ci0tLS0tICJHYXJyZXR0IENvb3BlciIgPHlhbmVnb21pQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IE9u
+IFR1ZSwgTm92IDksIDIwMTAgYXQgNzozMiBQTSwgQ2FzcGFyIFpoYW5nIDxjemhhbmdAcmVkaGF0
+LmNvbT4KPiB3cm90ZToKPiA+IEhpIGFsbCwKPiA+Cj4gPiBJIG1ldCBhIHN0cmFuZ2UgZXJyb3Ig
+KG9ubHkpIGluIFJIRUw0LCBzeXNjYWxscy9zeXNjb25mCj4gPiBmYWlsZWQgdGhlIGxhc3QgdGVz
+dCBjYXNlIGJlY2F1c2Ugb2YgdGhlIHZhcmlhYmxlIGBhY3R1YWwnCj4gPiB3YXMgbm90IGV2YWx1
+YXRlZCBieSBgZXJybm8nOgo+ID4KPiA+IHN5c2NvbmYwMSDCoCA1NiDCoFRGQUlMIMKgOiDCoHN5
+c2NvbmYgY29ycmVjdGx5IGZhaWxlZCwgYnV0IGV4cGVjdGVkCj4gZXJybm8gKDIyKSAhPSBhY3R1
+YWwgKDApCj4gPgo+ID4gSSByZW1vdiB0aGUgdmFyIGBhY3R1YWwnIGFuZCB1c2UgYGVycm5vJyBk
+aXJlY3RseSwgc2VlbXMgaXQKPiA+IHdvcmtzLiBSZS10ZXN0IHVuZGVyIFJIRUw0LzUvNiBhbmQg
+YWxsIG9mIHRoZW0gcGFzcyB0aGUgdGVzdC4KPiA+Cj4gPiBJIGhhdmUgbm8gaWRlYSB3aHkgZXJy
+bm8gdmFsdWUgY291bGRuJ3QgYmUgYXNzaWduZWQgdG8KPiA+IGBhY3R1YWwnLCBlaXRoZXIgbm90
+IHN1cmUgd2hldGhlciBteSBwYXRjaCB3b3JrcyBvbiBvdGhlcgo+ID4gbm9uLVJlZCBIYXQgZGlz
+dG9zLiBQbGVhc2UgaGF2ZSBhIGxvb2sgYXQgdGhpcyBwYXRjaCBpZgo+ID4geW91IHdhbnQsIHRo
+YW5rcy4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBDYXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQu
+Y29tPgo+ID4KPiA+IC0tLQo+ID4gwqB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N5c2NvbmYv
+c3lzY29uZjAxLmMgfCDCoCDCoDkgKysrKy0tLS0tCj4gPiDCoDEgZmlsZXMgY2hhbmdlZCwgNCBp
+bnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL3N5c2NvbmYvc3lzY29uZjAxLmMKPiBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc3lzY29uZi9zeXNjb25mMDEuYwo+ID4gaW5kZXggNzgzYzZmNS4uNDIyNDZm
+MCAxMDA2NDQKPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3lzY29uZi9zeXNj
+b25mMDEuYwo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zeXNjb25mL3N5c2Nv
+bmYwMS5jCj4gPiBAQCAtMTUzLDE5ICsxNTMsMTggQEAgaW50IG1haW4oKQo+ID4KPiA+IMKgIMKg
+IMKgIMKgLyogNTYgKi8KPiA+IMKgIMKgIMKgIMKgewo+ID4gLSDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCBpbnQgcmV0dmFsLCBhY3R1YWw7Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGludCByZXR2
+YWw7Cj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGVycm5vID0gMDsKPiA+IMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgcmV0dmFsID0gc3lzY29uZihJTlZBTF9GTEFHKTsKPiA+IC0gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgYWN0dWFsID0gZXJybm87Cj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGlm
+IChyZXR2YWwgIT0gLTEpIHsKPiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+dHN0X3Jlc20oVEZBSUwsCj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCAic3lzY29uZiBzdWNjZWVkZWQgZm9yIGludmFsaWQgZmxhZwo+ICglaSksICIK
+PiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICIgcmV0
+dmFsPSVkIGVycm5vPSVkOiAlcyIsCj4gPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgSU5WQUxfRkxBRywgcmV0dmFsLCBhY3R1YWwsCj4gc3RyZXJyb3Io
+YWN0dWFsKSk7Cj4gPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0gZWxzZSBpZiAoYWN0dWFsICE9
+IEVJTlZBTCkgewo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoElOVkFMX0ZMQUcsIHJldHZhbCwgZXJybm8sCj4gc3RyZXJyb3IoZXJybm8pKTsKPiA+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNlIGlmIChlcnJubyAhPSBFSU5WQUwpIHsKPiA+
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X3Jlc20oVEZBSUwsCj4gPiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAic3lzY29uZiBj
+b3JyZWN0bHkgZmFpbGVkLCBidXQKPiBleHBlY3RlZCAiCj4gPiAtIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgImVycm5vICglaSkgIT0gYWN0dWFsICglaSki
+LAo+IEVJTlZBTCwgYWN0dWFsKTsKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAiZXJybm8gKCVpKSAhPSBhY3R1YWwgKCVpKSIsCj4gRUlOVkFMLCBl
+cnJubyk7Cj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0gZWxzZQo+ID4gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3RfcmVzbShUUEFTUywgIlRoZSBpbnZhbGlkIHN5c2Nv
+bmYga2V5IHdhcwo+IHRyYXBwZWQgIgo+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAiYXBwcm9wcmlhdGVseSIpOwo+IAo+IEhtbW0u
+Li4gd2VsbCwgZm9yIHN0YXJ0ZXJzIHRoZSBkZWZpbml0aW9ucyBhcmVuJ3QgdGhlIHNhbWU6Cj4g
+Cj4gICAgICAgICAgICBleHRlcm4gaW50ICogX19lcnJvcigpOwo+ICAgICAgICAgICAgI2RlZmlu
+ZSBlcnJubyAoKiBfX2Vycm9yKCkpCj4gCj4gSSB3b25kZXIgaWYgdGhhdCBoYXMgdG8gZG8gc29t
+ZXRoaW5nIHdpdGggaXQuLi4gdHJ5IG91dCB0aGUgZm9sbG93aW5nCj4gcHJvZ3JhbToKPiAKPiAj
+ZGVmaW5lIF9HTlVfU09VUkNFIDEKPiAjaW5jbHVkZSA8ZXJybm8uaD4KPiAjaW5jbHVkZSA8c3Rk
+aW8uaD4KPiAKPiBpbnQKPiBtYWluKHZvaWQpCj4gewo+ICAgICBvcGVuKE5VTEwsIDApOwo+ICAg
+ICBpbnQgYWN0dWFsID0gZXJybm87Cj4gICAgIHByaW50ZigiJWkgJWQgJWkgJWRcbiIsIGFjdHVh
+bCwgYWN0dWFsLCBlcnJubywgZXJybm8pOwo+ICAgICByZXR1cm4gKDApOwo+IH0KCkkndmUgdHJp
+ZWQgYSBzaW1pbGFyIHNpbXBsZSBwcm9ncmFtIGJlZm9yZSBpbiBSSEVMNCwgaXQgd29ya2VkCm91
+dCB0aGF0IGFjdHVhbCA9PSBlcnJuby4gQnV0IHdoZW4gdHVybmVkIHRvIHRoZSBwcm9ncmFtIGlu
+CnRoaXMgdGVzdGNhc2UsIGl0IGFsd2F5cyBnYXZlIHRoZSBlcnJvciByZXN1bHQuCgo+IAo+IEl0
+IHNwaXQgb3V0IHRoaXMgb24gRnJlZUJTRCBhdCBsZWFzdDoKPiAKPiAkIGdjYyAtV2FsbCAtbyB0
+ZXN0X2Vycm5vX2Fzc2lnbm1lbnQgdGVzdF9lcnJub19hc3NpZ25tZW50LmMKPiAkIC4vdGVzdF9l
+cnJub19hc3NpZ25tZW50Cj4gMTQgMTQgMTQgMTQKPiAKPiBIVEgsCj4gLUdhcnJldHQKCi0tIApR
+dWFsaXR5IEFzc3VyYW5jZSBBc3NvY2lhdGUgKEtlcm5lbCkgaW4KUmVkIEhhdCBTb2Z0d2FyZSAo
+QmVpamluZykgQ28uLCBSJkQgQnJhbmNoCgpURUw6ICs4Ni0xMC02MjYwODE1MApXRUI6IGh0dHA6
+Ly93d3cucmVkaGF0LmNvbS8KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgTmV4dCA4MDAgQ29t
+cGFuaWVzIHRvIExlYWQgQW1lcmljYSdzIEdyb3d0aDogTmV3IFZpZGVvIFdoaXRlcGFwZXIKRGF2
+aWQgRy4gVGhvbXNvbiwgYXV0aG9yIG9mIHRoZSBiZXN0LXNlbGxpbmcgYm9vayAiQmx1ZXByaW50
+IHRvIGEgCkJpbGxpb24iIHNoYXJlcyBoaXMgaW5zaWdodHMgYW5kIGFjdGlvbnMgdG8gaGVscCBw
+cm9wZWwgeW91ciAKYnVzaW5lc3MgZHVyaW5nIHRoZSBuZXh0IGdyb3d0aCBjeWNsZS4gTGlzdGVu
+IE5vdyEKaHR0cDovL3Auc2YubmV0L3NmdS9TQVAtZGV2MmRldgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxp
+c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
+c3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
