@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PGR7N-0002Lj-Mt
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 06:58:45 +0000
-Received: from out21.sjc.mx.trendmicro.com ([216.99.131.78])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PGR7L-0001CX-Uh
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 06:58:45 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.77])
-	by out21.sjc.mx.trendmicro.com (Postfix) with ESMTP id E31E3980415
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PG1nb-0007ZB-NB
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:56:39 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PG1nZ-0007Ny-Eb
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:56:39 +0000
+Received: by wyb34 with SMTP id 34so217173wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Nov 2010 06:58:37 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 3C3CD114B83C
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Nov 2010 06:58:36 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 15:58:34 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Thu, 11 Nov 2010 15:58:34 +0900
-Message-ID: <000001cb816d$dbdec820$939c5860$@co.jp>
+	Tue, 09 Nov 2010 19:56:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] About "realtime" build failure
+In-Reply-To: <1206967940.2804651289359947848.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <1824167242.2804331289359263862.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<1206967940.2804651289359947848.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Tue, 9 Nov 2010 19:56:30 -0800
+Message-ID: <AANLkTikvbUkjbvVSHQKcn+4AcxGFYBAx436GpRLoadS+@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix sysconf failure in RHEL4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,115 +28,114 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi,
+On Tue, Nov 9, 2010 at 7:32 PM, Caspar Zhang <czhang@redhat.com> wrote:
+> Hi all,
+>
+> I met a strange error (only) in RHEL4, syscalls/sysconf
+> failed the last test case because of the variable `actual'
+> was not evaluated by `errno':
+>
+> sysconf01 =A0 56 =A0TFAIL =A0: =A0sysconf correctly failed, but expected =
+errno (22) !=3D actual (0)
+>
+> I remov the var `actual' and use `errno' directly, seems it
+> works. Re-test under RHEL4/5/6 and all of them pass the test.
+>
+> I have no idea why errno value couldn't be assigned to
+> `actual', either not sure whether my patch works on other
+> non-Red Hat distos. Please have a look at this patch if
+> you want, thanks.
+>
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+>
+> ---
+> =A0testcases/kernel/syscalls/sysconf/sysconf01.c | =A0 =A09 ++++-----
+> =A01 files changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/sysconf/sysconf01.c b/testcases/ke=
+rnel/syscalls/sysconf/sysconf01.c
+> index 783c6f5..42246f0 100644
+> --- a/testcases/kernel/syscalls/sysconf/sysconf01.c
+> +++ b/testcases/kernel/syscalls/sysconf/sysconf01.c
+> @@ -153,19 +153,18 @@ int main()
+>
+> =A0 =A0 =A0 =A0/* 56 */
+> =A0 =A0 =A0 =A0{
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 int retval, actual;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int retval;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0errno =3D 0;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0retval =3D sysconf(INVAL_FLAG);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 actual =3D errno;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (retval !=3D -1) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "sysconf =
+succeeded for invalid flag (%i), "
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 " retval=
+=3D%d errno=3D%d: %s",
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0INVAL_FL=
+AG, retval, actual, strerror(actual));
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else if (actual !=3D EINVAL) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0INVAL_FL=
+AG, retval, errno, strerror(errno));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else if (errno !=3D EINVAL) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "sysconf =
+correctly failed, but expected "
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"errno (=
+%i) !=3D actual (%i)", EINVAL, actual);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"errno (=
+%i) !=3D actual (%i)", EINVAL, errno);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TPASS, "The inval=
+id sysconf key was trapped "
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0"appropriately");
 
-Build error occured with recent git "ltp-a997c94.tar.gz".
-This failure was caused by "realtime" as follows:
-------------
-[root@RHEL48-LTP-x86 LTP]# less gitMMDD-makeYYYYMMDD.txt
-[...]
-make[1]: Entering directory `/home/LTP/ltp-a997c94/lib'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o cloner.o cloner.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o dataascii.o dataascii.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o databin.o databin.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o datapid.o datapid.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o file_lock.o file_lock.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o forker.o forker.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o get_high_address.o get_high_address.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o get_path.o get_path.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o libtestsuite.o libtestsuite.c
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../include
--I../include  -
-c -o open_flags.o open_flags.c
-...skipping...
-p-a997c94/testcases/realtime/include -I../../../../include
--I../../../../include
-   -L/home/LTP/ltp-a997c94/testcases/realtime/lib -L../../../../lib
-async_handl
-er.c   -lrealtime -lpthread -lrt -lm -o async_handler
-In file included from async_handler.c:42:
-/home/LTP/ltp-a997c94/testcases/realtime/include/librttest.h: In function
-`atomi
-c_add':
-/home/LTP/ltp-a997c94/testcases/realtime/include/librttest.h:117: warning:
-impli
-cit declaration of function `__sync_add_and_fetch'
-/home/LTP/ltp-a997c94/testcases/realtime/lib/librealtime.a(librttest.o)(.tex
-t+0x
-1a7): In function `create_thread':
-/home/LTP/ltp-a997c94/testcases/realtime/lib/../include/librttest.h:117:
-undefin
-ed reference to `__sync_add_and_fetch'
-collect2: ld returned 1 exit status
-make[4]: *** [async_handler] Error 1
-make[4]: Leaving directory
-`/home/LTP/ltp-a997c94/testcases/realtime/func/async_
-handler'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory `/home/LTP/ltp-a997c94/testcases/realtime/func'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/LTP/ltp-a997c94/testcases/realtime'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/LTP/ltp-a997c94/testcases'
-make: *** [testcases-all] Error 2
-------------
+Hmmm... well, for starters the definitions aren't the same:
 
-I confirmed that above error is dissolved by following revision:
-------------
-[root@RHEL48-LTP-x86 ltp-dev-20101111]# diff -u testcases/Makefile.org
-testcases/Makefile
---- testcases/Makefile.org      2010-11-11 14:20:07.000000000 +0900
-+++ testcases/Makefile  2010-11-11 14:21:25.000000000 +0900
-@@ -37,7 +37,7 @@
- # original list of disabled items...
- # XXX (garrcoop): kdump was in this list.
- # XXX (garrcoop): open_hpi_testsuite was in this list.
--ifeq ($(UCLINUX),1)
-+ifneq ($(UCLINUX),1)
- FILTER_OUT_DIRS                += realtime
- endif
+           extern int * __error();
+           #define errno (* __error())
 
-------------
+I wonder if that has to do something with it... try out the following progr=
+am:
 
-Is realtime necessary? 
-Please revise it if there is not problem.
+#define _GNU_SOURCE 1
+#include <errno.h>
+#include <stdio.h>
 
+int
+main(void)
+{
+    open(NULL, 0);
+    int actual =3D errno;
+    printf("%i %d %i %d\n", actual, actual, errno, errno);
+    return (0);
+}
 
-Regards--
+It spit out this on FreeBSD at least:
 
--Tomonori Mitani
+$ gcc -Wall -o test_errno_assignment test_errno_assignment.c
+$ ./test_errno_assignment
+14 14 14 14
 
+HTH,
+-Garrett
 
+---------------------------------------------------------------------------=
+---
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
 
-------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+Billion" shares his insights and actions to help propel your =
+
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
