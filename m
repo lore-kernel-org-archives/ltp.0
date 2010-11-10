@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PGNgO-00081W-OJ
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 03:18:40 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PGNgN-0001ss-Fu
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 03:18:40 +0000
-Message-ID: <4CDB609E.105@cn.fujitsu.com>
-Date: Thu, 11 Nov 2010 11:18:54 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	(envelope-from <czhang@redhat.com>) id 1PG1QJ-0003Nh-2e
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:32:35 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PG1QH-0003td-To
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:32:35 +0000
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oAA3WRKN010146
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Nov 2010 22:32:27 -0500
+Date: Tue, 9 Nov 2010 22:32:27 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1206967940.2804651289359947848.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1824167242.2804331289359263862.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-References: <4CDB5E53.6070604@cn.fujitsu.com>
-In-Reply-To: <4CDB5E53.6070604@cn.fujitsu.com>
-Subject: [LTP] [POSIX][PATCH 2/2]Use aio_error instead signal hander at
-	aio_suspend/4-1
+Subject: [LTP] [PATCH] fix sysconf failure in RHEL4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,167 +30,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-aio_suspend may be interrupted by IO request's completion signal, so we
-should use aio_error instead signal hander to check whether this request
-has complete.
+Hi all,
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+I met a strange error (only) in RHEL4, syscalls/sysconf 
+failed the last test case because of the variable `actual' 
+was not evaluated by `errno':
+
+sysconf01   56  TFAIL  :  sysconf correctly failed, but expected errno (22) != actual (0)
+
+I remov the var `actual' and use `errno' directly, seems it 
+works. Re-test under RHEL4/5/6 and all of them pass the test. 
+
+I have no idea why errno value couldn't be assigned to 
+`actual', either not sure whether my patch works on other
+non-Red Hat distos. Please have a look at this patch if 
+you want, thanks.
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
 
 ---
- .../conformance/interfaces/aio_suspend/4-1.c       |   65 +++++++-------------
- 1 files changed, 23 insertions(+), 42 deletions(-)
+ testcases/kernel/syscalls/sysconf/sysconf01.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-index 260c26a..6699ab4 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-@@ -41,18 +41,24 @@
- #define BUF_SIZE	1024*1024
- #define WAIT_FOR_AIOCB	6
+diff --git a/testcases/kernel/syscalls/sysconf/sysconf01.c b/testcases/kernel/syscalls/sysconf/sysconf01.c
+index 783c6f5..42246f0 100644
+--- a/testcases/kernel/syscalls/sysconf/sysconf01.c
++++ b/testcases/kernel/syscalls/sysconf/sysconf01.c
+@@ -153,19 +153,18 @@ int main()
  
--int received_selected	= 0;
- int received_all	= 0;
- 
--void
--sigrt1_handler(int signum, siginfo_t *info, void *context)
-+int
-+selected_request_status(struct aiocb *paiocb, int expect)
- {
--	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
--		received_selected = 1;
-+	int err = aio_error(paiocb);
-+
-+	if (err != expect) {
-+		printf (TNAME " Selected request expect %d[%s], not %d[%s]\n",
-+			expect, strerror(expect), err, strerror(err));
-+		return 0;
-+	}
-+
-+	return 1;
- }
- 
- void
--sigrt2_handler(int signum, siginfo_t *info, void *context)
-+sigrt1_handler(int signum, siginfo_t *info, void *context)
- {
- 	received_all = 1;
- }
-@@ -68,7 +74,7 @@ main ()
- 	char *bufs;
- 	struct sigaction action;
- 	struct sigevent event;
--	struct timespec ts = {0, 10000000}; /* 10 ms */
-+	struct timespec ts = {0, 1000}; /* 1 us */
- 	int errors = 0;
- 	int ret;
- 	int err;
-@@ -121,39 +127,28 @@ main ()
- 		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
- 		aiocbs[i]->aio_nbytes = BUF_SIZE;
- 		aiocbs[i]->aio_lio_opcode = LIO_READ;
--
--		/* Use SIRTMIN+1 for individual completions */
--		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
--		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
--		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
- 	}
- 
- 	/* Use SIGRTMIN+2 for list completion */
- 	event.sigev_notify = SIGEV_SIGNAL;
--	event.sigev_signo = SIGRTMIN+2;
-+	event.sigev_signo = SIGRTMIN+1;
- 	event.sigev_value.sival_ptr = NULL;
- 
--	/* Setup handler for individual operation completion */
-+	/* Setup handler for list completion */
- 	action.sa_sigaction = sigrt1_handler;
- 	sigemptyset(&action.sa_mask);
- 	action.sa_flags = SA_SIGINFO|SA_RESTART;
- 	sigaction(SIGRTMIN+1, &action, NULL);
- 
--	/* Setup handler for list completion */
--	action.sa_sigaction = sigrt2_handler;
--	sigemptyset(&action.sa_mask);
--	action.sa_flags = SA_SIGINFO|SA_RESTART;
--	sigaction(SIGRTMIN+2, &action, NULL);
--
- 	/* Setup suspend list */
- 	plist[0] = NULL;
- 	plist[1] = aiocbs[WAIT_FOR_AIOCB];
- 
- 	/* Submit request list */
- 	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
--
- 	if (ret) {
--		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
-+		printf (TNAME " Error at lio_listio() %d: %s\n",
-+			errno, strerror(errno));
- 		for (i=0; i<NUM_AIOCBS; i++)
- 			free (aiocbs[i]);
- 		free (bufs);
-@@ -163,9 +158,7 @@ main ()
- 	}
- 
- 	/* Check selected request has not completed yet */
--	if (received_selected) {
--		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
--			WAIT_FOR_AIOCB);
-+	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
- 		for (i=0; i<NUM_AIOCBS; i++)
- 			free (aiocbs[i]);
- 		free (bufs);
-@@ -177,21 +170,10 @@ main ()
- 	/* Suspend on selected request */
- 	ret = aio_suspend((const struct aiocb **)plist, 2, &ts);
- 
--	/* Check selected request has not completed */
--	if (received_selected) {
--		printf (TNAME " Error : AIOCB %d should not have completed after timed out suspend\n",
--			WAIT_FOR_AIOCB);
--		for (i=0; i<NUM_AIOCBS; i++)
--			free (aiocbs[i]);
--		free (bufs);
--		free (aiocbs);
--		close (fd);
--		exit (PTS_FAIL);
--	}
--
- 	/* timed out aio_suspend should return -1 and set errno to EAGAIN */
--	if (ret != -1) {
--		printf (TNAME " aio_suspend() should return -1\n");
-+	if (ret != -1 || errno != EAGAIN) {
-+		printf (TNAME " aio_suspend() should return -1 and set errno "
-+			"to EAGAIN: %d, %s\n", ret, strerror(errno));
- 		for (i=0; i<NUM_AIOCBS; i++)
- 			free (aiocbs[i]);
- 		free (bufs);
-@@ -200,9 +182,8 @@ main ()
- 		exit (PTS_FAIL);
- 	}
- 
--	if (errno != EAGAIN) {
--		printf (TNAME " aio_suspend() should set errno to EAGAIN: %d (%s)\n",
--			errno, strerror (errno));
-+	/* Check selected request has not completed */
-+	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
- 		for (i=0; i<NUM_AIOCBS; i++)
- 			free (aiocbs[i]);
- 		free (bufs);
+ 	/* 56 */
+ 	{
+-		int retval, actual;
++		int retval;
+ 		errno = 0;
+ 		retval = sysconf(INVAL_FLAG);
+-		actual = errno;
+ 		if (retval != -1) {
+ 			tst_resm(TFAIL,
+ 				 "sysconf succeeded for invalid flag (%i), "
+ 				 " retval=%d errno=%d: %s",
+-				 INVAL_FLAG, retval, actual, strerror(actual));
+-		} else if (actual != EINVAL) {
++				 INVAL_FLAG, retval, errno, strerror(errno));
++		} else if (errno != EINVAL) {
+ 			tst_resm(TFAIL,
+ 				 "sysconf correctly failed, but expected "
+-				 "errno (%i) != actual (%i)", EINVAL, actual);
++				 "errno (%i) != actual (%i)", EINVAL, errno);
+ 		} else
+ 			tst_resm(TPASS, "The invalid sysconf key was trapped "
+ 					"appropriately");
 -- 
-1.7.0.4
+1.7.3.2
 
+-- 
+Quality Assurance Associate (Kernel) in
+Red Hat Software (Beijing) Co., R&D Branch
 
-
+TEL: +86-10-62608150
+WEB: http://www.redhat.com/
 
 ------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a 
+Billion" shares his insights and actions to help propel your 
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
