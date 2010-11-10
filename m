@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PIzGM-0005Rn-RB
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 07:50:34 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PIzGK-0005g9-1H
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 07:50:34 +0000
-Message-ID: <4CE4DAC7.5080608@cn.fujitsu.com>
-Date: Thu, 18 Nov 2010 15:50:31 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	(envelope-from <yanegomi@gmail.com>) id 1PG4bp-0004VT-7F
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 06:56:41 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PG4bo-0006CB-8T
+	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 06:56:41 +0000
+Received: by wyb34 with SMTP id 34so328623wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 09 Nov 2010 22:56:34 -0800 (PST)
 MIME-Version: 1.0
-References: <000001cb798d$1aaa0210$4ffe0630$@co.jp>	<AANLkTiktyyfpSX+ZkOucGCNg2vSajcVPQ8Q60z4Uj8kh@mail.gmail.com>	<4CCE73A6.9020901@cn.fujitsu.com>	<AANLkTi=TyhLVZ5OOcRduBwvkxS3-u4f7A1W+bv+WO6Y1@mail.gmail.com>	<4CE4AD0D.1050501@cn.fujitsu.com>
-	<AANLkTim5JubFxad76akVJ7YOVs1V84gY=2TUVQ1KMkJz@mail.gmail.com>
-	<4CE4B2B6.4030408@cn.fujitsu.com>
-	<000001cb86ed$d4984070$7dc8c150$@co.jp>
-In-Reply-To: <000001cb86ed$d4984070$7dc8c150$@co.jp>
-Subject: Re: [LTP] [PATCH] fix "sigaction" tests
+In-Reply-To: <AANLkTikr-OGBcEVu1mxoLFdmHBFSFx8+NOyUXk=Ugus6@mail.gmail.com>
+References: <AANLkTikr-OGBcEVu1mxoLFdmHBFSFx8+NOyUXk=Ugus6@mail.gmail.com>
+Date: Tue, 9 Nov 2010 22:56:34 -0800
+Message-ID: <AANLkTin9_rAF0_Bcr9Qpw6Zru=zVnCB_rmt9a7yD0OZx@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [RFC] Remove testcases/open_hpi_testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,156 +27,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
+On Mon, Nov 8, 2010 at 2:00 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> =A0 =A0The code exists elsewhere with the openhpi package, is currently
+> not locked on the latest version, and doesn't fit cleanly in the build
+> or our runtime infrastructure. Does anyone object that this be
+> removed?
 
->> testcases/open_posix_testsuite/conformance/interfaces/sigaction/
->>>>>>>> #./gentests.pl
->>>>>>>> ------------
->>>>>>>>
->>>>>>>> Similar revisions are necessary for other 25 "sigaction" tests.
->>>>>>>     Sorry, but Linux-isms can't leak into the open_posix_testsuite.
->>>>>>> Same with BSDisms (at least they shouldn't... if they do, then slap
->> me
->>>>>>> or whoever did the commit).
->>>>>> Do you mean the culprit is Linux-isms?
->>>>> Mitani-san is proposing that I `fix' the testcases to work on RHEL
->>>>> 4.8. These testcases should function with minimal change for all
->>>>> versions of Unix.
->>>>>
->>>>  This open_posix_suite is the part of LTP(linux test project), must
->> we
->>>> make sure it can work at all versions of unix?
->>> I use it in FreeBSD and others have used it in other versions of Unix
->>> (in the past), based on the README. There's no reason why we need to
->>> maintain something that philosophically diverges from the upstream
->>> project's goal because it will make merging more painful and
->>> unnecessary.
->>>
->>   OK, i get it. Thanks. ^_^
->>
->>   Then, whether should we remove the following case, because it invokes
->>   the uname that it's not exsit at 4.3 BSD.
->>   conformance/interfaces/pthread_mutex_init/speculative/5-2.c
->>
->>   Thanks
->>     Bian
->>
->>>> What about this patch?  If you think so, other similar patchs will
->> be post.
->>>>
->> --------------------------------------------------------------------
->> -----------
->>>> At older linux kernel(2.6.22 before), a signal handler always
->> interrupts a
->>>> blocked call to one of these functions, regardless of the use of the
->> sigaction
->>>> SA_RESTART flag, so we should not test these cases at this situation.
->>>>
->>>> Althought uname is not exsit at 4.3 BSD, but this open_posix_suite
->> just
->>>> the part of LTP(linux test project), so i think it's not a problem.
->>>>
->>>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
->>>>
->>>> ---
->>>>  .../conformance/interfaces/sigaction/16-1.c        |   27
->> ++++++++++++++++++++
->>>>  1 files changed, 27 insertions(+), 0 deletions(-)
->>>>
->>>> diff --git
->> a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
->> -1.c
->> b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
->> -1.c
->>>> index 706dbfc..3d6e1a1 100644
->>>> ---
->> a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
->> -1.c
->>>> +++
->> b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
->> -1.c
->>>> @@ -50,6 +50,7 @@ Anyway, a false negative status cannot be returned.
->>>>  #include <stdlib.h>
->>>>  #include <string.h>
->>>>  #include <unistd.h>
->>>> +#include <sys/utsname.h>
->>>>
->>>>  #include <semaphore.h>
->>>>  #include <signal.h>
->>>> @@ -95,6 +96,27 @@ Anyway, a false negative status cannot be returned.
->>>>  volatile sig_atomic_t caught = 0;
->>>>  sem_t sem;
->>>>
->>>> +#define KERNEL_VERSION(a, b, c)        (((a) << 16) + ((b) << 8) +
->> (c))
->>>> +
->>>> +int check_linux()
->>>> +{
->>>> +       struct utsname tn;
->>>> +       int r1, r2, r3;
->>>> +
->>>> +       if (0 > uname(&tn)) {
->>>> +               UNRESOLVED( errno, "uname failed" );
->>>> +       }
->>>> +
->>>> +       if (strcmp(tn.sysname, "Linux") != 0)
->>>> +               return 0;
->>>> +
+Going twice...
 
-  Sorry for my mistake, here should return 1.
+---------------------------------------------------------------------------=
+---
+The Next 800 Companies to Lead America's Growth: New Video Whitepaper
+David G. Thomson, author of the best-selling book "Blueprint to a =
 
->>>> +       sscanf(tn.release, "%d.%d.%d", &r1, &r2, &r3);
->>>> +       if (KERNEL_VERSION(r1, r2, r3) >= KERNEL_VERSION(2, 6, 22))
->>>> +               return 1;
->>>> +
->>>> +       return 0;
->>>> +}
->>>> +
->>>>  /* Handler function */
->>>>  void handler( int signo )
->>>>  {
->>>> @@ -133,6 +155,11 @@ int main()
->>>>
->>>>        struct sigaction sa;
->>>>
->>>> +       if (!check_linux())
->>>> +               UNTESTED( "A signal handler always interrupts sem_wait
->> "
->>>> +                         "at linux release, regardless of the use
->> of "
->>>> +                         "the sigaction SA_RESTART flag" );
->>>> +
->>>>        /* Initialize output */
->>>>        output_init();
->>>
->> --
->> Regards
->> Bian Naimeng
-> 
-> 
-> I applied Bian's patch in my system, and build succeeded.
-> 
-> I'm OK with the Bian's patch.
-> 
+Billion" shares his insights and actions to help propel your =
 
-  Thanks for confirmation.
-
--- 
-Regards
-Bian Naimeng
-
-
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+business during the next growth cycle. Listen Now!
+http://p.sf.net/sfu/SAP-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
