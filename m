@@ -1,20 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PGWSP-0004VT-34
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 12:40:49 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	by mx2.suse.de (Postfix) with ESMTP id C149D5FC9F
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1PGSGT-00065M-3d
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:12:13 +0000
+Received: from out13.sjc.mx.trendmicro.com ([216.99.131.50])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PGSGO-0007VQ-Em
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:12:13 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.135])
+	by out13.sjc.mx.trendmicro.com (Postfix) with ESMTP id D8AC398042A
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Nov 2010 13:40:41 +0100 (CET)
-Date: Thu, 11 Nov 2010 13:52:02 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101111125202.GB26340@saboteur.suse.cz>
+	Thu, 11 Nov 2010 08:12:01 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 748579583A
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Nov 2010 08:12:01 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 17:11:59 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Thu, 11 Nov 2010 17:11:59 +0900
+Message-ID: <000301cb8178$1ce4dad0$56ae9070$@co.jp>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="PNTmBPCT7hxwcZjr"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix TMP versus TMPDIR in runtest files
+Content-Language: ja
+Subject: [LTP] =?iso-2022-jp?b?QWJvdXQgUE9TSVgbJEIhIRsoQmJ1aWxkIGZhaWx1?=
+	=?iso-2022-jp?b?cmU=?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,169 +36,108 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+Hi,
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Build of POSIX tests failed:
+------------
+conformance/behavior/timers/1-1 compile FAILED; SKIPPING
+conformance/behavior/timers/2-1 compile FAILED; SKIPPING
+conformance/definitions/mqueue_h/1-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/8-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/9-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/7-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/12-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/5-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/1-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/13-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/20-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/22-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/18-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/21-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/23-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/25-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/4-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/24-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/6-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/11-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/14-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/2-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/17-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/15-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/16-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/19-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/10-1 compile FAILED; SKIPPING
+conformance/interfaces/lio_listio/3-1 compile FAILED; SKIPPING
+------------
 
-Hi!
-There are a few places in runtest files that use $TMP instead of
-$TMPDIR. Attached patch fixes that.
+Error message is as follows:
+------------
+/lib64/libpthread.so.0: undefined reference to
+`__libc_malloc_pthread_startup@GLIBC_PRIVATE'
+/usr/lib64/nptl/librt.so: undefined reference to
+`__pthread_unwind@GLIBC_PRIVATE'
+/usr/lib64/nptl/librt.so: undefined reference to
+`__pthread_register_cancel@GLIBC_2.3.3'
+/lib64/libpthread.so.0: undefined reference to `__on_exit@GLIBC_PRIVATE'
+/lib64/libpthread.so.0: undefined reference to `_errno@GLIBC_2.2.5'
+/usr/lib64/nptl/librt.so: undefined reference to
+`__pthread_unregister_cancel@GLIBC_2.3.3'
+/lib64/libpthread.so.0: undefined reference to `_h_errno@GLIBC_2.2.5'
+/usr/lib64/nptl/librt.so: undefined reference to
+`__pthread_unwind_next@GLIBC_2.3.3'
+/lib64/libpthread.so.0: undefined reference to
+`__libc_sigaction@GLIBC_PRIVATE'
+collect2: ld returned 1 exit status
+------------
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+Environment is as follows:
+  - RHEL4.8 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="runtest_files.patch"
+I did the following environment setting in my systems:
+------------
+export LIBRARY_PATH=/usr/lib64/nptl
+------------
 
-diff --git a/runtest/fs b/runtest/fs
-index e6741a0..c47be1f 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -39,7 +39,7 @@ rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:$TMPDIR/rwte
- #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ | doio -akv -n 2
- iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:$TMPDIR/doio.f1.$$ 1000b:$TMPDIR/doio.f2.$$
- 
--fs_inod01 fs_inod $TMP 10 10 10
-+fs_inod01 fs_inod $TMPDIR 10 10 10
- linker01 linktest.sh 1000 1000
- openfile01 openfile -f10 -t10
- inode01 inode01
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 93285e5..516ba7c 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -104,14 +104,14 @@ chmod01A symlink01 -T chmod01
- chmod02 chmod02
- chmod03 chmod03
- chmod04 chmod04
--chmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMP;chmod05 
--chmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMP;chmod06
-+chmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;chmod05 
-+chmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;chmod06
- chmod07 chmod07
- 
- chown01 chown01
- chown02 chown02
- chown03 export change_owner=$LTPROOT/testcases/bin/change_owner;chown03
--chown04 cp -p $LTPROOT/testcases/bin/change_owner $TMP;chown04
-+chown04 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;chown04
- chown05 chown05
- 
- chroot01 chroot01
-@@ -182,13 +182,13 @@ fchmod01 fchmod01
- fchmod02 fchmod02
- fchmod03 fchmod03
- fchmod04 fchmod04
--fchmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMP;fchmod05 
--fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMP;fchmod06
-+fchmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod05 
-+fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod06
- fchmod07 fchmod07
- 
- fchown01 fchown01
- fchown02 fchown02
--fchown03 cp -p $LTPROOT/testcases/bin/change_owner $TMP;fchown03
-+fchown03 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchown03
- fchown04 export change_owner=$LTPROOT/testcases/bin/change_owner;fchown04
- fchown05 fchown05
- 
-@@ -605,7 +605,7 @@ readlink01A symlink01 -T readlink01
- readlink01 readlink01
- readlink02 readlink02
- readlink03 readlink03
--readlink04 cp -f $LTPROOT/testcases/bin/creat_slink $TMP; readlink04
-+readlink04 cp -f $LTPROOT/testcases/bin/creat_slink $TMPDIR; readlink04
- 
- readv01 readv01
- readv02 readv02
-diff --git a/runtest/stress.part1 b/runtest/stress.part1
-index 4225052..6d69abb 100644
---- a/runtest/stress.part1
-+++ b/runtest/stress.part1
-@@ -155,7 +155,7 @@ rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:/tmp/rwtest0
- #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ | doio -akv -n 2
- iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
- 
--fs_inod01 fs_inod $TMP 10 10 1
-+fs_inod01 fs_inod $TMPDIR 10 10 1
- linker01 linktest.sh 1000 1000
- openfile01 openfile -f10 -t10
- inode01 inode01
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 2e9564f..c2903f5 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -46,14 +46,14 @@ chmod01A symlink01 -T chmod01
- chmod02 chmod02
- chmod03 chmod03
- chmod04 chmod04
--chmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMP;chmod05 
--chmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMP;chmod06
-+chmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;chmod05 
-+chmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;chmod06
- chmod07 chmod07
- 
- chown01 chown01
- chown02 chown02
- chown03 export change_owner=$LTPROOT/testcases/bin/change_owner;chown03
--chown04 cp -p $LTPROOT/testcases/bin/change_owner $TMP;chown04
-+chown04 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;chown04
- chown05 chown05
- 
- chroot01 chroot01
-@@ -123,13 +123,13 @@ fchmod01 fchmod01
- fchmod02 fchmod02
- fchmod03 fchmod03
- fchmod04 fchmod04
--fchmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMP;fchmod05 
--fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMP;fchmod06
-+fchmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod05 
-+fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod06
- fchmod07 fchmod07
- 
- fchown01 fchown01
- fchown02 fchown02
--fchown03 cp -p $LTPROOT/testcases/bin/change_owner $TMP;fchown03
-+fchown03 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchown03
- fchown04 export change_owner=$LTPROOT/testcases/bin/change_owner;fchown04
- fchown05 fchown05
- 
-@@ -515,7 +515,7 @@ readlink01A symlink01 -T readlink01
- readlink01 readlink01
- readlink02 readlink02
- readlink03 readlink03
--readlink04 cp -f $LTPROOT/testcases/bin/creat_slink $TMP; readlink04
-+readlink04 cp -f $LTPROOT/testcases/bin/creat_slink $TMPDIR; readlink04
- 
- readv01 readv01
- readv02 readv02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0ed2468..b2bf144 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -754,7 +754,7 @@ readlink01A symlink01 -T readlink01
- readlink01 readlink01
- readlink02 readlink02
- readlink03 readlink03
--readlink04 cp -f $LTPROOT/testcases/bin/creat_slink $TMP; readlink04
-+readlink04 cp -f $LTPROOT/testcases/bin/creat_slink $TMPDIR; readlink04
- 
- #readlinkat test cases
- readlinkat01 readlinkat01
+This id for build of following tests.
+These need the installing of nptl-devel package.
+------------
+conformance/interfaces/pthread_barrierattr_getpshared
+conformance/interfaces/pthread_barrierattr_init
+conformance/interfaces/pthread_barrierattr_setpshared
+conformance/interfaces/pthread_cond_broadcast
+conformance/interfaces/pthread_cond_destroy
+conformance/interfaces/pthread_cond_init
+conformance/interfaces/pthread_cond_signal
+conformance/interfaces/pthread_cond_timedwait
+conformance/interfaces/pthread_cond_wait
+conformance/interfaces/pthread_condattr_getclock
+conformance/interfaces/pthread_condattr_setclock
+conformance/interfaces/pthread_getschedparam
+conformance/interfaces/pthread_setschedprio
+conformance/interfaces/sched_yield
+------------
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Therefore I added "-lpthread" to following files:
+------------
+testcases/open_posix_testsuite/conformance/behavior/timers/LDLIBS
+testcases/open_posix_testsuite/conformance/definitions/mqueue_h/LDLIBS
+testcases/open_posix_testsuite/conformance/interfaces/lio_listio/LDLIBS
+------------
+
+After this, build succeeded.
+
+
+Regards--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
 Centralized Desktop Delivery: Dell and VMware Reference Architecture
@@ -194,16 +145,7 @@ Simplifying enterprise desktop deployment and management using
 Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
 client virtualization framework. Read more!
 http://p.sf.net/sfu/dell-eql-dev2dev
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---PNTmBPCT7hxwcZjr--
-
