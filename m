@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PLhql-0002r9-9Z
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 19:51:23 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PGNgO-00081W-OJ
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 03:18:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PLhqk-0001n1-5g
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 19:51:23 +0000
-Received: by wwb39 with SMTP id 39so4515wwb.10
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 25 Nov 2010 11:51:16 -0800 (PST)
+	id 1PGNgN-0001ss-Fu
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 03:18:40 +0000
+Message-ID: <4CDB609E.105@cn.fujitsu.com>
+Date: Thu, 11 Nov 2010 11:18:54 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1163307688.229311290511451623.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <197804608.229291290511437013.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<1163307688.229311290511451623.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Thu, 25 Nov 2010 11:51:15 -0800
-Message-ID: <AANLkTin0d_pskgoJ7otHc-nsYcYsT6ZJocNS83t38u6F@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] mbind_range() vma merge
+References: <4CDB5E53.6070604@cn.fujitsu.com>
+In-Reply-To: <4CDB5E53.6070604@cn.fujitsu.com>
+Subject: [LTP] [POSIX][PATCH 2/2]Use aio_error instead signal hander at
+	aio_suspend/4-1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,245 +25,170 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: caiqian@redhat.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-    Comments are prefixed by gcooper>.
-Thanks,
--Garrett
+aio_suspend may be interrupted by IO request's completion signal, so we
+should use aio_error instead signal hander to check whether this request
+has complete.
 
-Please do an inline and patch submit next time. Patch reviewing that
-isn't inline in the email body is a bit annoying...
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-On Tue, Nov 23, 2010 at 3:24 AM,  <caiqian@redhat.com> wrote:
-> This is a reproducer from mainline commit
-> 9d8cebd4bcd7c3878462fdfda34bbcdeb4df7ef4:
->
-> "Strangely, current mbind() doesn't merge vma with neighbor vma although
-> it's possible. =A0Unfortunately, many vma can reduce performance..."
-
- testcases/kernel/mem/mbind/Makefile  |   25 ++++++
- testcases/kernel/mem/mbind/mbind01.c |  158 ++++++++++++++++++++++++++++++=
-++++
- 2 files changed, 183 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/mbind/Makefile
- create mode 100644 testcases/kernel/mem/mbind/mbind01.c
-
-diff --git a/testcases/kernel/mem/mbind/Makefile
-b/testcases/kernel/mem/mbind/Makefile
-new file mode 100644
-index 0000000..11aa2f9
---- /dev/null
-+++ b/testcases/kernel/mem/mbind/Makefile
-@@ -0,0 +1,25 @@
-+#
-+#  Copyright (C) 2010  Red Hat, Inc.
-+#
-+#  This program is free software; you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or (at
-+#  your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful, but
-+#  WITHOUT ANY WARRANTY; without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+#  General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program; if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+#  02110-1301, USA.
-+#
-+
-+top_srcdir              ?=3D ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+LDLIBS 			+=3D -lnuma
-
-gcooper> Do $(NUMA_LIBS) instead.
-
-+#include <numaif.h>
-+#include <numa.h>
-+#include <sys/mman.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include "test.h"
-+#include "usctest.h"
-
-gcooper> This will cause breakage on systems without proper numa lib
-support *cues some RHEL users from Ryobi on the list :)...*
-
-+char *TCID =3D "mbind01";
-+int TST_TOTAL =3D 1;
-+extern int Tst_count;
-+static unsigned long pagesize;
-+static int opt_node;
-+static char *opt_nodestr;
-+
-+static option_t options[] =3D {
-+	{ "n:", &opt_node,	&opt_nodestr},
-+	{ NULL, NULL,		NULL}
-+};
-+
-+static void usage(void);
-
-gcooper> Get rid of this function please (unused).
-
-+int main(int argc, char** argv)
-+{
-+	FILE *fp;
-+	void* addr;
-+	int node;
-+	struct bitmask *nmask =3D numa_allocate_nodemask();
-+	int err;
-+	char buf[BUFSIZ];
-+	char start[BUFSIZ];
-+	char end[BUFSIZ];
-+	char string[BUFSIZ];
-+	char *p;
-+
-+	/* message returned from parse_opts */
-+	char *msg;
-+
-+	/* loop counter */
-+	int lc;
-+
-+	msg =3D parse_opts(argc, argv, options, usage);
-+	if (msg !=3D NULL) {
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+		tst_exit();
-+	}
-+	if (opt_node) {
-+		node =3D strtol(optarg, NULL, 0);
-
-gcooper> This is wrong. The value that gets passed into node is an
-unsigned integer, not a long. Also, what if the value passed in was
-invalid (say -1)?
-
-+		numa_bitmask_setbit(nmask, node);
-+	} else
-+		numa_bitmask_setbit(nmask, 0);
-+
-+	pagesize =3D getpagesize();
-+
-+	/* Check looping state if -i option given */
-+	for (lc =3D 0; TEST_LOOPING(lc); lc++) {
-+		/* Reset Tst_count in case we are looping. */
-+		Tst_count =3D 0;
-+
-+		addr =3D mmap(NULL, pagesize*3, PROT_READ|PROT_WRITE,
-+			MAP_ANON|MAP_PRIVATE, 0, 0);
-+		if (addr =3D=3D MAP_FAILED)
-+			tst_brkm(TBROK|TERRNO, NULL, "mmap"), exit(1);
-
-gcooper> Remove exit(1) please...
-
-+		tst_resm(TINFO, "pid =3D %d", getpid());
-+		tst_resm(TINFO, "addr =3D %p", addr);
-
-gcooper> Consolidate to one call please (also, do you _really_ need to
-print out the pid info?).
-
-+		/* make page populate */
-+		memset(addr, 0, pagesize*3);
-+
-+		/* first mbind */
-+		err =3D mbind(addr+pagesize, pagesize, MPOL_BIND,
-+			nmask->maskp, nmask->size, MPOL_MF_MOVE_ALL);
-+		if (err)
-
-gcooper> For the sake of correctness this should be -1.
-
-+			tst_brkm(TBROK|TERRNO, NULL, "mbind1");
-+
-+		/* second mbind */
-+		err =3D mbind(addr, pagesize*3, MPOL_DEFAULT, NULL, 0, 0);
-+		if (err)
-
-gcooper> Same as above.
-
-+			tst_brkm(TBROK|TERRNO, NULL, "mbind2 ");
-+
-+		/* /proc/%d/maps in the form of
-+		   "00400000-00406000 r-xp 00000000". */
-+		sprintf(buf, "/proc/%d/maps", getpid());
-+		sprintf(string, "%lx", (long)addr);
-
-gcooper> I know it may seem a bit obtuse, but couldn't do you %p
-instead, and increment the pointer to the buffer by 2 to achieve the
-same result? The point I'm driving at is that this casting is probably
-going to be incorrect in some cases.
-
-+		fp =3D fopen(buf, "r");
-+		if (fp =3D=3D NULL)
-+			tst_brkm(TBROK|TERRNO, NULL, "fopen");
-
-gcooper> Please describe what file you were trying to open that failed.
-
-+		while (fgets(buf, BUFSIZ, fp) !=3D NULL) {
-+			/* Find out the 1st VMA. */
-+			p =3D strtok(buf, "-");
-+			if (p =3D=3D NULL)
-+				continue;
-+			=
-
-+			strcpy(start, p);
-+			if (strcmp(string, start) !=3D 0)
-+				continue;
-+
-+			/* Get the end range of the 2nd VMA. */
-+			p =3D strtok(NULL, " ");
-
-gcooper> What if this token isn't found?
-
-+			strcpy(end, p);
-+
-+			/* Find out the second VMA. */
-+			if (fgets(buf, BUFSIZ, fp) =3D=3D NULL)
-+				tst_brkm(TBROK|TERRNO, NULL, "fgets");
-+
-+			p =3D strtok(buf, "-");
-+			if (p =3D=3D NULL || strcmp(p, end) !=3D 0)
-+				tst_resm(TPASS, "only 1 VMA.");
-+			else
-+				tst_resm(TFAIL, "more than 1 VMA.");
-+		}
-+		if (fclose(fp) =3D=3D EOF)
-+			tst_brkm(TWARN|TERRNO, NULL, "fclose");
-
-gcooper> I wouldn't worry about the fclose failing, because this could
-invariably turn into noise.
-
-+		if (munmap(addr, pagesize*3) =3D=3D -1)
-+			tst_brkm(TWARN|TERRNO, NULL, "munmap");
-
-gcooper> This is correct though.
-
-+	}
-+	return 0;
-+}
-+
-+void usage(void)
-+{
-+	printf("  -n      Number of NUMA nodes\n");
-+}
-
-gcooper> Get rid of this function please (unused).
-
----------------------------------------------------------------------------=
 ---
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+ .../conformance/interfaces/aio_suspend/4-1.c       |   65 +++++++-------------
+ 1 files changed, 23 insertions(+), 42 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+index 260c26a..6699ab4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+@@ -41,18 +41,24 @@
+ #define BUF_SIZE	1024*1024
+ #define WAIT_FOR_AIOCB	6
+ 
+-int received_selected	= 0;
+ int received_all	= 0;
+ 
+-void
+-sigrt1_handler(int signum, siginfo_t *info, void *context)
++int
++selected_request_status(struct aiocb *paiocb, int expect)
+ {
+-	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
+-		received_selected = 1;
++	int err = aio_error(paiocb);
++
++	if (err != expect) {
++		printf (TNAME " Selected request expect %d[%s], not %d[%s]\n",
++			expect, strerror(expect), err, strerror(err));
++		return 0;
++	}
++
++	return 1;
+ }
+ 
+ void
+-sigrt2_handler(int signum, siginfo_t *info, void *context)
++sigrt1_handler(int signum, siginfo_t *info, void *context)
+ {
+ 	received_all = 1;
+ }
+@@ -68,7 +74,7 @@ main ()
+ 	char *bufs;
+ 	struct sigaction action;
+ 	struct sigevent event;
+-	struct timespec ts = {0, 10000000}; /* 10 ms */
++	struct timespec ts = {0, 1000}; /* 1 us */
+ 	int errors = 0;
+ 	int ret;
+ 	int err;
+@@ -121,39 +127,28 @@ main ()
+ 		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
+ 		aiocbs[i]->aio_nbytes = BUF_SIZE;
+ 		aiocbs[i]->aio_lio_opcode = LIO_READ;
+-
+-		/* Use SIRTMIN+1 for individual completions */
+-		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+-		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
+-		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
+ 	}
+ 
+ 	/* Use SIGRTMIN+2 for list completion */
+ 	event.sigev_notify = SIGEV_SIGNAL;
+-	event.sigev_signo = SIGRTMIN+2;
++	event.sigev_signo = SIGRTMIN+1;
+ 	event.sigev_value.sival_ptr = NULL;
+ 
+-	/* Setup handler for individual operation completion */
++	/* Setup handler for list completion */
+ 	action.sa_sigaction = sigrt1_handler;
+ 	sigemptyset(&action.sa_mask);
+ 	action.sa_flags = SA_SIGINFO|SA_RESTART;
+ 	sigaction(SIGRTMIN+1, &action, NULL);
+ 
+-	/* Setup handler for list completion */
+-	action.sa_sigaction = sigrt2_handler;
+-	sigemptyset(&action.sa_mask);
+-	action.sa_flags = SA_SIGINFO|SA_RESTART;
+-	sigaction(SIGRTMIN+2, &action, NULL);
+-
+ 	/* Setup suspend list */
+ 	plist[0] = NULL;
+ 	plist[1] = aiocbs[WAIT_FOR_AIOCB];
+ 
+ 	/* Submit request list */
+ 	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
+-
+ 	if (ret) {
+-		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
++		printf (TNAME " Error at lio_listio() %d: %s\n",
++			errno, strerror(errno));
+ 		for (i=0; i<NUM_AIOCBS; i++)
+ 			free (aiocbs[i]);
+ 		free (bufs);
+@@ -163,9 +158,7 @@ main ()
+ 	}
+ 
+ 	/* Check selected request has not completed yet */
+-	if (received_selected) {
+-		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
+-			WAIT_FOR_AIOCB);
++	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
+ 		for (i=0; i<NUM_AIOCBS; i++)
+ 			free (aiocbs[i]);
+ 		free (bufs);
+@@ -177,21 +170,10 @@ main ()
+ 	/* Suspend on selected request */
+ 	ret = aio_suspend((const struct aiocb **)plist, 2, &ts);
+ 
+-	/* Check selected request has not completed */
+-	if (received_selected) {
+-		printf (TNAME " Error : AIOCB %d should not have completed after timed out suspend\n",
+-			WAIT_FOR_AIOCB);
+-		for (i=0; i<NUM_AIOCBS; i++)
+-			free (aiocbs[i]);
+-		free (bufs);
+-		free (aiocbs);
+-		close (fd);
+-		exit (PTS_FAIL);
+-	}
+-
+ 	/* timed out aio_suspend should return -1 and set errno to EAGAIN */
+-	if (ret != -1) {
+-		printf (TNAME " aio_suspend() should return -1\n");
++	if (ret != -1 || errno != EAGAIN) {
++		printf (TNAME " aio_suspend() should return -1 and set errno "
++			"to EAGAIN: %d, %s\n", ret, strerror(errno));
+ 		for (i=0; i<NUM_AIOCBS; i++)
+ 			free (aiocbs[i]);
+ 		free (bufs);
+@@ -200,9 +182,8 @@ main ()
+ 		exit (PTS_FAIL);
+ 	}
+ 
+-	if (errno != EAGAIN) {
+-		printf (TNAME " aio_suspend() should set errno to EAGAIN: %d (%s)\n",
+-			errno, strerror (errno));
++	/* Check selected request has not completed */
++	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
+ 		for (i=0; i<NUM_AIOCBS; i++)
+ 			free (aiocbs[i]);
+ 		free (bufs);
+-- 
+1.7.0.4
+
+
+
+
+------------------------------------------------------------------------------
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
