@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PELqP-00045a-MG
-	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 12:56:37 +0000
-Received: from out12.sjc.mx.trendmicro.com ([216.99.131.49])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PELqM-0004cx-Mu
-	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 12:56:37 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cb74af$8658b390$930a1ab0$@co.jp>	<AANLkTimQc+8+ytEWT3zXVE1dCf-SKZp-hrt7RRkXUDX4@mail.gmail.com>	<000b01cb764a$12ae2050$380a60f0$@co.jp>
-	<AANLkTikYjD9UT5Tw7rkY9QJcN1kgKwu21wv6+6CORfVK@mail.gmail.com>
-In-Reply-To: <AANLkTikYjD9UT5Tw7rkY9QJcN1kgKwu21wv6+6CORfVK@mail.gmail.com>
-Date: Fri, 5 Nov 2010 21:56:22 +0900
-Message-ID: <000001cb7ce8$d8c95080$8a5bf180$@co.jp>
+	(envelope-from <chrubis@suse.de>) id 1PGYSS-0004QZ-HZ
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 14:49:00 +0000
+Date: Thu, 11 Nov 2010 16:00:12 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101111150012.GC24599@saboteur.suse.cz>
+References: <4CDB5E53.6070604@cn.fujitsu.com>
+ <4CDB609E.105@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
+Content-Disposition: inline
+In-Reply-To: <4CDB609E.105@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX][PATCH 2/2]Use aio_error instead signal hander at
+ aio_suspend/4-1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,212 +23,182 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Tuesday, November 02, 2010 3:43 PM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
-> =
+Hi!
+> aio_suspend may be interrupted by IO request's completion signal, so we
+> should use aio_error instead signal hander to check whether this request
+> has complete.
+> 
+> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> 
+> ---
+>  .../conformance/interfaces/aio_suspend/4-1.c       |   65 +++++++-------------
+>  1 files changed, 23 insertions(+), 42 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+> index 260c26a..6699ab4 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+> @@ -41,18 +41,24 @@
+>  #define BUF_SIZE	1024*1024
+>  #define WAIT_FOR_AIOCB	6
+>  
+> -int received_selected	= 0;
+>  int received_all	= 0;
+>  
+> -void
+> -sigrt1_handler(int signum, siginfo_t *info, void *context)
+> +int
+> +selected_request_status(struct aiocb *paiocb, int expect)
+>  {
+> -	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
+> -		received_selected = 1;
+> +	int err = aio_error(paiocb);
+> +
+> +	if (err != expect) {
+> +		printf (TNAME " Selected request expect %d[%s], not %d[%s]\n",
+> +			expect, strerror(expect), err, strerror(err));
+> +		return 0;
+> +	}
+> +
+> +	return 1;
+>  }
+>  
+>  void
+> -sigrt2_handler(int signum, siginfo_t *info, void *context)
+> +sigrt1_handler(int signum, siginfo_t *info, void *context)
+>  {
+>  	received_all = 1;
+>  }
+> @@ -68,7 +74,7 @@ main ()
+>  	char *bufs;
+>  	struct sigaction action;
+>  	struct sigevent event;
+> -	struct timespec ts = {0, 10000000}; /* 10 ms */
+> +	struct timespec ts = {0, 1000}; /* 1 us */
+>  	int errors = 0;
+>  	int ret;
+>  	int err;
+> @@ -121,39 +127,28 @@ main ()
+>  		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
+>  		aiocbs[i]->aio_nbytes = BUF_SIZE;
+>  		aiocbs[i]->aio_lio_opcode = LIO_READ;
+> -
+> -		/* Use SIRTMIN+1 for individual completions */
+> -		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
+> -		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
+>  	}
+>  
+>  	/* Use SIGRTMIN+2 for list completion */
+>  	event.sigev_notify = SIGEV_SIGNAL;
+> -	event.sigev_signo = SIGRTMIN+2;
+> +	event.sigev_signo = SIGRTMIN+1;
+>  	event.sigev_value.sival_ptr = NULL;
 
-> On Wed, Oct 27, 2010 at 7:44 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> >> -----Original Message-----
-> >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> >> Sent: Tuesday, October 26, 2010 3:57 PM
-> >> To: Mitani
-> >> Cc: ltp-list@lists.sourceforge.net
-> >> Subject: Re: [LTP] About POSIX "sched_yield/1-1.c" buld failure
-> >>
-> >> On Mon, Oct 25, 2010 at 6:45 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> >> > Hi,
-> >> >
-> >> > I reported that build failure of POSIX test set
-> >> "conformance/interfaces/
-> >> > sched_yield/1-1" was still left in RHEL4.8 system:
-> >> >
-> >> >
-> >>
-> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg1071
-> >> 3.html
-> >> >
-> >> > In addition, build of the following tests failed by the reason
-> of
-> >> > "undefined reference":
-> >>
-> >> =A0 =A0 Some versions of gcc didn't function properly with -lpthread;
-> try
-> >> -pthread instead at the top-level LDLIBS file and see whether or
-> not
-> >> it works for you.
-> >> HTH,
-> >> -Garrett
-> >
-> > Hi,
-> >
-> > I tried to use "-pthread" instead of "-lpthread".
-> > But "sched_yield/1-1" failed in my all archtectures (RHEL4.8-x86,
-> x86_64,
-> > ia64).
-> > Other 27 tests, too.
-> =
+Same here.
 
-> What does `man pthread_barrierattr_getpshared' say?
-> -Garrett
+> -	/* Setup handler for individual operation completion */
+> +	/* Setup handler for list completion */
+>  	action.sa_sigaction = sigrt1_handler;
+>  	sigemptyset(&action.sa_mask);
+>  	action.sa_flags = SA_SIGINFO|SA_RESTART;
+>  	sigaction(SIGRTMIN+1, &action, NULL);
+>  
+> -	/* Setup handler for list completion */
+> -	action.sa_sigaction = sigrt2_handler;
+> -	sigemptyset(&action.sa_mask);
+> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
+> -	sigaction(SIGRTMIN+2, &action, NULL);
+> -
+>  	/* Setup suspend list */
+>  	plist[0] = NULL;
+>  	plist[1] = aiocbs[WAIT_FOR_AIOCB];
+>  
+>  	/* Submit request list */
+>  	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
+> -
 
+Here.
 
-"man pthread_barrierattr_getpshared" in my system "RHEL4.8-x86_64".
+>  	if (ret) {
+> -		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
+> +		printf (TNAME " Error at lio_listio() %d: %s\n",
+> +			errno, strerror(errno));
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
+> @@ -163,9 +158,7 @@ main ()
+>  	}
+>  
+>  	/* Check selected request has not completed yet */
+> -	if (received_selected) {
+> -		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
+> -			WAIT_FOR_AIOCB);
+> +	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
 
-------------
-[root@RHEL48-LTP-EM64T make]# man pthread_barrierattr_getpshared
-PTHREAD_BARRIERATTR_GETPSHARED(P)
-PTHREAD_BARRIERATTR_GETPSHARED(P)
+And here.
 
-NAME
-       pthread_barrierattr_getpshared, pthread_barrierattr_setpshared - get
-and set the
-       process-shared attribute of the barrier  attributes  object
-(ADVANCED  REALTIME
-       THREADS)
+> @@ -177,21 +170,10 @@ main ()
+>  	/* Suspend on selected request */
+>  	ret = aio_suspend((const struct aiocb **)plist, 2, &ts);
 
-SYNOPSIS
-       #include <pthread.h>
+Useless cast (and I've missed it in comments for previous patch).
+  
+> -	/* Check selected request has not completed */
+> -	if (received_selected) {
+> -		printf (TNAME " Error : AIOCB %d should not have completed after timed out suspend\n",
+> -			WAIT_FOR_AIOCB);
+> -		for (i=0; i<NUM_AIOCBS; i++)
+> -			free (aiocbs[i]);
+> -		free (bufs);
+> -		free (aiocbs);
+> -		close (fd);
+> -		exit (PTS_FAIL);
+> -	}
+> -
+>  	/* timed out aio_suspend should return -1 and set errno to EAGAIN */
+> -	if (ret != -1) {
+> -		printf (TNAME " aio_suspend() should return -1\n");
+> +	if (ret != -1 || errno != EAGAIN) {
+> +		printf (TNAME " aio_suspend() should return -1 and set errno "
+> +			"to EAGAIN: %d, %s\n", ret, strerror(errno));
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
+> @@ -200,9 +182,8 @@ main ()
+>  		exit (PTS_FAIL);
+>  	}
+>  
+> -	if (errno != EAGAIN) {
+> -		printf (TNAME " aio_suspend() should set errno to EAGAIN: %d (%s)\n",
+> -			errno, strerror (errno));
+> +	/* Check selected request has not completed */
+> +	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
 
-       int pthread_barrierattr_getpshared(const pthread_barrierattr_t *
-              restrict attr, int *restrict pshared);
-       int pthread_barrierattr_setpshared(pthread_barrierattr_t *attr,
-              int pshared);
+I think we should print here, why the test has failed.
 
-DESCRIPTION
-       The pthread_barrierattr_getpshared() function shall obtain the value
-of the pro-
-       cess-shared attribute  from  the  attributes  object  referenced  by
-attr.  The
-       pthread_barrierattr_setpshared() function shall set the
-process-shared attribute
-       in an initialized attributes object referenced by attr.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-       The process-shared attribute is set to PTHREAD_PROCESS_SHARED to
-permit  a  bar-
-       rier  to  be operated upon by any thread that has access to the
-memory where the
-       barrier is allocated. If the process-shared  attribute  is
-PTHREAD_PROCESS_PRI-
-       VATE, the barrier shall only be operated upon by threads created
-within the same
-       process as the thread that initialized the barrier; if threads of
-different pro-
-       cesses  attempt  to  operate  on  such a barrier, the behavior is
-undefined. The
-       default value of the attribute shall be PTHREAD_PROCESS_PRIVATE. Both
-constants
-       PTHREAD_PROCESS_SHARED and PTHREAD_PROCESS_PRIVATE are defined in
-<pthread.h>.
-
-       Additional  attributes,  their  default  values, and the names of the
-associated
-       functions to get and set those attribute values are
-implementation-defined.
-
-RETURN VALUE
-       If successful, the pthread_barrierattr_getpshared() function shall
-return  zero
-       and store the value of the process-shared attribute of attr into the
-object ref-
-       erenced by the pshared parameter. Otherwise, an error number shall
-be  returned
-       to indicate the error.
-
-       If  successful, the pthread_barrierattr_setpshared() function shall
-return zero;
-       otherwise, an error number shall be returned to indicate the error.
-
-ERRORS
-       These functions may fail if:
-
-       EINVAL The value specified by attr is invalid.
-
-       The pthread_barrierattr_setpshared() function may fail if:
-
-       EINVAL The new value specified for the process-shared attribute is
-not  one  of
-              the legal values PTHREAD_PROCESS_SHARED or
-PTHREAD_PROCESS_PRIVATE.
-
-       These functions shall not return an error code of [EINTR].
-
-       The following sections are informative.
-
-EXAMPLES
-       None.
-
-APPLICATION USAGE
-       The  pthread_barrierattr_getpshared() and
-pthread_barrierattr_setpshared() func-
-       tions are part of the Barriers option and need not be provided on all
-implemen-
-       tations.
-
-RATIONALE
-       None.
-
-FUTURE DIRECTIONS
-       None.
-
-SEE ALSO
-       pthread_barrier_destroy()  ,  pthread_barrierattr_destroy()  ,
-pthread_barrier-
-       attr_init() , the Base Definitions volume of IEEE Std 1003.1-2001,
-<pthread.h>
-
-COPYRIGHT
-       Portions of this text are reprinted and reproduced in electronic form
-from  IEEE
-       Std  1003.1, 2003 Edition, Standard for Information Technology --
-Portable Oper-
-       ating System Interface (POSIX), The Open  Group  Base  Specifications
-Issue  6,
-       Copyright  (C)  2001-2003  by  the Institute of Electrical and
-Electronics Engi-
-       neers, Inc and The Open Group. In the event of any discrepancy
-between this ver-
-       sion  and  the  original IEEE and The Open Group Standard, the
-original IEEE and
-       The Open Group Standard is the referee document. The original
-Standard  can  be
-       obtained online at http://www.opengroup.org/unix/online.html .
-
-POSIX                                     2003
-PTHREAD_BARRIERATTR_GETPSHARED(P)
-[root@RHEL48-LTP-EM64T make]#
-------------
-
-In the manual, it seems not to be mentioned the necessity of the "". =
-
-Sorry, but I examine context and e-mail a few days later.
-
-
-Regards--
-
--Tomonori Mitani
-
-
-
-
----------------------------------------------------------------------------=
----
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a =
-
-Billion" shares his insights and actions to help propel your =
-
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
+------------------------------------------------------------------------------
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
