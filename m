@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1PG4lL-00057Z-2u
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 07:06:31 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PG4lJ-0007pU-Ke
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 07:06:31 +0000
-Date: Wed, 10 Nov 2010 02:06:22 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <913041685.2809031289372782429.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1781778525.2808981289372735084.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PGOMx-00027u-JX
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 04:02:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PGOMw-0005MO-2p
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 04:02:39 +0000
+Message-ID: <4CDB6AEC.9090604@cn.fujitsu.com>
+Date: Thu, 11 Nov 2010 12:02:52 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix sysconf failure in RHEL4
+Subject: [LTP] [POSIX][PATCH 0/4]Get rid of some test for aio_suspend.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,111 +22,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-Ci0tLS0tICJDYXNwYXIgWmhhbmciIDxjemhhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cgo+IC0tLS0t
-ICJHYXJyZXR0IENvb3BlciIgPHlhbmVnb21pQGdtYWlsLmNvbT4gd3JvdGU6Cj4gCj4gPiBPbiBU
-dWUsIE5vdiA5LCAyMDEwIGF0IDc6MzIgUE0sIENhc3BhciBaaGFuZyA8Y3poYW5nQHJlZGhhdC5j
-b20+Cj4gPiB3cm90ZToKPiA+ID4gSGkgYWxsLAo+ID4gPgo+ID4gPiBJIG1ldCBhIHN0cmFuZ2Ug
-ZXJyb3IgKG9ubHkpIGluIFJIRUw0LCBzeXNjYWxscy9zeXNjb25mCj4gPiA+IGZhaWxlZCB0aGUg
-bGFzdCB0ZXN0IGNhc2UgYmVjYXVzZSBvZiB0aGUgdmFyaWFibGUgYGFjdHVhbCcKPiA+ID4gd2Fz
-IG5vdCBldmFsdWF0ZWQgYnkgYGVycm5vJzoKPiA+ID4KPiA+ID4gc3lzY29uZjAxIMKgIDU2IMKg
-VEZBSUwgwqA6IMKgc3lzY29uZiBjb3JyZWN0bHkgZmFpbGVkLCBidXQgZXhwZWN0ZWQKPiA+IGVy
-cm5vICgyMikgIT0gYWN0dWFsICgwKQo+ID4gPgo+ID4gPiBJIHJlbW92IHRoZSB2YXIgYGFjdHVh
-bCcgYW5kIHVzZSBgZXJybm8nIGRpcmVjdGx5LCBzZWVtcyBpdAo+ID4gPiB3b3Jrcy4gUmUtdGVz
-dCB1bmRlciBSSEVMNC81LzYgYW5kIGFsbCBvZiB0aGVtIHBhc3MgdGhlIHRlc3QuCj4gPiA+Cj4g
-PiA+IEkgaGF2ZSBubyBpZGVhIHdoeSBlcnJubyB2YWx1ZSBjb3VsZG4ndCBiZSBhc3NpZ25lZCB0
-bwo+ID4gPiBgYWN0dWFsJywgZWl0aGVyIG5vdCBzdXJlIHdoZXRoZXIgbXkgcGF0Y2ggd29ya3Mg
-b24gb3RoZXIKPiA+ID4gbm9uLVJlZCBIYXQgZGlzdG9zLiBQbGVhc2UgaGF2ZSBhIGxvb2sgYXQg
-dGhpcyBwYXRjaCBpZgo+ID4gPiB5b3Ugd2FudCwgdGhhbmtzLgo+ID4gPgo+ID4gPiBTaWduZWQt
-b2ZmLWJ5OiBDYXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQuY29tPgo+ID4gPgo+ID4gPiAtLS0K
-PiA+ID4gwqB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N5c2NvbmYvc3lzY29uZjAxLmMgfCDC
-oCDCoDkgKysrKy0tLS0tCj4gPiA+IMKgMSBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyks
-IDUgZGVsZXRpb25zKC0pCj4gPiA+Cj4gPiA+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL3N5c2NvbmYvc3lzY29uZjAxLmMKPiA+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9zeXNjb25mL3N5c2NvbmYwMS5jCj4gPiA+IGluZGV4IDc4M2M2ZjUuLjQyMjQ2ZjAgMTAw
-NjQ0Cj4gPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3lzY29uZi9zeXNjb25m
-MDEuYwo+ID4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N5c2NvbmYvc3lzY29u
-ZjAxLmMKPiA+ID4gQEAgLTE1MywxOSArMTUzLDE4IEBAIGludCBtYWluKCkKPiA+ID4KPiA+ID4g
-wqAgwqAgwqAgwqAvKiA1NiAqLwo+ID4gPiDCoCDCoCDCoCDCoHsKPiA+ID4gLSDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCBpbnQgcmV0dmFsLCBhY3R1YWw7Cj4gPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgaW50IHJldHZhbDsKPiA+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBlcnJubyA9IDA7Cj4g
-PiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmV0dmFsID0gc3lzY29uZihJTlZBTF9GTEFHKTsK
-PiA+ID4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCBhY3R1YWwgPSBlcnJubzsKPiA+ID4gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqBpZiAocmV0dmFsICE9IC0xKSB7Cj4gPiA+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X3Jlc20oVEZBSUwsCj4gPiA+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICJzeXNjb25mIHN1Y2NlZWRlZCBmb3Ig
-aW52YWxpZAo+IGZsYWcKPiA+ICglaSksICIKPiA+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgIiByZXR2YWw9JWQgZXJybm89JWQ6ICVzIiwKPiA+ID4g
-LSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoElOVkFMX0ZM
-QUcsIHJldHZhbCwgYWN0dWFsLAo+ID4gc3RyZXJyb3IoYWN0dWFsKSk7Cj4gPiA+IC0gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgfSBlbHNlIGlmIChhY3R1YWwgIT0gRUlOVkFMKSB7Cj4gPiA+ICsgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBJTlZBTF9GTEFHLCBy
-ZXR2YWwsIGVycm5vLAo+ID4gc3RyZXJyb3IoZXJybm8pKTsKPiA+ID4gKyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCB9IGVsc2UgaWYgKGVycm5vICE9IEVJTlZBTCkgewo+ID4gPiDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXNtKFRGQUlMLAo+ID4gPiDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAic3lzY29uZiBjb3JyZWN0bHkgZmFp
-bGVkLCBidXQKPiA+IGV4cGVjdGVkICIKPiA+ID4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCJlcnJubyAoJWkpICE9IGFjdHVhbCAoJWkpIiwKPiA+IEVJ
-TlZBTCwgYWN0dWFsKTsKPiA+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCJlcnJubyAoJWkpICE9IGFjdHVhbCAoJWkpIiwKPiA+IEVJTlZBTCwgZXJy
-bm8pOwo+ID4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0gZWxzZQo+ID4gPiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXNtKFRQQVNTLCAiVGhlIGludmFsaWQgc3lz
-Y29uZiBrZXkKPiB3YXMKPiA+IHRyYXBwZWQgIgo+ID4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCJhcHByb3ByaWF0ZWx5Iik7Cj4g
-PiAKPiA+IEhtbW0uLi4gd2VsbCwgZm9yIHN0YXJ0ZXJzIHRoZSBkZWZpbml0aW9ucyBhcmVuJ3Qg
-dGhlIHNhbWU6Cj4gPiAKPiA+ICAgICAgICAgICAgZXh0ZXJuIGludCAqIF9fZXJyb3IoKTsKPiA+
-ICAgICAgICAgICAgI2RlZmluZSBlcnJubyAoKiBfX2Vycm9yKCkpCj4gPiAKPiA+IEkgd29uZGVy
-IGlmIHRoYXQgaGFzIHRvIGRvIHNvbWV0aGluZyB3aXRoIGl0Li4uIHRyeSBvdXQgdGhlCj4gZm9s
-bG93aW5nCj4gPiBwcm9ncmFtOgo+ID4gCj4gPiAjZGVmaW5lIF9HTlVfU09VUkNFIDEKPiA+ICNp
-bmNsdWRlIDxlcnJuby5oPgo+ID4gI2luY2x1ZGUgPHN0ZGlvLmg+Cj4gPiAKPiA+IGludAo+ID4g
-bWFpbih2b2lkKQo+ID4gewo+ID4gICAgIG9wZW4oTlVMTCwgMCk7Cj4gPiAgICAgaW50IGFjdHVh
-bCA9IGVycm5vOwo+ID4gICAgIHByaW50ZigiJWkgJWQgJWkgJWRcbiIsIGFjdHVhbCwgYWN0dWFs
-LCBlcnJubywgZXJybm8pOwo+ID4gICAgIHJldHVybiAoMCk7Cj4gPiB9Cj4gCj4gSSd2ZSB0cmll
-ZCBhIHNpbWlsYXIgc2ltcGxlIHByb2dyYW0gYmVmb3JlIGluIFJIRUw0LCBpdCB3b3JrZWQKPiBv
-dXQgdGhhdCBhY3R1YWwgPT0gZXJybm8uIEJ1dCB3aGVuIHR1cm5lZCB0byB0aGUgcHJvZ3JhbSBp
-bgo+IHRoaXMgdGVzdGNhc2UsIGl0IGFsd2F5cyBnYXZlIHRoZSBlcnJvciByZXN1bHQuCgpTb3Jy
-eSBJIG1hZGUgYSBtaXN0YWtlLgoKTXkgcmVwcm9kdWNlciBpczoKCiNkZWZpbmUgX0dOVV9TT1VS
-Q0UgMQojaW5jbHVkZSA8c3RkaW8uaD4KI2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRlIDx1bmlz
-dGQuaD4KCmludCBtYWluKCkKewogICAgICAgIGludCByZXR2YWw7CiAgICAgICAgZXJybm8gPSAw
-OwogICAgICAgIHJldHZhbCA9IHN5c2NvbmYoLTEpOwoJcHJpbnRmKCJlcnJubz0lZFxuIiwgZXJy
-bm8pOwoJcmV0dXJuIDA7Cn0KClRoaXMgZmFpbHVyZSB3YXMgY2F1c2VkIGJ5IC1PMiBvcHRpb24u
-IE5vdGhpbmcgdG8gZG8Kd2l0aCBgYWN0dWFsJyB2YXJpYWJsZS4KCkhlcmUgaXMgdGhlIGdhcyBk
-aWZmIG9mIHdpdGgvd2l0aG91dCAtTzIgb3B0aW9uOgoKLS0tIHdpdGgtTzIucwkyMDEwLTExLTEw
-IDAyOjAxOjQ1LjAwMDAwMDAwMCAtMDUwMAorKysgd2l0aG91dC1PMi5zCTIwMTAtMTEtMTAgMDI6
-MDE6NTMuMDAwMDAwMDAwIC0wNTAwCkBAIC0xLDkgKzEsOCBAQAogCS5maWxlCSJtYWluLmMiCi0J
-LnNlY3Rpb24JLnJvZGF0YS5zdHIxLjEsImFNUyIsQHByb2diaXRzLDEKKwkuc2VjdGlvbgkucm9k
-YXRhCiAuTEMwOgogCS5zdHJpbmcJImVycm5vPSVkXG4iCiAJLnRleHQKLQkucDJhbGlnbiAyLCwz
-CiAuZ2xvYmwgbWFpbgogCS50eXBlCW1haW4sIEBmdW5jdGlvbgogbWFpbjoKQEAgLTExLDE5ICsx
-MCwyOCBAQAogCW1vdmwJJWVzcCwgJWVicAogCXN1YmwJJDgsICVlc3AKIAlhbmRsCSQtMTYsICVl
-c3AKLQlzdWJsCSQxNiwgJWVzcAorCW1vdmwJJDAsICVlYXgKKwlhZGRsCSQxNSwgJWVheAorCWFk
-ZGwJJDE1LCAlZWF4CisJc2hybAkkNCwgJWVheAorCXNhbGwJJDQsICVlYXgKKwlzdWJsCSVlYXgs
-ICVlc3AKIAljYWxsCV9fZXJybm9fbG9jYXRpb24KLQlzdWJsCSQxMiwgJWVzcAogCW1vdmwJJDAs
-ICglZWF4KQorCXN1YmwJJDEyLCAlZXNwCiAJcHVzaGwJJC0xCiAJY2FsbAlzeXNjb25mCisJYWRk
-bAkkMTYsICVlc3AKKwltb3ZsCSVlYXgsIC00KCVlYnApCisJc3VibAkkOCwgJWVzcAorCXN1YmwJ
-JDgsICVlc3AKIAljYWxsCV9fZXJybm9fbG9jYXRpb24KLQlwb3BsCSVlYXgKLQlwb3BsCSVlZHgK
-LQlwdXNobAkkMAorCWFkZGwJJDgsICVlc3AKKwlwdXNobAkoJWVheCkKIAlwdXNobAkkLkxDMAog
-CWNhbGwJcHJpbnRmCi0JeG9ybAklZWF4LCAlZWF4CisJYWRkbAkkMTYsICVlc3AKKwltb3ZsCSQw
-LCAlZWF4CiAJbGVhdmUKIAlyZXQKIAkuc2l6ZQltYWluLCAuLW1haW4KCgo+IAo+ID4gCj4gPiBJ
-dCBzcGl0IG91dCB0aGlzIG9uIEZyZWVCU0QgYXQgbGVhc3Q6Cj4gPiAKPiA+ICQgZ2NjIC1XYWxs
-IC1vIHRlc3RfZXJybm9fYXNzaWdubWVudCB0ZXN0X2Vycm5vX2Fzc2lnbm1lbnQuYwo+ID4gJCAu
-L3Rlc3RfZXJybm9fYXNzaWdubWVudAo+ID4gMTQgMTQgMTQgMTQKPiA+IAo+ID4gSFRILAo+ID4g
-LUdhcnJldHQKPiAKPiAtLSAKPiBRdWFsaXR5IEFzc3VyYW5jZSBBc3NvY2lhdGUgKEtlcm5lbCkg
-aW4KPiBSZWQgSGF0IFNvZnR3YXJlIChCZWlqaW5nKSBDby4sIFImRCBCcmFuY2gKPiAKPiBURUw6
-ICs4Ni0xMC02MjYwODE1MAo+IFdFQjogaHR0cDovL3d3dy5yZWRoYXQuY29tLwoKLS0gClF1YWxp
-dHkgQXNzdXJhbmNlIEFzc29jaWF0ZSAoS2VybmVsKSBpbgpSZWQgSGF0IFNvZnR3YXJlIChCZWlq
-aW5nKSBDby4sIFImRCBCcmFuY2gKClRFTDogKzg2LTEwLTYyNjA4MTUwCldFQjogaHR0cDovL3d3
-dy5yZWRoYXQuY29tLwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoZSBOZXh0IDgwMCBDb21wYW5p
-ZXMgdG8gTGVhZCBBbWVyaWNhJ3MgR3Jvd3RoOiBOZXcgVmlkZW8gV2hpdGVwYXBlcgpEYXZpZCBH
-LiBUaG9tc29uLCBhdXRob3Igb2YgdGhlIGJlc3Qtc2VsbGluZyBib29rICJCbHVlcHJpbnQgdG8g
-YSAKQmlsbGlvbiIgc2hhcmVzIGhpcyBpbnNpZ2h0cyBhbmQgYWN0aW9ucyB0byBoZWxwIHByb3Bl
-bCB5b3VyIApidXNpbmVzcyBkdXJpbmcgdGhlIG5leHQgZ3Jvd3RoIGN5Y2xlLiBMaXN0ZW4gTm93
-IQpodHRwOi8vcC5zZi5uZXQvc2Z1L1NBUC1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+Some aio_suspend tests are redundantly, so we should remove them.
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+------
+
+ .../conformance/interfaces/aio_suspend/6-1.c       |  217 ------------------
+ .../conformance/interfaces/aio_suspend/7-1.c       |  242 --------------------
+ .../conformance/interfaces/aio_suspend/8-1.c       |  240 -------------------
+ .../conformance/interfaces/aio_suspend/9-1.c       |  242 --------------------
+ 4 files changed, 0 insertions(+), 941 deletions(-)
+
+
+------------------------------------------------------------------------------
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
