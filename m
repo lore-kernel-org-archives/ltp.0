@@ -1,23 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PIyQv-0005SO-I0
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 06:57:25 +0000
-Received: from out20.sjc.mx.trendmicro.com ([216.99.131.77])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PIyQt-0000mN-RH
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 06:57:25 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001cb798d$1aaa0210$4ffe0630$@co.jp>	<AANLkTiktyyfpSX+ZkOucGCNg2vSajcVPQ8Q60z4Uj8kh@mail.gmail.com>	<4CCE73A6.9020901@cn.fujitsu.com>	<AANLkTi=TyhLVZ5OOcRduBwvkxS3-u4f7A1W+bv+WO6Y1@mail.gmail.com>	<4CE4AD0D.1050501@cn.fujitsu.com>
-	<AANLkTim5JubFxad76akVJ7YOVs1V84gY=2TUVQ1KMkJz@mail.gmail.com>
-	<4CE4B2B6.4030408@cn.fujitsu.com>
-In-Reply-To: <4CE4B2B6.4030408@cn.fujitsu.com>
-Date: Thu, 18 Nov 2010 15:57:14 +0900
-Message-ID: <000001cb86ed$d4984070$7dc8c150$@co.jp>
+	(envelope-from <iranna.ankad@in.ibm.com>) id 1PGSpw-0006hP-78
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:48:52 +0000
+Received: from e28smtp09.in.ibm.com ([122.248.162.9])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PGSpu-0003yp-4e
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:48:52 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp09.in.ibm.com (8.14.4/8.13.1) with ESMTP id oAB8IvHa004998
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 13:48:57 +0530
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	oAB8mfVm1110142
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 14:18:41 +0530
+Received: from d28av04.in.ibm.com (loopback [127.0.0.1])
+	by d28av04.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	oAB8mf32009555
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 19:48:41 +1100
+In-Reply-To: <1289458673.5622.19.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] [PATCH] fix "sigaction" tests
+Message-ID: <OF7E98D2D1.7AEC88E3-ON652577D8.002CB466-652577D8.0030671A@in.ibm.com>
+From: Iranna D Ankad <iranna.ankad@in.ibm.com>
+Date: Thu, 11 Nov 2010 14:17:52 +0530
+Subject: Re: [LTP] [RFC] Remove testcases/pounder21
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,199 +34,259 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3373098944048284966=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Bian Naimeng' <biannm@cn.fujitsu.com>, Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com, yanegomi@gmail.com, shubgoya@in.ibm.com
+Cc: LTP list <ltp-list@lists.sourceforge.net>, takahash <takahash@us.ibm.com>
 
-> -----Original Message-----
-> From: Bian Naimeng [mailto:biannm@cn.fujitsu.com]
-> Sent: Thursday, November 18, 2010 2:00 PM
-> To: Garrett Cooper
-> Cc: Gui Jianfeng; ltp-list@lists.sourceforge.net; 當座 健市; Mitani
-> Subject: Re: [LTP] [PATCH] fix "sigaction" tests
->
->
->
-> Garrett Cooper wrote:
-> > 2010/11/17 Bian Naimeng <biannm@cn.fujitsu.com>:
+This is a multipart message in MIME format.
+--===============3373098944048284966==
+Content-Type: multipart/alternative;
+	boundary="=_alternative 003066F0652577D8_="
+
+This is a multipart message in MIME format.
+--=_alternative 003066F0652577D8_=
+Content-Type: text/plain; charset="US-ASCII"
+
+Oh yes, IBM (especially SystemX team) still uses pounder for distro 
+validation. The thing is we use couple of other customized pounder scripts 
+in addition to the ones present in the LTP's "pounder21" directory, so 
+that dependent config files are downloaded & logs are saved from/to our 
+repo server. Having said that, we still require LTP's "pounder21" tree. So 
+please DO NOT remove it.
+
+However, I agree that current pounder of LTP has some compatibility 
+issues, thereby making it difficult to run independently on a stand alone 
+system. This needs to be addressed and is in TODO list of our new pounder 
+maintainer "Shubham Goyal (shubgoya@in.ibm.com)". 
+
+@Shubham, any comments?
+
+Thanks!
+-Iranna D Ankad
+----------------------------------------------------------------------------------------------------
+Linux-Technology Center, IBM India Software Labs
+Manyata Embassy Park, BENGALURU - 560045,
+Ph: +91-080-28055007   Extn: 55007
+----------------------------------------------------------------------------------------------------
+"If you don't have patience to test the software, the software will test 
+your patience !!"
+
+
+
+Subrata Modak <subrata@linux.vnet.ibm.com> 
+11/11/10 12:27 PM
+Please respond to
+subrata@linux.vnet.ibm.com
+
+
+To
+Garrett Cooper <yanegomi@gmail.com>, Iranna D Ankad/India/IBM@IBMIN
+cc
+Murlin Wenzel <mwenzel@novell.com>, LTP list 
+<ltp-list@lists.sourceforge.net>, takahash <takahash@us.ibm.com>
+Subject
+Re: [LTP] [RFC] Remove testcases/pounder21
+
+
+
+
+
+
+On Wed, 2010-11-10 at 16:54 -0800, Garrett Cooper wrote:
+> On Wed, Nov 10, 2010 at 12:53 PM, Murlin Wenzel <mwenzel@novell.com> 
+wrote:
+> >>>> On 11/10/2010 at 01:28 PM, in message
+> > <AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com>, 
+Garrett Cooper
+> > <yanegomi@gmail.com> wrote:
+> >> On Mon, Nov 8, 2010 at 1:57 PM, Garrett Cooper <yanegomi@gmail.com> 
+wrote:
+> >>>    Hasn't compiled for a while, and looks pretty broken. If no one
+> >>> objects to me removing it in 3 days I'll get rid of it.
 > >>
-> >> Garrett Cooper wrote:
-> >>> On Mon, Nov 1, 2010 at 1:00 AM, Gui Jianfeng
-> <guijianfeng@cn.fujitsu.com> wrote:
-> >>>> Garrett Cooper wrote:
-> >>>>> 2010/10/31 Mitani <mitani@ryobi.co.jp>:
-> >>>> ...
-> >>>>>>  int main()
-> >>>>>>  {
-> >>>>>> @@ -133,6 +152,12 @@
-> >>>>>>
-> >>>>>>        struct sigaction sa;
-> >>>>>>
-> >>>>>> +       /* Checking for Kernel Version */
-> >>>>>> +       if ( kernel_ver_cmp(2, 6, 21) != 0 )
-> >>>>>> +       {
-> >>>>>> +               UNTESTED( "sem_wait() returned EINTR on kernel
-> versions
-> >>>>>> lower than 2.6.22" );
-> >>>>>> +       }
-> >>>>>> +
-> >>>>>>        /* Initialize output */
-> >>>>>>        output_init();
-> >>>>>>
-> >>>>>> ============
-> >>>>>>
-> >>>>>> Above patch is revision only for templates.
-> >>>>>> The following procedure is necessary after applying patch:
-> >>>>>> ------------
-> >>>>>> #cd
-> testcases/open_posix_testsuite/conformance/interfaces/sigaction/
-> >>>>>> #./gentests.pl
-> >>>>>> ------------
-> >>>>>>
-> >>>>>> Similar revisions are necessary for other 25 "sigaction" tests.
-> >>>>>     Sorry, but Linux-isms can't leak into the open_posix_testsuite.
-> >>>>> Same with BSDisms (at least they shouldn't... if they do, then slap
-> me
-> >>>>> or whoever did the commit).
-> >>>> Do you mean the culprit is Linux-isms?
-> >>> Mitani-san is proposing that I `fix' the testcases to work on RHEL
-> >>> 4.8. These testcases should function with minimal change for all
-> >>> versions of Unix.
-> >>>
-> >>  This open_posix_suite is the part of LTP(linux test project), must
-> we
-> >> make sure it can work at all versions of unix?
+> >> (retroactively as of yesterday)
+> >> Going twice...
 > >
-> > I use it in FreeBSD and others have used it in other versions of Unix
-> > (in the past), based on the README. There's no reason why we need to
-> > maintain something that philosophically diverges from the upstream
-> > project's goal because it will make merging more painful and
-> > unnecessary.
-> >
->
->   OK, i get it. Thanks. ^_^
->
->   Then, whether should we remove the following case, because it invokes
->   the uname that it's not exsit at 4.3 BSD.
->   conformance/interfaces/pthread_mutex_init/speculative/5-2.c
->
->   Thanks
->     Bian
->
-> >> What about this patch?  If you think so, other similar patchs will
-> be post.
-> >>
-> >>
-> --------------------------------------------------------------------
-> -----------
-> >>
-> >> At older linux kernel(2.6.22 before), a signal handler always
-> interrupts a
-> >> blocked call to one of these functions, regardless of the use of the
-> sigaction
-> >> SA_RESTART flag, so we should not test these cases at this situation.
-> >>
-> >> Althought uname is not exsit at 4.3 BSD, but this open_posix_suite
-> just
-> >> the part of LTP(linux test project), so i think it's not a problem.
-> >>
-> >> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-> >>
-> >> ---
-> >>  .../conformance/interfaces/sigaction/16-1.c        |   27
-> ++++++++++++++++++++
-> >>  1 files changed, 27 insertions(+), 0 deletions(-)
-> >>
-> >> diff --git
-> a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
-> -1.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
-> -1.c
-> >> index 706dbfc..3d6e1a1 100644
-> >> ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
-> -1.c
-> >> +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
-> -1.c
-> >> @@ -50,6 +50,7 @@ Anyway, a false negative status cannot be returned.
-> >>  #include <stdlib.h>
-> >>  #include <string.h>
-> >>  #include <unistd.h>
-> >> +#include <sys/utsname.h>
-> >>
-> >>  #include <semaphore.h>
-> >>  #include <signal.h>
-> >> @@ -95,6 +96,27 @@ Anyway, a false negative status cannot be returned.
-> >>  volatile sig_atomic_t caught = 0;
-> >>  sem_t sem;
-> >>
-> >> +#define KERNEL_VERSION(a, b, c)        (((a) << 16) + ((b) << 8) +
-> (c))
-> >> +
-> >> +int check_linux()
-> >> +{
-> >> +       struct utsname tn;
-> >> +       int r1, r2, r3;
-> >> +
-> >> +       if (0 > uname(&tn)) {
-> >> +               UNRESOLVED( errno, "uname failed" );
-> >> +       }
-> >> +
-> >> +       if (strcmp(tn.sysname, "Linux") != 0)
-> >> +               return 0;
-> >> +
-> >> +       sscanf(tn.release, "%d.%d.%d", &r1, &r2, &r3);
-> >> +       if (KERNEL_VERSION(r1, r2, r3) >= KERNEL_VERSION(2, 6, 22))
-> >> +               return 1;
-> >> +
-> >> +       return 0;
-> >> +}
-> >> +
-> >>  /* Handler function */
-> >>  void handler( int signo )
-> >>  {
-> >> @@ -133,6 +155,11 @@ int main()
-> >>
-> >>        struct sigaction sa;
-> >>
-> >> +       if (!check_linux())
-> >> +               UNTESTED( "A signal handler always interrupts sem_wait
-> "
-> >> +                         "at linux release, regardless of the use
-> of "
-> >> +                         "the sigaction SA_RESTART flag" );
-> >> +
-> >>        /* Initialize output */
-> >>        output_init();
-> >
-> >
->
-> --
-> Regards
-> Bian Naimeng
+> > I thought this was still being used by IBM in particular.  I know for 
+a fact it has multiple issues with file versions, missing/changed updates 
+etc.  Are you talking about removing the whole pounder tree?
+> 
+> Answering my own question:
+> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg09788.html
+> , I asked this earlier on this year and someone replied saying "don't
+> remove it". If it's not removed and serves a particular purpose, maybe
+> it should be moved to a different section of the tree to avoid
+> confusion in the future (in particular if it's a framework and not
+> actually a test / test suite).
+
+IBM still uses Pounder heavily for testing Distros. So, we can move it
+to some other portion of the tree but still should be inside LTP.
+
+Regards--
+Subrata
+
+> Thanks!
+> -Garrett
+> 
+> 
+------------------------------------------------------------------------------
+> Centralized Desktop Delivery: Dell and VMware Reference Architecture
+> Simplifying enterprise desktop deployment and management using
+> Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+> client virtualization framework. Read more!
+> http://p.sf.net/sfu/dell-eql-dev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
-I applied Bian's patch in my system, and build succeeded.
 
-I'm OK with the Bian's patch.
-
-
-Thank you--
-
--Tomonori Mitani
+--=_alternative 003066F0652577D8_=
+Content-Type: text/html; charset="US-ASCII"
 
 
+<br><font size=2 face="sans-serif">Oh yes, IBM (especially SystemX team)
+still uses pounder for distro validation. The thing is we use couple of
+other customized pounder scripts in addition to the ones present in the
+LTP's &quot;pounder21&quot; directory, so that dependent config files are
+downloaded &amp; logs are saved from/to our repo server. Having said that,
+we still require LTP's &quot;pounder21&quot; tree. So please DO NOT remove
+it.</font>
+<br>
+<br><font size=2 face="sans-serif">However, I agree that current pounder
+of LTP has some compatibility issues, thereby making it difficult to run
+independently on a stand alone system. This needs to be addressed and is
+in TODO list of our new pounder maintainer &quot;Shubham Goyal (shubgoya@in.ibm.com)&quot;.
+</font>
+<br>
+<br><font size=2 face="sans-serif">@Shubham, any comments?</font>
+<br>
+<br><font size=2 face="sans-serif">Thanks!</font>
+<br><font size=2 face="sans-serif">-Iranna D Ankad<br>
+----------------------------------------------------------------------------------------------------<br>
+Linux-Technology Center, IBM India Software Labs<br>
+Manyata Embassy Park, BENGALURU - 560045,<br>
+Ph: +91-080-28055007 &nbsp; Extn: 55007<br>
+----------------------------------------------------------------------------------------------------<br>
+&quot;If you don't have patience to test the software, the software will
+test your patience !!&quot;</font>
+<br>
+<br>
+<br>
+<table width=100%>
+<tr valign=top>
+<td width=40%><font size=1 face="sans-serif"><b>Subrata Modak &lt;subrata@linux.vnet.ibm.com&gt;</b>
+</font>
+<p><font size=1 face="sans-serif">11/11/10 12:27 PM</font>
+<table border>
+<tr valign=top>
+<td bgcolor=white>
+<div align=center><font size=1 face="sans-serif">Please respond to<br>
+subrata@linux.vnet.ibm.com</font></div></table>
+<br>
+<td width=59%>
+<table width=100%>
+<tr valign=top>
+<td>
+<div align=right><font size=1 face="sans-serif">To</font></div>
+<td><font size=1 face="sans-serif">Garrett Cooper &lt;yanegomi@gmail.com&gt;,
+Iranna D Ankad/India/IBM@IBMIN</font>
+<tr valign=top>
+<td>
+<div align=right><font size=1 face="sans-serif">cc</font></div>
+<td><font size=1 face="sans-serif">Murlin Wenzel &lt;mwenzel@novell.com&gt;,
+LTP list &lt;ltp-list@lists.sourceforge.net&gt;, takahash &lt;takahash@us.ibm.com&gt;</font>
+<tr valign=top>
+<td>
+<div align=right><font size=1 face="sans-serif">Subject</font></div>
+<td><font size=1 face="sans-serif">Re: [LTP] [RFC] Remove testcases/pounder21</font></table>
+<br>
+<table>
+<tr valign=top>
+<td>
+<td></table>
+<br></table>
+<br>
+<br>
+<br><tt><font size=2>On Wed, 2010-11-10 at 16:54 -0800, Garrett Cooper
+wrote:<br>
+&gt; On Wed, Nov 10, 2010 at 12:53 PM, Murlin Wenzel &lt;mwenzel@novell.com&gt;
+wrote:<br>
+&gt; &gt;&gt;&gt;&gt; On 11/10/2010 at 01:28 PM, in message<br>
+&gt; &gt; &lt;AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com&gt;,
+Garrett Cooper<br>
+&gt; &gt; &lt;yanegomi@gmail.com&gt; wrote:<br>
+&gt; &gt;&gt; On Mon, Nov 8, 2010 at 1:57 PM, Garrett Cooper &lt;yanegomi@gmail.com&gt;
+wrote:<br>
+&gt; &gt;&gt;&gt; &nbsp; &nbsp;Hasn't compiled for a while, and looks pretty
+broken. If no one<br>
+&gt; &gt;&gt;&gt; objects to me removing it in 3 days I'll get rid of it.<br>
+&gt; &gt;&gt;<br>
+&gt; &gt;&gt; (retroactively as of yesterday)<br>
+&gt; &gt;&gt; Going twice...<br>
+&gt; &gt;<br>
+&gt; &gt; I thought this was still being used by IBM in particular. &nbsp;I
+know for a fact it has multiple issues with file versions, missing/changed
+updates etc. &nbsp;Are you talking about removing the whole pounder tree?<br>
+&gt; <br>
+&gt; Answering my own question:<br>
+&gt; http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg09788.html<br>
+&gt; , I asked this earlier on this year and someone replied saying &quot;don't<br>
+&gt; remove it&quot;. If it's not removed and serves a particular purpose,
+maybe<br>
+&gt; it should be moved to a different section of the tree to avoid<br>
+&gt; confusion in the future (in particular if it's a framework and not<br>
+&gt; actually a test / test suite).<br>
+<br>
+IBM still uses Pounder heavily for testing Distros. So, we can move it<br>
+to some other portion of the tree but still should be inside LTP.<br>
+<br>
+Regards--<br>
+Subrata<br>
+<br>
+&gt; Thanks!<br>
+&gt; -Garrett<br>
+&gt; <br>
+&gt; ------------------------------------------------------------------------------<br>
+&gt; Centralized Desktop Delivery: Dell and VMware Reference Architecture<br>
+&gt; Simplifying enterprise desktop deployment and management using<br>
+&gt; Dell EqualLogic storage and VMware View: A highly scalable, end-to-end<br>
+&gt; client virtualization framework. Read more!<br>
+&gt; http://p.sf.net/sfu/dell-eql-dev2dev<br>
+&gt; _______________________________________________<br>
+&gt; Ltp-list mailing list<br>
+&gt; Ltp-list@lists.sourceforge.net<br>
+&gt; https://lists.sourceforge.net/lists/listinfo/ltp-list<br>
+<br>
+</font></tt>
+<br>
+--=_alternative 003066F0652577D8_=--
+
+
+--===============3373098944048284966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
+--===============3373098944048284966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3373098944048284966==--
+
