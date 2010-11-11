@@ -1,24 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tosubrata@gmail.com>) id 1PG7gn-0002Gn-1f
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 10:14:01 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PGTwl-0002lM-61
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 09:59:59 +0000
 Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PG7gl-0003AX-NK
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 10:14:00 +0000
-Received: by wwb13 with SMTP id 13so7114wwb.10
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PGTwk-0006Bv-7z
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 09:59:59 +0000
+Received: by wwe15 with SMTP id 15so935068wwe.10
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Nov 2010 02:13:54 -0800 (PST)
+	Thu, 11 Nov 2010 01:59:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4CCEA188.7020301@linux.vnet.ibm.com>
-References: <4CCEA188.7020301@linux.vnet.ibm.com>
-Date: Wed, 10 Nov 2010 15:43:53 +0530
-Message-ID: <AANLkTi=JSG+fdRVSMwjeHbyqcMqvWfZQ=SYEWrtW7pu4@mail.gmail.com>
-From: Subrata Modak <tosubrata@gmail.com>
-Subject: Re: [LTP] [ANN] Linux Test Project for OCTOBER 2010 has been
-	released
+In-Reply-To: <4CDBA487.7080507@st.com>
+References: <4CA09D4D.6050708@st.com> <4CA34070.9070505@st.com>
+	<20100930133120.GA4070@hannu-debian.research.nokia.com>
+	<4CA469A0.5090700@st.com> <20101001040609.GA2090@hannu-ubuntu>
+	<4CA9D0EB.5090309@st.com>
+	<20101004190552.GA997@debian-master.elisa-laajakaista.fi>
+	<4CD92F6B.9040508@st.com>
+	<1289462230.5622.40.camel@subratamodak.linux.ibm.com>
+	<4CDBA487.7080507@st.com>
+Date: Thu, 11 Nov 2010 01:59:51 -0800
+Message-ID: <AANLkTi=Y-z0WFb6Nkr6zr650urxoQOPo3ohw+e+YZueJ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] ltp_clone alignment issues.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,131 +34,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5200494676536585471=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
---===============5200494676536585471==
-Content-Type: multipart/alternative; boundary=0016367b600c48313e0494b01dbc
-
---0016367b600c48313e0494b01dbc
-Content-Type: text/plain; charset=UTF-8
-
-On Mon, Nov 1, 2010 at 4:46 PM, Subrata Modak <subrata@linux.vnet.ibm.com>wrote:
-
-> Hi,
->
-> The Linux Test Project for October 2010 has been released. You can pick
-> up your copy from:
-> http://ltp.sourceforge.net/
-
-
-The release had an issue with <make install>. Since this issue been fixed in
-git, i created a new tarball which replaces the older one.
-
-Regards--
-Subrata
-
-
->
-> Regards--
-> Subrata
->
->
->
->
-> ------------------------------------------------------------------------------
-> Nokia and AT&T present the 2010 Calling All Innovators-North America
-> contest
-> Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-> $10 million total in prizes - $4M cash, 500 devices, nearly $6M in
-> marketing
-> Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store
-> http://p.sf.net/sfu/nokia-dev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
-
-
-
--- 
-Regards & Thanks--
-Subrata
-
---0016367b600c48313e0494b01dbc
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div class=3D"gmail_quote">On Mon, Nov 1, 2010 at 4:46 PM, Subrata Modak <s=
-pan dir=3D"ltr">&lt;<a href=3D"mailto:subrata@linux.vnet.ibm.com">subrata@l=
-inux.vnet.ibm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote=
-" style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0=
-.8ex; padding-left: 1ex;">
-Hi,<br>
-<br>
-The Linux Test Project for October 2010 has been released. You can pick<br>
-up your copy from:<br>
-<a href=3D"http://ltp.sourceforge.net/" target=3D"_blank">http://ltp.source=
-forge.net/</a></blockquote><div><br>The release had an issue with &lt;make =
-install&gt;. Since this issue been fixed in git, i created a new tarball wh=
-ich replaces the older one.<br>
-<br>Regards--<br>Subrata<br><br></div><blockquote class=3D"gmail_quote" sty=
-le=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex;=
- padding-left: 1ex;"><br>
-<br>
-Regards--<br>
-Subrata<br>
-<br>
-<br>
-<br>
----------------------------------------------------------------------------=
----<br>
-Nokia and AT&amp;T present the 2010 Calling All Innovators-North America co=
-ntest<br>
-Create new apps &amp; games for the Nokia N8 for consumers in =C2=A0U.S. an=
-d Canada<br>
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketin=
-g<br>
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store<br=
->
-<a href=3D"http://p.sf.net/sfu/nokia-dev2dev" target=3D"_blank">http://p.sf=
-.net/sfu/nokia-dev2dev</a><br>
-_______________________________________________<br>
-Ltp-list mailing list<br>
-<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
-e.net</a><br>
-<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
-"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
-</blockquote></div><br><br clear=3D"all"><br>-- <br>Regards &amp; Thanks--<=
-br>Subrata<br>
-
---0016367b600c48313e0494b01dbc--
-
-
---===============5200494676536585471==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+On Thu, Nov 11, 2010 at 12:08 AM, Carmelo AMOROSO
+<carmelo.amoroso@st.com> wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>
+> On 11/11/2010 8:57 AM, Subrata Modak wrote:
+>> On Tue, 2010-11-09 at 12:24 +0100, Carmelo AMOROSO wrote:
+>> On 10/4/2010 9:05 PM, Hannu Heikkinen wrote:
+>>> On 04/10/10 15:04 +0200, Carmelo AMOROSO wrote:
+>>> -clip-
+>>> >
+>>> > Hannu,
+>>> > I don't think that it is a good to force the alignment; we could need to
+>>> > write a test case that calls LTP_clone with an unaligned stack just to
+>>> > test the behavior of the clone implementation.
+>>> >
+>>> > Likely, it should be useful to add a check inside the C lib clone
+>>> > implementation (arch specific) to protect against unaligned stack, but
+>>> > this is a different matter.
+>>> >
+>>> > I would just leave the LTP_clone passing the argument to the clone as
+>>> > they came from the caller.
+>>> >
+>>> > Regards,
+>>> > Carmelo
+>>> >
+>>
+>>> Hi Carmelo,
+>>
+>>> you've got point, yes. I was just so worried about the fact that in ARM
+>>> architectures that previous eg clone02 failed due to alignment errors.
+>>> But your fix of course fixed that issue, and it gives as a possiblity
+>>> to make test case against alignment issues, quite right.
+>>
+>>> br,
+>>> Hannu
+>>
+>>
+>> Folks,
+>> any change to get this included for the next release ?
+>>
+>>> Did we miss any patch here ?
+>>
+>
+> I think so: this one
+> http://sourceforge.net/mailarchive/forum.php?thread_name=4CA09D4D.6050708%40st.com&forum_name=ltp-list
+
+Is the above patch endian agnostic?
 
 ------------------------------------------------------------------------------
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a 
-Billion" shares his insights and actions to help propel your 
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
---===============5200494676536585471==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5200494676536585471==--
-
