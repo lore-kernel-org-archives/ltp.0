@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <carmelo.amoroso@st.com>) id 1PGSFQ-00068y-7d
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:11:08 +0000
-Received: from eu1sys200aog110.obsmtp.com ([207.126.144.129])
-	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PGSFO-0002zk-UZ
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:11:08 +0000
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Date: Thu, 11 Nov 2010 09:08:39 +0100
-Message-ID: <4CDBA487.7080507@st.com>
-References: <4CA09D4D.6050708@st.com> <4CA34070.9070505@st.com>
-	<20100930133120.GA4070@hannu-debian.research.nokia.com>
-	<4CA469A0.5090700@st.com> <20101001040609.GA2090@hannu-ubuntu>
-	<4CA9D0EB.5090309@st.com>
-	<20101004190552.GA997@debian-master.elisa-laajakaista.fi>
-	<4CD92F6B.9040508@st.com>
-	<1289462230.5622.40.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1289462230.5622.40.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PGLRI-0000jF-74
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 00:54:56 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PGLRH-0005TD-4S
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 00:54:56 +0000
+Received: by wyi11 with SMTP id 11so546379wyi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Nov 2010 16:54:49 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [LTP] ltp_clone alignment issues.
+In-Reply-To: <4CDAA3CA020000E80006AF93@novprvoes0310.provo.novell.com>
+References: <AANLkTik8zF-X21KAUjYWeB2FhNVX61oc5ptMffXBnukJ@mail.gmail.com>
+	<AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com>
+	<4CDAA3CA020000E80006AF93@novprvoes0310.provo.novell.com>
+Date: Wed, 10 Nov 2010 16:54:48 -0800
+Message-ID: <AANLkTimOfSA_9ixATpX32a_7ytz8zdYLjLr_PZiegcmf@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [RFC] Remove testcases/pounder21
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,89 +29,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Murlin Wenzel <mwenzel@novell.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wed, Nov 10, 2010 at 12:53 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
+>>>> On 11/10/2010 at 01:28 PM, in message
+> <AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com>, Garrett C=
+ooper
+> <yanegomi@gmail.com> wrote:
+>> On Mon, Nov 8, 2010 at 1:57 PM, Garrett Cooper <yanegomi@gmail.com> wrot=
+e:
+>>> =A0 =A0Hasn't compiled for a while, and looks pretty broken. If no one
+>>> objects to me removing it in 3 days I'll get rid of it.
+>>
+>> (retroactively as of yesterday)
+>> Going twice...
+>
+> I thought this was still being used by IBM in particular. =A0I know for a=
+ fact it has multiple issues with file versions, missing/changed updates et=
+c. =A0Are you talking about removing the whole pounder tree?
 
-On 11/11/2010 8:57 AM, Subrata Modak wrote:
-> On Tue, 2010-11-09 at 12:24 +0100, Carmelo AMOROSO wrote:
-> On 10/4/2010 9:05 PM, Hannu Heikkinen wrote:
->> On 04/10/10 15:04 +0200, Carmelo AMOROSO wrote:
->> -clip-
->> >
->> > Hannu,
->> > I don't think that it is a good to force the alignment; we could need to
->> > write a test case that calls LTP_clone with an unaligned stack just to
->> > test the behavior of the clone implementation.
->> >
->> > Likely, it should be useful to add a check inside the C lib clone
->> > implementation (arch specific) to protect against unaligned stack, but
->> > this is a different matter.
->> >
->> > I would just leave the LTP_clone passing the argument to the clone as
->> > they came from the caller.
->> >
->> > Regards,
->> > Carmelo
->> >
-> 
->> Hi Carmelo,
-> 
->> you've got point, yes. I was just so worried about the fact that in ARM
->> architectures that previous eg clone02 failed due to alignment errors.
->> But your fix of course fixed that issue, and it gives as a possiblity
->> to make test case against alignment issues, quite right.
-> 
->> br,
->> Hannu
-> 
-> 
-> Folks,
-> any change to get this included for the next release ?
-> 
->> Did we miss any patch here ?
-> 
+Answering my own question:
+http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg09788.html
+, I asked this earlier on this year and someone replied saying "don't
+remove it". If it's not removed and serves a particular purpose, maybe
+it should be moved to a different section of the tree to avoid
+confusion in the future (in particular if it's a framework and not
+actually a test / test suite).
+Thanks!
+-Garrett
 
-I think so: this one
-http://sourceforge.net/mailarchive/forum.php?thread_name=4CA09D4D.6050708%40st.com&forum_name=ltp-list
-
-Cheers,
-carmelo
-
->> Regards--
->> Subrata
-> 
-> 
-> Carmelo
-> 
->  >
--
-------------------------------------------------------------------------------
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a
-Billion" shares his insights and actions to help propel your
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAkzbpIcACgkQoRq/3BrK1s9NrwCeNwTM5Nwp3nqF+UtY0GvYNyR4
-7tsAnA0BgHUYggQYXFfmK7zForgxDnpy
-=UwIh
------END PGP SIGNATURE-----
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Centralized Desktop Delivery: Dell and VMware Reference Architecture
 Simplifying enterprise desktop deployment and management using
 Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
