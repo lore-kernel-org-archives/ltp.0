@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PFVof-00013T-U6
-	for ltp-list@lists.sourceforge.net; Mon, 08 Nov 2010 17:47:37 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 0AFBD90847
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Nov 2010 18:47:30 +0100 (CET)
-Date: Mon, 8 Nov 2010 18:58:36 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101108175836.GA20774@saboteur.suse.cz>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix obvious compilation problems in cap_bounds
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1PGS22-0005IF-9g
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 07:57:18 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PGS20-0003Xe-1i
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 07:57:18 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e6.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id oAB7w5Vj032318
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 02:58:05 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	oAB7vAec1658970
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 02:57:10 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	oAB7vA2n018666
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 02:57:10 -0500
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <000001cb816d$dbdec820$939c5860$@co.jp>
+References: <000001cb816d$dbdec820$939c5860$@co.jp>
+Date: Thu, 11 Nov 2010 13:27:04 +0530
+Message-Id: <1289462224.5622.37.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] About "realtime" build failure
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,204 +36,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-Following patch fixes obvious problems with cap_bounds compilation
-
-* CAP_LAST_CAP is defined in linux/capability.h => include it
-
-* remove int errno; definition
-
-* move #ifdef HAVE_SYS_CAPABILITY_H after int main(int argc, char *argv[])
-  in check_pe.c
-
-* small typos and coding style
-
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---NzB8fVQJ5HfG6fxh
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="cap_bounds.patch"
-
-diff --git a/testcases/kernel/security/cap_bound/cap_bounds_r.c b/testcases/kernel/security/cap_bound/cap_bounds_r.c
-index 0b1c5b3..13c5400 100644
---- a/testcases/kernel/security/cap_bound/cap_bounds_r.c
-+++ b/testcases/kernel/security/cap_bound/cap_bounds_r.c
-@@ -29,14 +29,13 @@
- #if HAVE_SYS_CAPABILITY_H
- #include <sys/capability.h>
- #endif
-+#include <linux/capability.h>
- #include <sys/prctl.h>
- #include <test.h>
- 
- char *TCID = "cap_bounds_r";
- int TST_TOTAL=1;
- 
--int errno;
--
- int main(int argc, char *argv[])
- {
- #if HAVE_SYS_CAPABILITY_H
-diff --git a/testcases/kernel/security/cap_bound/cap_bounds_rw.c b/testcases/kernel/security/cap_bound/cap_bounds_rw.c
-index 827a305..c23c598 100644
---- a/testcases/kernel/security/cap_bound/cap_bounds_rw.c
-+++ b/testcases/kernel/security/cap_bound/cap_bounds_rw.c
-@@ -28,20 +28,19 @@
- #if HAVE_SYS_CAPABILITY_H
- #include <sys/capability.h>
- #endif
-+#include <linux/capability.h>
- #include <sys/prctl.h>
- #include <test.h>
- 
- char *TCID = "cap_bounds_rw";
- int TST_TOTAL=1;
- 
--int errno;
--
- int check_remaining_caps(int lastdropped)
- {
- 	int i;
- 	int ret;
- 
--	for (i=0; i <= lastdropped; i++) {
-+	for (i = 0; i <= lastdropped; i++) {
- #if HAVE_DECL_PR_CAPBSET_READ
- 		ret = prctl(PR_CAPBSET_READ, i);
- #else
-@@ -57,7 +56,7 @@ int check_remaining_caps(int lastdropped)
- 			return i;
- 		}
- 	}
--	for (; i<=CAP_LAST_CAP; i++) {
-+	for (; i <= CAP_LAST_CAP; i++) {
- #if HAVE_DECL_PR_CAPBSET_READ
- 		ret = prctl(PR_CAPBSET_READ, i);
- #else
-@@ -108,7 +107,7 @@ int main(int argc, char *argv[])
- 		tst_resm(TINFO, " %d is should not exist\n", max(INSANE, CAP_LAST_CAP+1));
- 		tst_exit();
- 	}
--	for (i=0; i<=CAP_LAST_CAP; i++) {
-+	for (i = 0; i <= CAP_LAST_CAP; i++) {
- #if HAVE_DECL_PR_CAPBSET_DROP
- 		ret = prctl(PR_CAPBSET_DROP, i);
- #else
-diff --git a/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c b/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-index 7033a37..1f3634b 100644
---- a/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-+++ b/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-@@ -37,8 +37,6 @@
- char *TCID = "cap_bounds_r";
- int TST_TOTAL=2;
- 
--int errno;
--
- int main(int argc, char *argv[])
- {
- #if HAVE_SYS_CAPABILITY_H
-diff --git a/testcases/kernel/security/cap_bound/check_pe.c b/testcases/kernel/security/cap_bound/check_pe.c
-index f621e70..2f5aec9 100644
---- a/testcases/kernel/security/cap_bound/check_pe.c
-+++ b/testcases/kernel/security/cap_bound/check_pe.c
-@@ -38,12 +38,10 @@
- char *TCID = "check_pe";
- int TST_TOTAL=1;
- 
--int errno;
--
--#if HAVE_SYS_CAPABILITY_H
--#ifdef HAVE_LIBCAP
- int main(int argc, char *argv[])
- {
-+#ifdef HAVE_SYS_CAPABILITY_H
-+#ifdef HAVE_LIBCAP
- 	int ret = 1;
- 	cap_flag_value_t f;
- 	cap_t cur;
-@@ -72,7 +70,7 @@ int main(int argc, char *argv[])
- 			tst_resm(TPASS, "cap is in pE\n");
- 			tst_exit();
- 		}
--		tst_resm(TFAIL, "Cap is not in pE\n");
-+		tst_resm(TFAIL, "cap is not in pE\n");
- 		tst_exit();
- 	}
- 	if (f == CAP_CLEAR) {
-diff --git a/testcases/kernel/security/cap_bound/dummy.c b/testcases/kernel/security/cap_bound/dummy.c
-index e882940..3ee7c9b 100644
---- a/testcases/kernel/security/cap_bound/dummy.c
-+++ b/testcases/kernel/security/cap_bound/dummy.c
-@@ -5,7 +5,7 @@
- #include <sys/capability.h>
- #endif
- 
--int main()
-+int main(void)
- {
- #if HAVE_SYS_CAPABILITY_H
- #ifdef HAVE_LIBCAP
-diff --git a/testcases/kernel/security/cap_bound/exec_with_inh.c b/testcases/kernel/security/cap_bound/exec_with_inh.c
-index 123f665..dc18b63 100644
---- a/testcases/kernel/security/cap_bound/exec_with_inh.c
-+++ b/testcases/kernel/security/cap_bound/exec_with_inh.c
-@@ -37,8 +37,6 @@
- char *TCID = "exec_with_inh";
- int TST_TOTAL=1;
- 
--int errno;
--
- int main(int argc, char *argv[])
- {
- #if HAVE_SYS_CAPABILITY_H
-diff --git a/testcases/kernel/security/cap_bound/exec_without_inh.c b/testcases/kernel/security/cap_bound/exec_without_inh.c
-index df3c4d9..8d99883 100644
---- a/testcases/kernel/security/cap_bound/exec_without_inh.c
-+++ b/testcases/kernel/security/cap_bound/exec_without_inh.c
-@@ -37,8 +37,6 @@
- char *TCID = "exec_without_inh";
- int TST_TOTAL=1;
- 
--int errno;
--
- int main(int argc, char *argv[])
- {
- #if HAVE_SYS_CAPABILITY_H
-
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a 
-Billion" shares his insights and actions to help propel your 
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---NzB8fVQJ5HfG6fxh--
-
+SG93ZXZlciwgeWVzdGVyZGF5xZsgZ2l0IHRoZSBmYWlsdXJlIHdhcyBub3QgdGhlcmUuIEFuZCBo
+ZW5jZSB0aGUgcmVhc29uCmZvciBtZSB0byByZXBsYWNlIHRoZSBPY3RvYmVyIHRhci4KClJlZ2Fy
+ZHMtLQpTdWJyYXRhCgpPbiBUaHUsIDIwMTAtMTEtMTEgYXQgMTU6NTggKzA5MDAsIE1pdGFuaSB3
+cm90ZTogCj4gSGksCj4gCj4gQnVpbGQgZXJyb3Igb2NjdXJlZCB3aXRoIHJlY2VudCBnaXQgImx0
+cC1hOTk3Yzk0LnRhci5neiIuCj4gVGhpcyBmYWlsdXJlIHdhcyBjYXVzZWQgYnkgInJlYWx0aW1l
+IiBhcyBmb2xsb3dzOgo+IC0tLS0tLS0tLS0tLQo+IFtyb290QFJIRUw0OC1MVFAteDg2IExUUF0j
+IGxlc3MgZ2l0TU1ERC1tYWtlWVlZWU1NREQudHh0Cj4gWy4uLl0KPiBtYWtlWzFdOiBFbnRlcmlu
+ZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtYTk5N2M5NC9saWInCj4gZ2NjIC1nIC1PMiAtZyAt
+TzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgIC1JLi4vaW5jbHVkZQo+IC1JLi4v
+aW5jbHVkZSAgLQo+IGMgLW8gY2xvbmVyLm8gY2xvbmVyLmMKPiBnY2MgLWcgLU8yIC1nIC1PMiAt
+Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRlCj4gLUkuLi9pbmNs
+dWRlICAtCj4gYyAtbyBkYXRhYXNjaWkubyBkYXRhYXNjaWkuYwo+IGdjYyAtZyAtTzIgLWcgLU8y
+IC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4uL2luY2x1ZGUKPiAtSS4uL2lu
+Y2x1ZGUgIC0KPiBjIC1vIGRhdGFiaW4ubyBkYXRhYmluLmMKPiBnY2MgLWcgLU8yIC1nIC1PMiAt
+Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRlCj4gLUkuLi9pbmNs
+dWRlICAtCj4gYyAtbyBkYXRhcGlkLm8gZGF0YXBpZC5jCj4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZu
+by1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgIC1JLi4vaW5jbHVkZQo+IC1JLi4vaW5jbHVk
+ZSAgLQo+IGMgLW8gZmlsZV9sb2NrLm8gZmlsZV9sb2NrLmMKPiBnY2MgLWcgLU8yIC1nIC1PMiAt
+Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRlCj4gLUkuLi9pbmNs
+dWRlICAtCj4gYyAtbyBmb3JrZXIubyBmb3JrZXIuYwo+IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8t
+c3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4uL2luY2x1ZGUKPiAtSS4uL2luY2x1ZGUg
+IC0KPiBjIC1vIGdldF9oaWdoX2FkZHJlc3MubyBnZXRfaGlnaF9hZGRyZXNzLmMKPiBnY2MgLWcg
+LU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRl
+Cj4gLUkuLi9pbmNsdWRlICAtCj4gYyAtbyBnZXRfcGF0aC5vIGdldF9wYXRoLmMKPiBnY2MgLWcg
+LU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRl
+Cj4gLUkuLi9pbmNsdWRlICAtCj4gYyAtbyBsaWJ0ZXN0c3VpdGUubyBsaWJ0ZXN0c3VpdGUuYwo+
+IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4u
+L2luY2x1ZGUKPiAtSS4uL2luY2x1ZGUgIC0KPiBjIC1vIG9wZW5fZmxhZ3MubyBvcGVuX2ZsYWdz
+LmMKPiAuLi5za2lwcGluZy4uLgo+IHAtYTk5N2M5NC90ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVk
+ZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPiAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPiAgICAtTC9o
+b21lL0xUUC9sdHAtYTk5N2M5NC90ZXN0Y2FzZXMvcmVhbHRpbWUvbGliIC1MLi4vLi4vLi4vLi4v
+bGliCj4gYXN5bmNfaGFuZGwKPiBlci5jICAgLWxyZWFsdGltZSAtbHB0aHJlYWQgLWxydCAtbG0g
+LW8gYXN5bmNfaGFuZGxlcgo+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBhc3luY19oYW5kbGVyLmM6
+NDI6Cj4gL2hvbWUvTFRQL2x0cC1hOTk3Yzk0L3Rlc3RjYXNlcy9yZWFsdGltZS9pbmNsdWRlL2xp
+YnJ0dGVzdC5oOiBJbiBmdW5jdGlvbgo+IGBhdG9taQo+IGNfYWRkJzoKPiAvaG9tZS9MVFAvbHRw
+LWE5OTdjOTQvdGVzdGNhc2VzL3JlYWx0aW1lL2luY2x1ZGUvbGlicnR0ZXN0Lmg6MTE3OiB3YXJu
+aW5nOgo+IGltcGxpCj4gY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIGBfX3N5bmNfYWRkX2Fu
+ZF9mZXRjaCcKPiAvaG9tZS9MVFAvbHRwLWE5OTdjOTQvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi9s
+aWJyZWFsdGltZS5hKGxpYnJ0dGVzdC5vKSgudGV4Cj4gdCsweAo+IDFhNyk6IEluIGZ1bmN0aW9u
+IGBjcmVhdGVfdGhyZWFkJzoKPiAvaG9tZS9MVFAvbHRwLWE5OTdjOTQvdGVzdGNhc2VzL3JlYWx0
+aW1lL2xpYi8uLi9pbmNsdWRlL2xpYnJ0dGVzdC5oOjExNzoKPiB1bmRlZmluCj4gZWQgcmVmZXJl
+bmNlIHRvIGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPiBjb2xsZWN0MjogbGQgcmV0dXJuZWQgMSBl
+eGl0IHN0YXR1cwo+IG1ha2VbNF06ICoqKiBbYXN5bmNfaGFuZGxlcl0gRXJyb3IgMQo+IG1ha2Vb
+NF06IExlYXZpbmcgZGlyZWN0b3J5Cj4gYC9ob21lL0xUUC9sdHAtYTk5N2M5NC90ZXN0Y2FzZXMv
+cmVhbHRpbWUvZnVuYy9hc3luY18KPiBoYW5kbGVyJwo+IG1ha2VbM106ICoqKiBbYWxsXSBFcnJv
+ciAyCj4gbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtYTk5N2M5NC90
+ZXN0Y2FzZXMvcmVhbHRpbWUvZnVuYycKPiBtYWtlWzJdOiAqKiogW2FsbF0gRXJyb3IgMgo+IG1h
+a2VbMl06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9MVFAvbHRwLWE5OTdjOTQvdGVzdGNhc2Vz
+L3JlYWx0aW1lJwo+IG1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyCj4gbWFrZVsxXTogTGVhdmlu
+ZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtYTk5N2M5NC90ZXN0Y2FzZXMnCj4gbWFrZTogKioq
+IFt0ZXN0Y2FzZXMtYWxsXSBFcnJvciAyCj4gLS0tLS0tLS0tLS0tCj4gCj4gSSBjb25maXJtZWQg
+dGhhdCBhYm92ZSBlcnJvciBpcyBkaXNzb2x2ZWQgYnkgZm9sbG93aW5nIHJldmlzaW9uOgo+IC0t
+LS0tLS0tLS0tLQo+IFtyb290QFJIRUw0OC1MVFAteDg2IGx0cC1kZXYtMjAxMDExMTFdIyBkaWZm
+IC11IHRlc3RjYXNlcy9NYWtlZmlsZS5vcmcKPiB0ZXN0Y2FzZXMvTWFrZWZpbGUKPiAtLS0gdGVz
+dGNhc2VzL01ha2VmaWxlLm9yZyAgICAgIDIwMTAtMTEtMTEgMTQ6MjA6MDcuMDAwMDAwMDAwICsw
+OTAwCj4gKysrIHRlc3RjYXNlcy9NYWtlZmlsZSAgMjAxMC0xMS0xMSAxNDoyMToyNS4wMDAwMDAw
+MDAgKzA5MDAKPiBAQCAtMzcsNyArMzcsNyBAQAo+ICAjIG9yaWdpbmFsIGxpc3Qgb2YgZGlzYWJs
+ZWQgaXRlbXMuLi4KPiAgIyBYWFggKGdhcnJjb29wKToga2R1bXAgd2FzIGluIHRoaXMgbGlzdC4K
+PiAgIyBYWFggKGdhcnJjb29wKTogb3Blbl9ocGlfdGVzdHN1aXRlIHdhcyBpbiB0aGlzIGxpc3Qu
+Cj4gLWlmZXEgKCQoVUNMSU5VWCksMSkKPiAraWZuZXEgKCQoVUNMSU5VWCksMSkKPiAgRklMVEVS
+X09VVF9ESVJTICAgICAgICAgICAgICAgICs9IHJlYWx0aW1lCj4gIGVuZGlmCj4gCj4gLS0tLS0t
+LS0tLS0tCj4gCj4gSXMgcmVhbHRpbWUgbmVjZXNzYXJ5PyAKPiBQbGVhc2UgcmV2aXNlIGl0IGlm
+IHRoZXJlIGlzIG5vdCBwcm9ibGVtLgo+IAo+IAo+IFJlZ2FyZHMtLQo+IAo+IC1Ub21vbm9yaSBN
+aXRhbmkKPiAKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBDZW50cmFsaXplZCBEZXNr
+dG9wIERlbGl2ZXJ5OiBEZWxsIGFuZCBWTXdhcmUgUmVmZXJlbmNlIEFyY2hpdGVjdHVyZQo+IFNp
+bXBsaWZ5aW5nIGVudGVycHJpc2UgZGVza3RvcCBkZXBsb3ltZW50IGFuZCBtYW5hZ2VtZW50IHVz
+aW5nCj4gRGVsbCBFcXVhbExvZ2ljIHN0b3JhZ2UgYW5kIFZNd2FyZSBWaWV3OiBBIGhpZ2hseSBz
+Y2FsYWJsZSwgZW5kLXRvLWVuZAo+IGNsaWVudCB2aXJ0dWFsaXphdGlvbiBmcmFtZXdvcmsuIFJl
+YWQgbW9yZSEKPiBodHRwOi8vcC5zZi5uZXQvc2Z1L2RlbGwtZXFsLWRldjJkZXYKPiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1haWxp
+bmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCkNlbnRyYWxpemVkIERlc2t0b3AgRGVsaXZlcnk6IERlbGwgYW5kIFZNd2FyZSBSZWZl
+cmVuY2UgQXJjaGl0ZWN0dXJlClNpbXBsaWZ5aW5nIGVudGVycHJpc2UgZGVza3RvcCBkZXBsb3lt
+ZW50IGFuZCBtYW5hZ2VtZW50IHVzaW5nCkRlbGwgRXF1YWxMb2dpYyBzdG9yYWdlIGFuZCBWTXdh
+cmUgVmlldzogQSBoaWdobHkgc2NhbGFibGUsIGVuZC10by1lbmQKY2xpZW50IHZpcnR1YWxpemF0
+aW9uIGZyYW1ld29yay4gUmVhZCBtb3JlIQpodHRwOi8vcC5zZi5uZXQvc2Z1L2RlbGwtZXFsLWRl
+djJkZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
+LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
+L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
