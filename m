@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1PG1QJ-0003Nh-2e
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:32:35 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PG1QH-0003td-To
-	for ltp-list@lists.sourceforge.net; Wed, 10 Nov 2010 03:32:35 +0000
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oAA3WRKN010146
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Nov 2010 22:32:27 -0500
-Date: Tue, 9 Nov 2010 22:32:27 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1206967940.2804651289359947848.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1824167242.2804331289359263862.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <carmelo.amoroso@st.com>) id 1PGSFQ-00068y-7d
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:11:08 +0000
+Received: from eu1sys200aog110.obsmtp.com ([207.126.144.129])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PGSFO-0002zk-UZ
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 08:11:08 +0000
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Date: Thu, 11 Nov 2010 09:08:39 +0100
+Message-ID: <4CDBA487.7080507@st.com>
+References: <4CA09D4D.6050708@st.com> <4CA34070.9070505@st.com>
+	<20100930133120.GA4070@hannu-debian.research.nokia.com>
+	<4CA469A0.5090700@st.com> <20101001040609.GA2090@hannu-ubuntu>
+	<4CA9D0EB.5090309@st.com>
+	<20101004190552.GA997@debian-master.elisa-laajakaista.fi>
+	<4CD92F6B.9040508@st.com>
+	<1289462230.5622.40.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1289462230.5622.40.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fix sysconf failure in RHEL4
+Subject: Re: [LTP] ltp_clone alignment issues.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,74 +33,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi all,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I met a strange error (only) in RHEL4, syscalls/sysconf 
-failed the last test case because of the variable `actual' 
-was not evaluated by `errno':
+On 11/11/2010 8:57 AM, Subrata Modak wrote:
+> On Tue, 2010-11-09 at 12:24 +0100, Carmelo AMOROSO wrote:
+> On 10/4/2010 9:05 PM, Hannu Heikkinen wrote:
+>> On 04/10/10 15:04 +0200, Carmelo AMOROSO wrote:
+>> -clip-
+>> >
+>> > Hannu,
+>> > I don't think that it is a good to force the alignment; we could need to
+>> > write a test case that calls LTP_clone with an unaligned stack just to
+>> > test the behavior of the clone implementation.
+>> >
+>> > Likely, it should be useful to add a check inside the C lib clone
+>> > implementation (arch specific) to protect against unaligned stack, but
+>> > this is a different matter.
+>> >
+>> > I would just leave the LTP_clone passing the argument to the clone as
+>> > they came from the caller.
+>> >
+>> > Regards,
+>> > Carmelo
+>> >
+> 
+>> Hi Carmelo,
+> 
+>> you've got point, yes. I was just so worried about the fact that in ARM
+>> architectures that previous eg clone02 failed due to alignment errors.
+>> But your fix of course fixed that issue, and it gives as a possiblity
+>> to make test case against alignment issues, quite right.
+> 
+>> br,
+>> Hannu
+> 
+> 
+> Folks,
+> any change to get this included for the next release ?
+> 
+>> Did we miss any patch here ?
+> 
 
-sysconf01   56  TFAIL  :  sysconf correctly failed, but expected errno (22) != actual (0)
+I think so: this one
+http://sourceforge.net/mailarchive/forum.php?thread_name=4CA09D4D.6050708%40st.com&forum_name=ltp-list
 
-I remov the var `actual' and use `errno' directly, seems it 
-works. Re-test under RHEL4/5/6 and all of them pass the test. 
+Cheers,
+carmelo
 
-I have no idea why errno value couldn't be assigned to 
-`actual', either not sure whether my patch works on other
-non-Red Hat distos. Please have a look at this patch if 
-you want, thanks.
-
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
-
----
- testcases/kernel/syscalls/sysconf/sysconf01.c |    9 ++++-----
- 1 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/sysconf/sysconf01.c b/testcases/kernel/syscalls/sysconf/sysconf01.c
-index 783c6f5..42246f0 100644
---- a/testcases/kernel/syscalls/sysconf/sysconf01.c
-+++ b/testcases/kernel/syscalls/sysconf/sysconf01.c
-@@ -153,19 +153,18 @@ int main()
- 
- 	/* 56 */
- 	{
--		int retval, actual;
-+		int retval;
- 		errno = 0;
- 		retval = sysconf(INVAL_FLAG);
--		actual = errno;
- 		if (retval != -1) {
- 			tst_resm(TFAIL,
- 				 "sysconf succeeded for invalid flag (%i), "
- 				 " retval=%d errno=%d: %s",
--				 INVAL_FLAG, retval, actual, strerror(actual));
--		} else if (actual != EINVAL) {
-+				 INVAL_FLAG, retval, errno, strerror(errno));
-+		} else if (errno != EINVAL) {
- 			tst_resm(TFAIL,
- 				 "sysconf correctly failed, but expected "
--				 "errno (%i) != actual (%i)", EINVAL, actual);
-+				 "errno (%i) != actual (%i)", EINVAL, errno);
- 		} else
- 			tst_resm(TPASS, "The invalid sysconf key was trapped "
- 					"appropriately");
--- 
-1.7.3.2
-
--- 
-Quality Assurance Associate (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-
-TEL: +86-10-62608150
-WEB: http://www.redhat.com/
-
+>> Regards--
+>> Subrata
+> 
+> 
+> Carmelo
+> 
+>  >
+-
 ------------------------------------------------------------------------------
 The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a 
-Billion" shares his insights and actions to help propel your 
+David G. Thomson, author of the best-selling book "Blueprint to a
+Billion" shares his insights and actions to help propel your
 business during the next growth cycle. Listen Now!
 http://p.sf.net/sfu/SAP-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAkzbpIcACgkQoRq/3BrK1s9NrwCeNwTM5Nwp3nqF+UtY0GvYNyR4
+7tsAnA0BgHUYggQYXFfmK7zForgxDnpy
+=UwIh
+-----END PGP SIGNATURE-----
+
+------------------------------------------------------------------------------
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
