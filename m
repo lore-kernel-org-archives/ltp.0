@@ -1,23 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PLucG-00006q-Iv
-	for ltp-list@lists.sourceforge.net; Fri, 26 Nov 2010 09:29:16 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PLucF-0003xt-Ms
-	for ltp-list@lists.sourceforge.net; Fri, 26 Nov 2010 09:29:16 +0000
-Received: by ywt2 with SMTP id 2so898286ywt.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1PGMje-0005PQ-Ni
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 02:17:58 +0000
+Received: from out17.sjc.mx.trendmicro.com ([216.99.131.74])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PGMjd-0005OC-0h
+	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 02:17:58 +0000
+Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.130])
+	by out17.sjc.mx.trendmicro.com (Postfix) with ESMTP id C6E2C980418
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 26 Nov 2010 01:29:10 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1082)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <1566760762.501801290751932675.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Fri, 26 Nov 2010 01:29:06 -0800
-Message-Id: <EDD0AF13-7D60-41BC-BD81-F47218CD96DA@gmail.com>
-References: <1566760762.501801290751932675.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH v2]extend the -I option value
+	Thu, 11 Nov 2010 02:17:50 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 2BDD0114B83B
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Nov 2010 02:17:49 +0000 (UTC)
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Thu, 11 Nov 2010 11:17:47 +0900
+Message-ID: <000301cb8146$a1f23510$e5d69f30$@co.jp>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0004_01CB8192.11D9DD10"
+Content-Language: ja
+Subject: [LTP] [PATCH] fix "clock_getcpuclockid/5-1" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,84 +33,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: =?iso-2022-jp?B?GyRCYUQ6QhsoQiAbJEI3cjtUGyhC?= <toza@ryobi.co.jp>
 
-On Nov 25, 2010, at 10:12 PM, Zhouping Liu wrote:
+This is a multi-part message in MIME format.
 
-> 
-> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
-> 
->> From: "Garrett Cooper" <yanegomi@gmail.com>
->> To: "Zhouping Liu" <zliu@redhat.com>
->> Cc: ltp-list@lists.sourceforge.net
->> Sent: Friday, November 26, 2010 4:41:24 AM GMT +08:00 Beijing / Chongqing / Hong Kong / Urumqi
->> Subject: Re: [LTP] [PATCH v2]extend the -I option value
->> 
->> On Thu, Nov 25, 2010 at 1:23 AM, Zhouping Liu <zliu@redhat.com>
->> wrote:
->>> Hi,all
->>> I found it just support a small value for -I option.
->>> when I run '#./hugemmap04 -I 3600 -H /var/hugetlbfs',the test
->> returned
->>> immediately.
->>> the -I option details :
->>> -I x Execute test for x seconds
->>> And if you give a much bigger value to -I option such as 3600 or
->> larger, you
->>> will find the -I option disabled,
->>> so I changed the lib/parse_opts.c file, and just modified the
->> stop_time
->>> variable type from 'int' to 'double',
->>> after changed, it can support a very bigger value for -I option.
->> 
->>    Or maybe this should be time_t or long?
->>    Honestly, this could potentially introduce a lot of headache if
->> done improperly in lib/parse_opts.c (especially if you use a double
->> precisioned time amount as this could seriously impact architectures
->> without FPUs).
-> yeah,you're right, then I think it should change long long type,as there
-> is no apparent difference between int type and long type.(the long long
-> type can arrive at the maximum:9223372036854775807,and it can support a much bigger value.)
+------=_NextPart_000_0004_01CB8192.11D9DD10
+Content-Type: text/plain;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 
-Are you so sure about that statement?
+Hi,
 
-(amd64 FreeBSD CURRENT)
-$ ~/test_int_and_long 
-(I) 4294967295, (L) 18446744073709551615
+Build of POSIX "conformance/interfaces/clock_getcpuclockid/5-1.c" test
+failed 
+with following message:
+------------
+conformance/interfaces/clock_getcpuclockid/5-1 compile FAILED; SKIPPING
+../../../conformance/interfaces/clock_getcpuclockid/5-1.c: In function
+'main':
+../../../conformance/interfaces/clock_getcpuclockid/5-1.c:54: error:
+expected ';' before 'if'
+------------
 
-(i386 Fedora 13)
-$ ~/test_int_and_long
-(I) 4294967295, (L) 4294967295
+Environment is as follows:
+  - RHEL5.5 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
+  - RHEL4.8 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
 
-$ cat test_int_and_long.c 
-#include <limits.h>
-#include <stdio.h>
 
-int
-main(void)
-{
-	printf("(I) %u, (L) %lu\n", UINT_MAX, ULONG_MAX);
-	return (0);
-}
+I noticed some mistakes.
 
-Longs are 32-bit integers on 32-bit architectures and 64-bit integers on 64-bit architectures...
+Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+============
+---
+a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/
+5-1.c	2010-11-09 19:00:43.000000000 +0900
++++
+b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/
+5-1.c	2010-11-11 10:00:47.000000000 +0900
+@@ -50,14 +50,14 @@
+ 	}
+ 
+ 	/* Try and get the cpu clock ID for init(1) :)... */
+-	error = clock_getcpuclockid(1, &clockid_1)
++	error = clock_getcpuclockid(1, &clockid_1);
+ 	if (error == 0) {
+ 		printf("clock_getcpuclockid(1, ..) passed unexpectedly\n");
+ 		return PTS_UNRESOLVED;
+ 	} else if (error != EPERM) {
+ 		printf("clock_getcpuclockid(1, ..) failed with an improper "
+ 			"error (%d != %d)\n", EPERM, error);
+-		return PTS_FAILED;
++		return PTS_FAIL;
+ 	}
+ 	printf("Test PASSED\n");
+ 	return PTS_PASS;
+============
 
-> ( but I also have a question: why the STD_LOOP_DURATION (defined in lib/parse_opts.c) use float type? )
 
-Don't know... I'll have to look.
-Thanks,
--Garrett
+Thank you--
+
+-Tomonori Mitani
+
+------=_NextPart_000_0004_01CB8192.11D9DD10
+Content-Type: application/octet-stream;
+	name="5-1.c.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="5-1.c.patch"
+
+--- =
+a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclock=
+id/5-1.c	2010-11-09 19:00:43.000000000 +0900=0A=
++++ =
+b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclock=
+id/5-1.c	2010-11-11 10:00:47.000000000 +0900=0A=
+@@ -50,14 +50,14 @@=0A=
+ 	}=0A=
+ =0A=
+ 	/* Try and get the cpu clock ID for init(1) :)... */=0A=
+-	error =3D clock_getcpuclockid(1, &clockid_1)=0A=
++	error =3D clock_getcpuclockid(1, &clockid_1);=0A=
+ 	if (error =3D=3D 0) {=0A=
+ 		printf("clock_getcpuclockid(1, ..) passed unexpectedly\n");=0A=
+ 		return PTS_UNRESOLVED;=0A=
+ 	} else if (error !=3D EPERM) {=0A=
+ 		printf("clock_getcpuclockid(1, ..) failed with an improper "=0A=
+ 			"error (%d !=3D %d)\n", EPERM, error);=0A=
+-		return PTS_FAILED;=0A=
++		return PTS_FAIL;=0A=
+ 	}=0A=
+ 	printf("Test PASSED\n");=0A=
+ 	return PTS_PASS;=0A=
+
+------=_NextPart_000_0004_01CB8192.11D9DD10
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 ------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
+------=_NextPart_000_0004_01CB8192.11D9DD10
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_NextPart_000_0004_01CB8192.11D9DD10--
+
+
+
