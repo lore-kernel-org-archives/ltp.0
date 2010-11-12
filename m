@@ -1,30 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <carmelo.amoroso@st.com>) id 1PLAlq-0007xR-OT
-	for ltp-list@lists.sourceforge.net; Wed, 24 Nov 2010 08:32:06 +0000
-Received: from eu1sys200aog110.obsmtp.com ([207.126.144.129])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PLAlp-0001Zq-2c
-	for ltp-list@lists.sourceforge.net; Wed, 24 Nov 2010 08:32:06 +0000
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Date: Wed, 24 Nov 2010 09:30:47 +0100
-Message-ID: <4CECCD37.70900@st.com>
-References: <4CA09D4D.6050708@st.com>	<4CA34070.9070505@st.com>
-	<20100930133120.GA4070@hannu-debian.research.nokia.com>
-	<4CA469A0.5090700@st.com>	<20101001040609.GA2090@hannu-ubuntu>
-	<4CA9D0EB.5090309@st.com>
-	<20101004190552.GA997@debian-master.elisa-laajakaista.fi>
-	<4CD92F6B.9040508@st.com>
-	<1289462230.5622.40.camel@subratamodak.linux.ibm.com>
-	<4CDBA487.7080507@st.com>
-	<AANLkTi=Y-z0WFb6Nkr6zr650urxoQOPo3ohw+e+YZueJ@mail.gmail.com>
-	<4CE0E14D.6010306@st.com>
-	<AANLkTi=B8pSuAH3EjJK47wN9P_Y2Z1F88Wzqn0Y7aJ9f@mail.gmail.com>
-In-Reply-To: <AANLkTi=B8pSuAH3EjJK47wN9P_Y2Z1F88Wzqn0Y7aJ9f@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shubgoya@in.ibm.com>) id 1PGrBl-00077c-95
+	for ltp-list@lists.sourceforge.net; Fri, 12 Nov 2010 10:49:01 +0000
+Received: from e28smtp04.in.ibm.com ([122.248.162.4])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PGrBh-0007hX-0k
+	for ltp-list@lists.sourceforge.net; Fri, 12 Nov 2010 10:49:01 +0000
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by e28smtp04.in.ibm.com (8.14.4/8.13.1) with ESMTP id oACAmllo007489
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Nov 2010 16:18:47 +0530
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	oACAmlkE675872
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Nov 2010 16:18:47 +0530
+Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	oACAmkMW028340
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Nov 2010 21:48:47 +1100
+In-Reply-To: <AANLkTi=i0QWb616WG=FsD5aQh5kjeFjggzj3mKJV-d2-@mail.gmail.com>
+References: <1289458673.5622.19.camel@subratamodak.linux.ibm.com>	<OF7E98D2D1.7AEC88E3-ON652577D8.002CB466-652577D8.0030671A@LocalDomain>
+	<OF0CF663E4.3DA7EB94-ON652577D8.0037CCDB-652577D8.00391B71@in.ibm.com>
+	<AANLkTi=i0QWb616WG=FsD5aQh5kjeFjggzj3mKJV-d2-@mail.gmail.com>
+Message-ID: <OFAA826A3D.B74F9335-ON652577D9.003A595F-652577D9.003B651E@in.ibm.com>
+From: Shubham Goyal <shubgoya@in.ibm.com>
+Date: Fri, 12 Nov 2010 16:18:30 +0530
 MIME-Version: 1.0
-Subject: Re: [LTP] ltp_clone alignment issues.
+Subject: Re: [LTP] [RFC] Remove testcases/pounder21
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,106 +37,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: Iranna D Ankad <iranna.ankad@in.ibm.com>, takahash <takahash@us.ibm.com>, LTP list <ltp-list@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi Garrett,
+                  Our intention is that pounder21 tree should always be a
+part of coming LTP tarball releases in the same directory where it is
+sitting now. We have plans to use latest LTP for coming new distros and in
+that case we will need pounder21 along with LTP.
 
-On 11/21/2010 4:34 AM, Garrett Cooper wrote:
-> On Sun, Nov 14, 2010 at 11:29 PM, Carmelo AMOROSO
-> <carmelo.amoroso@st.com> wrote:
->  > -----BEGIN PGP SIGNED MESSAGE-----
->  > Hash: SHA1
->  >
->  > On 11/11/2010 10:59 AM, Garrett Cooper wrote:
->  >> On Thu, Nov 11, 2010 at 12:08 AM, Carmelo AMOROSO
->  >> <carmelo.amoroso@st.com> wrote:
->  >> > -----BEGIN PGP SIGNED MESSAGE-----
->  >> > Hash: SHA1
->  >> >
->  >> > On 11/11/2010 8:57 AM, Subrata Modak wrote:
->  >> >> On Tue, 2010-11-09 at 12:24 +0100, Carmelo AMOROSO wrote:
->  >> >> On 10/4/2010 9:05 PM, Hannu Heikkinen wrote:
->  >> >>> On 04/10/10 15:04 +0200, Carmelo AMOROSO wrote:
->  >> >>> -clip-
->  >> >>> >
->  >> >>> > Hannu,
->  >> >>> > I don't think that it is a good to force the alignment; we could need to
->  >> >>> > write a test case that calls LTP_clone with an unaligned stack just to
->  >> >>> > test the behavior of the clone implementation.
->  >> >>> >
->  >> >>> > Likely, it should be useful to add a check inside the C lib clone
->  >> >>> > implementation (arch specific) to protect against unaligned stack, but
->  >> >>> > this is a different matter.
->  >> >>> >
->  >> >>> > I would just leave the LTP_clone passing the argument to the clone as
->  >> >>> > they came from the caller.
->  >> >>> >
->  >> >>> > Regards,
->  >> >>> > Carmelo
->  >> >>> >
->  >> >>
->  >> >>> Hi Carmelo,
->  >> >>
->  >> >>> you've got point, yes. I was just so worried about the fact that in ARM
->  >> >>> architectures that previous eg clone02 failed due to alignment errors.
->  >> >>> But your fix of course fixed that issue, and it gives as a possiblity
->  >> >>> to make test case against alignment issues, quite right.
->  >> >>
->  >> >>> br,
->  >> >>> Hannu
->  >> >>
->  >> >>
->  >> >> Folks,
->  >> >> any change to get this included for the next release ?
->  >> >>
->  >> >>> Did we miss any patch here ?
->  >> >>
->  >> >
->  >> > I think so: this one
->  >> >
->  >> 
-> http://sourceforge.net/mailarchive/forum.php?thread_name=4CA09D4D.6050708%40st.com&forum_name=ltp-list 
-> <http://sourceforge.net/mailarchive/forum.php?thread_name=4CA09D4D.6050708%40st.com&forum_name=ltp-list>
->  >> 
-> <http://sourceforge.net/mailarchive/forum.php?thread_name=4CA09D4D.6050708%40st.com&forum_name=ltp-list 
-> <http://sourceforge.net/mailarchive/forum.php?thread_name=4CA09D4D.6050708%40st.com&forum_name=ltp-list>>
->  >>
->  >> Is the above patch endian agnostic?
->  >>
->  >
->  > Yes, definitely. The patch just removed an wrong manipulation of the
->  > stack arguments for all the archs.
-> 
-> I'm going to test it in just a bit, but please let me know if you
-> run into any issues.
+So if you move pounder21 directory to a separate module under LTP CVS, will
+it still fulfil our above requirement?
 
-No issues.
+Thanks,
+-Shubham
 
-Carmelo
-> Thanks,
-> -Garrett
-> 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAkzszTcACgkQoRq/3BrK1s97UQCeJEiAisHHlmqwNuaNGhXZuVAJ
-ercAoL9ysW+cGly5vDI3c7cy7o2SGni1
-=teZB
------END PGP SIGNATURE-----
+                                                                           =
 
-------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+             Garrett Cooper                                                =
+
+             <yanegomi@gmail.c                                             =
+
+             om>                                                        To =
+
+                                       Shubham Goyal/India/IBM@IBMIN       =
+
+             11/11/2010 10:48                                           cc =
+
+             PM                        Iranna D Ankad/India/IBM@IBMIN, LTP =
+
+                                       list                                =
+
+                                       <ltp-list@lists.sourceforge.net>,   =
+
+                                       Murlin Wenzel <mwenzel@novell.com>, =
+
+                                       subrata@linux.vnet.ibm.com,         =
+
+                                       takahash <takahash@us.ibm.com>      =
+
+                                                                   Subject =
+
+                                       Re: [LTP] [RFC] Remove              =
+
+                                       testcases/pounder21                 =
+
+                                                                           =
+
+                                                                           =
+
+                                                                           =
+
+                                                                           =
+
+                                                                           =
+
+                                                                           =
+
+
+
+
+
+On Thu, Nov 11, 2010 at 2:23 AM, Shubham Goyal <shubgoya@in.ibm.com> wrote:
+> Yes Iranna I agree with you and I also feel that "pounder21" tree should
+> not be removed from LTP. As you correctly said currently its difficult to
+> run LTP's pounder on stand alone systems due to some other helper files
+> dependency. I will try to address this problem ASAP and try to make
+pounder
+> run on stand alone systems without any other dependencies. =A0I have it in
+my
+> TODO list.
+
+    Should it be moved to a separate module under LTP CVS?
+Thanks,
+-Garrett
+
+
+
+---------------------------------------------------------------------------=
+---
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
