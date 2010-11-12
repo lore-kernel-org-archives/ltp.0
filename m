@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PLgKh-0005ng-Pb
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 18:14:11 +0000
-Date: Thu, 25 Nov 2010 19:26:32 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101125182632.GA7551@saboteur.suse.cz>
-References: <4CE61F95.0@cn.fujitsu.com>
-	<20101119122145.GB19564@saboteur.suse.cz>
-	<AANLkTim_uuAEQcuJ6o7=GJT7Gp0G_b2LYUYpxZKg15Jm@mail.gmail.com>
-	<4CE9C778.6000703@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CE9C778.6000703@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH]Instead sem_wait by fcntl for sigaction
- test.
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1PGr5G-0000RO-UV
+	for ltp-list@lists.sourceforge.net; Fri, 12 Nov 2010 10:42:18 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PGr5F-0002xa-SN
+	for ltp-list@lists.sourceforge.net; Fri, 12 Nov 2010 10:42:18 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e5.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id oACAKlZR016981
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Nov 2010 05:20:47 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	oACAgCtB394890
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Nov 2010 05:42:12 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	oACAgB8S019336
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Nov 2010 08:42:12 -0200
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <AANLkTi=i0QWb616WG=FsD5aQh5kjeFjggzj3mKJV-d2-@mail.gmail.com>
+References: <1289458673.5622.19.camel@subratamodak.linux.ibm.com>
+	<OF7E98D2D1.7AEC88E3-ON652577D8.002CB466-652577D8.0030671A@LocalDomain>
+	<OF0CF663E4.3DA7EB94-ON652577D8.0037CCDB-652577D8.00391B71@in.ibm.com>
+	<AANLkTi=i0QWb616WG=FsD5aQh5kjeFjggzj3mKJV-d2-@mail.gmail.com>
+Date: Fri, 12 Nov 2010 16:11:31 +0530
+Message-Id: <1289558494.13890.3.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [RFC] Remove testcases/pounder21
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +42,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Iranna D Ankad <iranna.ankad@in.ibm.com>, Shubham Goyal <shubgoya@in.ibm.com>, takahash <takahash@us.ibm.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> >>> Some days before, mitani-san reported some sigaction test failed at linux,
-> >>> http://sourceforge.net/mailarchive/message.php?msg_id=000001cb798d%241aaa0210%244ffe0630%24%40co.jp
-> >>>
-> >>> As Garrett said, add Linux-isms is not advisably. So i want try to fix it by another method.
-> >>>
-> >>> I have seen the assertions.xml, these tests want to test sigaction with SA_RESTART
-> >>> not sem_wait(it looks like there's a bug at older linux kernel), so i suggest to
-> >>> instead sem_wait by fcntl.
-> >>>
-> >>> What about this one?  If you agree with me, i will post other patchs.
-> >> As far as I understand this, you are trying to avoid a fact, that older
-> >> kernels are not comforming to the POSIX specification. This is a case
-> >> where the test is failing for a good reason, all we could do here is
-> >> print message like:
-> >>
-> >> "this test is known to fail on linux kernel < 2.6.22"
-> >>
-> >> Before the test reports failure.
-> > 
-> > Well... I would actually record these items in a file somewhere. Once
-> > upon a time the ltp-results@ list was a good source for this data, but
-> > I don't know how useful this data is anymore or how much/well this
-> > data is reported and subsequently mined (I'm not on the list for
-> > instance)...
-> > 
-> >> On the other end I do not object to adding test for file locks with
-> >> SA_RESTART. But you should not remove the sem_lock() test (as it's not
-> >> broken).
-> > 
-> > Agreed.
-> > 
+On Thu, 2010-11-11 at 09:18 -0800, Garrett Cooper wrote:
+> On Thu, Nov 11, 2010 at 2:23 AM, Shubham Goyal <shubgoya@in.ibm.com> wrote:
+> > Yes Iranna I agree with you and I also feel that "pounder21" tree should
+> > not be removed from LTP. As you correctly said currently its difficult to
+> > run LTP's pounder on stand alone systems due to some other helper files
+> > dependency. I will try to address this problem ASAP and try to make pounder
+> > run on stand alone systems without any other dependencies.  I have it in my
+> > TODO list.
 > 
->   Well...
->   Then, do you have a plan to do it?
+>     Should it be moved to a separate module under LTP CVS?
 
-So far there are more important things on my TODO.
+I would prefer to keep it in git for the time being. Let it be where it is. We will not try to integrate it inside LTP root Makefile, so, configure/make/make install will not interfere with pounder21 directory. Once Subham comes wiht the patch for generic build/install we can integrate it to LTP Makefile then.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Since, the IBM distro test teams use both LTP and Pounder21, it would be much easier for them to access them from a single tarball :-)
+
+Regards--
+Subrata
+
+> Thanks,
+> -Garrett
+
 
 ------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+Centralized Desktop Delivery: Dell and VMware Reference Architecture
+Simplifying enterprise desktop deployment and management using
+Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
+client virtualization framework. Read more!
+http://p.sf.net/sfu/dell-eql-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
