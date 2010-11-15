@@ -2,17 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PGYKQ-0005Id-QM
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 14:40:42 +0000
-Date: Thu, 11 Nov 2010 15:51:55 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101111145155.GB24599@saboteur.suse.cz>
-References: <4CDB5E53.6070604@cn.fujitsu.com> <4CDB6039.2050200@cn.fujitsu.com>
+	(envelope-from <yanegomi@gmail.com>) id 1PHrUK-00022Z-8K
+	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 05:20:20 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PHrUF-0003NS-F0
+	for ltp-list@lists.sourceforge.net; Mon, 15 Nov 2010 05:20:20 +0000
+Received: by wwe15 with SMTP id 15so4501995wwe.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 14 Nov 2010 21:20:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CDB6039.2050200@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH 1/2]Use aio_error instead signal hander at
- aio_suspend/1-1
+In-Reply-To: <000b01cb8481$c3c9a1d0$4b5ce570$@co.jp>
+References: <000001cb8470$6662ddb0$33289910$@co.jp>
+	<AANLkTimGi4v_OHzZAD8BbyGKsuVzpBcokEECezPeTC8e@mail.gmail.com>
+	<000b01cb8481$c3c9a1d0$4b5ce570$@co.jp>
+Date: Sun, 14 Nov 2010 21:20:09 -0800
+Message-ID: <AANLkTim3wqv3fS8Sg9TNvZ=nDuXGcTB4GmPcH4d9pEee@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Realtime test failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,150 +29,170 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, =?Big5?B?t+2ueSCwt6Wr?= <toza@ryobi.co.jp>
 
-Hi!
-> aio_suspend may be interrupted by IO request's completion signal, so we
-> should use aio_error instead signal hander to check whether this request
-> has complete.
-> 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-> 
-> ---
->  .../conformance/interfaces/aio_suspend/1-1.c       |   49 +++++++------------
->  1 files changed, 18 insertions(+), 31 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
-> index 7d33e62..63d986e 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
-> @@ -44,18 +44,23 @@
->  #define BUF_SIZE	1024*1024
->  #define WAIT_FOR_AIOCB	6
->  
-> -int received_selected	= 0;
->  int received_all	= 0;
->  
-> -void
-> -sigrt1_handler(int signum, siginfo_t *info, void *context)
-> +int selected_request_status(struct aiocb *paiocb, int expect)
->  {
-> -	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
-> -		received_selected = 1;
-> +	int err = aio_error(paiocb);
-> +
-> +	if (err != expect) {
-> +		printf (TNAME " Selected request expect %d[%s], not %d[%s]\n",
-> +			expect, strerror(expect), err, strerror(err));
-> +		return 0;
-> +	}
-> +
-> +	return 1;
->  }
->  
->  void
-> -sigrt2_handler(int signum, siginfo_t *info, void *context)
-> +sigrt1_handler(int signum, siginfo_t *info, void *context)
->  {
->  	received_all = 1;
->  }
-> @@ -123,37 +128,25 @@ main ()
->  		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
->  		aiocbs[i]->aio_nbytes = BUF_SIZE;
->  		aiocbs[i]->aio_lio_opcode = LIO_READ;
-> -
-> -		/* Use SIRTMIN+1 for individual completions */
-> -		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
-> -		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
->  	}
->  
->  	/* Use SIGRTMIN+2 for list completion */
->  	event.sigev_notify = SIGEV_SIGNAL;
-> -	event.sigev_signo = SIGRTMIN+2;
-> +	event.sigev_signo = SIGRTMIN+1;
->  	event.sigev_value.sival_ptr = NULL;
-
-Fix comment here.
-
-> -	/* Setup handler for individual operation completion */
-> +	/* Setup handler for list completion */
->  	action.sa_sigaction = sigrt1_handler;
->  	sigemptyset(&action.sa_mask);
->  	action.sa_flags = SA_SIGINFO|SA_RESTART;
->  	sigaction(SIGRTMIN+1, &action, NULL);
->  
-> -	/* Setup handler for list completion */
-> -	action.sa_sigaction = sigrt2_handler;
-> -	sigemptyset(&action.sa_mask);
-> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
-> -	sigaction(SIGRTMIN+2, &action, NULL);
-> -
->  	/* Setup suspend list */
->  	plist[0] = NULL;
->  	plist[1] = aiocbs[WAIT_FOR_AIOCB];
->  
->  	/* Submit request list */
->  	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
-> -
-
-No need to remove newline here.
-
->  	if (ret) {
->  		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
-> @@ -165,9 +158,7 @@ main ()
->  	}
->  
->  	/* Check selected request has not completed yet */
-> -	if (received_selected) {
-> -		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
-> -			WAIT_FOR_AIOCB);
-> +	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], EINPROGRESS)) {
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-
-Any particular need to removing the printf() here?
-
-> @@ -178,11 +169,8 @@ main ()
->  
->  	/* Suspend on selected request */
->  	ret = aio_suspend((const struct aiocb **)plist, 2, NULL);
-> -
-> -	/* Check selected request has completed */
-> -	if (!received_selected) {
-> -		printf (TNAME " Error : AIOCB %d should have completed after suspend\n",
-> -			WAIT_FOR_AIOCB);
-> +	if (ret) {
-> +		printf (TNAME " Error at aio_suspend() %d: %s\n", errno, strerror (errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-> @@ -191,9 +179,8 @@ main ()
->  		exit (PTS_FAIL);
->  	}
+2010/11/14 Mitani <mitani@ryobi.co.jp>:
+>> -----Original Message-----
+>> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> Sent: Monday, November 15, 2010 12:03 PM
+>> To: Mitani
+>> Subject: Re: [LTP] Realtime test failure
+>>
+>> On Sun, Nov 14, 2010 at 6:54 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> > Hi,
+>> >
+>> > "realtime" build failed in my system with git "ltp-f388d33.tar.gz":
+>> > ------------<RHEL4.8 - x86>
+>> > make[2]: Entering directory
+>> `/home/LTP/ltp-dev-20101112/testcases/realtime'
+>> > make -C lib -f
+>> "/home/LTP/ltp-dev-20101112/testcases/realtime/lib/Makefile"
+>> > all
+>> > make[3]: Entering directory
+>> > `/home/LTP/ltp-dev-20101112/testcases/realtime/lib'
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
+>> > -I/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include
+>> > -I../../../include -I../../../include =A0-c -o librttest.o librttest.c
+>> > In file included from librttest.c:43:
+>> >
+>> /home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librtte
+>> st.h: In
+>> > function `atomic_add':
+>> >
+>> /home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librtte
+>> st.h:119
+>> > : warning: implicit declaration of function `__sync_add_and_fetch'
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
+>> > -I/home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include
+>> > -I../../../include -I../../../include =A0-c -o libstats.o libstats.c
+>> > In file included from libstats.c:47:
+>> >
+>> /home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librtte
+>> st.h: In
+>> > function `atomic_add':
+>> >
+>> /home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librtte
+>> st.h:119
+>> > : warning: implicit declaration of function `__sync_add_and_fetch'
+>> > if [ -z "librttest.o libstats.o" ] ; then \
+>> > =A0 =A0 =A0 =A0echo "Cowardly refusing to create empty archive"; \
+>> > =A0 =A0 =A0 =A0exit 1; \
+>> > fi
+>> > ar -rc "librealtime.a" librttest.o libstats.o
+>> > ranlib "librealtime.a"
+>> > make[3]: Leaving directory
+>> > `/home/LTP/ltp-dev-20101112/testcases/realtime/lib'
+>> > make[3]: Entering directory
+>> > `/home/LTP/ltp-dev-20101112/testcases/realtime/func'
+>> > make[4]: Entering directory
+>> > `/home/LTP/ltp-dev-20101112/testcases/realtime/func/async_handler'
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
+>> > -I/home/LTP/ltp-dev-20101112/testcases/realtime/include
+>> > -I../../../../include -I../../../../include
+>> > -L/home/LTP/ltp-dev-20101112/testcases/realtime/lib
+>> -L../../../../lib
+>> > async_handler.c =A0 -lrealtime -lpthread -lrt -lm -o async_handler
+>> > In file included from async_handler.c:42:
+>> > /home/LTP/ltp-dev-20101112/testcases/realtime/include/librttest.h:
+>> In
+>> > function `atomic_add':
+>> >
+>> /home/LTP/ltp-dev-20101112/testcases/realtime/include/librttest.h:11
+>> 9:
+>> > warning: implicit declaration of function `__sync_add_and_fetch'
+>> >
+>> /home/LTP/ltp-dev-20101112/testcases/realtime/lib/librealtime.a(libr
+>> ttest.o)
+>> > (.text+0x1a7): In function `create_thread':
+>> >
+>> /home/LTP/ltp-dev-20101112/testcases/realtime/lib/../include/librtte
+>> st.h:119
+>> > : undefined reference to `__sync_add_and_fetch'
+>> > collect2: ld returned 1 exit status
+>> > make[4]: *** [async_handler] Error 1
+>> > make[4]: Leaving directory
+>> > `/home/LTP/ltp-dev-20101112/testcases/realtime/func/async_handler'
+>> > make[3]: *** [all] Error 2
+>> > make[3]: Leaving directory
+>> > `/home/LTP/ltp-dev-20101112/testcases/realtime/func'
+>> > make[2]: *** [all] Error 2
+>> > make[2]: Leaving directory
+>> `/home/LTP/ltp-dev-20101112/testcases/realtime'
+>> > make[1]: *** [all] Error 2
+>> > make[1]: Leaving directory `/home/LTP/ltp-dev-20101112/testcases'
+>> > make: *** [testcases-all] Error 2
+>> > ------------
+>> >
+>> > "realtime" build failed in:
+>> > ------------
+>> > RHEL4.8 -- x86, x86_64, ia64
+>> > RHEL5.4 -- x86
+>> > ------------
+>> >
+>> > "realtime" build succeeded in:
+>> > ------------
+>> > RHEL5.4 -- x86_64, ia64
+>> > ------------
+>> >
+>> > It is caused by "__sync_add_and_fetch".
+>> >
+>> > In following URL, "__sync_add_and_fetch" is "built-in functions for
+>> > atomic memory access". And It is provided in "gcc":
+>> > =A0 http://gcc.gnu.org/onlinedocs/gcc-4.4.0/gcc/Atomic-Builtins.html
+>> >
+>> > There is "__sync_add_and_fetch" in gcc4.1.2 (It is the gcc of RHEL5.1
+>> -
+>> > RHEL5.4).
+>> > And there is not "__sync_add_and_fetch" in gcc3.4.6 (It is the gcc of
+>> > RHEL4.8)
+>> >
+>> > In addition, "__sync_add_and_fetch" is for 64 bit environment.
+>> >
+>> >
+>> http://stackoverflow.com/questions/130740/link-error-when-compiling-
+>> gcc-atom
+>> > ic-operation-in-32-bit-mode
+>> >
+>> > =A0 http://gcc.gnu.org/wiki/Atomic
+>> >
+>> > Perhaps, the judgment that "realtime" must be built or not depends on
+>> > gcc's version (> 4.0) and 64 bits environment, I think.
+>>
+>> Could you please attach your testcases/realtime/config.log and
+>> testcases/realtime/include/realtime_config.h ?
+>> Thanks,
+>> -Garrett
 >
-> -
-> -	if (ret) {
-> -		printf (TNAME " Error at aio_suspend() %d: %s\n", errno, strerror (errno));
-> +	/* Check selected request has completed */
-> +	if (!selected_request_status(aiocbs[WAIT_FOR_AIOCB], 0)) {
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
+>
+> I understood.
+> Thank you and sorry for my insufficient information.
+>
+> I attach following files:
+> =A0 - config.log =A0 =A0 =A0 =A0(RHEL4.8-x86)
+> =A0 - realtime_config.h (RHEL4.8-x86)
+> =A0 - config.log =A0 =A0 =A0 =A0(RHEL5.5-x86)
+> =A0 - realtime_config.h (RHEL5.5-x86)
 
-And here.
+    Could you please try compiling the following C sources in both scenario=
+s?
+Thanks,
+-Garrett
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#include <stdlib.h>
+int main(void) {
+        char *c;
+        return __sync_add_and_fetch(c, 1);
+}
 
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Centralized Desktop Delivery: Dell and VMware Reference Architecture
 Simplifying enterprise desktop deployment and management using
 Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
