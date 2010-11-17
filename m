@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PLefh-0003Kr-AO
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 16:27:45 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 3B32E945D8
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PIYWP-0004gz-W8
+	for ltp-list@lists.sourceforge.net; Wed, 17 Nov 2010 03:17:22 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PIYWO-0004Uw-2e
+	for ltp-list@lists.sourceforge.net; Wed, 17 Nov 2010 03:17:21 +0000
+Received: by wyb34 with SMTP id 34so1438650wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 25 Nov 2010 17:27:36 +0100 (CET)
-Date: Thu, 25 Nov 2010 17:40:08 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101125164008.GC2853@saboteur.suse.cz>
+	Tue, 16 Nov 2010 19:17:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix lchown tests
+In-Reply-To: <000601cb8603$7519a570$5f4cf050$@co.jp>
+References: <000001cb8470$6662ddb0$33289910$@co.jp>
+	<AANLkTimGi4v_OHzZAD8BbyGKsuVzpBcokEECezPeTC8e@mail.gmail.com>
+	<000b01cb8481$c3c9a1d0$4b5ce570$@co.jp>
+	<AANLkTim3wqv3fS8Sg9TNvZ=nDuXGcTB4GmPcH4d9pEee@mail.gmail.com>
+	<001501cb848e$7e894960$7b9bdc20$@co.jp>
+	<AANLkTi=2ZMmCCHYFjX3ZK203hTHE9W=QTUZgDzkLyB=e@mail.gmail.com>
+	<000301cb8568$4a9060a0$dfb121e0$@co.jp>
+	<AANLkTi=Aia-KRKPT8JJtE_ts4jCPsDqjSF5cyhHMVjJo@mail.gmail.com>
+	<000601cb8603$7519a570$5f4cf050$@co.jp>
+Date: Tue, 16 Nov 2010 19:17:14 -0800
+Message-ID: <AANLkTi=yU5JkGE496Gg5mOtaO2FRfdfF7wkNvUKEqnHu@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Realtime test failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,1047 +35,373 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-Folowing patch fixes/cleanups lchown tests.
-
-lchown01 changes:
-
-* make a better use of ltp test interface
-* make error messages consistent
-* various coding style issues
-
-lchown02 changes:
-
-* all test setups are now done in setup functions
-* eliminated need for external script for preparing tempfile
-* make a better use of ltp test interface
-* make error messages consistent
-* various coding style issues
-* fix lchown02 invocation in runtest files
-
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---fdj2RfSjLxBAspz7
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="fix_lchown_tests.patch"
-
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 516ba7c..0b0368c 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -373,7 +373,7 @@ kill11 ulimit -c 1024;kill11
- kill12 kill12
- 
- lchown01 lchown01
--lchown02 prep_create_link; lchown02
-+lchown02 lchown02
- 
- link01 symlink01 -T link01
- link02 link02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index c2903f5..55d4fe5 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -306,7 +306,7 @@ kill11 ulimit -c 1024;kill11
- kill12 kill12
- 
- lchown01 lchown01
--lchown02 prep_create_link; lchown02
-+lchown02 lchown02
- 
- link01 symlink01 -T link01
- link02 link02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b2bf144..e0d1e10 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -462,8 +462,8 @@ kill12 kill12
- 
- lchown01 lchown01
- lchown01_16 lchown01_16
--lchown02 prep_create_link; lchown02
--lchown02_16 prep_create_link; lchown02_16
-+lchown02  lchown02
-+lchown02_16 lchown02_16
- 
- libevent01 export LTPROOT; $LTPROOT/testcases/bin/libevent/run_libevent.sh
- 
-diff --git a/testcases/kernel/syscalls/lchown/Makefile b/testcases/kernel/syscalls/lchown/Makefile
-index 829746d..fba133f 100644
---- a/testcases/kernel/syscalls/lchown/Makefile
-+++ b/testcases/kernel/syscalls/lchown/Makefile
-@@ -20,12 +20,10 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
-+CFLAGS+=-W -Wall
-+
- SRCS			:= $(wildcard $(abs_srcdir)/lchown*.c)
- 
- include $(abs_srcdir)/../utils/compat_16.mk
- 
--INSTALL_TARGETS		:= prep_create_link
--
--MAKE_TARGETS		+= create_link
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/lchown/create_link.c b/testcases/kernel/syscalls/lchown/create_link.c
-deleted file mode 100644
-index 0cb53ec..0000000
---- a/testcases/kernel/syscalls/lchown/create_link.c
-+++ /dev/null
-@@ -1,94 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-- */
--
--/*
-- * Description: This is a setuid to root program invoked by a non-root
-- *		process to change the user id/group id bits on the test
-- *		directory/file created in the setup function.
-- *		It sets uid to another non-root user and creates a
-- *		symlink of testfile/directory.
-- *
-- *		This function exit with 0 or 1 depending upon the
-- *		success/failure each system call.
-- */
--
--#include <libgen.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <sys/types.h>
--#include <pwd.h>
--#include <grp.h>
--#include <errno.h>
--#include <string.h>
--
--#define LTPUSER		"bin"
--#define LTPGRP		"bin"
--#define SFILE1		"sfile_1"
--
--int main(int argc, char **argv)
--{
--	int rc = 1;		/* Failed until proven passed ;). */
--	struct passwd *ltpuser;	/* password struct for nobody */
--	struct group *ltpgroup;	/* group struct for nobody */
--	uid_t user_uid;		/* user id of nobody */
--	gid_t group_gid;	/* group id of nobody */
--	char *path_name;	/* name of test directory/file */
--
--	path_name = argv[1];
--
--	if (argc != 2) {
--		fprintf(stderr, "usage: %s filename\n", basename(*argv));
--		exit (1);
--	} else if ((ltpuser = getpwnam(LTPUSER)) == NULL)
--		/*
--		 * Get the user id and group id of "ltpuser" user from password
--		 * and group files.
--		 */
--		fprintf(stderr, "change_owner: %s not found in /etc/passwd",
--			LTPUSER);
--	else if ((ltpgroup = getgrnam(LTPGRP)) == NULL)
--		fprintf(stderr, "change_owner: %s not found in /etc/group",
--			LTPGRP);
--	else {
--
--		user_uid = ltpuser->pw_uid;
--		group_gid = ltpgroup->gr_gid;
--
--		/*
--		 * Change the ownership of test directory/file specified by
--		 * pathname to that of LTPUSER user_uid and group_gid.
--		 */
--		if (chown(path_name, user_uid, group_gid) < 0)
--			fprintf(stderr, "change_owner: chown() of %s failed, "
--				"error %d\n", path_name, errno);
--		else if (setuid(user_uid) < 0)
--			fprintf(stderr, "change_owner: setuid() to %s fails, error=%d",
--				LTPUSER, errno);
--		else if (symlink(path_name, SFILE1) < 0)
--			fprintf(stderr, "change_owner: symlink() of %s Failed, "
--				"errno=%d : %s", path_name, errno, strerror(errno));
--		else
--			rc = 0;
--
--	}
--
--	return rc;
--
--}
-diff --git a/testcases/kernel/syscalls/lchown/lchown01.c b/testcases/kernel/syscalls/lchown/lchown01.c
-index 8e83a8f..b4a8ec3 100644
---- a/testcases/kernel/syscalls/lchown/lchown01.c
-+++ b/testcases/kernel/syscalls/lchown/lchown01.c
-@@ -62,6 +62,7 @@
-  *
-  * HISTORY
-  *	07/2001 Ported by Wayne Boyer
-+ *	11/2010 Code cleanup by Cyril Hrubis chrubis@suse.cz
-  *
-  * RESTRICTIONS:
-  *  This test should be run by 'super-user' (root) only.
-@@ -83,65 +84,57 @@
- #define TESTFILE	"testfile"
- #define SFILE		"slink_file"
- 
--char *TCID = "lchown01";	/* Test program identifier.    */
--int TST_TOTAL = 5;		/* Total number of test conditions */
--extern int Tst_count;		/* Test Case counter for tst_* routines */
-+char *TCID = "lchown01";
-+int TST_TOTAL = 5;
-+extern int Tst_count;
- 
--struct test_case_t {		/* test case struct. to test different conditions */
-+struct test_case_t {
- 	char *desc;
- 	uid_t user_id;
- 	gid_t group_id;
--} Test_cases[] = {
--	{
--	"Change Owner/Group ids", 700, 701}, {
--	"Change Owner id only", 702, -1}, {
--	"Change Owner id only", 703, 701}, {
--	"Change Group id only", -1, 704}, {
--	"Change Group id only", 703, 705}, {
--	NULL, 0, 0}
- };
- 
--void setup();			/* setup function for the test */
--void cleanup();			/* cleanup function for the test */
-+static struct test_case_t test_cases[] = {
-+	{"Change Owner/Group ids", 700, 701},
-+	{"Change Owner id only",   702,  -1},
-+	{"Change Owner/Group ids", 703, 701},
-+	{"Change Group id only",    -1, 704},
-+	{"Change Group/Group ids", 703, 705},
-+	{NULL,                       0,   0}
-+};
-+
-+void setup(void);
-+void cleanup(void);
- 
--int main(int ac, char **av)
-+int main(int argc, char *argv[])
- {
--	struct stat stat_buf;	/* stat(2) struct contents */
--	int lc;			/* loop counter */
--	char *msg;		/* message returned from parse_opts */
--	int ind;		/* counter variable for chmod(2) tests */
--	uid_t User_id;		/* user id of the user set for testfile */
--	gid_t Group_id;		/* group id of the user set for testfile */
--	char *test_desc;	/* test specific message */
-+	struct stat stat_buf;
-+	int lc, i;
-+	char *msg;
- 
--	/* Parse standard options given to run the test. */
--	msg = parse_opts(ac, av, (option_t *) NULL, NULL);
--	if (msg != (char *)NULL) {
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--		tst_exit();
--	}
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
- 
--	/* Perform global setup for test */
- 	setup();
- 
--	/* Check looping state if -i option given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		/* Reset Tst_count in case we are looping. */
- 		Tst_count = 0;
- 
--		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
--			test_desc = Test_cases[ind].desc;
--			User_id = Test_cases[ind].user_id;
--			Group_id = Test_cases[ind].group_id;
-+		for (i = 0; test_cases[i].desc != NULL; i++) {
-+			uid_t user_id = test_cases[i].user_id;
-+			gid_t group_id = test_cases[i].group_id;
-+			char *test_desc = test_cases[i].desc;
- 
- 			/*
- 			 * Call lchwon(2) with different user id and
- 			 * group id (numeric values) to set it on
- 			 * symlink of testfile.
- 			 */
--			TEST(lchown(SFILE, User_id, Group_id));
-+			TEST(lchown(SFILE, user_id, group_id));
- 
--			/* check return code of lchown(2) */
- 			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL,
- 					 "lchown() Fails to %s, errno=%d",
-@@ -162,23 +155,19 @@ int main(int ac, char **av)
- 						 "%s failed, errno:%d",
- 						 SFILE, TEST_ERRNO);
- 				}
--				if (User_id == -1) {
--					User_id = Test_cases[ind - 1].user_id;
--				}
--				if (Group_id == -1) {
--					Group_id = Test_cases[ind - 1].group_id;
--				}
- 
--				/*
--				 * Check for expected Ownership ids
--				 * set on testfile.
--				 */
--				if ((stat_buf.st_uid != User_id) ||
--				    (stat_buf.st_gid != Group_id)) {
-+				if (user_id == (uid_t)-1)
-+					user_id = test_cases[i - 1].user_id;
-+
-+				if (group_id == (gid_t)-1)
-+					group_id = test_cases[i - 1].group_id;
-+
-+				if ((stat_buf.st_uid != user_id) ||
-+				    (stat_buf.st_gid != group_id)) {
- 					tst_resm(TFAIL,
- 						 "%s: Incorrect ownership set, "
- 						 "Expected %d %d", SFILE,
--						 User_id, Group_id);
-+						 user_id, group_id);
- 				} else {
- 					tst_resm(TPASS, "lchown() succeeds to "
- 						 "%s of %s", test_desc, SFILE);
-@@ -187,13 +176,12 @@ int main(int ac, char **av)
- 				tst_resm(TPASS, "call succeeded");
- 			}
- 		}
--	}			/* End for TEST_LOOPING */
-+	}
- 
--	/* Call cleanup() to undo setup done for the test. */
- 	cleanup();
- 
--	 /*NOTREACHED*/ return 0;
--}				/* End main */
-+	return 0;
-+}
- 
- /*
-  * setup() - performs all ONE TIME setup for this test.
-@@ -201,41 +189,29 @@ int main(int ac, char **av)
-  *	     Create a test file under temporary directory and close it
-  *	     Create a symlink of testfile under temporary directory.
-  */
--void setup()
-+void setup(void)
- {
- 	int fd;
- 
- 	/* capture signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
--	/* Pause if that option was specified */
-+	
-+	tst_require_root(tst_exit);
-+	
- 	TEST_PAUSE;
--
--	/* make a temp directory and cd to it */
- 	tst_tmpdir();
- 
- 	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, %o) Failed, errno=%d : %s",
--			 TESTFILE, FILE_MODE, errno, strerror(errno));
--	}
--	if (close(fd) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "close(%s) Failed, errno=%d : %s",
--			 TESTFILE, errno, strerror(errno));
-+		tst_brkm(TBROK | TERRNO, cleanup, "open(2) %s mode %o failed",
-+		         TESTFILE, FILE_MODE);
- 	}
-+	
-+	if (close(fd) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "close(2) %s", TESTFILE);
- 
--	/* Create a symlink for testfile created */
- 	if (symlink(TESTFILE, SFILE) < 0) {
--		tst_brkm(TBROK, cleanup,
--			 "symlink() of %s Failed, errno=%d : %s",
--			 TESTFILE, errno, strerror(errno));
-+		tst_brkm(TBROK | TERRNO, cleanup, "symlink(2) %s to %s failed",
-+		         TESTFILE, SFILE);
- 	}
- }
- 
-@@ -244,16 +220,10 @@ void setup()
-  *	       completion or premature exit.
-  *	       Remove the test directory and testfile created in the setup.
-  */
--void cleanup()
-+void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 */
- 	TEST_CLEANUP;
- 
--	/* Remove tmp dir and all files in it */
- 	tst_rmdir();
--
--	/* exit with return code appropriate for results */
- 	tst_exit();
- }
-diff --git a/testcases/kernel/syscalls/lchown/lchown02.c b/testcases/kernel/syscalls/lchown/lchown02.c
-index 4f519ab..a858f85 100644
---- a/testcases/kernel/syscalls/lchown/lchown02.c
-+++ b/testcases/kernel/syscalls/lchown/lchown02.c
-@@ -72,6 +72,7 @@
-  *
-  * HISTORY
-  *	07/2001 Ported by Wayne Boyer
-+ *      11/2010 Rewritten by Cyril Hrubis chrubis@suse.cz
-  *
-  * RESTRICTIONS:
-  *
-@@ -93,6 +94,7 @@
- #include "test.h"
- #include "usctest.h"
- 
-+#define TEST_USER       "nobody"
- #define MODE_RWX	S_IRWXU | S_IRWXG | S_IRWXO
- #define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
- #define DIR_TEMP	"testdir_1"
-@@ -100,105 +102,87 @@
- #define SFILE1		"sfile_1"
- #define TEST_FILE2	"testdir_1/tfile_2"
- #define SFILE2		"testdir_1/sfile_2"
--#define TEST_FILE3	"t_file/tfile_3"
--#define SFILE3		"t_file/sfile_3"
-+#define TFILE3          "t_file"
-+#define SFILE3		"t_file/sfile"
- 
--int no_setup();
--int setup1();			/* setup function to test lchown for EPERM */
--int setup2();			/* setup function to test lchown for EACCES */
--int setup3();			/* setup function to test lchown for ENOTDIR */
--int longpath_setup();		/* setup function to test chown for ENAMETOOLONG */
-+char *TCID = "lchown02";
-+int TST_TOTAL = 7;
-+extern int Tst_count;
- 
--char Longpathname[PATH_MAX + 2];
--char High_address_node[64];
--char EXEC_DIR[PATH_MAX];
--char main_test_dir[PATH_MAX + 2];
-+static void setup_eperm(int pos);
-+static void setup_eacces(int pos);
-+static void setup_enotdir(int pos);
-+static void setup_longpath(int pos);
-+static void setup_efault(int pos);
-+static void setup_highaddress(int pos);
- 
--struct test_case_t {		/* test case struct. to hold ref. test cond's */
-+static char path[PATH_MAX + 2];
-+
-+struct test_case_t {
- 	char *pathname;
- 	char *desc;
- 	int exp_errno;
--	int (*setupfunc) ();
--} Test_cases[] = {
--	{
--	SFILE1, "Process is not owner/root", EPERM, setup1}, {
--	SFILE2, "No Search permissions to process", EACCES, setup2}, {
--	High_address_node, "Address beyond address space", EFAULT, no_setup},
--	{
--	(char *)-1, "Negative address", EFAULT, no_setup}, {
--	Longpathname, "Pathname too long", ENAMETOOLONG, longpath_setup}, {
--	"", "Pathname is empty", ENOENT, no_setup}, {
--	SFILE3, "Path contains regular file", ENOTDIR, setup3}, {
--	NULL, NULL, 0, no_setup}
-+	void (*setup)(int pos);
- };
- 
--char *TCID = "lchown02";	/* Test program identifier.    */
--int TST_TOTAL = 7;		/* Total number of test cases. */
--extern int Tst_count;		/* Test Case counter for tst_* routines */
--int exp_enos[] = { EPERM, EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
-+static struct test_case_t test_cases[] = {
-+	{SFILE1, "Process is not owner/root",    EPERM,   setup_eperm},
-+	{SFILE2, "Search permission denied",     EACCES,  setup_eacces},
-+	{NULL,   "Address beyond address space", EFAULT,  setup_highaddress},
-+	{NULL,   "Unaccessible address space",   EFAULT,  setup_efault},
-+	{path,   "Pathname too long",            ENAMETOOLONG, setup_longpath},
-+	{SFILE3, "Path contains regular file",   ENOTDIR, setup_enotdir},
-+	{"",     "Pathname is empty",            ENOENT,  NULL},
-+	{NULL,   NULL,                           0,       NULL}
-+};
- 
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
-+static struct passwd *ltpuser;
- 
--char *bad_addr = 0;
-+static int exp_enos[] =
-+	{EPERM, EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0};
- 
--void setup();			/* Main setup function for the tests */
--void cleanup();			/* cleanup function for the test */
-+void setup(void);
-+void cleanup(void);
- 
--int main(int ac, char **av)
-+int main(int argc, char *argv[])
- {
--	int lc;			/* loop counter */
--	char *msg;		/* message returned from parse_opts */
--	char *file_name;	/* ptr. for file name whose mode is modified */
--	char *test_desc;	/* test specific error message */
--	int ind;		/* counter to test different test conditions */
--	uid_t User_id;		/* Effective user id of a test process */
--	gid_t Group_id;		/* Effective group id of a test process */
-+	int lc;
-+	char *msg;
-+	uid_t user_id;
-+	gid_t group_id;
-+	int i;
- 
- 	/* Parse standard options given to run the test. */
--	msg = parse_opts(ac, av, (option_t *) NULL, NULL);
--	if (msg != (char *)NULL) {
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--		tst_exit();
--	}
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
- 
--	/*
--	 * Invoke setup function to call individual test setup functions
--	 * to simulate test conditions.
--	 */
- 	setup();
--
- 	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
--	/* Set uid/gid values to that of test process */
--	User_id = geteuid();
--	Group_id = getegid();
-+	user_id = geteuid();
-+	group_id = getegid();
- 
--	/* Check looping state if -i option given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* Reset Tst_count in case we are looping. */
- 		Tst_count = 0;
- 
--		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
--			file_name = Test_cases[ind].pathname;
--			test_desc = Test_cases[ind].desc;
--
--			if (file_name == High_address_node) {
--				file_name = get_high_address();
--			}
-+		for (i = 0; test_cases[i].desc != NULL; i++) {
-+			char *file_name = test_cases[i].pathname;
-+			char *test_desc = test_cases[i].desc;
- 
- 			/*
- 			 * Call lchown(2) to test different test conditions.
- 			 * verify that it fails with -1 return value and
- 			 * sets appropriate errno.
- 			 */
--			TEST(lchown(file_name, User_id, Group_id));
-+			TEST(lchown(file_name, user_id, group_id));
- 
- 			/* Check return code from lchown(2) */
- 			if (TEST_RETURN == -1) {
- 				TEST_ERROR_LOG(TEST_ERRNO);
--				if (TEST_ERRNO == Test_cases[ind].exp_errno) {
-+				if (TEST_ERRNO == test_cases[i].exp_errno) {
- 					tst_resm(TPASS,
- 						 "lchown() fails, %s, errno:%d",
- 						 test_desc, TEST_ERRNO);
-@@ -206,267 +190,233 @@ int main(int ac, char **av)
- 					tst_resm(TFAIL, "lchown() fails, %s, "
- 						 "errno:%d, expected errno:%d",
- 						 test_desc, TEST_ERRNO,
--						 Test_cases[ind].exp_errno);
-+						 test_cases[i].exp_errno);
- 				}
- 			} else {
- 				tst_resm(TFAIL, "lchown() returned %ld, "
- 					 "expected -1, errno:%d", TEST_RETURN,
--					 Test_cases[ind].exp_errno);
-+					 test_cases[i].exp_errno);
- 			}
--		}		/* End of TEST CASE LOOPING. */
--	}			/* End for TEST_LOOPING */
-+		}
-+	}
- 
--	/*
--	 * Invoke cleanup() to delete the test directory/file(s) created
--	 * in the setup().
--	 */
- 	cleanup();
- 
--	 /*NOTREACHED*/ return 0;
--}				/* End main */
-+	return 0;
-+}
- 
- /*
-- * setup(void) - performs all ONE TIME setup for this test.
-+ * setup() - performs all ONE TIME setup for this test.
-+ *	
-  *	Exit the test program on receipt of unexpected signals.
-  *	Create a temporary directory and change directory to it.
-- *	Invoke individual test setup functions according to the order
-- *	set in struct. definition.
-+ *	Invoke individual test setup functions.
-  */
--void setup()
-+void setup(void)
- {
--	int ind;		/* counter for setup functions */
-+	int i;
- 
- 	/* Capture unexpected signals */
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--	/* Get the current directory of the test executable */
--	if (getcwd(EXEC_DIR, sizeof(EXEC_DIR)) == NULL) {
--		tst_brkm(TBROK, cleanup,
--			 "getcwd(3) fails to get working directory of process");
--	}
--
--	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, tst_exit, "Test must be run as root");
--	}
--	ltpuser = getpwnam(nobody_uid);
--	if (setgid(ltpuser->pw_uid) == -1) {
--		tst_resm(TINFO, "setgid failed to "
--			 "to set the effective gid to %d", ltpuser->pw_uid);
--		perror("setgid");
--	}
--
--	if (seteuid(ltpuser->pw_uid) == -1) {
--		tst_resm(TINFO, "setuid failed to "
--			 "to set the effective uid to %d", ltpuser->pw_uid);
--		perror("setuid");
--	}
-+	tst_require_root(tst_exit);
- 
--	/* Pause if that option was specified */
- 	TEST_PAUSE;
-+	
-+	/* change uid and gid to nobody */
-+	ltpuser = getpwnam(TEST_USER);
- 
--	/* remember current dir, because create_link has been copied here */
--	if (getcwd(main_test_dir, sizeof(main_test_dir)) == NULL) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "failed to get the current working directory.");
-+	if (ltpuser == NULL) {
-+		tst_brkm(TBROK, cleanup, "test need user %s to run",
-+		         TEST_USER);
- 	}
- 
--	/* Make a temp dir and cd to it */
--	tst_tmpdir();
--
--	/* fix permissions on the tmpdir */
--	if (chmod(".", 0711) != 0) {
--		tst_brkm(TBROK | TERRNO, cleanup, "chmod() failed");
-+	if (setgid(ltpuser->pw_uid) == -1) {
-+		tst_resm(TBROK | TERRNO,
-+		         "setgid(2) failed set the effective gid to %d",
-+			 ltpuser->pw_uid);
- 	}
- 
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED) {
--		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
-+	if (seteuid(ltpuser->pw_uid) == -1) {
-+		tst_resm(TBROK | TERRNO,
-+		         "seteuid(2) failed to set the effective uid to %d",
-+			 ltpuser->pw_uid);
- 	}
--	Test_cases[3].pathname = bad_addr;
-+	
-+	tst_tmpdir();
- 
- 	/* call individual setup functions */
--	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
--		Test_cases[ind].setupfunc();
-+	for (i = 0; test_cases[i].desc != NULL; i++) {
-+		if (test_cases[i].setup != NULL)
-+			test_cases[i].setup(i);
- 	}
- }
- 
- /*
-- * no_setup() - Some test conditions for mknod(2) do not any setup.
-- *              Hence, this function just returns 0.
-- *  This function simply returns 0.
-- */
--int no_setup()
--{
--	return 0;
--}
--
--/*
-- * setup1() - setup function for a test condition for which chown(2)
-- *	      returns -1 and sets errno to EPERM.
-+ * setup_eperm() - setup function for a test condition for which lchown(2)
-+ *	           returns -1 and sets errno to EPERM.
-  *
-- *  Create a testfile under temporary directory and invoke setuid to root
-- *  program to change the ownership of testfile to that of "ltpuser2" user,
-- *  create a symlink file of it with ownership as ltpuser2.
-+ * Create test file and symlink with uid 0.
-  */
--int setup1()
-+void setup_eperm(int pos LTP_ATTRIBUTE_UNUSED)
- {
--	int fd;			/* file handler for testfile */
--	char Path_name[PATH_MAX];	/* Buffer to hold command string */
--	char Path2_name[PATH_MAX];	/* Buffer for just the path name */
--	char Cmd_buffer[BUFSIZ];	/* Buffer to hold command string */
-+	int fd;
- 
--	/* Creat a testfile and close it */
-+	/* create a testfile */
- 	if ((fd = open(TEST_FILE1, O_RDWR | O_CREAT, 0666)) == -1) {
- 		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, 0666) failed", TEST_FILE1);
-+			 "open(2) %s failed", TEST_FILE1);
- 	}
-+
- 	if (close(fd) == -1) {
--		tst_brkm(TBROK, cleanup, "close(%s) Failed", TEST_FILE1);
-+		tst_brkm(TBROK | TERRNO, cleanup, "close(2) %s failed",
-+		         TEST_FILE1);
- 	}
--
--	/* Get the current working directory of the process */
--	if (getcwd(Path_name, sizeof(Path_name)) == NULL) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "failed to get the current working directory.");
-+	
-+	/* become root once more */
-+	if (seteuid(0) == -1) {
-+		tst_resm(TBROK | TERRNO,
-+		         "seteuid(2) failed to set the effective uid to 0");
- 	}
- 
--	/* Provide permissions for temporary directory */
--	if (chmod(Path_name, 0777) == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup, "chmod(%s, 0777) failed", Path_name);
-+	/* create symling to testfile */
-+	if (symlink(TEST_FILE1, SFILE1) < 0) {
-+		tst_brkm(TBROK, cleanup, "symlink(2) %s to %s failed",
-+			 TEST_FILE1, SFILE1);
- 	}
- 
--	strcpy(Path2_name, Path_name);
--
--	/* Get the path of test file created under temporary directory */
--	strcat(Path_name, "/" TEST_FILE1);
--
--	/* Get the command name to be executed as setuid to root */
--	strcat((char *)Cmd_buffer, main_test_dir);
--	strcat((char *)Cmd_buffer, (const char *)"/create_link ");
--	strcat((char *)Cmd_buffer, Path_name);
--
--	if (system((const char *)Cmd_buffer) != 0) {
--		tst_brkm(TBROK, cleanup,
--			 "Fail to modify %s ownership(s)!", TEST_FILE1);
-+	/* back to the user nobody */
-+	if (seteuid(ltpuser->pw_uid) == -1) {
-+		tst_resm(TBROK | TERRNO,
-+		         "seteuid(2) failed to set the effective uid to %d",
-+			 ltpuser->pw_uid);
- 	}
--	return 0;
- }
- 
- /*
-- * setup2() - setup function for a test condition for which chown(2)
-- *	      returns -1 and sets errno to EACCES.
-+ * setup_eaccess() - setup function for a test condition for which lchown(2)
-+ *	             returns -1 and sets errno to EACCES.
-+ *
-  *  Create a test directory under temporary directory and create a test file
-  *  under this directory with mode "0666" permissions.
-  *  Modify the mode permissions on test directory such that process will not
-  *  have search permissions on test directory.
-- *
-- *  The function returns 0.
-  */
--int setup2()
-+void setup_eacces(int pos LTP_ATTRIBUTE_UNUSED)
- {
--	int fd;			/* file handle for testfile */
-+	int fd;
- 
--	/* Creat a test directory */
-+	/* create a test directory */
- 	if (mkdir(DIR_TEMP, MODE_RWX) < 0) {
--		tst_brkm(TBROK, cleanup, "mkdir(2) of %s failed", DIR_TEMP);
-+		tst_brkm(TBROK | TERRNO, cleanup, "mkdir(2) %s failed",
-+		         DIR_TEMP);
- 	}
- 
--	/* Creat a file under above test directory */
-+	/* create a file under test directory */
- 	if ((fd = open(TEST_FILE2, O_RDWR | O_CREAT, 0666)) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, 0666) failed, errno=%d : %s",
--			 TEST_FILE2, errno, strerror(errno));
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+		         "open(2) %s failed", TEST_FILE2);
- 	}
--	/* Close the test file created above */
-+	
- 	if (close(fd) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "close(%s) Failed, errno=%d : %s",
--			 TEST_FILE2, errno, strerror(errno));
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "close(2) %s failed", TEST_FILE2);
- 	}
- 
--	/* Creat a symlink of testfile */
-+	/* create a symlink of testfile */
- 	if (symlink(TEST_FILE2, SFILE2) < 0) {
--		tst_brkm(TBROK, cleanup,
--			 "symlink() of %s Failed, errno=%d : %s",
--			 TEST_FILE2, errno, strerror(errno));
-+		tst_brkm(TBROK | TERRNO, cleanup, "symlink(2) %s to %s failed",
-+			 TEST_FILE2, SFILE2);
- 	}
- 
--	/* Modify mode permissions on test directory */
-+	/* modify mode permissions on test directory */
- 	if (chmod(DIR_TEMP, FILE_MODE) < 0) {
--		tst_brkm(TBROK, cleanup, "chmod(2) of %s failed", DIR_TEMP);
-+		tst_brkm(TBROK | TERRNO, cleanup, "chmod(2) %s failed",
-+		         DIR_TEMP);
- 	}
--	return 0;
- }
- 
- /*
-- * setup3() - setup function for a test condition for which chown(2)
-- *	     returns -1 and sets errno to ENOTDIR.
-+ * setup_efault() -- setup for a test condition where lchown(2) returns -1 and
-+ *                   sets errno to EFAULT.
-+ *
-+ * Create "bad address" by explicitly mmaping anonymous page that may not be
-+ * accesed (see PROT_NONE).
-+ */
-+static void setup_efault(int pos)
-+{
-+	char *bad_addr = 0;
-+	
-+	bad_addr = mmap(NULL, 1, PROT_NONE,
-+			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, -1, 0);
-+
-+	if (bad_addr == MAP_FAILED)
-+		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
-+
-+	test_cases[pos].pathname = bad_addr;
-+}
-+
-+/*
-+ * setup_efault() -- setup for a test condition where lchown(2) returns -1 and
-+ *                   sets errno to EFAULT.
-+ *
-+ * Use ltp function get_high_address() to compute high address.
-+ */
-+static void setup_highaddress(int pos)
-+{
-+	test_cases[pos].pathname = get_high_address();
-+}
-+
-+/*
-+ * setup_enotdir() - setup function for a test condition for which chown(2)
-+ *	             returns -1 and sets errno to ENOTDIR.
-  *
-- *  Create a test file under temporary directory so that test tries to
-- *  change mode of a testfile "tfile_3" under "t_file" which happens to be
-- *  another regular file.
-+ * Create a regular file "t_file" to call lchown(2) on "t_file/sfile" later.
-  */
--int setup3()
-+void setup_enotdir(int pos LTP_ATTRIBUTE_UNUSED)
- {
- 	int fd;
- 
--	/* Creat a testfile under temporary directory */
--	if ((fd = open("t_file", O_RDWR | O_CREAT, MODE_RWX)) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "open(2) on t_file failed, errno=%d : %s",
--			 errno, strerror(errno));
-+	/* create a testfile under temporary directory */
-+	if ((fd = open(TFILE3, O_RDWR | O_CREAT, MODE_RWX)) == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup, "open(2) %s failed",
-+		         TFILE3);
- 	}
--	/* close the test file */
-+
- 	if (close(fd) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "close(t_file) Failed, errno=%d : %s",
--			 errno, strerror(errno));
-+		tst_brkm(TBROK | TERRNO, cleanup, "close(2) %s failed",
-+		         TFILE3);
- 	}
--	return 0;
- }
- 
- /*
-  * longpath_setup() - setup to create a node with a name length exceeding
-- *                    the MAX. length of PATH_MAX.
-- *   This function retruns 0.
-+ *                    the length of PATH_MAX.
-  */
--int longpath_setup()
-+void setup_longpath(int pos)
- {
--	int ind;		/* counter variable */
--
--	for (ind = 0; ind <= (PATH_MAX + 1); ind++) {
--		Longpathname[ind] = 'a';
--	}
--	return 0;
-+	memset(test_cases[pos].pathname, 'a', PATH_MAX + 1);
-+	test_cases[pos].pathname[PATH_MAX + 1] = '\0';
- }
- 
- /*
-  * cleanup() - Performs all ONE TIME cleanup for this test at
-  *             completion or premature exit.
-- *	Print test timing stats and errno log if test executed with options.
-- *      Restore the mode permissions on test directory.
-+ *
-  *	Remove temporary directory and sub-directories/files under it
-  *	created during setup().
-  *	Exit the test program with normal exit code.
-  */
--void cleanup()
-+void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
--
--	/* Restore mode permissions on test directory created in setup2() */
--	if (chmod(DIR_TEMP, MODE_RWX) < 0) {
--		tst_brkm(TBROK, NULL, "chmod(2) of %s failed", DIR_TEMP);
-+	
-+	/* become root again */
-+	if (seteuid(0) == -1) {
-+		tst_resm(TINFO | TERRNO,
-+		         "seteuid(0) failed to set the effective uid to 0");
- 	}
- 
--	/* Remove files and temporary directory created */
- 	tst_rmdir();
--
--	/* exit with return code appropriate for results */
- 	tst_exit();
- }
-diff --git a/testcases/kernel/syscalls/lchown/prep_create_link b/testcases/kernel/syscalls/lchown/prep_create_link
-deleted file mode 100755
-index ef3f767..0000000
---- a/testcases/kernel/syscalls/lchown/prep_create_link
-+++ /dev/null
-@@ -1,20 +0,0 @@
--#!/bin/sh
--
--set -e
--
--TMP=${TMP:-/tmp}
--
--if ! PROGDIR=$(dirname "$0") ; then
--
--    if [ -x "$LTPROOT/testcases/bin/create_link" ] ; then
--        PROGDIR=$LTPROOT/testcases/bin
--    else
--        echo "${0%##*/} : ERROR : Couldn't determine directory for \`$0'"
--        exit 1
--    fi
--
--fi
--
--cp "$PROGDIR/create_link" "$TMP"
--chown root:root "$TMP/create_link"
--chmod 04755 "$TMP/create_link"
-
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---fdj2RfSjLxBAspz7--
-
+T24gVHVlLCBOb3YgMTYsIDIwMTAgYXQgNjo1OSBQTSwgTWl0YW5pIDxtaXRhbmlAcnlvYmkuY28u
+anA+IHdyb3RlOgo+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+PiBGcm9tOiBHYXJyZXR0
+IENvb3BlciBbbWFpbHRvOnlhbmVnb21pQGdtYWlsLmNvbV0KPj4gU2VudDogV2VkbmVzZGF5LCBO
+b3ZlbWJlciAxNywgMjAxMCAyOjA0IEFNCj4+IFRvOiBNaXRhbmkKPj4gQ2M6IGx0cC1saXN0QGxp
+c3RzLnNvdXJjZWZvcmdlLm5ldAo+PiBTdWJqZWN0OiBSZTogW0xUUF0gUmVhbHRpbWUgdGVzdCBm
+YWlsdXJlCj4+Cj4+IE9uIFR1ZSwgTm92IDE2LCAyMDEwIGF0IDEyOjI4IEFNLCBNaXRhbmkgPG1p
+dGFuaUByeW9iaS5jby5qcD4gd3JvdGU6Cj4+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+Cj4+ID4+IEZyb206IEdhcnJldHQgQ29vcGVyIFttYWlsdG86eWFuZWdvbWlAZ21haWwuY29tXQo+
+PiA+PiBTZW50OiBUdWVzZGF5LCBOb3ZlbWJlciAxNiwgMjAxMCAxMjo1OCBBTQo+PiA+PiBUbzog
+TWl0YW5pCj4+ID4+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPj4gPj4gU3Vi
+amVjdDogUmU6IFtMVFBdIFJlYWx0aW1lIHRlc3QgZmFpbHVyZQo+PiA+Pgo+PiA+PiBPbiBTdW4s
+IE5vdiAxNCwgMjAxMCBhdCAxMDoyOSBQTSwgTWl0YW5pIDxtaXRhbmlAcnlvYmkuY28uanA+IHdy
+b3RlOgo+PiA+PiA+Cj4+ID4+ID4KPj4gPj4gPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0K
+Pj4gPj4gPj4gRnJvbTogR2FycmV0dCBDb29wZXIgW21haWx0bzp5YW5lZ29taUBnbWFpbC5jb21d
+Cj4+ID4+ID4+IFNlbnQ6IE1vbmRheSwgTm92ZW1iZXIgMTUsIDIwMTAgMjoyMCBQTQo+PiA+PiA+
+PiBUbzogTWl0YW5pCj4+ID4+ID4+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7
+IOeVtuW6pyDlgaXluIIKPj4gPj4gPj4gU3ViamVjdDogUmU6IFtMVFBdIFJlYWx0aW1lIHRlc3Qg
+ZmFpbHVyZQo+PiA+PiA+Pgo+PiA+PiA+PiAyMDEwLzExLzE0IE1pdGFuaSA8bWl0YW5pQHJ5b2Jp
+LmNvLmpwPjoKPj4gPj4gPj4gPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPj4gPj4gPj4g
+Pj4gRnJvbTogR2FycmV0dCBDb29wZXIgW21haWx0bzp5YW5lZ29taUBnbWFpbC5jb21dCj4+ID4+
+ID4+ID4+IFNlbnQ6IE1vbmRheSwgTm92ZW1iZXIgMTUsIDIwMTAgMTI6MDMgUE0KPj4gPj4gPj4g
+Pj4gVG86IE1pdGFuaQo+PiA+PiA+PiA+PiBTdWJqZWN0OiBSZTogW0xUUF0gUmVhbHRpbWUgdGVz
+dCBmYWlsdXJlCj4+ID4+ID4+ID4+Cj4+ID4+ID4+ID4+IE9uIFN1biwgTm92IDE0LCAyMDEwIGF0
+IDY6NTQgUE0sIE1pdGFuaSA8bWl0YW5pQHJ5b2JpLmNvLmpwPgo+PiB3cm90ZToKPj4gPj4gPj4g
+Pj4gPiBIaSwKPj4gPj4gPj4gPj4gPgo+PiA+PiA+PiA+PiA+ICJyZWFsdGltZSIgYnVpbGQgZmFp
+bGVkIGluIG15IHN5c3RlbSB3aXRoIGdpdAo+PiAibHRwLWYzODhkMzMudGFyLmd6IjoKPj4gPj4g
+Pj4gPj4gPiAtLS0tLS0tLS0tLS08UkhFTDQuOCAtIHg4Nj4KPj4gPj4gPj4gPj4gPiBtYWtlWzJd
+OiBFbnRlcmluZyBkaXJlY3RvcnkKPj4gPj4gPj4gPj4gYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAx
+MTEyL3Rlc3RjYXNlcy9yZWFsdGltZScKPj4gPj4gPj4gPj4gPiBtYWtlIC1DIGxpYiAtZgo+PiA+
+PiA+PiA+PiAiL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2xp
+Yi9NYWtlZmlsZSIKPj4gPj4gPj4gPj4gPiBhbGwKPj4gPj4gPj4gPj4gPiBtYWtlWzNdOiBFbnRl
+cmluZyBkaXJlY3RvcnkKPj4gPj4gPj4gPj4gPiBgL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIv
+dGVzdGNhc2VzL3JlYWx0aW1lL2xpYicKPj4gPj4gPj4gPj4gPiBnY2MgLWcgLU8yIC1nIC1PMiAt
+Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRF9HTlVfU09VUkNFCj4+ID4+ID4+ID4+
+ID4KPj4gLUkvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvbGli
+Ly4uL2luY2x1ZGUKPj4gPj4gPj4gPj4gPiAtSS4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi9p
+bmNsdWRlIMKgLWMgLW8gbGlicnR0ZXN0Lm8KPj4gPj4gPj4gbGlicnR0ZXN0LmMKPj4gPj4gPj4g
+Pj4gPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gbGlicnR0ZXN0LmM6NDM6Cj4+ID4+ID4+ID4+ID4K
+Pj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIv
+dGVzdGNhc2VzL3JlYWx0aW1lL2xpYi8uLi9pbmNsdWRlL2xpYnJ0dGUKPj4gPj4gPj4gPj4gc3Qu
+aDogSW4KPj4gPj4gPj4gPj4gPiBmdW5jdGlvbiBgYXRvbWljX2FkZCc6Cj4+ID4+ID4+ID4+ID4K
+Pj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIv
+dGVzdGNhc2VzL3JlYWx0aW1lL2xpYi8uLi9pbmNsdWRlL2xpYnJ0dGUKPj4gPj4gPj4gPj4gc3Qu
+aDoxMTkKPj4gPj4gPj4gPj4gPiA6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1
+bmN0aW9uCj4+IGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPj4gPj4gPj4gPj4gPiBnY2MgLWcgLU8y
+IC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRF9HTlVfU09VUkNFCj4+
+ID4+ID4+ID4+ID4KPj4gLUkvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVh
+bHRpbWUvbGliLy4uL2luY2x1ZGUKPj4gPj4gPj4gPj4gPiAtSS4uLy4uLy4uL2luY2x1ZGUgLUku
+Li8uLi8uLi9pbmNsdWRlIMKgLWMgLW8gbGlic3RhdHMubwo+PiA+PiBsaWJzdGF0cy5jCj4+ID4+
+ID4+ID4+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGxpYnN0YXRzLmM6NDc6Cj4+ID4+ID4+ID4+
+ID4KPj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDEx
+MTIvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi8uLi9pbmNsdWRlL2xpYnJ0dGUKPj4gPj4gPj4gPj4g
+c3QuaDogSW4KPj4gPj4gPj4gPj4gPiBmdW5jdGlvbiBgYXRvbWljX2FkZCc6Cj4+ID4+ID4+ID4+
+ID4KPj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDEx
+MTIvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi8uLi9pbmNsdWRlL2xpYnJ0dGUKPj4gPj4gPj4gPj4g
+c3QuaDoxMTkKPj4gPj4gPj4gPj4gPiA6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9m
+IGZ1bmN0aW9uCj4+IGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPj4gPj4gPj4gPj4gPiBpZiBbIC16
+ICJsaWJydHRlc3QubyBsaWJzdGF0cy5vIiBdIDsgdGhlbiBcCj4+ID4+ID4+ID4+ID4gwqAgwqAg
+wqAgwqBlY2hvICJDb3dhcmRseSByZWZ1c2luZyB0byBjcmVhdGUgZW1wdHkgYXJjaGl2ZSI7IFwK
+Pj4gPj4gPj4gPj4gPiDCoCDCoCDCoCDCoGV4aXQgMTsgXAo+PiA+PiA+PiA+PiA+IGZpCj4+ID4+
+ID4+ID4+ID4gYXIgLXJjICJsaWJyZWFsdGltZS5hIiBsaWJydHRlc3QubyBsaWJzdGF0cy5vCj4+
+ID4+ID4+ID4+ID4gcmFubGliICJsaWJyZWFsdGltZS5hIgo+PiA+PiA+PiA+PiA+IG1ha2VbM106
+IExlYXZpbmcgZGlyZWN0b3J5Cj4+ID4+ID4+ID4+ID4gYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAx
+MTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9saWInCj4+ID4+ID4+ID4+ID4gbWFrZVszXTogRW50ZXJp
+bmcgZGlyZWN0b3J5Cj4+ID4+ID4+ID4+ID4gYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rl
+c3RjYXNlcy9yZWFsdGltZS9mdW5jJwo+PiA+PiA+PiA+PiA+IG1ha2VbNF06IEVudGVyaW5nIGRp
+cmVjdG9yeQo+PiA+PiA+PiA+PiA+Cj4+ID4+ID4+Cj4+IGAvaG9tZS9MVFAvbHRwLWRldi0yMDEw
+MTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvZnVuYy9hc3luY19oYW5kbGVyJwo+PiA+PiA+PiA+PiA+
+IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsIC1EX0dO
+VV9TT1VSQ0UKPj4gPj4gPj4gPj4gPiAtSS9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3Rj
+YXNlcy9yZWFsdGltZS9pbmNsdWRlCj4+ID4+ID4+ID4+ID4gLUkuLi8uLi8uLi8uLi9pbmNsdWRl
+IC1JLi4vLi4vLi4vLi4vaW5jbHVkZQo+PiA+PiA+PiA+PiA+IC1ML2hvbWUvTFRQL2x0cC1kZXYt
+MjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYgo+PiA+PiA+PiA+PiAtTC4uLy4uLy4uLy4u
+L2xpYgo+PiA+PiA+PiA+PiA+IGFzeW5jX2hhbmRsZXIuYyDCoCAtbHJlYWx0aW1lIC1scHRocmVh
+ZCAtbHJ0IC1sbSAtbwo+PiBhc3luY19oYW5kbGVyCj4+ID4+ID4+ID4+ID4gSW4gZmlsZSBpbmNs
+dWRlZCBmcm9tIGFzeW5jX2hhbmRsZXIuYzo0MjoKPj4gPj4gPj4gPj4gPgo+PiA+PiA+Pgo+PiAv
+aG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVkZS9saWJy
+dHRlc3QuaDoKPj4gPj4gPj4gPj4gSW4KPj4gPj4gPj4gPj4gPiBmdW5jdGlvbiBgYXRvbWljX2Fk
+ZCc6Cj4+ID4+ID4+ID4+ID4KPj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gL2hvbWUvTFRQ
+L2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2luY2x1ZGUvbGlicnR0ZXN0Lmg6
+MTEKPj4gPj4gPj4gPj4gOToKPj4gPj4gPj4gPj4gPiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJh
+dGlvbiBvZiBmdW5jdGlvbgo+PiBgX19zeW5jX2FkZF9hbmRfZmV0Y2gnCj4+ID4+ID4+ID4+ID4K
+Pj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIv
+dGVzdGNhc2VzL3JlYWx0aW1lL2xpYi9saWJyZWFsdGltZS5hKGxpYnIKPj4gPj4gPj4gPj4gdHRl
+c3QubykKPj4gPj4gPj4gPj4gPiAoLnRleHQrMHgxYTcpOiBJbiBmdW5jdGlvbiBgY3JlYXRlX3Ro
+cmVhZCc6Cj4+ID4+ID4+ID4+ID4KPj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gL2hvbWUv
+TFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi8uLi9pbmNsdWRlL2xp
+YnJ0dGUKPj4gPj4gPj4gPj4gc3QuaDoxMTkKPj4gPj4gPj4gPj4gPiA6IHVuZGVmaW5lZCByZWZl
+cmVuY2UgdG8gYF9fc3luY19hZGRfYW5kX2ZldGNoJwo+PiA+PiA+PiA+PiA+IGNvbGxlY3QyOiBs
+ZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4+ID4+ID4+ID4+ID4gbWFrZVs0XTogKioqIFthc3lu
+Y19oYW5kbGVyXSBFcnJvciAxCj4+ID4+ID4+ID4+ID4gbWFrZVs0XTogTGVhdmluZyBkaXJlY3Rv
+cnkKPj4gPj4gPj4gPj4gPgo+PiA+PiA+Pgo+PiBgL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIv
+dGVzdGNhc2VzL3JlYWx0aW1lL2Z1bmMvYXN5bmNfaGFuZGxlcicKPj4gPj4gPj4gPj4gPiBtYWtl
+WzNdOiAqKiogW2FsbF0gRXJyb3IgMgo+PiA+PiA+PiA+PiA+IG1ha2VbM106IExlYXZpbmcgZGly
+ZWN0b3J5Cj4+ID4+ID4+ID4+ID4gYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNl
+cy9yZWFsdGltZS9mdW5jJwo+PiA+PiA+PiA+PiA+IG1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAy
+Cj4+ID4+ID4+ID4+ID4gbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkKPj4gPj4gPj4gPj4gYC9o
+b21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZScKPj4gPj4gPj4gPj4g
+PiBtYWtlWzFdOiAqKiogW2FsbF0gRXJyb3IgMgo+PiA+PiA+PiA+PiA+IG1ha2VbMV06IExlYXZp
+bmcgZGlyZWN0b3J5Cj4+ID4+IGAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMn
+Cj4+ID4+ID4+ID4+ID4gbWFrZTogKioqIFt0ZXN0Y2FzZXMtYWxsXSBFcnJvciAyCj4+ID4+ID4+
+ID4+ID4gLS0tLS0tLS0tLS0tCj4+ID4+ID4+ID4+ID4KPj4gPj4gPj4gPj4gPiAicmVhbHRpbWUi
+IGJ1aWxkIGZhaWxlZCBpbjoKPj4gPj4gPj4gPj4gPiAtLS0tLS0tLS0tLS0KPj4gPj4gPj4gPj4g
+PiBSSEVMNC44IC0tIHg4NiwgeDg2XzY0LCBpYTY0Cj4+ID4+ID4+ID4+ID4gUkhFTDUuNCAtLSB4
+ODYKPj4gPj4gPj4gPj4gPiAtLS0tLS0tLS0tLS0KPj4gPj4gPj4gPj4gPgo+PiA+PiA+PiA+PiA+
+ICJyZWFsdGltZSIgYnVpbGQgc3VjY2VlZGVkIGluOgo+PiA+PiA+PiA+PiA+IC0tLS0tLS0tLS0t
+LQo+PiA+PiA+PiA+PiA+IFJIRUw1LjQgLS0geDg2XzY0LCBpYTY0Cj4+ID4+ID4+ID4+ID4gLS0t
+LS0tLS0tLS0tCj4+ID4+ID4+ID4+ID4KPj4gPj4gPj4gPj4gPiBJdCBpcyBjYXVzZWQgYnkgIl9f
+c3luY19hZGRfYW5kX2ZldGNoIi4KPj4gPj4gPj4gPj4gPgo+PiA+PiA+PiA+PiA+IEluIGZvbGxv
+d2luZyBVUkwsICJfX3N5bmNfYWRkX2FuZF9mZXRjaCIgaXMgImJ1aWx0LWluIGZ1bmN0aW9ucwo+
+PiA+PiBmb3IKPj4gPj4gPj4gPj4gPiBhdG9taWMgbWVtb3J5IGFjY2VzcyIuIEFuZCBJdCBpcyBw
+cm92aWRlZCBpbiAiZ2NjIjoKPj4gPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gPiDCoCBodHRw
+Oi8vZ2NjLmdudS5vcmcvb25saW5lZG9jcy9nY2MtNC40LjAvZ2NjL0F0b21pYy1CdWlsdGlucy5o
+dG1sCj4+ID4+ID4+ID4+ID4KPj4gPj4gPj4gPj4gPiBUaGVyZSBpcyAiX19zeW5jX2FkZF9hbmRf
+ZmV0Y2giIGluIGdjYzQuMS4yIChJdCBpcyB0aGUgZ2NjCj4+IG9mCj4+ID4+IFJIRUw1LjEKPj4g
+Pj4gPj4gPj4gLQo+PiA+PiA+PiA+PiA+IFJIRUw1LjQpLgo+PiA+PiA+PiA+PiA+IEFuZCB0aGVy
+ZSBpcyBub3QgIl9fc3luY19hZGRfYW5kX2ZldGNoIiBpbiBnY2MzLjQuNiAoSXQgaXMKPj4gdGhl
+Cj4+ID4+IGdjYwo+PiA+PiA+PiBvZgo+PiA+PiA+PiA+PiA+IFJIRUw0LjgpCj4+ID4+ID4+ID4+
+ID4KPj4gPj4gPj4gPj4gPiBJbiBhZGRpdGlvbiwgIl9fc3luY19hZGRfYW5kX2ZldGNoIiBpcyBm
+b3IgNjQgYml0IGVudmlyb25tZW50Lgo+PiA+PiA+PiA+PiA+Cj4+ID4+ID4+ID4+ID4KPj4gPj4g
+Pj4gPj4KPj4gPj4gPj4KPj4gPj4KPj4gaHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9u
+cy8xMzA3NDAvbGluay1lcnJvci13aGVuLWNvbXBpbGluZy0KPj4gPj4gPj4gPj4gZ2NjLWF0b20K
+Pj4gPj4gPj4gPj4gPiBpYy1vcGVyYXRpb24taW4tMzItYml0LW1vZGUKPj4gPj4gPj4gPj4gPgo+
+PiA+PiA+PiA+PiA+IMKgIGh0dHA6Ly9nY2MuZ251Lm9yZy93aWtpL0F0b21pYwo+PiA+PiA+PiA+
+PiA+Cj4+ID4+ID4+ID4+ID4gUGVyaGFwcywgdGhlIGp1ZGdtZW50IHRoYXQgInJlYWx0aW1lIiBt
+dXN0IGJlIGJ1aWx0IG9yIG5vdAo+PiBkZXBlbmRzCj4+ID4+ID4+IG9uCj4+ID4+ID4+ID4+ID4g
+Z2NjJ3MgdmVyc2lvbiAoPiA0LjApIGFuZCA2NCBiaXRzIGVudmlyb25tZW50LCBJIHRoaW5rLgo+
+PiA+PiA+PiA+Pgo+PiA+PiA+PiA+PiBDb3VsZCB5b3UgcGxlYXNlIGF0dGFjaCB5b3VyIHRlc3Rj
+YXNlcy9yZWFsdGltZS9jb25maWcubG9nIGFuZAo+PiA+PiA+PiA+PiB0ZXN0Y2FzZXMvcmVhbHRp
+bWUvaW5jbHVkZS9yZWFsdGltZV9jb25maWcuaCA/Cj4+ID4+ID4+ID4+IFRoYW5rcywKPj4gPj4g
+Pj4gPj4gLUdhcnJldHQKPj4gPj4gPj4gPgo+PiA+PiA+PiA+Cj4+ID4+ID4+ID4gSSB1bmRlcnN0
+b29kLgo+PiA+PiA+PiA+IFRoYW5rIHlvdSBhbmQgc29ycnkgZm9yIG15IGluc3VmZmljaWVudCBp
+bmZvcm1hdGlvbi4KPj4gPj4gPj4gPgo+PiA+PiA+PiA+IEkgYXR0YWNoIGZvbGxvd2luZyBmaWxl
+czoKPj4gPj4gPj4gPiDCoCAtIGNvbmZpZy5sb2cgwqAgwqAgwqAgwqAoUkhFTDQuOC14ODYpCj4+
+ID4+ID4+ID4gwqAgLSByZWFsdGltZV9jb25maWcuaCAoUkhFTDQuOC14ODYpCj4+ID4+ID4+ID4g
+wqAgLSBjb25maWcubG9nIMKgIMKgIMKgIMKgKFJIRUw1LjUteDg2KQo+PiA+PiA+PiA+IMKgIC0g
+cmVhbHRpbWVfY29uZmlnLmggKFJIRUw1LjUteDg2KQo+PiA+PiA+Pgo+PiA+PiA+PiDCoCDCoCBD
+b3VsZCB5b3UgcGxlYXNlIHRyeSBjb21waWxpbmcgdGhlIGZvbGxvd2luZyBDIHNvdXJjZXMgaW4g
+Ym90aAo+PiA+PiA+PiBzY2VuYXJpb3M/Cj4+ID4+ID4+IFRoYW5rcywKPj4gPj4gPj4gLUdhcnJl
+dHQKPj4gPj4gPj4KPj4gPj4gPj4gI2lmbmRlZiBfR05VX1NPVVJDRQo+PiA+PiA+PiAjZGVmaW5l
+IF9HTlVfU09VUkNFCj4+ID4+ID4+ICNlbmRpZgo+PiA+PiA+PiAjaW5jbHVkZSA8c3RkbGliLmg+
+Cj4+ID4+ID4+IGludCBtYWluKHZvaWQpIHsKPj4gPj4gPj4gwqAgwqAgwqAgwqAgY2hhciAqYzsK
+Pj4gPj4gPj4gwqAgwqAgwqAgwqAgcmV0dXJuIF9fc3luY19hZGRfYW5kX2ZldGNoKGMsIDEpOwo+
+PiA+PiA+PiB9Cj4+ID4+ID4KPj4gPj4gPgo+PiA+PiA+IEkgd2FzIGdvaW5nIHRvIGNvbXBpbGUg
+dGhlIHNlbnQgc291cmNlIGluIFJIRUw0LjgvNS41LXg4NiwgYnV0IGZhaWxlZC4KPj4gPj4gPgo+
+PiA+PiA+IC0tLS0tLS0tLS0tLTxSSEVMNC44LXg4Nj4KPj4gPj4gPiBbcm9vdEBSSEVMNDgtTFRQ
+LXg4NiBhc3luY19oYW5kbGVyXSMgY2F0IHJlYWx0aW1lLXRlc3QuYwo+PiA+PiA+ICNpZm5kZWYg
+X0dOVV9TT1VSQ0UKPj4gPj4gPiAjZGVmaW5lIF9HTlVfU09VUkNFCj4+ID4+ID4gI2VuZGlmCj4+
+ID4+ID4gI2luY2x1ZGUgPHN0ZGxpYi5oPgo+PiA+PiA+IGludCBtYWluKHZvaWQpIHsKPj4gPj4g
+PiDCoCDCoCDCoCDCoGNoYXIgKmM7Cj4+ID4+ID4gwqAgwqAgwqAgwqByZXR1cm4gX19zeW5jX2Fk
+ZF9hbmRfZmV0Y2goYywgMSk7IH0KPj4gPj4gPgo+PiA+PiA+IFtyb290QFJIRUw0OC1MVFAteDg2
+IGFzeW5jX2hhbmRsZXJdIyBnY2MgcmVhbHRpbWUtdGVzdC5jIC1vCj4+ID4+IHJlYWx0aW1lLXRl
+c3QKPj4gPj4gPiAvdG1wL2NjaUhWeDhiLm8oLnRleHQrMHgyNSk6IEluIGZ1bmN0aW9uIGBtYWlu
+JzoKPj4gPj4gPiA6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYF9fc3luY19hZGRfYW5kX2ZldGNo
+Jwo+PiA+PiA+IGNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4+ID4+ID4gW3Jv
+b3RAUkhFTDQ4LUxUUC14ODYgYXN5bmNfaGFuZGxlcl0jCj4+ID4+ID4gW3Jvb3RAUkhFTDQ4LUxU
+UC14ODYgYXN5bmNfaGFuZGxlcl0jIGdjYyAtZyAtTzIgLWcgLU8yCj4+ID4+IC1mbm8tc3RyaWN0
+LWFsaWFzaW5nIC1waXBlIC1XYWxsIC1ECj4+ID4+ID4KPj4gPj4KPj4gX0dOVV9TT1VSQ0UgwqAt
+SS9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9pbmNsdWRlCj4+
+ID4+IC1JLi4vLi4vLi4vLi4vaW5jbHVkZQo+PiA+Pgo+PiA+IMKgLUkuLi8uLi8uLi8uLi9pbmNs
+dWRlIMKgIC1ML2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlCj4+ID4+IGFs
+dGltZS9saWIgLUwuLi8uLi8uLi8uLgo+PiA+PiA+IC9saWIgwqByZWFsdGltZS10ZXN0LmMgwqAg
+LWxyZWFsdGltZSAtbHB0aHJlYWQgLWxydCAtbG0gLW8KPj4gcmVhbHRpbWUtdGVzdAo+PiA+PiA+
+IHJlYWx0aW1lLXRlc3QuYzogSW4gZnVuY3Rpb24gYG1haW4nOgo+PiA+PiA+IHJlYWx0aW1lLXRl
+c3QuYzo3OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbgo+PiA+PiBg
+X19zeW5jX2FkZF9hbmRfZmV0Y2gnCj4+ID4+ID4gcmVhbHRpbWUtdGVzdC5jOjY6IHdhcm5pbmc6
+ICdjJyBtaWdodCBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcwo+PiA+PiBmdW5jdGlvbgo+
+PiA+PiA+IC90bXAvY2NJRGNrTGsubygudGV4dCsweDEwKTogSW4gZnVuY3Rpb24gYG1haW4nOgo+
+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFs
+dGltZS9mdW5jL2FzeW5jX2hhbmRsZXIvcmVhCj4+ID4+IGx0aW1lLXRlc3QuYzo3OiB1bmRlZmlu
+ZWQgcmVmZXJlbmNlIHRvIGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPj4gPj4gPiBjb2xsZWN0Mjog
+bGQgcmV0dXJuZWQgMSBleGl0IHN0YXR1cwo+PiA+PiA+IFtyb290QFJIRUw0OC1MVFAteDg2IGFz
+eW5jX2hhbmRsZXJdIwo+PiA+PiA+IC0tLS0tLS0tLS0tLQo+PiA+PiA+Cj4+ID4+ID4gLS0tLS0t
+LS0tLS0tPFJIRUw1LjUteDg2Pgo+PiA+PiA+IFtyb290QFJIRUw1NS1MVFAteDg2IGFzeW5jX2hh
+bmRsZXJdIyBjYXQgcmVhbHRpbWUtdGVzdC5jCj4+ID4+ID4gI2lmbmRlZiBfR05VX1NPVVJDRQo+
+PiA+PiA+ICNkZWZpbmUgX0dOVV9TT1VSQ0UKPj4gPj4gPiAjZW5kaWYKPj4gPj4gPiAjaW5jbHVk
+ZSA8c3RkbGliLmg+Cj4+ID4+ID4gaW50IG1haW4odm9pZCkgewo+PiA+PiA+IMKgIMKgIMKgIMKg
+Y2hhciAqYzsKPj4gPj4gPiDCoCDCoCDCoCDCoHJldHVybiBfX3N5bmNfYWRkX2FuZF9mZXRjaChj
+LCAxKTsgfQo+PiA+PiA+Cj4+ID4+ID4gW3Jvb3RAUkhFTDU1LUxUUC14ODYgYXN5bmNfaGFuZGxl
+cl0jIGdjYyByZWFsdGltZS10ZXN0LmMgLW8KPj4gPj4gcmVhbHRpbWUtdGVzdAo+PiA+PiA+IC90
+bXAvY2NLOGhtUHMubzogSW4gZnVuY3Rpb24gYG1haW4nOgo+PiA+PiA+IHJlYWx0aW1lLXRlc3Qu
+YzooLnRleHQrMHgyMCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8KPj4gPj4gYF9fc3luY19hZGRf
+YW5kX2ZldGNoXzEnCj4+ID4+ID4gY29sbGVjdDI6IGxkIHJldHVybmVkIDEgZXhpdCBzdGF0dXMK
+Pj4gPj4gPiBbcm9vdEBSSEVMNTUtTFRQLXg4NiBhc3luY19oYW5kbGVyXSMgZ2NjIC1nIC1PMiAt
+ZyAtTzIKPj4gPj4gLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgLUQKPj4gPj4gPgo+
+PiA+Pgo+PiBfR05VX1NPVVJDRSDCoC1JL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNh
+c2VzL3JlYWx0aW1lL2luY2x1ZGUKPj4gPj4gLUkuLi8uLi8uLi8uLi9pbmNsdWRlCj4+ID4+Cj4+
+ID4gwqAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgwqAgLUwvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTEx
+Mi90ZXN0Y2FzZXMvcmUKPj4gPj4gYWx0aW1lL2xpYiAtTC4uLy4uLy4uLy4uCj4+ID4+ID4gL2xp
+YiDCoHJlYWx0aW1lLXRlc3QuYyDCoCAtbHJlYWx0aW1lIC1scHRocmVhZCAtbHJ0IC1sbSAtbwo+
+PiByZWFsdGltZS10ZXN0Cj4+ID4+ID4gcmVhbHRpbWUtdGVzdC5jOiBJbiBmdW5jdGlvbiAnbWFp
+bic6Cj4+ID4+ID4gcmVhbHRpbWUtdGVzdC5jOjc6IHdhcm5pbmc6ICdjJyBpcyB1c2VkIHVuaW5p
+dGlhbGl6ZWQgaW4gdGhpcwo+PiBmdW5jdGlvbgo+PiA+PiA+IC90bXAvY2NLVW5vY0IubzogSW4g
+ZnVuY3Rpb24gYG1haW4nOgo+PiA+PiA+Cj4+ID4+Cj4+IC9ob21lL0xUUC9sdHAtZGV2LTIwMTAx
+MTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9mdW5jL2FzeW5jX2hhbmRsZXIvcmVhCj4+ID4+IGx0aW1l
+LXRlc3QuYzo3OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBfX3N5bmNfYWRkX2FuZF9mZXRjaF8x
+Jwo+PiA+PiA+IGNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4+ID4+ID4gW3Jv
+b3RAUkhFTDU1LUxUUC14ODYgYXN5bmNfaGFuZGxlcl0jCj4+ID4+Cj4+ID4+IMKgIMKgIE5vdCBz
+dXJlIHdoeSBidXQgaXQgaW5jb3JyZWN0bHkgcGFzc2VkIG9uIHlvdXIgbWFjaGluZToKPj4gPj4K
+Pj4gPj4gY29uZmlndXJlOjUxODY6IGNoZWNraW5nIENoZWNraW5nIGZvciBfX3N5bmNfYWRkX2Fu
+ZF9mZXRjaCBnY2MgYnVpbHRpbgo+PiA+PiBmdW5jdGlvbgo+PiA+PiBjb25maWd1cmU6NTIxNjog
+Z2NjIC1jIC1nIC1PMiDCoGNvbmZ0ZXN0LmMgPiY1Cj4+ID4+IGNvbmZpZ3VyZTo1MjIyOiAkPyA9
+IDAKPj4gPj4KPj4gPj4gMjMgQUNfTVNHX0NIRUNLSU5HKFtDaGVja2luZyBmb3IgX19zeW5jX2Fk
+ZF9hbmRfZmV0Y2ggZ2NjIGJ1aWx0aW4KPj4gPj4gZnVuY3Rpb25dKQo+PiA+PiAyNCBBQ19UUllf
+Q09NUElMRShbCj4+ID4+IDI1ICNpZm5kZWYgX0dOVV9TT1VSQ0UKPj4gPj4gMjYgI2RlZmluZSBf
+R05VX1NPVVJDRQo+PiA+PiAyNyAjZW5kaWYKPj4gPj4gMjggI2luY2x1ZGUgPHN0ZGxpYi5oPl0s
+W2ludCBtYWluKHZvaWQpIHsKPj4gPj4gMjkgwqAgwqAgwqAgwqAgY2hhciAqYzsKPj4gPj4gMzAg
+wqAgwqAgwqAgwqAgcmV0dXJuIF9fc3luY19hZGRfYW5kX2ZldGNoKGMsIDEpOwo+PiA+PiAzMSB9
+XSxbaGFzX19fc3luY19hZGRfYW5kX2ZldGNoPXllc10pCj4+ID4+IDMyIGlmIHRlc3QgIngkaGFz
+X19fc3luY19hZGRfYW5kX2ZldGNoIiA9IHh5ZXM7IHRoZW4KPj4gPj4gMzMgwqAgwqAgwqAgwqAg
+QUNfREVGSU5FKEhBVkVfX19TWU5DX0FERF9BTkRfRkVUQ0gsMSxbRGVmaW5lIHRvIDEgaWYgeW91
+Cj4+ID4+IGhhdmUgdGhlIF9fIMKgIHN5bmNfYWRkX2FuZF9mZXRjaCBnY2MgYnVpbHRpbiBmdW5j
+dGlvbl0pCj4+ID4+IDM0IMKgIMKgIMKgIMKgIEFDX01TR19SRVNVTFQoeWVzKQo+PiA+PiAzNSBl
+bHNlCj4+ID4+IDM2IMKgIMKgIMKgIMKgIEFDX01TR19SRVNVTFQobm8pCj4+ID4+IDM3IGZpCj4+
+ID4+Cj4+ID4+IMKgIMKgIFdoZXJlYXMgaXQgZGlkbid0IG9uIG1pbmU6Cj4+ID4+Cj4+ID4+IDI0
+OCBjb25maWd1cmU6NDc3NzogY2hlY2tpbmcgQ2hlY2tpbmcgZm9yIF9fc3luY19hZGRfYW5kX2Zl
+dGNoIGdjYwo+PiA+PiBidWlsdGluIGZ1bmN0IMKgIMKgaW9uCj4+ID4+IDI0OSBjb25maWd1cmU6
+NDc5NzogZ2NjIC1jIC1nIC1PMiDCoGNvbmZ0ZXN0LmMgPiY1Cj4+ID4+IDI1MCBjb25maWd1cmU6
+NDc5NzogJD8gPSAwCj4+ID4+Cj4+ID4+IMKgIMKgIFRoZXJlIHdhcyBhIHBvdGVudGlhbCBwcm9i
+bGVtIHdpdGggdGhlIG1hY3JvIHRob3VnaCAoSSBrZWVwIG9uCj4+ID4+IGZvcmdldHRpbmcgdGhh
+dCBBQ19UUllfQ09NUElMRSBhbmQgQUNfQ09NUElMRV9JRkVMU0Ugd29yayBwcmVkZWZpbmUKPj4g
+Pj4gbWFpbigpIHdpdGggdGhlIGJsb2NrIG9mIGNvZGUgcHJvdmlkZWQpLCBzbyBwbGVhc2UgbGV0
+IG1lIGtub3cgaWYKPj4gPj4gdGhpbmdzIHdvcmsgZm9yIHlvdS4KPj4gPj4gVGhhbmtzLAo+PiA+
+PiAtR2FycmV0dAo+PiA+Cj4+ID4KPj4gPiBJIGF0dGFjaGVkIHNhbWUgb3B0aW9ucyBieSBvYmV5
+aW5nICJjb25maWcubG9nIi4KPj4gPiBBbmQgSSBjb25maXJtZWQgdGhhdCAiY29uZnRlc3QuYyIg
+Y291bGQgYmUgc3VjY2Vzc2Z1bGx5IGNvbXBpbGVkIGJ5Cj4+ID4gbWFudWFsIG9wZXJhdGlvbjoK
+Pj4gPiAtLS0tLS0tLS0tLS0KPj4gPiBbcm9vdEBSSEVMNDgtTFRQLXg4NiBhc3luY19oYW5kbGVy
+XSMgcHdkCj4+ID4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1l
+L2Z1bmMvYXN5bmNfaGFuZGxlcgo+PiA+IFtyb290QFJIRUw0OC1MVFAteDg2IGFzeW5jX2hhbmRs
+ZXJdIyBsbAo+PiA+IHRvdGFsIDM2Cj4+ID4gLXJ3LXJ3LXItLSDCoDEgcm9vdCByb290IDEwNDUg
+Tm92IDEyIDAyOjE5IE1ha2VmaWxlCj4+ID4gLXJ3LXJ3LXItLSDCoDEgcm9vdCByb290IDUzNDEg
+Tm92IDEyIDAyOjE5IGFzeW5jX2hhbmRsZXIuYwo+PiA+IC1ydy1ydy1yLS0gwqAxIHJvb3Qgcm9v
+dCA0NDg1IE5vdiAxMiAwMjoxOSBhc3luY19oYW5kbGVyX2prLmMKPj4gPiAtcnctcnctci0tIMKg
+MSByb290IHJvb3QgNjAxMyBOb3YgMTIgMDI6MTkgYXN5bmNfaGFuZGxlcl90c2MuYwo+PiA+IC1y
+dy1yLS1yLS0gwqAxIHJvb3Qgcm9vdCDCoDE0NyBOb3YgMTUgMTU6MTQgY29uZnRlc3QuYwo+PiA+
+IC1yd3hyd3hyLXggwqAxIHJvb3Qgcm9vdCDCoDMzMyBOb3YgMTIgMDI6MTkgcnVuX2F1dG8uc2gK
+Pj4gPiBbcm9vdEBSSEVMNDgtTFRQLXg4NiBhc3luY19oYW5kbGVyXSMgY2F0IGNvbmZ0ZXN0LmMK
+Pj4gPiAjaWZuZGVmIF9HTlVfU09VUkNFCj4+ID4gI2RlZmluZSBfR05VX1NPVVJDRQo+PiA+ICNl
+bmRpZgo+PiA+ICNpbmNsdWRlIDxzdGRsaWIuaD4KPj4gPiBpbnQgbWFpbih2b2lkKSB7Cj4+ID4g
+wqAgwqAgwqAgwqBjaGFyICpjOwo+PiA+IMKgIMKgIMKgIMKgcmV0dXJuIF9fc3luY19hZGRfYW5k
+X2ZldGNoKGMsIDEpOyB9Cj4+ID4KPj4gPiBbcm9vdEBSSEVMNDgtTFRQLXg4NiBhc3luY19oYW5k
+bGVyXSMgZ2NjIC1jIC1nIC1PMiBjb25mdGVzdC5jCj4+ID4gW3Jvb3RAUkhFTDQ4LUxUUC14ODYg
+YXN5bmNfaGFuZGxlcl0jIGVjaG8gJD8KPj4gPiAwCj4+ID4gW3Jvb3RAUkhFTDQ4LUxUUC14ODYg
+YXN5bmNfaGFuZGxlcl0jIGxsCj4+ID4gdG90YWwgNDAKPj4gPiAtcnctcnctci0tIMKgMSByb290
+IHJvb3QgMTA0NSBOb3YgMTIgMDI6MTkgTWFrZWZpbGUKPj4gPiAtcnctcnctci0tIMKgMSByb290
+IHJvb3QgNTM0MSBOb3YgMTIgMDI6MTkgYXN5bmNfaGFuZGxlci5jCj4+ID4gLXJ3LXJ3LXItLSDC
+oDEgcm9vdCByb290IDQ0ODUgTm92IDEyIDAyOjE5IGFzeW5jX2hhbmRsZXJfamsuYwo+PiA+IC1y
+dy1ydy1yLS0gwqAxIHJvb3Qgcm9vdCA2MDEzIE5vdiAxMiAwMjoxOSBhc3luY19oYW5kbGVyX3Rz
+Yy5jCj4+ID4gLXJ3LXItLXItLSDCoDEgcm9vdCByb290IMKgMTQ3IE5vdiAxNSAxNToxNCBjb25m
+dGVzdC5jCj4+ID4gLXJ3LXItLXItLSDCoDEgcm9vdCByb290IDI1OTYgTm92IDE2IDE2OjI0IGNv
+bmZ0ZXN0Lm8KPj4gPiAtcnd4cnd4ci14IMKgMSByb290IHJvb3QgwqAzMzMgTm92IDEyIDAyOjE5
+IHJ1bl9hdXRvLnNoCj4+ID4gW3Jvb3RAUkhFTDQ4LUxUUC14ODYgYXN5bmNfaGFuZGxlcl0jCj4+
+ID4gLS0tLS0tLS0tLS0tCj4+ID4KPj4gPiBJIHRyaWVkIGJ1aWxkIGFzeW5jX2hhbmRsZXIuYyB3
+aXRoICItYyIgb3B0aW9uIGJ5IG1hbnVhbCBvcGVyYXRpb24KPj4gPiBhY2NvcmRpbmcgdG8gImNv
+bmZ0ZXN0LmMiLCBhbmQgaXQgc3VjY2VlZGVkOgo+PiA+IC0tLS0tLS0tLS0tLQo+PiA+IFtyb290
+QFJIRUw0OC1MVFAteDg2IGFzeW5jX2hhbmRsZXJdIyBnY2MgLWMgLWcgLU8yIC1mbm8tc3RyaWN0
+LWFsaWFzaW5nCj4+IC1waXBlIC1XYWxsCj4+IC1EX0dOVV9TT1VSQ0UgwqAtSS9ob21lL0xUUC9s
+dHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9yZWFsdGltZS9pbmNsdQo+PiBkZSAtSS4uLy4uLy4u
+Ly4uL2luY2x1ZGUKPj4gLUkuLi8uLi8uLi8uLi9pbmNsdWRlIMKgIC1ML2hvbWUvTFRQL2x0cC1k
+ZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0Cj4+IGltZS9saWIgLUwuLi8uLi8uLi8uLi9saWIg
+wqBhc3luY19oYW5kbGVyLmMgwqAgLWxyZWFsdGltZSAtbHB0aHJlYWQgLWxydAo+PiAtbG0gLW8g
+YXN5bmNfaGFuZGxlcgo+PiA+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBhc3luY19oYW5kbGVyLmM6
+NDI6Cj4+ID4gL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2lu
+Y2x1ZGUvbGlicnR0ZXN0Lmg6Cj4+IEluIGZ1bmN0aW9uIGBhdG9taWNfYWRkJzoKPj4gPgo+PiAv
+aG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVkZS9saWJy
+dHRlc3QuaDoxMQo+PiA5OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlv
+biBgX19zeW5jX2FkZF9hbmRfZmV0Y2gnCj4+ID4gZ2NjOiAtbHJlYWx0aW1lOiBsaW5rZXIgaW5w
+dXQgZmlsZSB1bnVzZWQgYmVjYXVzZSBsaW5raW5nIG5vdCBkb25lCj4+ID4gZ2NjOiAtbHB0aHJl
+YWQ6IGxpbmtlciBpbnB1dCBmaWxlIHVudXNlZCBiZWNhdXNlIGxpbmtpbmcgbm90IGRvbmUKPj4g
+PiBnY2M6IC1scnQ6IGxpbmtlciBpbnB1dCBmaWxlIHVudXNlZCBiZWNhdXNlIGxpbmtpbmcgbm90
+IGRvbmUKPj4gPiBnY2M6IC1sbTogbGlua2VyIGlucHV0IGZpbGUgdW51c2VkIGJlY2F1c2UgbGlu
+a2luZyBub3QgZG9uZQo+PiA+IFtyb290QFJIRUw0OC1MVFAteDg2IGFzeW5jX2hhbmRsZXJdIyBl
+Y2hvICQ/Cj4+ID4gMAo+PiA+IFtyb290QFJIRUw0OC1MVFAteDg2IGFzeW5jX2hhbmRsZXJdIyBs
+bAo+PiA+IHRvdGFsIDU2Cj4+ID4gLXJ3LXJ3LXItLSDCoDEgcm9vdCByb290IMKgMTA0NSBOb3Yg
+MTIgMDI6MTkgTWFrZWZpbGUKPj4gPiAtcnctci0tci0tIMKgMSByb290IHJvb3QgMTI2MTIgTm92
+IDE2IDE2OjI3IGFzeW5jX2hhbmRsZXIKPj4gPiAtcnctcnctci0tIMKgMSByb290IHJvb3QgwqA1
+MzQxIE5vdiAxMiAwMjoxOSBhc3luY19oYW5kbGVyLmMKPj4gPiAtcnctcnctci0tIMKgMSByb290
+IHJvb3QgwqA0NDg1IE5vdiAxMiAwMjoxOSBhc3luY19oYW5kbGVyX2prLmMKPj4gPiAtcnctcnct
+ci0tIMKgMSByb290IHJvb3QgwqA2MDEzIE5vdiAxMiAwMjoxOSBhc3luY19oYW5kbGVyX3RzYy5j
+Cj4+ID4gLXJ3LXItLXItLSDCoDEgcm9vdCByb290IMKgIDE0NyBOb3YgMTUgMTU6MTQgY29uZnRl
+c3QuYwo+PiA+IC1ydy1yLS1yLS0gwqAxIHJvb3Qgcm9vdCDCoDI1OTYgTm92IDE2IDE2OjI0IGNv
+bmZ0ZXN0Lm8KPj4gPiAtcnd4cnd4ci14IMKgMSByb290IHJvb3QgwqAgMzMzIE5vdiAxMiAwMjox
+OSBydW5fYXV0by5zaAo+PiA+IFtyb290QFJIRUw0OC1MVFAteDg2IGFzeW5jX2hhbmRsZXJdIwo+
+PiA+IC0tLS0tLS0tLS0tLQo+PiA+Cj4+ID4gQnV0IGFib3ZlIGJ1aWxkIGlzIG5vdCB3aXRoIGxp
+bmthZ2UgYnkgIi1jIiBvcHRpb24uCj4+ID4gV2l0aCBsaW5rYWdlLCBpdCBmYWlsZWQ6Cj4+ID4g
+LS0tLS0tLS0tLS0tCj4+ID4gW3Jvb3RAUkhFTDQ4LUxUUC14ODYgYXN5bmNfaGFuZGxlcl0jIGdj
+YyAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcKPj4gLXBpcGUgLVdhbGwKPj4gLURfR05VX1NP
+VVJDRSDCoC1JL2hvbWUvTFRQL2x0cC1kZXYtMjAxMDExMTIvdGVzdGNhc2VzL3JlYWx0aW1lL2lu
+Y2x1Cj4+IGRlIC1JLi4vLi4vLi4vLi4vaW5jbHVkZQo+PiAtSS4uLy4uLy4uLy4uL2luY2x1ZGUg
+wqAgLUwvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHQKPj4gaW1lL2xp
+YiAtTC4uLy4uLy4uLy4uL2xpYiDCoGFzeW5jX2hhbmRsZXIuYyDCoCAtbHJlYWx0aW1lIC1scHRo
+cmVhZCAtbHJ0Cj4+IC1sbSAtbyBhc3luY19oYW5kbGVyCj4+ID4gSW4gZmlsZSBpbmNsdWRlZCBm
+cm9tIGFzeW5jX2hhbmRsZXIuYzo0MjoKPj4gPiAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90
+ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVkZS9saWJydHRlc3QuaDoKPj4gSW4gZnVuY3Rpb24gYGF0
+b21pY19hZGQnOgo+PiA+Cj4+IC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTEyL3Rlc3RjYXNlcy9y
+ZWFsdGltZS9pbmNsdWRlL2xpYnJ0dGVzdC5oOjExCj4+IDk6IHdhcm5pbmc6IGltcGxpY2l0IGRl
+Y2xhcmF0aW9uIG9mIGZ1bmN0aW9uIGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPj4gPgo+PiAvaG9t
+ZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRpbWUvbGliL2xpYnJlYWx0aW1l
+LmEobGlicgo+PiB0dGVzdC5vKSgudGV4dCsweDFhNyk6IEluIGZ1bmN0aW9uIGBjcmVhdGVfdGhy
+ZWFkJzoKPj4gPgo+PiAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExMi90ZXN0Y2FzZXMvcmVhbHRp
+bWUvbGliLy4uL2luY2x1ZGUvbGlicnR0ZQo+PiBzdC5oOjExOTogdW5kZWZpbmVkIHJlZmVyZW5j
+ZSB0byBgX19zeW5jX2FkZF9hbmRfZmV0Y2gnCj4+ID4gY29sbGVjdDI6IGxkIHJldHVybmVkIDEg
+ZXhpdCBzdGF0dXMKPj4gPiBbcm9vdEBSSEVMNDgtTFRQLXg4NiBhc3luY19oYW5kbGVyXSMKPj4g
+PiAtLS0tLS0tLS0tLS0KPj4gPgo+PiA+IEkgdGhpbmsgdGhhdCB0aGUgY2hlY2sgb2YgIl9fc3lu
+Y19hZGRfYW5kX2ZldGNoIiBieSAiY29uZnRlc3QuYyIgbXVzdAo+PiA+IGJlIGRvbmUgd2l0aG91
+dCAiLWMiIG9wdGlvbi4KPj4KPj4gwqAgwqAgUGxlYXNlIHRyeSBvdXQgSEVBRCBhZ2Fpbi4gSXQg
+c2hvdWxkIGJlIGZpeGVkIG5vdyAoSSBzdWJzdGl0dXRlZAo+PiBBQ19MSU5LX0lGRUxTRSBmb3Ig
+QUNfVFJZX0NPTVBJTEUpLgo+PiBUaGFua3MsCj4+IC1HYXJyZXR0Cj4KPiBUaGFuayB5b3UgZm9y
+IHlvdXIgcmVzcG9uc2UuCj4KPgo+IEkgdHJpZWQgdG8gYnVpbGQgInJlYWx0aW1lIiB0ZXN0cyB3
+aXRoIHJlY2VudCBnaXQgImx0cC1jMjNjMzUxLnRhci5neiIuCj4KPiBCdWlsZCBzdWNjZWVkZWQg
+aW4gUkhFTDUuNS14ODYgc3lzdGVtLgo+Cj4gQnV0IGJ1aWxkIGZhaWxlZCBpbiBSSEVMNC44LXg4
+Ni94ODZfNjQvaWE2NCBzeXN0ZW1zOgo+IC0tLS0tLS0tLS0tLTxSSEVMNC44LXg4Nj4KPiBnY2Mg
+LWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRF9HTlVfU09V
+UkNFIMKgLUkvaG9tZS9MVFAvbHRwLWRldi0yMDEwCj4gMTExNi90ZXN0Y2FzZXMvcmVhbHRpbWUv
+aW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIMKgIC1M
+L2hvbWUvTFRQLwo+IGx0cC1kZXYtMjAxMDExMTYvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYiAtTC4u
+Ly4uLy4uLy4uL2xpYiDCoHRlc3RwaS00LmMgwqAgLWxyZWFsdGltZSAtbHB0aHJlCj4gYWQgLWxy
+dCAtbG0gLW8gdGVzdHBpLTQKPiBnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2lu
+ZyAtcGlwZSAtV2FsbCAtRF9HTlVfU09VUkNFIMKgLUkvaG9tZS9MVFAvbHRwLWRldi0yMDEwCj4g
+MTExNi90ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUku
+Li8uLi8uLi8uLi9pbmNsdWRlIMKgIC1ML2hvbWUvTFRQLwo+IGx0cC1kZXYtMjAxMDExMTYvdGVz
+dGNhc2VzL3JlYWx0aW1lL2xpYiAtTC4uLy4uLy4uLy4uL2xpYiDCoHRlc3RwaS01LmMgwqAgLWxy
+ZWFsdGltZSAtbHB0aHJlCj4gYWQgLWxydCAtbG0gLW8gdGVzdHBpLTUKPiB0ZXN0cGktNS5jOiBJ
+biBmdW5jdGlvbiBgZG9fdGVzdCc6Cj4gdGVzdHBpLTUuYzo2OTogd2FybmluZzogdW51c2VkIHZh
+cmlhYmxlIGBtdXRleGF0dHInCj4gdGVzdHBpLTUuYzo3MDogd2FybmluZzogdW51c2VkIHZhcmlh
+YmxlIGByZXRjJwo+IHRlc3RwaS01LmM6NzA6IHdhcm5pbmc6IHVudXNlZCB2YXJpYWJsZSBgcHJv
+dG9jb2wnCj4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdh
+bGwgLURfR05VX1NPVVJDRSDCoC1JL2hvbWUvTFRQL2x0cC1kZXYtMjAxMAo+IDExMTYvdGVzdGNh
+c2VzL3JlYWx0aW1lL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4v
+aW5jbHVkZSDCoCAtTC9ob21lL0xUUC8KPiBsdHAtZGV2LTIwMTAxMTE2L3Rlc3RjYXNlcy9yZWFs
+dGltZS9saWIgLUwuLi8uLi8uLi8uLi9saWIgwqB0ZXN0cGktNi5jIMKgIC1scmVhbHRpbWUgLWxw
+dGhyZQo+IGFkIC1scnQgLWxtIC1vIHRlc3RwaS02Cj4gdGVzdHBpLTYuYzogSW4gZnVuY3Rpb24g
+YGRvX3Rlc3QnOgo+IHRlc3RwaS02LmM6NzU6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9u
+IG9mIGZ1bmN0aW9uIGBwdGhyZWFkX211dGV4YXR0cl9zZXRyb2J1c3RfbnAnCj4gdGVzdHBpLTYu
+Yzo3NTogZXJyb3I6IGBQVEhSRUFEX01VVEVYX1JPQlVTVF9OUCcgdW5kZWNsYXJlZCAoZmlyc3Qg
+dXNlIGluIHRoaXMgZnVuY3Rpb24pCj4gdGVzdHBpLTYuYzo3NTogZXJyb3I6IChFYWNoIHVuZGVj
+bGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UKPiB0ZXN0cGktNi5jOjc1OiBl
+cnJvcjogZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbi4pCj4gdGVzdHBpLTYuYzo3OTog
+d2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24gYHB0aHJlYWRfbXV0ZXhh
+dHRyX2dldHJvYnVzdF9ucCcKPiBtYWtlWzRdOiAqKiogW3Rlc3RwaS02XSBFcnJvciAxCj4gbWFr
+ZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTE2L3Rlc3Rj
+YXNlcy9yZWFsdGltZS9mdW5jL3BpLXRlc3RzJwo+IG1ha2VbM106ICoqKiBbYWxsXSBFcnJvciAy
+Cj4gbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTE2
+L3Rlc3RjYXNlcy9yZWFsdGltZS9mdW5jJwo+IG1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyCj4g
+bWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtZGV2LTIwMTAxMTE2L3Rl
+c3RjYXNlcy9yZWFsdGltZScKPiBtYWtlWzFdOiAqKiogW2FsbF0gRXJyb3IgMgo+IG1ha2VbMV06
+IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9MVFAvbHRwLWRldi0yMDEwMTExNi90ZXN0Y2FzZXMn
+Cj4gbWFrZTogKioqIFt0ZXN0Y2FzZXMtYWxsXSBFcnJvciAyCj4gLS0tLS0tLS0tLS0tCj4KPiBU
+aGUgZXJyb3Igb2YgdGhlICJhc3luY19oYW5kbGVyLmMiIGJ5ICJfX3N5bmNfYWRkX2FuZF9mZXRj
+aCIgdW50aWwgeWVzdGVyZGF5Cj4gd2FzIHNvbHZlZC4KPiBIb3dldmVyLCBhIG5ldyBmYWlsdXJl
+IGFib3V0IG11dGV4IG9jY3VycyBpbiBhbm90aGVyIGZ1bmN0aW9uLgo+Cj4gSSBhbSBpbnZlc3Rp
+Z2F0aW5nIGFib3V0IGl0Lgo+IFBlcmhhcHMuLiBwZXJoYXBzLCBtdXRleCBpcyBzdXBwb3J0ZWQg
+YWZ0ZXIga2VybmVsIHZlcnNpb24gMi42LjE2LCBJIHRoaW5rLgo+Cj4KPiBUaGlzIGlzIGp1c3Qg
+YSBxdWljayBub3RlIHRvIGxldCB5b3Uga25vdy4KCkxvbC4gUGxlYXNlIHRyeSBhZ2Fpbi4KCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQpCZWF1dGlmdWwgaXMgd3JpdGluZyBzYW1lIG1hcmt1cC4gSW50
+ZXJuZXQgRXhwbG9yZXIgOSBzdXBwb3J0cwpzdGFuZGFyZHMgZm9yIEhUTUw1LCBDU1MzLCBTVkcg
+MS4xLCAgRUNNQVNjcmlwdDUsIGFuZCBET00gTDIgJiBMMy4KU3BlbmQgbGVzcyB0aW1lIHdyaXRp
+bmcgYW5kICByZXdyaXRpbmcgY29kZSBhbmQgbW9yZSB0aW1lIGNyZWF0aW5nIGdyZWF0CmV4cGVy
+aWVuY2VzIG9uIHRoZSB3ZWIuIEJlIGEgcGFydCBvZiB0aGUgYmV0YSB0b2RheQpodHRwOi8vcC5z
+Zi5uZXQvc2Z1L21zSUU5LXNmZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2x0cC1saXN0Cg==
