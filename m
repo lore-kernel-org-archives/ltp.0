@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PJ92n-0008QM-0I
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 18:17:13 +0000
-Date: Thu, 18 Nov 2010 19:29:01 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101118182901.GC19296@saboteur.suse.cz>
-References: <4CDB5E53.6070604@cn.fujitsu.com> <4CDB6039.2050200@cn.fujitsu.com>
-	<20101111145155.GB24599@saboteur.suse.cz>
-	<4CDCA278.8080301@cn.fujitsu.com>
+	(envelope-from <mitani@ryobi.co.jp>) id 1PIyQv-0005SO-I0
+	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 06:57:25 +0000
+Received: from out20.sjc.mx.trendmicro.com ([216.99.131.77])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PIyQt-0000mN-RH
+	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 06:57:25 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000001cb798d$1aaa0210$4ffe0630$@co.jp>	<AANLkTiktyyfpSX+ZkOucGCNg2vSajcVPQ8Q60z4Uj8kh@mail.gmail.com>	<4CCE73A6.9020901@cn.fujitsu.com>	<AANLkTi=TyhLVZ5OOcRduBwvkxS3-u4f7A1W+bv+WO6Y1@mail.gmail.com>	<4CE4AD0D.1050501@cn.fujitsu.com>
+	<AANLkTim5JubFxad76akVJ7YOVs1V84gY=2TUVQ1KMkJz@mail.gmail.com>
+	<4CE4B2B6.4030408@cn.fujitsu.com>
+In-Reply-To: <4CE4B2B6.4030408@cn.fujitsu.com>
+Date: Thu, 18 Nov 2010 15:57:14 +0900
+Message-ID: <000001cb86ed$d4984070$7dc8c150$@co.jp>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CDCA278.8080301@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH 1/2][v2]Use aio_error instead signal hander
- at aio_suspend/1-1
+Content-Language: ja
+Subject: Re: [LTP] [PATCH] fix "sigaction" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,163 +27,191 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
+To: 'Bian Naimeng' <biannm@cn.fujitsu.com>, Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> aio_suspend may be interrupted by IO request's completion signal, so we
-> should use aio_error instead signal hander to check whether this request
-> has complete.
-> 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-> 
-> ---
->  .../conformance/interfaces/aio_suspend/1-1.c       |   51 +++++++-------------
->  1 files changed, 17 insertions(+), 34 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
-> index 7d33e62..8c85ca5 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
-> @@ -44,19 +44,11 @@
->  #define BUF_SIZE	1024*1024
->  #define WAIT_FOR_AIOCB	6
->  
-> -int received_selected	= 0;
->  int received_all	= 0;
->  
->  void
->  sigrt1_handler(int signum, siginfo_t *info, void *context)
->  {
-> -	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
-> -		received_selected = 1;
-> -}
-> -
-> -void
-> -sigrt2_handler(int signum, siginfo_t *info, void *context)
-> -{
->  	received_all = 1;
->  }
->  
-> @@ -123,30 +115,19 @@ main ()
->  		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
->  		aiocbs[i]->aio_nbytes = BUF_SIZE;
->  		aiocbs[i]->aio_lio_opcode = LIO_READ;
-> -
-> -		/* Use SIRTMIN+1 for individual completions */
-> -		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
-> -		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
->  	}
->  
-> -	/* Use SIGRTMIN+2 for list completion */
-> +	/* Use SIGRTMIN+1 for list completion */
->  	event.sigev_notify = SIGEV_SIGNAL;
-> -	event.sigev_signo = SIGRTMIN+2;
-> +	event.sigev_signo = SIGRTMIN+1;
->  	event.sigev_value.sival_ptr = NULL;
->  
-> -	/* Setup handler for individual operation completion */
-> +	/* Setup handler for list completion */
->  	action.sa_sigaction = sigrt1_handler;
->  	sigemptyset(&action.sa_mask);
->  	action.sa_flags = SA_SIGINFO|SA_RESTART;
->  	sigaction(SIGRTMIN+1, &action, NULL);
->  
-> -	/* Setup handler for list completion */
-> -	action.sa_sigaction = sigrt2_handler;
-> -	sigemptyset(&action.sa_mask);
-> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
-> -	sigaction(SIGRTMIN+2, &action, NULL);
-> -
->  	/* Setup suspend list */
->  	plist[0] = NULL;
->  	plist[1] = aiocbs[WAIT_FOR_AIOCB];
-> @@ -155,7 +136,8 @@ main ()
->  	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
->  
->  	if (ret) {
-> -		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
-> +		printf (TNAME " Error at lio_listio() %d: %s\n",
-> +			errno, strerror(errno));
+> -----Original Message-----
+> From: Bian Naimeng [mailto:biannm@cn.fujitsu.com]
+> Sent: Thursday, November 18, 2010 2:00 PM
+> To: Garrett Cooper
+> Cc: Gui Jianfeng; ltp-list@lists.sourceforge.net; 當座 健市; Mitani
+> Subject: Re: [LTP] [PATCH] fix "sigaction" tests
+>
+>
+>
+> Garrett Cooper wrote:
+> > 2010/11/17 Bian Naimeng <biannm@cn.fujitsu.com>:
+> >>
+> >> Garrett Cooper wrote:
+> >>> On Mon, Nov 1, 2010 at 1:00 AM, Gui Jianfeng
+> <guijianfeng@cn.fujitsu.com> wrote:
+> >>>> Garrett Cooper wrote:
+> >>>>> 2010/10/31 Mitani <mitani@ryobi.co.jp>:
+> >>>> ...
+> >>>>>>  int main()
+> >>>>>>  {
+> >>>>>> @@ -133,6 +152,12 @@
+> >>>>>>
+> >>>>>>        struct sigaction sa;
+> >>>>>>
+> >>>>>> +       /* Checking for Kernel Version */
+> >>>>>> +       if ( kernel_ver_cmp(2, 6, 21) != 0 )
+> >>>>>> +       {
+> >>>>>> +               UNTESTED( "sem_wait() returned EINTR on kernel
+> versions
+> >>>>>> lower than 2.6.22" );
+> >>>>>> +       }
+> >>>>>> +
+> >>>>>>        /* Initialize output */
+> >>>>>>        output_init();
+> >>>>>>
+> >>>>>> ============
+> >>>>>>
+> >>>>>> Above patch is revision only for templates.
+> >>>>>> The following procedure is necessary after applying patch:
+> >>>>>> ------------
+> >>>>>> #cd
+> testcases/open_posix_testsuite/conformance/interfaces/sigaction/
+> >>>>>> #./gentests.pl
+> >>>>>> ------------
+> >>>>>>
+> >>>>>> Similar revisions are necessary for other 25 "sigaction" tests.
+> >>>>>     Sorry, but Linux-isms can't leak into the open_posix_testsuite.
+> >>>>> Same with BSDisms (at least they shouldn't... if they do, then slap
+> me
+> >>>>> or whoever did the commit).
+> >>>> Do you mean the culprit is Linux-isms?
+> >>> Mitani-san is proposing that I `fix' the testcases to work on RHEL
+> >>> 4.8. These testcases should function with minimal change for all
+> >>> versions of Unix.
+> >>>
+> >>  This open_posix_suite is the part of LTP(linux test project), must
+> we
+> >> make sure it can work at all versions of unix?
+> >
+> > I use it in FreeBSD and others have used it in other versions of Unix
+> > (in the past), based on the README. There's no reason why we need to
+> > maintain something that philosophically diverges from the upstream
+> > project's goal because it will make merging more painful and
+> > unnecessary.
+> >
+>
+>   OK, i get it. Thanks. ^_^
+>
+>   Then, whether should we remove the following case, because it invokes
+>   the uname that it's not exsit at 4.3 BSD.
+>   conformance/interfaces/pthread_mutex_init/speculative/5-2.c
+>
+>   Thanks
+>     Bian
+>
+> >> What about this patch?  If you think so, other similar patchs will
+> be post.
+> >>
+> >>
+> --------------------------------------------------------------------
+> -----------
+> >>
+> >> At older linux kernel(2.6.22 before), a signal handler always
+> interrupts a
+> >> blocked call to one of these functions, regardless of the use of the
+> sigaction
+> >> SA_RESTART flag, so we should not test these cases at this situation.
+> >>
+> >> Althought uname is not exsit at 4.3 BSD, but this open_posix_suite
+> just
+> >> the part of LTP(linux test project), so i think it's not a problem.
+> >>
+> >> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> >>
+> >> ---
+> >>  .../conformance/interfaces/sigaction/16-1.c        |   27
+> ++++++++++++++++++++
+> >>  1 files changed, 27 insertions(+), 0 deletions(-)
+> >>
+> >> diff --git
+> a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
+> -1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
+> -1.c
+> >> index 706dbfc..3d6e1a1 100644
+> >> ---
+> a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
+> -1.c
+> >> +++
+> b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16
+> -1.c
+> >> @@ -50,6 +50,7 @@ Anyway, a false negative status cannot be returned.
+> >>  #include <stdlib.h>
+> >>  #include <string.h>
+> >>  #include <unistd.h>
+> >> +#include <sys/utsname.h>
+> >>
+> >>  #include <semaphore.h>
+> >>  #include <signal.h>
+> >> @@ -95,6 +96,27 @@ Anyway, a false negative status cannot be returned.
+> >>  volatile sig_atomic_t caught = 0;
+> >>  sem_t sem;
+> >>
+> >> +#define KERNEL_VERSION(a, b, c)        (((a) << 16) + ((b) << 8) +
+> (c))
+> >> +
+> >> +int check_linux()
+> >> +{
+> >> +       struct utsname tn;
+> >> +       int r1, r2, r3;
+> >> +
+> >> +       if (0 > uname(&tn)) {
+> >> +               UNRESOLVED( errno, "uname failed" );
+> >> +       }
+> >> +
+> >> +       if (strcmp(tn.sysname, "Linux") != 0)
+> >> +               return 0;
+> >> +
+> >> +       sscanf(tn.release, "%d.%d.%d", &r1, &r2, &r3);
+> >> +       if (KERNEL_VERSION(r1, r2, r3) >= KERNEL_VERSION(2, 6, 22))
+> >> +               return 1;
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >>  /* Handler function */
+> >>  void handler( int signo )
+> >>  {
+> >> @@ -133,6 +155,11 @@ int main()
+> >>
+> >>        struct sigaction sa;
+> >>
+> >> +       if (!check_linux())
+> >> +               UNTESTED( "A signal handler always interrupts sem_wait
+> "
+> >> +                         "at linux release, regardless of the use
+> of "
+> >> +                         "the sigaction SA_RESTART flag" );
+> >> +
+> >>        /* Initialize output */
+> >>        output_init();
+> >
+> >
+>
+> --
+> Regards
+> Bian Naimeng
 
-According to lkml coding style (that we are trying to use here), space
-should be only between C keywords and (). Not betweeen library calls
-like printf and so.
 
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-> @@ -165,9 +147,10 @@ main ()
->  	}
->  
->  	/* Check selected request has not completed yet */
-> -	if (received_selected) {
-> -		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
-> -			WAIT_FOR_AIOCB);
-> +	err = aio_error(aiocbs[WAIT_FOR_AIOCB]);
-> +	if (err != EINPROGRESS) {
-> +		printf (TNAME " Error : AIOCB %d should not have completed "
-> +			"before suspend\n", WAIT_FOR_AIOCB);
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-....
->		exit(PTS_FAIL);
->}
+I applied Bian's patch in my system, and build succeeded.
 
-Another problem lies here. The test relies that aio operation in not
-finished when we got here. And as some linux kernels fallbacks aio as
-synchronous IO, when we got there, it's allready finished. So I think we
-should change this PTS_FAIL to PTS_UNRESOLVED.
-
-Garrett what you think?
+I'm OK with the Bian's patch.
 
 
-> @@ -178,11 +161,9 @@ main ()
->  
->  	/* Suspend on selected request */
->  	ret = aio_suspend((const struct aiocb **)plist, 2, NULL);
+Thank you--
 
-Please remove useless cast to (const struct aiocb**)
+-Tomonori Mitani
 
-> -
-> -	/* Check selected request has completed */
-> -	if (!received_selected) {
-> -		printf (TNAME " Error : AIOCB %d should have completed after suspend\n",
-> -			WAIT_FOR_AIOCB);
-> +	if (ret) {
-> +		printf (TNAME " Error at aio_suspend() %d: %s\n",
-> +			errno, strerror (errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-> @@ -191,9 +172,11 @@ main ()
->  		exit (PTS_FAIL);
->  	}
 
-Here again with the printf.
-  
-> -
-> -	if (ret) {
-> -		printf (TNAME " Error at aio_suspend() %d: %s\n", errno, strerror (errno));
-> +	/* Check selected request has completed */
-> +	err = aio_error(aiocbs[WAIT_FOR_AIOCB]);
-> +	if (err) {
-> +		printf (TNAME " Error : AIOCB %d should have completed after "
-> +			"suspend\n", WAIT_FOR_AIOCB);
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-
-And here.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
