@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PD6F1-0007ah-MY
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:04:51 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PIyNw-0007tq-7m
+	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 06:54:20 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PD6F0-000343-9s
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:04:51 +0000
-Message-ID: <4CCF7166.1050105@cn.fujitsu.com>
-Date: Tue, 02 Nov 2010 10:03:18 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PIyNu-0000Bh-2u
+	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 06:54:20 +0000
+Message-ID: <4CE4CD9D.4040406@cn.fujitsu.com>
+Date: Thu, 18 Nov 2010 14:54:21 +0800
 From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4CCF6B53.5050109@cn.fujitsu.com>
-	<AANLkTimZFKMZ3YYjr7k3gkjagZUXwwWyjw5YjTfVLURO@mail.gmail.com>
-In-Reply-To: <AANLkTimZFKMZ3YYjr7k3gkjagZUXwwWyjw5YjTfVLURO@mail.gmail.com>
-Subject: Re: [LTP] [POSIX][PATCH]Cleanup the test shm_open/2-1 to make a
- good format
+Subject: [LTP] [POSIX][PATCH]Destroy mutex an mutex_attr object at end of
+	test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,47 +29,68 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
->> ---
->>  .../conformance/interfaces/shm_open/2-1.c          |    4 +++-
->>  1 files changed, 3 insertions(+), 1 deletions(-)
->>
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
->> index f4bab48..b0adce6 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-1.c
->> @@ -17,7 +17,9 @@
->>
->>  int main()
->>  {
->> -        printf("Will not test that the shm_open() function create an open file description\nthat refers to the shared memory object and a file descriptor that refers to\nthat open file description.");
->> +        printf("Will not test that the shm_open() function create an open file"
->> +              "description that refers to the shared memory object and a file"
->> +              "descriptor that refers to that open file description.\n");
->>         return PTS_UNTESTED;
->>  }
-> 
->     Actually, that will look a lot worse because you just removed some
-> spaces in areas. description should be descriptor, etc.
+Destroy mutex an mutex_attr object at end of test.
 
-  Yes, it's my mistake. Thank you for pointing out it. ^_^
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-> Thanks,
-> -Garrett
-> 
-> 
-> 
+---
+ .../interfaces/pthread_mutex_getprioceiling/3-1.c  |    2 ++
+ .../interfaces/pthread_mutex_getprioceiling/3-2.c  |    3 +++
+ .../interfaces/pthread_mutex_getprioceiling/3-3.c  |    3 +++
+ 3 files changed, 8 insertions(+), 0 deletions(-)
 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c
+index d96ae43..5267b63 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c
+@@ -62,6 +62,8 @@ main(void)
+ 	} else
+ 		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
+ 
++	(void) pthread_mutex_destroy(&mutex);
++
+ 	return (error == EINVAL ? PTS_PASS : PTS_FAIL);
+ #else
+ 	printf("pthread_mutex_getprioceiling not supported");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c
+index 843c048..afa12c1 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c
+@@ -75,6 +75,9 @@ main(void)
+ 	} else
+ 		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
+ 
++	(void) pthread_mutexattr_destroy(&mutex_attr);
++	(void) pthread_mutex_destroy(&mutex);
++
+ 	return (error == EINVAL ? PTS_PASS : PTS_FAIL);
+ #else
+ 	printf("pthread_mutex_getprioceiling not supported");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
+index cf46f77..4aa6b1c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
+@@ -76,6 +76,9 @@ main(void)
+ 	} else
+ 		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
+ 
++	(void) pthread_mutexattr_destroy(&mutex_attr);
++	(void) pthread_mutex_destroy(&mutex);
++
+ 	return (error == EINVAL ? PTS_PASS : PTS_UNRESOLVED);
+ #else
+ 	printf("pthread_mutex_getprioceiling not supported");
 -- 
-Regards
-Bian Naimeng
+1.7.0.4
+
 
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
