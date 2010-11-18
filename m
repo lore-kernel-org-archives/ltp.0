@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PD5PL-0004Iy-Ge
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 01:11:27 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PD5PJ-0005G2-S6
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 01:11:27 +0000
-Message-ID: <4CCF64E0.4060909@cn.fujitsu.com>
-Date: Tue, 02 Nov 2010 09:09:52 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PJA7i-0006s1-8b
+	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 19:26:22 +0000
+Date: Thu, 18 Nov 2010 20:38:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101118193811.GE19296@saboteur.suse.cz>
+References: <AANLkTi=4D4yhyXoH4XWvi9NWjrZS9gaDeW+YcedHb5Mp@mail.gmail.com>
 MIME-Version: 1.0
-References: <4CC8D859.4010701@cn.fujitsu.com>
-In-Reply-To: <4CC8D859.4010701@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH]Some building error at pi_test cases.
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=4D4yhyXoH4XWvi9NWjrZS9gaDeW+YcedHb5Mp@mail.gmail.com>
+Subject: Re: [LTP] realtime test use of hostname with busybox
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,112 +24,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
+To: David Peverley <pev@sketchymonkey.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
-
-  Would you like to pick up this patch?  ^_^
-
-Best Regards
-  Bian
-
-> Commit 5f2ba92bdbef089bad74906fd8a86b54617f7878 make some building error.
+Hi!
+> Hi all,
 > 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> Another one... The realtime test script :
+>    testcases/realtime/scripts/setenv.sh
 > 
-> ---
->  .../functional/threads/pi_test/pitest-2.c          |    2 +-
->  .../functional/threads/pi_test/pitest-3.c          |    4 ++--
->  .../functional/threads/pi_test/pitest-4.c          |    4 ++--
->  .../functional/threads/pi_test/pitest-6.c          |    4 ++--
->  4 files changed, 7 insertions(+), 7 deletions(-)
+> uses "hostname --short" which isn't supported by busybox. "hostname
+> -s" is supported but gives "hostname: unknown host". Given that every
+> other script uses "hostname" as-is I reckon it would be reasonable to
+> match that usage in this script too?
 > 
-> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
-> index 62f1f45..0a96377 100644
-> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
-> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
-> @@ -235,7 +235,7 @@ void *thread_tb2(void *arg)
->  	DPRINTF(stdout, "#EVENT %f TB2 Thread Started\n",
->  		seconds_read() - base_time); 
->  	
-> -	boost_time.tv_sec = time(NULL) + *(time_t*)timeoutsec;
-> +	boost_time.tv_sec = time(NULL) + *(time_t*)arg;
->  	boost_time.tv_nsec = 0;
->  
->  	t0 = seconds_read();
-> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
-> index fe0c886..58d7a4a 100644
-> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
-> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
-> @@ -219,7 +219,7 @@ void *thread_tb1(void *arg)
->  	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n", 
->  		seconds_read() - base_time);
->  
-> -	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-> +	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
->  	boost_time.tv_nsec = 0;
->  
->  	t0 = seconds_read();
-> @@ -247,7 +247,7 @@ void *thread_tb2(void *arg)
->  	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n", 
->  		seconds_read() - base_time);
->  
-> -	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-> +	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
->  	boost_time.tv_nsec = 0;
->  	t0 = seconds_read();
->  	rc = pthread_mutex_timedlock(&mutex2, &boost_time);	
-> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-> index a042dbf..077f966 100644
-> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-> @@ -187,7 +187,7 @@ void *thread_tb1(void *arg)
->  
->  	pthread_mutex_lock(&mutex2);
->   
-> -	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-> +	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
->  	boost_time.tv_nsec = 0;
->  	t0 = seconds_read();
->  	rc = pthread_mutex_timedlock(&mutex1, &boost_time);	
-> @@ -218,7 +218,7 @@ void *thread_tb2(void *arg)
->  	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n", 
->  		seconds_read() - base_time);
->  
-> -	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-> +	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
->  	boost_time.tv_nsec = 0;
->  
->  	t0 = seconds_read();
-> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
-> index 6ebb003..2f2272b 100644
-> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
-> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
-> @@ -204,9 +204,9 @@ void *thread_tb(void *arg)
->  	DPRINTF(stderr,"Thread TB: started\n");
->  	
->  	DPRINTF(stdout, "#EVENT %f TB Started, waiting for mutex for %lu s\n", 
-> -		seconds_read() - base_time, timeoutsec);
-> +		seconds_read() - base_time, *(unsigned long*)arg);
->  
-> -	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
-> +	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
->  	boost_time.tv_nsec = 0;
->  
->  	t0 = seconds_read();
+
+On linux "hostname --short" is equivalent to "hostname" at least on
+linuxes I have here. So IMHO this is safe for linux only realtime tests.
+
+Please send patch.
 
 -- 
-Regards
-Bian Naimeng
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
