@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PLmRQ-0000iK-Ta
-	for ltp-list@lists.sourceforge.net; Fri, 26 Nov 2010 00:45:32 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PLmRP-0001XE-Ib
-	for ltp-list@lists.sourceforge.net; Fri, 26 Nov 2010 00:45:32 +0000
-Date: Thu, 25 Nov 2010 19:45:24 -0500 (EST)
-From: caiqian@redhat.com
-Message-ID: <1778429352.495721290732324614.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1456973476.495611290731859465.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PJ98P-0002W4-NZ
+	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 18:23:01 +0000
+Date: Thu, 18 Nov 2010 19:34:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101118183451.GD19296@saboteur.suse.cz>
+References: <4CDB5E53.6070604@cn.fujitsu.com> <4CDB609E.105@cn.fujitsu.com>
+	<20101111150012.GC24599@saboteur.suse.cz>
+	<4CDCA2D6.1020106@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mbind_range() vma merge
+Content-Disposition: inline
+In-Reply-To: <4CDCA2D6.1020106@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX][PATCH 2/2][V2]Use aio_error instead signal hander
+ at aio_suspend/4-1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,147 +27,180 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> aio_suspend may be interrupted by IO request's completion signal, so we
+> should use aio_error instead signal hander to check whether this request
+> has complete.
+> 
+> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> 
+> ---
+>  .../conformance/interfaces/aio_suspend/4-1.c       |   62 ++++++--------------
+>  1 files changed, 18 insertions(+), 44 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+> index 260c26a..bb90234 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
+> @@ -41,19 +41,11 @@
+>  #define BUF_SIZE	1024*1024
+>  #define WAIT_FOR_AIOCB	6
+>  
+> -int received_selected	= 0;
+>  int received_all	= 0;
+>  
+>  void
+>  sigrt1_handler(int signum, siginfo_t *info, void *context)
+>  {
+> -	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
+> -		received_selected = 1;
+> -}
+> -
+> -void
+> -sigrt2_handler(int signum, siginfo_t *info, void *context)
+> -{
+>  	received_all = 1;
+>  }
+>  
+> @@ -68,7 +60,7 @@ main ()
+>  	char *bufs;
+>  	struct sigaction action;
+>  	struct sigevent event;
+> -	struct timespec ts = {0, 10000000}; /* 10 ms */
+> +	struct timespec ts = {0, 1000}; /* 1 us */
+>  	int errors = 0;
+>  	int ret;
+>  	int err;
+> @@ -121,30 +113,19 @@ main ()
+>  		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
+>  		aiocbs[i]->aio_nbytes = BUF_SIZE;
+>  		aiocbs[i]->aio_lio_opcode = LIO_READ;
+> -
+> -		/* Use SIRTMIN+1 for individual completions */
+> -		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
+> -		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
+>  	}
+>  
+> -	/* Use SIGRTMIN+2 for list completion */
+> +	/* Use SIGRTMIN+1 for list completion */
+>  	event.sigev_notify = SIGEV_SIGNAL;
+> -	event.sigev_signo = SIGRTMIN+2;
+> +	event.sigev_signo = SIGRTMIN+1;
+>  	event.sigev_value.sival_ptr = NULL;
+>  
+> -	/* Setup handler for individual operation completion */
+> +	/* Setup handler for list completion */
+>  	action.sa_sigaction = sigrt1_handler;
+>  	sigemptyset(&action.sa_mask);
+>  	action.sa_flags = SA_SIGINFO|SA_RESTART;
+>  	sigaction(SIGRTMIN+1, &action, NULL);
+>  
+> -	/* Setup handler for list completion */
+> -	action.sa_sigaction = sigrt2_handler;
+> -	sigemptyset(&action.sa_mask);
+> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
+> -	sigaction(SIGRTMIN+2, &action, NULL);
+> -
+>  	/* Setup suspend list */
+>  	plist[0] = NULL;
+>  	plist[1] = aiocbs[WAIT_FOR_AIOCB];
+> @@ -153,7 +134,8 @@ main ()
+>  	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
+>  
+>  	if (ret) {
+> -		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
+> +		printf (TNAME " Error at lio_listio() %d: %s\n",
+> +			errno, strerror(errno));
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
 
-> Please do an inline and patch submit next time. Patch reviewing that
-> isn't inline in the email body is a bit annoying...
-OK.
+Once again, space here.
 
-> +LDLIBS 			+= -lnuma
-> 
-> gcooper> Do $(NUMA_LIBS) instead.
-OK.
+> @@ -163,9 +145,10 @@ main ()
+>  	}
+>  
+>  	/* Check selected request has not completed yet */
+> -	if (received_selected) {
+> -		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
+> -			WAIT_FOR_AIOCB);
+> +	err = aio_error(aiocbs[WAIT_FOR_AIOCB]);
+> +	if (err !=  EINPROGRESS) {
+> +		printf (TNAME " Error : AIOCB %d should not have completed "
+> +			"before suspend\n", WAIT_FOR_AIOCB);
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
+...
+>		exit(PTS_FAIL);
+>	}
 
-> +#include <numaif.h>
-> +#include <numa.h>
-> +#include <sys/mman.h>
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> 
-> gcooper> This will cause breakage on systems without proper numa lib
-> support *cues some RHEL users from Ryobi on the list :)...*
-Right, I'll add a autoconf check for this.
+Spaces after printf and free.
 
-> +static void usage(void);
-> 
-> gcooper> Get rid of this function please (unused).
-I saw this has been discussed, so presumable you are fine with it.
+And the same problem with relying on AIO operation not finished yet. So
+I propose to change this PTS_FAIL to PTS_UNRESOLVED.
 
-> +	if (opt_node) {
-> +		node = strtol(optarg, NULL, 0);
-> 
-> gcooper> This is wrong. The value that gets passed into node is an
-> unsigned integer, not a long. Also, what if the value passed in was
-> invalid (say -1)?
-OK.
+> @@ -177,21 +160,10 @@ main ()
+>  	/* Suspend on selected request */
+>  	ret = aio_suspend((const struct aiocb **)plist, 2, &ts);
 
-> +		addr = mmap(NULL, pagesize*3, PROT_READ|PROT_WRITE,
-> +			MAP_ANON|MAP_PRIVATE, 0, 0);
-> +		if (addr == MAP_FAILED)
-> +			tst_brkm(TBROK|TERRNO, NULL, "mmap"), exit(1);
-> 
-> gcooper> Remove exit(1) please...
-I saw this has been discussed as well. Looks like the best option right now would be tst_brkm(TBROK|TERRNO, tst_exit, "mmap");
+Useless cast.
 
-> 
-> +		tst_resm(TINFO, "pid = %d", getpid());
-> +		tst_resm(TINFO, "addr = %p", addr);
-> 
-> gcooper> Consolidate to one call please (also, do you _really_ need
-> to
-> print out the pid info?).
-OK. pid is something there to be able to debug when the test goes wrong.
+> -	/* Check selected request has not completed */
+> -	if (received_selected) {
+> -		printf (TNAME " Error : AIOCB %d should not have completed after timed out suspend\n",
+> -			WAIT_FOR_AIOCB);
+> -		for (i=0; i<NUM_AIOCBS; i++)
+> -			free (aiocbs[i]);
+> -		free (bufs);
+> -		free (aiocbs);
+> -		close (fd);
+> -		exit (PTS_FAIL);
+> -	}
+> -
+>  	/* timed out aio_suspend should return -1 and set errno to EAGAIN */
+> -	if (ret != -1) {
+> -		printf (TNAME " aio_suspend() should return -1\n");
+> +	if (ret != -1 || errno != EAGAIN) {
+> +		printf (TNAME " aio_suspend() should return -1 and set errno "
+> +			"to EAGAIN: %d, %s\n", ret, strerror(errno));
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
+> @@ -200,9 +172,11 @@ main ()
+>  		exit (PTS_FAIL);
+>  	}
 
+Spaces after free and exit.
 
-> 
-> +		/* make page populate */
-> +		memset(addr, 0, pagesize*3);
-> +
-> +		/* first mbind */
-> +		err = mbind(addr+pagesize, pagesize, MPOL_BIND,
-> +			nmask->maskp, nmask->size, MPOL_MF_MOVE_ALL);
-> +		if (err)
-> 
-> gcooper> For the sake of correctness this should be -1.
-Yes.
+> -	if (errno != EAGAIN) {
+> -		printf (TNAME " aio_suspend() should set errno to EAGAIN: %d (%s)\n",
+> -			errno, strerror (errno));
+> +	/* Check selected request has not completed */
+> +	err = aio_error(aiocbs[WAIT_FOR_AIOCB]);
+> +	if (err !=  EINPROGRESS) {
+> +		printf (TNAME " Error : AIOCB %d should not have completed "
+> +			"after timed out suspend\n", WAIT_FOR_AIOCB);
+>  		for (i=0; i<NUM_AIOCBS; i++)
+>  			free (aiocbs[i]);
+>  		free (bufs);
 
-> 
-> +			tst_brkm(TBROK|TERRNO, NULL, "mbind1");
-> +
-> +		/* second mbind */
-> +		err = mbind(addr, pagesize*3, MPOL_DEFAULT, NULL, 0, 0);
-> +		if (err)
-> 
-> gcooper> Same as above.
-OK.
+And here spaces after printf and free.
 
-> 
-> +			tst_brkm(TBROK|TERRNO, NULL, "mbind2 ");
-> +
-> +		/* /proc/%d/maps in the form of
-> +		   "00400000-00406000 r-xp 00000000". */
-> +		sprintf(buf, "/proc/%d/maps", getpid());
-> +		sprintf(string, "%lx", (long)addr);
-> 
-> gcooper> I know it may seem a bit obtuse, but couldn't do you %p
-> instead, and increment the pointer to the buffer by 2 to achieve the
-> same result? The point I'm driving at is that this casting is
-> probably
-> going to be incorrect in some cases.
-Fine for me.
-
-> 
-> +		fp = fopen(buf, "r");
-> +		if (fp == NULL)
-> +			tst_brkm(TBROK|TERRNO, NULL, "fopen");
-> 
-> gcooper> Please describe what file you were trying to open that
-> failed.
-That is doable.
-
-> +			/* Get the end range of the 2nd VMA. */
-> +			p = strtok(NULL, " ");
-> 
-> gcooper> What if this token isn't found?
-I will rewrite here to use sscanf which might be more straightforward.
-
-
-> +		if (fclose(fp) == EOF)
-> +			tst_brkm(TWARN|TERRNO, NULL, "fclose");
-> 
-> gcooper> I wouldn't worry about the fclose failing, because this
-> could
-> invariably turn into noise.
-OK.
-
-> +		if (munmap(addr, pagesize*3) == -1)
-> +			tst_brkm(TWARN|TERRNO, NULL, "munmap");
-> 
-> gcooper> This is correct though.
-This one needs tst_exit too.
-
-> +void usage(void)
-> +{
-> +	printf("  -n      Number of NUMA nodes\n");
-> +}
-> 
-> gcooper> Get rid of this function please (unused).
-Discussed before. Thanks.
-
-CAI Qian
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
