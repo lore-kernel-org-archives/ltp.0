@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PFhuM-0005gs-C1
-	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 06:42:18 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PFhuL-0005rg-D3
-	for ltp-list@lists.sourceforge.net; Tue, 09 Nov 2010 06:42:18 +0000
-Received: by wwb29 with SMTP id 29so1021965wwb.10
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 08 Nov 2010 22:42:11 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PJBMX-0003wt-HJ
+	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 20:45:45 +0000
+Date: Thu, 18 Nov 2010 21:57:35 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101118205735.GA23731@saboteur.suse.cz>
+References: <0A8C979C21B8D745A471962AD91DBAD844DD247AA3@SAFEX1MAIL4.st.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=XWVK8k0kB1XU8n70adHcbVvHsY-w3GCOzK8kN@mail.gmail.com>
-References: <AANLkTi=XWVK8k0kB1XU8n70adHcbVvHsY-w3GCOzK8kN@mail.gmail.com>
-Date: Mon, 8 Nov 2010 22:42:10 -0800
-Message-ID: <AANLkTi=VuxGbNrb6ASDWUpGNP=UuBAjvboFJojE0rp6r@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] check_onlycap()
+Content-Disposition: inline
+In-Reply-To: <0A8C979C21B8D745A471962AD91DBAD844DD247AA3@SAFEX1MAIL4.st.com>
+Subject: Re: [LTP] FW: Removed unused variables on getdelay.c file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,44 +21,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ARJIT SHARMA <joyarjit@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, ajay.khandelwal@st.com, hannuxx@gmail.com
+To: Francesco RUNDO <francesco.rundo@st.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Mon, Nov 8, 2010 at 10:40 PM, ARJIT SHARMA <joyarjit@gmail.com> wrote:
-> HI,
->
-> =A0=A0=A0=A0 Inside ltp/testcases/kernel/security/smack there is a shell =
-named
-> smack_common.sh, inside this script there is a function "check_onlycap"
-> which is giving error as :---
->
-> The smack label reported for /smack/onlycap is "", not the expected ""
-> why there is such problem and how can i overcome this?
->
-> i made a little change in the code but still the error is same:--
->
-> i wrote
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if [ !z "$onlycap" ];
->
-> instead of
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if [ -z "$onlycap" ];
->
-> inside check_onlycap() function.
+Hi!
+> Any updates about the issue related to getdelays.c file ?
+> Subrata,
+> Please, can you send me your feedback about the patch I want to submit for fixing the getdelays issue ?
 
-Fixed in a later version.
+Acked-by: Cyril Hrubis chrubis@suse.cz
 
----------------------------------------------------------------------------=
----
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a =
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Billion" shares his insights and actions to help propel your =
-
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
+------------------------------------------------------------------------------
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
