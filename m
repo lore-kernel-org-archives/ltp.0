@@ -1,32 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1PGS22-0005IF-9g
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 07:57:18 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PGS20-0003Xe-1i
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 07:57:18 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e6.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id oAB7w5Vj032318
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 02:58:05 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	oAB7vAec1658970
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 02:57:10 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	oAB7vA2n018666
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 02:57:10 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <000001cb816d$dbdec820$939c5860$@co.jp>
-References: <000001cb816d$dbdec820$939c5860$@co.jp>
-Date: Thu, 11 Nov 2010 13:27:04 +0530
-Message-Id: <1289462224.5622.37.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] About "realtime" build failure
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PJQdo-0006nd-KY
+	for ltp-list@lists.sourceforge.net; Fri, 19 Nov 2010 13:04:36 +0000
+Date: Fri, 19 Nov 2010 14:16:30 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101119131630.GC19564@saboteur.suse.cz>
+References: <000001cb798d$1aaa0210$4ffe0630$@co.jp>
+	<AANLkTiktyyfpSX+ZkOucGCNg2vSajcVPQ8Q60z4Uj8kh@mail.gmail.com>
+	<4CCE73A6.9020901@cn.fujitsu.com>
+	<AANLkTi=TyhLVZ5OOcRduBwvkxS3-u4f7A1W+bv+WO6Y1@mail.gmail.com>
+	<4CE4AD0D.1050501@cn.fujitsu.com>
+	<AANLkTim5JubFxad76akVJ7YOVs1V84gY=2TUVQ1KMkJz@mail.gmail.com>
+	<4CE4B2B6.4030408@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4CE4B2B6.4030408@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] fix "sigaction" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,91 +27,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ?c?? ???s <toza@ryobi.co.jp>, ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-SG93ZXZlciwgeWVzdGVyZGF5xZsgZ2l0IHRoZSBmYWlsdXJlIHdhcyBub3QgdGhlcmUuIEFuZCBo
-ZW5jZSB0aGUgcmVhc29uCmZvciBtZSB0byByZXBsYWNlIHRoZSBPY3RvYmVyIHRhci4KClJlZ2Fy
-ZHMtLQpTdWJyYXRhCgpPbiBUaHUsIDIwMTAtMTEtMTEgYXQgMTU6NTggKzA5MDAsIE1pdGFuaSB3
-cm90ZTogCj4gSGksCj4gCj4gQnVpbGQgZXJyb3Igb2NjdXJlZCB3aXRoIHJlY2VudCBnaXQgImx0
-cC1hOTk3Yzk0LnRhci5neiIuCj4gVGhpcyBmYWlsdXJlIHdhcyBjYXVzZWQgYnkgInJlYWx0aW1l
-IiBhcyBmb2xsb3dzOgo+IC0tLS0tLS0tLS0tLQo+IFtyb290QFJIRUw0OC1MVFAteDg2IExUUF0j
-IGxlc3MgZ2l0TU1ERC1tYWtlWVlZWU1NREQudHh0Cj4gWy4uLl0KPiBtYWtlWzFdOiBFbnRlcmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtYTk5N2M5NC9saWInCj4gZ2NjIC1nIC1PMiAtZyAt
-TzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgIC1JLi4vaW5jbHVkZQo+IC1JLi4v
-aW5jbHVkZSAgLQo+IGMgLW8gY2xvbmVyLm8gY2xvbmVyLmMKPiBnY2MgLWcgLU8yIC1nIC1PMiAt
-Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRlCj4gLUkuLi9pbmNs
-dWRlICAtCj4gYyAtbyBkYXRhYXNjaWkubyBkYXRhYXNjaWkuYwo+IGdjYyAtZyAtTzIgLWcgLU8y
-IC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4uL2luY2x1ZGUKPiAtSS4uL2lu
-Y2x1ZGUgIC0KPiBjIC1vIGRhdGFiaW4ubyBkYXRhYmluLmMKPiBnY2MgLWcgLU8yIC1nIC1PMiAt
-Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRlCj4gLUkuLi9pbmNs
-dWRlICAtCj4gYyAtbyBkYXRhcGlkLm8gZGF0YXBpZC5jCj4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZu
-by1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgIC1JLi4vaW5jbHVkZQo+IC1JLi4vaW5jbHVk
-ZSAgLQo+IGMgLW8gZmlsZV9sb2NrLm8gZmlsZV9sb2NrLmMKPiBnY2MgLWcgLU8yIC1nIC1PMiAt
-Zm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRlCj4gLUkuLi9pbmNs
-dWRlICAtCj4gYyAtbyBmb3JrZXIubyBmb3JrZXIuYwo+IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8t
-c3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4uL2luY2x1ZGUKPiAtSS4uL2luY2x1ZGUg
-IC0KPiBjIC1vIGdldF9oaWdoX2FkZHJlc3MubyBnZXRfaGlnaF9hZGRyZXNzLmMKPiBnY2MgLWcg
-LU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRl
-Cj4gLUkuLi9pbmNsdWRlICAtCj4gYyAtbyBnZXRfcGF0aC5vIGdldF9wYXRoLmMKPiBnY2MgLWcg
-LU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi9pbmNsdWRl
-Cj4gLUkuLi9pbmNsdWRlICAtCj4gYyAtbyBsaWJ0ZXN0c3VpdGUubyBsaWJ0ZXN0c3VpdGUuYwo+
-IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4u
-L2luY2x1ZGUKPiAtSS4uL2luY2x1ZGUgIC0KPiBjIC1vIG9wZW5fZmxhZ3MubyBvcGVuX2ZsYWdz
-LmMKPiAuLi5za2lwcGluZy4uLgo+IHAtYTk5N2M5NC90ZXN0Y2FzZXMvcmVhbHRpbWUvaW5jbHVk
-ZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPiAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPiAgICAtTC9o
-b21lL0xUUC9sdHAtYTk5N2M5NC90ZXN0Y2FzZXMvcmVhbHRpbWUvbGliIC1MLi4vLi4vLi4vLi4v
-bGliCj4gYXN5bmNfaGFuZGwKPiBlci5jICAgLWxyZWFsdGltZSAtbHB0aHJlYWQgLWxydCAtbG0g
-LW8gYXN5bmNfaGFuZGxlcgo+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBhc3luY19oYW5kbGVyLmM6
-NDI6Cj4gL2hvbWUvTFRQL2x0cC1hOTk3Yzk0L3Rlc3RjYXNlcy9yZWFsdGltZS9pbmNsdWRlL2xp
-YnJ0dGVzdC5oOiBJbiBmdW5jdGlvbgo+IGBhdG9taQo+IGNfYWRkJzoKPiAvaG9tZS9MVFAvbHRw
-LWE5OTdjOTQvdGVzdGNhc2VzL3JlYWx0aW1lL2luY2x1ZGUvbGlicnR0ZXN0Lmg6MTE3OiB3YXJu
-aW5nOgo+IGltcGxpCj4gY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIGBfX3N5bmNfYWRkX2Fu
-ZF9mZXRjaCcKPiAvaG9tZS9MVFAvbHRwLWE5OTdjOTQvdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi9s
-aWJyZWFsdGltZS5hKGxpYnJ0dGVzdC5vKSgudGV4Cj4gdCsweAo+IDFhNyk6IEluIGZ1bmN0aW9u
-IGBjcmVhdGVfdGhyZWFkJzoKPiAvaG9tZS9MVFAvbHRwLWE5OTdjOTQvdGVzdGNhc2VzL3JlYWx0
-aW1lL2xpYi8uLi9pbmNsdWRlL2xpYnJ0dGVzdC5oOjExNzoKPiB1bmRlZmluCj4gZWQgcmVmZXJl
-bmNlIHRvIGBfX3N5bmNfYWRkX2FuZF9mZXRjaCcKPiBjb2xsZWN0MjogbGQgcmV0dXJuZWQgMSBl
-eGl0IHN0YXR1cwo+IG1ha2VbNF06ICoqKiBbYXN5bmNfaGFuZGxlcl0gRXJyb3IgMQo+IG1ha2Vb
-NF06IExlYXZpbmcgZGlyZWN0b3J5Cj4gYC9ob21lL0xUUC9sdHAtYTk5N2M5NC90ZXN0Y2FzZXMv
-cmVhbHRpbWUvZnVuYy9hc3luY18KPiBoYW5kbGVyJwo+IG1ha2VbM106ICoqKiBbYWxsXSBFcnJv
-ciAyCj4gbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtYTk5N2M5NC90
-ZXN0Y2FzZXMvcmVhbHRpbWUvZnVuYycKPiBtYWtlWzJdOiAqKiogW2FsbF0gRXJyb3IgMgo+IG1h
-a2VbMl06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9MVFAvbHRwLWE5OTdjOTQvdGVzdGNhc2Vz
-L3JlYWx0aW1lJwo+IG1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyCj4gbWFrZVsxXTogTGVhdmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL0xUUC9sdHAtYTk5N2M5NC90ZXN0Y2FzZXMnCj4gbWFrZTogKioq
-IFt0ZXN0Y2FzZXMtYWxsXSBFcnJvciAyCj4gLS0tLS0tLS0tLS0tCj4gCj4gSSBjb25maXJtZWQg
-dGhhdCBhYm92ZSBlcnJvciBpcyBkaXNzb2x2ZWQgYnkgZm9sbG93aW5nIHJldmlzaW9uOgo+IC0t
-LS0tLS0tLS0tLQo+IFtyb290QFJIRUw0OC1MVFAteDg2IGx0cC1kZXYtMjAxMDExMTFdIyBkaWZm
-IC11IHRlc3RjYXNlcy9NYWtlZmlsZS5vcmcKPiB0ZXN0Y2FzZXMvTWFrZWZpbGUKPiAtLS0gdGVz
-dGNhc2VzL01ha2VmaWxlLm9yZyAgICAgIDIwMTAtMTEtMTEgMTQ6MjA6MDcuMDAwMDAwMDAwICsw
-OTAwCj4gKysrIHRlc3RjYXNlcy9NYWtlZmlsZSAgMjAxMC0xMS0xMSAxNDoyMToyNS4wMDAwMDAw
-MDAgKzA5MDAKPiBAQCAtMzcsNyArMzcsNyBAQAo+ICAjIG9yaWdpbmFsIGxpc3Qgb2YgZGlzYWJs
-ZWQgaXRlbXMuLi4KPiAgIyBYWFggKGdhcnJjb29wKToga2R1bXAgd2FzIGluIHRoaXMgbGlzdC4K
-PiAgIyBYWFggKGdhcnJjb29wKTogb3Blbl9ocGlfdGVzdHN1aXRlIHdhcyBpbiB0aGlzIGxpc3Qu
-Cj4gLWlmZXEgKCQoVUNMSU5VWCksMSkKPiAraWZuZXEgKCQoVUNMSU5VWCksMSkKPiAgRklMVEVS
-X09VVF9ESVJTICAgICAgICAgICAgICAgICs9IHJlYWx0aW1lCj4gIGVuZGlmCj4gCj4gLS0tLS0t
-LS0tLS0tCj4gCj4gSXMgcmVhbHRpbWUgbmVjZXNzYXJ5PyAKPiBQbGVhc2UgcmV2aXNlIGl0IGlm
-IHRoZXJlIGlzIG5vdCBwcm9ibGVtLgo+IAo+IAo+IFJlZ2FyZHMtLQo+IAo+IC1Ub21vbm9yaSBN
-aXRhbmkKPiAKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBDZW50cmFsaXplZCBEZXNr
-dG9wIERlbGl2ZXJ5OiBEZWxsIGFuZCBWTXdhcmUgUmVmZXJlbmNlIEFyY2hpdGVjdHVyZQo+IFNp
-bXBsaWZ5aW5nIGVudGVycHJpc2UgZGVza3RvcCBkZXBsb3ltZW50IGFuZCBtYW5hZ2VtZW50IHVz
-aW5nCj4gRGVsbCBFcXVhbExvZ2ljIHN0b3JhZ2UgYW5kIFZNd2FyZSBWaWV3OiBBIGhpZ2hseSBz
-Y2FsYWJsZSwgZW5kLXRvLWVuZAo+IGNsaWVudCB2aXJ0dWFsaXphdGlvbiBmcmFtZXdvcmsuIFJl
-YWQgbW9yZSEKPiBodHRwOi8vcC5zZi5uZXQvc2Z1L2RlbGwtZXFsLWRldjJkZXYKPiBfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1haWxp
-bmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCkNlbnRyYWxpemVkIERlc2t0b3AgRGVsaXZlcnk6IERlbGwgYW5kIFZNd2FyZSBSZWZl
-cmVuY2UgQXJjaGl0ZWN0dXJlClNpbXBsaWZ5aW5nIGVudGVycHJpc2UgZGVza3RvcCBkZXBsb3lt
-ZW50IGFuZCBtYW5hZ2VtZW50IHVzaW5nCkRlbGwgRXF1YWxMb2dpYyBzdG9yYWdlIGFuZCBWTXdh
-cmUgVmlldzogQSBoaWdobHkgc2NhbGFibGUsIGVuZC10by1lbmQKY2xpZW50IHZpcnR1YWxpemF0
-aW9uIGZyYW1ld29yay4gUmVhZCBtb3JlIQpodHRwOi8vcC5zZi5uZXQvc2Z1L2RlbGwtZXFsLWRl
-djJkZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
-LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
-L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hi!
+> >>>> ...
+> >>>>>>  int main()
+> >>>>>>  {
+> >>>>>> @@ -133,6 +152,12 @@
+> >>>>>>
+> >>>>>>        struct sigaction sa;
+> >>>>>>
+> >>>>>> +       /* Checking for Kernel Version */
+> >>>>>> +       if ( kernel_ver_cmp(2, 6, 21) != 0 )
+> >>>>>> +       {
+> >>>>>> +               UNTESTED( "sem_wait() returned EINTR on kernel versions
+> >>>>>> lower than 2.6.22" );
+> >>>>>> +       }
+> >>>>>> +
+> >>>>>>        /* Initialize output */
+> >>>>>>        output_init();
+> >>>>>>
+> >>>>>> ============
+> >>>>>>
+> >>>>>> Above patch is revision only for templates.
+> >>>>>> The following procedure is necessary after applying patch:
+> >>>>>> ------------
+> >>>>>> #cd testcases/open_posix_testsuite/conformance/interfaces/sigaction/
+> >>>>>> #./gentests.pl
+> >>>>>> ------------
+> >>>>>>
+> >>>>>> Similar revisions are necessary for other 25 "sigaction" tests.
+> >>>>>     Sorry, but Linux-isms can't leak into the open_posix_testsuite.
+> >>>>> Same with BSDisms (at least they shouldn't... if they do, then slap me
+> >>>>> or whoever did the commit).
+> >>>> Do you mean the culprit is Linux-isms?
+> >>> Mitani-san is proposing that I `fix' the testcases to work on RHEL
+> >>> 4.8. These testcases should function with minimal change for all
+> >>> versions of Unix.
+> >>>
+> >>  This open_posix_suite is the part of LTP(linux test project), must we
+> >> make sure it can work at all versions of unix?
+> > 
+> > I use it in FreeBSD and others have used it in other versions of Unix
+> > (in the past), based on the README. There's no reason why we need to
+> > maintain something that philosophically diverges from the upstream
+> > project's goal because it will make merging more painful and
+> > unnecessary.
+> > 
+> 
+>   OK, i get it. Thanks. ^_^
+> 
+>   Then, whether should we remove the following case, because it invokes
+>   the uname that it's not exsit at 4.3 BSD.
+>   conformance/interfaces/pthread_mutex_init/speculative/5-2.c
+> 
+
+The uname() is part of the POSIX, for sure it's available on BSD.
+
+Thinking of it, the patch that checks for kernel version only when
+sysname == Linux should compile and work. But the question here is if we
+want to bloat the tests with workarounds for broken systems. I would
+rather see this covered by a database of known issues, so you can easily
+copare results and read why your system is broken.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
