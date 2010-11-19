@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PJ98P-0002W4-NZ
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 18:23:01 +0000
-Date: Thu, 18 Nov 2010 19:34:51 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101118183451.GD19296@saboteur.suse.cz>
-References: <4CDB5E53.6070604@cn.fujitsu.com> <4CDB609E.105@cn.fujitsu.com>
-	<20101111150012.GC24599@saboteur.suse.cz>
-	<4CDCA2D6.1020106@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PJKta-0007W4-Pc
+	for ltp-list@lists.sourceforge.net; Fri, 19 Nov 2010 06:56:30 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PJKtX-0001LJ-Dd
+	for ltp-list@lists.sourceforge.net; Fri, 19 Nov 2010 06:56:30 +0000
+Message-ID: <4CE61F95.0@cn.fujitsu.com>
+Date: Fri, 19 Nov 2010 14:56:21 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CDCA2D6.1020106@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH 2/2][V2]Use aio_error instead signal hander
- at aio_suspend/4-1
+Subject: [LTP] [POSIX][PATCH]Instead sem_wait by fcntl for sigaction test.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,173 +25,309 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-Hi!
-> aio_suspend may be interrupted by IO request's completion signal, so we
-> should use aio_error instead signal hander to check whether this request
-> has complete.
-> 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-> 
-> ---
->  .../conformance/interfaces/aio_suspend/4-1.c       |   62 ++++++--------------
->  1 files changed, 18 insertions(+), 44 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-> index 260c26a..bb90234 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/4-1.c
-> @@ -41,19 +41,11 @@
->  #define BUF_SIZE	1024*1024
->  #define WAIT_FOR_AIOCB	6
->  
-> -int received_selected	= 0;
->  int received_all	= 0;
->  
->  void
->  sigrt1_handler(int signum, siginfo_t *info, void *context)
->  {
-> -	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
-> -		received_selected = 1;
-> -}
-> -
-> -void
-> -sigrt2_handler(int signum, siginfo_t *info, void *context)
-> -{
->  	received_all = 1;
->  }
->  
-> @@ -68,7 +60,7 @@ main ()
->  	char *bufs;
->  	struct sigaction action;
->  	struct sigevent event;
-> -	struct timespec ts = {0, 10000000}; /* 10 ms */
-> +	struct timespec ts = {0, 1000}; /* 1 us */
->  	int errors = 0;
->  	int ret;
->  	int err;
-> @@ -121,30 +113,19 @@ main ()
->  		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
->  		aiocbs[i]->aio_nbytes = BUF_SIZE;
->  		aiocbs[i]->aio_lio_opcode = LIO_READ;
-> -
-> -		/* Use SIRTMIN+1 for individual completions */
-> -		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
-> -		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
->  	}
->  
-> -	/* Use SIGRTMIN+2 for list completion */
-> +	/* Use SIGRTMIN+1 for list completion */
->  	event.sigev_notify = SIGEV_SIGNAL;
-> -	event.sigev_signo = SIGRTMIN+2;
-> +	event.sigev_signo = SIGRTMIN+1;
->  	event.sigev_value.sival_ptr = NULL;
->  
-> -	/* Setup handler for individual operation completion */
-> +	/* Setup handler for list completion */
->  	action.sa_sigaction = sigrt1_handler;
->  	sigemptyset(&action.sa_mask);
->  	action.sa_flags = SA_SIGINFO|SA_RESTART;
->  	sigaction(SIGRTMIN+1, &action, NULL);
->  
-> -	/* Setup handler for list completion */
-> -	action.sa_sigaction = sigrt2_handler;
-> -	sigemptyset(&action.sa_mask);
-> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
-> -	sigaction(SIGRTMIN+2, &action, NULL);
-> -
->  	/* Setup suspend list */
->  	plist[0] = NULL;
->  	plist[1] = aiocbs[WAIT_FOR_AIOCB];
-> @@ -153,7 +134,8 @@ main ()
->  	ret = lio_listio(LIO_NOWAIT, aiocbs, NUM_AIOCBS, &event);
->  
->  	if (ret) {
-> -		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
-> +		printf (TNAME " Error at lio_listio() %d: %s\n",
-> +			errno, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
+Some days before, mitani-san reported some sigaction test failed at linux,
+http://sourceforge.net/mailarchive/message.php?msg_id=000001cb798d%241aaa0210%244ffe0630%24%40co.jp
 
-Once again, space here.
+As Garrett said, add Linux-isms is not advisably. So i want try to fix it by another method.
 
-> @@ -163,9 +145,10 @@ main ()
->  	}
->  
->  	/* Check selected request has not completed yet */
-> -	if (received_selected) {
-> -		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
-> -			WAIT_FOR_AIOCB);
-> +	err = aio_error(aiocbs[WAIT_FOR_AIOCB]);
-> +	if (err !=  EINPROGRESS) {
-> +		printf (TNAME " Error : AIOCB %d should not have completed "
-> +			"before suspend\n", WAIT_FOR_AIOCB);
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-...
->		exit(PTS_FAIL);
->	}
+I have seen the assertions.xml, these tests want to test sigaction with SA_RESTART
+not sem_wait(it looks like there's a bug at older linux kernel), so i suggest to
+instead sem_wait by fcntl.
 
-Spaces after printf and free.
+What about this one?  If you agree with me, i will post other patchs.
 
-And the same problem with relying on AIO operation not finished yet. So
-I propose to change this PTS_FAIL to PTS_UNRESOLVED.
+-------------------------------------------------------------------------------------
+At older linux kernel(2.6.22 before), a signal handler always interrupts a
+blocked call to sem_wait, regardless of the use of the sigaction
+SA_RESTART flag. So instead it by fcntl.
 
-> @@ -177,21 +160,10 @@ main ()
->  	/* Suspend on selected request */
->  	ret = aio_suspend((const struct aiocb **)plist, 2, &ts);
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-Useless cast.
+---
+ .../conformance/interfaces/sigaction/16-1.c        |  201 ++++++++++----------
+ 1 files changed, 103 insertions(+), 98 deletions(-)
 
-> -	/* Check selected request has not completed */
-> -	if (received_selected) {
-> -		printf (TNAME " Error : AIOCB %d should not have completed after timed out suspend\n",
-> -			WAIT_FOR_AIOCB);
-> -		for (i=0; i<NUM_AIOCBS; i++)
-> -			free (aiocbs[i]);
-> -		free (bufs);
-> -		free (aiocbs);
-> -		close (fd);
-> -		exit (PTS_FAIL);
-> -	}
-> -
->  	/* timed out aio_suspend should return -1 and set errno to EAGAIN */
-> -	if (ret != -1) {
-> -		printf (TNAME " aio_suspend() should return -1\n");
-> +	if (ret != -1 || errno != EAGAIN) {
-> +		printf (TNAME " aio_suspend() should return -1 and set errno "
-> +			"to EAGAIN: %d, %s\n", ret, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
-> @@ -200,9 +172,11 @@ main ()
->  		exit (PTS_FAIL);
->  	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
+index 706dbfc..752dcb9 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
+@@ -21,14 +21,15 @@
+ * shall restart silently.
+ 
+ * The steps are:
+-* -> create a child thread 
+-* -> child registers a handler for SIGABRT with SA_RESTART, then waits for the semaphore
+-* -> parent kills the child with SIGABRT, then post the semaphore.
++* -> acquired a file lock
++* -> create a child process
++* -> child registers a handler for SIGABRT with SA_RESTART, then blocked at fcntl
++* -> parent kills the child with SIGABRT, then release the lock
+ 
+-* The test fails if the sem_wait function returns EINTR
++* The test fails if the fcntl function returns EINTR
+ 
+ *Note:
+-This test uses sem_wait to check if EINTR is returned. As the function is not required to
++This test uses fcntl to check if EINTR is returned. As the function is not required to
+ fail with EINTR, the test may return PASS and the feature not be correct (false positive).
+ Anyway, a false negative status cannot be returned.
+ 
+@@ -51,9 +52,11 @@ Anyway, a false negative status cannot be returned.
+ #include <string.h>
+ #include <unistd.h>
+ 
+-#include <semaphore.h>
+ #include <signal.h>
+ #include <errno.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
+ 
+ /******************************************************************************/
+ /***************************   Test framework   *******************************/
+@@ -92,128 +95,130 @@ Anyway, a false negative status cannot be returned.
+ /***************************    Test case   ***********************************/
+ /******************************************************************************/
+ 
+-volatile sig_atomic_t caught = 0;
+-sem_t sem;
+-
+ /* Handler function */
+ void handler( int signo )
+ {
+ 	printf( "Caught signal %d\n", signo );
+-	caught++;
+-}
+-
+-/* Thread function */
+-void * threaded ( void * arg )
+-{
+-	int ret = 0;
+-
+-	ret = sem_wait( &sem );
+-
+-	if ( ret != 0 )
+-	{
+-		if ( errno == EINTR )
+-		{
+-			FAILED( "The function returned EINTR while SA_RESTART is set" );
+-		}
+-		else
+-		{
+-			UNRESOLVED( errno, "sem_wait failed" );
+-		}
+-	}
+-
+-	return NULL;
+ }
+ 
+ /* main function */
+ int main()
+ {
+ 	int ret;
+-	pthread_t child;
+-
++	pid_t pid;
++	int lockfd;
++	struct flock fl;
++	char tmpfname[256];
++	int status; 
+ 
+-	struct sigaction sa;
++	snprintf(tmpfname, sizeof(tmpfname), "/tmp/sigaction_16_1_%d", getpid());
++	unlink(tmpfname);
+ 
+ 	/* Initialize output */
+ 	output_init();
+ 
+-	/* Set the signal handler */
+-	sa.sa_flags = SA_RESTART;
+-	sa.sa_handler = handler;
+-	ret = sigemptyset( &sa.sa_mask );
+-
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( ret, "Failed to empty signal set" );
+-	}
+-
+-	/* Install the signal handler for SIGNAL */
+-	ret = sigaction( SIGNAL, &sa, 0 );
+-
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( ret, "Failed to set signal handler" );
++	/*create a tmp file for test.*/
++	lockfd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
++	if (lockfd == -1) {
++		printf("Error at create file: %s\n", strerror(errno));
++		return PTS_UNRESOLVED;
+ 	}
+-
+-	/* Initialize the semaphore */
+-	ret = sem_init( &sem, 0, 0 );
+-
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( ret, "Failed to init a semaphore" );
++	unlink(tmpfname);
++
++	/* lock the file first */
++	memset(&fl, 0, sizeof(struct flock));
++	fl.l_type = F_WRLCK;
++	fl.l_whence = SEEK_SET;
++	fl.l_start = 0;
++	fl.l_len = 0;
++	fl.l_pid = getpid();
++	if (-1 == fcntl(lockfd, F_SETLKW, &fl)) {
++		printf("Failed to acquire write lock: %s\n", strerror(errno));
++		return PTS_UNRESOLVED;
+ 	}
+ 
+-	/* Create the child thread */
+-	ret = pthread_create( &child, NULL, threaded, NULL );
+-
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( ret, "Failed to create a child thread" );
+-	}
+-
+-	/* Let the child thread enter the wait routine...
+-	  we use sched_yield as there is no certain way to test that the child
+-	  is waiting for the semaphore... */
+-	sched_yield();
++	pid = fork();
++	if (pid < 0) {
++		printf("Failed to fork: %s\n", strerror(errno));
++		return PTS_UNRESOLVED;
++	} else if (pid == 0) {
++		struct sigaction sa;
++
++		/* Set the signal handler */
++		sa.sa_flags = SA_RESTART;
++		sa.sa_flags = 0;
++		sa.sa_handler = handler;
++
++		ret = sigemptyset(&sa.sa_mask);
++		if(ret != 0) {
++			printf("Failed to empty signal set: %s\n",
++				strerror(errno));
++			exit(PTS_UNRESOLVED);
++		}
+ 
+-	sched_yield();
++		/* Install the signal handler for SIGNAL */
++		ret = sigaction(SIGNAL, &sa, 0);
++		if (ret != 0) {
++			printf("Failed to set signal handler: %s\n",
++				strerror(errno));
++			exit(PTS_UNRESOLVED);
++		}
+ 
+-	sched_yield();
++		/* block self */
++		memset(&fl, 0, sizeof(struct flock));
++		fl.l_type = F_WRLCK;
++		fl.l_whence = SEEK_SET;
++		fl.l_start = 0;
++		fl.l_len = 0;
++		fl.l_pid = getpid();
++
++		if (-1 == fcntl(lockfd, F_SETLKW, &fl)) {
++			if (errno == EINTR) {
++				printf("The function returned EINTR while "
++				       "SA_RESTART is set\n");
++			} else {
++				printf("Failed with unexpected error: %s\n",
++				       strerror(errno));
++			}
++			exit(PTS_FAIL);
++		}
+ 
+-	/* Ok, now kill the child */
+-	ret = pthread_kill( child, SIGNAL );
++		fl.l_type = F_UNLCK;
++		if (-1 == fcntl(lockfd, F_SETLKW, &fl)) {
++			printf("Failed to remove lock: %s\n", strerror(errno));
++			exit(PTS_UNRESOLVED);
++		}
+ 
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( ret, "Failed to kill the child thread" );
++		exit(PTS_PASS);
+ 	}
+ 
+-	/* wait that the child receives the signal */
+-	while ( !caught )
+-		sched_yield();
++	/* make sure child has blocked at fcntl */
++	sleep(2);
+ 
+-	/* Now let the child run and terminate */
+-	ret = sem_post( &sem );
++	kill(pid, SIGNAL);
+ 
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( errno, "Failed to post the semaphore" );
+-	}
++	/* make sure fcntl has enough time to restart */
++	sleep(2);
+ 
+-	ret = pthread_join( child, NULL );
+-
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( ret, "Failed to join the thread" );
++	/* release lock to make sure child can acquire it */
++	fl.l_type = F_UNLCK;
++	if (fcntl(lockfd, F_SETLKW, &fl) == -1) {
++		printf("Failed to remove lock: %s\n", strerror(errno));
++		return PTS_UNRESOLVED;
+ 	}
+ 
+-	/* terminate */
+-	ret = sem_destroy( &sem );
+-
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( ret, "Failed to destroy the semaphore" );
++	ret = waitpid(pid, &status, 0);
++	if (ret != pid) {
++		printf("Failed to waitpid\n");
++		return PTS_UNRESOLVED;
+ 	}
+ 
++	if (WIFEXITED(status)) {
++		if ((ret = WEXITSTATUS(status)) != PTS_PASS)
++			return ret;
++	} else {
++		return PTS_UNRESOLVED;
++	}
+ 
+ 	/* Test passed */
+ #if VERBOSE > 0
+@@ -222,5 +227,5 @@ int main()
+ 
+ #endif
+ 
+-	PASSED;
++	return PTS_PASS;
+ }
+-- 
+1.7.0.4
 
-Spaces after free and exit.
 
-> -	if (errno != EAGAIN) {
-> -		printf (TNAME " aio_suspend() should set errno to EAGAIN: %d (%s)\n",
-> -			errno, strerror (errno));
-> +	/* Check selected request has not completed */
-> +	err = aio_error(aiocbs[WAIT_FOR_AIOCB]);
-> +	if (err !=  EINPROGRESS) {
-> +		printf (TNAME " Error : AIOCB %d should not have completed "
-> +			"after timed out suspend\n", WAIT_FOR_AIOCB);
->  		for (i=0; i<NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
->  		free (bufs);
 
-And here spaces after printf and free.
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards
+Bian Naimeng
+
 
 ------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
