@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PDCrQ-00027n-OW
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 09:08:56 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PDCrO-0008CZ-Qw
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 09:08:56 +0000
-Message-ID: <4CCFD4C8.8060007@cn.fujitsu.com>
-Date: Tue, 02 Nov 2010 17:07:20 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PJPmr-00039i-Cm
+	for ltp-list@lists.sourceforge.net; Fri, 19 Nov 2010 12:09:53 +0000
+Date: Fri, 19 Nov 2010 13:21:45 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101119122145.GB19564@saboteur.suse.cz>
+References: <4CE61F95.0@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [POSIX][PATCH]pthread_mutex_getprioceiling should return
- EINVAl when mutex's protocol is PTHREAD_PRIO_NONE.
+Content-Disposition: inline
+In-Reply-To: <4CE61F95.0@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX][PATCH]Instead sem_wait by fcntl for sigaction
+ test.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +25,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-The default value of the mutex's protocol shall be PTHREAD_PRIO_NONE, 
-so pthread_mutex_getprioceiling should return EINVAL.
+Hi!
+> Some days before, mitani-san reported some sigaction test failed at linux,
+> http://sourceforge.net/mailarchive/message.php?msg_id=000001cb798d%241aaa0210%244ffe0630%24%40co.jp
+> 
+> As Garrett said, add Linux-isms is not advisably. So i want try to fix it by another method.
+> 
+> I have seen the assertions.xml, these tests want to test sigaction with SA_RESTART
+> not sem_wait(it looks like there's a bug at older linux kernel), so i suggest to
+> instead sem_wait by fcntl.
+> 
+> What about this one?  If you agree with me, i will post other patchs.
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+As far as I understand this, you are trying to avoid a fact, that older
+kernels are not comforming to the POSIX specification. This is a case
+where the test is failing for a good reason, all we could do here is
+print message like:
 
----
- .../interfaces/pthread_mutex_getprioceiling/1-1.c  |   30 ++++++++++++++++++++
- 1 files changed, 30 insertions(+), 0 deletions(-)
+"this test is known to fail on linux kernel < 2.6.22"
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
-index d9251e6..65c8c6b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/1-1.c
-@@ -18,6 +18,7 @@
- #include <pthread.h>
- #include <stdio.h>
- #include <sched.h>
-+#include <errno.h>
- #include "posixtest.h"
- 
- int main()
-@@ -29,6 +30,7 @@ int main()
- 	  return PTS_UNRESOLVED;	
- 	#endif */
- 
-+	pthread_mutexattr_t mattr;
- 	pthread_mutex_t mutex;
- 	int prioceiling, max_prio, min_prio;
- 	
-@@ -40,6 +42,34 @@ int main()
- 	}
- 	
- 	/* Get the prioceiling of the mutex. */
-+	if(pthread_mutex_getprioceiling(&mutex, &prioceiling) != EINVAL)
-+	{
-+		printf("Test FAILED: Default, the protocol attribute of mutex "
-+		       "is PTHREAD_PRIO_NONE, so pthread_mutex_getprioceiling "
-+		       "should return EINVAL\n");
-+		return PTS_FAIL;
-+	}
-+
-+	if (pthread_mutexattr_init(&mattr) != 0)
-+	{
-+		perror("Error at pthread_mutexattr_init()\n");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	if (pthread_mutexattr_setprotocol(&mattr, PTHREAD_PRIO_PROTECT) != 0)
-+	{
-+		perror("Error at pthread_mutexattr_setprotocol()\n");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	/* Initialize a mutex object */
-+	if(pthread_mutex_init(&mutex, &mattr) != 0)
-+	{
-+		perror("Error at pthread_mutex_init()\n");
-+		return PTS_UNRESOLVED;
-+	}
-+	
-+	/* Get the prioceiling of the mutex. */
- 	if(pthread_mutex_getprioceiling(&mutex, &prioceiling) != 0)
- 	{
- 		printf("Test FAILED: Error obtaining the priority ceiling\n");
--- 
-1.7.0.4
+Before the test reports failure.
 
 
+On the other end I do not object to adding test for file locks with
+SA_RESTART. But you should not remove the sem_lock() test (as it's not
+broken).
 
 -- 
-Regards
-Bian Naimeng
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
