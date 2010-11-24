@@ -1,20 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PGOQG-00036v-Q1
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 04:06:04 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PGOQB-0000x6-R2
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 04:06:04 +0000
-Message-ID: <4CDB6BB4.3010004@cn.fujitsu.com>
-Date: Thu, 11 Nov 2010 12:06:12 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tyrlik@us.ibm.com>) id 1PLDDA-0001fj-S0
+	for ltp-list@lists.sourceforge.net; Wed, 24 Nov 2010 11:08:28 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PLDD9-0007RW-7T
+	for ltp-list@lists.sourceforge.net; Wed, 24 Nov 2010 11:08:28 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e32.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id oAOAwwET007410
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Nov 2010 03:58:58 -0700
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	oAOB8JRj262544
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Nov 2010 04:08:19 -0700
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id oAOB8IPx020775
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Nov 2010 04:08:18 -0700
+Received: from d03nm126.boulder.ibm.com (d03nm126.boulder.ibm.com
+	[9.17.195.152])
+	by d03av04.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	oAOB8Ifl020739
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Nov 2010 04:08:18 -0700
+From: Matt Tyrlik <tyrlik@us.ibm.com>
+Message-ID: <OFF5A5C259.9187D9E1-ON872577E5.003D2EFE-872577E5.003D2EFF@us.ibm.com>
+Date: Wed, 24 Nov 2010 04:08:17 -0700
 MIME-Version: 1.0
-References: <4CDB6AEC.9090604@cn.fujitsu.com>
-In-Reply-To: <4CDB6AEC.9090604@cn.fujitsu.com>
-Subject: [LTP]  [POSIX][PATCH 1/4]Get rid of aio_suspend/6-1
+Subject: [LTP] AUTO: Matt Tyrlik/Raleigh/IBM is out of the office until
+ 08/08/2002. (returning 11/29/2010)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,117 +40,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5281363835396781464=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-YWlvX3N1c3BlbmQvNi0xIGlzIHNhbWUgYXMgMS0x77yMc28gcmVtb3ZlIGl0LgoKU2lnbmVkLW9m
-Zi1ieTogQmlhbiBOYWltZW5nIDxiaWFubm1AY24uZnVqaXRzdS5jb20+CgotLS0KIC4uLi9jb25m
-b3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19zdXNwZW5kLzYtMS5jICAgICAgIHwgIDIxNyAtLS0tLS0t
-LS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAwIGluc2VydGlvbnMoKyksIDIxNyBkZWxl
-dGlvbnMoLSkKIGRlbGV0ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fc3VzcGVuZC82LTEuYwoKZGlmZiAtLWdpdCBh
-L3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fp
-b19zdXNwZW5kLzYtMS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1h
-bmNlL2ludGVyZmFjZXMvYWlvX3N1c3BlbmQvNi0xLmMKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0
-CmluZGV4IGJjNDY0YzguLjAwMDAwMDAKLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1
-aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3N1c3BlbmQvNi0xLmMKKysrIC9kZXYvbnVs
-bApAQCAtMSwyMTcgKzAsMCBAQAotLyoKLSAqIENvcHlyaWdodCAoYykgMjAwNCwgQnVsbCBTQS4g
-QWxsIHJpZ2h0cyByZXNlcnZlZC4KLSAqIENyZWF0ZWQgYnk6ICBMYXVyZW50LlZpdmllckBidWxs
-Lm5ldAotICogVGhpcyBmaWxlIGlzIGxpY2Vuc2VkIHVuZGVyIHRoZSBHUEwgbGljZW5zZS4gIEZv
-ciB0aGUgZnVsbCBjb250ZW50Ci0gKiBvZiB0aGlzIGxpY2Vuc2UsIHNlZSB0aGUgQ09QWUlORyBm
-aWxlIGF0IHRoZSB0b3AgbGV2ZWwgb2YgdGhpcyAKLSAqIHNvdXJjZSB0cmVlLgotICovCi0KLS8q
-Ci0gKiBhc3NlcnRpb246Ci0gKgotICoJYWlvX3N1cGVuZCgpIHNoYWxsIHJldHVybiB6ZXJvIGFm
-dGVyIG9uZSBvciBtb3JlIEFJTyBvcGVyYXRpb25zIGhhdmUgCi0gKgljb21wbGV0ZWQuCi0gKgot
-ICogbWV0aG9kOgotICoKLSAqCS0gd3JpdGUgdG8gYSBmaWxlCi0gKgktIHN1Ym1pdCBhIGxpc3Qg
-b2YgcmVhZCByZXF1ZXN0cwotICoJLSBzdXNwZW5kIG9uIGEgc2VsZWN0ZWQgcmVxdWVzdAotICoJ
-LSBjaGVjayByZXR1cm4gY29kZQotICoKLSAqLwotCi0jZGVmaW5lIF9YT1BFTl9TT1VSQ0UgNjAw
-Ci0jaW5jbHVkZSA8c3lzL3N0YXQuaD4KLSNpbmNsdWRlIDxhaW8uaD4KLSNpbmNsdWRlIDxlcnJu
-by5oPgotI2luY2x1ZGUgPGZjbnRsLmg+Ci0jaW5jbHVkZSA8c2lnbmFsLmg+Ci0jaW5jbHVkZSA8
-c3RkaW8uaD4KLSNpbmNsdWRlIDxzdGRsaWIuaD4KLSNpbmNsdWRlIDxzdHJpbmcuaD4KLSNpbmNs
-dWRlIDx1bmlzdGQuaD4KLQotI2luY2x1ZGUgInBvc2l4dGVzdC5oIgotCi0jZGVmaW5lIFROQU1F
-ICJhaW9fc3VzcGVuZC82LTEuYyIKLQotI2RlZmluZSBOVU1fQUlPQ0JTCTEwCi0jZGVmaW5lIEJV
-Rl9TSVpFCTEwMjQqMTAyNAotI2RlZmluZSBXQUlUX0ZPUl9BSU9DQgk2Ci0KLWludCByZWNlaXZl
-ZF9zZWxlY3RlZAk9IDA7Ci1pbnQgcmVjZWl2ZWRfYWxsCT0gMDsKLQotdm9pZAotc2lncnQxX2hh
-bmRsZXIoaW50IHNpZ251bSwgc2lnaW5mb190ICppbmZvLCB2b2lkICpjb250ZXh0KQotewotCWlm
-IChpbmZvLT5zaV92YWx1ZS5zaXZhbF9pbnQgPT0gV0FJVF9GT1JfQUlPQ0IpCi0JCXJlY2VpdmVk
-X3NlbGVjdGVkID0gMTsKLX0KLQotdm9pZAotc2lncnQyX2hhbmRsZXIoaW50IHNpZ251bSwgc2ln
-aW5mb190ICppbmZvLCB2b2lkICpjb250ZXh0KQotewotCXJlY2VpdmVkX2FsbCA9IDE7Ci19Ci0K
-LWludAotbWFpbiAoKQotewotCWNoYXIgdG1wZm5hbWVbMjU2XTsKLQlpbnQgZmQ7Ci0KLQlzdHJ1
-Y3QgYWlvY2IgKiphaW9jYnM7Ci0Jc3RydWN0IGFpb2NiICpwbGlzdFsyXTsKLQljaGFyICpidWZz
-OwotCXN0cnVjdCBzaWdhY3Rpb24gYWN0aW9uOwotCXN0cnVjdCBzaWdldmVudCBldmVudDsKLQlp
-bnQgZXJyb3JzID0gMDsKLQlpbnQgcmV0OwotCWludCBlcnI7Ci0JaW50IGk7Ci0KLQlpZiAoc3lz
-Y29uZihfU0NfQVNZTkNIUk9OT1VTX0lPKSAhPSAyMDAxMTJMKQotCQlyZXR1cm4gUFRTX1VOU1VQ
-UE9SVEVEOwotCi0Jc25wcmludGYodG1wZm5hbWUsIHNpemVvZih0bXBmbmFtZSksICIvdG1wL3B0
-c19haW9fc3VzcGVuZF82XzFfJWQiLCAKLQkJICBnZXRwaWQoKSk7Ci0JdW5saW5rKHRtcGZuYW1l
-KTsKLQotCWZkID0gb3Blbih0bXBmbmFtZSwgT19DUkVBVCB8IE9fUkRXUiB8IE9fRVhDTCwgU19J
-UlVTUiB8IFNfSVdVU1IpOwotCi0JaWYgKGZkID09IC0xKSB7Ci0JCXByaW50ZihUTkFNRSAiIEVy
-cm9yIGF0IG9wZW4oKTogJXNcbiIsCi0JCSAgICAgICBzdHJlcnJvcihlcnJubykpOwotCQlleGl0
-KFBUU19VTlJFU09MVkVEKTsKLQl9Ci0KLQl1bmxpbmsodG1wZm5hbWUpOwotCi0JYnVmcyA9IChj
-aGFyICopIG1hbGxvYyAoTlVNX0FJT0NCUypCVUZfU0laRSk7Ci0KLQlpZiAoYnVmcyA9PSBOVUxM
-KSB7Ci0JCXByaW50ZiAoVE5BTUUgIiBFcnJvciBhdCBtYWxsb2MoKTogJXNcbiIsIHN0cmVycm9y
-IChlcnJubykpOwotCQljbG9zZSAoZmQpOwotCQlleGl0KFBUU19VTlJFU09MVkVEKTsKLQl9Ci0K
-LQlpZiAod3JpdGUgKGZkLCBidWZzLCBOVU1fQUlPQ0JTKkJVRl9TSVpFKSAhPSAoTlVNX0FJT0NC
-UypCVUZfU0laRSkpIHsKLQkJcHJpbnRmKFROQU1FICIgRXJyb3IgYXQgd3JpdGUoKTogJXNcbiIs
-IHN0cmVycm9yKGVycm5vKSk7Ci0JCWZyZWUgKGJ1ZnMpOwotCQljbG9zZSAoZmQpOwotCQlleGl0
-KFBUU19VTlJFU09MVkVEKTsKLQl9Ci0KLQotCi0JYWlvY2JzID0gKHN0cnVjdCBhaW9jYioqKW1h
-bGxvYyhzaXplb2Yoc3RydWN0IGFpb2NiICopICogTlVNX0FJT0NCUyk7Ci0KLQkvKiBRdWV1ZSB1
-cCBhIGJ1bmNoIG9mIGFpbyByZWFkcyAqLwotCWZvciAoaSA9IDA7IGkgPCBOVU1fQUlPQ0JTOyBp
-KyspIHsKLQotCQlhaW9jYnNbaV0gPSAoc3RydWN0IGFpb2NiKiltYWxsb2Moc2l6ZW9mKHN0cnVj
-dCBhaW9jYikpOwotCQltZW1zZXQoYWlvY2JzW2ldLCAwLCBzaXplb2Yoc3RydWN0IGFpb2NiKSk7
-Ci0KLQkJYWlvY2JzW2ldLT5haW9fZmlsZGVzID0gZmQ7Ci0JCWFpb2Nic1tpXS0+YWlvX29mZnNl
-dCA9IGkgKiBCVUZfU0laRTsKLQkJYWlvY2JzW2ldLT5haW9fYnVmID0gJmJ1ZnNbaSpCVUZfU0la
-RV07Ci0JCWFpb2Nic1tpXS0+YWlvX25ieXRlcyA9IEJVRl9TSVpFOwotCQlhaW9jYnNbaV0tPmFp
-b19saW9fb3Bjb2RlID0gTElPX1JFQUQ7Ci0KLQkJLyogVXNlIFNJUlRNSU4rMSBmb3IgaW5kaXZp
-ZHVhbCBjb21wbGV0aW9ucyAqLwotCQlhaW9jYnNbaV0tPmFpb19zaWdldmVudC5zaWdldl9ub3Rp
-ZnkgPSBTSUdFVl9TSUdOQUw7Ci0JCWFpb2Nic1tpXS0+YWlvX3NpZ2V2ZW50LnNpZ2V2X3NpZ25v
-ID0gU0lHUlRNSU4rMTsKLQkJYWlvY2JzW2ldLT5haW9fc2lnZXZlbnQuc2lnZXZfdmFsdWUuc2l2
-YWxfaW50ID0gaTsKLQl9Ci0KLQkvKiBVc2UgU0lHUlRNSU4rMiBmb3IgbGlzdCBjb21wbGV0aW9u
-ICovCi0JZXZlbnQuc2lnZXZfbm90aWZ5ID0gU0lHRVZfU0lHTkFMOwotCWV2ZW50LnNpZ2V2X3Np
-Z25vID0gU0lHUlRNSU4rMjsKLQlldmVudC5zaWdldl92YWx1ZS5zaXZhbF9wdHIgPSBOVUxMOwot
-Ci0JLyogU2V0dXAgaGFuZGxlciBmb3IgaW5kaXZpZHVhbCBvcGVyYXRpb24gY29tcGxldGlvbiAq
-LwotCWFjdGlvbi5zYV9zaWdhY3Rpb24gPSBzaWdydDFfaGFuZGxlcjsKLQlzaWdlbXB0eXNldCgm
-YWN0aW9uLnNhX21hc2spOwotCWFjdGlvbi5zYV9mbGFncyA9IFNBX1NJR0lORk98U0FfUkVTVEFS
-VDsKLQlzaWdhY3Rpb24oU0lHUlRNSU4rMSwgJmFjdGlvbiwgTlVMTCk7Ci0KLQkvKiBTZXR1cCBo
-YW5kbGVyIGZvciBsaXN0IGNvbXBsZXRpb24gKi8KLQlhY3Rpb24uc2Ffc2lnYWN0aW9uID0gc2ln
-cnQyX2hhbmRsZXI7Ci0Jc2lnZW1wdHlzZXQoJmFjdGlvbi5zYV9tYXNrKTsKLQlhY3Rpb24uc2Ff
-ZmxhZ3MgPSBTQV9TSUdJTkZPfFNBX1JFU1RBUlQ7Ci0Jc2lnYWN0aW9uKFNJR1JUTUlOKzIsICZh
-Y3Rpb24sIE5VTEwpOwotCi0JLyogU2V0dXAgc3VzcGVuZCBsaXN0ICovCi0JcGxpc3RbMF0gPSBO
-VUxMOwotCXBsaXN0WzFdID0gYWlvY2JzW1dBSVRfRk9SX0FJT0NCXTsKLQotCS8qIFN1Ym1pdCBy
-ZXF1ZXN0IGxpc3QgKi8KLQlyZXQgPSBsaW9fbGlzdGlvKExJT19OT1dBSVQsIGFpb2NicywgTlVN
-X0FJT0NCUywgJmV2ZW50KTsKLQotCWlmIChyZXQpIHsKLQkJcHJpbnRmKFROQU1FICIgRXJyb3Ig
-YXQgbGlvX2xpc3RpbygpICVkOiAlc1xuIiwgZXJybm8sIHN0cmVycm9yKGVycm5vKSk7Ci0JCWZv
-ciAoaT0wOyBpPE5VTV9BSU9DQlM7IGkrKykKLQkJCWZyZWUgKGFpb2Nic1tpXSk7Ci0JCWZyZWUg
-KGJ1ZnMpOwotCQlmcmVlIChhaW9jYnMpOwotCQljbG9zZSAoZmQpOwotCQlleGl0IChQVFNfVU5S
-RVNPTFZFRCk7Ci0JfQotCi0JLyogU3VzcGVuZCBvbiBzZWxlY3RlZCByZXF1ZXN0ICovCi0JcmV0
-ID0gYWlvX3N1c3BlbmQoKGNvbnN0IHN0cnVjdCBhaW9jYiAqKilwbGlzdCwgMiwgTlVMTCk7Ci0K
-LQkvKiBDaGVjayBzZWxlY3RlZCByZXF1ZXN0IGhhcyBjb21wbGV0ZWQgKi8KLQlpZiAoIXJlY2Vp
-dmVkX3NlbGVjdGVkKSB7Ci0JCXByaW50ZiAoVE5BTUUgIiBFcnJvciA6IEFJT0NCICVkIHNob3Vs
-ZCBoYXZlIGNvbXBsZXRlZCBhZnRlciBzdXNwZW5kXG4iLAotCQkJV0FJVF9GT1JfQUlPQ0IpOwot
-CQlmb3IgKGk9MDsgaTxOVU1fQUlPQ0JTOyBpKyspCi0JCQlmcmVlIChhaW9jYnNbaV0pOwotCQlm
-cmVlIChidWZzKTsKLQkJZnJlZSAoYWlvY2JzKTsKLQkJY2xvc2UgKGZkKTsKLQkJZXhpdCAoUFRT
-X0ZBSUwpOwotCX0KLQotCi0JaWYgKHJldCkgewotCQlwcmludGYgKFROQU1FICIgRXJyb3IgYXQg
-YWlvX3N1c3BlbmQoKSAlZDogJXNcbiIsIGVycm5vLCBzdHJlcnJvciAoZXJybm8pKTsKLQkJZm9y
-IChpPTA7IGk8TlVNX0FJT0NCUzsgaSsrKQotCQkJZnJlZSAoYWlvY2JzW2ldKTsKLQkJZnJlZSAo
-YnVmcyk7Ci0JCWZyZWUgKGFpb2Nicyk7Ci0JCWNsb3NlIChmZCk7Ci0JCWV4aXQgKFBUU19GQUlM
-KTsKLQl9Ci0KLQkvKiBXYWl0IGZvciBsaXN0IHByb2Nlc3NpbmcgY29tcGxldGlvbiAqLwotCXdo
-aWxlICghcmVjZWl2ZWRfYWxsKQotCQlzbGVlcCAoMSk7Ci0KLQkvKiBDaGVjayByZXR1cm4gY29k
-ZSBhbmQgZnJlZSB0aGluZ3MgKi8KLQlmb3IgKGkgPSAwOyBpIDwgTlVNX0FJT0NCUzsgaSsrKSB7
-Ci0JICAJZXJyID0gYWlvX2Vycm9yKGFpb2Nic1tpXSk7Ci0JCXJldCA9IGFpb19yZXR1cm4oYWlv
-Y2JzW2ldKTsKLQotCQlpZiAoKGVyciAhPSAwKSAmJiAocmV0ICE9IEJVRl9TSVpFKSkgewotCQkJ
-cHJpbnRmKFROQU1FICIgcmVxICVkOiBlcnJvciA9ICVkIC0gcmV0dXJuID0gJWRcbiIsIGksIGVy
-ciwgcmV0KTsKLQkJCWVycm9ycysrOwotCQl9Ci0KLQkJZnJlZSAoYWlvY2JzW2ldKTsKLQl9Ci0K
-LQlmcmVlIChidWZzKTsKLQlmcmVlIChhaW9jYnMpOwotCi0JY2xvc2UoZmQpOwotCi0JaWYgKGVy
-cm9ycyAhPSAwKQotCQlleGl0IChQVFNfRkFJTCk7Ci0KLQlwcmludGYgKFROQU1FICIgUEFTU0VE
-XG4iKTsKLQotCXJldHVybiBQVFNfUEFTUzsKLX0KLS0gCjEuNy4wLjQKCgoKCi0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpDZW50cmFsaXplZCBEZXNrdG9wIERlbGl2ZXJ5OiBEZWxsIGFuZCBWTXdhcmUg
-UmVmZXJlbmNlIEFyY2hpdGVjdHVyZQpTaW1wbGlmeWluZyBlbnRlcnByaXNlIGRlc2t0b3AgZGVw
-bG95bWVudCBhbmQgbWFuYWdlbWVudCB1c2luZwpEZWxsIEVxdWFsTG9naWMgc3RvcmFnZSBhbmQg
-Vk13YXJlIFZpZXc6IEEgaGlnaGx5IHNjYWxhYmxlLCBlbmQtdG8tZW5kCmNsaWVudCB2aXJ0dWFs
-aXphdGlvbiBmcmFtZXdvcmsuIFJlYWQgbW9yZSEKaHR0cDovL3Auc2YubmV0L3NmdS9kZWxsLWVx
-bC1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Ckx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+--===============5281363835396781464==
+Content-type: multipart/alternative; 
+	Boundary="0__=08BBFD76DFAEA86E8f9e8a93df938690918c08BBFD76DFAEA86E"
+Content-Disposition: inline
+
+--0__=08BBFD76DFAEA86E8f9e8a93df938690918c08BBFD76DFAEA86E
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
+
+
+
+I am out of the office until 11/29/2010.
+
+Vacation returning 11/29/2010
+
+
+Note: This is an automated response to your message  "Ltp-list Digest, =
+Vol
+54, Issue 43" sent on 11/24/10 0:24:23.
+
+This is the only notification you will receive while this person is awa=
+y.=
+
+--0__=08BBFD76DFAEA86E8f9e8a93df938690918c08BBFD76DFAEA86E
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p><font size=3D"2">I am out of the office until 11/29/2010.<br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2">Vacation returning 11/29/2010<br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2" color=3D"#808080">Note: This is an automated re=
+sponse to your message  &quot;</font><b><font size=3D"2">Ltp-list Diges=
+t, Vol 54, Issue 43&quot;</font></b><font size=3D"2" color=3D"#808080">=
+ sent on </font><b><font size=3D"2">11/24/10 0:24:23</font></b><font si=
+ze=3D"2" color=3D"#808080">. <br>
+</font><font size=3D"2" color=3D"#808080"><br>
+</font><font size=3D"2" color=3D"#808080">This is the only notification=
+ you will receive while this person is away.</font></body></html>=
+
+--0__=08BBFD76DFAEA86E8f9e8a93df938690918c08BBFD76DFAEA86E--
+
+
+
+--===============5281363835396781464==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
+--===============5281363835396781464==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5281363835396781464==--
+
+
