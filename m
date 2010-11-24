@@ -1,32 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shubgoya@in.ibm.com>) id 1PGUJx-0004F4-MJ
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 10:23:57 +0000
-Received: from e28smtp06.in.ibm.com ([122.248.162.6])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PGUJv-0004hF-MZ
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 10:23:57 +0000
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by e28smtp06.in.ibm.com (8.14.4/8.13.1) with ESMTP id oABANlCn019437
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 15:53:47 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	oABANlGq352440
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 15:53:47 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	oABANkNV003722
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Nov 2010 15:53:46 +0530
-In-Reply-To: <OF7E98D2D1.7AEC88E3-ON652577D8.002CB466-652577D8.0030671A@LocalDomain>
-References: <1289458673.5622.19.camel@subratamodak.linux.ibm.com>
-	<OF7E98D2D1.7AEC88E3-ON652577D8.002CB466-652577D8.0030671A@LocalDomain>
-Message-ID: <OF0CF663E4.3DA7EB94-ON652577D8.0037CCDB-652577D8.00391B71@in.ibm.com>
-From: Shubham Goyal <shubgoya@in.ibm.com>
-Date: Thu, 11 Nov 2010 15:53:31 +0530
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PLB0i-0001BZ-SV
+	for ltp-list@lists.sourceforge.net; Wed, 24 Nov 2010 08:47:28 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PLB0h-00022s-DT
+	for ltp-list@lists.sourceforge.net; Wed, 24 Nov 2010 08:47:28 +0000
+Received: by wyb40 with SMTP id 40so2325350wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 24 Nov 2010 00:47:21 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [LTP] [RFC] Remove testcases/pounder21
+In-Reply-To: <4CECC662.2080103@cn.fujitsu.com>
+References: <000001cb8a0d$cd4fad30$67ef0790$@co.jp>
+	<4CECC662.2080103@cn.fujitsu.com>
+Date: Wed, 24 Nov 2010 00:47:20 -0800
+Message-ID: <AANLkTikwNTQQ58W7MX_qfPkqdWyEM8_7as9hb-Z=McLB@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] About "configure" failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,159 +28,154 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Iranna D Ankad <iranna.ankad@in.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, takahash <takahash@us.ibm.com>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-Yes Iranna I agree with you and I also feel that "pounder21" tree should
-not be removed from LTP. As you correctly said currently its difficult to
-run LTP's pounder on stand alone systems due to some other helper files
-dependency. I will try to address this problem ASAP and try to make pounder
-run on stand alone systems without any other dependencies.  I have it in my
-TODO list.
-
-Thanks,
-Shubham
-
-
-
-                                                                           
-             Iranna D                                                      
-             Ankad/India/IBM                                               
-                                                                        To 
-             11/11/2010 02:17          subrata@linux.vnet.ibm.com,         
-             PM                        yanegomi@gmail.com,                 
-                                       shubgoya@in.ibm.com                 
-                                                                        cc 
-                                       LTP list                            
-                                       <ltp-list@lists.sourceforge.net>,   
-                                       Murlin Wenzel <mwenzel@novell.com>, 
-                                       takahash <takahash@us.ibm.com>      
-                                                                   Subject 
-                                       Re: [LTP] [RFC] Remove              
-                                       testcases/pounder21(Document link:  
-                                       Shubham Goyal)                      
-                                                                           
-                                                                           
-                                                                           
-                                                                           
-                                                                           
-                                                                           
-
-
-
-
-
-Oh yes, IBM (especially SystemX team) still uses pounder for distro
-validation. The thing is we use couple of other customized pounder scripts
-in addition to the ones present in the LTP's "pounder21" directory, so that
-dependent config files are downloaded & logs are saved from/to our repo
-server. Having said that, we still require LTP's "pounder21" tree. So
-please DO NOT remove it.
-
-However, I agree that current pounder of LTP has some compatibility issues,
-thereby making it difficult to run independently on a stand alone system.
-This needs to be addressed and is in TODO list of our new pounder
-maintainer "Shubham Goyal (shubgoya@in.ibm.com)".
-
-@Shubham, any comments?
-
-Thanks!
--Iranna D Ankad
-----------------------------------------------------------------------------------------------------
-
-Linux-Technology Center, IBM India Software Labs
-Manyata Embassy Park, BENGALURU - 560045,
-Ph: +91-080-28055007   Extn: 55007
-----------------------------------------------------------------------------------------------------
-
-"If you don't have patience to test the software, the software will test
-your patience !!"
-
-                                                                           
- Subrata Modak                                                             
- <subrata@linux.vnet.                                                      
- ibm.com>                                                               To 
-                              Garrett Cooper <yanegomi@gmail.com>, Iranna  
-                              D Ankad/India/IBM@IBMIN                      
- 11/11/10 12:27 PM                                                      cc 
-                              Murlin Wenzel <mwenzel@novell.com>, LTP list 
-                              <ltp-list@lists.sourceforge.net>, takahash   
-   Please respond to          <takahash@us.ibm.com>                        
-  subrata@linux.vnet.                                              Subject 
-        ibm.com               Re: [LTP] [RFC] Remove testcases/pounder21   
-                                                                           
-                                                                           
-                                                                           
-                                                                           
-                                                                           
-                                                                           
-                                                                           
-
-
-
-
-
-On Wed, 2010-11-10 at 16:54 -0800, Garrett Cooper wrote:
-> On Wed, Nov 10, 2010 at 12:53 PM, Murlin Wenzel <mwenzel@novell.com>
-wrote:
-> >>>> On 11/10/2010 at 01:28 PM, in message
-> > <AANLkTink7COs0xpg5QRPxBajHRGfYfnghs2_xn1FBFLk@mail.gmail.com>, Garrett
-Cooper
-> > <yanegomi@gmail.com> wrote:
-> >> On Mon, Nov 8, 2010 at 1:57 PM, Garrett Cooper <yanegomi@gmail.com>
-wrote:
-> >>>    Hasn't compiled for a while, and looks pretty broken. If no one
-> >>> objects to me removing it in 3 days I'll get rid of it.
-> >>
-> >> (retroactively as of yesterday)
-> >> Going twice...
-> >
-> > I thought this was still being used by IBM in particular.  I know for a
-fact it has multiple issues with file versions, missing/changed updates
-etc.  Are you talking about removing the whole pounder tree?
->
-> Answering my own question:
-> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg09788.html
-> , I asked this earlier on this year and someone replied saying "don't
-> remove it". If it's not removed and serves a particular purpose, maybe
-> it should be moved to a different section of the tree to avoid
-> confusion in the future (in particular if it's a framework and not
-> actually a test / test suite).
-
-IBM still uses Pounder heavily for testing Distros. So, we can move it
-to some other portion of the tree but still should be inside LTP.
-
-Regards--
-Subrata
-
-> Thanks!
-> -Garrett
+On Wed, Nov 24, 2010 at 12:01 AM, Bian Naimeng <biannm@cn.fujitsu.com> wrot=
+e:
 >
 >
-------------------------------------------------------------------------------
+> Mitani wrote:
+>> Hi,
+>>
+>> I reported failure of "configure" on the other day.
+>> =A0 =A0 http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg11=
+137.html
+>>
+>> But I think that it's hard to notice because my report is contributed to
+>> the report of "realtime" failure. It's my clumsiness.
+>> Therefore, I report about "configure" again with =A0the recent git.
+>>
+>>
+>
+> Hi mitani-san,
+>
+> =A0Please try the following patch.
+>
+> -----------------------
+> fix configure error.
+>
+> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>
+> ---
+> =A0m4/ltp-quota.m4 | =A0 =A04 ++--
+> =A01 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/m4/ltp-quota.m4 b/m4/ltp-quota.m4
+> index af1212a..5a367e9 100644
+> --- a/m4/ltp-quota.m4
+> +++ b/m4/ltp-quota.m4
+> @@ -29,7 +29,7 @@ int main(void) {
+> =A0 =A0 =A0 =A0struct dqblk dq;
+> =A0 =A0 =A0 =A0return quotactl(QCMD(Q_GETINFO, USRQUOTA), (const char *) =
+"/dev/null",
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0geteuid(), (caddr_t) &dq);
+> -}],[has_quotav2=3D"yes"],[dnl END quota v2 check
+> +}])],[has_quotav2=3D"yes"],[dnl END quota v2 check
+> =A0AC_LINK_IFELSE([AC_LANG_SOURCE([
+> =A0#define _LINUX_QUOTA_VERSION 1
+> =A0#include <sys/types.h>
+> @@ -46,4 +46,4 @@ if test "x$has_quotav1" =3D "xyes"; then
+> =A0elif test "x$has_quotav2" =3D "xyes"; then
+> =A0 =A0 =A0 =A0AC_DEFINE(HAVE_QUOTAV2,1,[Define to 1 if you have quota v2=
+])
+> =A0fi
+> -])])
+> +])
+> --
+> 1.7.0.4
+>
+>
+>
+>> ---
+>>
+>> "configure" failed with git "ltp-7d2055e.tar.gz":
+>> ------------<RHEL4.8 - x86>
+>> ./configure: line 8228: syntax error near unexpected token `elif'
+>> ./configure: line 8228: `elif test "x$has_quotav2" =3D "xyes"; then'
+>> ------------
+>>
+>> Environmants are RHEL5.5/4.8 -- x86/x86_64/ia64.
+>>
+>>
+>> "${LTPROOT}/configure" file of "ltp-7d2055e.tar.gz" is following:
+>>
+>> ------------< RHEL4.8 - x86>
+>> [...]
+>>
+>> cat >conftest.$ac_ext <<_ACEOF
+>> /* confdefs.h. =A0*/
+>> _ACEOF
+>> cat confdefs.h >>conftest.$ac_ext
+>> cat >>conftest.$ac_ext <<_ACEOF =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ---
+>> LINE 8210
+>> /* end confdefs.h. =A0*/
+>>
+>> #define _LINUX_QUOTA_VERSION 2
+>> #include <sys/types.h>
+>> #include <sys/quota.h>
+>> #include <unistd.h>
+>> int main(void) {
+>> =A0 =A0 =A0 =A0 struct dqblk dq;
+>> =A0 =A0 =A0 =A0 return quotactl(QCMD(Q_GETINFO, USRQUOTA), (const char *)
+>> "/dev/null",
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 geteuid(), (caddr_t) &dq=
+);
+>> }
+>> --- LINE 8221
+>> if test "x$has_quotav1" =3D "xyes"; then
+>>
+>> cat >>confdefs.h <<\_ACEOF
+>> --- LINE 8224
+>> #define HAVE_QUOTAV1 1
+>> _ACEOF
+>>
+>> elif test "x$has_quotav2" =3D "xyes"; then
+>>
+>> cat >>confdefs.h <<\_ACEOF
+>> #define HAVE_QUOTAV2 1
+>> _ACEOF
+>>
+>> fi
+>>
+>> _ACEOF
+>> --- LINE 8236
+>> rm -f conftest.$ac_objext conftest$ac_exeext
+>> if { (ac_try=3D"$ac_link"
+>> [...]
+>> ------------
+>>
+>>
+>> The line 8210 (" =A08210 =A0cat >>conftest.$ac_ext <<_ACEOF") is the "he=
+re
+>> document".
+>> First "_ACEOF" which appears after this line is the line 8224.
+>> But the line 8224 is "here document", too.
+>>
+>> I think that it is syntax error.
+>>
+>> In the line 8236, there is "_ACEOF".
+>> This "_ACEOF" may be just after line 8221, I think.
+>>
+>> I tried to execute "configure" after above revision, and it succeeded.
+>> After this, "make" and "make install" succeeded, too.
 
-> Centralized Desktop Delivery: Dell and VMware Reference Architecture
-> Simplifying enterprise desktop deployment and management using
-> Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-> client virtualization framework. Read more!
-> http://p.sf.net/sfu/dell-eql-dev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+    Thanks for better pointing out the problem. I spread the autoconf
+tests out so that (hopefully) the same mistake won't happen again.
+Cheers,
+-Garrett
 
-
-
-
-------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+---------------------------------------------------------------------------=
+---
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
