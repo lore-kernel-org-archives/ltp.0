@@ -2,24 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PNNLm-0002TP-64
-	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 10:22:18 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	(envelope-from <zliu@redhat.com>) id 1PLVUg-0004uA-9K
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 06:39:46 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PNNLk-0002l2-72
-	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 10:22:18 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oAUAMABU004003
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Nov 2010 05:22:10 -0500
-Date: Tue, 30 Nov 2010 05:22:10 -0500 (EST)
-From: caiqian@redhat.com
-Message-ID: <287605998.757291291112530309.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1024507315.757271291112523642.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	id 1PLVUe-0005OF-Rq
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 06:39:46 +0000
+Date: Thu, 25 Nov 2010 01:39:38 -0500 (EST)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <986274267.439511290667178978.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <309535663.439391290666931720.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_43108_1031146584.1291112530308"
-Subject: [LTP] [PATCH v10] mmap/munmap /dev/zero
+Subject: [LTP] [PATCH] fix the SEGBUS signal error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,549 +23,141 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============2712023701731712302=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-------=_Part_43108_1031146584.1291112530308
+--===============2712023701731712302==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_24187_1858774968.1290667178977"
+
+------=_Part_24187_1858774968.1290667178977
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-The basic purpose of this is a to test if it is possible to map and
-unmap /dev/zero, and to read and write the mapping. Being inspired by
-two bugs in the past, the design of the test was added some variations
-based on the reproducers for them. It also accept an option to
-mmap/munmap anonymous pages.
+Hi,all 
+when I run this test program : 
+#./hugemmap04 -I 3600 -H /var/hugetlbfs 
+I found it returned quickly. 
+I used gdb tool to debug it, it returned error with the 'SEGBUS' signal error, 
+and the error occurred in the 178 lines '*(int*)addr = 0;'. 
+it's okay when I add this line 
+write(fildes, "write some words to the TEMPFILE file\n",40); 
+you can run this c program to find this error. 
+$cat test.c 
 
-One is to trigger panic with transparent hugepage feature that
-split_huge_page is very strict in checking the rmap walk was
-perfect. Keep it strict because if page_mapcount isn't stable and just
-right, the __split_huge_page_refcount that follows the rmap walk could
-lead to erratic page_count()s for the subpages. The bug in fork lead
-to the rmap walk finding the parent huge-pmd twice instead of just
-one, because the anon_vma_chain objects of the child vma still point
-to the vma->vm_mm of the parent. That trips on the split_huge_page
-mapcount vs page_mapcount check leading to a BUG_ON.
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <fcntl.h> 
+#include <sys/mman.h> 
+char * TEMPFILE="mmapfile"; 
+int freepages = 0; 
+int main() 
+{ 
+long *addr; 
+int fd; 
+long long mapsize; 
+if ((fd = open(TEMPFILE, O_RDWR | O_CREAT | O_TRUNC,0666)) < 0) { 
+printf("open error\n"); 
+return -2; 
+} 
+freepages = 100; 
+mapsize = (long long)freepages * 2048 * 1024; 
+printf("mapsize is %lld \n",mapsize); 
+addr = (long *)mmap(NULL,mapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fd,0); 
+if (addr == MAP_FAILED) { 
+printf("mmap error\n"); 
+return -1; 
+} 
+/* if you enable this line,there will be no error. */ 
+//write(fd,"I don't know\n",20); 
+*(int *)addr = 0; 
+sleep(10); 
+close(fd); 
+return 0; 
+} 
 
-The other bug is mmap() of /dev/zero results in calling map_zero()
-which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
-address range. Since the application which maps a region from 5M to
-16M in size is also multi-threaded the subsequent munmap() of
-/dev/zero results is TLB shootdowns to all other CPUs. When this
-happens thousands or millions of times the application performance is
-terrible. The mapping ZERO_PAGE in every pte within that virtual
-address range was an optimization to make the subsequent pagefault
-times faster on RHEL5 that has been removed/changed upstream.
+$./test 
+mapsize is 209715200 
+Bus error (core dumped) 
+$ 
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
-v10: code cleanup
-v9:  add the tests to runtest/mm.
-v8:  add an option to utilize KSM; no need to open /dev/zero for
-     anonymous page testing.
-v7:  another "(void)" fix
-v6:  really use git format; check return from children; cleanup.
-v5:  add an option to test anonymous pages; move open() into setup().
-v4:  comment fix; code cleanup.
-v3:  really mmap /dev/zero; replace _exit() with exit(); fix patch
-     format.
-v2:  incorporate comments from Mike and Garrett.
+Signed-off-by: Zhouping Liu < zliu@ redhat > 
 
- runtest/mm                              |    5 +
- testcases/kernel/syscalls/mmap/mmap10.c |  196 +++++++++++++++++++++++++++++++
- 2 files changed, 201 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/mmap/mmap10.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 2f3f407..36550d2 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -54,3 +54,8 @@ mmapstress08 mmapstress08
- mmapstress09 mmapstress09 -p 20 -t 0.2
- mmapstress10 mmapstress10 -p 20 -t 0.2
- 
-+mmap10 mmap10
-+mmap10_1 mmap10 -a
-+mmap10_2 mmap10 -s
-+mmap10_3 mmap10 -a -s
-+mmap10_4 mmap10 -a -s -c 60
-diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
-new file mode 100644
-index 0000000..b96e937
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap10.c
-@@ -0,0 +1,196 @@
-+/*
-+ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
-+ * memory on Solaris.
-+ *
-+ * The basic purpose of this is a to test if it is possible to map and
-+ * unmap /dev/zero, and to read and write the mapping. Being inspired
-+ * by two bugs in the past, the design of the test was added some
-+ * variations based on the reproducers for them. It also accept an
-+ * option to mmap/munmap anonymous pages.
-+ *
-+ * One is to trigger panic with transparent hugepage feature that
-+ * split_huge_page is very strict in checking the rmap walk was
-+ * perfect. Keep it strict because if page_mapcount isn't stable and
-+ * just right, the __split_huge_page_refcount that follows the rmap
-+ * walk could lead to erratic page_count()s for the subpages. The bug
-+ * in fork lead to the rmap walk finding the parent huge-pmd twice
-+ * instead of just one, because the anon_vma_chain objects of the
-+ * child vma still point to the vma->vm_mm of the parent. That trips
-+ * on the split_huge_page mapcount vs page_mapcount check leading to a
-+ * BUG_ON.
-+ *
-+ * The other bug is mmap() of /dev/zero results in calling map_zero()
-+ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
-+ * address range. Since the application which maps a region from 5M to
-+ * 16M in size is also multi-threaded the subsequent munmap() of
-+ * /dev/zero results is TLB shootdowns to all other CPUs. When this
-+ * happens thousands or millions of times the application performance
-+ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
-+ * address range was an optimization to make the subsequent pagefault
-+ * times faster on RHEL5 that has been removed/changed upstream.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <sys/mman.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+#define SIZE (5*1024*1024)
-+
-+char *TCID = "mmap10";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+static int fd, opt_anon, opt_ksm;
-+
-+/* main setup function of test */
-+void setup(void);
-+/* cleanup function for the test */
-+void cleanup(void);
-+int mmapzero(void);
-+void help(void);
-+
-+static option_t options[] = {
-+	{ "a", &opt_anon,   NULL},
-+	{ "s", &opt_ksm,    NULL},
-+	{ NULL, NULL,       NULL}
-+};
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, options, help);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
-+			msg);
-+
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		/* Reset Tst_count in case we are looping. */
-+		Tst_count = 0;
-+
-+		tst_resm(TINFO, "start tests.");
-+		TEST(mmapzero());
-+	}
-+	cleanup();
-+	return 0;
-+}
-+int mmapzero(void)
-+{
-+	char *x;
-+	int n;
-+
-+	if (opt_anon) {
-+		tst_resm(TINFO, "use anonymous pages.");
-+		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
-+			MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-+	} else {
-+		tst_resm(TINFO, "use /dev/zero.");
-+		if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open");
-+
-+		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
-+			MAP_PRIVATE, fd, 0);
-+	}
-+	if (x == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+
-+	if (opt_ksm) {
-+		tst_resm(TINFO, "add to KSM regions.");
-+		if (madvise(x, SIZE+SIZE-4096, MADV_MERGEABLE) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-+	}
-+	x[SIZE] = 0;
-+
-+	switch(n = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-+		exit(0);
-+	default:
-+		break;
-+	}
-+	switch(n = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-+		exit(0);
-+	default:
-+		switch (n = fork()) {
-+		case -1:
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		case 0:
-+			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup,
-+					"munmap");
-+			exit(0);
-+		default:
-+			break;
-+		}
-+		break;
-+	}
-+	if (munmap(x, SIZE+SIZE-4096) == -1)
-+		tst_resm(TFAIL|TERRNO, "munmap");
-+	while (waitpid(-1, &n, WUNTRACED | WCONTINUED) > 0) {
-+		if (WEXITSTATUS(n) != 0)
-+			tst_resm(TFAIL, "child exit status is %d",
-+				WEXITSTATUS(n));
-+	}
-+	return 0;
-+}
-+void cleanup(void)
-+{
-+	/*
-+	 * remove the tmp directory and exit
-+	 */
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+	tst_exit();
-+}
-+void setup(void)
-+{
-+	/*
-+	 * setup a default signal hander and a
-+	 * temporary working directory.
-+	 */
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+	tst_tmpdir();
-+}
-+void help(void)
-+{
-+	printf("  -a      Test anonymous pages\n");
-+	printf("  -s      Add to KSM regions\n");
-+}
--- 
-1.7.1
-------=_Part_43108_1031146584.1291112530308
-Content-Type: text/x-patch; name=0001-mmap-munmap-dev-zero.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=0001-mmap-munmap-dev-zero.patch
-
-From: CAI Qian <caiqian@redhat.com>
-Date: Tue, 30 Nov 2010 17:34:51 +0800
-Subject: [PATCH v10] mmap/munmap /dev/zero
-
-The basic purpose of this is a to test if it is possible to map and
-unmap /dev/zero, and to read and write the mapping. Being inspired by
-two bugs in the past, the design of the test was added some variations
-based on the reproducers for them. It also accept an option to
-mmap/munmap anonymous pages.
-
-One is to trigger panic with transparent hugepage feature that
-split_huge_page is very strict in checking the rmap walk was
-perfect. Keep it strict because if page_mapcount isn't stable and just
-right, the __split_huge_page_refcount that follows the rmap walk could
-lead to erratic page_count()s for the subpages. The bug in fork lead
-to the rmap walk finding the parent huge-pmd twice instead of just
-one, because the anon_vma_chain objects of the child vma still point
-to the vma->vm_mm of the parent. That trips on the split_huge_page
-mapcount vs page_mapcount check leading to a BUG_ON.
-
-The other bug is mmap() of /dev/zero results in calling map_zero()
-which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
-address range. Since the application which maps a region from 5M to
-16M in size is also multi-threaded the subsequent munmap() of
-/dev/zero results is TLB shootdowns to all other CPUs. When this
-happens thousands or millions of times the application performance is
-terrible. The mapping ZERO_PAGE in every pte within that virtual
-address range was an optimization to make the subsequent pagefault
-times faster on RHEL5 that has been removed/changed upstream.
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
-v10: code cleanup
-v9:  add the tests to runtest/mm.
-v8:  add an option to utilize KSM; no need to open /dev/zero for
-     anonymous page testing.
-v7:  another "(void)" fix
-v6:  really use git format; check return from children; cleanup.
-v5:  add an option to test anonymous pages; move open() into setup().
-v4:  comment fix; code cleanup.
-v3:  really mmap /dev/zero; replace _exit() with exit(); fix patch
-     format.
-v2:  incorporate comments from Mike and Garrett.
-
- runtest/mm                              |    5 +
- testcases/kernel/syscalls/mmap/mmap10.c |  196 +++++++++++++++++++++++++++++++
- 2 files changed, 201 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/mmap/mmap10.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 2f3f407..36550d2 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -54,3 +54,8 @@ mmapstress08 mmapstress08
- mmapstress09 mmapstress09 -p 20 -t 0.2
- mmapstress10 mmapstress10 -p 20 -t 0.2
- 
-+mmap10 mmap10
-+mmap10_1 mmap10 -a
-+mmap10_2 mmap10 -s
-+mmap10_3 mmap10 -a -s
-+mmap10_4 mmap10 -a -s -c 60
-diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
-new file mode 100644
-index 0000000..b96e937
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap10.c
-@@ -0,0 +1,196 @@
-+/*
-+ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
-+ * memory on Solaris.
-+ *
-+ * The basic purpose of this is a to test if it is possible to map and
-+ * unmap /dev/zero, and to read and write the mapping. Being inspired
-+ * by two bugs in the past, the design of the test was added some
-+ * variations based on the reproducers for them. It also accept an
-+ * option to mmap/munmap anonymous pages.
-+ *
-+ * One is to trigger panic with transparent hugepage feature that
-+ * split_huge_page is very strict in checking the rmap walk was
-+ * perfect. Keep it strict because if page_mapcount isn't stable and
-+ * just right, the __split_huge_page_refcount that follows the rmap
-+ * walk could lead to erratic page_count()s for the subpages. The bug
-+ * in fork lead to the rmap walk finding the parent huge-pmd twice
-+ * instead of just one, because the anon_vma_chain objects of the
-+ * child vma still point to the vma->vm_mm of the parent. That trips
-+ * on the split_huge_page mapcount vs page_mapcount check leading to a
-+ * BUG_ON.
-+ *
-+ * The other bug is mmap() of /dev/zero results in calling map_zero()
-+ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
-+ * address range. Since the application which maps a region from 5M to
-+ * 16M in size is also multi-threaded the subsequent munmap() of
-+ * /dev/zero results is TLB shootdowns to all other CPUs. When this
-+ * happens thousands or millions of times the application performance
-+ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
-+ * address range was an optimization to make the subsequent pagefault
-+ * times faster on RHEL5 that has been removed/changed upstream.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <sys/mman.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+#define SIZE (5*1024*1024)
-+
-+char *TCID = "mmap10";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+static int fd, opt_anon, opt_ksm;
-+
-+/* main setup function of test */
-+void setup(void);
-+/* cleanup function for the test */
-+void cleanup(void);
-+int mmapzero(void);
-+void help(void);
-+
-+static option_t options[] = {
-+	{ "a", &opt_anon,   NULL},
-+	{ "s", &opt_ksm,    NULL},
-+	{ NULL, NULL,       NULL}
-+};
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, options, help);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
-+			msg);
-+
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		/* Reset Tst_count in case we are looping. */
-+		Tst_count = 0;
-+
-+		tst_resm(TINFO, "start tests.");
-+		TEST(mmapzero());
-+	}
-+	cleanup();
-+	return 0;
-+}
-+int mmapzero(void)
-+{
-+	char *x;
-+	int n;
-+
-+	if (opt_anon) {
-+		tst_resm(TINFO, "use anonymous pages.");
-+		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
-+			MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-+	} else {
-+		tst_resm(TINFO, "use /dev/zero.");
-+		if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open");
-+
-+		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
-+			MAP_PRIVATE, fd, 0);
-+	}
-+	if (x == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+
-+	if (opt_ksm) {
-+		tst_resm(TINFO, "add to KSM regions.");
-+		if (madvise(x, SIZE+SIZE-4096, MADV_MERGEABLE) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-+	}
-+	x[SIZE] = 0;
-+
-+	switch(n = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-+		exit(0);
-+	default:
-+		break;
-+	}
-+	switch(n = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-+		exit(0);
-+	default:
-+		switch (n = fork()) {
-+		case -1:
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		case 0:
-+			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup,
-+					"munmap");
-+			exit(0);
-+		default:
-+			break;
-+		}
-+		break;
-+	}
-+	if (munmap(x, SIZE+SIZE-4096) == -1)
-+		tst_resm(TFAIL|TERRNO, "munmap");
-+	while (waitpid(-1, &n, WUNTRACED | WCONTINUED) > 0) {
-+		if (WEXITSTATUS(n) != 0)
-+			tst_resm(TFAIL, "child exit status is %d",
-+				WEXITSTATUS(n));
-+	}
-+	return 0;
-+}
-+void cleanup(void)
-+{
-+	/*
-+	 * remove the tmp directory and exit
-+	 */
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+	tst_exit();
-+}
-+void setup(void)
-+{
-+	/*
-+	 * setup a default signal hander and a
-+	 * temporary working directory.
-+	 */
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+	tst_tmpdir();
-+}
-+void help(void)
-+{
-+	printf("  -a      Test anonymous pages\n");
-+	printf("  -s      Add to KSM regions\n");
-+}
--- 
-1.7.1
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c 
+index 485b465..cc7b249 100644 
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c 
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c 
+@@ -174,6 +174,8 @@ main(int ac, char **av) 
+continue; 
+} else { 
+tst_resm(TPASS, "Succeeded mapping file using %d pages",freepages); 
++ /* the write function just do initalization */ 
++ write(fildes, "write some words to the TEMPFILE file\n",40); 
+/* force to allocate page and change HugePages_Free */ 
+*(int*)addr = 0; 
+} 
 
 
-------=_Part_43108_1031146584.1291112530308
+------=_Part_24187_1858774968.1290667178977
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><style type=3D'text/css'>p { margin: 0; }</style></head><body><=
+div style=3D'font-family: Times New Roman; font-size: 12pt; color: #000000'=
+>Hi,all<br>when I run this test program :<br>#./hugemmap04 -I 3600 -H /var/=
+hugetlbfs<br>I found it returned quickly.<br>I used gdb&nbsp; tool to debug=
+ it, it returned error with the 'SEGBUS' signal error,<br>and the error occ=
+urred in the 178 lines '*(int*)addr =3D 0;'.<br>it's okay when I add this l=
+ine <br>write(fildes, "write some words to the TEMPFILE file\n",40);<br>you=
+ can run this c program to find this error.<br>$cat test.c<br><br>#include =
+&lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;fcntl.h&gt;<br=
+>#include &lt;sys/mman.h&gt;<br>char * TEMPFILE=3D"mmapfile";<br>int freepa=
+ges =3D 0;<br>int main() <br>{<br>&nbsp;&nbsp;&nbsp; long *addr;<br>&nbsp;&=
+nbsp;&nbsp; int fd;<br>&nbsp;&nbsp;&nbsp; long long mapsize;<br>&nbsp;&nbsp=
+;&nbsp; if ((fd =3D open(TEMPFILE, O_RDWR | O_CREAT | O_TRUNC,0666)) &lt; 0=
+) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; printf("open error\n");<br>&nb=
+sp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return -2;<br>&nbsp;&nbsp;&nbsp; }<br>&n=
+bsp;&nbsp;&nbsp; freepages =3D 100;<br>&nbsp;&nbsp;&nbsp; mapsize =3D (long=
+ long)freepages * 2048 * 1024;<br>&nbsp;&nbsp;&nbsp; printf("mapsize is %ll=
+d \n",mapsize);<br>&nbsp;&nbsp;&nbsp; addr =3D (long *)mmap(NULL,mapsize, P=
+ROT_READ | PROT_WRITE, MAP_SHARED, fd,0);<br>&nbsp;&nbsp;&nbsp; if (addr =
+=3D=3D MAP_FAILED) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; printf("mmap =
+error\n");<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return -1;<br>&nbsp;&nb=
+sp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp; /*&nbsp; if you enable this line,th=
+ere will be no error. */<br>&nbsp;&nbsp;&nbsp; //write(fd,"I don't know\n",=
+20);<br>&nbsp;&nbsp;&nbsp; *(int *)addr =3D 0;<br>&nbsp;&nbsp;&nbsp; sleep(=
+10);<br>&nbsp;&nbsp;&nbsp; close(fd);<br>&nbsp;&nbsp;&nbsp; return 0;<br>}<=
+br><br>$./test <br>mapsize is 209715200 <br>Bus error (core dumped)<br>$<br=
+><br>Signed-off-by: Zhouping Liu &lt;<span class=3D"Object" id=3D"OBJ_PREFI=
+X_DWT574"><span class=3D"Object" id=3D"OBJ_PREFIX_DWT575">zliu@<span class=
+=3D"Object" id=3D"OBJ_PREFIX_DWT621">redhat</span></span></span>&gt;<br><br=
+>diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcase=
+s/kernel/mem/hugetlb/hugemmap/hugemmap04.c<br>index 485b465..cc7b249 100644=
+<br>--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c<br>+++ b/testc=
+ases/kernel/mem/hugetlb/hugemmap/hugemmap04.c<br>@@ -174,6 +174,8 @@ main(i=
+nt ac, char **av)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; continue;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else {<br>&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tst_resm(TPASS, "Succeeded mapping =
+file using %d pages",freepages);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp; /* the write function just do initalization */<br>+&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; write(fildes, "write =
+some words to the TEMPFILE file\n",40);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* force to allocate page and change HugePa=
+ges_Free */<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp; *(int*)addr =3D 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br></div></body></html>
+------=_Part_24187_1858774968.1290667178977--
+
+
+--===============2712023701731712302==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -583,7 +169,7 @@ Tap into the largest installed PC base & get more eyes on your game by
 optimizing for Intel(R) Graphics Technology. Get started today with the
 Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
 http://p.sf.net/sfu/intelisp-dev2dev
-------=_Part_43108_1031146584.1291112530308
+--===============2712023701731712302==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -594,5 +180,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_43108_1031146584.1291112530308--
+--===============2712023701731712302==--
 
