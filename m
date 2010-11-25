@@ -2,28 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PGMje-0005PQ-Ni
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 02:17:58 +0000
-Received: from out17.sjc.mx.trendmicro.com ([216.99.131.74])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PGMjd-0005OC-0h
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 02:17:58 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.130])
-	by out17.sjc.mx.trendmicro.com (Postfix) with ESMTP id C6E2C980418
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Nov 2010 02:17:50 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 2BDD0114B83B
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Nov 2010 02:17:49 +0000 (UTC)
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Thu, 11 Nov 2010 11:17:47 +0900
-Message-ID: <000301cb8146$a1f23510$e5d69f30$@co.jp>
+	(envelope-from <chrubis@suse.de>) id 1PLgbf-0006fb-P1
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 18:31:43 +0000
+Date: Thu, 25 Nov 2010 19:44:05 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101125184405.GB7551@saboteur.suse.cz>
+References: <000001cb798d$1aaa0210$4ffe0630$@co.jp>
+	<AANLkTiktyyfpSX+ZkOucGCNg2vSajcVPQ8Q60z4Uj8kh@mail.gmail.com>
+	<4CCE73A6.9020901@cn.fujitsu.com>
+	<AANLkTi=TyhLVZ5OOcRduBwvkxS3-u4f7A1W+bv+WO6Y1@mail.gmail.com>
+	<4CE4AD0D.1050501@cn.fujitsu.com>
+	<AANLkTim5JubFxad76akVJ7YOVs1V84gY=2TUVQ1KMkJz@mail.gmail.com>
+	<4CE4B2B6.4030408@cn.fujitsu.com>
+	<20101119131630.GC19564@saboteur.suse.cz>
+	<4CE9CAE0.2070808@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0004_01CB8192.11D9DD10"
-Content-Language: ja
-Subject: [LTP] [PATCH] fix "clock_getcpuclockid/5-1" test
+Content-Disposition: inline
+In-Reply-To: <4CE9CAE0.2070808@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] fix "sigaction" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,124 +29,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: =?iso-2022-jp?B?GyRCYUQ6QhsoQiAbJEI3cjtUGyhC?= <toza@ryobi.co.jp>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0004_01CB8192.11D9DD10
-Content-Type: text/plain;
-	charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-Build of POSIX "conformance/interfaces/clock_getcpuclockid/5-1.c" test
-failed 
-with following message:
-------------
-conformance/interfaces/clock_getcpuclockid/5-1 compile FAILED; SKIPPING
-../../../conformance/interfaces/clock_getcpuclockid/5-1.c: In function
-'main':
-../../../conformance/interfaces/clock_getcpuclockid/5-1.c:54: error:
-expected ';' before 'if'
-------------
-
-Environment is as follows:
-  - RHEL5.5 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
-  - RHEL4.8 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
-
-
-I noticed some mistakes.
-
-Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-============
----
-a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/
-5-1.c	2010-11-09 19:00:43.000000000 +0900
-+++
-b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/
-5-1.c	2010-11-11 10:00:47.000000000 +0900
-@@ -50,14 +50,14 @@
- 	}
- 
- 	/* Try and get the cpu clock ID for init(1) :)... */
--	error = clock_getcpuclockid(1, &clockid_1)
-+	error = clock_getcpuclockid(1, &clockid_1);
- 	if (error == 0) {
- 		printf("clock_getcpuclockid(1, ..) passed unexpectedly\n");
- 		return PTS_UNRESOLVED;
- 	} else if (error != EPERM) {
- 		printf("clock_getcpuclockid(1, ..) failed with an improper "
- 			"error (%d != %d)\n", EPERM, error);
--		return PTS_FAILED;
-+		return PTS_FAIL;
- 	}
- 	printf("Test PASSED\n");
- 	return PTS_PASS;
-============
-
-
-Thank you--
-
--Tomonori Mitani
-
-------=_NextPart_000_0004_01CB8192.11D9DD10
-Content-Type: application/octet-stream;
-	name="5-1.c.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="5-1.c.patch"
-
---- =
-a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclock=
-id/5-1.c	2010-11-09 19:00:43.000000000 +0900=0A=
-+++ =
-b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclock=
-id/5-1.c	2010-11-11 10:00:47.000000000 +0900=0A=
-@@ -50,14 +50,14 @@=0A=
- 	}=0A=
- =0A=
- 	/* Try and get the cpu clock ID for init(1) :)... */=0A=
--	error =3D clock_getcpuclockid(1, &clockid_1)=0A=
-+	error =3D clock_getcpuclockid(1, &clockid_1);=0A=
- 	if (error =3D=3D 0) {=0A=
- 		printf("clock_getcpuclockid(1, ..) passed unexpectedly\n");=0A=
- 		return PTS_UNRESOLVED;=0A=
- 	} else if (error !=3D EPERM) {=0A=
- 		printf("clock_getcpuclockid(1, ..) failed with an improper "=0A=
- 			"error (%d !=3D %d)\n", EPERM, error);=0A=
--		return PTS_FAILED;=0A=
-+		return PTS_FAIL;=0A=
- 	}=0A=
- 	printf("Test PASSED\n");=0A=
- 	return PTS_PASS;=0A=
-
-------=_NextPart_000_0004_01CB8192.11D9DD10
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ?c?? ???s <toza@ryobi.co.jp>, ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
+
+Hi!
+> >>>>>> ...
+> >>>>>>>>  int main()
+> >>>>>>>>  {
+> >>>>>>>> @@ -133,6 +152,12 @@
+> >>>>>>>>
+> >>>>>>>>        struct sigaction sa;
+> >>>>>>>>
+> >>>>>>>> +       /* Checking for Kernel Version */
+> >>>>>>>> +       if ( kernel_ver_cmp(2, 6, 21) != 0 )
+> >>>>>>>> +       {
+> >>>>>>>> +               UNTESTED( "sem_wait() returned EINTR on kernel versions
+> >>>>>>>> lower than 2.6.22" );
+> >>>>>>>> +       }
+> >>>>>>>> +
+> >>>>>>>>        /* Initialize output */
+> >>>>>>>>        output_init();
+> >>>>>>>>
+> >>>>>>>> ============
+> >>>>>>>>
+> >>>>>>>> Above patch is revision only for templates.
+> >>>>>>>> The following procedure is necessary after applying patch:
+> >>>>>>>> ------------
+> >>>>>>>> #cd testcases/open_posix_testsuite/conformance/interfaces/sigaction/
+> >>>>>>>> #./gentests.pl
+> >>>>>>>> ------------
+> >>>>>>>>
+> >>>>>>>> Similar revisions are necessary for other 25 "sigaction" tests.
+> >>>>>>>     Sorry, but Linux-isms can't leak into the open_posix_testsuite.
+> >>>>>>> Same with BSDisms (at least they shouldn't... if they do, then slap me
+> >>>>>>> or whoever did the commit).
+> >>>>>> Do you mean the culprit is Linux-isms?
+> >>>>> Mitani-san is proposing that I `fix' the testcases to work on RHEL
+> >>>>> 4.8. These testcases should function with minimal change for all
+> >>>>> versions of Unix.
+> >>>>>
+> >>>>  This open_posix_suite is the part of LTP(linux test project), must we
+> >>>> make sure it can work at all versions of unix?
+> >>> I use it in FreeBSD and others have used it in other versions of Unix
+> >>> (in the past), based on the README. There's no reason why we need to
+> >>> maintain something that philosophically diverges from the upstream
+> >>> project's goal because it will make merging more painful and
+> >>> unnecessary.
+> >>>
+> >>   OK, i get it. Thanks. ^_^
+> >>
+> >>   Then, whether should we remove the following case, because it invokes
+> >>   the uname that it's not exsit at 4.3 BSD.
+> >>   conformance/interfaces/pthread_mutex_init/speculative/5-2.c
+> >>
+> > 
+> > The uname() is part of the POSIX, for sure it's available on BSD.
+> > 
+>  
+>   Maybe i miss somethings, but the IEEE Std 1003.1-2008 said:
+>   "The uname() function originated in System III, System V, and related implementations, 
+>   and it does not exist in Version 7 or 4.3 BSD. The values it returns are set at system
+>   compile time in those historical implementations."
+
+Well BSD 4.3 has been released in 1986. The recent BSD systems (tested
+on FreeBSD 8.0) should be fine.
+
+> > Thinking of it, the patch that checks for kernel version only when
+> > sysname == Linux should compile and work. But the question here is if we
+> > want to bloat the tests with workarounds for broken systems. I would
+> > rather see this covered by a database of known issues, so you can easily
+> > copare results and read why your system is broken.
+> > 
+> 
+>   OK, if we have this database, it looks good to me.
+> 
+
+Garrett pointed out the results mailing list. I'm however not reading
+it either.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
-------=_NextPart_000_0004_01CB8192.11D9DD10
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_NextPart_000_0004_01CB8192.11D9DD10--
-
-
-
