@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PGY8u-0002xg-Fk
-	for ltp-list@lists.sourceforge.net; Thu, 11 Nov 2010 14:28:48 +0000
-Date: Thu, 11 Nov 2010 15:39:52 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PLiE4-0000Ii-Ty
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 20:15:28 +0000
+Date: Thu, 25 Nov 2010 21:27:51 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101111143952.GA24599@saboteur.suse.cz>
-References: <4CDB5E53.6070604@cn.fujitsu.com>
+Message-ID: <20101125202751.GB11386@saboteur.suse.cz>
+References: <AANLkTi=+oxNMPd_J8w46xXM8nwiNet9dLKHK-rLq94Ft@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4CDB5E53.6070604@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH 0/2]aio_suspend may be interrupted by
- completion signal.
+In-Reply-To: <AANLkTi=+oxNMPd_J8w46xXM8nwiNet9dLKHK-rLq94Ft@mail.gmail.com>
+Subject: Re: [LTP] [RFC] Remove dumb LTP tst_res APIs and improve others
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,46 +21,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> aio_suspend may be interrupted by IO request's completion signal, so we
-> should use aio_error instead signal hander to check whether this request
-> has complete.
+> >>>
+> >>> ...
+> >>>
+> >>> > You should use tst_brkm(TBROK|TERRNO, tst_exit, "mmap") here. As
+> >>> > tst_brkm() exits when pointer to cleanup is not NULL.
+> >>>
+> >>> Actually, the exit should be dropped and the tst_brkm invocation
+> >>> should be left alone. When NULL is specified as the second argument to
+> >>> tst_brkm, it automatically calls tst_exit.
+> >>
+> >> I would disagree here.
+> >>
+> >> man tst_res
+> >>
+> >> ...
+> >>
+> >> If func is NULL, tst_brk() and tst_brkm return to the caller after all
+> >> results have been printed.
+> >>
+> >> ...
+> >>
+> >>
+> >>
+> >> And the corresponding code in the lib/tst_res.c is
+> >>
+> >> ...
+> >>
+> >> =A0 =A0 =A0 =A0if (func !=3D NULL) {
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(*func)();
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> >> =A0 =A0 =A0 =A0}
+> >>
+> >> }
+> >>
+> >>
+> >> Which seems like a dump interface to me, but once used this way in who=
+le
+> >> LTP, we cannot easily change that.
+> >
+> > !!!
+> >
+> > Crap. I've somehow gotten it backwards this entire time >:(...
+> =
 
-This seems reasonable, as in the original code any aio_read could send
-the signal that could interrupt aio_suspend (and even completion of the
-aio request we are waiting for could interrupt it with signal).
+>     I took a quick look around the sourcebase and there are a number
+> of ways where this is done incorrectly. I know it's an API change, but
+> does it make sense just to call tst_exit() at the end of tst_brkm?
+>     Also, tst_brkloop* is completely unused. I vote for that to be
+> removed as well.
 
-And as I quick looked at the code and there is more to fix:
+I'm pretty sure that this is misused in many places, as a matter of
+fact, I could not remember single test that played 100% nice with the
+LTP api.
 
-Bugs:
-
-* relying on write() writing the whole buffer
-
-* not checking malloc() return value
+This however needs extensive testing. Ideally each tests gets reviewed,
+but I'm pretty sure we are lacking manpower for this. =
 
 
-Conding style issues:
+Still I vote for that change. Good luck with testing. ;)
 
-* bunch of useless pointer cast
+PS: don't forget to change the docs
 
-* spaces between function names and () (all free (..), malloc (...) ...)
 
--- 
+And when we are at it, we should consider removing unused (and sometimes
+broken) functionality from include/usctest.h
+
+-- =
+
 Cyril Hrubis
 chrubis@suse.cz
 
-------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+---------------------------------------------------------------------------=
+---
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
