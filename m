@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <zliu@redhat.com>) id 1PLUwE-0000hH-8U
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 06:04:10 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PLUwC-0005AS-T3
-	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 06:04:10 +0000
-Date: Thu, 25 Nov 2010 01:04:02 -0500 (EST)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <504858358.438631290665042835.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1303921694.438401290664898120.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PLXWg-0002VW-Cj
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 08:49:58 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PLXWe-0007W8-0q
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 08:49:58 +0000
+Message-ID: <4CEE2299.1080605@cn.fujitsu.com>
+Date: Thu, 25 Nov 2010 16:47:21 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] extend the '-I' options
+Subject: [LTP] [RFC][POSIX][PATCH]Get rid of the test of
+	pthread_mutex_getprioceiling
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,155 +23,135 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4587714254264159948=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============4587714254264159948==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_24142_241904647.1290665042834"
-
-------=_Part_24142_241904647.1290665042834
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi,
+
+  The 1-1 and 3-3 do the same test, but they expect different result.
+I do not know why?
+
+However, i think we should get rid of 3-3. Because it looks like not a POSIX
+compliant case.
+
+---------------------------------------------------------------
+
+Get rid of the test pthread_mutex_getprioceiling 3-3.
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+---
+ .../interfaces/pthread_mutex_getprioceiling/3-3.c  |   88 --------------------
+ 1 files changed, 0 insertions(+), 88 deletions(-)
+ delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
+deleted file mode 100644
+index 4aa6b1c..0000000
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
++++ /dev/null
+@@ -1,88 +0,0 @@
+-/*   
+- * Copyright (c) 2010, Garrett Cooper.
+- *
+- * Test that pthread_mutex_getprioceiling() fails because:
+- *
+- * [EINVAL]
+- *     The protocol attribute of mutex is PTHREAD_PRIO_NONE.
+- *
+- * by explicitly specifying the protocol as PTHREAD_PRIO_NONE.
+- *
+- * Steps:
+- * 1.  Initialize a pthread_mutexattr_t object with pthread_mutexattr_init()
+- * 2.  Explicitly set the protocol using PTHREAD_PRIO_NONE.
+- * 3.  Call pthread_mutex_getprioceiling() to obtain the prioceiling.
+- * 
+- */
+-
+-#include <pthread.h>
+-#include <errno.h>
+-#include <pwd.h>
+-#include <sched.h>
+-#include <stdio.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include "posixtest.h"
+-
+-int
+-main(void)
+-{
+-#if defined(_SC_PRIORITY_SCHEDULING)
+-
+-	if (sysconf(_SC_PRIORITY_SCHEDULING) == -1) {
+-		printf("PRIORITY_SCHEDULING not supported\n");
+-		return PTS_UNSUPPORTED;
+-	}
+-
+-	pthread_mutexattr_t mutex_attr;
+-	pthread_mutex_t mutex;
+-	int error, prioceiling;
+-
+-	error = pthread_mutexattr_init(&mutex_attr);
+-	if (error) {
+-		printf("pthread_mutexattr_init failed: %s\n", strerror(error));
+-		return PTS_UNRESOLVED;
+-	}
+-
+-	/* 
+-	 * The default protocol is PTHREAD_PRIO_NONE according to
+-	 * pthread_mutexattr_getprotocol.
+-	 */
+-	error = pthread_mutexattr_setprotocol(&mutex_attr,
+-		PTHREAD_PRIO_INHERIT);
+-	if (error) {
+-		printf("pthread_mutexattr_setprotocol failed: %s\n",
+-			strerror(error));
+-		return PTS_UNRESOLVED;
+-	}
+-
+-	/* Initialize a mutex object */
+-	error = pthread_mutex_init(&mutex, &mutex_attr);
+-	if (error) {
+-		printf("pthread_mutex_init failed: %s\n", strerror(error));
+-		return PTS_UNRESOLVED;
+-	}
+-
+-	/* Get the prioceiling of the mutex. */
+-	error = pthread_mutex_getprioceiling(&mutex, &prioceiling);
+-	if (error) {
+-		if (error == EINVAL) {
+-			printf("pthread_mutex_getprioceiling failed as "
+-				"expected\n");
+-		} else {
+-			printf("pthread_mutex_getprioceiling did not fail as "
+-				"expected: %s\n", strerror(error));
+-		}
+-	} else
+-		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
+-
+-	(void) pthread_mutexattr_destroy(&mutex_attr);
+-	(void) pthread_mutex_destroy(&mutex);
+-
+-	return (error == EINVAL ? PTS_PASS : PTS_UNRESOLVED);
+-#else
+-	printf("pthread_mutex_getprioceiling not supported");
+-	return PTS_UNSUPPORTED;
+-#endif
+-
+-}
+-- 
+1.7.0.4
 
 
------ "Zhouping Liu" <zliu@redhat.com> wrote: 
-> From: "Zhouping Liu" <zliu@redhat.com> 
-> To: ltp-list@lists.sourceforge.net 
-> Cc: caiqian@redhat.com, czhang@redhat.com 
-> Sent: Thursday, November 25, 2010 2:01:38 PM GMT +08:00 Beijing / Chongqing / Hong Kong / Urumqi 
-> Subject: [LTP] [PATCH] extend the '-I' options 
-> 
-> 
-> Hi,all 
-> I found it just support a small value for -I option. 
-> when I run '#./hugemmap04 -I 3600 -H /var/hugetlbfs',the test returned immediately. 
-> the -I option details: 
-> -I x Execute test for x seconds 
-> And if you give a much bigger value to -I option such as 3600 or larger, you will find the -I option disabled, 
-> so I changed the lib/parse_opts.c file, and just modified the stop_time variable type from 'int' to 'double', 
-> after changed, it can support a very bigger value for -I option. 
-> this patch is in the following : 
-> 
-> Signed-off-by: Zhouping Liu < zliu@redhat@redhat.com > 
-sorry,I wrote my email error, change it: 
-Signed-off-by: Zhouping Liu < zliu@redhat.com > 
-> --- 
-> lib/parse_opts.c | 6 +++--- 
-> 1 files changed, 3 insertions(+), 3 deletions(-) 
-> 
-> diff --git a/lib/parse_opts.c b/lib/parse_opts.c 
-> index e4de709..da75df5 100644 
-> --- a/lib/parse_opts.c 
-> +++ b/lib/parse_opts.c 
-> @@ -699,7 +699,7 @@ usc_test_looping(counter) 
-> int counter; 
-> { 
-> static int first_time = 1; 
-> - static int stop_time = 0; /* stop time in rtc or usecs */ 
-> + static double stop_time = 0; /* stop time in rtc or usecs */ 
-> static int delay; /* delay in clocks or usecs */ 
-> int hertz=0; /* clocks per second or usecs per second */ 
-> int ct, end; /* current time, end delay time */ 
-> @@ -724,7 +724,7 @@ int counter; 
-> 
-> if ( STD_LOOP_DURATION) { 
-> ct=get_current_time(); 
-> - stop_time=(int)((float)hertz * STD_LOOP_DURATION) + ct; 
-> + stop_time = (double)hertz * (double)STD_LOOP_DURATION + (double)ct; 
-> } 
-> 
-> /* 
-> @@ -769,7 +769,7 @@ int counter; 
-> keepgoing++; 
-> } 
-> 
-> - if ( STD_LOOP_DURATION != 0.0 && get_current_time() < stop_time ) { 
-> + if ( STD_LOOP_DURATION != 0.0 && (double)get_current_time() < stop_time ) { 
-> keepgoing++; 
-> } 
-> 
-> -- 
-> 1.7.2.3 
-> 
-> 
-> -- 
-> Name: Zhouping Liu 
-> 
+
 
 -- 
-Name: Zhouping Liu 
-Team: Kernel-QE 
-Timezone: GMT+0800 (Asia/Shanghai) 
-IRC: zliu @ #kernel-qe, #eng-china 
-Cellphone: +86-187-0166-8285 
+Regards
+Bian Naimeng
 
-------=_Part_24142_241904647.1290665042834
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-<html><head><style type=3D'text/css'>p { margin: 0; }</style></head><body><=
-div style=3D'font-family: Times New Roman; font-size: 12pt; color: #000000'=
-><br>----- "Zhouping Liu" &lt;zliu@redhat.com&gt; wrote:
-<br>&gt; From: "Zhouping Liu" &lt;zliu@redhat.com&gt;<br>&gt; To: ltp-list@=
-lists.sourceforge.net<br>&gt; Cc: caiqian@redhat.com, czhang@redhat.com<br>=
-&gt; Sent: Thursday, November 25, 2010 2:01:38 PM GMT +08:00 Beijing / Chon=
-gqing / Hong Kong / Urumqi<br>&gt; Subject: [LTP] [PATCH] extend the '-I' o=
-ptions<br>&gt;<br>&gt; <style>p { margin: 0; }</style><div style=3D"font-fa=
-mily: Times New Roman; font-size: 12pt; color: rgb(0, 0, 0);">&gt; Hi,all<b=
-r>&gt; I found it just support a small value for -I option.<br>&gt; when I =
-run '#./hugemmap04 -I 3600 -H /var/hugetlbfs',the test returned immediately=
-.<br>&gt; the -I option details:<br>&gt; -I x &nbsp; &nbsp;Execute test for=
- x seconds <br>&gt; And if you give a much bigger value to -I option such a=
-s 3600 or larger, you will find the -I option disabled,<br>&gt; so I change=
-d the lib/parse_opts.c file, and just modified the stop_time variable type =
-from 'int' to 'double',<br>&gt; after changed, it can support a very bigger=
- value for -I option.<br>&gt; this patch is in the following : <br>&gt; <br=
->&gt; Signed-off-by: Zhouping Liu &lt;<span class=3D"Object" id=3D"OBJ_PREF=
-IX_DWT574"><span class=3D"Object" id=3D"OBJ_PREFIX_DWT575">zliu@redhat@redh=
-at.com</span></span>&gt;<br>sorry,I wrote my email error, change it:<br>Sig=
-ned-off-by: Zhouping Liu &lt;<span class=3D"Object" id=3D"OBJ_PREFIX_DWT574=
-"><span class=3D"Object" id=3D"OBJ_PREFIX_DWT575">zliu@redhat.com</span></s=
-pan>&gt;<br>&gt; ---<br>&gt; &nbsp;lib/parse_opts.c |&nbsp;&nbsp;&nbsp; 6 +=
-++---<br>&gt; &nbsp;1 files changed, 3 insertions(+), 3 deletions(-)<br>&gt=
-; <br>&gt; diff --git a/lib/parse_opts.c b/lib/parse_opts.c<br>&gt; index e=
-4de709..da75df5 100644<br>&gt; --- a/lib/parse_opts.c<br>&gt; +++ b/lib/par=
-se_opts.c<br>&gt; @@ -699,7 +699,7 @@ usc_test_looping(counter)<br>&gt; &nb=
-sp;int counter;<br>&gt; &nbsp;{<br>&gt; &nbsp;&nbsp;&nbsp;&nbsp; static int=
- first_time =3D 1;<br>&gt; -&nbsp;&nbsp;&nbsp; static int stop_time =3D 0;&=
-nbsp;&nbsp;&nbsp; /* stop time in rtc or usecs */<br>&gt; +&nbsp;&nbsp;&nbs=
-p; static double stop_time =3D 0;&nbsp;&nbsp;&nbsp; /* stop time in rtc or =
-usecs */<br>&gt; &nbsp;&nbsp;&nbsp;&nbsp; static int delay;&nbsp;&nbsp;&nbs=
-p; &nbsp;&nbsp;&nbsp; /* delay in clocks or usecs&nbsp; */<br>&gt; &nbsp;&n=
-bsp;&nbsp;&nbsp; int hertz=3D0;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;=
-&nbsp;&nbsp; /* clocks per second or usecs per second */<br>&gt; &nbsp;&nbs=
-p;&nbsp;&nbsp; int ct, end;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* current=
- time, end delay time */<br>&gt; @@ -724,7 +724,7 @@ int counter;<br>&gt; &=
-nbsp;<br>&gt; &nbsp;&nbsp;&nbsp;&nbsp; if ( STD_LOOP_DURATION) {<br>&gt; &n=
-bsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ct=3Dget_current_time();<br>&gt; =
--&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; stop_time=3D(int)((float)hertz * STD=
-_LOOP_DURATION) + ct;<br>&gt; +&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; stop_t=
-ime =3D (double)hertz * (double)STD_LOOP_DURATION + (double)ct;<br>&gt; &nb=
-sp;&nbsp;&nbsp;&nbsp; }<br>&gt; &nbsp;<br>&gt; &nbsp;&nbsp;&nbsp;&nbsp; /*<=
-br>&gt; @@ -769,7 +769,7 @@ int counter;<br>&gt; &nbsp;&nbsp;&nbsp;&nbsp; k=
-eepgoing++;<br>&gt; &nbsp;&nbsp;&nbsp;&nbsp; }<br>&gt; &nbsp;<br>&gt; -&nbs=
-p;&nbsp;&nbsp; if ( STD_LOOP_DURATION !=3D 0.0 &amp;&amp; get_current_time(=
-) &lt; stop_time ) {<br>&gt; +&nbsp;&nbsp;&nbsp; if ( STD_LOOP_DURATION !=
-=3D 0.0 &amp;&amp; (double)get_current_time() &lt; stop_time ) {<br>&gt; &n=
-bsp;&nbsp;&nbsp;&nbsp; keepgoing++;<br>&gt; &nbsp;&nbsp;&nbsp;&nbsp; }<br>&=
-gt; &nbsp;<br>&gt; -- <br>&gt; 1.7.2.3<br>&gt; <br>&gt; <br>&gt; -- <br>&gt=
-; Name: Zhouping Liu<br>&gt; </div><br><br>-- <br>Name: Zhouping Liu<br>Tea=
-m: Kernel-QE<br>Timezone: GMT+0800 (Asia/Shanghai)<br>IRC: zliu @ #kernel-q=
-e, #eng-china<br>Cellphone: +86-187-0166-8285<br></div></body></html>
-------=_Part_24142_241904647.1290665042834--
-
-
---===============4587714254264159948==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
@@ -179,16 +159,7 @@ Tap into the largest installed PC base & get more eyes on your game by
 optimizing for Intel(R) Graphics Technology. Get started today with the
 Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
 http://p.sf.net/sfu/intelisp-dev2dev
---===============4587714254264159948==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4587714254264159948==--
-
