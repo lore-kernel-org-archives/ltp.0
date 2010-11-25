@@ -2,22 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PEAuH-00038f-Jc
-	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 01:15:53 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PEAuG-0006IH-5u
-	for ltp-list@lists.sourceforge.net; Fri, 05 Nov 2010 01:15:53 +0000
-Received: by wya21 with SMTP id 21so2534363wya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 04 Nov 2010 18:15:46 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1PLf8q-0001mn-Sz
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 16:57:52 +0000
+Date: Thu, 25 Nov 2010 18:10:17 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101125171017.GE2853@saboteur.suse.cz>
+References: <197804608.229291290511437013.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1163307688.229311290511451623.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <000001cb7c0a$343bc2c0$9cb34840$@co.jp>
-References: <000001cb7c0a$343bc2c0$9cb34840$@co.jp>
-Date: Thu, 4 Nov 2010 18:15:45 -0700
-Message-ID: <AANLkTi=3PpaGkchzV7Zw282=+nRjtLjBqHug+cVQAywq@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] About "make autotools" failure
+Content-Disposition: inline
+In-Reply-To: <1163307688.229311290511451623.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] mbind_range() vma merge
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,111 +22,245 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: caiqian@redhat.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Thu, Nov 4, 2010 at 3:22 AM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
->
-> I tried to build LTP with today's git "ltp-40be648.tar.gz".
-> But "make autotools" failed in my all systems.
->
-> ------------
-> sed -n '1{s:LTP-:m4_define([LTP_VERSION],[:;s:$:]):;p;q}' ChangeLog >
-> m4/ltp-version.m4
-> aclocal -I m4
-> autoconf
-> autoheader
-> automake -c -a
-> configure.ac:18: installing `./config.guess'
-> configure.ac:18: installing `./config.sub'
-> configure.ac:4: installing `./install-sh'
-> configure.ac:4: installing `./missing'
-> set -x; \
-> =A0 =A0 =A0 =A0cd testcases/kernel/syscalls/pcllib && \
-> =A0 =A0 =A0 =A0aclocal && \
-> =A0 =A0 =A0 =A0autoconf && \
-> =A0 =A0 =A0 =A0autoheader && \
-> =A0 =A0 =A0 =A0automake --add-missing
-> + cd testcases/kernel/syscalls/pcllib
-> + aclocal
-> + autoconf
-> configure.in:11: error: possibly undefined macro: AC_PROG_LIBTOOL
-> =A0 =A0 =A0If this token and others are legitimate, please use m4_pattern=
-_allow.
-> =A0 =A0 =A0See the Autoconf documentation.
-> make: *** [testcases/kernel/syscalls/pcllib/configure] Error 1
-> ------------
->
-> The environments of my systems are as follows:
-> =A0- RHEL4.8 (kernel version 2.6.9-89) =A0 --- (x86, x86_64, ia64)
-> =A0- RHEL5.5 (kernel version 2.6.18-194) --- (x86, x86_64, ia64)
->
->
-> I use "automake", "autoconf" and "m4" whose versions are same as
-> written in "INSTALL" file:
-> ------------
-> [root@RHEL55-64-LTP ~]# automake --version
-> automake (GNU automake) 1.10.2
-> Copyright (C) 2008 Free Software Foundation, Inc.
-> License GPLv2+: GNU GPL version 2 or later
-> <http://gnu.org/licenses/gpl.html>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law.
->
-> Written by Tom Tromey <tromey@redhat.com>
-> =A0 =A0 =A0 and Alexandre Duret-Lutz <adl@gnu.org>.
-> [root@RHEL55-64-LTP ~]# autoconf --version
-> autoconf (GNU Autoconf) 2.61
-> Copyright (C) 2006 Free Software Foundation, Inc.
-> This is free software. =A0You may redistribute copies of it under the ter=
-ms of
-> the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.
-> There is NO WARRANTY, to the extent permitted by law.
->
-> Written by David J. MacKenzie and Akim Demaille.
-> [root@RHEL55-64-LTP ~]# m4 --version
-> GNU M4 1.4.7
-> Copyright (C) 2006 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions. =A0There is=
- NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOS=
-E.
->
-> Written by Rene' Seindal.
-> [root@RHEL55-64-LTP ~]#
-> ------------
->
->
->
-> By the way, in today's git "ltp-40be648.tar.gz", "${LTPROOT}/testcases/
-> kernel/syscalls/pcllib/aclocal.m4" is overwritten after failure of
-> "make autotools" command.
-> But, in older gits "ltp-7e2cbbd", "${LTPROOT}/testcases/kernel/
-> syscalls/pcllib/aclocal.m4" is not overwritten after success of
-> "make autotools" command.
-> Why?
+Hi!
+> This is a reproducer from mainline commit
+> 9d8cebd4bcd7c3878462fdfda34bbcdeb4df7ef4:
+> 
+> "Strangely, current mbind() doesn't merge vma with neighbor vma although
+> it's possible.  Unfortunately, many vma can reduce performance..."
+> 
+> Signed-off-by: CAI Qian <caiqian@redhat.com>
+> ---
 
-    I was trying to get rid of autogenerated files, but unfortunately
-I was only half successful. I'll restore the original files if I can't
-get the whole thing to work tonight (please try installing the libtool
-package to see if the problem goes away though first).
-Thanks and sorry for the inconvenience,
--Garrett
+>  testcases/kernel/mem/mbind/Makefile  |   25 ++++++
+>  testcases/kernel/mem/mbind/mbind01.c |  158 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 183 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/mem/mbind/Makefile
+>  create mode 100644 testcases/kernel/mem/mbind/mbind01.c
+> 
+> diff --git a/testcases/kernel/mem/mbind/Makefile b/testcases/kernel/mem/mbind/Makefile
+> new file mode 100644
+> index 0000000..11aa2f9
+> --- /dev/null
+> +++ b/testcases/kernel/mem/mbind/Makefile
+> @@ -0,0 +1,25 @@
+> +#
+> +#  Copyright (C) 2010  Red Hat, Inc.
+> +#
+> +#  This program is free software; you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or (at
+> +#  your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful, but
+> +#  WITHOUT ANY WARRANTY; without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> +#  General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program; if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> +#  02110-1301, USA.
+> +#
+> +
+> +top_srcdir              ?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> +LDLIBS 			+= -lnuma
+> \ No newline at end of file
+> diff --git a/testcases/kernel/mem/mbind/mbind01.c b/testcases/kernel/mem/mbind/mbind01.c
+> new file mode 100644
+> index 0000000..32a8b68
+> --- /dev/null
+> +++ b/testcases/kernel/mem/mbind/mbind01.c
+> @@ -0,0 +1,158 @@
+> +/*
+> + * This is a reproducer from mainline commit
+> + * 9d8cebd4bcd7c3878462fdfda34bbcdeb4df7ef4:
+> + *
+> + * "Strangely, current mbind() doesn't merge vma with neighbor vma
+> + * although it's possible.  Unfortunately, many vma can reduce
+> + * performance..."
+> + *
+> + * Copyright (C) 2010  Red Hat, Inc.
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + */
+> +#include <numaif.h>
+> +#include <numa.h>
+> +#include <sys/mman.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include "test.h"
+> +#include "usctest.h"
+> +
+> +char *TCID = "mbind01";
+> +int TST_TOTAL = 1;
+> +extern int Tst_count;
+> +static unsigned long pagesize;
+> +static int opt_node;
+> +static char *opt_nodestr;
+> +
+> +static option_t options[] = {
+> +	{ "n:", &opt_node,	&opt_nodestr},
+> +	{ NULL, NULL,		NULL}
+> +};
+> +
+> +static void usage(void);
+> +
+> +int main(int argc, char** argv)
+> +{
+> +	FILE *fp;
+> +	void* addr;
+> +	int node;
+> +	struct bitmask *nmask = numa_allocate_nodemask();
+> +	int err;
+> +	char buf[BUFSIZ];
+> +	char start[BUFSIZ];
+> +	char end[BUFSIZ];
+> +	char string[BUFSIZ];
+> +	char *p;
+> +
+> +	/* message returned from parse_opts */
+> +	char *msg;
+> +
 
----------------------------------------------------------------------------=
----
-The Next 800 Companies to Lead America's Growth: New Video Whitepaper
-David G. Thomson, author of the best-selling book "Blueprint to a =
+Well I think there is no need for that comment, everybody sees that this
+is a message returned from parse_opts.
 
-Billion" shares his insights and actions to help propel your =
+> +	/* loop counter */
+> +	int lc;
 
-business during the next growth cycle. Listen Now!
-http://p.sf.net/sfu/SAP-dev2dev
+Same here, no need to say "this is a counter". Save comments for places
+where they are really needed.
+
+> +	msg = parse_opts(argc, argv, options, usage);
+> +	if (msg != NULL) {
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +		tst_exit();
+> +	}
+> +	if (opt_node) {
+> +		node = strtol(optarg, NULL, 0);
+> +		numa_bitmask_setbit(nmask, node);
+> +	} else
+> +		numa_bitmask_setbit(nmask, 0);
+> +
+> +	pagesize = getpagesize();
+> +
+> +	/* Check looping state if -i option given */
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		/* Reset Tst_count in case we are looping. */
+> +		Tst_count = 0;
+> +
+> +		addr = mmap(NULL, pagesize*3, PROT_READ|PROT_WRITE,
+> +			MAP_ANON|MAP_PRIVATE, 0, 0);
+> +		if (addr == MAP_FAILED)
+> +			tst_brkm(TBROK|TERRNO, NULL, "mmap"), exit(1);
+
+You should use tst_brkm(TBROK|TERRNO, tst_exit, "mmap") here. As
+tst_brkm() exits when pointer to cleanup is not NULL.
+
+> +		tst_resm(TINFO, "pid = %d", getpid());
+> +		tst_resm(TINFO, "addr = %p", addr);
+> +
+> +		/* make page populate */
+> +		memset(addr, 0, pagesize*3);
+> +
+> +		/* first mbind */
+> +		err = mbind(addr+pagesize, pagesize, MPOL_BIND,
+> +			nmask->maskp, nmask->size, MPOL_MF_MOVE_ALL);
+> +		if (err)
+> +			tst_brkm(TBROK|TERRNO, NULL, "mbind1");
+> +
+> +		/* second mbind */
+> +		err = mbind(addr, pagesize*3, MPOL_DEFAULT, NULL, 0, 0);
+> +		if (err)
+> +			tst_brkm(TBROK|TERRNO, NULL, "mbind2 ");
+> +
+> +		/* /proc/%d/maps in the form of
+> +		   "00400000-00406000 r-xp 00000000". */
+> +		sprintf(buf, "/proc/%d/maps", getpid());
+> +		sprintf(string, "%lx", (long)addr);
+> +
+> +		fp = fopen(buf, "r");
+> +		if (fp == NULL)
+> +			tst_brkm(TBROK|TERRNO, NULL, "fopen");
+> +
+> +		while (fgets(buf, BUFSIZ, fp) != NULL) {
+> +			/* Find out the 1st VMA. */
+> +			p = strtok(buf, "-");
+> +			if (p == NULL)
+> +				continue;
+> +			
+> +			strcpy(start, p);
+> +			if (strcmp(string, start) != 0)
+> +				continue;
+> +
+> +			/* Get the end range of the 2nd VMA. */
+> +			p = strtok(NULL, " ");
+> +			strcpy(end, p);
+> +
+> +			/* Find out the second VMA. */
+> +			if (fgets(buf, BUFSIZ, fp) == NULL)
+> +				tst_brkm(TBROK|TERRNO, NULL, "fgets");
+> +
+> +			p = strtok(buf, "-");
+> +			if (p == NULL || strcmp(p, end) != 0)
+> +				tst_resm(TPASS, "only 1 VMA.");
+> +			else
+> +				tst_resm(TFAIL, "more than 1 VMA.");
+> +		}
+> +		if (fclose(fp) == EOF)
+> +			tst_brkm(TWARN|TERRNO, NULL, "fclose");
+> +
+> +		if (munmap(addr, pagesize*3) == -1)
+> +			tst_brkm(TWARN|TERRNO, NULL, "munmap");
+> +	}
+> +	return 0;
+> +}
+> +
+> +void usage(void)
+> +{
+> +	printf("  -n      Number of NUMA nodes\n");
+> +}
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
