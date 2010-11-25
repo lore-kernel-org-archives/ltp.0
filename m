@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PJ8QQ-0008EL-E1
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 17:37:34 +0000
-Date: Thu, 18 Nov 2010 18:49:23 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PLhlx-0005pY-Vx
+	for ltp-list@lists.sourceforge.net; Thu, 25 Nov 2010 19:46:25 +0000
+Date: Thu, 25 Nov 2010 20:58:48 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101118174923.GB19296@saboteur.suse.cz>
-References: <4CE4CD9D.4040406@cn.fujitsu.com>
+Message-ID: <20101125195848.GC10085@saboteur.suse.cz>
+References: <197804608.229291290511437013.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1163307688.229311290511451623.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<20101125171017.GE2853@saboteur.suse.cz>
+	<AANLkTi=b5LsTayX9j8_yroYBLAr5=A-uSX_qkai8PMnM@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4CE4CD9D.4040406@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH]Destroy mutex an mutex_attr object at end
- of test
+In-Reply-To: <AANLkTi=b5LsTayX9j8_yroYBLAr5=A-uSX_qkai8PMnM@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] mbind_range() vma merge
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,83 +27,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Destroy mutex an mutex_attr object at end of test.
 > 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> ...
 > 
-> ---
->  .../interfaces/pthread_mutex_getprioceiling/3-1.c  |    2 ++
->  .../interfaces/pthread_mutex_getprioceiling/3-2.c  |    3 +++
->  .../interfaces/pthread_mutex_getprioceiling/3-3.c  |    3 +++
->  3 files changed, 8 insertions(+), 0 deletions(-)
+> > You should use tst_brkm(TBROK|TERRNO, tst_exit, "mmap") here. As
+> > tst_brkm() exits when pointer to cleanup is not NULL.
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c
-> index d96ae43..5267b63 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-1.c
-> @@ -62,6 +62,8 @@ main(void)
->  	} else
->  		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
->  
-> +	(void) pthread_mutex_destroy(&mutex);
-> +
+> Actually, the exit should be dropped and the tst_brkm invocation
+> should be left alone. When NULL is specified as the second argument to
+> tst_brkm, it automatically calls tst_exit.
 
-Please never use useless cast like this.
+I would disagree here. 
 
->  	return (error == EINVAL ? PTS_PASS : PTS_FAIL);
->  #else
->  	printf("pthread_mutex_getprioceiling not supported");
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c
-> index 843c048..afa12c1 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-2.c
-> @@ -75,6 +75,9 @@ main(void)
->  	} else
->  		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
->  
-> +	(void) pthread_mutexattr_destroy(&mutex_attr);
-> +	(void) pthread_mutex_destroy(&mutex);
-> +
+man tst_res
 
-And here.
+...
 
->  	return (error == EINVAL ? PTS_PASS : PTS_FAIL);
->  #else
->  	printf("pthread_mutex_getprioceiling not supported");
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
-> index cf46f77..4aa6b1c 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_getprioceiling/3-3.c
-> @@ -76,6 +76,9 @@ main(void)
->  	} else
->  		printf("pthread_mutex_getprioceiling passed unexpectedly\n");
->  
-> +	(void) pthread_mutexattr_destroy(&mutex_attr);
-> +	(void) pthread_mutex_destroy(&mutex);
-> +
+If func is NULL, tst_brk() and tst_brkm return to the caller after all
+results have been printed.
 
-And here.
+...
 
->  	return (error == EINVAL ? PTS_PASS : PTS_UNRESOLVED);
->  #else
->  	printf("pthread_mutex_getprioceiling not supported");
-> -- 
-> 1.7.0.4
+
+
+And the corresponding code in the lib/tst_res.c is
+
+...
+
+	if (func != NULL) {
+		(*func)();
+		tst_exit();
+	}
+
+}
+
+
+Which seems like a dump interface to me, but once used this way in whole
+LTP, we cannot easily change that.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
