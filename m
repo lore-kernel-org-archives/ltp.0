@@ -2,20 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PIeVK-0006E7-LP
-	for ltp-list@lists.sourceforge.net; Wed, 17 Nov 2010 09:40:38 +0000
+	(envelope-from <joyarjit@gmail.com>) id 1PLuAZ-0004N9-GE
+	for ltp-list@lists.sourceforge.net; Fri, 26 Nov 2010 09:00:39 +0000
 Received: from mail-wy0-f175.google.com ([74.125.82.175])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PIeVH-0003pk-Sh
-	for ltp-list@lists.sourceforge.net; Wed, 17 Nov 2010 09:40:36 +0000
-Received: by wyb34 with SMTP id 34so1678160wyb.34
+	id 1PLuAY-0008Ch-Lc
+	for ltp-list@lists.sourceforge.net; Fri, 26 Nov 2010 09:00:39 +0000
+Received: by wyb40 with SMTP id 40so1652894wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Nov 2010 01:40:30 -0800 (PST)
+	Fri, 26 Nov 2010 01:00:33 -0800 (PST)
 MIME-Version: 1.0
-Date: Wed, 17 Nov 2010 01:40:29 -0800
-Message-ID: <AANLkTi=85c03TG7hxPz8xKeVFumdkqwAegRQaM+AGp6R@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] New features in LTP (11/17/2010)
+Date: Fri, 26 Nov 2010 14:30:32 +0530
+Message-ID: <AANLkTinw1Yc+QGtMuKH=xep4VGjusBdO2+mQeQhmM15K@mail.gmail.com>
+From: ARJIT SHARMA <joyarjit@gmail.com>
+Subject: [LTP] networkstress tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,47 +25,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5907765461788430712=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>, hannuxx@gmail.com, "Serge E. Hallyn" <serge.hallyn@canonical.com>, ltp-list@lists.sourceforge.net
+Cc: ajay.khandelwal@st.com
 
-    So, I've added a number of features to the copy of ltp on git
-today -- most notably:
-1. Some knobs for specifying features that you want to test. This is
-currently limited to open_posix_testsuite, the power management
-testsuite, and the realtime tests. Please note the knobs help
-description via configure --help.
-2. Less warnings are now printed out via autoconf (yay!).
-3. The default scenario set was moved from execltp / runltp to
-scenario_groups/default and scenario_groups/net ; soon 1. will tie
-into 3. so the default scenario and net scenarios can be modified on
-the fly according to features enabled/disabled via configure.
-    Many features are disabled conservatively in light of the fact
-that some folks on the list are still running outdated versions of
-LTP. Eventually I'd like for some of the complexity in the kernel
-version and feature comparison to be to the simplest pieces method
-possible, assuming that the tester knows what they should be testing
-(if the tester doesn't understand that fundamental point and how they
-need to be running the tests, then they shouldn't be running the tests
-at least, or maybe even LTP!), because right now it's very
-inconsistent and messy in the repository.
-    Other cleanup is pending (open_hpi_testsuite is gone today,
-mce-test will be updated and shift around to a better location, etc),
-and I hope to resolve a bug that's existed with pan for a while now so
-that output is consistent and correct with execltp and other external
-parsing scripts.
-    Happy testing and let me know what you think :).
-Cheers,
--Garrett
+--===============5907765461788430712==
+Content-Type: multipart/alternative; boundary=0016364d236d70f1ea0495f0f4b2
+
+--0016364d236d70f1ea0495f0f4b2
+Content-Type: text/plain; charset=ISO-8859-1
+
+ Hi,
+
+      I was trying to run network stress tests on my side, but none of them
+is passing.
+
+      it is not able to find the harware address at remote host, altough the
+settings and configurations are as required and as mentioned in README and
+INSTALL files.
+
+      So can u please tell me that whether these stress tests are meant to
+be run on embedded boards, do they always cause problems, if u have executed
+them?
+
+-- 
+Best Regards,
+Arjit Sharma
+
+--0016364d236d70f1ea0495f0f4b2
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<br>
+<div class=3D"gmail_quote">
+<div>Hi,</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0 I was trying to run network stress tests on my side, b=
+ut none of them is passing.</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0 it is not able to find the harware address at remote h=
+ost,=A0altough=A0the settings and configurations are as required and as men=
+tioned in README and INSTALL files.</div>
+<div>=A0</div>
+<div>=A0=A0=A0=A0=A0 So can u please tell me that whether these stress=A0te=
+sts are meant to be run on embedded boards, do they always cause problems, =
+if u have executed them?=A0 <br clear=3D"all"><br>-- <br></div>
+<div>Best Regards,</div>
+<div>Arjit Sharma</div>
+<div>=A0</div></div>
+
+--0016364d236d70f1ea0495f0f4b2--
+
+
+--===============5907765461788430712==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
+--===============5907765461788430712==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5907765461788430712==--
+
