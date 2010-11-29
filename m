@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PIsOJ-0000tE-4E
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 00:30:19 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PMtxU-0002Eg-Dd
+	for ltp-list@lists.sourceforge.net; Mon, 29 Nov 2010 02:59:16 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PIsOI-0002wz-AA
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 00:30:19 +0000
-Received: by wwb28 with SMTP id 28so1875610wwb.10
+	id 1PMtxT-0006uC-Bh
+	for ltp-list@lists.sourceforge.net; Mon, 29 Nov 2010 02:59:16 +0000
+Received: by wyb40 with SMTP id 40so3829044wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Nov 2010 16:30:12 -0800 (PST)
+	Sun, 28 Nov 2010 18:59:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <001601cb86b6$9d505ad0$d7f11070$@co.jp>
-References: <000001cb8470$6662ddb0$33289910$@co.jp>
-	<AANLkTimGi4v_OHzZAD8BbyGKsuVzpBcokEECezPeTC8e@mail.gmail.com>
-	<000b01cb8481$c3c9a1d0$4b5ce570$@co.jp>
-	<AANLkTim3wqv3fS8Sg9TNvZ=nDuXGcTB4GmPcH4d9pEee@mail.gmail.com>
-	<001501cb848e$7e894960$7b9bdc20$@co.jp>
-	<AANLkTi=2ZMmCCHYFjX3ZK203hTHE9W=QTUZgDzkLyB=e@mail.gmail.com>
-	<000301cb8568$4a9060a0$dfb121e0$@co.jp>
-	<AANLkTi=Aia-KRKPT8JJtE_ts4jCPsDqjSF5cyhHMVjJo@mail.gmail.com>
-	<000601cb8603$7519a570$5f4cf050$@co.jp>
-	<AANLkTi=yU5JkGE496Gg5mOtaO2FRfdfF7wkNvUKEqnHu@mail.gmail.com>
-	<001601cb86b6$9d505ad0$d7f11070$@co.jp>
-Date: Wed, 17 Nov 2010 16:30:12 -0800
-Message-ID: <AANLkTi=V85s0-9tzTvdXtqedgQFABJWvW3pjQQ+F7DcM@mail.gmail.com>
+In-Reply-To: <4CF30B46.8060905@cn.fujitsu.com>
+References: <4CF30B46.8060905@cn.fujitsu.com>
+Date: Sun, 28 Nov 2010 18:59:09 -0800
+Message-ID: <AANLkTinzZGbOybQ2zoERvvHAi-yLouF024Y+TkHOGa16@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Realtime test failure
+Subject: Re: [LTP] [POSIX][PATCH]Do some cleanup after remove libevent
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,31 +30,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-> Thank you for your response.
+On Sun, Nov 28, 2010 at 6:09 PM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+> Do some cleanup after remove libevent.
 >
-> I tried to build with "ltp-66d67b5.tar.gz", but it failed in configure.
-> Therefore, I tried with older git "ltp-92dfd5b.tar.gz", and it succeeded
-> in RHEL5.5-x86 and RHEL4.8-x86 systems.
->
-> From "ltp-92dfd5b.tar.gz" to "ltp-66d67b5.tar.gz", new probrem occured.
->
-> New revisions are released in sequence. Therefore I intend to build
-> with the latest version again.
+> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
 
-Huh...? What do you mean failed in configure? Logs please (PS the
-latest snapshot is different from that)!
-Thanks,
+Thanks!
 -Garrett
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
