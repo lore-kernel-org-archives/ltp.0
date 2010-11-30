@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PKWt0-00088O-QE
-	for ltp-list@lists.sourceforge.net; Mon, 22 Nov 2010 13:56:50 +0000
-Date: Mon, 22 Nov 2010 15:08:57 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101122140857.GB2853@saboteur.suse.cz>
-References: <4CE4CD9D.4040406@cn.fujitsu.com>
-	<20101118174923.GB19296@saboteur.suse.cz>
-	<AANLkTi=eDrR3hZwjbuHSVxTuswYAPdBQgOvRAoVNxUVB@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PNIty-0002Vs-Qb
+	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 05:37:18 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PNItx-00072O-Rg
+	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 05:37:18 +0000
+Received: by wwb39 with SMTP id 39so2201723wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 29 Nov 2010 21:37:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=eDrR3hZwjbuHSVxTuswYAPdBQgOvRAoVNxUVB@mail.gmail.com>
-Subject: Re: [LTP] [POSIX][PATCH]Destroy mutex an mutex_attr object at end
- of test
+In-Reply-To: <AANLkTimLXaH_mRJ7xxfj93RJt6wPEcheC3Mg6nONkSq4@mail.gmail.com>
+References: <AANLkTinw1Yc+QGtMuKH=xep4VGjusBdO2+mQeQhmM15K@mail.gmail.com>
+	<20101129133724.GA4065@hallyn.com>
+	<AANLkTimLXaH_mRJ7xxfj93RJt6wPEcheC3Mg6nONkSq4@mail.gmail.com>
+Date: Mon, 29 Nov 2010 21:37:11 -0800
+Message-ID: <AANLkTimx0uR1v1AEP3DTx=-d1fxudUir3ngoDrjxvBtr@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] networkstress tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,67 +29,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ARJIT SHARMA <joyarjit@gmail.com>
+Cc: ajay.khandelwal@st.com, ltp-list@lists.sourceforge.net
 
-Hi!
-> >> Destroy mutex an mutex_attr object at end of test.
-> >>
-> >> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
-> >>
-> >> ---
-> >> =A0.../interfaces/pthread_mutex_getprioceiling/3-1.c =A0| =A0 =A02 ++
-> >> =A0.../interfaces/pthread_mutex_getprioceiling/3-2.c =A0| =A0 =A03 +++
-> >> =A0.../interfaces/pthread_mutex_getprioceiling/3-3.c =A0| =A0 =A03 +++
-> >> =A03 files changed, 8 insertions(+), 0 deletions(-)
-> >>
-> >> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pth=
-read_mutex_getprioceiling/3-1.c b/testcases/open_posix_testsuite/conformanc=
-e/interfaces/pthread_mutex_getprioceiling/3-1.c
-> >> index d96ae43..5267b63 100644
-> >> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mu=
-tex_getprioceiling/3-1.c
-> >> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mu=
-tex_getprioceiling/3-1.c
-> >> @@ -62,6 +62,8 @@ main(void)
-> >> =A0 =A0 =A0 } else
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("pthread_mutex_getprioceiling passe=
-d unexpectedly\n");
-> >>
-> >> + =A0 =A0 (void) pthread_mutex_destroy(&mutex);
-> >> +
-> >
-> > Please never use useless cast like this.
-> =
+On Mon, Nov 29, 2010 at 9:33 PM, ARJIT SHARMA <joyarjit@gmail.com> wrote:
+> Actually Network related tests are failing, like :--
+>
+> network_stress.broken_ip
+>
+> network_stress.icmp
+>
+> network_stress.interface
+>
+> network_stress.multicast
+>
+> network_stress.tcp
+>
+>
+> here I am sending you the log of "network_stress.broken.ip" testcase...
+> similar error is come in all the above mentioned tests
+> "TBROK: Failed to get the interface name at the remote host.".
 
-> Bian was following my example. I've gotten into the habit of doing
-> this on calls like this because later versions of glibc start whining
-> about blind calls to libcalls / syscalls (take open, write, etc for
-> instance) where the developer doesn't check the return code. I did
-> this to shut up that whining (because the return code isn't important
-> for the overall intent of this testcase), and because I wanted to be
-> explicit about the fact that the return code is ignored for human
-> readers.
-> =
+    You didn't mention that you've hacked the scripts to get them to
+pass instead of potentially addressing the main issue, which is the
+unbound variables in the shell scripts (which I did explicitly when I
+coded up the general purpose libraries to avoid QA issues like this,
+or identify problems).
+    I will look at it in a while.
+Thanks,
+-Garrett
 
-
-Okay.
-
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
-
----------------------------------------------------------------------------=
----
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
+------------------------------------------------------------------------------
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
