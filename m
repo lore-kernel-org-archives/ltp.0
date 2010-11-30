@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PItGi-00071a-Ad
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 01:26:32 +0000
-Received: from out10.sjc.mx.trendmicro.com ([216.99.131.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PItGg-0003w6-Ln
-	for ltp-list@lists.sourceforge.net; Thu, 18 Nov 2010 01:26:32 +0000
-Message-ID: <000001cb86bf$78f99850$6aecc8f0$@co.jp>
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Thu, 18 Nov 2010 10:25:23 +0900
+	(envelope-from <qcai@redhat.com>) id 1PNNLm-0002TP-64
+	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 10:22:18 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PNNLk-0002l2-72
+	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 10:22:18 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oAUAMABU004003
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Nov 2010 05:22:10 -0500
+Date: Tue, 30 Nov 2010 05:22:10 -0500 (EST)
+From: caiqian@redhat.com
+Message-ID: <287605998.757291291112530309.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1024507315.757271291112523642.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="--=_NextPart_ST_10_25_26_Thursday_November_18_2010_2266"
-References: <000001cb8470$6662ddb0$33289910$@co.jp>	<AANLkTimGi4v_OHzZAD8BbyGKsuVzpBcokEECezPeTC8e@mail.gmail.com>	<000b01cb8481$c3c9a1d0$4b5ce570$@co.jp>	<AANLkTim3wqv3fS8Sg9TNvZ=nDuXGcTB4GmPcH4d9pEee@mail.gmail.com>	<001501cb848e$7e894960$7b9bdc20$@co.jp>	<AANLkTi=2ZMmCCHYFjX3ZK203hTHE9W=QTUZgDzkLyB=e@mail.gmail.com>	<000301cb8568$4a9060a0$dfb121e0$@co.jp>	<AANLkTi=Aia-KRKPT8JJtE_ts4jCPsDqjSF5cyhHMVjJo@mail.gmail.com>	<000601cb8603$7519a570$5f4cf050$@co.jp>	<AANLkTi=yU5JkGE496Gg5mOtaO2FRfdfF7wkNvUKEqnHu@mail.gmail.com>	<001601cb86b6$9d505ad0$d7f11070$@co.jp>
-	<AANLkTi=V85s0-9tzTvdXtqedgQFABJWvW3pjQQ+F7DcM@mail.gmail.com>
-In-Reply-To: <AANLkTi=V85s0-9tzTvdXtqedgQFABJWvW3pjQQ+F7DcM@mail.gmail.com>
-Content-Language: ja
-Subject: Re: [LTP] Realtime test failure
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_43108_1031146584.1291112530308"
+Subject: [LTP] [PATCH v10] mmap/munmap /dev/zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,146 +30,560 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, =?iso-2022-jp?B?GyRCYUQ6QhsoQiAbJEI3cjtUGyhC?= <toza@ryobi.co.jp>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
-
-----=_NextPart_ST_10_25_26_Thursday_November_18_2010_2266
-Content-Type: text/plain;
-	charset="iso-2022-jp"
+------=_Part_43108_1031146584.1291112530308
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Thursday, November 18, 2010 9:30 AM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] Realtime test failure
-> 
-> > Thank you for your response.
-> >
-> > I tried to build with "ltp-66d67b5.tar.gz", but it failed in configure.
-> > Therefore, I tried with older git "ltp-92dfd5b.tar.gz", and it succeeded
-> > in RHEL5.5-x86 and RHEL4.8-x86 systems.
-> >
-> > From "ltp-92dfd5b.tar.gz" to "ltp-66d67b5.tar.gz", new probrem occured.
-> >
-> > New revisions are released in sequence. Therefore I intend to build
-> > with the latest version again.
-> 
-> Huh...? What do you mean failed in configure? Logs please (PS the
-> latest snapshot is different from that)!
-> Thanks,
-> -Garrett
+The basic purpose of this is a to test if it is possible to map and
+unmap /dev/zero, and to read and write the mapping. Being inspired by
+two bugs in the past, the design of the test was added some variations
+based on the reproducers for them. It also accept an option to
+mmap/munmap anonymous pages.
+
+One is to trigger panic with transparent hugepage feature that
+split_huge_page is very strict in checking the rmap walk was
+perfect. Keep it strict because if page_mapcount isn't stable and just
+right, the __split_huge_page_refcount that follows the rmap walk could
+lead to erratic page_count()s for the subpages. The bug in fork lead
+to the rmap walk finding the parent huge-pmd twice instead of just
+one, because the anon_vma_chain objects of the child vma still point
+to the vma->vm_mm of the parent. That trips on the split_huge_page
+mapcount vs page_mapcount check leading to a BUG_ON.
+
+The other bug is mmap() of /dev/zero results in calling map_zero()
+which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
+address range. Since the application which maps a region from 5M to
+16M in size is also multi-threaded the subsequent munmap() of
+/dev/zero results is TLB shootdowns to all other CPUs. When this
+happens thousands or millions of times the application performance is
+terrible. The mapping ZERO_PAGE in every pte within that virtual
+address range was an optimization to make the subsequent pagefault
+times faster on RHEL5 that has been removed/changed upstream.
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+v10: code cleanup
+v9:  add the tests to runtest/mm.
+v8:  add an option to utilize KSM; no need to open /dev/zero for
+     anonymous page testing.
+v7:  another "(void)" fix
+v6:  really use git format; check return from children; cleanup.
+v5:  add an option to test anonymous pages; move open() into setup().
+v4:  comment fix; code cleanup.
+v3:  really mmap /dev/zero; replace _exit() with exit(); fix patch
+     format.
+v2:  incorporate comments from Mike and Garrett.
+
+ runtest/mm                              |    5 +
+ testcases/kernel/syscalls/mmap/mmap10.c |  196 +++++++++++++++++++++++++++++++
+ 2 files changed, 201 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap10.c
+
+diff --git a/runtest/mm b/runtest/mm
+index 2f3f407..36550d2 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -54,3 +54,8 @@ mmapstress08 mmapstress08
+ mmapstress09 mmapstress09 -p 20 -t 0.2
+ mmapstress10 mmapstress10 -p 20 -t 0.2
+ 
++mmap10 mmap10
++mmap10_1 mmap10 -a
++mmap10_2 mmap10 -s
++mmap10_3 mmap10 -a -s
++mmap10_4 mmap10 -a -s -c 60
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+new file mode 100644
+index 0000000..b96e937
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -0,0 +1,196 @@
++/*
++ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
++ * memory on Solaris.
++ *
++ * The basic purpose of this is a to test if it is possible to map and
++ * unmap /dev/zero, and to read and write the mapping. Being inspired
++ * by two bugs in the past, the design of the test was added some
++ * variations based on the reproducers for them. It also accept an
++ * option to mmap/munmap anonymous pages.
++ *
++ * One is to trigger panic with transparent hugepage feature that
++ * split_huge_page is very strict in checking the rmap walk was
++ * perfect. Keep it strict because if page_mapcount isn't stable and
++ * just right, the __split_huge_page_refcount that follows the rmap
++ * walk could lead to erratic page_count()s for the subpages. The bug
++ * in fork lead to the rmap walk finding the parent huge-pmd twice
++ * instead of just one, because the anon_vma_chain objects of the
++ * child vma still point to the vma->vm_mm of the parent. That trips
++ * on the split_huge_page mapcount vs page_mapcount check leading to a
++ * BUG_ON.
++ *
++ * The other bug is mmap() of /dev/zero results in calling map_zero()
++ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
++ * address range. Since the application which maps a region from 5M to
++ * 16M in size is also multi-threaded the subsequent munmap() of
++ * /dev/zero results is TLB shootdowns to all other CPUs. When this
++ * happens thousands or millions of times the application performance
++ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
++ * address range was an optimization to make the subsequent pagefault
++ * times faster on RHEL5 that has been removed/changed upstream.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <fcntl.h>
++#include "test.h"
++#include "usctest.h"
++
++#define SIZE (5*1024*1024)
++
++char *TCID = "mmap10";
++int TST_TOTAL = 1;
++extern int Tst_count;
++static int fd, opt_anon, opt_ksm;
++
++/* main setup function of test */
++void setup(void);
++/* cleanup function for the test */
++void cleanup(void);
++int mmapzero(void);
++void help(void);
++
++static option_t options[] = {
++	{ "a", &opt_anon,   NULL},
++	{ "s", &opt_ksm,    NULL},
++	{ NULL, NULL,       NULL}
++};
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, help);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
++			msg);
++
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* Reset Tst_count in case we are looping. */
++		Tst_count = 0;
++
++		tst_resm(TINFO, "start tests.");
++		TEST(mmapzero());
++	}
++	cleanup();
++	return 0;
++}
++int mmapzero(void)
++{
++	char *x;
++	int n;
++
++	if (opt_anon) {
++		tst_resm(TINFO, "use anonymous pages.");
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
++	} else {
++		tst_resm(TINFO, "use /dev/zero.");
++		if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
++			tst_brkm(TBROK|TERRNO, cleanup, "open");
++
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE, fd, 0);
++	}
++	if (x == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++
++	if (opt_ksm) {
++		tst_resm(TINFO, "add to KSM regions.");
++		if (madvise(x, SIZE+SIZE-4096, MADV_MERGEABLE) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++	}
++	x[SIZE] = 0;
++
++	switch(n = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
++		exit(0);
++	default:
++		break;
++	}
++	switch(n = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
++		exit(0);
++	default:
++		switch (n = fork()) {
++		case -1:
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		case 0:
++			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++				tst_brkm(TBROK|TERRNO, cleanup,
++					"munmap");
++			exit(0);
++		default:
++			break;
++		}
++		break;
++	}
++	if (munmap(x, SIZE+SIZE-4096) == -1)
++		tst_resm(TFAIL|TERRNO, "munmap");
++	while (waitpid(-1, &n, WUNTRACED | WCONTINUED) > 0) {
++		if (WEXITSTATUS(n) != 0)
++			tst_resm(TFAIL, "child exit status is %d",
++				WEXITSTATUS(n));
++	}
++	return 0;
++}
++void cleanup(void)
++{
++	/*
++	 * remove the tmp directory and exit
++	 */
++	TEST_CLEANUP;
++	tst_rmdir();
++	tst_exit();
++}
++void setup(void)
++{
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++	tst_tmpdir();
++}
++void help(void)
++{
++	printf("  -a      Test anonymous pages\n");
++	printf("  -s      Add to KSM regions\n");
++}
+-- 
+1.7.1
+------=_Part_43108_1031146584.1291112530308
+Content-Type: text/x-patch; name=0001-mmap-munmap-dev-zero.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=0001-mmap-munmap-dev-zero.patch
+
+From: CAI Qian <caiqian@redhat.com>
+Date: Tue, 30 Nov 2010 17:34:51 +0800
+Subject: [PATCH v10] mmap/munmap /dev/zero
+
+The basic purpose of this is a to test if it is possible to map and
+unmap /dev/zero, and to read and write the mapping. Being inspired by
+two bugs in the past, the design of the test was added some variations
+based on the reproducers for them. It also accept an option to
+mmap/munmap anonymous pages.
+
+One is to trigger panic with transparent hugepage feature that
+split_huge_page is very strict in checking the rmap walk was
+perfect. Keep it strict because if page_mapcount isn't stable and just
+right, the __split_huge_page_refcount that follows the rmap walk could
+lead to erratic page_count()s for the subpages. The bug in fork lead
+to the rmap walk finding the parent huge-pmd twice instead of just
+one, because the anon_vma_chain objects of the child vma still point
+to the vma->vm_mm of the parent. That trips on the split_huge_page
+mapcount vs page_mapcount check leading to a BUG_ON.
+
+The other bug is mmap() of /dev/zero results in calling map_zero()
+which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
+address range. Since the application which maps a region from 5M to
+16M in size is also multi-threaded the subsequent munmap() of
+/dev/zero results is TLB shootdowns to all other CPUs. When this
+happens thousands or millions of times the application performance is
+terrible. The mapping ZERO_PAGE in every pte within that virtual
+address range was an optimization to make the subsequent pagefault
+times faster on RHEL5 that has been removed/changed upstream.
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+v10: code cleanup
+v9:  add the tests to runtest/mm.
+v8:  add an option to utilize KSM; no need to open /dev/zero for
+     anonymous page testing.
+v7:  another "(void)" fix
+v6:  really use git format; check return from children; cleanup.
+v5:  add an option to test anonymous pages; move open() into setup().
+v4:  comment fix; code cleanup.
+v3:  really mmap /dev/zero; replace _exit() with exit(); fix patch
+     format.
+v2:  incorporate comments from Mike and Garrett.
+
+ runtest/mm                              |    5 +
+ testcases/kernel/syscalls/mmap/mmap10.c |  196 +++++++++++++++++++++++++++++++
+ 2 files changed, 201 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap10.c
+
+diff --git a/runtest/mm b/runtest/mm
+index 2f3f407..36550d2 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -54,3 +54,8 @@ mmapstress08 mmapstress08
+ mmapstress09 mmapstress09 -p 20 -t 0.2
+ mmapstress10 mmapstress10 -p 20 -t 0.2
+ 
++mmap10 mmap10
++mmap10_1 mmap10 -a
++mmap10_2 mmap10 -s
++mmap10_3 mmap10 -a -s
++mmap10_4 mmap10 -a -s -c 60
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+new file mode 100644
+index 0000000..b96e937
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -0,0 +1,196 @@
++/*
++ * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
++ * memory on Solaris.
++ *
++ * The basic purpose of this is a to test if it is possible to map and
++ * unmap /dev/zero, and to read and write the mapping. Being inspired
++ * by two bugs in the past, the design of the test was added some
++ * variations based on the reproducers for them. It also accept an
++ * option to mmap/munmap anonymous pages.
++ *
++ * One is to trigger panic with transparent hugepage feature that
++ * split_huge_page is very strict in checking the rmap walk was
++ * perfect. Keep it strict because if page_mapcount isn't stable and
++ * just right, the __split_huge_page_refcount that follows the rmap
++ * walk could lead to erratic page_count()s for the subpages. The bug
++ * in fork lead to the rmap walk finding the parent huge-pmd twice
++ * instead of just one, because the anon_vma_chain objects of the
++ * child vma still point to the vma->vm_mm of the parent. That trips
++ * on the split_huge_page mapcount vs page_mapcount check leading to a
++ * BUG_ON.
++ *
++ * The other bug is mmap() of /dev/zero results in calling map_zero()
++ * which on RHEL5 maps the ZERO_PAGE in every PTE within that virtual
++ * address range. Since the application which maps a region from 5M to
++ * 16M in size is also multi-threaded the subsequent munmap() of
++ * /dev/zero results is TLB shootdowns to all other CPUs. When this
++ * happens thousands or millions of times the application performance
++ * is terrible. The mapping ZERO_PAGE in every pte within that virtual
++ * address range was an optimization to make the subsequent pagefault
++ * times faster on RHEL5 that has been removed/changed upstream.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <fcntl.h>
++#include "test.h"
++#include "usctest.h"
++
++#define SIZE (5*1024*1024)
++
++char *TCID = "mmap10";
++int TST_TOTAL = 1;
++extern int Tst_count;
++static int fd, opt_anon, opt_ksm;
++
++/* main setup function of test */
++void setup(void);
++/* cleanup function for the test */
++void cleanup(void);
++int mmapzero(void);
++void help(void);
++
++static option_t options[] = {
++	{ "a", &opt_anon,   NULL},
++	{ "s", &opt_ksm,    NULL},
++	{ NULL, NULL,       NULL}
++};
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, help);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
++			msg);
++
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* Reset Tst_count in case we are looping. */
++		Tst_count = 0;
++
++		tst_resm(TINFO, "start tests.");
++		TEST(mmapzero());
++	}
++	cleanup();
++	return 0;
++}
++int mmapzero(void)
++{
++	char *x;
++	int n;
++
++	if (opt_anon) {
++		tst_resm(TINFO, "use anonymous pages.");
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
++	} else {
++		tst_resm(TINFO, "use /dev/zero.");
++		if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
++			tst_brkm(TBROK|TERRNO, cleanup, "open");
++
++		x = mmap(NULL, SIZE+SIZE-4096, PROT_READ|PROT_WRITE,
++			MAP_PRIVATE, fd, 0);
++	}
++	if (x == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++
++	if (opt_ksm) {
++		tst_resm(TINFO, "add to KSM regions.");
++		if (madvise(x, SIZE+SIZE-4096, MADV_MERGEABLE) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++	}
++	x[SIZE] = 0;
++
++	switch(n = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
++		exit(0);
++	default:
++		break;
++	}
++	switch(n = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
++		exit(0);
++	default:
++		switch (n = fork()) {
++		case -1:
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		case 0:
++			if (munmap(x + SIZE+4096, SIZE-4096*2) == -1)
++				tst_brkm(TBROK|TERRNO, cleanup,
++					"munmap");
++			exit(0);
++		default:
++			break;
++		}
++		break;
++	}
++	if (munmap(x, SIZE+SIZE-4096) == -1)
++		tst_resm(TFAIL|TERRNO, "munmap");
++	while (waitpid(-1, &n, WUNTRACED | WCONTINUED) > 0) {
++		if (WEXITSTATUS(n) != 0)
++			tst_resm(TFAIL, "child exit status is %d",
++				WEXITSTATUS(n));
++	}
++	return 0;
++}
++void cleanup(void)
++{
++	/*
++	 * remove the tmp directory and exit
++	 */
++	TEST_CLEANUP;
++	tst_rmdir();
++	tst_exit();
++}
++void setup(void)
++{
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++	tst_tmpdir();
++}
++void help(void)
++{
++	printf("  -a      Test anonymous pages\n");
++	printf("  -s      Add to KSM regions\n");
++}
+-- 
+1.7.1
 
 
-I send configure's logs.
-
-I tried with "ltp-92dfd5b.tar.gz", "ltp-66d67b5.tar.gz" and
-"ltp-86209d2.tar.gz".
-Only "ltp-92dfd5b.tar.gz" succeeded.
-
-> the latest snapshot is different from that
-
-Yes. latest snapshot is  "ltp-86209d2.tar.gz". But it failed, too.
-I send two logs just in case.
-
-  - ltp-86209d2_configure.txt --- result of "ltp-86209d2.tar.gz"
-  - ltp-66d67b5_configure.txt --- result of "ltp-66d67b5.tar.gz"
-
-
-Thank you--
-
-
--Tomonori Mitani
-
-----=_NextPart_ST_10_25_26_Thursday_November_18_2010_2266
-Content-Type: application/x-zip-compressed;
-	name="configure_logs.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="configure_logs.zip"
-
-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
-UEsFBgAAAAACAAIAsAAAAJANAAAAAA==
-
-----=_NextPart_ST_10_25_26_Thursday_November_18_2010_2266
+------=_Part_43108_1031146584.1291112530308
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today
-http://p.sf.net/sfu/msIE9-sfdev2dev
-----=_NextPart_ST_10_25_26_Thursday_November_18_2010_2266
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
+------=_Part_43108_1031146584.1291112530308
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -179,5 +594,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-----=_NextPart_ST_10_25_26_Thursday_November_18_2010_2266--
+------=_Part_43108_1031146584.1291112530308--
 
