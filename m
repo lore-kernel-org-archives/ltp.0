@@ -2,25 +2,25 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PD6Gy-0006tB-BE
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:06:52 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	(envelope-from <qcai@redhat.com>) id 1PNNQV-0007yC-2o
+	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 10:27:11 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PD6Gx-0003Jr-G8
-	for ltp-list@lists.sourceforge.net; Tue, 02 Nov 2010 02:06:52 +0000
-Received: by wya21 with SMTP id 21so6309568wya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 01 Nov 2010 19:06:45 -0700 (PDT)
+	id 1PNNQT-0001cq-D8
+	for ltp-list@lists.sourceforge.net; Tue, 30 Nov 2010 10:27:11 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oAUAR3Jn004467
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Nov 2010 05:27:03 -0500
+Date: Tue, 30 Nov 2010 05:27:03 -0500 (EST)
+From: caiqian@redhat.com
+Message-ID: <563618248.757801291112823614.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <619032683.757781291112821349.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4CCF7166.1050105@cn.fujitsu.com>
-References: <4CCF6B53.5050109@cn.fujitsu.com>
-	<AANLkTimZFKMZ3YYjr7k3gkjagZUXwwWyjw5YjTfVLURO@mail.gmail.com>
-	<4CCF7166.1050105@cn.fujitsu.com>
-Date: Mon, 1 Nov 2010 19:06:45 -0700
-Message-ID: <AANLkTinQU6f8kzND7j28bgnvzi8GvpAv0kLTZcfww2_Q@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [POSIX][PATCH]Cleanup the test shm_open/2-1 to make a
-	good format
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_43129_458355891.1291112823613"
+Subject: [LTP] [PATCH] Stack size mapping is decreased through mlock/munlock
+	call
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,59 +30,318 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Mon, Nov 1, 2010 at 7:03 PM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
->>> ---
->>> =A0.../conformance/interfaces/shm_open/2-1.c =A0 =A0 =A0 =A0 =A0| =A0 =
-=A04 +++-
->>> =A01 files changed, 3 insertions(+), 1 deletions(-)
->>>
->>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_=
-open/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open=
-/2-1.c
->>> index f4bab48..b0adce6 100644
->>> --- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-=
-1.c
->>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/2-=
-1.c
->>> @@ -17,7 +17,9 @@
->>>
->>> =A0int main()
->>> =A0{
->>> - =A0 =A0 =A0 =A0printf("Will not test that the shm_open() function cre=
-ate an open file description\nthat refers to the shared memory object and a=
- file descriptor that refers to\nthat open file description.");
->>> + =A0 =A0 =A0 =A0printf("Will not test that the shm_open() function cre=
-ate an open file"
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0"description that refers to the shared mem=
-ory object and a file"
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0"descriptor that refers to that open file =
-description.\n");
->>> =A0 =A0 =A0 =A0 return PTS_UNTESTED;
->>> =A0}
->>
->> =A0 =A0 Actually, that will look a lot worse because you just removed so=
-me
->> spaces in areas. description should be descriptor, etc.
->
-> =A0Yes, it's my mistake. Thank you for pointing out it. ^_^
+------=_Part_43129_458355891.1291112823613
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-I'm tempted to just delete this test because it's a no-op. Anyone object?
+- mlock all lines on /proc/self/maps
+- show mapping
+- munlock all lines on /proc/self/maps
+- show again
 
----------------------------------------------------------------------------=
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
+ runtest/mm                                |    1 +
+ testcases/kernel/syscalls/mlock/mlock03.c |  106 +++++++++++++++++++++++++++++
+ 2 files changed, 107 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/mlock/mlock03.c
 
-http://p.sf.net/sfu/nokia-dev2dev
+diff --git a/runtest/mm b/runtest/mm
+index 16e60d4..09a339d 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -70,3 +70,4 @@ hugemmap05_3 hugemmap05 -s -m
+ cpuset01 cpuset01 -I 3600
+ 
+ mbind01 mbind01
++mlock01 mlock01 -i 20
+diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
+new file mode 100644
+index 0000000..7e66053
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock/mlock03.c
+@@ -0,0 +1,106 @@
++/*
++ * Stack size mapping is decreased through mlock/munlock call.
++ *
++ * - mlock all lines on /proc/self/maps
++ * - show mapping
++ * - munlock all lines on /proc/self/maps
++ * - show again
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <stdio.h>
++#include <string.h>
++#include <sys/mman.h>
++#include "test.h"
++#include "usctest.h"
++
++#define KB 1024
++
++char *TCID = "mlock03";
++int TST_TOTAL = 1;
++extern int Tst_count;
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++	long from, to, first = -1, last = -1;
++	char b[KB], pid[BUFSIZ];
++	FILE *fp;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
++			msg);
++	sprintf(pid, "cat /proc/%d/maps", getpid());
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		fp = fopen("/proc/self/maps", "r");
++		if (fp == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "fopen");
++
++		while (!feof(fp)) {
++			if (!fgets(b, KB - 1, fp))
++				break;
++			b[strlen(b) - 1] = '\0';
++			sscanf(b, "%lx-%lx", &from, &to);
++
++			/* Record the initial stack size. */
++			if ((lc == 0) && (strstr(b, "[stack]") != NULL))
++				first = (to - from)/KB;
++
++			switch (lc & 1) {
++			case 0:
++				if (mlock((const void*)from,
++						(to - from)) == -1)
++					tst_resm(TINFO|TERRNO, "mlock");
++				break;
++			case 1:
++				if (munlock((const void*)from,
++						(to - from)) == -1)
++					tst_resm(TINFO|TERRNO,
++						"munlock");
++				break;
++			default:
++				break;
++			}
++			tst_resm(TINFO, "%s from %lx to %0lx",
++				(lc&1) ? "munlock" : "mlock  ",
++				from, to);
++
++			/* Record the final stack size. */
++			if (strstr(b, "[stack]") != NULL)
++				last = (to - from)/KB;
++		}
++		printf("\n");
++		fclose(fp);
++	}
++	tst_resm(TINFO, "starting stack size is %ld", first);
++	tst_resm(TINFO, "final stack size is %ld", last);
++
++	if (last < first)
++		tst_resm(TFAIL, "stack size is decreased.");
++	else
++		tst_resm(TPASS, "stack size is not decreased.");
++		
++	tst_exit();
++}
+-- 
+1.7.1
+------=_Part_43129_458355891.1291112823613
+Content-Type: text/x-patch;
+	name=0006-Stack-size-mapping-is-decreased-through-mlock-munloc.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=0006-Stack-size-mapping-is-decreased-through-mlock-munloc.patch
+
+From: CAI Qian <caiqian@redhat.com>
+Date: Tue, 30 Nov 2010 17:58:08 +0800
+Subject: [PATCH] Stack size mapping is decreased through mlock/munlock call
+
+- mlock all lines on /proc/self/maps
+- show mapping
+- munlock all lines on /proc/self/maps
+- show again
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ runtest/mm                                |    1 +
+ testcases/kernel/syscalls/mlock/mlock03.c |  106 +++++++++++++++++++++++++++++
+ 2 files changed, 107 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/mlock/mlock03.c
+
+diff --git a/runtest/mm b/runtest/mm
+index 16e60d4..09a339d 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -70,3 +70,4 @@ hugemmap05_3 hugemmap05 -s -m
+ cpuset01 cpuset01 -I 3600
+ 
+ mbind01 mbind01
++mlock01 mlock01 -i 20
+diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
+new file mode 100644
+index 0000000..7e66053
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock/mlock03.c
+@@ -0,0 +1,106 @@
++/*
++ * Stack size mapping is decreased through mlock/munlock call.
++ *
++ * - mlock all lines on /proc/self/maps
++ * - show mapping
++ * - munlock all lines on /proc/self/maps
++ * - show again
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <stdio.h>
++#include <string.h>
++#include <sys/mman.h>
++#include "test.h"
++#include "usctest.h"
++
++#define KB 1024
++
++char *TCID = "mlock03";
++int TST_TOTAL = 1;
++extern int Tst_count;
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++	long from, to, first = -1, last = -1;
++	char b[KB], pid[BUFSIZ];
++	FILE *fp;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
++			msg);
++	sprintf(pid, "cat /proc/%d/maps", getpid());
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		fp = fopen("/proc/self/maps", "r");
++		if (fp == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "fopen");
++
++		while (!feof(fp)) {
++			if (!fgets(b, KB - 1, fp))
++				break;
++			b[strlen(b) - 1] = '\0';
++			sscanf(b, "%lx-%lx", &from, &to);
++
++			/* Record the initial stack size. */
++			if ((lc == 0) && (strstr(b, "[stack]") != NULL))
++				first = (to - from)/KB;
++
++			switch (lc & 1) {
++			case 0:
++				if (mlock((const void*)from,
++						(to - from)) == -1)
++					tst_resm(TINFO|TERRNO, "mlock");
++				break;
++			case 1:
++				if (munlock((const void*)from,
++						(to - from)) == -1)
++					tst_resm(TINFO|TERRNO,
++						"munlock");
++				break;
++			default:
++				break;
++			}
++			tst_resm(TINFO, "%s from %lx to %0lx",
++				(lc&1) ? "munlock" : "mlock  ",
++				from, to);
++
++			/* Record the final stack size. */
++			if (strstr(b, "[stack]") != NULL)
++				last = (to - from)/KB;
++		}
++		printf("\n");
++		fclose(fp);
++	}
++	tst_resm(TINFO, "starting stack size is %ld", first);
++	tst_resm(TINFO, "final stack size is %ld", last);
++
++	if (last < first)
++		tst_resm(TFAIL, "stack size is decreased.");
++	else
++		tst_resm(TPASS, "stack size is not decreased.");
++		
++	tst_exit();
++}
+-- 
+1.7.1
+
+
+------=_Part_43129_458355891.1291112823613
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
+------=_Part_43129_458355891.1291112823613
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_43129_458355891.1291112823613--
+
