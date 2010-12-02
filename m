@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PSgjU-0006sR-9T
-	for ltp-list@lists.sourceforge.net; Wed, 15 Dec 2010 02:04:44 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PSgjS-0000ra-Qe
-	for ltp-list@lists.sourceforge.net; Wed, 15 Dec 2010 02:04:44 +0000
-Message-ID: <4D08224A.4060801@cn.fujitsu.com>
-Date: Wed, 15 Dec 2010 10:04:58 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PO92O-0007YI-Tt
+	for ltp-list@lists.sourceforge.net; Thu, 02 Dec 2010 13:17:28 +0000
+Date: Thu, 2 Dec 2010 14:13:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101202131351.GB20268@saboteur.suse.cz>
+References: <20101125164008.GC2853@saboteur.suse.cz>
+	<AANLkTimFfK-34NALnKWMmOUqRhVfF70KMnWup8TiEp1C@mail.gmail.com>
+	<20101126142704.GA3587@saboteur.suse.cz>
+	<AANLkTim4PpA-aWoW_+cbB--cC6fj9qADhJEPf69S-BpW@mail.gmail.com>
 MIME-Version: 1.0
-References: <4D058241.7040603@cn.fujitsu.com>
-	<AANLkTim_ExzOr2G-NnzLWB=b14zj8s5c1pYjsZEkine7@mail.gmail.com>
-In-Reply-To: <AANLkTim_ExzOr2G-NnzLWB=b14zj8s5c1pYjsZEkine7@mail.gmail.com>
-Subject: Re: [LTP] About Community discussion
+Content-Disposition: inline
+In-Reply-To: <AANLkTim4PpA-aWoW_+cbB--cC6fj9qADhJEPf69S-BpW@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix lchown tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,59 +24,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-Garrett Cooper wrote:
-> On Sun, Dec 12, 2010 at 6:17 PM, Gui Jianfeng
-> <guijianfeng@cn.fujitsu.com> wrote:
->> Hi Garrett,
->>
->> I'm sorry to bother you. My team is trying to make LTP more stable and
->> make openposix testsuite less bugs. We'd like to continue to contribute
->> to it. But I found you stop replying our mail for a long time. I'm not
->> sure whether you have received these mails. Or whether you have some
->> concerns? If yes, please let me know. :)
-> 
-> Hi Gui,
->     What concerns me isn't the fact that people are `finding
-> problems', it's the analysis and the quality of the patches provided
-> back which are problematic. Some of the analysis is spot on, some is
-> way off the mark, and other analysis is incomplete; furthermore some
-> of the patches fed back are hacky or unmaintainable. Add to that the
-> fact that I'm not getting paid for this work and it no longer really
-> aligns with my current job charter, I've been neglecting this in favor
-> of more critical items in my life.
+Hi!
+> > Well, the return 0; is there just to silent compiler as cleanup() calls
+> > tst_exit(); The best solution is IMHO add noreturn attribute to
+> > cleanup() and remove the return 0;
+> =
 
-Ok, I got. :)
+> Eventually what will happen (if you've been watching git) is that the
+> calls will become:
+> =
 
->     That being said, it still puzzles me why other folks attached to
-> the project have been largely silent over the past couple months or
-> years (in particular the official maintainers), as I would figure that
-> they would have a vested interest in insuring that the changes being
-> committed to the project are consistent and/or high quality.
->     I will look at the open_posix_testsuite items again tonight and
-> will make a best effort at fixing things. I may not get as much done
-> as people like, but I'm being more conservative to avoid missteps and
-> incorrect commits.
+> cleanup();
+> tst_exit();
+> =
 
-Thanks for you work.
+> in main, and any and all references of tst_exit() elsewhere should be
+> replaced / removed. I've completed about 100 or so of the syscalls and
+> have about 800 to go. Whee...
 
-Gui
+Ah, okay.
 
-> Thanks,
-> -Garrett
-> 
+> >> + =A0 =A0 if (close(fd) =3D=3D -1)
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK | TERRNO, cleanup, "close(2) =
+%s", TESTFILE);
+> >>
+> >> gcooper> Wouldn't worry about the close.
+> >
+> > Checking it doesn't do any harm. ;)
+> =
 
-------------------------------------------------------------------------------
-Lotusphere 2011
-Register now for Lotusphere 2011 and learn how
-to connect the dots, take your collaborative environment
-to the next level, and enter the era of Social Business.
-http://p.sf.net/sfu/lotusphere-d2d
+> Yeah. It's closing before running a test not after (and that's the
+> only potential exception for looking at the output of *close).
+> Sorry...
+> =
+
+> >>
+> >> - =A0 =A0 /* fix permissions on the tmpdir */
+> >> - =A0 =A0 if (chmod(".", 0711) !=3D 0) {
+> >> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK | TERRNO, cleanup, "chmod() f=
+ailed");
+> >>
+> >> gcooper> The directory mode for tst_tmpdir is different:
+> >>
+> >> #define DIR_MODE =A0 =A0 =A0 =A00777 =A0/* mode of tmp dir that will b=
+e created */
+> >
+> > As far as I understand the tests, changing permissions on tmp directory
+> > is not needed as the test is testing permissions on symlinks created
+> > inside of it (so we only need that the content of the directory is
+> > accesible). I susspect that this is some workaround that wasn't removed
+> > when test was ported for LTP.
+> =
+
+> Are you sure? If you change credentials (and this test does) the
+> contents of the directory are inaccessible. I'd readd this and check
+> what the outcome is of the test.
+
+The tst_tmpdir() is called after effective ids are set to TEST_USER
+(user nobody) and the whole test (without one setup function, which
+creates data that should result in EPERM) runs as TEST_USER then the
+test is owner of the directory, so if I'm not missing something, there
+is no point in changing the test directory from 0777 to 0711.
+
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
+
+---------------------------------------------------------------------------=
+---
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
