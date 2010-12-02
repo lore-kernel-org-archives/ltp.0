@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PPgrL-0001v3-3e
-	for ltp-list@lists.sourceforge.net; Mon, 06 Dec 2010 19:36:27 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id D1BF093F19
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  6 Dec 2010 20:36:16 +0100 (CET)
-Date: Mon, 6 Dec 2010 20:49:46 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101206194946.GA12546@saboteur.suse.cz>
+	(envelope-from <mitani@ryobi.co.jp>) id 1PNx3B-0003EF-Kq
+	for ltp-list@lists.sourceforge.net; Thu, 02 Dec 2010 00:29:29 +0000
+Received: from out18.sjc.mx.trendmicro.com ([216.99.131.75])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PNx3A-0008M0-2F
+	for ltp-list@lists.sourceforge.net; Thu, 02 Dec 2010 00:29:29 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Thu, 2 Dec 2010 09:29:00 +0900
+Message-ID: <000c01cb91b7$ea0bddc0$be239940$@co.jp>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] open posix testsuite fork 7-1.c
+Content-Language: ja
+Subject: Re: [LTP] [PATCH] open_posix_testsuite: Don\'t use clock_settime()
+	to reset a CPU-time Clock
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,30 +27,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: guijianfeng@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-The fork 7-1 testcase tests that child gets a copy of the parent message
-catalog descriptor. For that the test creates catalog from file
-messcat_src.txt that is not being installed now and even if would be,
-the test has wrong hardcoded path, so we have two options here:
+I agree the opinion of Gui. 
 
-* fix the makefile generator so the file gets installed and then fix the
-  test to find the input file
+In my environment, the difference of clock-ID in the same way as 
+Gui's opinion occurs with recent git.
+"clock_getcpuclockid/2-1.c" succeeded with Gui's patch.
 
-* make the test self-contained so it creates and fills the input file,
-  generates message catalog, opens it, forks ...
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
-What happens now with your Lotus Notes apps - do you make another costly 
-upgrade, or settle for being marooned without product support? Time to move
-off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
-use, and manage than apps on traditional platforms. Sign up for the Lotus 
-Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
