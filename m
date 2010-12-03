@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PO92O-0007YI-Tt
-	for ltp-list@lists.sourceforge.net; Thu, 02 Dec 2010 13:17:28 +0000
-Date: Thu, 2 Dec 2010 14:13:51 +0100
+	(envelope-from <chrubis@suse.de>) id 1POYGQ-0001hh-Nh
+	for ltp-list@lists.sourceforge.net; Fri, 03 Dec 2010 16:13:38 +0000
+Date: Fri, 3 Dec 2010 17:26:44 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101202131351.GB20268@saboteur.suse.cz>
-References: <20101125164008.GC2853@saboteur.suse.cz>
-	<AANLkTimFfK-34NALnKWMmOUqRhVfF70KMnWup8TiEp1C@mail.gmail.com>
-	<20101126142704.GA3587@saboteur.suse.cz>
-	<AANLkTim4PpA-aWoW_+cbB--cC6fj9qADhJEPf69S-BpW@mail.gmail.com>
+Message-ID: <20101203162644.GC28084@saboteur.suse.cz>
+References: <456905695.757931291112868201.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1609599410.757951291112870787.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <AANLkTim4PpA-aWoW_+cbB--cC6fj9qADhJEPf69S-BpW@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix lchown tests
+In-Reply-To: <1609599410.757951291112870787.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] a race in pid generation that causes pids to be
+ reused immediatelly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,81 +23,176 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: caiqian@redhat.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > Well, the return 0; is there just to silent compiler as cleanup() calls
-> > tst_exit(); The best solution is IMHO add noreturn attribute to
-> > cleanup() and remove the return 0;
-> =
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +#include "test.h"
+> +#include "usctest.h"
+> +
+> +char *TCID = "fork13";
+> +int TST_TOTAL = 1;
+> +extern int Tst_count;
+> +
+> +static void setup(void);
+> +static int PidDistance(pid_t first, pid_t second);
 
-> Eventually what will happen (if you've been watching git) is that the
-> calls will become:
-> =
+Just to cite from linux kernel conding style:
 
-> cleanup();
-> tst_exit();
-> =
+"mixed-case names are frowned upon"
 
-> in main, and any and all references of tst_exit() elsewhere should be
-> replaced / removed. I've completed about 100 or so of the syscalls and
-> have about 800 to go. Whee...
+> +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
+> +static int check(void);
+> +
+> +int main(int argc, char* argv[])
+> +{
+> +	/* message returned from parse_opts */
+> +	char *msg;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL) {
+> +		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s",
+> +			msg);
+> +		tst_exit();
+> +	}
+> +	setup();
+> +	TEST(check());
+> +	cleanup();
+> +}
+> +
+> +int check(void)
+> +{
+> +	/* loop counter */
 
-Ah, okay.
+Once again, this comment is useless ;).
 
-> >> + =A0 =A0 if (close(fd) =3D=3D -1)
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK | TERRNO, cleanup, "close(2) =
-%s", TESTFILE);
-> >>
-> >> gcooper> Wouldn't worry about the close.
-> >
-> > Checking it doesn't do any harm. ;)
-> =
+> +	int lc;
+> +
+> +	pid_t last_pid = 0;
+> +	pid_t pid;
+> +	int child_exit_code, distance, reaped, status;
+> +
+> +	/* Check looping state if -i option given */
 
-> Yeah. It's closing before running a test not after (and that's the
-> only potential exception for looking at the output of *close).
-> Sorry...
-> =
+Here as well.
 
-> >>
-> >> - =A0 =A0 /* fix permissions on the tmpdir */
-> >> - =A0 =A0 if (chmod(".", 0711) !=3D 0) {
-> >> - =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK | TERRNO, cleanup, "chmod() f=
-ailed");
-> >>
-> >> gcooper> The directory mode for tst_tmpdir is different:
-> >>
-> >> #define DIR_MODE =A0 =A0 =A0 =A00777 =A0/* mode of tmp dir that will b=
-e created */
-> >
-> > As far as I understand the tests, changing permissions on tmp directory
-> > is not needed as the test is testing permissions on symlinks created
-> > inside of it (so we only need that the content of the directory is
-> > accesible). I susspect that this is some workaround that wasn't removed
-> > when test was ported for LTP.
-> =
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		if (lc % 32786 == 0)
+> +			tst_resm(TINFO, "Iter: %d", lc/32768);
+> +		child_exit_code = lc % 256;
+> +		switch (pid = fork()) {
+> +		case -1:
+> +			tst_brkm(TBROK|TERRNO, cleanup, "fork");
+> +			tst_exit();
+> +		case 0:
+> +			// Child
 
-> Are you sure? If you change credentials (and this test does) the
-> contents of the directory are inaccessible. I'd readd this and check
-> what the outcome is of the test.
+I would remove this one as well. Everybody who plays with lowlevel OS
+api should know how fork works.
 
-The tst_tmpdir() is called after effective ids are set to TEST_USER
-(user nobody) and the whole test (without one setup function, which
-creates data that should result in EPERM) runs as TEST_USER then the
-test is owner of the directory, so if I'm not missing something, there
-is no point in changing the test directory from 0777 to 0711.
+> +			exit(child_exit_code);
+> +		default:
+> +			// Parent
 
--- =
+Here as well.
 
+> +			if (lc > 0) {
+> +				printf("last_pid = %d\npid = %d\n", last_pid, pid);
+> +				distance = PidDistance(last_pid, pid);
+> +				if (distance == 0 || distance > 30000) {
+
+Hmm are you sure that distance > 30000 is good thing to assert? Who says
+that two pids keeps at least 2768 distance and even then, who says that
+32768 is maximal pid (see below)?
+
+> +					tst_resm(TFAIL,
+> +						"Unexpected pid "
+> +						"sequence: previous "
+> +						"fork: pid=%d, current "
+> +						"fork: pid=%d for "
+> +						"iteration=%d.",
+> +						last_pid, pid, lc);
+> +				}
+> +			}
+> +			last_pid = pid;
+> +
+> +			reaped = wait(&status);
+> +			if (reaped != pid) {
+> +				tst_resm(TFAIL,
+> +					"Wait return value: expected "
+> +					"pid=%d, got %d, iteration %d.",
+> +					pid, reaped, lc);
+> +			} else if (WEXITSTATUS(status != child_exit_code)
+> +				!= child_exit_code) {
+> +				tst_resm(TFAIL,
+> +					"Unexpected exit status %x, "
+> +					"iteration %d.",
+> +					WEXITSTATUS(status), lc);
+> +			}
+> +		}
+> +	}
+> +	return 0;
+
+Rather use tst_exit() here.
+
+> +}
+> +
+> +void setup(void)
+> +{
+> +	/* capture signals */
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	/* Pause if that option was specified */
+> +	TEST_PAUSE;
+> +
+> +	tst_tmpdir();
+
+Do you really need temporary directory to test fork() ?
+
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	/*
+> +	 * print timing stats if that option was specified.
+> +	 * print errno log if that option was specified.
+> +	 */
+> +	TEST_CLEANUP;
+> +
+> +	/* exit with return code appropriate for results */
+> +	tst_rmdir();
+> +	tst_exit();
+> +}
+>
+> +/* The distance mod 32768 between two pids, where the first pid is
+> +   expected to be smaller than the second. */
+> +int PidDistance(pid_t first, pid_t second) {
+> +	return (second + 32768 - first) % 32768;
+> +}
+
+The comment doesn't hold as when second is smaller than first the
+negative value would be smaller than 32768.
+
+Moreover the maximal pid value may be changed by writing to
+"/proc/sys/kernel/pid_max", then this code is broken.
+
+Also I'm not sure if the result of such computation couldn't
+overflow/underflow as int may not be the same size as pid_t. 
+
+-- 
 Cyril Hrubis
 chrubis@suse.cz
 
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
 Tap into the largest installed PC base & get more eyes on your game by
 optimizing for Intel(R) Graphics Technology. Get started today with the
