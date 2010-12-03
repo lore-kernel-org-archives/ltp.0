@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PYTjq-0000dd-TM
-	for ltp-list@lists.sourceforge.net; Fri, 31 Dec 2010 01:25:02 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PYTjp-00033h-8L
-	for ltp-list@lists.sourceforge.net; Fri, 31 Dec 2010 01:25:02 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oBV1OttV006779
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Dec 2010 20:24:55 -0500
-Date: Thu, 30 Dec 2010 20:24:55 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <307686026.100796.1293758695307.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <605627072.100793.1293758674932.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1POWjv-0006Aa-Gu
+	for ltp-list@lists.sourceforge.net; Fri, 03 Dec 2010 14:35:59 +0000
+Date: Fri, 3 Dec 2010 15:49:03 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101203144903.GA28084@saboteur.suse.cz>
+References: <20101125164008.GC2853@saboteur.suse.cz>
+	<AANLkTimFfK-34NALnKWMmOUqRhVfF70KMnWup8TiEp1C@mail.gmail.com>
+	<20101126142704.GA3587@saboteur.suse.cz>
+	<AANLkTim4PpA-aWoW_+cbB--cC6fj9qADhJEPf69S-BpW@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_100795_1232007200.1293758695306"
-Subject: [LTP] [PATCH] hugemmap05: fix pathname to remove underscore
+Content-Type: multipart/mixed; boundary="cmJC7u66zC7hs+87"
+Content-Disposition: inline
+In-Reply-To: <AANLkTim4PpA-aWoW_+cbB--cC6fj9qADhJEPf69S-BpW@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix lchown tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,295 +26,1053 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-------=_Part_100795_1232007200.1293758695306
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c |   68 ++++++++++----------
- 1 files changed, 34 insertions(+), 34 deletions(-)
+--cmJC7u66zC7hs+87
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-index bce9fe6..85fee4d 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-@@ -51,18 +51,18 @@
+Hi!
+Here's updated patch, it's still removing the part of lchown02 test that
+changes tmpdir permission as this is not settled down yet.
+
+New changes for lchown01:
+
+* added check for array out of bounds
+* added test that lchown(path, -1, -1) is no op
+* tst_exit() handling
+
+lchown02:
+
+* tst_exit() handling
+
+I've gone trough both lchown01 and lchown02 code once more and fixed a
+few more typos and once more checked these tests do pass.
+
+Signed-of-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--cmJC7u66zC7hs+87
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="fix_lchown_tests_II.patch"
+
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 516ba7c..0b0368c 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -373,7 +373,7 @@ kill11 ulimit -c 1024;kill11
+ kill12 kill12
+ 
+ lchown01 lchown01
+-lchown02 prep_create_link; lchown02
++lchown02 lchown02
+ 
+ link01 symlink01 -T link01
+ link02 link02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index c2903f5..55d4fe5 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -306,7 +306,7 @@ kill11 ulimit -c 1024;kill11
+ kill12 kill12
+ 
+ lchown01 lchown01
+-lchown02 prep_create_link; lchown02
++lchown02 lchown02
+ 
+ link01 symlink01 -T link01
+ link02 link02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 085763f..4cd32b8 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -462,8 +462,8 @@ kill12 kill12
+ 
+ lchown01 lchown01
+ lchown01_16 lchown01_16
+-lchown02 prep_create_link; lchown02
+-lchown02_16 prep_create_link; lchown02_16
++lchown02  lchown02
++lchown02_16 lchown02_16
+ 
+ link01 symlink01 -T link01
+ link02 link02
+diff --git a/testcases/kernel/syscalls/lchown/Makefile b/testcases/kernel/syscalls/lchown/Makefile
+index 829746d..a5b2431 100644
+--- a/testcases/kernel/syscalls/lchown/Makefile
++++ b/testcases/kernel/syscalls/lchown/Makefile
+@@ -24,8 +24,4 @@ SRCS			:= $(wildcard $(abs_srcdir)/lchown*.c)
+ 
+ include $(abs_srcdir)/../utils/compat_16.mk
+ 
+-INSTALL_TARGETS		:= prep_create_link
+-
+-MAKE_TARGETS		+= create_link
+-
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/lchown/create_link.c b/testcases/kernel/syscalls/lchown/create_link.c
+deleted file mode 100644
+index 0cb53ec..0000000
+--- a/testcases/kernel/syscalls/lchown/create_link.c
++++ /dev/null
+@@ -1,94 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+- */
+-
+-/*
+- * Description: This is a setuid to root program invoked by a non-root
+- *		process to change the user id/group id bits on the test
+- *		directory/file created in the setup function.
+- *		It sets uid to another non-root user and creates a
+- *		symlink of testfile/directory.
+- *
+- *		This function exit with 0 or 1 depending upon the
+- *		success/failure each system call.
+- */
+-
+-#include <libgen.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <sys/types.h>
+-#include <pwd.h>
+-#include <grp.h>
+-#include <errno.h>
+-#include <string.h>
+-
+-#define LTPUSER		"bin"
+-#define LTPGRP		"bin"
+-#define SFILE1		"sfile_1"
+-
+-int main(int argc, char **argv)
+-{
+-	int rc = 1;		/* Failed until proven passed ;). */
+-	struct passwd *ltpuser;	/* password struct for nobody */
+-	struct group *ltpgroup;	/* group struct for nobody */
+-	uid_t user_uid;		/* user id of nobody */
+-	gid_t group_gid;	/* group id of nobody */
+-	char *path_name;	/* name of test directory/file */
+-
+-	path_name = argv[1];
+-
+-	if (argc != 2) {
+-		fprintf(stderr, "usage: %s filename\n", basename(*argv));
+-		exit (1);
+-	} else if ((ltpuser = getpwnam(LTPUSER)) == NULL)
+-		/*
+-		 * Get the user id and group id of "ltpuser" user from password
+-		 * and group files.
+-		 */
+-		fprintf(stderr, "change_owner: %s not found in /etc/passwd",
+-			LTPUSER);
+-	else if ((ltpgroup = getgrnam(LTPGRP)) == NULL)
+-		fprintf(stderr, "change_owner: %s not found in /etc/group",
+-			LTPGRP);
+-	else {
+-
+-		user_uid = ltpuser->pw_uid;
+-		group_gid = ltpgroup->gr_gid;
+-
+-		/*
+-		 * Change the ownership of test directory/file specified by
+-		 * pathname to that of LTPUSER user_uid and group_gid.
+-		 */
+-		if (chown(path_name, user_uid, group_gid) < 0)
+-			fprintf(stderr, "change_owner: chown() of %s failed, "
+-				"error %d\n", path_name, errno);
+-		else if (setuid(user_uid) < 0)
+-			fprintf(stderr, "change_owner: setuid() to %s fails, error=%d",
+-				LTPUSER, errno);
+-		else if (symlink(path_name, SFILE1) < 0)
+-			fprintf(stderr, "change_owner: symlink() of %s Failed, "
+-				"errno=%d : %s", path_name, errno, strerror(errno));
+-		else
+-			rc = 0;
+-
+-	}
+-
+-	return rc;
+-
+-}
+diff --git a/testcases/kernel/syscalls/lchown/lchown01.c b/testcases/kernel/syscalls/lchown/lchown01.c
+index 8e83a8f..b7ba136 100644
+--- a/testcases/kernel/syscalls/lchown/lchown01.c
++++ b/testcases/kernel/syscalls/lchown/lchown01.c
+@@ -62,6 +62,7 @@
+  *
+  * HISTORY
+  *	07/2001 Ported by Wayne Boyer
++ *	11/2010 Code cleanup by Cyril Hrubis chrubis@suse.cz
+  *
+  * RESTRICTIONS:
+  *  This test should be run by 'super-user' (root) only.
+@@ -83,68 +84,61 @@
+ #define TESTFILE	"testfile"
+ #define SFILE		"slink_file"
+ 
+-char *TCID = "lchown01";	/* Test program identifier.    */
+-int TST_TOTAL = 5;		/* Total number of test conditions */
+-extern int Tst_count;		/* Test Case counter for tst_* routines */
++char *TCID = "lchown01";
++int TST_TOTAL = 5;
++extern int Tst_count;
+ 
+-struct test_case_t {		/* test case struct. to test different conditions */
++struct test_case_t {
+ 	char *desc;
+ 	uid_t user_id;
+ 	gid_t group_id;
+-} Test_cases[] = {
+-	{
+-	"Change Owner/Group ids", 700, 701}, {
+-	"Change Owner id only", 702, -1}, {
+-	"Change Owner id only", 703, 701}, {
+-	"Change Group id only", -1, 704}, {
+-	"Change Group id only", 703, 705}, {
+-	NULL, 0, 0}
+ };
+ 
+-void setup();			/* setup function for the test */
+-void cleanup();			/* cleanup function for the test */
++static struct test_case_t test_cases[] = {
++	{"Change Owner/Group ids", 700, 701},
++	{"Change Owner id only",   702,  -1},
++	{"Change Owner/Group ids", 703, 701},
++	{"Change Group id only",    -1, 704},
++	{"Change Group/Group ids", 703, 705},
++	{"Change none",             -1,  -1},
++	{NULL,                       0,   0}
++};
++
++void setup(void);
++void cleanup(void);
+ 
+-int main(int ac, char **av)
++int main(int argc, char *argv[])
+ {
+-	struct stat stat_buf;	/* stat(2) struct contents */
+-	int lc;			/* loop counter */
+-	char *msg;		/* message returned from parse_opts */
+-	int ind;		/* counter variable for chmod(2) tests */
+-	uid_t User_id;		/* user id of the user set for testfile */
+-	gid_t Group_id;		/* group id of the user set for testfile */
+-	char *test_desc;	/* test specific message */
++	struct stat stat_buf;
++	int lc, i;
++	char *msg;
+ 
+-	/* Parse standard options given to run the test. */
+-	msg = parse_opts(ac, av, (option_t *) NULL, NULL);
+-	if (msg != (char *)NULL) {
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-		tst_exit();
+-	}
++	msg = parse_opts(argc, argv, NULL, NULL);
++	
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
+ 
+-	/* Perform global setup for test */
+ 	setup();
+ 
+-	/* Check looping state if -i option given */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		/* Reset Tst_count in case we are looping. */
+ 		Tst_count = 0;
+ 
+-		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-			test_desc = Test_cases[ind].desc;
+-			User_id = Test_cases[ind].user_id;
+-			Group_id = Test_cases[ind].group_id;
++		for (i = 0; test_cases[i].desc != NULL; i++) {
++			uid_t user_id = test_cases[i].user_id;
++			gid_t group_id = test_cases[i].group_id;
++			char *test_desc = test_cases[i].desc;
+ 
+ 			/*
+ 			 * Call lchwon(2) with different user id and
+ 			 * group id (numeric values) to set it on
+ 			 * symlink of testfile.
+ 			 */
+-			TEST(lchown(SFILE, User_id, Group_id));
++			TEST(lchown(SFILE, user_id, group_id));
+ 
+-			/* check return code of lchown(2) */
+ 			if (TEST_RETURN == -1) {
+ 				tst_resm(TFAIL,
+-					 "lchown() Fails to %s, errno=%d",
++					 "lchown() Fails to %s, errno %d",
+ 					 test_desc, TEST_ERRNO);
+ 				continue;
+ 			}
+@@ -158,27 +152,31 @@ int main(int ac, char **av)
+ 				 * lstat(2).
+ 				 */
+ 				if (lstat(SFILE, &stat_buf) < 0) {
+-					tst_brkm(TFAIL, cleanup, "lstat(2) of "
+-						 "%s failed, errno:%d",
++					tst_brkm(TFAIL, cleanup, "lstat(2) "
++					         "%s failed, errno %d",
+ 						 SFILE, TEST_ERRNO);
+ 				}
+-				if (User_id == -1) {
+-					User_id = Test_cases[ind - 1].user_id;
++
++				if (user_id == (uid_t)-1) {
++					if (i > 0)
++						user_id = test_cases[i-1].user_id;
++					else
++						user_id = geteuid();
+ 				}
+-				if (Group_id == -1) {
+-					Group_id = Test_cases[ind - 1].group_id;
++
++				if (group_id == (gid_t)-1) {
++					if (i > 0)
++						group_id = test_cases[i - 1].group_id;
++					else
++						group_id = getegid();
+ 				}
+ 
+-				/*
+-				 * Check for expected Ownership ids
+-				 * set on testfile.
+-				 */
+-				if ((stat_buf.st_uid != User_id) ||
+-				    (stat_buf.st_gid != Group_id)) {
++				if ((stat_buf.st_uid != user_id) ||
++				    (stat_buf.st_gid != group_id)) {
+ 					tst_resm(TFAIL,
+-						 "%s: Incorrect ownership set, "
+-						 "Expected %d %d", SFILE,
+-						 User_id, Group_id);
++						 "%s: incorrect ownership set, "
++						 "expected %u %u", SFILE,
++						 user_id, group_id);
+ 				} else {
+ 					tst_resm(TPASS, "lchown() succeeds to "
+ 						 "%s of %s", test_desc, SFILE);
+@@ -187,13 +185,11 @@ int main(int ac, char **av)
+ 				tst_resm(TPASS, "call succeeded");
+ 			}
+ 		}
+-	}			/* End for TEST_LOOPING */
++	}
+ 
+-	/* Call cleanup() to undo setup done for the test. */
+ 	cleanup();
+-
+-	 /*NOTREACHED*/ return 0;
+-}				/* End main */
++	tst_exit();
++}
+ 
+ /*
+  * setup() - performs all ONE TIME setup for this test.
+@@ -201,41 +197,29 @@ int main(int ac, char **av)
+  *	     Create a test file under temporary directory and close it
+  *	     Create a symlink of testfile under temporary directory.
+  */
+-void setup()
++void setup(void)
+ {
+ 	int fd;
+ 
+ 	/* capture signals */
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	/* Check that the test process id is super/root  */
+-	if (geteuid() != 0) {
+-		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
+-		tst_exit();
+-	}
+-
+-	/* Pause if that option was specified */
++	
++	tst_require_root(tst_exit);
++	
+ 	TEST_PAUSE;
+-
+-	/* make a temp directory and cd to it */
+ 	tst_tmpdir();
+ 
+ 	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, %o) Failed, errno=%d : %s",
+-			 TESTFILE, FILE_MODE, errno, strerror(errno));
+-	}
+-	if (close(fd) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "close(%s) Failed, errno=%d : %s",
+-			 TESTFILE, errno, strerror(errno));
++		tst_brkm(TBROK | TERRNO, cleanup, "open(2) %s mode %o failed",
++		         TESTFILE, FILE_MODE);
+ 	}
++	
++	if (close(fd) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "close(2) %s", TESTFILE);
+ 
+-	/* Create a symlink for testfile created */
+ 	if (symlink(TESTFILE, SFILE) < 0) {
+-		tst_brkm(TBROK, cleanup,
+-			 "symlink() of %s Failed, errno=%d : %s",
+-			 TESTFILE, errno, strerror(errno));
++		tst_brkm(TBROK | TERRNO, cleanup, "symlink(2) %s to %s failed",
++		         TESTFILE, SFILE);
+ 	}
+ }
+ 
+@@ -244,16 +228,9 @@ void setup()
+  *	       completion or premature exit.
+  *	       Remove the test directory and testfile created in the setup.
+  */
+-void cleanup()
++void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+ 
+-	/* Remove tmp dir and all files in it */
+ 	tst_rmdir();
+-
+-	/* exit with return code appropriate for results */
+-	tst_exit();
+ }
+diff --git a/testcases/kernel/syscalls/lchown/lchown02.c b/testcases/kernel/syscalls/lchown/lchown02.c
+index 4f519ab..7bf2d0a 100644
+--- a/testcases/kernel/syscalls/lchown/lchown02.c
++++ b/testcases/kernel/syscalls/lchown/lchown02.c
+@@ -72,6 +72,7 @@
+  *
+  * HISTORY
+  *	07/2001 Ported by Wayne Boyer
++ *      11/2010 Rewritten by Cyril Hrubis chrubis@suse.cz
+  *
+  * RESTRICTIONS:
+  *
+@@ -93,6 +94,7 @@
+ #include "test.h"
  #include "usctest.h"
  
- #define PROTECTION		(PROT_READ | PROT_WRITE)
--#define _PATH_MEMINFO		"/proc/meminfo"
--#define _PATH_SYS_HUGE		"/sys/kernel/mm/hugepages"
--#define _PATH_SYS_2M		_PATH_SYS_HUGE "/hugepages-2048kB/"
--#define _PATH_SYS_2M_OVER	_PATH_SYS_2M "nr_overcommit_hugepages"
--#define _PATH_SYS_2M_FREE	_PATH_SYS_2M "free_hugepages"
--#define _PATH_SYS_2M_RESV	_PATH_SYS_2M "resv_hugepages"
--#define _PATH_SYS_2M_SURP	_PATH_SYS_2M "surplus_hugepages"
--#define _PATH_SYS_2M_HUGE	_PATH_SYS_2M "nr_hugepages"
--#define _PATH_PROC_VM		"/proc/sys/vm/"
--#define _PATH_PROC_OVER		_PATH_PROC_VM "nr_overcommit_hugepages"
--#define _PATH_PROC_HUGE		_PATH_PROC_VM "nr_hugepages"
--#define _PATH_SHMMAX		"/proc/sys/kernel/shmmax"
-+#define PATH_MEMINFO		"/proc/meminfo"
-+#define PATH_SYS_HUGE		"/sys/kernel/mm/hugepages"
-+#define PATH_SYS_2M		PATH_SYS_HUGE "/hugepages-2048kB/"
-+#define PATH_SYS_2M_OVER	PATH_SYS_2M "nr_overcommit_hugepages"
-+#define PATH_SYS_2M_FREE	PATH_SYS_2M "free_hugepages"
-+#define PATH_SYS_2M_RESV	PATH_SYS_2M "resv_hugepages"
-+#define PATH_SYS_2M_SURP	PATH_SYS_2M "surplus_hugepages"
-+#define PATH_SYS_2M_HUGE	PATH_SYS_2M "nr_hugepages"
-+#define PATH_PROC_VM		"/proc/sys/vm/"
-+#define PATH_PROC_OVER		PATH_PROC_VM "nr_overcommit_hugepages"
-+#define PATH_PROC_HUGE		PATH_PROC_VM "nr_hugepages"
-+#define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
- #define MB			(1024 * 1024)
++#define TEST_USER       "nobody"
+ #define MODE_RWX	S_IRWXU | S_IRWXG | S_IRWXO
+ #define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+ #define DIR_TEMP	"testdir_1"
+@@ -100,373 +102,318 @@
+ #define SFILE1		"sfile_1"
+ #define TEST_FILE2	"testdir_1/tfile_2"
+ #define SFILE2		"testdir_1/sfile_2"
+-#define TEST_FILE3	"t_file/tfile_3"
+-#define SFILE3		"t_file/sfile_3"
++#define TFILE3          "t_file"
++#define SFILE3		"t_file/sfile"
  
- /* Only ia64 requires this */
-@@ -116,15 +116,15 @@ int main(int argc, char *argv[])
- 	if (msg != NULL)
- 		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
- 	if (opt_sysfs) {
--		strncpy(path, _PATH_SYS_2M_HUGE,
--			strlen(_PATH_SYS_2M_HUGE) + 1);
--		strncpy(pathover, _PATH_SYS_2M_OVER,
--			strlen(_PATH_SYS_2M_OVER) + 1);
-+		strncpy(path, PATH_SYS_2M_HUGE,
-+			strlen(PATH_SYS_2M_HUGE) + 1);
-+		strncpy(pathover, PATH_SYS_2M_OVER,
-+			strlen(PATH_SYS_2M_OVER) + 1);
- 	} else {
--		strncpy(path, _PATH_PROC_HUGE,
--			strlen(_PATH_PROC_HUGE) + 1);
--		strncpy(pathover, _PATH_PROC_OVER,
--			strlen(_PATH_PROC_OVER) + 1);
-+		strncpy(path, PATH_PROC_HUGE,
-+			strlen(PATH_PROC_HUGE) + 1);
-+		strncpy(pathover, PATH_PROC_OVER,
-+			strlen(PATH_PROC_OVER) + 1);
- 	}
- 	if (opt_alloc) {
- 		size = atoi(opt_allocstr);
-@@ -147,7 +147,7 @@ static void overcommit(void)
+-int no_setup();
+-int setup1();			/* setup function to test lchown for EPERM */
+-int setup2();			/* setup function to test lchown for EACCES */
+-int setup3();			/* setup function to test lchown for ENOTDIR */
+-int longpath_setup();		/* setup function to test chown for ENAMETOOLONG */
++char *TCID = "lchown02";
++int TST_TOTAL = 7;
++extern int Tst_count;
  
- 	if (shmid != -1) {
- 		/* Use /proc/meminfo to generate an IPC key. */
--		key = ftok(_PATH_MEMINFO, strlen(_PATH_MEMINFO));
-+		key = ftok(PATH_MEMINFO, strlen(PATH_MEMINFO));
- 		if (key == -1)
- 			tst_brkm(TBROK|TERRNO, cleanup, "ftok");
- 		shmid = shmget(key, (long)(length * MB),
-@@ -167,22 +167,22 @@ static void overcommit(void)
+-char Longpathname[PATH_MAX + 2];
+-char High_address_node[64];
+-char EXEC_DIR[PATH_MAX];
+-char main_test_dir[PATH_MAX + 2];
++static void setup_eperm(int pos);
++static void setup_eacces(int pos);
++static void setup_enotdir(int pos);
++static void setup_longpath(int pos);
++static void setup_efault(int pos);
++static void setup_highaddress(int pos);
  
- 	if (opt_sysfs) {
- 		tst_resm(TINFO, "check sysfs before allocation.");
--		if (checksys(_PATH_SYS_2M_HUGE, "HugePages_Total",
-+		if (checksys(PATH_SYS_2M_HUGE, "HugePages_Total",
- 				length / 2) != 0)
- 			return;
--		if (checksys(_PATH_SYS_2M_FREE, "HugePages_Free",
-+		if (checksys(PATH_SYS_2M_FREE, "HugePages_Free",
- 				length / 2) != 0)
- 			return;
--		if (checksys(_PATH_SYS_2M_SURP, "HugePages_Surp",
-+		if (checksys(PATH_SYS_2M_SURP, "HugePages_Surp",
- 				length / 2 - size) != 0)
- 			return;
--		if (checksys(_PATH_SYS_2M_RESV, "HugePages_Rsvd",
-+		if (checksys(PATH_SYS_2M_RESV, "HugePages_Rsvd",
- 				length / 2) != 0)
- 			return;
- 	} else {
- 		tst_resm(TINFO,
- 			"check /proc/meminfo before allocation.");
--		fp = fopen(_PATH_MEMINFO, "r");
-+		fp = fopen(PATH_MEMINFO, "r");
- 		if (fp == NULL)
- 			tst_brkm(TBROK|TERRNO, cleanup, "fopen");
- 		if (checkproc(fp, "HugePages_Total", length / 2) != 0)
-@@ -209,21 +209,21 @@ static void overcommit(void)
- 	}
- 	if (opt_sysfs) {
- 		tst_resm(TINFO, "check sysfs.");
--		if (checksys(_PATH_SYS_2M_HUGE, "HugePages_Total",
-+		if (checksys(PATH_SYS_2M_HUGE, "HugePages_Total",
- 				length / 2) != 0)
- 			return;
--		if (checksys(_PATH_SYS_2M_FREE, "HugePages_Free", 0)
-+		if (checksys(PATH_SYS_2M_FREE, "HugePages_Free", 0)
- 			!= 0)
- 			return;
--		if (checksys(_PATH_SYS_2M_SURP, "HugePages_Surp",
-+		if (checksys(PATH_SYS_2M_SURP, "HugePages_Surp",
- 				length / 2 - size) != 0)
- 			return;
--		if (checksys(_PATH_SYS_2M_RESV, "HugePages_Rsvd", 0)
-+		if (checksys(PATH_SYS_2M_RESV, "HugePages_Rsvd", 0)
- 			!= 0)
- 			return;
- 	} else {
- 		tst_resm(TINFO, "check /proc/meminfo.");
--		fp = fopen(_PATH_MEMINFO, "r");
-+		fp = fopen(PATH_MEMINFO, "r");
- 		if (fp == NULL)
- 			tst_brkm(TBROK|TERRNO, cleanup, "fopen");
- 		if (checkproc(fp, "HugePages_Total", length / 2) != 0)
-@@ -253,7 +253,7 @@ static void cleanup(void)
+-struct test_case_t {		/* test case struct. to hold ref. test cond's */
++static char path[PATH_MAX + 2];
++
++struct test_case_t {
+ 	char *pathname;
+ 	char *desc;
+ 	int exp_errno;
+-	int (*setupfunc) ();
+-} Test_cases[] = {
+-	{
+-	SFILE1, "Process is not owner/root", EPERM, setup1}, {
+-	SFILE2, "No Search permissions to process", EACCES, setup2}, {
+-	High_address_node, "Address beyond address space", EFAULT, no_setup},
+-	{
+-	(char *)-1, "Negative address", EFAULT, no_setup}, {
+-	Longpathname, "Pathname too long", ENAMETOOLONG, longpath_setup}, {
+-	"", "Pathname is empty", ENOENT, no_setup}, {
+-	SFILE3, "Path contains regular file", ENOTDIR, setup3}, {
+-	NULL, NULL, 0, no_setup}
++	void (*setup)(int pos);
+ };
  
- 	TEST_CLEANUP;
- 	if (restore_shmmax) {
--		fd = open(_PATH_SHMMAX, O_WRONLY);
-+		fd = open(PATH_SHMMAX, O_WRONLY);
- 		if (fd == -1)
- 			tst_resm(TWARN|TERRNO, "open");
- 		if (write(fd, shmmax, strlen(shmmax)) != strlen(shmmax))
-@@ -297,7 +297,7 @@ static void setup(void)
+-char *TCID = "lchown02";	/* Test program identifier.    */
+-int TST_TOTAL = 7;		/* Total number of test cases. */
+-extern int Tst_count;		/* Test Case counter for tst_* routines */
+-int exp_enos[] = { EPERM, EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
++static struct test_case_t test_cases[] = {
++	{SFILE1, "Process is not owner/root",    EPERM,   setup_eperm},
++	{SFILE2, "Search permission denied",     EACCES,  setup_eacces},
++	{NULL,   "Address beyond address space", EFAULT,  setup_highaddress},
++	{NULL,   "Unaccessible address space",   EFAULT,  setup_efault},
++	{path,   "Pathname too long",            ENAMETOOLONG, setup_longpath},
++	{SFILE3, "Path contains regular file",   ENOTDIR, setup_enotdir},
++	{"",     "Pathname is empty",            ENOENT,  NULL},
++	{NULL,   NULL,                           0,       NULL}
++};
+ 
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
++static struct passwd *ltpuser;
+ 
+-char *bad_addr = 0;
++static int exp_enos[] =
++	{EPERM, EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0};
+ 
+-void setup();			/* Main setup function for the tests */
+-void cleanup();			/* cleanup function for the test */
++void setup(void);
++void cleanup(void);
+ 
+-int main(int ac, char **av)
++int main(int argc, char *argv[])
+ {
+-	int lc;			/* loop counter */
+-	char *msg;		/* message returned from parse_opts */
+-	char *file_name;	/* ptr. for file name whose mode is modified */
+-	char *test_desc;	/* test specific error message */
+-	int ind;		/* counter to test different test conditions */
+-	uid_t User_id;		/* Effective user id of a test process */
+-	gid_t Group_id;		/* Effective group id of a test process */
++	int lc;
++	char *msg;
++	uid_t user_id;
++	gid_t group_id;
++	int i;
+ 
+ 	/* Parse standard options given to run the test. */
+-	msg = parse_opts(ac, av, (option_t *) NULL, NULL);
+-	if (msg != (char *)NULL) {
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-		tst_exit();
+-	}
++	msg = parse_opts(argc, argv, NULL, NULL);
++	
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
+ 
+-	/*
+-	 * Invoke setup function to call individual test setup functions
+-	 * to simulate test conditions.
+-	 */
+ 	setup();
+-
+ 	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+-	/* Set uid/gid values to that of test process */
+-	User_id = geteuid();
+-	Group_id = getegid();
++	user_id = geteuid();
++	group_id = getegid();
+ 
+-	/* Check looping state if -i option given */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* Reset Tst_count in case we are looping. */
+ 		Tst_count = 0;
+ 
+-		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-			file_name = Test_cases[ind].pathname;
+-			test_desc = Test_cases[ind].desc;
+-
+-			if (file_name == High_address_node) {
+-				file_name = get_high_address();
+-			}
++		for (i = 0; test_cases[i].desc != NULL; i++) {
++			char *file_name = test_cases[i].pathname;
++			char *test_desc = test_cases[i].desc;
+ 
+ 			/*
+ 			 * Call lchown(2) to test different test conditions.
+ 			 * verify that it fails with -1 return value and
+ 			 * sets appropriate errno.
+ 			 */
+-			TEST(lchown(file_name, User_id, Group_id));
++			TEST(lchown(file_name, user_id, group_id));
+ 
+ 			/* Check return code from lchown(2) */
+ 			if (TEST_RETURN == -1) {
+ 				TEST_ERROR_LOG(TEST_ERRNO);
+-				if (TEST_ERRNO == Test_cases[ind].exp_errno) {
++				if (TEST_ERRNO == test_cases[i].exp_errno) {
+ 					tst_resm(TPASS,
+-						 "lchown() fails, %s, errno:%d",
++						 "lchown(2) fails, %s, errno:%d",
+ 						 test_desc, TEST_ERRNO);
+ 				} else {
+-					tst_resm(TFAIL, "lchown() fails, %s, "
++					tst_resm(TFAIL, "lchown(2) fails, %s, "
+ 						 "errno:%d, expected errno:%d",
+ 						 test_desc, TEST_ERRNO,
+-						 Test_cases[ind].exp_errno);
++						 test_cases[i].exp_errno);
+ 				}
+ 			} else {
+-				tst_resm(TFAIL, "lchown() returned %ld, "
++				tst_resm(TFAIL, "lchown(2) returned %ld, "
+ 					 "expected -1, errno:%d", TEST_RETURN,
+-					 Test_cases[ind].exp_errno);
++					 test_cases[i].exp_errno);
+ 			}
+-		}		/* End of TEST CASE LOOPING. */
+-	}			/* End for TEST_LOOPING */
++		}
++	}
+ 
+-	/*
+-	 * Invoke cleanup() to delete the test directory/file(s) created
+-	 * in the setup().
+-	 */
+ 	cleanup();
+-
+-	 /*NOTREACHED*/ return 0;
+-}				/* End main */
++	tst_exit();
++}
+ 
+ /*
+- * setup(void) - performs all ONE TIME setup for this test.
++ * setup() - performs all ONE TIME setup for this test.
++ *	
+  *	Exit the test program on receipt of unexpected signals.
+  *	Create a temporary directory and change directory to it.
+- *	Invoke individual test setup functions according to the order
+- *	set in struct. definition.
++ *	Invoke individual test setup functions.
+  */
+-void setup()
++void setup(void)
+ {
+-	int ind;		/* counter for setup functions */
++	int i;
+ 
+ 	/* Capture unexpected signals */
  	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
- 	if (shmid != -1) {
--		fp = fopen(_PATH_SHMMAX, "r");
-+		fp = fopen(PATH_SHMMAX, "r");
- 		if (fp == NULL)
- 			tst_brkm(TBROK|TERRNO, cleanup, "fopen");
- 		if (fgets(shmmax, BUFSIZ, fp) == NULL)
-@@ -306,7 +306,7 @@ static void setup(void)
  
- 		if (atol(shmmax) < (long)(length * MB)) {
- 			restore_shmmax = 1;
--			fd = open(_PATH_SHMMAX, O_RDWR);
-+			fd = open(PATH_SHMMAX, O_RDWR);
- 			if (fd == -1)
- 				tst_brkm(TBROK|TERRNO, cleanup, "open");
- 			snprintf(buf, BUFSIZ, "%ld", (long)(length * MB));
--- 
-1.7.3.2
-------=_Part_100795_1232007200.1293758695306
-Content-Type: text/x-patch;
-	name=0001-hugemmap05-fix-pathname-to-remove-underscore.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename=0001-hugemmap05-fix-pathname-to-remove-underscore.patch
+-	/* Get the current directory of the test executable */
+-	if (getcwd(EXEC_DIR, sizeof(EXEC_DIR)) == NULL) {
+-		tst_brkm(TBROK, cleanup,
+-			 "getcwd(3) fails to get working directory of process");
+-	}
+-
+-	/* Switch to nobody user for correct error code collection */
+-	if (geteuid() != 0) {
+-		tst_brkm(TBROK, tst_exit, "Test must be run as root");
+-	}
+-	ltpuser = getpwnam(nobody_uid);
+-	if (setgid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setgid failed to "
+-			 "to set the effective gid to %d", ltpuser->pw_uid);
+-		perror("setgid");
+-	}
++	tst_require_root(tst_exit);
+ 
+-	if (seteuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setuid");
+-	}
+-
+-	/* Pause if that option was specified */
+ 	TEST_PAUSE;
++	
++	/* change euid and gid to nobody */
++	ltpuser = getpwnam(TEST_USER);
+ 
+-	/* remember current dir, because create_link has been copied here */
+-	if (getcwd(main_test_dir, sizeof(main_test_dir)) == NULL) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "failed to get the current working directory.");
++	if (ltpuser == NULL) {
++		tst_brkm(TBROK, cleanup, "test need user %s to run",
++		         TEST_USER);
+ 	}
+ 
+-	/* Make a temp dir and cd to it */
+-	tst_tmpdir();
+-
+-	/* fix permissions on the tmpdir */
+-	if (chmod(".", 0711) != 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "chmod() failed");
++	if (setgid(ltpuser->pw_uid) == -1) {
++		tst_resm(TBROK | TERRNO,
++		         "setgid(2) failed set the effective gid to %d",
++			 ltpuser->pw_uid);
+ 	}
+ 
+-	bad_addr = mmap(0, 1, PROT_NONE,
+-			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+-	if (bad_addr == MAP_FAILED) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
++	if (seteuid(ltpuser->pw_uid) == -1) {
++		tst_resm(TBROK | TERRNO,
++		         "seteuid(2) failed to set the effective uid to %d",
++			 ltpuser->pw_uid);
+ 	}
+-	Test_cases[3].pathname = bad_addr;
++	
++	tst_tmpdir();
+ 
+ 	/* call individual setup functions */
+-	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-		Test_cases[ind].setupfunc();
++	for (i = 0; test_cases[i].desc != NULL; i++) {
++		if (test_cases[i].setup != NULL)
++			test_cases[i].setup(i);
+ 	}
+ }
+ 
+ /*
+- * no_setup() - Some test conditions for mknod(2) do not any setup.
+- *              Hence, this function just returns 0.
+- *  This function simply returns 0.
+- */
+-int no_setup()
+-{
+-	return 0;
+-}
+-
+-/*
+- * setup1() - setup function for a test condition for which chown(2)
+- *	      returns -1 and sets errno to EPERM.
++ * setup_eperm() - setup function for a test condition for which lchown(2)
++ *	           returns -1 and sets errno to EPERM.
+  *
+- *  Create a testfile under temporary directory and invoke setuid to root
+- *  program to change the ownership of testfile to that of "ltpuser2" user,
+- *  create a symlink file of it with ownership as ltpuser2.
++ * Create test file and symlink with uid 0.
+  */
+-int setup1()
++void setup_eperm(int pos LTP_ATTRIBUTE_UNUSED)
+ {
+-	int fd;			/* file handler for testfile */
+-	char Path_name[PATH_MAX];	/* Buffer to hold command string */
+-	char Path2_name[PATH_MAX];	/* Buffer for just the path name */
+-	char Cmd_buffer[BUFSIZ];	/* Buffer to hold command string */
++	int fd;
+ 
+-	/* Creat a testfile and close it */
++	/* create a testfile */
+ 	if ((fd = open(TEST_FILE1, O_RDWR | O_CREAT, 0666)) == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, 0666) failed", TEST_FILE1);
++			 "open(2) %s failed", TEST_FILE1);
+ 	}
++
+ 	if (close(fd) == -1) {
+-		tst_brkm(TBROK, cleanup, "close(%s) Failed", TEST_FILE1);
++		tst_brkm(TBROK | TERRNO, cleanup, "close(2) %s failed",
++		         TEST_FILE1);
+ 	}
+-
+-	/* Get the current working directory of the process */
+-	if (getcwd(Path_name, sizeof(Path_name)) == NULL) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "failed to get the current working directory.");
++	
++	/* become root once more */
++	if (seteuid(0) == -1) {
++		tst_resm(TBROK | TERRNO,
++		         "seteuid(2) failed to set the effective uid to 0");
+ 	}
+ 
+-	/* Provide permissions for temporary directory */
+-	if (chmod(Path_name, 0777) == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "chmod(%s, 0777) failed", Path_name);
++	/* create symling to testfile */
++	if (symlink(TEST_FILE1, SFILE1) < 0) {
++		tst_brkm(TBROK, cleanup, "symlink(2) %s to %s failed",
++			 TEST_FILE1, SFILE1);
+ 	}
+ 
+-	strcpy(Path2_name, Path_name);
+-
+-	/* Get the path of test file created under temporary directory */
+-	strcat(Path_name, "/" TEST_FILE1);
+-
+-	/* Get the command name to be executed as setuid to root */
+-	strcat((char *)Cmd_buffer, main_test_dir);
+-	strcat((char *)Cmd_buffer, (const char *)"/create_link ");
+-	strcat((char *)Cmd_buffer, Path_name);
+-
+-	if (system((const char *)Cmd_buffer) != 0) {
+-		tst_brkm(TBROK, cleanup,
+-			 "Fail to modify %s ownership(s)!", TEST_FILE1);
++	/* back to the user nobody */
++	if (seteuid(ltpuser->pw_uid) == -1) {
++		tst_resm(TBROK | TERRNO,
++		         "seteuid(2) failed to set the effective uid to %d",
++			 ltpuser->pw_uid);
+ 	}
+-	return 0;
+ }
+ 
+ /*
+- * setup2() - setup function for a test condition for which chown(2)
+- *	      returns -1 and sets errno to EACCES.
++ * setup_eaccess() - setup function for a test condition for which lchown(2)
++ *	             returns -1 and sets errno to EACCES.
++ *
+  *  Create a test directory under temporary directory and create a test file
+  *  under this directory with mode "0666" permissions.
+  *  Modify the mode permissions on test directory such that process will not
+  *  have search permissions on test directory.
+- *
+- *  The function returns 0.
+  */
+-int setup2()
++void setup_eacces(int pos LTP_ATTRIBUTE_UNUSED)
+ {
+-	int fd;			/* file handle for testfile */
++	int fd;
+ 
+-	/* Creat a test directory */
++	/* create a test directory */
+ 	if (mkdir(DIR_TEMP, MODE_RWX) < 0) {
+-		tst_brkm(TBROK, cleanup, "mkdir(2) of %s failed", DIR_TEMP);
++		tst_brkm(TBROK | TERRNO, cleanup, "mkdir(2) %s failed",
++		         DIR_TEMP);
+ 	}
+ 
+-	/* Creat a file under above test directory */
++	/* create a file under test directory */
+ 	if ((fd = open(TEST_FILE2, O_RDWR | O_CREAT, 0666)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, 0666) failed, errno=%d : %s",
+-			 TEST_FILE2, errno, strerror(errno));
++		tst_brkm(TBROK | TERRNO, cleanup,
++		         "open(2) %s failed", TEST_FILE2);
+ 	}
+-	/* Close the test file created above */
++	
+ 	if (close(fd) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "close(%s) Failed, errno=%d : %s",
+-			 TEST_FILE2, errno, strerror(errno));
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "close(2) %s failed", TEST_FILE2);
+ 	}
+ 
+-	/* Creat a symlink of testfile */
++	/* create a symlink of testfile */
+ 	if (symlink(TEST_FILE2, SFILE2) < 0) {
+-		tst_brkm(TBROK, cleanup,
+-			 "symlink() of %s Failed, errno=%d : %s",
+-			 TEST_FILE2, errno, strerror(errno));
++		tst_brkm(TBROK | TERRNO, cleanup, "symlink(2) %s to %s failed",
++			 TEST_FILE2, SFILE2);
+ 	}
+ 
+-	/* Modify mode permissions on test directory */
++	/* modify mode permissions on test directory */
+ 	if (chmod(DIR_TEMP, FILE_MODE) < 0) {
+-		tst_brkm(TBROK, cleanup, "chmod(2) of %s failed", DIR_TEMP);
++		tst_brkm(TBROK | TERRNO, cleanup, "chmod(2) %s failed",
++		         DIR_TEMP);
+ 	}
+-	return 0;
+ }
+ 
+ /*
+- * setup3() - setup function for a test condition for which chown(2)
+- *	     returns -1 and sets errno to ENOTDIR.
++ * setup_efault() -- setup for a test condition where lchown(2) returns -1 and
++ *                   sets errno to EFAULT.
++ *
++ * Create "bad address" by explicitly mmaping anonymous page that may not be
++ * accesed (see PROT_NONE).
++ */
++static void setup_efault(int pos)
++{
++	char *bad_addr = 0;
++	
++	bad_addr = mmap(NULL, 1, PROT_NONE,
++			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, -1, 0);
++
++	if (bad_addr == MAP_FAILED)
++		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
++
++	test_cases[pos].pathname = bad_addr;
++}
++
++/*
++ * setup_efault() -- setup for a test condition where lchown(2) returns -1 and
++ *                   sets errno to EFAULT.
++ *
++ * Use ltp function get_high_address() to compute high address.
++ */
++static void setup_highaddress(int pos)
++{
++	test_cases[pos].pathname = get_high_address();
++}
++
++/*
++ * setup_enotdir() - setup function for a test condition for which chown(2)
++ *	             returns -1 and sets errno to ENOTDIR.
+  *
+- *  Create a test file under temporary directory so that test tries to
+- *  change mode of a testfile "tfile_3" under "t_file" which happens to be
+- *  another regular file.
++ * Create a regular file "t_file" to call lchown(2) on "t_file/sfile" later.
+  */
+-int setup3()
++void setup_enotdir(int pos LTP_ATTRIBUTE_UNUSED)
+ {
+ 	int fd;
+ 
+-	/* Creat a testfile under temporary directory */
+-	if ((fd = open("t_file", O_RDWR | O_CREAT, MODE_RWX)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(2) on t_file failed, errno=%d : %s",
+-			 errno, strerror(errno));
++	/* create a testfile under temporary directory */
++	if ((fd = open(TFILE3, O_RDWR | O_CREAT, MODE_RWX)) == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup, "open(2) %s failed",
++		         TFILE3);
+ 	}
+-	/* close the test file */
++
+ 	if (close(fd) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "close(t_file) Failed, errno=%d : %s",
+-			 errno, strerror(errno));
++		tst_brkm(TBROK | TERRNO, cleanup, "close(2) %s failed",
++		         TFILE3);
+ 	}
+-	return 0;
+ }
+ 
+ /*
+  * longpath_setup() - setup to create a node with a name length exceeding
+- *                    the MAX. length of PATH_MAX.
+- *   This function retruns 0.
++ *                    the length of PATH_MAX.
+  */
+-int longpath_setup()
++void setup_longpath(int pos)
+ {
+-	int ind;		/* counter variable */
+-
+-	for (ind = 0; ind <= (PATH_MAX + 1); ind++) {
+-		Longpathname[ind] = 'a';
+-	}
+-	return 0;
++	memset(test_cases[pos].pathname, 'a', PATH_MAX + 1);
++	test_cases[pos].pathname[PATH_MAX + 1] = '\0';
+ }
+ 
+ /*
+  * cleanup() - Performs all ONE TIME cleanup for this test at
+  *             completion or premature exit.
+- *	Print test timing stats and errno log if test executed with options.
+- *      Restore the mode permissions on test directory.
++ *
+  *	Remove temporary directory and sub-directories/files under it
+  *	created during setup().
+- *	Exit the test program with normal exit code.
+  */
+-void cleanup()
++void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-
+-	/* Restore mode permissions on test directory created in setup2() */
+-	if (chmod(DIR_TEMP, MODE_RWX) < 0) {
+-		tst_brkm(TBROK, NULL, "chmod(2) of %s failed", DIR_TEMP);
++	
++	/* become root again */
++	if (seteuid(0) == -1) {
++		tst_resm(TINFO | TERRNO,
++		         "seteuid(2) failed to set the effective uid to 0");
+ 	}
+ 
+-	/* Remove files and temporary directory created */
+ 	tst_rmdir();
+-
+-	/* exit with return code appropriate for results */
+-	tst_exit();
+ }
+diff --git a/testcases/kernel/syscalls/lchown/prep_create_link b/testcases/kernel/syscalls/lchown/prep_create_link
+deleted file mode 100755
+index ef3f767..0000000
+--- a/testcases/kernel/syscalls/lchown/prep_create_link
++++ /dev/null
+@@ -1,20 +0,0 @@
+-#!/bin/sh
+-
+-set -e
+-
+-TMP=${TMP:-/tmp}
+-
+-if ! PROGDIR=$(dirname "$0") ; then
+-
+-    if [ -x "$LTPROOT/testcases/bin/create_link" ] ; then
+-        PROGDIR=$LTPROOT/testcases/bin
+-    else
+-        echo "${0%##*/} : ERROR : Couldn't determine directory for \`$0'"
+-        exit 1
+-    fi
+-
+-fi
+-
+-cp "$PROGDIR/create_link" "$TMP"
+-chown root:root "$TMP/create_link"
+-chmod 04755 "$TMP/create_link"
 
-RnJvbSA4YjkwYWIzZTNmYTdlNjhkYzFkYzI1NTg4NmU4ODU5YzQ5YWU5ZTA1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBG
-cmksIDMxIERlYyAyMDEwIDA5OjA4OjMwICswODAwClN1YmplY3Q6IFtQQVRDSF0gaHVnZW1tYXAw
-NTogZml4IHBhdGhuYW1lIHRvIHJlbW92ZSB1bmRlcnNjb3JlCgoKU2lnbmVkLW9mZi1ieTogQ0FJ
-IFFpYW4gPGNhaXFpYW5AcmVkaGF0LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL21lbS9odWdl
-dGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMDUuYyB8ICAgNjggKysrKysrKysrKy0tLS0tLS0tLS0KIDEg
-ZmlsZXMgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgMzQgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlbW1hcC9odWdlbW1hcDA1LmMg
-Yi90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMDUuYwppbmRl
-eCBiY2U5ZmU2Li44NWZlZTRkIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdl
-dGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMDUuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdl
-dGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMDUuYwpAQCAtNTEsMTggKzUxLDE4IEBACiAjaW5jbHVkZSAi
-dXNjdGVzdC5oIgogCiAjZGVmaW5lIFBST1RFQ1RJT04JCShQUk9UX1JFQUQgfCBQUk9UX1dSSVRF
-KQotI2RlZmluZSBfUEFUSF9NRU1JTkZPCQkiL3Byb2MvbWVtaW5mbyIKLSNkZWZpbmUgX1BBVEhf
-U1lTX0hVR0UJCSIvc3lzL2tlcm5lbC9tbS9odWdlcGFnZXMiCi0jZGVmaW5lIF9QQVRIX1NZU18y
-TQkJX1BBVEhfU1lTX0hVR0UgIi9odWdlcGFnZXMtMjA0OGtCLyIKLSNkZWZpbmUgX1BBVEhfU1lT
-XzJNX09WRVIJX1BBVEhfU1lTXzJNICJucl9vdmVyY29tbWl0X2h1Z2VwYWdlcyIKLSNkZWZpbmUg
-X1BBVEhfU1lTXzJNX0ZSRUUJX1BBVEhfU1lTXzJNICJmcmVlX2h1Z2VwYWdlcyIKLSNkZWZpbmUg
-X1BBVEhfU1lTXzJNX1JFU1YJX1BBVEhfU1lTXzJNICJyZXN2X2h1Z2VwYWdlcyIKLSNkZWZpbmUg
-X1BBVEhfU1lTXzJNX1NVUlAJX1BBVEhfU1lTXzJNICJzdXJwbHVzX2h1Z2VwYWdlcyIKLSNkZWZp
-bmUgX1BBVEhfU1lTXzJNX0hVR0UJX1BBVEhfU1lTXzJNICJucl9odWdlcGFnZXMiCi0jZGVmaW5l
-IF9QQVRIX1BST0NfVk0JCSIvcHJvYy9zeXMvdm0vIgotI2RlZmluZSBfUEFUSF9QUk9DX09WRVIJ
-CV9QQVRIX1BST0NfVk0gIm5yX292ZXJjb21taXRfaHVnZXBhZ2VzIgotI2RlZmluZSBfUEFUSF9Q
-Uk9DX0hVR0UJCV9QQVRIX1BST0NfVk0gIm5yX2h1Z2VwYWdlcyIKLSNkZWZpbmUgX1BBVEhfU0hN
-TUFYCQkiL3Byb2Mvc3lzL2tlcm5lbC9zaG1tYXgiCisjZGVmaW5lIFBBVEhfTUVNSU5GTwkJIi9w
-cm9jL21lbWluZm8iCisjZGVmaW5lIFBBVEhfU1lTX0hVR0UJCSIvc3lzL2tlcm5lbC9tbS9odWdl
-cGFnZXMiCisjZGVmaW5lIFBBVEhfU1lTXzJNCQlQQVRIX1NZU19IVUdFICIvaHVnZXBhZ2VzLTIw
-NDhrQi8iCisjZGVmaW5lIFBBVEhfU1lTXzJNX09WRVIJUEFUSF9TWVNfMk0gIm5yX292ZXJjb21t
-aXRfaHVnZXBhZ2VzIgorI2RlZmluZSBQQVRIX1NZU18yTV9GUkVFCVBBVEhfU1lTXzJNICJmcmVl
-X2h1Z2VwYWdlcyIKKyNkZWZpbmUgUEFUSF9TWVNfMk1fUkVTVglQQVRIX1NZU18yTSAicmVzdl9o
-dWdlcGFnZXMiCisjZGVmaW5lIFBBVEhfU1lTXzJNX1NVUlAJUEFUSF9TWVNfMk0gInN1cnBsdXNf
-aHVnZXBhZ2VzIgorI2RlZmluZSBQQVRIX1NZU18yTV9IVUdFCVBBVEhfU1lTXzJNICJucl9odWdl
-cGFnZXMiCisjZGVmaW5lIFBBVEhfUFJPQ19WTQkJIi9wcm9jL3N5cy92bS8iCisjZGVmaW5lIFBB
-VEhfUFJPQ19PVkVSCQlQQVRIX1BST0NfVk0gIm5yX292ZXJjb21taXRfaHVnZXBhZ2VzIgorI2Rl
-ZmluZSBQQVRIX1BST0NfSFVHRQkJUEFUSF9QUk9DX1ZNICJucl9odWdlcGFnZXMiCisjZGVmaW5l
-IFBBVEhfU0hNTUFYCQkiL3Byb2Mvc3lzL2tlcm5lbC9zaG1tYXgiCiAjZGVmaW5lIE1CCQkJKDEw
-MjQgKiAxMDI0KQogCiAvKiBPbmx5IGlhNjQgcmVxdWlyZXMgdGhpcyAqLwpAQCAtMTE2LDE1ICsx
-MTYsMTUgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAlpZiAobXNnICE9IE5V
-TEwpCiAJCXRzdF9icmttKFRCUk9LLCB0c3RfZXhpdCwgIk9QVElPTiBQQVJTSU5HIEVSUk9SIC0g
-JXMiLCBtc2cpOwogCWlmIChvcHRfc3lzZnMpIHsKLQkJc3RybmNweShwYXRoLCBfUEFUSF9TWVNf
-Mk1fSFVHRSwKLQkJCXN0cmxlbihfUEFUSF9TWVNfMk1fSFVHRSkgKyAxKTsKLQkJc3RybmNweShw
-YXRob3ZlciwgX1BBVEhfU1lTXzJNX09WRVIsCi0JCQlzdHJsZW4oX1BBVEhfU1lTXzJNX09WRVIp
-ICsgMSk7CisJCXN0cm5jcHkocGF0aCwgUEFUSF9TWVNfMk1fSFVHRSwKKwkJCXN0cmxlbihQQVRI
-X1NZU18yTV9IVUdFKSArIDEpOworCQlzdHJuY3B5KHBhdGhvdmVyLCBQQVRIX1NZU18yTV9PVkVS
-LAorCQkJc3RybGVuKFBBVEhfU1lTXzJNX09WRVIpICsgMSk7CiAJfSBlbHNlIHsKLQkJc3RybmNw
-eShwYXRoLCBfUEFUSF9QUk9DX0hVR0UsCi0JCQlzdHJsZW4oX1BBVEhfUFJPQ19IVUdFKSArIDEp
-OwotCQlzdHJuY3B5KHBhdGhvdmVyLCBfUEFUSF9QUk9DX09WRVIsCi0JCQlzdHJsZW4oX1BBVEhf
-UFJPQ19PVkVSKSArIDEpOworCQlzdHJuY3B5KHBhdGgsIFBBVEhfUFJPQ19IVUdFLAorCQkJc3Ry
-bGVuKFBBVEhfUFJPQ19IVUdFKSArIDEpOworCQlzdHJuY3B5KHBhdGhvdmVyLCBQQVRIX1BST0Nf
-T1ZFUiwKKwkJCXN0cmxlbihQQVRIX1BST0NfT1ZFUikgKyAxKTsKIAl9CiAJaWYgKG9wdF9hbGxv
-YykgewogCQlzaXplID0gYXRvaShvcHRfYWxsb2NzdHIpOwpAQCAtMTQ3LDcgKzE0Nyw3IEBAIHN0
-YXRpYyB2b2lkIG92ZXJjb21taXQodm9pZCkKIAogCWlmIChzaG1pZCAhPSAtMSkgewogCQkvKiBV
-c2UgL3Byb2MvbWVtaW5mbyB0byBnZW5lcmF0ZSBhbiBJUEMga2V5LiAqLwotCQlrZXkgPSBmdG9r
-KF9QQVRIX01FTUlORk8sIHN0cmxlbihfUEFUSF9NRU1JTkZPKSk7CisJCWtleSA9IGZ0b2soUEFU
-SF9NRU1JTkZPLCBzdHJsZW4oUEFUSF9NRU1JTkZPKSk7CiAJCWlmIChrZXkgPT0gLTEpCiAJCQl0
-c3RfYnJrbShUQlJPS3xURVJSTk8sIGNsZWFudXAsICJmdG9rIik7CiAJCXNobWlkID0gc2htZ2V0
-KGtleSwgKGxvbmcpKGxlbmd0aCAqIE1CKSwKQEAgLTE2NywyMiArMTY3LDIyIEBAIHN0YXRpYyB2
-b2lkIG92ZXJjb21taXQodm9pZCkKIAogCWlmIChvcHRfc3lzZnMpIHsKIAkJdHN0X3Jlc20oVElO
-Rk8sICJjaGVjayBzeXNmcyBiZWZvcmUgYWxsb2NhdGlvbi4iKTsKLQkJaWYgKGNoZWNrc3lzKF9Q
-QVRIX1NZU18yTV9IVUdFLCAiSHVnZVBhZ2VzX1RvdGFsIiwKKwkJaWYgKGNoZWNrc3lzKFBBVEhf
-U1lTXzJNX0hVR0UsICJIdWdlUGFnZXNfVG90YWwiLAogCQkJCWxlbmd0aCAvIDIpICE9IDApCiAJ
-CQlyZXR1cm47Ci0JCWlmIChjaGVja3N5cyhfUEFUSF9TWVNfMk1fRlJFRSwgIkh1Z2VQYWdlc19G
-cmVlIiwKKwkJaWYgKGNoZWNrc3lzKFBBVEhfU1lTXzJNX0ZSRUUsICJIdWdlUGFnZXNfRnJlZSIs
-CiAJCQkJbGVuZ3RoIC8gMikgIT0gMCkKIAkJCXJldHVybjsKLQkJaWYgKGNoZWNrc3lzKF9QQVRI
-X1NZU18yTV9TVVJQLCAiSHVnZVBhZ2VzX1N1cnAiLAorCQlpZiAoY2hlY2tzeXMoUEFUSF9TWVNf
-Mk1fU1VSUCwgIkh1Z2VQYWdlc19TdXJwIiwKIAkJCQlsZW5ndGggLyAyIC0gc2l6ZSkgIT0gMCkK
-IAkJCXJldHVybjsKLQkJaWYgKGNoZWNrc3lzKF9QQVRIX1NZU18yTV9SRVNWLCAiSHVnZVBhZ2Vz
-X1JzdmQiLAorCQlpZiAoY2hlY2tzeXMoUEFUSF9TWVNfMk1fUkVTViwgIkh1Z2VQYWdlc19Sc3Zk
-IiwKIAkJCQlsZW5ndGggLyAyKSAhPSAwKQogCQkJcmV0dXJuOwogCX0gZWxzZSB7CiAJCXRzdF9y
-ZXNtKFRJTkZPLAogCQkJImNoZWNrIC9wcm9jL21lbWluZm8gYmVmb3JlIGFsbG9jYXRpb24uIik7
-Ci0JCWZwID0gZm9wZW4oX1BBVEhfTUVNSU5GTywgInIiKTsKKwkJZnAgPSBmb3BlbihQQVRIX01F
-TUlORk8sICJyIik7CiAJCWlmIChmcCA9PSBOVUxMKQogCQkJdHN0X2Jya20oVEJST0t8VEVSUk5P
-LCBjbGVhbnVwLCAiZm9wZW4iKTsKIAkJaWYgKGNoZWNrcHJvYyhmcCwgIkh1Z2VQYWdlc19Ub3Rh
-bCIsIGxlbmd0aCAvIDIpICE9IDApCkBAIC0yMDksMjEgKzIwOSwyMSBAQCBzdGF0aWMgdm9pZCBv
-dmVyY29tbWl0KHZvaWQpCiAJfQogCWlmIChvcHRfc3lzZnMpIHsKIAkJdHN0X3Jlc20oVElORk8s
-ICJjaGVjayBzeXNmcy4iKTsKLQkJaWYgKGNoZWNrc3lzKF9QQVRIX1NZU18yTV9IVUdFLCAiSHVn
-ZVBhZ2VzX1RvdGFsIiwKKwkJaWYgKGNoZWNrc3lzKFBBVEhfU1lTXzJNX0hVR0UsICJIdWdlUGFn
-ZXNfVG90YWwiLAogCQkJCWxlbmd0aCAvIDIpICE9IDApCiAJCQlyZXR1cm47Ci0JCWlmIChjaGVj
-a3N5cyhfUEFUSF9TWVNfMk1fRlJFRSwgIkh1Z2VQYWdlc19GcmVlIiwgMCkKKwkJaWYgKGNoZWNr
-c3lzKFBBVEhfU1lTXzJNX0ZSRUUsICJIdWdlUGFnZXNfRnJlZSIsIDApCiAJCQkhPSAwKQogCQkJ
-cmV0dXJuOwotCQlpZiAoY2hlY2tzeXMoX1BBVEhfU1lTXzJNX1NVUlAsICJIdWdlUGFnZXNfU3Vy
-cCIsCisJCWlmIChjaGVja3N5cyhQQVRIX1NZU18yTV9TVVJQLCAiSHVnZVBhZ2VzX1N1cnAiLAog
-CQkJCWxlbmd0aCAvIDIgLSBzaXplKSAhPSAwKQogCQkJcmV0dXJuOwotCQlpZiAoY2hlY2tzeXMo
-X1BBVEhfU1lTXzJNX1JFU1YsICJIdWdlUGFnZXNfUnN2ZCIsIDApCisJCWlmIChjaGVja3N5cyhQ
-QVRIX1NZU18yTV9SRVNWLCAiSHVnZVBhZ2VzX1JzdmQiLCAwKQogCQkJIT0gMCkKIAkJCXJldHVy
-bjsKIAl9IGVsc2UgewogCQl0c3RfcmVzbShUSU5GTywgImNoZWNrIC9wcm9jL21lbWluZm8uIik7
-Ci0JCWZwID0gZm9wZW4oX1BBVEhfTUVNSU5GTywgInIiKTsKKwkJZnAgPSBmb3BlbihQQVRIX01F
-TUlORk8sICJyIik7CiAJCWlmIChmcCA9PSBOVUxMKQogCQkJdHN0X2Jya20oVEJST0t8VEVSUk5P
-LCBjbGVhbnVwLCAiZm9wZW4iKTsKIAkJaWYgKGNoZWNrcHJvYyhmcCwgIkh1Z2VQYWdlc19Ub3Rh
-bCIsIGxlbmd0aCAvIDIpICE9IDApCkBAIC0yNTMsNyArMjUzLDcgQEAgc3RhdGljIHZvaWQgY2xl
-YW51cCh2b2lkKQogCiAJVEVTVF9DTEVBTlVQOwogCWlmIChyZXN0b3JlX3NobW1heCkgewotCQlm
-ZCA9IG9wZW4oX1BBVEhfU0hNTUFYLCBPX1dST05MWSk7CisJCWZkID0gb3BlbihQQVRIX1NITU1B
-WCwgT19XUk9OTFkpOwogCQlpZiAoZmQgPT0gLTEpCiAJCQl0c3RfcmVzbShUV0FSTnxURVJSTk8s
-ICJvcGVuIik7CiAJCWlmICh3cml0ZShmZCwgc2htbWF4LCBzdHJsZW4oc2htbWF4KSkgIT0gc3Ry
-bGVuKHNobW1heCkpCkBAIC0yOTcsNyArMjk3LDcgQEAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkK
-IAl0c3Rfc2lnKEZPUkssIERFRl9IQU5ETEVSLCBjbGVhbnVwKTsKIAlURVNUX1BBVVNFOwogCWlm
-IChzaG1pZCAhPSAtMSkgewotCQlmcCA9IGZvcGVuKF9QQVRIX1NITU1BWCwgInIiKTsKKwkJZnAg
-PSBmb3BlbihQQVRIX1NITU1BWCwgInIiKTsKIAkJaWYgKGZwID09IE5VTEwpCiAJCQl0c3RfYnJr
-bShUQlJPS3xURVJSTk8sIGNsZWFudXAsICJmb3BlbiIpOwogCQlpZiAoZmdldHMoc2htbWF4LCBC
-VUZTSVosIGZwKSA9PSBOVUxMKQpAQCAtMzA2LDcgKzMwNiw3IEBAIHN0YXRpYyB2b2lkIHNldHVw
-KHZvaWQpCiAKIAkJaWYgKGF0b2woc2htbWF4KSA8IChsb25nKShsZW5ndGggKiBNQikpIHsKIAkJ
-CXJlc3RvcmVfc2htbWF4ID0gMTsKLQkJCWZkID0gb3BlbihfUEFUSF9TSE1NQVgsIE9fUkRXUik7
-CisJCQlmZCA9IG9wZW4oUEFUSF9TSE1NQVgsIE9fUkRXUik7CiAJCQlpZiAoZmQgPT0gLTEpCiAJ
-CQkJdHN0X2Jya20oVEJST0t8VEVSUk5PLCBjbGVhbnVwLCAib3BlbiIpOwogCQkJc25wcmludGYo
-YnVmLCBCVUZTSVosICIlbGQiLCAobG9uZykobGVuZ3RoICogTUIpKTsKLS0gCjEuNy4zLjIKCg==
-
-------=_Part_100795_1232007200.1293758695306
+--cmJC7u66zC7hs+87
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
-------=_Part_100795_1232007200.1293758695306
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
+--cmJC7u66zC7hs+87
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -329,5 +1083,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_100795_1232007200.1293758695306--
+--cmJC7u66zC7hs+87--
 
