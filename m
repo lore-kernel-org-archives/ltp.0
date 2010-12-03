@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PUvdA-0007w1-0k
-	for ltp-list@lists.sourceforge.net; Tue, 21 Dec 2010 06:23:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PUvd7-0002OO-Qp
-	for ltp-list@lists.sourceforge.net; Tue, 21 Dec 2010 06:23:28 +0000
-Message-ID: <4D104724.4@cn.fujitsu.com>
-Date: Tue, 21 Dec 2010 14:20:20 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1POalt-0006Cr-Dr
+	for ltp-list@lists.sourceforge.net; Fri, 03 Dec 2010 18:54:17 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 787C5945D8
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  3 Dec 2010 19:54:09 +0100 (CET)
+Date: Fri, 3 Dec 2010 20:07:23 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101203190723.GA2420@saboteur.suse.cz>
 MIME-Version: 1.0
-References: <4D085CF1.7070308@cn.fujitsu.com>
-In-Reply-To: <4D085CF1.7070308@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH]Fix building error.
+Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+Subject: [LTP] [PATCH] cleanup ar0 testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,69 +26,108 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-SGkgR2FycmV0dCwgQ2FpCgogV2hhdCBkbyB5b3UgdGhpbmsgYWJvdXQgaXQ/ICBBbnkgY29tbWVu
-dHMgYXJlIHdlbGNvbWUuIF5fXgoKUmVnYXJkcwogQmlhbgoKQmlhbiBOYWltZW5nIHdyb3RlOgo+
-IFdoZW4gaSBidWlsZCB0aGUgTFRQIGF0IFJIRUw1LjVHQSwgdGhlIGZvbGxvd2luZyBlcnJvciB3
-YXMgY2F1Z2h0Lgo+IAo+IG1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvYmlhbm5t
-L2dpdHNyYy9sdHAtZGV2L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcCcKPiBnY2MgLWcg
-LU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAgLUkvaG9tZS9iaWFu
-bm0vZ2l0c3JjL2x0cC1kZXYvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlIC1JLi4vLi4vLi4vLi4v
-aW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgICAtTC4uLy4uLy4uLy4uL2xpYiAgbW1hcDEw
-LmMgICAtbGx0cCAtbHB0aHJlYWQgLW8gbW1hcDEwCj4gbW1hcDEwLmM6IEluIGZ1bmN0aW9uIOKA
-mG1tYXB6ZXJv4oCZOgo+IG1tYXAxMC5jOjEyMDogZXJyb3I6IOKAmE1BRFZfTUVSR0VBQkxF4oCZ
-IHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQo+IG1tYXAxMC5jOjEyMDog
-ZXJyb3I6IChFYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UK
-PiBtbWFwMTAuYzoxMjA6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikK
-PiBtYWtlWzRdOiAqKiogW21tYXAxMF0gRXJyb3IgMQo+IAo+IFNvLCB3aGF0IGFib3V0IHRoaXMg
-cGF0Y2g/Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gCj4gS1NNIGlzIHVuc3VwcG9ydGVkIGJlZm9yZSAyLjYu
-MzIuIFNvIGlmIE1BRFZfTUVSR0VBQkxFIGlzIHVuZGVmaW5lLAo+IHdlIHNob3VsZCBub3QgdGVz
-dCB0aGUgZm9sbG93aW5nIGNhc2VzLgo+IAo+IDEuIG1tYXAxMCB3aXRoIHRoZSBvcHRpb24gIi1z
-Ii4KPiAyLiBrc20wMS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBCaWFuIE5haW1lbmcgPGJpYW5ubUBj
-bi5mdWppdHN1LmNvbT4KPiAKPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTAx
-LmMgICAgICAgIHwgICAxNSArKysrKysrKysrKystLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9tbWFwL21tYXAxMC5jIHwgICAgNCArKysrCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTYgaW5z
-ZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tl
-cm5lbC9tZW0va3NtL2tzbTAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9rc20va3NtMDEuYwo+
-IGluZGV4IDExNDM3OTEuLjliNTc1ZmYgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9t
-ZW0va3NtL2tzbTAxLmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9rc20va3NtMDEuYwo+
-IEBAIC03MCwxMiArNzAsMTQgQEAKPiAgI2luY2x1ZGUgInRlc3QuaCIKPiAgI2luY2x1ZGUgInVz
-Y3Rlc3QuaCIKPiAgCj4gLSNkZWZpbmUgX1BBVEhfS1NNCSIvc3lzL2tlcm5lbC9tbS9rc20vIgo+
-IC0jZGVmaW5lIE1CCQkoMTAyNCAqIDEwMjQpCj4gLQo+ICBjaGFyICpUQ0lEID0gImtzbTAxIjsK
-PiAgaW50IFRTVF9UT1RBTCA9IDE7Cj4gIGV4dGVybiBpbnQgVHN0X2NvdW50Owo+ICsKPiArI2lm
-ZGVmCU1BRFZfTUVSR0VBQkxFCj4gKwo+ICsjZGVmaW5lIF9QQVRIX0tTTQkiL3N5cy9rZXJuZWwv
-bW0va3NtLyIKPiArI2RlZmluZSBNQgkJKDEwMjQgKiAxMDI0KQo+ICBzdGF0aWMgaW50IG9wdF9u
-dW0sIG9wdF9zaXplOwo+ICBzdGF0aWMgY2hhciAqb3B0X251bXN0ciwgKm9wdF9zaXplc3RyOwo+
-ICAvKiBtZW1vcnkgcG9pbnRlciB0byBpZGVudGlmeSBwZXIgcHJvY2VzcywgTUIsIGFuZCBieXRl
-IGxpa2UKPiBAQCAtNTM4LDMgKzU0MCwxMCBAQCB2b2lkIGdyb3VwX2NoZWNrKGludCBydW4sIGlu
-dCBwYWdlc19zaGFyZWQsIGludCBwYWdlc19zaGFyaW5nLAo+ICAJY2hlY2soInNsZWVwX21pbGxp
-c2VjcyIsIE5VTEwsIHNsZWVwX21pbGxpc2Vjcyk7Cj4gIAljaGVjaygicGFnZXNfdG9fc2NhbiIs
-IE5VTEwsIHBhZ2VzX3RvX3NjYW4pOwo+ICB9Cj4gKwo+ICsjZWxzZQo+ICtpbnQgbWFpbihpbnQg
-YXJnYywgY2hhciAqYXJndltdKQo+ICt7Cj4gKwl0c3RfYnJrbShUUkVUUiwgdHN0X2V4aXQsICJL
-U00gaXMgdW5zdXBwb3J0ZWQiKTsKPiArfQo+ICsjZW5kaWYKPiBkaWZmIC0tZ2l0IGEvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxMC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9tbWFwL21tYXAxMC5jCj4gaW5kZXggZmU5ZDYyMi4uYmU5ODhjZiAxMDA2NDQKPiAtLS0g
-YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDEwLmMKPiArKysgYi90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDEwLmMKPiBAQCAtMTE2LDkgKzExNiwxMyBAQCB2
-b2lkIG1tYXB6ZXJvKHZvaWQpCj4gIAlpZiAoeCA9PSBNQVBfRkFJTEVEKQo+ICAJCXRzdF9icmtt
-KFRCUk9LfFRFUlJOTywgY2xlYW51cCwgIm1tYXAiKTsKPiAgCWlmIChvcHRfa3NtKSB7Cj4gKyNp
-ZmRlZglNQURWX01FUkdFQUJMRQo+ICAJCXRzdF9yZXNtKFRJTkZPLCAiYWRkIHRvIEtTTSByZWdp
-b25zLiIpOwo+ICAJCWlmIChtYWR2aXNlKHgsIFNJWkUrU0laRS00MDk2LCBNQURWX01FUkdFQUJM
-RSkgPT0gLTEpCj4gIAkJCXRzdF9icmttKFRCUk9LfFRFUlJOTywgY2xlYW51cCwgIm1hZHZpc2Ui
-KTsKPiArI2Vsc2UKPiArCQl0c3RfYnJrbShUUkVUUiwgY2xlYW51cCwgIktTTSBpcyB1bnN1cHBv
-cnRlZC4iKTsKPiArI2VuZGlmCj4gIAl9Cj4gIAl4W1NJWkVdID0gMDsKPiAgCgotLSAKUmVnYXJk
-cwpCaWFuIE5haW1lbmcKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTG90dXNwaGVyZSAyMDExClJl
-Z2lzdGVyIG5vdyBmb3IgTG90dXNwaGVyZSAyMDExIGFuZCBsZWFybiBob3cKdG8gY29ubmVjdCB0
-aGUgZG90cywgdGFrZSB5b3VyIGNvbGxhYm9yYXRpdmUgZW52aXJvbm1lbnQKdG8gdGhlIG5leHQg
-bGV2ZWwsIGFuZCBlbnRlciB0aGUgZXJhIG9mIFNvY2lhbCBCdXNpbmVzcy4KaHR0cDovL3Auc2Yu
-bmV0L3NmdS9sb3R1c3BoZXJlLWQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+The ar0 testcase, as the matter of a fact, doesn't need any of the object
+files that are compiled from the file*.c. Attached patch removes them.
+
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="remove_unused_ar0_files.patch"
+
+diff --git a/testcases/commands/ade/ar/Makefile b/testcases/commands/ade/ar/Makefile
+index b6ab633..c9c189b 100644
+--- a/testcases/commands/ade/ar/Makefile
++++ b/testcases/commands/ade/ar/Makefile
+@@ -24,13 +24,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CPPFLAGS		+= -fpic
+-
+ INSTALL_TARGETS		:= ar01 *.in
+ 
+-MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%.obj,$(wildcard $(abs_srcdir)/*.c))
+-
+-$(MAKE_TARGETS): %.obj: %.o
+-	mv "$^" "$@"
+-
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/ade/ar/file1.c b/testcases/commands/ade/ar/file1.c
+deleted file mode 100644
+index 27b57b5..0000000
+--- a/testcases/commands/ade/ar/file1.c
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#include <stdio.h>
+-
+-int main(void)
+-{
+-        printf("Hello World\n");
+-	return 0;
+-}
+diff --git a/testcases/commands/ade/ar/file2.c b/testcases/commands/ade/ar/file2.c
+deleted file mode 100644
+index 27b57b5..0000000
+--- a/testcases/commands/ade/ar/file2.c
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#include <stdio.h>
+-
+-int main(void)
+-{
+-        printf("Hello World\n");
+-	return 0;
+-}
+diff --git a/testcases/commands/ade/ar/file3.c b/testcases/commands/ade/ar/file3.c
+deleted file mode 100644
+index 27b57b5..0000000
+--- a/testcases/commands/ade/ar/file3.c
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#include <stdio.h>
+-
+-int main(void)
+-{
+-        printf("Hello World\n");
+-	return 0;
+-}
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--LQksG6bCIzRHxTLp--
+
