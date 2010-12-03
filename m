@@ -1,22 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PVaxr-0002Fe-6Z
-	for ltp-list@lists.sourceforge.net; Thu, 23 Dec 2010 02:31:35 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PVaxp-00007T-Sv
-	for ltp-list@lists.sourceforge.net; Thu, 23 Dec 2010 02:31:35 +0000
-Message-ID: <4D12B48A.9020500@cn.fujitsu.com>
-Date: Thu, 23 Dec 2010 10:31:38 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4CBEAF2A.1070101@cn.fujitsu.com>
-	<20101221124935.GA944@hannu-debian.research.nokia.com>
-In-Reply-To: <20101221124935.GA944@hannu-debian.research.nokia.com>
-Subject: Re: [LTP] About LTP
- open_posix_testsuite/functional/threads/robust_test cases
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <noreply@sourceforge.net>) id 1POd6Z-0006iD-PV
+	for ltp-list@lists.sourceforge.net; Fri, 03 Dec 2010 21:23:47 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
+Mime-Version: 1.0
+Message-Id: <E1POd6Z-0000bX-Cs@sfs-web-6.v29.ch3.sourceforge.com>
+Date: Fri, 03 Dec 2010 21:23:47 +0000
+Subject: [LTP] [ ltp-Bugs-3126942 ] cpuset tests should use nftw() instead
+	of fts_*()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,43 +22,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>, Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: noreply@sourceforge.net
 
-Hannu Heikkinen wrote:
-> On 20/10/10 10:58 +0200, ext Gui Jianfeng wrote:
->> Hi Garrett
->>
->> In open_posix_testsuite/functional/threads/robust_test category,
->> all test cases don't follow the POSIX standard. They call many 
->> functions that glibc doesn't even support. I wonder why not just
->> get rid of these test cases.
->>
->> -- 
->> Regards
->> Gui Jianfeng
-> 
-> Hi,
-> 
-> any progress/news about this?
+Bugs item #3126942, was opened at 2010-12-03 22:23
+Message generated for change (Tracker Item Submitted) made by tpetazzoni
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3126942&group_id=3382
 
-Garrett,
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: Testcases
+Group: Other
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Thomas Petazzoni (tpetazzoni)
+Assigned to: Nobody/Anonymous (nobody)
+Summary: cpuset tests should use nftw() instead of fts_*()
 
-Would you get rid of these cases?
+Initial Comment:
+The cpusets tests use the fts_*() family of functions for tree traversal. Unfortunately, this family of functions is not compatible with Large File Support (to support files larger than 2 GB on 32 bits systems). From /usr/include/fts.h:
 
-Gui
 
-> 
-> br,
-> Hannu
-> 
+/* The fts interface is incompatible with the LFS interface which
+   transparently uses the 64-bit file access functions.  */
+#ifdef __USE_FILE_OFFSET64
+# error "<fts.h> cannot be used with -D_FILE_OFFSET_BITS==64"
+#endif
+
+The nftw() function can be used for tree traversal instead.
+
+----------------------------------------------------------------------
+
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3126942&group_id=3382
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+What happens now with your Lotus Notes apps - do you make another costly 
+upgrade, or settle for being marooned without product support? Time to move
+off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
+use, and manage than apps on traditional platforms. Sign up for the Lotus 
+Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
