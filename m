@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PQNXU-0002AO-9D
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 17:10:48 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PQNXS-0005hU-ST
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 17:10:48 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oB8HAfqa020518
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Dec 2010 12:10:41 -0500
-Date: Wed, 8 Dec 2010 12:10:41 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1721305118.513281291828241432.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <806083991.512621291828016991.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PPdoh-00043O-5a
+	for ltp-list@lists.sourceforge.net; Mon, 06 Dec 2010 16:21:31 +0000
+Date: Mon, 6 Dec 2010 17:34:52 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101206163452.GB6562@saboteur.suse.cz>
+References: <20101203193017.GA3291@saboteur.suse.cz>
+	<746530311.2251291437718914.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] oom01: Out Of Memory (OOM)
+Content-Disposition: inline
+In-Reply-To: <746530311.2251291437718914.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH v2] mbind_range() vma merge
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,277 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Sorry, sent a wrong version.
+Hi!
+> > What about using "/proc/self/maps" here and get rid of sprintf() and
+> > buf here.
+> OK.
+> 
+> > Empty line here please.
+> It was removed explicitly to make the code compact. Could you explain the benefit? Thanks.
 
------ caiqian@redhat.com wrote:
+It's kind of common sense to divide the code into functions to make it
+more readable. Adding empty lines between them is done for exact same
+reason. And if you look into LTP codebase every test does that (at least
+I haven't seen opposite) so one more reason for this is staying
+consistent.
 
-> Add a new test - Out Of Memory (OOM)
-> 
-> The program is designed to cope with unpredictable like amount and
-> system physical memory, swap size and other VMM technology like KSM,
-> memcg, memory hotplug and so on which may affect the OOM
-> behaviours. It simply increase the memory consumption 3G each time
-> until all the available memory is consumed and OOM is triggered.
-> 
-> Signed-off-by: CAI Qian <caiqian@redhat.com>
-> ---
->  runtest/mm                        |    2 +
->  testcases/kernel/mem/oom/Makefile |   22 +++++
->  testcases/kernel/mem/oom/oom01.c  |  189
-> +++++++++++++++++++++++++++++++++++++
->  3 files changed, 213 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/mem/oom/Makefile
->  create mode 100644 testcases/kernel/mem/oom/oom01.c
-> 
-> diff --git a/runtest/mm b/runtest/mm
-> index 8be3025..0afa3fb 100644
-> --- a/runtest/mm
-> +++ b/runtest/mm
-> @@ -72,3 +72,5 @@ mmap10_4 mmap10 -a -s -c 60
->  ksm01 ksm01
-> 
->  cpuset01 cpuset01 -I 3600
-> +
-> +oom01 oom01
-> diff --git a/testcases/kernel/mem/oom/Makefile
-> b/testcases/kernel/mem/oom/Makefile
-> new file mode 100644
-> index 0000000..3634570
-> --- /dev/null
-> +++ b/testcases/kernel/mem/oom/Makefile
-> @@ -0,0 +1,22 @@
-> +#
-> +#  Copyright (C) 2010  Red Hat, Inc.
-> +#
-> +#  This program is free software;  you can redistribute it and/or
-> modify
-> +#  it under the terms of the GNU General Public License as published
-> by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-> 02111-1307 USA
-> +#
-> +
-> +top_srcdir              ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/mem/oom/oom01.c
-> b/testcases/kernel/mem/oom/oom01.c
-> new file mode 100644
-> index 0000000..7dfc9f9
-> --- /dev/null
-> +++ b/testcases/kernel/mem/oom/oom01.c
-> @@ -0,0 +1,189 @@
-> +/*
-> + * Out Of Memory (OOM)
-> + *
-> + * The program is designed to cope with unpredictable like amount and
-> + * system physical memory, swap size and other VMM technology like
-> KSM,
-> + * memcg, memory hotplug and so on which may affect the OOM
-> + * behaviours. It simply increase the memory consumption 3G each time
-> + * until all the available memory is consumed and OOM is triggered.
-> + *
-> + * Copyright (C) 2010  Red Hat, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include <signal.h>
-> +#include <unistd.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +char *TCID = "oom01";
-> +int TST_TOTAL = 3;
-> +extern int Tst_count;
-> +
-> +#define LENGTH		(3UL<<30)
-> +#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
-> +
-> +static char overcommit;
-> +static void setup(void);
-> +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-> +static void oom(void);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	char *msg;
-> +	int lc;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != (char *)NULL)
-> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-> +	setup();
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +		oom();
-> +	}
-> +	tst_exit();
-> +}
-> +
-> +void setup(void)
-> +{
-> +	int fd;
-> +
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +	fd = open(SYSFS_OVER, O_RDONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (read(fd, &overcommit, 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "read");
-> +	close(fd);
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	int fd;
-> +
-> +	fd = open(SYSFS_OVER, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (write(fd, &overcommit, 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	close(fd);
-> +	TEST_CLEANUP;
-> +	tst_exit();
-> +}
-> +
-> +void oom(void)
-> +{
-> +	pid_t pid;
-> +	int status, fd;
-> +	char *s;
-> +
-> +	tst_resm(TINFO, "start testing overcommit_memory tunables.");
-> +	fd = open(SYSFS_OVER, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (write(fd, "2", 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	switch(pid = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +	case 0:
-> +		while(1) {
-> +			s = malloc(LENGTH);
-> +			if (s == NULL) {
-> +				if (errno == ENOMEM)
-> +					break;
-> +				else
-> +					tst_brkm(TBROK|TERRNO, cleanup,
-> +						"malloc");
-> +			}
-> +			memset(s, '\a', LENGTH);
-> +		}
-> +		exit(0);
-> +	default:
-> +		break;
-> +	}
-> +	tst_resm(TINFO, "expected victim is %d.", pid);
-> +	if (waitpid(-1, &status, 0) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> +		tst_resm(TFAIL, "the victim unxpectedly failred: %d", status);
-> +
-> +	tst_resm(TINFO, "start basic OOM testing.");
-> +	if (lseek(fd, SEEK_SET, 0) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-> +	if (write(fd, "1", 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	switch(pid = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +	case 0:
-> +		while(1) {
-> +			s = malloc(LENGTH);
-> +			if (s == NULL)
-> +				tst_brkm(TBROK|TERRNO, cleanup, "malloc");
-> +			memset(s, '\a', LENGTH);
-> +		}
-> +		exit(0);
-> +	default:
-> +		break;
-> +	}
-> +	tst_resm(TINFO, "expected victim is %d.", pid);
-> +	if (waitpid(-1, &status, 0) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-> +		tst_resm(TFAIL, "the victim unexpectedly failed: %d", status);
-> +
-> +	tst_resm(TINFO, "start OOM testing for mlocked pages.");
-> +	switch(pid = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +	case 0:
-> +		while(1) {
-> +			s = malloc(LENGTH);
-> +			if (s == NULL)
-> +				tst_brkm(TBROK|TERRNO, cleanup, "malloc");
-> +			if (mlock(s, LENGTH) == -1)
-> +				tst_brkm(TINFO|TERRNO, cleanup, "mlock");
-> +			memset(s, '\a', LENGTH);
-> +		}
-> +		exit(0);
-> +	default:
-> +		break;
-> +	}
-> +	tst_resm(TINFO, "expected victim is %d.", pid);
-> +	if (waitpid(-1, &status, 0) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-> +		tst_resm(TFAIL, "the victim unexpectedly failed: %d", status);
-> +	close(fd);
-> +}
-> --
-> 1.7.3.2
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF Dev2Dev email is sponsored by:
-
-WikiLeaks The End of the Free Internet
-http://p.sf.net/sfu/therealnews-com
+What happens now with your Lotus Notes apps - do you make another costly 
+upgrade, or settle for being marooned without product support? Time to move
+off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
+use, and manage than apps on traditional platforms. Sign up for the Lotus 
+Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
