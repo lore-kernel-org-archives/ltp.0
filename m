@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <violetleigh@gmail.com>) id 1PXsRK-0006CC-7X
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:26 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PXsRJ-00013F-A3
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:26 +0000
-Received: by gxk20 with SMTP id 20so4618986gxk.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Dec 2010 01:35:20 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PPryz-0005n2-4d
+	for ltp-list@lists.sourceforge.net; Tue, 07 Dec 2010 07:29:05 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PPryw-0007e0-4E
+	for ltp-list@lists.sourceforge.net; Tue, 07 Dec 2010 07:29:05 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oB77SudR029259
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Dec 2010 02:28:56 -0500
+Date: Tue, 7 Dec 2010 02:28:54 -0500 (EST)
+From: caiqian@redhat.com
+Message-ID: <531179765.253021291706934211.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <91982603.253001291706928092.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Date: Wed, 29 Dec 2010 17:35:19 +0800
-Message-ID: <AANLkTinfPDnAj15kpPX+om+JEQ569hUBG53GTkHjPF=Q@mail.gmail.com>
-From: Vivi <violetleigh@gmail.com>
-Subject: [LTP]  port several ltp test cases for uClinux platform
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_17377_883199747.1291706934210"
+Subject: [LTP] [PATCH v7] functional testing for Kernel Samepage Merging
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,256 +29,1265 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1098859232067997310=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP mailing list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
---===============1098859232067997310==
-Content-Type: multipart/alternative; boundary=0016e64651be9f65a004988949eb
+------=_Part_17377_883199747.1291706934210
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
---0016e64651be9f65a004988949eb
-Content-Type: text/plain; charset=ISO-8859-1
+Basic tests were to start several programs with same and different
+memory contents and ensure only to merge the ones with the same
+contents. When changed the content of one of merged pages in a
+process and to the mode "unmerging", it should discard all merged
+pages there. Also tested it is possible to disable KSM. There are
+also command-line options to specify the memory allocation size, and
+number of processes have same memory contents so it is possible to
+test more advanced things like KSM + OOM etc. KSM statistics numbers
+look like hard to predict, so only check the ranges.
 
-Port following ltp test cases for uClinux platform:
---
-fcntl17
-rt_sigqueueinfo01
-exit_group01
-umount03
-mount03
-eventfd01
---
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+v7: more code cleanup
+v6: code cleanup
+v5: fixed in group_check() that pages_volatile was mistakenly written
+    in pages_sharing caused the test failure.
+v4: various of fixes from feedback by Garrett.
+v3: fixed expected values based on the feedback from KSM developers;
+    fixed madvise return code; replaced malloc with mmap calls to better
+    align page boundaries; added additional memory content verification
+    after each run.
+v2: fixed stupid mistakes about memory content assignment.
+---
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/ksm/Makefile |   22 ++
+ testcases/kernel/mem/ksm/ksm01.c  |  540 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 564 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/ksm/Makefile
+ create mode 100644 testcases/kernel/mem/ksm/ksm01.c
 
-Bellow is the patch:
---
-Index: testcases/kernel/syscalls/fcntl/fcntl17.c
-===================================================================
---- testcases/kernel/syscalls/fcntl/fcntl17.c
-+++ testcases/kernel/syscalls/fcntl/fcntl17.c
-@@ -477,7 +477,7 @@
+diff --git a/runtest/mm b/runtest/mm
+index 36550d2..8c65aeb 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -59,3 +59,5 @@ mmap10_1 mmap10 -a
+ mmap10_2 mmap10 -s
+ mmap10_3 mmap10 -a -s
+ mmap10_4 mmap10 -a -s -c 60
++
++ksm01 ksm01
+diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm/Makefile
+new file mode 100644
+index 0000000..3634570
+--- /dev/null
++++ b/testcases/kernel/mem/ksm/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2010  Red Hat, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/ksm/ksm01.c b/testcases/kernel/mem/ksm/ksm01.c
+new file mode 100644
+index 0000000..1143791
+--- /dev/null
++++ b/testcases/kernel/mem/ksm/ksm01.c
+@@ -0,0 +1,540 @@
++/*
++ * functional testing for Kernel Samepage Merging (KSM)
++ *
++ * Basic tests were to start several programs with same and different
++ * memory contents and ensure only to merge the ones with the same
++ * contents. When changed the content of one of merged pages in a
++ * process and to the mode "unmerging", it should discard all merged
++ * pages there. Also tested it is possible to disable KSM. There are
++ * also command-line options to specify the memory allocation size, and
++ * number of processes have same memory contents so it is possible to
++ * test more advanced things like KSM + OOM etc.
++ *
++ * Prerequisites:
++ *
++ * 1) ksm and ksmtuned daemons need to be disabled. Otherwise, it could
++ *    distrub the testing as they also change some ksm tunables depends
++ *    on current workloads.
++ *
++ * The test steps are:
++ * - Check ksm feature and backup current run setting.
++ * - Change run setting to 1 - merging.
++ * - 3 memory allocation programs have the memory contents that 2 of
++ *   them are all 'a' and one is all 'b'.
++ * - Check ksm statistics and verify the content.
++ * - 1 program changes the memory content from all 'a' to all 'b'.
++ * - Check ksm statistics and verify the content.
++ * - All programs change the memory content to all 'd'.
++ * - Check ksm statistics and verify the content.
++ * - Change one page of a process.
++ * - Check ksm statistics and verify the content.
++ * - Change run setting to 2 - unmerging.
++ * - Check ksm statistics and verify the content.
++ * - Change run setting to 0 - stop.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <errno.h>
++#include "test.h"
++#include "usctest.h"
++
++#define _PATH_KSM	"/sys/kernel/mm/ksm/"
++#define MB		(1024 * 1024)
++
++char *TCID = "ksm01";
++int TST_TOTAL = 1;
++extern int Tst_count;
++static int opt_num, opt_size;
++static char *opt_numstr, *opt_sizestr;
++/* memory pointer to identify per process, MB, and byte like
++   memory[process No.][MB No.][byte No.]. */
++static char ***memory;
++static option_t options[] = {
++	{ "n:", &opt_num,	&opt_numstr},
++	{ "s:", &opt_size,	&opt_sizestr},
++	{ NULL, NULL,		NULL}
++};
++static void setup(void);
++static void ksmtest(void);
++static void usage(void);
++static void check(char *path, char *path2, long int value);
++static void verify(char value, int proc, int start, int end, int start2,
++		int end2);
++static void group_check(int run, int pages_shared, int pages_sharing,
++			int pages_volatile, int pages_unshared,
++			int sleep_millisecs, int pages_to_scan);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, usage);
++	if (msg != (char *)NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++		ksmtest();
++	}
++	tst_exit();
++}
++
++void ksmtest(void)
++{
++	char buf[BUFSIZ], buf2[BUFSIZ];
++	int i, j, status, k, fd, *child;
++	int size = 128, num = 3;
++
++	if (opt_size) {
++		size = atoi(opt_sizestr);
++		if (size < 1)
++			tst_brkm(TBROK, tst_exit,
++				"size cannot be less than 1.");
++	}
++	if (opt_num) {
++		num = atoi(opt_numstr);
++		if (num < 3)
++			tst_brkm(TBROK, tst_exit,
++				"process number cannot be less 3.");
++	}
++	child = malloc(num);
++	if (child == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++
++	memory = malloc(num * sizeof(**memory));
++	if (memory == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++
++	switch (child[0] = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, tst_exit, "fork");
++	case 0:
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 0 continues...");
++
++		/* Avoid TransparentHugePage allocation which can't ksm at the
++		   moment. */
++		tst_resm(TINFO, "child 0 allocates %d MB filled with 'c'.",
++			size);
++		memory[0] = malloc(size * sizeof(*memory));
++		if (memory[0] == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++		for (j = 0; j < size; j++) {
++			memory[0][j] = mmap(NULL, MB, PROT_READ|PROT_WRITE,
++					MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++			if (memory[0][j] == MAP_FAILED)
++				tst_brkm(TBROK|TERRNO, tst_exit, "mmap");
++			if (madvise(memory[0][j], MB, MADV_MERGEABLE) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "madvise");
++			for (i = 0; i < MB; i++)
++				memory[0][j][i] = 'c';
++		}
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 0 continues...");
++		verify('c', 0, 0, size, 0, MB);
++		tst_resm(TINFO, "child 0 changes memory content to 'd'.");
++		for (j = 0; j < size; j++) {
++			for (i = 0; i < MB; i++)
++				memory[0][j][i] = 'd';
++		}
++		/* Unmerge. */
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 0 continues...");
++		verify('d', 0, 0, size, 0, MB);
++		/* Stop. */
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 0 continues...");
++		exit(0);
++	}
++	switch (child[1] = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, tst_exit, "fork");
++	case 0:
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		tst_resm(TINFO, "child 1 allocates %d MB filled with 'a'.",
++			size);
++		memory[1] = malloc(size * sizeof(*memory));
++		if (memory[1] == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++		for (j = 0; j < size; j++) {
++			memory[1][j] = mmap(NULL, MB, PROT_READ|PROT_WRITE,
++					MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++			if (memory[1][j] == MAP_FAILED)
++				tst_brkm(TBROK|TERRNO, tst_exit, "mmap");
++			if (madvise(memory[1][j], MB, MADV_MERGEABLE) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "madvise");
++			for (i = 0; i < MB; i++)
++				memory[1][j][i] = 'a';
++		}
++
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		verify('a', 1, 0, size, 0, MB);
++		tst_resm(TINFO, "child 1 changes memory content to 'b'.");
++		for (j = 0; j < size; j++) {
++			for (i = 0; i < MB; i++)
++				memory[1][j][i] = 'b';
++		}
++
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		verify('b', 1, 0, size, 0, MB);
++		tst_resm(TINFO, "child 1 changes memory content to 'd'");
++		for (j = 0; j < size; j++) {
++			for (i = 0; i < MB; i++)
++				memory[1][j][i] = 'd';
++		}
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 1 continues...");
++		verify('d', 1, 0, size, 0, MB);
++		tst_resm(TINFO, "child 1 changes one page to 'e'.");
++		memory[1][size - 1][MB - 1] = 'e';
++
++		/* Unmerge. */
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		verify('e', 1, size - 1, size, MB - 1, MB);
++		verify('d', 1, 0, size - 1, 0, MB - 1);
++
++		/* Stop. */
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		exit(0);
++	}
++	for (k = 2; k < num; k++) {
++		switch (child[k] = fork()) {
++		case -1:
++			tst_brkm(TBROK|TERRNO, tst_exit, "fork");
++		case 0:
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++			tst_resm(TINFO, "child %d allocates %d "
++				"MB filled with 'a'.", k, size);
++			memory[k] = malloc(size * sizeof(*memory));
++			if (memory[k] == NULL)
++				tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++			for (j = 0; j < size; j++) {
++				memory[k][j] = mmap(NULL, MB,
++						PROT_READ|PROT_WRITE,
++						MAP_ANONYMOUS
++						|MAP_PRIVATE, -1, 0);
++				if (memory[k][j] == MAP_FAILED)
++					tst_brkm(TBROK|TERRNO, tst_exit,
++						"mmap");
++				if (madvise(memory[k][j], MB,
++						MADV_MERGEABLE) == -1)
++					tst_brkm(TBROK|TERRNO, tst_exit,
++						"madvise");
++				for (i = 0; i < MB; i++)
++					memory[k][j][i] = 'a';
++			}
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++			tst_resm(TINFO, "child %d changes memory content to "
++				"'d'", k);
++			for (j = 0; j < size; j++) {
++				for (i = 0; i < MB; i++)
++					memory[k][j][i] = 'd';
++		        }
++			/* Unmerge. */
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++
++			/* Stop. */
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++			exit(0);
++		}
++	}
++	tst_resm(TINFO, "KSM merging...");
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, "1", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "pages_to_scan");
++	snprintf(buf2, BUFSIZ, "%d", size * 256 * num);
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, buf2, strlen(buf2)) != strlen(buf2))
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "sleep_millisecs");
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, "0", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++
++	tst_resm(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		if (waitpid(child[k], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, tst_exit, "child %d was not stopped.",
++				k);
++	}
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for child 1 to stop.");
++	if (waitpid(child[1], &status, WUNTRACED) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++	if (!WIFSTOPPED(status))
++		tst_brkm(TBROK, tst_exit, "child 1 was not stopped.");
++
++	/* Child 1 changes all pages to 'b'. */
++	tst_resm(TINFO, "resume child 1.");
++	if (kill(child[1], SIGCONT) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++	group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for child 1 to stop.");
++	if (waitpid(child[1], &status, WUNTRACED) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++	if (!WIFSTOPPED(status))
++		tst_brkm(TBROK, tst_exit, "child 1 was not stopped.");
++
++	/* All children change pages to 'd'. */
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		if (waitpid(child[k], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, tst_exit, "child %d was not stopped.",
++				k);
++	}
++	/* Child 1 changes pages to 'e'. */
++	tst_resm(TINFO, "resume child 1.");
++	if (kill(child[1], SIGCONT) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++	group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for child 1 to stop.");
++	if (waitpid(child[1], &status, WUNTRACED) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++	if (!WIFSTOPPED(status))
++		tst_brkm(TBROK, tst_exit, "child 1 was not stopped.");
++
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	tst_resm(TINFO, "KSM unmerging...");
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, "2", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	group_check(2, 0, 0, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		if (waitpid(child[k], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, tst_exit, "child %d was not stopped.",
++				k);
++	}
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	tst_resm(TINFO, "stop KSM.");
++	if (lseek(fd, 0, SEEK_SET) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "lseek");
++	if (write(fd, "0", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++	group_check(0, 0, 0, 0, 0, 0, size * 256 * num);
++	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
++		if (WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "child exit status is %d",
++				WEXITSTATUS(status));
++}
++
++void setup(void)
++{
++	char buf[BUFSIZ];
++	struct stat new;
++
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
++	if (stat(buf, &new) == -1) {
++		if (errno == ENOENT)
++			tst_brkm(TCONF, tst_exit, "no KSM.");
++		else
++			tst_brkm(TBROK, tst_exit, "stat");
++	}
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, NULL);
++	TEST_PAUSE;
++}
++
++void usage(void)
++{
++	printf("  -n      Number of processes\n");
++	printf("  -s      Memory allocation size in MB\n");
++}
++
++/* There is currently a bug will cause the test failure - *
++ http://marc.info/?l=linux-mm&m=128928530308526&w=2 .  Since it has
++ still been discussed upstream, the interface here was added some
++ flexiblity with path2, so it is possible to make changes here depends
++ on the future implementation in kernel. For example, to verify
++ (pages_sharing + pages_volatile) instead of a single item. */
++void check(char *path, char *path2, long int value)
++{
++	FILE *fp;
++	char buf[BUFSIZ], buf2[BUFSIZ];
++
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, path);
++	fp = fopen(buf, "r");
++	if (fp == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "fopen");
++	if (fgets(buf, BUFSIZ, fp) == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "fgets");
++	fclose(fp);
++
++	tst_resm(TINFO, "%s is %ld.", path, atol(buf));
++	if (path2 != NULL) {
++		snprintf(buf2, BUFSIZ, "%s%s", _PATH_KSM, path2);
++		fp = fopen(buf2, "r");
++		if (fp == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "fopen");
++		if (fgets(buf2, BUFSIZ, fp) == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "fgets");
++		fclose(fp);
++
++		tst_resm(TINFO, "%s is %ld.", path2, atol(buf2));
++		if (atol(buf) + atol(buf2) != value)
++			tst_resm(TFAIL, "%s + %s is not %ld.", path, path2,
++				value);
++	} else
++		if (atol(buf) != value)
++			tst_resm(TFAIL, "%s is not %ld.", path, value);
++}
++
++void verify(char value, int proc, int start, int end, int start2, int end2)
++{
++	int i, j;
++	void *s = NULL;
++
++	s = malloc((end - start) * (end2 - start2));
++	if (s == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++
++	tst_resm(TINFO, "child %d verifies memory content.", proc);
++	memset(s, value, (end - start) * (end2 - start2));
++	if (memcmp(memory[proc][start], s, (end - start) * (end2 - start2)) != 0)
++		for (j = start; j < end; j++)
++			for (i = start2; i < end2; i++)
++				if (memory[proc][j][i] != value)
++					tst_resm(TFAIL, "child %d has %c at "
++						"%d,%d,%d.",
++						proc, memory[proc][j][i], proc,
++						j, i);
++	free(s);
++}
++
++void group_check(int run, int pages_shared, int pages_sharing,
++		int pages_volatile, int pages_unshared,
++		int sleep_millisecs, int pages_to_scan)
++{
++        /* 5 seconds for ksm to scan pages. */
++	sleep(5);
++	tst_resm(TINFO, "check!");
++	check("run", NULL, run);
++	check("pages_shared", NULL, pages_shared);
++	check("pages_sharing", NULL, pages_sharing);
++	check("pages_volatile", NULL, pages_volatile);
++	check("pages_unshared", NULL, pages_unshared);
++	check("sleep_millisecs", NULL, sleep_millisecs);
++	check("pages_to_scan", NULL, pages_to_scan);
++}
+-- 
+1.7.3.2
+------=_Part_17377_883199747.1291706934210
+Content-Type: text/x-patch; name=functional-testing-for-ksm.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=functional-testing-for-ksm.patch
 
-                /* parent */
+Basic tests were to start several programs with same and different
+memory contents and ensure only to merge the ones with the same
+contents. When changed the content of one of merged pages in a
+process and to the mode "unmerging", it should discard all merged
+pages there. Also tested it is possible to disable KSM. There are
+also command-line options to specify the memory allocation size, and
+number of processes have same memory contents so it is possible to
+test more advanced things like KSM + OOM etc. KSM statistics numbers
+look like hard to predict, so only check the ranges.
 
--               if ((child_pid2 = fork()) == 0) {       /* second child */
-+               if ((child_pid2 = FORK_OR_VFORK()) == 0) {      /* second
-child */
- #ifdef UCLINUX
-                        if (self_exec(av[0], "nddddddddd", 2, file_fd,
-                                      parent_pipe[0], parent_pipe[1],
-@@ -501,7 +501,7 @@
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+v7: more code cleanup
+v6: code cleanup
+v5: fixed in group_check() that pages_volatile was mistakenly written
+    in pages_sharing caused the test failure.
+v4: various of fixes from feedback by Garrett.
+v3: fixed expected values based on the feedback from KSM developers;
+    fixed madvise return code; replaced malloc with mmap calls to better
+    align page boundaries; added additional memory content verification
+    after each run.
+v2: fixed stupid mistakes about memory content assignment.
+---
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/ksm/Makefile |   22 ++
+ testcases/kernel/mem/ksm/ksm01.c  |  540 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 564 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/ksm/Makefile
+ create mode 100644 testcases/kernel/mem/ksm/ksm01.c
 
-                /* parent */
+diff --git a/runtest/mm b/runtest/mm
+index 36550d2..8c65aeb 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -59,3 +59,5 @@ mmap10_1 mmap10 -a
+ mmap10_2 mmap10 -s
+ mmap10_3 mmap10 -a -s
+ mmap10_4 mmap10 -a -s -c 60
++
++ksm01 ksm01
+diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm/Makefile
+new file mode 100644
+index 0000000..3634570
+--- /dev/null
++++ b/testcases/kernel/mem/ksm/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2010  Red Hat, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/ksm/ksm01.c b/testcases/kernel/mem/ksm/ksm01.c
+new file mode 100644
+index 0000000..1143791
+--- /dev/null
++++ b/testcases/kernel/mem/ksm/ksm01.c
+@@ -0,0 +1,540 @@
++/*
++ * functional testing for Kernel Samepage Merging (KSM)
++ *
++ * Basic tests were to start several programs with same and different
++ * memory contents and ensure only to merge the ones with the same
++ * contents. When changed the content of one of merged pages in a
++ * process and to the mode "unmerging", it should discard all merged
++ * pages there. Also tested it is possible to disable KSM. There are
++ * also command-line options to specify the memory allocation size, and
++ * number of processes have same memory contents so it is possible to
++ * test more advanced things like KSM + OOM etc.
++ *
++ * Prerequisites:
++ *
++ * 1) ksm and ksmtuned daemons need to be disabled. Otherwise, it could
++ *    distrub the testing as they also change some ksm tunables depends
++ *    on current workloads.
++ *
++ * The test steps are:
++ * - Check ksm feature and backup current run setting.
++ * - Change run setting to 1 - merging.
++ * - 3 memory allocation programs have the memory contents that 2 of
++ *   them are all 'a' and one is all 'b'.
++ * - Check ksm statistics and verify the content.
++ * - 1 program changes the memory content from all 'a' to all 'b'.
++ * - Check ksm statistics and verify the content.
++ * - All programs change the memory content to all 'd'.
++ * - Check ksm statistics and verify the content.
++ * - Change one page of a process.
++ * - Check ksm statistics and verify the content.
++ * - Change run setting to 2 - unmerging.
++ * - Check ksm statistics and verify the content.
++ * - Change run setting to 0 - stop.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <errno.h>
++#include "test.h"
++#include "usctest.h"
++
++#define _PATH_KSM	"/sys/kernel/mm/ksm/"
++#define MB		(1024 * 1024)
++
++char *TCID = "ksm01";
++int TST_TOTAL = 1;
++extern int Tst_count;
++static int opt_num, opt_size;
++static char *opt_numstr, *opt_sizestr;
++/* memory pointer to identify per process, MB, and byte like
++   memory[process No.][MB No.][byte No.]. */
++static char ***memory;
++static option_t options[] = {
++	{ "n:", &opt_num,	&opt_numstr},
++	{ "s:", &opt_size,	&opt_sizestr},
++	{ NULL, NULL,		NULL}
++};
++static void setup(void);
++static void ksmtest(void);
++static void usage(void);
++static void check(char *path, char *path2, long int value);
++static void verify(char value, int proc, int start, int end, int start2,
++		int end2);
++static void group_check(int run, int pages_shared, int pages_sharing,
++			int pages_volatile, int pages_unshared,
++			int sleep_millisecs, int pages_to_scan);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, usage);
++	if (msg != (char *)NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++		ksmtest();
++	}
++	tst_exit();
++}
++
++void ksmtest(void)
++{
++	char buf[BUFSIZ], buf2[BUFSIZ];
++	int i, j, status, k, fd, *child;
++	int size = 128, num = 3;
++
++	if (opt_size) {
++		size = atoi(opt_sizestr);
++		if (size < 1)
++			tst_brkm(TBROK, tst_exit,
++				"size cannot be less than 1.");
++	}
++	if (opt_num) {
++		num = atoi(opt_numstr);
++		if (num < 3)
++			tst_brkm(TBROK, tst_exit,
++				"process number cannot be less 3.");
++	}
++	child = malloc(num);
++	if (child == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++
++	memory = malloc(num * sizeof(**memory));
++	if (memory == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++
++	switch (child[0] = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, tst_exit, "fork");
++	case 0:
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 0 continues...");
++
++		/* Avoid TransparentHugePage allocation which can't ksm at the
++		   moment. */
++		tst_resm(TINFO, "child 0 allocates %d MB filled with 'c'.",
++			size);
++		memory[0] = malloc(size * sizeof(*memory));
++		if (memory[0] == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++		for (j = 0; j < size; j++) {
++			memory[0][j] = mmap(NULL, MB, PROT_READ|PROT_WRITE,
++					MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++			if (memory[0][j] == MAP_FAILED)
++				tst_brkm(TBROK|TERRNO, tst_exit, "mmap");
++			if (madvise(memory[0][j], MB, MADV_MERGEABLE) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "madvise");
++			for (i = 0; i < MB; i++)
++				memory[0][j][i] = 'c';
++		}
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 0 continues...");
++		verify('c', 0, 0, size, 0, MB);
++		tst_resm(TINFO, "child 0 changes memory content to 'd'.");
++		for (j = 0; j < size; j++) {
++			for (i = 0; i < MB; i++)
++				memory[0][j][i] = 'd';
++		}
++		/* Unmerge. */
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 0 continues...");
++		verify('d', 0, 0, size, 0, MB);
++		/* Stop. */
++		tst_resm(TINFO, "child 0 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 0 continues...");
++		exit(0);
++	}
++	switch (child[1] = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, tst_exit, "fork");
++	case 0:
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		tst_resm(TINFO, "child 1 allocates %d MB filled with 'a'.",
++			size);
++		memory[1] = malloc(size * sizeof(*memory));
++		if (memory[1] == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++		for (j = 0; j < size; j++) {
++			memory[1][j] = mmap(NULL, MB, PROT_READ|PROT_WRITE,
++					MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++			if (memory[1][j] == MAP_FAILED)
++				tst_brkm(TBROK|TERRNO, tst_exit, "mmap");
++			if (madvise(memory[1][j], MB, MADV_MERGEABLE) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "madvise");
++			for (i = 0; i < MB; i++)
++				memory[1][j][i] = 'a';
++		}
++
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		verify('a', 1, 0, size, 0, MB);
++		tst_resm(TINFO, "child 1 changes memory content to 'b'.");
++		for (j = 0; j < size; j++) {
++			for (i = 0; i < MB; i++)
++				memory[1][j][i] = 'b';
++		}
++
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		verify('b', 1, 0, size, 0, MB);
++		tst_resm(TINFO, "child 1 changes memory content to 'd'");
++		for (j = 0; j < size; j++) {
++			for (i = 0; i < MB; i++)
++				memory[1][j][i] = 'd';
++		}
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		tst_resm(TINFO, "child 1 continues...");
++		verify('d', 1, 0, size, 0, MB);
++		tst_resm(TINFO, "child 1 changes one page to 'e'.");
++		memory[1][size - 1][MB - 1] = 'e';
++
++		/* Unmerge. */
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		verify('e', 1, size - 1, size, MB - 1, MB);
++		verify('d', 1, 0, size - 1, 0, MB - 1);
++
++		/* Stop. */
++		tst_resm(TINFO, "child 1 stops.");
++		if (raise(SIGSTOP) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++		tst_resm(TINFO, "child 1 continues...");
++		exit(0);
++	}
++	for (k = 2; k < num; k++) {
++		switch (child[k] = fork()) {
++		case -1:
++			tst_brkm(TBROK|TERRNO, tst_exit, "fork");
++		case 0:
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++			tst_resm(TINFO, "child %d allocates %d "
++				"MB filled with 'a'.", k, size);
++			memory[k] = malloc(size * sizeof(*memory));
++			if (memory[k] == NULL)
++				tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++			for (j = 0; j < size; j++) {
++				memory[k][j] = mmap(NULL, MB,
++						PROT_READ|PROT_WRITE,
++						MAP_ANONYMOUS
++						|MAP_PRIVATE, -1, 0);
++				if (memory[k][j] == MAP_FAILED)
++					tst_brkm(TBROK|TERRNO, tst_exit,
++						"mmap");
++				if (madvise(memory[k][j], MB,
++						MADV_MERGEABLE) == -1)
++					tst_brkm(TBROK|TERRNO, tst_exit,
++						"madvise");
++				for (i = 0; i < MB; i++)
++					memory[k][j][i] = 'a';
++			}
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++			tst_resm(TINFO, "child %d changes memory content to "
++				"'d'", k);
++			for (j = 0; j < size; j++) {
++				for (i = 0; i < MB; i++)
++					memory[k][j][i] = 'd';
++		        }
++			/* Unmerge. */
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++
++			/* Stop. */
++			tst_resm(TINFO, "child %d stops.", k);
++			if (raise(SIGSTOP) == -1)
++				tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++			tst_resm(TINFO, "child %d continues...", k);
++			exit(0);
++		}
++	}
++	tst_resm(TINFO, "KSM merging...");
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, "1", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "pages_to_scan");
++	snprintf(buf2, BUFSIZ, "%d", size * 256 * num);
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, buf2, strlen(buf2)) != strlen(buf2))
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "sleep_millisecs");
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, "0", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++
++	tst_resm(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		if (waitpid(child[k], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, tst_exit, "child %d was not stopped.",
++				k);
++	}
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for child 1 to stop.");
++	if (waitpid(child[1], &status, WUNTRACED) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++	if (!WIFSTOPPED(status))
++		tst_brkm(TBROK, tst_exit, "child 1 was not stopped.");
++
++	/* Child 1 changes all pages to 'b'. */
++	tst_resm(TINFO, "resume child 1.");
++	if (kill(child[1], SIGCONT) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++	group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for child 1 to stop.");
++	if (waitpid(child[1], &status, WUNTRACED) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++	if (!WIFSTOPPED(status))
++		tst_brkm(TBROK, tst_exit, "child 1 was not stopped.");
++
++	/* All children change pages to 'd'. */
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		if (waitpid(child[k], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, tst_exit, "child %d was not stopped.",
++				k);
++	}
++	/* Child 1 changes pages to 'e'. */
++	tst_resm(TINFO, "resume child 1.");
++	if (kill(child[1], SIGCONT) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++	group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for child 1 to stop.");
++	if (waitpid(child[1], &status, WUNTRACED) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++	if (!WIFSTOPPED(status))
++		tst_brkm(TBROK, tst_exit, "child 1 was not stopped.");
++
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	tst_resm(TINFO, "KSM unmerging...");
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
++	fd = open(buf, O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "open");
++	if (write(fd, "2", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	group_check(2, 0, 0, 0, 0, 0, size * 256 * num);
++
++	tst_resm(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		if (waitpid(child[k], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, tst_exit, "child %d was not stopped.",
++				k);
++	}
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill child[%d]", k);
++	}
++	tst_resm(TINFO, "stop KSM.");
++	if (lseek(fd, 0, SEEK_SET) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "lseek");
++	if (write(fd, "0", 1) != 1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "write");
++	close(fd);
++	group_check(0, 0, 0, 0, 0, 0, size * 256 * num);
++	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
++		if (WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "child exit status is %d",
++				WEXITSTATUS(status));
++}
++
++void setup(void)
++{
++	char buf[BUFSIZ];
++	struct stat new;
++
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, "run");
++	if (stat(buf, &new) == -1) {
++		if (errno == ENOENT)
++			tst_brkm(TCONF, tst_exit, "no KSM.");
++		else
++			tst_brkm(TBROK, tst_exit, "stat");
++	}
++	/*
++	 * setup a default signal hander and a
++	 * temporary working directory.
++	 */
++	tst_sig(FORK, DEF_HANDLER, NULL);
++	TEST_PAUSE;
++}
++
++void usage(void)
++{
++	printf("  -n      Number of processes\n");
++	printf("  -s      Memory allocation size in MB\n");
++}
++
++/* There is currently a bug will cause the test failure - *
++ http://marc.info/?l=linux-mm&m=128928530308526&w=2 .  Since it has
++ still been discussed upstream, the interface here was added some
++ flexiblity with path2, so it is possible to make changes here depends
++ on the future implementation in kernel. For example, to verify
++ (pages_sharing + pages_volatile) instead of a single item. */
++void check(char *path, char *path2, long int value)
++{
++	FILE *fp;
++	char buf[BUFSIZ], buf2[BUFSIZ];
++
++	snprintf(buf, BUFSIZ, "%s%s", _PATH_KSM, path);
++	fp = fopen(buf, "r");
++	if (fp == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "fopen");
++	if (fgets(buf, BUFSIZ, fp) == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "fgets");
++	fclose(fp);
++
++	tst_resm(TINFO, "%s is %ld.", path, atol(buf));
++	if (path2 != NULL) {
++		snprintf(buf2, BUFSIZ, "%s%s", _PATH_KSM, path2);
++		fp = fopen(buf2, "r");
++		if (fp == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "fopen");
++		if (fgets(buf2, BUFSIZ, fp) == NULL)
++			tst_brkm(TBROK|TERRNO, tst_exit, "fgets");
++		fclose(fp);
++
++		tst_resm(TINFO, "%s is %ld.", path2, atol(buf2));
++		if (atol(buf) + atol(buf2) != value)
++			tst_resm(TFAIL, "%s + %s is not %ld.", path, path2,
++				value);
++	} else
++		if (atol(buf) != value)
++			tst_resm(TFAIL, "%s is not %ld.", path, value);
++}
++
++void verify(char value, int proc, int start, int end, int start2, int end2)
++{
++	int i, j;
++	void *s = NULL;
++
++	s = malloc((end - start) * (end2 - start2));
++	if (s == NULL)
++		tst_brkm(TBROK|TERRNO, tst_exit, "malloc");
++
++	tst_resm(TINFO, "child %d verifies memory content.", proc);
++	memset(s, value, (end - start) * (end2 - start2));
++	if (memcmp(memory[proc][start], s, (end - start) * (end2 - start2)) != 0)
++		for (j = start; j < end; j++)
++			for (i = start2; i < end2; i++)
++				if (memory[proc][j][i] != value)
++					tst_resm(TFAIL, "child %d has %c at "
++						"%d,%d,%d.",
++						proc, memory[proc][j][i], proc,
++						j, i);
++	free(s);
++}
++
++void group_check(int run, int pages_shared, int pages_sharing,
++		int pages_volatile, int pages_unshared,
++		int sleep_millisecs, int pages_to_scan)
++{
++        /* 5 seconds for ksm to scan pages. */
++	sleep(5);
++	tst_resm(TINFO, "check!");
++	check("run", NULL, run);
++	check("pages_shared", NULL, pages_shared);
++	check("pages_sharing", NULL, pages_sharing);
++	check("pages_volatile", NULL, pages_volatile);
++	check("pages_unshared", NULL, pages_unshared);
++	check("sleep_millisecs", NULL, sleep_millisecs);
++	check("pages_to_scan", NULL, pages_to_scan);
++}
+-- 
+1.7.3.2
 
--               if ((child_pid3 = fork()) == 0) {       /* third child */
-+               if ((child_pid3 = FORK_OR_VFORK()) == 0) {      /* third
-child */
- #ifdef UCLINUX
-                        if (self_exec(av[0], "nddddddddd", 3, file_fd,
-                                      parent_pipe[0], parent_pipe[1],
-Index: testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-===================================================================
---- testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-+++ testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-@@ -128,7 +128,7 @@
-        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-                Tst_count = 0;
-                for (testno = 0; testno < TST_TOTAL; ++testno) {
--                       TEST(pid = fork());
-+                       TEST(pid = FORK_OR_VFORK());
-                        setup();
-                        if (TEST_RETURN < 0) {
-                                tst_resm(TFAIL, "fork() Failed, errno=%d :
-%s", TEST_ERRNO,
-@@ -146,6 +146,7 @@
 
-strerror(TEST_ERRNO));
-                                }
-                                cleanup();
-+                               _exit(0);
-                        }
-                        tst_exit();
-                }
-Index: testcases/kernel/syscalls/exit_group/exit_group01.c
-===================================================================
---- testcases/kernel/syscalls/exit_group/exit_group01.c
-+++ testcases/kernel/syscalls/exit_group/exit_group01.c
-@@ -128,7 +128,7 @@
-                 Tst_count = 0;
-                 for (testno = 0; testno < TST_TOTAL; ++testno) {
-
--                    TEST(cpid = fork());     //call exit_group()
-+                    TEST(cpid = FORK_OR_VFORK());     //call exit_group()
-                      if(TEST_RETURN == -1) {
-                                tst_resm(TFAIL, "fork() error ...errno
-%d",TEST_ERRNO);
-                                cleanup();
-Index: testcases/kernel/syscalls/umount/umount03.c
-===================================================================
---- testcases/kernel/syscalls/umount/umount03.c
-+++ testcases/kernel/syscalls/umount/umount03.c
-@@ -170,7 +170,7 @@
-                /* reset Tst_count in case we are looping. */
-                Tst_count = 0;
-
--               switch (fork()) {
-+               switch (FORK_OR_VFORK()) {
-
-                case -1:
-                        /* fork() failed */
-Index: testcases/kernel/syscalls/mount/mount03.c
-===================================================================
---- testcases/kernel/syscalls/mount/mount03.c
-+++ testcases/kernel/syscalls/mount/mount03.c
-@@ -391,7 +391,7 @@
-                /* Validate MS_NOSUID flag of mount call */
-
-                setup_uid();
--               if ((pid = fork()) == 0) {
-+               if ((pid = FORK_OR_VFORK()) == 0) {
-                        snprintf(file, PATH_MAX, "%ssetuid_test",
-Path_name);
-                        if (chmod(file, SUID_MODE) != 0) {
-                                tst_resm(TWARN, "chmod() failed to "
-@@ -429,7 +429,7 @@
-        int pid, status;
-        char command[PATH_MAX];
-
--       switch (pid = fork()) {
-+       switch (pid = FORK_OR_VFORK()) {
-        case -1:
-                tst_resm(TWARN, "Unable to fork a child process"
-                         " to exec over!  Errno:%d, :%s",
-Index: testcases/kernel/syscalls/eventfd/eventfd01.c
-===================================================================
---- testcases/kernel/syscalls/eventfd/eventfd01.c
-+++ testcases/kernel/syscalls/eventfd/eventfd01.c
-@@ -438,7 +438,7 @@
-        uint64_t to_parent = 0xdeadbeef;
-        uint64_t dummy;
-
--       cpid = fork();
-+       cpid = FORK_OR_VFORK();
-        if (cpid == -1)
-                tst_resm(TBROK|TERRNO, "fork() failed");
-        if (cpid != 0) {
---
-
-
-Best regards,
-Vivi Li
-
---0016e64651be9f65a004988949eb
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: base64
-
-UG9ydCBmb2xsb3dpbmcgbHRwIHRlc3QgY2FzZXMgZm9yIHVDbGludXggcGxhdGZvcm06PGJyPi0t
-PGJyPmZjbnRsMTc8YnI+cnRfc2lncXVldWVpbmZvMDE8YnI+ZXhpdF9ncm91cDAxPGJyPnVtb3Vu
-dDAzPGJyPm1vdW50MDM8YnI+ZXZlbnRmZDAxPGJyPi0tPGJyPjxicj5CZWxsb3cgaXMgdGhlIHBh
-dGNoOjxicj4tLTxicj5JbmRleDogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mY250bC9mY250
-bDE3LmM8YnI+CgoKCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT08YnI+LS0tIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-ZmNudGwvZmNudGwxNy5jPGJyPisrKyB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZjbnRsL2Zj
-bnRsMTcuYzxicj5AQCAtNDc3LDcgKzQ3Nyw3IEBAPGJyPjxicj6goKCgoKCgoKCgoKCgoKAgLyog
-cGFyZW50ICovPGJyPgoKCgo8YnI+LaCgoKCgoKCgoKCgoKCgIGlmICgoY2hpbGRfcGlkMiA9IGZv
-cmsoKSkgPT0gMCkge6CgoKCgoCAvKiBzZWNvbmQgY2hpbGQgKi88YnI+K6CgoKCgoKCgoKCgoKCg
-IGlmICgoY2hpbGRfcGlkMiA9IEZPUktfT1JfVkZPUksoKSkgPT0gMCkge6CgoKCgIC8qIHNlY29u
-ZCBjaGlsZCAqLzxicj6gI2lmZGVmIFVDTElOVVg8YnI+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAg
-aWYgKHNlbGZfZXhlYyhhdlswXSwgJnF1b3Q7bmRkZGRkZGRkZCZxdW90OywgMiwgZmlsZV9mZCw8
-YnI+CgoKCqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgcGFyZW50X3BpcGVb
-MF0sIHBhcmVudF9waXBlWzFdLDxicj5AQCAtNTAxLDcgKzUwMSw3IEBAPGJyPjxicj6goKCgoKCg
-oKCgoKCgoKAgLyogcGFyZW50ICovPGJyPjxicj4toKCgoKCgoKCgoKCgoKAgaWYgKChjaGlsZF9w
-aWQzID0gZm9yaygpKSA9PSAwKSB7oKCgoKCgIC8qIHRoaXJkIGNoaWxkICovPGJyPiugoKCgoKCg
-oKCgoKCgoCBpZiAoKGNoaWxkX3BpZDMgPSBGT1JLX09SX1ZGT1JLKCkpID09IDApIHugoKCgoCAv
-KiB0aGlyZCBjaGlsZCAqLzxicj4KCgoKoCNpZmRlZiBVQ0xJTlVYPGJyPqCgoKCgoKCgoKCgoKCg
-oKCgoKCgoKCgIGlmIChzZWxmX2V4ZWMoYXZbMF0sICZxdW90O25kZGRkZGRkZGQmcXVvdDssIDMs
-IGZpbGVfZmQsPGJyPqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgcGFyZW50
-X3BpcGVbMF0sIHBhcmVudF9waXBlWzFdLDxicj5JbmRleDogdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9ydF9zaWdxdWV1ZWluZm8vcnRfc2lncXVldWVpbmZvMDEuYzxicj4KCgoKPT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PTxicj4tLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWdxdWV1ZWluZm8vcnRfc2ln
-cXVldWVpbmZvMDEuYzxicj4rKysgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWdxdWV1
-ZWluZm8vcnRfc2lncXVldWVpbmZvMDEuYzxicj5AQCAtMTI4LDcgKzEyOCw3IEBAPGJyPgoKCgqg
-oKCgoKCgIGZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyArK2xjKSB7PGJyPqCgoKCgoKCg
-oKCgoKCgoCBUc3RfY291bnQgPSAwOzxicj6goKCgoKCgoKCgoKCgoKAgZm9yICh0ZXN0bm8gPSAw
-OyB0ZXN0bm8gJmx0OyBUU1RfVE9UQUw7ICsrdGVzdG5vKSB7PGJyPi2goKCgoKCgoKCgoKCgoKCg
-oKCgoKCgIFRFU1QocGlkID0gZm9yaygpKTs8YnI+K6CgoKCgoKCgoKCgoKCgoKCgoKCgoKAgVEVT
-VChwaWQgPSBGT1JLX09SX1ZGT1JLKCkpOzxicj4KCgoKoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAg
-c2V0dXAoKTs8YnI+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgaWYgKFRFU1RfUkVUVVJOICZsdDsg
-MCkgezxicj6goKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIHRzdF9yZXNtKFRGQUlMLCAm
-cXVvdDtmb3JrKCkgRmFpbGVkLCBlcnJubz0lZCA6ICVzJnF1b3Q7LCBURVNUX0VSUk5PLDxicj5A
-QCAtMTQ2LDYgKzE0Niw3IEBAPGJyPqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
-oKCgoKCgoKCgoKCgoKCgoKCgoKAgc3RyZXJyb3IoVEVTVF9FUlJOTykpOzxicj4KCgoKoKCgoKCg
-oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCB9PGJyPqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
-oKCgoKAgY2xlYW51cCgpOzxicj4roKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIF9leGl0
-KDApOzxicj6goKCgoKCgoKCgoKCgoKCgoKCgoKCgoCB9PGJyPqCgoKCgoKCgoKCgoKCgoKCgoKCg
-oKCgIHRzdF9leGl0KCk7PGJyPqCgoKCgoKCgoKCgoKCgoCB9PGJyPkluZGV4OiB0ZXN0Y2FzZXMv
-a2VybmVsL3N5c2NhbGxzL2V4aXRfZ3JvdXAvZXhpdF9ncm91cDAxLmM8YnI+CgoKCj09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT08YnI+LS0tIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZXhpdF9ncm91cC9leGl0X2dyb3Vw
-MDEuYzxicj4rKysgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9leGl0X2dyb3VwL2V4aXRfZ3Jv
-dXAwMS5jPGJyPkBAIC0xMjgsNyArMTI4LDcgQEA8YnI+oKCgoKCgoKCgoKCgoKCgoCBUc3RfY291
-bnQgPSAwOzxicj4KCgoKoKCgoKCgoKCgoKCgoKCgoCBmb3IgKHRlc3RubyA9IDA7IHRlc3RubyAm
-bHQ7IFRTVF9UT1RBTDsgKyt0ZXN0bm8pIHs8YnI+PGJyPi2goKCgoKCgoKCgoKCgoKCgoKCgIFRF
-U1QoY3BpZCA9IGZvcmsoKSk7oKCgoCAvL2NhbGwgZXhpdF9ncm91cCgpPGJyPiugoKCgoKCgoKCg
-oKCgoKCgoKCgIFRFU1QoY3BpZCA9IEZPUktfT1JfVkZPUksoKSk7oKCgoCAvL2NhbGwgZXhpdF9n
-cm91cCgpPGJyPgoKCgqgoKCgoKCgoKCgoKCgoKCgoKCgoKAgaWYoVEVTVF9SRVRVUk4gPT0gLTEp
-IHs8YnI+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCB0c3RfcmVzbShURkFJTCwgJnF1
-b3Q7Zm9yaygpIGVycm9yIC4uLmVycm5vICVkJnF1b3Q7LFRFU1RfRVJSTk8pOzxicj6goKCgoKCg
-oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIGNsZWFudXAoKTs8YnI+SW5kZXg6IHRlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvdW1vdW50L3Vtb3VudDAzLmM8YnI+CgoKCj09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT08YnI+LS0t
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdW1vdW50L3Vtb3VudDAzLmM8YnI+KysrIHRlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvdW1vdW50L3Vtb3VudDAzLmM8YnI+QEAgLTE3MCw3ICsxNzAs
-NyBAQDxicj6goKCgoKCgoKCgoKCgoKAgLyogcmVzZXQgVHN0X2NvdW50IGluIGNhc2Ugd2UgYXJl
-IGxvb3BpbmcuICovPGJyPgoKCgqgoKCgoKCgoKCgoKCgoKAgVHN0X2NvdW50ID0gMDs8YnI+PGJy
-Pi2goKCgoKCgoKCgoKCgoCBzd2l0Y2ggKGZvcmsoKSkgezxicj4roKCgoKCgoKCgoKCgoKAgc3dp
-dGNoIChGT1JLX09SX1ZGT1JLKCkpIHs8YnI+PGJyPqCgoKCgoKCgoKCgoKCgoCBjYXNlIC0xOjxi
-cj6goKCgoKCgoKCgoKCgoKCgoKCgoKCgoCAvKiBmb3JrKCkgZmFpbGVkICovPGJyPkluZGV4OiB0
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21vdW50L21vdW50MDMuYzxicj4KCgoKPT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PTxicj4tLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tb3VudC9tb3VudDAzLmM8YnI+Kysr
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW91bnQvbW91bnQwMy5jPGJyPkBAIC0zOTEsNyAr
-MzkxLDcgQEA8YnI+oKCgoKCgoKCgoKCgoKCgIC8qIFZhbGlkYXRlIE1TX05PU1VJRCBmbGFnIG9m
-IG1vdW50IGNhbGwgKi88YnI+CgoKCjxicj6goKCgoKCgoKCgoKCgoKAgc2V0dXBfdWlkKCk7PGJy
-Pi2goKCgoKCgoKCgoKCgoCBpZiAoKHBpZCA9IGZvcmsoKSkgPT0gMCkgezxicj4roKCgoKCgoKCg
-oKCgoKAgaWYgKChwaWQgPSBGT1JLX09SX1ZGT1JLKCkpID09IDApIHs8YnI+oKCgoKCgoKCgoKCg
-oKCgoKCgoKCgoKAgc25wcmludGYoZmlsZSwgUEFUSF9NQVgsICZxdW90OyVzc2V0dWlkX3Rlc3Qm
-cXVvdDssIFBhdGhfbmFtZSk7PGJyPgoKCgqgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCBpZiAoY2ht
-b2QoZmlsZSwgU1VJRF9NT0RFKSAhPSAwKSB7PGJyPqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
-oKCgoKAgdHN0X3Jlc20oVFdBUk4sICZxdW90O2NobW9kKCkgZmFpbGVkIHRvICZxdW90Ozxicj5A
-QCAtNDI5LDcgKzQyOSw3IEBAPGJyPqCgoKCgoKAgaW50IHBpZCwgc3RhdHVzOzxicj6goKCgoKCg
-IGNoYXIgY29tbWFuZFtQQVRIX01BWF07PGJyPgoKCgo8YnI+LaCgoKCgoCBzd2l0Y2ggKHBpZCA9
-IGZvcmsoKSkgezxicj4roKCgoKCgIHN3aXRjaCAocGlkID0gRk9SS19PUl9WRk9SSygpKSB7PGJy
-PqCgoKCgoKAgY2FzZSAtMTo8YnI+oKCgoKCgoKCgoKCgoKCgIHRzdF9yZXNtKFRXQVJOLCAmcXVv
-dDtVbmFibGUgdG8gZm9yayBhIGNoaWxkIHByb2Nlc3MmcXVvdDs8YnI+oKCgoKCgoKCgoKCgoKCg
-oKCgoKCgoKCgICZxdW90OyB0byBleGVjIG92ZXIhoCBFcnJubzolZCwgOiVzJnF1b3Q7LDxicj4K
-CgoKSW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZXZlbnRmZC9ldmVudGZkMDEuYzxi
-cj49PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PGJyPi0tLSB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2V2ZW50ZmQvZXZl
-bnRmZDAxLmM8YnI+KysrIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZXZlbnRmZC9ldmVudGZk
-MDEuYzxicj4KCgoKQEAgLTQzOCw3ICs0MzgsNyBAQDxicj6goKCgoKCgIHVpbnQ2NF90IHRvX3Bh
-cmVudCA9IDB4ZGVhZGJlZWY7PGJyPqCgoKCgoKAgdWludDY0X3QgZHVtbXk7PGJyPjxicj4toKCg
-oKCgIGNwaWQgPSBmb3JrKCk7PGJyPiugoKCgoKAgY3BpZCA9IEZPUktfT1JfVkZPUksoKTs8YnI+
-oKCgoKCgoCBpZiAoY3BpZCA9PSAtMSk8YnI+oKCgoKCgoKCgoKCgoKCgIHRzdF9yZXNtKFRCUk9L
-fFRFUlJOTywgJnF1b3Q7Zm9yaygpIGZhaWxlZCZxdW90Oyk7PGJyPgoKCgqgoKCgoKCgIGlmIChj
-cGlkICE9IDApIHs8YnI+LS08YnI+PGJyPjxicj5CZXN0IHJlZ2FyZHMsPGJyPlZpdmkgTGk8YnI+
-Cg==
---0016e64651be9f65a004988949eb--
-
-
---===============1098859232067997310==
+------=_Part_17377_883199747.1291706934210
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
---===============1098859232067997310==
+What happens now with your Lotus Notes apps - do you make another costly 
+upgrade, or settle for being marooned without product support? Time to move
+off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
+use, and manage than apps on traditional platforms. Sign up for the Lotus 
+Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
+------=_Part_17377_883199747.1291706934210
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -285,5 +1298,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============1098859232067997310==--
+------=_Part_17377_883199747.1291706934210--
 
