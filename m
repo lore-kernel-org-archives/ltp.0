@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PS0m0-0002TB-QP
-	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 05:16:32 +0000
+	(envelope-from <qcai@redhat.com>) id 1PQNqf-00063H-Np
+	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 17:30:37 +0000
 Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PS0lz-0008Nv-3t
-	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 05:16:32 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PQNqe-0008Cw-5d
+	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 17:30:37 +0000
 Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
 	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oBD5GPOo003067
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Dec 2010 00:16:25 -0500
-Date: Mon, 13 Dec 2010 00:16:19 -0500 (EST)
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oB8HUUAo024138
+	for <ltp-list@lists.sourceforge.net>; Wed, 8 Dec 2010 12:30:30 -0500
+Date: Wed, 8 Dec 2010 12:30:30 -0500 (EST)
 From: caiqian@redhat.com
-Message-ID: <224013166.819151292217379224.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1615822844.819121292217239826.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Message-ID: <1494611959.515551291829430332.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <167814967.515531291829426269.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; 
-	boundary="----=_Part_47495_1270206399.1292217379223"
-Subject: [LTP] [PATCH v2] fork13: a race in pid generation
+	boundary="----=_Part_33588_1709182833.1291829430330"
+Subject: [LTP] oom01: Out Of Memory (OOM)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,88 +32,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list <ltp-list@lists.sourceforge.net>
 
-------=_Part_47495_1270206399.1292217379223
+------=_Part_33588_1709182833.1291829430330
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-From the mainline commit 5fdee8c4a5e1800489ce61963208f8cc55e42ea1:
+Add a new test - Out Of Memory (OOM)
 
-A program that repeatedly forks and waits is susceptible to having the
-same pid repeated, especially when it competes with another instance of
-the same program.  This is really bad for bash implementation.
-Furthermore, many shell scripts assume that pid numbers will not be used
-for some length of time.
-
-Race Description:
-
-A                                B
-
-// pid == offset == n            // pid == offset == n + 1
-test_and_set_bit(offset, map->page)
-                                 test_and_set_bit(offset, map->page);
-                                 pid_ns->last_pid = pid;
-pid_ns->last_pid = pid;
-                                 // pid == n + 1 is freed (wait())
-
-                                 // Next fork()...
-                                 last = pid_ns->last_pid; // == n
-                                 pid = last + 1;
+The program is designed to cope with unpredictable like amount and
+system physical memory, swap size and other VMM technology like KSM,
+memcg, memory hotplug and so on which may affect the OOM
+behaviours. It simply increase the memory consumption 3G each time
+until all the available memory is consumed and OOM is triggered.
 
 Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
-v2: backup/restore pid_max and remove probably artificial PID distance
-    assertion.
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/oom/Makefile |   22 +++++
+ testcases/kernel/mem/oom/oom01.c  |  169 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 193 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/oom/Makefile
+ create mode 100644 testcases/kernel/mem/oom/oom01.c
 
- runtest/syscalls                        |    1 +
- testcases/kernel/syscalls/fork/fork13.c |  179 +++++++++++++++++++++++++++++++
- 2 files changed, 180 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/fork/fork13.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2071ed3..119d582 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -274,6 +274,7 @@ fork08 fork08
- fork09 fork09
- fork10 fork10
- fork11 fork11
-+fork13 fork13 -c 2 -i 10000000
+diff --git a/runtest/mm b/runtest/mm
+index 8be3025..0afa3fb 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -72,3 +72,5 @@ mmap10_4 mmap10 -a -s -c 60
+ ksm01 ksm01
  
- fpathconf01 fpathconf01
- 
-diff --git a/testcases/kernel/syscalls/fork/fork13.c b/testcases/kernel/syscalls/fork/fork13.c
+ cpuset01 cpuset01 -I 3600
++
++oom01 oom01
+diff --git a/testcases/kernel/mem/oom/Makefile b/testcases/kernel/mem/oom/Makefile
 new file mode 100644
-index 0000000..2d81d98
+index 0000000..3634570
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fork/fork13.c
-@@ -0,0 +1,179 @@
++++ b/testcases/kernel/mem/oom/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2010  Red Hat, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+new file mode 100644
+index 0000000..1265faa
+--- /dev/null
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -0,0 +1,169 @@
 +/*
-+ * a race in pid generation that causes pids to be reused immediately
++ * Out Of Memory (OOM)
 + *
-+ * From the mainline commit 5fdee8c4a5e1800489ce61963208f8cc55e42ea1:
-+ * 
-+ * A program that repeatedly forks and waits is susceptible to having
-+ * the same pid repeated, especially when it competes with another
-+ * instance of the same program.  This is really bad for bash
-+ * implementation.  Furthermore, many shell scripts assume that pid
-+ * numbers will not be used for some length of time.
-+ * 
-+ * Race Description:
-+ *
-+ * A                                B
-+ *
-+ * // pid == offset == n            // pid == offset == n + 1
-+ * test_and_set_bit(offset, map->page)
-+ *                                  test_and_set_bit(offset, map->page);
-+ *                                  pid_ns->last_pid = pid;
-+ * pid_ns->last_pid = pid;
-+ *                                  // pid == n + 1 is freed (wait())
-+ *
-+ *                                  // Next fork()...
-+ *                                  last = pid_ns->last_pid; // == n
-+ *                                  pid = last + 1;
++ * The program is designed to cope with unpredictable like amount and
++ * system physical memory, swap size and other VMM technology like KSM,
++ * memcg, memory hotplug and so on which may affect the OOM
++ * behaviours. It simply increase the memory consumption 3G each time
++ * until all the available memory is consumed and OOM is triggered.
 + *
 + * Copyright (C) 2010  Red Hat, Inc.
++ *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of version 2 of the GNU General Public
 + * License as published by the Free Software Foundation.
@@ -134,114 +128,84 @@ index 0000000..2d81d98
 + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 + * 02110-1301, USA.
 + */
++#include <sys/mman.h>
 +#include <sys/types.h>
 +#include <sys/stat.h>
 +#include <sys/wait.h>
 +#include <fcntl.h>
-+#include <errno.h>
-+#include <unistd.h>
 +#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
 +#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++#include <signal.h>
++#include <unistd.h>
 +#include "test.h"
 +#include "usctest.h"
 +
-+char *TCID = "fork13";
-+int TST_TOTAL = 1;
++char *TCID = "oom01";
++int TST_TOTAL = 3;
 +extern int Tst_count;
 +
-+static char pid_max[BUFSIZ];
++#define LENGTH		(3UL<<30)
++#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
++#define OVERCOMMIT	1
++#define NORMAL		2
++#define MLOCK		3
++#define KSM		4
 +
-+#define PATH	"/proc/sys/kernel/pid_max"
-+#define PIDMAX	32768
-+#define RETURN	256
-+
++static char overcommit[BUFSIZ];
 +static void setup(void);
-+static int pid_distance(pid_t first, pid_t second);
 +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+static void check(void);
++static void oom(int testcase);
 +
-+int main(int argc, char* argv[])
++int main(int argc, char *argv[])
 +{
-+	/* message returned from parse_opts */
 +	char *msg;
++	int lc, fd;
 +
 +	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
-+			msg);
++	if (msg != (char *)NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
 +	setup();
-+	check();
-+	cleanup();
-+}
-+
-+void check(void)
-+{
-+	int lc;
-+	pid_t last_pid = 0;
-+	pid_t pid;
-+	int child_exit_code, distance, reaped, status;
-+
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		Tst_count = 0;
-+		if (lc % PIDMAX == 0)
-+			tst_resm(TINFO, "Iter: %d", lc/PIDMAX);
-+		child_exit_code = lc % RETURN;
-+		switch (pid = fork()) {
-+		case -1:
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		case 0:
-+			exit(child_exit_code);
-+		default:
-+			if (lc > 0) {
-+				tst_resm(TINFO, "last_pid = %d pid = %d",
-+					last_pid, pid);
-+				distance = pid_distance(last_pid, pid);
-+				if (distance == 0)
-+					tst_resm(TFAIL,
-+						"Unexpected pid sequence: "
-+						"previous fork: pid=%d, "
-+						"current fork: pid=%d for "
-+						"iteration=%d.", last_pid, pid,
-+						lc);
-+			}
-+			last_pid = pid;
++		tst_resm(TINFO, "start testing overcommit_memory tunables.");
++		fd = open(SYSFS_OVER, O_WRONLY);
++		if (fd == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "open");
++		if (write(fd, "2", 1) != 1)
++			tst_brkm(TBROK|TERRNO, cleanup, "write");
++		oom(OVERCOMMIT);
 +
-+			reaped = wait(&status);
-+			if (reaped != pid)
-+				tst_resm(TFAIL,
-+					"Wait return value: expected pid=%d, "
-+					"got %d, iteration %d.", pid, reaped,
-+					lc);
-+			else if (WEXITSTATUS(status) != child_exit_code)
-+				tst_resm(TFAIL, "Unexpected exit status %x, "
-+					"iteration %d.", WEXITSTATUS(status),
-+					lc);
-+		}
++		tst_resm(TINFO, "start normal OOM testing.");
++		if (lseek(fd, SEEK_SET, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "lseek");
++		if (write(fd, "1", 1) != 1)
++			tst_brkm(TBROK|TERRNO, cleanup, "write");
++		oom(NORMAL);
++
++		tst_resm(TINFO, "start OOM testing for mlocked pages.");
++		oom(MLOCK);
++
++		tst_resm(TINFO, "start OOM testing for KSM pages.");
++		oom(KSM);
 +	}
++	tst_exit();
 +}
 +
 +void setup(void)
 +{
-+	FILE *fp;
 +	int fd;
-+	char buf[BUFSIZ];
 +
 +	tst_sig(FORK, DEF_HANDLER, cleanup);
 +	TEST_PAUSE;
-+	/* Backup pid_max value. */
-+	fp = fopen(PATH, "r+");
-+	if (fp == NULL)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-+	if (fgets(pid_max, BUFSIZ, fp) == NULL)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fgets");
-+	fclose(fp);
-+
-+	fd = open(PATH, O_WRONLY);
++	fd = open(SYSFS_OVER, O_RDONLY);
 +	if (fd == -1)
-+		tst_resm(TBROK|TERRNO, "open");
-+	sprintf(buf, "%d", PIDMAX);
-+	if (write(fd, buf, strlen(buf)) != strlen(buf))
-+		tst_resm(TBROK|TERRNO, "write");
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++	if (read(fd, &overcommit, 1) != 1)
++		tst_brkm(TBROK|TERRNO, cleanup, "read");
 +	close(fd);
 +}
 +
@@ -249,111 +213,136 @@ index 0000000..2d81d98
 +{
 +	int fd;
 +
-+	fd = open(PATH, O_WRONLY);
++	fd = open(SYSFS_OVER, O_WRONLY);
 +	if (fd == -1)
-+		tst_resm(TWARN|TERRNO, "open");
-+	if (write(fd, pid_max, strlen(pid_max)) != strlen(pid_max))
-+		tst_resm(TWARN|TERRNO, "write");
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++	if (write(fd, &overcommit, 1) != 1)
++		tst_brkm(TBROK|TERRNO, cleanup, "write");
 +	close(fd);
-+
 +	TEST_CLEANUP;
 +	tst_exit();
 +}
 +
-+/* The distance mod PIDMAX between two pids, where the first pid is
-+   expected to be smaller than the second. */
-+int pid_distance(pid_t first, pid_t second)
++void oom(int testcase)
 +{
-+	return (second + PIDMAX - first) % PIDMAX;
++	pid_t pid;
++	int status;
++	void *s; 
++
++	switch(pid = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		while(1) {
++			s = mmap(NULL, LENGTH, PROT_READ|PROT_WRITE,
++				MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++			if (s == MAP_FAILED) {
++				if (testcase == OVERCOMMIT && errno == ENOMEM)
++					break;
++				else
++					tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++			}
++			if (testcase == MLOCK && mlock(s, LENGTH) == -1)
++				tst_brkm(TINFO|TERRNO, cleanup, "mlock");
++			if (testcase == KSM
++				&& madvise(s, LENGTH, MADV_MERGEABLE) == -1)
++				tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++			memset(s, '\a', LENGTH);
++		}
++		exit(0);
++	default:
++		break;
++	}
++	tst_resm(TINFO, "expected victim is %d.", pid);
++	if (waitpid(-1, &status, 0) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	if (testcase == OVERCOMMIT) {
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
++				status);
++	} else {
++		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
++			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
++				status);
++	}
 +}
 -- 
 1.7.3.2
-------=_Part_47495_1270206399.1292217379223
-Content-Type: text/x-patch; name=0001-fork13-a-race-in-pid-generation.patch
+------=_Part_33588_1709182833.1291829430330
+Content-Type: text/x-patch; name=0001-oom01-Out-Of-Memory-OOM.patch
 Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=0001-fork13-a-race-in-pid-generation.patch
+Content-Disposition: attachment; filename=0001-oom01-Out-Of-Memory-OOM.patch
 
-From 4681ff1796c0d9a9fa143b0c4b1452fe95303537 Mon Sep 17 00:00:00 2001
-From: CAI Qian <caiqian@redhat.com>
-Date: Mon, 13 Dec 2010 13:08:37 +0800
-Subject: [PATCH] fork13: a race in pid generation
-
-From the mainline commit 5fdee8c4a5e1800489ce61963208f8cc55e42ea1:
-
-A program that repeatedly forks and waits is susceptible to having the
-same pid repeated, especially when it competes with another instance of
-the same program.  This is really bad for bash implementation.
-Furthermore, many shell scripts assume that pid numbers will not be used
-for some length of time.
-
-Race Description:
-
-A                                B
-
-// pid == offset == n            // pid == offset == n + 1
-test_and_set_bit(offset, map->page)
-                                 test_and_set_bit(offset, map->page);
-                                 pid_ns->last_pid = pid;
-pid_ns->last_pid = pid;
-                                 // pid == n + 1 is freed (wait())
-
-                                 // Next fork()...
-                                 last = pid_ns->last_pid; // == n
-                                 pid = last + 1;
+The program is designed to cope with unpredictable like amount and
+system physical memory, swap size and other VMM technology like KSM,
+memcg, memory hotplug and so on which may affect the OOM
+behaviours. It simply increase the memory consumption 3G each time
+until all the available memory is consumed and OOM is triggered.
 
 Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
- runtest/syscalls                        |    1 +
- testcases/kernel/syscalls/fork/fork13.c |  179 +++++++++++++++++++++++++++++++
- 2 files changed, 180 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/fork/fork13.c
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/oom/Makefile |   22 +++++
+ testcases/kernel/mem/oom/oom01.c  |  169 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 193 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/oom/Makefile
+ create mode 100644 testcases/kernel/mem/oom/oom01.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2071ed3..119d582 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -274,6 +274,7 @@ fork08 fork08
- fork09 fork09
- fork10 fork10
- fork11 fork11
-+fork13 fork13 -c 2 -i 10000000
+diff --git a/runtest/mm b/runtest/mm
+index 8be3025..0afa3fb 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -72,3 +72,5 @@ mmap10_4 mmap10 -a -s -c 60
+ ksm01 ksm01
  
- fpathconf01 fpathconf01
- 
-diff --git a/testcases/kernel/syscalls/fork/fork13.c b/testcases/kernel/syscalls/fork/fork13.c
+ cpuset01 cpuset01 -I 3600
++
++oom01 oom01
+diff --git a/testcases/kernel/mem/oom/Makefile b/testcases/kernel/mem/oom/Makefile
 new file mode 100644
-index 0000000..2d81d98
+index 0000000..3634570
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fork/fork13.c
-@@ -0,0 +1,179 @@
++++ b/testcases/kernel/mem/oom/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2010  Red Hat, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+new file mode 100644
+index 0000000..1265faa
+--- /dev/null
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -0,0 +1,169 @@
 +/*
-+ * a race in pid generation that causes pids to be reused immediately
++ * Out Of Memory (OOM)
 + *
-+ * From the mainline commit 5fdee8c4a5e1800489ce61963208f8cc55e42ea1:
-+ * 
-+ * A program that repeatedly forks and waits is susceptible to having
-+ * the same pid repeated, especially when it competes with another
-+ * instance of the same program.  This is really bad for bash
-+ * implementation.  Furthermore, many shell scripts assume that pid
-+ * numbers will not be used for some length of time.
-+ * 
-+ * Race Description:
-+ *
-+ * A                                B
-+ *
-+ * // pid == offset == n            // pid == offset == n + 1
-+ * test_and_set_bit(offset, map->page)
-+ *                                  test_and_set_bit(offset, map->page);
-+ *                                  pid_ns->last_pid = pid;
-+ * pid_ns->last_pid = pid;
-+ *                                  // pid == n + 1 is freed (wait())
-+ *
-+ *                                  // Next fork()...
-+ *                                  last = pid_ns->last_pid; // == n
-+ *                                  pid = last + 1;
++ * The program is designed to cope with unpredictable like amount and
++ * system physical memory, swap size and other VMM technology like KSM,
++ * memcg, memory hotplug and so on which may affect the OOM
++ * behaviours. It simply increase the memory consumption 3G each time
++ * until all the available memory is consumed and OOM is triggered.
 + *
 + * Copyright (C) 2010  Red Hat, Inc.
++ *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of version 2 of the GNU General Public
 + * License as published by the Free Software Foundation.
@@ -374,114 +363,84 @@ index 0000000..2d81d98
 + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 + * 02110-1301, USA.
 + */
++#include <sys/mman.h>
 +#include <sys/types.h>
 +#include <sys/stat.h>
 +#include <sys/wait.h>
 +#include <fcntl.h>
-+#include <errno.h>
-+#include <unistd.h>
 +#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
 +#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++#include <signal.h>
++#include <unistd.h>
 +#include "test.h"
 +#include "usctest.h"
 +
-+char *TCID = "fork13";
-+int TST_TOTAL = 1;
++char *TCID = "oom01";
++int TST_TOTAL = 3;
 +extern int Tst_count;
 +
-+static char pid_max[BUFSIZ];
++#define LENGTH		(3UL<<30)
++#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
++#define OVERCOMMIT	1
++#define NORMAL		2
++#define MLOCK		3
++#define KSM		4
 +
-+#define PATH	"/proc/sys/kernel/pid_max"
-+#define PIDMAX	32768
-+#define RETURN	256
-+
++static char overcommit[BUFSIZ];
 +static void setup(void);
-+static int pid_distance(pid_t first, pid_t second);
 +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+static void check(void);
++static void oom(int testcase);
 +
-+int main(int argc, char* argv[])
++int main(int argc, char *argv[])
 +{
-+	/* message returned from parse_opts */
 +	char *msg;
++	int lc, fd;
 +
 +	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s",
-+			msg);
++	if (msg != (char *)NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
 +	setup();
-+	check();
-+	cleanup();
-+}
-+
-+void check(void)
-+{
-+	int lc;
-+	pid_t last_pid = 0;
-+	pid_t pid;
-+	int child_exit_code, distance, reaped, status;
-+
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		Tst_count = 0;
-+		if (lc % PIDMAX == 0)
-+			tst_resm(TINFO, "Iter: %d", lc/PIDMAX);
-+		child_exit_code = lc % RETURN;
-+		switch (pid = fork()) {
-+		case -1:
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		case 0:
-+			exit(child_exit_code);
-+		default:
-+			if (lc > 0) {
-+				tst_resm(TINFO, "last_pid = %d pid = %d",
-+					last_pid, pid);
-+				distance = pid_distance(last_pid, pid);
-+				if (distance == 0)
-+					tst_resm(TFAIL,
-+						"Unexpected pid sequence: "
-+						"previous fork: pid=%d, "
-+						"current fork: pid=%d for "
-+						"iteration=%d.", last_pid, pid,
-+						lc);
-+			}
-+			last_pid = pid;
++		tst_resm(TINFO, "start testing overcommit_memory tunables.");
++		fd = open(SYSFS_OVER, O_WRONLY);
++		if (fd == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "open");
++		if (write(fd, "2", 1) != 1)
++			tst_brkm(TBROK|TERRNO, cleanup, "write");
++		oom(OVERCOMMIT);
 +
-+			reaped = wait(&status);
-+			if (reaped != pid)
-+				tst_resm(TFAIL,
-+					"Wait return value: expected pid=%d, "
-+					"got %d, iteration %d.", pid, reaped,
-+					lc);
-+			else if (WEXITSTATUS(status) != child_exit_code)
-+				tst_resm(TFAIL, "Unexpected exit status %x, "
-+					"iteration %d.", WEXITSTATUS(status),
-+					lc);
-+		}
++		tst_resm(TINFO, "start normal OOM testing.");
++		if (lseek(fd, SEEK_SET, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "lseek");
++		if (write(fd, "1", 1) != 1)
++			tst_brkm(TBROK|TERRNO, cleanup, "write");
++		oom(NORMAL);
++
++		tst_resm(TINFO, "start OOM testing for mlocked pages.");
++		oom(MLOCK);
++
++		tst_resm(TINFO, "start OOM testing for KSM pages.");
++		oom(KSM);
 +	}
++	tst_exit();
 +}
 +
 +void setup(void)
 +{
-+	FILE *fp;
 +	int fd;
-+	char buf[BUFSIZ];
 +
 +	tst_sig(FORK, DEF_HANDLER, cleanup);
 +	TEST_PAUSE;
-+	/* Backup pid_max value. */
-+	fp = fopen(PATH, "r+");
-+	if (fp == NULL)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-+	if (fgets(pid_max, BUFSIZ, fp) == NULL)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fgets");
-+	fclose(fp);
-+
-+	fd = open(PATH, O_WRONLY);
++	fd = open(SYSFS_OVER, O_RDONLY);
 +	if (fd == -1)
-+		tst_resm(TBROK|TERRNO, "open");
-+	sprintf(buf, "%d", PIDMAX);
-+	if (write(fd, buf, strlen(buf)) != strlen(buf))
-+		tst_resm(TBROK|TERRNO, "write");
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++	if (read(fd, &overcommit, 1) != 1)
++		tst_brkm(TBROK|TERRNO, cleanup, "read");
 +	close(fd);
 +}
 +
@@ -489,39 +448,75 @@ index 0000000..2d81d98
 +{
 +	int fd;
 +
-+	fd = open(PATH, O_WRONLY);
++	fd = open(SYSFS_OVER, O_WRONLY);
 +	if (fd == -1)
-+		tst_resm(TWARN|TERRNO, "open");
-+	if (write(fd, pid_max, strlen(pid_max)) != strlen(pid_max))
-+		tst_resm(TWARN|TERRNO, "write");
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++	if (write(fd, &overcommit, 1) != 1)
++		tst_brkm(TBROK|TERRNO, cleanup, "write");
 +	close(fd);
-+
 +	TEST_CLEANUP;
 +	tst_exit();
 +}
 +
-+/* The distance mod PIDMAX between two pids, where the first pid is
-+   expected to be smaller than the second. */
-+int pid_distance(pid_t first, pid_t second)
++void oom(int testcase)
 +{
-+	return (second + PIDMAX - first) % PIDMAX;
++	pid_t pid;
++	int status;
++	void *s; 
++
++	switch(pid = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		while(1) {
++			s = mmap(NULL, LENGTH, PROT_READ|PROT_WRITE,
++				MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++			if (s == MAP_FAILED) {
++				if (testcase == OVERCOMMIT && errno == ENOMEM)
++					break;
++				else
++					tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++			}
++			if (testcase == MLOCK && mlock(s, LENGTH) == -1)
++				tst_brkm(TINFO|TERRNO, cleanup, "mlock");
++			if (testcase == KSM
++				&& madvise(s, LENGTH, MADV_MERGEABLE) == -1)
++				tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++			memset(s, '\a', LENGTH);
++		}
++		exit(0);
++	default:
++		break;
++	}
++	tst_resm(TINFO, "expected victim is %d.", pid);
++	if (waitpid(-1, &status, 0) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	if (testcase == OVERCOMMIT) {
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
++				status);
++	} else {
++		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
++			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
++				status);
++	}
 +}
 -- 
 1.7.3.2
 
 
-------=_Part_47495_1270206399.1292217379223
+------=_Part_33588_1709182833.1291829430330
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Oracle to DB2 Conversion Guide: Learn learn about native support for PL/SQL,
-new data types, scalar functions, improved concurrency, built-in packages, 
-OCI, SQL*Plus, data movement tools, best practices and more.
-http://p.sf.net/sfu/oracle-sfdev2dev 
-------=_Part_47495_1270206399.1292217379223
+This SF Dev2Dev email is sponsored by:
+
+WikiLeaks The End of the Free Internet
+http://p.sf.net/sfu/therealnews-com
+------=_Part_33588_1709182833.1291829430330
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -532,5 +527,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_47495_1270206399.1292217379223--
+------=_Part_33588_1709182833.1291829430330--
 
