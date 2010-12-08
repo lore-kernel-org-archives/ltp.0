@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PWpd5-0004Rg-Po
-	for ltp-list@lists.sourceforge.net; Sun, 26 Dec 2010 12:23:15 +0000
-Date: Sun, 26 Dec 2010 13:38:17 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101226123817.GC5708@saboteur.suse.cz>
-References: <192690881.24611.1292899687435.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<1650367088.24614.1292899690275.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <huruomu@gmail.com>) id 1PQGjU-0005ux-Fv
+	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 09:54:44 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PQGjT-0002Vt-F6
+	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 09:54:44 +0000
+Received: by wwi18 with SMTP id 18so889872wwi.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Dec 2010 01:54:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1650367088.24614.1292899690275.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH v2 3/5] oom03: test OOM for memcg
+Date: Wed, 8 Dec 2010 17:54:37 +0800
+Message-ID: <AANLkTi=Cm3vsEJSXoigxy+brBWy5r9OQJGyyJp+gDk4i@mail.gmail.com>
+From: Romu <huruomu@gmail.com>
+Subject: [LTP] Problem with su01 and PASSWD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,253 +28,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +#include <sys/mount.h>
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include <signal.h>
-> +#include <unistd.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +char *TCID = "oom03";
-> +int TST_TOTAL = 1;
-> +extern int Tst_count;
-> +
-> +#define LENGTH		(3UL<<30)
-> +#define NORMAL		1
-> +#define MLOCK		2
-> +#define KSM		3
-> +#define PATH		"/dev/cgroup"
-> +#define PATH_NEW	PATH "/1"
-> +#define TESTMEM		(1UL<<30)
-> +#define MB		(1UL<<20)
-> +#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
-> +
-> +static char overcommit[BUFSIZ];
-> +
-> +static void setup(void);
-> +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-> +static void oom(int testcase, int lite);
-> +static void testoom(int lite);
-> +static void alloc_mem(long int length, int testcase);
-> +static void test_alloc(int testcase, int lite);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	char *msg;
-> +	int lc, fd;
-> +	char buf[BUFSIZ], mem[BUFSIZ];
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != (char *)NULL)
-> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
+Hi all,
 
-Useless cast.
+I installed ltp 20100831 on RHEL5u6 beta using the following commands:
 
-> +#ifdef __i386__
-> +	tst_brkm(TCONF, tst_exit,
-> +		"test is not designed for 32-bit system.");
-> +#endif /* __i386__ */
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +		fd = open(SYSFS_OVER, O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +		if (write(fd, "1", 1) != 1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +		close(fd);
-> +
-> +		snprintf(buf, BUFSIZ, "%s/memory.limit_in_bytes", PATH_NEW);
-> +		fd = open(buf, O_WRONLY);
-> +
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-> +		sprintf(mem, "%ld", TESTMEM);
-> +		if (write(fd, mem, strlen(mem)) != strlen(mem))
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-> +		close(fd);
-> +
-> +		snprintf(buf, BUFSIZ, "%s/tasks", PATH_NEW);
-> +		fd = open(buf, O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-> +		snprintf(buf, BUFSIZ, "%d", getpid());
-> +		if (write(fd, buf, strlen(buf)) != strlen(buf))
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-> +		close(fd);
-> +		testoom(0);
-> +
-> +		snprintf(buf, BUFSIZ, "%s/memory.memsw.limit_in_bytes",
-> +			PATH_NEW);
-> +		fd = open(buf, O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-> +		if (write(fd, mem, strlen(mem)) != strlen(mem))
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-> +		close(fd);
-> +		testoom(1);
-> +	}
-> +	cleanup();
-> +}
+./configure
+make all
+make install
 
-Here we could spare the snprintf() calls again.
+I learnt from thread
+http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg09967.html
+that PASSWD environment variable must be properly set to run su01, so
+I ran the tests by the following commands:
 
-> +void testoom(int lite)
-> +{
-> +	tst_resm(TINFO, "start normal OOM testing.");
-> +	oom(NORMAL, lite);
-> +
-> +	tst_resm(TINFO, "start OOM testing for mlocked pages.");
-> +	oom(MLOCK, lite);
-> +
-> +	tst_resm(TINFO, "start OOM testing for KSM pages.");
-> +	oom(KSM, lite);
-> +}
-> +
-> +void setup(void)
-> +{
-> +	int fd;
-> +
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +
-> +	fd = open(SYSFS_OVER, O_RDONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (read(fd, &overcommit, 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "read");
-> +	close(fd);
-> +
-> +	if (mkdir(PATH, 0777) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir");
-> +	if (mount("memcg", PATH, "cgroup", 0, "memory") == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mount %s", PATH);
-> +	if (mkdir(PATH_NEW, 0777) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir %s", PATH_NEW);
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	FILE *fp;
-> +	int fd;
-> +	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
-> +
-> +	fd = open(SYSFS_OVER, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (write(fd, &overcommit, 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	close(fd);
-> +
-> +	/* Move all processes in task to its parent memcg node. */
-> +	snprintf(s, BUFSIZ, "%s/tasks", PATH);
-> +	fd = open(s, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_resm(TWARN|TERRNO, "open %s", s);
-> +	snprintf(s_new, BUFSIZ, "%s/tasks", PATH_NEW);
-> +
-> +	fp = fopen(s_new, "r");
-> +	if (fp == NULL)
-> +		tst_resm(TWARN|TERRNO, "fopen %s", s_new);
-> +	if ((fd != -1) && (fp != NULL)) {
-> +		while (fgets(value, BUFSIZ, fp) != NULL)
-> +			if (write(fd, value, strlen(value) - 1)
-> +				!= strlen(value) - 1)
-> +				tst_resm(TWARN|TERRNO, "write %s", s);
-> +	}
-> +	if (fd != -1)
-> +		close(fd);
-> +	if (fp != NULL)
-> +		fclose(fp);
-> +	if (rmdir(PATH_NEW) == -1)
-> +		tst_resm(TWARN|TERRNO, "rmdir %s", PATH_NEW);
-> +	if (umount(PATH) == -1)
-> +		tst_resm(TWARN|TERRNO, "umount %s", PATH);
-> +	if (rmdir(PATH) == -1)
-> +		tst_resm(TWARN|TERRNO, "rmdir %s", PATH);
-> +	
-> +	TEST_CLEANUP;
-> +	tst_exit();
-> +}
-> +
-> +void alloc_mem(long int length, int testcase)
-> +{
-> +	void *s;
-> +
-> +	tst_resm(TINFO, "allocating %ld bytes.", length);
-> +	s = mmap(NULL, length, PROT_READ|PROT_WRITE,
-> +		MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-> +	if (s == MAP_FAILED) {
-> +			tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-> +	}
+cd /opt/ltp
+PASSWD=myrootpasswd  ./runltp -p -o /tmp/runalltest.out -l /tmp/runalltest.log
 
-I would remove the curly brackets, as the rest of the code is omiting
-them for one line code blocks.
+su01 still failed for the first time:
 
-> +	if (testcase == MLOCK && mlock(s, length) == -1)
-> +		tst_brkm(TINFO|TERRNO, cleanup, "mlock");
-> +	if (testcase == KSM
-> +		&& madvise(s, length, MADV_MERGEABLE) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-> +	memset(s, '\a', length);
-> +}
-> +
-> +void test_alloc(int testcase, int lite)
-> +{
-> +	if (lite)
-> +		alloc_mem(TESTMEM + MB, testcase);
-> +	else
-> +		while(1)
-> +			alloc_mem(LENGTH, testcase);
-> +}
-> +
-> +void oom(int testcase, int lite)
-> +{
-> +	pid_t pid;
-> +	int status;
-> +
-> +	switch(pid = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +	case 0:
-> +		test_alloc(testcase, lite);
-> +		exit(0);
-> +	default:
-> +		break;
-> +	}
-> +	tst_resm(TINFO, "expected victim is %d.", pid);
-> +	if (waitpid(-1, &status, 0) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +
-> +	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-> +		tst_resm(TFAIL, "the victim unexpectedly failed: %d", status);
-> +}
+<<<test_start>>>
+tag=su01 stime=1291793988
+cmdline="export TCbin=$LTPROOT/testcases/bin;su01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+Machine type is: redhat-linux
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+userdel: user su_usr1 does not exist
+Creating mailbox file: File exists
+userdel: user su_usr2 does not exist
+Creating mailbox file: File exists
+YOU NEED TO SET ENVIROMENT VARIABLE PASSWD.
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=3 termination_type=exited termination_id=1 corefile=no
+cutime=12 cstime=18
+<<<test_end>>>
+
+Test output file shows that subsequent su01 tests all passed.
+
+However, I created mysu01 file under /opt/ltp/runtest dir with these lines:
+
+su01 export TCbin=$LTPROOT/testcases/bin;su01
+su01 export TCbin=$LTPROOT/testcases/bin;su01
+su01 export TCbin=$LTPROOT/testcases/bin;su01
+su01 export TCbin=$LTPROOT/testcases/bin;su01
+
+And ran the following command:
+
+PASSWD=myrootpasswd  ./runltp -o /tmp/su01.out -l /tmp/su01.log -p -f mysu01
+
+All 4 tests passed.
+
+Any idea?
+
+
+Regards,
+Simon
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+What happens now with your Lotus Notes apps - do you make another costly 
+upgrade, or settle for being marooned without product support? Time to move
+off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
+use, and manage than apps on traditional platforms. Sign up for the Lotus 
+Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
