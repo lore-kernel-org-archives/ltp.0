@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1POalt-0006Cr-Dr
-	for ltp-list@lists.sourceforge.net; Fri, 03 Dec 2010 18:54:17 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 787C5945D8
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  3 Dec 2010 19:54:09 +0100 (CET)
-Date: Fri, 3 Dec 2010 20:07:23 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PQj0m-00048I-Gp
+	for ltp-list@lists.sourceforge.net; Thu, 09 Dec 2010 16:06:28 +0000
+Date: Thu, 9 Dec 2010 17:20:05 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101203190723.GA2420@saboteur.suse.cz>
+Message-ID: <20101209162004.GA14177@saboteur.suse.cz>
+References: <AANLkTi=1byd4Aef1uwOKKBFVoGKFMkPm7bBTGJBigT+R@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
 Content-Disposition: inline
-Subject: [LTP] [PATCH] cleanup ar0 testcase
+In-Reply-To: <AANLkTi=1byd4Aef1uwOKKBFVoGKFMkPm7bBTGJBigT+R@mail.gmail.com>
+Subject: Re: [LTP] Failed to build ltp 20101031 on RHEL5u6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,108 +21,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Romu <huruomu@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!,
+> I failed to build ltp 20101031 on RHEL5u6 beta (i686):
+> 
+> ./configure
+> make all
+> 
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
+> -I/root/ltp-full-20101031/testcases/realtime/include
+> -I../../../../include -I../../../../include
+> -L/root/ltp-full-20101031/testcases/realtime/lib -L../../../../lib
+> async_handler.c   -lrealtime -lpthread -lrt -lm -o async_handler
+> /root/ltp-full-20101031/testcases/realtime/lib/librealtime.a(librttest.o):
+> In function `atomic_add':
+> /root/ltp-full-20101031/testcases/realtime/lib/../include/librttest.h:117:
+> undefined reference to `__sync_add_and_fetch_4'
+> collect2: ld returned 1 exit status
+> make[4]: *** [async_handler] Error 1
+> make[4]: Leaving directory
+> `/root/ltp-full-20101031/testcases/realtime/func/async_handler'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory `/root/ltp-full-20101031/testcases/realtime/func'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/root/ltp-full-20101031/testcases/realtime'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/root/ltp-full-20101031/testcases'
+> make: *** [testcases-all] Error 2
+> 
+> I googled and some people said "-march=i686" should be used.  I tried:
+> 
+> CFLAGS="-march=i686" ./configure
+> CFLAGS="-march=i686" make all
+> 
+> still got the same error.
+> 
+> Any idea?
 
---LQksG6bCIzRHxTLp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-The ar0 testcase, as the matter of a fact, doesn't need any of the object
-files that are compiled from the file*.c. Attached patch removes them.
-
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+Problably too old gcc (that doesn't support __sync_add_and_fetch()) this
+should be covered by autoconf checks in latest git. Workaround is to
+disable realtime tests in testcases makefile (by adding it to
+FILTER_OUT_DIRS).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
---LQksG6bCIzRHxTLp
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="remove_unused_ar0_files.patch"
-
-diff --git a/testcases/commands/ade/ar/Makefile b/testcases/commands/ade/ar/Makefile
-index b6ab633..c9c189b 100644
---- a/testcases/commands/ade/ar/Makefile
-+++ b/testcases/commands/ade/ar/Makefile
-@@ -24,13 +24,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--CPPFLAGS		+= -fpic
--
- INSTALL_TARGETS		:= ar01 *.in
- 
--MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%.obj,$(wildcard $(abs_srcdir)/*.c))
--
--$(MAKE_TARGETS): %.obj: %.o
--	mv "$^" "$@"
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/ade/ar/file1.c b/testcases/commands/ade/ar/file1.c
-deleted file mode 100644
-index 27b57b5..0000000
---- a/testcases/commands/ade/ar/file1.c
-+++ /dev/null
-@@ -1,7 +0,0 @@
--#include <stdio.h>
--
--int main(void)
--{
--        printf("Hello World\n");
--	return 0;
--}
-diff --git a/testcases/commands/ade/ar/file2.c b/testcases/commands/ade/ar/file2.c
-deleted file mode 100644
-index 27b57b5..0000000
---- a/testcases/commands/ade/ar/file2.c
-+++ /dev/null
-@@ -1,7 +0,0 @@
--#include <stdio.h>
--
--int main(void)
--{
--        printf("Hello World\n");
--	return 0;
--}
-diff --git a/testcases/commands/ade/ar/file3.c b/testcases/commands/ade/ar/file3.c
-deleted file mode 100644
-index 27b57b5..0000000
---- a/testcases/commands/ade/ar/file3.c
-+++ /dev/null
-@@ -1,7 +0,0 @@
--#include <stdio.h>
--
--int main(void)
--{
--        printf("Hello World\n");
--	return 0;
--}
-
---LQksG6bCIzRHxTLp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 ------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
---LQksG6bCIzRHxTLp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---LQksG6bCIzRHxTLp--
-
