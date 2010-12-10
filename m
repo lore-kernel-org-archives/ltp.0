@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PUvsi-0000GF-KA
-	for ltp-list@lists.sourceforge.net; Tue, 21 Dec 2010 06:39:32 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PUvsh-0004UI-Cw
-	for ltp-list@lists.sourceforge.net; Tue, 21 Dec 2010 06:39:32 +0000
-Date: Tue, 21 Dec 2010 01:39:21 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <924010297.25165.1292913561101.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4D104724.4@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1PR2XN-0007LZ-19
+	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 12:57:25 +0000
+Date: Fri, 10 Dec 2010 14:11:05 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101210131105.GA16791@saboteur.suse.cz>
+References: <20101125164008.GC2853@saboteur.suse.cz>
+	<AANLkTimFfK-34NALnKWMmOUqRhVfF70KMnWup8TiEp1C@mail.gmail.com>
+	<20101126142704.GA3587@saboteur.suse.cz>
+	<AANLkTim4PpA-aWoW_+cbB--cC6fj9qADhJEPf69S-BpW@mail.gmail.com>
+	<20101203144903.GA28084@saboteur.suse.cz>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH]Fix building error.
+Content-Disposition: inline
+In-Reply-To: <20101203144903.GA28084@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH] fix lchown tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +28,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> Here's updated patch, it's still removing the part of lchown02 test that
+> changes tmpdir permission as this is not settled down yet.
 
-> What do you think about it? Any comments are welcome. ^_^
-This test is not designed for older kernels like RHEL5.5. Even if fixed the compilation error, the test will not be working correctly due to old KSM interfaces and implementation there. 
+Ping.
 
-CAI Qian
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Lotusphere 2011
-Register now for Lotusphere 2011 and learn how
-to connect the dots, take your collaborative environment
-to the next level, and enter the era of Social Business.
-http://p.sf.net/sfu/lotusphere-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
