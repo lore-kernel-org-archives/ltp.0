@@ -2,18 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PVmS5-0007Rl-Fj
-	for ltp-list@lists.sourceforge.net; Thu, 23 Dec 2010 14:47:33 +0000
-Date: Thu, 23 Dec 2010 16:02:21 +0100
+	(envelope-from <chrubis@suse.de>) id 1PR44b-0005Ui-Ma
+	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 14:35:49 +0000
+Date: Fri, 10 Dec 2010 15:49:30 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101223150221.GC24841@saboteur.suse.cz>
-References: <20101217142007.GA6682@saboteur.suse.cz>
-	<AANLkTikabdJaWP4bnjep2nh2B06pGvYfQXpz=GosuJ_2@mail.gmail.com>
-	<AANLkTikAnDARhrLFba3-7yE5YpCRFQkvo4_Pt74DVCsm@mail.gmail.com>
+Message-ID: <20101210144930.GA16800@saboteur.suse.cz>
+References: <000001cb8f8d$a7cf4310$f76dc930$@co.jp>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="ZPt4rx8FFjLCG7dd"
 Content-Disposition: inline
-In-Reply-To: <AANLkTikAnDARhrLFba3-7yE5YpCRFQkvo4_Pt74DVCsm@mail.gmail.com>
-Subject: Re: [LTP] [RFC] sysconf(_SC_ASYNCHRONOUS_IO) != 200112L
+In-Reply-To: <000001cb8f8d$a7cf4310$f76dc930$@co.jp>
+Subject: Re: [LTP] [PATCH] fix "timer_create/10-1" and "timer_create/11-1"
+ tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,65 +23,290 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, "?$BaD:B ?$B7r;T" <toza@ryobi.co.jp>
+
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 Hi!
-> >> Hi!
-> >> Newer glibc returns 200809 as a result from sysconf(_SC_ASYNCHRONOUS_I=
-O)
-> >> (the git commit was done on 26 Feb 2009) and the change seems to be
-> >> propagated into stable glibc versions (mine is 2.11.2-r3).
-> >>
-> >> The problem is that nearly all aio testcases starts with
-> >>
-> >> if (sysconf(_SC_ASYNCHRONOUS_IO) !=3D 200112L)
-> >> =A0 =A0 =A0 =A0return PTS_UNRESOLVED;
-> >>
-> >> So these tests are disabled with newer glibc.
-> >>
-> >> However the changes between posix 200112 and 200908 seems to be minimal
-> >> (I haven't been able to find the full list of changes, but at least the
-> >> =A0testcases seems to work.)
-> >>
-> >> My proposal is to do one of the following:
-> >>
-> >> * remove these two lines to enable the tests
-> >>
-> >> * change them to sysconf(_SC_ASYNCHRONOUS_IO) >=3D 200112L
-> >
-> > Option 2 is better than option 1.
-> =
+Slightly different patch to fix these tests is attached. The code is a
+little cleaner but basically does the same.
 
-> That being said though, it would be nice if we had tests specific to
-> these requirements, in addition to ones that aren't, and if glibc is
-> unnecessarily bumping values then someone needs to talk to Ulrich
-> about not creating unnecessary churn.
+The tests now do
 
-The problem is that I've been unable to find a document which sumarizes
-changes between 1003.1-2002 and 1003.1-2008. And coparing the
-documentation page by page is troublesome, especially when there seems
-to be miminal number of changes.
+* get cputime
+* set timer
+* bussy loop while signal is not catched
+* get cputime
+* check that two stored cpu times differ approximately by timer interval
 
--- =
+Also some more problems are fixed.
 
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
 Cyril Hrubis
 chrubis@suse.cz
 
----------------------------------------------------------------------------=
----
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, an=
-d, =
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="timer_create_II.patch"
 
-should the need arise, upgrade to a full multi-node Oracle RAC database =
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
+index 56ffbbd..3553f20 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
+@@ -10,8 +10,6 @@
+  * Same test as 1-1.c.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+-
+ #include <time.h>
+ #include <signal.h>
+ #include <stdio.h>
+@@ -21,12 +19,13 @@
+ 
+ #define SIGTOTEST SIGALRM
+ #define TIMERSEC 2
+-#define SLEEPDELTA 3
+ #define ACCEPTABLEDELTA 1
+ 
+-void handler(int signo)
++static int endflg = 0;
++
++static void handler(int signo)
+ {
+-	printf("Caught signal\n");
++	endflg = 1;
+ }
+ 
+ int main(int argc, char *argv[])
+@@ -39,33 +38,33 @@ int main(int argc, char *argv[])
+ 	struct sigaction act;
+ 	timer_t tid;
+ 	struct itimerspec its;
+-	struct timespec ts, tsleft;
++	struct timespec tstart, tstop;
+ 	int rc;
+ 
+ 	rc = sysconf(_SC_CPUTIME);
+ 	printf("sysconf(_SC_CPUTIME) returns: %d\n", rc);
+-	if (rc <= 0) {
+-		return PTS_UNRESOLVED;	
++
++	if (rc == -1) {
++		printf("_POSIX_CPUTIME unsupported\n");
++		return PTS_UNSUPPORTED;
+ 	}
+-		
++
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	ev.sigev_signo = SIGTOTEST;
+ 
+-	act.sa_handler=handler;
+-	act.sa_flags=0;
++	act.sa_handler = handler;
++	act.sa_flags = 0;
+ 
+ 	its.it_interval.tv_sec = 0;
+ 	its.it_interval.tv_nsec = 0;
+ 	its.it_value.tv_sec = TIMERSEC;
+ 	its.it_value.tv_nsec = 0;
+ 
+-	ts.tv_sec=TIMERSEC+SLEEPDELTA;
+-	ts.tv_nsec=0;
+-
+ 	if (sigemptyset(&act.sa_mask) == -1) {
+ 		perror("Error calling sigemptyset");
+ 		return PTS_UNRESOLVED;
+ 	}
++
+ 	if (sigaction(SIGTOTEST, &act, 0) == -1) {
+ 		perror("Error calling sigaction");
+ 		return PTS_UNRESOLVED;
+@@ -76,23 +75,34 @@ int main(int argc, char *argv[])
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tstart) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
++	}
++
+ 	if (timer_settime(tid, 0, &its, NULL) != 0) {
+ 		perror("timer_settime() did not return success");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (nanosleep(&ts, &tsleft) != -1) {
+-		perror("nanosleep() not interrupted");
+-		return PTS_FAIL;
++	/*
++	 * We need to bussy loop here as the timer is set to wait for 2 seconds
++	 * of cputime of this process (which doesn't tick in any sleep function)
++	 */
++	while (!endflg);
++
++	if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tstop) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (abs(tsleft.tv_sec-SLEEPDELTA) <= ACCEPTABLEDELTA) {
+-		printf("Test PASSED");
++	if (abs(tstop.tv_sec - tstart.tv_sec - TIMERSEC) <= ACCEPTABLEDELTA) {
++		printf("Test PASSED\n");
+ 		return PTS_PASS;
+ 	} else {
+ 		printf("Timer did not last for correct amount of time\n");
+ 		printf("timer: %d != correct %d\n", 
+-				(int) ts.tv_sec- (int) tsleft.tv_sec,
++				(int) tstop.tv_sec - tstart.tv_sec,
+ 				TIMERSEC);
+ 		return PTS_FAIL;
+ 	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
+index 83e87e4..b703a16 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
+@@ -19,26 +19,30 @@
+ 
+ #define SIGTOTEST SIGALRM
+ #define TIMERSEC 2
+-#define SLEEPDELTA 3
+ #define ACCEPTABLEDELTA 1
+ 
+-void handler(int signo)
++static int endflg = 0;
++
++static void handler(int signo)
+ {
+-	printf("Caught signal\n");
++	endflg = 1;
+ }
+ 
+ int main(int argc, char *argv[])
+ {
+-	int rc;
+-	rc = sysconf(_SC_THREAD_CPUTIME);
+-	printf("rc = %d\n", rc);
+-
+-#if _POSIX_THREAD_CPUTIME != -1
++#if _POSIX_THREAD_CPUTIME == -1
++	printf("_POSIX_THREAD_CPUTIME unsupported\n");
++	return PTS_UNSUPPORTED;
++#else
+ 	struct sigevent ev;
+ 	struct sigaction act;
+ 	timer_t tid;
+ 	struct itimerspec its;
+-	struct timespec ts, tsleft;
++	struct timespec tstart, tstop;
++	int rc;
++
++	rc = sysconf(_SC_THREAD_CPUTIME);
++	printf("sysconf(_SC_THREAD_CPUTIME) returns: %d\n", rc);
+ 
+ 	if (rc == -1) {
+ 		printf("_POSIX_THREAD_CPUTIME unsupported\n");
+@@ -48,21 +52,19 @@ int main(int argc, char *argv[])
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	ev.sigev_signo = SIGTOTEST;
+ 
+-	act.sa_handler=handler;
+-	act.sa_flags=0;
++	act.sa_handler = handler;
++	act.sa_flags = 0;
+ 
+ 	its.it_interval.tv_sec = 0;
+ 	its.it_interval.tv_nsec = 0;
+ 	its.it_value.tv_sec = TIMERSEC;
+ 	its.it_value.tv_nsec = 0;
+ 
+-	ts.tv_sec=TIMERSEC+SLEEPDELTA;
+-	ts.tv_nsec=0;
+-
+ 	if (sigemptyset(&act.sa_mask) == -1) {
+ 		perror("Error calling sigemptyset");
+ 		return PTS_UNRESOLVED;
+ 	}
++
+ 	if (sigaction(SIGTOTEST, &act, 0) == -1) {
+ 		perror("Error calling sigaction");
+ 		return PTS_UNRESOLVED;
+@@ -73,31 +75,38 @@ int main(int argc, char *argv[])
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tstart) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
++	}
++
+ 	if (timer_settime(tid, 0, &its, NULL) != 0) {
+ 		perror("timer_settime() did not return success");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (nanosleep(&ts, &tsleft) != -1) {
+-		perror("nanosleep() not interrupted");
+-		return PTS_FAIL;
++	/*
++	 * We need to bussy loop here as the timer is set to wait for 2 seconds
++	 * of cputime of this process (which doesn't tick in any sleep function)
++	 */
++	while (!endflg);
++
++	if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tstop) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (abs(tsleft.tv_sec-SLEEPDELTA) <= ACCEPTABLEDELTA) {
+-		printf("Test PASSED");
++	if (abs(tstop.tv_sec - tstart.tv_sec - TIMERSEC) <= ACCEPTABLEDELTA) {
++		printf("Test PASSED\n");
+ 		return PTS_PASS;
+ 	} else {
+ 		printf("Timer did not last for correct amount of time\n");
+ 		printf("timer: %d != correct %d\n", 
+-				(int) ts.tv_sec- (int) tsleft.tv_sec,
++				(int) tstop.tv_sec - tstart.tv_sec,
+ 				TIMERSEC);
+ 		return PTS_FAIL;
+ 	}
+ 
+ 	return PTS_UNRESOLVED;
+-#else
+-	printf("_POSIX_THREAD_CPUTIME unsupported\n");
+-	return PTS_UNSUPPORTED;
+ #endif
+-
+ }
 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--ZPt4rx8FFjLCG7dd--
+
