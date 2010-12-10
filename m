@@ -1,17 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PYEOP-0006EZ-9F
-	for ltp-list@lists.sourceforge.net; Thu, 30 Dec 2010 09:01:53 +0000
-Date: Thu, 30 Dec 2010 10:17:15 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101230091715.GA14045@saboteur.suse.cz>
-References: <4D195645.1050902@cn.fujitsu.com>
+	(envelope-from <qcai@redhat.com>) id 1PR7Ve-0005eP-F5
+	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 18:15:58 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PR7Vd-00087l-4S
+	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 18:15:58 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oBAIFoku008476
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Dec 2010 13:15:50 -0500
+Date: Fri, 10 Dec 2010 13:15:50 -0500 (EST)
+From: caiqian@redhat.com
+Message-ID: <1407168634.759561292004950881.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1466293016.759541292004944147.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4D195645.1050902@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH]Remove redundance code.
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_44958_915450706.1292004950880"
+Subject: [LTP] [PATCH] runtest/mm: fix a typo
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,40 +29,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> It's incorrect to close a file twice, so remove the redundance code.
-> 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+------=_Part_44958_915450706.1292004950880
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Good catch ;).
+mmap10 tests have been executed already.
 
-It seems like this broke in Garrett's style commit.
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ runtest/mm |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-And there are more. The uid_t and gid_t is unsigned so (uid_t)-1 is the
-only way how to pass -1 to lchown() without warning. That's even said in
-POSIX documentation.
-
-Garrett please remove the first one close() and add back the (uid_t) and
-(gid_t). Also the tst_brkm() messages in lchown01 got a little
-unconsistent after this merge.
-
+diff --git a/runtest/mm b/runtest/mm
+index 8be3025..82c5a0c 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -54,7 +54,7 @@ mmapstress08 mmapstress08
+ mmapstress09 mmapstress09 -p 20 -t 0.2
+ mmapstress10 mmapstress10 -p 20 -t 0.2
+ 
+-mmap10 mmap10
++mmap11 mmap11
+ 
+ mlock03 mlock03 -i 20
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.3.2
+------=_Part_44958_915450706.1292004950880
+Content-Type: text/x-patch; name=0001-runtest-mm-fix-a-typo.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=0001-runtest-mm-fix-a-typo.patch
+
+From: CAI Qian <caiqian@redhat.com>
+Date: Sat, 11 Dec 2010 02:03:44 +0800
+Subject: [PATCH] runtest/mm: fix a typo
+
+mmap10 tests have been executed already.
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ runtest/mm |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/runtest/mm b/runtest/mm
+index 8be3025..82c5a0c 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -54,7 +54,7 @@ mmapstress08 mmapstress08
+ mmapstress09 mmapstress09 -p 20 -t 0.2
+ mmapstress10 mmapstress10 -p 20 -t 0.2
+ 
+-mmap10 mmap10
++mmap11 mmap11
+ 
+ mlock03 mlock03 -i 20
+ 
+-- 
+1.7.3.2
+
+
+------=_Part_44958_915450706.1292004950880
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+Oracle to DB2 Conversion Guide: Learn learn about native support for PL/SQL,
+new data types, scalar functions, improved concurrency, built-in packages, 
+OCI, SQL*Plus, data movement tools, best practices and more.
+http://p.sf.net/sfu/oracle-sfdev2dev 
+------=_Part_44958_915450706.1292004950880
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_44958_915450706.1292004950880--
+
