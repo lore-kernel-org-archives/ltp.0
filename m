@@ -1,32 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PPuT6-0008H5-E8
-	for ltp-list@lists.sourceforge.net; Tue, 07 Dec 2010 10:08:20 +0000
-Received: from out15.sjc.mx.trendmicro.com ([216.99.131.72])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PPuT5-00046d-2u
-	for ltp-list@lists.sourceforge.net; Tue, 07 Dec 2010 10:08:20 +0000
-Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.130])
-	by out15.sjc.mx.trendmicro.com (Postfix) with ESMTP id 06CE1980434
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  7 Dec 2010 10:08:13 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 422253DD01C
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  7 Dec 2010 10:08:12 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Dec 2010 19:08:09 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Tue, 7 Dec 2010 19:08:09 +0900
-Message-ID: <000001cb95f6$a6565400$f302fc00$@co.jp>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PR7dq-000227-Oq
+	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 18:24:26 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PR7dp-00015r-NG
+	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 18:24:26 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oBAIOKIL013111
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Dec 2010 13:24:20 -0500
+Date: Fri, 10 Dec 2010 13:24:20 -0500 (EST)
+From: caiqian@redhat.com
+Message-ID: <5150122.761061292005460192.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <501902646.761041292005457418.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] [PATCH] fix \"timer_create/10-1\" and \"timer_create/11-1\"
-	tests
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_45028_1062817524.1292005460191"
+Subject: [LTP] [PATCH 5/5] mm/runtest: add oom tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,31 +29,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi,
+------=_Part_45028_1062817524.1292005460191
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ runtest/mm |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/runtest/mm b/runtest/mm
+index 82c5a0c..caa674f 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -72,3 +72,8 @@ mmap10_4 mmap10 -a -s -c 60
+ ksm01 ksm01
+ 
+ cpuset01 cpuset01 -I 3600
++
++oom01 oom01
++oom02 oom02
++oom03 oom03
++oom04 oom04
+-- 
+1.7.3.2
+------=_Part_45028_1062817524.1292005460191
+Content-Type: text/x-patch; name=0005-mm-runtest-add-oom-tests.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=0005-mm-runtest-add-oom-tests.patch
+
+From: CAI Qian <caiqian@redhat.com>
+Date: Sat, 11 Dec 2010 02:11:17 +0800
+Subject: [PATCH 5/5] mm/runtest: add oom tests
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ runtest/mm |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/runtest/mm b/runtest/mm
+index 82c5a0c..caa674f 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -72,3 +72,8 @@ mmap10_4 mmap10 -a -s -c 60
+ ksm01 ksm01
+ 
+ cpuset01 cpuset01 -I 3600
++
++oom01 oom01
++oom02 oom02
++oom03 oom03
++oom04 oom04
+-- 
+1.7.3.2
 
 
-How about my patch for "timer_create/10-1" and "11-1"?
-
-I am glad if I get some opinion.
-
-Regards--
-
--Tomonori Mitani
-
-
+------=_Part_45028_1062817524.1292005460191
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-What happens now with your Lotus Notes apps - do you make another costly 
-upgrade, or settle for being marooned without product support? Time to move
-off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
-use, and manage than apps on traditional platforms. Sign up for the Lotus 
-Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
+Oracle to DB2 Conversion Guide: Learn learn about native support for PL/SQL,
+new data types, scalar functions, improved concurrency, built-in packages, 
+OCI, SQL*Plus, data movement tools, best practices and more.
+http://p.sf.net/sfu/oracle-sfdev2dev 
+------=_Part_45028_1062817524.1292005460191
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_45028_1062817524.1292005460191--
+
