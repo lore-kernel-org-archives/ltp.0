@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PYTmD-00068r-30
-	for ltp-list@lists.sourceforge.net; Fri, 31 Dec 2010 01:27:29 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PYTmC-0003JW-7P
-	for ltp-list@lists.sourceforge.net; Fri, 31 Dec 2010 01:27:29 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oBV1RMk6004695
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Dec 2010 20:27:22 -0500
-Date: Thu, 30 Dec 2010 20:27:22 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1970205536.100804.1293758842635.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1971196114.100790.1293758629841.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rishikesh.rajak@hp.com>) id 1PSBb6-0003Xd-1j
+	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 16:50:00 +0000
+Received: from g4t0017.houston.hp.com ([15.201.24.20])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PSBb5-0006cV-1T
+	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 16:50:00 +0000
+From: "Rajak, Rishikesh Kumar" <rishikesh.rajak@hp.com>
+Date: Mon, 13 Dec 2010 16:48:54 +0000
+Message-ID: <4663D34326F2F1408E2F34B8769DBA6A6CC748286E@GVW1154EXB.americas.hpqcorp.net>
+References: <4D058241.7040603@cn.fujitsu.com>
+	<AANLkTim_ExzOr2G-NnzLWB=b14zj8s5c1pYjsZEkine7@mail.gmail.com>
+	<20101213141246.GB17546@hallyn.com>
+	<AANLkTikwqq9VDS5hSZ+XpgKWH=XNt7ckne+wPqRm=Vtn@mail.gmail.com>
+In-Reply-To: <AANLkTikwqq9VDS5hSZ+XpgKWH=XNt7ckne+wPqRm=Vtn@mail.gmail.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] cpuset01: fix pathname to remove underscore
+Subject: Re: [LTP] About Community discussion
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,109 +31,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>, "Serge E. Hallyn" <serge.hallyn@canonical.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-This patch is also to add the missing Makefile.
+Hi Garret,
 
-CAI Qian
+I did not go anywhere, I always watch this place whenever I get time as it is my ever favorite list. Only priorities has changed and because of that I am not able to contribute now, but planning to come back soon in 2011.
 
------ Original Message -----
-> Signed-off-by: CAI Qian <caiqian@redhat.com>
-> ---
-> testcases/kernel/mem/cpuset/Makefile | 25 +++++++++++++++++++++++++
-> testcases/kernel/mem/cpuset/cpuset01.c | 6 +++---
-> 2 files changed, 28 insertions(+), 3 deletions(-)
-> create mode 100644 testcases/kernel/mem/cpuset/Makefile
-> 
-> diff --git a/testcases/kernel/mem/cpuset/Makefile
-> b/testcases/kernel/mem/cpuset/Makefile
-> new file mode 100644
-> index 0000000..822e783
-> --- /dev/null
-> +++ b/testcases/kernel/mem/cpuset/Makefile
-> @@ -0,0 +1,25 @@
-> +#
-> +# Copyright (C) 2010 Red Hat, Inc.
-> +#
-> +# This program is free software; you can redistribute it and/or
-> modify
-> +# it under the terms of the GNU General Public License as published
-> by
-> +# the Free Software Foundation; either version 2 of the License, or
-> (at
-> +# your option) any later version.
-> +#
-> +# This program is distributed in the hope that it will be useful, but
-> +# WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-> +# General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program; if not, write to the Free Software
-> +# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> +# 02110-1301, USA.
-> +#
-> +
-> +top_srcdir ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +
-> +LDLIBS += $(NUMA_LIBS) -lm
-> diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
-> b/testcases/kernel/mem/cpuset/cpuset01.c
-> index 966e826..27e2d68 100644
-> --- a/testcases/kernel/mem/cpuset/cpuset01.c
-> +++ b/testcases/kernel/mem/cpuset/cpuset01.c
-> @@ -58,7 +58,7 @@ extern int Tst_count;
-> #define MAXNODES 512
-> #define CPATH "/dev/cpuset"
-> #define CPATH_NEW "/dev/cpuset/1"
-> -#define _PATH_SYS_SYSTEM "/sys/devices/system"
-> +#define PATH_SYS_SYSTEM "/sys/devices/system"
-> 
-> static pid_t *pids;
-> volatile int end;
-> @@ -298,7 +298,7 @@ long count_numa(void)
-> {
-> int nnodes = 0;
-> 
-> - while(path_exist(_PATH_SYS_SYSTEM "/node/node%d", nnodes))
-> + while(path_exist(PATH_SYS_SYSTEM "/node/node%d", nnodes))
-> nnodes++;
-> 
-> return nnodes;
-> @@ -308,7 +308,7 @@ long count_cpu(void)
-> {
-> int ncpus = 0;
-> 
-> - while(path_exist(_PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
-> + while(path_exist(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
-> ncpus++;
-> 
-> return ncpus;
-> --
-> 1.7.3.2
-> ------------------------------------------------------------------------------
-> Learn how Oracle Real Application Clusters (RAC) One Node allows
-> customers
-> to consolidate database storage, standardize their database
-> environment, and,
-> should the need arise, upgrade to a full multi-node Oracle RAC
-> database
-> without downtime or disruption
-> http://p.sf.net/sfu/oracle-sfdevnl
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Regards
+Rishi
+
+-----Original Message-----
+From: Garrett Cooper [mailto:yanegomi@gmail.com]
+Sent: Monday, December 13, 2010 9:56 PM
+To: Serge E. Hallyn
+Cc: LTP list
+Subject: Re: [LTP] About Community discussion
+
+On Mon, Dec 13, 2010 at 6:12 AM, Serge E. Hallyn
+<serge.hallyn@canonical.com> wrote:
+> Quoting Garrett Cooper (yanegomi@gmail.com):
+>>     That being said, it still puzzles me why other folks attached to
+>> the project have been largely silent over the past couple months or
+>> years (in particular the official maintainers), as I would figure that
+>> they would have a vested interest in insuring that the changes being
+>> committed to the project are consistent and/or high quality.
+>
+> I'd sort of assumed you had taken over maintainership!  Is Subrata still
+> trying to be involved?  Does IBM have any resources assigned at all?
+
+    Ack... I don't want to be a maintainer. A committer is ok, but a
+maintainer...? No thanks :(. I don't have the time, the access, or the
+ability to maintain releases or the project.
+    Rishi went other places, but I have no idea what happened to the
+rest of the Canonical, IBM, and SGI folks -- they kind of fell off the
+map (minus Peter from IBM who is religiously committing to lcov) :/...
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+Oracle to DB2 Conversion Guide: Learn learn about native support for PL/SQL,
+new data types, scalar functions, improved concurrency, built-in packages,
+OCI, SQL*Plus, data movement tools, best practices and more.
+http://p.sf.net/sfu/oracle-sfdev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------------------------------------------------------------------------------
+Lotusphere 2011
+Register now for Lotusphere 2011 and learn how
+to connect the dots, take your collaborative environment
+to the next level, and enter the era of Social Business.
+http://p.sf.net/sfu/lotusphere-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
