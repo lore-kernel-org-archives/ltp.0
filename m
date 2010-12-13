@@ -1,20 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1PXz9a-0001WM-OA
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 16:45:34 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1PSCKC-0007Sp-UE
+	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 17:36:36 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.72) id 1PXz9X-0002pU-O4
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 16:45:32 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 29 Dec 2010 11:44:57 -0500
-References: <AANLkTi=qFxgs4CPQ2EUwHin1LTgxw0V-RENPV9rRqraF@mail.gmail.com>
-In-Reply-To: <AANLkTi=qFxgs4CPQ2EUwHin1LTgxw0V-RENPV9rRqraF@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <201012291144.58092.vapier@gentoo.org>
-Subject: Re: [LTP] [Bug Fix] utimensat01 can't build
+	(Exim 4.69) id 1PSCKB-0005Tb-PB
+	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 17:36:36 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e35.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id oBDHO0u6027320
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Dec 2010 10:24:00 -0700
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	oBDHaRgm130900
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Dec 2010 10:36:27 -0700
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id oBDHaPPa022242
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Dec 2010 10:36:26 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <AANLkTikwqq9VDS5hSZ+XpgKWH=XNt7ckne+wPqRm=Vtn@mail.gmail.com>
+References: <4D058241.7040603@cn.fujitsu.com>
+	<AANLkTim_ExzOr2G-NnzLWB=b14zj8s5c1pYjsZEkine7@mail.gmail.com>
+	<20101213141246.GB17546@hallyn.com>
+	<AANLkTikwqq9VDS5hSZ+XpgKWH=XNt7ckne+wPqRm=Vtn@mail.gmail.com>
+Date: Mon, 13 Dec 2010 23:05:02 +0530
+Message-Id: <1292261703.4384.10.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] About Community discussion
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,75 +40,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5436828500506082590=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============5436828500506082590==
-Content-Type: multipart/signed; boundary="nextPart1531525.YZMSM5ZIgU";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1531525.YZMSM5ZIgU
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday, December 29, 2010 04:35:48 Vivi wrote:
-> LTP test case utimensat01.c can't build without file usctest.h.
-
-this compiles fine for me on x86_64/Linux as well as Blackfin/Linux without=
-=20
-this change.  so why do you need this ?
-=2Dmike
-
---nextPart1531525.YZMSM5ZIgU
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
-
-iQIcBAABAgAGBQJNG2WKAAoJEEFjO5/oN/WBLrgP/20YKZEJF6kfGzQEZFD18fHG
-IlQZPu21WN0U3+Oytn7Jdggwlzq3M2N9T/yPzhEhIjl2QRW+DyoPe8r+hvCooyRu
-mvdDH7bWr6X1hwi/vDXKrRWa6BBaS/UpkheYZA/U8plXfXL2ubixS+mU0Qj79x3O
-ZGbUM2LfYQQfV2ubrUpQ0uRhGRtd7p/u4nqSJ1aZ9keSISFbrwsYULstNfglbohE
-yL5AzM+NPnZYyK58bmI9LWO6VGYfFyzqAvBbAPR4T6tiUZvxwmCMwek5b6JEdLpr
-HkTr/zqx19FdNgx3EK/wPTj3Btq+Pg/tpZ8OInHwS6vMPamKqC+OabuGSh+v93JO
-tphneOaGLKEnkqlG5P3eUADjGGdDBvfQFwp01CDyFSCGIidTCQnMFZzCtyWA3HHN
-aia+Ap5p5rPMcAKv8Bpdw1m78I2+UGq7dYx4xACmC9gc+3o+r24F83Fnx+wZ18WL
-PuWq49b+VOytMjY6rx9IeYhMrX4p03A3YSZFfJEE9yPGlkxMwV/h6/EIRSvf+z9/
-bqzaNnxlsJqOE/OStuW/NQp9A1wMt0REWBX3AOlVhnexYngK0UsCwoQQUlgHUD04
-rTsuaT0rep4KULxNGECPD/ssXzu7mMlxaUKbqUPNmPjNQfUCbY7kLPoNXW/JN+ma
-VxWgZ1bjf9F6CsCFMoZg
-=vA/n
------END PGP SIGNATURE-----
-
---nextPart1531525.YZMSM5ZIgU--
-
-
---===============5436828500506082590==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
+
+On Mon, 2010-12-13 at 08:26 -0800, Garrett Cooper wrote:
+> On Mon, Dec 13, 2010 at 6:12 AM, Serge E. Hallyn
+> <serge.hallyn@canonical.com> wrote:
+> > Quoting Garrett Cooper (yanegomi@gmail.com):
+> >>     That being said, it still puzzles me why other folks attached to
+> >> the project have been largely silent over the past couple months or
+> >> years (in particular the official maintainers), as I would figure that
+> >> they would have a vested interest in insuring that the changes being
+> >> committed to the project are consistent and/or high quality.
+> >
+> > I'd sort of assumed you had taken over maintainership!  Is Subrata still
+> > trying to be involved?  Does IBM have any resources assigned at all?
+
+Well, Yes and no both. Since Rishi moved out of IBM, i was requested to
+continue doing minimal releases till they can find somebody to look back
+at LTP. 2010 is bit challenging from people management point of view
+with lots of people moving in and out of the organization. So, probably
+things will settle down for the best and you can hear somebody solidly
+from IBM next year.
+
+Regards--
+Subrata
+
+> 
+>     Ack... I don't want to be a maintainer. A committer is ok, but a
+> maintainer...? No thanks :(. I don't have the time, the access, or the
+> ability to maintain releases or the project.
+>     Rishi went other places, but I have no idea what happened to the
+> rest of the Canonical, IBM, and SGI folks -- they kind of fell off the
+> map (minus Peter from IBM who is religiously committing to lcov) :/...
+> Thanks,
+> -Garrett
+> 
+> ------------------------------------------------------------------------------
+> Oracle to DB2 Conversion Guide: Learn learn about native support for PL/SQL,
+> new data types, scalar functions, improved concurrency, built-in packages, 
+> OCI, SQL*Plus, data movement tools, best practices and more.
+> http://p.sf.net/sfu/oracle-sfdev2dev 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
---===============5436828500506082590==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Lotusphere 2011
+Register now for Lotusphere 2011 and learn how
+to connect the dots, take your collaborative environment
+to the next level, and enter the era of Social Business.
+http://p.sf.net/sfu/lotusphere-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5436828500506082590==--
-
