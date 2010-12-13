@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PY83b-0003Fl-9w
-	for ltp-list@lists.sourceforge.net; Thu, 30 Dec 2010 02:15:59 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PY83a-0005He-Hh
-	for ltp-list@lists.sourceforge.net; Thu, 30 Dec 2010 02:15:59 +0000
-Received: by iwn8 with SMTP id 8so10648618iwn.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PS4WW-00083K-UY
+	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 09:16:48 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PS4WV-0006Wi-KH
+	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 09:16:48 +0000
+Received: by wyb40 with SMTP id 40so5563603wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Dec 2010 18:15:53 -0800 (PST)
+	Mon, 13 Dec 2010 01:16:41 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4D058241.7040603@cn.fujitsu.com>
+References: <4D058241.7040603@cn.fujitsu.com>
+Date: Mon, 13 Dec 2010 01:16:41 -0800
+Message-ID: <AANLkTim_ExzOr2G-NnzLWB=b14zj8s5c1pYjsZEkine7@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Date: Sun, 26 Dec 2010 15:34:52 -0800
-Message-Id: <F5A66950-5708-425F-A254-4483F29CA0F0@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v1082)
-Subject: [LTP] realtime lookup_pi_state potential bug concerns
+Subject: Re: [LTP] About Community discussion
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,18 +30,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: dvhltc@ibm.com
-Cc: "ltp-list@lists.sourceforge.net List" <ltp-list@lists.sourceforge.net>
+To: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Reading through some of the comments about CS, MS, whatever, the code looks extremely questionable. Can someone from IBM look at that code and fix it please or delete the comments if they're not applicable anymore?
+On Sun, Dec 12, 2010 at 6:17 PM, Gui Jianfeng
+<guijianfeng@cn.fujitsu.com> wrote:
+> Hi Garrett,
+>
+> I'm sorry to bother you. My team is trying to make LTP more stable and
+> make openposix testsuite less bugs. We'd like to continue to contribute
+> to it. But I found you stop replying our mail for a long time. I'm not
+> sure whether you have received these mails. Or whether you have some
+> concerns? If yes, please let me know. :)
+
+Hi Gui,
+    What concerns me isn't the fact that people are `finding
+problems', it's the analysis and the quality of the patches provided
+back which are problematic. Some of the analysis is spot on, some is
+way off the mark, and other analysis is incomplete; furthermore some
+of the patches fed back are hacky or unmaintainable. Add to that the
+fact that I'm not getting paid for this work and it no longer really
+aligns with my current job charter, I've been neglecting this in favor
+of more critical items in my life.
+    That being said, it still puzzles me why other folks attached to
+the project have been largely silent over the past couple months or
+years (in particular the official maintainers), as I would figure that
+they would have a vested interest in insuring that the changes being
+committed to the project are consistent and/or high quality.
+    I will look at the open_posix_testsuite items again tonight and
+will make a best effort at fixing things. I may not get as much done
+as people like, but I'm being more conservative to avoid missteps and
+incorrect commits.
 Thanks,
 -Garrett
+
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+Oracle to DB2 Conversion Guide: Learn learn about native support for PL/SQL,
+new data types, scalar functions, improved concurrency, built-in packages, 
+OCI, SQL*Plus, data movement tools, best practices and more.
+http://p.sf.net/sfu/oracle-sfdev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
