@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PR7cR-0001wG-OY
-	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 18:22:59 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PR7cQ-0000Bl-0C
-	for ltp-list@lists.sourceforge.net; Fri, 10 Dec 2010 18:22:59 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oBAIMqWh013010
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Dec 2010 13:22:52 -0500
-Date: Fri, 10 Dec 2010 13:22:52 -0500 (EST)
-From: caiqian@redhat.com
-Message-ID: <2094816219.760921292005372092.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <461460491.760901292005368256.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PSDJE-0003X1-5D
+	for ltp-list@lists.sourceforge.net; Mon, 13 Dec 2010 18:39:40 +0000
+Date: Mon, 13 Dec 2010 19:53:37 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101213185337.GB697@saboteur.suse.cz>
+References: <000001cb8f8d$a7cf4310$f76dc930$@co.jp>
+	<20101210144930.GA16800@saboteur.suse.cz>
+	<AANLkTimmkmk_H+AzYOGau6fr_BHChOCif7n=FOu2F14R@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_45020_1360553499.1292005372091"
-Subject: [LTP] [PATCH 3/5] oom03: test OOM for memcg
+Content-Type: multipart/mixed; boundary="liOOAslEiF7prFVr"
+Content-Disposition: inline
+In-Reply-To: <AANLkTimmkmk_H+AzYOGau6fr_BHChOCif7n=FOu2F14R@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix "timer_create/10-1" and "timer_create/11-1"
+ tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,559 +26,344 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, "?$BaD:B ?$B7r, T" <toza@ryobi.co.jp>, Mitani <mitani@ryobi.co.jp>
 
-------=_Part_45020_1360553499.1292005372091
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- testcases/kernel/mem/oom/oom03.c |  248 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 248 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/oom/oom03.c
+--liOOAslEiF7prFVr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-new file mode 100644
-index 0000000..afd0f24
---- /dev/null
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -0,0 +1,248 @@
-+/*
-+ * Out Of Memory (OOM) for Memory Resource Controller
-+ *
-+ * The program is designed to cope with unpredictable like amount and
-+ * system physical memory, swap size and other VMM technology like KSM,
-+ * memcg, memory hotplug and so on which may affect the OOM
-+ * behaviours. It simply increase the memory consumption 3G each time
-+ * until all the available memory is consumed and OOM is triggered.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/mount.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "oom03";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+
-+#define LENGTH		(3UL<<30)
-+#define NORMAL		1
-+#define MLOCK		2
-+#define KSM		3
-+#define PATH		"/dev/cgroup"
-+#define PATH_NEW	PATH "/1"
-+#define TESTMEM		(1UL<<30)
-+#define MB		(1UL<<20)
-+#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
-+
-+static char overcommit[BUFSIZ];
-+
-+static void setup(void);
-+static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+static void oom(int testcase, int lite);
-+static void testoom(int lite);
-+static void alloc_mem(long int length, int testcase);
-+static void test_alloc(int testcase, int lite);
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	int lc, fd;
-+	char buf[BUFSIZ], mem[BUFSIZ];
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != (char *)NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+		fd = open(SYSFS_OVER, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open");
-+		if (write(fd, "1", 1) != 1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "write");
-+		close(fd);
-+
-+		snprintf(buf, BUFSIZ, "%s/memory.limit_in_bytes", PATH_NEW);
-+		fd = open(buf, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		sprintf(mem, "%ld", TESTMEM);
-+		if (write(fd, mem, strlen(mem)) != strlen(mem))
-+			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-+		close(fd);
-+
-+		snprintf(buf, BUFSIZ, "%s/tasks", PATH_NEW);
-+		fd = open(buf, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		snprintf(buf, BUFSIZ, "%d", getpid());
-+		if (write(fd, buf, strlen(buf)) != strlen(buf))
-+			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-+		close(fd);
-+		testoom(0);
-+
-+		snprintf(buf, BUFSIZ, "%s/memory.memsw.limit_in_bytes",
-+			PATH_NEW);
-+		fd = open(buf, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		if (write(fd, mem, strlen(mem)) != strlen(mem))
-+			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-+		close(fd);
-+		testoom(1);
-+	}
-+	cleanup();
-+}
-+
-+void testoom(int lite)
-+{
-+	tst_resm(TINFO, "start normal OOM testing.");
-+	oom(NORMAL, lite);
-+
-+	tst_resm(TINFO, "start OOM testing for mlocked pages.");
-+	oom(MLOCK, lite);
-+
-+	tst_resm(TINFO, "start OOM testing for KSM pages.");
-+	oom(KSM, lite);
-+}
-+
-+void setup(void)
-+{
-+	int fd;
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+
-+	fd = open(SYSFS_OVER, O_RDONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (read(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "read");
-+	close(fd);
-+
-+	if (mkdir(PATH, 0777) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mkdir");
-+	if (mount("memcg", PATH, "cgroup", 0, "memory") == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mount %s", PATH);
-+	if (mkdir(PATH_NEW, 0777) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mkdir %s", PATH_NEW);
-+}
-+
-+void cleanup(void)
-+{
-+	FILE *fp;
-+	int fd;
-+	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
-+
-+	fd = open(SYSFS_OVER, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+
-+	/* Move all processes in task to its parent memcg node. */
-+	snprintf(s, BUFSIZ, "%s/tasks", PATH);
-+	fd = open(s, O_WRONLY);
-+	if (fd == -1)
-+		tst_resm(TWARN|TERRNO, "open %s", s);
-+	snprintf(s_new, BUFSIZ, "%s/tasks", PATH_NEW);
-+
-+	fp = fopen(s_new, "r");
-+	if (fp == NULL)
-+		tst_resm(TWARN|TERRNO, "fopen %s", s_new);
-+	if ((fd != -1) && (fp != NULL)) {
-+		while (fgets(value, BUFSIZ, fp) != NULL)
-+			if (write(fd, value, strlen(value) - 1)
-+				!= strlen(value) - 1)
-+				tst_resm(TWARN|TERRNO, "write %s", s);
-+	}
-+	if (fd != -1)
-+		close(fd);
-+	if (fp != NULL)
-+		fclose(fp);
-+	if (rmdir(PATH_NEW) == -1)
-+		tst_resm(TWARN|TERRNO, "rmdir %s", PATH_NEW);
-+	if (umount(PATH) == -1)
-+		tst_resm(TWARN|TERRNO, "umount %s", PATH);
-+	if (rmdir(PATH) == -1)
-+		tst_resm(TWARN|TERRNO, "rmdir %s", PATH);
-+	
-+	TEST_CLEANUP;
-+	tst_exit();
-+}
-+
-+void alloc_mem(long int length, int testcase)
-+{
-+	void *s;
-+
-+	tst_resm(TINFO, "allocating %ld bytes.", length);
-+	s = mmap(NULL, length, PROT_READ|PROT_WRITE,
-+		MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-+	if (s == MAP_FAILED) {
-+			tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+	}
-+	if (testcase == MLOCK && mlock(s, length) == -1)
-+		tst_brkm(TINFO|TERRNO, cleanup, "mlock");
-+	if (testcase == KSM
-+		&& madvise(s, length, MADV_MERGEABLE) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-+	memset(s, '\a', length);
-+}
-+
-+void test_alloc(int testcase, int lite)
-+{
-+	if (lite)
-+		alloc_mem(TESTMEM + MB, testcase);
-+	else
-+		while(1)
-+			alloc_mem(LENGTH, testcase);
-+}
-+
-+void oom(int testcase, int lite)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	switch(pid = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		test_alloc(testcase, lite);
-+		exit(0);
-+	default:
-+		break;
-+	}
-+	tst_resm(TINFO, "expected victim is %d.", pid);
-+	if (waitpid(-1, &status, 0) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+
-+	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-+		tst_resm(TFAIL, "the victim unexpectedly failed: %d", status);
-+}
+Hi!
+> > Slightly different patch to fix these tests is attached. The code is a
+> > little cleaner but basically does the same.
+> >
+> > The tests now do
+> >
+> > * get cputime
+> > * set timer
+> > * bussy loop while signal is not catched
+> > * get cputime
+> > * check that two stored cpu times differ approximately by timer interval
+> >
+> > Also some more problems are fixed.
+> 
+> Could you please add...
+> 
+> #ifdef CLOCK_PROCESS_CPUTIME_ID
+> /* ... */
+> #else
+> int
+> main(void)
+> {
+>     printf("CLOCK_PROCESS_CPUTIME_ID not supported\n");
+>     return PTS_UNSUPPORTED;
+> }
+> #endif
+> 
+> ...? The constant is optional according to POSIX 2008.1:
+> 
+> "[CPT][Option Start] Process CPU-Time Clocks [Option End]
+> The functionality described is optional. The functionality described
+> is also an extension to the ISO C standard.
+> 
+> [TMR][Option Start] Timers [Option End]
+> The functionality described is optional. The functionality described
+> is also an extension to the ISO C standard.
+> 
+> Where applicable, functions are marked with the TMR margin legend in
+> the SYNOPSIS section. Where additional semantics apply to a function,
+> the material is identified by use of the TMR margin legend."
+> 
+
+Here you are.
+
+(I also noted that previous patch was by accident using
+ CLOCK_PROCESS_CPUTIME_ID to get elapsed time in 11-1.c, this is
+ fixed too)
+
+Notable changes:
+
+* changed tests to do a bussy loop waiting as cpu time
+  is not counted up in any of the sleep functions
+
+* removed printf() from signal handlers as printf()
+  is not async-signal-safe function
+
+* added check for optional CLOCK_PROCESS_CPUTIME_ID
+
+* coding style cleanup
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
 -- 
-1.7.3.2
-------=_Part_45020_1360553499.1292005372091
-Content-Type: text/x-patch; name=0003-oom03-test-OOM-for-memcg.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=0003-oom03-test-OOM-for-memcg.patch
+Cyril Hrubis
+chrubis@suse.cz
 
-From: CAI Qian <caiqian@redhat.com>
-Date: Sat, 11 Dec 2010 02:09:33 +0800
-Subject: [PATCH 3/5] oom03: test OOM for memcg
+--liOOAslEiF7prFVr
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="timer_create_III.patch"
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- testcases/kernel/mem/oom/oom03.c |  248 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 248 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/oom/oom03.c
-
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-new file mode 100644
-index 0000000..afd0f24
---- /dev/null
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -0,0 +1,248 @@
-+/*
-+ * Out Of Memory (OOM) for Memory Resource Controller
-+ *
-+ * The program is designed to cope with unpredictable like amount and
-+ * system physical memory, swap size and other VMM technology like KSM,
-+ * memcg, memory hotplug and so on which may affect the OOM
-+ * behaviours. It simply increase the memory consumption 3G each time
-+ * until all the available memory is consumed and OOM is triggered.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/mount.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "usctest.h"
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
+index 56ffbbd..3e105f9 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
+@@ -10,8 +10,6 @@
+  * Same test as 1-1.c.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+-
+ #include <time.h>
+ #include <signal.h>
+ #include <stdio.h>
+@@ -21,14 +19,16 @@
+ 
+ #define SIGTOTEST SIGALRM
+ #define TIMERSEC 2
+-#define SLEEPDELTA 3
+ #define ACCEPTABLEDELTA 1
+ 
+-void handler(int signo)
++static int endflg = 0;
 +
-+char *TCID = "oom03";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
++static void handler(int signo)
+ {
+-	printf("Caught signal\n");
++	endflg = 1;
+ }
+ 
++#ifdef CLOCK_PROCESS_CPUTIME_ID
+ int main(int argc, char *argv[])
+ {
+ #if _POSIX_CPUTIME == -1
+@@ -39,33 +39,33 @@ int main(int argc, char *argv[])
+ 	struct sigaction act;
+ 	timer_t tid;
+ 	struct itimerspec its;
+-	struct timespec ts, tsleft;
++	struct timespec tstart, tstop;
+ 	int rc;
+ 
+ 	rc = sysconf(_SC_CPUTIME);
+ 	printf("sysconf(_SC_CPUTIME) returns: %d\n", rc);
+-	if (rc <= 0) {
+-		return PTS_UNRESOLVED;	
 +
-+#define LENGTH		(3UL<<30)
-+#define NORMAL		1
-+#define MLOCK		2
-+#define KSM		3
-+#define PATH		"/dev/cgroup"
-+#define PATH_NEW	PATH "/1"
-+#define TESTMEM		(1UL<<30)
-+#define MB		(1UL<<20)
-+#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
++	if (rc == -1) {
++		printf("_POSIX_CPUTIME unsupported\n");
++		return PTS_UNSUPPORTED;
+ 	}
+-		
 +
-+static char overcommit[BUFSIZ];
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	ev.sigev_signo = SIGTOTEST;
+ 
+-	act.sa_handler=handler;
+-	act.sa_flags=0;
++	act.sa_handler = handler;
++	act.sa_flags = 0;
+ 
+ 	its.it_interval.tv_sec = 0;
+ 	its.it_interval.tv_nsec = 0;
+ 	its.it_value.tv_sec = TIMERSEC;
+ 	its.it_value.tv_nsec = 0;
+ 
+-	ts.tv_sec=TIMERSEC+SLEEPDELTA;
+-	ts.tv_nsec=0;
+-
+ 	if (sigemptyset(&act.sa_mask) == -1) {
+ 		perror("Error calling sigemptyset");
+ 		return PTS_UNRESOLVED;
+ 	}
 +
-+static void setup(void);
-+static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+static void oom(int testcase, int lite);
-+static void testoom(int lite);
-+static void alloc_mem(long int length, int testcase);
-+static void test_alloc(int testcase, int lite);
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	int lc, fd;
-+	char buf[BUFSIZ], mem[BUFSIZ];
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != (char *)NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+		fd = open(SYSFS_OVER, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open");
-+		if (write(fd, "1", 1) != 1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "write");
-+		close(fd);
-+
-+		snprintf(buf, BUFSIZ, "%s/memory.limit_in_bytes", PATH_NEW);
-+		fd = open(buf, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		sprintf(mem, "%ld", TESTMEM);
-+		if (write(fd, mem, strlen(mem)) != strlen(mem))
-+			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-+		close(fd);
-+
-+		snprintf(buf, BUFSIZ, "%s/tasks", PATH_NEW);
-+		fd = open(buf, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		snprintf(buf, BUFSIZ, "%d", getpid());
-+		if (write(fd, buf, strlen(buf)) != strlen(buf))
-+			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-+		close(fd);
-+		testoom(0);
-+
-+		snprintf(buf, BUFSIZ, "%s/memory.memsw.limit_in_bytes",
-+			PATH_NEW);
-+		fd = open(buf, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		if (write(fd, mem, strlen(mem)) != strlen(mem))
-+			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-+		close(fd);
-+		testoom(1);
+ 	if (sigaction(SIGTOTEST, &act, 0) == -1) {
+ 		perror("Error calling sigaction");
+ 		return PTS_UNRESOLVED;
+@@ -76,23 +76,34 @@ int main(int argc, char *argv[])
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tstart) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
 +	}
-+	cleanup();
-+}
 +
-+void testoom(int lite)
+ 	if (timer_settime(tid, 0, &its, NULL) != 0) {
+ 		perror("timer_settime() did not return success");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (nanosleep(&ts, &tsleft) != -1) {
+-		perror("nanosleep() not interrupted");
+-		return PTS_FAIL;
++	/*
++	 * We need to bussy loop here as the timer is set to wait for 2 seconds
++	 * of cputime of this process (which doesn't tick in any sleep function)
++	 */
++	while (!endflg);
++
++	if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tstop) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (abs(tsleft.tv_sec-SLEEPDELTA) <= ACCEPTABLEDELTA) {
+-		printf("Test PASSED");
++	if (abs(tstop.tv_sec - tstart.tv_sec - TIMERSEC) <= ACCEPTABLEDELTA) {
++		printf("Test PASSED\n");
+ 		return PTS_PASS;
+ 	} else {
+ 		printf("Timer did not last for correct amount of time\n");
+ 		printf("timer: %d != correct %d\n", 
+-				(int) ts.tv_sec- (int) tsleft.tv_sec,
++				(int) tstop.tv_sec - tstart.tv_sec,
+ 				TIMERSEC);
+ 		return PTS_FAIL;
+ 	}
+@@ -100,3 +111,10 @@ int main(int argc, char *argv[])
+ 	return PTS_UNRESOLVED;
+ #endif
+ }
++#else
++int main(void)
 +{
-+	tst_resm(TINFO, "start normal OOM testing.");
-+	oom(NORMAL, lite);
-+
-+	tst_resm(TINFO, "start OOM testing for mlocked pages.");
-+	oom(MLOCK, lite);
-+
-+	tst_resm(TINFO, "start OOM testing for KSM pages.");
-+	oom(KSM, lite);
++	printf("CLOCK_PROCESS_CPUTIME_ID not supported\n");
++	return PTS_UNSUPPORTED;
 +}
++#endif
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
+index 83e87e4..0f7704f 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
+@@ -19,26 +19,30 @@
+ 
+ #define SIGTOTEST SIGALRM
+ #define TIMERSEC 2
+-#define SLEEPDELTA 3
+ #define ACCEPTABLEDELTA 1
+ 
+-void handler(int signo)
++static int endflg = 0;
 +
-+void setup(void)
-+{
-+	int fd;
++static void handler(int signo)
+ {
+-	printf("Caught signal\n");
++	endflg = 1;
+ }
+ 
+ int main(int argc, char *argv[])
+ {
+-	int rc;
+-	rc = sysconf(_SC_THREAD_CPUTIME);
+-	printf("rc = %d\n", rc);
+-
+-#if _POSIX_THREAD_CPUTIME != -1
++#if _POSIX_THREAD_CPUTIME == -1
++	printf("_POSIX_THREAD_CPUTIME unsupported\n");
++	return PTS_UNSUPPORTED;
++#else
+ 	struct sigevent ev;
+ 	struct sigaction act;
+ 	timer_t tid;
+ 	struct itimerspec its;
+-	struct timespec ts, tsleft;
++	struct timespec tstart, tstop;
++	int rc;
 +
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
++	rc = sysconf(_SC_THREAD_CPUTIME);
++	printf("sysconf(_SC_THREAD_CPUTIME) returns: %d\n", rc);
+ 
+ 	if (rc == -1) {
+ 		printf("_POSIX_THREAD_CPUTIME unsupported\n");
+@@ -48,21 +52,19 @@ int main(int argc, char *argv[])
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	ev.sigev_signo = SIGTOTEST;
+ 
+-	act.sa_handler=handler;
+-	act.sa_flags=0;
++	act.sa_handler = handler;
++	act.sa_flags = 0;
+ 
+ 	its.it_interval.tv_sec = 0;
+ 	its.it_interval.tv_nsec = 0;
+ 	its.it_value.tv_sec = TIMERSEC;
+ 	its.it_value.tv_nsec = 0;
+ 
+-	ts.tv_sec=TIMERSEC+SLEEPDELTA;
+-	ts.tv_nsec=0;
+-
+ 	if (sigemptyset(&act.sa_mask) == -1) {
+ 		perror("Error calling sigemptyset");
+ 		return PTS_UNRESOLVED;
+ 	}
 +
-+	fd = open(SYSFS_OVER, O_RDONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (read(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "read");
-+	close(fd);
-+
-+	if (mkdir(PATH, 0777) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mkdir");
-+	if (mount("memcg", PATH, "cgroup", 0, "memory") == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mount %s", PATH);
-+	if (mkdir(PATH_NEW, 0777) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mkdir %s", PATH_NEW);
-+}
-+
-+void cleanup(void)
-+{
-+	FILE *fp;
-+	int fd;
-+	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
-+
-+	fd = open(SYSFS_OVER, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+
-+	/* Move all processes in task to its parent memcg node. */
-+	snprintf(s, BUFSIZ, "%s/tasks", PATH);
-+	fd = open(s, O_WRONLY);
-+	if (fd == -1)
-+		tst_resm(TWARN|TERRNO, "open %s", s);
-+	snprintf(s_new, BUFSIZ, "%s/tasks", PATH_NEW);
-+
-+	fp = fopen(s_new, "r");
-+	if (fp == NULL)
-+		tst_resm(TWARN|TERRNO, "fopen %s", s_new);
-+	if ((fd != -1) && (fp != NULL)) {
-+		while (fgets(value, BUFSIZ, fp) != NULL)
-+			if (write(fd, value, strlen(value) - 1)
-+				!= strlen(value) - 1)
-+				tst_resm(TWARN|TERRNO, "write %s", s);
+ 	if (sigaction(SIGTOTEST, &act, 0) == -1) {
+ 		perror("Error calling sigaction");
+ 		return PTS_UNRESOLVED;
+@@ -73,31 +75,38 @@ int main(int argc, char *argv[])
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &tstart) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
 +	}
-+	if (fd != -1)
-+		close(fd);
-+	if (fp != NULL)
-+		fclose(fp);
-+	if (rmdir(PATH_NEW) == -1)
-+		tst_resm(TWARN|TERRNO, "rmdir %s", PATH_NEW);
-+	if (umount(PATH) == -1)
-+		tst_resm(TWARN|TERRNO, "umount %s", PATH);
-+	if (rmdir(PATH) == -1)
-+		tst_resm(TWARN|TERRNO, "rmdir %s", PATH);
-+	
-+	TEST_CLEANUP;
-+	tst_exit();
-+}
 +
-+void alloc_mem(long int length, int testcase)
-+{
-+	void *s;
+ 	if (timer_settime(tid, 0, &its, NULL) != 0) {
+ 		perror("timer_settime() did not return success");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (nanosleep(&ts, &tsleft) != -1) {
+-		perror("nanosleep() not interrupted");
+-		return PTS_FAIL;
++	/*
++	 * We need to bussy loop here as the timer is set to wait for 2 seconds
++	 * of cputime of this process (which doesn't tick in any sleep function)
++	 */
++	while (!endflg);
 +
-+	tst_resm(TINFO, "allocating %ld bytes.", length);
-+	s = mmap(NULL, length, PROT_READ|PROT_WRITE,
-+		MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-+	if (s == MAP_FAILED) {
-+			tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+	}
-+	if (testcase == MLOCK && mlock(s, length) == -1)
-+		tst_brkm(TINFO|TERRNO, cleanup, "mlock");
-+	if (testcase == KSM
-+		&& madvise(s, length, MADV_MERGEABLE) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-+	memset(s, '\a', length);
-+}
-+
-+void test_alloc(int testcase, int lite)
-+{
-+	if (lite)
-+		alloc_mem(TESTMEM + MB, testcase);
-+	else
-+		while(1)
-+			alloc_mem(LENGTH, testcase);
-+}
-+
-+void oom(int testcase, int lite)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	switch(pid = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		test_alloc(testcase, lite);
-+		exit(0);
-+	default:
-+		break;
-+	}
-+	tst_resm(TINFO, "expected victim is %d.", pid);
-+	if (waitpid(-1, &status, 0) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+
-+	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-+		tst_resm(TFAIL, "the victim unexpectedly failed: %d", status);
-+}
--- 
-1.7.3.2
++	if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &tstop) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (abs(tsleft.tv_sec-SLEEPDELTA) <= ACCEPTABLEDELTA) {
+-		printf("Test PASSED");
++	if (abs(tstop.tv_sec - tstart.tv_sec - TIMERSEC) <= ACCEPTABLEDELTA) {
++		printf("Test PASSED\n");
+ 		return PTS_PASS;
+ 	} else {
+ 		printf("Timer did not last for correct amount of time\n");
+ 		printf("timer: %d != correct %d\n", 
+-				(int) ts.tv_sec- (int) tsleft.tv_sec,
++				(int) tstop.tv_sec - tstart.tv_sec,
+ 				TIMERSEC);
+ 		return PTS_FAIL;
+ 	}
+ 
+ 	return PTS_UNRESOLVED;
+-#else
+-	printf("_POSIX_THREAD_CPUTIME unsupported\n");
+-	return PTS_UNSUPPORTED;
+ #endif
+-
+ }
 
-
-------=_Part_45020_1360553499.1292005372091
+--liOOAslEiF7prFVr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Oracle to DB2 Conversion Guide: Learn learn about native support for PL/SQL,
-new data types, scalar functions, improved concurrency, built-in packages, 
-OCI, SQL*Plus, data movement tools, best practices and more.
-http://p.sf.net/sfu/oracle-sfdev2dev 
-------=_Part_45020_1360553499.1292005372091
+Lotusphere 2011
+Register now for Lotusphere 2011 and learn how
+to connect the dots, take your collaborative environment
+to the next level, and enter the era of Social Business.
+http://p.sf.net/sfu/lotusphere-d2d
+--liOOAslEiF7prFVr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -593,5 +374,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_45020_1360553499.1292005372091--
+--liOOAslEiF7prFVr--
 
