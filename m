@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <violetleigh@gmail.com>) id 1PXsRf-0003vE-DE
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:47 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PXsRe-0003mK-Gc
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:47 +0000
-Received: by ywi6 with SMTP id 6so4270910ywi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Dec 2010 01:35:41 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <zliu@redhat.com>) id 1PSNSp-0001GQ-3F
+	for ltp-list@lists.sourceforge.net; Tue, 14 Dec 2010 05:30:15 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PSNSn-0003C5-JW
+	for ltp-list@lists.sourceforge.net; Tue, 14 Dec 2010 05:30:15 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oBE5U70V023021
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Dec 2010 00:30:07 -0500
+Date: Tue, 14 Dec 2010 00:30:07 -0500 (EST)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <84488521.961801292304607525.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Date: Wed, 29 Dec 2010 17:35:41 +0800
-Message-ID: <AANLkTimUOfMRp5eTABnr5i04FssPQoFHY7MheNe_SBLm@mail.gmail.com>
-From: Vivi <violetleigh@gmail.com>
-Subject: [LTP] [Bug Fix] LTP test cases kill05 is broken on uclinux platform
+Subject: [LTP] [PATCH v2] add a testcase to test /proc/sys/vm/nr_hugepages
+ vm tunable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,217 +27,272 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7077634257888318422=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP mailing list <ltp-list@lists.sourceforge.net>
-
---===============7077634257888318422==
-Content-Type: multipart/alternative; boundary=0016e645b89ee2c47b0498894ae6
-
---0016e645b89ee2c47b0498894ae6
-Content-Type: text/plain; charset=ISO-8859-1
-
-LTP test cases kill05 is broken on uclinux platform.
-
---
-root:/bin> kill05
-kill05      1  BROK  :  self_exec of child failed
-kill05      0  INFO  :  WARNING: shared memory deletion failed.
-kill05      0  INFO  :  This could lead to IPC resource problems.
-kill05      0  INFO  :  id = 0
-kill05      2  PASS  :  errno set to 1 : Operation not permitted, as
-expected
-kill05      0  WARN  :  tst_rmdir(): rmobj(/tmp/kilhsxPSp) failed:
-lstat(/tmp/kilhsxPSp) failed; errno=2: No such file or directory
-root:/bin>
---
-
-Bellow is the fix for uclinux platform. And the permission of kill05 should
-be set to be executable by every user.
---
-Index: testcases/kernel/syscalls/kill/kill05.c
-===================================================================
---- testcases/kernel/syscalls/kill/kill05.c
-+++ testcases/kernel/syscalls/kill/kill05.c
-@@ -84,12 +84,19 @@
- void cleanup(void);
- void setup(void);
- void do_child(void);
-+#ifdef UCLINUX
-+void uclinux_child(void);
-+#endif
- void do_master_child(char **av);
-
- char *TCID = "kill05";
- int TST_TOTAL = 1;
- int shmid1 = -1;
-+#ifdef UCLINUX
-+static key_t semkey = 1234;
-+#else
- extern key_t semkey;
-+#endif
- int *flag;
-
- int exp_enos[] = { EPERM, 0 };
-@@ -110,7 +117,7 @@
-                tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-        }
- #ifdef UCLINUX
--       maybe_run_child(&do_child, "");
-+       maybe_run_child(&uclinux_child, "");
- #endif
-
-        setup();                /* global setup */
-@@ -239,6 +246,29 @@
-        }
- }
-
-+#ifdef UCLINUX
-+void
-+uclinux_child()
-+{
-+       if ((shmid1 = shmget(semkey, (int)getpagesize(),
-+             0666|IPC_CREAT)) == -1) {
-+               tst_brkm(TBROK, cleanup, "uclinux_child: Failed to setup
-shared memory");
-+       }
-+
-+       if ((flag = (int *)shmat(shmid1, 0, 0)) == (int *)-1) {
-+               tst_brkm(TBROK, cleanup,
-+                       "uclinux_child: Failed to attatch shared memory:%d",
-flag);
-+       }
-+       while(1) {
-+               if (*flag == 1) {
-+                       shmdt(flag);
-+                       exit(0);
-+               } else
-+                       sleep (1);
-+       }
-+}
-+#endif
-+
- /*
-  * setup() - performs all ONE TIME setup for this test
-  */
-@@ -257,8 +287,10 @@
-         */
-        tst_tmpdir();
-
-+#ifndef UCLINUX
-        /* get an IPC resource key */
-        semkey = getipckey();
-+#endif
-
-        if ((shmid1 = shmget(semkey, (int)getpagesize(),
-                             0666 | IPC_CREAT)) == -1) {
---
-
-
-
-Best regards,
-Vivi Li
-
---0016e645b89ee2c47b0498894ae6
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-LTP test cases kill05 is broken on uclinux platform.<br><br>--<br>root:/bin=
-&gt; kill05<br>kill05=A0=A0=A0=A0=A0 1=A0 BROK=A0 :=A0 self_exec of child f=
-ailed<br>kill05=A0=A0=A0=A0=A0 0=A0 INFO=A0 :=A0 WARNING: shared memory del=
-etion failed.<br>kill05=A0=A0=A0=A0=A0 0=A0 INFO=A0 :=A0 This could lead to=
- IPC resource problems.<br>
-
-kill05=A0=A0=A0=A0=A0 0=A0 INFO=A0 :=A0 id =3D 0<br>kill05=A0=A0=A0=A0=A0 2=
-=A0 PASS=A0 :=A0 errno set to 1 : Operation not permitted, as expected<br>k=
-ill05=A0=A0=A0=A0=A0 0=A0 WARN=A0 :=A0 tst_rmdir(): rmobj(/tmp/kilhsxPSp) f=
-ailed: lstat(/tmp/kilhsxPSp) failed; errno=3D2: No such file or directory<b=
-r>
-
-root:/bin&gt;<br>--<br><br>Bellow is the fix for uclinux platform. And the =
-permission of kill05 should be set to be executable by every user.<br>--<br=
->Index: testcases/kernel/syscalls/kill/kill05.c<br>=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>
-
---- testcases/kernel/syscalls/kill/kill05.c<br>+++ testcases/kernel/syscall=
-s/kill/kill05.c<br>@@ -84,12 +84,19 @@<br>=A0void cleanup(void);<br>=A0void=
- setup(void);<br>=A0void do_child(void);<br>+#ifdef UCLINUX<br>+void uclinu=
-x_child(void);<br>
-
-+#endif<br>=A0void do_master_child(char **av);<br><br>=A0char *TCID =3D &qu=
-ot;kill05&quot;;<br>=A0int TST_TOTAL =3D 1;<br>=A0int shmid1 =3D -1;<br>+#i=
-fdef UCLINUX<br>+static key_t semkey =3D 1234;<br>+#else<br>=A0extern key_t=
- semkey;<br>+#endif<br>
-
-=A0int *flag;<br><br>=A0int exp_enos[] =3D { EPERM, 0 };<br>@@ -110,7 +117,=
-7 @@<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_brkm(TBROK, clean=
-up, &quot;OPTION PARSING ERROR - %s&quot;, msg);<br>=A0=A0=A0=A0=A0=A0=A0 }=
-<br>=A0#ifdef UCLINUX<br>-=A0=A0=A0=A0=A0=A0 maybe_run_child(&amp;do_child,=
- &quot;&quot;);<br>
-
-+=A0=A0=A0=A0=A0=A0 maybe_run_child(&amp;uclinux_child, &quot;&quot;);<br>=
-=A0#endif<br><br>=A0=A0=A0=A0=A0=A0=A0 setup();=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 /* global setup */<br>@@ -239,6 +246,29 @@<br>=A0=A0=A0=
-=A0=A0=A0=A0 }<br>=A0}<br><br>+#ifdef UCLINUX<br>+void<br>+uclinux_child()<=
-br>
-
-+{<br>+=A0=A0=A0=A0=A0=A0 if ((shmid1 =3D shmget(semkey, (int)getpagesize()=
-,<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0666|IPC_CREAT)) =3D=3D -1) {<br=
->+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_brkm(TBROK, cleanup, &quot=
-;uclinux_child: Failed to setup shared memory&quot;);<br>+=A0=A0=A0=A0=A0=
-=A0 }<br>
-
-+<br>+=A0=A0=A0=A0=A0=A0 if ((flag =3D (int *)shmat(shmid1, 0, 0)) =3D=3D (=
-int *)-1) {<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_brkm(TBROK, =
-cleanup,<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0 &quot;uclinux_child: Failed to attatch shared memory:%d&quot;, flag)=
-;<br>+=A0=A0=A0=A0=A0=A0 }<br>
-
-+=A0=A0=A0=A0=A0=A0 while(1) {<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 if (*flag =3D=3D 1) {<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 shmdt(flag);<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 exit(0);<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0 } else<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0 sleep (1);<br>+=A0=A0=A0=A0=A0=A0 }<br>+}<br>+#endif<br>
-
-+<br>=A0/*<br>=A0 * setup() - performs all ONE TIME setup for this test<br>=
-=A0 */<br>@@ -257,8 +287,10 @@<br>=A0=A0=A0=A0=A0=A0=A0=A0 */<br>=A0=A0=A0=
-=A0=A0=A0=A0 tst_tmpdir();<br><br>+#ifndef UCLINUX<br>=A0=A0=A0=A0=A0=A0=A0=
- /* get an IPC resource key */<br>=A0=A0=A0=A0=A0=A0=A0 semkey =3D getipcke=
-y();<br>
-
-+#endif<br><br>=A0=A0=A0=A0=A0=A0=A0 if ((shmid1 =3D shmget(semkey, (int)ge=
-tpagesize(),<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0 0666 | IPC_CREAT)) =3D=3D -1) {<br>--<br><br><b=
-r><br>Best regards,<br>Vivi Li
-
---0016e645b89ee2c47b0498894ae6--
-
-
---===============7077634257888318422==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+hi,I'd like to add several testcases to test vm tunable(/proc/sys/vm/*).
+the patch is designed to test nr_hugepages vm tunable, if you set nr_hugepages,
+you can find this change through /proc/meminfo <HighTotal: > 
+I will add more testcases for vm tunables in the few days.
+
+v2: fixed the code style
+
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ runtest/mm                                    |    3 +
+ testcases/kernel/mem/vmtunable/Makefile       |   28 ++++
+ testcases/kernel/mem/vmtunable/nr_hugepages.c |  184 +++++++++++++++++++++++++
+ 3 files changed, 215 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/vmtunable/Makefile
+ create mode 100644 testcases/kernel/mem/vmtunable/nr_hugepages.c
+
+diff --git a/runtest/mm b/runtest/mm
+index 8be3025..3b5182f 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -72,3 +72,6 @@ mmap10_4 mmap10 -a -s -c 60
+ ksm01 ksm01
+ 
+ cpuset01 cpuset01 -I 3600
++
++# test for vm tunable
++nr_hugepages nr_hugepages -i 5
+diff --git a/testcases/kernel/mem/vmtunable/Makefile b/testcases/kernel/mem/vmtunable/Makefile
+new file mode 100644
+index 0000000..fe4c248
+--- /dev/null
++++ b/testcases/kernel/mem/vmtunable/Makefile
+@@ -0,0 +1,28 @@
++#
++# Copyright (C) 2010  Red Hat, Inc.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of version 2 of the GNU General Public
++# License as published by the Free Software Foundation.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++#
++# Further, this software is distributed without any warranty that it
++# is free of the rightful claim of any third person regarding
++# infringement or the like.  Any license provided herein, whether
++# implied or otherwise, applies only to this software file.  Patent
++# licenses, if any, provided herein do not apply to combinations of
++# this program with other software, or any other product whatsoever.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software
++# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++# 02110-1301, USA.
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/vmtunable/nr_hugepages.c b/testcases/kernel/mem/vmtunable/nr_hugepages.c
+new file mode 100644
+index 0000000..a573630
+--- /dev/null
++++ b/testcases/kernel/mem/vmtunable/nr_hugepages.c
+@@ -0,0 +1,184 @@
++/* 
++ * vm tunable test
++ *
++ * ********************************************************************
++ * Copyright (C) 2010 Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ *
++ * ********************************************************************
++ *
++ * File Name: nr_hugepage.c
++ * Author: Zhouping Liu <zliu@redhat.com>
++ * Description:  
++ * The program is designed to test /proc/sys/vm/nr_hugepages.
++ * set the different values to nr_hugepages and watch this operations
++ * work normally. if you set nr_hugepages, you can see this change in
++ * /proc/meminfo: HugePages_Total
++ *
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdint.h>
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++
++#include "test.h"
++#include "usctest.h"
++#define BUFFER_SIZE 256
++
++/* the HUGEPAGES is the value that I will set /proc/sys/vm/nr_hugepages, 
++ * why I set HUGEPAGES 30, I think this value is appropriate.
++ * In general, all the systems can provide about 30 hugepages if they 
++ * support hugepage, if you make a much larger value, it will cause 
++ * shortage memory.
++ */
++#define HUGEPAGES 30 
++
++char *TCID ="nr_hugepages"; 
++int TST_TOTAL = 1;
++
++/* set hugepages */
++int set_hugepages(int nr_hugepages);
++/* get the total of hugepages and surplus hugepages */ 
++int get_hugepages(int *nr_hugepages);
++
++/* check whether the /proc/sys/vm/nr_hugepages file exist
++ * if not, then the test can't run continue.
++ * */
++int check_system();
++
++/* make some clean work. */
++void cleanup();
++
++int old_hugepages = 0; /* save the old nr_hugepages value */
++
++int main(int argc, char *argv[])
++{
++	int lc = 0; /* loop counter */
++	char *msg; /* message returned from parse_opts */
++	int counter = 0;
++	int nr = 10;
++	int hugepages = 0;
++
++	/* the test need to be run as root */
++	tst_require_root(tst_exit);
++
++	/* if check_system() return zero, 
++ 	 * the system can't support this test. 
++ 	 */
++	if (!check_system()) {
++		tst_brkm(TCONF|TERRNO,tst_exit, "Can't test %s, no such file", TCID);
++	}
++
++	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL) {
++		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR -%s ", msg);
++	}
++	
++	get_hugepages(&old_hugepages); /* save the original hugepages */
++	tst_resm(TINFO, "the original nr_hugepages is %d\n", old_hugepages);
++	
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		/* try to set nr_hugepages from 30 to 39 */
++		for ( counter = 0; counter < nr; counter++ ) {
++			set_hugepages(HUGEPAGES + counter);
++			tst_resm(TINFO, "set nr_hugepages %d", 
++				HUGEPAGES + counter);
++			get_hugepages(&hugepages);
++			if (hugepages != HUGEPAGES + counter) {
++				set_hugepages(old_hugepages); /* recover the original value */
++				tst_brkm(TFAIL, cleanup, "nr_hugepages error");
++			}
++		}
++	}
++	
++	tst_resm(TPASS, "nr_hugepages succeed.");
++	
++	set_hugepages(old_hugepages); /* recover the primary value */
++	cleanup();
++	return 0;
++}
++
++int get_hugepages(int *nr_hugepages) 
++{
++	FILE *f;
++	int flag = 0;
++	char buff[BUFFER_SIZE];
++
++	f = fopen("/proc/meminfo", "r");
++	if (f == NULL) {
++		tst_brkm(TBROK, cleanup, "open /proc/meminfo error");
++	}
++
++	while (fgets(buff,BUFFER_SIZE, f) != NULL) {
++		if ((flag = sscanf(buff, "HugePages_Total: %d ", nr_hugepages)) == 1)
++			break;
++	}
++
++	/* if flag = 1, that indicates the sscanf() have gotten the HugePages_Total */
++	if (flag != 1) {
++		fclose(f);
++		tst_brkm(TBROK, cleanup, "Failed reading Hugepages_Total.");
++	}
++
++	fclose(f);
++	return 0;
++}
++
++int set_hugepages(int nr_hugepages)
++{
++	FILE *f ;
++
++	f = fopen("/proc/sys/vm/nr_hugepages","w");
++	if (f == NULL) {
++		tst_brkm(TBROK, cleanup, "open /proc/sys/vm/nr_hugepages error");
++	}
++
++	/* write nr_hugepages to /proc/sys/vm/nr_hugepages */
++	if (fprintf(f, "%d", nr_hugepages) < 0) {
++		tst_brkm(TBROK, cleanup, "fprintf() error");
++	}
++	
++	fclose(f);
++	return 0;
++}
++
++int check_system()
++{
++	int flag = -1;
++	
++	flag = access("/proc/sys/vm/nr_hugepages", F_OK);
++	if (flag == 0) {  
++		return 1;  /* can access this file */
++	} else {
++		return 0;
++	}
++}
++
++void cleanup()
++{
++	set_hugepages(old_hugepages); /* recover the original data */
++	tst_exit();
++}
+-- 
+1.7.2.3
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
---===============7077634257888318422==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Lotusphere 2011
+Register now for Lotusphere 2011 and learn how
+to connect the dots, take your collaborative environment
+to the next level, and enter the era of Social Business.
+http://p.sf.net/sfu/lotusphere-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7077634257888318422==--
-
