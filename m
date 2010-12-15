@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PPdoh-00043O-5a
-	for ltp-list@lists.sourceforge.net; Mon, 06 Dec 2010 16:21:31 +0000
-Date: Mon, 6 Dec 2010 17:34:52 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101206163452.GB6562@saboteur.suse.cz>
-References: <20101203193017.GA3291@saboteur.suse.cz>
-	<746530311.2251291437718914.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PSkgl-00086n-TP
+	for ltp-list@lists.sourceforge.net; Wed, 15 Dec 2010 06:18:11 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PSkgk-0004D7-1n
+	for ltp-list@lists.sourceforge.net; Wed, 15 Dec 2010 06:18:11 +0000
+Message-ID: <4D085CF1.7070308@cn.fujitsu.com>
+Date: Wed, 15 Dec 2010 14:15:13 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <746530311.2251291437718914.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH v2] mbind_range() vma merge
+Subject: [LTP] [PATCH]Fix building error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,37 +22,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > What about using "/proc/self/maps" here and get rid of sprintf() and
-> > buf here.
-> OK.
-> 
-> > Empty line here please.
-> It was removed explicitly to make the code compact. Could you explain the benefit? Thanks.
-
-It's kind of common sense to divide the code into functions to make it
-more readable. Adding empty lines between them is done for exact same
-reason. And if you look into LTP codebase every test does that (at least
-I haven't seen opposite) so one more reason for this is staying
-consistent.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-What happens now with your Lotus Notes apps - do you make another costly 
-upgrade, or settle for being marooned without product support? Time to move
-off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
-use, and manage than apps on traditional platforms. Sign up for the Lotus 
-Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+V2hlbiBpIGJ1aWxkIHRoZSBMVFAgYXQgUkhFTDUuNUdBLCB0aGUgZm9sbG93aW5nIGVycm9yIHdh
+cyBjYXVnaHQuCgptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2JpYW5ubS9naXRz
+cmMvbHRwLWRldi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAnCmdjYyAtZyAtTzIgLWcg
+LU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS9ob21lL2JpYW5ubS9naXRz
+cmMvbHRwLWRldi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRl
+IC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAgIC1MLi4vLi4vLi4vLi4vbGliICBtbWFwMTAuYyAgIC1s
+bHRwIC1scHRocmVhZCAtbyBtbWFwMTAKbW1hcDEwLmM6IEluIGZ1bmN0aW9uIOKAmG1tYXB6ZXJv
+4oCZOgptbWFwMTAuYzoxMjA6IGVycm9yOiDigJhNQURWX01FUkdFQUJMReKAmSB1bmRlY2xhcmVk
+IChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKbW1hcDEwLmM6MTIwOiBlcnJvcjogKEVhY2gg
+dW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQptbWFwMTAuYzoxMjA6
+IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikKbWFrZVs0XTogKioqIFtt
+bWFwMTBdIEVycm9yIDEKClNvLCB3aGF0IGFib3V0IHRoaXMgcGF0Y2g/Ci0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoK
+S1NNIGlzIHVuc3VwcG9ydGVkIGJlZm9yZSAyLjYuMzIuIFNvIGlmIE1BRFZfTUVSR0VBQkxFIGlz
+IHVuZGVmaW5lLAp3ZSBzaG91bGQgbm90IHRlc3QgdGhlIGZvbGxvd2luZyBjYXNlcy4KCjEuIG1t
+YXAxMCB3aXRoIHRoZSBvcHRpb24gIi1zIi4KMi4ga3NtMDEuCgpTaWduZWQtb2ZmLWJ5OiBCaWFu
+IE5haW1lbmcgPGJpYW5ubUBjbi5mdWppdHN1LmNvbT4KCi0tLQogdGVzdGNhc2VzL2tlcm5lbC9t
+ZW0va3NtL2tzbTAxLmMgICAgICAgIHwgICAxNSArKysrKysrKysrKystLS0KIHRlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTAuYyB8ICAgIDQgKysrKwogMiBmaWxlcyBjaGFuZ2Vk
+LCAxNiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvbWVtL2tzbS9rc20wMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTAx
+LmMKaW5kZXggMTE0Mzc5MS4uOWI1NzVmZiAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9t
+ZW0va3NtL2tzbTAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTAxLmMKQEAg
+LTcwLDEyICs3MCwxNCBAQAogI2luY2x1ZGUgInRlc3QuaCIKICNpbmNsdWRlICJ1c2N0ZXN0Lmgi
+CiAKLSNkZWZpbmUgX1BBVEhfS1NNCSIvc3lzL2tlcm5lbC9tbS9rc20vIgotI2RlZmluZSBNQgkJ
+KDEwMjQgKiAxMDI0KQotCiBjaGFyICpUQ0lEID0gImtzbTAxIjsKIGludCBUU1RfVE9UQUwgPSAx
+OwogZXh0ZXJuIGludCBUc3RfY291bnQ7CisKKyNpZmRlZglNQURWX01FUkdFQUJMRQorCisjZGVm
+aW5lIF9QQVRIX0tTTQkiL3N5cy9rZXJuZWwvbW0va3NtLyIKKyNkZWZpbmUgTUIJCSgxMDI0ICog
+MTAyNCkKIHN0YXRpYyBpbnQgb3B0X251bSwgb3B0X3NpemU7CiBzdGF0aWMgY2hhciAqb3B0X251
+bXN0ciwgKm9wdF9zaXplc3RyOwogLyogbWVtb3J5IHBvaW50ZXIgdG8gaWRlbnRpZnkgcGVyIHBy
+b2Nlc3MsIE1CLCBhbmQgYnl0ZSBsaWtlCkBAIC01MzgsMyArNTQwLDEwIEBAIHZvaWQgZ3JvdXBf
+Y2hlY2soaW50IHJ1biwgaW50IHBhZ2VzX3NoYXJlZCwgaW50IHBhZ2VzX3NoYXJpbmcsCiAJY2hl
+Y2soInNsZWVwX21pbGxpc2VjcyIsIE5VTEwsIHNsZWVwX21pbGxpc2Vjcyk7CiAJY2hlY2soInBh
+Z2VzX3RvX3NjYW4iLCBOVUxMLCBwYWdlc190b19zY2FuKTsKIH0KKworI2Vsc2UKK2ludCBtYWlu
+KGludCBhcmdjLCBjaGFyICphcmd2W10pCit7CisJdHN0X2Jya20oVFJFVFIsIHRzdF9leGl0LCAi
+S1NNIGlzIHVuc3VwcG9ydGVkIik7Cit9CisjZW5kaWYKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTAuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+bW1hcC9tbWFwMTAuYwppbmRleCBmZTlkNjIyLi5iZTk4OGNmIDEwMDY0NAotLS0gYS90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDEwLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9tbWFwL21tYXAxMC5jCkBAIC0xMTYsOSArMTE2LDEzIEBAIHZvaWQgbW1hcHplcm8o
+dm9pZCkKIAlpZiAoeCA9PSBNQVBfRkFJTEVEKQogCQl0c3RfYnJrbShUQlJPS3xURVJSTk8sIGNs
+ZWFudXAsICJtbWFwIik7CiAJaWYgKG9wdF9rc20pIHsKKyNpZmRlZglNQURWX01FUkdFQUJMRQog
+CQl0c3RfcmVzbShUSU5GTywgImFkZCB0byBLU00gcmVnaW9ucy4iKTsKIAkJaWYgKG1hZHZpc2Uo
+eCwgU0laRStTSVpFLTQwOTYsIE1BRFZfTUVSR0VBQkxFKSA9PSAtMSkKIAkJCXRzdF9icmttKFRC
+Uk9LfFRFUlJOTywgY2xlYW51cCwgIm1hZHZpc2UiKTsKKyNlbHNlCisJCXRzdF9icmttKFRSRVRS
+LCBjbGVhbnVwLCAiS1NNIGlzIHVuc3VwcG9ydGVkLiIpOworI2VuZGlmCiAJfQogCXhbU0laRV0g
+PSAwOwogCi0tIAoxLjcuMC40CgoKCgotLSAKUmVnYXJkcwpCaWFuIE5haW1lbmcKCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KTG90dXNwaGVyZSAyMDExClJlZ2lzdGVyIG5vdyBmb3IgTG90dXNwaGVy
+ZSAyMDExIGFuZCBsZWFybiBob3cKdG8gY29ubmVjdCB0aGUgZG90cywgdGFrZSB5b3VyIGNvbGxh
+Ym9yYXRpdmUgZW52aXJvbm1lbnQKdG8gdGhlIG5leHQgbGV2ZWwsIGFuZCBlbnRlciB0aGUgZXJh
+IG9mIFNvY2lhbCBCdXNpbmVzcy4KaHR0cDovL3Auc2YubmV0L3NmdS9sb3R1c3BoZXJlLWQyZApf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
