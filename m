@@ -1,30 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PQDyI-00006N-FW
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 06:57:50 +0000
-Received: from out22.sjc.mx.trendmicro.com ([216.99.131.79])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PQDyG-0006V2-Q8
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 06:57:50 +0000
-Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.132])
-	by out22.sjc.mx.trendmicro.com (Postfix) with ESMTP id BBFAA980461
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  8 Dec 2010 06:57:42 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 49B7295838
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  8 Dec 2010 06:57:41 +0000 (UTC)
-Message-ID: <000001cb96a5$12026c30$36074490$@co.jp>
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 8 Dec 2010 15:56:42 +0900
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="--=_NextPart_ST_15_56_42_Wednesday_December_08_2010_29688"
-Content-Language: ja
-Subject: [LTP] [PATCH] fix "sched_getparam/6-1" and "sched_getscheduler/7-1"
-	tests
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1PTJXz-0005fJ-SA
+	for ltp-list@lists.sourceforge.net; Thu, 16 Dec 2010 19:31:27 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.72) id 1PTJXy-0001hT-NO
+	for ltp-list@lists.sourceforge.net; Thu, 16 Dec 2010 19:31:27 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Fri, 17 Dec 2010 01:01:04 +0530
+Message-Id: <1292527865.4463.53.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] New SCTP error
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,161 +23,233 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: =?iso-2022-jp?B?GyRCYUQ6QhsoQiAbJEI3cjtUGyhC?= <toza@ryobi.co.jp>
-
-This is a multi-part message in MIME format.
-
-----=_NextPart_ST_15_56_42_Wednesday_December_08_2010_29688
-Content-Type: text/plain;
-	charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-Hi,
+Jiri,
 
+I remember you submitted a patch years back on SCTP fix. I get the new
+error on RHEL6:
 
-Following POSIX testsets failed:
-------------
-conformance/interfaces/sched_getparam/6-1: execution: FAILED: Output:
-Testing with user 'bin' (euid: 1)(uid: 1)
-The function sched_getparam has successed.
-------------
+# uname -a
+Linux alien10.ltc.austin.ibm.com 2.6.32-71.el6.ppc64 #1 SMP Wed Sep 1
+02:56:55 EDT 2010 ppc64 ppc64 ppc64 GNU/Linux
+# cat /etc/issue
+Red Hat Enterprise Linux Server release 6.0 (Santiago)
+Kernel \r on an \m
 
-------------
-conformance/interfaces/sched_getscheduler/7-1: execution: FAILED: Output:
-Testing with user 'bin' (uid: 1)
-The function sched_getscheduler has successed.
-------------
+# ./runltp -f sctp
+...
+<<<test_output>>>
+test_1_to_1_accept_close.c    1  TBROK  :  bind: Permission denied
+test_1_to_1_accept_close.c    2  TBROK  :  Remaining cases broken
+test_1_to_1_accept_close.c    3  TBROK  :  Remaining cases broken
+...
+incrementing stop
+test_timetolive.c    1  TBROK  :  bind: Permission denied
+test_timetolive.c    2  TBROK  :  Remaining cases broken
+test_timetolive.c    3  TBROK  :  Remaining cases broken
 
-The environments are as follows:
-  - RHEL4.8 --- (x86, x86_64, ia64)
-  - kernel  --- kernel-2.6.9-89.EL
-  - glibc   --- glibc-2.3.4-2.43
+STRACE Output of the last 2 tests:
 
-  - RHEL5.5 --- (x86, x86_64, ia64)
-  - kernel  --- kernel-2.6.18-194.el5
-  - glibc   --- glibc-2.5-49
+<<<test_start>>>
+tag=test_timetolive stime=1292549345
+cmdline="strace test_timetolive"
+contacts=""
+analysis=exit
+<<<test_output>>>
+execve("/opt/ltp/testcases/bin/test_timetolive", ["test_timetolive"],
+[/* 34 vars */]) = 0
+brk(0)                                  = 0x1001b520000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 5
+fstat(5, {st_mode=S_IFREG|0644, st_size=102327, ...}) = 0
+mmap(NULL, 102327, PROT_READ, MAP_PRIVATE, 5, 0) = 0xfff909c0000
+close(5)                                = 0
+open("/lib64/libpthread.so.0", O_RDONLY) = 5
+read(5, "\177ELF\2\2\1\0\0\0\0\0\0\0\0\0\0\3\0\25\0\0\0\1\0\0\0\200\26
+\321\1\30"..., 832) = 832
+fstat(5, {st_mode=S_IFREG|0755, st_size=187784, ...}) = 0
+mmap(0x8016ce0000, 220472, PROT_READ|PROT_EXEC, MAP_PRIVATE|
+MAP_DENYWRITE, 5, 0) = 0x8016ce0000
+mmap(0x8016d00000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
+MAP_DENYWRITE, 5, 0x10000) = 0x8016d00000
+close(5)                                = 0
+open("/lib64/libc.so.6", O_RDONLY)      = 5
+read(5, "\177ELF\2\2\1\0\0\0\0\0\0\0\0\0\0\3\0\25\0\0\0\1\0\0\0\200\26
+\271\r "..., 832) = 832
+fstat(5, {st_mode=S_IFREG|0755, st_size=2177992, ...}) = 0
+mmap(0x80169c0000, 1982040, PROT_READ|PROT_EXEC, MAP_PRIVATE|
+MAP_DENYWRITE, 5, 0) = 0x80169c0000
+mmap(0x8016b80000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
+MAP_DENYWRITE, 5, 0x1b0000) = 0x8016b80000
+mmap(0x8016ba0000, 15960, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
+MAP_ANONYMOUS, -1, 0) = 0x8016ba0000
+close(5)                                = 0
+mprotect(0x8016b80000, 65536, PROT_READ) = 0
+mprotect(0x8016d00000, 65536, PROT_READ) = 0
+mprotect(0x8016980000, 65536, PROT_READ) = 0
+munmap(0xfff909c0000, 102327)           = 0
+set_tid_address(0x80169952c0)           = 27259
+get_robust_list(0x80169952d0, 0x18, 0xffff63967a8) = 0
+futex(0xffff6396500, FUTEX_WAKE_PRIVATE, 1) = 0
+futex(0xffff6396500, FUTEX_WAIT_BITSET_PRIVATE|FUTEX_CLOCK_REALTIME, 1,
+NULL, 8016a75220) = -1 EAGAIN (Resource temporarily unavailable)
+rt_sigaction(SIGRTMIN, {0x8016d100d8, [], SA_SIGINFO}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {0x8016d100b8, [], SA_RESTART|SA_SIGINFO}, NULL,
+8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=10240*1024, rlim_max=RLIM_INFINITY}) =
+0
+socket(PF_INET, SOCK_SEQPACKET, 0x84 /* IPPROTO_??? */) = 5
+socket(PF_INET, SOCK_SEQPACKET, 0x84 /* IPPROTO_??? */) = 6
+getsockopt(6, SOL_SOCKET, SO_RCVBUF, [536561674354816], [4]) = 0
+setsockopt(5, 0x84 /* SOL_?? */, 13, [100], 4) = 0
+setsockopt(5, 0x84 /* SOL_?? */, 11, "\1\1\0\1\0\0\0\0", 8) = 0
+setsockopt(6, 0x84 /* SOL_?? */, 11, "\1\1\0\1\0\0\0\0", 8) = 0
+setsockopt(5, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+bind(5, {sa_family=AF_INET, sin_port=htons(1024),
+sin_addr=inet_addr("127.0.0.1")}, 28) = -1 EACCES (Permission denied)
+write(1, "test_timetolive.c    1  TBROK  :"..., 57test_timetolive.c    1
+TBROK  :  bind: Permission denied) = 57
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    2  TBROK  :"..., 56test_timetolive.c    2
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    3  TBROK  :"..., 56test_timetolive.c    3
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    4  TBROK  :"..., 56test_timetolive.c    4
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    5  TBROK  :"..., 56test_timetolive.c    5
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    6  TBROK  :"..., 56test_timetolive.c    6
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+exit_group(2)                           = ?
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=test_timetolive_v6 stime=1292549345
+cmdline="strace test_timetolive_v6"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+execve("/opt/ltp/testcases/bin/test_timetolive_v6",
+["test_timetolive_v6"], [/* 34 vars */]) = 0
+brk(0)                                  = 0x100108b0000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 5
+fstat(5, {st_mode=S_IFREG|0644, st_size=102327, ...}) = 0
+mmap(NULL, 102327, PROT_READ, MAP_PRIVATE, 5, 0) = 0xfff9e220000
+close(5)                                = 0
+open("/lib64/libpthread.so.0", O_RDONLY) = 5
+read(5, "\177ELF\2\2\1\0\0\0\0\0\0\0\0\0\0\3\0\25\0\0\0\1\0\0\0\200\26
+\321\1\30"..., 832) = 832
+fstat(5, {st_mode=S_IFREG|0755, st_size=187784, ...}) = 0
+mmap(0x8016ce0000, 220472, PROT_READ|PROT_EXEC, MAP_PRIVATE|
+MAP_DENYWRITE, 5, 0) = 0x8016ce0000
+mmap(0x8016d00000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
+MAP_DENYWRITE, 5, 0x10000) = 0x8016d00000
+close(5)                                = 0
+open("/lib64/libc.so.6", O_RDONLY)      = 5
+read(5, "\177ELF\2\2\1\0\0\0\0\0\0\0\0\0\0\3\0\25\0\0\0\1\0\0\0\200\26
+\271\r "..., 832) = 832
+fstat(5, {st_mode=S_IFREG|0755, st_size=2177992, ...}) = 0
+mmap(0x80169c0000, 1982040, PROT_READ|PROT_EXEC, MAP_PRIVATE|
+MAP_DENYWRITE, 5, 0) = 0x80169c0000
+mmap(0x8016b80000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
+MAP_DENYWRITE, 5, 0x1b0000) = 0x8016b80000
+mmap(0x8016ba0000, 15960, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|
+MAP_ANONYMOUS, -1, 0) = 0x8016ba0000
+close(5)                                = 0
+mprotect(0x8016b80000, 65536, PROT_READ) = 0
+mprotect(0x8016d00000, 65536, PROT_READ) = 0
+mprotect(0x8016980000, 65536, PROT_READ) = 0
+munmap(0xfff9e220000, 102327)           = 0
+set_tid_address(0x80169952c0)           = 27261
+get_robust_list(0x80169952d0, 0x18, 0xfffec90f788) = 0
+futex(0xfffec90f4e0, FUTEX_WAKE_PRIVATE, 1) = 0
+futex(0xfffec90f4e0, FUTEX_WAIT_BITSET_PRIVATE|FUTEX_CLOCK_REALTIME, 1,
+NULL, 8016a75220) = -1 EAGAIN (Resource temporarily unavailable)
+rt_sigaction(SIGRTMIN, {0x8016d100d8, [], SA_SIGINFO}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {0x8016d100b8, [], SA_RESTART|SA_SIGINFO}, NULL,
+8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=10240*1024, rlim_max=RLIM_INFINITY}) =
+0
+socket(PF_INET6, SOCK_SEQPACKET, 0x84 /* IPPROTO_??? */) = 5
+socket(PF_INET6, SOCK_SEQPACKET, 0x84 /* IPPROTO_??? */) = 6
+getsockopt(6, SOL_SOCKET, SO_RCVBUF, [536561674354816], [4]) = 0
+setsockopt(5, 0x84 /* SOL_?? */, 13, [100], 4) = 0
+setsockopt(5, 0x84 /* SOL_?? */, 11, "\1\1\0\1\0\0\0\0", 8) = 0
+setsockopt(6, 0x84 /* SOL_?? */, 11, "\1\1\0\1\0\0\0\0", 8) = 0
+setsockopt(5, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+bind(5, {sa_family=AF_INET6, sin6_port=htons(1024), inet_pton(AF_INET6,
+"::1", &sin6_addr), sin6_flowinfo=0, sin6_scope_id=128}, 28) = -1 EACCES
+(Permission denied)
+write(1, "test_timetolive.c    1  TBROK  :"..., 57test_timetolive.c    1
+TBROK  :  bind: Permission denied) = 57
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    2  TBROK  :"..., 56test_timetolive.c    2
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    3  TBROK  :"..., 56test_timetolive.c    3
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    4  TBROK  :"..., 56test_timetolive.c    4
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    5  TBROK  :"..., 56test_timetolive.c    5
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+write(1, "test_timetolive.c    6  TBROK  :"..., 56test_timetolive.c    6
+TBROK  :  Remaining cases broken) = 56
+write(1, "\n", 1
+)                       = 1
+exit_group(2)                           = ?
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
 
-
-They are permission tests.
-
-The comment of "sched_getparam/6-1" testset source is as follows:
-------------
-  * On Linux, e.g, the kernel makes no check on user permission to call this
-  * API. So basically we don't know on what condition a system should return
-  * EPERM. It is implementation defined.
-------------
-
-
-Therefore I revised their results to "UNRESOLVED" by judging linux
-environment.
-
-Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-============
----
-a/testcases/open_posix_testsuite/conformance/interfaces/sched_getparam/6-1.c
-2010-12-08 15:39:45.000000000 +0900
-+++
-b/testcases/open_posix_testsuite/conformance/interfaces/sched_getparam/6-1.c
-2010-12-08 13:48:51.000000000 +0900
-@@ -65,6 +65,11 @@
- 	struct sched_param param;
- 	int result = -1;
- 
-+#ifdef __linux__
-+	printf("We don't know on what condition a system should return
-EPERM.\n");
-+        return PTS_UNRESOLVED;
-+#endif
-+
- 	/* We assume process Number 1 is created by root */
- 	/* and can only be accessed by root */ 
- 	/* This test should be run under standard user permissions */
-============
-
-============
----
-a/testcases/open_posix_testsuite/conformance/interfaces/sched_getscheduler/7
--1.c	2010-11-12 02:19:16.000000000 +0900
-+++
-b/testcases/open_posix_testsuite/conformance/interfaces/sched_getscheduler/7
--1.c	2010-12-08 15:42:23.000000000 +0900
-@@ -55,6 +55,11 @@
- 
- 	int result = -1;
- 
-+#ifdef __linux__
-+	printf("We don't know on what condition a system should return
-EPERM.\n");
-+	return PTS_UNRESOLVED;
-+#endif
-+
- 	/* We assume process Number 1 is created by root */
- 	/* and can only be accessed by root */ 
- 	/* This test should be run under standard user permissions */
-============
-
-
+Any Ideas ??
 
 Regards--
+Subrata
 
--Tomonori Mitani
 
-----=_NextPart_ST_15_56_42_Wednesday_December_08_2010_29688
-Content-Type: application/octet-stream;
-	name="7-1.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="7-1.patch"
-
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_getschedu=
-ler/7-1.c=092010-11-12 02:19:16.000000000 +0900=0A+++ b/testcases/open_posi=
-x_testsuite/conformance/interfaces/sched_getscheduler/7-1.c=092010-12-08 15=
-:42:23.000000000 +0900=0A@@ -55,6 +55,11 @@=0A =0A =09int result =3D -1;=0A=
- =0A+#ifdef __linux__=0A+=09printf("We don't know on what condition a syste=
-m should return EPERM.\n");=0A+=09return PTS_UNRESOLVED;=0A+#endif=0A+=0A =09=
-/* We assume process Number 1 is created by root */=0A =09/* and can only b=
-e accessed by root */ =0A =09/* This test should be run under standard user=
- permissions */=0A
-----=_NextPart_ST_15_56_42_Wednesday_December_08_2010_29688
-Content-Type: application/octet-stream;
-	name="6-1.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="6-1.patch"
-
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_getparam/=
-6-1.c=092010-12-08 15:39:45.000000000 +0900=0A+++ b/testcases/open_posix_te=
-stsuite/conformance/interfaces/sched_getparam/6-1.c=092010-12-08 13:48:51.0=
-00000000 +0900=0A@@ -65,6 +65,11 @@=0A =09struct sched_param param;=0A =09i=
-nt result =3D -1;=0A =0A+#ifdef __linux__=0A+=09printf("We don't know on wh=
-at condition a system should return EPERM.\n");=0A+        return PTS_UNRES=
-OLVED;=0A+#endif=0A+=0A =09/* We assume process Number 1 is created by root=
- */=0A =09/* and can only be accessed by root */ =0A =09/* This test should=
- be run under standard user permissions */=0A
-----=_NextPart_ST_15_56_42_Wednesday_December_08_2010_29688
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-What happens now with your Lotus Notes apps - do you make another costly 
-upgrade, or settle for being marooned without product support? Time to move
-off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
-use, and manage than apps on traditional platforms. Sign up for the Lotus 
-Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
-----=_NextPart_ST_15_56_42_Wednesday_December_08_2010_29688
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Lotusphere 2011
+Register now for Lotusphere 2011 and learn how
+to connect the dots, take your collaborative environment
+to the next level, and enter the era of Social Business.
+http://p.sf.net/sfu/lotusphere-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-----=_NextPart_ST_15_56_42_Wednesday_December_08_2010_29688--
-
