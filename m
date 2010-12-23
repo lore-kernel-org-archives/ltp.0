@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PUwHu-0002Nd-57
-	for ltp-list@lists.sourceforge.net; Tue, 21 Dec 2010 07:05:34 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PVaxr-0002Fe-6Z
+	for ltp-list@lists.sourceforge.net; Thu, 23 Dec 2010 02:31:35 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PUwHs-0007S9-OZ
-	for ltp-list@lists.sourceforge.net; Tue, 21 Dec 2010 07:05:34 +0000
-Message-ID: <4D105104.1000506@cn.fujitsu.com>
-Date: Tue, 21 Dec 2010 15:02:28 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PVaxp-00007T-Sv
+	for ltp-list@lists.sourceforge.net; Thu, 23 Dec 2010 02:31:35 +0000
+Message-ID: <4D12B48A.9020500@cn.fujitsu.com>
+Date: Thu, 23 Dec 2010 10:31:38 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <924010297.25165.1292913561101.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <924010297.25165.1292913561101.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH]Fix building error.
+References: <4CBEAF2A.1070101@cn.fujitsu.com>
+	<20101221124935.GA944@hannu-debian.research.nokia.com>
+In-Reply-To: <20101221124935.GA944@hannu-debian.research.nokia.com>
+Subject: Re: [LTP] About LTP
+ open_posix_testsuite/functional/threads/robust_test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +29,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>, Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-CAI Qian wrote:
+Hannu Heikkinen wrote:
+> On 20/10/10 10:58 +0200, ext Gui Jianfeng wrote:
+>> Hi Garrett
+>>
+>> In open_posix_testsuite/functional/threads/robust_test category,
+>> all test cases don't follow the POSIX standard. They call many 
+>> functions that glibc doesn't even support. I wonder why not just
+>> get rid of these test cases.
+>>
+>> -- 
+>> Regards
+>> Gui Jianfeng
+> 
 > Hi,
 > 
->> What do you think about it? Any comments are welcome. ^_^
-> This test is not designed for older kernels like RHEL5.5. Even if fixed the compilation error, the test will not be working correctly due to old KSM interfaces and implementation there. 
+> any progress/news about this?
+
+Garrett,
+
+Would you get rid of these cases?
+
+Gui
+
 > 
-
-  Thanks for your reply.
-
-  Could you tell me which kernels are this test fit to? 
-
-  If there is old KSM interface, and this test can not work correctly on it,
-  i think we should fix the test, it should not do anything but reports 
-  "This test is unsupported!"
-
--- 
-Regards
-Bian Naimeng
-
-> CAI Qian
+> br,
+> Hannu
 > 
-> 
-
 
 ------------------------------------------------------------------------------
-Lotusphere 2011
-Register now for Lotusphere 2011 and learn how
-to connect the dots, take your collaborative environment
-to the next level, and enter the era of Social Business.
-http://p.sf.net/sfu/lotusphere-d2d
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
