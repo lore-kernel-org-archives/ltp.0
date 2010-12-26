@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PYGm7-0008RX-Ow
-	for ltp-list@lists.sourceforge.net; Thu, 30 Dec 2010 11:34:31 +0000
-Date: Thu, 30 Dec 2010 12:49:56 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101230114956.GB18817@saboteur.suse.cz>
-References: <2097609633.253231291707076583.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<581834084.253251291707080238.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <581834084.253251291707080238.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH v4] Out Of Memory when changing cpuset's mems on
- NUMA
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PY83b-0003Fl-9w
+	for ltp-list@lists.sourceforge.net; Thu, 30 Dec 2010 02:15:59 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PY83a-0005He-Hh
+	for ltp-list@lists.sourceforge.net; Thu, 30 Dec 2010 02:15:59 +0000
+Received: by iwn8 with SMTP id 8so10648618iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Dec 2010 18:15:53 -0800 (PST)
+From: Garrett Cooper <yanegomi@gmail.com>
+Date: Sun, 26 Dec 2010 15:34:52 -0800
+Message-Id: <F5A66950-5708-425F-A254-4483F29CA0F0@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1082)
+Subject: [LTP] realtime lookup_pi_state potential bug concerns
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,21 +28,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: caiqian@redhat.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: dvhltc@ibm.com
+Cc: "ltp-list@lists.sourceforge.net List" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> +#define MAXNODES		512
-> +#define CPATH			"/dev/cpuset"
-> +#define CPATH_NEW		"/dev/cpuset/1"
-> +#define _PATH_SYS_SYSTEM	"/sys/devices/system"
-
-here as well.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
+Reading through some of the comments about CS, MS, whatever, the code looks extremely questionable. Can someone from IBM look at that code and fix it please or delete the comments if they're not applicable anymore?
+Thanks,
+-Garrett
 ------------------------------------------------------------------------------
 Learn how Oracle Real Application Clusters (RAC) One Node allows customers
 to consolidate database storage, standardize their database environment, and, 
