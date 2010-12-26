@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PXW0K-0002hi-0N
-	for ltp-list@lists.sourceforge.net; Tue, 28 Dec 2010 09:38:04 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PXW0I-0007zd-12
-	for ltp-list@lists.sourceforge.net; Tue, 28 Dec 2010 09:38:03 +0000
-Message-ID: <4D19AF34.9030907@cn.fujitsu.com>
-Date: Tue, 28 Dec 2010 17:34:44 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1PWpSD-0004EP-Ex
+	for ltp-list@lists.sourceforge.net; Sun, 26 Dec 2010 12:12:01 +0000
+Date: Sun, 26 Dec 2010 13:27:04 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101226122704.GB5708@saboteur.suse.cz>
+References: <1256633228.24598.1292899638530.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1662204911.24601.1292899641904.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]Fix bug of hugemmap
+Content-Disposition: inline
+In-Reply-To: <1662204911.24601.1292899641904.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH v2 2/5] oom02: test OOM for NUMA using mempolicy
+ and cpuset
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,101 +26,286 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Man pages of mmap said: 
+Hi!
+> +#define SYSFS_OVER		"/proc/sys/vm/overcommit_memory"
+> +#define MAXNODES		512
+> +#define CPATH			"/dev/cpuset"
+> +#define CPATH_NEW		CPATH "/1"
+> +#define _PATH_SYS_SYSTEM	"/sys/devices/system"
 
-  Use of a mapped region can result in these signals:
-    SIGSEGV
-       Attempted write into a region mapped as read-only.
-    SIGBUS
-       Attempted access to a portion of the buffer that does not correspond to the
-       file (for example, beyond the end of the  file,  including  the  case where
-       another process has truncated the file).
+Names starting with underscore are kind of reserved for system
+libraries.
 
-So we should make sure the size of file is not zero, otherwise test will fail
-when write to the mapped region.
+> +#define LENGTH			(3UL<<30)
+> +#define NORMAL			1
+> +#define MLOCK			2
+> +#define KSM			3
+> +
+> +static char overcommit[BUFSIZ];
+> +
+> +static void setup(void);
+> +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
+> +static void oom(int testcase, int mempolicy);
+> +static long count_numa(void);
+> +static int path_exist(const char *path, ...);
+> +static void testoom(int mempolicy);
+> +static void gather_cpus(char *cpus);
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	char *msg;
+> +	int lc, fd;
+> +	unsigned long nnodes = 1;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != (char *)NULL)
+> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+Useless cast.
 
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   11 +++++++++--
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |   11 +++++++++--
- 2 files changed, 18 insertions(+), 4 deletions(-)
+> +#ifdef __i386__
+> +	tst_brkm(TCONF, tst_exit,
+> +		"test is not designed for 32-bit system.");
+> +#endif /* __i386__ */
+> +
+> +	nnodes = count_numa();
+> +	if (count_numa() == 1)
+> +		tst_brkm(TCONF, tst_exit, "required a NUMA system.");
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		Tst_count = 0;
+> +		fd = open(SYSFS_OVER, O_WRONLY);
+> +		if (fd == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "open");
+> +		if (write(fd, "1", 1) != 1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "write");
+> +		close(fd);
+> +
+> +		tst_resm(TINFO, "process mempolicy.");
+> +		testoom(1);
+> +
+> +		tst_resm(TINFO, "process cpuset.");
+> +		testoom(0);
+> +	}
+> +	cleanup();
+> +}
+> +
+> +void testoom(int mempolicy)
+> +{
+> +	int fd;
+> +	char buf[BUFSIZ] = "";
+> +	char cpus[BUFSIZ] = "";
+> +
+> +	if (!mempolicy) {
+> +		gather_cpus(cpus);
+> +		tst_resm(TINFO, "CPU list for 2nd node is %s.", cpus);
+> +
+> +		snprintf(buf, BUFSIZ, "%s/cpuset.mems", CPATH_NEW);
+> +		fd = open(buf, O_WRONLY);
+> +		if (fd == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
+> +		if (write(fd, "1", 1) != 1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
+> +		close(fd);
+> +
+> +		snprintf(buf, BUFSIZ, "%s/cpuset.cpus", CPATH_NEW);
+> +
+> +		fd = open(buf, O_WRONLY);
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-index 3676f1b..33b3ade 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-@@ -73,7 +73,8 @@
- #include "test.h"
- #include "usctest.h"
- 
--#define BUFFER_SIZE  256
-+#define BUFFER_SIZE	256
-+#define FILE_SIZE	1024
- 
- char* TEMPFILE="mmapfile";
- 
-@@ -129,12 +130,18 @@ main(int ac, char **av)
- 	/* Check looping state if -i option given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
--	        /* Creat a temporary file used for mapping */
-+	        /* Creat a temporary file used for mapping,and truncate it */
- 		if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0) {
- 			tst_brkm(TFAIL, cleanup,
- 				 "open() on %s Failed, errno=%d : %s",
- 				 TEMPFILE, errno, strerror(errno));
- 		}
-+		if (ftruncate(fildes, FILE_SIZE) < 0) {
-+			close(fildes);
-+			tst_brkm(TFAIL, cleanup,
-+				 "ftruncate() on %s Failed, errno=%d : %s",
-+				 TEMPFILE, errno, strerror(errno));
-+		}
- 		/* Reset Tst_count in case we are looping. */
- 		Tst_count=0;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-index c3b7af2..02d7e9f 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-@@ -74,7 +74,8 @@
- #include "usctest.h"
- #include "system_specific_hugepages_info.h"
- 
--#define BUFFER_SIZE  256
-+#define BUFFER_SIZE	256
-+#define FILE_SIZE	1024
- 
- char* TEMPFILE="mmapfile";
- 
-@@ -135,12 +136,18 @@ main(int ac, char **av)
- 	/* Check looping state if -i option given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
--	        /* Creat a temporary file used for mapping */
-+	        /* Creat a temporary file used for mapping, and truncate it */
- 		if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0) {
- 			tst_brkm(TFAIL, cleanup,
- 				 "open() on %s Failed, errno=%d : %s",
- 				 TEMPFILE, errno, strerror(errno));
- 		}
-+		if (ftruncate(fildes, FILE_SIZE) < 0) {
-+			close(fildes);
-+			tst_brkm(TFAIL, cleanup,
-+				 "ftruncate() on %s Failed, errno=%d : %s",
-+				 TEMPFILE, errno, strerror(errno));
-+		}
- 		/* Reset Tst_count in case we are looping. */
- 		Tst_count=0;
- 
+Static C strings could be concatenated just by writing them alongside.
+So here we could just do open(CPATH_NEW "/cpuset.cpus", O_WRONLY); and
+spare the snprintf() call.
+
+> +		if (fd == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
+> +		if (write(fd, cpus, strlen(cpus)) != strlen(cpus))
+> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
+> +		close(fd);
+> +
+> +		snprintf(buf, BUFSIZ, "%s/tasks", CPATH);
+> +		fd = open(buf, O_WRONLY);
+> +		if (fd == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
+> +		snprintf(buf, BUFSIZ, "%d", getpid());
+> +		if (write(fd, buf, strlen(buf)) != strlen(buf))
+> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
+> +		close(fd);
+> +	}
+> +	tst_resm(TINFO, "start normal OOM testing.");
+> +	oom(NORMAL, mempolicy);
+> +
+> +	tst_resm(TINFO, "start OOM testing for mlocked pages.");
+> +	oom(MLOCK, mempolicy);
+> +
+> +	tst_resm(TINFO, "start OOM testing for KSM pages.");
+> +	oom(KSM, mempolicy);
+> +}
+> +
+> +void setup(void)
+> +{
+> +	int fd;
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +	TEST_PAUSE;
+> +
+> +	fd = open(SYSFS_OVER, O_RDONLY);
+> +	if (fd == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
+> +	if (read(fd, &overcommit, 1) != 1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "read");
+> +	close(fd);
+> +
+> +	if (mkdir(CPATH, 0777) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir %s", CPATH);
+> +	if (mount("cpuset", CPATH, "cpuset", 0, NULL) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "mount %s", CPATH);
+> +	if (mkdir(CPATH_NEW, 0777) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir %s", CPATH_NEW);
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	FILE *fp;
+> +	int fd;
+> +	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
+> +
+> +	fd = open(SYSFS_OVER, O_WRONLY);
+> +	if (fd == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
+> +	if (write(fd, &overcommit, 1) != 1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
+> +	close(fd);
+> +
+> +	/* Move all processes in task to its parent cpuset node. */
+> +	snprintf(s, BUFSIZ, "%s/tasks", CPATH);
+
+Here as well.
+
+> +	fd = open(s, O_WRONLY);
+> +	if (fd == -1)
+> +		tst_resm(TWARN|TERRNO, "open %s", s);
+> +	snprintf(s_new, BUFSIZ, "%s/tasks", CPATH_NEW);
+
+And here.
+
+> +	fp = fopen(s_new, "r");
+> +	if (fp == NULL)
+> +		tst_resm(TWARN|TERRNO, "fopen %s", s_new);
+> +	if ((fd != -1) && (fp != NULL)) {
+> +		while (fgets(value, BUFSIZ, fp) != NULL)
+> +			if (write(fd, value, strlen(value) - 1)
+> +				!= strlen(value) - 1)
+> +				tst_resm(TWARN|TERRNO, "write %s", s);
+> +	}
+> +	if (fd != -1)
+> +		close(fd);
+> +	if (fp != NULL)
+> +		fclose(fp);
+> +	if (rmdir(CPATH_NEW) == -1)
+> +		tst_resm(TWARN|TERRNO, "rmdir %s", CPATH_NEW);
+> +	if (umount(CPATH) == -1)
+> +		tst_resm(TWARN|TERRNO, "umount %s", CPATH);
+> +	if (rmdir(CPATH) == -1)
+> +		tst_resm(TWARN|TERRNO, "rmdir %s", CPATH);
+> +
+> +	TEST_CLEANUP;
+> +	tst_exit();
+> +}
+> +
+> +void oom(int testcase, int mempolicy)
+> +{
+> +	pid_t pid;
+> +	int status;
+> +	void *s;
+> +	unsigned long nmask = 2;
+> +
+> +	switch(pid = fork()) {
+> +	case -1:
+> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
+> +	case 0:
+> +		if (mempolicy)
+> +			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
+> +				tst_brkm(TBROK|TERRNO, cleanup,
+> +					"set_mempolicy");
+> +		while(1) {
+> +			s = mmap(NULL, LENGTH, PROT_READ|PROT_WRITE,
+> +				MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
+> +			if (s == MAP_FAILED)
+> +				tst_brkm(TBROK|TERRNO, cleanup, "mmap");
+> +			if (testcase == MLOCK && mlock(s, LENGTH) == -1)
+> +				tst_brkm(TINFO|TERRNO, cleanup, "mlock");
+> +			if (testcase == KSM
+> +				&& madvise(s, LENGTH, MADV_MERGEABLE) == -1)
+> +				tst_brkm(TBROK|TERRNO, cleanup, "madvise");
+> +			memset(s, '\a', LENGTH);
+> +		}
+> +		exit(0);
+> +	default:
+> +		break;
+> +	}
+> +	tst_resm(TINFO, "expected victim is %d.", pid);
+> +	if (waitpid(-1, &status, 0) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> +
+> +	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
+> +		tst_resm(TFAIL, "the victim unexpectedly failed: %d", status);
+> +}
+> +
+> +long count_numa(void)
+> +{
+> +	int nnodes = 0;
+> +
+> +	while(path_exist(_PATH_SYS_SYSTEM "/node/node%d", nnodes))
+> +		nnodes++;
+> +
+> +	return nnodes;
+> +}
+> +
+> +int path_exist(const char *path, ...)
+> +{
+> +	va_list ap;
+> +	char pathbuf[PATH_MAX];
+> +
+> +	va_start(ap, path);
+> +	vsnprintf(pathbuf, sizeof(pathbuf), path, ap);
+> +	va_end(ap);
+> +
+> +	return access(pathbuf, F_OK) == 0;
+> +}
+> +
+> +void gather_cpus(char *cpus)
+> +{
+> +	int ncpus = 0;
+> +	int i;
+> +	char buf[BUFSIZ];
+> +
+> +	while(path_exist(_PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
+> +		ncpus++;
+> +
+> +	for (i = 0; i < ncpus; i++)
+> +		if (path_exist(_PATH_SYS_SYSTEM "/node/node1/cpu%d", i)) {
+> +			sprintf(buf, "%d,", i);
+> +			strcat(cpus, buf);
+> +		}
+> +	/* Remove the trailing comma. */
+> +	cpus[strlen(cpus) - 1] = '\0';
+> +}
+> +
+> +#else /* no NUMA */
+> +int main(void) {
+> +	tst_resm(TCONF, "no NUMA development packages installed.");
+> +	tst_exit();
+> +}
+> +#endif
+
 -- 
-1.7.0.4
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn how Oracle Real Application Clusters (RAC) One Node allows customers
