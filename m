@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PQj0m-00048I-Gp
-	for ltp-list@lists.sourceforge.net; Thu, 09 Dec 2010 16:06:28 +0000
-Date: Thu, 9 Dec 2010 17:20:05 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101209162004.GA14177@saboteur.suse.cz>
-References: <AANLkTi=1byd4Aef1uwOKKBFVoGKFMkPm7bBTGJBigT+R@mail.gmail.com>
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PXQaW-0004k0-Fn
+	for ltp-list@lists.sourceforge.net; Tue, 28 Dec 2010 03:51:04 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PXQaV-0001ul-8Z
+	for ltp-list@lists.sourceforge.net; Tue, 28 Dec 2010 03:51:04 +0000
+Message-ID: <4D195DE8.4070209@cn.fujitsu.com>
+Date: Tue, 28 Dec 2010 11:47:52 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=1byd4Aef1uwOKKBFVoGKFMkPm7bBTGJBigT+R@mail.gmail.com>
-Subject: Re: [LTP] Failed to build ltp 20101031 on RHEL5u6
+Subject: [LTP] [PATCH]Fix bug of add_key01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,55 +25,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Romu <huruomu@gmail.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!,
-> I failed to build ltp 20101031 on RHEL5u6 beta (i686):
-> 
-> ./configure
-> make all
-> 
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -D_GNU_SOURCE
-> -I/root/ltp-full-20101031/testcases/realtime/include
-> -I../../../../include -I../../../../include
-> -L/root/ltp-full-20101031/testcases/realtime/lib -L../../../../lib
-> async_handler.c   -lrealtime -lpthread -lrt -lm -o async_handler
-> /root/ltp-full-20101031/testcases/realtime/lib/librealtime.a(librttest.o):
-> In function `atomic_add':
-> /root/ltp-full-20101031/testcases/realtime/lib/../include/librttest.h:117:
-> undefined reference to `__sync_add_and_fetch_4'
-> collect2: ld returned 1 exit status
-> make[4]: *** [async_handler] Error 1
-> make[4]: Leaving directory
-> `/root/ltp-full-20101031/testcases/realtime/func/async_handler'
-> make[3]: *** [all] Error 2
-> make[3]: Leaving directory `/root/ltp-full-20101031/testcases/realtime/func'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/root/ltp-full-20101031/testcases/realtime'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/root/ltp-full-20101031/testcases'
-> make: *** [testcases-all] Error 2
-> 
-> I googled and some people said "-march=i686" should be used.  I tried:
-> 
-> CFLAGS="-march=i686" ./configure
-> CFLAGS="-march=i686" make all
-> 
-> still got the same error.
-> 
-> Any idea?
+Never pass TPASS to tst_brkm, tst_brkm will set TBROK to T_exitval,
+then cause test fail.
 
-Problably too old gcc (that doesn't support __sync_add_and_fetch()) this
-should be covered by autoconf checks in latest git. Workaround is to
-disable realtime tests in testcases makefile (by adding it to
-FILTER_OUT_DIRS).
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+---
+ testcases/kernel/syscalls/add_key/add_key01.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/add_key/add_key01.c b/testcases/kernel/syscalls/add_key/add_key01.c
+index ffa2f68..3786c9a 100644
+--- a/testcases/kernel/syscalls/add_key/add_key01.c
++++ b/testcases/kernel/syscalls/add_key/add_key01.c
+@@ -127,8 +127,7 @@ int main(int ac, char **av) {
+ 					NULL, 0,
+ 					KEY_SPEC_THREAD_KEYRING));
+ 			if (TEST_RETURN != -1) {
+-				tst_brkm(TPASS, cleanup,
+-				    "add_key call succeeded");
++				tst_resm(TPASS, "add_key call succeeded");
+ 			} else {
+ 				tst_resm(TFAIL|TTERRNO, "%s failed", TCID);
+ 			}
+-- 
+1.7.0.4
+
+
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards
+Bian Naimeng
+
 
 ------------------------------------------------------------------------------
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
