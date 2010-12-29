@@ -2,25 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PPs3w-0007W5-VN
-	for ltp-list@lists.sourceforge.net; Tue, 07 Dec 2010 07:34:12 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PPs3v-0008Jv-Ch
-	for ltp-list@lists.sourceforge.net; Tue, 07 Dec 2010 07:34:12 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oB77Y6Wl029711
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Dec 2010 02:34:06 -0500
-Date: Tue, 7 Dec 2010 02:34:05 -0500 (EST)
-From: caiqian@redhat.com
-Message-ID: <1066118806.253351291707245941.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <507792947.253331291707242881.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	(envelope-from <violetleigh@gmail.com>) id 1PXsRQ-0006DG-76
+	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:32 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PXsRP-0004WR-47
+	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:32 +0000
+Received: by gwaa12 with SMTP id a12so1779190gwa.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Dec 2010 01:35:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_17388_1797519330.1291707245940"
-Subject: [LTP] [PATCH v2] Stack size mapping is decreased through
- mlock/munlock call
+Date: Wed, 29 Dec 2010 17:35:25 +0800
+Message-ID: <AANLkTi=GnrruHu=2SnXsuc+xHRhLDy1=54YntB9w+325@mail.gmail.com>
+From: Vivi <violetleigh@gmail.com>
+Subject: [LTP]  [Bug Fix] write04 will crash on uClinux platform
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,349 +25,139 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============2011473543133207812=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: LTP mailing list <ltp-list@lists.sourceforge.net>
 
-------=_Part_17388_1797519330.1291707245940
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+--===============2011473543133207812==
+Content-Type: multipart/alternative; boundary=001636ed7256f9ca9b0498894943
 
-This is to test kernel if it has a problem with shortening [stack]
-mapping through several loops of  mlock/munlock of /proc/self/maps.
+--001636ed7256f9ca9b0498894943
+Content-Type: text/plain; charset=ISO-8859-1
 
-From:
-munlock     76KiB bfef2000-bff05000 rw-p 00000000 00:00 0          [stack]
+LTP test case write04 will crash on uClinux platform.
 
-To:
-munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
+Bellow is the fix:
+--
+Index: testcases/kernel/syscalls/write/write04.c
+===================================================================
+--- testcases/kernel/syscalls/write/write04.c
++++ testcases/kernel/syscalls/write/write04.c
+@@ -71,6 +71,10 @@
+ static sigjmp_buf jmp;
+ int rfd, wfd;
 
-With more iterations - could drop to 0KiB.
++#ifdef UCLINUX
++char *wbuf;
++#endif
++
+ int main(int argc, char **argv)
+ {
+        int lc;
+@@ -79,7 +83,9 @@
+        struct stat buf;
+        int fail;
+        int cnt;
++#ifndef UCLINUX
+        char wbuf[17 * PIPE_SIZE_TEST];
++#endif
+        struct sigaction sigptr;        /* set up signal handler */
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
-v2: fix typos; code cleanup
----
- runtest/mm                                |    2 +
- testcases/kernel/syscalls/mlock/mlock03.c |  120 +++++++++++++++++++++++++++++
- 2 files changed, 122 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/mlock/mlock03.c
+        /* parse standard options */
+@@ -221,6 +227,17 @@
+  */
+ void setup(void)
+ {
++#ifdef UCLINUX
++       /* Allocate wbuf in heap not in the local function stack */
++       int pagesize = getpagesize();
++
++       wbuf = (char *) malloc(17 * pagesize);
++       if (!wbuf) {
++               tst_resm(TBROK, "malloc failed");
++               cleanup();
++       }
++#endif
++
+        /* capture signals */
+        tst_sig(FORK, DEF_HANDLER, cleanup);
 
-diff --git a/runtest/mm b/runtest/mm
-index 16e60d4..fabfab1 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -70,3 +70,5 @@ hugemmap05_3 hugemmap05 -s -m
- cpuset01 cpuset01 -I 3600
- 
- mbind01 mbind01
-+
-+mlock03 mlock03 -i 20
-diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
-new file mode 100644
-index 0000000..d11e42d
---- /dev/null
-+++ b/testcases/kernel/syscalls/mlock/mlock03.c
-@@ -0,0 +1,120 @@
-+/*
-+ * Stack size mapping is decreased through mlock/munlock call.
-+ *
-+ * This is to test kernel if it has a problem with shortening [stack]
-+ * mapping through several loops of mlock/munlock of /proc/self/maps.
-+ *
-+ * From:
-+ * munlock     76KiB bfef2000-bff05000 rw-p 00000000 00:00 0          [stack]
-+ *
-+ * To:
-+ * munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
-+ *
-+ * with more iterations - could drop to 0KiB.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+#define KB 1024
-+
-+char *TCID = "mlock03";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+
-+static void setup(void);
-+static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+	long from, to, first = -1, last = -1;
-+	char b[KB];
-+	FILE *fp;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		fp = fopen("/proc/self/maps", "r");
-+		if (fp == NULL)
-+			tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-+		while (!feof(fp)) {
-+			if (!fgets(b, KB - 1, fp))
-+				break;
-+			b[strlen(b) - 1] = '\0';
-+			sscanf(b, "%lx-%lx", &from, &to);
-+
-+			/* Record the initial stack size. */
-+			if ((lc == 0) && (strstr(b, "[stack]") != NULL))
-+				first = (to - from)/KB;
-+
-+			switch (lc & 1) {
-+			case 0:
-+				if (mlock((const void*)from, (to - from)) == -1)
-+					tst_resm(TINFO|TERRNO, "mlock");
-+				break;
-+			case 1:
-+				if (munlock((const void*)from,
-+						(to - from)) == -1)
-+					tst_resm(TINFO|TERRNO,
-+						"munlock");
-+				break;
-+			default:
-+				break;
-+			}
-+			tst_resm(TINFO, "%s from %lx to %0lx",
-+				(lc&1) ? "munlock" : "mlock  ", from, to);
-+
-+			/* Record the final stack size. */
-+			if (strstr(b, "[stack]") != NULL)
-+				last = (to - from)/KB;
-+		}
-+		printf("\n");
-+		fclose(fp);
-+	}
-+	tst_resm(TINFO, "starting stack size is %ld", first);
-+	tst_resm(TINFO, "final stack size is %ld", last);
-+	if (last < first)
-+		tst_resm(TFAIL, "stack size is decreased.");
-+	else
-+		tst_resm(TPASS, "stack size is not decreased.");
-+	cleanup();
-+}
-+
-+void setup(void)
-+{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	tst_exit();
-+}
--- 
-1.7.3.2
-------=_Part_17388_1797519330.1291707245940
-Content-Type: text/x-patch; name=stack-size-mapping-is-decreased.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=stack-size-mapping-is-decreased.patch
+@@ -244,6 +261,12 @@
 
-This is to test kernel if it has a problem with shortening [stack]
-mapping through several loops of  mlock/munlock of /proc/self/maps.
-
-From:
-munlock     76KiB bfef2000-bff05000 rw-p 00000000 00:00 0          [stack]
-
-To:
-munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
-
-With more iterations - could drop to 0KiB.
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
-v2: fix typos; code cleanup
----
- runtest/mm                                |    2 +
- testcases/kernel/syscalls/mlock/mlock03.c |  120 +++++++++++++++++++++++++++++
- 2 files changed, 122 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/mlock/mlock03.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 16e60d4..fabfab1 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -70,3 +70,5 @@ hugemmap05_3 hugemmap05 -s -m
- cpuset01 cpuset01 -I 3600
- 
- mbind01 mbind01
+ void cleanup()
+ {
 +
-+mlock03 mlock03 -i 20
-diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
-new file mode 100644
-index 0000000..d11e42d
---- /dev/null
-+++ b/testcases/kernel/syscalls/mlock/mlock03.c
-@@ -0,0 +1,120 @@
-+/*
-+ * Stack size mapping is decreased through mlock/munlock call.
-+ *
-+ * This is to test kernel if it has a problem with shortening [stack]
-+ * mapping through several loops of mlock/munlock of /proc/self/maps.
-+ *
-+ * From:
-+ * munlock     76KiB bfef2000-bff05000 rw-p 00000000 00:00 0          [stack]
-+ *
-+ * To:
-+ * munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
-+ *
-+ * with more iterations - could drop to 0KiB.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include "test.h"
-+#include "usctest.h"
++#ifdef UCLINUX
++       if (wbuf)
++               free(wbuf);
++#endif
 +
-+#define KB 1024
-+
-+char *TCID = "mlock03";
-+int TST_TOTAL = 1;
-+extern int Tst_count;
-+
-+static void setup(void);
-+static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+	long from, to, first = -1, last = -1;
-+	char b[KB];
-+	FILE *fp;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		fp = fopen("/proc/self/maps", "r");
-+		if (fp == NULL)
-+			tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-+		while (!feof(fp)) {
-+			if (!fgets(b, KB - 1, fp))
-+				break;
-+			b[strlen(b) - 1] = '\0';
-+			sscanf(b, "%lx-%lx", &from, &to);
-+
-+			/* Record the initial stack size. */
-+			if ((lc == 0) && (strstr(b, "[stack]") != NULL))
-+				first = (to - from)/KB;
-+
-+			switch (lc & 1) {
-+			case 0:
-+				if (mlock((const void*)from, (to - from)) == -1)
-+					tst_resm(TINFO|TERRNO, "mlock");
-+				break;
-+			case 1:
-+				if (munlock((const void*)from,
-+						(to - from)) == -1)
-+					tst_resm(TINFO|TERRNO,
-+						"munlock");
-+				break;
-+			default:
-+				break;
-+			}
-+			tst_resm(TINFO, "%s from %lx to %0lx",
-+				(lc&1) ? "munlock" : "mlock  ", from, to);
-+
-+			/* Record the final stack size. */
-+			if (strstr(b, "[stack]") != NULL)
-+				last = (to - from)/KB;
-+		}
-+		printf("\n");
-+		fclose(fp);
-+	}
-+	tst_resm(TINFO, "starting stack size is %ld", first);
-+	tst_resm(TINFO, "final stack size is %ld", last);
-+	if (last < first)
-+		tst_resm(TFAIL, "stack size is decreased.");
-+	else
-+		tst_resm(TPASS, "stack size is not decreased.");
-+	cleanup();
-+}
-+
-+void setup(void)
-+{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	tst_exit();
-+}
--- 
-1.7.3.2
+        /*
+         * print errno log if that option was specified.
+         */
+--
 
 
-------=_Part_17388_1797519330.1291707245940
+Best regards,
+Vivi Li
+
+--001636ed7256f9ca9b0498894943
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+LTP test case write04 will crash on uClinux platform.<br><br>Bellow is the =
+fix:<br>--<br>Index: testcases/kernel/syscalls/write/write04.c<br>=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>--- testcases/kernel/syscalls=
+/write/write04.c<br>
+
++++ testcases/kernel/syscalls/write/write04.c<br>@@ -71,6 +71,10 @@<br>=A0s=
+tatic sigjmp_buf jmp;<br>=A0int rfd, wfd;<br><br>+#ifdef UCLINUX<br>+char *=
+wbuf;<br>+#endif<br>+<br>=A0int main(int argc, char **argv)<br>=A0{<br>=A0=
+=A0=A0=A0=A0=A0=A0 int lc;<br>
+
+@@ -79,7 +83,9 @@<br>=A0=A0=A0=A0=A0=A0=A0 struct stat buf;<br>=A0=A0=A0=A0=
+=A0=A0=A0 int fail;<br>=A0=A0=A0=A0=A0=A0=A0 int cnt;<br>+#ifndef UCLINUX<b=
+r>=A0=A0=A0=A0=A0=A0=A0 char wbuf[17 * PIPE_SIZE_TEST];<br>+#endif<br>=A0=
+=A0=A0=A0=A0=A0=A0 struct sigaction sigptr;=A0=A0=A0=A0=A0=A0=A0 /* set up =
+signal handler */<br>
+
+<br>=A0=A0=A0=A0=A0=A0=A0 /* parse standard options */<br>@@ -221,6 +227,17=
+ @@<br>=A0 */<br>=A0void setup(void)<br>=A0{<br>+#ifdef UCLINUX<br>+=A0=A0=
+=A0=A0=A0=A0 /* Allocate wbuf in heap not in the local function stack */<br=
+>+=A0=A0=A0=A0=A0=A0 int pagesize =3D getpagesize();<br>
+
++<br>+=A0=A0=A0=A0=A0=A0 wbuf =3D (char *) malloc(17 * pagesize);<br>+=A0=
+=A0=A0=A0=A0=A0 if (!wbuf) {<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ tst_resm(TBROK, &quot;malloc failed&quot;);<br>+=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 cleanup();<br>+=A0=A0=A0=A0=A0=A0 }<br>+#endif<br>+<br>=
+=A0=A0=A0=A0=A0=A0=A0 /* capture signals */<br>
+
+=A0=A0=A0=A0=A0=A0=A0 tst_sig(FORK, DEF_HANDLER, cleanup);<br><br>@@ -244,6=
+ +261,12 @@<br><br>=A0void cleanup()<br>=A0{<br>+<br>+#ifdef UCLINUX<br>+=
+=A0=A0=A0=A0=A0=A0 if (wbuf)<br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ free(wbuf);<br>+#endif<br>+<br>=A0=A0=A0=A0=A0=A0=A0 /*<br>=A0=A0=A0=A0=A0=
+=A0=A0=A0 * print errno log if that option was specified.<br>
+
+=A0=A0=A0=A0=A0=A0=A0=A0 */<br>--<br><br><br>Best regards,<br>Vivi Li<br>
+
+--001636ed7256f9ca9b0498894943--
+
+
+--===============2011473543133207812==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-What happens now with your Lotus Notes apps - do you make another costly 
-upgrade, or settle for being marooned without product support? Time to move
-off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
-use, and manage than apps on traditional platforms. Sign up for the Lotus 
-Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
-------=_Part_17388_1797519330.1291707245940
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
+--===============2011473543133207812==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -383,5 +168,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_17388_1797519330.1291707245940--
+--===============2011473543133207812==--
 
