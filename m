@@ -1,31 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1PQ8yM-0004re-0A
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 01:37:34 +0000
-Received: from out16.sjc.mx.trendmicro.com ([216.99.131.73])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PQ8yK-0002nC-5c
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 01:37:33 +0000
-Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.136])
-	by out16.sjc.mx.trendmicro.com (Postfix) with ESMTP id 89141980424
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  8 Dec 2010 01:37:25 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id CCB243DD025
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  8 Dec 2010 01:37:24 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Dec 2010 10:37:21 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 8 Dec 2010 10:37:21 +0900
-Message-ID: <000001cb9678$7565d140$603173c0$@co.jp>
+	(envelope-from <vapier@gentoo.org>) id 1PXz7C-0004a0-EU
+	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 16:43:06 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.72) id 1PXz7B-00084E-Mo
+	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 16:43:06 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 29 Dec 2010 11:42:31 -0500
+References: <AANLkTi=TOy3i69CnLoZPK+rYqUQ_TfCQXmV=STzYop2i@mail.gmail.com>
+In-Reply-To: <AANLkTi=TOy3i69CnLoZPK+rYqUQ_TfCQXmV=STzYop2i@mail.gmail.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] About "hugeshmat01" and "humeshmget03" testsets
+Message-Id: <201012291142.32471.vapier@gentoo.org>
+Subject: Re: [LTP] enable pwrite for 64 bits test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,40 +24,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3687034404970452868=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi,
+--===============3687034404970452868==
+Content-Type: multipart/signed; boundary="nextPart1653955.PvJseYjm1f";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1653955.PvJseYjm1f
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wednesday, December 29, 2010 04:35:45 Vivi wrote:
+> Enable ltp test of pwrite for 64 bit test.
+
+this patch is fine ... but i had to merge it by hand since your e-mailer is=
+=20
+sending both html and plain text.  please disable that.
+=2Dmike
+
+--nextPart1653955.PvJseYjm1f
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iQIcBAABAgAGBQJNG2T4AAoJEEFjO5/oN/WBFmMP/0xxz4PxJ3d/PC7CrQkNBkzj
+5LDvxBlSV5s0muFcLlt0ZtUNAxMJoaA4cCmYpkW7GqugbidIGu10e0ftAjUqc9pd
+6I5AOzUJrE6VF4C8W/5We2AJJtpsBSrSAh6XNe35NGwYg8MQxQsorGcqEz8yHLpy
+9oD7QntqrVIsjtLNRy90zKDy6f5PXlkx4rUpulzpMReix6OYARKe5fwEUOLmqgvX
+0EzCPmMkwUUhIawgEZwfASMKS5GaaggfcbhJce56Ones8Vmpsukd9tGBXCENewbY
+ag1CNVwKX/el2DSUzJmRj2GdlQQyoOJIw+Xzuw0fgIjrH5Xmcaq1ahJEZRn9fJkt
+aBmyhYSQg4HFebKJyWxwzrL9Jqk39GkEUSEkxq61/NHlwBSPQLRY7gQs34aBnTX2
+Vx6Mh8eIjy7QMiZ7O63AQV/n8C9cYs54QXx9fVYSPnl2hRjF/Gvq3E3I0EzwPiw0
+djH4POrK/hYjmjOHt4PdQ7tX2bM4CKnEPnfXFDEfdabUHj5P6As/EoJBd4o5JNSz
+750Wb7+ejSoFWPIrcI6tA8HPIWA40MgUnb7inezWwhc+Vkc7fU+PmPXVsoa4bgZg
+mXwpTyql/lLkpxmfQ/80opnEuKxXPZiD+bYn/0P1XtyXelHarPqlYKnIFYOjhYjl
+Xf19ssBC2OUVHoms81co
+=QmtM
+-----END PGP SIGNATURE-----
+
+--nextPart1653955.PvJseYjm1f--
 
 
-I sent patches of "hugeshmat01" and "humeshmget03" testsets.
-How about my patch for "hugeshmat01" and "hugeshmget03"?
-
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg10623.html
-
-
-What should I do to push this forward?
-
-
-I am glad if I get some opinion.
-
-
-
-Regards--
-
--Tomonori Mitani
-
-
+--===============3687034404970452868==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-What happens now with your Lotus Notes apps - do you make another costly 
-upgrade, or settle for being marooned without product support? Time to move
-off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
-use, and manage than apps on traditional platforms. Sign up for the Lotus 
-Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
+--===============3687034404970452868==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3687034404970452868==--
+
