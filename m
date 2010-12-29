@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PVqlH-0007Hz-Dz
-	for ltp-list@lists.sourceforge.net; Thu, 23 Dec 2010 19:23:39 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PY5QG-0006gi-8v
+	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 23:27:12 +0000
 Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PVqlF-00007o-Db
-	for ltp-list@lists.sourceforge.net; Thu, 23 Dec 2010 19:23:39 +0000
-Received: by pwi8 with SMTP id 8so529094pwi.34
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PY5QD-0006oP-Vu
+	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 23:27:12 +0000
+Received: by pwi8 with SMTP id 8so1290671pwi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 23 Dec 2010 11:23:31 -0800 (PST)
-References: <czhang@redhat.com>
-	<1292926320-7079-1-git-send-email-czhang@redhat.com>
-	<4D12F416.4060600@redhat.com>
-In-Reply-To: <4D12F416.4060600@redhat.com>
+	Wed, 29 Dec 2010 15:27:04 -0800 (PST)
+References: <AANLkTi=TOy3i69CnLoZPK+rYqUQ_TfCQXmV=STzYop2i@mail.gmail.com>
+	<AAFECAC8-E32A-4241-B201-3EA5F0233FA1@gmail.com>
+	<201012291747.35513.vapier@gentoo.org>
+In-Reply-To: <201012291747.35513.vapier@gentoo.org>
 Mime-Version: 1.0 (iPhone Mail 8C148)
-Message-Id: <D8BB618C-76D0-478C-9A82-1D48C20F9497@gmail.com>
+Message-Id: <807498B0-9470-4A83-BD44-443EFFFF7574@gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Date: Thu, 23 Dec 2010 11:22:59 -0800
-Subject: Re: [LTP] [PATCH] make pid_list dynamically sized with memory
+Date: Wed, 29 Dec 2010 15:26:53 -0800
+Subject: Re: [LTP] enable pwrite for 64 bits test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,165 +32,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-In addition to what Hannu mentioned...
+Grep for pwrite under the runtest dir in the got repo.
 
-1. It seems silly that the test is split in to s390 / 32-bit / 64-bit when all of this stuff is limit driven AFAICS. Would be nice if this was all folded in one body of test code with a minimal amount of setup code.
-2. More comments inline.
+Sent from my iPhone
 
-On Dec 22, 2010, at 11:02 PM, Caspar Zhang <czhang@redhat.com> wrote:
+On Dec 29, 2010, at 2:47 PM, Mike Frysinger <vapier@gentoo.org> wrote:
 
-> ping... any comments?
+> On Wednesday, December 29, 2010 17:10:42 Garrett Cooper wrote:
+>> This didn't add the runtest entire though.
 > 
-> On 12/21/2010 06:12 PM, Caspar Zhang wrote:
->> We get segfaults during testing mtest01 on a 5TB memory machine, the
->> problem was traced to the array pdi_list[] went to overflow and
->> corrupted memory. This fix makes pid_list[] dynamically sized with
->> correct memory size to avoid overflow.
->> 
->> Signed-off-by: Caspar Zhang<czhang@redhat.com>
->> ---
->>  testcases/kernel/mem/mtest01/mtest01.c |   50 +++++++++++++++++++------------
->>  1 files changed, 31 insertions(+), 19 deletions(-)
->> 
->> diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
->> index e4e9a56..1362e08 100644
->> --- a/testcases/kernel/mem/mtest01/mtest01.c
->> +++ b/testcases/kernel/mem/mtest01/mtest01.c
->> @@ -44,6 +44,10 @@
->> 
->>  #include "test.h"
->> 
->> +#define MAX_31BIT_SIZE (unsigned long)(500*1024*1024)
->> +#define MAX_32BIT_SIZE (unsigned long)(1024*1024*1024)
->> +#define MAX_64BIT_SIZE (unsigned long long)(3*1024*1024*1024)
->> +
->>  char *TCID = "mtest01";
->>  int TST_TOTAL = 1;
->> 
->> @@ -62,11 +66,12 @@ int main(int argc, char* argv[]) {
->>    unsigned long bytecount, alloc_bytes;
->>    unsigned long long original_maxbytes,maxbytes=0;
->>    unsigned long long pre_mem, post_mem;
->> +  unsigned long long total_ram, total_free, D, C;
->>    extern char* optarg;
->>    int chunksize = 1024*1024; /* one meg at a time by default */
->>    struct sysinfo sstats;
->>    int i,pid_cntr;
->> -  pid_t pid,pid_list[1000];
->> +  pid_t pid,*pid_list;
->>    struct sigaction act;
->> 
->>    act.sa_handler = handler;
->> @@ -74,8 +79,18 @@ int main(int argc, char* argv[]) {
->>    sigemptyset(&act.sa_mask);
->>    sigaction(SIGRTMIN,&act, 0);
->> 
->> -  for (i=0;i<1000;i++)
->> -   pid_list[i]=(pid_t)0;
->> +  sysinfo(&sstats);
->> +  total_ram=sstats.totalram;
->> +  total_ram=total_ram+sstats.totalswap;
->> +#if defined (_s390_)
->> +  pidlist_sz = total_ram / MAX_31BIT_SIZE + 1;
->> +#elif __WORDSIZE==32
->> +  pidlist_sz = total_ram / MAX_32BIT_SIZE + 1;
->> +#elif __WORDSIZE==64
->> +  pidlist_sz = total_ram / MAX_64BIT_SIZE + 1;
->> +#endif
->> +  pid_list = (pid_t *)malloc(sizeof(pid_t) * pidlist_sz);
-
-You aren't checking the return from malloc and the cast is unnecessary.
-
->> +  memset(pid_list, 0, sizeof(pid_t) * pidlist_sz);
->> 
->>    while ((c=getopt(argc, argv, "c:b:p:wvh")) != EOF) {
->>      switch((char)c) {
->> @@ -115,12 +130,8 @@ int main(int argc, char* argv[]) {
->> 
->>    sysinfo(&sstats);
->>    if (maxpercent) {
->> -    unsigned long long total_ram, total_free, D, C;
->>      percent=(float)maxpercent/100.00;
->> 
->> -    total_ram=sstats.totalram;
->> -    total_ram=total_ram+sstats.totalswap;
->> -
->>      total_free=sstats.freeram;
->>      total_free=total_free+sstats.freeswap;
->> 
->> @@ -157,47 +168,47 @@ int main(int argc, char* argv[]) {
->>      pid_list[i]=pid;
->> 
->>  #if defined (_s390_) /* s390's 31bit addressing requires smaller chunks */
->> -  while ( (pid!=0)&&  (maxbytes>  500*1024*1024) )
->> +  while ((pid!=0)&&  (maxbytes>  MAX_31BIT_SIZE))
-
-If you're going to trim the whitespace, please remove the unnecessary parentheses and add whitespace around the logic operators please.
-
->>    {
->>      i++;
->> -    maxbytes=maxbytes-(500*1024*1024);
->> +    maxbytes -= MAX_31BIT_SIZE;
->>      pid=fork();
->>      if (pid != 0)
->>        pid_cntr++;
->>        pid_list[i]=pid;
->>    }
->> -  if ( maxbytes>  500*1024*1024 )
->> -    alloc_bytes=500*1024*1024;
->> +  if (maxbytes>  MAX_31BIT_SIZE)
->> +    alloc_bytes = MAX_31BIT_SIZE;
->>    else
->>      alloc_bytes=(unsigned long)maxbytes;
->> 
->>  #elif __WORDSIZE==32
->> -  while ( (pid!=0)&&  (maxbytes>  1024*1024*1024) )
->> +  while ((pid!=0)&&  (maxbytes>  MAX_32BIT_SIZE))
->>    {
->>      i++;
->> -    maxbytes=maxbytes-(1024*1024*1024);
->> +    maxbytes -= MAX_32BIT_SIZE;
->>      pid=fork();
->>      if (pid != 0)
->>        pid_cntr++;
->>        pid_list[i]=pid;
->>    }
->> -  if ( maxbytes>  1024*1024*1024 )
->> -    alloc_bytes=1024*1024*1024;
->> +  if (maxbytes>  MAX_32BIT_SIZE)
->> +    alloc_bytes = MAX_32BIT_SIZE;
->>    else
->>      alloc_bytes=(unsigned long)maxbytes;
->> 
->>  #elif __WORDSIZE==64
->> -  while ( (pid!=0)&&  (maxbytes>  (unsigned long long)3*1024*1024*1024) )
->> +  while ((pid!=0)&&  (maxbytes>  MAX_64BIT_SIZE))
->>    {
->>      i++;
->> -    maxbytes=maxbytes-(unsigned long long)3*1024*1024*1024;
->> +    maxbytes - MAX_64BIT_SIZE;
->>      pid=fork();
->>      if (pid != 0)
->>        pid_cntr++;
->>        pid_list[i]=pid;
->>    }
->> -  if ( maxbytes>  (unsigned long long)3*1024*1024*1024 )
->> -    alloc_bytes=(unsigned long long)3*1024*1024*1024;
->> +  if (maxbytes>  MAX_64BIT_SIZE)
->> +    alloc_bytes = MAX_64BIT_SIZE;
->>    else
->>      alloc_bytes=(unsigned long)maxbytes;
->>  #endif
->> @@ -258,5 +269,6 @@ int main(int argc, char* argv[]) {
->>      else
->>        tst_resm(TPASS, "%llu kbytes allocated only.", original_maxbytes/1024);
->>    }
->> +  free(pid_list);
->>    exit(0);
->>  }
+> what are you referring to exactly ?  the changes to pwrite's Makefile look 
+> like all that's needed as compared to say pselect/Makefile.
+> -mike
 
 ------------------------------------------------------------------------------
 Learn how Oracle Real Application Clusters (RAC) One Node allows customers
