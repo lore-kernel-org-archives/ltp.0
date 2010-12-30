@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PWpSD-0004EP-Ex
-	for ltp-list@lists.sourceforge.net; Sun, 26 Dec 2010 12:12:01 +0000
-Date: Sun, 26 Dec 2010 13:27:04 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PYL2u-0000WS-Gy
+	for ltp-list@lists.sourceforge.net; Thu, 30 Dec 2010 16:08:08 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 8A6A990847
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 30 Dec 2010 17:07:59 +0100 (CET)
+Date: Thu, 30 Dec 2010 17:23:31 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20101226122704.GB5708@saboteur.suse.cz>
-References: <1256633228.24598.1292899638530.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<1662204911.24601.1292899641904.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Message-ID: <20101230162331.GA25928@saboteur.suse.cz>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
 Content-Disposition: inline
-In-Reply-To: <1662204911.24601.1292899641904.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH v2 2/5] oom02: test OOM for NUMA using mempolicy
- and cpuset
+Subject: [LTP] [PATCH] first part of the sysconf(_SC_ASYNCHRONOUS_IO) !=
+ 200112L cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,289 +27,1029 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 Hi!
-> +#define SYSFS_OVER		"/proc/sys/vm/overcommit_memory"
-> +#define MAXNODES		512
-> +#define CPATH			"/dev/cpuset"
-> +#define CPATH_NEW		CPATH "/1"
-> +#define _PATH_SYS_SYSTEM	"/sys/devices/system"
+I've started to fix testcases disabled by value from
+sysconf(_SC_ASYNCHRONOUS_IO) as POSIX from 2008 allows value 200XXXL to be
+returned. Attached patch fixes all tests in conformance/aio_fsync directory.
+Each test gets reviewed and issues are fixed.  See detailed log below (trivial
+coding style fixes are not mentoined).
 
-Names starting with underscore are kind of reserved for system
-libraries.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-> +#define LENGTH			(3UL<<30)
-> +#define NORMAL			1
-> +#define MLOCK			2
-> +#define KSM			3
-> +
-> +static char overcommit[BUFSIZ];
-> +
-> +static void setup(void);
-> +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-> +static void oom(int testcase, int mempolicy);
-> +static long count_numa(void);
-> +static int path_exist(const char *path, ...);
-> +static void testoom(int mempolicy);
-> +static void gather_cpus(char *cpus);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	char *msg;
-> +	int lc, fd;
-> +	unsigned long nnodes = 1;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != (char *)NULL)
-> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
 
-Useless cast.
+conformance/interfaces/aio_fsync/
 
-> +#ifdef __i386__
-> +	tst_brkm(TCONF, tst_exit,
-> +		"test is not designed for 32-bit system.");
-> +#endif /* __i386__ */
-> +
-> +	nnodes = count_numa();
-> +	if (count_numa() == 1)
-> +		tst_brkm(TCONF, tst_exit, "required a NUMA system.");
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +		fd = open(SYSFS_OVER, O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +		if (write(fd, "1", 1) != 1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +		close(fd);
-> +
-> +		tst_resm(TINFO, "process mempolicy.");
-> +		testoom(1);
-> +
-> +		tst_resm(TINFO, "process cpuset.");
-> +		testoom(0);
-> +	}
-> +	cleanup();
-> +}
-> +
-> +void testoom(int mempolicy)
-> +{
-> +	int fd;
-> +	char buf[BUFSIZ] = "";
-> +	char cpus[BUFSIZ] = "";
-> +
-> +	if (!mempolicy) {
-> +		gather_cpus(cpus);
-> +		tst_resm(TINFO, "CPU list for 2nd node is %s.", cpus);
-> +
-> +		snprintf(buf, BUFSIZ, "%s/cpuset.mems", CPATH_NEW);
-> +		fd = open(buf, O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-> +		if (write(fd, "1", 1) != 1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-> +		close(fd);
-> +
-> +		snprintf(buf, BUFSIZ, "%s/cpuset.cpus", CPATH_NEW);
-> +
-> +		fd = open(buf, O_WRONLY);
+1-1.c  -- trivial change (test unimplemented)
 
-Static C strings could be concatenated just by writing them alongside.
-So here we could just do open(CPATH_NEW "/cpuset.cpus", O_WRONLY); and
-spare the snprintf() call.
+2-1.c  -- looks like test is not finished
+          (does some work and then return UNTESTED)
 
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-> +		if (write(fd, cpus, strlen(cpus)) != strlen(cpus))
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-> +		close(fd);
-> +
-> +		snprintf(buf, BUFSIZ, "%s/tasks", CPATH);
-> +		fd = open(buf, O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-> +		snprintf(buf, BUFSIZ, "%d", getpid());
-> +		if (write(fd, buf, strlen(buf)) != strlen(buf))
-> +			tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
-> +		close(fd);
-> +	}
-> +	tst_resm(TINFO, "start normal OOM testing.");
-> +	oom(NORMAL, mempolicy);
-> +
-> +	tst_resm(TINFO, "start OOM testing for mlocked pages.");
-> +	oom(MLOCK, mempolicy);
-> +
-> +	tst_resm(TINFO, "start OOM testing for KSM pages.");
-> +	oom(KSM, mempolicy);
-> +}
-> +
-> +void setup(void)
-> +{
-> +	int fd;
-> +
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +
-> +	fd = open(SYSFS_OVER, O_RDONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (read(fd, &overcommit, 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "read");
-> +	close(fd);
-> +
-> +	if (mkdir(CPATH, 0777) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir %s", CPATH);
-> +	if (mount("cpuset", CPATH, "cpuset", 0, NULL) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mount %s", CPATH);
-> +	if (mkdir(CPATH_NEW, 0777) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mkdir %s", CPATH_NEW);
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	FILE *fp;
-> +	int fd;
-> +	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
-> +
-> +	fd = open(SYSFS_OVER, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open");
-> +	if (write(fd, &overcommit, 1) != 1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "write");
-> +	close(fd);
-> +
-> +	/* Move all processes in task to its parent cpuset node. */
-> +	snprintf(s, BUFSIZ, "%s/tasks", CPATH);
+3-1.c  -- looks like test is not finished
+          (does some work and then return UNTESTED)
 
-Here as well.
+4-1.c  -- works
 
-> +	fd = open(s, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_resm(TWARN|TERRNO, "open %s", s);
-> +	snprintf(s_new, BUFSIZ, "%s/tasks", CPATH_NEW);
+4-2.c  -- was broken (testing errno value instead of
+                      value from aio_return())
+          works now
 
-And here.
+5-1.c  -- works
 
-> +	fp = fopen(s_new, "r");
-> +	if (fp == NULL)
-> +		tst_resm(TWARN|TERRNO, "fopen %s", s_new);
-> +	if ((fd != -1) && (fp != NULL)) {
-> +		while (fgets(value, BUFSIZ, fp) != NULL)
-> +			if (write(fd, value, strlen(value) - 1)
-> +				!= strlen(value) - 1)
-> +				tst_resm(TWARN|TERRNO, "write %s", s);
-> +	}
-> +	if (fd != -1)
-> +		close(fd);
-> +	if (fp != NULL)
-> +		fclose(fp);
-> +	if (rmdir(CPATH_NEW) == -1)
-> +		tst_resm(TWARN|TERRNO, "rmdir %s", CPATH_NEW);
-> +	if (umount(CPATH) == -1)
-> +		tst_resm(TWARN|TERRNO, "umount %s", CPATH);
-> +	if (rmdir(CPATH) == -1)
-> +		tst_resm(TWARN|TERRNO, "rmdir %s", CPATH);
-> +
-> +	TEST_CLEANUP;
-> +	tst_exit();
-> +}
-> +
-> +void oom(int testcase, int mempolicy)
-> +{
-> +	pid_t pid;
-> +	int status;
-> +	void *s;
-> +	unsigned long nmask = 2;
-> +
-> +	switch(pid = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +	case 0:
-> +		if (mempolicy)
-> +			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup,
-> +					"set_mempolicy");
-> +		while(1) {
-> +			s = mmap(NULL, LENGTH, PROT_READ|PROT_WRITE,
-> +				MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-> +			if (s == MAP_FAILED)
-> +				tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-> +			if (testcase == MLOCK && mlock(s, LENGTH) == -1)
-> +				tst_brkm(TINFO|TERRNO, cleanup, "mlock");
-> +			if (testcase == KSM
-> +				&& madvise(s, LENGTH, MADV_MERGEABLE) == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-> +			memset(s, '\a', LENGTH);
-> +		}
-> +		exit(0);
-> +	default:
-> +		break;
-> +	}
-> +	tst_resm(TINFO, "expected victim is %d.", pid);
-> +	if (waitpid(-1, &status, 0) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +
-> +	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-> +		tst_resm(TFAIL, "the victim unexpectedly failed: %d", status);
-> +}
-> +
-> +long count_numa(void)
-> +{
-> +	int nnodes = 0;
-> +
-> +	while(path_exist(_PATH_SYS_SYSTEM "/node/node%d", nnodes))
-> +		nnodes++;
-> +
-> +	return nnodes;
-> +}
-> +
-> +int path_exist(const char *path, ...)
-> +{
-> +	va_list ap;
-> +	char pathbuf[PATH_MAX];
-> +
-> +	va_start(ap, path);
-> +	vsnprintf(pathbuf, sizeof(pathbuf), path, ap);
-> +	va_end(ap);
-> +
-> +	return access(pathbuf, F_OK) == 0;
-> +}
-> +
-> +void gather_cpus(char *cpus)
-> +{
-> +	int ncpus = 0;
-> +	int i;
-> +	char buf[BUFSIZ];
-> +
-> +	while(path_exist(_PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
-> +		ncpus++;
-> +
-> +	for (i = 0; i < ncpus; i++)
-> +		if (path_exist(_PATH_SYS_SYSTEM "/node/node1/cpu%d", i)) {
-> +			sprintf(buf, "%d,", i);
-> +			strcat(cpus, buf);
-> +		}
-> +	/* Remove the trailing comma. */
-> +	cpus[strlen(cpus) - 1] = '\0';
-> +}
-> +
-> +#else /* no NUMA */
-> +int main(void) {
-> +	tst_resm(TCONF, "no NUMA development packages installed.");
-> +	tst_exit();
-> +}
-> +#endif
+6-1.c  -- trivial change (test unimplemented)
+
+7-1.c  -- trivial change (test unimplemented)
+
+8-1.c  -- works
+
+8-2.c  -- works
+
+8-3.c  -- works
+
+8-4.c  -- works
+
+9-1.c  -- works
+
+10-1.c -- trivial change (test unimplemented)
+
+11-1.c -- trivial change (test unimplemented)
+
+12-1.c -- works
+
+13-1.c -- works
+
+14-1.c -- works
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="SC_ASYNCHRONOUS_IO_1.patch"
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/1-1.c
+index a7aa26a..bbafb41 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/1-1.c
+@@ -6,14 +6,13 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+ 
+-int main()
++int main(void)
+ {
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		exit(PTS_UNSUPPORTED);
+ 	exit(PTS_UNTESTED);
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/10-1.c
+index e2f9a21..9596ca1 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/10-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/10-1.c
+@@ -20,14 +20,13 @@
+  *
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+ 
+-int main()
++int main(void)
+ {
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		exit(PTS_UNSUPPORTED);
+ 	exit(PTS_UNTESTED);
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/11-1.c
+index a7aa26a..bbafb41 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/11-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/11-1.c
+@@ -6,14 +6,13 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+ 
+-int main()
++int main(void)
+ {
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		exit(PTS_UNSUPPORTED);
+ 	exit(PTS_UNTESTED);
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/12-1.c
+index cc9b6e1..1423db4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/12-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/12-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,28 +20,27 @@
+ 
+ #define TNAME "aio_fsync/12-1.c"
+ 
+-int main()
++int main(void)
+ {
+ 	struct aiocb aiocb;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	memset(&aiocb, 0, sizeof(struct aiocb));
+ 	aiocb.aio_fildes = -1;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb) != -1)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb) != -1) {
+ 		printf(TNAME " aio_fsync() accepts bad filedes\n");
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	if (errno != EBADF)
+-	{
++	if (errno != EBADF) {
+ 		printf(TNAME " errno is not EBADF (%d)\n", errno);
+ 		exit(PTS_FAIL);
+ 	}
+ 	
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
++
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/13-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/13-1.c
+index a7aa26a..bbafb41 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/13-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/13-1.c
+@@ -6,14 +6,13 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+ 
+-int main()
++int main(void)
+ {
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		exit(PTS_UNSUPPORTED);
+ 	exit(PTS_UNTESTED);
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+index bc1d384..d60636a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/14-1.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_14_1_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -62,19 +61,17 @@ int main()
+ 	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+ 	aiocb_fsync.aio_fildes = fd;
+ 
+-	if (aio_fsync(-1, &aiocb_fsync) != -1)
+-	{
++	if (aio_fsync(-1, &aiocb_fsync) != -1) {
+ 		printf(TNAME " aio_fsync() accepts bad op\n");
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	if (errno != EINVAL)
+-	{
++	if (errno != EINVAL) {
+ 		printf(TNAME " errno is not EINVAL (%d)\n", errno);
+ 		exit(PTS_FAIL);
+ 	}
+ 	
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
+index 52d0dad..a2be2c1 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -23,8 +22,7 @@
+ 
+ #define BUF_SIZE 1024
+ 
+-int
+-main (void)
++int main(void)
+ {
+ 	char tmpfname[256];
+ 	char buf[BUF_SIZE];
+@@ -32,7 +30,7 @@ main (void)
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_2_1_%d", 
+@@ -40,8 +38,8 @@ main (void)
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -54,8 +52,7 @@ main (void)
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -64,8 +61,7 @@ main (void)
+ 	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+ 	aiocb_fsync.aio_fildes = fd;
+ 
+-	if (aio_fsync(O_DSYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_DSYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync(): %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/3-1.c
+index dd80669..e016fb1 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/3-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -23,7 +22,7 @@
+ 
+ #define BUF_SIZE 1024
+ 
+-int main()
++int main(void)
+ {
+ 	char tmpfname[256];
+ 	char buf[BUF_SIZE];
+@@ -31,7 +30,7 @@ int main()
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_3_1_%d", 
+@@ -39,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -53,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -63,8 +61,7 @@ int main()
+ 	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+ 	aiocb_fsync.aio_fildes = fd;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync(): %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-1.c
+index 41adb25..1767889 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/4-1.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_4_1_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -62,19 +61,17 @@ int main()
+ 	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+ 	aiocb_fsync.aio_fildes = fd;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync()\n");
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	if (aio_error(&aiocb_fsync) < 0)
+-	{
++	if (aio_error(&aiocb_fsync) < 0) {
+ 		printf(TNAME " Error at aio_error() : %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-2.c
+index 9bc63ea..1e77103 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/4-2.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/4-2.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+-	int fd;
++	int fd, ret;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_4_2_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -62,20 +61,17 @@ int main()
+ 	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+ 	aiocb_fsync.aio_fildes = fd;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync()\n");
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	errno = 0;
+-	aio_return(&aiocb_fsync);
+-	if (errno != 0)
+-	{
+-		printf(TNAME " Error at aio_return() : %s\n", strerror(errno));
++	if ((ret = aio_return(&aiocb_fsync) != 0)) {
++		printf(TNAME " Error at aio_return() : %s\n", strerror(ret));
+ 		exit(PTS_FAIL);
+ 	}
++
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/5-1.c
+index 6524cf8..b641232 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/5-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -23,7 +22,7 @@
+ 
+ #define BUF_SIZE 1024
+ 
+-int main()
++int main(void)
+ {
+ 	char tmpfname[256];
+ 	char buf[BUF_SIZE];
+@@ -32,7 +31,7 @@ int main()
+ 	struct aiocb aiocb_fsync;
+ 	int ret;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_5_1_%d", 
+@@ -40,8 +39,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++	
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -54,8 +53,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -64,8 +62,7 @@ int main()
+ 	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+ 	aiocb_fsync.aio_fildes = fd;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync(): %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+@@ -78,12 +75,13 @@ int main()
+ 	 * something else
+ 	 * otherwise test hangs
+ 	 */
+-
+ 	while (aio_error(&aiocb_fsync) == EINPROGRESS);
+ 
+ 	close(fd);
+ 
+ 	/* we didn't check if the operation is really performed */
++	if (ret == PTS_PASS)
++		printf("Test PASSED\n");
+ 
+ 	return ret;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/6-1.c
+index a7aa26a..bbafb41 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/6-1.c
+@@ -6,14 +6,13 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+ 
+-int main()
++int main(void)
+ {
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		exit(PTS_UNSUPPORTED);
+ 	exit(PTS_UNTESTED);
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/7-1.c
+index a7aa26a..bbafb41 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/7-1.c
+@@ -6,14 +6,13 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+ 
+-int main()
++int main(void)
+ {
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		exit(PTS_UNSUPPORTED);
+ 	exit(PTS_UNTESTED);
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-1.c
+index 8a54098..1ea09c5 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/8-1.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_8_1_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -63,13 +62,12 @@ int main()
+ 	aiocb_fsync.aio_fildes = fd;
+ 	aiocb_fsync.aio_nbytes = -1;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync(): %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-2.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-2.c
+index 798339e..1a7d5e6 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-2.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/8-2.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_8_2_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -63,13 +62,12 @@ int main()
+ 	aiocb_fsync.aio_fildes = fd;
+ 	aiocb_fsync.aio_buf = NULL;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync(): %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-3.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-3.c
+index c7ad2f4..7745e58 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-3.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/8-3.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_8_3_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -63,13 +62,12 @@ int main()
+ 	aiocb_fsync.aio_fildes = fd;
+ 	aiocb_fsync.aio_reqprio = -1;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync(): %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-4.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-4.c
+index bce6714..167566e 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-4.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/8-4.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/8-4.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) == -1)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_8_4_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -63,13 +62,12 @@ int main()
+ 	aiocb_fsync.aio_fildes = fd;
+ 	aiocb_fsync.aio_offset = -1;
+ 
+-	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0)
+-	{
++	if (aio_fsync(O_SYNC, &aiocb_fsync) != 0) {
+ 		printf(TNAME " Error at aio_fsync(): %s\n", strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/9-1.c
+index 6ff435f..3cd4c74 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/9-1.c
+@@ -6,7 +6,6 @@
+  * source tree.
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+@@ -21,16 +20,17 @@
+ 
+ #define TNAME "aio_fsync/9-1.c"
+ 
+-int main()
++#define BUF_SIZE 111
++
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) != 200112L)
++	if (sysconf(_SC_ASYNCHRONOUS_IO) <= 0)
+ 		return PTS_UNSUPPORTED;
+ 
+ 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_fsync_9_1_%d", 
+@@ -38,8 +38,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++	
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -52,8 +52,7 @@ int main()
+ 	aiocb_write.aio_buf = buf;
+ 	aiocb_write.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb_write) == -1)
+-	{
++	if (aio_write(&aiocb_write) == -1) {
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -69,6 +68,6 @@ int main()
+ 	}
+ 
+ 	close(fd);
+-	printf ("Test PASSED\n");
++	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Learn how Oracle Real Application Clusters (RAC) One Node allows customers
@@ -313,7 +1057,16 @@ to consolidate database storage, standardize their database environment, and,
 should the need arise, upgrade to a full multi-node Oracle RAC database 
 without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--u3/rZRmxL6MmkK24--
+
