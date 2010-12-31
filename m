@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <violetleigh@gmail.com>) id 1PXsRW-0003Bd-4u
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:38 +0000
-Received: from mail-gw0-f47.google.com ([74.125.83.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PXsRV-0004WR-Ab
-	for ltp-list@lists.sourceforge.net; Wed, 29 Dec 2010 09:35:38 +0000
-Received: by mail-gw0-f47.google.com with SMTP id a12so1779190gwa.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Dec 2010 01:35:37 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PYcO3-0006zy-1D
+	for ltp-list@lists.sourceforge.net; Fri, 31 Dec 2010 10:39:07 +0000
+Date: Fri, 31 Dec 2010 11:54:34 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20101231105434.GA20612@saboteur.suse.cz>
+References: <4D1824C1.1070306@cn.fujitsu.com>
+	<20101230143141.GA23205@saboteur.suse.cz>
+	<DA7098EA-157A-40A1-A734-F33B67C7E912@gmail.com>
 MIME-Version: 1.0
-Date: Wed, 29 Dec 2010 17:35:37 +0800
-Message-ID: <AANLkTi=pHhb0Stk5RpnobA0Sqo4G6C07meCKTQzBCY8B@mail.gmail.com>
-From: Vivi <violetleigh@gmail.com>
-Subject: [LTP]  [Bug Fix] fcntl14 cause msh relaunch in uClinux platform
+Content-Disposition: inline
+In-Reply-To: <DA7098EA-157A-40A1-A734-F33B67C7E912@gmail.com>
+Subject: Re: [LTP] [PATCH]Do some cleanup for tst_brkloop
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,108 +23,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8959802433190768288=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP mailing list <ltp-list@lists.sourceforge.net>
-
---===============8959802433190768288==
-Content-Type: multipart/alternative; boundary=0016e645ab96a5fd9c0498894a4b
-
---0016e645ab96a5fd9c0498894a4b
-Content-Type: text/plain; charset=ISO-8859-1
-
-fcntl14 cause msh relaunch in uClinux platform.
-
---
-fcntl14     0  INFO  :  Enter block 1: without mandatory locking
-
-
-BusyBox v1.13.4 (2009-06-04 17:49:13 CST) built-in shell (msh)
-Enter 'help' for a list of built-in commands.
-root:/> fcntl14     1  PASS  :  testcase:1 PASSED
-fcntl14     2  PASS  :  testcase:2 PASSED
-fcntl14     3  PASS  :  testcase:3 PASSED
-fcntl14     4  PASS  :  testcase:4 PASSED
-fcntl14     5  PASS  :  testcase:5 PASSED
-fcntl14     6  PASS  :  testcase:6 PASSED
-fcntl14     7  PASS  :  testcase:7 PASSED
---
-
-
-Fix by delivering parent as one parameter of child process:
---
-Index: testcases/kernel/syscalls/fcntl/fcntl14.c
-===================================================================
---- testcases/kernel/syscalls/fcntl/fcntl14.c
-+++ testcases/kernel/syscalls/fcntl/fcntl14.c
-@@ -763,7 +763,7 @@
-                        break;
-                case 0: /* child */
- #ifdef UCLINUX
--                       if (self_exec(argv0, "n", 1) < 0) {
-+                       if (self_exec(argv0, "nd", 1, parent) < 0) {
-                                tst_resm(TFAIL, "self_exec failed");
-                                break;
-                        }
-@@ -980,7 +980,7 @@
- #ifdef UCLINUX
-        argv0 = av[0];
-
--       maybe_run_child(&do_usleep_child, "n", 1);
-+       maybe_run_child(&do_usleep_child, "nd", 1, &parent);
-        thiscase = malloc(sizeof(testcase));
-
-        maybe_run_child(&dochild, "nddddddddd", 2, &thiscase->c_type,
---
-
-
-
-Best regards,
-Vivi Li
-
---0016e645ab96a5fd9c0498894a4b
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: base64
-
-ZmNudGwxNCBjYXVzZSBtc2ggcmVsYXVuY2ggaW4gdUNsaW51eCBwbGF0Zm9ybS48YnI+PGJyPi0t
-PGJyPmZjbnRsMTSgoKCgIDCgIElORk+gIDqgIEVudGVyIGJsb2NrIDE6IHdpdGhvdXQgbWFuZGF0
-b3J5IGxvY2tpbmc8YnI+PGJyPjxicj5CdXN5Qm94IHYxLjEzLjQgKDIwMDktMDYtMDQgMTc6NDk6
-MTMgQ1NUKSBidWlsdC1pbiBzaGVsbCAobXNoKTxicj5FbnRlciAmIzM5O2hlbHAmIzM5OyBmb3Ig
-YSBsaXN0IG9mIGJ1aWx0LWluIGNvbW1hbmRzLjxicj4KCgoKcm9vdDovJmd0OyBmY250bDE0oKCg
-oCAxoCBQQVNToCA6oCB0ZXN0Y2FzZToxIFBBU1NFRDxicj5mY250bDE0oKCgoCAyoCBQQVNToCA6
-oCB0ZXN0Y2FzZToyIFBBU1NFRDxicj5mY250bDE0oKCgoCAzoCBQQVNToCA6oCB0ZXN0Y2FzZToz
-IFBBU1NFRDxicj5mY250bDE0oKCgoCA0oCBQQVNToCA6oCB0ZXN0Y2FzZTo0IFBBU1NFRDxicj5m
-Y250bDE0oKCgoCA1oCBQQVNToCA6oCB0ZXN0Y2FzZTo1IFBBU1NFRDxicj4KCgoKZmNudGwxNKCg
-oKAgNqAgUEFTU6AgOqAgdGVzdGNhc2U6NiBQQVNTRUQ8YnI+ZmNudGwxNKCgoKAgN6AgUEFTU6Ag
-OqAgdGVzdGNhc2U6NyBQQVNTRUQ8YnI+LS08YnI+PGJyPjxicj5GaXggYnkgZGVsaXZlcmluZyBw
-YXJlbnQgYXMgb25lIHBhcmFtZXRlciBvZiBjaGlsZCBwcm9jZXNzOjxicj4tLTxicj5JbmRleDog
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mY250bC9mY250bDE0LmM8YnI+CgoKCj09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT08YnI+LS0tIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZmNudGwvZmNudGwxNC5jPGJyPisr
-KyB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZjbnRsL2ZjbnRsMTQuYzxicj4KQEAgLTc2Myw3
-ICs3NjMsNyBAQDxicj6goKCgoKCgoKCgoKCgoKCgoKCgoKCgoCBicmVhazs8YnI+oKCgoKCgoKCg
-oKCgoKCgIGNhc2UgMDogLyogY2hpbGQgKi88YnI+oCNpZmRlZiBVQ0xJTlVYPGJyPi2goKCgoKCg
-oKCgoKCgoKCgoKCgoKCgIGlmIChzZWxmX2V4ZWMoYXJndjAsICZxdW90O24mcXVvdDssIDEpICZs
-dDsgMCkgezxicj4roKCgoKCgoKCgoKCgoKCgoKCgoKCgoCBpZiAoc2VsZl9leGVjKGFyZ3YwLCAm
-cXVvdDtuZCZxdW90OywgMSwgcGFyZW50KSAmbHQ7IDApIHs8YnI+CgoKCgqgoKCgoKCgoKCgoKCg
-oKCgoKCgoKCgoKCgoKCgoKCgIHRzdF9yZXNtKFRGQUlMLCAmcXVvdDtzZWxmX2V4ZWMgZmFpbGVk
-JnF1b3Q7KTs8YnI+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCBicmVhazs8YnI+oKCg
-oKCgoKCgoKCgoKCgoKCgoKCgoKAgfTxicj5AQCAtOTgwLDcgKzk4MCw3IEBAPGJyPqAjaWZkZWYg
-VUNMSU5VWDxicj6goKCgoKCgIGFyZ3YwID0gYXZbMF07PGJyPgoKCgoKPGJyPi2goKCgoKAgbWF5
-YmVfcnVuX2NoaWxkKCZhbXA7ZG9fdXNsZWVwX2NoaWxkLCAmcXVvdDtuJnF1b3Q7LCAxKTs8YnI+
-K6CgoKCgoCBtYXliZV9ydW5fY2hpbGQoJmFtcDtkb191c2xlZXBfY2hpbGQsICZxdW90O25kJnF1
-b3Q7LCAxLCAmYW1wO3BhcmVudCk7PGJyPqCgoKCgoKAgdGhpc2Nhc2UgPSBtYWxsb2Moc2l6ZW9m
-KHRlc3RjYXNlKSk7PGJyPjxicj6goKCgoKCgIG1heWJlX3J1bl9jaGlsZCgmYW1wO2RvY2hpbGQs
-ICZxdW90O25kZGRkZGRkZGQmcXVvdDssIDIsICZhbXA7dGhpc2Nhc2UtJmd0O2NfdHlwZSw8YnI+
-CgoKCgotLTxicj48YnI+PGJyPjxicj5CZXN0IHJlZ2FyZHMsPGJyPlZpdmkgTGk8YnI+Cg==
---0016e645ab96a5fd9c0498894a4b--
-
-
---===============8959802433190768288==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> 	*facepalm* git and I really don't get along. I tried to merge the change from ltp-broom, that pulled in a bunch of stuff I didn't want, reset via reset --hard, then checked out the one file from ltp-broom, which worked, and when I pushed everything -- it pushed all of my changes from ltp-broom back to master. So I suppose the question now is to continue with things as-is, or revert the commit. I'm guessing folks will want the latter, but I'm unfamiliar enough with merging and reverting with git because it's user friendliness that I'm concerned about doing more harm than good trying to fix things.
+
+Just now we need to get git to some sane state so that patches created
+against latest git could be merged later. But I'm not sure if reseting
+back is better than fixing the problems created by merge. If all the
+problems are created by merging files that were changed in both master
+and ltp-broom then IMHO fixing these would be better way to go.
+
+FYI: just now compilation dies with:
+
+gcc   -L../../../../lib  test_arch.o   -o test_arch_debug
+test_arch.o: In function `main':
+/home/metan/Work/git/ltp-dev/testcases/commands/ade/objdump/test_arch.c:17:
+undefined reference to `tst_exit'
+collect2: ld returned 1 exit status
+make[4]: *** [test_arch_debug] Error 1
+make[4]: Leaving directory
+`/home/metan/Work/git/ltp-dev/testcases/commands/ade/objdump'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory
+`/home/metan/Work/git/ltp-dev/testcases/commands/ade'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory
+`/home/metan/Work/git/ltp-dev/testcases/commands'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/metan/Work/git/ltp-dev/testcases'
+make: *** [testcases-all] Error 2
+
+> 	I need to go back home (where I don't have internet via my laptop right now and won't for the next couple of days), but I'll continue to work on verifying everything and fix regressions if and when I find them, and I'll try to pop over to work whenever possible to push code back to the git repo.
+
+I hope that lack of the internet connection in your home is only
+temporary, as so far you did the commits and there is a already some
+backlog of waiting patches. I know that it's holidays now but I'm
+allready starting to lose track of the issues waiting for commit.
+
+If you need some help with that, don't hesitate to ask.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn how Oracle Real Application Clusters (RAC) One Node allows customers
@@ -134,16 +77,7 @@ to consolidate database storage, standardize their database environment, and,
 should the need arise, upgrade to a full multi-node Oracle RAC database 
 without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
---===============8959802433190768288==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8959802433190768288==--
-
