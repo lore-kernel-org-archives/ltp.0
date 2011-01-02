@@ -2,22 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PfUTp-0001E9-Tk
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:37:29 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PfUTo-0001wO-UZ
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:37:29 +0000
-Received: by wyb40 with SMTP id 40so607641wyb.34
+	(envelope-from <yanegomi@gmail.com>) id 1PZCTR-0004J3-53
+	for ltp-list@lists.sourceforge.net; Sun, 02 Jan 2011 01:11:05 +0000
+Received: from mail-px0-f175.google.com ([209.85.212.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PZCTP-0005mh-Sb
+	for ltp-list@lists.sourceforge.net; Sun, 02 Jan 2011 01:11:05 +0000
+Received: by pxi17 with SMTP id 17so2698192pxi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 19 Jan 2011 01:37:22 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1044F3871F984514ACE11A23C55DAFB3@FM38572274>
-References: <1044F3871F984514ACE11A23C55DAFB3@FM38572274>
-Date: Wed, 19 Jan 2011 01:37:22 -0800
-Message-ID: <AANLkTikGkTqAyoDoPaV5YVxgFqx=DQsqeTCpNRbUtHVt@mail.gmail.com>
+	Sat, 01 Jan 2011 17:10:58 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1082)
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Fix the test04 of testcases/kernel/numa/numa01.sh
+In-Reply-To: <4D1986DE.50309@cn.fujitsu.com>
+Date: Sat, 1 Jan 2011 17:11:05 -0800
+Message-Id: <770BF2E0-F6BC-4D51-9A5D-448B25525204@gmail.com>
+References: <4D1986DE.50309@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]fix bug of tst_brk
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,24 +30,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kazuki Seki <k-seki@np.css.fujitsu.com>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Sun, Jan 16, 2011 at 4:38 PM, Kazuki Seki <k-seki@np.css.fujitsu.com> wrote:
-> Hi,
->
-> Did you confirm the following email which I posted before?
+On Dec 27, 2010, at 10:42 PM, Bian Naimeng wrote:
 
-    I can't because I don't have the resources and FWIW no one else
-has ACKed this issue.
-Thanks,
+> Test will fail if invoke tst_brk with (TCONF | TERRNO), it's not our expectation.
+> 
+> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+Good catch -- thanks!
 -Garrett
-
 ------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
