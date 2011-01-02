@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PdI2m-0006oP-Qq
-	for ltp-list@lists.sourceforge.net; Thu, 13 Jan 2011 07:56:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PZCXU-0004at-K3
+	for ltp-list@lists.sourceforge.net; Sun, 02 Jan 2011 01:15:16 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PdI2k-0006Ea-H1
-	for ltp-list@lists.sourceforge.net; Thu, 13 Jan 2011 07:56:28 +0000
-Message-ID: <4D2EB02C.2050109@cn.fujitsu.com>
-Date: Thu, 13 Jan 2011 15:56:28 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [POSIX][PATCH] Fix a building error at pthread_join cases.
+	id 1PZCXT-0007qD-PM
+	for ltp-list@lists.sourceforge.net; Sun, 02 Jan 2011 01:15:16 +0000
+Received: by pvd12 with SMTP id 12so2434105pvd.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 01 Jan 2011 17:15:10 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1082)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <4D199160.3070103@cn.fujitsu.com>
+Date: Sat, 1 Jan 2011 17:15:16 -0800
+Message-Id: <729F45BA-7F15-45FE-B300-E0BDECF4870C@gmail.com>
+References: <4D199160.3070103@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]Fix bug of unshare
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,51 +30,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
+To: Bian Naimeng <biannm@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+On Dec 27, 2010, at 11:27 PM, Bian Naimeng wrote:
 
-Fix building error of pthread_join cases.
+> Fix two bugs of unshare01.
+> 
+> 1. We have test unshare(CLONE_FS) twice, the first one should be CLONE_FILES.
+> 2. Child process forgot to invoke exit, it will cause test fail.
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
----
- .../interfaces/pthread_join/threads_scenarii.c     |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/threads_scenarii.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/threads_scenarii.c
-index 479b28c..ee9ccbb 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/threads_scenarii.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/threads_scenarii.c
-@@ -225,7 +225,6 @@ void scenar_init()
- 
- 			if (scenarii[ i ].schedparam == -1)
- 				sp.sched_priority = sched_get_priority_min(old);
-->>>>>>> origin
- 
- 			ret = pthread_attr_setschedparam(&scenarii[ i ].ta, &sp);
- 
-@@ -487,4 +486,4 @@ int main (int argc, char *argv[])
- 
- 	PASSED;
- }
--#endif
-\ No newline at end of file
-+#endif
--- 
-1.7.0.4
-
--- 
-Best Regards,
-Peng Haitao
+Thanks!
+-Garrett
 
 
 ------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
