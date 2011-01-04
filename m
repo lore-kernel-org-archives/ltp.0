@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PfaGJ-0006us-Cg
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 15:47:55 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PfaGI-0004pf-0u
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 15:47:55 +0000
-Date: Wed, 19 Jan 2011 10:47:46 -0500 (EST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PZyop-0003lL-7J
+	for ltp-list@lists.sourceforge.net; Tue, 04 Jan 2011 04:48:23 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PZyon-00053x-SK
+	for ltp-list@lists.sourceforge.net; Tue, 04 Jan 2011 04:48:23 +0000
+Date: Mon, 3 Jan 2011 23:48:14 -0500 (EST)
 From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1186837298.70819.1295452066448.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <823965169.56383.1295425072957.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Message-ID: <1721058193.119579.1294116494383.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTimdcjx7DmoWgsXfS25LymO0U2RFkjS-uNhAnfMD@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_70818_1877183367.1295452066448"
-Subject: Re: [LTP] [PATCH] mbind: add a missing Makefile
+Subject: Re: [LTP] [PATCH] hugemmap05 issues
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,91 +23,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-------=_Part_70818_1877183367.1295452066448
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-Garrett, this patch still need to merge.
-
-Thanks.
-
-CAI Qian
-
------ Original Message -----
-> The patch is attached.
-> ------------------------------------------------------------------------------
-> Protect Your Site and Customers from Malware Attacks
-> Learn about various malware tactics and how to avoid them. Understand
-> malware threats, the impact they can have on your business, and how
-> you
-> can protect your company and customers by using code signing.
-> http://p.sf.net/sfu/oracle-sfdevnl
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_70818_1877183367.1295452066448
-Content-Type: text/x-patch; name=0001-mbind-add-a-missing-Makefile.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename=0001-mbind-add-a-missing-Makefile.patch
-
-RnJvbSA4YjhjOTlhMDJlMDM4NGU2YWY3M2NlNTk2NjM4YzU0MzY0ODRmOGUwIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBX
-ZWQsIDE5IEphbiAyMDExIDE1OjU0OjE5ICswODAwClN1YmplY3Q6IFtQQVRDSF0gbWJpbmQ6IGFk
-ZCBhIG1pc3NpbmcgTWFrZWZpbGUKCgpTaWduZWQtb2ZmLWJ5OiBDQUkgUWlhbiA8Y2FpcWlhbkBy
-ZWRoYXQuY29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL21iaW5kL01ha2VmaWxlIHwgICAy
-NSArKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZpbGVzIGNoYW5nZWQsIDI1IGluc2VydGlv
-bnMoKyksIDAgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5l
-bC9tZW0vbWJpbmQvTWFrZWZpbGUKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS9t
-YmluZC9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL21iaW5kL01ha2VmaWxlCm5ldyBm
-aWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLmUyMDJhNmIKLS0tIC9kZXYvbnVsbAorKysg
-Yi90ZXN0Y2FzZXMva2VybmVsL21lbS9tYmluZC9NYWtlZmlsZQpAQCAtMCwwICsxLDI1IEBACisj
-CisjICBDb3B5cmlnaHQgKEMpIDIwMTAgIFJlZCBIYXQsIEluYy4KKyMKKyMgIFRoaXMgcHJvZ3Jh
-bSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5
-CisjICBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNl
-IGFzIHB1Ymxpc2hlZCBieQorIyAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVy
-IHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwgb3IgKGF0CisjICB5b3VyIG9wdGlvbikgYW55IGxh
-dGVyIHZlcnNpb24uCisjCisjICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhv
-cGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgYnV0CisjICBXSVRIT1VUIEFOWSBXQVJSQU5UWTsg
-d2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisjICBNRVJDSEFOVEFCSUxJVFkg
-b3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVQorIyAgR2Vu
-ZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgorIworIyAgWW91IHNob3VsZCBo
-YXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKKyMg
-IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3
-YXJlCisjICBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdHJlZXQsIEZpZnRoIEZsb29y
-LCBCb3N0b24sIE1BCisjICAwMjExMC0xMzAxLCBVU0EuCisjCisKK3RvcF9zcmNkaXIgICAgICAg
-ICAgICAgID89IC4uLy4uLy4uLy4uCisKK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21r
-L3Rlc3RjYXNlcy5taworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19s
-ZWFmX3RhcmdldC5taworCitMRExJQlMgCQkJKz0gJChOVU1BX0xJQlMpClwgTm8gbmV3bGluZSBh
-dCBlbmQgb2YgZmlsZQotLSAKMS43LjMuMgoK
-------=_Part_70818_1877183367.1295452066448
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
-http://p.sf.net/sfu/oracle-sfdevnl
-------=_Part_70818_1877183367.1295452066448
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_70818_1877183367.1295452066448--
-
+Cj4gVEVTVERJUiBpc24ndCBwdWJsaWNseSB2aXNpYmxlIGFueW1vcmUgYmVjYXVzZSBwZW9wbGUg
+cmVhbGx5IHNob3VsZG4ndAo+IGJlIG11Y2tpbmcgYXJvdW5kIHdpdGggdGhhdCB2YWx1ZSwgb3Ig
+cXVlcnlpbmcgaXQgaWYgdGhleSBoYXZlbid0Cj4gY2FsbGVkIHRzdF90bXBkaXIgKHdoaWNoIGlz
+IGFjdHVhbGx5IHdoYXQgeW91IGRpZCBpbiB0aGlzIHRlc3QhKS4KSSBhbSBzb3JyeSBhYm91dCB0
+aGF0LiBUaGF0IGlzIHdoeSBJIGhhZCBzZW50IGEgZm9sbG93LXVwIHBhdGNoIHRvIGFkZHJlc3MK
+aXQsCmh0dHA6Ly9tYXJjLmluZm8vP2w9bHRwLWxpc3QmbT0xMjkzNzkyOTE1MTUwMTImdz0yCgo+
+ID4gQWdhaW4sIHdoYXQgaXNzdWVzIGFyZSB5b3VyIGZhY2luZyB3aXRoIHRoaXMgY29kZT8KPiA+
+PiArIGNoYXIgKnRtcF90c3RkaXI7Cj4gPj4gKwo+ID4+ICsgdG1wX3RzdGRpciA9IGdldF90c3Rf
+dG1wZGlyKCk7Cj4gPj4gKyBpZiAodG1wX3RzdGRpciA9PSBOVUxMKQo+ID4+ICsgdHN0X2Jya20o
+VEJST0t8VEVSUk5PLCBjbGVhbnVwLCAiZ2V0X3RtcF90c3RkaXIgZmFpbGVkIik7Cj4gPj4gKyBz
+bnByaW50ZihzLCBCVUZTSVosICIlcy9odWdlbW1hcDA1L2ZpbGUiLCB0bXBfdHN0ZGlyKTsKPiA+
+PiArIGZyZWUodG1wX3RzdGRpcik7Cj4gPj4gKwo+ID4+ICsgZmQgPSBvcGVuKHMsIE9fQ1JFQVR8
+T19SRFdSLCAwNzU1KTsKPiA+PiBpZiAoZmQgPT0gLTEpCj4gPj4gdHN0X2Jya20oVEJST0t8VEVS
+Uk5PLCBjbGVhbnVwLCAib3BlbiIpOwo+ID4+IGFkZHIgPSBtbWFwKEFERFIsIChsb25nKShsZW5n
+dGggKiBNQiksIFBST1RFQ1RJT04sIEZMQUdTLCBmZCwKPiA+PiBAQCAtMTk1LDE5ICsyMDMsMTQg
+QEAgc3RhdGljIHZvaWQgb3ZlcmNvbW1pdCh2b2lkKQo+ID4+IHJldHVybjsKPiA+PiBmY2xvc2Uo
+ZnApOwo+ID4+IH0KPiA+PiAtIGlmIChzaG1pZCAhPSAtMSkgewo+ID4+IC0gdHN0X3Jlc20oVElO
+Rk8sICJzaG1pZDogMHgleCIsIHNobWlkKTsKPiA+PiAtIHNobWFkZHIgPSBzaG1hdChzaG1pZCwg
+QUREUiwgU0hNQVRfRkxBR1MpOwo+ID4+IC0gaWYgKHNobWFkZHIgPT0gKHZvaWQgKiktMSkKPiA+
+PiAtIHRzdF9icmttKFRCUk9LfFRFUlJOTywgY2xlYW51cCwgInNobWF0Iik7Cj4gPj4gLSB3cml0
+ZV9ieXRlcyhzaG1hZGRyKTsKPiA+PiAtIHJlYWRfYnl0ZXMoc2htYWRkcik7Cj4gPj4gLSB9IGVs
+c2Ugewo+ID4+IC0gd3JpdGVfYnl0ZXMoYWRkcik7Cj4gPj4gLSByZWFkX2J5dGVzKGFkZHIpOwo+
+ID4+IC0gfQo+ID4gQXMgeW91IGNhbiByZWFkIGZyb20gdGhlIGhlbHAoKSwgdGhlIHRlc3QgY2Fu
+IGFsbG9jYXRlIGh1Z2VwYWdlcwo+ID4gZWl0aGVyCj4gPiBmcm9tIHNobWdldCgpIG9yIG1tYXAo
+KS4gSW4gY2FzZSBvZiBzaG1nZXQoKSwgYSBnbG9iYWwgdmFyaWFibGUKPiA+IHNobWlkIHdpdGgK
+PiA+IHRoZSBkZWZhdWx0IHZhbHVlIC0xIHdpbGwgYmUgY2hhbmdlIHRvIDEgdmlhIGNvbW1hbmQt
+bGluZSwKPiAKPiBPaywgSSBtdXN0IGhhdmUgbWlzc2VkIHRoYXQgcGFydC4gU29ycnkuLi4KPiAK
+PiA+IHN0YXRpYyBvcHRpb25fdCBvcHRpb25zW10gPSB7Cj4gPiDCoCDCoCDCoCDCoHsgInMiLCAm
+b3B0X3N5c2ZzLCBOVUxMfSwKPiA+IMKgIMKgIMKgIMKgeyAibSIsICZzaG1pZCwgTlVMTH0sCj4g
+PiDCoCDCoCDCoCDCoHsgImE6IiwgJm9wdF9hbGxvYywgJm9wdF9hbGxvY3N0cn0sCj4gPiDCoCDC
+oCDCoCDCoHsgTlVMTCwgTlVMTCwgTlVMTH0KPiA+IH07Cj4gPgo+ID4gVGhlcmVmb3JlLCB0aGVy
+ZSBpcyBhIG5lZWQgdG8gY2FsbCBzaG1hdCgpLiBUaGF0IGlzIHdoeSBpdCBvbmx5IGNhbGwKPiA+
+IGl0Cj4gPiB3aGVuIHNobWlkICE9IC0xLiBJbiBjYXNlIG9mIG1tYXAoKSwgdGhlcmUgaXMgbm8g
+bmVlZCB0byBjYWxsCj4gPiBzaG1hdCgpLgo+ID4+ICsgdHN0X3Jlc20oVElORk8sICJzaG1pZDog
+MHgleCIsIHNobWlkKTsKPiA+PiArIHNobWFkZHIgPSBzaG1hdChzaG1pZCwgQUREUiwgU0hNQVRf
+RkxBR1MpOwo+ID4+ICsgaWYgKHNobWFkZHIgPT0gKHZvaWQgKiktMSkKPiA+PiArIHRzdF9icmtt
+KFRCUk9LfFRFUlJOTywgY2xlYW51cCwgInNobWF0Iik7Cj4gPj4gKyB3cml0ZV9ieXRlcyhzaG1h
+ZGRyKTsKPiA+PiArIHJlYWRfYnl0ZXMoc2htYWRkcik7Cj4gPj4gaWYgKG9wdF9zeXNmcykgewo+
+ID4+IC0gdHN0X3Jlc20oVElORk8sICJjaGVjayBzeXNmcy4iKTsKPiA+PiArIHRzdF9yZXNtKFRJ
+TkZPLCAiY2hlY2tpbmcgc3lzZnMuIik7Cj4gPj4gaWYgKGNoZWNrc3lzKF9QQVRIX1NZU18yTV9I
+VUdFLCAiSHVnZVBhZ2VzX1RvdGFsIiwKPiA+PiBsZW5ndGggLyAyKSAhPSAwKQo+ID4+IHJldHVy
+bjsKPiA+PiBAQCAtMjIxLDcgKzIyNCw3IEBAIHN0YXRpYyB2b2lkIG92ZXJjb21taXQodm9pZCkK
+PiA+PiAhPSAwKQo+ID4+IHJldHVybjsKPiA+PiB9IGVsc2Ugewo+ID4+IC0gdHN0X3Jlc20oVElO
+Rk8sICJjaGVjayAvcHJvYy9tZW1pbmZvLiIpOwo+ID4+ICsgdHN0X3Jlc20oVElORk8sICJjaGVj
+a2luZyAvcHJvYy9tZW1pbmZvLiIpOwo+ID4gSWYgeW91IGFyZSBnb2luZyB0byBjaGFuZ2UgdGhl
+IHN5bnRheCBoZXJlLCB0aGVyZSBhcmUgbWFueSBvdGhlcgo+ID4gcGxhY2VzCj4gPiBhbHNvIG5l
+ZWQgdG8gY2hhbmdlZCB0byBiZSBjb25zaXN0ZW50IGxpa2UsCj4gPiAiY2hlY2sgc3lzZnMuIgo+
+ID4gImNoZWNrIC9wcm9jL21lbWluZm8gYmVmb3JlIGFsbG9jYXRpb24uIgo+ID4gZXRjCj4gCj4g
+QWdyZWVkLiBJdCB3YXMganVzdCBhbiBleGFtcGxlLCBhbmQgdGhlIHBvaW50IHdhcyB0byBjbGVh
+cmx5IHN0YXRlCj4gd2l0aCBwcm9wZXIgdmVyYiB0ZW5zZXMgc28gdGhhdCBwZW9wbGUgY291bGQg
+Z2V0IGEgY2xlYXIgaWRlYSBvZiB3aGF0Cj4gdGhlIHRlc3Qgd2FzIGRvaW5nIGluc3RlYWQgb2Yg
+aGF2aW5nIHRvIHJlYWQgdGhlIGNvZGUgdG8gZGVjeXBoZXIgdGhlCj4gaW50ZW50IG9mIHRoZSB0
+ZXN0IHdyaXRlci4gR3JhbnRlZCwgSSd2ZSBnb3R0ZW4gbGF6eSBhbmQgc3RvcHBlZAo+IGZpeGlu
+ZyBzb21lIG9mIHRoZXNlIGl0ZW1zIGluIGxhdGVyIGNvbW1pdHMgYmVjYXVzZSBvZiBhbGwgb2Yg
+dGhlIExPQ3MKPiBJJ3ZlIG1hZGUsIGJ1dCBpdCBuZWVkcyB0byBiZSBmaXhlZCBsYXRlciBiZWNh
+dXNlIHRoZSBncmFtbWFyIGFuZAo+IHNwZWxsaW5nIHVzZWQgYnkgdGVzdCB3cml0ZXJzIGlzIGxl
+c3MgdGhhbiBkZXNpcmFibGUsIHdoaWNoIG1ha2VzIGl0Cj4gaGFyZCBmb3IgZm9sa3MgdHJ5aW5n
+IHRvIHVuZGVyc3RhbmQgd2hhdCB0aGUgaW50ZW50aW9uIGlzIGJlaGluZCB0aGVzZQo+IHRlc3Rz
+LgpPSy4KClRoYW5rcy4KCkNBSSBRaWFuCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGVhcm4gaG93
+IE9yYWNsZSBSZWFsIEFwcGxpY2F0aW9uIENsdXN0ZXJzIChSQUMpIE9uZSBOb2RlIGFsbG93cyBj
+dXN0b21lcnMKdG8gY29uc29saWRhdGUgZGF0YWJhc2Ugc3RvcmFnZSwgc3RhbmRhcmRpemUgdGhl
+aXIgZGF0YWJhc2UgZW52aXJvbm1lbnQsIGFuZCwgCnNob3VsZCB0aGUgbmVlZCBhcmlzZSwgdXBn
+cmFkZSB0byBhIGZ1bGwgbXVsdGktbm9kZSBPcmFjbGUgUkFDIGRhdGFiYXNlIAp3aXRob3V0IGRv
+d250aW1lIG9yIGRpc3J1cHRpb24KaHR0cDovL3Auc2YubmV0L3NmdS9vcmFjbGUtc2ZkZXZubApf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
