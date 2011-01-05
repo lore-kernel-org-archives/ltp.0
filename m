@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PZxH4-00046p-Dp
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jan 2011 03:09:26 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PZxH2-0001de-3H
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jan 2011 03:09:26 +0000
-Date: Mon, 3 Jan 2011 22:09:16 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <474711911.119247.1294110556912.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <AANLkTi=PvGB+oDjF8D1sVtUrXgAHUuuL8JQ+nzvTqjTa@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <violetleigh@gmail.com>) id 1PaQPe-0006yx-Iz
+	for ltp-list@lists.sourceforge.net; Wed, 05 Jan 2011 10:16:14 +0000
+Received: from mail-gw0-f47.google.com ([74.125.83.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PaQPd-0001fO-OI
+	for ltp-list@lists.sourceforge.net; Wed, 05 Jan 2011 10:16:14 +0000
+Received: by gwaa12 with SMTP id a12so3518647gwa.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 05 Jan 2011 02:16:08 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] hugemmap05 issues
+In-Reply-To: <201012291144.58092.vapier@gentoo.org>
+References: <AANLkTi=qFxgs4CPQ2EUwHin1LTgxw0V-RENPV9rRqraF@mail.gmail.com>
+	<201012291144.58092.vapier@gentoo.org>
+Date: Wed, 5 Jan 2011 18:16:08 +0800
+Message-ID: <AANLkTimxrSw2qSVnqqw+wUkNSgZOHwb59Qvo61swTf9s@mail.gmail.com>
+From: Vivi <violetleigh@gmail.com>
+Subject: Re: [LTP] [Bug Fix] utimensat01 can't build
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,263 +28,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2341452183663299071=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+--===============2341452183663299071==
+Content-Type: multipart/alternative; boundary=0016368e1d22742f52049916ac7b
 
------ Original Message -----
-> Looking over the code, there are a number of flawed assumptions in
-> terms of how things are executed and it seems that the code is overly
-> complex. Before I go and do something rash though, I wanted others to
-> look at the code (in particular the areas I'm touching) and see
-> whether or not I'm just blowing something out my rear.
-> As-is the code doesn't compile due to warnings.
-> This is a WIP patch (please ignore the whitespace and style to a
-> small degree as I know gmail will fubar the formatting).
-> Thanks,
-> -Garrett
-> 
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-> index 8893f84..2ea1363 100644
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-> @@ -97,7 +97,7 @@ static option_t options[] = {
-> { NULL, NULL, NULL}
-> };
-> static void setup(void);
-> -static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-> +static void cleanup(void);
-Cyril suggested me to change this way to use LTP_ATTRIBUTE_NORETURN, as
-cleanup() will call tst_exit() anyway. What's the issues are you
-facing?
-> static void overcommit(void);
-> static void write_bytes(void *addr);
-> static void read_bytes(void *addr);
-> @@ -135,6 +135,7 @@ int main(int argc, char *argv[])
-> overcommit();
-> }
-> cleanup();
-> + tst_exit();
-This is not needed as mentioned before.
-> }
-> 
-> static void overcommit(void)
-> @@ -154,8 +155,15 @@ static void overcommit(void)
-> if (shmid == -1)
-> tst_brkm(TBROK|TERRNO, cleanup, "shmget");
-> } else {
-> - snprintf(s, BUFSIZ, "%s/hugemmap05/file", get_tmp_tstdir());
-> - fd = open(s, O_CREAT | O_RDWR, 0755);
-I did not write those code. My code is this,
-        } else {
-                snprintf(s, BUFSIZ, "%s/hugemmap05/file", TESTDIR);
-                fd = open(s, O_CREAT | O_RDWR, 0755);
+--0016368e1d22742f52049916ac7b
+Content-Type: text/plain; charset=ISO-8859-1
 
-Are you using the latest patch?
-http://marc.info/?l=ltp-list&m=129170706228725&w=2
+>>On Wednesday, December 29, 2010 04:35:48 Vivi wrote:
+>> LTP test case utimensat01.c can't build without file usctest.h.
 
-Again, what issues are your facing with this code?
-> + char *tmp_tstdir;
-> +
-> + tmp_tstdir = get_tst_tmpdir();
-> + if (tmp_tstdir == NULL)
-> + tst_brkm(TBROK|TERRNO, cleanup, "get_tmp_tstdir failed");
-> + snprintf(s, BUFSIZ, "%s/hugemmap05/file", tmp_tstdir);
-> + free(tmp_tstdir);
-> +
-> + fd = open(s, O_CREAT|O_RDWR, 0755);
-> if (fd == -1)
-> tst_brkm(TBROK|TERRNO, cleanup, "open");
-> addr = mmap(ADDR, (long)(length * MB), PROTECTION, FLAGS, fd,
-> @@ -195,19 +203,14 @@ static void overcommit(void)
-> return;
-> fclose(fp);
-> }
-> - if (shmid != -1) {
-> - tst_resm(TINFO, "shmid: 0x%x", shmid);
-> - shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
-> - if (shmaddr == (void *)-1)
-> - tst_brkm(TBROK|TERRNO, cleanup, "shmat");
-> - write_bytes(shmaddr);
-> - read_bytes(shmaddr);
-> - } else {
-> - write_bytes(addr);
-> - read_bytes(addr);
-> - }
-As you can read from the help(), the test can allocate hugepages either
-from shmget() or mmap(). In case of shmget(), a global variable shmid with
-the default value -1 will be change to 1 via command-line,
+>this compiles fine for me on x86_64/Linux as well as Blackfin/Linux without
+>this change.  so why do you need this ?
+>-mike
 
-static option_t options[] = {
-        { "s", &opt_sysfs,      NULL},
-        { "m", &shmid,          NULL},
-        { "a:", &opt_alloc,     &opt_allocstr},
-        { NULL, NULL,           NULL}
-};
 
-Therefore, there is a need to call shmat(). That is why it only call it
-when shmid != -1. In case of mmap(), there is no need to call shmat().
-> + tst_resm(TINFO, "shmid: 0x%x", shmid);
-> + shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
-> + if (shmaddr == (void *)-1)
-> + tst_brkm(TBROK|TERRNO, cleanup, "shmat");
-> + write_bytes(shmaddr);
-> + read_bytes(shmaddr);
-> if (opt_sysfs) {
-> - tst_resm(TINFO, "check sysfs.");
-> + tst_resm(TINFO, "checking sysfs.");
-> if (checksys(_PATH_SYS_2M_HUGE, "HugePages_Total",
-> length / 2) != 0)
-> return;
-> @@ -221,7 +224,7 @@ static void overcommit(void)
-> != 0)
-> return;
-> } else {
-> - tst_resm(TINFO, "check /proc/meminfo.");
-> + tst_resm(TINFO, "checking /proc/meminfo.");
-If you are going to change the syntax here, there are many other places
-also need to changed to be consistent like,
-"check sysfs."
-"check /proc/meminfo before allocation."
-etc
-> fp = fopen(_PATH_MEMINFO, "r");
-> if (fp == NULL)
-> tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-> @@ -236,18 +239,17 @@ static void overcommit(void)
-> return;
-> fclose(fp);
-> }
-> - if (shmid != -1) {
-> - if (shmdt(shmaddr) != 0)
-> - tst_brkm(TBROK|TERRNO, cleanup, "shmdt");
-> - } else {
-> - munmap(addr, (long)(length * MB));
-> - close(fd);
-> - unlink(s);
-> - }
-Same here. We call shmdt only in case of shmget(), and call munmap for
-mmap().
+I get following error when build utimensat01.c.
+--
+bfin-uclinux-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/home/test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/testcases/kernel/include
+-I../../../../include -I../../../../include -D__UCLIBC__ -DUCLINUX
+-L../../../../lib  utimensat01.c   -lltp -o utimensat01
+../../../../lib/libltp.a(tst_res.o): In function `tst_print':
+/home/test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/lib/tst_res.c:512:
+undefined reference to `_TEST_ERRNO'
+/home/test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/lib/tst_res.c:512:
+undefined reference to `_TEST_ERRNO'
+collect2: ld returned 1 exit status
+make: *** [utimensat01] Error 1
+--
 
-Thanks.
+--0016368e1d22742f52049916ac7b
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-CAI Qian
-> + shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
-> + if (shmaddr == (void *)-1)
-> + tst_brkm(TBROK|TERRNO, cleanup, "shmat failed");
-> + if (shmdt(shmaddr) != 0)
-> + tst_brkm(TBROK|TERRNO, cleanup, "shmdt failed");
-> }
-> 
-> static void cleanup(void)
-> {
-> + char *tmp_tstdir;
-> + void *shmaddr;
-> int fd;
-> 
-> TEST_CLEANUP;
-> @@ -262,38 +264,49 @@ static void cleanup(void)
-> fd = open(path, O_WRONLY);
-> if (fd == -1)
-> tst_resm(TWARN|TERRNO, "open");
-> - tst_resm(TINFO, "restore nr_hugepages to %s.", nr_hugepages);
-> - if (write(fd, nr_hugepages,
-> - strlen(nr_hugepages)) != strlen(nr_hugepages))
-> + tst_resm(TINFO, "restoring nr_hugepages to %s", nr_hugepages);
-> + if (write(fd, nr_hugepages, strlen(nr_hugepages)) !=
-> + strlen(nr_hugepages))
-> tst_resm(TWARN|TERRNO, "write");
-> close(fd);
-> 
-> fd = open(pathover, O_WRONLY);
-> if (fd == -1)
-> tst_resm(TWARN|TERRNO, "open");
-> - tst_resm(TINFO, "restore nr_overcommit_hugepages to %s.",
-> + tst_resm(TINFO, "restoring nr_overcommit_hugepages to %s.",
-> nr_overcommit_hugepages);
-> if (write(fd, nr_overcommit_hugepages,
-> strlen(nr_overcommit_hugepages))
-> != strlen(nr_overcommit_hugepages))
-> tst_resm(TWARN|TERRNO, "write");
-> close(fd);
-> 
-> - snprintf(buf, BUFSIZ, "%s/hugemmap05", get_tst_tmpdir());
-> + tmp_tstdir = get_tst_tmpdir();
-> + if (tmp_tstdir == NULL)
-> + tst_brkm(TBROK|TERRNO, NULL, "tmp_tstdir failed");
-> + snprintf(buf, BUFSIZ, "%s/hugemmap05", tmp_tstdir);
-> + free(tmp_tstdir);
-> + shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
-> + if (shmaddr == (void *)-1)
-> + tst_brkm(TBROK|TERRNO, cleanup, "shmat");
-> + else if (shmdt(shmaddr) == -1)
-> + tst_resm(TBROK|TERRNO, "shmdt failed");
-> + else if (shmctl(shmid, IPC_RMID, NULL) == -1)
-> + tst_resm(TBROK|TERRNO,
-> + "shmctl(..., IPC_RMID, ...) failed");
-> if (umount(buf) == -1)
-> tst_resm(TWARN|TERRNO, "umount");
-> - if (shmid != -1) {
-> - tst_resm(TINFO|TERRNO, "shmdt");
-> - shmctl(shmid, IPC_RMID, NULL);
-> - }
-> + tst_rmdir();
-> 
-> }
-> 
-> static void setup(void)
-> {
-> FILE *fp;
-> + char *tmp_tstdir;
-> int fd;
-> 
-> tst_sig(FORK, DEF_HANDLER, cleanup);
-> + tst_tmpdir();
-> TEST_PAUSE;
-> if (shmid != -1) {
-> fp = fopen(_PATH_SHMMAX, "r");
-> @@ -332,7 +345,7 @@ static void setup(void)
-> tst_brkm(TBROK|TERRNO, cleanup, "write");
-> if (lseek(fd, 0, SEEK_SET) == -1)
-> tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-> - snprintf(buf, BUFSIZ, "%ld", size);
-> + snprintf(buf, BUFSIZ, "%zd", size);
-> if (write(fd, buf, strlen(buf)) != strlen(buf))
-> tst_brkm(TBROK|TERRNO, cleanup,
-> "failed to change nr_hugepages.");
-> @@ -356,13 +369,18 @@ static void setup(void)
-> tst_brkm(TBROK|TERRNO, cleanup, "write");
-> if (lseek(fd, 0, SEEK_SET) == -1)
-> tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-> - snprintf(buf, BUFSIZ, "%ld", size);
-> + snprintf(buf, BUFSIZ, "%zd", size);
-> if (write(fd, buf, strlen(buf)) != strlen(buf))
-> tst_brkm(TBROK|TERRNO, cleanup,
-> "failed to change nr_hugepages.");
-> close(fd);
-> 
-> - snprintf(buf, BUFSIZ, "%s/hugemmap05", get_tst_tmpdir());
-> + tmp_tstdir = get_tst_tmpdir();
-> + if (tmp_tstdir == NULL)
-> + tst_brkm(TBROK|TERRNO, NULL, "tmp_tstdir failed");
-> + snprintf(buf, BUFSIZ, "%s/hugemmap05", tmp_tstdir);
-> + free(tmp_tstdir);
-> +
-> if (mkdir(buf, 0700) == -1)
-> tst_brkm(TBROK|TERRNO, cleanup, "mkdir");
-> if (mount(NULL, buf, "hugetlbfs", 0, NULL) == -1)
-> @@ -447,4 +465,4 @@ static int checkproc(FILE *fp, char *pattern, int
-> value)
-> return 1;
-> }
-> return 0;
-> -}
-> \ No newline at end of file
-> +}
+&gt;&gt;On Wednesday, December 29, 2010 04:35:48 Vivi wrote:<br>
+&gt;&gt; LTP test case utimensat01.c can&#39;t build without file usctest.h=
+.<br><br>&gt;this compiles fine for me on x86_64/Linux as well as Blackfin/=
+Linux without<br>
+&gt;this change. =A0so why do you need this ?<br>
+<font color=3D"#888888">&gt;-mike</font><br><br><br>I get following error w=
+hen build utimensat01.c.<br>--<br>bfin-uclinux-gcc -g -O2 -g -O2 -fno-stric=
+t-aliasing -pipe -Wall=A0 -I/home/test/work/cruise/checkouts/uclinux-dist/t=
+estsuites/ltp/ltp-full-20101031/testcases/kernel/include -I../../../../incl=
+ude -I../../../../include -D__UCLIBC__ -DUCLINUX=A0=A0 -L../../../../lib=A0=
+ utimensat01.c=A0=A0 -lltp -o utimensat01<br>
+../../../../lib/libltp.a(tst_res.o): In function `tst_print&#39;:<br>/home/=
+test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/li=
+b/tst_res.c:512: undefined reference to `_TEST_ERRNO&#39;<br>/home/test/wor=
+k/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/lib/tst_re=
+s.c:512: undefined reference to `_TEST_ERRNO&#39;<br>
+collect2: ld returned 1 exit status<br>make: *** [utimensat01] Error 1<br>-=
+-<br>
+
+--0016368e1d22742f52049916ac7b--
+
+
+--===============2341452183663299071==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Learn how Oracle Real Application Clusters (RAC) One Node allows customers
@@ -287,7 +100,16 @@ to consolidate database storage, standardize their database environment, and,
 should the need arise, upgrade to a full multi-node Oracle RAC database 
 without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
+--===============2341452183663299071==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2341452183663299071==--
+
