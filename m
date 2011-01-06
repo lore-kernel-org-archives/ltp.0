@@ -2,16 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PdiyV-0003T0-HA
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 12:41:51 +0000
-Date: Fri, 14 Jan 2011 13:58:31 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110114125831.GB1609@saboteur.suse.cz>
-References: <4D301BF1.8070101@cn.fujitsu.com>
+	(envelope-from <vapierfilter@gmail.com>) id 1PauU2-00012X-1d
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:22:46 +0000
+Received: from mail-ew0-f47.google.com ([209.85.215.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PauU1-000854-7N
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:22:46 +0000
+Received: by ewy28 with SMTP id 28so4249893ewy.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Jan 2011 10:22:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4D301BF1.8070101@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] Fix a building error.
+In-Reply-To: <4D25A28C.1030204@cn.fujitsu.com>
+References: <4D259E4A.2050704@cn.fujitsu.com> <4D25A28C.1030204@cn.fujitsu.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 6 Jan 2011 13:22:18 -0500
+Message-ID: <AANLkTi=6EoGnDxgYewZi5jqQ_4+GUY=i12T3mZqT3iBw@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 09/13]Add a missing ")"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,30 +27,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: tangchen <tangchen@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> A build error is caught after applied commit bacc849720ec4efda5a0a8a9ea6a0e93a1415541.
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+On Thu, Jan 6, 2011 at 6:07 AM, tangchen wrote:
+> =A0testcases/kernel/syscalls/pread/pread03.c | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
 
-You were faster than me ;).
+please use more useful summaries.  in this case, your summary should
+be prefixed with "pread03: ".
+-mike
 
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
+---------------------------------------------------------------------------=
+---
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, an=
+d, =
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+should the need arise, upgrade to a full multi-node Oracle RAC database =
 
-------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
+without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
