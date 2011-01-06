@@ -2,22 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PfD8v-0003xs-PY
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 15:06:45 +0000
-Received: from mail-iw0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PfD8u-0002va-L7
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 15:06:45 +0000
-Received: by iwn8 with SMTP id 8so6017746iwn.34
+	(envelope-from <vapierfilter@gmail.com>) id 1PawNq-0003oG-7f
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 20:24:30 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PawNp-0001eZ-A5
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 20:24:30 +0000
+Received: by fxm17 with SMTP id 17so15547876fxm.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 18 Jan 2011 07:06:39 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1082)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <2071432981.37105.1295362614543.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Tue, 18 Jan 2011 07:06:34 -0800
-Message-Id: <C5520275-F1CD-46F9-A9CE-3DEC1A298FD0@gmail.com>
-References: <2071432981.37105.1295362614543.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] rework code for oom and ksm tests
+	Thu, 06 Jan 2011 12:24:23 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
+References: <4D259E4A.2050704@cn.fujitsu.com>
+	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
+	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 6 Jan 2011 15:24:01 -0500
+Message-ID: <AANLkTimXYP1SfRWoy1S6VWAhAFn-B7p0wgrOOu+Az-Bd@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +32,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Jan 18, 2011, at 6:56 AM, CAI Qian wrote:
+On Thu, Jan 6, 2011 at 2:35 PM, Garrett Cooper wrote:
+> On Jan 6, 2011, at 10:26 AM, Mike Frysinger wrote:
+>> On Thu, Jan 6, 2011 at 5:49 AM, tangchen wrote:
+>>> There are several small bugs making LTP unable to be built, most of
+>>> which are syntax errors.
+>>>
+>>> 1. Add missing parameters for tst_brkm() in
+>>> testcases/kernel/syscalls/fchmod/fchmod03.c
+>>> 2. Add missing parameters for tst_brkm() in
+>>> testcases/kernel/syscalls/flock/flock04.c
+>>> 3. Add missing ";" in testcases/kernel/syscalls/getpagesize/getpagesize01.c
+>>> 4. Correct the parameters' names for parse_opts() in
+>>> testcases/kernel/syscalls/lchown/lchown02.c
+>>> 5. Add some preprocessor variables in /testcases/kernel/mem/ksm/ksm01.c
+>>> bacause KSM is not supported on RHEL5
+>>> 6. Add missing operators for parse_opts() in
+>>> testcases/kernel/syscalls/msync/msync04.c
+>>> 7. Fix an wrong using of macro WTERMSIG in
+>>> testcases/kernel/syscalls/pipe/pipe04.c
+>>> 8. Fix the wrong variable name of wtstatus in
+>>> testcases/kernel/syscalls/pipe/pipe09.c
+>>> 9. Add a missing ")" in testcases/kernel/syscalls/pread/pread03.c
+>>> 10. Remove a redundant "{" in
+>>> testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
+>>> 11. Fix the wrong using of perror() in
+>>> testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
+>>> 12. Add a missing variable TST_TOTAL in
+>>> testcases/kernel/syscalls/socketpair/socketpair02.c
+>>> 13. Add missing parameters for tst_brkm() in
+>>> testcases/kernel/syscalls/statfs/statfs03.c
+>>
+>> this is weird ... how did all these *compile errors* manage to get
+>> *committed* ??
+>
+> A really bad merge (I posted a reply to it a while ago in the archives).
 
-> Mainly to reduce code duplication. Also, to add an option for ksm01 to
-> use a different memory allocation unit size to take advantage of
-> THP. In addition, adjust ksm01 according the latest upstream
-> development effort,
-> http://marc.info/?l=linux-mm&m=129473104716901&w=2
-> http://marc.info/?l=linux-mm&m=129442718808733&w=2
-> 
-> Signed-off-by: CAI Qian <caiqian@redhat.com>
+i guess i read that as "things are fixed now" rather than "there are
+still some latent issues laying about"
+-mike
 
-	I was in the middle of writing up a style guide before I accidentally quite mousepad and lost my progress... Please look at the last couple commits I signed off on and try to follow my example for how to do things in a more consistent manner according to I've been trying to do in the project over the past couple of weeks; I'll see if I can rewrite bits and pieces of the style guide before nightfall.
-Thanks,
--Garrett
 ------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
