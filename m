@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PfTwL-0005jv-Tk
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:02:53 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PfTwK-0007xM-Se
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:02:53 +0000
-Received: by wwi18 with SMTP id 18so598213wwi.10
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tangchen@cn.fujitsu.com>) id 1PanZq-0006sL-2A
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:00:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PanZp-0002bn-1W
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:00:18 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 5C2E117013B
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 19 Jan 2011 01:02:46 -0800 (PST)
+	Thu,  6 Jan 2011 19:00:08 +0800 (CST)
+Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06At2JY019158
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 18:55:02 +0800
+Message-ID: <4D25A136.2020400@cn.fujitsu.com>
+Date: Thu, 06 Jan 2011 19:02:14 +0800
+From: tangchen <tangchen@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <939890281.56169.1295424638444.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <1653392548.56166.1295424632735.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<939890281.56169.1295424638444.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Wed, 19 Jan 2011 01:02:46 -0800
-Message-ID: <AANLkTimDZjkcbbd9OFdRj--7iS7_Lo8XAvOfsRjho-Cx@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fork13: pid reuse race
+References: <4D259E4A.2050704@cn.fujitsu.com>
+In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
+Subject: [LTP]  [PATCH 05/13]Add some preprocessor variables
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,55 +31,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Jan 19, 2011 at 12:10 AM, CAI Qian <caiqian@redhat.com> wrote:
-> >From the mainline commit 5fdee8c4a5e1800489ce61963208f8cc55e42ea1:
->
-> A program that repeatedly forks and waits is susceptible to having the
-> same pid repeated, especially when it competes with another instance of
-> the same program. =A0This is really bad for bash implementation.
-> Furthermore, many shell scripts assume that pid numbers will not be used
-> for some length of time.
->
-> Race Description:
->
-> A =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0B
->
-> // pid =3D=3D offset =3D=3D n =A0 =A0 =A0 =A0 =A0 =A0// pid =3D=3D offset=
- =3D=3D n + 1
-> test_and_set_bit(offset, map->page)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 test_and_=
-set_bit(offset, map->page);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pid_ns->l=
-ast_pid =3D pid;
-> pid_ns->last_pid =3D pid;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 // pid =
-=3D=3D n + 1 is freed (wait())
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 // Next f=
-ork()...
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 last =3D =
-pid_ns->last_pid; // =3D=3D n
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pid =3D l=
-ast + 1;
+KSM is not supported on RHEL5.
 
-Commit pending.
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
+Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
 ---
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand =
+  testcases/kernel/mem/ksm/ksm01.c        |   18 +++++++++++++++---
+  testcases/kernel/syscalls/mmap/mmap10.c |    6 +++++-
+  2 files changed, 20 insertions(+), 4 deletions(-)
 
-malware threats, the impact they can have on your business, and how you =
+diff --git a/testcases/kernel/mem/ksm/ksm01.c 
+b/testcases/kernel/mem/ksm/ksm01.c
+index 09f71d7..2b10fef 100644
+--- a/testcases/kernel/mem/ksm/ksm01.c
++++ b/testcases/kernel/mem/ksm/ksm01.c
+@@ -70,11 +70,15 @@
+  #include "test.h"
+  #include "usctest.h"
 
-can protect your company and customers by using code signing.
+-#define _PATH_KSM    "/sys/kernel/mm/ksm/"
+-#define MB        (1024 * 1024)
+
+  char *TCID = "ksm01";
+  int TST_TOTAL = 1;
++
++#ifdef    MADV_MERGEABLE
++
++#define _PATH_KSM    "/sys/kernel/mm/ksm/"
++#define MB        (1024 * 1024)
++
+  static int opt_num, opt_size;
+  static char *opt_numstr, *opt_sizestr;
+  /* memory pointer to identify per process, MB, and byte like
+@@ -536,4 +540,12 @@ void group_check(int run, int pages_shared, int 
+pages_sharing,
+      check("pages_unshared", NULL, pages_unshared);
+      check("sleep_millisecs", NULL, sleep_millisecs);
+      check("pages_to_scan", NULL, pages_to_scan);
+-}
+\ No newline at end of file
++}
++
++#else
++int main(int argc, char *argv[])
++{
++    tst_brkm(TRETR, tst_exit, "KSM is unsupported");
++}
++#endif
++
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c 
+b/testcases/kernel/syscalls/mmap/mmap10.c
+index b31975e..e3a158e 100644
+--- a/testcases/kernel/syscalls/mmap/mmap10.c
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -115,9 +115,13 @@ void mmapzero(void)
+      if (x == MAP_FAILED)
+          tst_brkm(TBROK|TERRNO, cleanup, "mmap");
+      if (opt_ksm) {
++#ifdef    MADV_MERGEABLE
+          tst_resm(TINFO, "add to KSM regions.");
+          if (madvise(x, SIZE+SIZE-4096, MADV_MERGEABLE) == -1)
+              tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++#else
++        tst_brkm(TRETR, cleanup, "KSM is unsupported.");
++#endif
+      }
+      x[SIZE] = 0;
+
+@@ -175,4 +179,4 @@ void help(void)
+  {
+      printf("  -a      Test anonymous pages\n");
+      printf("  -s      Add to KSM regions\n");
+-}
+\ No newline at end of file
++}
+-- 
+1.7.0.4
+
+
+-- 
+Best Regards,
+Tang chen
+
+
+
+------------------------------------------------------------------------------
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
