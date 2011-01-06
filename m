@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PhJCh-0008Hj-9d
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:59:19 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PhJCe-0000J0-Dl
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:59:19 +0000
-Message-ID: <4D3D4D36.1030002@cn.fujitsu.com>
-Date: Mon, 24 Jan 2011 17:58:14 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapierfilter@gmail.com>) id 1PauVB-00039i-IR
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:23:57 +0000
+Received: from mail-ey0-f175.google.com ([209.85.215.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PauVA-0006XN-Kc
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:23:57 +0000
+Received: by eya28 with SMTP id 28so6853411eya.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Jan 2011 10:23:50 -0800 (PST)
 MIME-Version: 1.0
-References: <000001cb96a5$12026c30$36074490$@co.jp>
-In-Reply-To: <000001cb96a5$12026c30$36074490$@co.jp>
-Subject: Re: [LTP] [PATCH] fix "sched_getparam/6-1" and
- "sched_getscheduler/7-1" tests
+In-Reply-To: <4D25A136.2020400@cn.fujitsu.com>
+References: <4D259E4A.2050704@cn.fujitsu.com> <4D25A136.2020400@cn.fujitsu.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 6 Jan 2011 13:23:30 -0500
+Message-ID: <AANLkTi=-BZaz5UVc=M++PzZ9dYiZ7Q7hT4b2PG2ENp8Q@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 05/13]Add some preprocessor variables
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,142 +27,34 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net, =?UTF-8?B?55W25bqnIOWBpeW4gg==?= <toza@ryobi.co.jp>
+To: tangchen <tangchen@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
-Mitani wrote:
-> Hi,
-> 
-> 
-> Following POSIX testsets failed:
-> ------------
-> conformance/interfaces/sched_getparam/6-1: execution: FAILED: Output:
-> Testing with user 'bin' (euid: 1)(uid: 1)
-> The function sched_getparam has successed.
-> ------------
-> 
-> ------------
-> conformance/interfaces/sched_getscheduler/7-1: execution: FAILED: Output:
-> Testing with user 'bin' (uid: 1)
-> The function sched_getscheduler has successed.
-> ------------
-> 
-> The environments are as follows:
->   - RHEL4.8 --- (x86, x86_64, ia64)
->   - kernel  --- kernel-2.6.9-89.EL
->   - glibc   --- glibc-2.3.4-2.43
-> 
->   - RHEL5.5 --- (x86, x86_64, ia64)
->   - kernel  --- kernel-2.6.18-194.el5
->   - glibc   --- glibc-2.5-49
-> 
-> 
-> They are permission tests.
-> 
-> The comment of "sched_getparam/6-1" testset source is as follows:
-> ------------
->   * On Linux, e.g, the kernel makes no check on user permission to call this
->   * API. So basically we don't know on what condition a system should return
->   * EPERM. It is implementation defined.
-> ------------
-> 
-
-Hi Garrett,
-
- I think it's better to report UNRESOLVED, whatever the os is.
-
-Regards
- Bian
-
-> 
-> Therefore I revised their results to "UNRESOLVED" by judging linux
-> environment.
-> 
-> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
-> ============
-> ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/sched_getparam/6-1.c
-> 2010-12-08 15:39:45.000000000 +0900
-> +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/sched_getparam/6-1.c
-> 2010-12-08 13:48:51.000000000 +0900
-> @@ -65,6 +65,11 @@
->  	struct sched_param param;
->  	int result = -1;
->  
-> +#ifdef __linux__
-> +	printf("We don't know on what condition a system should return
-> EPERM.\n");
-> +        return PTS_UNRESOLVED;
+On Thu, Jan 6, 2011 at 6:02 AM, tangchen wrote:
+> +#else
+> +int main(int argc, char *argv[])
+> +{
+> + =A0 =A0tst_brkm(TRETR, tst_exit, "KSM is unsupported");
+> +}
 > +#endif
-> +
->  	/* We assume process Number 1 is created by root */
->  	/* and can only be accessed by root */ 
->  	/* This test should be run under standard user permissions */
-> ============
-> 
-> ============
-> ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/sched_getscheduler/7
-> -1.c	2010-11-12 02:19:16.000000000 +0900
-> +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/sched_getscheduler/7
-> -1.c	2010-12-08 15:42:23.000000000 +0900
-> @@ -55,6 +55,11 @@
->  
->  	int result = -1;
->  
-> +#ifdef __linux__
-> +	printf("We don't know on what condition a system should return
-> EPERM.\n");
-> +	return PTS_UNRESOLVED;
-> +#endif
-> +
->  	/* We assume process Number 1 is created by root */
->  	/* and can only be accessed by root */ 
->  	/* This test should be run under standard user permissions */
-> ============
-> 
-> 
-> 
-> Regards--
-> 
-> -Tomonori Mitani
-> 
-> 
-> ------------------------------------------------------------------------
-> 
-> ------------------------------------------------------------------------------
-> What happens now with your Lotus Notes apps - do you make another costly 
-> upgrade, or settle for being marooned without product support? Time to move
-> off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
-> use, and manage than apps on traditional platforms. Sign up for the Lotus 
-> Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
-> 
-> 
-> ------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
--- 
-Regards
-Bian Naimeng
+i forget ... what did we decide for situations like this ?  tst_bkrm(TCONF)=
+ ?
+-mike
 
+---------------------------------------------------------------------------=
+---
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, an=
+d, =
 
-------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+should the need arise, upgrade to a full multi-node Oracle RAC database =
+
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
