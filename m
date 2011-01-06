@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1Pca0c-0000Ax-K4
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:55:18 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pca0b-00024h-J9
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:55:18 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8tCfG027730
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:55:12 -0500
-Date: Tue, 11 Jan 2011 03:55:12 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <85958116.42979.1294736112060.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1781507635.42976.1294736107850.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_42978_1833677859.1294736112059"
-Subject: [LTP] [PATCH 09/13] zram01: check root
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PavcY-0002Ml-K3
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 19:35:38 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PavcX-00071N-SQ
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 19:35:38 +0000
+Received: by iwn8 with SMTP id 8so16454840iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Jan 2011 11:35:32 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1082)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
+Date: Thu, 6 Jan 2011 11:35:27 -0800
+Message-Id: <20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
+References: <4D259E4A.2050704@cn.fujitsu.com>
+	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,74 +28,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
-------=_Part_42978_1833677859.1294736112059
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- testcases/kernel/mem/zram/zram01.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/mem/zram/zram01.c b/testcases/kernel/mem/zram/zram01.c
-index e63cec4..1f1a5f4 100644
---- a/testcases/kernel/mem/zram/zram01.c
-+++ b/testcases/kernel/mem/zram/zram01.c
-@@ -106,6 +106,8 @@ int main(int argc, char *argv[])
- 
- void setup(void)
- {
-+	tst_require_root(tst_exit);
-+
- 	if (access(PATH_ZRAM, R_OK|W_OK|X_OK) == -1 && errno == ENOENT) {
- 		system("modprobe zram");
- 		modprobe = 1;
--- 
-1.7.3.2
-------=_Part_42978_1833677859.1294736112059
-Content-Type: text/x-patch; name=0009-zram01-check-root.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=0009-zram01-check-root.patch
-
-RnJvbSA2NTU1ZmM4NzE3MjdjZmNhNzI0NDUyYWYwMjQ0NzQ4ZDRkYzJjNmZiIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
-dWUsIDExIEphbiAyMDExIDE2OjQyOjM2ICswODAwClN1YmplY3Q6IFtQQVRDSCAwOS8xM10genJh
-bTAxOiBjaGVjayByb290CgoKU2lnbmVkLW9mZi1ieTogQ0FJIFFpYW4gPGNhaXFpYW5AcmVkaGF0
-LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL21lbS96cmFtL3pyYW0wMS5jIHwgICAgMiArKwog
-MSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0venJhbS96cmFtMDEuYyBiL3Rlc3RjYXNlcy9rZXJu
-ZWwvbWVtL3pyYW0venJhbTAxLmMKaW5kZXggZTYzY2VjNC4uMWYxYTVmNCAxMDA2NDQKLS0tIGEv
-dGVzdGNhc2VzL2tlcm5lbC9tZW0venJhbS96cmFtMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVs
-L21lbS96cmFtL3pyYW0wMS5jCkBAIC0xMDYsNiArMTA2LDggQEAgaW50IG1haW4oaW50IGFyZ2Ms
-IGNoYXIgKmFyZ3ZbXSkKIAogdm9pZCBzZXR1cCh2b2lkKQogeworCXRzdF9yZXF1aXJlX3Jvb3Qo
-dHN0X2V4aXQpOworCiAJaWYgKGFjY2VzcyhQQVRIX1pSQU0sIFJfT0t8V19PS3xYX09LKSA9PSAt
-MSAmJiBlcnJubyA9PSBFTk9FTlQpIHsKIAkJc3lzdGVtKCJtb2Rwcm9iZSB6cmFtIik7CiAJCW1v
-ZHByb2JlID0gMTsKLS0gCjEuNy4zLjIKCg==
-------=_Part_42978_1833677859.1294736112059
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
+
+On Jan 6, 2011, at 10:26 AM, Mike Frysinger wrote:
+
+> On Thu, Jan 6, 2011 at 5:49 AM, tangchen wrote:
+>> There are several small bugs making LTP unable to be built, most of
+>> which are syntax errors.
+>> 
+>> 1. Add missing parameters for tst_brkm() in
+>> testcases/kernel/syscalls/fchmod/fchmod03.c
+>> 2. Add missing parameters for tst_brkm() in
+>> testcases/kernel/syscalls/flock/flock04.c
+>> 3. Add missing ";" in testcases/kernel/syscalls/getpagesize/getpagesize01.c
+>> 4. Correct the parameters' names for parse_opts() in
+>> testcases/kernel/syscalls/lchown/lchown02.c
+>> 5. Add some preprocessor variables in /testcases/kernel/mem/ksm/ksm01.c
+>> bacause KSM is not supported on RHEL5
+>> 6. Add missing operators for parse_opts() in
+>> testcases/kernel/syscalls/msync/msync04.c
+>> 7. Fix an wrong using of macro WTERMSIG in
+>> testcases/kernel/syscalls/pipe/pipe04.c
+>> 8. Fix the wrong variable name of wtstatus in
+>> testcases/kernel/syscalls/pipe/pipe09.c
+>> 9. Add a missing ")" in testcases/kernel/syscalls/pread/pread03.c
+>> 10. Remove a redundant "{" in
+>> testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
+>> 11. Fix the wrong using of perror() in
+>> testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
+>> 12. Add a missing variable TST_TOTAL in
+>> testcases/kernel/syscalls/socketpair/socketpair02.c
+>> 13. Add missing parameters for tst_brkm() in
+>> testcases/kernel/syscalls/statfs/statfs03.c
+> 
+> this is weird ... how did all these *compile errors* manage to get
+> *committed* ??
+
+A really bad merge (I posted a reply to it a while ago in the archives).
+-Garrett
+
 
 ------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
-------=_Part_42978_1833677859.1294736112059
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_42978_1833677859.1294736112059--
-
