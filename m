@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Pdyr4-0005Tl-BG
-	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 05:39:14 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pdyr2-0003gq-4l
-	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 05:39:14 +0000
-Received: by wyb40 with SMTP id 40so3415858wyb.34
+	(envelope-from <tangchen@cn.fujitsu.com>) id 1PanjD-00040b-RJ
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:09:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PanjC-0005BY-NA
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:09:59 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 95EA7170138
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 14 Jan 2011 21:39:06 -0800 (PST)
+	Thu,  6 Jan 2011 19:09:52 +0800 (CST)
+Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06B4kpi019356
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 19:04:46 +0800
+Message-ID: <4D25A37D.9080303@cn.fujitsu.com>
+Date: Thu, 06 Jan 2011 19:11:57 +0800
+From: tangchen <tangchen@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=TOy3i69CnLoZPK+rYqUQ_TfCQXmV=STzYop2i@mail.gmail.com>
-References: <AANLkTi=TOy3i69CnLoZPK+rYqUQ_TfCQXmV=STzYop2i@mail.gmail.com>
-Date: Fri, 14 Jan 2011 21:39:05 -0800
-Message-ID: <AANLkTi=MC-shYNCszhz=8=nBg_J26_X5iBG-rcw05L7O@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] enable pwrite for 64 bits test
+References: <4D259E4A.2050704@cn.fujitsu.com>
+In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
+Subject: [LTP]  [PATCH 12/13]Add a missing variable TST_TOTAL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,47 +31,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vivi <violetleigh@gmail.com>
-Cc: LTP mailing list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Dec 29, 2010 at 1:35 AM, Vivi <violetleigh@gmail.com> wrote:
-> Enable ltp test of pwrite for 64 bit test.
->
-> Bellow is the patch:
-> --
-> Index: testcases/kernel/syscalls/pwrite/Makefile
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- testcases/kernel/syscalls/pwrite/Makefile=A0=A0 (revision 161)
-> +++ testcases/kernel/syscalls/pwrite/Makefile=A0=A0 (revision 183)
-> @@ -19,5 +19,8 @@
-> =A0top_srcdir=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ?=3D ../../../..
->
-> =A0include $(top_srcdir)/include/mk/testcases.mk
-> +include $(abs_srcdir)/../utils/newer_64.mk
->
-> +%_64: CPPFLAGS +=3D -D_FILE_OFFSET_BITS=3D64
-> +
-> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
-
-I applied your patch, but there are a lot of warnings w.r.t. 64-bit
-compilation that need fixing now. Please provide another patch to fix
-that.
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
+Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
 ---
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand =
+  .../kernel/syscalls/socketpair/socketpair02.c      |    6 ++++--
+  1 files changed, 4 insertions(+), 2 deletions(-)
 
-malware threats, the impact they can have on your business, and how you =
+diff --git a/testcases/kernel/syscalls/socketpair/socketpair02.c 
+b/testcases/kernel/syscalls/socketpair/socketpair02.c
+index e898066..7ac74f3 100644
+--- a/testcases/kernel/syscalls/socketpair/socketpair02.c
++++ b/testcases/kernel/syscalls/socketpair/socketpair02.c
+@@ -65,7 +65,8 @@
+  extern char *TESTDIR;        /* temporary dir created by tst_tmpdir() */
 
-can protect your company and customers by using code signing.
+  /* Global Variables */
+-char *TCID = "socketpair02";    /* test program identifier.              */
++char *TCID = "socketpair02";    /* test program identifier.*/
++int TST_TOTAL = 1;
+
+  /* Extern Global Functions */
+  /******************************************************************************/
+@@ -162,4 +163,5 @@ int main(int argc, char *argv[])
+      tst_resm(TPASS, "socketpair(SOCK_NONBLOCK) PASSED");
+      cleanup();
+      tst_exit();
+-}
+\ No newline at end of file
++}
++
+-- 
+1.7.0.4
+
+
+-- 
+Best Regards,
+Tang chen
+
+
+
+------------------------------------------------------------------------------
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
