@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PiOWi-00032b-Sx
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jan 2011 09:52:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PiOWh-0001vK-Dk
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jan 2011 09:52:28 +0000
-Message-ID: <4D414061.1060502@cn.fujitsu.com>
-Date: Thu, 27 Jan 2011 17:52:33 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapierfilter@gmail.com>) id 1PauXd-0004fn-Uz
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:26:29 +0000
+Received: from mail-ew0-f47.google.com ([209.85.215.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PauXd-0003Lv-0P
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:26:29 +0000
+Received: by ewy28 with SMTP id 28so4251655ewy.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Jan 2011 10:26:23 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] sched_getscheduler01.c: fix error of wrong return code
+In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
+References: <4D259E4A.2050704@cn.fujitsu.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 6 Jan 2011 13:26:03 -0500
+Message-ID: <AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,54 +30,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: tangchen <tangchen@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+On Thu, Jan 6, 2011 at 5:49 AM, tangchen wrote:
+> There are several small bugs making LTP unable to be built, most of
+> which are syntax errors.
+>
+> 1. Add missing parameters for tst_brkm() in
+> testcases/kernel/syscalls/fchmod/fchmod03.c
+> 2. Add missing parameters for tst_brkm() in
+> testcases/kernel/syscalls/flock/flock04.c
+> 3. Add missing ";" in testcases/kernel/syscalls/getpagesize/getpagesize01.c
+> 4. Correct the parameters' names for parse_opts() in
+> testcases/kernel/syscalls/lchown/lchown02.c
+> 5. Add some preprocessor variables in /testcases/kernel/mem/ksm/ksm01.c
+> bacause KSM is not supported on RHEL5
+> 6. Add missing operators for parse_opts() in
+> testcases/kernel/syscalls/msync/msync04.c
+> 7. Fix an wrong using of macro WTERMSIG in
+> testcases/kernel/syscalls/pipe/pipe04.c
+> 8. Fix the wrong variable name of wtstatus in
+> testcases/kernel/syscalls/pipe/pipe09.c
+> 9. Add a missing ")" in testcases/kernel/syscalls/pread/pread03.c
+> 10. Remove a redundant "{" in
+> testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
+> 11. Fix the wrong using of perror() in
+> testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
+> 12. Add a missing variable TST_TOTAL in
+> testcases/kernel/syscalls/socketpair/socketpair02.c
+> 13. Add missing parameters for tst_brkm() in
+> testcases/kernel/syscalls/statfs/statfs03.c
 
-"return -1" should be replaced with "tst_exit()".
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
----
- .../sched_getscheduler/sched_getscheduler01.c      |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
-index 495ed44..3e938ee 100644
---- a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
-+++ b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
-@@ -125,7 +125,7 @@ int main(int ac, char **av)
- 	}
- 	cleanup();
- 
--	return -1;
-+	tst_exit();
-  }
- 
- /*
-@@ -155,4 +155,4 @@ void cleanup()
- 	 */
- 	TEST_CLEANUP;
- 
--}
-\ No newline at end of file
-+}
--- 
-1.7.0.1
-
-
--- 
-Best Regards,
-Peng Haitao
-
+this is weird ... how did all these *compile errors* manage to get
+*committed* ??
+-mike
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
