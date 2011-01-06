@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PcZya-0008PQ-Ek
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:53:12 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PcZyZ-0001rS-Ez
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:53:12 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8r6XH016611
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:53:06 -0500
-Date: Tue, 11 Jan 2011 03:53:06 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <600408183.42948.1294735986034.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1721941398.42945.1294735982904.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapierfilter@gmail.com>) id 1PauT4-0000ws-J0
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:21:46 +0000
+Received: from mail-ey0-f175.google.com ([209.85.215.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PauT3-0006T5-Lw
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:21:46 +0000
+Received: by eya28 with SMTP id 28so6852197eya.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Jan 2011 10:21:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_42947_1141146228.1294735986033"
-Subject: [LTP] [PATCH 05/13] mbind01: check root
+In-Reply-To: <4D25A333.40501@cn.fujitsu.com>
+References: <4D259E4A.2050704@cn.fujitsu.com> <4D25A333.40501@cn.fujitsu.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 6 Jan 2011 13:21:19 -0500
+Message-ID: <AANLkTi=bDvZF6O5=m1gpX08YgN05=Ey7rL8OXP7sQ1ta@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 11/13]Fix the wrong using of perror()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,75 +27,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: tangchen <tangchen@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-------=_Part_42947_1141146228.1294735986033
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+On Thu, Jan 6, 2011 at 6:10 AM, tangchen wrote:
+> --- a/testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
+> +++ b/testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
+> @@ -121,7 +121,8 @@ int main(int ac, char **av)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(sched_setparam(getppid(), &param));
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0if (TEST_RETURN =3D=3D -1) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("sched_setparam returned %ld", TE=
+ST_RETURN);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0fprintf(stderr, "sched_setparam returned=
+ %ld: "
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"%s\n", TEST_RETURN, strerror(er=
+rno));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0exit(0);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0exit(1);
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
+odd, this should have caused a compile error ...
+
+also, i wonder why this test isnt using tst_* helpers for its output ...
+-mike
+
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/mem/mbind/mbind01.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, an=
+d, =
 
-diff --git a/testcases/kernel/mem/mbind/mbind01.c b/testcases/kernel/mem/mbind/mbind01.c
-index 5c9c955..b6a1f68 100644
---- a/testcases/kernel/mem/mbind/mbind01.c
-+++ b/testcases/kernel/mem/mbind/mbind01.c
-@@ -77,6 +77,8 @@ int main(int argc, char** argv)
- 	} else
- 		numa_bitmask_setbit(nmask, 0);
- 
-+	tst_require_root(tst_exit);
-+
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		Tst_count = 0;
- 		addr = mmap(NULL, pagesize*3, PROT_READ|PROT_WRITE,
--- 
-1.7.3.2
-------=_Part_42947_1141146228.1294735986033
-Content-Type: text/x-patch; name=0005-mbind01-check-root.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=0005-mbind01-check-root.patch
+should the need arise, upgrade to a full multi-node Oracle RAC database =
 
-RnJvbSBhNmQ1ZmVkODM5MjcwMGIyNDVmNjM3YzY2YTRhYzFlMTUxZDJlZTFjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
-dWUsIDExIEphbiAyMDExIDE2OjM5OjA4ICswODAwClN1YmplY3Q6IFtQQVRDSCAwNS8xM10gbWJp
-bmQwMTogY2hlY2sgcm9vdAoKClNpZ25lZC1vZmYtYnk6IENBSSBRaWFuIDxjYWlxaWFuQHJlZGhh
-dC5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9tZW0vbWJpbmQvbWJpbmQwMS5jIHwgICAgMiAr
-KwogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZm
-IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vbWJpbmQvbWJpbmQwMS5jIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9tZW0vbWJpbmQvbWJpbmQwMS5jCmluZGV4IDVjOWM5NTUuLmI2YTFmNjggMTAwNjQ0
-Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL21iaW5kL21iaW5kMDEuYworKysgYi90ZXN0Y2Fz
-ZXMva2VybmVsL21lbS9tYmluZC9tYmluZDAxLmMKQEAgLTc3LDYgKzc3LDggQEAgaW50IG1haW4o
-aW50IGFyZ2MsIGNoYXIqKiBhcmd2KQogCX0gZWxzZQogCQludW1hX2JpdG1hc2tfc2V0Yml0KG5t
-YXNrLCAwKTsKIAorCXRzdF9yZXF1aXJlX3Jvb3QodHN0X2V4aXQpOworCiAJZm9yIChsYyA9IDA7
-IFRFU1RfTE9PUElORyhsYyk7IGxjKyspIHsKIAkJVHN0X2NvdW50ID0gMDsKIAkJYWRkciA9IG1t
-YXAoTlVMTCwgcGFnZXNpemUqMywgUFJPVF9SRUFEfFBST1RfV1JJVEUsCi0tIAoxLjcuMy4yCgo=
-
-------=_Part_42947_1141146228.1294735986033
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
-------=_Part_42947_1141146228.1294735986033
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_42947_1141146228.1294735986033--
-
