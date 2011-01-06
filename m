@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PfU3e-00067W-N0
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:10:26 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PfU3d-0006V8-Ug
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:10:26 +0000
-Received: by wyb40 with SMTP id 40so586814wyb.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tangchen@cn.fujitsu.com>) id 1Panao-0004rp-Ey
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:01:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Panal-0002mx-J8
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:01:16 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id DB23817013B
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 19 Jan 2011 01:10:19 -0800 (PST)
+	Thu,  6 Jan 2011 19:01:09 +0800 (CST)
+Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06Au3YT019169
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 18:56:04 +0800
+Message-ID: <4D25A173.8020708@cn.fujitsu.com>
+Date: Thu, 06 Jan 2011 19:03:15 +0800
+From: tangchen <tangchen@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1974851619.56201.1295424811447.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <1220355164.56198.1295424804831.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<1974851619.56201.1295424811447.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Wed, 19 Jan 2011 01:10:19 -0800
-Message-ID: <AANLkTincQudD7ZenNx1wGCb1Zzme=QVXv5pkaF3Lep2v@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/4] ksm02: KSM for NUMA
+References: <4D259E4A.2050704@cn.fujitsu.com>
+In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
+Subject: [LTP]  [PATCH 06/13]Add missing operators
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,31 +31,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Jan 19, 2011 at 12:13 AM, CAI Qian <caiqian@redhat.com> wrote:
-> Signed-off-by: CAI Qian <caiqian@redhat.com>
-> ---
-> =A0testcases/kernel/mem/ksm/ksm02.c | =A0137 ++++++++++++++++++++++++++++=
-++++++++++
-> =A01 files changed, 137 insertions(+), 0 deletions(-)
-> =A0create mode 100644 testcases/kernel/mem/ksm/ksm02.c
-
-Commit pending.
--Garrett
-
----------------------------------------------------------------------------=
+Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
 ---
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand =
+  testcases/kernel/syscalls/msync/msync04.c |    2 +-
+  1 files changed, 1 insertions(+), 1 deletions(-)
 
-malware threats, the impact they can have on your business, and how you =
+diff --git a/testcases/kernel/syscalls/msync/msync04.c 
+b/testcases/kernel/syscalls/msync/msync04.c
+index 3e4b9a4..4e5dccb 100644
+--- a/testcases/kernel/syscalls/msync/msync04.c
++++ b/testcases/kernel/syscalls/msync/msync04.c
+@@ -93,7 +93,7 @@ int main(int ac, char **av)
+      char *msg;        /* message returned from parse_opts */
 
-can protect your company and customers by using code signing.
+      /* Parse standard options given to run the test. */
+-    if ((msg = parse_opts(ac, av, NULL, NULL)) NULL)
++    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+          tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+
+      TEST_EXP_ENOS(exp_enos);
+-- 
+1.7.0.4
+
+
+-- 
+Best Regards,
+Tang chen
+
+
+
+------------------------------------------------------------------------------
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
