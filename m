@@ -1,19 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PhzSu-0005Ee-9q
-	for ltp-list@lists.sourceforge.net; Wed, 26 Jan 2011 07:06:52 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PhzSs-0005bM-VD
-	for ltp-list@lists.sourceforge.net; Wed, 26 Jan 2011 07:06:52 +0000
-Date: Wed, 26 Jan 2011 02:06:42 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1890463144.158606.1296025602247.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <AANLkTin52dVdOUf0K25Sma2NrGLmet9aK7tbUmg3fKds@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tangchen@cn.fujitsu.com>) id 1PangE-0003oZ-8q
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:06:54 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PangB-0007lu-2E
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:06:52 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 59AE417013F
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  6 Jan 2011 19:06:42 +0800 (CST)
+Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06B1aDv019276
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 19:01:36 +0800
+Message-ID: <4D25A2BF.7000901@cn.fujitsu.com>
+Date: Thu, 06 Jan 2011 19:08:47 +0800
+From: tangchen <tangchen@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix Makefile of testcase/kernel/mem/ksm/
+References: <4D259E4A.2050704@cn.fujitsu.com>
+In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
+Subject: [LTP]  [PATCH 10/13]Remove a redundant "{"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,60 +31,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gT24gVHVlLCBKYW4gMjUsIDIwMTEgYXQg
-MTA6NTQgUE0sIEJpYW4gTmFpbWVuZyA8Ymlhbm5tQGNuLmZ1aml0c3UuY29tPgo+IHdyb3RlOgo+
-ID4gVGhlcmUgaXMgbm90IGFueSBkaXJlY3RvcnkgYXQgdGVzdGNhc2Uva2VybmVsL21lbS9rc20v
-LAo+ID4gc28gcmVwbGFjZSBnZW5lcmljX3RydW5rX3RhcmdldC5tayBieSBnZW5lcmljX2xlYWZf
-dGFyZ2V0Lm1rCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogQmlhbiBOYWltZW5nIDxiaWFubm1AY24u
-ZnVqaXRzdS5jb20+Cj4gPgo+ID4gLS0tCj4gPiDCoHRlc3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9N
-YWtlZmlsZSB8IDIgKy0KPiA+IMKgMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb25zKC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2tz
-bS9NYWtlZmlsZQo+ID4gYi90ZXN0Y2FzZXMva2VybmVsL21lbS9rc20vTWFrZWZpbGUKPiA+IGlu
-ZGV4IDgxNTA5YmYuLjIyMTkwZjEgMTAwNjQ0Cj4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL21l
-bS9rc20vTWFrZWZpbGUKPiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9NYWtlZmls
-ZQo+ID4gQEAgLTM5LDUgKzM5LDUgQEAgdHJ1bmstY2xlYW46OiB8IGxpYi1jbGVhbgo+ID4gwqBs
-aWItY2xlYW46OiAkKExJQkRJUikKPiA+IMKgIMKgIMKgIMKgJChNQUtFKSAtQyAkXiAtZiAiJChh
-YnNfc3JjZGlyKS8kXi9NYWtlZmlsZSIgY2xlYW4KPiA+Cj4gPiAtaW5jbHVkZSAkKHRvcF9zcmNk
-aXIpL2luY2x1ZGUvbWsvZ2VuZXJpY190cnVua190YXJnZXQubWsKPiA+IMKgaW5jbHVkZSAkKHRv
-cF9zcmNkaXIpL2luY2x1ZGUvbWsvdGVzdGNhc2VzLm1rCj4gPiAraW5jbHVkZSAkKHRvcF9zcmNk
-aXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19sZWFmX3RhcmdldC5tawo+IAo+IEZvcmdvdCBhYm91dCB0
-aGF0IE1ha2VmaWxlIHRoYXQgQ2FpIHN1Ym1pdHRlZC4gSG93IGFib3V0IHRoaXMgaW5zdGVhZD8K
-SXQgaXMgbm90IG1lIGJ1dCBMdWNhcy4KPiBUaGFua3MsCj4gLUdhcnJldHQKPiAKPiBkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL01ha2VmaWxlCj4gYi90ZXN0Y2FzZXMva2Vy
-bmVsL21lbS9rc20vTWFrZWZpbGUKPiBpbmRleCA4MTUwOWJmLi5mZGZmNWZjIDEwMDY0NAo+IC0t
-LSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9NYWtlZmlsZQo+ICsrKyBiL3Rlc3RjYXNlcy9r
-ZXJuZWwvbWVtL2tzbS9NYWtlZmlsZQo+IEBAIC0xOCw3ICsxOCw3IEBACj4gCj4gdG9wX3NyY2Rp
-ciA/PSAuLi8uLi8uLi8uLgo+IAo+IC1pbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9l
-bnZfcHJlLm1rCj4gK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL3Rlc3RjYXNlcy5t
-awo+IAo+IExETElCUyArPSAkKE5VTUFfTElCUykgLWxtZW0KPiBMSUJESVIgOj0gLi4vbGliCj4g
-QEAgLTM5LDUgKzM5LDQgQEAgdHJ1bmstY2xlYW46OiB8IGxpYi1jbGVhbgo+IGxpYi1jbGVhbjo6
-ICQoTElCRElSKQo+ICQoTUFLRSkgLUMgJF4gLWYgIiQoYWJzX3NyY2RpcikvJF4vTWFrZWZpbGUi
-IGNsZWFuCj4gCj4gLWluY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL2dlbmVyaWNfdHJ1
-bmtfdGFyZ2V0Lm1rCj4gLWluY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL3Rlc3RjYXNl
-cy5tawo+ICtpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9nZW5lcmljX2xlYWZfdGFy
-Z2V0Lm1rCj4gCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gU3BlY2lhbCBPZmZlci0tIERvd25s
-b2FkIEFyY1NpZ2h0IExvZ2dlciBmb3IgRlJFRSAoYSAkNDkgVVNEIHZhbHVlKSEKPiBGaW5hbGx5
-LCBhIHdvcmxkLWNsYXNzIGxvZyBtYW5hZ2VtZW50IHNvbHV0aW9uIGF0IGFuIGV2ZW4gYmV0dGVy
-Cj4gcHJpY2UtZnJlZSEKPiBEb3dubG9hZCB1c2luZyBwcm9tbyBjb2RlIEZyZWVfTG9nZ2VyXzRf
-RGV2MkRldi4gT2ZmZXIgZXhwaXJlcwo+IEZlYnJ1YXJ5IDI4dGgsIHNvIHNlY3VyZSB5b3VyIGZy
-ZWUgQXJjU2lnaHQgTG9nZ2VyIFRPREFZIQo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvYXJjc2lnaHQt
-c2ZkMmQKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+
-IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cgot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KU3BlY2lhbCBPZmZlci0tIERvd25sb2FkIEFyY1NpZ2h0IExv
-Z2dlciBmb3IgRlJFRSAoYSAkNDkgVVNEIHZhbHVlKSEKRmluYWxseSwgYSB3b3JsZC1jbGFzcyBs
-b2cgbWFuYWdlbWVudCBzb2x1dGlvbiBhdCBhbiBldmVuIGJldHRlciBwcmljZS1mcmVlIQpEb3du
-bG9hZCB1c2luZyBwcm9tbyBjb2RlIEZyZWVfTG9nZ2VyXzRfRGV2MkRldi4gT2ZmZXIgZXhwaXJl
-cyAKRmVicnVhcnkgMjh0aCwgc28gc2VjdXJlIHlvdXIgZnJlZSBBcmNTaWdodCBMb2dnZXIgVE9E
-QVkhIApodHRwOi8vcC5zZi5uZXQvc2Z1L2FyY3NpZ2h0LXNmZDJkCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+---
+  .../syscalls/sched_getparam/sched_getparam02.c     |    5 +++--
+  1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c 
+b/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
+index 72d7d20..4a15acc 100644
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
++++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
+@@ -94,7 +94,7 @@ int main(int ac, char **av)
+      pid_t child_pid;
+
+      /* parse standard options */
+-    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+          tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+
+      setup();
+@@ -180,4 +180,5 @@ void cleanup()
+       * print errno log if that option was specified.
+       */
+      TEST_CLEANUP;
+-}
+\ No newline at end of file
++}
++
+-- 
+1.7.0.4
+
+
+-- 
+Best Regards,
+Tang chen
+
+
+
+------------------------------------------------------------------------------
+Learn how Oracle Real Application Clusters (RAC) One Node allows customers
+to consolidate database storage, standardize their database environment, and, 
+should the need arise, upgrade to a full multi-node Oracle RAC database 
+without downtime or disruption
+http://p.sf.net/sfu/oracle-sfdevnl
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
