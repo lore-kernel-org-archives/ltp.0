@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tangchen@cn.fujitsu.com>) id 1PanYU-0007Q8-Th
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:58:54 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PanYT-0007CG-WC
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:58:54 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id CEB8B170141
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Jan 2011 18:58:47 +0800 (CST)
-Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06Arffi019139
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 18:53:42 +0800
-Message-ID: <4D25A0E5.10407@cn.fujitsu.com>
-Date: Thu, 06 Jan 2011 19:00:53 +0800
-From: tangchen <tangchen@cn.fujitsu.com>
-MIME-Version: 1.0
+	(envelope-from <chrubis@suse.de>) id 1PbDAg-0007Fu-RB
+	for ltp-list@lists.sourceforge.net; Fri, 07 Jan 2011 14:20:02 +0000
+Date: Fri, 7 Jan 2011 15:36:07 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110107143607.GA12323@saboteur.suse.cz>
 References: <4D259E4A.2050704@cn.fujitsu.com>
-In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 04/13]Correct the wrong parameters names
+	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
+	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
+	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
+	<AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
+	<AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
+	<F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
+Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,42 +30,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
----
-  testcases/kernel/syscalls/lchown/lchown02.c |    2 +-
-  1 files changed, 1 insertions(+), 1 deletions(-)
+Hi!
+> 
+> 	Ok -- good to note for next time I guess. I fixed all of the compilation errors so now people can report runtime issues. There are a handful of them.
+>
 
-diff --git a/testcases/kernel/syscalls/lchown/lchown02.c 
-b/testcases/kernel/syscalls/lchown/lchown02.c
-index 9a213a2..04cb943 100644
---- a/testcases/kernel/syscalls/lchown/lchown02.c
-+++ b/testcases/kernel/syscalls/lchown/lchown02.c
-@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
-      gid_t group_id;
-      int i;
+I still could not compile the latest git. I've got a bunch of:
 
--    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+    if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
-          tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+pipe declared with warn_unused_result
+write declared with warn_unused_result
+read declared with warn_unused_result
 
-      setup();
+little less of:
+
+getcwd declared with warn_unused_result
+chdir declared with warn_unused_result
+ftruncate declared with warn_unused_result
+system declared with warn_unused_result
+
+plus some printf() formatting issues
+
+And after disabling -Werror it stops on getdelays.c with
+
+getdelays.c: In function 'main':
+getdelays.c:525: warning: implicit declaration of function 'tst_exit'
+getdelays.c:526: warning: control reaches end of non-void function
+getdelays.c:266: warning: 'cmd_type' may be used uninitialized in this
+function
+../../../../lib/libltp.a(tst_res.o): In function `cat_file':
+/home/metan/Work/git/ltp-dev/lib/tst_res.c:710: undefined reference to `TCID'
+/home/metan/Work/git/ltp-dev/lib/tst_res.c:728: undefined reference to `TCID'
+/home/metan/Work/git/ltp-dev/lib/tst_res.c:720: undefined reference to `TCID'
+../../../../lib/libltp.a(tst_res.o): In function `tst_res':
+/home/metan/Work/git/ltp-dev/lib/tst_res.c:321: undefined reference to `TCID'
+../../../../lib/libltp.a(tst_res.o): In function `tst_condense':
+/home/metan/Work/git/ltp-dev/lib/tst_res.c:377: undefined reference to `TCID'
+../../../../lib/libltp.a(tst_res.o):/home/metan/Work/git/ltp-dev/lib/tst_res.c:3
+05: more undefined references to `TCID' follow
+../../../../lib/libltp.a(tst_res.o): In function `tst_brk':
+/home/metan/Work/git/ltp-dev/lib/tst_res.c:613: undefined reference to `TST_TOTAL'
+
+The same goes for testcases/kernel/io/ltp-aiodio/dirty.c and
+testcases/kernel/security/cap_bound/dummy.c
+
+Then it hangs on securebits but is suppose that this is bug somewhere in
+configure not detecting securebits headers right. I'll look into this
+later.
+
+
+The realtime tests hangs on:
+
+async_handler_jk.c: In function 'main':
+async_handler_jk.c:162: warning: implicit declaration of function
+'tst_exit'
+async_handler_jk.c:163: warning: control reaches end of non-void
+function
+/tmp/ccGU6ubN.o: In function `main':
+/home/metan/Work/git/ltp-dev/testcases/realtime/func/async_handler/async_handler_jk.c:162:
+undefined reference to `tst_exit'
+collect2: ld returned 1 exit status
+make[2]: *** [async_handler_jk] Error 1
+make[2]: Leaving directory
+`/home/metan/Work/git/ltp-dev/testcases/realtime/func/async_handler'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory
+`/home/metan/Work/git/ltp-dev/testcases/realtime/func'
+make: *** [all] Error 2
+
+
+The rest seems to compile fine.
+
 -- 
-1.7.0.4
-
--- 
-Best Regards,
-Tang chen
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+Gaining the trust of online customers is vital for the success of any company
+that requires sensitive data to be transmitted over the Web.   Learn how to 
+best implement a security strategy that keeps consumers' information secure 
+and instills the confidence they need to proceed with transactions.
+http://p.sf.net/sfu/oracle-sfdevnl 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
