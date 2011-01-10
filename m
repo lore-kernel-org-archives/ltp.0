@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PhIvR-0003xC-DG
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:41:29 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PhIvP-0006Gh-JC
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:41:29 +0000
-Message-ID: <4D3D490C.4000902@cn.fujitsu.com>
-Date: Mon, 24 Jan 2011 17:40:28 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PcMSE-0001o8-AS
+	for ltp-list@lists.sourceforge.net; Mon, 10 Jan 2011 18:26:54 +0000
+Date: Mon, 10 Jan 2011 19:43:16 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110110184316.GB23413@saboteur.suse.cz>
+References: <4D259E4A.2050704@cn.fujitsu.com>
+	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
+	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
+	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
+	<AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
+	<AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
+	<F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
+	<20110107143607.GA12323@saboteur.suse.cz>
+	<C4CD5B9F-C198-44A7-996B-3D2C46C4AD86@gmail.com>
 MIME-Version: 1.0
-References: <4CEE2299.1080605@cn.fujitsu.com>
-	<AANLkTikJjKXKrCxHa8hnjRHfaM6hGM-xy28ps6ca0Yep@mail.gmail.com>
-In-Reply-To: <AANLkTikJjKXKrCxHa8hnjRHfaM6hGM-xy28ps6ca0Yep@mail.gmail.com>
-Subject: Re: [LTP] [RFC][POSIX][PATCH]Get rid of the test of
-	pthread_mutex_getprioceiling
+Content-Disposition: inline
+In-Reply-To: <C4CD5B9F-C198-44A7-996B-3D2C46C4AD86@gmail.com>
+Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,42 +33,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-
-
-Garrett Cooper wrote:
-> On Thu, Nov 25, 2010 at 12:47 AM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
->> Hi,
->>
->>  The 1-1 and 3-3 do the same test, but they expect different result.
->> I do not know why?
->>
->> However, i think we should get rid of 3-3. Because it looks like not a POSIX
->> compliant case.
+Hi!
+> > I still could not compile the latest git. I've got a bunch of:
+> > 
+> > pipe declared with warn_unused_result
+> > write declared with warn_unused_result
+> > read declared with warn_unused_result
 > 
-> I'll look at cleaning this up. I didn't clean everything up yet in
-> that area as I was going through and adding testcases for missing
-> POSIX assertions.
+> Now you know why I used void casts in a few spots :). Some are of value, some are fud.
 
-Hi Garrett,
+The problem seems to be that in different versions of libc different
+calls are marked with warn_unused_result. I'm still thinking if -Werror
+is right default for git tree. And I'm almost sure that it's wrong for
+releases.
 
- Would you like to pick up it.
+> Ok. It would be nice to have a summary email (off-list) with all of
+> these warnings, as they can lead to really bad problems. I may do like
+> I've done in some directories as well and add -Wno-error with a
+> comment stating why things were done that way.
 
-Regards
- Bian
 
-> Thanks,
-> -Garrett
-> 
+Will send.
 
+BTW: just now, you are missing SAFE_SETEGID and SAFE_SETEUID implementation
+     so compilation stops at fchown04.c
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Gaining the trust of online customers is vital for the success of any company
+that requires sensitive data to be transmitted over the Web.   Learn how to 
+best implement a security strategy that keeps consumers' information secure 
+and instills the confidence they need to proceed with transactions.
+http://p.sf.net/sfu/oracle-sfdevnl 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
