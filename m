@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PdQwj-0003M1-Ku
-	for ltp-list@lists.sourceforge.net; Thu, 13 Jan 2011 17:26:49 +0000
-Date: Thu, 13 Jan 2011 18:43:26 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110113174325.GA7180@saboteur.suse.cz>
-References: <20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
-	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
-	<AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
-	<AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
-	<F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
-	<20110107143607.GA12323@saboteur.suse.cz>
-	<C4CD5B9F-C198-44A7-996B-3D2C46C4AD86@gmail.com>
-	<20110110184316.GB23413@saboteur.suse.cz>
-	<AANLkTi=RGbG++FaG4AsZZkrZB14cuKPeuOZZPNVoNvSc@mail.gmail.com>
-	<20110110200100.GC23413@saboteur.suse.cz>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1Pca0c-0000Ax-K4
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:55:18 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pca0b-00024h-J9
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:55:18 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8tCfG027730
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:55:12 -0500
+Date: Tue, 11 Jan 2011 03:55:12 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <85958116.42979.1294736112060.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1781507635.42976.1294736107850.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20110110200100.GC23413@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_42978_1833677859.1294736112059"
+Subject: [LTP] [PATCH 09/13] zram01: check root
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,43 +29,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > int
-> > main(void)
-> > {
-> >     tst_brkm(TCONF, NULL, "gcc is dumb");
-> > }
-> 
-> Well, that's the whole reason for attribute __noreturn__. The compiler
-> is not smart enough and it's not easy to make it smarter, without a buch
-> of matematicians and a lot of work. And as such code leads, usually, to
-> bug, the gcc folks rather prints the warning. There are even parts of
-> gcc compiler, that are compiled with warnings disabled...
+------=_Part_42978_1833677859.1294736112059
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Thinking of this again, even a bunch of matematicians wouldn't help
-here. As the compiler doesn't have any means to find out, when main is
-compiled, how tst_brkm() is actually implemented. That is not possible
-before the linker comes into play and in case of dynamic linker, this
-warning could be generated only at runtime. That's IMHO the whole reason
-for attribute __noreturn__.
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ testcases/kernel/mem/zram/zram01.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
+diff --git a/testcases/kernel/mem/zram/zram01.c b/testcases/kernel/mem/zram/zram01.c
+index e63cec4..1f1a5f4 100644
+--- a/testcases/kernel/mem/zram/zram01.c
++++ b/testcases/kernel/mem/zram/zram01.c
+@@ -106,6 +106,8 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	tst_require_root(tst_exit);
++
+ 	if (access(PATH_ZRAM, R_OK|W_OK|X_OK) == -1 && errno == ENOENT) {
+ 		system("modprobe zram");
+ 		modprobe = 1;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.3.2
+------=_Part_42978_1833677859.1294736112059
+Content-Type: text/x-patch; name=0009-zram01-check-root.patch
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=0009-zram01-check-root.patch
+
+RnJvbSA2NTU1ZmM4NzE3MjdjZmNhNzI0NDUyYWYwMjQ0NzQ4ZDRkYzJjNmZiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
+dWUsIDExIEphbiAyMDExIDE2OjQyOjM2ICswODAwClN1YmplY3Q6IFtQQVRDSCAwOS8xM10genJh
+bTAxOiBjaGVjayByb290CgoKU2lnbmVkLW9mZi1ieTogQ0FJIFFpYW4gPGNhaXFpYW5AcmVkaGF0
+LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL21lbS96cmFtL3pyYW0wMS5jIHwgICAgMiArKwog
+MSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0venJhbS96cmFtMDEuYyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvbWVtL3pyYW0venJhbTAxLmMKaW5kZXggZTYzY2VjNC4uMWYxYTVmNCAxMDA2NDQKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9tZW0venJhbS96cmFtMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVs
+L21lbS96cmFtL3pyYW0wMS5jCkBAIC0xMDYsNiArMTA2LDggQEAgaW50IG1haW4oaW50IGFyZ2Ms
+IGNoYXIgKmFyZ3ZbXSkKIAogdm9pZCBzZXR1cCh2b2lkKQogeworCXRzdF9yZXF1aXJlX3Jvb3Qo
+dHN0X2V4aXQpOworCiAJaWYgKGFjY2VzcyhQQVRIX1pSQU0sIFJfT0t8V19PS3xYX09LKSA9PSAt
+MSAmJiBlcnJubyA9PSBFTk9FTlQpIHsKIAkJc3lzdGVtKCJtb2Rwcm9iZSB6cmFtIik7CiAJCW1v
+ZHByb2JlID0gMTsKLS0gCjEuNy4zLjIKCg==
+------=_Part_42978_1833677859.1294736112059
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
-http://p.sf.net/sfu/oracle-sfdevnl
+Gaining the trust of online customers is vital for the success of any company
+that requires sensitive data to be transmitted over the Web.   Learn how to 
+best implement a security strategy that keeps consumers' information secure 
+and instills the confidence they need to proceed with transactions.
+http://p.sf.net/sfu/oracle-sfdevnl 
+------=_Part_42978_1833677859.1294736112059
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_42978_1833677859.1294736112059--
+
