@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Pjyfm-0004jC-15
-	for ltp-list@lists.sourceforge.net; Mon, 31 Jan 2011 18:40:22 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 53BE79486B
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 31 Jan 2011 19:40:13 +0100 (CET)
-Date: Mon, 31 Jan 2011 19:58:30 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110131185830.GA5618@saboteur.suse.cz>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PcZvt-0004wS-B0
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:50:25 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PcZvs-0001Iy-0M
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:50:25 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8oH9I016494
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:50:17 -0500
+Date: Tue, 11 Jan 2011 03:50:17 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <480784444.42897.1294735817976.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="xHFwDpU9dbj6ez1V"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] the very last patch for timer_create
+Subject: [LTP] [PATCH 00/13] check tests require root
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,68 +26,20 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-For some reason timer_create/11-1.c is missing call for reading time
-into ts_start, which is the reason for the tescase to fail. Patch is
-attached.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---xHFwDpU9dbj6ez1V
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="timer_create_missing.patch"
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
-index 447c7ed..321b7bc 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
-@@ -73,6 +73,11 @@ int main(int argc, char *argv[])
- 		return PTS_UNRESOLVED;
- 	}
- 
-+	if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts_start) != 0) {
-+		perror("clock_gettime() failed");
-+		return PTS_UNRESOLVED;
-+	}
-+	
- 	if (timer_settime(tid, 0, &its, NULL) != 0) {
- 		perror("timer_settime did not return success");
- 		return PTS_UNRESOLVED;
-
---xHFwDpU9dbj6ez1V
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
+
+All tests in this series require to run as root user.
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Gaining the trust of online customers is vital for the success of any company
+that requires sensitive data to be transmitted over the Web.   Learn how to 
+best implement a security strategy that keeps consumers' information secure 
+and instills the confidence they need to proceed with transactions.
+http://p.sf.net/sfu/oracle-sfdevnl 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---xHFwDpU9dbj6ez1V--
-
