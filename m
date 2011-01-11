@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PhzKb-0004j4-D4
-	for ltp-list@lists.sourceforge.net; Wed, 26 Jan 2011 06:58:17 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PhzKa-0004Gm-Gd
-	for ltp-list@lists.sourceforge.net; Wed, 26 Jan 2011 06:58:17 +0000
-Received: by wyb40 with SMTP id 40so616225wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 25 Jan 2011 22:58:10 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1Pca29-0007Bv-WF
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:56:54 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pca29-0007PI-55
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:56:53 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8ulfo027861
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:56:47 -0500
+Date: Tue, 11 Jan 2011 03:56:47 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <970121974.43007.1294736207630.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <935942858.43004.1294736204283.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4D3FC51B.3080306@cn.fujitsu.com>
-References: <4D3FC51B.3080306@cn.fujitsu.com>
-Date: Tue, 25 Jan 2011 22:58:09 -0800
-Message-ID: <AANLkTin52dVdOUf0K25Sma2NrGLmet9aK7tbUmg3fKds@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix Makefile of testcase/kernel/mem/ksm/
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_43006_1614982801.1294736207630"
+Subject: [LTP] [PATCH 12/13] oom03: check root
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,72 +29,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Jan 25, 2011 at 10:54 PM, Bian Naimeng <biannm@cn.fujitsu.com> wrot=
-e:
-> There is not any directory at testcase/kernel/mem/ksm/,
-> so replace generic_trunk_target.mk by generic_leaf_target.mk
->
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
->
-> ---
-> =A0testcases/kernel/mem/ksm/Makefile | =A0 =A02 +-
-> =A01 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm=
-/Makefile
-> index 81509bf..22190f1 100644
-> --- a/testcases/kernel/mem/ksm/Makefile
-> +++ b/testcases/kernel/mem/ksm/Makefile
-> @@ -39,5 +39,5 @@ trunk-clean:: | lib-clean
-> =A0lib-clean:: $(LIBDIR)
-> =A0 =A0 =A0 =A0$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
->
-> -include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> =A0include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+------=_Part_43006_1614982801.1294736207630
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-    Forgot about that Makefile that Cai submitted. How about this instead?
-Thanks,
--Garrett
-
-diff --git a/testcases/kernel/mem/ksm/Makefile
-b/testcases/kernel/mem/ksm/Makefile
-index 81509bf..fdff5fc 100644
---- a/testcases/kernel/mem/ksm/Makefile
-+++ b/testcases/kernel/mem/ksm/Makefile
-@@ -18,7 +18,7 @@
-
- top_srcdir              ?=3D ../../../..
-
--include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/testcases.mk
-
- LDLIBS                 +=3D $(NUMA_LIBS) -lmem
- LIBDIR                 :=3D ../lib
-@@ -39,5 +39,4 @@ trunk-clean:: | lib-clean
- lib-clean:: $(LIBDIR)
-        $(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
-
--include $(top_srcdir)/include/mk/generic_trunk_target.mk
--include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-
----------------------------------------------------------------------------=
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires =
+ testcases/kernel/mem/oom/oom03.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-February 28th, so secure your free ArcSight Logger TODAY! =
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index 12c2063..8cdff78 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -102,6 +102,8 @@ void setup(void)
+ {
+ 	int fd;
+ 
++	tst_require_root(tst_exit);
++
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 
+-- 
+1.7.3.2
+------=_Part_43006_1614982801.1294736207630
+Content-Type: text/x-patch; name=0012-oom03-check-root.patch
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=0012-oom03-check-root.patch
 
-http://p.sf.net/sfu/arcsight-sfd2d
+RnJvbSBmNGYzMWFlMTJhZmFiYTU4NTk3YzQxMGMyM2M2MGFkYmE4YjM5OTI4IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
+dWUsIDExIEphbiAyMDExIDE2OjQzOjUzICswODAwClN1YmplY3Q6IFtQQVRDSCAxMi8xM10gb29t
+MDM6IGNoZWNrIHJvb3QKCgpTaWduZWQtb2ZmLWJ5OiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQu
+Y29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL29vbS9vb20wMy5jIHwgICAgMiArKwogMSBm
+aWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
+IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vb29tL29vbTAzLmMgYi90ZXN0Y2FzZXMva2VybmVsL21l
+bS9vb20vb29tMDMuYwppbmRleCAxMmMyMDYzLi44Y2RmZjc4IDEwMDY0NAotLS0gYS90ZXN0Y2Fz
+ZXMva2VybmVsL21lbS9vb20vb29tMDMuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9vb20v
+b29tMDMuYwpAQCAtMTAyLDYgKzEwMiw4IEBAIHZvaWQgc2V0dXAodm9pZCkKIHsKIAlpbnQgZmQ7
+CiAKKwl0c3RfcmVxdWlyZV9yb290KHRzdF9leGl0KTsKKwogCXRzdF9zaWcoRk9SSywgREVGX0hB
+TkRMRVIsIGNsZWFudXApOwogCVRFU1RfUEFVU0U7CiAKLS0gCjEuNy4zLjIKCg==
+------=_Part_43006_1614982801.1294736207630
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Gaining the trust of online customers is vital for the success of any company
+that requires sensitive data to be transmitted over the Web.   Learn how to 
+best implement a security strategy that keeps consumers' information secure 
+and instills the confidence they need to proceed with transactions.
+http://p.sf.net/sfu/oracle-sfdevnl 
+------=_Part_43006_1614982801.1294736207630
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_43006_1614982801.1294736207630--
+
