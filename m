@@ -1,27 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tangchen@cn.fujitsu.com>) id 1PangE-0003oZ-8q
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:06:54 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PangB-0007lu-2E
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:06:52 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 59AE417013F
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Jan 2011 19:06:42 +0800 (CST)
-Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06B1aDv019276
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 19:01:36 +0800
-Message-ID: <4D25A2BF.7000901@cn.fujitsu.com>
-Date: Thu, 06 Jan 2011 19:08:47 +0800
-From: tangchen <tangchen@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1Pca18-0000CT-9r
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:55:50 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pca17-0002Mi-A2
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:55:50 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8thGx027812
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:55:43 -0500
+Date: Tue, 11 Jan 2011 03:55:43 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1740271738.42985.1294736143877.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <627355630.42982.1294736140079.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-References: <4D259E4A.2050704@cn.fujitsu.com>
-In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 10/13]Remove a redundant "{"
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_42984_43674195.1294736143877"
+Subject: [LTP] [PATCH 10/13] oom01: check root
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,55 +29,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+------=_Part_42984_43674195.1294736143877
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
-  .../syscalls/sched_getparam/sched_getparam02.c     |    5 +++--
-  1 files changed, 3 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/oom/oom01.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c 
-b/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
-index 72d7d20..4a15acc 100644
---- a/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
-+++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
-@@ -94,7 +94,7 @@ int main(int ac, char **av)
-      pid_t child_pid;
-
-      /* parse standard options */
--    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-          tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-
-      setup();
-@@ -180,4 +180,5 @@ void cleanup()
-       * print errno log if that option was specified.
-       */
-      TEST_CLEANUP;
--}
-\ No newline at end of file
-+}
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+index 8fb58c3..73311a3 100644
+--- a/testcases/kernel/mem/oom/oom01.c
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -93,6 +93,8 @@ void setup(void)
+ {
+ 	int fd;
+ 
++	tst_require_root(tst_exit);
 +
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 
 -- 
-1.7.0.4
+1.7.3.2
+------=_Part_42984_43674195.1294736143877
+Content-Type: text/x-patch; name=0010-oom01-check-root.patch
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=0010-oom01-check-root.patch
 
-
--- 
-Best Regards,
-Tang chen
-
-
+RnJvbSA4MDNkZjA0YjdlZTI3NjRiYzU2NGQwMjY3NjQ2YjgzNDZjZjU3ZGRiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
+dWUsIDExIEphbiAyMDExIDE2OjQzOjA5ICswODAwClN1YmplY3Q6IFtQQVRDSCAxMC8xM10gb29t
+MDE6IGNoZWNrIHJvb3QKCgpTaWduZWQtb2ZmLWJ5OiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQu
+Y29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL29vbS9vb20wMS5jIHwgICAgMiArKwogMSBm
+aWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
+IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vb29tL29vbTAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL21l
+bS9vb20vb29tMDEuYwppbmRleCA4ZmI1OGMzLi43MzMxMWEzIDEwMDY0NAotLS0gYS90ZXN0Y2Fz
+ZXMva2VybmVsL21lbS9vb20vb29tMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9vb20v
+b29tMDEuYwpAQCAtOTMsNiArOTMsOCBAQCB2b2lkIHNldHVwKHZvaWQpCiB7CiAJaW50IGZkOwog
+CisJdHN0X3JlcXVpcmVfcm9vdCh0c3RfZXhpdCk7CisKIAl0c3Rfc2lnKEZPUkssIERFRl9IQU5E
+TEVSLCBjbGVhbnVwKTsKIAlURVNUX1BBVVNFOwogCi0tIAoxLjcuMy4yCgo=
+------=_Part_42984_43674195.1294736143877
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+Gaining the trust of online customers is vital for the success of any company
+that requires sensitive data to be transmitted over the Web.   Learn how to 
+best implement a security strategy that keeps consumers' information secure 
+and instills the confidence they need to proceed with transactions.
+http://p.sf.net/sfu/oracle-sfdevnl 
+------=_Part_42984_43674195.1294736143877
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_42984_43674195.1294736143877--
+
