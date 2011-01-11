@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Pjcwr-0008VA-UG
-	for ltp-list@lists.sourceforge.net; Sun, 30 Jan 2011 19:28:33 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1Pjcwq-0006ga-MN
-	for ltp-list@lists.sourceforge.net; Sun, 30 Jan 2011 19:28:33 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Mon, 31 Jan 2011 00:58:28 +0530
-Message-Id: <1296415709.29830.8.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] Finding True Application Code Coverage in case of
-	heteregenous	Executable Environment
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PcaHV-00082X-17
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 09:12:45 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PcaHS-0003Od-OU
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 09:12:44 +0000
+Date: Tue, 11 Jan 2011 04:12:35 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1783539079.43214.1294737155893.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <95E78125-2C7F-4FC1-B547-C700EAA923B0@gmail.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH 13/13] oom04: check root
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,49 +26,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>
-
-Peter,
-
-Is there a way to find true application code coverage for a
-heterogeneous Executable Environment, where the application can consist
-of:
-     1. C Programs(only for which .gcno and .gcda files can be
-        generated)
-     2. Shell Scripts,
-     3. Perl Scripts,
-     4. Python Scripts,
-     5. etc ?
-
-Is there any by which i can also count the no. of lines/ branches/
-Functions executed by the Scripts ??
-
-Another question. when i tried to execute the following, it took into
-consideration only the .gcda of the C executables invoked by the
-program:
-     1. lcov --directory /root/LTP-GIT/ltp/ --zerocounters
-     2. (cd /opt/ltp/; ./runltp -f math)
-     3. lcov --directory /root/LTP-GIT/ltp/ --capture --output-file
-        app.info
-     4. genhtml app.info
-
-Instead i wanted it consider all C files for which .gcno are present
-and .gcda are not present(as i did not execute the corresponding
-binaries), so to truly find the exact % of C files covered and % left
-out from the whole trickled down /root/LTP-GIT/ltp/ directory.
-
-Regards--
-Subrata
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 
+
+----- Original Message -----
+> On Jan 11, 2011, at 12:57 AM, CAI Qian wrote:
+> 
+> > Signed-off-by: CAI Qian <caiqian@redhat.com>
+> > ---
+> > testcases/kernel/mem/oom/oom04.c | 2 ++
+> > 1 files changed, 2 insertions(+), 0 deletions(-)
+> >
+> > diff --git a/testcases/kernel/mem/oom/oom04.c
+> > b/testcases/kernel/mem/oom/oom04.c
+> > index 5b403f4..befb7e9 100644
+> > --- a/testcases/kernel/mem/oom/oom04.c
+> > +++ b/testcases/kernel/mem/oom/oom04.c
+> > @@ -133,6 +133,8 @@ void setup(void)
+> > {
+> > 	int fd;
+> >
+> > + tst_require_root(tst_exit);
+> > +
+> > 	tst_sig(FORK, DEF_HANDLER, cleanup);
+> > 	TEST_PAUSE;
+> 
+> tst_require_root(NULL) is what you want for all of these patches.
+> Makes me wonder if there's any value in having a cleanup argument or
+> not...
+I did try tst_require_root(NULL), but it kept calling cleanup() which
+was unnecessary.
+
+$ ./hugemmap05
+hugemmap05    1  TCONF  :  Test needs to be run as root
+hugemmap05    0  TWARN  :  open: errno=EACCES(13): Permission denied
+hugemmap05    0  TINFO  :  restore nr_hugepages to .
+hugemmap05    0  TWARN  :  write: errno=EBADF(9): Bad file descriptor
+hugemmap05    0  TWARN  :  open: errno=EACCES(13): Permission denied
+hugemmap05    0  TINFO  :  restore nr_overcommit_hugepages to .
+hugemmap05    0  TWARN  :  write: errno=EBADF(9): Bad file descriptor
+hugemmap05    0  TWARN  :  umount: errno=ENOENT(2): No such file or directory
+
+CAI Qian
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Gaining the trust of online customers is vital for the success of any company
+that requires sensitive data to be transmitted over the Web.   Learn how to 
+best implement a security strategy that keeps consumers' information secure 
+and instills the confidence they need to proceed with transactions.
+http://p.sf.net/sfu/oracle-sfdevnl 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
