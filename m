@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tangchen@cn.fujitsu.com>) id 1PanWd-0006ee-Ht
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:56:59 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PanWc-0004QC-2q
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:56:59 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 63E9F170138
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Jan 2011 18:56:39 +0800 (CST)
-Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06ApXge019087
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 18:51:33 +0800
-Message-ID: <4D25A065.1090407@cn.fujitsu.com>
-Date: Thu, 06 Jan 2011 18:58:45 +0800
-From: tangchen <tangchen@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PdQwj-0003M1-Ku
+	for ltp-list@lists.sourceforge.net; Thu, 13 Jan 2011 17:26:49 +0000
+Date: Thu, 13 Jan 2011 18:43:26 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110113174325.GA7180@saboteur.suse.cz>
+References: <20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
+	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
+	<AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
+	<AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
+	<F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
+	<20110107143607.GA12323@saboteur.suse.cz>
+	<C4CD5B9F-C198-44A7-996B-3D2C46C4AD86@gmail.com>
+	<20110110184316.GB23413@saboteur.suse.cz>
+	<AANLkTi=RGbG++FaG4AsZZkrZB14cuKPeuOZZPNVoNvSc@mail.gmail.com>
+	<20110110200100.GC23413@saboteur.suse.cz>
 MIME-Version: 1.0
-References: <4D259E4A.2050704@cn.fujitsu.com>
-In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 03/13]Add a missing ";"
+Content-Disposition: inline
+In-Reply-To: <20110110200100.GC23413@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,64 +33,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
----
-  .../kernel/syscalls/getpagesize/getpagesize01.c    |    8 +++++---
-  1 files changed, 5 insertions(+), 3 deletions(-)
+Hi!
+> > int
+> > main(void)
+> > {
+> >     tst_brkm(TCONF, NULL, "gcc is dumb");
+> > }
+> 
+> Well, that's the whole reason for attribute __noreturn__. The compiler
+> is not smart enough and it's not easy to make it smarter, without a buch
+> of matematicians and a lot of work. And as such code leads, usually, to
+> bug, the gcc folks rather prints the warning. There are even parts of
+> gcc compiler, that are compiled with warnings disabled...
 
-diff --git a/testcases/kernel/syscalls/getpagesize/getpagesize01.c 
-b/testcases/kernel/syscalls/getpagesize/getpagesize01.c
-index 09c229e..9b6e27e 100644
---- a/testcases/kernel/syscalls/getpagesize/getpagesize01.c
-+++ b/testcases/kernel/syscalls/getpagesize/getpagesize01.c
-@@ -77,8 +77,9 @@ int main(int ac, char **av)
-
-          /* check return code */
-          if (TEST_RETURN == -1) {
--            tst_resm(TFAIL|TTERRNO, "getpagesize failed"),
--            continue;    /* next loop for MTKERNEL */
-+            tst_resm(TFAIL|TTERRNO, "getpagesize failed");
-+            /* next loop for MTKERNEL */
-+            continue;
-          }
-
-          if (STD_FUNCTIONAL_TEST) {
-@@ -126,4 +127,5 @@ void cleanup()
-       * print errno log if that option was specified.
-       */
-      TEST_CLEANUP;
--}
-\ No newline at end of file
-+}
-+
--- 
-1.7.0.4
-
+Thinking of this again, even a bunch of matematicians wouldn't help
+here. As the compiler doesn't have any means to find out, when main is
+compiled, how tst_brkm() is actually implemented. That is not possible
+before the linker comes into play and in case of dynamic linker, this
+warning could be generated only at runtime. That's IMHO the whole reason
+for attribute __noreturn__.
 
 -- 
-Best Regards,
-Tang chen
---------------------------------------------------
-Tang Chen
-Development Dept.I
-Nanjing Fujitsu Nanda Software Tech. Co., Ltd.(FNST)
-No.6 Wenzhu Road, Nanjing, 210012, China
-TEL: +86+25-86630566-8513
-FUJITSU INTERNAL: 7998-8513
-FAX: +86+25-83317685
-EMail: tangchen@cn.fujitsu.com
---------------------------------------------------
-This communication is for use by the intended recipient(s) only and may contain information that is privileged, confidential and exempt from disclosure under applicable law. If you are not an intended recipient of this communication, you are hereby notified that any dissemination, distribution or copying hereof is strictly prohibited.  If you have received this communication in error, please notify me by reply e-mail, permanently delete this communication from your system, and destroy any hard copies you may have printed
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
