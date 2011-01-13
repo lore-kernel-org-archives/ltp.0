@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PilCO-0003rC-Ne
-	for ltp-list@lists.sourceforge.net; Fri, 28 Jan 2011 10:05:00 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.74) id 1PilCN-0001v2-HT
-	for ltp-list@lists.sourceforge.net; Fri, 28 Jan 2011 10:05:00 +0000
-Received: by wwi18 with SMTP id 18so2943902wwi.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 28 Jan 2011 02:04:53 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PdHrw-0006E0-0w
+	for ltp-list@lists.sourceforge.net; Thu, 13 Jan 2011 07:45:16 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PdHrt-00027r-S5
+	for ltp-list@lists.sourceforge.net; Thu, 13 Jan 2011 07:45:15 +0000
+Message-ID: <4D2EAD4B.8040800@cn.fujitsu.com>
+Date: Thu, 13 Jan 2011 15:44:11 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4D4266E2.9070001@cn.fujitsu.com>
-References: <4D4266E2.9070001@cn.fujitsu.com>
-Date: Fri, 28 Jan 2011 02:04:53 -0800
-Message-ID: <AANLkTinTGN5CVhk4kVCrbYZm5za-Fv5EOzd2dRaHO-ES@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] sigrelse01.c: cleanup() should be called only once
+Subject: [LTP]  [POSIX][PATCH] Fix a building error at pi_test case.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +25,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: yanegomi@gmail.com
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jan 27, 2011 at 10:49 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> cleanup() call the function tst_rmdir() to remove the temporary
-> directory, so cleanup() should be called only once.
+Hi Garrett,
 
-    I did some style cleanup, but I'm concerned that the signal
-handler code setup might not function as expected because it used to
-build off of choose_sig. Please verify whether or not things work for
-you now.
-Thanks,
--Garrett
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+---
+ .../functional/threads/pi_test/pitest-4.c          |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+index dca4f07..ad940dc 100644
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
++++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+@@ -217,7 +217,7 @@ void *thread_tb2(void *arg)
+ 	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
+ 		seconds_read() - base_time);
+ 
+-	boost_time.tv_sec = time(NULL) + *(time_t *)timeoutsec;
++	boost_time.tv_sec = time(NULL) + *(time_t *)arg;
+ 	boost_time.tv_nsec = 0;
+ 
+ 	t0 = seconds_read();
+@@ -341,4 +341,4 @@ int main(int argc, char **argv)
+ 	ts_stop = 1;
+ 	DPRINTF(stderr,"Main Thread: stop sampler thread\n");
+ 	return 0;
+-}
+\ No newline at end of file
++}
+-- 
+1.7.0.4
+
+-- 
+Best Regards,
+Peng Haitao
+
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
