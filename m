@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1Pca1d-0006iC-FU
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:56:21 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pca1c-0002RW-Kt
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:56:21 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8uFpl027839
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:56:15 -0500
-Date: Tue, 11 Jan 2011 03:56:15 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1814853948.42996.1294736175098.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1406296700.42991.1294736171251.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1Pdr8T-0006hK-He
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 21:24:41 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.72) id 1Pdr8S-0005xt-6O
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 21:24:41 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 14 Jan 2011 16:24:58 -0500
+References: <4D301BF1.8070101@cn.fujitsu.com>
+In-Reply-To: <4D301BF1.8070101@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_42995_1519075412.1294736175097"
-Subject: [LTP] [PATCH 11/13] oom02: check root
+Message-Id: <201101141624.59736.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Fix a building error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,63 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============3794852230131807384=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-------=_Part_42995_1519075412.1294736175097
-Content-Type: text/plain; charset=utf-8
+--===============3794852230131807384==
+Content-Type: multipart/signed; boundary="nextPart1420409.G0tZZUQdxh";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- testcases/kernel/mem/oom/oom02.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+--nextPart1420409.G0tZZUQdxh
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
-index 38533ef..f9060d5 100644
---- a/testcases/kernel/mem/oom/oom02.c
-+++ b/testcases/kernel/mem/oom/oom02.c
-@@ -90,6 +90,8 @@ void setup(void)
- {
- 	int fd;
- 
-+	tst_require_root(tst_exit);
-+
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
- 
--- 
-1.7.3.2
-------=_Part_42995_1519075412.1294736175097
-Content-Type: text/x-patch; name=0011-oom02-check-root.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=0011-oom02-check-root.patch
+On Friday, January 14, 2011 04:48:33 Peng Haitao wrote:
+>  testcases/kernel/syscalls/mallopt/mallopt01.c |    1 +
 
-RnJvbSA3Y2EzYWI2ODRhZGVjNmZlYjUwNDBiYThiYTI0MTg3NTdlMjMyMTEwIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
-dWUsIDExIEphbiAyMDExIDE2OjQzOjI4ICswODAwClN1YmplY3Q6IFtQQVRDSCAxMS8xM10gb29t
-MDI6IGNoZWNrIHJvb3QKCgpTaWduZWQtb2ZmLWJ5OiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQu
-Y29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL29vbS9vb20wMi5jIHwgICAgMiArKwogMSBm
-aWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
-IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vb29tL29vbTAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL21l
-bS9vb20vb29tMDIuYwppbmRleCAzODUzM2VmLi5mOTA2MGQ1IDEwMDY0NAotLS0gYS90ZXN0Y2Fz
-ZXMva2VybmVsL21lbS9vb20vb29tMDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9vb20v
-b29tMDIuYwpAQCAtOTAsNiArOTAsOCBAQCB2b2lkIHNldHVwKHZvaWQpCiB7CiAJaW50IGZkOwog
-CisJdHN0X3JlcXVpcmVfcm9vdCh0c3RfZXhpdCk7CisKIAl0c3Rfc2lnKEZPUkssIERFRl9IQU5E
-TEVSLCBjbGVhbnVwKTsKIAlURVNUX1BBVVNFOwogCi0tIAoxLjcuMy4yCgo=
-------=_Part_42995_1519075412.1294736175097
+please use descriptive subjects in your patches.  this really should be=20
+something like:
+	mallopt01: fix build error due to xxxx
+
+> --- a/testcases/kernel/syscalls/mallopt/mallopt01.c
+> +++ b/testcases/kernel/syscalls/mallopt/mallopt01.c
+> @@ -37,6 +37,7 @@
+>  #ifdef CONFIG_COLDFIRE
+>  #define __MALLOC_STANDARD__
+>  #endif
+> +#include <malloc.h>
+
+umm, no.  malloc.h is a dead header file and nothing should be including it.
+=2Dmike
+
+--nextPart1420409.G0tZZUQdxh
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iQIcBAABAgAGBQJNML8rAAoJEEFjO5/oN/WB4RAP/3PVnn9MUMBQcct4xpQWXtiA
+bMUAtEw5wiTpL7pa/IJSDcg0k3u9uhboYLpcr1X8RQ27K8s9lWoLu/Is4p1GQzxk
+rtywHqgPw1Lx+uWivEoe3LY6YTADuybECQhkK01U79YVod/ltLOYTz9200QCyB92
+tttEOiwjaUN8vtaUb9I3++0rGQL0GsetIhn2rXOkI6aVRpEVbIz6KMwW3YdwNORJ
+kQHabSlLL0lXmPNGVg6Aa3qyj5rjRfUK8wV5Ddcj+YsVA7GUMfUAyWDXYXkX6WKL
+aPtncczETg+oMXEQqiGzNviSOFmANgbjDXVsXy9GEXlg0t1wdROla5L8s+jYeJxM
+Cm4nyfv9C5xn/YatObQsgWKg6YtpsU0PBdjfZai3fv6gEiFxN9jpqAPqaYGKjPzg
+5WFPMt1GUTwsYc8N6h00WGNdPSi23EXveTN0HtazH/nKhZJNQ52YK4ntJmNIKY/w
+9cp3rUKP9WxCIcaQ+7cLNsQvfUAoZ9Hkw1c0Dr1ZAYuvOC1URYICQwfyyjgtjOJF
+IGt6uPq2U9h3Y3uWD/ZFjquD/sz3GCD3plu/RyHIiAr/2+CwHYQS5KsxyU2oRM4L
+sNnsGZ5x6e/BdLX6pVJHzA+e3pVpTtMbaO2tT9y8zbnxBG+Ih7OO8Aa4QiMbdmN4
+SI9WJMmqFj6PThWLzLzK
+=ZPWl
+-----END PGP SIGNATURE-----
+
+--nextPart1420409.G0tZZUQdxh--
+
+
+--===============3794852230131807384==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
-------=_Part_42995_1519075412.1294736175097
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
+--===============3794852230131807384==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -96,5 +104,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_42995_1519075412.1294736175097--
+--===============3794852230131807384==--
 
