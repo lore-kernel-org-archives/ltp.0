@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapierfilter@gmail.com>) id 1PauRC-0002uf-VP
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:19:50 +0000
-Received: from mail-ew0-f47.google.com ([209.85.215.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PauRC-0006GQ-2b
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:19:50 +0000
-Received: by ewy28 with SMTP id 28so4248350ewy.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 10:19:44 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PdgIe-00042n-7l
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 09:50:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PdgIc-0007i1-Ks
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 09:50:28 +0000
+Message-ID: <4D3017F9.7060307@cn.fujitsu.com>
+Date: Fri, 14 Jan 2011 17:31:37 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4D259F62.7040102@cn.fujitsu.com>
-References: <4D259E4A.2050704@cn.fujitsu.com> <4D259F62.7040102@cn.fujitsu.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 6 Jan 2011 13:19:23 -0500
-Message-ID: <AANLkTinKDgtXF=ttc=Q0ZAGScYnQe1p+_k+2WrGXL5wm@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 01/13]Add missing parameters for tst_brkm()
+Subject: [LTP]  [PATCH] Fix a building error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,36 +22,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
+To: yanegomi@gmail.com
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jan 6, 2011 at 5:54 AM, tangchen wrote:
-> --- a/testcases/kernel/syscalls/fchmod/fchmod03.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod03.c
-> @@ -178,7 +178,7 @@ void cleanup()
-> =A0 =A0 =A0TEST_CLEANUP;
->
-> =A0 =A0 =A0if (close(fd) =3D=3D -1)
-> - =A0 =A0 =A0 =A0tst_brkm(TWARN|TERRNO, "close failed");
-> + =A0 =A0 =A0 =A0tst_brkm(TWARN|TERRNO, NULL, "close failed");
+Hi Garrett,
 
-i guess we should add a non-null gcc attribute to the tst_brkm
-function ... and perhaps a printf attribute if it doesnt have one
-already
--mike
-
----------------------------------------------------------------------------=
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 ---
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, an=
-d, =
+ pan/scan.l |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-should the need arise, upgrade to a full multi-node Oracle RAC database =
+diff --git a/pan/scan.l b/pan/scan.l
+index 9696531..cc47bdf 100644
+--- a/pan/scan.l
++++ b/pan/scan.l
+@@ -91,6 +91,7 @@ static int check_mode(int, int, ...);
+ %option noinput
+ %option nolex-compat
+ %option nounput
++%option yylineno
+ 
+ UI      [0-9]+
+ A       [a-zA-Z]+
+-- 
+1.7.0.4
 
-without downtime or disruption
+-- 
+Best Regards,
+Peng Haitao
+
+
+------------------------------------------------------------------------------
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
