@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapierfilter@gmail.com>) id 1PaxfF-0002Nn-Qy
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 21:46:33 +0000
-Received: from mail-fx0-f47.google.com ([209.85.161.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PaxfE-0003hq-Uq
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 21:46:33 +0000
-Received: by fxm17 with SMTP id 17so15616937fxm.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 13:46:27 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
-References: <4D259E4A.2050704@cn.fujitsu.com>
-	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
-	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
-	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
-	<AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1Pdrs2-0007Nv-He
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 22:11:46 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.72) id 1Pdrs1-0002an-GP
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 22:11:46 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 6 Jan 2011 16:46:06 -0500
-Message-ID: <AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
+Date: Fri, 14 Jan 2011 17:12:04 -0500
+References: <4D301BF1.8070101@cn.fujitsu.com>
+	<201101141646.09224.vapier@gentoo.org>
+	<AANLkTiknw80paBiHe9_qBhW1XHLXuaKM=dQyx4kNg1x6@mail.gmail.com>
+In-Reply-To: <AANLkTiknw80paBiHe9_qBhW1XHLXuaKM=dQyx4kNg1x6@mail.gmail.com>
+MIME-Version: 1.0
+Message-Id: <201101141712.05548.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Fix a building error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,54 +26,114 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4264748712835534034=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Thu, Jan 6, 2011 at 4:38 PM, Garrett Cooper wrote:
-> On Thu, Jan 6, 2011 at 1:30 PM, Mike Frysinger wrote:
->> On Thu, Jan 6, 2011 at 2:35 PM, Garrett Cooper wrote:
->>> A really bad merge (I posted a reply to it a while ago in the archives).
->>
->> is there a way for us to manage the git hooks ? =A0we could have them
->> reject trivial merge commits (ones that should be fast forwards), and
->> commits with merge cruft in it ...
->
-> =A0 This was nastier. A lot of the problems I caused was ignorance and
-> human error based -- in particular I thought that git reset --hard
-> would actually reset merges (but it didn't!)
+--===============4264748712835534034==
+Content-Type: multipart/signed; boundary="nextPart13637097.Dt7B4zLB2Z";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-sure it will ... you just have to reset to before the merge
+--nextPart13637097.Dt7B4zLB2Z
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> I didn't bother to fake the push before I did it and the rest is history.
+On Friday, January 14, 2011 16:52:15 Garrett Cooper wrote:
+> On Fri, Jan 14, 2011 at 1:46 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> > On Friday, January 14, 2011 16:33:38 Garrett Cooper wrote:
+> >> On Fri, Jan 14, 2011 at 1:24 PM, Mike Frysinger wrote:
+> >> > On Friday, January 14, 2011 04:48:33 Peng Haitao wrote:
+> >> >>  testcases/kernel/syscalls/mallopt/mallopt01.c |    1 +
+> >> >=20
+> >> > please use descriptive subjects in your patches.  this really should
+> >> > be something like:
+> >> >        mallopt01: fix build error due to xxxx
+> >> >=20
+> >> >> --- a/testcases/kernel/syscalls/mallopt/mallopt01.c
+> >> >> +++ b/testcases/kernel/syscalls/mallopt/mallopt01.c
+> >> >> @@ -37,6 +37,7 @@
+> >> >>  #ifdef CONFIG_COLDFIRE
+> >> >>  #define __MALLOC_STANDARD__
+> >> >>  #endif
+> >> >> +#include <malloc.h>
+> >> >=20
+> >> > umm, no.  malloc.h is a dead header file and nothing should be
+> >> > including it.
+> >>=20
+> >>     It is exposing extra junk in this case that isn't available from
+> >> stdlib.h, which unfortunately the test uses. I fixed the build error
+> >> for now, but maybe someone upstream should be informed that this
+> >> header needs to die a painful death, because all contemporary
+> >> documentation says that you need to include stdlib.h, not malloc.h
+> >> when working with malloc(3). I was reminded of this recently because I
+> >> built some stuff on FreeBSD and FreeBSD has a nice #warning about this
+> >> deprecation.
+> >=20
+> > err, right.  we're using mallopt() here and not malloc().  the former is
+> > not part of POSIX which means it should not be in stdlib.h.  i dont
+> > believe it is being deprecated on the GNU side, so we dont want to go
+> > killing off the tests.
+>=20
+> Should these tests live with glibc then and not ltp?
 
-if you caught it soon, you could have pushed up an old one and forced
-it back to the sane state ...
-git push --force origin <older commit>:refs/head/master
+not really.  you might be able to get glibc to accept these, but you'll mos=
+t=20
+likely need to rewrite them considerably.  plus, other C library=20
+implementations also support mallopt, not just glibc.  while it isnt part o=
+f=20
+POSIX, i do believe it is part of older standards.  glibc seems to quote=20
+SVID/XPG/ANSI.
+=2Dmike
 
-> So I don't know if adding hooks would fix that
+--nextPart13637097.Dt7B4zLB2Z
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-i saw that you had actual conflicts in there, and the hook would have
-caught that (">>>>>>>>>" and "=3D=3D=3D=3D=3D=3D=3D=3D=3D" and such)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
 
-but i'm not sure if your non-trivial merge would have been detected as
-a trivial merge since we dont want that (it'd prevent people from
-being able to pull a branch from someone else)
--mike
+iQIcBAABAgAGBQJNMMo1AAoJEEFjO5/oN/WBoeQP/3Koh57BiH2lyBsUorEGhpsO
+L3unwwMtMIFvcSKnuUNrtj0jsQRvSxbf/QoySO4ZwVqzNQfx5plc0/s+W5CkGv08
+CFsG5kQgXYW6jnVKdl06h5MmSbXQN7Q+CzOeE+qVoi+8WAEqKOCtA/hjKHKPuX8s
+X7bB/89p7ayjR203kjo+gH/BEpZHKl+QyiYnkh+kdS/EFT7az4+TEE4qs2Q3DnV4
+lafNK0COgCMQGwteYeGYeiOhhbSFr7DfMp1eGapdDiRwa9DZ5gXVMZ1uCfHRoUab
+jNlmPcODGbT5iyOlmKXOTH9+zO+BHrg7c0AJ5v+LcHvIc7v9RsEjukC0lxINprhK
+lEkVR7CUU13yChLNRckbRUsUNHEiml6mDZOI+GFJUu7wkiHq7rcbndHJKldyQrDj
+2agX0DHhcrPhPHtn9OsLbWiDeaD2ice1XVg9Yh2UslF9hPvrRc36XtlRccsPpPE/
+reMD5gxOpuXlr9UtUIyA8y636PJSwmV+AGwYe5xa5GvGOHljWdzHNTEeFoRsjuB5
+lM3RazY0+DWOC4SoW3WfHuuQSlTwqi2P+/bgQrIa2I4aIxtGApxbVwfbXpldrJ1O
+YjcPKXDIgZAZNdUM9jjEua3OfrTtk5CFm0aQ5O3I1nI/ii9saZyHaKhqfIG4DNme
+dZjbo7SoS4pfpZ4W2Lui
+=POo5
+-----END PGP SIGNATURE-----
 
----------------------------------------------------------------------------=
----
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, an=
-d, =
+--nextPart13637097.Dt7B4zLB2Z--
 
-should the need arise, upgrade to a full multi-node Oracle RAC database =
 
-without downtime or disruption
+--===============4264748712835534034==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
+--===============4264748712835534034==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4264748712835534034==--
+
