@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <violetleigh@gmail.com>) id 1PaQPe-0006yx-Iz
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jan 2011 10:16:14 +0000
-Received: from mail-gw0-f47.google.com ([74.125.83.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PaQPd-0001fO-OI
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jan 2011 10:16:14 +0000
-Received: by gwaa12 with SMTP id a12so3518647gwa.34
+	(envelope-from <yanegomi@gmail.com>) id 1PdrN0-0007wW-WF
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 21:39:43 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PdrN0-0004Rw-35
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 21:39:42 +0000
+Received: by wwi18 with SMTP id 18so3235722wwi.10
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 05 Jan 2011 02:16:08 -0800 (PST)
+	Fri, 14 Jan 2011 13:39:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <201012291144.58092.vapier@gentoo.org>
-References: <AANLkTi=qFxgs4CPQ2EUwHin1LTgxw0V-RENPV9rRqraF@mail.gmail.com>
-	<201012291144.58092.vapier@gentoo.org>
-Date: Wed, 5 Jan 2011 18:16:08 +0800
-Message-ID: <AANLkTimxrSw2qSVnqqw+wUkNSgZOHwb59Qvo61swTf9s@mail.gmail.com>
-From: Vivi <violetleigh@gmail.com>
-Subject: Re: [LTP] [Bug Fix] utimensat01 can't build
+In-Reply-To: <201101141624.59736.vapier@gentoo.org>
+References: <4D301BF1.8070101@cn.fujitsu.com>
+	<201101141624.59736.vapier@gentoo.org>
+Date: Fri, 14 Jan 2011 13:33:38 -0800
+Message-ID: <AANLkTik8_=dyDFacvbJs8t6E1iaCmAgUEKOSRtv9fepZ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix a building error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,88 +28,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2341452183663299071=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
---===============2341452183663299071==
-Content-Type: multipart/alternative; boundary=0016368e1d22742f52049916ac7b
+On Fri, Jan 14, 2011 at 1:24 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Friday, January 14, 2011 04:48:33 Peng Haitao wrote:
+>> =A0testcases/kernel/syscalls/mallopt/mallopt01.c | =A0 =A01 +
+>
+> please use descriptive subjects in your patches. =A0this really should be
+> something like:
+> =A0 =A0 =A0 =A0mallopt01: fix build error due to xxxx
+>
+>> --- a/testcases/kernel/syscalls/mallopt/mallopt01.c
+>> +++ b/testcases/kernel/syscalls/mallopt/mallopt01.c
+>> @@ -37,6 +37,7 @@
+>> =A0#ifdef CONFIG_COLDFIRE
+>> =A0#define __MALLOC_STANDARD__
+>> =A0#endif
+>> +#include <malloc.h>
+>
+> umm, no. =A0malloc.h is a dead header file and nothing should be includin=
+g it.
 
---0016368e1d22742f52049916ac7b
-Content-Type: text/plain; charset=ISO-8859-1
+    It is exposing extra junk in this case that isn't available from
+stdlib.h, which unfortunately the test uses. I fixed the build error
+for now, but maybe someone upstream should be informed that this
+header needs to die a painful death, because all contemporary
+documentation says that you need to include stdlib.h, not malloc.h
+when working with malloc(3). I was reminded of this recently because I
+built some stuff on FreeBSD and FreeBSD has a nice #warning about this
+deprecation.
+Thanks,
+-Garrett
 
->>On Wednesday, December 29, 2010 04:35:48 Vivi wrote:
->> LTP test case utimensat01.c can't build without file usctest.h.
+---------------------------------------------------------------------------=
+---
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand =
 
->this compiles fine for me on x86_64/Linux as well as Blackfin/Linux without
->this change.  so why do you need this ?
->-mike
+malware threats, the impact they can have on your business, and how you =
 
-
-I get following error when build utimensat01.c.
---
-bfin-uclinux-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/testcases/kernel/include
--I../../../../include -I../../../../include -D__UCLIBC__ -DUCLINUX
--L../../../../lib  utimensat01.c   -lltp -o utimensat01
-../../../../lib/libltp.a(tst_res.o): In function `tst_print':
-/home/test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/lib/tst_res.c:512:
-undefined reference to `_TEST_ERRNO'
-/home/test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/lib/tst_res.c:512:
-undefined reference to `_TEST_ERRNO'
-collect2: ld returned 1 exit status
-make: *** [utimensat01] Error 1
---
-
---0016368e1d22742f52049916ac7b
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-&gt;&gt;On Wednesday, December 29, 2010 04:35:48 Vivi wrote:<br>
-&gt;&gt; LTP test case utimensat01.c can&#39;t build without file usctest.h=
-.<br><br>&gt;this compiles fine for me on x86_64/Linux as well as Blackfin/=
-Linux without<br>
-&gt;this change. =A0so why do you need this ?<br>
-<font color=3D"#888888">&gt;-mike</font><br><br><br>I get following error w=
-hen build utimensat01.c.<br>--<br>bfin-uclinux-gcc -g -O2 -g -O2 -fno-stric=
-t-aliasing -pipe -Wall=A0 -I/home/test/work/cruise/checkouts/uclinux-dist/t=
-estsuites/ltp/ltp-full-20101031/testcases/kernel/include -I../../../../incl=
-ude -I../../../../include -D__UCLIBC__ -DUCLINUX=A0=A0 -L../../../../lib=A0=
- utimensat01.c=A0=A0 -lltp -o utimensat01<br>
-../../../../lib/libltp.a(tst_res.o): In function `tst_print&#39;:<br>/home/=
-test/work/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/li=
-b/tst_res.c:512: undefined reference to `_TEST_ERRNO&#39;<br>/home/test/wor=
-k/cruise/checkouts/uclinux-dist/testsuites/ltp/ltp-full-20101031/lib/tst_re=
-s.c:512: undefined reference to `_TEST_ERRNO&#39;<br>
-collect2: ld returned 1 exit status<br>make: *** [utimensat01] Error 1<br>-=
--<br>
-
---0016368e1d22742f52049916ac7b--
-
-
---===============2341452183663299071==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
---===============2341452183663299071==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2341452183663299071==--
-
