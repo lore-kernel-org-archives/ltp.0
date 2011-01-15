@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tangchen@cn.fujitsu.com>) id 1PanNl-0006CH-Ke
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:47:49 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PdymU-0006sG-0n
+	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 05:34:30 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PanNj-0003tP-SC
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:47:49 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id CAA7B17012C
+	id 1PdymT-0004rO-4L
+	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 05:34:29 +0000
+Received: by wwi18 with SMTP id 18so3486938wwi.10
 	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Jan 2011 18:47:40 +0800 (CST)
-Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06AgYvd018885
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 18:42:35 +0800
-Message-ID: <4D259E4A.2050704@cn.fujitsu.com>
-Date: Thu, 06 Jan 2011 18:49:46 +0800
-From: tangchen <tangchen@cn.fujitsu.com>
+	Fri, 14 Jan 2011 21:34:23 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 00/13]Fix a few syntax error
+In-Reply-To: <201012291135.40157.vapier@gentoo.org>
+References: <AANLkTinxp9Aj7MwPqpR13cZRjAYdLVwMkhCteDM-S7Vi@mail.gmail.com>
+	<201012291135.40157.vapier@gentoo.org>
+Date: Fri, 14 Jan 2011 21:34:23 -0800
+Message-ID: <AANLkTi=sSsbYn4HKxNLegDqY49POL1Qt287uDK_=MMOT@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [Bug Fix] Skip first case in adjtimex02 test by a safer
+	method
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,52 +29,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-There are several small bugs making LTP unable to be built, most of 
-which are syntax errors.
+On Wed, Dec 29, 2010 at 8:35 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Wednesday, December 29, 2010 04:35:29 Vivi wrote:
+>> --- testcases/kernel/syscalls/adjtimex/adjtimex02.c
+>> +++ testcases/kernel/syscalls/adjtimex/adjtimex02.c
+>> @@ -122,12 +122,7 @@
+>> =A0 =A0 =A0 =A0 void (*cleanup) ();
+>> =A0 =A0 =A0 =A0 int exp_errno;
+>> =A0} test_cases[] =3D {
+>> -#ifndef UCLINUX
+>> - =A0 =A0 =A0 /* Skip since uClinux does not implement memory protection=
+ */
+>> - =A0 =A0 =A0 {
+>> - =A0 =A0 =A0 (struct timex *)-1, NULL, NULL, EFAULT},
+>> -#endif
+>> - =A0 =A0 =A0 {
+>> + =A0 =A0 =A0 { (struct timex *)-1, NULL, NULL, EFAULT},{
+>> =A0 =A0 =A0 =A0 &buff, setup2, NULL, EINVAL}, {
+>> =A0 =A0 =A0 =A0 &buff, setup3, NULL, EINVAL}, {
+>> =A0 =A0 =A0 =A0 &buff, setup4, NULL, EINVAL}, {
+>> @@ -159,7 +154,18 @@
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Tst_count =3D 0;
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (i =3D 0; i < TST_TOTAL; ++i) {
+>> +#ifdef UCLINUX
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* Skip first case since=
+ uClinux does not implement
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* memory protection.
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (i =3D=3D 0) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(T=
+CONF, "uClinux does not
+>> implement" + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 " memory
+>> protection."); + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 continue;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+>> +#endif
+>
+> we should be able to handle bad pointers like -1 and NULL. =A0the kernel'=
+s check
+> access func should force EFAULT. =A0so why do we need this new if code ?
 
-1. Add missing parameters for tst_brkm() in 
-testcases/kernel/syscalls/fchmod/fchmod03.c
-2. Add missing parameters for tst_brkm() in 
-testcases/kernel/syscalls/flock/flock04.c
-3. Add missing ";" in testcases/kernel/syscalls/getpagesize/getpagesize01.c
-4. Correct the parameters' names for parse_opts() in 
-testcases/kernel/syscalls/lchown/lchown02.c
-5. Add some preprocessor variables in /testcases/kernel/mem/ksm/ksm01.c 
-bacause KSM is not supported on RHEL5
-6. Add missing operators for parse_opts() in 
-testcases/kernel/syscalls/msync/msync04.c
-7. Fix an wrong using of macro WTERMSIG in 
-testcases/kernel/syscalls/pipe/pipe04.c
-8. Fix the wrong variable name of wtstatus in 
-testcases/kernel/syscalls/pipe/pipe09.c
-9. Add a missing ")" in testcases/kernel/syscalls/pread/pread03.c
-10. Remove a redundant "{" in 
-testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
-11. Fix the wrong using of perror() in 
-testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
-12. Add a missing variable TST_TOTAL in 
-testcases/kernel/syscalls/socketpair/socketpair02.c
-13. Add missing parameters for tst_brkm() in 
-testcases/kernel/syscalls/statfs/statfs03.c
+    If so, then there's a lot of code in LTP that needs to be fixed.
+Thanks,
+-Garrett
 
--- 
-Best Regards,
-Tang chen
---------------------------------------------------
-Tang Chen
+---------------------------------------------------------------------------=
+---
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand =
 
+malware threats, the impact they can have on your business, and how you =
 
-
-------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
