@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PgCM4-0000HN-CT
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 08:28:24 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PgCM3-0005KK-7U
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 08:28:24 +0000
-Received: by wwi18 with SMTP id 18so1488434wwi.10
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PdypT-000730-1B
+	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 05:37:35 +0000
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PdypS-0003WP-7E
+	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 05:37:34 +0000
+Received: by wwi18 with SMTP id 18so412696wwi.4
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 00:28:17 -0800 (PST)
+	Fri, 14 Jan 2011 21:37:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20110120143028.4df7ab81@regolo>
-References: <20110120143028.4df7ab81@regolo>
-Date: Fri, 21 Jan 2011 00:28:16 -0800
-Message-ID: <AANLkTikt-TBmgTSqcRT4OY21udzxpuq-s0yGqirMrWFr@mail.gmail.com>
+In-Reply-To: <AANLkTi=pHhb0Stk5RpnobA0Sqo4G6C07meCKTQzBCY8B@mail.gmail.com>
+References: <AANLkTi=pHhb0Stk5RpnobA0Sqo4G6C07meCKTQzBCY8B@mail.gmail.com>
+Date: Fri, 14 Jan 2011 21:37:27 -0800
+Message-ID: <AANLkTin-eo2G5mOF_9PoHbVx_Z=xvZ7vhSE9h4OQy388@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Add tst_require_root to acct01 testcase.
+Subject: Re: [LTP] [Bug Fix] fcntl14 cause msh relaunch in uClinux platform
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,30 +30,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Greco <cristian@regolo.cc>
-Cc: ltp-list@lists.sourceforge.net
+To: Vivi <violetleigh@gmail.com>
+Cc: LTP mailing list <ltp-list@lists.sourceforge.net>
 
-On Thu, Jan 20, 2011 at 5:30 AM, Cristian Greco <cristian@regolo.cc> wrote:
-> Hi,
->
-> [ please keep CC as I'm not currently subscribed to the list ]
->
-> please find attached a small fix to check for root privileges in
-> acct(2) testcase (syscalls/acct/acct01.c).
+On Wed, Dec 29, 2010 at 1:35 AM, Vivi <violetleigh@gmail.com> wrote:
+> fcntl14 cause msh relaunch in uClinux platform.
 
-    Thanks for spotting the issue. I've fixed it, added a few more
-testcases, and discovered what appears to be a kernel bug on 2.6.34
-(acct("/tmp/does/not/exist") should fail with == -1 and errno ==
-ENOTDIR) :)...
-Cheers,
+Fixed. Please add a signed-off-by described in the DSO document next time.
+Thanks,
 -Garrett
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
