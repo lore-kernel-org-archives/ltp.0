@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PfcL9-0002wI-3f
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 18:01:03 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PfcL8-0006YH-7h
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 18:01:03 +0000
-Received: by gxk20 with SMTP id 20so361048gxk.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 19 Jan 2011 10:00:56 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1PePPz-0000qY-FW
+	for ltp-list@lists.sourceforge.net; Sun, 16 Jan 2011 10:01:03 +0000
+Date: Sun, 16 Jan 2011 11:17:53 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110116101753.GA7172@saboteur.suse.cz>
+References: <4D310A5D.6000006@cn.fujitsu.com>
+	<AANLkTin8PLaWHyqu1jQETZXNWWVFizf=SqUj23=mBC5u@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1186837298.70819.1295452066448.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <823965169.56383.1295425072957.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<1186837298.70819.1295452066448.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Wed, 19 Jan 2011 10:00:56 -0800
-Message-ID: <AANLkTin1mcmihjfN265h5wTd-8YPuRzioxigkqxRjSQs@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] mbind: add a missing Makefile
+Content-Disposition: inline
+In-Reply-To: <AANLkTin8PLaWHyqu1jQETZXNWWVFizf=SqUj23=mBC5u@mail.gmail.com>
+Subject: Re: [LTP] [POSIX][PATCH] Fix bug of the test timer_create.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,14 +25,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Jan 19, 2011 at 7:47 AM, CAI Qian <caiqian@redhat.com> wrote:
-> Garrett, this patch still need to merge.
+Hi!
+> > CLOCK_THREAD_CPUTIME_ID and CLOCK_PROCESS_CPUTIME_ID are CPU-time clock,
+> > so when the thread/process invokes nanosleep, these clocks will go sleeping
+> > too.
 
-Committed -- thanks!
--Garrett
+I've send a sligtly better version of this patch a couple of weeks ago
+and that was one of the patches I've been constantly reminding you
+about.
+
+I'm a little worried here that mixing time() that returns time since the
+epoch and per process cpu timers wouldn't work on machine under load.
+
+My patch uses only per cpu process timers so should be fine.
+
+Could you please have a look at my version?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Protect Your Site and Customers from Malware Attacks
