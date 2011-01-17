@@ -1,24 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PgDm2-0001OQ-7x
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:59:18 +0000
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PgDm1-00080M-6z
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:59:18 +0000
-Received: by wwi18 with SMTP id 18so468699wwi.4
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <achender@us.ibm.com>) id 1PevZt-00067t-EY
+	for ltp-list@lists.sourceforge.net; Mon, 17 Jan 2011 20:21:25 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.72) id 1PevZs-0008Ae-IS
+	for ltp-list@lists.sourceforge.net; Mon, 17 Jan 2011 20:21:25 +0000
+Received: from d01dlp01.pok.ibm.com (d01dlp01.pok.ibm.com [9.56.224.56])
+	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p0HK3POF004121
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 15:03:58 -0500
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by d01dlp01.pok.ibm.com (Postfix) with ESMTP id 531E2728042
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 01:59:11 -0800 (PST)
+	Mon, 17 Jan 2011 15:21:12 -0500 (EST)
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p0HKLBUK179756
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 15:21:11 -0500
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id p0HKLBwX006227
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 13:21:11 -0700
+Received: from d03nm127.boulder.ibm.com (d03nm127.boulder.ibm.com
+	[9.17.195.18])
+	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p0HKLBlt006224
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 13:21:11 -0700
 MIME-Version: 1.0
-In-Reply-To: <323415307.101341.1295603866637.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <1435824546.101326.1295603761218.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<323415307.101341.1295603866637.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Fri, 21 Jan 2011 01:59:10 -0800
-Message-ID: <AANLkTim08bh_cHvz6EzMR4FGwNnqns9SCYgAO++kdDaf@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] check two possible pathes for cpuset
+Message-ID: <OF556F8504.F2C4ACB7-ON8725781B.006F4CCC-0725781B.006FD309@us.ibm.com>
+From: Allison C Henderson <achender@us.ibm.com>
+Date: Mon, 17 Jan 2011 13:21:10 -0700
+Content-Type: multipart/mixed; boundary="=_mixed 006FD3040725781B_="
+Subject: [LTP] New ltp test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,30 +43,251 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Fri, Jan 21, 2011 at 1:57 AM, CAI Qian <caiqian@redhat.com> wrote:
-> This is the correct patch attached.
->
-> ----- Original Message -----
->> It can be difficult to predict if cpuset files have prefix or not,
->> so only to fail after checked both.
+--=_mixed 006FD3040725781B_=
+Content-Type: multipart/alternative;
+	boundary="=_alternative 006FD3050725781B_="
 
-    Is there a requirement that documents this behavior?
-Thanks,
--Garrett
+
+--=_alternative 006FD3050725781B_=
+Content-Type: text/plain; charset="US-ASCII"
+
+Hi All,
+
+I am new to the ltc filesystem team at IBM and we have been working on a 
+new ltp test case for ext4.  The test case exercises the new punch hole 
+flag in the fallocate system call that we will be using to implement punch 
+hole support for ext4.  Currently, there is no punch hole support for 
+ext4, so the test just returns failed, but we wanted to add the test case 
+to help verify that the new VFS changes to fallocate are working.   I have 
+included a patch that adds the new ltp test case.  Let me know what you 
+think.  Thanks!
+
+Allison Henderson
+eml: achender@us.ibm.com
+ph:799-5761 (T/L 321)
+--=_alternative 006FD3050725781B_=
+Content-Type: text/html; charset="US-ASCII"
+
+
+<br><font size=2 face="sans-serif">Hi All,</font>
+<br>
+<br><font size=2 face="sans-serif">I am new to the ltc filesystem team
+at IBM and we have been working on a new ltp test case for ext4. &nbsp;The
+test case exercises the new punch hole flag in the fallocate system call
+that we will be using to implement punch hole support for ext4. &nbsp;Currently,
+there is no punch hole support for ext4, so the test just returns failed,
+but we wanted to add the test case to help verify that the new VFS changes
+to fallocate are working. &nbsp; I have included a patch that adds the
+new ltp test case. &nbsp;Let me know what you think. &nbsp;Thanks!</font>
+<br>
+<br><font size=2 face="sans-serif">Allison Henderson<br>
+eml: achender@us.ibm.com<br>
+ph:799-5761 (T/L 321)</font>
+--=_alternative 006FD3050725781B_=--
+
+--=_mixed 006FD3040725781B_=
+Content-Type: application/octet-stream; name="ltp_holepunch_patch"
+Content-Disposition: attachment; filename="ltp_holepunch_patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtTnVhciBsdHBfdW5wYXRjaGVkL2x0cC90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3
+LWZlYXR1cmVzL2V4dDQtaG9sZS1wdW5jaC9leHQ0X2hvbGVfcHVuY2guYyBsdHBfbWFudWFsUGF0
+Y2gvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1
+bmNoL2V4dDRfaG9sZV9wdW5jaC5jCi0tLSBsdHBfdW5wYXRjaGVkL2x0cC90ZXN0Y2FzZXMva2Vy
+bmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaG9sZS1wdW5jaC9leHQ0X2hvbGVfcHVuY2gu
+YwkxOTY5LTEyLTMxIDE3OjAwOjAwLjAwMDAwMDAwMCAtMDcwMAorKysgbHRwX21hbnVhbFBhdGNo
+L2x0cC90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaG9sZS1wdW5j
+aC9leHQ0X2hvbGVfcHVuY2guYwkyMDExLTAxLTE0IDE3OjM0OjQ2LjkzNjE5NDg1OSAtMDcwMApA
+QCAtMCwwICsxLDk4IEBACisvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLworLyogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKi8KKy8qIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5l
+cyAgQ29ycC4sIDIwMTEgICAgICAgICAgICAgICAgICovCisvKiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAq
+LworLyogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0
+ZSBpdCBhbmQvb3IgbW9kaWZ5ICAgICAgKi8KKy8qIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUg
+R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5ICAgICAgICovCisvKiB0
+aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNl
+bnNlLCBvciAgICAgICAgICAqLworLyogKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lv
+bi4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KKy8qICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICovCisvKiBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUg
+dGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgICAgICAgICAgICAqLworLyogYnV0IFdJVEhPVVQgQU5Z
+IFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mICAgICAgICAg
+ICAgKi8KKy8qIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVS
+UE9TRS4gIFNlZSAgICAgICAgICAgICAgICAgICovCisvKiB0aGUgR05VIEdlbmVyYWwgUHVibGlj
+IExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4gICAgICAgICAgICAgICAgICAgICAgICAgICAqLwor
+LyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKi8KKy8qIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNv
+cHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlICAgICAgICAgICovCisvKiBhbG9u
+ZyB3aXRoIHRoaXMgcHJvZ3JhbTsgIGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUg
+ICAgICAgICAgICAgICAqLworLyogRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBT
+dWl0ZSAzMzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBVU0EgICAgKi8KKy8qICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICovCisvKiBBdXRob3I6IEFsbGlzb24gSGVuZGVyc29uICA8YWNoZW5kZXJAdXMuaWJt
+LmNvbT4gICAgICAgICAgICAgICAgICAgICAgICAgICAqLworLyogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Ki8KKy8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKiovCisKKyNpbmNsdWRlIDxsaW51eC9mYWxsb2MuaD4K
+KyNpbmNsdWRlIDxzdGRpby5oPgorI2luY2x1ZGUgPHN0ZGxpYi5oPgorI2luY2x1ZGUgPHN0cmlu
+Zy5oPgorI2luY2x1ZGUgPHVuaXN0ZC5oPgorI2luY2x1ZGUgPHN5cy90eXBlcy5oPgorI2luY2x1
+ZGUgPHN5cy9zdGF0Lmg+CisjaW5jbHVkZSA8ZmNudGwuaD4KKworCisjZGVmaW5lIFVTQUdFICJV
+U0FHRTogZXh0NC1wdW5jaC1ob2xlIC1vIG9mZnNldCAtbCBsZW5ndGggZmlsZW5hbWVcbiIKKwor
+aW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKK3sKKyAgICAgICAgaW50IGxlbmd0aCA9
+IC0xOworICAgICAgICBpbnQgb2Zmc2V0ID0gLTE7CisgICAgICAgIGludCBvcHQgPSAwOworICAg
+ICAgICBpbnQgZmQgPSAwOworICAgICAgICBpbnQgcmMgPSAwOworICAgICAgICBpbnQgbW9kZSA9
+IDA7CisgICAgICAgIGNoYXIgKmZpbGVuYW1lID0gTlVMTDsKKworCisgICAgICAgIGlmIChhcmdj
+ICE9IDYpIHsKKyAgICAgICAgICAgICAgICBmcHJpbnRmKHN0ZGVyciwgVVNBR0UpOworICAgICAg
+ICAgICAgICAgIHJldHVybiAxOworICAgICAgICB9CisKKyAgICAgICAgLyogUGFyc2UgYXJndW1l
+bnRzICovCisgICAgICAgIHdoaWxlICgob3B0ID0gZ2V0b3B0KGFyZ2MsIGFyZ3YsICJvOmw6Iikp
+ICE9IEVPRikgeworICAgICAgICAgICAgICAgIHN3aXRjaCAob3B0KSB7CisgICAgICAgICAgICAg
+ICAgY2FzZSAnbyc6CisgICAgICAgICAgICAgICAgICAgICAgICBvZmZzZXQgPSBhdG9pKG9wdGFy
+Zyk7CisgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKKyAgICAgICAgICAgICAgICBjYXNl
+ICdsJzoKKyAgICAgICAgICAgICAgICAgICAgICAgIGxlbmd0aCA9IGF0b2kob3B0YXJnKTsKKyAg
+ICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOworICAgICAgICAgICAgICAgIGRlZmF1bHQ6Cisg
+ICAgICAgICAgICAgICAgICAgICAgICBmcHJpbnRmKHN0ZGVyciwgVVNBR0UpOworICAgICAgICAg
+ICAgICAgICAgICAgICAgcmV0dXJuIDE7CisgICAgICAgICAgICAgICAgfQorICAgICAgICB9CisK
+KyAgICAgICAgZmlsZW5hbWUgPSBhcmd2WzVdOworCisgICAgICAgIGlmKG9mZnNldCA8IDAgfHwg
+bGVuZ3RoIDwgMCB8fCBmaWxlbmFtZSA9PSBOVUxMKXsKKyAgICAgICAgICAgICAgICBmcHJpbnRm
+KHN0ZGVyciwgVVNBR0UpOworICAgICAgICAgICAgICAgIHJldHVybiAxOworICAgICAgICB9CisK
+KworICAgICAgICAvKiBDaGVjayBmb3IgcHVuY2ggaG9sZSBzdXBwb3J0ICovCisjaWZuZGVmIEZB
+TExPQ19GTF9QVU5DSF9IT0xFCisgICAgICAgIGZwcmludGYoc3RkZXJyLCAiRXJyb3I6IGZhbGxv
+Y2F0ZSBwdW5jaCBob2xlIG5vdCBzdXBwb3J0ZWRcbiIpOworICAgICAgICByZXR1cm4gMTsKKyNl
+bHNlCisKKyAgICAgICAgLyogT3BlbiBmaWxlICovCisgICAgICAgIGZkID0gb3BlbihmaWxlbmFt
+ZSwgT19XUk9OTFksIDA3NTUgICk7CisgICAgICAgIGlmKGZkIDw9IDApeworICAgICAgICAgICAg
+ICAgIHBlcnJvcigiRXJyb3I6IEZhaWxlZCB0byBvcGVuIGZpbGUiKTsKKyAgICAgICAgICAgICAg
+ICByZXR1cm4gMTsKKyAgICAgICAgfQorCisgICAgICAgIC8qIFB1bmNoIGhvbGUgKi8KKyAgICAg
+ICAgbW9kZSA9IEZBTExPQ19GTF9QVU5DSF9IT0xFIHwgRkFMTE9DX0ZMX0tFRVBfU0laRTsKKyAg
+ICAgICAgcmMgPSBmYWxsb2NhdGUoZmQsIG1vZGUsIG9mZnNldCwgbGVuZ3RoKTsKKyAgICAgICAg
+aWYocmMgIT0gMCl7CisgICAgICAgICAgICAgICAgcGVycm9yKCJFcnJvcjogUHVuY2ggaG9sZSBm
+YWlsZWQiKTsKKyAgICAgICAgfQorCisgICAgICAgIGNsb3NlKGZkKTsKKyNlbmRpZgorCXJldHVy
+biByYzsKK30KKwpkaWZmIC1OdWFyIGx0cF91bnBhdGNoZWQvbHRwL3Rlc3RjYXNlcy9rZXJuZWwv
+ZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNoL2V4dDRfaG9sZV9wdW5jaF90ZXN0
+LnNoIGx0cF9tYW51YWxQYXRjaC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0
+dXJlcy9leHQ0LWhvbGUtcHVuY2gvZXh0NF9ob2xlX3B1bmNoX3Rlc3Quc2gKLS0tIGx0cF91bnBh
+dGNoZWQvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xl
+LXB1bmNoL2V4dDRfaG9sZV9wdW5jaF90ZXN0LnNoCTE5NjktMTItMzEgMTc6MDA6MDAuMDAwMDAw
+MDAwIC0wNzAwCisrKyBsdHBfbWFudWFsUGF0Y2gvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0
+NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNoL2V4dDRfaG9sZV9wdW5jaF90ZXN0LnNoCTIw
+MTEtMDEtMTQgMTc6MzU6MjAuMjU3MTk3NDEzIC0wNzAwCkBAIC0wLDAgKzEsOTYgQEAKKyMhL2Jp
+bi9iYXNoCisKKyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCisjIyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
+IworIyMgQ29weXJpZ2h0IChjKSBJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzICBDb3Jw
+LiwgMjAxMSAgICAgICAgICAgICAgICAgIyMKKyMjICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyBU
+aGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFu
+ZCNvciBtb2RpZnkgICAgICAjIworIyMgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2Vu
+ZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkgICAgICAgIyMKKyMjIHRoZSBGcmVl
+IFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9y
+ICAgICAgICAgICMjCisjIyAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIyMKKyMjIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0
+IHdpbGwgYmUgdXNlZnVsLCBidXQgICAgICAgICMjCisjIyBXSVRIT1VUIEFOWSBXQVJSQU5UWTsg
+d2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSAjIwor
+IyMgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVSBHZW5l
+cmFsIFB1YmxpYyBMaWNlbnNlICAgIyMKKyMjIGZvciBtb3JlIGRldGFpbHMuICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAjIworIyMgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0
+aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgICAgICAgICAgIyMKKyMjIGFsb25nIHdpdGgg
+dGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSAgICAgICAg
+ICAgICAgICMjCisjIyBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UsIFN1aXRlIDMz
+MCwgQm9zdG9uLCBNQSAwMjExMS0xMzA3IFVTQSAgICAjIworIyMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IyMKKyMjIEF1dGhvcjogQWxsaXNvbiBIZW5kZXJzb24gPGFoZW5kZXJAdXMuaWJtLi5jb20+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMKKworY2QgJExUUFJPT1QvdGVzdGNhc2VzL2JpbgorCisuIC4v
+ZXh0NF9mdW5jcy5zaAorCitleHBvcnQgVENJRD0iZXh0NC1ob2xlLXB1bmNoIgorZXhwb3J0IFRT
+VF9UT1RBTD0yCitleHBvcnQgVFNUX0NPVU5UPTEKKworIyAkMTogdGhlIHRlc3QgY29uZmlnCity
+ZWFkX2NvbmZpZyAkMQorCitURVNUX0RJUj0kUFdECisKKyMgVGVzdCB0aGF0IGZpbGUgY2FuIGJl
+IGhvbGUgcHVuY2hlZAorZXh0NF90ZXN0X2hvbGVfcHVuY2goKQoreworCXRzdF9yZXNtIFRJTkZP
+ICJUZXN0IGZhbGxvY2F0ZSBwdW5jaCBob2xlIgorCisJI2NyZWF0ZSB0aGUgZmlsZSBzeXN0ZW0K
+Kwlta2ZzLmV4dDQgICRFWFQ0X0RFViAmPiAvZGV2L251bGwKKwlpZiBbICQ/IC1uZSAwIF07IHRo
+ZW4KKwkJdHN0X3Jlc20gVEZBSUwgImZhaWxlZCB0byBjcmVhdGUgZXh0NCBmaWxlc3lzdGVtIgor
+CQlyZXR1cm4gMQorCWZpCisKKwkjbW91bnQgdGhlIGZpbGUgc3lzdGVtCisJbW91bnQgLXQgZXh0
+NCAkRVhUNF9ERVYgbW50X3BvaW50CisJaWYgWyAkPyAtbmUgMCBdOyB0aGVuCisJCXRzdF9yZXNt
+IFRGQUlMICJmYWlsZWQgdG8gbW91bnQgZXh0NCBmaWxlc3lzdGVtIgorCQlyZXR1cm4gMQorCWZp
+CisKKwkjY3JlYXRlIHRlc3QgZmlsZQorCXJtIG1udF9wb2ludC90bXBfZmlsZQorCXRvdWNoIG1u
+dF9wb2ludC90bXBfZmlsZQorCWRkIGlmPS9kZXYvemVybyBvZj1tbnRfcG9pbnQvdG1wX2ZpbGUg
+YnM9MTAyNCBjb3VudD01MCAmPiAvZGV2L251bGwgICAgICAgCisKKwkjcHVuY2ggaG9sZSBpbiBt
+aWRkbGUKKwkuL2V4dDRfaG9sZV9wdW5jaCAtbyAgMjU2MDAgLWwgNjE0NCBtbnRfcG9pbnQvdG1w
+X2ZpbGUKKworCWlmIFsgJD8gLW5lIDAgXTsgdGhlbgorCQl0c3RfcmVzbSBURkFJTCAiUHVuY2gg
+aG9sZSBmYWlsZWQiCisJCXVtb3VudCBtbnRfcG9pbnQKKwkJcmV0dXJuIDEKKwlmaQorCisKKwor
+CSN1bm1vdW50IGZpbGVzeXRlbQorCXVtb3VudCBtbnRfcG9pbnQKKwlpZiBbICQ/IC1uZSAwIF07
+IHRoZW4KKwkJdHN0X3Jlc20gVEZBSUwgImZhaWxlZCB0byB1bW91bnQgZXh0NCBmaWxlc3lzdGVt
+IgorCQlyZXR1cm4gMQorCWZpCisKKwl0c3RfcmVzbSBUUEFTUyAiRXh0NCBwdW5jaCBob2xlIHBh
+c3MiCit9CisKKyMgbWFpbgorZXh0NF9zZXR1cAorCitSRVQ9MAorCitleHQ0X3Rlc3RfaG9sZV9w
+dW5jaAoraWYgWyAkPyAtbmUgMCBdOyB0aGVuCisJUkVUPTEKK2ZpCis6ICQoKFRTVF9DT1VOVCsr
+KSkKKworZXh0NF9jbGVhbnVwCitleGl0ICRSRVQKKwpkaWZmIC1OdWFyIGx0cF91bnBhdGNoZWQv
+bHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNo
+L01ha2VmaWxlIGx0cF9tYW51YWxQYXRjaC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5l
+dy1mZWF0dXJlcy9leHQ0LWhvbGUtcHVuY2gvTWFrZWZpbGUKLS0tIGx0cF91bnBhdGNoZWQvbHRw
+L3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNoL01h
+a2VmaWxlCTE5NjktMTItMzEgMTc6MDA6MDAuMDAwMDAwMDAwIC0wNzAwCisrKyBsdHBfbWFudWFs
+UGF0Y2gvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xl
+LXB1bmNoL01ha2VmaWxlCTIwMTEtMDEtMTQgMTc6NDE6MzAuNTg2MTk1MzAyIC0wNzAwCkBAIC0w
+LDAgKzEsMjUgQEAKKyMgICAgQ29weXJpZ2h0IChDKSBJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1h
+Y2hpbmVzICBDb3JwLiwgMjAxMSAKKyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdh
+cmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKKyMgICAgaXQgdW5kZXIg
+dGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQg
+YnkKKyMgICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBv
+ZiB0aGUgTGljZW5zZSwgb3IKKyMgICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lv
+bi4KKyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQg
+aXQgd2lsbCBiZSB1c2VmdWwsCisjICAgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91
+dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisjICAgIE1FUkNIQU5UQUJJTElUWSBvciBG
+SVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKKyMgICAgR05VIEdlbmVy
+YWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KKyMKKyMgICAgWW91IHNob3VsZCBo
+YXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYWxv
+bmcKKyMgICAgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29m
+dHdhcmUgRm91bmRhdGlvbiwgSW5jLiwKKyMgICAgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBG
+bG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQS4KKyMKKwordG9wX3NyY2RpciAgICAgICAg
+ICAgICAgPz0gLi4vLi4vLi4vLi4vLi4KKworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUv
+bWsvdGVzdGNhc2VzLm1rCisKK0xETElCUyArPSAtbG0KK0lOU1RBTExfVEFSR0VUUwkJPz0gKi5z
+aAorCitpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9nZW5lcmljX2xlYWZfdGFyZ2V0
+Lm1rCmRpZmYgLU51YXIgbHRwX3VucGF0Y2hlZC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0
+LW5ldy1mZWF0dXJlcy9ydW5fZXh0NF90ZXN0LnNoIGx0cF9tYW51YWxQYXRjaC9sdHAvdGVzdGNh
+c2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9ydW5fZXh0NF90ZXN0LnNoCi0tLSBsdHBf
+dW5wYXRjaGVkL2x0cC90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL3J1bl9l
+eHQ0X3Rlc3Quc2gJMjAwOS0xMC0yNiAwNDoyNTo1NS4wMDAwMDAwMDAgLTA3MDAKKysrIGx0cF9t
+YW51YWxQYXRjaC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9ydW5f
+ZXh0NF90ZXN0LnNoCTIwMTEtMDEtMTQgMTQ6MDA6NTMuMzEwMjAwNzEyIC0wNzAwCkBAIC0xNzYs
+NCArMTc2LDE4IEBACiAJUkVUPTEKIGZpCiAKKworZWNobyAiICIKK2VjaG8gIkV4dDQgZmFsbG9j
+YXRlIGhvbGUgcHVuY2ggdGVzdCIKK2lmIFsgLWYgImV4dDRfaG9sZV9wdW5jaF90ZXN0LnNoIiBd
+OyAgdGhlbgorICAgICAgICAuL2V4dDRfaG9sZV9wdW5jaF90ZXN0LnNoIC4vZXh0NC10ZXN0LWNv
+bmZpZworICAgICAgICBpZiBbICQ/IC1uZSAwIF07IHRoZW4KKyAgICAgICAgICAgICAgICBSRVQ9
+MQorICAgICAgICBmaQorZWxzZQorICAgICAgICBlY2hvICJTaGVsbCBmaWxlIGlzIG5vdCBpbnN0
+YWxsZWQuLlBsZWFzZSBjaGVjayBNYWtlZmlsZS4uLiIKKyAgICAgICAgUkVUPTEKK2ZpCisKKwog
+ZXhpdCAkUkVUCg==
+
+--=_mixed 006FD3040725781B_=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
+--=_mixed 006FD3040725781B_=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--=_mixed 006FD3040725781B_=--
+
