@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PfDCu-0000Qu-Ao
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 15:10:52 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PfDCt-0003Ub-5i
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 15:10:52 +0000
-Date: Tue, 18 Jan 2011 10:10:44 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1157769992.37634.1295363444199.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <C5520275-F1CD-46F9-A9CE-3DEC1A298FD0@gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Pf8DZ-00016l-F1
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:51:13 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf8DY-0005Wu-Js
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:51:13 +0000
+Received: by wyb40 with SMTP id 40so5712350wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Jan 2011 01:51:06 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/3] rework code for oom and ksm tests
+In-Reply-To: <482156687.24713.1292899793949.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <632747622.24710.1292899791514.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<482156687.24713.1292899793949.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Tue, 18 Jan 2011 01:51:05 -0800
+Message-ID: <AANLkTimhe1JehFkFUoe2EdarSQGEO85ZhobMiYtmETLC@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v2 5/5] mm/runtest: add oom tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,17 +31,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: CAI Qian <caiqian@redhat.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
+2010/12/20 CAI Qian <caiqian@redhat.com>:
+> Signed-off-by: CAI Qian <caiqian@redhat.com>
 
-> I was in the middle of writing up a style guide before I accidentally
-> quite mousepad and lost my progress... Please look at the last couple
-> commits I signed off on and try to follow my example for how to do
-> things in a more consistent manner according to I've been trying to do
-> in the project over the past couple of weeks; I'll see if I can
-> rewrite bits and pieces of the style guide before nightfall.
-Would you need me to re-send those with the style fixed? 
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Protect Your Site and Customers from Malware Attacks
