@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Pfpjq-0007O1-Cn
-	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 08:19:26 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pfpjp-0002dn-1R
-	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 08:19:26 +0000
-Message-ID: <4D37F00B.8020402@cn.fujitsu.com>
-Date: Thu, 20 Jan 2011 16:19:23 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <yanegomi@gmail.com>) id 1Pf6jb-0005a1-SN
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 08:16:11 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf6ja-0006Ir-Mo
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 08:16:11 +0000
+Received: by wyb40 with SMTP id 40so5645389wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Jan 2011 00:16:05 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] rt_sigprocmask01: fix error of wrong return code
+In-Reply-To: <4D35466D.60000@cn.fujitsu.com>
+References: <4D35466D.60000@cn.fujitsu.com>
+Date: Tue, 18 Jan 2011 00:16:04 -0800
+Message-ID: <AANLkTikE32KY_3zag-CvOFuekM1Vbq6gRY6rsDO23DCp@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] float_bessel: fix error of infinite loop
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,40 +30,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+On Mon, Jan 17, 2011 at 11:51 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> Hi Garrett,
+>
+> exit() should be modified to tst_exit() in function myexit().
 
-"return 1" should be replaced with "tst_exit()".
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
----
- .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-index fca2276..c052a3a 100644
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-@@ -236,6 +236,5 @@ int main(int ac, char **av) {
- 
- 	cleanup();
- 
--	return 1;
--
--}
-\ No newline at end of file
-+	tst_exit();
-+}
--- 
-1.7.3.1
-
--- 
-Best Regards,
-Peng Haitao
-
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Protect Your Site and Customers from Malware Attacks
