@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PfTGN-00036Z-6t
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:19:31 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PfTGL-0004fo-HN
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:19:31 +0000
-Message-ID: <4D369E98.4060602@cn.fujitsu.com>
-Date: Wed, 19 Jan 2011 16:19:36 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Pf8C3-0002q6-Ei
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:49:39 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf8C2-0005Dr-M0
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:49:39 +0000
+Received: by wwi18 with SMTP id 18so5832660wwi.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Jan 2011 01:49:33 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] fsync02: fix error of overflow from MUL
+In-Reply-To: <1814853948.42996.1294736175098.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <1406296700.42991.1294736171251.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1814853948.42996.1294736175098.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Tue, 18 Jan 2011 01:49:32 -0800
+Message-ID: <AANLkTi=m5n51PtE8gFbC+4voDOr-8zp8hHzxA-2eOQ_b@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 11/13] oom02: check root
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,47 +31,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi Garrett,
+On Tue, Jan 11, 2011 at 12:56 AM, CAI Qian <caiqian@redhat.com> wrote:
+> Signed-off-by: CAI Qian <caiqian@redhat.com>
 
-If the third argument is SEEK_SET of function fsync(), offset can not be
-negative. But when overflow from MUL, the offset is negative.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
----
- testcases/kernel/syscalls/fsync/fsync02.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fsync/fsync02.c b/testcases/kernel/syscalls/fsync/fsync02.c
-index 213eac3..64bb012 100644
---- a/testcases/kernel/syscalls/fsync/fsync02.c
-+++ b/testcases/kernel/syscalls/fsync/fsync02.c
-@@ -102,7 +102,7 @@ int main(int ac, char **av)
- 		}
- 
- 		for (i = 1; i <= data_blocks; i++) {
--			offset = (i * BLOCKSIZE * max_block) / data_blocks - BUFSIZ;
-+			offset = (BLOCKSIZE * max_block) / data_blocks * i - BUFSIZ;
- 			if ((offsetret = lseek(fd, offset, SEEK_SET)) != offset)
- 				tst_brkm(TBROK|TERRNO, cleanup, "lseek failed: %ld, %ld", offsetret, offset);
- 			if ((ret = write(fd, pbuf, BUFSIZ)) != BUFSIZ)
-@@ -197,4 +197,4 @@ void cleanup()
- 
- 	tst_rmdir();
- 
--}
-\ No newline at end of file
-+}
--- 
-1.7.3.1
-
--- 
-Best Regards,
-Peng Haitao
-
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Protect Your Site and Customers from Malware Attacks
