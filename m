@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PhPUp-0007U0-Gl
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 16:42:27 +0000
-Date: Mon, 24 Jan 2011 17:59:59 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110124165959.GA12057@saboteur.suse.cz>
-References: <000001cb8f8d$a7cf4310$f76dc930$@co.jp>
-	<20101210144930.GA16800@saboteur.suse.cz>
-	<AANLkTimmkmk_H+AzYOGau6fr_BHChOCif7n=FOu2F14R@mail.gmail.com>
-	<20101213185337.GB697@saboteur.suse.cz>
-	<20110106152547.GA9358@saboteur.suse.cz>
-	<AANLkTi=YcasSVsYCX7gmkt2m7uBDBf3u=XvAAn=x3vSy@mail.gmail.com>
-	<20110116140911.GB12249@saboteur.suse.cz>
-	<AANLkTi=DyeO5E7MWR=SbB=N24PafZwmQFqS6d2mhbZiL@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1Pf7hq-0007Vm-0i
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:18:26 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf7ho-0001S7-Vx
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:18:25 +0000
+Date: Tue, 18 Jan 2011 04:18:18 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1296101387.28447.1295342298146.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1971196114.100790.1293758629841.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=DyeO5E7MWR=SbB=N24PafZwmQFqS6d2mhbZiL@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix "timer_create/10-1" and "timer_create/11-1"
- tests
+Subject: Re: [LTP] [PATCH] cpuset01: fix pathname to remove underscore
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,37 +27,96 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, "?$BaD:B ?$B7r, T" <toza@ryobi.co.jp>, Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > Misplaced whitespace after while (!caught_signal) ;
+Garrett, any comment/feedback to merge this too?
+
+CAI Qian
+
+----- Original Message -----
+> Signed-off-by: CAI Qian <caiqian@redhat.com>
+> ---
+> testcases/kernel/mem/cpuset/Makefile | 25 +++++++++++++++++++++++++
+> testcases/kernel/mem/cpuset/cpuset01.c | 6 +++---
+> 2 files changed, 28 insertions(+), 3 deletions(-)
+> create mode 100644 testcases/kernel/mem/cpuset/Makefile
 > 
-> Both of us are wrong. K&R says it should be:
+> diff --git a/testcases/kernel/mem/cpuset/Makefile
+> b/testcases/kernel/mem/cpuset/Makefile
+> new file mode 100644
+> index 0000000..822e783
+> --- /dev/null
+> +++ b/testcases/kernel/mem/cpuset/Makefile
+> @@ -0,0 +1,25 @@
+> +#
+> +# Copyright (C) 2010 Red Hat, Inc.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> modify
+> +# it under the terms of the GNU General Public License as published
+> by
+> +# the Free Software Foundation; either version 2 of the License, or
+> (at
+> +# your option) any later version.
+> +#
+> +# This program is distributed in the hope that it will be useful, but
+> +# WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+> +# General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, write to the Free Software
+> +# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> +# 02110-1301, USA.
+> +#
+> +
+> +top_srcdir ?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> +LDLIBS += $(NUMA_LIBS) -lm
+> diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
+> b/testcases/kernel/mem/cpuset/cpuset01.c
+> index 966e826..27e2d68 100644
+> --- a/testcases/kernel/mem/cpuset/cpuset01.c
+> +++ b/testcases/kernel/mem/cpuset/cpuset01.c
+> @@ -58,7 +58,7 @@ extern int Tst_count;
+> #define MAXNODES 512
+> #define CPATH "/dev/cpuset"
+> #define CPATH_NEW "/dev/cpuset/1"
+> -#define _PATH_SYS_SYSTEM "/sys/devices/system"
+> +#define PATH_SYS_SYSTEM "/sys/devices/system"
 > 
-> while (!caught_signal)
->     ; /* With the correct amount of indentation here of course. */
+> static pid_t *pids;
+> volatile int end;
+> @@ -298,7 +298,7 @@ long count_numa(void)
+> {
+> int nnodes = 0;
 > 
-> LKML always defers to K&R unless stated otherwise.
-
-Hmm, I'm still not sure. LKML does cite the K&R but but I don't think
-that it's set as base coding style. And lindent script seems to 
-format this as:
-
-while (!caught_signal) ;
-
-So it looks like LKML conding style just sets some boundaries and
-general ideas what to do and what not.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> - while(path_exist(_PATH_SYS_SYSTEM "/node/node%d", nnodes))
+> + while(path_exist(PATH_SYS_SYSTEM "/node/node%d", nnodes))
+> nnodes++;
+> 
+> return nnodes;
+> @@ -308,7 +308,7 @@ long count_cpu(void)
+> {
+> int ncpus = 0;
+> 
+> - while(path_exist(_PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
+> + while(path_exist(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
+> ncpus++;
+> 
+> return ncpus;
+> --
+> 1.7.3.2
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
