@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1Pdrs2-0007Nv-He
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 22:11:46 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.72) id 1Pdrs1-0002an-GP
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 22:11:46 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 14 Jan 2011 17:12:04 -0500
-References: <4D301BF1.8070101@cn.fujitsu.com>
-	<201101141646.09224.vapier@gentoo.org>
-	<AANLkTiknw80paBiHe9_qBhW1XHLXuaKM=dQyx4kNg1x6@mail.gmail.com>
-In-Reply-To: <AANLkTiknw80paBiHe9_qBhW1XHLXuaKM=dQyx4kNg1x6@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PfD1O-0006BC-OL
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 14:58:58 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PfD1N-0001oh-Hg
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 14:58:58 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0IEwpOZ031938
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Jan 2011 09:58:51 -0500
+Date: Tue, 18 Jan 2011 09:58:51 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1959408122.37181.1295362731739.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <317848093.37178.1295362728341.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Message-Id: <201101141712.05548.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Fix a building error.
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_37180_1447275492.1295362731739"
+Subject: [LTP] [PATCH 3/3] add a missing Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,93 +29,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4264748712835534034=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
---===============4264748712835534034==
-Content-Type: multipart/signed; boundary="nextPart13637097.Dt7B4zLB2Z";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+------=_Part_37180_1447275492.1295362731739
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
---nextPart13637097.Dt7B4zLB2Z
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ testcases/kernel/mem/lib/Makefile |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/lib/Makefile
 
-On Friday, January 14, 2011 16:52:15 Garrett Cooper wrote:
-> On Fri, Jan 14, 2011 at 1:46 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> > On Friday, January 14, 2011 16:33:38 Garrett Cooper wrote:
-> >> On Fri, Jan 14, 2011 at 1:24 PM, Mike Frysinger wrote:
-> >> > On Friday, January 14, 2011 04:48:33 Peng Haitao wrote:
-> >> >>  testcases/kernel/syscalls/mallopt/mallopt01.c |    1 +
-> >> >=20
-> >> > please use descriptive subjects in your patches.  this really should
-> >> > be something like:
-> >> >        mallopt01: fix build error due to xxxx
-> >> >=20
-> >> >> --- a/testcases/kernel/syscalls/mallopt/mallopt01.c
-> >> >> +++ b/testcases/kernel/syscalls/mallopt/mallopt01.c
-> >> >> @@ -37,6 +37,7 @@
-> >> >>  #ifdef CONFIG_COLDFIRE
-> >> >>  #define __MALLOC_STANDARD__
-> >> >>  #endif
-> >> >> +#include <malloc.h>
-> >> >=20
-> >> > umm, no.  malloc.h is a dead header file and nothing should be
-> >> > including it.
-> >>=20
-> >>     It is exposing extra junk in this case that isn't available from
-> >> stdlib.h, which unfortunately the test uses. I fixed the build error
-> >> for now, but maybe someone upstream should be informed that this
-> >> header needs to die a painful death, because all contemporary
-> >> documentation says that you need to include stdlib.h, not malloc.h
-> >> when working with malloc(3). I was reminded of this recently because I
-> >> built some stuff on FreeBSD and FreeBSD has a nice #warning about this
-> >> deprecation.
-> >=20
-> > err, right.  we're using mallopt() here and not malloc().  the former is
-> > not part of POSIX which means it should not be in stdlib.h.  i dont
-> > believe it is being deprecated on the GNU side, so we dont want to go
-> > killing off the tests.
->=20
-> Should these tests live with glibc then and not ltp?
+diff --git a/testcases/kernel/mem/lib/Makefile b/testcases/kernel/mem/lib/Makefile
+new file mode 100644
+index 0000000..dd978a7
+--- /dev/null
++++ b/testcases/kernel/mem/lib/Makefile
+@@ -0,0 +1,25 @@
++#
++#  Copyright (C) 2010  Red Hat, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++LIB			:= libmem.a
++
++include $(top_srcdir)/include/mk/lib.mk
+-- 
+1.7.3.2
+------=_Part_37180_1447275492.1295362731739
+Content-Type: text/x-patch; name=0003-add-a-missing-Makefile.patch
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=0003-add-a-missing-Makefile.patch
 
-not really.  you might be able to get glibc to accept these, but you'll mos=
-t=20
-likely need to rewrite them considerably.  plus, other C library=20
-implementations also support mallopt, not just glibc.  while it isnt part o=
-f=20
-POSIX, i do believe it is part of older standards.  glibc seems to quote=20
-SVID/XPG/ANSI.
-=2Dmike
-
---nextPart13637097.Dt7B4zLB2Z
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
-
-iQIcBAABAgAGBQJNMMo1AAoJEEFjO5/oN/WBoeQP/3Koh57BiH2lyBsUorEGhpsO
-L3unwwMtMIFvcSKnuUNrtj0jsQRvSxbf/QoySO4ZwVqzNQfx5plc0/s+W5CkGv08
-CFsG5kQgXYW6jnVKdl06h5MmSbXQN7Q+CzOeE+qVoi+8WAEqKOCtA/hjKHKPuX8s
-X7bB/89p7ayjR203kjo+gH/BEpZHKl+QyiYnkh+kdS/EFT7az4+TEE4qs2Q3DnV4
-lafNK0COgCMQGwteYeGYeiOhhbSFr7DfMp1eGapdDiRwa9DZ5gXVMZ1uCfHRoUab
-jNlmPcODGbT5iyOlmKXOTH9+zO+BHrg7c0AJ5v+LcHvIc7v9RsEjukC0lxINprhK
-lEkVR7CUU13yChLNRckbRUsUNHEiml6mDZOI+GFJUu7wkiHq7rcbndHJKldyQrDj
-2agX0DHhcrPhPHtn9OsLbWiDeaD2ice1XVg9Yh2UslF9hPvrRc36XtlRccsPpPE/
-reMD5gxOpuXlr9UtUIyA8y636PJSwmV+AGwYe5xa5GvGOHljWdzHNTEeFoRsjuB5
-lM3RazY0+DWOC4SoW3WfHuuQSlTwqi2P+/bgQrIa2I4aIxtGApxbVwfbXpldrJ1O
-YjcPKXDIgZAZNdUM9jjEua3OfrTtk5CFm0aQ5O3I1nI/ii9saZyHaKhqfIG4DNme
-dZjbo7SoS4pfpZ4W2Lui
-=POo5
------END PGP SIGNATURE-----
-
---nextPart13637097.Dt7B4zLB2Z--
-
-
---===============4264748712835534034==
+RnJvbSBiYWQyYWFjZDZjNzU3YjI2Nzg4ZGJiMmNkMmI5ZTdhOWYwM2Q4MThkIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
+dWUsIDE4IEphbiAyMDExIDE3OjIzOjQ0ICswODAwClN1YmplY3Q6IFtQQVRDSCAzLzNdIGFkZCBh
+IG1pc3NpbmcgTWFrZWZpbGUKCgpTaWduZWQtb2ZmLWJ5OiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRo
+YXQuY29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL2xpYi9NYWtlZmlsZSB8ICAgMjUgKysr
+KysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlcyBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCsp
+LCAwIGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvbWVt
+L2xpYi9NYWtlZmlsZQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2xpYi9NYWtl
+ZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2xpYi9NYWtlZmlsZQpuZXcgZmlsZSBtb2RlIDEw
+MDY0NAppbmRleCAwMDAwMDAwLi5kZDk3OGE3Ci0tLSAvZGV2L251bGwKKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9tZW0vbGliL01ha2VmaWxlCkBAIC0wLDAgKzEsMjUgQEAKKyMKKyMgIENvcHlyaWdo
+dCAoQykgMjAxMCAgUmVkIEhhdCwgSW5jLgorIworIyAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29m
+dHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisjICBpdCB1bmRl
+ciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hl
+ZCBieQorIyAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBv
+ZiB0aGUgTGljZW5zZSwgb3IKKyMgIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24u
+CisjCisjICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3
+aWxsIGJlIHVzZWZ1bCwKKyMgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdpdGhvdXQgZXZl
+biB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgorIyAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1Mg
+Rk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlCisjICB0aGUgR05VIEdlbmVyYWwgUHVibGlj
+IExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KKyMKKyMgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZl
+ZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCisjICBhbG9uZyB3aXRo
+IHRoaXMgcHJvZ3JhbTsgIGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUKKyMgIEZv
+dW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSwgU3VpdGUgMzMwLCBCb3N0b24sIE1BIDAy
+MTExLTEzMDcgVVNBCisjCisKK3RvcF9zcmNkaXIgICAgICAgICAgICAgID89IC4uLy4uLy4uLy4u
+CisKK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL2Vudl9wcmUubWsKKworTElCCQkJ
+Oj0gbGlibWVtLmEKKworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvbGliLm1rCi0t
+IAoxLjcuMy4yCgo=
+------=_Part_37180_1447275492.1295362731739
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -124,7 +120,7 @@ Learn about various malware tactics and how to avoid them. Understand
 malware threats, the impact they can have on your business, and how you 
 can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
---===============4264748712835534034==
+------=_Part_37180_1447275492.1295362731739
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -135,5 +131,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4264748712835534034==--
+------=_Part_37180_1447275492.1295362731739--
 
