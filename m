@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PdgLs-0001pL-2S
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 09:53:48 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PdgLp-00084S-Lr
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jan 2011 09:53:48 +0000
-Message-ID: <4D301BF1.8070101@cn.fujitsu.com>
-Date: Fri, 14 Jan 2011 17:48:33 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1Pf86w-0002QO-KA
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:44:22 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf86v-0002rU-Gl
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:44:22 +0000
+Date: Tue, 18 Jan 2011 04:44:14 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1284131616.28748.1295343854874.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTim+7dZv-+OWMEhrVuFKmHOTKyiinSTsBqf4Hf0F@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] Fix a building error.
+Subject: Re: [LTP] [PATCH v3 1/5] oom01: test OOM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,38 +26,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi Garrett,
 
-A build error is caught after applied commit bacc849720ec4efda5a0a8a9ea6a0e93a1415541.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
----
- testcases/kernel/syscalls/mallopt/mallopt01.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mallopt/mallopt01.c b/testcases/kernel/syscalls/mallopt/mallopt01.c
-index d356cb2..26307a6 100644
---- a/testcases/kernel/syscalls/mallopt/mallopt01.c
-+++ b/testcases/kernel/syscalls/mallopt/mallopt01.c
-@@ -37,6 +37,7 @@
- #ifdef CONFIG_COLDFIRE
- #define __MALLOC_STANDARD__
- #endif
-+#include <malloc.h>
- #include <stdlib.h>
- #include <errno.h>
- 
--- 
-1.7.0.4
-
--- 
-Best Regards,
-Peng Haitao
-
+> Committing now -- please provide any needed patches for runtest if you
+> feel that this test is stable enough to run in mainline LTP.
+It is 5/5 in this series,
+http://marc.info/?l=ltp-list&m=129289982816229&w=2
 
 ------------------------------------------------------------------------------
 Protect Your Site and Customers from Malware Attacks
