@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PavbF-0007mg-8T
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 19:34:17 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PavbE-00045a-CK
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 19:34:17 +0000
-Received: by ywi6 with SMTP id 6so6588541ywi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 11:34:11 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1082)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <4D25A173.8020708@cn.fujitsu.com>
-Date: Thu, 6 Jan 2011 11:34:06 -0800
-Message-Id: <D89B8908-7BC7-4034-BBD9-BA1D1B0EB608@gmail.com>
-References: <4D259E4A.2050704@cn.fujitsu.com> <4D25A173.8020708@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 06/13]Add missing operators
+	(envelope-from <qcai@redhat.com>) id 1Pf8GH-0002sp-Qj
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:54:01 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf8GG-0000I9-O6
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:54:01 +0000
+Date: Tue, 18 Jan 2011 04:53:53 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <2094710513.30367.1295344433866.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTimQM8L342XCx7obE0yK25WxamPSLUbm0XeNtSAF@mail.gmail.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] cpuset01: fix pathname to remove underscore
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,40 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Jan 6, 2011, at 3:03 AM, tangchen wrote:
 
-> Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/msync/msync04.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+----- Original Message -----
+> On Tue, Jan 18, 2011 at 1:18 AM, CAI Qian <caiqian@redhat.com> wrote:
+> > Garrett, any comment/feedback to merge this too?
 > 
-> diff --git a/testcases/kernel/syscalls/msync/msync04.c 
-> b/testcases/kernel/syscalls/msync/msync04.c
-> index 3e4b9a4..4e5dccb 100644
-> --- a/testcases/kernel/syscalls/msync/msync04.c
-> +++ b/testcases/kernel/syscalls/msync/msync04.c
-> @@ -93,7 +93,7 @@ int main(int ac, char **av)
->      char *msg;        /* message returned from parse_opts */
-> 
->      /* Parse standard options given to run the test. */
-> -    if ((msg = parse_opts(ac, av, NULL, NULL)) NULL)
-> +    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
->          tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> Committed. Please add a runtest entry please.
+Yes, I can see it has already been added in runtest/mm
 
-	Patch is good despite the fact that the description is misleading.
-	I checked in a different fix though.
-Thanks,
--Garrett
+cpuset01 cpuset01 -I 3600
 
+However, it depends on this patch to be merged upstream for -I option to work properly.
+http://marc.info/?l=ltp-list&m=129067708004560&w=2
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
