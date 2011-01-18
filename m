@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <zliu@redhat.com>) id 1PhGQp-0000zk-N4
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 07:01:43 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PhGQm-0004tZ-EX
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 07:01:41 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0O71YUw002100
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Jan 2011 02:01:34 -0500
-Date: Mon, 24 Jan 2011 02:01:32 -0500 (EST)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1524114322.122004.1295852492822.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1695645262.121371.1295841776437.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Pf70W-0004c5-C3
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 08:33:40 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf70V-0003k3-J4
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 08:33:40 +0000
+Received: by wwi18 with SMTP id 18so5776885wwi.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Jan 2011 00:33:33 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fix the -I option and enable a larger numble to I
- option
+In-Reply-To: <4D354F53.8050600@redhat.com>
+References: <1294339211-19449-1-git-send-email-czhang@redhat.com>
+	<4D354F53.8050600@redhat.com>
+Date: Tue, 18 Jan 2011 00:33:33 -0800
+Message-ID: <AANLkTin5SC-04QxrrFmAAYA49PZ0uu6wzVjv4=ckOrf0@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v4] make pid_list dynamically sized with memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,79 +28,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
-Please review.
-when running a test case with setting -I options a number, it's 
-useless. 
-e.g  when I run testcase/kernel/mem/hugetlbfs/hugemmap/hugemmap01,
-[root@dell-per805-01 hugemmap]# ./hugemmap01 -I 3600 -H /var/hugetlbfs/
-hugemmap01    1  TPASS  :  call succeeded
-[root@dell-per805-01 hugemmap]# 
-the test returned immediately, but no running for 3600 seconds, and other test cases all 
-have this problem. I found it was that the variable stop_time in lib/parse_opts.c was integer that's not 
-enough large, I changed it to a larger type(long long type), then it was okay, and support a larger number.
+On Tue, Jan 18, 2011 at 12:29 AM, Caspar Zhang <czhang@redhat.com> wrote:
+> On 01/07/2011 02:40 AM, czhang@redhat.com wrote:
+>> From: Caspar Zhang <czhang@redhat.com>
+>>
+>> We get segfaults during testing mtest01 on a 5TB memory machine, the
+>> problem was traced to the array pid_list[] went to overflow and
+>> corrupted memory. This fix makes pid_list dynamically sized with
+>> correct memory size to avoid overflow.
+>>
+>> v2: not split into different bits when allocating pid_list.
+>> v3: 1) fix optargs: -b and -p should not be used at the same time.
+>> =A0 =A0 2) pre_mem maybe not initialized before using if -p option not u=
+sed.
+>> =A0 =A0 =A0 =A0fix it by moving it outside ``if(maxpercent)'' block.
+>> v4: fix code format.
+>>
+>> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+>
+> Patch attached.
 
-Zhouping Liu
+Doesn't patch:
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
+Patching file testcases/kernel/mem/mtest01/mtest01.c using Plan A...
+Hunk #1 failed at 44.
+1 out of 1 hunks failed--saving rejects to
+testcases/kernel/mem/mtest01/mtest01.c.rej
+Hmm...  Ignoring the trailing garbage.
+done
+
+Have you updated your sources recently?
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
 ---
- lib/parse_opts.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand =
 
-diff --git a/lib/parse_opts.c b/lib/parse_opts.c
-index 338cbea..f8b1743 100644
---- a/lib/parse_opts.c
-+++ b/lib/parse_opts.c
-@@ -706,7 +706,7 @@ usc_test_looping(counter)
- int counter;
- {
-     static int first_time = 1;
--    static int stop_time = 0;	/* stop time in rtc or usecs */
-+    static long long stop_time = 0;	/* stop time in rtc or usecs */
-     static int delay;		/* delay in clocks or usecs  */
-     int hertz=0;			/* clocks per second or usecs per second */
-     int ct, end;		/* current time, end delay time */
-@@ -731,7 +731,7 @@ int counter;
- 
- 	if (STD_LOOP_DURATION) {
- 	    ct=get_current_time();
--	    stop_time=(int)((float)hertz * STD_LOOP_DURATION) + ct;
-+	    stop_time = (long long)hertz * (long long)STD_LOOP_DURATION + (long long)ct;
- 	}
- 
- 	/*
-@@ -776,7 +776,7 @@ int counter;
- 	keepgoing++;
-     }
- 
--    if (STD_LOOP_DURATION != 0.0 && get_current_time() < stop_time) {
-+    if (STD_LOOP_DURATION != 0.0 && (long long)get_current_time() < stop_time) {
- 	keepgoing++;
-     }
- 
-@@ -896,4 +896,4 @@ char **argv;
-     exit(0);
- }
- 
--#endif /* UNIT_TEST */
-\ No newline at end of file
-+#endif /* UNIT_TEST */
--- 
-1.7.1
+malware threats, the impact they can have on your business, and how you =
 
-
-
-------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
