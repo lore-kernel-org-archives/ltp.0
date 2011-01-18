@@ -1,38 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <k-seki@np.css.fujitsu.com>) id 1Ped7W-00006c-P7
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jan 2011 00:38:54 +0000
-Received: from fgwmail5.fujitsu.co.jp ([192.51.44.35])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Ped7U-0007Fy-Nb
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jan 2011 00:38:54 +0000
-Received: from m2.gw.fujitsu.co.jp (unknown [10.0.50.72])
-	by fgwmail5.fujitsu.co.jp (Postfix) with ESMTP id EC46B3EE0D4
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jan 2011 09:38:42 +0900 (JST)
-Received: from smail (m2 [127.0.0.1])
-	by outgoing.m2.gw.fujitsu.co.jp (Postfix) with ESMTP id D1AC845DE68
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jan 2011 09:38:42 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (s2.gw.fujitsu.co.jp [10.0.50.92])
-	by m2.gw.fujitsu.co.jp (Postfix) with ESMTP id B2AAF45DE6A
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jan 2011 09:38:42 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id A331FE08002
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jan 2011 09:38:42 +0900 (JST)
-Received: from ml14.s.css.fujitsu.com (ml14.s.css.fujitsu.com [10.249.87.104])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 632E31DB8038
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jan 2011 09:38:42 +0900 (JST)
-Message-ID: <1044F3871F984514ACE11A23C55DAFB3@FM38572274>
-From: "Kazuki Seki" <k-seki@np.css.fujitsu.com>
-Date: Mon, 17 Jan 2011 09:38:26 +0900
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penght@cn.fujitsu.com>) id 1Pf6LP-0004Ba-TT
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 07:51:11 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf6LN-0003SH-SJ
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 07:51:11 +0000
+Message-ID: <4D35466D.60000@cn.fujitsu.com>
+Date: Tue, 18 Jan 2011 15:51:09 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Fix the test04 of testcases/kernel/numa/numa01.sh
+Subject: [LTP]  [PATCH] float_bessel: fix error of infinite loop
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,94 +25,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: =?iso-2022-jp?B?GyRCNFghIU9CNTEbKEI=?= <k-seki@np.css.fujitsu.com>
+To: yanegomi@gmail.com, ltp-list@lists.sourceforge.net
 
-Hi,
+Hi Garrett,
 
-Did you confirm the following email which I posted before?
+exit() should be modified to tst_exit() in function myexit().
 
-Best regards,
-K Seki
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/misc/math/float/main.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
------ Original Message ----- 
-From: "Kazuki Seki" <k-seki@np.css.fujitsu.com>
-To: <ltp-list@lists.sourceforge.net>
-Cc: "Kazuki Seki" <k-seki@np.css.fujitsu.com>
-Sent: Monday, December 13, 2010 3:51 PM
-Subject: Fix the test04 of testcases/kernel/numa/numa01.sh
+diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/main.c
+index 18757e7..8998c33 100644
+--- a/testcases/misc/math/float/main.c
++++ b/testcases/misc/math/float/main.c
+@@ -42,7 +42,7 @@ myexit (int x)
+ 		tst_resm (TFAIL, "Test failed");
+ 	else
+ 		tst_resm (TPASS, "Test passed");
+-	exit(0);
++	tst_exit();
+ }
+ 
+ TH_DATA *pcom;
+@@ -428,4 +428,4 @@ static void sys_error(const char *msg, int line)
+ 
+ 	sprintf(syserr_msg, "%s: %s", msg, strerror(errno));
+ 	error(syserr_msg, line);
+-}
+\ No newline at end of file
++}
+-- 
+1.7.0.4
 
-> Hi,
->
-> I found the test04 of testcases/kernel/numa/numa01.sh can become either
-> PASS or FAIL on the same system.
-> As a result of examining the following lines of the shell,
-> I noticed the execution way of these processings is wrong.
->
->  - Here is a part of a problem in the shell.
->  ---------------------------------------------------------------------------
->   numactl --physcpubind=$run_on_cpu support_numa $PAUSE & #just waits for
-> sigint
->   pid=$!
->   running_on_cpu=$(awk '{ print $39; }' /proc/$pid/stat)
->  ---------------------------------------------------------------------------
->
-> The following shows the root cause:
->
->  (A) : numactl --physcpubind=$run_on_cpu support_numa $PAUSE &
->  (B) : running_on_cpu=$(awk '{ print $39; }' /proc/$pid/stat)
->
-> If (B) completes its execution before (A) binds a certain CPU,
-> (B) doesn't set the number of expected CPU and then the test becomes FAIL.
-> Therefore, (B) must start after (A) binds a certain CPU.
->
-> I made the patch which executes (B) after cmm field of /proc/$pid/stat
-> changes from "(numactl)" into "(support_numa)".
->
->  - Example of changing cmm field of /proc/$pid/stat
->  ---------------------------------------------------------------------------
->    [before (A) binds CPU]
->     # awk '{ print $2; }' /proc/$pid/stat
->       (numactl)
->       ^^^^^^^^^
->       cmm field
->
->    [after (A) bound CPU]
->     # awk '{ print $2; }' /proc/$pid/stat
->       (support_numa)
->  ---------------------------------------------------------------------------
->
-> Please apply this patch.
->
-> ---
-> testcases/kernel/numa/numa01.sh |    4 ++++
-> 1 file changed, 4 insertions(+)
->
-> Index: ltp-70a3216/testcases/kernel/numa/numa01.sh
-> ===================================================================
-> --- ltp-70a3216.orig/testcases/kernel/numa/numa01.sh    2010-12-01
-> 10:50:43.000000000 +0900
-> +++ ltp-70a3216/testcases/kernel/numa/numa01.sh 2010-12-01
-> 10:51:55.000000000 +0900
-> @@ -471,6 +471,10 @@ test04()
->     run_on_cpu=$[$[$no_of_cpus+1]/2]
->     numactl --physcpubind=$run_on_cpu support_numa $PAUSE & #just waits 
-> for
-> sigint
->     pid=$!
-> +    var=`awk '{ print $2; }' /proc/$pid/stat`
-> +    while [ $var == "(numactl)" ];do
-> +        var=`awk '{ print $2; }' /proc/$pid/stat`
-> +    done
->     # Warning !! 39 represents cpu number, on which process pid is
-> currently running and
->     # this may change if Some more fields are added in the middle, may be
-> in future
->     running_on_cpu=$(awk '{ print $39; }' /proc/$pid/stat)
->
-> Best regards,
-> K Seki
-
+-- 
+Best Regards,
+Peng Haitao
 
 
 ------------------------------------------------------------------------------
