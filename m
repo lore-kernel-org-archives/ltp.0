@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Pax1A-0002iN-Kw
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 21:05:08 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pax19-000430-Li
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 21:05:08 +0000
-Received: by wwi18 with SMTP id 18so16932775wwi.10
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Pf82A-0004pg-6y
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:39:26 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf829-0003ye-8w
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:39:26 +0000
+Received: by wyb40 with SMTP id 40so5703324wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 13:05:02 -0800 (PST)
+	Tue, 18 Jan 2011 01:39:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimXYP1SfRWoy1S6VWAhAFn-B7p0wgrOOu+Az-Bd@mail.gmail.com>
-References: <4D259E4A.2050704@cn.fujitsu.com>
-	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
-	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
-	<AANLkTimXYP1SfRWoy1S6VWAhAFn-B7p0wgrOOu+Az-Bd@mail.gmail.com>
-Date: Thu, 6 Jan 2011 13:05:01 -0800
-Message-ID: <AANLkTik3mMhViF2AYPmjXvt9et07NAiAFB8xiUcJktXi@mail.gmail.com>
+In-Reply-To: <1147194460.28452.1295342363604.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <307686026.100796.1293758695307.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1147194460.28452.1295342363604.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Tue, 18 Jan 2011 01:39:16 -0800
+Message-ID: <AANLkTindunKpu-ayn4d4TipXuAZ=n2eAcFLep50L8RJL@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
+Subject: Re: [LTP] [PATCH] hugemmap05: fix pathname to remove underscore
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,65 +31,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Thu, Jan 6, 2011 at 12:24 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Thu, Jan 6, 2011 at 2:35 PM, Garrett Cooper wrote:
->> On Jan 6, 2011, at 10:26 AM, Mike Frysinger wrote:
->>> On Thu, Jan 6, 2011 at 5:49 AM, tangchen wrote:
->>>> There are several small bugs making LTP unable to be built, most of
->>>> which are syntax errors.
->>>>
->>>> 1. Add missing parameters for tst_brkm() in
->>>> testcases/kernel/syscalls/fchmod/fchmod03.c
->>>> 2. Add missing parameters for tst_brkm() in
->>>> testcases/kernel/syscalls/flock/flock04.c
->>>> 3. Add missing ";" in testcases/kernel/syscalls/getpagesize/getpagesize01.c
->>>> 4. Correct the parameters' names for parse_opts() in
->>>> testcases/kernel/syscalls/lchown/lchown02.c
->>>> 5. Add some preprocessor variables in /testcases/kernel/mem/ksm/ksm01.c
->>>> bacause KSM is not supported on RHEL5
->>>> 6. Add missing operators for parse_opts() in
->>>> testcases/kernel/syscalls/msync/msync04.c
->>>> 7. Fix an wrong using of macro WTERMSIG in
->>>> testcases/kernel/syscalls/pipe/pipe04.c
->>>> 8. Fix the wrong variable name of wtstatus in
->>>> testcases/kernel/syscalls/pipe/pipe09.c
->>>> 9. Add a missing ")" in testcases/kernel/syscalls/pread/pread03.c
->>>> 10. Remove a redundant "{" in
->>>> testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
->>>> 11. Fix the wrong using of perror() in
->>>> testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
->>>> 12. Add a missing variable TST_TOTAL in
->>>> testcases/kernel/syscalls/socketpair/socketpair02.c
->>>> 13. Add missing parameters for tst_brkm() in
->>>> testcases/kernel/syscalls/statfs/statfs03.c
->>>
->>> this is weird ... how did all these *compile errors* manage to get
->>> *committed* ??
->>
->> A really bad merge (I posted a reply to it a while ago in the archives).
->
-> i guess i read that as "things are fixed now" rather than "there are
-> still some latent issues laying about"
+On Tue, Jan 18, 2011 at 1:19 AM, CAI Qian <caiqian@redhat.com> wrote:
+> Garrett, any feedback/comment to merge this as well?
 
-    306 to be exact still need to be resolved; my previous number was
-much lower because I forgot the power of make -k.
-    I'll post the problem files soon (as a list) and a way for
-reproducing the problems so that others can provide patches (maybe),
-but [un]fortunately many times I have to go in and fix other items
-anyhow, as the process that it goes and executes things sometimes
-leaves test directories hanging around. On the bright side I've fixed
-about 20-30 or so legitimate test bugs so far.
-Thanks,
--Garrett "still making progress, but steady as she goes"
+Committed -- thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
