@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PcZze-00060X-Db
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:54:18 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PcZzd-0000jF-GG
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:54:18 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8sCJT016644
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:54:12 -0500
-Date: Tue, 11 Jan 2011 03:54:11 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <938807313.42965.1294736051956.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <322650391.42962.1294736048718.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	(envelope-from <czhang@redhat.com>) id 1Pf7B1-0005AT-0V
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 08:44:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf7Ay-0003JE-Oo
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 08:44:30 +0000
+Message-ID: <4D35530F.7050503@redhat.com>
+Date: Tue, 18 Jan 2011 16:45:03 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_42964_85536108.1294736051955"
-Subject: [LTP] [PATCH 07/13] mmap11: check root
+References: <1294339211-19449-1-git-send-email-czhang@redhat.com>	<4D354F53.8050600@redhat.com>
+	<AANLkTin5SC-04QxrrFmAAYA49PZ0uu6wzVjv4=ckOrf0@mail.gmail.com>
+In-Reply-To: <AANLkTin5SC-04QxrrFmAAYA49PZ0uu6wzVjv4=ckOrf0@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v4] make pid_list dynamically sized with memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,73 +25,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
-------=_Part_42964_85536108.1294736051955
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- testcases/kernel/syscalls/mmap/mmap11.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mmap/mmap11.c b/testcases/kernel/syscalls/mmap/mmap11.c
-index 0cd32d4..1929d1a 100644
---- a/testcases/kernel/syscalls/mmap/mmap11.c
-+++ b/testcases/kernel/syscalls/mmap/mmap11.c
-@@ -81,6 +81,8 @@ int main(int argc, char *argv[])
- 
- void setup(void)
- {
-+	tst_require_root(tst_exit);
-+
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
- }
--- 
-1.7.3.2
-------=_Part_42964_85536108.1294736051955
-Content-Type: text/x-patch; name=0007-mmap11-check-root.patch
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=0007-mmap11-check-root.patch
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-RnJvbSAzOWZiMTI1NmRiNWMwOGU2ZTRlYmVlNGZlODM5YmY3MmJhZWZkNjZjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
-dWUsIDExIEphbiAyMDExIDE2OjQwOjU4ICswODAwClN1YmplY3Q6IFtQQVRDSCAwNy8xM10gbW1h
-cDExOiBjaGVjayByb290CgoKU2lnbmVkLW9mZi1ieTogQ0FJIFFpYW4gPGNhaXFpYW5AcmVkaGF0
-LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDExLmMgfCAgICAy
-ICsrCiAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRp
-ZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDExLmMgYi90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDExLmMKaW5kZXggMGNkMzJkNC4uMTkyOWQx
-YSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxMS5jCisr
-KyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTEuYwpAQCAtODEsNiArODEs
-OCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCiB2b2lkIHNldHVwKHZvaWQp
-CiB7CisJdHN0X3JlcXVpcmVfcm9vdCh0c3RfZXhpdCk7CisKIAl0c3Rfc2lnKEZPUkssIERFRl9I
-QU5ETEVSLCBjbGVhbnVwKTsKIAlURVNUX1BBVVNFOwogfQotLSAKMS43LjMuMgoK
-------=_Part_42964_85536108.1294736051955
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
-------=_Part_42964_85536108.1294736051955
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_42964_85536108.1294736051955--
-
+T24gMDEvMTgvMjAxMSAwNDozMyBQTSwgR2FycmV0dCBDb29wZXIgd3JvdGU6Cj4gRG9lc24ndCBw
+YXRjaDoKPiAKPiBQYXRjaGluZyBmaWxlIHRlc3RjYXNlcy9rZXJuZWwvbWVtL210ZXN0MDEvbXRl
+c3QwMS5jIHVzaW5nIFBsYW4gQS4uLgo+IEh1bmsgIzEgZmFpbGVkIGF0IDQ0Lgo+IDEgb3V0IG9m
+IDEgaHVua3MgZmFpbGVkLS1zYXZpbmcgcmVqZWN0cyB0bwo+IHRlc3RjYXNlcy9rZXJuZWwvbWVt
+L210ZXN0MDEvbXRlc3QwMS5jLnJlago+IEhtbS4uLiAgSWdub3JpbmcgdGhlIHRyYWlsaW5nIGdh
+cmJhZ2UuCj4gZG9uZQo+IAo+IEhhdmUgeW91IHVwZGF0ZWQgeW91ciBzb3VyY2VzIHJlY2VudGx5
+PwoKT2guLi4gc29ycnkgSSBkaWRuJ3QuIEknbGwgd29yayBvdXQgYSB1cGRhdGVkIHZlcnNpb24g
+c2hvcnRseS4KClRoYW5rcywKQ2FzcGFyCgotLSAKUXVhbGl0eSBBc3N1cmFuY2UgRW5naW5lZXIg
+KEtlcm5lbCkgaW4KUmVkIEhhdCBTb2Z0d2FyZSAoQmVpamluZykgQ28uLCBSJkQgQnJhbmNoCgpU
+RUw6ICs4Ni0xMC02MjYwODE1MApXRUI6IGh0dHA6Ly93d3cucmVkaGF0LmNvbS8KLS0KQy1BLVMt
+UC1BLVIsIENhc3BhciAva8Omc3DJkTovIDstKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClByb3Rl
+Y3QgWW91ciBTaXRlIGFuZCBDdXN0b21lcnMgZnJvbSBNYWx3YXJlIEF0dGFja3MKTGVhcm4gYWJv
+dXQgdmFyaW91cyBtYWx3YXJlIHRhY3RpY3MgYW5kIGhvdyB0byBhdm9pZCB0aGVtLiBVbmRlcnN0
+YW5kIAptYWx3YXJlIHRocmVhdHMsIHRoZSBpbXBhY3QgdGhleSBjYW4gaGF2ZSBvbiB5b3VyIGJ1
+c2luZXNzLCBhbmQgaG93IHlvdSAKY2FuIHByb3RlY3QgeW91ciBjb21wYW55IGFuZCBjdXN0b21l
+cnMgYnkgdXNpbmcgY29kZSBzaWduaW5nLgpodHRwOi8vcC5zZi5uZXQvc2Z1L29yYWNsZS1zZmRl
+dm5sCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1s
+aXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
