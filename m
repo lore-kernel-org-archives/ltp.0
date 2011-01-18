@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapierfilter@gmail.com>) id 1PauXd-0004fn-Uz
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:26:29 +0000
-Received: from mail-ew0-f47.google.com ([209.85.215.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PauXd-0003Lv-0P
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:26:29 +0000
-Received: by ewy28 with SMTP id 28so4251655ewy.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Pf84K-00055q-2a
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:41:40 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pf84J-0007Hi-66
+	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:41:40 +0000
+Received: by wyb40 with SMTP id 40so5704945wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 10:26:23 -0800 (PST)
+	Tue, 18 Jan 2011 01:41:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
-References: <4D259E4A.2050704@cn.fujitsu.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 6 Jan 2011 13:26:03 -0500
-Message-ID: <AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
+In-Reply-To: <1296101387.28447.1295342298146.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <1971196114.100790.1293758629841.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1296101387.28447.1295342298146.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Tue, 18 Jan 2011 01:41:32 -0800
+Message-ID: <AANLkTimQM8L342XCx7obE0yK25WxamPSLUbm0XeNtSAF@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] cpuset01: fix pathname to remove underscore
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,47 +31,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Thu, Jan 6, 2011 at 5:49 AM, tangchen wrote:
-> There are several small bugs making LTP unable to be built, most of
-> which are syntax errors.
->
-> 1. Add missing parameters for tst_brkm() in
-> testcases/kernel/syscalls/fchmod/fchmod03.c
-> 2. Add missing parameters for tst_brkm() in
-> testcases/kernel/syscalls/flock/flock04.c
-> 3. Add missing ";" in testcases/kernel/syscalls/getpagesize/getpagesize01.c
-> 4. Correct the parameters' names for parse_opts() in
-> testcases/kernel/syscalls/lchown/lchown02.c
-> 5. Add some preprocessor variables in /testcases/kernel/mem/ksm/ksm01.c
-> bacause KSM is not supported on RHEL5
-> 6. Add missing operators for parse_opts() in
-> testcases/kernel/syscalls/msync/msync04.c
-> 7. Fix an wrong using of macro WTERMSIG in
-> testcases/kernel/syscalls/pipe/pipe04.c
-> 8. Fix the wrong variable name of wtstatus in
-> testcases/kernel/syscalls/pipe/pipe09.c
-> 9. Add a missing ")" in testcases/kernel/syscalls/pread/pread03.c
-> 10. Remove a redundant "{" in
-> testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
-> 11. Fix the wrong using of perror() in
-> testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
-> 12. Add a missing variable TST_TOTAL in
-> testcases/kernel/syscalls/socketpair/socketpair02.c
-> 13. Add missing parameters for tst_brkm() in
-> testcases/kernel/syscalls/statfs/statfs03.c
+On Tue, Jan 18, 2011 at 1:18 AM, CAI Qian <caiqian@redhat.com> wrote:
+> Garrett, any comment/feedback to merge this too?
 
-this is weird ... how did all these *compile errors* manage to get
-*committed* ??
--mike
+Committed. Please add a runtest entry please.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
