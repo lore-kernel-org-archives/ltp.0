@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PZxQL-0004Vt-Jt
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jan 2011 03:19:01 +0000
-Received: from mail-ww0-f67.google.com ([74.125.82.67])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PZxQK-0002KO-9N
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jan 2011 03:19:01 +0000
-Received: by wwb31 with SMTP id 31so4329897wwb.10
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 03 Jan 2011 19:18:54 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PfT6J-00014s-7v
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:09:07 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PfT6H-0002xz-Se
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:09:07 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0J88xnU015438
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jan 2011 03:08:59 -0500
+Date: Wed, 19 Jan 2011 03:08:59 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <639439003.56154.1295424539927.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1818642692.56149.1295424534765.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <474711911.119247.1294110556912.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <AANLkTi=PvGB+oDjF8D1sVtUrXgAHUuuL8JQ+nzvTqjTa@mail.gmail.com>
-	<474711911.119247.1294110556912.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Mon, 3 Jan 2011 19:18:53 -0800
-Message-ID: <AANLkTimdcjx7DmoWgsXfS25LymO0U2RFkjS-uNhAnfMD@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] hugemmap05 issues
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_56153_2137683159.1295424539926"
+Subject: [LTP] [PATCH] tests require root users
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,188 +29,196 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Mon, Jan 3, 2011 at 7:09 PM, CAI Qian <caiqian@redhat.com> wrote:
-> Hi Garrett,
->
-> ----- Original Message -----
->> Looking over the code, there are a number of flawed assumptions in
->> terms of how things are executed and it seems that the code is overly
->> complex. Before I go and do something rash though, I wanted others to
->> look at the code (in particular the areas I'm touching) and see
->> whether or not I'm just blowing something out my rear.
->> As-is the code doesn't compile due to warnings.
->> This is a WIP patch (please ignore the whitespace and style to a
->> small degree as I know gmail will fubar the formatting).
->> Thanks,
->> -Garrett
->>
->> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
->> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
->> index 8893f84..2ea1363 100644
->> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
->> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
->> @@ -97,7 +97,7 @@ static option_t options[] =3D {
->> { NULL, NULL, NULL}
->> };
->> static void setup(void);
->> -static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
->> +static void cleanup(void);
-> Cyril suggested me to change this way to use LTP_ATTRIBUTE_NORETURN, as
-> cleanup() will call tst_exit() anyway. What's the issues are you
-> facing?
->> static void overcommit(void);
->> static void write_bytes(void *addr);
->> static void read_bytes(void *addr);
->> @@ -135,6 +135,7 @@ int main(int argc, char *argv[])
->> overcommit();
->> }
->> cleanup();
->> + tst_exit();
-> This is not needed as mentioned before.
+------=_Part_56153_2137683159.1295424539926
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-As Cyril pointed out a few weeks ago (and I agreed), it doesn't make
-sense for tst_brkm to not call tst_exit at the end of each call (it
-makes things unintuitive API-wise), thus this all trickles down to
-calling cleanup, then tst_exit in every test that uses the libltp
-APIs. That's why there is so much churn and a fair amount of breakage
-right now... I'm working my way down the list -- manually going and
-fixing testcases and then verifying them for sanity.
-
->> static void overcommit(void)
->> @@ -154,8 +155,15 @@ static void overcommit(void)
->> if (shmid =3D=3D -1)
->> tst_brkm(TBROK|TERRNO, cleanup, "shmget");
->> } else {
->> - snprintf(s, BUFSIZ, "%s/hugemmap05/file", get_tmp_tstdir());
->> - fd =3D open(s, O_CREAT | O_RDWR, 0755);
-> I did not write those code. My code is this,
-> =A0 =A0 =A0 =A0} else {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snprintf(s, BUFSIZ, "%s/hugemmap05/file", =
-TESTDIR);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0fd =3D open(s, O_CREAT | O_RDWR, 0755);
->
-> Are you using the latest patch?
-> http://marc.info/?l=3Dltp-list&m=3D129170706228725&w=3D2
-
-TESTDIR isn't publicly visible anymore because people really shouldn't
-be mucking around with that value, or querying it if they haven't
-called tst_tmpdir (which is actually what you did in this test!).
-
-> Again, what issues are your facing with this code?
->> + char *tmp_tstdir;
->> +
->> + tmp_tstdir =3D get_tst_tmpdir();
->> + if (tmp_tstdir =3D=3D NULL)
->> + tst_brkm(TBROK|TERRNO, cleanup, "get_tmp_tstdir failed");
->> + snprintf(s, BUFSIZ, "%s/hugemmap05/file", tmp_tstdir);
->> + free(tmp_tstdir);
->> +
->> + fd =3D open(s, O_CREAT|O_RDWR, 0755);
->> if (fd =3D=3D -1)
->> tst_brkm(TBROK|TERRNO, cleanup, "open");
->> addr =3D mmap(ADDR, (long)(length * MB), PROTECTION, FLAGS, fd,
->> @@ -195,19 +203,14 @@ static void overcommit(void)
->> return;
->> fclose(fp);
->> }
->> - if (shmid !=3D -1) {
->> - tst_resm(TINFO, "shmid: 0x%x", shmid);
->> - shmaddr =3D shmat(shmid, ADDR, SHMAT_FLAGS);
->> - if (shmaddr =3D=3D (void *)-1)
->> - tst_brkm(TBROK|TERRNO, cleanup, "shmat");
->> - write_bytes(shmaddr);
->> - read_bytes(shmaddr);
->> - } else {
->> - write_bytes(addr);
->> - read_bytes(addr);
->> - }
-> As you can read from the help(), the test can allocate hugepages either
-> from shmget() or mmap(). In case of shmget(), a global variable shmid with
-> the default value -1 will be change to 1 via command-line,
-
-Ok, I must have missed that part. Sorry...
-
-> static option_t options[] =3D {
-> =A0 =A0 =A0 =A0{ "s", &opt_sysfs, =A0 =A0 =A0NULL},
-> =A0 =A0 =A0 =A0{ "m", &shmid, =A0 =A0 =A0 =A0 =A0NULL},
-> =A0 =A0 =A0 =A0{ "a:", &opt_alloc, =A0 =A0 &opt_allocstr},
-> =A0 =A0 =A0 =A0{ NULL, NULL, =A0 =A0 =A0 =A0 =A0 NULL}
-> };
->
-> Therefore, there is a need to call shmat(). That is why it only call it
-> when shmid !=3D -1. In case of mmap(), there is no need to call shmat().
->> + tst_resm(TINFO, "shmid: 0x%x", shmid);
->> + shmaddr =3D shmat(shmid, ADDR, SHMAT_FLAGS);
->> + if (shmaddr =3D=3D (void *)-1)
->> + tst_brkm(TBROK|TERRNO, cleanup, "shmat");
->> + write_bytes(shmaddr);
->> + read_bytes(shmaddr);
->> if (opt_sysfs) {
->> - tst_resm(TINFO, "check sysfs.");
->> + tst_resm(TINFO, "checking sysfs.");
->> if (checksys(_PATH_SYS_2M_HUGE, "HugePages_Total",
->> length / 2) !=3D 0)
->> return;
->> @@ -221,7 +224,7 @@ static void overcommit(void)
->> !=3D 0)
->> return;
->> } else {
->> - tst_resm(TINFO, "check /proc/meminfo.");
->> + tst_resm(TINFO, "checking /proc/meminfo.");
-> If you are going to change the syntax here, there are many other places
-> also need to changed to be consistent like,
-> "check sysfs."
-> "check /proc/meminfo before allocation."
-> etc
-
-Agreed. It was just an example, and the point was to clearly state
-with proper verb tenses so that people could get a clear idea of what
-the test was doing instead of having to read the code to decypher the
-intent of the test writer. Granted, I've gotten lazy and stopped
-fixing some of these items in later commits because of all of the LOCs
-I've made, but it needs to be fixed later because the grammar and
-spelling used by test writers is less than desirable, which makes it
-hard for folks trying to understand what the intention is behind these
-tests.
-
->> fp =3D fopen(_PATH_MEMINFO, "r");
->> if (fp =3D=3D NULL)
->> tst_brkm(TBROK|TERRNO, cleanup, "fopen");
->> @@ -236,18 +239,17 @@ static void overcommit(void)
->> return;
->> fclose(fp);
->> }
->> - if (shmid !=3D -1) {
->> - if (shmdt(shmaddr) !=3D 0)
->> - tst_brkm(TBROK|TERRNO, cleanup, "shmdt");
->> - } else {
->> - munmap(addr, (long)(length * MB));
->> - close(fd);
->> - unlink(s);
->> - }
-> Same here. We call shmdt only in case of shmget(), and call munmap for
-> mmap().
-
-Ok -- thanks!
--Garrett
-
----------------------------------------------------------------------------=
+Signed-off-by: CAI Qian <caiqian@redhat.com>
 ---
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, an=
-d, =
+ testcases/kernel/mem/cpuset/cpuset01.c             |    3 ++-
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c |    1 +
+ testcases/kernel/syscalls/mlock/mlock03.c          |    4 +++-
+ testcases/kernel/syscalls/mmap/mmap10.c            |    3 ++-
+ testcases/kernel/syscalls/mmap/mmap11.c            |    3 ++-
+ 5 files changed, 10 insertions(+), 4 deletions(-)
 
-should the need arise, upgrade to a full multi-node Oracle RAC database =
+diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
+index f769156..10ccde7 100644
+--- a/testcases/kernel/mem/cpuset/cpuset01.c
++++ b/testcases/kernel/mem/cpuset/cpuset01.c
+@@ -177,6 +177,8 @@ void testcpuset(void)
+ 
+ void setup(void)
+ {
++	tst_require_root(NULL);
++
+ 	if (count_numa() == 1)
+ 		tst_brkm(TCONF, NULL, "required a NUMA system.");
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+@@ -223,7 +225,6 @@ void cleanup(void)
+ 		tst_resm(TWARN|TERRNO, "rmdir");
+ 
+ 	TEST_CLEANUP;
+-
+ }
+ 
+ void sighandler(int signo LTP_ATTRIBUTE_UNUSED)
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+index 73c6960..910b75c 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+@@ -294,6 +294,7 @@ static void setup(void)
+ 	FILE *fp;
+ 	int fd;
+ 
++	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 	tst_tmpdir();
+diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
+index 8ed9378..da469cb 100644
+--- a/testcases/kernel/syscalls/mlock/mlock03.c
++++ b/testcases/kernel/syscalls/mlock/mlock03.c
+@@ -110,6 +110,8 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	tst_require_root(NULL);
++
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ }
+@@ -117,4 +119,4 @@ void setup(void)
+ void cleanup(void)
+ {
+ 	TEST_CLEANUP;
+-}
+\ No newline at end of file
++}
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+index 7db7148..d3877a3 100644
+--- a/testcases/kernel/syscalls/mmap/mmap10.c
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -163,11 +163,12 @@ void mmapzero(void)
+ void cleanup(void)
+ {
+ 	TEST_CLEANUP;
+-
+ }
+ 
+ void setup(void)
+ {
++	tst_require_root(NULL);
++
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ }
+diff --git a/testcases/kernel/syscalls/mmap/mmap11.c b/testcases/kernel/syscalls/mmap/mmap11.c
+index 5c141a0..786724b 100644
+--- a/testcases/kernel/syscalls/mmap/mmap11.c
++++ b/testcases/kernel/syscalls/mmap/mmap11.c
+@@ -81,6 +81,8 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	tst_require_root(NULL);
++
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ }
+@@ -88,7 +90,6 @@ void setup(void)
+ void cleanup(void)
+ {
+ 	TEST_CLEANUP;
+-
+ }
+ 
+ void check(void)
+-- 
+1.7.3.2
+------=_Part_56153_2137683159.1295424539926
+Content-Type: text/x-patch; name=0001-tests-require-root-users.patch
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=0001-tests-require-root-users.patch
 
-without downtime or disruption
+RnJvbSA1NWZkMTg3YzM2ZDFjNzQ4NGE1NmY3NzhkMjRjOGFjN2NjZWMzNDllIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBX
+ZWQsIDE5IEphbiAyMDExIDE1OjIxOjAyICswODAwClN1YmplY3Q6IFtQQVRDSF0gdGVzdHMgcmVx
+dWlyZSByb290IHVzZXJzCgoKU2lnbmVkLW9mZi1ieTogQ0FJIFFpYW4gPGNhaXFpYW5AcmVkaGF0
+LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL21lbS9jcHVzZXQvY3B1c2V0MDEuYyAgICAgICAg
+ICAgICB8ICAgIDMgKystCiB0ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VtbWFwL2h1
+Z2VtbWFwMDUuYyB8ICAgIDEgKwogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbG9jay9tbG9j
+azAzLmMgICAgICAgICAgfCAgICA0ICsrKy0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1h
+cC9tbWFwMTAuYyAgICAgICAgICAgIHwgICAgMyArKy0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvbW1hcC9tbWFwMTEuYyAgICAgICAgICAgIHwgICAgMyArKy0KIDUgZmlsZXMgY2hhbmdlZCwg
+MTAgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
+a2VybmVsL21lbS9jcHVzZXQvY3B1c2V0MDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2NwdXNl
+dC9jcHVzZXQwMS5jCmluZGV4IGY3NjkxNTYuLjEwY2NkZTcgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNl
+cy9rZXJuZWwvbWVtL2NwdXNldC9jcHVzZXQwMS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVt
+L2NwdXNldC9jcHVzZXQwMS5jCkBAIC0xNzcsNiArMTc3LDggQEAgdm9pZCB0ZXN0Y3B1c2V0KHZv
+aWQpCiAKIHZvaWQgc2V0dXAodm9pZCkKIHsKKwl0c3RfcmVxdWlyZV9yb290KE5VTEwpOworCiAJ
+aWYgKGNvdW50X251bWEoKSA9PSAxKQogCQl0c3RfYnJrbShUQ09ORiwgTlVMTCwgInJlcXVpcmVk
+IGEgTlVNQSBzeXN0ZW0uIik7CiAJdHN0X3NpZyhGT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7
+CkBAIC0yMjMsNyArMjI1LDYgQEAgdm9pZCBjbGVhbnVwKHZvaWQpCiAJCXRzdF9yZXNtKFRXQVJO
+fFRFUlJOTywgInJtZGlyIik7CiAKIAlURVNUX0NMRUFOVVA7Ci0KIH0KIAogdm9pZCBzaWdoYW5k
+bGVyKGludCBzaWdubyBMVFBfQVRUUklCVVRFX1VOVVNFRCkKZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZW1tYXAvaHVnZW1tYXAwNS5jIGIvdGVzdGNhc2VzL2tl
+cm5lbC9tZW0vaHVnZXRsYi9odWdlbW1hcC9odWdlbW1hcDA1LmMKaW5kZXggNzNjNjk2MC4uOTEw
+Yjc1YyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlbW1hcC9o
+dWdlbW1hcDA1LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlbW1hcC9o
+dWdlbW1hcDA1LmMKQEAgLTI5NCw2ICsyOTQsNyBAQCBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQog
+CUZJTEUgKmZwOwogCWludCBmZDsKIAorCXRzdF9yZXF1aXJlX3Jvb3QoTlVMTCk7CiAJdHN0X3Np
+ZyhGT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7CiAJVEVTVF9QQVVTRTsKIAl0c3RfdG1wZGly
+KCk7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDMu
+YyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMy5jCmluZGV4IDhlZDkz
+NzguLmRhNDY5Y2IgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2sv
+bWxvY2swMy5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMy5j
+CkBAIC0xMTAsNiArMTEwLDggQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAog
+dm9pZCBzZXR1cCh2b2lkKQogeworCXRzdF9yZXF1aXJlX3Jvb3QoTlVMTCk7CisKIAl0c3Rfc2ln
+KEZPUkssIERFRl9IQU5ETEVSLCBjbGVhbnVwKTsKIAlURVNUX1BBVVNFOwogfQpAQCAtMTE3LDQg
+KzExOSw0IEBAIHZvaWQgc2V0dXAodm9pZCkKIHZvaWQgY2xlYW51cCh2b2lkKQogewogCVRFU1Rf
+Q0xFQU5VUDsKLX0KXCBObyBuZXdsaW5lIGF0IGVuZCBvZiBmaWxlCit9CmRpZmYgLS1naXQgYS90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDEwLmMgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL21tYXAvbW1hcDEwLmMKaW5kZXggN2RiNzE0OC4uZDM4NzdhMyAxMDA2NDQKLS0t
+IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxMC5jCisrKyBiL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTAuYwpAQCAtMTYzLDExICsxNjMsMTIgQEAgdm9p
+ZCBtbWFwemVybyh2b2lkKQogdm9pZCBjbGVhbnVwKHZvaWQpCiB7CiAJVEVTVF9DTEVBTlVQOwot
+CiB9CiAKIHZvaWQgc2V0dXAodm9pZCkKIHsKKwl0c3RfcmVxdWlyZV9yb290KE5VTEwpOworCiAJ
+dHN0X3NpZyhGT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7CiAJVEVTVF9QQVVTRTsKIH0KZGlm
+ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTEuYyBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTEuYwppbmRleCA1YzE0MWEwLi43ODY3MjRi
+IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDExLmMKKysr
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxMS5jCkBAIC04MSw2ICs4MSw4
+IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAKIHZvaWQgc2V0dXAodm9pZCkK
+IHsKKwl0c3RfcmVxdWlyZV9yb290KE5VTEwpOworCiAJdHN0X3NpZyhGT1JLLCBERUZfSEFORExF
+UiwgY2xlYW51cCk7CiAJVEVTVF9QQVVTRTsKIH0KQEAgLTg4LDcgKzkwLDYgQEAgdm9pZCBzZXR1
+cCh2b2lkKQogdm9pZCBjbGVhbnVwKHZvaWQpCiB7CiAJVEVTVF9DTEVBTlVQOwotCiB9CiAKIHZv
+aWQgY2hlY2sodm9pZCkKLS0gCjEuNy4zLjIKCg==
+------=_Part_56153_2137683159.1295424539926
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
+------=_Part_56153_2137683159.1295424539926
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_56153_2137683159.1295424539926--
+
