@@ -1,28 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PgCNh-0003Zd-K7
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 08:30:05 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PgCNg-0004T7-HV
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 08:30:05 +0000
-Received: by wwi18 with SMTP id 18so1489536wwi.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 00:29:58 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PfTEt-0007vx-9K
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:17:59 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PfTEs-0000K1-Da
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:17:59 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0J8HrRi005273
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jan 2011 03:17:53 -0500
+Date: Wed, 19 Jan 2011 03:17:52 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <823965169.56383.1295425072957.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <126716020.56158.1295424573848.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4D391BEB.9070508@cn.fujitsu.com>
-References: <4D37EB92.3060901@cn.fujitsu.com>
-	<AANLkTin4N+xuTwQP2w7WtGvO20qdsa2mEjeiMi5fFK2d@mail.gmail.com>
-	<4D3903AC.2070901@cn.fujitsu.com>
-	<AANLkTimPKEHGOc4-UQXxSZoNJi5UQD1wB1L2n3iUznhE@mail.gmail.com>
-	<4D391BEB.9070508@cn.fujitsu.com>
-Date: Fri, 21 Jan 2011 00:29:58 -0800
-Message-ID: <AANLkTing1S_trGTyHmJixR7rrWVxu2WXcT+G+Ey-tWGw@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] mprotect02: fix error of the case need
-	sighandler()
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_56382_146860396.1295425072957"
+Subject: Re: [LTP] [PATCH] mbind: add a missing Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,51 +29,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Thu, Jan 20, 2011 at 9:38 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> Garrett Cooper said the following on 2011-1-21 12:00:
->>> This is OK, but the default signal handler is invoked when an unexpecte=
-d signal
->>> is caught. so I think we should add sighandler(). Furthermore, the defa=
-ult
->>> signal handler make the child process exit 2, but the case expect the c=
-hild
->>> process exit 1, this will cause the case fail.
->>>
->>> The following patch will reinitialize signal handler.
->>
->> =A0 =A0 This won't work if the number of test loops is > 1 (it will reset
->> the handler back to the default and fail on the next iteration).
->
-> Thanks for your comment.
->
-> The following patch will initialize signal handler to sighandler() in loo=
-ps starting,
-> and reinitialize default signal handle in the second part.
+------=_Part_56382_146860396.1295425072957
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-    I fixed it in a different way from what you did and it appears to
-work well now (I simplified the test by not using tst_sig, as it kept
-on segfaulting in the parent process when I used tst_sig).
-Thanks,
--Garrett
+The patch is attached.
+------=_Part_56382_146860396.1295425072957
+Content-Type: text/x-patch; name=0001-mbind-add-a-missing-Makefile.patch
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename=0001-mbind-add-a-missing-Makefile.patch
 
----------------------------------------------------------------------------=
----
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires =
+RnJvbSA4YjhjOTlhMDJlMDM4NGU2YWY3M2NlNTk2NjM4YzU0MzY0ODRmOGUwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBX
+ZWQsIDE5IEphbiAyMDExIDE1OjU0OjE5ICswODAwClN1YmplY3Q6IFtQQVRDSF0gbWJpbmQ6IGFk
+ZCBhIG1pc3NpbmcgTWFrZWZpbGUKCgpTaWduZWQtb2ZmLWJ5OiBDQUkgUWlhbiA8Y2FpcWlhbkBy
+ZWRoYXQuY29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL21iaW5kL01ha2VmaWxlIHwgICAy
+NSArKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZpbGVzIGNoYW5nZWQsIDI1IGluc2VydGlv
+bnMoKyksIDAgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5l
+bC9tZW0vbWJpbmQvTWFrZWZpbGUKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS9t
+YmluZC9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL21iaW5kL01ha2VmaWxlCm5ldyBm
+aWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLmUyMDJhNmIKLS0tIC9kZXYvbnVsbAorKysg
+Yi90ZXN0Y2FzZXMva2VybmVsL21lbS9tYmluZC9NYWtlZmlsZQpAQCAtMCwwICsxLDI1IEBACisj
+CisjICBDb3B5cmlnaHQgKEMpIDIwMTAgIFJlZCBIYXQsIEluYy4KKyMKKyMgIFRoaXMgcHJvZ3Jh
+bSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5
+CisjICBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNl
+IGFzIHB1Ymxpc2hlZCBieQorIyAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVy
+IHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwgb3IgKGF0CisjICB5b3VyIG9wdGlvbikgYW55IGxh
+dGVyIHZlcnNpb24uCisjCisjICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhv
+cGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgYnV0CisjICBXSVRIT1VUIEFOWSBXQVJSQU5UWTsg
+d2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisjICBNRVJDSEFOVEFCSUxJVFkg
+b3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVQorIyAgR2Vu
+ZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgorIworIyAgWW91IHNob3VsZCBo
+YXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKKyMg
+IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3
+YXJlCisjICBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdHJlZXQsIEZpZnRoIEZsb29y
+LCBCb3N0b24sIE1BCisjICAwMjExMC0xMzAxLCBVU0EuCisjCisKK3RvcF9zcmNkaXIgICAgICAg
+ICAgICAgID89IC4uLy4uLy4uLy4uCisKK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21r
+L3Rlc3RjYXNlcy5taworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19s
+ZWFmX3RhcmdldC5taworCitMRExJQlMgCQkJKz0gJChOVU1BX0xJQlMpClwgTm8gbmV3bGluZSBh
+dCBlbmQgb2YgZmlsZQotLSAKMS43LjMuMgoK
+------=_Part_56382_146860396.1295425072957
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-February 28th, so secure your free ArcSight Logger TODAY! =
+------------------------------------------------------------------------------
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
+------=_Part_56382_146860396.1295425072957
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_56382_146860396.1295425072957--
+
