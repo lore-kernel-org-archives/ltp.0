@@ -2,17 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PfRv5-0006KN-Pa
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 06:53:27 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PfRv3-00045f-Qv
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 06:53:27 +0000
-Message-ID: <4D368A67.8000105@cn.fujitsu.com>
-Date: Wed, 19 Jan 2011 14:53:27 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <yanegomi@gmail.com>) id 1PfUTp-0001E9-Tk
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:37:29 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PfUTo-0001wO-UZ
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 09:37:29 +0000
+Received: by wyb40 with SMTP id 40so607641wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 19 Jan 2011 01:37:22 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] dup203: fix error of not using O_ACCMODE
+In-Reply-To: <1044F3871F984514ACE11A23C55DAFB3@FM38572274>
+References: <1044F3871F984514ACE11A23C55DAFB3@FM38572274>
+Date: Wed, 19 Jan 2011 01:37:22 -0800
+Message-ID: <AANLkTikGkTqAyoDoPaV5YVxgFqx=DQsqeTCpNRbUtHVt@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Fix the test04 of testcases/kernel/numa/numa01.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,46 +30,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
+To: Kazuki Seki <k-seki@np.css.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+On Sun, Jan 16, 2011 at 4:38 PM, Kazuki Seki <k-seki@np.css.fujitsu.com> wrote:
+> Hi,
+>
+> Did you confirm the following email which I posted before?
 
-The file access mode is extracted from the return value of function fcntl() using the mask O_ACCMODE.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
----
- testcases/kernel/syscalls/dup2/dup203.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/dup2/dup203.c b/testcases/kernel/syscalls/dup2/dup203.c
-index 51a3579..0df92b4 100644
---- a/testcases/kernel/syscalls/dup2/dup203.c
-+++ b/testcases/kernel/syscalls/dup2/dup203.c
-@@ -170,7 +170,7 @@ int main(int ac, char **av)
- 				    "return value of 0x0, got %#x", rval);
- 				break;
- 			}
--			if (((rval = fcntl(fd0, F_GETFL, 0)) != O_WRONLY)) {
-+			if ((rval = (fcntl(fd0, F_GETFL, 0) & O_ACCMODE)) != O_WRONLY) {
- 				tst_resm(TFAIL, "fctnl F_GETFL bad rval on fd0 "
- 					"Expected %#x got %#x", O_WRONLY, rval);
- 			}
-@@ -212,4 +212,4 @@ void cleanup()
- 	TEST_CLEANUP;
- 
- 	tst_rmdir();
--}
-\ No newline at end of file
-+}
--- 
-1.7.3.1
-
--- 
-Best Regards,
-Peng Haitao
-
+    I can't because I don't have the resources and FWIW no one else
+has ACKed this issue.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Protect Your Site and Customers from Malware Attacks
