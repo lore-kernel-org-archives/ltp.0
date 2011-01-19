@@ -1,39 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <achender@us.ibm.com>) id 1PevZt-00067t-EY
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jan 2011 20:21:25 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.72) id 1PevZs-0008Ae-IS
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jan 2011 20:21:25 +0000
-Received: from d01dlp01.pok.ibm.com (d01dlp01.pok.ibm.com [9.56.224.56])
-	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p0HK3POF004121
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 15:03:58 -0500
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by d01dlp01.pok.ibm.com (Postfix) with ESMTP id 531E2728042
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jan 2011 15:21:12 -0500 (EST)
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p0HKLBUK179756
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 15:21:11 -0500
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id p0HKLBwX006227
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 13:21:11 -0700
-Received: from d03nm127.boulder.ibm.com (d03nm127.boulder.ibm.com
-	[9.17.195.18])
-	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p0HKLBlt006224
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Jan 2011 13:21:11 -0700
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PfTBR-0002iI-53
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:14:25 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PfTBQ-0008A7-2I
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 08:14:25 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0J8EI9G004854
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jan 2011 03:14:18 -0500
+Date: Wed, 19 Jan 2011 03:14:18 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <729484419.56210.1295424858185.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <25776661.56207.1295424852426.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Message-ID: <OF556F8504.F2C4ACB7-ON8725781B.006F4CCC-0725781B.006FD309@us.ibm.com>
-From: Allison C Henderson <achender@us.ibm.com>
-Date: Mon, 17 Jan 2011 13:21:10 -0700
-Content-Type: multipart/mixed; boundary="=_mixed 006FD3040725781B_="
-Subject: [LTP] New ltp test case
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_56209_1709392855.1295424858184"
+Subject: [LTP] [PATCH 2/4] ksm03: KSM for Memory Resource Controller
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,229 +30,232 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
---=_mixed 006FD3040725781B_=
-Content-Type: multipart/alternative;
-	boundary="=_alternative 006FD3050725781B_="
+------=_Part_56209_1709392855.1295424858184
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+---
+ testcases/kernel/mem/ksm/ksm03.c |  117 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 117 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/ksm/ksm03.c
 
---=_alternative 006FD3050725781B_=
-Content-Type: text/plain; charset="US-ASCII"
-
-Hi All,
-
-I am new to the ltc filesystem team at IBM and we have been working on a 
-new ltp test case for ext4.  The test case exercises the new punch hole 
-flag in the fallocate system call that we will be using to implement punch 
-hole support for ext4.  Currently, there is no punch hole support for 
-ext4, so the test just returns failed, but we wanted to add the test case 
-to help verify that the new VFS changes to fallocate are working.   I have 
-included a patch that adds the new ltp test case.  Let me know what you 
-think.  Thanks!
-
-Allison Henderson
-eml: achender@us.ibm.com
-ph:799-5761 (T/L 321)
---=_alternative 006FD3050725781B_=
-Content-Type: text/html; charset="US-ASCII"
-
-
-<br><font size=2 face="sans-serif">Hi All,</font>
-<br>
-<br><font size=2 face="sans-serif">I am new to the ltc filesystem team
-at IBM and we have been working on a new ltp test case for ext4. &nbsp;The
-test case exercises the new punch hole flag in the fallocate system call
-that we will be using to implement punch hole support for ext4. &nbsp;Currently,
-there is no punch hole support for ext4, so the test just returns failed,
-but we wanted to add the test case to help verify that the new VFS changes
-to fallocate are working. &nbsp; I have included a patch that adds the
-new ltp test case. &nbsp;Let me know what you think. &nbsp;Thanks!</font>
-<br>
-<br><font size=2 face="sans-serif">Allison Henderson<br>
-eml: achender@us.ibm.com<br>
-ph:799-5761 (T/L 321)</font>
---=_alternative 006FD3050725781B_=--
-
---=_mixed 006FD3040725781B_=
-Content-Type: application/octet-stream; name="ltp_holepunch_patch"
-Content-Disposition: attachment; filename="ltp_holepunch_patch"
+diff --git a/testcases/kernel/mem/ksm/ksm03.c b/testcases/kernel/mem/ksm/ksm03.c
+new file mode 100644
+index 0000000..fc10932
+--- /dev/null
++++ b/testcases/kernel/mem/ksm/ksm03.c
+@@ -0,0 +1,117 @@
++/*
++ * Kernel Samepage Merging (KSM) for Memory Resource Controller
++ *
++ * Basic tests were to start several programs with same and different
++ * memory contents and ensure only to merge the ones with the same
++ * contents. When changed the content of one of merged pages in a
++ * process and to the mode "unmerging", it should discard all merged
++ * pages there. Also tested it is possible to disable KSM. There are
++ * also command-line options to specify the memory allocation size, and
++ * number of processes have same memory contents so it is possible to
++ * test more advanced things like KSM + OOM etc.
++ *
++ * Prerequisites:
++ *
++ * 1) ksm and ksmtuned daemons need to be disabled. Otherwise, it could
++ *    distrub the testing as they also change some ksm tunables depends
++ *    on current workloads.
++ *
++ * The test steps are:
++ * - Check ksm feature and backup current run setting.
++ * - Change run setting to 1 - merging.
++ * - 3 memory allocation programs have the memory contents that 2 of
++ *   them are all 'a' and one is all 'b'.
++ * - Check ksm statistics and verify the content.
++ * - 1 program changes the memory content from all 'a' to all 'b'.
++ * - Check ksm statistics and verify the content.
++ * - All programs change the memory content to all 'd'.
++ * - Check ksm statistics and verify the content.
++ * - Change one page of a process.
++ * - Check ksm statistics and verify the content.
++ * - Change run setting to 2 - unmerging.
++ * - Check ksm statistics and verify the content.
++ * - Change run setting to 0 - stop.
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <errno.h>
++#include "test.h"
++#include "usctest.h"
++#include "../include/mem.h"
++
++char *TCID = "ksm03";
++int TST_TOTAL = 1;
++
++option_t ksm_options[] = {
++        { "n:", &opt_num,       &opt_numstr},
++        { "s:", &opt_size,      &opt_sizestr},
++        { "u:", &opt_unit,      &opt_unitstr},
++        { NULL, NULL,           NULL}
++};
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++	int size = 128, num = 3, unit = 1;
++
++	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++		check_ksm_options(&size, &num, &unit);
++		write_memcg();
++		create_same_memory(size, num, unit);
++	}
++	cleanup();
++	tst_exit();
++}
++
++void setup(void)
++{
++	tst_require_root(NULL);
++
++	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
++	tst_sig(FORK, DEF_HANDLER, NULL);
++	TEST_PAUSE;
++}
++
++void cleanup(void)
++{
++	umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
++	TEST_CLEANUP;
++}
+-- 
+1.7.3.2
+------=_Part_56209_1709392855.1295424858184
+Content-Type: text/x-patch;
+	name=0002-ksm03-KSM-for-Memory-Resource-Controller.patch
 Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename=0002-ksm03-KSM-for-Memory-Resource-Controller.patch
 
-ZGlmZiAtTnVhciBsdHBfdW5wYXRjaGVkL2x0cC90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3
-LWZlYXR1cmVzL2V4dDQtaG9sZS1wdW5jaC9leHQ0X2hvbGVfcHVuY2guYyBsdHBfbWFudWFsUGF0
-Y2gvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1
-bmNoL2V4dDRfaG9sZV9wdW5jaC5jCi0tLSBsdHBfdW5wYXRjaGVkL2x0cC90ZXN0Y2FzZXMva2Vy
-bmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaG9sZS1wdW5jaC9leHQ0X2hvbGVfcHVuY2gu
-YwkxOTY5LTEyLTMxIDE3OjAwOjAwLjAwMDAwMDAwMCAtMDcwMAorKysgbHRwX21hbnVhbFBhdGNo
-L2x0cC90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaG9sZS1wdW5j
-aC9leHQ0X2hvbGVfcHVuY2guYwkyMDExLTAxLTE0IDE3OjM0OjQ2LjkzNjE5NDg1OSAtMDcwMApA
-QCAtMCwwICsxLDk4IEBACisvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLworLyogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKi8KKy8qIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5l
-cyAgQ29ycC4sIDIwMTEgICAgICAgICAgICAgICAgICovCisvKiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAq
-LworLyogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0
-ZSBpdCBhbmQvb3IgbW9kaWZ5ICAgICAgKi8KKy8qIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUg
-R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5ICAgICAgICovCisvKiB0
-aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNl
-bnNlLCBvciAgICAgICAgICAqLworLyogKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lv
-bi4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KKy8qICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICovCisvKiBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUg
-dGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgICAgICAgICAgICAqLworLyogYnV0IFdJVEhPVVQgQU5Z
-IFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mICAgICAgICAg
-ICAgKi8KKy8qIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVS
-UE9TRS4gIFNlZSAgICAgICAgICAgICAgICAgICovCisvKiB0aGUgR05VIEdlbmVyYWwgUHVibGlj
-IExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4gICAgICAgICAgICAgICAgICAgICAgICAgICAqLwor
-LyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgKi8KKy8qIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNv
-cHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlICAgICAgICAgICovCisvKiBhbG9u
-ZyB3aXRoIHRoaXMgcHJvZ3JhbTsgIGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUg
-ICAgICAgICAgICAgICAqLworLyogRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBT
-dWl0ZSAzMzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBVU0EgICAgKi8KKy8qICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICovCisvKiBBdXRob3I6IEFsbGlzb24gSGVuZGVyc29uICA8YWNoZW5kZXJAdXMuaWJt
-LmNvbT4gICAgICAgICAgICAgICAgICAgICAgICAgICAqLworLyogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Ki8KKy8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKiovCisKKyNpbmNsdWRlIDxsaW51eC9mYWxsb2MuaD4K
-KyNpbmNsdWRlIDxzdGRpby5oPgorI2luY2x1ZGUgPHN0ZGxpYi5oPgorI2luY2x1ZGUgPHN0cmlu
-Zy5oPgorI2luY2x1ZGUgPHVuaXN0ZC5oPgorI2luY2x1ZGUgPHN5cy90eXBlcy5oPgorI2luY2x1
-ZGUgPHN5cy9zdGF0Lmg+CisjaW5jbHVkZSA8ZmNudGwuaD4KKworCisjZGVmaW5lIFVTQUdFICJV
-U0FHRTogZXh0NC1wdW5jaC1ob2xlIC1vIG9mZnNldCAtbCBsZW5ndGggZmlsZW5hbWVcbiIKKwor
-aW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKK3sKKyAgICAgICAgaW50IGxlbmd0aCA9
-IC0xOworICAgICAgICBpbnQgb2Zmc2V0ID0gLTE7CisgICAgICAgIGludCBvcHQgPSAwOworICAg
-ICAgICBpbnQgZmQgPSAwOworICAgICAgICBpbnQgcmMgPSAwOworICAgICAgICBpbnQgbW9kZSA9
-IDA7CisgICAgICAgIGNoYXIgKmZpbGVuYW1lID0gTlVMTDsKKworCisgICAgICAgIGlmIChhcmdj
-ICE9IDYpIHsKKyAgICAgICAgICAgICAgICBmcHJpbnRmKHN0ZGVyciwgVVNBR0UpOworICAgICAg
-ICAgICAgICAgIHJldHVybiAxOworICAgICAgICB9CisKKyAgICAgICAgLyogUGFyc2UgYXJndW1l
-bnRzICovCisgICAgICAgIHdoaWxlICgob3B0ID0gZ2V0b3B0KGFyZ2MsIGFyZ3YsICJvOmw6Iikp
-ICE9IEVPRikgeworICAgICAgICAgICAgICAgIHN3aXRjaCAob3B0KSB7CisgICAgICAgICAgICAg
-ICAgY2FzZSAnbyc6CisgICAgICAgICAgICAgICAgICAgICAgICBvZmZzZXQgPSBhdG9pKG9wdGFy
-Zyk7CisgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKKyAgICAgICAgICAgICAgICBjYXNl
-ICdsJzoKKyAgICAgICAgICAgICAgICAgICAgICAgIGxlbmd0aCA9IGF0b2kob3B0YXJnKTsKKyAg
-ICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOworICAgICAgICAgICAgICAgIGRlZmF1bHQ6Cisg
-ICAgICAgICAgICAgICAgICAgICAgICBmcHJpbnRmKHN0ZGVyciwgVVNBR0UpOworICAgICAgICAg
-ICAgICAgICAgICAgICAgcmV0dXJuIDE7CisgICAgICAgICAgICAgICAgfQorICAgICAgICB9CisK
-KyAgICAgICAgZmlsZW5hbWUgPSBhcmd2WzVdOworCisgICAgICAgIGlmKG9mZnNldCA8IDAgfHwg
-bGVuZ3RoIDwgMCB8fCBmaWxlbmFtZSA9PSBOVUxMKXsKKyAgICAgICAgICAgICAgICBmcHJpbnRm
-KHN0ZGVyciwgVVNBR0UpOworICAgICAgICAgICAgICAgIHJldHVybiAxOworICAgICAgICB9CisK
-KworICAgICAgICAvKiBDaGVjayBmb3IgcHVuY2ggaG9sZSBzdXBwb3J0ICovCisjaWZuZGVmIEZB
-TExPQ19GTF9QVU5DSF9IT0xFCisgICAgICAgIGZwcmludGYoc3RkZXJyLCAiRXJyb3I6IGZhbGxv
-Y2F0ZSBwdW5jaCBob2xlIG5vdCBzdXBwb3J0ZWRcbiIpOworICAgICAgICByZXR1cm4gMTsKKyNl
-bHNlCisKKyAgICAgICAgLyogT3BlbiBmaWxlICovCisgICAgICAgIGZkID0gb3BlbihmaWxlbmFt
-ZSwgT19XUk9OTFksIDA3NTUgICk7CisgICAgICAgIGlmKGZkIDw9IDApeworICAgICAgICAgICAg
-ICAgIHBlcnJvcigiRXJyb3I6IEZhaWxlZCB0byBvcGVuIGZpbGUiKTsKKyAgICAgICAgICAgICAg
-ICByZXR1cm4gMTsKKyAgICAgICAgfQorCisgICAgICAgIC8qIFB1bmNoIGhvbGUgKi8KKyAgICAg
-ICAgbW9kZSA9IEZBTExPQ19GTF9QVU5DSF9IT0xFIHwgRkFMTE9DX0ZMX0tFRVBfU0laRTsKKyAg
-ICAgICAgcmMgPSBmYWxsb2NhdGUoZmQsIG1vZGUsIG9mZnNldCwgbGVuZ3RoKTsKKyAgICAgICAg
-aWYocmMgIT0gMCl7CisgICAgICAgICAgICAgICAgcGVycm9yKCJFcnJvcjogUHVuY2ggaG9sZSBm
-YWlsZWQiKTsKKyAgICAgICAgfQorCisgICAgICAgIGNsb3NlKGZkKTsKKyNlbmRpZgorCXJldHVy
-biByYzsKK30KKwpkaWZmIC1OdWFyIGx0cF91bnBhdGNoZWQvbHRwL3Rlc3RjYXNlcy9rZXJuZWwv
-ZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNoL2V4dDRfaG9sZV9wdW5jaF90ZXN0
-LnNoIGx0cF9tYW51YWxQYXRjaC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0
-dXJlcy9leHQ0LWhvbGUtcHVuY2gvZXh0NF9ob2xlX3B1bmNoX3Rlc3Quc2gKLS0tIGx0cF91bnBh
-dGNoZWQvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xl
-LXB1bmNoL2V4dDRfaG9sZV9wdW5jaF90ZXN0LnNoCTE5NjktMTItMzEgMTc6MDA6MDAuMDAwMDAw
-MDAwIC0wNzAwCisrKyBsdHBfbWFudWFsUGF0Y2gvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0
-NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNoL2V4dDRfaG9sZV9wdW5jaF90ZXN0LnNoCTIw
-MTEtMDEtMTQgMTc6MzU6MjAuMjU3MTk3NDEzIC0wNzAwCkBAIC0wLDAgKzEsOTYgQEAKKyMhL2Jp
-bi9iYXNoCisKKyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCisjIyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
-IworIyMgQ29weXJpZ2h0IChjKSBJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzICBDb3Jw
-LiwgMjAxMSAgICAgICAgICAgICAgICAgIyMKKyMjICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyBU
-aGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFu
-ZCNvciBtb2RpZnkgICAgICAjIworIyMgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2Vu
-ZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkgICAgICAgIyMKKyMjIHRoZSBGcmVl
-IFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9y
-ICAgICAgICAgICMjCisjIyAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIyMKKyMjIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0
-IHdpbGwgYmUgdXNlZnVsLCBidXQgICAgICAgICMjCisjIyBXSVRIT1VUIEFOWSBXQVJSQU5UWTsg
-d2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSAjIwor
-IyMgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVSBHZW5l
-cmFsIFB1YmxpYyBMaWNlbnNlICAgIyMKKyMjIGZvciBtb3JlIGRldGFpbHMuICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAjIworIyMgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0
-aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgICAgICAgICAgIyMKKyMjIGFsb25nIHdpdGgg
-dGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSAgICAgICAg
-ICAgICAgICMjCisjIyBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UsIFN1aXRlIDMz
-MCwgQm9zdG9uLCBNQSAwMjExMS0xMzA3IFVTQSAgICAjIworIyMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IyMKKyMjIEF1dGhvcjogQWxsaXNvbiBIZW5kZXJzb24gPGFoZW5kZXJAdXMuaWJtLi5jb20+ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMKKworY2QgJExUUFJPT1QvdGVzdGNhc2VzL2JpbgorCisuIC4v
-ZXh0NF9mdW5jcy5zaAorCitleHBvcnQgVENJRD0iZXh0NC1ob2xlLXB1bmNoIgorZXhwb3J0IFRT
-VF9UT1RBTD0yCitleHBvcnQgVFNUX0NPVU5UPTEKKworIyAkMTogdGhlIHRlc3QgY29uZmlnCity
-ZWFkX2NvbmZpZyAkMQorCitURVNUX0RJUj0kUFdECisKKyMgVGVzdCB0aGF0IGZpbGUgY2FuIGJl
-IGhvbGUgcHVuY2hlZAorZXh0NF90ZXN0X2hvbGVfcHVuY2goKQoreworCXRzdF9yZXNtIFRJTkZP
-ICJUZXN0IGZhbGxvY2F0ZSBwdW5jaCBob2xlIgorCisJI2NyZWF0ZSB0aGUgZmlsZSBzeXN0ZW0K
-Kwlta2ZzLmV4dDQgICRFWFQ0X0RFViAmPiAvZGV2L251bGwKKwlpZiBbICQ/IC1uZSAwIF07IHRo
-ZW4KKwkJdHN0X3Jlc20gVEZBSUwgImZhaWxlZCB0byBjcmVhdGUgZXh0NCBmaWxlc3lzdGVtIgor
-CQlyZXR1cm4gMQorCWZpCisKKwkjbW91bnQgdGhlIGZpbGUgc3lzdGVtCisJbW91bnQgLXQgZXh0
-NCAkRVhUNF9ERVYgbW50X3BvaW50CisJaWYgWyAkPyAtbmUgMCBdOyB0aGVuCisJCXRzdF9yZXNt
-IFRGQUlMICJmYWlsZWQgdG8gbW91bnQgZXh0NCBmaWxlc3lzdGVtIgorCQlyZXR1cm4gMQorCWZp
-CisKKwkjY3JlYXRlIHRlc3QgZmlsZQorCXJtIG1udF9wb2ludC90bXBfZmlsZQorCXRvdWNoIG1u
-dF9wb2ludC90bXBfZmlsZQorCWRkIGlmPS9kZXYvemVybyBvZj1tbnRfcG9pbnQvdG1wX2ZpbGUg
-YnM9MTAyNCBjb3VudD01MCAmPiAvZGV2L251bGwgICAgICAgCisKKwkjcHVuY2ggaG9sZSBpbiBt
-aWRkbGUKKwkuL2V4dDRfaG9sZV9wdW5jaCAtbyAgMjU2MDAgLWwgNjE0NCBtbnRfcG9pbnQvdG1w
-X2ZpbGUKKworCWlmIFsgJD8gLW5lIDAgXTsgdGhlbgorCQl0c3RfcmVzbSBURkFJTCAiUHVuY2gg
-aG9sZSBmYWlsZWQiCisJCXVtb3VudCBtbnRfcG9pbnQKKwkJcmV0dXJuIDEKKwlmaQorCisKKwor
-CSN1bm1vdW50IGZpbGVzeXRlbQorCXVtb3VudCBtbnRfcG9pbnQKKwlpZiBbICQ/IC1uZSAwIF07
-IHRoZW4KKwkJdHN0X3Jlc20gVEZBSUwgImZhaWxlZCB0byB1bW91bnQgZXh0NCBmaWxlc3lzdGVt
-IgorCQlyZXR1cm4gMQorCWZpCisKKwl0c3RfcmVzbSBUUEFTUyAiRXh0NCBwdW5jaCBob2xlIHBh
-c3MiCit9CisKKyMgbWFpbgorZXh0NF9zZXR1cAorCitSRVQ9MAorCitleHQ0X3Rlc3RfaG9sZV9w
-dW5jaAoraWYgWyAkPyAtbmUgMCBdOyB0aGVuCisJUkVUPTEKK2ZpCis6ICQoKFRTVF9DT1VOVCsr
-KSkKKworZXh0NF9jbGVhbnVwCitleGl0ICRSRVQKKwpkaWZmIC1OdWFyIGx0cF91bnBhdGNoZWQv
-bHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNo
-L01ha2VmaWxlIGx0cF9tYW51YWxQYXRjaC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5l
-dy1mZWF0dXJlcy9leHQ0LWhvbGUtcHVuY2gvTWFrZWZpbGUKLS0tIGx0cF91bnBhdGNoZWQvbHRw
-L3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xlLXB1bmNoL01h
-a2VmaWxlCTE5NjktMTItMzEgMTc6MDA6MDAuMDAwMDAwMDAwIC0wNzAwCisrKyBsdHBfbWFudWFs
-UGF0Y2gvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1ob2xl
-LXB1bmNoL01ha2VmaWxlCTIwMTEtMDEtMTQgMTc6NDE6MzAuNTg2MTk1MzAyIC0wNzAwCkBAIC0w
-LDAgKzEsMjUgQEAKKyMgICAgQ29weXJpZ2h0IChDKSBJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1h
-Y2hpbmVzICBDb3JwLiwgMjAxMSAKKyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdh
-cmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKKyMgICAgaXQgdW5kZXIg
-dGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQg
-YnkKKyMgICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBv
-ZiB0aGUgTGljZW5zZSwgb3IKKyMgICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lv
-bi4KKyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQg
-aXQgd2lsbCBiZSB1c2VmdWwsCisjICAgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91
-dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisjICAgIE1FUkNIQU5UQUJJTElUWSBvciBG
-SVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKKyMgICAgR05VIEdlbmVy
-YWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KKyMKKyMgICAgWW91IHNob3VsZCBo
-YXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYWxv
-bmcKKyMgICAgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29m
-dHdhcmUgRm91bmRhdGlvbiwgSW5jLiwKKyMgICAgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBG
-bG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQS4KKyMKKwordG9wX3NyY2RpciAgICAgICAg
-ICAgICAgPz0gLi4vLi4vLi4vLi4vLi4KKworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUv
-bWsvdGVzdGNhc2VzLm1rCisKK0xETElCUyArPSAtbG0KK0lOU1RBTExfVEFSR0VUUwkJPz0gKi5z
-aAorCitpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9nZW5lcmljX2xlYWZfdGFyZ2V0
-Lm1rCmRpZmYgLU51YXIgbHRwX3VucGF0Y2hlZC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0
-LW5ldy1mZWF0dXJlcy9ydW5fZXh0NF90ZXN0LnNoIGx0cF9tYW51YWxQYXRjaC9sdHAvdGVzdGNh
-c2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9ydW5fZXh0NF90ZXN0LnNoCi0tLSBsdHBf
-dW5wYXRjaGVkL2x0cC90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL3J1bl9l
-eHQ0X3Rlc3Quc2gJMjAwOS0xMC0yNiAwNDoyNTo1NS4wMDAwMDAwMDAgLTA3MDAKKysrIGx0cF9t
-YW51YWxQYXRjaC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9ydW5f
-ZXh0NF90ZXN0LnNoCTIwMTEtMDEtMTQgMTQ6MDA6NTMuMzEwMjAwNzEyIC0wNzAwCkBAIC0xNzYs
-NCArMTc2LDE4IEBACiAJUkVUPTEKIGZpCiAKKworZWNobyAiICIKK2VjaG8gIkV4dDQgZmFsbG9j
-YXRlIGhvbGUgcHVuY2ggdGVzdCIKK2lmIFsgLWYgImV4dDRfaG9sZV9wdW5jaF90ZXN0LnNoIiBd
-OyAgdGhlbgorICAgICAgICAuL2V4dDRfaG9sZV9wdW5jaF90ZXN0LnNoIC4vZXh0NC10ZXN0LWNv
-bmZpZworICAgICAgICBpZiBbICQ/IC1uZSAwIF07IHRoZW4KKyAgICAgICAgICAgICAgICBSRVQ9
-MQorICAgICAgICBmaQorZWxzZQorICAgICAgICBlY2hvICJTaGVsbCBmaWxlIGlzIG5vdCBpbnN0
-YWxsZWQuLlBsZWFzZSBjaGVjayBNYWtlZmlsZS4uLiIKKyAgICAgICAgUkVUPTEKK2ZpCisKKwog
-ZXhpdCAkUkVUCg==
-
---=_mixed 006FD3040725781B_=
+RnJvbSAzNmI0ZDA3ODRmMWU4ODAyMWZmMTRiYWQ3MjhlNGMzODFjMDg2YzMxIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBX
+ZWQsIDE5IEphbiAyMDExIDE1OjUxOjAzICswODAwClN1YmplY3Q6IFtQQVRDSCAyLzRdIGtzbTAz
+OiBLU00gZm9yIE1lbW9yeSBSZXNvdXJjZSBDb250cm9sbGVyCgoKU2lnbmVkLW9mZi1ieTogQ0FJ
+IFFpYW4gPGNhaXFpYW5AcmVkaGF0LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL21lbS9rc20v
+a3NtMDMuYyB8ICAxMTcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDEg
+ZmlsZXMgY2hhbmdlZCwgMTE3IGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCiBjcmVhdGUg
+bW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTAzLmMKCmRpZmYgLS1naXQg
+YS90ZXN0Y2FzZXMva2VybmVsL21lbS9rc20va3NtMDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVt
+L2tzbS9rc20wMy5jCm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLmZjMTA5MzIK
+LS0tIC9kZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9rc20va3NtMDMuYwpAQCAt
+MCwwICsxLDExNyBAQAorLyoKKyAqIEtlcm5lbCBTYW1lcGFnZSBNZXJnaW5nIChLU00pIGZvciBN
+ZW1vcnkgUmVzb3VyY2UgQ29udHJvbGxlcgorICoKKyAqIEJhc2ljIHRlc3RzIHdlcmUgdG8gc3Rh
+cnQgc2V2ZXJhbCBwcm9ncmFtcyB3aXRoIHNhbWUgYW5kIGRpZmZlcmVudAorICogbWVtb3J5IGNv
+bnRlbnRzIGFuZCBlbnN1cmUgb25seSB0byBtZXJnZSB0aGUgb25lcyB3aXRoIHRoZSBzYW1lCisg
+KiBjb250ZW50cy4gV2hlbiBjaGFuZ2VkIHRoZSBjb250ZW50IG9mIG9uZSBvZiBtZXJnZWQgcGFn
+ZXMgaW4gYQorICogcHJvY2VzcyBhbmQgdG8gdGhlIG1vZGUgInVubWVyZ2luZyIsIGl0IHNob3Vs
+ZCBkaXNjYXJkIGFsbCBtZXJnZWQKKyAqIHBhZ2VzIHRoZXJlLiBBbHNvIHRlc3RlZCBpdCBpcyBw
+b3NzaWJsZSB0byBkaXNhYmxlIEtTTS4gVGhlcmUgYXJlCisgKiBhbHNvIGNvbW1hbmQtbGluZSBv
+cHRpb25zIHRvIHNwZWNpZnkgdGhlIG1lbW9yeSBhbGxvY2F0aW9uIHNpemUsIGFuZAorICogbnVt
+YmVyIG9mIHByb2Nlc3NlcyBoYXZlIHNhbWUgbWVtb3J5IGNvbnRlbnRzIHNvIGl0IGlzIHBvc3Np
+YmxlIHRvCisgKiB0ZXN0IG1vcmUgYWR2YW5jZWQgdGhpbmdzIGxpa2UgS1NNICsgT09NIGV0Yy4K
+KyAqCisgKiBQcmVyZXF1aXNpdGVzOgorICoKKyAqIDEpIGtzbSBhbmQga3NtdHVuZWQgZGFlbW9u
+cyBuZWVkIHRvIGJlIGRpc2FibGVkLiBPdGhlcndpc2UsIGl0IGNvdWxkCisgKiAgICBkaXN0cnVi
+IHRoZSB0ZXN0aW5nIGFzIHRoZXkgYWxzbyBjaGFuZ2Ugc29tZSBrc20gdHVuYWJsZXMgZGVwZW5k
+cworICogICAgb24gY3VycmVudCB3b3JrbG9hZHMuCisgKgorICogVGhlIHRlc3Qgc3RlcHMgYXJl
+OgorICogLSBDaGVjayBrc20gZmVhdHVyZSBhbmQgYmFja3VwIGN1cnJlbnQgcnVuIHNldHRpbmcu
+CisgKiAtIENoYW5nZSBydW4gc2V0dGluZyB0byAxIC0gbWVyZ2luZy4KKyAqIC0gMyBtZW1vcnkg
+YWxsb2NhdGlvbiBwcm9ncmFtcyBoYXZlIHRoZSBtZW1vcnkgY29udGVudHMgdGhhdCAyIG9mCisg
+KiAgIHRoZW0gYXJlIGFsbCAnYScgYW5kIG9uZSBpcyBhbGwgJ2InLgorICogLSBDaGVjayBrc20g
+c3RhdGlzdGljcyBhbmQgdmVyaWZ5IHRoZSBjb250ZW50LgorICogLSAxIHByb2dyYW0gY2hhbmdl
+cyB0aGUgbWVtb3J5IGNvbnRlbnQgZnJvbSBhbGwgJ2EnIHRvIGFsbCAnYicuCisgKiAtIENoZWNr
+IGtzbSBzdGF0aXN0aWNzIGFuZCB2ZXJpZnkgdGhlIGNvbnRlbnQuCisgKiAtIEFsbCBwcm9ncmFt
+cyBjaGFuZ2UgdGhlIG1lbW9yeSBjb250ZW50IHRvIGFsbCAnZCcuCisgKiAtIENoZWNrIGtzbSBz
+dGF0aXN0aWNzIGFuZCB2ZXJpZnkgdGhlIGNvbnRlbnQuCisgKiAtIENoYW5nZSBvbmUgcGFnZSBv
+ZiBhIHByb2Nlc3MuCisgKiAtIENoZWNrIGtzbSBzdGF0aXN0aWNzIGFuZCB2ZXJpZnkgdGhlIGNv
+bnRlbnQuCisgKiAtIENoYW5nZSBydW4gc2V0dGluZyB0byAyIC0gdW5tZXJnaW5nLgorICogLSBD
+aGVjayBrc20gc3RhdGlzdGljcyBhbmQgdmVyaWZ5IHRoZSBjb250ZW50LgorICogLSBDaGFuZ2Ug
+cnVuIHNldHRpbmcgdG8gMCAtIHN0b3AuCisgKgorICogQ29weXJpZ2h0IChDKSAyMDEwICBSZWQg
+SGF0LCBJbmMuCisgKgorICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4g
+cmVkaXN0cmlidXRlIGl0IGFuZC9vcgorICogbW9kaWZ5IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB2
+ZXJzaW9uIDIgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYworICogTGljZW5zZSBhcyBwdWJsaXNo
+ZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KKyAqCisgKiBUaGlzIHByb2dyYW0g
+aXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3b3VsZCBiZSB1c2VmdWwsCisgKiBi
+dXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50
+eSBvZgorICogTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQ
+T1NFLgorICoKKyAqIEZ1cnRoZXIsIHRoaXMgc29mdHdhcmUgaXMgZGlzdHJpYnV0ZWQgd2l0aG91
+dCBhbnkgd2FycmFudHkgdGhhdCBpdAorICogaXMgZnJlZSBvZiB0aGUgcmlnaHRmdWwgY2xhaW0g
+b2YgYW55IHRoaXJkIHBlcnNvbiByZWdhcmRpbmcKKyAqIGluZnJpbmdlbWVudCBvciB0aGUgbGlr
+ZS4gIEFueSBsaWNlbnNlIHByb3ZpZGVkIGhlcmVpbiwgd2hldGhlcgorICogaW1wbGllZCBvciBv
+dGhlcndpc2UsIGFwcGxpZXMgb25seSB0byB0aGlzIHNvZnR3YXJlIGZpbGUuICBQYXRlbnQKKyAq
+IGxpY2Vuc2VzLCBpZiBhbnksIHByb3ZpZGVkIGhlcmVpbiBkbyBub3QgYXBwbHkgdG8gY29tYmlu
+YXRpb25zIG9mCisgKiB0aGlzIHByb2dyYW0gd2l0aCBvdGhlciBzb2Z0d2FyZSwgb3IgYW55IG90
+aGVyIHByb2R1Y3Qgd2hhdHNvZXZlci4KKyAqCisgKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQg
+YSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQorICogYWxvbmcgd2l0aCB0
+aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdGhlIEZyZWUgU29mdHdhcmUKKyAqIEZvdW5kYXRp
+b24sIEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEKKyAq
+IDAyMTEwLTEzMDEsIFVTQS4KKyAqLworI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CisjaW5jbHVkZSA8
+c3lzL21tYW4uaD4KKyNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KKyNpbmNsdWRlIDxzeXMvd2FpdC5o
+PgorI2luY2x1ZGUgPHN5cy90eXBlcy5oPgorI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CisjaW5jbHVk
+ZSA8ZmNudGwuaD4KKyNpbmNsdWRlIDxzaWduYWwuaD4KKyNpbmNsdWRlIDxzdGRsaWIuaD4KKyNp
+bmNsdWRlIDxzdHJpbmcuaD4KKyNpbmNsdWRlIDx1bmlzdGQuaD4KKyNpbmNsdWRlIDxzdGRpby5o
+PgorI2luY2x1ZGUgPGVycm5vLmg+CisjaW5jbHVkZSAidGVzdC5oIgorI2luY2x1ZGUgInVzY3Rl
+c3QuaCIKKyNpbmNsdWRlICIuLi9pbmNsdWRlL21lbS5oIgorCitjaGFyICpUQ0lEID0gImtzbTAz
+IjsKK2ludCBUU1RfVE9UQUwgPSAxOworCitvcHRpb25fdCBrc21fb3B0aW9uc1tdID0geworICAg
+ICAgICB7ICJuOiIsICZvcHRfbnVtLCAgICAgICAmb3B0X251bXN0cn0sCisgICAgICAgIHsgInM6
+IiwgJm9wdF9zaXplLCAgICAgICZvcHRfc2l6ZXN0cn0sCisgICAgICAgIHsgInU6IiwgJm9wdF91
+bml0LCAgICAgICZvcHRfdW5pdHN0cn0sCisgICAgICAgIHsgTlVMTCwgTlVMTCwgICAgICAgICAg
+IE5VTEx9Cit9OworCitpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQoreworCWludCBs
+YzsKKwljaGFyICptc2c7CisJaW50IHNpemUgPSAxMjgsIG51bSA9IDMsIHVuaXQgPSAxOworCisJ
+bXNnID0gcGFyc2Vfb3B0cyhhcmdjLCBhcmd2LCBrc21fb3B0aW9ucywga3NtX3VzYWdlKTsKKwlp
+ZiAobXNnICE9IE5VTEwpCisJCXRzdF9icmttKFRCUk9LLCB0c3RfZXhpdCwgIk9QVElPTiBQQVJT
+SU5HIEVSUk9SIC0gJXMiLCBtc2cpOworCXNldHVwKCk7CisJZm9yIChsYyA9IDA7IFRFU1RfTE9P
+UElORyhsYyk7IGxjKyspIHsKKwkJVHN0X2NvdW50ID0gMDsKKwkJY2hlY2tfa3NtX29wdGlvbnMo
+JnNpemUsICZudW0sICZ1bml0KTsKKwkJd3JpdGVfbWVtY2coKTsKKwkJY3JlYXRlX3NhbWVfbWVt
+b3J5KHNpemUsIG51bSwgdW5pdCk7CisJfQorCWNsZWFudXAoKTsKKwl0c3RfZXhpdCgpOworfQor
+Cit2b2lkIHNldHVwKHZvaWQpCit7CisJdHN0X3JlcXVpcmVfcm9vdChOVUxMKTsKKworCW1vdW50
+X21lbSgibWVtY2ciLCAiY2dyb3VwIiwgIm1lbW9yeSIsIE1FTUNHX1BBVEgsIE1FTUNHX1BBVEhf
+TkVXKTsKKwl0c3Rfc2lnKEZPUkssIERFRl9IQU5ETEVSLCBOVUxMKTsKKwlURVNUX1BBVVNFOwor
+fQorCit2b2lkIGNsZWFudXAodm9pZCkKK3sKKwl1bW91bnRfbWVtKE1FTUNHX1BBVEgsIE1FTUNH
+X1BBVEhfTkVXKTsKKwlURVNUX0NMRUFOVVA7Cit9Ci0tIAoxLjcuMy4yCgo=
+------=_Part_56209_1709392855.1295424858184
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -278,7 +267,7 @@ Learn about various malware tactics and how to avoid them. Understand
 malware threats, the impact they can have on your business, and how you 
 can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
---=_mixed 006FD3040725781B_=
+------=_Part_56209_1709392855.1295424858184
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -289,5 +278,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---=_mixed 006FD3040725781B_=--
+------=_Part_56209_1709392855.1295424858184--
 
