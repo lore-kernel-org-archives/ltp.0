@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PfSOD-0007V8-Ha
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 07:23:33 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PfQtM-0002Sc-TW
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 05:47:36 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PfSOB-0007yt-Gn
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 07:23:33 +0000
-Message-ID: <4D369178.4010107@cn.fujitsu.com>
-Date: Wed, 19 Jan 2011 15:23:36 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PfQtL-0007nK-6q
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jan 2011 05:47:36 +0000
+Message-ID: <4D367AF5.5070905@cn.fujitsu.com>
+Date: Wed, 19 Jan 2011 13:47:33 +0800
 From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] exit_group01: fix error of using wrong TEST_RETURN
+Subject: [LTP] [PATCH] creat07: "-F $LTPROOT/testcases/bin/test1" should be
+ removed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,34 +31,55 @@ Cc: ltp-list@lists.sourceforge.net
 
 Hi Garrett,
 
-"TEST_RETURN" should be replaced with "cpid".
+"-F $LTPROOT/testcases/bin/test1" should be removed when execute creat07.
 
 Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
 ---
- .../kernel/syscalls/exit_group/exit_group01.c      |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ runtest/ltplite      |    2 +-
+ runtest/stress.part3 |    2 +-
+ runtest/syscalls     |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/exit_group/exit_group01.c b/testcases/kernel/syscalls/exit_group/exit_group01.c
-index 9280f0a..d7454b2 100644
---- a/testcases/kernel/syscalls/exit_group/exit_group01.c
-+++ b/testcases/kernel/syscalls/exit_group/exit_group01.c
-@@ -113,7 +113,7 @@ int main(int ac, char **av) {
- 	cpid = fork();     //call exit_group()
- 	if (cpid == -1) {
-         	tst_brkm(TFAIL|TERRNO, cleanup, "fork failed");
--	} else if (TEST_RETURN == 0) {
-+	} else if (cpid == 0) {
- 		sleep(5);
- 		TEST(syscall(__NR_exit_group,4));
- 	} else {
-@@ -129,4 +129,4 @@ int main(int ac, char **av) {
-         }
- 	cleanup();
-         tst_exit();
--}
-\ No newline at end of file
-+}
+diff --git a/runtest/ltplite b/runtest/ltplite
+index a650482..ee573a9 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -141,7 +141,7 @@ creat03 creat03
+ creat04 creat04
+ creat05 creat05
+ creat06 creat06
+-creat07 creat07 -F $LTPROOT/testcases/bin/test1
++creat07 creat07
+ creat08 creat08
+ creat09 creat09
+ 
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 8d63e9c..0f33a48 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -82,7 +82,7 @@ creat03 creat03
+ creat04 creat04
+ creat05 creat05
+ creat06 creat06
+-creat07 creat07 -F $LTPROOT/testcases/bin/test1
++creat07 creat07
+ creat08 creat08
+ creat09 creat09
+ 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 7683e39..dbfc16b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -99,7 +99,7 @@ creat03 creat03
+ creat04 creat04
+ creat05 creat05
+ creat06 creat06
+-creat07 creat07 -F $LTPROOT/testcases/bin/test1
++creat07 creat07
+ creat08 creat08
+ creat09 creat09
+ 
 -- 
 1.7.3.1
 
