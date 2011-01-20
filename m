@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapierfilter@gmail.com>) id 1PauU2-00012X-1d
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:22:46 +0000
-Received: from mail-ew0-f47.google.com ([209.85.215.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PauU1-000854-7N
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:22:46 +0000
-Received: by ewy28 with SMTP id 28so4249893ewy.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 10:22:39 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PfpRE-0002fl-MI
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 08:00:12 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PfpRD-0000gL-4Z
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 08:00:12 +0000
+Message-ID: <4D37EB92.3060901@cn.fujitsu.com>
+Date: Thu, 20 Jan 2011 16:00:18 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4D25A28C.1030204@cn.fujitsu.com>
-References: <4D259E4A.2050704@cn.fujitsu.com> <4D25A28C.1030204@cn.fujitsu.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 6 Jan 2011 13:22:18 -0500
-Message-ID: <AANLkTi=6EoGnDxgYewZi5jqQ_4+GUY=i12T3mZqT3iBw@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 09/13]Add a missing ")"
+Subject: [LTP] [PATCH] mprotect02: fix error of the case need sighandler()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,29 +22,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jan 6, 2011 at 6:07 AM, tangchen wrote:
-> =A0testcases/kernel/syscalls/pread/pread03.c | =A0 =A02 +-
-> =A01 files changed, 1 insertions(+), 1 deletions(-)
+Hi Garrett,
 
-please use more useful summaries.  in this case, your summary should
-be prefixed with "pread03: ".
--mike
+The case expect the signal "SIGSEGV", so should add sighandler().
 
----------------------------------------------------------------------------=
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
 ---
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, an=
-d, =
+ testcases/kernel/syscalls/mprotect/mprotect02.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
 
-should the need arise, upgrade to a full multi-node Oracle RAC database =
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
+index ebc4bcc..36c41de 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect02.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
+@@ -198,12 +198,21 @@ int main()
+ 
+ #endif /* UCLINUX */
+ 
++void sighandler(int sig)
++{
++	tst_resm(TINFO, "received signal: %d", sig);
++	if (sig == SIGSEGV)
++		exit(1);
++	else
++		tst_brkm(TBROK, 0, "Unexpected signal %d received.", sig);
++}
++
+ /*
+  * setup() - performs all ONE TIME setup for this test
+  */
+ void setup()
+ {
+-	tst_sig(FORK, DEF_HANDLER, NULL);
++	tst_sig(FORK, sighandler, NULL);
+ 
+ 	TEST_PAUSE;
+ 
+-- 
+1.7.3.1
 
-without downtime or disruption
+-- 
+Best Regards,
+Peng Haitao
+
+
+------------------------------------------------------------------------------
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
