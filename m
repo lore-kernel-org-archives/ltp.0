@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PaxXy-0001mX-VZ
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 21:39:02 +0000
-Received: from mail-ew0-f47.google.com ([209.85.215.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PaxXx-0006AJ-VZ
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 21:39:02 +0000
-Received: by ewy28 with SMTP id 28so4336177ewy.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 13:38:56 -0800 (PST)
+	(envelope-from <penght@cn.fujitsu.com>) id 1Pfpjq-0007O1-Cn
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 08:19:26 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pfpjp-0002dn-1R
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 08:19:26 +0000
+Message-ID: <4D37F00B.8020402@cn.fujitsu.com>
+Date: Thu, 20 Jan 2011 16:19:23 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
-References: <4D259E4A.2050704@cn.fujitsu.com>
-	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
-	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
-	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
-Date: Thu, 6 Jan 2011 13:38:56 -0800
-Message-ID: <AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
+Subject: [LTP]  [PATCH] rt_sigprocmask01: fix error of wrong return code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,41 +22,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jan 6, 2011 at 1:30 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Thu, Jan 6, 2011 at 2:35 PM, Garrett Cooper wrote:
->> A really bad merge (I posted a reply to it a while ago in the archives).
->
-> is there a way for us to manage the git hooks ? =A0we could have them
-> reject trivial merge commits (ones that should be fast forwards), and
-> commits with merge cruft in it ...
+Hi Garrett,
 
-   This was nastier. A lot of the problems I caused was ignorance and
-human error based -- in particular I thought that git reset --hard
-would actually reset merges (but it didn't!) and I didn't bother to
-fake the push before I did it and the rest is history. So I don't know
-if adding hooks would fix that, but I think that the tool should reset
-merges if I do reset --hard.
-    I need to note some of the fun points I've had with git so far
-because there are a handful of items with the tool that have really
-made my life painful in the past couple of weeks that should be fixed.
-Thanks,
--Garrett
+"return 1" should be replaced with "tst_exit()".
 
----------------------------------------------------------------------------=
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
 ---
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, an=
-d, =
+ .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
-should the need arise, upgrade to a full multi-node Oracle RAC database =
+diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+index fca2276..c052a3a 100644
+--- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
++++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+@@ -236,6 +236,5 @@ int main(int ac, char **av) {
+ 
+ 	cleanup();
+ 
+-	return 1;
+-
+-}
+\ No newline at end of file
++	tst_exit();
++}
+-- 
+1.7.3.1
 
-without downtime or disruption
+-- 
+Best Regards,
+Peng Haitao
+
+
+------------------------------------------------------------------------------
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
