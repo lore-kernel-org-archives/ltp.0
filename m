@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <cristian@regolo.cc>) id 1PgGH6-00076m-CX
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 12:39:32 +0000
-Received: from aiolia.regolo.cc ([178.79.135.37])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PgGH5-0004OD-51
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 12:39:32 +0000
-Received: from regolo (93-46-43-128.ip106.fastwebnet.it [93.46.43.128])
-	by aiolia.regolo.cc (Postfix) with ESMTPSA id 5018464
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 13:39:25 +0100 (CET)
-Date: Fri, 21 Jan 2011 13:39:22 +0100
-From: Cristian Greco <cristian@regolo.cc>
-Message-ID: <20110121133922.7103ddbb@regolo>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] Fix missing curly bracket in abort01.c.
+	(envelope-from <qcai@redhat.com>) id 1Pfl0M-0003jB-EQ
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 03:16:10 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pfl0L-0007Xh-9t
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 03:16:10 +0000
+Date: Wed, 19 Jan 2011 22:16:02 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <372984767.81967.1295493362480.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTin1mcmihjfN265h5wTd-8YPuRzioxigkqxRjSQs@mail.gmail.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] mbind: add a missing Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,45 +26,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-Hi,
-
-this should fix a missing bracket.
-
-Signed-off-by: Cristian Greco <cristian@regolo.cc>
----
- testcases/kernel/syscalls/abort/abort01.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/abort/abort01.c
-b/testcases/kernel/syscalls/abort/abort01.c index 7c1f74f..ab0250f
-100644 --- a/testcases/kernel/syscalls/abort/abort01.c
-+++ b/testcases/kernel/syscalls/abort/abort01.c
-@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
- 		if ((kidpid = FORK_OR_VFORK()) == 0) {
- #ifdef UCLINUX
- 			if (self_exec(argv[0], "")) {
--				if (!instress())
-+				if (!instress()) {
- 					perror("fork failed");
- 					exit(1);
- 				}
--- 
-1.7.2.3
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 
-Thanks,
---
-Cristian Greco
-GPG key ID: 0xCF4D32E4
+> Committed -- thanks!
+Garrett, the file had two copies of the code.
 
 ------------------------------------------------------------------------------
-Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
-Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
-http://p.sf.net/sfu/arcsight-sfd2d
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
