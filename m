@@ -1,28 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PbB3n-0005qL-Ow
-	for ltp-list@lists.sourceforge.net; Fri, 07 Jan 2011 12:04:47 +0000
-Received: from mail-px0-f175.google.com ([209.85.212.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PbB3m-0000fW-Ry
-	for ltp-list@lists.sourceforge.net; Fri, 07 Jan 2011 12:04:47 +0000
-Received: by pxi17 with SMTP id 17so3458091pxi.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Pfqoz-0000ur-0T
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 09:28:49 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1Pfqoy-0005h6-0L
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 09:28:48 +0000
+Received: by wwi18 with SMTP id 18so353699wwi.10
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 07 Jan 2011 04:04:41 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1082)
+	Thu, 20 Jan 2011 01:28:41 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4D37EB92.3060901@cn.fujitsu.com>
+References: <4D37EB92.3060901@cn.fujitsu.com>
+Date: Thu, 20 Jan 2011 01:28:41 -0800
+Message-ID: <AANLkTin4N+xuTwQP2w7WtGvO20qdsa2mEjeiMi5fFK2d@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
-Date: Fri, 7 Jan 2011 04:04:34 -0800
-Message-Id: <F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
-References: <4D259E4A.2050704@cn.fujitsu.com>
-	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
-	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
-	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
-	<AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
-	<AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
+Subject: Re: [LTP] [PATCH] mprotect02: fix error of the case need
+	sighandler()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,52 +31,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Jan 6, 2011, at 1:46 PM, Mike Frysinger wrote:
+On Thu, Jan 20, 2011 at 12:00 AM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> Hi Garrett,
+>
+> The case expect the signal "SIGSEGV", so should add sighandler().
 
-> On Thu, Jan 6, 2011 at 4:38 PM, Garrett Cooper wrote:
->> On Thu, Jan 6, 2011 at 1:30 PM, Mike Frysinger wrote:
->>> On Thu, Jan 6, 2011 at 2:35 PM, Garrett Cooper wrote:
->>>> A really bad merge (I posted a reply to it a while ago in the archives).
->>> 
->>> is there a way for us to manage the git hooks ?  we could have them
->>> reject trivial merge commits (ones that should be fast forwards), and
->>> commits with merge cruft in it ...
->> 
->>   This was nastier. A lot of the problems I caused was ignorance and
->> human error based -- in particular I thought that git reset --hard
->> would actually reset merges (but it didn't!)
-> 
-> sure it will ... you just have to reset to before the merge
-> 
->> I didn't bother to fake the push before I did it and the rest is history.
-> 
-> if you caught it soon, you could have pushed up an old one and forced
-> it back to the sane state ...
-> git push --force origin <older commit>:refs/head/master
-> 
->> So I don't know if adding hooks would fix that
-> 
-> i saw that you had actual conflicts in there, and the hook would have
-> caught that (">>>>>>>>>" and "=========" and such)
-> 
-> but i'm not sure if your non-trivial merge would have been detected as
-> a trivial merge since we dont want that (it'd prevent people from
-> being able to pull a branch from someone else)
-
-	Ok -- good to note for next time I guess. I fixed all of the compilation errors so now people can report runtime issues. There are a handful of them.
+For the first portion of the testcase, yes. For the second part of the
+testcase, no.
 Thanks,
 -Garrett
 
-
 ------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
+http://p.sf.net/sfu/oracle-sfdevnl
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
