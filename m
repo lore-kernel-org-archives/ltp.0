@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tangchen@cn.fujitsu.com>) id 1PanUZ-0002l0-DK
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:54:51 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PanUY-0004E6-2V
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 10:54:51 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 579E0170138
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <green.hu@gmail.com>) id 1Pfr1J-0003Y2-Az
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 09:41:33 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1Pfr1I-0001Wf-1L
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jan 2011 09:41:33 +0000
+Received: by fxm17 with SMTP id 17so389884fxm.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Jan 2011 18:54:39 +0800 (CST)
-Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06AnXc8019049
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 18:49:33 +0800
-Message-ID: <4D259FED.3070001@cn.fujitsu.com>
-Date: Thu, 06 Jan 2011 18:56:45 +0800
-From: tangchen <tangchen@cn.fujitsu.com>
+	Thu, 20 Jan 2011 01:41:25 -0800 (PST)
 MIME-Version: 1.0
-References: <4D259E4A.2050704@cn.fujitsu.com>
-In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 02/13]Add missing parameters for tst_brkm()
+Date: Thu, 20 Jan 2011 17:41:25 +0800
+Message-ID: <AANLkTikm9cgL0w6WF+D_=GRLb1Wd8wdW_90f0T7SkSAW@mail.gmail.com>
+From: GreenTime <green.hu@gmail.com>
+Subject: [LTP]  [PATCH] mmap03 to support NDS32 cpu
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,67 +25,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5987621519973487556=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+--===============5987621519973487556==
+Content-Type: multipart/alternative; boundary=20cf3054a457e524f2049a43efb4
+
+--20cf3054a457e524f2049a43efb4
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi Garrett,
+
+I add a new cpu macro __NDS32__ in mmap03 for it to pass.
+
+    Signed-off-by: Greentime <green.hu@gmail.com>
 ---
-  testcases/kernel/syscalls/flock/flock04.c |    4 ++--
-  1 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/mmap/mmap03.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/flock/flock04.c 
-b/testcases/kernel/syscalls/flock/flock04.c
-index cd6b230..a3bc855 100644
---- a/testcases/kernel/syscalls/flock/flock04.c
-+++ b/testcases/kernel/syscalls/flock/flock04.c
-@@ -123,7 +123,7 @@ int main(int argc, char **argv)
-                  exit(0);
-              } else
-                  if (wait(&status) == -1)
--                    tst_brkm(TBROK|TERRNO, "wait failed");
-+                    tst_brkm(TBROK|TERRNO, cleanup, "wait failed");
+diff --git a/testcases/kernel/syscalls/mmap/mmap03.c
+b/testcases/kernel/syscalls/mmap/mmap03.c
+index 98e3c69..433f563 100644
+--- a/testcases/kernel/syscalls/mmap/mmap03.c
++++ b/testcases/kernel/syscalls/mmap/mmap03.c
+@@ -168,7 +168,7 @@ int main(int ac, char **av)
+                                                 "correct");
+                                }
+                        }
+-#if defined(__ia64__) || defined(__hppa__)
++#if defined(__ia64__) || defined(__hppa__) || defined(__NDS32__)
+                        if (pass) {
+                                tst_resm(TPASS, "Got SIGSEGV as expected");
+                        } else {
 
-              pid = FORK_OR_VFORK();
-              if (pid == -1)
-@@ -144,7 +144,7 @@ int main(int argc, char **argv)
-                  exit(0);
-              } else
-                  if (wait(&status) == -1)
--                    tst_brkm(TBROK|TERRNO, "wait failed");
-+                    tst_brkm(TBROK|TERRNO, cleanup, "wait failed");
-              TEST(flock(fd, LOCK_UN));
-          } else
-              tst_resm(TFAIL|TERRNO, "flock failed");
--- 
-1.7.0.4
+--20cf3054a457e524f2049a43efb4
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+<pre>Hi Garrett,<br><br>I add a new cpu macro __NDS32__ in mmap03 for it to=
+ pass.<br><br>    Signed-off-by: Greentime &lt;<a href=3D"http://green.hu">=
+green.hu</a>@<a href=3D"http://gmail.com">gmail.com</a>&gt;<br>---<br> test=
+cases/kernel/syscalls/mmap/mmap03.c |    2 +-<br>
+ 1 files changed, 1 insertions(+), 1 deletions(-)<br><br>diff --git a/testc=
+ases/kernel/syscalls/mmap/mmap03.c b/testcases/kernel/syscalls/mmap/mmap03.=
+c<br>index 98e3c69..433f563 100644<br>--- a/testcases/kernel/syscalls/mmap/=
+mmap03.c<br>
++++ b/testcases/kernel/syscalls/mmap/mmap03.c<br>@@ -168,7 +168,7 @@ int ma=
+in(int ac, char **av)<br>                                                 &=
+quot;correct&quot;);<br>                                }<br>              =
+          }<br>
+-#if defined(__ia64__) || defined(__hppa__)<br>+#if defined(__ia64__) || de=
+fined(__hppa__) || defined(__NDS32__)<br>                        if (pass) =
+{<br>                                tst_resm(TPASS, &quot;Got SIGSEGV as e=
+xpected&quot;);<br>
+                        } else {<br><br></pre>
 
--- 
-Best Regards,
-Tang chen
---------------------------------------------------
-Tang Chen
-Development Dept.I
-Nanjing Fujitsu Nanda Software Tech. Co., Ltd.(FNST)
-No.6 Wenzhu Road, Nanjing, 210012, China
-TEL: +86+25-86630566-8513
-FUJITSU INTERNAL: 7998-8513
-FAX: +86+25-83317685
-EMail: tangchen@cn.fujitsu.com
---------------------------------------------------
-This communication is for use by the intended recipient(s) only and may contain information that is privileged, confidential and exempt from disclosure under applicable law. If you are not an intended recipient of this communication, you are hereby notified that any dissemination, distribution or copying hereof is strictly prohibited.  If you have received this communication in error, please notify me by reply e-mail, permanently delete this communication from your system, and destroy any hard copies you may have printed
+--20cf3054a457e524f2049a43efb4--
 
 
+--===============5987621519973487556==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
+Protect Your Site and Customers from Malware Attacks
+Learn about various malware tactics and how to avoid them. Understand 
+malware threats, the impact they can have on your business, and how you 
+can protect your company and customers by using code signing.
 http://p.sf.net/sfu/oracle-sfdevnl
+--===============5987621519973487556==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5987621519973487556==--
+
