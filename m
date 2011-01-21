@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1PbDAg-0007Fu-RB
-	for ltp-list@lists.sourceforge.net; Fri, 07 Jan 2011 14:20:02 +0000
-Date: Fri, 7 Jan 2011 15:36:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110107143607.GA12323@saboteur.suse.cz>
-References: <4D259E4A.2050704@cn.fujitsu.com>
-	<AANLkTinX9M3EsBxSDsVy56iKqskSWKQE4vMhXy0kcxNG@mail.gmail.com>
-	<20B25B11-E8BD-45A7-AAD5-209D62BC6274@gmail.com>
-	<AANLkTi=L8Vai5_=fn0psJeovura_Y=VjdN28ufiqBiiA@mail.gmail.com>
-	<AANLkTin-yaUcPd8GZHgWnoYkxpOxDFs4enEik8afaeEc@mail.gmail.com>
-	<AANLkTinFbVBZtA_hCfRqTK=sZW+ZBSi3KbjA7Butkfum@mail.gmail.com>
-	<F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1PgKuB-00014w-FX
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 17:36:11 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PgKu9-000646-6u
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 17:36:11 +0000
+Received: by wyb40 with SMTP id 40so1933765wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 21 Jan 2011 09:36:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <F3972A55-1F53-4B70-A858-E041E01F246D@gmail.com>
-Subject: Re: [LTP] [PATCH 00/13]Fix a few syntax error
+In-Reply-To: <20110121133933.5d72795d@regolo>
+References: <20110121133933.5d72795d@regolo>
+Date: Fri, 21 Jan 2011 09:36:02 -0800
+Message-ID: <AANLkTinADcBWpV8UADG0kaY1Wvjngc2hgbs3Yc7usH+Y@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix access out of bounds in dup204.c.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,89 +30,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Cristian Greco <cristian@regolo.cc>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> 
-> 	Ok -- good to note for next time I guess. I fixed all of the compilation errors so now people can report runtime issues. There are a handful of them.
+On Fri, Jan 21, 2011 at 4:39 AM, Cristian Greco <cristian@regolo.cc> wrote:
+> Hi,
 >
+> this should fix an access out-of-bounds.
 
-I still could not compile the latest git. I've got a bunch of:
+This was the proper solution. Thanks for spotting the issue!
+-Garrett
 
-pipe declared with warn_unused_result
-write declared with warn_unused_result
-read declared with warn_unused_result
+diff --git a/testcases/kernel/syscalls/dup2/dup204.c
+b/testcases/kernel/syscalls/dup2/dup204.c
+index fd20ece..5b33484 100644
+--- a/testcases/kernel/syscalls/dup2/dup204.c
++++ b/testcases/kernel/syscalls/dup2/dup204.c
+@@ -132,10 +132,10 @@ void cleanup()
 
-little less of:
+        TEST_CLEANUP;
 
-getcwd declared with warn_unused_result
-chdir declared with warn_unused_result
-ftruncate declared with warn_unused_result
-system declared with warn_unused_result
+-       for (i = 0; i < sizeof(fd); i++) {
++       for (i = 0; i < (sizeof(fd) / sizeof(fd[0])); i++) {
+                close(fd[i]);
+                close(nfd[i]);
+        }
 
-plus some printf() formatting issues
-
-And after disabling -Werror it stops on getdelays.c with
-
-getdelays.c: In function 'main':
-getdelays.c:525: warning: implicit declaration of function 'tst_exit'
-getdelays.c:526: warning: control reaches end of non-void function
-getdelays.c:266: warning: 'cmd_type' may be used uninitialized in this
-function
-../../../../lib/libltp.a(tst_res.o): In function `cat_file':
-/home/metan/Work/git/ltp-dev/lib/tst_res.c:710: undefined reference to `TCID'
-/home/metan/Work/git/ltp-dev/lib/tst_res.c:728: undefined reference to `TCID'
-/home/metan/Work/git/ltp-dev/lib/tst_res.c:720: undefined reference to `TCID'
-../../../../lib/libltp.a(tst_res.o): In function `tst_res':
-/home/metan/Work/git/ltp-dev/lib/tst_res.c:321: undefined reference to `TCID'
-../../../../lib/libltp.a(tst_res.o): In function `tst_condense':
-/home/metan/Work/git/ltp-dev/lib/tst_res.c:377: undefined reference to `TCID'
-../../../../lib/libltp.a(tst_res.o):/home/metan/Work/git/ltp-dev/lib/tst_res.c:3
-05: more undefined references to `TCID' follow
-../../../../lib/libltp.a(tst_res.o): In function `tst_brk':
-/home/metan/Work/git/ltp-dev/lib/tst_res.c:613: undefined reference to `TST_TOTAL'
-
-The same goes for testcases/kernel/io/ltp-aiodio/dirty.c and
-testcases/kernel/security/cap_bound/dummy.c
-
-Then it hangs on securebits but is suppose that this is bug somewhere in
-configure not detecting securebits headers right. I'll look into this
-later.
-
-
-The realtime tests hangs on:
-
-async_handler_jk.c: In function 'main':
-async_handler_jk.c:162: warning: implicit declaration of function
-'tst_exit'
-async_handler_jk.c:163: warning: control reaches end of non-void
-function
-/tmp/ccGU6ubN.o: In function `main':
-/home/metan/Work/git/ltp-dev/testcases/realtime/func/async_handler/async_handler_jk.c:162:
-undefined reference to `tst_exit'
-collect2: ld returned 1 exit status
-make[2]: *** [async_handler_jk] Error 1
-make[2]: Leaving directory
-`/home/metan/Work/git/ltp-dev/testcases/realtime/func/async_handler'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory
-`/home/metan/Work/git/ltp-dev/testcases/realtime/func'
-make: *** [all] Error 2
-
-
-The rest seems to compile fine.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+        tst_rmdir();
+-}
+\ No newline at end of file
++}
 
 ------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
