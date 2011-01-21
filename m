@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PhEVM-0006Ui-QU
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 04:58:16 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PhEVH-0003qD-T2
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 04:58:14 +0000
-Message-ID: <4D3D06E8.9080907@cn.fujitsu.com>
-Date: Mon, 24 Jan 2011 12:58:16 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1044F3871F984514ACE11A23C55DAFB3@FM38572274>	<AANLkTikGkTqAyoDoPaV5YVxgFqx=DQsqeTCpNRbUtHVt@mail.gmail.com>	<4D3CE628.5050509@cn.fujitsu.com>
-	<AANLkTin2bEtPoZqm67v0pujcGCy3OxF+cCQR-fLqzLf3@mail.gmail.com>
-In-Reply-To: <AANLkTin2bEtPoZqm67v0pujcGCy3OxF+cCQR-fLqzLf3@mail.gmail.com>
-Subject: Re: [LTP] Fix the test04 of testcases/kernel/numa/numa01.sh
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <cristian@regolo.cc>) id 1PgGHF-00077n-TV
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 12:39:41 +0000
+Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PgGHE-00045R-Ol
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 12:39:41 +0000
+Received: from regolo (93-46-43-128.ip106.fastwebnet.it [93.46.43.128])
+	by aiolia.regolo.cc (Postfix) with ESMTPSA id CF03C64
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 21 Jan 2011 13:39:34 +0100 (CET)
+Date: Fri, 21 Jan 2011 13:39:33 +0100
+From: Cristian Greco <cristian@regolo.cc>
+Message-ID: <20110121133933.5d72795d@regolo>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Fix access out of bounds in dup204.c.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,38 +29,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Kazuki Seki <k-seki@np.css.fujitsu.com>
+To: ltp-list@lists.sourceforge.net
 
-Garrett Cooper wrote:
-> On Sun, Jan 23, 2011 at 6:38 PM, Gui Jianfeng
-> <guijianfeng@cn.fujitsu.com> wrote:
->> Garrett Cooper wrote:
->>> On Sun, Jan 16, 2011 at 4:38 PM, Kazuki Seki <k-seki@np.css.fujitsu.com> wrote:
->>>> Hi,
->>>>
->>>> Did you confirm the following email which I posted before?
->>>     I can't because I don't have the resources and FWIW no one else
->>> has ACKed this issue.
->> Hi Garrett,
->>
->> Would you try the kernel option "numa=fake=<N>" to create several fake nodes to
->> confirm this patch. This patch seems good to me.
-> 
->     If someone ACKs a patch, that's generally sufficient enough to
-> warrant a commit... if it worked before, I would just like to know
-> where and when the change was made to affect the output to cause the
-> failure seen, but seeing as how this is Linux and things are not
-> generally documented, I guess I'll just commit for now and hope that
-> people don't change the output unnecessarily again.
+Hi,
 
-Thanks a lot.
+this should fix an access out-of-bounds.
 
-Gui
+Signed-off-by: Cristian Greco <cristian@regolo.cc>
+---
+ testcases/kernel/syscalls/dup2/dup204.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-> Thanks,
-> -Garrett
-> 
+diff --git a/testcases/kernel/syscalls/dup2/dup204.c
+b/testcases/kernel/syscalls/dup2/dup204.c index fd20ece..97f7f57 100644
+--- a/testcases/kernel/syscalls/dup2/dup204.c
++++ b/testcases/kernel/syscalls/dup2/dup204.c
+@@ -132,10 +132,10 @@ void cleanup()
+ 
+ 	TEST_CLEANUP;
+ 
+-	for (i = 0; i < sizeof(fd); i++) {
++	for (i = 0; i < TST_TOTAL; i++) {
+ 		close(fd[i]);
+ 		close(nfd[i]);
+ 	}
+ 
+ 	tst_rmdir();
+-}
+\ No newline at end of file
++}
+-- 
+1.7.2.3
+
+
+Thanks,
+--
+Cristian Greco
+GPG key ID: 0xCF4D32E4
 
 ------------------------------------------------------------------------------
 Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
