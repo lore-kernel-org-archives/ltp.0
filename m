@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapierfilter@gmail.com>) id 1PauQV-00012L-Bo
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:19:07 +0000
-Received: from mail-ey0-f175.google.com ([209.85.215.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PauQU-0001yS-Eg
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 18:19:07 +0000
-Received: by eya28 with SMTP id 28so6850697eya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Jan 2011 10:19:00 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PgDqf-00064A-Nh
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 10:04:05 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PgDqe-00032g-Gh
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 10:04:05 +0000
+Date: Fri, 21 Jan 2011 05:03:57 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <590037838.101398.1295604237018.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTim08bh_cHvz6EzMR4FGwNnqns9SCYgAO++kdDaf@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4D25A2BF.7000901@cn.fujitsu.com>
-References: <4D259E4A.2050704@cn.fujitsu.com> <4D25A2BF.7000901@cn.fujitsu.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 6 Jan 2011 13:18:40 -0500
-Message-ID: <AANLkTi=rxCej1ws=P6xhHH4HPHRC6Eb-VDutTahouSXH@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 10/13]Remove a redundant "{"
+Subject: Re: [LTP] [PATCH] check two possible pathes for cpuset
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +23,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Thu, Jan 6, 2011 at 6:08 AM, tangchen <tangchen@cn.fujitsu.com> wrote:
-> @@ -180,4 +180,5 @@ void cleanup()
-> =A0 =A0 =A0 * print errno log if that option was specified.
-> =A0 =A0 =A0 */
-> =A0 =A0 =A0TEST_CLEANUP;
-> -}
-> \ No newline at end of file
-> +}
-> +
 
-please dont add trailing newlines
--mike
+> Is there a requirement that documents this behavior?
+Garrett, there is one in the kernel doc,
+http://lxr.linux.no/#linux+v2.6.37/Documentation/cgroups/cpusets.txt
 
----------------------------------------------------------------------------=
----
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, an=
-d, =
+"Note that for legacy reasons, the "cpuset" filesystem exists as a
+wrapper around the cgroup filesystem.
 
-should the need arise, upgrade to a full multi-node Oracle RAC database =
+The command
 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+mount -t cpuset X /dev/cpuset
+
+is equivalent to
+
+mount -t cgroup -ocpuset,noprefix X /dev/cpuset"
+
+However, I found this is not always case. In addition, there is an
+direct implementation without cgroup, and I can't find any doc about
+the behaviours of the prefix.
+
+------------------------------------------------------------------------------
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
