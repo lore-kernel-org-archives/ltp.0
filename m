@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PgD8A-0003jG-4h
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:18:06 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PgD89-0004bB-51
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:18:06 +0000
-Received: by wyb40 with SMTP id 40so1486135wyb.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <cristian@regolo.cc>) id 1PgGH6-00076m-CX
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 12:39:32 +0000
+Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PgGH5-0004OD-51
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 12:39:32 +0000
+Received: from regolo (93-46-43-128.ip106.fastwebnet.it [93.46.43.128])
+	by aiolia.regolo.cc (Postfix) with ESMTPSA id 5018464
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 01:17:59 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <4D394E65.2010601@cn.fujitsu.com>
-References: <4D39456D.4040308@cn.fujitsu.com>
-	<AANLkTik7Zp+LZ8VcMGZMoHtdhcdKHkiqEOCN7s-nbE0c@mail.gmail.com>
-	<4D394E65.2010601@cn.fujitsu.com>
-Date: Fri, 21 Jan 2011 01:17:58 -0800
-Message-ID: <AANLkTin5FE_kRx9Z-tUMUHgTxd69vDJPbtDz4D+2z_Ey@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix error of wrong return code in cases
- rt_sigsuspend01, sched_getaffinity01, ftest06, sem02 and hugemmap03
+	Fri, 21 Jan 2011 13:39:25 +0100 (CET)
+Date: Fri, 21 Jan 2011 13:39:22 +0100
+From: Cristian Greco <cristian@regolo.cc>
+Message-ID: <20110121133922.7103ddbb@regolo>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Fix missing curly bracket in abort01.c.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,39 +26,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Fri, Jan 21, 2011 at 1:14 AM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> Garrett Cooper said the following on 2011-1-21 16:43:
->> On Fri, Jan 21, 2011 at 12:35 AM, Peng Haitao <penght@cn.fujitsu.com> wr=
-ote:
->>> Hi Garrett,
->>>
->>> "return 1" should be replaced with "tst_exit()" in the following cases.
->>
->> =A0 =A0 Patch please?
->
-> The patch is in the first mail. Do you need an attached patch?
+Hi,
 
-    Please see the style guide ( doc/style-guide.rst ) for requested
-behavior on what to do when contributing patches.
-Thanks!
--Garrett
+this should fix a missing bracket.
 
----------------------------------------------------------------------------=
+Signed-off-by: Cristian Greco <cristian@regolo.cc>
 ---
+ testcases/kernel/syscalls/abort/abort01.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/abort/abort01.c
+b/testcases/kernel/syscalls/abort/abort01.c index 7c1f74f..ab0250f
+100644 --- a/testcases/kernel/syscalls/abort/abort01.c
++++ b/testcases/kernel/syscalls/abort/abort01.c
+@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
+ 		if ((kidpid = FORK_OR_VFORK()) == 0) {
+ #ifdef UCLINUX
+ 			if (self_exec(argv[0], "")) {
+-				if (!instress())
++				if (!instress()) {
+ 					perror("fork failed");
+ 					exit(1);
+ 				}
+-- 
+1.7.2.3
+
+
+Thanks,
+--
+Cristian Greco
+GPG key ID: 0xCF4D32E4
+
+------------------------------------------------------------------------------
 Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
 Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires =
-
-February 28th, so secure your free ArcSight Logger TODAY! =
-
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
 http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
