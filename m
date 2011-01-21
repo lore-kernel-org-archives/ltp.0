@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PhDsg-00038c-Cb
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 04:18:18 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PhDsf-0008Hl-G3
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 04:18:18 +0000
-Received: by wwi18 with SMTP id 18so3613776wwi.10
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <als.meng@gmail.com>) id 1PgD9L-0003lJ-0P
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:19:19 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PgD9K-0006OI-8m
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:19:18 +0000
+Received: by pwi8 with SMTP id 8so295994pwi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 23 Jan 2011 20:18:11 -0800 (PST)
+	Fri, 21 Jan 2011 01:19:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4D3CE628.5050509@cn.fujitsu.com>
-References: <1044F3871F984514ACE11A23C55DAFB3@FM38572274>
-	<AANLkTikGkTqAyoDoPaV5YVxgFqx=DQsqeTCpNRbUtHVt@mail.gmail.com>
-	<4D3CE628.5050509@cn.fujitsu.com>
-Date: Sun, 23 Jan 2011 20:18:11 -0800
-Message-ID: <AANLkTin2bEtPoZqm67v0pujcGCy3OxF+cCQR-fLqzLf3@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Fix the test04 of testcases/kernel/numa/numa01.sh
+Date: Fri, 21 Jan 2011 17:19:11 +0800
+Message-ID: <AANLkTimtKGNdR4EqsnFKQvTfE5FLgW=e99ChfV7qZUT0@mail.gmail.com>
+From: meng als <als.meng@gmail.com>
+Subject: [LTP] git ltp failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,49 +25,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============1411809088498317610=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Kazuki Seki <k-seki@np.css.fujitsu.com>
+To: ltp-list@lists.sourceforge.net
 
-On Sun, Jan 23, 2011 at 6:38 PM, Gui Jianfeng
-<guijianfeng@cn.fujitsu.com> wrote:
-> Garrett Cooper wrote:
->> On Sun, Jan 16, 2011 at 4:38 PM, Kazuki Seki <k-seki@np.css.fujitsu.com>=
- wrote:
->>> Hi,
->>>
->>> Did you confirm the following email which I posted before?
->>
->> =A0 =A0 I can't because I don't have the resources and FWIW no one else
->> has ACKed this issue.
->
-> Hi Garrett,
->
-> Would you try the kernel option "numa=3Dfake=3D<N>" to create several fak=
-e nodes to
-> confirm this patch. This patch seems good to me.
+--===============1411809088498317610==
+Content-Type: multipart/alternative; boundary=000e0cd2e0b8411183049a57bed5
 
-    If someone ACKs a patch, that's generally sufficient enough to
-warrant a commit... if it worked before, I would just like to know
-where and when the change was made to affect the output to cause the
-failure seen, but seeing as how this is Linux and things are not
-generally documented, I guess I'll just commit for now and hope that
-people don't change the output unnecessarily again.
-Thanks,
--Garrett
+--000e0cd2e0b8411183049a57bed5
+Content-Type: text/plain; charset=ISO-8859-1
 
----------------------------------------------------------------------------=
----
+Hi Garrett,
+
+ I follow git command below, but failed. whether it relates with privileges
+or not.
+
+#git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+
+Initialized empty Git repository in /home/fxu/ltp-dev/.git/
+fatal: The remote end hung up unexpectedly.
+
+
+
+
+thanks,
+
+als
+
+--000e0cd2e0b8411183049a57bed5
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi Garrett,<br><br>=A0I follow git command below, but failed. whether it re=
+lates with privileges or not.<br><pre>#git clone <a href=3D"git://ltp.git.s=
+ourceforge.net/gitroot/ltp/ltp-dev.git" target=3D"_new">git://ltp.git.sourc=
+eforge.net/gitroot/ltp/ltp-dev.git</a> ltp<br>
+<br>Initialized empty Git repository in /home/fxu/ltp-dev/.git/<br>fatal: T=
+he remote end hung up unexpectedly.<br></pre><br><br><br>thanks,<br><br>als=
+<br>
+
+--000e0cd2e0b8411183049a57bed5--
+
+
+--===============1411809088498317610==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
 Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires =
-
-February 28th, so secure your free ArcSight Logger TODAY! =
-
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
 http://p.sf.net/sfu/arcsight-sfd2d
+--===============1411809088498317610==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1411809088498317610==--
+
