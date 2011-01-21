@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tangchen@cn.fujitsu.com>) id 1PaneN-0007jz-3x
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:04:59 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PaneM-0002uL-86
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jan 2011 11:04:59 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 354FE170138
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Pg7ix-0004r6-VO
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 03:31:43 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1Pg7iw-0007C9-RT
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 03:31:43 +0000
+Received: by wwi18 with SMTP id 18so1326223wwi.10
 	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Jan 2011 19:04:52 +0800 (CST)
-Received: from mailserver.fnst.cn.fujitus.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p06Axkto019236
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Jan 2011 18:59:46 +0800
-Message-ID: <4D25A252.8090505@cn.fujitsu.com>
-Date: Thu, 06 Jan 2011 19:06:58 +0800
-From: tangchen <tangchen@cn.fujitsu.com>
+	Thu, 20 Jan 2011 19:31:36 -0800 (PST)
 MIME-Version: 1.0
-References: <4D259E4A.2050704@cn.fujitsu.com>
-In-Reply-To: <4D259E4A.2050704@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 08/13]Fix the wrong variable name of wtstatus
+In-Reply-To: <1295579994-23856-1-git-send-email-lmr@redhat.com>
+References: <1295579994-23856-1-git-send-email-lmr@redhat.com>
+Date: Thu, 20 Jan 2011 19:31:36 -0800
+Message-ID: <AANLkTinwguHbG+JEi=nQXnnHOdT6Aa=aF8Fsp7dRmdCP@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] KSM test: Fix compilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,53 +27,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Lucas Meneghel Rodrigues <lmr@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+On Thu, Jan 20, 2011 at 7:19 PM, Lucas Meneghel Rodrigues
+<lmr@redhat.com> wrote:
+> In the ksm Makefile, I noticed that the author used
+> the generic_trunk_target.mk macro, instead of the
+> generic_leaf_target.mk macro, leading to compilation
+> failures. This patch fixes the problem.
+>
+> Signed-off-by: Lucas Meneghel Rodrigues <lmr@redhat.com>
+> ---
+> =A0testcases/kernel/mem/ksm/Makefile | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm=
+/Makefile
+> index 81509bf..9da67a8 100644
+> --- a/testcases/kernel/mem/ksm/Makefile
+> +++ b/testcases/kernel/mem/ksm/Makefile
+> @@ -39,5 +39,5 @@ trunk-clean:: | lib-clean
+> =A0lib-clean:: $(LIBDIR)
+> =A0 =A0 =A0 =A0$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+>
+> -include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> =A0include $(top_srcdir)/include/mk/testcases.mk
+
+This is the fully correct way of doing this:
+
+$ git diff testcases/kernel/mem/ksm/Makefile
+
+diff --git a/testcases/kernel/mem/ksm/Makefile
+b/testcases/kernel/mem/ksm/Makefile
+index 81509bf..8138d70 100644
+--- a/testcases/kernel/mem/ksm/Makefile
++++ b/testcases/kernel/mem/ksm/Makefile
+@@ -18,12 +18,11 @@
+
+ top_srcdir              ?=3D ../../../..
+
+-include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/testcases.mk
+
+ LDLIBS                 +=3D $(NUMA_LIBS) -lmem
+ LIBDIR                 :=3D ../lib
+ LIB                    :=3D $(LIBDIR)/libmem.a
+-FILTER_OUT_DIRS                :=3D $(LIBDIR)
+ LDFLAGS                        +=3D -L$(LIBDIR)
+
+ $(LIBDIR):
+@@ -39,5 +38,4 @@ trunk-clean:: | lib-clean
+ lib-clean:: $(LIBDIR)
+        $(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+
+-include $(top_srcdir)/include/mk/generic_trunk_target.mk
+-include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+    Granted, Cai should have used a Makefile.inc file and included it
+from all of the Makefiles though that required this library if it was
+indeed a portable library. Otherwise he should just move the source to
+the test directory and compile / link the testcases with the
+additional source file. There are examples hanging around the source
+tree that do this (testcases/kernel/syscalls/... ), but I don't
+remember where they are exactly.
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
 ---
-  testcases/kernel/syscalls/pipe/pipe09.c |    5 +++--
-  1 files changed, 3 insertions(+), 2 deletions(-)
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires =
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe09.c 
-b/testcases/kernel/syscalls/pipe/pipe09.c
-index 7990fb6..ac9796e 100644
---- a/testcases/kernel/syscalls/pipe/pipe09.c
-+++ b/testcases/kernel/syscalls/pipe/pipe09.c
-@@ -131,7 +131,7 @@ int main(int ac, char **av)
+February 28th, so secure your free ArcSight Logger TODAY! =
 
-          if (waitpid(fork_1, &wtstatus, 0) == -1)
-              tst_brkm(TBROK, cleanup, "waitpid failed");
--        if (WIFEXITED(wstatus) && WEXITSTATUS(wtstatus) != 0) {
-+        if (WIFEXITED(wtstatus) && WEXITSTATUS(wtstatus) != 0) {
-              tst_brkm(TBROK, cleanup, "child exited abnormally");
-          }
-
-@@ -226,4 +226,5 @@ void cleanup()
-       * print errno log if that option was specified.
-       */
-      TEST_CLEANUP;
--}
-\ No newline at end of file
-+}
-+
--- 
-1.7.0.4
-
--- 
-Best Regards,
-Tang chen
-
-
-
-------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
