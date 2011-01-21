@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Pf6LP-0004Ba-TT
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 07:51:11 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pf6LN-0003SH-SJ
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 07:51:11 +0000
-Message-ID: <4D35466D.60000@cn.fujitsu.com>
-Date: Tue, 18 Jan 2011 15:51:09 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP]  [PATCH] float_bessel: fix error of infinite loop
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <lmr@redhat.com>) id 1Pg7Xk-0004C6-Cm
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 03:20:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pg7Xi-00006y-FC
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 03:20:08 +0000
+From: Lucas Meneghel Rodrigues <lmr@redhat.com>
+Date: Fri, 21 Jan 2011 01:19:54 -0200
+Message-Id: <1295579994-23856-1-git-send-email-lmr@redhat.com>
+Subject: [LTP] [PATCH] KSM test: Fix compilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,54 +21,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+In the ksm Makefile, I noticed that the author used
+the generic_trunk_target.mk macro, instead of the
+generic_leaf_target.mk macro, leading to compilation
+failures. This patch fixes the problem.
 
-exit() should be modified to tst_exit() in function myexit().
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+Signed-off-by: Lucas Meneghel Rodrigues <lmr@redhat.com>
 ---
- testcases/misc/math/float/main.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/ksm/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/main.c
-index 18757e7..8998c33 100644
---- a/testcases/misc/math/float/main.c
-+++ b/testcases/misc/math/float/main.c
-@@ -42,7 +42,7 @@ myexit (int x)
- 		tst_resm (TFAIL, "Test failed");
- 	else
- 		tst_resm (TPASS, "Test passed");
--	exit(0);
-+	tst_exit();
- }
+diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm/Makefile
+index 81509bf..9da67a8 100644
+--- a/testcases/kernel/mem/ksm/Makefile
++++ b/testcases/kernel/mem/ksm/Makefile
+@@ -39,5 +39,5 @@ trunk-clean:: | lib-clean
+ lib-clean:: $(LIBDIR)
+ 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
  
- TH_DATA *pcom;
-@@ -428,4 +428,4 @@ static void sys_error(const char *msg, int line)
- 
- 	sprintf(syserr_msg, "%s: %s", msg, strerror(errno));
- 	error(syserr_msg, line);
--}
-\ No newline at end of file
-+}
+-include $(top_srcdir)/include/mk/generic_trunk_target.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ include $(top_srcdir)/include/mk/testcases.mk
 -- 
-1.7.0.4
-
--- 
-Best Regards,
-Peng Haitao
+1.7.3.4
 
 
 ------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
-http://p.sf.net/sfu/oracle-sfdevnl
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
