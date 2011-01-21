@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PcZwc-0004lw-Mj
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:51:10 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PcZwb-0006Ly-SB
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 08:51:10 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0B8p3p2016518
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jan 2011 03:51:03 -0500
-Date: Tue, 11 Jan 2011 03:51:03 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <613624795.42903.1294735863857.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <648885156.42900.1294735859467.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	(envelope-from <penght@cn.fujitsu.com>) id 1Pg9of-00071J-0c
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 05:45:45 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1Pg9ob-00012R-6f
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 05:45:42 +0000
+Message-ID: <4D391BEB.9070508@cn.fujitsu.com>
+Date: Fri, 21 Jan 2011 13:38:51 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_42902_147576522.1294735863856"
-Subject: [LTP] [PATCH 01/13] hugemmap05: check root
+References: <4D37EB92.3060901@cn.fujitsu.com>	<AANLkTin4N+xuTwQP2w7WtGvO20qdsa2mEjeiMi5fFK2d@mail.gmail.com>	<4D3903AC.2070901@cn.fujitsu.com>
+	<AANLkTimPKEHGOc4-UQXxSZoNJi5UQD1wB1L2n3iUznhE@mail.gmail.com>
+In-Reply-To: <AANLkTimPKEHGOc4-UQXxSZoNJi5UQD1wB1L2n3iUznhE@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] mprotect02: fix error of the case need
+	sighandler()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,75 +26,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
-------=_Part_42902_147576522.1294735863856
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-index 8768b69..ec98395 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-@@ -295,6 +295,8 @@ static void setup(void)
- 	FILE *fp;
- 	int fd;
- 
-+	tst_require_root(tst_exit);
-+
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
- 	tst_tmpdir();
--- 
-1.7.3.2
-------=_Part_42902_147576522.1294735863856
-Content-Type: text/x-patch; name=0001-hugemmap05-check-root.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=0001-hugemmap05-check-root.patch
-
-RnJvbSBmZmM2ZmE1NzgxYTc3MDMyNzljNWU5Zjc4Njc2YjlmY2Y3NjM0ZTgzIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDQUkgUWlhbiA8Y2FpcWlhbkByZWRoYXQuY29tPgpEYXRlOiBU
-dWUsIDExIEphbiAyMDExIDE2OjMzOjAxICswODAwClN1YmplY3Q6IFtQQVRDSCAwMS8xM10gaHVn
-ZW1tYXAwNTogY2hlY2sgcm9vdAoKClNpZ25lZC1vZmYtYnk6IENBSSBRaWFuIDxjYWlxaWFuQHJl
-ZGhhdC5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlbW1hcC9odWdl
-bW1hcDA1LmMgfCAgICAyICsrCiAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMCBk
-ZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1
-Z2VtbWFwL2h1Z2VtbWFwMDUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZW1t
-YXAvaHVnZW1tYXAwNS5jCmluZGV4IDg3NjhiNjkuLmVjOTgzOTUgMTAwNjQ0Ci0tLSBhL3Rlc3Rj
-YXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZW1tYXAvaHVnZW1tYXAwNS5jCisrKyBiL3Rlc3Rj
-YXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZW1tYXAvaHVnZW1tYXAwNS5jCkBAIC0yOTUsNiAr
-Mjk1LDggQEAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKIAlGSUxFICpmcDsKIAlpbnQgZmQ7CiAK
-Kwl0c3RfcmVxdWlyZV9yb290KHRzdF9leGl0KTsKKwogCXRzdF9zaWcoRk9SSywgREVGX0hBTkRM
-RVIsIGNsZWFudXApOwogCVRFU1RfUEFVU0U7CiAJdHN0X3RtcGRpcigpOwotLSAKMS43LjMuMgoK
-
-------=_Part_42902_147576522.1294735863856
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi Garrett,
+
+Garrett Cooper said the following on 2011-1-21 12:00:
+>> This is OK, but the default signal handler is invoked when an unexpected signal
+>> is caught. so I think we should add sighandler(). Furthermore, the default
+>> signal handler make the child process exit 2, but the case expect the child
+>> process exit 1, this will cause the case fail.
+>>
+>> The following patch will reinitialize signal handler.
+> 
+>     This won't work if the number of test loops is > 1 (it will reset
+> the handler back to the default and fail on the next iteration).
+
+Thanks for your comment.
+
+The following patch will initialize signal handler to sighandler() in loops starting,
+and reinitialize default signal handle in the second part.
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mprotect/mprotect02.c |   18 ++++++++++++++++--
+ 1 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
+index ebc4bcc..f27d2da 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect02.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
+@@ -65,6 +65,7 @@
+ 
+ void cleanup(void);
+ void setup(void);
++void sighandler(int);
+ 
+ char *TCID = "mprotect02";
+ int TST_TOTAL = 1;
+@@ -93,6 +94,9 @@ int main(int ac, char **av)
+ 	/* The following loop checks looping state if -i option given */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 
++		/* Initialization signal handler */
++		tst_sig(FORK, sighandler, NULL);
++
+ 		/* reset Tst_count in case we are looping */
+ 		Tst_count = 0;
+ 
+@@ -129,6 +133,9 @@ int main(int ac, char **av)
+ 			tst_brkm(TBROK, cleanup, "child failed");
+ 		 }
+ 
++		/* Re-Initialization signal handler */
++		tst_sig(FORK, DEF_HANDLER, NULL);
++
+ 		/*
+ 		 * Change the protection to WRITE.
+ 		 */
+@@ -198,13 +205,20 @@ int main()
+ 
+ #endif /* UCLINUX */
+ 
++void sighandler(int sig)
++{
++	tst_resm(TINFO, "received signal: %d", sig);
++	if (sig == SIGSEGV)
++		exit(1);
++	else
++		tst_brkm(TBROK, 0, "Unexpected signal %d received.", sig);
++}
++
+ /*
+  * setup() - performs all ONE TIME setup for this test
+  */
+ void setup()
+ {
+-	tst_sig(FORK, DEF_HANDLER, NULL);
+-
+ 	TEST_PAUSE;
+ 
+ 	tst_tmpdir();		/* create a temporary directory, cd to it */
+-- 
+1.7.3.1
+
+
+-- 
+Best Regards,
+Peng Haitao
+
 
 ------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
-------=_Part_42902_147576522.1294735863856
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_42902_147576522.1294735863856--
-
