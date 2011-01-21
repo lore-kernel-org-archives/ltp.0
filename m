@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PdwCh-0005TF-Iq
-	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 02:49:23 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PgCTN-0008Er-Uj
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 08:35:57 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PdwCe-0005b0-UO
-	for ltp-list@lists.sourceforge.net; Sat, 15 Jan 2011 02:49:23 +0000
-Message-ID: <4D310A5D.6000006@cn.fujitsu.com>
-Date: Sat, 15 Jan 2011 10:45:49 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PgCTL-0008Ls-Ve
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 08:35:57 +0000
+Message-ID: <4D39456D.4040308@cn.fujitsu.com>
+Date: Fri, 21 Jan 2011 16:35:57 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [POSIX][PATCH] Fix bug of the test timer_create.
+Subject: [LTP] [PATCH] fix error of wrong return code in cases
+ rt_sigsuspend01, sched_getaffinity01, ftest06, sem02 and hugemmap03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,206 +29,122 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-CLOCK_THREAD_CPUTIME_ID and CLOCK_PROCESS_CPUTIME_ID are CPU-time clock,
-so when the thread/process invokes nanosleep, these clocks will go sleeping
-too.
+Hi Garrett,
 
-Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+"return 1" should be replaced with "tst_exit()" in the following cases.
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
 ---
- .../conformance/interfaces/timer_create/10-1.c     |   36 +++++++++++++------
- .../conformance/interfaces/timer_create/11-1.c     |   35 +++++++++++++------
- 2 files changed, 48 insertions(+), 23 deletions(-)
+ testcases/kernel/fs/ftest/ftest06.c                |    4 ++--
+ testcases/kernel/ipc/semaphore/sem02.c             |    4 ++--
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |    4 ++--
+ .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |    4 ++--
+ .../sched_getaffinity/sched_getaffinity01.c        |    5 ++---
+ 5 files changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
-index 27d5c1c..23a777e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/10-1.c
-@@ -24,9 +24,12 @@
- #define SLEEPDELTA 3
- #define ACCEPTABLEDELTA 1
+diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
+index b985a1d..d8ff8b6 100644
+--- a/testcases/kernel/fs/ftest/ftest06.c
++++ b/testcases/kernel/fs/ftest/ftest06.c
+@@ -249,7 +249,7 @@ int main(int ac, char *av[])
+ 		tst_resm(TPASS, "Test passed.");
  
-+int caught = 0;
-+
- void handler(int signo)
- {
- 	printf("Caught signal\n");
-+	caught = 1;
+ 	cleanup();
+-	return 1;
++	tst_exit();
  }
  
- int main(int argc, char *argv[])
-@@ -39,8 +42,8 @@ int main(int argc, char *argv[])
- 	struct sigaction act;
- 	timer_t tid;
- 	struct itimerspec its;
--	struct timespec ts, tsleft;
--	int rc;
-+	int rc, overrun = 0;
-+	time_t stime = 0, etime = 0;
- 
- 	rc = sysconf(_SC_CPUTIME);
- 	printf("sysconf(_SC_CPUTIME) returns: %d\n", rc);
-@@ -59,9 +62,6 @@ int main(int argc, char *argv[])
- 	its.it_value.tv_sec = TIMERSEC;
- 	its.it_value.tv_nsec = 0;
- 
--	ts.tv_sec=TIMERSEC+SLEEPDELTA;
--	ts.tv_nsec=0;
--
- 	if (sigemptyset(&act.sa_mask) == -1) {
- 		perror("Error calling sigemptyset");
- 		return PTS_UNRESOLVED;
-@@ -76,27 +76,39 @@ int main(int argc, char *argv[])
- 		return PTS_UNRESOLVED;
+ #define	warn(val,m1,m2)	if ((val) < 0) dowarn(me,m1,m2)
+@@ -479,4 +479,4 @@ static void cleanup(void)
  	}
- 
-+	if ((time_t)(-1) == time(&stime)) {
-+		perror("time() did not return success");
-+		return PTS_UNRESOLVED;
-+	}
-+
- 	if (timer_settime(tid, 0, &its, NULL) != 0) {
- 		perror("timer_settime() did not return success");
- 		return PTS_UNRESOLVED;
- 	}
- 
--	if (nanosleep(&ts, &tsleft) != -1) {
--		perror("nanosleep() not interrupted");
--		return PTS_FAIL;
-+	while(!caught);
-+
-+	if ((time_t)(-1) == time(&etime)) {
-+		perror("time() did not return success");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	if (-1 == (overrun = timer_getoverrun(tid))) {
-+		perror("timer_getoverrun() did not return success");
-+		return PTS_UNRESOLVED;
- 	}
- 
--	if (abs(tsleft.tv_sec-SLEEPDELTA) <= ACCEPTABLEDELTA) {
--		printf("Test PASSED");
-+	if (etime - stime == TIMERSEC + overrun) {
-+		printf("Test PASSED\n");
- 		return PTS_PASS;
- 	} else {
- 		printf("Timer did not last for correct amount of time\n");
- 		printf("timer: %d != correct %d\n",
--				(int) ts.tv_sec- (int) tsleft.tv_sec,
-+				(int) etime - (int) stime,
- 				TIMERSEC);
- 		return PTS_FAIL;
- 	}
- 
- 	return PTS_UNRESOLVED;
- #endif
--}
-\ No newline at end of file
-+}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
-index bd59e8f..c34b451 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
-@@ -22,9 +22,12 @@
- #define SLEEPDELTA 3
- #define ACCEPTABLEDELTA 1
- 
-+int caught = 0;
-+
- void handler(int signo)
- {
- 	printf("Caught signal\n");
-+	caught = 1;
- }
- 
- int main(int argc, char *argv[])
-@@ -38,7 +41,8 @@ int main(int argc, char *argv[])
- 	struct sigaction act;
- 	timer_t tid;
- 	struct itimerspec its;
--	struct timespec ts, tsleft;
-+	time_t  stime = 0, etime = 0;
-+	int overrun = 0;
- 
- 	if (rc == -1) {
- 		printf("_POSIX_THREAD_CPUTIME unsupported\n");
-@@ -56,9 +60,6 @@ int main(int argc, char *argv[])
- 	its.it_value.tv_sec = TIMERSEC;
- 	its.it_value.tv_nsec = 0;
- 
--	ts.tv_sec=TIMERSEC+SLEEPDELTA;
--	ts.tv_nsec=0;
--
- 	if (sigemptyset(&act.sa_mask) == -1) {
- 		perror("Error calling sigemptyset");
- 		return PTS_UNRESOLVED;
-@@ -73,23 +74,35 @@ int main(int argc, char *argv[])
- 		return PTS_UNRESOLVED;
- 	}
- 
-+	if ((time_t)(-1) == time(&stime)) {
-+		perror("time() did not return success");
-+		return PTS_UNRESOLVED;
-+	}
-+
- 	if (timer_settime(tid, 0, &its, NULL) != 0) {
- 		perror("timer_settime() did not return success");
- 		return PTS_UNRESOLVED;
- 	}
- 
--	if (nanosleep(&ts, &tsleft) != -1) {
--		perror("nanosleep() not interrupted");
--		return PTS_FAIL;
-+	while(!caught);
-+
-+	if ((time_t)(-1) == time(&etime)) {
-+		perror("time() did not return success");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	if (-1 == (overrun = timer_getoverrun(tid))) {
-+		perror("timer_getoverrun() did not return success");
-+		return PTS_UNRESOLVED;
- 	}
- 
--	if (abs(tsleft.tv_sec-SLEEPDELTA) <= ACCEPTABLEDELTA) {
--		printf("Test PASSED");
-+	if (etime - stime == TIMERSEC + overrun) {
-+		printf("Test PASSED\n");
- 		return PTS_PASS;
- 	} else {
- 		printf("Timer did not last for correct amount of time\n");
- 		printf("timer: %d != correct %d\n",
--				(int) ts.tv_sec- (int) tsleft.tv_sec,
-+				(int) etime - (int) stime,
- 				TIMERSEC);
- 		return PTS_FAIL;
- 	}
-@@ -100,4 +113,4 @@ int main(int argc, char *argv[])
- 	return PTS_UNSUPPORTED;
- #endif
+ 	tst_rmdir();
  
 -}
 \ No newline at end of file
 +}
+diff --git a/testcases/kernel/ipc/semaphore/sem02.c b/testcases/kernel/ipc/semaphore/sem02.c
+index 17645d8..5b9c58d 100644
+--- a/testcases/kernel/ipc/semaphore/sem02.c
++++ b/testcases/kernel/ipc/semaphore/sem02.c
+@@ -126,7 +126,7 @@ int main(int argc, char **argv)
+ 	tst_resm(TPASS, "passed");
+     cleanup();
+ 
+-    return 1;
++    tst_exit();
+ }
+ 
+ /* This thread sleeps 10 seconds then waits on the semaphore.  As long
+@@ -169,4 +169,4 @@ void cleanup(void)
+ {
+ 	TEST_CLEANUP;
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+index 209e40e..c1479fe 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+@@ -134,7 +134,7 @@ main(int ac, char **av)
+ 
+ 	cleanup();
+ 
+-	return 1;
++	tst_exit();
+ #endif
+ }
+ 
+@@ -178,4 +178,4 @@ cleanup()
+ 
+ 	unlink(TEMPFILE);
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+index f9e3b34..60f63dd 100644
+--- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
++++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+@@ -182,5 +182,5 @@ int main(int ac, char **av) {
+ 
+ 	cleanup();
+ 
+-	return 1;
+-}
+\ No newline at end of file
++	tst_exit();
++}
+diff --git a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+index d5182da..014acf2 100644
+--- a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
++++ b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+@@ -236,6 +236,5 @@ realloc:
+ 
+ 	cleanup();
+ 
+-	return (1);
+-
+-}
+\ No newline at end of file
++	tst_exit();
++}
 -- 
-1.7.0.4
-
-
+1.7.3.1
 
 
 -- 
-Regards
-Bian Naimeng
+Best Regards,
+Peng Haitao
 
 
 ------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
-http://p.sf.net/sfu/oracle-sfdevnl
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
