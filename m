@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <cristian@regolo.cc>) id 1PgNfD-0005tD-Dt
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 20:32:55 +0000
-Received: from aiolia.regolo.cc ([178.79.135.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PgNfC-000424-6p
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 20:32:55 +0000
-Received: from regolo (93-46-29-194.ip105.fastwebnet.it [93.46.29.194])
-	by aiolia.regolo.cc (Postfix) with ESMTPSA id 1CAC464
+	(envelope-from <yanegomi@gmail.com>) id 1PgD8S-0006hK-OO
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:18:24 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.72) id 1PgD8R-0004bB-TD
+	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 09:18:24 +0000
+Received: by mail-wy0-f175.google.com with SMTP id 40so1486135wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 21:32:48 +0100 (CET)
-Date: Fri, 21 Jan 2011 21:32:43 +0100
-From: Cristian Greco <cristian@regolo.cc>
-Message-ID: <20110121213243.68c293fc@regolo>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] Remove misused variable: fixes an array out-of-bounds
- access.
+	Fri, 21 Jan 2011 01:18:23 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTin5FE_kRx9Z-tUMUHgTxd69vDJPbtDz4D+2z_Ey@mail.gmail.com>
+References: <4D39456D.4040308@cn.fujitsu.com>
+	<AANLkTik7Zp+LZ8VcMGZMoHtdhcdKHkiqEOCN7s-nbE0c@mail.gmail.com>
+	<4D394E65.2010601@cn.fujitsu.com>
+	<AANLkTin5FE_kRx9Z-tUMUHgTxd69vDJPbtDz4D+2z_Ey@mail.gmail.com>
+Date: Fri, 21 Jan 2011 01:18:23 -0800
+Message-ID: <AANLkTin92HduDFWK1khvNdQLVeF2z3Ln0BXY+Futnz=1@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix error of wrong return code in cases
+ rt_sigsuspend01, sched_getaffinity01, ftest06, sem02 and hugemmap03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,84 +31,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Fri, Jan 21, 2011 at 1:17 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Fri, Jan 21, 2011 at 1:14 AM, Peng Haitao <penght@cn.fujitsu.com> wrot=
+e:
+>> Hi Garrett,
+>>
+>> Garrett Cooper said the following on 2011-1-21 16:43:
+>>> On Fri, Jan 21, 2011 at 12:35 AM, Peng Haitao <penght@cn.fujitsu.com> w=
+rote:
+>>>> Hi Garrett,
+>>>>
+>>>> "return 1" should be replaced with "tst_exit()" in the following cases.
+>>>
+>>> =A0 =A0 Patch please?
+>>
+>> The patch is in the first mail. Do you need an attached patch?
+>
+> =A0 =A0Please see the style guide ( doc/style-guide.rst ) for requested
+> behavior on what to do when contributing patches.
 
-this should fix an out-of-bounds access by removing the useless
-variable.
+Oh yes... and I committed the fix. Thanks!
+-Garrett
 
-
-Signed-off-by: Cristian Greco <cristian@regolo.cc>
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/fs/inode/inode02.c |   11 +++--------
- 1 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
-index 8566c9a..05d5c7a 100644
---- a/testcases/kernel/fs/inode/inode02.c
-+++ b/testcases/kernel/fs/inode/inode02.c
-@@ -80,7 +80,6 @@ int  nchild;
- FILE *list_stream=NULL;
- int  list_id;
- int  file_id;
--char slash[1];
- 
- int increment_name(), get_next_name(), mode(), escrivez(), massmurder();
- int max_depth, max_breadth, file_length;
-@@ -249,9 +248,6 @@ int tree()
- 	int len;
- 	int status;
- 
--	slash[0] = '/';
--	slash[1] = '\0';
--
- 	/********************************/
- 	/*				*/
- 	/*  make the root directory for */
-@@ -285,8 +281,7 @@ int tree()
- 	/****************************************/
- 
- 	strcpy(path_list_string, path_string);
--	strcat(path_list_string, slash);
--	strcat(path_list_string, "path_list");
-+	strcat(path_list_string, "/path_list");
- 	list_id = creat(path_list_string, FILE_MODE);
- 	if (list_id == -1) {
- 		fprintf(temp,"\nThe path_list file '%s' cannot be created, errno=%d\n",
-@@ -423,7 +418,7 @@ int level;    	/* the tree depth variable */
- 		for (i = 0; i <= max_breadth; i++) {
- 			get_next_name();
- 			strcpy(new_string, string);
--			strcat(new_string, slash);
-+			strcat(new_string, "/");
- 			strcat(new_string, name);
- 
- 			/****************************************/
-@@ -900,4 +895,4 @@ instress()
-         tst_resm(TINFO, "System resource may be too low, fork() malloc()"
-                                 " etc are likely to fail.\n");
-         return 1;
--}
-\ No newline at end of file
-+}
--- 
-1.7.2.3
-
-
-Thanks,
---
-Cristian Greco
-GPG key ID: 0xCF4D32E4
-
-------------------------------------------------------------------------------
 Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
 Finally, a world-class log management solution at an even better price-free!
-Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
-February 28th, so secure your free ArcSight Logger TODAY! 
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires =
+
+February 28th, so secure your free ArcSight Logger TODAY! =
+
 http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
