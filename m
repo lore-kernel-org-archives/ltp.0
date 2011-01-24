@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1Pf86w-0002QO-KA
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:44:22 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pf86v-0002rU-Gl
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jan 2011 09:44:22 +0000
-Date: Tue, 18 Jan 2011 04:44:14 -0500 (EST)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <1284131616.28748.1295343854874.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <AANLkTim+7dZv-+OWMEhrVuFKmHOTKyiinSTsBqf4Hf0F@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PhIvR-0003xC-DG
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:41:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PhIvP-0006Gh-JC
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:41:29 +0000
+Message-ID: <4D3D490C.4000902@cn.fujitsu.com>
+Date: Mon, 24 Jan 2011 17:40:28 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v3 1/5] oom01: test OOM
+References: <4CEE2299.1080605@cn.fujitsu.com>
+	<AANLkTikJjKXKrCxHa8hnjRHfaM6hGM-xy28ps6ca0Yep@mail.gmail.com>
+In-Reply-To: <AANLkTikJjKXKrCxHa8hnjRHfaM6hGM-xy28ps6ca0Yep@mail.gmail.com>
+Subject: Re: [LTP] [RFC][POSIX][PATCH]Get rid of the test of
+	pthread_mutex_getprioceiling
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,20 +30,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
 
-> Committing now -- please provide any needed patches for runtest if you
-> feel that this test is stable enough to run in mainline LTP.
-It is 5/5 in this series,
-http://marc.info/?l=ltp-list&m=129289982816229&w=2
+
+Garrett Cooper wrote:
+> On Thu, Nov 25, 2010 at 12:47 AM, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+>> Hi,
+>>
+>>  The 1-1 and 3-3 do the same test, but they expect different result.
+>> I do not know why?
+>>
+>> However, i think we should get rid of 3-3. Because it looks like not a POSIX
+>> compliant case.
+> 
+> I'll look at cleaning this up. I didn't clean everything up yet in
+> that area as I was going through and adding testcases for missing
+> POSIX assertions.
+
+Hi Garrett,
+
+ Would you like to pick up it.
+
+Regards
+ Bian
+
+> Thanks,
+> -Garrett
+> 
+
 
 ------------------------------------------------------------------------------
-Protect Your Site and Customers from Malware Attacks
-Learn about various malware tactics and how to avoid them. Understand 
-malware threats, the impact they can have on your business, and how you 
-can protect your company and customers by using code signing.
-http://p.sf.net/sfu/oracle-sfdevnl
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
