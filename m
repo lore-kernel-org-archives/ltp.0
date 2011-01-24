@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Pg9of-00071J-0c
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 05:45:45 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1Pg9ob-00012R-6f
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 05:45:42 +0000
-Message-ID: <4D391BEB.9070508@cn.fujitsu.com>
-Date: Fri, 21 Jan 2011 13:38:51 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <zliu@redhat.com>) id 1PhGQp-0000zk-N4
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 07:01:43 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PhGQm-0004tZ-EX
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 07:01:41 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p0O71YUw002100
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Jan 2011 02:01:34 -0500
+Date: Mon, 24 Jan 2011 02:01:32 -0500 (EST)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <1524114322.122004.1295852492822.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1695645262.121371.1295841776437.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-References: <4D37EB92.3060901@cn.fujitsu.com>	<AANLkTin4N+xuTwQP2w7WtGvO20qdsa2mEjeiMi5fFK2d@mail.gmail.com>	<4D3903AC.2070901@cn.fujitsu.com>
-	<AANLkTimPKEHGOc4-UQXxSZoNJi5UQD1wB1L2n3iUznhE@mail.gmail.com>
-In-Reply-To: <AANLkTimPKEHGOc4-UQXxSZoNJi5UQD1wB1L2n3iUznhE@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] mprotect02: fix error of the case need
-	sighandler()
+Subject: [LTP] [PATCH] fix the -I option and enable a larger numble to I
+ option
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,94 +31,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
 Hi Garrett,
+Please review.
+when running a test case with setting -I options a number, it's 
+useless. 
+e.g  when I run testcase/kernel/mem/hugetlbfs/hugemmap/hugemmap01,
+[root@dell-per805-01 hugemmap]# ./hugemmap01 -I 3600 -H /var/hugetlbfs/
+hugemmap01    1  TPASS  :  call succeeded
+[root@dell-per805-01 hugemmap]# 
+the test returned immediately, but no running for 3600 seconds, and other test cases all 
+have this problem. I found it was that the variable stop_time in lib/parse_opts.c was integer that's not 
+enough large, I changed it to a larger type(long long type), then it was okay, and support a larger number.
 
-Garrett Cooper said the following on 2011-1-21 12:00:
->> This is OK, but the default signal handler is invoked when an unexpected signal
->> is caught. so I think we should add sighandler(). Furthermore, the default
->> signal handler make the child process exit 2, but the case expect the child
->> process exit 1, this will cause the case fail.
->>
->> The following patch will reinitialize signal handler.
-> 
->     This won't work if the number of test loops is > 1 (it will reset
-> the handler back to the default and fail on the next iteration).
+Zhouping Liu
 
-Thanks for your comment.
-
-The following patch will initialize signal handler to sighandler() in loops starting,
-and reinitialize default signal handle in the second part.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
 ---
- testcases/kernel/syscalls/mprotect/mprotect02.c |   18 ++++++++++++++++--
- 1 files changed, 16 insertions(+), 2 deletions(-)
+ lib/parse_opts.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
-index ebc4bcc..f27d2da 100644
---- a/testcases/kernel/syscalls/mprotect/mprotect02.c
-+++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
-@@ -65,6 +65,7 @@
- 
- void cleanup(void);
- void setup(void);
-+void sighandler(int);
- 
- char *TCID = "mprotect02";
- int TST_TOTAL = 1;
-@@ -93,6 +94,9 @@ int main(int ac, char **av)
- 	/* The following loop checks looping state if -i option given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
-+		/* Initialization signal handler */
-+		tst_sig(FORK, sighandler, NULL);
-+
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
- 
-@@ -129,6 +133,9 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK, cleanup, "child failed");
- 		 }
- 
-+		/* Re-Initialization signal handler */
-+		tst_sig(FORK, DEF_HANDLER, NULL);
-+
- 		/*
- 		 * Change the protection to WRITE.
- 		 */
-@@ -198,13 +205,20 @@ int main()
- 
- #endif /* UCLINUX */
- 
-+void sighandler(int sig)
-+{
-+	tst_resm(TINFO, "received signal: %d", sig);
-+	if (sig == SIGSEGV)
-+		exit(1);
-+	else
-+		tst_brkm(TBROK, 0, "Unexpected signal %d received.", sig);
-+}
-+
- /*
-  * setup() - performs all ONE TIME setup for this test
-  */
- void setup()
+diff --git a/lib/parse_opts.c b/lib/parse_opts.c
+index 338cbea..f8b1743 100644
+--- a/lib/parse_opts.c
++++ b/lib/parse_opts.c
+@@ -706,7 +706,7 @@ usc_test_looping(counter)
+ int counter;
  {
--	tst_sig(FORK, DEF_HANDLER, NULL);
--
- 	TEST_PAUSE;
+     static int first_time = 1;
+-    static int stop_time = 0;	/* stop time in rtc or usecs */
++    static long long stop_time = 0;	/* stop time in rtc or usecs */
+     static int delay;		/* delay in clocks or usecs  */
+     int hertz=0;			/* clocks per second or usecs per second */
+     int ct, end;		/* current time, end delay time */
+@@ -731,7 +731,7 @@ int counter;
  
- 	tst_tmpdir();		/* create a temporary directory, cd to it */
+ 	if (STD_LOOP_DURATION) {
+ 	    ct=get_current_time();
+-	    stop_time=(int)((float)hertz * STD_LOOP_DURATION) + ct;
++	    stop_time = (long long)hertz * (long long)STD_LOOP_DURATION + (long long)ct;
+ 	}
+ 
+ 	/*
+@@ -776,7 +776,7 @@ int counter;
+ 	keepgoing++;
+     }
+ 
+-    if (STD_LOOP_DURATION != 0.0 && get_current_time() < stop_time) {
++    if (STD_LOOP_DURATION != 0.0 && (long long)get_current_time() < stop_time) {
+ 	keepgoing++;
+     }
+ 
+@@ -896,4 +896,4 @@ char **argv;
+     exit(0);
+ }
+ 
+-#endif /* UNIT_TEST */
+\ No newline at end of file
++#endif /* UNIT_TEST */
 -- 
-1.7.3.1
+1.7.1
 
-
--- 
-Best Regards,
-Peng Haitao
 
 
 ------------------------------------------------------------------------------
