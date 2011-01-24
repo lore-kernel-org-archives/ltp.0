@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1PiGpd-0003t2-4L
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jan 2011 01:39:29 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PhJCh-0008Hj-9d
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:59:19 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PiGpb-0005s4-6g
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jan 2011 01:39:29 +0000
-Message-ID: <4D40CC9B.5080204@cn.fujitsu.com>
-Date: Thu, 27 Jan 2011 09:38:35 +0800
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PhJCe-0000J0-Dl
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 09:59:19 +0000
+Message-ID: <4D3D4D36.1030002@cn.fujitsu.com>
+Date: Mon, 24 Jan 2011 17:58:14 +0800
 From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4D3F8E97.2030909@cn.fujitsu.com>
-In-Reply-To: <4D3F8E97.2030909@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH]fix functional/threads/pi_test/pitest-4 test
+References: <000001cb96a5$12026c30$36074490$@co.jp>
+In-Reply-To: <000001cb96a5$12026c30$36074490$@co.jp>
+Subject: Re: [LTP] [PATCH] fix "sched_getparam/6-1" and
+ "sched_getscheduler/7-1" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,74 +28,127 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net, =?UTF-8?B?55W25bqnIOWBpeW4gg==?= <toza@ryobi.co.jp>
+
+
+
+Mitani wrote:
+> Hi,
+> 
+> 
+> Following POSIX testsets failed:
+> ------------
+> conformance/interfaces/sched_getparam/6-1: execution: FAILED: Output:
+> Testing with user 'bin' (euid: 1)(uid: 1)
+> The function sched_getparam has successed.
+> ------------
+> 
+> ------------
+> conformance/interfaces/sched_getscheduler/7-1: execution: FAILED: Output:
+> Testing with user 'bin' (uid: 1)
+> The function sched_getscheduler has successed.
+> ------------
+> 
+> The environments are as follows:
+>   - RHEL4.8 --- (x86, x86_64, ia64)
+>   - kernel  --- kernel-2.6.9-89.EL
+>   - glibc   --- glibc-2.3.4-2.43
+> 
+>   - RHEL5.5 --- (x86, x86_64, ia64)
+>   - kernel  --- kernel-2.6.18-194.el5
+>   - glibc   --- glibc-2.5-49
+> 
+> 
+> They are permission tests.
+> 
+> The comment of "sched_getparam/6-1" testset source is as follows:
+> ------------
+>   * On Linux, e.g, the kernel makes no check on user permission to call this
+>   * API. So basically we don't know on what condition a system should return
+>   * EPERM. It is implementation defined.
+> ------------
+> 
 
 Hi Garrett,
 
-  Would you like to apply this patch? 
-
-  The priority of TB1 is lower than TFs, if TB1 was assigned to the CPU
-which scheduling TF, TB1 will not have chance to run.
-  I raise the priority of TB1, the new priority of TB1 is higher than TF
-and TL, and still lower than TP.
-  After applying the following patch, test will work correctly.
+ I think it's better to report UNRESOLVED, whatever the os is.
 
 Regards
-  Bian
+ Bian
 
-Bian Naimeng wrote:
-> TB1 has a lower priority than TFs, it has not chance to run.
 > 
-> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> Therefore I revised their results to "UNRESOLVED" by judging linux
+> environment.
 > 
+> Signed-off-by: Tomonori Mitani <mitani@ryobi.co.jp>
+> ============
 > ---
->  .../functional/threads/pi_test/pitest-4.c          |   18 +++++++++---------
->  1 files changed, 9 insertions(+), 9 deletions(-)
+> a/testcases/open_posix_testsuite/conformance/interfaces/sched_getparam/6-1.c
+> 2010-12-08 15:39:45.000000000 +0900
+> +++
+> b/testcases/open_posix_testsuite/conformance/interfaces/sched_getparam/6-1.c
+> 2010-12-08 13:48:51.000000000 +0900
+> @@ -65,6 +65,11 @@
+>  	struct sched_param param;
+>  	int result = -1;
+>  
+> +#ifdef __linux__
+> +	printf("We don't know on what condition a system should return
+> EPERM.\n");
+> +        return PTS_UNRESOLVED;
+> +#endif
+> +
+>  	/* We assume process Number 1 is created by root */
+>  	/* and can only be accessed by root */ 
+>  	/* This test should be run under standard user permissions */
+> ============
 > 
-> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-> index ad940dc..93e44b6 100644
-> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
-> @@ -69,13 +69,13 @@ struct thread_param
->  	volatile unsigned progress;
->  } tp[] = {
->  	{ 0,   0,   0, 1, SCHED_FIFO, "TL",  0, 0, 0, 0 },
-> -	{ 1,   0, 100, 3, SCHED_FIFO, "TP",  0, 0, 0, 0 },
-> -	{ 2,   0,   0, 4, SCHED_FIFO, "TF",  1, 0, 0, 0 },
-> -	{ 3,   0,   0, 4, SCHED_FIFO, "TF",  2, 0, 0, 0 },
-> -	{ 4,   0,   0, 4, SCHED_FIFO, "TF",  3, 0, 0, 0 },
-> -	{ 5,   0,   0, 4, SCHED_FIFO, "TF",  4, 0, 0, 0 },
-> -	{ 6,   0,   0, 4, SCHED_FIFO, "TF",  5, 0, 0, 0 },
-> -	{ 7,   0,   0, 4, SCHED_FIFO, "TF",  6, 0, 0, 0 }
-> +	{ 1,   0, 100, 4, SCHED_FIFO, "TP",  0, 0, 0, 0 },
-> +	{ 2,   0,   0, 2, SCHED_FIFO, "TF",  1, 0, 0, 0 },
-> +	{ 3,   0,   0, 2, SCHED_FIFO, "TF",  2, 0, 0, 0 },
-> +	{ 4,   0,   0, 2, SCHED_FIFO, "TF",  3, 0, 0, 0 },
-> +	{ 5,   0,   0, 2, SCHED_FIFO, "TF",  4, 0, 0, 0 },
-> +	{ 6,   0,   0, 2, SCHED_FIFO, "TF",  5, 0, 0, 0 },
-> +	{ 7,   0,   0, 2, SCHED_FIFO, "TF",  6, 0, 0, 0 }
->  };
+> ============
+> ---
+> a/testcases/open_posix_testsuite/conformance/interfaces/sched_getscheduler/7
+> -1.c	2010-11-12 02:19:16.000000000 +0900
+> +++
+> b/testcases/open_posix_testsuite/conformance/interfaces/sched_getscheduler/7
+> -1.c	2010-12-08 15:42:23.000000000 +0900
+> @@ -55,6 +55,11 @@
 >  
->  volatile unsigned do_work_dummy;
-> @@ -180,7 +180,7 @@ void *thread_tb1(void *arg)
->  	double t0, t1;
->  	int rc;
+>  	int result = -1;
 >  
-> -	test_set_priority(pthread_self(),SCHED_FIFO, 2);
-> +	test_set_priority(pthread_self(), SCHED_FIFO, 3);
->  	DPRINTF(stderr,"Thread TB1: started\n");
->  	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n",
->  		seconds_read() - base_time);
-> @@ -212,7 +212,7 @@ void *thread_tb2(void *arg)
->  	double t0, t1;
->  	int rc;
->  
-> -	test_set_priority(pthread_self(),SCHED_FIFO, 5);
-> +	test_set_priority(pthread_self(), SCHED_FIFO, 5);
->  	DPRINTF(stderr,"Thread TB2: started\n");
->  	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
->  		seconds_read() - base_time);
+> +#ifdef __linux__
+> +	printf("We don't know on what condition a system should return
+> EPERM.\n");
+> +	return PTS_UNRESOLVED;
+> +#endif
+> +
+>  	/* We assume process Number 1 is created by root */
+>  	/* and can only be accessed by root */ 
+>  	/* This test should be run under standard user permissions */
+> ============
+> 
+> 
+> 
+> Regards--
+> 
+> -Tomonori Mitani
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> ------------------------------------------------------------------------------
+> What happens now with your Lotus Notes apps - do you make another costly 
+> upgrade, or settle for being marooned without product support? Time to move
+> off Lotus Notes and onto the cloud with Force.com, apps are easier to build,
+> use, and manage than apps on traditional platforms. Sign up for the Lotus 
+> Notes Migration Kit to learn more. http://p.sf.net/sfu/salesforce-d2d
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
 Regards
