@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PcXnB-0006wc-BA
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 06:33:17 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PcXnA-0002gC-HY
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jan 2011 06:33:17 +0000
-Received: by wyb40 with SMTP id 40so19475821wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 10 Jan 2011 22:33:10 -0800 (PST)
+	(envelope-from <chrubis@suse.de>) id 1PhPUp-0007U0-Gl
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jan 2011 16:42:27 +0000
+Date: Mon, 24 Jan 2011 17:59:59 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110124165959.GA12057@saboteur.suse.cz>
+References: <000001cb8f8d$a7cf4310$f76dc930$@co.jp>
+	<20101210144930.GA16800@saboteur.suse.cz>
+	<AANLkTimmkmk_H+AzYOGau6fr_BHChOCif7n=FOu2F14R@mail.gmail.com>
+	<20101213185337.GB697@saboteur.suse.cz>
+	<20110106152547.GA9358@saboteur.suse.cz>
+	<AANLkTi=YcasSVsYCX7gmkt2m7uBDBf3u=XvAAn=x3vSy@mail.gmail.com>
+	<20110116140911.GB12249@saboteur.suse.cz>
+	<AANLkTi=DyeO5E7MWR=SbB=N24PafZwmQFqS6d2mhbZiL@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <233343295.39412.1294705307001.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <783A1EB7-BF40-4188-BF63-81C2C43EAAAE@gmail.com>
-	<233343295.39412.1294705307001.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Mon, 10 Jan 2011 22:33:10 -0800
-Message-ID: <AANLkTinzRFkEX7Hf-seH+P_WbTudvG=-c02YWBBYybxY@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] hugemmap05 issues
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=DyeO5E7MWR=SbB=N24PafZwmQFqS6d2mhbZiL@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix "timer_create/10-1" and "timer_create/11-1"
+ tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,59 +32,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, "?$BaD:B ?$B7r, T" <toza@ryobi.co.jp>, Mitani <mitani@ryobi.co.jp>
 
-On Mon, Jan 10, 2011 at 4:21 PM, CAI Qian <caiqian@redhat.com> wrote:
->
->> I applied your fixes but the test is still buggy in the following
->> ways:
->>
->> 1. It has to be run as root (otherwise it fails with EPERM opening the
->> file).
-> That is true for lots of LTP tests. To get the most of our of tests, it
-> requests root privilege. We can even setup config scripts to warning people
-> about the non-root users. Again, what is the guideline here? We probably
-> don't want to add many code to each of the test that required root.
+Hi!
+> > Misplaced whitespace after while (!caught_signal) ;
+> 
+> Both of us are wrong. K&R says it should be:
+> 
+> while (!caught_signal)
+>     ; /* With the correct amount of indentation here of course. */
+> 
+> LKML always defers to K&R unless stated otherwise.
 
-tst_require_root(NULL) is all you need to do in setup() if you need
-it. You can test a lot of EACCES and EPERM cases if you use users
-other than root.
+Hmm, I'm still not sure. LKML does cite the K&R but but I don't think
+that it's set as base coding style. And lindent script seems to 
+format this as:
 
-Most of the testcases that slack in this area that I've seen are the
-newer ones. The older testcases by IBM and SGI do the right thing when
-it comes to requiring root privileges.
+while (!caught_signal) ;
 
->> 2. Even when the test is run as root it leaves around allocated
->> hugepages, despite the fact that the temporary filesystem has been
->> unmounted.
-> Would you please be elaborate the failure? I can't see why it would work
-> that way. The cleanup routine does this.
->
-> - restore nr_hugepages
-> - restore nr_overcommit_hugepages
-> - unlink && umount (mmap case)
-> - shmdt (shmget case)
+So it looks like LKML conding style just sets some boundaries and
+general ideas what to do and what not.
 
-It's a little better now that it's using a temporary directory, but it
-still fails when I call it like:
-
-./hugemmap05
-
-on Fedora 13/i386 (first the mmap fails, then the test tries to do a
-bunch of stuff in cleanup, including unmount the hugemmap filesystem
--- which fails with EBUSY -- and remove the temporary directory --
-which fails because the mountpoint isn't unmounted -- and fails).
-
-Thanks,
--Garrett
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Gaining the trust of online customers is vital for the success of any company
-that requires sensitive data to be transmitted over the Web.   Learn how to 
-best implement a security strategy that keeps consumers' information secure 
-and instills the confidence they need to proceed with transactions.
-http://p.sf.net/sfu/oracle-sfdevnl 
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
