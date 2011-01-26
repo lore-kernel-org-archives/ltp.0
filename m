@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <qcai@redhat.com>) id 1PQNqf-00063H-Np
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 17:30:37 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1PQNqe-0008Cw-5d
-	for ltp-list@lists.sourceforge.net; Wed, 08 Dec 2010 17:30:37 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id oB8HUUAo024138
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Dec 2010 12:30:30 -0500
-Date: Wed, 8 Dec 2010 12:30:30 -0500 (EST)
-From: caiqian@redhat.com
-Message-ID: <1494611959.515551291829430332.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <167814967.515531291829426269.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <qcai@redhat.com>) id 1PhzSu-0005Ee-9q
+	for ltp-list@lists.sourceforge.net; Wed, 26 Jan 2011 07:06:52 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
+	id 1PhzSs-0005bM-VD
+	for ltp-list@lists.sourceforge.net; Wed, 26 Jan 2011 07:06:52 +0000
+Date: Wed, 26 Jan 2011 02:06:42 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1890463144.158606.1296025602247.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <AANLkTin52dVdOUf0K25Sma2NrGLmet9aK7tbUmg3fKds@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_33588_1709182833.1291829430330"
-Subject: [LTP] oom01: Out Of Memory (OOM)
+Subject: Re: [LTP] [PATCH] Fix Makefile of testcase/kernel/mem/ksm/
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,503 +23,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-------=_Part_33588_1709182833.1291829430330
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-Add a new test - Out Of Memory (OOM)
-
-The program is designed to cope with unpredictable like amount and
-system physical memory, swap size and other VMM technology like KSM,
-memcg, memory hotplug and so on which may affect the OOM
-behaviours. It simply increase the memory consumption 3G each time
-until all the available memory is consumed and OOM is triggered.
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- runtest/mm                        |    2 +
- testcases/kernel/mem/oom/Makefile |   22 +++++
- testcases/kernel/mem/oom/oom01.c  |  169 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 193 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/oom/Makefile
- create mode 100644 testcases/kernel/mem/oom/oom01.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 8be3025..0afa3fb 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -72,3 +72,5 @@ mmap10_4 mmap10 -a -s -c 60
- ksm01 ksm01
- 
- cpuset01 cpuset01 -I 3600
-+
-+oom01 oom01
-diff --git a/testcases/kernel/mem/oom/Makefile b/testcases/kernel/mem/oom/Makefile
-new file mode 100644
-index 0000000..3634570
---- /dev/null
-+++ b/testcases/kernel/mem/oom/Makefile
-@@ -0,0 +1,22 @@
-+#
-+#  Copyright (C) 2010  Red Hat, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-+#
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
-new file mode 100644
-index 0000000..1265faa
---- /dev/null
-+++ b/testcases/kernel/mem/oom/oom01.c
-@@ -0,0 +1,169 @@
-+/*
-+ * Out Of Memory (OOM)
-+ *
-+ * The program is designed to cope with unpredictable like amount and
-+ * system physical memory, swap size and other VMM technology like KSM,
-+ * memcg, memory hotplug and so on which may affect the OOM
-+ * behaviours. It simply increase the memory consumption 3G each time
-+ * until all the available memory is consumed and OOM is triggered.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "oom01";
-+int TST_TOTAL = 3;
-+extern int Tst_count;
-+
-+#define LENGTH		(3UL<<30)
-+#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
-+#define OVERCOMMIT	1
-+#define NORMAL		2
-+#define MLOCK		3
-+#define KSM		4
-+
-+static char overcommit[BUFSIZ];
-+static void setup(void);
-+static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+static void oom(int testcase);
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	int lc, fd;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != (char *)NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+		tst_resm(TINFO, "start testing overcommit_memory tunables.");
-+		fd = open(SYSFS_OVER, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open");
-+		if (write(fd, "2", 1) != 1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "write");
-+		oom(OVERCOMMIT);
-+
-+		tst_resm(TINFO, "start normal OOM testing.");
-+		if (lseek(fd, SEEK_SET, 0) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-+		if (write(fd, "1", 1) != 1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "write");
-+		oom(NORMAL);
-+
-+		tst_resm(TINFO, "start OOM testing for mlocked pages.");
-+		oom(MLOCK);
-+
-+		tst_resm(TINFO, "start OOM testing for KSM pages.");
-+		oom(KSM);
-+	}
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	int fd;
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+	fd = open(SYSFS_OVER, O_RDONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (read(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "read");
-+	close(fd);
-+}
-+
-+void cleanup(void)
-+{
-+	int fd;
-+
-+	fd = open(SYSFS_OVER, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+	TEST_CLEANUP;
-+	tst_exit();
-+}
-+
-+void oom(int testcase)
-+{
-+	pid_t pid;
-+	int status;
-+	void *s; 
-+
-+	switch(pid = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		while(1) {
-+			s = mmap(NULL, LENGTH, PROT_READ|PROT_WRITE,
-+				MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-+			if (s == MAP_FAILED) {
-+				if (testcase == OVERCOMMIT && errno == ENOMEM)
-+					break;
-+				else
-+					tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+			}
-+			if (testcase == MLOCK && mlock(s, LENGTH) == -1)
-+				tst_brkm(TINFO|TERRNO, cleanup, "mlock");
-+			if (testcase == KSM
-+				&& madvise(s, LENGTH, MADV_MERGEABLE) == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-+			memset(s, '\a', LENGTH);
-+		}
-+		exit(0);
-+	default:
-+		break;
-+	}
-+	tst_resm(TINFO, "expected victim is %d.", pid);
-+	if (waitpid(-1, &status, 0) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+	if (testcase == OVERCOMMIT) {
-+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
-+				status);
-+	} else {
-+		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-+			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
-+				status);
-+	}
-+}
--- 
-1.7.3.2
-------=_Part_33588_1709182833.1291829430330
-Content-Type: text/x-patch; name=0001-oom01-Out-Of-Memory-OOM.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=0001-oom01-Out-Of-Memory-OOM.patch
-
-The program is designed to cope with unpredictable like amount and
-system physical memory, swap size and other VMM technology like KSM,
-memcg, memory hotplug and so on which may affect the OOM
-behaviours. It simply increase the memory consumption 3G each time
-until all the available memory is consumed and OOM is triggered.
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
----
- runtest/mm                        |    2 +
- testcases/kernel/mem/oom/Makefile |   22 +++++
- testcases/kernel/mem/oom/oom01.c  |  169 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 193 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/oom/Makefile
- create mode 100644 testcases/kernel/mem/oom/oom01.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 8be3025..0afa3fb 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -72,3 +72,5 @@ mmap10_4 mmap10 -a -s -c 60
- ksm01 ksm01
- 
- cpuset01 cpuset01 -I 3600
-+
-+oom01 oom01
-diff --git a/testcases/kernel/mem/oom/Makefile b/testcases/kernel/mem/oom/Makefile
-new file mode 100644
-index 0000000..3634570
---- /dev/null
-+++ b/testcases/kernel/mem/oom/Makefile
-@@ -0,0 +1,22 @@
-+#
-+#  Copyright (C) 2010  Red Hat, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-+#
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
-new file mode 100644
-index 0000000..1265faa
---- /dev/null
-+++ b/testcases/kernel/mem/oom/oom01.c
-@@ -0,0 +1,169 @@
-+/*
-+ * Out Of Memory (OOM)
-+ *
-+ * The program is designed to cope with unpredictable like amount and
-+ * system physical memory, swap size and other VMM technology like KSM,
-+ * memcg, memory hotplug and so on which may affect the OOM
-+ * behaviours. It simply increase the memory consumption 3G each time
-+ * until all the available memory is consumed and OOM is triggered.
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "oom01";
-+int TST_TOTAL = 3;
-+extern int Tst_count;
-+
-+#define LENGTH		(3UL<<30)
-+#define SYSFS_OVER	"/proc/sys/vm/overcommit_memory"
-+#define OVERCOMMIT	1
-+#define NORMAL		2
-+#define MLOCK		3
-+#define KSM		4
-+
-+static char overcommit[BUFSIZ];
-+static void setup(void);
-+static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-+static void oom(int testcase);
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	int lc, fd;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != (char *)NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+		tst_resm(TINFO, "start testing overcommit_memory tunables.");
-+		fd = open(SYSFS_OVER, O_WRONLY);
-+		if (fd == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "open");
-+		if (write(fd, "2", 1) != 1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "write");
-+		oom(OVERCOMMIT);
-+
-+		tst_resm(TINFO, "start normal OOM testing.");
-+		if (lseek(fd, SEEK_SET, 0) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-+		if (write(fd, "1", 1) != 1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "write");
-+		oom(NORMAL);
-+
-+		tst_resm(TINFO, "start OOM testing for mlocked pages.");
-+		oom(MLOCK);
-+
-+		tst_resm(TINFO, "start OOM testing for KSM pages.");
-+		oom(KSM);
-+	}
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	int fd;
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+	fd = open(SYSFS_OVER, O_RDONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (read(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "read");
-+	close(fd);
-+}
-+
-+void cleanup(void)
-+{
-+	int fd;
-+
-+	fd = open(SYSFS_OVER, O_WRONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (write(fd, &overcommit, 1) != 1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "write");
-+	close(fd);
-+	TEST_CLEANUP;
-+	tst_exit();
-+}
-+
-+void oom(int testcase)
-+{
-+	pid_t pid;
-+	int status;
-+	void *s; 
-+
-+	switch(pid = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		while(1) {
-+			s = mmap(NULL, LENGTH, PROT_READ|PROT_WRITE,
-+				MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-+			if (s == MAP_FAILED) {
-+				if (testcase == OVERCOMMIT && errno == ENOMEM)
-+					break;
-+				else
-+					tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+			}
-+			if (testcase == MLOCK && mlock(s, LENGTH) == -1)
-+				tst_brkm(TINFO|TERRNO, cleanup, "mlock");
-+			if (testcase == KSM
-+				&& madvise(s, LENGTH, MADV_MERGEABLE) == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-+			memset(s, '\a', LENGTH);
-+		}
-+		exit(0);
-+	default:
-+		break;
-+	}
-+	tst_resm(TINFO, "expected victim is %d.", pid);
-+	if (waitpid(-1, &status, 0) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+	if (testcase == OVERCOMMIT) {
-+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
-+				status);
-+	} else {
-+		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-+			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
-+				status);
-+	}
-+}
--- 
-1.7.3.2
-
-
-------=_Part_33588_1709182833.1291829430330
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-This SF Dev2Dev email is sponsored by:
-
-WikiLeaks The End of the Free Internet
-http://p.sf.net/sfu/therealnews-com
-------=_Part_33588_1709182833.1291829430330
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_33588_1709182833.1291829430330--
-
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gT24gVHVlLCBKYW4gMjUsIDIwMTEgYXQg
+MTA6NTQgUE0sIEJpYW4gTmFpbWVuZyA8Ymlhbm5tQGNuLmZ1aml0c3UuY29tPgo+IHdyb3RlOgo+
+ID4gVGhlcmUgaXMgbm90IGFueSBkaXJlY3RvcnkgYXQgdGVzdGNhc2Uva2VybmVsL21lbS9rc20v
+LAo+ID4gc28gcmVwbGFjZSBnZW5lcmljX3RydW5rX3RhcmdldC5tayBieSBnZW5lcmljX2xlYWZf
+dGFyZ2V0Lm1rCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogQmlhbiBOYWltZW5nIDxiaWFubm1AY24u
+ZnVqaXRzdS5jb20+Cj4gPgo+ID4gLS0tCj4gPiDCoHRlc3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9N
+YWtlZmlsZSB8IDIgKy0KPiA+IMKgMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEg
+ZGVsZXRpb25zKC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2tz
+bS9NYWtlZmlsZQo+ID4gYi90ZXN0Y2FzZXMva2VybmVsL21lbS9rc20vTWFrZWZpbGUKPiA+IGlu
+ZGV4IDgxNTA5YmYuLjIyMTkwZjEgMTAwNjQ0Cj4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL21l
+bS9rc20vTWFrZWZpbGUKPiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9NYWtlZmls
+ZQo+ID4gQEAgLTM5LDUgKzM5LDUgQEAgdHJ1bmstY2xlYW46OiB8IGxpYi1jbGVhbgo+ID4gwqBs
+aWItY2xlYW46OiAkKExJQkRJUikKPiA+IMKgIMKgIMKgIMKgJChNQUtFKSAtQyAkXiAtZiAiJChh
+YnNfc3JjZGlyKS8kXi9NYWtlZmlsZSIgY2xlYW4KPiA+Cj4gPiAtaW5jbHVkZSAkKHRvcF9zcmNk
+aXIpL2luY2x1ZGUvbWsvZ2VuZXJpY190cnVua190YXJnZXQubWsKPiA+IMKgaW5jbHVkZSAkKHRv
+cF9zcmNkaXIpL2luY2x1ZGUvbWsvdGVzdGNhc2VzLm1rCj4gPiAraW5jbHVkZSAkKHRvcF9zcmNk
+aXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19sZWFmX3RhcmdldC5tawo+IAo+IEZvcmdvdCBhYm91dCB0
+aGF0IE1ha2VmaWxlIHRoYXQgQ2FpIHN1Ym1pdHRlZC4gSG93IGFib3V0IHRoaXMgaW5zdGVhZD8K
+SXQgaXMgbm90IG1lIGJ1dCBMdWNhcy4KPiBUaGFua3MsCj4gLUdhcnJldHQKPiAKPiBkaWZmIC0t
+Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL01ha2VmaWxlCj4gYi90ZXN0Y2FzZXMva2Vy
+bmVsL21lbS9rc20vTWFrZWZpbGUKPiBpbmRleCA4MTUwOWJmLi5mZGZmNWZjIDEwMDY0NAo+IC0t
+LSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9NYWtlZmlsZQo+ICsrKyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvbWVtL2tzbS9NYWtlZmlsZQo+IEBAIC0xOCw3ICsxOCw3IEBACj4gCj4gdG9wX3NyY2Rp
+ciA/PSAuLi8uLi8uLi8uLgo+IAo+IC1pbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9l
+bnZfcHJlLm1rCj4gK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL3Rlc3RjYXNlcy5t
+awo+IAo+IExETElCUyArPSAkKE5VTUFfTElCUykgLWxtZW0KPiBMSUJESVIgOj0gLi4vbGliCj4g
+QEAgLTM5LDUgKzM5LDQgQEAgdHJ1bmstY2xlYW46OiB8IGxpYi1jbGVhbgo+IGxpYi1jbGVhbjo6
+ICQoTElCRElSKQo+ICQoTUFLRSkgLUMgJF4gLWYgIiQoYWJzX3NyY2RpcikvJF4vTWFrZWZpbGUi
+IGNsZWFuCj4gCj4gLWluY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL2dlbmVyaWNfdHJ1
+bmtfdGFyZ2V0Lm1rCj4gLWluY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL3Rlc3RjYXNl
+cy5tawo+ICtpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9nZW5lcmljX2xlYWZfdGFy
+Z2V0Lm1rCj4gCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gU3BlY2lhbCBPZmZlci0tIERvd25s
+b2FkIEFyY1NpZ2h0IExvZ2dlciBmb3IgRlJFRSAoYSAkNDkgVVNEIHZhbHVlKSEKPiBGaW5hbGx5
+LCBhIHdvcmxkLWNsYXNzIGxvZyBtYW5hZ2VtZW50IHNvbHV0aW9uIGF0IGFuIGV2ZW4gYmV0dGVy
+Cj4gcHJpY2UtZnJlZSEKPiBEb3dubG9hZCB1c2luZyBwcm9tbyBjb2RlIEZyZWVfTG9nZ2VyXzRf
+RGV2MkRldi4gT2ZmZXIgZXhwaXJlcwo+IEZlYnJ1YXJ5IDI4dGgsIHNvIHNlY3VyZSB5b3VyIGZy
+ZWUgQXJjU2lnaHQgTG9nZ2VyIFRPREFZIQo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvYXJjc2lnaHQt
+c2ZkMmQKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+
+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KU3BlY2lhbCBPZmZlci0tIERvd25sb2FkIEFyY1NpZ2h0IExv
+Z2dlciBmb3IgRlJFRSAoYSAkNDkgVVNEIHZhbHVlKSEKRmluYWxseSwgYSB3b3JsZC1jbGFzcyBs
+b2cgbWFuYWdlbWVudCBzb2x1dGlvbiBhdCBhbiBldmVuIGJldHRlciBwcmljZS1mcmVlIQpEb3du
+bG9hZCB1c2luZyBwcm9tbyBjb2RlIEZyZWVfTG9nZ2VyXzRfRGV2MkRldi4gT2ZmZXIgZXhwaXJl
+cyAKRmVicnVhcnkgMjh0aCwgc28gc2VjdXJlIHlvdXIgZnJlZSBBcmNTaWdodCBMb2dnZXIgVE9E
+QVkhIApodHRwOi8vcC5zZi5uZXQvc2Z1L2FyY3NpZ2h0LXNmZDJkCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
+bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
