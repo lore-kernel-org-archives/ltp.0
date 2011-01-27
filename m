@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <cristian@regolo.cc>) id 1PgEBa-0005sQ-82
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 10:25:42 +0000
-Received: from aiolia.regolo.cc ([178.79.135.37])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.72)
-	id 1PgEBU-0005qJ-5i
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 10:25:42 +0000
-Received: from regolo (93-46-43-128.ip106.fastwebnet.it [93.46.43.128])
-	by aiolia.regolo.cc (Postfix) with ESMTPSA id 3470A64
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 11:25:20 +0100 (CET)
-Date: Fri, 21 Jan 2011 11:25:17 +0100
-From: Cristian Greco <cristian@regolo.cc>
-Message-ID: <20110121112517.0d468826@regolo>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] Various fixes for manpages.
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1PiO0x-0000Ye-IT
+	for ltp-list@lists.sourceforge.net; Thu, 27 Jan 2011 09:19:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PiO0v-0002cA-FE
+	for ltp-list@lists.sourceforge.net; Thu, 27 Jan 2011 09:19:39 +0000
+Message-ID: <4D413877.6000003@cn.fujitsu.com>
+Date: Thu, 27 Jan 2011 17:18:47 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [POSIX][PATCH]fix test conformance/interfaces/aio_cancel/7-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,126 +25,260 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+When i test conformance/interfaces/aio_cancel/7-1 on the same OS,
+it will report some different results, such as PASS, UNRESOLVED.
+The probable one is UNRESOLVED, it looks not a stable case.
 
-please merge some small fixes for manpages (typos, outdated content
-and file permissions).
+After applying following patch, the test will become stable.
 
-Signed-off-by: Cristian Greco <cristian@regolo.cc>
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
 ---
- doc/man1/ltp-pan.1           |    4 ++--
- doc/man3/parse_opts.3        |    4 +---
- doc/man3/tst_res.3           |    6 +++---
- doc/man3/usctest.3           |    5 ++---
- 4 files changed, 8 insertions(+), 11 deletions(-)
- mode change 100755 => 100644 doc/man3/random_range.3
- mode change 100755 => 100644 doc/man3/random_range_seed.3
+ .../conformance/interfaces/aio_cancel/7-1.c        |  192 ++++++++++++--------
+ 1 files changed, 112 insertions(+), 80 deletions(-)
 
-diff --git a/doc/man1/ltp-pan.1 b/doc/man1/ltp-pan.1
-index 16893ee..1359c78 100644
---- a/doc/man1/ltp-pan.1
-+++ b/doc/man1/ltp-pan.1
-@@ -144,7 +144,7 @@ specified for \fI-x\fP then it is bumped up to be equal to the value of
- Indicates the length that ltp-pan should run tests. By default this is not set.  If specified, 
- the \fI-s\fP flag is automatically set to 0 (infinite).  Presumably, you want as many 
- tests ran during this timeframe. Duration is measured in \fIs\fPeconds, \fIm\fPinutes, 
--\fIh\Pours,OR \fId\Pays.
-+\fIh\fPours, or \fId\fPays.
- .TP 1i
- \fB-x \fInactive\fB
- Indicates the number of commands (tags) that should be kept active at any one
-@@ -198,7 +198,7 @@ printing the output as a human readable format, with the test output at /tmp/out
- and all failed test commands (if you have any) at /tmp/fail-command-file.
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c
+index c37f184..a410152 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c
+@@ -43,14 +43,81 @@
+ #define BUF_NB		128
+ #define BUF_SIZE	1024
  
- $ ltp-pan -n stress -e -p -q -S -t 24h -a stress -l logfile -f command-file \
--		-o /tmp/output-file -C /tmp/fail-command-file
-+-o /tmp/output-file -C /tmp/fail-command-file
++int
++setup_aio_request(struct aiocb *aiocb[], char *bufs[], int count, int fd)
++{
++	int i = 0;
++
++	for (i = 0; i < count; i++) {
++		memset(aiocb[i], 0, sizeof(struct aiocb));
++
++		aiocb[i]->aio_fildes = fd;
++		memset(bufs[i], 0, BUF_SIZE);
++		aiocb[i]->aio_buf = bufs[i];
++		aiocb[i]->aio_nbytes = BUF_SIZE;
++		aiocb[i]->aio_offset = 0;
++		aiocb[i]->aio_sigevent.sigev_notify = SIGEV_NONE;
++
++		if (aio_write(aiocb[i]) == -1) {
++			printf(TNAME " loop %d: Error at aio_write(): %s\n",
++			       i, strerror(errno));
++			return -1;
++		}
++	}
++
++	return 0;
++}
++
++int
++create_aio_request(struct aiocb *aiocb[], char *bufs[], int count)
++{
++	int i = 0;
++
++	for (i = 0; i < count; i++) {
++		aiocb[i] = malloc(sizeof(struct aiocb));
++		if (aiocb[i] == NULL) {
++			printf(TNAME " Error at malloc(): %s\n",
++				strerror(errno));
++			return -1;
++		}
++
++		bufs[i] = malloc(BUF_SIZE);
++		if (bufs[i] == NULL) {
++			printf(TNAME " Error at malloc(): %s\n",
++		       		strerror(errno));
++			return -1;
++		}
++	}
++
++	return 0;
++}
++
++void
++destroy_aio_request(struct aiocb *aiocb[], char *bufs[], int count)
++{
++	int i = 0;
++
++	for (i = 0; i < count; i++) {
++		if (bufs[i]) {
++			free(bufs[i]);
++			bufs[i] = NULL;
++		}
++		if (aiocb[i]) {
++			free(aiocb[i]);
++			aiocb[i] = NULL;
++		}
++	}
++}
++
+ int main()
+ {
+ 	char tmpfname[256];
+ 	int fd;
+ 	struct aiocb *aiocb[BUF_NB];
++	char *bufs[BUF_NB];
+ 	int i;
+ 	int in_progress;
+-	int gret;
++	int gret, trying = 100;
  
- .SH LAYERING
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
+@@ -70,96 +137,61 @@ int main()
+ 	unlink(tmpfname);
  
-diff --git a/doc/man3/parse_opts.3 b/doc/man3/parse_opts.3
-index 525554a..abba0d5 100644
---- a/doc/man3/parse_opts.3
-+++ b/doc/man3/parse_opts.3
-@@ -115,7 +115,7 @@ Run for \fIn\fR iterations. A value of 0 makes the test loop infinitely.
- The test will loop until \fIx\fR seconds have passed. (default 0.0)
- .TP
- .B \-p
--Pause for SIGUSR1 before testing. The test will pause were you place
-+Pause for SIGUSR1 before testing. The test will pause where you place
- TEST_PAUSE.  \fIWarning\fR: The test will also fork at this point if \-c is
- used.  
- .TP
-@@ -177,5 +177,3 @@ int main(int argc, char *argv[])
- .fi
- .SH "SEE ALSO"
- usctest(3), getopt(3).
+ 	/* create AIO req */
++	if (create_aio_request(aiocb, bufs, BUF_NB) == -1) {
++		printf(TNAME " Error at create aio requests\n");
+ 
+-	for (i = 0; i < BUF_NB; i++)
+-	{
+-		aiocb[i] = malloc(sizeof(struct aiocb));
+-		if (aiocb[i] == NULL)
+-		{
+-			printf(TNAME " Error at malloc(): %s\n",
+-		       		strerror(errno));
+-			return PTS_UNRESOLVED;
+-		}
+-		aiocb[i]->aio_fildes = fd;
+-		aiocb[i]->aio_buf = malloc(BUF_SIZE);
+-		if (aiocb[i]->aio_buf == NULL)
+-		{
+-			printf(TNAME " Error at malloc(): %s\n",
+-		       		strerror(errno));
+-			return PTS_UNRESOLVED;
+-		}
+-		aiocb[i]->aio_nbytes = BUF_SIZE;
+-		aiocb[i]->aio_offset = 0;
+-		aiocb[i]->aio_sigevent.sigev_notify = SIGEV_NONE;
 -
+-		if (aio_write(aiocb[i]) == -1)
+-		{
+-			printf(TNAME " loop %d: Error at aio_write(): %s\n",
+-			       i, strerror(errno));
+-			return PTS_FAIL;
+-		}
++		destroy_aio_request(aiocb, bufs, BUF_NB);
++		close(fd);
++		return PTS_UNRESOLVED;
+ 	}
+ 
+-	/* try to cancel all
+-	 * we hope to have enough time to cancel at least one
+-	 */
 -
-diff --git a/doc/man3/random_range.3 b/doc/man3/random_range.3
-old mode 100755
-new mode 100644
-diff --git a/doc/man3/random_range_seed.3 b/doc/man3/random_range_seed.3
-old mode 100755
-new mode 100644
-diff --git a/doc/man3/tst_res.3 b/doc/man3/tst_res.3
-index d1a1c50..03e8f24 100644
---- a/doc/man3/tst_res.3
-+++ b/doc/man3/tst_res.3
-@@ -37,9 +37,9 @@ tst_res \- Print result message, including file contents
- .sp
- tst_resm \- Print result message
- .sp
--tst_brk \- Print result message and break remaining test cases
-+tst_brk \- Print result message, including file contents, and break remaining test cases
- .sp
--tst_brkm \- Print result message, including file contents, and break remaining test cases
-+tst_brkm \- Print result message and break remaining test cases
- .sp
- tst_flush \- Print any messages pending because of CONDENSE mode, and flush output stream
- .sp
-@@ -74,7 +74,7 @@ extern int Tst_range;
- .SH DESCRIPTION
- .SS Introduction
- This library of functions are used by UNICOS tests to report results to
--standard out in a consistent manner.  It is assumed that tests using this
-+standard output in a consistent manner.  It is assumed that tests using this
- library have a distinct number of test cases, and that each test case is
- distinct and uniquely identified by the test case number.  It is also assumed
- that test case results are printed in consecutive order, starting with 1.
-diff --git a/doc/man3/usctest.3 b/doc/man3/usctest.3
-index 8407803..d52968c 100644
---- a/doc/man3/usctest.3
-+++ b/doc/man3/usctest.3
-@@ -114,8 +114,7 @@ The \fBparse_opts\fR routine parses the command line (see \fBparse_opts(3)\fR).
- variables used are set by the \fBparse_opts(3)\fR routine.
+-	gret = aio_cancel(fd, NULL);
+-	if (gret == -1)
+-	{
+-		printf(TNAME " Error at aio_cancel(): %s\n",
+-		       strerror(errno));
+-		return PTS_FAIL;
+-	}
++	do {
++		if (setup_aio_request(aiocb, bufs, BUF_NB, fd) == -1) {
++			printf(TNAME " Error at set aio requests\n");
  
- .SH EXAMPLES
--Below is a partial template of a system call test using these routines, macros, and global variables.  A complete
--template may be found in the CUTS/sun/skel directory, in the file \fBusctest.c\fR.
-+Below is a partial template of a system call test using these routines, macros, and global variables.
+-	close(fd);
++			destroy_aio_request(aiocb, bufs, BUF_NB);
++			close(fd);
++			return PTS_UNRESOLVED;
++		}
  
- .nf
- void
-@@ -143,7 +142,7 @@ int main(ac, av)
- 	setup();	/* execute setup */
+-	do {
+-		in_progress = 0;
+-		for (i = 0; i < BUF_NB; i++)
+-		{
++		/*
++		 * try to cancel all
++		 * we hope to have enough time to cancel at least one
++		 */
++		gret = aio_cancel(fd, NULL);
++		if (gret == -1) {
++			printf(TNAME " Error at aio_cancel(): %s\n",
++				strerror(errno));
++			destroy_aio_request(aiocb, bufs, BUF_NB);
++			close(fd);
++			return PTS_FAIL;
++		} else if (gret == AIO_NOTCANCELED) {
+ 			int ret;
  
- 	/* parse options */
--	msg=parse_opts(ac, av, (option_t *)NULL);
-+	msg=parse_opts(ac, av, (option_t *)NULL, NULL);
+-			ret = (aio_error(aiocb[i]));
+-
+-			if (ret == -1)
+-			{
+-				printf(TNAME " Error at aio_error(): %s\n",
+-		       			strerror(errno));
+-				return PTS_FAIL;
+-			}
+-			else if (ret == EINPROGRESS)
+-			{
+-				/* at this point, all operations should be:
+-				 *    canceled
+-				 * or in progress
+-				 *    with aio_cancel() == AIO_NOTCANCELED
+-				 */
+-
+-				if (gret != AIO_NOTCANCELED)
+-				{
+-					printf(TNAME " Error at aio_error(): %s\n", strerror(errno));
+-					return PTS_FAIL;
+-				}
++			for (i = 0; i < BUF_NB; i++) {
++				ret = (aio_error(aiocb[i]));
++				if (ret == EINPROGRESS || ret == 0) {
++					destroy_aio_request(aiocb,bufs,BUF_NB);
++					close(fd);
  
- 	/* Check parse_opts return */
+-				in_progress = 1;
+-			}
+-			else if (ret == 0)
+-			{
+-				/* we seek one not canceled and check why.
+-				 * (perhaps) it has not been canceled
+-				 * because it was in progress
+-				 * during the cancel operation
+-				 */
+-
+-				if (gret == AIO_NOTCANCELED)
+-				{
+-					printf ("Test PASSED\n");
++					printf("Test PASSED\n");
+ 					return PTS_PASS;
+ 				}
+ 			}
++
++			printf(TNAME " aio_cancel return AIO_NOTCANCELED, "
++			       "but no request was processed\n");
++
++			destroy_aio_request(aiocb, bufs, BUF_NB);
++			close(fd);
++			return PTS_FAIL;
+ 		}
+-	} while (in_progress);
++	} while (trying --);
++
++	destroy_aio_request(aiocb, bufs, BUF_NB);
++	close(fd);
++
++	printf("Test unresolved\n");
  
+ 	return PTS_UNRESOLVED;
+-}
+\ No newline at end of file
++}
 -- 
-1.7.2.3
+1.7.0.4
 
 
-Thanks,
---
-Cristian Greco
-GPG key ID: 0xCF4D32E4
+
+
+-- 
+Regards
+Bian Naimeng
+
 
 ------------------------------------------------------------------------------
 Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
