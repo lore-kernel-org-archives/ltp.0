@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1PgLOn-0006XB-K2
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 18:07:49 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.72) id 1PgLOk-0001TX-QI
-	for ltp-list@lists.sourceforge.net; Fri, 21 Jan 2011 18:07:47 +0000
-Received: by wwi18 with SMTP id 18so2006393wwi.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Jan 2011 10:07:40 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1Pii8o-0004OV-4j
+	for ltp-list@lists.sourceforge.net; Fri, 28 Jan 2011 06:49:06 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pii8m-0006Hz-AG
+	for ltp-list@lists.sourceforge.net; Fri, 28 Jan 2011 06:49:06 +0000
+Message-ID: <4D4266E2.9070001@cn.fujitsu.com>
+Date: Fri, 28 Jan 2011 14:49:06 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20110121112517.0d468826@regolo>
-References: <20110121112517.0d468826@regolo>
-Date: Fri, 21 Jan 2011 09:54:05 -0800
-Message-ID: <AANLkTi=orYwq6E1Nv54mktjvYnGf00yeWDNcsdH2Jzbm@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Various fixes for manpages.
+Subject: [LTP]  [PATCH] sigrelse01.c: cleanup() should be called only once
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,17 +25,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Greco <cristian@regolo.cc>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Jan 21, 2011 at 2:25 AM, Cristian Greco <cristian@regolo.cc> wrote:
-> Hi,
->
-> please merge some small fixes for manpages (typos, outdated content
-> and file permissions).
+Hi Garrett,
 
-Committed with date bumps -- thanks!
--Garrett
+cleanup() call the function tst_rmdir() to remove the temporary
+directory, so cleanup() should be called only once.
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/sigrelse/sigrelse01.c |   11 +++--------
+ 1 files changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/sigrelse/sigrelse01.c b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
+index 0d0e12b..da612df 100644
+--- a/testcases/kernel/syscalls/sigrelse/sigrelse01.c
++++ b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
+@@ -373,9 +373,6 @@ static void parent()
+ 		tst_resm(TBROK, "Unexpected exit code %d from child", rv);
+ 		break;
+ 	}
+-
+-	cleanup();
+-
+ }				/* end of parent */
+ 
+ /****************************************************************************
+@@ -797,8 +794,7 @@ void setup()
+ 
+ 	/* set up pipe for parent/child communications */
+ 	if (pipe(pipe_fd) < 0) {
+-		tst_resm(TBROK|TERRNO, "pipe() failed");
+-		cleanup();
++		tst_brkm(TBROK|TERRNO, cleanup, "pipe() failed");
+ 	}
+ 
+ 	/*
+@@ -812,8 +808,7 @@ void setup()
+ 
+ 	/* set up pipe for parent/child communications */
+ 	if (pipe(pipe_fd2) < 0) {
+-		tst_resm(TBROK|TERRNO, "pipe() failed");
+-		cleanup();
++		tst_brkm(TBROK|TERRNO, cleanup, "pipe() failed");
+ 	}
+ 
+ 	/*
+@@ -840,4 +835,4 @@ void cleanup()
+ 
+ 	tst_rmdir();
+ 
+-}
+\ No newline at end of file
++}
+-- 
+1.7.0.1
+
+-- 
+Best Regards,
+Peng Haitao
+
 
 ------------------------------------------------------------------------------
 Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
