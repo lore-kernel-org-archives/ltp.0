@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ext-hannu.m.heikkinen@nokia.com>) id 1PaR7d-0001o1-J6
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jan 2011 11:01:41 +0000
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.72) id 1PaR7b-0008Qg-RF
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jan 2011 11:01:41 +0000
-Date: Wed, 5 Jan 2011 13:00:29 +0000
-From: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-Message-ID: <20110105130029.GA18322@hannu-debian.research.nokia.com>
-References: <AANLkTi=qFxgs4CPQ2EUwHin1LTgxw0V-RENPV9rRqraF@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Pjyfm-0004jC-15
+	for ltp-list@lists.sourceforge.net; Mon, 31 Jan 2011 18:40:22 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 53BE79486B
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 31 Jan 2011 19:40:13 +0100 (CET)
+Date: Mon, 31 Jan 2011 19:58:30 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110131185830.GA5618@saboteur.suse.cz>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="xHFwDpU9dbj6ez1V"
 Content-Disposition: inline
-In-Reply-To: <AANLkTi=qFxgs4CPQ2EUwHin1LTgxw0V-RENPV9rRqraF@mail.gmail.com>
-Subject: Re: [LTP] [Bug Fix] utimensat01 can't build
+Subject: [LTP] [PATCH] the very last patch for timer_create
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,62 +26,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ext Vivi <violetleigh@gmail.com>
-Cc: LTP mailing list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 29/12/10 10:35 +0100, ext Vivi wrote:
-> LTP test case utimensat01.c can't build without file usctest.h.
-> 
-> Bellow is the patch:
-> --
-> Index: testcases/kernel/syscalls/utimensat/utimensat01.c
-> ===================================================================
-> --- testcases/kernel/syscalls/utimensat/utimensat01.c   (revision 161)
-> +++ testcases/kernel/syscalls/utimensat/utimensat01.c   (revision 183)
-> @@ -40,6 +40,7 @@
->  #include <string.h>
->  #include <sys/stat.h>
->  #include <test.h>
-> +#include "usctest.h"
->  #include "linux_syscall_numbers.h"
-> 
->  char *TCID = "utimensat01";    /* Test program identifier.    */
-> --
-> 
-> 
-> 
-> Best regards,
-> Vivi Li
 
-Hi,
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-for your patch emails, can you please you format like:
+Hi!
+For some reason timer_create/11-1.c is missing call for reading time
+into ts_start, which is the reason for the tescase to fail. Patch is
+attached.
 
-Subject: [LTP] [PATCH] ....
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-and if secondary patch:
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Subject: [LTP] [PATCH v2] ....
+--xHFwDpU9dbj6ez1V
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="timer_create_missing.patch"
 
-etc.
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
+index 447c7ed..321b7bc 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_create/11-1.c
+@@ -73,6 +73,11 @@ int main(int argc, char *argv[])
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts_start) != 0) {
++		perror("clock_gettime() failed");
++		return PTS_UNRESOLVED;
++	}
++	
+ 	if (timer_settime(tid, 0, &its, NULL) != 0) {
+ 		perror("timer_settime did not return success");
+ 		return PTS_UNRESOLVED;
 
-Instead of using [Bug Fix] or similar keywords.
-
-Btw, is this btw described in ltp web site? 
-
-br,
-Hannu
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn how Oracle Real Application Clusters (RAC) One Node allows customers
-to consolidate database storage, standardize their database environment, and, 
-should the need arise, upgrade to a full multi-node Oracle RAC database 
-without downtime or disruption
-http://p.sf.net/sfu/oracle-sfdevnl
+Special Offer-- Download ArcSight Logger for FREE (a $49 USD value)!
+Finally, a world-class log management solution at an even better price-free!
+Download using promo code Free_Logger_4_Dev2Dev. Offer expires 
+February 28th, so secure your free ArcSight Logger TODAY! 
+http://p.sf.net/sfu/arcsight-sfd2d
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--xHFwDpU9dbj6ez1V--
+
