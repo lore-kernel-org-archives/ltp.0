@@ -1,28 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PsVSP-00025k-Nu
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:17:49 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PsVSO-000349-TT
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:17:49 +0000
-Received: by gxk1 with SMTP id 1so154462gxk.34
+	(envelope-from <chrubis@suse.de>) id 1PlOoh-0007UO-3s
+	for ltp-list@lists.sourceforge.net; Fri, 04 Feb 2011 16:47:27 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 3D25A93717
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Feb 2011 23:17:43 -0800 (PST)
+	Fri,  4 Feb 2011 17:47:19 +0100 (CET)
+Date: Fri, 4 Feb 2011 18:05:56 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110204170556.GA30962@saboteur.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <4D65F9CF.7090009@cn.fujitsu.com>
-References: <4CBEAF2A.1070101@cn.fujitsu.com>
-	<20101221124935.GA944@hannu-debian.research.nokia.com>
-	<4D12B48A.9020500@cn.fujitsu.com>
-	<ABDE7E44-F301-4846-A7C3-D0F35CCC2E4F@gmail.com>
-	<4D65F9CF.7090009@cn.fujitsu.com>
-Date: Wed, 23 Feb 2011 23:17:43 -0800
-Message-ID: <AANLkTi=h_En-qEXujxNwv85qUMnHGb+hUtL_Jb4sOF+F@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] About LTP
- open_posix_testsuite/functional/threads/robust_test cases
+Content-Type: multipart/mixed; boundary="/04w6evG8XlLl3ft"
+Content-Disposition: inline
+Subject: [LTP] [PATCH] style guide note about writing signal handlers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,58 +26,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Feb 23, 2011 at 10:25 PM, Gui Jianfeng
-<guijianfeng@cn.fujitsu.com> wrote:
-> Garrett Cooper wrote:
->> On Dec 22, 2010, at 6:31 PM, Gui Jianfeng <guijianfeng@cn.fujitsu.com
->> <mailto:guijianfeng@cn.fujitsu.com>> wrote:
->>
->>> Hannu Heikkinen wrote:
->>>> On 20/10/10 10:58 +0200, ext Gui Jianfeng wrote:
->>>>> Hi Garrett
->>>>>
->>>>> In open_posix_testsuite/functional/threads/robust_test category,
->>>>> all test cases don't follow the POSIX standard. They call many
->>>>> functions that glibc doesn't even support. I wonder why not just
->>>>> get rid of these test cases.
->>>>>
->>>>> --
->>>>> Regards
->>>>> Gui Jianfeng
->>>>
->>>> Hi,
->>>>
->>>> any progress/news about this?
->>>
->>> Garrett,
->>>
->>> Would you get rid of these cases?
->>
->> They should go in testcases/realtime . I can't commit changes for
->> approximately another week and a half because I don't have Internet
->> connectivity except on my phone (which doesn't do git :/..).
->
-> Garrett,
->
-> Would you also take a look these cases?
 
-Ok, I guess I'll toss them then.
-Thanks!
--Garrett
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+Patch with note about writing signal handlers attached.
+
+Garrett feel free to rewrite it to match the rest of the style guide.
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--/04w6evG8XlLl3ft
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="style_guide.patch"
+
+diff --git a/doc/style-guide.txt b/doc/style-guide.txt
+index a8b75a7..713df6c 100644
+--- a/doc/style-guide.txt
++++ b/doc/style-guide.txt
+@@ -172,6 +172,11 @@ if ((this_is_a_poorly_formed_really_long_variable = function_call()) == NULL &&
+     Furthermore, linux/ headers get shuffled around a lot more than
+     their sys/ counterparts it seems.
+ 
++15. Avoid doing tricky things in signal handlers. Calling most of the libc
++    functions from signal handler may lead to deadlocks or memory corruption.
++    If you really need to do anything more complicated that "should_run = 0;"
++    in your signal handler consult "man 7 singal" for async-signal-safe
++    functions.
+ 
+ Porting Testcases
+ ---------------------------
+
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
+The modern datacenter depends on network connectivity to access resources
+and provide services. The best practices for maximizing a physical server's
+connectivity to a physical network are well understood - see how these
+rules translate into the virtual world? 
+http://p.sf.net/sfu/oracle-sfdevnlfb
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--/04w6evG8XlLl3ft--
+
