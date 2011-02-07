@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PpM6q-0007fM-1O
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 14:42:32 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PpM6o-0008BM-HG
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 14:42:32 +0000
-Received: by wyb40 with SMTP id 40so218040wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 Feb 2011 06:42:24 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PmQFx-0002gT-I6
+	for ltp-list@lists.sourceforge.net; Mon, 07 Feb 2011 12:31:49 +0000
+Date: Mon, 7 Feb 2011 13:50:34 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110207125034.GA5014@saboteur.suse.cz>
+References: <20110204170556.GA30962@saboteur.suse.cz>
+	<AANLkTimOpGBzw7Ud2KgafUovCMD1V0zLOHUv75onSan=@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4D58F766.6040208@cn.fujitsu.com>
-References: <4D58C631.7040508@cn.fujitsu.com>
-	<AANLkTinXKnOn7XBWJ=+Pc=5r6ObK68s8K2VNEwpuuvBA@mail.gmail.com>
-	<4D58F766.6040208@cn.fujitsu.com>
-Date: Tue, 15 Feb 2011 06:42:24 -0800
-Message-ID: <AANLkTikdB=poh8vt8PhoiJxUFz2Zimu9oORiyyMSeu-+@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] setfsuid04.c: the child process should exit 0
+Content-Disposition: inline
+In-Reply-To: <AANLkTimOpGBzw7Ud2KgafUovCMD1V0zLOHUv75onSan=@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] style guide note about writing signal handlers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +22,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Feb 14, 2011 at 1:35 AM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> Garrett Cooper said the following on 2011-2-14 14:23:
->> =A0 =A0 How about this version instead? There were issues with the
->
-> The two "TEST_ERRNO" should be replaced with "errno" in this version,
-> If not, the version will fail.
+Hi!
+> > Patch with note about writing signal handlers attached.
+> >
+> > Garrett feel free to rewrite it to match the rest of the style guide.
+> 
+> Patch is fine minus one typo (s/singal/signal/). The more complicated
+> part is that the majority of our libltp based infrastructure does use
+> non-async safe functions in signal handlers to crash and burn
+> testcases (tst_sig is built on tst_brkm, which uses fprintf, fflush,
+> etc).
 
-Other than that I assume things are ok?
-Thanks,
--Garrett
+Well yes the libltp interface is far too complicated and would probably
+gain from simplification, it would be much easier to do it correctly
+then.  The real problem is a number of testcases using it.
 
----------------------------------------------------------------------------=
----
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+The downside of signal handler and non-async safe functions is that you
+will never know, when they fail, they usually fail with relatively small
+probability and on some system they run just fine, because of different
+libc internals etc. Such behaviour often results in false-possitive
+regressions. And the only way to avoid this is not to complicate your
+signal handler.
+
+If I remember correctly the problem with printf is that it may use
+malloc for allocating the buffer, that if called, while there is malloc
+or free running in the main loop, could cause problems. Which is not
+likely, at least most of the time.
+
+> I agree with you that doing stuff in signal handlers is non-kosher,
+> and some testcases should be fixed, but some concession might need to
+> be made for the crash and burn logic in other testcases and the
+> infrastructure proper.
+
+I've seen the libltp code and I agree that, as it is now, there is no
+better way. Actually I was thinking of playing with the api for some
+time to eliminate useless functions and rewrite some of the code and may
+be change parts of the api. But so far I haven't had enough time.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+The modern datacenter depends on network connectivity to access resources
+and provide services. The best practices for maximizing a physical server's
+connectivity to a physical network are well understood - see how these
+rules translate into the virtual world? 
+http://p.sf.net/sfu/oracle-sfdevnlfb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
