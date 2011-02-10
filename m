@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PsUWN-0004MN-6r
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 06:17:51 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PsUWL-0006XO-Oq
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 06:17:51 +0000
-Message-ID: <4D65F817.2020904@cn.fujitsu.com>
-Date: Thu, 24 Feb 2011 14:17:59 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PnYrh-0002ne-11
+	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 15:55:29 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PnYrg-0008V6-0I
+	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 15:55:28 +0000
+Received: by wwi18 with SMTP id 18so1421066wwi.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 10 Feb 2011 07:55:21 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] syslogtst.c: fix a bug of assert() is used wrong
+In-Reply-To: <20110210085232.GA9285@hpt.nay.redhat.com>
+References: <20110210085232.GA9285@hpt.nay.redhat.com>
+Date: Thu, 10 Feb 2011 07:55:21 -0800
+Message-ID: <AANLkTimk_+8o+QQdjzweLmhB=qzzO2TGYADmEuBQtZom@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix build of cpuset_syscall_test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,74 +27,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+On Thu, Feb 10, 2011 at 12:52 AM, Han Pingtian <phan@redhat.com> wrote:
+> cpuset_syscall_test now depends on numa lib:
+>
+> make[1]: Entering directory `/root/ltp/testcases/kernel/controllers/cpuse=
+t/cpuset_syscall_test'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I/root/ltp/testcas=
+es/kernel/include -I../../../../../include -I../../../../../include =A0 -L/=
+root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_=
+lib -L/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../=
+../libcontrollers -L../../../../../lib =A0cpuset_syscall_test.c =A0 -lltp -=
+lcpu_set -lcontrollers -lltp -o cpuset_syscall_test
+> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpus=
+et_lib/libcpu_set.a(libcpuset.o): In function `cpuset_addr2node':
+> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3455=
+: undefined reference to `get_mempolicy'
+> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpus=
+et_lib/libcpu_set.a(libcpuset.o): In function `cpuset_membind':
+> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3439=
+: undefined reference to `set_mempolicy'
+> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpus=
+et_lib/libcpu_set.a(libcpuset.o): In function `cpuset_unpin':
+> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3752=
+: undefined reference to `set_mempolicy'
+> collect2: ld returned 1 exit status
+> make[1]: *** [cpuset_syscall_test] Error 1
+> make[1]: Leaving directory `/root/ltp/testcases/kernel/controllers/cpuset=
+/cpuset_syscall_test'
+> make: *** [all] Error 2
+>
+> This patch fixes this problem
+>
+> Signed-off-by: Han Pingtian <phan@redhat.com>
+> ---
+> =A0.../cpuset/cpuset_syscall_test/Makefile =A0 =A0 =A0 =A0 =A0 =A0| =A0 =
+=A02 ++
+> =A01 files changed, 2 insertions(+), 0 deletions(-)
+>
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Make=
+file b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+> index edc6265..17331fb 100644
+> --- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+> @@ -25,3 +25,5 @@ top_srcdir =A0 =A0 =A0 =A0 =A0 =A0 =A0?=3D ../../../../=
+..
+> =A0include $(top_srcdir)/include/mk/testcases.mk
+> =A0include $(abs_srcdir)/../Makefile.inc
+> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> +LDLIBS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D $(NUMA_LIBS)
+> --
 
-When executing "./syslogtst 1", the error message is follows:
-syslogtst: syslogtst.c:93: main: Assertion `ch1 != -1' failed.
+For consistency this should be placed before generic_leaf_target.mk
+Thanks,
+-Garrett
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/syscalls/syslog/syslogtst.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/syslog/syslogtst.c b/testcases/kernel/syscalls/syslog/syslogtst.c
-index a229688..11a97fd 100644
---- a/testcases/kernel/syscalls/syslog/syslogtst.c
-+++ b/testcases/kernel/syscalls/syslog/syslogtst.c
-@@ -90,8 +90,6 @@ int main(int argc, char *argv[])
- 			ch1 = atoi(argv[2]);
- 	}
- 
--	assert (ch1 != -1);
--
- 	/*
- 	 * Send syslog messages according to the case number, which
- 	 * we will know from command line.
-@@ -101,6 +99,8 @@ int main(int argc, char *argv[])
- 		syslog(LOG_MAIL | LOG_INFO, "syslogtst: mail info test.");
- 		break;
- 	case 2:
-+		assert (ch1 != -1);
-+
- 		switch (ch1) {
- 		case 0:
- 			syslog(LOG_MAIL | LOG_EMERG,
-@@ -254,6 +254,8 @@ int main(int argc, char *argv[])
- 		syslog(LOG_USER | LOG_DEBUG, "syslogtst: debug log");
- 		break;
- 	case 8:
-+		assert (ch1 != -1);
-+
- 		switch (ch1) {
- 			/*
- 			 * Kernel messages cannot be send by user, so skipping the
-@@ -343,4 +345,4 @@ void sig_handler(int signal)
- 	}
- 
- 	exit(signal);
--}
-\ No newline at end of file
-+}
--- 
-1.7.1
-
--- 
-Best Regards,
-Peng Haitao
-
-
-------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
