@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Porsn-0008Tr-Cd
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:26:01 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Porsm-0004Nq-Hh
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:26:01 +0000
-Received: by wwi18 with SMTP id 18so4256232wwi.10
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 13 Feb 2011 22:25:54 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1PnQod-0004Y0-6G
+	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 07:19:47 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PnQoc-0006KZ-2d
+	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 07:19:47 +0000
+Date: Thu, 10 Feb 2011 15:23:15 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110210072315.GA7909@hpt.nay.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20110214061409.GA7983@hpt.nay.redhat.com>
-References: <20110214061409.GA7983@hpt.nay.redhat.com>
-Date: Sun, 13 Feb 2011 22:25:54 -0800
-Message-ID: <AANLkTimzLhCfwAgHuB4S3Fo=gHkHEKbjs6ObficnqKXU@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] ksm: wait 3 increments of full_scans before
- checking the results
+Content-Disposition: inline
+Subject: [LTP] [PATCH] Fix disable set_ftrace_pid in ftrace_set_ftrace_pid.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,19 +26,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, caiqian@redhat.com
+To: ltp-list@lists.sourceforge.net
 
-On Sun, Feb 13, 2011 at 10:14 PM, Han Pingtian <phan@redhat.com> wrote:
-> The KSM developer tell us that we should wait 3~5 increments of the
-> /sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results.
-> Otherwise, there may be some stuck pages that cause the testing failed.
+It seems we need echo -1 to set_ftrace_pid to disable in. Or we'll get
+these error message when running ftrace_stress:
 
-    A common mistake is thinking that sleep(3) is non-interruptable.
-This proposed patch also has style-violations and is missing error
-checking around lseek, et all. Please fix these items according to the
-style guide.
-Thanks,
--Garrett
+...
+ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh: line 39: echo: write error: Invalid argument
+...
+---
+ .../ftrace_stress/ftrace_set_ftrace_pid.sh         |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh
+index 541215c..bd08f04 100755
+--- a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh
++++ b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh
+@@ -36,7 +36,7 @@ for ((; ; ))
+ 			eval echo $str >> "$TRACING_PATH"/set_ftrace_pid
+ 		}
+ 
+-		echo > "$TRACING_PATH"/set_ftrace_pid
++		echo -1 > "$TRACING_PATH"/set_ftrace_pid
+ 	}
+ 
+ 	sleep 1
+-- 
+1.7.1
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
