@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <kumaratreya@gmail.com>) id 1PnnO8-0003ar-Qd
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 07:25:56 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PnnO8-0001Eu-1Q
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 07:25:56 +0000
-Received: by vxa37 with SMTP id 37so1131992vxa.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 Feb 2011 23:25:50 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1Poo37-0005Gs-KS
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 02:20:25 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Poo35-0000aC-6Z
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 02:20:25 +0000
+Message-ID: <4D58916C.6010800@cn.fujitsu.com>
+Date: Mon, 14 Feb 2011 10:20:28 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Fri, 11 Feb 2011 12:55:50 +0530
-Message-ID: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
-From: Amit kumar <kumaratreya@gmail.com>
-Subject: [LTP] LTP test cases fpathconf syscall and signal_test_06 ipc test
- cases found hanging on android Gingerbread kernel
+Subject: [LTP] [PATCH] cleanup() should not be called before setup() in
+ cases dup3_01 and eventfd2_01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,68 +23,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1539356101145074759=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============1539356101145074759==
-Content-Type: multipart/alternative; boundary=90e6ba4fc5088bf747049bfc9b92
-
---90e6ba4fc5088bf747049bfc9b92
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-I am using LTP to test Android platform and successively ported to Eclair
-after customization.
-
-
-fpathconf syscall and signal_test_06 ipc test cases found hanging on Android
-Gingerbread Kernel.
-
-
-Are these know issues or we need to fix them?
-
-
-
-
-Thanks and Regards,
-
-Amit kumar
-
---90e6ba4fc5088bf747049bfc9b92
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi,<br>I am using LTP to test Android platform and successively ported to E=
-clair after customization.<br><br><br>fpathconf syscall and signal_test_06 =
-ipc test cases found hanging on Android Gingerbread Kernel.<br><br><br>Are =
-these know issues or we need to fix them?<br>
-<br><br><br><br>Thanks and Regards,<br><br>Amit kumar<br><br clear=3D"all">=
-<br>
-
---90e6ba4fc5088bf747049bfc9b92--
-
-
---===============1539356101145074759==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi Garrett,
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+---
+ testcases/kernel/syscalls/dup3/dup3_01.c         |    4 ++--
+ testcases/kernel/syscalls/eventfd2/eventfd2_01.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/dup3/dup3_01.c b/testcases/kernel/syscalls/dup3/dup3_01.c
+index c95e79a..a0f1d63 100644
+--- a/testcases/kernel/syscalls/dup3/dup3_01.c
++++ b/testcases/kernel/syscalls/dup3/dup3_01.c
+@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
+ 	int fd, coe;
+ 
+ 	if ((tst_kvercmp(2, 6, 27)) < 0)
+-		tst_brkm(TCONF, cleanup,
++		tst_brkm(TCONF, NULL,
+ 			 "This test can only run on kernels that are 2.6.27 and higher");
+ 	setup();
+ 
+@@ -161,4 +161,4 @@ int main(int argc, char *argv[])
+ 
+ 	cleanup();
+ 	tst_exit();
+-}
+\ No newline at end of file
++}
+diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
+index 38f2ed0..0e87e85 100644
+--- a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
++++ b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
+@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
+ 	int fd, coe;
+ 
+ 	if ((tst_kvercmp(2, 6, 27)) < 0) {
+-		tst_brkm(TCONF, cleanup,
++		tst_brkm(TCONF, NULL,
+ 		    "This test can only run on kernels that are 2.6.27 and higher");
+ 	}
+ 	setup();
+@@ -167,4 +167,4 @@ int main(int argc, char *argv[])
+ 	tst_resm(TPASS, "eventfd2(EFD_CLOEXEC) Passed");
+ 	cleanup();
+ 	tst_exit();
+-}
+\ No newline at end of file
++}
+-- 
+1.7.3.1
+
+-- 
+Best Regards,
+Peng Haitao
+
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual 
---===============1539356101145074759==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1539356101145074759==--
-
