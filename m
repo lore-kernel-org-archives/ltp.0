@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PpM3o-0003tx-L8
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 14:39:24 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PpM3l-0007LR-Nb
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 14:39:24 +0000
-Received: by wwi18 with SMTP id 18so231767wwi.10
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 Feb 2011 06:39:15 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PoziV-000473-AW
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 14:47:55 +0000
+Date: Mon, 14 Feb 2011 16:07:16 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110214150715.GA426@saboteur.suse.cz>
+References: <4D3D4644.90607@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4D595C00.5050508@nokia.com>
-References: <4D595C00.5050508@nokia.com>
-Date: Tue, 15 Feb 2011 06:39:15 -0800
-Message-ID: <AANLkTini7Gfzu3j0mencEOH4SG01hCfYH0JkarbiN=OA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix compilation warning for tools/rand_lines.c
+Content-Disposition: inline
+In-Reply-To: <4D3D4644.90607@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX][PATCH]pthread_attr_t object should be initialized
+ before using it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,17 +25,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: maxin <john.maxin@nokia.com>
+To: Bian Naimeng <biannm@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Feb 14, 2011 at 8:44 AM, maxin <john.maxin@nokia.com> wrote:
->
-> Hi,
->
-> This one is a trivial fix for the compilation warnings in 'tools/rand_lines.c'
+Hi!
+> pthread_attr_t object should be initialized before using it.
 
-Committed -- thanks!
--Garrett
+That seems not to be necessary, at least not here. Did you get randomly
+looking stacksizes without this patch as a result?
+
+The problem with this testcase is expecting that the thread gets exactly
+the stack size that is defined in attr, but posix says that stacksize is
+minimal value to be used for that. So the assertion here should be
+ssize >= stack_size.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
