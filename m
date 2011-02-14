@@ -1,33 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1PoxG1-0006pg-V3
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 12:10:21 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1PoxG0-0004hH-P8
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 12:10:21 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e31.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id p1EBtVwe003374
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Feb 2011 04:55:31 -0700
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p1ECAE5E114462
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Feb 2011 05:10:14 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id p1ECADpV014979
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Feb 2011 05:10:14 -0700
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4D555AAB.4080806@redhat.com>
-References: <4D555AAB.4080806@redhat.com>
-Date: Mon, 14 Feb 2011 17:40:06 +0530
-Message-Id: <1297685407.25122.1.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] new LTP release?
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1Poo9a-0005uH-JK
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 02:27:06 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1Poo9Z-0006wf-IR
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 02:27:06 +0000
+Received: by wyb40 with SMTP id 40so4130786wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 13 Feb 2011 18:26:59 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4D58916C.6010800@cn.fujitsu.com>
+References: <4D58916C.6010800@cn.fujitsu.com>
+Date: Sun, 13 Feb 2011 18:26:59 -0800
+Message-ID: <AANLkTimrk9YLuPt3zFc00WYHPE6Xr8zSL0=mFrZ8Rfo+@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] cleanup() should not be called before setup() in
+ cases dup3_01 and eventfd2_01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,22 +31,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Fri, 2011-02-11 at 23:50 +0800, Caspar Zhang wrote:
-> Hi all, seems that we don't have a new stable release for long time, any
-> plan to release one?
+On Sun, Feb 13, 2011 at 6:20 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> Hi Garrett,
+>
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
-Shubham will probably release one at the End of February 2011 :-)
-
-Regards--
-Subrata
-
-> 
-> Thanks,
-> Caspar
-
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
