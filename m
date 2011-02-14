@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1PseF4-0001qe-FS
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 16:40:38 +0000
-Date: Thu, 24 Feb 2011 18:00:50 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110224170050.GE29199@saboteur.suse.cz>
-References: <1306180210.43013.1294736237011.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<95E78125-2C7F-4FC1-B547-C700EAA923B0@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <95E78125-2C7F-4FC1-B547-C700EAA923B0@gmail.com>
-Subject: Re: [LTP] [PATCH 13/13] oom04: check root
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1PosOW-0004sF-1V
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:58:48 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1PosOU-00073u-Vd
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:58:48 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <071128CA-BC84-401E-B7C9-7ABC66B1574D@gmail.com>
+References: <20110212175827.6308.29198.sendpatchset@subratamodak.linux.ibm.com>
+	<071128CA-BC84-401E-B7C9-7ABC66B1574D@gmail.com>
+Date: Mon, 14 Feb 2011 12:28:30 +0530
+Message-Id: <1297666711.25215.1.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Fix Usage Reference of those tools utilities
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +30,92 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+Cc: LTP Mailing List <ltp-list@lists.sf.net>
 
-Hi!
-> tst_require_root(NULL) is what you want for all of these patches.
-> Makes me wonder if there's any value in having a cleanup argument or
-> not...
+Garret,
 
-Well you should always call this before you start doing anything else,
-so IMHO there is no real need for it. At least I couldn't imagine one.
+Did you mean to comment something ? I did not receive any feedback in
+the mail, just blank reply :-(
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards--
+Subrata
+
+On Sat, 2011-02-12 at 11:13 -0800, Garrett Cooper wrote:
+> On Feb 12, 2011, at 9:58 AM, Subrata Modak <subrata@linux.vnet.ibm.com> wrote:
+> 
+> > Useful scripts under ltp/tools are no more installed @{LTP_ROOT}/tools,
+> > they are done under @{LTP_ROOT}/bin. Change their reference accordingly
+> > inside 'runltp' script. Nobody noticed this early as probably these
+> > options are least used in LTP ;-)
+> > 
+> > Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+> > 
+> > ---
+> > diff --git a/runltp b/runltp
+> > index 2c6785f..381e123 100755
+> > --- a/runltp
+> > +++ b/runltp
+> > @@ -779,7 +779,7 @@ main()
+> >            #Go ahead to Inject Fault & Create required
+> >            #Command Files for LTP run
+> >            echo Running tests with Fault Injection Enabled in the Kernel...
+> > -            ${LTPROOT}/tools/create_kernel_faults_in_loops_and_probability.pl\
+> > +            ${LTPROOT}/bin/create_kernel_faults_in_loops_and_probability.pl\
+> >                ${TMP}/alltests $INJECT_FAULT_LOOPS_PER_TEST $INJECT_KERNEL_FAULT_PERCENTAGE > ${TMP}/alltests.tmp
+> >            cp ${TMP}/alltests.tmp ${TMP}/alltests
+> >            rm -rf ${TMP}/alltests.tmp
+> > @@ -796,15 +796,15 @@ main()
+> >            which valgrind || VALGRIND_CHECK_TYPE=XYZ
+> >            case $VALGRIND_CHECK_TYPE in
+> >                1)
+> > -                ${LTPROOT}/tools/create_valgrind_check.pl ${TMP}/alltests 1 > ${TMP}/alltests.tmp
+> > +                ${LTPROOT}/bin/create_valgrind_check.pl ${TMP}/alltests 1 > ${TMP}/alltests.tmp
+> >                cp ${TMP}/alltests.tmp ${TMP}/alltests
+> >                rm -rf ${TMP}/alltests.tmp;;
+> >                2)
+> > -                ${LTPROOT}/tools/create_valgrind_check.pl ${TMP}/alltests 2 > ${TMP}/alltests.tmp
+> > +                ${LTPROOT}/bin/create_valgrind_check.pl ${TMP}/alltests 2 > ${TMP}/alltests.tmp
+> >                cp ${TMP}/alltests.tmp ${TMP}/alltests
+> >                rm -rf ${TMP}/alltests.tmp;;
+> >                3)
+> > -                ${LTPROOT}/tools/create_valgrind_check.pl ${TMP}/alltests 3 > ${TMP}/alltests.tmp
+> > +                ${LTPROOT}/bin/create_valgrind_check.pl ${TMP}/alltests 3 > ${TMP}/alltests.tmp
+> >                cp ${TMP}/alltests.tmp ${TMP}/alltests
+> >                rm -rf ${TMP}/alltests.tmp;;
+> >                *) echo "Invalid Memory Check Type, or, Valgrind is not available";;
+> > @@ -859,7 +859,7 @@ main()
+> >        export TEST_OUTPUT_DIRECTORY="$LTPROOT/output"
+> >        export TEST_LOGS_DIRECTORY=$LOGS_DIRECTORY
+> >        echo "Generating HTML Output.....!!"
+> > -       ( perl $LTPROOT/bin/genhtml.pl $LTPROOT/tools/html_report_header.txt test_start test_end test_output execution_status $OUTPUT_DIRECTORY  > $HTMLFILE; )   
+> > +       ( perl $LTPROOT/bin/genhtml.pl $LTPROOT/bin/html_report_header.txt test_start test_end test_output execution_status $OUTPUT_DIRECTORY  > $HTMLFILE; )   
+> >        echo "Generated HTML Output.....!!"
+> >        echo "Location: $HTMLFILE";
+> > 
+> > ---
+> > 
+> > Regards--
+> > Subrata
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+> > Pinpoint memory and threading errors before they happen.
+> > Find and fix more than 250 security defects in the development cycle.
+> > Locate bottlenecks in serial and parallel code that limit performance.
+> > http://p.sf.net/sfu/intel-dev2devfeb
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
