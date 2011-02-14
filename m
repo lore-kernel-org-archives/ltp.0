@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PorYy-0007pn-TR
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:05:32 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PorYw-0004nJ-T2
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:05:32 +0000
-Message-ID: <4D58C631.7040508@cn.fujitsu.com>
-Date: Mon, 14 Feb 2011 14:05:37 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1Pp3rl-0003pV-9Z
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 19:13:45 +0000
+Date: Mon, 14 Feb 2011 20:33:06 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110214193306.GA8468@saboteur.suse.cz>
+References: <4D595337.5070801@nokia.com>
+	<20110214154030.GC426@saboteur.suse.cz>
+	<20110214165816.GA3734@saboteur.suse.cz>
+	<AANLkTik5XNeSO8zjYXvsXDLt0VUVyr1FOUEiSC8agfhM@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] setfsuid04.c: the child process should exit 0
+Content-Disposition: inline
+In-Reply-To: <AANLkTik5XNeSO8zjYXvsXDLt0VUVyr1FOUEiSC8agfhM@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
+ "fs_perms" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,49 +31,28 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+Hi!
+> >> > In this case, I partially agree with you. It is true in the case of binary files. However, We need 'read' and 'exec'
+> >> > for script files and these testcases deals with script files too.
+> >> >
+> >>
+> >> Hmm I see the problem now. However as a root, I could read and run files
+> >> with just an exec flag, at least here. I suppose the test works here by
+> >> some saved-id magick. I'll look deeper into this.
+> >>
+> >
+> > I think I've found the cause. The wait() funcion returns -1 if exec*
+> > hasn't succeded to run the file (and sets the status to 0). I'm not sure
+> > if this is POSIX compilant behaviour, I'll check on that later.
+> 
+>     Check errno and see what it says.
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/kernel/syscalls/setfsuid/setfsuid04.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-index 9129892..cd230ff 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-@@ -93,7 +93,7 @@ int main(int ac, char **av)
- 
- 	if (pid == 0) {
- 		do_master_child();
--
-+		exit(0);
- 	} else {
- 		waitpid(pid, &status, 0);
- 		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
-@@ -103,8 +103,6 @@ int main(int ac, char **av)
- 
- 	cleanup();
- 	tst_exit();
--	tst_exit();
--
- }
- 
- /*
-@@ -244,4 +242,4 @@ void cleanup(void)
- 
- 	tst_rmdir();
- 
--}
-\ No newline at end of file
-+}
--- 
-1.7.3.1
+That seems to be feature, when running under strace (to avoid users
+gaining root rights).
 
 -- 
-Best Regards,
-Peng Haitao
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
