@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1PnvGB-0006Oe-33
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 15:50:15 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PnvG9-00028a-TW
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 15:50:15 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p1BFo7TV008356
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 11 Feb 2011 10:50:08 -0500
-Message-ID: <4D555AAB.4080806@redhat.com>
-Date: Fri, 11 Feb 2011 23:50:03 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Pp3zX-00036L-Og
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 19:21:47 +0000
+Date: Mon, 14 Feb 2011 20:41:08 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110214194108.GA8474@saboteur.suse.cz>
+References: <4D595337.5070801@nokia.com>
+	<20110214154030.GC426@saboteur.suse.cz>
+	<20110214165816.GA3734@saboteur.suse.cz>
+	<20110214175032.GA5716@saboteur.suse.cz>
 MIME-Version: 1.0
-Subject: [LTP] new LTP release?
+Content-Disposition: inline
+In-Reply-To: <20110214175032.GA5716@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
+ "fs_perms" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,23 +25,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: maxin <john.maxin@nokia.com>
+Cc: ltp-list@lists.sourceforge.net
 
-SGkgYWxsLCBzZWVtcyB0aGF0IHdlIGRvbid0IGhhdmUgYSBuZXcgc3RhYmxlIHJlbGVhc2UgZm9y
-IGxvbmcgdGltZSwgYW55CnBsYW4gdG8gcmVsZWFzZSBvbmU/CgpUaGFua3MsCkNhc3BhcgotLSAK
-UXVhbGl0eSBBc3N1cmFuY2UgRW5naW5lZXIgKEtlcm5lbCkgaW4KUmVkIEhhdCBTb2Z0d2FyZSAo
-QmVpamluZykgQ28uLCBSJkQgQnJhbmNoCgpURUw6ICs4Ni0xMC02MjYwODE1MApXRUI6IGh0dHA6
-Ly93d3cucmVkaGF0LmNvbS8KLS0KQy1BLVMtUC1BLVIsIENhc3BhciAva8Omc3DJkTovIDstKQoK
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoZSB1bHRpbWF0ZSBhbGwtaW4tb25lIHBlcmZvcm1hbmNl
-IHRvb2xraXQ6IEludGVsKFIpIFBhcmFsbGVsIFN0dWRpbyBYRToKUGlucG9pbnQgbWVtb3J5IGFu
-ZCB0aHJlYWRpbmcgZXJyb3JzIGJlZm9yZSB0aGV5IGhhcHBlbi4KRmluZCBhbmQgZml4IG1vcmUg
-dGhhbiAyNTAgc2VjdXJpdHkgZGVmZWN0cyBpbiB0aGUgZGV2ZWxvcG1lbnQgY3ljbGUuCkxvY2F0
-ZSBib3R0bGVuZWNrcyBpbiBzZXJpYWwgYW5kIHBhcmFsbGVsIGNvZGUgdGhhdCBsaW1pdCBwZXJm
-b3JtYW5jZS4KaHR0cDovL3Auc2YubmV0L3NmdS9pbnRlbC1kZXYyZGV2ZmViCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
-dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi!
+> > > Hmm I see the problem now. However as a root, I could read and run files
+> > > with just an exec flag, at least here. I suppose the test works here by
+> > > some saved-id magick. I'll look deeper into this.
+> > > 
+> > 
+> > I think I've found the cause. The wait() funcion returns -1 if exec*
+> > hasn't succeded to run the file (and sets the status to 0). I'm not sure
+> > if this is POSIX compilant behaviour, I'll check on that later. 
+> > 
+> > What flavour of glibc/kernel are you testing there, it seems that it
+> > behaves a little different than mine. Here I have glibc-2.11.
+> > 
+> > Anyway, I'll fix the test to check for return value from wait(), add the
+> > fix for octal file mode and fix the runtest files.
+> 
+> Grr, got myself caught. Strace behaves differently when running with
+> root + setegid + exec, so lets start digging again.
+> 
+
+Okay, seems that linux kernel (at least here) allows you to execute
+file if your user/group/other has at least execute rights and real uid 0.
+
+That is the reason why these tests runs fine here.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
