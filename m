@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <giri.subhra@gmail.com>) id 1PrXYA-0000Be-9U
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 15:19:46 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PrXY9-0008Km-IZ
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 15:19:46 +0000
-Received: by iyb26 with SMTP id 26so796875iyb.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PorqF-0000IK-KL
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:23:23 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PorqE-00072r-9K
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:23:23 +0000
+Received: by wyb40 with SMTP id 40so4238620wyb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 Feb 2011 07:19:40 -0800 (PST)
+	Sun, 13 Feb 2011 22:23:16 -0800 (PST)
 MIME-Version: 1.0
-Date: Mon, 21 Feb 2011 20:49:40 +0530
-Message-ID: <AANLkTikBLNDkFp2sLcM9VYwboB2+fyD2TzqkkK96G9mW@mail.gmail.com>
-From: SubhraPrakashGiri <giri.subhra@gmail.com>
-Subject: [LTP] i want to join in the project
+In-Reply-To: <4D58C631.7040508@cn.fujitsu.com>
+References: <4D58C631.7040508@cn.fujitsu.com>
+Date: Sun, 13 Feb 2011 22:23:16 -0800
+Message-ID: <AANLkTinXKnOn7XBWJ=+Pc=5r6ObK68s8K2VNEwpuuvBA@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0ce0d74049e9fa049c3815eb
+Subject: Re: [LTP] [PATCH] setfsuid04.c: the child process should exit 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,44 +28,152 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7563307030516801070=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
---===============7563307030516801070==
-Content-Type: multipart/alternative; boundary=00235433303a8072ff049ccc6425
-
---00235433303a8072ff049ccc6425
+--000e0ce0d74049e9fa049c3815eb
 Content-Type: text/plain; charset=ISO-8859-1
 
-Hi
+On Sun, Feb 13, 2011 at 10:05 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> Hi Garrett,
+>
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
-I want to join.Please add me in the project.
+Hi Peng,
+    How about this version instead? There were issues with the
+previous version of the file where calling tst_brkm from inside the
+child process would break test execution in interesting and
+non-deterministic ways.
+    As a bonus task you could convert things to SAFE_* macros as there
+are a number of spots that I didn't touch that are missing error
+checks.
+Thanks!
+-Garrett
 
-Thanks and Regards
-subhra prakash giri
+--000e0ce0d74049e9fa049c3815eb
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="ltp-fix-setfsuid04-testcase.patch"
+Content-Disposition: attachment; filename="ltp-fix-setfsuid04-testcase.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gk4zy5jz0
 
---00235433303a8072ff049ccc6425
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi=A0<div><br></div><div>I want to join.Please add me in the project.</div>=
-<div><br></div><div>Thanks and Regards</div><div>subhra prakash giri</div>
-
---00235433303a8072ff049ccc6425--
-
-
---===============7563307030516801070==
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0ZnN1aWQvc2V0ZnN1aWQw
+NC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRmc3VpZC9zZXRmc3VpZDA0LmMKaW5k
+ZXggOTEyOTg5Mi4uMDJhNDlkZSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9zZXRmc3VpZC9zZXRmc3VpZDA0LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9z
+ZXRmc3VpZC9zZXRmc3VpZDA0LmMKQEAgLTQzLDE4ICs0MywyMSBAQAogICogUkVTVFJJQ1RJT05T
+CiAgKiAJTXVzdCBiZSBydW4gYXMgcm9vdC4KICAqLwotI2luY2x1ZGUgPGVycm5vLmg+CiAjaW5j
+bHVkZSA8c3lzL3R5cGVzLmg+CisjaWZkZWYgX19HTElCQ19fCisjaW5jbHVkZSA8c3lzL2ZzdWlk
+Lmg+CisjZW5kaWYKICNpbmNsdWRlIDxzeXMvc3RhdC5oPgogI2luY2x1ZGUgPHN5cy93YWl0Lmg+
+CisjaW5jbHVkZSA8ZXJybm8uaD4KICNpbmNsdWRlIDxmY250bC5oPgorI2luY2x1ZGUgPHB3ZC5o
+PgorI2luY2x1ZGUgPHN0ZGlvLmg+CisjaW5jbHVkZSA8c3RkbGliLmg+CisjaW5jbHVkZSA8c3Ry
+aW5nLmg+CiAjaW5jbHVkZSA8dW5pc3RkLmg+Ci0jaWZkZWYgX19HTElCQ19fCi0jaW5jbHVkZSA8
+c3lzL2ZzdWlkLmg+Ci0jZW5kaWYKICNpbmNsdWRlICJ0ZXN0LmgiCiAjaW5jbHVkZSAidXNjdGVz
+dC5oIgotI2luY2x1ZGUgPHB3ZC5oPgogCiBjaGFyICpUQ0lEID0gInNldGZzdWlkMDQiOwogaW50
+IFRTVF9UT1RBTCA9IDE7CkBAIC03NiwxMyArNzksOSBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIg
+KiphdikKIAlpbnQgc3RhdHVzOwogCiAJLyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwotCWlm
+ICgobXNnID0gcGFyc2Vfb3B0cyhhYywgYXYsIE5VTEwsIE5VTEwpKSAhPSBOVUxMKSB7CisJaWYg
+KChtc2cgPSBwYXJzZV9vcHRzKGFjLCBhdiwgTlVMTCwgTlVMTCkpICE9IE5VTEwpCiAJCXRzdF9i
+cmttKFRCUk9LLCBOVUxMLCAiT1BUSU9OIFBBUlNJTkcgRVJST1IgLSAlcyIsIG1zZyk7Ci0JIH0K
+IAotCS8qCi0JICogcGVyZm9ybSBnbG9iYWwgc2V0dXAgZm9yIHRoZSB0ZXN0Ci0JICovCiAJc2V0
+dXAoKTsKIAogCVRFU1RfRVhQX0VOT1MoZXhwX2Vub3MpOwpAQCAtOTEsMjAgKzkwLDE2IEBAIGlu
+dCBtYWluKGludCBhYywgY2hhciAqKmF2KQogCWlmIChwaWQgPCAwKQogCQl0c3RfYnJrbShUQlJP
+SywgY2xlYW51cCwgIkZvcmsgZmFpbGVkIik7CiAKLQlpZiAocGlkID09IDApIHsKKwlpZiAocGlk
+ID09IDApCiAJCWRvX21hc3Rlcl9jaGlsZCgpOwogCi0JfSBlbHNlIHsKLQkJd2FpdHBpZChwaWQs
+ICZzdGF0dXMsIDApOwotCQlpZiAoIVdJRkVYSVRFRChzdGF0dXMpIHx8IChXRVhJVFNUQVRVUyhz
+dGF0dXMpICE9IDApKQotCQkJdHN0X3Jlc20oV0VYSVRTVEFUVVMoc3RhdHVzKSwKLQkJCQkgInNv
+biBwcm9jZXNzIGV4aXRzIHdpdGggZXJyb3IiKTsKLQl9CisJaWYgKHdhaXRwaWQocGlkLCAmc3Rh
+dHVzLCAwKSA9PSAtMSkKKwkJdHN0X3Jlc20oVEJST0t8VEVSUk5PLCAid2FpdHBpZCBmYWlsZWQi
+KTsKKwlpZiAoIVdJRkVYSVRFRChzdGF0dXMpIHx8IChXRVhJVFNUQVRVUyhzdGF0dXMpICE9IDAp
+KQorCQl0c3RfcmVzbShURkFJTCwgImNoaWxkIHByb2Nlc3MgdGVybWluYXRlZCBhYm5vcm1hbGx5
+Iik7CiAKIAljbGVhbnVwKCk7CiAJdHN0X2V4aXQoKTsKLQl0c3RfZXhpdCgpOwotCiB9CiAKIC8q
+CkBAIC0xMTIsOTUgKzEwNyw4NyBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKICAqLwog
+dm9pZCBkb19tYXN0ZXJfY2hpbGQoKQogewotCWludCBsYzsJCQkvKiBsb29wIGNvdW50ZXIgKi8K
+IAlpbnQgcGlkOwogCWludCBzdGF0dXM7CisJaW50IHRzdF9mZDsKIAotCWZvciAobGMgPSAwOyBU
+RVNUX0xPT1BJTkcobGMpOyBsYysrKSB7Ci0JCWludCB0c3RfZmQ7CisJaWYgKHNldGZzdWlkKGx0
+cHVzZXItPnB3X3VpZCkgPT0gLTEpIHsKKwkJcGVycm9yKCJzZXRmc3VpZCBmYWlsZWQiKTsKKwkJ
+ZXhpdCgxKTsKKwl9CiAKLQkJLyogUmVzZXQgVHN0X2NvdW50IGluIGNhc2Ugd2UgYXJlIGxvb3Bp
+bmcgKi8KLQkJVHN0X2NvdW50ID0gMDsKKwkvKiBUZXN0IDE6IENoZWNrIHRoZSBwcm9jZXNzIHdp
+dGggbmV3IHVpZCBjYW5ub3Qgb3BlbiB0aGUgZmlsZQorCSAqICAgICAgICAgd2l0aCBSRFdSIHBl
+cm1pc3Npb25zLgorCSAqLworCXRzdF9mZCA9IG9wZW4odGVzdGZpbGUsIE9fUkRXUik7CiAKLQkJ
+aWYgKHNldGZzdWlkKGx0cHVzZXItPnB3X3VpZCkgPT0gLTEpIHsKLQkJCXRzdF9icmttKFRCUk9L
+LCBjbGVhbnVwLAotCQkJCSAic2V0ZnN1aWQgZmFpbGVkIHRvIHNldCB0aGUgZXVpZCB0byAlZCIs
+Ci0JCQkJIGx0cHVzZXItPnB3X3VpZCk7Ci0JCX0KKwlpZiAodHN0X2ZkICE9IC0xKSB7CisJCXBy
+aW50Zigib3BlbiBzdWNjZWVkZWQgdW5leHBlY3RlZGx5Iik7CisJCWNsb3NlKHRzdF9mZCk7CisJ
+CWV4aXQoMSk7CisJfQogCi0JCS8qIFRlc3QgMTogQ2hlY2sgdGhlIHByb2Nlc3Mgd2l0aCBuZXcg
+dWlkIGNhbm5vdCBvcGVuIHRoZSBmaWxlCi0JCSAqICAgICAgICAgd2l0aCBSRFdSIHBlcm1pc3Np
+b25zLgotCQkgKi8KLQkJVEVTVCh0c3RfZmQgPSBvcGVuKHRlc3RmaWxlLCBPX1JEV1IpKTsKKwlp
+ZiAoVEVTVF9FUlJOTyA9PSBFQUNDRVMpCisJCXByaW50Zigib3BlbiBmYWlsZWQgd2l0aCBFQUND
+RVMgYXMgZXhwZWN0ZWQiKTsKKwllbHNlIHsKKwkJcGVycm9yKCJvcGVuIGZhaWxlZCB1bmV4cGVj
+dGVkbHkiKTsKKwkJZXhpdCgxKTsKKwl9CiAKLQkJaWYgKFRFU1RfUkVUVVJOICE9IC0xKSB7Ci0J
+CQl0c3RfcmVzbShURkFJTCwgImNhbGwgc3VjY2VlZGVkIHVuZXhwZWN0ZWRseSIpOwotCQkJY2xv
+c2UodHN0X2ZkKTsKLQkJfQorCS8qIFRlc3QgMjogQ2hlY2sgYSBzb24gcHJvY2VzcyBjYW5ub3Qg
+b3BlbiB0aGUgZmlsZQorCSAqICAgICAgICAgd2l0aCBSRFdSIHBlcm1pc3Npb25zLgorCSAqLwor
+CXBpZCA9IEZPUktfT1JfVkZPUksoKTsKKwlpZiAocGlkIDwgMCkKKwkJdHN0X2Jya20oVEJST0ss
+IGNsZWFudXAsICJGb3JrIGZhaWxlZCIpOwogCi0JCWlmIChURVNUX0VSUk5PID09IEVBQ0NFUykg
+ewotCQkJdHN0X3Jlc20oVFBBU1MsICJvcGVuIHJldHVybmVkIGVycm5vIEVBQ0NFUyIpOwotCQl9
+IGVsc2UgewotCQkJdHN0X3Jlc20oVEZBSUwsICJvcGVuIHJldHVybmVkIHVuZXhwZWN0ZWQgZXJy
+bm8gLSAlZCIsCi0JCQkJIFRFU1RfRVJSTk8pOwotCQkJY29udGludWU7Ci0JCX0KKwlpZiAocGlk
+ID09IDApIHsKKwkJaW50IHRzdF9mZDI7CisKKwkJLyogVGVzdCB0byBvcGVuIHRoZSBmaWxlIGlu
+IHNvbiBwcm9jZXNzICovCisJCXRzdF9mZDIgPSBvcGVuKHRlc3RmaWxlLCBPX1JEV1IpOwogCi0J
+CS8qIFRlc3QgMjogQ2hlY2sgYSBzb24gcHJvY2VzcyBjYW5ub3Qgb3BlbiB0aGUgZmlsZQotCQkg
+KiAgICAgICAgIHdpdGggUkRXUiBwZXJtaXNzaW9ucy4KLQkJICovCi0JCXBpZCA9IEZPUktfT1Jf
+VkZPUksoKTsKLQkJaWYgKHBpZCA8IDApCi0JCQl0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgIkZv
+cmsgZmFpbGVkIik7Ci0KLQkJaWYgKHBpZCA9PSAwKSB7Ci0JCQlpbnQgdHN0X2ZkMjsKLQotCQkJ
+LyogVGVzdCB0byBvcGVuIHRoZSBmaWxlIGluIHNvbiBwcm9jZXNzICovCi0JCQlURVNUKHRzdF9m
+ZDIgPSBvcGVuKHRlc3RmaWxlLCBPX1JEV1IpKTsKLQotCQkJaWYgKFRFU1RfUkVUVVJOICE9IC0x
+KSB7Ci0JCQkJdHN0X3Jlc20oVEZBSUwsICJjYWxsIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHkiKTsK
+LQkJCQljbG9zZSh0c3RfZmQyKTsKLQkJCX0KLQotCQkJVEVTVF9FUlJPUl9MT0coVEVTVF9FUlJO
+Tyk7Ci0KLQkJCWlmIChURVNUX0VSUk5PID09IEVBQ0NFUykgewotCQkJCXRzdF9yZXNtKFRQQVNT
+LCAib3BlbiByZXR1cm5lZCBlcnJubyBFQUNDRVMiKTsKLQkJCX0gZWxzZSB7Ci0JCQkJdHN0X3Jl
+c20oVEZBSUwsCi0JCQkJCSAib3BlbiByZXR1cm5lZCB1bmV4cGVjdGVkIGVycm5vIC0gJWQiLAot
+CQkJCQkgVEVTVF9FUlJOTyk7Ci0JCQl9Ci0JCQljb250aW51ZTsKLQkJfSBlbHNlIHsKLQkJCS8q
+IFdhaXQgZm9yIHNvbiBjb21wbGV0aW9uICovCi0JCQl3YWl0cGlkKHBpZCwgJnN0YXR1cywgMCk7
+Ci0JCQlpZiAoIVdJRkVYSVRFRChzdGF0dXMpIHx8IChXRVhJVFNUQVRVUyhzdGF0dXMpICE9IDAp
+KQotCQkJCWV4aXQoV0VYSVRTVEFUVVMoc3RhdHVzKSk7CisJCWlmICh0c3RfZmQyICE9IC0xKSB7
+CisJCQlwcmludGYoImNhbGwgc3VjY2VlZGVkIHVuZXhwZWN0ZWRseVxuIik7CisJCQljbG9zZSh0
+c3RfZmQyKTsKKwkJCWV4aXQoMSk7CiAJCX0KIAotCQkvKiBUZXN0IDM6IEZhbGxiYWNrIHRvIGlu
+aXRpYWwgdWlkIGFuZCBjaGVjayB3ZSBjYW4gYWdhaW4gb3BlbgotCQkgKiAgICAgICAgIHRoZSBm
+aWxlIHdpdGggUkRXUiBwZXJtaXNzaW9ucy4KLQkJICovCi0JCVRzdF9jb3VudCsrOwotCQlpZiAo
+c2V0ZnN1aWQoMCkgPT0gLTEpIHsKLQkJCXRzdF9icmttKFRCUk9LLCBjbGVhbnVwLAotCQkJCSAi
+c2V0ZnN1aWQgZmFpbGVkIHRvIHNldCB0aGUgZXVpZCB0byAwIik7CisJCWlmIChURVNUX0VSUk5P
+ID09IEVBQ0NFUykKKwkJCXByaW50Zigib3BlbiBmYWlsZWQgd2l0aCBFQUNDRVMgYXMgZXhwZWN0
+ZWRcbiIpOworCQllbHNlIHsKKwkJCXByaW50Zigib3BlbiBmYWlsZWQgdW5leHBlY3RlZGx5XG4i
+KTsKKwkJCWV4aXQoMSk7CiAJCX0KKwl9IGVsc2UgeworCQkvKiBXYWl0IGZvciBzb24gY29tcGxl
+dGlvbiAqLworCQlpZiAod2FpdHBpZChwaWQsICZzdGF0dXMsIDApID09IC0xKSB7CisJCQlwZXJy
+b3IoIndhaXRwaWQgZmFpbGVkIik7CisJCQlleGl0KDEpOworCQl9CisJCWlmICghV0lGRVhJVEVE
+KHN0YXR1cykgfHwgV0VYSVRTVEFUVVMoc3RhdHVzKSAhPSAwKQorCQkJZXhpdChXRVhJVFNUQVRV
+UyhzdGF0dXMpKTsKKwl9CisKKwkvKiBUZXN0IDM6IEZhbGxiYWNrIHRvIGluaXRpYWwgdWlkIGFu
+ZCBjaGVjayB3ZSBjYW4gYWdhaW4gb3BlbgorCSAqICAgICAgICAgdGhlIGZpbGUgd2l0aCBSRFdS
+IHBlcm1pc3Npb25zLgorCSAqLworCVRzdF9jb3VudCsrOworCWlmIChzZXRmc3VpZCgwKSA9PSAt
+MSkgeworCQlwZXJyb3IoInNldGZzdWlkIGZhaWxlZCIpOworCQlleGl0KDEpOworCX0KIAotCQlU
+RVNUKHRzdF9mZCA9IG9wZW4odGVzdGZpbGUsIE9fUkRXUikpOworCXRzdF9mZCA9IG9wZW4odGVz
+dGZpbGUsIE9fUkRXUik7CiAKLQkJaWYgKFRFU1RfUkVUVVJOID09IC0xKSB7Ci0JCQl0c3RfcmVz
+bShURkFJTCwgIm9wZW4gcmV0dXJuZWQgdW5leHBlY3RlZCBlcnJubyAlZCIsCi0JCQkJIFRFU1Rf
+RVJSTk8pOwotCQkJY29udGludWU7Ci0JCX0gZWxzZSB7Ci0JCQl0c3RfcmVzbShUUEFTUywgIm9w
+ZW4gY2FsbCBzdWNjZWVkZWQiKTsKLQkJCWNsb3NlKHRzdF9mZCk7Ci0JCX0KKwlpZiAodHN0X2Zk
+ID09IC0xKSB7CisJCXBlcnJvcigib3BlbiBmYWlsZWQgdW5leHBlY3RlZGx5Iik7CisJCWV4aXQo
+MSk7CisJfSBlbHNlIHsKKwkJcHJpbnRmKCJvcGVuIGNhbGwgc3VjY2VlZGVkIik7CisJCWNsb3Nl
+KHRzdF9mZCk7CiAJfQorCWV4aXQoMCk7CiB9CiAKIC8qCkBAIC0yMDgsOSArMTk1LDcgQEAgdm9p
+ZCBkb19tYXN0ZXJfY2hpbGQoKQogICovCiB2b2lkIHNldHVwKHZvaWQpCiB7Ci0JaWYgKGdldGV1
+aWQoKSAhPSAwKSB7Ci0JCXRzdF9icmttKFRCUk9LLCBOVUxMLCAiVGVzdCBtdXN0IGJlIHJ1biBh
+cyByb290Iik7Ci0JfQorCXRzdF9yZXF1aXJlX3Jvb3QoTlVMTCk7CiAKIAlsdHB1c2VyID0gZ2V0
+cHduYW0obm9ib2R5X3VpZCk7CiAKQEAgLTI0NCw0ICsyMjksNCBAQCB2b2lkIGNsZWFudXAodm9p
+ZCkKIAogCXRzdF9ybWRpcigpOwogCi19ClwgTm8gbmV3bGluZSBhdCBlbmQgb2YgZmlsZQorfQo=
+--000e0ce0d74049e9fa049c3815eb
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual 
---===============7563307030516801070==
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
+--000e0ce0d74049e9fa049c3815eb
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -73,5 +184,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============7563307030516801070==--
+--000e0ce0d74049e9fa049c3815eb--
 
