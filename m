@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <kumaratreya@gmail.com>) id 1PnnXn-0002QN-31
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 07:35:55 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PnnXm-0002vg-BD
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 07:35:55 +0000
-Received: by vxa37 with SMTP id 37so1134415vxa.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 Feb 2011 23:35:48 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1Pordn-0007s0-60
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:10:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pordm-0002eT-26
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:10:31 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p1E6AO4V028622
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 14 Feb 2011 01:10:24 -0500
+Date: Mon, 14 Feb 2011 14:14:10 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110214061409.GA7983@hpt.nay.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
-References: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
-Date: Fri, 11 Feb 2011 13:05:48 +0530
-Message-ID: <AANLkTi=Qp7uaO_8Wa+H5p2WUeBnxPArVPwDOMZKAU=mw@mail.gmail.com>
-From: Amit kumar <kumaratreya@gmail.com>
-Subject: Re: [LTP] LTP test cases fpathconf syscall and signal_test_06 ipc
- test cases found hanging on android Gingerbread kernel
+Content-Disposition: inline
+Subject: [LTP] [PATCH] ksm: wait 3 increments of full_scans before checking
+ the results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,79 +29,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7159547513586893572=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============7159547513586893572==
-Content-Type: multipart/alternative; boundary=90e6ba53ad74351407049bfcbfd7
+The KSM developer tell us that we should wait 3~5 increments of the
+/sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results.
+Otherwise, there may be some stuck pages that cause the testing failed.
 
---90e6ba53ad74351407049bfcbfd7
-Content-Type: text/plain; charset=ISO-8859-1
+Signed-off-by: Han Pingtian <phan@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c |   27 +++++++++++++++++++++++++--
+ 1 files changed, 25 insertions(+), 2 deletions(-)
 
->
-> Hi,
-> I am using LTP to test Android platform and successively ported to Eclair
-> after customization.
->
->
-> fpathconf syscall and signal_test_06 ipc test cases found hanging on
-> Android Gingerbread Kernel.
->
->
-> Are these know issues or we need to fix them?
->
->
->
->
-> Thanks and Regards,
->
-> Amit kumar
->
->
->
-
-
---
-
---90e6ba53ad74351407049bfcbfd7
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"borde=
-r-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-le=
-ft: 1ex;">Hi,<br>I am using LTP to test Android platform and successively p=
-orted to Eclair after customization.<br>
-<br><br>fpathconf syscall and signal_test_06 ipc test cases found hanging o=
-n Android Gingerbread Kernel.<br><br><br>Are these know issues or we need t=
-o fix them?<br>
-<br><br><br><br>Thanks and Regards,<br><font color=3D"#888888"><br>Amit kum=
-ar<br><br clear=3D"all"><br>
-</font></blockquote></div><br><br clear=3D"all"><br>-- <br>
-
---90e6ba53ad74351407049bfcbfd7--
-
-
---===============7159547513586893572==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 1a53359..98cca12 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -298,8 +298,31 @@ void group_check(int run, int pages_shared, int pages_sharing,
+ 		int pages_volatile, int pages_unshared,
+ 		int sleep_millisecs, int pages_to_scan)
+ {
+-        /* 5 seconds for ksm to scan pages. */
+-	sleep(5);
++	int fd;
++	char buf[BUFSIZ];
++	int old_num, new_num;
++
++	fd = open("/sys/kernel/mm/ksm/full_scans", O_RDONLY);
++	if (fd < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++
++        /* 1 seconds for ksm to scan pages. */
++	sleep(1);
++
++	/* wait 3 increments of full_scans */
++	if (read(fd, buf, BUFSIZ) < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "read");
++	old_num = new_num = atoi(buf);
++	lseek(fd, 0, SEEK_SET);
++	while (new_num < old_num * 3) {
++		sleep(1);
++		if (read(fd, buf, BUFSIZ) < 0)
++			tst_brkm(TBROK|TERRNO, cleanup, "read");
++		new_num = atoi(buf);
++		lseek(fd, 0, SEEK_SET);
++	}
++	close(fd);
++
+ 	tst_resm(TINFO, "check!");
+ 	check("run", run);
+ 	check("pages_shared", pages_shared);
+-- 
+1.7.1
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual 
---===============7159547513586893572==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7159547513586893572==--
-
