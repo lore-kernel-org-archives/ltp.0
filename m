@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <cristian@regolo.cc>) id 1ProvA-0003C1-4F
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 09:52:40 +0000
-Received: from aiolia.regolo.cc ([178.79.135.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Prov8-0006ck-OZ
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 09:52:40 +0000
-Received: from regolo (85-18-251-172.ip.fastwebnet.it [85.18.251.172])
-	by aiolia.regolo.cc (Postfix) with ESMTPSA id B6ECE64
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 22 Feb 2011 10:52:32 +0100 (CET)
-Date: Tue, 22 Feb 2011 10:52:30 +0100
-From: Cristian Greco <cristian@regolo.cc>
-Message-ID: <20110222105230.0f9fe24b@regolo>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] clone06 syscall testcase: use PWD instead of TERM
- environment variable.
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PoxZ3-0003LR-IB
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 12:30:01 +0000
+Date: Mon, 14 Feb 2011 13:49:21 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110214124921.GA29415@saboteur.suse.cz>
+References: <4D590650.4090806@nokia.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="sm4nu43k4a2Rpi4c"
+Content-Disposition: inline
+In-Reply-To: <4D590650.4090806@nokia.com>
+Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
+ "fs_perms" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,190 +23,120 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4383157934191192143=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: maxin <john.maxin@nokia.com>
+Cc: ltp-list@lists.sourceforge.net
 
---===============4383157934191192143==
-Content-Type: multipart/signed; micalg=PGP-SHA256;
-	boundary="Sig_/FHYms1i79NQi=jYv5te/m5Q";
-	protocol="application/pgp-signature"
 
---Sig_/FHYms1i79NQi=jYv5te/m5Q
-Content-Type: multipart/mixed; boundary="MP_/qYUL4Td=9K=QWwXxLZz+mI3"
-
---MP_/qYUL4Td=9K=QWwXxLZz+mI3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+--sm4nu43k4a2Rpi4c
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi,
+Hi!
+> On the preliminary analysis of  this failure, I came to know that the reason was due to insufficient file permissions provided in the
+> "runtests/fs_perms_simple" . To execute a script file, 'user', 'group', or 'others' should have 'read' and 'execute' permissions.
+> Based on that, I have modified the "s_perms_simple"  file as follows:
+> 
+> -fs_perms01 fs_perms 001 99 99 12 100 x 0
+> -fs_perms02 fs_perms 010 99 99 200 99 x 0
+> -fs_perms03 fs_perms 100 99 99 99 500 x 0
+> +fs_perms01 fs_perms 005 99 99 12 100 x 0
+> +fs_perms02 fs_perms 050 99 99 200 99 x 0
+> +fs_perms03 fs_perms 500 99 99 99 500 x 0
 
-please consider the following patch for the 'clone06' syscall test.
+Actually these are correct, the last number in a row is
+'expected result'. So execution of these files must fail in order for
+the test to succeed.
 
-When running the test on a remote host with an ssh command the TERM environ=
-ment
-variable is not available. Use PWD instead, with a buffer size of MAXPATHLE=
-N.
+> Even after this modification, I have observed some failures in the "fs_perms" test cases. Further analysis using "strace" showed "other"
+> issues  present in the test case.
+> 
+> # strace ./fs_perms 050 99 99 200 99 x 0
+> .
+> .
+> chmod("./test.file2", 062)              = 0
+> chown32("./test.file2", 99, 99)         = 0
+> .
+> We have provided the mode as "050" to the fs_perms binary. However, the test case got executed as though we have provided mode as "062".
+> This patch corrects this issue also.
 
-This is to show how using the TERM variable results in unexpected behavior:
+That's a good catch, the original code used strtol(..., 010). Let me
+know if attached patch fixed the issue.
 
->>> cristian@regolo:~$ ssh aiolia env | grep TERM
->>> cristian@regolo:~$ ssh aiolia
-Last login: ...
->>> cristian@aiolia:~$ env | grep TERM
-TERM=3Dxterm
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
+--sm4nu43k4a2Rpi4c
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="fs_perms_fix.patch"
 
-Signed-off-by: Cristian Greco <cristian@regolo.cc>
----
- testcases/kernel/syscalls/clone/clone06.c |   23 +++++++++++------------
- 1 files changed, 11 insertions(+), 12 deletions(-)
-
-
-Thanks,
---
-Cristian Greco
-GPG key ID: 0xCF4D32E4
-
---MP_/qYUL4Td=9K=QWwXxLZz+mI3
-Content-Type: text/x-patch
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename=0001-clone06-syscall-testcase-use-PWD-instead-of-TERM-env.patch
-
-diff --git a/testcases/kernel/syscalls/clone/clone06.c b/testcases/kernel/s=
-yscalls/clone/clone06.c
-index d79b302..8f797e3 100644
---- a/testcases/kernel/syscalls/clone/clone06.c
-+++ b/testcases/kernel/syscalls/clone/clone06.c
-@@ -42,12 +42,12 @@
-  *	  Call clone()
-  *
-  *	  CHILD:
-- *		get the value for environment variable, TERM  and write it
-+ *		get the value for environment variable PWD and write it
-  *		to pipe.
-  *
-  *	  PARENT:
-- *		Reads the value for environment variable, TERM from pipe.
-- *		Compare child's TERM value with that of parent,
-+ *		Reads the value for environment variable PWD from pipe.
-+ *		Compare child's PWD value with that of parent,
-  *		if same,
-  *			Test Passed.
-  *		else
-@@ -77,14 +77,13 @@
-=20
- #include <errno.h>
- #include <sched.h>
-+#include <sys/param.h> /* for MAXPATHLEN */
- #include <sys/wait.h>
- #include <fcntl.h>
- #include "test.h"
- #include "usctest.h"
- #include "clone_platform.h"
-=20
--#define MAX_LINE_LENGTH 256
+diff --git a/testcases/kernel/fs/fs_perms/fs_perms.c b/testcases/kernel/fs/fs_perms/fs_perms.c
+index 31cba4a..1e6a8fc 100644
+--- a/testcases/kernel/fs/fs_perms/fs_perms.c
++++ b/testcases/kernel/fs/fs_perms/fs_perms.c
+@@ -56,7 +56,6 @@ static void cleanup(void)
+ 	setegid(0);
+ 
+ 	tst_rmdir();
 -
- static void setup();
- static void cleanup();
- static int child_environ();
-@@ -101,7 +100,7 @@ int main(int ac, char **av)
- 	char *msg;		/* message returned from parse_opts */
- 	void *child_stack;	/* stack for child */
- 	char *parent_env;
--	char buff[MAX_LINE_LENGTH];
-+	char buff[MAXPATHLEN];
-=20
- 	/* parse standard options */
- 	if ((msg =3D parse_opts(ac, av, NULL, NULL)) !=3D NULL)
-@@ -146,7 +145,7 @@ int main(int ac, char **av)
- 			tst_resm(TWARN|TERRNO, "close(pfd[0]) failed");
- 		}
-=20
--		parent_env =3D getenv("TERM");
-+		parent_env =3D getenv("PWD");
-=20
- 		if ((strcmp(buff, parent_env)) =3D=3D 0) {
- 			tst_resm(TPASS, "Test Passed");
-@@ -186,24 +185,24 @@ void cleanup()
-=20
+ }
+ 
  /*
-  * child_environ() -	function executed by child.
-- *			Gets the value for environment variable,TERM &
-+ *			Gets the value for environment variable PWD and
-  *			writes it to  a pipe.
-  */
- int child_environ(void)
+@@ -163,10 +162,10 @@ static void print_usage(const char *bname)
+ 	printf("Usage: %s %s\n", bname, usage);
+ }
+ 
+-static long str_to_l(const char *str, const char *name)
++static long str_to_l(const char *str, const char *name, int mode)
  {
-=20
--	char var[MAX_LINE_LENGTH];
-+	char var[MAXPATHLEN];
-=20
- 	/* Close read end from child */
- 	if ((close(pfd[0])) =3D=3D -1) {
- 		tst_brkm(TBROK|TERRNO, cleanup, "close(pfd[0]) failed");
+ 	char *end;
+-	long i = strtol(str, &end, 10);
++	long i = strtol(str, &end, mode);
+ 
+ 	if (*end != '\0')
+ 		tst_brkm(TBROK, NULL, "Invalid parameter '%s' passed. (%s)",
+@@ -196,13 +195,13 @@ int main(int argc, char *argv[])
+ 		tst_exit();
  	}
-=20
--	if ((sprintf(var, "%s", getenv("TERM") ? : "")) <=3D 0) {
-+	if ((sprintf(var, "%s", getenv("PWD") ? : "")) <=3D 0) {
- 		tst_resm(TWARN|TERRNO, "sprintf() failed");
- 	}
-=20
--	if ((write(pfd[1], var, MAX_LINE_LENGTH)) =3D=3D -1) {
-+	if ((write(pfd[1], var, MAXPATHLEN)) =3D=3D -1) {
- 		tst_resm(TWARN|TERRNO, "write to pipe failed");
- 	}
-=20
-@@ -213,4 +212,4 @@ int child_environ(void)
- 	}
-=20
- 	exit(0);
+ 
+-	fmode     = str_to_l(argv[1], "file mode");
+-	fuser_id  = str_to_l(argv[2], "file uid");
+-	fgroup_id = str_to_l(argv[3], "file gid");
+-	user_id   = str_to_l(argv[4], "tester uid");
+-	group_id  = str_to_l(argv[5], "tester gid");
++	fmode     = str_to_l(argv[1], "file mode", 8);
++	fuser_id  = str_to_l(argv[2], "file uid", 10);
++	fgroup_id = str_to_l(argv[3], "file gid", 10);
++	user_id   = str_to_l(argv[4], "tester uid", 10);
++	group_id  = str_to_l(argv[5], "tester gid", 10);
+ 	fperm     = argv[6];
+-	exp_res   = str_to_l(argv[7], "expected result");
++	exp_res   = str_to_l(argv[7], "expected result", 10);
+ 
+ 	tst_tmpdir();
+ 	testsetup(TEST_FILE_NAME1, 0, fmode, fuser_id, fgroup_id);
+@@ -226,4 +225,4 @@ int main(int argc, char *argv[])
+ 
+ 	tst_rmdir();
+ 	tst_exit();
 -}
 \ No newline at end of file
 +}
 
---MP_/qYUL4Td=9K=QWwXxLZz+mI3--
-
---Sig_/FHYms1i79NQi=jYv5te/m5Q
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJNY4deAAoJEID329zPTTLkiqAP/3xIiOGMOuuIMT7LjDMaYyXW
-UvTqJAw42MARcsKp2VB8eIzR6+FeJolr8ACosbY82f/OpwweilwTbSvn/9UQzZhK
-LdjTFR8tLcbNtQWMXb2Ca12+xLyTb7yDMA+fruwmgthmNlJ3FKEpj1UV5sC3v1CI
-xRCMaQhfUo30gGQiOyq0LfGYJXGe4uQzbNV4dX2lRN6MSMlRNQvJgUrxNStzOzSW
-qwf0kWJT72IDtxyjiqdhDg2jTOo5gfhlTrXPLT+uhqNTZ+Zbcjd+0jHOjJ676378
-vsgALJzQoGtBJDIDJDlwlSljBo9A2+rmmRklTfHqHin/3elBVtFCv3yemiD/bXxP
-yewSLl5QPgtwN/JTx+o1umGjJT3V/1cTmRuhY26WoBkRC63FGmwgW3RTw3be9TZD
-sbZGlGKQcwYvC6pnznnGVqZ3+sKpUR1KTYSnD0giDzR9eKCtDXobm2J8fKUgUau6
-lVsnO+bxXr02ItrxpwlbCkCIOu4oNfPaQMTI8qqErT0xk88BbaS3o6URpHWkwgVy
-qj8MfVz9VkNkFHi937/ELw+luGZd+3Wk7oT7BCY2ryKsbteSDGkk2u0VQEVZ8ZU8
-LjheQerm28wZLxh4f/AuExAHEfXRmktXsAlMpQpgeB/kiKh1eL5/ob33ARWt9GR4
-MIA/O+P57FEZB/dloM8R
-=Kw0m
------END PGP SIGNATURE-----
-
---Sig_/FHYms1i79NQi=jYv5te/m5Q--
-
-
---===============4383157934191192143==
+--sm4nu43k4a2Rpi4c
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Index, Search & Analyze Logs and other IT data in Real-Time with Splunk 
-Collect, index and harness all the fast moving IT data generated by your 
-applications, servers and devices whether physical, virtual or in the cloud.
-Deliver compliance at lower cost and gain new business insights. 
-Free Software Download: http://p.sf.net/sfu/splunk-dev2dev
---===============4383157934191192143==
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
+--sm4nu43k4a2Rpi4c
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -221,5 +147,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4383157934191192143==--
+--sm4nu43k4a2Rpi4c--
 
