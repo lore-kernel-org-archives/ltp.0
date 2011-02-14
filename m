@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Pov03-0006nH-3z
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 09:45:43 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Pov00-0006HP-4K
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 09:45:43 +0000
-Message-ID: <4D58F9CF.6000203@cn.fujitsu.com>
-Date: Mon, 14 Feb 2011 17:45:51 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1Pp1Rw-0002RB-W5
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 16:38:56 +0000
+Date: Mon, 14 Feb 2011 17:58:16 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110214165816.GA3734@saboteur.suse.cz>
+References: <4D595337.5070801@nokia.com>
+	<20110214154030.GC426@saboteur.suse.cz>
 MIME-Version: 1.0
-References: <4D3017F9.7060307@cn.fujitsu.com> <4D427D32.8020801@cn.fujitsu.com>
-In-Reply-To: <4D427D32.8020801@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] Fix a building error.
+Content-Disposition: inline
+In-Reply-To: <20110214154030.GC426@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
+ "fs_perms" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,39 +23,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: maxin <john.maxin@nokia.com>
 Cc: ltp-list@lists.sourceforge.net
 
-SGkgR2FycmV0dCwKCkFueSByZXNwb25zZe+8nwoKVGhlIElOU1RBTEwgZmlsZSBzYXkgZmxleCBj
-YW4gYmUgb2J0YWluZWQgaGVyZToKLSBodHRwOi8vZG93bmxvYWRzLnNvdXJjZWZvcmdlLm5ldC9w
-cm9qZWN0L2ZsZXgvZmxleC9mbGV4LTIuNS4zMy9mbGV4LTIuNS4zMy50YXIuYnoyCgpBcmUgeW91
-IG1lYW4gdGhlIGZsZXggdmVyc2lvbiBpcyBzdXJlIGZsZXgtMi41LjMzK++8nwoKPiAgIFdvdWxk
-IHlvdSBsaWtlIHRvIGFwcGx5IHRoaXMgcGF0Y2g/IAo+IAo+ICAgIiVvcHRpb24gbm9sZXgtY29t
-cGF0IiBtYWtlIHRoZSBnbG9iYWwgdmFyaWFibGUgInl5bGluZW5vIiB1bmRlY2xhcmVkLCAKPiB0
-aGlzIHdpbGwgcmVzdWx0IGluIGJ1aWxkIGVycm9yIGluIFJIRUw0LjggYW5kIFJIRUw1LjUuCj4g
-Cj4gICBUaGUgZW52aXJvbm1lbnRzIGFyZSBhcyBmb2xsb3dzOgo+ICAgLSBSSEVMNC44IC0tLSB4
-ODZfNjQKPiAgIC0gZmxleCAgICAtLS0gdmVyc2lvbiAyLjUuNAo+IAo+ICAgLSBSSEVMNS41IC0t
-LSAoeDg2LCB4ODZfNjQsIGlhNjQpCj4gICAtIGZsZXggICAgLS0tIHZlcnNpb24gMi41LjQKPiAK
-PiAKPiBQZW5nIEhhaXRhbyBzYWlkIHRoZSBmb2xsb3dpbmcgb24gMjAxMS0xLTE0IDE3OjMxOgo+
-PiBIaSBHYXJyZXR0LAo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBQZW5nIEhhaXRhbyA8cGVuZ2h0QGNu
-LmZ1aml0c3UuY29tPgo+PiAtLS0KPj4gIHBhbi9zY2FuLmwgfCAgICAxICsKPj4gIDEgZmlsZXMg
-Y2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0
-IGEvcGFuL3NjYW4ubCBiL3Bhbi9zY2FuLmwKPj4gaW5kZXggOTY5NjUzMS4uY2M0N2JkZiAxMDA2
-NDQKPj4gLS0tIGEvcGFuL3NjYW4ubAo+PiArKysgYi9wYW4vc2Nhbi5sCj4+IEBAIC05MSw2ICs5
-MSw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfbW9kZShpbnQsIGludCwgLi4uKTsKPj4gICVvcHRpb24g
-bm9pbnB1dAo+PiAgJW9wdGlvbiBub2xleC1jb21wYXQKPj4gICVvcHRpb24gbm91bnB1dAo+PiAr
-JW9wdGlvbiB5eWxpbmVubwo+PiAgCj4+ICBVSSAgICAgIFswLTldKwo+PiAgQSAgICAgICBbYS16
-QS1aXSsKPiAKCi0tIApCZXN0IFJlZ2FyZHMsClBlbmcgSGFpdGFvCgoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tClRoZSB1bHRpbWF0ZSBhbGwtaW4tb25lIHBlcmZvcm1hbmNlIHRvb2xraXQ6IEludGVs
-KFIpIFBhcmFsbGVsIFN0dWRpbyBYRToKUGlucG9pbnQgbWVtb3J5IGFuZCB0aHJlYWRpbmcgZXJy
-b3JzIGJlZm9yZSB0aGV5IGhhcHBlbi4KRmluZCBhbmQgZml4IG1vcmUgdGhhbiAyNTAgc2VjdXJp
-dHkgZGVmZWN0cyBpbiB0aGUgZGV2ZWxvcG1lbnQgY3ljbGUuCkxvY2F0ZSBib3R0bGVuZWNrcyBp
-biBzZXJpYWwgYW5kIHBhcmFsbGVsIGNvZGUgdGhhdCBsaW1pdCBwZXJmb3JtYW5jZS4KaHR0cDov
-L3Auc2YubmV0L3NmdS9pbnRlbC1kZXYyZGV2ZmViCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0
-cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
-dGluZm8vbHRwLWxpc3QK
+Hi!
+> > I have checked your patch and it solves the number conversion (octal<->  decimal) issues. Thank you for that.
+> > However, the file permission issues are still valid. Please find the test execution log with this mail.
+> > 
+> > >But then 001 is right to exec by other which should work.
+> > >        010 is right to exec for group, which is the same on that line
+> > >        100 is right to exec for owner, which is the same again
+> > 
+> > In this case, I partially agree with you. It is true in the case of binary files. However, We need 'read' and 'exec'
+> > for script files and these testcases deals with script files too.
+> > 
+> 
+> Hmm I see the problem now. However as a root, I could read and run files
+> with just an exec flag, at least here. I suppose the test works here by
+> some saved-id magick. I'll look deeper into this.
+> 
+
+I think I've found the cause. The wait() funcion returns -1 if exec*
+hasn't succeded to run the file (and sets the status to 0). I'm not sure
+if this is POSIX compilant behaviour, I'll check on that later. 
+
+What flavour of glibc/kernel are you testing there, it seems that it
+behaves a little different than mine. Here I have glibc-2.11.
+
+Anyway, I'll fix the test to check for return value from wait(), add the
+fix for octal file mode and fix the runtest files.
+
+Thanks!
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
