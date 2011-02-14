@@ -1,13 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Message-ID: <4D5B7165.2070803@linux.vnet.ibm.com>
-Date: Wed, 16 Feb 2011 12:10:37 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <john.maxin@nokia.com>) id 1Pp0aL-0005nR-26
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 15:43:33 +0000
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1Pp0aJ-0006cy-88
+	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 15:43:33 +0000
+Received: from [172.21.22.250] (helruo-dhcp022250.ntc.nokia.com
+	[172.21.22.250])
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p1EFhMSf027235
+	for <ltp-list@lists.sourceforge.net>; Mon, 14 Feb 2011 17:43:22 +0200
+Message-ID: <4D595C00.5050508@nokia.com>
+Date: Mon, 14 Feb 2011 17:44:48 +0100
+From: maxin <john.maxin@nokia.com>
 MIME-Version: 1.0
-References: <AANLkTinXiKJkgw2-uiVKpYWD55C1EvnybPGaB3a6NaBW@mail.gmail.com>
-	<4D59104C.3040708@linux.vnet.ibm.com>
-In-Reply-To: <4D59104C.3040708@linux.vnet.ibm.com>
-Subject: Re: [LTP] [Ltp-commits] Sourceforge backend for hooks to
- ltp-commits list is dead
+Subject: [LTP] [PATCH]  Fix compilation warning for tools/rand_lines.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -20,45 +30,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, ltp-commits@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Monday 14 February 2011 04:51 PM, Shubham wrote:
-> On Monday 14 February 2011 09:10 AM, Garrett Cooper wrote:
->>       sendmail is no longer on the same server where git pushes are sent to:
->>
->> Counting objects: 3, done.
->> Delta compression using up to 8 threads.
->> Compressing objects: 100% (2/2), done.
->> Writing objects: 100% (2/2), 245 bytes, done.
->> Total 2 (delta 1), reused 0 (delta 0)
->> vz-git-2.sog
->> ls: /usr/sbin/sendmail: No such file or directory
->> hooks/post-receive: line 593: /usr/sbin/sendmail: No such file or directory
->> error: cannot run hooks/post-receive: No such file or directory
->> To ssh://yaberauneya@ltp.git.sourceforge.net/gitroot/ltp/ltp
->>      bc7f47d..5e2b3c6  master ->   master
->>
->>       I'm not a project admin or maintainer, so I'm not even going to
->> bother fixing it because I've already done enough. Will someone who's
->> SUPPOSED to be a project admin / maintainer contact sourceforge and
->> get it fixed please?
->> Thanks,
->> -Garrett
->>
-> Hi Garrett,
->
-> I have sent an email to SF admins about this. I will follow up with them.
->
-> Thanks
-> -Shubham
-Hi Garrett,
 
-I got a reply from SourceForge support and as per them this problem is fixed. Are we still having issues with this?
-Kindly confirm.
+Hi,
 
-Thanks,
-Shubham
+This one is a trivial fix for the compilation warnings in 'tools/rand_lines.c'
+
+Signed-off-by: Maxin John<john.maxin@nokia.com>
+
+----
+diff --git a/tools/rand_lines.c b/tools/rand_lines.c
+index e1b2d0a..e2c3bb9 100644
+--- a/tools/rand_lines.c
++++ b/tools/rand_lines.c
+@@ -99,6 +99,7 @@
+   **************************************************************/
+
+  #include<errno.h>
++#include<err.h>
+  #include<stdio.h>
+  #include<stdlib.h>
+  #include<string.h>
+----
+
+Warm Regards,
+Maxin B. John
 
 
 ------------------------------------------------------------------------------
