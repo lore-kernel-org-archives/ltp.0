@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1PlOoh-0007UO-3s
-	for ltp-list@lists.sourceforge.net; Fri, 04 Feb 2011 16:47:27 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 3D25A93717
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  4 Feb 2011 17:47:19 +0100 (CET)
-Date: Fri, 4 Feb 2011 18:05:56 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110204170556.GA30962@saboteur.suse.cz>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PpHFW-00039a-HB
+	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 09:31:10 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PpHFU-0000g7-Qo
+	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 09:31:10 +0000
+Message-ID: <4D5A47E5.3060108@cn.fujitsu.com>
+Date: Tue, 15 Feb 2011 17:31:17 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="/04w6evG8XlLl3ft"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] style guide note about writing signal handlers
+Subject: [LTP]  [PATCH] unshare01.c: TEST_RETURN is used wrong
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,68 +22,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi Garrett,
 
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/unshare/unshare01.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Hi!
-Patch with note about writing signal handlers attached.
-
-Garrett feel free to rewrite it to match the rest of the style guide.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+diff --git a/testcases/kernel/syscalls/unshare/unshare01.c b/testcases/kernel/syscalls/unshare/unshare01.c
+index e19d73d..9ae5e8f 100644
+--- a/testcases/kernel/syscalls/unshare/unshare01.c
++++ b/testcases/kernel/syscalls/unshare/unshare01.c
+@@ -206,7 +206,7 @@ int main(int ac, char **av) {
+ 			}
+ 
+ 			pid1 = fork();
+-			if (TEST_RETURN == -1) {
++			if (pid1 == -1) {
+ 				tst_brkm(TFAIL|TERRNO, cleanup,
+ 				    "fork failed");
+ 			} else if (pid1 == 0) {
+@@ -249,7 +249,7 @@ int main(int ac, char **av) {
+ 			if (pid1 == -1) {
+ 				tst_brkm(TFAIL|TERRNO, cleanup,
+ 				    "fork() failed.");
+-			} else if (TEST_RETURN == 0) {
++			} else if (pid1 == 0) {
+ 				TEST(unshare(CLONE_NEWNS));
+ 				if (TEST_RETURN == 0) {
+ 					printf("unshare call with CLONE_NEWNS "
+@@ -299,4 +299,4 @@ int main(void)
+ 	tst_resm(TCONF, "unshare is undefined.");
+ 	tst_exit();
+ }
+-#endif
+\ No newline at end of file
++#endif
+-- 
+1.7.3.1
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Best Regards,
+Peng Haitao
 
---/04w6evG8XlLl3ft
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="style_guide.patch"
-
-diff --git a/doc/style-guide.txt b/doc/style-guide.txt
-index a8b75a7..713df6c 100644
---- a/doc/style-guide.txt
-+++ b/doc/style-guide.txt
-@@ -172,6 +172,11 @@ if ((this_is_a_poorly_formed_really_long_variable = function_call()) == NULL &&
-     Furthermore, linux/ headers get shuffled around a lot more than
-     their sys/ counterparts it seems.
- 
-+15. Avoid doing tricky things in signal handlers. Calling most of the libc
-+    functions from signal handler may lead to deadlocks or memory corruption.
-+    If you really need to do anything more complicated that "should_run = 0;"
-+    in your signal handler consult "man 7 singal" for async-signal-safe
-+    functions.
- 
- Porting Testcases
- ---------------------------
-
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The modern datacenter depends on network connectivity to access resources
-and provide services. The best practices for maximizing a physical server's
-connectivity to a physical network are well understood - see how these
-rules translate into the virtual world? 
-http://p.sf.net/sfu/oracle-sfdevnlfb
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---/04w6evG8XlLl3ft--
-
