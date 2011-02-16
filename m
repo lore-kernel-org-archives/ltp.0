@@ -1,34 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1Psfz3-0007Vf-K5
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 18:32:13 +0000
-Received: from e28smtp03.in.ibm.com ([122.248.162.3])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1Psfz2-0003Jk-7K
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 18:32:13 +0000
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by e28smtp03.in.ibm.com (8.14.4/8.13.1) with ESMTP id p1OIW4io018638
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 Feb 2011 00:02:04 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p1OIW4XJ4354054
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 Feb 2011 00:02:04 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p1PAVrgs018095
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 Feb 2011 16:01:53 +0530
-Message-ID: <4D66A410.8020500@linux.vnet.ibm.com>
-Date: Fri, 25 Feb 2011 00:01:44 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	(envelope-from <chrubis@suse.de>) id 1PpqTD-0007tt-Iu
+	for ltp-list@lists.sourceforge.net; Wed, 16 Feb 2011 23:07:39 +0000
+Date: Thu, 17 Feb 2011 00:27:10 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110216232710.GC20313@saboteur.suse.cz>
+References: <4D595337.5070801@nokia.com>
+	<20110214154030.GC426@saboteur.suse.cz>
+	<20110214165816.GA3734@saboteur.suse.cz>
+	<20110214175032.GA5716@saboteur.suse.cz>
+	<20110214194108.GA8474@saboteur.suse.cz>
+	<06C8093A-387B-40E4-A625-5E0C7AACC38D@gmail.com>
+	<1E5B522887F7DD4CB1654389A51E3636D66A64@008-AM1MPN1-025.mgdnok.nokia.com>
+	<AANLkTin=Q1uu-w_+V8tcGdY1E0nQex2qxtiy0hfjkBVq@mail.gmail.com>
+	<4D5A5FB4.7010300@nokia.com>
 MIME-Version: 1.0
-References: <4D42FFBE.3080105@redhat.com>	<4D58DD0A.2050403@redhat.com>
-	<4D640B55.1050300@linux.vnet.ibm.com>
-	<AANLkTin8A_g2RHnGANpcJEHZ3PLdvjYegyfAdkf4nP8E@mail.gmail.com>
-In-Reply-To: <AANLkTin8A_g2RHnGANpcJEHZ3PLdvjYegyfAdkf4nP8E@mail.gmail.com>
-Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
- 03 fail due to different sender names]
+Content-Disposition: inline
+In-Reply-To: <4D5A5FB4.7010300@nokia.com>
+Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
+ "fs_perms" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,40 +33,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: maxin <john.maxin@nokia.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Alright Garrett..., so how should we take the patches in userland arena in future (including this one from Caspar)?
-I mean should they be reviewed and merged upstream? Do LSB currently involved in maintaining them?
+Hi!
+> Cyril, could you please share the Linux kernel version and the some
+> other details like name of the Linux distribution
+> that you are using. I think that would help.
 
-Thanks, Shubham
+It seems to work on various openSuSE instances (2.6.31 for example) as
+well as on gentoo with 2.6.37.
 
+But unix/linux security model is full of special cases and even more fun
+when things like securebits and capabilities comes to play.
 
-On Wednesday 23 February 2011 02:38 AM, Garrett Cooper wrote:
+Anyway, I'm planning to rewrite the test to rely on setuid() and
+setgid() rather than on seteuid() and setegid(), which should be quite
+deterministic.
 
-> On Tue, Feb 22, 2011 at 11:15 AM, Shubham Goyal
-> <shubham@linux.vnet.ibm.com>  wrote:
->> Hi Caspar,
->>
->> I reviewed/verified your patch and it seems to be working fine. I verified
->> it on RHEL6 and both mail02 and mail03 tests are passing now. I believe it
->> can be merged upstream.
->> Garrett, Any comments?
->      I guess... there's no apparent rhyme nor reason to GNU/Linux
-> userland software development, so I'm not going to fight these issues
-> anymore.
->      The LSB should maintain these tests and standardize things if
-> anyone really cares like the opengroup folks do for all of Unix.
-> Thanks,
-> -Garrett
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
