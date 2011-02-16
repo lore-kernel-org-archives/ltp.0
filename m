@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PrmDa-0003Wx-AU
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 06:59:30 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PrmDZ-0004oc-Ie
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 06:59:30 +0000
-Received: by iyb26 with SMTP id 26so1475110iyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 Feb 2011 22:59:24 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1082)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <4D622CFF.4000309@cn.fujitsu.com>
-Date: Mon, 21 Feb 2011 22:59:19 -0800
-Message-Id: <8D7B8E54-3903-473B-A04B-D0A6B768FB29@gmail.com>
-References: <4D622CFF.4000309@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] pan/scan.l: Fix a building error (resend)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <will.deacon@arm.com>) id 1PpkTo-0006yF-Uw
+	for ltp-list@lists.sourceforge.net; Wed, 16 Feb 2011 16:43:52 +0000
+Received: from service87.mimecast.com ([94.185.240.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1PpkTn-0000KS-98
+	for ltp-list@lists.sourceforge.net; Wed, 16 Feb 2011 16:43:52 +0000
+From: "Will Deacon" <will.deacon@arm.com>
+References: <1297088926-21505-1-git-send-email-will.deacon@arm.com>
+In-Reply-To: <1297088926-21505-1-git-send-email-will.deacon@arm.com>
+Date: Wed, 16 Feb 2011 16:43:40 -0000
+Message-ID: <000b01cbcdf8$aaaba430$0002ec90$@deacon@arm.com>
+MIME-Version: 1.0
+Content-Language: en-gb
+Subject: Re: [LTP] [PATCH] Fix rt_sigtimedwait ordering test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,102 +25,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Will Deacon <Will.Deacon@arm.com>, ltp-list@lists.sourceforge.net
 
-Please submit an autoconf-worthy testcase. That shouldn't be too hard to do=
- (AC_TRY_RUN is your friend :).).
+Hello,
 
-
-
-On Feb 21, 2011, at 1:14 AM, Peng Haitao wrote:
-
-> Hi Garrett,
-> =
-
-> When compiling the ltp source, it will error. The error messages are:
-> =
-
-> ...
-> flex -l -t scan.l > scan.c
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -Wno-error -I/home/ph=
-t/ltp-dev/pan -I../include -I../include  -c -o scan.o scan.c
-> scan.l: In function =91yylex=92:
-> scan.l:153: error: =91yylineno=92 undeclared (first use in this function)
-> scan.l:153: error: (Each undeclared identifier is reported only once
-> scan.l:153: error: for each function it appears in.)
-> make: *** [scan.o] Error 1
-> rm scan.c
-> =
-
-> "%option nolex-compat" can silence warning, but also make the global
-> variable "yylineno" undeclared. The following patch add "%option yylineno"
-> to make the global variable "yylineno" to be accessed.
-> =
-
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> The rt_sigtimedwait test invokes test_masked_matching_rt, which
+> spawns two children who send consecutive RT signals to the parent.
+> The test then checks (via sigwaitinfo) that the RT signals are
+> delivered in the correct order: namely that the lower signal is taken
+> first.
+> 
+> This test can fail due to a race condition where the parent issues
+> the sigwaitinfo syscall before the first child has signalled the
+> parent but after the second child has (due to context switching).
+> This results in the signals being received in the reverse order.
+> 
+> This patch inserts waitpid syscalls to the parent thread so that the
+> sigwaitinfo call is only issued after the children have exited.
+> 
+> Signed-off-by: Will Deacon <will.deacon@arm.com>
 > ---
-> pan/scan.l |    1 +
-> 1 files changed, 1 insertions(+), 0 deletions(-)
-> =
+>  .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c    |    7 ++++++-
+>  1 files changed, 6 insertions(+), 1 deletions(-)
 
-> diff --git a/pan/scan.l b/pan/scan.l
-> index 9696531..cc47bdf 100644
-> --- a/pan/scan.l
-> +++ b/pan/scan.l
-> @@ -91,6 +91,7 @@ static int check_mode(int, int, ...);
-> %option noinput
-> %option nolex-compat
-> %option nounput
-> +%option yylineno
-> =
+I've not heard anything further on this, but it does fix a real issue
+on the platform I'm using. Do you need anything more from me for this
+to be considered for committing?
 
-> UI      [0-9]+
-> A       [a-zA-Z]+
-> -- =
+Cheers,
 
-> 1.7.3.1
-> =
-
-> -- =
-
-> Best Regards,
-> Peng Haitao
-> =
-
-> =
-
-> =
-
-> =
-
-> =
-
-> =
-
-> =
-
-> =
-
-> =
-
-> =
+Will
 
 
 
----------------------------------------------------------------------------=
----
-Index, Search & Analyze Logs and other IT data in Real-Time with Splunk =
 
-Collect, index and harness all the fast moving IT data generated by your =
-
-applications, servers and devices whether physical, virtual or in the cloud.
-Deliver compliance at lower cost and gain new business insights. =
-
-Free Software Download: http://p.sf.net/sfu/splunk-dev2dev
+------------------------------------------------------------------------------
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
