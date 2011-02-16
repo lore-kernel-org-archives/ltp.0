@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <monstr@monstr.eu>) id 1Pq31S-0004N1-0Y
-	for ltp-list@lists.sourceforge.net; Thu, 17 Feb 2011 12:31:50 +0000
-Received: from mail-ey0-f175.google.com ([209.85.215.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Pq31Q-0007Hb-31
-	for ltp-list@lists.sourceforge.net; Thu, 17 Feb 2011 12:31:49 +0000
-Received: by eya28 with SMTP id 28so1237670eya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 17 Feb 2011 04:31:41 -0800 (PST)
-Message-ID: <4D5D0E22.3050701@monstr.eu>
-Date: Thu, 17 Feb 2011 13:01:38 +0100
-From: Michal Simek <monstr@monstr.eu>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1Ppb3Q-0006dL-Sa
+	for ltp-list@lists.sourceforge.net; Wed, 16 Feb 2011 06:40:00 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Ppb3O-0002LY-2g
+	for ltp-list@lists.sourceforge.net; Wed, 16 Feb 2011 06:40:00 +0000
+Message-ID: <4D5B7144.9000801@cn.fujitsu.com>
+Date: Wed, 16 Feb 2011 14:40:04 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4D5BCC74.9010301@monstr.eu> <4D5BCE43.1090401@monstr.eu>	
-	<1297862575.6596.0.camel@heimdal.trondhjem.org>	
-	<4D5BD6E5.8010903@monstr.eu>
-	<1297865074.6596.10.camel@heimdal.trondhjem.org>
-In-Reply-To: <1297865074.6596.10.camel@heimdal.trondhjem.org>
-Subject: Re: [LTP] NFS on little-endian platform - Microblaze
-Reply-To: monstr@monstr.eu
+References: <4D58C631.7040508@cn.fujitsu.com>	<AANLkTinXKnOn7XBWJ=+Pc=5r6ObK68s8K2VNEwpuuvBA@mail.gmail.com>	<4D58F766.6040208@cn.fujitsu.com>
+	<AANLkTikdB=poh8vt8PhoiJxUFz2Zimu9oORiyyMSeu-+@mail.gmail.com>
+In-Reply-To: <AANLkTikdB=poh8vt8PhoiJxUFz2Zimu9oORiyyMSeu-+@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------030702050607040601000902"
+Subject: Re: [LTP] [PATCH] setfsuid04.c: the child process should exit 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,127 +26,331 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Trond Myklebust <Trond.Myklebust@netapp.com>
-Cc: netdev@vger.kernel.org, linux-nfs@vger.kernel.org, David Miller <davem@davemloft.net>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Trond Myklebust wrote:
-> On Wed, 2011-02-16 at 14:53 +0100, Michal Simek wrote: 
->> Trond Myklebust wrote:
->>> On Wed, 2011-02-16 at 14:16 +0100, Michal Simek wrote: 
->>>> Hi again,
->>>>
->>>> I forget to cc linux-nfs mailing list.
->>>>
->>>> Michal
->>>>
->>>> P.S.: Tested on kernels 2.6.38-rc4, 2.6.37 and 2.6.36
->>>>
->>>> Michal Simek wrote:
->>>>> Hi All,
->>>>>
->>>>> I am trying to understand one problem which we have found.
->>>>> The problem is that I can't on Microblaze little-endian platform
->>>>> mount nfs without -o nolock options. (Log below)
->>>>> Selecting tcp or udp has no effect.
->>>>> I am using emaclite driver and there is no problem on big endian 
->>>>> microblaze.
->>>>>
->>>>> ping, telnet, http, ftp, iperf, netperf work well.
->>>>>
->>>>> That's why I have a question if there is any endian specific option for 
->>>>> NFS?
->>>>>
->>>>> Thanks,
->>>>> Michal
->>>>>
->>>>> ~ # mount -t nfs 192.168.0.101:/tftpboot/nfs /mnt
->>>>> svc: failed to register lockdv1 RPC service (errno 13).
->>>>> lockd_up: makesock failed, error=-13
->>>>> svc: failed to register lockdv1 RPC service (errno 13).
->>>>> ~ # mount -t nfs -o nolock 192.168.0.101:/tftpboot/nfs /mnt
->>>>> ~ # mount
->>>>> rootfs on / type rootfs (rw)
->>>>> proc on /proc type proc (rw,relatime)
->>>>> none on /var type ramfs (rw,relatime)
->>>>> none on /sys type sysfs (rw,relatime)
->>>>> none on /etc/config type ramfs (rw,relatime)
->>>>> none on /dev/pts type devpts (rw,relatime,mode=600)
->>>>> 192.168.0.101:/tftpboot/nfs on /mnt type nfs 
->>>>> (rw,relatime,vers=3,rsize=32768,wsize=32768,namlen=255,hard,nolock,proto=udp,port=65535,timeo=7,retrans=3,sec=sys,local_lock=all,addr=192.168.0.101) 
->>>>>
->>>>> ~ #
->>>>> ~ # ps
->>>>> PID   USER     TIME   COMMAND
->>>>>     1 root       0:02 init
->>>>>     2 root       0:00 [kthreadd]
->>>>>     3 root       0:00 [ksoftirqd/0]
->>>>>     4 root       0:00 [kworker/0:0]
->>>>>     5 root       0:00 [kworker/u:0]
->>>>>     6 root       0:00 [khelper]
->>>>>     7 root       0:00 [sync_supers]
->>>>>     8 root       0:00 [bdi-default]
->>>>>     9 root       0:00 [kblockd]
->>>>>    10 root       0:00 [rpciod]
->>>>>    11 root       0:00 [kworker/0:1]
->>>>>    12 root       0:00 [kswapd0]
->>>>>    13 root       0:00 [fsnotify_mark]
->>>>>    14 root       0:00 [aio]
->>>>>    15 root       0:00 [nfsiod]
->>>>>    16 root       0:00 [kworker/u:1]
->>>>>    58 root       0:00 udhcpc -R -n -p /var/run/udhcpc.eth0.pid -i eth0
->>>>>    62 1          0:00 /bin/portmap
->>>>>    64 root       0:00 /bin/inetd /etc/inetd.conf
->>>>>    65 root       0:01 -sh
->>>>>    66 root       0:00 /bin/syslogd -n
->>>>>    67 root       0:00 /bin/flatfsd
->>>>>    68 root       0:00 [kworker/0:2]
->>>>>    91 root       0:00 ps
->>> Where is rpc.statd? Without it, the above behaviour is 100% expected.
->> I see on BE that lockd is used but it is enabled on little endian too but hasn't started.
+
+--------------030702050607040601000902
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+
+Hi Garrett,
+
+Garrett Cooper said the following on 2011-2-15 22:42:
+>>>     How about this version instead? There were issues with the
 >>
->> Enabled options:
->> CONFIG_NETWORK_FILESYSTEMS=y
->> CONFIG_NFS_FS=y
->> CONFIG_NFS_V3=y
->> CONFIG_LOCKD=y
->> CONFIG_LOCKD_V4=y
->> CONFIG_NFS_COMMON=y
->> CONFIG_SUNRPC=y
->>
->> On Be lockd is up.
->>     69 root       0:00 /bin/flatfsd
->>     71 root       0:00 [lockd]
->>     73 root       0:00 ps
->>
->> I have to look why.
->> How is it started?
+>> The two "TEST_ERRNO" should be replaced with "errno" in this version,
+>> If not, the version will fail.
 > 
-> Either rpc.bind or rpc.portmap and then rpc.statd need to be started
-> manually (in that order) before you may mount the NFS partition without
-> '-onolock'. The lockd daemon itself will be started by the kernel
-> whenever there is a need for it.
-> 
-> Please check your 'init' boot scripts to find out why they are not being
-> started as expected.
-> 
+> Other than that I assume things are ok?
 
-It seems to me that the problem is with sunrpc in connection to endian.
-I am looking for any package which can test sunrpc on embedded systems.
-Can you recommend me any package?
+Sorry, the child process need exit when success in do_master_child().
+I rewrite a new patch base on your version, please review.
+Thinks.
 
-I have found RPC tests in LTP but it is designed for desktops not embedded.
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/setfsuid/setfsuid04.c |  105 +++++++++++------------
+ 1 files changed, 49 insertions(+), 56 deletions(-)
 
-Thanks,
-Michal
+diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
+index 9129892..ddbbcde 100644
+--- a/testcases/kernel/syscalls/setfsuid/setfsuid04.c
++++ b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
+@@ -43,18 +43,21 @@
+  * RESTRICTIONS
+  * 	Must be run as root.
+  */
+-#include <errno.h>
+ #include <sys/types.h>
++#ifdef __GLIBC__
++#include <sys/fsuid.h>
++#endif
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <errno.h>
+ #include <fcntl.h>
++#include <pwd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
+ #include <unistd.h>
+-#ifdef __GLIBC__
+-#include <sys/fsuid.h>
+-#endif
+ #include "test.h"
+ #include "usctest.h"
+-#include <pwd.h>
+ 
+ char *TCID = "setfsuid04";
+ int TST_TOTAL = 1;
+@@ -76,13 +79,9 @@ int main(int ac, char **av)
+ 	int status;
+ 
+ 	/* parse standard options */
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	 }
+ 
+-	/*
+-	 * perform global setup for the test
+-	 */
+ 	setup();
+ 
+ 	TEST_EXP_ENOS(exp_enos);
+@@ -91,20 +90,16 @@ int main(int ac, char **av)
+ 	if (pid < 0)
+ 		tst_brkm(TBROK, cleanup, "Fork failed");
+ 
+-	if (pid == 0) {
++	if (pid == 0)
+ 		do_master_child();
+ 
+-	} else {
+-		waitpid(pid, &status, 0);
+-		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
+-			tst_resm(WEXITSTATUS(status),
+-				 "son process exits with error");
+-	}
++	if (waitpid(pid, &status, 0) == -1)
++		tst_resm(TBROK|TERRNO, "waitpid failed");
++	if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
++		tst_resm(TFAIL, "child process terminated abnormally");
+ 
+ 	cleanup();
+ 	tst_exit();
+-	tst_exit();
+-
+ }
+ 
+ /*
+@@ -123,27 +118,26 @@ void do_master_child()
+ 		Tst_count = 0;
+ 
+ 		if (setfsuid(ltpuser->pw_uid) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "setfsuid failed to set the euid to %d",
+-				 ltpuser->pw_uid);
++			perror("setfsuid failed");
++			exit(1);
+ 		}
+ 
+ 		/* Test 1: Check the process with new uid cannot open the file
+ 		 *         with RDWR permissions.
+ 		 */
+-		TEST(tst_fd = open(testfile, O_RDWR));
++		tst_fd = open(testfile, O_RDWR);
+ 
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "call succeeded unexpectedly");
++		if (tst_fd != -1) {
++			printf("open succeeded unexpectedly\n");
+ 			close(tst_fd);
++			exit(1);
+ 		}
+ 
+-		if (TEST_ERRNO == EACCES) {
+-			tst_resm(TPASS, "open returned errno EACCES");
+-		} else {
+-			tst_resm(TFAIL, "open returned unexpected errno - %d",
+-				 TEST_ERRNO);
+-			continue;
++		if (errno == EACCES)
++			printf("open failed with EACCES as expected\n");
++		else {
++			perror("open failed unexpectedly");
++			exit(1);
+ 		}
+ 
+ 		/* Test 2: Check a son process cannot open the file
+@@ -157,27 +151,28 @@ void do_master_child()
+ 			int tst_fd2;
+ 
+ 			/* Test to open the file in son process */
+-			TEST(tst_fd2 = open(testfile, O_RDWR));
++			tst_fd2 = open(testfile, O_RDWR);
+ 
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
++			if (tst_fd2 != -1) {
++				printf("call succeeded unexpectedly\n");
+ 				close(tst_fd2);
++				exit(1);
+ 			}
+ 
+-			TEST_ERROR_LOG(TEST_ERRNO);
+-
+-			if (TEST_ERRNO == EACCES) {
+-				tst_resm(TPASS, "open returned errno EACCES");
++			if (errno == EACCES) {
++				printf("open failed with EACCES as expected\n");
++				exit(0);
+ 			} else {
+-				tst_resm(TFAIL,
+-					 "open returned unexpected errno - %d",
+-					 TEST_ERRNO);
++				printf("open failed unexpectedly\n");
++				exit(1);
+ 			}
+-			continue;
+ 		} else {
+ 			/* Wait for son completion */
+-			waitpid(pid, &status, 0);
+-			if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
++			if (waitpid(pid, &status, 0) == -1) {
++				perror("waitpid failed");
++				exit(1);
++			}
++			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+ 				exit(WEXITSTATUS(status));
+ 		}
+ 
+@@ -186,21 +181,21 @@ void do_master_child()
+ 		 */
+ 		Tst_count++;
+ 		if (setfsuid(0) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "setfsuid failed to set the euid to 0");
++			perror("setfsuid failed");
++			exit(1);
+ 		}
+ 
+-		TEST(tst_fd = open(testfile, O_RDWR));
++		tst_fd = open(testfile, O_RDWR);
+ 
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "open returned unexpected errno %d",
+-				 TEST_ERRNO);
+-			continue;
++		if (tst_fd == -1) {
++			perror("open failed unexpectedly");
++			exit(1);
+ 		} else {
+-			tst_resm(TPASS, "open call succeeded");
++			printf("open call succeeded\n");
+ 			close(tst_fd);
+ 		}
+ 	}
++	exit(0);
+ }
+ 
+ /*
+@@ -208,9 +203,7 @@ void do_master_child()
+  */
+ void setup(void)
+ {
+-	if (geteuid() != 0) {
+-		tst_brkm(TBROK, NULL, "Test must be run as root");
+-	}
++	tst_require_root(NULL);
+ 
+ 	ltpuser = getpwnam(nobody_uid);
+ 
+@@ -244,4 +237,4 @@ void cleanup(void)
+ 
+ 	tst_rmdir();
+ 
+-}
+\ No newline at end of file
++}
+-- 
+1.7.3.1
 
 -- 
-Michal Simek, Ing. (M.Eng)
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel 2.6 Microblaze Linux - http://www.monstr.eu/fdt/
-Microblaze U-BOOT custodian
+Best Regards,
+Peng Haitao
+
+--------------030702050607040601000902
+Content-Type: text/plain;
+	name="0001-setfsuid04.c-the-child-process-should-exit-0.patch"
+Content-Disposition: attachment;
+	filename="0001-setfsuid04.c-the-child-process-should-exit-0.patch"
+Content-Transfer-Encoding: quoted-printable
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>=0A---=0A testcases/kerne=
+l/syscalls/setfsuid/setfsuid04.c |  105 +++++++++++------------=0A 1 files =
+changed, 49 insertions(+), 56 deletions(-)=0A=0Adiff --git a/testcases/kern=
+el/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setf=
+suid04.c=0Aindex 9129892..ddbbcde 100644=0A--- a/testcases/kernel/syscalls/=
+setfsuid/setfsuid04.c=0A+++ b/testcases/kernel/syscalls/setfsuid/setfsuid04=
+.c=0A@@ -43,18 +43,21 @@=0A  * RESTRICTIONS=0A  * 	Must be run as root.=0A =
+ */=0A-#include <errno.h>=0A #include <sys/types.h>=0A+#ifdef =5F=5FGLIBC=
+=5F=5F=0A+#include <sys/fsuid.h>=0A+#endif=0A #include <sys/stat.h>=0A #inc=
+lude <sys/wait.h>=0A+#include <errno.h>=0A #include <fcntl.h>=0A+#include <=
+pwd.h>=0A+#include <stdio.h>=0A+#include <stdlib.h>=0A+#include <string.h>=
+=0A #include <unistd.h>=0A-#ifdef =5F=5FGLIBC=5F=5F=0A-#include <sys/fsuid.=
+h>=0A-#endif=0A #include "test.h"=0A #include "usctest.h"=0A-#include <pwd.=
+h>=0A =0A char *TCID =3D "setfsuid04";=0A int TST=5FTOTAL =3D 1;=0A@@ -76,1=
+3 +79,9 @@ int main(int ac, char **av)=0A 	int status;=0A =0A 	/* parse sta=
+ndard options */=0A-	if ((msg =3D parse=5Fopts(ac, av, NULL, NULL)) !=3D NU=
+LL) {=0A+	if ((msg =3D parse=5Fopts(ac, av, NULL, NULL)) !=3D NULL)=0A 		ts=
+t=5Fbrkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);=0A-	 }=0A =0A-	/*=
+=0A-	 * perform global setup for the test=0A-	 */=0A 	setup();=0A =0A 	TEST=
+=5FEXP=5FENOS(exp=5Fenos);=0A@@ -91,20 +90,16 @@ int main(int ac, char **av=
+)=0A 	if (pid < 0)=0A 		tst=5Fbrkm(TBROK, cleanup, "Fork failed");=0A =0A-	=
+if (pid =3D=3D 0) {=0A+	if (pid =3D=3D 0)=0A 		do=5Fmaster=5Fchild();=0A =
+=0A-	} else {=0A-		waitpid(pid, &status, 0);=0A-		if (!WIFEXITED(status) ||=
+ (WEXITSTATUS(status) !=3D 0))=0A-			tst=5Fresm(WEXITSTATUS(status),=0A-			=
+	 "son process exits with error");=0A-	}=0A+	if (waitpid(pid, &status, 0) =
+=3D=3D -1)=0A+		tst=5Fresm(TBROK|TERRNO, "waitpid failed");=0A+	if (!WIFEXI=
+TED(status) || (WEXITSTATUS(status) !=3D 0))=0A+		tst=5Fresm(TFAIL, "child =
+process terminated abnormally");=0A =0A 	cleanup();=0A 	tst=5Fexit();=0A-	t=
+st=5Fexit();=0A-=0A }=0A =0A /*=0A@@ -123,27 +118,26 @@ void do=5Fmaster=5F=
+child()=0A 		Tst=5Fcount =3D 0;=0A =0A 		if (setfsuid(ltpuser->pw=5Fuid) =
+=3D=3D -1) {=0A-			tst=5Fbrkm(TBROK, cleanup,=0A-				 "setfsuid failed to s=
+et the euid to %d",=0A-				 ltpuser->pw=5Fuid);=0A+			perror("setfsuid fail=
+ed");=0A+			exit(1);=0A 		}=0A =0A 		/* Test 1: Check the process with new =
+uid cannot open the file=0A 		 *         with RDWR permissions.=0A 		 */=0A=
+-		TEST(tst=5Ffd =3D open(testfile, O=5FRDWR));=0A+		tst=5Ffd =3D open(test=
+file, O=5FRDWR);=0A =0A-		if (TEST=5FRETURN !=3D -1) {=0A-			tst=5Fresm(TFA=
+IL, "call succeeded unexpectedly");=0A+		if (tst=5Ffd !=3D -1) {=0A+			prin=
+tf("open succeeded unexpectedly\n");=0A 			close(tst=5Ffd);=0A+			exit(1);=
+=0A 		}=0A =0A-		if (TEST=5FERRNO =3D=3D EACCES) {=0A-			tst=5Fresm(TPASS, =
+"open returned errno EACCES");=0A-		} else {=0A-			tst=5Fresm(TFAIL, "open =
+returned unexpected errno - %d",=0A-				 TEST=5FERRNO);=0A-			continue;=0A+=
+		if (errno =3D=3D EACCES)=0A+			printf("open failed with EACCES as expecte=
+d\n");=0A+		else {=0A+			perror("open failed unexpectedly");=0A+			exit(1);=
+=0A 		}=0A =0A 		/* Test 2: Check a son process cannot open the file=0A@@ -=
+157,27 +151,28 @@ void do=5Fmaster=5Fchild()=0A 			int tst=5Ffd2;=0A =0A 		=
+	/* Test to open the file in son process */=0A-			TEST(tst=5Ffd2 =3D open(t=
+estfile, O=5FRDWR));=0A+			tst=5Ffd2 =3D open(testfile, O=5FRDWR);=0A =0A-	=
+		if (TEST=5FRETURN !=3D -1) {=0A-				tst=5Fresm(TFAIL, "call succeeded une=
+xpectedly");=0A+			if (tst=5Ffd2 !=3D -1) {=0A+				printf("call succeeded u=
+nexpectedly\n");=0A 				close(tst=5Ffd2);=0A+				exit(1);=0A 			}=0A =0A-		=
+	TEST=5FERROR=5FLOG(TEST=5FERRNO);=0A-=0A-			if (TEST=5FERRNO =3D=3D EACCES=
+) {=0A-				tst=5Fresm(TPASS, "open returned errno EACCES");=0A+			if (errno=
+ =3D=3D EACCES) {=0A+				printf("open failed with EACCES as expected\n");=
+=0A+				exit(0);=0A 			} else {=0A-				tst=5Fresm(TFAIL,=0A-					 "open ret=
+urned unexpected errno - %d",=0A-					 TEST=5FERRNO);=0A+				printf("open f=
+ailed unexpectedly\n");=0A+				exit(1);=0A 			}=0A-			continue;=0A 		} else=
+ {=0A 			/* Wait for son completion */=0A-			waitpid(pid, &status, 0);=0A-	=
+		if (!WIFEXITED(status) || (WEXITSTATUS(status) !=3D 0))=0A+			if (waitpid=
+(pid, &status, 0) =3D=3D -1) {=0A+				perror("waitpid failed");=0A+				exit=
+(1);=0A+			}=0A+			if (!WIFEXITED(status) || WEXITSTATUS(status) !=3D 0)=0A=
+ 				exit(WEXITSTATUS(status));=0A 		}=0A =0A@@ -186,21 +181,21 @@ void do=
+=5Fmaster=5Fchild()=0A 		 */=0A 		Tst=5Fcount++;=0A 		if (setfsuid(0) =3D=
+=3D -1) {=0A-			tst=5Fbrkm(TBROK, cleanup,=0A-				 "setfsuid failed to set =
+the euid to 0");=0A+			perror("setfsuid failed");=0A+			exit(1);=0A 		}=0A =
+=0A-		TEST(tst=5Ffd =3D open(testfile, O=5FRDWR));=0A+		tst=5Ffd =3D open(t=
+estfile, O=5FRDWR);=0A =0A-		if (TEST=5FRETURN =3D=3D -1) {=0A-			tst=5Fres=
+m(TFAIL, "open returned unexpected errno %d",=0A-				 TEST=5FERRNO);=0A-			=
+continue;=0A+		if (tst=5Ffd =3D=3D -1) {=0A+			perror("open failed unexpect=
+edly");=0A+			exit(1);=0A 		} else {=0A-			tst=5Fresm(TPASS, "open call suc=
+ceeded");=0A+			printf("open call succeeded\n");=0A 			close(tst=5Ffd);=0A =
+		}=0A 	}=0A+	exit(0);=0A }=0A =0A /*=0A@@ -208,9 +203,7 @@ void do=5Fmaste=
+r=5Fchild()=0A  */=0A void setup(void)=0A {=0A-	if (geteuid() !=3D 0) {=0A-=
+		tst=5Fbrkm(TBROK, NULL, "Test must be run as root");=0A-	}=0A+	tst=5Frequ=
+ire=5Froot(NULL);=0A =0A 	ltpuser =3D getpwnam(nobody=5Fuid);=0A =0A@@ -244=
+,4 +237,4 @@ void cleanup(void)=0A =0A 	tst=5Frmdir();=0A =0A-}=0A\ No newl=
+ine at end of file=0A+}=0A-- =0A1.7.3.1=0A=0A=
+
+--------------030702050607040601000902
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
@@ -159,7 +358,17 @@ Pinpoint memory and threading errors before they happen.
 Find and fix more than 250 security defects in the development cycle.
 Locate bottlenecks in serial and parallel code that limit performance.
 http://p.sf.net/sfu/intel-dev2devfeb
+--------------030702050607040601000902
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030702050607040601000902--
+
+
