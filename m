@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1Psnik-0006RZ-2b
-	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 02:47:54 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Psnii-0005MA-Io
-	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 02:47:54 +0000
-Date: Fri, 25 Feb 2011 10:51:48 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110225025148.GA2902@hpt.nay.redhat.com>
-References: <20110224101921.GA30765@hpt.nay.redhat.com>
-	<AANLkTimuSUtaPSL5x1N75_nF2OtXfjMzcvu5wK4b2FJ7@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="GvXjxJ+pjyke8COw"
-Content-Disposition: inline
-In-Reply-To: <AANLkTimuSUtaPSL5x1N75_nF2OtXfjMzcvu5wK4b2FJ7@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] basic mlock() testcase from lkml
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <harsh@linux.vnet.ibm.com>) id 1PpvTI-0002V1-18
+	for ltp-list@lists.sourceforge.net; Thu, 17 Feb 2011 04:28:04 +0000
+Received: from e28smtp01.in.ibm.com ([122.248.162.1])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1PpvTG-0006c7-H3
+	for ltp-list@lists.sourceforge.net; Thu, 17 Feb 2011 04:28:03 +0000
+From: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
+Date: Thu, 17 Feb 2011 09:57:47 +0530
+Message-Id: <1297916867-14470-1-git-send-email-harsh@linux.vnet.ibm.com>
+Subject: [LTP] [PATCH] utime: Add exception for V9FS for utime functional
+	test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,249 +22,129 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
-
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 24, 2011 at 08:55:26AM -0800, Garrett Cooper wrote:
-> On Thu, Feb 24, 2011 at 2:19 AM, Han Pingtian <phan@redhat.com> wrote:
-> > This is a reproducer copied from one of LKML patch submission,
-> > which subject is
-> >
-> > [PATCH] mlock: revert the optimization for dirtying pages and
-> > triggering writeback.
-> >
-> > "In 5ecfda0, we do some optimization in mlock, but it causes
-> > a very basic test case(attached below) of mlock to fail. So
-> > this patch revert it with some tiny modification so that it
-> > apply successfully with the lastest 38-rc2 kernel."
-> 
->     The open / ftruncate should be moved to setup and the close should
-> be moved to cleanup. Other than that, looks fine.
-Updated as required. Please review. Thanks.
-> Thanks,
-> -Garrett
-
--- 
-Han Pingtian
-Quality Engineer
-hpt @ #kernel-qe
-Red Hat, Inc
-Freedom ... courage ... Commitment ... ACCOUNTABILITY
-
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-basic-mlock-testcase-from-lkml.patch"
-
-From a4071d84f31ed5af8203935dc95855a024ef8315 Mon Sep 17 00:00:00 2001
-From: Han Pingtian <phan@redhat.com>
-Date: Thu, 24 Feb 2011 17:25:03 +0800
-Subject: [PATCH] basic mlock() testcase from lkml
-
-This is a reproducer copied from one of LKML patch submission,
-which subject is
-
-[PATCH] mlock: revert the optimization for dirtying pages and
-triggering writeback.
-
-"In 5ecfda0, we do some optimization in mlock, but it causes
-a very basic test case(attached below) of mlock to fail. So
-this patch revert it with some tiny modification so that it
-apply successfully with the lastest 38-rc2 kernel."
-
-Signed-off-by: Han Pingtian <phan@redhat.com>
----
- runtest/mm                           |    1 +
- testcases/kernel/mem/mlock/Makefile  |   23 +++++++
- testcases/kernel/mem/mlock/mlock01.c |  105 ++++++++++++++++++++++++++++++++++
- 3 files changed, 129 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/mlock/Makefile
- create mode 100644 testcases/kernel/mem/mlock/mlock01.c
-
-diff --git a/runtest/mm b/runtest/mm
-index f097256..1296e59 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -76,6 +76,7 @@ hugemmap05_3 hugemmap05 -s -m
- 
- cpuset01 cpuset01 -I 3600
- 
-+mlock01 mlock01
- mlock03 mlock03 -i 20
- 
- mbind01 mbind01
-diff --git a/testcases/kernel/mem/mlock/Makefile b/testcases/kernel/mem/mlock/Makefile
-new file mode 100644
-index 0000000..dbfbc1b
---- /dev/null
-+++ b/testcases/kernel/mem/mlock/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (C) 2010  Red Hat, Inc.
-+#
-+#  This program is free software; you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or (at
-+#  your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful, but
-+#  WITHOUT ANY WARRANTY; without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+#  General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program; if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+#  02110-1301, USA.
-+#
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/mlock/mlock01.c b/testcases/kernel/mem/mlock/mlock01.c
-new file mode 100644
-index 0000000..e4dc31a
---- /dev/null
-+++ b/testcases/kernel/mem/mlock/mlock01.c
-@@ -0,0 +1,105 @@
-+/*
-+ * This is a reproducer copied from one of LKML patch submission,
-+ * which subject is
-+ *
-+ * [PATCH] mlock: revert the optimization for dirtying pages and triggering writeback.
-+ *
-+ * "In 5ecfda0, we do some optimization in mlock, but it causes
-+ * a very basic test case(attached below) of mlock to fail. So
-+ * this patch revert it with some tiny modification so that it
-+ * apply successfully with the lastest 38-rc2 kernel."
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include "test.h"
-+#include "usctest.h"
-+#include "config.h"
-+
-+char *TCID = "mlock01";
-+int TST_TOTAL = 1;
-+
-+#include <sys/mman.h>
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+
-+int fd, file_len = 40960;
-+char *testfile = "test_mmap";
-+
-+static void cleanup(void)
-+{
-+	close(fd);
-+
-+	TEST_CLEANUP;
-+
-+	tst_rmdir();
-+}
-+
-+static void setup(void)
-+{
-+	tst_tmpdir();
-+
-+	fd = open(testfile, O_CREAT | O_RDWR);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+
-+	if (ftruncate(fd, file_len) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "ftruncate");
-+
-+	TEST_PAUSE;
-+}
-+
-+int main(void)
-+{
-+	char *buf;
-+	int lc;
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		buf = mmap(NULL, file_len, PROT_WRITE, MAP_SHARED, fd, 0);
-+
-+		if (buf == MAP_FAILED)
-+			tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+
-+		if (mlock(buf, file_len) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "mlock");
-+
-+		tst_resm(TINFO, "locked %d bytes from %p", file_len, buf);
-+
-+		if (munlock(buf, file_len) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "munlock");
-+
-+		if (munmap(buf, file_len) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-+	}
-+
-+	tst_resm(TPASS, "mlock01 pass");
-+
-+	cleanup();
-+
-+	tst_exit();
-+}
--- 
-1.7.1
-
-
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sf.net
+
+The functional tests for utime checks if utime updates the
+modification and access time to current time, however V9FS,
+similar to NFS, by default uses the server's localtime if
+client doesnt specify a new time. The current implentation
+does not run the test if the underlying filesystem is NFS.
+A similar check for V9FS is also required, hence this patch.
+
+Signed-off-by: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
+---
+ include/test.h                            |    1 +
+ lib/tst_is_cwd.c                          |   10 ++++++++++
+ testcases/kernel/syscalls/utime/utime01.c |    8 ++++++++
+ testcases/kernel/syscalls/utime/utime02.c |    8 ++++++++
+ testcases/kernel/syscalls/utime/utime03.c |    8 ++++++++
+ 5 files changed, 35 insertions(+), 0 deletions(-)
+
+diff --git a/include/test.h b/include/test.h
+index 019bc59..39bad72 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -214,6 +214,7 @@ int tst_kvercmp(int r1, int r2, int r3);
+ 
+ /* lib/tst_is_cwd.c */
+ int tst_is_cwd_nfs(void);
++int tst_is_cwd_v9fs(void);
+ int tst_is_cwd_tmpfs(void);
+ int tst_is_cwd_ramfs(void);
+ 
+diff --git a/lib/tst_is_cwd.c b/lib/tst_is_cwd.c
+index 775d1f3..f06f1db 100644
+--- a/lib/tst_is_cwd.c
++++ b/lib/tst_is_cwd.c
+@@ -31,6 +31,16 @@ int tst_is_cwd_nfs(void)
+ 	return sf.f_type == NFS_MAGIC ? 1 : 0;
+ }
+ 
++#define V9FS_MAGIC 0x01021997 /* kernel-source/include/linux/magic.h */
++int tst_is_cwd_v9fs(void)
++{
++        struct statfs sf;
++        statfs(".", &sf);
++
++        /*  Verify that the file is not on a nfs filesystem */
++        return sf.f_type == V9FS_MAGIC ? 1 : 0;
++}
++
+ #define RAMFS_MAGIC 0x858458f6
+ int tst_is_cwd_ramfs(void)
+ {
+diff --git a/testcases/kernel/syscalls/utime/utime01.c b/testcases/kernel/syscalls/utime/utime01.c
+index c917afa..f635ae6 100644
+--- a/testcases/kernel/syscalls/utime/utime01.c
++++ b/testcases/kernel/syscalls/utime/utime01.c
+@@ -120,6 +120,14 @@ int main(int ac, char **av)
+ 			 "Cannot do utime on a file located on an NFS filesystem");
+ 	}
+ 
++	/*
++	 * check if the current filesystem is v9fs
++	 */
++        if (tst_is_cwd_v9fs()) {
++                tst_brkm(TCONF, cleanup,
++                         "Cannot do utime on a file located on an 9P filesystem");
++        }
++
+ 	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+diff --git a/testcases/kernel/syscalls/utime/utime02.c b/testcases/kernel/syscalls/utime/utime02.c
+index 8928a78..900ac89 100644
+--- a/testcases/kernel/syscalls/utime/utime02.c
++++ b/testcases/kernel/syscalls/utime/utime02.c
+@@ -125,6 +125,14 @@ int main(int ac, char **av)
+ 			 "Cannot do utime on a file located on an NFS filesystem");
+ 	}
+ 
++        /*
++	* check if the current filesystem is v9fs
++	*/
++        if (tst_is_cwd_v9fs()) {
++                tst_brkm(TCONF, cleanup,
++                         "Cannot do utime on a file located on an 9P filesystem");
++        }
++
+ 	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
+index 23402b7..707eab4 100644
+--- a/testcases/kernel/syscalls/utime/utime03.c
++++ b/testcases/kernel/syscalls/utime/utime03.c
+@@ -136,6 +136,14 @@ int main(int ac, char **av)
+ 			 "Cannot do utime on a file located on an NFS filesystem");
+ 	}
+ 
++        /*
++	* check if the current filesystem is v9fs
++	*/
++        if (tst_is_cwd_v9fs()) {
++                tst_brkm(TCONF, cleanup,
++                         "Cannot do utime on a file located on an 9P filesystem");
++        }
++
+ 	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+-- 
+1.7.1.1
+
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---GvXjxJ+pjyke8COw--
-
