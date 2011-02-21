@@ -1,35 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1PoDVn-0003WQ-GE
-	for ltp-list@lists.sourceforge.net; Sat, 12 Feb 2011 11:19:35 +0000
-Received: from e28smtp02.in.ibm.com ([122.248.162.2])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1PoDVk-0002Zo-Oh
-	for ltp-list@lists.sourceforge.net; Sat, 12 Feb 2011 11:19:35 +0000
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by e28smtp02.in.ibm.com (8.14.4/8.13.1) with ESMTP id p1CBJOIG018127
-	for <ltp-list@lists.sourceforge.net>; Sat, 12 Feb 2011 16:49:24 +0530
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p1CBJOo84309032
-	for <ltp-list@lists.sourceforge.net>; Sat, 12 Feb 2011 16:49:24 +0530
-Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
-	by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p1CBJOZU014226
-	for <ltp-list@lists.sourceforge.net>; Sat, 12 Feb 2011 22:19:24 +1100
-Received: from [9.124.220.150] ([9.124.220.150])
-	by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p1CBJN13014221
-	for <ltp-list@lists.sourceforge.net>; Sat, 12 Feb 2011 22:19:23 +1100
-Message-ID: <4D566CB9.8040201@linux.vnet.ibm.com>
-Date: Sat, 12 Feb 2011 16:49:21 +0530
-From: Shubham <shubham@linux.vnet.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <kumaratreya@gmail.com>) id 1PrPEo-0000Bp-La
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 06:27:14 +0000
+Received: from mail-vw0-f53.google.com ([209.85.212.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PrPEn-0004W0-PQ
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 06:27:14 +0000
+Received: by vws8 with SMTP id 8so3236176vws.12
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 20 Feb 2011 22:27:08 -0800 (PST)
 MIME-Version: 1.0
-References: <4D555AAB.4080806@redhat.com>
-In-Reply-To: <4D555AAB.4080806@redhat.com>
-Subject: Re: [LTP] new LTP release?
+In-Reply-To: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
+References: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
+Date: Mon, 21 Feb 2011 11:57:08 +0530
+Message-ID: <AANLkTimcBewoXLge5v7C1fUfeR7jWAuf1TkCv91GrrxX@mail.gmail.com>
+From: Amit kumar <kumaratreya@gmail.com>
+Subject: [LTP] LTP test cases fpathconf syscall and signal_test_06 ipc test
+ cases found hanging on android Gingerbread kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,31 +28,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8025790697137071752=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-On Friday 11 February 2011 09:20 PM, Caspar Zhang wrote:
-> Hi all, seems that we don't have a new stable release for long time, any
-> plan to release one?
->
-> Thanks,
-> Caspar
+--===============8025790697137071752==
+Content-Type: multipart/alternative; boundary=20cf305f944c04b53d049cc4f4e0
 
-Hi Caspar, Yes we do have plans to release a new LTP stable release. I will be working towards that very soon.
+--20cf305f944c04b53d049cc4f4e0
+Content-Type: text/plain; charset=ISO-8859-1
 
-Thanks,
-Shubham
+Hi,
+I am using LTP to test Android platform and successively ported to Eclair
+after customization.
 
+
+fpathconf syscall and signal_test_06 ipc test cases found hanging on Android
+Gingerbread Kernel.
+
+
+Are these known issues at this kernel or we need to fix them (If yes are
+there any guidlines ot suggestions)?
+
+
+
+
+
+
+Thanks and Regards,
+
+Amit kumar
+
+
+
+
+
+-- 
+Thanking you.
+
+From:
+
+Amit kumar
+Ph:(mob.)(+91)-9176975731.
+
+--20cf305f944c04b53d049cc4f4e0
+Content-Type: text/html; charset=ISO-8859-1
+
+<br><div class="gmail_quote">Hi,<br>I am using LTP to test Android platform and successively ported to Eclair after customization.<br><br><br>fpathconf syscall and signal_test_06 ipc test cases found hanging on Android Gingerbread Kernel.<br>
+<br><br>Are these known issues at this kernel or we need to fix them (If yes are there any guidlines ot suggestions)?<br><br><br>
+<br><br><br><br>Thanks and Regards,<br><font color="#888888"><br>Amit kumar<br><br clear="all"><br>
+</font></div><br><br clear="all"><br>-- <br>Thanking you.<br><br>From:<br><br>Amit kumar<br>Ph:(mob.)(+91)-9176975731.<br>
+
+--20cf305f944c04b53d049cc4f4e0--
+
+
+--===============8025790697137071752==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual 
+--===============8025790697137071752==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8025790697137071752==--
+
