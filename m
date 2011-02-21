@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1PmQFx-0002gT-I6
-	for ltp-list@lists.sourceforge.net; Mon, 07 Feb 2011 12:31:49 +0000
-Date: Mon, 7 Feb 2011 13:50:34 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110207125034.GA5014@saboteur.suse.cz>
-References: <20110204170556.GA30962@saboteur.suse.cz>
-	<AANLkTimOpGBzw7Ud2KgafUovCMD1V0zLOHUv75onSan=@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1PrR7U-00019E-Gd
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 08:27:48 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PrR7S-0007nz-3R
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 08:27:48 +0000
+Date: Mon, 21 Feb 2011 16:31:35 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110221083135.GA9779@hpt.nay.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <AANLkTimOpGBzw7Ud2KgafUovCMD1V0zLOHUv75onSan=@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] style guide note about writing signal handlers
+Subject: [LTP] [PATCH v2] check two possible pathes for cpuset
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,56 +26,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> > Patch with note about writing signal handlers attached.
-> >
-> > Garrett feel free to rewrite it to match the rest of the style guide.
-> 
-> Patch is fine minus one typo (s/singal/signal/). The more complicated
-> part is that the majority of our libltp based infrastructure does use
-> non-async safe functions in signal handlers to crash and burn
-> testcases (tst_sig is built on tst_brkm, which uses fprintf, fflush,
-> etc).
+From
 
-Well yes the libltp interface is far too complicated and would probably
-gain from simplification, it would be much easier to do it correctly
-then.  The real problem is a number of testcases using it.
+http://lxr.linux.no/#linux+v2.6.37/Documentation/cgroups/cpusets.txt
 
-The downside of signal handler and non-async safe functions is that you
-will never know, when they fail, they usually fail with relatively small
-probability and on some system they run just fine, because of different
-libc internals etc. Such behaviour often results in false-possitive
-regressions. And the only way to avoid this is not to complicate your
-signal handler.
+"Note that for legacy reasons, the "cpuset" filesystem exists as a
+wrapper around the cgroup filesystem.
 
-If I remember correctly the problem with printf is that it may use
-malloc for allocating the buffer, that if called, while there is malloc
-or free running in the main loop, could cause problems. Which is not
-likely, at least most of the time.
+The command
 
-> I agree with you that doing stuff in signal handlers is non-kosher,
-> and some testcases should be fixed, but some concession might need to
-> be made for the crash and burn logic in other testcases and the
-> infrastructure proper.
+mount -t cpuset X /dev/cpuset
 
-I've seen the libltp code and I agree that, as it is now, there is no
-better way. Actually I was thinking of playing with the api for some
-time to eliminate useless functions and rewrite some of the code and may
-be change parts of the api. But so far I haven't had enough time.
+is equivalent to
 
+mount -t cgroup -ocpuset,noprefix X /dev/cpuset"
+
+However, I found this is not always case. In addition, there is an
+direct implementation without cgroup, and I can't find any doc about
+the behaviours of the prefix.
+
+So, It can be difficult to predict if cpuset files have prefix or not,
+so only to fail after checked both.
+
+Signed-off-by: CAI Qian <caiqian@redhat.com>
+Signed-off-by: Han Pingtian <phan@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c |   24 ++++++++++++++++++++----
+ 1 files changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 1a53359..7bc26cd 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -89,16 +89,32 @@ void write_cpusets(void)
+ 	gather_cpus(cpus);
+ 	tst_resm(TINFO, "CPU list for 2nd node is %s.", cpus);
+ 
++	/* try either '/dev/cpuset/mems' or '/dev/cpuset/cpuset.mems' 
++	 * please see Documentation/cgroups/cpusets.txt of kernel src for detail */
+ 	fd = open(CPATH_NEW "/mems", O_WRONLY);
+-	if (fd == -1)
+-		tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
++	if (fd == -1) {
++		if (errno == ENOENT) {
++			fd = open(CPATH_NEW "/cpuset.mems", O_WRONLY);
++			if (fd == -1)
++				tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
++		} else
++			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
++	}
+ 	if (write(fd, "1", 1) != 1)
+ 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
+ 	close(fd);
+ 
++	/* try either '/dev/cpuset/cpus' or '/dev/cpuset/cpuset.cpus' 
++	 * please see Documentation/cgroups/cpusets.txt of kernel src for detail */
+ 	fd = open(CPATH_NEW "/cpus", O_WRONLY);
+-	if (fd == -1)
+-		tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
++	if (fd == -1) {
++		if (errno == ENOENT) {
++			fd = open(CPATH_NEW "/cpuset.cpus", O_WRONLY);
++			if (fd == -1)
++				tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
++		} else
++			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
++	}
+ 	if (write(fd, cpus, strlen(cpus)) != strlen(cpus))
+ 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
+ 	close(fd);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
 
 ------------------------------------------------------------------------------
-The modern datacenter depends on network connectivity to access resources
-and provide services. The best practices for maximizing a physical server's
-connectivity to a physical network are well understood - see how these
-rules translate into the virtual world? 
-http://p.sf.net/sfu/oracle-sfdevnlfb
+The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+Pinpoint memory and threading errors before they happen.
+Find and fix more than 250 security defects in the development cycle.
+Locate bottlenecks in serial and parallel code that limit performance.
+http://p.sf.net/sfu/intel-dev2devfeb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
