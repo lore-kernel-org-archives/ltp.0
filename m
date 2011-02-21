@@ -2,20 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Pp3zX-00036L-Og
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 19:21:47 +0000
-Date: Mon, 14 Feb 2011 20:41:08 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110214194108.GA8474@saboteur.suse.cz>
-References: <4D595337.5070801@nokia.com>
-	<20110214154030.GC426@saboteur.suse.cz>
-	<20110214165816.GA3734@saboteur.suse.cz>
-	<20110214175032.GA5716@saboteur.suse.cz>
+	(envelope-from <kumaratreya@gmail.com>) id 1Prary-0005f1-N2
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 18:52:26 +0000
+Received: from mail-vx0-f175.google.com ([209.85.220.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1Prarx-0001K7-TR
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 18:52:26 +0000
+Received: by vxd7 with SMTP id 7so1801782vxd.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 21 Feb 2011 10:52:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20110214175032.GA5716@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
- "fs_perms" tests
+Date: Tue, 22 Feb 2011 00:22:20 +0530
+Message-ID: <AANLkTimS97PvCXNr1CSwYbiYM8+Pgaod4qe1-MjcDD6J@mail.gmail.com>
+From: Amit kumar <kumaratreya@gmail.com>
+Subject: [LTP] where is source code of test case random_device_test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,40 +25,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2388776807485550079=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: maxin <john.maxin@nokia.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > > Hmm I see the problem now. However as a root, I could read and run files
-> > > with just an exec flag, at least here. I suppose the test works here by
-> > > some saved-id magick. I'll look deeper into this.
-> > > 
-> > 
-> > I think I've found the cause. The wait() funcion returns -1 if exec*
-> > hasn't succeded to run the file (and sets the status to 0). I'm not sure
-> > if this is POSIX compilant behaviour, I'll check on that later. 
-> > 
-> > What flavour of glibc/kernel are you testing there, it seems that it
-> > behaves a little different than mine. Here I have glibc-2.11.
-> > 
-> > Anyway, I'll fix the test to check for return value from wait(), add the
-> > fix for octal file mode and fix the runtest files.
-> 
-> Grr, got myself caught. Strace behaves differently when running with
-> root + setegid + exec, so lets start digging again.
-> 
+--===============2388776807485550079==
+Content-Type: multipart/alternative; boundary=bcaec53f8df30fbd4b049ccf5dee
 
-Okay, seems that linux kernel (at least here) allows you to execute
-file if your user/group/other has at least execute rights and real uid 0.
+--bcaec53f8df30fbd4b049ccf5dee
+Content-Type: text/plain; charset=ISO-8859-1
 
-That is the reason why these tests runs fine here.
+I would like to have source code of test case random_device test, it,s nor
+found at any version of ltp.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+This particular test case is found with binaries but no source code for
+this, how?
+
+
+Thanks in advance,
+
+From:
+
+Amit kumar
+
+--bcaec53f8df30fbd4b049ccf5dee
+Content-Type: text/html; charset=ISO-8859-1
+
+I would like to have source code of test case random_device test, it,s nor found at any version of ltp.<br><br>This particular test case is found with binaries but no source code for this, how?<br><br><br>Thanks in advance,<br>
+<br>From:<br><br>Amit kumar<br><br>
+
+--bcaec53f8df30fbd4b049ccf5dee--
+
+
+--===============2388776807485550079==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
@@ -66,7 +69,16 @@ Pinpoint memory and threading errors before they happen.
 Find and fix more than 250 security defects in the development cycle.
 Locate bottlenecks in serial and parallel code that limit performance.
 http://p.sf.net/sfu/intel-dev2devfeb
+--===============2388776807485550079==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2388776807485550079==--
+
