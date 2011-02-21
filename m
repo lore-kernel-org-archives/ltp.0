@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1PnvCA-0007KL-Cl
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 15:46:06 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PnvC9-0001XW-94
-	for ltp-list@lists.sourceforge.net; Fri, 11 Feb 2011 15:46:06 +0000
-Message-ID: <4D5559B2.4010000@redhat.com>
-Date: Fri, 11 Feb 2011 23:45:54 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	(envelope-from <giri.subhra@gmail.com>) id 1PrXWf-00006K-2e
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 15:18:13 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PrXWe-0004Y9-6T
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 15:18:12 +0000
+Received: by iyb26 with SMTP id 26so795319iyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 21 Feb 2011 07:18:07 -0800 (PST)
 MIME-Version: 1.0
-References: <4D42FFBE.3080105@redhat.com>
-In-Reply-To: <4D42FFBE.3080105@redhat.com>
-Subject: Re: [LTP] [PATCH] fix mail02,03 fail due to different sender names
+Date: Mon, 21 Feb 2011 20:48:06 +0530
+Message-ID: <AANLkTi=0Pu1bF4iVdWg4URKTm00wTT86=eg2UQfixTQo@mail.gmail.com>
+From: SubhraPrakashGiri <giri.subhra@gmail.com>
+Subject: [LTP] i want to join in the project
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,51 +25,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8454954291252823584=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-T24gMDEvMjkvMjAxMSAwMTo0MSBBTSwgQ2FzcGFyIFpoYW5nIHdyb3RlOgo+IEhpIGFsbCwgbWFp
-bDAyIGFuZCBtYWlsMDMgdGVzdHMgbm9uLWV4aXN0ZWQgaG9zdCBhbmQgbm9uLWV4aXN0ZWQKPiB1
-c2VybmFtZSBpbiB0aGUgdGVzdC4gSG93ZXZlciBpbiBzb21lIHN5c3RlbXMgKGF0IGxlYXN0IGlu
-IFJIRUw2KSwKPiB0aGV5IGJvdGggZmFpbHMgYmVjYXVzZSBvZiB0aGUgc2VuZGVyIG5hbWUgb2Yg
-dGhlIHJldHVybmVkIGxldHRlciBpcwo+ICJNYWlsIERlbGl2ZXIgU3lzdGVtIiBpbnN0ZWFkIG9m
-ICJNYWlsIERlbGl2ZXJ5IFN1YnN5cyIsIHdoaWNoIG1ha2VzIFJDMQo+IHRvIGJlIHplcm8gYW5k
-IGZhaWwgdGhlIHRlc3QuIFRoZSBwYXRjaCBmaXhlcyB0aGlzIGlzc3VlLgoKR2FycmV0dCwgYW55
-IG9iamVjdGlvbiBtZXJnaW5nIGl0IHRvIHVwc3RyZWFtPwoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBD
-YXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQuY29tPgo+IC0tLQo+ICB0ZXN0Y2FzZXMvY29tbWFu
-ZHMvbWFpbC9tYWlsX3Rlc3RzLnNoIHwgICAgNCArKy0tCj4gIDEgZmlsZXMgY2hhbmdlZCwgMiBp
-bnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
-Y29tbWFuZHMvbWFpbC9tYWlsX3Rlc3RzLnNoCj4gYi90ZXN0Y2FzZXMvY29tbWFuZHMvbWFpbC9t
-YWlsX3Rlc3RzLnNoCj4gaW5kZXggNTNhNWQ5MC4uYzMwZTJjMyAxMDA3NTUKPiAtLS0gYS90ZXN0
-Y2FzZXMvY29tbWFuZHMvbWFpbC9tYWlsX3Rlc3RzLnNoCj4gKysrIGIvdGVzdGNhc2VzL2NvbW1h
-bmRzL21haWwvbWFpbF90ZXN0cy5zaAo+IEBAIC0xNjksNyArMTY5LDcgQEAgZWxzZQo+ICAJCVJD
-MT0kKGF3ayAnL14+Ti8ge0lHTk9SRUNBU0U9MTsgcHJpbnQgbWF0Y2goJDMsICJNYWlsZXItRGFl
-bW9uIil9JyBcCj4gIAkJICAgICRMVFBUTVAvdHN0X21haWwucmVzKQo+ICAJZWxzZQo+IC0JCVJD
-MT0kKGF3ayAnL14+Ti8ge0lHTk9SRUNBU0U9MTsgcHJpbnQgbWF0Y2goJDMgJDQgJDUsCj4gIk1h
-aWxEZWxpdmVyeVN1YnN5cyIpfScgXAo+ICsJCVJDMT0kKGF3ayAnL14+Ti8ge0lHTk9SRUNBU0U9
-MTsgcHJpbnQgbWF0Y2goJDMgJDQgJDUsCj4gIk1haWxEZWxpdmVyeShTdWJzeXN8U3lzdGVtKSIp
-fScgXAo+ICAJCSAgICAkTFRQVE1QL3RzdF9tYWlsLnJlcykKPiAgCWZpCj4gCj4gQEAgLTI1MCw3
-ICsyNTAsNyBAQCBlbHNlCj4gIAkJUkMxPSQoYXdrICcvXj5OLyB7SUdOT1JFQ0FTRT0xOyBwcmlu
-dCBtYXRjaCgkMywgIk1haWxlci1EYWVtb24iKX0nIFwKPiAgCQkgICAgJExUUFRNUC90c3RfbWFp
-bC5yZXMpCj4gIAllbHNlCj4gLQkJUkMxPSQoYXdrICcvXj5OLyB7SUdOT1JFQ0FTRT0xOyBwcmlu
-dCBtYXRjaCgkMyAkNCAkNSwKPiAiTWFpbERlbGl2ZXJ5U3Vic3lzIil9JyBcCj4gKwkJUkMxPSQo
-YXdrICcvXj5OLyB7SUdOT1JFQ0FTRT0xOyBwcmludCBtYXRjaCgkMyAkNCAkNSwKPiAiTWFpbERl
-bGl2ZXJ5KFN1YnN5c3xTeXN0ZW0pIil9JyBcCj4gIAkJICAgICRMVFBUTVAvdHN0X21haWwucmVz
-KQo+ICAJZmkKPiAgCSMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIwoKCi0tIApRdWFsaXR5IEFzc3VyYW5jZSBFbmdpbmVlciAo
-S2VybmVsKSBpbgpSZWQgSGF0IFNvZnR3YXJlIChCZWlqaW5nKSBDby4sIFImRCBCcmFuY2gKClRF
-TDogKzg2LTEwLTYyNjA4MTUwCldFQjogaHR0cDovL3d3dy5yZWRoYXQuY29tLwotLQpDLUEtUy1Q
-LUEtUiwgQ2FzcGFyIC9rw6ZzcMmROi8gOy0pCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhlIHVs
-dGltYXRlIGFsbC1pbi1vbmUgcGVyZm9ybWFuY2UgdG9vbGtpdDogSW50ZWwoUikgUGFyYWxsZWwg
-U3R1ZGlvIFhFOgpQaW5wb2ludCBtZW1vcnkgYW5kIHRocmVhZGluZyBlcnJvcnMgYmVmb3JlIHRo
-ZXkgaGFwcGVuLgpGaW5kIGFuZCBmaXggbW9yZSB0aGFuIDI1MCBzZWN1cml0eSBkZWZlY3RzIGlu
-IHRoZSBkZXZlbG9wbWVudCBjeWNsZS4KTG9jYXRlIGJvdHRsZW5lY2tzIGluIHNlcmlhbCBhbmQg
-cGFyYWxsZWwgY29kZSB0aGF0IGxpbWl0IHBlcmZvcm1hbmNlLgpodHRwOi8vcC5zZi5uZXQvc2Z1
-L2ludGVsLWRldjJkZXZmZWIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAo=
+--===============8454954291252823584==
+Content-Type: multipart/alternative; boundary=0022152d5d61ef1609049ccc5ed8
+
+--0022152d5d61ef1609049ccc5ed8
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi
+I want to join.Please add me in the project.
+
+Thanks and Regards
+subhra prakash giri
+
+--0022152d5d61ef1609049ccc5ed8
+Content-Type: text/html; charset=ISO-8859-1
+
+Hi<div>I want to join.Please add me in the project.</div><div><br></div><div>Thanks and Regards</div><div>subhra prakash giri</div>
+
+--0022152d5d61ef1609049ccc5ed8--
+
+
+--===============8454954291252823584==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Index, Search & Analyze Logs and other IT data in Real-Time with Splunk 
+Collect, index and harness all the fast moving IT data generated by your 
+applications, servers and devices whether physical, virtual or in the cloud.
+Deliver compliance at lower cost and gain new business insights. 
+Free Software Download: http://p.sf.net/sfu/splunk-dev2dev
+--===============8454954291252823584==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8454954291252823584==--
+
