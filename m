@@ -1,23 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <john.maxin@nokia.com>) id 1Pp0aL-0005nR-26
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 15:43:33 +0000
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1Pp0aJ-0006cy-88
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 15:43:33 +0000
-Received: from [172.21.22.250] (helruo-dhcp022250.ntc.nokia.com
-	[172.21.22.250])
-	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p1EFhMSf027235
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Feb 2011 17:43:22 +0200
-Message-ID: <4D595C00.5050508@nokia.com>
-Date: Mon, 14 Feb 2011 17:44:48 +0100
-From: maxin <john.maxin@nokia.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1PrQGv-0007cX-Vc
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 07:33:29 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PrQGs-0008Bq-R7
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 07:33:27 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p1L7XLfY020536
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Feb 2011 02:33:21 -0500
+Received: from hpt.nay.redhat.com (dhcp-65-65.nay.redhat.com [10.66.65.65])
+	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id p1L7XIar009328
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Feb 2011 02:33:20 -0500
+Received: from hpt.nay.redhat.com (localhost.localdomain [127.0.0.1])
+	by hpt.nay.redhat.com (8.14.4/8.14.4) with ESMTP id p1L7bKLs009080
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Feb 2011 15:37:20 +0800
+Received: (from hpt@localhost)
+	by hpt.nay.redhat.com (8.14.4/8.14.4/Submit) id p1L7bJ4k009078
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 15:37:19 +0800
+Date: Mon, 21 Feb 2011 15:37:19 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110221073719.GE2904@hpt.nay.redhat.com>
+References: <20110210072315.GA7909@hpt.nay.redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]  Fix compilation warning for tools/rand_lines.c
+Content-Disposition: inline
+In-Reply-To: <20110210072315.GA7909@hpt.nay.redhat.com>
+Subject: Re: [LTP] [PATCH] Fix disable set_ftrace_pid in
+ ftrace_set_ftrace_pid.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,31 +47,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+Hello, 
 
-Hi,
+Any comments to this patch?
 
-This one is a trivial fix for the compilation warnings in 'tools/rand_lines.c'
+Thanks.
+On Thu, Feb 10, 2011 at 03:23:15PM +0800, Han Pingtian wrote:
+> It seems we need echo -1 to set_ftrace_pid to disable in. Or we'll get
+> these error message when running ftrace_stress:
+> 
+> ...
+> ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh: line 39: echo: write error: Invalid argument
+> ...
+> ---
+>  .../ftrace_stress/ftrace_set_ftrace_pid.sh         |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh
+> index 541215c..bd08f04 100755
+> --- a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh
+> +++ b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_set_ftrace_pid.sh
+> @@ -36,7 +36,7 @@ for ((; ; ))
+>  			eval echo $str >> "$TRACING_PATH"/set_ftrace_pid
+>  		}
+>  
+> -		echo > "$TRACING_PATH"/set_ftrace_pid
+> +		echo -1 > "$TRACING_PATH"/set_ftrace_pid
+>  	}
+>  
+>  	sleep 1
+> -- 
+> 1.7.1
+> 
+> ------------------------------------------------------------------------------
+> The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+> Pinpoint memory and threading errors before they happen.
+> Find and fix more than 250 security defects in the development cycle.
+> Locate bottlenecks in serial and parallel code that limit performance.
+> http://p.sf.net/sfu/intel-dev2devfeb
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-Signed-off-by: Maxin John<john.maxin@nokia.com>
-
-----
-diff --git a/tools/rand_lines.c b/tools/rand_lines.c
-index e1b2d0a..e2c3bb9 100644
---- a/tools/rand_lines.c
-+++ b/tools/rand_lines.c
-@@ -99,6 +99,7 @@
-   **************************************************************/
-
-  #include<errno.h>
-+#include<err.h>
-  #include<stdio.h>
-  #include<stdlib.h>
-  #include<string.h>
-----
-
-Warm Regards,
-Maxin B. John
-
+-- 
+Han Pingtian
+Quality Engineer
+hpt @ #kernel-qe
+Red Hat, Inc
+Freedom ... courage ... Commitment ... ACCOUNTABILITY
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
