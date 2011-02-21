@@ -1,20 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Pp2GW-00041Q-0Z
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 17:31:12 +0000
-Date: Mon, 14 Feb 2011 18:50:32 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110214175032.GA5716@saboteur.suse.cz>
-References: <4D595337.5070801@nokia.com>
-	<20110214154030.GC426@saboteur.suse.cz>
-	<20110214165816.GA3734@saboteur.suse.cz>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1PrYKn-0003aA-6d
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 16:10:01 +0000
+Received: from e23smtp09.au.ibm.com ([202.81.31.142])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1PrYKl-0001Od-Tt
+	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 16:10:01 +0000
+Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
+	by e23smtp09.au.ibm.com (8.14.4/8.13.1) with ESMTP id p1LG9q3Q011912
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Feb 2011 03:09:52 +1100
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p1LG9quD2490458
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Feb 2011 03:09:52 +1100
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p1LG9pUm020494
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Feb 2011 03:09:52 +1100
+Message-ID: <4D628E4A.5040202@linux.vnet.ibm.com>
+Date: Mon, 21 Feb 2011 21:39:46 +0530
+From: Shubham Goyal <shubham@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20110214165816.GA3734@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
- "fs_perms" tests
+References: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
+	<AANLkTi=iUMsdkEcvw+zpxBnZYT1AAZWAp_OHNEVVxf8=@mail.gmail.com>
+In-Reply-To: <AANLkTi=iUMsdkEcvw+zpxBnZYT1AAZWAp_OHNEVVxf8=@mail.gmail.com>
+Subject: Re: [LTP] LTP test cases fpathconf syscall and signal_test_06 ipc
+ test cases found hanging on android Gingerbread kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,45 +37,110 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3256841936214511441=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: maxin <john.maxin@nokia.com>
+To: Amit kumar <kumaratreya@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > > I have checked your patch and it solves the number conversion (octal<->  decimal) issues. Thank you for that.
-> > > However, the file permission issues are still valid. Please find the test execution log with this mail.
-> > > 
-> > > >But then 001 is right to exec by other which should work.
-> > > >        010 is right to exec for group, which is the same on that line
-> > > >        100 is right to exec for owner, which is the same again
-> > > 
-> > > In this case, I partially agree with you. It is true in the case of binary files. However, We need 'read' and 'exec'
-> > > for script files and these testcases deals with script files too.
-> > > 
-> > 
-> > Hmm I see the problem now. However as a root, I could read and run files
-> > with just an exec flag, at least here. I suppose the test works here by
-> > some saved-id magick. I'll look deeper into this.
-> > 
-> 
-> I think I've found the cause. The wait() funcion returns -1 if exec*
-> hasn't succeded to run the file (and sets the status to 0). I'm not sure
-> if this is POSIX compilant behaviour, I'll check on that later. 
-> 
-> What flavour of glibc/kernel are you testing there, it seems that it
-> behaves a little different than mine. Here I have glibc-2.11.
-> 
-> Anyway, I'll fix the test to check for return value from wait(), add the
-> fix for octal file mode and fix the runtest files.
+This is a multi-part message in MIME format.
+--===============3256841936214511441==
+Content-Type: multipart/alternative;
+	boundary="------------010607090008090605000701"
 
-Grr, got myself caught. Strace behaves differently when running with
-root + setegid + exec, so lets start digging again.
+This is a multi-part message in MIME format.
+--------------010607090008090605000701
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Hi Amit,
+
+Can you please let us know where exactly this test case is hanging for you?
+
+Thanks,
+Shubham
+
+
+On Monday 21 February 2011 12:01 PM, Amit kumar wrote:
+> Hi,
+> I am using LTP to test Android platform and successively ported to 
+> Eclair after customization.
+>
+>
+> fpathconf syscall and signal_test_06 ipc test cases found hanging on 
+> Android Gingerbread Kernel.
+>
+>
+> Are these know issues or we need to fix them?
+>
+>
+>
+>
+> Thanks and Regards,
+>
+> Amit kumar
+>
+
+
+
+--------------010607090008090605000701
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+    <title></title>
+  </head>
+  <body text="#000000" bgcolor="#ffffff">
+    <pre>Hi Amit,
+
+Can you please let us know where exactly this test case is hanging for you?
+
+Thanks,
+Shubham
+</pre>
+    <br>
+    On Monday 21 February 2011 12:01 PM, Amit kumar wrote:
+    <blockquote
+      cite="mid:AANLkTi=iUMsdkEcvw+zpxBnZYT1AAZWAp_OHNEVVxf8=@mail.gmail.com"
+      type="cite">
+      <meta http-equiv="Context-Type" content="text/html;
+        charset=ISO-8859-1">
+      <div>Hi,<br>
+        I am using LTP to test Android platform and successively ported
+        to Eclair after customization.<br>
+        <br>
+        <br>
+        fpathconf syscall and signal_test_06 ipc test cases found
+        hanging on Android Gingerbread Kernel.<br>
+        <br>
+        <br>
+        Are these know issues or we need to fix them?<br>
+        <br>
+        <br>
+        <br>
+        <br>
+        Thanks and Regards,<br>
+        <br>
+        Amit kumar<br>
+        <br>
+      </div>
+    </blockquote>
+    <br>
+    <br>
+  </body>
+</html>
+
+--------------010607090008090605000701--
+
+
+--===============3256841936214511441==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
@@ -70,7 +148,16 @@ Pinpoint memory and threading errors before they happen.
 Find and fix more than 250 security defects in the development cycle.
 Locate bottlenecks in serial and parallel code that limit performance.
 http://p.sf.net/sfu/intel-dev2devfeb
+--===============3256841936214511441==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3256841936214511441==--
+
