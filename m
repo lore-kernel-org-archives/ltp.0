@@ -2,21 +2,31 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <serge.hallyn@canonical.com>) id 1PpN3l-00085W-9N
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 15:43:25 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PpN3k-0007lG-E6
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 15:43:25 +0000
-Date: Tue, 15 Feb 2011 09:43:14 -0600
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20110215154314.GA8739@localhost>
-References: <4D5A47E5.3060108@cn.fujitsu.com> <20110215132603.GA3092@localhost>
-	<AANLkTikNC8VgJiK3fzxTBX_9PXF6rw_F3KLakF-1+c45@mail.gmail.com>
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1Prxi5-0007EL-5t
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 19:15:45 +0000
+Received: from e23smtp05.au.ibm.com ([202.81.31.147])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1Prxi3-0006M5-8K
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 19:15:45 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp05.au.ibm.com (8.14.4/8.13.1) with ESMTP id p1MJA4sV032365
+	for <ltp-list@lists.sourceforge.net>; Wed, 23 Feb 2011 06:10:04 +1100
+Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p1MJFZnK2314328
+	for <ltp-list@lists.sourceforge.net>; Wed, 23 Feb 2011 06:15:35 +1100
+Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
+	by d23av01.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p1MJFYPO015833
+	for <ltp-list@lists.sourceforge.net>; Wed, 23 Feb 2011 06:15:35 +1100
+Message-ID: <4D640B55.1050300@linux.vnet.ibm.com>
+Date: Wed, 23 Feb 2011 00:45:33 +0530
+From: Shubham Goyal <shubham@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTikNC8VgJiK3fzxTBX_9PXF6rw_F3KLakF-1+c45@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] unshare01.c: TEST_RETURN is used wrong
+References: <4D42FFBE.3080105@redhat.com> <4D58DD0A.2050403@redhat.com>
+In-Reply-To: <4D58DD0A.2050403@redhat.com>
+Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
+ 03 fail due to different sender names]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,31 +39,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> > Looking at the rest of that file, isn't the right fix to
-> > wrap 'pid1 = fork();' in a TEST() macro?
-> 
-> Hi Serge!
->     I would agree with you, but in my firm opinion this testcase
-> abuses TEST_ERRNO, etc way too much for no good reason.
+Hi Caspar,
 
-Cool.
+I reviewed/verified your patch and it seems to be working fine. I verified it on RHEL6 and both mail02 and mail03 tests are passing now. I believe it can be merged upstream.
+Garrett, Any comments?
 
->     I just didn't remember to follow through finishing off this file
-> for some odd reason.
+Thanks,
+Shubham
 
-thanks,
--serge
+
+On Monday 14 February 2011 01:13 PM, Caspar Zhang wrote:
+
+> Sorry for bothering, any comments on this patch?
+>
+> On 01/29/2011 01:41 AM, Caspar Zhang wrote:
+>> Hi all, mail02 and mail03 tests non-existed host and non-existed
+>> username in the test. However in some systems (at least in RHEL6),
+>> they both fails because of the sender name of the returned letter is
+>> "Mail Delivery System" instead of "Mail Delivery Subsys", which makes RC1
+>> to be zero and fail the test. The patch fixes this issue.
+>>
+>> Signed-off-by: Caspar Zhang<czhang@redhat.com>
+>> ---
+>>   testcases/commands/mail/mail_tests.sh |    4 ++--
+>>   1 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/testcases/commands/mail/mail_tests.sh
+>> b/testcases/commands/mail/mail_tests.sh
+>> index 53a5d90..c30e2c3 100755
+>> --- a/testcases/commands/mail/mail_tests.sh
+>> +++ b/testcases/commands/mail/mail_tests.sh
+>> @@ -169,7 +169,7 @@ else
+>>   		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
+>>   		    $LTPTMP/tst_mail.res)
+>>   	else
+>> -		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
+>> "MailDeliverySubsys")}' \
+>> +		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
+>> "MailDelivery(Subsys|System)")}' \
+>>   		    $LTPTMP/tst_mail.res)
+>>   	fi
+>>
+>> @@ -250,7 +250,7 @@ else
+>>   		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
+>>   		    $LTPTMP/tst_mail.res)
+>>   	else
+>> -		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
+>> "MailDeliverySubsys")}' \
+>> +		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
+>> "MailDelivery(Subsys|System)")}' \
+>>   		    $LTPTMP/tst_mail.res)
+>>   	fi
+>>   	##################################################################
+>
+
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
