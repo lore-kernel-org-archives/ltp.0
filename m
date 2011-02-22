@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PsA9s-000227-RF
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:33:16 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PrzT4-0004t3-8o
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 21:08:22 +0000
 Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PsA9q-0000tX-JV
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:33:16 +0000
-Received: by wyb38 with SMTP id 38so73423wyb.34
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PrzT3-0008PW-9p
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 21:08:22 +0000
+Received: by wyj26 with SMTP id 26so2406325wyj.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Feb 2011 00:33:08 -0800 (PST)
+	Tue, 22 Feb 2011 13:08:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20110222105230.0f9fe24b@regolo>
-References: <20110222105230.0f9fe24b@regolo>
-Date: Wed, 23 Feb 2011 00:33:08 -0800
-Message-ID: <AANLkTikZiPeEuKzvb-6Y1qmx6GgsDHA=o9grcXeXFtqL@mail.gmail.com>
+In-Reply-To: <4D640B55.1050300@linux.vnet.ibm.com>
+References: <4D42FFBE.3080105@redhat.com> <4D58DD0A.2050403@redhat.com>
+	<4D640B55.1050300@linux.vnet.ibm.com>
+Date: Tue, 22 Feb 2011 13:08:14 -0800
+Message-ID: <AANLkTin8A_g2RHnGANpcJEHZ3PLdvjYegyfAdkf4nP8E@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] clone06 syscall testcase: use PWD instead of TERM
- environment variable.
+Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
+ 03 fail due to different sender names]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,32 +32,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Greco <cristian@regolo.cc>
-Cc: ltp-list@lists.sourceforge.net
+To: Shubham Goyal <shubham@linux.vnet.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Feb 22, 2011 at 1:52 AM, Cristian Greco <cristian@regolo.cc> wrote:
-> Hi,
+On Tue, Feb 22, 2011 at 11:15 AM, Shubham Goyal
+<shubham@linux.vnet.ibm.com> wrote:
+> Hi Caspar,
 >
-> please consider the following patch for the 'clone06' syscall test.
->
-> When running the test on a remote host with an ssh command the TERM environment
-> variable is not available. Use PWD instead, with a buffer size of MAXPATHLEN.
->
-> This is to show how using the TERM variable results in unexpected behavior:
+> I reviewed/verified your patch and it seems to be working fine. I verified
+> it on RHEL6 and both mail02 and mail03 tests are passing now. I believe it
+> can be merged upstream.
+> Garrett, Any comments?
 
-    Depending on $PWD, $TERM, etc isn't smart as they're controlled by
-the shell and external sources and can be modified out from under you
-(there's some recent discussion on the opengroup list that has
-transpired related to $PATH, $PWD, etc).
-    How about this instead:
-
-1. unset a predetermined env variable if it's present.
-2. set it to a known value
-3. Make sure that the env variable set in 2. matches both in the child
-and parent.
-
-    If you submit this patch, I'll gladly commit it because it's more
-sane than the current test code.
+    I guess... there's no apparent rhyme nor reason to GNU/Linux
+userland software development, so I'm not going to fight these issues
+anymore.
+    The LSB should maintain these tests and standardize things if
+anyone really cares like the opengroup folks do for all of Unix.
 Thanks,
 -Garrett
 
