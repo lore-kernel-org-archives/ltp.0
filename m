@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1Prxi5-0007EL-5t
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 19:15:45 +0000
-Received: from e23smtp05.au.ibm.com ([202.81.31.147])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1Prxi3-0006M5-8K
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 19:15:45 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp05.au.ibm.com (8.14.4/8.13.1) with ESMTP id p1MJA4sV032365
-	for <ltp-list@lists.sourceforge.net>; Wed, 23 Feb 2011 06:10:04 +1100
-Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p1MJFZnK2314328
-	for <ltp-list@lists.sourceforge.net>; Wed, 23 Feb 2011 06:15:35 +1100
-Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
-	by d23av01.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p1MJFYPO015833
-	for <ltp-list@lists.sourceforge.net>; Wed, 23 Feb 2011 06:15:35 +1100
-Message-ID: <4D640B55.1050300@linux.vnet.ibm.com>
-Date: Wed, 23 Feb 2011 00:45:33 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
-MIME-Version: 1.0
-References: <4D42FFBE.3080105@redhat.com> <4D58DD0A.2050403@redhat.com>
-In-Reply-To: <4D58DD0A.2050403@redhat.com>
-Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
- 03 fail due to different sender names]
+	(envelope-from <cristian@regolo.cc>) id 1Prnyj-0000qi-2N
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 08:52:17 +0000
+Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Prnyh-0002Nr-Pk
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 08:52:17 +0000
+Received: from regolo (85-18-251-172.ip.fastwebnet.it [85.18.251.172])
+	by aiolia.regolo.cc (Postfix) with ESMTPSA id B555164
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 22 Feb 2011 09:52:09 +0100 (CET)
+Date: Tue, 22 Feb 2011 09:52:03 +0100
+From: Cristian Greco <cristian@regolo.cc>
+Message-ID: <20110222095203.474f1916@regolo>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Really enable mkdirat01 syscall test.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,74 +26,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4989205367203700944=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi Caspar,
+--===============4989205367203700944==
+Content-Type: multipart/signed; micalg=PGP-SHA256;
+	boundary="Sig_/K3=RIe_Y8+5SInXreCQkXQz";
+	protocol="application/pgp-signature"
 
-I reviewed/verified your patch and it seems to be working fine. I verified it on RHEL6 and both mail02 and mail03 tests are passing now. I believe it can be merged upstream.
-Garrett, Any comments?
+--Sig_/K3=RIe_Y8+5SInXreCQkXQz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+this is a trivial fix.
+
+
+Signed-off-by: Cristian Greco <cristian@regolo.cc>
+---
+ runtest/syscalls |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index f16daae..d402531 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -524,7 +524,7 @@ mkdir08 mkdir08
+ mkdir09 mkdir09
+=20
+ #mkdirat test cases
+-mkdirat01 mkdir01
++mkdirat01 mkdirat01
+=20
+ mknod01 mknod01
+ mknod02 mknod02
+--=20
+1.7.4.1
+
 
 Thanks,
-Shubham
+--
+Cristian Greco
+GPG key ID: 0xCF4D32E4
+
+--Sig_/K3=RIe_Y8+5SInXreCQkXQz
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBCAAGBQJNY3kzAAoJEID329zPTTLk0F4P+gLs902zV7xLApU0eOC0XbO0
+5x+O8nfkEpRez3lCguIb3QUeddafrNxDcjFZnQhOoildMPNshWpyeOrocUL5vE6D
+fBeLFDl11vOK53sAH/VX1+mJvWHBOF9A+txvOxtfQVcnBm9bdLZZfOPlCP/Rhmix
+/26/iFwzQ+uU5ggnTJ73a3Y9T7aq+zsbGbsU/RSicNEqyCvdI3SwZH3Cj4ePIfna
+fptKlAsmP7f06X4Fz/yAVs5s29zE3TRFS9C8eTCRDdNjAvkrVzunEmKNkWqJ6AiF
+tOjCU699w3F2oh72mCeUvZON7UoXbQ7Vt7pl9ESpm8OXeZDzt0VZJW9v4kVmHzBp
+kggtzohlVzkOJVNWBpTW2BEQBLe4d7VEhh7ZIGbNmb61kKV2bte8Wj5jWbKLESrJ
++LezShk7WKYIrwqh22bfYCTcJln/ojApHnjzGiA76yfx+AVtmAV5TALiGRx3Qdxp
+38jp42j/JxSdp+OBb90GiXkUmCDbHhfz0MPmigSWC1DIf6wy9s8xi787Pg009WnQ
+sNXdlaf8vwncvkPNxx3xnBN58ylRCR1ib6dn2SnBphqHUCJKfspX5JXhSlGie8o9
+Pprf/XJCgxAaeh2WWC0iWS1DrRiKVICPktSvgFw37+zsaMq2ZtXcT8dym2A0VZwm
+Ezofobc0d94UBkd6JebH
+=db6p
+-----END PGP SIGNATURE-----
+
+--Sig_/K3=RIe_Y8+5SInXreCQkXQz--
 
 
-On Monday 14 February 2011 01:13 PM, Caspar Zhang wrote:
-
-> Sorry for bothering, any comments on this patch?
->
-> On 01/29/2011 01:41 AM, Caspar Zhang wrote:
->> Hi all, mail02 and mail03 tests non-existed host and non-existed
->> username in the test. However in some systems (at least in RHEL6),
->> they both fails because of the sender name of the returned letter is
->> "Mail Delivery System" instead of "Mail Delivery Subsys", which makes RC1
->> to be zero and fail the test. The patch fixes this issue.
->>
->> Signed-off-by: Caspar Zhang<czhang@redhat.com>
->> ---
->>   testcases/commands/mail/mail_tests.sh |    4 ++--
->>   1 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/testcases/commands/mail/mail_tests.sh
->> b/testcases/commands/mail/mail_tests.sh
->> index 53a5d90..c30e2c3 100755
->> --- a/testcases/commands/mail/mail_tests.sh
->> +++ b/testcases/commands/mail/mail_tests.sh
->> @@ -169,7 +169,7 @@ else
->>   		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
->>   		    $LTPTMP/tst_mail.res)
->>   	else
->> -		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
->> "MailDeliverySubsys")}' \
->> +		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
->> "MailDelivery(Subsys|System)")}' \
->>   		    $LTPTMP/tst_mail.res)
->>   	fi
->>
->> @@ -250,7 +250,7 @@ else
->>   		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
->>   		    $LTPTMP/tst_mail.res)
->>   	else
->> -		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
->> "MailDeliverySubsys")}' \
->> +		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
->> "MailDelivery(Subsys|System)")}' \
->>   		    $LTPTMP/tst_mail.res)
->>   	fi
->>   	##################################################################
->
-
+--===============4989205367203700944==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
+Index, Search & Analyze Logs and other IT data in Real-Time with Splunk 
+Collect, index and harness all the fast moving IT data generated by your 
+applications, servers and devices whether physical, virtual or in the cloud.
+Deliver compliance at lower cost and gain new business insights. 
+Free Software Download: http://p.sf.net/sfu/splunk-dev2dev
+--===============4989205367203700944==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4989205367203700944==--
+
