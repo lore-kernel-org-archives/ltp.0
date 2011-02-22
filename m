@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <cristian@regolo.cc>) id 1PtMjM-0006DE-Ac
-	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 16:10:52 +0000
-Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1PrjHP-0005mJ-8E
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 03:51:15 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PtMjL-0004uE-Fj
-	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 16:10:52 +0000
-Date: Sat, 26 Feb 2011 17:11:20 +0100
-From: Cristian Greco <cristian@regolo.cc>
-Message-ID: <20110226171120.43fd0cba@regolo>
-In-Reply-To: <AANLkTikZiPeEuKzvb-6Y1qmx6GgsDHA=o9grcXeXFtqL@mail.gmail.com>
-References: <20110222105230.0f9fe24b@regolo>
-	<AANLkTikZiPeEuKzvb-6Y1qmx6GgsDHA=o9grcXeXFtqL@mail.gmail.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] clone06 syscall testcase: use PWD instead of TERM
- environment variable.
+	id 1PrjHO-0002LX-2V
+	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 03:51:15 +0000
+Date: Tue, 22 Feb 2011 11:55:02 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110222035502.GB2883@hpt.nay.redhat.com>
+References: <20110210072315.GA7909@hpt.nay.redhat.com>
+	<4D6217CB.1040506@cn.fujitsu.com>
+	<20110222015814.GA2883@hpt.nay.redhat.com>
+	<4D631A92.8000904@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4D631A92.8000904@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] Fix disable set_ftrace_pid in
+	ftrace_set_ftrace_pid.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,107 +29,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8064632825137733778=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Li Zefan <lizf@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
---===============8064632825137733778==
-Content-Type: multipart/signed; micalg=PGP-SHA256;
-	boundary="Sig_/kq_NsIj01q5fY_g/a7UotD7";
-	protocol="application/pgp-signature"
-
---Sig_/kq_NsIj01q5fY_g/a7UotD7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 23 Feb 2011 00:33:08 -0800
-Garrett Cooper <yanegomi@gmail.com> wrote:
-
-> On Tue, Feb 22, 2011 at 1:52 AM, Cristian Greco <cristian@regolo.cc> wrot=
-e:
-> > Hi,
-> >
-> > please consider the following patch for the 'clone06' syscall test.
-> >
-> > When running the test on a remote host with an ssh command the TERM env=
-ironment
-> > variable is not available. Use PWD instead, with a buffer size of MAXPA=
-THLEN.
-> >
-> > This is to show how using the TERM variable results in unexpected behav=
-ior:
->=20
->     Depending on $PWD, $TERM, etc isn't smart as they're controlled by
-> the shell and external sources and can be modified out from under you
-> (there's some recent discussion on the opengroup list that has
-> transpired related to $PATH, $PWD, etc).
->     How about this instead:
->=20
-> 1. unset a predetermined env variable if it's present.
-> 2. set it to a known value
-> 3. Make sure that the env variable set in 2. matches both in the child
-> and parent.
->=20
->     If you submit this patch, I'll gladly commit it because it's more
-> sane than the current test code.
-> Thanks,
-> -Garrett
-
-Ok, will do ASAP!
-
-Thanks,
---
-Cristian Greco
-GPG key ID: 0xCF4D32E4
-
---Sig_/kq_NsIj01q5fY_g/a7UotD7
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJNaSYoAAoJEID329zPTTLk52sP/RyfxSijvIMbBZPkERDnbk6t
-RyZcmaWD7gM6IQoT7DDfT0UV5pMuK1LQ3sY2TRAzBCrkebDwBjIavWifgbTpEZIH
-TeqnY1C9q5fBN1z/SPSI2LYVxk/IX8A83LbYn+h0tQjiMGK547RyVu27d2yrLW+z
-UNFY4uH8vgBFaGZWrFRASSHEnRhQYc0kygJS7TFdhNuyZ8LS9Oc6zHYnnP9avr12
-tFhnbbmyoLuZTgS4Fth43iiMwTkLcA5FBClT/VBpHGRjDtml0/hwLoPtpwukv6C+
-JzXiv701mDoGfZPZfZZCzxgM8z1iD/SU/xZYGGEez2yFGin8os2cIoNxELhLsJtY
-ZWbMOZ936iZSaPaEWZ8H7til4bk2inhMtLvWzGii5sei0YmQuJjhz5ozXIuW0XwU
-UPn2tP7gS9tiDX1WLPRwPf9C7dE9yxOu+4XhTQ4G4SHmZXJ0cT4KzDxrtYxY2UES
-US5EHIA5f48idMEey2FCDhkfCfte8EmZqgwJ7J1k0EeJPKkOHrrY5JETkGjDPMXP
-+MDqs45OixplWugwn03u6arvLN46t7oE55+Qwfqr1KvfAnNbZtVlkt8p5LtCgHOM
-bJORmlFt5b+wvEwoh4iQnjOwmIqkS92i9JxcYH7F643J++W3lv7xdDYNuBmjZfdE
-oDfnEUsZ6pYiN54sgMMg
-=REED
------END PGP SIGNATURE-----
-
---Sig_/kq_NsIj01q5fY_g/a7UotD7--
-
-
---===============8064632825137733778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
---===============8064632825137733778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8064632825137733778==--
-
+T24gVHVlLCBGZWIgMjIsIDIwMTEgYXQgMTA6MDg6MThBTSArMDgwMCwgTGkgWmVmYW4gd3JvdGU6
+Cj4g5LqOIDIwMTHlubQwMuaciDIy5pelIDA5OjU4LCBIYW4gUGluZ3RpYW4g5YaZ6YGTOgo+ID4g
+T24gTW9uLCBGZWIgMjEsIDIwMTEgYXQgMDM6NDQ6MTFQTSArMDgwMCwgTGkgWmVmYW4gd3JvdGU6
+Cj4gPj4gSGFuIFBpbmd0aWFuIHdyb3RlOgo+ID4+PiBJdCBzZWVtcyB3ZSBuZWVkIGVjaG8gLTEg
+dG8gc2V0X2Z0cmFjZV9waWQgdG8gZGlzYWJsZSBpbi4gT3Igd2UnbGwgZ2V0Cj4gPj4+IHRoZXNl
+IGVycm9yIG1lc3NhZ2Ugd2hlbiBydW5uaW5nIGZ0cmFjZV9zdHJlc3M6Cj4gPj4+Cj4gPj4KPiA+
+PiBrZXJuZWwgdmVyc2lvbj8KPiA+IDIuNi4zMi0xMTQuMC4xLmVsNi54ODZfNjQgLCBSSEVMNi4x
+Lgo+ID4+Cj4gPj4gVGhpcyBpcyB0aGUgcmVzdWx0IGZyb20gbGF0ZXN0IGtlcm5lbDoKPiA+Pgo+
+ID4+ICMgZWNobyA+IHNldF9mdHJhY2VfcGlkCj4gPj4gIyBlY2hvIC0xID4gc2V0X2Z0cmFjZV9w
+aWQKPiA+PiBiYXNoOiBlY2hvOiB3cml0ZSBlcnJvcjogSW52YWxpZCBhcmd1bWVudAo+ID4+Cj4g
+PiBMb29rcyBsaWtlIGxhdGVzdCBrZXJuZWwgY2hhbmdlZCB0aGUgYmVoYXZpb3VyLiBCdXQgdGhl
+Cj4gCj4gVGhlIGNoYW5nZSBjYW1lIGZyb20gY29tbWl0IDc1NmQxN2VlN2VlNGZiYzgyMzhiZGY5
+NzEwMGFmNjNlNmFjNDQxZWYKPiAKPiBTbyB3ZSBoYXZlIHRvIGNoZWNrIHRoZSBrZXJuZWwgdmVy
+c2lvbiwgb3IgdHJ5IGJvdGggImVjaG8gPiAuLi4iIGFuZAo+ICJlY2hvIC0xID4gLi4uIi4KSSBi
+ZWxpZXZlIHRoZSBzZWNvbmQgbWV0aG9kIGlzIGJldHRlci4KPiAKPiA+IERvY3VtZW50YXRpb24v
+dHJhY2UvZnRyYWNlLnR4dCBoYXNuJ3QgYmVlbiB1cGRhdGVkOgo+ID4gCj4gPiAgICAgIHl1bS11
+cGRhdGVzZC0zMTExICBbMDAzXSAgMTYzNy4yNTQ2ODM6IGxvY2tfaHJ0aW1lcl9iYXNlIDwtaHJ0
+aW1lcl90cnlfdG9fY2FuY2VsCj4gPiAgICAgIHl1bS11cGRhdGVzZC0zMTExICBbMDAzXSAgMTYz
+Ny4yNTQ2ODU6IGZnZXRfbGlnaHQgPC1kb19zeXNfcG9sbAo+ID4gICAgICB5dW0tdXBkYXRlc2Qt
+MzExMSAgWzAwM10gIDE2MzcuMjU0Njg2OiBwaXBlX3BvbGwgPC1kb19zeXNfcG9sbAo+ID4gIyBl
+Y2hvIC0xID4gc2V0X2Z0cmFjZV9waWQKPiA+ICMgY2F0IHRyYWNlIHxoZWFkCj4gPiAgIyB0cmFj
+ZXI6IGZ1bmN0aW9uCj4gPiAgIwo+ID4gICMgICAgICAgICAgIFRBU0stUElEICAgIENQVSMgICAg
+VElNRVNUQU1QICBGVU5DVElPTgoKLS0gCkhhbiBQaW5ndGlhbgpRdWFsaXR5IEVuZ2luZWVyCmhw
+dCBAICNrZXJuZWwtcWUKUmVkIEhhdCwgSW5jCkZyZWVkb20gLi4uIGNvdXJhZ2UgLi4uIENvbW1p
+dG1lbnQgLi4uIEFDQ09VTlRBQklMSVRZCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSW5kZXgsIFNl
+YXJjaCAmIEFuYWx5emUgTG9ncyBhbmQgb3RoZXIgSVQgZGF0YSBpbiBSZWFsLVRpbWUgd2l0aCBT
+cGx1bmsgCkNvbGxlY3QsIGluZGV4IGFuZCBoYXJuZXNzIGFsbCB0aGUgZmFzdCBtb3ZpbmcgSVQg
+ZGF0YSBnZW5lcmF0ZWQgYnkgeW91ciAKYXBwbGljYXRpb25zLCBzZXJ2ZXJzIGFuZCBkZXZpY2Vz
+IHdoZXRoZXIgcGh5c2ljYWwsIHZpcnR1YWwgb3IgaW4gdGhlIGNsb3VkLgpEZWxpdmVyIGNvbXBs
+aWFuY2UgYXQgbG93ZXIgY29zdCBhbmQgZ2FpbiBuZXcgYnVzaW5lc3MgaW5zaWdodHMuIApGcmVl
+IFNvZnR3YXJlIERvd25sb2FkOiBodHRwOi8vcC5zZi5uZXQvc2Z1L3NwbHVuay1kZXYyZGV2Cl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1h
+aWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
+b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
