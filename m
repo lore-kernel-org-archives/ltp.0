@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Poz1k-00060z-Fb
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 14:03:44 +0000
-Date: Mon, 14 Feb 2011 15:23:04 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110214142304.GA32554@saboteur.suse.cz>
-References: <4D590650.4090806@nokia.com>
-	<20110214124921.GA29415@saboteur.suse.cz>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1Ps9fu-00088D-B1
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:02:18 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1Ps9ft-0006nG-73
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:02:18 +0000
+Received: by wyb38 with SMTP id 38so54075wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Feb 2011 00:02:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20110214124921.GA29415@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
- "fs_perms" tests
+In-Reply-To: <9151393516569896904@unknownmsgid>
+References: <1297088926-21505-1-git-send-email-will.deacon@arm.com>
+	<9151393516569896904@unknownmsgid>
+Date: Wed, 23 Feb 2011 00:02:10 -0800
+Message-ID: <AANLkTikTY4X+q8iv6PBkiQbbA6MdJARCUOEr45JKPkTf@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix rt_sigtimedwait ordering test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,44 +31,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: maxin <john.maxin@nokia.com>
+To: Will Deacon <will.deacon@arm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > On the preliminary analysis of  this failure, I came to know that the reason was due to insufficient file permissions provided in the
-> > "runtests/fs_perms_simple" . To execute a script file, 'user', 'group', or 'others' should have 'read' and 'execute' permissions.
-> > Based on that, I have modified the "s_perms_simple"  file as follows:
-> > 
-> > -fs_perms01 fs_perms 001 99 99 12 100 x 0
-> > -fs_perms02 fs_perms 010 99 99 200 99 x 0
-> > -fs_perms03 fs_perms 100 99 99 99 500 x 0
-> > +fs_perms01 fs_perms 005 99 99 12 100 x 0
-> > +fs_perms02 fs_perms 050 99 99 200 99 x 0
-> > +fs_perms03 fs_perms 500 99 99 99 500 x 0
-> 
-> Actually these are correct, the last number in a row is
-> 'expected result'. So execution of these files must fail in order for
-> the test to succeed.
+ qOn Wed, Feb 16, 2011 at 8:43 AM, Will Deacon <will.deacon@arm.com> wrote:
 
-Reading the source again, 0 is success there.
+...
 
-But then 001 is right to exec by other which should work.
-         010 is right to exec for group, which is the same on that line
-	 100 is right to exec for owner, which is the same again
+> I've not heard anything further on this, but it does fix a real issue
+> on the platform I'm using. Do you need anything more from me for this
+> to be considered for committing?
 
-So this should really work. Let me know if the test works for you with
-previously posted patch.
+    Kind of odd that only doing it there would fix the entire testcase
+as that's not the only pattern of
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+create_sig_proc(...)
+
+    that isn't handled with a wait/waitpid.
+    It just seems like there are tons of bugs lurking under the scenes
+with this create_sig_proc deal because it doesn't wait, and if the
+parent doesn't wait, then you're just creating a ton of races
+potentially if not handled properly.
+    FWIW some more synchronization may need to be added in
+create_sig_proc (like blocking I/O with a pipe for instance, mq_*,
+sem_*? mq_* and sem_* are kind of undesirable though because those
+APIs are buggy on different architectures / versions of Linux, and
+pipes are generally simple enough to express synchronization), in
+order to ensure that things are deterministically ordered and the
+results of the test are sane.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
