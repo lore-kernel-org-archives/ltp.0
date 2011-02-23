@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PsPnD-0007DW-43
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 01:14:55 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PsPnB-0005ar-Cr
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 01:14:55 +0000
-Message-ID: <4D65B0FF.5020709@cn.fujitsu.com>
-Date: Thu, 24 Feb 2011 09:14:39 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PsAMJ-0000YL-TW
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:46:07 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PsAMJ-0002PX-5R
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:46:07 +0000
+Received: by wwb17 with SMTP id 17so62838wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Feb 2011 00:46:01 -0800 (PST)
 MIME-Version: 1.0
-References: <4D64B120.5010004@cn.fujitsu.com>
-	<AANLkTiktFzFLYD5xvwEpK0FkX52_q31YfdJfX11Qp1X=@mail.gmail.com>
-In-Reply-To: <AANLkTiktFzFLYD5xvwEpK0FkX52_q31YfdJfX11Qp1X=@mail.gmail.com>
-Subject: Re: [LTP] [POSIX][PATCH]Fix bug of script implemented tests
+In-Reply-To: <20110221054321.GB2904@hpt.nay.redhat.com>
+References: <20110214061409.GA7983@hpt.nay.redhat.com>
+	<AANLkTimzLhCfwAgHuB4S3Fo=gHkHEKbjs6ObficnqKXU@mail.gmail.com>
+	<20110215031334.GA2884@hpt.nay.redhat.com>
+	<AANLkTi=b7R39g8kn6_oNO6dgLp_Frss+v-iTAN6o=z13@mail.gmail.com>
+	<20110216025958.GA2891@hpt.nay.redhat.com>
+	<20110221054321.GB2904@hpt.nay.redhat.com>
+Date: Wed, 23 Feb 2011 00:46:00 -0800
+Message-ID: <AANLkTinrdGk2A_V6jn_MVkx0RnzO3GfgYYnUQ4k47-KX@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] ksm: wait 3 increments of full_scans before
+ checking the results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,77 +36,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+On Sun, Feb 20, 2011 at 9:43 PM, Han Pingtian <phan@redhat.com> wrote:
+> Hello Garrett,
+>
+> Any objection to merge this patch?
 
-Garrett Cooper said the following on 2011-2-23 15:48:
-> $ find [cms]* -name '*.sh' | xargs grep -l buildonly | xargs -J % sed
-> -i .bk -E -e 's,^[cfs].+[^/]/(.+)\.test,\./\1,g' -e
-> 's,\-buildonly\.test,,g' %
-> 
-> I've committed the end result after verifying that git diff's output was sane.
-> 
-
-There are four cases, and they have same problem.
-The following patch can fix the bug.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- .../conformance/interfaces/sigaddset/4-1.sh        |    2 +-
- .../conformance/interfaces/sigaddset/4-2.sh        |    2 +-
- .../conformance/interfaces/sigaddset/4-3.sh        |    2 +-
- .../conformance/interfaces/sigaddset/4-4.sh        |    2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-1.sh b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-1.sh
-index cb29ca9..32dc8a9 100755
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-1.sh
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-1.sh
-@@ -9,4 +9,4 @@
- #   Test various methods of adding invalid signals to sigaddset().
- # 
- 
--conformance/interfaces/sigaddset/4-core.run-test 1
-+./4-core 1
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-2.sh b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-2.sh
-index 5ab480d..708fe1a 100755
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-2.sh
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-2.sh
-@@ -10,4 +10,4 @@
- #   Test various methods of adding invalid signals to sigaddset().
- # 
- 
--conformance/interfaces/sigaddset/4-core.run-test 2
-+./4-core 2
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-3.sh b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-3.sh
-index 644512f..ad4fee1 100755
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-3.sh
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-3.sh
-@@ -9,4 +9,4 @@
- #   Test various methods of adding invalid signals to sigaddset().
- # 
- 
--conformance/interfaces/sigaddset/4-core.run-test 3
-+./4-core 3
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-4.sh b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-4.sh
-index ca8523f..c33d8fb 100755
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-4.sh
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaddset/4-4.sh
-@@ -9,4 +9,4 @@
- #   Test various methods of adding invalid signals to sigaddset().
- # 
- 
--conformance/interfaces/sigaddset/4-core.run-test 4
-+./4-core 4
--- 
-1.7.1
-
--- 
-Best Regards,
-Peng Haitao
-
+Please resubmit a git-formatted email with the patch attached.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
