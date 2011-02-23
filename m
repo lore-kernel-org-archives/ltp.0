@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Psckf-0006UV-Ib
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 15:05:09 +0000
-Date: Thu, 24 Feb 2011 16:25:21 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110224152521.GC29199@saboteur.suse.cz>
-References: <AANLkTi=0Pu1bF4iVdWg4URKTm00wTT86=eg2UQfixTQo@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PsAa4-000340-Bl
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 09:00:20 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsAa2-0003sV-LO
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 09:00:20 +0000
+Message-ID: <4D64CCAF.6050003@cn.fujitsu.com>
+Date: Wed, 23 Feb 2011 17:00:31 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=0Pu1bF4iVdWg4URKTm00wTT86=eg2UQfixTQo@mail.gmail.com>
-Subject: Re: [LTP] i want to join in the project
+Subject: [LTP]  [PATCH] common_j_h.c: add a missing ";"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,22 +25,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: SubhraPrakashGiri <giri.subhra@gmail.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
+Hi Garrett,
 
-Hi!
-As being said here a couple of times, there is no official joining
-procedure. Most of the people working on LTP are signed to the mailing
-list, where basically all the interesting things happen.
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/utils/common_j_h.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-If you wan't to work on LTP just join the mailing list and send your
-questions/comments/patches there.
+diff --git a/testcases/kernel/syscalls/utils/common_j_h.c b/testcases/kernel/syscalls/utils/common_j_h.c
+index 5e23d69..94541a8 100644
+--- a/testcases/kernel/syscalls/utils/common_j_h.c
++++ b/testcases/kernel/syscalls/utils/common_j_h.c
+@@ -42,7 +42,7 @@
+ #define barrier() __asm__ __volatile__("": : :"memory")
+ #define WITH_SIGNALS_BLOCKED(code) {					\
+ 		sigset_t held_sigs_;					\
+-		sigfillset(&held_sigs_)					\
++		sigfillset(&held_sigs_);				\
+ 		sigprocmask(SIG_SETMASK, &held_sigs_, &held_sigs_);	\
+ 		barrier();						\
+ 		code;							\
+-- 
+1.7.1
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Best Regards,
+Peng Haitao
+
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
