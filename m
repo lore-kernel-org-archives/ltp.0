@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PsVyx-0007pN-I5
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:51:27 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PsVyw-0006Jj-7u
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:51:27 +0000
-Message-ID: <4D660C15.1050609@cn.fujitsu.com>
-Date: Thu, 24 Feb 2011 15:43:17 +0800
-From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PsA9s-000227-RF
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:33:16 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PsA9q-0000tX-JV
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:33:16 +0000
+Received: by wyb38 with SMTP id 38so73423wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Feb 2011 00:33:08 -0800 (PST)
 MIME-Version: 1.0
-References: <4CBEAF2A.1070101@cn.fujitsu.com>	<20101221124935.GA944@hannu-debian.research.nokia.com>	<4D12B48A.9020500@cn.fujitsu.com>	<ABDE7E44-F301-4846-A7C3-D0F35CCC2E4F@gmail.com>	<4D65F9CF.7090009@cn.fujitsu.com>
-	<AANLkTi=h_En-qEXujxNwv85qUMnHGb+hUtL_Jb4sOF+F@mail.gmail.com>
-In-Reply-To: <AANLkTi=h_En-qEXujxNwv85qUMnHGb+hUtL_Jb4sOF+F@mail.gmail.com>
-Subject: Re: [LTP] About LTP
- open_posix_testsuite/functional/threads/robust_test cases
+In-Reply-To: <20110222105230.0f9fe24b@regolo>
+References: <20110222105230.0f9fe24b@regolo>
+Date: Wed, 23 Feb 2011 00:33:08 -0800
+Message-ID: <AANLkTikZiPeEuKzvb-6Y1qmx6GgsDHA=o9grcXeXFtqL@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] clone06 syscall testcase: use PWD instead of TERM
+ environment variable.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,51 +31,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Cristian Greco <cristian@regolo.cc>
+Cc: ltp-list@lists.sourceforge.net
 
-Garrett Cooper wrote:
-> On Wed, Feb 23, 2011 at 10:25 PM, Gui Jianfeng
-> <guijianfeng@cn.fujitsu.com> wrote:
->> Garrett Cooper wrote:
->>> On Dec 22, 2010, at 6:31 PM, Gui Jianfeng <guijianfeng@cn.fujitsu.com
->>> <mailto:guijianfeng@cn.fujitsu.com>> wrote:
->>>
->>>> Hannu Heikkinen wrote:
->>>>> On 20/10/10 10:58 +0200, ext Gui Jianfeng wrote:
->>>>>> Hi Garrett
->>>>>>
->>>>>> In open_posix_testsuite/functional/threads/robust_test category,
->>>>>> all test cases don't follow the POSIX standard. They call many
->>>>>> functions that glibc doesn't even support. I wonder why not just
->>>>>> get rid of these test cases.
->>>>>>
->>>>>> --
->>>>>> Regards
->>>>>> Gui Jianfeng
->>>>> Hi,
->>>>>
->>>>> any progress/news about this?
->>>> Garrett,
->>>>
->>>> Would you get rid of these cases?
->>> They should go in testcases/realtime . I can't commit changes for
->>> approximately another week and a half because I don't have Internet
->>> connectivity except on my phone (which doesn't do git :/..).
->> Garrett,
->>
->> Would you also take a look these cases?
-> 
-> Ok, I guess I'll toss them then.
+On Tue, Feb 22, 2011 at 1:52 AM, Cristian Greco <cristian@regolo.cc> wrote:
+> Hi,
+>
+> please consider the following patch for the 'clone06' syscall test.
+>
+> When running the test on a remote host with an ssh command the TERM environment
+> variable is not available. Use PWD instead, with a buffer size of MAXPATHLEN.
+>
+> This is to show how using the TERM variable results in unexpected behavior:
 
-Agreed :)
+    Depending on $PWD, $TERM, etc isn't smart as they're controlled by
+the shell and external sources and can be modified out from under you
+(there's some recent discussion on the opengroup list that has
+transpired related to $PATH, $PWD, etc).
+    How about this instead:
 
+1. unset a predetermined env variable if it's present.
+2. set it to a known value
+3. Make sure that the env variable set in 2. matches both in the child
+and parent.
+
+    If you submit this patch, I'll gladly commit it because it's more
+sane than the current test code.
 Thanks,
-Gui
-
-> Thanks!
-> -Garrett
-> 
+-Garrett
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
