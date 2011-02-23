@@ -1,18 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PsAa4-000340-Bl
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 09:00:20 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PsAa2-0003sV-LO
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 09:00:20 +0000
-Message-ID: <4D64CCAF.6050003@cn.fujitsu.com>
-Date: Wed, 23 Feb 2011 17:00:31 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1PsBeV-0007Pg-Ud
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 10:08:59 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsBeU-0008N0-P4
+	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 10:08:59 +0000
+Date: Wed, 23 Feb 2011 18:12:51 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110223101251.GJ2947@hpt.nay.redhat.com>
+References: <20110214061409.GA7983@hpt.nay.redhat.com>
+	<AANLkTimzLhCfwAgHuB4S3Fo=gHkHEKbjs6ObficnqKXU@mail.gmail.com>
+	<20110215031334.GA2884@hpt.nay.redhat.com>
+	<AANLkTi=b7R39g8kn6_oNO6dgLp_Frss+v-iTAN6o=z13@mail.gmail.com>
+	<20110216025958.GA2891@hpt.nay.redhat.com>
+	<20110221054321.GB2904@hpt.nay.redhat.com>
+	<AANLkTinrdGk2A_V6jn_MVkx0RnzO3GfgYYnUQ4k47-KX@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] common_j_h.c: add a missing ";"
+Content-Type: multipart/mixed; boundary="UPT3ojh+0CqEDtpF"
+Content-Disposition: inline
+In-Reply-To: <AANLkTinrdGk2A_V6jn_MVkx0RnzO3GfgYYnUQ4k47-KX@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] ksm: wait 3 increments of full_scans before
+ checking the results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,39 +33,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+--UPT3ojh+0CqEDtpF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 23, 2011 at 12:46:00AM -0800, Garrett Cooper wrote:
+> On Sun, Feb 20, 2011 at 9:43 PM, Han Pingtian <phan@redhat.com> wrote:
+> > Hello Garrett,
+> >
+> > Any objection to merge this patch?
+> 
+> Please resubmit a git-formatted email with the patch attached.
+> Thanks,
+> -Garrett
+This is the rebuilded patch, sorry for the inconvenience.
+
+-- 
+Han Pingtian
+Quality Engineer
+hpt @ #kernel-qe
+Red Hat, Inc
+Freedom ... courage ... Commitment ... ACCOUNTABILITY
+
+--UPT3ojh+0CqEDtpF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-ksm-wait-3-increments-of-full_scans-before-checking-.patch"
+
+From 1345942c75c55a9702df1cd66a2402c64c430d52 Mon Sep 17 00:00:00 2001
+From: Han Pingtian <phan@redhat.com>
+Date: Mon, 14 Feb 2011 11:47:59 +0800
+Subject: [PATCH] ksm: wait 3 increments of full_scans before checking the results
+
+The KSM developer tells us that we should wait 3~5 increments of the
+/sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results.
+Otherwise, there may be some stuck pages that cause the testing failed.
+
+Signed-off-by: Han Pingtian <phan@redhat.com>
 ---
- testcases/kernel/syscalls/utils/common_j_h.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ testcases/kernel/mem/lib/mem.c |   30 ++++++++++++++++++++++++++++--
+ 1 files changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/utils/common_j_h.c b/testcases/kernel/syscalls/utils/common_j_h.c
-index 5e23d69..94541a8 100644
---- a/testcases/kernel/syscalls/utils/common_j_h.c
-+++ b/testcases/kernel/syscalls/utils/common_j_h.c
-@@ -42,7 +42,7 @@
- #define barrier() __asm__ __volatile__("": : :"memory")
- #define WITH_SIGNALS_BLOCKED(code) {					\
- 		sigset_t held_sigs_;					\
--		sigfillset(&held_sigs_)					\
-+		sigfillset(&held_sigs_);				\
- 		sigprocmask(SIG_SETMASK, &held_sigs_, &held_sigs_);	\
- 		barrier();						\
- 		code;							\
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 1a53359..435620f 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -298,8 +298,34 @@ void group_check(int run, int pages_shared, int pages_sharing,
+ 		int pages_volatile, int pages_unshared,
+ 		int sleep_millisecs, int pages_to_scan)
+ {
+-        /* 5 seconds for ksm to scan pages. */
+-	sleep(5);
++	int fd;
++	char buf[BUFSIZ];
++	int old_num, new_num;
++
++	/* 1 seconds for ksm to scan pages. */
++	while (sleep(1) == 1)
++	    continue;
++
++	fd = open("/sys/kernel/mm/ksm/full_scans", O_RDONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++
++	/* wait 3 increments of full_scans */
++	if (read(fd, buf, BUFSIZ) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "read");
++	old_num = new_num = atoi(buf);
++	if (lseek(fd, 0, SEEK_SET) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "lseek");
++	while (new_num < old_num * 3) {
++		sleep(1);
++		if (read(fd, buf, BUFSIZ) < 0)
++			tst_brkm(TBROK|TERRNO, cleanup, "read");
++		new_num = atoi(buf);
++		if (lseek(fd, 0, SEEK_SET) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "lseek");
++	}
++	close(fd);
++
+ 	tst_resm(TINFO, "check!");
+ 	check("run", run);
+ 	check("pages_shared", pages_shared);
 -- 
 1.7.1
 
--- 
-Best Regards,
-Peng Haitao
 
+--UPT3ojh+0CqEDtpF
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
@@ -62,7 +136,16 @@ Real-Time with Splunk. Collect, index and harness all the fast moving IT data
 generated by your applications, servers and devices whether physical, virtual
 or in the cloud. Deliver compliance at lower cost and gain new business 
 insights. http://p.sf.net/sfu/splunk-dev2dev 
+--UPT3ojh+0CqEDtpF
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--UPT3ojh+0CqEDtpF--
+
