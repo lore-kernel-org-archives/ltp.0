@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Ppa34-0006ed-Mc
-	for ltp-list@lists.sourceforge.net; Wed, 16 Feb 2011 05:35:34 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Ppa31-0004nX-VH
-	for ltp-list@lists.sourceforge.net; Wed, 16 Feb 2011 05:35:34 +0000
-Received: by wyb40 with SMTP id 40so946863wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 Feb 2011 21:35:25 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PsUZz-0008EE-O8
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 06:21:35 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsUZy-0006sz-EN
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 06:21:35 +0000
+Message-ID: <4D65F8D6.7030207@cn.fujitsu.com>
+Date: Thu, 24 Feb 2011 14:21:10 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4D5B4B51.2010301@cn.fujitsu.com>
-References: <4D5A47E5.3060108@cn.fujitsu.com>
-	<AANLkTikjFEnngX7__W7gK8UBTV8O50vf-My5unK_P=8p@mail.gmail.com>
-	<4D5B4B51.2010301@cn.fujitsu.com>
-Date: Tue, 15 Feb 2011 21:35:25 -0800
-Message-ID: <AANLkTi=Q+WHsOq2Cxep605YKVET6Xk0G5CJUMB1tdZ=C@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] unshare01.c: TEST_RETURN is used wrong
+References: <4CCA33F8.6020104@cn.fujitsu.com>
+In-Reply-To: <4CCA33F8.6020104@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] open_posix_testsuite: Don't use clock_settime()
+ to reset a CPU-time Clock
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +25,140 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Feb 15, 2011 at 7:58 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> Garrett Cooper said the following on 2011-2-15 22:29:
->>
->> How about this?
->
-> =A0The patch is OK, thanks.
-> but "break;" in block "default:" can be deleted:)
+Hi Garrett,
 
-Sure -- thanks!
--Garrett
+This case always fails when I do the test. Would you take a look this patch,
+If you don't object, can you commit this patch? Or give some comments about it.
 
----------------------------------------------------------------------------=
----
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Thanks,
+Gui
+
+Gui Jianfeng wrote:
+> This case is trying to set CPU-time clock(ID is returned by clock_getcpuclockid()) of
+> a specific process by calling clock_settime(). But Linux kernel doesn't allow to reset
+> a CPU-time clock of a specific process. Kernel returns -EPERM. So test fails.
+> 
+> In "IEEE Std 1003.1, 2004 Edition", It's said as following:
+> If _POSIX_CPUTIME is defined, implementations shall support clock ID values obtained by
+> invoking clock_getcpuclockid(), which represent the CPU-time clock of a given process.
+> Implementations shall also support the special clockid_t value CLOCK_PROCESS_CPUTIME_ID,
+> which represents the CPU-time clock of the calling process when invoking one of the 
+> clock_*() or timer_*() functions. For these clock IDs, the values returned by 
+> clock_gettime() and specified by clock_settime() represent the amount of execution time
+> of the process associated with the clock. Changing the value of a CPU-time clock via
+> clock_settime() shall have no effect on the behavior of the sporadic server scheduling
+> policy. 
+> 
+> So the behaviour when changing the value of a CPU-time clock via clock_settime() is
+> operating system specific. 
+> 
+> We may change the test progress to stop using clock_settime(). Now, We just make use
+> of clock_gettime() instead to achieve the same test purpose.
+> 
+> Signed-off-by: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+> ---
+>  .../interfaces/clock_getcpuclockid/2-1.c           |   67 ++++++++++----------
+>  1 files changed, 33 insertions(+), 34 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
+> index edeb397..52240df 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/2-1.c
+> @@ -23,48 +23,47 @@ int main(int argc, char *argv[])
+>          printf("_POSIX_CPUTIME unsupported\n");
+>          return PTS_UNSUPPORTED;
+>  #else
+> -	unsigned long time_to_set;	
+>  	clockid_t clockid_1, clockid_2;
+>  	struct timespec tp1, tp2;
+> +	int i;
+>  
+>  	if (sysconf(_SC_CPUTIME) == -1) {
+>  		printf("_POSIX_CPUTIME unsupported\n");
+>  		return PTS_UNSUPPORTED;
+>  	}
+>  
+> -	if (clock_getcpuclockid(getpid(), &clockid_1) != 0) {
+> -		printf("clock_getcpuclockid(getpid(), ) failed\n");
+> -		return PTS_FAIL;
+> -	}
+> -	
+> -	if (clock_getcpuclockid(0, &clockid_2) != 0) {
+> -		printf("clock_getcpuclockid(0, ) failed\n");
+> -		return PTS_FAIL;
+> -	}
+> +        for (i = 0; i < 10; i++) {
+> +                if (clock_getcpuclockid(getpid(), &clockid_1) != 0) {
+> +                        printf("clock_getcpuclockid(getpid(), ) failed\n");
+> +                        return PTS_FAIL;
+> +                }
+>  
+> -	/* Set clockid_1 as a random value from 1 sec to 10 sec */
+> -	srand((unsigned long)time(NULL));
+> -	time_to_set = rand() * 10.0 / RAND_MAX + 1;
+> -	tp1.tv_sec = time_to_set;
+> -	tp1.tv_nsec = 0;	 
+> -	if (clock_settime(clockid_1, &tp1) != 0) {
+> -		printf("clock_getcpuclockid() returned an invalid clockid_t: "
+> -			"%d\n", clockid_1);
+> -		return PTS_FAIL;
+> -	}
+> -	/* Get the time of clockid_2, should almost the same as clockid_1 */
+> -	if (clock_gettime(clockid_2, &tp2) != 0) {
+> -		printf("clock_getcpuclockid() returned an invalid clockid_t: "
+> -			"%d\n", clockid_2);
+> -		return PTS_FAIL;
+> -	}
+> -	if (tp1.tv_sec == tp2.tv_sec)	
+> -	{
+> -		printf("Test PASSED\n");
+> -		return PTS_PASS;
+> -	}
+> -	printf("Test FAILED\n");
+> -	return PTS_FAIL;
+> -	
+> +                if (clock_getcpuclockid(0, &clockid_2) != 0) {
+> +                        printf("clock_getcpuclockid(0, ) failed\n");
+> +                        return PTS_FAIL;
+> +                }
+> +
+> +                /* Get the time of clockid_1 */
+> +                if (clock_gettime(clockid_1, &tp1) != 0) {
+> +                        printf("clock_getcpuclockid() returned an invalid clockid_t: "
+> +                               "%d\n", clockid_1);
+> +                        return PTS_FAIL;
+> +                }
+> +
+> +                /* Get the time of clockid_2, should almost the same as clockid_1 */
+> +                if (clock_gettime(clockid_2, &tp2) != 0) {
+> +                        printf("clock_getcpuclockid() returned an invalid clockid_t: "
+> +                               "%d\n", clockid_2);
+> +                        return PTS_FAIL;
+> +                }
+> +
+> +                if (tp1.tv_sec != tp2.tv_sec) {
+> +                        printf("Test FAILED\n");
+> +                        return PTS_FAIL;
+> +                }
+> +        }
+> +
+> +        printf("Test PASSED\n");
+> +        return PTS_PASS;
+>  #endif
+>  }
+
+------------------------------------------------------------------------------
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
