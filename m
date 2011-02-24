@@ -1,35 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1PnSCy-0002bH-MI
-	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 08:49:00 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PnSCx-00030M-Gt
-	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 08:49:00 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p1A8mrGY029022
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Feb 2011 03:48:53 -0500
-Received: from hpt.nay.redhat.com (dhcp-65-65.nay.redhat.com [10.66.65.65])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id p1A8moQE007232
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Feb 2011 03:48:52 -0500
-Received: from hpt.nay.redhat.com (localhost.localdomain [127.0.0.1])
-	by hpt.nay.redhat.com (8.14.4/8.14.4) with ESMTP id p1A8qXqD009301
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Feb 2011 16:52:33 +0800
-Received: (from hpt@localhost)
-	by hpt.nay.redhat.com (8.14.4/8.14.4/Submit) id p1A8qWWT009299
-	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 16:52:32 +0800
-Date: Thu, 10 Feb 2011 16:52:32 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110210085232.GA9285@hpt.nay.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PsTjR-0006CW-Tw
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 05:27:17 +0000
+Received: from mail-yi0-f47.google.com ([209.85.218.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PsTjR-0001hx-5B
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 05:27:17 +0000
+Received: by yia13 with SMTP id 13so127456yia.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Feb 2011 21:27:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] Fix build of cpuset_syscall_test
+In-Reply-To: <4D64D84D.3050205@cn.fujitsu.com>
+References: <4D58C631.7040508@cn.fujitsu.com>
+	<AANLkTinXKnOn7XBWJ=+Pc=5r6ObK68s8K2VNEwpuuvBA@mail.gmail.com>
+	<4D58F766.6040208@cn.fujitsu.com>
+	<AANLkTikdB=poh8vt8PhoiJxUFz2Zimu9oORiyyMSeu-+@mail.gmail.com>
+	<4D5B7144.9000801@cn.fujitsu.com>
+	<AANLkTim23RXT05JSZHwY0Bhnki4qz2T3vNen35gKFn1=@mail.gmail.com>
+	<4D5B7C44.6080005@cn.fujitsu.com> <4D64D84D.3050205@cn.fujitsu.com>
+Date: Wed, 23 Feb 2011 21:27:10 -0800
+Message-ID: <AANLkTikszEB5XS672s7SNmtsDMspyhsJgk5gV+GV4GNu@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] setfsuid04.c: the child process should exit 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,52 +33,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-cpuset_syscall_test now depends on numa lib:
+On Wed, Feb 23, 2011 at 1:50 AM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> Hi Garrett,
+>
+> Peng Haitao said the following on 2011-2-16 15:27:
+>>> =A0 =A0 This is what the code currently looks like. I assume the same
+>>> needs to be done for the other set*suid syscall testcases?
+>>
+>> setresuid and setreuid also need to be fixed at least.
+>> Thanks.
+>>
+>
+> =A0The following patch fix the cases of setresuid and setreuid.
 
-make[1]: Entering directory `/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/root/ltp/testcases/kernel/include -I../../../../../include -I../../../../../include   -L/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_lib -L/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../../libcontrollers -L../../../../../lib  cpuset_syscall_test.c   -lltp -lcpu_set -lcontrollers -lltp -o cpuset_syscall_test
-/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_lib/libcpu_set.a(libcpuset.o): In function `cpuset_addr2node':
-/root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3455: undefined reference to `get_mempolicy'
-/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_lib/libcpu_set.a(libcpuset.o): In function `cpuset_membind':
-/root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3439: undefined reference to `set_mempolicy'
-/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_lib/libcpu_set.a(libcpuset.o): In function `cpuset_unpin':
-/root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3752: undefined reference to `set_mempolicy'
-collect2: ld returned 1 exit status
-make[1]: *** [cpuset_syscall_test] Error 1
-make[1]: Leaving directory `/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test'
-make: *** [all] Error 2
+Committed -- thanks!
+-Garrett
 
-This patch fixes this problem
-
-Signed-off-by: Han Pingtian <phan@redhat.com>
+---------------------------------------------------------------------------=
 ---
- .../cpuset/cpuset_syscall_test/Makefile            |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Free Software Download: Index, Search & Analyze Logs and other IT data in =
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-index edc6265..17331fb 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-@@ -25,3 +25,5 @@ top_srcdir              ?= ../../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../Makefile.inc
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+LDLIBS                  += $(NUMA_LIBS)
--- 
-1.7.1
+Real-Time with Splunk. Collect, index and harness all the fast moving IT da=
+ta =
 
-------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+generated by your applications, servers and devices whether physical, virtu=
+al
+or in the cloud. Deliver compliance at lower cost and gain new business =
+
+insights. http://p.sf.net/sfu/splunk-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
