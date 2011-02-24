@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PsVgc-0000ex-SU
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:32:30 +0000
+	(envelope-from <yanegomi@gmail.com>) id 1PsTpV-0004Jk-2h
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 05:33:33 +0000
 Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PsVgc-0004iT-32
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:32:30 +0000
-Received: by gxk1 with SMTP id 1so159452gxk.34
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PsTpU-0001IA-Da
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 05:33:33 +0000
+Received: by gxk1 with SMTP id 1so117876gxk.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Feb 2011 23:32:24 -0800 (PST)
+	Wed, 23 Feb 2011 21:33:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4D65F817.2020904@cn.fujitsu.com>
-References: <4D65F817.2020904@cn.fujitsu.com>
-Date: Wed, 23 Feb 2011 23:32:24 -0800
-Message-ID: <AANLkTi=MP4_QyQsB_GOdfwxh8T-+d9Pqj6SY=K7_Hfk5@mail.gmail.com>
+In-Reply-To: <20110223101251.GJ2947@hpt.nay.redhat.com>
+References: <20110214061409.GA7983@hpt.nay.redhat.com>
+	<AANLkTimzLhCfwAgHuB4S3Fo=gHkHEKbjs6ObficnqKXU@mail.gmail.com>
+	<20110215031334.GA2884@hpt.nay.redhat.com>
+	<AANLkTi=b7R39g8kn6_oNO6dgLp_Frss+v-iTAN6o=z13@mail.gmail.com>
+	<20110216025958.GA2891@hpt.nay.redhat.com>
+	<20110221054321.GB2904@hpt.nay.redhat.com>
+	<AANLkTinrdGk2A_V6jn_MVkx0RnzO3GfgYYnUQ4k47-KX@mail.gmail.com>
+	<20110223101251.GJ2947@hpt.nay.redhat.com>
+Date: Wed, 23 Feb 2011 21:33:26 -0800
+Message-ID: <AANLkTi=g=ojJu0m+556rnekYenRTXtX+VBOj=rPmnjSw@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016361e86aaf98181049d0236e3
-Subject: Re: [LTP] [PATCH] syslogtst.c: fix a bug of assert() is used wrong
+Subject: Re: [LTP] [PATCH] ksm: wait 3 increments of full_scans before
+ checking the results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,50 +35,24 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
-
---0016361e86aaf98181049d0236e3
-Content-Type: text/plain; charset=ISO-8859-1
-
-On Wed, Feb 23, 2011 at 10:17 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> When executing "./syslogtst 1", the error message is follows:
-> syslogtst: syslogtst.c:93: main: Assertion `ch1 != -1' failed.
-
-    How about this instead?
-Thanks,
--Garrett
-
---0016361e86aaf98181049d0236e3
-Content-Type: text/x-patch; charset=US-ASCII; name="syslogtst-fixes.patch"
-Content-Disposition: attachment; filename="syslogtst-fixes.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gkjcuxyy0
-
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3lzbG9nL3N5c2xvZ3RzdC5j
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zeXNsb2cvc3lzbG9ndHN0LmMKaW5kZXggYTIy
-OTY4OC4uYTU2ZjIyZCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zeXNs
-b2cvc3lzbG9ndHN0LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zeXNsb2cvc3lz
-bG9ndHN0LmMKQEAgLTczLDcgKzczLDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3Zb
-XSkKIAogCWVsc2UgaWYgKGFyZ2MgPT0gMikgewogCQljaCA9IGF0b2koYXJndlsxXSk7Ci0JCWlm
-IChhdG9pKGFyZ3ZbMV0pID09IDIgfHwgYXRvaShhcmd2WzFdKSA9PSA4KSB7CisJCWlmIChjaCA9
-PSAyIHx8IGNoID09IDgpIHsKIAkJCWlmIChjaCA9PSAyKQogCQkJCWNoMSA9IHJhbmRvbSgpICUg
-ODsKIAkJCWlmIChjaCA9PSA4KQpAQCAtOTAsNyArOTAsOCBAQCBpbnQgbWFpbihpbnQgYXJnYywg
-Y2hhciAqYXJndltdKQogCQkJY2gxID0gYXRvaShhcmd2WzJdKTsKIAl9CiAKLQlhc3NlcnQgKGNo
-MSAhPSAtMSk7CisJLyogRW5zdXJlIGNoMSBpcyBwcm9wZXJseSBhbGxvY2F0ZWQgd2hlbiBjaCA9
-PSAyIG9yIGNoID09IDguICovCisJYXNzZXJ0ICghKChjaCA9PSAyIHx8IGNoID09IDgpICYmIGNo
-MSA9PSAtMSkpOwogCiAJLyoKIAkgKiBTZW5kIHN5c2xvZyBtZXNzYWdlcyBhY2NvcmRpbmcgdG8g
-dGhlIGNhc2UgbnVtYmVyLCB3aGljaApAQCAtMzQzLDQgKzM0NCw0IEBAIHZvaWQgc2lnX2hhbmRs
-ZXIoaW50IHNpZ25hbCkKIAl9CiAKIAlleGl0KHNpZ25hbCk7Ci19ClwgTm8gbmV3bGluZSBhdCBl
-bmQgb2YgZmlsZQorfQo=
---0016361e86aaf98181049d0236e3
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
+
+On Wed, Feb 23, 2011 at 2:12 AM, Han Pingtian <phan@redhat.com> wrote:
+> On Wed, Feb 23, 2011 at 12:46:00AM -0800, Garrett Cooper wrote:
+>> On Sun, Feb 20, 2011 at 9:43 PM, Han Pingtian <phan@redhat.com> wrote:
+>> > Hello Garrett,
+>> >
+>> > Any objection to merge this patch?
+>>
+>> Please resubmit a git-formatted email with the patch attached.
+>
+> This is the rebuilded patch, sorry for the inconvenience.
+
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
@@ -79,16 +60,7 @@ Real-Time with Splunk. Collect, index and harness all the fast moving IT data
 generated by your applications, servers and devices whether physical, virtual
 or in the cloud. Deliver compliance at lower cost and gain new business 
 insights. http://p.sf.net/sfu/splunk-dev2dev 
---0016361e86aaf98181049d0236e3
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016361e86aaf98181049d0236e3--
-
