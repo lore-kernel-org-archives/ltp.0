@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1PsdZI-0007e7-5c
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 15:57:28 +0000
-Date: Thu, 24 Feb 2011 17:01:27 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110224160127.GD29199@saboteur.suse.cz>
-References: <1297916867-14470-1-git-send-email-harsh@linux.vnet.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PsW6O-0003HZ-0M
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:59:08 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsW6M-0007U1-Sw
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:59:07 +0000
+Message-ID: <4D660FD8.5000305@cn.fujitsu.com>
+Date: Thu, 24 Feb 2011 15:59:20 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1297916867-14470-1-git-send-email-harsh@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] utime: Add exception for V9FS for utime
- functional test
+References: <4D65F817.2020904@cn.fujitsu.com>
+	<AANLkTi=MP4_QyQsB_GOdfwxh8T-+d9Pqj6SY=K7_Hfk5@mail.gmail.com>
+In-Reply-To: <AANLkTi=MP4_QyQsB_GOdfwxh8T-+d9Pqj6SY=K7_Hfk5@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] syslogtst.c: fix a bug of assert() is used wrong
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,50 +28,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Harsh Prateek Bora <harsh@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sf.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> +#define V9FS_MAGIC 0x01021997 /* kernel-source/include/linux/magic.h */
-> +int tst_is_cwd_v9fs(void)
-> +{
-> +        struct statfs sf;
-> +        statfs(".", &sf);
-> +
-> +        /*  Verify that the file is not on a nfs filesystem */
-> +        return sf.f_type == V9FS_MAGIC ? 1 : 0;
-> +}
+Hi Garrett,
 
-The "? 1 : 0" redundant here.
+Garrett Cooper said the following on 2011-2-24 15:32:
+>> When executing "./syslogtst 1", the error message is follows:
+>> syslogtst: syslogtst.c:93: main: Assertion `ch1 != -1' failed.
+> 
+>     How about this instead?
 
->  #define RAMFS_MAGIC 0x858458f6
->  int tst_is_cwd_ramfs(void)
->  {
-> diff --git a/testcases/kernel/syscalls/utime/utime01.c b/testcases/kernel/syscalls/utime/utime01.c
-> index c917afa..f635ae6 100644
-> --- a/testcases/kernel/syscalls/utime/utime01.c
-> +++ b/testcases/kernel/syscalls/utime/utime01.c
-> @@ -120,6 +120,14 @@ int main(int ac, char **av)
->  			 "Cannot do utime on a file located on an NFS filesystem");
->  	}
->  
-> +	/*
-> +	 * check if the current filesystem is v9fs
-> +	 */
-> +        if (tst_is_cwd_v9fs()) {
-> +                tst_brkm(TCONF, cleanup,
-> +                         "Cannot do utime on a file located on an 9P filesystem");
-> +        }
-> +
->  	/* set the expected errnos... */
->  	TEST_EXP_ENOS(exp_enos);
-
-The comment here is redundant too :). The function name tst_is_cwd_v9fs
-is decriptive enough.
+  The patch is OK, thanks.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Best Regards,
+Peng Haitao
+
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
