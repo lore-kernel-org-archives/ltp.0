@@ -1,29 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1PsBeV-0007Pg-Ud
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 10:08:59 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PsBeU-0008N0-P4
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 10:08:59 +0000
-Date: Wed, 23 Feb 2011 18:12:51 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110223101251.GJ2947@hpt.nay.redhat.com>
-References: <20110214061409.GA7983@hpt.nay.redhat.com>
-	<AANLkTimzLhCfwAgHuB4S3Fo=gHkHEKbjs6ObficnqKXU@mail.gmail.com>
-	<20110215031334.GA2884@hpt.nay.redhat.com>
-	<AANLkTi=b7R39g8kn6_oNO6dgLp_Frss+v-iTAN6o=z13@mail.gmail.com>
-	<20110216025958.GA2891@hpt.nay.redhat.com>
-	<20110221054321.GB2904@hpt.nay.redhat.com>
-	<AANLkTinrdGk2A_V6jn_MVkx0RnzO3GfgYYnUQ4k47-KX@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PsfUm-0005va-7c
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 18:00:56 +0000
+Date: Thu, 24 Feb 2011 19:21:08 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110224182108.GB8228@saboteur.suse.cz>
+References: <1298565751-23539-1-git-send-email-harsh@linux.vnet.ibm.com>
+	<4D669C0F.1090007@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="UPT3ojh+0CqEDtpF"
 Content-Disposition: inline
-In-Reply-To: <AANLkTinrdGk2A_V6jn_MVkx0RnzO3GfgYYnUQ4k47-KX@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] ksm: wait 3 increments of full_scans before
- checking the results
+In-Reply-To: <4D669C0F.1090007@linux.vnet.ibm.com>
+Subject: Re: [LTP] [PATCH v2] utime: Add exception for V9FS for utime
+ functional test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,102 +23,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
-
---UPT3ojh+0CqEDtpF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 23, 2011 at 12:46:00AM -0800, Garrett Cooper wrote:
-> On Sun, Feb 20, 2011 at 9:43 PM, Han Pingtian <phan@redhat.com> wrote:
-> > Hello Garrett,
-> >
-> > Any objection to merge this patch?
-> 
-> Please resubmit a git-formatted email with the patch attached.
-> Thanks,
-> -Garrett
-This is the rebuilded patch, sorry for the inconvenience.
-
--- 
-Han Pingtian
-Quality Engineer
-hpt @ #kernel-qe
-Red Hat, Inc
-Freedom ... courage ... Commitment ... ACCOUNTABILITY
-
---UPT3ojh+0CqEDtpF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-ksm-wait-3-increments-of-full_scans-before-checking-.patch"
-
-From 1345942c75c55a9702df1cd66a2402c64c430d52 Mon Sep 17 00:00:00 2001
-From: Han Pingtian <phan@redhat.com>
-Date: Mon, 14 Feb 2011 11:47:59 +0800
-Subject: [PATCH] ksm: wait 3 increments of full_scans before checking the results
-
-The KSM developer tells us that we should wait 3~5 increments of the
-/sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results.
-Otherwise, there may be some stuck pages that cause the testing failed.
-
-Signed-off-by: Han Pingtian <phan@redhat.com>
----
- testcases/kernel/mem/lib/mem.c |   30 ++++++++++++++++++++++++++++--
- 1 files changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 1a53359..435620f 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -298,8 +298,34 @@ void group_check(int run, int pages_shared, int pages_sharing,
- 		int pages_volatile, int pages_unshared,
- 		int sleep_millisecs, int pages_to_scan)
- {
--        /* 5 seconds for ksm to scan pages. */
--	sleep(5);
-+	int fd;
-+	char buf[BUFSIZ];
-+	int old_num, new_num;
-+
-+	/* 1 seconds for ksm to scan pages. */
-+	while (sleep(1) == 1)
-+	    continue;
-+
-+	fd = open("/sys/kernel/mm/ksm/full_scans", O_RDONLY);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+
-+	/* wait 3 increments of full_scans */
-+	if (read(fd, buf, BUFSIZ) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "read");
-+	old_num = new_num = atoi(buf);
-+	if (lseek(fd, 0, SEEK_SET) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-+	while (new_num < old_num * 3) {
-+		sleep(1);
-+		if (read(fd, buf, BUFSIZ) < 0)
-+			tst_brkm(TBROK|TERRNO, cleanup, "read");
-+		new_num = atoi(buf);
-+		if (lseek(fd, 0, SEEK_SET) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "lseek");
-+	}
-+	close(fd);
-+
- 	tst_resm(TINFO, "check!");
- 	check("run", run);
- 	check("pages_shared", pages_shared);
--- 
-1.7.1
-
-
---UPT3ojh+0CqEDtpF
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Shubham Goyal <shubham@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sf.net
+
+Hi!
+> The below changes make the files inconsistent WRT other function definitions and calls:-
+> 
+> 1) Other functions in '/lib/tst_is_cwd.c' still use '? 1 : 0'. Yes this is redundant but if we remove this from the newly added function, I believe we should sync other functions too
+>    by removing '? 1 : 0'.
+
+Allready fixed.
+
+> 2) Keeping the comments in utime0*.c files does not harm us, i think...
+
+See doc/style-guide.txt.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
@@ -136,16 +51,7 @@ Real-Time with Splunk. Collect, index and harness all the fast moving IT data
 generated by your applications, servers and devices whether physical, virtual
 or in the cloud. Deliver compliance at lower cost and gain new business 
 insights. http://p.sf.net/sfu/splunk-dev2dev 
---UPT3ojh+0CqEDtpF
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---UPT3ojh+0CqEDtpF--
-
