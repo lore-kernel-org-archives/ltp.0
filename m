@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Ps9fu-00088D-B1
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:02:18 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Ps9ft-0006nG-73
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 08:02:18 +0000
-Received: by wyb38 with SMTP id 38so54075wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Feb 2011 00:02:11 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PsY7u-0000GL-0r
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 10:08:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsY7s-0004zn-7Z
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 10:08:49 +0000
+Message-ID: <4D662E3A.1050802@cn.fujitsu.com>
+Date: Thu, 24 Feb 2011 18:08:58 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <9151393516569896904@unknownmsgid>
-References: <1297088926-21505-1-git-send-email-will.deacon@arm.com>
-	<9151393516569896904@unknownmsgid>
-Date: Wed, 23 Feb 2011 00:02:10 -0800
-Message-ID: <AANLkTikTY4X+q8iv6PBkiQbbA6MdJARCUOEr45JKPkTf@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix rt_sigtimedwait ordering test
+Subject: [LTP]  [PATCH] The parent process need exit of waitpid11.c,
+ waitpid12.c, waitpid13.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,36 +26,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Will Deacon <will.deacon@arm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
- qOn Wed, Feb 16, 2011 at 8:43 AM, Will Deacon <will.deacon@arm.com> wrote:
+Hi Garrett,
 
-...
+There are two processes in cases, and the test need run from child process,
+so parent process should exit after invoking cleanup().
 
-> I've not heard anything further on this, but it does fix a real issue
-> on the platform I'm using. Do you need anything more from me for this
-> to be considered for committing?
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/waitpid/waitpid11.c |    1 +
+ testcases/kernel/syscalls/waitpid/waitpid12.c |    1 +
+ testcases/kernel/syscalls/waitpid/waitpid13.c |    1 +
+ 3 files changed, 3 insertions(+), 0 deletions(-)
 
-    Kind of odd that only doing it there would fix the entire testcase
-as that's not the only pattern of
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid11.c b/testcases/kernel/syscalls/waitpid/waitpid11.c
+index 1e631da..d61b624 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid11.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid11.c
+@@ -112,6 +112,7 @@ int main(int ac, char **av)
+ 				tst_resm(TPASS, "%s PASSED", TCID);
+ 			}
+ 			cleanup();
++			tst_exit();
+ 		 } else if (pid < 0) {
+ 			tst_brkm(TBROK, cleanup, "fork failed");
+ 		 }
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid12.c b/testcases/kernel/syscalls/waitpid/waitpid12.c
+index 5c0ebe6..ac99c9a 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid12.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid12.c
+@@ -113,6 +113,7 @@ int main(int argc, char **argv)
+ 				tst_resm(TPASS, "%s PASSED", TCID);
+ 			}
+ 			cleanup();
++			tst_exit();
+ 		 } else if (pid < 0) {
+ 			tst_brkm(TBROK, cleanup, "fork failed");
+ 		 }
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid13.c b/testcases/kernel/syscalls/waitpid/waitpid13.c
+index 8b908a9..7f7393e 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid13.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid13.c
+@@ -110,6 +110,7 @@ int main(int ac, char **av)
+ 				tst_resm(TPASS, "%s PASSED", TCID);
+ 			}
+ 			cleanup();
++			tst_exit();
+ 		 } else if (pid < 0) {
+ 			tst_brkm(TBROK, cleanup, "fork failed");
+ 		 }
+-- 
+1.7.1
 
-create_sig_proc(...)
+-- 
+Best Regards,
+Peng Haitao
 
-    that isn't handled with a wait/waitpid.
-    It just seems like there are tons of bugs lurking under the scenes
-with this create_sig_proc deal because it doesn't wait, and if the
-parent doesn't wait, then you're just creating a ton of races
-potentially if not handled properly.
-    FWIW some more synchronization may need to be added in
-create_sig_proc (like blocking I/O with a pipe for instance, mq_*,
-sem_*? mq_* and sem_* are kind of undesirable though because those
-APIs are buggy on different architectures / versions of Linux, and
-pipes are generally simple enough to express synchronization), in
-order to ensure that things are deterministically ordered and the
-results of the test are sane.
-Thanks,
--Garrett
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
