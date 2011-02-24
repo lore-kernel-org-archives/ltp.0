@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PrzT4-0004t3-8o
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 21:08:22 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PrzT3-0008PW-9p
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 21:08:22 +0000
-Received: by wyj26 with SMTP id 26so2406325wyj.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PsVRq-0000i9-Vi
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:17:15 +0000
+Received: from mail-gy0-f175.google.com ([209.85.160.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PsVRq-0003Za-3w
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:17:14 +0000
+Received: by gyg13 with SMTP id 13so147881gyg.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 22 Feb 2011 13:08:15 -0800 (PST)
+	Wed, 23 Feb 2011 23:17:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4D640B55.1050300@linux.vnet.ibm.com>
-References: <4D42FFBE.3080105@redhat.com> <4D58DD0A.2050403@redhat.com>
-	<4D640B55.1050300@linux.vnet.ibm.com>
-Date: Tue, 22 Feb 2011 13:08:14 -0800
-Message-ID: <AANLkTin8A_g2RHnGANpcJEHZ3PLdvjYegyfAdkf4nP8E@mail.gmail.com>
+In-Reply-To: <4D660594.1090804@cn.fujitsu.com>
+References: <4D660594.1090804@cn.fujitsu.com>
+Date: Wed, 23 Feb 2011 23:17:08 -0800
+Message-ID: <AANLkTimtJJDcMMJwgMJ7ev6MT-sdJZ5UhS9b6rMaenN9@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
- 03 fail due to different sender names]
+Subject: Re: [LTP] [PATCH] syslog03: fix a bug of if statement
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,24 +30,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shubham Goyal <shubham@linux.vnet.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Feb 22, 2011 at 11:15 AM, Shubham Goyal
-<shubham@linux.vnet.ibm.com> wrote:
-> Hi Caspar,
+On Wed, Feb 23, 2011 at 11:15 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> Hi Garrett,
 >
-> I reviewed/verified your patch and it seems to be working fine. I verified
-> it on RHEL6 and both mail02 and mail03 tests are passing now. I believe it
-> can be merged upstream.
-> Garrett, Any comments?
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
-    I guess... there's no apparent rhyme nor reason to GNU/Linux
-userland software development, so I'm not going to fight these issues
-anymore.
-    The LSB should maintain these tests and standardize things if
-anyone really cares like the opengroup folks do for all of Unix.
-Thanks,
+Committed -- thanks!
 -Garrett
 
 ------------------------------------------------------------------------------
