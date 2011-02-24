@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <cristian@regolo.cc>) id 1Prnyj-0000qi-2N
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 08:52:17 +0000
-Received: from aiolia.regolo.cc ([178.79.135.37])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Prnyh-0002Nr-Pk
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 08:52:17 +0000
-Received: from regolo (85-18-251-172.ip.fastwebnet.it [85.18.251.172])
-	by aiolia.regolo.cc (Postfix) with ESMTPSA id B555164
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 22 Feb 2011 09:52:09 +0100 (CET)
-Date: Tue, 22 Feb 2011 09:52:03 +0100
-From: Cristian Greco <cristian@regolo.cc>
-Message-ID: <20110222095203.474f1916@regolo>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] Really enable mkdirat01 syscall test.
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PsUe1-0008M8-CY
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 06:25:45 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsUe0-0005UE-2U
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 06:25:45 +0000
+Message-ID: <4D65F9CF.7090009@cn.fujitsu.com>
+Date: Thu, 24 Feb 2011 14:25:19 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <4CBEAF2A.1070101@cn.fujitsu.com>
+	<20101221124935.GA944@hannu-debian.research.nokia.com>
+	<4D12B48A.9020500@cn.fujitsu.com>
+	<ABDE7E44-F301-4846-A7C3-D0F35CCC2E4F@gmail.com>
+In-Reply-To: <ABDE7E44-F301-4846-A7C3-D0F35CCC2E4F@gmail.com>
+Subject: Re: [LTP] About LTP
+ open_posix_testsuite/functional/threads/robust_test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,98 +28,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4989205367203700944=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
---===============4989205367203700944==
-Content-Type: multipart/signed; micalg=PGP-SHA256;
-	boundary="Sig_/K3=RIe_Y8+5SInXreCQkXQz";
-	protocol="application/pgp-signature"
+Garrett Cooper wrote:
+> On Dec 22, 2010, at 6:31 PM, Gui Jianfeng <guijianfeng@cn.fujitsu.com
+> <mailto:guijianfeng@cn.fujitsu.com>> wrote:
+> 
+>> Hannu Heikkinen wrote:
+>>> On 20/10/10 10:58 +0200, ext Gui Jianfeng wrote:
+>>>> Hi Garrett
+>>>>
+>>>> In open_posix_testsuite/functional/threads/robust_test category,
+>>>> all test cases don't follow the POSIX standard. They call many
+>>>> functions that glibc doesn't even support. I wonder why not just
+>>>> get rid of these test cases.
+>>>>
+>>>> -- 
+>>>> Regards
+>>>> Gui Jianfeng
+>>>
+>>> Hi,
+>>>
+>>> any progress/news about this?
+>>
+>> Garrett,
+>>
+>> Would you get rid of these cases?
+> 
+> They should go in testcases/realtime . I can't commit changes for
+> approximately another week and a half because I don't have Internet
+> connectivity except on my phone (which doesn't do git :/..).
 
---Sig_/K3=RIe_Y8+5SInXreCQkXQz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Garrett,
 
-Hi,
-
-this is a trivial fix.
-
-
-Signed-off-by: Cristian Greco <cristian@regolo.cc>
----
- runtest/syscalls |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index f16daae..d402531 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -524,7 +524,7 @@ mkdir08 mkdir08
- mkdir09 mkdir09
-=20
- #mkdirat test cases
--mkdirat01 mkdir01
-+mkdirat01 mkdirat01
-=20
- mknod01 mknod01
- mknod02 mknod02
---=20
-1.7.4.1
-
+Would you also take a look these cases?
 
 Thanks,
---
-Cristian Greco
-GPG key ID: 0xCF4D32E4
+Gui
 
---Sig_/K3=RIe_Y8+5SInXreCQkXQz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
+> Garrett
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJNY3kzAAoJEID329zPTTLk0F4P+gLs902zV7xLApU0eOC0XbO0
-5x+O8nfkEpRez3lCguIb3QUeddafrNxDcjFZnQhOoildMPNshWpyeOrocUL5vE6D
-fBeLFDl11vOK53sAH/VX1+mJvWHBOF9A+txvOxtfQVcnBm9bdLZZfOPlCP/Rhmix
-/26/iFwzQ+uU5ggnTJ73a3Y9T7aq+zsbGbsU/RSicNEqyCvdI3SwZH3Cj4ePIfna
-fptKlAsmP7f06X4Fz/yAVs5s29zE3TRFS9C8eTCRDdNjAvkrVzunEmKNkWqJ6AiF
-tOjCU699w3F2oh72mCeUvZON7UoXbQ7Vt7pl9ESpm8OXeZDzt0VZJW9v4kVmHzBp
-kggtzohlVzkOJVNWBpTW2BEQBLe4d7VEhh7ZIGbNmb61kKV2bte8Wj5jWbKLESrJ
-+LezShk7WKYIrwqh22bfYCTcJln/ojApHnjzGiA76yfx+AVtmAV5TALiGRx3Qdxp
-38jp42j/JxSdp+OBb90GiXkUmCDbHhfz0MPmigSWC1DIf6wy9s8xi787Pg009WnQ
-sNXdlaf8vwncvkPNxx3xnBN58ylRCR1ib6dn2SnBphqHUCJKfspX5JXhSlGie8o9
-Pprf/XJCgxAaeh2WWC0iWS1DrRiKVICPktSvgFw37+zsaMq2ZtXcT8dym2A0VZwm
-Ezofobc0d94UBkd6JebH
-=db6p
------END PGP SIGNATURE-----
-
---Sig_/K3=RIe_Y8+5SInXreCQkXQz--
-
-
---===============4989205367203700944==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Index, Search & Analyze Logs and other IT data in Real-Time with Splunk 
-Collect, index and harness all the fast moving IT data generated by your 
-applications, servers and devices whether physical, virtual or in the cloud.
-Deliver compliance at lower cost and gain new business insights. 
-Free Software Download: http://p.sf.net/sfu/splunk-dev2dev
---===============4989205367203700944==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4989205367203700944==--
-
