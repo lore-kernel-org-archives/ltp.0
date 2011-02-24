@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1PrR7U-00019E-Gd
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 08:27:48 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PrR7S-0007nz-3R
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 08:27:48 +0000
-Date: Mon, 21 Feb 2011 16:31:35 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110221083135.GA9779@hpt.nay.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PseTX-0002j0-CO
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 16:55:35 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PseTV-0003CS-2Q
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 16:55:35 +0000
+Received: by wyb38 with SMTP id 38so829510wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 24 Feb 2011 08:55:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH v2] check two possible pathes for cpuset
+In-Reply-To: <20110224101921.GA30765@hpt.nay.redhat.com>
+References: <20110224101921.GA30765@hpt.nay.redhat.com>
+Date: Thu, 24 Feb 2011 08:55:26 -0800
+Message-ID: <AANLkTimuSUtaPSL5x1N75_nF2OtXfjMzcvu5wK4b2FJ7@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] basic mlock() testcase from lkml
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,84 +32,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
-From
+On Thu, Feb 24, 2011 at 2:19 AM, Han Pingtian <phan@redhat.com> wrote:
+> This is a reproducer copied from one of LKML patch submission,
+> which subject is
+>
+> [PATCH] mlock: revert the optimization for dirtying pages and
+> triggering writeback.
+>
+> "In 5ecfda0, we do some optimization in mlock, but it causes
+> a very basic test case(attached below) of mlock to fail. So
+> this patch revert it with some tiny modification so that it
+> apply successfully with the lastest 38-rc2 kernel."
 
-http://lxr.linux.no/#linux+v2.6.37/Documentation/cgroups/cpusets.txt
-
-"Note that for legacy reasons, the "cpuset" filesystem exists as a
-wrapper around the cgroup filesystem.
-
-The command
-
-mount -t cpuset X /dev/cpuset
-
-is equivalent to
-
-mount -t cgroup -ocpuset,noprefix X /dev/cpuset"
-
-However, I found this is not always case. In addition, there is an
-direct implementation without cgroup, and I can't find any doc about
-the behaviours of the prefix.
-
-So, It can be difficult to predict if cpuset files have prefix or not,
-so only to fail after checked both.
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
-Signed-off-by: Han Pingtian <phan@redhat.com>
----
- testcases/kernel/mem/lib/mem.c |   24 ++++++++++++++++++++----
- 1 files changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 1a53359..7bc26cd 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -89,16 +89,32 @@ void write_cpusets(void)
- 	gather_cpus(cpus);
- 	tst_resm(TINFO, "CPU list for 2nd node is %s.", cpus);
- 
-+	/* try either '/dev/cpuset/mems' or '/dev/cpuset/cpuset.mems' 
-+	 * please see Documentation/cgroups/cpusets.txt of kernel src for detail */
- 	fd = open(CPATH_NEW "/mems", O_WRONLY);
--	if (fd == -1)
--		tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	if (fd == -1) {
-+		if (errno == ENOENT) {
-+			fd = open(CPATH_NEW "/cpuset.mems", O_WRONLY);
-+			if (fd == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		} else
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	}
- 	if (write(fd, "1", 1) != 1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
- 	close(fd);
- 
-+	/* try either '/dev/cpuset/cpus' or '/dev/cpuset/cpuset.cpus' 
-+	 * please see Documentation/cgroups/cpusets.txt of kernel src for detail */
- 	fd = open(CPATH_NEW "/cpus", O_WRONLY);
--	if (fd == -1)
--		tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	if (fd == -1) {
-+		if (errno == ENOENT) {
-+			fd = open(CPATH_NEW "/cpuset.cpus", O_WRONLY);
-+			if (fd == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		} else
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	}
- 	if (write(fd, cpus, strlen(cpus)) != strlen(cpus))
- 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
- 	close(fd);
--- 
-1.7.1
+    The open / ftruncate should be moved to setup and the close should
+be moved to cleanup. Other than that, looks fine.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
