@@ -1,33 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1Pu9fY-0007J2-IK
-	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 20:26:12 +0000
-Received: from e23smtp01.au.ibm.com ([202.81.31.143])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1Pu9fX-0003vw-9o
-	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 20:26:12 +0000
-Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
-	by e23smtp01.au.ibm.com (8.14.4/8.13.1) with ESMTP id p1SKMJmG005676
-	for <ltp-list@lists.sourceforge.net>; Tue, 1 Mar 2011 07:22:19 +1100
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p1SKQ3ag2453534
-	for <ltp-list@lists.sourceforge.net>; Tue, 1 Mar 2011 07:26:03 +1100
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p1SKQ3CL016014
-	for <ltp-list@lists.sourceforge.net>; Tue, 1 Mar 2011 07:26:03 +1100
-Message-ID: <4D6C04D7.8010104@linux.vnet.ibm.com>
-Date: Tue, 01 Mar 2011 01:55:59 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PsVQ4-0001yR-3d
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:15:24 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsVQ2-0003Pp-Ia
+	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:15:24 +0000
+Message-ID: <4D660594.1090804@cn.fujitsu.com>
+Date: Thu, 24 Feb 2011 15:15:32 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4D555AAB.4080806@redhat.com>
-	<1297685407.25122.1.camel@subratamodak.linux.ibm.com>
-	<4D6B3C56.7090501@cn.fujitsu.com>
-In-Reply-To: <4D6B3C56.7090501@cn.fujitsu.com>
-Subject: Re: [LTP] new LTP release?
+Subject: [LTP]  [PATCH] syslog03: fix a bug of if statement
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,25 +25,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Gui,
+Hi Garrett,
 
-Yes, I am in the process of creating new release. I will be releasing it ASAP (probably in next 2 weeks).
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/syslog/syslog03 |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Thanks,
-Shubham
+diff --git a/testcases/kernel/syscalls/syslog/syslog03 b/testcases/kernel/syscalls/syslog/syslog03
+index 8439bd3..bd84628 100755
+--- a/testcases/kernel/syscalls/syslog/syslog03
++++ b/testcases/kernel/syscalls/syslog/syslog03
+@@ -74,7 +74,7 @@ syslog_case3()
+ 	fi
+ 
+ 	newvalue4=`grep -c "SYSLOG_CASE3" /var/log/messages`
+-	if [ "x$(( $newvalue4 - $oldvalue4 ))" != 1 ]; then
++	if [ "x$(( $newvalue4 - $oldvalue4 ))" != "x1" ]; then
+ 		status_flag=1
+ 	fi
+ }
+-- 
+1.7.1
 
-
-On Monday 28 February 2011 11:40 AM, Gui Jianfeng wrote:
-
-> Hi Shubham,
->
-> Any news about the new release?
->
-> Thanks,
-> Gui
+-- 
+Best Regards,
+Peng Haitao
 
 
 ------------------------------------------------------------------------------
