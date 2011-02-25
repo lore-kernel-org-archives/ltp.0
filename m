@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <ext-hannu.m.heikkinen@nokia.com>) id 1Psys5-0001fv-4o
-	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 14:42:17 +0000
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1Psys3-0002yw-ON
-	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 14:42:17 +0000
-Date: Fri, 25 Feb 2011 16:41:59 +0200
-From: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
-Message-ID: <20110225144159.GE27985@hannu-debian.research.nokia.com>
-References: <000a01cbd4dc$be7a97b0$3b6fc710$@deacon@arm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PszC5-0001YT-Ej
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 15:02:57 +0000
+Date: Fri, 25 Feb 2011 16:23:14 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110225152314.GA7142@saboteur.suse.cz>
+References: <4D595337.5070801@nokia.com>
+	<20110214154030.GC426@saboteur.suse.cz>
+	<20110214165816.GA3734@saboteur.suse.cz>
+	<20110214175032.GA5716@saboteur.suse.cz>
+	<20110214194108.GA8474@saboteur.suse.cz>
+	<06C8093A-387B-40E4-A625-5E0C7AACC38D@gmail.com>
+	<1E5B522887F7DD4CB1654389A51E3636D66A64@008-AM1MPN1-025.mgdnok.nokia.com>
+	<AANLkTin=Q1uu-w_+V8tcGdY1E0nQex2qxtiy0hfjkBVq@mail.gmail.com>
+	<4D5A5FB4.7010300@nokia.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <000a01cbd4dc$be7a97b0$3b6fc710$@deacon@arm.com>
-Subject: Re: [LTP] ltp_clone
+In-Reply-To: <4D5A5FB4.7010300@nokia.com>
+Subject: Re: [LTP] [PATCH] Fix the file permissions and other issues in
+ "fs_perms" tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,85 +33,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ext Will Deacon <will.deacon@arm.com>
+To: maxin <john.maxin@nokia.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 25/02/11 11:11 +0000, ext Will Deacon wrote:
-> Hello,
-> 
-> The definition of ltp_clone looks like this:
-> 
-> 
-> int
-> ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
-> 		size_t stack_size, void *stack)
-> {
-> 	int ret;
-> 
-> #if defined(__hppa__)
-> 	ret = clone(fn, stack, clone_flags, arg);
-> #elif defined(__ia64__)
-> 	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
-> #elif defined(__arm__)
-> 	/*
-> 	 * Stack size should be a multiple of 32 bit words
-> 	 * & stack limit must be aligned to a 32 bit boundary
-> 	 */
-> 	ret = clone(fn, (stack ? stack + stack_size : NULL),
-> 			clone_flags, arg);
-> #else
-> 	ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
-> 			clone_flags, arg);
-> #endif
-> 
-> 	return ret;
-> }
-> 
-> 
-> I believe the __arm__ case is to ensure that we pass an aligned
-> stack pointer to the syscall (as required by the architecture).
-> What I don't understand, is why we pass an unaligned address in
-> the #else case? Given that a stack push decrements the sp before
-> writing on every architecture I know of, it seems that the __arm__
-> case should be used as the default rather than forcing a misaligned
-> stack on other architectures.
-> 
-> Will
-> 
+Hi!
+I've just commited fixes for fs_perms into git repository. Let me know
+if the test is working for you now.
 
-Hi,
-
-have you fetched the latest from the git tree:
-git://ltp.git.sourceforge.net/gitroot/ltp/ltp ?
-
-Lines are:
-
-int
-ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
-                size_t stack_size, void *stack)
-{
-        int ret;
-
-#if defined(__hppa__)
-        ret = clone(fn, stack, clone_flags, arg);
-#elif defined(__ia64__)
-        ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
-NULL);
-#else
-        /*
-         * For archs where stack grows downwards, stack points to the topmost
-         * address of the memory space set up for the child stack.
-         */
-        ret = clone(fn, (stack ? stack + stack_size : NULL),
-                        clone_flags, arg);
-#endif
-
-        return ret;
-}
-
-
-br,
-Hannu
+Thanks for reporting it!
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
