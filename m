@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1PsBOK-0003VJ-3h
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 09:52:16 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PsBOI-0000ll-UB
-	for ltp-list@lists.sourceforge.net; Wed, 23 Feb 2011 09:52:16 +0000
-Date: Wed, 23 Feb 2011 17:56:05 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110223095605.GI2947@hpt.nay.redhat.com>
-References: <20110221083135.GA9779@hpt.nay.redhat.com>
-	<AANLkTi=vTXpHj92=D3O=Oua6iZjfQoaCYSokb8PZvEsi@mail.gmail.com>
+	(envelope-from <ext-hannu.m.heikkinen@nokia.com>) id 1Psys5-0001fv-4o
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 14:42:17 +0000
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1Psys3-0002yw-ON
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 14:42:17 +0000
+Date: Fri, 25 Feb 2011 16:41:59 +0200
+From: Hannu Heikkinen <ext-hannu.m.heikkinen@nokia.com>
+Message-ID: <20110225144159.GE27985@hannu-debian.research.nokia.com>
+References: <000a01cbd4dc$be7a97b0$3b6fc710$@deacon@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8P1HSweYDcXXzwPJ"
 Content-Disposition: inline
-In-Reply-To: <AANLkTi=vTXpHj92=D3O=Oua6iZjfQoaCYSokb8PZvEsi@mail.gmail.com>
-Subject: Re: [LTP] [PATCH v2] check two possible pathes for cpuset
+In-Reply-To: <000a01cbd4dc$be7a97b0$3b6fc710$@deacon@arm.com>
+Subject: Re: [LTP] ltp_clone
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,137 +25,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: ext Will Deacon <will.deacon@arm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 23, 2011 at 12:45:04AM -0800, Garrett Cooper wrote:
-> On Mon, Feb 21, 2011 at 12:31 AM, Han Pingtian <phan@redhat.com> wrote:
-> > From
-> >
-> > http://lxr.linux.no/#linux+v2.6.37/Documentation/cgroups/cpusets.txt
-> >
-> > "Note that for legacy reasons, the "cpuset" filesystem exists as a
-> > wrapper around the cgroup filesystem.
-> >
-> > The command
-> >
-> > mount -t cpuset X /dev/cpuset
-> >
-> > is equivalent to
-> >
-> > mount -t cgroup -ocpuset,noprefix X /dev/cpuset"
-> >
-> > However, I found this is not always case. In addition, there is an
-> > direct implementation without cgroup, and I can't find any doc about
-> > the behaviours of the prefix.
-> >
-> > So, It can be difficult to predict if cpuset files have prefix or not,
-> > so only to fail after checked both.
+On 25/02/11 11:11 +0000, ext Will Deacon wrote:
+> Hello,
 > 
->     Please resubmit this as a proper git-formatted email with the patch.
-> Thanks,
-> -Garrett
-Is this one make sense to you? Thanks.
+> The definition of ltp_clone looks like this:
+> 
+> 
+> int
+> ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
+> 		size_t stack_size, void *stack)
+> {
+> 	int ret;
+> 
+> #if defined(__hppa__)
+> 	ret = clone(fn, stack, clone_flags, arg);
+> #elif defined(__ia64__)
+> 	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
+> #elif defined(__arm__)
+> 	/*
+> 	 * Stack size should be a multiple of 32 bit words
+> 	 * & stack limit must be aligned to a 32 bit boundary
+> 	 */
+> 	ret = clone(fn, (stack ? stack + stack_size : NULL),
+> 			clone_flags, arg);
+> #else
+> 	ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
+> 			clone_flags, arg);
+> #endif
+> 
+> 	return ret;
+> }
+> 
+> 
+> I believe the __arm__ case is to ensure that we pass an aligned
+> stack pointer to the syscall (as required by the architecture).
+> What I don't understand, is why we pass an unaligned address in
+> the #else case? Given that a stack push decrements the sp before
+> writing on every architecture I know of, it seems that the __arm__
+> case should be used as the default rather than forcing a misaligned
+> stack on other architectures.
+> 
+> Will
+> 
 
--- 
-Han Pingtian
-Quality Engineer
-hpt @ #kernel-qe
-Red Hat, Inc
-Freedom ... courage ... Commitment ... ACCOUNTABILITY
+Hi,
 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-check-two-possible-pathes-for-cpuset.patch"
+have you fetched the latest from the git tree:
+git://ltp.git.sourceforge.net/gitroot/ltp/ltp ?
 
-From ac0a3402d8e9a3d788f301818e1672a7a96596bb Mon Sep 17 00:00:00 2001
-From: CAI Qian <caiqian@redhat.com>
-Date: Fri, 21 Jan 2011 17:49:27 +0800
-Subject: [PATCH] check two possible pathes for cpuset
+Lines are:
 
-From Documentation/cgroups/cpusets.txt of kernel source:
+int
+ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
+                size_t stack_size, void *stack)
+{
+        int ret;
 
-"Note that for legacy reasons, the "cpuset" filesystem exists as a
-wrapper around the cgroup filesystem.
+#if defined(__hppa__)
+        ret = clone(fn, stack, clone_flags, arg);
+#elif defined(__ia64__)
+        ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
+NULL);
+#else
+        /*
+         * For archs where stack grows downwards, stack points to the topmost
+         * address of the memory space set up for the child stack.
+         */
+        ret = clone(fn, (stack ? stack + stack_size : NULL),
+                        clone_flags, arg);
+#endif
 
-The command
-
-mount -t cpuset X /dev/cpuset
-
-is equivalent to
-
-mount -t cgroup -ocpuset,noprefix X /dev/cpuset"
-
-However, I found this is not always case. In addition, there is an
-direct implementation without cgroup, and I can't find any doc about
-the behaviours of the prefix.
-
-So, It can be difficult to predict if cpuset files have prefix or not,
-so only to fail after checked both.
-
-Signed-off-by: CAI Qian <caiqian@redhat.com>
-Signed-off-by: Han Pingtian <phan@redhat.com>
----
- testcases/kernel/mem/lib/mem.c |   24 ++++++++++++++++++++----
- 1 files changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 1a53359..75ecaee 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -89,16 +89,32 @@ void write_cpusets(void)
- 	gather_cpus(cpus);
- 	tst_resm(TINFO, "CPU list for 2nd node is %s.", cpus);
- 
-+	/* try either '/dev/cpuset/mems' or '/dev/cpuset/cpuset.mems'
-+	 * please see Documentation/cgroups/cpusets.txt of kernel src for detail */
- 	fd = open(CPATH_NEW "/mems", O_WRONLY);
--	if (fd == -1)
--		tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	if (fd == -1) {
-+		if (errno == ENOENT) {
-+			fd = open(CPATH_NEW "/cpuset.mems", O_WRONLY);
-+			if (fd == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		} else
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	}
- 	if (write(fd, "1", 1) != 1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
- 	close(fd);
- 
-+	/* try either '/dev/cpuset/cpus' or '/dev/cpuset/cpuset.cpus'
-+	 * please see Documentation/cgroups/cpusets.txt of kernel src for detail */
- 	fd = open(CPATH_NEW "/cpus", O_WRONLY);
--	if (fd == -1)
--		tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	if (fd == -1) {
-+		if (errno == ENOENT) {
-+			fd = open(CPATH_NEW "/cpuset.cpus", O_WRONLY);
-+			if (fd == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+		} else
-+			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
-+	}
- 	if (write(fd, cpus, strlen(cpus)) != strlen(cpus))
- 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
- 	close(fd);
--- 
-1.7.1
+        return ret;
+}
 
 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+br,
+Hannu
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
@@ -165,16 +114,7 @@ Real-Time with Splunk. Collect, index and harness all the fast moving IT data
 generated by your applications, servers and devices whether physical, virtual
 or in the cloud. Deliver compliance at lower cost and gain new business 
 insights. http://p.sf.net/sfu/splunk-dev2dev 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---8P1HSweYDcXXzwPJ--
-
