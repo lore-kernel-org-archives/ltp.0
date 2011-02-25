@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <john.maxin@nokia.com>) id 1PrUjj-0004a1-03
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 12:19:31 +0000
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1PrUjh-0005yg-MP
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 12:19:30 +0000
-Message-ID: <4D6266A3.1020800@nokia.com>
-Date: Mon, 21 Feb 2011 14:20:35 +0100
-From: maxin <john.maxin@nokia.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <will.deacon@arm.com>) id 1PsvJG-0008Fu-Eo
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 10:54:06 +0000
+Received: from service87.mimecast.com ([94.185.240.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1PsvJF-0005nd-6Q
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 10:54:06 +0000
+From: "Will Deacon" <will.deacon@arm.com>
+References: <1297088926-21505-1-git-send-email-will.deacon@arm.com>	<9151393516569896904@unknownmsgid>
+	<AANLkTikTY4X+q8iv6PBkiQbbA6MdJARCUOEr45JKPkTf@mail.gmail.com>
+In-Reply-To: <AANLkTikTY4X+q8iv6PBkiQbbA6MdJARCUOEr45JKPkTf@mail.gmail.com>
+Date: Fri, 25 Feb 2011 10:53:48 -0000
+Message-ID: <000901cbd4da$4a2949d0$de7bdd70$@deacon@arm.com>
 MIME-Version: 1.0
-References: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
-	<AANLkTi=iUMsdkEcvw+zpxBnZYT1AAZWAp_OHNEVVxf8=@mail.gmail.com>
-In-Reply-To: <AANLkTi=iUMsdkEcvw+zpxBnZYT1AAZWAp_OHNEVVxf8=@mail.gmail.com>
-Subject: Re: [LTP] LTP test cases fpathconf syscall and signal_test_06 ipc
- test cases found hanging on android Gingerbread kernel
+Content-Language: en-gb
+Subject: Re: [LTP] [PATCH] Fix rt_sigtimedwait ordering test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,163 +26,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4048253478496587855=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ext Amit kumar <kumaratreya@gmail.com>
+To: 'Garrett Cooper' <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---===============4048253478496587855==
-Content-Type: multipart/alternative;
-	boundary="------------010903010700000208080208"
+Hi Garrett,
 
-This is a multi-part message in MIME format.
---------------010903010700000208080208
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+> > I've not heard anything further on this, but it does fix a real issue
+> > on the platform I'm using. Do you need anything more from me for this
+> > to be considered for committing?
+> 
+>     Kind of odd that only doing it there would fix the entire testcase
+> as that's not the only pattern of
+> 
+> create_sig_proc(...)
+> 
+>     that isn't handled with a wait/waitpid.
 
+It's not that strange because, in this testcase at least, we call
+sigwaitinfo either with a timeout or a sigset_t in the parent. In
+the latter case this will block until the signal is delivered so
+the race between child and parent isn't a problem.
 
-Hi Amit,
+>     It just seems like there are tons of bugs lurking under the scenes
+> with this create_sig_proc deal because it doesn't wait, and if the
+> parent doesn't wait, then you're just creating a ton of races
+> potentially if not handled properly.
 
-The "fpathconf" test case works fine in my PC. Please share some more 
-information on test case execution using 'strace'. ie:
-# strace ./fpathconf01
+The issue is when you have multiple children and the test relies
+on a specific ordering of signal delivery (as is the case for RT
+signals).
 
-This will help in analyzing the cause of failure.
+>     FWIW some more synchronization may need to be added in
+> create_sig_proc (like blocking I/O with a pipe for instance, mq_*,
+> sem_*? mq_* and sem_* are kind of undesirable though because those
+> APIs are buggy on different architectures / versions of Linux, and
+> pipes are generally simple enough to express synchronization), in
+> order to ensure that things are deterministically ordered and the
+> results of the test are sane.
 
-Best Regards,
-Maxin Baby John
+I'm not sure this is necessary because it restricts the concurrency
+for testcases where the race shouldn't matter.
 
-On 11-02-21 07:31 AM, ext Amit kumar wrote:
-> Hi,
-> I am using LTP to test Android platform and successively ported to 
-> Eclair after customization.
->
->
-> fpathconf syscall and signal_test_06 ipc test cases found hanging on 
-> Android Gingerbread Kernel.
->
->
-> Are these know issues or we need to fix them?
->
->
->
->
-> Thanks and Regards,
->
-> Amit kumar
->
->
->
-> ------------------------------------------------------------------------------
-> The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-> Pinpoint memory and threading errors before they happen.
-> Find and fix more than 250 security defects in the development cycle.
-> Locate bottlenecks in serial and parallel code that limit performance.
-> http://p.sf.net/sfu/intel-dev2devfeb
->
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Will
 
 
---------------010903010700000208080208
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-    <title></title>
-  </head>
-  <body text="#000000" bgcolor="#ffffff">
-    <br>
-    Hi Amit,<br>
-    <br>
-    The "fpathconf" test case works fine in my PC. Please share some
-    more information on test case execution using 'strace'. ie:<br>
-    # strace ./fpathconf01<br>
-    <br>
-    This will help in analyzing the cause of failure. <br>
-    <br>
-    Best Regards,<br>
-    Maxin Baby John<br>
-    <br>
-    On 11-02-21 07:31 AM, ext Amit kumar wrote:
-    <blockquote
-      cite="mid:AANLkTi=iUMsdkEcvw+zpxBnZYT1AAZWAp_OHNEVVxf8=@mail.gmail.com"
-      type="cite">
-      <meta http-equiv="Content-Type" content="text/html;
-        charset=ISO-8859-1">
-      <div class="gmail_quote">Hi,<br>
-        I am using LTP to test Android platform and successively ported
-        to Eclair after customization.<br>
-        <br>
-        <br>
-        fpathconf syscall and signal_test_06 ipc test cases found
-        hanging on Android Gingerbread Kernel.<br>
-        <br>
-        <br>
-        Are these know issues or we need to fix them?<br>
-        <br>
-        <br>
-        <br>
-        <br>
-        Thanks and Regards,<br>
-        <font color="#888888"><br>
-          Amit kumar<br>
-        </font><br>
-      </div>
-      <br>
-      <pre wrap="">
-<fieldset class="mimeAttachmentHeader"></fieldset>
-------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/intel-dev2devfeb">http://p.sf.net/sfu/intel-dev2devfeb</a></pre>
-      <pre wrap="">
-<fieldset class="mimeAttachmentHeader"></fieldset>
-_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------010903010700000208080208--
-
-
---===============4048253478496587855==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
---===============4048253478496587855==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4048253478496587855==--
-
