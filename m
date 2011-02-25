@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1Pordn-0007s0-60
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:10:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Pordm-0002eT-26
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 06:10:31 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p1E6AO4V028622
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 14 Feb 2011 01:10:24 -0500
-Date: Mon, 14 Feb 2011 14:14:10 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110214061409.GA7983@hpt.nay.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <will.deacon@arm.com>) id 1Psywn-00007t-SG
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 14:47:09 +0000
+Received: from service87.mimecast.com ([94.185.240.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1Psywh-0001V7-KH
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 14:47:09 +0000
+From: "Will Deacon" <will.deacon@arm.com>
+References: <000a01cbd4dc$be7a97b0$3b6fc710$@deacon@arm.com>
+	<20110225144159.GE27985@hannu-debian.research.nokia.com>
+In-Reply-To: <20110225144159.GE27985@hannu-debian.research.nokia.com>
+Date: Fri, 25 Feb 2011 14:46:51 -0000
+Message-ID: <000b01cbd4fa$d675ada0$836108e0$@deacon@arm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] ksm: wait 3 increments of full_scans before checking
- the results
+Content-Language: en-gb
+Subject: Re: [LTP] ltp_clone
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,64 +29,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: 'Hannu Heikkinen' <ext-hannu.m.heikkinen@nokia.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The KSM developer tell us that we should wait 3~5 increments of the
-/sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results.
-Otherwise, there may be some stuck pages that cause the testing failed.
+Hi Hannu,
 
-Signed-off-by: Han Pingtian <phan@redhat.com>
----
- testcases/kernel/mem/lib/mem.c |   27 +++++++++++++++++++++++++--
- 1 files changed, 25 insertions(+), 2 deletions(-)
+> > I believe the __arm__ case is to ensure that we pass an aligned
+> > stack pointer to the syscall (as required by the architecture).
+> > What I don't understand, is why we pass an unaligned address in
+> > the #else case? Given that a stack push decrements the sp before
+> > writing on every architecture I know of, it seems that the __arm__
+> > case should be used as the default rather than forcing a misaligned
+> > stack on other architectures.
+> >
+> > Will
+> >
+> 
+> Hi,
+> 
+> have you fetched the latest from the git tree:
+> git://ltp.git.sourceforge.net/gitroot/ltp/ltp ?
+> 
+> Lines are:
+> 
+> int
+> ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
+>                 size_t stack_size, void *stack)
+> {
+>         int ret;
+> 
+> #if defined(__hppa__)
+>         ret = clone(fn, stack, clone_flags, arg);
+> #elif defined(__ia64__)
+>         ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
+> NULL);
+> #else
+>         /*
+>          * For archs where stack grows downwards, stack points to the topmost
+>          * address of the memory space set up for the child stack.
+>          */
+>         ret = clone(fn, (stack ? stack + stack_size : NULL),
+>                         clone_flags, arg);
+> #endif
+> 
+>         return ret;
+> }
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 1a53359..98cca12 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -298,8 +298,31 @@ void group_check(int run, int pages_shared, int pages_sharing,
- 		int pages_volatile, int pages_unshared,
- 		int sleep_millisecs, int pages_to_scan)
- {
--        /* 5 seconds for ksm to scan pages. */
--	sleep(5);
-+	int fd;
-+	char buf[BUFSIZ];
-+	int old_num, new_num;
-+
-+	fd = open("/sys/kernel/mm/ksm/full_scans", O_RDONLY);
-+	if (fd < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+
-+        /* 1 seconds for ksm to scan pages. */
-+	sleep(1);
-+
-+	/* wait 3 increments of full_scans */
-+	if (read(fd, buf, BUFSIZ) < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "read");
-+	old_num = new_num = atoi(buf);
-+	lseek(fd, 0, SEEK_SET);
-+	while (new_num < old_num * 3) {
-+		sleep(1);
-+		if (read(fd, buf, BUFSIZ) < 0)
-+			tst_brkm(TBROK|TERRNO, cleanup, "read");
-+		new_num = atoi(buf);
-+		lseek(fd, 0, SEEK_SET);
-+	}
-+	close(fd);
-+
- 	tst_resm(TINFO, "check!");
- 	check("run", run);
- 	check("pages_shared", pages_shared);
--- 
-1.7.1
+
+Wahey - that's much better! I was accidently looking in my checkout of the
+October stable release, where ARM is special-cased.
+
+Thanks for pointing this out.
+
+Will
+
+
+
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
