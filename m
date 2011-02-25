@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <lizf@cn.fujitsu.com>) id 1PrheW-0002Gu-RS
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 02:07:00 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PrheQ-0001u1-JU
-	for ltp-list@lists.sourceforge.net; Tue, 22 Feb 2011 02:07:00 +0000
-Message-ID: <4D631A92.8000904@cn.fujitsu.com>
-Date: Tue, 22 Feb 2011 10:08:18 +0800
-From: Li Zefan <lizf@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1PsuyJ-0007Dw-CI
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 10:32:27 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PsuyH-0003aY-VC
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 10:32:27 +0000
+Date: Fri, 25 Feb 2011 18:36:20 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110225103620.GA10350@hpt.nay.redhat.com>
 MIME-Version: 1.0
-References: <20110210072315.GA7909@hpt.nay.redhat.com>
-	<4D6217CB.1040506@cn.fujitsu.com>
-	<20110222015814.GA2883@hpt.nay.redhat.com>
-In-Reply-To: <20110222015814.GA2883@hpt.nay.redhat.com>
-Subject: Re: [LTP] [PATCH] Fix disable set_ftrace_pid in
-	ftrace_set_ftrace_pid.sh
+Content-Disposition: inline
+Subject: [LTP] [PATCH] thp testcase come from CVE reproducer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +23,192 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "phan@redhat.com >> Han Pingtian" <phan@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-5LqOIDIwMTHlubQwMuaciDIy5pelIDA5OjU4LCBIYW4gUGluZ3RpYW4g5YaZ6YGTOgo+IE9uIE1v
-biwgRmViIDIxLCAyMDExIGF0IDAzOjQ0OjExUE0gKzA4MDAsIExpIFplZmFuIHdyb3RlOgo+PiBI
-YW4gUGluZ3RpYW4gd3JvdGU6Cj4+PiBJdCBzZWVtcyB3ZSBuZWVkIGVjaG8gLTEgdG8gc2V0X2Z0
-cmFjZV9waWQgdG8gZGlzYWJsZSBpbi4gT3Igd2UnbGwgZ2V0Cj4+PiB0aGVzZSBlcnJvciBtZXNz
-YWdlIHdoZW4gcnVubmluZyBmdHJhY2Vfc3RyZXNzOgo+Pj4KPj4KPj4ga2VybmVsIHZlcnNpb24/
-Cj4gMi42LjMyLTExNC4wLjEuZWw2Lng4Nl82NCAsIFJIRUw2LjEuCj4+Cj4+IFRoaXMgaXMgdGhl
-IHJlc3VsdCBmcm9tIGxhdGVzdCBrZXJuZWw6Cj4+Cj4+ICMgZWNobyA+IHNldF9mdHJhY2VfcGlk
-Cj4+ICMgZWNobyAtMSA+IHNldF9mdHJhY2VfcGlkCj4+IGJhc2g6IGVjaG86IHdyaXRlIGVycm9y
-OiBJbnZhbGlkIGFyZ3VtZW50Cj4+Cj4gTG9va3MgbGlrZSBsYXRlc3Qga2VybmVsIGNoYW5nZWQg
-dGhlIGJlaGF2aW91ci4gQnV0IHRoZQoKVGhlIGNoYW5nZSBjYW1lIGZyb20gY29tbWl0IDc1NmQx
-N2VlN2VlNGZiYzgyMzhiZGY5NzEwMGFmNjNlNmFjNDQxZWYKClNvIHdlIGhhdmUgdG8gY2hlY2sg
-dGhlIGtlcm5lbCB2ZXJzaW9uLCBvciB0cnkgYm90aCAiZWNobyA+IC4uLiIgYW5kCiJlY2hvIC0x
-ID4gLi4uIi4KCj4gRG9jdW1lbnRhdGlvbi90cmFjZS9mdHJhY2UudHh0IGhhc24ndCBiZWVuIHVw
-ZGF0ZWQ6Cj4gCj4gICAgICB5dW0tdXBkYXRlc2QtMzExMSAgWzAwM10gIDE2MzcuMjU0NjgzOiBs
-b2NrX2hydGltZXJfYmFzZSA8LWhydGltZXJfdHJ5X3RvX2NhbmNlbAo+ICAgICAgeXVtLXVwZGF0
-ZXNkLTMxMTEgIFswMDNdICAxNjM3LjI1NDY4NTogZmdldF9saWdodCA8LWRvX3N5c19wb2xsCj4g
-ICAgICB5dW0tdXBkYXRlc2QtMzExMSAgWzAwM10gIDE2MzcuMjU0Njg2OiBwaXBlX3BvbGwgPC1k
-b19zeXNfcG9sbAo+ICMgZWNobyAtMSA+IHNldF9mdHJhY2VfcGlkCj4gIyBjYXQgdHJhY2UgfGhl
-YWQKPiAgIyB0cmFjZXI6IGZ1bmN0aW9uCj4gICMKPiAgIyAgICAgICAgICAgVEFTSy1QSUQgICAg
-Q1BVIyAgICBUSU1FU1RBTVAgIEZVTkNUSU9OCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSW5kZXgs
-IFNlYXJjaCAmIEFuYWx5emUgTG9ncyBhbmQgb3RoZXIgSVQgZGF0YSBpbiBSZWFsLVRpbWUgd2l0
-aCBTcGx1bmsgCkNvbGxlY3QsIGluZGV4IGFuZCBoYXJuZXNzIGFsbCB0aGUgZmFzdCBtb3Zpbmcg
-SVQgZGF0YSBnZW5lcmF0ZWQgYnkgeW91ciAKYXBwbGljYXRpb25zLCBzZXJ2ZXJzIGFuZCBkZXZp
-Y2VzIHdoZXRoZXIgcGh5c2ljYWwsIHZpcnR1YWwgb3IgaW4gdGhlIGNsb3VkLgpEZWxpdmVyIGNv
-bXBsaWFuY2UgYXQgbG93ZXIgY29zdCBhbmQgZ2FpbiBuZXcgYnVzaW5lc3MgaW5zaWdodHMuIApG
-cmVlIFNvZnR3YXJlIERvd25sb2FkOiBodHRwOi8vcC5zZi5uZXQvc2Z1L3NwbHVuay1kZXYyZGV2
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0
-IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
-cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+This is a reproducer of  CVE-2011-0999, which fixed by mainline commit
+a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
+
+"Transparent hugepages can only be created if rmap is fully
+functional. So we must prevent hugepages to be created while
+is_vma_temporary_stack() is true."
+
+When running in a loop, it can trigger panic like this, if kernel
+unpatched:
+
+kernel BUG at mm/huge_memory.c:1260!
+invalid opcode: 0000 [#1] SMP
+last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
+....
+
+So I recommend to run it as 'thp01 -I xxx'.
+
+Signed-off-by: Han Pingtian <phan@redhat.com>
+---
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/thp/Makefile |   23 +++++++++
+ testcases/kernel/mem/thp/thp01.c  |   99 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 124 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/thp/Makefile
+ create mode 100644 testcases/kernel/mem/thp/thp01.c
+
+diff --git a/runtest/mm b/runtest/mm
+index f097256..6b7e003 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -84,3 +84,5 @@ oom01 oom01
+ oom02 oom02
+ oom03 oom03
+ oom04 oom04
++
++thp01 thp01 -I 600
+diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
+new file mode 100644
+index 0000000..dbfbc1b
+--- /dev/null
++++ b/testcases/kernel/mem/thp/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (C) 2010  Red Hat, Inc.
++#
++#  This program is free software; you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or (at
++#  your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful, but
++#  WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++#  General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program; if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++#  02110-1301, USA.
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
+new file mode 100644
+index 0000000..b667b78
+--- /dev/null
++++ b/testcases/kernel/mem/thp/thp01.c
+@@ -0,0 +1,99 @@
++/*
++ * This is a reproducer of  CVE-2011-0999, which fixed by mainline commit
++ * a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
++ *
++ * "Transparent hugepages can only be created if rmap is fully
++ * functional. So we must prevent hugepages to be created while
++ * is_vma_temporary_stack() is true."
++ *
++ * It will cause a panic something like this, if the patch didn't get applied:
++ *
++ * kernel BUG at mm/huge_memory.c:1260!
++ * invalid opcode: 0000 [#1] SMP
++ * last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
++ * ....
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include "test.h"
++#include "usctest.h"
++#include "config.h"
++
++char *TCID = "thp01";
++int TST_TOTAL = 1;
++
++#include <stdio.h>
++#include <unistd.h>
++#include <string.h>
++#include <sys/resource.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++
++static option_t options[] = {
++	{NULL, NULL, NULL}
++};
++
++static void usage(void)
++{
++    return;
++}
++
++int main(int argc, char **argv) {
++	int i, lc, st;
++	pid_t pid;
++	char *msg;
++	char *c[257];
++	char cc[32*4096];
++	struct rlimit rl = {
++		.rlim_cur =RLIM_INFINITY,
++		.rlim_max=RLIM_INFINITY,
++	};
++
++	msg = parse_opts(argc, argv, options, usage);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		switch (pid = fork()) {
++			case -1:
++				tst_brkm(TBROK|TERRNO, NULL, "fork");
++			case 0:
++				memset(cc, 'c', 32*4096-1);
++				for (i=0;i<256;i++)
++					c[i] = cc;
++				if (setrlimit(RLIMIT_STACK, &rl) == -1)
++					tst_brkm(TBROK|TERRNO, NULL, "setrlimit");
++				if (execve("/bin/true", c, c) == -1)
++					tst_brkm(TBROK|TERRNO, NULL, "execve");
++			default:
++				if (waitpid(pid, &st, 0) == -1)
++					tst_brkm(TBROK|TERRNO, NULL, "waitpid");
++
++				if (! WIFEXITED(st))
++					tst_brkm(TBROK, NULL, "child exit status is %d", WEXITSTATUS(st));
++
++				tst_resm(TPASS, "thp01 pass");
++		}
++	}
++
++        tst_exit();
++}
+-- 
+1.7.1
+
+------------------------------------------------------------------------------
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
