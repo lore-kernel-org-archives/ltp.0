@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <kumaratreya@gmail.com>) id 1PrPEo-0000Bp-La
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 06:27:14 +0000
-Received: from mail-vw0-f53.google.com ([209.85.212.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PrPEn-0004W0-PQ
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 06:27:14 +0000
-Received: by vws8 with SMTP id 8so3236176vws.12
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 20 Feb 2011 22:27:08 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <will.deacon@arm.com>) id 1PsvaD-0005aW-MU
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 11:11:37 +0000
+Received: from service87.mimecast.com ([94.185.240.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1PsvaC-0008RR-N4
+	for ltp-list@lists.sourceforge.net; Fri, 25 Feb 2011 11:11:37 +0000
+From: "Will Deacon" <will.deacon@arm.com>
+Date: Fri, 25 Feb 2011 11:11:25 -0000
+Message-ID: <000a01cbd4dc$be7a97b0$3b6fc710$@deacon@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
-References: <AANLkTinOqU_P=kD065O7MayXgN30NV_=D2cpqWGVwM5E@mail.gmail.com>
-Date: Mon, 21 Feb 2011 11:57:08 +0530
-Message-ID: <AANLkTimcBewoXLge5v7C1fUfeR7jWAuf1TkCv91GrrxX@mail.gmail.com>
-From: Amit kumar <kumaratreya@gmail.com>
-Subject: [LTP] LTP test cases fpathconf syscall and signal_test_06 ipc test
- cases found hanging on android Gingerbread kernel
+Content-Language: en-gb
+Subject: [LTP] ltp_clone
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,80 +23,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8025790697137071752=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============8025790697137071752==
-Content-Type: multipart/alternative; boundary=20cf305f944c04b53d049cc4f4e0
+Hello,
 
---20cf305f944c04b53d049cc4f4e0
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-I am using LTP to test Android platform and successively ported to Eclair
-after customization.
+The definition of ltp_clone looks like this:
 
 
-fpathconf syscall and signal_test_06 ipc test cases found hanging on Android
-Gingerbread Kernel.
+int
+ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
+		size_t stack_size, void *stack)
+{
+	int ret;
+
+#if defined(__hppa__)
+	ret = clone(fn, stack, clone_flags, arg);
+#elif defined(__ia64__)
+	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
+#elif defined(__arm__)
+	/*
+	 * Stack size should be a multiple of 32 bit words
+	 * & stack limit must be aligned to a 32 bit boundary
+	 */
+	ret = clone(fn, (stack ? stack + stack_size : NULL),
+			clone_flags, arg);
+#else
+	ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
+			clone_flags, arg);
+#endif
+
+	return ret;
+}
 
 
-Are these known issues at this kernel or we need to fix them (If yes are
-there any guidlines ot suggestions)?
+I believe the __arm__ case is to ensure that we pass an aligned
+stack pointer to the syscall (as required by the architecture).
+What I don't understand, is why we pass an unaligned address in
+the #else case? Given that a stack push decrements the sp before
+writing on every architecture I know of, it seems that the __arm__
+case should be used as the default rather than forcing a misaligned
+stack on other architectures.
+
+Will
 
 
 
-
-
-
-Thanks and Regards,
-
-Amit kumar
-
-
-
-
-
--- 
-Thanking you.
-
-From:
-
-Amit kumar
-Ph:(mob.)(+91)-9176975731.
-
---20cf305f944c04b53d049cc4f4e0
-Content-Type: text/html; charset=ISO-8859-1
-
-<br><div class="gmail_quote">Hi,<br>I am using LTP to test Android platform and successively ported to Eclair after customization.<br><br><br>fpathconf syscall and signal_test_06 ipc test cases found hanging on Android Gingerbread Kernel.<br>
-<br><br>Are these known issues at this kernel or we need to fix them (If yes are there any guidlines ot suggestions)?<br><br><br>
-<br><br><br><br>Thanks and Regards,<br><font color="#888888"><br>Amit kumar<br><br clear="all"><br>
-</font></div><br><br clear="all"><br>-- <br>Thanking you.<br><br>From:<br><br>Amit kumar<br>Ph:(mob.)(+91)-9176975731.<br>
-
---20cf305f944c04b53d049cc4f4e0--
-
-
---===============8025790697137071752==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
 Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual 
---===============8025790697137071752==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8025790697137071752==--
-
