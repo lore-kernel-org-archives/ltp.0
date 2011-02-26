@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Poo9a-0005uH-JK
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 02:27:06 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Poo9Z-0006wf-IR
-	for ltp-list@lists.sourceforge.net; Mon, 14 Feb 2011 02:27:06 +0000
-Received: by wyb40 with SMTP id 40so4130786wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 13 Feb 2011 18:26:59 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <4D58916C.6010800@cn.fujitsu.com>
-References: <4D58916C.6010800@cn.fujitsu.com>
-Date: Sun, 13 Feb 2011 18:26:59 -0800
-Message-ID: <AANLkTimrk9YLuPt3zFc00WYHPE6Xr8zSL0=mFrZ8Rfo+@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cleanup() should not be called before setup() in
- cases dup3_01 and eventfd2_01
+	(envelope-from <cristian@regolo.cc>) id 1PtMjM-0006DE-Ac
+	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 16:10:52 +0000
+Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PtMjL-0004uE-Fj
+	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 16:10:52 +0000
+Date: Sat, 26 Feb 2011 17:11:20 +0100
+From: Cristian Greco <cristian@regolo.cc>
+Message-ID: <20110226171120.43fd0cba@regolo>
+In-Reply-To: <AANLkTikZiPeEuKzvb-6Y1qmx6GgsDHA=o9grcXeXFtqL@mail.gmail.com>
+References: <20110222105230.0f9fe24b@regolo>
+	<AANLkTikZiPeEuKzvb-6Y1qmx6GgsDHA=o9grcXeXFtqL@mail.gmail.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] clone06 syscall testcase: use PWD instead of TERM
+ environment variable.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,27 +26,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8064632825137733778=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Sun, Feb 13, 2011 at 6:20 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+--===============8064632825137733778==
+Content-Type: multipart/signed; micalg=PGP-SHA256;
+	boundary="Sig_/kq_NsIj01q5fY_g/a7UotD7";
+	protocol="application/pgp-signature"
 
-Committed -- thanks!
--Garrett
+--Sig_/kq_NsIj01q5fY_g/a7UotD7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 23 Feb 2011 00:33:08 -0800
+Garrett Cooper <yanegomi@gmail.com> wrote:
+
+> On Tue, Feb 22, 2011 at 1:52 AM, Cristian Greco <cristian@regolo.cc> wrot=
+e:
+> > Hi,
+> >
+> > please consider the following patch for the 'clone06' syscall test.
+> >
+> > When running the test on a remote host with an ssh command the TERM env=
+ironment
+> > variable is not available. Use PWD instead, with a buffer size of MAXPA=
+THLEN.
+> >
+> > This is to show how using the TERM variable results in unexpected behav=
+ior:
+>=20
+>     Depending on $PWD, $TERM, etc isn't smart as they're controlled by
+> the shell and external sources and can be modified out from under you
+> (there's some recent discussion on the opengroup list that has
+> transpired related to $PATH, $PWD, etc).
+>     How about this instead:
+>=20
+> 1. unset a predetermined env variable if it's present.
+> 2. set it to a known value
+> 3. Make sure that the env variable set in 2. matches both in the child
+> and parent.
+>=20
+>     If you submit this patch, I'll gladly commit it because it's more
+> sane than the current test code.
+> Thanks,
+> -Garrett
+
+Ok, will do ASAP!
+
+Thanks,
+--
+Cristian Greco
+GPG key ID: 0xCF4D32E4
+
+--Sig_/kq_NsIj01q5fY_g/a7UotD7
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBCAAGBQJNaSYoAAoJEID329zPTTLk52sP/RyfxSijvIMbBZPkERDnbk6t
+RyZcmaWD7gM6IQoT7DDfT0UV5pMuK1LQ3sY2TRAzBCrkebDwBjIavWifgbTpEZIH
+TeqnY1C9q5fBN1z/SPSI2LYVxk/IX8A83LbYn+h0tQjiMGK547RyVu27d2yrLW+z
+UNFY4uH8vgBFaGZWrFRASSHEnRhQYc0kygJS7TFdhNuyZ8LS9Oc6zHYnnP9avr12
+tFhnbbmyoLuZTgS4Fth43iiMwTkLcA5FBClT/VBpHGRjDtml0/hwLoPtpwukv6C+
+JzXiv701mDoGfZPZfZZCzxgM8z1iD/SU/xZYGGEez2yFGin8os2cIoNxELhLsJtY
+ZWbMOZ936iZSaPaEWZ8H7til4bk2inhMtLvWzGii5sei0YmQuJjhz5ozXIuW0XwU
+UPn2tP7gS9tiDX1WLPRwPf9C7dE9yxOu+4XhTQ4G4SHmZXJ0cT4KzDxrtYxY2UES
+US5EHIA5f48idMEey2FCDhkfCfte8EmZqgwJ7J1k0EeJPKkOHrrY5JETkGjDPMXP
++MDqs45OixplWugwn03u6arvLN46t7oE55+Qwfqr1KvfAnNbZtVlkt8p5LtCgHOM
+bJORmlFt5b+wvEwoh4iQnjOwmIqkS92i9JxcYH7F643J++W3lv7xdDYNuBmjZfdE
+oDfnEUsZ6pYiN54sgMMg
+=REED
+-----END PGP SIGNATURE-----
+
+--Sig_/kq_NsIj01q5fY_g/a7UotD7--
+
+
+--===============8064632825137733778==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
+--===============8064632825137733778==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8064632825137733778==--
+
