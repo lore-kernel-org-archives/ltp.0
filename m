@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PpLuC-0005jy-0L
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 14:29:28 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PpLuA-0001pw-Sg
-	for ltp-list@lists.sourceforge.net; Tue, 15 Feb 2011 14:29:27 +0000
-Received: by wyb40 with SMTP id 40so205373wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 Feb 2011 06:29:20 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <4D5A47E5.3060108@cn.fujitsu.com>
-References: <4D5A47E5.3060108@cn.fujitsu.com>
-Date: Tue, 15 Feb 2011 06:29:20 -0800
-Message-ID: <AANLkTikjFEnngX7__W7gK8UBTV8O50vf-My5unK_P=8p@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0ce0ad1e7a4c3f049c52fd9c
-Subject: Re: [LTP] [PATCH] unshare01.c: TEST_RETURN is used wrong
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <cristian@regolo.cc>) id 1PtTaD-0002ng-SK
+	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 23:29:53 +0000
+Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PtTaC-00072T-KT
+	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 23:29:53 +0000
+Date: Sun, 27 Feb 2011 00:30:34 +0100
+From: Cristian Greco <cristian@regolo.cc>
+Message-ID: <20110227003034.16263db3@regolo>
+In-Reply-To: <AANLkTi=iT+dYAW4K9JGW9BD1vau0s6e8d+QOgvzrryS4@mail.gmail.com>
+References: <AANLkTi=iT+dYAW4K9JGW9BD1vau0s6e8d+QOgvzrryS4@mail.gmail.com>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Make fs_inod script shell agnostic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,171 +24,215 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1154022802947654297=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
---000e0ce0ad1e7a4c3f049c52fd9c
-Content-Type: text/plain; charset=ISO-8859-1
+--===============1154022802947654297==
+Content-Type: multipart/signed; micalg=PGP-SHA256;
+	boundary="Sig_/VMsUhWXslfn5eMQt0I7pKjG";
+	protocol="application/pgp-signature"
+
+--Sig_/VMsUhWXslfn5eMQt0I7pKjG
+Content-Type: multipart/mixed; boundary="MP_/t6ujasebp9g8EA03gIV52o4"
+
+--MP_/t6ujasebp9g8EA03gIV52o4
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-On Tue, Feb 15, 2011 at 1:31 AM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> Hi Garrett,
->
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> ---
-> =A0testcases/kernel/syscalls/unshare/unshare01.c | =A0 =A06 +++---
-> =A01 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/unshare/unshare01.c b/testcases/ke=
-rnel/syscalls/unshare/unshare01.c
-> index e19d73d..9ae5e8f 100644
-> --- a/testcases/kernel/syscalls/unshare/unshare01.c
-> +++ b/testcases/kernel/syscalls/unshare/unshare01.c
-> @@ -206,7 +206,7 @@ int main(int ac, char **av) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pid1 =3D fork();
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_RETURN =3D=3D -1) =
-{
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (pid1 =3D=3D -1) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_brkm(T=
-FAIL|TERRNO, cleanup,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"f=
-ork failed");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else if (pid1 =3D=3D 0) =
-{
-> @@ -249,7 +249,7 @@ int main(int ac, char **av) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (pid1 =3D=3D -1) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_brkm(T=
-FAIL|TERRNO, cleanup,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"f=
-ork() failed.");
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else if (TEST_RETURN =3D=
-=3D 0) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else if (pid1 =3D=3D 0) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(unsha=
-re(CLONE_NEWNS));
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (TEST_R=
-ETURN =3D=3D 0) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0printf("unshare call with CLONE_NEWNS "
-> @@ -299,4 +299,4 @@ int main(void)
-> =A0 =A0 =A0 =A0tst_resm(TCONF, "unshare is undefined.");
-> =A0 =A0 =A0 =A0tst_exit();
-> =A0}
-> -#endif
-> \ No newline at end of file
-> +#endif
+Hi Garrett,
 
-How about this?
+find attached the modified patch.
+
+
+Signed-off-by: Cristian Greco <cristian@regolo.cc>
+---
+ testcases/kernel/fs/fs_inod/fs_inod |   28 ++++++++++++++--------------
+ 1 files changed, 14 insertions(+), 14 deletions(-)
+
+
 Thanks,
--Garrett
+--
+Cristian Greco
+GPG key ID: 0xCF4D32E4
 
---000e0ce0ad1e7a4c3f049c52fd9c
-Content-Type: text/x-patch; charset=US-ASCII; 
-	name="ltp-testcases-kernel-syscalls-unshare-fix.patch"
-Content-Disposition: attachment; 
-	filename="ltp-testcases-kernel-syscalls-unshare-fix.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gk6wrpnh0
+--MP_/t6ujasebp9g8EA03gIV52o4
+Content-Type: text/x-patch
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename=0001-Make-fs_inod-script-shell-agnostic.patch
 
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdW5zaGFyZS91bnNoYXJlMDEu
-YyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdW5zaGFyZS91bnNoYXJlMDEuYwppbmRleCBl
-MTlkNzNkLi5hNDYwMjQ4IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Vu
-c2hhcmUvdW5zaGFyZTAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91bnNoYXJl
-L3Vuc2hhcmUwMS5jCkBAIC0xMDksMTQgKzEwOSwxNCBAQCBpbnQgIFRTVF9UT1RBTCA9IDE7CQkg
-ICAvKiB0b3RhbCBudW1iZXIgb2YgdGVzdHMgaW4gdGhpcyBmaWxlLiAgICovCiAvKiBEZXNjcmlw
-dGlvbjogUGVyZm9ybXMgYWxsIG9uZSB0aW1lIGNsZWFuIHVwIGZvciB0aGlzIHRlc3Qgb24gc3Vj
-Y2Vzc2Z1bCAgICAqLwogLyoJICAgICAgY29tcGxldGlvbiwgIHByZW1hdHVyZSBleGl0IG9yICBm
-YWlsdXJlLiBDbG9zZXMgYWxsIHRlbXBvcmFyeSAqLwogLyoJICAgICAgZmlsZXMsIHJlbW92ZXMg
-YWxsIHRlbXBvcmFyeSBkaXJlY3RvcmllcyBleGl0cyB0aGUgdGVzdCB3aXRoICAqLwotLyoJICAg
-ICAgYXBwcm9wcmlhdGUgVEVTVF9SRVRVUk51cm4gY29kZSBieSBjYWxsaW5nIHRzdF9leGl0KCkg
-ZnVuY3Rpb24uICAgICAgICovCisvKgkgICAgICBhcHByb3ByaWF0ZSByZXR1cm4gY29kZSBieSBj
-YWxsaW5nIHRzdF9leGl0KCkgZnVuY3Rpb24uICAgICAgICovCiAvKgkJCQkJCQkJCSAgICAqLwog
-LyogSW5wdXQ6ICAgICAgIE5vbmUuCQkJCQkJCSAqLwogLyoJCQkJCQkJCQkgICAgKi8KIC8qIE91
-dHB1dDogICAgICBOb25lLgkJCQkJCQkgKi8KIC8qCQkJCQkJCQkJICAgICovCi0vKiBSZXR1cm46
-ICAgICAgT24gZmFpbHVyZSAtIEV4aXRzIGNhbGxpbmcgdHN0X2V4aXQoKS4gTm9uICcwJyBURVNU
-X1JFVFVSTnVybiBjb2RlLiAgICovCi0vKgkgICAgICBPbiBzdWNjZXNzIC0gRXhpdHMgY2FsbGlu
-ZyB0c3RfZXhpdCgpLiBXaXRoICcwJyBURVNUX1JFVFVSTnVybiBjb2RlLiAgKi8KKy8qIFJldHVy
-bjogICAgICBPbiBmYWlsdXJlIC0gRXhpdHMgY2FsbGluZyB0c3RfZXhpdCgpLiBOb24gJzAnIHJl
-dHVybiBjb2RlLiAgICovCisvKgkgICAgICBPbiBzdWNjZXNzIC0gRXhpdHMgY2FsbGluZyB0c3Rf
-ZXhpdCgpLiBXaXRoICcwJyByZXR1cm4gY29kZS4gICovCiAvKgkJCQkJCQkJCSAgICAqLwogLyoq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKi8KIGV4dGVybiB2b2lkIGNsZWFudXAoKSB7CkBAIC0xNDAsNyAr
-MTQwLDcgQEAgZXh0ZXJuIHZvaWQgY2xlYW51cCgpIHsKIC8qIE91dHB1dDogICAgICBOb25lLgkJ
-CQkJCQkgKi8KIC8qCQkJCQkJCQkJICAgICovCiAvKiBSZXR1cm46ICAgICAgT24gZmFpbHVyZSAt
-IEV4aXRzIGJ5IGNhbGxpbmcgY2xlYW51cCgpLgkJICAgICAgKi8KLS8qCSAgICAgIE9uIHN1Y2Nl
-c3MgLSBURVNUX1JFVFVSTnVybnMgMC4JCQkJICAgICAgICovCisvKgkgICAgICBPbiBzdWNjZXNz
-IC0gcmV0dXJucyAwLgkJCQkgICAgICAgKi8KIC8qCQkJCQkJCQkJICAgICovCiAvKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqLwogdm9pZCBzZXR1cCgpIHsKQEAgLTE1NCw3ICsxNTQsNyBAQCBpbnQgbWFp
-bihpbnQgYWMsIGNoYXIgKiphdikgewogCXBpZF90IHBpZDE7CiAJaW50IGxjOwkJCS8qIGxvb3Ag
-Y291bnRlciAqLwogCWludCBydmFsOwotCWNoYXIgKm1zZzsJCS8qIG1lc3NhZ2UgVEVTVF9SRVRV
-Uk51cm5lZCBmcm9tIHBhcnNlX29wdHMgKi8KKwljaGFyICptc2c7CQkvKiBtZXNzYWdlIHJldHVy
-bmVkIGZyb20gcGFyc2Vfb3B0cyAqLwogCiAJLyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwog
-CWlmICgobXNnID0gcGFyc2Vfb3B0cyhhYywgYXYsIE5VTEwsIE5VTEwpKSAhPSBOVUxMKQpAQCAt
-MTY2LDIwICsxNjYsMjAgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpIHsKIAkJVHN0X2Nv
-dW50ID0gMDsKIAkJZm9yICh0ZXN0bm8gPSAwOyB0ZXN0bm8gPCBUU1RfVE9UQUw7ICsrdGVzdG5v
-KSB7CiAKLQkJCVRFU1QocGlkMSA9IGZvcmsoKSk7ICAgIC8vY2FsbCB0byBmb3JrKCkKLQkJCWlm
-IChURVNUX1JFVFVSTiA9PSAtMSkgewotCQkJCXRzdF9icmttKFRGQUlMfFRURVJSTk8sIGNsZWFu
-dXAsICJmb3JrIGZhaWxlZCIpOwotCQkJfSBlbHNlIGlmIChURVNUX1JFVFVSTiA9PSAwKSB7Ci0J
-CQkJVEVTVCh1bnNoYXJlKENMT05FX0ZJTEVTKSk7Ci0JCQkJaWYgKFRFU1RfUkVUVVJOID09IDAp
-IHsKKwkJCXBpZDEgPSBmb3JrKCk7ICAgIC8vY2FsbCB0byBmb3JrKCkKKwkJCWlmIChwaWQxID09
-IC0xKSB7CisJCQkJdHN0X2Jya20oVEZBSUx8VEVSUk5PLCBjbGVhbnVwLCAiZm9yayBmYWlsZWQi
-KTsKKwkJCX0gZWxzZSBpZiAocGlkMSA9PSAwKSB7CisJCQkJc3dpdGNoICh1bnNoYXJlKENMT05F
-X0ZJTEVTKSkgeworCQkJCWNhc2UgMDoKIAkJCQkJcHJpbnRmKCJ1bnNoYXJlIHdpdGggQ0xPTkVf
-RklMRVMgY2FsbCAiCiAJCQkJCSAgICAic3VjY2VlZGVkXG4iKTsKIAkJCQkJcnZhbCA9IDA7Ci0J
-CQkJfSBlbHNlIGlmIChURVNUX1JFVFVSTiA9PSAtMSkgewotCQkJCQlpZiAoVEVTVF9FUlJOTyA9
-PSBFTk9TWVMpIHsKKwkJCQkJYnJlYWs7CisJCQkJY2FzZSAtMToKKwkJCQkJaWYgKGVycm5vID09
-IEVOT1NZUykKIAkJCQkJCXJ2YWwgPSAxOwotCQkJCQl9IGVsc2UgewotCQkJCQkJZXJybm8gPSBU
-RVNUX0VSUk5POworCQkJCQllbHNlIHsKIAkJCQkJCXBlcnJvcigidW5zaGFyZSBmYWlsZWQiKTsK
-IAkJCQkJCXJ2YWwgPSAyOwogCQkJCQl9CkBAIC0yMDAsMzYgKzIwMCwzNCBAQCBpbnQgbWFpbihp
-bnQgYWMsIGNoYXIgKiphdikgewogCQkJCQlkZWZhdWx0OgogCQkJCQkJdHN0X2Jya20oVEZBSUws
-IGNsZWFudXAsCiAJCQkJCQkgICAgInVuc2hhcmUgZmFpbGVkIik7Ci0JCQkJCQlicmVhazsKIAkJ
-CQkJfQogCQkJCX0KIAkJCX0KIAogCQkJcGlkMSA9IGZvcmsoKTsKLQkJCWlmIChURVNUX1JFVFVS
-TiA9PSAtMSkgeworCQkJaWYgKHBpZDEgPT0gLTEpIHsKIAkJCQl0c3RfYnJrbShURkFJTHxURVJS
-Tk8sIGNsZWFudXAsCiAJCQkJICAgICJmb3JrIGZhaWxlZCIpOwogCQkJfSBlbHNlIGlmIChwaWQx
-ID09IDApIHsKLQkJCQlURVNUKHVuc2hhcmUoQ0xPTkVfRlMpKTsKLQkJCQlpZiAoVEVTVF9SRVRV
-Uk4gPT0gMCkgeworCQkJCXN3aXRjaCAodW5zaGFyZShDTE9ORV9GUykpIHsKKwkJCQljYXNlIDA6
-CiAJCQkJCXByaW50ZigidW5zaGFyZSB3aXRoIENMT05FX0ZTIGNhbGwgIgogCQkJCQkgICAgInN1
-Y2NlZWRlZFxuIik7CiAJCQkJCXJ2YWwgPSAwOwotCQkJCX0gZWxzZSBpZiAoVEVTVF9SRVRVUk4g
-PT0gLTEpIHsKLQkJCQkJaWYgKFRFU1RfRVJSTk8gPT0gRU5PU1lTKSB7CisJCQkJCWJyZWFrOwor
-CQkJCWNhc2UgLTE6CisJCQkJCWlmIChlcnJubyA9PSBFTk9TWVMpCiAJCQkJCQlydmFsID0gMTsK
-LQkJCQkJfSBlbHNlIHsKLQkJCQkJCWVycm5vID0gVEVTVF9FUlJOTzsKKwkJCQkJZWxzZSB7CiAJ
-CQkJCQlwZXJyb3IoInVuc2hhcmUgZmFpbGVkIik7CiAJCQkJCQlydmFsID0gMjsKIAkJCQkJfQog
-CQkJCX0KIAkJCQlleGl0KHJ2YWwpOwogCQkJfSBlbHNlIHsKLQkJCQlpZiAod2FpdCgmcnZhbCkg
-PT0gLTEpIHsKKwkJCQlpZiAod2FpdCgmcnZhbCkgPT0gLTEpCiAJCQkJCXRzdF9icmttKFRCUk9L
-fFRFUlJOTywgY2xlYW51cCwKIAkJCQkJICAgICJ3YWl0IGZhaWxlZCIpOwotCQkJCX0KIAkJCQlp
-ZiAocnZhbCAhPSAwICYmIFdJRkVYSVRFRChydmFsKSkgewogCQkJCQlzd2l0Y2ggKFdFWElUU1RB
-VFVTKHJ2YWwpKSB7CiAJCQkJCWNhc2UgMToKQEAgLTI0OSwxNyArMjQ3LDE3IEBAIGludCBtYWlu
-KGludCBhYywgY2hhciAqKmF2KSB7CiAJCQlpZiAocGlkMSA9PSAtMSkgewogCQkJCXRzdF9icmtt
-KFRGQUlMfFRFUlJOTywgY2xlYW51cCwKIAkJCQkgICAgImZvcmsoKSBmYWlsZWQuIik7Ci0JCQl9
-IGVsc2UgaWYgKFRFU1RfUkVUVVJOID09IDApIHsKLQkJCQlURVNUKHVuc2hhcmUoQ0xPTkVfTkVX
-TlMpKTsKLQkJCQlpZiAoVEVTVF9SRVRVUk4gPT0gMCkgeworCQkJfSBlbHNlIGlmIChwaWQxID09
-IDApIHsKKwkJCQlzd2l0Y2ggKHVuc2hhcmUoQ0xPTkVfTkVXTlMpKSB7CisJCQkJY2FzZSAwOgog
-CQkJCQlwcmludGYoInVuc2hhcmUgY2FsbCB3aXRoIENMT05FX05FV05TICIKIAkJCQkJICAgICJz
-dWNjZWVkZWRcbiIpOwogCQkJCQlydmFsID0gMDsKLQkJCQl9IGVsc2UgaWYgKFRFU1RfUkVUVVJO
-ID09IC0xKSB7Ci0JCQkJCWlmIChURVNUX0VSUk5PID09IEVOT1NZUykgeworCQkJCQlicmVhazsK
-KwkJCQljYXNlIC0xOgorCQkJCQlpZiAoZXJybm8gPT0gRU5PU1lTKQogCQkJCQkJcnZhbCA9IDE7
-Ci0JCQkJCX0gZWxzZSB7Ci0JCQkJCQllcnJubyA9IFRFU1RfRVJSTk87CisJCQkJCWVsc2Ugewog
-CQkJCQkJcGVycm9yKCJ1bnNoYXJlIGZhaWxlZCIpOwogCQkJCQkJcnZhbCA9IDI7CiAJCQkJCX0K
-QEAgLTI5OSw0ICsyOTcsNCBAQCBpbnQgbWFpbih2b2lkKQogCXRzdF9yZXNtKFRDT05GLCAidW5z
-aGFyZSBpcyB1bmRlZmluZWQuIik7CiAJdHN0X2V4aXQoKTsKIH0KLSNlbmRpZgpcIE5vIG5ld2xp
-bmUgYXQgZW5kIG9mIGZpbGUKKyNlbmRpZgo=
---000e0ce0ad1e7a4c3f049c52fd9c
+diff --git a/testcases/kernel/fs/fs_inod/fs_inod b/testcases/kernel/fs/fs_i=
+nod/fs_inod
+index 39d7302..b962dad 100755
+--- a/testcases/kernel/fs/fs_inod/fs_inod
++++ b/testcases/kernel/fs/fs_inod/fs_inod
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+=20
+ #
+ #
+@@ -51,9 +51,9 @@
+ #
+ # RETURNS:              None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function err_log
++err_log()
+ {
+-    let step_errors=3D$step_errors+1
++    : $((step_errors +=3D 1))
+ }
+=20
+=20
+@@ -66,7 +66,7 @@ function err_log
+ #
+ # RETURNS: 		None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function make_subdirs=20
++make_subdirs ()
+ {
+     i=3D0;
+     while [ "$i" -lt "$numsubdirs" ]; do
+@@ -74,7 +74,7 @@ function make_subdirs
+             echo "$0: mkdir dir$i"
+             mkdir -p dir$i || echo "mkdir dir$i FAILED"
+         }
+-	let i=3D"$i + 1"
++	: $((i +=3D 1))
+     done;
+ }=20
+=20
+@@ -88,7 +88,7 @@ function make_subdirs
+ #
+ # RETURNS: 		None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function touch_files=20
++touch_files()
+ {
+     echo "$0: touch files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
+     j=3D0;
+@@ -99,10 +99,10 @@ function touch_files
+=20
+ 	while [ "$k" -lt "$numfiles" ]; do =20
+ 	    >file$j$k || err_log ">file$j$k FAILED"
+-	    let k=3D"$k + 1"
++	    : $((k +=3D 1))
+ 	done
+=20
+-	let j=3D"$j + 1"
++	: $((j +=3D 1))
+ 	cd ..
+     done
+ }
+@@ -117,7 +117,7 @@ function touch_files
+ #
+ # RETURNS: 	None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function rm_files=20
++rm_files()
+ {
+     echo "$0: rm files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
+     j=3D0;
+@@ -128,10 +128,10 @@ function rm_files
+=20
+ 	while [ "$k" -lt "$numfiles" ]; do =20
+ 	    rm -f file$j$k || err_log "rm -f file$j$k FAILED"
+-	    let k=3D"$k + 1"
++	    : $((k +=3D 1))
+ 	done
+=20
+-	let j=3D"$j + 1"
++	: $((j +=3D 1))
+ 	cd ..
+     done
+ }
+@@ -146,7 +146,7 @@ function rm_files
+ #
+ # RETURNS: 		None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function step1=20
++step1 ()
+ {=20
+     echo "=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D"
+     echo "MULTIPLE PROCESSES CREATING AND DELETING FILES"
+@@ -199,7 +199,7 @@ function step1
+ 	rm_files &
+ 	pid1=3D$!
+=20
+-	let i=3D"$i + 1"
++	: $((i +=3D 1))
+     done
+=20
+     # wait for all background processes to complete execution
+@@ -244,7 +244,7 @@ function step1
+          step$I
+          if [ $? !=3D 0 ]; then
+             echo "step$I failed - see above errors"
+-            let ERRORS=3D$ERRORS+$step_errors
++            : $((ERRORS +=3D step_errors))
+          fi
+     done  =20
+=20
+
+--MP_/t6ujasebp9g8EA03gIV52o4--
+
+--Sig_/VMsUhWXslfn5eMQt0I7pKjG
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBCAAGBQJNaY0aAAoJEID329zPTTLkmdQP+QHLKU3e12FiFCE5LXxmDRQi
+pgV+hVykT63R5j/zJwTLHSpp006z3cJ7M5yVS9Pl9vrCx93nXXgMWy0008EhH7dL
+MOGFn1VNOQEotip8WECHZP0VhFe6sSwr6DPBB14gd2W9+DWmPdjbKNrlAwr6GxaW
+IDMN7lWmZptJQn5yqkKNYOHGU2FKi3EY/gMUNg2XVSii0960q/hFa6fka/yKPyFa
+QmlUv8vOaNMHXGm+MNBT8w2qHJ3ahAQjyYnJbGo3kwIvVqrTStF+RY5FJYIByR6x
+N++fqgncWqQ3VJ0UHvpfomTac90G/qTKhLcWyE6xJJYG1qbx9moF1sM64pLPbnlf
+i1FF14Ru1AY1DGzkTflQw1wfgTVTemV0nBXlyGExPhtPse07Po6tpJF9hQW37uZH
+en8+moeLSh0ukPpunjtOa7HH3ipnaRp+NV/AeLx+KRn0imVlrJszJqQ+zTpmfSIx
+keNH2BhN+UtpqF4em6MSzRgtUSCLm9sCuaos/gdo4OGLcFROTXYjur/bcAGQfVk4
+MHU9F0eSdELx+0U2w0d4n1XtrWunHDFYIjLvkuz9NFGTCNpgzWUJ0IxeDa1c0Pa8
+wabwtooNi5TOpXHiYLrVd9Sr2fTB29s3GLKDuI5TWvMBdat6d5VlZzxS9zMvrcku
+GonLaWthecoO8k3RD+2h
+=xfzm
+-----END PGP SIGNATURE-----
+
+--Sig_/VMsUhWXslfn5eMQt0I7pKjG--
+
+
+--===============1154022802947654297==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
---000e0ce0ad1e7a4c3f049c52fd9c
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
+--===============1154022802947654297==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -203,5 +243,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---000e0ce0ad1e7a4c3f049c52fd9c--
+--===============1154022802947654297==--
 
