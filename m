@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PrSzN-0000V4-Nk
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 10:27:33 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PrSzM-0002rw-0z
-	for ltp-list@lists.sourceforge.net; Mon, 21 Feb 2011 10:27:33 +0000
-Message-ID: <4D622CFF.4000309@cn.fujitsu.com>
-Date: Mon, 21 Feb 2011 17:14:39 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP]  [PATCH] pan/scan.l: Fix a building error (resend)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <cristian@regolo.cc>) id 1PtMdt-0002Yx-Uz
+	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 16:05:13 +0000
+Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PtMds-0004KX-Et
+	for ltp-list@lists.sourceforge.net; Sat, 26 Feb 2011 16:05:13 +0000
+Received: from regolo (93-46-32-253.ip105.fastwebnet.it [93.46.32.253])
+	by aiolia.regolo.cc (Postfix) with ESMTPSA id F0F1B64
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 26 Feb 2011 17:05:05 +0100 (CET)
+Date: Sat, 26 Feb 2011 17:05:38 +0100
+From: Cristian Greco <cristian@regolo.cc>
+Message-ID: <20110226170538.69eea71a@regolo>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Make fs_inod script shell agnostic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,39 +26,224 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5887217623565083030=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-SGkgR2FycmV0dCwKCldoZW4gY29tcGlsaW5nIHRoZSBsdHAgc291cmNlLCBpdCB3aWxsIGVycm9y
-LiBUaGUgZXJyb3IgbWVzc2FnZXMgYXJlOgoKLi4uCmZsZXggLWwgLXQgc2Nhbi5sID4gc2Nhbi5j
-CmdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtV25v
-LWVycm9yIC1JL2hvbWUvcGh0L2x0cC1kZXYvcGFuIC1JLi4vaW5jbHVkZSAtSS4uL2luY2x1ZGUg
-IC1jIC1vIHNjYW4ubyBzY2FuLmMKc2Nhbi5sOiBJbiBmdW5jdGlvbiDigJh5eWxleOKAmToKc2Nh
-bi5sOjE1MzogZXJyb3I6IOKAmHl5bGluZW5v4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0
-aGlzIGZ1bmN0aW9uKQpzY2FuLmw6MTUzOiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlm
-aWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQpzY2FuLmw6MTUzOiBlcnJvcjogZm9yIGVhY2ggZnVu
-Y3Rpb24gaXQgYXBwZWFycyBpbi4pCm1ha2U6ICoqKiBbc2Nhbi5vXSBFcnJvciAxCnJtIHNjYW4u
-YwoKIiVvcHRpb24gbm9sZXgtY29tcGF0IiBjYW4gc2lsZW5jZSB3YXJuaW5nLCBidXQgYWxzbyBt
-YWtlIHRoZSBnbG9iYWwKdmFyaWFibGUgInl5bGluZW5vIiB1bmRlY2xhcmVkLiBUaGUgZm9sbG93
-aW5nIHBhdGNoIGFkZCAiJW9wdGlvbiB5eWxpbmVubyIKdG8gbWFrZSB0aGUgZ2xvYmFsIHZhcmlh
-YmxlICJ5eWxpbmVubyIgdG8gYmUgYWNjZXNzZWQuCgpTaWduZWQtb2ZmLWJ5OiBQZW5nIEhhaXRh
-byA8cGVuZ2h0QGNuLmZ1aml0c3UuY29tPgotLS0KIHBhbi9zY2FuLmwgfCAgICAxICsKIDEgZmls
-ZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L3Bhbi9zY2FuLmwgYi9wYW4vc2Nhbi5sCmluZGV4IDk2OTY1MzEuLmNjNDdiZGYgMTAwNjQ0Ci0t
-LSBhL3Bhbi9zY2FuLmwKKysrIGIvcGFuL3NjYW4ubApAQCAtOTEsNiArOTEsNyBAQCBzdGF0aWMg
-aW50IGNoZWNrX21vZGUoaW50LCBpbnQsIC4uLik7CiAlb3B0aW9uIG5vaW5wdXQKICVvcHRpb24g
-bm9sZXgtY29tcGF0CiAlb3B0aW9uIG5vdW5wdXQKKyVvcHRpb24geXlsaW5lbm8KIAogVUkgICAg
-ICBbMC05XSsKIEEgICAgICAgW2EtekEtWl0rCi0tIAoxLjcuMy4xCgotLSAKQmVzdCBSZWdhcmRz
-LApQZW5nIEhhaXRhbwoKCgoKCgoKCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgdWx0aW1h
-dGUgYWxsLWluLW9uZSBwZXJmb3JtYW5jZSB0b29sa2l0OiBJbnRlbChSKSBQYXJhbGxlbCBTdHVk
-aW8gWEU6ClBpbnBvaW50IG1lbW9yeSBhbmQgdGhyZWFkaW5nIGVycm9ycyBiZWZvcmUgdGhleSBo
-YXBwZW4uCkZpbmQgYW5kIGZpeCBtb3JlIHRoYW4gMjUwIHNlY3VyaXR5IGRlZmVjdHMgaW4gdGhl
-IGRldmVsb3BtZW50IGN5Y2xlLgpMb2NhdGUgYm90dGxlbmVja3MgaW4gc2VyaWFsIGFuZCBwYXJh
-bGxlbCBjb2RlIHRoYXQgbGltaXQgcGVyZm9ybWFuY2UuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50
-ZWwtZGV2MmRldmZlYgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+--===============5887217623565083030==
+Content-Type: multipart/signed; micalg=PGP-SHA256;
+	boundary="Sig_/PX3aI+RHYddImb8cLfZD7KB";
+	protocol="application/pgp-signature"
+
+--Sig_/PX3aI+RHYddImb8cLfZD7KB
+Content-Type: multipart/mixed; boundary="MP_//n8_5DHP4rI4+gh.=zzItCW"
+
+--MP_//n8_5DHP4rI4+gh.=zzItCW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Hi,
+
+this patch will fix bashisms in fs_inod test script, i.e. it will be
+shell agnostic.
+
+
+Signed-off-by: Cristian Greco <cristian@regolo.cc>
+---
+ testcases/kernel/fs/fs_inod/fs_inod |   28 ++++++++++++++--------------
+ 1 files changed, 14 insertions(+), 14 deletions(-)
+
+
+Thanks,
+--
+Cristian Greco
+GPG key ID: 0xCF4D32E4
+
+--MP_//n8_5DHP4rI4+gh.=zzItCW
+Content-Type: text/x-patch
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename=0001-Make-fs_inod-script-shell-agnostic.patch
+
+diff --git a/testcases/kernel/fs/fs_inod/fs_inod b/testcases/kernel/fs/fs_i=
+nod/fs_inod
+index 39d7302..b7b6bd4 100755
+--- a/testcases/kernel/fs/fs_inod/fs_inod
++++ b/testcases/kernel/fs/fs_inod/fs_inod
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+=20
+ #
+ #
+@@ -51,9 +51,9 @@
+ #
+ # RETURNS:              None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function err_log
++err_log()
+ {
+-    let step_errors=3D$step_errors+1
++    step_errors=3D$(($step_errors+1))
+ }
+=20
+=20
+@@ -66,7 +66,7 @@ function err_log
+ #
+ # RETURNS: 		None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function make_subdirs=20
++make_subdirs ()
+ {
+     i=3D0;
+     while [ "$i" -lt "$numsubdirs" ]; do
+@@ -74,7 +74,7 @@ function make_subdirs
+             echo "$0: mkdir dir$i"
+             mkdir -p dir$i || echo "mkdir dir$i FAILED"
+         }
+-	let i=3D"$i + 1"
++	i=3D$(($i + 1))
+     done;
+ }=20
+=20
+@@ -88,7 +88,7 @@ function make_subdirs
+ #
+ # RETURNS: 		None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function touch_files=20
++touch_files()
+ {
+     echo "$0: touch files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
+     j=3D0;
+@@ -99,10 +99,10 @@ function touch_files
+=20
+ 	while [ "$k" -lt "$numfiles" ]; do =20
+ 	    >file$j$k || err_log ">file$j$k FAILED"
+-	    let k=3D"$k + 1"
++	    k=3D$(($k + 1))
+ 	done
+=20
+-	let j=3D"$j + 1"
++	j=3D$(($j + 1))
+ 	cd ..
+     done
+ }
+@@ -117,7 +117,7 @@ function touch_files
+ #
+ # RETURNS: 	None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function rm_files=20
++rm_files()
+ {
+     echo "$0: rm files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
+     j=3D0;
+@@ -128,10 +128,10 @@ function rm_files
+=20
+ 	while [ "$k" -lt "$numfiles" ]; do =20
+ 	    rm -f file$j$k || err_log "rm -f file$j$k FAILED"
+-	    let k=3D"$k + 1"
++	    k=3D$(($k + 1))
+ 	done
+=20
+-	let j=3D"$j + 1"
++	j=3D$(($j + 1))
+ 	cd ..
+     done
+ }
+@@ -146,7 +146,7 @@ function rm_files
+ #
+ # RETURNS: 		None.
+ #=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+-function step1=20
++step1 ()
+ {=20
+     echo "=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D"
+     echo "MULTIPLE PROCESSES CREATING AND DELETING FILES"
+@@ -199,7 +199,7 @@ function step1
+ 	rm_files &
+ 	pid1=3D$!
+=20
+-	let i=3D"$i + 1"
++	i=3D$(($i + 1))
+     done
+=20
+     # wait for all background processes to complete execution
+@@ -244,7 +244,7 @@ function step1
+          step$I
+          if [ $? !=3D 0 ]; then
+             echo "step$I failed - see above errors"
+-            let ERRORS=3D$ERRORS+$step_errors
++            ERRORS=3D$(($ERRORS+$step_errors))
+          fi
+     done  =20
+=20
+
+--MP_//n8_5DHP4rI4+gh.=zzItCW--
+
+--Sig_/PX3aI+RHYddImb8cLfZD7KB
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBCAAGBQJNaSTSAAoJEID329zPTTLkXYAP+wRIsMjZHqjL1cHHltni+uFV
+mv/W5XGtX9jzW5ylcVjckjy/9XJlDHLYa4mk/hhV+ha9eAAQlhoOt6oWl42y2NZY
+ri7uXJ7LXDfEjvR+27AG5XXdTwEZsZINasmhvEQjgCoL9RXlNnVbdUjHc88UbQcR
+AISPKATchkTOc6O5NkLSirqq5rphcT79qClRKIzUeGe/xLp33smQ09/jqT3j+YvY
+VfClQzS2N5vx9737VaGYKN08SZSnlzhOBmjB5Iv+97BwR/tIa9esW9jiBLO51sIS
+66kQZpy5fQZFmOndOgdmuBHU/JRYLTLHFxqA/o9L34kOq0+J2bSPrBtuTr+f3w0l
+eVaH2wkhsnyxUGlAqoy5QX9J6MbZi9feOKaPGb/JpGAAXCXnEKZRNsvF0xM9B9jj
+XOpTzfDBwc4C7mGI3SHdtVv+gJhdGchtGET9dKKnkJR9n5v8VRch4l9A3GLtIh8F
++l7TzlWwxCgat3+4bpKe1Gnw2r9z2iUw/BAOYltTo/rXUtO8o1UHGtMNRiLOn2OY
+QH3TGCDhUBxUKaWIQVciN7209TZAGR3eLz72CL6a68FpkAnSDrknC8R7jEBM+K4j
+zivu4E5v6RQDwAot/TNbGNYLLdKrapg9NQUfDXydb4IgMLNAykAvG0oKt+5WEr5D
+Xjxoo4hfysFz8w3Q1eLd
+=coAT
+-----END PGP SIGNATURE-----
+
+--Sig_/PX3aI+RHYddImb8cLfZD7KB--
+
+
+--===============5887217623565083030==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
+--===============5887217623565083030==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5887217623565083030==--
+
