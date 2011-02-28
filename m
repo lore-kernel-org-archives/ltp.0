@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PsW6O-0003HZ-0M
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:59:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PsW6M-0007U1-Sw
-	for ltp-list@lists.sourceforge.net; Thu, 24 Feb 2011 07:59:07 +0000
-Message-ID: <4D660FD8.5000305@cn.fujitsu.com>
-Date: Thu, 24 Feb 2011 15:59:20 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1Pu9fY-0007J2-IK
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 20:26:12 +0000
+Received: from e23smtp01.au.ibm.com ([202.81.31.143])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1Pu9fX-0003vw-9o
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 20:26:12 +0000
+Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
+	by e23smtp01.au.ibm.com (8.14.4/8.13.1) with ESMTP id p1SKMJmG005676
+	for <ltp-list@lists.sourceforge.net>; Tue, 1 Mar 2011 07:22:19 +1100
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p1SKQ3ag2453534
+	for <ltp-list@lists.sourceforge.net>; Tue, 1 Mar 2011 07:26:03 +1100
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p1SKQ3CL016014
+	for <ltp-list@lists.sourceforge.net>; Tue, 1 Mar 2011 07:26:03 +1100
+Message-ID: <4D6C04D7.8010104@linux.vnet.ibm.com>
+Date: Tue, 01 Mar 2011 01:55:59 +0530
+From: Shubham Goyal <shubham@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <4D65F817.2020904@cn.fujitsu.com>
-	<AANLkTi=MP4_QyQsB_GOdfwxh8T-+d9Pqj6SY=K7_Hfk5@mail.gmail.com>
-In-Reply-To: <AANLkTi=MP4_QyQsB_GOdfwxh8T-+d9Pqj6SY=K7_Hfk5@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] syslogtst.c: fix a bug of assert() is used wrong
+References: <4D555AAB.4080806@redhat.com>
+	<1297685407.25122.1.camel@subratamodak.linux.ibm.com>
+	<4D6B3C56.7090501@cn.fujitsu.com>
+In-Reply-To: <4D6B3C56.7090501@cn.fujitsu.com>
+Subject: Re: [LTP] new LTP release?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,22 +40,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
+Hi Gui,
 
-Garrett Cooper said the following on 2011-2-24 15:32:
->> When executing "./syslogtst 1", the error message is follows:
->> syslogtst: syslogtst.c:93: main: Assertion `ch1 != -1' failed.
-> 
->     How about this instead?
+Yes, I am in the process of creating new release. I will be releasing it ASAP (probably in next 2 weeks).
 
-  The patch is OK, thanks.
+Thanks,
+Shubham
 
--- 
-Best Regards,
-Peng Haitao
+
+On Monday 28 February 2011 11:40 AM, Gui Jianfeng wrote:
+
+> Hi Shubham,
+>
+> Any news about the new release?
+>
+> Thanks,
+> Gui
 
 
 ------------------------------------------------------------------------------
