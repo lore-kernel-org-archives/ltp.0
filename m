@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PnYrh-0002ne-11
-	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 15:55:29 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PnYrg-0008V6-0I
-	for ltp-list@lists.sourceforge.net; Thu, 10 Feb 2011 15:55:28 +0000
-Received: by wwi18 with SMTP id 18so1421066wwi.10
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 Feb 2011 07:55:21 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1Ptxxu-0004Jr-DG
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 07:56:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Ptxxt-0004Yp-5a
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 07:56:22 +0000
+Message-ID: <4D6B5505.5050607@redhat.com>
+Date: Mon, 28 Feb 2011 15:55:49 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20110210085232.GA9285@hpt.nay.redhat.com>
-References: <20110210085232.GA9285@hpt.nay.redhat.com>
-Date: Thu, 10 Feb 2011 07:55:21 -0800
-Message-ID: <AANLkTimk_+8o+QQdjzweLmhB=qzzO2TGYADmEuBQtZom@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix build of cpuset_syscall_test
+References: <4D42FFBE.3080105@redhat.com>	<4D58DD0A.2050403@redhat.com>
+	<4D640B55.1050300@linux.vnet.ibm.com>
+	<AANLkTin8A_g2RHnGANpcJEHZ3PLdvjYegyfAdkf4nP8E@mail.gmail.com>
+	<4D66A410.8020500@linux.vnet.ibm.com>
+	<AANLkTimWfcBNogrCzdsamTDPQ2iW0ce7iuHxUhCAw6_C@mail.gmail.com>
+	<4D6B519A.4050906@linux.vnet.ibm.com>
+In-Reply-To: <4D6B519A.4050906@linux.vnet.ibm.com>
+Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
+ 03 fail due to different sender names]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,73 +30,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Shubham Goyal <shubham@linux.vnet.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Thu, Feb 10, 2011 at 12:52 AM, Han Pingtian <phan@redhat.com> wrote:
-> cpuset_syscall_test now depends on numa lib:
->
-> make[1]: Entering directory `/root/ltp/testcases/kernel/controllers/cpuse=
-t/cpuset_syscall_test'
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I/root/ltp/testcas=
-es/kernel/include -I../../../../../include -I../../../../../include =A0 -L/=
-root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_=
-lib -L/root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../=
-../libcontrollers -L../../../../../lib =A0cpuset_syscall_test.c =A0 -lltp -=
-lcpu_set -lcontrollers -lltp -o cpuset_syscall_test
-> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpus=
-et_lib/libcpu_set.a(libcpuset.o): In function `cpuset_addr2node':
-> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3455=
-: undefined reference to `get_mempolicy'
-> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpus=
-et_lib/libcpu_set.a(libcpuset.o): In function `cpuset_membind':
-> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3439=
-: undefined reference to `set_mempolicy'
-> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpus=
-et_lib/libcpu_set.a(libcpuset.o): In function `cpuset_unpin':
-> /root/ltp/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c:3752=
-: undefined reference to `set_mempolicy'
-> collect2: ld returned 1 exit status
-> make[1]: *** [cpuset_syscall_test] Error 1
-> make[1]: Leaving directory `/root/ltp/testcases/kernel/controllers/cpuset=
-/cpuset_syscall_test'
-> make: *** [all] Error 2
->
-> This patch fixes this problem
->
-> Signed-off-by: Han Pingtian <phan@redhat.com>
-> ---
-> =A0.../cpuset/cpuset_syscall_test/Makefile =A0 =A0 =A0 =A0 =A0 =A0| =A0 =
-=A02 ++
-> =A01 files changed, 2 insertions(+), 0 deletions(-)
->
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Make=
-file b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-> index edc6265..17331fb 100644
-> --- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-> @@ -25,3 +25,5 @@ top_srcdir =A0 =A0 =A0 =A0 =A0 =A0 =A0?=3D ../../../../=
-..
-> =A0include $(top_srcdir)/include/mk/testcases.mk
-> =A0include $(abs_srcdir)/../Makefile.inc
-> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +
-> +LDLIBS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D $(NUMA_LIBS)
-> --
+On 02/28/2011 03:41 PM, Shubham Goyal wrote:
+> Alright Garrett.., I can understand your concerns on quality
+> standardization and consistency across multiple platforms.
+> But how do we conclude my below question for now?
+> 
+> @Caspar: Any comments from your side?
 
-For consistency this should be placed before generic_leaf_target.mk
+I see Garrett committed my patch, it seems good for me. And I agree with
+that LSB should maintain a test suite to improve standardization.
+
 Thanks,
--Garrett
+Caspar
 
----------------------------------------------------------------------------=
----
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+> 
+> Thanks,
+> Shubham
+> 
+> 
+>> On Thu, Feb 24, 2011 at 10:31 AM, Shubham Goyal
+>> <shubham@linux.vnet.ibm.com>  wrote:
+>>> Alright Garrett..., so how should we take the patches in userland
+>>> arena in
+>>> future (including this one from Caspar)?
+>>> I mean should they be reviewed and merged upstream? Do LSB currently
+>>> involved in maintaining them?
+>> (this is going to seem like a bit of a rant, so please bear with me...)
+>>
+>> I don't know if the LSB actually has a test suite, but they should
+>> really get into the business of producing a test suite, because the
+>> LSB is mocked (in some circles) for being an excuse for a standards
+>> committee.
+>>
+>> FreeBSD devs (for sure) and many Linux devs know that there isn't a
+>> lot of decision making that goes into making Linux consistent across
+>> all platforms. Someone needs to herd all of the cats together and
+>> provide a means of testing standardization for these things (again,
+>> LSB) because then the quality element will properly trickle down in
+>> the GNU/Linux community.
+>>
+>> Right now everything's too ad hoc and messy for anyone depending on
+>> behavior to actually depend on Linux to remain constant over an
+>> extended period of time. That's one reason why (apart from GPL
+>> licensing) that people stay away from Linux: it's consistently
+>> inconsistent.
+>>
+>> Thanks,
+>> -Garrett
+> 
+
+
+-- 
+Quality Engineer (Kernel) in
+Red Hat Software (Beijing) Co., R&D Branch
+http://www.cn.redhat.com/
+TEL: +86-10-62608150
+
+------------------------------------------------------------------------------
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
