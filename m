@@ -1,12 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Message-ID: <4D59104C.3040708@linux.vnet.ibm.com>
-Date: Mon, 14 Feb 2011 16:51:48 +0530
-From: Shubham <shubham@linux.vnet.ibm.com>
-MIME-Version: 1.0
-References: <AANLkTinXiKJkgw2-uiVKpYWD55C1EvnybPGaB3a6NaBW@mail.gmail.com>
-In-Reply-To: <AANLkTinXiKJkgw2-uiVKpYWD55C1EvnybPGaB3a6NaBW@mail.gmail.com>
-Subject: Re: [LTP] [Ltp-commits] Sourceforge backend for hooks to
- ltp-commits list is dead
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1Ptxlk-00054O-C2
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 07:43:48 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1Ptxlh-0006QT-LI
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 07:43:46 +0000
+Received: by iwn10 with SMTP id 10so3414438iwn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 27 Feb 2011 23:43:40 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1082)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <4D6B519A.4050906@linux.vnet.ibm.com>
+Date: Sun, 27 Feb 2011 23:43:38 -0800
+Message-Id: <1AB9145D-1D47-4C58-9CEF-4F21B352F076@gmail.com>
+References: <4D42FFBE.3080105@redhat.com>	<4D58DD0A.2050403@redhat.com>
+	<4D640B55.1050300@linux.vnet.ibm.com>
+	<AANLkTin8A_g2RHnGANpcJEHZ3PLdvjYegyfAdkf4nP8E@mail.gmail.com>
+	<4D66A410.8020500@linux.vnet.ibm.com>
+	<AANLkTimWfcBNogrCzdsamTDPQ2iW0ce7iuHxUhCAw6_C@mail.gmail.com>
+	<4D6B519A.4050906@linux.vnet.ibm.com>
+Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
+	03 fail due to different sender names]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,45 +36,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, ltp-commits@lists.sourceforge.net
+To: Shubham Goyal <shubham@linux.vnet.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Monday 14 February 2011 09:10 AM, Garrett Cooper wrote:
->      sendmail is no longer on the same server where git pushes are sent to:
->
-> Counting objects: 3, done.
-> Delta compression using up to 8 threads.
-> Compressing objects: 100% (2/2), done.
-> Writing objects: 100% (2/2), 245 bytes, done.
-> Total 2 (delta 1), reused 0 (delta 0)
-> vz-git-2.sog
-> ls: /usr/sbin/sendmail: No such file or directory
-> hooks/post-receive: line 593: /usr/sbin/sendmail: No such file or directory
-> error: cannot run hooks/post-receive: No such file or directory
-> To ssh://yaberauneya@ltp.git.sourceforge.net/gitroot/ltp/ltp
->     bc7f47d..5e2b3c6  master ->  master
->
->      I'm not a project admin or maintainer, so I'm not even going to
-> bother fixing it because I've already done enough. Will someone who's
-> SUPPOSED to be a project admin / maintainer contact sourceforge and
-> get it fixed please?
+	Commit "fix" now, beat standards committees into submission with a baseball bat later.
+Thanks,
+-Garrett
+
+On Feb 27, 2011, at 11:41 PM, Shubham Goyal wrote:
+
+> Alright Garrett.., I can understand your concerns on quality standardization and consistency across multiple platforms.
+> But how do we conclude my below question for now?
+> 
+> @Caspar: Any comments from your side?
+> 
 > Thanks,
-> -Garrett
->
-Hi Garrett,
-
-I have sent an email to SF admins about this. I will follow up with them.
-
-Thanks
--Shubham
+> Shubham
+> 
+> 
+>> On Thu, Feb 24, 2011 at 10:31 AM, Shubham Goyal
+>> <shubham@linux.vnet.ibm.com>  wrote:
+>>> Alright Garrett..., so how should we take the patches in userland arena in
+>>> future (including this one from Caspar)?
+>>> I mean should they be reviewed and merged upstream? Do LSB currently
+>>> involved in maintaining them?
+>> (this is going to seem like a bit of a rant, so please bear with me...)
+>> 
+>> I don't know if the LSB actually has a test suite, but they should
+>> really get into the business of producing a test suite, because the
+>> LSB is mocked (in some circles) for being an excuse for a standards
+>> committee.
+>> 
+>> FreeBSD devs (for sure) and many Linux devs know that there isn't a
+>> lot of decision making that goes into making Linux consistent across
+>> all platforms. Someone needs to herd all of the cats together and
+>> provide a means of testing standardization for these things (again,
+>> LSB) because then the quality element will properly trickle down in
+>> the GNU/Linux community.
+>> 
+>> Right now everything's too ad hoc and messy for anyone depending on
+>> behavior to actually depend on Linux to remain constant over an
+>> extended period of time. That's one reason why (apart from GPL
+>> licensing) that people stay away from Linux: it's consistently
+>> inconsistent.
+>> 
+>> Thanks,
+>> -Garrett
+> 
 
 
 ------------------------------------------------------------------------------
-The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
-Pinpoint memory and threading errors before they happen.
-Find and fix more than 250 security defects in the development cycle.
-Locate bottlenecks in serial and parallel code that limit performance.
-http://p.sf.net/sfu/intel-dev2devfeb
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
