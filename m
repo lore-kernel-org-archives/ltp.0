@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1Ptxxu-0004Jr-DG
-	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 07:56:22 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Ptxxt-0004Yp-5a
-	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 07:56:22 +0000
-Message-ID: <4D6B5505.5050607@redhat.com>
-Date: Mon, 28 Feb 2011 15:55:49 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1PtwJy-0000vm-Hm
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 06:11:02 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PtwJw-0003hn-Kp
+	for ltp-list@lists.sourceforge.net; Mon, 28 Feb 2011 06:11:02 +0000
+Message-ID: <4D6B3C56.7090501@cn.fujitsu.com>
+Date: Mon, 28 Feb 2011 14:10:30 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4D42FFBE.3080105@redhat.com>	<4D58DD0A.2050403@redhat.com>
-	<4D640B55.1050300@linux.vnet.ibm.com>
-	<AANLkTin8A_g2RHnGANpcJEHZ3PLdvjYegyfAdkf4nP8E@mail.gmail.com>
-	<4D66A410.8020500@linux.vnet.ibm.com>
-	<AANLkTimWfcBNogrCzdsamTDPQ2iW0ce7iuHxUhCAw6_C@mail.gmail.com>
-	<4D6B519A.4050906@linux.vnet.ibm.com>
-In-Reply-To: <4D6B519A.4050906@linux.vnet.ibm.com>
-Subject: Re: [LTP] Review Required: [Re: [PATCH] fix mail02,
- 03 fail due to different sender names]
+References: <4D555AAB.4080806@redhat.com>
+	<1297685407.25122.1.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1297685407.25122.1.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] new LTP release?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,64 +28,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shubham Goyal <shubham@linux.vnet.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com, shubham@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-On 02/28/2011 03:41 PM, Shubham Goyal wrote:
-> Alright Garrett.., I can understand your concerns on quality
-> standardization and consistency across multiple platforms.
-> But how do we conclude my below question for now?
+Subrata Modak wrote:
+> On Fri, 2011-02-11 at 23:50 +0800, Caspar Zhang wrote:
+>> Hi all, seems that we don't have a new stable release for long time, any
+>> plan to release one?
 > 
-> @Caspar: Any comments from your side?
+> Shubham will probably release one at the End of February 2011 :-)
 
-I see Garrett committed my patch, it seems good for me. And I agree with
-that LSB should maintain a test suite to improve standardization.
+Hi Shubham,
+
+Any news about the new release?
 
 Thanks,
-Caspar
+Gui
 
 > 
-> Thanks,
-> Shubham
+> Regards--
+> Subrata
 > 
-> 
->> On Thu, Feb 24, 2011 at 10:31 AM, Shubham Goyal
->> <shubham@linux.vnet.ibm.com>  wrote:
->>> Alright Garrett..., so how should we take the patches in userland
->>> arena in
->>> future (including this one from Caspar)?
->>> I mean should they be reviewed and merged upstream? Do LSB currently
->>> involved in maintaining them?
->> (this is going to seem like a bit of a rant, so please bear with me...)
->>
->> I don't know if the LSB actually has a test suite, but they should
->> really get into the business of producing a test suite, because the
->> LSB is mocked (in some circles) for being an excuse for a standards
->> committee.
->>
->> FreeBSD devs (for sure) and many Linux devs know that there isn't a
->> lot of decision making that goes into making Linux consistent across
->> all platforms. Someone needs to herd all of the cats together and
->> provide a means of testing standardization for these things (again,
->> LSB) because then the quality element will properly trickle down in
->> the GNU/Linux community.
->>
->> Right now everything's too ad hoc and messy for anyone depending on
->> behavior to actually depend on Linux to remain constant over an
->> extended period of time. That's one reason why (apart from GPL
->> licensing) that people stay away from Linux: it's consistently
->> inconsistent.
->>
 >> Thanks,
->> -Garrett
+>> Caspar
+> 
+> 
+> ------------------------------------------------------------------------------
+> The ultimate all-in-one performance toolkit: Intel(R) Parallel Studio XE:
+> Pinpoint memory and threading errors before they happen.
+> Find and fix more than 250 security defects in the development cycle.
+> Locate bottlenecks in serial and parallel code that limit performance.
+> http://p.sf.net/sfu/intel-dev2devfeb
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
 
-
--- 
-Quality Engineer (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-http://www.cn.redhat.com/
-TEL: +86-10-62608150
 
 ------------------------------------------------------------------------------
 Free Software Download: Index, Search & Analyze Logs and other IT data in 
