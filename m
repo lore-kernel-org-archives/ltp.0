@@ -1,31 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1Pxlb4-00033p-MK
-	for ltp-list@lists.sourceforge.net; Thu, 10 Mar 2011 19:32:30 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1Pxlb3-0006Ix-1F
-	for ltp-list@lists.sourceforge.net; Thu, 10 Mar 2011 19:32:30 +0000
-Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
-	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id p2AJWLpX032610
-	for <ltp-list@lists.sourceforge.net>; Fri, 11 Mar 2011 06:32:21 +1100
-Received: from d23av04.au.ibm.com (d23av04.au.ibm.com [9.190.235.139])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p2AJWLpA1618116
-	for <ltp-list@lists.sourceforge.net>; Fri, 11 Mar 2011 06:32:21 +1100
-Received: from d23av04.au.ibm.com (loopback [127.0.0.1])
-	by d23av04.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p2AJWLwK020254
-	for <ltp-list@lists.sourceforge.net>; Fri, 11 Mar 2011 06:32:21 +1100
-Message-ID: <4D792741.6050003@linux.vnet.ibm.com>
-Date: Fri, 11 Mar 2011 01:02:17 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	(envelope-from <guijianfeng@cn.fujitsu.com>) id 1Pucoo-000358-3g
+	for ltp-list@lists.sourceforge.net; Wed, 02 Mar 2011 03:33:42 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pucom-0005ih-8t
+	for ltp-list@lists.sourceforge.net; Wed, 02 Mar 2011 03:33:42 +0000
+Message-ID: <4D6DBA6F.9080808@cn.fujitsu.com>
+Date: Wed, 02 Mar 2011 11:33:03 +0800
+From: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <COL101-W52E6073E7542C28F530CC7B2C80@phx.gbl>
-In-Reply-To: <COL101-W52E6073E7542C28F530CC7B2C80@phx.gbl>
-Subject: Re: [LTP] LTP contribution.
+References: <4D555AAB.4080806@redhat.com>
+	<1297685407.25122.1.camel@subratamodak.linux.ibm.com>
+	<4D6B3C56.7090501@cn.fujitsu.com>
+	<4D6C04D7.8010104@linux.vnet.ibm.com>
+In-Reply-To: <4D6C04D7.8010104@linux.vnet.ibm.com>
+Subject: Re: [LTP] new LTP release?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,112 +27,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0120124909711472133=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: mukesh tupe <mukesh_d_tupe@hotmail.com>
+To: Shubham Goyal <shubham@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---===============0120124909711472133==
-Content-Type: multipart/alternative;
-	boundary="------------080608000901020701050201"
+Shubham Goyal wrote:
+> Hi Gui,
+> 
+> Yes, I am in the process of creating new release. I will be releasing it
+> ASAP (probably in next 2 weeks).
 
-This is a multi-part message in MIME format.
---------------080608000901020701050201
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi Mukesh,
-
-You need to subscribe to the LTP mailing lists to send and receive emails here.
-Most of the interesting discussions about LTP happen in this list. You can go through the list
-archives as well on LTP site. You can start sending your comments, patches or any questions there.
+Ok, looking forward to see it soon.
 
 Thanks,
-Shubham
+Gui
 
-On Thursday 10 March 2011 04:42 PM, mukesh tupe wrote:Hi,
-
-> I am working as a automation and test tool developer in software organization. I would like to contribute to LTP [perl/c tools/scripts developement].
-> Could you please give me details on how I can help/work on any of the LTP project [ToDO list, new sub-projects]?
+> 
 > Thanks,
-> Mukesh
->
-
---------------080608000901020701050201
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-    <title></title>
-  </head>
-  <body text="#000000" bgcolor="#ffffff">
-    <pre>Hi Mukesh,
-
-You need to subscribe to the LTP mailing lists to send and receive emails here.
-Most of the interesting discussions about LTP happen in this list. You can go through the list
-archives as well on LTP site. You can start sending your comments, patches or any questions there.
-
-Thanks,
-Shubham
-
-On Thursday 10 March 2011 04:42 PM, mukesh tupe wrote:<font style="" face="Verdana">Hi,</font></pre>
-    <blockquote cite="mid:COL101-W52E6073E7542C28F530CC7B2C80@phx.gbl"
-      type="cite">
-      <style><!--
-.hmmessage P
-{
-margin:0px;
-padding:0px
-}
-body.hmmessage
-{
-font-size: 10pt;
-font-family:Tahoma
-}
---></style>
-      <pre><font style="" face="Verdana">I am working as a automation and test tool developer in software organization. I would like to contribute to LTP [perl/c tools/scripts developement].</font></pre>
-      <pre><font style="" face="Verdana">Could you please give me details on how I can help/work on any of the LTP project [ToDO list, new sub-projects]?</font></pre>
-      <pre><font style="" face="Verdana">Thanks,</font></pre>
-      <pre><font style="" face="Verdana">Mukesh</font></pre>
-      <font style="" face="Verdana"><br>
-      </font>
-      <pre wrap="">
-</pre>
-    </blockquote>
-    <pre>
-</pre>
-  </body>
-</html>
-
---------------080608000901020701050201--
-
-
---===============0120124909711472133==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> Shubham
+> 
+> 
+> On Monday 28 February 2011 11:40 AM, Gui Jianfeng wrote:
+> 
+>> Hi Shubham,
+>>
+>> Any news about the new release?
+>>
+>> Thanks,
+>> Gui
+> 
+> 
 
 ------------------------------------------------------------------------------
-Colocation vs. Managed Hosting
-A question and answer guide to determining the best fit
-for your organization - today and in the future.
-http://p.sf.net/sfu/internap-sfd2d
---===============0120124909711472133==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0120124909711472133==--
-
