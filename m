@@ -1,26 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PvS20-0005RP-DA
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 10:14:44 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PvS1z-0006Hh-J9
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 10:14:44 +0000
-Received: by wwb29 with SMTP id 29so2716281wwb.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 04 Mar 2011 02:14:37 -0800 (PST)
+	(envelope-from <czhang@redhat.com>) id 1Puj49-0004s7-Al
+	for ltp-list@lists.sourceforge.net; Wed, 02 Mar 2011 10:13:57 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Puj48-0005Y0-Ai
+	for ltp-list@lists.sourceforge.net; Wed, 02 Mar 2011 10:13:57 +0000
+Message-ID: <4D6E1852.9050401@redhat.com>
+Date: Wed, 02 Mar 2011 18:13:38 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4D70B17C.6010202@redhat.com>
-References: <4D6FD1D5.30209@redhat.com> <4D6FD518.1040503@redhat.com>
-	<20110304093711.7c022f74@regolo> <4D70A86B.3000800@redhat.com>
-	<AANLkTimspgQ+vhic29iSFrcWyXjT88WjKVvXY8uRELo0@mail.gmail.com>
-	<4D70B17C.6010202@redhat.com>
-Date: Fri, 4 Mar 2011 02:14:37 -0800
-Message-ID: <AANLkTimQnP_1q3LpRhmp3VvfRb1rH6DhNKktiR+wBCRe@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v2] syscalls: getdents0[234]: add tst_exit()
+Content-Type: multipart/mixed; boundary="------------050901020306010700020709"
+Subject: [LTP] [PATCH] add config.h header file in mmap10 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,42 +23,100 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
+Cc: Jan Malanik <jmalanik@redhat.com>
 
-On Fri, Mar 4, 2011 at 1:31 AM, Caspar Zhang <czhang@redhat.com> wrote:
-> On 03/04/2011 05:27 PM, Garrett Cooper wrote:
->> On Fri, Mar 4, 2011 at 12:52 AM, Caspar Zhang <czhang@redhat.com> wrote:
->>> On 03/04/2011 04:37 PM, Cristian Greco wrote:
->>>> wouldn't it be better to call tst_resm() with TCONF instead of TINFO,
->>>> for the sake of consistency?
->>>
->>> Agree. Updated to v3:
->>>
->>> These tests contain x86 asm so that they wouldn't be run on x86_64
->>> machine, but run into a simple main() functions instead. However all of
->>> them are missing tst_exit() which could result in a exit_code=10
->>> failure.
->>
->> Fixing it with equivalent:
->>
->> tst_brkm(TBROK, NULL, ...);
->
-> TBROK returns a non-zero value, which may result in a FAIL in log...
+This is a multi-part message in MIME format.
+--------------050901020306010700020709
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Sorry... meant TCONF.
-Thanks,
--Garrett
+Hi all, mmap10 test will check the macro "HAVE_MADV_MERGEABLE" to see if
+the kernel supports MADV_MERGEABLE argument which is available since
+2.6.32, however in mmap10.c it didn't include the header file "config.h"
+which may cause "HAVE_MADV_MERGEABLE" undefined, so that the test will
+never be executed correctly. This patch is simple enough but do fixing
+the issue.
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+ testcases/kernel/syscalls/mmap/mmap10.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c
+b/testcases/kernel/syscalls/mmap/mmap10.c
+index 3191580..58d5c9c 100644
+--- a/testcases/kernel/syscalls/mmap/mmap10.c
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -61,6 +61,7 @@
+ #include <fcntl.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "config.h"
+
+ #define SIZE (5*1024*1024)
+
+-- 
+1.7.4.1
+
+
+-- 
+Quality Engineer (Kernel) in
+Red Hat Software (Beijing) Co., R&D Branch
+http://www.cn.redhat.com/
+TEL: +86-10-62608150
+
+--------------050901020306010700020709
+Content-Type: text/plain;
+	name="0001-add-config.h-header-file-in-mmap10-test.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="0001-add-config.h-header-file-in-mmap10-test.patch"
+
+RnJvbSA0YTM5NmFkNmQ4ODg2ZWU3YTAxYTkyMTk4ZWY1ZTk5MzMwM2VlNjA3IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBDYXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQuY29t
+PgpEYXRlOiBXZWQsIDIgTWFyIDIwMTEgMTg6MDY6MTAgKzA4MDAKU3ViamVjdDogW1BBVENI
+XSBhZGQgY29uZmlnLmggaGVhZGVyIGZpbGUgaW4gbW1hcDEwIHRlc3QKCkhpIGFsbCwgbW1h
+cDEwIHRlc3Qgd2lsbCBjaGVjayB0aGUgbWFjcm8gIkhBVkVfTUFEVl9NRVJHRUFCTEUiIHRv
+IHNlZSBpZgp0aGUga2VybmVsIHN1cHBvcnRzIE1BRFZfTUVSR0VBQkxFIGFyZ3VtZW50IHdo
+aWNoIGlzIGF2YWlsYWJsZSBzaW5jZQoyLjYuMzIsIGhvd2V2ZXIgaW4gbW1hcDEwLmMgaXQg
+ZGlkbid0IGluY2x1ZGUgdGhlIGhlYWRlciBmaWxlICJjb25maWcuaCIKd2hpY2ggbWF5IGNh
+dXNlICJIQVZFX01BRFZfTUVSR0VBQkxFIiB1bmRlZmluZWQsIHNvIHRoYXQgdGhlIHRlc3Qg
+d2lsbApuZXZlciBiZSBleGVjdXRlZCBjb3JyZWN0bHkuIFRoaXMgcGF0Y2ggaXMgc2ltcGxl
+IGVub3VnaCBidXQgZG8gZml4aW5nCnRoZSBpc3N1ZS4KClNpZ25lZC1vZmYtYnk6IENhc3Bh
+ciBaaGFuZyA8Y3poYW5nQHJlZGhhdC5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9tbWFwL21tYXAxMC5jIHwgICAgMSArCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0
+aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL21tYXAvbW1hcDEwLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21t
+YXAvbW1hcDEwLmMKaW5kZXggMzE5MTU4MC4uNThkNWM5YyAxMDA2NDQKLS0tIGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxMC5jCisrKyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTAuYwpAQCAtNjEsNiArNjEsNyBAQAogI2luY2x1ZGUg
+PGZjbnRsLmg+CiAjaW5jbHVkZSAidGVzdC5oIgogI2luY2x1ZGUgInVzY3Rlc3QuaCIKKyNp
+bmNsdWRlICJjb25maWcuaCIKIAogI2RlZmluZSBTSVpFICg1KjEwMjQqMTAyNCkKIAotLSAK
+MS43LjQuMQoK
+--------------050901020306010700020709
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
+--------------050901020306010700020709
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------050901020306010700020709--
+
