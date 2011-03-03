@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1PwUoD-0006iR-2c
-	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 07:24:49 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <qcai@redhat.com>) id 1PuxjH-0008Mm-7U
+	for ltp-list@lists.sourceforge.net; Thu, 03 Mar 2011 01:53:23 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PwUoB-00048g-TB
-	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 07:24:48 +0000
-Date: Mon, 7 Mar 2011 15:29:01 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110307072901.GB2877@hpt.nay.redhat.com>
-References: <20110225103620.GA10350@hpt.nay.redhat.com>
-	<AANLkTi=_K2Q1iYtN0T6izFmnmeEe1Tyyst1CzRHiN+Yg@mail.gmail.com>
+	id 1PuxjG-0001Zy-3U
+	for ltp-list@lists.sourceforge.net; Thu, 03 Mar 2011 01:53:23 +0000
+Date: Wed, 2 Mar 2011 20:52:37 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1469445745.266603.1299117157337.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1299068635.4463.1.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="sm4nu43k4a2Rpi4c"
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=_K2Q1iYtN0T6izFmnmeEe1Tyyst1CzRHiN+Yg@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] thp testcase come from CVE reproducer
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ FEBRUARY 2011.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,292 +24,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
-
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by mx1.redhat.com id
-	p277OfFT026312
-
-On Fri, Mar 04, 2011 at 02:38:51AM -0800, Garrett Cooper wrote:
-> On Fri, Feb 25, 2011 at 2:36 AM, Han Pingtian <phan@redhat.com> wrote:
-> > This is a reproducer of =A0CVE-2011-0999, which fixed by mainline com=
-mit
-> > a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
-> >
-> > "Transparent hugepages can only be created if rmap is fully
-> > functional. So we must prevent hugepages to be created while
-> > is_vma_temporary_stack() is true."
-> >
-> > When running in a loop, it can trigger panic like this, if kernel
-> > unpatched:
-> >
-> > kernel BUG at mm/huge_memory.c:1260!
-> > invalid opcode: 0000 [#1] SMP
-> > last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cp=
-u_map
->=20
-> ...
->=20
-> > +static option_t options[] =3D {
-> > + =A0 =A0 =A0 {NULL, NULL, NULL}
-> > +};
-> > +
-> > +static void usage(void)
-> > +{
-> > + =A0 =A0return;
-> > +}
->=20
-> You can delete this if you do what I suggest below...
->=20
-> ...
->=20
-> > + =A0 =A0 =A0 msg =3D parse_opts(argc, argv, options, usage);
-> > + =A0 =A0 =A0 if (msg !=3D NULL)
->=20
-> `if ((msg =3D parse_opts(argc, argv, NULL, NULL)) !=3D NULL)' is prefer=
-red.
-Thanks. I have updated this according to your suggestion.
->=20
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (exe=
-cve("/bin/true", c, c) =3D=3D -1)
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 tst_brkm(TBROK|TERRNO, NULL, "execve");
->=20
-> Not all systems have /bin/true. It would be better to do:
->=20
-> /bin/sh -c ':'
->=20
-> etc, as we have code that depends on this type of shell-required POSIX =
-behavior.
->=20
-I'm sorry for I cannot figure out how to do this way. I tried, but
-cannot crash unpatched kernel anymore. So I think the simple workaround
-is checking if /bin/true installed in the program:
-
-+
-+                               if (WEXITSTATUS(st) =3D=3D 2)
-+                                       tst_brkm(TBROK, NULL, "Do you hav=
-e /bin/true installed?");
-+
-
-Please review the updated version.
-> Thanks,
-> -Garrett
-
---=20
-Han Pingtian
-Quality Engineer
-hpt @ #kernel-qe
-Red Hat, Inc
-Freedom ... courage ... Commitment ... ACCOUNTABILITY
-
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-thp-testcase-come-from-CVE-reproducer.patch"
-
-From 38c3526fdb59c0b18015914745f2d43fc6c6b1a3 Mon Sep 17 00:00:00 2001
-From: Han Pingtian <phan@redhat.com>
-Date: Fri, 25 Feb 2011 17:51:24 +0800
-Subject: [PATCH] thp testcase come from CVE reproducer
-
-This is a reproducer of  CVE-2011-0999, which fixed by mainline commit
-a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
-
-"Transparent hugepages can only be created if rmap is fully
-functional. So we must prevent hugepages to be created while
-is_vma_temporary_stack() is true."
-
-When running in a loop, it can trigger panic like this, if kernel
-unpatched:
-
-kernel BUG at mm/huge_memory.c:1260!
-invalid opcode: 0000 [#1] SMP
-last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
-....
-
-So I recommend to run it as 'thp01 -I xxx'.
-
-Signed-off-by: Han Pingtian <phan@redhat.com>
----
- runtest/mm                        |    2 +
- testcases/kernel/mem/thp/Makefile |   23 +++++++++
- testcases/kernel/mem/thp/thp01.c  |   95 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 120 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/thp/Makefile
- create mode 100644 testcases/kernel/mem/thp/thp01.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 1296e59..51cc82d 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -85,3 +85,5 @@ oom01 oom01
- oom02 oom02
- oom03 oom03
- oom04 oom04
-+
-+thp01 thp01 -I 600
-diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
-new file mode 100644
-index 0000000..dbfbc1b
---- /dev/null
-+++ b/testcases/kernel/mem/thp/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (C) 2010  Red Hat, Inc.
-+#
-+#  This program is free software; you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or (at
-+#  your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful, but
-+#  WITHOUT ANY WARRANTY; without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+#  General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program; if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+#  02110-1301, USA.
-+#
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
-new file mode 100644
-index 0000000..0b6ec1a
---- /dev/null
-+++ b/testcases/kernel/mem/thp/thp01.c
-@@ -0,0 +1,95 @@
-+/*
-+ * This is a reproducer of  CVE-2011-0999, which fixed by mainline commit
-+ * a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
-+ *
-+ * "Transparent hugepages can only be created if rmap is fully
-+ * functional. So we must prevent hugepages to be created while
-+ * is_vma_temporary_stack() is true."
-+ *
-+ * It will cause a panic something like this, if the patch didn't get applied:
-+ *
-+ * kernel BUG at mm/huge_memory.c:1260!
-+ * invalid opcode: 0000 [#1] SMP
-+ * last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
-+ * ....
-+ *
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include "test.h"
-+#include "usctest.h"
-+#include "config.h"
-+
-+char *TCID = "thp01";
-+int TST_TOTAL = 1;
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <sys/resource.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+
-+int main(int argc, char **argv) {
-+	int i, lc, st;
-+	pid_t pid;
-+	char *msg;
-+	char *c[257];
-+	char cc[32*4096];
-+	struct rlimit rl = {
-+		.rlim_cur = RLIM_INFINITY,
-+		.rlim_max = RLIM_INFINITY,
-+	};
-+
-+	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		switch (pid = fork()) {
-+			case -1:
-+				tst_brkm(TBROK|TERRNO, NULL, "fork");
-+			case 0:
-+				memset(cc, 'c', 32*4096-1);
-+				for (i=0;i<256;i++)
-+					c[i] = cc;
-+				if (setrlimit(RLIMIT_STACK, &rl) == -1)
-+					tst_brkm(TBROK|TERRNO, NULL, "setrlimit");
-+				if (execve("/bin/true", c, c) == -1)
-+					tst_brkm(TBROK|TERRNO, NULL, "execve");
-+			default:
-+				if (waitpid(pid, &st, 0) == -1)
-+					tst_brkm(TBROK|TERRNO, NULL, "waitpid");
-+
-+				if (! WIFEXITED(st))
-+					tst_brkm(TBROK, NULL, "child exits abnormally");
-+
-+				if (WEXITSTATUS(st) == 2)
-+					tst_brkm(TBROK, NULL, "Do you have /bin/true installed?");
-+
-+				if (WEXITSTATUS(st) != 0)
-+					tst_brkm(TBROK, NULL, "chaild exits with non-zero value");
-+
-+				tst_resm(TPASS, "thp01 pass");
-+		}
-+	}
-+
-+        tst_exit();
-+}
--- 
-1.7.1
-
-
---sm4nu43k4a2Rpi4c
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sf.net, vapier@gentoo.org, linux-kernel@vger.kernel.org, Paolo Ciarrocchi <paolo.ciarrocchi@gmail.com>, akpm@linux-foundation.org, torvalds@linux-foundation.org
+
+
+> There was discussion like this some few years back. The idea was to get
+> some core tests from LTP to the kernel source tree. But then the idea
+> was dropped probably to avoid maintenance overhead ;-)
+Where are the places in kernel source tree for those?
+
+Those days, there just too many tests and testing projects for kernel like
+LTP, autotest, xfstests and so on. Why not have somewhere to collabrate and
+then to extract the best?
+
+LTP has so many goals and focus which isn't going to be only to test kernel
+any more and it is increasing difficult to support so many distros, kernel
+versions, and so on.
+
+There are some CORE tests like memory management tests, ksm, oom etc have
+benefit from the developers' bless and review. It also need to be updated
+to keep the tests relevant to the current git tree, since the features/specs
+are changing consistent inside the kernel.
+
+This could be also useful to improve the kernel quality by providing test
+code inside the kernel tree that to be used during the code review process
+that for example, a ksm patchset needs to pass that particular sanity tests
+in order to catch the regression. It provide benefit that when the changelog
+said that it passed the ksm tests inside the kernel, we knew exactly what it is
+without needing to sync up with another project like LTP.
+
+In term of maintenance, it needs to be selectively which tests need to be
+inside the kernel. There should ideally have a dedicated maintainer from the
+testing point of view to review them. The criteria can be something like,
+
+1) purely purpose of the tests are to test kernel written in C with the kernel
+   coding style. Userspace and integration tests should be better to put into
+   LTP and other projects.
+2) tests need to pass sub-system maintainers' review that for example, ksm
+   tests need MM sub-system maintainers' review-by and sign-off-by and alike.
+3) they need to be working with and sync up to the latest git version.
+4) they have to be proved to be the best tests we can have to test those
+   particular kernel code. There are many tests in LTP, but there are also
+   many duplicated tests as well. Those need to be solved when considering to
+   be moved inside the kernel source.
+5) they should really be functional testing. Non-functional tests like stress
+   or performance tests are usually more complex to setup hence defeat the
+   purpose of quick regression checking.
+
+Once we have those tests in-place, the next step to improve the kernel quality
+is to have more patches had Tested-by tags before been accepted in the kernel
+git tree. Those testers can simply use the non-ambiguious references for tests
+provided by those in-kernel tests.
+
+In addition, those could be a follow-up items with the kernel regression reports
+that after fixed/analyzed a regression in kernel, the next natural thing to do
+is to fix/add missing tests to close this gap in the future by providing efficient
+tests to our users if all possible.
+
+CAI Qian
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---sm4nu43k4a2Rpi4c--
-
