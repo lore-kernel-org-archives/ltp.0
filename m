@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <cristian@regolo.cc>) id 1PvXZr-0006IL-L4
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:10:03 +0000
-Received: from aiolia.regolo.cc ([178.79.135.37])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PvXZq-00081a-OX
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:10:03 +0000
-Received: from regolo (85-18-251-172.ip.fastwebnet.it [85.18.251.172])
-	by aiolia.regolo.cc (Postfix) with ESMTPSA id DED2064
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  4 Mar 2011 17:09:56 +0100 (CET)
-Date: Fri, 4 Mar 2011 17:09:32 +0100
-From: Cristian Greco <cristian@regolo.cc>
-Message-ID: <20110304170932.19819907@regolo>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] kill05: fix regression
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1PvCT7-0006GP-VS
+	for ltp-list@lists.sourceforge.net; Thu, 03 Mar 2011 17:37:41 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PvCT6-0005w0-Ql
+	for ltp-list@lists.sourceforge.net; Thu, 03 Mar 2011 17:37:41 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p23HbZrv005994
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Mar 2011 12:37:35 -0500
+Message-ID: <4D6FD1D5.30209@redhat.com>
+Date: Fri, 04 Mar 2011 01:37:25 +0800
+From: Caspar Zhang <czhang@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------060107020403080801050603"
+Subject: [LTP] [PATCH] syscalls: getdents02: add tst_exit()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,95 +28,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4379084151952127048=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
---===============4379084151952127048==
-Content-Type: multipart/signed; micalg=PGP-SHA256;
-	boundary="Sig_/7U1h5ONWtNvYQ1b.FP8y21R";
-	protocol="application/pgp-signature"
+This is a multi-part message in MIME format.
+--------------060107020403080801050603
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---Sig_/7U1h5ONWtNvYQ1b.FP8y21R
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This test contains x86 asm so that it wouldn't be run on x86_64 machine,
+but run into a simple main() functions instead. However it forgets to
+give a return value, so that the program will exit with exit_code=10.
+added tst_exit() to solve this issue.
 
-Hi,
-
-this should fix a regression in kill05.
-
-Why did tst_resm/tst_exit get replaced by perror/exit in 84f181fd?
-
-
-Signed-off-by: Cristian Greco <cristian@regolo.cc>
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- testcases/kernel/syscalls/kill/kill05.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ testcases/kernel/syscalls/getdents/getdents02.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/kill/kill05.c
-b/testcases/kernel/syscalls/kill/kill05.c index 0193100..ac5dc86 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -121,11 +121,12 @@ int main(int ac, char **av)
- 		tst_brkm(TBROK, cleanup, "Fork failed");
- 	else if (pid =3D=3D 0)
- 		do_master_child(av);
+diff --git a/testcases/kernel/syscalls/getdents/getdents02.c
+b/testcases/kernel/syscalls/getdents/getdents02.c
+index 4daae05..2503712 100644
+--- a/testcases/kernel/syscalls/getdents/getdents02.c
++++ b/testcases/kernel/syscalls/getdents/getdents02.c
+@@ -74,7 +74,7 @@ int main()
+ {
+ 	tst_resm(TINFO, "This test includes x86 asm and will not work on "
+ 		 "this machine");
 -
-+  else {
- 	if (waitpid(pid, &status, 0) =3D=3D -1)
- 		tst_resm(TBROK|TERRNO, "waitpid failed");
- 	else if (!WIFEXITED(status) || WEXITSTATUS(status) !=3D 0)
- 		tst_resm(TFAIL, "child exited abnormally");
-+  }
- 	cleanup();
- 	tst_exit();
++	tst_exit();
  }
---=20
+ #else
+
+@@ -208,4 +208,4 @@ void cleanup(void)
+
+ }
+
+-#endif /* __i386__ */
+\ No newline at end of file
++#endif /* __i386__ */
+-- 
 1.7.4.1
 
 
-Thanks,
---
-Cristian Greco
-GPG key ID: 0xCF4D32E4
+-- 
+Quality Engineer (Kernel) in
+Red Hat Software (Beijing) Co., R&D Branch
+http://www.cn.redhat.com/
+TEL: +86-10-62608150
 
---Sig_/7U1h5ONWtNvYQ1b.FP8y21R
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
+--------------060107020403080801050603
+Content-Type: text/plain;
+ name="0003-syscalls-getdents02-add-tst_exit.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="0003-syscalls-getdents02-add-tst_exit.patch"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJNcQ68AAoJEID329zPTTLkD7MP/0cAkcmFZ6jTXQgu3mJIXsvS
-nrEnV66BiRP8h/KSah+vmI/M8NNisehtD/PjZPK0yy/4L7OpuIWfwmrOrXbXIxTs
-yN5pOjWf1NfgLxbZMLSfk4Detnz+2fOYUMQZ2h08/HbUrA7pLBZckdpL1s4fphhX
-sJqTkB/l2QE8q4HTJH+8leMJwk3DyMApgQj27hhc5UyzJeuSmTRJ2bbf7c/N5D/7
-zdg/5PCuJbxNJF/bHYJgMc+fhJyYkD51BTXaRF4Xmcq0jblqMmbi50nhBPc22nL5
-0fsdoHgVwXp6GukKebMnPTaUieeiCfxYf2jcK6554XVTKhBBKbQFt3BXHngTKEGI
-0koGJy00/gPF8eA6b4F7boQo+WVRagXAxvpNDbAFZzVRPKGDBi06KOovcnetOZAt
-Lh4KVn8zWVVB8ul3bDJXkEr6thJaN4MuRpLH1LfrjbJaPlJl9P+lExbjepNvowrD
-gfHkCwU/aR42Il6lCtM6G79AuLVbvMSmQe0sQuzuDh889KQUOfdHSDZDDlgkr7lU
-aAQD3KR3dqazUJVdcl4i0+GQt8OUiBsoSN382hUIZNrnvjuCkW+1zSn6WdwExlJ/
-70AMfaaePTHOHW63zwjDbDvqm0MvWROi7Eu5vrNY7GXLLFC8/NGOxpNsD2fdb5DD
-46DaSIdV9dJTtpkkjjqI
-=GvjT
------END PGP SIGNATURE-----
-
---Sig_/7U1h5ONWtNvYQ1b.FP8y21R--
-
-
---===============4379084151952127048==
+VGhpcyB0ZXN0IGNvbnRhaW5zIHg4NiBhc20gc28gdGhhdCBpdCB3b3VsZG4ndCBiZSBydW4g
+b24geDg2XzY0IG1hY2hpbmUsCmJ1dCBydW4gaW50byBhIHNpbXBsZSBtYWluKCkgZnVuY3Rp
+b25zIGluc3RlYWQuIEhvd2V2ZXIgaXQgZm9yZ2V0cyB0byAKZ2l2ZSBhIHJldHVybiB2YWx1
+ZSwgc28gdGhhdCB0aGUgcHJvZ3JhbSB3aWxsIGV4aXQgd2l0aCBleGl0X2NvZGU9MTAuIAph
+ZGRlZCB0c3RfZXhpdCgpIHRvIHNvbHZlIHRoaXMgaXNzdWUuCgpTaWduZWQtb2ZmLWJ5OiBD
+YXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQuY29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvZ2V0ZGVudHMvZ2V0ZGVudHMwMi5jIHwgICAgNCArKy0tCiAxIGZpbGVzIGNo
+YW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldGRlbnRzL2dldGRlbnRzMDIuYyBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0ZGVudHMvZ2V0ZGVudHMwMi5jCmluZGV4IDRkYWFl
+MDUuLjI1MDM3MTIgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0
+ZGVudHMvZ2V0ZGVudHMwMi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0
+ZGVudHMvZ2V0ZGVudHMwMi5jCkBAIC03NCw3ICs3NCw3IEBAIGludCBtYWluKCkKIHsKIAl0
+c3RfcmVzbShUSU5GTywgIlRoaXMgdGVzdCBpbmNsdWRlcyB4ODYgYXNtIGFuZCB3aWxsIG5v
+dCB3b3JrIG9uICIKIAkJICJ0aGlzIG1hY2hpbmUiKTsKLQorCXRzdF9leGl0KCk7CiB9CiAj
+ZWxzZQogCkBAIC0yMDgsNCArMjA4LDQgQEAgdm9pZCBjbGVhbnVwKHZvaWQpCiAKIH0KIAot
+I2VuZGlmIC8qIF9faTM4Nl9fICovClwgTm8gbmV3bGluZSBhdCBlbmQgb2YgZmlsZQorI2Vu
+ZGlmIC8qIF9faTM4Nl9fICovCi0tIAoxLjcuNC4xCgo=
+--------------060107020403080801050603
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
---===============4379084151952127048==
+Free Software Download: Index, Search & Analyze Logs and other IT data in 
+Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
+generated by your applications, servers and devices whether physical, virtual
+or in the cloud. Deliver compliance at lower cost and gain new business 
+insights. http://p.sf.net/sfu/splunk-dev2dev 
+--------------060107020403080801050603
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -125,5 +125,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4379084151952127048==--
+--------------060107020403080801050603--
 
