@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1PvCT7-0006GP-VS
-	for ltp-list@lists.sourceforge.net; Thu, 03 Mar 2011 17:37:41 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PvCT6-0005w0-Ql
-	for ltp-list@lists.sourceforge.net; Thu, 03 Mar 2011 17:37:41 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p23HbZrv005994
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Mar 2011 12:37:35 -0500
-Message-ID: <4D6FD1D5.30209@redhat.com>
-Date: Fri, 04 Mar 2011 01:37:25 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	(envelope-from <chrubis@suse.de>) id 1PvW0M-0003Qg-LY
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 14:29:18 +0000
+Date: Fri, 4 Mar 2011 15:50:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110304145011.GC21064@saboteur.suse.cz>
+References: <OF9AB4C7C7.EB1D7DBD-ON87257822.0057786A-07257822.00583026@us.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060107020403080801050603"
-Subject: [LTP] [PATCH] syscalls: getdents02: add tst_exit()
+Content-Disposition: inline
+In-Reply-To: <OF9AB4C7C7.EB1D7DBD-ON87257822.0057786A-07257822.00583026@us.ibm.com>
+Subject: Re: [LTP] Fw: [Ltp Patch for ext4 punch hole 1/1] Added a new ext4
+ hole punch test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,102 +22,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------060107020403080801050603
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-This test contains x86 asm so that it wouldn't be run on x86_64 machine,
-but run into a simple main() functions instead. However it forgets to
-give a return value, so that the program will exit with exit_code=10.
-added tst_exit() to solve this issue.
-
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
- testcases/kernel/syscalls/getdents/getdents02.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/getdents/getdents02.c
-b/testcases/kernel/syscalls/getdents/getdents02.c
-index 4daae05..2503712 100644
---- a/testcases/kernel/syscalls/getdents/getdents02.c
-+++ b/testcases/kernel/syscalls/getdents/getdents02.c
-@@ -74,7 +74,7 @@ int main()
- {
- 	tst_resm(TINFO, "This test includes x86 asm and will not work on "
- 		 "this machine");
--
-+	tst_exit();
- }
- #else
-
-@@ -208,4 +208,4 @@ void cleanup(void)
-
- }
-
--#endif /* __i386__ */
-\ No newline at end of file
-+#endif /* __i386__ */
--- 
-1.7.4.1
-
-
--- 
-Quality Engineer (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-http://www.cn.redhat.com/
-TEL: +86-10-62608150
-
---------------060107020403080801050603
-Content-Type: text/plain;
- name="0003-syscalls-getdents02-add-tst_exit.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="0003-syscalls-getdents02-add-tst_exit.patch"
-
-VGhpcyB0ZXN0IGNvbnRhaW5zIHg4NiBhc20gc28gdGhhdCBpdCB3b3VsZG4ndCBiZSBydW4g
-b24geDg2XzY0IG1hY2hpbmUsCmJ1dCBydW4gaW50byBhIHNpbXBsZSBtYWluKCkgZnVuY3Rp
-b25zIGluc3RlYWQuIEhvd2V2ZXIgaXQgZm9yZ2V0cyB0byAKZ2l2ZSBhIHJldHVybiB2YWx1
-ZSwgc28gdGhhdCB0aGUgcHJvZ3JhbSB3aWxsIGV4aXQgd2l0aCBleGl0X2NvZGU9MTAuIAph
-ZGRlZCB0c3RfZXhpdCgpIHRvIHNvbHZlIHRoaXMgaXNzdWUuCgpTaWduZWQtb2ZmLWJ5OiBD
-YXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQuY29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvZ2V0ZGVudHMvZ2V0ZGVudHMwMi5jIHwgICAgNCArKy0tCiAxIGZpbGVzIGNo
-YW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldGRlbnRzL2dldGRlbnRzMDIuYyBiL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0ZGVudHMvZ2V0ZGVudHMwMi5jCmluZGV4IDRkYWFl
-MDUuLjI1MDM3MTIgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0
-ZGVudHMvZ2V0ZGVudHMwMi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0
-ZGVudHMvZ2V0ZGVudHMwMi5jCkBAIC03NCw3ICs3NCw3IEBAIGludCBtYWluKCkKIHsKIAl0
-c3RfcmVzbShUSU5GTywgIlRoaXMgdGVzdCBpbmNsdWRlcyB4ODYgYXNtIGFuZCB3aWxsIG5v
-dCB3b3JrIG9uICIKIAkJICJ0aGlzIG1hY2hpbmUiKTsKLQorCXRzdF9leGl0KCk7CiB9CiAj
-ZWxzZQogCkBAIC0yMDgsNCArMjA4LDQgQEAgdm9pZCBjbGVhbnVwKHZvaWQpCiAKIH0KIAot
-I2VuZGlmIC8qIF9faTM4Nl9fICovClwgTm8gbmV3bGluZSBhdCBlbmQgb2YgZmlsZQorI2Vu
-ZGlmIC8qIF9faTM4Nl9fICovCi0tIAoxLjcuNC4xCgo=
---------------060107020403080801050603
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Allison C Henderson <achender@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> This is a re-submission of an earlier patch to add an ext4 testcase to 
+> ltp.  I've cleaned up the patch according to the stlye guide and attached 
+> a git friendly patch.  This is my first time doing one of these, so please 
+> let me know if I left anything out.  Thx!
+
+Sorry for the delay. Looking at the patch, it has dos newlines (CR+LF).
+
+And I see some minor coding style violation like missing spaces after
+keywords and so.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Free Software Download: Index, Search & Analyze Logs and other IT data in 
-Real-Time with Splunk. Collect, index and harness all the fast moving IT data 
-generated by your applications, servers and devices whether physical, virtual
-or in the cloud. Deliver compliance at lower cost and gain new business 
-insights. http://p.sf.net/sfu/splunk-dev2dev 
---------------060107020403080801050603
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------060107020403080801050603--
-
