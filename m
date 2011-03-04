@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PvXtV-0007Gv-LD
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:30:21 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PvXtU-0007wQ-Qo
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:30:21 +0000
-Received: by wwb29 with SMTP id 29so3164912wwb.10
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <cristian@regolo.cc>) id 1PvQVu-0003TR-Vx
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 08:37:30 +0000
+Received: from aiolia.regolo.cc ([178.79.135.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PvQVu-0002gD-2T
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 08:37:30 +0000
+Received: from regolo (85-18-251-172.ip.fastwebnet.it [85.18.251.172])
+	by aiolia.regolo.cc (Postfix) with ESMTPSA id 4197264
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 04 Mar 2011 08:30:14 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTin_4rBGj5O-ZgTdu2C8nV6Lc9-pa9ig8NsAowAd@mail.gmail.com>
-References: <20110304170932.19819907@regolo>
-	<AANLkTin_4rBGj5O-ZgTdu2C8nV6Lc9-pa9ig8NsAowAd@mail.gmail.com>
-Date: Fri, 4 Mar 2011 08:30:14 -0800
-Message-ID: <AANLkTik6nKzqp2tuyhsuk6FvMd540xZVGGddr=B13D-R@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] kill05: fix regression
+	Fri,  4 Mar 2011 09:37:24 +0100 (CET)
+Date: Fri, 4 Mar 2011 09:37:11 +0100
+From: Cristian Greco <cristian@regolo.cc>
+Message-ID: <20110304093711.7c022f74@regolo>
+In-Reply-To: <4D6FD518.1040503@redhat.com>
+References: <4D6FD1D5.30209@redhat.com>
+	<4D6FD518.1040503@redhat.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH v2] syscalls: getdents0[234]: add tst_exit()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,44 +29,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============5852321611762380941=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Greco <cristian@regolo.cc>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Fri, Mar 4, 2011 at 8:29 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Fri, Mar 4, 2011 at 8:09 AM, Cristian Greco <cristian@regolo.cc> wrote:
->> Hi,
->>
->> this should fix a regression in kill05.
->>
->> Why did tst_resm/tst_exit get replaced by perror/exit in 84f181fd?
->
-> =A0 =A0Because it's a child process and child processes should _not_ use
-> libltp for sanity and to avoid introducing determinism, test bugs, and
+--===============5852321611762380941==
+Content-Type: multipart/signed; micalg=PGP-SHA256;
+	boundary="Sig_/suH9UEteLXnc6Oti8GoImqM";
+	protocol="application/pgp-signature"
 
-s/determinism/non-determinism/
+--Sig_/suH9UEteLXnc6Oti8GoImqM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> for cluttering up output (remember: you have to communicate to the
-> user which process is actually doing the work, they're sharing file
-> descriptors potentially, etc).
-> =A0 =A0The proposed fix doesn't make sense though because do_master_child
-> always exits when the flow is executed correctly (i.e. there aren't
-> any early return statements from do_master_child, etc. Is it not
-> resuming the stack appropriately after it gets signaled? What's the
-> call flow exactly for the failure?
-> Thanks,
-> -Garrett
->
+On Fri, 04 Mar 2011 01:51:20 +0800
+Caspar Zhang <czhang@redhat.com> wrote:
 
----------------------------------------------------------------------------=
----
+> Similar to getdents0[34] and getdents0[234]_64, so I updated the patch
+> to v2.
+>=20
+> These tests contain x86 asm so that they wouldn't be run on x86_64
+> machine, but run into a simple main() functions instead. However all of
+> them are missing tst_exit() which could result in a exit_code=3D10
+> failure.
+>=20
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  testcases/kernel/syscalls/getdents/getdents02.c |    4 ++--
+>  testcases/kernel/syscalls/getdents/getdents03.c |    4 ++--
+>  testcases/kernel/syscalls/getdents/getdents04.c |    4 ++--
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/testcases/kernel/syscalls/getdents/getdents02.c
+> b/testcases/kernel/syscalls/getdents/getdents02.c
+> index 4daae05..2503712 100644
+> --- a/testcases/kernel/syscalls/getdents/getdents02.c
+> +++ b/testcases/kernel/syscalls/getdents/getdents02.c
+> @@ -74,7 +74,7 @@ int main()
+>  {
+>  	tst_resm(TINFO, "This test includes x86 asm and will not work on "
+>  		 "this machine");
+
+Hi Caspar,
+
+wouldn't it be better to call tst_resm() with TCONF instead of TINFO,
+for the sake of consistency?
+
+Thanks,
+--
+Cristian Greco
+GPG key ID: 0xCF4D32E4
+
+--Sig_/suH9UEteLXnc6Oti8GoImqM
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBCAAGBQJNcKS3AAoJEID329zPTTLkiasQAITHEdbliuYW4y94AAnhI+OB
+3oXIUEDfNFD4AGxw3mtscs5G5G/jF8QopIGj30mfshS5csBqMkOgyoyXgqVnHwk7
+l3cHhNzr+Klga1kriQTOXe6k/qGa0dg4SGoDUFSoKncMuulot8lpE1h5MMHFCZwY
+4anM8NEXV+7ss/YG0DXfVfeXozwHEhyZI0uTLOJoBeo3gQxRVBXaBFtyIlD3DAgW
+7PDyxdsJeoA2+iBvhbvVhHdgt+g8O+17J09orYSZtHBf6nCr1wNxrU4fuC6P6QAE
+nnhBJj5rA5/nv8eY4rGjRNpF/EZvbTNIfrq79KSIf7DuMmX2Lmhvn+ZcgScN4/86
+u5riYmuR4/WbYo4pIYdL78Ljo/Z5/dAOAFfRR2Sen1d3svcVmXgqCZiUwlaYkRoV
+aX9VjRliPmAz/Oe3hzLbCRj/RN3aVduPiEPEVPR46qN4Ha0MZ/GqCj/3ItR1WXAH
+TiiZsIelRimEc9jLA/u/poERXrg3DvbAljBAGZlh98CD/lDK6BErZ0CHOPipv+ZL
+Hjy647QGwWPeBdFPWx/NSqOM+c4Y/nCzSaPUKAdkpL18yYW7hcZ+sr5yChghHIUj
+sbmjr8GHiNODKIdcxAyWhOBfyUF5l0W4Qjo0MPbbt9nL1Net2NtduvkK3wFT8vda
+dH/LLOsUfFZyf7MZUmKU
+=6qlC
+-----END PGP SIGNATURE-----
+
+--Sig_/suH9UEteLXnc6Oti8GoImqM--
+
+
+--===============5852321611762380941==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 What You Don't Know About Data Connectivity CAN Hurt You
 This paper provides an overview of data connectivity, details
 its effect on application quality, and explores various alternative
 solutions. http://p.sf.net/sfu/progress-d2d
+--===============5852321611762380941==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5852321611762380941==--
+
