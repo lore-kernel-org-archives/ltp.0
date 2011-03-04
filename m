@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q5K57-0004yP-2D
-	for ltp-list@lists.sourceforge.net; Thu, 31 Mar 2011 15:46:45 +0000
-Date: Thu, 31 Mar 2011 18:09:53 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110331160953.GA6673@saboteur.suse.cz>
-References: <4D80769F.70202@cn.fujitsu.com>
-	<20110323163619.GA7438@saboteur.suse.cz>
-	<4D8AA64A.30506@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PvSJY-0008B9-Rj
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 10:32:52 +0000
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PvSJY-00026g-2K
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 10:32:52 +0000
+Received: by wwb29 with SMTP id 29so59291wwb.4
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 04 Mar 2011 02:32:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4D8AA64A.30506@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH] sem_wait: Setting a range for time
- checking.
+In-Reply-To: <20110225075728.GB2902@hpt.nay.redhat.com>
+References: <20110224101921.GA30765@hpt.nay.redhat.com>
+	<AANLkTimuSUtaPSL5x1N75_nF2OtXfjMzcvu5wK4b2FJ7@mail.gmail.com>
+	<20110225025148.GA2902@hpt.nay.redhat.com>
+	<AANLkTi=cqRqDH_JKyVTx0cnRRy74Yidd9T8Ww-cSJMs4@mail.gmail.com>
+	<20110225075728.GB2902@hpt.nay.redhat.com>
+Date: Fri, 4 Mar 2011 02:32:45 -0800
+Message-ID: <AANLkTim2_K5WV11qPm9GG8Xz9vQ-YAVgQ=B+a225vRU3@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] basic mlock() testcase from lkml
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,49 +31,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> >>According to POSIX, many historical implementations (including Version 7
-> >>and System V) allow an alarm to occur up to a second early. Other
-> >>implementations allow alarms up to half a second or one clock tick early
-> >>or do not allow them to occur early at all. That means, the SIGALRM sent
-> >>by alarm() could arrive a little earlier. So, even if sem_wait() is
-> >>blocked, test could still fail.
-> >>Setting a range for time checking would be better. When sem_wait() is
-> >>block and then be interrupted by SIGALRM, if the time is in this range,
-> >>test is passed.
-> >Out of curiosity, what system is this? The signal seems to arrives after
-> >more than 1 second on all linux boxes that I have.
-> My box is like the following:
-> 
-> OS: RHEL5.5 x86-64.
-> Memory: 2GB
-> CPU: Intel(R) Xeon(TM) CPU 3.00GHz (4 CPUs)
-> 
-> 
-> Sometimes it worked normally, but sometimes I got the following messages:
-> 
->   Ts: 1300437153.432960442  ->  1300437154.432457949
->   Test ../../../conformance/interfaces/sem_wait/13-1.c
->   FAILED: The sem_wait call did not block
+On Thu, Feb 24, 2011 at 11:57 PM, Han Pingtian <phan@redhat.com> wrote:
+> On Thu, Feb 24, 2011 at 10:16:58PM -0800, Garrett Cooper wrote:
+>> On Thu, Feb 24, 2011 at 6:51 PM, Han Pingtian <phan@redhat.com> wrote:
+>>
+>> ...
+>>
+>> > Updated as required. Please review. Thanks.
+>>
+>> =A0 =A0 close should be under TEST_CLEANUP. Other than that it's fine.
+> Updated. Thanks.
 
-Okay, I've did a little different fix. Now the alarm is set to wait for
-two seconds and we expects it to last at least one.
+Committed -- thanks!
+-Garrett
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+---------------------------------------------------------------------------=
+---
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
