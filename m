@@ -2,21 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1PzrML-0006Dr-Ba
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 14:05:57 +0000
+	(envelope-from <czhang@redhat.com>) id 1PvXQJ-0005nE-6A
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:00:11 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PzrMK-0007od-Bq
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 14:05:57 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p2GE5oPa013196
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 16 Mar 2011 10:05:50 -0400
-From: czhang@redhat.com
-Date: Wed, 16 Mar 2011 22:05:45 +0800
-Message-Id: <1300284345-23533-1-git-send-email-czhang@redhat.com>
-Subject: [LTP] [PATCH 2/2] fs: fsstress: fix compile when -DNO_XFS disabled
+	id 1PvXQI-00051w-2i
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:00:11 +0000
+Message-ID: <4D710C76.40900@redhat.com>
+Date: Fri, 04 Mar 2011 23:59:50 +0800
+From: Caspar Zhang <czhang@redhat.com>
+MIME-Version: 1.0
+References: <4D662E3A.1050802@cn.fujitsu.com>	<AANLkTim+d5gTwh84n2s79f2s+TmZD7AMuK65iQAfQ9yw@mail.gmail.com>	<4D6AF509.7000302@cn.fujitsu.com>
+	<AANLkTinfLc-WM3vkV7WWFNxdAjFMEz1LiHT9CqA5+fih@mail.gmail.com>
+In-Reply-To: <AANLkTinfLc-WM3vkV7WWFNxdAjFMEz1LiHT9CqA5+fih@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------020809020105070908090707"
+Subject: Re: [LTP] [PATCH] The parent process need exit of waitpid11.c,
+ waitpid12.c, waitpid13.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,126 +27,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Caspar Zhang <czhang@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Caspar Zhang <czhang@redhat.com>
+This is a multi-part message in MIME format.
+--------------020809020105070908090707
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When -DNO_XFS disabled in Makefile, the compilation couldn't pass and
-many errors and warnings outputed. This patch fixes this issue.
+On 03/04/2011 06:13 PM, Garrett Cooper wrote:
+> I've committed a more extensive patch. Please test it out and let me
+> know how it goes -- thanks!
+> -Garrett
 
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
- testcases/kernel/fs/fsstress/Makefile   |    3 +++
- testcases/kernel/fs/fsstress/fsstress.c |   16 ++++++++--------
- testcases/kernel/fs/fsstress/global.h   |    4 ++--
- 3 files changed, 13 insertions(+), 10 deletions(-)
+Hi Garrett, compile error occurs in this patch, here is a fix.
 
-diff --git a/testcases/kernel/fs/fsstress/Makefile b/testcases/kernel/fs/fsstress/Makefile
-index 0a53891..f6527ed 100644
---- a/testcases/kernel/fs/fsstress/Makefile
-+++ b/testcases/kernel/fs/fsstress/Makefile
-@@ -27,6 +27,9 @@ include $(top_srcdir)/include/mk/env_pre.mk
- CPPFLAGS			+= -DNO_XFS -I$(abs_srcdir) \
- 				   -D_LARGEFILE64_SOURCE -D_GNU_SOURCE
- 
-+# if removed -DNO_XFS, you should unmask the following line
-+#CPPFLAGS			+= -lattr
-+
- # XXX (garrcoop): not -Wuninitialized clean.
- CPPFLAGS			+= -Wno-error
- 
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-index 37956f3..e774d22 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -1436,7 +1436,7 @@ allocsp_f(int opno, long r)
- 	e = ioctl(fd, XFS_IOC_ALLOCSP64, &fl) < 0 ? errno : 0;
- 	if (v)
- 		printf("%d/%d: ioctl(XFS_IOC_ALLOCSP64) %s %lld 0 %d\n",
--			procid, opno, f.path, off, e);
-+			procid, opno, f.path, (long long)off, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-@@ -1571,7 +1571,7 @@ bulkstat_f(int opno, long r)
- 	free(t);
- 	if (verbose)
- 		printf("%d/%d: bulkstat nent %d total %lld\n",
--			procid, opno, nent, total);
-+			procid, opno, nent, (long long)total);
- 	close(fd);
- }
- 
-@@ -1704,7 +1704,7 @@ creat_f(int opno, long r)
- 				geom.rtextsize * geom.blocksize * extsize;
- 			if (ioctl(fd, XFS_IOC_FSSETXATTR, &a) < 0)
- 				e1 = errno;
--			esz = a.fsx_estsize;
-+			esz = a.fsx_extsize;
- 
- 		}
- #endif
-@@ -2014,7 +2014,7 @@ freesp_f(int opno, long r)
- 	e = ioctl(fd, XFS_IOC_FREESP64, &fl) < 0 ? errno : 0;
- 	if (v)
- 		printf("%d/%d: ioctl(XFS_IOC_FREESP64) %s %lld 0 %d\n",
--			procid, opno, f.path, off, e);
-+			procid, opno, f.path, (long long)off, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-@@ -2386,8 +2386,8 @@ resvsp_f(int opno, long r)
- 	fl.l_len = (off64_t)(random() % (1024 * 1024));
- 	e = ioctl(fd, XFS_IOC_RESVSP64, &fl) < 0 ? errno : 0;
- 	if (v)
--		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %lld %d\n",
--			procid, opno, f.path, off, fl.l_len, e);
-+		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %ld %d\n",
-+			procid, opno, f.path, (long long)off, fl.l_len, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-@@ -2603,8 +2603,8 @@ unresvsp_f(int opno, long r)
- 	fl.l_len = (off64_t)(random() % (1 << 20));
- 	e = ioctl(fd, XFS_IOC_UNRESVSP64, &fl) < 0 ? errno : 0;
- 	if (v)
--		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %lld %d\n",
--			procid, opno, f.path, off, fl.l_len, e);
-+		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %ld %d\n",
-+			procid, opno, f.path, (long long)off, fl.l_len, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-diff --git a/testcases/kernel/fs/fsstress/global.h b/testcases/kernel/fs/fsstress/global.h
-index f788395..9644666 100644
---- a/testcases/kernel/fs/fsstress/global.h
-+++ b/testcases/kernel/fs/fsstress/global.h
-@@ -38,8 +38,8 @@
- #if defined(NO_XFS)
- # include "xfscompat.h"
- #else
--# include <libxfs.h>
--# include <attributes.h>
-+# include <xfs/libxfs.h>
-+# include <attr/attributes.h>
- #endif
- 
- /* libc includes */
 -- 
-1.7.4.1
+Quality Engineer (Kernel) in
+Red Hat Software (Beijing) Co., R&D Branch
+http://www.cn.redhat.com/
+TEL: +86-10-62608150
 
+--------------020809020105070908090707
+Content-Type: text/plain; name="0001-syscalls-waitpid11-fix-compile-err.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="0001-syscalls-waitpid11-fix-compile-err.patch"
+
+RnJvbSBjNTJhNjc5OGNhYTVkZDY3M2VlYTUwYjlhNDE2ODY3MTNlNmMxMzAzIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBDYXNwYXIgWmhhbmcgPGN6aGFuZ0ByZWRoYXQuY29t
+PgpEYXRlOiBGcmksIDQgTWFyIDIwMTEgMjM6NTc6MzkgKzA4MDAKU3ViamVjdDogW1BBVENI
+XSBzeXNjYWxsczogd2FpdHBpZDExOiBmaXggY29tcGlsZSBlcnIKClNpZ25lZC1vZmYtYnk6
+IENhc3BhciBaaGFuZyA8Y3poYW5nQHJlZGhhdC5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy93YWl0cGlkL3dhaXRwaWQxMS5jIHwgICAgMiArLQogMSBmaWxlcyBjaGFu
+Z2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy93YWl0cGlkL3dhaXRwaWQxMS5jIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy93YWl0cGlkL3dhaXRwaWQxMS5jCmluZGV4IDQ1ZDgyOGMuLjM2
+OGU5ODQgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvd2FpdHBpZC93
+YWl0cGlkMTEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3dhaXRwaWQvd2Fp
+dHBpZDExLmMKQEAgLTI4Myw3ICsyODMsNyBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiph
+dikKIHZvaWQgc2V0dXBfc2lnaW50KHZvaWQpCiB7CiAJaWYgKHNpZ25hbChTSUdJTlQsIGlu
+dGhhbmRscikgPT0gU0lHX0VSUikKLQkJdHN0X2Jya20oVEZBSUx8VEVSUk5PLCAic2lnbmFs
+IFNJR0lOVCBmYWlsZWQiKTsKKwkJdHN0X2Jya20oVEZBSUx8VEVSUk5PLCBOVUxMLCAic2ln
+bmFsIFNJR0lOVCBmYWlsZWQiKTsKIH0KIAogdm9pZCBzZXR1cCh2b2lkKQotLSAKMS43LjQu
+MQoK
+--------------020809020105070908090707
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Colocation vs. Managed Hosting
-A question and answer guide to determining the best fit
-for your organization - today and in the future.
-http://p.sf.net/sfu/internap-sfd2d
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
+--------------020809020105070908090707
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------020809020105070908090707--
+
