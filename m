@@ -1,18 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q4ykK-0006bT-46
-	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 16:59:52 +0000
-Date: Wed, 30 Mar 2011 19:22:58 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110330172258.GG29707@saboteur.suse.cz>
-References: <AANLkTimQ87Q009E_3fM5KAHX79tDnHOVryR4VQijEi6y@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PvXh1-00027v-Qh
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:17:27 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PvXh1-0006qn-1a
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:17:27 +0000
+Received: by wyb38 with SMTP id 38so2606307wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 04 Mar 2011 08:17:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTimQ87Q009E_3fM5KAHX79tDnHOVryR4VQijEi6y@mail.gmail.com>
-Subject: Re: [LTP] testcases/kernel/mem/mtest01/mtest01.c mishandles fork()
- failure
+In-Reply-To: <4D710C76.40900@redhat.com>
+References: <4D662E3A.1050802@cn.fujitsu.com>
+	<AANLkTim+d5gTwh84n2s79f2s+TmZD7AMuK65iQAfQ9yw@mail.gmail.com>
+	<4D6AF509.7000302@cn.fujitsu.com>
+	<AANLkTinfLc-WM3vkV7WWFNxdAjFMEz1LiHT9CqA5+fih@mail.gmail.com>
+	<4D710C76.40900@redhat.com>
+Date: Fri, 4 Mar 2011 08:17:20 -0800
+Message-ID: <AANLkTinEEo_hPbZzKVa-LgEp_Qyx9zcNJ6OO0Lyy6rXQ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] The parent process need exit of waitpid11.c,
+ waitpid12.c, waitpid13.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,39 +35,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: John Hawkes <jhawkes@penguincomputing.com>
+To: Caspar Zhang <czhang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> I don't know if this has been reported previously, but
-> testcases/kernel/mem/mtest01/mtest01.c improperly handles fork()
-> failures.  This coding sequence appears in several spots:
->         pid = fork();
->         if (pid != 0)
->                 pid_cntr++;
->         pid_list[i] = pid;
-> 
-> If fork() fails and returns -1, that -1 gets stored in pid_list[i].  Later:
->          while (pid_list[i] != 0) {
->                  kill(pid_list[i], SIGKILL);
->                  i++;
->          }
-> will execute   kill(-1, SIGKILL)   which attempts sends a SIGKILL to
-> every process on the system, except for init and the current process.
-> If LTP is running as root, then this will take down the system.
+On Fri, Mar 4, 2011 at 7:59 AM, Caspar Zhang <czhang@redhat.com> wrote:
+> On 03/04/2011 06:13 PM, Garrett Cooper wrote:
+>> I've committed a more extensive patch. Please test it out and let me
+>> know how it goes -- thanks!
+>> -Garrett
+>
+> Hi Garrett, compile error occurs in this patch, here is a fix.
 
-That is broken indeed. Do you care to send a patch or this is just
-bugreport?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Sorry for the error -- thanks.
+-Garrett
 
 ------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
