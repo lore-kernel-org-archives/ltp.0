@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <phan@redhat.com>) id 1PxA9T-0007Hn-Bw
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 03:33:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PxA9S-0002tL-Bw
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 03:33:31 +0000
-Date: Wed, 9 Mar 2011 11:37:47 +0800
-From: Han Pingtian <phan@redhat.com>
-Message-ID: <20110309033747.GA4731@hpt.nay.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PvRIu-0003Ci-DJ
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 09:28:08 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PvRIt-0007c2-Fi
+	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 09:28:08 +0000
+Received: by wwb29 with SMTP id 29so2679342wwb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 04 Mar 2011 01:28:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] Per-NUMA control of huge pages
+In-Reply-To: <4D6FCCF7.2010101@redhat.com>
+References: <20110120143028.4df7ab81@regolo>
+	<AANLkTikt-TBmgTSqcRT4OY21udzxpuq-s0yGqirMrWFr@mail.gmail.com>
+	<4D6FCCF7.2010101@redhat.com>
+Date: Fri, 4 Mar 2011 01:28:01 -0800
+Message-ID: <AANLkTi=v3wogPd8sC_5qmSxjmOhJUgn3i90r3yD8AARo@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] syscalls: acct01: fix testcases [was: Re: [PATCH]
+ Add tst_require_root to acct01 testcase.]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,112 +30,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-There are two new features of hugetlb related to NUMA:
-Interaction of Task Memory Policy with Huge Page Allocation/Freeing and
-Per Node Hugepages Attributes. Please refer to
-Documentation/vm/hugetlbpage.txt in kernel source for details. This
-patch try to verify those two features in numa's test.
+On Thu, Mar 3, 2011 at 9:16 AM, Caspar Zhang <czhang@redhat.com> wrote:
+> On 01/21/2011 04:28 PM, Garrett Cooper wrote:
+>> On Thu, Jan 20, 2011 at 5:30 AM, Cristian Greco <cristian@regolo.cc> wro=
+te:
+>>> > Hi,
+>>> >
+>>> > [ please keep CC as I'm not currently subscribed to the list ]
+>>> >
+>>> > please find attached a small fix to check for root privileges in
+>>> > acct(2) testcase (syscalls/acct/acct01.c).
+>> =A0 =A0 Thanks for spotting the issue. I've fixed it, added a few more
+>> testcases, and discovered what appears to be a kernel bug on 2.6.34
+>> (acct("/tmp/does/not/exist") should fail with =3D=3D -1 and errno =3D=3D
+>> ENOTDIR) :)...
+>> Cheers,
+>> -Garrett
+>
+> a follow-up fix for http://article.gmane.org/gmane.linux.ltp/13576 .
+> In fact, it's not a kernel bug of ENOTDIR's failure. ENOTDIR means that
+> you setup a string as directory in argument, but it is actually a file.
+> The patch fixes this failure. The result of given path
+> /tmp/does/not/exist should be expected as ENOENT.
+>
+> And also, there is a mistake in EPERM case, to restore the permissions,
+> SAFE_SETUID should be used instead of SAFE_SETGID, else it will never
+> recover the permissions.
 
-Signed-off-by: Han Pingtian <phan@redhat.com>
+Yeah, you're right... committed.
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/numa/numa01.sh |   64 ++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 63 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index 151d25b..4e58c66 100644
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -834,6 +834,68 @@ test010()
-     tst_resm TPASS "NUMA MIGRATEPAGES policy -TEST10 PASSED !!"
-     return 0
- }
-+# Function:     test11
-+#
-+# Description:  - Verification of Interaction of Task Memory Policy with Huge Page Allocation/Freeing
-+#
-+# Return:       - zero on success.
-+#               - non-zero on failure.
-+test011()
-+{
-+    TCID=numa11
-+    TST_COUNT=11
-+
-+    Hugepage_root=$(echo /sys/kernel/mm/hugepages/hugepages-*|tail -n1)
-+    Nr_hugepages=$(cat $Hugepage_root/nr_hugepages)
-+    Node_nr_hugepages_path="/sys/devices/system/node/node\$COUNTER/hugepages/${Hugepage_root##*/}/nr_hugepages"
-+
-+    COUNTER=0
-+    while [ $COUNTER -lt $max_node ];do
-+	Old_nr_hugepages=$(eval cat $Node_nr_hugepages_path)
-+	numactl -m $COUNTER echo $[Nr_hugepages+1] > $Hugepage_root/nr_hugepages_mempolicy
-+	New_nr_hugepages=$(eval cat $Node_nr_hugepages_path)
-+
-+	if [ $[Old_nr_hugepages+1] -ne $New_nr_hugepages ]
-+	then
-+	    tst_resm TFAIL \
-+		"Teset #11: NUMA allocate huge page through Memory Policy failed on node #$COUNTER"
-+	    return 1
-+	fi
-+
-+	numactl -m $COUNTER echo 1 > $Hugepage_root/nr_hugepages_mempolicy
-+	New_nr_hugepages=$(eval cat $Node_nr_hugepages_path)
-+
-+	if [ $Old_nr_hugepages -ne $New_nr_hugepages ]
-+	then
-+	    tst_resm TFAIL \
-+		"Test #11: NUMA free huge page through Memory Policy failed on node #$COUNTER"
-+	    return 1
-+	fi
-+
-+	echo $[Old_nr_hugepages+1] > $(eval echo $Node_nr_hugepages_path)
-+	New_nr_hugepages=$(eval cat $Node_nr_hugepages_path)
-+
-+	if [ $[Old_nr_hugepages+1] -ne $New_nr_hugepages ]
-+	then
-+	    tst_resm TFAIL \
-+		"Test #11: NUMA per node hugepages allocation failed on node #$COUNTER"
-+	    return 1
-+	fi
-+
-+	echo $[New_nr_hugepages-1] > $(eval echo $Node_nr_hugepages_path)
-+	New_nr_hugepages=$(eval cat $Node_nr_hugepages_path)
-+
-+	if [ $Old_nr_hugepages -ne $New_nr_hugepages ]
-+	then
-+	    tst_resm TFAIL \
-+		"Test #11: NUMA per node hugepages freeing failed on node #$COUNTER"
-+	    return 1
-+	fi
-+
-+	COUNTER=$[COUNTER+1]
-+    done
-+    tst_resm TPASS "NUMA Interact with Huge Page Allocation/Freeing -TEST11 PASSED !!"
-+}
- 
- # Function:    main
- #
-@@ -843,7 +905,7 @@ test010()
- #              - non-zero on failure.
-     #WARNING!! Never use duplicate variables here...
-     TCID=numa
--    no_of_test=10	#total no. of testcases
-+    no_of_test=11	#total no. of testcases
-     no_of_test_failed=0	#total no. of testcases failed
-     numa_ret=0		#return value of main script
- 
--- 
-1.7.1
-
-------------------------------------------------------------------------------
-Colocation vs. Managed Hosting
-A question and answer guide to determining the best fit
-for your organization - today and in the future.
-http://p.sf.net/sfu/internap-sfd2d
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
