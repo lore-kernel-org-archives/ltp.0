@@ -2,24 +2,25 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1Pzsv4-0004IS-O1
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 15:45:54 +0000
+	(envelope-from <czhang@redhat.com>) id 1PwcSL-00085q-O4
+	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 15:34:45 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Pzsv3-0005O3-RH
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 15:45:54 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p2GFjmKu010369
+	id 1PwcSK-0005Xd-NH
+	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 15:34:45 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p27FYcdC026247
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 16 Mar 2011 11:45:48 -0400
-From: czhang@redhat.com
-Date: Wed, 16 Mar 2011 23:45:46 +0800
-Message-Id: <1300290346-26901-1-git-send-email-czhang@redhat.com>
-In-Reply-To: <[PATCH 1/2]>
-References: <[PATCH 1/2]>
-Subject: [LTP] [PATCH v2 2/2] fs: fsstress: fix compile when -DNO_XFS
-	disabled
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Mar 2011 10:34:38 -0500
+Message-ID: <4D74FAEC.9070909@redhat.com>
+Date: Mon, 07 Mar 2011 23:34:04 +0800
+From: Caspar Zhang <czhang@redhat.com>
+MIME-Version: 1.0
+References: <4D74FAA1.4000105@redhat.com>
+In-Reply-To: <4D74FAA1.4000105@redhat.com>
+Content-Type: multipart/mixed; boundary="------------080206000504060306030809"
+Subject: [LTP] [PATCH] Re: mm: mtest01(w): fail to get EOF on some archs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,128 +30,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Caspar Zhang <czhang@redhat.com>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-From: Caspar Zhang <czhang@redhat.com>
+This is a multi-part message in MIME format.
+--------------080206000504060306030809
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When -DNO_XFS disabled in Makefile, the compilation couldn't pass and
-many errors and warnings outputed. This patch fixes this issue.
+forgot to add [PATCH] tag... re-send patch.
 
-v2: modify CPPFLAGS to LDLIBS
+On 03/07/2011 11:32 PM, Caspar Zhang wrote:
+> on some secondary archs (e.g. ppc64), mtest01(w) tests fails for
+> incorrect argument. Digged into the problem, we found this sentense:
+>   while ((c = getopt(argc, argv, "c:b:p:wvh")) != -1)
+> here 'c' is char type instead of int. It runs well on x86 systems, but
+> gets failed on ppc64, s/390x systems, since it returns 255 instead of -1
+> when 'c' is char type.
+> This failure was introduced in commit
+> 8147b761b08eefde4f9b965fabb9ef614b3d5817, this patch fixes the issue.
+> 
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  testcases/kernel/mem/mtest01/mtest01.c |    3 ++-
+>  1 files changed, 2 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/mtest01/mtest01.c
+> b/testcases/kernel/mem/mtest01/mtest01.c
+> index b247dbf..dc960a8 100644
+> --- a/testcases/kernel/mem/mtest01/mtest01.c
+> +++ b/testcases/kernel/mem/mtest01/mtest01.c
+> @@ -59,7 +59,8 @@ void handler(int signo)
+> 
+>  int main(int argc, char* argv[])
+>  {
+> -	char c, *mem;
+> +	int c;
+> +	char *mem;
+>  	float percent;
+>  	unsigned int maxpercent = 0, dowrite = 0, verbose=0, j;
+>  	unsigned long bytecount, alloc_bytes, max_pids;
 
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
- testcases/kernel/fs/fsstress/Makefile   |    3 +++
- testcases/kernel/fs/fsstress/fsstress.c |   16 ++++++++--------
- testcases/kernel/fs/fsstress/global.h   |    4 ++--
- 3 files changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/fs/fsstress/Makefile b/testcases/kernel/fs/fsstress/Makefile
-index 0a53891..38acce0 100644
---- a/testcases/kernel/fs/fsstress/Makefile
-+++ b/testcases/kernel/fs/fsstress/Makefile
-@@ -27,6 +27,9 @@ include $(top_srcdir)/include/mk/env_pre.mk
- CPPFLAGS			+= -DNO_XFS -I$(abs_srcdir) \
- 				   -D_LARGEFILE64_SOURCE -D_GNU_SOURCE
- 
-+# if removed -DNO_XFS, you should unmask the following line
-+#LDLIBS				+= -lattr
-+
- # XXX (garrcoop): not -Wuninitialized clean.
- CPPFLAGS			+= -Wno-error
- 
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-index d6521f4..089edfb 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -1436,7 +1436,7 @@ allocsp_f(int opno, long r)
- 	e = ioctl(fd, XFS_IOC_ALLOCSP64, &fl) < 0 ? errno : 0;
- 	if (v)
- 		printf("%d/%d: ioctl(XFS_IOC_ALLOCSP64) %s %lld 0 %d\n",
--			procid, opno, f.path, off, e);
-+			procid, opno, f.path, (long long)off, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-@@ -1571,7 +1571,7 @@ bulkstat_f(int opno, long r)
- 	free(t);
- 	if (verbose)
- 		printf("%d/%d: bulkstat nent %d total %lld\n",
--			procid, opno, nent, total);
-+			procid, opno, nent, (long long)total);
- 	close(fd);
- }
- 
-@@ -1704,7 +1704,7 @@ creat_f(int opno, long r)
- 				geom.rtextsize * geom.blocksize * extsize;
- 			if (ioctl(fd, XFS_IOC_FSSETXATTR, &a) < 0)
- 				e1 = errno;
--			esz = a.fsx_estsize;
-+			esz = a.fsx_extsize;
- 
- 		}
- #endif
-@@ -2016,7 +2016,7 @@ freesp_f(int opno, long r)
- 	e = ioctl(fd, XFS_IOC_FREESP64, &fl) < 0 ? errno : 0;
- 	if (v)
- 		printf("%d/%d: ioctl(XFS_IOC_FREESP64) %s %lld 0 %d\n",
--			procid, opno, f.path, off, e);
-+			procid, opno, f.path, (long long)off, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-@@ -2388,8 +2388,8 @@ resvsp_f(int opno, long r)
- 	fl.l_len = (off64_t)(random() % (1024 * 1024));
- 	e = ioctl(fd, XFS_IOC_RESVSP64, &fl) < 0 ? errno : 0;
- 	if (v)
--		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %lld %d\n",
--			procid, opno, f.path, off, fl.l_len, e);
-+		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %ld %d\n",
-+			procid, opno, f.path, (long long)off, fl.l_len, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-@@ -2605,8 +2605,8 @@ unresvsp_f(int opno, long r)
- 	fl.l_len = (off64_t)(random() % (1 << 20));
- 	e = ioctl(fd, XFS_IOC_UNRESVSP64, &fl) < 0 ? errno : 0;
- 	if (v)
--		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %lld %d\n",
--			procid, opno, f.path, off, fl.l_len, e);
-+		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %ld %d\n",
-+			procid, opno, f.path, (long long)off, fl.l_len, e);
- 	free_pathname(&f);
- 	close(fd);
- }
-diff --git a/testcases/kernel/fs/fsstress/global.h b/testcases/kernel/fs/fsstress/global.h
-index f788395..9644666 100644
---- a/testcases/kernel/fs/fsstress/global.h
-+++ b/testcases/kernel/fs/fsstress/global.h
-@@ -38,8 +38,8 @@
- #if defined(NO_XFS)
- # include "xfscompat.h"
- #else
--# include <libxfs.h>
--# include <attributes.h>
-+# include <xfs/libxfs.h>
-+# include <attr/attributes.h>
- #endif
- 
- /* libc includes */
 -- 
-1.7.4.1
+Quality Engineer (Kernel) in
+Red Hat Software (Beijing) Co., R&D Branch
+http://www.cn.redhat.com/
+TEL: +86-10-62608150
 
+--------------080206000504060306030809
+Content-Type: text/plain;
+	name="0002-mm-mtest01-w-fail-to-get-EOF-on-some-archs.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="0002-mm-mtest01-w-fail-to-get-EOF-on-some-archs.patch"
+
+bW06IG10ZXN0MDEodyk6IGZhaWwgdG8gZ2V0IEVPRiBvbiBzb21lIGFyY2hzCgpvbiBzb21l
+IHNlY29uZGFyeSBhcmNocyAoZS5nLiBwcGM2NCksIG10ZXN0MDEodykgdGVzdHMgZmFpbHMg
+Zm9yCmluY29ycmVjdCBhcmd1bWVudC4gRGlnZ2VkIGludG8gdGhlIHByb2JsZW0sIHdlIGZv
+dW5kIHRoaXMgc2VudGVuc2U6CiAgd2hpbGUgKChjID0gZ2V0b3B0KGFyZ2MsIGFyZ3YsICJj
+OmI6cDp3dmgiKSkgIT0gLTEpCmhlcmUgJ2MnIGlzIGNoYXIgdHlwZSBpbnN0ZWFkIG9mIGlu
+dC4gSXQgcnVucyB3ZWxsIG9uIHg4NiBzeXN0ZW1zLCBidXQKZ2V0cyBmYWlsZWQgb24gcHBj
+NjQsIHMvMzkweCBzeXN0ZW1zLCBzaW5jZSBpdCByZXR1cm5zIDI1NSBpbnN0ZWFkIG9mIC0x
+CndoZW4gJ2MnIGlzIGNoYXIgdHlwZS4KVGhpcyBmYWlsdXJlIHdhcyBpbnRyb2R1Y2VkIGlu
+IGNvbW1pdAo4MTQ3Yjc2MWIwOGVlZmRlNGY5Yjk2NWZhYmI5ZWY2MTRiM2Q1ODE3LCB0aGlz
+IHBhdGNoIGZpeGVzIHRoZSBpc3N1ZS4KClNpZ25lZC1vZmYtYnk6IENhc3BhciBaaGFuZyA8
+Y3poYW5nQHJlZGhhdC5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9tZW0vbXRlc3QwMS9t
+dGVzdDAxLmMgfCAgICAzICsrLQogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyks
+IDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vbXRl
+c3QwMS9tdGVzdDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9tdGVzdDAxL210ZXN0MDEu
+YwppbmRleCBiMjQ3ZGJmLi5kYzk2MGE4IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVs
+L21lbS9tdGVzdDAxL210ZXN0MDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9tdGVz
+dDAxL210ZXN0MDEuYwpAQCAtNTksNyArNTksOCBAQCB2b2lkIGhhbmRsZXIoaW50IHNpZ25v
+KQogCiBpbnQgbWFpbihpbnQgYXJnYywgY2hhciogYXJndltdKQogewotCWNoYXIgYywgKm1l
+bTsKKwlpbnQgYzsKKwljaGFyICptZW07CiAJZmxvYXQgcGVyY2VudDsKIAl1bnNpZ25lZCBp
+bnQgbWF4cGVyY2VudCA9IDAsIGRvd3JpdGUgPSAwLCB2ZXJib3NlPTAsIGo7CiAJdW5zaWdu
+ZWQgbG9uZyBieXRlY291bnQsIGFsbG9jX2J5dGVzLCBtYXhfcGlkczsKLS0gCjEuNy40LjEK
+Cg==
+--------------080206000504060306030809
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Colocation vs. Managed Hosting
-A question and answer guide to determining the best fit
-for your organization - today and in the future.
-http://p.sf.net/sfu/internap-sfd2d
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
+--------------080206000504060306030809
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------080206000504060306030809--
+
