@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <zliu@redhat.com>) id 1Q4tD5-0001xJ-Np
-	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 11:05:11 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q4tD4-0001h2-CY
-	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 11:05:11 +0000
-Date: Wed, 30 Mar 2011 07:05:04 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1472927069.670110.1301483104408.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <708245171.670105.1301483005817.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1PwUoD-0006iR-2c
+	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 07:24:49 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PwUoB-00048g-TB
+	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 07:24:48 +0000
+Date: Mon, 7 Mar 2011 15:29:01 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110307072901.GB2877@hpt.nay.redhat.com>
+References: <20110225103620.GA10350@hpt.nay.redhat.com>
+	<AANLkTi=_K2Q1iYtN0T6izFmnmeEe1Tyyst1CzRHiN+Yg@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/2] add nr_overcommit_hugepages vm tunable test
+Content-Type: multipart/mixed; boundary="sm4nu43k4a2Rpi4c"
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=_K2Q1iYtN0T6izFmnmeEe1Tyyst1CzRHiN+Yg@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] thp testcase come from CVE reproducer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,44 +27,188 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, yanegomi@gmail.com
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi, Garrett,
-Please review the new test case.
 
- * The program is designed to test /proc/sys/vm/nr_overcommit_hugepages
- * tunable. /proc/sys/vm/nr_overcommit_hugepages specifies how large 
- * the pool of huge pages can grow, if more huge pages than 
- * /proc/sys/vm/nr_hugepages are requested by applications.  
- * Writing any non-zero value into this file indicates that the hugetlb 
- * subsystem is allowed to try to obtain that number of "surplus" huge 
- * pages from the kernel's normal page pool, when the persistent huge 
- * page pool is exhausted. As these surplus huge pages become unused, 
- * they are freed back to the kernel's normal page pool. When applicatons
- * alloc more huge pages, it will overcommit the hugepage pool,  we can 
- * confirmed the correction by /proc/meminfo: HugePages_Surp.
+--sm4nu43k4a2Rpi4c
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by mx1.redhat.com id
+	p277OfFT026312
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
+On Fri, Mar 04, 2011 at 02:38:51AM -0800, Garrett Cooper wrote:
+> On Fri, Feb 25, 2011 at 2:36 AM, Han Pingtian <phan@redhat.com> wrote:
+> > This is a reproducer of =A0CVE-2011-0999, which fixed by mainline com=
+mit
+> > a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
+> >
+> > "Transparent hugepages can only be created if rmap is fully
+> > functional. So we must prevent hugepages to be created while
+> > is_vma_temporary_stack() is true."
+> >
+> > When running in a loop, it can trigger panic like this, if kernel
+> > unpatched:
+> >
+> > kernel BUG at mm/huge_memory.c:1260!
+> > invalid opcode: 0000 [#1] SMP
+> > last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cp=
+u_map
+>=20
+> ...
+>=20
+> > +static option_t options[] =3D {
+> > + =A0 =A0 =A0 {NULL, NULL, NULL}
+> > +};
+> > +
+> > +static void usage(void)
+> > +{
+> > + =A0 =A0return;
+> > +}
+>=20
+> You can delete this if you do what I suggest below...
+>=20
+> ...
+>=20
+> > + =A0 =A0 =A0 msg =3D parse_opts(argc, argv, options, usage);
+> > + =A0 =A0 =A0 if (msg !=3D NULL)
+>=20
+> `if ((msg =3D parse_opts(argc, argv, NULL, NULL)) !=3D NULL)' is prefer=
+red.
+Thanks. I have updated this according to your suggestion.
+>=20
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (exe=
+cve("/bin/true", c, c) =3D=3D -1)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 tst_brkm(TBROK|TERRNO, NULL, "execve");
+>=20
+> Not all systems have /bin/true. It would be better to do:
+>=20
+> /bin/sh -c ':'
+>=20
+> etc, as we have code that depends on this type of shell-required POSIX =
+behavior.
+>=20
+I'm sorry for I cannot figure out how to do this way. I tried, but
+cannot crash unpatched kernel anymore. So I think the simple workaround
+is checking if /bin/true installed in the program:
+
++
++                               if (WEXITSTATUS(st) =3D=3D 2)
++                                       tst_brkm(TBROK, NULL, "Do you hav=
+e /bin/true installed?");
++
+
+Please review the updated version.
+> Thanks,
+> -Garrett
+
+--=20
+Han Pingtian
+Quality Engineer
+hpt @ #kernel-qe
+Red Hat, Inc
+Freedom ... courage ... Commitment ... ACCOUNTABILITY
+
+--sm4nu43k4a2Rpi4c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-thp-testcase-come-from-CVE-reproducer.patch"
+
+From 38c3526fdb59c0b18015914745f2d43fc6c6b1a3 Mon Sep 17 00:00:00 2001
+From: Han Pingtian <phan@redhat.com>
+Date: Fri, 25 Feb 2011 17:51:24 +0800
+Subject: [PATCH] thp testcase come from CVE reproducer
+
+This is a reproducer of  CVE-2011-0999, which fixed by mainline commit
+a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
+
+"Transparent hugepages can only be created if rmap is fully
+functional. So we must prevent hugepages to be created while
+is_vma_temporary_stack() is true."
+
+When running in a loop, it can trigger panic like this, if kernel
+unpatched:
+
+kernel BUG at mm/huge_memory.c:1260!
+invalid opcode: 0000 [#1] SMP
+last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
+....
+
+So I recommend to run it as 'thp01 -I xxx'.
+
+Signed-off-by: Han Pingtian <phan@redhat.com>
 ---
- .../kernel/mem/vmtunable/nr_overcommit_hugepages.c |  300 ++++++++++++++++++++
- 1 files changed, 300 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/thp/Makefile |   23 +++++++++
+ testcases/kernel/mem/thp/thp01.c  |   95 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 120 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/thp/Makefile
+ create mode 100644 testcases/kernel/mem/thp/thp01.c
 
-diff --git a/testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c b/testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c
+diff --git a/runtest/mm b/runtest/mm
+index 1296e59..51cc82d 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -85,3 +85,5 @@ oom01 oom01
+ oom02 oom02
+ oom03 oom03
+ oom04 oom04
++
++thp01 thp01 -I 600
+diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
 new file mode 100644
-index 0000000..00d4983
+index 0000000..dbfbc1b
 --- /dev/null
-+++ b/testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c
-@@ -0,0 +1,300 @@
++++ b/testcases/kernel/mem/thp/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (C) 2010  Red Hat, Inc.
++#
++#  This program is free software; you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or (at
++#  your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful, but
++#  WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++#  General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program; if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++#  02110-1301, USA.
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
+new file mode 100644
+index 0000000..0b6ec1a
+--- /dev/null
++++ b/testcases/kernel/mem/thp/thp01.c
+@@ -0,0 +1,95 @@
 +/*
-+ * vm tunable test
++ * This is a reproducer of  CVE-2011-0999, which fixed by mainline commit
++ * a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
 + *
-+ * ********************************************************************
-+ * Copyright (C) 2011  Red Hat, Inc.
++ * "Transparent hugepages can only be created if rmap is fully
++ * functional. So we must prevent hugepages to be created while
++ * is_vma_temporary_stack() is true."
 + *
++ * It will cause a panic something like this, if the patch didn't get applied:
++ *
++ * kernel BUG at mm/huge_memory.c:1260!
++ * invalid opcode: 0000 [#1] SMP
++ * last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
++ * ....
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of version 2 of the GNU General Public
 + * License as published by the Free Software Foundation.
@@ -80,292 +228,91 @@ index 0000000..00d4983
 + * along with this program; if not, write the Free Software
 + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 + * 02110-1301, USA.
-+ *
-+ * ********************************************************************
-+ *
-+ * File Name: nr_overcommit_hugepage.c
-+ * Author: Zhouping Liu <zliu@redhat.com>
-+ * Description:  
-+ * The program is designed to test /proc/sys/vm/nr_overcommit_hugepages
-+ * tunable. /proc/sys/vm/nr_overcommit_hugepages specifies how large 
-+ * the pool of huge pages can grow, if more huge pages than 
-+ * /proc/sys/vm/nr_hugepages are requested by applications.  
-+ * Writing any non-zero value into this file indicates that the hugetlb 
-+ * subsystem is allowed to try to obtain that number of "surplus" huge 
-+ * pages from the kernel's normal page pool, when the persistent huge 
-+ * page pool is exhausted. As these surplus huge pages become unused, 
-+ * they are freed back to the kernel's normal page pool. When applicatons
-+ * alloc more huge pages, it will overcommit the hugepage pool,  we can 
-+ * confirmed the correction by /proc/meminfo: HugePages_Surp.
-+ * 
 + */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <stdint.h>
-+#include <sys/stat.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+
 +#include "test.h"
 +#include "usctest.h"
++#include "config.h"
 +
-+char *TCID = "nr_overcommit_hugepages"; 
++char *TCID = "thp01";
 +int TST_TOTAL = 1;
 +
-+#define NUM 50UL /* the amount of hugepages try to mmap */
-+#define HUGEPAGES 30 /* set /proc/sys/vm/nr_hugepages */
-+#define OVER_HUGEPAGES 30 /* set /proc/sys/vm/nr_overcommit_hugepages */
-+#define BUFFER_SIZE 256 
-+#define FILE_NAME "/mnt/hugepagefile"
-+#define PROTECTION (PROT_READ | PROT_WRITE) /* mmap mode */
++#include <stdio.h>
++#include <unistd.h>
++#include <string.h>
++#include <sys/resource.h>
++#include <sys/types.h>
++#include <sys/wait.h>
 +
-+/* Only ia64 requires this */
-+#ifdef __ia64__
-+#define ADDR (void *)(0x8000000000000000UL)
-+#define FLAGS (MAP_SHARED | MAP_FIXED)
-+#else
-+#define ADDR (void *)(0x0UL)
-+#define FLAGS (MAP_SHARED)
-+#endif
-+
-+/* Check whether there're the two tunable or not */
-+int check_system();
-+
-+/* We're not sure one hugepag size is 2048kb or not, we can confirm
-+ * it by catting /proc/meminfo: Hugepagesize
-+ */
-+unsigned long get_one_hugepage_size();
-+
-+/* set hugepages */
-+int set_hugepages(int nr_hugepages, int nr_overcommit_hugepages);
-+
-+/* get the total of hugepages and surplus hugepages */ 
-+int get_hugepages(int *nr_hugepages, int *nr_overcommit_hugepages);
-+
-+/* try to alloc overcommit hugepage */
-+int test_overcommit_hugepages();
-+
-+/* do some clean after test */
-+void cleanup();
-+
-+int old_hugepages;
-+int old_overcommit; /* save the original data */
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc = 0; /* loop counter */
++int main(int argc, char **argv) {
++	int i, lc, st;
++	pid_t pid;
 +	char *msg;
-+	
-+	/* if check_system() return zero, the system can't support the testing */
-+	if (check_system() == 0) {
-+		tst_resm(TFAIL, "Can't test nr_hugepages and \
-+				nr_overcommit_hugepages,no such file");
-+		tst_exit();
-+	}
++	char *c[257];
++	char cc[32*4096];
++	struct rlimit rl = {
++		.rlim_cur = RLIM_INFINITY,
++		.rlim_max = RLIM_INFINITY,
++	};
 +
-+	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL) {
-+		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR -%s", msg);
-+	}
-+	get_hugepages(&old_hugepages, &old_overcommit);
-+	tst_resm(TINFO, "old nr_hugepages value is %d", old_hugepages);
-+	tst_resm(TINFO, "old nr_overcommit hugepages is %d", old_overcommit);
-+	
++	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		set_hugepages(HUGEPAGES, OVER_HUGEPAGES);
-+		if (test_overcommit_hugepages() == 0) {
-+			set_hugepages(old_hugepages, old_overcommit);
-+			tst_resm(TPASS, "succeeded to overcommit hugepages");
-+		} else {
-+			tst_resm(TFAIL, "FAIL mapping!");
++		switch (pid = fork()) {
++			case -1:
++				tst_brkm(TBROK|TERRNO, NULL, "fork");
++			case 0:
++				memset(cc, 'c', 32*4096-1);
++				for (i=0;i<256;i++)
++					c[i] = cc;
++				if (setrlimit(RLIMIT_STACK, &rl) == -1)
++					tst_brkm(TBROK|TERRNO, NULL, "setrlimit");
++				if (execve("/bin/true", c, c) == -1)
++					tst_brkm(TBROK|TERRNO, NULL, "execve");
++			default:
++				if (waitpid(pid, &st, 0) == -1)
++					tst_brkm(TBROK|TERRNO, NULL, "waitpid");
++
++				if (! WIFEXITED(st))
++					tst_brkm(TBROK, NULL, "child exits abnormally");
++
++				if (WEXITSTATUS(st) == 2)
++					tst_brkm(TBROK, NULL, "Do you have /bin/true installed?");
++
++				if (WEXITSTATUS(st) != 0)
++					tst_brkm(TBROK, NULL, "chaild exits with non-zero value");
++
++				tst_resm(TPASS, "thp01 pass");
 +		}
-+		cleanup();
 +	}
 +
-+	tst_exit();
-+	return 0;
++        tst_exit();
 +}
-+
-+/* try to overcommit hugepages */
-+int test_overcommit_hugepages()
-+{
-+	char *addr;
-+	int fd;
-+	int hugepages = 0;
-+	int overcommit = 0;
-+	unsigned long i;
-+	unsigned long length = 0;
-+	unsigned long one_hugepage_size = 0;
-+
-+	/* mount hugetlbfs */
-+	if (system("mount -t hugetlbfs nodev /mnt") != 0) {
-+		tst_brkm(TBROK, cleanup, "Can't mount hugetlbfs");
-+	}
-+
-+	fd = open(FILE_NAME, O_CREAT | O_RDWR, 0755);
-+	if (fd < 0) {
-+		tst_brkm(TBROK, cleanup, "OPEN File %s error", FILE_NAME);
-+		tst_exit();
-+	}
-+	
-+	one_hugepage_size = get_one_hugepage_size();
-+	length = NUM * one_hugepage_size;
-+	addr = (char *)mmap(ADDR, length, PROTECTION, FLAGS, fd, 0);
-+	if (addr == MAP_FAILED) {
-+		tst_resm(TFAIL, "mmap() Failed on %s, errno=%d : %s", \
-+				FILE_NAME, errno, strerror(errno));
-+		munmap(addr, length);
-+		close(fd);
-+		unlink(FILE_NAME);
-+		cleanup();
-+		tst_exit();
-+	}
-+
-+	tst_resm(TINFO, "Returned address is %p", addr);
-+	tst_resm(TINFO, "First hex is %x", *((unsigned int *)addr));
-+	for (i = 0; i < length; i++) {
-+		*(addr + i) = (char)i;
-+	}
-+
-+	sleep(1);
-+	/* get the hugepages and surplus hugepages after mmap successfully */
-+	get_hugepages(&hugepages, &overcommit);
-+	
-+	munmap(addr, length);
-+	close(fd);
-+	unlink(FILE_NAME);
-+	tst_resm(TINFO, "the current hugepages is %d and overcommit is %d ", hugepages, overcommit);
-+	
-+	/* if everything is okay, overcommit should equal (NUM - HUGEPAGES) */
-+	if(hugepages == NUM && overcommit == (NUM - HUGEPAGES)) {
-+		return 0;
-+	} else {
-+		return -1;
-+	}
-+}
-+
-+unsigned long get_one_hugepage_size()
-+{
-+	FILE *f;
-+	int retcode = 0;
-+	char buff[BUFFER_SIZE];
-+	unsigned long one_hugepage_size = 0;
-+
-+	f = fopen("/proc/meminfo", "r");
-+	if (f == NULL) {
-+		tst_brkm(TFAIL, cleanup, "Please run the test using root user.");
-+	}
-+	while(fgets(buff,BUFFER_SIZE, f) != NULL) {
-+		if((retcode = sscanf(buff, "Hugepagesize: %lu kB",
-+			&one_hugepage_size)) == 1)
-+			break;
-+	}
-+	tst_resm(TINFO, "one hugepagesize is %lu", one_hugepage_size);
-+	fclose(f);
-+	
-+	if(one_hugepage_size == 0) {
-+		tst_brkm(TFAIL, cleanup, "Can't read out hugepage size");
-+	}
-+
-+	return one_hugepage_size * 1024UL;
-+}
-+
-+/* get nr_hugepages and nr_overcommit_hugepages values */
-+int get_hugepages(int *nr_hugepages, int *nr_overcommit_hugepages) 
-+{
-+	FILE *f;
-+	int flag = 0;
-+	int retcode = 0;
-+	char buff[BUFFER_SIZE];
-+
-+	f = fopen("/proc/meminfo", "r");
-+	if (f == NULL) {
-+		tst_brkm(TFAIL, cleanup, "Please run the test using root user.");
-+	}
-+	while(fgets(buff,BUFFER_SIZE, f) != NULL && flag < 2) {
-+		if((retcode = sscanf(buff, "HugePages_Total: %d ",
-+			nr_hugepages)) == 1)
-+			flag++;
-+		if((retcode = sscanf(buff, "HugePages_Surp: %d ", 
-+			nr_overcommit_hugepages)) == 1) 
-+			flag++;
-+	}
-+
-+	if (flag != 2) {
-+		fclose(f); 
-+		tst_brkm(TFAIL, cleanup, "Failed reading size of huge page.");
-+	}
-+	fclose(f);
-+
-+	return 0;
-+}
-+
-+/* set nr_hugepages and nr_overcommit_hugepages values */
-+int set_hugepages(int nr_hugepages, int nr_overcommit_hugepages)
-+{
-+	FILE *f1, *f2;
-+
-+	f1 = fopen("/proc/sys/vm/nr_hugepages", "w");
-+	if (f1 == NULL) {
-+		tst_brkm(TFAIL, tst_exit, "No permission, using root user");
-+	}
-+
-+	f2 = fopen("/proc/sys/vm/nr_overcommit_hugepages", "w");
-+	if (f2 == NULL) {
-+		tst_brkm(TFAIL, tst_exit, "No permission, using root user");
-+	}
-+
-+	/* write nr_hugepages to /proc/sys/vm/nr_hugepages and 
-+	 * nr_overcommit_hugepages to /proc/sys/vm/nr_overcommit_hugepages
-+	 */
-+	if (fprintf(f1, "%d", nr_hugepages) == 0) {
-+		tst_brkm(TFAIL, cleanup, "write date error to nr_hugepages");
-+	}
-+	if (fprintf(f2, "%d", nr_overcommit_hugepages) ==0 ) {
-+		tst_brkm(TFAIL, cleanup, "write date error to nr_overcommit_hugepages");
-+	}
-+	fclose(f1);
-+	fclose(f2);
-+	
-+	return 0;
-+}
-+
-+int check_system()
-+{
-+	int flag1 = -1;
-+	int flag2 = -1;
-+
-+	flag1 = access("/proc/sys/vm/nr_hugepages", F_OK);
-+	flag2 = access("/proc/sys/vm/nr_overcommit_hugepages", F_OK);
-+
-+	if (flag1 == 0 && flag2 == 0) {
-+		return 1;
-+	} else {
-+		return 0;
-+	}
-+}
-+
-+void cleanup()
-+{
-+	set_hugepages(old_hugepages, old_overcommit);
-+	tst_exit();
-+
-+	return;
-+}
-+
 -- 
-1.7.3.4
+1.7.1
 
+
+--sm4nu43k4a2Rpi4c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enable your software for Intel(R) Active Management Technology to meet the
-growing manageability and security demands of your customers. Businesses
-are taking advantage of Intel(R) vPro (TM) technology - will your software 
-be a part of the solution? Download the Intel(R) Manageability Checker 
-today! http://p.sf.net/sfu/intel-dev2devmar
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
+--sm4nu43k4a2Rpi4c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--sm4nu43k4a2Rpi4c--
+
