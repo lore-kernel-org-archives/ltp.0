@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Pzpqn-0001C7-AL
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 12:29:17 +0000
-Date: Wed, 16 Mar 2011 13:51:10 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110316125110.GC2096@saboteur.suse.cz>
-References: <4D7E0425.7090509@redhat.com>
-	<20110316120758.GA2096@saboteur.suse.cz>
-	<4D80A5E1.2020002@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <qcai@redhat.com>) id 1Pwmjv-0004NA-2A
+	for ltp-list@lists.sourceforge.net; Tue, 08 Mar 2011 02:33:35 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pwmju-00025N-1C
+	for ltp-list@lists.sourceforge.net; Tue, 08 Mar 2011 02:33:35 +0000
+Date: Mon, 7 Mar 2011 21:33:14 -0500 (EST)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <1121368325.334177.1299551594318.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <20110307175929.GA1240@home.goodmis.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4D80A5E1.2020002@redhat.com>
-Subject: Re: [LTP] [PATCH] fs: fsstress: make test more POSIX compliant
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ FEBRUARY 2011.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,61 +27,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: ltp-list@lists.sf.net, vapier@gentoo.org, linux-kernel@vger.kernel.org, Paolo Ciarrocchi <paolo.ciarrocchi@gmail.com>, Theodore Tso <tytso@MIT.EDU>, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
-Hi!
-> >> -	if (no_xfs) {
-> >> -		diob.d_miniosz = stb.st_blksize;
-> >> -		diob.d_maxiosz = stb.st_blksize * 256;  /* good number ? */
-> >> -		diob.d_mem = stb.st_blksize;
-> >> -	}
-> >> +	diob.d_miniosz = stb.st_blksize;
-> >> +	diob.d_maxiosz = stb.st_blksize * 256;  /* good number ? */
-> >> +	diob.d_mem = stb.st_blksize;
-> > 
-> > Hmm, why you are removing the if (no_xfs) here (I don't say it's wrong,
-> > I only want to know why)?
-> 
-> The compiler gave warning that diob.d_* may not initialized. I don't
-> know what the values diob.d_* should be if XFS exists (no_xfs == 0), but
-> I guess they should be the same as when XFS not available.
-> 
-> > 
-> >>  #ifndef NO_XFS
-> >>  	else if (ioctl(fd, XFS_IOC_DIOINFO, &diob) < 0) {
-> >>  		if (v)
-> >> @@ -1826,7 +1824,13 @@ dread_f(int opno, long r)
-> >>  		len = align;
-> >>  	else if (len > diob.d_maxiosz)
-> >>  		len = diob.d_maxiosz;
-> >> -	buf = memalign(diob.d_mem, len);
-> >> +	if (posix_memalign((void **)buf, diob.d_mem, len) != 0) {
-> > 
-> > The posix_memalign() actually returns pointer to the memory via buf, so
-> > instead of (void **)buf, you should write &buf (and that would silence
-> > the warning about uninitalized buf too).
-> > 
-> 
-> sorry, my mistake. I'll correct it. Btw, compiler kept silent when I
-> missed & sign..
 
-That's because of the (void **) cast. The char * and void ** are
-not compatible pointers and copiler should print a warning about
-incompatible type. On the other hand void ** and char ** are
-incompatible pointers too.
+> Perhaps we need to get developer's tests into the kernel. We now have a
+> tools/testing directory lets use it.
+There are a few test code span over other directories too.
+Documentation/vm/hugepage-mmap.c
+Documentation/vm/hugepage-shm.c
+Documentation/vm/map_hugetlb.c
+...
 
-As one wise man said: "C is a Spartan language" ...
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+CAI Qian
 
 ------------------------------------------------------------------------------
-Colocation vs. Managed Hosting
-A question and answer guide to determining the best fit
-for your organization - today and in the future.
-http://p.sf.net/sfu/internap-sfd2d
+What You Don't Know About Data Connectivity CAN Hurt You
+This paper provides an overview of data connectivity, details
+its effect on application quality, and explores various alternative
+solutions. http://p.sf.net/sfu/progress-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
