@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PvXng-0002SG-62
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:24:20 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PvXnf-00082w-A7
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 16:24:20 +0000
-Received: by wwb29 with SMTP id 29so3155909wwb.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 04 Mar 2011 08:24:13 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20110304163712.7fd3b975@regolo>
-References: <20110304163712.7fd3b975@regolo>
-Date: Fri, 4 Mar 2011 08:24:13 -0800
-Message-ID: <AANLkTimt_VmfCqt0zsneBY7xnn2V0vTHgKaWKNEvHuOp@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fstat05: fix regression on arches which get
-	SIGSEGV
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <rostedt@goodmis.org>) id 1Pwz6a-0001P3-GD
+	for ltp-list@lists.sourceforge.net; Tue, 08 Mar 2011 15:45:48 +0000
+Received: from hrndva-omtalb.mail.rr.com ([71.74.56.125])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pwz6Z-0000UQ-GR
+	for ltp-list@lists.sourceforge.net; Tue, 08 Mar 2011 15:45:48 +0000
+From: Steven Rostedt <rostedt@goodmis.org>
+In-Reply-To: <1121368325.334177.1299551594318.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <1121368325.334177.1299551594318.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Tue, 08 Mar 2011 10:27:58 -0500
+Message-ID: <1299598078.20306.70.camel@gandalf.stny.rr.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ FEBRUARY 2011.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,16 +28,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Greco <cristian@regolo.cc>
-Cc: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list@lists.sf.net, vapier@gentoo.org, linux-kernel@vger.kernel.org, Paolo Ciarrocchi <paolo.ciarrocchi@gmail.com>, Theodore Tso <tytso@MIT.EDU>, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
-On Fri, Mar 4, 2011 at 7:37 AM, Cristian Greco <cristian@regolo.cc> wrote:
-> Hi,
->
-> this should fix a regression for fstat05 on some architectures.
+On Mon, 2011-03-07 at 21:33 -0500, CAI Qian wrote:
+> > Perhaps we need to get developer's tests into the kernel. We now have a
+> > tools/testing directory lets use it.
+> There are a few test code span over other directories too.
+> Documentation/vm/hugepage-mmap.c
+> Documentation/vm/hugepage-shm.c
+> Documentation/vm/map_hugetlb.c
 
-Committed -- thanks!
--Garrett
+These all look like "Examples", which means they should probably be
+moved to samples? As "samples" can be compiled on boot. But perhaps
+because they are user space programs its fine to keep them here?
+
+-- Steve
+
+> ...
+
+
+
 
 ------------------------------------------------------------------------------
 What You Don't Know About Data Connectivity CAN Hurt You
