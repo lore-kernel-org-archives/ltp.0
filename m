@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1Pyamm-0005QG-V6
-	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 02:12:00 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Pyamk-0001j1-Oj
-	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 02:12:00 +0000
-Message-ID: <4D7C2785.3020607@cn.fujitsu.com>
-Date: Sun, 13 Mar 2011 10:10:13 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PxLDd-0000Ck-LK
+	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 15:22:33 +0000
+Date: Wed, 9 Mar 2011 16:43:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110309154351.GB10062@saboteur.suse.cz>
+References: <20110225164849.GB7142@saboteur.suse.cz>
+	<AANLkTi=0c3hXb__M_fXkwYyzjwJFq_hwRvibE4zMvr=E@mail.gmail.com>
+	<AANLkTimYqcKfOwqTVaA+vnVhWnXtfxg_UurKkjCf5QdF@mail.gmail.com>
 MIME-Version: 1.0
-References: <4D3F8E97.2030909@cn.fujitsu.com> <4D40CC9B.5080204@cn.fujitsu.com>
-In-Reply-To: <4D40CC9B.5080204@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH]fix functional/threads/pi_test/pitest-4 test
+Content-Disposition: inline
+In-Reply-To: <AANLkTimYqcKfOwqTVaA+vnVhWnXtfxg_UurKkjCf5QdF@mail.gmail.com>
+Subject: Re: [LTP] testcases/kernel/mem Makefile mess
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,90 +23,34 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> >> There are more than two libraries in testcases/kernel/mem/ that results
+> >> in Makefile confusion. One of the sideeffects is that internal librari=
+es
+> >> libmem.a and liboom.a gets installed.
+> >>
+> >> Garrett do you care to have a look on this?
+> >
+> > =A0 =A0Agreed. `liboom' shouldn't be a library. It can be moved to the
+> > directory, one can apply FILTER_OUT_SRCS on oom.c (might be better to
 
+And even then the mem directory contains libmm and lib (which is source
+for libmem) and that confuses the Make system too. Shouldn't we merge
+these two?
 
-Bian Naimeng wrote:
-> Hi Garrett,
-> 
->   Would you like to apply this patch? 
-> 
->   The priority of TB1 is lower than TFs, if TB1 was assigned to the CPU
-> which scheduling TF, TB1 will not have chance to run.
->   I raise the priority of TB1, the new priority of TB1 is higher than TF
-> and TL, and still lower than TP.
->   After applying the following patch, test will work correctly.
-> 
+-- =
 
-ping.  Would you have time to pick up it.
+Cyril Hrubis
+chrubis@suse.cz
 
-Regards
- Bian
-
-> Regards
->   Bian
-> 
-> Bian Naimeng wrote:
->> TB1 has a lower priority than TFs, it has not chance to run.
->>
->> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
->>
->> ---
->>  .../functional/threads/pi_test/pitest-4.c          |   18 +++++++++---------
->>  1 files changed, 9 insertions(+), 9 deletions(-)
->>
->> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
->> index ad940dc..93e44b6 100644
->> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
->> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
->> @@ -69,13 +69,13 @@ struct thread_param
->>  	volatile unsigned progress;
->>  } tp[] = {
->>  	{ 0,   0,   0, 1, SCHED_FIFO, "TL",  0, 0, 0, 0 },
->> -	{ 1,   0, 100, 3, SCHED_FIFO, "TP",  0, 0, 0, 0 },
->> -	{ 2,   0,   0, 4, SCHED_FIFO, "TF",  1, 0, 0, 0 },
->> -	{ 3,   0,   0, 4, SCHED_FIFO, "TF",  2, 0, 0, 0 },
->> -	{ 4,   0,   0, 4, SCHED_FIFO, "TF",  3, 0, 0, 0 },
->> -	{ 5,   0,   0, 4, SCHED_FIFO, "TF",  4, 0, 0, 0 },
->> -	{ 6,   0,   0, 4, SCHED_FIFO, "TF",  5, 0, 0, 0 },
->> -	{ 7,   0,   0, 4, SCHED_FIFO, "TF",  6, 0, 0, 0 }
->> +	{ 1,   0, 100, 4, SCHED_FIFO, "TP",  0, 0, 0, 0 },
->> +	{ 2,   0,   0, 2, SCHED_FIFO, "TF",  1, 0, 0, 0 },
->> +	{ 3,   0,   0, 2, SCHED_FIFO, "TF",  2, 0, 0, 0 },
->> +	{ 4,   0,   0, 2, SCHED_FIFO, "TF",  3, 0, 0, 0 },
->> +	{ 5,   0,   0, 2, SCHED_FIFO, "TF",  4, 0, 0, 0 },
->> +	{ 6,   0,   0, 2, SCHED_FIFO, "TF",  5, 0, 0, 0 },
->> +	{ 7,   0,   0, 2, SCHED_FIFO, "TF",  6, 0, 0, 0 }
->>  };
->>  
->>  volatile unsigned do_work_dummy;
->> @@ -180,7 +180,7 @@ void *thread_tb1(void *arg)
->>  	double t0, t1;
->>  	int rc;
->>  
->> -	test_set_priority(pthread_self(),SCHED_FIFO, 2);
->> +	test_set_priority(pthread_self(), SCHED_FIFO, 3);
->>  	DPRINTF(stderr,"Thread TB1: started\n");
->>  	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n",
->>  		seconds_read() - base_time);
->> @@ -212,7 +212,7 @@ void *thread_tb2(void *arg)
->>  	double t0, t1;
->>  	int rc;
->>  
->> -	test_set_priority(pthread_self(),SCHED_FIFO, 5);
->> +	test_set_priority(pthread_self(), SCHED_FIFO, 5);
->>  	DPRINTF(stderr,"Thread TB2: started\n");
->>  	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
->>  		seconds_read() - base_time);
-> 
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Colocation vs. Managed Hosting
 A question and answer guide to determining the best fit
 for your organization - today and in the future.
