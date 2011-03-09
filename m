@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PyLjT-0006Ar-QK
-	for ltp-list@lists.sourceforge.net; Sat, 12 Mar 2011 10:07:35 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PyLjR-0005oN-S0
-	for ltp-list@lists.sourceforge.net; Sat, 12 Mar 2011 10:07:35 +0000
-Message-ID: <4D7B45F3.90703@cn.fujitsu.com>
-Date: Sat, 12 Mar 2011 18:07:47 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PxAMI-0002Zg-VR
+	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 03:46:46 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PxAMH-0003Fk-Tt
+	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 03:46:46 +0000
+Received: by wwj40 with SMTP id 40so145642wwj.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 08 Mar 2011 19:46:39 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] ftest06.c: fix a bug of using option -i
+In-Reply-To: <20110309033747.GA4731@hpt.nay.redhat.com>
+References: <20110309033747.GA4731@hpt.nay.redhat.com>
+Date: Tue, 8 Mar 2011 19:46:39 -0800
+Message-ID: <AANLkTingdN-GrnRJ6yQ-qRw-OasXLquVZsaY5B0wQd=q@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Per-NUMA control of huge pages
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,44 +30,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
+On Tue, Mar 8, 2011 at 7:37 PM, Han Pingtian <phan@redhat.com> wrote:
+> There are two new features of hugetlb related to NUMA:
+> Interaction of Task Memory Policy with Huge Page Allocation/Freeing and
+> Per Node Hugepages Attributes. Please refer to
+> Documentation/vm/hugetlbpage.txt in kernel source for details. This
+> patch try to verify those two features in numa's test.
 
-When using option -i, the case will print the following error message:
-# ./ftest06 -i 2
-ftest06     1  TPASS  :  Test passed.
-ftest06     2  TFAIL  :         Can't chdir(/tmp/fteBX4U5O/ftest06.7461/tmp/fteBX4U5O/ftest06.7461): errno=ENOENT(2): No such file or directory
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/kernel/fs/ftest/ftest06.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
-index 18eae5d..d59a18f 100644
---- a/testcases/kernel/fs/ftest/ftest06.c
-+++ b/testcases/kernel/fs/ftest/ftest06.c
-@@ -140,10 +140,10 @@ int main(int ac, char *av[])
- 			}
- 		}
- 		cwd = startdir;
--		strcat(dirname, cwd);
-+		strcpy(dirname, cwd);
- 		sprintf(tmpname, "/ftest06.%d", getpid());
- 		strcat(dirname, tmpname);
--		strcat(homedir, cwd);
-+		strcpy(homedir, cwd);
- 		sprintf(tmpname, "/ftest06h.%d", getpid());
- 		strcat(homedir, tmpname);
- 
--- 
-1.7.1
-
--- 
-Best Regards,
-Peng Haitao
-
+Use portable shell please.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Colocation vs. Managed Hosting
