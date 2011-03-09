@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1PxgQC-0000Q2-LQ
-	for ltp-list@lists.sourceforge.net; Thu, 10 Mar 2011 14:00:56 +0000
-Date: Thu, 10 Mar 2011 15:22:19 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PxJdm-00081N-Gy
+	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 13:41:26 +0000
+Date: Wed, 9 Mar 2011 15:02:43 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110310142219.GA18909@saboteur.suse.cz>
+Message-ID: <20110309140243.GA7793@saboteur.suse.cz>
 References: <20110224101921.GA30765@hpt.nay.redhat.com>
 	<AANLkTimuSUtaPSL5x1N75_nF2OtXfjMzcvu5wK4b2FJ7@mail.gmail.com>
 	<20110225025148.GA2902@hpt.nay.redhat.com>
 	<AANLkTi=cqRqDH_JKyVTx0cnRRy74Yidd9T8Ww-cSJMs4@mail.gmail.com>
 	<20110225075728.GB2902@hpt.nay.redhat.com>
-	<20110309140243.GA7793@saboteur.suse.cz>
-	<20110310042858.GB2918@hpt.nay.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110310042858.GB2918@hpt.nay.redhat.com>
+In-Reply-To: <20110225075728.GB2902@hpt.nay.redhat.com>
 Subject: Re: [LTP] [PATCH] basic mlock() testcase from lkml
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -30,10 +28,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, Garrett Cooper <yanegomi@gmail.com>
+To: Han Pingtian <phan@redhat.com>, ltp-list@lists.sourceforge.net
 
 Hi!
-Thanks - Commited.
+> +static void setup(void)
+> +{
+> +	tst_tmpdir();
+> +
+> +	fd = open(testfile, O_CREAT | O_RDWR);
+
+Sorry for not exposing this earlier. But you should specify mode for
+open with O_CREAT. That's part of the open() inteface that is kind of
+badly engineered...
 
 -- 
 Cyril Hrubis
