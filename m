@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PxAMI-0002Zg-VR
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 03:46:46 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PxAMH-0003Fk-Tt
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 03:46:46 +0000
-Received: by wwj40 with SMTP id 40so145642wwj.10
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 08 Mar 2011 19:46:39 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PxJnA-0004eQ-RT
+	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 13:51:08 +0000
+Date: Wed, 9 Mar 2011 15:12:26 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110309141226.GB7793@saboteur.suse.cz>
+References: <4D75E7B9020000E800071530@novprvoes0310.provo.novell.com>
 MIME-Version: 1.0
-In-Reply-To: <20110309033747.GA4731@hpt.nay.redhat.com>
-References: <20110309033747.GA4731@hpt.nay.redhat.com>
-Date: Tue, 8 Mar 2011 19:46:39 -0800
-Message-ID: <AANLkTingdN-GrnRJ6yQ-qRw-OasXLquVZsaY5B0wQd=q@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Per-NUMA control of huge pages
+Content-Disposition: inline
+In-Reply-To: <4D75E7B9020000E800071530@novprvoes0310.provo.novell.com>
+Subject: Re: [LTP] pidns errors
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,18 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
+To: Murlin Wenzel <mwenzel@novell.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, Mar 8, 2011 at 7:37 PM, Han Pingtian <phan@redhat.com> wrote:
-> There are two new features of hugetlb related to NUMA:
-> Interaction of Task Memory Policy with Huge Page Allocation/Freeing and
-> Per Node Hugepages Attributes. Please refer to
-> Documentation/vm/hugetlbpage.txt in kernel source for details. This
-> patch try to verify those two features in numa's test.
+Hi!
+> Are there still known issues with the pidns tests and 20110228 stable
+> release?  I've got the same failure on 2 unrelated pieces of hardware
+> but both running SLE11SP1 (2.6.32) kernel.  The pidns tests just hang
+> with multiple child processes.  I haven't started debugging yet, but
+> it looks like a signal problem in the child processes.
 
-Use portable shell please.
-Thanks,
--Garrett
+Which testcases do hang? There is more than ten pidnsXX tests in LTP, do
+they all hang?
+
+Have you tried to connect debugger to the test process? 
+(gdb /path/to/binary PID)
+
+Also witch architectures are these failing on? The tests are ported from
+crackerjack project. Which is IMHO not designed/tested to run on
+anything else but x86 (at least some of crackerjack tests).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Colocation vs. Managed Hosting
