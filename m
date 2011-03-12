@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PvSPS-00079x-Sw
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 10:38:58 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PvSPR-0000mQ-VC
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 10:38:58 +0000
-Received: by wyb38 with SMTP id 38so2270865wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 04 Mar 2011 02:38:51 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PyKgl-0005rB-DY
+	for ltp-list@lists.sourceforge.net; Sat, 12 Mar 2011 09:00:43 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PyKge-0003C5-C5
+	for ltp-list@lists.sourceforge.net; Sat, 12 Mar 2011 09:00:43 +0000
+Message-ID: <4D7B3610.2000905@cn.fujitsu.com>
+Date: Sat, 12 Mar 2011 17:00:00 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20110225103620.GA10350@hpt.nay.redhat.com>
-References: <20110225103620.GA10350@hpt.nay.redhat.com>
-Date: Fri, 4 Mar 2011 02:38:51 -0800
-Message-ID: <AANLkTi=_K2Q1iYtN0T6izFmnmeEe1Tyyst1CzRHiN+Yg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] thp testcase come from CVE reproducer
+Subject: [LTP] [ltp] [PATCH] shmctl01.c: fix error of the case need
+	sighandler()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,67 +23,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Feb 25, 2011 at 2:36 AM, Han Pingtian <phan@redhat.com> wrote:
-> This is a reproducer of =A0CVE-2011-0999, which fixed by mainline commit
-> a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
->
-> "Transparent hugepages can only be created if rmap is fully
-> functional. So we must prevent hugepages to be created while
-> is_vma_temporary_stack() is true."
->
-> When running in a loop, it can trigger panic like this, if kernel
-> unpatched:
->
-> kernel BUG at mm/huge_memory.c:1260!
-> invalid opcode: 0000 [#1] SMP
-> last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
 
-...
+The case expect the signal "SIGUSR1" to wake up child process, so should add
+sighandler().
 
-> +static option_t options[] =3D {
-> + =A0 =A0 =A0 {NULL, NULL, NULL}
-> +};
-> +
-> +static void usage(void)
-> +{
-> + =A0 =A0return;
-> +}
-
-You can delete this if you do what I suggest below...
-
-...
-
-> + =A0 =A0 =A0 msg =3D parse_opts(argc, argv, options, usage);
-> + =A0 =A0 =A0 if (msg !=3D NULL)
-
-`if ((msg =3D parse_opts(argc, argv, NULL, NULL)) !=3D NULL)' is preferred.
-
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (execve(=
-"/bin/true", c, c) =3D=3D -1)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_brkm(TBROK|TERRNO, NULL, "execve");
-
-Not all systems have /bin/true. It would be better to do:
-
-/bin/sh -c ':'
-
-etc, as we have code that depends on this type of shell-required POSIX beha=
-vior.
-
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 ---
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
+ testcases/kernel/syscalls/ipc/shmctl/shmctl01.c |   18 +++++++++++++-----
+ 1 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+index 693bf97..f72487b 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+@@ -138,9 +138,9 @@ int main(int ac, char **av)
+ 	void check_functionality(void);
+ 
+ 	/* parse standard options */
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	}
++
+ #ifdef UCLINUX
+ 	argv0 = av[0];
+ 	maybe_run_child(do_child, "ddd", &stat_i, &stat_time, &shm_id_1);
+@@ -231,8 +231,7 @@ void *set_shmat()
+ 	 * print a message to that effect.
+ 	 */
+ 	if (rval == (void *)-1) {
+-		tst_resm(TBROK, "shmat() failed - %s", strerror(errno));
+-		cleanup();
++		tst_brkm(TBROK, cleanup, "shmat() failed - %s", strerror(errno));
+ 	}
+ 
+ 	return rval;
+@@ -485,10 +484,19 @@ void func_rmid()
+ 	shm_id_1 = -1;
+ }
+ 
++/*
++ * sighandler() - handle signals, in this case SIGUSR1 is the only one expected
++ */
++void sighandler(sig)
++{
++	if (sig != SIGUSR1)
++		tst_resm(TINFO, "received unexpected signal %d", sig);
++}
++
+ void setup(void)
+ {
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	tst_sig(FORK, sighandler, cleanup);
+ 
+ 	TEST_PAUSE;
+ 
+-- 
+1.7.1
+
+-- 
+Best Regards,
+Peng Haitao
+
+
+------------------------------------------------------------------------------
+Colocation vs. Managed Hosting
+A question and answer guide to determining the best fit
+for your organization - today and in the future.
+http://p.sf.net/sfu/internap-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
