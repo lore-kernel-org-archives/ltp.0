@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PxBqd-0005Pr-IW
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 05:22:11 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PyLjT-0006Ar-QK
+	for ltp-list@lists.sourceforge.net; Sat, 12 Mar 2011 10:07:35 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PxBqb-0004v3-Mq
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2011 05:22:11 +0000
-Message-ID: <4D770E80.7080207@cn.fujitsu.com>
-Date: Wed, 09 Mar 2011 13:22:08 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PyLjR-0005oN-S0
+	for ltp-list@lists.sourceforge.net; Sat, 12 Mar 2011 10:07:35 +0000
+Message-ID: <4D7B45F3.90703@cn.fujitsu.com>
+Date: Sat, 12 Mar 2011 18:07:47 +0800
 From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4D662E3A.1050802@cn.fujitsu.com>	<AANLkTim+d5gTwh84n2s79f2s+TmZD7AMuK65iQAfQ9yw@mail.gmail.com>	<4D6AF509.7000302@cn.fujitsu.com>
-	<AANLkTinfLc-WM3vkV7WWFNxdAjFMEz1LiHT9CqA5+fih@mail.gmail.com>
-In-Reply-To: <AANLkTinfLc-WM3vkV7WWFNxdAjFMEz1LiHT9CqA5+fih@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] The parent process need exit of waitpid11.c,
- waitpid12.c, waitpid13.c
+Subject: [LTP]  [PATCH] ftest06.c: fix a bug of using option -i
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,18 +28,40 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
 
-Garrett Cooper said the following on 2011-3-4 18:13:
->> Would you commit the patch?
-> 
-> I've committed a more extensive patch. Please test it out and let me
-> know how it goes -- thanks!
+When using option -i, the case will print the following error message:
+# ./ftest06 -i 2
+ftest06     1  TPASS  :  Test passed.
+ftest06     2  TFAIL  :         Can't chdir(/tmp/fteBX4U5O/ftest06.7461/tmp/fteBX4U5O/ftest06.7461): errno=ENOENT(2): No such file or directory
 
-The patch is OK, thanks for you work.
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/fs/ftest/ftest06.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
+index 18eae5d..d59a18f 100644
+--- a/testcases/kernel/fs/ftest/ftest06.c
++++ b/testcases/kernel/fs/ftest/ftest06.c
+@@ -140,10 +140,10 @@ int main(int ac, char *av[])
+ 			}
+ 		}
+ 		cwd = startdir;
+-		strcat(dirname, cwd);
++		strcpy(dirname, cwd);
+ 		sprintf(tmpname, "/ftest06.%d", getpid());
+ 		strcat(dirname, tmpname);
+-		strcat(homedir, cwd);
++		strcpy(homedir, cwd);
+ 		sprintf(tmpname, "/ftest06h.%d", getpid());
+ 		strcat(homedir, tmpname);
+ 
+-- 
+1.7.1
+
+-- 
 Best Regards,
-Peng
+Peng Haitao
 
 
 ------------------------------------------------------------------------------
