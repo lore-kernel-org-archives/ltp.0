@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Pxh4G-0002zq-Qg
-	for ltp-list@lists.sourceforge.net; Thu, 10 Mar 2011 14:42:20 +0000
-Date: Thu, 10 Mar 2011 16:03:44 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110310150344.GB18909@saboteur.suse.cz>
-References: <20110309154100.GA10062@saboteur.suse.cz>
-	<1392476673.384827.1299738744990.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	(envelope-from <biannm@cn.fujitsu.com>) id 1Pyamm-0005QG-V6
+	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 02:12:00 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pyamk-0001j1-Oj
+	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 02:12:00 +0000
+Message-ID: <4D7C2785.3020607@cn.fujitsu.com>
+Date: Sun, 13 Mar 2011 10:10:13 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1392476673.384827.1299738744990.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] testcases/kernel/mem Makefile mess
+References: <4D3F8E97.2030909@cn.fujitsu.com> <4D40CC9B.5080204@cn.fujitsu.com>
+In-Reply-To: <4D40CC9B.5080204@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX][PATCH]fix functional/threads/pi_test/pitest-4 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,20 +27,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > Hmm, it looks like the oom library is not used at all.
-> > Pehaps some misapplied patch?
-> Indeed, I have sent some patches before to remove liboom
-> to use something else instead a few months ago.
 
-Okay liboom removed.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Bian Naimeng wrote:
+> Hi Garrett,
+> 
+>   Would you like to apply this patch? 
+> 
+>   The priority of TB1 is lower than TFs, if TB1 was assigned to the CPU
+> which scheduling TF, TB1 will not have chance to run.
+>   I raise the priority of TB1, the new priority of TB1 is higher than TF
+> and TL, and still lower than TP.
+>   After applying the following patch, test will work correctly.
+> 
+
+ping.  Would you have time to pick up it.
+
+Regards
+ Bian
+
+> Regards
+>   Bian
+> 
+> Bian Naimeng wrote:
+>> TB1 has a lower priority than TFs, it has not chance to run.
+>>
+>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>>
+>> ---
+>>  .../functional/threads/pi_test/pitest-4.c          |   18 +++++++++---------
+>>  1 files changed, 9 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+>> index ad940dc..93e44b6 100644
+>> --- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+>> +++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+>> @@ -69,13 +69,13 @@ struct thread_param
+>>  	volatile unsigned progress;
+>>  } tp[] = {
+>>  	{ 0,   0,   0, 1, SCHED_FIFO, "TL",  0, 0, 0, 0 },
+>> -	{ 1,   0, 100, 3, SCHED_FIFO, "TP",  0, 0, 0, 0 },
+>> -	{ 2,   0,   0, 4, SCHED_FIFO, "TF",  1, 0, 0, 0 },
+>> -	{ 3,   0,   0, 4, SCHED_FIFO, "TF",  2, 0, 0, 0 },
+>> -	{ 4,   0,   0, 4, SCHED_FIFO, "TF",  3, 0, 0, 0 },
+>> -	{ 5,   0,   0, 4, SCHED_FIFO, "TF",  4, 0, 0, 0 },
+>> -	{ 6,   0,   0, 4, SCHED_FIFO, "TF",  5, 0, 0, 0 },
+>> -	{ 7,   0,   0, 4, SCHED_FIFO, "TF",  6, 0, 0, 0 }
+>> +	{ 1,   0, 100, 4, SCHED_FIFO, "TP",  0, 0, 0, 0 },
+>> +	{ 2,   0,   0, 2, SCHED_FIFO, "TF",  1, 0, 0, 0 },
+>> +	{ 3,   0,   0, 2, SCHED_FIFO, "TF",  2, 0, 0, 0 },
+>> +	{ 4,   0,   0, 2, SCHED_FIFO, "TF",  3, 0, 0, 0 },
+>> +	{ 5,   0,   0, 2, SCHED_FIFO, "TF",  4, 0, 0, 0 },
+>> +	{ 6,   0,   0, 2, SCHED_FIFO, "TF",  5, 0, 0, 0 },
+>> +	{ 7,   0,   0, 2, SCHED_FIFO, "TF",  6, 0, 0, 0 }
+>>  };
+>>  
+>>  volatile unsigned do_work_dummy;
+>> @@ -180,7 +180,7 @@ void *thread_tb1(void *arg)
+>>  	double t0, t1;
+>>  	int rc;
+>>  
+>> -	test_set_priority(pthread_self(),SCHED_FIFO, 2);
+>> +	test_set_priority(pthread_self(), SCHED_FIFO, 3);
+>>  	DPRINTF(stderr,"Thread TB1: started\n");
+>>  	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n",
+>>  		seconds_read() - base_time);
+>> @@ -212,7 +212,7 @@ void *thread_tb2(void *arg)
+>>  	double t0, t1;
+>>  	int rc;
+>>  
+>> -	test_set_priority(pthread_self(),SCHED_FIFO, 5);
+>> +	test_set_priority(pthread_self(), SCHED_FIFO, 5);
+>>  	DPRINTF(stderr,"Thread TB2: started\n");
+>>  	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
+>>  		seconds_read() - base_time);
+> 
+
 
 ------------------------------------------------------------------------------
 Colocation vs. Managed Hosting
