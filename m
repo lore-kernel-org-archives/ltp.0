@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PvRLF-0003NJ-Pd
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 09:30:33 +0000
-Received: from mail-ww0-f53.google.com ([74.125.82.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PvRLF-000882-0T
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 09:30:33 +0000
-Received: by wwb29 with SMTP id 29so2681129wwb.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 04 Mar 2011 01:30:26 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1PzrjQ-00085W-Vx
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 14:29:48 +0000
+Date: Wed, 16 Mar 2011 15:51:43 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110316145143.GF2096@saboteur.suse.cz>
+References: <1300284345-23533-1-git-send-email-czhang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4D6FB841.1060401@redhat.com>
-References: <4D6F3AC9.4040608@redhat.com> <4D6FA7E9.5070200@redhat.com>
-	<4D6FB841.1060401@redhat.com>
-Date: Fri, 4 Mar 2011 01:30:26 -0800
-Message-ID: <AANLkTimoBGhpyYCXiq1U=JiFNzNyAB453Vpmv91Vjsim@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v2] fork13 output too large
+Content-Disposition: inline
+In-Reply-To: <1300284345-23533-1-git-send-email-czhang@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] fs: fsstress: fix compile when -DNO_XFS
+ disabled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,21 +25,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: czhang@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Mar 3, 2011 at 7:48 AM, Caspar Zhang <czhang@redhat.com> wrote:
-> Oh... I sent the wrong v2 patch. here is the correct PATCH v2. Sorry for
-> noise...
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  testcases/kernel/fs/fsstress/Makefile   |    3 +++
+>  testcases/kernel/fs/fsstress/fsstress.c |   16 ++++++++--------
+>  testcases/kernel/fs/fsstress/global.h   |    4 ++--
+>  3 files changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/testcases/kernel/fs/fsstress/Makefile b/testcases/kernel/fs/fsstress/Makefile
+> index 0a53891..f6527ed 100644
+> --- a/testcases/kernel/fs/fsstress/Makefile
+> +++ b/testcases/kernel/fs/fsstress/Makefile
+> @@ -27,6 +27,9 @@ include $(top_srcdir)/include/mk/env_pre.mk
+>  CPPFLAGS			+= -DNO_XFS -I$(abs_srcdir) \
+>  				   -D_LARGEFILE64_SOURCE -D_GNU_SOURCE
+>  
+> +# if removed -DNO_XFS, you should unmask the following line
+> +#CPPFLAGS			+= -lattr
 
-Seems sane -- thanks!
--Garrett
+Dynamic libraries should be added to LDLIBS variable see doc/README.mk-devel.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
+Colocation vs. Managed Hosting
+A question and answer guide to determining the best fit
+for your organization - today and in the future.
+http://p.sf.net/sfu/internap-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
