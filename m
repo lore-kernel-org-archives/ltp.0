@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1Q3qiY-00039Z-83
-	for ltp-list@lists.sourceforge.net; Sun, 27 Mar 2011 14:13:22 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1Pzsv4-0004IS-O1
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 15:45:54 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q3qiX-0007o3-6z
-	for ltp-list@lists.sourceforge.net; Sun, 27 Mar 2011 14:13:22 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p2REDFHX015300
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pzsv3-0005O3-RH
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 15:45:54 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p2GFjmKu010369
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Mar 2011 10:13:15 -0400
+	for <ltp-list@lists.sourceforge.net>; Wed, 16 Mar 2011 11:45:48 -0400
 From: czhang@redhat.com
-Date: Sun, 27 Mar 2011 22:13:08 +0800
-Message-Id: <1301235188-26579-1-git-send-email-czhang@redhat.com>
-In-Reply-To: <1301233261-25499-1-git-send-email-czhang@redhat.com>
-References: <1301233261-25499-1-git-send-email-czhang@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.4.1"
-Subject: [LTP] [PATCH] [syscalls] io_submit: fix broken testcase
+Date: Wed, 16 Mar 2011 23:45:46 +0800
+Message-Id: <1300290346-26901-1-git-send-email-czhang@redhat.com>
+In-Reply-To: <[PATCH 1/2]>
+References: <[PATCH 1/2]>
+Subject: [LTP] [PATCH v2 2/2] fs: fsstress: fix compile when -DNO_XFS
+	disabled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,308 +29,128 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: emcnabb@redhat.com, Caspar Zhang <czhang@redhat.com>
+Cc: Caspar Zhang <czhang@redhat.com>
 
 From: Caspar Zhang <czhang@redhat.com>
 
-This is a multi-part message in MIME format.
---------------1.7.4.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+When -DNO_XFS disabled in Makefile, the compilation couldn't pass and
+many errors and warnings outputed. This patch fixes this issue.
 
-
-io_submit01 contains 4 negative testing: EINVAL, EFAULT, EINVAL+EFAULT
-and EBADF. The first 3 testcases didn't initialize the content of 'ctx'
-so that they contained invalid argument in the cases. This may cause
-incorrect result on some architectures, like:
-
-io_submit01    1  TPASS  :  expected failure - returned value = 22 :
-Invalid argument
-io_submit01    2  TFAIL  :  unexpected returned value - -22 - expected
--14
-io_submit01    3  TPASS  :  expected failure - returned value = 22 :
-Invalid argument
-io_submit01    4  TPASS  :  expected failure - returned value = 9 : Bad
-file descriptor
-
-I fixed this issue by moving the initialization of ctx before the cases,
-also added some additional negative + positive cases. Now tested on x86
-and s390x system, the results seem good:
-
-io_submit01    1  TPASS  :  expected failure - returned value = 22 :
-Invalid argument
-io_submit01    2  TPASS  :  expected failure - returned value = 22 :
-Invalid argument
-io_submit01    3  TPASS  :  expected failure - returned value = 22 :
-Invalid argument
-io_submit01    4  TPASS  :  expected failure - returned value = 14 : Bad
-address
-io_submit01    5  TPASS  :  expected failure - returned value = 22 :
-Invalid argument
-io_submit01    6  TPASS  :  expected failure - returned value = 9 : Bad
-file descriptor
-io_submit01    7  TPASS  :  call succeeded expectedly
-io_submit01    8  TPASS  :  call succeeded expectedly
+v2: modify CPPFLAGS to LDLIBS
 
 Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- testcases/kernel/syscalls/io_submit/io_submit01.c |  147 ++++++++++++++-------
- 1 files changed, 101 insertions(+), 46 deletions(-)
+ testcases/kernel/fs/fsstress/Makefile   |    3 +++
+ testcases/kernel/fs/fsstress/fsstress.c |   16 ++++++++--------
+ testcases/kernel/fs/fsstress/global.h   |    4 ++--
+ 3 files changed, 13 insertions(+), 10 deletions(-)
 
+diff --git a/testcases/kernel/fs/fsstress/Makefile b/testcases/kernel/fs/fsstress/Makefile
+index 0a53891..38acce0 100644
+--- a/testcases/kernel/fs/fsstress/Makefile
++++ b/testcases/kernel/fs/fsstress/Makefile
+@@ -27,6 +27,9 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ CPPFLAGS			+= -DNO_XFS -I$(abs_srcdir) \
+ 				   -D_LARGEFILE64_SOURCE -D_GNU_SOURCE
+ 
++# if removed -DNO_XFS, you should unmask the following line
++#LDLIBS				+= -lattr
++
+ # XXX (garrcoop): not -Wuninitialized clean.
+ CPPFLAGS			+= -Wno-error
+ 
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index d6521f4..089edfb 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -1436,7 +1436,7 @@ allocsp_f(int opno, long r)
+ 	e = ioctl(fd, XFS_IOC_ALLOCSP64, &fl) < 0 ? errno : 0;
+ 	if (v)
+ 		printf("%d/%d: ioctl(XFS_IOC_ALLOCSP64) %s %lld 0 %d\n",
+-			procid, opno, f.path, off, e);
++			procid, opno, f.path, (long long)off, e);
+ 	free_pathname(&f);
+ 	close(fd);
+ }
+@@ -1571,7 +1571,7 @@ bulkstat_f(int opno, long r)
+ 	free(t);
+ 	if (verbose)
+ 		printf("%d/%d: bulkstat nent %d total %lld\n",
+-			procid, opno, nent, total);
++			procid, opno, nent, (long long)total);
+ 	close(fd);
+ }
+ 
+@@ -1704,7 +1704,7 @@ creat_f(int opno, long r)
+ 				geom.rtextsize * geom.blocksize * extsize;
+ 			if (ioctl(fd, XFS_IOC_FSSETXATTR, &a) < 0)
+ 				e1 = errno;
+-			esz = a.fsx_estsize;
++			esz = a.fsx_extsize;
+ 
+ 		}
+ #endif
+@@ -2016,7 +2016,7 @@ freesp_f(int opno, long r)
+ 	e = ioctl(fd, XFS_IOC_FREESP64, &fl) < 0 ? errno : 0;
+ 	if (v)
+ 		printf("%d/%d: ioctl(XFS_IOC_FREESP64) %s %lld 0 %d\n",
+-			procid, opno, f.path, off, e);
++			procid, opno, f.path, (long long)off, e);
+ 	free_pathname(&f);
+ 	close(fd);
+ }
+@@ -2388,8 +2388,8 @@ resvsp_f(int opno, long r)
+ 	fl.l_len = (off64_t)(random() % (1024 * 1024));
+ 	e = ioctl(fd, XFS_IOC_RESVSP64, &fl) < 0 ? errno : 0;
+ 	if (v)
+-		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %lld %d\n",
+-			procid, opno, f.path, off, fl.l_len, e);
++		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %ld %d\n",
++			procid, opno, f.path, (long long)off, fl.l_len, e);
+ 	free_pathname(&f);
+ 	close(fd);
+ }
+@@ -2605,8 +2605,8 @@ unresvsp_f(int opno, long r)
+ 	fl.l_len = (off64_t)(random() % (1 << 20));
+ 	e = ioctl(fd, XFS_IOC_UNRESVSP64, &fl) < 0 ? errno : 0;
+ 	if (v)
+-		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %lld %d\n",
+-			procid, opno, f.path, off, fl.l_len, e);
++		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %ld %d\n",
++			procid, opno, f.path, (long long)off, fl.l_len, e);
+ 	free_pathname(&f);
+ 	close(fd);
+ }
+diff --git a/testcases/kernel/fs/fsstress/global.h b/testcases/kernel/fs/fsstress/global.h
+index f788395..9644666 100644
+--- a/testcases/kernel/fs/fsstress/global.h
++++ b/testcases/kernel/fs/fsstress/global.h
+@@ -38,8 +38,8 @@
+ #if defined(NO_XFS)
+ # include "xfscompat.h"
+ #else
+-# include <libxfs.h>
+-# include <attributes.h>
++# include <xfs/libxfs.h>
++# include <attr/attributes.h>
+ #endif
+ 
+ /* libc includes */
+-- 
+1.7.4.1
 
---------------1.7.4.1
-Content-Type: text/x-patch;
-	name="0001-syscalls-io_submit-fix-broken-testcase.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-syscalls-io_submit-fix-broken-testcase.patch"
-
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
-index 44580e6..fc9fc1c 100644
---- a/testcases/kernel/syscalls/io_submit/io_submit01.c
-+++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
-@@ -27,12 +27,13 @@
- 
- char *TCID = "io_submit01";
- 
--int TST_TOTAL = 3;
-+int TST_TOTAL = 8;
- 
- #ifdef HAVE_LIBAIO_H
- #include <libaio.h>
- #include <errno.h>
- #include <string.h>
-+#include <fcntl.h>
- 
- static void cleanup(void)
- {
-@@ -56,12 +57,6 @@ static void setup(void)
-    On  success,  io_submit()  returns the number of iocbs submitted (which
-    may be 0 if nr is zero); on failure,  it  returns  one  of  the  errors
-    listed under ERRORS.
--
--   ERRORS
--   EINVAL The aio_context specified by ctx_id is invalid.  nr is less than
--   0.  The iocb at *iocbpp[0] is not properly initialized,  or  the
--   operation  specified  is  invalid for the file descriptor in the
--   iocb.
-  */
- int main(int argc, char *argv[])
- {
-@@ -69,12 +64,14 @@ int main(int argc, char *argv[])
- 	char *msg;
- 
- 	long expected_return;
-+	long expected_fault = -EFAULT;
-+	long expected_inval = -EINVAL;
- 
--	int rval;
-+	int rval, fd;
- 	char buf[256];
- 	struct iocb iocb;
- 	struct iocb *iocbs[1];
--	
-+
- 	io_context_t ctx;
- 
- 	memset(&ctx, 0, sizeof(ctx));
-@@ -87,6 +84,13 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		Tst_count = 0;
- 
-+		/*
-+		 * EINVAL The aio_context specified by ctx_id is invalid. nr
-+		 * is less than 0. The iocb at *iocbpp[0] is not properly
-+		 * initialized, or the operation specified is invalid for
-+		 * the file descriptor in the iocb.
-+		 */
-+		/* EINVAL-1: invalid ctx */
- 		expected_return = -EINVAL;
- 		TEST(io_submit(ctx, 0, NULL));
- 		if (TEST_RETURN == 0) {
-@@ -100,8 +104,40 @@ int main(int argc, char *argv[])
- 				 "expected %ld", TEST_RETURN, expected_return);
- 		}
- 
-+		/* EINVAL-2: invalid nr */
-+		expected_return = -EINVAL;
-+		rval = io_setup(1, &ctx);
-+		if (rval != 0)
-+			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
-+		TEST(io_submit(ctx, -1, NULL));
-+		if (TEST_RETURN == 0) {
-+			tst_resm(TFAIL, "call succeeded unexpectedly");
-+		} else if (TEST_RETURN == expected_return) {
-+			tst_resm(TPASS, "expected failure - "
-+				 "returned value = %ld : %s", (-1 * TEST_RETURN),
-+				 strerror(-1 * TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "unexpected returned value - %ld - "
-+				 "expected %ld", TEST_RETURN, expected_return);
-+		}
-+
-+		/* EINVAL-3: uninitialized iocb */
-+		expected_return = -EINVAL;
-+		iocbs[0] = &iocb;
-+		TEST(io_submit(ctx, 1, iocbs));
-+		if (TEST_RETURN == 0) {
-+			tst_resm(TFAIL, "call succeeded unexpectedly");
-+		} else if (TEST_RETURN == expected_return) {
-+			tst_resm(TPASS, "expected failure - "
-+				 "returned value = %ld : %s", (-1 * TEST_RETURN),
-+				 strerror(-1 * TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "unexpected returned value - %ld - "
-+				 "expected %ld", TEST_RETURN, expected_return);
-+		}
-+
- 		/*
--		   EFAULT One of the data structures points to invalid data.
-+		 * EFAULT: One of the data structures points to invalid data.
- 		 */
- 		expected_return = -EFAULT;
- 		TEST(io_submit(ctx, 1, (void *)-1));
-@@ -116,51 +152,42 @@ int main(int argc, char *argv[])
- 				 "expected %ld", TEST_RETURN, expected_return);
- 		}
- 
--		/* Special case EFAULT or EINVAL (indetermination)
--
--		   The errno depends on the per architecture implementation
--		   of io_submit. On the architecture using compat_sys_io_submit
--		   as its implementation, errno is set to -EINVAL. */
--		{
--			long expected_fault = -EFAULT;
--			long expected_inval = -EINVAL;
--
--			TEST(io_submit(ctx, 0, (void *)-1));
--			if (TEST_RETURN == 0)
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--			else if (TEST_RETURN == expected_fault
--				   || TEST_RETURN == expected_inval) {
--				tst_resm(TPASS, "expected failure - "
--					 "returned value = %ld : %s",
--					 (-1 * TEST_RETURN),
--					 strerror(-1 * TEST_RETURN));
--			} else {
--				tst_resm(TFAIL,
--					 "unexpected returned value - %ld - "
--					 "expected %ld(%s) or %ld(%s)",
--					 TEST_RETURN, expected_fault,
--					 strerror(-1 * expected_fault),
--					 expected_inval,
--					 strerror(-1 * expected_inval));
--			}
--
-+		/*
-+		 * Special case EFAULT or EINVAL (indetermination)
-+		 *
-+		 * The errno depends on the per architecture implementation
-+		 * of io_submit. On the architecture using compat_sys_io_submit
-+		 * as its implementation, errno is set to -EINVAL.
-+		 */
-+		TEST(io_submit(ctx, -1, (void *)-1));
-+		if (TEST_RETURN == 0) {
-+			tst_resm(TFAIL, "call succeeded unexpectedly");
-+		} else if (TEST_RETURN == expected_fault
-+			   || TEST_RETURN == expected_inval) {
-+			tst_resm(TPASS, "expected failure - "
-+				 "returned value = %ld : %s",
-+				 (-1 * TEST_RETURN),
-+				 strerror(-1 * TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL,
-+				 "unexpected returned value - %ld - "
-+				 "expected %ld(%s) or %ld(%s)",
-+				 TEST_RETURN, expected_fault,
-+				 strerror(-1 * expected_fault),
-+				 expected_inval,
-+				 strerror(-1 * expected_inval));
- 		}
- 
- 		/*
--		   EBADF  The file descriptor specified in the first iocb is invalid.
-+		 * EBADF: The file descriptor specified in the first iocb is invalid.
- 		 */
- 		expected_return = -EBADF;
- 		io_prep_pread(&iocb, -1, (void *)buf, sizeof(buf), 0);
- 		iocbs[0] = &iocb;
--		memset(&ctx, 0, sizeof(io_context_t));
--		rval = io_setup(1, &ctx);
--		if (rval != 0)
--			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
--
- 		TEST(io_submit(ctx, 1, iocbs));
--		if (TEST_RETURN == 0)
-+		if (TEST_RETURN == 0) {
- 			tst_resm(TFAIL, "call succeeded unexpectedly");
--		else if (TEST_RETURN == expected_return) {
-+		} else if (TEST_RETURN == expected_return) {
- 			tst_resm(TPASS, "expected failure - "
- 				 "returned value = %ld : %s", (-1 * TEST_RETURN),
- 				 strerror(-1 * TEST_RETURN));
-@@ -168,6 +195,34 @@ int main(int argc, char *argv[])
- 			tst_resm(TFAIL, "unexpected returned value - %ld - "
- 				 "expected %ld", TEST_RETURN, expected_return);
- 		}
-+
-+		/* positive test: nr == 0 */
-+		TEST(io_submit(ctx, 0, NULL));
-+		if (TEST_RETURN == 0) {
-+			tst_resm(TPASS, "call succeeded expectedly");
-+		} else {
-+			tst_resm(TFAIL, "unexpected failure - "
-+				 "returned value = %ld : %s", (-1 * TEST_RETURN),
-+				 strerror(-1 * TEST_RETURN));
-+		}
-+
-+		/* positive test: valid fd */
-+		fd = open("/etc/fstab", O_RDONLY);
-+		if (fd == -1)
-+			tst_resm(TBROK, "open /etc/fstab fail");
-+		io_prep_pread(&iocb, fd, (void *)buf, sizeof(buf), 0);
-+		iocbs[0] = &iocb;
-+		TEST(io_submit(ctx, 1, iocbs));
-+		if (TEST_RETURN == 1)
-+			tst_resm(TPASS, "call succeeded expectedly");
-+		else if (TEST_RETURN >= 0) {
-+			tst_resm(TFAIL, "unexpected retval - "
-+				 "returned value = %ld", TEST_RETURN);
-+		} else {
-+			tst_resm(TFAIL, "unexpected returned value - %ld - "
-+				 "expected %ld", TEST_RETURN, expected_return);
-+		}
-+		close(fd);
- 	}
- 	cleanup();
- 
-
---------------1.7.4.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enable your software for Intel(R) Active Management Technology to meet the
-growing manageability and security demands of your customers. Businesses
-are taking advantage of Intel(R) vPro (TM) technology - will your software 
-be a part of the solution? Download the Intel(R) Manageability Checker 
-today! http://p.sf.net/sfu/intel-dev2devmar
---------------1.7.4.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Colocation vs. Managed Hosting
+A question and answer guide to determining the best fit
+for your organization - today and in the future.
+http://p.sf.net/sfu/internap-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.4.1--
-
-
-
