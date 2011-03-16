@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1PztFD-0004v7-6o
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 16:06:43 +0000
-Date: Wed, 16 Mar 2011 17:28:37 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110316162837.GA10245@saboteur.suse.cz>
-References: <[PATCH1/2]> <1300290266-26725-1-git-send-email-czhang@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1PzuUS-0004X2-Jf
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 17:26:32 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1PzuUQ-0000r5-Bv
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 17:26:32 +0000
+Received: by wyb40 with SMTP id 40so2131785wyb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 16 Mar 2011 10:26:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1300290266-26725-1-git-send-email-czhang@redhat.com>
-Subject: Re: [LTP] [PATCH v4 1/2] fs: fsstress: make test more POSIX
- compliant
+In-Reply-To: <1300290346-26901-1-git-send-email-czhang@redhat.com>
+References: <1300290346-26901-1-git-send-email-czhang@redhat.com>
+Date: Wed, 16 Mar 2011 10:26:24 -0700
+Message-ID: <AANLkTi=FoS-qWsvxH0YegaLfywCrOqfvNOS1bpCMW+aY@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v2 2/2] fs: fsstress: fix compile when -DNO_XFS
+	disabled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,51 +34,19 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: czhang@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
->  dread_f(int opno, long r)
->  {
->  	__int64_t	align;
-> -	char		*buf;
-> +	char		*buf = NULL;
->  	struct dioattr	diob;
->  	int		e;
->  	pathname_t	f;
-> @@ -1826,7 +1826,14 @@ dread_f(int opno, long r)
->  		len = align;
->  	else if (len > diob.d_maxiosz)
->  		len = diob.d_maxiosz;
-> -	buf = memalign(diob.d_mem, len);
-> +	if (posix_memalign((void **)&buf, diob.d_mem, len) != 0) {
-> +		perror("posix_memalign");
+On Wed, Mar 16, 2011 at 8:45 AM,  <czhang@redhat.com> wrote:
+> From: Caspar Zhang <czhang@redhat.com>
+>
+> When -DNO_XFS disabled in Makefile, the compilation couldn't pass and
+> many errors and warnings outputed. This patch fixes this issue.
+>
+> v2: modify CPPFLAGS to LDLIBS
 
-Sorry for not spotting this earlier, but I've doublechecked the
-manual page and it says:
-
-...
-posix_memalign() returns zero on success, or one of the error values
-listed in the next section on failure.  Note that errno is not set.
-...
-
-So you can't use perror() to print the error message. It would probably
-print something like:
-
-posix_memalign: Succeded
-
-The correct solution is to save the return value from posix_memalign()
-and use strerror().
-
-> +		exit(1);
-> +	}
-> +	if (buf == NULL) {
-> +		fprintf(stderr, "posix_memalign: buf is NULL\n");
-> +		exit(1);
-> +	}
->  	e = read(fd, buf, len) < 0 ? errno : 0;
->  	free(buf);
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+    Once upon a time I assume this worked for someone when compiling
+on legacy systems. Please add any and all necessary autoconf tests for
+these headers.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Colocation vs. Managed Hosting
