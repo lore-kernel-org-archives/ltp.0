@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1PwcSL-00085q-O4
-	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 15:34:45 +0000
+	(envelope-from <czhang@redhat.com>) id 1Pzstn-00048l-1O
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 15:44:35 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PwcSK-0005Xd-NH
-	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 15:34:45 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p27FYcdC026247
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Pzstl-00089k-Sl
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 15:44:35 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p2GFiS7h009180
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Mar 2011 10:34:38 -0500
-Message-ID: <4D74FAEC.9070909@redhat.com>
-Date: Mon, 07 Mar 2011 23:34:04 +0800
-From: Caspar Zhang <czhang@redhat.com>
-MIME-Version: 1.0
-References: <4D74FAA1.4000105@redhat.com>
-In-Reply-To: <4D74FAA1.4000105@redhat.com>
-Content-Type: multipart/mixed; boundary="------------080206000504060306030809"
-Subject: [LTP] [PATCH] Re: mm: mtest01(w): fail to get EOF on some archs
+	for <ltp-list@lists.sourceforge.net>; Wed, 16 Mar 2011 11:44:28 -0400
+From: czhang@redhat.com
+Date: Wed, 16 Mar 2011 23:44:26 +0800
+Message-Id: <1300290266-26725-1-git-send-email-czhang@redhat.com>
+In-Reply-To: <[PATCH 1/2]>
+References: <[PATCH 1/2]>
+Subject: [LTP] [PATCH v4 1/2] fs: fsstress: make test more POSIX compliant
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,104 +28,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------080206000504060306030809
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-forgot to add [PATCH] tag... re-send patch.
-
-On 03/07/2011 11:32 PM, Caspar Zhang wrote:
-> on some secondary archs (e.g. ppc64), mtest01(w) tests fails for
-> incorrect argument. Digged into the problem, we found this sentense:
->   while ((c = getopt(argc, argv, "c:b:p:wvh")) != -1)
-> here 'c' is char type instead of int. It runs well on x86 systems, but
-> gets failed on ppc64, s/390x systems, since it returns 255 instead of -1
-> when 'c' is char type.
-> This failure was introduced in commit
-> 8147b761b08eefde4f9b965fabb9ef614b3d5817, this patch fixes the issue.
-> 
-> Signed-off-by: Caspar Zhang <czhang@redhat.com>
-> ---
->  testcases/kernel/mem/mtest01/mtest01.c |    3 ++-
->  1 files changed, 2 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/mtest01/mtest01.c
-> b/testcases/kernel/mem/mtest01/mtest01.c
-> index b247dbf..dc960a8 100644
-> --- a/testcases/kernel/mem/mtest01/mtest01.c
-> +++ b/testcases/kernel/mem/mtest01/mtest01.c
-> @@ -59,7 +59,8 @@ void handler(int signo)
-> 
->  int main(int argc, char* argv[])
->  {
-> -	char c, *mem;
-> +	int c;
-> +	char *mem;
->  	float percent;
->  	unsigned int maxpercent = 0, dowrite = 0, verbose=0, j;
->  	unsigned long bytecount, alloc_bytes, max_pids;
-
-
--- 
-Quality Engineer (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-http://www.cn.redhat.com/
-TEL: +86-10-62608150
-
---------------080206000504060306030809
-Content-Type: text/plain;
-	name="0002-mm-mtest01-w-fail-to-get-EOF-on-some-archs.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="0002-mm-mtest01-w-fail-to-get-EOF-on-some-archs.patch"
-
-bW06IG10ZXN0MDEodyk6IGZhaWwgdG8gZ2V0IEVPRiBvbiBzb21lIGFyY2hzCgpvbiBzb21l
-IHNlY29uZGFyeSBhcmNocyAoZS5nLiBwcGM2NCksIG10ZXN0MDEodykgdGVzdHMgZmFpbHMg
-Zm9yCmluY29ycmVjdCBhcmd1bWVudC4gRGlnZ2VkIGludG8gdGhlIHByb2JsZW0sIHdlIGZv
-dW5kIHRoaXMgc2VudGVuc2U6CiAgd2hpbGUgKChjID0gZ2V0b3B0KGFyZ2MsIGFyZ3YsICJj
-OmI6cDp3dmgiKSkgIT0gLTEpCmhlcmUgJ2MnIGlzIGNoYXIgdHlwZSBpbnN0ZWFkIG9mIGlu
-dC4gSXQgcnVucyB3ZWxsIG9uIHg4NiBzeXN0ZW1zLCBidXQKZ2V0cyBmYWlsZWQgb24gcHBj
-NjQsIHMvMzkweCBzeXN0ZW1zLCBzaW5jZSBpdCByZXR1cm5zIDI1NSBpbnN0ZWFkIG9mIC0x
-CndoZW4gJ2MnIGlzIGNoYXIgdHlwZS4KVGhpcyBmYWlsdXJlIHdhcyBpbnRyb2R1Y2VkIGlu
-IGNvbW1pdAo4MTQ3Yjc2MWIwOGVlZmRlNGY5Yjk2NWZhYmI5ZWY2MTRiM2Q1ODE3LCB0aGlz
-IHBhdGNoIGZpeGVzIHRoZSBpc3N1ZS4KClNpZ25lZC1vZmYtYnk6IENhc3BhciBaaGFuZyA8
-Y3poYW5nQHJlZGhhdC5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9tZW0vbXRlc3QwMS9t
-dGVzdDAxLmMgfCAgICAzICsrLQogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyks
-IDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vbXRl
-c3QwMS9tdGVzdDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9tdGVzdDAxL210ZXN0MDEu
-YwppbmRleCBiMjQ3ZGJmLi5kYzk2MGE4IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVs
-L21lbS9tdGVzdDAxL210ZXN0MDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9tdGVz
-dDAxL210ZXN0MDEuYwpAQCAtNTksNyArNTksOCBAQCB2b2lkIGhhbmRsZXIoaW50IHNpZ25v
-KQogCiBpbnQgbWFpbihpbnQgYXJnYywgY2hhciogYXJndltdKQogewotCWNoYXIgYywgKm1l
-bTsKKwlpbnQgYzsKKwljaGFyICptZW07CiAJZmxvYXQgcGVyY2VudDsKIAl1bnNpZ25lZCBp
-bnQgbWF4cGVyY2VudCA9IDAsIGRvd3JpdGUgPSAwLCB2ZXJib3NlPTAsIGo7CiAJdW5zaWdu
-ZWQgbG9uZyBieXRlY291bnQsIGFsbG9jX2J5dGVzLCBtYXhfcGlkczsKLS0gCjEuNy40LjEK
-Cg==
---------------080206000504060306030809
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Caspar Zhang <czhang@redhat.com>
+
+From: Caspar Zhang <czhang@redhat.com>
+
+in commit bacc849720ec4efda5a0a8a9ea6a0e93a1415541, malloc.h was removed
+and stdlib.h got used instead. However, it's not enough. The function
+memalign() is also obsolete (via man memalign) and we should use
+posix_memalign instead. Also if we keep memalign() function here, the
+program would probably hit segfault once it enters dwrite_t and dread_t.
+
+v2: use correct &buf as argument
+v3: remove incorrect disabling warning, will try to fix warning and
+compiling without -DNO_XFS in another patch
+v4: code style
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+ testcases/kernel/fs/fsstress/fsstress.c |   24 +++++++++++++++++++-----
+ 1 files changed, 19 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index e3b48ea..d6521f4 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -1746,7 +1746,7 @@ void
+ dread_f(int opno, long r)
+ {
+ 	__int64_t	align;
+-	char		*buf;
++	char		*buf = NULL;
+ 	struct dioattr	diob;
+ 	int		e;
+ 	pathname_t	f;
+@@ -1826,7 +1826,14 @@ dread_f(int opno, long r)
+ 		len = align;
+ 	else if (len > diob.d_maxiosz)
+ 		len = diob.d_maxiosz;
+-	buf = memalign(diob.d_mem, len);
++	if (posix_memalign((void **)&buf, diob.d_mem, len) != 0) {
++		perror("posix_memalign");
++		exit(1);
++	}
++	if (buf == NULL) {
++		fprintf(stderr, "posix_memalign: buf is NULL\n");
++		exit(1);
++	}
+ 	e = read(fd, buf, len) < 0 ? errno : 0;
+ 	free(buf);
+ 	if (v)
+@@ -1840,7 +1847,7 @@ void
+ dwrite_f(int opno, long r)
+ {
+ 	__int64_t	align;
+-	char		*buf;
++	char		*buf = NULL;
+ 	struct dioattr	diob;
+ 	int		e;
+ 	pathname_t	f;
+@@ -1909,7 +1916,14 @@ dwrite_f(int opno, long r)
+ 		len = align;
+ 	else if (len > diob.d_maxiosz)
+ 		len = diob.d_maxiosz;
+-	buf = memalign(diob.d_mem, len);
++	if (posix_memalign((void **)&buf, diob.d_mem, len) != 0) {
++		perror("posix_memalign");
++		exit(1);
++	}
++	if (buf == NULL) {
++		fprintf(stderr, "posix_memalign: buf is NULL\n");
++		exit(1);
++	}
+ 	off %= maxfsize;
+ 	lseek64(fd, off, SEEK_SET);
+ 	memset(buf, nameseq & 0xff, len);
+@@ -2650,4 +2664,4 @@ write_f(int opno, long r)
+ 			procid, opno, f.path, (long long)off, (long int)len, e);
+ 	free_pathname(&f);
+ 	close(fd);
+-}
+\ No newline at end of file
++}
+-- 
+1.7.4.1
+
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
---------------080206000504060306030809
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Colocation vs. Managed Hosting
+A question and answer guide to determining the best fit
+for your organization - today and in the future.
+http://p.sf.net/sfu/internap-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------080206000504060306030809--
-
