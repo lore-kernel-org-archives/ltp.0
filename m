@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q4xzG-0003KY-1S
-	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 16:11:14 +0000
-Date: Wed, 30 Mar 2011 18:34:19 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110330163419.GD29707@saboteur.suse.cz>
-References: <1301061351-20787-1-git-send-email-czhang@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <penght@cn.fujitsu.com>) id 1PzhiJ-0000sA-WD
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 03:47:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1PzhiI-0002dC-8o
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 03:47:59 +0000
+Message-ID: <4D8032E9.2040800@cn.fujitsu.com>
+Date: Wed, 16 Mar 2011 11:47:53 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1301061351-20787-1-git-send-email-czhang@redhat.com>
-Subject: Re: [LTP] [PATCH] mem test items cleanup
+Subject: [LTP] [PATCH] syslog02: "tst_count_incr" should be replaced with
+ "incr_tst_count"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,20 +26,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: czhang@redhat.com
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-Commited, thanks!
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+---
+ testcases/kernel/syscalls/syslog/syslog02 |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/syslog/syslog02 b/testcases/kernel/syscalls/syslog/syslog02
+index 30be60d..d0501ba 100755
+--- a/testcases/kernel/syscalls/syslog/syslog02
++++ b/testcases/kernel/syscalls/syslog/syslog02
+@@ -104,7 +104,7 @@ syslog_case2()
+ 		# Increment the level_no for next level...
+ 		: $(( level_no += 1 ))
+ 
+-		tst_count_incr
++		incr_tst_count
+ 	done
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
+-- 
+Best Regards,
+Peng Haitao
+
 
 ------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+Colocation vs. Managed Hosting
+A question and answer guide to determining the best fit
+for your organization - today and in the future.
+http://p.sf.net/sfu/internap-sfd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
