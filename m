@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1PykNm-00079G-54
-	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 12:26:50 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PykNl-00060B-2G
-	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 12:26:50 +0000
-Message-ID: <4D7CB7FB.8060908@redhat.com>
-Date: Sun, 13 Mar 2011 20:26:35 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Pzuc4-0002Ni-8o
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 17:34:24 +0000
+Date: Wed, 16 Mar 2011 18:56:19 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110316175619.GB11728@saboteur.suse.cz>
+References: <1300290346-26901-1-git-send-email-czhang@redhat.com>
+	<AANLkTi=FoS-qWsvxH0YegaLfywCrOqfvNOS1bpCMW+aY@mail.gmail.com>
 MIME-Version: 1.0
-References: <4D7B3610.2000905@cn.fujitsu.com>
-In-Reply-To: <4D7B3610.2000905@cn.fujitsu.com>
-Subject: Re: [LTP] [ltp] [PATCH] shmctl01.c: fix error of the case
-	need	sighandler()
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=FoS-qWsvxH0YegaLfywCrOqfvNOS1bpCMW+aY@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v2 2/2] fs: fsstress: fix compile when -DNO_XFS
+ disabled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,78 +26,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 03/12/2011 05:00 PM, Peng Haitao wrote:
-> 
-> The case expect the signal "SIGUSR1" to wake up child process, so should add
-> sighandler().
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+Hi!
+>     Once upon a time I assume this worked for someone when compiling
+> on legacy systems. Please add any and all necessary autoconf tests for
+> these headers.
 
-Confirmed the patch works in RHEL6.
-
-Tested-by: Caspar Zhang <czhang@redhat.com>
-
-> ---
->  testcases/kernel/syscalls/ipc/shmctl/shmctl01.c |   18 +++++++++++++-----
->  1 files changed, 13 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> index 693bf97..f72487b 100644
-> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> @@ -138,9 +138,9 @@ int main(int ac, char **av)
->  	void check_functionality(void);
->  
->  	/* parse standard options */
-> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
->  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> -	}
-> +
->  #ifdef UCLINUX
->  	argv0 = av[0];
->  	maybe_run_child(do_child, "ddd", &stat_i, &stat_time, &shm_id_1);
-> @@ -231,8 +231,7 @@ void *set_shmat()
->  	 * print a message to that effect.
->  	 */
->  	if (rval == (void *)-1) {
-> -		tst_resm(TBROK, "shmat() failed - %s", strerror(errno));
-> -		cleanup();
-> +		tst_brkm(TBROK, cleanup, "shmat() failed - %s", strerror(errno));
->  	}
->  
->  	return rval;
-> @@ -485,10 +484,19 @@ void func_rmid()
->  	shm_id_1 = -1;
->  }
->  
-> +/*
-> + * sighandler() - handle signals, in this case SIGUSR1 is the only one expected
-> + */
-> +void sighandler(sig)
-> +{
-> +	if (sig != SIGUSR1)
-> +		tst_resm(TINFO, "received unexpected signal %d", sig);
-> +}
-> +
->  void setup(void)
->  {
->  
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	tst_sig(FORK, sighandler, cleanup);
->  
->  	TEST_PAUSE;
->  
-
+I've commited the patch as it is a couple of minutes ago as you may say
+it's improvement to the previous state. However that it doesn't compile
+here.
 
 -- 
-Quality Engineer (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-http://www.cn.redhat.com/
-TEL: +86-10-62608150
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Colocation vs. Managed Hosting
