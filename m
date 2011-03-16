@@ -2,23 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PzuUS-0004X2-Jf
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 17:26:32 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PzuUQ-0000r5-Bv
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 17:26:32 +0000
-Received: by wyb40 with SMTP id 40so2131785wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 16 Mar 2011 10:26:24 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1PzrdD-00022Y-2B
+	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 14:23:23 +0000
+Date: Wed, 16 Mar 2011 15:45:16 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110316144516.GE2096@saboteur.suse.cz>
+References: <1300284319-23476-1-git-send-email-czhang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1300290346-26901-1-git-send-email-czhang@redhat.com>
-References: <1300290346-26901-1-git-send-email-czhang@redhat.com>
-Date: Wed, 16 Mar 2011 10:26:24 -0700
-Message-ID: <AANLkTi=FoS-qWsvxH0YegaLfywCrOqfvNOS1bpCMW+aY@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v2 2/2] fs: fsstress: fix compile when -DNO_XFS
-	disabled
+Content-Disposition: inline
+In-Reply-To: <1300284319-23476-1-git-send-email-czhang@redhat.com>
+Subject: Re: [LTP] [PATCH 1/2] fs: fsstress: make test more POSIX compliant
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,19 +27,34 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: czhang@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Mar 16, 2011 at 8:45 AM,  <czhang@redhat.com> wrote:
-> From: Caspar Zhang <czhang@redhat.com>
->
-> When -DNO_XFS disabled in Makefile, the compilation couldn't pass and
-> many errors and warnings outputed. This patch fixes this issue.
->
-> v2: modify CPPFLAGS to LDLIBS
+Hi!
+> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+> index e3b48ea..37956f3 100644
+> --- a/testcases/kernel/fs/fsstress/fsstress.c
+> +++ b/testcases/kernel/fs/fsstress/fsstress.c
+> @@ -1826,7 +1826,13 @@ dread_f(int opno, long r)
+>  		len = align;
+>  	else if (len > diob.d_maxiosz)
+>  		len = diob.d_maxiosz;
+> -	buf = memalign(diob.d_mem, len);
+> +	if (posix_memalign((void **)&buf, diob.d_mem, len) != 0) {
+> +		perror("posix_memalign");
+> +		exit (1);
+> +	} else if (buf == NULL) {
+> +		fprintf(stderr, "buf remains NULL unexpectly\n");
+> +		exit (1);
+> +	}
 
-    Once upon a time I assume this worked for someone when compiling
-on legacy systems. Please add any and all necessary autoconf tests for
-these headers.
-Thanks,
--Garrett
+Okay, last comments:
+
+* exit is a function so we should write exit(1);
+
+* there is no need for the second if to be in else branch as the first
+  one calls exit anyway.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Colocation vs. Managed Hosting
