@@ -2,16 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1PzrdD-00022Y-2B
-	for ltp-list@lists.sourceforge.net; Wed, 16 Mar 2011 14:23:23 +0000
-Date: Wed, 16 Mar 2011 15:45:16 +0100
+	(envelope-from <chrubis@suse.de>) id 1Q0G4l-000561-JK
+	for ltp-list@lists.sourceforge.net; Thu, 17 Mar 2011 16:29:27 +0000
+Date: Thu, 17 Mar 2011 17:51:27 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110316144516.GE2096@saboteur.suse.cz>
-References: <1300284319-23476-1-git-send-email-czhang@redhat.com>
+Message-ID: <20110317165127.GA14723@saboteur.suse.cz>
+References: <4D7FB02B.2040904@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1300284319-23476-1-git-send-email-czhang@redhat.com>
-Subject: Re: [LTP] [PATCH 1/2] fs: fsstress: make test more POSIX compliant
+In-Reply-To: <4D7FB02B.2040904@redhat.com>
+Subject: Re: [LTP] [PATCH] mm: hugemmap05: fix hardcoded hugepagesize
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,33 +24,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: czhang@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-> index e3b48ea..37956f3 100644
-> --- a/testcases/kernel/fs/fsstress/fsstress.c
-> +++ b/testcases/kernel/fs/fsstress/fsstress.c
-> @@ -1826,7 +1826,13 @@ dread_f(int opno, long r)
->  		len = align;
->  	else if (len > diob.d_maxiosz)
->  		len = diob.d_maxiosz;
-> -	buf = memalign(diob.d_mem, len);
-> +	if (posix_memalign((void **)&buf, diob.d_mem, len) != 0) {
-> +		perror("posix_memalign");
-> +		exit (1);
-> +	} else if (buf == NULL) {
-> +		fprintf(stderr, "buf remains NULL unexpectly\n");
-> +		exit (1);
+Here comes some minor notes.
+
+> +static int hugepagesize; /* in Byte */
+
+Correct spelling should be "in Bytes"
+
+> +
+> +static void get_hugepagesize(void)
+> +{
+> +	FILE *fp;
+> +
+> +	memset(buf, -1, BUFSIZ);
+> +	if ((fp = fopen(PATH_MEMINFO, "r")) == NULL)
+> +		tst_brkm(TBROK, NULL, "can't open %s", PATH_MEMINFO);
+> +	while (fgets(line, BUFSIZ, fp) != NULL) {
+> +		if (lookup(line, "Hugepagesize")) {
+> +			tst_resm(TINFO, "Hugepagesize is %d kB", atoi(buf));
+
+It's kind of useless to convert string into integer and then integer
+into string again. ;)
+
+> +			hugepagesize = atoi(buf) * 1024;
+> +			return;
+> +		}
 > +	}
+> +	tst_brkm(TBROK, NULL, "get Hugepagesize failed.");
+> +}
+> +
+> +/* 
+> + * It's not easy to #define tunable file paths via sysfs,
+> + * use function get_hugepagesize and global variable instead. 
+> + */
+> +static void get_sys_sz_paths(void)
+> +{
+> +	sprintf(path_sys_sz, "/sys/kernel/mm/hugepages/hugepages-%dkB",
+> +			hugepagesize / 1024);
+> +	sprintf(path_sys_sz_over, "%s/nr_overcommit_hugepages", 
+> +			path_sys_sz);
+> +	sprintf(path_sys_sz_free, "%s/free_hugepages", 
+> +			path_sys_sz);
+> +	sprintf(path_sys_sz_resv, "%s/resv_hugepages", 
+> +			path_sys_sz);
+> +	sprintf(path_sys_sz_surp, "%s/surplus_hugepages", 
+> +			path_sys_sz);
+> +	sprintf(path_sys_sz_huge, "%s/nr_hugepages", 
+> +			path_sys_sz);
+> +}
 
-Okay, last comments:
+It's kind of confusing to name the function get_sys_sz_paths() as it's
+not returning anything, I would rather name it as init_sys_sz_paths().
+The same goes for get_hugepagesize().
 
-* exit is a function so we should write exit(1);
-
-* there is no need for the second if to be in else branch as the first
-  one calls exit anyway.
 
 -- 
 Cyril Hrubis
