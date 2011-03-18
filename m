@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1PzTGA-0004G8-60
-	for ltp-list@lists.sourceforge.net; Tue, 15 Mar 2011 12:21:58 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PzTG9-00028q-4e
-	for ltp-list@lists.sourceforge.net; Tue, 15 Mar 2011 12:21:58 +0000
-Received: by wyb40 with SMTP id 40so517962wyb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 Mar 2011 05:21:51 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Q0c9T-0000CP-C1
+	for ltp-list@lists.sourceforge.net; Fri, 18 Mar 2011 16:03:47 +0000
+Date: Fri, 18 Mar 2011 17:25:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110318162551.GA23312@saboteur.suse.cz>
+References: <4D8032E9.2040800@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4D7B3610.2000905@cn.fujitsu.com>
-References: <4D7B3610.2000905@cn.fujitsu.com>
-Date: Tue, 15 Mar 2011 05:21:50 -0700
-Message-ID: <AANLkTimZLM17zsLJnWVwtPASa5nhVW9W-2_PKDwv8aXK@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [ltp] [PATCH] shmctl01.c: fix error of the case need
-	sighandler()
+Content-Disposition: inline
+In-Reply-To: <4D8032E9.2040800@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] syslog02: "tst_count_incr" should be replaced
+ with "incr_tst_count"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,15 +28,13 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Sat, Mar 12, 2011 at 1:00 AM, Peng Haitao <penght@cn.fujitsu.com> wrote:
->
-> The case expect the signal "SIGUSR1" to wake up child process, so should add
-> sighandler().
+Hi!
 
-Committed a modified patch that calls tst_resm(TBROK, ...) in the
-signal handler as it's an unexpected signal.
-Thanks,
--Garrett
+Commited -- Thanks!
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Colocation vs. Managed Hosting
