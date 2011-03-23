@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1PykQq-000556-LZ
-	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 12:30:00 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PykQo-0003Ms-Cm
-	for ltp-list@lists.sourceforge.net; Sun, 13 Mar 2011 12:30:00 +0000
-Message-ID: <4D7CB8BB.6080608@redhat.com>
-Date: Sun, 13 Mar 2011 20:29:47 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Q2Qgv-0006KM-MF
+	for ltp-list@lists.sourceforge.net; Wed, 23 Mar 2011 16:13:49 +0000
+Date: Wed, 23 Mar 2011 17:36:19 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110323163619.GA7438@saboteur.suse.cz>
+References: <4D80769F.70202@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4D7B4202.1020302@cn.fujitsu.com>
-In-Reply-To: <4D7B4202.1020302@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ftest06.c: fix error of the child process need
- exit
+Content-Disposition: inline
+In-Reply-To: <4D80769F.70202@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX][PATCH] sem_wait: Setting a range for time
+ checking.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,69 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: tangchen <tangchen@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 03/12/2011 05:50 PM, Peng Haitao wrote:
-> 
-> The child process should exit after invoking dotest().
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+Hi!
+> According to POSIX, many historical implementations (including Version 7 
+> and System V) allow an alarm to occur up to a second early. Other 
+> implementations allow alarms up to half a second or one clock tick early 
+> or do not allow them to occur early at all. That means, the SIGALRM sent 
+> by alarm() could arrive a little earlier. So, even if sem_wait() is 
+> blocked, test could still fail.
+> Setting a range for time checking would be better. When sem_wait() is 
+> block and then be interrupted by SIGALRM, if the time is in this range, 
+> test is passed.
 
-Confirmed this patch and the other ftest06 patch both work on RHEL6.
-
-Tested-by: Caspar Zhang <czhang@redhat.com>
-
-> ---
->  testcases/kernel/fs/ftest/ftest06.c |    7 ++-----
->  1 files changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
-> index d8ff8b6..18eae5d 100644
-> --- a/testcases/kernel/fs/ftest/ftest06.c
-> +++ b/testcases/kernel/fs/ftest/ftest06.c
-> @@ -110,9 +110,8 @@ int main(int ac, char *av[])
->  	/*
->  	 * parse standard options
->  	 */
-> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
->  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> -	}
->  
->  	/*
->  	 * Default values for run conditions.
-> @@ -162,7 +161,7 @@ int main(int ac, char *av[])
->  		for (k = 0; k < nchild; k++) {
->  			if ((child = fork()) == 0) {
->  				dotest(k, iterations);
-> -
-> +				tst_exit();
->  			}
->  			if (child < 0) {
->  				tst_brkm(TBROK|TERRNO, cleanup, "fork failed");
-> @@ -239,8 +238,6 @@ int main(int ac, char *av[])
->  		}
->  
->  		sync();
-> -		cleanup();
-> -
->  	}
->  
->  	if (local_flag == FAILED)
-
+Out of curiosity, what system is this? The signal seems to arrives after
+more than 1 second on all linux boxes that I have.
 
 -- 
-Quality Engineer (Kernel) in
-Red Hat Software (Beijing) Co., R&D Branch
-http://www.cn.redhat.com/
-TEL: +86-10-62608150
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Colocation vs. Managed Hosting
-A question and answer guide to determining the best fit
-for your organization - today and in the future.
-http://p.sf.net/sfu/internap-sfd2d
+Enable your software for Intel(R) Active Management Technology to meet the
+growing manageability and security demands of your customers. Businesses
+are taking advantage of Intel(R) vPro (TM) technology - will your software 
+be a part of the solution? Download the Intel(R) Manageability Checker 
+today! http://p.sf.net/sfu/intel-dev2devmar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
