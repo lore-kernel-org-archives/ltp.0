@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <tytso@mit.edu>) id 1PvaU0-0006wp-9f
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 19:16:12 +0000
-Received: from dmz-mailsec-scanner-4.mit.edu ([18.9.25.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PvaTz-0000bN-H2
-	for ltp-list@lists.sourceforge.net; Fri, 04 Mar 2011 19:16:12 +0000
-Mime-Version: 1.0 (Apple Message framework v1082)
-From: Theodore Tso <tytso@MIT.EDU>
-In-Reply-To: <1469445745.266603.1299117157337.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Fri, 4 Mar 2011 13:58:45 -0500
-Message-Id: <6AFCFCC5-DBC2-403E-9EED-D2A85FFCB21C@mit.edu>
-References: <1469445745.266603.1299117157337.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
-	FEBRUARY 2011.
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Q2MsG-0004G8-9R
+	for ltp-list@lists.sourceforge.net; Wed, 23 Mar 2011 12:09:16 +0000
+Date: Wed, 23 Mar 2011 13:31:46 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110323123146.GA4035@saboteur.suse.cz>
+References: <AANLkTinnnh7H2fjxSfnnc7JsSFdTBQWCDeWTkzWMDCRO@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <AANLkTinnnh7H2fjxSfnnc7JsSFdTBQWCDeWTkzWMDCRO@mail.gmail.com>
+Subject: Re: [LTP] New member to mailing list ..
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,50 +24,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list@lists.sf.net, vapier@gentoo.org, linux-kernel@vger.kernel.org, Paolo Ciarrocchi <paolo.ciarrocchi@gmail.com>, akpm@linux-foundation.org, torvalds@linux-foundation.org
+To: Naveen Joshi - C and Linux <joshiplns@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> This is Joshi . newer to LTP mailing list.
+> 
+> Right now doing am testing with LTP. having some issues related aio_return.
+> In aio_return/2-1.c
+> vi 2-1.c
+> 
+> *#define TNAME "aio_return/2-1.test"
+> :
+> Something
+> :
+> 
+> retval = aio_return(&aiocb)
+> if (retval != -1)
+> {
+>      close()fd)
+>      printf(TNAME "Second call to aio_return() should return -1 :%d\n",retval)
+>      exit()
+> 
+> }
+> 
+> Here i calling aio_return(&aiocb)for 3 times . but **if i call
+> aio_return(&aiocb)2nd ti,e it should fail means it should return
+> -1 . in my program its retuning other than -1 . SO test is failing
+> here . Can any one suggest to fix the bug .
 
-On Mar 2, 2011, at 8:52 PM, CAI Qian wrote:
+The POSIX [1] says, aio_return() _may_ fail, if called more than once.
+The 'may' means that it's implementation defined if it fails or not so
+the test as it is now is invalid. We were fixing these cases by
+reporting TCONF rather than failure, if I remember correctly.
 
-> Those days, there just too many tests and testing projects for kernel like
-> LTP, autotest, xfstests and so on. Why not have somewhere to collabrate and
-> then to extract the best?
+[1] http://pubs.opengroup.org/onlinepubs/009695399/functions/aio_return.html
 
-Part of the problem is that every single testing project has different goals and
-priorities.   For example xfstests is maintained by the XFS folks, as well as people
-from some of the other file system development efforts (the ext4 one in particular,
-thanks to people like Eric Sandeen), to test file systems.
-
-At least at one point, I had heard a complaint that LTP was more focused on 
-increasing test coverage as measured by a code coverage tool in the kernel
-than it was about about covering edge conditions, or races.  There's nothing 
-wrong with that, per se, and I don't know if it was true then or now, but it's a very
-different focus from one which is focused increasing the data reliability of file
-systems, quickly and efficiently.
-
-And then there's the LSB test suites, which is really code at testing correctness
-from a standards perspective, which is a different focus yet again from the LTP
-and xfstests approach.
-
-Bottom line, I'm a big fan of having different test suites, with different philosophies.
-Each philosophy has its strengths and blind spots, and so a problem that might
-be missed by one test suite might get caught by another.
-
-The only real problem is an operational one.   There are some programs which
-are used by both LTP and xfstests, and changes that is made in one, don't 
-necessarily get propagated to the other unless someone manually does it.
-But I think we can solve that without trying to merge all of these tests into a
-single Grand Unified Test Suite.
-
--- Ted
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
+Enable your software for Intel(R) Active Management Technology to meet the
+growing manageability and security demands of your customers. Businesses
+are taking advantage of Intel(R) vPro (TM) technology - will your software 
+be a part of the solution? Download the Intel(R) Manageability Checker 
+today! http://p.sf.net/sfu/intel-dev2devmar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
