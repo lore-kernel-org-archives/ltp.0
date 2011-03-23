@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q4szC-00052l-2g
-	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 10:50:50 +0000
-Date: Wed, 30 Mar 2011 13:13:54 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Q2Q58-00085X-94
+	for ltp-list@lists.sourceforge.net; Wed, 23 Mar 2011 15:34:46 +0000
+Date: Wed, 23 Mar 2011 16:57:16 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110330111354.GA29707@saboteur.suse.cz>
-References: <4D901425.2020803@tataelxsi.co.in>
+Message-ID: <20110323155716.GA9320@saboteur.suse.cz>
+References: <4D7FB02B.2040904@redhat.com>
+	<20110317165127.GA14723@saboteur.suse.cz>
+	<4D8872BF.2060502@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4D901425.2020803@tataelxsi.co.in>
-Subject: Re: [LTP] Error with Device driver tests in LTP
+In-Reply-To: <4D8872BF.2060502@redhat.com>
+Subject: Re: [LTP] [PATCH v2] mm: hugemmap05: fix hardcoded hugepagesize
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,36 +26,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Tijo <tijotj@tataelxsi.co.in>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
->  I'm new to the LTP mailing list and I'm facing a problem while
-> running the device driver tests in LTP. When I try to make the acpi
-> driver in LTP, I'm getting an error as
-> 
-> make -C /lib/modules/2.6.32.TEL-0.7-default/build SUBDIRS=/root/tijo/LTP-docs/ltp-full-20110228/testcases/kernel/device-drivers/acpi
-> modules
-> make[1]: Entering directory `/usr/src/linux-2.6.32.12-0.7'
->  CC [M]  /root/tijo/LTP-docs/ltp-full-20110228/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.o
-> /root/tijo/LTP-docs/ltp-full-20110228/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.c:
-> In function ltpdev_ioctl:
-> /root/tijo/LTP-docs/ltp-full-20110228/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.c:188:
-> warning: passing argument 2 of acpi_get_object_info from
-> incompatible pointer type
-> /root/tijo/LTP-docs/ltp-full-20110228/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.c:369:
-> *error: implicit declaration of function acpi_get_register*
-> make[2]: *** [/root/tijo/LTP-docs/ltp-full-20110228/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.o]
-> Error 1
-> make[1]: *** [_module_/root/tijo/LTP-docs/ltp-full-20110228/testcases/kernel/device-drivers/acpi]
-> Error 2
-> make[1]: Leaving directory `/usr/src/linux-2.6.32.12-0.7'
-> make: *** [default] Error 2
-> 
-> please help on how to solve this problem
+Commited.
 
-The source code says that last update was for kernel 2.6.28, that is
-aprox. 2 years old, most likely the acpi api has changed since then.
+It however goes into infinite loop on my machine with hugepagesize 4096,
+but that's for further investigation, it seems like it burns cpu in
+write_bytes cycling in place.
+
+Note that the patch had trailing whitespaces, I've fixed them manually.
+
+It would be good to use check_patch.pl from linux kernel before sending
+patches. It would save us some of the patch ping pong...
+
+Thanks.
 
 -- 
 Cyril Hrubis
