@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q2Qgv-0006KM-MF
-	for ltp-list@lists.sourceforge.net; Wed, 23 Mar 2011 16:13:49 +0000
-Date: Wed, 23 Mar 2011 17:36:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110323163619.GA7438@saboteur.suse.cz>
-References: <4D80769F.70202@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1Q3qiY-00039Z-83
+	for ltp-list@lists.sourceforge.net; Sun, 27 Mar 2011 14:13:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q3qiX-0007o3-6z
+	for ltp-list@lists.sourceforge.net; Sun, 27 Mar 2011 14:13:22 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p2REDFHX015300
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Mar 2011 10:13:15 -0400
+From: czhang@redhat.com
+Date: Sun, 27 Mar 2011 22:13:08 +0800
+Message-Id: <1301235188-26579-1-git-send-email-czhang@redhat.com>
+In-Reply-To: <1301233261-25499-1-git-send-email-czhang@redhat.com>
+References: <1301233261-25499-1-git-send-email-czhang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4D80769F.70202@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH] sem_wait: Setting a range for time
- checking.
+Content-Type: multipart/mixed; boundary="------------1.7.4.1"
+Subject: [LTP] [PATCH] [syscalls] io_submit: fix broken testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,29 +30,289 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: emcnabb@redhat.com, Caspar Zhang <czhang@redhat.com>
 
-Hi!
-> According to POSIX, many historical implementations (including Version 7 
-> and System V) allow an alarm to occur up to a second early. Other 
-> implementations allow alarms up to half a second or one clock tick early 
-> or do not allow them to occur early at all. That means, the SIGALRM sent 
-> by alarm() could arrive a little earlier. So, even if sem_wait() is 
-> blocked, test could still fail.
-> Setting a range for time checking would be better. When sem_wait() is 
-> block and then be interrupted by SIGALRM, if the time is in this range, 
-> test is passed.
+From: Caspar Zhang <czhang@redhat.com>
 
-Out of curiosity, what system is this? The signal seems to arrives after
-more than 1 second on all linux boxes that I have.
+This is a multi-part message in MIME format.
+--------------1.7.4.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+io_submit01 contains 4 negative testing: EINVAL, EFAULT, EINVAL+EFAULT
+and EBADF. The first 3 testcases didn't initialize the content of 'ctx'
+so that they contained invalid argument in the cases. This may cause
+incorrect result on some architectures, like:
+
+io_submit01    1  TPASS  :  expected failure - returned value = 22 :
+Invalid argument
+io_submit01    2  TFAIL  :  unexpected returned value - -22 - expected
+-14
+io_submit01    3  TPASS  :  expected failure - returned value = 22 :
+Invalid argument
+io_submit01    4  TPASS  :  expected failure - returned value = 9 : Bad
+file descriptor
+
+I fixed this issue by moving the initialization of ctx before the cases,
+also added some additional negative + positive cases. Now tested on x86
+and s390x system, the results seem good:
+
+io_submit01    1  TPASS  :  expected failure - returned value = 22 :
+Invalid argument
+io_submit01    2  TPASS  :  expected failure - returned value = 22 :
+Invalid argument
+io_submit01    3  TPASS  :  expected failure - returned value = 22 :
+Invalid argument
+io_submit01    4  TPASS  :  expected failure - returned value = 14 : Bad
+address
+io_submit01    5  TPASS  :  expected failure - returned value = 22 :
+Invalid argument
+io_submit01    6  TPASS  :  expected failure - returned value = 9 : Bad
+file descriptor
+io_submit01    7  TPASS  :  call succeeded expectedly
+io_submit01    8  TPASS  :  call succeeded expectedly
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+ testcases/kernel/syscalls/io_submit/io_submit01.c |  147 ++++++++++++++-------
+ 1 files changed, 101 insertions(+), 46 deletions(-)
+
+
+--------------1.7.4.1
+Content-Type: text/x-patch;
+	name="0001-syscalls-io_submit-fix-broken-testcase.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-syscalls-io_submit-fix-broken-testcase.patch"
+
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
+index 44580e6..fc9fc1c 100644
+--- a/testcases/kernel/syscalls/io_submit/io_submit01.c
++++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
+@@ -27,12 +27,13 @@
+ 
+ char *TCID = "io_submit01";
+ 
+-int TST_TOTAL = 3;
++int TST_TOTAL = 8;
+ 
+ #ifdef HAVE_LIBAIO_H
+ #include <libaio.h>
+ #include <errno.h>
+ #include <string.h>
++#include <fcntl.h>
+ 
+ static void cleanup(void)
+ {
+@@ -56,12 +57,6 @@ static void setup(void)
+    On  success,  io_submit()  returns the number of iocbs submitted (which
+    may be 0 if nr is zero); on failure,  it  returns  one  of  the  errors
+    listed under ERRORS.
+-
+-   ERRORS
+-   EINVAL The aio_context specified by ctx_id is invalid.  nr is less than
+-   0.  The iocb at *iocbpp[0] is not properly initialized,  or  the
+-   operation  specified  is  invalid for the file descriptor in the
+-   iocb.
+  */
+ int main(int argc, char *argv[])
+ {
+@@ -69,12 +64,14 @@ int main(int argc, char *argv[])
+ 	char *msg;
+ 
+ 	long expected_return;
++	long expected_fault = -EFAULT;
++	long expected_inval = -EINVAL;
+ 
+-	int rval;
++	int rval, fd;
+ 	char buf[256];
+ 	struct iocb iocb;
+ 	struct iocb *iocbs[1];
+-	
++
+ 	io_context_t ctx;
+ 
+ 	memset(&ctx, 0, sizeof(ctx));
+@@ -87,6 +84,13 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		Tst_count = 0;
+ 
++		/*
++		 * EINVAL The aio_context specified by ctx_id is invalid. nr
++		 * is less than 0. The iocb at *iocbpp[0] is not properly
++		 * initialized, or the operation specified is invalid for
++		 * the file descriptor in the iocb.
++		 */
++		/* EINVAL-1: invalid ctx */
+ 		expected_return = -EINVAL;
+ 		TEST(io_submit(ctx, 0, NULL));
+ 		if (TEST_RETURN == 0) {
+@@ -100,8 +104,40 @@ int main(int argc, char *argv[])
+ 				 "expected %ld", TEST_RETURN, expected_return);
+ 		}
+ 
++		/* EINVAL-2: invalid nr */
++		expected_return = -EINVAL;
++		rval = io_setup(1, &ctx);
++		if (rval != 0)
++			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
++		TEST(io_submit(ctx, -1, NULL));
++		if (TEST_RETURN == 0) {
++			tst_resm(TFAIL, "call succeeded unexpectedly");
++		} else if (TEST_RETURN == expected_return) {
++			tst_resm(TPASS, "expected failure - "
++				 "returned value = %ld : %s", (-1 * TEST_RETURN),
++				 strerror(-1 * TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "unexpected returned value - %ld - "
++				 "expected %ld", TEST_RETURN, expected_return);
++		}
++
++		/* EINVAL-3: uninitialized iocb */
++		expected_return = -EINVAL;
++		iocbs[0] = &iocb;
++		TEST(io_submit(ctx, 1, iocbs));
++		if (TEST_RETURN == 0) {
++			tst_resm(TFAIL, "call succeeded unexpectedly");
++		} else if (TEST_RETURN == expected_return) {
++			tst_resm(TPASS, "expected failure - "
++				 "returned value = %ld : %s", (-1 * TEST_RETURN),
++				 strerror(-1 * TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "unexpected returned value - %ld - "
++				 "expected %ld", TEST_RETURN, expected_return);
++		}
++
+ 		/*
+-		   EFAULT One of the data structures points to invalid data.
++		 * EFAULT: One of the data structures points to invalid data.
+ 		 */
+ 		expected_return = -EFAULT;
+ 		TEST(io_submit(ctx, 1, (void *)-1));
+@@ -116,51 +152,42 @@ int main(int argc, char *argv[])
+ 				 "expected %ld", TEST_RETURN, expected_return);
+ 		}
+ 
+-		/* Special case EFAULT or EINVAL (indetermination)
+-
+-		   The errno depends on the per architecture implementation
+-		   of io_submit. On the architecture using compat_sys_io_submit
+-		   as its implementation, errno is set to -EINVAL. */
+-		{
+-			long expected_fault = -EFAULT;
+-			long expected_inval = -EINVAL;
+-
+-			TEST(io_submit(ctx, 0, (void *)-1));
+-			if (TEST_RETURN == 0)
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-			else if (TEST_RETURN == expected_fault
+-				   || TEST_RETURN == expected_inval) {
+-				tst_resm(TPASS, "expected failure - "
+-					 "returned value = %ld : %s",
+-					 (-1 * TEST_RETURN),
+-					 strerror(-1 * TEST_RETURN));
+-			} else {
+-				tst_resm(TFAIL,
+-					 "unexpected returned value - %ld - "
+-					 "expected %ld(%s) or %ld(%s)",
+-					 TEST_RETURN, expected_fault,
+-					 strerror(-1 * expected_fault),
+-					 expected_inval,
+-					 strerror(-1 * expected_inval));
+-			}
+-
++		/*
++		 * Special case EFAULT or EINVAL (indetermination)
++		 *
++		 * The errno depends on the per architecture implementation
++		 * of io_submit. On the architecture using compat_sys_io_submit
++		 * as its implementation, errno is set to -EINVAL.
++		 */
++		TEST(io_submit(ctx, -1, (void *)-1));
++		if (TEST_RETURN == 0) {
++			tst_resm(TFAIL, "call succeeded unexpectedly");
++		} else if (TEST_RETURN == expected_fault
++			   || TEST_RETURN == expected_inval) {
++			tst_resm(TPASS, "expected failure - "
++				 "returned value = %ld : %s",
++				 (-1 * TEST_RETURN),
++				 strerror(-1 * TEST_RETURN));
++		} else {
++			tst_resm(TFAIL,
++				 "unexpected returned value - %ld - "
++				 "expected %ld(%s) or %ld(%s)",
++				 TEST_RETURN, expected_fault,
++				 strerror(-1 * expected_fault),
++				 expected_inval,
++				 strerror(-1 * expected_inval));
+ 		}
+ 
+ 		/*
+-		   EBADF  The file descriptor specified in the first iocb is invalid.
++		 * EBADF: The file descriptor specified in the first iocb is invalid.
+ 		 */
+ 		expected_return = -EBADF;
+ 		io_prep_pread(&iocb, -1, (void *)buf, sizeof(buf), 0);
+ 		iocbs[0] = &iocb;
+-		memset(&ctx, 0, sizeof(io_context_t));
+-		rval = io_setup(1, &ctx);
+-		if (rval != 0)
+-			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
+-
+ 		TEST(io_submit(ctx, 1, iocbs));
+-		if (TEST_RETURN == 0)
++		if (TEST_RETURN == 0) {
+ 			tst_resm(TFAIL, "call succeeded unexpectedly");
+-		else if (TEST_RETURN == expected_return) {
++		} else if (TEST_RETURN == expected_return) {
+ 			tst_resm(TPASS, "expected failure - "
+ 				 "returned value = %ld : %s", (-1 * TEST_RETURN),
+ 				 strerror(-1 * TEST_RETURN));
+@@ -168,6 +195,34 @@ int main(int argc, char *argv[])
+ 			tst_resm(TFAIL, "unexpected returned value - %ld - "
+ 				 "expected %ld", TEST_RETURN, expected_return);
+ 		}
++
++		/* positive test: nr == 0 */
++		TEST(io_submit(ctx, 0, NULL));
++		if (TEST_RETURN == 0) {
++			tst_resm(TPASS, "call succeeded expectedly");
++		} else {
++			tst_resm(TFAIL, "unexpected failure - "
++				 "returned value = %ld : %s", (-1 * TEST_RETURN),
++				 strerror(-1 * TEST_RETURN));
++		}
++
++		/* positive test: valid fd */
++		fd = open("/etc/fstab", O_RDONLY);
++		if (fd == -1)
++			tst_resm(TBROK, "open /etc/fstab fail");
++		io_prep_pread(&iocb, fd, (void *)buf, sizeof(buf), 0);
++		iocbs[0] = &iocb;
++		TEST(io_submit(ctx, 1, iocbs));
++		if (TEST_RETURN == 1)
++			tst_resm(TPASS, "call succeeded expectedly");
++		else if (TEST_RETURN >= 0) {
++			tst_resm(TFAIL, "unexpected retval - "
++				 "returned value = %ld", TEST_RETURN);
++		} else {
++			tst_resm(TFAIL, "unexpected returned value - %ld - "
++				 "expected %ld", TEST_RETURN, expected_return);
++		}
++		close(fd);
+ 	}
+ 	cleanup();
+ 
+
+--------------1.7.4.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Enable your software for Intel(R) Active Management Technology to meet the
@@ -52,7 +320,18 @@ growing manageability and security demands of your customers. Businesses
 are taking advantage of Intel(R) vPro (TM) technology - will your software 
 be a part of the solution? Download the Intel(R) Manageability Checker 
 today! http://p.sf.net/sfu/intel-dev2devmar
+--------------1.7.4.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.4.1--
+
+
+
