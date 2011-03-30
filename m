@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q2Q58-00085X-94
-	for ltp-list@lists.sourceforge.net; Wed, 23 Mar 2011 15:34:46 +0000
-Date: Wed, 23 Mar 2011 16:57:16 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Q4tnR-0004vy-7L
+	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 11:42:45 +0000
+Date: Wed, 30 Mar 2011 14:05:48 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110323155716.GA9320@saboteur.suse.cz>
-References: <4D7FB02B.2040904@redhat.com>
-	<20110317165127.GA14723@saboteur.suse.cz>
-	<4D8872BF.2060502@redhat.com>
+Message-ID: <20110330120548.GC29707@saboteur.suse.cz>
+References: <1472927069.670110.1301483104408.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<132508409.670123.1301483198974.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4D8872BF.2060502@redhat.com>
-Subject: Re: [LTP] [PATCH v2] mm: hugemmap05: fix hardcoded hugepagesize
+In-Reply-To: <132508409.670123.1301483198974.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] add nr_overcommit_hugepages vm tunable test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +25,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Commited.
-
-It however goes into infinite loop on my machine with hugepagesize 4096,
-but that's for further investigation, it seems like it burns cpu in
-write_bytes cycling in place.
-
-Note that the patch had trailing whitespaces, I've fixed them manually.
-
-It would be good to use check_patch.pl from linux kernel before sending
-patches. It would save us some of the patch ping pong...
-
-Thanks.
+Most of the comments for previous patch apply here as well.
 
 -- 
 Cyril Hrubis
