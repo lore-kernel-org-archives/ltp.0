@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <rostedt@home.goodmis.org>) id 1PweyW-0000ZV-Kx
-	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 18:16:08 +0000
-Received: from hrndva-omtalb.mail.rr.com ([71.74.56.124])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1PweyU-0002KH-T7
-	for ltp-list@lists.sourceforge.net; Mon, 07 Mar 2011 18:16:08 +0000
-Date: Mon, 7 Mar 2011 12:59:29 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-Message-ID: <20110307175929.GA1240@home.goodmis.org>
-References: <1469445745.266603.1299117157337.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<6AFCFCC5-DBC2-403E-9EED-D2A85FFCB21C@mit.edu>
+	(envelope-from <zliu@redhat.com>) id 1Q4tD5-0001xJ-Np
+	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 11:05:11 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q4tD4-0001h2-CY
+	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 11:05:11 +0000
+Date: Wed, 30 Mar 2011 07:05:04 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <1472927069.670110.1301483104408.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <708245171.670105.1301483005817.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6AFCFCC5-DBC2-403E-9EED-D2A85FFCB21C@mit.edu>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
- FEBRUARY 2011.
+Subject: [LTP] [PATCH 2/2] add nr_overcommit_hugepages vm tunable test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,131 +26,345 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Theodore Tso <tytso@MIT.EDU>
-Cc: ltp-list@lists.sf.net, vapier@gentoo.org, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, Paolo Ciarrocchi <paolo.ciarrocchi@gmail.com>, akpm@linux-foundation.org
+To: ltp-list@lists.sourceforge.net, yanegomi@gmail.com
 
-On Fri, Mar 04, 2011 at 01:58:45PM -0500, Theodore Tso wrote:
-> 
-> On Mar 2, 2011, at 8:52 PM, CAI Qian wrote:
-> 
-> > Those days, there just too many tests and testing projects for kernel like
-> > LTP, autotest, xfstests and so on. Why not have somewhere to collabrate and
-> > then to extract the best?
-> 
-> Part of the problem is that every single testing project has different goals and
-> priorities.   For example xfstests is maintained by the XFS folks, as well as people
-> from some of the other file system development efforts (the ext4 one in particular,
-> thanks to people like Eric Sandeen), to test file systems.
+Hi, Garrett,
+Please review the new test case.
 
-Perhaps we need to get developer's tests into the kernel. We now have a
-tools/testing directory lets use it.
+ * The program is designed to test /proc/sys/vm/nr_overcommit_hugepages
+ * tunable. /proc/sys/vm/nr_overcommit_hugepages specifies how large 
+ * the pool of huge pages can grow, if more huge pages than 
+ * /proc/sys/vm/nr_hugepages are requested by applications.  
+ * Writing any non-zero value into this file indicates that the hugetlb 
+ * subsystem is allowed to try to obtain that number of "surplus" huge 
+ * pages from the kernel's normal page pool, when the persistent huge 
+ * page pool is exhausted. As these surplus huge pages become unused, 
+ * they are freed back to the kernel's normal page pool. When applicatons
+ * alloc more huge pages, it will overcommit the hugepage pool,  we can 
+ * confirmed the correction by /proc/meminfo: HugePages_Surp.
 
-> 
-> At least at one point, I had heard a complaint that LTP was more focused on 
-> increasing test coverage as measured by a code coverage tool in the kernel
-> than it was about about covering edge conditions, or races.  There's nothing 
-> wrong with that, per se, and I don't know if it was true then or now, but it's a very
-> different focus from one which is focused increasing the data reliability of file
-> systems, quickly and efficiently.
-> 
-> And then there's the LSB test suites, which is really code at testing correctness
-> from a standards perspective, which is a different focus yet again from the LTP
-> and xfstests approach.
-> 
-> Bottom line, I'm a big fan of having different test suites, with different philosophies.
-> Each philosophy has its strengths and blind spots, and so a problem that might
-> be missed by one test suite might get caught by another.
-> 
-> The only real problem is an operational one.   There are some programs which
-> are used by both LTP and xfstests, and changes that is made in one, don't 
-> necessarily get propagated to the other unless someone manually does it.
-> But I think we can solve that without trying to merge all of these tests into a
-> single Grand Unified Test Suite.
-> 
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ .../kernel/mem/vmtunable/nr_overcommit_hugepages.c |  300 ++++++++++++++++++++
+ 1 files changed, 300 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c
 
-How about having the developers write tests and place them in the
-tools/testing directory and then the folks at LTP and xfstests et al.
-can update their code with the code from the kernel.
-
-Currently only ktest.pl exists in this directory. I use it constantly
-and post bugs that it finds. It focuses on just the building and booting
-of a kernel. It can run several randconfigs, do bisects and such, but it
-just has a single command to do any tests. This command is just a shell
-command the user can put in. I leave what tests to run to the user. Thus
-LTP could be the test that gets kicked off.
-
-For example: I have this script I run on my x86 box:
-
-TEST_START ITERATE 10
-TEST_TYPE = test
-BUILD_TYPE = randconfig
-MIN_CONFIG = /home/rostedt/work/autotest/configs/mitest/config-mitest-net
-CHECKOUT = origin/master
-TEST = ssh root@mitest /work/c/hackbench_32 50
-
-TEST_START ITERATE 10
-TEST_TYPE = boot
-BUILD_TYPE = randconfig
-MIN_CONFIG = /home/rostedt/work/autotest/configs/mitest/config-mitest-min
-MAKE_CMD = make ARCH=i386
-
-DEFAULTS
-REBOOT_ON_ERROR = 0
-POWEROFF_ON_ERROR = 1
-POWEROFF_ON_SUCCESS = 1
-REBOOT_ON_SUCCESS = 0
-DIE_ON_FAILURE = 0
-STORE_FAILURES = /home/rostedt/work/autotest/nobackup/failures
-POWEROFF_AFTER_HALT = 60
-CLEAR_LOG = 1
-MIN_CONFIG = /home/rostedt/work/autotest/configs/mitest/config-mitest-min
-SSH_USER = root
-BUILD_DIR = /home/rostedt/work/autotest/nobackup/linux-test.git
-OUTPUT_DIR = /home/rostedt/work/autotest/nobackup/mitest
-BUILD_TARGET = arch/x86/boot/bzImage
-TARGET_IMAGE = /boot/vmlinuz-test
-POWER_CYCLE = /home/rostedt/work/autotest/cycle-mxtest
-CONSOLE = nc -d fedora 3001
-LOCALVERSION = -test
-GRUB_MENU = Test Kernel
-MAKE_CMD = distmake-32 ARCH=i386
-POWER_OFF = /home/rostedt/work/autotest/poweroff-mxtest
-BUILD_OPTIONS = -j20
-LOG_FILE = /home/rostedt/work/autotest/nobackup/mitest/mitest.log
-TEST = ssh root@mitest cat /debug/tracing/trace
-ADD_CONFIG = /home/rostedt/work/autotest/configs/config-broken /home/rostedt/work/autotest/config-general
-
-
-Each command is documented in the samples.conf that is also in that
-directory.
-
-The above test runs two sets of tests. The first runs randconfig 10
-times with a minimum config that will allow my box to have a network
-connection, and after it boots, it runs hackbench.
-
-The second test runs ten randconfig builds 10 times and just makes sure
-the box can boot.
-
-I'm working on getting to run commands via the console so I do not need
-the network active to run tests.
-
-Once could change the TEST = ... to run LTP tests, or anything else.
-Having tests to run that I can add to my automated testing would be
-helpful. I could build randconfigs and run these tests making sure that
-they work with different configurations.
-
-Maybe it would also be helpful to have the CONFIGs that are needed by
-the tests. It would not make sense to test iptables if iptables is not
-configured ;)
-
--- Steve
+diff --git a/testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c b/testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c
+new file mode 100644
+index 0000000..00d4983
+--- /dev/null
++++ b/testcases/kernel/mem/vmtunable/nr_overcommit_hugepages.c
+@@ -0,0 +1,300 @@
++/*
++ * vm tunable test
++ *
++ * ********************************************************************
++ * Copyright (C) 2011  Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ *
++ * ********************************************************************
++ *
++ * File Name: nr_overcommit_hugepage.c
++ * Author: Zhouping Liu <zliu@redhat.com>
++ * Description:  
++ * The program is designed to test /proc/sys/vm/nr_overcommit_hugepages
++ * tunable. /proc/sys/vm/nr_overcommit_hugepages specifies how large 
++ * the pool of huge pages can grow, if more huge pages than 
++ * /proc/sys/vm/nr_hugepages are requested by applications.  
++ * Writing any non-zero value into this file indicates that the hugetlb 
++ * subsystem is allowed to try to obtain that number of "surplus" huge 
++ * pages from the kernel's normal page pool, when the persistent huge 
++ * page pool is exhausted. As these surplus huge pages become unused, 
++ * they are freed back to the kernel's normal page pool. When applicatons
++ * alloc more huge pages, it will overcommit the hugepage pool,  we can 
++ * confirmed the correction by /proc/meminfo: HugePages_Surp.
++ * 
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdint.h>
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++
++#include "test.h"
++#include "usctest.h"
++
++char *TCID = "nr_overcommit_hugepages"; 
++int TST_TOTAL = 1;
++
++#define NUM 50UL /* the amount of hugepages try to mmap */
++#define HUGEPAGES 30 /* set /proc/sys/vm/nr_hugepages */
++#define OVER_HUGEPAGES 30 /* set /proc/sys/vm/nr_overcommit_hugepages */
++#define BUFFER_SIZE 256 
++#define FILE_NAME "/mnt/hugepagefile"
++#define PROTECTION (PROT_READ | PROT_WRITE) /* mmap mode */
++
++/* Only ia64 requires this */
++#ifdef __ia64__
++#define ADDR (void *)(0x8000000000000000UL)
++#define FLAGS (MAP_SHARED | MAP_FIXED)
++#else
++#define ADDR (void *)(0x0UL)
++#define FLAGS (MAP_SHARED)
++#endif
++
++/* Check whether there're the two tunable or not */
++int check_system();
++
++/* We're not sure one hugepag size is 2048kb or not, we can confirm
++ * it by catting /proc/meminfo: Hugepagesize
++ */
++unsigned long get_one_hugepage_size();
++
++/* set hugepages */
++int set_hugepages(int nr_hugepages, int nr_overcommit_hugepages);
++
++/* get the total of hugepages and surplus hugepages */ 
++int get_hugepages(int *nr_hugepages, int *nr_overcommit_hugepages);
++
++/* try to alloc overcommit hugepage */
++int test_overcommit_hugepages();
++
++/* do some clean after test */
++void cleanup();
++
++int old_hugepages;
++int old_overcommit; /* save the original data */
++
++int main(int argc, char *argv[])
++{
++	int lc = 0; /* loop counter */
++	char *msg;
++	
++	/* if check_system() return zero, the system can't support the testing */
++	if (check_system() == 0) {
++		tst_resm(TFAIL, "Can't test nr_hugepages and \
++				nr_overcommit_hugepages,no such file");
++		tst_exit();
++	}
++
++	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL) {
++		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR -%s", msg);
++	}
++	get_hugepages(&old_hugepages, &old_overcommit);
++	tst_resm(TINFO, "old nr_hugepages value is %d", old_hugepages);
++	tst_resm(TINFO, "old nr_overcommit hugepages is %d", old_overcommit);
++	
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		set_hugepages(HUGEPAGES, OVER_HUGEPAGES);
++		if (test_overcommit_hugepages() == 0) {
++			set_hugepages(old_hugepages, old_overcommit);
++			tst_resm(TPASS, "succeeded to overcommit hugepages");
++		} else {
++			tst_resm(TFAIL, "FAIL mapping!");
++		}
++		cleanup();
++	}
++
++	tst_exit();
++	return 0;
++}
++
++/* try to overcommit hugepages */
++int test_overcommit_hugepages()
++{
++	char *addr;
++	int fd;
++	int hugepages = 0;
++	int overcommit = 0;
++	unsigned long i;
++	unsigned long length = 0;
++	unsigned long one_hugepage_size = 0;
++
++	/* mount hugetlbfs */
++	if (system("mount -t hugetlbfs nodev /mnt") != 0) {
++		tst_brkm(TBROK, cleanup, "Can't mount hugetlbfs");
++	}
++
++	fd = open(FILE_NAME, O_CREAT | O_RDWR, 0755);
++	if (fd < 0) {
++		tst_brkm(TBROK, cleanup, "OPEN File %s error", FILE_NAME);
++		tst_exit();
++	}
++	
++	one_hugepage_size = get_one_hugepage_size();
++	length = NUM * one_hugepage_size;
++	addr = (char *)mmap(ADDR, length, PROTECTION, FLAGS, fd, 0);
++	if (addr == MAP_FAILED) {
++		tst_resm(TFAIL, "mmap() Failed on %s, errno=%d : %s", \
++				FILE_NAME, errno, strerror(errno));
++		munmap(addr, length);
++		close(fd);
++		unlink(FILE_NAME);
++		cleanup();
++		tst_exit();
++	}
++
++	tst_resm(TINFO, "Returned address is %p", addr);
++	tst_resm(TINFO, "First hex is %x", *((unsigned int *)addr));
++	for (i = 0; i < length; i++) {
++		*(addr + i) = (char)i;
++	}
++
++	sleep(1);
++	/* get the hugepages and surplus hugepages after mmap successfully */
++	get_hugepages(&hugepages, &overcommit);
++	
++	munmap(addr, length);
++	close(fd);
++	unlink(FILE_NAME);
++	tst_resm(TINFO, "the current hugepages is %d and overcommit is %d ", hugepages, overcommit);
++	
++	/* if everything is okay, overcommit should equal (NUM - HUGEPAGES) */
++	if(hugepages == NUM && overcommit == (NUM - HUGEPAGES)) {
++		return 0;
++	} else {
++		return -1;
++	}
++}
++
++unsigned long get_one_hugepage_size()
++{
++	FILE *f;
++	int retcode = 0;
++	char buff[BUFFER_SIZE];
++	unsigned long one_hugepage_size = 0;
++
++	f = fopen("/proc/meminfo", "r");
++	if (f == NULL) {
++		tst_brkm(TFAIL, cleanup, "Please run the test using root user.");
++	}
++	while(fgets(buff,BUFFER_SIZE, f) != NULL) {
++		if((retcode = sscanf(buff, "Hugepagesize: %lu kB",
++			&one_hugepage_size)) == 1)
++			break;
++	}
++	tst_resm(TINFO, "one hugepagesize is %lu", one_hugepage_size);
++	fclose(f);
++	
++	if(one_hugepage_size == 0) {
++		tst_brkm(TFAIL, cleanup, "Can't read out hugepage size");
++	}
++
++	return one_hugepage_size * 1024UL;
++}
++
++/* get nr_hugepages and nr_overcommit_hugepages values */
++int get_hugepages(int *nr_hugepages, int *nr_overcommit_hugepages) 
++{
++	FILE *f;
++	int flag = 0;
++	int retcode = 0;
++	char buff[BUFFER_SIZE];
++
++	f = fopen("/proc/meminfo", "r");
++	if (f == NULL) {
++		tst_brkm(TFAIL, cleanup, "Please run the test using root user.");
++	}
++	while(fgets(buff,BUFFER_SIZE, f) != NULL && flag < 2) {
++		if((retcode = sscanf(buff, "HugePages_Total: %d ",
++			nr_hugepages)) == 1)
++			flag++;
++		if((retcode = sscanf(buff, "HugePages_Surp: %d ", 
++			nr_overcommit_hugepages)) == 1) 
++			flag++;
++	}
++
++	if (flag != 2) {
++		fclose(f); 
++		tst_brkm(TFAIL, cleanup, "Failed reading size of huge page.");
++	}
++	fclose(f);
++
++	return 0;
++}
++
++/* set nr_hugepages and nr_overcommit_hugepages values */
++int set_hugepages(int nr_hugepages, int nr_overcommit_hugepages)
++{
++	FILE *f1, *f2;
++
++	f1 = fopen("/proc/sys/vm/nr_hugepages", "w");
++	if (f1 == NULL) {
++		tst_brkm(TFAIL, tst_exit, "No permission, using root user");
++	}
++
++	f2 = fopen("/proc/sys/vm/nr_overcommit_hugepages", "w");
++	if (f2 == NULL) {
++		tst_brkm(TFAIL, tst_exit, "No permission, using root user");
++	}
++
++	/* write nr_hugepages to /proc/sys/vm/nr_hugepages and 
++	 * nr_overcommit_hugepages to /proc/sys/vm/nr_overcommit_hugepages
++	 */
++	if (fprintf(f1, "%d", nr_hugepages) == 0) {
++		tst_brkm(TFAIL, cleanup, "write date error to nr_hugepages");
++	}
++	if (fprintf(f2, "%d", nr_overcommit_hugepages) ==0 ) {
++		tst_brkm(TFAIL, cleanup, "write date error to nr_overcommit_hugepages");
++	}
++	fclose(f1);
++	fclose(f2);
++	
++	return 0;
++}
++
++int check_system()
++{
++	int flag1 = -1;
++	int flag2 = -1;
++
++	flag1 = access("/proc/sys/vm/nr_hugepages", F_OK);
++	flag2 = access("/proc/sys/vm/nr_overcommit_hugepages", F_OK);
++
++	if (flag1 == 0 && flag2 == 0) {
++		return 1;
++	} else {
++		return 0;
++	}
++}
++
++void cleanup()
++{
++	set_hugepages(old_hugepages, old_overcommit);
++	tst_exit();
++
++	return;
++}
++
+-- 
+1.7.3.4
 
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
+Enable your software for Intel(R) Active Management Technology to meet the
+growing manageability and security demands of your customers. Businesses
+are taking advantage of Intel(R) vPro (TM) technology - will your software 
+be a part of the solution? Download the Intel(R) Manageability Checker 
+today! http://p.sf.net/sfu/intel-dev2devmar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
