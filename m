@@ -2,18 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <penght@cn.fujitsu.com>) id 1PwpgB-0004yf-Bc
-	for ltp-list@lists.sourceforge.net; Tue, 08 Mar 2011 05:41:55 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Pwpg9-00062s-IJ
-	for ltp-list@lists.sourceforge.net; Tue, 08 Mar 2011 05:41:55 +0000
-Message-ID: <4D75C1AA.3020302@cn.fujitsu.com>
-Date: Tue, 08 Mar 2011 13:42:02 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1Q4xzG-0003KY-1S
+	for ltp-list@lists.sourceforge.net; Wed, 30 Mar 2011 16:11:14 +0000
+Date: Wed, 30 Mar 2011 18:34:19 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110330163419.GD29707@saboteur.suse.cz>
+References: <1301061351-20787-1-git-send-email-czhang@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] kill05.c: fix fail due to the same pw_uid of ltpuser1
- and ltpuser2
+Content-Disposition: inline
+In-Reply-To: <1301061351-20787-1-git-send-email-czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] mem test items cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,63 +24,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: czhang@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett,
-
-When the macro "SAFE_GETPWNAM" is called twice, the return values are the same.
-This may cause the case failure.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/kernel/syscalls/kill/kill05.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
-index 0193100..6a80597 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -143,9 +143,6 @@ void do_master_child(char **av)
- 
- 	struct passwd *ltpuser1, *ltpuser2;
- 
--	ltpuser1 = SAFE_GETPWNAM(NULL, user1name);
--	ltpuser2 = SAFE_GETPWNAM(NULL, user2name);
--
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	Tst_count = 0;
-@@ -158,7 +155,7 @@ void do_master_child(char **av)
- 		tst_brkm(TBROK|TERRNO, cleanup, "Fork failed");
- 
- 	if (pid1 == 0) {
--
-+		ltpuser1 = SAFE_GETPWNAM(NULL, user1name);
- 		if (setreuid(ltpuser1->pw_uid, ltpuser1->pw_uid) == -1) {
- 			perror("setreuid failed (in child)");
- 			exit(1);
-@@ -172,6 +169,7 @@ void do_master_child(char **av)
- 		do_child();
- #endif
- 	}
-+	ltpuser2 = SAFE_GETPWNAM(NULL, user2name);
- 	if (setreuid(ltpuser2->pw_uid, ltpuser2->pw_uid) == -1) {
- 		perror("seteuid failed");
- 		exit(1);
+Hi!
+Commited, thanks!
 -- 
-1.7.1
-
--- 
-Best Regards,
-Peng Haitao
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-What You Don't Know About Data Connectivity CAN Hurt You
-This paper provides an overview of data connectivity, details
-its effect on application quality, and explores various alternative
-solutions. http://p.sf.net/sfu/progress-d2d
+Create and publish websites with WebMatrix
+Use the most popular FREE web apps or write code yourself; 
+WebMatrix provides all the features you need to develop and 
+publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
