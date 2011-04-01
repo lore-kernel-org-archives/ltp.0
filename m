@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q7SC6-0003hV-7x
-	for ltp-list@lists.sourceforge.net; Wed, 06 Apr 2011 12:50:46 +0000
-Date: Wed, 6 Apr 2011 15:14:28 +0200
+	(envelope-from <chrubis@suse.de>) id 1Q5fIP-0005TW-4R
+	for ltp-list@lists.sourceforge.net; Fri, 01 Apr 2011 14:25:53 +0000
+Date: Fri, 1 Apr 2011 16:49:09 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110406131428.GC6652@saboteur.suse.cz>
-References: <26c7134d7a0855a4bd8a5f73e7dfc8088115f9d2.1301695094.git.aelder@sgi.com>
-	<fd62b40430e6b1c99c8c1495fbc2d17ce2f959b0.1301695094.git.aelder@sgi.com>
+Message-ID: <20110401144909.GA12082@saboteur.suse.cz>
+References: <4D92DFEB.8050103@cn.fujitsu.com>
+	<AANLkTikD_kNHdAVz3Z4O9pbmqxkD0Z991e=ytFcBb3s5@mail.gmail.com>
+	<4D959E5B.7070002@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <fd62b40430e6b1c99c8c1495fbc2d17ce2f959b0.1301695094.git.aelder@sgi.com>
-Subject: Re: [LTP] [PATCH 2/6] ltp: move type definitions up in "doio.c"
+In-Reply-To: <4D959E5B.7070002@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] mprotect02.c: fix error of Segmentation fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,34 +26,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alex Elder <aelder@sgi.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> +struct syscall_info {
-> +	char		*sy_name;
-> +	int		sy_type;
-> +	struct status	*(*sy_syscall)();
-> +	int		(*sy_buffer)();
-> +	char		*(*sy_format)();
-> +	int		sy_flags;
-> +	int		sy_bits;
-> +};
-
-Ideally these callbacks should have defined their parameters too.
-Otherwise the compiler can't check if we passed somehow correct
-parametetrs. Somethink like (*fn)(int, void*, char); should be enough.
-
+Commited, thanks.
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+Create and publish websites with WebMatrix
+Use the most popular FREE web apps or write code yourself; 
+WebMatrix provides all the features you need to develop and 
+publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
