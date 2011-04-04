@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <jstancek@redhat.com>) id 1QAKyj-0003qw-It
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 11:44:53 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QAKyi-0000yO-MK
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 11:44:53 +0000
-Date: Thu, 14 Apr 2011 07:44:46 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1443931472.73326.1302781486782.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1640962017.73206.1302781090843.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] memcg_process.c: signals initialization
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <aelder@sgi.com>) id 1Q6ia9-0005Tg-5x
+	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:08:33 +0000
+Received: from relay2.sgi.com ([192.48.179.30] helo=relay.sgi.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1Q6ia5-0001CZ-Fj
+	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:08:33 +0000
+Received: from cf--amer001e--3.americas.sgi.com
+	(cf--amer001e--3.americas.sgi.com [137.38.100.5])
+	by relay2.corp.sgi.com (Postfix) with ESMTP id 3305630406A
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  4 Apr 2011 05:08:24 -0700 (PDT)
+From: Alex Elder <aelder@sgi.com>
+Date: Mon, 04 Apr 2011 07:08:22 -0500
+Message-ID: <1301918902.3282.24.camel@doink>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 1/6] ltp: fix databinchk() definition
+Reply-To: aelder@sgi.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,57 +31,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-1. There seems to be copy paste error, instead of clearing 
-sigusr_action.sa_mask it clears sigint_action.sa_mask.
-Change comes from 6c4d1c6d4b3c116ff88f9209b4860940fb8659a8
+Fix a bogus (misspelled) declaration for databinchk() in
+"include/databin.h".
 
-2. Other fields of these structures are left to be uninitialized.
+Then, change databinchk() so that its second argument is a signed
+rather than an unsigned character pointer.  This is consistent with
+the way it is used throughout the code.  Because of the way that
+argument is used, it won't change the behavior of that function; its
+value is immediately assigned to a local variable, which is still
+unsigned.  Add a cast in that assignment to force the conversion.
 
-Both 1) and 2) make the behaviour unexpected. Occasionally I saw,
-this program to end upon receiving SIGUSR1.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Alex Elder <aelder@sgi.com>
 ---
- .../controllers/memcg/functional/memcg_process.c   |    9 ++-
+ include/databin.h |    2 +-
+ lib/databin.c     |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-index bccb2da..da91dc9 100644
---- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-@@ -295,17 +295,18 @@ int main(int argc, char *argv[])
- 	if ((fd = open("/dev/zero", O_RDWR)) == -1)
- 		err(1, "open /dev/zero failed");
+diff --git a/include/databin.h b/include/databin.h
+index c168799..93c3863 100644
+--- a/include/databin.h
++++ b/include/databin.h
+@@ -39,6 +39,6 @@
  
-+	memset(&sigint_action, 0, sizeof(sigint_action));
-+	memset(&sigusr_action, 0, sizeof(sigusr_action));
-+
- 	/* TODO: writer error handling here. */
- 	sigemptyset(&sigint_action.sa_mask);
- 	sigint_action.sa_handler = &sigint_handler;
- 	sigaction(SIGINT, &sigint_action, NULL);
+ void databingen( int mode, char *buffer, int bsize, int offset );
  
--	sigemptyset(&sigint_action.sa_mask);
-+	sigemptyset(&sigusr_action.sa_mask);
- 	sigusr_action.sa_handler = &sigusr_handler;
- 	sigaction(SIGUSR1, &sigusr_action, NULL);
+-void databinchedk( int mode, unsigned char *buffer, int bsize, int offset, char **errmsg);
++int databinchk( int mode, char *buffer, int bsize, int offset, char **errmsg);
  
--	sigemptyset(&sigusr_action.sa_mask);
--
- 	process_options(argc, argv);
+ #endif
+diff --git a/lib/databin.c b/lib/databin.c
+index 6659ccf..c0f4307 100644
+--- a/lib/databin.c
++++ b/lib/databin.c
+@@ -91,7 +91,7 @@ int ind;
+ int
+ databinchk(mode, buffer, bsize, offset, errmsg)
+ int mode;	/* either a, c, r, z, o, or C */
+-unsigned char *buffer;	/* buffer pointer */
++char *buffer;	/* buffer pointer */
+ int bsize;	/* size of buffer */
+ int offset;	/* offset into the file where buffer starts */
+ char **errmsg;
+@@ -102,7 +102,7 @@ char **errmsg;
+     long expbits;
+     long actbits;
  
- 	while (!flag_exit)
+-	chr=buffer;
++	chr = (unsigned char *) buffer;
+ 	total=bsize;
+ 
+ 	if (errmsg != NULL) {
 -- 
-1.7.1
+1.7.4
+
+
+
 
 ------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+Create and publish websites with WebMatrix
+Use the most popular FREE web apps or write code yourself; 
+WebMatrix provides all the features you need to develop and 
+publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
