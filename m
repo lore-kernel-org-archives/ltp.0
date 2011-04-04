@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Q9XDE-0000JN-Vi
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:36:32 +0000
-Received: from mail-px0-f174.google.com ([209.85.212.174])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Q9XDC-0004Xc-Mk
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:36:32 +0000
-Received: by pxi15 with SMTP id 15so3208332pxi.33
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <aelder@sgi.com>) id 1Q6idm-0002ya-Jm
+	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:12:18 +0000
+Received: from relay1.sgi.com ([192.48.179.29] helo=relay.sgi.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1Q6idm-0007Qm-1m
+	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:12:18 +0000
+Received: from cf--amer001e--3.americas.sgi.com
+	(cf--amer001e--3.americas.sgi.com [137.38.100.5])
+	by relay1.corp.sgi.com (Postfix) with ESMTP id 3B06C8F8084
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 11 Apr 2011 23:36:24 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1302546710.2580.27.camel@doink>
-References: <1302546710.2580.27.camel@doink>
-Date: Mon, 11 Apr 2011 23:36:24 -0700
-Message-ID: <BANLkTin6AZi22PbxzE=yg576a024P-eAsg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 2/3, v2] ltp: fix warnings in "aio-stress.c"
+	Mon,  4 Apr 2011 05:12:04 -0700 (PDT)
+From: Alex Elder <aelder@sgi.com>
+Date: Mon, 04 Apr 2011 07:08:49 -0500
+Message-ID: <1301918929.3282.30.camel@doink>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 0/6] ltp: kill off some compile warnings
+Reply-To: aelder@sgi.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,38 +28,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: aelder@sgi.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Mon, Apr 11, 2011 at 11:31 AM, Alex Elder <aelder@sgi.com> wrote:
-> In "testcases/kernel/io/ltp-aiodio/aio-stress.c" there are a
-> number of warnings that show up due to mismatches between
-> fprintf() conversion specifications and the variables being
-> formatted.
->
-> Fix most of these by casting the variables to the right type;
-> in one case a "%td" is used to signify a ptrdiff_t variable.
->
-> Updated to address comments made by Garrett Cooper in review.
-> However, both "file_size" and "context_offset" variables represent
-> file offsets, and therefore should remain type off_t (rather than
-> size_t, which was recommended). =A0Some printf() formats were
-> adjusted to use %ld/(long) for printing off_t values.
+The motivation for this series of patches is to eliminate build
+warnings in files under "testcases/kernel/fs/doio/".  The main
+reason warnings are emitted is that most functions are defined using
+old-style C syntax.  So most of the changes amount to updating such
+functions to use standard C prototypes.
 
-    Fine minus IO's -> I/O and space between cast values.
-Thanks,
--Garrett
+The first patch fixes a buggy header file.  The next one gathers
+type definitions to the top of "doio.c" so they are defined when
+needed in declaring all the function prototypes.
 
----------------------------------------------------------------------------=
----
-Forrester Wave Report - Recovery time is now measured in hours and minutes
-not days. Key insights are discussed in the 2010 Forrester Wave Report as
-part of an in-depth evaluation of disaster recovery service providers.
-Forrester found the best-in-class provider in terms of services and vision.
-Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
+The last patch enables the "-Wall" flag to gcc for these files.
+
+					-Alex
+
+
+------------------------------------------------------------------------------
+Create and publish websites with WebMatrix
+Use the most popular FREE web apps or write code yourself; 
+WebMatrix provides all the features you need to develop and 
+publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
