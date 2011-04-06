@@ -1,19 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q5fIP-0005TW-4R
-	for ltp-list@lists.sourceforge.net; Fri, 01 Apr 2011 14:25:53 +0000
-Date: Fri, 1 Apr 2011 16:49:09 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110401144909.GA12082@saboteur.suse.cz>
-References: <4D92DFEB.8050103@cn.fujitsu.com>
-	<AANLkTikD_kNHdAVz3Z4O9pbmqxkD0Z991e=ytFcBb3s5@mail.gmail.com>
-	<4D959E5B.7070002@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4D959E5B.7070002@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] mprotect02.c: fix error of Segmentation fault
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <noreply@sourceforge.net>) id 1Q7Vey-0005hJ-Pk
+	for ltp-list@lists.sourceforge.net; Wed, 06 Apr 2011 16:32:48 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
+Mime-Version: 1.0
+Message-Id: <E1Q7Vey-00050Z-Cl@sfs-web-5.v29.ch3.sourceforge.com>
+Date: Wed, 06 Apr 2011 16:32:48 +0000
+Subject: [LTP] [ ltp-Bugs-3267963 ] process_stress infinite loop
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,20 +21,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: noreply@sourceforge.net
 
-Hi!
-Commited, thanks.
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Bugs item #3267963, was opened at 2011-04-01 23:07
+Message generated for change (Settings changed) made by metan
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3267963&group_id=3382
+
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: Testcases
+Group: Scheduler
+>Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Mike Kravetz (mkravetz)
+Assigned to: Cyril Hrubis (metan)
+Summary: process_stress infinite loop
+
+Initial Comment:
+./testcases/kernel/sched/process_stress/process -b10 -d2 can go into an infinite loop.
+
+The test creates a tree of processes.  Each process will send a message
+(msgsnd, queue up) to all of its siblings.  After sending messages, it 
+will then read (msgrcv) from its siblings.
+
+The issue/bug is that on a large systems with lots of cores/processors 
+(64 cores in my case) it is possible for many processes to be sending 
+messages in parallel.  All before any/many processes have started 
+reading/receiving messages.  This will result in the message queue filling 
+up before the processes start emptying (msgrcv) the queue.  Once the queue 
+is full, processes retry forever hoping someone will drain.  But, everyone 
+is sending 'at once'.
+
+This 'works' in environments with lower core/processor counts as processes 
+are able to queue up request and drain some in the same time slice.
+
+To test/verify you can add a 'sleep(1)' to the testcase after it does 
+all the sends, and before doing any receives.  I ran this on a small
+(4 processor) system and it failed (ran forever) in the same manner as 
+it did on the large system.
+
+
+----------------------------------------------------------------------
+
+Comment By: Cyril Hrubis (metan)
+Date: 2011-04-06 18:30
+
+Message:
+Thanks for the detailed report. We've seen similar symptoms while testing
+SUSE linux here in suse. I'll look at the code.
+
+----------------------------------------------------------------------
+
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3267963&group_id=3382
 
 ------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
