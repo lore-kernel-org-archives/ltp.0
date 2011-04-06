@@ -1,19 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <jstancek@redhat.com>) id 1QC8w0-0007Tn-TB
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 11:17:32 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QC8vz-0007oJ-Qm
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 11:17:32 +0000
-Date: Tue, 19 Apr 2011 07:17:25 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <132246322.26988.1303211845214.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <BANLkTikVQHoeKGR8RsUE4wbU=+BPDAQqsw@mail.gmail.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] kill05: fix sporadic failures
+	(envelope-from <noreply@sourceforge.net>) id 1Q7Vca-0007SH-I6
+	for ltp-list@lists.sourceforge.net; Wed, 06 Apr 2011 16:30:20 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
+Mime-Version: 1.0
+Message-Id: <E1Q7VcZ-00075o-Kp@sfs-web-11.v29.ch3.sourceforge.com>
+Date: Wed, 06 Apr 2011 16:30:19 +0000
+Subject: [LTP] [ ltp-Bugs-3267963 ] process_stress infinite loop
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,29 +21,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: noreply@sourceforge.net
 
-> I'm puzzled by the first wait_for_flag invocation. Wouldn't that
-> continue to loop in the infinite loop with the parent pid?
-> Furthermore, it doesn't make sense for wait_for_flag to be used at all
-> (or the equivalent in the existing test) in the test as the memory
-> isn't shared between processes after the fork is done, apart from
-> dealing with vfork -- which is only with UCLINUX (fork does COW, vfork
-> doesn't), and the subsequent exec does the COW for us.
-> This really should use pipes or something equivalent to message
-> the child process(es) to continue.
+Bugs item #3267963, was opened at 2011-04-01 23:07
+Message generated for change (Comment added) made by metan
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3267963&group_id=3382
 
-flag is pointer to shared memory, and according to shmget(2)/shmat(2):
-"After a fork() the child inherits the attached shared memory segments."
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: Testcases
+Group: Scheduler
+>Status: Pending
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Mike Kravetz (mkravetz)
+>Assigned to: Cyril Hrubis (metan)
+Summary: process_stress infinite loop
 
-It does complete, gdb and valgrind seem to be fine with it, but to
-be completely honest, I haven't tried it with UCLINUX.
+Initial Comment:
+./testcases/kernel/sched/process_stress/process -b10 -d2 can go into an infinite loop.
 
-I made one copy paste error in wait_for_flag, so I'll post a v3.
+The test creates a tree of processes.  Each process will send a message
+(msgsnd, queue up) to all of its siblings.  After sending messages, it 
+will then read (msgrcv) from its siblings.
 
-> Thanks,
-> -Garrett
+The issue/bug is that on a large systems with lots of cores/processors 
+(64 cores in my case) it is possible for many processes to be sending 
+messages in parallel.  All before any/many processes have started 
+reading/receiving messages.  This will result in the message queue filling 
+up before the processes start emptying (msgrcv) the queue.  Once the queue 
+is full, processes retry forever hoping someone will drain.  But, everyone 
+is sending 'at once'.
+
+This 'works' in environments with lower core/processor counts as processes 
+are able to queue up request and drain some in the same time slice.
+
+To test/verify you can add a 'sleep(1)' to the testcase after it does 
+all the sends, and before doing any receives.  I ran this on a small
+(4 processor) system and it failed (ran forever) in the same manner as 
+it did on the large system.
+
+
+----------------------------------------------------------------------
+
+>Comment By: Cyril Hrubis (metan)
+Date: 2011-04-06 18:30
+
+Message:
+Thanks for the detailed report. We've seen similar symptoms while testing
+SUSE linux here in suse. I'll look at the code.
+
+----------------------------------------------------------------------
+
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3267963&group_id=3382
 
 ------------------------------------------------------------------------------
 Benefiting from Server Virtualization: Beyond Initial Workload 
