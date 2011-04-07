@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <aelder@sgi.com>) id 1Q6idg-0002xx-WE
-	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:12:13 +0000
-Received: from relay1.sgi.com ([192.48.179.29] helo=relay.sgi.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.74)
-	id 1Q6idd-0001BS-9g
-	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:12:12 +0000
-Received: from cf--amer001e--3.americas.sgi.com
-	(cf--amer001e--3.americas.sgi.com [137.38.100.5])
-	by relay1.corp.sgi.com (Postfix) with ESMTP id 1D3B68F8078
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  4 Apr 2011 05:12:04 -0700 (PDT)
-From: Alex Elder <aelder@sgi.com>
-Date: Mon, 04 Apr 2011 07:08:37 -0500
-Message-ID: <1301918917.3282.28.camel@doink>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 5/6] ltp: use C function prototypes in "iogen.c"
-Reply-To: aelder@sgi.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <biannm@cn.fujitsu.com>) id 1Q7iBC-000787-Ik
+	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 05:54:54 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q7iBA-0008FJ-Bt
+	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 05:54:54 +0000
+Message-ID: <4D9D5128.3060709@cn.fujitsu.com>
+Date: Thu, 07 Apr 2011 13:52:40 +0800
+From: Bian Naimeng <biannm@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <2025116569.785721.1302133158267.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <2025116569.785721.1302133158267.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH]KSM: full_scans will stop increasing
+ after	stopping ksm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,191 +28,232 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-Many functions in "iogen.c" are defined using old-style C
-declarations.  Convert all functions so they follow standard C,
-and include standard prototypes for each.
-
-Every function (except main()) now has a standard C prototype, and
-all prototypes are grouped in the same section of the file.  The
-prototypes--as well as the function definitions themselves--now
-follow a consistent formatting style.
-
-Signed-off-by: Alex Elder <aelder@sgi.com>
----
- testcases/kernel/fs/doio/iogen.c |   61 +++++++++++++++-----------------------
- 1 files changed, 24 insertions(+), 37 deletions(-)
-
-diff --git a/testcases/kernel/fs/doio/iogen.c b/testcases/kernel/fs/doio/iogen.c
-index 4f46099..167edbd 100644
---- a/testcases/kernel/fs/doio/iogen.c
-+++ b/testcases/kernel/fs/doio/iogen.c
-@@ -113,6 +113,18 @@ struct strmap {
- 	int	m_flags;
- };
- 
-+void		startup_info(FILE *stream, int seed);
-+int		init_output(void);
-+int		form_iorequest(struct io_req *req);
-+int		get_file_info(struct file_info *rec);
-+int		create_file(char *path, int nbytes);
-+int		str_to_value(struct strmap *map, char *str);
-+struct strmap	*str_lookup(struct strmap *map, char *str);
-+char		*value_to_string(struct strmap *map, int val);
-+int		parse_cmdline(int argc, char **argv, char *opts);
-+int		help(FILE *stream);
-+int		usage(FILE *stream);
-+
- /*
-  * Declare cmdline option flags/variables initialized in parse_cmdline()
-  */
-@@ -165,8 +177,6 @@ int	Fileio = 0;		/* flag indicating that a file		    */
- int	Naio_Strat_Types = 0;	/* # async io completion types		    */
- struct	strmap *Aio_Strat_List[128]; /* Async io completion types	    */
- 
--void	startup_info();
--
- /*
-  * Map async io completion modes (-a args) names to values.  Macros are
-  * defined in doio.h.
-@@ -366,16 +376,8 @@ char	Byte_Patterns[26] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
- 			      'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
- 			      'Y', 'Z' };
- 
--int form_iorequest(struct io_req *);
--int init_output();
--int parse_cmdline(int argc, char **argv, char *opts);
--int help(FILE *stream);
--int usage(FILE *stream);
--
- int
--main(argc, argv)
--int 	argc;
--char	**argv;
-+main(int argc, char **argv)
- {
-     int	    	    rseed, outfd, infinite;
-     time_t  	    start_time;
-@@ -533,7 +535,7 @@ startup_info(FILE *stream, int seed)
-  * error code if this cannot be done.
-  */
- int
--init_output()
-+init_output(void)
- {
-     int	 outfd;
-     struct stat	    sbuf;
-@@ -579,8 +581,7 @@ init_output()
-  */
- 
- int
--form_iorequest(req)
--struct io_req   *req;
-+form_iorequest(struct io_req *req)
- {
-     int	    	    	mult, offset=0, length=0, slength;
-     int	    	    	minlength, maxlength, laststart, lastend;
-@@ -926,8 +927,7 @@ struct io_req   *req;
-  */
- 
- int
--get_file_info(rec)
--struct file_info    *rec;
-+get_file_info(struct file_info *rec)
- {
-     struct stat			sbuf;
- #ifdef CRAY
-@@ -1047,9 +1047,7 @@ struct file_info    *rec;
-  */
- 
- int
--create_file(path, nbytes)
--char	*path;
--int 	nbytes;
-+create_file(char *path, int nbytes)
- {
-     int	    	fd, rval;
-     char    	c;
-@@ -1298,9 +1296,7 @@ int 	nbytes;
-  */
- 
- int
--str_to_value(map, str)
--struct strmap	*map;
--char	    	*str;
-+str_to_value(struct strmap *map, char *str)
- {
-     struct strmap   *mp;
- 
-@@ -1317,9 +1313,7 @@ char	    	*str;
-  */
- 
- struct strmap *
--str_lookup(map, str)
--struct strmap	*map;
--char	    	*str;
-+str_lookup(struct strmap *map, char *str)
- {
-     struct strmap   *mp;
- 
-@@ -1336,9 +1330,7 @@ char	    	*str;
-  */
- 
- char *
--value_to_string(map, val)
--struct strmap   *map;
--int		val;
-+value_to_string(struct strmap *map, int val)
- {
-     struct strmap  *mp;
- 
-@@ -1355,10 +1347,7 @@ int		val;
-  */
- 
- int
--parse_cmdline(argc, argv, opts)
--int 	argc;
--char	**argv;
--char	*opts;
-+parse_cmdline(int argc, char **argv, char *opts)
- {
-     int	    	    	o, len, nb, format_error;
-     struct strmap	*flgs, *sc;
-@@ -1870,8 +1859,7 @@ char	*opts;
- }
- 
- int
--help(stream)
--FILE	*stream;
-+help(FILE *stream)
- {
-     usage(stream);
-     fprintf(stream, "\n");
-@@ -1981,9 +1969,8 @@ FILE	*stream;
-  */
- 
- int
--usage(stream)
--FILE	*stream;
-+usage(FILE *stream)
- {
-     fprintf(stream, "usage%s:  iogen [-hoq] [-a aio_type,...] [-f flag[,flag...]] [-i iterations] [-p outpipe] [-m offset-mode] [-s syscall[,syscall...]] [-t mintrans] [-T maxtrans] [ -O file-create-flags ] [[len:]file ...]\n", TagName);
-   return 0;
--}
-\ No newline at end of file
-+}
--- 
-1.7.4
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
+
+CAI Qian wrote:
+> 
+> ----- Original Message -----
+>> Qian Cai wrote:
+>>> On 2011-4-4, at 0:47, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+>>>
+>>>> There are some problem in ksm tests.
+>>>>
+>>>> 1. We should break the test when checking is failure.
+>>> No, this is not the intention. The design here is to run all tests
+>>> to check for all stats to give a full picture even if the a single
+>>> failure has been observed. This type of the failures do not prevent
+>>> the rest of the tests from running, so there is no need to stop the
+>>> tests now which also give more insight to track down root causes.
+>> Various reason can make checking failure, someone can make the test
+>> hangup.
+>> I did this test on RHEL5, i found ksmd stopped before doing "echo 2 >
+>> /sys/kernel/mm/ksm/run",
+>> so group_check will be hanged on "new_num < old_num * 3".
+>>
+>> So, i think we should break the test if "run" is not expecting.
+> What happened if you run the tests for a recent upstream kernel? There
+> are some patches for ksm recently merged upstream. If the problem still
+> persistent, please paste the EXACT OUTPUT from the ksm01 test. If it is
+> hung, please upload sysrq-t output somewhere.
+> 
+
+Maybe there are some bugs in the RHEL6's kernel, but the purpose of this patch
+is not to workround these bugs, i want to fix the test's bug.
+
+Would you explain to me why we do this loop "while (new_num < old_num * 3)" in
+group_check, i think "while (new_num < old_num + 3)" is better.
+
+Some time ago, the following patch insert this loop.
+http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTi%3Dg%3DojJu0m%2B556rnekYenRTXtX%2BVBOj%3DrPmnjSw%40mail.gmail.com&forum_name=ltp-list
+
+The changelog of this patch said "we should wait 3~5 increments of the
+/sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results", but
+it do "while (new_num < old_num * 3)" actually.
+
+Regards
+ Bian
+
+> CAI Qian
+>  
+>>>> 2. The condition "new_num < old_num * 3" seems uncomfortable, i
+>>>> think
+>>>>   it should be "new_num < old_num + 3"
+>>> I don't understand. What error did you see from the testing output?
+>> Sometimes, the old_num is a big number, so it takes long time in this
+>> loop,
+>> i don't understand the purpose.
+>> Would you explain to me why we expect this condition "new_num <
+>> old_num * 3".
+>>
+>>>> 3. After stopping ksm(echo 2 > /sys/kernel/mm/ksm/run), the ksmd
+>>>>   will stop scaning pages, so looping in "new_num < old_num * 3"
+>>>>   is wrong.
+>>> Ditto.
+>>>
+>> After stopping ksm, looping in "new_num < old_num * 3" will make the
+>> process hang up,
+>> because new_num does not be increased.
+>>
+>> Regards
+>> Bian
+>>
+>>
+>>> CAI Qian
+>>>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+>>>>
+>>>> ---
+>>>> testcases/kernel/mem/include/mem.h | 2 +-
+>>>> testcases/kernel/mem/lib/mem.c | 19 ++++++++++---------
+>>>> 2 files changed, 11 insertions(+), 10 deletions(-)
+>>>>
+>>>> diff --git a/testcases/kernel/mem/include/mem.h
+>>>> b/testcases/kernel/mem/include/mem.h
+>>>> index 778d403..b640a63 100644
+>>>> --- a/testcases/kernel/mem/include/mem.h
+>>>> +++ b/testcases/kernel/mem/include/mem.h
+>>>> @@ -42,7 +42,7 @@ void check(char *path, long int value);
+>>>> void verify(char value, int proc, int start, int end, int start2,
+>>>> int end2);
+>>>> void group_check(int run, int pages_shared, int pages_sharing,
+>>>>        int pages_volatile, int pages_unshared, int sleep_millisecs,
+>>>> - int pages_to_scan);
+>>>> + int pages_to_scan, int scans);
+>>>> void create_same_memory(int size, int num, int unit);
+>>>> void check_ksm_options(int *size, int *num, int *unit);
+>>>> void write_cpusets(void);
+>>>> diff --git a/testcases/kernel/mem/lib/mem.c
+>>>> b/testcases/kernel/mem/lib/mem.c
+>>>> index 12e61e9..db1a7dd 100644
+>>>> --- a/testcases/kernel/mem/lib/mem.c
+>>>> +++ b/testcases/kernel/mem/lib/mem.c
+>>>> @@ -284,7 +284,7 @@ void check(char *path, long int value)
+>>>>
+>>>>    tst_resm(TINFO, "%s is %ld.", path, atol(buf));
+>>>>    if (atol(buf) != value)
+>>>> - tst_resm(TFAIL, "%s is not %ld.", path, value);
+>>>> + tst_brkm(TFAIL, tst_exit, "%s is not %ld.", path, value);
+>>>> }
+>>>>
+>>>> void verify(char value, int proc, int start, int end, int start2,
+>>>> int end2)
+>>>> @@ -312,7 +312,8 @@ void verify(char value, int proc, int start,
+>>>> int end, int start2, int end2)
+>>>>
+>>>> void group_check(int run, int pages_shared, int pages_sharing,
+>>>>        int pages_volatile, int pages_unshared,
+>>>> - int sleep_millisecs, int pages_to_scan)
+>>>> + int sleep_millisecs, int pages_to_scan,
+>>>> + int scans)
+>>>> {
+>>>>    int fd;
+>>>>    char buf[BUFSIZ];
+>>>> @@ -332,7 +333,7 @@ void group_check(int run, int pages_shared, int
+>>>> pages_sharing,
+>>>>    old_num = new_num = atoi(buf);
+>>>>    if (lseek(fd, 0, SEEK_SET) == -1)
+>>>>        tst_brkm(TBROK|TERRNO, cleanup, "lseek");
+>>>> - while (new_num < old_num * 3) {
+>>>> + while (new_num < old_num + scans) {
+>>>>        sleep(1);
+>>>>        if (read(fd, buf, BUFSIZ) < 0)
+>>>>            tst_brkm(TBROK|TERRNO, cleanup, "read");
+>>>> @@ -587,7 +588,7 @@ void create_same_memory(int size, int num, int
+>>>> unit)
+>>>>        if (kill(child[k], SIGCONT) == -1)
+>>>>            tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
+>>>>    }
+>>>> - group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 *
+>>>> num);
+>>>> + group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 *
+>>>> num, 3);
+>>>>
+>>>>    tst_resm(TINFO, "wait for child 1 to stop.");
+>>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
+>>>> @@ -599,7 +600,7 @@ void create_same_memory(int size, int num, int
+>>>> unit)
+>>>>    tst_resm(TINFO, "resume child 1.");
+>>>>    if (kill(child[1], SIGCONT) == -1)
+>>>>        tst_brkm(TBROK|TERRNO, cleanup, "kill");
+>>>> - group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 *
+>>>> num);
+>>>> + group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 *
+>>>> num, 3);
+>>>>
+>>>>    tst_resm(TINFO, "wait for child 1 to stop.");
+>>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
+>>>> @@ -613,7 +614,7 @@ void create_same_memory(int size, int num, int
+>>>> unit)
+>>>>        if (kill(child[k], SIGCONT) == -1)
+>>>>            tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
+>>>>    }
+>>>> - group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 *
+>>>> num);
+>>>> + group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 *
+>>>> num, 3);
+>>>>
+>>>>    tst_resm(TINFO, "wait for all children to stop.");
+>>>>    for (k = 0; k < num; k++) {
+>>>> @@ -627,7 +628,7 @@ void create_same_memory(int size, int num, int
+>>>> unit)
+>>>>    tst_resm(TINFO, "resume child 1.");
+>>>>    if (kill(child[1], SIGCONT) == -1)
+>>>>        tst_brkm(TBROK|TERRNO, cleanup, "kill");
+>>>> - group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 *
+>>>> num);
+>>>> + group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 *
+>>>> num, 3);
+>>>>
+>>>>    tst_resm(TINFO, "wait for child 1 to stop.");
+>>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
+>>>> @@ -647,7 +648,7 @@ void create_same_memory(int size, int num, int
+>>>> unit)
+>>>>        tst_brkm(TBROK|TERRNO, cleanup, "open");
+>>>>    if (write(fd, "2", 1) != 1)
+>>>>        tst_brkm(TBROK|TERRNO, cleanup, "write");
+>>>> - group_check(2, 0, 0, 0, 0, 0, size * 256 * num);
+>>>> + group_check(2, 0, 0, 0, 0, 0, size * 256 * num, 0);
+>>>>
+>>>>    tst_resm(TINFO, "wait for all children to stop.");
+>>>>    for (k = 0; k < num; k++) {
+>>>> @@ -668,7 +669,7 @@ void create_same_memory(int size, int num, int
+>>>> unit)
+>>>>    if (write(fd, "0", 1) != 1)
+>>>>        tst_brkm(TBROK|TERRNO, cleanup, "write");
+>>>>    close(fd);
+>>>> - group_check(0, 0, 0, 0, 0, 0, size * 256 * num);
+>>>> + group_check(0, 0, 0, 0, 0, 0, size * 256 * num, 0);
+>>>>    while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
+>>>>        if (WEXITSTATUS(status) != 0)
+>>>>            tst_resm(TFAIL, "child exit status is %d",
+>>>> --
+>>>> 1.7.1
+>>>>
+>>>>
+>>>
+>>
+>> ------------------------------------------------------------------------------
+>> Xperia(TM) PLAY
+>> It's a major breakthrough. An authentic gaming
+>> smartphone on the nation's most reliable network.
+>> And it wants your games.
+>> http://p.sf.net/sfu/verizon-sfdev
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
 
 
 ------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
