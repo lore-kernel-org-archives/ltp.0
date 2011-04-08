@@ -1,15 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <noreply@sourceforge.net>) id 1Q7t8A-0006Qr-FD
-	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 17:36:30 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1Q7t8A-00057P-AG@sfs-web-10.v29.ch3.sourceforge.com>
-Date: Thu, 07 Apr 2011 17:36:30 +0000
-Subject: [LTP] [ ltp-Patches-1942286 ] Port rhel5_ibm_eal4_cert_suite2 for
-	SGI RHEL5.1 CC tests
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <phan@redhat.com>) id 1Q82Ib-00012n-Rr
+	for ltp-list@lists.sourceforge.net; Fri, 08 Apr 2011 03:23:53 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q82Ia-000281-GA
+	for ltp-list@lists.sourceforge.net; Fri, 08 Apr 2011 03:23:53 +0000
+Date: Fri, 8 Apr 2011 11:28:44 +0800
+From: Han Pingtian <phan@redhat.com>
+Message-ID: <20110408032844.GA2945@hpt.nay.redhat.com>
+References: <2025116569.785721.1302133158267.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<4D9D5128.3060709@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4D9D5128.3060709@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]KSM: full_scans will stop increasing
+	after	stopping ksm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,192 +30,268 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Bian Naimeng <biannm@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Patches item #1942286, was opened at 2008-04-14 17:44
-Message generated for change (Comment added) made by nobody
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=1942286&group_id=3382
+On Thu, Apr 07, 2011 at 01:52:40PM +0800, Bian Naimeng wrote:
+> 
+> 
+> CAI Qian wrote:
+> > 
+> > ----- Original Message -----
+> >> Qian Cai wrote:
+> >>> On 2011-4-4, at 0:47, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+> >>>
+> >>>> There are some problem in ksm tests.
+> >>>>
+> >>>> 1. We should break the test when checking is failure.
+> >>> No, this is not the intention. The design here is to run all tests
+> >>> to check for all stats to give a full picture even if the a single
+> >>> failure has been observed. This type of the failures do not prevent
+> >>> the rest of the tests from running, so there is no need to stop the
+> >>> tests now which also give more insight to track down root causes.
+> >> Various reason can make checking failure, someone can make the test
+> >> hangup.
+> >> I did this test on RHEL5, i found ksmd stopped before doing "echo 2 >
+> >> /sys/kernel/mm/ksm/run",
+> >> so group_check will be hanged on "new_num < old_num * 3".
+> >>
+> >> So, i think we should break the test if "run" is not expecting.
+> > What happened if you run the tests for a recent upstream kernel? There
+> > are some patches for ksm recently merged upstream. If the problem still
+> > persistent, please paste the EXACT OUTPUT from the ksm01 test. If it is
+> > hung, please upload sysrq-t output somewhere.
+> > 
+> 
+> Maybe there are some bugs in the RHEL6's kernel, but the purpose of this patch
+> is not to workround these bugs, i want to fix the test's bug.
+> 
+> Would you explain to me why we do this loop "while (new_num < old_num * 3)" in
+> group_check, i think "while (new_num < old_num + 3)" is better.
+> 
+> Some time ago, the following patch insert this loop.
+> http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTi%3Dg%3DojJu0m%2B556rnekYenRTXtX%2BVBOj%3DrPmnjSw%40mail.gmail.com&forum_name=ltp-list
+> 
+> The changelog of this patch said "we should wait 3~5 increments of the
+> /sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results", but
+> it do "while (new_num < old_num * 3)" actually.
+I made a mistake. The code is what I wanted to do, but the changelog was
+wrong. When testing the new ksm patch, the developer told us we must
+wait 3~5 times increments of the number before checking testing
+results. So I coded to wait til new_num >= old_num * 3 before checking
+the results. 
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Testcases
-Group: Other
-Status: Closed
-Resolution: Accepted
-Priority: 5
-Private: No
-Submitted By: Klaus Weidner (kweidner)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: Port rhel5_ibm_eal4_cert_suite2 for SGI RHEL5.1 CC tests
+About 'echo 2 > /sys/kernel/mm/ksm/run' problem, I have tested it with
+ksm01.
+If I run the 'echo 2 > /sys/kernel/mm/ksm/run' before issue ksm test,
+the content of /sys/kernel/mm/ksm/run will be changed to 1 and the test
+can finished successfully. Only if I echo the 2 between the testing process,
+ksm01 will hang up. On that time, new_num will be zero, so your plus 3
+method won't work either. So what should we do in this circumstance?
 
-Initial Comment:
-This patch contains the changes to the rhel5_ibm_eal4_cert_suite2 test
-suite made for the CC evaluation of RHEL5.1 on SGI hardware.
+Thanks.
 
-Thank you to the IBM team for providing the test cases!
+Han Pingtian
+> 
+> Regards
+>  Bian
+> 
+> > CAI Qian
+> >  
+> >>>> 2. The condition "new_num < old_num * 3" seems uncomfortable, i
+> >>>> think
+> >>>>   it should be "new_num < old_num + 3"
+> >>> I don't understand. What error did you see from the testing output?
+> >> Sometimes, the old_num is a big number, so it takes long time in this
+> >> loop,
+> >> i don't understand the purpose.
+> >> Would you explain to me why we expect this condition "new_num <
+> >> old_num * 3".
+> >>
+> >>>> 3. After stopping ksm(echo 2 > /sys/kernel/mm/ksm/run), the ksmd
+> >>>>   will stop scaning pages, so looping in "new_num < old_num * 3"
+> >>>>   is wrong.
+> >>> Ditto.
+> >>>
+> >> After stopping ksm, looping in "new_num < old_num * 3" will make the
+> >> process hang up,
+> >> because new_num does not be increased.
+> >>
+> >> Regards
+> >> Bian
+> >>
+> >>
+> >>> CAI Qian
+> >>>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+> >>>>
+> >>>> ---
+> >>>> testcases/kernel/mem/include/mem.h | 2 +-
+> >>>> testcases/kernel/mem/lib/mem.c | 19 ++++++++++---------
+> >>>> 2 files changed, 11 insertions(+), 10 deletions(-)
+> >>>>
+> >>>> diff --git a/testcases/kernel/mem/include/mem.h
+> >>>> b/testcases/kernel/mem/include/mem.h
+> >>>> index 778d403..b640a63 100644
+> >>>> --- a/testcases/kernel/mem/include/mem.h
+> >>>> +++ b/testcases/kernel/mem/include/mem.h
+> >>>> @@ -42,7 +42,7 @@ void check(char *path, long int value);
+> >>>> void verify(char value, int proc, int start, int end, int start2,
+> >>>> int end2);
+> >>>> void group_check(int run, int pages_shared, int pages_sharing,
+> >>>>        int pages_volatile, int pages_unshared, int sleep_millisecs,
+> >>>> - int pages_to_scan);
+> >>>> + int pages_to_scan, int scans);
+> >>>> void create_same_memory(int size, int num, int unit);
+> >>>> void check_ksm_options(int *size, int *num, int *unit);
+> >>>> void write_cpusets(void);
+> >>>> diff --git a/testcases/kernel/mem/lib/mem.c
+> >>>> b/testcases/kernel/mem/lib/mem.c
+> >>>> index 12e61e9..db1a7dd 100644
+> >>>> --- a/testcases/kernel/mem/lib/mem.c
+> >>>> +++ b/testcases/kernel/mem/lib/mem.c
+> >>>> @@ -284,7 +284,7 @@ void check(char *path, long int value)
+> >>>>
+> >>>>    tst_resm(TINFO, "%s is %ld.", path, atol(buf));
+> >>>>    if (atol(buf) != value)
+> >>>> - tst_resm(TFAIL, "%s is not %ld.", path, value);
+> >>>> + tst_brkm(TFAIL, tst_exit, "%s is not %ld.", path, value);
+> >>>> }
+> >>>>
+> >>>> void verify(char value, int proc, int start, int end, int start2,
+> >>>> int end2)
+> >>>> @@ -312,7 +312,8 @@ void verify(char value, int proc, int start,
+> >>>> int end, int start2, int end2)
+> >>>>
+> >>>> void group_check(int run, int pages_shared, int pages_sharing,
+> >>>>        int pages_volatile, int pages_unshared,
+> >>>> - int sleep_millisecs, int pages_to_scan)
+> >>>> + int sleep_millisecs, int pages_to_scan,
+> >>>> + int scans)
+> >>>> {
+> >>>>    int fd;
+> >>>>    char buf[BUFSIZ];
+> >>>> @@ -332,7 +333,7 @@ void group_check(int run, int pages_shared, int
+> >>>> pages_sharing,
+> >>>>    old_num = new_num = atoi(buf);
+> >>>>    if (lseek(fd, 0, SEEK_SET) == -1)
+> >>>>        tst_brkm(TBROK|TERRNO, cleanup, "lseek");
+> >>>> - while (new_num < old_num * 3) {
+> >>>> + while (new_num < old_num + scans) {
+> >>>>        sleep(1);
+> >>>>        if (read(fd, buf, BUFSIZ) < 0)
+> >>>>            tst_brkm(TBROK|TERRNO, cleanup, "read");
+> >>>> @@ -587,7 +588,7 @@ void create_same_memory(int size, int num, int
+> >>>> unit)
+> >>>>        if (kill(child[k], SIGCONT) == -1)
+> >>>>            tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
+> >>>>    }
+> >>>> - group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 *
+> >>>> num);
+> >>>> + group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 *
+> >>>> num, 3);
+> >>>>
+> >>>>    tst_resm(TINFO, "wait for child 1 to stop.");
+> >>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
+> >>>> @@ -599,7 +600,7 @@ void create_same_memory(int size, int num, int
+> >>>> unit)
+> >>>>    tst_resm(TINFO, "resume child 1.");
+> >>>>    if (kill(child[1], SIGCONT) == -1)
+> >>>>        tst_brkm(TBROK|TERRNO, cleanup, "kill");
+> >>>> - group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 *
+> >>>> num);
+> >>>> + group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 *
+> >>>> num, 3);
+> >>>>
+> >>>>    tst_resm(TINFO, "wait for child 1 to stop.");
+> >>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
+> >>>> @@ -613,7 +614,7 @@ void create_same_memory(int size, int num, int
+> >>>> unit)
+> >>>>        if (kill(child[k], SIGCONT) == -1)
+> >>>>            tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
+> >>>>    }
+> >>>> - group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 *
+> >>>> num);
+> >>>> + group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 *
+> >>>> num, 3);
+> >>>>
+> >>>>    tst_resm(TINFO, "wait for all children to stop.");
+> >>>>    for (k = 0; k < num; k++) {
+> >>>> @@ -627,7 +628,7 @@ void create_same_memory(int size, int num, int
+> >>>> unit)
+> >>>>    tst_resm(TINFO, "resume child 1.");
+> >>>>    if (kill(child[1], SIGCONT) == -1)
+> >>>>        tst_brkm(TBROK|TERRNO, cleanup, "kill");
+> >>>> - group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 *
+> >>>> num);
+> >>>> + group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 *
+> >>>> num, 3);
+> >>>>
+> >>>>    tst_resm(TINFO, "wait for child 1 to stop.");
+> >>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
+> >>>> @@ -647,7 +648,7 @@ void create_same_memory(int size, int num, int
+> >>>> unit)
+> >>>>        tst_brkm(TBROK|TERRNO, cleanup, "open");
+> >>>>    if (write(fd, "2", 1) != 1)
+> >>>>        tst_brkm(TBROK|TERRNO, cleanup, "write");
+> >>>> - group_check(2, 0, 0, 0, 0, 0, size * 256 * num);
+> >>>> + group_check(2, 0, 0, 0, 0, 0, size * 256 * num, 0);
+> >>>>
+> >>>>    tst_resm(TINFO, "wait for all children to stop.");
+> >>>>    for (k = 0; k < num; k++) {
+> >>>> @@ -668,7 +669,7 @@ void create_same_memory(int size, int num, int
+> >>>> unit)
+> >>>>    if (write(fd, "0", 1) != 1)
+> >>>>        tst_brkm(TBROK|TERRNO, cleanup, "write");
+> >>>>    close(fd);
+> >>>> - group_check(0, 0, 0, 0, 0, 0, size * 256 * num);
+> >>>> + group_check(0, 0, 0, 0, 0, 0, size * 256 * num, 0);
+> >>>>    while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
+> >>>>        if (WEXITSTATUS(status) != 0)
+> >>>>            tst_resm(TFAIL, "child exit status is %d",
+> >>>> --
+> >>>> 1.7.1
+> >>>>
+> >>>>
+> >>>
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Xperia(TM) PLAY
+> >> It's a major breakthrough. An authentic gaming
+> >> smartphone on the nation's most reliable network.
+> >> And it wants your games.
+> >> http://p.sf.net/sfu/verizon-sfdev
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> > 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Xperia(TM) PLAY
+> It's a major breakthrough. An authentic gaming
+> smartphone on the nation's most reliable network.
+> And it wants your games.
+> http://p.sf.net/sfu/verizon-sfdev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-Bill O'Donnell <billodo@sgi.com>
-Klaus Weidner <klaus@atsec.com>
-
-*** Description of changes **************************************************
-
-New features are:
-
-- add support for the IA64 (Itanium2) platform, including testing of new system
-  calls (clone2) and conditionally disabling inapplicable system calls for that
-  platform
-
-- add additional sanity checks to the "make verifydeps" step to catch common
-  configuration errors in LSPP mode before running the tests
-
-- add DAC manual test (tests/manual/dac.test file) suitable for running in
-  tmpfs and other non-ext3 filesystems for additional coverage
-
-The following enhancements were made to the test suite:
-
-- show clearer usage message for the exportvars.sh script, make IPv6 address
-  assignment more flexible
-
-- when waiting for audit records to be written to disk, always wait for the
-  kernel to indicate that it has cleared the backlog. This helps ensure
-  reliable results on slow machines or ones with inconsistent clocks (such as
-  testing in VMWare). (Optionally, try removing the "sleep 1" in function
-  ltp-full/lib/audit_utils.c:pause_for_auditd() and
-  ltp-full/python-lib/framework/audit_interface.py:wait_for_audit_log() for
-  faster test execution.)
-
-- remove unnecessary sleep()s in the Python RPC framework to speed up test
-  execution
-
-- more informative debugging output in the Python RPC framework, including
-  enabling coredumps in case of segmentation faults in test cases
-
-The following bugs were fixed:
-
-- ensure correct permissions for new audit log file in
-  ltp-full/lib/audit_utils.c:clear_audit_log()
-
-- increase static string buffers in the ltp-full/lib/audit_parse_verify.c
-  routines to avoid overflows and corresponding segmentation faults (this is
-  not a security issue since root rights are already needed to execute the
-  tests)
-
-- in ltp-full/lib/tst_res.c, increase maximum supported user message size to
-  avoid truncation of output
-
-- in ltp-full/lib/tst_sig.c, ignore SIGWINCH signal to avoid test failure when
-  the window containing the shell running the tests is resized
-
-*** Diffstat ****************************************************************
-
- lspp/tests/LTP/Makefile                                                                            |   10 
- lspp/tests/LTP/ltp-full/lib/audit_parse_verify.c                                                   |   15 
- lspp/tests/LTP/ltp-full/lib/audit_utils.c                                                          |   21 
- lspp/tests/LTP/ltp-full/lib/tst_res.c                                                              |  968 ++++++++++
- lspp/tests/LTP/ltp-full/lib/tst_sig.c                                                              |  289 ++
- lspp/tests/LTP/ltp-full/python-lib/framework/audit_interface.py                                    |   27 
- lspp/tests/LTP/ltp-full/python-lib/framework/rexec.py                                              |   68 
- lspp/tests/LTP/ltp-full/python-lib/framework/shared_globals.py                                     |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/audit_tools/ausearch_test                                  |   15 
- lspp/tests/LTP/ltp-full/testcases/audit/filters/multirule_test.c                                   |    2 
- lspp/tests/LTP/ltp-full/testcases/audit/filters/ranges1_test.c                                     |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/filters/ranges2_test.c                                     |    5 
- lspp/tests/LTP/ltp-full/testcases/audit/filters/selinux_context_test.c                             |    1 
- lspp/tests/LTP/ltp-full/testcases/audit/include.mk                                                 |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/accept_test.c                                     |    1 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/bind_test.c                                       |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/chown32_test.c                                    |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/clone2_test.c                                     |  237 ++
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/clone_test.c                                      |   11 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/connect_test.c                                    |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/fchown32_test.c                                   |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/fork_test.c                                       |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/getsockopt_test.c                                 |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/init_module_test.c                                |    2 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/lchown32_test.c                                   |    5 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/mmap2_test.c                                      |    2 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/msgctl_test.c                                     |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/msgget_test.c                                     |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/msgrecv_test.c                                    |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/msgsend_test.c                                    |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/reboot_test.c                                     |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/recvfrom_recvmsg_test.c                           |   14 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/semctl_test.c                                     |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/semget_test.c                                     |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/semop_test.c                                      |   10 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/semtimedop_test.c                                 |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/sendmsg_test.c                                    |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/sendto_test.c                                     |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setfsgid32_test.c                                 |    3 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setfsuid32_test.c                                 |    3 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setgid32_test.c                                   |    3 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setgroups32_test.c                                |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setregid32_test.c                                 |    3 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setresgid32_test.c                                |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setresuid32_test.c                                |    3 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setreuid32_test.c                                 |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/setuid32_test.c                                   |    4 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/shmat_test.c                                      |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/shmctl_test.c                                     |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/shmdt_test.c                                      |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/shmget_test.c                                     |    6 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/stime_test.c                                      |    2 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/umount2_test.c                                    |    9 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/utime_test.c                                      |    9 
- lspp/tests/LTP/ltp-full/testcases/audit/syscalls/vfork_test.c                                      |    9 
- lspp/tests/LTP/ltp-full/testcases/audit/trustedpgms/passwd_test.c                                  |    4 
- lspp/tests/LTP/ltp-full/testcases/kernel/security/mls/tests/framework/drivers/_ipc.c               |   36 
- lspp/tests/LTP/ltp-full/testcases/kernel/security/mls/tests/framework/drivers/_syscalls.c          |    6 
- lspp/tests/LTP/ltp-full/testcases/kernel/security/mls/tests/framework/drivers/ipc.py               |    6 
- lspp/tests/LTP/ltp-full/testcases/network/cipso_ipsec/framework/test_drivers/ipsec_v6_sshd_test.py |    3 
- lspp/tests/LTP/ltp-full/testcases/platform.mk                                                      |    5 
- lspp/tests/exportvars.sh                                                                           |   50 
- lspp/tests/manual/dac.test                                                                         |   98 +
- lspp/tests/platform.mk                                                                             |    8 
- lspp/tests/rules.mk                                                                                |   46 
- 65 files changed, 1993 insertions(+), 190 deletions(-)
-
-
-
-----------------------------------------------------------------------
-
-Comment By: Nobody/Anonymous (nobody)
-Date: 2011-04-07 17:36
-
-Message:
-YfrcWR  <a href="http://yylwzcqwnqih.com/">yylwzcqwnqih</a>,
-[url=http://plqtpudqvvmo.com/]plqtpudqvvmo[/url],
-[link=http://brurvyewbnqf.com/]brurvyewbnqf[/link],
-http://uxuavwhtluzn.com/
-
-----------------------------------------------------------------------
-
-Comment By: Subrata Modak (subrata_modak)
-Date: 2008-04-20 19:21
-
-Message:
-Logged In: YES 
-user_id=1737361
-Originator: NO
-
-Thanks. This has been released now.
-
-Regards--
-Subrata
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=1942286&group_id=3382
+-- 
+Han Pingtian
+Quality Engineer
+hpt @ #kernel-qe
+Red Hat, Inc
+Freedom ... courage ... Commitment ... ACCOUNTABILITY
 
 ------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
