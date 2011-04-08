@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QCQgg-0001ym-Cp
-	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 06:14:54 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QCQgf-0008Rk-NO
-	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 06:14:54 +0000
-Received: by pzk35 with SMTP id 35so314322pzk.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 19 Apr 2011 23:14:47 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Q8CgU-0001rQ-67
+	for ltp-list@lists.sourceforge.net; Fri, 08 Apr 2011 14:29:14 +0000
+Date: Fri, 8 Apr 2011 16:53:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110408145304.GC21327@saboteur.suse.cz>
+References: <4D9DA7A1.7000901@redhat.com>
+	<20110408145056.GB21327@saboteur.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <1067240850.28848.1303219004077.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <508695279.28083.1303217546129.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<1067240850.28848.1303219004077.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Tue, 19 Apr 2011 23:14:46 -0700
-Message-ID: <BANLkTini_6Bk04Vm9di+88pgcYDBzY+ubA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups/cpuacct_setup: fix task_kill() search for
-	process
+Content-Disposition: inline
+In-Reply-To: <20110408145056.GB21327@saboteur.suse.cz>
+Subject: Re: [LTP] mem/libmm usage?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,38 +22,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Apr 19, 2011 at 6:16 AM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> 1. "i* in "grep cpuacct_taski*" seems pointless as
-> its target is cpuacct_task01
->
-> 2. using cut fails when ps indents the output as following:
-> =A099 cpuacct_task01
-> =A0112 cpuacct_task01
-> 1111 cpuacct_task01
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Hi!
+> It seems that most of the tests links against this library. Also it
+                                 ^ in this directory
+> seems that they don't need to. And the makefiles in mem/ are little
+> messed up.
 
-Patch doesn't apply.
-Thanks,
--Garrett
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
----------------------------------------------------------------------------=
----
-Benefiting from Server Virtualization: Beyond Initial Workload =
-
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve =
-
-application availability and disaster protection. Learn more about boosting =
-
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+------------------------------------------------------------------------------
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
