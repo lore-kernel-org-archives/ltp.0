@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1QEkGy-0000mX-MW
-	for ltp-list@lists.sourceforge.net; Tue, 26 Apr 2011 15:33:56 +0000
-Date: Tue, 26 Apr 2011 17:59:23 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1Q8AbH-0003Mr-E4
+	for ltp-list@lists.sourceforge.net; Fri, 08 Apr 2011 12:15:43 +0000
+Date: Fri, 8 Apr 2011 14:39:34 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110426155923.GB28253@saboteur.suse.cz>
-References: <20110304170932.19819907@regolo>
-	<AANLkTin_4rBGj5O-ZgTdu2C8nV6Lc9-pa9ig8NsAowAd@mail.gmail.com>
-	<AANLkTik6nKzqp2tuyhsuk6FvMd540xZVGGddr=B13D-R@mail.gmail.com>
-	<20110305010600.0c7cd017@regolo>
+Message-ID: <20110408123934.GD24025@saboteur.suse.cz>
+References: <20110210085232.GA9285@hpt.nay.redhat.com>
+	<AANLkTimk_+8o+QQdjzweLmhB=qzzO2TGYADmEuBQtZom@mail.gmail.com>
+	<20110221073548.GD2904@hpt.nay.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110305010600.0c7cd017@regolo>
-Subject: Re: [LTP] [PATCH] kill05: fix regression
+In-Reply-To: <20110221073548.GD2904@hpt.nay.redhat.com>
+Subject: Re: [LTP] [PATCH] Fix build of cpuset_syscall_test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,36 +26,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Greco <cristian@regolo.cc>
+To: Han Pingtian <phan@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> you're right. In fact, the problem is in safe_getpwnam(), which does not
-> correctly reproduce the behavior of the deprecated my_getpwnam().
-> Moreover, I'm not noticing the problem on my laptop due to a race
-> condition in kill05, while it shows an inconsistent behavior on the box
-> I'm running tests on (mipsel with glibc, for the sake).
-> 
-> Could you please fix safe_getpwnam() with either one of the following
-> patches?
-
-Technically you are right, but my_getpwnam() behaviour is broken too. As
-the strings the structure is pointing to are statically allocated too,
-this copying preserves only uid and gid. So instead of creating
-crippled interface we will rather fix the test itself.
-
-Thanks the report anyway.
+Commited, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
