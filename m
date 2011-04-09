@@ -1,20 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <jstancek@redhat.com>) id 1QCDpc-0003j6-JM
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:31:16 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QCDpb-0000H1-DY
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:31:16 +0000
-Date: Tue, 19 Apr 2011 12:31:08 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1595803481.34824.1303230668869.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <BANLkTikym73Dno4O9sc5VH81dzJ2_P8R9A@mail.gmail.com>
+	(envelope-from <czhang@redhat.com>) id 1Q8Omj-0007NF-IY
+	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 03:24:29 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q8Omi-00073G-De
+	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 03:24:29 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p393OM3I010336
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Apr 2011 23:24:22 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Sat,  9 Apr 2011 11:24:10 +0800
+Message-Id: <3b84dec9459d115647f5e49c6b2f0b8623f5dcfe.1302319401.git.czhang@redhat.com>
+In-Reply-To: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>
+References: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>
+In-Reply-To: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>
+References: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] cgroups/cgroup_regression_test: fix sporadic
- failures
+Content-Type: multipart/mixed; boundary="------------1.7.1"
+Subject: [LTP] [PATCH v2 2/2] [mm] mbind01: move to syscalls directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,70 +32,464 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+
+This is a multi-part message in MIME format.
+--------------1.7.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
+there are 2 mbind01 tests in different place: syscalls/ and mem/, after
+installation, the latter one would cover the former one, and it's not
+convenient for maintenance. So I move it to syscalls/ and changed its
+name to mbind02.
 
------ Original Message -----
-> From: "Garrett Cooper" <yanegomi@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, April 19, 2011 6:13:48 PM
-> Subject: Re: [LTP] [PATCH] cgroups/cgroup_regression_test: fix sporadic failures
-> On Tue, Apr 19, 2011 at 6:27 AM, Jan Stancek <jstancek@redhat.com>
-> wrote:
-> >
-> > There were failures caused by incomplete cleanup,
-> > leaving groups behind after some stress tests.
-> > Some stress tests failed to complete upon receiving SIGUSR1.
-> >
-> > 1. dmesg can rotate and number of found bugs can actually go down
-> > clear the buffer before test to avoid this
-> >
-> > 2. test_5: test should mount 2 subsystems, but mount command
-> > says "$subsys" instead of "$subsys2"
-> >
-> > 3. test_6: test may leave groups behind, fix rmdir
-> > to match test_6_1.sh
-> >
-> > 4. test_7_2: mounts whole cgroup not $subsys
-> >
-> > 5. test_10: can leave cgroups umounted before cleanup
-> > make sure cgroups are mounted before doing cleanup
-> >
-> > 6. test_*.sh scripts use trap in loop, which may cause bash
-> > to miss signal, see
-> > https://bugzilla.redhat.com/show_bug.cgi?id=695656
-> > move trap outside loop to avoid it
-> 
-> I personally don't have a lot of context into cgroups, but when is
-> it acceptable for Linux to send SIGUSR1 when mounting, unmounting, or
-> removing cgroup directories?
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+ runtest/mm                                |    2 -
+ runtest/syscalls                          |   11 +-
+ testcases/kernel/mem/mbind/Makefile       |   26 -----
+ testcases/kernel/mem/mbind/mbind01.c      |  146 -----------------------------
+ testcases/kernel/syscalls/mbind/mbind02.c |  146 +++++++++++++++++++++++++++++
+ 5 files changed, 152 insertions(+), 179 deletions(-)
+ delete mode 100644 testcases/kernel/mem/mbind/Makefile
+ delete mode 100644 testcases/kernel/mem/mbind/mbind01.c
+ create mode 100644 testcases/kernel/syscalls/mbind/mbind02.c
 
-The main test spawns couple of workers, which run infinite loop and stress
-test some area. SIGUSR1 was chosen by author of test to stop these workers
-after certain amount of time.
 
-The signal only controls workers, it is not directly related to any
-cgroup functionality AFAIK.
+--------------1.7.1
+Content-Type: text/x-patch;
+	name="0002-mm-mbind01-move-to-syscalls-directory.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0002-mm-mbind01-move-to-syscalls-directory.patch"
 
-Unfortunetly, when resetting "trap" in bash, signal is ignored for
-short period of time, which occasionally hangs the whole test.
+diff --git a/runtest/mm b/runtest/mm
+index f2d50d6..6382c82 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -72,8 +72,6 @@ ksm04_1 ksm04 -u 128
+ 
+ cpuset01 cpuset01 -I 3600
+ 
+-mbind01 mbind01
+-
+ oom01 oom01
+ oom02 oom02
+ oom03 oom03
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4294d07..265f67a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -505,6 +505,7 @@ lstat03_64 lstat03_64
+ mallopt01 mallopt01
+ 
+ mbind01 mbind01
++mbind02 mbind02
+ 
+ memset01 memset01
+ memcmp01 memcmp01
+@@ -573,7 +574,7 @@ mount1234 test_mount
+ 
+ move_pages01 move_pages.sh 01
+ move_pages02 move_pages.sh 02
+-move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod 04755 move_pages03 && move_pages.sh 03 
++move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod 04755 move_pages03 && move_pages.sh 03
+ move_pages04 move_pages.sh 04
+ move_pages05 move_pages.sh 05
+ move_pages06 move_pages.sh 06
+@@ -675,7 +676,7 @@ open10 open10
+ openat01 openat01
+ 
+ mincore01 mincore01
+-mincore02 mincore02 
++mincore02 mincore02
+ 
+ madvise01 madvise01
+ madvise02 madvise02
+@@ -689,8 +690,8 @@ pause01 pause01
+ pause02 pause02
+ pause03 pause03
+ 
+-#  The personality() system call is poorly documented 
+-#  and difficult to figure out how to use by looking 
++#  The personality() system call is poorly documented
++#  and difficult to figure out how to use by looking
+ #  at the different architecture specific kernel files.
+ #personality01 personality01
+ #personality02 personality02
+@@ -1200,7 +1201,7 @@ truncate04_64 truncate04_64
+ # This syscall is obsolete.  The latest glibc does not even
+ # include the ulimit.h file anymore.  The test will fail
+ # because the error handling has been simplified.
+-# 
++#
+ ulimit01 ulimit01
+ 
+ umask01 umask01
+diff --git a/testcases/kernel/mem/mbind/Makefile b/testcases/kernel/mem/mbind/Makefile
+deleted file mode 100644
+index 27208d1..0000000
+--- a/testcases/kernel/mem/mbind/Makefile
++++ /dev/null
+@@ -1,26 +0,0 @@
+-#
+-#  Copyright (C) 2010  Red Hat, Inc.
+-#
+-#  This program is free software; you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or (at
+-#  your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful, but
+-#  WITHOUT ANY WARRANTY; without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-#  General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program; if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+-#  02110-1301, USA.
+-#
+-
+-top_srcdir              ?= ../../../..
+-
+-include $(top_srcdir)/include/mk/testcases.mk
+-
+-LDLIBS 			+= $(NUMA_LIBS)
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/mbind/mbind01.c b/testcases/kernel/mem/mbind/mbind01.c
+deleted file mode 100644
+index 497df24..0000000
+--- a/testcases/kernel/mem/mbind/mbind01.c
++++ /dev/null
+@@ -1,146 +0,0 @@
+-/*
+- * This is a reproducer from mainline commit
+- * 9d8cebd4bcd7c3878462fdfda34bbcdeb4df7ef4:
+- *
+- * "Strangely, current mbind() doesn't merge vma with neighbor vma
+- * although it's possible.  Unfortunately, many vma can reduce
+- * performance..."
+- *
+- * Copyright (C) 2010  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
+- */
+-#include "test.h"
+-#include "usctest.h"
+-#include "config.h"
+-
+-char *TCID = "mbind01";
+-int TST_TOTAL = 1;
+-
+-#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+-	&& HAVE_MPOL_CONSTANTS
+-#include <numaif.h>
+-#include <numa.h>
+-#include <sys/mman.h>
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <string.h>
+-
+-static unsigned long pagesize;
+-static int opt_node;
+-static char *opt_nodestr;
+-static option_t options[] = {
+-	{ "n:", &opt_node,	&opt_nodestr},
+-	{ NULL, NULL,		NULL}
+-};
+-
+-static void usage(void);
+-
+-int main(int argc, char** argv)
+-{
+-	FILE *fp;
+-	void* addr;
+-	int node, err, lc;
+-	struct bitmask *nmask = numa_allocate_nodemask();
+-	char buf[BUFSIZ], start[BUFSIZ], end[BUFSIZ], string[BUFSIZ];
+-	char *p, *msg;
+-
+-	pagesize = getpagesize();
+-	msg = parse_opts(argc, argv, options, usage);
+-	if (msg != NULL)
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-
+-#if __WORDSIZE == 32
+-	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
+-#endif
+-
+-	if (opt_node) {
+-		node = atoi(optarg);
+-		if (node < 1)
+-			tst_brkm(TBROK, NULL,
+-				"Number of NUMA nodes cannot be less that 1.");
+-		numa_bitmask_setbit(nmask, node);
+-	} else
+-		numa_bitmask_setbit(nmask, 0);
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		Tst_count = 0;
+-		addr = mmap(NULL, pagesize*3, PROT_READ|PROT_WRITE,
+-			MAP_ANON|MAP_PRIVATE, 0, 0);
+-		if (addr == MAP_FAILED)
+-			tst_brkm(TBROK|TERRNO, NULL, "mmap");
+-
+-		tst_resm(TINFO, "pid = %d addr = %p", getpid(), addr);
+-		/* make page populate */
+-		memset(addr, 0, pagesize*3);
+-
+-		/* first mbind */
+-		err = mbind(addr+pagesize, pagesize, MPOL_BIND, nmask->maskp,
+-			nmask->size, MPOL_MF_MOVE_ALL);
+-		if (err != 0)
+-			tst_brkm(TBROK|TERRNO, NULL, "mbind1");
+-
+-		/* second mbind */
+-		err = mbind(addr, pagesize*3, MPOL_DEFAULT, NULL, 0, 0);
+-		if (err != 0)
+-			tst_brkm(TBROK|TERRNO, NULL, "mbind2");
+-
+-		/* /proc/self/maps in the form of
+-		   "00400000-00406000 r-xp 00000000". */
+-		sprintf(string, "%p", addr);
+-		fp = fopen("/proc/self/maps", "r");
+-		if (fp == NULL)
+-			tst_brkm(TBROK|TERRNO, NULL, "fopen");
+-
+-		while (fgets(buf, BUFSIZ, fp) != NULL) {
+-			/* Find out the 1st VMAs. */
+-			if (sscanf(buf, "%s-%s ", start, end) != 2)
+-				continue;
+-			/* Remove leading 0x. */
+-			if (strcmp(string + 2, start) != 0)
+-				continue;
+-			/* Find out the second VMA. */
+-			if (fgets(buf, BUFSIZ, fp) == NULL)
+-				tst_brkm(TBROK|TERRNO, NULL, "fgets");
+-			p = strtok(buf, "-");
+-			if (p == NULL || strcmp(p, end) != 0)
+-				tst_resm(TPASS, "only 1 VMA.");
+-			else
+-				tst_resm(TFAIL, "more than 1 VMA.");
+-		}
+-		fclose(fp);
+-		if (munmap(addr, pagesize*3) == -1)
+-			tst_brkm(TWARN|TERRNO, NULL, "munmap");
+-	}
+-	tst_exit();
+-}
+-
+-void usage(void)
+-{
+-	printf("  -n      Number of NUMA nodes\n");
+-}
+-
+-#else /* no NUMA */
+-int main(void) {
+-	tst_resm(TCONF, "no NUMA development packages installed.");
+-	tst_exit();
+-}
+-#endif
+diff --git a/testcases/kernel/syscalls/mbind/mbind02.c b/testcases/kernel/syscalls/mbind/mbind02.c
+new file mode 100644
+index 0000000..a2993a8
+--- /dev/null
++++ b/testcases/kernel/syscalls/mbind/mbind02.c
+@@ -0,0 +1,146 @@
++/*
++ * This is a reproducer from mainline commit
++ * 9d8cebd4bcd7c3878462fdfda34bbcdeb4df7ef4:
++ *
++ * "Strangely, current mbind() doesn't merge vma with neighbor vma
++ * although it's possible.  Unfortunately, many vma can reduce
++ * performance..."
++ *
++ * Copyright (C) 2010  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include "test.h"
++#include "usctest.h"
++#include "config.h"
++
++char *TCID = "mbind02";
++int TST_TOTAL = 1;
++
++#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
++	&& HAVE_MPOL_CONSTANTS
++#include <numaif.h>
++#include <numa.h>
++#include <sys/mman.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <string.h>
++
++static unsigned long pagesize;
++static int opt_node;
++static char *opt_nodestr;
++static option_t options[] = {
++	{ "n:", &opt_node,	&opt_nodestr},
++	{ NULL, NULL,		NULL}
++};
++
++static void usage(void);
++
++int main(int argc, char** argv)
++{
++	FILE *fp;
++	void* addr;
++	int node, err, lc;
++	struct bitmask *nmask = numa_allocate_nodemask();
++	char buf[BUFSIZ], start[BUFSIZ], end[BUFSIZ], string[BUFSIZ];
++	char *p, *msg;
++
++	pagesize = getpagesize();
++	msg = parse_opts(argc, argv, options, usage);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++#if __WORDSIZE == 32
++	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
++#endif
++
++	if (opt_node) {
++		node = atoi(optarg);
++		if (node < 1)
++			tst_brkm(TBROK, NULL,
++				"Number of NUMA nodes cannot be less that 1.");
++		numa_bitmask_setbit(nmask, node);
++	} else
++		numa_bitmask_setbit(nmask, 0);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++		addr = mmap(NULL, pagesize*3, PROT_READ|PROT_WRITE,
++			MAP_ANON|MAP_PRIVATE, 0, 0);
++		if (addr == MAP_FAILED)
++			tst_brkm(TBROK|TERRNO, NULL, "mmap");
++
++		tst_resm(TINFO, "pid = %d addr = %p", getpid(), addr);
++		/* make page populate */
++		memset(addr, 0, pagesize*3);
++
++		/* first mbind */
++		err = mbind(addr+pagesize, pagesize, MPOL_BIND, nmask->maskp,
++			nmask->size, MPOL_MF_MOVE_ALL);
++		if (err != 0)
++			tst_brkm(TBROK|TERRNO, NULL, "mbind1");
++
++		/* second mbind */
++		err = mbind(addr, pagesize*3, MPOL_DEFAULT, NULL, 0, 0);
++		if (err != 0)
++			tst_brkm(TBROK|TERRNO, NULL, "mbind2");
++
++		/* /proc/self/maps in the form of
++		   "00400000-00406000 r-xp 00000000". */
++		sprintf(string, "%p", addr);
++		fp = fopen("/proc/self/maps", "r");
++		if (fp == NULL)
++			tst_brkm(TBROK|TERRNO, NULL, "fopen");
++
++		while (fgets(buf, BUFSIZ, fp) != NULL) {
++			/* Find out the 1st VMAs. */
++			if (sscanf(buf, "%s-%s ", start, end) != 2)
++				continue;
++			/* Remove leading 0x. */
++			if (strcmp(string + 2, start) != 0)
++				continue;
++			/* Find out the second VMA. */
++			if (fgets(buf, BUFSIZ, fp) == NULL)
++				tst_brkm(TBROK|TERRNO, NULL, "fgets");
++			p = strtok(buf, "-");
++			if (p == NULL || strcmp(p, end) != 0)
++				tst_resm(TPASS, "only 1 VMA.");
++			else
++				tst_resm(TFAIL, "more than 1 VMA.");
++		}
++		fclose(fp);
++		if (munmap(addr, pagesize*3) == -1)
++			tst_brkm(TWARN|TERRNO, NULL, "munmap");
++	}
++	tst_exit();
++}
++
++void usage(void)
++{
++	printf("  -n      Number of NUMA nodes\n");
++}
++
++#else /* no NUMA */
++int main(void) {
++	tst_resm(TCONF, "no NUMA development packages installed.");
++	tst_exit();
++}
++#endif
 
-> Thanks,
-> -Garrett
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.1--
+
+
+
