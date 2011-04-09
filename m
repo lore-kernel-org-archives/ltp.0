@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1QANP4-0007da-0p
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 14:20:14 +0000
-Date: Thu, 14 Apr 2011 16:44:37 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110414144437.GF3206@saboteur.suse.cz>
-References: <20110413173333.GC3206@saboteur.suse.cz>
-	<3d2379f1357b2be2957c69ac408365c257e40a44.1302751818.git.czhang@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1Q8QxF-00022N-U7
+	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 05:43:29 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1Q8QxF-0004zf-4Z
+	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 05:43:29 +0000
+Received: by pwj9 with SMTP id 9so2234593pwj.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 08 Apr 2011 22:43:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3d2379f1357b2be2957c69ac408365c257e40a44.1302751818.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH v3] [syscalls] io_submit: fix broken testcase
+In-Reply-To: <2fb6f8d9dc82ef63e3c7cd80151cb6ea7972aae9.1302294850.git.aelder@sgi.com>
+References: <1302294875-6898-1-git-send-email-aelder@sgi.com>
+	<2fb6f8d9dc82ef63e3c7cd80151cb6ea7972aae9.1302294850.git.aelder@sgi.com>
+Date: Fri, 8 Apr 2011 22:43:23 -0700
+Message-ID: <BANLkTi=-b=AGXeU4D7WhpnRrV8hNg987Jg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 1/4] ltp: kill remaining warnings in "lib/tlibio.c"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,69 +28,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Alex Elder <aelder@sgi.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> +static void check_result(long exp, long act)
-> +{
-> +	if (exp >= 0)
-> +	{
-> +		if (act == exp)
-> +			tst_resm(TPASS, "expected success - "
-> +					"returned value = %ld", act);
-> +		else
-> +			tst_resm(TFAIL, "unexpected failure - "
-> +					"returned value = %ld : %s",
-> +					act, strerror(-1 * act));
-> +	} else {
-> +		if (act == exp)
-> +			tst_resm(TPASS, "expected failure - "
-> +					"returned value = %ld : %s",
-> +					act, strerror(-1 * act));
-> +		else if (act == 0)
-> +			tst_resm(TFAIL, "call succeeded unexpectedly");
-> +		else
-> +			tst_resm(TFAIL, "unexpected failure - "
-> +					"returned value = %ld : %s, "
-> +					"expected value = %ld : %s",
-> +					act, strerror(-1 * act),
-> +					exp, strerror(-1 * exp));
-> +	}
->  }
+On Fri, Apr 8, 2011 at 1:34 PM, Alex Elder <aelder@sgi.com> wrote:
+> There remain a few warnings when I build "lib/tlibio.c":
+> - _GNU_SOURCE is defined on the command line, then defined
+> =A0unconditionally in this file. =A0Fix by making the definition
+> =A0in the file conditional on whether it's already defined.
+> - The function random_bit() has a full, standard declaration in
+> =A0"include/random_range.h", so just include that file rather than
+> =A0doing an incomplete declaration in lio_random_methods().
 
-I hate being CodingStyle nazi (and that is one more reason why you should
-learn how to use linux/scripts/checkpatch.pl...).
+    Committed, but please note the item about contributing patches via
+the mailing list next time as is stated in the "CONTRIBUTING TO THE
+PROJECT" section under doc/style-guide.txt ; it makes our lives a lot
+easier and increases throughput reviewing and committing patches.
+Thanks,
+-Garrett
 
-But here the curly bracket should be located at the end of if (exp >= 0)
-and not on the new line.
-
-Also it could be a little better if there were an return statement in
-the first code block, something like:
-
-if (exp >= 0) {
-	...
-	return;
-}
-
-if (act == exp)
-	...
-
-Which would make the code IMHO more readable.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+---------------------------------------------------------------------------=
+---
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
