@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1Q9YjV-0004qK-F2
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 08:13:57 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q9YjU-0000iS-PA
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 08:13:57 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3C8Dpmu013105
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 Apr 2011 04:13:51 -0400
-From: Caspar Zhang <czhang@redhat.com>
-Date: Tue, 12 Apr 2011 16:13:40 +0800
-Message-Id: <a8c42cda82df15baf9acaf89ed09b41cc8cb5af8.1302595961.git.czhang@redhat.com>
-In-Reply-To: <f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302595961.git.czhang@redhat.com>
-References: <f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302595961.git.czhang@redhat.com>
+	(envelope-from <yanegomi@gmail.com>) id 1Q8RCx-00040w-84
+	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 05:59:43 +0000
+Received: from mail-px0-f174.google.com ([209.85.212.174])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1Q8RCw-0005rb-E6
+	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 05:59:43 +0000
+Received: by pxi15 with SMTP id 15so2066482pxi.33
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 08 Apr 2011 22:59:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH] ksm: mempolicy syscalls not implemented
+In-Reply-To: <de84600847aa9a4caaed369f0771bf4a2e18536c.1302294850.git.aelder@sgi.com>
+References: <2fb6f8d9dc82ef63e3c7cd80151cb6ea7972aae9.1302294850.git.aelder@sgi.com>
+	<1302294875-6898-1-git-send-email-aelder@sgi.com>
+	<de84600847aa9a4caaed369f0771bf4a2e18536c.1302294850.git.aelder@sgi.com>
+Date: Fri, 8 Apr 2011 22:59:36 -0700
+Message-ID: <BANLkTinJwd885ZKb67iD3ftkfhQ3kG6piQ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 4/4] ltp: kill off warnings in "fsstress.c"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,98 +29,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Alex Elder <aelder@sgi.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.7.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+On Fri, Apr 8, 2011 at 1:34 PM, Alex Elder <aelder@sgi.com> wrote:
+> Fix remaining warnings in "testcases/kernel/fs/fsstress/fsstress.c".
+> Three of them are due to mismatches between fprintf() conversion
+> specifications and the variables being formatted. =A0Fix these by
+> casting the variables to the right type.
+>
+> Two others are due to the use of a __uint64_t local variable to
+> represent a value of type __u64 (which evidently can be defined
+> differently in some environments). =A0Fix these by using the exact
+> matching type in the cases that produce the warning messages.
 
+    I see different typedef'ed types when going over the xfs_ioctl.c
+source. Could you please either use the kernel datatype (highly
+recommended), or a POSIX equivalent if you can't use the kernel
+datatype? I would really like the former because having to fix this in
+2-4 years because someone changes the field size and the test doesn't
+get updated properly is incredibly annoying.
+Thanks,
+-Garrett
 
-since NUMA is only supported on a few i386 systems, mempolicy syscalls
-([gs]et_mempolicy, mbind) may not implemented, thus, an ENOSYS errno
-should be acceptable.
-
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/mem/ksm/ksm02.c |    9 +++++++--
- testcases/kernel/mem/ksm/ksm04.c |    9 +++++++--
- 2 files changed, 14 insertions(+), 4 deletions(-)
-
-
---------------1.7.1
-Content-Type: text/x-patch;
-	name="0003-ksm-mempolicy-syscalls-not-implemented.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0003-ksm-mempolicy-syscalls-not-implemented.patch"
-
-diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
-index 33ed887..3ae4c08 100644
---- a/testcases/kernel/mem/ksm/ksm02.c
-+++ b/testcases/kernel/mem/ksm/ksm02.c
-@@ -102,8 +102,13 @@ int main(int argc, char *argv[])
- 		Tst_count = 0;
- 		check_ksm_options(&size, &num, &unit);
- 
--		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
--			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
-+		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
-+			if (errno != ENOSYS)
-+				tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
-+			else
-+				tst_resm(TCONF, cleanup,
-+					"set_mempolicy syscall is not implemented on your system.");
-+		}
- 		create_same_memory(size, num, unit);
- 
- 		write_cpusets();
-diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
-index 8bb791e..5121111 100644
---- a/testcases/kernel/mem/ksm/ksm04.c
-+++ b/testcases/kernel/mem/ksm/ksm04.c
-@@ -104,8 +104,13 @@ int main(int argc, char *argv[])
- 
- 		write_memcg();
- 
--		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
--			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
-+		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
-+			if (errno != ENOSYS)
-+				tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
-+			else
-+				tst_resm(TCONF, cleanup,
-+					"set_mempolicy syscall is not implemented on your system.");
-+		}
- 		create_same_memory(size, num, unit);
- 
- 		write_cpusets();
-
---------------1.7.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Forrester Wave Report - Recovery time is now measured in hours and minutes
-not days. Key insights are discussed in the 2010 Forrester Wave Report as
-part of an in-depth evaluation of disaster recovery service providers.
-Forrester found the best-in-class provider in terms of services and vision.
-Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
---------------1.7.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.1--
-
-
-
