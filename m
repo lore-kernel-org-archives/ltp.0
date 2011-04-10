@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <sds@tycho.nsa.gov>) id 1QELuI-0007Vl-Rf
-	for ltp-list@lists.sourceforge.net; Mon, 25 Apr 2011 13:32:54 +0000
-Received: from msux-gh1-uea01.nsa.gov ([63.239.65.39])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QELuH-0003WN-LY
-	for ltp-list@lists.sourceforge.net; Mon, 25 Apr 2011 13:32:54 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <4DB1E88D.2030808@linux.vnet.ibm.com>
-References: <1303477727.18220.15.camel@moss-pluto>
-	<4DB1E88D.2030808@linux.vnet.ibm.com>
-Date: Mon, 25 Apr 2011 09:32:36 -0400
-Message-ID: <1303738356.4244.67.camel@moss-pluto>
-Mime-Version: 1.0
-Subject: Re: [LTP] selinux-testsuite has moved
+	(envelope-from <czhang@redhat.com>) id 1Q8mIu-0005iD-U6
+	for ltp-list@lists.sourceforge.net; Sun, 10 Apr 2011 04:31:16 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q8mIt-0006mI-QT
+	for ltp-list@lists.sourceforge.net; Sun, 10 Apr 2011 04:31:16 +0000
+Message-ID: <4DA13284.3090007@redhat.com>
+Date: Sun, 10 Apr 2011 12:31:00 +0800
+From: Caspar Zhang <czhang@redhat.com>
+MIME-Version: 1.0
+References: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>
+	<BANLkTi=b=n56Ef8HGDF4drXLWm9RXvOH1g@mail.gmail.com>
+In-Reply-To: <BANLkTi=b=n56Ef8HGDF4drXLWm9RXvOH1g@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v2 1/2] [mm] mbind01: not working on 32bit systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,95 +28,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shubham Goyal <shubham@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Sat, 2011-04-23 at 02:13 +0530, Shubham Goyal wrote:
-> On Friday 22 April 2011 06:38 PM, Stephen Smalley wrote:
-> > Hi,
-> >
-> > A recent posting on lkml noted that the selinux testsuite in ltp doesn't
-> > work anymore.  As no one seems to be maintaining it in the ltp, I'd
-> > suggest just removing it entirely. You may want to leave a README.MOVED
-> > or similar file pointing to the new location, e.g.:
-> >
-> > The selinux testsuite has been moved to a standalone testsuite
-> > separate from the ltp.  You can obtain it via:
-> >   git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
-> >
-> > Thanks.
-> >
-> 
-> Hi Stephan,
-> 
-> Can you please tell what was the exact problem in running LTP's selinux 
-> testsuite?
-> I tried running them and it worked for me with a minor modification. The 
-> current
-> 'test_selinux.sh' sets the LTPROOT as the LTP source's 'testscripts' 
-> directory but as
-> per current build process '/opt/ltp' is the install directory. After 
-> making these changes
-> in 'test_selinux.sh' script, the test cases worked fine for me.
+On 04/09/2011 01:38 PM, Garrett Cooper wrote:
+>> > when executing mem/mbind01 testcase under 32bit systems, it returns
+>> > ENOSYS error, indicating that the test is not suitable for running on
+>> > 32bit systems. This patch checks wordsize before executing the actual
+>> > case.
+>     This error doesn't make sense; it's not documented in the manpage [1].
+>     Are you sure your system actually supports mbind(2)?
 
-I don't know the exact problem; I just know that it didn't work for the
-person who mentioned it in passing on lkml.  And apparently it didn't
-work for you either until you changed test_selinux.sh.  But I know that
-test_selinux.sh has worked in the past, even after the change
-to /opt/ltp, and that we haven't changed it recently.
+Hmmm... Seems CONFIG_NUMA is not set in RHEL6 on x86 systems, so that
+all mempolicy related syscalls not work on this platform. I shouldn't
+simply check the WORDSIZE but need to check the kernel configuration
+option, yet it's kind of difficult from previous discussion[1]...
 
-Actually, I just tried running it via cd /opt/ltp
-&& ./testscripts/test_selinux.sh and it seemed to work fine.  This was
-with the current git, building in-tree, installing to /opt/ltp.
+Thanks,
+Caspar
 
-> I believe keeping it as a part of LTP tree is a better idea and would 
-> have better
-> chances of getting it maintained along with other LTP test case and modules.
-
-This has been discussed a bit in the past, e.g. see this thread:
-http://marc.info/?t=127790181000003&r=1&w=2
-
-At present we see no benefit, only cost, to maintaining the selinux
-testsuite in the ltp as it is regularly broken by unrelated changes
-elsewhere in the ltp and as it is not truly integrated into the ltp (you
-have to perform separate steps to build and run it).  In comparison, we
-don't have to worry about unrelated changes breaking the standalone
-selinux testsuite, and it is certainly no harder to do this:
-
-git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
-cd selinux-testsuite
-sudo make test
-
-than to do this:
-
-git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
-cd ltp
-make autotools
-./configure
-make all
-make install
-cd testcases/kernel/security/selinux-testsuite
-make all
-make install
-cd /opt/ltp
-./testscripts/test_selinux.sh
-
-If the selinux testsuite were fully integrated into the ltp (e.g. built
-and run by default if SELinux is enabled on the system), then that might
-be more worthwhile to keep it as part of the ltp.  But in the 6 years
-since it was added to the ltp, that hasn't happened. 
-
--- 
-Stephen Smalley
-National Security Agency
-
+[1] http://thread.gmane.org/gmane.linux.ltp/12234/focus=12255
 
 ------------------------------------------------------------------------------
-Fulfilling the Lean Software Promise
-Lean software platforms are now widely adopted and the benefits have been 
-demonstrated beyond question. Learn why your peers are replacing JEE 
-containers with lightweight application servers - and what you can gain 
-from the move. http://p.sf.net/sfu/vmware-sfemails
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
