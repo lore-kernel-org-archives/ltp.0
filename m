@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1QEvcy-0006FI-Ig
-	for ltp-list@lists.sourceforge.net; Wed, 27 Apr 2011 03:41:24 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QEvcx-0001TM-BC
-	for ltp-list@lists.sourceforge.net; Wed, 27 Apr 2011 03:41:24 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3R3fH2U013683
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Apr 2011 23:41:17 -0400
-From: Caspar Zhang <czhang@redhat.com>
-Date: Wed, 27 Apr 2011 11:40:56 +0800
-Message-Id: <4568ba43493b4cdedfa0ccb3a3b2cdb746ea2147.1303875548.git.czhang@redhat.com>
-In-Reply-To: <BANLkTimHzFEY8-ECzh7++oK97oboW31zdQ@mail.gmail.com>
-References: <BANLkTimHzFEY8-ECzh7++oK97oboW31zdQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH v3] thp testcase come from CVE reproducer
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <aelder@sgi.com>) id 1Q9LuA-00012e-GO
+	for ltp-list@lists.sourceforge.net; Mon, 11 Apr 2011 18:32:06 +0000
+Received: from relay1.sgi.com ([192.48.179.29] helo=relay.sgi.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1Q9Lu9-0006t3-ID
+	for ltp-list@lists.sourceforge.net; Mon, 11 Apr 2011 18:32:06 +0000
+Received: from cf--amer001e--3.americas.sgi.com
+	(cf--amer001e--3.americas.sgi.com [137.38.100.5])
+	by relay1.corp.sgi.com (Postfix) with ESMTP id 1BAA18F8050
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 11 Apr 2011 11:32:00 -0700 (PDT)
+From: Alex Elder <aelder@sgi.com>
+Date: Mon, 11 Apr 2011 13:31:50 -0500
+Message-ID: <1302546710.2580.27.camel@doink>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 2/3, v2] ltp: fix warnings in "aio-stress.c"
+Reply-To: aelder@sgi.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,249 +28,173 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-This is a reproducer of CVE-2011-0999, which fixed by mainline commit
-a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
-
-"Transparent hugepages can only be created if rmap is fully functional.
-So we must prevent hugepages to be created while
-is_vma_temporary_stack() is true."
-
-When running in a loop, it can trigger panic like this, if kernel
-unpatched:
-
-kernel BUG at mm/huge_memory.c:1260!
-invalid opcode: 0000 [#1] SMP
-last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
-....
-
-So I recommend to run it as 'thp01 -I xxx'.
-
-v2 & v3: update code style
-
-Signed-off-by: Pingtian Han <phan@redhat.com>
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
- runtest/mm                        |    2 +
- testcases/kernel/mem/thp/Makefile |   23 +++++++
- testcases/kernel/mem/thp/thp01.c  |  127 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 152 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/thp/Makefile
- create mode 100644 testcases/kernel/mem/thp/thp01.c
-
-
---------------1.7.1
-Content-Type: text/x-patch;
-	name="0001-thp-testcase-come-from-CVE-reproducer.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-thp-testcase-come-from-CVE-reproducer.patch"
-
-diff --git a/runtest/mm b/runtest/mm
-index f2d50d6..dded529 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -78,3 +78,5 @@ oom01 oom01
- oom02 oom02
- oom03 oom03
- oom04 oom04
-+
-+thp01 thp01 -I 600
-diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
-new file mode 100644
-index 0000000..d43511a
---- /dev/null
-+++ b/testcases/kernel/mem/thp/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (C) 2011  Red Hat, Inc.
-+#
-+#  This program is free software; you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or (at
-+#  your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful, but
-+#  WITHOUT ANY WARRANTY; without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+#  General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program; if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+#  02110-1301, USA.
-+#
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
-new file mode 100644
-index 0000000..a1d248f
---- /dev/null
-+++ b/testcases/kernel/mem/thp/thp01.c
-@@ -0,0 +1,127 @@
-+/*
-+ * This is a reproducer of CVE-2011-0999, which fixed by mainline commit
-+ * a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
-+ *
-+ * "Transparent hugepages can only be created if rmap is fully
-+ * functional. So we must prevent hugepages to be created while
-+ * is_vma_temporary_stack() is true."
-+ *
-+ * It will cause a panic something like this, if the patch didn't get
-+ * applied:
-+ *
-+ * kernel BUG at mm/huge_memory.c:1260!
-+ * invalid opcode: 0000 [#1] SMP
-+ * last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
-+ * ....
-+ *
-+ * Copyright (C) 2011  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/resource.h>
-+#include <sys/wait.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "usctest.h"
-+#include "config.h"
-+
-+char *TCID = "thp01";
-+int TST_TOTAL = 1;
-+
-+#define ARRAY_SZ	256
-+
-+static int ps;
-+static long length;
-+static char *array[ARRAY_SZ];
-+static char *arg;
-+
-+struct rlimit rl = {
-+	.rlim_cur = RLIM_INFINITY,
-+	.rlim_max = RLIM_INFINITY,
-+};
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+int main(int argc, char **argv)
-+{
-+	int i, lc, st;
-+	pid_t pid;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		switch (pid = fork()) {
-+		case -1:
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		case 0:
-+			memset(arg, 'c', length - 1);
-+			arg[length - 1] = '\0';
-+			for (i = 0; i < ARRAY_SZ; i++)
-+				array[i] = arg;
-+			if (setrlimit(RLIMIT_STACK, &rl) == -1) {
-+				perror("setrlimit");
-+				exit(1);
-+			}
-+			if (execve("/bin/true", array, array) == -1) {
-+				perror("execve");
-+				exit(1);
-+			}
-+		default:
-+			if (waitpid(pid, &st, 0) == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+			if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
-+				tst_brkm(TBROK, cleanup,
-+					"child exited abnormally");
-+		}
-+	}
-+	tst_resm(TPASS, "system didn't crash, pass.");
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup()
-+{
-+	if (access("/bin/true", F_OK) == -1)
-+		tst_brkm(TBROK, NULL, "/bin/true not exist");
-+
-+	ps = sysconf(_SC_PAGESIZE);
-+	length = 32 * ps;
-+	arg = malloc(length * sizeof(char));
-+	if (arg == NULL)
-+		tst_brkm(TBROK|TERRNO, NULL, "malloc");
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup()
-+{
-+	TEST_CLEANUP;
-+}
-
---------------1.7.1
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+In "testcases/kernel/io/ltp-aiodio/aio-stress.c" there are a
+number of warnings that show up due to mismatches between
+fprintf() conversion specifications and the variables being
+formatted.
+
+Fix most of these by casting the variables to the right type;
+in one case a "%td" is used to signify a ptrdiff_t variable.
+
+Updated to address comments made by Garrett Cooper in review.
+However, both "file_size" and "context_offset" variables represent
+file offsets, and therefore should remain type off_t (rather than
+size_t, which was recommended).  Some printf() formats were
+adjusted to use %ld/(long) for printing off_t values.
+
+Signed-off-by: Alex Elder <aelder@sgi.com>
+
+---
+ ltp/aio-stress.c |   39 ++++++++++++++++++++++-----------------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
+
+Index: b/ltp/aio-stress.c
+===================================================================
+--- a/ltp/aio-stress.c
++++ b/ltp/aio-stress.c
+@@ -161,16 +161,16 @@ struct io_oper {
+     /* read,write, random, etc */
+     int rw;
+ 
+-    /* number of ios that will get sent to aio */
++    /* number of I/O's that will get sent to aio */
+     int total_ios;
+ 
+-    /* number of ios we've already sent */
++    /* number of I/O's we've already sent */
+     int started_ios;
+ 
+     /* last offset used in an io operation */
+     off_t last_offset;
+ 
+-    /* stonewalled = 1 when we got cut off before submitting all our
+ios */
++    /* stonewalled = 1 when we got cut off before submitting all our
+I/O's */
+     int stonewalled;
+ 
+     /* list management */
+@@ -217,7 +217,7 @@ struct thread_info {
+     /* list of io units available for io */
+     struct io_unit *free_ious;
+ 
+-    /* number of io units in the ios array */
++    /* number of io units in the I/O array */
+     int num_global_ios;
+ 
+     /* number of io units in flight */
+@@ -745,7 +745,7 @@ resubmit:
+     calc_latency(&start_time, &stop_time, &t->io_submit_latency);
+ 
+     if (ret != num_ios) {
+-       /* some ios got through */
++       /* some I/O's got through */
+        if (ret > 0) {
+            update_iou_counters(my_iocbs, ret, &stop_time);
+            my_iocbs += ret;
+@@ -1165,7 +1165,7 @@ restart:
+ 
+     if (t->stage_mb_trans && t->num_files > 0) {
+         double seconds = time_since_now(&stage_time);
+-       fprintf(stderr, "thread %d %s totals (%.2f MB/s) %.2f MB in
+%.2fs\n",
++       fprintf(stderr, "thread %td %s totals (%.2f MB/s) %.2f MB in
+%.2fs\n",
+                t - global_thread_info, this_stage,
+t->stage_mb_trans/seconds,
+                t->stage_mb_trans, seconds);
+     }
+@@ -1270,8 +1270,10 @@ void print_usage(void) {
+     printf("\t-s size in MB of the test file(s), default 1024MB\n");
+     printf("\t-r record size in KB used for each io, default 64KB\n");
+     printf("\t-d number of pending aio requests for each file, default
+64\n");
+-    printf("\t-i number of ios per file sent before switching\n\t   to
+the next file, default 8\n");
+-    printf("\t-I total number of ayncs IOs the program will run,
+default is run until Cntl-C\n");
++    printf("\t-i number of I/O's per file sent before switching\n"
++           "\t   to the next file, default 8\n");
++    printf("\t-I total number of ayncs I/Os the program will run, "
++           "default is run until Cntl-C\n");
+     printf("\t-O Use O_DIRECT (not available in 2.4 kernels),\n");
+     printf("\t-S Use O_SYNC for writes\n");
+     printf("\t-o add an operation to the list: write=0, read=1,\n");
+@@ -1391,7 +1393,7 @@ int main(int ac, char **av)
+     }
+ 
+     /*
+-     * make sure we don't try to submit more ios than we have allocated
++     * make sure we don't try to submit more I/O's than we have
+allocated
+      * memory for
+      */
+     if (depth < io_iter) {
+@@ -1426,7 +1428,7 @@ int main(int ac, char **av)
+         max_io_submit = num_files * io_iter * num_contexts;
+ 
+     /*
+-     * make sure we don't try to submit more ios than max_io_submit
+allows
++     * make sure we don't try to submit more I/O's than max_io_submit
+allows
+      */
+     if (max_io_submit < io_iter) {
+         io_iter = max_io_submit;
+@@ -1446,17 +1448,21 @@ int main(int ac, char **av)
+     }
+ 
+     if (file_size < num_contexts * context_offset) {
+-        fprintf(stderr, "file size %Lu too small for %d contexts\n",
+-               file_size, num_contexts);
++        fprintf(stderr, "file size %ld too small for %d contexts\n",
++               (long) file_size, num_contexts);
+        exit(1);
+     }
+ 
+-    fprintf(stderr, "file size %LuMB, record size %luKB, depth %d, ios
+per iteration %d\n", file_size / (1024 * 1024), rec_len / 1024, depth,
+io_iter);
++    fprintf(stderr, "file size %ldMB, record size %ldKB, depth %d, "
++           "I/O's per iteration %d\n",
++           (long) (file_size / (1024 * 1024)),
++           rec_len / 1024, depth, io_iter);
+     fprintf(stderr, "max io_submit %d, buffer alignment set to %luKB
+\n",
+             max_io_submit, (page_size_mask + 1)/1024);
+-    fprintf(stderr, "threads %d files %d contexts %d context offset %
+LuMB verification %s\n",
+-            num_threads, num_files, num_contexts,
+-           context_offset / (1024 * 1024), verify ? "on" : "off");
++    fprintf(stderr, "threads %d files %d contexts %d context offset %
+ldMB "
++           "verification %s\n", num_threads, num_files, num_contexts,
++           (long) (context_offset / (1024 * 1024)),
++           verify ? "on" : "off");
+     /* open all the files and do any required setup for them */
+     for (i = optind ; i < ac ; i++) {
+        int thread_index;
+@@ -1508,4 +1514,4 @@ int main(int ac, char **av)
+        exit(1);
+     }
+     return status;
+-}
+\ No newline at end of file
++}
+
 
 ------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
---------------1.7.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Xperia(TM) PLAY
+It's a major breakthrough. An authentic gaming
+smartphone on the nation's most reliable network.
+And it wants your games.
+http://p.sf.net/sfu/verizon-sfdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.1--
-
-
-
