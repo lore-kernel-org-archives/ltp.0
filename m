@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <biannm@cn.fujitsu.com>) id 1Q7iBC-000787-Ik
-	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 05:54:54 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q7iBA-0008FJ-Bt
-	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 05:54:54 +0000
-Message-ID: <4D9D5128.3060709@cn.fujitsu.com>
-Date: Thu, 07 Apr 2011 13:52:40 +0800
-From: Bian Naimeng <biannm@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <aelder@sgi.com>) id 1Q9eEY-0006Z2-Pi
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 14:06:22 +0000
+Received: from relay2.sgi.com ([192.48.179.30] helo=relay.sgi.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.74)
+	id 1Q9eEX-0007zl-O8
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 14:06:22 +0000
+From: Alex Elder <aelder@sgi.com>
+Date: Tue, 12 Apr 2011 09:06:06 -0500
+Message-Id: <4b2cc7d81eb2b9665e9b6f0f19f1ef31f1fab84d.1302617105.git.aelder@sgi.com>
+In-Reply-To: <1302617166-10309-1-git-send-email-aelder@sgi.com>
+References: <1302617166-10309-1-git-send-email-aelder@sgi.com>
+In-Reply-To: <cb4b455094351bcefd98c7095f3639dd14498bca.1302617105.git.aelder@sgi.com>
+References: <cb4b455094351bcefd98c7095f3639dd14498bca.1302617105.git.aelder@sgi.com>
 MIME-Version: 1.0
-References: <2025116569.785721.1302133158267.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <2025116569.785721.1302133158267.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH]KSM: full_scans will stop increasing
- after	stopping ksm
+Content-Type: multipart/mixed; boundary="------------true"
+Subject: [LTP] [PATCH 3/3] ltp: fix warnings in "fsstress.c"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,236 +27,315 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+This is a multi-part message in MIME format.
+--------------true
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: quoted-printable
 
 
+Fix remaining warnings in "testcases/kernel/fs/fsstress/fsstress.c".
+Three of them are due to mismatches between fprintf() conversion
+specifications and the variables being formatted.  Fix these by
+casting the variables to the right type.
 
-CAI Qian wrote:
-> 
-> ----- Original Message -----
->> Qian Cai wrote:
->>> On 2011-4-4, at 0:47, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
->>>
->>>> There are some problem in ksm tests.
->>>>
->>>> 1. We should break the test when checking is failure.
->>> No, this is not the intention. The design here is to run all tests
->>> to check for all stats to give a full picture even if the a single
->>> failure has been observed. This type of the failures do not prevent
->>> the rest of the tests from running, so there is no need to stop the
->>> tests now which also give more insight to track down root causes.
->> Various reason can make checking failure, someone can make the test
->> hangup.
->> I did this test on RHEL5, i found ksmd stopped before doing "echo 2 >
->> /sys/kernel/mm/ksm/run",
->> so group_check will be hanged on "new_num < old_num * 3".
->>
->> So, i think we should break the test if "run" is not expecting.
-> What happened if you run the tests for a recent upstream kernel? There
-> are some patches for ksm recently merged upstream. If the problem still
-> persistent, please paste the EXACT OUTPUT from the ksm01 test. If it is
-> hung, please upload sysrq-t output somewhere.
-> 
+Two others are due to the use of a __uint64_t local variable to
+represent a value of type __u64 (which evidently can be defined
+differently in some environments).  Fix these by using the exact
+matching type in the cases that produce the warning messages.
 
-Maybe there are some bugs in the RHEL6's kernel, but the purpose of this patch
-is not to workround these bugs, i want to fix the test's bug.
+Updated to address the concern raised by Garrett Cooper about the
+use of types that are not identical to what's used in the XFS
+ioctl() interface in the kernel.  Also added memset() calls so we're
+sure no garbage resides in data structures passed between user space
+and the kernel.  Also updated some whitespace, as requested.
 
-Would you explain to me why we do this loop "while (new_num < old_num * 3)" in
-group_check, i think "while (new_num < old_num + 3)" is better.
+Signed-off-by: Alex Elder <aelder@sgi.com>
+---
+ testcases/kernel/fs/fsstress/fsstress.c |   81 ++++++++++++++++++-------=
+------
+ 1 files changed, 48 insertions(+), 33 deletions(-)
 
-Some time ago, the following patch insert this loop.
-http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTi%3Dg%3DojJu0m%2B556rnekYenRTXtX%2BVBOj%3DrPmnjSw%40mail.gmail.com&forum_name=ltp-list
 
-The changelog of this patch said "we should wait 3~5 increments of the
-/sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results", but
-it do "while (new_num < old_num * 3)" actually.
+--------------true
+Content-Type: text/x-patch; name="0003-ltp-fix-warnings-in-fsstress.c.patch"
+Content-Disposition: attachment;
+	filename="0003-ltp-fix-warnings-in-fsstress.c.patch"
+Content-Transfer-Encoding: quoted-printable
 
-Regards
- Bian
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/f=
+s/fsstress/fsstress.c
+index 9b93bca..9987484 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -419,6 +419,7 @@ int main(int argc, char **argv)
+ 		}
+ #ifndef NO_XFS
+ 		if (!no_xfs) {
++		memset(&geom, 0, sizeof(geom));
+ 		i =3D ioctl(fd, XFS_IOC_FSGEOMETRY, &geom);
+ 		if (i >=3D 0 && geom.rtblocks)
+ 			rtpct =3D MIN(MAX(geom.rtblocks * 100 /
+@@ -447,6 +448,7 @@ int main(int argc, char **argv)
+ 				errtag +=3D (random() % (XFS_ERRTAG_MAX - errtag));
+ 			}
+ 			printf("Injecting failure on tag #%d\n", errtag);
++			memset(&err_inj, 0, sizeof(err_inj));
+ 			err_inj.errtag =3D errtag;
+ 			err_inj.fd =3D fd;
+ 			srval =3D ioctl(fd, XFS_IOC_ERROR_INJECTION, &err_inj);
+@@ -476,6 +478,7 @@ int main(int argc, char **argv)
+ 		}
+ #ifndef NO_XFS
+ 		if (errtag !=3D 0) {
++			memset(&err_inj, 0, sizeof(err_inj));
+ 			err_inj.errtag =3D 0;
+ 			err_inj.fd =3D fd;
+ 			if ((srval =3D ioctl(fd, XFS_IOC_ERROR_CLEARALL, &err_inj)) !=3D 0) {
+@@ -1396,9 +1399,9 @@ allocsp_f(int opno, long r)
+ 	int		e;
+ 	pathname_t	f;
+ 	int		fd;
+-	struct flock64	fl;
+-	__int64_t	lr;
+-	off64_t		off;
++	struct xfs_flock64 fl;
++	__s64		lr;
++	__s64		off;
+ 	struct stat64	stb;
+ 	int		v;
+=20
+@@ -1427,9 +1430,10 @@ allocsp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr =3D ((__int64_t)random() << 32) + random();
+-	off =3D (off64_t)(lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
++	lr =3D ((__s64)random() << 32) + random();
++	off =3D lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE);
+ 	off %=3D maxfsize;
++	memset(&fl, 0, sizeof(fl));
+ 	fl.l_whence =3D SEEK_SET;
+ 	fl.l_start =3D off;
+ 	fl.l_len =3D 0;
+@@ -1547,10 +1551,10 @@ attr_set_f(int opno, long r)
+ void
+ bulkstat_f(int opno, long r)
+ {
+-	int		count;
++	__s32		count;
+ 	int		fd;
+-	__uint64_t	last;
+-	int		nent;
++	__u64		last;
++	__s32		nent;
+ 	xfs_bstat_t	*t;
+ 	__int64_t	total;
+ 	xfs_fsop_bulkreq_t bsr;
+@@ -1561,6 +1565,7 @@ bulkstat_f(int opno, long r)
+ 	fd =3D open(".", O_RDONLY);
+ 	total =3D 0;
+=20
++	memset(&bsr, 0, sizeof(bsr));
+ 	bsr.lastip=3D&last;
+ 	bsr.icount=3Dnent;
+ 	bsr.ubuffer=3Dt;
+@@ -1571,7 +1576,7 @@ bulkstat_f(int opno, long r)
+ 	free(t);
+ 	if (verbose)
+ 		printf("%d/%d: bulkstat nent %d total %lld\n",
+-			procid, opno, nent, (long long)total);
++			procid, opno, (int)nent, (long long)total);
+ 	close(fd);
+ }
+=20
+@@ -1582,7 +1587,7 @@ bulkstat1_f(int opno, long r)
+ 	pathname_t	f;
+ 	int		fd;
+ 	int		good;
+-	__uint64_t	ino;
++	__u64		ino;
+ 	struct stat64	s;
+ 	xfs_bstat_t	t;
+ 	int		v;
+@@ -1617,6 +1622,7 @@ bulkstat1_f(int opno, long r)
+ 	}
+ 	fd =3D open(".", O_RDONLY);
+=20
++	memset(&bsr, 0, sizeof(bsr));
+ 	bsr.lastip=3D&ino;
+ 	bsr.icount=3D1;
+ 	bsr.ubuffer=3D&t;
+@@ -1625,7 +1631,8 @@ bulkstat1_f(int opno, long r)
+ 	e =3D ioctl(fd, XFS_IOC_FSBULKSTAT_SINGLE, &bsr) < 0 ? errno : 0;
+ 	if (v)
+ 		printf("%d/%d: bulkstat1 %s ino %lld %d\n",
+-			procid, opno, good?"real":"random", (int64_t)ino, e);
++			procid, opno, good ? "real" : "random",
++			(long long)ino, e);
+ 	close(fd);
+ }
+=20
+@@ -1698,6 +1705,7 @@ creat_f(int opno, long r)
+ 	if (fd >=3D 0) {
+ #ifndef NO_XFS
+ 		struct fsxattr	a;
++		memset(&a, 0, sizeof(a));
+ 		if (extsize && ioctl(fd, XFS_IOC_FSGETXATTR, &a) >=3D 0) {
+ 			a.fsx_xflags |=3D XFS_XFLAG_REALTIME;
+ 			a.fsx_extsize =3D
+@@ -1799,6 +1807,7 @@ dread_f(int opno, long r)
+ 		return;
+ 	}
+=20
++	memset(&diob, 0, sizeof(diob));
+ 	if (no_xfs) {
+ 		diob.d_miniosz =3D stb.st_blksize;
+ 		diob.d_maxiosz =3D stb.st_blksize * 256;  /* good number ? */
+@@ -1889,6 +1898,7 @@ dwrite_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
++	memset(&diob, 0, sizeof(diob));
+ 	if (no_xfs) {
+ 		diob.d_miniosz =3D stb.st_blksize;
+ 		diob.d_maxiosz =3D stb.st_blksize * 256;  /* good number ? */
+@@ -1976,9 +1986,9 @@ freesp_f(int opno, long r)
+ 	int		e;
+ 	pathname_t	f;
+ 	int		fd;
+-	struct flock64	fl;
+-	__int64_t	lr;
+-	off64_t		off;
++	struct xfs_flock64 fl;
++	__s64		lr;
++	__s64		off;
+ 	struct stat64	stb;
+ 	int		v;
+=20
+@@ -2007,9 +2017,10 @@ freesp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr =3D ((__int64_t)random() << 32) + random();
+-	off =3D (off64_t)(lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
++	lr =3D ((__s64)random() << 32) + random();
++	off =3D lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE);
+ 	off %=3D maxfsize;
++	memset(&fl, 0, sizeof(fl));
+ 	fl.l_whence =3D SEEK_SET;
+ 	fl.l_start =3D off;
+ 	fl.l_len =3D 0;
+@@ -2349,9 +2360,9 @@ resvsp_f(int opno, long r)
+ 	int		e;
+ 	pathname_t	f;
+ 	int		fd;
+-	struct flock64	fl;
+-	__int64_t	lr;
+-	off64_t		off;
++	struct xfs_flock64 fl;
++	__s64		lr;
++	__s64		off;
+ 	struct stat64	stb;
+ 	int		v;
+=20
+@@ -2380,16 +2391,18 @@ resvsp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr =3D ((__int64_t)random() << 32) + random();
+-	off =3D (off64_t)(lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
++	lr =3D ((__s64)random() << 32) + random();
++	off =3D lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE);
+ 	off %=3D maxfsize;
++	memset(&fl, 0, sizeof(fl));
+ 	fl.l_whence =3D SEEK_SET;
+ 	fl.l_start =3D off;
+-	fl.l_len =3D (off64_t)(random() % (1024 * 1024));
++	fl.l_len =3D (__s64)(random() % (1024 * 1024));
+ 	e =3D ioctl(fd, XFS_IOC_RESVSP64, &fl) < 0 ? errno : 0;
+ 	if (v)
+-		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %ld %d\n",
+-			procid, opno, f.path, (long long)off, fl.l_len, e);
++		printf("%d/%d: ioctl(XFS_IOC_RESVSP64) %s %lld %lld %d\n",
++			procid, opno, f.path, (long long)off,
++			(long long)fl.l_len, e);
+ 	free_pathname(&f);
+ 	close(fd);
+ }
+@@ -2524,7 +2537,7 @@ truncate_f(int opno, long r)
+ 		return;
+ 	}
+ 	lr =3D ((__int64_t)random() << 32) + random();
+-	off =3D (off64_t)(lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
++	off =3D lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE);
+ 	off %=3D maxfsize;
+ 	e =3D truncate64_path(&f, off) < 0 ? errno : 0;
+ 	check_cwd();
+@@ -2566,9 +2579,9 @@ unresvsp_f(int opno, long r)
+ 	int		e;
+ 	pathname_t	f;
+ 	int		fd;
+-	struct flock64	fl;
+-	__int64_t	lr;
+-	off64_t		off;
++	struct xfs_flock64 fl;
++	__s64		lr;
++	__s64		off;
+ 	struct stat64	stb;
+ 	int		v;
+=20
+@@ -2597,16 +2610,18 @@ unresvsp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr =3D ((__int64_t)random() << 32) + random();
+-	off =3D (off64_t)(lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
++	lr =3D ((__s64)random() << 32) + random();
++	off =3D lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE);
+ 	off %=3D maxfsize;
++	memset(&fl, 0, sizeof(fl));
+ 	fl.l_whence =3D SEEK_SET;
+ 	fl.l_start =3D off;
+-	fl.l_len =3D (off64_t)(random() % (1 << 20));
++	fl.l_len =3D (__s64)(random() % (1 << 20));
+ 	e =3D ioctl(fd, XFS_IOC_UNRESVSP64, &fl) < 0 ? errno : 0;
+ 	if (v)
+-		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %ld %d\n",
+-			procid, opno, f.path, (long long)off, fl.l_len, e);
++		printf("%d/%d: ioctl(XFS_IOC_UNRESVSP64) %s %lld %lld %d\n",
++			procid, opno, f.path, (long long)off,
++			(long long)fl.l_len, e);
+ 	free_pathname(&f);
+ 	close(fd);
+ }
 
-> CAI Qian
->  
->>>> 2. The condition "new_num < old_num * 3" seems uncomfortable, i
->>>> think
->>>>   it should be "new_num < old_num + 3"
->>> I don't understand. What error did you see from the testing output?
->> Sometimes, the old_num is a big number, so it takes long time in this
->> loop,
->> i don't understand the purpose.
->> Would you explain to me why we expect this condition "new_num <
->> old_num * 3".
->>
->>>> 3. After stopping ksm(echo 2 > /sys/kernel/mm/ksm/run), the ksmd
->>>>   will stop scaning pages, so looping in "new_num < old_num * 3"
->>>>   is wrong.
->>> Ditto.
->>>
->> After stopping ksm, looping in "new_num < old_num * 3" will make the
->> process hang up,
->> because new_num does not be increased.
->>
->> Regards
->> Bian
->>
->>
->>> CAI Qian
->>>> Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
->>>>
->>>> ---
->>>> testcases/kernel/mem/include/mem.h | 2 +-
->>>> testcases/kernel/mem/lib/mem.c | 19 ++++++++++---------
->>>> 2 files changed, 11 insertions(+), 10 deletions(-)
->>>>
->>>> diff --git a/testcases/kernel/mem/include/mem.h
->>>> b/testcases/kernel/mem/include/mem.h
->>>> index 778d403..b640a63 100644
->>>> --- a/testcases/kernel/mem/include/mem.h
->>>> +++ b/testcases/kernel/mem/include/mem.h
->>>> @@ -42,7 +42,7 @@ void check(char *path, long int value);
->>>> void verify(char value, int proc, int start, int end, int start2,
->>>> int end2);
->>>> void group_check(int run, int pages_shared, int pages_sharing,
->>>>        int pages_volatile, int pages_unshared, int sleep_millisecs,
->>>> - int pages_to_scan);
->>>> + int pages_to_scan, int scans);
->>>> void create_same_memory(int size, int num, int unit);
->>>> void check_ksm_options(int *size, int *num, int *unit);
->>>> void write_cpusets(void);
->>>> diff --git a/testcases/kernel/mem/lib/mem.c
->>>> b/testcases/kernel/mem/lib/mem.c
->>>> index 12e61e9..db1a7dd 100644
->>>> --- a/testcases/kernel/mem/lib/mem.c
->>>> +++ b/testcases/kernel/mem/lib/mem.c
->>>> @@ -284,7 +284,7 @@ void check(char *path, long int value)
->>>>
->>>>    tst_resm(TINFO, "%s is %ld.", path, atol(buf));
->>>>    if (atol(buf) != value)
->>>> - tst_resm(TFAIL, "%s is not %ld.", path, value);
->>>> + tst_brkm(TFAIL, tst_exit, "%s is not %ld.", path, value);
->>>> }
->>>>
->>>> void verify(char value, int proc, int start, int end, int start2,
->>>> int end2)
->>>> @@ -312,7 +312,8 @@ void verify(char value, int proc, int start,
->>>> int end, int start2, int end2)
->>>>
->>>> void group_check(int run, int pages_shared, int pages_sharing,
->>>>        int pages_volatile, int pages_unshared,
->>>> - int sleep_millisecs, int pages_to_scan)
->>>> + int sleep_millisecs, int pages_to_scan,
->>>> + int scans)
->>>> {
->>>>    int fd;
->>>>    char buf[BUFSIZ];
->>>> @@ -332,7 +333,7 @@ void group_check(int run, int pages_shared, int
->>>> pages_sharing,
->>>>    old_num = new_num = atoi(buf);
->>>>    if (lseek(fd, 0, SEEK_SET) == -1)
->>>>        tst_brkm(TBROK|TERRNO, cleanup, "lseek");
->>>> - while (new_num < old_num * 3) {
->>>> + while (new_num < old_num + scans) {
->>>>        sleep(1);
->>>>        if (read(fd, buf, BUFSIZ) < 0)
->>>>            tst_brkm(TBROK|TERRNO, cleanup, "read");
->>>> @@ -587,7 +588,7 @@ void create_same_memory(int size, int num, int
->>>> unit)
->>>>        if (kill(child[k], SIGCONT) == -1)
->>>>            tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
->>>>    }
->>>> - group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 *
->>>> num);
->>>> + group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 *
->>>> num, 3);
->>>>
->>>>    tst_resm(TINFO, "wait for child 1 to stop.");
->>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
->>>> @@ -599,7 +600,7 @@ void create_same_memory(int size, int num, int
->>>> unit)
->>>>    tst_resm(TINFO, "resume child 1.");
->>>>    if (kill(child[1], SIGCONT) == -1)
->>>>        tst_brkm(TBROK|TERRNO, cleanup, "kill");
->>>> - group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 *
->>>> num);
->>>> + group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 *
->>>> num, 3);
->>>>
->>>>    tst_resm(TINFO, "wait for child 1 to stop.");
->>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
->>>> @@ -613,7 +614,7 @@ void create_same_memory(int size, int num, int
->>>> unit)
->>>>        if (kill(child[k], SIGCONT) == -1)
->>>>            tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
->>>>    }
->>>> - group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 *
->>>> num);
->>>> + group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 *
->>>> num, 3);
->>>>
->>>>    tst_resm(TINFO, "wait for all children to stop.");
->>>>    for (k = 0; k < num; k++) {
->>>> @@ -627,7 +628,7 @@ void create_same_memory(int size, int num, int
->>>> unit)
->>>>    tst_resm(TINFO, "resume child 1.");
->>>>    if (kill(child[1], SIGCONT) == -1)
->>>>        tst_brkm(TBROK|TERRNO, cleanup, "kill");
->>>> - group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 *
->>>> num);
->>>> + group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 *
->>>> num, 3);
->>>>
->>>>    tst_resm(TINFO, "wait for child 1 to stop.");
->>>>    if (waitpid(child[1], &status, WUNTRACED) == -1)
->>>> @@ -647,7 +648,7 @@ void create_same_memory(int size, int num, int
->>>> unit)
->>>>        tst_brkm(TBROK|TERRNO, cleanup, "open");
->>>>    if (write(fd, "2", 1) != 1)
->>>>        tst_brkm(TBROK|TERRNO, cleanup, "write");
->>>> - group_check(2, 0, 0, 0, 0, 0, size * 256 * num);
->>>> + group_check(2, 0, 0, 0, 0, 0, size * 256 * num, 0);
->>>>
->>>>    tst_resm(TINFO, "wait for all children to stop.");
->>>>    for (k = 0; k < num; k++) {
->>>> @@ -668,7 +669,7 @@ void create_same_memory(int size, int num, int
->>>> unit)
->>>>    if (write(fd, "0", 1) != 1)
->>>>        tst_brkm(TBROK|TERRNO, cleanup, "write");
->>>>    close(fd);
->>>> - group_check(0, 0, 0, 0, 0, 0, size * 256 * num);
->>>> + group_check(0, 0, 0, 0, 0, 0, size * 256 * num, 0);
->>>>    while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
->>>>        if (WEXITSTATUS(status) != 0)
->>>>            tst_resm(TFAIL, "child exit status is %d",
->>>> --
->>>> 1.7.1
->>>>
->>>>
->>>
->>
->> ------------------------------------------------------------------------------
->> Xperia(TM) PLAY
->> It's a major breakthrough. An authentic gaming
->> smartphone on the nation's most reliable network.
->> And it wants your games.
->> http://p.sf.net/sfu/verizon-sfdev
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-
+--------------true
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+Forrester Wave Report - Recovery time is now measured in hours and minutes
+not days. Key insights are discussed in the 2010 Forrester Wave Report as
+part of an in-depth evaluation of disaster recovery service providers.
+Forrester found the best-in-class provider in terms of services and vision.
+Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
+--------------true
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------true--
+
+
+
