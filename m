@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QCDUT-0005jV-MG
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:09:25 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1Q9XHB-0000XL-Gf
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:40:37 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QCDUT-0004JP-2q
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:09:25 +0000
-Received: by pvc30 with SMTP id 30so3758486pvc.34
+	(Exim 4.74) id 1Q9XH8-00079h-QC
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:40:35 +0000
+Received: by pzk35 with SMTP id 35so3367881pzk.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 19 Apr 2011 09:09:19 -0700 (PDT)
+	Mon, 11 Apr 2011 23:40:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1510096795.29564.1303220561910.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <1510096795.29564.1303220561910.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Tue, 19 Apr 2011 09:09:19 -0700
-Message-ID: <BANLkTikCFPSFf7bZO0T9zqO8OT5ej+3ZWQ@mail.gmail.com>
+In-Reply-To: <4DA2D0F5.6020109@redhat.com>
+References: <4DA2D0F5.6020109@redhat.com>
+Date: Mon, 11 Apr 2011 23:40:28 -0700
+Message-ID: <BANLkTinr2n4cY9HO+x_EBsGv4UPcjVRMyg@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups/memcg_regression_test: fix random failures
+Subject: Re: [LTP] hugeshmdt01: -I5 or -i5?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +30,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Apr 19, 2011 at 6:42 AM, Jan Stancek <jstancek@redhat.com> wrote:
+2011/4/11 Caspar Zhang <czhang@redhat.com>:
+> The hugeshm* tests in runtest/hugetlb are:
 >
-> 1. dmesg can rotate and number of found bugs can actually go down
-> clear the buffer before test to avoid this
+> hugeshmat01 hugeshmat01 -i 5
+> hugeshmat02 hugeshmat02 -i 5
+> hugeshmat03 hugeshmat03 -i 5
 >
-> 2. clean any groups left behind, if test_4.sh gets killed by OOM
+> hugeshmctl01 hugeshmctl01 -i 5
+> hugeshmctl02 hugeshmctl02 -i 5
+> hugeshmctl03 hugeshmctl03 -i 5
 >
-> 3. failed mount should be treated as error and return non-zero
+> hugeshmdt01 hugeshmdt01 -I 5 <--- *-I or -i?*
+>
+> hugeshmget01 hugeshmget01 -i 10
+> hugeshmget02 hugeshmget02 -i 10
+> hugeshmget03 hugeshmget03 -i 10
+> hugeshmget05 hugeshmget05 -i 10
+>
+> I wonder whether hugeshmdt01 should be repeated for 5 times, or 5
+> seconds? (5 seconds is enough to execute the test for thousands times...
+> That will produce tens ~ hundreds MB log)
 
-Could you please update your workspace and resubmit the patch?
-Thanks,
+    Good question. "How many iterations does it take to reproduce the
+problem?" is probably a good question to ask.
+Cheers,
 -Garrett
 
 ------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+Forrester Wave Report - Recovery time is now measured in hours and minutes
+not days. Key insights are discussed in the 2010 Forrester Wave Report as
+part of an in-depth evaluation of disaster recovery service providers.
+Forrester found the best-in-class provider in terms of services and vision.
+Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
