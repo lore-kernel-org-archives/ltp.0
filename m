@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1QAPEc-0005QM-Tm
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 16:17:34 +0000
-Date: Thu, 14 Apr 2011 18:41:55 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110414164155.GD17067@saboteur.suse.cz>
-References: <4DA2D0F5.6020109@redhat.com>
-	<BANLkTinr2n4cY9HO+x_EBsGv4UPcjVRMyg@mail.gmail.com>
-	<20110413180708.GE3206@saboteur.suse.cz>
-	<BANLkTimdKXf8dg0VHHR4m5ySGBnyNK-fKA@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1Q9XLH-0003Rz-ET
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:44:51 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.74) id 1Q9XLG-0004yE-Q7
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:44:51 +0000
+Received: by pvc30 with SMTP id 30so3368650pvc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 11 Apr 2011 23:44:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BANLkTimdKXf8dg0VHHR4m5ySGBnyNK-fKA@mail.gmail.com>
-Subject: Re: [LTP] hugeshmdt01: -I5 or -i5?
+In-Reply-To: <9c4ca5a38da5486b9aceae69e9fc8a01b3e5ad4f.1302499207.git.czhang@redhat.com>
+References: <9c4ca5a38da5486b9aceae69e9fc8a01b3e5ad4f.1302499207.git.czhang@redhat.com>
+Date: Mon, 11 Apr 2011 23:44:44 -0700
+Message-ID: <BANLkTi=1zEv2CVZX+YiX5vj6RSaiUKf2YQ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] [hugetlb] hugemmap: some tiny fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,45 +30,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> >> =A0 =A0 Good question. "How many iterations does it take to reproduce =
-the
-> >> problem?" is probably a good question to ask.
-> >
-> > The source doesn't say that we should run this for several seconds. And
-> > the test seems to be testing functionality rather than regression (also
-> > there is no clear line between these two). But still I thik it's safe to
-> > assume that this is a typo. Anybody any objections?
-> =
+On Sun, Apr 10, 2011 at 10:20 PM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> some tiny fixes including:
+> - change 'return 1' to 'tst_exit()'
+> - remove 'tst_rmdir()' from cleanup()
+>
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+> =A0testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c | =A0 =A04 ++--
+> =A0testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c | =A0 =A03 +--
+> =A0testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c | =A0 =A04 ++--
+> =A03 files changed, 5 insertions(+), 6 deletions(-)
 
->     No, but I'd prefer is someone changed the 'typo', ran the test a
-> few times in positive cases as opposed to blindly commit what someone
-> considered a 'typo', and make the test ineffective.
->     Digging through the CVS/git commit email and/or the mail archives
-> to determine what the contributor had in mind for the test would
-> definitely help. The latter might be painful depending on the test
-> submission though.
-
-Okay git -p log says that the line was added by Subrata, CCing.
-
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
+I agree with 01 and 04's changes, but not 02's change (the test
+creates a temporary directory; it should also clean it up).
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Benefiting from Server Virtualization: Beyond Initial Workload =
-
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve =
-
-application availability and disaster protection. Learn more about boosting =
-
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+Forrester Wave Report - Recovery time is now measured in hours and minutes
+not days. Key insights are discussed in the 2010 Forrester Wave Report as
+part of an in-depth evaluation of disaster recovery service providers.
+Forrester found the best-in-class provider in terms of services and vision.
+Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
