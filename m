@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <jstancek@redhat.com>) id 1QAMfn-0004F2-QI
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 13:33:27 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QAMfj-0000SH-Uj
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 13:33:27 +0000
-Date: Thu, 14 Apr 2011 09:33:17 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <511817558.75058.1302787997174.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <BANLkTin8di7Q=rZVD9=LFnQVDY4ZrSb7OQ@mail.gmail.com>
+	(envelope-from <czhang@redhat.com>) id 1Q9Xt0-00074C-Ib
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 07:19:42 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q9Xsz-0004Fh-LT
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 07:19:42 +0000
+Message-ID: <4DA3FCFC.9060109@redhat.com>
+Date: Tue, 12 Apr 2011 15:19:24 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] memcg_process.c: signals initialization
+References: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>	<f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302440251.git.czhang@redhat.com>	<31e14b5b388ec4591dd62f86fa2b35b5ae4f408f.1302440251.git.czhang@redhat.com>
+	<BANLkTi=zFezAWMpeQYE+JFRth8zCuByXhA@mail.gmail.com>
+In-Reply-To: <BANLkTi=zFezAWMpeQYE+JFRth8zCuByXhA@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v3] [mm] mbind01: not working on some systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,59 +29,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Garrett,
+On 04/12/2011 02:46 PM, Garrett Cooper wrote:
+> On Sun, Apr 10, 2011 at 6:00 AM, Caspar Zhang <czhang@redhat.com> wrote:
+>>
+>> when executing mem/mbind01 testcase under some systems, it returns
+>> ENOSYS error, indicating that mbind syscall is not implemented on this
+>> system. This behavior is allowed and should not return error.
+>>
+>> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> 
+> Committed.
+> Thanks!
+> -Garrett
 
-now they are both wrong.
+Thanks Garrett! However I still suggest merge the other patch, else
+there will be two "mbind01" tests: /kernel/syscalls/mbind/mbind01 and
+/kernel/mem/mbind/mbind01, after make install, there will be only one
+mbind01 in /opt/ltp/testcases/bin/..
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_proce
-index 4ba212f..4f8c257 100644
---- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-@@ -299,11 +299,11 @@ int main(int argc, char *argv[])
-        memset(&sigusr_action, 0, sizeof(sigusr_action));
- 
-        /* TODO: add error handling below. */
--       sigemptyset(&sigusr_action.sa_mask);
-+       sigemptyset(&sigint_action.sa_mask);
-        sigint_action.sa_handler = &sigint_handler;
-        sigaction(SIGINT, &sigint_action, NULL);
- 
--       sigemptyset(&sigint_action.sa_mask);
-+       sigemptyset(&sigusr_action.sa_mask);
-        sigusr_action.sa_handler = &sigusr_handler;
-        sigaction(SIGUSR1, &sigusr_action, NULL);
-
-Regards,
-Jan
-
------ Original Message -----
-From: "Garrett Cooper" <yanegomi@gmail.com>
-To: "Jan Stancek" <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, "Jeffrey Burke" <jburke@redhat.com>
-Sent: Thursday, April 14, 2011 3:15:27 PM
-Subject: Re: [LTP] [PATCH] memcg_process.c: signals initialization
-
-On Thu, Apr 14, 2011 at 4:44 AM, Jan Stancek <jstancek@redhat.com> wrote:
-> 1. There seems to be copy paste error, instead of clearing
-> sigusr_action.sa_mask it clears sigint_action.sa_mask.
-> Change comes from 6c4d1c6d4b3c116ff88f9209b4860940fb8659a8
->
-> 2. Other fields of these structures are left to be uninitialized.
->
-> Both 1) and 2) make the behaviour unexpected. Occasionally I saw,
-> this program to end upon receiving SIGUSR1.
-
-Committed -- thanks!
--Garrett
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+Forrester Wave Report - Recovery time is now measured in hours and minutes
+not days. Key insights are discussed in the 2010 Forrester Wave Report as
+part of an in-depth evaluation of disaster recovery service providers.
+Forrester found the best-in-class provider in terms of services and vision.
+Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
