@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q7uew-0007eE-1c
-	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 19:14:26 +0000
-Date: Thu, 7 Apr 2011 21:38:14 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110407193814.GA24025@saboteur.suse.cz>
-References: <4D9C1520.9050004@cn.fujitsu.com> <4D9D4A97.3080701@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1Q9WGK-0003RT-2K
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 05:35:40 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1Q9WGJ-00028r-50
+	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 05:35:40 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3C5ZXVQ002956
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 Apr 2011 01:35:33 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Tue, 12 Apr 2011 13:35:23 +0800
+Message-Id: <cd5131a04961c81e7a09a88c2d6c3020429d451a.1302586505.git.czhang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4D9D4A97.3080701@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ltp cgroup: Create a hierarchy with no
-	bound	subsystems
+Content-Type: multipart/mixed; boundary="------------1.7.1"
+Subject: [LTP] [PATCH] [hugetlb] hugeshmctl01: should exit when shmat fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,34 +28,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Gui Jianfeng <guijianfeng@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Any objection of this fix, if no, would you push it?
+This is a multi-part message in MIME format.
+--------------1.7.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Not really, I'm just chekcking patches as fast as I can, so sometimes
-they need to wait a little.
 
-And it's certainly good idea to ping me if they are not reviewed for
-like three weeks or more.
+if shmat() fails in hugeshmctl01 test, the test should exit, else -1
+will return, which may cause SIGSEGV due to this line:
 
-For this particual one see comments by garrett. ;)
+*(int *)test = i;
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+thus incorrect signal sent to parent and test gets blocked infiniately.
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
+
+
+--------------1.7.1
+Content-Type: text/x-patch;
+	name="0001-hugetlb-hugeshmctl01-should-exit-when-shmat-fails.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-hugetlb-hugeshmctl01-should-exit-when-shmat-fails.patch"
+
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+index 48740cd..1fd5dec 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+@@ -213,14 +213,8 @@ set_shmat()
+ 	/* attach the shared memory */
+ 	rval = shmat(shm_id_1, 0, 0);
+ 
+-	/*
+-	 * if shmat() fails, the only thing we can do is
+-	 * print a message to that effect.
+-	 */
+-	if (rval == (void *)-1) {
+-		tst_resm(TBROK, "shmat() failed - %s",strerror(errno));
+-		cleanup();
+-	}
++	if (rval == (void *)-1)
++		tst_brkm(TBROK|TERRNO, cleanup, "shmat() failed.")
+ 
+ 	return rval;
+ }
+
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+Forrester Wave Report - Recovery time is now measured in hours and minutes
+not days. Key insights are discussed in the 2010 Forrester Wave Report as
+part of an in-depth evaluation of disaster recovery service providers.
+Forrester found the best-in-class provider in terms of services and vision.
+Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.1--
+
+
+
