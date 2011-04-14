@@ -1,28 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1Q8uGF-0004dE-Th
-	for ltp-list@lists.sourceforge.net; Sun, 10 Apr 2011 13:01:03 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q8uGF-0004Sa-7F
-	for ltp-list@lists.sourceforge.net; Sun, 10 Apr 2011 13:01:03 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3AD0vKU012783
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Sun, 10 Apr 2011 09:00:57 -0400
-From: Caspar Zhang <czhang@redhat.com>
-Date: Sun, 10 Apr 2011 21:00:44 +0800
-Message-Id: <31e14b5b388ec4591dd62f86fa2b35b5ae4f408f.1302440251.git.czhang@redhat.com>
-In-Reply-To: <f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302440251.git.czhang@redhat.com>
-References: <f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302440251.git.czhang@redhat.com>
-In-Reply-To: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>
-References: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>
+	(envelope-from <chrubis@suse.de>) id 1QAPEc-0005QM-Tm
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 16:17:34 +0000
+Date: Thu, 14 Apr 2011 18:41:55 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110414164155.GD17067@saboteur.suse.cz>
+References: <4DA2D0F5.6020109@redhat.com>
+	<BANLkTinr2n4cY9HO+x_EBsGv4UPcjVRMyg@mail.gmail.com>
+	<20110413180708.GE3206@saboteur.suse.cz>
+	<BANLkTimdKXf8dg0VHHR4m5ySGBnyNK-fKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH v3] [mm] mbind01: not working on some systems
+Content-Disposition: inline
+In-Reply-To: <BANLkTimdKXf8dg0VHHR4m5ySGBnyNK-fKA@mail.gmail.com>
+Subject: Re: [LTP] hugeshmdt01: -I5 or -i5?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,85 +24,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------1.7.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+Hi!
+> >> =A0 =A0 Good question. "How many iterations does it take to reproduce =
+the
+> >> problem?" is probably a good question to ask.
+> >
+> > The source doesn't say that we should run this for several seconds. And
+> > the test seems to be testing functionality rather than regression (also
+> > there is no clear line between these two). But still I thik it's safe to
+> > assume that this is a typo. Anybody any objections?
+> =
 
+>     No, but I'd prefer is someone changed the 'typo', ran the test a
+> few times in positive cases as opposed to blindly commit what someone
+> considered a 'typo', and make the test ineffective.
+>     Digging through the CVS/git commit email and/or the mail archives
+> to determine what the contributor had in mind for the test would
+> definitely help. The latter might be painful depending on the test
+> submission though.
 
-when executing mem/mbind01 testcase under some systems, it returns
-ENOSYS error, indicating that mbind syscall is not implemented on this
-system. This behavior is allowed and should not return error.
+Okay git -p log says that the line was added by Subrata, CCing.
 
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
+
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/syscalls/mbind/mbind02.c |   10 ++++++++--
- 1 files changed, 8 insertions(+), 2 deletions(-)
+Benefiting from Server Virtualization: Beyond Initial Workload =
 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve =
 
---------------1.7.1
-Content-Type: text/x-patch;
-	name="0002-mm-mbind01-not-working-on-some-systems.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0002-mm-mbind01-not-working-on-some-systems.patch"
+application availability and disaster protection. Learn more about boosting =
 
-diff --git a/testcases/kernel/syscalls/mbind/mbind02.c b/testcases/kernel/syscalls/mbind/mbind02.c
-index 78d4a11..c829558 100644
---- a/testcases/kernel/syscalls/mbind/mbind02.c
-+++ b/testcases/kernel/syscalls/mbind/mbind02.c
-@@ -43,6 +43,7 @@ int TST_TOTAL = 1;
- #include <unistd.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <errno.h>
- 
- static unsigned long pagesize;
- static int opt_node;
-@@ -90,8 +91,13 @@ int main(int argc, char** argv)
- 		/* first mbind */
- 		err = mbind(addr+pagesize, pagesize, MPOL_BIND, nmask->maskp,
- 			nmask->size, MPOL_MF_MOVE_ALL);
--		if (err != 0)
--			tst_brkm(TBROK|TERRNO, NULL, "mbind1");
-+		if (err != 0) {
-+			if (errno != ENOSYS)
-+				tst_brkm(TBROK|TERRNO, NULL, "mbind1");
-+			else
-+				tst_brkm(TCONF, NULL,
-+					"mbind syscall not implemented on this system.");
-+		}
- 
- 		/* second mbind */
- 		err = mbind(addr, pagesize*3, MPOL_DEFAULT, NULL, 0, 0);
-
---------------1.7.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
---------------1.7.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.1--
-
-
-
