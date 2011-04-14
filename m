@@ -2,25 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1QAl0j-000353-N4
-	for ltp-list@lists.sourceforge.net; Fri, 15 Apr 2011 15:32:41 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QAl0i-0002S9-Vu
-	for ltp-list@lists.sourceforge.net; Fri, 15 Apr 2011 15:32:41 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3FFWZHN019534
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Apr 2011 11:32:35 -0400
-Message-ID: <4DA86504.4070703@redhat.com>
-Date: Fri, 15 Apr 2011 23:32:20 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	(envelope-from <chrubis@suse.de>) id 1QANP4-0007da-0p
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 14:20:14 +0000
+Date: Thu, 14 Apr 2011 16:44:37 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110414144437.GF3206@saboteur.suse.cz>
+References: <20110413173333.GC3206@saboteur.suse.cz>
+	<3d2379f1357b2be2957c69ac408365c257e40a44.1302751818.git.czhang@redhat.com>
 MIME-Version: 1.0
-References: <f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302595961.git.czhang@redhat.com>
-	<a8c42cda82df15baf9acaf89ed09b41cc8cb5af8.1302595961.git.czhang@redhat.com>
-In-Reply-To: <a8c42cda82df15baf9acaf89ed09b41cc8cb5af8.1302595961.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH] ksm: mempolicy syscalls not implemented
+Content-Disposition: inline
+In-Reply-To: <3d2379f1357b2be2957c69ac408365c257e40a44.1302751818.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH v3] [syscalls] io_submit: fix broken testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,25 +25,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/12/2011 04:13 PM, Caspar Zhang wrote:
-> 
-> since NUMA is only supported on a few i386 systems, mempolicy syscalls
-> ([gs]et_mempolicy, mbind) may not implemented, thus, an ENOSYS errno
-> should be acceptable.
-> 
-> Signed-off-by: Caspar Zhang <czhang@redhat.com>
-> ---
->  testcases/kernel/mem/ksm/ksm02.c |    9 +++++++--
->  testcases/kernel/mem/ksm/ksm04.c |    9 +++++++--
->  2 files changed, 14 insertions(+), 4 deletions(-)
-> 
+Hi!
+> +static void check_result(long exp, long act)
+> +{
+> +	if (exp >= 0)
+> +	{
+> +		if (act == exp)
+> +			tst_resm(TPASS, "expected success - "
+> +					"returned value = %ld", act);
+> +		else
+> +			tst_resm(TFAIL, "unexpected failure - "
+> +					"returned value = %ld : %s",
+> +					act, strerror(-1 * act));
+> +	} else {
+> +		if (act == exp)
+> +			tst_resm(TPASS, "expected failure - "
+> +					"returned value = %ld : %s",
+> +					act, strerror(-1 * act));
+> +		else if (act == 0)
+> +			tst_resm(TFAIL, "call succeeded unexpectedly");
+> +		else
+> +			tst_resm(TFAIL, "unexpected failure - "
+> +					"returned value = %ld : %s, "
+> +					"expected value = %ld : %s",
+> +					act, strerror(-1 * act),
+> +					exp, strerror(-1 * exp));
+> +	}
+>  }
 
-Hi, anyone can review this patch and get it merged if suitable?
+I hate being CodingStyle nazi (and that is one more reason why you should
+learn how to use linux/scripts/checkpatch.pl...).
 
-Thanks,
-Caspar
+But here the curly bracket should be located at the end of if (exp >= 0)
+and not on the new line.
+
+Also it could be a little better if there were an return statement in
+the first code block, something like:
+
+if (exp >= 0) {
+	...
+	return;
+}
+
+if (act == exp)
+	...
+
+Which would make the code IMHO more readable.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Benefiting from Server Virtualization: Beyond Initial Workload 
