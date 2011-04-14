@@ -1,17 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1QEkE0-0000aD-0t
-	for ltp-list@lists.sourceforge.net; Tue, 26 Apr 2011 15:30:52 +0000
-Date: Tue, 26 Apr 2011 17:56:18 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110426155618.GA28253@saboteur.suse.cz>
-References: <1624817233.26998.1303211901975.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <romansc@us.ibm.com>) id 1QANPp-00039v-15
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 14:21:01 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1QANPl-00022e-4T
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 14:21:00 +0000
+Received: from d01dlp01.pok.ibm.com (d01dlp01.pok.ibm.com [9.56.224.56])
+	by e5.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p3EDsptM023903
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 09:54:51 -0400
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by d01dlp01.pok.ibm.com (Postfix) with ESMTP id 334F938C803B
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Apr 2011 10:20:39 -0400 (EDT)
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p3EEKmGX2637922
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 10:20:48 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p3EEKmBG001110
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 11:20:48 -0300
+Received: from d01ml605.pok.ibm.com (d01ml605.pok.ibm.com [9.56.227.91])
+	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p3EEKmNH001098
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 11:20:48 -0300
+In-Reply-To: <OFCEFD64D0.BC49FB71-ON8525785E.0065EB2E-8525785E.0066D6A1@LocalDomain>
+References: <OFCEFD64D0.BC49FB71-ON8525785E.0065EB2E-8525785E.0066D6A1@LocalDomain>
+Message-ID: <OF7FE76060.EAACC2A8-ON85257872.004D62BE-85257872.004ECF6E@us.ibm.com>
+From: Scott Romanowski <romansc@us.ibm.com>
+Date: Thu, 14 Apr 2011 10:20:47 -0400
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1624817233.26998.1303211901975.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH v3] kill05: fix sporadic failures
+Subject: [LTP] ioctl01.c bug in error message
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,127 +43,141 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4176843925637638924=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> 1. misusage of getpwnam causes ltpuser1 and ltpuser2 to point
-> to same passwd structure, from getpwnam(3):
-> "The return value may point to a static area, and may be overwritten by
-> subsequent calls to getpwent(3)."
-> Fix this by copying the results from returned pointer.
+--===============4176843925637638924==
+Content-type: multipart/alternative; 
+	Boundary="0__=0ABBF2E1DFDEE42E8f9e8a93df938690918c0ABBF2E1DFDEE42E"
+Content-Disposition: inline
 
-I see, that was caused by replacing the my_getpwnam() by
-SAFE_GETPWNAM().
+--0__=0ABBF2E1DFDEE42E8f9e8a93df938690918c0ABBF2E1DFDEE42E
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
 
-Anyway my_getpwnam() is wrong hackend interface, we should get rid of
-it. For next time Garrett note that getpwnam() is one of these
-non-reentrant interfaces and do it correctly ;).
 
-> +void wait_for_flag(int value)
-> +{
-> +	while (1) {
-> +		if (*flag == value)
-> +			break;
-> +		else
-> +			sleep(1);
-> +	}
-> +}
-> +
->  /*
->   * do_master_child()
->   */
-> @@ -141,10 +158,16 @@ void do_master_child(char **av)
->  	char user1name[] = "nobody";
->  	char user2name[] = "bin";
->  
-> -	struct passwd *ltpuser1, *ltpuser2;
-> +	struct passwd *user;
-> +	unsigned int uid1, uid2, gid1, gid2;
+testcases/kernel/syscalls/ioctl/ioctl01.c has a bug where, if the open(=
+)
+fails, the error message it prints uses an uninitialized char * variabl=
+e
+instead of the one that holds the device.  This only affects the error
+message.  The solution is to use 'devname' instead of 'tty' in the tst_=
+brkm
+(), and you can also delete the unused variable, 'char *tty;'.
 
-Technically these should be uid_t and gid_t.
+diff -r a58e88d4c024 testcases/kernel/syscalls/ioctl/ioctl01.c
+--- a/testcases/kernel/syscalls/ioctl/ioctl01.c	Fri Mar 25 17:21:49 201=
+1
+-0400
++++ b/testcases/kernel/syscalls/ioctl/ioctl01.c	Thu Apr 14 10:08:39 201=
+1
+-0400
+@@ -71,7 +71,6 @@
+ int fd, fd1;
+ int bfd =3D -1;
 
-> -	ltpuser1 = SAFE_GETPWNAM(NULL, user1name);
-> -	ltpuser2 = SAFE_GETPWNAM(NULL, user2name);
-> +	user = SAFE_GETPWNAM(NULL, user1name);
-> +	uid1 = user->pw_uid;
-> +	gid1 = user->pw_gid;
-> +
-> +	user = SAFE_GETPWNAM(NULL, user2name);
-> +	uid2 = user->pw_uid;
-> +	gid2 = user->pw_gid;
->  
->  	TEST_EXP_ENOS(exp_enos);
->  
-> @@ -158,11 +181,11 @@ void do_master_child(char **av)
->  		tst_brkm(TBROK|TERRNO, cleanup, "Fork failed");
->  
->  	if (pid1 == 0) {
-> -
-> -		if (setreuid(ltpuser1->pw_uid, ltpuser1->pw_uid) == -1) {
-> +		if (setreuid(uid1, gid1) == -1) {
->  			perror("setreuid failed (in child)");
->  			exit(1);
->  		}
-> +		*flag = 1;
->  #ifdef UCLINUX
->  		if (self_exec(av[0], "") < 0) {
->  			perror("self_exec failed");
-> @@ -172,15 +195,18 @@ void do_master_child(char **av)
->  		do_child();
->  #endif
->  	}
-> -	if (setreuid(ltpuser2->pw_uid, ltpuser2->pw_uid) == -1) {
-> +	if (setreuid(uid2, gid2) == -1) {
->  		perror("seteuid failed");
->  		exit(1);
->  	}
->  
-> +	/* wait until child sets its euid */
-> +	wait_for_flag(1);
-> +
->  	TEST(kill(pid1, TEST_SIG));
->  
->  	/* signal the child that we're done */
-> -	*flag = 1;
-> +	*flag = 2;
->  
->  	if (waitpid(pid1, &status, 0) == -1) {
->  		perror("waitpid failed");
-> @@ -209,12 +235,8 @@ void do_child()
->  	pid_t my_pid;
->  
->  	my_pid = getpid();
-> -	while (1) {
-> -		if (*flag == 1)
-> -			exit(0);
-> -		else
-> -			sleep(1);
-> -	}
-> +	wait_for_flag(2);
-> +	exit(0);
->  }
->  
->  void setup(void)
+-char *tty;
+ struct termio termio;
 
-And the patch doesn't apply (as your source is older than current git).
+ struct test_case_t {
+@@ -125,7 +124,7 @@
 
-Please use latest git sources when creating patches.
+ 	if ((fd =3D open(devname, O_RDWR, 0777)) < 0) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't open %s, errno =3D %d",
+-			 tty, errno);
++			 devname, errno);
+ 	}
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+ 	TEST_EXP_ENOS(exp_enos);
+
+Signed-off-by: Scott Romanowski <romansc@us.ibm.com>,
+
+--
+Scott Romanowski
+978-899-5384
+IBM
+Cubicle BG125C
+550 King St.
+Littleton, MA 01460=
+
+--0__=0ABBF2E1DFDEE42E8f9e8a93df938690918c0ABBF2E1DFDEE42E
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p><font size=3D"2" face=3D"sans-serif">testcases/kernel/syscalls/ioctl=
+/ioctl01.c has a bug where, if the open() fails, the error message it p=
+rints uses an uninitialized char * variable instead of the one that hol=
+ds the device.  This only affects the error message.  The solution is t=
+o use 'devname' instead of 'tty' in the tst_brkm(), and you can also de=
+lete the unused variable, 'char *tty;'.</font><br>
+<br>
+<tt><font size=3D"2">diff -r a58e88d4c024 testcases/kernel/syscalls/ioc=
+tl/ioctl01.c</font></tt><br>
+<tt><font size=3D"2">--- a/testcases/kernel/syscalls/ioctl/ioctl01.c	Fr=
+i Mar 25 17:21:49 2011 -0400</font></tt><br>
+<tt><font size=3D"2">+++ b/testcases/kernel/syscalls/ioctl/ioctl01.c	Th=
+u Apr 14 10:08:39 2011 -0400</font></tt><br>
+<tt><font size=3D"2">@@ -71,7 +71,6 @@</font></tt><br>
+<tt><font size=3D"2"> int fd, fd1;</font></tt><br>
+<tt><font size=3D"2"> int bfd =3D -1;</font></tt><br>
+<tt><font size=3D"2"> </font></tt><br>
+<tt><font size=3D"2">-char *tty;</font></tt><br>
+<tt><font size=3D"2"> struct termio termio;</font></tt><br>
+<tt><font size=3D"2"> </font></tt><br>
+<tt><font size=3D"2"> struct test_case_t {</font></tt><br>
+<tt><font size=3D"2">@@ -125,7 +124,7 @@</font></tt><br>
+<tt><font size=3D"2"> </font></tt><br>
+<tt><font size=3D"2"> 	if ((fd =3D open(devname, O_RDWR, 0777)) &lt; 0)=
+ {</font></tt><br>
+<tt><font size=3D"2"> 		tst_brkm(TBROK, cleanup, &quot;Couldn't open %s=
+, errno =3D %d&quot;,</font></tt><br>
+<tt><font size=3D"2">-			 tty, errno);</font></tt><br>
+<tt><font size=3D"2">+			 devname, errno);</font></tt><br>
+<tt><font size=3D"2"> 	}</font></tt><br>
+<tt><font size=3D"2"> </font></tt><br>
+<tt><font size=3D"2"> 	TEST_EXP_ENOS(exp_enos);</font></tt><br>
+<br>
+<font size=3D"2" face=3D"sans-serif">Signed-off-by: Scott Romanowski &l=
+t;romansc@us.ibm.com&gt;,</font><br>
+<br>
+<font size=3D"2" face=3D"sans-serif">--<br>
+Scott Romanowski<br>
+978-899-5384<br>
+IBM<br>
+Cubicle BG125C<br>
+550 King St.<br>
+Littleton, MA 01460</font></body></html>=
+
+--0__=0ABBF2E1DFDEE42E8f9e8a93df938690918c0ABBF2E1DFDEE42E--
+
+
+
+--===============4176843925637638924==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+--===============4176843925637638924==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4176843925637638924==--
+
+
