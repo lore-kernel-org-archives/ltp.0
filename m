@@ -1,26 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1Q9YcC-0003p3-9S
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 08:06:24 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q9YcB-0002Zt-52
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 08:06:24 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3C86HxW015692
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 Apr 2011 04:06:17 -0400
-From: Caspar Zhang <czhang@redhat.com>
-Date: Tue, 12 Apr 2011 16:06:06 +0800
-Message-Id: <b262ce2a7b471caa002c96fbef62b10c3229b56a.1302595212.git.czhang@redhat.com>
-In-Reply-To: <20110401144407.GA24854@saboteur.suse.cz>
-References: <20110401144407.GA24854@saboteur.suse.cz>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <romansc@us.ibm.com>) id 1QAO9G-0006FC-Fr
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 15:07:58 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1QAO9F-0001Qx-Ha
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 15:07:58 +0000
+Received: from d01dlp02.pok.ibm.com (d01dlp02.pok.ibm.com [9.56.224.85])
+	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p3EEgWcp002347
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 10:42:32 -0400
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by d01dlp02.pok.ibm.com (Postfix) with ESMTP id C367A6E8039
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Apr 2011 11:07:51 -0400 (EDT)
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p3EF7p3O395666
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 11:07:51 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p3EF7mBm017850
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 12:07:50 -0300
+In-Reply-To: <BANLkTim9UOO3bCubw+G+Px0-cV6vVuxsNQ@mail.gmail.com>
+References: <OFCEFD64D0.BC49FB71-ON8525785E.0065EB2E-8525785E.0066D6A1@LocalDomain>	<OF7FE76060.EAACC2A8-ON85257872.004D62BE-85257872.004ECF6E@us.ibm.com>
+	<BANLkTim9UOO3bCubw+G+Px0-cV6vVuxsNQ@mail.gmail.com>
+Message-ID: <OFF2FBFC58.67A816F3-ON85257872.0052183E-85257872.00531A4B@us.ibm.com>
+From: Scott Romanowski <romansc@us.ibm.com>
+Date: Thu, 14 Apr 2011 11:07:40 -0400
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH v2] [syscalls] io_submit: fix broken testcase
+Subject: Re: [LTP] ioctl01.c bug in error message
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,331 +40,248 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1623465728956218222=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.7.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+--===============1623465728956218222==
+Content-type: multipart/related; 
+	Boundary="0__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE"
 
-Updated the patch per Cyril's suggestion but the v2 patch escaped from 
-my mailbox, re-send it again. Please review it.
+--0__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE
+Content-type: multipart/alternative; 
+	Boundary="1__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE"
 
+--1__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
+
+
+True, tty is intializes to 0, so if there's a failure, the error messag=
+e is
+something like this
+    Couldn't open (null), errno =3D 6
+Instead of something like
+    Couldn't open /dev/ttyFoo, errno =3D 6
+I should have written "unused".
+--
+Scott Romanowski
+978-899-5384
+IBM
+Cubicle BG125C
+550 King St.
+Littleton, MA 01460
+
+
+                                                                       =
+                                             
+  From:       Garrett Cooper <yanegomi@gmail.com>                      =
+                                             
+                                                                       =
+                                             
+  To:         Scott Romanowski/Watson/Contr/IBM@IBMUS                  =
+                                             
+                                                                       =
+                                             
+  Cc:         ltp-list@lists.sourceforge.net                           =
+                                             
+                                                                       =
+                                             
+  Date:       04/14/2011 10:30 AM                                      =
+                                             
+                                                                       =
+                                             
+  Subject:    Re: [LTP] ioctl01.c bug in error message                 =
+                                             
+                                                                       =
+                                             
+
+
+
+
+
+On Thu, Apr 14, 2011 at 7:20 AM, Scott Romanowski <romansc@us.ibm.com>
+wrote:
+> testcases/kernel/syscalls/ioctl/ioctl01.c has a bug where, if the ope=
+n()
+> fails, the error message it prints uses an uninitialized char * varia=
+ble
+> instead of the one that holds the device. This only affects the error=
+
+> message. The solution is to use 'devname' instead of 'tty' in the
+> tst_brkm(), and you can also delete the unused variable, 'char *tty;'=
+.
+
+    tty is initialized -- just not the value that you want (0 because
+it's in the BSS).
+    Please try this patch and let me know how things go.
 Thanks,
-Caspar
+-Garrett
+[attachment "fix-ioctl01.patch" deleted by Scott
+Romanowski/Watson/Contr/IBM]
+=
 
-io_submit01 contains 4 negative testing: EINVAL, EFAULT, EINVAL+EFAULT
-and EBADF. The first 3 testcases didn't initialize the content of 'ctx'
-so that they contained invalid argument in the cases. This may cause
-incorrect result on some architectures, like:
+--1__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
 
-io_submit01    1  TPASS  :  expected failure - returned value = 22 : Invalid argument
-io_submit01    2  TFAIL  :  unexpected returned value - -22 - expected -14
-io_submit01    3  TPASS  :  expected failure - returned value = 22 : Invalid argument
-io_submit01    4  TPASS  :  expected failure - returned value = 9 : Bad file descriptor
+<html><body>
+<p><font size=3D"2" face=3D"sans-serif">True, tty is intializes to 0, s=
+o if there's a failure, the error message is something like this</font>=
+<br>
+<font size=3D"1" color=3D"#800000" face=3D"Courier New">    Couldn't op=
+en (null), errno =3D 6</font><br>
+<font size=3D"2" face=3D"sans-serif">Instead of something like</font><b=
+r>
+<font size=3D"1" color=3D"#800000" face=3D"Courier New">    Couldn't op=
+en /dev/ttyFoo, errno =3D 6</font><br>
+<font size=3D"2" face=3D"sans-serif">I should have written &quot;unused=
+&quot;.</font><br>
+<font size=3D"2" face=3D"sans-serif">--<br>
+Scott Romanowski<br>
+978-899-5384<br>
+IBM<br>
+Cubicle BG125C<br>
+550 King St.<br>
+Littleton, MA 01460</font><br>
+<br>
+<img width=3D"16" height=3D"16" src=3D"cid:1__=3D0ABBF2E1DFC19EAE8f9e8a=
+93df938@us.ibm.com" border=3D"0" alt=3D"Inactive hide details for Garre=
+tt Cooper ---04/14/2011 10:30:26 AM---On Thu, Apr 14, 2011 at 7:20 AM, =
+Scott Romanowski &lt;romansc"><font size=3D"2" color=3D"#424282" face=3D=
+"sans-serif">Garrett Cooper ---04/14/2011 10:30:26 AM---On Thu, Apr 14,=
+ 2011 at 7:20 AM, Scott Romanowski &lt;romansc@us.ibm.com&gt; wrote: &g=
+t; testcases/kernel/sys</font><br>
+<br>
 
-I fixed this issue by moving the initialization of ctx before the cases,
-also added some additional negative + positive cases. Now tested on x86
-and s390x system, the results seem good:
+<table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0">=
 
-io_submit01    1  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    2  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    3  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    4  TPASS  :  expected failure - returned value = -14 : Bad address
-io_submit01    5  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    6  TPASS  :  expected failure - returned value = -9 : Bad file descriptor
-io_submit01    7  TPASS  :  expected success - returned value = 0
-io_submit01    8  TPASS  :  expected success - returned value = 1
+<tr valign=3D"top"><td width=3D"1%"><img width=3D"96" height=3D"1" src=3D=
+"cid:2__=3D0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D=
+""><br>
 
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
- testcases/kernel/syscalls/io_submit/io_submit01.c |  208 +++++++++++----------
- 1 files changed, 109 insertions(+), 99 deletions(-)
+<ul style=3D"padding-left: 4pt"><font size=3D"1" color=3D"#5F5F5F" face=
+=3D"sans-serif">From:</font></ul>
+</td><td width=3D"100%"><img width=3D"1" height=3D"1" src=3D"cid:2__=3D=
+0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D""><br>
+<font size=3D"1" face=3D"sans-serif">Garrett Cooper &lt;yanegomi@gmail.=
+com&gt;</font></td></tr>
+
+<tr valign=3D"top"><td width=3D"1%"><img width=3D"96" height=3D"1" src=3D=
+"cid:2__=3D0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D=
+""><br>
+
+<ul style=3D"padding-left: 4pt"><font size=3D"1" color=3D"#5F5F5F" face=
+=3D"sans-serif">To:</font></ul>
+</td><td width=3D"100%"><img width=3D"1" height=3D"1" src=3D"cid:2__=3D=
+0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D""><br>
+<font size=3D"1" face=3D"sans-serif">Scott Romanowski/Watson/Contr/IBM@=
+IBMUS</font></td></tr>
+
+<tr valign=3D"top"><td width=3D"1%"><img width=3D"96" height=3D"1" src=3D=
+"cid:2__=3D0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D=
+""><br>
+
+<ul style=3D"padding-left: 4pt"><font size=3D"1" color=3D"#5F5F5F" face=
+=3D"sans-serif">Cc:</font></ul>
+</td><td width=3D"100%" valign=3D"middle"><img width=3D"1" height=3D"1"=
+ src=3D"cid:2__=3D0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0=
+" alt=3D""><br>
+<font size=3D"1" face=3D"sans-serif">ltp-list@lists.sourceforge.net</fo=
+nt></td></tr>
+
+<tr valign=3D"top"><td width=3D"1%"><img width=3D"96" height=3D"1" src=3D=
+"cid:2__=3D0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D=
+""><br>
+
+<ul style=3D"padding-left: 4pt"><font size=3D"1" color=3D"#5F5F5F" face=
+=3D"sans-serif">Date:</font></ul>
+</td><td width=3D"100%"><img width=3D"1" height=3D"1" src=3D"cid:2__=3D=
+0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D""><br>
+<font size=3D"1" face=3D"sans-serif">04/14/2011 10:30 AM</font></td></t=
+r>
+
+<tr valign=3D"top"><td width=3D"1%"><img width=3D"96" height=3D"1" src=3D=
+"cid:2__=3D0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D=
+""><br>
+
+<ul style=3D"padding-left: 4pt"><font size=3D"1" color=3D"#5F5F5F" face=
+=3D"sans-serif">Subject:</font></ul>
+</td><td width=3D"100%"><img width=3D"1" height=3D"1" src=3D"cid:2__=3D=
+0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com" border=3D"0" alt=3D""><br>
+<font size=3D"1" face=3D"sans-serif">Re: [LTP] ioctl01.c bug in error m=
+essage</font></td></tr>
+</table>
+<hr width=3D"100%" size=3D"2" align=3D"left" noshade style=3D"color:#80=
+91A5; "><br>
+<br>
+<br>
+<tt><font size=3D"2">On Thu, Apr 14, 2011 at 7:20 AM, Scott Romanowski =
+&lt;romansc@us.ibm.com&gt; wrote:<br>
+&gt; testcases/kernel/syscalls/ioctl/ioctl01.c has a bug where, if the =
+open()<br>
+&gt; fails, the error message it prints uses an uninitialized char * va=
+riable<br>
+&gt; instead of the one that holds the device. This only affects the er=
+ror<br>
+&gt; message. The solution is to use 'devname' instead of 'tty' in the<=
+br>
+&gt; tst_brkm(), and you can also delete the unused variable, 'char *tt=
+y;'.<br>
+<br>
+    tty is initialized -- just not the value that you want (0 because<b=
+r>
+it's in the BSS).<br>
+    Please try this patch and let me know how things go.<br>
+Thanks,<br>
+-Garrett<br>
+[attachment &quot;fix-ioctl01.patch&quot; deleted by Scott Romanowski/W=
+atson/Contr/IBM] </font></tt><br>
+<br>
+</body></html>=
 
 
---------------1.7.1
-Content-Type: text/x-patch;
-	name="0001-syscalls-io_submit-fix-broken-testcase.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-syscalls-io_submit-fix-broken-testcase.patch"
+--1__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE--
 
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
-index 44580e6..cd94649 100644
---- a/testcases/kernel/syscalls/io_submit/io_submit01.c
-+++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
-@@ -27,54 +27,53 @@
- 
- char *TCID = "io_submit01";
- 
--int TST_TOTAL = 3;
-+int TST_TOTAL = 8;
- 
- #ifdef HAVE_LIBAIO_H
- #include <libaio.h>
- #include <errno.h>
- #include <string.h>
--
--static void cleanup(void)
--{
--	TEST_CLEANUP;
-+#include <fcntl.h>
-+
-+#define TESTFILE	"testfile"
-+#define NEG_RESULT(exp, act) {\
-+	if (act == 0) {\
-+			tst_resm(TFAIL, "call succeeded unexpectedly");\
-+		} else if (act == exp) {\
-+			tst_resm(TPASS, "expected failure - "\
-+				"returned value = %ld : %s", \
-+				act, strerror(-1 * act));\
-+		} else {\
-+			tst_resm(TFAIL, "unexpected failure - "\
-+				"returned value = %ld : %s, "\
-+				"expected value = %d : %s",\
-+				act, strerror(-1 * act),\
-+				exp, strerror(-1 * exp));\
-+		} \
- }
--
--static void setup(void)
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+#define POS_RESULT(act) {\
-+	if (act >= 0) {\
-+		tst_resm(TPASS, "expected success - "\
-+			"returned value = %ld", act);\
-+	} else {\
-+		tst_resm(TFAIL, "unexpected failure - "\
-+			"returned value = %ld : %s",\
-+			act, strerror(-1 * act));\
-+	} \
- }
- 
--/*
--   DESCRIPTION
--   io_submit() queues nr I/O request blocks for processing in the AIO con-
--   text ctx_id.  iocbpp should be an array of nr AIO request blocks, which
--   will be submitted to context ctx_id.
--
--   RETURN VALUE
--   On  success,  io_submit()  returns the number of iocbs submitted (which
--   may be 0 if nr is zero); on failure,  it  returns  one  of  the  errors
--   listed under ERRORS.
--
--   ERRORS
--   EINVAL The aio_context specified by ctx_id is invalid.  nr is less than
--   0.  The iocb at *iocbpp[0] is not properly initialized,  or  the
--   operation  specified  is  invalid for the file descriptor in the
--   iocb.
-- */
-+static void cleanup(void);
-+static void setup(void);
-+
- int main(int argc, char *argv[])
- {
- 	int lc;
- 	char *msg;
--
--	long expected_return;
--
--	int rval;
-+	int rval, fd;
- 	char buf[256];
- 	struct iocb iocb;
- 	struct iocb *iocbs[1];
--	
-+
- 	io_context_t ctx;
- 
- 	memset(&ctx, 0, sizeof(ctx));
-@@ -87,92 +86,103 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		Tst_count = 0;
- 
--		expected_return = -EINVAL;
-+		/* 1 - EINVAL */
-+		/* 1.1 - EINVAL: invalid ctx */
- 		TEST(io_submit(ctx, 0, NULL));
--		if (TEST_RETURN == 0) {
--			tst_resm(TFAIL, "call succeeded unexpectedly");
--		} else if (TEST_RETURN == expected_return) {
--			tst_resm(TPASS, "expected failure - "
--				 "returned value = %ld : %s", (-1 * TEST_RETURN),
--				 strerror(-1 * TEST_RETURN));
--		} else {
--			tst_resm(TFAIL, "unexpected returned value - %ld - "
--				 "expected %ld", TEST_RETURN, expected_return);
--		}
-+		NEG_RESULT(-EINVAL, TEST_RETURN);
-+
-+		/* 1.2 - EINVAL: invalid nr */
-+		rval = io_setup(1, &ctx);
-+		if (rval != 0)
-+			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
-+		TEST(io_submit(ctx, -1, NULL));
-+		NEG_RESULT(-EINVAL, TEST_RETURN);
-+
-+		/* 1.3 - EINVAL: uninitialized iocb */
-+		iocbs[0] = &iocb;
-+		TEST(io_submit(ctx, 1, iocbs));
-+		NEG_RESULT(-EINVAL, TEST_RETURN);
-+
-+		/* 2 - EFAULT: iocb points to invalid data */
-+		TEST(io_submit(ctx, 1, (struct iocb **)-1));
-+		NEG_RESULT(-EFAULT, TEST_RETURN);
- 
- 		/*
--		   EFAULT One of the data structures points to invalid data.
-+		 * 3 - Special case EFAULT or EINVAL (indetermination)
-+		 *
-+		 * The errno depends on the per architecture implementation
-+		 * of io_submit. On the architecture using compat_sys_io_submit
-+		 * as its implementation, errno is set to -EINVAL.
- 		 */
--		expected_return = -EFAULT;
--		TEST(io_submit(ctx, 1, (void *)-1));
-+		TEST(io_submit(ctx, -1, (struct iocb **)-1));
- 		if (TEST_RETURN == 0) {
- 			tst_resm(TFAIL, "call succeeded unexpectedly");
--		} else if (TEST_RETURN == expected_return) {
-+		} else if (TEST_RETURN == -EFAULT
-+			   || TEST_RETURN == -EINVAL) {
- 			tst_resm(TPASS, "expected failure - "
--				 "returned value = %ld : %s", (-1 * TEST_RETURN),
--				 strerror(-1 * TEST_RETURN));
-+				"returned value = %ld : %s",
-+				TEST_RETURN, strerror(-1 * TEST_RETURN));
- 		} else {
--			tst_resm(TFAIL, "unexpected returned value - %ld - "
--				 "expected %ld", TEST_RETURN, expected_return);
--		}
--
--		/* Special case EFAULT or EINVAL (indetermination)
--
--		   The errno depends on the per architecture implementation
--		   of io_submit. On the architecture using compat_sys_io_submit
--		   as its implementation, errno is set to -EINVAL. */
--		{
--			long expected_fault = -EFAULT;
--			long expected_inval = -EINVAL;
--
--			TEST(io_submit(ctx, 0, (void *)-1));
--			if (TEST_RETURN == 0)
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--			else if (TEST_RETURN == expected_fault
--				   || TEST_RETURN == expected_inval) {
--				tst_resm(TPASS, "expected failure - "
--					 "returned value = %ld : %s",
--					 (-1 * TEST_RETURN),
--					 strerror(-1 * TEST_RETURN));
--			} else {
--				tst_resm(TFAIL,
--					 "unexpected returned value - %ld - "
--					 "expected %ld(%s) or %ld(%s)",
--					 TEST_RETURN, expected_fault,
--					 strerror(-1 * expected_fault),
--					 expected_inval,
--					 strerror(-1 * expected_inval));
--			}
--
-+			tst_resm(TFAIL, "unexpected failure - "
-+				"returned value = %ld : %s, "
-+				"expected = %d : %s or %d : %s",
-+				TEST_RETURN, strerror(-1 * TEST_RETURN),
-+				-EFAULT, strerror(EFAULT),
-+				-EINVAL, strerror(EINVAL));
- 		}
- 
- 		/*
--		   EBADF  The file descriptor specified in the first iocb is invalid.
-+		 * 4 - EBADF: fd in iocb is invalid
- 		 */
--		expected_return = -EBADF;
--		io_prep_pread(&iocb, -1, (void *)buf, sizeof(buf), 0);
-+		io_prep_pread(&iocb, -1, buf, sizeof(buf), 0);
- 		iocbs[0] = &iocb;
--		memset(&ctx, 0, sizeof(io_context_t));
--		rval = io_setup(1, &ctx);
--		if (rval != 0)
--			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
-+		TEST(io_submit(ctx, 1, iocbs));
-+		NEG_RESULT(-EBADF, TEST_RETURN);
-+
-+		/* 5 - Positive test: nr == 0 */
-+		TEST(io_submit(ctx, 0, NULL));
-+		POS_RESULT(TEST_RETURN);
- 
-+		/* 6 - Positive test: valid fd */
-+		fd = open(TESTFILE, O_RDONLY);
-+		if (fd == -1)
-+			tst_resm(TBROK|TERRNO, "open");
-+		io_prep_pread(&iocb, fd, buf, sizeof(buf), 0);
-+		iocbs[0] = &iocb;
- 		TEST(io_submit(ctx, 1, iocbs));
--		if (TEST_RETURN == 0)
--			tst_resm(TFAIL, "call succeeded unexpectedly");
--		else if (TEST_RETURN == expected_return) {
--			tst_resm(TPASS, "expected failure - "
--				 "returned value = %ld : %s", (-1 * TEST_RETURN),
--				 strerror(-1 * TEST_RETURN));
--		} else {
--			tst_resm(TFAIL, "unexpected returned value - %ld - "
--				 "expected %ld", TEST_RETURN, expected_return);
--		}
-+		POS_RESULT(TEST_RETURN);
-+		if (close(fd) == -1)
-+			tst_resm(TBROK|TERRNO, "close");
- 	}
- 	cleanup();
- 
- 	tst_exit();
- }
-+
-+static void setup(void)
-+{
-+	int fd;
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+
-+	fd = open(TESTFILE, O_CREAT|O_RDWR, 0755);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (close(fd) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "close");
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	tst_rmdir();
-+}
-+
- #else
- int main(int argc, char *argv[])
- {
 
---------------1.7.1
+--0__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE
+Content-type: image/gif; 
+	name="graycol.gif"
+Content-Disposition: inline; filename="graycol.gif"
+Content-ID: <1__=0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com>
+Content-transfer-encoding: base64
+
+R0lGODlhEAAQAKECAMzMzAAAAP///wAAACH5BAEAAAIALAAAAAAQABAAAAIXlI+py+0PopwxUbpu
+ZRfKZ2zgSJbmSRYAIf4fT3B0aW1pemVkIGJ5IFVsZWFkIFNtYXJ0U2F2ZXIhAAA7
+
+--0__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE
+Content-type: image/gif; 
+	name="ecblank.gif"
+Content-Disposition: inline; filename="ecblank.gif"
+Content-ID: <2__=0ABBF2E1DFC19EAE8f9e8a93df938@us.ibm.com>
+Content-transfer-encoding: base64
+
+R0lGODlhEAABAIAAAAAAAP///yH5BAEAAAEALAAAAAAQAAEAAAIEjI8ZBQA7
+
+--0__=0ABBF2E1DFC19EAE8f9e8a93df938690918c0ABBF2E1DFC19EAE--
+
+
+
+--===============1623465728956218222==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Forrester Wave Report - Recovery time is now measured in hours and minutes
-not days. Key insights are discussed in the 2010 Forrester Wave Report as
-part of an in-depth evaluation of disaster recovery service providers.
-Forrester found the best-in-class provider in terms of services and vision.
-Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
---------------1.7.1
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+--===============1623465728956218222==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -365,7 +292,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------1.7.1--
-
+--===============1623465728956218222==--
 
 
