@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Q9XHB-0000XL-Gf
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:40:37 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Q9XH8-00079h-QC
-	for ltp-list@lists.sourceforge.net; Tue, 12 Apr 2011 06:40:35 +0000
-Received: by pzk35 with SMTP id 35so3367881pzk.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1QAMOV-0008Sc-0f
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 13:15:35 +0000
+Received: from mail-px0-f174.google.com ([209.85.212.174])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QAMOU-0003uB-9z
+	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 13:15:34 +0000
+Received: by pxi15 with SMTP id 15so1342366pxi.33
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 11 Apr 2011 23:40:28 -0700 (PDT)
+	Thu, 14 Apr 2011 06:15:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4DA2D0F5.6020109@redhat.com>
-References: <4DA2D0F5.6020109@redhat.com>
-Date: Mon, 11 Apr 2011 23:40:28 -0700
-Message-ID: <BANLkTinr2n4cY9HO+x_EBsGv4UPcjVRMyg@mail.gmail.com>
+In-Reply-To: <1443931472.73326.1302781486782.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <1640962017.73206.1302781090843.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<1443931472.73326.1302781486782.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Thu, 14 Apr 2011 06:15:27 -0700
+Message-ID: <BANLkTin8di7Q=rZVD9=LFnQVDY4ZrSb7OQ@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] hugeshmdt01: -I5 or -i5?
+Subject: Re: [LTP] [PATCH] memcg_process.c: signals initialization
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,42 +31,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-2011/4/11 Caspar Zhang <czhang@redhat.com>:
-> The hugeshm* tests in runtest/hugetlb are:
+On Thu, Apr 14, 2011 at 4:44 AM, Jan Stancek <jstancek@redhat.com> wrote:
+> 1. There seems to be copy paste error, instead of clearing
+> sigusr_action.sa_mask it clears sigint_action.sa_mask.
+> Change comes from 6c4d1c6d4b3c116ff88f9209b4860940fb8659a8
 >
-> hugeshmat01 hugeshmat01 -i 5
-> hugeshmat02 hugeshmat02 -i 5
-> hugeshmat03 hugeshmat03 -i 5
+> 2. Other fields of these structures are left to be uninitialized.
 >
-> hugeshmctl01 hugeshmctl01 -i 5
-> hugeshmctl02 hugeshmctl02 -i 5
-> hugeshmctl03 hugeshmctl03 -i 5
->
-> hugeshmdt01 hugeshmdt01 -I 5 <--- *-I or -i?*
->
-> hugeshmget01 hugeshmget01 -i 10
-> hugeshmget02 hugeshmget02 -i 10
-> hugeshmget03 hugeshmget03 -i 10
-> hugeshmget05 hugeshmget05 -i 10
->
-> I wonder whether hugeshmdt01 should be repeated for 5 times, or 5
-> seconds? (5 seconds is enough to execute the test for thousands times...
-> That will produce tens ~ hundreds MB log)
+> Both 1) and 2) make the behaviour unexpected. Occasionally I saw,
+> this program to end upon receiving SIGUSR1.
 
-    Good question. "How many iterations does it take to reproduce the
-problem?" is probably a good question to ask.
-Cheers,
+Committed -- thanks!
 -Garrett
 
 ------------------------------------------------------------------------------
-Forrester Wave Report - Recovery time is now measured in hours and minutes
-not days. Key insights are discussed in the 2010 Forrester Wave Report as
-part of an in-depth evaluation of disaster recovery service providers.
-Forrester found the best-in-class provider in terms of services and vision.
-Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
