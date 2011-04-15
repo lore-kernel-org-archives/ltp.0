@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1QCU61-0004qD-KQ
-	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 09:53:17 +0000
-Date: Wed, 20 Apr 2011 12:18:12 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110420101812.GA8161@saboteur.suse.cz>
-References: <BANLkTi=Q+MM0JLVtRD6C0__doJzP6axMwA@mail.gmail.com>
-	<331823962.36120.1303234323973.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<BANLkTinx31ZQfzb9=z8M-x2x9UOnguJ2Gg@mail.gmail.com>
-	<20110419183231.GC4194@saboteur.suse.cz>
-	<BANLkTi=8tuYsYWpZAeL0F1O4BERp5vARbQ@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1QAl2E-0000dt-JE
+	for ltp-list@lists.sourceforge.net; Fri, 15 Apr 2011 15:34:14 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QAl2D-0000lx-Nq
+	for ltp-list@lists.sourceforge.net; Fri, 15 Apr 2011 15:34:14 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3FFY7NR030926
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Apr 2011 11:34:07 -0400
+Message-ID: <4DA86561.9040707@redhat.com>
+Date: Fri, 15 Apr 2011 23:33:53 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BANLkTi=8tuYsYWpZAeL0F1O4BERp5vARbQ@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for
- sched_relax_domain_level
+References: <13c00d6b60ba3b56e0d774ecc06c701417f3a288.1302693113.git.czhang@redhat.com>
+In-Reply-To: <13c00d6b60ba3b56e0d774ecc06c701417f3a288.1302693113.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] [mm] cpuset01: stop testing if no numa
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,60 +29,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> >> =A0 =A0 Just make the test only run on kernels without that particular
-> >> functionality. I assume that's possible in some way, or was the author
-> >> not nice enough to do that (I have to remember that this is Linux and
-> >> sane versioning with kernel/userland sources, etc aren't commonplace
-> >> like BSD)?
-> >
-> > It's more complicated than that. There are several kernel constants that
-> > are considered internal, these may be changed by config knobs
-> > architecture or particular commit. And sometimes there is no way to get
-> > these from running kernel (as it doesn't make sence to get them until
-> > you are trying to test that particular part of the kernel works some
-> > way).
-> >
-> > Even more the kernel is every changing codebase, so what was influenced
-> > by constant may not exist anymore (and the interface for userspace
-> > don't need to be changed at all) just internal implementation.
-> >
-> > And if that's the case. I would rather get rid of test that rely on some
-> > kernel internals and speculated behaviour, rather than spending eternity
-> > patching it for each release.
-> =
+On 04/13/2011 07:12 PM, Caspar Zhang wrote:
+> 
+> Since NUMA is only supported by a few types of machines on x86, if no
+> NUMA support, the numa_count will return 0, this is also acceptable and
+> should stop the test without give an error.
+> 
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  testcases/kernel/mem/cpuset/cpuset01.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
 
->     Fair enough. It would be nice if there was some way to expose this
-> information via debug /proc (or better -- /sys) entries though.
-> Otherwise doing graybox / whitebox testing of the Linux kernel is
-> impossible.
-> Thanks,
+Hi, any one review this one and get it merged too, or not?
 
-Well yes, the problem here is that linux kernel wasn't really made to be
-testeded (and that is true even for POSIX at least partially) we need
-probably to do some talks to let the kernel people know that if they
-want good testsuites, they need to lend a helping hand.
+Thanks,
+Caspar
 
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
-
----------------------------------------------------------------------------=
----
-Benefiting from Server Virtualization: Beyond Initial Workload =
-
+------------------------------------------------------------------------------
+Benefiting from Server Virtualization: Beyond Initial Workload 
 Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve =
-
-application availability and disaster protection. Learn more about boosting =
-
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
 the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
