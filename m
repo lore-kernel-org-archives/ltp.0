@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QCDbf-00061q-IF
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:16:51 +0000
-Received: from mail-pz0-f46.google.com ([209.85.210.46])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QCDbe-0004W3-SA
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:16:51 +0000
-Received: by pzk9 with SMTP id 9so4119910pzk.33
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 19 Apr 2011 09:16:45 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1QAl0j-000353-N4
+	for ltp-list@lists.sourceforge.net; Fri, 15 Apr 2011 15:32:41 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QAl0i-0002S9-Vu
+	for ltp-list@lists.sourceforge.net; Fri, 15 Apr 2011 15:32:41 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3FFWZHN019534
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Apr 2011 11:32:35 -0400
+Message-ID: <4DA86504.4070703@redhat.com>
+Date: Fri, 15 Apr 2011 23:32:20 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <2128371302.29010.1303219317394.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <2128371302.29010.1303219317394.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Tue, 19 Apr 2011 09:16:45 -0700
-Message-ID: <BANLkTi=Q+MM0JLVtRD6C0__doJzP6axMwA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for
-	sched_relax_domain_level
+References: <f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302595961.git.czhang@redhat.com>
+	<a8c42cda82df15baf9acaf89ed09b41cc8cb5af8.1302595961.git.czhang@redhat.com>
+In-Reply-To: <a8c42cda82df15baf9acaf89ed09b41cc8cb5af8.1302595961.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] ksm: mempolicy syscalls not implemented
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,31 +33,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On Tue, Apr 19, 2011 at 6:21 AM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> commit 01a08546af311c065f34727787dd0cc8dc0c216f in linux
-> kernel tree introduced SD_LV_BOOK, which made value "6" valid.
->
-> It is questionable if this test should be in at all,
-> the sched domain mapping can be completely overridden by
-> the architecture-specific code.
->
-> Anyway, a quick solution for now is to skip testing value "6",
-> as it may work on newer kernels.
+On 04/12/2011 04:13 PM, Caspar Zhang wrote:
+> 
+> since NUMA is only supported on a few i386 systems, mempolicy syscalls
+> ([gs]et_mempolicy, mbind) may not implemented, thus, an ENOSYS errno
+> should be acceptable.
+> 
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  testcases/kernel/mem/ksm/ksm02.c |    9 +++++++--
+>  testcases/kernel/mem/ksm/ksm04.c |    9 +++++++--
+>  2 files changed, 14 insertions(+), 4 deletions(-)
+> 
 
-This may be quick and dirty, but now it changes boundary conditions
-for the testcase.
+Hi, anyone can review this patch and get it merged if suitable?
 
-Is there a way where you could quickly come up with a series of
-autoconf driven/Makefile generated means for driving this testcase? It
-seems like that would be the most ideal solution to this problem as
-that would preserve the boundary condition with older kernels.
-
-Thanks!
--Garrett
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
 Benefiting from Server Virtualization: Beyond Initial Workload 
