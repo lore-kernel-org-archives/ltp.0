@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1QA45f-0002HA-UH
-	for ltp-list@lists.sourceforge.net; Wed, 13 Apr 2011 17:42:55 +0000
-Date: Wed, 13 Apr 2011 20:07:08 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110413180708.GE3206@saboteur.suse.cz>
-References: <4DA2D0F5.6020109@redhat.com>
-	<BANLkTinr2n4cY9HO+x_EBsGv4UPcjVRMyg@mail.gmail.com>
+	(envelope-from <yanegomi@gmail.com>) id 1QCDbf-00061q-IF
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:16:51 +0000
+Received: from mail-pz0-f46.google.com ([209.85.210.46])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QCDbe-0004W3-SA
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:16:51 +0000
+Received: by pzk9 with SMTP id 9so4119910pzk.33
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 19 Apr 2011 09:16:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BANLkTinr2n4cY9HO+x_EBsGv4UPcjVRMyg@mail.gmail.com>
-Subject: Re: [LTP] hugeshmdt01: -I5 or -i5?
+In-Reply-To: <2128371302.29010.1303219317394.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <2128371302.29010.1303219317394.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Tue, 19 Apr 2011 09:16:45 -0700
+Message-ID: <BANLkTi=Q+MM0JLVtRD6C0__doJzP6axMwA@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for
+	sched_relax_domain_level
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,28 +31,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
->     Good question. "How many iterations does it take to reproduce the
-> problem?" is probably a good question to ask.
+On Tue, Apr 19, 2011 at 6:21 AM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+> commit 01a08546af311c065f34727787dd0cc8dc0c216f in linux
+> kernel tree introduced SD_LV_BOOK, which made value "6" valid.
+>
+> It is questionable if this test should be in at all,
+> the sched domain mapping can be completely overridden by
+> the architecture-specific code.
+>
+> Anyway, a quick solution for now is to skip testing value "6",
+> as it may work on newer kernels.
 
-The source doesn't say that we should run this for several seconds. And
-the test seems to be testing functionality rather than regression (also
-there is no clear line between these two). But still I thik it's safe to
-assume that this is a typo. Anybody any objections?
+This may be quick and dirty, but now it changes boundary conditions
+for the testcase.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Is there a way where you could quickly come up with a series of
+autoconf driven/Makefile generated means for driving this testcase? It
+seems like that would be the most ideal solution to this problem as
+that would preserve the boundary condition with older kernels.
+
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
-Forrester Wave Report - Recovery time is now measured in hours and minutes
-not days. Key insights are discussed in the 2010 Forrester Wave Report as
-part of an in-depth evaluation of disaster recovery service providers.
-Forrester found the best-in-class provider in terms of services and vision.
-Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
