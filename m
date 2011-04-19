@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1QD9l9-0006x2-61
-	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 06:22:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QD9l8-0003eV-EJ
-	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 06:22:31 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3M6MOWB011476
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Apr 2011 02:22:24 -0400
-From: Caspar Zhang <czhang@redhat.com>
-Date: Fri, 22 Apr 2011 14:22:14 +0800
-Message-Id: <14a46a643c1e7c7b912be1a237067f79b203baa1.1303453311.git.czhang@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <jstancek@redhat.com>) id 1QCAsV-0004di-QC
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 13:22:03 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QCAsV-0002wc-4e
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 13:22:03 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p3JDLvZi003040
+	for <ltp-list@lists.sourceforge.net>; Tue, 19 Apr 2011 09:21:57 -0400
+Date: Tue, 19 Apr 2011 09:21:57 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <2128371302.29010.1303219317394.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH] [mm] mbind01: fix compile issue in RHEL5
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_29009_478793903.1303219317393"
+Subject: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for
+ sched_relax_domain_level
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,71 +30,62 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.7.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+------=_Part_29009_478793903.1303219317393
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
 
-mem/mbind01 was designed to test NUMA v2 lib, it will cause compile
-error with old NUMA API version, this patch fixes this issue.
+commit 01a08546af311c065f34727787dd0cc8dc0c216f in linux
+kernel tree introduced SD_LV_BOOK, which made value "6" valid.
 
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
+It is questionable if this test should be in at all,
+the sched domain mapping can be completely overridden by
+the architecture-specific code.
+
+Anyway, a quick solution for now is to skip testing value "6",
+as it may work on newer kernels.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/mem/mbind/mbind01.c |    9 ++++++++-
- 1 files changed, 8 insertions(+), 1 deletions(-)
+ .../cpuset_base_ops_testset.sh                     |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
 
---------------1.7.1
+------=_Part_29009_478793903.1303219317393
 Content-Type: text/x-patch;
-	name="0001-mm-mbind01-fix-compile-issue-in-RHEL5.patch"
-Content-Transfer-Encoding: 8bit
+	name=0001-cgroups-cpuset_base_ops-6-is-valid-value-for-sched_r.patch
+Content-Transfer-Encoding: base64
 Content-Disposition: attachment;
-	filename="0001-mm-mbind01-fix-compile-issue-in-RHEL5.patch"
+	filename=0001-cgroups-cpuset_base_ops-6-is-valid-value-for-sched_r.patch
 
-diff --git a/testcases/kernel/mem/mbind/mbind01.c b/testcases/kernel/mem/mbind/mbind01.c
-index 2bac1ca..9d99873 100644
---- a/testcases/kernel/mem/mbind/mbind01.c
-+++ b/testcases/kernel/mem/mbind/mbind01.c
-@@ -45,6 +45,8 @@ int TST_TOTAL = 1;
- #include <string.h>
- #include <errno.h>
- 
-+#if defined(LIBNUMA_API_VERSION) && LIBNUMA_API_VERSION == 2
-+
- static unsigned long pagesize;
- static int opt_node;
- static char *opt_nodestr;
-@@ -138,7 +140,12 @@ void usage(void)
- {
- 	printf("  -n      Number of NUMA nodes\n");
- }
--
-+#else /* libnuma v1 */
-+int main(void) {
-+	tst_brkm(TCONF, "XXX: test is only supported on libnuma v2.");
-+	tst_exit();
-+}
-+#endif
- #else /* no NUMA */
- int main(void) {
- 	tst_resm(TCONF, "no NUMA development packages installed.");
-
---------------1.7.1
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0L2NwdXNldF9i
+YXNlX29wc190ZXN0L2NwdXNldF9iYXNlX29wc190ZXN0c2V0LnNoIGIvdGVzdGNhc2VzL2tlcm5l
+bC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X2Jhc2Vfb3BzX3Rlc3QvY3B1c2V0X2Jhc2Vfb3Bz
+X3Rlc3RzZXQuc2gNCmluZGV4IDJiMTAxNmUuLmRhMWY2ZGEgMTAwNzU1DQotLS0gYS90ZXN0Y2Fz
+ZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfYmFzZV9vcHNfdGVzdC9jcHVzZXRf
+YmFzZV9vcHNfdGVzdHNldC5zaA0KKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9j
+cHVzZXQvY3B1c2V0X2Jhc2Vfb3BzX3Rlc3QvY3B1c2V0X2Jhc2Vfb3BzX3Rlc3RzZXQuc2gNCkBA
+IC0xOTAsMTIgKzE5MCwxMyBAQCB0ZXN0X2RvbWFpbigpDQogCQkzCTMNCiAJCTQJNA0KIAkJNQk1
+DQotCQk2CVdSSVRFX0VSUk9SDQorCQk3CVdSSVRFX0VSUk9SDQogCQktMQktMQ0KIAkJLTIJV1JJ
+VEVfRVJST1INCiAJCUEJV1JJVEVfRVJST1INCiAJRU9GDQogCSMgd2hpbGUgcmVhZCBkb21haW5f
+bGV2ZWwgcmVzdWx0DQorCSMgY2hhbmdlZCBsaW1pdCB0byA3LCBhcyA2IG1pZ2h0IHN1Y2NlZWQs
+IHNlZSBTRF9MVl9NQVggaW4gaW5jbHVkZS9saW51eC9zY2hlZC5oDQogfQ0KIA0KICMgYXR0YWNo
+X3Rhc2tfdGVzdCA8Y3B1cz4gPG1lbXM+IDxleHBlY3Q+DQo=
+------=_Part_29009_478793903.1303219317393
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Fulfilling the Lean Software Promise
-Lean software platforms are now widely adopted and the benefits have been 
-demonstrated beyond question. Learn why your peers are replacing JEE 
-containers with lightweight application servers - and what you can gain 
-from the move. http://p.sf.net/sfu/vmware-sfemails
---------------1.7.1
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+------=_Part_29009_478793903.1303219317393
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -104,7 +96,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------1.7.1--
-
-
+------=_Part_29009_478793903.1303219317393--
 
