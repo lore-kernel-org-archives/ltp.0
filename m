@@ -1,28 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <jstancek@redhat.com>) id 1QEyI0-0004T1-KV
-	for ltp-list@lists.sourceforge.net; Wed, 27 Apr 2011 06:31:56 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QEyHz-0000Gg-Nw
-	for ltp-list@lists.sourceforge.net; Wed, 27 Apr 2011 06:31:56 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3R6Vnf9005033
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 Apr 2011 02:31:49 -0400
-Received: from laptop.jstancek.net (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id p3R6VmoQ018112
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 Apr 2011 02:31:49 -0400
-Message-ID: <4DB7B854.8010304@redhat.com>
-Date: Wed, 27 Apr 2011 08:31:48 +0200
+	(envelope-from <jstancek@redhat.com>) id 1QCEma-0000vF-OI
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 17:32:12 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QCEmY-0001ui-Bx
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 17:32:12 +0000
+Date: Tue, 19 Apr 2011 13:32:03 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <331823962.36120.1303234323973.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <BANLkTi=Q+MM0JLVtRD6C0__doJzP6axMwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050307020607070306080109"
-Subject: [LTP] [PATCH] kill05: fix race condition in do_master_child
+Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for
+ sched_relax_domain_level
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,117 +24,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------050307020607070306080109
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-There is a race condition when starting child. Master child can go
-forward before child changes its reuid.
-Fix this by waiting until child is ready.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-  testcases/kernel/syscalls/kill/kill05.c |   25 +++++++++++++++++--------
-  1 files changed, 17 insertions(+), 8 deletions(-)
-
-
-
---------------050307020607070306080109
-Content-Type: text/x-patch;
-	name="0001-kill05-fix-race-condition-in-do_master_child.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="0001-kill05-fix-race-condition-in-do_master_child.patch"
-
-diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
-index e44b690..fe34788 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -130,6 +130,16 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
-+void wait_for_flag(int value)
-+{
-+	while (1) {
-+		if (*flag == value)
-+			break;
-+		else
-+			sleep(1);
-+	}
-+}
-+
- /*
-  * do_master_child()
-  */
-@@ -160,6 +170,7 @@ void do_master_child(char **av)
- 			perror("setreuid failed (in child)");
- 			exit(1);
- 		}
-+		*flag = 1;
- #ifdef UCLINUX
- 		if (self_exec(av[0], "") < 0) {
- 			perror("self_exec failed");
-@@ -175,10 +186,13 @@ void do_master_child(char **av)
- 		exit(1);
- 	}
- 
-+	/* wait until child sets its euid */
-+	wait_for_flag(1);
-+
- 	TEST(kill(pid1, TEST_SIG));
- 
- 	/* signal the child that we're done */
--	*flag = 1;
-+	*flag = 2;
- 
- 	if (waitpid(pid1, &status, 0) == -1) {
- 		perror("waitpid failed");
-@@ -204,13 +218,8 @@ void do_master_child(char **av)
- 
- void do_child()
- {
--
--	while (1) {
--		if (*flag == 1)
--			exit(0);
--		else
--			sleep(1);
--	}
-+	wait_for_flag(2);
-+	exit(0);
- }
- 
- void setup(void)
-
-
---------------050307020607070306080109
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+
+
+----- Original Message -----
+> From: "Garrett Cooper" <yanegomi@gmail.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, April 19, 2011 6:16:45 PM
+> Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for sched_relax_domain_level
+> On Tue, Apr 19, 2011 at 6:21 AM, Jan Stancek <jstancek@redhat.com>
+> wrote:
+> >
+> > commit 01a08546af311c065f34727787dd0cc8dc0c216f in linux
+> > kernel tree introduced SD_LV_BOOK, which made value "6" valid.
+> >
+> > It is questionable if this test should be in at all,
+> > the sched domain mapping can be completely overridden by
+> > the architecture-specific code.
+> >
+> > Anyway, a quick solution for now is to skip testing value "6",
+> > as it may work on newer kernels.
+> 
+> This may be quick and dirty, but now it changes boundary conditions
+> for the testcase.
+> 
+> Is there a way where you could quickly come up with a series of
+> autoconf driven/Makefile generated means for driving this testcase? It
+> seems like that would be the most ideal solution to this problem as
+> that would preserve the boundary condition with older kernels.
+
+I don't see any way to find out range from user-space.
+Even with CONFIG_SCHED_DEBUG, sched_domain->level isn't exported to /proc.
+
+I think whole test isn't much useful, as it is very unlikely
+you would have all scheduling domains available:
+http://lxr.linux.no/#linux+v2.6.38/kernel/sched.c#L6995
+
+Quoting Peter Zijlstra:
+"More like, use sched_debug boot parameter and see your dmesg output.
+I've recently merged a patch that makes the whole level thing completely
+dynamic, there's no more fixed levels."
+
+At the moment, I'm out of ideas how to find out acceptable range.
+
+> 
+> Thanks!
+> -Garrett
 
 ------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
---------------050307020607070306080109
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------050307020607070306080109--
-
