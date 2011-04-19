@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <jstancek@redhat.com>) id 1QCAyC-0007G6-1G
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 13:27:56 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QCAyA-00035J-P4
-	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 13:27:56 +0000
-Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
-	[10.5.5.45])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p3JDRnib012938
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Apr 2011 09:27:49 -0400
-Date: Tue, 19 Apr 2011 09:27:49 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2122052384.29161.1303219669187.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1QCDNv-0005R5-FF
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:02:39 +0000
+Date: Tue, 19 Apr 2011 18:27:28 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110419162728.GA4194@saboteur.suse.cz>
+References: <f4ad73abd0251782d607e88f90a4a1a26001d9ea.1302595961.git.czhang@redhat.com>
+	<a8c42cda82df15baf9acaf89ed09b41cc8cb5af8.1302595961.git.czhang@redhat.com>
+	<4DA86504.4070703@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_29160_782696391.1303219669173"
-Subject: [LTP] [PATCH] cgroups/cgroup_regression_test: fix sporadic failures
+Content-Disposition: inline
+In-Reply-To: <4DA86504.4070703@redhat.com>
+Subject: Re: [LTP] [PATCH] ksm: mempolicy syscalls not implemented
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,171 +23,18 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-------=_Part_29160_782696391.1303219669173
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-
-There were failures caused by incomplete cleanup,
-leaving groups behind after some stress tests.
-Some stress tests failed to complete upon receiving SIGUSR1.
-
-1. dmesg can rotate and number of found bugs can actually go down
-clear the buffer before test to avoid this
-
-2. test_5: test should mount 2 subsystems, but mount command
-says "$subsys" instead of "$subsys2"
-
-3. test_6: test may leave groups behind, fix rmdir
-to match test_6_1.sh
-
-4. test_7_2: mounts whole cgroup not $subsys
-
-5. test_10: can leave cgroups umounted before cleanup
-make sure cgroups are mounted before doing cleanup
-
-6. test_*.sh scripts use trap in loop, which may cause bash
-to miss signal, see https://bugzilla.redhat.com/show_bug.cgi?id=695656
-move trap outside loop to avoid it
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../controllers/cgroup/cgroup_regression_test.sh   |   15 ++++++++++-----
- testcases/kernel/controllers/cgroup/test_10_1.sh   |    3 +--
- testcases/kernel/controllers/cgroup/test_10_2.sh   |    3 +--
- testcases/kernel/controllers/cgroup/test_3_1.sh    |    3 +--
- testcases/kernel/controllers/cgroup/test_3_2.sh    |    3 +--
- testcases/kernel/controllers/cgroup/test_6_1.sh    |    3 +--
- testcases/kernel/controllers/cgroup/test_9_1.sh    |    3 +--
- testcases/kernel/controllers/cgroup/test_9_2.sh    |    3 +--
- 8 files changed, 17 insertions(+), 19 deletions(-)
-
-
-------=_Part_29160_782696391.1303219669173
-Content-Type: text/x-patch;
-	name=0001-cgroups-cgroup_regression_test-fix-sporadic-failures.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename=0001-cgroups-cgroup_regression_test-fix-sporadic-failures.patch
-
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL2Nncm91cF9y
-ZWdyZXNzaW9uX3Rlc3Quc2ggYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC9j
-Z3JvdXBfcmVncmVzc2lvbl90ZXN0LnNoDQppbmRleCA1NTI3YWZjLi42Yzc0YjkyIDEwMDc1NQ0K
-LS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvY2dyb3VwX3JlZ3Jlc3Np
-b25fdGVzdC5zaA0KKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvY2dy
-b3VwX3JlZ3Jlc3Npb25fdGVzdC5zaA0KQEAgLTQwLDYgKzQwLDcgQEAgZWxpZiBbICJ4JChpZCAt
-cnUpIiAhPSB4MCBdOyB0aGVuDQogCWV4aXQgMA0KIGZpDQogDQorZG1lc2cgLWMgPiAvZGV2L251
-bGwNCiBucl9idWc9YGRtZXNnIHwgZ3JlcCAtYyAia2VybmVsIEJVRyJgDQogbnJfbnVsbD1gZG1l
-c2cgfCBncmVwIC1jICJrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlImANCiBucl93YXJu
-aW5nPWBkbWVzZyB8IGdyZXAgLWMgIl5XQVJOSU5HImANCkBAIC03OCw2ICs3OSw4IEBAIGNoZWNr
-X2tlcm5lbF9idWcoKQ0KIAlucl93YXJuaW5nPSRuZXdfd2FybmluZw0KIAlucl9sb2NrZGVwPSRu
-ZXdfbG9ja2RlcA0KIA0KKwllY2hvICJjaGVja19rZXJuZWxfYnVnIGZvdW5kIHNvbWV0aGluZyEi
-DQorCWRtZXNnDQogCWZhaWxlZD0xDQogCXJldHVybiAwDQogfQ0KQEAgLTI1NCw3ICsyNTcsNyBA
-QCB0ZXN0XzUoKQ0KIAlzdWJzeXMxPWB0YWlsIC1uIDEgL3Byb2MvY2dyb3VwcyB8IGF3ayAneyBw
-cmludCAkMSB9J2ANCiAJc3Vic3lzMj1gdGFpbCAtbiAyIC9wcm9jL2Nncm91cHMgfCBoZWFkIC0x
-IHwgYXdrICd7IHByaW50ICQxIH0nYA0KIA0KLQltb3VudCAtdCBjZ3JvdXAgLW8gJHN1YnN5czEs
-JHN1YnN5cyB4eHggY2dyb3VwLw0KKwltb3VudCAtdCBjZ3JvdXAgLW8gJHN1YnN5czEsJHN1YnN5
-czIgeHh4IGNncm91cC8NCiAJaWYgWyAkPyAtbmUgMCBdOyB0aGVuDQogCQl0c3RfcmVzbSBURkFJ
-TCAibW91bnQgJHN1YnN5czEgYW5kICRzdWJzeXMyIGZhaWxlZCINCiAJCWZhaWxlZD0xDQpAQCAt
-MzI1LDcgKzMyOCw3IEBAIHRlc3RfNigpDQogDQogCSMgY2xlYW4gdXANCiAJbW91bnQgLXQgY2dy
-b3VwIC1vIG5zIHh4eCBjZ3JvdXAvID4gL2Rldi9udWxsIDI+JjENCi0Jcm1kaXIgY2dyb3VwL1sx
-LTldID4gL2Rldi9udWxsIDI+JjENCisJcm1kaXIgY2dyb3VwL1sxLTldKiA+IC9kZXYvbnVsbCAy
-PiYxDQogCXVtb3VudCBjZ3JvdXAvDQogfQ0KIA0KQEAgLTM2Miw3ICszNjUsNyBAQCB0ZXN0Xzdf
-MigpDQogew0KIAltb3VudCAtdCBjZ3JvdXAgeHh4IGNncm91cC8NCiAJaWYgWyAkPyAtbmUgMCBd
-OyB0aGVuDQotCQl0c3RfcmVzbSBURkFJTCAiZmFpbGVkIHRvIG1vdW50ICRzdWJzeXMiDQorCQl0
-c3RfcmVzbSBURkFJTCAiZmFpbGVkIHRvIG1vdW50IGNncm91cCINCiAJCWZhaWxlZD0xDQogCQly
-ZXR1cm4NCiAJZmkNCkBAIC00OTksOCArNTAyLDkgQEAgdGVzdF8xMCgpDQogCXdhaXQgJHBpZDEN
-CiAJd2FpdCAkcGlkMg0KIA0KLQlybWRpciBjZ3JvdXAvMCAyPiAvZGV2L251bGwNCi0JdW1vdW50
-IGNncm91cC8gMj4gL2Rldi9udWxsDQorCW1vdW50IC10IGNncm91cCBub25lIGNncm91cCAyPiAv
-ZGV2L251bGwNCisJcm1kaXIgY2dyb3VwLzANCisJdW1vdW50IGNncm91cC8NCiANCiAJY2hlY2tf
-a2VybmVsX2J1Zw0KIAlpZiBbICQ/IC1lcSAxIF07IHRoZW4NCkBAIC01MTAsNiArNTE0LDcgQEAg
-dGVzdF8xMCgpDQogDQogIyBtYWluDQogDQorZmFpbGVkPTANCiBta2RpciBjZ3JvdXAvDQogDQog
-Zm9yICgoY3VyID0gMTsgY3VyIDw9ICRUU1RfVE9UQUw7IGN1cisrKSkNCmRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzEwXzEuc2ggYi90ZXN0Y2Fz
-ZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzEwXzEuc2gNCmluZGV4IDYyODQ3MjIu
-LmZmYTBkNWYgMTAwNzU1DQotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91
-cC90ZXN0XzEwXzEuc2gNCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3Vw
-L3Rlc3RfMTBfMS5zaA0KQEAgLTIyLDEzICsyMiwxMiBAQA0KICMjICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICMjDQogIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMNCiANCit0cmFwIGV4aXQgU0lHVVNSMQ0KIGZv
-ciAoKDsgOykpDQogew0KIAltb3VudCAtdCBjZ3JvdXAgeHh4IGNncm91cC8gPiAvZGV2L251bGwg
-Mj4mMQ0KIAlta2RpciBjZ3JvdXAvMCA+IC9kZXYvbnVsbCAyPiYxDQogCXJtZGlyIGNncm91cC8w
-ID4gL2Rldi9udWxsIDI+JjENCiAJdW1vdW50IGNncm91cC8gPiAvZGV2L251bGwgMj4mMQ0KLQ0K
-LQl0cmFwIGV4aXQgU0lHVVNSMQ0KIH0NCiANCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
-L2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzEwXzIuc2ggYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRy
-b2xsZXJzL2Nncm91cC90ZXN0XzEwXzIuc2gNCmluZGV4IDgyYjkxZTMuLmY4MTFiYmQgMTAwNzU1
-DQotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzEwXzIuc2gN
-CisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL3Rlc3RfMTBfMi5zaA0K
-QEAgLTIyLDExICsyMiwxMCBAQA0KICMjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjDQogIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMNCiANCit0cmFwIGV4aXQgU0lHVVNSMQ0KIGZvciAoKDsgOykpDQogew0K
-IAltb3VudCAtdCBjZ3JvdXAgeHh4IGNncm91cC8gPiAvZGV2L251bGwgMj4mMQ0KIAl1bW91bnQg
-Y2dyb3VwLyA+IC9kZXYvbnVsbCAyPiYxDQotDQotCXRyYXAgZXhpdCBTSUdVU1IxDQogfQ0KIA0K
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL3Rlc3RfM18x
-LnNoIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvdGVzdF8zXzEuc2gNCmlu
-ZGV4IDg2NjI3ZDQuLjUwN2EyYzQgMTAwNzU1DQotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRy
-b2xsZXJzL2Nncm91cC90ZXN0XzNfMS5zaA0KKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9s
-bGVycy9jZ3JvdXAvdGVzdF8zXzEuc2gNCkBAIC0yMiwxMSArMjIsMTAgQEANCiAjIyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAjIw0KICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjDQogDQordHJhcCBleGl0IFNJ
-R1VTUjENCiBmb3IgKCg7IDspKQ0KIHsNCiAJbWtkaXIgY2dyb3VwLzANCiAJcm1kaXIgY2dyb3Vw
-LzANCi0NCi0JdHJhcCBleGl0IFNJR1VTUjENCiB9DQogDQpkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
-L2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvdGVzdF8zXzIuc2ggYi90ZXN0Y2FzZXMva2VybmVs
-L2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzNfMi5zaA0KaW5kZXggYzk0Mjk2OS4uOWY4M2Q5ZCAx
-MDA3NTUNCi0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL3Rlc3RfM18y
-LnNoDQorKysgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzNfMi5z
-aA0KQEAgLTIyLDEwICsyMiw5IEBADQogIyMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMNCiAjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIw0KIA0KK3RyYXAgZXhpdCBTSUdVU1IxDQogZm9yICgoOyA7KSkNCiB7
-DQogCWNhdCAvcHJvYy9zY2hlZF9kZWJ1ZyA+IC9kZXYvbnVsbA0KLQ0KLQl0cmFwIGV4aXQgU0lH
-VVNSMQ0KIH0NCiANCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nn
-cm91cC90ZXN0XzZfMS5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL3Rl
-c3RfNl8xLnNoDQppbmRleCBmZjcwNjc3Li5lOTFlNzk0IDEwMDc1NQ0KLS0tIGEvdGVzdGNhc2Vz
-L2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvdGVzdF82XzEuc2gNCisrKyBiL3Rlc3RjYXNlcy9r
-ZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL3Rlc3RfNl8xLnNoDQpAQCAtMjIsMTIgKzIyLDExIEBA
-DQogIyMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIyMNCiAjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KIA0K
-K3RyYXAgZXhpdCBTSUdVU1IxDQogZm9yICgoOyA7KSkNCiB7DQogCW1vdW50IC10IGNncm91cCAt
-byBucyB4eHggY2dyb3VwLyA+IC9kZXYvbnVsbCAyPiYxDQogCXJtZGlyIGNncm91cC9bMS05XSog
-PiAvZGV2L251bGwgMj4mMQ0KIAl1bW91bnQgY2dyb3VwLyA+IC9kZXYvbnVsbCAyPiYxDQotDQot
-CXRyYXAgZXhpdCBTSUdVU1IxDQogfQ0KIA0KZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-Y29udHJvbGxlcnMvY2dyb3VwL3Rlc3RfOV8xLnNoIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9s
-bGVycy9jZ3JvdXAvdGVzdF85XzEuc2gNCmluZGV4IDI0YTE1MjQuLmM2ZThmNmYgMTAwNzU1DQot
-LS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzlfMS5zaA0KKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvdGVzdF85XzEuc2gNCkBAIC0y
-MiwxMyArMjIsMTIgQEANCiAjIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIw0KICMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjDQogDQordHJhcCBleGl0IFNJR1VTUjENCiBmb3IgKCg7IDspKQ0KIHsNCiAjCW1v
-dW50IC10IGNncm91cCAtbyBkZWJ1ZyB4eHggY2dyb3VwLyA+IC9kZXYvbnVsbCAyPiYxDQogCW1v
-dW50IC10IGNncm91cCB4eHggY2dyb3VwLyA+IC9kZXYvbnVsbCAyPiYxDQogCWNhdCBjZ3JvdXAv
-cmVsZWFzZV9hZ2VudCA+IC9kZXYvbnVsbCAyPiYxDQogCXVtb3VudCBjZ3JvdXAvID4gL2Rldi9u
-dWxsIDI+JjENCi0NCi0JdHJhcCBleGl0IFNJR1VTUjENCiB9DQogDQpkaWZmIC0tZ2l0IGEvdGVz
-dGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvdGVzdF85XzIuc2ggYi90ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0XzlfMi5zaA0KaW5kZXggNjU0ZGY0ZC4uZjhl
-MWM2MSAxMDA3NTUNCi0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL3Rl
-c3RfOV8yLnNoDQorKysgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC90ZXN0
-XzlfMi5zaA0KQEAgLTIyLDEyICsyMiwxMSBAQA0KICMjICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjDQog
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMNCiANCit0cmFwIGV4aXQgU0lHVVNSMQ0KIGZvciAoKDsg
-OykpDQogew0KICMJbW91bnQgLXQgY2dyb3VwIC1vIGRlYnVnIHh4eCBjZ3JvdXAvID4gL2Rldi9u
-dWxsIDI+JjENCiAJbW91bnQgLXQgY2dyb3VwIHh4eCBjZ3JvdXAvID4gL2Rldi9udWxsIDI+JjEN
-CiAJdW1vdW50IGNncm91cC8gPiAvZGV2L251bGwgMj4mMQ0KLQ0KLQl0cmFwIGV4aXQgU0lHVVNS
-MQ0KIH0NCiANCg==
-------=_Part_29160_782696391.1303219669173
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
+
+Hi!
+Commited.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Benefiting from Server Virtualization: Beyond Initial Workload 
@@ -200,16 +42,7 @@ Consolidation -- Increasing the use of server virtualization is a top
 priority.Virtualization can reduce costs, simplify management, and improve 
 application availability and disaster protection. Learn more about boosting 
 the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
-------=_Part_29160_782696391.1303219669173
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_29160_782696391.1303219669173--
-
