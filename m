@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1QA2IQ-0006V4-R4
-	for ltp-list@lists.sourceforge.net; Wed, 13 Apr 2011 15:47:58 +0000
-Date: Wed, 13 Apr 2011 18:12:13 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110413161213.GB3206@saboteur.suse.cz>
-References: <4D8AB7FB.6030108@cn.fujitsu.com>
-	<20110324190228.GA4003@hannu-debian.elisa-laajakaista.fi>
-	<4D8BF42D.4010709@cn.fujitsu.com>
-	<20110331164159.GA11109@saboteur.suse.cz>
-	<4D953B4E.8010408@cn.fujitsu.com>
-	<20110401125046.GF11484@saboteur.suse.cz>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1QCEsd-0001Li-1U
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 17:38:27 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QCEsc-00024d-5i
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 17:38:27 +0000
+Received: by pvc30 with SMTP id 30so3818252pvc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 19 Apr 2011 10:38:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20110401125046.GF11484@saboteur.suse.cz>
-Subject: Re: [LTP] [POSIX][PATCH]Fix bug of "pthread_rwlock_timedwrlock" test
+In-Reply-To: <331823962.36120.1303234323973.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+References: <BANLkTi=Q+MM0JLVtRD6C0__doJzP6axMwA@mail.gmail.com>
+	<331823962.36120.1303234323973.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+Date: Tue, 19 Apr 2011 10:38:20 -0700
+Message-ID: <BANLkTinx31ZQfzb9=z8M-x2x9UOnguJ2Gg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for
+	sched_relax_domain_level
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,24 +32,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bian Naimeng <biannm@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-I've commited a little different fix for this.
+On Tue, Apr 19, 2011 at 10:32 AM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+>> From: "Garrett Cooper" <yanegomi@gmail.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Tuesday, April 19, 2011 6:16:45 PM
+>> Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for sched_relax_domain_level
+>> On Tue, Apr 19, 2011 at 6:21 AM, Jan Stancek <jstancek@redhat.com>
+>> wrote:
+>> >
+>> > commit 01a08546af311c065f34727787dd0cc8dc0c216f in linux
+>> > kernel tree introduced SD_LV_BOOK, which made value "6" valid.
+>> >
+>> > It is questionable if this test should be in at all,
+>> > the sched domain mapping can be completely overridden by
+>> > the architecture-specific code.
+>> >
+>> > Anyway, a quick solution for now is to skip testing value "6",
+>> > as it may work on newer kernels.
+>>
+>> This may be quick and dirty, but now it changes boundary conditions
+>> for the testcase.
+>>
+>> Is there a way where you could quickly come up with a series of
+>> autoconf driven/Makefile generated means for driving this testcase? It
+>> seems like that would be the most ideal solution to this problem as
+>> that would preserve the boundary condition with older kernels.
+>
+> I don't see any way to find out range from user-space.
+> Even with CONFIG_SCHED_DEBUG, sched_domain->level isn't exported to /proc.
+>
+> I think whole test isn't much useful, as it is very unlikely
+> you would have all scheduling domains available:
+> http://lxr.linux.no/#linux+v2.6.38/kernel/sched.c#L6995
+>
+> Quoting Peter Zijlstra:
+> "More like, use sched_debug boot parameter and see your dmesg output.
+> I've recently merged a patch that makes the whole level thing completely
+> dynamic, there's no more fixed levels."
+>
+> At the moment, I'm out of ideas how to find out acceptable range.
 
-Thanks.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+    Just make the test only run on kernels without that particular
+functionality. I assume that's possible in some way, or was the author
+not nice enough to do that (I have to remember that this is Linux and
+sane versioning with kernel/userland sources, etc aren't commonplace
+like BSD)?
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Forrester Wave Report - Recovery time is now measured in hours and minutes
-not days. Key insights are discussed in the 2010 Forrester Wave Report as
-part of an in-depth evaluation of disaster recovery service providers.
-Forrester found the best-in-class provider in terms of services and vision.
-Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
