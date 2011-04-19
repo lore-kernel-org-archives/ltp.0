@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <aelder@sgi.com>) id 1Q6idh-0005hE-Jj
-	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:12:13 +0000
-Received: from relay1.sgi.com ([192.48.179.29] helo=relay.sgi.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.74)
-	id 1Q6idd-0007QZ-D6
-	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:12:13 +0000
-Received: from cf--amer001e--3.americas.sgi.com
-	(cf--amer001e--3.americas.sgi.com [137.38.100.5])
-	by relay1.corp.sgi.com (Postfix) with ESMTP id 24D9F8F807A
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  4 Apr 2011 05:12:04 -0700 (PDT)
-From: Alex Elder <aelder@sgi.com>
-Date: Mon, 04 Apr 2011 07:08:42 -0500
-Message-ID: <1301918922.3282.29.camel@doink>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 6/6] ltp: enable -Wall for doio compiles
-Reply-To: aelder@sgi.com
+	(envelope-from <jstancek@redhat.com>) id 1QCDpc-0003j6-JM
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:31:16 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QCDpb-0000H1-DY
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 16:31:16 +0000
+Date: Tue, 19 Apr 2011 12:31:08 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1595803481.34824.1303230668869.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <BANLkTikym73Dno4O9sc5VH81dzJ2_P8R9A@mail.gmail.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] cgroups/cgroup_regression_test: fix sporadic
+ failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,41 +27,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-Now that the code has been made modern and a few minor problems have
-been addressed, enable the "-Wall" flag for gcc when building files
-under "testcases/kernel/fs/doio/".
-
-Signed-off-by: Alex Elder <aelder@sgi.com>
----
- testcases/kernel/fs/doio/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/fs/doio/Makefile b/testcases/kernel/fs/doio/Makefile
-index 2cfc8b7..7e56089 100644
---- a/testcases/kernel/fs/doio/Makefile
-+++ b/testcases/kernel/fs/doio/Makefile
-@@ -24,7 +24,7 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--CFLAGS			+= -D_LARGEFILE64_SOURCE
-+CFLAGS			+= -D_LARGEFILE64_SOURCE -Wall
- LDLIBS			+= -lrt -lpthread
- 
- INSTALL_TARGETS		:= rwtest
--- 
-1.7.4
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
 
+----- Original Message -----
+> From: "Garrett Cooper" <yanegomi@gmail.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, April 19, 2011 6:13:48 PM
+> Subject: Re: [LTP] [PATCH] cgroups/cgroup_regression_test: fix sporadic failures
+> On Tue, Apr 19, 2011 at 6:27 AM, Jan Stancek <jstancek@redhat.com>
+> wrote:
+> >
+> > There were failures caused by incomplete cleanup,
+> > leaving groups behind after some stress tests.
+> > Some stress tests failed to complete upon receiving SIGUSR1.
+> >
+> > 1. dmesg can rotate and number of found bugs can actually go down
+> > clear the buffer before test to avoid this
+> >
+> > 2. test_5: test should mount 2 subsystems, but mount command
+> > says "$subsys" instead of "$subsys2"
+> >
+> > 3. test_6: test may leave groups behind, fix rmdir
+> > to match test_6_1.sh
+> >
+> > 4. test_7_2: mounts whole cgroup not $subsys
+> >
+> > 5. test_10: can leave cgroups umounted before cleanup
+> > make sure cgroups are mounted before doing cleanup
+> >
+> > 6. test_*.sh scripts use trap in loop, which may cause bash
+> > to miss signal, see
+> > https://bugzilla.redhat.com/show_bug.cgi?id=695656
+> > move trap outside loop to avoid it
+> 
+> I personally don't have a lot of context into cgroups, but when is
+> it acceptable for Linux to send SIGUSR1 when mounting, unmounting, or
+> removing cgroup directories?
+
+The main test spawns couple of workers, which run infinite loop and stress
+test some area. SIGUSR1 was chosen by author of test to stop these workers
+after certain amount of time.
+
+The signal only controls workers, it is not directly related to any
+cgroup functionality AFAIK.
+
+Unfortunetly, when resetting "trap" in bash, signal is ignored for
+short period of time, which occasionally hangs the whole test.
+
+> Thanks,
+> -Garrett
 
 ------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
