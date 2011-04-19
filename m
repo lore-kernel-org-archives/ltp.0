@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <aelder@sgi.com>) id 1Q9LuA-00012e-GO
-	for ltp-list@lists.sourceforge.net; Mon, 11 Apr 2011 18:32:06 +0000
-Received: from relay1.sgi.com ([192.48.179.29] helo=relay.sgi.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.74)
-	id 1Q9Lu9-0006t3-ID
-	for ltp-list@lists.sourceforge.net; Mon, 11 Apr 2011 18:32:06 +0000
-Received: from cf--amer001e--3.americas.sgi.com
-	(cf--amer001e--3.americas.sgi.com [137.38.100.5])
-	by relay1.corp.sgi.com (Postfix) with ESMTP id 1BAA18F8050
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 11 Apr 2011 11:32:00 -0700 (PDT)
-From: Alex Elder <aelder@sgi.com>
-Date: Mon, 11 Apr 2011 13:31:50 -0500
-Message-ID: <1302546710.2580.27.camel@doink>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 2/3, v2] ltp: fix warnings in "aio-stress.c"
-Reply-To: aelder@sgi.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <jstancek@redhat.com>) id 1QC6Cf-0000Dy-G4
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 08:22:33 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QC6Ce-0007LH-EX
+	for ltp-list@lists.sourceforge.net; Tue, 19 Apr 2011 08:22:33 +0000
+Received: from mail06.corp.redhat.com (zmail06.collab.prod.int.phx2.redhat.com
+	[10.5.5.45])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p3J8MQOo027458
+	for <ltp-list@lists.sourceforge.net>; Tue, 19 Apr 2011 04:22:26 -0400
+Date: Tue, 19 Apr 2011 04:22:26 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1772868088.24910.1303201346610.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_24909_287074242.1303201346609"
+Subject: [LTP] [PATCH v2] kill05: fix sporadic failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,173 +28,108 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-In "testcases/kernel/io/ltp-aiodio/aio-stress.c" there are a
-number of warnings that show up due to mismatches between
-fprintf() conversion specifications and the variables being
-formatted.
+------=_Part_24909_287074242.1303201346609
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Fix most of these by casting the variables to the right type;
-in one case a "%td" is used to signify a ptrdiff_t variable.
 
-Updated to address comments made by Garrett Cooper in review.
-However, both "file_size" and "context_offset" variables represent
-file offsets, and therefore should remain type off_t (rather than
-size_t, which was recommended).  Some printf() formats were
-adjusted to use %ld/(long) for printing off_t values.
+This test failed sporadically, because of:
 
-Signed-off-by: Alex Elder <aelder@sgi.com>
+1. misusage of getpwnam causes ltpuser1 and ltpuser2 to point
+to same passwd structure, from getpwnam(3):
+"The return value may point to a static area, and may be overwritten by
+subsequent calls to getpwent(3)."
+Fix this by copying the results from returned pointer.
 
+2. race condition between parent and child
+The test actually worked when child didn't have time to set its euid.
+Fix this by waiting for child to set its euid.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- ltp/aio-stress.c |   39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+ testcases/kernel/syscalls/kill/kill05.c |   47 ++++++++++++++++++++++--------
+ 1 files changed, 34 insertions(+), 13 deletions(-)
 
-Index: b/ltp/aio-stress.c
-===================================================================
---- a/ltp/aio-stress.c
-+++ b/ltp/aio-stress.c
-@@ -161,16 +161,16 @@ struct io_oper {
-     /* read,write, random, etc */
-     int rw;
- 
--    /* number of ios that will get sent to aio */
-+    /* number of I/O's that will get sent to aio */
-     int total_ios;
- 
--    /* number of ios we've already sent */
-+    /* number of I/O's we've already sent */
-     int started_ios;
- 
-     /* last offset used in an io operation */
-     off_t last_offset;
- 
--    /* stonewalled = 1 when we got cut off before submitting all our
-ios */
-+    /* stonewalled = 1 when we got cut off before submitting all our
-I/O's */
-     int stonewalled;
- 
-     /* list management */
-@@ -217,7 +217,7 @@ struct thread_info {
-     /* list of io units available for io */
-     struct io_unit *free_ious;
- 
--    /* number of io units in the ios array */
-+    /* number of io units in the I/O array */
-     int num_global_ios;
- 
-     /* number of io units in flight */
-@@ -745,7 +745,7 @@ resubmit:
-     calc_latency(&start_time, &stop_time, &t->io_submit_latency);
- 
-     if (ret != num_ios) {
--       /* some ios got through */
-+       /* some I/O's got through */
-        if (ret > 0) {
-            update_iou_counters(my_iocbs, ret, &stop_time);
-            my_iocbs += ret;
-@@ -1165,7 +1165,7 @@ restart:
- 
-     if (t->stage_mb_trans && t->num_files > 0) {
-         double seconds = time_since_now(&stage_time);
--       fprintf(stderr, "thread %d %s totals (%.2f MB/s) %.2f MB in
-%.2fs\n",
-+       fprintf(stderr, "thread %td %s totals (%.2f MB/s) %.2f MB in
-%.2fs\n",
-                t - global_thread_info, this_stage,
-t->stage_mb_trans/seconds,
-                t->stage_mb_trans, seconds);
-     }
-@@ -1270,8 +1270,10 @@ void print_usage(void) {
-     printf("\t-s size in MB of the test file(s), default 1024MB\n");
-     printf("\t-r record size in KB used for each io, default 64KB\n");
-     printf("\t-d number of pending aio requests for each file, default
-64\n");
--    printf("\t-i number of ios per file sent before switching\n\t   to
-the next file, default 8\n");
--    printf("\t-I total number of ayncs IOs the program will run,
-default is run until Cntl-C\n");
-+    printf("\t-i number of I/O's per file sent before switching\n"
-+           "\t   to the next file, default 8\n");
-+    printf("\t-I total number of ayncs I/Os the program will run, "
-+           "default is run until Cntl-C\n");
-     printf("\t-O Use O_DIRECT (not available in 2.4 kernels),\n");
-     printf("\t-S Use O_SYNC for writes\n");
-     printf("\t-o add an operation to the list: write=0, read=1,\n");
-@@ -1391,7 +1393,7 @@ int main(int ac, char **av)
-     }
- 
-     /*
--     * make sure we don't try to submit more ios than we have allocated
-+     * make sure we don't try to submit more I/O's than we have
-allocated
-      * memory for
-      */
-     if (depth < io_iter) {
-@@ -1426,7 +1428,7 @@ int main(int ac, char **av)
-         max_io_submit = num_files * io_iter * num_contexts;
- 
-     /*
--     * make sure we don't try to submit more ios than max_io_submit
-allows
-+     * make sure we don't try to submit more I/O's than max_io_submit
-allows
-      */
-     if (max_io_submit < io_iter) {
-         io_iter = max_io_submit;
-@@ -1446,17 +1448,21 @@ int main(int ac, char **av)
-     }
- 
-     if (file_size < num_contexts * context_offset) {
--        fprintf(stderr, "file size %Lu too small for %d contexts\n",
--               file_size, num_contexts);
-+        fprintf(stderr, "file size %ld too small for %d contexts\n",
-+               (long) file_size, num_contexts);
-        exit(1);
-     }
- 
--    fprintf(stderr, "file size %LuMB, record size %luKB, depth %d, ios
-per iteration %d\n", file_size / (1024 * 1024), rec_len / 1024, depth,
-io_iter);
-+    fprintf(stderr, "file size %ldMB, record size %ldKB, depth %d, "
-+           "I/O's per iteration %d\n",
-+           (long) (file_size / (1024 * 1024)),
-+           rec_len / 1024, depth, io_iter);
-     fprintf(stderr, "max io_submit %d, buffer alignment set to %luKB
-\n",
-             max_io_submit, (page_size_mask + 1)/1024);
--    fprintf(stderr, "threads %d files %d contexts %d context offset %
-LuMB verification %s\n",
--            num_threads, num_files, num_contexts,
--           context_offset / (1024 * 1024), verify ? "on" : "off");
-+    fprintf(stderr, "threads %d files %d contexts %d context offset %
-ldMB "
-+           "verification %s\n", num_threads, num_files, num_contexts,
-+           (long) (context_offset / (1024 * 1024)),
-+           verify ? "on" : "off");
-     /* open all the files and do any required setup for them */
-     for (i = optind ; i < ac ; i++) {
-        int thread_index;
-@@ -1508,4 +1514,4 @@ int main(int ac, char **av)
-        exit(1);
-     }
-     return status;
--}
-\ No newline at end of file
-+}
 
+------=_Part_24909_287074242.1303201346609
+Content-Type: text/x-patch; name=0001-kill05-fix-sporadic-failures.patch
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename=0001-kill05-fix-sporadic-failures.patch
+
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMva2lsbC9raWxsMDUuYyBiL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMva2lsbC9raWxsMDUuYw0KaW5kZXggMDE5MzEwMC4uMTU5
+MzkzMiAxMDA2NDQNCi0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMva2lsbC9raWxsMDUu
+Yw0KKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9raWxsL2tpbGwwNS5jDQpAQCAtNjEs
+NiArNjEsMTMgQEANCiAgKiAgICAgIC0gRml4IGRlbGV0aW9uIG9mIElQQyBtZW1vcnkgc2VnbWVu
+dC4gU2VnbWVudCB3YXMgbm90IGNvcnJlY3RseQ0KICAqICAgICAgICBkZWxldGVkIGR1ZSB0byB0
+aGUgY2hhbmdlIG9mIHVpZCBkdXJpbmcgdGhlIHRlc3QuDQogICoNCisgKiAgICAgIDEzLzA0LzIw
+MDEgSmFuIFN0YW5jZWsgKGpzdGFuY2VrQHJlZGhhdC5jb20pDQorICogICAgICAtIEZpeCBtaXN1
+c2FnZSBvZiBnZXRwd25hbQ0KKyAqICAgICAgICAiVGhlIHJldHVybiB2YWx1ZSBtYXkgcG9pbnQg
+dG8gYSBzdGF0aWMgYXJlYSwgYW5kIG1heSBiZQ0KKyAqICAgICAgICBvdmVyd3JpdHRlbiBieSBz
+dWJzZXF1ZW50IGNhbGxzIHRvIGdldHB3ZW50KDMpIg0KKyAqICAgICAgLSBGaXggcmFjZSBjb25k
+aXRpb24gYmV0d2VlbiBwYXJlbnQgYW5kIGNoaWxkDQorICogICAgICAgIFdhaXQgZm9yIGNoaWxk
+IHRvIHNldCBpdHMgZXVpZCBiZWZvcmUgYXR0ZW1wdGluZyB0byBraWxsIGl0DQorICoNCiAgKiBS
+RVNUUklDVElPTlMNCiAgKglUaGlzIHRlc3QgbXVzdCBiZSBydW4gYXMgcm9vdC4NCiAgKglMb29w
+aW5nIHdpdGggdGhlIC1pIG9wdGlvbiBkb2VzIG5vdCB3b3JrIGNvcnJlY3RseS4NCkBAIC0xMzAs
+NiArMTM3LDE2IEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQ0KIAl0c3RfZXhpdCgpOw0K
+IH0NCiANCit2b2lkIHdhaXRfZm9yX2ZsYWcoaW50IHZhbHVlKQ0KK3sNCisJd2hpbGUgKDEpIHsN
+CisJCWlmICgqZmxhZyA9PSB2YWx1ZSkNCisJCQlleGl0KDApOw0KKwkJZWxzZQ0KKwkJCXNsZWVw
+KDEpOw0KKwl9DQorfQ0KKw0KIC8qDQogICogZG9fbWFzdGVyX2NoaWxkKCkNCiAgKi8NCkBAIC0x
+NDEsMTAgKzE1OCwxNiBAQCB2b2lkIGRvX21hc3Rlcl9jaGlsZChjaGFyICoqYXYpDQogCWNoYXIg
+dXNlcjFuYW1lW10gPSAibm9ib2R5IjsNCiAJY2hhciB1c2VyMm5hbWVbXSA9ICJiaW4iOw0KIA0K
+LQlzdHJ1Y3QgcGFzc3dkICpsdHB1c2VyMSwgKmx0cHVzZXIyOw0KKwlzdHJ1Y3QgcGFzc3dkICp1
+c2VyOw0KKwl1bnNpZ25lZCBpbnQgdWlkMSwgdWlkMiwgZ2lkMSwgZ2lkMjsNCiANCi0JbHRwdXNl
+cjEgPSBTQUZFX0dFVFBXTkFNKE5VTEwsIHVzZXIxbmFtZSk7DQotCWx0cHVzZXIyID0gU0FGRV9H
+RVRQV05BTShOVUxMLCB1c2VyMm5hbWUpOw0KKwl1c2VyID0gU0FGRV9HRVRQV05BTShOVUxMLCB1
+c2VyMW5hbWUpOw0KKwl1aWQxID0gdXNlci0+cHdfdWlkOw0KKwlnaWQxID0gdXNlci0+cHdfZ2lk
+Ow0KKw0KKwl1c2VyID0gU0FGRV9HRVRQV05BTShOVUxMLCB1c2VyMm5hbWUpOw0KKwl1aWQyID0g
+dXNlci0+cHdfdWlkOw0KKwlnaWQyID0gdXNlci0+cHdfZ2lkOw0KIA0KIAlURVNUX0VYUF9FTk9T
+KGV4cF9lbm9zKTsNCiANCkBAIC0xNTgsMTEgKzE4MSwxMSBAQCB2b2lkIGRvX21hc3Rlcl9jaGls
+ZChjaGFyICoqYXYpDQogCQl0c3RfYnJrbShUQlJPS3xURVJSTk8sIGNsZWFudXAsICJGb3JrIGZh
+aWxlZCIpOw0KIA0KIAlpZiAocGlkMSA9PSAwKSB7DQotDQotCQlpZiAoc2V0cmV1aWQobHRwdXNl
+cjEtPnB3X3VpZCwgbHRwdXNlcjEtPnB3X3VpZCkgPT0gLTEpIHsNCisJCWlmIChzZXRyZXVpZCh1
+aWQxLCBnaWQxKSA9PSAtMSkgew0KIAkJCXBlcnJvcigic2V0cmV1aWQgZmFpbGVkIChpbiBjaGls
+ZCkiKTsNCiAJCQlleGl0KDEpOw0KIAkJfQ0KKwkJKmZsYWcgPSAxOw0KICNpZmRlZiBVQ0xJTlVY
+DQogCQlpZiAoc2VsZl9leGVjKGF2WzBdLCAiIikgPCAwKSB7DQogCQkJcGVycm9yKCJzZWxmX2V4
+ZWMgZmFpbGVkIik7DQpAQCAtMTcyLDE1ICsxOTUsMTggQEAgdm9pZCBkb19tYXN0ZXJfY2hpbGQo
+Y2hhciAqKmF2KQ0KIAkJZG9fY2hpbGQoKTsNCiAjZW5kaWYNCiAJfQ0KLQlpZiAoc2V0cmV1aWQo
+bHRwdXNlcjItPnB3X3VpZCwgbHRwdXNlcjItPnB3X3VpZCkgPT0gLTEpIHsNCisJaWYgKHNldHJl
+dWlkKHVpZDIsIGdpZDIpID09IC0xKSB7DQogCQlwZXJyb3IoInNldGV1aWQgZmFpbGVkIik7DQog
+CQlleGl0KDEpOw0KIAl9DQogDQorCS8qIHdhaXQgdW50aWwgY2hpbGQgc2V0cyBpdHMgZXVpZCAq
+Lw0KKwl3YWl0X2Zvcl9mbGFnKDEpOw0KKw0KIAlURVNUKGtpbGwocGlkMSwgVEVTVF9TSUcpKTsN
+CiANCiAJLyogc2lnbmFsIHRoZSBjaGlsZCB0aGF0IHdlJ3JlIGRvbmUgKi8NCi0JKmZsYWcgPSAx
+Ow0KKwkqZmxhZyA9IDI7DQogDQogCWlmICh3YWl0cGlkKHBpZDEsICZzdGF0dXMsIDApID09IC0x
+KSB7DQogCQlwZXJyb3IoIndhaXRwaWQgZmFpbGVkIik7DQpAQCAtMjA5LDEyICsyMzUsNyBAQCB2
+b2lkIGRvX2NoaWxkKCkNCiAJcGlkX3QgbXlfcGlkOw0KIA0KIAlteV9waWQgPSBnZXRwaWQoKTsN
+Ci0Jd2hpbGUgKDEpIHsNCi0JCWlmICgqZmxhZyA9PSAxKQ0KLQkJCWV4aXQoMCk7DQotCQllbHNl
+DQotCQkJc2xlZXAoMSk7DQotCX0NCisJd2FpdF9mb3JfZmxhZygyKTsNCiB9DQogDQogdm9pZCBz
+ZXR1cCh2b2lkKQ0K
+------=_Part_24909_287074242.1303201346609
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+------=_Part_24909_287074242.1303201346609
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_24909_287074242.1303201346609--
+
