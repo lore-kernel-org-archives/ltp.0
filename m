@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q7S3I-0000QW-HF
-	for ltp-list@lists.sourceforge.net; Wed, 06 Apr 2011 12:41:40 +0000
-Date: Wed, 6 Apr 2011 15:05:22 +0200
+	(envelope-from <chrubis@suse.de>) id 1QCU61-0004qD-KQ
+	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 09:53:17 +0000
+Date: Wed, 20 Apr 2011 12:18:12 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110406130522.GB6652@saboteur.suse.cz>
-References: <1301695288-24912-1-git-send-email-aelder@sgi.com>
-	<26c7134d7a0855a4bd8a5f73e7dfc8088115f9d2.1301695094.git.aelder@sgi.com>
+Message-ID: <20110420101812.GA8161@saboteur.suse.cz>
+References: <BANLkTi=Q+MM0JLVtRD6C0__doJzP6axMwA@mail.gmail.com>
+	<331823962.36120.1303234323973.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+	<BANLkTinx31ZQfzb9=z8M-x2x9UOnguJ2Gg@mail.gmail.com>
+	<20110419183231.GC4194@saboteur.suse.cz>
+	<BANLkTi=8tuYsYWpZAeL0F1O4BERp5vARbQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <26c7134d7a0855a4bd8a5f73e7dfc8088115f9d2.1301695094.git.aelder@sgi.com>
-Subject: Re: [LTP] [PATCH 1/6] ltp: fix databinchk() definition
+In-Reply-To: <BANLkTi=8tuYsYWpZAeL0F1O4BERp5vARbQ@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] cgroups/cpuset_base_ops: 6 is valid value for
+ sched_relax_domain_level
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,28 +26,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alex Elder <aelder@sgi.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> -void databinchedk( int mode, unsigned char *buffer, int bsize, int offset, char **errmsg);
-> +int databinchk( int mode, char *buffer, int bsize, int offset, char **errmsg);
+> >> =A0 =A0 Just make the test only run on kernels without that particular
+> >> functionality. I assume that's possible in some way, or was the author
+> >> not nice enough to do that (I have to remember that this is Linux and
+> >> sane versioning with kernel/userland sources, etc aren't commonplace
+> >> like BSD)?
+> >
+> > It's more complicated than that. There are several kernel constants that
+> > are considered internal, these may be changed by config knobs
+> > architecture or particular commit. And sometimes there is no way to get
+> > these from running kernel (as it doesn't make sence to get them until
+> > you are trying to test that particular part of the kernel works some
+> > way).
+> >
+> > Even more the kernel is every changing codebase, so what was influenced
+> > by constant may not exist anymore (and the interface for userspace
+> > don't need to be changed at all) just internal implementation.
+> >
+> > And if that's the case. I would rather get rid of test that rely on some
+> > kernel internals and speculated behaviour, rather than spending eternity
+> > patching it for each release.
+> =
 
-You've forgotten to remove the space here "databinchk( int".
+>     Fair enough. It would be nice if there was some way to expose this
+> information via debug /proc (or better -- /sys) entries though.
+> Otherwise doing graybox / whitebox testing of the Linux kernel is
+> impossible.
+> Thanks,
 
--- 
+Well yes, the problem here is that linux kernel wasn't really made to be
+testeded (and that is true even for POSIX at least partially) we need
+probably to do some talks to let the kernel people know that if they
+want good testsuites, they need to lend a helping hand.
+
+-- =
+
 Cyril Hrubis
 chrubis@suse.cz
 
-------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+---------------------------------------------------------------------------=
+---
+Benefiting from Server Virtualization: Beyond Initial Workload =
+
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve =
+
+application availability and disaster protection. Learn more about boosting =
+
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
