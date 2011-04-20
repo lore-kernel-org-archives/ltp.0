@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QAMve-00052I-RL
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 13:49:50 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QAMve-0000vu-6Z
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 13:49:50 +0000
-Received: by pvc30 with SMTP id 30so917085pvc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Apr 2011 06:49:44 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <jstancek@redhat.com>) id 1QCXw8-0003hi-0R
+	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 13:59:20 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QCXw7-0007na-0d
+	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 13:59:19 +0000
+Date: Wed, 20 Apr 2011 09:59:11 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1340377970.49928.1303307951314.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <BANLkTini_6Bk04Vm9di+88pgcYDBzY+ubA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <511817558.75058.1302787997174.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-References: <BANLkTin8di7Q=rZVD9=LFnQVDY4ZrSb7OQ@mail.gmail.com>
-	<511817558.75058.1302787997174.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-Date: Thu, 14 Apr 2011 06:49:44 -0700
-Message-ID: <BANLkTikFd+we2YgO9HT-9=1ZtzPiJ6HJaA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] memcg_process.c: signals initialization
+Subject: Re: [LTP] [PATCH] cgroups/cpuacct_setup: fix task_kill() search for
+ process
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,29 +24,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Apr 14, 2011 at 6:33 AM, Jan Stancek <jstancek@redhat.com> wrote:
-> Garrett,
->
-> now they are both wrong.
-
-    Another reason why attaching a diff and including an inline diff
-is a requirement per the style guide.
-Thanks for noticing,
--Garrett
-
-------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkdhcnJldHQgQ29vcGVyIiA8
+eWFuZWdvbWlAZ21haWwuY29tPgo+IFRvOiAiSmFuIFN0YW5jZWsiIDxqc3RhbmNla0ByZWRoYXQu
+Y29tPgo+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBTZW50OiBXZWRuZXNk
+YXksIEFwcmlsIDIwLCAyMDExIDg6MTQ6NDYgQU0KPiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENI
+XSBjZ3JvdXBzL2NwdWFjY3Rfc2V0dXA6IGZpeCB0YXNrX2tpbGwoKSBzZWFyY2ggZm9yIHByb2Nl
+c3MKPiBPbiBUdWUsIEFwciAxOSwgMjAxMSBhdCA2OjE2IEFNLCBKYW4gU3RhbmNlayA8anN0YW5j
+ZWtAcmVkaGF0LmNvbT4KPiB3cm90ZToKPiA+Cj4gPiAxLiAiaSogaW4gImdyZXAgY3B1YWNjdF90
+YXNraSoiIHNlZW1zIHBvaW50bGVzcyBhcwo+ID4gaXRzIHRhcmdldCBpcyBjcHVhY2N0X3Rhc2sw
+MQo+ID4KPiA+IDIuIHVzaW5nIGN1dCBmYWlscyB3aGVuIHBzIGluZGVudHMgdGhlIG91dHB1dCBh
+cyBmb2xsb3dpbmc6Cj4gPiDCoDk5IGNwdWFjY3RfdGFzazAxCj4gPiDCoDExMiBjcHVhY2N0X3Rh
+c2swMQo+ID4gMTExMSBjcHVhY2N0X3Rhc2swMQo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IEphbiBT
+dGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPgo+IAo+IFBhdGNoIGRvZXNuJ3QgYXBwbHkuCgpJ
+IGd1ZXNzIEkgZm91bmQgYW5vdGhlciBiYWQgYmVoYXZpbmcgY2xpZW50OiBaaW1icmEgd2VibWFp
+bApJdCBjb252ZXJ0ZWQgYWxsIExGIHRvIENSL0xGLiAKCkknbSBnb2luZyB0byB0cnkgc29tZXRo
+aW5nIGVsc2UgZm9yIHYyIChmaW5nZXJzIGNyb3NzZWQpLgoKPiBUaGFua3MsCj4gLUdhcnJldHQK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCZW5lZml0aW5nIGZyb20gU2VydmVyIFZpcnR1YWxpemF0
+aW9uOiBCZXlvbmQgSW5pdGlhbCBXb3JrbG9hZCAKQ29uc29saWRhdGlvbiAtLSBJbmNyZWFzaW5n
+IHRoZSB1c2Ugb2Ygc2VydmVyIHZpcnR1YWxpemF0aW9uIGlzIGEgdG9wCnByaW9yaXR5LlZpcnR1
+YWxpemF0aW9uIGNhbiByZWR1Y2UgY29zdHMsIHNpbXBsaWZ5IG1hbmFnZW1lbnQsIGFuZCBpbXBy
+b3ZlIAphcHBsaWNhdGlvbiBhdmFpbGFiaWxpdHkgYW5kIGRpc2FzdGVyIHByb3RlY3Rpb24uIExl
+YXJuIG1vcmUgYWJvdXQgYm9vc3RpbmcgCnRoZSB2YWx1ZSBvZiBzZXJ2ZXIgdmlydHVhbGl6YXRp
+b24uIGh0dHA6Ly9wLnNmLm5ldC9zZnUvdm13YXJlLXNmZGV2MmRldgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRw
+LWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0
+L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
