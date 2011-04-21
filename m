@@ -1,26 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1QANXe-0007EU-BI
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 14:29:06 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1QCo56-0003KQ-F8
+	for ltp-list@lists.sourceforge.net; Thu, 21 Apr 2011 07:13:40 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QANXd-00069u-Bn
-	for ltp-list@lists.sourceforge.net; Thu, 14 Apr 2011 14:29:06 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3EESxHv013124
+	id 1QCo53-0007b7-GS
+	for ltp-list@lists.sourceforge.net; Thu, 21 Apr 2011 07:13:38 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3L7DVLp013949
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Apr 2011 10:28:59 -0400
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Apr 2011 03:13:31 -0400
 From: Caspar Zhang <czhang@redhat.com>
-Date: Thu, 14 Apr 2011 22:28:46 +0800
-Message-Id: <96be7124cab2f3ebaf59fdca1df63018f80baae0.1302791173.git.czhang@redhat.com>
-In-Reply-To: <20110414144437.GF3206@saboteur.suse.cz>
-References: <20110414144437.GF3206@saboteur.suse.cz>
+Date: Thu, 21 Apr 2011 15:13:16 +0800
+Message-Id: <ebbbe0dead0a401286ecede63f3e8dbe03f29e18.1303369524.git.czhang@redhat.com>
+In-Reply-To: <3b1be0379ad68fd9c06480b7b5cf2f9c1e9b2529.1303369524.git.czhang@redhat.com>
+References: <czhang@redhat.com>
+	<1303369996-4812-1-git-send-email-czhang@redhat.com>
+	<3b1be0379ad68fd9c06480b7b5cf2f9c1e9b2529.1303369524.git.czhang@redhat.com>
+In-Reply-To: <3b1be0379ad68fd9c06480b7b5cf2f9c1e9b2529.1303369524.git.czhang@redhat.com>
+References: <3b1be0379ad68fd9c06480b7b5cf2f9c1e9b2529.1303369524.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH v4] [syscalls] io_submit: fix broken testcase
+Subject: [LTP] [PATCH 2/2] hugemmap: use common header files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,287 +43,364 @@ Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-io_submit01 contains 4 negative testing: EINVAL, EFAULT, EINVAL+EFAULT
-and EBADF. The first 3 testcases didn't initialize the content of 'ctx'
-so that they contained invalid argument in the cases. This may cause
-incorrect result on some architectures, like:
-
-io_submit01    1  TPASS  :  expected failure - returned value = 22 : Invalid argument
-io_submit01    2  TFAIL  :  unexpected returned value - -22 - expected -14
-io_submit01    3  TPASS  :  expected failure - returned value = 22 : Invalid argument
-io_submit01    4  TPASS  :  expected failure - returned value = 9 : Bad file descriptor
-
-I fixed this issue by moving the initialization of ctx before the cases,
-also added some additional negative + positive cases. Now tested on x86
-and s390x system, the results seem good:
-
-io_submit01    1  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    2  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    3  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    4  TPASS  :  expected failure - returned value = -14 : Bad address
-io_submit01    5  TPASS  :  expected failure - returned value = -22 : Invalid argument
-io_submit01    6  TPASS  :  expected failure - returned value = -9 : Bad file descriptor
-io_submit01    7  TPASS  :  expected success - returned value = 0
-io_submit01    8  TPASS  :  expected success - returned value = 1
-
-v2: use tempfile instead of read /etc/fstab directly
-v3: add a function to check results
-v4: code style improvement
+there are some hugetlb related functions in
+$(topdir)/include/system_specific_hugepages_info.h, this patch makes the
+hugemmap tests use this common header so that codes can be simpler and
+less overlaps.
 
 Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- testcases/kernel/syscalls/io_submit/io_submit01.c |  190 +++++++++++----------
- 1 files changed, 100 insertions(+), 90 deletions(-)
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   65 +------------------
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |   18 +++---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |   18 +++---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |   64 +------------------
+ 4 files changed, 26 insertions(+), 139 deletions(-)
 
 
 --------------1.7.1
-Content-Type: text/x-patch;
-	name="0001-syscalls-io_submit-fix-broken-testcase.patch"
+Content-Type: text/x-patch; name="0002-hugemmap-use-common-header-files.patch"
 Content-Transfer-Encoding: 8bit
 Content-Disposition: attachment;
-	filename="0001-syscalls-io_submit-fix-broken-testcase.patch"
+	filename="0002-hugemmap-use-common-header-files.patch"
 
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
-index 44580e6..da15aa0 100644
---- a/testcases/kernel/syscalls/io_submit/io_submit01.c
-+++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
-@@ -33,48 +33,72 @@ int TST_TOTAL = 3;
- #include <libaio.h>
- #include <errno.h>
- #include <string.h>
-+#include <fcntl.h>
-+
-+#define TESTFILE	"testfile"
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+index 4b2cd30..874f736 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+@@ -72,6 +72,7 @@
  
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
-+
-+	tst_rmdir();
+ #include "test.h"
+ #include "usctest.h"
++#include "system_specific_hugepages_info.h"
+ 
+ #define BUFFER_SIZE  256
+ 
+@@ -87,8 +88,6 @@ int aftertest=0;		/* Amount of free huge pages after testing */
+ int hugepagesmapped=0;		/* Amount of huge pages mapped after testing */
+ 
+ void setup();			/* Main setup function of test */
+-int getfreehugepages();		/* Reads free huge pages */
+-int get_huge_pagesize();        /* Reads huge page size */
+ void cleanup();			/* cleanup function for the test */
+ 
+ void help()
+@@ -135,10 +134,10 @@ main(int ac, char **av)
+ 		Tst_count=0;
+ 
+ 		/* Note the number of free huge pages BEFORE testing */
+-		beforetest = getfreehugepages();
++		beforetest = get_no_of_free_hugepages();
+ 
+ 		/* Note the size of huge page size BEFORE testing */
+-		page_sz = get_huge_pagesize();
++		page_sz = hugepages_size();
+ 
+ 		/*
+ 		 * Call mmap
+@@ -160,7 +159,7 @@ main(int ac, char **av)
+ 		}
+ 
+ 		/* Make sure the number of free huge pages AFTER testing decreased */
+-		aftertest = getfreehugepages();
++		aftertest = get_no_of_free_hugepages();
+ 		hugepagesmapped = beforetest - aftertest;
+ 		if (hugepagesmapped < 1) {
+ 			tst_resm(TWARN,"Number of HUGEPAGES_FREE stayed the same. Okay if");
+@@ -205,62 +204,6 @@ setup()
  }
  
- static void setup(void)
- {
-+	int fd;
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+
-+	fd = open(TESTFILE, O_CREAT|O_RDWR, 0755);
-+	if (fd == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "open");
-+	if (close(fd) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "close");
-+}
-+
-+static void check_result(long exp, long act)
-+{
-+	if (exp >= 0) {
-+		if (act == exp)
-+			tst_resm(TPASS, "expected success - "
-+					"returned value = %ld", act);
-+		else
-+			tst_resm(TFAIL, "unexpected failure - "
-+					"returned value = %ld : %s",
-+					act, strerror(-1 * act));
-+		return;
-+	}
-+
-+	/* if return value is expected to be < 0 */
-+	if (act == exp)
-+		tst_resm(TPASS, "expected failure - "
-+				"returned value = %ld : %s",
-+				act, strerror(-1 * act));
-+	else if (act == 0)
-+		tst_resm(TFAIL, "call succeeded unexpectedly");
-+	else
-+		tst_resm(TFAIL, "unexpected failure - "
-+				"returned value = %ld : %s, "
-+				"expected value = %ld : %s",
-+				act, strerror(-1 * act),
-+				exp, strerror(-1 * exp));
- }
- 
--/*
--   DESCRIPTION
--   io_submit() queues nr I/O request blocks for processing in the AIO con-
--   text ctx_id.  iocbpp should be an array of nr AIO request blocks, which
--   will be submitted to context ctx_id.
--
--   RETURN VALUE
--   On  success,  io_submit()  returns the number of iocbs submitted (which
--   may be 0 if nr is zero); on failure,  it  returns  one  of  the  errors
--   listed under ERRORS.
--
--   ERRORS
--   EINVAL The aio_context specified by ctx_id is invalid.  nr is less than
--   0.  The iocb at *iocbpp[0] is not properly initialized,  or  the
--   operation  specified  is  invalid for the file descriptor in the
--   iocb.
+ /*
+- * getfreehugepages() - Reads the number of free huge pages from /proc/meminfo
 - */
- int main(int argc, char *argv[])
- {
+-int
+-getfreehugepages()
+-{
+-	int hugefree;
+-	FILE* f;
+-	int retcode=0;
+-	char buff[BUFFER_SIZE];
+-
+-        f = fopen("/proc/meminfo", "r");
+-	if (!f)
+-     		tst_brkm(TFAIL, cleanup, "Could not open /proc/meminfo for reading");
+-
+-	while (fgets(buff,BUFFER_SIZE, f) != NULL) {
+-		if ((retcode = sscanf(buff, "HugePages_Free: %d ", &hugefree)) == 1)
+-	  		break;
+-	}
+-
+-        if (retcode != 1) {
+-        	fclose(f);
+-       		tst_brkm(TFAIL, cleanup, "Failed reading number of huge pages free.");
+-     	}
+-	fclose(f);
+-	return(hugefree);
+-}
+-
+-/*
+- * get_huge_pagesize() - Reads the size of huge page size from /proc/meminfo
+- */
+-int
+-get_huge_pagesize()
+-{
+-        int hugesize;
+-        FILE* f;
+-        int retcode=0;
+-        char buff[BUFFER_SIZE];
+-
+-        f = fopen("/proc/meminfo", "r");
+-        if (!f)
+-                tst_brkm(TFAIL, cleanup, "Could not open /proc/meminfo for reading");
+-
+-        while (fgets(buff,BUFFER_SIZE, f) != NULL) {
+-                if ((retcode = sscanf(buff, "Hugepagesize: %d ", &hugesize)) == 1)
+-                        break;
+-        }
+-
+-        if (retcode != 1) {
+-                fclose(f);
+-                tst_brkm(TFAIL, cleanup, "Failed reading size of huge page.");
+-        }
+-        fclose(f);
+-        return(hugesize);
+-}
+-
+-/*
+  * cleanup() - performs all ONE TIME cleanup for this test at
+  *             completion or premature exit.
+  * 	       Remove the temporary directory created.
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+index ce4cdac..45cddf7 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+@@ -62,10 +62,8 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "system_specific_hugepages_info.h"
+ 
+-#define PAGE_SIZE      ((1UL) << 12) 	/* Normal page size */
+-#define HPAGE_SIZE     ((1UL) << 24) 	/* Huge page size */
+-#define MAP_SIZE       (2*HPAGE_SIZE) 	/* Huge map page size */
+ #define LOW_ADDR       (void *)(0x80000000)
+ #define LOW_ADDR2      (void *)(0x90000000)
+ 
+@@ -95,6 +93,7 @@ main(int ac, char **av)
  	int lc;
  	char *msg;
+         int Hflag = 0;
++	int page_sz, map_sz;
  
--	long expected_return;
--
--	int rval;
-+	int rval, fd;
- 	char buf[256];
- 	struct iocb iocb;
- 	struct iocb *iocbs[1];
--	
-+
- 	io_context_t ctx;
- 
- 	memset(&ctx, 0, sizeof(ctx));
-@@ -87,87 +111,73 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		Tst_count = 0;
- 
--		expected_return = -EINVAL;
-+		/* 1 - EINVAL */
-+		/* 1.1 - EINVAL: invalid ctx */
- 		TEST(io_submit(ctx, 0, NULL));
--		if (TEST_RETURN == 0) {
--			tst_resm(TFAIL, "call succeeded unexpectedly");
--		} else if (TEST_RETURN == expected_return) {
--			tst_resm(TPASS, "expected failure - "
--				 "returned value = %ld : %s", (-1 * TEST_RETURN),
--				 strerror(-1 * TEST_RETURN));
--		} else {
--			tst_resm(TFAIL, "unexpected returned value - %ld - "
--				 "expected %ld", TEST_RETURN, expected_return);
--		}
-+		check_result(-EINVAL, TEST_RETURN);
-+
-+		/* 1.2 - EINVAL: invalid nr */
-+		rval = io_setup(1, &ctx);
-+		if (rval != 0)
-+			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
-+		TEST(io_submit(ctx, -1, NULL));
-+		check_result(-EINVAL, TEST_RETURN);
-+
-+		/* 1.3 - EINVAL: uninitialized iocb */
-+		iocbs[0] = &iocb;
-+		TEST(io_submit(ctx, 1, iocbs));
-+		check_result(-EINVAL, TEST_RETURN);
-+
-+		/* 2 - EFAULT: iocb points to invalid data */
-+		TEST(io_submit(ctx, 1, (struct iocb **)-1));
-+		check_result(-EFAULT, TEST_RETURN);
- 
- 		/*
--		   EFAULT One of the data structures points to invalid data.
-+		 * 3 - Special case EFAULT or EINVAL (indetermination)
-+		 *
-+		 * The errno depends on the per architecture implementation
-+		 * of io_submit. On the architecture using compat_sys_io_submit
-+		 * as its implementation, errno is set to -EINVAL.
- 		 */
--		expected_return = -EFAULT;
--		TEST(io_submit(ctx, 1, (void *)-1));
--		if (TEST_RETURN == 0) {
-+		TEST(io_submit(ctx, -1, (struct iocb **)-1));
-+		if (TEST_RETURN == 0)
- 			tst_resm(TFAIL, "call succeeded unexpectedly");
--		} else if (TEST_RETURN == expected_return) {
-+		else if (TEST_RETURN == -EFAULT
-+				|| TEST_RETURN == -EINVAL)
- 			tst_resm(TPASS, "expected failure - "
--				 "returned value = %ld : %s", (-1 * TEST_RETURN),
--				 strerror(-1 * TEST_RETURN));
--		} else {
--			tst_resm(TFAIL, "unexpected returned value - %ld - "
--				 "expected %ld", TEST_RETURN, expected_return);
--		}
--
--		/* Special case EFAULT or EINVAL (indetermination)
--
--		   The errno depends on the per architecture implementation
--		   of io_submit. On the architecture using compat_sys_io_submit
--		   as its implementation, errno is set to -EINVAL. */
--		{
--			long expected_fault = -EFAULT;
--			long expected_inval = -EINVAL;
--
--			TEST(io_submit(ctx, 0, (void *)-1));
--			if (TEST_RETURN == 0)
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--			else if (TEST_RETURN == expected_fault
--				   || TEST_RETURN == expected_inval) {
--				tst_resm(TPASS, "expected failure - "
--					 "returned value = %ld : %s",
--					 (-1 * TEST_RETURN),
--					 strerror(-1 * TEST_RETURN));
--			} else {
--				tst_resm(TFAIL,
--					 "unexpected returned value - %ld - "
--					 "expected %ld(%s) or %ld(%s)",
--					 TEST_RETURN, expected_fault,
--					 strerror(-1 * expected_fault),
--					 expected_inval,
--					 strerror(-1 * expected_inval));
--			}
--
--		}
-+					"returned value = %ld : %s",
-+					TEST_RETURN, strerror(-1 * TEST_RETURN));
-+		else
-+			tst_resm(TFAIL, "unexpected failure - "
-+					"returned value = %ld : %s, "
-+					"expected = %d : %s or %d : %s",
-+					TEST_RETURN, strerror(-1 * TEST_RETURN),
-+					-EFAULT, strerror(EFAULT),
-+					-EINVAL, strerror(EINVAL));
- 
- 		/*
--		   EBADF  The file descriptor specified in the first iocb is invalid.
-+		 * 4 - EBADF: fd in iocb is invalid
- 		 */
--		expected_return = -EBADF;
--		io_prep_pread(&iocb, -1, (void *)buf, sizeof(buf), 0);
-+		io_prep_pread(&iocb, -1, buf, sizeof(buf), 0);
- 		iocbs[0] = &iocb;
--		memset(&ctx, 0, sizeof(io_context_t));
--		rval = io_setup(1, &ctx);
--		if (rval != 0)
--			tst_brkm(TBROK, cleanup, "io_setup failed: %d", rval);
-+		TEST(io_submit(ctx, 1, iocbs));
-+		check_result(-EBADF, TEST_RETURN);
- 
-+		/* 5 - Positive test: nr == 0 */
-+		TEST(io_submit(ctx, 0, NULL));
-+		check_result(0, TEST_RETURN);
-+
-+		/* 6 - Positive test: valid fd */
-+		fd = open(TESTFILE, O_RDONLY);
-+		if (fd == -1)
-+			tst_resm(TBROK|TERRNO, "open");
-+		io_prep_pread(&iocb, fd, buf, sizeof(buf), 0);
-+		iocbs[0] = &iocb;
- 		TEST(io_submit(ctx, 1, iocbs));
--		if (TEST_RETURN == 0)
--			tst_resm(TFAIL, "call succeeded unexpectedly");
--		else if (TEST_RETURN == expected_return) {
--			tst_resm(TPASS, "expected failure - "
--				 "returned value = %ld : %s", (-1 * TEST_RETURN),
--				 strerror(-1 * TEST_RETURN));
--		} else {
--			tst_resm(TFAIL, "unexpected returned value - %ld - "
--				 "expected %ld", TEST_RETURN, expected_return);
--		}
-+		check_result(1, TEST_RETURN);
-+		if (close(fd) == -1)
-+			tst_resm(TBROK|TERRNO, "close");
-+
+        	option_t options[] = {
+         	{ "H:",   &Hflag, &Hopt },    /* Required for location of hugetlbfs */
+@@ -110,6 +109,9 @@ main(int ac, char **av)
+ 		    "-H option is REQUIRED for this test, use -h for options help");
  	}
+ 
++	page_sz = getpagesize();
++	map_sz = 2 * 1024 * hugepages_size();
++
+ 	setup();
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+@@ -138,14 +140,14 @@ main(int ac, char **av)
+ 
+ 		/* mmap using normal pages and a low memory address */
+ 		errno = 0;
+-		addr = mmap(LOW_ADDR, PAGE_SIZE, PROT_READ,
++		addr = mmap(LOW_ADDR, page_sz, PROT_READ,
+ 			    MAP_SHARED | MAP_FIXED, nfildes, 0);
+ 		if (addr == MAP_FAILED)
+ 			tst_brkm(TBROK, cleanup,"mmap failed on nfildes");
+ 
+ 		/* Attempt to mmap a huge page into a low memory address */
+ 		errno = 0;
+-		addr2 = mmap(LOW_ADDR2, MAP_SIZE, PROT_READ | PROT_WRITE,
++		addr2 = mmap(LOW_ADDR2, map_sz, PROT_READ | PROT_WRITE,
+ 			    MAP_SHARED, fildes, 0);
+ 
+ #if __WORDSIZE == 64 /* 64-bit process */
+@@ -177,11 +179,11 @@ main(int ac, char **av)
+         	}
+ 
+ #if __WORDSIZE == 64
+-		if (munmap(addr2, MAP_SIZE) == -1) {
++		if (munmap(addr2, map_sz) == -1) {
+ 			tst_brkm(TFAIL|TERRNO, NULL, "huge munmap failed");
+ 		}
+ #endif
+-		if (munmap(addr, PAGE_SIZE) == -1) {
++		if (munmap(addr, page_sz) == -1) {
+ 			tst_brkm(TFAIL|TERRNO, NULL, "munmap failed");
+ 		}
+ 
+@@ -231,4 +233,4 @@ cleanup()
+ 	unlink(TEMPFILE);
+ 
+ 	tst_rmdir();
+-}
+\ No newline at end of file
++}
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+index c1479fe..cac94b0 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+@@ -53,8 +53,8 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "system_specific_hugepages_info.h"
+ 
+-#define PAGE_SIZE      ((1UL) << 12) 	/* Normal page size */
+ #define HIGH_ADDR      (void *)(0x1000000000000)
+ 
+ char* TEMPFILE="mmapfile";
+@@ -76,15 +76,14 @@ void help()
+ int
+ main(int ac, char **av)
+ {
+-#if __WORDSIZE==32  /* 32-bit compiled */
+-      	tst_resm(TCONF,"This test is only for 64bit");
+-	tst_exit();
+-
+-       	return 1;
+-#else	/* 64-bit compiled */
+ 	int lc;			/* loop counter */
+ 	char *msg;		/* message returned from parse_opts */
+         int Hflag=0;              /* binary flag: opt or not */
++	int page_sz;
++
++#if __WORDSIZE==32  /* 32-bit compiled */
++	tst_brkm(TCONF, NULL, "This test is only for 64bit");
++#endif
+ 
+        	option_t options[] = {
+         	{ "H:",   &Hflag, &Hopt },    /* Required for location of hugetlbfs */
+@@ -103,6 +102,8 @@ main(int ac, char **av)
+ 		tst_exit();
+ 	}
+ 
++	page_sz = getpagesize();
++
+ 	setup();
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+@@ -118,7 +119,7 @@ main(int ac, char **av)
+ 
+ 		/* Attempt to mmap using normal pages and a high memory address */
+ 		errno = 0;
+-		addr = mmap(HIGH_ADDR, PAGE_SIZE, PROT_READ,
++		addr = mmap(HIGH_ADDR, page_sz, PROT_READ,
+ 			    MAP_SHARED | MAP_FIXED, fildes, 0);
+ 		if (addr != MAP_FAILED) {
+ 			tst_resm(TFAIL, "Normal mmap() into high region unexpectedly succeeded on %s, errno=%d : %s",
+@@ -135,7 +136,6 @@ main(int ac, char **av)
  	cleanup();
  
+ 	tst_exit();
+-#endif
+ }
+ 
+ /*
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+index b6c6988..4cc6ed4 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+@@ -90,8 +90,6 @@ int hugepagesmapped=0;		/* Amount of huge pages mapped after testing */
+ char *Hopt;                     /* location of hugetlbfs */
+ 
+ void setup();			/* Main setup function of test */
+-int getfreehugepages();		/* Reads free huge pages */
+-int get_huge_pagesize();        /* Reads huge page size */
+ void cleanup();			/* cleanup function for the test */
+ 
+ void help()
+@@ -142,11 +140,11 @@ main(int ac, char **av)
+ 		Tst_count=0;
+ 
+ 		/* Note the number of free huge pages BEFORE testing */
+-		freepages = getfreehugepages();
++		freepages = get_no_of_free_hugepages();
+ 		beforetest = freepages;
+ 
+ 		/* Note the size of huge page size BEFORE testing */
+-		huge_pagesize = get_huge_pagesize();
++		huge_pagesize = hugepages_size();
+ 		tst_resm(TINFO,"Size of huge pages is %d KB",huge_pagesize);
+ 
+ #if __WORDSIZE==32
+@@ -176,7 +174,7 @@ main(int ac, char **av)
+ 		}
+ 
+ 		/* Make sure the number of free huge pages AFTER testing decreased */
+-		aftertest = getfreehugepages();
++		aftertest = get_no_of_free_hugepages();
+ 		hugepagesmapped = beforetest - aftertest;
+ 		if (hugepagesmapped < 1) {
+ 			tst_resm(TWARN,"Number of HUGEPAGES_FREE stayed the same. Okay if");
+@@ -221,62 +219,6 @@ setup()
+ }
+ 
+ /*
+- * getfreehugepages() - Reads the number of free huge pages from /proc/meminfo
+- */
+-int
+-getfreehugepages()
+-{
+-	int hugefree;
+-	FILE* f;
+-	int retcode=0;
+-	char buff[BUFFER_SIZE];
+-
+-        f = fopen("/proc/meminfo", "r");
+-	if (!f)
+-     		tst_brkm(TFAIL, cleanup, "Could not open /proc/meminfo for reading");
+-
+-	while (fgets(buff,BUFFER_SIZE, f) != NULL) {
+-		if ((retcode = sscanf(buff, "HugePages_Free: %d ", &hugefree)) == 1)
+-			break;
+-	}
+-
+-        if (retcode != 1) {
+-        	fclose(f);
+-       		tst_brkm(TFAIL, cleanup, "Failed reading number of huge pages free.");
+-     	}
+-	fclose(f);
+-	return(hugefree);
+-}
+-
+-/*
+- * get_huge_pagesize() - Reads the size of huge page size from /proc/meminfo
+-*/
+-int
+-get_huge_pagesize()
+-{
+-	int hugesize;
+-	FILE* f;
+-	int retcode=0;
+-	char buff[BUFFER_SIZE];
+-
+-        f = fopen("/proc/meminfo", "r");
+-	if (!f)
+-     		tst_brkm(TFAIL, cleanup, "Could not open /proc/meminfo for reading");
+-
+-	while (fgets(buff,BUFFER_SIZE, f) != NULL) {
+-		if ((retcode = sscanf(buff, "Hugepagesize: %d ", &hugesize)) == 1)
+-			break;
+-	}
+-
+-        if (retcode != 1) {
+-        	fclose(f);
+-       		tst_brkm(TFAIL, cleanup, "Failed reading size of huge page.");
+-     	}
+-	fclose(f);
+-	return(hugesize);
+-}
+-
+-/*
+  * cleanup() - performs all ONE TIME cleanup for this test at
+  *             completion or premature exit.
+  * 	       Remove the temporary directory created.
 
 --------------1.7.1
 Content-Type: text/plain; charset="us-ascii"
