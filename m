@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <aelder@sgi.com>) id 1Q8IOD-0003GR-AK
-	for ltp-list@lists.sourceforge.net; Fri, 08 Apr 2011 20:34:45 +0000
-Received: from relay2.sgi.com ([192.48.179.30] helo=relay.sgi.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.74)
-	id 1Q8IOC-0005DZ-Ee
-	for ltp-list@lists.sourceforge.net; Fri, 08 Apr 2011 20:34:45 +0000
-From: Alex Elder <aelder@sgi.com>
-Date: Fri,  8 Apr 2011 15:34:32 -0500
-Message-Id: <2fb6f8d9dc82ef63e3c7cd80151cb6ea7972aae9.1302294850.git.aelder@sgi.com>
-In-Reply-To: <1302294875-6898-1-git-send-email-aelder@sgi.com>
-References: <1302294875-6898-1-git-send-email-aelder@sgi.com>
-Subject: [LTP] [PATCH 1/4] ltp: kill remaining warnings in "lib/tlibio.c"
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1QD9hf-0004UN-Ty
+	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 06:18:55 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QD9hd-0002xV-L7
+	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 06:18:55 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3M6IlR6001725
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Apr 2011 02:18:47 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Fri, 22 Apr 2011 14:18:38 +0800
+Message-Id: <e1b3ebd85b1f628673a0c93a1e93445da1bf1d4b.1303453106.git.czhang@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------1.7.1"
+Subject: [LTP] [PATCH] hotplug: fix compile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,73 +28,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-There remain a few warnings when I build "lib/tlibio.c":
-- _GNU_SOURCE is defined on the command line, then defined
-  unconditionally in this file.  Fix by making the definition
-  in the file conditional on whether it's already defined.
-- The function random_bit() has a full, standard declaration in
-  "include/random_range.h", so just include that file rather than
-  doing an incomplete declaration in lio_random_methods().
+This is a multi-part message in MIME format.
+--------------1.7.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Alex Elder <aelder@sgi.com>
+
+commands.c in memory_hotplug uses nodemask_isset and nodemask_set
+functions which are already declared in /usr/include/numa.h with NUMA
+v1, thus would cause compile error on the system installed NUMA v1 libs
+(e.g. RHEL 5). This patch fixes this issue.
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- lib/tlibio.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+ testcases/kernel/hotplug/memory_hotplug/commands.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/lib/tlibio.c b/lib/tlibio.c
-index 15b536b..634aca8 100644
---- a/lib/tlibio.c
-+++ b/lib/tlibio.c
-@@ -79,7 +79,9 @@
-  */
- 
- #ifdef __linux__
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif /* !_GNU_SOURCE */
- #define _LARGEFILE64_SOURCE
+
+--------------1.7.1
+Content-Type: text/x-patch; name="0001-hotplug-fix-compile.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment; filename="0001-hotplug-fix-compile.patch"
+
+diff --git a/testcases/kernel/hotplug/memory_hotplug/commands.c b/testcases/kernel/hotplug/memory_hotplug/commands.c
+index 683ac92..4f8ab96 100644
+--- a/testcases/kernel/hotplug/memory_hotplug/commands.c
++++ b/testcases/kernel/hotplug/memory_hotplug/commands.c
+@@ -59,6 +59,7 @@
+ #define MPOL_MF_WAIT    (1<<2)  /* Wait for existing pages to migrate */
  #endif
- #include "config.h"
-@@ -113,6 +115,7 @@
- #include <stdlib.h> /* atoi, abs */
  
- #include "tlibio.h"		/* defines LIO* marcos */
-+#include "random_range.h"
- 
- #ifndef PATH_MAX
- #define PATH_MAX	MAXPATHLEN
-@@ -470,7 +473,6 @@ int
- lio_random_methods(long curr_mask)
++#if defined(LIBNUMA_API_VERSION) && LIBNUMA_API_VERSION == 2
+ static inline int nodemask_isset(nodemask_t *mask, int node)
  {
-     int mask=0;
--    long random_bit();
+ 	if ((unsigned)node >= NUMA_NUM_NODES)
+@@ -74,6 +75,7 @@ static inline void nodemask_set(nodemask_t *mask, int node)
+ 	mask->n[node / (8*sizeof(unsigned long))] |=
+ 		(1UL<<(node%(8*sizeof(unsigned long))));
+ }
++#endif
  
-     /* remove random select, io type, and wait method bits from curr_mask */
-     mask = curr_mask & (~(LIO_IO_TYPES | LIO_WAIT_TYPES | LIO_RANDOM));
-@@ -2079,4 +2081,4 @@ char **argv;
+ static char *whitespace = " \t";
  
-     exit(exit_status);
+@@ -1336,4 +1338,4 @@ process_commands()
+ 
+ 	} while (1);
  }
 -#endif
 \ No newline at end of file
 +#endif
--- 
-1.7.4
 
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+Fulfilling the Lean Software Promise
+Lean software platforms are now widely adopted and the benefits have been 
+demonstrated beyond question. Learn why your peers are replacing JEE 
+containers with lightweight application servers - and what you can gain 
+from the move. http://p.sf.net/sfu/vmware-sfemails
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.1--
+
+
+
