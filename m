@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <czhang@redhat.com>) id 1Q8qvr-0007dz-65
-	for ltp-list@lists.sourceforge.net; Sun, 10 Apr 2011 09:27:47 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q8qvq-0007f4-8t
-	for ltp-list@lists.sourceforge.net; Sun, 10 Apr 2011 09:27:47 +0000
-Message-ID: <4DA177FE.1000304@redhat.com>
-Date: Sun, 10 Apr 2011 17:27:26 +0800
-From: Caspar Zhang <czhang@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1QD71K-0001jA-Pd
+	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 03:27:02 +0000
+Received: from mail-px0-f174.google.com ([209.85.212.174])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QD71K-0004vn-31
+	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 03:27:02 +0000
+Received: by pxi15 with SMTP id 15so221938pxi.33
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Apr 2011 20:26:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <06e447138f8f007517bb5c09cd96ffd4804a95d5.1302319401.git.czhang@redhat.com>	<BANLkTi=b=n56Ef8HGDF4drXLWm9RXvOH1g@mail.gmail.com>	<4DA13284.3090007@redhat.com>
-	<BANLkTim_9bJi==MyPHoeQtjo+wLL-XJ=8A@mail.gmail.com>
-In-Reply-To: <BANLkTim_9bJi==MyPHoeQtjo+wLL-XJ=8A@mail.gmail.com>
-Subject: Re: [LTP] [PATCH v2 1/2] [mm] mbind01: not working on 32bit systems
+In-Reply-To: <1303369996-4812-1-git-send-email-czhang@redhat.com>
+References: <czhang@redhat.com>
+	<1303369996-4812-1-git-send-email-czhang@redhat.com>
+Date: Thu, 21 Apr 2011 20:26:55 -0700
+Message-ID: <BANLkTiki_ft4JF=p4tUW5jmioHg-Txf8Yg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 0/2] use system_specific_hugepages_info.h/.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,34 +31,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Caspar Zhang <czhang@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/10/2011 05:19 PM, Garrett Cooper wrote:
->     I wouldn't worry too much about it. If it fails with ENOSYS, I
-> would just fail with tst_brkm(TCONF, ...).
+On Thu, Apr 21, 2011 at 12:13 AM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> I found some tests in hugemmap uses
+> $(topdir)/include/system_specific_hugepages_info.h while some others not.
+> I also find some function overlaps in hugemmap tests, like getting
+> hugepagesize or getting free hugepages, I believe we could move all these
+> funtions to system_specific_hugepages_info.c and make the code simpler and
+> cleaner.
 
-Would something like this be good:
-
-err = mbind(addr+pagesize, pagesize, MPOL_BIND, nmask->maskp,
-nmask->size, MPOL_MF_MOVE_ALL);
-if (err != 0)
-  if (errno == ENOSYS)
-    tst_brkm(TCONF,...)
-  else
-    tst_brkm(TBROK|TERRNO, NULL, "mbind1");
-
-If yes, I'll work out an updated patch soon.
-
-Thanks,
-Caspar
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+Fulfilling the Lean Software Promise
+Lean software platforms are now widely adopted and the benefits have been 
+demonstrated beyond question. Learn why your peers are replacing JEE 
+containers with lightweight application servers - and what you can gain 
+from the move. http://p.sf.net/sfu/vmware-sfemails
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
