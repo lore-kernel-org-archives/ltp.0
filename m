@@ -2,18 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <aelder@sgi.com>) id 1Q5men-0003R5-03
-	for ltp-list@lists.sourceforge.net; Fri, 01 Apr 2011 22:17:29 +0000
-Received: from relay3.sgi.com ([192.48.152.1] helo=relay.sgi.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1Q5mem-0004lk-5q
-	for ltp-list@lists.sourceforge.net; Fri, 01 Apr 2011 22:17:28 +0000
-From: Alex Elder <aelder@sgi.com>
-Date: Fri,  1 Apr 2011 17:01:23 -0500
-Message-Id: <26c7134d7a0855a4bd8a5f73e7dfc8088115f9d2.1301695094.git.aelder@sgi.com>
-In-Reply-To: <1301695288-24912-1-git-send-email-aelder@sgi.com>
-References: <1301695288-24912-1-git-send-email-aelder@sgi.com>
-Subject: [LTP] [PATCH 1/6] ltp: fix databinchk() definition
+	(envelope-from <yanegomi@gmail.com>) id 1QDA0y-0007H9-Aa
+	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 06:38:52 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QDA0x-0003Oq-Kj
+	for ltp-list@lists.sourceforge.net; Fri, 22 Apr 2011 06:38:52 +0000
+Received: by pzk35 with SMTP id 35so278384pzk.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Apr 2011 23:38:45 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <14a46a643c1e7c7b912be1a237067f79b203baa1.1303453311.git.czhang@redhat.com>
+References: <14a46a643c1e7c7b912be1a237067f79b203baa1.1303453311.git.czhang@redhat.com>
+Date: Thu, 21 Apr 2011 23:38:45 -0700
+Message-ID: <BANLkTimGcJ2a7wpe34Y4iML4GLvcjCD0NA@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] [mm] mbind01: fix compile issue in RHEL5
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,71 +27,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Fix a bogus (misspelled) declaration for databinchk() in
-"include/databin.h".
+On Thu, Apr 21, 2011 at 11:22 PM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> mem/mbind01 was designed to test NUMA v2 lib, it will cause compile
+> error with old NUMA API version, this patch fixes this issue.
 
-Then, change databinchk() so that its second argument is a signed
-rather than an unsigned character pointer.  This is consistent with
-the way it is used throughout the code.  Because of the way that
-argument is used, it won't change the behavior of that function; its
-value is immediately assigned to a local variable, which is still
-unsigned.  Add a cast in that assignment to force the conversion.
-
-Signed-off-by: Alex Elder <aelder@sgi.com>
----
- include/databin.h |    2 +-
- lib/databin.c     |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/databin.h b/include/databin.h
-index c168799..93c3863 100644
---- a/include/databin.h
-+++ b/include/databin.h
-@@ -39,6 +39,6 @@
- 
- void databingen( int mode, char *buffer, int bsize, int offset );
- 
--void databinchedk( int mode, unsigned char *buffer, int bsize, int offset, char **errmsg);
-+int databinchk( int mode, char *buffer, int bsize, int offset, char **errmsg);
- 
- #endif
-diff --git a/lib/databin.c b/lib/databin.c
-index 6659ccf..c0f4307 100644
---- a/lib/databin.c
-+++ b/lib/databin.c
-@@ -91,7 +91,7 @@ int ind;
- int
- databinchk(mode, buffer, bsize, offset, errmsg)
- int mode;	/* either a, c, r, z, o, or C */
--unsigned char *buffer;	/* buffer pointer */
-+char *buffer;	/* buffer pointer */
- int bsize;	/* size of buffer */
- int offset;	/* offset into the file where buffer starts */
- char **errmsg;
-@@ -102,7 +102,7 @@ char **errmsg;
-     long expbits;
-     long actbits;
- 
--	chr=buffer;
-+	chr = (unsigned char *) buffer;
- 	total=bsize;
- 
- 	if (errmsg != NULL) {
--- 
-1.7.4
-
+Fixed this and the other libnuma item in one commit.
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+Fulfilling the Lean Software Promise
+Lean software platforms are now widely adopted and the benefits have been 
+demonstrated beyond question. Learn why your peers are replacing JEE 
+containers with lightweight application servers - and what you can gain 
+from the move. http://p.sf.net/sfu/vmware-sfemails
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
