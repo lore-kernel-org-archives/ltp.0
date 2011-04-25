@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QCQd5-0001k0-0c
-	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 06:11:11 +0000
-Received: from mail-px0-f174.google.com ([209.85.212.174])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QCQd3-0006HC-Ut
-	for ltp-list@lists.sourceforge.net; Wed, 20 Apr 2011 06:11:10 +0000
-Received: by pxi15 with SMTP id 15so339332pxi.33
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 19 Apr 2011 23:11:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <BANLkTikvFfzQBwq-17_6B1WCmRCmLA67eA@mail.gmail.com>
-References: <BANLkTimn5YKKSb2nVY-va-4-Oz_fH1Z5hA@mail.gmail.com>
-	<1460652483.36832.1303236011908.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>
-	<BANLkTikvFfzQBwq-17_6B1WCmRCmLA67eA@mail.gmail.com>
-Date: Tue, 19 Apr 2011 23:11:03 -0700
-Message-ID: <BANLkTi=67r5TW4oPhmQT+ORUwE95H7ZtLA@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1QERcq-0000uY-90
+	for ltp-list@lists.sourceforge.net; Mon, 25 Apr 2011 19:39:16 +0000
+Received: from mail-pv0-f174.google.com ([74.125.83.174])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QERcp-0006Ug-7g
+	for ltp-list@lists.sourceforge.net; Mon, 25 Apr 2011 19:39:16 +0000
+References: <1303477727.18220.15.camel@moss-pluto>
+	<4DB1E88D.2030808@linux.vnet.ibm.com>
+	<1303738356.4244.67.camel@moss-pluto>
+In-Reply-To: <1303738356.4244.67.camel@moss-pluto>
+Mime-Version: 1.0 (iPhone Mail 8C148)
+Message-Id: <96AA5F80-E871-4368-BEB7-BC9FA24FFABD@gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups/cgroup_regression_test: fix sporadic
-	failures
+Date: Mon, 25 Apr 2011 12:38:55 -0700
+Subject: Re: [LTP] selinux-testsuite has moved
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,124 +26,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, Apr 19, 2011 at 3:04 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Tue, Apr 19, 2011 at 11:00 AM, Jan Stancek <jstancek@redhat.com> wrote:
->>
->>
->> ----- Original Message -----
->>> From: "Garrett Cooper" <yanegomi@gmail.com>
->>> To: "Jan Stancek" <jstancek@redhat.com>
->>> Cc: ltp-list@lists.sourceforge.net
->>> Sent: Tuesday, April 19, 2011 7:40:46 PM
->>> Subject: Re: [LTP] [PATCH] cgroups/cgroup_regression_test: fix sporadic=
- failures
->>> On Tue, Apr 19, 2011 at 9:31 AM, Jan Stancek <jstancek@redhat.com>
->>> wrote:
->>> >
->>> >
->>> > ----- Original Message -----
->>> >> From: "Garrett Cooper" <yanegomi@gmail.com>
->>> >> To: "Jan Stancek" <jstancek@redhat.com>
->>> >> Cc: ltp-list@lists.sourceforge.net
->>> >> Sent: Tuesday, April 19, 2011 6:13:48 PM
->>> >> Subject: Re: [LTP] [PATCH] cgroups/cgroup_regression_test: fix
->>> >> sporadic failures
->>> >> On Tue, Apr 19, 2011 at 6:27 AM, Jan Stancek <jstancek@redhat.com>
->>> >> wrote:
->>> >> >
->>> >> > There were failures caused by incomplete cleanup,
->>> >> > leaving groups behind after some stress tests.
->>> >> > Some stress tests failed to complete upon receiving SIGUSR1.
->>> >> >
->>> >> > 1. dmesg can rotate and number of found bugs can actually go down
->>> >> > clear the buffer before test to avoid this
->>> >> >
->>> >> > 2. test_5: test should mount 2 subsystems, but mount command
->>> >> > says "$subsys" instead of "$subsys2"
->>> >> >
->>> >> > 3. test_6: test may leave groups behind, fix rmdir
->>> >> > to match test_6_1.sh
->>> >> >
->>> >> > 4. test_7_2: mounts whole cgroup not $subsys
->>> >> >
->>> >> > 5. test_10: can leave cgroups umounted before cleanup
->>> >> > make sure cgroups are mounted before doing cleanup
->>> >> >
->>> >> > 6. test_*.sh scripts use trap in loop, which may cause bash
->>> >> > to miss signal, see
->>> >> > https://bugzilla.redhat.com/show_bug.cgi?id=3D695656
->>> >> > move trap outside loop to avoid it
->>> >>
->>> >> I personally don't have a lot of context into cgroups, but when is
->>> >> it acceptable for Linux to send SIGUSR1 when mounting, unmounting,
->>> >> or
->>> >> removing cgroup directories?
->>> >
->>> > The main test spawns couple of workers, which run infinite loop and
->>> > stress
->>> > test some area. SIGUSR1 was chosen by author of test to stop these
->>> > workers
->>> > after certain amount of time.
->>> >
->>> > The signal only controls workers, it is not directly related to any
->>> > cgroup functionality AFAIK.
->>> >
->>> > Unfortunetly, when resetting "trap" in bash, signal is ignored for
->>> > short period of time, which occasionally hangs the whole test.
->>>
->>> That just sounds like a cop-out for fixing a bug in bash. Unless
->>> the item is documented in bash and/or the POSIX spec prior to that
->>> bug, I would just push back on the devs until they fix the shell.
->>> Setting signal handlers in a synchronous fashion isn't rocket science.
->>> Thanks,
->>> -Garrett
->>
->> I am trying to push them :-). If you look at bz, maintainer is trying
->> to get things moving upstream:
->> http://www.mail-archive.com/bug-bash@gnu.org/msg09099.html
->>
->> But at the same time, it seems pointless for test to keep resetting
->> signal handler in busy loop, unless it is a bash stress test.
->>
->> One way or another, bash folks will deal with the issue: fix it or
->> document it. Avoiding this problem by moving trap out of loop allows
->> people to use test also on older versions.
->>
->> Or as alternative, I can put in extra "kill -SIGTERM", so even
->> when SIGUSR1 gets lost, test will be able to progress.
->
-> =A0 =A0Sure. My concern is that there could be other unintended behavior
-> that crops up because the signal handler is being setup once now
-> instead of each and every loop. But I also understand your plight...
-> =A0 =A0FWIW it would be nice to move away from SIGUSR1/SIGUSR2 because I
-> know people who have hacked the Linux kernel and init in the past to
-> pass 'special messages' / trigger asynchronous systemwide events with
-> these signals. Granted, I think they're morons for doing so as
-> SIGUSR1/SIGUSR2 are general purpose user-defined signals with certain
-> semantic meaning (in particular dealing with legacy shell and init
-> behavior), but I was QA at the time and had no real say in what
-> 'design'/hacks they employed to get software out the door.
+On Apr 25, 2011, at 6:32 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
 
-Patches don't apply.
-Thanks,
+> On Sat, 2011-04-23 at 02:13 +0530, Shubham Goyal wrote:
+>> On Friday 22 April 2011 06:38 PM, Stephen Smalley wrote:
+>>> Hi,
+>>> 
+>>> A recent posting on lkml noted that the selinux testsuite in ltp doesn't
+>>> work anymore.  As no one seems to be maintaining it in the ltp, I'd
+>>> suggest just removing it entirely. You may want to leave a README.MOVED
+>>> or similar file pointing to the new location, e.g.:
+>>> 
+>>> The selinux testsuite has been moved to a standalone testsuite
+>>> separate from the ltp.  You can obtain it via:
+>>>  git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
+>>> 
+>>> Thanks.
+>>> 
+>> 
+>> Hi Stephan,
+>> 
+>> Can you please tell what was the exact problem in running LTP's selinux 
+>> testsuite?
+>> I tried running them and it worked for me with a minor modification. The 
+>> current
+>> 'test_selinux.sh' sets the LTPROOT as the LTP source's 'testscripts' 
+>> directory but as
+>> per current build process '/opt/ltp' is the install directory. After 
+>> making these changes
+>> in 'test_selinux.sh' script, the test cases worked fine for me.
+> 
+> I don't know the exact problem; I just know that it didn't work for the
+> person who mentioned it in passing on lkml.  And apparently it didn't
+> work for you either until you changed test_selinux.sh.  But I know that
+> test_selinux.sh has worked in the past, even after the change
+> to /opt/ltp, and that we haven't changed it recently.
+> 
+> Actually, I just tried running it via cd /opt/ltp
+> && ./testscripts/test_selinux.sh and it seemed to work fine.  This was
+> with the current git, building in-tree, installing to /opt/ltp.
+> 
+>> I believe keeping it as a part of LTP tree is a better idea and would 
+>> have better
+>> chances of getting it maintained along with other LTP test case and modules.
+> 
+> This has been discussed a bit in the past, e.g. see this thread:
+> http://marc.info/?t=127790181000003&r=1&w=2
+> 
+> At present we see no benefit, only cost, to maintaining the selinux
+> testsuite in the ltp as it is regularly broken by unrelated changes
+> elsewhere in the ltp and as it is not truly integrated into the ltp (you
+> have to perform separate steps to build and run it).  In comparison, we
+> don't have to worry about unrelated changes breaking the standalone
+> selinux testsuite, and it is certainly no harder to do this:
+> 
+> git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
+> cd selinux-testsuite
+> sudo make test
+> 
+> than to do this:
+> 
+> git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
+> cd ltp
+> make autotools
+> ./configure
+> make all
+> make install
+> cd testcases/kernel/security/selinux-testsuite
+> make all
+> make install
+> cd /opt/ltp
+> ./testscripts/test_selinux.sh
+> 
+> If the selinux testsuite were fully integrated into the ltp (e.g. built
+> and run by default if SELinux is enabled on the system), then that might
+> be more worthwhile to keep it as part of the ltp.  But in the 6 years
+> since it was added to the ltp, that hasn't happened.
+
+Do what's easiest for you guys to maintain upstream; what you suggested makes sense: pull from git and run selinux as-is. The twist I'm proposing here is as follows:
+1. The selinux test suite needs to be made modular and portable. I'll provide you with autoconf/other patches sometime after I get back from vacation on friday.
+2. I'll add logic to pull from git in ltp, which means the following: releases will come with the selinux test suite; archives and other non-release mechanisms won't. Thus, if you want to run the selinux testcases, you will need git, and will have to specify --with-selinux=yes when running configure, etc.
+
+Sound ok?
+
+Thanks!
 -Garrett
-
----------------------------------------------------------------------------=
----
-Benefiting from Server Virtualization: Beyond Initial Workload =
-
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve =
-
-application availability and disaster protection. Learn more about boosting =
-
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+------------------------------------------------------------------------------
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
