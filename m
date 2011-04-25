@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Q7jAE-0005X6-Lm
-	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 06:57:58 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Q7jAD-0003zS-RL
-	for ltp-list@lists.sourceforge.net; Thu, 07 Apr 2011 06:57:58 +0000
-Received: by pwj9 with SMTP id 9so1282635pwj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 06 Apr 2011 23:57:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20110225103620.GA10350@hpt.nay.redhat.com>
-References: <20110225103620.GA10350@hpt.nay.redhat.com>
-Date: Wed, 6 Apr 2011 23:57:51 -0700
-Message-ID: <BANLkTimC1VXcu1DTfR+nOK5sx5vvKguZkQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] thp testcase come from CVE reproducer
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <sds@tycho.nsa.gov>) id 1QELuI-0007Vl-Rf
+	for ltp-list@lists.sourceforge.net; Mon, 25 Apr 2011 13:32:54 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.65.39])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QELuH-0003WN-LY
+	for ltp-list@lists.sourceforge.net; Mon, 25 Apr 2011 13:32:54 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <4DB1E88D.2030808@linux.vnet.ibm.com>
+References: <1303477727.18220.15.camel@moss-pluto>
+	<4DB1E88D.2030808@linux.vnet.ibm.com>
+Date: Mon, 25 Apr 2011 09:32:36 -0400
+Message-ID: <1303738356.4244.67.camel@moss-pluto>
+Mime-Version: 1.0
+Subject: Re: [LTP] selinux-testsuite has moved
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,106 +25,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
+To: Shubham Goyal <shubham@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-I'm going to be more anal retentive with this review than I was previously.
+On Sat, 2011-04-23 at 02:13 +0530, Shubham Goyal wrote:
+> On Friday 22 April 2011 06:38 PM, Stephen Smalley wrote:
+> > Hi,
+> >
+> > A recent posting on lkml noted that the selinux testsuite in ltp doesn't
+> > work anymore.  As no one seems to be maintaining it in the ltp, I'd
+> > suggest just removing it entirely. You may want to leave a README.MOVED
+> > or similar file pointing to the new location, e.g.:
+> >
+> > The selinux testsuite has been moved to a standalone testsuite
+> > separate from the ltp.  You can obtain it via:
+> >   git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
+> >
+> > Thanks.
+> >
+> 
+> Hi Stephan,
+> 
+> Can you please tell what was the exact problem in running LTP's selinux 
+> testsuite?
+> I tried running them and it worked for me with a minor modification. The 
+> current
+> 'test_selinux.sh' sets the LTPROOT as the LTP source's 'testscripts' 
+> directory but as
+> per current build process '/opt/ltp' is the install directory. After 
+> making these changes
+> in 'test_selinux.sh' script, the test cases worked fine for me.
 
-On Fri, Feb 25, 2011 at 2:36 AM, Han Pingtian <phan@redhat.com> wrote:
-> This is a reproducer of =A0CVE-2011-0999, which fixed by mainline commit
-> a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
->
-> "Transparent hugepages can only be created if rmap is fully
-> functional. So we must prevent hugepages to be created while
-> is_vma_temporary_stack() is true."
->
-> When running in a loop, it can trigger panic like this, if kernel
-> unpatched:
->
-> kernel BUG at mm/huge_memory.c:1260!
-> invalid opcode: 0000 [#1] SMP
-> last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
+I don't know the exact problem; I just know that it didn't work for the
+person who mentioned it in passing on lkml.  And apparently it didn't
+work for you either until you changed test_selinux.sh.  But I know that
+test_selinux.sh has worked in the past, even after the change
+to /opt/ltp, and that we haven't changed it recently.
 
-...
->
-> So I recommend to run it as 'thp01 -I xxx'.
-> +static option_t options[] =3D {
-> + =A0 =A0 =A0 {NULL, NULL, NULL}
-> +};
-> +
-> +static void usage(void)
-> +{
-> + =A0 =A0return;
-> +}
-> +
-> +int main(int argc, char **argv) {
-> + =A0 =A0 =A0 int i, lc, st;
-> + =A0 =A0 =A0 pid_t pid;
-> + =A0 =A0 =A0 char *msg;
-> + =A0 =A0 =A0 char *c[257];
-> + =A0 =A0 =A0 char cc[32*4096];
-> + =A0 =A0 =A0 struct rlimit rl =3D {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .rlim_cur =3DRLIM_INFINITY,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .rlim_max=3DRLIM_INFINITY,
-> + =A0 =A0 =A0 };
-> +
-> + =A0 =A0 =A0 msg =3D parse_opts(argc, argv, options, usage);
-> + =A0 =A0 =A0 if (msg !=3D NULL)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK, NULL, "OPTION PARSING ERROR=
- - %s", msg);
-> +
-> + =A0 =A0 =A0 for (lc =3D 0; TEST_LOOPING(lc); lc++) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 switch (pid =3D fork()) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 case -1:
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TB=
-ROK|TERRNO, NULL, "fork");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 case 0:
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 memset(cc, =
-'c', 32*4096-1);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (i=3D0;=
-i<256;i++)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 c[i] =3D cc;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (setrlim=
-it(RLIMIT_STACK, &rl) =3D=3D -1)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_brkm(TBROK|TERRNO, NULL, "setrlimit");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (execve(=
-"/bin/true", c, c) =3D=3D -1)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_brkm(TBROK|TERRNO, NULL, "execve");
+Actually, I just tried running it via cd /opt/ltp
+&& ./testscripts/test_selinux.sh and it seemed to work fine.  This was
+with the current git, building in-tree, installing to /opt/ltp.
 
-I would just do perror("execve"), etc, because this is a child process
-and according to the style guide you shouldn't use tst_resm in child
-processes (I recommended that in the style guide for a very good
-reason that you should understand).
+> I believe keeping it as a part of LTP tree is a better idea and would 
+> have better
+> chances of getting it maintained along with other LTP test case and modules.
 
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 default:
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (waitpid=
-(pid, &st, 0) =3D=3D -1)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_brkm(TBROK|TERRNO, NULL, "waitpid");
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (! WIFEX=
-ITED(st))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_brkm(TBROK, NULL, "child exit status is %d", WEXITSTATUS(st));
+This has been discussed a bit in the past, e.g. see this thread:
+http://marc.info/?t=127790181000003&r=1&w=2
 
-I agree with what Cyril said before about whitespace.
+At present we see no benefit, only cost, to maintaining the selinux
+testsuite in the ltp as it is regularly broken by unrelated changes
+elsewhere in the ltp and as it is not truly integrated into the ltp (you
+have to perform separate steps to build and run it).  In comparison, we
+don't have to worry about unrelated changes breaking the standalone
+selinux testsuite, and it is certainly no harder to do this:
 
-...
+git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
+cd selinux-testsuite
+sudo make test
 
--Garrett
+than to do this:
 
----------------------------------------------------------------------------=
----
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
+cd ltp
+make autotools
+./configure
+make all
+make install
+cd testcases/kernel/security/selinux-testsuite
+make all
+make install
+cd /opt/ltp
+./testscripts/test_selinux.sh
+
+If the selinux testsuite were fully integrated into the ltp (e.g. built
+and run by default if SELinux is enabled on the system), then that might
+be more worthwhile to keep it as part of the ltp.  But in the 6 years
+since it was added to the ltp, that hasn't happened. 
+
+-- 
+Stephen Smalley
+National Security Agency
+
+
+------------------------------------------------------------------------------
+Fulfilling the Lean Software Promise
+Lean software platforms are now widely adopted and the benefits have been 
+demonstrated beyond question. Learn why your peers are replacing JEE 
+containers with lightweight application servers - and what you can gain 
+from the move. http://p.sf.net/sfu/vmware-sfemails
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
