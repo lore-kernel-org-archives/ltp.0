@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q7UJ0-0000yE-KB
-	for ltp-list@lists.sourceforge.net; Wed, 06 Apr 2011 15:06:02 +0000
-Date: Wed, 6 Apr 2011 17:29:44 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <chrubis@suse.de>) id 1QEkGy-0000mX-MW
+	for ltp-list@lists.sourceforge.net; Tue, 26 Apr 2011 15:33:56 +0000
+Date: Tue, 26 Apr 2011 17:59:23 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110406152944.GA12317@saboteur.suse.cz>
-References: <1301695288-24912-1-git-send-email-aelder@sgi.com>
-	<26c7134d7a0855a4bd8a5f73e7dfc8088115f9d2.1301695094.git.aelder@sgi.com>
-	<20110406130522.GB6652@saboteur.suse.cz>
-	<1302102133.2505.26.camel@doink>
+Message-ID: <20110426155923.GB28253@saboteur.suse.cz>
+References: <20110304170932.19819907@regolo>
+	<AANLkTin_4rBGj5O-ZgTdu2C8nV6Lc9-pa9ig8NsAowAd@mail.gmail.com>
+	<AANLkTik6nKzqp2tuyhsuk6FvMd540xZVGGddr=B13D-R@mail.gmail.com>
+	<20110305010600.0c7cd017@regolo>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1302102133.2505.26.camel@doink>
-Subject: Re: [LTP] [PATCH 1/6] ltp: fix databinchk() definition
+In-Reply-To: <20110305010600.0c7cd017@regolo>
+Subject: Re: [LTP] [PATCH] kill05: fix regression
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,33 +27,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alex Elder <aelder@sgi.com>
+To: Cristian Greco <cristian@regolo.cc>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > > -void databinchedk( int mode, unsigned char *buffer, int bsize, int offset, char **errmsg);
-> > > +int databinchk( int mode, char *buffer, int bsize, int offset, char **errmsg);
-> > 
-> > You've forgotten to remove the space here "databinchk( int".
+> you're right. In fact, the problem is in safe_getpwnam(), which does not
+> correctly reproduce the behavior of the deprecated my_getpwnam().
+> Moreover, I'm not noticing the problem on my laptop due to a race
+> condition in kill05, while it shows an inconsistent behavior on the box
+> I'm running tests on (mipsel with glibc, for the sake).
 > 
-> I'll happily fix that (or whoever commits it is welcome to).
-> I was just preserving the exiting formatting.  Might as well
-> drop the spaces in the declaration of databingen() next to it
-> as well.
+> Could you please fix safe_getpwnam() with either one of the following
+> patches?
 
-Okay. So I'll commit this as it is. Feel free to send another patch that
-fixes the whitespace madness.
+Technically you are right, but my_getpwnam() behaviour is broken too. As
+the strings the structure is pointing to are statically allocated too,
+this copying preserves only uid and gid. So instead of creating
+crippled interface we will rather fix the test itself.
+
+Thanks the report anyway.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
