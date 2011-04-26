@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <aelder@sgi.com>) id 1Q6ia9-0005Tg-5x
-	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:08:33 +0000
-Received: from relay2.sgi.com ([192.48.179.30] helo=relay.sgi.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.74)
-	id 1Q6ia5-0001CZ-Fj
-	for ltp-list@lists.sourceforge.net; Mon, 04 Apr 2011 12:08:33 +0000
-Received: from cf--amer001e--3.americas.sgi.com
-	(cf--amer001e--3.americas.sgi.com [137.38.100.5])
-	by relay2.corp.sgi.com (Postfix) with ESMTP id 3305630406A
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  4 Apr 2011 05:08:24 -0700 (PDT)
-From: Alex Elder <aelder@sgi.com>
-Date: Mon, 04 Apr 2011 07:08:22 -0500
-Message-ID: <1301918902.3282.24.camel@doink>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <sds@tycho.nsa.gov>) id 1QEiCj-00089h-3c
+	for ltp-list@lists.sourceforge.net; Tue, 26 Apr 2011 13:21:25 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.65.39])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QEiCd-0006fz-L0
+	for ltp-list@lists.sourceforge.net; Tue, 26 Apr 2011 13:21:25 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <96AA5F80-E871-4368-BEB7-BC9FA24FFABD@gmail.com>
+References: <1303477727.18220.15.camel@moss-pluto>
+	<4DB1E88D.2030808@linux.vnet.ibm.com>
+	<1303738356.4244.67.camel@moss-pluto>
+	<96AA5F80-E871-4368-BEB7-BC9FA24FFABD@gmail.com>
+Date: Tue, 26 Apr 2011 09:21:10 -0400
+Message-ID: <1303824070.4244.102.camel@moss-pluto>
 Mime-Version: 1.0
-Subject: [LTP] [PATCH 1/6] ltp: fix databinchk() definition
-Reply-To: aelder@sgi.com
+Subject: Re: [LTP] selinux-testsuite has moved
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,69 +30,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Serge Hallyn <serge@hallyn.com>
 
-Fix a bogus (misspelled) declaration for databinchk() in
-"include/databin.h".
+On Mon, 2011-04-25 at 12:38 -0700, Garrett Cooper wrote:
+> On Apr 25, 2011, at 6:32 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> > At present we see no benefit, only cost, to maintaining the selinux
+> > testsuite in the ltp as it is regularly broken by unrelated changes
+> > elsewhere in the ltp and as it is not truly integrated into the ltp (you
+> > have to perform separate steps to build and run it).  In comparison, we
+> > don't have to worry about unrelated changes breaking the standalone
+> > selinux testsuite, and it is certainly no harder to do this:
+> > 
+> > git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
+> > cd selinux-testsuite
+> > sudo make test
+> > 
+> > than to do this:
+> > 
+> > git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp
+> > cd ltp
+> > make autotools
+> > ./configure
+> > make all
+> > make install
+> > cd testcases/kernel/security/selinux-testsuite
+> > make all
+> > make install
+> > cd /opt/ltp
+> > ./testscripts/test_selinux.sh
+> > 
+> > If the selinux testsuite were fully integrated into the ltp (e.g. built
+> > and run by default if SELinux is enabled on the system), then that might
+> > be more worthwhile to keep it as part of the ltp.  But in the 6 years
+> > since it was added to the ltp, that hasn't happened.
+> 
+> Do what's easiest for you guys to maintain upstream; what you suggested makes sense: pull from git and run selinux as-is. The twist I'm proposing here is as follows:
+> 1. The selinux test suite needs to be made modular and portable. I'll provide you with autoconf/other patches sometime after I get back from vacation on friday.
+> 2. I'll add logic to pull from git in ltp, which means the following: releases will come with the selinux test suite; archives and other non-release mechanisms won't. Thus, if you want to run the selinux testcases, you will need git, and will have to specify --with-selinux=yes when running configure, etc.
+> 
+> Sound ok?
 
-Then, change databinchk() so that its second argument is a signed
-rather than an unsigned character pointer.  This is consistent with
-the way it is used throughout the code.  Because of the way that
-argument is used, it won't change the behavior of that function; its
-value is immediately assigned to a local variable, which is still
-unsigned.  Add a cast in that assignment to force the conversion.
+Not sure what modularity or portability problems you see in the
+testsuite, but I think autotools would be overkill and just make
+maintenance harder.  If by modularity you mean the ability to run tests
+individually, that is already possible, and if by portability you mean
+the ability to build and run the tests on the various architectures, I
+believe that also is already covered.  We certainly don't have to
+concern ourselves with portability to other OSes, as the selinux
+testsuite is by definition specific to Linux.
 
-Signed-off-by: Alex Elder <aelder@sgi.com>
----
- include/databin.h |    2 +-
- lib/databin.c     |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/databin.h b/include/databin.h
-index c168799..93c3863 100644
---- a/include/databin.h
-+++ b/include/databin.h
-@@ -39,6 +39,6 @@
- 
- void databingen( int mode, char *buffer, int bsize, int offset );
- 
--void databinchedk( int mode, unsigned char *buffer, int bsize, int offset, char **errmsg);
-+int databinchk( int mode, char *buffer, int bsize, int offset, char **errmsg);
- 
- #endif
-diff --git a/lib/databin.c b/lib/databin.c
-index 6659ccf..c0f4307 100644
---- a/lib/databin.c
-+++ b/lib/databin.c
-@@ -91,7 +91,7 @@ int ind;
- int
- databinchk(mode, buffer, bsize, offset, errmsg)
- int mode;	/* either a, c, r, z, o, or C */
--unsigned char *buffer;	/* buffer pointer */
-+char *buffer;	/* buffer pointer */
- int bsize;	/* size of buffer */
- int offset;	/* offset into the file where buffer starts */
- char **errmsg;
-@@ -102,7 +102,7 @@ char **errmsg;
-     long expbits;
-     long actbits;
- 
--	chr=buffer;
-+	chr = (unsigned char *) buffer;
- 	total=bsize;
- 
- 	if (errmsg != NULL) {
 -- 
-1.7.4
-
-
+Stephen Smalley
+National Security Agency
 
 
 ------------------------------------------------------------------------------
-Create and publish websites with WebMatrix
-Use the most popular FREE web apps or write code yourself; 
-WebMatrix provides all the features you need to develop and 
-publish your website. http://p.sf.net/sfu/ms-webmatrix-sf
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
