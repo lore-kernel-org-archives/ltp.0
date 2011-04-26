@@ -2,17 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <chrubis@suse.de>) id 1Q9yR4-00014a-UU
-	for ltp-list@lists.sourceforge.net; Wed, 13 Apr 2011 11:40:38 +0000
-Date: Wed, 13 Apr 2011 14:04:52 +0200
+	(envelope-from <chrubis@suse.de>) id 1QElDX-0001ys-6C
+	for ltp-list@lists.sourceforge.net; Tue, 26 Apr 2011 16:34:27 +0000
+Date: Tue, 26 Apr 2011 18:59:53 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110413120452.GA3206@saboteur.suse.cz>
-References: <1302546720.2580.29.camel@doink>
-	<BANLkTimqaMit_JMGLvDJFzsoJZMQhf0JSQ@mail.gmail.com>
+Message-ID: <20110426165953.GD30153@saboteur.suse.cz>
+References: <06352e949d1cb1a9b4cc6c6e1593360f377705e3.1303456355.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <BANLkTimqaMit_JMGLvDJFzsoJZMQhf0JSQ@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 3/3, v2] ltp: fix warnings in "fsstress.c"
+In-Reply-To: <06352e949d1cb1a9b4cc6c6e1593360f377705e3.1303456355.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] ftrace: fix memory allocation size computation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,33 +24,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>, Jiri Olsa <jolsa@redhat.com>
 
 Hi!
-> 1. Please use sizeof() instead of bareword sizeof.
-> 2. I'm not sure if this is necessarily LKML style (the code I've
-> sampled in the mainline kernel do this however), but casts don't
-> require spurious spaces in FreeBSD for instance, i.e.
-> 
->     foo = (void*)bar;
-> 
-> instead of
-> 
->     foo = (void*) bar;
-
-Agreed, while it's not written explicitly it seems to be common sense.
+Commited, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Forrester Wave Report - Recovery time is now measured in hours and minutes
-not days. Key insights are discussed in the 2010 Forrester Wave Report as
-part of an in-depth evaluation of disaster recovery service providers.
-Forrester found the best-in-class provider in terms of services and vision.
-Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
