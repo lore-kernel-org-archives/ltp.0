@@ -1,25 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1Q8RCx-00040w-84
-	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 05:59:43 +0000
-Received: from mail-px0-f174.google.com ([209.85.212.174])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1Q8RCw-0005rb-E6
-	for ltp-list@lists.sourceforge.net; Sat, 09 Apr 2011 05:59:43 +0000
-Received: by pxi15 with SMTP id 15so2066482pxi.33
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 08 Apr 2011 22:59:36 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1QEvcy-0006FI-Ig
+	for ltp-list@lists.sourceforge.net; Wed, 27 Apr 2011 03:41:24 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QEvcx-0001TM-BC
+	for ltp-list@lists.sourceforge.net; Wed, 27 Apr 2011 03:41:24 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p3R3fH2U013683
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 26 Apr 2011 23:41:17 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Wed, 27 Apr 2011 11:40:56 +0800
+Message-Id: <4568ba43493b4cdedfa0ccb3a3b2cdb746ea2147.1303875548.git.czhang@redhat.com>
+In-Reply-To: <BANLkTimHzFEY8-ECzh7++oK97oboW31zdQ@mail.gmail.com>
+References: <BANLkTimHzFEY8-ECzh7++oK97oboW31zdQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <de84600847aa9a4caaed369f0771bf4a2e18536c.1302294850.git.aelder@sgi.com>
-References: <2fb6f8d9dc82ef63e3c7cd80151cb6ea7972aae9.1302294850.git.aelder@sgi.com>
-	<1302294875-6898-1-git-send-email-aelder@sgi.com>
-	<de84600847aa9a4caaed369f0771bf4a2e18536c.1302294850.git.aelder@sgi.com>
-Date: Fri, 8 Apr 2011 22:59:36 -0700
-Message-ID: <BANLkTinJwd885ZKb67iD3ftkfhQ3kG6piQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 4/4] ltp: kill off warnings in "fsstress.c"
+Content-Type: multipart/mixed; boundary="------------1.7.1"
+Subject: [LTP] [PATCH v3] thp testcase come from CVE reproducer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,40 +30,249 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alex Elder <aelder@sgi.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On Fri, Apr 8, 2011 at 1:34 PM, Alex Elder <aelder@sgi.com> wrote:
-> Fix remaining warnings in "testcases/kernel/fs/fsstress/fsstress.c".
-> Three of them are due to mismatches between fprintf() conversion
-> specifications and the variables being formatted. =A0Fix these by
-> casting the variables to the right type.
->
-> Two others are due to the use of a __uint64_t local variable to
-> represent a value of type __u64 (which evidently can be defined
-> differently in some environments). =A0Fix these by using the exact
-> matching type in the cases that produce the warning messages.
+This is a multi-part message in MIME format.
+--------------1.7.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-    I see different typedef'ed types when going over the xfs_ioctl.c
-source. Could you please either use the kernel datatype (highly
-recommended), or a POSIX equivalent if you can't use the kernel
-datatype? I would really like the former because having to fix this in
-2-4 years because someone changes the field size and the test doesn't
-get updated properly is incredibly annoying.
-Thanks,
--Garrett
 
----------------------------------------------------------------------------=
+This is a reproducer of CVE-2011-0999, which fixed by mainline commit
+a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
+
+"Transparent hugepages can only be created if rmap is fully functional.
+So we must prevent hugepages to be created while
+is_vma_temporary_stack() is true."
+
+When running in a loop, it can trigger panic like this, if kernel
+unpatched:
+
+kernel BUG at mm/huge_memory.c:1260!
+invalid opcode: 0000 [#1] SMP
+last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
+....
+
+So I recommend to run it as 'thp01 -I xxx'.
+
+v2 & v3: update code style
+
+Signed-off-by: Pingtian Han <phan@redhat.com>
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
-Xperia(TM) PLAY
-It's a major breakthrough. An authentic gaming
-smartphone on the nation's most reliable network.
-And it wants your games.
-http://p.sf.net/sfu/verizon-sfdev
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/thp/Makefile |   23 +++++++
+ testcases/kernel/mem/thp/thp01.c  |  127 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 152 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/thp/Makefile
+ create mode 100644 testcases/kernel/mem/thp/thp01.c
+
+
+--------------1.7.1
+Content-Type: text/x-patch;
+	name="0001-thp-testcase-come-from-CVE-reproducer.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-thp-testcase-come-from-CVE-reproducer.patch"
+
+diff --git a/runtest/mm b/runtest/mm
+index f2d50d6..dded529 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -78,3 +78,5 @@ oom01 oom01
+ oom02 oom02
+ oom03 oom03
+ oom04 oom04
++
++thp01 thp01 -I 600
+diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
+new file mode 100644
+index 0000000..d43511a
+--- /dev/null
++++ b/testcases/kernel/mem/thp/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (C) 2011  Red Hat, Inc.
++#
++#  This program is free software; you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or (at
++#  your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful, but
++#  WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++#  General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program; if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++#  02110-1301, USA.
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
+new file mode 100644
+index 0000000..a1d248f
+--- /dev/null
++++ b/testcases/kernel/mem/thp/thp01.c
+@@ -0,0 +1,127 @@
++/*
++ * This is a reproducer of CVE-2011-0999, which fixed by mainline commit
++ * a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
++ *
++ * "Transparent hugepages can only be created if rmap is fully
++ * functional. So we must prevent hugepages to be created while
++ * is_vma_temporary_stack() is true."
++ *
++ * It will cause a panic something like this, if the patch didn't get
++ * applied:
++ *
++ * kernel BUG at mm/huge_memory.c:1260!
++ * invalid opcode: 0000 [#1] SMP
++ * last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
++ * ....
++ *
++ * Copyright (C) 2011  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#include <sys/types.h>
++#include <sys/resource.h>
++#include <sys/wait.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include "test.h"
++#include "usctest.h"
++#include "config.h"
++
++char *TCID = "thp01";
++int TST_TOTAL = 1;
++
++#define ARRAY_SZ	256
++
++static int ps;
++static long length;
++static char *array[ARRAY_SZ];
++static char *arg;
++
++struct rlimit rl = {
++	.rlim_cur = RLIM_INFINITY,
++	.rlim_max = RLIM_INFINITY,
++};
++
++static void setup(void);
++static void cleanup(void);
++
++int main(int argc, char **argv)
++{
++	int i, lc, st;
++	pid_t pid;
++	char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		switch (pid = fork()) {
++		case -1:
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		case 0:
++			memset(arg, 'c', length - 1);
++			arg[length - 1] = '\0';
++			for (i = 0; i < ARRAY_SZ; i++)
++				array[i] = arg;
++			if (setrlimit(RLIMIT_STACK, &rl) == -1) {
++				perror("setrlimit");
++				exit(1);
++			}
++			if (execve("/bin/true", array, array) == -1) {
++				perror("execve");
++				exit(1);
++			}
++		default:
++			if (waitpid(pid, &st, 0) == -1)
++				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++			if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
++				tst_brkm(TBROK, cleanup,
++					"child exited abnormally");
++		}
++	}
++	tst_resm(TPASS, "system didn't crash, pass.");
++	cleanup();
++	tst_exit();
++}
++
++static void setup()
++{
++	if (access("/bin/true", F_OK) == -1)
++		tst_brkm(TBROK, NULL, "/bin/true not exist");
++
++	ps = sysconf(_SC_PAGESIZE);
++	length = 32 * ps;
++	arg = malloc(length * sizeof(char));
++	if (arg == NULL)
++		tst_brkm(TBROK|TERRNO, NULL, "malloc");
++
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++}
++
++static void cleanup()
++{
++	TEST_CLEANUP;
++}
+
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.1--
+
+
+
