@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QK8m2-0000NV-F0
-	for ltp-list@lists.sourceforge.net; Wed, 11 May 2011 12:44:18 +0000
-Date: Wed, 11 May 2011 14:39:18 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110511123918.GA10319@saboteur.suse.cz>
-References: <1303477727.18220.15.camel@moss-pluto>
-	<4DB1E88D.2030808@linux.vnet.ibm.com>
-	<1303738356.4244.67.camel@moss-pluto>
-	<96AA5F80-E871-4368-BEB7-BC9FA24FFABD@gmail.com>
-	<1303824070.4244.102.camel@moss-pluto>
-	<20110506112531.GA17564@saboteur.suse.cz>
-	<1304686654.1821.14.camel@moss-pluto>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1QHfPM-0001gy-V8
+	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:58:40 +0000
+Received: from mail-vx0-f175.google.com ([209.85.220.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QHfPM-00072S-Bd
+	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:58:40 +0000
+Received: by vxd7 with SMTP id 7so2190887vxd.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 04 May 2011 09:58:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1304686654.1821.14.camel@moss-pluto>
-Subject: Re: [LTP] selinux-testsuite has moved
+In-Reply-To: <4DB7B854.8010304@redhat.com>
+References: <4DB7B854.8010304@redhat.com>
+Date: Wed, 4 May 2011 09:58:34 -0700
+Message-ID: <BANLkTim33DNfozkPozHCwZ3QsUUd_CHh=A@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] kill05: fix race condition in do_master_child
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,30 +30,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list <ltp-list@lists.sf.net>, Serge Hallyn <serge@hallyn.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> I'd vote for the first option. The second one is harder than you may
-> think given differences in test harness and layout, and the third one
-> seems unlikely at this point.  Just redirect to
-> git://git.kernel.org/pub/scm/tests/selinux-testsuite
+On Tue, Apr 26, 2011 at 11:31 PM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+> There is a race condition when starting child. Master child can go
+> forward before child changes its reuid.
+> Fix this by waiting until child is ready.
 
-Okay.
-
-Let's wait for about a week or two and if nobody would object in that
-period I'll do so.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
-Achieve unprecedented app performance and reliability
-What every C/C++ and Fortran developer should know.
-Learn how Intel has extended the reach of its next-generation tools
-to help boost performance applications - inlcuding clusters.
-http://p.sf.net/sfu/intel-dev2devmay
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
