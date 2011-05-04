@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QOsIb-0004MB-4m
-	for ltp-list@lists.sourceforge.net; Tue, 24 May 2011 14:09:29 +0000
-Date: Tue, 24 May 2011 16:05:41 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110524140541.GA32666@saboteur.suse.cz>
-References: <4DDA25E6.8090509@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <yanegomi@gmail.com>) id 1QHfNw-0000of-8T
+	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:57:12 +0000
+Received: from mail-vx0-f175.google.com ([209.85.220.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QHfNv-0008KK-Nq
+	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:57:12 +0000
+Received: by vxd7 with SMTP id 7so2188534vxd.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 04 May 2011 09:57:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4DDA25E6.8090509@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ksm cases should call tst_kvercmp()
+In-Reply-To: <496372751cd0fb99e60661b99f2c0601ba13edfa.1304504870.git.czhang@redhat.com>
+References: <496372751cd0fb99e60661b99f2c0601ba13edfa.1304504870.git.czhang@redhat.com>
+Date: Wed, 4 May 2011 09:57:06 -0700
+Message-ID: <BANLkTikonsEzyiJuJ=poJkKrOd4i1-6dww@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] [syscalls] mbind01: fix compile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,22 +30,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Caspar Zhang <czhang@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-Commited, thanks.
+On Wed, May 4, 2011 at 3:28 AM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> a typo fix, forgot NULL in tst_brkm. And seems tst_resm+tst_exit could
+> be replaced by tst_brkm().
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Committed -- thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
-vRanger cuts backup time in half-while increasing security.
-With the market-leading solution for virtual backup and recovery, 
-you get blazing-fast, flexible, and affordable data protection.
-Download your free trial now. 
-http://p.sf.net/sfu/quest-d2dcopy1
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
