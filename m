@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <czhang@redhat.com>) id 1QLsLl-0002eV-CQ
-	for ltp-list@lists.sourceforge.net; Mon, 16 May 2011 07:36:21 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1QHYGi-00040b-Rd
+	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 09:21:16 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QLsLk-0000kx-I1
-	for ltp-list@lists.sourceforge.net; Mon, 16 May 2011 07:36:21 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p4G7aEO2029739
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QHYGe-0005C2-VL
+	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 09:21:16 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p449L7X9029041
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 May 2011 03:36:14 -0400
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 May 2011 05:21:07 -0400
 From: Caspar Zhang <czhang@redhat.com>
-Date: Mon, 16 May 2011 15:36:09 +0800
-Message-Id: <a893e731f5998485ba2b9309e0c909b933c40479.1305519242.git.czhang@redhat.com>
+Date: Wed,  4 May 2011 17:21:00 +0800
+Message-Id: <dba8a1fa92ed925df7774c7be07f85407f0bea0c.1304500580.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH] [syscalls] mmap11: fix broken testcase
+Subject: [LTP] [PATCH] mem_hotplug: more compile err fix against NUMA v1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,91 +37,52 @@ Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-mmap11 testcase couldn't run correctly as it should be. The purpose of
-this test program was that, on some old kernels, program received
-SIGABRT unexpected when large amount munmap happens, in new kernels,
-this wouldn't happen, despite some ENOMEM/EAGAIN might occur during
-testing. So the correct PASS/FAIL criteria is: the test passes when the
-program finishes running and exits normally; the test fails when the
-program exits abnormally, e.g. a SIGABRT received. My patch fetches the
-newest version of reproducer from kernel commit log to make the testcase
-work again.
+commands.c still fail to compile under RHEL5 since it used a compat
+function from NUMA API v2.
 
 Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- runtest/syscalls                        |    2 +-
- testcases/kernel/syscalls/mmap/mmap11.c |   14 ++++++++------
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ testcases/kernel/hotplug/memory_hotplug/commands.c |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
 
 
 --------------1.7.1
 Content-Type: text/x-patch;
-	name="0001-syscalls-mmap11-fix-broken-testcase.patch"
+	name="0001-mem_hotplug-more-compile-err-fix-against-NUMA-v1.patch"
 Content-Transfer-Encoding: 8bit
 Content-Disposition: attachment;
-	filename="0001-syscalls-mmap11-fix-broken-testcase.patch"
+	filename="0001-mem_hotplug-more-compile-err-fix-against-NUMA-v1.patch"
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4294d07..930b207 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -554,7 +554,7 @@ mmap06 mmap06
- mmap07 mmap07
- mmap08 mmap08
- mmap09 mmap09
--mmap11 mmap11 -i 30000
-+mmap11 mmap11 -i 50000
+diff --git a/testcases/kernel/hotplug/memory_hotplug/commands.c b/testcases/kernel/hotplug/memory_hotplug/commands.c
+index 4f8ab96..5216339 100644
+--- a/testcases/kernel/hotplug/memory_hotplug/commands.c
++++ b/testcases/kernel/hotplug/memory_hotplug/commands.c
+@@ -394,7 +394,11 @@ get_arg_nodeid_list(char *args, unsigned int *list)
+ 	int         node, count = 0;
  
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-diff --git a/testcases/kernel/syscalls/mmap/mmap11.c b/testcases/kernel/syscalls/mmap/mmap11.c
-index 786724b..4cbad58 100644
---- a/testcases/kernel/syscalls/mmap/mmap11.c
-+++ b/testcases/kernel/syscalls/mmap/mmap11.c
-@@ -58,7 +58,7 @@
- char *TCID = "mmap11";
- int TST_TOTAL = 1;
+         gcp = &glctx;
+-        my_allowed_nodes = numa_get_membind_compat();
++#if defined(LIBNUMA_API_VERSION) && LIBNUMA_API_VERSION == 2
++	my_allowed_nodes = numa_get_membind_compat();
++#else
++	my_allowed_nodes = numa_get_membind();
++#endif
+ 	while (*args != '\0') {
+ 		if (!isdigit(*args)) {
+ 			fprintf(stderr, "%s:  expected digit for <node/list>\n",
+@@ -452,7 +456,11 @@ get_current_nodeid_list(unsigned int *fromids)
+ 	int        node;
  
--#define MAL_SIZE (100*1024)
-+#define MAL_SIZE (8*1024*1024)
- 
- static void *wait_thread(void *args);
- static void *wait_thread2(void *args);
-@@ -112,13 +112,15 @@ void check(void)
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		Tst_count = 0;
- 		ret = pthread_create(&th, &attr, wait_thread, NULL);
--		if (ret) {
-+		if (ret && errno != ENOMEM && errno != EAGAIN) {
- 			tst_resm(TINFO, "[%d] ", count);
- 			tst_brkm(TBROK|TERRNO, cleanup, "pthread_create");
- 		}
-+		if (count % 100 == 0)
-+			usleep(10000);
- 		count++;
- 		ret = pthread_create(&thread[lc], &attr, wait_thread2, NULL);
--		if (ret) {
-+		if (ret && errno != ENOMEM && errno != EAGAIN) {
- 			tst_resm(TINFO, "[%d] ", count);
- 			tst_brkm(TBROK|TERRNO, cleanup, "pthread_create");
- 		}
-@@ -133,13 +135,13 @@ void *wait_thread(void *args)
- 	void *addr;
- 
- 	addr = malloc(MAL_SIZE);
--	if (addr)
--		memset(addr, 1, MAL_SIZE);
--	sleep(1);
-+	sleep(10);
-+
- 	return NULL;
- }
- 
- void *wait_thread2(void *args)
- {
-+	sleep(60);
- 	return NULL;
- }
+         gcp = &glctx;
+-        my_allowed_nodes = numa_get_membind_compat();
++#if defined(LIBNUMA_API_VERSION) && LIBNUMA_API_VERSION == 2
++	my_allowed_nodes = numa_get_membind_compat();
++#else
++	my_allowed_nodes = numa_get_membind();
++#endif
+ 	for (node=0; node <= max_node; ++node) {
+ 		if (nodemask_isset(&my_allowed_nodes, node))
+ 			*(fromids + nr_nodes++) = node;
 
 --------------1.7.1
 Content-Type: text/plain; charset="us-ascii"
@@ -130,11 +91,11 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Achieve unprecedented app performance and reliability
-What every C/C++ and Fortran developer should know.
-Learn how Intel has extended the reach of its next-generation tools
-to help boost performance applications - inlcuding clusters.
-http://p.sf.net/sfu/intel-dev2devmay
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 --------------1.7.1
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
