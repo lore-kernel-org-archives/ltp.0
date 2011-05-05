@@ -1,23 +1,11 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QHfGd-0001MG-0u
-	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:49:39 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QHfGc-0000Uz-4D
-	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:49:38 +0000
-Received: by vxd7 with SMTP id 7so2175928vxd.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 May 2011 09:49:32 -0700 (PDT)
+Message-ID: <4DC27A52.6000906@linux.vnet.ibm.com>
+Date: Thu, 05 May 2011 12:22:10 +0200
+From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <dba8a1fa92ed925df7774c7be07f85407f0bea0c.1304500580.git.czhang@redhat.com>
-References: <dba8a1fa92ed925df7774c7be07f85407f0bea0c.1304500580.git.czhang@redhat.com>
-Date: Wed, 4 May 2011 09:49:32 -0700
-Message-ID: <BANLkTik2TDf_6ZH9GtWpG0gfpHfOa5Ejeg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] mem_hotplug: more compile err fix against NUMA v1
+References: <OFCE99A449.0BE9809D-ON85257885.006ACE3C-85257885.006BBD47@faa.gov>
+In-Reply-To: <OFCE99A449.0BE9809D-ON85257885.006ACE3C-85257885.006BBD47@faa.gov>
+Subject: Re: [LTP] [Ltp-coverage] Linux Kernel code coverage
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,16 +18,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: ltp-coverage@lists.sourceforge.net, Thomas.Cleary@faa.gov
 
-On Wed, May 4, 2011 at 2:21 AM, Caspar Zhang <czhang@redhat.com> wrote:
+Hi,
+
+I'm not aware of any current activities to measure Linux kernel code 
+coverage of the LTP test suite. I'm forwarding your mail to the main LTP 
+mailing list - maybe one of the test suite maintainers or contributors 
+has more information.
+
+Regards,
+   Peter Oberparleiter
+
+On 03.05.2011 21:36, Thomas.Cleary@faa.gov wrote:
+> I see a nice 2008 brief on the Linux Kernel code coverage statistics, was
+> there any update to this brief on the current LTP test cases "statement
+> coverage"?
 >
-> commands.c still fail to compile under RHEL5 since it used a compat
-> function from NUMA API v2.
+> What is your assessment on the feasibility of re-engineering Kernel
+> 2.6.18-194els? i.e. in the context of DO-178/278 to development high&low
+> level requirements and ensure>%90+ statement coverage?
 
-Committed -- thanks!
--Garrett
 
 ------------------------------------------------------------------------------
 WhatsUp Gold - Download Free Network Management Software
