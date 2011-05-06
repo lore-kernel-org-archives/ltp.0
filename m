@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QRR3v-0000a6-TE
-	for ltp-list@lists.sourceforge.net; Tue, 31 May 2011 15:40:55 +0000
-Date: Tue, 31 May 2011 17:37:42 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110531153741.GB1901@saboteur.suse.cz>
-References: <1305183593-25512-1-git-send-email-lliubbo@gmail.com>
-	<5004B0F2-AD73-437F-995E-71B88F329A8E@gmail.com>
-	<BANLkTik9irk3Yket8uK79H4d2X-5a8bYcg@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <czhang@redhat.com>) id 1QIBzp-0003HZ-HZ
+	for ltp-list@lists.sourceforge.net; Fri, 06 May 2011 03:46:29 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QIBzo-0006AB-LA
+	for ltp-list@lists.sourceforge.net; Fri, 06 May 2011 03:46:29 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p463kM3L013381
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 May 2011 23:46:22 -0400
+Message-ID: <4DC36F05.6080704@redhat.com>
+Date: Fri, 06 May 2011 11:46:13 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BANLkTik9irk3Yket8uK79H4d2X-5a8bYcg@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] testcases: syscall: sockioctl: fix except return
- val
+References: <201104292305.31174.vapier@gentoo.org>
+	<5da8d206a0df7808faed5039ade03c433af02abc.1304148727.git.czhang@redhat.com>
+In-Reply-To: <5da8d206a0df7808faed5039ade03c433af02abc.1304148727.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH v5] thp testcase come from CVE reproducer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,25 +33,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bob Liu <lliubbo@gmail.com>
-Cc: ltp-list@lists.sf.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Whether using tst_kvercmp() can be accepted ?
+On 04/30/2011 04:46 PM, Caspar Zhang wrote:
+> 
+> This is a reproducer of CVE-2011-0999, which fixed by mainline commit
+> a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
+> 
+> "Transparent hugepages can only be created if rmap is fully functional.
+> So we must prevent hugepages to be created while
+> is_vma_temporary_stack() is true."
+> 
+> When running in a loop, it can trigger panic like this, if kernel
+> unpatched:
+> 
+> kernel BUG at mm/huge_memory.c:1260!
+> invalid opcode: 0000 [#1] SMP
+> last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
+> ....
+> 
+> So I recommend to run it as 'thp01 -I xxx'.
+> 
+> v5: not using hard depend on /bin/true, use execvp() and "true" instead.
+> 
+> Signed-off-by: Pingtian Han <phan@redhat.com>
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  runtest/mm                        |    2 +
+>  testcases/kernel/mem/thp/Makefile |   23 +++++++
+>  testcases/kernel/mem/thp/thp01.c  |  124 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 149 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/mem/thp/Makefile
+>  create mode 100644 testcases/kernel/mem/thp/thp01.c
+> 
 
-Sure. Ideally please add pointer to kernel commit that caused this
-change in the test souce as a comment.
+Hi all, I've modified the patch as suggested and tested it. Any comments
+on this new case?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
-Simplify data backup and recovery for your virtual environment with vRanger. 
-Installation's a snap, and flexible recovery options mean your data is safe,
-secure and there when you need it. Data protection magic?
-Nope - It's vRanger. Get your free trial download today. 
-http://p.sf.net/sfu/quest-sfdev2dev
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
