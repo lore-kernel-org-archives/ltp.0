@@ -2,16 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QN7Gk-0006nj-4D
-	for ltp-list@lists.sourceforge.net; Thu, 19 May 2011 17:44:18 +0000
-Date: Thu, 19 May 2011 19:40:03 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110519174003.GF2333@saboteur.suse.cz>
-References: <4b2e0e53cb8ba5934df4fa72055d1d29746bffa2.1305557863.git.czhang@redhat.com>
+	(envelope-from <czhang@redhat.com>) id 1QJpSZ-0003Z4-Dk
+	for ltp-list@lists.sourceforge.net; Tue, 10 May 2011 16:06:55 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QJpSY-0004wB-0w
+	for ltp-list@lists.sourceforge.net; Tue, 10 May 2011 16:06:55 +0000
+Message-ID: <4DC9627C.1050402@redhat.com>
+Date: Wed, 11 May 2011 00:06:20 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4b2e0e53cb8ba5934df4fa72055d1d29746bffa2.1305557863.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH] [syscalls] getrusage03: test ru_maxrss
+References: <2025116569.785721.1302133158267.JavaMail.root@zmail06.collab.prod.int.phx2.redhat.com>	<4D9D5128.3060709@cn.fujitsu.com>	<20110408032844.GA2945@hpt.nay.redhat.com>	<4D9E9DCF.8020504@cn.fujitsu.com>
+	<20110408060725.GB2945@hpt.nay.redhat.com>
+In-Reply-To: <20110408060725.GB2945@hpt.nay.redhat.com>
+Subject: Re: [LTP] [PATCH]KSM: full_scans will stop increasing after
+ stopping ksm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,538 +29,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Bian Naimeng <biannm@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> +char *TCID = "child_proc ";
+Hi Bian, to make a conclusion for this thread:
 
-Is this whitespace at the end of child_proc intentional?
+I have tested ksm cases and Pingtian's patch for many times, it worked
+well. If it doesn't work on your system, please check:
 
-> +int TST_TOTAL = 1;
-> +
-> +#define DELTA_MAX	10240
-> +
-> +static int opt_consume, opt_grand, opt_show, opt_self, opt_child;
-> +static char *consume_str, *grand_consume_str, *self_str, *child_str;
-> +
-> +option_t child_options[] = {
-> +	{ "n:", &opt_consume, &consume_str },
-> +	{ "g:", &opt_grand,   &grand_consume_str },
-> +	{ "v",  &opt_show,    NULL },
-> +	{ "s:", &opt_self,    &self_str },
-> +	{ "l:", &opt_child,   &child_str }
-> +};
-> +
-> +static void usage(void);
-> +static void consume(int mega);
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	pid_t pid;
-> +	long maxrss_self, maxrss_children, delta;
-> +	struct rusage ru;
-> +	char *msg;
-> +
-> +	msg = parse_opts(argc, argv, child_options, usage);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +
-> +		if (opt_consume) {
-> +			tst_resm(TINFO, "child allocate %sMB", consume_str);
-> +			consume(atol(consume_str));
+1) Have you disabled ksm and ksmtuned before test? it will very easy to
+get "stopped before echo 2 > ksm/run" due to ksmtuned behavior if you
+keep them running.
 
-I would rather use strtol() here and print errors when invalid
-parameters were given.
+2) Have you tried with a kernel containing this upstream commit:
+2919bfd0758257c469abef8c26c3e516bbebb851 ? Without the patch in this
+commit, your test might fail as well.
 
-> +		}
-> +
-> +		if (opt_grand) {
-> +			tst_resm(TINFO, "grandchild allocate %sMB",
-> +				grand_consume_str);
-> +			switch (pid = fork()) {
-> +			case -1:
-> +				tst_brkm(TBROK, cleanup, "fork");
-> +			case 0:
-> +				consume(atol(grand_consume_str));
+Thanks,
+Caspar
 
-Here too.
-
-> +				exit(0);
-> +			default:
-> +				break;
-> +			}
-> +			while (waitpid(-1, &pid, WUNTRACED|WCONTINUED) > 0)
-> +				if (WEXITSTATUS(pid) != 0)
-> +					tst_brkm(TBROK|TERRNO, cleanup,
-> +						"child exit status is not 0");
-> +		}
-> +
-> +		if (opt_show) {
-> +			if (getrusage(RUSAGE_SELF, &ru) == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup,
-> +					"exec getrusage");
-> +			maxrss_self = ru.ru_maxrss;
-> +			if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup,
-> +					"exec getrusage");
-> +			maxrss_children = ru.ru_maxrss;
-> +			tst_resm(TINFO, "exec.self = %ld, exec.children = %ld",
-> +					maxrss_self, maxrss_children);
-> +			if (opt_self) {
-> +				delta = maxrss_self - atol(self_str);
-> +				if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
-> +					tst_resm(TPASS,
-> +						"initial.self ~= exec.self");
-> +				else
-> +					tst_resm(TFAIL,
-> +						"initial.self !~= exec.self");
-> +			}
-> +			if (opt_child) {
-> +				delta = maxrss_children - atol(child_str);
-> +				if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
-> +					tst_resm(TPASS,
-> +						"initial.children ~= exec.children");
-> +				else
-> +					tst_resm(TFAIL,
-> +						"initial.children !~= exec.children");
-> +			}
-> +		}
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void usage(void)
-> +{
-> +	printf("  -n      consume size (MB)\n");
-> +	printf("  -g      grandchild consume size (MB)\n");
-> +	printf("  -v      verbose mode, show rusage info\n");
-> +	printf("  -s      compare rusage_self.maxrss with given number\n");
-> +	printf("  -l      compare rusage_children.maxrss with given number\n");
-> +}
-> +
-> +static void consume(int mega)
-> +{
-> +	size_t sz;
-> +	void *ptr;
-> +
-> +	sz  = mega * 1024 * 1024;
-> +	ptr = malloc(sz);
-> +	memset(ptr, 0, sz);
-> +}
-> +
-> +static void setup()
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup()
-> +{
-> +	TEST_CLEANUP;
-> +}
-
-Also naming the file simple child.c is not wise idea as it likely will
-collide after installation. I would suggest getrusage03_child.c here.
-
-It seems that there isn't child binary just now, but even then, somebody
-will burn because of that sooner or later.
-
-> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> new file mode 100644
-> index 0000000..c1d8108
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> @@ -0,0 +1,341 @@
-> +/*
-> + * getrusage03 - test ru_maxrss behaviors in struct rusage
-> + *
-> + * This test program is backported from upstream commit:
-> + * 1f10206cf8e945220f7220a809d8bfc15c21f9a5, which fills ru_maxrss
-> + * value in struct rusage according to rss hiwater mark. To make sure
-> + * this feature works correctly, a series of tests are executed in
-> + * this program.
-> + *
-> + * Copyright (C) 2011  Red Hat, Inc.
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +#include <sys/types.h>
-> +#include <sys/mman.h>
-> +#include <sys/resource.h>
-> +#include <sys/time.h>
-> +#include <sys/wait.h>
-> +#include <unistd.h>
-> +#include <signal.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +char *TCID = "getrusage03";
-> +int TST_TOTAL = 7, Tst_count;
-> +
-> +#define DELTA_MAX	10240
-> +#define ERR(x) perror(x), cleanup(), exit(-1);
-> +
-> +static struct rusage ru;
-> +static long maxrss_init;
-> +
-> +static void check_return(int status, char *pass_msg, char *fail_msg);
-> +static void consume(int mega);
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	long delta;
-> +	int retval;
-> +	pid_t pid;
-> +	char *msg;
-> +	long maxrss_self, maxrss_child;
-> +	char str_maxrss_self[BUFSIZ], str_maxrss_child[BUFSIZ];
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +
-> +		tst_resm(TINFO, "allocate 100MB");
-> +		consume(100);
-> +
-> +		/* Testcase #01: fork inherit
-> +		 * expect: initial.self ~= child.self */
-> +		tst_resm(TINFO, "Testcase #01: fork inherit");
-> +		if (getrusage(RUSAGE_SELF, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #1");
-> +		tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
-> +
-> +		switch (pid = fork()) {
-> +		case -1:
-> +			tst_brkm(TBROK|TERRNO, cleanup, "fork #1");
-> +		case 0:
-> +			maxrss_init = ru.ru_maxrss;
-> +			if (getrusage(RUSAGE_SELF, &ru) == -1)
-> +				ERR("child: getrusage #1");
-> +			printf("%-8s %4d  TINFO  :  child.self = %ld\n",
-> +				"child_proc ", 0, ru.ru_maxrss);
-> +			delta = maxrss_init - ru.ru_maxrss;
-> +			retval = (delta >= -DELTA_MAX &&
-> +				delta <= DELTA_MAX) ? 0 : 1;
-> +			exit(retval);
-> +		default:
-> +			break;
-> +		}
-> +		while (waitpid(-1, &pid, WUNTRACED|WCONTINUED) > 0)
-> +			check_return(WEXITSTATUS(pid),
-> +				"initial.self ~= child.self",
-> +				"initial.self !~= child.self");
-> +
-> +		/*
-> +		 * Testcase #02: fork inherit (cont.)
-> +		 * expect: initial.children ~= 100MB,
-> +		 *         child.children = 0
-> +		 */
-> +		tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #2");
-> +		tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> +		delta = ru.ru_maxrss - 102400;
-> +		if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
-> +			tst_resm(TPASS, "initial.children ~= 100MB");
-> +		else
-> +			tst_resm(TFAIL, "initial.children !~= 100MB");
-> +
-> +		switch (pid = fork()) {
-> +		case -1:
-> +			tst_brkm(TBROK|TERRNO, cleanup, "fork #2");
-> +		case 0:
-> +			if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +				ERR("child: getrusage #2");
-> +			printf("%-8s %4d  TINFO  :  child.children = %ld\n",
-> +				"child_proc ", 0, ru.ru_maxrss);
-> +			retval = (ru.ru_maxrss == 0) ? 0 : 1;
-> +			exit(retval);
-> +		default:
-> +			break;
-> +		}
-> +		while (waitpid(-1, &pid, WUNTRACED|WCONTINUED) > 0)
-> +			check_return(WEXITSTATUS(pid),
-> +				"child.children == 0",
-> +				"child.children != 0");
-> +
-> +		/* Testcase #03: fork + malloc
-> +		 * expect: initial.self + 50MB ~= child.self */
-> +		tst_resm(TINFO, "Testcase #03: fork + malloc");
-> +		if (getrusage(RUSAGE_SELF, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #3");
-> +		tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
-> +
-> +		switch (pid = fork()) {
-> +		case -1:
-> +			tst_brkm(TBROK|TERRNO, cleanup, "fork #3");
-> +		case 0:
-> +			maxrss_init = ru.ru_maxrss;
-> +			printf("%-8s %4d  TINFO  :  child allocate +50MB\n",
-> +				"child_proc ", 0);
-> +			consume(50);
-> +			if (getrusage(RUSAGE_SELF, &ru) == -1)
-> +				ERR("child getrusage #3");
-> +			printf("%-8s %4d  TINFO  :  child.self = %ld\n",
-> +				"child_proc ", 0, ru.ru_maxrss);
-> +			delta = maxrss_init + 51200 - ru.ru_maxrss;
-> +			retval = (delta >= -DELTA_MAX &&
-> +				delta <= DELTA_MAX) ? 0 : 1;
-> +			exit(retval);
-> +		default:
-> +			break;
-> +		}
-> +		while (waitpid(-1, &pid, WUNTRACED|WCONTINUED) > 0)
-> +			check_return(WEXITSTATUS(pid),
-> +				"initial.self + 50MB ~= child.self",
-> +				"initial.self + 50MB !~= child.self");
-> +
-> +		/* Testcase #04: grandchild maxrss
-> +		 * expect: post_wait.children ~= 300MB */
-> +		tst_resm(TINFO, "Testcase #04: grandchild maxrss");
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #4");
-> +		tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> +
-> +		switch (pid = fork()) {
-> +		case -1:
-> +			tst_brkm(TBROK|TERRNO, cleanup, "fork #4");
-> +		case 0:
-> +			retval = system("./child -g 300");
-> +			if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
-> +				ERR("system");
-> +			exit(0);
-> +		default:
-> +			break;
-> +		}
-> +		while (waitpid(-1, &pid, WUNTRACED|WCONTINUED) > 0)
-> +			if (WEXITSTATUS(pid) != 0)
-> +				tst_brkm(TBROK|TERRNO, cleanup,
-> +					"child exit status is not 0");
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup,
-> +				"post_wait getrusage #4");
-> +		tst_resm(TINFO, "post_wait.children = %ld",
-> +			ru.ru_maxrss);
-> +		delta = ru.ru_maxrss - 307200;
-> +		if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
-> +			tst_resm(TPASS, "child.children ~= 300MB");
-> +		else
-> +			tst_resm(TFAIL, "child.children !~= 300MB");
-> +
-> +		/* Testcase #05: zombie
-> +		 * expect: initial ~= pre_wait, post_wait ~= 400MB */
-> +		tst_resm(TINFO, "Testcase #05: zombie");
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #5");
-> +		tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> +		maxrss_init = ru.ru_maxrss;
-> +		switch (pid = fork()) {
-> +		case -1:
-> +			tst_brkm(TBROK, cleanup, "fork #5");
-> +		case 0:
-> +			retval = system("./child -n 400");
-> +			if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
-> +				ERR("system");
-> +			exit(0);
-> +		default:
-> +			break;
-> +		}
-> +		sleep(1); /* children become zombie */
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup,
-> +				"pre_wait getrusage #5");
-> +		tst_resm(TINFO, "pre_wait.children = %ld", ru.ru_maxrss);
-> +		delta = ru.ru_maxrss - maxrss_init;
-> +		if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
-> +			tst_resm(TPASS,
-> +				"initial.children ~= pre_wait.children");
-> +		else
-> +			tst_resm(TFAIL,
-> +				"initial.children !~= pre_wait.children");
-> +		while (waitpid(-1, &pid, WUNTRACED|WCONTINUED) > 0)
-> +			if (WEXITSTATUS(pid) != 0)
-> +				tst_brkm(TBROK|TERRNO, cleanup,
-> +					"child exit status is not 0");
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup,
-> +				"post_wait getrusage #5");
-> +		tst_resm(TINFO, "post_wait.children = %ld", ru.ru_maxrss);
-> +		delta = ru.ru_maxrss - 409600;
-> +		if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
-> +			tst_resm(TPASS, "post_wait.children ~= 400MB");
-> +		else
-> +			tst_resm(TFAIL, "post_wait.children !~= 400MB");
-> +
-> +		/* Testcase #06: SIG_IGN
-> +		 * expect: initial ~= after_zombie */
-> +		tst_resm(TINFO, "Testcase #06: SIG_IGN");
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #6");
-> +		tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> +		signal(SIGCHLD, SIG_IGN);
-> +		maxrss_init = ru.ru_maxrss;
-> +		switch (pid = fork()) {
-> +		case -1:
-> +			tst_brkm(TBROK, cleanup, "fork #6");
-> +		case 0:
-> +			retval = system("./child -n 500");
-> +			if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
-> +				ERR("system");
-> +			exit(0);
-> +		default:
-> +			break;
-> +		}
-> +		sleep(1); /* children become zombie */
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup,
-> +				"after_zombie getrusage #6");
-> +		tst_resm(TINFO, "after_zombie.children = %ld",
-> +			ru.ru_maxrss);
-> +		delta = ru.ru_maxrss - maxrss_init;
-> +		if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
-> +			tst_resm(TPASS,
-> +				"initial.children ~= after_zombie.children");
-> +		else
-> +			tst_resm(TFAIL,
-> +				"initial.children !~= after_zombie.children");
-> +		signal(SIGCHLD, SIG_DFL);
-> +
-> +		/* Testcase #07: exec without fork
-> +		 * expect: initial ~= fork */
-> +		tst_resm(TINFO, "Testcase #07: exec without fork");
-> +		if (getrusage(RUSAGE_SELF, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #7");
-> +		maxrss_self = ru.ru_maxrss;
-> +		if (getrusage(RUSAGE_CHILDREN, &ru) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "getrusage #7");
-> +		maxrss_child = ru.ru_maxrss;
-> +		tst_resm(TINFO, "initial.self = %ld, initial.children = %ld",
-> +				maxrss_self, maxrss_child);
-> +		sprintf(str_maxrss_self, "%ld", maxrss_self);
-> +		sprintf(str_maxrss_child, "%ld", maxrss_child);
-> +		if (execl("./child", "child", "-v",
-> +				"-s", str_maxrss_self,
-> +				"-l", str_maxrss_child, NULL) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "execl");
-
-Executing binaries from local directory likely won't work after the test
-is installed. Do we have some helper fuctions for that; Garrett?
-
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
-
-
-Aaargh, the main is too long, could you split the testcases into
-individual functions.
-
-Also creating SAFE_GETRUSAGE() (as it is done in include/safe_macros.h)
-would probably make the code simplier.
-
-And creating function to handle the delta may help too, then you
-can just easily write:
-
-if (is_in_delta(ru.ru_maxrss - maxrss_init)) {
-...
-
-or:
-
-exit(is_in_delta(maxrss_init - ru.ru_maxrss));
-
-
-> +static void check_return(int status, char *pass_msg, char *fail_msg)
-> +{
-> +	switch (status) {
-> +	case 0:
-> +		tst_resm(TPASS, "%s", pass_msg);
-> +		break;
-> +	case 1:
-> +		tst_resm(TFAIL, "%s", fail_msg);
-> +		break;
-> +	default:
-> +		tst_resm(TFAIL, "child exit status is %d", status);
-> +		break;
-> +	}
-> +}
-> +
-> +static void consume(int mega)
-> +{
-> +	size_t sz;
-> +	void *ptr;
-> +
-> +	sz  = mega * 1024 * 1024;
-> +	ptr = malloc(sz);
-> +	memset(ptr, 0, sz);
-> +}
-
-I would rather check the return value here. You know, there may be
-strange linux system where this may segfault here. Or even better, use
-SAFE_MALLOC() from safe_macros.h.
-
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +}
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 04/08/2011 02:07 PM, Han Pingtian wrote:
+> On Fri, Apr 08, 2011 at 01:31:59PM +0800, Bian Naimeng wrote:
+>>
+>>
+>> Han Pingtian wrote:
+>>> On Thu, Apr 07, 2011 at 01:52:40PM +0800, Bian Naimeng wrote:
+>>>>
+>>>> CAI Qian wrote:
+>>>>> ----- Original Message -----
+>>>>>> Qian Cai wrote:
+>>>>>>> On 2011-4-4, at 0:47, Bian Naimeng <biannm@cn.fujitsu.com> wrote:
+>>>>>>>
+>>>>>>>> There are some problem in ksm tests.
+>>>>>>>>
+>>>>>>>> 1. We should break the test when checking is failure.
+>>>>>>> No, this is not the intention. The design here is to run all tests
+>>>>>>> to check for all stats to give a full picture even if the a single
+>>>>>>> failure has been observed. This type of the failures do not prevent
+>>>>>>> the rest of the tests from running, so there is no need to stop the
+>>>>>>> tests now which also give more insight to track down root causes.
+>>>>>> Various reason can make checking failure, someone can make the test
+>>>>>> hangup.
+>>>>>> I did this test on RHEL5, i found ksmd stopped before doing "echo 2 >
+>>>>>> /sys/kernel/mm/ksm/run",
+>>>>>> so group_check will be hanged on "new_num < old_num * 3".
+>>>>>>
+>>>>>> So, i think we should break the test if "run" is not expecting.
+>>>>> What happened if you run the tests for a recent upstream kernel? There
+>>>>> are some patches for ksm recently merged upstream. If the problem still
+>>>>> persistent, please paste the EXACT OUTPUT from the ksm01 test. If it is
+>>>>> hung, please upload sysrq-t output somewhere.
+>>>>>
+>>>> Maybe there are some bugs in the RHEL6's kernel, but the purpose of this patch
+>>>> is not to workround these bugs, i want to fix the test's bug.
+>>>>
+>>>> Would you explain to me why we do this loop "while (new_num < old_num * 3)" in
+>>>> group_check, i think "while (new_num < old_num + 3)" is better.
+>>>>
+>>>> Some time ago, the following patch insert this loop.
+>>>> http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTi%3Dg%3DojJu0m%2B556rnekYenRTXtX%2BVBOj%3DrPmnjSw%40mail.gmail.com&forum_name=ltp-list
+>>>>
+>>>> The changelog of this patch said "we should wait 3~5 increments of the
+>>>> /sys/kernel/mm/ksm/full_scans before checking ksm* testcases's results", but
+>>>> it do "while (new_num < old_num * 3)" actually.
+>>> I made a mistake. The code is what I wanted to do, but the changelog was
+>>> wrong. When testing the new ksm patch, the developer told us we must
+>>> wait 3~5 times increments of the number before checking testing
+>>> results. So I coded to wait til new_num >= old_num * 3 before checking
+>>> the results. 
+>>>
+>>
+>> The bigger old_new is, the longer time test takes, it's strange.
+> I agree that it's strange. But it seems that we have to do this way.
+>>
+>>> About 'echo 2 > /sys/kernel/mm/ksm/run' problem, I have tested it with
+>>> ksm01.
+>>> If I run the 'echo 2 > /sys/kernel/mm/ksm/run' before issue ksm test,
+>>> the content of /sys/kernel/mm/ksm/run will be changed to 1 and the test
+>>> can finished successfully. 
+>>
+>> I think we shoud not care this.
+> Yep, I think so.
+>>
+>>> Only if I echo the 2 between the testing process,
+>>> ksm01 will hang up. On that time, new_num will be zero, so your plus 3
+>>> method won't work either. So what should we do in this circumstance?
+>>>
+>>
+>> Please look at my patch, after stopping ksmd in the testing(echo 2 > /sys/kernel/mm/ksm/run or
+>> echo 0 > /sys/kernel/mm/ksm/run), group_check will skip waiting at the loop "new_num >= old_num * 3".
+>>
+> Run 'echo 2 > /sys/kernel/mm/ksm/run' before calling group_check() won't
+> cause the while loops infinitely, because old_num and new_num would be all
+> zero before the while, so new_num == old_num * 3, the while won't be
+> ran.
+>> Regards
+>>  Bian
+>>
+>>> Thanks.
+>>>
+>>> Han Pingtian
+>>>> Regards
+>>>>  Bian
+>>>>
+>>>>> CAI Qian
+>>>>>  
+>>>>>>>> 2. The condition "new_num < old_num * 3" seems uncomfortable, i
+>>>>>>>> think
+>>>>>>>>   it should be "new_num < old_num + 3"
+>>>>>>> I don't understand. What error did you see from the testing output?
+>>>>>> Sometimes, the old_num is a big number, so it takes long time in this
+>>>>>> loop,
+>>>>>> i don't understand the purpose.
+>>>>>> Would you explain to me why we expect this condition "new_num <
+>>>>>> old_num * 3".
+>>>>>>
+>>>>>>>> 3. After stopping ksm(echo 2 > /sys/kernel/mm/ksm/run), the ksmd
+>>>>>>>>   will stop scaning pages, so looping in "new_num < old_num * 3"
+>>>>>>>>   is wrong.
+>>>>>>> Ditto.
+>>>>>>>
+>>>>>> After stopping ksm, looping in "new_num < old_num * 3" will make the
+>>>>>> process hang up,
+>>>>>> because new_num does not be increased.
+>>>>>>
+>>>>>> Regards
+>>>>>> Bian
 
 ------------------------------------------------------------------------------
-What Every C/C++ and Fortran developer Should Know!
-Read this article and learn how Intel has extended the reach of its 
-next-generation tools to help Windows* and Linux* C/C++ and Fortran 
-developers boost performance applications - including clusters. 
+Achieve unprecedented app performance and reliability
+What every C/C++ and Fortran developer should know.
+Learn how Intel has extended the reach of its next-generation tools
+to help boost performance applications - inlcuding clusters.
 http://p.sf.net/sfu/intel-dev2devmay
 _______________________________________________
 Ltp-list mailing list
