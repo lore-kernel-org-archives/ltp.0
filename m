@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <czhang@redhat.com>) id 1QKDP6-00078w-H4
-	for ltp-list@lists.sourceforge.net; Wed, 11 May 2011 17:40:56 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <czhang@redhat.com>) id 1QK5u4-0000Uq-F5
+	for ltp-list@lists.sourceforge.net; Wed, 11 May 2011 09:40:24 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QKDP5-0003S2-LF
-	for ltp-list@lists.sourceforge.net; Wed, 11 May 2011 17:40:56 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QK5u3-0003Vn-LV
+	for ltp-list@lists.sourceforge.net; Wed, 11 May 2011 09:40:24 +0000
 Received: from int-mx09.intmail.prod.int.phx2.redhat.com
 	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p4BHemse003913
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p4B9eHCO007250
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 11 May 2011 13:40:49 -0400
+	for <ltp-list@lists.sourceforge.net>; Wed, 11 May 2011 05:40:17 -0400
 From: Caspar Zhang <czhang@redhat.com>
-Date: Thu, 12 May 2011 00:52:37 +0800
-Message-Id: <89266008fcb8e9ec4ea36dab80a2430b893dacbd.1305117174.git.czhang@redhat.com>
+Date: Wed, 11 May 2011 17:39:54 +0800
+Message-Id: <1aca96688a199f0cc6559a3f64be2ca1d73e6842.1305106654.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH] [mm] ksm: fix pagesize
+Subject: [LTP] [PATCH] [syscalls] chown03: fix EPERM issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,99 +37,61 @@ Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-ksm test fails on ppc64 systems because of the pagesize on ppc64 is
-larger than 4KB, so page_sharing will be a different value. This patch
-replace the hard-coded number 256 to a variable: 1MB/pagesize.
+in setup phase of chown03 testcase, it set effective gid/uid before
+create tmpdir, this might cause EPERM error under some circumstance:
+
+chown03     1  TBROK  :  chown(/tmp/ltp-1FYYTiULQl/chos2UBh3, -1, 0) failed: errno=EPERM(1): Operation not permitted
+chown03     2  TBROK  :  Remaining cases broken
+chown03     0  TWARN  :  tst_brk: Invalid Type: 4. Using TBROK
+chown03     3  TBROK  :  tmpdir_cleanup: no user cleanup function called before exiting
+
+This patch creates tmpdir first, then set the effective gid/uid to test.
 
 Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- testcases/kernel/mem/lib/mem.c |   18 +++++++++++-------
- 1 files changed, 11 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/chown/chown03.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
 
 --------------1.7.1
-Content-Type: text/x-patch; name="0001-mm-ksm-fix-pagesize.patch"
+Content-Type: text/x-patch; name="0001-syscalls-chown03-fix-EPERM-issue.patch"
 Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment; filename="0001-mm-ksm-fix-pagesize.patch"
+Content-Disposition: attachment;
+	filename="0001-syscalls-chown03-fix-EPERM-issue.patch"
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 12e61e9..e2a05db 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -358,6 +358,10 @@ void create_same_memory(int size, int num, int unit)
- 	int i, j, k;
- 	int status, fd;
- 	int *child;
-+	long ps, pages;
+diff --git a/testcases/kernel/syscalls/chown/chown03.c b/testcases/kernel/syscalls/chown/chown03.c
+index 34b2d59..e26be0d 100644
+--- a/testcases/kernel/syscalls/chown/chown03.c
++++ b/testcases/kernel/syscalls/chown/chown03.c
+@@ -167,6 +167,10 @@ void setup()
+ 
+ 	tst_require_root(NULL);
+ 
++	tst_sig(FORK, DEF_HANDLER, cleanup);
 +
-+	ps = sysconf(_SC_PAGE_SIZE);
-+	pages = 1024 * 1024 / ps;
++	tst_tmpdir();
++
+ 	ltpuser = getpwnam(nobody_uid);
+ 	if (ltpuser == NULL)
+ 		tst_brkm(TBROK|TERRNO, NULL, "getpwnam(\"nobody\") failed");
+@@ -177,10 +181,6 @@ void setup()
+ 		tst_brkm(TBROK|TERRNO, NULL, "seteuid(%d) failed",
+ 		    ltpuser->pw_uid);
  
- 	child = malloc(num);
- 	if (child == NULL)
-@@ -558,7 +562,7 @@ void create_same_memory(int size, int num, int unit)
- 		tst_brkm(TBROK|TERRNO, cleanup, "write");
- 	close(fd);
- 	snprintf(buf, BUFSIZ, "%s%s", PATH_KSM, "pages_to_scan");
--	snprintf(buf2, BUFSIZ, "%d", size * 256 * num);
-+	snprintf(buf2, BUFSIZ, "%ld", size * pages * num);
- 	fd = open(buf, O_WRONLY);
- 	if (fd == -1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "open");
-@@ -587,7 +591,7 @@ void create_same_memory(int size, int num, int unit)
- 		if (kill(child[k], SIGCONT) == -1)
- 			tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
- 	}
--	group_check(1, 2, size * num * 256 - 2, 0, 0, 0, size * 256 * num);
-+	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	tst_tmpdir();
+-
+ 	/* Create a test file under temporary directory */
+ 	if ((fd = open(TESTFILE, O_RDWR|O_CREAT, FILE_MODE)) == -1)
+ 		tst_brkm(TBROK|TERRNO, cleanup,
+@@ -213,4 +213,4 @@ void cleanup()
  
- 	tst_resm(TINFO, "wait for child 1 to stop.");
- 	if (waitpid(child[1], &status, WUNTRACED) == -1)
-@@ -599,7 +603,7 @@ void create_same_memory(int size, int num, int unit)
- 	tst_resm(TINFO, "resume child 1.");
- 	if (kill(child[1], SIGCONT) == -1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "kill");
--	group_check(1, 3, size * num * 256 - 3, 0, 0, 0, size * 256 * num);
-+	group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+ 	tst_rmdir();
  
- 	tst_resm(TINFO, "wait for child 1 to stop.");
- 	if (waitpid(child[1], &status, WUNTRACED) == -1)
-@@ -613,7 +617,7 @@ void create_same_memory(int size, int num, int unit)
- 		if (kill(child[k], SIGCONT) == -1)
- 			tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
- 	}
--	group_check(1, 1, size * num * 256 - 1, 0, 0, 0, size * 256 * num);
-+	group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
- 
- 	tst_resm(TINFO, "wait for all children to stop.");
- 	for (k = 0; k < num; k++) {
-@@ -627,7 +631,7 @@ void create_same_memory(int size, int num, int unit)
- 	tst_resm(TINFO, "resume child 1.");
- 	if (kill(child[1], SIGCONT) == -1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "kill");
--	group_check(1, 1, size * num * 256 - 2, 0, 1, 0, size * 256 * num);
-+	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
- 
- 	tst_resm(TINFO, "wait for child 1 to stop.");
- 	if (waitpid(child[1], &status, WUNTRACED) == -1)
-@@ -647,7 +651,7 @@ void create_same_memory(int size, int num, int unit)
- 		tst_brkm(TBROK|TERRNO, cleanup, "open");
- 	if (write(fd, "2", 1) != 1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "write");
--	group_check(2, 0, 0, 0, 0, 0, size * 256 * num);
-+	group_check(2, 0, 0, 0, 0, 0, size * pages * num);
- 
- 	tst_resm(TINFO, "wait for all children to stop.");
- 	for (k = 0; k < num; k++) {
-@@ -668,7 +672,7 @@ void create_same_memory(int size, int num, int unit)
- 	if (write(fd, "0", 1) != 1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "write");
- 	close(fd);
--	group_check(0, 0, 0, 0, 0, 0, size * 256 * num);
-+	group_check(0, 0, 0, 0, 0, 0, size * pages * num);
- 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
- 		if (WEXITSTATUS(status) != 0)
- 			tst_resm(TFAIL, "child exit status is %d",
+-}
+\ No newline at end of file
++}
 
 --------------1.7.1
 Content-Type: text/plain; charset="us-ascii"
