@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <czhang@redhat.com>) id 1QK5u4-0000Uq-F5
-	for ltp-list@lists.sourceforge.net; Wed, 11 May 2011 09:40:24 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <czhang@redhat.com>) id 1QLsLl-0002eV-CQ
+	for ltp-list@lists.sourceforge.net; Mon, 16 May 2011 07:36:21 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QK5u3-0003Vn-LV
-	for ltp-list@lists.sourceforge.net; Wed, 11 May 2011 09:40:24 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p4B9eHCO007250
+	id 1QLsLk-0000kx-I1
+	for ltp-list@lists.sourceforge.net; Mon, 16 May 2011 07:36:21 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p4G7aEO2029739
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 11 May 2011 05:40:17 -0400
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 May 2011 03:36:14 -0400
 From: Caspar Zhang <czhang@redhat.com>
-Date: Wed, 11 May 2011 17:39:54 +0800
-Message-Id: <1aca96688a199f0cc6559a3f64be2ca1d73e6842.1305106654.git.czhang@redhat.com>
+Date: Mon, 16 May 2011 15:36:09 +0800
+Message-Id: <a893e731f5998485ba2b9309e0c909b933c40479.1305519242.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH] [syscalls] chown03: fix EPERM issue
+Subject: [LTP] [PATCH] [syscalls] mmap11: fix broken testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,61 +37,91 @@ Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-in setup phase of chown03 testcase, it set effective gid/uid before
-create tmpdir, this might cause EPERM error under some circumstance:
-
-chown03     1  TBROK  :  chown(/tmp/ltp-1FYYTiULQl/chos2UBh3, -1, 0) failed: errno=EPERM(1): Operation not permitted
-chown03     2  TBROK  :  Remaining cases broken
-chown03     0  TWARN  :  tst_brk: Invalid Type: 4. Using TBROK
-chown03     3  TBROK  :  tmpdir_cleanup: no user cleanup function called before exiting
-
-This patch creates tmpdir first, then set the effective gid/uid to test.
+mmap11 testcase couldn't run correctly as it should be. The purpose of
+this test program was that, on some old kernels, program received
+SIGABRT unexpected when large amount munmap happens, in new kernels,
+this wouldn't happen, despite some ENOMEM/EAGAIN might occur during
+testing. So the correct PASS/FAIL criteria is: the test passes when the
+program finishes running and exits normally; the test fails when the
+program exits abnormally, e.g. a SIGABRT received. My patch fetches the
+newest version of reproducer from kernel commit log to make the testcase
+work again.
 
 Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- testcases/kernel/syscalls/chown/chown03.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+ runtest/syscalls                        |    2 +-
+ testcases/kernel/syscalls/mmap/mmap11.c |   14 ++++++++------
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
 
 --------------1.7.1
-Content-Type: text/x-patch; name="0001-syscalls-chown03-fix-EPERM-issue.patch"
+Content-Type: text/x-patch;
+	name="0001-syscalls-mmap11-fix-broken-testcase.patch"
 Content-Transfer-Encoding: 8bit
 Content-Disposition: attachment;
-	filename="0001-syscalls-chown03-fix-EPERM-issue.patch"
+	filename="0001-syscalls-mmap11-fix-broken-testcase.patch"
 
-diff --git a/testcases/kernel/syscalls/chown/chown03.c b/testcases/kernel/syscalls/chown/chown03.c
-index 34b2d59..e26be0d 100644
---- a/testcases/kernel/syscalls/chown/chown03.c
-+++ b/testcases/kernel/syscalls/chown/chown03.c
-@@ -167,6 +167,10 @@ void setup()
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4294d07..930b207 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -554,7 +554,7 @@ mmap06 mmap06
+ mmap07 mmap07
+ mmap08 mmap08
+ mmap09 mmap09
+-mmap11 mmap11 -i 30000
++mmap11 mmap11 -i 50000
  
- 	tst_require_root(NULL);
+ modify_ldt01 modify_ldt01
+ modify_ldt02 modify_ldt02
+diff --git a/testcases/kernel/syscalls/mmap/mmap11.c b/testcases/kernel/syscalls/mmap/mmap11.c
+index 786724b..4cbad58 100644
+--- a/testcases/kernel/syscalls/mmap/mmap11.c
++++ b/testcases/kernel/syscalls/mmap/mmap11.c
+@@ -58,7 +58,7 @@
+ char *TCID = "mmap11";
+ int TST_TOTAL = 1;
  
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
+-#define MAL_SIZE (100*1024)
++#define MAL_SIZE (8*1024*1024)
+ 
+ static void *wait_thread(void *args);
+ static void *wait_thread2(void *args);
+@@ -112,13 +112,15 @@ void check(void)
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		Tst_count = 0;
+ 		ret = pthread_create(&th, &attr, wait_thread, NULL);
+-		if (ret) {
++		if (ret && errno != ENOMEM && errno != EAGAIN) {
+ 			tst_resm(TINFO, "[%d] ", count);
+ 			tst_brkm(TBROK|TERRNO, cleanup, "pthread_create");
+ 		}
++		if (count % 100 == 0)
++			usleep(10000);
+ 		count++;
+ 		ret = pthread_create(&thread[lc], &attr, wait_thread2, NULL);
+-		if (ret) {
++		if (ret && errno != ENOMEM && errno != EAGAIN) {
+ 			tst_resm(TINFO, "[%d] ", count);
+ 			tst_brkm(TBROK|TERRNO, cleanup, "pthread_create");
+ 		}
+@@ -133,13 +135,13 @@ void *wait_thread(void *args)
+ 	void *addr;
+ 
+ 	addr = malloc(MAL_SIZE);
+-	if (addr)
+-		memset(addr, 1, MAL_SIZE);
+-	sleep(1);
++	sleep(10);
 +
-+	tst_tmpdir();
-+
- 	ltpuser = getpwnam(nobody_uid);
- 	if (ltpuser == NULL)
- 		tst_brkm(TBROK|TERRNO, NULL, "getpwnam(\"nobody\") failed");
-@@ -177,10 +181,6 @@ void setup()
- 		tst_brkm(TBROK|TERRNO, NULL, "seteuid(%d) failed",
- 		    ltpuser->pw_uid);
+ 	return NULL;
+ }
  
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	tst_tmpdir();
--
- 	/* Create a test file under temporary directory */
- 	if ((fd = open(TESTFILE, O_RDWR|O_CREAT, FILE_MODE)) == -1)
- 		tst_brkm(TBROK|TERRNO, cleanup,
-@@ -213,4 +213,4 @@ void cleanup()
- 
- 	tst_rmdir();
- 
--}
-\ No newline at end of file
-+}
+ void *wait_thread2(void *args)
+ {
++	sleep(60);
+ 	return NULL;
+ }
 
 --------------1.7.1
 Content-Type: text/plain; charset="us-ascii"
