@@ -1,18 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QRR8R-0003mp-Hb
-	for ltp-list@lists.sourceforge.net; Tue, 31 May 2011 15:45:35 +0000
-Date: Tue, 31 May 2011 17:42:22 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110531154222.GC1901@saboteur.suse.cz>
-References: <1305189432-24927-1-git-send-email-lliubbo@gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1QMycW-0004aB-6N
+	for ltp-list@lists.sourceforge.net; Thu, 19 May 2011 08:30:12 +0000
+Received: from e28smtp04.in.ibm.com ([122.248.162.4])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QMycU-0000dx-TY
+	for ltp-list@lists.sourceforge.net; Thu, 19 May 2011 08:30:12 +0000
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by e28smtp04.in.ibm.com (8.14.4/8.13.1) with ESMTP id p4J8U2cO016217
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 May 2011 14:00:02 +0530
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p4J8U2Qp4227132
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 May 2011 14:00:02 +0530
+Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
+	by d28av03.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p4J8U1t4002945
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 May 2011 18:30:02 +1000
+Message-ID: <4DD4D509.6090407@linux.vnet.ibm.com>
+Date: Thu, 19 May 2011 14:00:01 +0530
+From: Shubham Goyal <shubham@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1305189432-24927-1-git-send-email-lliubbo@gmail.com>
-Subject: Re: [LTP] [PATCH] testcases: syscall: readlink: fix except return
- val
+References: <loom.20110518T201407-12@post.gmane.org>
+In-Reply-To: <loom.20110518T201407-12@post.gmane.org>
+Subject: Re: [LTP] LTP version in ChangeLog not updated?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,50 +38,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bob Liu <lliubbo@gmail.com>
-Cc: ltp-list@lists.sf.net
+To: Sandip Bhattacharya <sandipb@foss-community.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> This kernel commit "readlinkat(), fchownat() and fstatat() with empty relative
-> pathnames"(65cfc6722361570bfe255698d9cd4dccaf47570d) broken POSIX scope which
-> makes readlink03 fail like this:
-> 
-> readlink03    1  TFAIL  :  readlink() failed, Symlink Pathname is empty,
-> errno=22, expected errno=2
-> 
-> This patch fix the except return val from -ENOENT to -EINVAL.
-> 
-> Signed-off-by: Bob Liu <lliubbo@gmail.com>
-> ---
->  testcases/kernel/syscalls/readlink/readlink03.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/readlink/readlink03.c b/testcases/kernel/syscalls/readlink/readlink03.c
-> index 0535b25..dbc20e6 100644
-> --- a/testcases/kernel/syscalls/readlink/readlink03.c
-> +++ b/testcases/kernel/syscalls/readlink/readlink03.c
-> @@ -132,7 +132,7 @@ struct test_case_t {		/* test case struct. to hold ref. test cond's */
->  	TEST_FILE2, "File is not symbolic link", EINVAL, 1, no_setup}, {
->  	Longpathname, "Symlink path too long", ENAMETOOLONG, 1, lpath_setup},
->  	{
-> -	"", "Symlink Pathname is empty", ENOENT, 1, no_setup}, {
-> +	"", "Symlink Pathname is empty", EINVAL, 1, no_setup}, {
->  	NULL, NULL, 0, 0, no_setup}
->  };
+On Wednesday 18 May 2011 11:46 PM, Sandip Bhattacharya wrote:
+> I just cloned the LTP git repo from SF and ran the suite. Strangely, the report
+> showed the LTP version to be an old one. Is something amiss?
 
-Same as previous one. Please make sure this doesn't break the test on
-older kernels.
+The LTP present in SF is the latest stable one and  nothing is missing. 
+The reason for getting older version in HTML report is probably the 
+'Version' file present in the LTP tree is having older version entry. I 
+will make sure that this file is updated in the next release.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks, Shubham
 
 ------------------------------------------------------------------------------
-Simplify data backup and recovery for your virtual environment with vRanger. 
-Installation's a snap, and flexible recovery options mean your data is safe,
-secure and there when you need it. Data protection magic?
-Nope - It's vRanger. Get your free trial download today. 
-http://p.sf.net/sfu/quest-sfdev2dev
+What Every C/C++ and Fortran developer Should Know!
+Read this article and learn how Intel has extended the reach of its 
+next-generation tools to help Windows* and Linux* C/C++ and Fortran 
+developers boost performance applications - including clusters. 
+http://p.sf.net/sfu/intel-dev2devmay
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
