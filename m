@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QN53c-0007xD-2s
-	for ltp-list@lists.sourceforge.net; Thu, 19 May 2011 15:22:36 +0000
-Date: Thu, 19 May 2011 17:18:22 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QN6eM-0003IA-Le
+	for ltp-list@lists.sourceforge.net; Thu, 19 May 2011 17:04:38 +0000
+Date: Thu, 19 May 2011 19:00:25 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110519151822.GD2333@saboteur.suse.cz>
-References: <40b09ff7d8ded0fdbb3719b95e910d1faec0d319.1305042807.git.czhang@redhat.com>
+Message-ID: <20110519170025.GE2333@saboteur.suse.cz>
+References: <89266008fcb8e9ec4ea36dab80a2430b893dacbd.1305117174.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <40b09ff7d8ded0fdbb3719b95e910d1faec0d319.1305042807.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH] ksm02,04: fix typo
+In-Reply-To: <89266008fcb8e9ec4ea36dab80a2430b893dacbd.1305117174.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] [mm] ksm: fix pagesize
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,7 +28,7 @@ To: Caspar Zhang <czhang@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-Commited, thanks.
+Commited, thanks!
 
 -- 
 Cyril Hrubis
