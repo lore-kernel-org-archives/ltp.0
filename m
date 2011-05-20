@@ -1,31 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1QMycW-0004aB-6N
-	for ltp-list@lists.sourceforge.net; Thu, 19 May 2011 08:30:12 +0000
-Received: from e28smtp04.in.ibm.com ([122.248.162.4])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QMycU-0000dx-TY
-	for ltp-list@lists.sourceforge.net; Thu, 19 May 2011 08:30:12 +0000
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by e28smtp04.in.ibm.com (8.14.4/8.13.1) with ESMTP id p4J8U2cO016217
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 May 2011 14:00:02 +0530
-Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
-	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p4J8U2Qp4227132
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 May 2011 14:00:02 +0530
-Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
-	by d28av03.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p4J8U1t4002945
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 May 2011 18:30:02 +1000
-Message-ID: <4DD4D509.6090407@linux.vnet.ibm.com>
-Date: Thu, 19 May 2011 14:00:01 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	(envelope-from <yanegomi@gmail.com>) id 1QNPNS-0008DT-61
+	for ltp-list@lists.sourceforge.net; Fri, 20 May 2011 13:04:26 +0000
+Received: from mail-vw0-f47.google.com ([209.85.212.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1QNPNR-00023J-Iy
+	for ltp-list@lists.sourceforge.net; Fri, 20 May 2011 13:04:26 +0000
+Received: by vws2 with SMTP id 2so4112696vws.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 20 May 2011 06:04:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <loom.20110518T201407-12@post.gmane.org>
-In-Reply-To: <loom.20110518T201407-12@post.gmane.org>
-Subject: Re: [LTP] LTP version in ChangeLog not updated?
+In-Reply-To: <1aca96688a199f0cc6559a3f64be2ca1d73e6842.1305106654.git.czhang@redhat.com>
+References: <1aca96688a199f0cc6559a3f64be2ca1d73e6842.1305106654.git.czhang@redhat.com>
+Date: Fri, 20 May 2011 06:04:20 -0700
+Message-ID: <BANLkTik82GxsSMDV0ifMxy4DvEBRRGJPww@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] [syscalls] chown03: fix EPERM issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,28 +27,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sandip Bhattacharya <sandipb@foss-community.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wednesday 18 May 2011 11:46 PM, Sandip Bhattacharya wrote:
-> I just cloned the LTP git repo from SF and ran the suite. Strangely, the report
-> showed the LTP version to be an old one. Is something amiss?
+On Wed, May 11, 2011 at 2:39 AM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+> in setup phase of chown03 testcase, it set effective gid/uid before
+> create tmpdir, this might cause EPERM error under some circumstance:
+>
+> chown03 =A0 =A0 1 =A0TBROK =A0: =A0chown(/tmp/ltp-1FYYTiULQl/chos2UBh3, -=
+1, 0) failed: errno=3DEPERM(1): Operation not permitted
+> chown03 =A0 =A0 2 =A0TBROK =A0: =A0Remaining cases broken
+> chown03 =A0 =A0 0 =A0TWARN =A0: =A0tst_brk: Invalid Type: 4. Using TBROK
 
-The LTP present in SF is the latest stable one and  nothing is missing. 
-The reason for getting older version in HTML report is probably the 
-'Version' file present in the LTP tree is having older version entry. I 
-will make sure that this file is updated in the next release.
+That message is bizarre and looks like another bug in lib/... .
 
-Thanks, Shubham
+Thanks,
+-Garrett
 
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 What Every C/C++ and Fortran developer Should Know!
-Read this article and learn how Intel has extended the reach of its 
-next-generation tools to help Windows* and Linux* C/C++ and Fortran 
-developers boost performance applications - including clusters. 
+Read this article and learn how Intel has extended the reach of its =
+
+next-generation tools to help Windows* and Linux* C/C++ and Fortran =
+
+developers boost performance applications - including clusters. =
+
 http://p.sf.net/sfu/intel-dev2devmay
 _______________________________________________
 Ltp-list mailing list
