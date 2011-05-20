@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QHfNw-0000of-8T
-	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:57:12 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QHfNv-0008KK-Nq
-	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:57:12 +0000
-Received: by vxd7 with SMTP id 7so2188534vxd.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 May 2011 09:57:06 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QNO8k-0007cD-FR
+	for ltp-list@lists.sourceforge.net; Fri, 20 May 2011 11:45:10 +0000
+Date: Fri, 20 May 2011 13:41:00 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110520114100.GA13413@saboteur.suse.cz>
+References: <a893e731f5998485ba2b9309e0c909b933c40479.1305519242.git.czhang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <496372751cd0fb99e60661b99f2c0601ba13edfa.1304504870.git.czhang@redhat.com>
-References: <496372751cd0fb99e60661b99f2c0601ba13edfa.1304504870.git.czhang@redhat.com>
-Date: Wed, 4 May 2011 09:57:06 -0700
-Message-ID: <BANLkTikonsEzyiJuJ=poJkKrOd4i1-6dww@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] [syscalls] mbind01: fix compile
+Content-Disposition: inline
+In-Reply-To: <a893e731f5998485ba2b9309e0c909b933c40479.1305519242.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] [syscalls] mmap11: fix broken testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,20 +27,75 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Caspar Zhang <czhang@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wed, May 4, 2011 at 3:28 AM, Caspar Zhang <czhang@redhat.com> wrote:
->
-> a typo fix, forgot NULL in tst_brkm. And seems tst_resm+tst_exit could
-> be replaced by tst_brkm().
+Hi!
+>  modify_ldt01 modify_ldt01
+>  modify_ldt02 modify_ldt02
+> diff --git a/testcases/kernel/syscalls/mmap/mmap11.c b/testcases/kernel/syscalls/mmap/mmap11.c
+> index 786724b..4cbad58 100644
+> --- a/testcases/kernel/syscalls/mmap/mmap11.c
+> +++ b/testcases/kernel/syscalls/mmap/mmap11.c
+> @@ -58,7 +58,7 @@
+>  char *TCID = "mmap11";
+>  int TST_TOTAL = 1;
+>  
+> -#define MAL_SIZE (100*1024)
+> +#define MAL_SIZE (8*1024*1024)
+>  
+>  static void *wait_thread(void *args);
+>  static void *wait_thread2(void *args);
+> @@ -112,13 +112,15 @@ void check(void)
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>  		Tst_count = 0;
+>  		ret = pthread_create(&th, &attr, wait_thread, NULL);
+> -		if (ret) {
+> +		if (ret && errno != ENOMEM && errno != EAGAIN) {
+>  			tst_resm(TINFO, "[%d] ", count);
+>  			tst_brkm(TBROK|TERRNO, cleanup, "pthread_create");
+>  		}
+> +		if (count % 100 == 0)
+> +			usleep(10000);
 
-Committed -- thanks!
--Garrett
+Hmm throwing in random sleeps often makes it work only on certain
+systems. What are you trying to assert? That wait_thread() last long
+enough so that wait_thread2 is executed meanwhile? You should use proper
+locks for that otherwise it will start failing again sooner or later.
+
+>  		count++;
+>  		ret = pthread_create(&thread[lc], &attr, wait_thread2, NULL);
+> -		if (ret) {
+> +		if (ret && errno != ENOMEM && errno != EAGAIN) {
+>  			tst_resm(TINFO, "[%d] ", count);
+>  			tst_brkm(TBROK|TERRNO, cleanup, "pthread_create");
+>  		}
+> @@ -133,13 +135,13 @@ void *wait_thread(void *args)
+>  	void *addr;
+>  
+>  	addr = malloc(MAL_SIZE);
+> -	if (addr)
+> -		memset(addr, 1, MAL_SIZE);
+> -	sleep(1);
+> +	sleep(10);
+> +
+>  	return NULL;
+>  }
+>  
+>  void *wait_thread2(void *args)
+>  {
+> +	sleep(60);
+>  	return NULL;
+>  }
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
+What Every C/C++ and Fortran developer Should Know!
+Read this article and learn how Intel has extended the reach of its 
+next-generation tools to help Windows* and Linux* C/C++ and Fortran 
+developers boost performance applications - including clusters. 
+http://p.sf.net/sfu/intel-dev2devmay
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
