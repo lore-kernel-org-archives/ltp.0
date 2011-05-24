@@ -1,23 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <yanegomi@gmail.com>) id 1QHfPM-0001gy-V8
-	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:58:40 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QHfPM-00072S-Bd
-	for ltp-list@lists.sourceforge.net; Wed, 04 May 2011 16:58:40 +0000
-Received: by vxd7 with SMTP id 7so2190887vxd.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sandipb@yahoo-inc.com>) id 1QOsSQ-0002SI-RI
+	for ltp-list@lists.sourceforge.net; Tue, 24 May 2011 14:19:38 +0000
+Received: from mrout3.yahoo.com ([216.145.54.173])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QOsSQ-0006zJ-4t
+	for ltp-list@lists.sourceforge.net; Tue, 24 May 2011 14:19:38 +0000
+Received: from orthus.eglbp.corp.yahoo.com
+	(hurtsnowdance-dr.eglbp.corp.yahoo.com [10.66.78.119])
+	by mrout3.yahoo.com (8.13.8/8.13.8/y.out) with ESMTP id p4ODwMM8046040
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 May 2011 09:58:34 -0700 (PDT)
+	Tue, 24 May 2011 06:58:22 -0700 (PDT)
+Received: from [10.66.104.24] (vpn-client-104-24.eglbp.corp.yahoo.com
+	[10.66.104.24])
+	by orthus.eglbp.corp.yahoo.com (Postfix) with ESMTP id 7AB891BD8034
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 24 May 2011 06:58:21 -0700 (PDT)
+Message-ID: <4DDBB97C.1050202@yahoo-inc.com>
+Date: Tue, 24 May 2011 19:28:20 +0530
+From: Sandip Bhattacharya <sandipb@yahoo-inc.com>
 MIME-Version: 1.0
-In-Reply-To: <4DB7B854.8010304@redhat.com>
-References: <4DB7B854.8010304@redhat.com>
-Date: Wed, 4 May 2011 09:58:34 -0700
-Message-ID: <BANLkTim33DNfozkPozHCwZ3QsUUd_CHh=A@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] kill05: fix race condition in do_master_child
+Subject: [LTP] su01 test case failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,24 +35,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Apr 26, 2011 at 11:31 PM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> There is a race condition when starting child. Master child can go
-> forward before child changes its reuid.
-> Fix this by waiting until child is ready.
+The expect script /opt/ltp/testcases/bin/su01_s1 expects an environment
+variable PASSWD, but /opt/ltp/testcases/bin/su01 doesn't setup such a
+variable.
 
-Committed -- thanks!
--Garrett
+Since this test always fails for me on the RHEL machines I run this on,
+I wanted to ask if the LTP test framework itself passed this environment
+variable to the tests or is there something wrong with this test.
+
+My test output is normally like this:
+
+    <<<test_start>>>
+    tag=su01 stime=1305746477
+    cmdline="export TCbin=$LTPROOT/testcases/bin;su01"
+    contacts=""
+    analysis=exit
+    <<<test_output>>>
+    Machine type is: redhat-linux
+
+    userdel: user su_usr1 does not exist
+    userdel: user su_usr2 does not exist
+    YOU NEED TO SET ENVIROMENT VARIABLE PASSWD.
+    <<<execution_status>>>
+    initiation_status="ok"
+    duration=4 termination_type=exited termination_id=1 corefile=no
+    cutime=13 cstime=35
+    <<<test_end>>>
+
+
+TIA,
+  Sandip
 
 ------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
+vRanger cuts backup time in half-while increasing security.
+With the market-leading solution for virtual backup and recovery, 
+you get blazing-fast, flexible, and affordable data protection.
+Download your free trial now. 
+http://p.sf.net/sfu/quest-d2dcopy1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
