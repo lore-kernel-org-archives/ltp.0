@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QNPpy-0004Oi-R4
-	for ltp-list@lists.sourceforge.net; Fri, 20 May 2011 13:33:54 +0000
-Date: Fri, 20 May 2011 15:29:45 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QRREn-0007H0-Q2
+	for ltp-list@lists.sourceforge.net; Tue, 31 May 2011 15:52:09 +0000
+Date: Tue, 31 May 2011 17:48:53 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110520132945.GA18020@saboteur.suse.cz>
-References: <4b2e0e53cb8ba5934df4fa72055d1d29746bffa2.1305557863.git.czhang@redhat.com>
-	<20110519174003.GF2333@saboteur.suse.cz>
-	<BANLkTi=m96RBZeFuRaOA5Sb_QANhgo4yCA@mail.gmail.com>
+Message-ID: <20110531154853.GG7092@saboteur.suse.cz>
+References: <4DE3011A.5000108@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <BANLkTi=m96RBZeFuRaOA5Sb_QANhgo4yCA@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] [syscalls] getrusage03: test ru_maxrss
+In-Reply-To: <4DE3011A.5000108@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] Add kernel tag checking to oom testcases.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,35 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: tangchen <tangchen@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
->     [Un]fortunately we don't (I say that because writing something
-> functional would be kind of a pain because we'd need to replicate what
-> tar does with that file mode, permissions bits, and other fun security
-> attributes in order to be complete).
->     Does this need to be run from the current working directory, or
-> can it be picked up from $PATH ? If the latter is ok, then all you
-> need to do is add $LTPROOT/testcases/bin to $PATH (which should be
-> done already by runltp) and use execvp, or you could play tricks and
-> lookup the dirname of the realpath, etc of the testcase (argv[0]), and
-> use that in the execle, etc call.
+> cgroup filesystem is used in testcases oom03 and oom04, but cgroup
+> filesystem is not supported in kernel older than 2.6.24. So we should
+> check the kernel tag first.
 
-All the child does here is allocating memory, so I would say execvp() is
-good enough in this case. (And adding note about this into style-guide
-would be great).
+Still this doesn't help on kernels where cgroups are not compiled in.
+
+What about changing the mount_mem() to exit the test with TCONF when
+mount() returned ENODEV.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-What Every C/C++ and Fortran developer Should Know!
-Read this article and learn how Intel has extended the reach of its 
-next-generation tools to help Windows* and Linux* C/C++ and Fortran 
-developers boost performance applications - including clusters. 
-http://p.sf.net/sfu/intel-dev2devmay
+Simplify data backup and recovery for your virtual environment with vRanger. 
+Installation's a snap, and flexible recovery options mean your data is safe,
+secure and there when you need it. Data protection magic?
+Nope - It's vRanger. Get your free trial download today. 
+http://p.sf.net/sfu/quest-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
