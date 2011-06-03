@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QcJQW-0003ZW-J9
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 15:45:12 +0000
-Date: Thu, 30 Jun 2011 17:45:36 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QSU2G-0002Yu-Ol
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jun 2011 13:03:32 +0000
+Date: Fri, 3 Jun 2011 15:00:36 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110630154536.GE20254@saboteur.suse.cz>
-References: <4DF2588A.5030701@cn.fujitsu.com> <4DF630F1.50301@redhat.com>
-	<4E0BD766.3040907@cn.fujitsu.com>
+Message-ID: <20110603130036.GA7155@saboteur.suse.cz>
+References: <BANLkTinjK1N+jzhSOJrECj3O95k16+6Fkg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E0BD766.3040907@cn.fujitsu.com>
-Subject: Re: [LTP] [Patch] Replace wait() with waitpid() in fork13.c
+In-Reply-To: <BANLkTinjK1N+jzhSOJrECj3O95k16+6Fkg@mail.gmail.com>
+Subject: Re: [LTP] open posix "sigpause" test defect
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,22 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: "Kevin R. Whitney" <krwhitney@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Commited, thanks.
+> This is my first post, so if I'm in the wrong place, please direct me to the
+> correct place!
+> 
+> I found that
+> test testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c is
+> unstable because of a defect in the code.  Of course I can provide the logic
+> and diffs, but where/who should I send it to?
+
+You got to the right place ;). Send a signed patch here.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+Simplify data backup and recovery for your virtual environment with vRanger.
+Installation's a snap, and flexible recovery options mean your data is safe,
+secure and there when you need it. Discover what all the cheering's about.
+Get your free trial download today. 
+http://p.sf.net/sfu/quest-dev2dev2 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
