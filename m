@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanpai.chen@gmail.com>) id 1QcAct-0002vT-H8
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:23 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1QcAcs-0004uP-H1
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:23 +0000
-Received: by ywa12 with SMTP id 12so1017741ywa.34
+	(envelope-from <yanegomi@gmail.com>) id 1QUWbP-0000NM-AL
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 04:12:15 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QUWbO-0007IK-J9
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 04:12:15 +0000
+Received: by pwj9 with SMTP id 9so750479pwj.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Jun 2011 23:21:17 -0700 (PDT)
-From: Andrew Chen <yanpai.chen@gmail.com>
-Date: Thu, 30 Jun 2011 14:19:41 +0800
-Message-Id: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
-Subject: [LTP] [PATCH 1/7] testcases: fs_bind: fix hanging of testscript
+	Wed, 08 Jun 2011 21:12:08 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1084)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <1307591638-1662-1-git-send-email-ratbert.chuang@gmail.com>
+Date: Wed, 8 Jun 2011 21:12:07 -0700
+Message-Id: <CA7435E1-1588-4A21-A380-45D13479AC69@gmail.com>
+References: <1307591638-1662-1-git-send-email-ratbert.chuang@gmail.com>
+Subject: Re: [LTP] [PATCH] acl_test01: fix incorrect failure losetup.1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,45 +27,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: ypchen@faraday-tech.com
+To: Po-Yu Chuang <ratbert.chuang@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Po-Yu Chuang <ratbert@faraday-tech.com>
 
-From: Andrew Chen <ypchen@faraday-tech.com>
+On Jun 8, 2011, at 8:53 PM, Po-Yu Chuang wrote:
 
-Busybox's xargs doesn't recongize the --max-args option. Use -n instead.
+> From: Po-Yu Chuang <ratbert@faraday-tech.com>
+> 
+> The LOOP_DEV empty checking was incorrect.
+> 
+> Use `command` for command substitution.
+> 
+> Also move the assignment out of condition expression. Bash 3.2.9 and
+> Busybox 1.17.3 ash do not seem to support this kind of usage.
 
-Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
----
- ltp-full-20101031/testscripts/test_fs_bind.sh |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/ltp-full-20101031/testscripts/test_fs_bind.sh b/ltp-full-20101031/testscripts/test_fs_bind.sh
-index 9ab533a..6b986dc 100755
---- a/ltp-full-20101031/testscripts/test_fs_bind.sh
-+++ b/ltp-full-20101031/testscripts/test_fs_bind.sh
-@@ -318,7 +318,7 @@ restore_mounts()
- 	# new mounts around and will never remove mounts outside the test
- 	# directory
- 	( while grep_mounts ; do
--		grep_mounts | awk '{print $3}' | xargs -r --max-args=1 umount -l
-+		grep_mounts | awk '{print $3}' | xargs -r -n 1 umount -l
- 	done ) >& /dev/null
- 
- 	# mount list and exit with 0
--- 
-1.6.5
-
-
+	Yeah... looking back and knowing what I do now, that would never work because that's executed in a subshell.
+Thanks!
+-Garrett
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+EditLive Enterprise is the world's most technically advanced content
+authoring tool. Experience the power of Track Changes, Inline Image
+Editing and ensure content is compliant with Accessibility Checking.
+http://p.sf.net/sfu/ephox-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
