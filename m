@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <biessmann@corscience.de>) id 1QYzbs-0007eY-64
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 11:59:12 +0000
-Received: from moutng.kundenserver.de ([212.227.17.9])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QYzbp-0007D4-K8
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 11:59:12 +0000
-From: =?UTF-8?q?Andreas=20Bie=C3=9Fmann?= <biessmann@corscience.de>
-Date: Tue, 21 Jun 2011 13:58:57 +0200
-Message-Id: <1308657537-17594-1-git-send-email-biessmann@corscience.de>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] t/k/s/writev: fix UCLINUX build
+	(envelope-from <yanegomi@gmail.com>) id 1QUWje-0001MP-Cg
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 04:20:46 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QUWjd-0003xb-FC
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 04:20:46 +0000
+Received: by pvc30 with SMTP id 30so753448pvc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Jun 2011 21:20:39 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1084)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <1307591784-1735-1-git-send-email-ratbert.chuang@gmail.com>
+Date: Wed, 8 Jun 2011 21:20:40 -0700
+Message-Id: <9507E9B4-F82A-4118-B4A4-D1D1DC466780@gmail.com>
+References: <1307591784-1735-1-git-send-email-ratbert.chuang@gmail.com>
+Subject: Re: [LTP] [PATCH] gzip_tests.sh: fix error message typo
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,59 +27,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Po-Yu Chuang <ratbert.chuang@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Po-Yu Chuang <ratbert@faraday-tech.com>
 
-d3JpdGV2MDIgYW5kIHdyaXRldjAzIGNhbiBub3QgYnVpbGQgZm9yIFVDTElOVVggZGVmaW5lZCBi
-dXQgdGhlIGNob29zZW4KbWVjaGFuaXNtIGlzIGVycm9yLXByb25lIGNhdXNlIGluIHRoYXQgY2Fz
-ZSBsaW5raW5nIGxpYmx0cC5hIGNvbXBsYWluZWQgYWJvdXQKbWlzc2luZyBUQ0lEIHN5bWJvbC4K
-ClJlbW92ZSB0aGUgb2xkIHdheSB0byBza2lwIHRoaXMgdGVzdCBmb3IgVUNMSU5VWCBhbmQgY2hv
-b3NlIGFuIG1ha2VmaWxlIGJhc2VkCm1ldGhvZCBpbnN0ZWFkLgoKU2lnbmVkLW9mZi1ieTogQW5k
-cmVhcyBCaWXDn21hbm4gPGJpZXNzbWFubkBjb3JzY2llbmNlLmRlPgotLS0KIHRlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvd3JpdGV2L01ha2VmaWxlICAgfCAgICA0ICsrKysKIHRlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvd3JpdGV2L3dyaXRldjAyLmMgfCAgICA4IC0tLS0tLS0tCiB0ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL3dyaXRldi93cml0ZXYwMy5jIHwgICAgOCAtLS0tLS0tLQogMyBm
-aWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDE2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
-dCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvd3JpdGV2L01ha2VmaWxlIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy93cml0ZXYvTWFrZWZpbGUKaW5kZXggYmQ2MTdkOC4uNGFhMzhiZSAx
-MDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy93cml0ZXYvTWFrZWZpbGUKKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy93cml0ZXYvTWFrZWZpbGUKQEAgLTE4LDYgKzE4
-LDEwIEBACiAKIHRvcF9zcmNkaXIJCT89IC4uLy4uLy4uLy4uCiAKK2lmZXEgKCQoVUNMSU5VWCks
-MSkKK0ZJTFRFUl9PVVRfTUFLRV9UQVJHRVRTCSs9IHdyaXRldjAyIHdyaXRldjAzCitlbmRpZgor
-CiBpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay90ZXN0Y2FzZXMubWsKIAogaW5jbHVk
-ZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19sZWFmX3RhcmdldC5tawpkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy93cml0ZXYvd3JpdGV2MDIuYyBiL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvd3JpdGV2L3dyaXRldjAyLmMKaW5kZXggYTIwMTEwZC4uNjc1
-ODFjYiAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy93cml0ZXYvd3JpdGV2
-MDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3dyaXRldi93cml0ZXYwMi5jCkBA
-IC01OSw4ICs1OSw2IEBACiAjaW5jbHVkZSAidXNjdGVzdC5oIgogI2luY2x1ZGUgPHN5cy9tbWFu
-Lmg+CiAKLSNpZiAhZGVmaW5lZChVQ0xJTlVYKQotCiAjZGVmaW5lCUtfMQk4MTkyCiAKICNkZWZp
-bmUJTkJVRlMJCTIKQEAgLTI0Miw5ICsyNDAsMyBAQCB2b2lkIGxfc2VlayhpbnQgZmRlc2MsIG9m
-Zl90IG9mZnNldCwgaW50IHdoZW5jZSkKIAlpZiAobHNlZWsoZmRlc2MsIG9mZnNldCwgd2hlbmNl
-KSA9PSAtMSkKIAkJdHN0X3Jlc20oVEJST0t8VEVSUk5PLCAibHNlZWsgZmFpbGVkIik7CiB9Ci0j
-ZWxzZQotaW50IG1haW4oKQotewotCXRzdF9icmttKFRDT05GLCBOVUxMLCAidGVzdCBpcyBub3Qg
-YXZhaWxhYmxlIG9uIHVDbGludXgiKTsKLX0KLSNlbmRpZiAvKiBpZiAhZGVmaW5lZChVQ0xJTlVY
-KSAqLwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy93cml0ZXYvd3JpdGV2
-MDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvd3JpdGV2L3dyaXRldjAzLmMKaW5kZXgg
-YWVlYzg5My4uYjIzNDYxOCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy93
-cml0ZXYvd3JpdGV2MDMuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3dyaXRldi93
-cml0ZXYwMy5jCkBAIC02Miw4ICs2Miw2IEBACiAjZGVmaW5lCU1BWF9JT1ZFQwk0CiAjZGVmaW5l
-CURBVEFfRklMRQkid3JpdGV2X2RhdGFfZmlsZSIKIAotI2lmICFkZWZpbmVkKFVDTElOVVgpCi0K
-IGNoYXIgYnVmMVtLXzFdLCBidWYyW0tfMV0sIGJ1ZjNbS18xXTsKIGNoYXIgKmJhZF9hZGRyID0g
-MDsKIApAQCAtMjg0LDkgKzI4MiwzIEBAIHZvaWQgbF9zZWVrKGludCBmZGVzYywgb2ZmX3Qgb2Zm
-c2V0LCBpbnQgd2hlbmNlKQogCWlmIChsc2VlayhmZGVzYywgb2Zmc2V0LCB3aGVuY2UpID09IC0x
-KQogCQl0c3RfYnJrbShUQlJPS3xURVJSTk8sIGNsZWFudXAsICJsc2VlayBmYWlsZWQiKTsKIH0K
-LSNlbHNlCi1pbnQgbWFpbigpCi17Ci0JdHN0X2Jya20oVENPTkYsIE5VTEwsICJ0ZXN0IGlzIG5v
-dCBhdmFpbGFibGUgb24gdUNsaW51eCIpOwotfQotI2VuZGlmIC8qIGlmICFkZWZpbmVkKFVDTElO
-VVgpICovClwgTm8gbmV3bGluZSBhdCBlbmQgb2YgZmlsZQotLSAKMS43LjIuNQoKCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpFZGl0TGl2ZSBFbnRlcnByaXNlIGlzIHRoZSB3b3JsZCdzIG1vc3QgdGVj
-aG5pY2FsbHkgYWR2YW5jZWQgY29udGVudAphdXRob3JpbmcgdG9vbC4gRXhwZXJpZW5jZSB0aGUg
-cG93ZXIgb2YgVHJhY2sgQ2hhbmdlcywgSW5saW5lIEltYWdlCkVkaXRpbmcgYW5kIGVuc3VyZSBj
-b250ZW50IGlzIGNvbXBsaWFudCB3aXRoIEFjY2Vzc2liaWxpdHkgQ2hlY2tpbmcuCmh0dHA6Ly9w
-LnNmLm5ldC9zZnUvZXBob3gtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0Cg==
+On Jun 8, 2011, at 8:56 PM, Po-Yu Chuang wrote:
+
+> From: Po-Yu Chuang <ratbert@faraday-tech.com>
+> 
+> 
+> Signed-off-by: Po-Yu Chuang <ratbert@faraday-tech.com>
+> ---
+> testcases/commands/gzip/gzip_tests.sh |    2 +-
+> 1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/commands/gzip/gzip_tests.sh b/testcases/commands/gzip/gzip_tests.sh
+> index 99cafa4..5dba859 100755
+> --- a/testcases/commands/gzip/gzip_tests.sh
+> +++ b/testcases/commands/gzip/gzip_tests.sh
+> @@ -265,7 +265,7 @@ test02()
+>     if [ $RC -ne 0 ]
+> 	then
+> 		tst_brk TBROK $LTPTMP/tst_gzip.err NULL \
+> -		"Test #2: uncompressing directory $LTPTMP/tst_gzip.tmp failed.  Reason"
+> +		"Test #2: compressing directory $LTPTMP/tst_gzip.tmp failed.  Reason"
+> 		return $RC
+
+Committed -- thanks :).
+-Garrett
+
+
+------------------------------------------------------------------------------
+EditLive Enterprise is the world's most technically advanced content
+authoring tool. Experience the power of Track Changes, Inline Image
+Editing and ensure content is compliant with Accessibility Checking.
+http://p.sf.net/sfu/ephox-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
