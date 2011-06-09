@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <imagezhang.au@gmail.com>) id 1QRbcp-0007eP-0U
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jun 2011 02:57:39 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1QRbco-0004Xh-Bj
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jun 2011 02:57:38 +0000
-Received: by ywg8 with SMTP id 8so2692851ywg.34
+	(envelope-from <strings.ltp@gmail.com>) id 1QUngb-0001ho-LV
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 22:26:45 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QUngb-0003cc-09
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 22:26:45 +0000
+Received: by pvc30 with SMTP id 30so1295298pvc.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 31 May 2011 19:57:33 -0700 (PDT)
+	Thu, 09 Jun 2011 15:26:39 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 1 Jun 2011 12:57:32 +1000
-Message-ID: <BANLkTikiOmV3zKs6ayFk52GwxAUzqe6O-A@mail.gmail.com>
-From: jian zhang <imagezhang.tech@gmail.com>
-Subject: [LTP] LTP uClibc support.
+Date: Thu, 9 Jun 2011 15:26:38 -0700
+Message-ID: <BANLkTikw1+miZerrpyRxf_-KkkWWPvG1Sw@mail.gmail.com>
+From: Saru Adde <strings.ltp@gmail.com>
+Subject: [LTP] LTP android...
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,69 +25,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6111764948226659754=="
+Content-Type: multipart/mixed; boundary="===============0963580279114823930=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============6111764948226659754==
-Content-Type: multipart/alternative; boundary=20cf3040ec049834a704a49daea0
+--===============0963580279114823930==
+Content-Type: multipart/alternative; boundary=000e0cd2e1f85b111b04a54ef22f
 
---20cf3040ec049834a704a49daea0
+--000e0cd2e1f85b111b04a54ef22f
 Content-Type: text/plain; charset=ISO-8859-1
 
-Hi All,
+Has anyone gotten LTP to port onto android...
 
-Currently I am trying to cross compile LTP to a mips linux platform which
-using uClibc-0.9.31.
+If so can you share details...
 
-The problem is, by default the uClibc do not support obsoleted BSD signal
-handling and Large File Support, which actually are not needed in the real
-system.
+Thanks
 
-Except rebuild the uClibc with those support, is there any easy way, to
-configure the LTP to make it work? Or, if not currently, is there any work
-in progress to make LTP more friendly to the embedded system?
-
-If there is any other test suite more fit for embedded linux design, please
-let me know.
-
-Thanks and Best Regards,
-Jian
-
---20cf3040ec049834a704a49daea0
+--000e0cd2e1f85b111b04a54ef22f
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-<span style=3D"border-collapse:collapse;font-family:arial, sans-serif;font-=
-size:13px">Hi All,<div><br></div><div>Currently I am trying to cross compil=
-e LTP to a mips linux platform which using uClibc-0.9.31.</div>
-<div><br></div><div>The problem is, by default the uClibc do not support ob=
-soleted BSD signal handling and Large File Support, which actually are not =
-needed in the real system.=A0</div><div><br></div><div>Except rebuild the u=
-Clibc with those support, is there any easy way, to configure the LTP to ma=
-ke it work? Or, if not currently, is there any work in progress to make LTP=
- more friendly to the embedded system?</div>
+<div>Has anyone gotten LTP to port onto android... </div>
+<div>=A0</div>
+<div>If so can you share details...</div>
+<div>=A0</div>
+<div>Thanks</div>
 
-<div><br></div><div>If there is any other test suite more fit for embedded =
-linux design, please let me know.</div><div><br></div><div>Thanks and Best =
-Regards,</div><div>Jian</div></span>
-
---20cf3040ec049834a704a49daea0--
+--000e0cd2e1f85b111b04a54ef22f--
 
 
---===============6111764948226659754==
+--===============0963580279114823930==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Simplify data backup and recovery for your virtual environment with vRanger. 
-Installation's a snap, and flexible recovery options mean your data is safe,
-secure and there when you need it. Data protection magic?
-Nope - It's vRanger. Get your free trial download today. 
-http://p.sf.net/sfu/quest-sfdev2dev
---===============6111764948226659754==
+EditLive Enterprise is the world's most technically advanced content
+authoring tool. Experience the power of Track Changes, Inline Image
+Editing and ensure content is compliant with Accessibility Checking.
+http://p.sf.net/sfu/ephox-dev2dev
+--===============0963580279114823930==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -98,5 +76,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6111764948226659754==--
+--===============0963580279114823930==--
 
