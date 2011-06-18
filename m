@@ -1,32 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1QYwRV-0001cc-Fg
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 08:36:17 +0000
-Received: from e28smtp08.in.ibm.com ([122.248.162.8])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QYwRU-0005zV-0Q
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 08:36:17 +0000
-Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
-	by e28smtp08.in.ibm.com (8.14.4/8.13.1) with ESMTP id p5L8N2NG008829
-	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jun 2011 13:53:02 +0530
-Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
-	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p5L8a3232547876
-	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jun 2011 14:06:03 +0530
-Received: from d28av04.in.ibm.com (loopback [127.0.0.1])
-	by d28av04.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p5L8a2aZ031287
-	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jun 2011 18:36:02 +1000
-Message-ID: <4E0057F2.4030502@linux.vnet.ibm.com>
-Date: Tue, 21 Jun 2011 14:06:02 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QZP2K-0004SS-TH
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jun 2011 15:08:12 +0000
+Date: Sat, 18 Jun 2011 04:36:36 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110618023636.GA12034@saboteur.suse.cz>
+References: <4E00F3A2.2040000@canonical.com>
 MIME-Version: 1.0
-References: <mailman.181450.1307593246.21896.ltp-list@lists.sourceforge.net>
-	<BANLkTikpV2jpTJ8_N3FhV0Y1S5p_8n-fPA@mail.gmail.com>
-In-Reply-To: <BANLkTikpV2jpTJ8_N3FhV0Y1S5p_8n-fPA@mail.gmail.com>
-Subject: Re: [LTP] Ltp-list Digest, Vol 61, Issue 3
+Content-Disposition: inline
+In-Reply-To: <4E00F3A2.2040000@canonical.com>
+Subject: Re: [LTP] Looking for pointers to log file format...
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,39 +24,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hake huang <hakehuang@gmail.com>
+To: Brad Figg <brad.figg@canonical.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Hake,
+Hi!
+> I'm looking to do some log file parsing and would like to find
+> a description of the various fields in the log files.
+> 
+> Also, if there is somewhere that contributors have put their
+> own log parsing tools, that would be helpful to know as well.
 
-We are not tagging GIT currently for stable releases. But its a good 
-idea to add tags for stable releases as some of the folks have suggested 
-previously. I will definitely add a tag in next release. Below is the 
-last commit taken for May release. You can use this for rebasing.
+We have here (in SuSE) ctcs2 glue around LTP testcases, these are
+internal now, but we will release them after they are cleaned up.
 
-commit 7bc2bbcbf6d8fc329506dc3fcded152c7659dab9
-Author: Caspar Zhang <czhang@redhat.com>
-Date:   Mon May 30 22:46:56 2011 +0800
+(it's set of generators for tcf files from LTP runtest files)
 
-Thanks,
-Shubham
-
-> Hi,
->
-> I am rebasing my local git repository with ltp May release from
-> git://ltp.git.sourceforge.net/gitroot/ltp/ltp, but I see no tag for
-> May release. which commit is the last one for May release?
->
-> Regards,
->
-> Hake
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-EditLive Enterprise is the world's most technically advanced content
-authoring tool. Experience the power of Track Changes, Inline Image
-Editing and ensure content is compliant with Accessibility Checking.
-http://p.sf.net/sfu/ephox-dev2dev
+Simplify data backup and recovery for your virtual environment with vRanger.
+Installation's a snap, and flexible recovery options mean your data is safe,
+secure and there when you need it. Data protection magic?
+Nope - It's vRanger. Get your free trial download today.
+http://p.sf.net/sfu/quest-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
