@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1QUWje-0001MP-Cg
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 04:20:46 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1QUWjd-0003xb-FC
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 04:20:46 +0000
-Received: by pvc30 with SMTP id 30so753448pvc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Jun 2011 21:20:39 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1084)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <1307591784-1735-1-git-send-email-ratbert.chuang@gmail.com>
-Date: Wed, 8 Jun 2011 21:20:40 -0700
-Message-Id: <9507E9B4-F82A-4118-B4A4-D1D1DC466780@gmail.com>
-References: <1307591784-1735-1-git-send-email-ratbert.chuang@gmail.com>
-Subject: Re: [LTP] [PATCH] gzip_tests.sh: fix error message typo
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1QYwRV-0001cc-Fg
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 08:36:17 +0000
+Received: from e28smtp08.in.ibm.com ([122.248.162.8])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QYwRU-0005zV-0Q
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 08:36:17 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp08.in.ibm.com (8.14.4/8.13.1) with ESMTP id p5L8N2NG008829
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jun 2011 13:53:02 +0530
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p5L8a3232547876
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jun 2011 14:06:03 +0530
+Received: from d28av04.in.ibm.com (loopback [127.0.0.1])
+	by d28av04.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p5L8a2aZ031287
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jun 2011 18:36:02 +1000
+Message-ID: <4E0057F2.4030502@linux.vnet.ibm.com>
+Date: Tue, 21 Jun 2011 14:06:02 +0530
+From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+MIME-Version: 1.0
+References: <mailman.181450.1307593246.21896.ltp-list@lists.sourceforge.net>
+	<BANLkTikpV2jpTJ8_N3FhV0Y1S5p_8n-fPA@mail.gmail.com>
+In-Reply-To: <BANLkTikpV2jpTJ8_N3FhV0Y1S5p_8n-fPA@mail.gmail.com>
+Subject: Re: [LTP] Ltp-list Digest, Vol 61, Issue 3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,33 +39,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Po-Yu Chuang <ratbert.chuang@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Po-Yu Chuang <ratbert@faraday-tech.com>
+To: hake huang <hakehuang@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Jun 8, 2011, at 8:56 PM, Po-Yu Chuang wrote:
+Hi Hake,
 
-> From: Po-Yu Chuang <ratbert@faraday-tech.com>
-> 
-> 
-> Signed-off-by: Po-Yu Chuang <ratbert@faraday-tech.com>
-> ---
-> testcases/commands/gzip/gzip_tests.sh |    2 +-
-> 1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/commands/gzip/gzip_tests.sh b/testcases/commands/gzip/gzip_tests.sh
-> index 99cafa4..5dba859 100755
-> --- a/testcases/commands/gzip/gzip_tests.sh
-> +++ b/testcases/commands/gzip/gzip_tests.sh
-> @@ -265,7 +265,7 @@ test02()
->     if [ $RC -ne 0 ]
-> 	then
-> 		tst_brk TBROK $LTPTMP/tst_gzip.err NULL \
-> -		"Test #2: uncompressing directory $LTPTMP/tst_gzip.tmp failed.  Reason"
-> +		"Test #2: compressing directory $LTPTMP/tst_gzip.tmp failed.  Reason"
-> 		return $RC
+We are not tagging GIT currently for stable releases. But its a good 
+idea to add tags for stable releases as some of the folks have suggested 
+previously. I will definitely add a tag in next release. Below is the 
+last commit taken for May release. You can use this for rebasing.
 
-Committed -- thanks :).
--Garrett
+commit 7bc2bbcbf6d8fc329506dc3fcded152c7659dab9
+Author: Caspar Zhang <czhang@redhat.com>
+Date:   Mon May 30 22:46:56 2011 +0800
+
+Thanks,
+Shubham
+
+> Hi,
+>
+> I am rebasing my local git repository with ltp May release from
+> git://ltp.git.sourceforge.net/gitroot/ltp/ltp, but I see no tag for
+> May release. which commit is the last one for May release?
+>
+> Regards,
+>
+> Hake
 
 
 ------------------------------------------------------------------------------
