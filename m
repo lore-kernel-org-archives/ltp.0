@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ratbert.chuang@gmail.com>) id 1QUWLz-0008Q9-Gj
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 03:56:21 +0000
-Received: from mail-px0-f174.google.com ([209.85.212.174])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1QUWLy-0007JU-EN
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 03:56:19 +0000
-Received: by pxi15 with SMTP id 15so806563pxi.33
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Jun 2011 20:56:12 -0700 (PDT)
-From: Po-Yu Chuang <ratbert.chuang@gmail.com>
-Date: Thu,  9 Jun 2011 11:56:24 +0800
-Message-Id: <1307591784-1735-1-git-send-email-ratbert.chuang@gmail.com>
-Subject: [LTP] [PATCH] gzip_tests.sh: fix error message typo
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rdunlap@xenotime.net>) id 1QZ7Q1-00022g-0F
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 20:19:29 +0000
+Received: from oproxy7-pub.bluehost.com ([67.222.55.9])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1QZ7Pz-00014h-Vw
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 20:19:28 +0000
+Date: Tue, 21 Jun 2011 12:52:34 -0700
+From: Randy Dunlap <rdunlap@xenotime.net>
+Message-Id: <20110621125234.278629f1.rdunlap@xenotime.net>
+In-Reply-To: <4E00F3A2.2040000@canonical.com>
+References: <4E00F3A2.2040000@canonical.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV"
+Subject: Re: [LTP] Looking for pointers to log file format...
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,44 +26,159 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Po-Yu Chuang <ratbert@faraday-tech.com>
+To: Brad Figg <brad.figg@canonical.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Po-Yu Chuang <ratbert@faraday-tech.com>
+This is a multi-part message in MIME format.
 
+--Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Po-Yu Chuang <ratbert@faraday-tech.com>
+On Tue, 21 Jun 2011 12:40:18 -0700 Brad Figg wrote:
+
+> 
+> I'm looking to do some log file parsing and would like to find
+> a description of the various fields in the log files.
+> 
+> Also, if there is somewhere that contributors have put their
+> own log parsing tools, that would be helpful to know as well.
+
+Hi,
+
+I don't recall seeing any docs for the log file format.  (unauthoritative)
+
+I have a couple of shell scripts that scan the log file to produce
+some summary information.  They are attached if you care to see them.
+
 ---
- testcases/commands/gzip/gzip_tests.sh |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+~Randy
 
-diff --git a/testcases/commands/gzip/gzip_tests.sh b/testcases/commands/gzip/gzip_tests.sh
-index 99cafa4..5dba859 100755
---- a/testcases/commands/gzip/gzip_tests.sh
-+++ b/testcases/commands/gzip/gzip_tests.sh
-@@ -265,7 +265,7 @@ test02()
-     if [ $RC -ne 0 ]
- 	then
- 		tst_brk TBROK $LTPTMP/tst_gzip.err NULL \
--		"Test #2: uncompressing directory $LTPTMP/tst_gzip.tmp failed.  Reason"
-+		"Test #2: compressing directory $LTPTMP/tst_gzip.tmp failed.  Reason"
- 		return $RC
- 	fi
- 
--- 
-1.6.3.3
+--Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+Content-Type: application/x-sh;
+ name="ltprun-summary.sh"
+Content-Disposition: attachment;
+ filename="ltprun-summary.sh"
+Content-Transfer-Encoding: base64
 
+IyEgL2Jpbi9zaAojIHN1bW1hcnkgb2YgTFRQIHN1aXRlICdsb2dmaWxlJyByZXN1bHRzOgojIGNv
+dW50ICJleGVjdXRpb246IFBBU1N8RkFJTHxXQVJOfEJST0t8UkVUUnxDT05GKGNvbmZpZyBlcnJv
+cikiOwojIGNvdW50ICJcLmM6LiplcnJvcjoiIGZvciBidWlsZCBlcnJvcnMgKGxpbmVzKTsKCmxv
+Z2ZpbGU9JHsxLWxvZ2ZpbGV9CmVjaG8gIlVzaW5nIGxvZ2ZpbGU9JGxvZ2ZpbGUiCgpUTVBGSUxF
+PSIkbG9nZmlsZS4kJCIKcHJ0YWcydGFnLnBsIHRlc3Rfb3V0cHV0IGV4ZWN1dGlvbl9zdGF0dXMg
+JGxvZ2ZpbGUgPiRUTVBGSUxFCgojI2J1aWxkX2ZhaWxlZD1gZ3JlcCAiYnVpbGQ6IEZBSUxFRCIg
+JFRNUEZJTEUgfCB3YyAtbGAKYnVpbGRfZXJyb3JzPWBncmVwICJcLmM6LiplcnJvcjoiICAkVE1Q
+RklMRSB8IHdjIC1sYAoKcnVuX3Bhc3NlZD1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpQQVNT
+ICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX3dhcm5lZD1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6
+XV0qICpXQVJOICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX2Jyb2tlbj1gZ3JlcCAiXlx3KiAq
+W1s6ZGlnaXQ6XV0qICpCUk9LICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX2ZhaWxlZD1gZ3Jl
+cCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpGQUlMICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX3Jl
+dGlyZT1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpSRVRSICo6IiAgJFRNUEZJTEUgfCB3YyAt
+bGAKcnVuX2NmZ2Vycj1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpDT05GICo6IiAgJFRNUEZJ
+TEUgfCB3YyAtbGAKIyBpZ25vcmUgSU5GTyBsaW5lcwoKcHJpbnRmICJidWlsZCBlcnJvcnM6ICAl
+cyBsaW5lc1xuIiAkYnVpbGRfZXJyb3JzCnByaW50ZiAiUEFTUzogICAgICAgICAgJXNcbiIgJHJ1
+bl9wYXNzZWQKcHJpbnRmICJXQVJOaW5nOiAgICAgICAlc1xuIiAkcnVuX3dhcm5lZApwcmludGYg
+IkJST0tlbjogICAgICAgICVzXG4iICRydW5fYnJva2VuCnByaW50ZiAiUkVUaVJlZDogICAgICAg
+JXNcbiIgJHJ1bl9yZXRpcmUJIyMgTkI6IG5vdCBjb3VudGVkIGluIGFueSB0b3RhbHMKcHJpbnRm
+ICJGQUlMOiAgICAgICAgICAlc1xuIiAkcnVuX2ZhaWxlZApwcmludGYgIkNPTkZpZyBlcnJvcjog
+ICVzXG4iICRydW5fY2ZnZXJyCgpwYXNzaW5nPSQoKHJ1bl9wYXNzZWQgKyBydW5fd2FybmVkKSkK
+bm90cGFzcz0kKChydW5fYnJva2VuICsgcnVuX2NmZ2VyciArIHJ1bl9mYWlsZWQpKQp0b3RhbD0k
+KChub3RwYXNzICsgcGFzc2luZykpCnNjb3JlPSQoKDEwMDAgKiBwYXNzaW5nKSkJIyBjb252ZXJ0
+IHRvIHBlcmNlbnQuZGVjaW1hbApzY29yZT0kKChzY29yZSArIHRvdGFsIC8gMikpCSMgcm91bmRp
+bmcKaWYgWyAkdG90YWwgLWVxIDAgXTsgdGhlbgoJc2NvcmU9MAplbHNlCglzY29yZT0kKChzY29y
+ZSAvIHRvdGFsKSkKZmkKZnJhY3Rpb249JCgoc2NvcmUgJSAxMCkpCnNjb3JlPSQoKHNjb3JlIC8g
+MTApKQpwcmludGYgIlNDT1JFLmx0cDogICAgICAgICVkLiVkXG4iICRzY29yZSAkZnJhY3Rpb24K
+cm0gLWYgJFRNUEZJTEUK
+
+--Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+Content-Type: application/x-sh;
+ name="ltprun-sumrawfile.sh"
+Content-Disposition: attachment;
+ filename="ltprun-sumrawfile.sh"
+Content-Transfer-Encoding: base64
+
+IyEgL2Jpbi9zaAojIHN1bW1hcnkgb2YgTFRQIHN1aXRlICdsb2dmaWxlJyByZXN1bHRzOgojIGNv
+dW50ICJleGVjdXRpb246IFBBU1N8RkFJTHxXQVJOfEJST0t8UkVUUnxDT05GKGNvbmZpZyBlcnJv
+cikiOwojIGNvdW50ICJcLmM6LiplcnJvcjoiIGZvciBidWlsZCBlcnJvcnMgKGxpbmVzKTsKCmxv
+Z2ZpbGU9JHsxLWxvZ2ZpbGV9CmVjaG8gIlVzaW5nIGxvZ2ZpbGU9JGxvZ2ZpbGUiCgpUTVBGSUxF
+PSIkbG9nZmlsZSIKCiMjYnVpbGRfZmFpbGVkPWBncmVwICJidWlsZDogRkFJTEVEIiAkVE1QRklM
+RSB8IHdjIC1sYApidWlsZF9lcnJvcnM9YGdyZXAgIlwuYzouKmVycm9yOiIgICRUTVBGSUxFIHwg
+d2MgLWxgCgpydW5fcGFzc2VkPWBncmVwICJeXHcqICpbWzpkaWdpdDpdXSogKlBBU1MgKjoiICAk
+VE1QRklMRSB8IHdjIC1sYApydW5fd2FybmVkPWBncmVwICJeXHcqICpbWzpkaWdpdDpdXSogKldB
+Uk4gKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5fYnJva2VuPWBncmVwICJeXHcqICpbWzpkaWdp
+dDpdXSogKkJST0sgKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5fZmFpbGVkPWBncmVwICJeXHcq
+ICpbWzpkaWdpdDpdXSogKkZBSUwgKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5fcmV0aXJlPWBn
+cmVwICJeXHcqICpbWzpkaWdpdDpdXSogKlJFVFIgKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5f
+Y2ZnZXJyPWBncmVwICJeXHcqICpbWzpkaWdpdDpdXSogKkNPTkYgKjoiICAkVE1QRklMRSB8IHdj
+IC1sYAojIGlnbm9yZSBJTkZPIGxpbmVzCgpwcmludGYgImJ1aWxkIGVycm9yczogICVzIGxpbmVz
+XG4iICRidWlsZF9lcnJvcnMKcHJpbnRmICJQQVNTOiAgICAgICAgICAlc1xuIiAkcnVuX3Bhc3Nl
+ZApwcmludGYgIldBUk5pbmc6ICAgICAgICVzXG4iICRydW5fd2FybmVkCnByaW50ZiAiQlJPS2Vu
+OiAgICAgICAgJXNcbiIgJHJ1bl9icm9rZW4KcHJpbnRmICJSRVRpUmVkOiAgICAgICAlc1xuIiAk
+cnVuX3JldGlyZQkjIyBOQjogbm90IGNvdW50ZWQgaW4gYW55IHRvdGFscwpwcmludGYgIkZBSUw6
+ICAgICAgICAgICVzXG4iICRydW5fZmFpbGVkCnByaW50ZiAiQ09ORmlnIGVycm9yOiAgJXNcbiIg
+JHJ1bl9jZmdlcnIKCnBhc3Npbmc9JCgocnVuX3Bhc3NlZCArIHJ1bl93YXJuZWQpKQpub3RwYXNz
+PSQoKHJ1bl9icm9rZW4gKyBydW5fY2ZnZXJyICsgcnVuX2ZhaWxlZCkpCnRvdGFsPSQoKG5vdHBh
+c3MgKyBwYXNzaW5nKSkKc2NvcmU9JCgoMTAwMCAqIHBhc3NpbmcpKQkjIGNvbnZlcnQgdG8gcGVy
+Y2VudC5kZWNpbWFsCnNjb3JlPSQoKHNjb3JlICsgdG90YWwgLyAyKSkJIyByb3VuZGluZwppZiBb
+ICR0b3RhbCAtZXEgMCBdOyB0aGVuCglzY29yZT0wCmVsc2UKCXNjb3JlPSQoKHNjb3JlIC8gdG90
+YWwpKQpmaQpmcmFjdGlvbj0kKChzY29yZSAlIDEwKSkKc2NvcmU9JCgoc2NvcmUgLyAxMCkpCnBy
+aW50ZiAiU0NPUkUubHRwOiAgICAgICAgJWQuJWRcbiIgJHNjb3JlICRmcmFjdGlvbgo=
+
+--Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+Content-Type: application/x-perl;
+ name="prtag2tag.pl"
+Content-Disposition: attachment;
+ filename="prtag2tag.pl"
+Content-Transfer-Encoding: base64
+
+IyEgL3Vzci9iaW4vcGVybAojIHBydGFnMnRhZy5wbDogcHJpbnQgbGluZXMgZnJvbSBpbnB1dF9m
+aWxlIGZyb20gL1RBRzEvIHRocnUgL1RBRzIvIChvciBFT0YpCiMgKEMpIENvcHlyaWdodCAyMDA3
+LTIwMDgsIFJhbmR5IER1bmxhcAojCiMgdmVyLiAwMDIgY2hhbmdlczoKIyAtIGFkZCBwcmNvdW50
+IGFuZCBleGl0ICgyKSBpZiBpdCBpcyAwOwojIC0gYWRkIC1pIChpZ25vcmUgY2FzZSkgb3B0aW9u
+OwojIC0gYWRkIHVzYWdlIGluZm8gZm9yICctJyA9PSBTVERJTiAoUGVybCBkb2VzIHRoaXMpOwoj
+CiMgTkI6IGNhbiB1c2UgLiBmb3Igc3BhY2VzIGluIGVpdGhlciBhcmcgKHJlZ2V4KSBzbyB0aGF0
+IHRoZSBhcmcocykKIyB3aWxsIGJlIHNlZW4gYXMgb25lIHN0cmluZzsKCiRWRVIgPSAiMDAyIjsK
+CnVzZSBHZXRvcHQ6OlN0ZDsKCmdldG9wdHMoImkiKTsKCnN1YiB1c2FnZSgpIHsKCXByaW50ICJ1
+c2FnZTogcHJ0YWcydGFnIFstaV0gYmVnaW5fdGFnIGVuZF90YWcgZmlsZShzKSBbdmVyLiAkVkVS
+XVxuIjsKCXByaW50ICIgIC1pIDogaWdub3JlIGNhc2VcbiI7CglwcmludCAiICBmaWxlKHMpIGNh
+biBiZSAnLScgZm9yIFNURElOXG4iOwoJZXhpdCAoMSk7Cn0KCm15ICRwcmludGluZyA9IDA7Cm15
+ICRiZWdpbl90YWcgPSBzaGlmdCAoQEFSR1YpIHx8IHVzYWdlKCk7Cm15ICRlbmRfdGFnID0gc2hp
+ZnQgKEBBUkdWKSB8fCB1c2FnZSgpOwpteSAkcHJjb3VudCA9IDA7CgppZiAoJGJlZ2luX3RhZyBl
+cSAiIiB8fCAkZW5kX3RhZyBlcSAiIikgewoJdXNhZ2UoKTsKfQoKIyNwcmludCAiYmVnaW4gLyRi
+ZWdpbl90YWcvLCBlbmQgLyRlbmRfdGFnL1xuIjsKIyNwcmludCAiZmlsZXM6IEBBUkdWXG4iOwoK
+Zm9yZWFjaCBteSAkZmlsZSAoQEFSR1YpIHsKCglvcGVuIChGSUxFLCAkZmlsZSkgfHwgZGllICJD
+YW5ub3Qgb3BlbiBmaWxlOiAkZmlsZVxuIjsKCglMSU5FOiB3aGlsZSAoJGxpbmUgPSA8RklMRT4p
+IHsKCQljaG9tcCAkbGluZTsKCgkJaWYgKCRvcHRfaSkgewoJCQlpZiAoJGxpbmUgPX4gLyRiZWdp
+bl90YWcvaSkgewoJCQkJJHByaW50aW5nID0gMTsKCQkJfQoJCX0KCQllbHNpZiAoJGxpbmUgPX4g
+LyRiZWdpbl90YWcvKSB7CgkJCSRwcmludGluZyA9IDE7CgkJfQoKCQlpZiAoJHByaW50aW5nKSB7
+CgkJCXByaW50ICIkbGluZVxuIjsKCQkJJHByY291bnQrKzsKCQl9CgoJCWlmICgkb3B0X2kpIHsK
+CQkJaWYgKCRsaW5lID1+IC8kZW5kX3RhZy9pKSB7CgkJCQkkcHJpbnRpbmcgPSAwOwoJCQl9CgkJ
+fQoJCWVsc2lmICgkbGluZSA9fiAvJGVuZF90YWcvKSB7CgkJCSRwcmludGluZyA9IDA7CgkJfQoJ
+fQoKCWNsb3NlIChGSUxFKTsKfQoKaWYgKCRwcmNvdW50ID09IDApIHsKCXByaW50ZihTVERFUlIg
+Im5vIG1hdGNoaW5nIGxpbmVzXG4iKTsKCWV4aXQgKDIpOwp9Cg==
+
+--Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 EditLive Enterprise is the world's most technically advanced content
 authoring tool. Experience the power of Track Changes, Inline Image
 Editing and ensure content is compliant with Accessibility Checking.
 http://p.sf.net/sfu/ephox-dev2dev
+--Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV--
+
