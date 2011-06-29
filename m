@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rdunlap@xenotime.net>) id 1QZ7Q1-00022g-0F
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 20:19:29 +0000
-Received: from oproxy7-pub.bluehost.com ([67.222.55.9])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1QZ7Pz-00014h-Vw
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jun 2011 20:19:28 +0000
-Date: Tue, 21 Jun 2011 12:52:34 -0700
-From: Randy Dunlap <rdunlap@xenotime.net>
-Message-Id: <20110621125234.278629f1.rdunlap@xenotime.net>
-In-Reply-To: <4E00F3A2.2040000@canonical.com>
-References: <4E00F3A2.2040000@canonical.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV"
-Subject: Re: [LTP] Looking for pointers to log file format...
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <czhang@redhat.com>) id 1Qbyum-0003Ql-GN
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jun 2011 17:51:04 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Qbyul-0002xr-6F
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jun 2011 17:51:04 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p5THovof031361
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 29 Jun 2011 13:50:57 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Thu, 30 Jun 2011 01:50:33 +0800
+Message-Id: <1309369833-6204-1-git-send-email-czhang@redhat.com>
+In-Reply-To: <bc82b67194b388102909bc38335c42bd661c3e55.1309361232.git.czhang@redhat.com>
+References: <bc82b67194b388102909bc38335c42bd661c3e55.1309361232.git.czhang@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------1.7.6"
+Subject: [LTP] [PATCH v4] [syscalls] getrusage03: test ru_maxrss
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,149 +31,667 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Brad Figg <brad.figg@canonical.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
 This is a multi-part message in MIME format.
+--------------1.7.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
---Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Tue, 21 Jun 2011 12:40:18 -0700 Brad Figg wrote:
+getrusage03 - test ru_maxrss behaviors in struct rusage
 
-> 
-> I'm looking to do some log file parsing and would like to find
-> a description of the various fields in the log files.
-> 
-> Also, if there is somewhere that contributors have put their
-> own log parsing tools, that would be helpful to know as well.
+This test program is backported from upstream commit:
+1f10206cf8e945220f7220a809d8bfc15c21f9a5, which fills ru_maxrss
+value in struct rusage according to rss hiwater mark. To make sure
+this feature works correctly, a series of tests are executed in
+this program.
 
-Hi,
-
-I don't recall seeing any docs for the log file format.  (unauthoritative)
-
-I have a couple of shell scripts that scan the log file to produce
-some summary information.  They are attached if you care to see them.
-
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
-~Randy
+ include/safe_macros.h                              |    5 +
+ lib/safe_macros.c                                  |   15 +
+ runtest/syscalls                                   |    1 +
+ testcases/kernel/syscalls/getrusage/getrusage03.c  |  358 ++++++++++++++++++++
+ .../kernel/syscalls/getrusage/getrusage03_child.c  |  182 ++++++++++
+ 5 files changed, 561 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/getrusage/getrusage03.c
+ create mode 100644 testcases/kernel/syscalls/getrusage/getrusage03_child.c
 
---Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
-Content-Type: application/x-sh;
- name="ltprun-summary.sh"
+
+--------------1.7.6
+Content-Type: text/x-patch;
+	name="0001-syscalls-getrusage03-test-ru_maxrss.patch"
+Content-Transfer-Encoding: 8bit
 Content-Disposition: attachment;
- filename="ltprun-summary.sh"
-Content-Transfer-Encoding: base64
+	filename="0001-syscalls-getrusage03-test-ru_maxrss.patch"
 
-IyEgL2Jpbi9zaAojIHN1bW1hcnkgb2YgTFRQIHN1aXRlICdsb2dmaWxlJyByZXN1bHRzOgojIGNv
-dW50ICJleGVjdXRpb246IFBBU1N8RkFJTHxXQVJOfEJST0t8UkVUUnxDT05GKGNvbmZpZyBlcnJv
-cikiOwojIGNvdW50ICJcLmM6LiplcnJvcjoiIGZvciBidWlsZCBlcnJvcnMgKGxpbmVzKTsKCmxv
-Z2ZpbGU9JHsxLWxvZ2ZpbGV9CmVjaG8gIlVzaW5nIGxvZ2ZpbGU9JGxvZ2ZpbGUiCgpUTVBGSUxF
-PSIkbG9nZmlsZS4kJCIKcHJ0YWcydGFnLnBsIHRlc3Rfb3V0cHV0IGV4ZWN1dGlvbl9zdGF0dXMg
-JGxvZ2ZpbGUgPiRUTVBGSUxFCgojI2J1aWxkX2ZhaWxlZD1gZ3JlcCAiYnVpbGQ6IEZBSUxFRCIg
-JFRNUEZJTEUgfCB3YyAtbGAKYnVpbGRfZXJyb3JzPWBncmVwICJcLmM6LiplcnJvcjoiICAkVE1Q
-RklMRSB8IHdjIC1sYAoKcnVuX3Bhc3NlZD1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpQQVNT
-ICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX3dhcm5lZD1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6
-XV0qICpXQVJOICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX2Jyb2tlbj1gZ3JlcCAiXlx3KiAq
-W1s6ZGlnaXQ6XV0qICpCUk9LICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX2ZhaWxlZD1gZ3Jl
-cCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpGQUlMICo6IiAgJFRNUEZJTEUgfCB3YyAtbGAKcnVuX3Jl
-dGlyZT1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpSRVRSICo6IiAgJFRNUEZJTEUgfCB3YyAt
-bGAKcnVuX2NmZ2Vycj1gZ3JlcCAiXlx3KiAqW1s6ZGlnaXQ6XV0qICpDT05GICo6IiAgJFRNUEZJ
-TEUgfCB3YyAtbGAKIyBpZ25vcmUgSU5GTyBsaW5lcwoKcHJpbnRmICJidWlsZCBlcnJvcnM6ICAl
-cyBsaW5lc1xuIiAkYnVpbGRfZXJyb3JzCnByaW50ZiAiUEFTUzogICAgICAgICAgJXNcbiIgJHJ1
-bl9wYXNzZWQKcHJpbnRmICJXQVJOaW5nOiAgICAgICAlc1xuIiAkcnVuX3dhcm5lZApwcmludGYg
-IkJST0tlbjogICAgICAgICVzXG4iICRydW5fYnJva2VuCnByaW50ZiAiUkVUaVJlZDogICAgICAg
-JXNcbiIgJHJ1bl9yZXRpcmUJIyMgTkI6IG5vdCBjb3VudGVkIGluIGFueSB0b3RhbHMKcHJpbnRm
-ICJGQUlMOiAgICAgICAgICAlc1xuIiAkcnVuX2ZhaWxlZApwcmludGYgIkNPTkZpZyBlcnJvcjog
-ICVzXG4iICRydW5fY2ZnZXJyCgpwYXNzaW5nPSQoKHJ1bl9wYXNzZWQgKyBydW5fd2FybmVkKSkK
-bm90cGFzcz0kKChydW5fYnJva2VuICsgcnVuX2NmZ2VyciArIHJ1bl9mYWlsZWQpKQp0b3RhbD0k
-KChub3RwYXNzICsgcGFzc2luZykpCnNjb3JlPSQoKDEwMDAgKiBwYXNzaW5nKSkJIyBjb252ZXJ0
-IHRvIHBlcmNlbnQuZGVjaW1hbApzY29yZT0kKChzY29yZSArIHRvdGFsIC8gMikpCSMgcm91bmRp
-bmcKaWYgWyAkdG90YWwgLWVxIDAgXTsgdGhlbgoJc2NvcmU9MAplbHNlCglzY29yZT0kKChzY29y
-ZSAvIHRvdGFsKSkKZmkKZnJhY3Rpb249JCgoc2NvcmUgJSAxMCkpCnNjb3JlPSQoKHNjb3JlIC8g
-MTApKQpwcmludGYgIlNDT1JFLmx0cDogICAgICAgICVkLiVkXG4iICRzY29yZSAkZnJhY3Rpb24K
-cm0gLWYgJFRNUEZJTEUK
+diff --git a/include/safe_macros.h b/include/safe_macros.h
+index 7c99c66..3753b7f 100644
+--- a/include/safe_macros.h
++++ b/include/safe_macros.h
+@@ -58,6 +58,11 @@ struct passwd*	safe_getpwnam(const char *file, const int lineno,
+ #define SAFE_GETPWNAM(cleanup_fn, name)	\
+ 	safe_getpwnam(__FILE__, __LINE__, cleanup_fn, (name))
+ 
++int     safe_getrusage(const char *file, const int lineno,
++	    void (*cleanup_fn)(void), int who, struct rusage *usage);
++#define SAFE_GETRUSAGE(cleanup_fn, who, usage) \
++	safe_getrusage(__FILE__, __LINE__, (cleanup_fn), (who), (usage))
++
+ void*	safe_malloc(const char *file, const int lineno,
+ 	    void (*cleanup_fn)(void), size_t size);
+ #define SAFE_MALLOC(cleanup_fn, size)	\
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index c98376d..11f5fe6 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -1,5 +1,6 @@
+ #include <sys/types.h>
+ #include <sys/mman.h>
++#include <sys/resource.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+@@ -108,6 +109,20 @@ safe_getpwnam(const char *file, const int lineno, void (*cleanup_fn)(void),
+ 	return (rval);
+ }
+ 
++int
++safe_getrusage(const char *file, const int lineno, void (*cleanup_fn)(void),
++	    int who, struct rusage *usage)
++{
++	int rval;
++
++	rval = getrusage(who, usage);
++	if (rval == -1)
++		tst_brkm(TBROK|TERRNO, cleanup_fn, "getrusage failed at %s:%d",
++		    file, lineno);
++
++	return rval;
++}
++
+ void*
+ safe_malloc(const char *file, const int lineno, void (*cleanup_fn)(void),
+     size_t size)
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4294d07..7989764 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -399,6 +399,7 @@ get_robust_list01 get_robust_list01
+ 
+ getrusage01 getrusage01
+ getrusage02 getrusage02
++getrusage03 getrusage03
+ 
+ getsid01 getsid01
+ getsid02 getsid02
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+new file mode 100644
+index 0000000..a50a852
+--- /dev/null
++++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+@@ -0,0 +1,358 @@
++/*
++ * getrusage03 - test ru_maxrss behaviors in struct rusage
++ *
++ * This test program is backported from upstream commit:
++ * 1f10206cf8e945220f7220a809d8bfc15c21f9a5, which fills ru_maxrss
++ * value in struct rusage according to rss hiwater mark. To make sure
++ * this feature works correctly, a series of tests are executed in
++ * this program.
++ *
++ * Copyright (C) 2011  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/resource.h>
++#include <sys/time.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++
++char *TCID = "getrusage03";
++int TST_TOTAL = 1;
++
++#define DELTA_MAX	10240
++
++static struct rusage ru;
++static long maxrss_init;
++static int retval, status;
++static pid_t pid;
++
++static void inherit_fork(void);
++static void inherit_fork2(void);
++static void fork_malloc(void);
++static void grandchild_maxrss(void);
++static void zombie(void);
++static void sig_ign(void);
++static void exec_without_fork(void);
++static void check_return(int status, char *pass_msg, char *fail_msg);
++static int is_in_delta(long value);
++static void consume(int mega);
++static void setup(void);
++static void cleanup(void);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		tst_resm(TINFO, "allocate 100MB");
++		consume(100);
++
++		inherit_fork();
++		inherit_fork2();
++		fork_malloc();
++		grandchild_maxrss();
++		zombie();
++		sig_ign();
++		exec_without_fork();
++	}
++	cleanup();
++	tst_exit();
++}
++
++/* Testcase #01: fork inherit
++ * expect: initial.self ~= child.self */
++static void inherit_fork(void)
++{
++	tst_resm(TINFO, "Testcase #01: fork inherit");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
++	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
++
++	switch (pid = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork #1");
++	case 0:
++		maxrss_init = ru.ru_maxrss;
++		SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
++		tst_resm(TINFO, "child.self = %ld", ru.ru_maxrss);
++		exit(is_in_delta(maxrss_init - ru.ru_maxrss));
++	default:
++		break;
++	}
++
++	if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	check_return(WEXITSTATUS(status), "initial.self ~= child.self",
++		    "initial.self !~= child.self");
++}
++
++/* Testcase #02: fork inherit (cont.)
++ * expect: initial.children ~= 100MB, child.children = 0 */
++static void inherit_fork2(void)
++{
++	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
++	if (is_in_delta(ru.ru_maxrss - 102400))
++		tst_resm(TPASS, "initial.children ~= 100MB");
++	else
++		tst_resm(TFAIL, "initial.children !~= 100MB");
++
++	switch (pid = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork #2");
++	case 0:
++		SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++		tst_resm(TINFO, "child.children = %ld", ru.ru_maxrss);
++		exit(ru.ru_maxrss == 0);
++	default:
++		break;
++	}
++
++	if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	check_return(WEXITSTATUS(status), "child.children == 0",
++		    "child.children != 0");
++}
++
++/* Testcase #03: fork + malloc
++ * expect: initial.self + 50MB ~= child.self */
++static void fork_malloc(void)
++{
++	tst_resm(TINFO, "Testcase #03: fork + malloc");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
++	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
++
++	switch (pid = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork #3");
++	case 0:
++		maxrss_init = ru.ru_maxrss;
++		tst_resm(TINFO, "child allocate +50MB");
++		consume(50);
++		SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
++		tst_resm(TINFO, "child.self = %ld", ru.ru_maxrss);
++		exit(is_in_delta(maxrss_init + 51200 - ru.ru_maxrss));
++	default:
++		break;
++	}
++
++	if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	check_return(WEXITSTATUS(status), "initial.self + 50MB ~= child.self",
++		    "initial.self + 50MB !~= child.self");
++}
++
++/* Testcase #04: grandchild maxrss
++ * expect: post_wait.children ~= 300MB */
++static void grandchild_maxrss(void)
++{
++	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
++
++	switch (pid = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork #4");
++	case 0:
++		retval = system("getrusage03_child -g 300");
++		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
++			tst_brkm(TBROK|TERRNO, cleanup, "system");
++		exit(0);
++	default:
++		break;
++	}
++
++	if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	if (WEXITSTATUS(status) != 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "child exit status is not 0");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "post_wait.children = %ld", ru.ru_maxrss);
++	if (is_in_delta(ru.ru_maxrss - 307200))
++		tst_resm(TPASS, "child.children ~= 300MB");
++	else
++		tst_resm(TFAIL, "child.children !~= 300MB");
++}
++
++/* Testcase #05: zombie
++ * expect: initial ~= pre_wait, post_wait ~= 400MB */
++static void zombie(void)
++{
++	tst_resm(TINFO, "Testcase #05: zombie");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
++	maxrss_init = ru.ru_maxrss;
++
++	switch (pid = fork()) {
++	case -1:
++		tst_brkm(TBROK, cleanup, "fork #5");
++	case 0:
++		retval = system("getrusage03_child -n 400");
++		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
++			tst_brkm(TBROK|TERRNO, cleanup, "system");
++		exit(0);
++	default:
++		break;
++	}
++
++	sleep(1); /* children become zombie */
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "pre_wait.children = %ld", ru.ru_maxrss);
++	if (is_in_delta(ru.ru_maxrss - maxrss_init))
++		tst_resm(TPASS, "initial.children ~= pre_wait.children");
++	else
++		tst_resm(TFAIL, "initial.children !~= pre_wait.children");
++
++	if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	if (WEXITSTATUS(status) != 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "child exit status is not 0");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "post_wait.children = %ld", ru.ru_maxrss);
++	if (is_in_delta(ru.ru_maxrss - 409600))
++		tst_resm(TPASS, "post_wait.children ~= 400MB");
++	else
++		tst_resm(TFAIL, "post_wait.children !~= 400MB");
++}
++
++/* Testcase #06: SIG_IGN
++ * expect: initial ~= after_zombie */
++static void sig_ign(void)
++{
++	tst_resm(TINFO, "Testcase #06: SIG_IGN");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
++	signal(SIGCHLD, SIG_IGN);
++	maxrss_init = ru.ru_maxrss;
++
++	switch (pid = fork()) {
++	case -1:
++		tst_brkm(TBROK, cleanup, "fork #6");
++	case 0:
++		retval = system("getrusage03_child -n 500");
++		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
++			tst_brkm(TBROK|TERRNO, cleanup, "system");
++		exit(0);
++	default:
++		break;
++	}
++
++	sleep(1); /* children become zombie */
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	tst_resm(TINFO, "after_zombie.children = %ld", ru.ru_maxrss);
++	if (is_in_delta(ru.ru_maxrss - maxrss_init))
++		tst_resm(TPASS, "initial.children ~= after_zombie.children");
++	else
++		tst_resm(TFAIL, "initial.children !~= after_zombie.children");
++	signal(SIGCHLD, SIG_DFL);
++}
++
++/* Testcase #07: exec without fork
++ * expect: initial ~= fork */
++static void exec_without_fork(void)
++{
++	char str_maxrss_self[BUFSIZ], str_maxrss_child[BUFSIZ];
++	long maxrss_self, maxrss_child;
++
++	tst_resm(TINFO, "Testcase #07: exec without fork");
++
++	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
++	maxrss_self = ru.ru_maxrss;
++	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++	maxrss_child = ru.ru_maxrss;
++	tst_resm(TINFO, "initial.self = %ld, initial.children = %ld",
++		    maxrss_self, maxrss_child);
++
++	sprintf(str_maxrss_self, "%ld", maxrss_self);
++	sprintf(str_maxrss_child, "%ld", maxrss_child);
++	if (execlp("getrusage03_child", "getrusage03_child", "-v",
++		    "-s", str_maxrss_self,
++		    "-l", str_maxrss_child, NULL) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "execlp");
++}
++
++static int is_in_delta(long value)
++{
++	return (value >= -DELTA_MAX && value <= DELTA_MAX);
++}
++
++static void check_return(int status, char *pass_msg, char *fail_msg)
++{
++	switch (status) {
++	case 1:
++		tst_resm(TPASS, "%s", pass_msg);
++		break;
++	case 0:
++		tst_resm(TFAIL, "%s", fail_msg);
++		break;
++	default:
++		tst_resm(TFAIL, "child exit status is %d", status);
++		break;
++	}
++}
++
++static void consume(int mega)
++{
++	size_t sz;
++	void *ptr;
++
++	sz  = mega * 1024 * 1024;
++	ptr = SAFE_MALLOC(cleanup, sz);
++	memset(ptr, 0, sz);
++}
++
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++}
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03_child.c b/testcases/kernel/syscalls/getrusage/getrusage03_child.c
+new file mode 100644
+index 0000000..0008aea
+--- /dev/null
++++ b/testcases/kernel/syscalls/getrusage/getrusage03_child.c
+@@ -0,0 +1,182 @@
++/*
++ * getrusage03_child.c - a child program executed by getrusage03
++ *
++ * Copyright (C) 2011  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/types.h>
++#include <sys/resource.h>
++#include <sys/time.h>
++#include <sys/wait.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++
++char *TCID = "getrusage03_child";
++int TST_TOTAL = 1;
++
++#define DELTA_MAX	10240
++
++static int opt_consume, opt_grand, opt_show, opt_self, opt_child;
++static char *consume_str, *grand_consume_str, *self_str, *child_str;
++
++option_t child_options[] = {
++	{ "n:", &opt_consume, &consume_str },
++	{ "g:", &opt_grand,   &grand_consume_str },
++	{ "v",  &opt_show,    NULL },
++	{ "s:", &opt_self,    &self_str },
++	{ "l:", &opt_child,   &child_str }
++};
++
++static void usage(void);
++static void consume(int mega);
++static long get_long(const char *str);
++static void setup(void);
++static void cleanup(void);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	pid_t pid;
++	long maxrss_self, maxrss_children, delta;
++	long consume_nr, grand_consume_nr, self_nr, child_nr;
++	struct rusage ru;
++	char *msg;
++
++	msg = parse_opts(argc, argv, child_options, usage);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		if (opt_consume) {
++			consume_nr = get_long(consume_str);
++			tst_resm(TINFO, "child allocate %ldMB", consume_nr);
++			consume(consume_nr);
++		}
++
++		if (opt_grand) {
++			grand_consume_nr = get_long(grand_consume_str);
++			tst_resm(TINFO, "grandchild allocate %ldMB",
++				    grand_consume_nr);
++			switch (pid = fork()) {
++			case -1:
++				tst_brkm(TBROK, cleanup, "fork");
++			case 0:
++				consume(grand_consume_nr);
++				exit(0);
++			default:
++				break;
++			}
++			while (waitpid(-1, &pid, WUNTRACED|WCONTINUED) > 0)
++				if (WEXITSTATUS(pid) != 0)
++					tst_brkm(TBROK|TERRNO, cleanup,
++						"child exit status is not 0");
++		}
++
++		if (opt_show) {
++			SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
++			maxrss_self = ru.ru_maxrss;
++			SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
++			maxrss_children = ru.ru_maxrss;
++			tst_resm(TINFO, "exec.self = %ld, exec.children = %ld",
++				    maxrss_self, maxrss_children);
++			if (opt_self) {
++				self_nr = get_long(self_str);
++				delta = maxrss_self - self_nr;
++				if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
++					tst_resm(TPASS,
++						"initial.self ~= exec.self");
++				else
++					tst_resm(TFAIL,
++						"initial.self !~= exec.self");
++			}
++			if (opt_child) {
++				child_nr = get_long(child_str);
++				delta = maxrss_children - child_nr;
++				if (delta >= -DELTA_MAX && delta <= DELTA_MAX)
++					tst_resm(TPASS,
++						"initial.children ~= exec.children");
++				else
++					tst_resm(TFAIL,
++						"initial.children !~= exec.children");
++			}
++		}
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void usage(void)
++{
++	printf("  -n NUM  consume NUM MB size\n");
++	printf("  -g NUM  grandchild consume NUM MB size\n");
++	printf("  -v      verbose mode, show rusage info\n");
++	printf("  -s NUM  compare rusage_self.maxrss with given NUM\n");
++	printf("  -l NUM  compare rusage_children.maxrss with given NUM\n");
++}
++
++static void consume(int mega)
++{
++	size_t sz;
++	void *ptr;
++
++	sz  = mega * 1024 * 1024;
++	ptr = SAFE_MALLOC(cleanup, sz);
++	memset(ptr, 0, sz);
++}
++
++static long get_long(const char *str)
++{
++	long val;
++	char *endptr;
++
++	val = strtol(str, &endptr, 10);
++	if (((val == LONG_MAX || val == LONG_MIN) && errno == ERANGE) ||
++		    (errno != 0 && val == 0))
++		tst_brkm(TBROK|TERRNO, cleanup, "strtol");
++	if (endptr == str || *endptr != '\0')
++		tst_brkm(TBROK, cleanup, "Invalid number parameter: %s", str);
++
++	return val;
++}
++
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++}
 
---Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
-Content-Type: application/x-sh;
- name="ltprun-sumrawfile.sh"
-Content-Disposition: attachment;
- filename="ltprun-sumrawfile.sh"
-Content-Transfer-Encoding: base64
-
-IyEgL2Jpbi9zaAojIHN1bW1hcnkgb2YgTFRQIHN1aXRlICdsb2dmaWxlJyByZXN1bHRzOgojIGNv
-dW50ICJleGVjdXRpb246IFBBU1N8RkFJTHxXQVJOfEJST0t8UkVUUnxDT05GKGNvbmZpZyBlcnJv
-cikiOwojIGNvdW50ICJcLmM6LiplcnJvcjoiIGZvciBidWlsZCBlcnJvcnMgKGxpbmVzKTsKCmxv
-Z2ZpbGU9JHsxLWxvZ2ZpbGV9CmVjaG8gIlVzaW5nIGxvZ2ZpbGU9JGxvZ2ZpbGUiCgpUTVBGSUxF
-PSIkbG9nZmlsZSIKCiMjYnVpbGRfZmFpbGVkPWBncmVwICJidWlsZDogRkFJTEVEIiAkVE1QRklM
-RSB8IHdjIC1sYApidWlsZF9lcnJvcnM9YGdyZXAgIlwuYzouKmVycm9yOiIgICRUTVBGSUxFIHwg
-d2MgLWxgCgpydW5fcGFzc2VkPWBncmVwICJeXHcqICpbWzpkaWdpdDpdXSogKlBBU1MgKjoiICAk
-VE1QRklMRSB8IHdjIC1sYApydW5fd2FybmVkPWBncmVwICJeXHcqICpbWzpkaWdpdDpdXSogKldB
-Uk4gKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5fYnJva2VuPWBncmVwICJeXHcqICpbWzpkaWdp
-dDpdXSogKkJST0sgKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5fZmFpbGVkPWBncmVwICJeXHcq
-ICpbWzpkaWdpdDpdXSogKkZBSUwgKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5fcmV0aXJlPWBn
-cmVwICJeXHcqICpbWzpkaWdpdDpdXSogKlJFVFIgKjoiICAkVE1QRklMRSB8IHdjIC1sYApydW5f
-Y2ZnZXJyPWBncmVwICJeXHcqICpbWzpkaWdpdDpdXSogKkNPTkYgKjoiICAkVE1QRklMRSB8IHdj
-IC1sYAojIGlnbm9yZSBJTkZPIGxpbmVzCgpwcmludGYgImJ1aWxkIGVycm9yczogICVzIGxpbmVz
-XG4iICRidWlsZF9lcnJvcnMKcHJpbnRmICJQQVNTOiAgICAgICAgICAlc1xuIiAkcnVuX3Bhc3Nl
-ZApwcmludGYgIldBUk5pbmc6ICAgICAgICVzXG4iICRydW5fd2FybmVkCnByaW50ZiAiQlJPS2Vu
-OiAgICAgICAgJXNcbiIgJHJ1bl9icm9rZW4KcHJpbnRmICJSRVRpUmVkOiAgICAgICAlc1xuIiAk
-cnVuX3JldGlyZQkjIyBOQjogbm90IGNvdW50ZWQgaW4gYW55IHRvdGFscwpwcmludGYgIkZBSUw6
-ICAgICAgICAgICVzXG4iICRydW5fZmFpbGVkCnByaW50ZiAiQ09ORmlnIGVycm9yOiAgJXNcbiIg
-JHJ1bl9jZmdlcnIKCnBhc3Npbmc9JCgocnVuX3Bhc3NlZCArIHJ1bl93YXJuZWQpKQpub3RwYXNz
-PSQoKHJ1bl9icm9rZW4gKyBydW5fY2ZnZXJyICsgcnVuX2ZhaWxlZCkpCnRvdGFsPSQoKG5vdHBh
-c3MgKyBwYXNzaW5nKSkKc2NvcmU9JCgoMTAwMCAqIHBhc3NpbmcpKQkjIGNvbnZlcnQgdG8gcGVy
-Y2VudC5kZWNpbWFsCnNjb3JlPSQoKHNjb3JlICsgdG90YWwgLyAyKSkJIyByb3VuZGluZwppZiBb
-ICR0b3RhbCAtZXEgMCBdOyB0aGVuCglzY29yZT0wCmVsc2UKCXNjb3JlPSQoKHNjb3JlIC8gdG90
-YWwpKQpmaQpmcmFjdGlvbj0kKChzY29yZSAlIDEwKSkKc2NvcmU9JCgoc2NvcmUgLyAxMCkpCnBy
-aW50ZiAiU0NPUkUubHRwOiAgICAgICAgJWQuJWRcbiIgJHNjb3JlICRmcmFjdGlvbgo=
-
---Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
-Content-Type: application/x-perl;
- name="prtag2tag.pl"
-Content-Disposition: attachment;
- filename="prtag2tag.pl"
-Content-Transfer-Encoding: base64
-
-IyEgL3Vzci9iaW4vcGVybAojIHBydGFnMnRhZy5wbDogcHJpbnQgbGluZXMgZnJvbSBpbnB1dF9m
-aWxlIGZyb20gL1RBRzEvIHRocnUgL1RBRzIvIChvciBFT0YpCiMgKEMpIENvcHlyaWdodCAyMDA3
-LTIwMDgsIFJhbmR5IER1bmxhcAojCiMgdmVyLiAwMDIgY2hhbmdlczoKIyAtIGFkZCBwcmNvdW50
-IGFuZCBleGl0ICgyKSBpZiBpdCBpcyAwOwojIC0gYWRkIC1pIChpZ25vcmUgY2FzZSkgb3B0aW9u
-OwojIC0gYWRkIHVzYWdlIGluZm8gZm9yICctJyA9PSBTVERJTiAoUGVybCBkb2VzIHRoaXMpOwoj
-CiMgTkI6IGNhbiB1c2UgLiBmb3Igc3BhY2VzIGluIGVpdGhlciBhcmcgKHJlZ2V4KSBzbyB0aGF0
-IHRoZSBhcmcocykKIyB3aWxsIGJlIHNlZW4gYXMgb25lIHN0cmluZzsKCiRWRVIgPSAiMDAyIjsK
-CnVzZSBHZXRvcHQ6OlN0ZDsKCmdldG9wdHMoImkiKTsKCnN1YiB1c2FnZSgpIHsKCXByaW50ICJ1
-c2FnZTogcHJ0YWcydGFnIFstaV0gYmVnaW5fdGFnIGVuZF90YWcgZmlsZShzKSBbdmVyLiAkVkVS
-XVxuIjsKCXByaW50ICIgIC1pIDogaWdub3JlIGNhc2VcbiI7CglwcmludCAiICBmaWxlKHMpIGNh
-biBiZSAnLScgZm9yIFNURElOXG4iOwoJZXhpdCAoMSk7Cn0KCm15ICRwcmludGluZyA9IDA7Cm15
-ICRiZWdpbl90YWcgPSBzaGlmdCAoQEFSR1YpIHx8IHVzYWdlKCk7Cm15ICRlbmRfdGFnID0gc2hp
-ZnQgKEBBUkdWKSB8fCB1c2FnZSgpOwpteSAkcHJjb3VudCA9IDA7CgppZiAoJGJlZ2luX3RhZyBl
-cSAiIiB8fCAkZW5kX3RhZyBlcSAiIikgewoJdXNhZ2UoKTsKfQoKIyNwcmludCAiYmVnaW4gLyRi
-ZWdpbl90YWcvLCBlbmQgLyRlbmRfdGFnL1xuIjsKIyNwcmludCAiZmlsZXM6IEBBUkdWXG4iOwoK
-Zm9yZWFjaCBteSAkZmlsZSAoQEFSR1YpIHsKCglvcGVuIChGSUxFLCAkZmlsZSkgfHwgZGllICJD
-YW5ub3Qgb3BlbiBmaWxlOiAkZmlsZVxuIjsKCglMSU5FOiB3aGlsZSAoJGxpbmUgPSA8RklMRT4p
-IHsKCQljaG9tcCAkbGluZTsKCgkJaWYgKCRvcHRfaSkgewoJCQlpZiAoJGxpbmUgPX4gLyRiZWdp
-bl90YWcvaSkgewoJCQkJJHByaW50aW5nID0gMTsKCQkJfQoJCX0KCQllbHNpZiAoJGxpbmUgPX4g
-LyRiZWdpbl90YWcvKSB7CgkJCSRwcmludGluZyA9IDE7CgkJfQoKCQlpZiAoJHByaW50aW5nKSB7
-CgkJCXByaW50ICIkbGluZVxuIjsKCQkJJHByY291bnQrKzsKCQl9CgoJCWlmICgkb3B0X2kpIHsK
-CQkJaWYgKCRsaW5lID1+IC8kZW5kX3RhZy9pKSB7CgkJCQkkcHJpbnRpbmcgPSAwOwoJCQl9CgkJ
-fQoJCWVsc2lmICgkbGluZSA9fiAvJGVuZF90YWcvKSB7CgkJCSRwcmludGluZyA9IDA7CgkJfQoJ
-fQoKCWNsb3NlIChGSUxFKTsKfQoKaWYgKCRwcmNvdW50ID09IDApIHsKCXByaW50ZihTVERFUlIg
-Im5vIG1hdGNoaW5nIGxpbmVzXG4iKTsKCWV4aXQgKDIpOwp9Cg==
-
---Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+--------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-EditLive Enterprise is the world's most technically advanced content
-authoring tool. Experience the power of Track Changes, Inline Image
-Editing and ensure content is compliant with Accessibility Checking.
-http://p.sf.net/sfu/ephox-dev2dev
---Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
+--------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -180,5 +702,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---Multipart=_Tue__21_Jun_2011_12_52_34_-0700_ES=AfGJEPRJPRWQV--
+--------------1.7.6--
+
+
 
