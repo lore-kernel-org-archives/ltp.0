@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QcJ4T-0003wz-Nu
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 15:22:25 +0000
-Date: Thu, 30 Jun 2011 17:22:49 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110630152249.GC20254@saboteur.suse.cz>
-References: <1305183593-25512-1-git-send-email-lliubbo@gmail.com>
-	<5004B0F2-AD73-437F-995E-71B88F329A8E@gmail.com>
-	<BANLkTik9irk3Yket8uK79H4d2X-5a8bYcg@mail.gmail.com>
-	<20110531153741.GB1901@saboteur.suse.cz>
-	<BANLkTik3Q9WgB_86S8f98cCYz091ZDpO=A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BANLkTik3Q9WgB_86S8f98cCYz091ZDpO=A@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] testcases: syscall: sockioctl: fix except return
- val
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanpai.chen@gmail.com>) id 1QcAdE-0002x6-Pp
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:44 +0000
+Received: from mail-gy0-f175.google.com ([209.85.160.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QcAdE-0004v3-6U
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:44 +0000
+Received: by gyd12 with SMTP id 12so1019180gyd.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Jun 2011 23:21:38 -0700 (PDT)
+From: Andrew Chen <yanpai.chen@gmail.com>
+Date: Thu, 30 Jun 2011 14:19:45 +0800
+Message-Id: <1309414787-2022-5-git-send-email-yanpai.chen@gmail.com>
+In-Reply-To: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
+References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
+Subject: [LTP] [PATCH 5/7] runltp: precise pattern matching for skipped
+	testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,30 +27,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bob Liu <lliubbo@gmail.com>
-Cc: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net
+Cc: ypchen@faraday-tech.com
 
-Hi!
-> >> Whether using tst_kvercmp() can be accepted ?
-> >
-> > Sure. Ideally please add pointer to kernel commit that caused this
-> > change in the test souce as a comment.
-> >
-> 
-> Sorry for that, tst_kvercmp() can't be used since it's in struct define.
-> Maybe a macro is needed, but I don't know which one to use.
-> 
-> Any ideas?
+From: Andrew Chen <ypchen@faraday-tech.com>
 
-Initalize this field of the structure in test init function depending on
-the kernel version.
 
+Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
+---
+ ltp-full-20101031/runltp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/ltp-full-20101031/runltp b/ltp-full-20101031/runltp
+index b385984..c8f558d 100755
+--- a/ltp-full-20101031/runltp
++++ b/ltp-full-20101031/runltp
+@@ -681,7 +681,7 @@ main()
+     if [ -n "$SKIPFILE" ]
+     then
+         for file in $( cat $SKIPFILE ); do
+-            sed -i "/$file/d" ${TMP}/alltests
++            sed -i "/^$file[ \t]/d" ${TMP}/alltests
+         done
+     fi
+     
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.6.5
+
 
 ------------------------------------------------------------------------------
 All of the data generated in your IT infrastructure is seriously valuable.
