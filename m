@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ratbert.chuang@gmail.com>) id 1QUWJy-0008Mb-AB
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 03:54:14 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1QUWJx-0008NM-Aw
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jun 2011 03:54:14 +0000
-Received: by pvc30 with SMTP id 30so744452pvc.34
+	(envelope-from <yanpai.chen@gmail.com>) id 1QcAct-0002vT-H8
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:23 +0000
+Received: from mail-yw0-f47.google.com ([209.85.213.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QcAcs-0004uP-H1
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:23 +0000
+Received: by ywa12 with SMTP id 12so1017741ywa.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Jun 2011 20:54:07 -0700 (PDT)
-From: Po-Yu Chuang <ratbert.chuang@gmail.com>
-Date: Thu,  9 Jun 2011 11:53:58 +0800
-Message-Id: <1307591638-1662-1-git-send-email-ratbert.chuang@gmail.com>
-Subject: [LTP] [PATCH] acl_test01: fix incorrect failure losetup.1
+	Wed, 29 Jun 2011 23:21:17 -0700 (PDT)
+From: Andrew Chen <yanpai.chen@gmail.com>
+Date: Thu, 30 Jun 2011 14:19:41 +0800
+Message-Id: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
+Subject: [LTP] [PATCH 1/7] testcases: fs_bind: fix hanging of testscript
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,45 +29,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Po-Yu Chuang <ratbert@faraday-tech.com>
+Cc: ypchen@faraday-tech.com
 
-From: Po-Yu Chuang <ratbert@faraday-tech.com>
+From: Andrew Chen <ypchen@faraday-tech.com>
 
-The LOOP_DEV empty checking was incorrect.
+Busybox's xargs doesn't recongize the --max-args option. Use -n instead.
 
-Use `command` for command substitution.
-
-Also move the assignment out of condition expression. Bash 3.2.9 and
-Busybox 1.17.3 ash do not seem to support this kind of usage.
-
-Signed-off-by: Po-Yu Chuang <ratbert@faraday-tech.com>
+Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
 ---
- testcases/kernel/fs/acls/acl_test01 |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ ltp-full-20101031/testscripts/test_fs_bind.sh |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-index 7901002..7f883c6 100755
---- a/testcases/kernel/fs/acls/acl_test01
-+++ b/testcases/kernel/fs/acls/acl_test01
-@@ -125,7 +125,8 @@ else
+diff --git a/ltp-full-20101031/testscripts/test_fs_bind.sh b/ltp-full-20101031/testscripts/test_fs_bind.sh
+index 9ab533a..6b986dc 100755
+--- a/ltp-full-20101031/testscripts/test_fs_bind.sh
++++ b/ltp-full-20101031/testscripts/test_fs_bind.sh
+@@ -318,7 +318,7 @@ restore_mounts()
+ 	# new mounts around and will never remove mounts outside the test
+ 	# directory
+ 	( while grep_mounts ; do
+-		grep_mounts | awk '{print $3}' | xargs -r --max-args=1 umount -l
++		grep_mounts | awk '{print $3}' | xargs -r -n 1 umount -l
+ 	done ) >& /dev/null
  
- 	# Avoid hardcoded loopback device values (-f tries to find the first
- 	# available loopback device name)!
--	if ! (LOOP_DEV=$(losetup -f) && [ "x$LOOP_DEV" = x ]); then
-+	LOOP_DEV=`losetup -f`
-+	if [ "x$LOOP_DEV" = x ]; then
- 		tst_resm TCONF "[ losetup.1 ] Failed to find an available loopback device -- is the required support compiled in your kernel?"
- 		exit 0
- 	fi
+ 	# mount list and exit with 0
 -- 
-1.6.3.3
+1.6.5
 
 
 ------------------------------------------------------------------------------
-EditLive Enterprise is the world's most technically advanced content
-authoring tool. Experience the power of Track Changes, Inline Image
-Editing and ensure content is compliant with Accessibility Checking.
-http://p.sf.net/sfu/ephox-dev2dev
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
