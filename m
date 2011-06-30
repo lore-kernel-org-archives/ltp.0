@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qbyq6-0002un-Ch
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jun 2011 17:46:14 +0000
-Date: Wed, 29 Jun 2011 19:46:33 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110629174633.GA17217@saboteur.suse.cz>
-References: <ef44f6feaa6d46350761dae93d997c3f6a3a7e9e.1307968048.git.czhang@redhat.com>
-	<bc82b67194b388102909bc38335c42bd661c3e55.1309361232.git.czhang@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <bc82b67194b388102909bc38335c42bd661c3e55.1309361232.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH v3] [syscalls] getrusage03: test ru_maxrss
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanpai.chen@gmail.com>) id 1QcAdB-00064b-Sv
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:41 +0000
+Received: from mail-yi0-f47.google.com ([209.85.218.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1QcAdA-0004AL-Tv
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jun 2011 06:21:41 +0000
+Received: by yib18 with SMTP id 18so1018474yib.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Jun 2011 23:21:35 -0700 (PDT)
+From: Andrew Chen <yanpai.chen@gmail.com>
+Date: Thu, 30 Jun 2011 14:19:44 +0800
+Message-Id: <1309414787-2022-4-git-send-email-yanpai.chen@gmail.com>
+In-Reply-To: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
+References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
+Subject: [LTP] [PATCH 4/7] testcases: memcg_function: set hugepage size to
+	zero when no hugepage support
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,50 +27,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: ypchen@faraday-tech.com
 
-Hi!
-> +static void consume(int mega)
-> +{
-> +	size_t sz;
-> +	void *ptr;
-> +
-> +	sz  = mega * 1024 * 1024;
-> +	ptr = SAFE_MALLOC(cleanup, sz);
-> +	memset(ptr, 0, sz);
-> +}
-> +
-> +static long get_long(const char *str)
-> +{
-> +	long val;
-> +	char *endptr;
-> +
-> +	val = strtol(str, &endptr, 10);
-> +	if (((val == LONG_MAX || val == LONG_MIN) && errno == ERANGE) ||
-> +		    (errno != 0 && val == 0))
-> +		tst_brkm(TBROK|TERRNO, cleanup, "strtol");
-> +	if (endptr == str || *endptr != '\0')
-> +		tst_brkm(TBROK, cleanup, "Non-digits were found.");
-> +
-> +	return val;
-> +}
+From: Andrew Chen <ypchen@faraday-tech.com>
 
-One more thing, please keep the error meesages sweet and to the point.
 
-Just imagine you get "Non-digits were found." error from some utility.
-Which doesn't say much, for example where was these non digits found.
+Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
+---
+ .../memcg/functional/memcg_function_test.sh        |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-I would do something like:
-
-tst_brkm(TBROK, "Invalid number parameter '%s'", str);
-
+diff --git a/ltp-full-20101031/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/ltp-full-20101031/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+index 56010ad..c504ed6 100755
+--- a/ltp-full-20101031/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
++++ b/ltp-full-20101031/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+@@ -45,6 +45,7 @@ FAIL=1
+ 
+ PAGESIZE=`./memcg_getpagesize`
+ HUGEPAGESIZE=`grep Hugepagesize /proc/meminfo | awk '{ print $2 }'`
++[ -z $HUGEPAGESIZE ] && HUGEPAGESIZE=0
+ HUGEPAGESIZE=$(( $HUGEPAGESIZE * 1024 ))
+ 
+ cur_id=0
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.6.5
+
 
 ------------------------------------------------------------------------------
 All of the data generated in your IT infrastructure is seriously valuable.
