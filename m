@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QgIzV-000425-IW
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 16:05:49 +0000
-Date: Mon, 11 Jul 2011 18:07:09 +0200
+	(envelope-from <chrubis@suse.de>) id 1QepqI-0007vQ-SE
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jul 2011 14:46:14 +0000
+Date: Thu, 7 Jul 2011 16:47:13 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110711160709.GA31575@saboteur.suse.cz>
-References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
-	<1309414787-2022-2-git-send-email-yanpai.chen@gmail.com>
-	<20110711144528.GE26246@saboteur.suse.cz>
+Message-ID: <20110707144713.GB17217@saboteur.suse.cz>
+References: <1309875852-3514-1-git-send-email-carmelo.amoroso@st.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110711144528.GE26246@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH 2/7] testcases: cgroup: correct wrong variable
- used in the testscript
+In-Reply-To: <1309875852-3514-1-git-send-email-carmelo.amoroso@st.com>
+Subject: Re: [LTP] [PATCH] mq_timedsend01: do not write out of the array
+ boundaries.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,48 +25,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Chen <yanpai.chen@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
+To: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > From: Andrew Chen <ypchen@faraday-tech.com>
-> > 
-> > 
-> > Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
-> > ---
-> >  .../controllers/cgroup/cgroup_regression_test.sh   |    2 +-
-> >  1 files changed, 1 insertions(+), 1 deletions(-)
-> > 
-> > diff --git a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> > index 5527afc..c7ce791 100755
-> > --- a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> > +++ b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> > @@ -254,7 +254,7 @@ test_5()
-> >  	subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
-> >  	subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
-> >  
-> > -	mount -t cgroup -o $subsys1,$subsys xxx cgroup/
-> > +	mount -t cgroup -o $subsys1,$subsys2 xxx cgroup/
-> >  	if [ $? -ne 0 ]; then
-> >  		tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
-> >  		failed=1
-> > -- 
+> When preparing the message to be sent, limit the number of written bytes
+> to the array's size, otherwise it will be detected as a stack smashing attack
+> and the test case will be killed, as from the output below:
 > 
-> Please don't leave the commit messages empty, even for such change it
-> should be something like:
+> <<<test_start>>>
+> tag=mq_timedsend01 stime=948808768
+> cmdline="mq_timedsend01"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
 > 
-> "Fix typo in cgroup_regression_test.sh."
+> ... [SNIP] ...
+> 
+> mq_timedsend01    0  TINFO  :  (case04) START
+> EXPECT: return value(ret)=-1 errno=90 (Message too long)
+> RESULT: return value(ret)=-1 errno=90 (Message too long)
+> stack smashing detected: mq_timedsend01 terminated()
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=signaled termination_id=6 corefile=no
+> cutime=0 cstime=2
+> <<<test_end>>>
+> 
+> Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+> ---
+>  .../kernel/syscalls/mq_timedsend/mq_timedsend01.c  |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+> index 63add02..db2b272 100644
+> --- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+> +++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+> @@ -367,7 +367,7 @@ static int do_test(struct test_case *tc)
+>  	/*
+>  	 * Prepare send message
+>  	 */
+> -	for (i = 0; i < tc->len; i++)
+> +	for (i = 0; i < tc->len && i < sizeof(smsg); i++)
+>  		smsg[i] = i;
+>  
+>  	/*
 
-Argh, scratch that. I'm allways confused by git generated emails.
-
-I would certainly expect that they add the first line of commit message
-not only to subject but into the mail body as well.
-
-Anyway the patches won't apply as they have ltp-full-20101031 prefix in
-the path and 'git am' couldn't find the files.
-
-PS: It's better to work with the LTP git repository to be sure you are
-    not fixing fixed problem.
+Perhaps increasing the smsg and rmsg array to MAX_MSGSIZE + 1 would be
+more consistend. Commited anyway, thanks.
 
 -- 
 Cyril Hrubis
