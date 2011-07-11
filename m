@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QhKba-00073k-SF
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 12:01:22 +0000
-Date: Thu, 14 Jul 2011 14:02:57 +0200
+	(envelope-from <chrubis@suse.de>) id 1QgJaZ-0005wA-Cj
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 16:44:07 +0000
+Date: Mon, 11 Jul 2011 18:45:27 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110714120257.GA4811@saboteur.suse.cz>
-References: <1310479114-19326-1-git-send-email-carmelo.amoroso@st.com>
+Message-ID: <20110711164527.GC31575@saboteur.suse.cz>
+References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
+	<1309414787-2022-7-git-send-email-yanpai.chen@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1310479114-19326-1-git-send-email-carmelo.amoroso@st.com>
-Subject: Re: [LTP] [PATCH] shmctl01: fix misaligned access
+In-Reply-To: <1309414787-2022-7-git-send-email-yanpai.chen@gmail.com>
+Subject: Re: [LTP] [PATCH 7/7] testcases: syscalls: close file descriptors
+ before unlinking
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,37 +26,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Andrew Chen <yanpai.chen@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
 
 Hi!
-> On architecture that are not able to handle in hardware
-> misaligned access, it could cause the application to be killed by a SIGBUS
-> 
-> So, the following simple assignment
-> 
-> void *test;
-> *(int *)test = stat_i;
-> 
-> causes on SH4 the following error:
-> 
-> Unaligned userspace access in "shmctl01" pid=8547 pc=0x0040221a ins=0x400b
-> Sending SIGBUS to "shmctl01" due to unaligned access (PC 40221a PR 40221e)
-> 
-> Using a 'memcpy' is safe.
+> Ensure file descriptors are closed before unlinking them, or we cannot
+> remove the generated directories after these tests. The leftover
+> directories may cause tests failed in latter runs once the directory
+> names are hit.
 
-Commited, thanks.
+I fail to see the problem here (which doesn't mean that there isn't
+any). If you do unlink() of file, it's removed from filesystem tree
+regardless if it's open or not.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-AppSumo Presents a FREE Video for the SourceForge Community by Eric 
-Ries, the creator of the Lean Startup Methodology on "Lean Startup 
-Secrets Revealed." This video shows you how to validate your ideas, 
-optimize your ideas and identify your business strategy.
-http://p.sf.net/sfu/appsumosfdev2dev
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
