@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QmlSl-0001Xn-Nw
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jul 2011 11:42:43 +0000
-Date: Fri, 29 Jul 2011 13:45:34 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QgHiU-0007X8-MP
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 14:44:10 +0000
+Date: Mon, 11 Jul 2011 16:45:28 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110729114534.GA29831@saboteur.suse.cz>
+Message-ID: <20110711144528.GE26246@saboteur.suse.cz>
 References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
-	<1309414787-2022-6-git-send-email-yanpai.chen@gmail.com>
+	<1309414787-2022-2-git-send-email-yanpai.chen@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1309414787-2022-6-git-send-email-yanpai.chen@gmail.com>
-Subject: Re: [LTP] [PATCH 6/7] runtest/fs: change parameters of growfiles
+In-Reply-To: <1309414787-2022-2-git-send-email-yanpai.chen@gmail.com>
+Subject: Re: [LTP] [PATCH 2/7] testcases: cgroup: correct wrong variable
+ used in the testscript
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,35 +30,44 @@ To: Andrew Chen <yanpai.chen@gmail.com>
 Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
 
 Hi!
-> --- a/ltp-full-20101031/runtest/fs
-> +++ b/ltp-full-20101031/runtest/fs
-> @@ -14,9 +14,9 @@ gf12 mkfifo $TMPDIR/gffifo17; growfiles -b -W gf12 -e 1 -u -i 0 -L 30 $TMPDIR/gf
->  gf13 mkfifo $TMPDIR/gffifo18; growfiles -b -W gf13 -e 1 -u -i 0 -L 30 -I r -r 1-4096 $TMPDIR/gffifo18
->  gf14 growfiles -W gf14 -b -e 1 -u -i 0 -L 20 -w -l -C 1 -T 10 -f glseek19 -S 2 -d $TMPDIR
->  gf15 growfiles -W gf15 -b -e 1 -u -r 1-49600 -I r -u -i 0 -L 120 -f Lgfile1 -d $TMPDIR
-> -gf16 growfiles -W gf16 -b -e 1 -i 0 -L 120 -u -g 4090 -T 100 -t 408990 -l -C 10 -c 1000 -S 10 -f Lgf02_ -d $TMPDIR
-> -gf17 growfiles -W gf17 -b -e 1 -i 0 -L 120 -u -g 5000 -T 100 -t 499990 -l -C 10 -c 1000 -S 10 -f Lgf03_ -d $TMPDIR
->  gf18 growfiles -W gf18 -b -e 1 -i 0 -L 120 -w -u -r 10-5000 -I r -l -S 2 -f Lgf04_ -d $TMPDIR
-> +gf16 growfiles -W gf16 -b -e 1 -i 0 -L 120 -u -g 4090 -T 101 -t 408990 -l -C 10 -c 1000 -S 10 -f Lgf02_ -d $TMPDIR
-> +gf17 growfiles -W gf17 -b -e 1 -i 0 -L 120 -u -g 5000 -T 101 -t 499990 -l -C 10 -c 1000 -S 10 -f Lgf03_ -d $TMPDIR
->  gf19 growfiles -W gf19 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -o O_RDWR,O_CREAT,O_TRUNC -u -f gf08i_ -d $TMPDIR
->  gf20 growfiles -W gf20 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1-256000:512 -R 512-256000 -T 4 -f gfbigio-$$ -d $TMPDIR
->  gf21 growfiles -W gf21 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 -T 10 -t 20480 -f gf-bld-$$ -d $TMPDIR
+> From: Andrew Chen <ypchen@faraday-tech.com>
+> 
+> 
+> Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
+> ---
+>  .../controllers/cgroup/cgroup_regression_test.sh   |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> index 5527afc..c7ce791 100755
+> --- a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> +++ b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> @@ -254,7 +254,7 @@ test_5()
+>  	subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
+>  	subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
+>  
+> -	mount -t cgroup -o $subsys1,$subsys xxx cgroup/
+> +	mount -t cgroup -o $subsys1,$subsys2 xxx cgroup/
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
+>  		failed=1
+> -- 
 
-Any reason why you have changed the order of the execution (the gf18 now preceeds gf16 and gf17)?
+Please don't leave the commit messages empty, even for such change it
+should be something like:
 
-Also I'm not sure if 'shrinking on the same file' wasn't intentional
-(most likely not but I'm not sure yet).
+"Fix typo in cgroup_regression_test.sh."
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Got Input?   Slashdot Needs You.
-Take our quick survey online.  Come on, we don't ask for help often.
-Plus, you'll get a chance to win $100 to spend on ThinkGeek.
-http://p.sf.net/sfu/slashdot-survey
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
