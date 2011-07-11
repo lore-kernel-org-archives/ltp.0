@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <francesco.rundo@st.com>) id 1QhLwT-00018v-Mu
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 13:27:01 +0000
-Received: from eu1sys200aog118.obsmtp.com ([207.126.144.145])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QhLwP-0006eh-SR
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 13:27:01 +0000
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 17C05161
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jul 2011 13:26:50 +0000 (GMT)
-Received: from mail7.sgp.st.com (unknown [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BB9F829BA
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jul 2011 13:26:50 +0000 (GMT)
-From: Francesco RUNDO <francesco.rundo@st.com>
-Date: Thu, 14 Jul 2011 15:26:23 +0200
-Message-Id: <1310649983-28262-1-git-send-email-n>
-Subject: [LTP] [PATCH V2] kill05: Added tst_resm() to print the proper error
-	code(TPASS) if test exits with EPERM
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QgIzV-000425-IW
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 16:05:49 +0000
+Date: Mon, 11 Jul 2011 18:07:09 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110711160709.GA31575@saboteur.suse.cz>
+References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
+	<1309414787-2022-2-git-send-email-yanpai.chen@gmail.com>
+	<20110711144528.GE26246@saboteur.suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20110711144528.GE26246@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH 2/7] testcases: cgroup: correct wrong variable
+ used in the testscript
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,51 +24,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Andrew Chen <yanpai.chen@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
 
-From: Francesco Rundo <francesco.rundo@st.com>
+Hi!
+> > From: Andrew Chen <ypchen@faraday-tech.com>
+> > 
+> > 
+> > Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
+> > ---
+> >  .../controllers/cgroup/cgroup_regression_test.sh   |    2 +-
+> >  1 files changed, 1 insertions(+), 1 deletions(-)
+> > 
+> > diff --git a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> > index 5527afc..c7ce791 100755
+> > --- a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> > +++ b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> > @@ -254,7 +254,7 @@ test_5()
+> >  	subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
+> >  	subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
+> >  
+> > -	mount -t cgroup -o $subsys1,$subsys xxx cgroup/
+> > +	mount -t cgroup -o $subsys1,$subsys2 xxx cgroup/
+> >  	if [ $? -ne 0 ]; then
+> >  		tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
+> >  		failed=1
+> > -- 
+> 
+> Please don't leave the commit messages empty, even for such change it
+> should be something like:
+> 
+> "Fix typo in cgroup_regression_test.sh."
 
-Added "tst_resm()" call to print the proper LTP error code(TPASS)
-in case of the testcase exit with expected result.
+Argh, scratch that. I'm allways confused by git generated emails.
 
-The testcase didn't call "tst_resm()" in case of 
-exit without error i.e. after that EPERM is correctly raised.
-The proper LTP error code, in that case, is TPASS as EPERM
-is the expected result.
+I would certainly expect that they add the first line of commit message
+not only to subject but into the mail body as well.
 
-Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
----
- testcases/kernel/syscalls/kill/kill05.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Anyway the patches won't apply as they have ltp-full-20101031 prefix in
+the path and 'git am' couldn't find the files.
 
-diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
-index fe34788..23fac0a 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -126,6 +126,8 @@ int main(int ac, char **av)
- 		tst_resm(TBROK|TERRNO, "waitpid failed");
- 	else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
- 		tst_resm(TFAIL, "child exited abnormally");
-+	else
-+		tst_resm(TPASS, "received expected errno(EPERM)");
- 	cleanup();
- 	tst_exit();
- }
+PS: It's better to work with the LTP git repository to be sure you are
+    not fixing fixed problem.
+
 -- 
-1.7.4.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-AppSumo Presents a FREE Video for the SourceForge Community by Eric 
-Ries, the creator of the Lean Startup Methodology on "Lean Startup 
-Secrets Revealed." This video shows you how to validate your ideas, 
-optimize your ideas and identify your business strategy.
-http://p.sf.net/sfu/appsumosfdev2dev
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
