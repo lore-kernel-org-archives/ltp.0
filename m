@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QhLAz-0008Kk-Rc
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 12:37:57 +0000
-Date: Thu, 14 Jul 2011 14:39:30 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QgHUJ-000780-7d
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 14:29:31 +0000
+Date: Mon, 11 Jul 2011 16:30:51 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110714123930.GB4811@saboteur.suse.cz>
-References: <1310542250-1294-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<20110714122308.GA5300@saboteur.suse.cz>
+Message-ID: <20110711143051.GC26246@saboteur.suse.cz>
+References: <1308655951-13647-1-git-send-email-biessmann@corscience.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110714122308.GA5300@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH] opsix-test:sigaltstack:9-1.c:fix the wrong file
- path
+In-Reply-To: <1308655951-13647-1-git-send-email-biessmann@corscience.de>
+Subject: Re: [LTP] [PATCH] t/k/s/eventfd2/eventfd2_03: fix build error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,35 +21,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Andreas =?iso-8859-1?Q?Bie=DFmann?= <biessmann@corscience.de>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > -	if (execl("conformance/interfaces/sigaltstack/9-buildonly.test", "9-buildonly.test", NULL) == -1) {
-> > +	if (execl("./9.run-test", "9.run-test", NULL) == -1) {
-> >  		perror("Unexpected error while attempting to setup test pre-conditions");
-> 
-> This one is more tricky too (mind the situation when the test is
-> installed). I need to figure out how how correctly propagate the path to
-> the test helper binary.
+> Without this patch linking libltp.a complains about missing TEST_ERRNO wh=
+en
+> building with UCLINUX=3D1.
+> =
 
-FYI: I just got a patch that incorporates these two tests into one
-     binary eg. the 9-1.c runs itself with "verify" parameter to
-     check the sigaltstack.
+> Signed-off-by: Andreas Bie=DFmann <biessmann@corscience.de>
 
--- 
+Commited, thanks.
+
+-- =
+
 Cyril Hrubis
 chrubis@suse.cz
 
-------------------------------------------------------------------------------
-AppSumo Presents a FREE Video for the SourceForge Community by Eric 
-Ries, the creator of the Lean Startup Methodology on "Lean Startup 
-Secrets Revealed." This video shows you how to validate your ideas, 
-optimize your ideas and identify your business strategy.
-http://p.sf.net/sfu/appsumosfdev2dev
+---------------------------------------------------------------------------=
+---
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security =
+
+threats, fraudulent activity, and more. Splunk takes this data and makes =
+
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
