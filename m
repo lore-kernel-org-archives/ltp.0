@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QgJ7J-0004OQ-Aj
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 16:13:53 +0000
-Date: Mon, 11 Jul 2011 18:15:13 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QgHVL-0001s1-0z
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 14:30:35 +0000
+Date: Mon, 11 Jul 2011 16:31:55 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110711161513.GB31575@saboteur.suse.cz>
-References: <20090512094631.26592.81609.sendpatchset@subratamodak.linux.ibm.com>
-	<4E19987B.2030507@hartkopp.net>
+Message-ID: <20110711143155.GD26246@saboteur.suse.cz>
+References: <1308657537-17594-1-git-send-email-biessmann@corscience.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E19987B.2030507@hartkopp.net>
-Subject: Re: [LTP] Update for CAN LTP tests
+In-Reply-To: <1308657537-17594-1-git-send-email-biessmann@corscience.de>
+Subject: Re: [LTP] [PATCH] t/k/s/writev: fix UCLINUX build
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,35 +24,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: ltp-list <ltp-list@lists.sf.net>, Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, netdev@vger.kernel.org, socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>
+To: Andreas =?iso-8859-1?Q?Bie=DFmann?= <biessmann@corscience.de>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > Would you also like to send a patch to update the testcases for CAN in LTP
-> > (http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/network/can/filter-tests/) ?
-> > These tests were originally picked up from:
-> > http://svn.berlios.de/wsvn/socketcan/trunk/test/?rev=877&amp;sc=1
+> writev02 and writev03 can not build for UCLINUX defined but the choosen
+> mechanism is error-prone cause in that case linking libltp.a complained about
+> missing TCID symbol.
 > 
-> Dear Subrata,
-> 
-> attached you'll find a major update for the LTP tests dealing with CAN filters
-> and the CAN frame flow down to the CAN netdevice and vice versa.
-> 
-> The patch removes all the obsolete stuff from the source code directory you
-> originally picked the tests from. I added two new tools that also reside on
-> the referenced SVN:
-> 
-> tst-filter: New filter test tool in *one* programm (easy to use & handle)
-> tst-rcv-own-msgs: Checks the CAN frame flow inside the networking stack
-> 
-> Additionally the virtual CAN driver needs to be loaded with a special
-> commandline option to perform the CAN frame flow test correctly.
-> 
-> The tests & the scripts are much clearer to me now. If it meets your
-> requirements consider to apply this patch to the LTP repository.
+> Remove the old way to skip this test for UCLINUX and choose an makefile based
+> method instead.
 
-Could you pretty please create signed patch(es) (git could create them
-for you) so we could commit them into LTP repository.
+Commited, thanks.
 
 -- 
 Cyril Hrubis
