@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <czhang@redhat.com>) id 1QnD3V-0007hP-L1
-	for ltp-list@lists.sourceforge.net; Sat, 30 Jul 2011 17:10:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QnD3U-0005VG-L0
-	for ltp-list@lists.sourceforge.net; Sat, 30 Jul 2011 17:10:29 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6UHAMtd020851
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Sat, 30 Jul 2011 13:10:22 -0400
-From: Caspar Zhang <czhang@redhat.com>
-Date: Sun, 31 Jul 2011 01:09:49 +0800
-Message-Id: <235cb4cd6481ca25245b6b6d5ed988736d8a2991.1312043382.git.czhang@redhat.com>
-In-Reply-To: <145b91763d3c2670cd736cc7fa3072c9a6db219a.1312043382.git.czhang@redhat.com>
-References: <145b91763d3c2670cd736cc7fa3072c9a6db219a.1312043382.git.czhang@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.6"
-Subject: [LTP] [PATCH] [mm] vma01: new testcase
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1QgdVY-0006IT-IZ
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jul 2011 14:00:16 +0000
+Received: from eu1sys200aog119.obsmtp.com ([207.126.144.147])
+	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QgdVX-0005kd-35
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jul 2011 14:00:16 +0000
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3A820D3
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 12 Jul 2011 14:00:02 +0000 (GMT)
+Received: from mail7.sgp.st.com (unknown [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D2FD61D4F
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 12 Jul 2011 14:00:02 +0000 (GMT)
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Date: Tue, 12 Jul 2011 15:58:34 +0200
+Message-Id: <1310479114-19326-1-git-send-email-carmelo.amoroso@st.com>
+Subject: [LTP] [PATCH] shmctl01: fix misaligned access
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,284 +29,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-vma01 - test not merging a VMA which cloned from parent process
-
-This program is used for testing the following upstream commit:
-965f55dea0e331152fa53941a51e4e16f9f06fae
-
-The cloned VMA shares the anon_vma lock with the parent process's
-VMA. If we do the merge, more vmas (even the new range is only
-for current process) use the perent process's anon_vma lock. This
-introduces scalability issues. find_mergeable_anon_vma() already
-considers this case.
-
-This test program clones VMA and checks /proc/$pid/maps file, on
-an unpatched kernel, there is a single 6*ps VMA for the child
-like this:
-
-7fee32989000-7fee3298f000 -w-p 00000000 00:00 0
-
-On a patched kernel, there are two 3*ps VMAs like this:
-
-7f55bbd47000-7f55bbd4a000 -w-p 00000000 00:00 0
-7f55bbd4a000-7f55bbd4d000 -w-p 00000000 00:00 0
-
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
- runtest/mm                        |    2 +
- testcases/kernel/mem/vma/Makefile |   24 ++++++
- testcases/kernel/mem/vma/vma01.c  |  162 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 188 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/mem/vma/Makefile
- create mode 100644 testcases/kernel/mem/vma/vma01.c
-
-
---------------1.7.6
-Content-Type: text/x-patch; name="0002-mm-vma01-new-testcase.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment; filename="0002-mm-vma01-new-testcase.patch"
-
-diff --git a/runtest/mm b/runtest/mm
-index df7d0cb..5b08d15 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -80,3 +80,5 @@ oom03 oom03
- oom04 oom04
- 
- thp01 thp01 -I 120
-+
-+vma01 vma01
-diff --git a/testcases/kernel/mem/vma/Makefile b/testcases/kernel/mem/vma/Makefile
-new file mode 100644
-index 0000000..6b347c4
---- /dev/null
-+++ b/testcases/kernel/mem/vma/Makefile
-@@ -0,0 +1,24 @@
-+#
-+#  Copyright (C) 2011  Red Hat, Inc.
-+#
-+#  This program is free software; you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or (at
-+#  your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful, but
-+#  WITHOUT ANY WARRANTY; without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+#  General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program; if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+#  02110-1301, USA.
-+#
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
-new file mode 100644
-index 0000000..6dd6eba
---- /dev/null
-+++ b/testcases/kernel/mem/vma/vma01.c
-@@ -0,0 +1,162 @@
-+/*
-+ * vma01 - test not merging a VMA which cloned from parent process
-+ *
-+ * This program is used for testing the following upstream commit:
-+ * 965f55dea0e331152fa53941a51e4e16f9f06fae
-+ *
-+ * The cloned VMA shares the anon_vma lock with the parent process's
-+ * VMA. If we do the merge, more vmas (even the new range is only
-+ * for current process) use the perent process's anon_vma lock. This
-+ * introduces scalability issues. find_mergeable_anon_vma() already
-+ * considers this case.
-+ *
-+ * This test program clones VMA and checks /proc/$pid/maps file, on
-+ * an unpatched kernel, there is a single 6*ps VMA for the child
-+ * like this:
-+ *
-+ * 7fee32989000-7fee3298f000 -w-p 00000000 00:00 0
-+ *
-+ * On a patched kernel, there are two 3*ps VMAs like this:
-+ *
-+ * 7f55bbd47000-7f55bbd4a000 -w-p 00000000 00:00 0
-+ * 7f55bbd4a000-7f55bbd4d000 -w-p 00000000 00:00 0
-+ *
-+ * Copyright (C) 2011  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/types.h>
-+#include <sys/mman.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "vma01";
-+int TST_TOTAL = 1;
-+
-+static void check_vma(void);
-+static void *get_end_addr(void *addr_s, char *mapfile);
-+static void setup(void);
-+static void cleanup(void);
-+
-+static unsigned long ps;
-+
-+int main(int argc, char **argv)
-+{
-+	char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	ps = sysconf(_SC_PAGE_SIZE);
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+
-+		check_vma();
-+	}
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void check_vma(void)
-+{
-+	pid_t pid;
-+	void *t, *u, *v, *x, *y;
-+	char mapfile[BUFSIZ];
-+
-+	t = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
-+	if (t == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+	tst_resm(TINFO, "t = %p", t);
-+	memset(t, 1, ps);
-+	v = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
-+	if (v == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+	tst_resm(TINFO, "v = %p", v);
-+	memset(v, 2, ps);
-+
-+	switch (pid = fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		sprintf(mapfile, "/proc/%u/maps", getpid());
-+		memset(t, 2, ps);
-+		u = mmap(t + 3*ps, 3*ps, PROT_WRITE,
-+			    MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
-+		if (u == MAP_FAILED)
-+			tst_brkm(TBROK|TERRNO, NULL, "mmap");
-+		tst_resm(TINFO, "u = %p", u);
-+		memset(u, 2, 4096);
-+		x = get_end_addr(u, mapfile);
-+		if (x == u + 6*ps)
-+			tst_resm(TFAIL, "A single 6*ps VMA found.");
-+		else if (x == u + 3*ps) {
-+			y = get_end_addr(x, mapfile);
-+			if (y == x + 3*ps)
-+				tst_resm(TPASS, "two 3*ps VMAs found.");
-+		} else
-+			tst_brkm(TBROK, cleanup, "unexpected VMA found.");
-+		exit(0);
-+	default:
-+		break;
-+	}
-+
-+}
-+
-+static void *get_end_addr(void *addr_s, char *mapfile)
-+{
-+	FILE *fp;
-+	void *s, *t;
-+	char buf[BUFSIZ];
-+
-+	fp = fopen(mapfile, "r+");
-+	if (fp == NULL)
-+		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
-+	while (fgets(buf, BUFSIZ, fp) != NULL) {
-+		fscanf(fp, "%p-%p", &s, &t);
-+		if (addr_s == s) {
-+			tst_resm(TINFO, "s = %p, t = %p", s, t);
-+			fclose(fp);
-+			return t;
-+		}
-+	}
-+	fclose(fp);
-+	tst_brkm(TBROK, cleanup, "no matched s = %p found.", addr_s);
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
-
---------------1.7.6
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+On architecture that are not able to handle in hardware
+misaligned access, it could cause the application to be killed by a SIGBUS
+
+So, the following simple assignment
+
+void *test;
+*(int *)test = stat_i;
+
+causes on SH4 the following error:
+
+Unaligned userspace access in "shmctl01" pid=8547 pc=0x0040221a ins=0x400b
+Sending SIGBUS to "shmctl01" due to unaligned access (PC 40221a PR 40221e)
+
+Using a 'memcpy' is safe.
+
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+---
+ testcases/kernel/syscalls/ipc/shmctl/shmctl01.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+index a37599a..38dcc12 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+@@ -325,7 +325,7 @@ void do_child()
+ 		tst_brkm(TBROK, cleanup, "sync_pipe_close failed");
+ 
+ 	/* do an assignement for fun */
+-	*(int *)test = stat_i;
++	memcpy(test, &stat_i, sizeof(stat_i));
+ 
+ 	/* pause until we get a signal from stat_cleanup() */
+ 	rval = pause();
+-- 
+1.7.4.4
+
 
 ------------------------------------------------------------------------------
-Got Input?   Slashdot Needs You.
-Take our quick survey online.  Come on, we don't ask for help often.
-Plus, you'll get a chance to win $100 to spend on ThinkGeek.
-http://p.sf.net/sfu/slashdot-survey
---------------1.7.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.6--
-
-
-
