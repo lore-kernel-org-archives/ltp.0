@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <francesco.rundo@st.com>) id 1Qh0Q7-00085X-DZ
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jul 2011 14:28:11 +0000
-Received: from eu1sys200aog118.obsmtp.com ([207.126.144.145])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qh0Q3-0001KP-In
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jul 2011 14:28:11 +0000
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 321CC1AD
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Jul 2011 14:27:59 +0000 (GMT)
-Received: from mail7.sgp.st.com (unknown [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AE6D146A7
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Jul 2011 14:27:59 +0000 (GMT)
-From: Francesco RUNDO <francesco.rundo@st.com>
-Date: Wed, 13 Jul 2011 16:27:31 +0200
-Message-Id: <1310567251-20343-1-git-send-email-no>
-Subject: [LTP] [PATCH] kill05: Added proper return code (TPASS) if testcase
-	exit without errors.
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qh22J-0000Po-2o
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jul 2011 16:11:43 +0000
+Date: Wed, 13 Jul 2011 18:13:14 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110713161313.GC2317@saboteur.suse.cz>
+References: <1310019434-16203-1-git-send-email-gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1310019434-16203-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] clock_getcpuclockid:5-1.c:make setgid before
+	setuid
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,42 +22,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Francesco Rundo <francesco.rundo@st.com>
+Hi!
+> Call setgid() before setuid(), because that when setuid()
+> set this process' uid to an unprivileged one, then it can't
+> do the setgid() operation.
 
-	Added kill05 TPASS exit code.
+This is for sure a better order, but the test itself is broken even more
+as POSIX states that whether process has permission to get cpu clock id
+is implementation defined (on linux this will always succeed). So the
+test should return UNRESOLVED rather than FAIL (I've fixed that in
+another patch). 
 
-The testcase didn't return any retrun code in case of 
-exit without errors i.e. in case of EPERM is correctly 
-raised by the system.
-
-Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
----
- testcases/kernel/syscalls/kill/kill05.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
-index fe34788..23fac0a 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -126,6 +126,8 @@ int main(int ac, char **av)
- 		tst_resm(TBROK|TERRNO, "waitpid failed");
- 	else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
- 		tst_resm(TFAIL, "child exited abnormally");
-+	else
-+		tst_resm(TPASS, "received expected errno(EPERM)");
- 	cleanup();
- 	tst_exit();
- }
 -- 
-1.7.4.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 AppSumo Presents a FREE Video for the SourceForge Community by Eric 
