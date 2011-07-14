@@ -1,29 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1QkApQ-0005yn-5s
-	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:11:24 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QkApO-00037d-QS
-	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:11:24 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6M8BHLD018887
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:11:17 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id p6M8BBB1009146
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:11:12 -0400
-Message-ID: <4E29309F.2050307@redhat.com>
-Date: Fri, 22 Jul 2011 10:11:11 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QhImV-0000xr-9S
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 10:04:31 +0000
+Date: Thu, 14 Jul 2011 12:06:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110714100602.GA1261@saboteur.suse.cz>
+References: <1310608703-4814-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050502090809010100070207"
-Subject: [LTP] [PATCH 6/6 v3] cgroups/cgroup_regression_test: fix test_*.sh
- trap in loop
+Content-Disposition: inline
+In-Reply-To: <1310608703-4814-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] posix:clock_getcpuclockid:6-1.c:change the
+ argument -1 to -2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,192 +22,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------050502090809010100070207
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-test_*.sh scripts use trap in tight loop, which may cause bash
-to miss signal, see:
-https://bugzilla.redhat.com/show_bug.cgi?id=695656
-
-Move trap outside loop to avoid it.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-   testcases/kernel/controllers/cgroup/test_10_1.sh |    3 +--
-   testcases/kernel/controllers/cgroup/test_10_2.sh |    3 +--
-   testcases/kernel/controllers/cgroup/test_3_1.sh  |    3 +--
-   testcases/kernel/controllers/cgroup/test_3_2.sh  |    3 +--
-   testcases/kernel/controllers/cgroup/test_6_1.sh  |    3 +--
-   testcases/kernel/controllers/cgroup/test_9_1.sh  |    3 +--
-   testcases/kernel/controllers/cgroup/test_9_2.sh  |    3 +--
-   7 files changed, 7 insertions(+), 14 deletions(-)
-
-
-
-
---------------050502090809010100070207
-Content-Type: text/x-patch;
-	name="0006-cgroups-cgroup_regression_test-fix-test_-.sh-trap-in.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0006-cgroups-cgroup_regression_test-fix-test_-.sh-trap-in.pa";
-	filename*1="tch"
-
-diff --git a/testcases/kernel/controllers/cgroup/test_10_1.sh b/testcases/kernel/controllers/cgroup/test_10_1.sh
-index 6284722..ffa0d5f 100755
---- a/testcases/kernel/controllers/cgroup/test_10_1.sh
-+++ b/testcases/kernel/controllers/cgroup/test_10_1.sh
-@@ -22,13 +22,12 @@
- ##                                                                            ##
- ################################################################################
- 
-+trap exit SIGUSR1
- for ((; ;))
- {
- 	mount -t cgroup xxx cgroup/ > /dev/null 2>&1
- 	mkdir cgroup/0 > /dev/null 2>&1
- 	rmdir cgroup/0 > /dev/null 2>&1
- 	umount cgroup/ > /dev/null 2>&1
--
--	trap exit SIGUSR1
- }
- 
-diff --git a/testcases/kernel/controllers/cgroup/test_10_2.sh b/testcases/kernel/controllers/cgroup/test_10_2.sh
-index 82b91e3..f811bbd 100755
---- a/testcases/kernel/controllers/cgroup/test_10_2.sh
-+++ b/testcases/kernel/controllers/cgroup/test_10_2.sh
-@@ -22,11 +22,10 @@
- ##                                                                            ##
- ################################################################################
- 
-+trap exit SIGUSR1
- for ((; ;))
- {
- 	mount -t cgroup xxx cgroup/ > /dev/null 2>&1
- 	umount cgroup/ > /dev/null 2>&1
--
--	trap exit SIGUSR1
- }
- 
-diff --git a/testcases/kernel/controllers/cgroup/test_3_1.sh b/testcases/kernel/controllers/cgroup/test_3_1.sh
-index 86627d4..507a2c4 100755
---- a/testcases/kernel/controllers/cgroup/test_3_1.sh
-+++ b/testcases/kernel/controllers/cgroup/test_3_1.sh
-@@ -22,11 +22,10 @@
- ##                                                                            ##
- ################################################################################
- 
-+trap exit SIGUSR1
- for ((; ;))
- {
- 	mkdir cgroup/0
- 	rmdir cgroup/0
--
--	trap exit SIGUSR1
- }
- 
-diff --git a/testcases/kernel/controllers/cgroup/test_3_2.sh b/testcases/kernel/controllers/cgroup/test_3_2.sh
-index c942969..9f83d9d 100755
---- a/testcases/kernel/controllers/cgroup/test_3_2.sh
-+++ b/testcases/kernel/controllers/cgroup/test_3_2.sh
-@@ -22,10 +22,9 @@
- ##                                                                            ##
- ################################################################################
- 
-+trap exit SIGUSR1
- for ((; ;))
- {
- 	cat /proc/sched_debug > /dev/null
--
--	trap exit SIGUSR1
- }
- 
-diff --git a/testcases/kernel/controllers/cgroup/test_6_1.sh b/testcases/kernel/controllers/cgroup/test_6_1.sh
-index ff70677..e91e794 100755
---- a/testcases/kernel/controllers/cgroup/test_6_1.sh
-+++ b/testcases/kernel/controllers/cgroup/test_6_1.sh
-@@ -22,12 +22,11 @@
- ##                                                                            ##
- ################################################################################
- 
-+trap exit SIGUSR1
- for ((; ;))
- {
- 	mount -t cgroup -o ns xxx cgroup/ > /dev/null 2>&1
- 	rmdir cgroup/[1-9]* > /dev/null 2>&1
- 	umount cgroup/ > /dev/null 2>&1
--
--	trap exit SIGUSR1
- }
- 
-diff --git a/testcases/kernel/controllers/cgroup/test_9_1.sh b/testcases/kernel/controllers/cgroup/test_9_1.sh
-index 24a1524..c6e8f6f 100755
---- a/testcases/kernel/controllers/cgroup/test_9_1.sh
-+++ b/testcases/kernel/controllers/cgroup/test_9_1.sh
-@@ -22,13 +22,12 @@
- ##                                                                            ##
- ################################################################################
- 
-+trap exit SIGUSR1
- for ((; ;))
- {
- #	mount -t cgroup -o debug xxx cgroup/ > /dev/null 2>&1
- 	mount -t cgroup xxx cgroup/ > /dev/null 2>&1
- 	cat cgroup/release_agent > /dev/null 2>&1
- 	umount cgroup/ > /dev/null 2>&1
--
--	trap exit SIGUSR1
- }
- 
-diff --git a/testcases/kernel/controllers/cgroup/test_9_2.sh b/testcases/kernel/controllers/cgroup/test_9_2.sh
-index 654df4d..f8e1c61 100755
---- a/testcases/kernel/controllers/cgroup/test_9_2.sh
-+++ b/testcases/kernel/controllers/cgroup/test_9_2.sh
-@@ -22,12 +22,11 @@
- ##                                                                            ##
- ################################################################################
- 
-+trap exit SIGUSR1
- for ((; ;))
- {
- #	mount -t cgroup -o debug xxx cgroup/ > /dev/null 2>&1
- 	mount -t cgroup xxx cgroup/ > /dev/null 2>&1
- 	umount cgroup/ > /dev/null 2>&1
--
--	trap exit SIGUSR1
- }
- 
-
-
-
---------------050502090809010100070207
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> ---
+>  .../interfaces/clock_getcpuclockid/6-1.c           |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
+> index 380e2a4..0371c41 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
+> @@ -24,7 +24,7 @@ int main(int argc, char *argv[])
+>  #else
+>  	clockid_t clockid_1;
+>  
+> -	if (clock_getcpuclockid(-1, &clockid_1) == 0) {
+> +	if (clock_getcpuclockid(-2, &clockid_1) == 0) {
+>  		printf("clock_getcpuclockid(-1, ..) failed\n");
+
+You forgotten to update the message (it's still -1 there) and I would
+change it to something less missleading like:
+
+"clock_getcpuclockid(-2, ..) succeeded unexpectedly\n"
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-10 Tips for Better Web Security
-Learn 10 ways to better secure your business today. Topics covered include:
-Web security, SSL, hacker attacks & Denial of Service (DoS), private keys,
-security Microsoft Exchange, secure Instant Messaging, and much more.
-http://www.accelacomm.com/jaw/sfnl/114/51426210/
---------------050502090809010100070207
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+AppSumo Presents a FREE Video for the SourceForge Community by Eric 
+Ries, the creator of the Lean Startup Methodology on "Lean Startup 
+Secrets Revealed." This video shows you how to validate your ideas, 
+optimize your ideas and identify your business strategy.
+http://p.sf.net/sfu/appsumosfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------050502090809010100070207--
-
