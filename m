@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Qge6x-0003kw-DG
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jul 2011 14:38:55 +0000
-Received: from mail-vw0-f47.google.com ([209.85.212.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Qge6w-0006Q2-GK
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jul 2011 14:38:55 +0000
-Received: by vws2 with SMTP id 2so5196405vws.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Jul 2011 07:38:49 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QhLAz-0008Kk-Rc
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 12:37:57 +0000
+Date: Thu, 14 Jul 2011 14:39:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110714123930.GB4811@saboteur.suse.cz>
+References: <1310542250-1294-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20110714122308.GA5300@saboteur.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <4e1c09b0.04af2a0a.2ccb.ffffab1eSMTPIN_ADDED@mx.google.com>
-References: <4e1c09b0.04af2a0a.2ccb.ffffab1eSMTPIN_ADDED@mx.google.com>
-Date: Tue, 12 Jul 2011 07:38:48 -0700
-Message-ID: <CAGH67wQ4knG70q-bpPV0fmTOsmf9ciyPN-k65M=ysMk1o5_uFg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Added proper return code (TPASS) in case of exit
- without errors.
+Content-Disposition: inline
+In-Reply-To: <20110714122308.GA5300@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH] opsix-test:sigaltstack:9-1.c:fix the wrong file
+ path
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,32 +26,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Jul 12, 2011 at 1:45 AM, Francesco RUNDO <francesco.rundo@st.com> wrote:
-> From: Francesco Rundo <francesco.rundo@st.com>
->
-> The "kill05" testcase checks if EPERM is correctly raised by the system.
-> The testcase manages the error exit codes correctly while it didn't return
-> any exit code in case of no errors occured i.e. the system has raised EPERM.
-> The correct exit-code "TPASS" has been added in case of the test works fine without
-> errors.
->
-> Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-> Reviewed-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+Hi!
+> > -	if (execl("conformance/interfaces/sigaltstack/9-buildonly.test", "9-buildonly.test", NULL) == -1) {
+> > +	if (execl("./9.run-test", "9.run-test", NULL) == -1) {
+> >  		perror("Unexpected error while attempting to setup test pre-conditions");
+> 
+> This one is more tricky too (mind the situation when the test is
+> installed). I need to figure out how how correctly propagate the path to
+> the test helper binary.
 
-    Please properly styleize this; this doesn't conform to Linux
-coding standards..
-Thanks,
--Garrett
+FYI: I just got a patch that incorporates these two tests into one
+     binary eg. the 9-1.c runs itself with "verify" parameter to
+     check the sigaltstack.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+AppSumo Presents a FREE Video for the SourceForge Community by Eric 
+Ries, the creator of the Lean Startup Methodology on "Lean Startup 
+Secrets Revealed." This video shows you how to validate your ideas, 
+optimize your ideas and identify your business strategy.
+http://p.sf.net/sfu/appsumosfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
