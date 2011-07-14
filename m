@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Yi.Zhao@windriver.com>) id 1QmiVT-0005PV-8T
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jul 2011 08:33:19 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QmiVS-0000Gj-1t
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jul 2011 08:33:19 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id p6T8XBr1013993
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 29 Jul 2011 01:33:11 -0700 (PDT)
-From: Yi Zhao <yi.zhao@windriver.com>
-Date: Fri, 29 Jul 2011 16:33:05 +0800
-Message-ID: <1311928385-11522-1-git-send-email-yi.zhao@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QhMQX-0004nF-6B
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 13:58:05 +0000
+Date: Thu, 14 Jul 2011 15:59:37 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110714135937.GA7866@saboteur.suse.cz>
+References: <1310649983-28262-1-git-send-email-n>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] run-all-posix-option-group-tests.sh: Fix a spelling
-	mistake
+Content-Disposition: inline
+In-Reply-To: <1310649983-28262-1-git-send-email-n>
+Subject: Re: [LTP] [PATCH V2] kill05: Added tst_resm() to print the proper
+ error code(TPASS) if test exits with EPERM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,37 +25,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Francesco RUNDO <francesco.rundo@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The script can not work due to this mistake.
+Hi!
+> Added "tst_resm()" call to print the proper LTP error code(TPASS)
+> in case of the testcase exit with expected result.
+> 
+> The testcase didn't call "tst_resm()" in case of 
+> exit without error i.e. after that EPERM is correctly raised.
+> The proper LTP error code, in that case, is TPASS as EPERM
+> is the expected result.
 
-Signed-off-by: Yi Zhao <yi.zhao@windriver.com>
----
- .../bin/run-all-posix-option-group-tests.sh        |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Commited, thanks.
 
-diff --git a/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh b/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
-index a9b2c05..39ff989 100755
---- a/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
-+++ b/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
-@@ -8,7 +8,7 @@
- #
- 
- FAILED=0
--RPOG_SCRIPT="$(dirname "$0")/run-posix-option-group-test.sh"
-+PROG_SCRIPT="$(dirname "$0")/run-posix-option-group-test.sh"
- 
- for option_group in AIO MEM MSG SEM SIG THR TMR TPS; do
- 	if ! $PROG_SCRIPT $option_group; then
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Got Input?   Slashdot Needs You.
-Take our quick survey online.  Come on, we don't ask for help often.
-Plus, you'll get a chance to win $100 to spend on ThinkGeek.
-http://p.sf.net/sfu/slashdot-survey
+AppSumo Presents a FREE Video for the SourceForge Community by Eric 
+Ries, the creator of the Lean Startup Methodology on "Lean Startup 
+Secrets Revealed." This video shows you how to validate your ideas, 
+optimize your ideas and identify your business strategy.
+http://p.sf.net/sfu/appsumosfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
