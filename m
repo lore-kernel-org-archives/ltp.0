@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QgJaZ-0005wA-Cj
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 16:44:07 +0000
-Date: Mon, 11 Jul 2011 18:45:27 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qhe8g-0005U8-JZ
+	for ltp-list@lists.sourceforge.net; Fri, 15 Jul 2011 08:52:50 +0000
+Date: Fri, 15 Jul 2011 10:54:26 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110711164527.GC31575@saboteur.suse.cz>
-References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
-	<1309414787-2022-7-git-send-email-yanpai.chen@gmail.com>
+Message-ID: <20110715085426.GA4470@saboteur.suse.cz>
+References: <1310608703-4814-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20110714100602.GA1261@saboteur.suse.cz>
+	<4E1F8257.3020001@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1309414787-2022-7-git-send-email-yanpai.chen@gmail.com>
-Subject: Re: [LTP] [PATCH 7/7] testcases: syscalls: close file descriptors
- before unlinking
+In-Reply-To: <4E1F8257.3020001@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] posix:clock_getcpuclockid:6-1.c:change the
+ argument -1 to -2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,29 +27,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Chen <yanpai.chen@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Ensure file descriptors are closed before unlinking them, or we cannot
-> remove the generated directories after these tests. The leftover
-> directories may cause tests failed in latter runs once the directory
-> names are hit.
+> >>Signed-off-by: Wanlong Gao<gaowanlong@cn.fujitsu.com>
+> >>---
+> >>  .../interfaces/clock_getcpuclockid/6-1.c           |    4 ++--
+> >>  1 files changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >>diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
+> >>index 380e2a4..0371c41 100644
+> >>--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
+> >>+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
+> >>@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
+> >>  #else
+> >>  	clockid_t clockid_1;
+> >>
+> >>-	if (clock_getcpuclockid(-1,&clockid_1) == 0) {
+> >>+	if (clock_getcpuclockid(-2,&clockid_1) == 0) {
+> >>  		printf("clock_getcpuclockid(-1, ..) failed\n");
+> >
+> >You forgotten to update the message (it's still -1 there) and I would
+> >change it to something less missleading like:
+> >
+> >"clock_getcpuclockid(-2, ..) succeeded unexpectedly\n"
+> I'm sorry for this.
 
-I fail to see the problem here (which doesn't mean that there isn't
-any). If you do unlink() of file, it's removed from filesystem tree
-regardless if it's open or not.
+No need to be sorry, just send updated patch :).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+AppSumo Presents a FREE Video for the SourceForge Community by Eric 
+Ries, the creator of the Lean Startup Methodology on "Lean Startup 
+Secrets Revealed." This video shows you how to validate your ideas, 
+optimize your ideas and identify your business strategy.
+http://p.sf.net/sfu/appsumosfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
