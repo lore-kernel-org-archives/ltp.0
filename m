@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QjwWz-0000CM-NT
-	for ltp-list@lists.sourceforge.net; Thu, 21 Jul 2011 16:55:25 +0000
-Date: Thu, 21 Jul 2011 18:57:37 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QjWCo-0005Ve-D4
+	for ltp-list@lists.sourceforge.net; Wed, 20 Jul 2011 12:48:50 +0000
+Date: Wed, 20 Jul 2011 14:50:50 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110721165737.GB7179@saboteur.suse.cz>
-References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
-	<1309414787-2022-3-git-send-email-yanpai.chen@gmail.com>
+Message-ID: <20110720125050.GA29029@saboteur.suse.cz>
+References: <4E26CA55.7010308@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1309414787-2022-3-git-send-email-yanpai.chen@gmail.com>
-Subject: Re: [LTP] [PATCH 3/7] testcases: controllers: fix wrong cpu number
- calculated
+In-Reply-To: <4E26CA55.7010308@linux.vnet.ibm.com>
+Subject: Re: [LTP] CVS gone?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,70 +24,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Chen <yanpai.chen@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
+To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> From: Andrew Chen <ypchen@faraday-tech.com>
+> when I try to access the LTP CVS repository, I'm getting timeouts 
+> (command-line client) and "root not found" messages (web interface). Is 
+> this a temporary error or a deliberate change by the project admins?
 > 
-> Only "Processor" will be showed up in /proc/cpuinfo for ARM non-SMP CPUs.
-> Ignore case to fix this issue.
+> While I do realize that the LTP test suite has been converted to GIT a 
+> while ago, there are some related repositories (such as lcov, 
+> gcov-kernel, gcov-kdump, etc.) with no GIT replacement which are 
+> currently no longer accessible.
 > 
-> Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
-> ---
->  .../kernel/controllers/cpuacct/run_cpuacct_test.sh |    2 +-
->  .../controllers/cpuctl/run_cpuctl_latency_test.sh  |    4 ++--
->  .../controllers/cpuctl/run_cpuctl_stress_test.sh   |    2 +-
->  .../kernel/controllers/cpuctl/run_cpuctl_test.sh   |    2 +-
->  4 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/ltp-full-20101031/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh b/ltp-full-20101031/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
-> index 38b2ab6..332a5ae 100755
-> --- a/ltp-full-20101031/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
-> +++ b/ltp-full-20101031/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
-> @@ -68,7 +68,7 @@ cleanup
->  
->  mes="CPU Accounting Controller"
->  cg_path="/dev/cpuacct";
-> -num_online_cpus=`cat /proc/cpuinfo | grep -w processor | wc -l`
-> +num_online_cpus=`cat /proc/cpuinfo | grep -w -i processor | wc -l`
->  
->  #Function to create tasks equal to num_online_cpus.
->  nr_tasks ()
-> diff --git a/ltp-full-20101031/testcases/kernel/controllers/cpuctl/run_cpuctl_latency_test.sh b/ltp-full-20101031/testcases/kernel/controllers/cpuctl/run_cpuctl_latency_test.sh
-> index 51d6df0..d75d356 100755
-> --- a/ltp-full-20101031/testcases/kernel/controllers/cpuctl/run_cpuctl_latency_test.sh
-> +++ b/ltp-full-20101031/testcases/kernel/controllers/cpuctl/run_cpuctl_latency_test.sh
-> @@ -99,7 +99,7 @@ calc_allowed_latency()
->  		sys_latency=`cat /proc/sys/kernel/sched_wakeup_granularity_ns`
->  		allowed_latency=`expr $sys_latency / 1000` # in microseconds
->  	else
-> -		num_cpus=`cat /proc/cpuinfo | grep -w processor | wc -l`
-> +		num_cpus=`cat /proc/cpuinfo | grep -w -i processor | wc -l`
->  		log2 $num_cpus;
->  		ln_num_cpus=$?
->  		ln_num_cpus=`expr $ln_num_cpus + 1`
-> @@ -170,7 +170,7 @@ PWD=`pwd`
->  	"2")	# With group scheduling
->  		echo TINFO "Running cpuctl Latency Test 2"
->  
-> -		NUM_CPUS=`cat /proc/cpuinfo | grep -w processor | wc -l`;
-> +		NUM_CPUS=`cat /proc/cpuinfo | grep -w -i processor | wc -l`;
->  		get_num_groups;	# NUM_GROUPS is set now
->  		do_setup;
+> Any insight in this matter is greatly appreciated.
 
-Same for this one.
+Hmm, the web interface shows "An Exception Has Occurred" while there is
+still link to LTP CVS from the project page. I would contact the
+sourceforge guys as this is most likely problem on their side.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-5 Ways to Improve & Secure Unified Communications
-Unified Communications promises greater efficiencies for business. UC can 
-improve internal communications as well as offer faster, more efficient ways
-to interact with customers and streamline customer service. Learn more!
-http://www.accelacomm.com/jaw/sfnl/114/51426253/
+10 Tips for Better Web Security
+Learn 10 ways to better secure your business today. Topics covered include:
+Web security, SSL, hacker attacks & Denial of Service (DoS), private keys,
+security Microsoft Exchange, secure Instant Messaging, and much more.
+http://www.accelacomm.com/jaw/sfnl/114/51426210/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
