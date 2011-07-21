@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qh1Pr-0002sf-Q0
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jul 2011 15:31:59 +0000
-Date: Wed, 13 Jul 2011 17:33:27 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QjwLH-00085c-1w
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jul 2011 16:43:19 +0000
+Date: Thu, 21 Jul 2011 18:45:30 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110713153327.GA4772@saboteur.suse.cz>
-References: <1310567251-20343-1-git-send-email-no>
+Message-ID: <20110721164530.GA6809@saboteur.suse.cz>
+References: <4E257897.1080707@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1310567251-20343-1-git-send-email-no>
-Subject: Re: [LTP] [PATCH] kill05: Added proper return code (TPASS) if
- testcase exit without errors.
+In-Reply-To: <4E257897.1080707@redhat.com>
+Subject: Re: [LTP] [PATCH v2] cgroups/cgroup_regression_test: fix sporadic
+ failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,30 +25,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> 	Added kill05 TPASS exit code.
+> This patch fixes some failures caused by missing cleanup,
+> leaving groups behind after some stress tests.
+> Some stress tests failed to complete upon receiving SIGUSR1.
 > 
-> The testcase didn't return any retrun code in case of 
-> exit without errors i.e. in case of EPERM is correctly 
-> raised by the system.
+> 1. dmesg can rotate and number of found bugs can actually go down
+> clear the buffer before test to avoid this
+> 
+> 2. test_5: test should mount 2 subsystems, but mount command
+> says "$subsys" instead of "$subsys2"
+> 
+> 3. test_6: test may leave groups behind, fix rmdir
+> to match test_6_1.sh
+> 
+> 4. test_7_2: mounts whole cgroup not $subsys
+> 
+> 5. test_10: can leave cgroups umounted before cleanup
+> make sure cgroups are mounted before doing cleanup
+> 
+> 6. test_*.sh scripts use trap in loop, which may cause bash
+> to miss signal, see
+> https://bugzilla.redhat.com/show_bug.cgi?id=695656
+> move trap outside loop to avoid it
 
-That shouldn't be a problem. The source in lib/tst_res.c initalizes the
-return value to 0 (which is equal to TPASS) so when you call tst_exit()
-it returns TPASS unless the tests reports failure.
+I know these are mostly trivial changes, but even that could you split
+them into several patches (they are easier to review, revert if
+needed...)
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-AppSumo Presents a FREE Video for the SourceForge Community by Eric 
-Ries, the creator of the Lean Startup Methodology on "Lean Startup 
-Secrets Revealed." This video shows you how to validate your ideas, 
-optimize your ideas and identify your business strategy.
-http://p.sf.net/sfu/appsumosfdev2dev
+5 Ways to Improve & Secure Unified Communications
+Unified Communications promises greater efficiencies for business. UC can 
+improve internal communications as well as offer faster, more efficient ways
+to interact with customers and streamline customer service. Learn more!
+http://www.accelacomm.com/jaw/sfnl/114/51426253/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
