@@ -1,18 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QhImV-0000xr-9S
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 10:04:31 +0000
-Date: Thu, 14 Jul 2011 12:06:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110714100602.GA1261@saboteur.suse.cz>
-References: <1310608703-4814-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1QkAoX-0003EI-My
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:29 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QkAoW-0007qd-Tt
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:29 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6M8ANV3018713
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:23 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id p6M8AMmJ008931
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:22 -0400
+Message-ID: <4E29306D.2000307@redhat.com>
+Date: Fri, 22 Jul 2011 10:10:21 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1310608703-4814-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] posix:clock_getcpuclockid:6-1.c:change the
- argument -1 to -2
+Content-Type: multipart/mixed; boundary="------------030908020508050600090700"
+Subject: [LTP] [PATCH 2/6 v3] cgroups/cgroup_regression_test: fix test_5
+	mount typo
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,46 +33,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  .../interfaces/clock_getcpuclockid/6-1.c           |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
-> index 380e2a4..0371c41 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/6-1.c
-> @@ -24,7 +24,7 @@ int main(int argc, char *argv[])
->  #else
->  	clockid_t clockid_1;
->  
-> -	if (clock_getcpuclockid(-1, &clockid_1) == 0) {
-> +	if (clock_getcpuclockid(-2, &clockid_1) == 0) {
->  		printf("clock_getcpuclockid(-1, ..) failed\n");
+This is a multi-part message in MIME format.
+--------------030908020508050600090700
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-You forgotten to update the message (it's still -1 there) and I would
-change it to something less missleading like:
 
-"clock_getcpuclockid(-2, ..) succeeded unexpectedly\n"
+test_5 should mount 2 subsystems, but mount command has typo,
+it says "$subsys" instead of "$subsys2"
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+   .../controllers/cgroup/cgroup_regression_test.sh   |    2 +-
+   1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+
+
+--------------030908020508050600090700
+Content-Type: text/x-patch;
+	name="0002-cgroups-cgroup_regression_test-fix-test_5-mount-typo.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0002-cgroups-cgroup_regression_test-fix-test_5-mount-typo.pa";
+	filename*1="tch"
+
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index 5615053..db903d5 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -257,7 +257,7 @@ test_5()
+ 	subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
+ 	subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
+ 
+-	mount -t cgroup -o $subsys1,$subsys xxx cgroup/
++	mount -t cgroup -o $subsys1,$subsys2 xxx cgroup/
+ 	if [ $? -ne 0 ]; then
+ 		tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
+ 		failed=1
+
+
+
+--------------030908020508050600090700
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-AppSumo Presents a FREE Video for the SourceForge Community by Eric 
-Ries, the creator of the Lean Startup Methodology on "Lean Startup 
-Secrets Revealed." This video shows you how to validate your ideas, 
-optimize your ideas and identify your business strategy.
-http://p.sf.net/sfu/appsumosfdev2dev
+10 Tips for Better Web Security
+Learn 10 ways to better secure your business today. Topics covered include:
+Web security, SSL, hacker attacks & Denial of Service (DoS), private keys,
+security Microsoft Exchange, secure Instant Messaging, and much more.
+http://www.accelacomm.com/jaw/sfnl/114/51426210/
+--------------030908020508050600090700
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030908020508050600090700--
+
