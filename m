@@ -2,17 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QepqI-0007vQ-SE
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jul 2011 14:46:14 +0000
-Date: Thu, 7 Jul 2011 16:47:13 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110707144713.GB17217@saboteur.suse.cz>
-References: <1309875852-3514-1-git-send-email-carmelo.amoroso@st.com>
+	(envelope-from <jstancek@redhat.com>) id 1QkAot-0003G5-Ec
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:51 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QkAos-0004dR-MA
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:51 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6M8AjaO028629
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:45 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id p6M8Aic0016035
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:44 -0400
+Message-ID: <4E293084.1090509@redhat.com>
+Date: Fri, 22 Jul 2011 10:10:44 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1309875852-3514-1-git-send-email-carmelo.amoroso@st.com>
-Subject: Re: [LTP] [PATCH] mq_timedsend01: do not write out of the array
- boundaries.
+Content-Type: multipart/mixed; boundary="------------000809050202010602090508"
+Subject: [LTP] [PATCH 4/6 v3] cgroups/cgroup_regression_test: fix test_7_2
+ failed mount message
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,70 +33,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> When preparing the message to be sent, limit the number of written bytes
-> to the array's size, otherwise it will be detected as a stack smashing attack
-> and the test case will be killed, as from the output below:
-> 
-> <<<test_start>>>
-> tag=mq_timedsend01 stime=948808768
-> cmdline="mq_timedsend01"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> 
-> ... [SNIP] ...
-> 
-> mq_timedsend01    0  TINFO  :  (case04) START
-> EXPECT: return value(ret)=-1 errno=90 (Message too long)
-> RESULT: return value(ret)=-1 errno=90 (Message too long)
-> stack smashing detected: mq_timedsend01 terminated()
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=signaled termination_id=6 corefile=no
-> cutime=0 cstime=2
-> <<<test_end>>>
-> 
-> Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
-> ---
->  .../kernel/syscalls/mq_timedsend/mq_timedsend01.c  |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-> index 63add02..db2b272 100644
-> --- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-> +++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-> @@ -367,7 +367,7 @@ static int do_test(struct test_case *tc)
->  	/*
->  	 * Prepare send message
->  	 */
-> -	for (i = 0; i < tc->len; i++)
-> +	for (i = 0; i < tc->len && i < sizeof(smsg); i++)
->  		smsg[i] = i;
->  
->  	/*
+This is a multi-part message in MIME format.
+--------------000809050202010602090508
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Perhaps increasing the smsg and rmsg array to MAX_MSGSIZE + 1 would be
-more consistend. Commited anyway, thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+test_7_2 mounts whole cgroup not $subsys
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+   .../controllers/cgroup/cgroup_regression_test.sh   |    2 +-
+   1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+
+
+--------------000809050202010602090508
+Content-Type: text/x-patch;
+	name="0004-cgroups-cgroup_regression_test-fix-test_7_2-failed-m.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0004-cgroups-cgroup_regression_test-fix-test_7_2-failed-m.pa";
+	filename*1="tch"
+
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index 1fd3c08..09563ef 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -365,7 +365,7 @@ test_7_2()
+ {
+ 	mount -t cgroup -o none,name=foo cgroup cgroup/
+ 	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "failed to mount $subsys"
++		tst_resm TFAIL "failed to mount cgroup"
+ 		failed=1
+ 		return
+ 	fi
+
+
+
+--------------000809050202010602090508
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+10 Tips for Better Web Security
+Learn 10 ways to better secure your business today. Topics covered include:
+Web security, SSL, hacker attacks & Denial of Service (DoS), private keys,
+security Microsoft Exchange, secure Instant Messaging, and much more.
+http://www.accelacomm.com/jaw/sfnl/114/51426210/
+--------------000809050202010602090508
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------000809050202010602090508--
+
