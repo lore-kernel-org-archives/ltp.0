@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QkG4i-00009v-W6
-	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 13:47:32 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id 97C818A908
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 22 Jul 2011 15:47:25 +0200 (CEST)
-Date: Fri, 22 Jul 2011 15:49:49 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110722134949.GA5869@saboteur.suse.cz>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1QkAoC-0005se-WB
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:09 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QkAoA-0004YO-Om
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:08 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6M8A1Eb018553
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:01 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id p6M8A0im017362
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:00 -0400
+Message-ID: <4E293057.8020908@redhat.com>
+Date: Fri, 22 Jul 2011 10:09:59 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] ltp-aiodio.part2 "kills" slower machines
+Subject: [LTP] [PATCH 0/6 v3] cgroups/cgroup_regression_test fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,19 +36,28 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi!
-When running the LTP on slower machines some ltp-aiodio.part2 testcases
-"kills" the machine as it spawns 512 or 1000 childrens that do I/O.
-Anybody else run in this problem?
 
-I would like to either remove these testcases entirely, change them not
-to spawn that much of childrens or splitting the runtest file into two,
-one containing "light" testcases and the other one for the "stress"
-ones. Any thoughts on this?
+The following patches fix sporadic failures and typos in
+cgroups/cgroup_regression_test and related scripts.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Jan Stancek (6):
+   cgroups/cgroup_regression_test: clear dmesg before test
+   cgroups/cgroup_regression_test: fix test_5 mount typo
+   cgroups/cgroup_regression_test: fix test_6 cleanup
+   cgroups/cgroup_regression_test: fix test_7_2 failed mount message
+   cgroups/cgroup_regression_test: fix test_10 cleanup
+   cgroups/cgroup_regression_test: fix test_*.sh trap in loop
+
+  .../controllers/cgroup/cgroup_regression_test.sh   |   14 +++++++++-----
+  testcases/kernel/controllers/cgroup/test_10_1.sh   |    3 +--
+  testcases/kernel/controllers/cgroup/test_10_2.sh   |    3 +--
+  testcases/kernel/controllers/cgroup/test_3_1.sh    |    3 +--
+  testcases/kernel/controllers/cgroup/test_3_2.sh    |    3 +--
+  testcases/kernel/controllers/cgroup/test_6_1.sh    |    3 +--
+  testcases/kernel/controllers/cgroup/test_9_1.sh    |    3 +--
+  testcases/kernel/controllers/cgroup/test_9_2.sh    |    3 +--
+  8 files changed, 16 insertions(+), 19 deletions(-)
+
 
 ------------------------------------------------------------------------------
 10 Tips for Better Web Security
