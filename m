@@ -1,19 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QgHiU-0007X8-MP
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jul 2011 14:44:10 +0000
-Date: Mon, 11 Jul 2011 16:45:28 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110711144528.GE26246@saboteur.suse.cz>
-References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
-	<1309414787-2022-2-git-send-email-yanpai.chen@gmail.com>
+	(envelope-from <jstancek@redhat.com>) id 1QkAok-0005oH-G3
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:42 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QkAoj-0004cV-Pa
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jul 2011 08:10:42 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6M8AZvf003647
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:36 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id p6M8AY8I008229
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Jul 2011 04:10:35 -0400
+Message-ID: <4E29307A.7080708@redhat.com>
+Date: Fri, 22 Jul 2011 10:10:34 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1309414787-2022-2-git-send-email-yanpai.chen@gmail.com>
-Subject: Re: [LTP] [PATCH 2/7] testcases: cgroup: correct wrong variable
- used in the testscript
+Content-Type: multipart/mixed; boundary="------------000503010806030900040506"
+Subject: [LTP] [PATCH 3/6 v3] cgroups/cgroup_regression_test: fix test_6
+	cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,52 +33,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Chen <yanpai.chen@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> From: Andrew Chen <ypchen@faraday-tech.com>
-> 
-> 
-> Signed-off-by: Andrew Chen <ypchen@faraday-tech.com>
-> ---
->  .../controllers/cgroup/cgroup_regression_test.sh   |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> index 5527afc..c7ce791 100755
-> --- a/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> +++ b/ltp-full-20101031/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> @@ -254,7 +254,7 @@ test_5()
->  	subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
->  	subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
->  
-> -	mount -t cgroup -o $subsys1,$subsys xxx cgroup/
-> +	mount -t cgroup -o $subsys1,$subsys2 xxx cgroup/
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
->  		failed=1
-> -- 
+This is a multi-part message in MIME format.
+--------------000503010806030900040506
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Please don't leave the commit messages empty, even for such change it
-should be something like:
 
-"Fix typo in cgroup_regression_test.sh."
+test may leave groups behind, fix rmdir to match test_6_1.sh
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+   .../controllers/cgroup/cgroup_regression_test.sh   |    2 +-
+   1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+
+
+--------------000503010806030900040506
+Content-Type: text/x-patch;
+	name="0003-cgroups-cgroup_regression_test-fix-test_6-cleanup.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0003-cgroups-cgroup_regression_test-fix-test_6-cleanup.patch"
+
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index db903d5..1fd3c08 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -328,7 +328,7 @@ test_6()
+ 
+ 	# clean up
+ 	mount -t cgroup -o ns xxx cgroup/ > /dev/null 2>&1
+-	rmdir cgroup/[1-9] > /dev/null 2>&1
++	rmdir cgroup/[1-9]* > /dev/null 2>&1
+ 	umount cgroup/
+ }
+ 
+
+
+
+--------------000503010806030900040506
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+10 Tips for Better Web Security
+Learn 10 ways to better secure your business today. Topics covered include:
+Web security, SSL, hacker attacks & Denial of Service (DoS), private keys,
+security Microsoft Exchange, secure Instant Messaging, and much more.
+http://www.accelacomm.com/jaw/sfnl/114/51426210/
+--------------000503010806030900040506
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------000503010806030900040506--
+
