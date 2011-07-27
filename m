@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QmTun-0000Yp-9u
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jul 2011 16:58:29 +0000
-Date: Thu, 28 Jul 2011 19:01:16 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110728170116.GB21916@saboteur.suse.cz>
-References: <4E293064.5020706@redhat.com>
+	(envelope-from <maxin.john@gmail.com>) id 1Qm4j9-0004hh-6R
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jul 2011 14:04:47 +0000
+Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Qm4j5-0000Su-5h
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jul 2011 14:04:47 +0000
+Received: by gxk3 with SMTP id 3so1383329gxk.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 27 Jul 2011 07:04:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4E293064.5020706@redhat.com>
-Subject: Re: [LTP] [PATCH 1/6 v3] cgroups/cgroup_regression_test: clear
- dmesg before test
+In-Reply-To: <260174ADA4D63F4AA543B9C81F2DE712B34F@POCITMSEXMB01.LntUniverse.com>
+References: <260174ADA4D63F4AA543B9C81F2DE712B34F@POCITMSEXMB01.LntUniverse.com>
+Date: Wed, 27 Jul 2011 17:04:37 +0300
+Message-ID: <CAMhs6YzX0srwbYm778ro7o7zLGKZfmpqrRaPUgBTzX+a4arRCQ@mail.gmail.com>
+From: Maxin B John <maxin.john@gmail.com>
+Subject: Re: [LTP] How to test Linux Kernel using LTP on Beagleboard (ARM
+ Cortex-A8 based board)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,50 +31,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: G Rajender <G.Rajender@lnties.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> dmesg can rotate and number of found bugs can actually go down,
-> clear the buffer before test to avoid this
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->   .../controllers/cgroup/cgroup_regression_test.sh   |    3 +++
->   1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> 
-> 
+Hi Rajender,
 
-> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> index 878f91a..5615053 100755
-> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> @@ -40,6 +40,7 @@ elif [ "x$(id -ru)" != x0 ]; then
->  	exit 0
->  fi
->  
-> +dmesg -c > /dev/null
->  nr_bug=`dmesg | grep -c "kernel BUG"`
->  nr_null=`dmesg | grep -c "kernel NULL pointer dereference"`
->  nr_warning=`dmesg | grep -c "^WARNING"`
-> @@ -78,6 +79,8 @@ check_kernel_bug()
->  	nr_warning=$new_warning
->  	nr_lockdep=$new_lockdep
->  
-> +	echo "check_kernel_bug found something!"
-> +	dmesg
->  	failed=1
->  	return 0
->  }
+On Wed, Jul 27, 2011 at 4:45 PM, G Rajender <G.Rajender@lnties.com> wrote:
+> Hi all,
+>
+>
+>
+> Can LTP (Linux Test Project) be ported to Embedded boards like Beagleboard
+> or beagle clone boards.
+> Or
+>
+> Can LTP runs and test the linux kernel on Beagleboard (Embedded boards or
+> Target boards).
 
-Applied, but with the 'dmesg -c' the test could be simplified as storing
-number of bugs in log at the start is meaningless now as it's most
-likely 0.
+The answer is "Yes".
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>
+> If Yes please share the procedure of how to test kernel using LTP on
+> beagleboard (Target board or Embedded board).
+>
+
+You need to cross-compile the LTP source using the proper toolchain.
+For the  Beagleboard, you can use the Codesourcery tool-chain (can be
+downloaded from:
+http://www.codesourcery.com/sgpp/lite/arm/portal/release1803).
+
+We can easily build LTP for Beagleboard using the Scratchbox. More
+info is available in the below give link:
+  http://felipec.wordpress.com/2009/06/07/installing-scratchbox-1-and-2-for-arm-cross-compilation/
+
+Previous discussions on cross-compiling LTP is available here:
+http://osdir.com/ml/linux.ltp/2005-06/msg00023.html
+
+Hope this helps.
+
+Warm Regards,
+Maxin
 
 ------------------------------------------------------------------------------
 Got Input?   Slashdot Needs You.
