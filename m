@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QhKVC-0005nf-OA
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jul 2011 11:54:46 +0000
-Date: Thu, 14 Jul 2011 13:56:18 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110714115618.GA3287@saboteur.suse.cz>
-References: <1310567251-20343-1-git-send-email-no>
-	<20110713153327.GA4772@saboteur.suse.cz>
-	<000c01cc41f3$bf4c0370$3de40a50$@rundo@st.com>
-	<20110714103204.GA2018@saboteur.suse.cz>
-	<000d01cc421a$607dc5a0$217950e0$@rundo@st.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <prvs=8189a0f18f=G.Rajender@lnties.com>)
+	id 1Qm4Qz-0005RF-No
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jul 2011 13:46:01 +0000
+Received: from mailout2.ltindia.com ([125.18.18.171])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Qm4Qx-00052y-EH
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jul 2011 13:46:01 +0000
+From: G Rajender <G.Rajender@lnties.com>
+Date: Wed, 27 Jul 2011 13:45:50 +0000
+Message-ID: <260174ADA4D63F4AA543B9C81F2DE712B34F@POCITMSEXMB01.LntUniverse.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <000d01cc421a$607dc5a0$217950e0$@rundo@st.com>
-Subject: Re: [LTP] [PATCH] kill05: Added proper return code (TPASS) if
- testcase exit without errors.
+Subject: [LTP] How to test Linux Kernel using LTP on Beagleboard (ARM
+ Cortex-A8 based board)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,55 +25,152 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0009019606864517475=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Hmmm....I'm not sure about that....is not only a proper "print" issue as the
-> testcase should return a "well defined" LTP error code i.e.
-> TAPSS/TFAIL/TBROK etc...
+--===============0009019606864517475==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_260174ADA4D63F4AA543B9C81F2DE712B34FPOCITMSEXMB01LntUni_"
+
+--_000_260174ADA4D63F4AA543B9C81F2DE712B34FPOCITMSEXMB01LntUni_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Can LTP (Linux Test Project) be ported to Embedded boards like Beagleboard =
+or beagle clone boards.
+Or
+Can LTP runs and test the linux kernel on Beagleboard (Embedded boards or T=
+arget boards).
+
+If Yes please share the procedure of how to test kernel using LTP on beagle=
+board (Target board or Embedded board).
+
+If No please suggest the tool or framework which run on Beagleboard (Embedd=
+ed board) and test the linux kernel.
+
+Thanks in advance
+
+Br,
+
+Rajender
+
+
+
+
+
+Larsen & Toubro Limited
+
+www.larsentoubro.com
+
+This Email may contain confidential or privileged information for the inten=
+ded recipient (s) If you are not the intended recipient, please do not use =
+or disseminate the information, notify the sender and delete it from your s=
+ystem.
+
+--_000_260174ADA4D63F4AA543B9C81F2DE712B34FPOCITMSEXMB01LntUni_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
 >
-> In the lib/tst_res.c, the error code used in the tst_resm()[internally by
-> "tst_res()"] is used to setup the "T_exitval" variable which is used to
-> define the LTP testcase exit code in the "tst_exit()".
+<style>
+<!--
+@font-face
+	{font-family:Calibri}
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif"}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline}
+span.EmailStyle17
+	{font-family:"Calibri","sans-serif";
+	color:windowtext}
+.MsoChpDefault
+	{font-family:"Calibri","sans-serif"}
+@page WordSection1
+	{margin:1.0in 1.0in 1.0in 1.0in}
+div.WordSection1
+	{}
+-->
+</style>
+</head>
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Hi all,</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">Can <b>LTP</b> (Linux Test Project) be ported to Emb=
+edded boards like
+<b>Beagleboard</b> or beagle clone boards.</p>
+<p class=3D"MsoNormal">Or</p>
+<p class=3D"MsoNormal">Can <b>LTP</b> <b>runs and test the linux kernel on =
+Beagleboard</b> (Embedded boards or Target boards).</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">If <b>Yes</b> please share the procedure of <b>how t=
+o test kernel using LTP on beagleboard</b> (Target board or Embedded board)=
+.</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">If <b>No</b> please suggest the <b>tool</b> or <b>fr=
+amework which run on Beagleboard</b> (Embedded board) and
+<b>test the linux kernel</b>.</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">Thanks in advance</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">Br,</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">Rajender</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+<p class=3D"MsoNormal">&nbsp;</p>
+</div>
+<br>
+<br>
+<b>Larsen &amp; Toubro Limited <br>
+<br>
+www.larsentoubro.com <br>
+<br>
+</b>This Email may contain confidential or privileged information for the i=
+ntended recipient (s) If you are not the intended recipient, please do not =
+use or disseminate the information, notify the sender and delete it from yo=
+ur system.
+</body>
+</html>
 
-Well test that just calls tst_exit() is successful and that would not
-change, that would be called regression ;). Frankly there is quite lot
-of things that has default behavior that must not change and not only in
-LTP.
+--_000_260174ADA4D63F4AA543B9C81F2DE712B34FPOCITMSEXMB01LntUni_--
 
-> Correctly, in the "kill05" test, each wrong scenario is properly managed
-> with a tst_resm(TFAIL,"......") and so on.
-> 
-> Why it didn't the same(with tst_resm(TPASS,"...")) in case of no errors ?
 
-I'm certainly not against that, I just don't like the wording for the
-commit message, which made me think that the commit fixes very different
-problem.
-
-> Ok about your comment for the default LTP setup but I think the "kill05"
-> test(or generally speaking, each LTP testcase) shouldn't make any assumption
-> about LTP default settings as it could changes.... 
-> Each test should set proper exit error code according to the obtained
-> results/expected ones.
-
-In short I will gladly pick your patch, just clarify the commit message
-a little.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--===============0009019606864517475==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-AppSumo Presents a FREE Video for the SourceForge Community by Eric 
-Ries, the creator of the Lean Startup Methodology on "Lean Startup 
-Secrets Revealed." This video shows you how to validate your ideas, 
-optimize your ideas and identify your business strategy.
-http://p.sf.net/sfu/appsumosfdev2dev
+Got Input?   Slashdot Needs You.
+Take our quick survey online.  Come on, we don't ask for help often.
+Plus, you'll get a chance to win $100 to spend on ThinkGeek.
+http://p.sf.net/sfu/slashdot-survey
+--===============0009019606864517475==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0009019606864517475==--
+
