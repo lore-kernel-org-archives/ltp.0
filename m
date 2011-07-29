@@ -1,30 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <carmelo.amoroso@st.com>) id 1QgfPk-0000zv-1t
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jul 2011 16:02:24 +0000
-Received: from eu1sys200aog102.obsmtp.com ([207.126.144.113])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QgfPg-0001ia-6g
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jul 2011 16:02:24 +0000
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5CB141A6
+	(envelope-from <Yi.Zhao@windriver.com>) id 1QmiVT-0005PV-8T
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jul 2011 08:33:19 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QmiVS-0000Gj-1t
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jul 2011 08:33:19 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id p6T8XBr1013993
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Jul 2011 16:02:06 +0000 (GMT)
-Received: from mail7.sgp.st.com (unknown [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0C49A22F7
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Jul 2011 16:02:06 +0000 (GMT)
-Message-ID: <4E1C6FCE.1010402@st.com>
-Date: Tue, 12 Jul 2011 18:01:18 +0200
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+	Fri, 29 Jul 2011 01:33:11 -0700 (PDT)
+From: Yi Zhao <yi.zhao@windriver.com>
+Date: Fri, 29 Jul 2011 16:33:05 +0800
+Message-ID: <1311928385-11522-1-git-send-email-yi.zhao@windriver.com>
 MIME-Version: 1.0
-References: <4e1c09b0.04af2a0a.2ccb.ffffab1eSMTPIN_ADDED@mx.google.com>
-	<CAGH67wQ4knG70q-bpPV0fmTOsmf9ciyPN-k65M=ysMk1o5_uFg@mail.gmail.com>
-In-Reply-To: <CAGH67wQ4knG70q-bpPV0fmTOsmf9ciyPN-k65M=ysMk1o5_uFg@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Added proper return code (TPASS) in case of exit
- without errors.
+Subject: [LTP] [PATCH] run-all-posix-option-group-tests.sh: Fix a spelling
+	mistake
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,50 +33,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-On 12/07/2011 16.38, Garrett Cooper wrote:
-> On Tue, Jul 12, 2011 at 1:45 AM, Francesco RUNDO <francesco.rundo@st.com> wrote:
->> From: Francesco Rundo <francesco.rundo@st.com>
->>
->> The "kill05" testcase checks if EPERM is correctly raised by the system.
->> The testcase manages the error exit codes correctly while it didn't return
->> any exit code in case of no errors occured i.e. the system has raised EPERM.
->> The correct exit-code "TPASS" has been added in case of the test works fine without
->> errors.
->>
->> Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
->> Reviewed-by: Carmelo Amoroso <carmelo.amoroso@st.com>
-> 
->     Please properly styleize this; this doesn't conform to Linux
-> coding standards..
+The script can not work due to this mistake.
 
-I've noted there is a trailing white space ?
-is this the only problem ?
+Signed-off-by: Yi Zhao <yi.zhao@windriver.com>
+---
+ .../bin/run-all-posix-option-group-tests.sh        |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-carmelo
-
-
-> Thanks,
-> -Garrett
-> 
-> ------------------------------------------------------------------------------
-> All of the data generated in your IT infrastructure is seriously valuable.
-> Why? It contains a definitive record of application performance, security 
-> threats, fraudulent activity, and more. Splunk takes this data and makes 
-> sense of it. IT sense. And common sense.
-> http://p.sf.net/sfu/splunk-d2d-c2
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+diff --git a/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh b/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
+index a9b2c05..39ff989 100755
+--- a/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
++++ b/testcases/open_posix_testsuite/bin/run-all-posix-option-group-tests.sh
+@@ -8,7 +8,7 @@
+ #
+ 
+ FAILED=0
+-RPOG_SCRIPT="$(dirname "$0")/run-posix-option-group-test.sh"
++PROG_SCRIPT="$(dirname "$0")/run-posix-option-group-test.sh"
+ 
+ for option_group in AIO MEM MSG SEM SIG THR TMR TPS; do
+ 	if ! $PROG_SCRIPT $option_group; then
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+Got Input?   Slashdot Needs You.
+Take our quick survey online.  Come on, we don't ask for help often.
+Plus, you'll get a chance to win $100 to spend on ThinkGeek.
+http://p.sf.net/sfu/slashdot-survey
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
