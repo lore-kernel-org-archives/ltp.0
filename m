@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <czhang@redhat.com>) id 1Qlf0V-0000kW-4s
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jul 2011 10:36:59 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <czhang@redhat.com>) id 1QnD3V-0007hP-L1
+	for ltp-list@lists.sourceforge.net; Sat, 30 Jul 2011 17:10:29 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Qlf0U-0001Uw-1u
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jul 2011 10:36:59 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QnD3U-0005VG-L0
+	for ltp-list@lists.sourceforge.net; Sat, 30 Jul 2011 17:10:29 +0000
 Received: from int-mx09.intmail.prod.int.phx2.redhat.com
 	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6QAaqi8023061
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p6UHAMtd020851
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Jul 2011 06:36:52 -0400
+	for <ltp-list@lists.sourceforge.net>; Sat, 30 Jul 2011 13:10:22 -0400
 From: Caspar Zhang <czhang@redhat.com>
-Date: Tue, 26 Jul 2011 18:36:32 +0800
-Message-Id: <145b91763d3c2670cd736cc7fa3072c9a6db219a.1311676572.git.czhang@redhat.com>
+Date: Sun, 31 Jul 2011 01:09:49 +0800
+Message-Id: <235cb4cd6481ca25245b6b6d5ed988736d8a2991.1312043382.git.czhang@redhat.com>
+In-Reply-To: <145b91763d3c2670cd736cc7fa3072c9a6db219a.1312043382.git.czhang@redhat.com>
+References: <145b91763d3c2670cd736cc7fa3072c9a6db219a.1312043382.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="------------1.7.6"
-Subject: [LTP] [PATCH] [syscalls] getrusage04: new testcase
+Subject: [LTP] [PATCH] [mm] vma01: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,102 +39,111 @@ Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-getrusage04 - accuracy of getrusage() with RUSAGE_THREAD
+vma01 - test not merging a VMA which cloned from parent process
 
 This program is used for testing the following upstream commit:
-761b1d26df542fd5eb348837351e4d2f3bc7bffe.
+965f55dea0e331152fa53941a51e4e16f9f06fae
 
-getrusage() returns cpu resource usage with accuracy of 10000us
-when RUSAGE_THREAD is specified to the argument who. Meanwhile,
-accuracy is 1000us when RUSAGE_SELF is specified. This bad
-accuracy of getrusage() caused a big impact on some application
-which is critical to accuracy of cpu usage. The upstream fix
-removed casts to clock_t in task_u/stime(), to keep granularity
-of cputime_t over the calculation.
+The cloned VMA shares the anon_vma lock with the parent process's
+VMA. If we do the merge, more vmas (even the new range is only
+for current process) use the perent process's anon_vma lock. This
+introduces scalability issues. find_mergeable_anon_vma() already
+considers this case.
+
+This test program clones VMA and checks /proc/$pid/maps file, on
+an unpatched kernel, there is a single 6*ps VMA for the child
+like this:
+
+7fee32989000-7fee3298f000 -w-p 00000000 00:00 0
+
+On a patched kernel, there are two 3*ps VMAs like this:
+
+7f55bbd47000-7f55bbd4a000 -w-p 00000000 00:00 0
+7f55bbd4a000-7f55bbd4d000 -w-p 00000000 00:00 0
 
 Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- runtest/syscalls                                  |   11 +-
- testcases/kernel/syscalls/getrusage/getrusage04.c |  122 +++++++++++++++++++++
- 2 files changed, 128 insertions(+), 5 deletions(-)
- create mode 100644 testcases/kernel/syscalls/getrusage/getrusage04.c
+ runtest/mm                        |    2 +
+ testcases/kernel/mem/vma/Makefile |   24 ++++++
+ testcases/kernel/mem/vma/vma01.c  |  162 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 188 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/vma/Makefile
+ create mode 100644 testcases/kernel/mem/vma/vma01.c
 
 
 --------------1.7.6
-Content-Type: text/x-patch; name="0001-syscalls-getrusage04-new-testcase.patch"
+Content-Type: text/x-patch; name="0002-mm-vma01-new-testcase.patch"
 Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-syscalls-getrusage04-new-testcase.patch"
+Content-Disposition: attachment; filename="0002-mm-vma01-new-testcase.patch"
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7989764..62d4760 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -400,6 +400,7 @@ get_robust_list01 get_robust_list01
- getrusage01 getrusage01
- getrusage02 getrusage02
- getrusage03 getrusage03
-+getrusage04 getrusage04
+diff --git a/runtest/mm b/runtest/mm
+index df7d0cb..5b08d15 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -80,3 +80,5 @@ oom03 oom03
+ oom04 oom04
  
- getsid01 getsid01
- getsid02 getsid02
-@@ -574,7 +575,7 @@ mount1234 test_mount
- 
- move_pages01 move_pages.sh 01
- move_pages02 move_pages.sh 02
--move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod 04755 move_pages03 && move_pages.sh 03 
-+move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod 04755 move_pages03 && move_pages.sh 03
- move_pages04 move_pages.sh 04
- move_pages05 move_pages.sh 05
- move_pages06 move_pages.sh 06
-@@ -676,7 +677,7 @@ open10 open10
- openat01 openat01
- 
- mincore01 mincore01
--mincore02 mincore02 
-+mincore02 mincore02
- 
- madvise01 madvise01
- madvise02 madvise02
-@@ -690,8 +691,8 @@ pause01 pause01
- pause02 pause02
- pause03 pause03
- 
--#  The personality() system call is poorly documented 
--#  and difficult to figure out how to use by looking 
-+#  The personality() system call is poorly documented
-+#  and difficult to figure out how to use by looking
- #  at the different architecture specific kernel files.
- #personality01 personality01
- #personality02 personality02
-@@ -1201,7 +1202,7 @@ truncate04_64 truncate04_64
- # This syscall is obsolete.  The latest glibc does not even
- # include the ulimit.h file anymore.  The test will fail
- # because the error handling has been simplified.
--# 
-+#
- ulimit01 ulimit01
- 
- umask01 umask01
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+ thp01 thp01 -I 120
++
++vma01 vma01
+diff --git a/testcases/kernel/mem/vma/Makefile b/testcases/kernel/mem/vma/Makefile
 new file mode 100644
-index 0000000..092a557
+index 0000000..6b347c4
 --- /dev/null
-+++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-@@ -0,0 +1,122 @@
++++ b/testcases/kernel/mem/vma/Makefile
+@@ -0,0 +1,24 @@
++#
++#  Copyright (C) 2011  Red Hat, Inc.
++#
++#  This program is free software; you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or (at
++#  your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful, but
++#  WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++#  General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program; if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++#  02110-1301, USA.
++#
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
+new file mode 100644
+index 0000000..6dd6eba
+--- /dev/null
++++ b/testcases/kernel/mem/vma/vma01.c
+@@ -0,0 +1,162 @@
 +/*
-+ * getrusage04 - accuracy of getrusage() with RUSAGE_THREAD
++ * vma01 - test not merging a VMA which cloned from parent process
 + *
 + * This program is used for testing the following upstream commit:
-+ * 761b1d26df542fd5eb348837351e4d2f3bc7bffe.
++ * 965f55dea0e331152fa53941a51e4e16f9f06fae
 + *
-+ * getrusage() returns cpu resource usage with accuracy of 10000us
-+ * when RUSAGE_THREAD is specified to the argument who. Meanwhile,
-+ * accuracy is 1000us when RUSAGE_SELF is specified. This bad
-+ * accuracy of getrusage() caused a big impact on some application
-+ * which is critical to accuracy of cpu usage. The upstream fix
-+ * removed casts to clock_t in task_u/stime(), to keep granularity
-+ * of cputime_t over the calculation.
++ * The cloned VMA shares the anon_vma lock with the parent process's
++ * VMA. If we do the merge, more vmas (even the new range is only
++ * for current process) use the perent process's anon_vma lock. This
++ * introduces scalability issues. find_mergeable_anon_vma() already
++ * considers this case.
++ *
++ * This test program clones VMA and checks /proc/$pid/maps file, on
++ * an unpatched kernel, there is a single 6*ps VMA for the child
++ * like this:
++ *
++ * 7fee32989000-7fee3298f000 -w-p 00000000 00:00 0
++ *
++ * On a patched kernel, there are two 3*ps VMAs like this:
++ *
++ * 7f55bbd47000-7f55bbd4a000 -w-p 00000000 00:00 0
++ * 7f55bbd4a000-7f55bbd4d000 -w-p 00000000 00:00 0
 + *
 + * Copyright (C) 2011  Red Hat, Inc.
 + * This program is free software; you can redistribute it and/or
@@ -156,84 +167,115 @@ index 0000000..092a557
 + * 02110-1301, USA.
 + */
 +#include <sys/types.h>
-+#include <sys/resource.h>
-+#include <sys/time.h>
-+#include <errno.h>
++#include <sys/mman.h>
++#include <unistd.h>
 +#include <stdio.h>
 +#include <stdlib.h>
++#include <string.h>
 +
 +#include "test.h"
 +#include "usctest.h"
-+#include "safe_macros.h"
 +
-+char *TCID = "getrusage04";
++char *TCID = "vma01";
 +int TST_TOTAL = 1;
 +
-+#define BIAS_MAX      1000
-+#define RECORD_MAX    20
-+#define RUSAGE_THREAD 1
-+
-+static void busyloop(int wait);
++static void check_vma(void);
++static void *get_end_addr(void *addr_s, char *mapfile);
 +static void setup(void);
 +static void cleanup(void);
 +
-+int main(int argc, char *argv[])
++static unsigned long ps;
++
++int main(int argc, char **argv)
 +{
-+	struct rusage usage;
-+	unsigned long ulast, udelta, slast, sdelta;
-+	int i, lc;
 +	char *msg;
++	int lc;
 +
 +	msg = parse_opts(argc, argv, NULL, NULL);
 +	if (msg != NULL)
 +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
 +
++	ps = sysconf(_SC_PAGE_SIZE);
 +	setup();
 +
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0; i = 0;
-+		ulast = 0, slast = 0;
-+		SAFE_GETRUSAGE(cleanup, RUSAGE_THREAD, &usage);
-+		tst_resm(TINFO, "utime:%12luus; stime:%12luus",
-+			usage.ru_utime.tv_usec, usage.ru_stime.tv_usec);
-+		while (i < RECORD_MAX) {
-+			SAFE_GETRUSAGE(cleanup, RUSAGE_THREAD, &usage);
-+			udelta = usage.ru_utime.tv_usec - ulast;
-+			sdelta = usage.ru_stime.tv_usec - slast;
-+			if (udelta > 0 || sdelta > 0) {
-+				i++;
-+				tst_resm(TINFO, "utime:%12luus; stime:%12luus",
-+					    usage.ru_utime.tv_usec,
-+					    usage.ru_stime.tv_usec);
-+				if (udelta > 1000+BIAS_MAX)
-+					tst_brkm(TFAIL, cleanup,
-+						    "utime increased > 1000us:"
-+						    " delta = %luus", udelta);
-+				if (sdelta > 1000+BIAS_MAX)
-+					tst_brkm(TFAIL, cleanup,
-+						    "stime increased > 1000us:"
-+						    " delta = %luus", sdelta);
-+			}
-+			ulast = usage.ru_utime.tv_usec;
-+			slast = usage.ru_stime.tv_usec;
-+			busyloop(100000);
-+		}
++		Tst_count = 0;
++
++		check_vma();
 +	}
 +	cleanup();
 +	tst_exit();
 +}
 +
-+static void busyloop(int wait)
++static void check_vma(void)
 +{
-+	int i, j = 0;
++	pid_t pid;
++	void *t, *u, *v, *x, *y;
++	char mapfile[BUFSIZ];
 +
-+	for (i = 0; i < wait; i++)
-+		j = j * 3 + 11;
++	t = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
++	if (t == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++	tst_resm(TINFO, "t = %p", t);
++	memset(t, 1, ps);
++	v = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
++	if (v == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++	tst_resm(TINFO, "v = %p", v);
++	memset(v, 2, ps);
++
++	switch (pid = fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		sprintf(mapfile, "/proc/%u/maps", getpid());
++		memset(t, 2, ps);
++		u = mmap(t + 3*ps, 3*ps, PROT_WRITE,
++			    MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
++		if (u == MAP_FAILED)
++			tst_brkm(TBROK|TERRNO, NULL, "mmap");
++		tst_resm(TINFO, "u = %p", u);
++		memset(u, 2, 4096);
++		x = get_end_addr(u, mapfile);
++		if (x == u + 6*ps)
++			tst_resm(TFAIL, "A single 6*ps VMA found.");
++		else if (x == u + 3*ps) {
++			y = get_end_addr(x, mapfile);
++			if (y == x + 3*ps)
++				tst_resm(TPASS, "two 3*ps VMAs found.");
++		} else
++			tst_brkm(TBROK, cleanup, "unexpected VMA found.");
++		exit(0);
++	default:
++		break;
++	}
++
++}
++
++static void *get_end_addr(void *addr_s, char *mapfile)
++{
++	FILE *fp;
++	void *s, *t;
++	char buf[BUFSIZ];
++
++	fp = fopen(mapfile, "r+");
++	if (fp == NULL)
++		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
++	while (fgets(buf, BUFSIZ, fp) != NULL) {
++		fscanf(fp, "%p-%p", &s, &t);
++		if (addr_s == s) {
++			tst_resm(TINFO, "s = %p, t = %p", s, t);
++			fclose(fp);
++			return t;
++		}
++	}
++	fclose(fp);
++	tst_brkm(TBROK, cleanup, "no matched s = %p found.", addr_s);
 +}
 +
 +static void setup(void)
 +{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	tst_sig(FORK, DEF_HANDLER, cleanup);
 +
 +	TEST_PAUSE;
 +}
@@ -250,11 +292,10 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Magic Quadrant for Content-Aware Data Loss Prevention
-Research study explores the data loss prevention market. Includes in-depth
-analysis on the changes within the DLP market, and the criteria used to
-evaluate the strengths and weaknesses of these DLP solutions.
-http://www.accelacomm.com/jaw/sfnl/114/51385063/
+Got Input?   Slashdot Needs You.
+Take our quick survey online.  Come on, we don't ask for help often.
+Plus, you'll get a chance to win $100 to spend on ThinkGeek.
+http://p.sf.net/sfu/slashdot-survey
 --------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
