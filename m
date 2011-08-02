@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Qs5mb-00079i-EL
-	for ltp-list@lists.sourceforge.net; Sat, 13 Aug 2011 04:25:13 +0000
-Received: from mail-qy0-f182.google.com ([209.85.216.182])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Qs5ma-0002up-SF
-	for ltp-list@lists.sourceforge.net; Sat, 13 Aug 2011 04:25:13 +0000
-Received: by qyk9 with SMTP id 9so2459733qyk.13
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 12 Aug 2011 21:25:07 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <skannan@redhat.com>) id 1Qo6bJ-0004U7-Q2
+	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 04:29:05 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Qo6bI-0004Ch-OK
+	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 04:29:05 +0000
+Received: from mail03.corp.redhat.com (zmail07.collab.prod.int.phx2.redhat.com
+	[10.5.5.47])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p724SwKG011873
+	for <ltp-list@lists.sourceforge.net>; Tue, 2 Aug 2011 00:28:58 -0400
+Date: Tue, 2 Aug 2011 00:28:58 -0400 (EDT)
+From: Shakthi Kannan <skannan@redhat.com>
+Message-ID: <474812428.578270.1312259338813.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1609707634.578233.1312258810042.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGH67wSUQOd0h5Q1yZ0owyuGPWnGSY_ECB-cWC6PVx8ux4uisw@mail.gmail.com>
-References: <0F68B52D2432864190BC72F760407FE9118354BDE5@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-	<CAGH67wSUQOd0h5Q1yZ0owyuGPWnGSY_ECB-cWC6PVx8ux4uisw@mail.gmail.com>
-Date: Fri, 12 Aug 2011 21:25:07 -0700
-Message-ID: <CAGH67wS5MokGCCOrH+9X9oDjU4-veCbZWXZwcOr_3mmuLsKtkw@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Porting of LTP on Android - Patch
+Subject: [LTP] Running only kernel syscall tests
+Reply-To: Shakthi Kannan <skannan@redhat.com>
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,44 +31,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Manoj Kumar <Manoj_Kr@hcl.com>
+To: ltp-list@lists.sourceforge.net
 
-On Fri, Aug 12, 2011 at 8:59 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Mon, Aug 8, 2011 at 6:13 AM, Anupam Srivastava - ERS, HCL Tech
-> <Anupam_Srivastava@hcl.com> wrote:
->> Hi,
->>
->>
->>
->> This is in continuation of my last mail sent to you regarding the porting of
->> LTP on Android 2.2 Froyo dated Aug 04, 2010.
->>
->> We have ported LTP open source (Version: ltp-full-20110228) on Android 2.2
->> Froyo. It will validate the reliability, robustness, and stability of
->> Android. We want to submit the same to open source community.
->
-> ...
->
-> 1. This really should use git, not a patch against a release version.
-> 2. You should use unified diffs.
+Hi,
 
-Some other things:
-1. These diffs contain references to files not in the git repo.
-2. There are debug statements that were added should be removed.
-3. Some diagnostic output should be restored.
-4. There's some unnecessary commentary that's been added.
-5. It doesn't make sense why you didn't follow the build directions
-and decided to instead remove all references to config.h .
-Thanks,
--Garrett
+Are there any options to runltp or any other means to just run the kernel syscall tests? How long does it take to run the runalltests.sh on an i386/x86_64 machine?
+
+Appreciate any inputs in this regard,
+
+SK
+
+-- 
+Shakthi Kannan 
+skannan at redhat dot com
 
 ------------------------------------------------------------------------------
-FREE DOWNLOAD - uberSVN with Social Coding for Subversion.
-Subversion made easy with a complete admin console. Easy 
-to use, easy to manage, easy to install, easy to extend. 
-Get a Free download of the new open ALM Subversion platform now.
-http://p.sf.net/sfu/wandisco-dev2dev
+BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
+The must-attend event for mobile developers. Connect with experts. 
+Get tools for creating Super Apps. See the latest technologies.
+Sessions, hands-on labs, demos & much more. Register early & save!
+http://p.sf.net/sfu/rim-blackberry-1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
