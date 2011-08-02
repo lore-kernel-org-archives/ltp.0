@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Anupam_Srivastava@hcl.com>) id 1Qotze-0000hu-5E
-	for ltp-list@lists.sourceforge.net; Thu, 04 Aug 2011 09:13:30 +0000
-Received: from gws06.hcl.com ([203.105.185.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qotzc-0006ah-5B
-	for ltp-list@lists.sourceforge.net; Thu, 04 Aug 2011 09:13:30 +0000
-From: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
-Date: Thu, 4 Aug 2011 14:43:11 +0530
-Message-ID: <0F68B52D2432864190BC72F760407FE911834BB2CC@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-Content-Language: en-US
+	(envelope-from <czhang@redhat.com>) id 1QoBn2-0007fd-15
+	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 10:01:32 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QoBn1-0006yv-6g
+	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 10:01:32 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p72A1PBa004023
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 2 Aug 2011 06:01:25 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Tue,  2 Aug 2011 18:00:45 +0800
+Message-Id: <b0a95140f81a60e6051f3effc5bdd4e35f3825f7.1312279196.git.czhang@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] Want to contribute in open source community
+Content-Type: multipart/mixed; boundary="------------1.7.6"
+Subject: [LTP] [PATCH] mm/include: add config.h header file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,184 +28,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6833069956856337746=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
---===============6833069956856337746==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_0F68B52D2432864190BC72F760407FE911834BB2CCNDAHCLTEVS04H_"
-
---_000_0F68B52D2432864190BC72F760407FE911834BB2CCNDAHCLTEVS04H_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-We have ported LTP open source (Version: ltp-full-20110228) on Android. It =
-will validate the reliability, robustness, and stability of Android. We wan=
-t to submit the same to open source community.
-
-Please let us know the procedure for the same.
-
-Thanks & Regards,
-Anupam
-+91-9717782727
-
-________________________________
-::DISCLAIMER::
----------------------------------------------------------------------------=
---------------------------------------------
-
-The contents of this e-mail and any attachment(s) are confidential and inte=
-nded for the named recipient(s) only.
-It shall not attach any liability on the originator or HCL or its affiliate=
-s. Any views or opinions presented in
-this email are solely those of the author and may not necessarily reflect t=
-he opinions of HCL or its affiliates.
-Any form of reproduction, dissemination, copying, disclosure, modification,=
- distribution and / or publication of
-this message without the prior written consent of the author of this e-mail=
- is strictly prohibited. If you have
-received this email in error please delete it and notify the sender immedia=
-tely. Before opening any mail and
-attachments please check them for viruses and defect.
-
----------------------------------------------------------------------------=
---------------------------------------------
-
---_000_0F68B52D2432864190BC72F760407FE911834BB2CCNDAHCLTEVS04H_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
-osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
-//www.w3.org/TR/REC-html40">
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
->
-<meta name=3D"Generator" content=3D"Microsoft Word 12 (filtered medium)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri","sans-serif";}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal;
-	font-family:"Calibri","sans-serif";
-	color:windowtext;}
-span.EmailStyle18
-	{mso-style-type:personal;
-	font-family:"Calibri","sans-serif";
-	color:#1F497D;}
-span.EmailStyle19
-	{mso-style-type:personal;
-	font-family:"Calibri","sans-serif";
-	color:#1F497D;}
-span.EmailStyle20
-	{mso-style-type:personal-reply;
-	font-family:"Calibri","sans-serif";
-	color:#1F497D;}
-.MsoChpDefault
-	{mso-style-type:export-only;
-	font-size:10.0pt;}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
-div.Section1
-	{page:Section1;}
--->
-</style><!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <o:shapelayout v:ext=3D"edit">
-  <o:idmap v:ext=3D"edit" data=3D"1" />
- </o:shapelayout></xml><![endif]-->
-</head>
-<body lang=3D"EN-IN" link=3D"blue" vlink=3D"purple">
-<div class=3D"Section1">
-<p class=3D"MsoNormal">Hi,<o:p></o:p></p>
-<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
-<p class=3D"MsoNormal" style=3D"text-align:justify;text-autospace:none"><b>=
-We have ported LTP open source (Version: ltp-full-20110228) on Android</b>.=
- It will validate the reliability, robustness, and stability of Android. We=
- want to submit the same to open source
- community.<o:p></o:p></p>
-<p class=3D"MsoNormal" style=3D"text-align:justify;text-autospace:none"><o:=
-p>&nbsp;</o:p></p>
-<p class=3D"MsoNormal" style=3D"text-align:justify;text-autospace:none">Ple=
-ase let us know the procedure for the same.<o:p></o:p></p>
-<p class=3D"MsoNormal" style=3D"text-align:justify;text-autospace:none"><o:=
-p>&nbsp;</o:p></p>
-<p class=3D"MsoNormal" style=3D"text-align:justify;text-autospace:none">Tha=
-nks &amp; Regards,<o:p></o:p></p>
-<p class=3D"MsoNormal" style=3D"text-align:justify;text-autospace:none">Anu=
-pam<o:p></o:p></p>
-<p class=3D"MsoNormal" style=3D"text-align:justify;text-autospace:none">&#4=
-3;91-9717782727<o:p></o:p></p>
-</div>
-<br>
-<hr>
-<font face=3D"Arial" color=3D"Gray" size=3D"1">::DISCLAIMER::<br>
----------------------------------------------------------------------------=
---------------------------------------------<br>
-<br>
-The contents of this e-mail and any attachment(s) are confidential and inte=
-nded for the named recipient(s) only.<br>
-It shall not attach any liability on the originator or HCL or its affiliate=
-s. Any views or opinions presented in<br>
-this email are solely those of the author and may not necessarily reflect t=
-he opinions of HCL or its affiliates.<br>
-Any form of reproduction, dissemination, copying, disclosure, modification,=
- distribution and / or publication of<br>
-this message without the prior written consent of the author of this e-mail=
- is strictly prohibited. If you have<br>
-received this email in error please delete it and notify the sender immedia=
-tely. Before opening any mail and<br>
-attachments please check them for viruses and defect.<br>
-<br>
----------------------------------------------------------------------------=
---------------------------------------------<br>
-</font>
-</body>
-</html>
-
---_000_0F68B52D2432864190BC72F760407FE911834BB2CCNDAHCLTEVS04H_--
+This is a multi-part message in MIME format.
+--------------1.7.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
---===============6833069956856337746==
+include/config.h is missing which leads to HAVE_MADV_MERGABLE macro not
+found. This causes some KSM-related tests failing.
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+ testcases/kernel/mem/include/mem.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+
+--------------1.7.6
+Content-Type: text/x-patch;
+	name="0001-mm-include-add-config.h-header-file.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-mm-include-add-config.h-header-file.patch"
+
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 778d403..9e6b72c 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -1,5 +1,6 @@
+ #ifndef _MEM_H
+ #define _MEM_H
++#include "config.h"
+ #include "test.h"
+ #include "usctest.h"
+ 
+
+--------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-FREE DOWNLOAD - uberSVN with Social Coding for Subversion.
-Subversion made easy with a complete admin console. Easy 
-to use, easy to manage, easy to install, easy to extend. 
-Get a Free download of the new open ALM Subversion platform now.
-http://p.sf.net/sfu/wandisco-dev2dev
---===============6833069956856337746==
+BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
+The must-attend event for mobile developers. Connect with experts. 
+Get tools for creating Super Apps. See the latest technologies.
+Sessions, hands-on labs, demos & much more. Register early & save!
+http://p.sf.net/sfu/rim-blackberry-1
+--------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -211,5 +88,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6833069956856337746==--
+--------------1.7.6--
+
+
 
