@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QwWur-0004vB-7s
-	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 10:12:05 +0000
-Date: Thu, 25 Aug 2011 12:17:15 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qr9RT-0005FA-5H
+	for ltp-list@lists.sourceforge.net; Wed, 10 Aug 2011 14:07:31 +0000
+Date: Wed, 10 Aug 2011 15:55:18 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110825101715.GC11006@saboteur.suse.cz>
-References: <1313434593-7942-1-git-send-email-lgliang@linux.vnet.ibm.com>
-	<1313434593-7942-6-git-send-email-lgliang@linux.vnet.ibm.com>
+Message-ID: <20110810135518.GE8687@saboteur.suse.cz>
+References: <1609707634.578233.1312258810042.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
+	<474812428.578270.1312259338813.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
+	<CAGH67wRZx=iRqR0fMEuGV83Gz686Bq1nLjC8rtJpFCYCT5QWVA@mail.gmail.com>
+	<20110802131543.GA17783@sergelap>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1313434593-7942-6-git-send-email-lgliang@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH 6/7 ver2 w/attachment] Modified pounder install
- and run scripts
+In-Reply-To: <20110802131543.GA17783@sergelap>
+Subject: Re: [LTP] Running only kernel syscall tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,60 +27,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Lucy Liang <lgliang@linux.vnet.ibm.com>
+To: "Serge E. Hallyn" <serge.hallyn@canonical.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Made changes to two files here, the Install script that builds
-> pounder, and the pounder script that runs it. Updated the Install
-> script to have it now list the available test schedulers for user
-> selectrion prior to starting the build process. Install also now
-> includes the functionality for allowing users to skip subtests
-> that failed to build rather than just exiting out of the entire
-> build process due to a single subtest failure.
-> 
-> The updated pounder script now includes the -m, -c, -l, -e, -i,
-> and -h options (README has more info). The -c, -e, -i options
-> handle creation and modification of test schedulers. The -m
-> option sets an upper bound on output of repeatedly run subtests.
-> The -l option lists subtests packaged with the test scheduler
-> and the -h option gives description of pounder usage. Also moved
-> all the provided test schedulers into newly created schedulers/
-> directory.
-> 
-> Signed-off-by: Lucy Liang <lgliang@linux.vnet.ibm.com>
-> ---
->  tools/pounder21/Install                         |   63 ++++++--
->  tools/pounder21/default-tests.tar.gz            |  Bin 1441 -> 0 bytes
->  tools/pounder21/fast-tests.tar.gz               |  Bin 1292 -> 0 bytes
->  tools/pounder21/pounder                         |  174 ++++++++++++++++++-----
->  tools/pounder21/schedulers/default-tests.tar.gz |  Bin 0 -> 1663 bytes
->  tools/pounder21/schedulers/fast-tests.tar.gz    |  Bin 0 -> 1494 bytes
->  tools/pounder21/schedulers/test-tests.tar.gz    |  Bin 0 -> 1057 bytes
->  tools/pounder21/test-tests.tar.gz               |  Bin 1006 -> 0 bytes
->  tools/pounder21/testall-tests.tar.gz            |  Bin 314 -> 0 bytes
->  9 files changed, 186 insertions(+), 51 deletions(-)
->  delete mode 100644 tools/pounder21/default-tests.tar.gz
->  delete mode 100644 tools/pounder21/fast-tests.tar.gz
->  create mode 100644 tools/pounder21/schedulers/default-tests.tar.gz
->  create mode 100644 tools/pounder21/schedulers/fast-tests.tar.gz
->  create mode 100644 tools/pounder21/schedulers/test-tests.tar.gz
->  delete mode 100644 tools/pounder21/test-tests.tar.gz
->  delete mode 100644 tools/pounder21/testall-tests.tar.gz
+> I'm curious - what exactly do people find they can run reliably with no
+> hangs on a known good system?  On ec2 instances I find even runltp -f
+> syscalls to hang.  I know, I know :)  I do intend to look into it.  But
+> is there anything people find they can use as a gross "this works on good
+> kernel, let's see if it breaks on test kernel" metric?
 
-I'm not happy to have tarballs stored in the git for several reasons. Is
-this really needed? Shouldn't having directories with files serve the
-same purpose?
+That is probably sched_yield() testcase, the culprit is writing to
+stderr while plaing the ping pong with sched_yield() which would make
+the disk writing thread lock (not really kernel bug as the test blocked
+all cpus but one which on which it plays ping pong with sched_yield()).
+At least it locks with some older kernels. I will commit a patch that
+just removes useless printf().
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-EMC VNX: the world's simplest storage, starting under $10K
-The only unified storage solution that offers unified management 
-Up to 160% more powerful than alternatives and 25% more efficient. 
-Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
+uberSVN's rich system and user administration capabilities and model 
+configuration take the hassle out of deploying and managing Subversion and 
+the tools developers use with it. Learn more about uberSVN and get a free 
+download at:  http://p.sf.net/sfu/wandisco-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
