@@ -1,34 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lgliang@taco.beaverton.ibm.com>) id 1Qt2pg-0001Nd-Pw
-	for ltp-list@lists.sourceforge.net; Mon, 15 Aug 2011 19:28:20 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qt2pf-0005c4-P8
-	for ltp-list@lists.sourceforge.net; Mon, 15 Aug 2011 19:28:20 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e38.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id p7FBJtB7011883
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Aug 2011 05:19:55 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p7FIv9lR178790
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Aug 2011 12:57:09 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id p7FCugtS017193
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Aug 2011 06:56:42 -0600
-From: Lucy Liang <lgliang@linux.vnet.ibm.com>
-Date: Mon, 15 Aug 2011 11:56:31 -0700
-Message-Id: <1313434593-7942-5-git-send-email-lgliang@linux.vnet.ibm.com>
-In-Reply-To: <1313434593-7942-1-git-send-email-lgliang@linux.vnet.ibm.com>
-References: <1313434593-7942-1-git-send-email-lgliang@linux.vnet.ibm.com>
+	(envelope-from <czhang@redhat.com>) id 1QrX22-0003GB-G8
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 15:18:50 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QrX21-0007vL-91
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 15:18:50 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p7BFIhcV013338
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Aug 2011 11:18:43 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Thu, 11 Aug 2011 23:17:40 +0800
+Message-Id: <1313075860-20655-1-git-send-email-czhang@redhat.com>
+In-Reply-To: <120e211c585b71f27c1bfc13d48e0f535b3201d5.1312279518.git.czhang@redhat.com>
+References: <120e211c585b71f27c1bfc13d48e0f535b3201d5.1312279518.git.czhang@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.4.1"
-Subject: [LTP] [PATCH 5/7 ver2 w/attachment] Changes to pounder's teset
-	scripts
+Content-Type: multipart/mixed; boundary="------------1.7.6"
+Subject: [LTP] [PATCH v3] mm/ksm05: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,364 +31,274 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
 This is a multi-part message in MIME format.
---------------1.7.4.1
+--------------1.7.6
 Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-Fixed several bugs that prevented test scripts from running
-correctly. Affected test scripts: bonnie++, build_kernel,
-cpufreq, get_hw_info, ide_cdrom_copy, ltp, memtest, nfs,
-ping_nfs_server, random_syscall, time_consistency,
-time_drift, xterm_stress.
+KSM - NULL pointer dereference in ksm_do_scan() (CVE-2011-2183)
 
-Signed-off-by: Lucy Liang <lgliang@linux.vnet.ibm.com>
+This is a testcase from upstream commit:
+2b472611a32a72f4a118c069c2d62a1a3f087afd.
+
+an exiting task can race against ksmd::scan_get_next_rmap_item
+(http://lkml.org/lkml/2011/6/1/742) easily triggering a NULL pointer
+dereference in ksmd.
+ksm_scan.mm_slot == &ksm_mm_head with only one registered mm
+
+CPU 1 (__ksm_exit)          CPU 2 (scan_get_next_rmap_item)
+                            list_empty() is false
+lock                        slot == &ksm_mm_head
+list_del(slot->mm_list)
+(list now empty)
+unlock
+                            lock
+                            slot = list_entry(slot->mm_list.next)
+                            (list is empty, so slot is still ksm_mm_head)
+                            unlock
+                            slot->mm == NULL ... Oops
+
+Close this race by revalidating that the new slot is not simply the list
+head again.
+
+Test Prerequisites:
+
+*) ksm and ksmtuned daemons need to be disabled. Otherwise, it could
+   distrub the testing as they also change some ksm tunables depends
+   on current workloads.
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
 ---
- tools/pounder21/test_scripts/bonnie++         |   11 -----------
- tools/pounder21/test_scripts/build_kernel     |    7 +++----
- tools/pounder21/test_scripts/cpufreq          |   10 +++++-----
- tools/pounder21/test_scripts/get_hw_info      |    2 +-
- tools/pounder21/test_scripts/ide_cdrom_copy   |    3 ++-
- tools/pounder21/test_scripts/ltp              |    6 +++++-
- tools/pounder21/test_scripts/memtest          |   14 +++-----------
- tools/pounder21/test_scripts/nfs              |    2 +-
- tools/pounder21/test_scripts/passloop.sh      |    1 -
- tools/pounder21/test_scripts/ping_nfs_server  |    2 +-
- tools/pounder21/test_scripts/random_syscall   |    1 +
- tools/pounder21/test_scripts/simpleD          |    4 ++++
- tools/pounder21/test_scripts/time_consistency |    1 -
- tools/pounder21/test_scripts/time_drift       |   14 ++++++++++----
- tools/pounder21/test_scripts/xterm_stress     |    2 +-
- 15 files changed, 37 insertions(+), 43 deletions(-)
- create mode 100755 tools/pounder21/test_scripts/simpleD
+ runtest/mm                       |    1 +
+ testcases/kernel/mem/ksm/ksm05.c |  184 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 185 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/ksm/ksm05.c
 
 
---------------1.7.4.1
-Content-Type: text/x-patch;
-	name="0005-Changes-to-pounder-s-teset-scripts.patch"
+--------------1.7.6
+Content-Type: text/x-patch; name="0001-mm-ksm05-new-testcase.patch"
 Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0005-Changes-to-pounder-s-teset-scripts.patch"
+Content-Disposition: attachment; filename="0001-mm-ksm05-new-testcase.patch"
 
-diff --git a/tools/pounder21/test_scripts/bonnie++ b/tools/pounder21/test_scripts/bonnie++
-index 7b3cb95..109c4e3 100755
---- a/tools/pounder21/test_scripts/bonnie++
-+++ b/tools/pounder21/test_scripts/bonnie++
-@@ -36,10 +36,6 @@ fi
- LOGFILE=/proc/$$/fd/1
- OLD_ERRORS=`egrep -ic "(err|fail|invalid|cannot|denied)" $LOGFILE`
+diff --git a/runtest/mm b/runtest/mm
+index 5b08d15..e3519c3 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -69,6 +69,7 @@ ksm03 ksm03
+ ksm03_1 ksm03 -u 128
+ ksm04 ksm04
+ ksm04_1 ksm04 -u 128
++ksm05 ksm05 -I 10
  
--# How much RAM do we have?
--RAM=`cat /proc/meminfo | grep MemTotal | awk -F " " '{print $2}'`
--SPACE_REQUIRED=`expr $RAM \* 4`
--
- # Now figure out where we have mounted filesystems
- MOUNTS=`egrep "(ext|reiser)" /proc/mounts | awk -F " " '{print $2}'`
+ cpuset01 cpuset01 -I 3600
  
-@@ -51,13 +47,6 @@ echo $MOUNTS | sed -e 's/ /\n/g' | while read f; do
- 	# Clean out space for bonnie
- 	rm -rf "$f/bonnie/"
- 
--	# Do we have enough space? (assume 4x RAM is enough)
--	FREE_SPACE=`df -k -P "$f" | tail -n 1 | awk -F " " '{print $4}'`
--	if [ "$FREE_SPACE" -lt "$SPACE_REQUIRED" ]; then
--		echo "Insufficient space on $f; not running bonnie."
--		continue
--	fi
--	
- 	# Set up for bonnie
- 	mkdir -p "$f/bonnie/"
- 
-diff --git a/tools/pounder21/test_scripts/build_kernel b/tools/pounder21/test_scripts/build_kernel
-index ccd66ea..56f50c7 100755
---- a/tools/pounder21/test_scripts/build_kernel
-+++ b/tools/pounder21/test_scripts/build_kernel
-@@ -22,7 +22,7 @@
- 
- CPUS=`grep processor /proc/cpuinfo | wc -l`
- ARCH=`uname -m`
--VERSION=2.6.18
-+VERSION=2.6.39
- # WARNING: If you update the kernel version that we use, be sure to
- # update $POUNDER_SRCDIR/memtest.patch, $POUNDER_HOME/test_scripts/memtest,
- # $POUNDER_HOME/test_scripts/build_kernel, and
-@@ -32,12 +32,11 @@ VERSION=2.6.18
- 
- # Decompress tarball if necessary
- cd "$POUNDER_TMPDIR"
--if [ ! -d linux-$VERSION ]; then
--	tar -xzf "$POUNDER_OPTDIR/linux-$VERSION.tar.gz"
--fi
-+tar -xvf "$POUNDER_OPTDIR/linux-$VERSION.tar.bz2"
- 
- # Clean up the tree.
- cd linux-$VERSION
-+
- make mrproper
- 
- # Create a config file
-diff --git a/tools/pounder21/test_scripts/cpufreq b/tools/pounder21/test_scripts/cpufreq
-index 09b2925..8fd44db 100755
---- a/tools/pounder21/test_scripts/cpufreq
-+++ b/tools/pounder21/test_scripts/cpufreq
-@@ -21,12 +21,12 @@
- 
- 
- # Do any CPU support cpufreq?
--CPUFREQ_ENABLED_CPUS=`/bin/ls -lad /sys/devices/system/cpu/cpu*/cpufreq 2> /dev/null | wc -l`
-+#CPUFREQ_ENABLED_CPUS=`/bin/ls -lad /sys/devices/system/cpu/cpu*/cpufreq 2> /dev/null | wc -l`
- 
--if [ "$CPUFREQ_ENABLED_CPUS" -lt 1 ]; then
--	echo "None of your CPUs support cpufreq.  Bye."
--	exit 255
--fi
-+#if [ "$CPUFREQ_ENABLED_CPUS" -lt 1 ]; then
-+#	echo "None of your CPUs support cpufreq.  Bye."
-+#	exit 255
-+#fi
- 
- # Turn on acpi_pstate_strict to ensure that state transitions actually happen...
- if [ -f /sys/module/acpi_cpufreq/parameters/acpi_pstate_strict ]; then
-diff --git a/tools/pounder21/test_scripts/get_hw_info b/tools/pounder21/test_scripts/get_hw_info
-index f4d469a..c0ee107 100755
---- a/tools/pounder21/test_scripts/get_hw_info
-+++ b/tools/pounder21/test_scripts/get_hw_info
-@@ -82,6 +82,6 @@ fdisk -l /dev/sd[a-z] /dev/hd[a-z]
- echo
- echo "sysfs Device Info:"
- echo "=================="
--find /sys -type f | while read f; do echo $f: `cat $f`; done
-+find /sys -mount -type f | while read f; do echo $f: `cat $f`; done
- 
- exit 0
-diff --git a/tools/pounder21/test_scripts/ide_cdrom_copy b/tools/pounder21/test_scripts/ide_cdrom_copy
-index 45e24cc..ed67f2f 100755
---- a/tools/pounder21/test_scripts/ide_cdrom_copy
-+++ b/tools/pounder21/test_scripts/ide_cdrom_copy
-@@ -40,6 +40,7 @@ trap 'exit 255' SIGABRT
- 
- # Now, mount each disc and do the test.
- find_discs_with_media | while read DEV USE_FSTAB; do
-+
- 	# Are there no CDs at all?
- 	if [ "$DEV" == "NONE" ]; then
- 		echo "No CD/DVD drives found.  Aborting."
-@@ -76,6 +77,7 @@ find_discs_with_media | while read DEV USE_FSTAB; do
- 	rm -rf "$DESTINATION"
- done
- 
-+
- # Look for new errors.
- NEW_ERRORS=`egrep -ic "(err|fail|invalid|cannot|denied)" $LOGFILE`
- NEW_DIFFS=`egrep -ic "^---" $LOGFILE`
-@@ -86,5 +88,4 @@ WRONG=$(( ERRORS + DIFFS ))
- if [ $WRONG -eq 255 ]; then
- 	WRONG=254
- fi
--
- exit $WRONG
-diff --git a/tools/pounder21/test_scripts/ltp b/tools/pounder21/test_scripts/ltp
-index fb70c63..fce09eb 100755
---- a/tools/pounder21/test_scripts/ltp
-+++ b/tools/pounder21/test_scripts/ltp
-@@ -19,7 +19,7 @@
- # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- # 02111-1307, USA.
- 
--LTPRUNALL=`ls $POUNDER_HOME/../../runltp`
-+LTPRUNALL=`ls $POUNDER_TMPDIR/opt/ltp/runltp`
- 
- # Catch errors
- LOGFILE=/proc/$$/fd/1
-@@ -27,6 +27,10 @@ OLD_ERRORS=`egrep -c "FAIL  :" $LOGFILE`
- 
- "$LTPRUNALL"
- 
-+if [ $? -ne 0 ]; then
-+	exit 255
-+fi
-+
- # Catch errors
- NEW_ERRORS=`egrep -c "FAIL  :" $LOGFILE`
- ERRORS=$(( NEW_ERRORS - OLD_ERRORS ))
-diff --git a/tools/pounder21/test_scripts/memtest b/tools/pounder21/test_scripts/memtest
-index 3a6bd1f..841fee7 100755
---- a/tools/pounder21/test_scripts/memtest
-+++ b/tools/pounder21/test_scripts/memtest
-@@ -26,19 +26,9 @@ if [ ! -f "$POUNDER_OPTDIR/memtest.sh" ]; then
- 	exit -1
- fi
- 
--# How much RAM do we have?
--RAM=`cat /proc/meminfo | grep MemTotal | awk -F " " '{print $2}'`
--SPACE_REQUIRED=`expr $RAM \* 2`
--
--# Do we have enough space?
- MEMTESTDIR="$POUNDER_TMPDIR/memtest/"
- rm -rf "$MEMTESTDIR"
- mkdir -p "$MEMTESTDIR"
--FREE_SPACE=`df -k -P "$MEMTESTDIR" | tail -n 1 | awk -F " " '{print $4}'`
--if [ "$FREE_SPACE" -lt "$SPACE_REQUIRED" ]; then
--	echo "Insufficient space; not running memtest."
--	exit -1
--fi
- 
- # Did we see any failures?
- LOGFILE=/proc/$$/fd/1
-@@ -46,7 +36,9 @@ OLD_ERRORS=`egrep -ic "(err|fail|invalid|cannot|denied|diff)" $LOGFILE`
- 
- # Run the test
- cd "$POUNDER_OPTDIR"
--NR_PASSES=2 TEST_DIR="$MEMTESTDIR" SOURCE_FILE="$POUNDER_OPTDIR/linux-2.6.18.tar.gz" ./memtest.sh
-+cp "$POUNDER_OPTDIR/linux-2.6.39.tar.bz2" "$MEMTESTDIR/linux-2.6.39.tar.bz2"
-+#NR_PASSES=2 TEST_DIR="$MEMTESTDIR" SOURCE_FILE="$POUNDER_OPTDIR/linux-2.6.39.tar.gz" 
-+./memtest.sh
- 
- # Now clean up
- rm -rf "$POUNDER_TMPDIR/memtest/"
-diff --git a/tools/pounder21/test_scripts/nfs b/tools/pounder21/test_scripts/nfs
-index ca335dd..94d45c9 100755
---- a/tools/pounder21/test_scripts/nfs
-+++ b/tools/pounder21/test_scripts/nfs
-@@ -19,7 +19,7 @@
- # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- # 02111-1307, USA.
- 
--if [ -z "$NFS_SERVER" ]; then
-+if [ -z "$NFS_SERVER" -o "$NFS_SERVER" == "0" ]; then
- 	echo "NFS server not configured."
- 	exit 255
- fi
-diff --git a/tools/pounder21/test_scripts/passloop.sh b/tools/pounder21/test_scripts/passloop.sh
-index 8af9b18..72b6a30 100755
---- a/tools/pounder21/test_scripts/passloop.sh
-+++ b/tools/pounder21/test_scripts/passloop.sh
-@@ -19,6 +19,5 @@
- # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- # 02111-1307, USA.
- 
--
- $POUNDER_HOME/timed_loop 1 $POUNDER_HOME/test_scripts/pass.sh
- exit $?
-diff --git a/tools/pounder21/test_scripts/ping_nfs_server b/tools/pounder21/test_scripts/ping_nfs_server
-index 6b510e0..ebcf233 100755
---- a/tools/pounder21/test_scripts/ping_nfs_server
-+++ b/tools/pounder21/test_scripts/ping_nfs_server
-@@ -19,7 +19,7 @@
- # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- # 02111-1307, USA.
- 
--if [ -z "$NFS_SERVER" ]; then
-+if [ -z "$NFS_SERVER" -o "$NFS_SERVER" == "0" ]; then
- 	echo "NFS server not configured."
- 	exit -1
- fi
-diff --git a/tools/pounder21/test_scripts/random_syscall b/tools/pounder21/test_scripts/random_syscall
-index ee290f1..823a4bb 100755
---- a/tools/pounder21/test_scripts/random_syscall
-+++ b/tools/pounder21/test_scripts/random_syscall
-@@ -58,6 +58,7 @@ wait
- 
- # Save another copy of dmesg
- dmesg > "$POUNDER_TMPDIR/randasys-after"
-+echo "CECHK 5"
- 
- # Diff
- DMESG_DIFF_LINES=`diff "$POUNDER_TMPDIR/randasys-before" "$POUNDER_TMPDIR/randasys-after" | wc -l`
-diff --git a/tools/pounder21/test_scripts/simpleD b/tools/pounder21/test_scripts/simpleD
-new file mode 100755
-index 0000000..0fddc95
+diff --git a/testcases/kernel/mem/ksm/ksm05.c b/testcases/kernel/mem/ksm/ksm05.c
+new file mode 100644
+index 0000000..d21d95e
 --- /dev/null
-+++ b/tools/pounder21/test_scripts/simpleD
-@@ -0,0 +1,4 @@
-+#!/bin/sh
-+echo simpleD running....
-+sleep 100
-+exit  $?
-diff --git a/tools/pounder21/test_scripts/time_consistency b/tools/pounder21/test_scripts/time_consistency
-index 4a8a2bc..3d4dae7 100755
---- a/tools/pounder21/test_scripts/time_consistency
-+++ b/tools/pounder21/test_scripts/time_consistency
-@@ -25,7 +25,6 @@ LOGFILE=/proc/$$/fd/1
- OLD_ERRORS=`grep ^--- $LOGFILE | wc -l`
- 
- $POUNDER_HOME/timed_loop 600 "$POUNDER_SRCDIR/time_tests/inconsistency-check"
--
- # Can we find any new errors?
- NEW_ERRORS=`grep ^--- $LOGFILE | wc -l`
- 
-diff --git a/tools/pounder21/test_scripts/time_drift b/tools/pounder21/test_scripts/time_drift
-index a92efd3..5bdbfdd 100755
---- a/tools/pounder21/test_scripts/time_drift
-+++ b/tools/pounder21/test_scripts/time_drift
-@@ -19,7 +19,7 @@
- # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- # 02111-1307, USA.
- 
--if [ -z "$NTP_SERVER" ]; then
-+if [ -z "$NTP_SERVER" -o "$NTP_SERVER" == "0" ]; then
- 	echo "NTP server is not configured."
- 	exit 255
- fi
-@@ -35,19 +35,25 @@ DFT=500
- LOGFILE=/proc/$$/fd/1
- 
- # Why do we need this?  Output is already being logged!
--#cp -f $LOGFILE $POUNDER_TMPDIR/ntpdrift-$$
-+cp -f $LOGFILE $POUNDER_TMPDIR/ntpdrift-$$
- 
- # Do we have a python interpreter?
- PYTHON=`which python`
- if [ -n "$PYTHON" -a -x "$PYTHON" ]; then
--	$POUNDER_HOME/timed_loop 900 "$POUNDER_SRCDIR/time_tests/drift-test.py" $NTP_SERVER $FREQ
-+		$POUNDER_HOME/timed_loop 900 "$POUNDER_SRCDIR/time_tests/drift-test.py" $NTP_SERVER $FREQ
- else
- 	echo "There is no python interpreter installed.  Aborting."
- 	exit -1
- fi
- 
--# Did we see any failures?
-+# Did drift-test.py fail to run properly?
-+if [ $? -ne 0 ]; then
-+	exit 1
-+fi
++++ b/testcases/kernel/mem/ksm/ksm05.c
+@@ -0,0 +1,184 @@
++/*
++ * KSM - NULL pointer dereference in ksm_do_scan() (CVE-2011-2183)
++ *
++ * This is a testcase from upstream commit:
++ * 2b472611a32a72f4a118c069c2d62a1a3f087afd.
++ *
++ * an exiting task can race against ksmd::scan_get_next_rmap_item
++ * (http://lkml.org/lkml/2011/6/1/742) easily triggering a NULL pointer
++ * dereference in ksmd.
++ * ksm_scan.mm_slot == &ksm_mm_head with only one registered mm
++ *
++ * CPU 1 (__ksm_exit)          CPU 2 (scan_get_next_rmap_item)
++ *                             list_empty() is false
++ * lock                        slot == &ksm_mm_head
++ * list_del(slot->mm_list)
++ * (list now empty)
++ * unlock
++ *                              lock
++ *                              slot = list_entry(slot->mm_list.next)
++ *                              (list is empty, so slot is still ksm_mm_head)
++ *                              unlock
++ *                              slot->mm == NULL ... Oops
++ *
++ * Close this race by revalidating that the new slot is not simply the list
++ * head again.
++ *
++ * Test Prerequisites:
++ *
++ * *) ksm and ksmtuned daemons need to be disabled. Otherwise, it could
++ *    distrub the testing as they also change some ksm tunables depends
++ *    on current workloads.
++ *
++ * Copyright (C) 2011  Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
 +
-+# Did we see any failures in actual drift test?
- ERRORS=0
-+cp -f $LOGFILE $POUNDER_TMPDIR/ntpdrift2-$$
- diff -u $POUNDER_TMPDIR/ntpdrift-$$ $LOGFILE | while read a b c d e field drift garbage; do
- 	if [ "$field" != "drift:" ]; then
- 		continue;
-diff --git a/tools/pounder21/test_scripts/xterm_stress b/tools/pounder21/test_scripts/xterm_stress
-index 8abeaf6..370d2a6 100755
---- a/tools/pounder21/test_scripts/xterm_stress
-+++ b/tools/pounder21/test_scripts/xterm_stress
-@@ -32,7 +32,7 @@ NEED_TO_START_X=1
- #fi
- 
- # Kill test if we don't want it.
--if [ $DO_X_TESTS -eq 0 ]; then
-+if [ -z "$DO_X_TESTS" -o "$DO_X_TESTS" == "0" ]; then
- 	echo "X11 testing is off."
- 	exit -1
- fi
++#include "test.h"
++#include "usctest.h"
++#include "../include/mem.h"
++
++char *TCID = "ksm05";
++int TST_TOTAL = 1;
++
++#ifdef HAVE_MADV_MERGEABLE
++
++static int ksm_run_orig;
++
++static void sighandler(int sig);
++static void write_ksm_run(int val);
++
++int main(int argc, char *argv[])
++{
++	int lc, status;
++	long ps;
++	char *msg;
++	pid_t pid;
++	void *ptr;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++
++	ps = sysconf(_SC_PAGESIZE);
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		switch (pid = fork()) {
++		case -1:
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		case 0:
++			if (posix_memalign(&ptr, ps, ps) < 0)
++				tst_brkm(TBROK|TERRNO, cleanup,
++						"posix_memalign");
++			if (madvise(ptr, ps, MADV_MERGEABLE) < 0)
++				tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++			*(char *)NULL = 0; /* SIGSEGV occurs as expected. */
++			exit(0);
++		default:
++			break;
++		}
++		if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_brkm(TBROK, cleanup,
++					"invalid signal received: %d", status);
++	}
++
++	tst_resm(TPASS, "still alive.");
++	cleanup();
++	tst_exit();
++}
++
++static void sighandler(int sig)
++{
++	_exit((sig == SIGSEGV) ? 0 : sig);
++}
++
++static void write_ksm_run(int val)
++{
++	int fd;
++	char buf[BUFSIZ];
++
++	sprintf(buf, "%d", val);
++	fd = open(PATH_KSM "run", O_WRONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++	if (write(fd, buf, 1) != 1)
++		tst_brkm(TBROK|TERRNO, cleanup, "write");
++	close(fd);
++}
++
++void setup(void)
++{
++	int fd;
++	char buf[BUFSIZ];
++
++	tst_require_root(NULL);
++
++	if (tst_kvercmp(2, 6, 32) < 0)
++		tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required.");
++
++	tst_sig(FORK, sighandler, cleanup);
++	TEST_PAUSE;
++
++	/* save original /sys/kernel/mm/ksm/run value */
++	fd = open(PATH_KSM "run", O_RDONLY);
++	if (fd == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "open");
++	if (read(fd, buf, 1) != 1)
++		tst_brkm(TBROK|TERRNO, cleanup, "read");
++	close(fd);
++	ksm_run_orig = atoi(buf);
++
++	/* echo 1 > /sys/kernel/mm/ksm/run */
++	if (ksm_run_orig != 1)
++		write_ksm_run(1);
++}
++
++void cleanup(void)
++{
++	/* restore /sys/kernel/mm/ksm/run value */
++	if (ksm_run_orig != 1)
++		write_ksm_run(ksm_run_orig);
++
++	TEST_CLEANUP;
++}
++#else
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "no MADV_MERGEABLE found.");
++}
++#endif
 
---------------1.7.4.1
+--------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-uberSVN's rich system and user administration capabilities and model 
-configuration take the hassle out of deploying and managing Subversion and 
-the tools developers use with it. Learn more about uberSVN and get a free 
-download at:  http://p.sf.net/sfu/wandisco-dev2dev
-
---------------1.7.4.1
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. 
+http://p.sf.net/sfu/wandisco-dev2dev
+--------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -407,7 +309,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------1.7.4.1--
+--------------1.7.6--
 
 
 
