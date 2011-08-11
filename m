@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QwuhH-0006LI-FI
-	for ltp-list@lists.sourceforge.net; Fri, 26 Aug 2011 11:35:39 +0000
-Date: Fri, 26 Aug 2011 13:40:54 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QrY7v-000718-2V
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 16:28:59 +0000
+Date: Thu, 11 Aug 2011 18:32:58 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110826114054.GB17499@saboteur.suse.cz>
-References: <mailman.342816.1314268291.22889.ltp-list@lists.sourceforge.net>
-	<20110825172626.GA6398@us.ibm.com>
+Message-ID: <20110811163258.GB21959@saboteur.suse.cz>
+References: <120e211c585b71f27c1bfc13d48e0f535b3201d5.1312279518.git.czhang@redhat.com>
+	<1313075860-20655-1-git-send-email-czhang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110825172626.GA6398@us.ibm.com>
-Subject: Re: [LTP] [PATCH 4/7 ver2 w/attachment] Changes to pounder's build
- scripts (Cyril Hrubis)
+In-Reply-To: <1313075860-20655-1-git-send-email-czhang@redhat.com>
+Subject: Re: [LTP] [PATCH v3] mm/ksm05: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,37 +25,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: James Takahashi <takahash@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Lucy was a summer intern here at IBM, but her internship has ended.  I'll
-> try to resolve any open issues with her pounder patch submission.  Please
-> direct any future comments to me.
-
-Okay.
-
-> > Patching LTP before build from this build script is not really long term
-> > solution. We should get these patches applied to LTP (as it should have
-> > been done long time ago) and drop this logic entrirely.
-> 
-> I agree that this smells like a workaround, not a long term solution.
-> 
-> I'll investigate whether the setregid02 patch is still needed or not,
-> then I'll resubmit this patch.
-
-Ideally if these patches are needed, they should be merged into LTP and
-dropped from here. (I've found at least two LTP patches there).
+Commited, however it seems like half of the ksm tests are missing some
+checks. On my workstation (which is obviously not a numa system) half of
+them prints that numa system is required while the other half crashes
+and segfaults.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-EMC VNX: the world's simplest storage, starting under $10K
-The only unified storage solution that offers unified management 
-Up to 160% more powerful than alternatives and 25% more efficient. 
-Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. 
+http://p.sf.net/sfu/wandisco-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
