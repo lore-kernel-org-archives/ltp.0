@@ -1,27 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qr8z2-0004XN-Lu
-	for ltp-list@lists.sourceforge.net; Wed, 10 Aug 2011 13:38:08 +0000
-Date: Wed, 10 Aug 2011 15:42:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110810134202.GB8687@saboteur.suse.cz>
-References: <260174ADA4D63F4AA543B9C81F2DE712B34F@POCITMSEXMB01.LntUniverse.com>
-	<CAMhs6YzX0srwbYm778ro7o7zLGKZfmpqrRaPUgBTzX+a4arRCQ@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B601@POCITMSEXMB01.LntUniverse.com>
-	<CAMhs6Yy76dinKx_SSXfB90+76g3iUL6okPUNgETDMiVHpCrsgw@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B6A2@POCITMSEXMB01.LntUniverse.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B7AB@POCITMSEXMB01.LntUniverse.com>
-	<CAMhs6Yy17=HN_zc_4yC=1_GYLjisVq6UUR5UU0Kna_Syas154w@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B87B@POCITMSEXMB01.LntUniverse.com>
-	<CAGH67wTOh0aHCxrS0gdB0CjbBnFfJeNZyD6H9d0ep2MpkKTPhQ@mail.gmail.com>
-	<20110810131010.GA8687@saboteur.suse.cz>
-MIME-Version: 1.0
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lgliang@linux.vnet.ibm.com>) id 1QrdFN-000645-MC
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 21:57:01 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QrdFM-0000an-V8
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 21:57:01 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e33.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id p7BLn13o021290
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Aug 2011 15:49:01 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p7BLtZrL208030
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Aug 2011 15:55:35 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id p7BFtYD9008869
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Aug 2011 09:55:34 -0600
+Received: from taco.beaverton.ibm.com ([9.47.29.114])
+	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p7BFtYAj008856
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Aug 2011 09:55:34 -0600
+Date: Thu, 11 Aug 2011 14:55:40 -0700
+From: Lucy Liang <lgliang@linux.vnet.ibm.com>
+Message-ID: <20110811215540.GA9414@us.ibm.com>
+Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110810131010.GA8687@saboteur.suse.cz>
-Subject: Re: [LTP] How to test Linux Kernel using LTP on Beagleboard (ARM
- Cortex-A8 based board)
+Subject: [LTP] [PATCH 0/7] Pounder Overhaul
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,27 +42,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
 Hi!
-> > Use a more recent version of LTP and see if the issues persist.
-> 
-> Grr the download link on LTP sf pages still points to this ancient
-> version. I'll try to figure out what is wrong there.
 
-Found it. Changed the default download in the sf.net web gui to
-ltp-2011-06-06.bz2.
+Some of you might have noticed a directory called pounder21 sitting at
+ltp-full-xxxxxxxx/tools/pounder21 and are probably wondering what it's
+used for. In short, pounder is a test suite originally developed by IBM
+that provides a framework for building, scheduling, running, and logging
+results for user-defined sets of tests.  Almost any test or test suite
+may be run as a subtest from within this framework, including the LTP test
+suite. Unfortunately, it has been neglected for a good while, rendering it
+out of date and basically unusable for quite some time. However, the
+following patches will make the necessary updates to pounder that will make
+it work again.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Pounder is currently used by IBM to test its systems, but we would really
+like to get pounder out to the public and make more usable by everyone.
+The new version of pounder comes with more comphrehensive pieces of
+documentation that describe how pounder works and how to use it as well as
+provides additional functionality that will make building, running, and
+customizing pounder by users much easier.
+
+A bulk of the old build problems, issues with compatibility, file dependencies,
+outdated packages, etc. should also be fixed in the new version. These
+patches are lengthy, but they'll be well worth it to get pounder up and
+running again. The patches only apply to files in the tools/pounder21/
+directory, so LTP will remain untouched.
+
+(warning: Patch 6 contains binary info that seems like only git understands,
+so should use something like git-apply rather than normal patch for applying
+patch 6)
+
+Lucy Liang
 
 ------------------------------------------------------------------------------
-uberSVN's rich system and user administration capabilities and model 
-configuration take the hassle out of deploying and managing Subversion and 
-the tools developers use with it. Learn more about uberSVN and get a free 
-download at:  http://p.sf.net/sfu/wandisco-dev2dev
+FREE DOWNLOAD - uberSVN with Social Coding for Subversion.
+Subversion made easy with a complete admin console. Easy 
+to use, easy to manage, easy to install, easy to extend. 
+Get a Free download of the new open ALM Subversion platform now.
+http://p.sf.net/sfu/wandisco-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
