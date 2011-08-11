@@ -1,27 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qr92c-0004fb-Ql
-	for ltp-list@lists.sourceforge.net; Wed, 10 Aug 2011 13:41:50 +0000
-Date: Wed, 10 Aug 2011 15:45:43 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QrVvP-0006dX-UT
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 14:07:55 +0000
+Date: Thu, 11 Aug 2011 16:11:55 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110810134543.GD8687@saboteur.suse.cz>
-References: <CAMhs6YzX0srwbYm778ro7o7zLGKZfmpqrRaPUgBTzX+a4arRCQ@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B601@POCITMSEXMB01.LntUniverse.com>
-	<CAMhs6Yy76dinKx_SSXfB90+76g3iUL6okPUNgETDMiVHpCrsgw@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B6A2@POCITMSEXMB01.LntUniverse.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B7AB@POCITMSEXMB01.LntUniverse.com>
-	<CAMhs6Yy17=HN_zc_4yC=1_GYLjisVq6UUR5UU0Kna_Syas154w@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B87B@POCITMSEXMB01.LntUniverse.com>
-	<CAGH67wTOh0aHCxrS0gdB0CjbBnFfJeNZyD6H9d0ep2MpkKTPhQ@mail.gmail.com>
-	<20110810131010.GA8687@saboteur.suse.cz>
-	<20110810134202.GB8687@saboteur.suse.cz>
+Message-ID: <20110811141155.GB16435@saboteur.suse.cz>
+References: <15c8ac922d2c4548bb9171b55df4b143b65e21d4.1312342893.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110810134202.GB8687@saboteur.suse.cz>
-Subject: Re: [LTP] How to test Linux Kernel using LTP on Beagleboard (ARM
- Cortex-A8 based board)
+In-Reply-To: <15c8ac922d2c4548bb9171b55df4b143b65e21d4.1312342893.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] syscalls/mprotect02: hide sigfault info from dmesg
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,27 +24,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-> > Grr the download link on LTP sf pages still points to this ancient
-> > version. I'll try to figure out what is wrong there.
+Hi!
+> mprotect02 triggered an expected SIGSEGV in test, but it puts this
+> information in dmesg, which might cause confusion when checking results:
 > 
-> Found it. Changed the default download in the sf.net web gui to
-> ltp-2011-06-06.bz2.
+> mprotect02[11416]: segfault at 7f9ca0060000 ip 0000003a8e3382ff sp 00007fff7aeecb68 error 6 in libc-2.12.so[3a8e200000+197000]
+> 
+> This patch hides the sigfault information from dmesg.
+> 
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  testcases/kernel/syscalls/mprotect/mprotect02.c |   20 +++++++++++++-------
+>  1 files changed, 13 insertions(+), 7 deletions(-)
+> 
 
-Actually it's 20110606 (I got it right in the gui, just misspelled
-here).
+> diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
+> index 97250c5..1d1fad0 100644
+> --- a/testcases/kernel/syscalls/mprotect/mprotect02.c
+> +++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
+> @@ -60,6 +60,7 @@
+>  
+>  #include "safe_macros.h"
+>  
+> +static void sighandler(int sig);
+>  static void cleanup(void);
+>  static void setup(void);
+>  
+> @@ -121,13 +122,6 @@ int main(int ac, char **av)
+>  		if (waitpid(pid, &status, 0) == -1)
+>  			tst_brkm(TBROK|TERRNO, cleanup, "waitpid failed");
+>  
+> -		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+> -			tst_resm(TPASS, "got SIGSEGV as expected");
+> -		else
+> -			tst_brkm(TBROK, cleanup,
+> -			    "child exited abnormally; wait status = %d",
+> -			    status);
+> -
+>  		/* Change the protection to WRITE. */
+>  		TEST(mprotect(addr, sizeof(buf), PROT_WRITE));
+>  
+> @@ -185,9 +179,21 @@ int main()
+>  
+>  #endif /* UCLINUX */
+>  
+> +static void sighandler(int sig)
+> +{
+> +	if (sig == SIGSEGV) {
+> +		tst_resm(TPASS, "got SIGSEGV as expected");
+> +		tst_exit();
+> +	} else
+> +		tst_brkm(TBROK, cleanup, "child exited abnormally: %d",
+> +			sig);
+> +}
+
+Same as previous, please use the signal to propagete the return value to
+parent using _exit().
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-uberSVN's rich system and user administration capabilities and model 
-configuration take the hassle out of deploying and managing Subversion and 
-the tools developers use with it. Learn more about uberSVN and get a free 
-download at:  http://p.sf.net/sfu/wandisco-dev2dev
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. 
+http://p.sf.net/sfu/wandisco-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
