@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <serge.hallyn@canonical.com>) id 1QoF4R-0006df-8R
-	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 13:31:43 +0000
-Received: from youngberry.canonical.com ([91.189.89.112])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QoF4O-0003Nr-D9
-	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 13:31:41 +0000
-Date: Tue, 2 Aug 2011 08:15:43 -0500
-From: "Serge E. Hallyn" <serge.hallyn@canonical.com>
-Message-ID: <20110802131543.GA17783@sergelap>
-References: <1609707634.578233.1312258810042.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
-	<474812428.578270.1312259338813.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
-	<CAGH67wRZx=iRqR0fMEuGV83Gz686Bq1nLjC8rtJpFCYCT5QWVA@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <czhang@redhat.com>) id 1QrXEs-0006Jd-7m
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 15:32:06 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QrXEr-0008Hu-CB
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 15:32:06 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p7BFVxI2017452
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Aug 2011 11:31:59 -0400
+From: Caspar Zhang <czhang@redhat.com>
+Date: Thu, 11 Aug 2011 23:30:56 +0800
+Message-Id: <537c38d30cd527a91b97200b11b5714ce9a2785a.1313075996.git.czhang@redhat.com>
+In-Reply-To: <15c8ac922d2c4548bb9171b55df4b143b65e21d4.1312342893.git.czhang@redhat.com>
+References: <15c8ac922d2c4548bb9171b55df4b143b65e21d4.1312342893.git.czhang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAGH67wRZx=iRqR0fMEuGV83Gz686Bq1nLjC8rtJpFCYCT5QWVA@mail.gmail.com>
-Subject: Re: [LTP] Running only kernel syscall tests
+Content-Type: multipart/mixed; boundary="------------1.7.6"
+Subject: [LTP] [PATCH v2] syscalls/mprotect02: hide sigfault info from dmesg
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +30,122 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> On Mon, Aug 1, 2011 at 9:28 PM, Shakthi Kannan <skannan@redhat.com> wrote:
-> > Hi,
-> >
-> > Are there any options to runltp or any other means to just run the kernel syscall tests?
-> 
-> runltp -f syscalls
-> 
-> > How long does it take to run the runalltests.sh on an i386/x86_64 machine?
-> 
-> Varies depending on the speed of the machine and other factors.
+This is a multi-part message in MIME format.
+--------------1.7.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-I'm curious - what exactly do people find they can run reliably with no
-hangs on a known good system?  On ec2 instances I find even runltp -f
-syscalls to hang.  I know, I know :)  I do intend to look into it.  But
-is there anything people find they can use as a gross "this works on good
-kernel, let's see if it breaks on test kernel" metric?
 
--serge
+mprotect02 triggered an expected SIGSEGV in test, but it puts this
+information in dmesg, which might cause confusion when checking results:
+
+mprotect02[11416]: segfault at 7f9ca0060000 ip 0000003a8e3382ff sp 00007fff7aeecb68 error 6 in libc-2.12.so[3a8e200000+197000]
+
+This patch hides the sigfault information from dmesg.
+
+Signed-off-by: Caspar Zhang <czhang@redhat.com>
+---
+ testcases/kernel/syscalls/mprotect/mprotect02.c |   31 +++++++++++++++++------
+ 1 files changed, 23 insertions(+), 8 deletions(-)
+
+
+--------------1.7.6
+Content-Type: text/x-patch;
+	name="0001-syscalls-mprotect02-hide-sigfault-info-from-dmesg.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-syscalls-mprotect02-hide-sigfault-info-from-dmesg.patch"
+
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
+index 97250c5..301391a 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect02.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
+@@ -60,6 +60,7 @@
+ 
+ #include "safe_macros.h"
+ 
++static void sighandler(int sig);
+ static void cleanup(void);
+ static void setup(void);
+ 
+@@ -114,19 +115,26 @@ int main(int ac, char **av)
+ 
+ 		if (pid == 0) {
+ 			(void)memcpy(addr, buf, strlen(buf));
+-			printf("memcpy did not generate SIGSEGV\n");
+-			exit(1);
++			exit(255);
+ 		}
+ 
+ 		if (waitpid(pid, &status, 0) == -1)
+ 			tst_brkm(TBROK|TERRNO, cleanup, "waitpid failed");
+-
+-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+-			tst_resm(TPASS, "got SIGSEGV as expected");
+-		else
++		if (!WIFEXITED(status))
++			tst_brkm(TBROK, cleanup, "child exited abnormally "
++					"with status: %d", status);
++		switch (status) {
++		case 255:
+ 			tst_brkm(TBROK, cleanup,
+-			    "child exited abnormally; wait status = %d",
+-			    status);
++					"memcpy did not generate SIGSEGV");
++		case 0:
++			tst_resm(TPASS, "got SIGSEGV as expected");
++			break;
++		default:
++			tst_brkm(TBROK, cleanup, "got unexpected signal: %d",
++					status);
++			break;
++		}
+ 
+ 		/* Change the protection to WRITE. */
+ 		TEST(mprotect(addr, sizeof(buf), PROT_WRITE));
+@@ -185,8 +193,14 @@ int main()
+ 
+ #endif /* UCLINUX */
+ 
++static void sighandler(int sig)
++{
++	_exit((sig == SIGSEGV) ? 0 : sig);
++}
++
+ static void setup()
+ {
++	tst_sig(FORK, sighandler, cleanup);
+ 
+ 	TEST_PAUSE;
+ 
+
+--------------1.7.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
-The must-attend event for mobile developers. Connect with experts. 
-Get tools for creating Super Apps. See the latest technologies.
-Sessions, hands-on labs, demos & much more. Register early & save!
-http://p.sf.net/sfu/rim-blackberry-1
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. 
+http://p.sf.net/sfu/wandisco-dev2dev
+--------------1.7.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.6--
+
+
+
