@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QwBfb-0002I5-0f
-	for ltp-list@lists.sourceforge.net; Wed, 24 Aug 2011 11:30:55 +0000
-Date: Wed, 24 Aug 2011 13:36:00 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QrW48-0004w5-HK
+	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 14:16:56 +0000
+Date: Thu, 11 Aug 2011 16:20:55 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110824113600.GA10574@saboteur.suse.cz>
-References: <4E525C68.4040903@redhat.com>
+Message-ID: <20110811142055.GC16435@saboteur.suse.cz>
+References: <20110811134320.GA15662@saboteur.suse.cz>
+	<253a16eea6b5f4f1c5231132895c04d7b697f5bc.1313071419.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E525C68.4040903@redhat.com>
-Subject: Re: [LTP] [PATCH] memcg_test_2.c: clear all fields of sigaction
- structure
+In-Reply-To: <253a16eea6b5f4f1c5231132895c04d7b697f5bc.1313071419.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH v3] mm/vma01: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,8 +25,8 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, jburke@redhat.com
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
 Commited, thanks.
@@ -36,10 +36,11 @@ Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-EMC VNX: the world's simplest storage, starting under $10K
-The only unified storage solution that offers unified management 
-Up to 160% more powerful than alternatives and 25% more efficient. 
-Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. 
+http://p.sf.net/sfu/wandisco-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
