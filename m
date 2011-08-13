@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QrVvP-0006dX-UT
-	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 14:07:55 +0000
-Date: Thu, 11 Aug 2011 16:11:55 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110811141155.GB16435@saboteur.suse.cz>
-References: <15c8ac922d2c4548bb9171b55df4b143b65e21d4.1312342893.git.czhang@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1Qs5OE-0007Ux-9A
+	for ltp-list@lists.sourceforge.net; Sat, 13 Aug 2011 04:00:02 +0000
+Received: from mail-qw0-f47.google.com ([209.85.216.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Qs5OD-00046a-Gc
+	for ltp-list@lists.sourceforge.net; Sat, 13 Aug 2011 04:00:02 +0000
+Received: by qwh5 with SMTP id 5so2491962qwh.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 12 Aug 2011 20:59:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <15c8ac922d2c4548bb9171b55df4b143b65e21d4.1312342893.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/mprotect02: hide sigfault info from dmesg
+In-Reply-To: <0F68B52D2432864190BC72F760407FE9118354BDE5@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+References: <0F68B52D2432864190BC72F760407FE9118354BDE5@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+Date: Fri, 12 Aug 2011 20:59:55 -0700
+Message-ID: <CAGH67wSUQOd0h5Q1yZ0owyuGPWnGSY_ECB-cWC6PVx8ux4uisw@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Porting of LTP on Android - Patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,75 +30,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Manoj Kumar <Manoj_Kr@hcl.com>
 
-Hi!
-> mprotect02 triggered an expected SIGSEGV in test, but it puts this
-> information in dmesg, which might cause confusion when checking results:
-> 
-> mprotect02[11416]: segfault at 7f9ca0060000 ip 0000003a8e3382ff sp 00007fff7aeecb68 error 6 in libc-2.12.so[3a8e200000+197000]
-> 
-> This patch hides the sigfault information from dmesg.
-> 
-> Signed-off-by: Caspar Zhang <czhang@redhat.com>
-> ---
->  testcases/kernel/syscalls/mprotect/mprotect02.c |   20 +++++++++++++-------
->  1 files changed, 13 insertions(+), 7 deletions(-)
-> 
+On Mon, Aug 8, 2011 at 6:13 AM, Anupam Srivastava - ERS, HCL Tech
+<Anupam_Srivastava@hcl.com> wrote:
+> Hi,
+>
+>
+>
+> This is in continuation of my last mail sent to you regarding the porting of
+> LTP on Android 2.2 Froyo dated Aug 04, 2010.
+>
+> We have ported LTP open source (Version: ltp-full-20110228) on Android 2.2
+> Froyo. It will validate the reliability, robustness, and stability of
+> Android. We want to submit the same to open source community.
 
-> diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
-> index 97250c5..1d1fad0 100644
-> --- a/testcases/kernel/syscalls/mprotect/mprotect02.c
-> +++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
-> @@ -60,6 +60,7 @@
->  
->  #include "safe_macros.h"
->  
-> +static void sighandler(int sig);
->  static void cleanup(void);
->  static void setup(void);
->  
-> @@ -121,13 +122,6 @@ int main(int ac, char **av)
->  		if (waitpid(pid, &status, 0) == -1)
->  			tst_brkm(TBROK|TERRNO, cleanup, "waitpid failed");
->  
-> -		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
-> -			tst_resm(TPASS, "got SIGSEGV as expected");
-> -		else
-> -			tst_brkm(TBROK, cleanup,
-> -			    "child exited abnormally; wait status = %d",
-> -			    status);
-> -
->  		/* Change the protection to WRITE. */
->  		TEST(mprotect(addr, sizeof(buf), PROT_WRITE));
->  
-> @@ -185,9 +179,21 @@ int main()
->  
->  #endif /* UCLINUX */
->  
-> +static void sighandler(int sig)
-> +{
-> +	if (sig == SIGSEGV) {
-> +		tst_resm(TPASS, "got SIGSEGV as expected");
-> +		tst_exit();
-> +	} else
-> +		tst_brkm(TBROK, cleanup, "child exited abnormally: %d",
-> +			sig);
-> +}
+...
 
-Same as previous, please use the signal to propagete the return value to
-parent using _exit().
+1. This really should use git, not a patch against a release version.
+2. You should use unified diffs.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+-Garrett
 
 ------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
-tools developers use with it. 
+FREE DOWNLOAD - uberSVN with Social Coding for Subversion.
+Subversion made easy with a complete admin console. Easy 
+to use, easy to manage, easy to install, easy to extend. 
+Get a Free download of the new open ALM Subversion platform now.
 http://p.sf.net/sfu/wandisco-dev2dev
 _______________________________________________
 Ltp-list mailing list
