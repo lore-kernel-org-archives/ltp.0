@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qyi01-0005dE-Mh
-	for ltp-list@lists.sourceforge.net; Wed, 31 Aug 2011 10:26:25 +0000
-Date: Wed, 31 Aug 2011 12:26:20 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qu0FD-00037S-GZ
+	for ltp-list@lists.sourceforge.net; Thu, 18 Aug 2011 10:54:39 +0000
+Date: Thu, 18 Aug 2011 12:59:13 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110831102620.GA32395@saboteur.suse.cz>
-References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
-	<201108292342.IBI64522.FJOFMVSOLQOtHF@I-love.SAKURA.ne.jp>
+Message-ID: <20110818105913.GA19491@saboteur.suse.cz>
+References: <1310538972-27982-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<1311143742-16746-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201108292342.IBI64522.FJOFMVSOLQOtHF@I-love.SAKURA.ne.jp>
-Subject: Re: [LTP] [linux-3.1] TOMOYO Linux update
+In-Reply-To: <1311143742-16746-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] posix:sigset:fix the wrong use of sigset() in
+ 6-1.c and 7-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,47 +26,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I updated TOMOYO testcases for Linux 3.1.
-> http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.4.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=5388&root=tomoyo
-> 4378 lines, 162,176 bytes.
-> MD5: 4b1ce1f661a9b102b44ae59e495ee3d6
+> v1->v2:
+> 	v1:use the sigset for twice times.
+> 	v2:not use sigset for twice, but just check the SIG_ERR.
+> 
+> According to the posix IEEE Std 1003.1-2008:Upon successful completion,
+> sigset() shall return SIG_HOLD if the signal had been blocked and the
+> signal's previous disposition if it had not been blocked.
+> 
+> In these two test instances, the first time when sigset() is called, it
+> then calls the __sigprocmask() to mask the signal to SIG_BLOCK and checks
+> the old set to see if the signal was blocked previously, and it's not.
+> So it will not return SIG_HOLD, but the sigset() already runs successfully.
+> 
+> Then, after the first time we calls the sigset, the signal has already be
+> blocked, and now, calls the sigset() second, it will return SIG_HOLD, since
+> the signal had been blocked when we called the sigset() first time.
+> 
+> We are now checking the return value of the first time calling. So, if
+> it fails, it'll return SIG_ERR instead. Just need to check the SIG_ERR.
+> 
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-I'm glad to see the patch, however there are a few things that needs to
-be settled before applying to LTP.
+Applied a little different patch for sigset/7-1.c (but added your
+Signed-of-by so you have credit for the work too).
 
-* Please next time send the patch attached to the mail, ideally inlined
-  as well as attachement. It's much easier for me to review it that way.
-  Or even better If you had a git repository on sf.net I could pull
-  changes directly from there.
+I'll apply the part for sigset/6-1.c.
 
-* Including <linux/sched.h> instead of <sched.h> may introduce problems
-  in future.
-
-  Look here how to fix the problem with sched.h:
-
-  http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp.git;a=commit;h=019ed6c71369217ac02c399abb12abb93bd527f3
-
-  The clone flags are GNU extensions and Ulrich 'fixed' these, so they
-  aren't defined unless you say they should.
-
-There are some minor coding style violations and useless statements. But
-I don't think there is a reason to force you to fix them. Just let me
-know if you wan't to know ;).
+Thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Special Offer -- Download ArcSight Logger for FREE!
-Finally, a world-class log management solution at an even better 
-price-free! And you'll get a free "Love Thy Logs" t-shirt when you
-download Logger. Secure your free ArcSight Logger TODAY!
-http://p.sf.net/sfu/arcsisghtdev2dev
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
