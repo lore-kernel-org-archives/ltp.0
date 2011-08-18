@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QrqKz-0005j9-0x
-	for ltp-list@lists.sourceforge.net; Fri, 12 Aug 2011 11:55:41 +0000
-Date: Fri, 12 Aug 2011 13:59:43 +0200
+	(envelope-from <chrubis@suse.de>) id 1Qu0hp-0002sb-9w
+	for ltp-list@lists.sourceforge.net; Thu, 18 Aug 2011 11:24:13 +0000
+Date: Thu, 18 Aug 2011 13:28:47 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110812115943.GB27650@saboteur.suse.cz>
-References: <1311302222-7280-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1311303451-7570-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20110818112847.GB19491@saboteur.suse.cz>
+References: <4E151B53.4050207@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1311303451-7570-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] sem_post:8-1:sleep to make sure child_3 get lock
- after child_2
+In-Reply-To: <4E151B53.4050207@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX] [PATCH] sched_setscheduler/17-5.c: Add the
+ missing scheduling policies.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,42 +25,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: tangchen <tangchen@cn.fujitsu.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
+> On linux, I found the scheduling policies are defined as follow:
 > 
-> If with no sleep, child_3 will preempt and get the lock before child_2
-> some time. It may fail the test case.
+> in /usr/include/bits/sched.h
 > 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  .../conformance/interfaces/sem_post/8-1.c          |    3 ++-
->  1 files changed, 2 insertions(+), 1 deletions(-)
+> /* Scheduling algorithms.  */
+> #define SCHED_OTHER             0
+> #define SCHED_FIFO              1
+> #define SCHED_RR                2
+> #ifdef __USE_GNU
+> # define SCHED_BATCH            3
+> # define SCHED_IDLE             5
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
-> index 165b094..37ed8a3 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
-> @@ -174,6 +174,7 @@ int main()
->  	}
->  	fprintf(stderr, "P: child_2: %d forked\n", c_2);
+> # define SCHED_RESET_ON_FORK    0x40000000
+> #endif
+> 
+> So besides SCHED_OTHER, SCHED_FIFO and SCHED_RR, there are another 
+> two policies, SCHED_BATCH and SCHED_IDLE. And 3 is a valid value 
+> for the scheduling policy, which causes the test returns UNSOLVED 
+> on linux system.
 >  
-> +	sleep(1);
->  	/* Make sure the two children has been waiting */
->  	/*do {
->  		sleep(1);
-> @@ -254,4 +255,4 @@ clean_up:
->  	sem_unlink(semname);
->  	sem_unlink(semname_1);
->  	return retval;
+> Here is the patch, please comment!
+> Thanks.:)
+> 
+> 
+> Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+> ---
+>  .../interfaces/sched_setscheduler/17-5.c           |   11 ++++++++++-
+>  1 files changed, 10 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c
+> index b4f90b3..652db27 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c
+> @@ -17,6 +17,11 @@
+>   *   2. Call sched_setscheduler with invalid args.
+>   *   3. Check that the policy and priority have not changed.
+>   */
+> +
+> +#ifdef __linux__
+> +#define _GNU_SOURCE
+> +#endif
+> +
+>  #include <sched.h>
+>  #include <stdio.h>
+>  #include <errno.h>
+> @@ -31,6 +36,10 @@ int main() {
+>  	invalid_policy = 0;
+>  	/* Linux does not treat minus value as invalid for policy */
+>  	while (invalid_policy == SCHED_OTHER ||
+> +#ifdef _GNU_SOURCE
+> +		invalid_policy == SCHED_BATCH ||
+> +		invalid_policy == SCHED_IDLE ||
+> +#endif
+>  		invalid_policy == SCHED_FIFO ||
+>  		invalid_policy == SCHED_RR)
+>  	invalid_policy++;
+> @@ -78,4 +87,4 @@ int main() {
+>  		printf("The policy has changed\n");
+>  	}
+>  	return PTS_FAIL;
 > -}
 > \ No newline at end of file
+> +}
 
-While this makes the probability of preempting smaller, the test still
-would fail under some cirscumstances. The correct solution would be
-check the semafore for number of waiting processes. And the code is
-allready there but was commented out some time ago and I wonder why... 
+Meanwhile we changed the invalid policy to INT_MAX, which seems to work
+fine. Thanks anyway.
 
 -- 
 Cyril Hrubis
@@ -71,8 +104,7 @@ chrubis@suse.cz
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
 user administration capabilities and model configuration. Take 
 the hassle out of deploying and managing Subversion and the 
-tools developers use with it. 
-http://p.sf.net/sfu/wandisco-dev2dev
+tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
