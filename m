@@ -2,23 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <czhang@redhat.com>) id 1QoBn2-0007fd-15
-	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 10:01:32 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QoBn1-0006yv-6g
-	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 10:01:32 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p72A1PBa004023
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Aug 2011 06:01:25 -0400
-From: Caspar Zhang <czhang@redhat.com>
-Date: Tue,  2 Aug 2011 18:00:45 +0800
-Message-Id: <b0a95140f81a60e6051f3effc5bdd4e35f3825f7.1312279196.git.czhang@redhat.com>
+	(envelope-from <chrubis@suse.de>) id 1QuMvh-0004vH-En
+	for ltp-list@lists.sourceforge.net; Fri, 19 Aug 2011 11:08:01 +0000
+Date: Fri, 19 Aug 2011 13:12:40 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110819111240.GA24503@saboteur.suse.cz>
+References: <1313743491-13887-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.6"
-Subject: [LTP] [PATCH] mm/include: add config.h header file
+Content-Disposition: inline
+In-Reply-To: <1313743491-13887-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] sigqueue:9-1:make the running user to nobody to
+ avoid test fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,67 +22,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-include/config.h is missing which leads to HAVE_MADV_MERGABLE macro not
-found. This causes some KSM-related tests failing.
-
-Signed-off-by: Caspar Zhang <czhang@redhat.com>
----
- testcases/kernel/mem/include/mem.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-
---------------1.7.6
-Content-Type: text/x-patch;
-	name="0001-mm-include-add-config.h-header-file.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-mm-include-add-config.h-header-file.patch"
-
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 778d403..9e6b72c 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -1,5 +1,6 @@
- #ifndef _MEM_H
- #define _MEM_H
-+#include "config.h"
- #include "test.h"
- #include "usctest.h"
- 
-
---------------1.7.6
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> According to the Linux kernel code, we know that the sigqueue is
+> allocated and queue the signal to it's list by the system call
+> rt_sigqueueinfo(2) which called by sigqueue(3) in this test code.
+> Meanwhile, if the signal is queued, it increase the user's sigpending
+> field. Then if it going to queue another signal, it read the rlimit of
+> the sigpending from the task's signal->rlim[] member and compare with
+> the user's current sigpending number.
+> So, it's the issue. The user who is running this code may have other
+> pending signals before this, and actually it does.
+
+Clever, that may actually work, however there may be two problems:
+
+* I'm not sure if existence of user nobody is granted by POSIX
+* There may be some system daemons running under user nobody
+
+Perhaps we need to create a fresh user before the testing has started.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
-The must-attend event for mobile developers. Connect with experts. 
-Get tools for creating Super Apps. See the latest technologies.
-Sessions, hands-on labs, demos & much more. Register early & save!
-http://p.sf.net/sfu/rim-blackberry-1
---------------1.7.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.6--
-
-
-
