@@ -1,31 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penguin-kernel@I-love.SAKURA.ne.jp>)
-	id 1Qy3dU-0001pb-OO
-	for ltp-list@lists.sourceforge.net; Mon, 29 Aug 2011 15:20:28 +0000
-Received: from www262.sakura.ne.jp ([202.181.97.72])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qy3dS-0004QP-UM
-	for ltp-list@lists.sourceforge.net; Mon, 29 Aug 2011 15:20:28 +0000
-Received: from www262.sakura.ne.jp (ksav21.sakura.ne.jp [210.224.165.143])
-	by www262.sakura.ne.jp (8.14.3/8.14.3) with ESMTP id p7TEgY5o091612
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 29 Aug 2011 23:42:34 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from CLAMP (KD175108057186.ppp-bb.dion.ne.jp [175.108.57.186])
-	by www262.sakura.ne.jp (8.14.3/8.14.3) with ESMTP id p7TEgYpC091609
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 29 Aug 2011 23:42:34 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
-In-Reply-To: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
-Message-Id: <201108292342.IBI64522.FJOFMVSOLQOtHF@I-love.SAKURA.ne.jp>
-Date: Mon, 29 Aug 2011 23:42:34 +0900
-Mime-Version: 1.0
-Subject: [LTP] [linux-3.1] TOMOYO Linux update
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1QvUkW-0001uR-I9
+	for ltp-list@lists.sourceforge.net; Mon, 22 Aug 2011 13:41:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QvUkS-0006uD-En
+	for ltp-list@lists.sourceforge.net; Mon, 22 Aug 2011 13:41:08 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p7MDewbi012322
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Aug 2011 09:40:58 -0400
+Message-ID: <4E525C68.4040903@redhat.com>
+Date: Mon, 22 Aug 2011 15:40:56 +0200
+From: Jan Stancek <jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------050402060103000400030302"
+Subject: [LTP] [PATCH] memcg_test_2.c: clear all fields of sigaction
+	structure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,26 +29,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: jburke@redhat.com
 
-Hello.
+This is a multi-part message in MIME format.
+--------------050402060103000400030302
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I updated TOMOYO testcases for Linux 3.1.
-http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.4.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=5388&root=tomoyo
-4378 lines, 162,176 bytes.
-MD5: 4b1ce1f661a9b102b44ae59e495ee3d6
 
-Regards.
+This test didn't set all fields of sigaction structure before
+using it, which caused some of them to be left in random state.
+Namely sa_flags could end up with SA_RESTORER, which after
+receiving signal would call invalid pointer in sa_restorer.
+
+Something, we apparently hit here:
+Bug 731954 - segfault on s390x when setting memory.limit_in_bytes
+https://bugzilla.redhat.com/show_bug.cgi?id=731954
+
+Fix this by zero-ing whole structure before usage.
+Clearing just sa_flags should be enough, but let's match the style
+of other test in this group: memcg_test_4.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+  .../controllers/memcg/regression/memcg_test_2.c    |    4 ++--
+  1 files changed, 2 insertions(+), 2 deletions(-)
+
+
+
+--------------050402060103000400030302
+Content-Type: text/x-patch;
+	name="0001-memcg_test_2.c-clear-all-fields-of-sigaction-structu.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0001-memcg_test_2.c-clear-all-fields-of-sigaction-structu.pa";
+	filename*1="tch"
+
+diff --git a/testcases/kernel/controllers/memcg/regression/memcg_test_2.c b/testcases/kernel/controllers/memcg/regression/memcg_test_2.c
+index e147e27..1643408 100644
+--- a/testcases/kernel/controllers/memcg/regression/memcg_test_2.c
++++ b/testcases/kernel/controllers/memcg/regression/memcg_test_2.c
+@@ -41,7 +41,7 @@ int main(void)
+ {
+ 	struct sigaction sigusr_action;
+ 
+-	sigemptyset(&sigusr_action.sa_mask);
++	memset(&sigusr_action, 0, sizeof(sigusr_action));
+ 	sigusr_action.sa_handler = &sigusr_handler;
+ 	sigaction(SIGUSR1, &sigusr_action, NULL);
+ 
+@@ -49,4 +49,4 @@ int main(void)
+ 		sleep(1);
+ 
+ 	return 0;
+-}
+\ No newline at end of file
++}
+
+
+--------------050402060103000400030302
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-EMC VNX: the world's simplest storage, starting under $10K
-The only unified storage solution that offers unified management 
-Up to 160% more powerful than alternatives and 25% more efficient. 
-Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
+uberSVN's rich system and user administration capabilities and model 
+configuration take the hassle out of deploying and managing Subversion and 
+the tools developers use with it. Learn more about uberSVN and get a free 
+download at:  http://p.sf.net/sfu/wandisco-dev2dev
+
+--------------050402060103000400030302
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------050402060103000400030302--
+
