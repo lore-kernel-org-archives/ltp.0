@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qu0hp-0002sb-9w
-	for ltp-list@lists.sourceforge.net; Thu, 18 Aug 2011 11:24:13 +0000
-Date: Thu, 18 Aug 2011 13:28:47 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QwYG5-0001Sy-TH
+	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 11:38:05 +0000
+Date: Thu, 25 Aug 2011 13:43:16 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110818112847.GB19491@saboteur.suse.cz>
-References: <4E151B53.4050207@cn.fujitsu.com>
+Message-ID: <20110825114316.GA12466@saboteur.suse.cz>
+References: <109d27248df0d3518fbc4a6cc410345d6bdfed7f.1314156213.git.czhang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E151B53.4050207@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX] [PATCH] sched_setscheduler/17-5.c: Add the
- missing scheduling policies.
+In-Reply-To: <109d27248df0d3518fbc4a6cc410345d6bdfed7f.1314156213.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] hugeshmat01: do not use fixed addr
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,86 +24,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tangchen <tangchen@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> On linux, I found the scheduling policies are defined as follow:
-> 
-> in /usr/include/bits/sched.h
-> 
-> /* Scheduling algorithms.  */
-> #define SCHED_OTHER             0
-> #define SCHED_FIFO              1
-> #define SCHED_RR                2
-> #ifdef __USE_GNU
-> # define SCHED_BATCH            3
-> # define SCHED_IDLE             5
-> 
-> # define SCHED_RESET_ON_FORK    0x40000000
-> #endif
-> 
-> So besides SCHED_OTHER, SCHED_FIFO and SCHED_RR, there are another 
-> two policies, SCHED_BATCH and SCHED_IDLE. And 3 is a valid value 
-> for the scheduling policy, which causes the test returns UNSOLVED 
-> on linux system.
->  
-> Here is the patch, please comment!
-> Thanks.:)
-> 
-> 
-> Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
-> ---
->  .../interfaces/sched_setscheduler/17-5.c           |   11 ++++++++++-
->  1 files changed, 10 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c
-> index b4f90b3..652db27 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-5.c
-> @@ -17,6 +17,11 @@
->   *   2. Call sched_setscheduler with invalid args.
->   *   3. Check that the policy and priority have not changed.
->   */
-> +
-> +#ifdef __linux__
-> +#define _GNU_SOURCE
-> +#endif
-> +
->  #include <sched.h>
->  #include <stdio.h>
->  #include <errno.h>
-> @@ -31,6 +36,10 @@ int main() {
->  	invalid_policy = 0;
->  	/* Linux does not treat minus value as invalid for policy */
->  	while (invalid_policy == SCHED_OTHER ||
-> +#ifdef _GNU_SOURCE
-> +		invalid_policy == SCHED_BATCH ||
-> +		invalid_policy == SCHED_IDLE ||
-> +#endif
->  		invalid_policy == SCHED_FIFO ||
->  		invalid_policy == SCHED_RR)
->  	invalid_policy++;
-> @@ -78,4 +87,4 @@ int main() {
->  		printf("The policy has changed\n");
->  	}
->  	return PTS_FAIL;
-> -}
-> \ No newline at end of file
-> +}
+> hugeshmat01 test use fixed addr for its 2nd testcase, however it does
+> not work on some architectures, like powerpc. I took some codes from
+> syscalls/shmat01, which fetches the baseaddr by running shmat first at
+> setup(), and use it for 2nd testcase.
 
-Meanwhile we changed the invalid policy to INT_MAX, which seems to work
-fine. Thanks anyway.
+I would be happier to have the code generating the address in one place
+rather than copying the code around.
+
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+> +void	*base_addr;
+>  
+>  struct test_case_t {
+>  	int *shmid;
+>  	void *addr;
+>  	int flags;
+> -} TC[] = {
+> -	/* a straight forward read/write attach */
+> -	{&shm_id_1, 0, 0},
+> -
+> -       /* an attach using non aligned memory */
+> -	{&shm_id_1, (void *)UNALIGNED, SHM_RND},
+> -
+> -	/* a read only attach */
+> -	{&shm_id_1, 0, SHM_RDONLY}
+>  };
+
+There is no need to remove the static declaration for the structure,
+just set the UNALIGNED to NULL and intialize only what is needed on
+runtime.
+
+Also the addr should be initalized with NULL rather than 0.
+
+> +struct test_case_t TC[3];
+> +
+>  int main(int ac, char **av)
+>  {
+>  	int lc;				/* loop counter */
+> @@ -259,6 +247,35 @@ setup(void)
+>  		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
+>  			 "resource 1 in setup()");
+>  	}
+> +
+> +	/* Probe an available linear address for attachment */
+> +	base_addr = shmat(shm_id_1, NULL, 0);
+> +	if (base_addr == (void *)-1)
+> +		tst_brkm(TBROK|TERRNO, cleanup,
+> +				"Couldn't attach shared memory");
+> +	if (shmdt((const void *)base_addr) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup,
+> +				"Couldn't detach shared memory");
+
+Cast from void* to const void* is not needed here.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
-tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
+EMC VNX: the world's simplest storage, starting under $10K
+The only unified storage solution that offers unified management 
+Up to 160% more powerful than alternatives and 25% more efficient. 
+Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
