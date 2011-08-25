@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QrAcR-0000yg-9O
-	for ltp-list@lists.sourceforge.net; Wed, 10 Aug 2011 15:22:55 +0000
-Date: Wed, 10 Aug 2011 17:26:49 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qwbxg-0004wT-RJ
+	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 15:35:20 +0000
+Date: Thu, 25 Aug 2011 17:40:32 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110810152649.GA12769@saboteur.suse.cz>
-References: <4E3F865E.4030104@cn.fujitsu.com>
+Message-ID: <20110825154032.GA20282@saboteur.suse.cz>
+References: <1311234139-5340-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E3F865E.4030104@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX] [PATCH] mlockall/3-7.c: fix the wrong file path.
+In-Reply-To: <1311234139-5340-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] posix:stress:fix the wrong use of mq_open
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,26 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Modify the file path "conformance/interfaces/mlockall/3-7.c" to "/tmp/mlockall_3-7-XXXXXX".
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+Commited.
 
-Commited, thanks.
+However the test would need far more work to get it working.
+
+For example it returns SUCCESS even if recieving of sending messages has
+failed (and there is more mistakes there). Not to metion the coding
+style...
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-uberSVN's rich system and user administration capabilities and model 
-configuration take the hassle out of deploying and managing Subversion and 
-the tools developers use with it. Learn more about uberSVN and get a free 
-download at:  http://p.sf.net/sfu/wandisco-dev2dev
+EMC VNX: the world's simplest storage, starting under $10K
+The only unified storage solution that offers unified management 
+Up to 160% more powerful than alternatives and 25% more efficient. 
+Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
