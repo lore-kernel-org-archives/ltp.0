@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QrW48-0004w5-HK
-	for ltp-list@lists.sourceforge.net; Thu, 11 Aug 2011 14:16:56 +0000
-Date: Thu, 11 Aug 2011 16:20:55 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QwcDZ-0005iK-Gs
+	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 15:51:45 +0000
+Date: Thu, 25 Aug 2011 17:56:57 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110811142055.GC16435@saboteur.suse.cz>
-References: <20110811134320.GA15662@saboteur.suse.cz>
-	<253a16eea6b5f4f1c5231132895c04d7b697f5bc.1313071419.git.czhang@redhat.com>
+Message-ID: <20110825155657.GC20282@saboteur.suse.cz>
+References: <4E3F8C85.2020704@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <253a16eea6b5f4f1c5231132895c04d7b697f5bc.1313071419.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH v3] mm/vma01: new testcase
+In-Reply-To: <4E3F8C85.2020704@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX] [PATCH] sched_setparam: fix the wrong file path.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,22 +24,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-Commited, thanks.
+> Modify the file path to "/dev/null" when call ftok().
+
+Technically yes, but these tests are invalid for many other reasons and
+needs to be redesigned as whole.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
-tools developers use with it. 
-http://p.sf.net/sfu/wandisco-dev2dev
+EMC VNX: the world's simplest storage, starting under $10K
+The only unified storage solution that offers unified management 
+Up to 160% more powerful than alternatives and 25% more efficient. 
+Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
