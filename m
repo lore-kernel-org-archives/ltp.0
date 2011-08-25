@@ -1,37 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <takahash@us.ibm.com>) id 1QwdjM-0004ce-AF
-	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 17:28:40 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QwdjL-0008Ul-Mj
-	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 17:28:40 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e4.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p7PH5K3v000997
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Aug 2011 13:05:20 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p7PHSYKb214148
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Aug 2011 13:28:34 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p7PDSLIE032001
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Aug 2011 10:28:21 -0300
-Received: from taco.beaverton.ibm.com ([9.47.29.114])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p7PDSKOh031987
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Aug 2011 10:28:21 -0300
-Date: Thu, 25 Aug 2011 10:26:27 -0700
-From: James Takahashi <takahash@us.ibm.com>
-Message-ID: <20110825172626.GA6398@us.ibm.com>
-References: <mailman.342816.1314268291.22889.ltp-list@lists.sourceforge.net>
-Mime-Version: 1.0
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QwYsC-0003hO-UW
+	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 12:17:28 +0000
+Date: Thu, 25 Aug 2011 14:22:39 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110825122239.GC12466@saboteur.suse.cz>
+References: <bb8dd0f8ab78cf55a124f99af36b0eea70f787a1.1314254883.git.czhang@redhat.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <mailman.342816.1314268291.22889.ltp-list@lists.sourceforge.net>
-Subject: Re: [LTP] [PATCH 4/7 ver2 w/attachment] Changes to pounder's build
-	scripts (Cyril Hrubis)
+In-Reply-To: <bb8dd0f8ab78cf55a124f99af36b0eea70f787a1.1314254883.git.czhang@redhat.com>
+Subject: Re: [LTP] [PATCH] syscalls/mmap11: mask broken test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,54 +24,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Thu, 25 Aug 2011 12:14:03, Cyril Hrubis <chrubis@suse.cz> wrote:
-> To: Lucy Liang <lgliang@linux.vnet.ibm.com>
-
-Hi Cyril,
-
-Lucy was a summer intern here at IBM, but her internship has ended.  I'll
-try to resolve any open issues with her pounder patch submission.  Please
-direct any future comments to me.
-
-> > diff --git a/tools/pounder21/build_scripts/ltp b/tools/pounder21/build_scripts/ltp
-> > index 68dcdbe..70defe4 100755
-> > --- a/tools/pounder21/build_scripts/ltp
-> > +++ b/tools/pounder21/build_scripts/ltp
-> > @@ -55,23 +55,24 @@ fi
-> >  
-> >  # NAK the setregid EPERM -> EINVAL patch, because it's
-> >  # broken on 2.6!  May be fixed some time after 20050804 release.
-> > -if [ ! -e "testcases/kernel/syscalls/setregid/setregid02.c.pounder" ]; then
-> > -	echo "Patching some holes in ltp..."
-> > -	cp -pRdu testcases/kernel/syscalls/setregid/setregid02.c testcases/kernel/syscalls/setregid/setregid02.c.pounder
-> > -	patch -p1 < $POUNDER_SRCDIR/ltp-setregid-fix.patch
-> > -	RESULT=$?
-> > -	if [ $RESULT -ne 0 ]; then
-> > -		echo Patching failed.
-> > -		exit 1
-> > -	fi
-> > -fi
-> > +#if [ ! -e "testcases/kernel/syscalls/setregid/setregid02.c.pounder" ]; then
-> > +#	echo "Patching some holes in ltp..."
-> > +#	cp -pRdu testcases/kernel/syscalls/setregid/setregid02.c testcases/kernel/syscalls/setregid/setregid02.c.pounder
-> > +#	patch -p1 < $POUNDER_SRCDIR/ltp-setregid-fix.patch
-> > +#	RESULT=$?
-> > +#	if [ $RESULT -ne 0 ]; then
-> > +#		echo Patching failed.
-> > +#		exit 1
-> > +#	fi
-> > +#fi
+Hi!
+> mmap11 is currently broken and we meet difficult to fix it perfectly.
+> Mask the testcase for now.
 > 
-> Patching LTP before build from this build script is not really long term
-> solution. We should get these patches applied to LTP (as it should have
-> been done long time ago) and drop this logic entrirely.
+> Signed-off-by: Caspar Zhang <czhang@redhat.com>
+> ---
+>  runtest/syscalls |    4 +++-
+>  1 files changed, 3 insertions(+), 1 deletions(-)
+> 
 
-I agree that this smells like a workaround, not a long term solution.
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 7989764..353f427 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -555,7 +555,9 @@ mmap06 mmap06
+>  mmap07 mmap07
+>  mmap08 mmap08
+>  mmap09 mmap09
+> -mmap11 mmap11 -i 30000
+> +# Masked by Caspar Zhang <czhang@redhat.com>
+> +# test is broken, mask it for now.
+> +#mmap11 mmap11 -i 30000
 
-I'll investigate whether the setregid02 patch is still needed or not,
-then I'll resubmit this patch.
+Please omit the 'Masked by...' line. This info would be stored in the
+git commit message and it's redundant here.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 EMC VNX: the world's simplest storage, starting under $10K
