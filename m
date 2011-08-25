@@ -1,29 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maxin.john@gmail.com>) id 1Qnt6z-000505-Aa
-	for ltp-list@lists.sourceforge.net; Mon, 01 Aug 2011 14:04:53 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1Qnt6y-0001tC-8y
-	for ltp-list@lists.sourceforge.net; Mon, 01 Aug 2011 14:04:53 +0000
-Received: by gxk3 with SMTP id 3so4570125gxk.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 01 Aug 2011 07:04:46 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QwY7E-0000fY-3L
+	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 11:28:56 +0000
+Date: Thu, 25 Aug 2011 13:34:06 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110825113406.GA13635@saboteur.suse.cz>
+References: <260174ADA4D63F4AA543B9C81F2DE71214D443@POCITMSEXMB02.LntUniverse.com>
+	<20110825094054.GA11006@saboteur.suse.cz>
+	<260174ADA4D63F4AA543B9C81F2DE71214D45D@POCITMSEXMB02.LntUniverse.com>
+	<CAMhs6YzTYjHbKB2f6+j7pg04COn6mnMOaoHtzphjukxT-EqLBg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <260174ADA4D63F4AA543B9C81F2DE712B7AB@POCITMSEXMB01.LntUniverse.com>
-References: <260174ADA4D63F4AA543B9C81F2DE712B34F@POCITMSEXMB01.LntUniverse.com>
-	<CAMhs6YzX0srwbYm778ro7o7zLGKZfmpqrRaPUgBTzX+a4arRCQ@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B601@POCITMSEXMB01.LntUniverse.com>
-	<CAMhs6Yy76dinKx_SSXfB90+76g3iUL6okPUNgETDMiVHpCrsgw@mail.gmail.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B6A2@POCITMSEXMB01.LntUniverse.com>
-	<260174ADA4D63F4AA543B9C81F2DE712B7AB@POCITMSEXMB01.LntUniverse.com>
-Date: Mon, 1 Aug 2011 17:04:46 +0300
-Message-ID: <CAMhs6Yy17=HN_zc_4yC=1_GYLjisVq6UUR5UU0Kna_Syas154w@mail.gmail.com>
-From: Maxin B John <maxin.john@gmail.com>
-Subject: Re: [LTP] How to test Linux Kernel using LTP on Beagleboard (ARM
- Cortex-A8 based board)
+Content-Disposition: inline
+In-Reply-To: <CAMhs6YzTYjHbKB2f6+j7pg04COn6mnMOaoHtzphjukxT-EqLBg@mail.gmail.com>
+Subject: Re: [LTP] Porting of LTP on Android on Beagleboard
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,46 +24,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: G Rajender <G.Rajender@lnties.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Maxin B John <maxin.john@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "Manoj@suse.de" <Manoj@suse.de>, Kumar <Manoj_Kr@hcl.com>, "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
 
-Hi Rajender,
+Hi!
+> as bionic isn't as smart or big as glibc). I would also recommend you
+> to port "Busybox" for Android or download it from the Android market
+> itself.  The "ash" shell available in Busybox should be enough for you
+> to get started with the scripts in LTP.
 
-On Mon, Aug 1, 2011 at 4:13 PM, G Rajender <G.Rajender@lnties.com> wrote:
->
-> I have successfully installed Scratchbox1 and selected the armv7 target i=
-n sub-menu. I got shell prompt like "[ sbox- armv7 =A0~]". I have downloade=
-d the LTP source "ltp-full-20100228.ar.gz" from LTP-web.
->
-> Can you please share the procedure of how to Cross-Compile the LTP source=
- code using Scratchbox1 to generate the binaries for the beagleboard.
->
+If anything doesn't work with ash, just send a patch. There may be some
+bashishm lefovers that needs to be fixed. Ideally all the scripts should
+work with POSIX compilant shell.
 
-The Scratchbox environment simplifies the cross-compilation process.
-Within the Scratchbox environment, perform the following steps:
+> There are some patches already available for porting LTP to Android :
+> http://comments.gmane.org/gmane.linux.ltp/14497
+> However,  these patches may not be acceptable to the mainstream LTP as
+> it breaks some existing tests in the "common/normal" platforms. I
+> think we can go ahead with the way we support UCLINUX in LTP ..
+> ie: #ifdef UCLINUX
+> So, if we care to re-write those patches with #ifdef ANDROID (or
+> #ifndef ANDROID based on our logic) without breaking other tests, I
+> think we can officially welcome Android related patches to LTP.
+> 
+> Cyril, Garrett, please let us know your thoughts on this.
 
-# tar zxvf ltp-full-20100228.tar.gz
-# cd ltp-full-20100228
-# ./configure
-# make
-# make install
+As noted by garret previously, do not remove references for config.h.
 
-You will find the cross-compiled binaries in "/opt/ltp" directory in
-Scratchbox. Move these binaries to your Beagleboard to execute LTP
-test-suite on the target board.
+Either use the configure script to create config.h or create config.h by
+hand (as written in INSTALL).
 
-Hope this helps.
-Maxin B. John
+Ideally most of the differencies should be detected with configure script
+(Writing rules for generating it is hard but we may help you).
 
----------------------------------------------------------------------------=
----
-Got Input?   Slashdot Needs You.
-Take our quick survey online.  Come on, we don't ask for help often.
-Plus, you'll get a chance to win $100 to spend on ThinkGeek.
-http://p.sf.net/sfu/slashdot-survey
+Do not write "removed XXX to do YYY" into comments to C sources. We have
+git to track the change descriptions. Ideally each logical set of
+changes should be in one patch. Please learn how to use git to create
+patches with reasonable description. You have a bigger chance to get the
+changes commited by small well described and reasonable bits.
+
+Do not send patches mixed with DOS CR+LF
+
+Most of the changes that patch are just lines commented out, that is
+hardly applicable, this needs to be addresed in some reasonable manner.
+
+Generally I'm not saying no. This would just need some more work done.
+
+And for the UCLINUX part, I'm not really happy that we have #ifdef
+UCLINUX spread around the codebase, but I could live with reasonable
+bits that needs to be there. The best I could think about is to create
+android-compat.h header to store all the android specific stuff. Which
+would be included in test.h if ANDROID is defined.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+EMC VNX: the world's simplest storage, starting under $10K
+The only unified storage solution that offers unified management 
+Up to 160% more powerful than alternatives and 25% more efficient. 
+Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
