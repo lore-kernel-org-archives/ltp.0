@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qwc8n-0005Xh-2w
-	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 15:46:49 +0000
-Date: Thu, 25 Aug 2011 17:52:00 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QwuhH-0006LI-FI
+	for ltp-list@lists.sourceforge.net; Fri, 26 Aug 2011 11:35:39 +0000
+Date: Fri, 26 Aug 2011 13:40:54 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110825155200.GB20282@saboteur.suse.cz>
-References: <4E291159.20704@cn.fujitsu.com>
-	<20110812113510.GA27650@saboteur.suse.cz>
-	<4E4A350B.5040404@cn.fujitsu.com>
+Message-ID: <20110826114054.GB17499@saboteur.suse.cz>
+References: <mailman.342816.1314268291.22889.ltp-list@lists.sourceforge.net>
+	<20110825172626.GA6398@us.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E4A350B.5040404@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ld: fix error with -m32 in x86_64
+In-Reply-To: <20110825172626.GA6398@us.ibm.com>
+Subject: Re: [LTP] [PATCH 4/7 ver2 w/attachment] Changes to pounder's build
+ scripts (Cyril Hrubis)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,11 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: James Takahashi <takahash@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Commited, thanks.
+> Lucy was a summer intern here at IBM, but her internship has ended.  I'll
+> try to resolve any open issues with her pounder patch submission.  Please
+> direct any future comments to me.
+
+Okay.
+
+> > Patching LTP before build from this build script is not really long term
+> > solution. We should get these patches applied to LTP (as it should have
+> > been done long time ago) and drop this logic entrirely.
+> 
+> I agree that this smells like a workaround, not a long term solution.
+> 
+> I'll investigate whether the setregid02 patch is still needed or not,
+> then I'll resubmit this patch.
+
+Ideally if these patches are needed, they should be merged into LTP and
+dropped from here. (I've found at least two LTP patches there).
 
 -- 
 Cyril Hrubis
