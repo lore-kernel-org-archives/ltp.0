@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <skannan@redhat.com>) id 1Qo6bJ-0004U7-Q2
-	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 04:29:05 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Qo6bI-0004Ch-OK
-	for ltp-list@lists.sourceforge.net; Tue, 02 Aug 2011 04:29:05 +0000
-Received: from mail03.corp.redhat.com (zmail07.collab.prod.int.phx2.redhat.com
-	[10.5.5.47])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id p724SwKG011873
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Aug 2011 00:28:58 -0400
-Date: Tue, 2 Aug 2011 00:28:58 -0400 (EDT)
-From: Shakthi Kannan <skannan@redhat.com>
-Message-ID: <474812428.578270.1312259338813.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1609707634.578233.1312258810042.JavaMail.root@zmail07.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qyk0H-0006y5-9J
+	for ltp-list@lists.sourceforge.net; Wed, 31 Aug 2011 12:34:49 +0000
+Date: Wed, 31 Aug 2011 14:34:45 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110831123445.GB28807@saboteur.suse.cz>
+References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
+	<201108292342.IBI64522.FJOFMVSOLQOtHF@I-love.SAKURA.ne.jp>
+	<20110831102620.GA32395@saboteur.suse.cz>
+	<201108312011.FFF00576.FFLOHOSQOJtMFV@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-Subject: [LTP] Running only kernel syscall tests
-Reply-To: Shakthi Kannan <skannan@redhat.com>
+Content-Disposition: inline
+In-Reply-To: <201108312011.FFF00576.FFLOHOSQOJtMFV@I-love.SAKURA.ne.jp>
+Subject: Re: [LTP] [linux-3.1] TOMOYO Linux update
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,26 +27,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> > * Please next time send the patch attached to the mail, ideally inlined
+> >   as well as attachement. It's much easier for me to review it that way.
+> >   Or even better If you had a git repository on sf.net I could pull
+> >   changes directly from there.
+> 
+> I think this patch was too large. Does this ML accept such a large patch?
+> Or, should I split into smaller patches for this ML?
 
-Are there any options to runltp or any other means to just run the kernel syscall tests? How long does it take to run the runalltests.sh on an i386/x86_64 machine?
+Not sure about the ML settings, but it should work, the worse that could
+happen is being hold for moderator to approve the mail.
 
-Appreciate any inputs in this regard,
+Yes ideally I would like to see the patches being split into reasonable
+bits. Its easier to keep track what has changed and why this way.
 
-SK
+> > * Including <linux/sched.h> instead of <sched.h> may introduce problems
+> >   in future.
+> > 
+> >   Look here how to fix the problem with sched.h:
+> 
+> Two weeks ago I received a report from Clemens Fischer that tomoyo-tools does
+> not build on Arch-Linux system with rolling releases
+> ('uname -rms' -> Linux 3.0.1-spott i686) because CLONE_NEWNS is not defined by
+> including <sched.h> . Thus, I added including <linux/sched.h> if CLONE_NEWNS is
+> not defined by including <sched.h> (as shown below).
+> I'll contact Clemens to try _GNU_SOURCE instead of including <linux/sched.h> .
+
+Defining _GNU_SOURCE should do the trick, just keep in mind that this
+must be defined before you include any libc headers.
 
 -- 
-Shakthi Kannan 
-skannan at redhat dot com
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
-The must-attend event for mobile developers. Connect with experts. 
-Get tools for creating Super Apps. See the latest technologies.
-Sessions, hands-on labs, demos & much more. Register early & save!
-http://p.sf.net/sfu/rim-blackberry-1
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
