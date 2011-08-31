@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1QwbHc-0002K8-Hf
-	for ltp-list@lists.sourceforge.net; Thu, 25 Aug 2011 14:51:52 +0000
-Date: Thu, 25 Aug 2011 16:57:01 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qyi01-0005dE-Mh
+	for ltp-list@lists.sourceforge.net; Wed, 31 Aug 2011 10:26:25 +0000
+Date: Wed, 31 Aug 2011 12:26:20 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110825145701.GA19113@saboteur.suse.cz>
-References: <4E4C34E5.1090702@linux.vnet.ibm.com>
+Message-ID: <20110831102620.GA32395@saboteur.suse.cz>
+References: <201006061713.BGF64500.OtOHFJVQLOSFFM@I-love.SAKURA.ne.jp>
+	<201108292342.IBI64522.FJOFMVSOLQOtHF@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E4C34E5.1090702@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH 1/1] fix ssh03 on system running mls policy
+In-Reply-To: <201108292342.IBI64522.FJOFMVSOLQOtHF@I-love.SAKURA.ne.jp>
+Subject: Re: [LTP] [linux-3.1] TOMOYO Linux update
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,68 +25,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: James Czyzak <czyzak2@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, debora@linux.vnet.ibm.com
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Modified ssh03 to unset TCtmp. On a system running the latest
-> selinux mls policy the call to tst_setup in the cmdlib.sh script
-> with the TCtmp variable still set with the TEST_USER directory will
-> result in the directory being created with the context of the logged
-> in user (i.e. administrator running the test
-> ...staff_u:object_r:home_root_t:SystemLow) when the useradd is run
-> afterwords the directory will already exist but the context of
-> directory /home/ssh_user3 should be
-> user_u:object_r:user_home_dir_t:SystemLow-SystemHigh. Now when the
-> test is run to ssh login with the valid password the test will fail
-> due to not being able to change to the user directory which is
-> caused by a mismatched context. The unset of TCtmp will prevent
-> this. This does not appear to be detrimental to systems running with
-> a targeted policy and should have no ill affect systems not running
-> selinux, although a test could be placed around the unset to
-> determine if selinux is running and the mls policy is in use.
-> 
-> Signed-off-by James Czyzak <czyzak2@linux.vnet.ibm.com>
-> <mailto:czyzak2@linux.vnet.ibm.com>
-> 
-> diff --git a/testcases/network/tcp_cmds/ssh/ssh03
-> b/testcases/network/tcp_cmds/s
-> index 8fbca34..a75032c 100755
-> --- a/testcases/network/tcp_cmds/ssh/ssh03
-> +++ b/testcases/network/tcp_cmds/ssh/ssh03
-> @@ -42,7 +42,7 @@ do_setup()
->      TCtmp=/home/$TEST_USER
-> 
->      rm -Rf $TCtmp
-> -
-> +    unset TCtmp
->      tst_setup
-> 
+> I updated TOMOYO testcases for Linux 3.1.
+> http://sourceforge.jp/projects/tomoyo/svn/view/trunk/2.4.x/tomoyo-tools/kernel_test/tomoyo-ltp.diff?revision=5388&root=tomoyo
+> 4378 lines, 162,176 bytes.
+> MD5: 4b1ce1f661a9b102b44ae59e495ee3d6
 
-What about not setting the TCtmp in the first place.
+I'm glad to see the patch, however there are a few things that needs to
+be settled before applying to LTP.
 
-Change it from: 
-TCtmp=/home/$TEST_USER
-rm -Rf $TCtmp
-unset $TCtmp
-to:
-rm -Rf /home/$TEST_USER
+* Please next time send the patch attached to the mail, ideally inlined
+  as well as attachement. It's much easier for me to review it that way.
+  Or even better If you had a git repository on sf.net I could pull
+  changes directly from there.
 
-And the Signed-off-by line is missing double colon and there is mailto
-html tag that shouldn't be there.
+* Including <linux/sched.h> instead of <sched.h> may introduce problems
+  in future.
 
-I wonder why people aren't using git commit -s and git format-patch to
-generate correct patches, which is easier than doing them by hand...
+  Look here how to fix the problem with sched.h:
+
+  http://ltp.git.sourceforge.net/git/gitweb.cgi?p=ltp/ltp.git;a=commit;h=019ed6c71369217ac02c399abb12abb93bd527f3
+
+  The clone flags are GNU extensions and Ulrich 'fixed' these, so they
+  aren't defined unless you say they should.
+
+There are some minor coding style violations and useless statements. But
+I don't think there is a reason to force you to fix them. Just let me
+know if you wan't to know ;).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-EMC VNX: the world's simplest storage, starting under $10K
-The only unified storage solution that offers unified management 
-Up to 160% more powerful than alternatives and 25% more efficient. 
-Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
