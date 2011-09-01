@@ -1,15 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1R2167-0001PL-JR
-	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 13:26:23 +0000
-Date: Fri, 9 Sep 2011 15:27:04 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Qz4vS-0008Qd-2g
+	for ltp-list@lists.sourceforge.net; Thu, 01 Sep 2011 10:55:14 +0000
+Date: Thu, 1 Sep 2011 12:55:14 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110909132704.GA6934@saboteur.suse.cz>
+Message-ID: <20110901105514.GA14488@saboteur.suse.cz>
+References: <1314856407-9740-1-git-send-email-yi.zhao@windriver.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] next LTP release
+In-Reply-To: <1314856407-9740-1-git-send-email-yi.zhao@windriver.com>
+Subject: Re: [LTP] [PATCH] rt_sigqueueinfo01: Fix test failed on mips.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,25 +24,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+To: Yi Zhao <yi.zhao@windriver.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Just thinking, isn't now the time to do next LTP release we are about
-three months and 89 patches from the last one. I could assist with
-tagging the release in the git and setting the default download on
-sf.net pages.
+Thanks, commited.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Why Cloud-Based Security and Archiving Make Sense
-Osterman Research conducted this study that outlines how and why cloud
-computing security and archiving is rapidly being adopted across the IT 
-space for its ease of implementation, lower cost, and increased 
-reliability. Learn more. http://www.accelacomm.com/jaw/sfnl/114/51425301/
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
