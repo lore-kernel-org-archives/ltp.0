@@ -1,32 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1R64AD-0005VF-Tw
-	for ltp-list@lists.sourceforge.net; Tue, 20 Sep 2011 17:31:21 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R64AC-0006Pm-7W
-	for ltp-list@lists.sourceforge.net; Tue, 20 Sep 2011 17:31:21 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e5.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p8KH0NFG026289
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Sep 2011 13:00:27 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p8KHVAtF224348
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Sep 2011 13:31:10 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p8KDUI6w004569
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Sep 2011 10:30:18 -0300
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <260174ADA4D63F4AA543B9C81F2DE7124714C8@POCITMSEXMB02.LntUniverse.com>
-References: <260174ADA4D63F4AA543B9C81F2DE7124714C8@POCITMSEXMB02.LntUniverse.com>
-Date: Tue, 20 Sep 2011 22:59:45 +0530
-Message-Id: <1316539785.4441.6.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Cross Compiling LTP for Android platform
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <chrubis@suse.de>) id 1Qz6vY-0006zG-JN
+	for ltp-list@lists.sourceforge.net; Thu, 01 Sep 2011 13:03:28 +0000
+Date: Thu, 1 Sep 2011 15:03:26 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110901130326.GB10968@saboteur.suse.cz>
+References: <4E5D276C.3020505@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4E5D276C.3020505@linux.vnet.ibm.com>
+Subject: Re: [LTP] [PATCH 1/1] fix ssh03 on system running mls policy
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,90 +24,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: G Rajender <G.Rajender@lnties.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: James Czyzak <czyzak2@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, debora@linux.vnet.ibm.com
 
-On Tue, 2011-09-20 at 14:28 +0000, G Rajender wrote:
-> Hi,
+Hi!
+> Hi Cyril
 > 
-> I am Cross Compiling LTP-20110228 using arm-linux-androideabi cross
-> toolchain.
-> Im getting the below errors
+> I sent this as new message since it's a revision of the patch as you
+> suggested, which is a better way to do it. I wasn't sure whether it
+> would be proper procedure to send a revised patch in a reply that
+> contained the original. Anyway I modified some of the configuration
+> settings of the mail client I'm using (Thunderbird) which unfortunately
+> I need to run on a windows machine. Hopefully the configuration changes
+> will prevent distortion of the patch. Please let me know if it does not.
 > 
-> 
-> make[4]: Leaving directory
-> `/media/C0AA04ADAA04A250/ltp-full-20110228/testcases/commands/ade/nm'
-> make[4]: Entering directory
-> `/media/C0AA04ADAA04A250/ltp-full-20110228/testcases/commands/ade/objdump'
-> arm-linux-androideabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe
-> -Wall -g  -I../../../../include -I../../../../include  -c -o
-> test_arch.o test_arch.c
-> arm-linux-androideabi-gcc   -L../../../../lib  test_arch.o   -o
-> test_arch_debug
-> arm-linux-androideabi-gcc   -L../../../../lib  test_arch.o   -o
-> test_arch_stripped
-> strip test_arch_stripped
-> strip: Unable to recognise the format of the input file
-> `test_arch_stripped'
+>  Signed-off-by: James Czyzak <czyzak2@linux.vnet.ibm.com>
 
-The Error lies here. Do you have 'strip' from the Cross-Architecture
-Binary Utils package. Apart from your GCC (which is from your GCC
-package), all the following packages should also be from your CROSS
-COMPILE ARCH:
+The patch is OK. But please write description for the code change into
+the mail body (instead of how Thunderbird tends to mangle patches ;).
 
-Glibc
-Glibc-devel
-Binutils
+Also there shouldn't be a whitespace before the Signed-off-by line.
 
-If you see your 'strip' binary, probably it is still belonging to the
-machine arch on which you are compiling.
+> ---
+>  testcases/network/tcp_cmds/ssh/ssh03 |    4 +---
+>  1 files changed, 1 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/network/tcp_cmds/ssh/ssh03
+> b/testcases/network/tcp_cmds/ssh/ssh03
+> index 8fbca34..798d385 100755
+> --- a/testcases/network/tcp_cmds/ssh/ssh03
+> +++ b/testcases/network/tcp_cmds/ssh/ssh03
+> @@ -39,10 +39,8 @@ do_setup()
+>      export TEST_USER_HOMEDIR="/home/$TEST_USER"
+> 
+>      # erase user if he/she already exists, so we can have a clean env
+> -    TCtmp=/home/$TEST_USER
+> -
+> -    rm -Rf $TCtmp
+> 
+> +    rm -Rf /home/$TEST_USER
+>      tst_setup
+> 
+>      exists expect ssh ssh03_s1 useradd userdel
+> --
+> 1.7.4.1
 
-# which strip
-/usr/bin/strip
-
-# rpm -qf /usr/bin/strip
-binutils-2.20.51.0.2-5.27.el6.ppc64
-
-Check that out first.
-
-Regards--
-Subrata
-
-> make[4]: *** [test_arch_stripped] Error 1
-> 
-> Any suggestion on this erros please......
-> 
-> Thanks in advance.
-> 
-> Regards
-> 
-> Rajender.G
-> 
-> 
-> 
-> Larsen & Toubro Limited 
-> 
-> www.larsentoubro.com 
-> 
-> This Email may contain confidential or privileged information for the
-> intended recipient (s) If you are not the intended recipient, please
-> do not use or disseminate the information, notify the sender and
-> delete it from your system. 
-> ------------------------------------------------------------------------------
-> All the data continuously generated in your IT infrastructure contains a
-> definitive record of customers, application performance, security
-> threats, fraudulent activity and more. Splunk takes this data and makes
-> sense of it. Business sense. IT sense. Common sense.
-> http://p.sf.net/sfu/splunk-d2dcopy1
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure contains a
-definitive record of customers, application performance, security
-threats, fraudulent activity and more. Splunk takes this data and makes
-sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
