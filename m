@@ -1,27 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1R5YbZ-0000DT-TJ
-	for ltp-list@lists.sourceforge.net; Mon, 19 Sep 2011 07:49:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1R5YbZ-000441-3w
-	for ltp-list@lists.sourceforge.net; Mon, 19 Sep 2011 07:49:29 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p8J7nNPJ004153
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 19 Sep 2011 03:49:23 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id p8J7nM4s030042
-	for <ltp-list@lists.sourceforge.net>; Mon, 19 Sep 2011 03:49:22 -0400
-Message-ID: <4E76F401.6090305@redhat.com>
-Date: Mon, 19 Sep 2011 09:49:21 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1QzTPu-0005Ec-05
+	for ltp-list@lists.sourceforge.net; Fri, 02 Sep 2011 13:04:18 +0000
+Date: Fri, 2 Sep 2011 15:04:24 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110902130424.GA15784@saboteur.suse.cz>
+References: <4E0FE494.6040701@cn.fujitsu.com>
+	<20110902125802.GA15349@saboteur.suse.cz>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 0/3] cgroup/memcg_regression_test fixes
+Content-Disposition: inline
+In-Reply-To: <20110902125802.GA15349@saboteur.suse.cz>
+Subject: Re: [LTP] [POSIX] [PATCH] aio_cancel/7-1: fix fail occasionally due
+ to aio_error() returns EBADF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,29 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Following 3 patches fix small issues in
-memcg/regression/memcg_regression_test.sh
+Hi!
+> So we may rather:
+> 
+> * change the code to close the fd correctly
 
-These are similar to ones already submitted for
-cgroup/cgroup_regression_test.sh
+Eg. in all codepaths
 
-Jan Stancek (3):
-   cgroup/memcg_regression_test: clear dmesg before test
-   cgroup/memcg_regression_test: fix test4 cleanup
-   cgroup/memcg_regression_test: treat failed mount as error
 
-  .../memcg/regression/memcg_regression_test.sh      |   20 
-+++++++++++++++-----
-  1 files changed, 15 insertions(+), 5 deletions(-)
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
-Learn about the latest advances in developing for the 
-BlackBerry&reg; mobile platform with sessions, labs & more.
-See new tools and technologies. Register for BlackBerry&reg; DevCon today!
-http://p.sf.net/sfu/rim-devcon-copy1 
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
