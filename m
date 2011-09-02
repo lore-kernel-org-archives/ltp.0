@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <huruomu@gmail.com>) id 1R8UI4-0005Y0-HI
-	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 09:49:28 +0000
-Received: from mail-qy0-f175.google.com ([209.85.216.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1R8UI3-0006QL-T9
-	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 09:49:28 +0000
-Received: by qyk10 with SMTP id 10so780649qyk.13
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 27 Sep 2011 02:49:22 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1QzT62-0003Wg-Hp
+	for ltp-list@lists.sourceforge.net; Fri, 02 Sep 2011 12:43:46 +0000
+Date: Fri, 2 Sep 2011 14:43:52 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110902124352.GA14558@saboteur.suse.cz>
+References: <4E377560.7060600@cn.fujitsu.com> <4E4A2359.2040602@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Tue, 27 Sep 2011 17:49:22 +0800
-Message-ID: <CANoG8sWBQBjVej__oW0HSWB3wiXBU0HrdFE=5DpUeFABtoF5wQ@mail.gmail.com>
-From: Romu <huruomu@gmail.com>
-Subject: [LTP] proc01 failed on 2.6.39 kernel
+Content-Disposition: inline
+In-Reply-To: <4E4A2359.2040602@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 3/6] hugemmap01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,63 +24,129 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: tangchen <tangchen@cn.fujitsu.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi,
+Hi!
+>  #include "test.h"
+>  #include "usctest.h"
+>  #include "system_specific_hugepages_info.h"
+> +#include "libmnt.h"
+>  
+>  #define BUFFER_SIZE  256
+>  
+> -char* TEMPFILE="mmapfile";
+> +char TEMPFILE[MAXPATHLEN];
+>  
+>  char *TCID="hugemmap01";	/* Test program identifier.    */
+>  int TST_TOTAL=1;		/* Total number of test cases. */
+>  long *addr;			/* addr of memory mapped region */
+>  int fildes;			/* file descriptor for tempfile */
+> -char *Hopt;                     /* location of hugetlbfs */
+> +int hugepagesmapped=0;		/* Amount of huge pages mapped after testing */
+>  int beforetest=0;		/* Amount of free huge pages before testing */
+>  int aftertest=0;		/* Amount of free huge pages after testing */
+> -int hugepagesmapped=0;		/* Amount of huge pages mapped after testing */
+> +char *mount_point=NULL;
+>  
+> -void setup();			/* Main setup function of test */
+> -void cleanup();			/* cleanup function for the test */
+> -
+> -void help()
+> -{
+> -	printf("  -H /..  Location of hugetlbfs, i.e. -H /var/hugetlbfs \n");
+> -}
+> +void setup(void);			/* Main setup function of test */
+> +void cleanup(void);			/* cleanup function for the test */
+>  
+>  int
+>  main(int ac, char **av)
+>  {
+>  	int lc;			/* loop counter */
+> -	char *msg;		/* message returned from parse_opts */
+> -        int Hflag=0;              /* binary flag: opt or not */
+>  	int page_sz=0;
+>  
+> -       	option_t options[] = {
+> -        	{ "H:",   &Hflag, &Hopt },    /* Required for location of hugetlbfs */
+> -            	{ NULL, NULL, NULL }          /* NULL required to end array */
+> -       	};
+> -
+> -	/* Parse standard options given to run the test. */
+> -	msg = parse_opts(ac, av, options, &help);
+> -	if (msg != (char *) NULL) {
+> -		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s, use -help", msg);
+> -		tst_exit();
+> -	}
 
-proc01 in ltp-20110915 failed on 2.6.39 kernel:
+The parse_opts() should stay here but with NULL parameters there are
+some default options and it makes the test bail out on invalid options
+passed.
 
-<<<test_start>>>
-tag=proc01 stime=1317119259
-cmdline="proc01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-proc01      0  TINFO  :  /proc/sysrq-trigger: is write-only.
-proc01      0  TINFO  :  /proc/kmsg: known issue: errno=EAGAIN(11):
-Resource temporarily unavailable
-proc01      0  TINFO  :  /proc/acpi/event: known issue:
-errno=EBUSY(16): Device or resource busy
-proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
-proc01      1  TFAIL  :  read failed: /proc/self/task/6144/ns/net:
-errno=EINVAL(22): Invalid argument
-proc01      2  TFAIL  :  read failed: /proc/self/task/6144/ns/uts:
-errno=EINVAL(22): Invalid argument
-proc01      3  TFAIL  :  read failed: /proc/self/task/6144/ns/ipc:
-errno=EINVAL(22): Invalid argument
-proc01      0  TINFO  :  /proc/self/task/6144/mem: known issue:
-errno=EIO(5): Input/output error
-proc01      0  TINFO  :  /proc/self/task/6144/clear_refs: is write-only.
-proc01      4  TFAIL  :  read failed: /proc/self/ns/net:
-errno=EINVAL(22): Invalid argument
-proc01      5  TFAIL  :  read failed: /proc/self/ns/uts:
-errno=EINVAL(22): Invalid argument
-proc01      6  TFAIL  :  read failed: /proc/self/ns/ipc:
-errno=EINVAL(22): Invalid argument
-proc01      0  TINFO  :  /proc/self/mem: known issue: errno=EIO(5):
-Input/output error
-proc01      0  TINFO  :  /proc/self/clear_refs: is write-only.
-proc01      7  TFAIL  :  readproc() failed with 6 errors.
-<<<execution_status>>>
-initiation_status="ok"
-duration=940 termination_type=exited termination_id=1 corefile=no
-cutime=1652 cstime=92280
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: LTP-20110915
+> -	if (Hflag == 0) {
+> -		tst_brkm(TBROK, NULL, "-H option is REQUIRED for this test, use -h for options help");
+> -		tst_exit();
+> -	}
+> -
+>  	setup();
+>  
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> @@ -189,18 +166,22 @@ main(int ac, char **av)
+>   * 	     Write some known data into file and get the size of the file.
+>   */
+>  void
+> -setup()
+> +setup(void)
+>  {
+> -	char mypid[40];
+> -
+> -	sprintf(mypid,"/%d",getpid());
+> -	TEMPFILE=strcat(mypid,TEMPFILE);
+> -	TEMPFILE=strcat(Hopt,TEMPFILE);
+> +	tst_require_root(NULL);
+>  
+>  	tst_sig(FORK, DEF_HANDLER, cleanup);
+>  
+>  	TEST_PAUSE;
+>  
+> +	tst_tmpdir();
+> +	mount_point = get_tst_tmpdir();
+> +
+> +	mount_hugetlbfs(mount_point);
+> +	hugepage_alloc(1024);
+> +
+> +	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", 
+> +		mount_point, getpid());
+>  }
+>  
+>  /*
+> @@ -209,7 +190,7 @@ setup()
+>   * 	       Remove the temporary directory created.
+>   */
+>  void
+> -cleanup()
+> +cleanup(void)
+>  {
+>  	/*
+>  	 * print timing stats if that option was specified.
+> @@ -218,4 +199,6 @@ cleanup()
+>  
+>  	unlink(TEMPFILE);
+>  
+> +	umount_hugetlbfs(mount_point);
+> +	tst_rmdir();
+>  }
 
-I have no clue about the failure.  Any help would be great, thanks in advance.
-
-Regards,
-Romu
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure contains a
-definitive record of customers, application performance, security
-threats, fraudulent activity and more. Splunk takes this data and makes
-sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
