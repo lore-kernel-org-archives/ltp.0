@@ -1,24 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <michal.simek@petalogix.com>) id 1R88em-0006wC-Qh
-	for ltp-list@lists.sourceforge.net; Mon, 26 Sep 2011 10:43:28 +0000
-Received: from mail-ey0-f175.google.com ([209.85.215.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1R88em-0005m2-1x
-	for ltp-list@lists.sourceforge.net; Mon, 26 Sep 2011 10:43:28 +0000
-Received: by eya25 with SMTP id 25so4449375eya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Sep 2011 03:43:21 -0700 (PDT)
-Message-ID: <4E805746.4080503@petalogix.com>
-Date: Mon, 26 Sep 2011 12:43:18 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0WGy-0000s3-Qt
+	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:19:24 +0000
+Received: from e23smtp09.au.ibm.com ([202.81.31.142])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1R0WGv-0003D0-Ds
+	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:19:24 +0000
+Received: from /spool/local by au.ibm.com with XMail ESMTP
+	for <ltp-list@lists.sourceforge.net> from <rnsastry@linux.vnet.ibm.com>;
+	Mon, 5 Sep 2011 11:15:54 +1000
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p85AHui81691786
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:56 +1000
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p85AHuho003934
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:56 +1000
+Received: from [127.0.0.1] ([9.124.33.206])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p85AHsax003574
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:55 +1000
+Message-ID: <4E64A1D2.3070701@linux.vnet.ibm.com>
+Date: Mon, 05 Sep 2011 15:47:54 +0530
+From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <4E6DF14F.8030800@linux.vnet.ibm.com>
-In-Reply-To: <4E6DF14F.8030800@linux.vnet.ibm.com>
-Subject: Re: [LTP] [Patch v2] readlink03 test case fix
-Reply-To: michal.simek@petalogix.com
+Content-Type: multipart/mixed; boundary="------------020408080503010703010002"
+Subject: [LTP] [Patch 2/4] KSM test case fixes - ksm03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,54 +38,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Nageswara R Sastry wrote:
-> In readlink03 testcase,
-> When 'Symlink Pathname is empty' the return value was 'ENOENT' but with 
-> newer kernels the return value is 'EINVAL'. The following patch will fix 
-> this.
-> 
-> readlink03:
-> Before patch:
-> ...
-> readlink03    9  TFAIL  :  readlink() failed, Symlink Pathname is empty, 
-> errno=22, expected errno=2
-> ...
-> 
-> After patch:
-> ...
-> readlink03    9  TPASS  :  readlink(), Symlink Pathname is empty, 
-> returned errno 22
-> readlink03   10  TPASS  :  readlink(), Symlink Pathname is empty, 
-> returned errno 22
-> ...
-> 
-> Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+This is a multi-part message in MIME format.
+--------------020408080503010703010002
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Please add it to mainline.
+While setting up the environment, checking whether ksm related directory 
+exists in sysfs or not.
 
-Tested-by: Michal Simek <michal.simek@petalogix.com>
+ksm03, ksm03_1:
+Before patch:
+...
+ksm03       0  TINFO  :  KSM merging...
+ksm03       1  TBROK  :  open: errno=ENOENT(2): No such file or directory
+ksm03       2  TBROK  :  Remaining cases broken
+ksm03       0  TINFO  :  child 1 stops.
+ksm03       1  TBROK  :  unexpected signal 1 received (pid = 46142).
+ksm03       2  TBROK  :  Remaining cases broken
+...
 
-Thanks,
-Michal
+After patch:
+...
+ksm03       1  TCONF  :  KSM configuration is not enabled
+ksm03       2  TCONF  :  Remaining cases not appropriate for configuration
+...
+
+Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 
 -- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+Regards
+R.Nageswara Sastry
+
+
+--------------020408080503010703010002
+Content-Type: text/plain;
+ name="ksm03.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="ksm03.patch"
+
+--- ltp.orig/testcases/kernel/mem/ksm/ksm03.c	2011-09-05 08:42:12.000000000 +0200
++++ ltp/testcases/kernel/mem/ksm/ksm03.c	2011-09-05 08:45:47.000000000 +0200
+@@ -111,6 +111,12 @@ void setup(void)
+ 	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
+ 	tst_sig(FORK, DEF_HANDLER, NULL);
+ 	TEST_PAUSE;
++
++	char *fname = "/sys/kernel/mm/ksm/";
++
++        if( access( fname, F_OK ) == -1 ) {
++                tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
++        }
+ }
+ 
+ void cleanup(void)
+
+--------------020408080503010703010002
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure contains a
-definitive record of customers, application performance, security
-threats, fraudulent activity and more. Splunk takes this data and makes
-sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
+--------------020408080503010703010002
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------020408080503010703010002--
+
+
