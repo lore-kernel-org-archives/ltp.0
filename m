@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0WFB-0000k8-Hm
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:17:33 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R0WFA-0007OG-IL
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:17:33 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id p85AHP1o006181
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:25 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p85AHPYM1970254
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:25 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p85AHO7T002833
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:24 +1000
-Received: from [127.0.0.1] ([9.124.33.206])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p85AHMfH002476
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:23 +1000
-Message-ID: <4E64A1B2.1020401@linux.vnet.ibm.com>
-Date: Mon, 05 Sep 2011 15:47:22 +0530
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0ubt-0002ep-JU
+	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 12:18:37 +0000
+Received: from e23smtp06.au.ibm.com ([202.81.31.148])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1R0ubs-0000qw-7o
+	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 12:18:37 +0000
+Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
+	by e23smtp06.au.ibm.com (8.14.4/8.13.1) with ESMTP id p86CHSlB024582
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 22:17:28 +1000
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p86CGrQW565298
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 22:16:53 +1000
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p86CISd4010146
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 22:18:28 +1000
+Received: from [127.0.0.1] ([9.77.196.21])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p86CIPkk010116
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 22:18:27 +1000
+Message-ID: <4E660F91.6030200@linux.vnet.ibm.com>
+Date: Tue, 06 Sep 2011 17:48:25 +0530
 From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090704040509020903050805"
-Subject: [LTP] [Patch 4/4] KSM test case fixes - oom01 and oom03
+Content-Type: multipart/mixed; boundary="------------040807050507080305010809"
+Subject: [LTP] [Patch v2 2/4] KSM test case fixes - ksm03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,43 +42,28 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
 This is a multi-part message in MIME format.
---------------090704040509020903050805
+--------------040807050507080305010809
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Before testing 'oom' with KSM pages - checking whether ksm related 
-directory exists in sysfs or not.
+Thanks Casper. Used macro 'PATH_KSM' and removed braces. And tested the 
+same.
 
-oom01:
-Before the patch:
+ksm03, ksm03_1:
+Before patch:
 ...
-oom01       0  TINFO  :  start OOM testing for KSM pages.
-oom01       0  TINFO  :  allocating 3221225472 bytes.
-oom01       1  TBROK  :  madvise: errno=EINVAL(22): Invalid argument
-oom01       2  TBROK  :  Remaining cases broken
-...
-
-After the patch:
-...
-oom01       1  TCONF  :  KSM configuration is not enabled
-oom01       2  TCONF  :  Remaining cases not appropriate for configuration
+ksm03       0  TINFO  :  KSM merging...
+ksm03       1  TBROK  :  open: errno=ENOENT(2): No such file or directory
+ksm03       2  TBROK  :  Remaining cases broken
+ksm03       0  TINFO  :  child 1 stops.
+ksm03       1  TBROK  :  unexpected signal 1 received (pid = 46142).
+ksm03       2  TBROK  :  Remaining cases broken
 ...
 
-oom03
-Before the patch:
+After patch:
 ...
-oom03       0  TINFO  :  start OOM testing for KSM pages.
-oom03       0  TINFO  :  expected victim is 46162.
-oom03       1  TFAIL  :  the victim unexpectedly failed: 512
-oom03       2  TBROK  :  open 46159: errno=ENOENT(2): No such file or 
-directory
-oom03       3  TBROK  :  Remaining cases broken
-...
-
-After the patch:
-...
-oom03       1  TCONF  :  KSM configuration is not enabled
-oom03       2  TCONF  :  Remaining cases not appropriate for configuration
+ksm03       1  TCONF  :  KSM configuration is not enabled
+ksm03       2  TCONF  :  Remaining cases not appropriate for configuration
 ...
 
 Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
@@ -88,29 +73,26 @@ Regards
 R.Nageswara Sastry
 
 
---------------090704040509020903050805
+--------------040807050507080305010809
 Content-Type: text/plain;
- name="mem.patch"
+ name="ksm03.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename="mem.patch"
+ filename="ksm03.patch"
 
---- ltp.orig/testcases/kernel/mem/lib/mem.c	2011-09-05 08:42:12.000000000 +0200
-+++ ltp/testcases/kernel/mem/lib/mem.c	2011-09-05 08:50:27.000000000 +0200
-@@ -139,6 +139,11 @@ void testoom(int mempolicy, int lite, in
- 	tst_resm(TINFO, "start OOM testing for mlocked pages.");
- 	oom(MLOCK, mempolicy, lite);
- 
-+        char *fname = "/sys/kernel/mm/ksm/";
-+        if( access( fname, F_OK ) == -1 ) {
+--- ltp.orig/testcases/kernel/mem/ksm/ksm03.c	2011-09-05 08:42:12.000000000 +0200
++++ ltp/testcases/kernel/mem/ksm/ksm03.c	2011-09-06 13:50:16.000000000 +0200
+@@ -111,6 +111,8 @@ void setup(void)
+ 	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
+ 	tst_sig(FORK, DEF_HANDLER, NULL);
+ 	TEST_PAUSE;
++        if( access( PATH_KSM, F_OK ) == -1 )
 +                tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
-+        }
-+
- 	tst_resm(TINFO, "start OOM testing for KSM pages.");
- 	oom(KSM, mempolicy, lite);
  }
+ 
+ void cleanup(void)
 
---------------090704040509020903050805
+--------------040807050507080305010809
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -122,7 +104,7 @@ Finally, a world-class log management solution at an even better
 price-free! And you'll get a free "Love Thy Logs" t-shirt when you
 download Logger. Secure your free ArcSight Logger TODAY!
 http://p.sf.net/sfu/arcsisghtdev2dev
---------------090704040509020903050805
+--------------040807050507080305010809
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -133,6 +115,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------090704040509020903050805--
+--------------040807050507080305010809--
 
 
