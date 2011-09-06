@@ -1,34 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0vH7-00056A-H2
-	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 13:01:13 +0000
-Received: from e23smtp03.au.ibm.com ([202.81.31.145])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R0vH1-0005nb-N9
-	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 13:01:13 +0000
-Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
-	by e23smtp03.au.ibm.com (8.14.4/8.13.1) with ESMTP id p86CtZsa017830
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 22:55:35 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p86CxQSs1257592
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 22:59:27 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p86D10Ml014345
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 23:01:00 +1000
-Received: from [127.0.0.1] ([9.77.196.21])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p86D0vKO014307
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 23:00:59 +1000
-Message-ID: <4E661988.80303@linux.vnet.ibm.com>
-Date: Tue, 06 Sep 2011 18:30:56 +0530
-From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <czhang@redhat.com>) id 1R0rvC-0001Rd-V0
+	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 09:26:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1R0rvC-0004Og-40
+	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 09:26:22 +0000
+Message-ID: <4E65E6B4.2030209@redhat.com>
+Date: Tue, 06 Sep 2011 17:24:04 +0800
+From: Caspar Zhang <czhang@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080505020601000708070104"
-Subject: [LTP] [Patch v3 1/4] KSM test case fixes - ksm01
+References: <4E64A194.2070805@linux.vnet.ibm.com>
+In-Reply-To: <4E64A194.2070805@linux.vnet.ibm.com>
+Subject: Re: [LTP] [Patch 1/4] KSM test case fixes - ksm01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,47 +24,30 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------080505020601000708070104
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Fixed format issues.
-
-Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
-
--- 
-Regards
-R.Nageswara Sastry
-
-
---------------080505020601000708070104
-Content-Type: text/plain;
- name="ksm01.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="ksm01.patch"
-
---- ltp.orig/testcases/kernel/mem/ksm/ksm01.c	2011-09-05 08:42:12.000000000 +0200
-+++ ltp/testcases/kernel/mem/ksm/ksm01.c	2011-09-06 14:49:27.000000000 +0200
-@@ -106,6 +106,8 @@ void setup(void)
- 
- 	if (tst_kvercmp(2, 6, 32) < 0)
- 		tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
-+	if(access( PATH_KSM, F_OK ) == -1)
-+		tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
- 
- 	tst_sig(FORK, DEF_HANDLER, NULL);
- 	TEST_PAUSE;
-
---------------080505020601000708070104
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 09/05/2011 06:16 PM, Nageswara R Sastry wrote:
+> +
+> +	char *fname = "/sys/kernel/mm/ksm/";
+> +
+> +        if( access( fname, F_OK ) == -1 ) {
+> +                tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+> +        }
+>   }
+
+Hi, thanks for the patch. However, there is already a macro defined in 
+include/mem.h:
+
+#define PATH_KSM                "/sys/kernel/mm/ksm/"
+
+And I think the braces are not necessary here?
+
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
 Special Offer -- Download ArcSight Logger for FREE!
@@ -86,17 +55,7 @@ Finally, a world-class log management solution at an even better
 price-free! And you'll get a free "Love Thy Logs" t-shirt when you
 download Logger. Secure your free ArcSight Logger TODAY!
 http://p.sf.net/sfu/arcsisghtdev2dev
---------------080505020601000708070104
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------080505020601000708070104--
-
-
