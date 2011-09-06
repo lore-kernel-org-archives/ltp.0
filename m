@@ -1,18 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1R1Gte-0000aJ-ML
-	for ltp-list@lists.sourceforge.net; Wed, 07 Sep 2011 12:06:26 +0000
-Date: Wed, 7 Sep 2011 14:06:58 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110907120658.GA31361@saboteur.suse.cz>
-References: <4E65E013.7020503@cn.fujitsu.com>
+	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0vIf-0005Ag-ET
+	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 13:02:49 +0000
+Received: from e23smtp06.au.ibm.com ([202.81.31.148])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1R0vIZ-0006X4-OA
+	for ltp-list@lists.sourceforge.net; Tue, 06 Sep 2011 13:02:49 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp06.au.ibm.com (8.14.4/8.13.1) with ESMTP id p86D1ak4011220
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 23:01:36 +1000
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p86D2aak868574
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 23:02:36 +1000
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p86D2aNL016206
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 23:02:36 +1000
+Received: from [127.0.0.1] ([9.77.196.21])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p86D2YL1016186
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Sep 2011 23:02:35 +1000
+Message-ID: <4E6619E9.9060400@linux.vnet.ibm.com>
+Date: Tue, 06 Sep 2011 18:32:33 +0530
+From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4E65E013.7020503@cn.fujitsu.com>
-Subject: Re: [LTP] [POSIX][PATCH] pthread_create/10-1: correct return value
- if test fails
+Content-Type: multipart/mixed; boundary="------------090407070307040300000906"
+Subject: [LTP] [Patch v3 3/4] KSM test case fixes - mmap10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,68 +38,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> This patch fixes return value always being 0 even if test
-> fails. Using _exit(value) instead of pthread_exit();.
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> ---
->  .../conformance/interfaces/pthread_create/10-1.c   |    8 ++++----
->  1 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/10-1.c
-> index 265901f..fe0c88d 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/10-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/10-1.c
-> @@ -76,16 +76,16 @@ void sig_handler(int sig)
->  		if (created_thread == 1)
->  		{
->  			printf("Test FAILED: Created thread though an invalid attribute was passed to pthread_create().\n");
-> -			pthread_exit((void*)PTS_FAIL);
-> +			_exit(PTS_FAIL);
->  		}
->  
->  		printf("Test PASSED\n");
-> -		pthread_exit((void*)PTS_PASS);
-> +		_exit(PTS_PASS);
->  		return;
->  	}
->  
->  	printf("Test FAILED: Did not receive segmentation fault signal, waited 10 seconds.\n");
-> -	pthread_exit((void*)PTS_FAIL);
-> +	_exit(PTS_FAIL);
->  	return;
->  }
->  
-> @@ -124,4 +124,4 @@ int main()
->  
->  	printf("Test FAILED.\n");
->  	return PTS_FAIL;
-> -}
-> \ No newline at end of file
-> +}
+This is a multi-part message in MIME format.
+--------------090407070307040300000906
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Fixed format issues.
 
-Commited, at least the tests correctly reports it's failure now. But it
-has some more desing flaws that needs to be fixed.
+Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards
+R.Nageswara Sastry
+
+
+--------------090407070307040300000906
+Content-Type: text/plain;
+ name="mmap10.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="mmap10.patch"
+
+--- ltp.orig/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-05 08:42:12.000000000 +0200
++++ ltp/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-06 14:50:28.000000000 +0200
+@@ -62,6 +62,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "config.h"
++#include "../../mem/include/mem.h"
+ 
+ #define SIZE (5*1024*1024)
+ 
+@@ -94,6 +95,8 @@ int main(int argc, char *argv[])
+ 
+ 	if (opt_ksm)
+ 	{
++		if(access( PATH_KSM, F_OK ) == -1)
++			tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+ #ifdef HAVE_MADV_MERGEABLE
+ 		tst_resm(TINFO, "add to KSM regions.");
+ #else
+
+--------------090407070307040300000906
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Using storage to extend the benefits of virtualization and iSCSI
-Virtualization increases hardware utilization and delivers a new level of
-agility. Learn what those decisions are and how to modernize your storage 
-and backup environments for virtualization.
-http://www.accelacomm.com/jaw/sfnl/114/51434361/
+Special Offer -- Download ArcSight Logger for FREE!
+Finally, a world-class log management solution at an even better 
+price-free! And you'll get a free "Love Thy Logs" t-shirt when you
+download Logger. Secure your free ArcSight Logger TODAY!
+http://p.sf.net/sfu/arcsisghtdev2dev
+--------------090407070307040300000906
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------090407070307040300000906--
+
+
