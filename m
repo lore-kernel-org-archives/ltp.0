@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Yi.Zhao@windriver.com>) id 1Qz0Df-00022g-2g
-	for ltp-list@lists.sourceforge.net; Thu, 01 Sep 2011 05:53:43 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qz0Db-0002pL-PM
-	for ltp-list@lists.sourceforge.net; Thu, 01 Sep 2011 05:53:42 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id p815rV0k021466
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 31 Aug 2011 22:53:31 -0700 (PDT)
-From: Yi Zhao <yi.zhao@windriver.com>
-Date: Thu, 1 Sep 2011 13:53:27 +0800
-Message-ID: <1314856407-9740-1-git-send-email-yi.zhao@windriver.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1R1HxK-0004IR-SY
+	for ltp-list@lists.sourceforge.net; Wed, 07 Sep 2011 13:14:18 +0000
+Date: Wed, 7 Sep 2011 15:14:51 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110907131451.GA32567@saboteur.suse.cz>
+References: <4E661988.80303@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] rt_sigqueueinfo01: Fix test failed on mips.
+Content-Disposition: inline
+In-Reply-To: <4E661988.80303@linux.vnet.ibm.com>
+Subject: Re: [LTP] [Patch v3 1/4] KSM test case fixes - ksm01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,62 +24,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-rt_sigqueueinfo01 case test failed on mips arch:
-	rt_sigqueueinfo01    1  TFAIL  :  Test Failed
-	rt_sigqueueinfo01    2  TFAIL  :  Test Failed
+Hi!
+> Fixed format issues.
 
-We are sending signal 17 that could be SIGUSR2, SIGCHILD or SIGSTOP and depends on hardware platform.
-On x86, arm, and powerpc, this number is defined to SIGCHILD. So in this case I think it should be SIGCHILD.
-However, on mips this number is defined to SIGUSR2 and SIGCHILD is defined as 18. 
-This made the test case failed. I think that symbolic name rather than number should be used.
+^ please write here short description of the problme that the patch is
+  fixing. Somethink like "Disable ksm01 test if KSM is not supported"
+  should do.
 
-And this patch also add a a missing brace.
+> Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+> 
+> -- 
+> Regards
+> R.Nageswara Sastry
+> 
 
-Signed-off-by: Yi Zhao <yi.zhao@windriver.com>
----
- .../syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c   |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+> --- ltp.orig/testcases/kernel/mem/ksm/ksm01.c	2011-09-05 08:42:12.000000000 +0200
+> +++ ltp/testcases/kernel/mem/ksm/ksm01.c	2011-09-06 14:49:27.000000000 +0200
+> @@ -106,6 +106,8 @@ void setup(void)
+>  
+>  	if (tst_kvercmp(2, 6, 32) < 0)
+>  		tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
+> +	if(access( PATH_KSM, F_OK ) == -1)
+> +		tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+>  
+>  	tst_sig(FORK, DEF_HANDLER, NULL);
+>  	TEST_PAUSE;
 
-diff --git a/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-index da3c403..61b1991 100644
---- a/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-+++ b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-@@ -85,18 +85,19 @@ int main(int ac, char **av) {
- 		else if (TEST_RETURN == 0) {
- 			uinfo.si_errno = 0;
- 			uinfo.si_code = SI_QUEUE;
--			TEST(syscall(__NR_rt_sigqueueinfo, getpid(), 17,
-+			TEST(syscall(__NR_rt_sigqueueinfo, getpid(), SIGCHLD,
- 			    &uinfo));
- 			if (TEST_RETURN != 0)
- 				err(1, "rt_sigqueueinfo");
- 			exit(0);
--		} else
-+		} else {
- 			wait(&status);
- 			if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
- 				tst_resm(TPASS, "Test Succeeded");
- 			else
- 				tst_resm(TFAIL, "Test Failed");
-+		}
- 		cleanup();
- 	}
- 	tst_exit();
--}
-\ No newline at end of file
-+}
+Still there should be whitespace after the if and there shouldn't be
+whitespaces on the inner side of the braces.
+
+Could you pretty please use the checkpatch.pl script, that should save
+both your and mine time ;).
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Special Offer -- Download ArcSight Logger for FREE!
-Finally, a world-class log management solution at an even better 
-price-free! And you'll get a free "Love Thy Logs" t-shirt when you
-download Logger. Secure your free ArcSight Logger TODAY!
-http://p.sf.net/sfu/arcsisghtdev2dev
+Using storage to extend the benefits of virtualization and iSCSI
+Virtualization increases hardware utilization and delivers a new level of
+agility. Learn what those decisions are and how to modernize your storage 
+and backup environments for virtualization.
+http://www.accelacomm.com/jaw/sfnl/114/51434361/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
