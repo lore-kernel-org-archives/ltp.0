@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <michal.simek@petalogix.com>) id 1R88eA-0001ar-Nk
-	for ltp-list@lists.sourceforge.net; Mon, 26 Sep 2011 10:42:50 +0000
-Received: from mail-ey0-f175.google.com ([209.85.215.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1R88e9-00085W-Mf
-	for ltp-list@lists.sourceforge.net; Mon, 26 Sep 2011 10:42:50 +0000
-Received: by eya25 with SMTP id 25so4448960eya.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Sep 2011 03:42:43 -0700 (PDT)
-Message-ID: <4E805721.6020709@petalogix.com>
-Date: Mon, 26 Sep 2011 12:42:41 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1R1IXj-0003hs-WC
+	for ltp-list@lists.sourceforge.net; Wed, 07 Sep 2011 13:51:55 +0000
+Date: Wed, 7 Sep 2011 15:52:29 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110907135229.GA2281@saboteur.suse.cz>
+References: <4E660FFC.9080900@linux.vnet.ibm.com> <4E661798.70305@redhat.com>
 MIME-Version: 1.0
-References: <4E6DF0E4.1040004@linux.vnet.ibm.com>
-In-Reply-To: <4E6DF0E4.1040004@linux.vnet.ibm.com>
-Subject: Re: [LTP] [Patch v2] sockioctl01 test case fix
-Reply-To: michal.simek@petalogix.com
+Content-Disposition: inline
+In-Reply-To: <4E661798.70305@redhat.com>
+Subject: Re: [LTP] [Patch v2 3/4] KSM test case fixes - mmap10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,54 +24,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+To: Caspar Zhang <czhang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Nageswara R Sastry wrote:
-> In sockioctl01 testcase,
-> Current 'inappropriate ioctl operation returning EINVAL'
-> With the git commit '41c31f318a5209922d051e293c61e4724daad11c' more 
-> details at 
-> http://permalink.gmane.org/gmane.linux.kernel.commits.head/296060
-> 'inappropriate ioctl operation returning ENOTTY'
+Hi!
+> >--- ltp.orig/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-05 08:42:12.000000000 +0200
+> >+++ ltp/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-06 14:10:23.000000000 +0200
+> >@@ -62,6 +62,7 @@
+> >  #include "test.h"
+> >  #include "usctest.h"
+> >  #include "config.h"
+> >+#include "../../mem/include/mem.h"
+> >
+> >  #define SIZE (5*1024*1024)
+> >
+> >@@ -94,6 +95,8 @@ int main(int argc, char *argv[])
+> >
+> >  	if (opt_ksm)
+> >  	{
+> >+		if( access( PATH_KSM, F_OK ) == -1 )
+> >+			tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+> >  #ifdef HAVE_MADV_MERGEABLE
+> >  		tst_resm(TINFO, "add to KSM regions.");
+> >  #else
 > 
-> The following patch will fix this.
+> Hmmm... seems HAVE_MADV_MERGEABLE is not enough? from man page:
 > 
+> The MADV_MERGEABLE and MADV_UNMERGEABLE operations are only
+> available if the kernel was configured with CONFIG_KSM.
 > 
-> sockioctl01:
-> Before patch:
-> ...
-> sockioctl01    4  TFAIL  :  ATMARK on UDP ; returned -1 (expected -1), 
-> errno 25 (expected 22)
-> ...
-> 
-> After patch:
-> ...
-> sockioctl01    4  TPASS  :  ATMARK on UDP successful
-> ...
-> 
-> P.S. patch has ran through checkpatch.pl
-> 
-> Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+> Doesn't that means, if CONFIG_KSM is not set, MAD_MERGEABLE won't be
+> defined?
 
-Can someone add this patch to git?
-
-Tested-by: Michal Simek <michal.simek@petalogix.com>
-
-Thanks,
-Michal
+I don't think so, the problem here is that you can't say that KSM is in
+the kernel at test compile time, just because you can reboot into
+another kernel after the test is compiled, even more when the LTP is
+packaged you don't really know what kernel it will run on. The
+HAVE_MADV_MERGEABLE is enough to get the test compiled with
+MADV_MERGEABLE support, however you still may get ENOSYS from the
+syscall when the test is executed.
 
 -- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure contains a
-definitive record of customers, application performance, security
-threats, fraudulent activity and more. Splunk takes this data and makes
-sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+Using storage to extend the benefits of virtualization and iSCSI
+Virtualization increases hardware utilization and delivers a new level of
+agility. Learn what those decisions are and how to modernize your storage 
+and backup environments for virtualization.
+http://www.accelacomm.com/jaw/sfnl/114/51434361/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
