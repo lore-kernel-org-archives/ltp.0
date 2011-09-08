@@ -1,21 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1R1dPH-0006J5-Uf
-	for ltp-list@lists.sourceforge.net; Thu, 08 Sep 2011 12:08:35 +0000
-Date: Thu, 8 Sep 2011 14:09:12 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110908120912.GA9901@saboteur.suse.cz>
-References: <1309414787-2022-1-git-send-email-yanpai.chen@gmail.com>
-	<1309414787-2022-6-git-send-email-yanpai.chen@gmail.com>
-	<20110729114534.GA29831@saboteur.suse.cz>
-	<CANj_sbC3+eO+6=_S4MO8Wr1o6b7Oo9mbX=EehBFaQb6dj=xOww@mail.gmail.com>
-	<20110810121642.GD3179@saboteur.suse.cz>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R1bI2-0001TZ-00
+	for ltp-list@lists.sourceforge.net; Thu, 08 Sep 2011 09:52:58 +0000
+Received: from e28smtp01.in.ibm.com ([122.248.162.1])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1R1bHx-0001iE-Qi
+	for ltp-list@lists.sourceforge.net; Thu, 08 Sep 2011 09:52:57 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp01.in.ibm.com (8.14.4/8.13.1) with ESMTP id p889qknb028419
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Sep 2011 15:22:46 +0530
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p889qkME864350
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Sep 2011 15:22:46 +0530
+Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p889qjiY012412
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Sep 2011 19:52:45 +1000
+Received: from [127.0.0.1] ([9.124.46.53])
+	by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p889qjev012398
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Sep 2011 19:52:45 +1000
+Message-ID: <4E68906D.1090209@linux.vnet.ibm.com>
+Date: Thu, 08 Sep 2011 15:22:45 +0530
+From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20110810121642.GD3179@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH 6/7] runtest/fs: change parameters of growfiles
+Content-Type: multipart/mixed; boundary="------------030702040300010703090200"
+Subject: [LTP] [Patch v4 3/4] KSM test case fixes - mmap10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,77 +38,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Yan-Pai Chen <yanpai.chen@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > >> --- a/ltp-full-20101031/runtest/fs
-> > >> +++ b/ltp-full-20101031/runtest/fs
-> > >> @@ -14,9 +14,9 @@ gf12 mkfifo $TMPDIR/gffifo17; growfiles -b -W gf12=
- -e 1 -u -i 0 -L 30 $TMPDIR/gf
-> > >> =A0gf13 mkfifo $TMPDIR/gffifo18; growfiles -b -W gf13 -e 1 -u -i 0 -=
-L 30 -I r -r 1-4096 $TMPDIR/gffifo18
-> > >> =A0gf14 growfiles -W gf14 -b -e 1 -u -i 0 -L 20 -w -l -C 1 -T 10 -f =
-glseek19 -S 2 -d $TMPDIR
-> > >> =A0gf15 growfiles -W gf15 -b -e 1 -u -r 1-49600 -I r -u -i 0 -L 120 =
--f Lgfile1 -d $TMPDIR
-> > >> -gf16 growfiles -W gf16 -b -e 1 -i 0 -L 120 -u -g 4090 -T 100 -t 408=
-990 -l -C 10 -c 1000 -S 10 -f Lgf02_ -d $TMPDIR
-> > >> -gf17 growfiles -W gf17 -b -e 1 -i 0 -L 120 -u -g 5000 -T 100 -t 499=
-990 -l -C 10 -c 1000 -S 10 -f Lgf03_ -d $TMPDIR
-> > >> =A0gf18 growfiles -W gf18 -b -e 1 -i 0 -L 120 -w -u -r 10-5000 -I r =
--l -S 2 -f Lgf04_ -d $TMPDIR
-> > >> +gf16 growfiles -W gf16 -b -e 1 -i 0 -L 120 -u -g 4090 -T 101 -t 408=
-990 -l -C 10 -c 1000 -S 10 -f Lgf02_ -d $TMPDIR
-> > >> +gf17 growfiles -W gf17 -b -e 1 -i 0 -L 120 -u -g 5000 -T 101 -t 499=
-990 -l -C 10 -c 1000 -S 10 -f Lgf03_ -d $TMPDIR
-> > >> =A0gf19 growfiles -W gf19 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -=
-I p -o O_RDWR,O_CREAT,O_TRUNC -u -f gf08i_ -d $TMPDIR
-> > >> =A0gf20 growfiles -W gf20 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1-2=
-56000:512 -R 512-256000 -T 4 -f gfbigio-$$ -d $TMPDIR
-> > >> =A0gf21 growfiles -W gf21 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 204=
-80 -T 10 -t 20480 -f gf-bld-$$ -d $TMPDIR
-> > >
-> > > Any reason why you have changed the order of the execution (the gf18 =
-now preceeds gf16 and gf17)?
-> > >
-> > Sorry, that's my mistake.
-> > I will resend the patch later.
-> > =
+This is a multi-part message in MIME format.
+--------------030702040300010703090200
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> > > Also I'm not sure if 'shrinking on the same file' wasn't intentional
-> > > (most likely not but I'm not sure yet).
-> > >
-> > We made the patch here for the following problem:
-> > gf16/gf17 create 10 files and keep them growing and shrinking.
-> > But shrinking on the same file leads the others to be growing only
-> > which may cause the tests run out of memory.
-> =
+Disable mmap10 test if KSM is not configured
 
-> Ah right, this should have been in the commit description and also the
-> amount of the memory consumed. That makes clear why you did such change
-> as the change itself doesn't define the problem that you hit...
->
+P.S. patch checked with 'checkpatch.pl'
 
-Ping, any progress on this?
+Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 
--- =
+-- 
+Regards
+R.Nageswara Sastry
 
-Cyril Hrubis
-chrubis@suse.cz
 
----------------------------------------------------------------------------=
----
-Doing More with Less: The Next Generation Virtual Desktop =
+--------------030702040300010703090200
+Content-Type: text/plain;
+ name="mmap10.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="mmap10.patch"
 
+--- ltp.orig/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-08 11:32:12.000000000 +0200
++++ ltp/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-08 11:45:40.000000000 +0200
+@@ -94,6 +94,8 @@ int main(int argc, char *argv[])
+ 
+ 	if (opt_ksm)
+ 	{
++		if (access(PATH_KSM, F_OK) == -1)
++			tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+ #ifdef HAVE_MADV_MERGEABLE
+ 		tst_resm(TINFO, "add to KSM regions.");
+ #else
+
+--------------030702040300010703090200
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Doing More with Less: The Next Generation Virtual Desktop 
 What are the key obstacles that have prevented many mid-market businesses
 from deploying virtual desktops?   How do next-generation virtual desktops
 provide companies an easier-to-deploy, easier-to-manage and more affordable
 virtual desktop model.http://www.accelacomm.com/jaw/sfnl/114/51426474/
+--------------030702040300010703090200
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030702040300010703090200--
+
+
