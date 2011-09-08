@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1R1yqz-0004uJ-Dw
-	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 11:02:37 +0000
-Date: Fri, 9 Sep 2011 13:03:20 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1R1dG4-0005d7-I3
+	for ltp-list@lists.sourceforge.net; Thu, 08 Sep 2011 11:59:04 +0000
+Date: Thu, 8 Sep 2011 13:59:39 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110909110320.GC855@saboteur.suse.cz>
-References: <4E64A1DB.5020301@linux.vnet.ibm.com>
+Message-ID: <20110908115939.GA9484@saboteur.suse.cz>
+References: <4E377560.7060600@cn.fujitsu.com> <4E4A2359.2040602@cn.fujitsu.com>
+	<20110902124352.GA14558@saboteur.suse.cz>
+	<20110902124744.GA14944@saboteur.suse.cz>
+	<4E66D3C5.80001@cn.fujitsu.com> <4E66D492.1030907@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E64A1DB.5020301@linux.vnet.ibm.com>
-Subject: Re: [LTP] [Patch] sockioctl01 test case fix
+In-Reply-To: <4E66D492.1030907@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 3/6] hugemmap01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,65 +27,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: tangchen <tangchen@cn.fujitsu.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
-> sockioctl01:
-> Before patch:
-> ...
-> sockioctl01    4  TFAIL  :  ATMARK on UDP ; returned -1 (expected
-> -1), errno 25 (expected 22)
-> ...
-> 
-> After patch:
-> ...
-> sockioctl01    4  TPASS  :  ATMARK on UDP successful
-> ...
-> 
-> 
-> Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
-> 
-> -- 
-> Regards
-> R.Nageswara Sastry
-> 
+>  	/* Parse standard options given to run the test. */
+> -	msg = parse_opts(ac, av, options, &help);
+> +	msg = parse_opts(ac, av, NULL, NULL);
+>  	if (msg != (char *) NULL) {
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s, use -help", msg);
+>  		tst_exit();
 
-> --- ltp.orig/testcases/kernel/syscalls/sockioctl/sockioctl01.c	2011-09-05 08:42:12.000000000 +0200
-> +++ ltp/testcases/kernel/syscalls/sockioctl/sockioctl01.c	2011-09-05 08:47:52.000000000 +0200
-> @@ -227,6 +227,12 @@ void setup1(void)
->  			 strerror(errno));
->  	}
->  	sinlen = sizeof(fsin1);
-> +
-> +	if (strncmp(tdat[testno].desc, "ATMARK on UDP", 14) == 0) {
-> +                if ( tst_kvercmp(2,6,39) >= 0 || tst_kvercmp(3,0,0) >= 0 ) {
-> +                        tdat[testno].experrno = ENOTTY;
-> +                }
-> +        }
->  }
->  
->  void setup2(void)
-> @@ -254,4 +260,4 @@ void cleanup1(void)
->  {
->  	(void)close(s);
->  	s = -1;
-> -}
-> \ No newline at end of file
-> +}
-
-Same as the previous one.
+The cast to (char *) is useless, please remove it, and also the
+tst_exit() don't need to be there as tst_brkm() calls the tst_exit()
+itself now.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Why Cloud-Based Security and Archiving Make Sense
-Osterman Research conducted this study that outlines how and why cloud
-computing security and archiving is rapidly being adopted across the IT 
-space for its ease of implementation, lower cost, and increased 
-reliability. Learn more. http://www.accelacomm.com/jaw/sfnl/114/51425301/
+Doing More with Less: The Next Generation Virtual Desktop 
+What are the key obstacles that have prevented many mid-market businesses
+from deploying virtual desktops?   How do next-generation virtual desktops
+provide companies an easier-to-deploy, easier-to-manage and more affordable
+virtual desktop model.http://www.accelacomm.com/jaw/sfnl/114/51426474/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
