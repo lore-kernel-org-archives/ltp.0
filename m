@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1R6GSR-0003iR-T3
-	for ltp-list@lists.sourceforge.net; Wed, 21 Sep 2011 06:38:59 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R6GSQ-0004Zq-Pl
-	for ltp-list@lists.sourceforge.net; Wed, 21 Sep 2011 06:38:59 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p8L684iq024415
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Sep 2011 02:08:04 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p8L6cj9v421776
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Sep 2011 02:38:49 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p8L6ciBS006209
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Sep 2011 02:38:45 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <260174ADA4D63F4AA543B9C81F2DE71247156D@POCITMSEXMB02.LntUniverse.com>
-References: <260174ADA4D63F4AA543B9C81F2DE7124714C8@POCITMSEXMB02.LntUniverse.com>
-	,<1316539785.4441.6.camel@subratamodak.linux.ibm.com>
-	<260174ADA4D63F4AA543B9C81F2DE71247156D@POCITMSEXMB02.LntUniverse.com>
-Date: Wed, 21 Sep 2011 12:08:44 +0530
-Message-Id: <1316587124.4544.3.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Cross Compiling LTP for Android platform
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R1tfH-0001z9-SD
+	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 05:30:11 +0000
+Received: from e23smtp07.au.ibm.com ([202.81.31.140])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1R1tfG-00018w-N7
+	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 05:30:11 +0000
+Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
+	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id p895U3DR001959
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 15:30:03 +1000
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p895SO7p831740
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 15:28:24 +1000
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p895U3aF005014
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 15:30:03 +1000
+Received: from [127.0.0.1] ([9.124.46.47])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p895TwM0004602
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 15:30:02 +1000
+Message-ID: <4E69A455.7070908@linux.vnet.ibm.com>
+Date: Fri, 09 Sep 2011 10:59:57 +0530
+From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------020707060406090209020404"
+Subject: [LTP] [Patch v5 3/4] KSM test case fixes - mmap10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,152 +38,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: G Rajender <G.Rajender@lnties.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, 2011-09-21 at 06:28 +0000, G Rajender wrote:
-> Hi,
-> 
-> Thank you for your reply and support.
-> 
-> I have checked for the strip with commands suggested by you.
-> # which strip
-> /usr/bin/strip
-> 
-> # rpm -qf /usr/bin/strip
-> "file /usr/bin/strip is not owned by any package"
+This is a multi-part message in MIME format.
+--------------020707060406090209020404
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Install the Cross Compile Binutils of the target Arch in this machine.
-Or, you can build the Target Arch Binutils in the source machine
-provided you have the Binuitls source code.
+Disable mmap10 test if KSM is not configured
 
-So just like your 'arm-linux-androideabi-gcc' which shows up in
-your /usr/bin/arm-linux-androideabi-gcc,
+P.S. patch checked with 'checkpatch.pl'
 
-You will then have all the binaries of the Binutils package here:
-/usr/bin/arm-linux-androideabi-stripe
-/usr/bin/arm-linux-androideabi-ar
-/usr/bin/arm-linux-androideabi-as
-/usr/bin/arm-linux-androideabi-ld
-/usr/bin/arm-linux-androideabi-nm
-/usr/bin/arm-linux-androideabi-objdump
+# ./mmap10 -s
+mmap10      1  TCONF  :  KSM configuration is not enabled
+mmap10      2  TCONF  :  Remaining cases not appropriate for configuration
 
-etc.
 
-Regards--
-Subrata
+Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 
-> 
-> I think strip not owned by any package....
-> 
-> How to modify or configure my arm-linux-androideabi- strip binutils.
-> 
-> Any suggestions please......
-> 
-> Thanks
-> Rajender.G
-> 
-> ________________________________________
-> From: Subrata Modak [subrata@linux.vnet.ibm.com]
-> Sent: Tuesday, September 20, 2011 10:59 PM
-> To: G Rajender
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] Cross Compiling LTP for Android platform
-> 
-> On Tue, 2011-09-20 at 14:28 +0000, G Rajender wrote:
-> > Hi,
-> >
-> > I am Cross Compiling LTP-20110228 using arm-linux-androideabi cross
-> > toolchain.
-> > Im getting the below errors
-> >
-> >
-> > make[4]: Leaving directory
-> > `/media/C0AA04ADAA04A250/ltp-full-20110228/testcases/commands/ade/nm'
-> > make[4]: Entering directory
-> > `/media/C0AA04ADAA04A250/ltp-full-20110228/testcases/commands/ade/objdump'
-> > arm-linux-androideabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe
-> > -Wall -g  -I../../../../include -I../../../../include  -c -o
-> > test_arch.o test_arch.c
-> > arm-linux-androideabi-gcc   -L../../../../lib  test_arch.o   -o
-> > test_arch_debug
-> > arm-linux-androideabi-gcc   -L../../../../lib  test_arch.o   -o
-> > test_arch_stripped
-> > strip test_arch_stripped
-> > strip: Unable to recognise the format of the input file
-> > `test_arch_stripped'
-> 
-> The Error lies here. Do you have 'strip' from the Cross-Architecture
-> Binary Utils package. Apart from your GCC (which is from your GCC
-> package), all the following packages should also be from your CROSS
-> COMPILE ARCH:
-> 
-> Glibc
-> Glibc-devel
-> Binutils
-> 
-> If you see your 'strip' binary, probably it is still belonging to the
-> machine arch on which you are compiling.
-> 
-> # which strip
-> /usr/bin/strip
-> 
-> # rpm -qf /usr/bin/strip
-> binutils-2.20.51.0.2-5.27.el6.ppc64
-> 
-> Check that out first.
-> 
-> Regards--
-> Subrata
-> 
-> > make[4]: *** [test_arch_stripped] Error 1
-> >
-> > Any suggestion on this erros please......
-> >
-> > Thanks in advance.
-> >
-> > Regards
-> >
-> > Rajender.G
-> >
-> >
-> >
-> > Larsen & Toubro Limited
-> >
-> > www.larsentoubro.com
-> >
-> > This Email may contain confidential or privileged information for the
-> > intended recipient (s) If you are not the intended recipient, please
-> > do not use or disseminate the information, notify the sender and
-> > delete it from your system.
-> > ------------------------------------------------------------------------------
-> > All the data continuously generated in your IT infrastructure contains a
-> > definitive record of customers, application performance, security
-> > threats, fraudulent activity and more. Splunk takes this data and makes
-> > sense of it. Business sense. IT sense. Common sense.
-> > http://p.sf.net/sfu/splunk-d2dcopy1
-> > _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> 
-> Larsen & Toubro Limited
-> 
-> www.larsentoubro.com
-> 
-> This Email may contain confidential or privileged information for the intended recipient (s) If you are not the intended recipient, please do not use or disseminate the information, notify the sender and delete it from your system.
-> 
+-- 
+Regards
+R.Nageswara Sastry
 
+
+--------------020707060406090209020404
+Content-Type: text/plain;
+ name="mmap10.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="mmap10.patch"
+
+--- ltp.orig/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-08 11:32:12.000000000 +0200
++++ ltp/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-09 07:22:35.000000000 +0200
+@@ -62,6 +62,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "config.h"
++#include "../../mem/include/mem.h"
+ 
+ #define SIZE (5*1024*1024)
+ 
+@@ -94,6 +95,8 @@ int main(int argc, char *argv[])
+ 
+ 	if (opt_ksm)
+ 	{
++		if (access(PATH_KSM, F_OK) == -1)
++			tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+ #ifdef HAVE_MADV_MERGEABLE
+ 		tst_resm(TINFO, "add to KSM regions.");
+ #else
+
+--------------020707060406090209020404
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure contains a
-definitive record of customers, application performance, security
-threats, fraudulent activity and more. Splunk takes this data and makes
-sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+Why Cloud-Based Security and Archiving Make Sense
+Osterman Research conducted this study that outlines how and why cloud
+computing security and archiving is rapidly being adopted across the IT 
+space for its ease of implementation, lower cost, and increased 
+reliability. Learn more. http://www.accelacomm.com/jaw/sfnl/114/51425301/
+--------------020707060406090209020404
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------020707060406090209020404--
+
+
