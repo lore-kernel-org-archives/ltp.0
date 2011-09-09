@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <huruomu@gmail.com>) id 1R8X1g-0002Hr-KA
-	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 12:44:44 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1R8X1c-00005p-UV
-	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 12:44:44 +0000
-Received: by mail-vx0-f175.google.com with SMTP id fl17so5236906vcb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 27 Sep 2011 05:44:40 -0700 (PDT)
-Message-ID: <4E81C3BE.7000004@gmail.com>
-Date: Tue, 27 Sep 2011 20:38:22 +0800
-From: Romu Hu <huruomu@gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1R1yeb-0002P4-AP
+	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 10:49:49 +0000
+Date: Fri, 9 Sep 2011 12:50:29 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20110909105029.GA855@saboteur.suse.cz>
+References: <4E69A455.7070908@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <4E808A86.3020403@gmail.com> <4E81A27B.7030908@casparzhang.com>
-In-Reply-To: <4E81A27B.7030908@casparzhang.com>
-Subject: Re: [LTP] msgctl11 TBROK Not enough free pids
+Content-Disposition: inline
+In-Reply-To: <4E69A455.7070908@linux.vnet.ibm.com>
+Subject: Re: [LTP] [Patch v5 3/4] KSM test case fixes - mmap10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,54 +24,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 2011/9/27 18:16, Caspar Zhang wrote:
-> On 09/26/2011 10:21 PM, Romu Hu wrote:
->> Hi,
->>
->> msgctl11 in ltp-20110915 failed on 2.6.39 kernel:
->>
->> msgctl11    1  TBROK  :  Not enough free pids
->>
->> I found that before error out,
->>
->> MSGMNI is 32768
->> MAXNKIDS is 10
->> free_pids is 32611
->> maxnkids = ((free_pids / 4) / MSGMNI);
->> so maxnkids is zero, which is why msgctl11 failed.
->>
->> Is this problem of testcase or problem of the tested system?
->>
->> Thanks
->>
->
-> I think it's a configuration issue.
->
-> Cyril, do you think is it better to change TBROK to TCONF here?
->
-> -                       tst_resm(TBROK, "Not enough free pids");
-> +                       tst_resm(TCONF, "Not enough free pids");
->
-> Thanks,
-> Caspar
+Hi!
+> --- ltp.orig/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-08 11:32:12.000000000 +0200
+> +++ ltp/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-09 07:22:35.000000000 +0200
+> @@ -62,6 +62,7 @@
+>  #include "test.h"
+>  #include "usctest.h"
+>  #include "config.h"
+> +#include "../../mem/include/mem.h"
+>  
+>  #define SIZE (5*1024*1024)
+>  
+> @@ -94,6 +95,8 @@ int main(int argc, char *argv[])
+>  
+>  	if (opt_ksm)
+>  	{
+> +		if (access(PATH_KSM, F_OK) == -1)
+> +			tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+>  #ifdef HAVE_MADV_MERGEABLE
+>  		tst_resm(TINFO, "add to KSM regions.");
+>  #else
 
-I changed MSGMNI in /proc to below 3000 and test passed.
-
-Thanks
+I don't have a good feeling about including header files across several
+directories, which could break things miraculously in the future. The
+best solution would be creating one header file to store constants to in
+ltp/include/. Or even duplicating the constant in the mmap10.c source
+seems as better solution to me.
 
 -- 
-Regards,
-Romu
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure contains a
-definitive record of customers, application performance, security
-threats, fraudulent activity and more. Splunk takes this data and makes
-sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+Why Cloud-Based Security and Archiving Make Sense
+Osterman Research conducted this study that outlines how and why cloud
+computing security and archiving is rapidly being adopted across the IT 
+space for its ease of implementation, lower cost, and increased 
+reliability. Learn more. http://www.accelacomm.com/jaw/sfnl/114/51425301/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
