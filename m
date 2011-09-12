@@ -1,17 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Qz6vY-0006zG-JN
-	for ltp-list@lists.sourceforge.net; Thu, 01 Sep 2011 13:03:28 +0000
-Date: Thu, 1 Sep 2011 15:03:26 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110901130326.GB10968@saboteur.suse.cz>
-References: <4E5D276C.3020505@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R356p-0001Qs-8f
+	for ltp-list@lists.sourceforge.net; Mon, 12 Sep 2011 11:55:31 +0000
+Received: from e23smtp05.au.ibm.com ([202.81.31.147])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1R356o-0007C5-6n
+	for ltp-list@lists.sourceforge.net; Mon, 12 Sep 2011 11:55:31 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp05.au.ibm.com (8.14.4/8.13.1) with ESMTP id p8CBmdAl002651
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Sep 2011 21:48:39 +1000
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	p8CBtNvm1630426
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Sep 2011 21:55:23 +1000
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	p8CBtNFi012648
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Sep 2011 21:55:23 +1000
+Received: from [127.0.0.1] ([9.79.197.179])
+	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	p8CBtJm2012608
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Sep 2011 21:55:22 +1000
+Message-ID: <4E6DF327.7070908@linux.vnet.ibm.com>
+Date: Mon, 12 Sep 2011 17:25:19 +0530
+From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4E5D276C.3020505@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH 1/1] fix ssh03 on system running mls policy
+Content-Type: multipart/mixed; boundary="------------070408060701090108060702"
+Subject: [LTP] [Patch v6 3/4] KSM test case fixes - mmap10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,65 +38,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: James Czyzak <czyzak2@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, debora@linux.vnet.ibm.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Hi Cyril
-> 
-> I sent this as new message since it's a revision of the patch as you
-> suggested, which is a better way to do it. I wasn't sure whether it
-> would be proper procedure to send a revised patch in a reply that
-> contained the original. Anyway I modified some of the configuration
-> settings of the mail client I'm using (Thunderbird) which unfortunately
-> I need to run on a windows machine. Hopefully the configuration changes
-> will prevent distortion of the patch. Please let me know if it does not.
-> 
->  Signed-off-by: James Czyzak <czyzak2@linux.vnet.ibm.com>
+This is a multi-part message in MIME format.
+--------------070408060701090108060702
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The patch is OK. But please write description for the code change into
-the mail body (instead of how Thunderbird tends to mangle patches ;).
+Disable mmap10 test if KSM is not configured
 
-Also there shouldn't be a whitespace before the Signed-off-by line.
+P.S. patch checked with 'checkpatch.pl'
 
-> ---
->  testcases/network/tcp_cmds/ssh/ssh03 |    4 +---
->  1 files changed, 1 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/network/tcp_cmds/ssh/ssh03
-> b/testcases/network/tcp_cmds/ssh/ssh03
-> index 8fbca34..798d385 100755
-> --- a/testcases/network/tcp_cmds/ssh/ssh03
-> +++ b/testcases/network/tcp_cmds/ssh/ssh03
-> @@ -39,10 +39,8 @@ do_setup()
->      export TEST_USER_HOMEDIR="/home/$TEST_USER"
-> 
->      # erase user if he/she already exists, so we can have a clean env
-> -    TCtmp=/home/$TEST_USER
-> -
-> -    rm -Rf $TCtmp
-> 
-> +    rm -Rf /home/$TEST_USER
->      tst_setup
-> 
->      exists expect ssh ssh03_s1 useradd userdel
-> --
-> 1.7.4.1
+# ./mmap10 -s
+mmap10      1  TCONF  :  KSM configuration is not enabled
+mmap10      2  TCONF  :  Remaining cases not appropriate for configuration
+
+
+Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards
+R.Nageswara Sastry
+
+
+--------------070408060701090108060702
+Content-Type: text/plain;
+ name="mmap10.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="mmap10.patch"
+
+--- ltp.orig/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-08 11:32:12.000000000 +0200
++++ ltp/testcases/kernel/syscalls/mmap/mmap10.c	2011-09-12 13:52:57.000000000 +0200
+@@ -64,6 +64,7 @@
+ #include "config.h"
+ 
+ #define SIZE (5*1024*1024)
++#define PATH_KSM "/sys/kernel/mm/ksm/"
+ 
+ char *TCID = "mmap10";
+ int TST_TOTAL = 1;
+@@ -94,6 +95,8 @@ int main(int argc, char *argv[])
+ 
+ 	if (opt_ksm)
+ 	{
++		if (access(PATH_KSM, F_OK) == -1)
++			tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+ #ifdef HAVE_MADV_MERGEABLE
+ 		tst_resm(TINFO, "add to KSM regions.");
+ #else
+
+--------------070408060701090108060702
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Special Offer -- Download ArcSight Logger for FREE!
-Finally, a world-class log management solution at an even better 
-price-free! And you'll get a free "Love Thy Logs" t-shirt when you
-download Logger. Secure your free ArcSight Logger TODAY!
-http://p.sf.net/sfu/arcsisghtdev2dev
+Doing More with Less: The Next Generation Virtual Desktop 
+What are the key obstacles that have prevented many mid-market businesses
+from deploying virtual desktops?   How do next-generation virtual desktops
+provide companies an easier-to-deploy, easier-to-manage and more affordable
+virtual desktop model.http://www.accelacomm.com/jaw/sfnl/114/51426474/
+--------------070408060701090108060702
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------070408060701090108060702--
+
+
