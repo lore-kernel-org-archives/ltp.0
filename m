@@ -1,33 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R1uCJ-00035Y-TN
-	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 06:04:19 +0000
-Received: from e23smtp04.au.ibm.com ([202.81.31.146])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R1uCI-0001PB-UG
-	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 06:04:19 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp04.au.ibm.com (8.14.4/8.13.1) with ESMTP id p895vafq014130
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 15:57:36 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p8964CWS1687638
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 16:04:12 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p8964BRH019926
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 16:04:11 +1000
-Received: from [127.0.0.1] ([9.124.46.47])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p89648Ao019849
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 16:04:10 +1000
-Message-ID: <4E69AC58.3080300@linux.vnet.ibm.com>
-Date: Fri, 09 Sep 2011 11:34:08 +0530
-From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1R5YbZ-0000DT-TJ
+	for ltp-list@lists.sourceforge.net; Mon, 19 Sep 2011 07:49:29 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1R5YbZ-000441-3w
+	for ltp-list@lists.sourceforge.net; Mon, 19 Sep 2011 07:49:29 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p8J7nNPJ004153
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Sep 2011 03:49:23 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id p8J7nM4s030042
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Sep 2011 03:49:22 -0400
+Message-ID: <4E76F401.6090305@redhat.com>
+Date: Mon, 19 Sep 2011 09:49:21 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [Patch] readlink03 test case fix
+Subject: [LTP] [PATCH 0/3] cgroup/memcg_regression_test fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,44 +36,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hello,
+Following 3 patches fix small issues in
+memcg/regression/memcg_regression_test.sh
 
-Any comments on this patch. Thanks!!
+These are similar to ones already submitted for
+cgroup/cgroup_regression_test.sh
 
->  In readlink03 testcase,
->  When 'Symlink Pathname is empty' the return value was 'ENOENT' but with
->  newer kernels the return value is 'EINVAL'. The following patch will fix
->  this.
->
->  readlink03:
->  Before patch:
->  ...
->  readlink03    9  TFAIL  :  readlink() failed, Symlink Pathname is empty,
->  errno=22, expected errno=2
->  ...
->
->  After patch:
->  ...
->  readlink03    9  TPASS  :  readlink(), Symlink Pathname is empty,
->  returned errno 22
->  readlink03   10  TPASS  :  readlink(), Symlink Pathname is empty,
->  returned errno 22
->  ...
->
->  Signed-off-by: Nageswara R Sastry<rnsastry@...>
+Jan Stancek (3):
+   cgroup/memcg_regression_test: clear dmesg before test
+   cgroup/memcg_regression_test: fix test4 cleanup
+   cgroup/memcg_regression_test: treat failed mount as error
 
--- 
-Regards
-R.Nageswara Sastry
-
-
+  .../memcg/regression/memcg_regression_test.sh      |   20 
++++++++++++++++-----
+  1 files changed, 15 insertions(+), 5 deletions(-)
 
 ------------------------------------------------------------------------------
-Why Cloud-Based Security and Archiving Make Sense
-Osterman Research conducted this study that outlines how and why cloud
-computing security and archiving is rapidly being adopted across the IT 
-space for its ease of implementation, lower cost, and increased 
-reliability. Learn more. http://www.accelacomm.com/jaw/sfnl/114/51425301/
+BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
+Learn about the latest advances in developing for the 
+BlackBerry&reg; mobile platform with sessions, labs & more.
+See new tools and technologies. Register for BlackBerry&reg; DevCon today!
+http://p.sf.net/sfu/rim-devcon-copy1 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
