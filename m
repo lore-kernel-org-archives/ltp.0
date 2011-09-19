@@ -1,34 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0WFL-0003qh-GW
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:17:43 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R0WFI-00067W-TF
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:17:43 +0000
-Received: from /spool/local by au.ibm.com with XMail ESMTP
-	for <ltp-list@lists.sourceforge.net> from <rnsastry@linux.vnet.ibm.com>;
-	Mon, 5 Sep 2011 11:14:14 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p85AHVp71740824
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:31 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p85AHUrh003061
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:30 +1000
-Received: from [127.0.0.1] ([9.124.33.206])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p85AHSpP002954
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:17:29 +1000
-Message-ID: <4E64A1B8.6070501@linux.vnet.ibm.com>
-Date: Mon, 05 Sep 2011 15:47:28 +0530
-From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+	(envelope-from <jstancek@redhat.com>) id 1R5Ybt-0007Ix-13
+	for ltp-list@lists.sourceforge.net; Mon, 19 Sep 2011 07:49:49 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1R5Ybs-0006AZ-Cg
+	for ltp-list@lists.sourceforge.net; Mon, 19 Sep 2011 07:49:48 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id p8J7ngCf004181
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Sep 2011 03:49:42 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id p8J7ne0J013734
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Sep 2011 03:49:41 -0400
+Message-ID: <4E76F414.3050200@redhat.com>
+Date: Mon, 19 Sep 2011 09:49:40 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000700050605090300070804"
-Subject: [LTP] [Patch] readlink03 test case fix
+Content-Type: multipart/mixed; boundary="------------070602010201060708020509"
+Subject: [LTP] [PATCH 1/3] cgroup/memcg_regression_test: clear dmesg before
+	test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,80 +37,75 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
 This is a multi-part message in MIME format.
---------------000700050605090300070804
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--------------070602010201060708020509
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-In readlink03 testcase,
-When 'Symlink Pathname is empty' the return value was 'ENOENT' but with 
-newer kernels the return value is 'EINVAL'. The following patch will fix 
-this.
 
-readlink03:
-Before patch:
-...
-readlink03    9  TFAIL  :  readlink() failed, Symlink Pathname is empty, 
-errno=22, expected errno=2
-...
+dmesg can rotate and number of found bugs can actually go down,
+so clear the buffer before test to avoid this.
 
-After patch:
-...
-readlink03    9  TPASS  :  readlink(), Symlink Pathname is empty, 
-returned errno 22
-readlink03   10  TPASS  :  readlink(), Symlink Pathname is empty, 
-returned errno 22
-...
-
-Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
-
--- 
-Regards
-R.Nageswara Sastry
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+  .../memcg/regression/memcg_regression_test.sh      |   13 +++++++++----
+  1 files changed, 9 insertions(+), 4 deletions(-)
 
 
---------------000700050605090300070804
-Content-Type: text/plain;
- name="readlink03.patch"
+
+--------------070602010201060708020509
+Content-Type: text/x-patch;
+	name="0001-cgroup-memcg_regression_test-clear-dmesg-before-test.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename="readlink03.patch"
+	filename*0="0001-cgroup-memcg_regression_test-clear-dmesg-before-test.pa";
+	filename*1="tch"
 
---- ltp.orig/testcases/kernel/syscalls/readlink/readlink03.c	2011-09-05 08:42:12.000000000 +0200
-+++ ltp/testcases/kernel/syscalls/readlink/readlink03.c	2011-09-05 08:49:28.000000000 +0200
-@@ -172,7 +172,11 @@ int main(int ac, char **av)
- 			if (buf_size == 1) {
- 				buf_size = sizeof(buffer);
- 			}
--
-+                        if (strncmp(test_desc, "Symlink Pathname is empty", 25) == 0) {
-+                                if ( tst_kvercmp(2,6,39) >= 0 || tst_kvercmp(3,0,0) >= 0 ) {
-+                                        Test_cases[i].exp_errno = EINVAL;
-+                                }
-+                        }
- 			/*
- 			 * Call readlink(2) to test different test conditions.
- 			 * verify that it fails with -1 return value and sets
-@@ -358,4 +362,4 @@ void cleanup()
+diff --git a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
+index b564ece..855b0fe 100755
+--- a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
++++ b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
+@@ -47,10 +47,13 @@ if [ $? -eq 0 ]; then
+ 	exit 0
+ fi
  
- 	tst_rmdir();
+-nr_bug=`dmesg | grep -c "kernel BUG"`
+-nr_null=`dmesg | grep -c "kernel NULL pointer dereference"`
+-nr_warning=`dmesg | grep -c "^WARNING"`
+-nr_lockdep=`dmesg | grep -c "possible recursive locking detected"`
++#buffer can rotate and number of found bugs can actually go down
++#so clear the buffer to avoid this
++dmesg -c > /dev/null
++nr_bug=0
++nr_null=0
++nr_warning=0
++nr_lockdep=0
  
--}
-\ No newline at end of file
-+}
+ # check_kernel_bug - check if some kind of kernel bug happened
+ check_kernel_bug()
+@@ -85,6 +88,8 @@ check_kernel_bug()
+ 	nr_warning=$new_warning
+ 	nr_lockdep=$new_lockdep
+ 
++	echo "check_kernel_bug found something!"
++	dmesg
+ 	failed=1
+ 	return 0
+ }
 
---------------000700050605090300070804
+
+--------------070602010201060708020509
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Special Offer -- Download ArcSight Logger for FREE!
-Finally, a world-class log management solution at an even better 
-price-free! And you'll get a free "Love Thy Logs" t-shirt when you
-download Logger. Secure your free ArcSight Logger TODAY!
-http://p.sf.net/sfu/arcsisghtdev2dev
---------------000700050605090300070804
+BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
+Learn about the latest advances in developing for the 
+BlackBerry&reg; mobile platform with sessions, labs & more.
+See new tools and technologies. Register for BlackBerry&reg; DevCon today!
+http://p.sf.net/sfu/rim-devcon-copy1 
+--------------070602010201060708020509
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -126,6 +116,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------000700050605090300070804--
-
+--------------070602010201060708020509--
 
