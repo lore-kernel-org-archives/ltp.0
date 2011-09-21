@@ -1,34 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0WFw-0003t8-SC
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:18:20 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R0WFv-00069E-UA
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:18:20 +0000
-Received: from /spool/local by au.ibm.com with XMail ESMTP
-	for <ltp-list@lists.sourceforge.net> from <rnsastry@linux.vnet.ibm.com>;
-	Mon, 5 Sep 2011 11:14:53 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p85AFK0X1069102
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:15:20 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p85AGs0j001616
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:16:54 +1000
-Received: from [127.0.0.1] ([9.124.33.206])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p85AGqv5001579
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:16:53 +1000
-Message-ID: <4E64A194.2070805@linux.vnet.ibm.com>
-Date: Mon, 05 Sep 2011 15:46:52 +0530
-From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+	(envelope-from <prvs=8245b581d5=G.Rajender@lnties.com>)
+	id 1R6GJ3-0003PZ-OR
+	for ltp-list@lists.sourceforge.net; Wed, 21 Sep 2011 06:29:17 +0000
+Received: from mailout2.ltindia.com ([125.18.18.171])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1R6GJ1-0001n0-6Q
+	for ltp-list@lists.sourceforge.net; Wed, 21 Sep 2011 06:29:17 +0000
+From: G Rajender <G.Rajender@lnties.com>
+Date: Wed, 21 Sep 2011 06:28:58 +0000
+Message-ID: <260174ADA4D63F4AA543B9C81F2DE71247156D@POCITMSEXMB02.LntUniverse.com>
+References: <260174ADA4D63F4AA543B9C81F2DE7124714C8@POCITMSEXMB02.LntUniverse.com>,
+	<1316539785.4441.6.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1316539785.4441.6.camel@subratamodak.linux.ibm.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070707020703040600000107"
-Subject: [LTP] [Patch 1/4] KSM test case fixes - ksm01
+Subject: Re: [LTP] Cross Compiling LTP for Android platform
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,85 +27,128 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------070707020703040600000107
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-While setting up the environment, checking whether ksm related directory 
-exists in sysfs or not.
-
-ksm01, ksm01_1:
-Before patch:
-...
-ksm01       0  TINFO  :  KSM merging...
-ksm01       1  TBROK  :  open: errno=ENOENT(2): No such file or directory
-ksm01       2  TBROK  :  Remaining cases broken
-...
-
-After patch:
-...
-ksm01       1  TCONF  :  KSM configuration is not enabled
-ksm01       2  TCONF  :  Remaining cases not appropriate for configuration
-...
-
-Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
-
--- 
-Regards
-R.Nageswara Sastry
-
-
---------------070707020703040600000107
-Content-Type: text/plain;
- name="ksm01.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="ksm01.patch"
-
---- ltp.orig/testcases/kernel/mem/ksm/ksm01.c	2011-09-05 08:42:12.000000000 +0200
-+++ ltp/testcases/kernel/mem/ksm/ksm01.c	2011-09-05 08:45:15.000000000 +0200
-@@ -109,6 +109,12 @@ void setup(void)
- 
- 	tst_sig(FORK, DEF_HANDLER, NULL);
- 	TEST_PAUSE;
-+
-+	char *fname = "/sys/kernel/mm/ksm/";
-+
-+        if( access( fname, F_OK ) == -1 ) {
-+                tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
-+        }
- }
- 
- void cleanup(void)
-
---------------070707020703040600000107
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+Hi,
+
+Thank you for your reply and support.
+
+I have checked for the strip with commands suggested by you.
+# which strip
+/usr/bin/strip
+
+# rpm -qf /usr/bin/strip
+"file /usr/bin/strip is not owned by any package"
+
+I think strip not owned by any package....
+
+How to modify or configure my arm-linux-androideabi- strip binutils.
+
+Any suggestions please......
+
+Thanks
+Rajender.G
+
+________________________________________
+From: Subrata Modak [subrata@linux.vnet.ibm.com]
+Sent: Tuesday, September 20, 2011 10:59 PM
+To: G Rajender
+Cc: ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] Cross Compiling LTP for Android platform
+
+On Tue, 2011-09-20 at 14:28 +0000, G Rajender wrote:
+> Hi,
+>
+> I am Cross Compiling LTP-20110228 using arm-linux-androideabi cross
+> toolchain.
+> Im getting the below errors
+>
+>
+> make[4]: Leaving directory
+> `/media/C0AA04ADAA04A250/ltp-full-20110228/testcases/commands/ade/nm'
+> make[4]: Entering directory
+> `/media/C0AA04ADAA04A250/ltp-full-20110228/testcases/commands/ade/objdump'
+> arm-linux-androideabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe
+> -Wall -g  -I../../../../include -I../../../../include  -c -o
+> test_arch.o test_arch.c
+> arm-linux-androideabi-gcc   -L../../../../lib  test_arch.o   -o
+> test_arch_debug
+> arm-linux-androideabi-gcc   -L../../../../lib  test_arch.o   -o
+> test_arch_stripped
+> strip test_arch_stripped
+> strip: Unable to recognise the format of the input file
+> `test_arch_stripped'
+
+The Error lies here. Do you have 'strip' from the Cross-Architecture
+Binary Utils package. Apart from your GCC (which is from your GCC
+package), all the following packages should also be from your CROSS
+COMPILE ARCH:
+
+Glibc
+Glibc-devel
+Binutils
+
+If you see your 'strip' binary, probably it is still belonging to the
+machine arch on which you are compiling.
+
+# which strip
+/usr/bin/strip
+
+# rpm -qf /usr/bin/strip
+binutils-2.20.51.0.2-5.27.el6.ppc64
+
+Check that out first.
+
+Regards--
+Subrata
+
+> make[4]: *** [test_arch_stripped] Error 1
+>
+> Any suggestion on this erros please......
+>
+> Thanks in advance.
+>
+> Regards
+>
+> Rajender.G
+>
+>
+>
+> Larsen & Toubro Limited
+>
+> www.larsentoubro.com
+>
+> This Email may contain confidential or privileged information for the
+> intended recipient (s) If you are not the intended recipient, please
+> do not use or disseminate the information, notify the sender and
+> delete it from your system.
+> ------------------------------------------------------------------------------
+> All the data continuously generated in your IT infrastructure contains a
+> definitive record of customers, application performance, security
+> threats, fraudulent activity and more. Splunk takes this data and makes
+> sense of it. Business sense. IT sense. Common sense.
+> http://p.sf.net/sfu/splunk-d2dcopy1
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+
+Larsen & Toubro Limited
+
+www.larsentoubro.com
+
+This Email may contain confidential or privileged information for the intended recipient (s) If you are not the intended recipient, please do not use or disseminate the information, notify the sender and delete it from your system.
 
 ------------------------------------------------------------------------------
-Special Offer -- Download ArcSight Logger for FREE!
-Finally, a world-class log management solution at an even better 
-price-free! And you'll get a free "Love Thy Logs" t-shirt when you
-download Logger. Secure your free ArcSight Logger TODAY!
-http://p.sf.net/sfu/arcsisghtdev2dev
---------------070707020703040600000107
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+All the data continuously generated in your IT infrastructure contains a
+definitive record of customers, application performance, security
+threats, fraudulent activity and more. Splunk takes this data and makes
+sense of it. Business sense. IT sense. Common sense.
+http://p.sf.net/sfu/splunk-d2dcopy1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------070707020703040600000107--
-
-
