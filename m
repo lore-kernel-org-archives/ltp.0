@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1R1boJ-0005Cr-K5
-	for ltp-list@lists.sourceforge.net; Thu, 08 Sep 2011 10:26:19 +0000
-Date: Thu, 8 Sep 2011 12:26:49 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20110908102649.GA6550@saboteur.suse.cz>
-References: <4E68906D.1090209@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <michal.simek@petalogix.com>) id 1R85Ch-0007ZH-I2
+	for ltp-list@lists.sourceforge.net; Mon, 26 Sep 2011 07:02:15 +0000
+Received: from mail-ey0-f175.google.com ([209.85.215.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1R85Cg-0000MM-JV
+	for ltp-list@lists.sourceforge.net; Mon, 26 Sep 2011 07:02:15 +0000
+Received: by eya25 with SMTP id 25so4293397eya.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 26 Sep 2011 00:02:08 -0700 (PDT)
+Message-ID: <4E801D5B.1030206@petalogix.com>
+Date: Mon, 26 Sep 2011 08:36:11 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4E68906D.1090209@linux.vnet.ibm.com>
-Subject: Re: [LTP] [Patch v4 3/4] KSM test case fixes - mmap10
+References: <1316084942-24319-1-git-send-email-monstr@monstr.eu>
+In-Reply-To: <1316084942-24319-1-git-send-email-monstr@monstr.eu>
+Subject: Re: [LTP] [PATCH] creat08: Fix test to be able to run on NFS
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,30 +31,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Disable mmap10 test if KSM is not configured
+Michal Simek wrote:
+> NFS creates temporary .nfsXXX files for every open/created file.
+> Based on this rmdir syscall failed because directory is not empty.
+> The solution is to close all open/created files. They are also unlink
+> in cleanup.
 > 
-> P.S. patch checked with 'checkpatch.pl'
+> Error log:
+> creat08     5  TBROK  :  rmdir testdir.A.167 failed: errno=???(39): Directory not empty
+> creat08     6  TBROK  :  Remaining cases broken
 > 
-> Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+> Example of created files(listed by readdir):
+> testdir.A.155
+> .nfs00000000070201f60000007d
+> ..
+> .nfs00000000070201f70000007c
+> .
 > 
+> testdir.B.155
+> .nfs00000000000dc13c0000007f
+> .nfs00000000000dc1050000007e
+> ..
+> .
+> .nfs00000000000dc0f600000080
+> 
+> Signed-off-by: Michal Simek <monstr@monstr.eu>
+> ---
+>  testcases/kernel/syscalls/creat/creat08.c |   23 +++++++++++++++++------
+>  1 files changed, 17 insertions(+), 6 deletions(-)
 
-All but this one commited. The mmap10 isn't probably including header
-with PATH_KSM as the compilation fails with PATH_KSM undefined.
+
+Can someone review it or apply it to git?
+
+Thanks,
+Michal
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
-Doing More with Less: The Next Generation Virtual Desktop 
-What are the key obstacles that have prevented many mid-market businesses
-from deploying virtual desktops?   How do next-generation virtual desktops
-provide companies an easier-to-deploy, easier-to-manage and more affordable
-virtual desktop model.http://www.accelacomm.com/jaw/sfnl/114/51426474/
+All the data continuously generated in your IT infrastructure contains a
+definitive record of customers, application performance, security
+threats, fraudulent activity and more. Splunk takes this data and makes
+sense of it. Business sense. IT sense. Common sense.
+http://p.sf.net/sfu/splunk-d2dcopy1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
