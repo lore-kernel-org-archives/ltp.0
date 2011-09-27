@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1R8VNn-0006Au-UZ
-	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 10:59:27 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1R8VNj-0001l5-Pk
-	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 10:59:27 +0000
-Received: by wyh5 with SMTP id 5so9679949wyh.34
+	(envelope-from <huruomu@gmail.com>) id 1R8X1g-0002Hr-KA
+	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 12:44:44 +0000
+Received: from mail-vx0-f175.google.com ([209.85.220.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1R8X1c-00005p-UV
+	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 12:44:44 +0000
+Received: by mail-vx0-f175.google.com with SMTP id fl17so5236906vcb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 27 Sep 2011 03:59:17 -0700 (PDT)
-Message-ID: <4E81A4D1.7030502@casparzhang.com>
-Date: Tue, 27 Sep 2011 18:26:25 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Tue, 27 Sep 2011 05:44:40 -0700 (PDT)
+Message-ID: <4E81C3BE.7000004@gmail.com>
+Date: Tue, 27 Sep 2011 20:38:22 +0800
+From: Romu Hu <huruomu@gmail.com>
 MIME-Version: 1.0
-References: <CANoG8sWBQBjVej__oW0HSWB3wiXBU0HrdFE=5DpUeFABtoF5wQ@mail.gmail.com>
-In-Reply-To: <CANoG8sWBQBjVej__oW0HSWB3wiXBU0HrdFE=5DpUeFABtoF5wQ@mail.gmail.com>
-Subject: Re: [LTP] proc01 failed on 2.6.39 kernel
+References: <4E808A86.3020403@gmail.com> <4E81A27B.7030908@casparzhang.com>
+In-Reply-To: <4E81A27B.7030908@casparzhang.com>
+Subject: Re: [LTP] msgctl11 TBROK Not enough free pids
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,65 +30,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Romu <huruomu@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 09/27/2011 05:49 PM, Romu wrote:
-> Hi,
+On 2011/9/27 18:16, Caspar Zhang wrote:
+> On 09/26/2011 10:21 PM, Romu Hu wrote:
+>> Hi,
+>>
+>> msgctl11 in ltp-20110915 failed on 2.6.39 kernel:
+>>
+>> msgctl11    1  TBROK  :  Not enough free pids
+>>
+>> I found that before error out,
+>>
+>> MSGMNI is 32768
+>> MAXNKIDS is 10
+>> free_pids is 32611
+>> maxnkids = ((free_pids / 4) / MSGMNI);
+>> so maxnkids is zero, which is why msgctl11 failed.
+>>
+>> Is this problem of testcase or problem of the tested system?
+>>
+>> Thanks
+>>
 >
-> proc01 in ltp-20110915 failed on 2.6.39 kernel:
+> I think it's a configuration issue.
 >
-> <<<test_start>>>
-> tag=proc01 stime=1317119259
-> cmdline="proc01"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> proc01      0  TINFO  :  /proc/sysrq-trigger: is write-only.
-> proc01      0  TINFO  :  /proc/kmsg: known issue: errno=EAGAIN(11):
-> Resource temporarily unavailable
-> proc01      0  TINFO  :  /proc/acpi/event: known issue:
-> errno=EBUSY(16): Device or resource busy
-> proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
-> proc01      1  TFAIL  :  read failed: /proc/self/task/6144/ns/net:
-> errno=EINVAL(22): Invalid argument
-> proc01      2  TFAIL  :  read failed: /proc/self/task/6144/ns/uts:
-> errno=EINVAL(22): Invalid argument
-> proc01      3  TFAIL  :  read failed: /proc/self/task/6144/ns/ipc:
-> errno=EINVAL(22): Invalid argument
-> proc01      0  TINFO  :  /proc/self/task/6144/mem: known issue:
-> errno=EIO(5): Input/output error
-> proc01      0  TINFO  :  /proc/self/task/6144/clear_refs: is write-only.
-> proc01      4  TFAIL  :  read failed: /proc/self/ns/net:
-> errno=EINVAL(22): Invalid argument
-> proc01      5  TFAIL  :  read failed: /proc/self/ns/uts:
-> errno=EINVAL(22): Invalid argument
-> proc01      6  TFAIL  :  read failed: /proc/self/ns/ipc:
-> errno=EINVAL(22): Invalid argument
-> proc01      0  TINFO  :  /proc/self/mem: known issue: errno=EIO(5):
-> Input/output error
-> proc01      0  TINFO  :  /proc/self/clear_refs: is write-only.
-> proc01      7  TFAIL  :  readproc() failed with 6 errors.
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=940 termination_type=exited termination_id=1 corefile=no
-> cutime=1652 cstime=92280
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: LTP-20110915
+> Cyril, do you think is it better to change TBROK to TCONF here?
 >
-> I have no clue about the failure.  Any help would be great, thanks in advance.
+> -                       tst_resm(TBROK, "Not enough free pids");
+> +                       tst_resm(TCONF, "Not enough free pids");
 >
+> Thanks,
+> Caspar
 
-looks like it was caused by the namespace support in 2.6.39:
+I changed MSGMNI in /proc to below 3000 and test passed.
 
-http://thread.gmane.org/gmane.linux.kernel/1039644
+Thanks
 
-LTP proc test seems couldn't handle them yet.
-
-Thanks,
-Caspar
+-- 
+Regards,
+Romu
 
 
 ------------------------------------------------------------------------------
