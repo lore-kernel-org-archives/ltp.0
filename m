@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R1uAi-0003DE-MS
-	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 06:02:40 +0000
-Received: from e23smtp04.au.ibm.com ([202.81.31.146])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R1uAh-0001JB-BN
-	for ltp-list@lists.sourceforge.net; Fri, 09 Sep 2011 06:02:40 +0000
-Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
-	by e23smtp04.au.ibm.com (8.14.4/8.13.1) with ESMTP id p895tqnB013566
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 15:55:52 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p8960n9K1519688
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 16:00:50 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p8962QXj017799
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 16:02:26 +1000
-Received: from [127.0.0.1] ([9.124.46.47])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p8962Otd017726
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Sep 2011 16:02:25 +1000
-Message-ID: <4E69ABEF.9050905@linux.vnet.ibm.com>
-Date: Fri, 09 Sep 2011 11:32:23 +0530
-From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <huruomu@gmail.com>) id 1R8UI4-0005Y0-HI
+	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 09:49:28 +0000
+Received: from mail-qy0-f175.google.com ([209.85.216.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1R8UI3-0006QL-T9
+	for ltp-list@lists.sourceforge.net; Tue, 27 Sep 2011 09:49:28 +0000
+Received: by qyk10 with SMTP id 10so780649qyk.13
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 27 Sep 2011 02:49:22 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] [Patch] sockioctl01 test case fix
+Date: Tue, 27 Sep 2011 17:49:22 +0800
+Message-ID: <CANoG8sWBQBjVej__oW0HSWB3wiXBU0HrdFE=5DpUeFABtoF5wQ@mail.gmail.com>
+From: Romu <huruomu@gmail.com>
+Subject: [LTP] proc01 failed on 2.6.39 kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,48 +30,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hello,
+Hi,
 
-Any comments on this patch. Thanks!!
+proc01 in ltp-20110915 failed on 2.6.39 kernel:
 
->  In sockioctl01 testcase,
->  Current 'inappropriate ioctl operation returning EINVAL'
->
->  With the git commit '41c31f318a5209922d051e293c61e4724daad11c' more
->  details athttp://permalink.gmane.org/gmane.linux.kernel.commits.head/296060
->
->  'inappropriate ioctl operation returning ENOTTY'
->
->  The following patch will fix this.
->
->
->  sockioctl01:
->  Before patch:
->  ...
->  sockioctl01    4  TFAIL  :  ATMARK on UDP ; returned -1 (expected -1),
->  errno 25 (expected 22)
->  ...
->
->  After patch:
->  ...
->  sockioctl01    4  TPASS  :  ATMARK on UDP successful
->  ...
->
->
->  Signed-off-by: Nageswara R Sastry<rnsastry@...>
+<<<test_start>>>
+tag=proc01 stime=1317119259
+cmdline="proc01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+proc01      0  TINFO  :  /proc/sysrq-trigger: is write-only.
+proc01      0  TINFO  :  /proc/kmsg: known issue: errno=EAGAIN(11):
+Resource temporarily unavailable
+proc01      0  TINFO  :  /proc/acpi/event: known issue:
+errno=EBUSY(16): Device or resource busy
+proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
+proc01      1  TFAIL  :  read failed: /proc/self/task/6144/ns/net:
+errno=EINVAL(22): Invalid argument
+proc01      2  TFAIL  :  read failed: /proc/self/task/6144/ns/uts:
+errno=EINVAL(22): Invalid argument
+proc01      3  TFAIL  :  read failed: /proc/self/task/6144/ns/ipc:
+errno=EINVAL(22): Invalid argument
+proc01      0  TINFO  :  /proc/self/task/6144/mem: known issue:
+errno=EIO(5): Input/output error
+proc01      0  TINFO  :  /proc/self/task/6144/clear_refs: is write-only.
+proc01      4  TFAIL  :  read failed: /proc/self/ns/net:
+errno=EINVAL(22): Invalid argument
+proc01      5  TFAIL  :  read failed: /proc/self/ns/uts:
+errno=EINVAL(22): Invalid argument
+proc01      6  TFAIL  :  read failed: /proc/self/ns/ipc:
+errno=EINVAL(22): Invalid argument
+proc01      0  TINFO  :  /proc/self/mem: known issue: errno=EIO(5):
+Input/output error
+proc01      0  TINFO  :  /proc/self/clear_refs: is write-only.
+proc01      7  TFAIL  :  readproc() failed with 6 errors.
+<<<execution_status>>>
+initiation_status="ok"
+duration=940 termination_type=exited termination_id=1 corefile=no
+cutime=1652 cstime=92280
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20110915
 
--- 
-Regards
-R.Nageswara Sastry
+I have no clue about the failure.  Any help would be great, thanks in advance.
 
-
+Regards,
+Romu
 
 ------------------------------------------------------------------------------
-Why Cloud-Based Security and Archiving Make Sense
-Osterman Research conducted this study that outlines how and why cloud
-computing security and archiving is rapidly being adopted across the IT 
-space for its ease of implementation, lower cost, and increased 
-reliability. Learn more. http://www.accelacomm.com/jaw/sfnl/114/51425301/
+All the data continuously generated in your IT infrastructure contains a
+definitive record of customers, application performance, security
+threats, fraudulent activity and more. Splunk takes this data and makes
+sense of it. Business sense. IT sense. Common sense.
+http://p.sf.net/sfu/splunk-d2dcopy1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
