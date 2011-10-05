@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <michal.simek@petalogix.com>) id 1RFjbD-0003lW-3p
-	for ltp-list@lists.sourceforge.net; Mon, 17 Oct 2011 09:35:11 +0000
-Received: from mail-bw0-f47.google.com ([209.85.214.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RFjb7-0007sB-Dm
-	for ltp-list@lists.sourceforge.net; Mon, 17 Oct 2011 09:35:11 +0000
-Received: by bkat8 with SMTP id t8so7278568bka.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Oct 2011 02:34:58 -0700 (PDT)
-Message-ID: <4E9BF106.8000906@petalogix.com>
-Date: Mon, 17 Oct 2011 11:10:30 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RBR3R-0006hs-LJ
+	for ltp-list@lists.sourceforge.net; Wed, 05 Oct 2011 12:58:33 +0000
+Date: Wed, 5 Oct 2011 15:01:32 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111005130132.GC26968@saboteur.suse.cz>
+References: <4E6DF0E4.1040004@linux.vnet.ibm.com>
+	<4E805721.6020709@petalogix.com>
 MIME-Version: 1.0
-Subject: [LTP] lseek03 - v3.1-rc1
-Reply-To: michal.simek@petalogix.com
+Content-Disposition: inline
+In-Reply-To: <4E805721.6020709@petalogix.com>
+Subject: Re: [LTP] [Patch v2] sockioctl01 test case fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,37 +22,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Michal Simek <michal.simek@petalogix.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> Can someone add this patch to git?
+> 
+> Tested-by: Michal Simek <michal.simek@petalogix.com>
 
-I see that there is problem with lseek03 test case caused by
-kernel commit =93fs: add SEEK_HOLE and SEEK_DATA flags=93 (sha1: 982d816581=
-eeeacfe5b2b7c6d47d13a157616eff).
-It was added to kernel in v3.1 merge window.
+Sure, done.
 
-Can someone confirm the test failure?
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Thanks,
-Michal
-
-
--- =
-
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 All the data continuously generated in your IT infrastructure contains a
 definitive record of customers, application performance, security
 threats, fraudulent activity and more. Splunk takes this data and makes
 sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2d-oct
+http://p.sf.net/sfu/splunk-d2dcopy1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
