@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RELmf-0000Fx-8d
-	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 13:57:17 +0000
-Date: Thu, 13 Oct 2011 16:00:57 +0200
+	(envelope-from <chrubis@suse.de>) id 1RBT0y-0004qO-S8
+	for ltp-list@lists.sourceforge.net; Wed, 05 Oct 2011 15:04:08 +0000
+Date: Wed, 5 Oct 2011 17:07:02 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111013140057.GE23592@saboteur.suse.cz>
-References: <20110908120912.GA9901@saboteur.suse.cz>
-	<1316411646-1886-1-git-send-email-yanpai.chen@gmail.com>
-	<CANj_sbD=c+R4YVwqh1tSw-4LanVimNos5rFc0tU872ouCLf-8g@mail.gmail.com>
+Message-ID: <20111005150702.GE26968@saboteur.suse.cz>
+References: <1316084942-24319-1-git-send-email-monstr@monstr.eu>
+	<4E801D5B.1030206@petalogix.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CANj_sbD=c+R4YVwqh1tSw-4LanVimNos5rFc0tU872ouCLf-8g@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 6/7 V2] runtest/fs: change parameters of growfiles
+In-Reply-To: <4E801D5B.1030206@petalogix.com>
+Subject: Re: [LTP] [PATCH] creat08: Fix test to be able to run on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,16 +25,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Yan-Pai Chen <yanpai.chen@gmail.com>
+To: Michal Simek <michal.simek@petalogix.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Hi Cyril,
 > 
-> Is this OK?
+> Can someone review it or apply it to git?
+>
 
-Yes, this time both description and patche seem fine. Will commit in a
-minute.
+Commited, thanks.
 
 -- 
 Cyril Hrubis
@@ -46,7 +44,7 @@ All the data continuously generated in your IT infrastructure contains a
 definitive record of customers, application performance, security
 threats, fraudulent activity and more. Splunk takes this data and makes
 sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2d-oct
+http://p.sf.net/sfu/splunk-d2dcopy1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
