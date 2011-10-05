@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RBTeB-00066q-L9
-	for ltp-list@lists.sourceforge.net; Wed, 05 Oct 2011 15:44:39 +0000
-Date: Wed, 5 Oct 2011 17:47:34 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RBQvD-0005vS-Mm
+	for ltp-list@lists.sourceforge.net; Wed, 05 Oct 2011 12:50:03 +0000
+Date: Wed, 5 Oct 2011 14:52:58 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111005154734.GF26968@saboteur.suse.cz>
-References: <1317385970-4899-1-git-send-email-mad_soft@inbox.ru>
+Message-ID: <20111005125258.GB26968@saboteur.suse.cz>
+References: <CAHJT+nqA2mti+vZ5F16Rdu0EvJtuZMBYTmuOaVa_X9LxXwC4sA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1317385970-4899-1-git-send-email-mad_soft@inbox.ru>
-Subject: Re: [LTP] [PATCH] fs/proc01: namespaces fix for kernel >= 3.0
+In-Reply-To: <CAHJT+nqA2mti+vZ5F16Rdu0EvJtuZMBYTmuOaVa_X9LxXwC4sA@mail.gmail.com>
+Subject: Re: [LTP] About the test tools for Mac OS X
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,18 +24,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Dmitry Artamonow <mad_soft@inbox.ru>
+To: "flost.Dexiong Li" <flost.d.li@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Add exclusion for /proc/self/.../ns/{net,uts,ipc} files introduced
-> in kernel 3.0. These files aren't meant to be read and merely
-> used for getting filedescriptor as a handle to corresponding namespace.
-> Any file operation on them including read() returns -EINVAL.
-> 
-> Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
+> Is there any plan for migrating the LTP project to some Unix system like Mac
+> OS X?
 
-Commited, thanks.
+Well, there is Open Posix Testsuite which was developed both on Linux
+and BSD (and test that is broken on POSIX compilant system is considered
+buggy). The rest of LTP is more or less linux centric, some parts may
+work, some would need a little effort and some are testing linux
+specific parts and thuss are unportable.
+
+Being you, I would start with the Open Posix Testsuite.
 
 -- 
 Cyril Hrubis
