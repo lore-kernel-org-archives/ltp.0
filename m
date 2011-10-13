@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RDz0V-0002Cd-Gd
-	for ltp-list@lists.sourceforge.net; Wed, 12 Oct 2011 13:38:03 +0000
-Date: Wed, 12 Oct 2011 15:41:33 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1REKSf-000702-Eb
+	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 12:32:33 +0000
+Date: Thu, 13 Oct 2011 14:36:08 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111012134133.GA21367@saboteur.suse.cz>
-References: <CADfK0X7-VwdyCDMZe5VJfv+KchEKqRRw6e-9dv4=ine+36rDzQ@mail.gmail.com>
-	<CADfK0X5k6se_VirWQk-Fh1Dibx0Xpg-Wq8ekXDqHCj1bY+jhLw@mail.gmail.com>
-	<CAMhs6YxRdWGBwg2R4aCSJtB9ZFTYFfOEO+=GvrL0yKa0cM-Z6Q@mail.gmail.com>
-	<CADfK0X4ScZbwutFoB5h05jD3-qeCdwURjyNfNRbTMHxxdO_neg@mail.gmail.com>
-	<CADfK0X7hP+5B8UA4pm9gDk40t+rpC_KNMQ3hdiNJq6H5x4DV6A@mail.gmail.com>
+Message-ID: <20111013123608.GA23966@saboteur.suse.cz>
+References: <CAFew7vRh3dEFE1FFdfrkcqAw3HpGD9Sj6pggD_T_w9d6xbvdiw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CADfK0X7hP+5B8UA4pm9gDk40t+rpC_KNMQ3hdiNJq6H5x4DV6A@mail.gmail.com>
-Subject: Re: [LTP] ltp-pan: cannot execute binary file
+In-Reply-To: <CAFew7vRh3dEFE1FFdfrkcqAw3HpGD9Sj6pggD_T_w9d6xbvdiw@mail.gmail.com>
+Subject: Re: [LTP] Ltp-kdump does not execute
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,29 +24,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Josh! <joshiplns@gmail.com>
+To: "shwetabhgoel@gmail.com" <shwetabhgoel@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >
-> > I'm sharing you following info regarding your last comment
-> >
-> > +++++
-> > /opt/Joshi_LTP4/bin # file ltp-pan
-> > ltp-pan: ELF 32-bit LSB execable, Intel 80386SYSV), for GNU/Li dynamically
-> > linkhared libs), not stripped
-> > +++++
-> >
-> > Even though exporting CROSS_COMPILER it still compiling for X86 not for
-> > armv7a.
-> > In Make file not able to find out CROSS_COMPILER .
-> >
+> I am trying to run the LTP's kdump tests on 3.1.0-rc7+ kernel on Rhel6.2
+> beta target.
+> The LTP version being used is ltp-full-20110915. When I try to do a make all
+> for kdump,
+> I get the following error:
+> 
+> [root@Treadstone kdump]# make all
+> chmod a+x runkdump.sh lib/*.sh
+> ./runkdump.sh
+> + conf=runkdump.conf
+> + lib=lib
+> + log=log
+> + . runkdump.conf
+> ./runkdump.sh: line 174: .: runkdump.conf: file not found
+> make: *** [all] Error 1
 
-Hmm, what are the exact steps that have you done? 
+The problem seems to be that posix shell behavior is try to find the
+runkdump.conf file in $PATH rather than in current directory (because
+the filename doesn't start with ./ or /).
 
-I haven't tried cross compiling myself, but there seems to be --host and
---build configure parameters that should do the trick (in case this
-actually works).
+Adding ./ before the runkdump.conf in runkdump.sh (around line 196)
+should do the trick.
+
+I'll commit patch for this into LTP git.
 
 -- 
 Cyril Hrubis
