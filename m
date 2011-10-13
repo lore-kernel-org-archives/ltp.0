@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1REKAp-0001BH-TW
-	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 12:14:07 +0000
-Date: Thu, 13 Oct 2011 14:17:42 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RELmf-0000Fx-8d
+	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 13:57:17 +0000
+Date: Thu, 13 Oct 2011 16:00:57 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111013121742.GA23592@saboteur.suse.cz>
-References: <CADfK0X7-VwdyCDMZe5VJfv+KchEKqRRw6e-9dv4=ine+36rDzQ@mail.gmail.com>
-	<CADfK0X5k6se_VirWQk-Fh1Dibx0Xpg-Wq8ekXDqHCj1bY+jhLw@mail.gmail.com>
-	<CAMhs6YxRdWGBwg2R4aCSJtB9ZFTYFfOEO+=GvrL0yKa0cM-Z6Q@mail.gmail.com>
-	<CADfK0X4ScZbwutFoB5h05jD3-qeCdwURjyNfNRbTMHxxdO_neg@mail.gmail.com>
-	<CADfK0X7hP+5B8UA4pm9gDk40t+rpC_KNMQ3hdiNJq6H5x4DV6A@mail.gmail.com>
-	<20111012134133.GA21367@saboteur.suse.cz>
-	<CADfK0X435BeEb91Jsp96kRJgkaW-4aHHsLqNdU2WU+59HTPdug@mail.gmail.com>
+Message-ID: <20111013140057.GE23592@saboteur.suse.cz>
+References: <20110908120912.GA9901@saboteur.suse.cz>
+	<1316411646-1886-1-git-send-email-yanpai.chen@gmail.com>
+	<CANj_sbD=c+R4YVwqh1tSw-4LanVimNos5rFc0tU872ouCLf-8g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CADfK0X435BeEb91Jsp96kRJgkaW-4aHHsLqNdU2WU+59HTPdug@mail.gmail.com>
-Subject: Re: [LTP] ltp-pan: cannot execute binary file
+In-Reply-To: <CANj_sbD=c+R4YVwqh1tSw-4LanVimNos5rFc0tU872ouCLf-8g@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 6/7 V2] runtest/fs: change parameters of growfiles
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,25 +26,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Josh! <joshiplns@gmail.com>
+To: Andrew Yan-Pai Chen <yanpai.chen@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I exported CROSS_COMPILER path and ran configure the path from where LTP
-> execute.
-> and did make and make install as *ROOT* user.
+> Hi Cyril,
 > 
-> I think , i want to modify Make-file in latest LTP for setting to my tool
-> chain.
-> 
-> Could any one share Knowledge on 'How to modify the LTP-Make-file to our
-> cross_compiler platform'
+> Is this OK?
 
-As Garrett said in previous mail, you need to pass correct parameters to
-configure script, and these pointed out were --host, --build, CC,
-CFLAGS, LDFLAGS. And as I said earlier, I didn't tried to cross compile
-LTP so I do not have definitive answer how to do that. All I have are
-hints.
+Yes, this time both description and patche seem fine. Will commit in a
+minute.
 
 -- 
 Cyril Hrubis
