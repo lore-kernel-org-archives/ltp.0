@@ -1,34 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rnsastry@linux.vnet.ibm.com>) id 1R0WFr-00084c-Ov
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:18:15 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1R0WFn-0007Q2-Lj
-	for ltp-list@lists.sourceforge.net; Mon, 05 Sep 2011 10:18:15 +0000
-Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
-	by e23smtp07.au.ibm.com (8.14.4/8.13.1) with ESMTP id p85AI4EO006354
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:18:04 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p85AGUjc1360050
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:16:30 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p85AI404004007
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:18:04 +1000
-Received: from [127.0.0.1] ([9.124.33.206])
-	by d23av02.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	p85AI2gP003990
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 Sep 2011 20:18:03 +1000
-Message-ID: <4E64A1DB.5020301@linux.vnet.ibm.com>
-Date: Mon, 05 Sep 2011 15:48:03 +0530
-From: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+	(envelope-from <chrubis@suse.de>) id 1RELXi-0007S2-Cg
+	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 13:41:50 +0000
+Date: Thu, 13 Oct 2011 15:45:29 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111013134529.GD23592@saboteur.suse.cz>
+References: <20110810121045.GB3179@saboteur.suse.cz>
+	<1316411928-1941-1-git-send-email-yanpai.chen@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030805040900020309070603"
-Subject: [LTP] [Patch] sockioctl01 test case fix
+Content-Disposition: inline
+In-Reply-To: <1316411928-1941-1-git-send-email-yanpai.chen@gmail.com>
+Subject: Re: [LTP] [PATCH] testcases: syscalls: use tst_tmpdir() interface
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,99 +22,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------030805040900020309070603
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Andrew Chen <yanpai.chen@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, ypchen@faraday-tech.com
 
+Hi!
+First of all, please use more recent LTP source (ideally git checkout).
+The '/* End setup() */' and '/* End cleanup() */' comments were removed
+about an year ago.
 
-In sockioctl01 testcase,
-Current 'inappropriate ioctl operation returning EINVAL'
+> index 5f81dac..0851cbc 100644
+> --- a/ltp-full-20101031/testcases/kernel/syscalls/fstatat/fstatat01.c
+> +++ b/ltp-full-20101031/testcases/kernel/syscalls/fstatat/fstatat01.c
+> @@ -247,6 +247,8 @@ void setup()
+>  	/* capture signals */
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>  
+> +	tst_tmpdir();
+> +
+>  	/* Pause if that option was specified */
+>  	TEST_PAUSE;
+>  }				/* End setup() */
+> @@ -269,6 +271,8 @@ void cleanup()
+>  	 */
+>  	TEST_CLEANUP;
+>  
+> +	tst_rmdir();
+> +
+>  	/* exit with return code appropriate for results */
+>  	tst_exit();
+>  }				/* End cleanup() */
 
-With the git commit '41c31f318a5209922d051e293c61e4724daad11c' more 
-details at http://permalink.gmane.org/gmane.linux.kernel.commits.head/296060
+You missed the testfile3 that uses absolute path to /tmp/ which should
+rather be absoulute path to tst_tmpdir. Something like this should work:
 
-'inappropriate ioctl operation returning ENOTTY'
+snprintf(testfile3, sizeof(testfile3),
+         "%s/fstatattestfile.txt", tst_get_tmpdir())
 
-The following patch will fix this.
+Note that we no longer need the pid in the filenames as the create test
+directory is unique.
 
-
-sockioctl01:
-Before patch:
-...
-sockioctl01    4  TFAIL  :  ATMARK on UDP ; returned -1 (expected -1), 
-errno 25 (expected 22)
-...
-
-After patch:
-...
-sockioctl01    4  TPASS  :  ATMARK on UDP successful
-...
-
-
-Signed-off-by: Nageswara R Sastry <rnsastry@linux.vnet.ibm.com>
+And the same goes for the rest of the testcases.
 
 -- 
-Regards
-R.Nageswara Sastry
-
-
---------------030805040900020309070603
-Content-Type: text/plain;
- name="sockioctl01.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="sockioctl01.patch"
-
---- ltp.orig/testcases/kernel/syscalls/sockioctl/sockioctl01.c	2011-09-05 08:42:12.000000000 +0200
-+++ ltp/testcases/kernel/syscalls/sockioctl/sockioctl01.c	2011-09-05 08:47:52.000000000 +0200
-@@ -227,6 +227,12 @@ void setup1(void)
- 			 strerror(errno));
- 	}
- 	sinlen = sizeof(fsin1);
-+
-+	if (strncmp(tdat[testno].desc, "ATMARK on UDP", 14) == 0) {
-+                if ( tst_kvercmp(2,6,39) >= 0 || tst_kvercmp(3,0,0) >= 0 ) {
-+                        tdat[testno].experrno = ENOTTY;
-+                }
-+        }
- }
- 
- void setup2(void)
-@@ -254,4 +260,4 @@ void cleanup1(void)
- {
- 	(void)close(s);
- 	s = -1;
--}
-\ No newline at end of file
-+}
-
---------------030805040900020309070603
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Special Offer -- Download ArcSight Logger for FREE!
-Finally, a world-class log management solution at an even better 
-price-free! And you'll get a free "Love Thy Logs" t-shirt when you
-download Logger. Secure your free ArcSight Logger TODAY!
-http://p.sf.net/sfu/arcsisghtdev2dev
---------------030805040900020309070603
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+All the data continuously generated in your IT infrastructure contains a
+definitive record of customers, application performance, security
+threats, fraudulent activity and more. Splunk takes this data and makes
+sense of it. Business sense. IT sense. Common sense.
+http://p.sf.net/sfu/splunk-d2d-oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------030805040900020309070603--
-
-
