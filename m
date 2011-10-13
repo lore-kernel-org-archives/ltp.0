@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RGX0W-0008Ip-Oa
-	for ltp-list@lists.sourceforge.net; Wed, 19 Oct 2011 14:20:36 +0000
-Date: Wed, 19 Oct 2011 16:24:47 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1REHxW-0007bM-9n
+	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 09:52:14 +0000
+Date: Thu, 13 Oct 2011 11:55:44 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111019142447.GA12902@saboteur.suse.cz>
-References: <4E97A1E8.4070908@cn.fujitsu.com>
+Message-ID: <20111013095543.GB19002@saboteur.suse.cz>
+References: <4E83D8C3.5010404@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4E97A1E8.4070908@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] cron_deny01: fix error of minute over 60
+In-Reply-To: <4E83D8C3.5010404@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] ldd: fix error with -m32 in x86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,10 +28,11 @@ To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Change to fix hour error when the addition of 2 minutes over 60.
+> When making with -m32 in x86_64 kernel, the following error messages may be outputted:
+> /usr/bin/ld: i386 architecture of input file `/root/ltp-dev/testcases/commands/ade/ldd/lddfile1.obj' is incompatible with i386:x86-64 output
+> collect2: ld returned 1 exit status
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> Signed-off-by: Yang Dongqing <yangdongqing@cn.fujitsu.com>
+> The following patch can fix this.
 
 Commited, thanks.
 
