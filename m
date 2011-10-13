@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1REL8v-0004L6-UU
-	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 13:16:13 +0000
-Date: Thu, 13 Oct 2011 15:19:45 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1REKbJ-0007Fe-9h
+	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 12:41:29 +0000
+Date: Thu, 13 Oct 2011 14:45:03 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111013131945.GC23592@saboteur.suse.cz>
-References: <7aa3e2a9858ded835eff77c3ac908787a9646c02.1316074590.git.czhang@redhat.com>
-	<ae195155f70857f54efe56c5decaee71990d72b9.1316074590.git.czhang@redhat.com>
+Message-ID: <20111013124503.GB23592@saboteur.suse.cz>
+References: <6b1be13a5797d4c5bc9343f5c84d5e14bcc705f5.1317115609.git.caspar@casparzhang.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ae195155f70857f54efe56c5decaee71990d72b9.1316074590.git.czhang@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] mm/ksm: more fixes when ksm config not enabled
+In-Reply-To: <6b1be13a5797d4c5bc9343f5c84d5e14bcc705f5.1317115609.git.caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH] mm/vma01: remove useless mmap
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,12 +24,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
+To: Caspar Zhang <caspar@casparzhang.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
+> addr v has been proved unless in test case, so remove it in this patch.
+> Also a tst_resm/printf would call mmap() which might cause noise in this
+> test, remove it as well.
 
-Both commited, thanks.
+Commited, thanks.
 
 -- 
 Cyril Hrubis
