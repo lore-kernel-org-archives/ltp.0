@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RBQvD-0005vS-Mm
-	for ltp-list@lists.sourceforge.net; Wed, 05 Oct 2011 12:50:03 +0000
-Date: Wed, 5 Oct 2011 14:52:58 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1REMOq-0004xA-Ji
+	for ltp-list@lists.sourceforge.net; Thu, 13 Oct 2011 14:36:44 +0000
+Date: Thu, 13 Oct 2011 16:40:17 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111005125258.GB26968@saboteur.suse.cz>
-References: <CAHJT+nqA2mti+vZ5F16Rdu0EvJtuZMBYTmuOaVa_X9LxXwC4sA@mail.gmail.com>
+Message-ID: <20111013144017.GA26842@saboteur.suse.cz>
+References: <260174ADA4D63F4AA543B9C81F2DE7124714C8@POCITMSEXMB02.LntUniverse.com>
+	<1316539785.4441.6.camel@subratamodak.linux.ibm.com>
+	<260174ADA4D63F4AA543B9C81F2DE71247156D@POCITMSEXMB02.LntUniverse.com>
+	<1316587124.4544.3.camel@subratamodak.linux.ibm.com>
+	<260174ADA4D63F4AA543B9C81F2DE712471654@POCITMSEXMB02.LntUniverse.com>
+	<1316674584.4516.7.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAHJT+nqA2mti+vZ5F16Rdu0EvJtuZMBYTmuOaVa_X9LxXwC4sA@mail.gmail.com>
-Subject: Re: [LTP] About the test tools for Mac OS X
+In-Reply-To: <1316674584.4516.7.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Cross Compiling LTP for Android platform
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,20 +29,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "flost.Dexiong Li" <flost.d.li@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Is there any plan for migrating the LTP project to some Unix system like Mac
-> OS X?
+>      1. You can add a statement 'ifdef _android' or something in your
+>         code and try to compile it. So, this code will not compile at
+>         all,
+>      2. Similarly check for other SYSTEM CALLs and APIs which are not
+>         supported on Android and create a list first (else you will keep
+>         coming back to LTP mailing list with all these failures, and, i
+>         am not sure whether anybody will look into all your issues).
+>         Create patches accordingly,
+>      3. Maintain those patches privately(apply them every time you are
+>         building LTP) with you as i believe LTP community will probably
+>         not interested to add check for Android (they may be, you can
+>         talk to Cyril/Shubham/Garrett/Mike Frysinger),
 
-Well, there is Open Posix Testsuite which was developed both on Linux
-and BSD (and test that is broken on POSIX compilant system is considered
-buggy). The rest of LTP is more or less linux centric, some parts may
-work, some would need a little effort and some are testing linux
-specific parts and thuss are unportable.
-
-Being you, I would start with the Open Posix Testsuite.
+If you look into Makefiles (for example testcases/kernel/Makefile) there
+often is check ifeq($(UCLINUX), 1) or something like that and some
+tests/subdirectories are filtered out from the targets based on that. So
+if you are using original LTP buildsystem you may just do the same for
+android (and if done right, this changes will be accepted upstream).
 
 -- 
 Cyril Hrubis
@@ -48,7 +61,7 @@ All the data continuously generated in your IT infrastructure contains a
 definitive record of customers, application performance, security
 threats, fraudulent activity and more. Splunk takes this data and makes
 sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+http://p.sf.net/sfu/splunk-d2d-oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
