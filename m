@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1RB5Sn-000538-Qk
-	for ltp-list@lists.sourceforge.net; Tue, 04 Oct 2011 13:55:17 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RB5Si-0006j3-Dv
-	for ltp-list@lists.sourceforge.net; Tue, 04 Oct 2011 13:55:17 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e8.ny.us.ibm.com (8.14.4/8.13.1) with ESMTP id p94DdwYJ019315
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Oct 2011 09:39:58 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p94Dt6SO180192
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Oct 2011 09:55:06 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	p94Dt6sK010404
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Oct 2011 10:55:06 -0300
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <CADfK0X5k6se_VirWQk-Fh1Dibx0Xpg-Wq8ekXDqHCj1bY+jhLw@mail.gmail.com>
-References: <CADfK0X7-VwdyCDMZe5VJfv+KchEKqRRw6e-9dv4=ine+36rDzQ@mail.gmail.com>
-	<CADfK0X5k6se_VirWQk-Fh1Dibx0Xpg-Wq8ekXDqHCj1bY+jhLw@mail.gmail.com>
-Date: Tue, 04 Oct 2011 19:25:00 +0530
-Message-Id: <1317736501.4423.7.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] ltp-pan: cannot execute binary file
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <chrubis@suse.de>) id 1RGX0W-0008Ip-Oa
+	for ltp-list@lists.sourceforge.net; Wed, 19 Oct 2011 14:20:36 +0000
+Date: Wed, 19 Oct 2011 16:24:47 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111019142447.GA12902@saboteur.suse.cz>
+References: <4E97A1E8.4070908@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4E97A1E8.4070908@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] cron_deny01: fix error of minute over 60
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,73 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Josh! <joshiplns@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Are you sure that you have the 'glibc'(on linux) type counterpart
-installed on your system ??
+Hi!
+> Change to fix hour error when the addition of 2 minutes over 60.
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> Signed-off-by: Yang Dongqing <yangdongqing@cn.fujitsu.com>
 
-Without glibc your binaries will not run.
+Commited, thanks.
 
-Regards--
-Subrata
-
-On Tue, 2011-10-04 at 18:11 +0530, Josh! wrote:
-> Hi,
-> 
-> Any Inputs  ?
-> 
-> Joshi
-> 
-> On Fri, Sep 30, 2011 at 2:22 PM, Josh! <joshiplns@gmail.com> wrote:
->         Hi folks ,
->         
->         I am running 3.0 Kernel for armv7a on *Beagle Board* target.
->         
->         Meanwhile I'm testing kernel with ltp-full-20110915. I did the
->         Make and Make Install properly.
->         But while running ./runltp script I am facing following issue.
->         
->         {{{
->         
->         ./runltp: line
->         824: /mnt/HDD/ltp-full-20110915/Joshi_LTP/bin/ltp-pan: cannot
->         execute binary file
->         INFO: ltp-pan reportedAIL
->         
->         }}}
->         
->         Could anyone can share knowledge on this issue ?
->         
->         Kindly
->         Joshi
->         
->         
-> 
-> 
-> 
-> -- 
-> 
-> 
-> Stay Cool,
-> Joshi"Mera Bhaarath Mahaan"
-> 
-> 
-> ------------------------------------------------------------------------------
-> All the data continuously generated in your IT infrastructure contains a
-> definitive record of customers, application performance, security
-> threats, fraudulent activity and more. Splunk takes this data and makes
-> sense of it. Business sense. IT sense. Common sense.
-> http://p.sf.net/sfu/splunk-d2dcopy1
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 All the data continuously generated in your IT infrastructure contains a
 definitive record of customers, application performance, security
 threats, fraudulent activity and more. Splunk takes this data and makes
 sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2dcopy1
+http://p.sf.net/sfu/splunk-d2d-oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
