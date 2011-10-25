@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shwetabhgoel@gmail.com>) id 1RDVDK-000632-NE
-	for ltp-list@lists.sourceforge.net; Tue, 11 Oct 2011 05:49:18 +0000
-Received: from mail-gy0-f175.google.com ([209.85.160.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1RDVDK-0008MC-08
-	for ltp-list@lists.sourceforge.net; Tue, 11 Oct 2011 05:49:18 +0000
-Received: by gyg8 with SMTP id 8so7927543gyg.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RIWNX-0000PJ-Co
+	for ltp-list@lists.sourceforge.net; Tue, 25 Oct 2011 02:04:35 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RIWNV-0001ho-KF
+	for ltp-list@lists.sourceforge.net; Tue, 25 Oct 2011 02:04:35 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id A471617011E
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 10 Oct 2011 22:49:12 -0700 (PDT)
+	Tue, 25 Oct 2011 10:04:21 +0800 (CST)
+Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id p9P24JXe015436
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Oct 2011 10:04:20 +0800
+Message-ID: <4EA618E7.90002@cn.fujitsu.com>
+Date: Tue, 25 Oct 2011 10:03:19 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-From: "shwetabhgoel@gmail.com" <shwetabhgoel@gmail.com>
-Date: Tue, 11 Oct 2011 11:18:52 +0530
-Message-ID: <CAFew7vRh3dEFE1FFdfrkcqAw3HpGD9Sj6pggD_T_w9d6xbvdiw@mail.gmail.com>
-Subject: [LTP] Ltp-kdump does not execute
+References: <4E9BF106.8000906@petalogix.com>
+In-Reply-To: <4E9BF106.8000906@petalogix.com>
+Subject: Re: [LTP] lseek03 - v3.1-rc1
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,79 +32,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6571458384594966372=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============6571458384594966372==
-Content-Type: multipart/alternative; boundary=bcaec520ee878920bb04aeff7722
-
---bcaec520ee878920bb04aeff7722
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-I am trying to run the LTP's kdump tests on 3.1.0-rc7+ kernel on Rhel6.2
-beta target.
-The LTP version being used is ltp-full-20110915. When I try to do a make all
-for kdump,
-I get the following error:
-
-[root@Treadstone kdump]# make all
-chmod a+x runkdump.sh lib/*.sh
-./runkdump.sh
-+ conf=runkdump.conf
-+ lib=lib
-+ log=log
-+ . runkdump.conf
-./runkdump.sh: line 174: .: runkdump.conf: file not found
-make: *** [all] Error 1
-
-As per the instructions in the README document, I copied
-runkdump.BASIC_LKDTM.RHEL from sample
-and renamed it to runkdump.conf, but I am not able to proceed further.
-
-Could anyone help me with this?
----
-Regards,
-Shwetabh
-
---bcaec520ee878920bb04aeff7722
-Content-Type: text/html; charset=ISO-8859-1
-
-Hi,<br><br>I am trying to run the LTP&#39;s kdump tests on 3.1.0-rc7+ kernel on Rhel6.2 beta target.<br>The LTP version being used is ltp-full-20110915. When I try to do a make all for kdump,<br>I get the following error:<br>
-
-<br>[root@Treadstone kdump]# make all<br>chmod a+x runkdump.sh lib/*.sh<br>./runkdump.sh<br>+ conf=runkdump.conf<br>+ lib=lib<br>+ log=log<br>+ . runkdump.conf<br>./runkdump.sh: line 174: .: runkdump.conf: file not found<br>
-
-make: *** [all] Error 1<br><br>As per the instructions in the README document, I copied runkdump.BASIC_LKDTM.RHEL from sample<br>and renamed it to runkdump.conf, but I am not able to proceed further.<br><br>Could anyone help me with this?<br clear="all">
-
----<br>Regards,<br>Shwetabh<br>
-
---bcaec520ee878920bb04aeff7722--
-
-
---===============6571458384594966372==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure contains a
-definitive record of customers, application performance, security
-threats, fraudulent activity and more. Splunk takes this data and makes
-sense of it. Business sense. IT sense. Common sense.
-http://p.sf.net/sfu/splunk-d2d-oct
---===============6571458384594966372==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6571458384594966372==--
-
+T24gMTAvMTcvMjAxMSAwNToxMCBQTSwgTWljaGFsIFNpbWVrIHdyb3RlOgoKPiBIaSwKPiAKPiBJ
+IHNlZSB0aGF0IHRoZXJlIGlzIHByb2JsZW0gd2l0aCBsc2VlazAzIHRlc3QgY2FzZSBjYXVzZWQg
+YnkKPiBrZXJuZWwgY29tbWl0IOKAnGZzOiBhZGQgU0VFS19IT0xFIGFuZCBTRUVLX0RBVEEgZmxh
+Z3PigJwgKHNoYTE6IDk4MmQ4MTY1ODFlZWVhY2ZlNWIyYjdjNmQ0N2QxM2ExNTc2MTZlZmYpLgo+
+IEl0IHdhcyBhZGRlZCB0byBrZXJuZWwgaW4gdjMuMSBtZXJnZSB3aW5kb3cuCj4gCj4gQ2FuIHNv
+bWVvbmUgY29uZmlybSB0aGUgdGVzdCBmYWlsdXJlPwo+IAo+IFRoYW5rcywKPiBNaWNoYWwKPiAK
+PiAKCgpZZWFoLCBJIHNlZWsgdGhhdC4KCmFuZCBJIGhhZCBzZW5kIGEgcGF0Y2ggdG8gZml4IHRo
+aXMuIApodHRwOi8vc291cmNlZm9yZ2UubmV0L21haWxhcmNoaXZlL21lc3NhZ2UucGhwP21zZ19p
+ZD0yODI3NTU5MgoKSSB0aGluayB3ZSBqdXN0IGNoYW5nZSAqNCogdG8gKjUqIGJlY2F1c2UgdGhl
+IFNFRUtfTUFYIGNoYW5nZSAqMiogdG8gKjQqLgoKTWF5YmUganVzdCBuZWVkIHRoZSBzaW1wbGUg
+Zml4LgoKClRoYW5rcwotV2FubG9uZyBHYW8KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgZGVt
+YW5kIGZvciBJVCBuZXR3b3JraW5nIHByb2Zlc3Npb25hbHMgY29udGludWVzIHRvIGdyb3csIGFu
+ZCB0aGUKZGVtYW5kIGZvciBzcGVjaWFsaXplZCBuZXR3b3JraW5nIHNraWxscyBpcyBncm93aW5n
+IGV2ZW4gbW9yZSByYXBpZGx5LgpUYWtlIGEgY29tcGxpbWVudGFyeSBMZWFybmluZ0BDaXNjbyBT
+ZWxmLUFzc2Vzc21lbnQgYW5kIGxlYXJuIAphYm91dCBDaXNjbyBjZXJ0aWZpY2F0aW9ucywgdHJh
+aW5pbmcsIGFuZCBjYXJlZXIgb3Bwb3J0dW5pdGllcy4gCmh0dHA6Ly9wLnNmLm5ldC9zZnUvY2lz
+Y28tZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
