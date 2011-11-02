@@ -1,31 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <k-mio@sx.jp.nec.com>) id 1RUtkU-0003KH-2m
-	for ltp-list@lists.sourceforge.net; Mon, 28 Nov 2011 05:27:26 +0000
-Received: from tyo201.gate.nec.co.jp ([202.32.8.193])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RUtkQ-0003P7-Gk
-	for ltp-list@lists.sourceforge.net; Mon, 28 Nov 2011 05:27:26 +0000
-Received: from mailgate3.nec.co.jp ([10.7.69.192])
-	by tyo201.gate.nec.co.jp (8.13.8/8.13.4) with ESMTP id pAS5REbe019219
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 Nov 2011 14:27:14 +0900 (JST)
-Received: (from root@localhost) by mailgate3.nec.co.jp
-	(8.11.7/3.7W-MAILGATE-NEC)
-	id pAS5REd01466 for ltp-list@lists.sourceforge.net;
-	Mon, 28 Nov 2011 14:27:14 +0900 (JST)
-Received: from mail03.kamome.nec.co.jp (mail03.kamome.nec.co.jp [10.25.43.7])
-	by mailsv4.nec.co.jp (8.13.8/8.13.4) with ESMTP id pAS5REip010989
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 Nov 2011 14:27:14 +0900 (JST)
-Message-ID: <4ED31B4E.5030405@sx.jp.nec.com>
-Date: Mon, 28 Nov 2011 14:25:34 +0900
-From: Kazuya Mio <k-mio@sx.jp.nec.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RLehJ-0006x8-Mj
+	for ltp-list@lists.sourceforge.net; Wed, 02 Nov 2011 17:33:57 +0000
+Date: Wed, 2 Nov 2011 18:39:23 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111102173923.GA12153@saboteur.suse.cz>
+References: <mailman.342816.1314268291.22889.ltp-list@lists.sourceforge.net>
+	<20110825174602.GB6398@us.ibm.com>
+	<20110826113843.GA17499@saboteur.suse.cz>
+	<20110908110129.GA8261@saboteur.suse.cz>
+	<20110908225757.GA31906@us.ibm.com>
+	<20110909123134.GA3552@saboteur.suse.cz>
+	<20110909175843.GA4276@us.ibm.com>
+	<20111027172945.GB11634@us.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] ext4-online-defrag test doesn't work due to too old e4defrag
- command
+Content-Disposition: inline
+In-Reply-To: <20111027172945.GB11634@us.ibm.com>
+Subject: Re: [LTP] [PATCH 6/7 ver2 w/attachment] Modified pounder
+	install	and run scripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,35 +32,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: James Takahashi <takahash@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> > The main mission of Lucy's patch set is to enable pounder usage for
+> > the world.  Being able to run LTP side by side with your own in-house
+> > tests and applications is a handy framework, and I'm hoping that Lucy's
+> > patch set will help to grow a community of happy pounder users.  If you
+> > could defer this issue for now, it might enable others to contribute
+> > towards fixing this problem (and perhaps the tarball issue as well).  
+> > 
+> Hi Cyril,
+> 
+> Any chance that you can accept these pounder patches?  Even though
+> they don't fix everything you'd like, they definitely move pounder
+> a quantum leap forward in enabling others to use pounder.
 
-I tried to test ext4-online-defrag, but it didn't work well due to
-the following errors:
+Thanks for the reminder, merged.
 
-ext4-online-defrag    0  TINFO  :  defrag type: 1, defrag obj: 2, block size: 1024
- "/opt/ltp/testcases/bin/mnt_point/data0"
-        File is not regular file                [ NG ]
-        Failed to defrag:Bad file descriptor    [ NG ]
-        Failed to defrag:Bad file descriptor    [ NG ]
-<snip>
-        Failed to defrag:Bad file descriptor    [ NG ]
-        Failed to defrag:Bad file descriptor    [ NG ]
-ext4-online-defrag    2  TPASS  :  ext4 online defrag test pass
+And looking forward to future patches for the rest of the issues ;).
 
-This is because e4defrag is too old to defrag the file in the latest kernel.
-I think we should use the latest e4defrag command that is contained in e2fsprogs.
-
-Regards,
-Kazuya Mio
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
+RSA&#174; Conference 2012
+Save $700 by Nov 18
+Register now&#33;
+http://p.sf.net/sfu/rsa-sfdev2dev1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
