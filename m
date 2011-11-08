@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <salvatore.cro@st.com>) id 1RSloz-0001H2-9w
-	for ltp-list@lists.sourceforge.net; Tue, 22 Nov 2011 08:35:17 +0000
-Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
-	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RSlov-0003Ys-81
-	for ltp-list@lists.sourceforge.net; Tue, 22 Nov 2011 08:35:17 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9FB9410C
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 22 Nov 2011 08:35:06 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 49C2F1ABE
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 22 Nov 2011 08:35:06 +0000 (GMT)
-From: "Salvatore CRO'" <salvatore.cro@st.com>
-Date: Tue, 22 Nov 2011 09:34:48 +0100
-Message-Id: <1321950888-11346-1-git-send-email-salvatore.cro@st.com>
-Subject: [LTP] [PATCH] testcases: exit from signal handler in setrlimit01
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RNgkD-0006vy-Nm
+	for ltp-list@lists.sourceforge.net; Tue, 08 Nov 2011 08:09:21 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RNgkA-0001QO-Dn
+	for ltp-list@lists.sourceforge.net; Tue, 08 Nov 2011 08:09:21 +0000
+Message-ID: <4EB8E362.1090602@cn.fujitsu.com>
+Date: Tue, 08 Nov 2011 16:08:02 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <fd23b1ea-f8c6-45ba-8591-78444e165a36@zmail16.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <fd23b1ea-f8c6-45ba-8591-78444e165a36@zmail16.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was forked
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,49 +25,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Salvatore Cro <salvatore.cro@st.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Salvatore Cro <salvatore.cro@st.com>
+On 11/08/2011 03:50 PM, Jan Stancek wrote:
 
-Signal hanlder is installed using default tst_sig function
-which sets sa_flags = SA_RESTART for sigaction. In this
-conditions the child gets stuck because at any SIGSEGV
-caught the hanlder ends-up restarting the function which
-raised the signal.
-Signal handler must give the child the chance to exit.
+> 
+> 
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Tuesday, November 8, 2011 8:21:01 AM
+>> Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was forked
+>>
+>> On 11/08/2011 03:14 PM, Jan Stancek wrote:
+>>
+>>>
+>>>
+>>> ----- Original Message -----
+>>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>>> To: "Jan Stancek" <jstancek@redhat.com>
+>>>> Cc: ltp-list@lists.sourceforge.net
+>>>> Sent: Tuesday, November 8, 2011 4:07:56 AM
+>>>> Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was
+>>>> forked
+>>>>
+>>>> On 11/07/2011 08:53 PM, Jan Stancek wrote:
+>>>>
+>>>>>
+>>>>> If start_server() fails, then pid will end up with -1 and
+>>>>> cleanup() will do kill(-1, SIGKILL), which kills everything
+>>>>> this process can kill.
+>>>>>
+>>>>> Change the test to kill pid (child) only when it successfully
+>>>>> creates one.
+>>>>>
+>>>>
+>>>>
+>>>> Yeah, but this can't fix the problem in this case?
+>>>>
+>>>> recvmsg01    1  TBROK  :  server bind failed: errno=???(98):
+>>>> Address
+>>>> already in use
+>>>> recvmsg01    2  TBROK  :  Remaining cases broken
+>>>>
+>>>
+>>> I'm not sure I follow you here.
+>>> In case you described start_server() returns -1,
+>>> so pid = -1, and cleanup won't do kill(-1, SIGKILL).
+>>>
+>>
+>>
+>> Yeah, I understood you.
+>>
+>> But we wanna fix the case to TPASS but not TBROK, do we?
+> 
+> True, but until we have such fix, we should at least make it
+> less annoying when it fails.
+> 
+>> So, I mean that the issues of this case is not only what you said.
+> 
+> I didn't actually get to see yet what those are, because those
+> TBROK messages didn't make it to log:
+> 
+> <<<test_start>>>
+> tag=recvmsg01 stime=1320555319
+> cmdline="recvmsg01"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=signaled termination_id=9 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>>
+> 
+> Regards,
+> Jan
+> 
 
-Signed-off-by: Salvatore Cro <salvatore.cro@.st.com>
----
- testcases/kernel/syscalls/setrlimit/setrlimit01.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-index 077c13b..4acf62c 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-@@ -326,6 +326,7 @@ void sighandler(int sig)
- 	if (sig != SIGSEGV && sig != SIGXFSZ) {
- 		tst_brkm(TBROK, NULL, "caught unexpected signal: %d", sig);
- 	}
-+	tst_exit();
- }
- 
- /*
--- 
-1.7.4.4
+You can do like this:
+while [ $? -eq 0 ]; do ./recvmsg01; done
 
+Then you can see the TBROK message.
+
+-Wanlong Gao
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
+RSA(R) Conference 2012
+Save $700 by Nov 18
+Register now
+http://p.sf.net/sfu/rsa-sfdev2dev1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
