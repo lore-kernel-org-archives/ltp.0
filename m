@@ -1,36 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <k-mio@sx.jp.nec.com>) id 1RTRS3-0007dQ-G7
-	for ltp-list@lists.sourceforge.net; Thu, 24 Nov 2011 05:02:23 +0000
-Received: from tyo200.gate.nec.co.jp ([202.32.8.215])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RTRS1-00034m-Mu
-	for ltp-list@lists.sourceforge.net; Thu, 24 Nov 2011 05:02:23 +0000
-Received: from tyo202.gate.nec.co.jp ([10.7.69.202])
-	by tyo200.gate.nec.co.jp (8.13.8/8.13.4) with ESMTP id pAO2w0JN004108
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Nov 2011 11:58:00 +0900 (JST)
-Received: from mailgate3.nec.co.jp ([10.7.69.160])
-	by tyo202.gate.nec.co.jp (8.13.8/8.13.4) with ESMTP id pAO2rAG4016157
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Nov 2011 11:53:10 +0900 (JST)
-Received: (from root@localhost) by mailgate3.nec.co.jp
-	(8.11.7/3.7W-MAILGATE-NEC)
-	id pAO2rAv07962 for ltp-list@lists.sourceforge.net;
-	Thu, 24 Nov 2011 11:53:10 +0900 (JST)
-Received: from mail02.kamome.nec.co.jp (mail02.kamome.nec.co.jp [10.25.43.5])
-	by mailsv4.nec.co.jp (8.13.8/8.13.4) with ESMTP id pAO2r9eu014268
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Nov 2011 11:53:10 +0900 (JST)
-Message-ID: <4ECDB134.3020706@sx.jp.nec.com>
-Date: Thu, 24 Nov 2011 11:51:32 +0900
-From: Kazuya Mio <k-mio@sx.jp.nec.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chen.nisnkorn@ravellosystems.com>)
+	id 1ROCrr-0005GM-Cl
+	for ltp-list@lists.sourceforge.net; Wed, 09 Nov 2011 18:27:23 +0000
+Received: from na3sys010aog103.obsmtp.com ([74.125.245.74])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1ROCrq-0001GN-FM
+	for ltp-list@lists.sourceforge.net; Wed, 09 Nov 2011 18:27:23 +0000
 MIME-Version: 1.0
-Subject: [LTP] ext4-online-defrag test doesn't work due to too old e4defrag
- command
+Date: Wed, 9 Nov 2011 20:01:32 +0200
+Message-ID: <CAKCBqa2tKNhY4LvPF2H=0iL8dVdV_+jYMgt3Qe3ULapL2ndz6g@mail.gmail.com>
+From: Chen Nisnkorn <chen.nisnkorn@ravellosystems.com>
+Subject: [LTP] FATAL: LTP not installed correctly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,31 +23,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1364818196103139961=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sf.net
 
-Hi,
+--===============1364818196103139961==
+Content-Type: multipart/alternative; boundary=f46d04447247fc107c04b1511385
 
-I tried to test ext4-online-defrag, but it didn't work well due to
-the following errors:
+--f46d04447247fc107c04b1511385
+Content-Type: text/plain; charset=ISO-8859-1
 
-ext4-online-defrag    0  TINFO  :  defrag type: 1, defrag obj: 2, block size: 1024
- "/opt/ltp/testcases/bin/mnt_point/data0"
-        File is not regular file                [ NG ]
-        Failed to defrag:Bad file descriptor    [ NG ]
-        Failed to defrag:Bad file descriptor    [ NG ]
-<snip>
-        Failed to defrag:Bad file descriptor    [ NG ]
-        Failed to defrag:Bad file descriptor    [ NG ]
-ext4-online-defrag    2  TPASS  :  ext4 online defrag test pass
+Hi
 
-This is because e4defrag is too old to defrag the file in the latest kernel.
-I think we should use the latest e4defrag command that is contained in e2fsprogs.
+i new in LTP and im taring to run it from the first time
+i download the ltp-20110915 version and i did the install (by the file)
+step by step
 
-Regards,
-Kazuya Mio
+but when i tried to run it i get =>
+
+
+chen@chen:~/QA/LTP/ltp-20110915$ ./runltp -p -l
+/home/chen/QA/LTP/result.02.log -f my_command_file
+FATAL: LTP not installed correctly
+INFO:  Follow directions in INSTALL!
+
+i don't know what is the problem.
+
+when i run = >
+sudo /opt/ltp/runltplite.sh -p -l /home/chen/QA/LTP/result.02.log -f
+my_command_file
+
+i get = > Illegal option -f
+
+enoter thing is where can i found explanation to what every test is doing
+and explanation on how can i config my command file
+
+thanks
+
+
+chen
+
+--f46d04447247fc107c04b1511385
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi<div><br></div><div>i=A0new in LTP and im=A0taring=A0to =
+run it from the first time</div><div>i download the ltp-20110915 version an=
+d i did the install (by the file) step by step</div><div><br></div><div>but=
+ when i tried to run it i get =3D&gt;</div>
+<div><br></div><div><br></div><div><div>chen@chen:~/QA/LTP/ltp-20110915$ ./=
+runltp -p -l /home/chen/QA/LTP/result.02.log -f my_command_file</div><div><=
+font class=3D"Apple-style-span" color=3D"#cc0000">FATAL: LTP not installed =
+correctly</font></div>
+<div><font class=3D"Apple-style-span" color=3D"#cc0000">INFO: =A0Follow dir=
+ections in INSTALL!</font></div></div><div><br></div><div>i don&#39;t know =
+what is the problem.=A0</div><div><br></div><div>when i run =3D &gt;</div><=
+div>sudo /opt/ltp/runltplite.sh -p -l /home/chen/QA/LTP/result.02.log -f my=
+_command_file</div>
+<div><br></div><div>i get =3D &gt;=A0<font class=3D"Apple-style-span" color=
+=3D"#cc0000">Illegal option -f</font></div><div><font class=3D"Apple-style-=
+span" color=3D"#cc0000"><br></font></div><div>enoter thing is where can i f=
+ound explanation to what every test is doing and=A0explanation=A0on how can=
+ i config my command file</div>
+<div><br></div><div>thanks</div><div><br></div><div><br></div><div>chen</di=
+v><div><font class=3D"Apple-style-span" color=3D"#cc0000"><br></font></div>=
+<div><font class=3D"Apple-style-span" color=3D"#cc0000"><br></font></div><d=
+iv><br>
+</div><div><br></div><div><br></div></div>
+
+--f46d04447247fc107c04b1511385--
+
+
+--===============1364818196103139961==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 All the data continuously generated in your IT infrastructure 
@@ -72,7 +106,16 @@ contains a definitive record of customers, application performance,
 security threats, fraudulent activity, and more. Splunk takes this 
 data and makes sense of it. IT sense. And common sense.
 http://p.sf.net/sfu/splunk-novd2d
+--===============1364818196103139961==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1364818196103139961==--
+
