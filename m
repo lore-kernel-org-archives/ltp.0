@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RLf1f-00027K-FY
-	for ltp-list@lists.sourceforge.net; Wed, 02 Nov 2011 17:54:59 +0000
-Date: Wed, 2 Nov 2011 19:00:24 +0100
+	(envelope-from <chrubis@suse.de>) id 1RO4KU-0006l0-Uo
+	for ltp-list@lists.sourceforge.net; Wed, 09 Nov 2011 09:20:22 +0000
+Date: Wed, 9 Nov 2011 10:26:21 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111102180024.GB12153@saboteur.suse.cz>
-References: <1320052884-11475-1-git-send-email-carmelo.amoroso@st.com>
-	<20111102172631.GA14582@saboteur.suse.cz>
-	<CAGH67wQu7Yx8=GMHxXWXsz=i9736jva89QNeobWku=0YJQwTQQ@mail.gmail.com>
+Message-ID: <20111109092621.GB31394@saboteur.suse.cz>
+References: <1317360651-19857-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<1317362906-22726-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20111005153603.GA29960@saboteur.suse.cz>
+	<4E8CF9D5.7020402@cn.fujitsu.com> <4E92526F.3030704@cn.fujitsu.com>
+	<20111012131527.GA21031@saboteur.suse.cz>
+	<4EAE4C2A.7030509@cn.fujitsu.com>
+	<20111103143141.GF12153@saboteur.suse.cz>
+	<4EBA4431.7050403@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAGH67wQu7Yx8=GMHxXWXsz=i9736jva89QNeobWku=0YJQwTQQ@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] runltp: fix printing of LTP Version
+In-Reply-To: <4EBA4431.7050403@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] mtest06: avoid the segment fault of
+	nul	address dereference
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,84 +29,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> Fix function 'version_of_ltp' to reference Version in the correct path
-> >> Fix Version's path when settign version_date
+> >>>>> So, if the first running thread is not read_mem(), it will not fail with segment
+> >>>>> fault all the time. So, I think there's no wrong with the signal or others' handling.
+> >>>>>
+> >>>>> We just make sure that read_mem() is not the first running thread, it will be enough.
+> >>>>
+> >>>>
+> >>>> Any comment ?
+> >>>>
+> >>>
+> >>> Stay tuned, I'll get to this till the end of the week.
+> >>>
 > >>
-> >> Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
-> >> ---
-> >> =A0runltp | =A0 =A04 ++--
-> >> =A01 files changed, 2 insertions(+), 2 deletions(-)
 > >>
-> >> diff --git a/runltp b/runltp
-> >> index 4ef8b38..244cd2f 100755
-> >> --- a/runltp
-> >> +++ b/runltp
-> >> @@ -97,7 +97,7 @@ setup()
-> >>
-> >> =A0version_of_ltp()
-> >> =A0{
-> >> - =A0 =A0cat "$LTPROOT/Version"
-> >> + =A0 =A0cat "$LTPROOT/testcases/bin/Version"
-> >> =A0 =A0 =A0exit 0
-> >> =A0}
-> >>
-> >> @@ -209,7 +209,7 @@ main()
-> >>
-> >> =A0 =A0 =A0local scenfile=3D
-> >>
-> >> - =A0 =A0version_date=3D$(cat "$LTPROOT/Version")
-> >> + =A0 =A0version_date=3D$(cat "$LTPROOT/testcases/bin/Version")
-> >>
-> >> =A0 =A0 =A0while getopts a:c:C:d:D:f:F:ehi:K:g:l:m:M:Nno:pqr:s:S:t:T:w=
-:x:b:B: arg
-> >> =A0 =A0 =A0do =A0case $arg in
-> >
-> > Right, but there is one more thing to fix.
-> >
-> > The Version is generated from Changelog, which is abandoned for some
-> > time. But we introduced a VERSION file that carries latest version. So
-> > the best woul be to drop Changelog completly and use the VERSION file
-> > instead, anybody objects to that?
-> =
+> >> Maybe you missed this?
+> > 
+> > Sorry, should get to this ASAP.
+> > 
+> 
+> 
+> Yeah Cyril:
+> I see you are back.
+> Please don't miss this now.
 
-> I'd just generate the version like so:
-> =
+Don't worry. I've spend one afternoon playing with the testcase and it's
+full of misconceptions race conditions and broken code (and one of the
+bugs disables the reading thread shortly after the start so no testing
+is done at all no matter how long you run it). I have, so far, five
+incremental patches that fixes most of the problems but it's not
+finished yet. I expect to commit these hopefully this week.
 
-> VERSION ?=3D $(shell echo ltp-nightly-`env LANG=3DC date +%Y%m%d`)
-> =
-
-> in the Makefile, or something like that... I just did it based on the
-> ChangeLog as it was the defacto source of truth in the LTP 'release
-> process' (which fizzled after Subrata couldn't lead that effort
-> anymore).
-
-Now we have the VERSION file, that should defacto carry on that
-information for the future. So there is no problem with that, changing
-'head ChangeLog' to 'cat VERSION' should be enough. Maybe it would be
-nice to use 'git describe' for builds from git repository too.
-
-And we should probably get rid of the ChangeLog and result files, as
-they are not maintained anymore, actually if somebody has time to
-generate results I would be glad to include them, but I personally don't
-have a time to do that.
-
--- =
-
+-- 
 Cyril Hrubis
 chrubis@suse.cz
 
----------------------------------------------------------------------------=
----
-RSA&#174; Conference 2012
+------------------------------------------------------------------------------
+RSA(R) Conference 2012
 Save $700 by Nov 18
-Register now&#33;
+Register now
 http://p.sf.net/sfu/rsa-sfdev2dev1
 _______________________________________________
 Ltp-list mailing list
