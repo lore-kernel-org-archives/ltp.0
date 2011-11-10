@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1RNgS8-0004tz-Ex
-	for ltp-list@lists.sourceforge.net; Tue, 08 Nov 2011 07:50:40 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RNgS7-0005X5-Dh
-	for ltp-list@lists.sourceforge.net; Tue, 08 Nov 2011 07:50:40 +0000
-Date: Tue, 08 Nov 2011 02:50:27 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <fd23b1ea-f8c6-45ba-8591-78444e165a36@zmail16.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4EB8D85D.1060602@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <huruomu@gmail.com>) id 1ROXxV-0002eT-Ax
+	for ltp-list@lists.sourceforge.net; Thu, 10 Nov 2011 16:58:37 +0000
+Received: from mail-qw0-f47.google.com ([209.85.216.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1ROXxU-0006An-KI
+	for ltp-list@lists.sourceforge.net; Thu, 10 Nov 2011 16:58:37 +0000
+Received: by qabj40 with SMTP id j40so3039019qab.13
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 10 Nov 2011 08:58:31 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was forked
+Date: Fri, 11 Nov 2011 00:58:31 +0800
+Message-ID: <CANoG8sW+PEbwqCvQt7i=VENnySb1JXEdBrgMmKEJqyAcROQS_A@mail.gmail.com>
+From: Romu <huruomu@gmail.com>
+Subject: [LTP] nfsv3 filesystem: tst_rmdir: rmobj failed;
+ errno=16: Device or resource busy
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,82 +29,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+Hi,
 
+Many testcases fail on nfs v3 filesystem, the testcases per se
+actually passed, but rmobj failed, and testcases return failure.  e.g.
 
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, November 8, 2011 8:21:01 AM
-> Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was forked
-> 
-> On 11/08/2011 03:14 PM, Jan Stancek wrote:
-> 
-> > 
-> > 
-> > ----- Original Message -----
-> >> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> >> To: "Jan Stancek" <jstancek@redhat.com>
-> >> Cc: ltp-list@lists.sourceforge.net
-> >> Sent: Tuesday, November 8, 2011 4:07:56 AM
-> >> Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was
-> >> forked
-> >>
-> >> On 11/07/2011 08:53 PM, Jan Stancek wrote:
-> >>
-> >>>
-> >>> If start_server() fails, then pid will end up with -1 and
-> >>> cleanup() will do kill(-1, SIGKILL), which kills everything
-> >>> this process can kill.
-> >>>
-> >>> Change the test to kill pid (child) only when it successfully
-> >>> creates one.
-> >>>
-> >>
-> >>
-> >> Yeah, but this can't fix the problem in this case?
-> >>
-> >> recvmsg01    1  TBROK  :  server bind failed: errno=???(98):
-> >> Address
-> >> already in use
-> >> recvmsg01    2  TBROK  :  Remaining cases broken
-> >>
-> > 
-> > I'm not sure I follow you here.
-> > In case you described start_server() returns -1,
-> > so pid = -1, and cleanup won't do kill(-1, SIGKILL).
-> > 
-> 
-> 
-> Yeah, I understood you.
-> 
-> But we wanna fix the case to TPASS but not TBROK, do we?
+dup03       1  TPASS  :  dup failed as expected with EMFILE
+dup03       0  TWARN  :  tst_rmdir:
+rmobj(/mnt/nfsv3/ltp-o9A6KJNkUl/dupI97bw6) failed:
+unlink(/mnt/nfsv3/ltp-o9A6KJNkUl/dupI97bw6/.nfs0000000000c4409f0000000c)
+failed; errno=16: Device or resource busy
 
-True, but until we have such fix, we should at least make it
-less annoying when it fails.
+dup205      1  TPASS  :  Test passed.
+dup205      0  TWARN  :  tst_rmdir: rmobj failed; errno=16: Device or
+resource busy
 
-> So, I mean that the issues of this case is not only what you said.
+fcntl16     0  TINFO  :  Entering block 1
+fcntl16     0  TINFO  :  Test case 1: without manadatory locking PASSED
+fcntl16     0  TINFO  :  Exiting block 1
+fcntl16     0  TINFO  :  Entering block 2
+fcntl16     1  TFAIL  :  First parent lock failed
+fcntl16     2  TFAIL  :  Test case 1, errno = 37
+fcntl16     0  TINFO  :  Test case 2: with mandatory record locking FAILED
+fcntl16     0  TINFO  :  Exiting block 2
+fcntl16     0  TINFO  :  Entering block 3
+fcntl16     3  TFAIL  :  First parent lock failed
+fcntl16     4  TFAIL  :  Test case 1, errno = 37
+fcntl16     0  TINFO  :  Test case 3: mandatory locking with NODELAY FAILED
+fcntl16     0  TINFO  :  Exiting block 3
+fcntl16     0  TWARN  :  tst_rmdir:
+rmobj(/mnt/nfsv3/ltp-owwgcrfI7A/fcnWRtID0) failed:
+unlink(/mnt/nfsv3/ltp-owwgcrfI7A/fcnWRtID0/.nfs00000000016ec3ff00000011)
+failed; errno=16: Device or resource busy
 
-I didn't actually get to see yet what those are, because those
-TBROK messages didn't make it to log:
+Can this problem be safely ignored?  How to fix it?
 
-<<<test_start>>>
-tag=recvmsg01 stime=1320555319
-cmdline="recvmsg01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=signaled termination_id=9 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-
-Regards,
-Jan
+Thanks
+Romu
 
 ------------------------------------------------------------------------------
 RSA(R) Conference 2012
