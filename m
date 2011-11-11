@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RNg0c-0000G8-Py
-	for ltp-list@lists.sourceforge.net; Tue, 08 Nov 2011 07:22:14 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RNg0a-0001fK-4Q
-	for ltp-list@lists.sourceforge.net; Tue, 08 Nov 2011 07:22:14 +0000
-Message-ID: <4EB8D85D.1060602@cn.fujitsu.com>
-Date: Tue, 08 Nov 2011 15:21:01 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1ROjV3-0002MA-VM
+	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 05:18:01 +0000
+Received: from mail-vx0-f175.google.com ([209.85.220.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ROjV2-0007af-Pa
+	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 05:18:01 +0000
+Received: by vcbfl11 with SMTP id fl11so1536688vcb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 10 Nov 2011 21:17:55 -0800 (PST)
+Message-ID: <4EBCAAEB.6010004@casparzhang.com>
+Date: Fri, 11 Nov 2011 12:56:11 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <f8f55a57-966a-4523-ae6a-94179b2636bc@zmail16.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <f8f55a57-966a-4523-ae6a-94179b2636bc@zmail16.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was forked
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <1320987154-28844-1-git-send-email-eguan@redhat.com>
+In-Reply-To: <1320987154-28844-1-git-send-email-eguan@redhat.com>
+Subject: Re: [LTP] [PATCH] syscall/dup03: Close all open files in cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,52 +30,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Eryu Guan <eguan@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 11/08/2011 03:14 PM, Jan Stancek wrote:
-
+On 11/11/2011 12:52 PM, Eryu Guan wrote:
 > 
+> The 'silly rename' mechanism of NFS creates temporary file .nfsXXX in
+> NFS mount. The cleanup() in dup03.c doesn't close all open files and
+> leaves .nfsXXX file in the testing directory. Then rmdir(2) complains
+> about "Directory not empty".
 > 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: ltp-list@lists.sourceforge.net
->> Sent: Tuesday, November 8, 2011 4:07:56 AM
->> Subject: Re: [LTP] [PATCH] recvmsg01: kill child only if one was forked
->>
->> On 11/07/2011 08:53 PM, Jan Stancek wrote:
->>
->>>
->>> If start_server() fails, then pid will end up with -1 and
->>> cleanup() will do kill(-1, SIGKILL), which kills everything
->>> this process can kill.
->>>
->>> Change the test to kill pid (child) only when it successfully
->>> creates one.
->>>
->>
->>
->> Yeah, but this can't fix the problem in this case?
->>
->> recvmsg01    1  TBROK  :  server bind failed: errno=???(98): Address
->> already in use
->> recvmsg01    2  TBROK  :  Remaining cases broken
->>
+> dup03       1  TPASS  :  dup failed as expected with EMFILE
+> dup03       0  TWARN  :  tst_rmdir: rmobj(/mnt/nfs/dupxesX9v) failed: remove(/mnt/nfs/dupxesX9v) failed; errno=39: Directory not empty
 > 
-> I'm not sure I follow you here.
-> In case you described start_server() returns -1,
-> so pid = -1, and cleanup won't do kill(-1, SIGKILL).
+> So close all open files in cleanup().
 > 
+> Signed-off-by: Eryu Guan <eguan@redhat.com>
 
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
-Yeah, I understood you.
-
-But we wanna fix the case to TPASS but not TBROK, do we?
-So, I mean that the issues of this case is not only what you said.
-
-Thanks
--Wanlong Gao
 
 ------------------------------------------------------------------------------
 RSA(R) Conference 2012
