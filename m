@@ -1,27 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <tangchen@cn.fujitsu.com>) id 1RT3Mf-0001uz-Ap
-	for ltp-list@lists.sourceforge.net; Wed, 23 Nov 2011 03:19:13 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RT3Me-0007ON-Gd
-	for ltp-list@lists.sourceforge.net; Wed, 23 Nov 2011 03:19:13 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 163D51700BD
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Nov 2011 11:19:01 +0800 (CST)
-Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id pAN3J0ED020052
-	for <ltp-list@lists.sourceforge.net>; Wed, 23 Nov 2011 11:19:00 +0800
-Message-ID: <4ECC65C1.4060904@cn.fujitsu.com>
-Date: Wed, 23 Nov 2011 11:17:21 +0800
-From: tangchen <tangchen@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1ROsz0-0001On-RD
+	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 15:25:34 +0000
+Date: Fri, 11 Nov 2011 16:31:46 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111111153146.GA15906@saboteur.suse.cz>
+References: <1320826145-5181-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4ECC636A.3040300@cn.fujitsu.com>
-In-Reply-To: <4ECC636A.3040300@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 1/6]  -H option for hugetlbfs is no longer needed.
+Content-Disposition: inline
+In-Reply-To: <1320826145-5181-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] sysctl: return TWARN when the sysctl is not
+ configured in kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,45 +25,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The hugetlbfs will be mounted automatically when doing hugemmap tests, so -H option is no longer needed.
+Hi!
+> If CONFIG_SYSCTL_SYSCALL is not configured in the kernel, the
+> sysctl(2) should return ENOSYS. So, warn the LTP user the useful
+> information for making the kernel config on.
 
-Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
----
- runtest/hugetlb |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index af45868..641c2a6 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -1,7 +1,7 @@
--hugemmap01 hugemmap01 -H/tmp
--hugemmap02 hugemmap02 -H/tmp -c10
--hugemmap03 hugemmap03 -H/tmp -I2 -c10
--hugemmap04 hugemmap04 -H/tmp
-+hugemmap01 hugemmap01
-+hugemmap02 hugemmap02 -c10
-+hugemmap03 hugemmap03 -I2 -c10
-+hugemmap04 hugemmap04
- hugemmap05 hugemmap05
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
--- 
-1.7.1
-
+I think that TCONF is more appropriate test result here or not?
 
 -- 
-Best Regards,
-Tang chen
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
+RSA(R) Conference 2012
+Save $700 by Nov 18
+Register now
+http://p.sf.net/sfu/rsa-sfdev2dev1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
