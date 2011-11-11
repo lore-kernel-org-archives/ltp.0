@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1ROsz0-0001On-RD
-	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 15:25:34 +0000
-Date: Fri, 11 Nov 2011 16:31:46 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1ROutI-0006we-DL
+	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 17:27:48 +0000
+Date: Fri, 11 Nov 2011 18:34:00 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111111153146.GA15906@saboteur.suse.cz>
-References: <1320826145-5181-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20111111173400.GA16674@saboteur.suse.cz>
+References: <CANoG8sWFVaVLUkQFnT2bmbTD1HvTemWJkUmhB23K4Pb9kcrfGQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1320826145-5181-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] sysctl: return TWARN when the sysctl is not
- configured in kernel
+In-Reply-To: <CANoG8sWFVaVLUkQFnT2bmbTD1HvTemWJkUmhB23K4Pb9kcrfGQ@mail.gmail.com>
+Subject: Re: [LTP] Strange behavior of inotify02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,15 +24,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Romu <huruomu@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> If CONFIG_SYSCTL_SYSCALL is not configured in the kernel, the
-> sysctl(2) should return ENOSYS. So, warn the LTP user the useful
-> information for making the kernel config on.
+> On my system a kernel-header package of say 2.6.32-ver1 is installed,
+> two versions of kernel package are installed, say:
+> 
+> 2.6.32-ver2 (different from the version of kernel-header)
+> 2.6.39
+> 
+> If I configure and build ltp when system is running 2.6.32-ver2
+> kernel, reboot to 2.6.39 kernel and run inotify02, it passes on nfs
+> (both v3 and v4) file system.
+> 
+> If I configure and build ltp when system is running 2.6.39 kernel, and
+> run inotify02 on 2.6.39 kernel, it fails on nfs (both v3 and v4) file
+> system.
+> 
+> Any idea?
 
-I think that TCONF is more appropriate test result here or not?
+I would start with diffing kernel headers for both of the kernels just
+to be sure nothing has changed there.
 
 -- 
 Cyril Hrubis
