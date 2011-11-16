@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1ROsWY-0007C5-OY
-	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 14:56:10 +0000
-Date: Fri, 11 Nov 2011 16:02:21 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RQiS8-0001KI-Iq
+	for ltp-list@lists.sourceforge.net; Wed, 16 Nov 2011 16:35:12 +0000
+Date: Wed, 16 Nov 2011 17:41:47 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111111150221.GD13045@saboteur.suse.cz>
-References: <CANoG8sX-GKK2dbxiHAocviCue8Y7rU1O10=wzbNmZhrMZZQhbA@mail.gmail.com>
+Message-ID: <20111116164147.GB2069@saboteur.suse.cz>
+References: <4E0FE494.6040701@cn.fujitsu.com>
+	<20110902125802.GA15349@saboteur.suse.cz>
+	<20110902130424.GA15784@saboteur.suse.cz>
+	<4E642521.9050909@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CANoG8sX-GKK2dbxiHAocviCue8Y7rU1O10=wzbNmZhrMZZQhbA@mail.gmail.com>
-Subject: Re: [LTP] Incorrect mode on nfsv3 filesystem
+In-Reply-To: <4E642521.9050909@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX] [PATCH] aio_cancel/7-1: fix fail occasionally due
+ to aio_error() returns EBADF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,31 +28,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Romu <huruomu@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> chmod03     1  TFAIL  :  testfile: Incorrect modes 0100777, Expected 0777
-> fchmod03    1  TFAIL  :  testfile: Incorrect modes 0100777, Expected 0777
-> chown02     1  TFAIL  :  testfile1: incorrect mode permissions
-> 0106770, Expected 0100770
-> 
-> I have no idea whether they are kernel issue.  Any idea?
-
-Seems like your nfs doesn't support sticky bit (note the messages from
-the tests are wrong and should be "Expected 1777").
-
-And the chown02 does something with set UID and set GID bits.
+Commited, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-RSA(R) Conference 2012
-Save $700 by Nov 18
-Register now
-http://p.sf.net/sfu/rsa-sfdev2dev1
+All the data continuously generated in your IT infrastructure 
+contains a definitive record of customers, application performance, 
+security threats, fraudulent activity, and more. Splunk takes this 
+data and makes sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-novd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
