@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1RVHWN-0005Gi-92
-	for ltp-list@lists.sourceforge.net; Tue, 29 Nov 2011 06:50:27 +0000
-Received: from e23smtp02.au.ibm.com ([202.81.31.144])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RVHWK-0007MY-MB
-	for ltp-list@lists.sourceforge.net; Tue, 29 Nov 2011 06:50:27 +0000
-Received: from /spool/local
-	by e23smtp02.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
-	Tue, 29 Nov 2011 06:36:31 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	pAT6knJW3641388
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Nov 2011 17:46:50 +1100
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	pAT6oEEZ030536
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Nov 2011 17:50:14 +1100
-Message-ID: <4ED480A4.2000003@linux.vnet.ibm.com>
-Date: Tue, 29 Nov 2011 12:20:12 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RQjSU-0006IS-BD
+	for ltp-list@lists.sourceforge.net; Wed, 16 Nov 2011 17:39:38 +0000
+Date: Wed, 16 Nov 2011 18:46:13 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111116174613.GC2069@saboteur.suse.cz>
+References: <4E535FA6.5000600@cn.fujitsu.com> <4EBCD0A4.9040104@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <20111127201232.GB2268@nik-comp.lan>
-In-Reply-To: <20111127201232.GB2268@nik-comp.lan>
-Subject: Re: [LTP] LTP: memcg_stress_test hanging whole box
+Content-Disposition: inline
+In-Reply-To: <4EBCD0A4.9040104@cn.fujitsu.com>
+Subject: Re: [LTP] [POSIX][PATCH] sched_yield/1-1: fix a bug of SIGINT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,35 +24,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
-Cc: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Monday 28 November 2011 01:42 AM, Nikola Ciprich wrote:
-> I hope I won't be bothering with dumb question, but I wasn't able to find any solution to my problem...
->
-> I'm playing with LTP, and it works nice for me (few tests fail, but with obvious reasons, which I will fix,
-> so this is Ok), but I'm having problem with memcg_stress test. It always almost immediately gets host machine to
-> heavy swapping, and never finishes... when I had 2GB of swap, machine usually got into totally unusable state,
-> when I lowered swap to 512M, I'm at least able to kill test after some time...
-> I guess this is not expected behaviour, but my question is, what should I check to get this working properly?
-> I'm getting same results for latest x86_64 2.6.32.x and 3.0.x. Testing machine has 4 cores and 4GB of RAM.
->
-> Could somebody help me with that please?
->
+Hi!
+> 
+> Any comments on the following patch?
+> 
 
-Hi Nikola,
+Commited, thanks.
 
-I have also seen some hangs with memcg_stress test on some of my x 
-machines. But this is not consistent for me as the same set of tests 
-works fine on one machine and hangs on other. Yes this is not expected 
-behavior and ideally tests should complete. Can you please give a try 
-after changing swap space to twice the size of RAM? Also can you paste 
-here the the exact process which is hanging for you i.e. paste the 
-output of 'ps -ef | grep ltp' during the system hang state.
+Note that I've removed the semicolon from "Test PASSED\n".
 
-Thanks,
-Shubham
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 All the data continuously generated in your IT infrastructure 
