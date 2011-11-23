@@ -2,20 +2,26 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <huruomu@gmail.com>) id 1ROumq-0006XO-I7
-	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 17:21:08 +0000
-Received: from mail-qw0-f47.google.com ([209.85.216.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1ROump-00068A-Ri
-	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 17:21:08 +0000
-Received: by qabj40 with SMTP id j40so4413366qab.13
+	(envelope-from <tangchen@cn.fujitsu.com>) id 1RT3Mf-0001uz-Ap
+	for ltp-list@lists.sourceforge.net; Wed, 23 Nov 2011 03:19:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RT3Me-0007ON-Gd
+	for ltp-list@lists.sourceforge.net; Wed, 23 Nov 2011 03:19:13 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 163D51700BD
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 11 Nov 2011 09:21:02 -0800 (PST)
+	Wed, 23 Nov 2011 11:19:01 +0800 (CST)
+Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id pAN3J0ED020052
+	for <ltp-list@lists.sourceforge.net>; Wed, 23 Nov 2011 11:19:00 +0800
+Message-ID: <4ECC65C1.4060904@cn.fujitsu.com>
+Date: Wed, 23 Nov 2011 11:17:21 +0800
+From: tangchen <tangchen@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Sat, 12 Nov 2011 01:13:16 +0800
-Message-ID: <CANoG8sWFVaVLUkQFnT2bmbTD1HvTemWJkUmhB23K4Pb9kcrfGQ@mail.gmail.com>
-From: Romu <huruomu@gmail.com>
-Subject: [LTP] Strange behavior of inotify02
+References: <4ECC636A.3040300@cn.fujitsu.com>
+In-Reply-To: <4ECC636A.3040300@cn.fujitsu.com>
+Subject: [LTP]  [PATCH 1/6]  -H option for hugetlbfs is no longer needed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,32 +36,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi,
+The hugetlbfs will be mounted automatically when doing hugemmap tests, so -H option is no longer needed.
 
-On my system a kernel-header package of say 2.6.32-ver1 is installed,
-two versions of kernel package are installed, say:
+Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+---
+ runtest/hugetlb |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-2.6.32-ver2 (different from the version of kernel-header)
-2.6.39
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index af45868..641c2a6 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -1,7 +1,7 @@
+-hugemmap01 hugemmap01 -H/tmp
+-hugemmap02 hugemmap02 -H/tmp -c10
+-hugemmap03 hugemmap03 -H/tmp -I2 -c10
+-hugemmap04 hugemmap04 -H/tmp
++hugemmap01 hugemmap01
++hugemmap02 hugemmap02 -c10
++hugemmap03 hugemmap03 -I2 -c10
++hugemmap04 hugemmap04
+ hugemmap05 hugemmap05
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+-- 
+1.7.1
 
-If I configure and build ltp when system is running 2.6.32-ver2
-kernel, reboot to 2.6.39 kernel and run inotify02, it passes on nfs
-(both v3 and v4) file system.
 
-If I configure and build ltp when system is running 2.6.39 kernel, and
-run inotify02 on 2.6.39 kernel, it fails on nfs (both v3 and v4) file
-system.
-
-Any idea?
-
-Thanks,
-Romu
+-- 
+Best Regards,
+Tang chen
 
 ------------------------------------------------------------------------------
-RSA(R) Conference 2012
-Save $700 by Nov 18
-Register now
-http://p.sf.net/sfu/rsa-sfdev2dev1
+All the data continuously generated in your IT infrastructure 
+contains a definitive record of customers, application performance, 
+security threats, fraudulent activity, and more. Splunk takes this 
+data and makes sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-novd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
