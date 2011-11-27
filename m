@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <huruomu@gmail.com>) id 1RQyas-00034z-FB
-	for ltp-list@lists.sourceforge.net; Thu, 17 Nov 2011 09:49:18 +0000
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RQyar-0005m1-L4
-	for ltp-list@lists.sourceforge.net; Thu, 17 Nov 2011 09:49:18 +0000
-Received: by pzk34 with SMTP id 34so1877022pzk.2
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 17 Nov 2011 01:49:11 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <nikola.ciprich@linuxbox.cz>) id 1RUlKM-0007B2-2Q
+	for ltp-list@lists.sourceforge.net; Sun, 27 Nov 2011 20:27:54 +0000
+Received: from gwu.lbox.cz ([62.245.111.132])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RUlKK-00014c-M5
+	for ltp-list@lists.sourceforge.net; Sun, 27 Nov 2011 20:27:54 +0000
+Received: from linuxbox.linuxbox.cz (linuxbox.linuxbox.cz [10.76.66.10])
+	by gwu.lbox.cz (Sendmail) with ESMTP id pARKCXqe009091
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Nov 2011 21:12:33 +0100
+Date: Sun, 27 Nov 2011 21:12:32 +0100
+From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+Message-ID: <20111127201232.GB2268@nik-comp.lan>
 MIME-Version: 1.0
-Date: Thu, 17 Nov 2011 17:49:11 +0800
-Message-ID: <CANoG8sVidgJ-=eRjbk7L-NSajQzMqQr24wFAYSW3FU8ChzL4ow@mail.gmail.com>
-From: Romu <huruomu@gmail.com>
-Subject: [LTP] Strange output of fork13 testcase
+Subject: [LTP] LTP: memcg_stress_test hanging whole box
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,45 +26,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7495298231299325873=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi,
 
-Please see the following fork13 test output:
+--===============7495298231299325873==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
+Content-Disposition: inline
 
-<<<test_start>>>
-tag=fork13 stime=1321633957
-cmdline="fork13 -c 2 -i 1000000"
-contacts=""
-analysis=exit
-<<<test_output>>>
-fork13      1  TPASS  :  1000000 pids forked, all passed
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=242 termination_type=exited termination_id=0 corefile=no
-cutime=397 cstime=11317
-<<<test_end>>>
-fork13      1  TBROK  :  unexpected signal 15 received (pid = 2046).
-fork13      2  TBROK  :  Remaining cases broken
-INFO: ltp-pan reported all tests PASS
-LTP Version: LTP-20110915
 
-       ###############################################################"
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-            Done executing testcases."
-            LTP Version:  LTP-20110915
-       ###############################################################"
+Hello,
 
-There are both TPASS and TFAIL in output.
+I hope I won't be bothering with dumb question, but I wasn't able to find a=
+ny solution to my problem...
 
-Any idea?
+I'm playing with LTP, and it works nice for me (few tests fail, but with ob=
+vious reasons, which I will fix,
+so this is Ok), but I'm having problem with memcg_stress test. It always al=
+most immediately gets host machine to
+heavy swapping, and never finishes... when I had 2GB of swap, machine usual=
+ly got into totally unusable state,
+when I lowered swap to 512M, I'm at least able to kill test after some time=
+=2E..
+I guess this is not expected behaviour, but my question is, what should I c=
+heck to get this working properly?
+I'm getting same results for latest x86_64 2.6.32.x and 3.0.x. Testing mach=
+ine has 4 cores and 4GB of RAM.
 
-Thanks
-Romu
+Could somebody help me with that please?
+
+with best regards
+
+nikola ciprich
+
+--=20
+-------------------------------------
+Ing. Nikola CIPRICH
+LinuxBox.cz, s.r.o.
+28. rijna 168, 709 01 Ostrava
+
+tel.:   +420 596 603 142
+fax:    +420 596 621 273
+mobil:  +420 777 093 799
+
+www.linuxbox.cz
+
+mobil servis: +420 737 238 656
+email servis: servis@linuxbox.cz
+-------------------------------------
+
+--f2QGlHpHGjS2mn6Y
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk7SmbAACgkQ3xdJJrLygV5KeQCfQL58j6tujZ7k4B3F6tC1qNHw
+s58AoJUvW2LjSDnWJCi/7gFun/g4wx9u
+=5J9x
+-----END PGP SIGNATURE-----
+
+--f2QGlHpHGjS2mn6Y--
+
+
+--===============7495298231299325873==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 All the data continuously generated in your IT infrastructure 
@@ -71,7 +109,16 @@ contains a definitive record of customers, application performance,
 security threats, fraudulent activity, and more. Splunk takes this 
 data and makes sense of it. IT sense. And common sense.
 http://p.sf.net/sfu/splunk-novd2d
+--===============7495298231299325873==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7495298231299325873==--
+
