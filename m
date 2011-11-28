@@ -1,20 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1RVa9g-0006Pt-9L
-	for ltp-list@lists.sourceforge.net; Wed, 30 Nov 2011 02:44:16 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RVa9e-0003BG-K6
-	for ltp-list@lists.sourceforge.net; Wed, 30 Nov 2011 02:44:16 +0000
-Message-ID: <4ED58011.6080600@cn.fujitsu.com>
-Date: Wed, 30 Nov 2011 09:00:01 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <k-mio@sx.jp.nec.com>) id 1RUtkU-0003KH-2m
+	for ltp-list@lists.sourceforge.net; Mon, 28 Nov 2011 05:27:26 +0000
+Received: from tyo201.gate.nec.co.jp ([202.32.8.193])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RUtkQ-0003P7-Gk
+	for ltp-list@lists.sourceforge.net; Mon, 28 Nov 2011 05:27:26 +0000
+Received: from mailgate3.nec.co.jp ([10.7.69.192])
+	by tyo201.gate.nec.co.jp (8.13.8/8.13.4) with ESMTP id pAS5REbe019219
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 Nov 2011 14:27:14 +0900 (JST)
+Received: (from root@localhost) by mailgate3.nec.co.jp
+	(8.11.7/3.7W-MAILGATE-NEC)
+	id pAS5REd01466 for ltp-list@lists.sourceforge.net;
+	Mon, 28 Nov 2011 14:27:14 +0900 (JST)
+Received: from mail03.kamome.nec.co.jp (mail03.kamome.nec.co.jp [10.25.43.7])
+	by mailsv4.nec.co.jp (8.13.8/8.13.4) with ESMTP id pAS5REip010989
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 Nov 2011 14:27:14 +0900 (JST)
+Message-ID: <4ED31B4E.5030405@sx.jp.nec.com>
+Date: Mon, 28 Nov 2011 14:25:34 +0900
+From: Kazuya Mio <k-mio@sx.jp.nec.com>
 MIME-Version: 1.0
-References: <CAKCBqa2tKNhY4LvPF2H=0iL8dVdV_+jYMgt3Qe3ULapL2ndz6g@mail.gmail.com>
-In-Reply-To: <CAKCBqa2tKNhY4LvPF2H=0iL8dVdV_+jYMgt3Qe3ULapL2ndz6g@mail.gmail.com>
-Subject: Re: [LTP] FATAL: LTP not installed correctly
+Subject: [LTP] ext4-online-defrag test doesn't work due to too old e4defrag
+ command
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,46 +35,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chen Nisnkorn <chen.nisnkorn@ravellosystems.com>
-Cc: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net
 
-CkNoZW4gTmlzbmtvcm4gc2FpZCB0aGUgZm9sbG93aW5nIG9uIDIwMTEtMTEtMTAgMjowMToKPiBI
-aQo+IAo+IGkgbmV3IGluIExUUCBhbmQgaW0gdGFyaW5nIHRvIHJ1biBpdCBmcm9tIHRoZSBmaXJz
-dCB0aW1lCj4gaSBkb3dubG9hZCB0aGUgbHRwLTIwMTEwOTE1IHZlcnNpb24gYW5kIGkgZGlkIHRo
-ZSBpbnN0YWxsIChieSB0aGUgZmlsZSkKPiBzdGVwIGJ5IHN0ZXAKPiAKPiBidXQgd2hlbiBpIHRy
-aWVkIHRvIHJ1biBpdCBpIGdldCA9Pgo+IAo+IAo+IGNoZW5AY2hlbjp+L1FBL0xUUC9sdHAtMjAx
-MTA5MTUkIC4vcnVubHRwIC1wIC1sCj4gL2hvbWUvY2hlbi9RQS9MVFAvcmVzdWx0LjAyLmxvZyAt
-ZiBteV9jb21tYW5kX2ZpbGUKCnlvdSBzaG91bGQgdXNlIHJvb3QgdG8gcnVuID0+CgojIC9vcHQv
-bHRwL3J1bmx0cCAtcCAtbCAvaG9tZS9jaGVuL1FBL0xUUC9yZXN1bHQuMDIubG9nIC1mIG15X2Nv
-bW1hbmRfZmlsZQoKTm90Ze+8mm15X2NvbW1hbmRfZmlsZSBzaG91bGQgYmUgaW4gZGlyZWN0b3J5
-ICIvb3B0L2x0cC9ydW50ZXN0LyIKCi0tIApCZXN0IFJlZ2FyZHMsClBlbmcKCj4gRkFUQUw6IExU
-UCBub3QgaW5zdGFsbGVkIGNvcnJlY3RseQo+IElORk86ICBGb2xsb3cgZGlyZWN0aW9ucyBpbiBJ
-TlNUQUxMIQo+IAo+IGkgZG9uJ3Qga25vdyB3aGF0IGlzIHRoZSBwcm9ibGVtLgo+IAo+IHdoZW4g
-aSBydW4gPSA+Cj4gc3VkbyAvb3B0L2x0cC9ydW5sdHBsaXRlLnNoIC1wIC1sIC9ob21lL2NoZW4v
-UUEvTFRQL3Jlc3VsdC4wMi5sb2cgLWYKPiBteV9jb21tYW5kX2ZpbGUKPiAKPiBpIGdldCA9ID4g
-SWxsZWdhbCBvcHRpb24gLWYKPiAKPiBlbm90ZXIgdGhpbmcgaXMgd2hlcmUgY2FuIGkgZm91bmQg
-ZXhwbGFuYXRpb24gdG8gd2hhdCBldmVyeSB0ZXN0IGlzIGRvaW5nCj4gYW5kIGV4cGxhbmF0aW9u
-IG9uIGhvdyBjYW4gaSBjb25maWcgbXkgY29tbWFuZCBmaWxlCj4gCj4gdGhhbmtzCj4gCj4gCj4g
-Y2hlbgo+IAo+IAo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IEFsbCB0aGUgZGF0YSBj
-b250aW51b3VzbHkgZ2VuZXJhdGVkIGluIHlvdXIgSVQgaW5mcmFzdHJ1Y3R1cmUgCj4gY29udGFp
-bnMgYSBkZWZpbml0aXZlIHJlY29yZCBvZiBjdXN0b21lcnMsIGFwcGxpY2F0aW9uIHBlcmZvcm1h
-bmNlLCAKPiBzZWN1cml0eSB0aHJlYXRzLCBmcmF1ZHVsZW50IGFjdGl2aXR5LCBhbmQgbW9yZS4g
-U3BsdW5rIHRha2VzIHRoaXMgCj4gZGF0YSBhbmQgbWFrZXMgc2Vuc2Ugb2YgaXQuIElUIHNlbnNl
-LiBBbmQgY29tbW9uIHNlbnNlLgo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvc3BsdW5rLW5vdmQyZAo+
-IAo+IAo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQWxsIHRoZSBkYXRhIGNvbnRpbnVvdXNseSBnZW5lcmF0
-ZWQgaW4geW91ciBJVCBpbmZyYXN0cnVjdHVyZSAKY29udGFpbnMgYSBkZWZpbml0aXZlIHJlY29y
-ZCBvZiBjdXN0b21lcnMsIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlLCAKc2VjdXJpdHkgdGhyZWF0
-cywgZnJhdWR1bGVudCBhY3Rpdml0eSwgYW5kIG1vcmUuIFNwbHVuayB0YWtlcyB0aGlzIApkYXRh
-IGFuZCBtYWtlcyBzZW5zZSBvZiBpdC4gSVQgc2Vuc2UuIEFuZCBjb21tb24gc2Vuc2UuCmh0dHA6
-Ly9wLnNmLm5ldC9zZnUvc3BsdW5rLW5vdmQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+Hi,
+
+I tried to test ext4-online-defrag, but it didn't work well due to
+the following errors:
+
+ext4-online-defrag    0  TINFO  :  defrag type: 1, defrag obj: 2, block size: 1024
+ "/opt/ltp/testcases/bin/mnt_point/data0"
+        File is not regular file                [ NG ]
+        Failed to defrag:Bad file descriptor    [ NG ]
+        Failed to defrag:Bad file descriptor    [ NG ]
+<snip>
+        Failed to defrag:Bad file descriptor    [ NG ]
+        Failed to defrag:Bad file descriptor    [ NG ]
+ext4-online-defrag    2  TPASS  :  ext4 online defrag test pass
+
+This is because e4defrag is too old to defrag the file in the latest kernel.
+I think we should use the latest e4defrag command that is contained in e2fsprogs.
+
+Regards,
+Kazuya Mio
+
+------------------------------------------------------------------------------
+All the data continuously generated in your IT infrastructure 
+contains a definitive record of customers, application performance, 
+security threats, fraudulent activity, and more. Splunk takes this 
+data and makes sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-novd2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
