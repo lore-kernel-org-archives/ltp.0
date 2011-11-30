@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1ROjV3-0002MA-VM
-	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 05:18:01 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ROjV2-0007af-Pa
-	for ltp-list@lists.sourceforge.net; Fri, 11 Nov 2011 05:18:01 +0000
-Received: by vcbfl11 with SMTP id fl11so1536688vcb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 Nov 2011 21:17:55 -0800 (PST)
-Message-ID: <4EBCAAEB.6010004@casparzhang.com>
-Date: Fri, 11 Nov 2011 12:56:11 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1RVa9g-0006Pt-9L
+	for ltp-list@lists.sourceforge.net; Wed, 30 Nov 2011 02:44:16 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RVa9e-0003BG-K6
+	for ltp-list@lists.sourceforge.net; Wed, 30 Nov 2011 02:44:16 +0000
+Message-ID: <4ED58011.6080600@cn.fujitsu.com>
+Date: Wed, 30 Nov 2011 09:00:01 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1320987154-28844-1-git-send-email-eguan@redhat.com>
-In-Reply-To: <1320987154-28844-1-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH] syscall/dup03: Close all open files in cleanup
+References: <CAKCBqa2tKNhY4LvPF2H=0iL8dVdV_+jYMgt3Qe3ULapL2ndz6g@mail.gmail.com>
+In-Reply-To: <CAKCBqa2tKNhY4LvPF2H=0iL8dVdV_+jYMgt3Qe3ULapL2ndz6g@mail.gmail.com>
+Subject: Re: [LTP] FATAL: LTP not installed correctly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +24,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Chen Nisnkorn <chen.nisnkorn@ravellosystems.com>
+Cc: ltp-list@lists.sf.net
 
-On 11/11/2011 12:52 PM, Eryu Guan wrote:
-> 
-> The 'silly rename' mechanism of NFS creates temporary file .nfsXXX in
-> NFS mount. The cleanup() in dup03.c doesn't close all open files and
-> leaves .nfsXXX file in the testing directory. Then rmdir(2) complains
-> about "Directory not empty".
-> 
-> dup03       1  TPASS  :  dup failed as expected with EMFILE
-> dup03       0  TWARN  :  tst_rmdir: rmobj(/mnt/nfs/dupxesX9v) failed: remove(/mnt/nfs/dupxesX9v) failed; errno=39: Directory not empty
-> 
-> So close all open files in cleanup().
-> 
-> Signed-off-by: Eryu Guan <eguan@redhat.com>
-
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
-
-
-------------------------------------------------------------------------------
-RSA(R) Conference 2012
-Save $700 by Nov 18
-Register now
-http://p.sf.net/sfu/rsa-sfdev2dev1
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CkNoZW4gTmlzbmtvcm4gc2FpZCB0aGUgZm9sbG93aW5nIG9uIDIwMTEtMTEtMTAgMjowMToKPiBI
+aQo+IAo+IGkgbmV3IGluIExUUCBhbmQgaW0gdGFyaW5nIHRvIHJ1biBpdCBmcm9tIHRoZSBmaXJz
+dCB0aW1lCj4gaSBkb3dubG9hZCB0aGUgbHRwLTIwMTEwOTE1IHZlcnNpb24gYW5kIGkgZGlkIHRo
+ZSBpbnN0YWxsIChieSB0aGUgZmlsZSkKPiBzdGVwIGJ5IHN0ZXAKPiAKPiBidXQgd2hlbiBpIHRy
+aWVkIHRvIHJ1biBpdCBpIGdldCA9Pgo+IAo+IAo+IGNoZW5AY2hlbjp+L1FBL0xUUC9sdHAtMjAx
+MTA5MTUkIC4vcnVubHRwIC1wIC1sCj4gL2hvbWUvY2hlbi9RQS9MVFAvcmVzdWx0LjAyLmxvZyAt
+ZiBteV9jb21tYW5kX2ZpbGUKCnlvdSBzaG91bGQgdXNlIHJvb3QgdG8gcnVuID0+CgojIC9vcHQv
+bHRwL3J1bmx0cCAtcCAtbCAvaG9tZS9jaGVuL1FBL0xUUC9yZXN1bHQuMDIubG9nIC1mIG15X2Nv
+bW1hbmRfZmlsZQoKTm90Ze+8mm15X2NvbW1hbmRfZmlsZSBzaG91bGQgYmUgaW4gZGlyZWN0b3J5
+ICIvb3B0L2x0cC9ydW50ZXN0LyIKCi0tIApCZXN0IFJlZ2FyZHMsClBlbmcKCj4gRkFUQUw6IExU
+UCBub3QgaW5zdGFsbGVkIGNvcnJlY3RseQo+IElORk86ICBGb2xsb3cgZGlyZWN0aW9ucyBpbiBJ
+TlNUQUxMIQo+IAo+IGkgZG9uJ3Qga25vdyB3aGF0IGlzIHRoZSBwcm9ibGVtLgo+IAo+IHdoZW4g
+aSBydW4gPSA+Cj4gc3VkbyAvb3B0L2x0cC9ydW5sdHBsaXRlLnNoIC1wIC1sIC9ob21lL2NoZW4v
+UUEvTFRQL3Jlc3VsdC4wMi5sb2cgLWYKPiBteV9jb21tYW5kX2ZpbGUKPiAKPiBpIGdldCA9ID4g
+SWxsZWdhbCBvcHRpb24gLWYKPiAKPiBlbm90ZXIgdGhpbmcgaXMgd2hlcmUgY2FuIGkgZm91bmQg
+ZXhwbGFuYXRpb24gdG8gd2hhdCBldmVyeSB0ZXN0IGlzIGRvaW5nCj4gYW5kIGV4cGxhbmF0aW9u
+IG9uIGhvdyBjYW4gaSBjb25maWcgbXkgY29tbWFuZCBmaWxlCj4gCj4gdGhhbmtzCj4gCj4gCj4g
+Y2hlbgo+IAo+IAo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IEFsbCB0aGUgZGF0YSBj
+b250aW51b3VzbHkgZ2VuZXJhdGVkIGluIHlvdXIgSVQgaW5mcmFzdHJ1Y3R1cmUgCj4gY29udGFp
+bnMgYSBkZWZpbml0aXZlIHJlY29yZCBvZiBjdXN0b21lcnMsIGFwcGxpY2F0aW9uIHBlcmZvcm1h
+bmNlLCAKPiBzZWN1cml0eSB0aHJlYXRzLCBmcmF1ZHVsZW50IGFjdGl2aXR5LCBhbmQgbW9yZS4g
+U3BsdW5rIHRha2VzIHRoaXMgCj4gZGF0YSBhbmQgbWFrZXMgc2Vuc2Ugb2YgaXQuIElUIHNlbnNl
+LiBBbmQgY29tbW9uIHNlbnNlLgo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvc3BsdW5rLW5vdmQyZAo+
+IAo+IAo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQWxsIHRoZSBkYXRhIGNvbnRpbnVvdXNseSBnZW5lcmF0
+ZWQgaW4geW91ciBJVCBpbmZyYXN0cnVjdHVyZSAKY29udGFpbnMgYSBkZWZpbml0aXZlIHJlY29y
+ZCBvZiBjdXN0b21lcnMsIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlLCAKc2VjdXJpdHkgdGhyZWF0
+cywgZnJhdWR1bGVudCBhY3Rpdml0eSwgYW5kIG1vcmUuIFNwbHVuayB0YWtlcyB0aGlzIApkYXRh
+IGFuZCBtYWtlcyBzZW5zZSBvZiBpdC4gSVQgc2Vuc2UuIEFuZCBjb21tb24gc2Vuc2UuCmh0dHA6
+Ly9wLnNmLm5ldC9zZnUvc3BsdW5rLW5vdmQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
+c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
+bmZvL2x0cC1saXN0Cg==
