@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RWIx7-0001A0-S6
-	for ltp-list@lists.sourceforge.net; Fri, 02 Dec 2011 02:34:17 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RWIx2-0000U7-7D
-	for ltp-list@lists.sourceforge.net; Fri, 02 Dec 2011 02:34:17 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pB22Y64t028612
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <steve@conklinhouse.com>) id 1RYnQg-00046h-47
+	for ltp-list@lists.sourceforge.net; Thu, 08 Dec 2011 23:31:06 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RYnQf-00055Y-B2
+	for ltp-list@lists.sourceforge.net; Thu, 08 Dec 2011 23:31:06 +0000
+Received: by dake40 with SMTP id e40so3133554dak.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 1 Dec 2011 18:34:06 -0800 (PST)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Fri, 2 Dec 2011 10:34:05 +0800
-Message-ID: <1322793245-10780-1-git-send-email-kai.kang@windriver.com>
+	Thu, 08 Dec 2011 15:30:59 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] pthread_mutex_lock/3-1: make sure install signal
-	hanldler first
+Date: Thu, 8 Dec 2011 17:04:21 -0600
+Message-ID: <CALJxBtVE_O83WkUMZDNFNB4xcW0h=EBx2yJ1PuMyJbNioe1SxQ@mail.gmail.com>
+From: Steve Conklin <steve@conklinhouse.com>
+Subject: [LTP] Looking for Jiri Palacek, debian maintainer for ltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,47 +28,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Test case failed for linux in some platform. Make parent thread
-sleep for a while to make sure that signal handlers are installed
-before send signal USR1 and USR2.
+I'm trying to reach Jiri with some questions, and I'm not sure the
+email address in the Debian packaging is still good.
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../interfaces/pthread_mutex_lock/3-1.c            |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+Apologies to the list for casting a wide net, but I thought he may
+receive the list.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c
-index 771851d..a648c96 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c
-@@ -307,6 +307,8 @@ int main (int argc, char * argv[])
- 	if ((ret = pthread_create(&th_work, NULL, threaded, NULL)))
- 	{ UNRESOLVED(ret, "Worker thread creation failed"); }
- 
-+	sleep(1);
-+
- 	arg1.thr = &th_work;
- 	arg2.thr = &th_work;
- 	arg1.sig = SIGUSR1;
-@@ -359,4 +361,4 @@ int main (int argc, char * argv[])
- 	#endif
- 	#endif
- 	PASSED;
--}
-\ No newline at end of file
-+}
--- 
-1.7.5.4
-
+Steve Conklin
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
+Cloud Services Checklist: Pricing and Packaging Optimization
+This white paper is intended to serve as a reference, checklist and point of 
+discussion for anyone considering optimizing the pricing and packaging model 
+of a cloud services business. Read Now!
+http://www.accelacomm.com/jaw/sfnl/114/51491232/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
