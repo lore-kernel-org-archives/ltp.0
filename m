@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RdkFy-00063C-Vf
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 15:08:30 +0000
-Date: Thu, 22 Dec 2011 16:18:10 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111222151810.GA1494@saboteur.suse.cz>
-References: <4EEB065C.4060805@cn.fujitsu.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RYwcg-0005dE-DU
+	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 09:20:06 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RYwcb-0008AX-QM
+	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 09:20:06 +0000
+Message-ID: <4EE1D27A.6000600@cn.fujitsu.com>
+Date: Fri, 09 Dec 2011 17:18:50 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4EEB065C.4060805@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong of test_proc_kill
+References: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
+	<1323419326-13172-3-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1323419326-13172-3-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH 2/2] pthread_rwlock_unlock/4-2: remove local var
+ 'rc'
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,58 +30,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> test_proc_kill() tests process will be killed due to exceed memory limit, but
-> when memcg_process exit due to mmap/munmap fails, the case still pass.
+On 12/09/2011 04:28 PM, Kang Kai wrote:
+
+> Local var 'rc' in function main hides the global one. In child thread
+> it sets global var 'rc' with funtion return value. But in function main,
+> test var 'rc' always succeeds because it tests local var 'rc'.
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+
+Good catch.
+
+Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
+> Signed-off-by: Kang Kai <kai.kang@windriver.com>
 > ---
->  .../memcg/functional/memcg_function_test.sh        |   12 +++++++++++-
->  1 files changed, 11 insertions(+), 1 deletions(-)
+>  .../interfaces/pthread_rwlock_unlock/4-2.c         |    3 +--
+>  1 files changed, 1 insertions(+), 2 deletions(-)
 > 
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> index 1f07cb5..6cfe9a5 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> @@ -175,13 +175,23 @@ test_failcnt()
->  test_proc_kill()
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
+> index 3023886..4928f85 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
+> @@ -54,7 +54,6 @@ static void* fn_unlk(void *arg)
+>  int main()
 >  {
->  	echo $1 > memory.limit_in_bytes
-> -	$TEST_PATH/memcg_process $2 -s $3 &
-> +	($TEST_PATH/memcg_process $2 -s $3 2>/tmp/errlog) &
->  	pid=$!
->  	sleep 1
->  	echo $pid > tasks
+>  	int cnt = 0;
+> -	int rc = 0;
 >  
->  	/bin/kill -s SIGUSR1 $pid 2> /dev/null
->  	sleep 1
-> +
-> +	if [ -s /tmp/errlog ]; then
-> +		err_msg=`cat /tmp/errlog`
-> +		rm -f /tmp/errlog
-> +		result $FAIL "$err_msg"
-> +		return
-> +	fi
-> +
-> +	rm -f /tmp/errlog
-> +
+>  	pthread_t un_thread;
+>  
+> @@ -125,4 +124,4 @@ int main()
+>  
+>  	printf("Test PASSED: Note*: Returned 0 instead of EPERM, but standard specified _may_ fail.\n");
+>  	return PTS_PASS;
+> -}
+> \ No newline at end of file
+> +}
 
-Looking into the memcg_process.c it returns return value 1 on failure,
-catching it correctly is better option here.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Cloud Services Checklist: Pricing and Packaging Optimization
+This white paper is intended to serve as a reference, checklist and point of 
+discussion for anyone considering optimizing the pricing and packaging model 
+of a cloud services business. Read Now!
+http://www.accelacomm.com/jaw/sfnl/114/51491232/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
