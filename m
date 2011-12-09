@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1Rf8me-0001KS-P2
-	for ltp-list@lists.sourceforge.net; Mon, 26 Dec 2011 11:32:00 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Rf8md-00080e-Pg
-	for ltp-list@lists.sourceforge.net; Mon, 26 Dec 2011 11:32:00 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id pBQBVrGt022057
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Dec 2011 06:31:53 -0500
-From: Eryu Guan <eguan@redhat.com>
-Date: Mon, 26 Dec 2011 19:31:41 +0800
-Message-Id: <1324899101-23034-1-git-send-email-eguan@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RZ09o-0008Vj-7V
+	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 13:06:32 +0000
+Date: Fri, 9 Dec 2011 14:15:04 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111209131504.GB6208@saboteur.suse.cz>
+References: <4EE1DC85.3060301@windriver.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.7.4"
-Subject: [LTP] [PATCH] io/diotest4: Close open fd after testing
+Content-Disposition: inline
+In-Reply-To: <4EE1DC85.3060301@windriver.com>
+Subject: Re: [LTP] Question about priority of pthread rwlock on linux
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,95 +21,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------1.7.7.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-The 'silly rename' mechanism of NFS creates temporary file .nfsXXX in
-NFS mount. The tst_rmdir() in cleanup() in diotest4.c complains about
-"Device or resource busy"
-
-Close open fd after each sub-test.
-
-Signed-off-by: Eryu Guan <eguan@redhat.com>
----
- testcases/kernel/io/direct_io/diotest4.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
-
-
---------------1.7.7.4
-Content-Type: text/x-patch;
-	name="0001-io-diotest4-Close-open-fd-after-testing.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-io-diotest4-Close-open-fd-after-testing.patch"
-
-diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
-index 1f1b44b..a256104 100644
---- a/testcases/kernel/io/direct_io/diotest4.c
-+++ b/testcases/kernel/io/direct_io/diotest4.c
-@@ -324,6 +324,7 @@ main(int argc, char *argv[])
- 		else
- 			tst_resm (TPASS, "Out of range file descriptor");
- 	}
-+	close(newfd);
- 	total++;
- 
- 	/* Test-7: Closed file descriptor */
-@@ -360,6 +361,7 @@ main(int argc, char *argv[])
- 		else
- 			tst_resm (TPASS, "character device read, write");
- 	}
-+	close(newfd);
- 	total++;
- 
- 	/* Test-10: read, write to a mmaped file */
-@@ -400,6 +402,7 @@ main(int argc, char *argv[])
- 	}
- 	else
- 		tst_resm (TPASS, "read, write to an unmapped file");
-+	close(fd);
- 	total++;
- 
- 	/* Test-12: read from file not open for reading */
-@@ -610,6 +613,7 @@ static void setup(void)
- 	if ((fd1 = open(filename, O_DIRECT, 0600)) < 0) {
- 		tst_brkm(TCONF, cleanup, "O_DIRECT is not supported by this filesystem. %s", strerror(errno));
- 	}
-+	close(fd1);
- }
- 
- static void cleanup(void)
-
---------------1.7.7.4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> I am working on Yocto( a kind of  embedded linux) to make POSIX test
+> cases pass. It uses kernel 3.0 and eglibc 2.3.
+> 
+> There are 3 failed test cases about pthread rwlock:
+> pthread_rwlock_rdlock/2-1 pthread_rwlock_rdlock/2-2
+> pthread_rwlock_unlock/3-1
+> 
+> In pthread_rwlock_rdlock/2-1,  main thread*read lock* a rwlock,
+> child thread1 *write lock* the rwlock with a medium priority, so it
+> should be blocked. child thread2 try to *read lock *the rwlock with
+> low priority, the case says child thread2 should block too. But in
+> Yocto linux child thread2 doesn't block and then read lock the
+> rwlock, that make test case fail.
+> 
+> In eglibc nptl implementation, rwlock has a element "__flags" to
+> identify prefer write lock or read lock, default is to prefer read
+> lock. If change __flags to prefer write lock, the test case will
+> pass.
+> 
+> My questions are:
+> 1 What is the test case base on? I checked the  POSIX.1-2008 but
+> didn't find description priority about the pthread rwlock? Could
+> anyone give me a source that make me to understand it better?
+> 2 Which C library or platform can make this case pass? So that I can
+> compare it with eglibc.
+
+These doesn't work with glibc either, see:
+
+http://old.nabble.com/pthread_rwlock_rdlock%28%29-p32423548.html
+
+I haven't got any reply though :(.
+
+The newer POSIX explicitly says that reader thread acquires the lock if
+no writer is holding the lock and no writers are locked on the lock. And
+it seems that previous standards specified the case of locked writing
+threads as implementation defined...
+
+http://pubs.opengroup.org/onlinepubs/007904975/functions/pthread_rwlock_rdlock.html
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------1.7.7.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Cloud Services Checklist: Pricing and Packaging Optimization
+This white paper is intended to serve as a reference, checklist and point of 
+discussion for anyone considering optimizing the pricing and packaging model 
+of a cloud services business. Read Now!
+http://www.accelacomm.com/jaw/sfnl/114/51491232/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.7.4--
-
-
-
