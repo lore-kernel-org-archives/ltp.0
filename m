@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Rb47E-0002hn-7B
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:44:24 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1Rb47D-00026E-9I
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:44:24 +0000
-Received: by ggnh1 with SMTP id h1so2030330ggn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 14 Dec 2011 21:44:17 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RYwDQ-0004lI-M0
+	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:54:00 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RYwDP-0002Fn-5z
+	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:54:00 +0000
+Message-ID: <4EE1CC5D.7090306@cn.fujitsu.com>
+Date: Fri, 09 Dec 2011 16:52:45 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4EE963A9.7030100@cn.fujitsu.com>
-References: <4EE95F75.6030909@cn.fujitsu.com> <4EE963A9.7030100@cn.fujitsu.com>
-Date: Wed, 14 Dec 2011 21:44:17 -0800
-Message-ID: <CAGH67wQxgxm01PQVGyaMTDgThGU8pNUSMsrAkVMX2MBiAX48JQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong use of mlock
+References: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] Patches for POSIX test cases
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +28,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Dec 14, 2011 at 7:04 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
-> On 12/15/2011 10:46 AM, Peng Haitao wrote:
->
->>
->> mlock and munmap will return -1 when ERROR.
->>
->> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
->
-> Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+On 12/09/2011 04:28 PM, Kang Kai wrote:
 
-Committed -- thanks!
--Garrett
+> Hi All,
+> 
+> These two patches are for POSIX test suite, and could anyone give some comments? Thanks.
+> 
+> And is there a irc channel for ltp/posix, I need some help about POSIX test on linux.
+
+
+It seems there isn't a irc. You can just send email to list.
+
+> 
+> Thanks and Regards,
+> Kai
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Cloud Services Checklist: Pricing and Packaging Optimization
+> This white paper is intended to serve as a reference, checklist and point of 
+> discussion for anyone considering optimizing the pricing and packaging model 
+> of a cloud services business. Read Now!
+> http://www.accelacomm.com/jaw/sfnl/114/51491232/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+
 
 ------------------------------------------------------------------------------
-10 Tips for Better Server Consolidation
-Server virtualization is being driven by many needs.  
-But none more important than the need to reduce IT complexity 
-while improving strategic productivity.  Learn More! 
-http://www.accelacomm.com/jaw/sdnl/114/51507609/
+Cloud Services Checklist: Pricing and Packaging Optimization
+This white paper is intended to serve as a reference, checklist and point of 
+discussion for anyone considering optimizing the pricing and packaging model 
+of a cloud services business. Read Now!
+http://www.accelacomm.com/jaw/sfnl/114/51491232/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
