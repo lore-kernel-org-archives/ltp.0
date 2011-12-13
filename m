@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1Rg7wf-0007rC-0s
-	for ltp-list@lists.sourceforge.net; Thu, 29 Dec 2011 04:50:25 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Rg7wc-0001l6-MU
-	for ltp-list@lists.sourceforge.net; Thu, 29 Dec 2011 04:50:24 +0000
-Date: Wed, 28 Dec 2011 23:50:16 -0500 (EST)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <b43188da-4121-41c3-bbfe-9c1ab377ad4b@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <127b3264-b65b-4768-89e6-e33dfc1234c7@zmail13.collab.prod.int.phx2.redhat.com>
-Content-Type: multipart/mixed;
-	boundary="=_2d2d5a53-aebd-429b-95f9-9475e79762e9"
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RaLYD-0002zY-O6
+	for ltp-list@lists.sourceforge.net; Tue, 13 Dec 2011 06:09:17 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RaLYB-0007fq-AE
+	for ltp-list@lists.sourceforge.net; Tue, 13 Dec 2011 06:09:17 +0000
+Message-ID: <4EE6EBC1.3000305@cn.fujitsu.com>
+Date: Tue, 13 Dec 2011 14:08:01 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/2] runtest/mm: add tunable/overcommit_memory
+References: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
+	<1323419326-13172-3-git-send-email-kai.kang@windriver.com>
+	<4EE1D27A.6000600@cn.fujitsu.com>
+	<CAGH67wQKH_iXJ59eDikG89_DzgGAU5n-_Sd9hoFt8devOFOmKg@mail.gmail.com>
+In-Reply-To: <CAGH67wQKH_iXJ59eDikG89_DzgGAU5n-_Sd9hoFt8devOFOmKg@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 2/2] pthread_rwlock_unlock/4-2: remove local var
+ 'rc'
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,71 +29,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
---=_2d2d5a53-aebd-429b-95f9-9475e79762e9
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+On 12/13/2011 01:56 PM, Garrett Cooper wrote:
 
-hi,
+> On Fri, Dec 9, 2011 at 1:18 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+>> On 12/09/2011 04:28 PM, Kang Kai wrote:
+>>
+>>> Local var 'rc' in function main hides the global one. In child thread
+>>> it sets global var 'rc' with funtion return value. But in function main,
+>>> test var 'rc' always succeeds because it tests local var 'rc'.
+>>>
+>>
+>>
+>> Good catch.
+>>
+>> Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>>
+>>> Signed-off-by: Kang Kai <kai.kang@windriver.com>
+>>> ---
+>>>  .../interfaces/pthread_rwlock_unlock/4-2.c         |    3 +--
+>>>  1 files changed, 1 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
+>>> index 3023886..4928f85 100644
+>>> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
+>>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
+>>> @@ -54,7 +54,6 @@ static void* fn_unlk(void *arg)
+>>>  int main()
+>>>  {
+>>>       int cnt = 0;
+>>> -     int rc = 0;
+>>>
+>>>       pthread_t un_thread;
+>>>
+>>> @@ -125,4 +124,4 @@ int main()
+>>>
+>>>       printf("Test PASSED: Note*: Returned 0 instead of EPERM, but standard specified _may_ fail.\n");
+>>>       return PTS_PASS;
+>>> -}
+>>> \ No newline at end of file
+>>> +}
+> 
+> Will be committed soon (kind of interesting why -Wshadow didn't
+> identify this issue...).
 
-add the overcommit_memory tests into runtest/mm
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- runtest/mm |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
--- 
-Thanks,
-Zhouping Liu
+Yeah, odd, I didn't see warning by -Wshadow, either.
 
---=_2d2d5a53-aebd-429b-95f9-9475e79762e9
-Content-Type: text/x-patch;
-	name=0002-runtest-mm-add-tunable-overcommit_memory.patch
-Content-Disposition: attachment;
-	filename=0002-runtest-mm-add-tunable-overcommit_memory.patch
-Content-Transfer-Encoding: base64
+> -Garrett
+> 
 
-RnJvbSA5ZTZkNDIyYWM0ODYwYjJiZjhhOGRmN2UyOGM0NTVmNWU1YTYyMmU0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBaaG91cGluZyBMaXUgPHpsaXVAcmVkaGF0LmNvbT4KRGF0ZTog
-VGh1LCAyOSBEZWMgMjAxMSAxMjo0NDozMCArMDgwMApTdWJqZWN0OiBbUEFUQ0ggMi8yXSBydW50
-ZXN0L21tOiBhZGQgdHVuYWJsZS9vdmVyY29tbWl0X21lbW9yeQoKYWRkIHRoZSBvdmVyY29tbWl0
-X21lbW9yeSB0ZXN0cyBpbnRvIHJ1bnRlc3QvbW0KClNpZ25lZC1vZmYtYnk6IFpob3VwaW5nIExp
-dSA8emxpdUByZWRoYXQuY29tPgotLS0KIHJ1bnRlc3QvbW0gfCAgICA3ICsrKysrKysKIDEgZmls
-ZXMgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L3J1bnRlc3QvbW0gYi9ydW50ZXN0L21tCmluZGV4IDlkZDFkZTAuLjViNjM2MTEgMTAwNjQ0Ci0t
-LSBhL3J1bnRlc3QvbW0KKysrIGIvcnVudGVzdC9tbQpAQCAtODQsMyArODQsMTAgQEAgdm1hMDEg
-dm1hMDEKIHZtYTAyIHZtYTAyCiAKIHpyYW0wMSB6cmFtMDEKKworb3ZlcmNvbW1pdF9tZW1vcnkg
-b3ZlcmNvbW1pdF9tZW1vcnkKK292ZXJjb21taXRfbWVtb3J5IG92ZXJjb21taXRfbWVtb3J5IC1S
-IDAKK292ZXJjb21taXRfbWVtb3J5IG92ZXJjb21taXRfbWVtb3J5IC1SIDMwCitvdmVyY29tbWl0
-X21lbW9yeSBvdmVyY29tbWl0X21lbW9yeSAtUiA4MAorb3ZlcmNvbW1pdF9tZW1vcnkgb3ZlcmNv
-bW1pdF9tZW1vcnkgLVIgMTAwCitvdmVyY29tbWl0X21lbW9yeSBvdmVyY29tbWl0X21lbW9yeSAt
-UiAyMDAKLS0gCjEuNy43LjQKCg==
 
---=_2d2d5a53-aebd-429b-95f9-9475e79762e9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
---=_2d2d5a53-aebd-429b-95f9-9475e79762e9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Systems Optimization Self Assessment
+Improve efficiency and utilization of IT resources. Drive out cost and 
+improve service delivery. Take 5 minutes to use this Systems Optimization 
+Self Assessment. http://www.accelacomm.com/jaw/sdnl/114/51450054/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---=_2d2d5a53-aebd-429b-95f9-9475e79762e9--
-
