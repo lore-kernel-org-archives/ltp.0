@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bounces@nabble.com>) id 1RgG7L-000337-JR
-	for ltp-list@lists.sourceforge.net; Thu, 29 Dec 2011 13:33:59 +0000
-Received: from sam.nabble.com ([216.139.236.26])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RgG7K-0005PA-Ku
-	for ltp-list@lists.sourceforge.net; Thu, 29 Dec 2011 13:33:59 +0000
-Received: from isper.nabble.com ([192.168.236.156])
-	by sam.nabble.com with esmtp (Exim 4.72)
-	(envelope-from <bounces@nabble.com>) id 1RgG7F-0000Ui-7a
-	for ltp-list@lists.sourceforge.net; Thu, 29 Dec 2011 05:33:53 -0800
-Message-ID: <33050191.post@talk.nabble.com>
-Date: Thu, 29 Dec 2011 05:33:53 -0800 (PST)
-From: svolpe <shanevolpe@gmail.com>
-In-Reply-To: <AANLkTim=Q-2z4Ms4fZhaFReVJWnmnRg0+eZWBKfaoJXZ@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1Rb9Cm-0008Kk-JI
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 11:10:28 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Rb9Cg-0003bC-V8
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 11:10:28 +0000
+Received: by obcwn6 with SMTP id wn6so250982obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Dec 2011 03:10:17 -0800 (PST)
 MIME-Version: 1.0
-References: <AANLkTim=Q-2z4Ms4fZhaFReVJWnmnRg0+eZWBKfaoJXZ@mail.gmail.com>
-Subject: Re: [LTP] LTP on embedded systems re-visited
+In-Reply-To: <ee737595-7ec2-4e85-a5fe-a393c4a86c7f@zmail16.collab.prod.int.phx2.redhat.com>
+References: <CAGH67wSnNDgrg5700WhGZ_8==v2wpo9AzSGwnwvVpyUzPq3QEQ@mail.gmail.com>
+	<ee737595-7ec2-4e85-a5fe-a393c4a86c7f@zmail16.collab.prod.int.phx2.redhat.com>
+Date: Thu, 15 Dec 2011 03:10:17 -0800
+Message-ID: <CAGH67wTvxOTeyN6K2a23FG30TDA=Mn6xT6Xy4X3Hjmph09yBTg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and
+	open()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,38 +32,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+On Thu, Dec 15, 2011 at 2:36 AM, Jan Stancek <jstancek@redhat.com> wrote:
+> Garrett,
+>
+> I'm not sure what happened, but I see only first patch from series
+> committed with description belonging to second one.
+>
+> Regards,
+> Jan
 
-Pev,
-
-"Looking in the archives, in 2008 Shane Volpe was looking into
-doing something similar but I couldn't find any eventual output from
-this?"
-
-I just came across your post from 2010 and wanted to reply (although very
-late): no there was never a final outcome to my work on getting LTP running
-on an embedded system.  I did get it working for my specific application but
-it involved several system specific hacks (mainly because of limit RAM) so I
-never posted those hacks.  
-
-Did you make any progress running LTP on your embedded system?  I still
-would like to see a more collaborative effort in LTP (or some other test
-suite) for testing embedded systems.
-Regards,
-Shane
-
--- 
-View this message in context: http://old.nabble.com/-LTP--LTP-on-embedded-systems-re-visited-tp30065931p33050191.html
-Sent from the ltp-list mailing list archive at Nabble.com.
-
+    I got confused by the multiple patches. Is this thread the one I
+need to look at to rectify the other issues identified?
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+10 Tips for Better Server Consolidation
+Server virtualization is being driven by many needs.  
+But none more important than the need to reduce IT complexity 
+while improving strategic productivity.  Learn More! 
+http://www.accelacomm.com/jaw/sdnl/114/51507609/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
