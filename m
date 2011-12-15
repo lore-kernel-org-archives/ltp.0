@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rdli6-0001OJ-7V
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 16:41:38 +0000
-Date: Thu, 22 Dec 2011 17:51:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111222165119.GB3466@saboteur.suse.cz>
-References: <1321609032-16026-1-git-send-email-caspar@casparzhang.com>
-	<1321609032-16026-7-git-send-email-caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Rb1e5-0006S5-6e
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 03:06:09 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Rb1e4-00088s-AR
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 03:06:09 +0000
+Received: by yenm12 with SMTP id m12so1289883yen.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Dec 2011 19:06:02 -0800 (PST)
+Message-ID: <4EE963F0.9090201@casparzhang.com>
+Date: Thu, 15 Dec 2011 11:05:20 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1321609032-16026-7-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH v5 6/7] mm/zram01: verify content written to zram
+References: <4EE95F75.6030909@cn.fujitsu.com>
+In-Reply-To: <4EE95F75.6030909@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong use of mlock
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,104 +30,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> diff --git a/testcases/kernel/mem/zram/zram01.c b/testcases/kernel/mem/zram/zram01.c
-> index 6967bd1..38adf63 100644
-> --- a/testcases/kernel/mem/zram/zram01.c
-> +++ b/testcases/kernel/mem/zram/zram01.c
-> @@ -44,6 +44,7 @@ int modprobe = 0;
+On 12/15/2011 10:46 AM, Peng Haitao wrote:
+> 
+> mlock and munmap will return -1 when ERROR.
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+Nice catch.
+
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+
+> ---
+>  .../cpuset/cpuset_memory_test/cpuset_memory_test.c |    4 ++--
+>  .../controllers/memcg/functional/memcg_process.c   |    6 +++---
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
+> index 8d37b24..512df3a 100644
+> --- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
+> @@ -196,7 +196,7 @@ void mmap_file(int flag_allocated)
+>  		}
+>  		touch_memory_and_echo_node(p, memsize);
+>  	} else {
+> -		if (!munmap(p, memsize) == -1)
+> +		if (munmap(p, memsize) == -1)
+>  			err(1, "munmap(file) failed");
 >  
->  static void set_disksize(void);
->  static void write_device(void);
-> +static void verify_device(void);
->  static void reset(void);
->  static void setup(void);
->  static void cleanup(void);
-> @@ -68,6 +69,7 @@ int main(int argc, char *argv[])
->  
->  		write_device();
->  		dump_info();
-> +		verify_device();
->  
->  		reset();
->  		dump_info();
-> @@ -96,7 +98,7 @@ static void set_disksize(void)
->  static void write_device(void)
->  {
->  	int fd;
-> -	void *s;
-> +	char *s;
->  
->  	tst_resm(TINFO, "map it into memory.");
->  	fd = open(DEVICE, O_RDWR);
-> @@ -107,7 +109,8 @@ static void write_device(void)
->  		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
->  
->  	tst_resm(TINFO, "write all the memory.");
-> -	memset(s, 'a', SIZE);
-> +	memset(s, 'a', SIZE-1);
-> +	s[SIZE-1] = '\0';
->  
->  	if (munmap(s, SIZE) == -1)
->  		tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-> @@ -115,6 +118,37 @@ static void write_device(void)
->  	close(fd);
+>  		if (opt_hugepage) {
+> @@ -236,7 +236,7 @@ void mmap_lock2(int flag_allocated)
+>  			err(1, "mlock failed");
+>  		touch_memory_and_echo_node(p, memsize);
+>  	} else {
+> -		if (!munmap(p, memsize) == -1)
+> +		if (munmap(p, memsize) == -1)
+>  			err(1, "munmap failed");
+>  	}
 >  }
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
+> index 4f8c257..37ded19 100644
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
+> @@ -167,7 +167,7 @@ void mmap_file()
+>  		}
+>  		touch_memory(p, memsize);
+>  	} else {
+> -		if (!munmap(p, memsize) == -1)
+> +		if (munmap(p, memsize) == -1)
+>  			err(1, "munmap(file) failed");
 >  
-> +static void verify_device(void)
-> +{
-> +	int fd, i, fail;
-> +	char *s;
-> +
-> +	tst_resm(TINFO, "verify contents from device.");
-> +	fd = open(DEVICE, O_RDONLY);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "open %s", DEVICE);
-> +	s = mmap(NULL, SIZE, PROT_READ, MAP_PRIVATE, fd, 0);
-> +	if (s == MAP_FAILED)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "2nd mmap");
-> +
-> +	i = 0;
-> +	fail = 0;
-> +	while (s[i]) {
-> +		if (s[i] != 'a')
-> +			fail++;
-> +		i++;
-> +	}
+>  		if (opt_hugepage) {
+> @@ -202,10 +202,10 @@ void mmap_lock2()
+>  		if (p == MAP_FAILED)
+>  			err(1, "mmap failed");
+>  
+> -		if (!mlock(p, memsize))
+> +		if (mlock(p, memsize) == -1)
+>  			err(1, "mlock failed");
+>  	} else {
+> -		if (!munmap(p, memsize) == -1)
+> +		if (munmap(p, memsize) == -1)
+>  			err(1, "munmap failed");
+>  	}
+>  }
 
-Hmm, I would make sure here, that I haven't read more than SIZE
-characters. Eg. I wouldn't expect that device you are testing is null
-terminated, even if you wrote the terminating zero there.
-
-> +	if (i != SIZE-1)
-> +		tst_resm(TFAIL, "expect size: %d, actual size: %d.",
-> +				SIZE-1, i);
-> +	if (fail)
-> +		tst_resm(TFAIL, "%d failed bytes found.", fail);
-> +	if (munmap(s, SIZE) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "2nd munmap");
-> +
-> +	close(fd);
-> +}
-> +
->  static void reset(void)
->  {
->  	int fd;
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+10 Tips for Better Server Consolidation
+Server virtualization is being driven by many needs.  
+But none more important than the need to reduce IT complexity 
+while improving strategic productivity.  Learn More! 
+http://www.accelacomm.com/jaw/sdnl/114/51507609/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
