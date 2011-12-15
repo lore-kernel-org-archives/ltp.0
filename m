@@ -2,17 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RdMhv-000404-OZ
-	for ltp-list@lists.sourceforge.net; Wed, 21 Dec 2011 13:59:47 +0000
-Date: Wed, 21 Dec 2011 15:09:26 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111221140926.GA27921@saboteur.suse.cz>
-References: <4EE95F75.6030909@cn.fujitsu.com>
-	<6d5f6f84-cdfa-42d0-a3a5-f9d028419818@zmail16.collab.prod.int.phx2.redhat.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Rb4Ge-0002w7-0p
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:54:08 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Rb4Gb-0008Mk-Ro
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:54:07 +0000
+Message-ID: <4EE98B34.2070709@cn.fujitsu.com>
+Date: Thu, 15 Dec 2011 13:52:52 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6d5f6f84-cdfa-42d0-a3a5-f9d028419818@zmail16.collab.prod.int.phx2.redhat.com>
+References: <4EE95F75.6030909@cn.fujitsu.com> <4EE963A9.7030100@cn.fujitsu.com>
+	<CAGH67wQxgxm01PQVGyaMTDgThGU8pNUSMsrAkVMX2MBiAX48JQ@mail.gmail.com>
+In-Reply-To: <CAGH67wQxgxm01PQVGyaMTDgThGU8pNUSMsrAkVMX2MBiAX48JQ@mail.gmail.com>
 Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong use of mlock
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,43 +29,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> this should be commited already, but looking at git,
-> I see changes only for memcg_process.c:
-> 
-> commit 17ecdc4e0f895f61067a65d6105f29d4f55680be
-> Author: Garrett Cooper <yanegomi@gmail.com>
-> Date:   Wed Dec 14 21:42:25 2011 -0800
-> 
->     mlock and munmap will return -1 if they fail.
-> 
->     Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
->     Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
->     Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> 
->  .../controllers/memcg/functional/memcg_process.c   |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> Have I missed some message on mailing list or did it slip by accident?
+Hi Garrett:
 
-Looks like the second part is somehow missing.
+What do you think about the patch set below now?
 
-Sigh, like when people are helping, but sometimes Garrett is actually
-making my life harder...
+	[PATCH 0/5] Automatically mount hugetlbfs for hugemmap tests.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Thanks a lot 
+-Wanlong Gao
+
+> On Wed, Dec 14, 2011 at 7:04 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+>> On 12/15/2011 10:46 AM, Peng Haitao wrote:
+>>
+>>>
+>>> mlock and munmap will return -1 when ERROR.
+>>>
+>>> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+>>
+>> Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> 
+> Committed -- thanks!
+> -Garrett
+> 
+
+
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+10 Tips for Better Server Consolidation
+Server virtualization is being driven by many needs.  
+But none more important than the need to reduce IT complexity 
+while improving strategic productivity.  Learn More! 
+http://www.accelacomm.com/jaw/sdnl/114/51507609/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
