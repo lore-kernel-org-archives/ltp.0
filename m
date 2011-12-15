@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1RdhGH-00014u-CX
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 11:56:37 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RdhGC-0006Wx-VU
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 11:56:37 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id pBMBuQOi027372
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Dec 2011 06:56:27 -0500
-From: Eryu Guan <eguan@redhat.com>
-Date: Thu, 22 Dec 2011 19:56:18 +0800
-Message-Id: <1324554978-26997-2-git-send-email-eguan@redhat.com>
-In-Reply-To: <1324554978-26997-1-git-send-email-eguan@redhat.com>
-References: <1324554978-26997-1-git-send-email-eguan@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1Rb49i-0005o8-4R
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:46:58 +0000
+Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Rb49f-0006sy-OZ
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:46:58 +0000
+Received: by ggnh1 with SMTP id h1so2032094ggn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Dec 2011 21:46:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.7.4"
-Subject: [LTP] [PATCH 2/2] syscalls/getxattr01: new testcase to test
-	getxattr(2) basic function
+In-Reply-To: <4EE8830E.6050804@redhat.com>
+References: <4EE8830E.6050804@redhat.com>
+Date: Wed, 14 Dec 2011 21:46:50 -0800
+Message-ID: <CAGH67wTyha76pFPVHxQ=WhTw-K7tDz7PmipQakdGYWhqtu_ndA@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] pipeio: prevent race between SIGCHLD and open()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,291 +27,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.7.7.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+On Wed, Dec 14, 2011 at 3:05 AM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+> This test occasionally hangs on some machines. The hang has been
+> observed on some single CPU ones.
+>
+> pipeio code is using signal(2), setting by default SA_RESTART
+> flag, which is also the case for SIGCHLD.
+>
+> If last child manages to exit while parent is still at open(),
+> parent gets SIGCHLD and open() is restarted. At this point test
+> hangs.
+>
+> Here's strace output from parent point of view:
+>
+> =3D=3D=3D snip =3D=3D=3D
+> brk(0) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0=3D 0x11bb000
+> brk(0x11dd000) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=3D 0x1=
+1dd000
+> getpid() =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+=3D 18826
+> stat("tpipe.18826", 0x7fff89e1d410) =A0 =A0 =3D -1 ENOENT (No such file or
+> directory)
+> mknod("tpipe.18826", S_IFIFO|0777) =A0 =A0 =A0=3D 0
+> rt_sigaction(SIGCHLD, {0x400a54, [CHLD], SA_RESTORER|SA_RESTART,
+> =A00x354aa32a20}, {SIG_DFL, [], 0}, 8) =3D 0
+> clone(child_stack=3D0, flags=3DCLONE_CHILD_CLEARTID|
+> =A0CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=3D0x7f53b9ddd9d0) =3D 18827
+> fstat(1, {st_mode=3DS_IFCHR|0620, st_rdev=3Dmakedev(136, 3), ...}) =3D 0
+> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+> =A0=3D 0x7f53b9de5000
+> open("tpipe.18826", O_RDONLY
+> ) =A0 =A0 =A0 =A0 =A0 =3D ? ERESTARTSYS (To be restarted)
+> --- SIGCHLD (Child exited) @ 0 (0) ---
+> wait4(-1, [{WIFEXITED(s) && WEXITSTATUS(s) =3D=3D 0}], 0, NULL) =3D 18827
+> rt_sigreturn(0xffffffffffffffff) =A0 =A0 =A0 =A0=3D 2
+> open("tpipe.18826", O_RDONLY
+> =3D=3D=3D /snip =3D=3D=3D
+>
+> This patch is introducing semaphore, which prevents children from
+> exiting until parent completes open(). It also adds timed wait,
+> so parent waits for children to exit before it deletes pipe and
+> semaphore.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+> =A0testcases/kernel/ipc/pipeio/pipeio.c | =A0 37
+> ++++++++++++++++++++++++++++++++-
+> =A01 files changed, 35 insertions(+), 2 deletions(-)
 
+Please use:
 
-Basic tests for getxattr(2) and make sure getxattr(2) handles error
-conditions correctly.
+tst_brkm(TBROK|TERRNO,
 
-There are 4 test cases:
-1. Get an non-existing attribute,
-   getxattr(2) should return -1 and set errno to ENOATTR
-2. Buffer size is smaller than attribute value size,
-   getxattr(2) should return -1 and set errno to ERANGE
-3. Get attribute, getxattr(2) should succeed
-4. Verify the attribute got by getxattr(2) is same as the value we set
+instead of:
 
-Signed-off-by: Eryu Guan <eguan@redhat.com>
+tst_brkm(TBROK, "... : %s", strerror(errno));
+
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
 ---
- runtest/syscalls                                |    2 +
- testcases/kernel/syscalls/getxattr/Makefile     |   23 +++
- testcases/kernel/syscalls/getxattr/getxattr01.c |  175 +++++++++++++++++++++++
- 3 files changed, 200 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/getxattr/Makefile
- create mode 100644 testcases/kernel/syscalls/getxattr/getxattr01.c
+10 Tips for Better Server Consolidation
+Server virtualization is being driven by many needs.  =
 
+But none more important than the need to reduce IT complexity =
 
---------------1.7.7.4
-Content-Type: text/x-patch;
-	name="0002-syscalls-getxattr01-new-testcase-to-test-getxattr-2-.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0002-syscalls-getxattr01-new-testcase-to-test-getxattr-2-.patch"
+while improving strategic productivity.  Learn More! =
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 3056659..48caaae 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -420,6 +420,8 @@ getuid02_16 getuid02_16
- getuid03 getuid03
- getuid03_16 getuid03_16
- 
-+getxattr01 getxattr01
-+
- #Needs tty device.
- #ioctl01 ioctl01 -D /dev/tty0
- #ioctl02 ioctl02 -D /dev/tty0
-diff --git a/testcases/kernel/syscalls/getxattr/Makefile b/testcases/kernel/syscalls/getxattr/Makefile
-new file mode 100644
-index 0000000..72544c1
---- /dev/null
-+++ b/testcases/kernel/syscalls/getxattr/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) Red Hat Inc., 2011
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c b/testcases/kernel/syscalls/getxattr/getxattr01.c
-new file mode 100644
-index 0000000..e05628f
---- /dev/null
-+++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
-@@ -0,0 +1,175 @@
-+/*
-+ * Copyright (C) 2011  Red Hat, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+/*
-+ * Basic tests for getxattr(2) and make sure getxattr(2) handles error
-+ * conditions correctly.
-+ *
-+ * There are 4 test cases:
-+ * 1. Get an non-existing attribute,
-+ *    getxattr(2) should return -1 and set errno to ENOATTR
-+ * 2. Buffer size is smaller than attribute value size,
-+ *    getxattr(2) should return -1 and set errno to ERANGE
-+ * 3. Get attribute, getxattr(2) should succeed
-+ * 4. Verify the attribute got by getxattr(2) is same as the value we set
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <attr/xattr.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+
-+#define XATTR_TEST_KEY "user.testkey"
-+#define XATTR_TEST_VALUE "this is a test value"
-+#define BUFFSIZE 64
-+#define NR_TEST 3
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+char *TCID = "getxattr01";
-+char filename[BUFSIZ];
-+int TST_TOTAL = NR_TEST + 1;
-+
-+struct test_case {
-+	char *fname;
-+	char *key;
-+	char *value;
-+	size_t size;
-+	int exp_err;
-+};
-+struct test_case tc[NR_TEST];
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	int i;
-+	char *msg;
-+	char *tname;
-+	char *tkey;
-+	char *tvalue;
-+	size_t tsize;
-+	int texp_err;
-+
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+
-+		for (i = 0; i < NR_TEST; i++)	{
-+			tname = tc[i].fname;
-+			tkey = tc[i].key;
-+			tvalue = tc[i].value;
-+			tsize = tc[i].size;
-+			texp_err = tc[i].exp_err;
-+
-+			TEST(getxattr(tname, tkey, tvalue, tsize));
-+
-+			if (TEST_ERRNO == texp_err) {
-+				tst_resm(TPASS, "expected behavior - errno = %d"
-+				    " : %s", TEST_ERRNO, strerror(TEST_ERRNO));
-+			} else {
-+				tst_resm(TFAIL, "unexpected behavior - %d : %s "
-+				    "- expected %d", TEST_ERRNO,
-+				    strerror(TEST_ERRNO), texp_err);
-+			}
-+		}
-+
-+		if (strcmp(tvalue, XATTR_TEST_VALUE))
-+			tst_resm(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
-+			    XATTR_TEST_VALUE, tvalue);
-+		else
-+			tst_resm(TPASS, "Got the right value");
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	int fd;
-+	int i;
-+
-+	tst_require_root(NULL);
-+
-+	tst_tmpdir();
-+
-+	/* Create test file and setup initial xattr */
-+	snprintf(filename, BUFSIZ, "getxattr01testfile");
-+	fd = creat(filename, 0644);
-+	if (fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
-+		    filename);
-+	close(fd);
-+	if (setxattr(filename, XATTR_TEST_KEY, XATTR_TEST_VALUE,
-+	    strlen(XATTR_TEST_VALUE), XATTR_CREATE) == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
-+			    "mount without user_xattr option");
-+		}
-+	}
-+
-+	/* Prepare test cases */
-+	memset(tc, 0, NR_TEST * sizeof(tc[0]));
-+	for (i = 0; i < NR_TEST; i++) {
-+		tc[i].fname = filename;
-+		tc[i].key = XATTR_TEST_KEY;
-+		tc[i].value = malloc(BUFFSIZE);
-+		if (tc[i].value == NULL) {
-+			tst_brkm(TBROK | TERRNO, cleanup,
-+			    "Cannot allocate memory");
-+		}
-+		tc[i].size = BUFFSIZE - 1;
-+	}
-+
-+	tc[0].key = "user.nosuchkey";
-+	tc[0].exp_err = ENOATTR;
-+
-+	tc[1].size = 1;
-+	tc[1].exp_err = ERANGE;
-+
-+	tc[2].exp_err = 0;
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+}
-
---------------1.7.7.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------1.7.7.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+http://www.accelacomm.com/jaw/sdnl/114/51507609/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.7.4--
-
-
-
