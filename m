@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RYwcg-0005dE-DU
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 09:20:06 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1RbA3l-000452-TF
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 12:05:13 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RYwcb-0008AX-QM
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 09:20:06 +0000
-Message-ID: <4EE1D27A.6000600@cn.fujitsu.com>
-Date: Fri, 09 Dec 2011 17:18:50 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1RbA3h-0005ab-Vx
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 12:05:13 +0000
+Date: Thu, 15 Dec 2011 07:05:03 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <f0db187c-f0fd-4362-a618-f9c2dcd081e2@zmail16.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <CAGH67wTvxOTeyN6K2a23FG30TDA=Mn6xT6Xy4X3Hjmph09yBTg@mail.gmail.com>
 MIME-Version: 1.0
-References: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
-	<1323419326-13172-3-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1323419326-13172-3-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH 2/2] pthread_rwlock_unlock/4-2: remove local var
- 'rc'
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and
+	open()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,54 +27,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 12/09/2011 04:28 PM, Kang Kai wrote:
 
-> Local var 'rc' in function main hides the global one. In child thread
-> it sets global var 'rc' with funtion return value. But in function main,
-> test var 'rc' always succeeds because it tests local var 'rc'.
+
+----- Original Message -----
+> From: "Garrett Cooper" <yanegomi@gmail.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Thursday, December 15, 2011 12:10:17 PM
+> Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and open()
 > 
-
-
-Good catch.
-
-Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
-> ---
->  .../interfaces/pthread_rwlock_unlock/4-2.c         |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
+> On Thu, Dec 15, 2011 at 2:36 AM, Jan Stancek <jstancek@redhat.com>
+> wrote:
+> > Garrett,
+> >
+> > I'm not sure what happened, but I see only first patch from series
+> > committed with description belonging to second one.
+> >
+> > Regards,
+> > Jan
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
-> index 3023886..4928f85 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
-> @@ -54,7 +54,6 @@ static void* fn_unlk(void *arg)
->  int main()
->  {
->  	int cnt = 0;
-> -	int rc = 0;
->  
->  	pthread_t un_thread;
->  
-> @@ -125,4 +124,4 @@ int main()
->  
->  	printf("Test PASSED: Note*: Returned 0 instead of EPERM, but standard specified _may_ fail.\n");
->  	return PTS_PASS;
-> -}
-> \ No newline at end of file
-> +}
+>     I got confused by the multiple patches. Is this thread the one I
+> need to look at to rectify the other issues identified?
 
+Yes, this is the one.
 
+I posted single patch yesterday:
+[LTP] [PATCH] pipeio: prevent race between SIGCHLD and open()
+
+You requested to use TERRNO instead of strerror(errno), so
+while I was at it, I made this change for all existing code in pipeio.c:
+[LTP] [PATCH v2 1/2] pipeio: convert strerror(errno) to TERRNO
+
+and then put my original patch (with minor changes) on top of that:
+[LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and open()
+
+Regards,
+Jan
+
+> Thanks,
+> -Garrett
+> 
 
 ------------------------------------------------------------------------------
-Cloud Services Checklist: Pricing and Packaging Optimization
-This white paper is intended to serve as a reference, checklist and point of 
-discussion for anyone considering optimizing the pricing and packaging model 
-of a cloud services business. Read Now!
-http://www.accelacomm.com/jaw/sfnl/114/51491232/
+10 Tips for Better Server Consolidation
+Server virtualization is being driven by many needs.  
+But none more important than the need to reduce IT complexity 
+while improving strategic productivity.  Learn More! 
+http://www.accelacomm.com/jaw/sdnl/114/51507609/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
