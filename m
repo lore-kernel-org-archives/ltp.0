@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Rb4Ge-0002w7-0p
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:54:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Rb4Gb-0008Mk-Ro
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:54:07 +0000
-Message-ID: <4EE98B34.2070709@cn.fujitsu.com>
-Date: Thu, 15 Dec 2011 13:52:52 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Rb8fm-0001ww-7i
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 10:36:22 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Rb8fg-0004FY-FL
+	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 10:36:22 +0000
+Date: Thu, 15 Dec 2011 05:36:09 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <ee737595-7ec2-4e85-a5fe-a393c4a86c7f@zmail16.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <CAGH67wSnNDgrg5700WhGZ_8==v2wpo9AzSGwnwvVpyUzPq3QEQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <4EE95F75.6030909@cn.fujitsu.com> <4EE963A9.7030100@cn.fujitsu.com>
-	<CAGH67wQxgxm01PQVGyaMTDgThGU8pNUSMsrAkVMX2MBiAX48JQ@mail.gmail.com>
-In-Reply-To: <CAGH67wQxgxm01PQVGyaMTDgThGU8pNUSMsrAkVMX2MBiAX48JQ@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong use of mlock
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and
+	open()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,33 +28,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Garrett:
+Garrett,
 
-What do you think about the patch set below now?
+I'm not sure what happened, but I see only first patch from series
+committed with description belonging to second one.
 
-	[PATCH 0/5] Automatically mount hugetlbfs for hugemmap tests.
+Regards,
+Jan
 
-
-Thanks a lot 
--Wanlong Gao
-
-> On Wed, Dec 14, 2011 at 7:04 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
->> On 12/15/2011 10:46 AM, Peng Haitao wrote:
->>
->>>
->>> mlock and munmap will return -1 when ERROR.
->>>
->>> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
->>
->> Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+----- Original Message -----
+> From: "Garrett Cooper" <yanegomi@gmail.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Thursday, December 15, 2011 11:15:34 AM
+> Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and open()
+> 
+> On Thu, Dec 15, 2011 at 1:35 AM, Jan Stancek <jstancek@redhat.com>
+> wrote:
+> >
+> > This test occasionally hangs on some machines. The hang has been
+> > observed mostly on single CPU ones.
+> >
+> > pipeio code is using signal(2), setting by default SA_RESTART
+> > flag, which is also the case for SIGCHLD.
+> >
+> > If last child manages to exit while parent is still at open(),
+> > parent gets SIGCHLD and open() is restarted. At this point test
+> > hangs.
+> >
+> > Here's strace output from parent point of view:
 > 
 > Committed -- thanks!
 > -Garrett
 > 
-
-
 
 ------------------------------------------------------------------------------
 10 Tips for Better Server Consolidation
