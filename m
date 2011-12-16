@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RfoeE-0001Yh-Vt
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 08:14:06 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1RbTUf-0006y3-Nb
+	for ltp-list@lists.sourceforge.net; Fri, 16 Dec 2011 08:50:17 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RfoeD-0003uH-Cg
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 08:14:06 +0000
-Message-ID: <4EFACF87.7090905@cn.fujitsu.com>
-Date: Wed, 28 Dec 2011 16:12:55 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1RbTUd-0007L8-8y
+	for ltp-list@lists.sourceforge.net; Fri, 16 Dec 2011 08:50:17 +0000
+Message-ID: <4EEB065C.4060805@cn.fujitsu.com>
+Date: Fri, 16 Dec 2011 16:50:36 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <76bf538a-270a-456b-8b7b-9c651396d76a@zmail13.collab.prod.int.phx2.redhat.com>
-	<4EFABB82.7090002@casparzhang.com>
-	<4EFAC9C4.7020901@cn.fujitsu.com>
-	<4EFACEDD.1040101@casparzhang.com>
-In-Reply-To: <4EFACEDD.1040101@casparzhang.com>
-Subject: Re: [LTP] [PATCH v6 1/2] mem/lib: add vm tunable file
- read/write/check func
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] [PATCH] memcg_function:fix the wrong of test_proc_kill
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,79 +25,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
-
-On 12/28/2011 04:10 PM, Caspar Zhang wrote:
-
-> On 12/28/2011 03:48 PM, Wanlong Gao wrote:
->> On 12/28/2011 02:47 PM, Caspar Zhang wrote:
->>
->>> On 11/15/2011 09:14 PM, Zhouping Liu wrote:
->>>> hi, Cyril & Garrett
->>>> v5 -> v6: updated the sscanf() function in read_meminfo() in order to avoid buffer overflow.
->>>>
->>>> please feel free to comment the patch.
->>>> BTW: you would miss the patch.
->>>>
->>>> There are several vm tunable files under /proc/sys/vm, I will compose
->>>> some cases for testing the basic functions of them. This patch is adding
->>>> the read/write/check functions to mem lib so that I can include them in
->>>> my testcases.
->>>>
->>>> set_sys_tune():   set a long long integer value to a vm tunable file.
->>>> get_sys_tune():   get a long long integer value from a vm tunable file.
->>>> check_sys_tune(): check to confirm the value in tunable file meets our
->>>>                   expectation.
->>>> read_meminfo():   read the special value from /proc/meminfo.
->>>>
->>>> Since most of the values in vm tunable files contain only single
->>>> integer, the functions I added only read/write long long values for now.
->>>> For those files not storing single interger (e.g. lowmem_reserve_ratio),
->>>> these functions will not be used in the case.
->>>>
->>>> Signed-off-by: Zhouping Liu <zliu@redhat.com>
->>>> ---
->>>>  runtest/mm                         |    7 +++
->>>>  testcases/kernel/mem/include/mem.h |    7 +++
->>>>  testcases/kernel/mem/lib/mem.c     |   84 +++++++++++++++++++++++++++++++++++-
->>>>  3 files changed, 97 insertions(+), 1 deletions(-)
->>>
->>> After talking to Zhouping Liu, I committed this patch with some
->>> modifications.
->>
->>
->> I saw that the patch you just committed defined an unused "PATH_SYSVM",
->> but as your comment of this patch, the set/get functions is just for sysfiles
->> under PATH_SYSVM, if so, you should do things like below first?
->>
->> snprintf(buf, BUFSIZ, "%s%s", PATH_KSM, path);
-> 
-> Hi, the original design was to pass full path to set/get_sys_tune()
-> functions, PATH_SYSVM will be used in other files. I agree with your
-> idea, it looks like sys_file is better to be filename only. I'll merge
-
-> your request.
-> 
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 
-Yeah, after this, I can then use set_sys_tune() in my patches.
+test_proc_kill() tests process will be killed due to exceed memory limit, but
+when memcg_process exit due to mmap/munmap fails, the case still pass.
 
-Thanks
--Wanlong Gao
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ .../memcg/functional/memcg_function_test.sh        |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
 
-> Thanks,
-> Caspar
-> 
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+index 1f07cb5..6cfe9a5 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+@@ -175,13 +175,23 @@ test_failcnt()
+ test_proc_kill()
+ {
+ 	echo $1 > memory.limit_in_bytes
+-	$TEST_PATH/memcg_process $2 -s $3 &
++	($TEST_PATH/memcg_process $2 -s $3 2>/tmp/errlog) &
+ 	pid=$!
+ 	sleep 1
+ 	echo $pid > tasks
+ 
+ 	/bin/kill -s SIGUSR1 $pid 2> /dev/null
+ 	sleep 1
++
++	if [ -s /tmp/errlog ]; then
++		err_msg=`cat /tmp/errlog`
++		rm -f /tmp/errlog
++		result $FAIL "$err_msg"
++		return
++	fi
++
++	rm -f /tmp/errlog
++
+ 	ps -p $pid > /dev/null 2> /dev/null
+ 	if [ $? -ne 0 ]; then
+ 		result $PASS "process $pid is killed"
+-- 
+1.7.1
 
+-- 
+Best Regards,
+Peng Haitao
 
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Learn Windows Azure Live!  Tuesday, Dec 13, 2011
+Microsoft is holding a special Learn Windows Azure training event for 
+developers. It will provide a great way to learn Windows Azure and what it 
+provides. You can attend the event by watching it streamed LIVE online.  
+Learn more at http://p.sf.net/sfu/ms-windowsazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
