@@ -2,36 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1RXsXx-000787-KU
-	for ltp-list@lists.sourceforge.net; Tue, 06 Dec 2011 10:46:49 +0000
-Received: from e28smtp01.in.ibm.com ([122.248.162.1])
+	(envelope-from <Kai.Kang@windriver.com>) id 1RbOVs-0003VS-TW
+	for ltp-list@lists.sourceforge.net; Fri, 16 Dec 2011 03:31:12 +0000
+Received: from mail.windriver.com ([147.11.1.11])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RXsXp-0007gw-Gu
-	for ltp-list@lists.sourceforge.net; Tue, 06 Dec 2011 10:46:49 +0000
-Received: from /spool/local
-	by e28smtp01.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
-	Tue, 6 Dec 2011 16:16:31 +0530
-Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
-	by d28relay02.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	pB6AkSZB2101454
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Dec 2011 16:16:29 +0530
-Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
-	by d28av03.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	pB6AkSRs012925
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Dec 2011 21:46:28 +1100
-Message-ID: <4EDDF283.2040901@linux.vnet.ibm.com>
-Date: Tue, 06 Dec 2011 16:16:27 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	(Exim 4.76) id 1RbOVr-0000hJ-Rf
+	for ltp-list@lists.sourceforge.net; Fri, 16 Dec 2011 03:31:12 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBG3V5Tg014839
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Dec 2011 19:31:05 -0800 (PST)
+From: Kang Kai <kai.kang@windriver.com>
+Date: Fri, 16 Dec 2011 11:30:59 +0800
+Message-ID: <1324006260-10122-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-References: <20111127201232.GB2268@nik-comp.lan>
-	<4ED480A4.2000003@linux.vnet.ibm.com>
-	<20111129220308.GA3953@nik-comp.lan>
-	<4ED90B1C.8000204@linux.vnet.ibm.com>
-	<20111205120118.GK988@pcnci.linuxbox.cz>
-In-Reply-To: <20111205120118.GK988@pcnci.linuxbox.cz>
-Subject: Re: [LTP] LTP: memcg_stress_test hanging whole box
+Subject: [LTP] [Patch v2] thread_mutex_lock/3-1: make sure install signal
+	hanldler first
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,31 +31,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
 
-Hi Nikola,
+Hi All,
 
-> yup, it's possible to reproduce just with this one test..
-> so do You want me to collect OOM traces and report here? or directly to
-> LKML?
+Version 2 use a semphore semsync2 to sync parent and child thread instead of make parent
+sleep 1 second.
 
-I suggest you report it here as well as to LKML. I will try to have a 
-look from test case perspective. Please clearly mention the test which 
-is causing the issue, architecture/hardware and kernel details on which 
-you are getting this issue.
-
-Thanks,
-Shubham
+Regards,
+Kai
 
 
 ------------------------------------------------------------------------------
-Cloud Services Checklist: Pricing and Packaging Optimization
-This white paper is intended to serve as a reference, checklist and point of 
-discussion for anyone considering optimizing the pricing and packaging model 
-of a cloud services business. Read Now!
-http://www.accelacomm.com/jaw/sfnl/114/51491232/
+Learn Windows Azure Live!  Tuesday, Dec 13, 2011
+Microsoft is holding a special Learn Windows Azure training event for 
+developers. It will provide a great way to learn Windows Azure and what it 
+provides. You can attend the event by watching it streamed LIVE online.  
+Learn more at http://p.sf.net/sfu/ms-windowsazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
