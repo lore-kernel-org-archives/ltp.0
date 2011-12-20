@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rdhff-0006tN-BF
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 12:22:51 +0000
-Date: Thu, 22 Dec 2011 13:32:32 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111222123232.GF26303@saboteur.suse.cz>
-References: <145b91763d3c2670cd736cc7fa3072c9a6db219a.1311676572.git.czhang@redhat.com>
-	<1324551871-825-1-git-send-email-caspar@casparzhang.com>
+	(envelope-from <Wei.Yang@windriver.com>) id 1RcwOi-0007yT-KM
+	for ltp-list@lists.sourceforge.net; Tue, 20 Dec 2011 09:54:12 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RcwOe-0006QB-HJ
+	for ltp-list@lists.sourceforge.net; Tue, 20 Dec 2011 09:54:12 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBK9s2J2000755
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 20 Dec 2011 01:54:02 -0800 (PST)
+From: <Wei.Yang@windriver.com>
+Date: Tue, 20 Dec 2011 17:53:54 +0800
+Message-ID: <1324374835-22722-1-git-send-email-Wei.Yang@windriver.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1324551871-825-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH v2] syscalls/getrusage04: new testcase
+Subject: [LTP] [PATCH]pthread_barrier_wait/2-1.c: using mutext to protect
+	global variable used by muti-thread
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,39 +31,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: wei.yang@windriver.com
 
-Hi!
-> 
-> getrusage04 - accuracy of getrusage() with RUSAGE_THREAD
-> 
-> This program is used for testing the following upstream commit:
-> 761b1d26df542fd5eb348837351e4d2f3bc7bffe.
-> 
-> getrusage() returns cpu resource usage with accuracy of 10ms
-> when RUSAGE_THREAD is specified to the argument who. Meanwhile,
-> accuracy is 1ms when RUSAGE_SELF is specified. This bad accuracy
-> of getrusage() caused a big impact on some application which is
-> critical to accuracy of cpu usage. The upstream fix removed
-> casts to clock_t in task_u/stime(), to keep granularity of
-> cputime_t over the calculation.
-> 
-> Note that the accuracy on powerpc and s390x systems is always
-> 10ms when either RUSAGE_THREAD or RUSAGE_SELF specified, so
-> this test won't be executed on those platforms.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  testcases/kernel/syscalls/getrusage/getrusage04.c |  132 +++++++++++++++++++++
->  1 files changed, 132 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/getrusage/getrusage04.c
 
-Could you please also add line into corresponding runtest file?
+Hi all
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+   This patch are for POSIX test suite. using mutext to protect global
+variable accessed by muti-threads. This ensures that it is a atomic operation, 
+increasing global variable.
+
+Thanks and Regards
+
+wei
 
 ------------------------------------------------------------------------------
 Write once. Port to many.
