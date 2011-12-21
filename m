@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1RbA3l-000452-TF
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 12:05:13 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RbA3h-0005ab-Vx
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 12:05:13 +0000
-Date: Thu, 15 Dec 2011 07:05:03 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <f0db187c-f0fd-4362-a618-f9c2dcd081e2@zmail16.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <CAGH67wTvxOTeyN6K2a23FG30TDA=Mn6xT6Xy4X3Hjmph09yBTg@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RdMhv-000404-OZ
+	for ltp-list@lists.sourceforge.net; Wed, 21 Dec 2011 13:59:47 +0000
+Date: Wed, 21 Dec 2011 15:09:26 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111221140926.GA27921@saboteur.suse.cz>
+References: <4EE95F75.6030909@cn.fujitsu.com>
+	<6d5f6f84-cdfa-42d0-a3a5-f9d028419818@zmail16.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and
-	open()
+Content-Disposition: inline
+In-Reply-To: <6d5f6f84-cdfa-42d0-a3a5-f9d028419818@zmail16.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong use of mlock
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,56 +25,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-
-
------ Original Message -----
-> From: "Garrett Cooper" <yanegomi@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Thursday, December 15, 2011 12:10:17 PM
-> Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and open()
+Hi!
+> this should be commited already, but looking at git,
+> I see changes only for memcg_process.c:
 > 
-> On Thu, Dec 15, 2011 at 2:36 AM, Jan Stancek <jstancek@redhat.com>
-> wrote:
-> > Garrett,
-> >
-> > I'm not sure what happened, but I see only first patch from series
-> > committed with description belonging to second one.
-> >
-> > Regards,
-> > Jan
+> commit 17ecdc4e0f895f61067a65d6105f29d4f55680be
+> Author: Garrett Cooper <yanegomi@gmail.com>
+> Date:   Wed Dec 14 21:42:25 2011 -0800
 > 
->     I got confused by the multiple patches. Is this thread the one I
-> need to look at to rectify the other issues identified?
-
-Yes, this is the one.
-
-I posted single patch yesterday:
-[LTP] [PATCH] pipeio: prevent race between SIGCHLD and open()
-
-You requested to use TERRNO instead of strerror(errno), so
-while I was at it, I made this change for all existing code in pipeio.c:
-[LTP] [PATCH v2 1/2] pipeio: convert strerror(errno) to TERRNO
-
-and then put my original patch (with minor changes) on top of that:
-[LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and open()
-
-Regards,
-Jan
-
-> Thanks,
-> -Garrett
+>     mlock and munmap will return -1 if they fail.
 > 
+>     Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+>     Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+>     Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> 
+>  .../controllers/memcg/functional/memcg_process.c   |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> Have I missed some message on mailing list or did it slip by accident?
+
+Looks like the second part is somehow missing.
+
+Sigh, like when people are helping, but sometimes Garrett is actually
+making my life harder...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-10 Tips for Better Server Consolidation
-Server virtualization is being driven by many needs.  
-But none more important than the need to reduce IT complexity 
-while improving strategic productivity.  Learn More! 
-http://www.accelacomm.com/jaw/sdnl/114/51507609/
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
