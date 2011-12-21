@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Rb8Ln-0008Ug-4L
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 10:15:43 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1Rb8Lj-00031B-I0
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 10:15:43 +0000
-Received: by ggnh1 with SMTP id h1so2219502ggn.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 15 Dec 2011 02:15:34 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RdMat-0002RO-Cz
+	for ltp-list@lists.sourceforge.net; Wed, 21 Dec 2011 13:52:31 +0000
+Date: Wed, 21 Dec 2011 15:02:07 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111221140207.GD22113@saboteur.suse.cz>
+References: <1324374835-22722-1-git-send-email-Wei.Yang@windriver.com>
+	<1324374835-22722-2-git-send-email-Wei.Yang@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <4EE9BF5F.1020704@redhat.com>
-References: <4EE9BF5F.1020704@redhat.com>
-Date: Thu, 15 Dec 2011 02:15:34 -0800
-Message-ID: <CAGH67wSnNDgrg5700WhGZ_8==v2wpo9AzSGwnwvVpyUzPq3QEQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v2 2/2] pipeio: prevent race between SIGCHLD and
-	open()
+Content-Disposition: inline
+In-Reply-To: <1324374835-22722-2-git-send-email-Wei.Yang@windriver.com>
+Subject: Re: [LTP] [PATCH 1/1] using mutex to protect the global variable
+ accessed by muti-threads
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,32 +26,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Wei.Yang@windriver.com
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Dec 15, 2011 at 1:35 AM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> This test occasionally hangs on some machines. The hang has been
-> observed mostly on single CPU ones.
->
-> pipeio code is using signal(2), setting by default SA_RESTART
-> flag, which is also the case for SIGCHLD.
->
-> If last child manages to exit while parent is still at open(),
-> parent gets SIGCHLD and open() is restarted. At this point test
-> hangs.
->
-> Here's strace output from parent point of view:
+Hi!
+> Signed-off-by: Wei Yang <Wei.Yang@windriver.com>
+> ---
+>  .../interfaces/pthread_barrier_wait/2-1.c          |    5 ++++-
+>  1 files changed, 4 insertions(+), 1 deletions(-)
+> 
 
-Committed -- thanks!
--Garrett
+Commited, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-10 Tips for Better Server Consolidation
-Server virtualization is being driven by many needs.  
-But none more important than the need to reduce IT complexity 
-while improving strategic productivity.  Learn More! 
-http://www.accelacomm.com/jaw/sdnl/114/51507609/
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
