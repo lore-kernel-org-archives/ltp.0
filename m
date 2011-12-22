@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RYvpH-0006Kr-4N
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:29:03 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RYvpG-0005S6-1n
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:29:03 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pB98StKL020966
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 9 Dec 2011 00:28:56 -0800 (PST)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Fri, 9 Dec 2011 16:28:44 +0800
-Message-ID: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rdhff-0006tN-BF
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 12:22:51 +0000
+Date: Thu, 22 Dec 2011 13:32:32 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111222123232.GF26303@saboteur.suse.cz>
+References: <145b91763d3c2670cd736cc7fa3072c9a6db219a.1311676572.git.czhang@redhat.com>
+	<1324551871-825-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] Patches for POSIX test cases
+Content-Disposition: inline
+In-Reply-To: <1324551871-825-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH v2] syscalls/getrusage04: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,26 +25,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi All,
+Hi!
+> 
+> getrusage04 - accuracy of getrusage() with RUSAGE_THREAD
+> 
+> This program is used for testing the following upstream commit:
+> 761b1d26df542fd5eb348837351e4d2f3bc7bffe.
+> 
+> getrusage() returns cpu resource usage with accuracy of 10ms
+> when RUSAGE_THREAD is specified to the argument who. Meanwhile,
+> accuracy is 1ms when RUSAGE_SELF is specified. This bad accuracy
+> of getrusage() caused a big impact on some application which is
+> critical to accuracy of cpu usage. The upstream fix removed
+> casts to clock_t in task_u/stime(), to keep granularity of
+> cputime_t over the calculation.
+> 
+> Note that the accuracy on powerpc and s390x systems is always
+> 10ms when either RUSAGE_THREAD or RUSAGE_SELF specified, so
+> this test won't be executed on those platforms.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/syscalls/getrusage/getrusage04.c |  132 +++++++++++++++++++++
+>  1 files changed, 132 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/getrusage/getrusage04.c
 
-These two patches are for POSIX test suite, and could anyone give some comments? Thanks.
+Could you please also add line into corresponding runtest file?
 
-And is there a irc channel for ltp/posix, I need some help about POSIX test on linux.
-
-Thanks and Regards,
-Kai
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Cloud Services Checklist: Pricing and Packaging Optimization
-This white paper is intended to serve as a reference, checklist and point of 
-discussion for anyone considering optimizing the pricing and packaging model 
-of a cloud services business. Read Now!
-http://www.accelacomm.com/jaw/sfnl/114/51491232/
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
