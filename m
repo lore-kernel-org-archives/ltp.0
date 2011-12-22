@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RYvpI-0002PO-0u
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:29:04 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RYvpH-0000dI-6G
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:29:03 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pB98SvQ8020969
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 9 Dec 2011 00:28:57 -0800 (PST)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Fri, 9 Dec 2011 16:28:45 +0800
-Message-ID: <1323419326-13172-2-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
-References: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rdli6-0001OJ-7V
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 16:41:38 +0000
+Date: Thu, 22 Dec 2011 17:51:19 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111222165119.GB3466@saboteur.suse.cz>
+References: <1321609032-16026-1-git-send-email-caspar@casparzhang.com>
+	<1321609032-16026-7-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] pthread_mutex_lock/3-1: make sure install signal
-	hanldler first
+Content-Disposition: inline
+In-Reply-To: <1321609032-16026-7-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH v5 6/7] mm/zram01: verify content written to zram
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,47 +25,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Test case failed for linux in some platform. Make parent thread
-sleep for a while to make sure that signal handlers are installed
-before send signal USR1 and USR2.
+Hi!
+> diff --git a/testcases/kernel/mem/zram/zram01.c b/testcases/kernel/mem/zram/zram01.c
+> index 6967bd1..38adf63 100644
+> --- a/testcases/kernel/mem/zram/zram01.c
+> +++ b/testcases/kernel/mem/zram/zram01.c
+> @@ -44,6 +44,7 @@ int modprobe = 0;
+>  
+>  static void set_disksize(void);
+>  static void write_device(void);
+> +static void verify_device(void);
+>  static void reset(void);
+>  static void setup(void);
+>  static void cleanup(void);
+> @@ -68,6 +69,7 @@ int main(int argc, char *argv[])
+>  
+>  		write_device();
+>  		dump_info();
+> +		verify_device();
+>  
+>  		reset();
+>  		dump_info();
+> @@ -96,7 +98,7 @@ static void set_disksize(void)
+>  static void write_device(void)
+>  {
+>  	int fd;
+> -	void *s;
+> +	char *s;
+>  
+>  	tst_resm(TINFO, "map it into memory.");
+>  	fd = open(DEVICE, O_RDWR);
+> @@ -107,7 +109,8 @@ static void write_device(void)
+>  		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
+>  
+>  	tst_resm(TINFO, "write all the memory.");
+> -	memset(s, 'a', SIZE);
+> +	memset(s, 'a', SIZE-1);
+> +	s[SIZE-1] = '\0';
+>  
+>  	if (munmap(s, SIZE) == -1)
+>  		tst_brkm(TBROK|TERRNO, cleanup, "munmap");
+> @@ -115,6 +118,37 @@ static void write_device(void)
+>  	close(fd);
+>  }
+>  
+> +static void verify_device(void)
+> +{
+> +	int fd, i, fail;
+> +	char *s;
+> +
+> +	tst_resm(TINFO, "verify contents from device.");
+> +	fd = open(DEVICE, O_RDONLY);
+> +	if (fd == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "open %s", DEVICE);
+> +	s = mmap(NULL, SIZE, PROT_READ, MAP_PRIVATE, fd, 0);
+> +	if (s == MAP_FAILED)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "2nd mmap");
+> +
+> +	i = 0;
+> +	fail = 0;
+> +	while (s[i]) {
+> +		if (s[i] != 'a')
+> +			fail++;
+> +		i++;
+> +	}
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../interfaces/pthread_mutex_lock/3-1.c            |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+Hmm, I would make sure here, that I haven't read more than SIZE
+characters. Eg. I wouldn't expect that device you are testing is null
+terminated, even if you wrote the terminating zero there.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c
-index 771851d..a648c96 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/3-1.c
-@@ -307,6 +307,8 @@ int main (int argc, char * argv[])
- 	if ((ret = pthread_create(&th_work, NULL, threaded, NULL)))
- 	{ UNRESOLVED(ret, "Worker thread creation failed"); }
- 
-+	sleep(1);
-+
- 	arg1.thr = &th_work;
- 	arg2.thr = &th_work;
- 	arg1.sig = SIGUSR1;
-@@ -359,4 +361,4 @@ int main (int argc, char * argv[])
- 	#endif
- 	#endif
- 	PASSED;
--}
-\ No newline at end of file
-+}
+> +	if (i != SIZE-1)
+> +		tst_resm(TFAIL, "expect size: %d, actual size: %d.",
+> +				SIZE-1, i);
+> +	if (fail)
+> +		tst_resm(TFAIL, "%d failed bytes found.", fail);
+> +	if (munmap(s, SIZE) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "2nd munmap");
+> +
+> +	close(fd);
+> +}
+> +
+>  static void reset(void)
+>  {
+>  	int fd;
+
+
 -- 
-1.7.5.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Cloud Services Checklist: Pricing and Packaging Optimization
-This white paper is intended to serve as a reference, checklist and point of 
-discussion for anyone considering optimizing the pricing and packaging model 
-of a cloud services business. Read Now!
-http://www.accelacomm.com/jaw/sfnl/114/51491232/
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
