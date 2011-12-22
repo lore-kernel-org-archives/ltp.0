@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Wei.Yang@windriver.com>) id 1RcwOi-0007yT-KM
-	for ltp-list@lists.sourceforge.net; Tue, 20 Dec 2011 09:54:12 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RcwOe-0006QB-HJ
-	for ltp-list@lists.sourceforge.net; Tue, 20 Dec 2011 09:54:12 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBK9s2J2000755
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 20 Dec 2011 01:54:02 -0800 (PST)
-From: <Wei.Yang@windriver.com>
-Date: Tue, 20 Dec 2011 17:53:54 +0800
-Message-ID: <1324374835-22722-1-git-send-email-Wei.Yang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RdfU2-0004tK-Q8
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 10:02:42 +0000
+Date: Thu, 22 Dec 2011 11:12:21 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111222101221.GC26303@saboteur.suse.cz>
+References: <611ED426031E9E48A80D02BED70BC810570E4F83@ALA-MBA.corp.ad.wrs.com>
+	<4EF2C511.2000605@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]pthread_barrier_wait/2-1.c: using mutext to protect
-	global variable used by muti-thread
+Content-Disposition: inline
+In-Reply-To: <4EF2C511.2000605@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] redefine NCPU = sysconf(_SC_NPROCESSORS_CONF)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,19 +25,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: wei.yang@windriver.com
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: "Shang, YanFeng" <YanFeng.Shang@windriver.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
+Hi!
+> > 
+> > I think using cat /proc/cpuinfo get core number is better.
+> 
+> 
+> But /proc/cpuinfo may not be supported by other OS.
 
-Hi all
+Yes, procfs is linux specific.
 
-   This patch are for POSIX test suite. using mutext to protect global
-variable accessed by muti-threads. This ensures that it is a atomic operation, 
-increasing global variable.
-
-Thanks and Regards
-
-wei
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Write once. Port to many.
