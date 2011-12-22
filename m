@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rdlbm-0007C5-78
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 16:35:06 +0000
-Date: Thu, 22 Dec 2011 17:44:48 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RdiG1-0003by-RY
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 13:00:25 +0000
+Date: Thu, 22 Dec 2011 14:10:06 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111222164448.GA3466@saboteur.suse.cz>
-References: <1321609032-16026-1-git-send-email-caspar@casparzhang.com>
-	<1321609032-16026-3-git-send-email-caspar@casparzhang.com>
+Message-ID: <20111222131006.GC29787@saboteur.suse.cz>
+References: <1324006260-10122-1-git-send-email-kai.kang@windriver.com>
+	<1324006260-10122-2-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1321609032-16026-3-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH v5 2/7] mm/zram01: errno not captured
+In-Reply-To: <1324006260-10122-2-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] pthread_mutex_lock/3-1: make sure install signal
+ hanldler first
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +26,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Sometimes `if (access(...) && errno == ENOENT)' doesn't work due to
-> errno not captures correctly from access() exection. This patch put them
-> into 2 nested if-condition statements.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  testcases/kernel/mem/zram/zram01.c |   20 ++++++++++++++------
->  1 files changed, 14 insertions(+), 6 deletions(-)
-> 
+> Import a new semphore semsync2 to sync thread parent and child thread
+> 'th_work', so that signal handlers are installed before receive signal
+> USR1 and USR2.
 
-> diff --git a/testcases/kernel/mem/zram/zram01.c b/testcases/kernel/mem/zram/zram01.c
-> index 63437c1..c382525 100644
-> --- a/testcases/kernel/mem/zram/zram01.c
-> +++ b/testcases/kernel/mem/zram/zram01.c
-> @@ -106,16 +106,24 @@ int main(int argc, char *argv[])
->  
->  void setup(void)
->  {
-> +	int retried = 0;
-> +
->  	tst_require_root(NULL);
->  
-> -	if (access(PATH_ZRAM, R_OK|W_OK|X_OK) == -1 && errno == ENOENT) {
+Commited, as this is better than the previous state.
 
-This one keeps me wondering. What exactly is wrong with this line?
+However the testcase implementation is quite questionable. It's trying
+to hammer the loop with pthread_mutex_lock()/pthread_mutext_unlock()
+with signals and the probability of signal arriving at the right time is
+not really high.
 
+Far better implementation would lock in the mutex for some time while
+the second thread would send the signals meanwhile.
 
 -- 
 Cyril Hrubis
