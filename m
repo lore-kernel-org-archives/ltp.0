@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RgbLe-0003NY-QJ
-	for ltp-list@lists.sourceforge.net; Fri, 30 Dec 2011 12:14:10 +0000
-Date: Fri, 30 Dec 2011 13:24:35 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111230122435.GA24428@saboteur.suse.cz>
-References: <1325227940-9971-1-git-send-email-Song.Li@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Rddu5-00016m-QJ
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 08:21:29 +0000
+Received: from mail-vx0-f175.google.com ([209.85.220.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Rddu4-0001JP-Fd
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 08:21:29 +0000
+Received: by vcbf1 with SMTP id f1so7619502vcb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 22 Dec 2011 00:21:23 -0800 (PST)
+Message-ID: <4EF2E1A1.904@casparzhang.com>
+Date: Thu, 22 Dec 2011 15:52:01 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1325227940-9971-1-git-send-email-Song.Li@windriver.com>
-Subject: Re: [LTP] [PATCH] sched_setparam/2-1.c and sched_setparam/2-2.c
+References: <76bf538a-270a-456b-8b7b-9c651396d76a@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <76bf538a-270a-456b-8b7b-9c651396d76a@zmail13.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH v6 1/2] mem/lib: add vm tunable file
+ read/write/check func
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,30 +31,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Song.Li@windriver.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> There is no guarantee that the LOOP of the child proecess
-> can be certainly big enough on any device at any time.
-> So if set_affinity function is available,
-> use it to bind the test processes to a single CPU
-> rather than using the LOOP.
+On 11/15/2011 09:14 PM, Zhouping Liu wrote:
+> hi, Cyril & Garrett
+> v5 -> v6: updated the sscanf() function in read_meminfo() in order to avoid buffer overflow.
 > 
-> Signed-off-by: Song.Li <Song.Li@windriver.com>
+> please feel free to comment the patch.
+> BTW: you would miss the patch.
+> 
+> There are several vm tunable files under /proc/sys/vm, I will compose
+> some cases for testing the basic functions of them. This patch is adding
+> the read/write/check functions to mem lib so that I can include them in
+> my testcases.
+> 
+> set_sys_tune():   set a long long integer value to a vm tunable file.
+> get_sys_tune():   get a long long integer value from a vm tunable file.
+> check_sys_tune(): check to confirm the value in tunable file meets our
+>                   expectation.
+> read_meminfo():   read the special value from /proc/meminfo.
+> 
+> Since most of the values in vm tunable files contain only single
+> integer, the functions I added only read/write long long values for now.
+> For those files not storing single interger (e.g. lowmem_reserve_ratio),
+> these functions will not be used in the case.
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
 
-Commited, thanks.
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>  runtest/mm                         |    7 +++
+>  testcases/kernel/mem/include/mem.h |    7 +++
+>  testcases/kernel/mem/lib/mem.c     |   84 +++++++++++++++++++++++++++++++++++-
+>  3 files changed, 97 insertions(+), 1 deletions(-)
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
