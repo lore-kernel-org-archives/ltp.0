@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RdfTO-0004qi-Hx
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 10:02:02 +0000
-Date: Thu, 22 Dec 2011 11:11:40 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RdkFy-00063C-Vf
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 15:08:30 +0000
+Date: Thu, 22 Dec 2011 16:18:10 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111222101140.GB26303@saboteur.suse.cz>
-References: <20111221132206.GC22113@saboteur.suse.cz>
-	<611ED426031E9E48A80D02BED70BC810570E4F83@ALA-MBA.corp.ad.wrs.com>
+Message-ID: <20111222151810.GA1494@saboteur.suse.cz>
+References: <4EEB065C.4060805@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <611ED426031E9E48A80D02BED70BC810570E4F83@ALA-MBA.corp.ad.wrs.com>
-Subject: Re: [LTP] [PATCH] redefine NCPU = sysconf(_SC_NPROCESSORS_CONF)
+In-Reply-To: <4EEB065C.4060805@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong of test_proc_kill
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +24,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Shang, YanFeng" <YanFeng.Shang@windriver.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> >> testcase create NCPU=4 threads running with a high priority with the same sched
-> >> policy and one with a low-priority. The low-priority thread should not run
-> >> until the other threads stop running, unless the machine has more than NCPU
-> >processors
-> >> when cpu core >4,testcase failed. redefine NCPU =
-> >sysconf(_SC_NPROCESSORS_CONF)
-> >
-> >There are two problems with that. The first one, and less problematic, is that
-> >_SC_NPROCESSORS_CONF is not yet POSIX standardized.
+> test_proc_kill() tests process will be killed due to exceed memory limit, but
+> when memcg_process exit due to mmap/munmap fails, the case still pass.
 > 
-> I think using cat /proc/cpuinfo get core number is better.
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> ---
+>  .../memcg/functional/memcg_function_test.sh        |   12 +++++++++++-
+>  1 files changed, 11 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> index 1f07cb5..6cfe9a5 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> @@ -175,13 +175,23 @@ test_failcnt()
+>  test_proc_kill()
+>  {
+>  	echo $1 > memory.limit_in_bytes
+> -	$TEST_PATH/memcg_process $2 -s $3 &
+> +	($TEST_PATH/memcg_process $2 -s $3 2>/tmp/errlog) &
+>  	pid=$!
+>  	sleep 1
+>  	echo $pid > tasks
+>  
+>  	/bin/kill -s SIGUSR1 $pid 2> /dev/null
+>  	sleep 1
+> +
+> +	if [ -s /tmp/errlog ]; then
+> +		err_msg=`cat /tmp/errlog`
+> +		rm -f /tmp/errlog
+> +		result $FAIL "$err_msg"
+> +		return
+> +	fi
+> +
+> +	rm -f /tmp/errlog
+> +
 
-That won't work. Not only the /proc/ filesystem is not standartized by
-POSIX, there is no /proc/ in other unixes.
-
-The sysconf() is more common, it's not standartized either, but at least
-it seems to work on newer unixes.
-
-> >The second and more problematic part is that such process would eat all
-> >your CPU time, which may easily lock the whole box while testing.
-> I test this case on many kinds of board(arm,mips,x86,ppc), no lock issue.
-
-It may work most of the time, but my expirience with realtime threadd
-and schedulling is that you will burn sooner or later when you do more
-realtime threads that is a number of your cores. Expecially if these
-threads are cycling in infinite loop.
+Looking into the memcg_process.c it returns return value 1 on failure,
+catching it correctly is better option here.
 
 -- 
 Cyril Hrubis
