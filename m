@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RfrAp-00061Z-He
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 10:55:55 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RfrAo-0006F7-Hn
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 10:55:55 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBSAtmmY023966
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 28 Dec 2011 02:55:48 -0800 (PST)
-Message-ID: <4EFAF5BB.2030407@windriver.com>
-Date: Wed, 28 Dec 2011 18:55:55 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RdhLi-0000bd-FA
+	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 12:02:14 +0000
+Date: Thu, 22 Dec 2011 13:11:53 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111222121153.GD26303@saboteur.suse.cz>
+References: <1324543794-28128-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] Posix test case mmap/31-1 fails on Linux/eglibc
+Content-Disposition: inline
+In-Reply-To: <1324543794-28128-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH] syscalls/getrusage03: fix option parsing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,26 +24,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi all,
+Hi!
+> On powerpc platform, getrusage03_child returns the following error
+> message:
+> 
+> getrusage03_child    1  TBROK  :  OPTION PARSING ERROR - parse_opts: ERROR - Only short options are allowed
+> 
+> This is because child_options[] didn't end up with a NULL array. This
+> patch fixes this problem.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 
-I run mmap/31-1 failed with ENOMEM on linux, with error message:
-off: fffffffffffff000, len: fffffffffffff000
-Test FAIL: expect EOVERFLOW but get other error: Cannot allocate memory
+Commited, thanks.
 
-But compare to mmap/24-2, it mmap() the same length but pass. Its output:
-available memory: 18446744073709551615
-addr: 7f78c54fa000, len: ffffffffffffffff
-addr: 7f78c54fa000, len: fffffffffffff000
-Test Pass: mmap/24-2.c Get ENOMEM: Cannot allocate memory
-
-So I suppose that mmap/31-1 may need update, but I don't know how to 
-make mmap() overflow as expect.
-Any suggestion is appreciated.
-
-Regards,
-Kai
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Write once. Port to many.
