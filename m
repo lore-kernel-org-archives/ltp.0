@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RYvpJ-0003n8-Ay
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:29:05 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1Rf0xr-0000Ga-Sk
+	for ltp-list@lists.sourceforge.net; Mon, 26 Dec 2011 03:11:03 +0000
 Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RYvpI-0005SK-4g
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 08:29:05 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Rf0xq-0004If-IH
+	for ltp-list@lists.sourceforge.net; Mon, 26 Dec 2011 03:11:03 +0000
 Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pB98SwwZ020972
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBQ3Auih017414
 	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 9 Dec 2011 00:28:58 -0800 (PST)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Fri, 9 Dec 2011 16:28:46 +0800
-Message-ID: <1323419326-13172-3-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
-References: <1323419326-13172-1-git-send-email-kai.kang@windriver.com>
+	Sun, 25 Dec 2011 19:10:56 -0800 (PST)
+From: Jin Li <jin.li@windriver.com>
+Date: Mon, 26 Dec 2011 11:10:52 +0800
+Message-ID: <1324869052-22433-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/2] pthread_rwlock_unlock/4-2: remove local var 'rc'
+Subject: [LTP] [PATCH] This fix make sure the function "setpgid" get invoked
+	in the right time in setpgid03 test02.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,46 +31,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: haotian.zhang@windriver.com, jin.li@windriver.com, ltp-list@lists.sourceforge.net
 
-Local var 'rc' in function main hides the global one. In child thread
-it sets global var 'rc' with funtion return value. But in function main,
-test var 'rc' always succeeds because it tests local var 'rc'.
+In setpgid03 test02, the function "setpgid" is likely to be invoked
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
+in father process before the function "execlp" get invoked in child
+
+process. Sometimes The performance or NFS file system may cause that
+
+the switch of context could not be done even after the 1 second sleeping
+
+of father process. In this case, the setpgid will get unexpected error
+
+number. Add sync mechanism to insure the 'setpgid' get invoked in the right
+
+order.
+
+Signed-off-by: Jin Li <jin.li@windriver.com>
 ---
- .../interfaces/pthread_rwlock_unlock/4-2.c         |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/setpgid/setpgid03.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
-index 3023886..4928f85 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_unlock/4-2.c
-@@ -54,7 +54,6 @@ static void* fn_unlk(void *arg)
- int main()
- {
- 	int cnt = 0;
--	int rc = 0;
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
+index a894389..a011419 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid03.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
+@@ -46,6 +46,7 @@
  
- 	pthread_t un_thread;
+ char *TCID = "setpgid03";
+ int TST_TOTAL = 1;
++char temp_file[64];
  
-@@ -125,4 +124,4 @@ int main()
+ void do_child(void);
+ void setup(void);
+@@ -60,6 +61,7 @@ int main(int ac, char **av)
  
- 	printf("Test PASSED: Note*: Returned 0 instead of EPERM, but standard specified _may_ fail.\n");
- 	return PTS_PASS;
+ 	int lc;			/* loop counter */
+ 	char *msg;		/* message returned from parse_opts */
++	char cmd_line[1024];    /* command line for exec */
+ 
+ 	/* parse standard options */
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
+@@ -74,6 +76,10 @@ int main(int ac, char **av)
+ 	 */
+ 	setup();
+ 
++	sprintf(temp_file,"/tmp/%s_file",TCID);
++
++	sprintf(cmd_line,"touch %s;sleep 5s;rm -f %s", temp_file, temp_file);
++
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 
+ 		/* reset Tst_count in case we are looping */
+@@ -132,12 +138,15 @@ int main(int ac, char **av)
+ 
+ 		}
+ 		if (pid == 0) {
+-			if (execlp("sleep", "sleep", "3", NULL) < 0) {
++			if (execlp("sh", "sh", "-c", cmd_line, NULL) < 0) {
+ 				perror("exec failed");
+ 			}
+ 			exit(127);
+ 		} else {
+-			sleep(1);
++			while ( access(temp_file, F_OK) != 0 ) {
++                            sleep(1);
++			}
++
+ 			rval = setpgid(pid, getppid());
+ 			if (errno == EACCES) {
+ 				tst_resm(TPASS, "setpgid SUCCEEDED to set "
+@@ -203,4 +212,4 @@ void cleanup(void)
+ 	 */
+ 	TEST_CLEANUP;
+ 
 -}
 \ No newline at end of file
 +}
 -- 
-1.7.5.4
+1.6.3.1
 
 
 ------------------------------------------------------------------------------
-Cloud Services Checklist: Pricing and Packaging Optimization
-This white paper is intended to serve as a reference, checklist and point of 
-discussion for anyone considering optimizing the pricing and packaging model 
-of a cloud services business. Read Now!
-http://www.accelacomm.com/jaw/sfnl/114/51491232/
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
