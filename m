@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Rfnhk-0000tg-GJ
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 07:13:40 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Rfnhj-0001qg-MA
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 07:13:40 +0000
-Received: by iakh37 with SMTP id h37so22297764iak.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Wei.Yang@windriver.com>) id 1RfQxL-0001MA-0B
+	for ltp-list@lists.sourceforge.net; Tue, 27 Dec 2011 06:56:15 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RfQxJ-0007OK-PC
+	for ltp-list@lists.sourceforge.net; Tue, 27 Dec 2011 06:56:14 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBR6u7E1025921
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 27 Dec 2011 23:13:34 -0800 (PST)
-Message-ID: <4EFABA8E.6050008@casparzhang.com>
-Date: Wed, 28 Dec 2011 14:43:26 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Mon, 26 Dec 2011 22:56:07 -0800 (PST)
+From: <Wei.Yang@windriver.com>
+Date: Tue, 27 Dec 2011 14:53:29 +0800
+Message-ID: <1324968809-15021-1-git-send-email-Wei.Yang@windriver.com>
 MIME-Version: 1.0
-References: <1322044169-30851-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1322044169-30851-3-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4EFAA778.5030704@casparzhang.com>
-	<4EFAB5FB.1070907@cn.fujitsu.com>
-In-Reply-To: <4EFAB5FB.1070907@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/5] hugemmap01.c : automatically mount hugetlbfs.
+Subject: [LTP] [PATCH] shmat01 failed on mips
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,34 +30,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: wei.yang@windriver.com
 
-On 12/28/2011 02:23 PM, Wanlong Gao wrote:
->>> >> +	tst_tmpdir();
->>> >> +	mount_point = get_tst_tmpdir();
->>> >> +	mount_hugetlbfs(mount_point);
->>> >> +	hugepage_alloc(1024);
-> 
-> sure, will change to a macro.
+From: Wei Yang <Wei.Yang@windriver.com>
 
-I don't think a macro can improve much. You patch reduces the testcase
-scalability. A better way is passing hugepage size you want to set via
-option:
+For mips architecture, SHMLBA is not equal to PAGE_SIZE
+ base_addr is not available address for process after
+ base_addr is aligned to next SHMLBA address. so we should
+ probe a bigger available virtual address space for ensuring that
+ a wide range from base_addr aligned to next SHMLBA to base_addr + INT_SIZE
+ always is available
 
-./hugemmap01 -s 1024
 
-The default value 1024 is not good enough, for x86 systems, it will
-require at least 2GB free memory, for other systems, like powerpc, it
-will require 16GB free memory. It would be better if you calculate how
-much memory the system can be used for hugepages.
+Signed-off-by: Wei Yang <Wei.Yang@windriver.com>
+---
+ testcases/kernel/syscalls/ipc/shmat/shmat01.c |   27 +++++++++++++++++++++++-
+ 1 files changed, 25 insertions(+), 2 deletions(-)
 
-One more thing (on libmnt.c side), is there any action if hugepage_alloc
-set 0, and is there any action if you want to set 1024 hpages, but only
-allocated less amount than that?
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+index 7c68459..344ad3f 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+@@ -65,6 +65,9 @@ void check_functionality(int);
+ #define CASE1		20	/* memory location.                */
+ 
+ int shm_id_1 = -1;
++#if defined(__mips__) || defined(__mips64)
++int shm_id_2 = -1;
++#endif
+ 
+ void *base_addr;		/* By probing this address first, we can make
+ 				 * non-aligned addresses from it for different
+@@ -262,14 +265,34 @@ void setup(void)
+ 		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
+ 			 "resource 1 in setup()");
+ 	}
+-
+ 	/* Probe an available linear address for attachment */
++#if defined(__mips__) || defined(__mips64)
++	/*
++	 * For mips architecture, SHMLBA is not equal to PAGE_SIZE
++	 * base_addr is not available address for process after 
++	 * base_addr is aligned to next SHMLBA address
++	 */
++	if ((shm_id_2 = shmget(shmkey++, SHMLBA, SHM_RW | IPC_CREAT | IPC_EXCL)) == -1) {
++		tst_brkm(TBROK, cleanup, "Failed to create shared memory ");
++	}
++	if ((base_addr = shmat(shm_id_2, NULL, 0)) == (void *) -1) {
++		rm_shm(shm_id_2);
++		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
++	}
++	if (shmdt((const void *)base_addr) == -1) {
++		rm_shm(shm_id_2);
++		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
++	}
++	rm_shm(shm_id_2);
++#else
+ 	if ((base_addr = shmat(shm_id_1, NULL, 0)) == (void *)-1) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
+ 	}
+ 	if (shmdt((const void *)base_addr) == -1) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
+ 	}
++#endif
++	
+ 
+ 	/* some architectures (e.g. parisc) are strange, so better always align to
+ 	 * next SHMLBA address. */
+@@ -299,4 +322,4 @@ void cleanup(void)
+ 	 */
+ 	TEST_CLEANUP;
+ 
+-}
+\ No newline at end of file
++}
+-- 
+1.7.0.2
 
-Thanks,
-Caspar
 
 ------------------------------------------------------------------------------
 Write once. Port to many.
