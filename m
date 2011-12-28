@@ -1,35 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1RWWwN-0006cf-2n
-	for ltp-list@lists.sourceforge.net; Fri, 02 Dec 2011 17:30:27 +0000
-Received: from e23smtp03.au.ibm.com ([202.81.31.145])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RWWwL-0008BE-Rv
-	for ltp-list@lists.sourceforge.net; Fri, 02 Dec 2011 17:30:27 +0000
-Received: from /spool/local
-	by e23smtp03.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
-	Fri, 2 Dec 2011 17:24:56 +1000
-Received: from d23av04.au.ibm.com (d23av04.au.ibm.com [9.190.235.139])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	pB2HQjKC3055680
-	for <ltp-list@lists.sourceforge.net>; Sat, 3 Dec 2011 04:26:45 +1100
-Received: from d23av04.au.ibm.com (loopback [127.0.0.1])
-	by d23av04.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	pB2HUEGc011531
-	for <ltp-list@lists.sourceforge.net>; Sat, 3 Dec 2011 04:30:14 +1100
-Message-ID: <4ED90B1C.8000204@linux.vnet.ibm.com>
-Date: Fri, 02 Dec 2011 23:00:04 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rfrvl-0004G6-Ee
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 11:44:25 +0000
+Date: Wed, 28 Dec 2011 12:54:40 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111228115439.GA18611@saboteur.suse.cz>
+References: <4EEB065C.4060805@cn.fujitsu.com>
+	<20111222151810.GA1494@saboteur.suse.cz>
+	<4EF98B7B.3040005@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <20111127201232.GB2268@nik-comp.lan>
-	<4ED480A4.2000003@linux.vnet.ibm.com>
-	<20111129220308.GA3953@nik-comp.lan>
-In-Reply-To: <20111129220308.GA3953@nik-comp.lan>
-Subject: Re: [LTP] LTP: memcg_stress_test hanging whole box
+Content-Disposition: inline
+In-Reply-To: <4EF98B7B.3040005@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong of test_proc_kill
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,49 +26,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
-Cc: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wednesday 30 November 2011 03:33 AM, Nikola Ciprich wrote:
-> Hello Shubham,
->
-> I tried setting swap to 8GB, but the result is the same... the box gets into state
-> that I can't login to it even after few hours, so hard reset is needed..
-> When I have top started, I see a lot of memcg_process_stress processes.
-> What is strange, when I start the test with swap disabled, memcg_process_stress processes
-> just seem to eat all physical memory and then just sleep. OOM killer doesn't kill anything,
-> but the box doesn't hang..
-> weird..
-> I'm wondering whether to report this to kernel list?
-> or do You have any idea on where to look?
-> cheers
-> nik
+> >> -	$TEST_PATH/memcg_process $2 -s $3 &
+> >> +	($TEST_PATH/memcg_process $2 -s $3 2>/tmp/errlog) &
+> >>  	pid=$!
+> >>  	sleep 1
+> >>  	echo $pid > tasks
+> >>  
+> >>  	/bin/kill -s SIGUSR1 $pid 2> /dev/null
+> >>  	sleep 1
+> >> +
+> >> +	if [ -s /tmp/errlog ]; then
+> >> +		err_msg=`cat /tmp/errlog`
+> >> +		rm -f /tmp/errlog
+> >> +		result $FAIL "$err_msg"
+> >> +		return
+> >> +	fi
+> >> +
+> >> +	rm -f /tmp/errlog
+> >> +
+> > 
+> > Looking into the memcg_process.c it returns return value 1 on failure,
+> > catching it correctly is better option here.
+> > 
+> 
+> I also think catching memcg_process's return value is better option,
+> but I think this way is simple.
+> 
+> Can you tell me a simple way to catch return value of background process?
+> Thanks.
 
-Hi Nikola,
+See manual pages for jobs and wait.
 
-What I recently noticed was the controller test hang problem is coming 
-with old versions of LTP. I tried with latest release of LTP on the same 
-affected machine and I did not observed any test case or system hang. I 
-hope you are using latest LTP downloaded from 'ltp.sourceforge.net'?
-
-There might be a issue with oom that it is not able to kill the memory 
-intensive process but you need to gather more information about the 
-hanging process first. You might want to run only the hanging test i.e. 
-memcg_stress and not complete LTP to narrow down the issue. Just check 
-whether you are able to reproduce the issue when only memcg_stress test 
-is running There are chances that test case itself has some issues.
-
-Thanks,
-Shubham
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
