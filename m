@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1RbTUf-0006y3-Nb
-	for ltp-list@lists.sourceforge.net; Fri, 16 Dec 2011 08:50:17 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RfnCN-0007z6-Vj
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 06:41:15 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RbTUd-0007L8-8y
-	for ltp-list@lists.sourceforge.net; Fri, 16 Dec 2011 08:50:17 +0000
-Message-ID: <4EEB065C.4060805@cn.fujitsu.com>
-Date: Fri, 16 Dec 2011 16:50:36 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] memcg_function:fix the wrong of test_proc_kill
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RfnCK-0000XQ-WC
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 06:41:15 +0000
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Date: Wed, 28 Dec 2011 14:40:03 +0800
+Message-Id: <1325054403-17741-1-git-send-email-gaowanlong@cn.fujitsu.com>
+In-Reply-To: <1322044169-30851-1-git-send-email-gaowanlong@cn.fujitsu.com>
+References: <1322044169-30851-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: [LTP] [PATCH 7/5] hugemmap: change hard-coded page alloc size to a
+	macro
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,64 +24,118 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: caspar@casparzhang.com
+Cc: ltp-list@lists.sourceforge.net
 
+change the hard-coded alloc size to a macro, because hard-coded is
+not a good idea.
 
-test_proc_kill() tests process will be killed due to exceed memory limit, but
-when memcg_process exit due to mmap/munmap fails, the case still pass.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 ---
- .../memcg/functional/memcg_function_test.sh        |   12 +++++++++++-
- 1 files changed, 11 insertions(+), 1 deletions(-)
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |    3 ++-
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |    3 ++-
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |    3 ++-
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |    3 ++-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-index 1f07cb5..6cfe9a5 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-@@ -175,13 +175,23 @@ test_failcnt()
- test_proc_kill()
- {
- 	echo $1 > memory.limit_in_bytes
--	$TEST_PATH/memcg_process $2 -s $3 &
-+	($TEST_PATH/memcg_process $2 -s $3 2>/tmp/errlog) &
- 	pid=$!
- 	sleep 1
- 	echo $pid > tasks
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+index 906f7e4..ca68fb5 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+@@ -76,6 +76,7 @@
+ #include "libmnt.h"
  
- 	/bin/kill -s SIGUSR1 $pid 2> /dev/null
- 	sleep 1
-+
-+	if [ -s /tmp/errlog ]; then
-+		err_msg=`cat /tmp/errlog`
-+		rm -f /tmp/errlog
-+		result $FAIL "$err_msg"
-+		return
-+	fi
-+
-+	rm -f /tmp/errlog
-+
- 	ps -p $pid > /dev/null 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		result $PASS "process $pid is killed"
+ #define BUFFER_SIZE  256
++#define PAGE_ALLOC_SIZE	1024
+ 
+ char TEMPFILE[MAXPATHLEN];
+ 
+@@ -183,7 +184,7 @@ setup(void)
+ 	tst_tmpdir();
+ 	mount_point = get_tst_tmpdir();
+ 	mount_hugetlbfs(mount_point);
+-	hugepage_alloc(1024);
++	hugepage_alloc(PAGE_ALLOC_SIZE);
+ 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d",
+ 		mount_point, getpid());
+ }
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+index 3bbbc46..349e564 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+@@ -67,6 +67,7 @@
+ 
+ #define LOW_ADDR       (void *)(0x80000000)
+ #define LOW_ADDR2      (void *)(0x90000000)
++#define PAGE_ALLOC_SIZE	1024
+ 
+ char TEMPFILE[MAXPATHLEN];
+ 
+@@ -197,7 +198,7 @@ setup(void)
+ 	mount_point = get_tst_tmpdir();
+ 
+ 	mount_hugetlbfs(mount_point);
+-	hugepage_alloc(1024);
++	hugepage_alloc(PAGE_ALLOC_SIZE);
+ 
+ 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", mount_point, getpid());
+ }
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+index b17b19d..866ca57 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+@@ -57,6 +57,7 @@
+ #include "libmnt.h"
+ 
+ #define HIGH_ADDR      (void *)(0x1000000000000)
++#define PAGE_ALLOC_SIZE	1024
+ 
+ char TEMPFILE[MAXPATHLEN];
+ 
+@@ -143,7 +144,7 @@ setup(void)
+ 	mount_point = get_tst_tmpdir();
+ 
+ 	mount_hugetlbfs(mount_point);
+-	hugepage_alloc(1024);
++	hugepage_alloc(PAGE_ALLOC_SIZE);
+ 
+ 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", mount_point, getpid());
+ }
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+index 9774e87..2eea936 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+@@ -76,6 +76,7 @@
+ #include "libmnt.h"
+ 
+ #define BUFFER_SIZE  256
++#define PAGE_ALLOC_SIZE	1024
+ 
+ char TEMPFILE[MAXPATHLEN];
+ 
+@@ -192,7 +193,7 @@ setup()
+ 	mount_point = get_tst_tmpdir();
+ 
+ 	mount_hugetlbfs(mount_point);
+-	hugepage_alloc(1024);
++	hugepage_alloc(PAGE_ALLOC_SIZE);
+ 
+ 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", mount_point, getpid());
+ }
 -- 
-1.7.1
-
--- 
-Best Regards,
-Peng Haitao
+1.7.8
 
 
 ------------------------------------------------------------------------------
-Learn Windows Azure Live!  Tuesday, Dec 13, 2011
-Microsoft is holding a special Learn Windows Azure training event for 
-developers. It will provide a great way to learn Windows Azure and what it 
-provides. You can attend the event by watching it streamed LIVE online.  
-Learn more at http://p.sf.net/sfu/ms-windowsazure
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
