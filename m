@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapierfilter@gmail.com>) id 1RgqV3-0006WQ-4n
-	for ltp-list@lists.sourceforge.net; Sat, 31 Dec 2011 04:24:53 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RgqV2-0007lw-FH
-	for ltp-list@lists.sourceforge.net; Sat, 31 Dec 2011 04:24:53 +0000
-Received: by iakh37 with SMTP id h37so27787147iak.34
+	(envelope-from <caspar@casparzhang.com>) id 1RfkZY-0000nc-0X
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 03:53:00 +0000
+Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1RfkZX-0000Wy-9O
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 03:52:59 +0000
+Received: by ggnh1 with SMTP id h1so10465546ggn.34
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 30 Dec 2011 20:24:47 -0800 (PST)
+	Tue, 27 Dec 2011 19:52:53 -0800 (PST)
+Message-ID: <4EFA8B41.1040802@casparzhang.com>
+Date: Wed, 28 Dec 2011 11:21:37 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-In-Reply-To: <1325226803-29578-1-git-send-email-YanFeng.Shang@windriver.com>
-References: <1325226803-29578-1-git-send-email-YanFeng.Shang@windriver.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 30 Dec 2011 23:24:27 -0500
-Message-ID: <CAJaTeTr0dDyBmT5docM4bt8zP2qKaepRzUXEpzZk-fMVvKtyNg@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] memory in mips with 32bit ELF is lower than
-	0x80000000
+References: <1324872283-6292-1-git-send-email-eguan@redhat.com>
+In-Reply-To: <1324872283-6292-1-git-send-email-eguan@redhat.com>
+Subject: Re: [LTP] [PATCH 1/2 V2] syscalls/setxattr01: new testcase to test
+ setxattr(2) basic function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,48 +28,34 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shang Yanfeng <YanFeng.Shang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Haotian.Zhang@windriver.com
+To: Eryu Guan <eguan@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Dec 30, 2011 at 01:33, Shang Yanfeng wrote:
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
->
-> +#if defined(__mips__)
-> +#if __WORDSIZE=3D=3D32
-> +#define LOW_ADDR =A0 =A0 =A0 (void *)(0x40000000)
-> +#define LOW_ADDR2 =A0 =A0 =A0(void *)(0x50000000)
-> +#else
-> =A0#define LOW_ADDR =A0 =A0 =A0 (void *)(0x80000000)
-> =A0#define LOW_ADDR2 =A0 =A0 =A0(void *)(0x90000000)
-> +#endif
-> +#else
-> +#define LOW_ADDR =A0 =A0 =A0 (void *)(0x80000000)
-> +#define LOW_ADDR2 =A0 =A0 =A0(void *)(0x90000000)
-> +#endif
+On 12/26/2011 12:04 PM, Eryu Guan wrote:
+> +			tname = tc[i].fname;
+> +			tkey = tc[i].key;
+> +			tvalue = tc[i].value;
+> +			tsize = tc[i].size;
+> +			tflags = tc[i].flags;
+> +			texp_err = tc[i].exp_err;
+> +
+> +			TEST(setxattr(tname, tkey, tvalue, tsize, tflags));
 
-the last two cases here are the same.  so it should be:
-#if defined(__mips__) && __WORDSIZE =3D=3D 32
-# define LOW_ADDR =A0 =A0 =A0 (void *)(0x40000000)
-# define LOW_ADDR2 =A0 =A0 =A0(void *)(0x50000000)
-#else
-# define LOW_ADDR =A0 =A0 =A0 (void *)(0x80000000)
-# define LOW_ADDR2 =A0 =A0 =A0(void *)(0x90000000)
-#endif
--mike
+I wonder whether it's necessary. all of the variables be used once only.
 
----------------------------------------------------------------------------=
----
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual =
+Others looks good for me.
 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure =
+Caspar
 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+------------------------------------------------------------------------------
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
