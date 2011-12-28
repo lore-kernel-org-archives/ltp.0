@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Rb49i-0005o8-4R
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:46:58 +0000
-Received: from mail-gx0-f175.google.com ([209.85.161.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1Rb49f-0006sy-OZ
-	for ltp-list@lists.sourceforge.net; Thu, 15 Dec 2011 05:46:58 +0000
-Received: by ggnh1 with SMTP id h1so2032094ggn.34
+	(envelope-from <caspar@casparzhang.com>) id 1Rfm59-0006sV-WE
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 05:29:44 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Rfm59-0006M9-3w
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 05:29:43 +0000
+Received: by yenm12 with SMTP id m12so7686880yen.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 14 Dec 2011 21:46:50 -0800 (PST)
+	Tue, 27 Dec 2011 21:29:37 -0800 (PST)
+Message-ID: <4EFAA763.4030607@casparzhang.com>
+Date: Wed, 28 Dec 2011 13:21:39 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-In-Reply-To: <4EE8830E.6050804@redhat.com>
-References: <4EE8830E.6050804@redhat.com>
-Date: Wed, 14 Dec 2011 21:46:50 -0800
-Message-ID: <CAGH67wTyha76pFPVHxQ=WhTw-K7tDz7PmipQakdGYWhqtu_ndA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] pipeio: prevent race between SIGCHLD and open()
+References: <1322044169-30851-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<1322044169-30851-2-git-send-email-gaowanlong@cn.fujitsu.com>
+In-Reply-To: <1322044169-30851-2-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/5] A library used to mount hugetlbfs
+	automatically.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,83 +29,149 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Dec 14, 2011 at 3:05 AM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> This test occasionally hangs on some machines. The hang has been
-> observed on some single CPU ones.
->
-> pipeio code is using signal(2), setting by default SA_RESTART
-> flag, which is also the case for SIGCHLD.
->
-> If last child manages to exit while parent is still at open(),
-> parent gets SIGCHLD and open() is restarted. At this point test
-> hangs.
->
-> Here's strace output from parent point of view:
->
-> =3D=3D=3D snip =3D=3D=3D
-> brk(0) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0=3D 0x11bb000
-> brk(0x11dd000) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=3D 0x1=
-1dd000
-> getpid() =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-=3D 18826
-> stat("tpipe.18826", 0x7fff89e1d410) =A0 =A0 =3D -1 ENOENT (No such file or
-> directory)
-> mknod("tpipe.18826", S_IFIFO|0777) =A0 =A0 =A0=3D 0
-> rt_sigaction(SIGCHLD, {0x400a54, [CHLD], SA_RESTORER|SA_RESTART,
-> =A00x354aa32a20}, {SIG_DFL, [], 0}, 8) =3D 0
-> clone(child_stack=3D0, flags=3DCLONE_CHILD_CLEARTID|
-> =A0CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=3D0x7f53b9ddd9d0) =3D 18827
-> fstat(1, {st_mode=3DS_IFCHR|0620, st_rdev=3Dmakedev(136, 3), ...}) =3D 0
-> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
-> =A0=3D 0x7f53b9de5000
-> open("tpipe.18826", O_RDONLY
-> ) =A0 =A0 =A0 =A0 =A0 =3D ? ERESTARTSYS (To be restarted)
-> --- SIGCHLD (Child exited) @ 0 (0) ---
-> wait4(-1, [{WIFEXITED(s) && WEXITSTATUS(s) =3D=3D 0}], 0, NULL) =3D 18827
-> rt_sigreturn(0xffffffffffffffff) =A0 =A0 =A0 =A0=3D 2
-> open("tpipe.18826", O_RDONLY
-> =3D=3D=3D /snip =3D=3D=3D
->
-> This patch is introducing semaphore, which prevents children from
-> exiting until parent completes open(). It also adds timed wait,
-> so parent waits for children to exit before it deletes pipe and
-> semaphore.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+On 11/23/2011 06:29 PM, Wanlong Gao wrote:
+> This library includes a set of functions used to mount hugetlbfs automatically when doing the hugemmap tests.
+> 
+> Signed-off-by: Tang Chen <tangchen@cn.fujitsu.com>
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 > ---
-> =A0testcases/kernel/ipc/pipeio/pipeio.c | =A0 37
-> ++++++++++++++++++++++++++++++++-
-> =A01 files changed, 35 insertions(+), 2 deletions(-)
+>  testcases/kernel/mem/hugetlb/hugemmap/Makefile |    6 ++-
+>  testcases/kernel/mem/hugetlb/hugemmap/libmnt.c |   58 ++++++++++++++++++++++++
+>  testcases/kernel/mem/hugetlb/hugemmap/libmnt.h |   25 ++++++++++
+>  3 files changed, 88 insertions(+), 1 deletions(-)
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/libmnt.c
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/libmnt.h
+> 
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> index a1ba46e..e6ba4fe 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> @@ -23,5 +23,9 @@
+>  top_srcdir              ?= ../../../../..
+>  
+>  include $(top_srcdir)/include/mk/testcases.mk
+> -include $(abs_srcdir)/../Makefile.inc
+> +
+> +MAKE_TARGETS	:= $(filter-out libmnt,$(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*.c)))
+> +
+> +$(MAKE_TARGETS): %: %.o libmnt.o
+> +
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/libmnt.c b/testcases/kernel/mem/hugetlb/hugemmap/libmnt.c
+> new file mode 100644
+> index 0000000..bf6f857
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/libmnt.c
+> @@ -0,0 +1,58 @@
+> +/*
+> + *
+> + *   Copyright (c) Fujitsu Corp., 2011
+> + *
+> + *   This program is free software;  you can redistribute it and/or modify
+> + *   it under the terms of the GNU General Public License as published by
+> + *   the Free Software Foundation; either version 2 of the License, or
+> + *   (at your option) any later version.
+> + *
+> + *   This program is distributed in the hope that it will be useful,
+> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + *   the GNU General Public License for more details.
+> + *
+> + *   You should have received a copy of the GNU General Public License
+> + *   along with this program;  if not, write to the Free Software
+> + *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> + */
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/mount.h>
+> +#include <errno.h>
+> +
+> +#include "test.h"
+> +#include "libmnt.h"
+> +
+> +void
+> +hugepage_alloc(int num)
 
-Please use:
+It's not necessary to put it into 2 lines.
 
-tst_brkm(TBROK|TERRNO,
+> +{
+> +	FILE *file = fopen("/proc/sys/vm/nr_hugepages", "w+");
+> +	if (file == NULL) {
+> +		tst_brkm(TBROK|TERRNO, NULL,
+> +			"fopen failed on /proc/sys/vm/nr_hugepages");
+> +	}
+> +
+> +	if (fprintf(file, "%d", num) < 0) {
+> +		tst_brkm(TBROK|TERRNO, NULL,
+> +			"fprintf failed on /proc/sys/vm/nr_hugepages");
+> +	}
+> +
+> +	fclose(file);
+> +}
+> +
+> +void
+> +mount_hugetlbfs(char *mount_point)
+> +{
+> +	if (mount("none", mount_point, "hugetlbfs", 0, NULL) < 0) {
+> +		tst_brkm(TBROK|TERRNO, NULL,
+> +			"mount failed on %s", mount_point);
+> +	}
+> +}
+> +
+> +void
+> +umount_hugetlbfs(char *mount_point)
+> +{
+> +	umount(mount_point);
 
-instead of:
+You should check the return code and errno for it.
 
-tst_brkm(TBROK, "... : %s", strerror(errno));
+> +}
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/libmnt.h b/testcases/kernel/mem/hugetlb/hugemmap/libmnt.h
+> new file mode 100644
+> index 0000000..dc1ceed
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/libmnt.h
+> @@ -0,0 +1,25 @@
+> +/*
+> + *   Copyright (c) Fujitsu  Corp., 2011
+> + *
+> + *   This program is free software;  you can redistribute it and/or modify
+> + *   it under the terms of the GNU General Public License as published by
+> + *   the Free Software Foundation; either version 2 of the License, or
+> + *   (at your option) any later version.
+> + *
+> + *   This program is distributed in the hope that it will be useful,
+> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + *   the GNU General Public License for more details.
+> + *
+> + *   You should have received a copy of the GNU General Public License
+> + *   along with this program;  if not, write to the Free Software
+> + *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> + */
+> +
+> +/*
+> + *   libmnt.h - functions to mount hugetlbfs automatically.
+> + */
+> +
+> +void hugepage_alloc(int num);
+> +void mount_hugetlbfs(char *mount_point);
+> +void umount_hugetlbfs(char *mount_point);
 
-Thanks!
--Garrett
 
----------------------------------------------------------------------------=
----
-10 Tips for Better Server Consolidation
-Server virtualization is being driven by many needs.  =
-
-But none more important than the need to reduce IT complexity =
-
-while improving strategic productivity.  Learn More! =
-
-http://www.accelacomm.com/jaw/sdnl/114/51507609/
+------------------------------------------------------------------------------
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
