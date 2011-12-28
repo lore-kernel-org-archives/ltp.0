@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Song.Li@windriver.com>) id 1Rdxzl-0004uV-G5
-	for ltp-list@lists.sourceforge.net; Fri, 23 Dec 2011 05:48:41 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Rdxzk-0002eb-7Z
-	for ltp-list@lists.sourceforge.net; Fri, 23 Dec 2011 05:48:41 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBN5mYOu002310
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 22 Dec 2011 21:48:34 -0800 (PST)
-From: <Song.Li@windriver.com>
-Date: Fri, 23 Dec 2011 13:48:36 +0800
-Message-ID: <1324619316-21596-1-git-send-email-Song.Li@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rfxsm-0004rq-NE
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 18:05:44 +0000
+Date: Wed, 28 Dec 2011 19:16:00 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111228181600.GA28606@saboteur.suse.cz>
+References: <4EFAF5BB.2030407@windriver.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] sched_setparam/2-1.c and sched_setparam/2-2.c
+Content-Disposition: inline
+In-Reply-To: <4EFAF5BB.2030407@windriver.com>
+Subject: Re: [LTP] Posix test case mmap/31-1 fails on Linux/eglibc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,149 +24,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: LiSong <Song.Li@windriver.com>
+Hi!
+> I run mmap/31-1 failed with ENOMEM on linux, with error message:
+> off: fffffffffffff000, len: fffffffffffff000
+> Test FAIL: expect EOVERFLOW but get other error: Cannot allocate memory
+> 
+> But compare to mmap/24-2, it mmap() the same length but pass. Its output:
+> available memory: 18446744073709551615
+> addr: 7f78c54fa000, len: ffffffffffffffff
+> addr: 7f78c54fa000, len: fffffffffffff000
+> Test Pass: mmap/24-2.c Get ENOMEM: Cannot allocate memory
 
-There is no guarantee that the LOOP of the child proecess
-can be certainly big enough on any device at any time.
-So if set_affinity function is available,
-use it to bind the test processes to a single CPU
-rather than using the LOOP.
+At least the mmap/31-1, mmap/28-1, mmap/27-1, mmap/24-2, mmap/11-4 and
+mmap/11-5 are known to fail sometimes and most likely are coded
+incorrecly.
 
-Signed-off-by: Song.Li <Song.Li@windriver.com>
----
- .../conformance/interfaces/sched_setparam/2-1.c    |   26 +++++++++++++++----
- .../conformance/interfaces/sched_setparam/2-2.c    |   26 +++++++++++++++----
- 2 files changed, 40 insertions(+), 12 deletions(-)
+> So I suppose that mmap/31-1 may need update, but I don't know how to 
+> make mmap() overflow as expect.
+> Any suggestion is appreciated.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
-index c548dd4..93f6443 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
-@@ -29,6 +29,7 @@
-  *
-  */
- 
-+#define _GNU_SOURCE
- #include <sched.h>
- #include <stdio.h>
- #include <signal.h>
-@@ -48,6 +49,8 @@
- # include <sys/pstat.h>
- #endif
- 
-+#include <affinity.h>
-+
- #define NB_LOOP         20000000
- #define NB_LOOP_CHILD  200000000 /* shall be much greater than NB_LOOP */
- 
-@@ -119,11 +122,22 @@ int main() {
- 	int *child_pid;
- 	float ratio;
- 
--	nb_child = get_ncpu();
--	if (nb_child == -1) {
--		printf("Can not get the number of CPUs of your machine.\n");
--		return PTS_UNRESOLVED;
--	}
-+        /* Only use a single CPU and one child process when set_affinity is availaible
-+           It's because no matter what value of the counter is set to, 
-+           There is no guarantee that the LOOP of the child can be certainly big enough on any device at any time.
-+        */
-+        int rc = set_affinity(0);
-+        if (rc) {
-+		nb_child = get_ncpu();
-+		if (nb_child == -1) {
-+			printf("Can not get the number of CPUs of your machine.\n");
-+			return PTS_UNRESOLVED;
-+		}
-+        }
-+        else {
-+		nb_child = 1;
-+        }
-+
- 	child_pid = malloc(nb_child);
- 
- 	param.sched_priority = (sched_get_priority_min(SCHED_FIFO) +
-@@ -208,4 +222,4 @@ int main() {
- 		return PTS_UNRESOLVED;
- 	}
- 
--}
-\ No newline at end of file
-+}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
-index 2b71893..c17c5b6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
-@@ -29,6 +29,7 @@
-  *
-  */
- 
-+#define _GNU_SOURCE
- #include <sched.h>
- #include <stdio.h>
- #include <signal.h>
-@@ -48,6 +49,8 @@
- # include <sys/pstat.h>
- #endif
- 
-+#include <affinity.h>
-+
- #define NB_LOOP         20000000
- #define NB_LOOP_CHILD  200000000 /* shall be much greater than NB_LOOP */
- 
-@@ -119,16 +122,27 @@ int main() {
- 	int *child_pid;
- 	float ratio;
- 
--	nb_child = get_ncpu();
--	if (nb_child == -1) {
--		printf("Can not get the number of CPUs of your machine.\n");
--		return PTS_UNRESOLVED;
--	}
-+        /* Only use a single CPU and one child process when set_affinity is availaible
-+           It's because no matter what value of the counter is set to, 
-+           There is no guarantee that the LOOP of the child can be certainly big enough on any device at any time.
-+        */
-+        int rc = set_affinity(0);
-+        if (rc) {
-+		nb_child = get_ncpu();
-+		if (nb_child == -1) {
-+			printf("Can not get the number of CPUs of your machine.\n");
-+			return PTS_UNRESOLVED;
-+		}
-+        }
-+        else {
-+		nb_child = 1;
-+        }
- 	child_pid = malloc(nb_child);
- 	if (child_pid == NULL) {
- 		printf("malloc failed\n");
- 		return PTS_UNRESOLVED;
- 	}
-+
- 	param.sched_priority = (sched_get_priority_min(SCHED_RR) +
- 				 sched_get_priority_max(SCHED_RR)) / 2;
- 
-@@ -211,4 +225,4 @@ int main() {
- 		return PTS_UNRESOLVED;
- 	}
- 
--}
-\ No newline at end of file
-+}
+I would start with careful reading of the mmap() manpages/docs, as most
+likely some of the assumptions that the testcase makes is incorrect.
+
 -- 
-1.7.5.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
