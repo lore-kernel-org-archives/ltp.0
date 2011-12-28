@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RdMat-0002RO-Cz
-	for ltp-list@lists.sourceforge.net; Wed, 21 Dec 2011 13:52:31 +0000
-Date: Wed, 21 Dec 2011 15:02:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111221140207.GD22113@saboteur.suse.cz>
-References: <1324374835-22722-1-git-send-email-Wei.Yang@windriver.com>
-	<1324374835-22722-2-git-send-email-Wei.Yang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Rfo9j-0001dj-SE
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 07:42:35 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Rfo9j-0003Wb-4L
+	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 07:42:35 +0000
+Received: by iakh37 with SMTP id h37so22335356iak.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 27 Dec 2011 23:42:29 -0800 (PST)
+Message-ID: <4EFABB82.7090002@casparzhang.com>
+Date: Wed, 28 Dec 2011 14:47:30 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1324374835-22722-2-git-send-email-Wei.Yang@windriver.com>
-Subject: Re: [LTP] [PATCH 1/1] using mutex to protect the global variable
- accessed by muti-threads
+References: <76bf538a-270a-456b-8b7b-9c651396d76a@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <76bf538a-270a-456b-8b7b-9c651396d76a@zmail13.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH v6 1/2] mem/lib: add vm tunable file
+ read/write/check func
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,21 +31,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei.Yang@windriver.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: Wei Yang <Wei.Yang@windriver.com>
-> ---
->  .../interfaces/pthread_barrier_wait/2-1.c          |    5 ++++-
->  1 files changed, 4 insertions(+), 1 deletions(-)
+On 11/15/2011 09:14 PM, Zhouping Liu wrote:
+> hi, Cyril & Garrett
+> v5 -> v6: updated the sscanf() function in read_meminfo() in order to avoid buffer overflow.
 > 
+> please feel free to comment the patch.
+> BTW: you would miss the patch.
+> 
+> There are several vm tunable files under /proc/sys/vm, I will compose
+> some cases for testing the basic functions of them. This patch is adding
+> the read/write/check functions to mem lib so that I can include them in
+> my testcases.
+> 
+> set_sys_tune():   set a long long integer value to a vm tunable file.
+> get_sys_tune():   get a long long integer value from a vm tunable file.
+> check_sys_tune(): check to confirm the value in tunable file meets our
+>                   expectation.
+> read_meminfo():   read the special value from /proc/meminfo.
+> 
+> Since most of the values in vm tunable files contain only single
+> integer, the functions I added only read/write long long values for now.
+> For those files not storing single interger (e.g. lowmem_reserve_ratio),
+> these functions will not be used in the case.
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> ---
+>  runtest/mm                         |    7 +++
+>  testcases/kernel/mem/include/mem.h |    7 +++
+>  testcases/kernel/mem/lib/mem.c     |   84 +++++++++++++++++++++++++++++++++++-
+>  3 files changed, 97 insertions(+), 1 deletions(-)
 
-Commited, thanks.
+After talking to Zhouping Liu, I committed this patch with some
+modifications.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Caspar
+
 
 ------------------------------------------------------------------------------
 Write once. Port to many.
