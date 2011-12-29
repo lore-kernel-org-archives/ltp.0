@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RWLvO-0004MG-Lq
-	for ltp-list@lists.sourceforge.net; Fri, 02 Dec 2011 05:44:42 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1RWLvN-0001u5-Nz
-	for ltp-list@lists.sourceforge.net; Fri, 02 Dec 2011 05:44:42 +0000
-Received: by yenr11 with SMTP id r11so3154726yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 01 Dec 2011 21:44:36 -0800 (PST)
-Message-ID: <4ED865A9.4080801@casparzhang.com>
-Date: Fri, 02 Dec 2011 13:44:09 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RgLXy-0007u8-3G
+	for ltp-list@lists.sourceforge.net; Thu, 29 Dec 2011 19:21:50 +0000
+Date: Thu, 29 Dec 2011 20:32:12 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111229193212.GB330@saboteur.suse.cz>
+References: <1324619316-21596-1-git-send-email-Song.Li@windriver.com>
+	<20111229193003.GA330@saboteur.suse.cz>
 MIME-Version: 1.0
-References: <1A42CE6F5F474C41B63392A5F80372B212E02C9595@shsmsx501.ccr.corp.intel.com>
-In-Reply-To: <1A42CE6F5F474C41B63392A5F80372B212E02C9595@shsmsx501.ccr.corp.intel.com>
-Subject: Re: [LTP] [Ltp-commits] [patches 1/3]perfcounter api updates
+Content-Disposition: inline
+In-Reply-To: <20111229193003.GA330@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH] sched_setparam/2-1.c and sched_setparam/2-2.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,31 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Xu, Anhua" <anhua.xu@intel.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, "Song,  Youquan" <youquan.song@intel.com>
+To: Song.Li@windriver.com
+Cc: ltp-list@lists.sourceforge.net
 
-On 12/02/2011 12:59 PM, Xu, Anhua wrote:
-> Hi, I'm newbie to LTP and I have some patches to submit. Not sure if it is OK to post here.
-
-Hi, ltp-list@lists.sourceforge.net should be the right place to put your
-patches. And I suggest to take a look at $LTPROOT/doc/style-guide.txt to
-get your patches submitted via git.
-
-Thanks,
-Caspar
-
-> Since perfcounter associated test cases had been out of date. I updated data structures used by new apis. 
-> And add a header file for both perfcounter01 and perfcounter02
+Hi!
+> > There is no guarantee that the LOOP of the child proecess
+> > can be certainly big enough on any device at any time.
+> > So if set_affinity function is available,
+> > use it to bind the test processes to a single CPU
+> > rather than using the LOOP.
 > 
+> The patch logic is looking good, there are some style problems though.
+> 
+> Please use checkpatch.pl (that is packed with linux kernel) and resend.
 
+And also I would suggest moving the get_ncpu() into common header just
+as the affinity is (in another patch).
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
