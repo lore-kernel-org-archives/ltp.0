@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <nikola.ciprich@linuxbox.cz>) id 1RXXEh-0003J4-F7
-	for ltp-list@lists.sourceforge.net; Mon, 05 Dec 2011 12:01:31 +0000
-Received: from gwu.lbox.cz ([62.245.111.132])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RXXEf-0002ei-Vm
-	for ltp-list@lists.sourceforge.net; Mon, 05 Dec 2011 12:01:31 +0000
-Date: Mon, 5 Dec 2011 13:01:18 +0100
-From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
-Message-ID: <20111205120118.GK988@pcnci.linuxbox.cz>
-References: <20111127201232.GB2268@nik-comp.lan>
-	<4ED480A4.2000003@linux.vnet.ibm.com>
-	<20111129220308.GA3953@nik-comp.lan>
-	<4ED90B1C.8000204@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eguan@redhat.com>) id 1RgSak-0005VE-V9
+	for ltp-list@lists.sourceforge.net; Fri, 30 Dec 2011 02:53:10 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RgSai-0006C1-K5
+	for ltp-list@lists.sourceforge.net; Fri, 30 Dec 2011 02:53:10 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id pBU2r24U014678
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 29 Dec 2011 21:53:02 -0500
+Date: Fri, 30 Dec 2011 10:53:00 +0800
+From: Eryu Guan <eguan@redhat.com>
+Message-ID: <20111230025300.GA30803@eguan-t400>
+References: <1325154816-31411-1-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4ED90B1C.8000204@linux.vnet.ibm.com>
-Subject: Re: [LTP] LTP: memcg_stress_test hanging whole box
+Content-Disposition: inline
+In-Reply-To: <1325154816-31411-1-git-send-email-eguan@redhat.com>
+Subject: Re: [LTP] [PATCH] syscalls/setxattr02: New test case to test
+	setxattr(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,113 +31,112 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1571734765820014676=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shubham Goyal <shubham@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
-
-
---===============1571734765820014676==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VSVNCtZB1QZ8vhj+"
-Content-Disposition: inline
-
-
---VSVNCtZB1QZ8vhj+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> Hi Nikola,
-Hello Shubham,
-
->
-> What I recently noticed was the controller test hang problem is coming =
-=20
-> with old versions of LTP. I tried with latest release of LTP on the same =
-=20
-> affected machine and I did not observed any test case or system hang. I =
-=20
-> hope you are using latest LTP downloaded from 'ltp.sourceforge.net'?
-yes, I'm using 20110915.
-
->
-> There might be a issue with oom that it is not able to kill the memory =
-=20
-> intensive process but you need to gather more information about the =20
-> hanging process first. You might want to run only the hanging test i.e. =
-=20
-> memcg_stress and not complete LTP to narrow down the issue. Just check =
-=20
-> whether you are able to reproduce the issue when only memcg_stress test =
-=20
-> is running There are chances that test case itself has some issues.
-yup, it's possible to reproduce just with this one test..
-so do You want me to collect OOM traces and report here? or directly to
-LKML?
-
-thanks
-n.
-
-
->
-> Thanks,
-> Shubham
->
->
-
---=20
--------------------------------------
-Ing. Nikola CIPRICH
-LinuxBox.cz, s.r.o.
-28. rijna 168, 709 01 Ostrava
-
-tel.:   +420 596 603 142
-fax:    +420 596 621 273
-mobil:  +420 777 093 799
-www.linuxbox.cz
-
-mobil servis: +420 737 238 656
-email servis: servis@linuxbox.cz
--------------------------------------
-
---VSVNCtZB1QZ8vhj+
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk7cso4ACgkQ3xdJJrLygV7TAACfWhblH1Nmh7uLi9HpHlH1ibX+
-e30An1GYwYQZpBqtpR08lqERfyBvsg8l
-=OxfT
------END PGP SIGNATURE-----
-
---VSVNCtZB1QZ8vhj+--
-
-
---===============1571734765820014676==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+On Thu, Dec 29, 2011 at 06:33:36PM +0800, Eryu Guan wrote:
+> 
+> In the user.* namespace, only regular files and directories can
+> have extended attributes. Otherwise setxattr(2) should return -1
+> and set errno to EPERM.
+snip
+> +		for (i = 0; i < TST_TOTAL; i++)	{
+> +			tname = tc[i].fname;
+> +			tkey = tc[i].key;
+> +			tvalue = tc[i].value;
+> +			tsize = tc[i].size;
+> +			tflags = tc[i].flags;
+> +			texp_err = tc[i].exp_err;
+
+Please ignore this setxattr02 test too, I'll resend a v2 to remove
+variables above.
+
+Eryu Guan
+> +
+> +			TEST(setxattr(tname, tkey, tvalue, tsize, tflags));
+> +
+> +			if (TEST_ERRNO == texp_err) {
+> +				tst_resm(TPASS | TTERRNO, "expected behavior");
+> +			} else {
+> +				tst_resm(TFAIL | TTERRNO, "unexpected behavior"
+> +				    " - expected errno %d - Got", texp_err);
+> +			}
+> +		}
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int fd;
+> +
+> +	tst_require_root(NULL);
+> +
+> +	tst_tmpdir();
+> +
+> +	/* Test for xattr support */
+> +	fd = creat("testfile", 0644);
+> +	if (fd == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create testfile failed");
+> +	close(fd);
+> +	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
+> +		if (errno == ENOTSUP)
+> +			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
+> +			    "mount without user_xattr option");
+> +	unlink("testfile");
+> +
+> +	/* Create test files */
+> +	fd = creat(file, 0644);
+> +	if (fd == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
+> +		    file);
+> +	close(fd);
+> +
+> +	if (mkdir(dir, 0644) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create test dir(%s) failed",
+> +		    dir);
+> +
+> +	if (symlink(file, sym) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create symlink(%s->%s)"
+> +		    " failed", sym, file);
+> +
+> +	if (mknod(fifo, S_IFIFO | 0777, 0) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create fifo(%s) failed",
+> +		    fifo);
+> +
+> +	if (mknod(chr, S_IFCHR | 0777, 0) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create char special(%s)"
+> +		    " failed", chr);
+> +
+> +	if (mknod(blk, S_IFBLK | 0777, 0) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create block special(%s)"
+> +		    " failed", blk);
+> +
+> +	if (mknod(sock, S_IFSOCK | 0777, 0) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create socket(%s) failed",
+> +		    sock);
+> +
+> +	TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +	tst_rmdir();
+> +}
+
 
 ------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
---===============1571734765820014676==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1571734765820014676==--
-
