@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rfrvl-0004G6-Ee
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 11:44:25 +0000
-Date: Wed, 28 Dec 2011 12:54:40 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RgchV-00067w-Un
+	for ltp-list@lists.sourceforge.net; Fri, 30 Dec 2011 13:40:49 +0000
+Date: Fri, 30 Dec 2011 14:51:14 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111228115439.GA18611@saboteur.suse.cz>
-References: <4EEB065C.4060805@cn.fujitsu.com>
-	<20111222151810.GA1494@saboteur.suse.cz>
-	<4EF98B7B.3040005@cn.fujitsu.com>
+Message-ID: <20111230135114.GC26420@saboteur.suse.cz>
+References: <20111230123309.GA26420@saboteur.suse.cz>
+	<1325249691-24954-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4EF98B7B.3040005@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong of test_proc_kill
+In-Reply-To: <1325249691-24954-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] gitignore: ignore the files compiled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,50 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <wanlong.gao@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-> >> -	$TEST_PATH/memcg_process $2 -s $3 &
-> >> +	($TEST_PATH/memcg_process $2 -s $3 2>/tmp/errlog) &
-> >>  	pid=$!
-> >>  	sleep 1
-> >>  	echo $pid > tasks
-> >>  
-> >>  	/bin/kill -s SIGUSR1 $pid 2> /dev/null
-> >>  	sleep 1
-> >> +
-> >> +	if [ -s /tmp/errlog ]; then
-> >> +		err_msg=`cat /tmp/errlog`
-> >> +		rm -f /tmp/errlog
-> >> +		result $FAIL "$err_msg"
-> >> +		return
-> >> +	fi
-> >> +
-> >> +	rm -f /tmp/errlog
-> >> +
-> > 
-> > Looking into the memcg_process.c it returns return value 1 on failure,
-> > catching it correctly is better option here.
-> > 
-> 
-> I also think catching memcg_process's return value is better option,
-> but I think this way is simple.
-> 
-> Can you tell me a simple way to catch return value of background process?
-> Thanks.
+Hi!
+> ---
+>  .gitignore |   30 ++++++++++++++++++++++++++++++
+>  1 files changed, 30 insertions(+), 0 deletions(-)
 
-See manual pages for jobs and wait.
+Commited, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
