@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rfxsm-0004rq-NE
-	for ltp-list@lists.sourceforge.net; Wed, 28 Dec 2011 18:05:44 +0000
-Date: Wed, 28 Dec 2011 19:16:00 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RgbTy-00033H-4p
+	for ltp-list@lists.sourceforge.net; Fri, 30 Dec 2011 12:22:46 +0000
+Date: Fri, 30 Dec 2011 13:33:09 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111228181600.GA28606@saboteur.suse.cz>
-References: <4EFAF5BB.2030407@windriver.com>
+Message-ID: <20111230123309.GA26420@saboteur.suse.cz>
+References: <1325235186-20625-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4EFAF5BB.2030407@windriver.com>
-Subject: Re: [LTP] Posix test case mmap/31-1 fails on Linux/eglibc
+In-Reply-To: <1325235186-20625-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] gitignore: ignore the files compiled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,30 +24,500 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
+To: Wanlong Gao <wanlong.gao@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I run mmap/31-1 failed with ENOMEM on linux, with error message:
-> off: fffffffffffff000, len: fffffffffffff000
-> Test FAIL: expect EOVERFLOW but get other error: Cannot allocate memory
+> Ignore the files compiled, give the git a clear view.
 > 
-> But compare to mmap/24-2, it mmap() the same length but pass. Its output:
-> available memory: 18446744073709551615
-> addr: 7f78c54fa000, len: ffffffffffffffff
-> addr: 7f78c54fa000, len: fffffffffffff000
-> Test Pass: mmap/24-2.c Get ENOMEM: Cannot allocate memory
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> ---
+>  .gitignore |  460 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 460 insertions(+), 0 deletions(-)
+> 
+> diff --git a/.gitignore b/.gitignore
+> index c2c1e84..5ea6105 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -1,6 +1,7 @@
+>  CVS
+>  *~
+>  *.o
+> +*.o.d
+>  *.obj
+>  *.gdb
+>  lib*.a
+> @@ -42,3 +43,462 @@ patches/
+>  *.patch
+>  *.rej
+>  *.orig
+> +
+> +*.run-test
+> +*.test
+> +logfile.*
+> +/testcases/open_posix_testsuite/conformance/interfaces/*/Makefile
+> +/testcases/open_posix_testsuite/conformance/interfaces/*/*/Makefile
+> +/testcases/open_posix_testsuite/conformance/interfaces/*/*-core
+> +/testcases/open_posix_testsuite/conformance/behavior/*/Makefile
+> +/testcases/open_posix_testsuite/conformance/definitions/*/Makefile
+> +/testcases/open_posix_testsuite/conformance/definitions/*/*/Makefile
+> +
+> +/testcases/open_posix_testsuite/functional/*/Makefile
+> +/testcases/open_posix_testsuite/functional/*/*/Makefile
+> +
+> +/testcases/open_posix_testsuite/stress/*/Makefile
+> +/testcases/open_posix_testsuite/stress/*/*/Makefile
+> +
+> +/testcases/open_posix_testsuite/bin/t0
 
-At least the mmap/31-1, mmap/28-1, mmap/27-1, mmap/24-2, mmap/11-4 and
-mmap/11-5 are known to fail sometimes and most likely are coded
-incorrecly.
+This part is ok.
 
-> So I suppose that mmap/31-1 may need update, but I don't know how to 
-> make mmap() overflow as expect.
-> Any suggestion is appreciated.
+> +/testcases/commands/ade/objdump/test_arch_debug
+> +/testcases/commands/ade/objdump/test_arch_stripped
+> +/testcases/commands/ade/size/test
+> +/testcases/commands/cron/cron_dirs_check
+> +/testcases/commands/eject/check_tray
+> +/testcases/kernel/connectors/pec/event_generator
+> +/testcases/kernel/connectors/pec/pec_listener
+> +/testcases/kernel/containers/check_for_unshare
+> +/testcases/kernel/containers/mqns/check_mqns_enabled
+> +/testcases/kernel/containers/mqns/mqns_01
+> +/testcases/kernel/containers/mqns/mqns_02
+> +/testcases/kernel/containers/mqns/mqns_03
+> +/testcases/kernel/containers/mqns/mqns_04
+> +/testcases/kernel/containers/netns/check_netns_enabled
+> +/testcases/kernel/containers/netns/create_container
+> +/testcases/kernel/containers/netns/crtchild
+> +/testcases/kernel/containers/netns/crtchild_delchild
+> +/testcases/kernel/containers/netns/par_chld_ftp
+> +/testcases/kernel/containers/netns/par_chld_ipv6
+> +/testcases/kernel/containers/netns/sysfsview
+> +/testcases/kernel/containers/netns/two_children_ns
+> +/testcases/kernel/containers/pidns/check_pidns_enabled
+> +/testcases/kernel/containers/pidns/pidns01
+> +/testcases/kernel/containers/pidns/pidns02
+> +/testcases/kernel/containers/pidns/pidns04
+> +/testcases/kernel/containers/pidns/pidns05
+> +/testcases/kernel/containers/pidns/pidns06
+> +/testcases/kernel/containers/pidns/pidns10
+> +/testcases/kernel/containers/pidns/pidns12
+> +/testcases/kernel/containers/pidns/pidns13
+> +/testcases/kernel/containers/pidns/pidns16
+> +/testcases/kernel/containers/pidns/pidns17
+> +/testcases/kernel/containers/pidns/pidns20
+> +/testcases/kernel/containers/pidns/pidns30
+> +/testcases/kernel/containers/pidns/pidns31
+> +/testcases/kernel/containers/sysvipc/check_ipcns_enabled
+> +/testcases/kernel/containers/sysvipc/mesgq_nstest
+> +/testcases/kernel/containers/sysvipc/sem_nstest
+> +/testcases/kernel/containers/sysvipc/semtest_2ns
+> +/testcases/kernel/containers/sysvipc/shmem_2nstest
+> +/testcases/kernel/containers/sysvipc/shmnstest
+> +/testcases/kernel/containers/utsname/check_utsns_enabled
+> +/testcases/kernel/containers/utsname/utstest
+> +/testcases/kernel/controllers/cgroup/fork_processes
+> +/testcases/kernel/controllers/cgroup/getdelays
+> +/testcases/kernel/controllers/cgroup/test_6_2
+> +/testcases/kernel/controllers/cgroup_fj/cgroup_fj_proc
+> +/testcases/kernel/controllers/cpuacct/cpuacct_task01
+> +/testcases/kernel/controllers/cpuctl/cpuctl_def_task01
+> +/testcases/kernel/controllers/cpuctl/cpuctl_def_task02
+> +/testcases/kernel/controllers/cpuctl/cpuctl_def_task03
+> +/testcases/kernel/controllers/cpuctl/cpuctl_def_task04
+> +/testcases/kernel/controllers/cpuctl/cpuctl_latency_check_task
+> +/testcases/kernel/controllers/cpuctl/cpuctl_latency_test
+> +/testcases/kernel/controllers/cpuctl/cpuctl_test01
+> +/testcases/kernel/controllers/cpuctl/cpuctl_test02
+> +/testcases/kernel/controllers/cpuctl/cpuctl_test03
+> +/testcases/kernel/controllers/cpuctl/cpuctl_test04
+> +/testcases/kernel/controllers/cpuctl_fj/cpuctl_fj_cpu-hog
+> +/testcases/kernel/controllers/cpuctl_fj/cpuctl_fj_simple_echo
+> +/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_list_compute
+> +/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog
+> +/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check
+> +/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure
+> +/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_mem_hog
+> +/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test
+> +/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test
+> +/testcases/kernel/controllers/freezer/fork_exec_loop
+> +/testcases/kernel/controllers/freezer/timed_forkbomb
+> +/testcases/kernel/controllers/freezer/vfork
+> +/testcases/kernel/controllers/io-throttle/iobw
+> +/testcases/kernel/controllers/memcg/control/mem_process
+> +/testcases/kernel/controllers/memcg/functional/memcg_getpagesize
+> +/testcases/kernel/controllers/memcg/functional/memcg_process
+> +/testcases/kernel/controllers/memcg/regression/memcg_test_1
+> +/testcases/kernel/controllers/memcg/regression/memcg_test_2
+> +/testcases/kernel/controllers/memcg/regression/memcg_test_4
+> +/testcases/kernel/controllers/memcg/stress/memcg_process_stress
+> +/testcases/kernel/controllers/memctl/memctl_test01
+> +/testcases/kernel/fs/acls/acl_file_test
+> +/testcases/kernel/fs/acls/acl_link_test
+> +/testcases/kernel/fs/doio/doio
+> +/testcases/kernel/fs/doio/growfiles
+> +/testcases/kernel/fs/doio/iogen
+> +/testcases/kernel/fs/fs-bench/create-files
+> +/testcases/kernel/fs/fs-bench/random-access
+> +/testcases/kernel/fs/fs-bench/random-access-del-create
+> +/testcases/kernel/fs/fs_bind/bin/nsclone
+> +/testcases/kernel/fs/fs_bind/bin/smount
+> +/testcases/kernel/fs/fs_di/create_datafile
+> +/testcases/kernel/fs/fs_di/frag
+> +/testcases/kernel/fs/fs_perms/fs_perms
+> +/testcases/kernel/fs/fsstress/fsstress
+> +/testcases/kernel/fs/fsx-linux/fsx-linux
+> +/testcases/kernel/fs/ftest/ftest01
+> +/testcases/kernel/fs/ftest/ftest02
+> +/testcases/kernel/fs/ftest/ftest03
+> +/testcases/kernel/fs/ftest/ftest04
+> +/testcases/kernel/fs/ftest/ftest05
+> +/testcases/kernel/fs/ftest/ftest06
+> +/testcases/kernel/fs/ftest/ftest07
+> +/testcases/kernel/fs/ftest/ftest08
+> +/testcases/kernel/fs/inode/inode01
+> +/testcases/kernel/fs/inode/inode02
+> +/testcases/kernel/fs/lftest/lftest
+> +/testcases/kernel/fs/openfile/openfile
+> +/testcases/kernel/fs/proc/proc01
+> +/testcases/kernel/fs/stream/stream01
+> +/testcases/kernel/fs/stream/stream02
+> +/testcases/kernel/fs/stream/stream03
+> +/testcases/kernel/fs/stream/stream04
+> +/testcases/kernel/fs/stream/stream05
+> +/testcases/kernel/hotplug/memory_hotplug/memtoy
+> +/testcases/kernel/io/direct_io/diotest1
+> +/testcases/kernel/io/direct_io/diotest2
+> +/testcases/kernel/io/direct_io/diotest3
+> +/testcases/kernel/io/direct_io/diotest4
+> +/testcases/kernel/io/direct_io/diotest5
+> +/testcases/kernel/io/direct_io/diotest6
+> +/testcases/kernel/io/direct_io/dma_thread_diotest7
+> +/testcases/kernel/io/disktest/disktest
+> +/testcases/kernel/io/stress_cd/stress_cd
+> +/testcases/kernel/io/writetest/writetest
+> +/testcases/kernel/ipc/ipc_stress/message_queue_test_01
+> +/testcases/kernel/ipc/ipc_stress/message_queue_test_02_ctl
+> +/testcases/kernel/ipc/ipc_stress/message_queue_test_02_get
+> +/testcases/kernel/ipc/ipc_stress/message_queue_test_02_rcv
+> +/testcases/kernel/ipc/ipc_stress/message_queue_test_02_snd
+> +/testcases/kernel/ipc/ipc_stress/message_queue_test_04
+> +/testcases/kernel/ipc/ipc_stress/message_queue_test_05
+> +/testcases/kernel/ipc/ipc_stress/pipe_test_01
+> +/testcases/kernel/ipc/ipc_stress/pipe_test_02
+> +/testcases/kernel/ipc/ipc_stress/semaphore_test_01
+> +/testcases/kernel/ipc/ipc_stress/semaphore_test_02
+> +/testcases/kernel/ipc/ipc_stress/semaphore_test_03
+> +/testcases/kernel/ipc/ipc_stress/shmem_test_01
+> +/testcases/kernel/ipc/ipc_stress/shmem_test_02
+> +/testcases/kernel/ipc/ipc_stress/shmem_test_03
+> +/testcases/kernel/ipc/ipc_stress/shmem_test_04
+> +/testcases/kernel/ipc/ipc_stress/shmem_test_05
+> +/testcases/kernel/ipc/ipc_stress/shmem_test_06
+> +/testcases/kernel/ipc/ipc_stress/shmem_test_07
+> +/testcases/kernel/ipc/ipc_stress/signal_test_01
+> +/testcases/kernel/ipc/ipc_stress/signal_test_02
+> +/testcases/kernel/ipc/ipc_stress/signal_test_03
+> +/testcases/kernel/ipc/ipc_stress/signal_test_04
+> +/testcases/kernel/ipc/ipc_stress/signal_test_05
+> +/testcases/kernel/ipc/ipc_stress/signal_test_06
+> +/testcases/kernel/ipc/ipc_stress/signal_test_07
+> +/testcases/kernel/ipc/pipeio/pipeio
+> +/testcases/kernel/ipc/semaphore/sem01
+> +/testcases/kernel/ipc/semaphore/sem02
+> +/testcases/kernel/mem/cpuset/cpuset01
+> +/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01
+> +/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
+> +/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03
+> +/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04
+> +/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05
+> +/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01
+> +/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02
+> +/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03
+> +/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01
+> +/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02
+> +/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03
+> +/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01
+> +/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01
+> +/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02
+> +/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03
+> +/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05
+> +/testcases/kernel/mem/ksm/ksm01
+> +/testcases/kernel/mem/ksm/ksm02
+> +/testcases/kernel/mem/ksm/ksm03
+> +/testcases/kernel/mem/ksm/ksm04
+> +/testcases/kernel/mem/ksm/ksm05
+> +/testcases/kernel/mem/mem/mem01
+> +/testcases/kernel/mem/mem/mem02
+> +/testcases/kernel/mem/mmapstress/mmap-corruption01
+> +/testcases/kernel/mem/mmapstress/mmapstress01
+> +/testcases/kernel/mem/mmapstress/mmapstress02
+> +/testcases/kernel/mem/mmapstress/mmapstress03
+> +/testcases/kernel/mem/mmapstress/mmapstress04
+> +/testcases/kernel/mem/mmapstress/mmapstress05
+> +/testcases/kernel/mem/mmapstress/mmapstress06
+> +/testcases/kernel/mem/mmapstress/mmapstress07
+> +/testcases/kernel/mem/mmapstress/mmapstress08
+> +/testcases/kernel/mem/mmapstress/mmapstress09
+> +/testcases/kernel/mem/mmapstress/mmapstress10
+> +/testcases/kernel/mem/mtest01/mtest01
+> +/testcases/kernel/mem/mtest05/dummy
+> +/testcases/kernel/mem/mtest05/mmstress
+> +/testcases/kernel/mem/mtest06/mmap1
+> +/testcases/kernel/mem/mtest06/mmap2
+> +/testcases/kernel/mem/mtest06/mmap3
+> +/testcases/kernel/mem/mtest06/shmat1
+> +/testcases/kernel/mem/mtest07/mallocstress
+> +/testcases/kernel/mem/mtest07/shm_test
+> +/testcases/kernel/mem/oom/oom01
+> +/testcases/kernel/mem/oom/oom02
+> +/testcases/kernel/mem/oom/oom03
+> +/testcases/kernel/mem/oom/oom04
+> +/testcases/kernel/mem/page/page01
+> +/testcases/kernel/mem/page/page02
+> +/testcases/kernel/mem/shmt/shmt02
+> +/testcases/kernel/mem/shmt/shmt03
+> +/testcases/kernel/mem/shmt/shmt04
+> +/testcases/kernel/mem/shmt/shmt05
+> +/testcases/kernel/mem/shmt/shmt06
+> +/testcases/kernel/mem/shmt/shmt07
+> +/testcases/kernel/mem/shmt/shmt08
+> +/testcases/kernel/mem/shmt/shmt09
+> +/testcases/kernel/mem/shmt/shmt10
+> +/testcases/kernel/mem/thp/thp01
+> +/testcases/kernel/mem/vma/vma01
+> +/testcases/kernel/mem/vma/vma02
+> +/testcases/kernel/mem/vmtests/data_space
+> +/testcases/kernel/mem/vmtests/stack_space
+> +/testcases/kernel/mem/zram/zram01
+> +/testcases/kernel/numa/numa_node_size
+> +/testcases/kernel/numa/support_numa
+> +/testcases/kernel/performance_counters/performance_counter01
+> +/testcases/kernel/performance_counters/performance_counter02
+> +/testcases/kernel/pty/hangup01
+> +/testcases/kernel/pty/ptem01
+> +/testcases/kernel/pty/pty01
+> +/testcases/kernel/sched/cfs-scheduler/hackbench
+> +/testcases/kernel/sched/clisrv/pthcli
+> +/testcases/kernel/sched/clisrv/pthserv
+> +/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity
+> +/testcases/kernel/sched/hyperthreading/ht_enabled/ht_enabled
+> +/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_interrupt
+> +/testcases/kernel/sched/nptl/nptl01
+> +/testcases/kernel/sched/process_stress/process
+> +/testcases/kernel/sched/pthreads/pth_str01
+> +/testcases/kernel/sched/pthreads/pth_str02
+> +/testcases/kernel/sched/pthreads/pth_str03
+> +/testcases/kernel/sched/sched_stress/sched_datafile
+> +/testcases/kernel/sched/sched_stress/sched_driver
+> +/testcases/kernel/sched/sched_stress/sched_tc0
+> +/testcases/kernel/sched/sched_stress/sched_tc1
+> +/testcases/kernel/sched/sched_stress/sched_tc2
+> +/testcases/kernel/sched/sched_stress/sched_tc3
+> +/testcases/kernel/sched/sched_stress/sched_tc4
+> +/testcases/kernel/sched/sched_stress/sched_tc5
+> +/testcases/kernel/sched/sched_stress/sched_tc6
+> +/testcases/kernel/sched/tool/time-schedule
+> +/testcases/kernel/sched/tool/trace_sched
+> +/testcases/kernel/security/cap_bound/cap_bounds_r
+> +/testcases/kernel/security/cap_bound/cap_bounds_rw
+> +/testcases/kernel/security/cap_bound/cap_bset_inh_bounds
+> +/testcases/kernel/security/cap_bound/check_pe
+> +/testcases/kernel/security/cap_bound/dummy
+> +/testcases/kernel/security/cap_bound/exec_with_inh
+> +/testcases/kernel/security/cap_bound/exec_without_inh
+> +/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate
+> +/testcases/kernel/security/integrity/ima/src/ima_measure
+> +/testcases/kernel/security/integrity/ima/src/ima_mmap
+> +/testcases/kernel/security/p9auth/unhex
+> +/testcases/kernel/security/securebits/check_keepcaps
+> +/testcases/kernel/security/smack/notroot
+> +/testcases/kernel/security/smack/smack_set_socket_labels
+> +/testcases/kernel/security/tomoyo/newns
+> +/testcases/kernel/security/tomoyo/tomoyo_accept_test
+> +/testcases/kernel/security/tomoyo/tomoyo_file_test
+> +/testcases/kernel/security/tomoyo/tomoyo_filesystem_test
+> +/testcases/kernel/security/tomoyo/tomoyo_new_file_test
+> +/testcases/kernel/security/tomoyo/tomoyo_new_test
+> +/testcases/kernel/security/tomoyo/tomoyo_policy_io_test
+> +/testcases/kernel/security/tomoyo/tomoyo_policy_memory_test
+> +/testcases/kernel/security/tomoyo/tomoyo_rewrite_test
+> +/testcases/kernel/syscalls/fork/fork13
+> +/testcases/kernel/syscalls/getrusage/getrusage03
+> +/testcases/kernel/syscalls/getrusage/getrusage03_child
+> +/testcases/kernel/syscalls/mlock/mlock04
+> +/testcases/kernel/syscalls/pwrite/pwrite01_64
+> +/testcases/kernel/syscalls/pwrite/pwrite02_64
+> +/testcases/kernel/syscalls/pwrite/pwrite03_64
+> +/testcases/kernel/syscalls/pwrite/pwrite04_64
+> +/testcases/kernel/syscalls/syslog/syslog11
+> +/testcases/kernel/syscalls/syslog/syslog12
+> +/testcases/kernel/syscalls/syslog/syslogtst
+> +/testcases/kernel/timers/clock_gettime/clock_gettime02
+> +/testcases/kernel/timers/clock_gettime/clock_gettime03
+> +/testcases/kernel/timers/clock_settime/clock_settime02
+> +/testcases/kernel/timers/clock_settime/clock_settime03
+> +/testcases/kernel/timers/timer_create/timer_create02
+> +/testcases/kernel/timers/timer_create/timer_create03
+> +/testcases/kernel/timers/timer_create/timer_create04
+> +/testcases/kernel/timers/timer_delete/timer_delete02
+> +/testcases/kernel/timers/timer_delete/timer_delete03
+> +/testcases/kernel/timers/timer_settime/timer_settime02
+> +/testcases/kernel/timers/timer_settime/timer_settime03
+> +/testcases/kernel/tracing/ftrace_stress_test/ftrace_get_page_size
+> +/testcases/misc/crash/crash01
+> +/testcases/misc/crash/crash02
+> +/testcases/misc/f00f/f00f
+> +/testcases/misc/math/abs/abs01
+> +/testcases/misc/math/atof/atof01
+> +/testcases/misc/math/float/bessel/genbessel
+> +/testcases/misc/math/float/bessel/genj0
+> +/testcases/misc/math/float/bessel/genj1
+> +/testcases/misc/math/float/bessel/genlgamma
+> +/testcases/misc/math/float/bessel/geny0
+> +/testcases/misc/math/float/bessel/geny1
+> +/testcases/misc/math/float/exp_log/genexp
+> +/testcases/misc/math/float/exp_log/genexp_log
+> +/testcases/misc/math/float/exp_log/genfrexp
+> +/testcases/misc/math/float/exp_log/genhypot
+> +/testcases/misc/math/float/exp_log/genldexp
+> +/testcases/misc/math/float/exp_log/genlog
+> +/testcases/misc/math/float/exp_log/genlog10
+> +/testcases/misc/math/float/exp_log/genmodf
+> +/testcases/misc/math/float/float_bessel
+> +/testcases/misc/math/float/float_exp_log
+> +/testcases/misc/math/float/float_iperb
+> +/testcases/misc/math/float/float_power
+> +/testcases/misc/math/float/float_trigo
+> +/testcases/misc/math/float/iperb/gencosh
+> +/testcases/misc/math/float/iperb/geniperb
+> +/testcases/misc/math/float/iperb/gensinh
+> +/testcases/misc/math/float/iperb/gentanh
+> +/testcases/misc/math/float/power/genceil
+> +/testcases/misc/math/float/power/genfabs
+> +/testcases/misc/math/float/power/genfloor
+> +/testcases/misc/math/float/power/genfmod
+> +/testcases/misc/math/float/power/genpow
+> +/testcases/misc/math/float/power/genpower
+> +/testcases/misc/math/float/power/gensqrt
+> +/testcases/misc/math/float/trigo/genacos
+> +/testcases/misc/math/float/trigo/genasin
+> +/testcases/misc/math/float/trigo/genatan
+> +/testcases/misc/math/float/trigo/genatan2
+> +/testcases/misc/math/float/trigo/gencos
+> +/testcases/misc/math/float/trigo/gensin
+> +/testcases/misc/math/float/trigo/gentan
+> +/testcases/misc/math/float/trigo/gentrigo
+> +/testcases/misc/math/fptests/fptest01
+> +/testcases/misc/math/fptests/fptest02
+> +/testcases/misc/math/nextafter/nextafter01
+> +/testcases/misc/tcore_patch_test_suites/tcore
+> +/testcases/network/datafiles/
+> +/testcases/network/lib6/asapi_01
+> +/testcases/network/lib6/asapi_02
+> +/testcases/network/lib6/asapi_03
+> +/testcases/network/lib6/asapi_04
+> +/testcases/network/lib6/asapi_05
+> +/testcases/network/lib6/asapi_06
+> +/testcases/network/lib6/asapi_07
+> +/testcases/network/lib6/getaddrinfo_01
+> +/testcases/network/lib6/in6_01
+> +/testcases/network/lib6/in6_02
+> +/testcases/network/multicast/mc_commo/mc_recv
+> +/testcases/network/multicast/mc_commo/mc_send
+> +/testcases/network/multicast/mc_member/member
+> +/testcases/network/multicast/mc_opts/opts
+> +/testcases/network/multicast/mc_opts/opts_e
+> +/testcases/network/nfs/nfs01/open_files
+> +/testcases/network/nfs/nfs04/nfs04_create_file
+> +/testcases/network/nfs/nfs_fsstress/fsstress
+> +/testcases/network/nfs/nfslock01/nfs_flock
+> +/testcases/network/nfs/nfslock01/nfs_flock_dgen
+> +/testcases/network/nfs/nfslock01/nfs_flock_frk
+> +/testcases/network/nfs/nfsstress/make_tree
+> +/testcases/network/nfsv4/acl/acl1
+> +/testcases/network/nfsv4/locks/locktests
+> +/testcases/network/rpc/basic_tests/rpc01/rpc1
+> +/testcases/network/rpc/basic_tests/rpc01/rpc_server
+> +/testcases/network/sctp/func_tests/test_1_to_1_accept_close
+> +/testcases/network/sctp/func_tests/test_1_to_1_addrs
+> +/testcases/network/sctp/func_tests/test_1_to_1_connect
+> +/testcases/network/sctp/func_tests/test_1_to_1_connectx
+> +/testcases/network/sctp/func_tests/test_1_to_1_events
+> +/testcases/network/sctp/func_tests/test_1_to_1_initmsg_connect
+> +/testcases/network/sctp/func_tests/test_1_to_1_nonblock
+> +/testcases/network/sctp/func_tests/test_1_to_1_recvfrom
+> +/testcases/network/sctp/func_tests/test_1_to_1_recvmsg
+> +/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo
+> +/testcases/network/sctp/func_tests/test_1_to_1_send
+> +/testcases/network/sctp/func_tests/test_1_to_1_sendmsg
+> +/testcases/network/sctp/func_tests/test_1_to_1_sendto
+> +/testcases/network/sctp/func_tests/test_1_to_1_shutdown
+> +/testcases/network/sctp/func_tests/test_1_to_1_socket_bind_listen
+> +/testcases/network/sctp/func_tests/test_1_to_1_sockopt
+> +/testcases/network/sctp/func_tests/test_1_to_1_threads
+> +/testcases/network/sctp/func_tests/test_assoc_abort
+> +/testcases/network/sctp/func_tests/test_assoc_shutdown
+> +/testcases/network/sctp/func_tests/test_autoclose
+> +/testcases/network/sctp/func_tests/test_basic
+> +/testcases/network/sctp/func_tests/test_basic_v6
+> +/testcases/network/sctp/func_tests/test_connect
+> +/testcases/network/sctp/func_tests/test_connectx
+> +/testcases/network/sctp/func_tests/test_fragments
+> +/testcases/network/sctp/func_tests/test_fragments_v6
+> +/testcases/network/sctp/func_tests/test_getname
+> +/testcases/network/sctp/func_tests/test_getname_v6
+> +/testcases/network/sctp/func_tests/test_inaddr_any
+> +/testcases/network/sctp/func_tests/test_inaddr_any_v6
+> +/testcases/network/sctp/func_tests/test_peeloff
+> +/testcases/network/sctp/func_tests/test_peeloff_v6
+> +/testcases/network/sctp/func_tests/test_recvmsg
+> +/testcases/network/sctp/func_tests/test_sctp_sendrecvmsg
+> +/testcases/network/sctp/func_tests/test_sctp_sendrecvmsg_v6
+> +/testcases/network/sctp/func_tests/test_sockopt
+> +/testcases/network/sctp/func_tests/test_sockopt_v6
+> +/testcases/network/sctp/func_tests/test_tcp_style
+> +/testcases/network/sctp/func_tests/test_tcp_style_v6
+> +/testcases/network/sctp/func_tests/test_timetolive
+> +/testcases/network/sctp/func_tests/test_timetolive_v6
+> +/testcases/network/sockets/ltpClient
+> +/testcases/network/sockets/ltpServer
+> +/testcases/network/stress/ns-tools/ns-icmp_redirector
+> +/testcases/network/stress/ns-tools/ns-icmpv4_sender
+> +/testcases/network/stress/ns-tools/ns-icmpv6_sender
+> +/testcases/network/stress/ns-tools/ns-igmp_querier
+> +/testcases/network/stress/ns-tools/ns-mcast_join
+> +/testcases/network/stress/ns-tools/ns-mcast_receiver
+> +/testcases/network/stress/ns-tools/ns-tcpclient
+> +/testcases/network/stress/ns-tools/ns-tcpserver
+> +/testcases/network/stress/ns-tools/ns-udpclient
+> +/testcases/network/stress/ns-tools/ns-udpsender
+> +/testcases/network/stress/ns-tools/ns-udpserver
+> +/testcases/network/tcp_cmds/echo/createfile
+> +/testcases/network/tcp_cmds/echo/echoes
+> +/testcases/network/tcp_cmds/echo/echoes6
+> +/testcases/network/tcp_cmds/perf_lan/pingpong
+> +/testcases/network/tcp_cmds/perf_lan/pingpong6
+> +/testcases/network/tcp_cmds/sendfile/testsf_c
+> +/testcases/network/tcp_cmds/sendfile/testsf_c6
+> +/testcases/network/tcp_cmds/sendfile/testsf_s
+> +/testcases/network/tcp_cmds/sendfile/testsf_s6
 
-I would start with careful reading of the mmap() manpages/docs, as most
-likely some of the assumptions that the testcase makes is incorrect.
+Hmm, I don't like the idea of listing all of the
+test binaries here, as it the list would need
+update each time we add testcase.
+
+> +/tools/apicmds/tst_brk
+> +/tools/apicmds/tst_brkm
+> +/tools/apicmds/tst_exit
+> +/tools/apicmds/tst_flush
+> +/tools/apicmds/tst_kvercmp
+> +/tools/apicmds/tst_res
+> +/tools/apicmds/tst_resm
+> +/tools/genload/genload
+> +/tools/genload/stress
+> +/utils/benchmark/ebizzy-0.3/ebizzy
+
+This part is ok as well.
 
 -- 
 Cyril Hrubis
