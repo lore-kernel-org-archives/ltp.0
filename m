@@ -2,18 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rdhv8-0007Mp-Fk
-	for ltp-list@lists.sourceforge.net; Thu, 22 Dec 2011 12:38:50 +0000
-Date: Thu, 22 Dec 2011 13:48:29 +0100
+	(envelope-from <chrubis@suse.de>) id 1RgdN6-0007nS-3O
+	for ltp-list@lists.sourceforge.net; Fri, 30 Dec 2011 14:23:48 +0000
+Date: Fri, 30 Dec 2011 15:34:13 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20111222124829.GB29787@saboteur.suse.cz>
-References: <1324554978-26997-1-git-send-email-eguan@redhat.com>
-	<1324554978-26997-2-git-send-email-eguan@redhat.com>
+Message-ID: <20111230143413.GA29431@saboteur.suse.cz>
+References: <1324869052-22433-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1324554978-26997-2-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] syscalls/getxattr01: new testcase to test
- getxattr(2) basic function
+In-Reply-To: <1324869052-22433-1-git-send-email-jin.li@windriver.com>
+Subject: Re: [LTP] [PATCH] This fix make sure the function "setpgid" get
+ invoked in the right time in setpgid03 test02.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,249 +25,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jin Li <jin.li@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, haotian.zhang@windriver.com
 
 Hi!
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 3056659..48caaae 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -420,6 +420,8 @@ getuid02_16 getuid02_16
->  getuid03 getuid03
->  getuid03_16 getuid03_16
+> In setpgid03 test02, the function "setpgid" is likely to be invoked
+> in father process before the function "execlp" get invoked in child
+> process. Sometimes The performance or NFS file system may cause that
+> the switch of context could not be done even after the 1 second sleeping
+> of father process. In this case, the setpgid will get unexpected error
+> number. Add sync mechanism to insure the 'setpgid' get invoked in the right
+> order.
+> 
+> Signed-off-by: Jin Li <jin.li@windriver.com>
+> ---
+>  void do_child(void);
+>  void setup(void);
+> @@ -60,6 +61,7 @@ int main(int ac, char **av)
 >  
-> +getxattr01 getxattr01
-> +
->  #Needs tty device.
->  #ioctl01 ioctl01 -D /dev/tty0
->  #ioctl02 ioctl02 -D /dev/tty0
-> diff --git a/testcases/kernel/syscalls/getxattr/Makefile b/testcases/kernel/syscalls/getxattr/Makefile
-> new file mode 100644
-> index 0000000..72544c1
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/getxattr/Makefile
-> @@ -0,0 +1,23 @@
-> +#
-> +#  Copyright (c) Red Hat Inc., 2011
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c b/testcases/kernel/syscalls/getxattr/getxattr01.c
-> new file mode 100644
-> index 0000000..e05628f
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
-> @@ -0,0 +1,175 @@
-> +/*
-> + * Copyright (C) 2011  Red Hat, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +
-> +/*
-> + * Basic tests for getxattr(2) and make sure getxattr(2) handles error
-> + * conditions correctly.
-> + *
-> + * There are 4 test cases:
-> + * 1. Get an non-existing attribute,
-> + *    getxattr(2) should return -1 and set errno to ENOATTR
-> + * 2. Buffer size is smaller than attribute value size,
-> + *    getxattr(2) should return -1 and set errno to ERANGE
-> + * 3. Get attribute, getxattr(2) should succeed
-> + * 4. Verify the attribute got by getxattr(2) is same as the value we set
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <attr/xattr.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +#define XATTR_TEST_KEY "user.testkey"
-> +#define XATTR_TEST_VALUE "this is a test value"
-> +#define BUFFSIZE 64
-> +#define NR_TEST 3
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +char *TCID = "getxattr01";
-> +char filename[BUFSIZ];
-> +int TST_TOTAL = NR_TEST + 1;
-> +
-> +struct test_case {
-> +	char *fname;
-> +	char *key;
-> +	char *value;
-> +	size_t size;
-> +	int exp_err;
-> +};
-> +struct test_case tc[NR_TEST];
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	int i;
-> +	char *msg;
-> +	char *tname;
-> +	char *tkey;
-> +	char *tvalue;
-> +	size_t tsize;
-> +	int texp_err;
-> +
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +
-> +		for (i = 0; i < NR_TEST; i++)	{
-> +			tname = tc[i].fname;
-> +			tkey = tc[i].key;
-> +			tvalue = tc[i].value;
-> +			tsize = tc[i].size;
-> +			texp_err = tc[i].exp_err;
-> +
-> +			TEST(getxattr(tname, tkey, tvalue, tsize));
-> +
-> +			if (TEST_ERRNO == texp_err) {
-> +				tst_resm(TPASS, "expected behavior - errno = %d"
-> +				    " : %s", TEST_ERRNO, strerror(TEST_ERRNO));
-> +			} else {
-> +				tst_resm(TFAIL, "unexpected behavior - %d : %s "
-> +				    "- expected %d", TEST_ERRNO,
-> +				    strerror(TEST_ERRNO), texp_err);
+>  	int lc;			/* loop counter */
+>  	char *msg;		/* message returned from parse_opts */
+> +	char cmd_line[1024];    /* command line for exec */
 
-The same here, you could use TTERRNO here.
+Please don't add trivial comments (and remove trivial comments that are
+in the code allready).
 
+>  	/* parse standard options */
+>  	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
+> @@ -74,6 +76,10 @@ int main(int ac, char **av)
+>  	 */
+>  	setup();
+>  
+> +	sprintf(temp_file,"/tmp/%s_file",TCID);
+
+Maybe it would be better to use tst_tmpdir() so the test has it's own
+and unique directory to create temp files instead of utlizing /tmp
+directly. (several instances of the test could then run at once).
+
+> +	sprintf(cmd_line,"touch %s;sleep 5s;rm -f %s", temp_file, temp_file);
+
+Hm, I still don't think the race is gone now. As once the shell calls
+rm, it exits, so most likely when the parent calls setpgid() the process
+is gone (and from the original source it seems that the process should
+be running while the parent calls setpgid()). And moreover the file
+doesn't need to be created when the parent tries access() for the first
+time.
+
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>  
+>  		/* reset Tst_count in case we are looping */
+> @@ -132,12 +138,15 @@ int main(int ac, char **av)
+>  
+>  		}
+>  		if (pid == 0) {
+> -			if (execlp("sleep", "sleep", "3", NULL) < 0) {
+> +			if (execlp("sh", "sh", "-c", cmd_line, NULL) < 0) {
+>  				perror("exec failed");
+>  			}
+>  			exit(127);
+>  		} else {
+> -			sleep(1);
+> +			while ( access(temp_file, F_OK) != 0 ) {
+> +                            sleep(1);
 > +			}
-> +		}
 > +
-> +		if (strcmp(tvalue, XATTR_TEST_VALUE))
-> +			tst_resm(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
-> +			    XATTR_TEST_VALUE, tvalue);
-> +		else
-> +			tst_resm(TPASS, "Got the right value");
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int fd;
-> +	int i;
-> +
-> +	tst_require_root(NULL);
-> +
-> +	tst_tmpdir();
-> +
-> +	/* Create test file and setup initial xattr */
-> +	snprintf(filename, BUFSIZ, "getxattr01testfile");
-> +	fd = creat(filename, 0644);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
-> +		    filename);
-> +	close(fd);
-> +	if (setxattr(filename, XATTR_TEST_KEY, XATTR_TEST_VALUE,
-> +	    strlen(XATTR_TEST_VALUE), XATTR_CREATE) == -1) {
-> +		if (errno == ENOTSUP) {
-> +			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
-> +			    "mount without user_xattr option");
-> +		}
-> +	}
-> +
-> +	/* Prepare test cases */
-> +	memset(tc, 0, NR_TEST * sizeof(tc[0]));
-> +	for (i = 0; i < NR_TEST; i++) {
-> +		tc[i].fname = filename;
-> +		tc[i].key = XATTR_TEST_KEY;
-> +		tc[i].value = malloc(BUFFSIZE);
-> +		if (tc[i].value == NULL) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			    "Cannot allocate memory");
-> +		}
-> +		tc[i].size = BUFFSIZE - 1;
-> +	}
-> +
-> +	tc[0].key = "user.nosuchkey";
-> +	tc[0].exp_err = ENOATTR;
-> +
-> +	tc[1].size = 1;
-> +	tc[1].exp_err = ERANGE;
-> +
-> +	tc[2].exp_err = 0;
+>  			rval = setpgid(pid, getppid());
+>  			if (errno == EACCES) {
+>  				tst_resm(TPASS, "setpgid SUCCEEDED to set "
+> @@ -203,4 +212,4 @@ void cleanup(void)
+>  	 */
+>  	TEST_CLEANUP;
 
-This part could be initalized statically as a whole, or not?
-
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +	tst_rmdir();
-> +}
+And please use the checkpatch next time.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
