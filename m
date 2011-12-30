@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RYxH6-0001E7-2P
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 10:01:52 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RYxH5-0001Ug-69
-	for ltp-list@lists.sourceforge.net; Fri, 09 Dec 2011 10:01:52 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pB9A1iL2003321
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 9 Dec 2011 02:01:45 -0800 (PST)
-Message-ID: <4EE1DC85.3060301@windriver.com>
-Date: Fri, 9 Dec 2011 18:01:41 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RgcIw-0003lw-Vi
+	for ltp-list@lists.sourceforge.net; Fri, 30 Dec 2011 13:15:26 +0000
+Date: Fri, 30 Dec 2011 14:25:52 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20111230132552.GB26420@saboteur.suse.cz>
+References: <4EEB065C.4060805@cn.fujitsu.com>
+	<20111222151810.GA1494@saboteur.suse.cz>
+	<4EF98B7B.3040005@cn.fujitsu.com>
+	<20111228115439.GA18611@saboteur.suse.cz>
+	<4EFBCE29.9070000@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] Question about priority of pthread rwlock on linux
+Content-Disposition: inline
+In-Reply-To: <4EFBCE29.9070000@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] memcg_function:fix the wrong of test_proc_kill
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,122 +25,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4575064121722602883=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============4575064121722602883==
-Content-Type: multipart/alternative;
-	boundary="------------080303050405090909050906"
-
---------------080303050405090909050906
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hello everyone,
-
-I am working on Yocto( a kind of  embedded linux) to make POSIX test 
-cases pass. It uses kernel 3.0 and eglibc 2.3.
-
-There are 3 failed test cases about pthread rwlock:
-pthread_rwlock_rdlock/2-1 pthread_rwlock_rdlock/2-2  
-pthread_rwlock_unlock/3-1
-
-In pthread_rwlock_rdlock/2-1,  main thread*read lock* a rwlock,  child 
-thread1 *write lock* the rwlock with a medium priority, so it should be 
-blocked. child thread2 try to *read lock *the rwlock with low priority, 
-the case says child thread2 should block too. But in Yocto linux child 
-thread2 doesn't block and then read lock the rwlock, that make test case 
-fail.
-
-In eglibc nptl implementation, rwlock has a element "__flags" to 
-identify prefer write lock or read lock, default is to prefer read lock. 
-If change __flags to prefer write lock, the test case will pass.
-
-My questions are:
-1 What is the test case base on? I checked the  POSIX.1-2008 but didn't 
-find description priority about the pthread rwlock? Could anyone give me 
-a source that make me to understand it better?
-2 Which C library or platform can make this case pass? So that I can 
-compare it with eglibc.
-
-Thanks a lot!
-Kai
-
-
-
-
---------------080303050405090909050906
-Content-Type: text/html; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-
-    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    Hello everyone,<br>
-    <br>
-    I am working on Yocto( a kind of&nbsp; embedded linux) to make POSIX test
-    cases pass. It uses kernel 3.0 and eglibc 2.3.<br>
-    <br>
-    There are 3 failed test cases about pthread rwlock: <br>
-    pthread_rwlock_rdlock/2-1 pthread_rwlock_rdlock/2-2&nbsp;
-    pthread_rwlock_unlock/3-1<br>
-    <br>
-    In pthread_rwlock_rdlock/2-1,&nbsp; main thread<b> read lock</b> a
-    rwlock,&nbsp; child thread1 <b>write lock</b> the rwlock with a medium
-    priority, so it should be blocked. child thread2 try to&nbsp;<b> read
-      lock </b>the rwlock with low priority, the case says child
-    thread2 should block too. But in Yocto linux child thread2 doesn't
-    block and then read lock the rwlock, that make test case fail.<br>
-    <br>
-    In eglibc nptl implementation, rwlock has a element "__flags" to
-    identify prefer write lock or read lock, default is to prefer read
-    lock. If change __flags to prefer write lock, the test case will
-    pass. <br>
-    <br>
-    My questions are:<br>
-    1 What is the test case base on? I checked the&nbsp; POSIX.1-2008 but
-    didn't find description priority about the pthread rwlock? Could
-    anyone give me a source that make me to understand it better?<br>
-    2 Which C library or platform can make this case pass? So that I can
-    compare it with eglibc.<br>
-    <br>
-    Thanks a lot!<br>
-    Kai<br>
-    <br>
-    <br>
-    <br>
-  </body>
-</html>
-
---------------080303050405090909050906--
-
-
---===============4575064121722602883==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
+
+Hi!
+> Cyril Hrubis said the following on 2011-12-28 19:54:
+> >> Can you tell me a simple way to catch return value of background process?
+> >> Thanks.
+> > 
+> > See manual pages for jobs and wait.
+> > 
+> 
+> Thanks for your suggest.
+> I know wait, but I think wait is not better than catching error message.
+> 
+> If you think wait is better, the following patch use wait.
+
+Yes, I think this way is better than looking for error logs.
+
+Also note that running the sleep 2; kill ... in background is not
+necessary as shell is required to save return status from background
+command if it's pid was saved by $!.
+
+Generally sequence of
+
+command&
+pid=$!
+kill $pid
+wait $pid
+
+Should work as expected.
+
+>  	sleep 1
+>  	echo $pid > tasks
+>  
+> -	/bin/kill -s SIGUSR1 $pid 2> /dev/null
+> -	sleep 1
+> +	{
+> +		sleep 2
+> +		/bin/kill -s SIGUSR1 $pid 2> /dev/null
+> +	}&
+> +
+> +	wait $pid
+> +	if [ $? -eq 1 ]; then
+> +		result $FAIL "process $pid is killed by error"
+> +		return
+> +	fi
+> +
+>  	ps -p $pid > /dev/null 2> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		result $PASS "process $pid is killed"
+
+Hmm I see the problem here, if the test wouldn't exit by the 
+getting the SIGUSR1 the wait will run forever. So the fail based
+solution may actually be better here, alghough I still think it's a
+little fragile.
+
+And I recall saying that earlier, the way the memcg_process is
+controlled by a signal is fundamentally flaved. The correct way
+for this would be creating a unix socket (or use whatever interface to
+interprocess communication). Then you can comunicate with the
+memcg_process running in background and gets it's status that way.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Cloud Services Checklist: Pricing and Packaging Optimization
-This white paper is intended to serve as a reference, checklist and point of 
-discussion for anyone considering optimizing the pricing and packaging model 
-of a cloud services business. Read Now!
-http://www.accelacomm.com/jaw/sfnl/114/51491232/
---===============4575064121722602883==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4575064121722602883==--
-
