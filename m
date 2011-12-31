@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1Rgpgi-0007u1-Ko
-	for ltp-list@lists.sourceforge.net; Sat, 31 Dec 2011 03:32:52 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Rgpgh-0000FS-Dd
-	for ltp-list@lists.sourceforge.net; Sat, 31 Dec 2011 03:32:52 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id pBV3WjUf026874
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapierfilter@gmail.com>) id 1RgqV3-0006WQ-4n
+	for ltp-list@lists.sourceforge.net; Sat, 31 Dec 2011 04:24:53 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RgqV2-0007lw-FH
+	for ltp-list@lists.sourceforge.net; Sat, 31 Dec 2011 04:24:53 +0000
+Received: by iakh37 with SMTP id h37so27787147iak.34
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 30 Dec 2011 19:32:45 -0800 (PST)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Sat, 31 Dec 2011 11:32:46 +0800
-Message-ID: <1325302366-375-1-git-send-email-kai.kang@windriver.com>
+	Fri, 30 Dec 2011 20:24:47 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] mq_timedsend/5-1: make parent has chance to sleep
+In-Reply-To: <1325226803-29578-1-git-send-email-YanFeng.Shang@windriver.com>
+References: <1325226803-29578-1-git-send-email-YanFeng.Shang@windriver.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 30 Dec 2011 23:24:27 -0500
+Message-ID: <CAJaTeTr0dDyBmT5docM4bt8zP2qKaepRzUXEpzZk-fMVvKtyNg@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] memory in mips with 32bit ELF is lower than
+	0x80000000
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,52 +28,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Shang Yanfeng <YanFeng.Shang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Haotian.Zhang@windriver.com
 
-Child process sends the last signal before parent process enter the
-final sleep sometimes, so sleep in parent will not be interrupted then
-the case fails.
-Sleep 1 second before send the last signal in child to make sure parent
-enter the final sleep.
+On Fri, Dec 30, 2011 at 01:33, Shang Yanfeng wrote:
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+>
+> +#if defined(__mips__)
+> +#if __WORDSIZE=3D=3D32
+> +#define LOW_ADDR =A0 =A0 =A0 (void *)(0x40000000)
+> +#define LOW_ADDR2 =A0 =A0 =A0(void *)(0x50000000)
+> +#else
+> =A0#define LOW_ADDR =A0 =A0 =A0 (void *)(0x80000000)
+> =A0#define LOW_ADDR2 =A0 =A0 =A0(void *)(0x90000000)
+> +#endif
+> +#else
+> +#define LOW_ADDR =A0 =A0 =A0 (void *)(0x80000000)
+> +#define LOW_ADDR2 =A0 =A0 =A0(void *)(0x90000000)
+> +#endif
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
+the last two cases here are the same.  so it should be:
+#if defined(__mips__) && __WORDSIZE =3D=3D 32
+# define LOW_ADDR =A0 =A0 =A0 (void *)(0x40000000)
+# define LOW_ADDR2 =A0 =A0 =A0(void *)(0x50000000)
+#else
+# define LOW_ADDR =A0 =A0 =A0 (void *)(0x80000000)
+# define LOW_ADDR2 =A0 =A0 =A0(void *)(0x90000000)
+#endif
+-mike
+
+---------------------------------------------------------------------------=
 ---
- .../conformance/interfaces/mq_timedsend/5-1.c      |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
-index 96daf72..37993c8 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
-@@ -82,6 +82,9 @@ int main()
- 		sleep(1);  // give parent time to set up handler
- 		for (i=0; i<MAXMSG+1; i++) {
-         		mq_timedsend(gqueue, msgptr, strlen(msgptr), 1, &ts);
-+            /* make sure parent enter the final sleep */
-+			if (i == MAXMSG) 
-+                sleep(1);
- 			/* send signal to parent each time message is sent */
- 			kill(getppid(), SIGABRT);
- 		}
-@@ -138,4 +141,4 @@ int main()
- 	}
- 
- 	return PTS_UNRESOLVED;
--}
-\ No newline at end of file
-+}
--- 
-1.7.5.4
-
-
-------------------------------------------------------------------------------
 Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
 infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+virtual desktops. With this all-in-one solution, easily deploy virtual =
+
+desktops for less than the cost of PCs and save 60% on VDI infrastructure =
+
 costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
