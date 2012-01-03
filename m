@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rj8Pw-0007Rr-O5
-	for ltp-list@lists.sourceforge.net; Fri, 06 Jan 2012 11:57:04 +0000
-Date: Fri, 6 Jan 2012 13:08:05 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120106120805.GA21376@saboteur.suse.cz>
-References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
-	<1325775471-19975-4-git-send-email-eguan@redhat.com>
-	<20120105154941.GE20860@saboteur.suse.cz>
-	<20120106035408.GI30803@eguan-t400>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri2OW-000211-Qi
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:19:04 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri2OW-0005la-1v
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:19:04 +0000
+Message-ID: <4F02E420.5040100@imgtec.com>
+Date: Tue, 3 Jan 2012 11:18:56 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20120106035408.GI30803@eguan-t400>
-Subject: Re: [LTP] [PATCH v3 3/4] syscalls/setxattr02: new testcase to test
- setxattr(2)
+Content-Type: multipart/mixed; boundary="------------020202060705010807060407"
+Subject: [LTP] [PATCH 12/21] syscalls/{getcontext,
+ profil}: Move test.h header and TCID variable to the top
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,46 +24,141 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Yes, I know the difference, but 'char *file = "foo"' will generate a
-> compiling error like:
-> 
-> setxattr02.c:88:3: error: initializer element is not constant
-> setxattr02.c:88:3: error: (near initialization for ???tc[0].fname???)
-> 
-> So I used 'char file[] = "foo"'.
-> 
-> That turns out to be a limitation of the C language. Quote the spec
-> 
-> "All the expressions in an initializer for an object that has static
-> storage duration shall be constant expressions or string literals."
-> 
-> Will macro be a better way? Like:
-> #define FILENAME "setxattr02testfile"
-> #define DIRNAME "setxattr02testdir"
-> 
+--------------020202060705010807060407
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Ah, I see.
-
-I think macros are better option here.
+Hi, please review the attached patch
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
+--------------020202060705010807060407
+Content-Type: text/plain;
+	name="0012-syscalls-getcontext-profil-Move-test.h-header-and-TC.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0012-syscalls-getcontext-profil-Move-test.h-header-and-TC.pa";
+	filename*1="tch"
+
+From 12fe59ab99a573210f38ca6c40b41aa68504ad37 Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Fri, 18 Nov 2011 16:08:21 +0000
+Subject: [PATCH 12/21] syscalls/{getcontext,profil}: Move test.h header and TCID variable to the top
+
+The tst_brkm() function is used independently of UCLIBC macro so
+they need to be defined outside of #ifdef statement
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ .../kernel/syscalls/getcontext/getcontext01.c      |    8 +++++---
+ testcases/kernel/syscalls/profil/profil01.c        |    8 +++++---
+ 2 files changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c b/testcases/kernel/syscalls/getcontext/getcontext01.c
+index 7cadc67..aea0b1d 100644
+--- a/testcases/kernel/syscalls/getcontext/getcontext01.c
++++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
+@@ -34,6 +34,10 @@
+  **********************************************************/
+ 
+ #include <features.h>
++#include "test.h"
++
++char *TCID = "getcontext01";	/* Test program identifier.    */
++
+ #if !defined(__UCLIBC__)
+ 
+ #include <stdio.h>
+@@ -41,13 +45,11 @@
+ #include <errno.h>
+ #include <ucontext.h>
+ 
+-#include "test.h"
+ #include "usctest.h"
+ 
+ void setup();
+ void cleanup();
+ 
+-char *TCID = "getcontext01";	/* Test program identifier.    */
+ int TST_TOTAL = 1;		/* Total number of test cases. */
+ 
+ int exp_enos[] = { 0 };		/* must be a 0 terminated list */
+@@ -102,4 +104,4 @@ int main()
+ {
+ 	tst_brkm(TCONF, NULL, "system doesn't have getcontext support");
+ }
+-#endif
+\ No newline at end of file
++#endif
+diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
+index 63bed83..1af7e5d 100644
+--- a/testcases/kernel/syscalls/profil/profil01.c
++++ b/testcases/kernel/syscalls/profil/profil01.c
+@@ -41,6 +41,10 @@
+ #endif
+ 
+ #include <features.h>
++#include "test.h"
++
++char *TCID = "profil01";
++
+ #ifndef __UCLIBC__
+ 
+ #ifdef __arm__
+@@ -58,7 +62,6 @@
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+-#include "test.h"
+ #include "usctest.h"
+ #define FAILED 0
+ #define PASSED 1
+@@ -73,7 +76,6 @@ volatile int t_flag;
+ //char progname[]= "profil1()";
+ 
+ /*****	LTP Port	*****/
+-char *TCID = "profil01";
+ int local_flag = PASSED;
+ int block_number;
+ FILE *temp;
+@@ -310,4 +312,4 @@ int main(void)
+ 	/* uClibc does not have profiling support */
+ 	tst_exit();
+ }
+-#endif
+\ No newline at end of file
++#endif
+-- 
+1.7.1
+
+
+--------------020202060705010807060407
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------020202060705010807060407
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------020202060705010807060407--
+
+
