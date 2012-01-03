@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiBKY-0000Eq-Ef
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:51:34 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiBKX-0002RX-Og
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:51:34 +0000
-Received: by obcwn6 with SMTP id wn6so18294047obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 12:51:28 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4Ia-0007Cm-7o
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:21:04 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri4IZ-0008VN-H8
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:21:04 +0000
+Message-ID: <4F0300B8.7050704@imgtec.com>
+Date: Tue, 3 Jan 2012 13:20:56 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <201201031521.18371.vapier@gentoo.org>
-References: <4F02E420.5040100@imgtec.com>
-	<201201031521.18371.vapier@gentoo.org>
-Date: Tue, 3 Jan 2012 12:51:28 -0800
-Message-ID: <CAGH67wRjvqesfUuEmuV9f2FkBFTF7j1y=DGHq08bR0MNrmt_mA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 12/21] syscalls/{getcontext,
- profil}: Move test.h header and TCID variable to the top
+Content-Type: multipart/mixed; boundary="------------080102030508070408000004"
+Subject: [LTP] [PATCH 15/21] fs/stream: ret variable is has an integer type
+ not size_t
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,34 +24,92 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 3, 2012 at 12:21 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Tuesday 03 January 2012 06:18:56 Markos Chandras wrote:
->> Hi, please review the attached patch
->
-> the test.h header should be after all system includes. =A0moving it befor=
-e them
-> is not a good idea. =A0so NAK this patch.
+--------------080102030508070408000004
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Good point. Rescinding my Reviewed-by...
-Thanks,
--Garrett
+Hi, please review the attached patch
 
----------------------------------------------------------------------------=
+-- 
+markos
+
+--------------080102030508070408000004
+Content-Type: text/plain;
+	name="0015-fs-stream-ret-variable-is-has-an-integer-type-not-si.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0015-fs-stream-ret-variable-is-has-an-integer-type-not-si.pa";
+	filename*1="tch"
+
+From fd8d55e8194f7e56d35c4a291e5a64aa09f24237 Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 22 Dec 2011 14:53:01 +0000
+Subject: [PATCH 15/21] fs/stream: ret variable is has an integer type not size_t
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
+ testcases/kernel/fs/stream/stream04.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/fs/stream/stream04.c b/testcases/kernel/fs/stream/stream04.c
+index 6ecac08..f88e395 100644
+--- a/testcases/kernel/fs/stream/stream04.c
++++ b/testcases/kernel/fs/stream/stream04.c
+@@ -88,7 +88,7 @@ int main(int ac, char *av[])
+ 		}
+ 
+ 		if ((size_t)ret != strlen(junk)) {
+-			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fwrite = %zi", strlen(junk), ret);
++			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fwrite = %d", strlen(junk), ret);
+ 			local_flag = FAILED;
+ 		}
+ 
+@@ -109,7 +109,7 @@ int main(int ac, char *av[])
+ 			tst_exit();
+ 		}
+ 		if ((size_t)ret != strlen(junk)) {
+-			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fread = %zi", strlen(junk), ret);
++			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fread = %d", strlen(junk), ret);
+ 			local_flag = FAILED;
+ 		}
+ 		fclose(stream);
+@@ -123,4 +123,4 @@ int main(int ac, char *av[])
+ 	} /* end for */
+ 	tst_rmdir();
+ 	tst_exit();
+-}
+\ No newline at end of file
++}
+-- 
+1.7.1
+
+
+--------------080102030508070408000004
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create =
-
-new or port existing apps to sell to consumers worldwide. Explore the =
-
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
 Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
 http://p.sf.net/sfu/intel-appdev
+--------------080102030508070408000004
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------080102030508070408000004--
+
+
