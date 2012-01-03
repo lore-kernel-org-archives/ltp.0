@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RhswK-0006Cp-9O
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 01:13:20 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RhswI-0002Vt-KS
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 01:13:20 +0000
-Message-ID: <4F024C98.8050203@cn.fujitsu.com>
-Date: Tue, 03 Jan 2012 08:32:24 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4M6-0007Kg-03
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:24:42 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri4M5-0008GS-7L
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:24:41 +0000
+Message-ID: <4F030192.8030107@imgtec.com>
+Date: Tue, 3 Jan 2012 13:24:34 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-References: <1325235186-20625-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<201201021520.58152.vapier@gentoo.org>
-In-Reply-To: <201201021520.58152.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] gitignore: ignore the files compiled
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------040802010308020600060501"
+Subject: [LTP] [PATCH 19/21] nfs/nfsstress/make_tree: Fix erroneous cast to
+ void pointer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,34 +24,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Wanlong Gao <wanlong.gao@gmail.com>
+To: ltp-list@lists.sourceforge.net
 
-On 01/03/2012 04:20 AM, Mike Frysinger wrote:
+--------------040802010308020600060501
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> On Friday 30 December 2011 03:53:06 Wanlong Gao wrote:
->> +/testcases/kernel/syscalls/fork/fork13
->> +/testcases/kernel/syscalls/getrusage/getrusage03
->> +/testcases/kernel/syscalls/getrusage/getrusage03_child
->> +/testcases/kernel/syscalls/mlock/mlock04
->> +/testcases/kernel/syscalls/pwrite/pwrite01_64
->> +/testcases/kernel/syscalls/pwrite/pwrite02_64
->> +/testcases/kernel/syscalls/pwrite/pwrite03_64
->> +/testcases/kernel/syscalls/pwrite/pwrite04_64
->> +/testcases/kernel/syscalls/syslog/syslog11
->> +/testcases/kernel/syscalls/syslog/syslog12
->> +/testcases/kernel/syscalls/syslog/syslogtst
-> 
-> i merged these into the testcases/kernel/syscalls/.gitignore file.  the other 
-> testcases/kernel/ ignores should get split up accordingly.
-> -mike
+Hi, please review the attached patch
+
+-- 
+markos
+
+--------------040802010308020600060501
+Content-Type: text/plain;
+	name="0019-nfs-nfsstress-make_tree-Fix-erroneous-cast-to-void-p.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0019-nfs-nfsstress-make_tree-Fix-erroneous-cast-to-void-p.pa";
+	filename*1="tch"
+
+From 3c4f375b923af0ddc64257afbecf1dd2c8efef17 Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 22 Dec 2011 15:17:34 +0000
+Subject: [PATCH 19/21] nfs/nfsstress/make_tree: Fix erroneous cast to void pointer
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ testcases/network/nfs/nfsstress/make_tree.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/network/nfs/nfsstress/make_tree.c b/testcases/network/nfs/nfsstress/make_tree.c
+index 02d0304..c51e75e 100644
+--- a/testcases/network/nfs/nfsstress/make_tree.c
++++ b/testcases/network/nfs/nfsstress/make_tree.c
+@@ -202,7 +202,7 @@
+ #define PTHREAD_EXIT(val)    do {\
+ 			exit_val = val; \
+                         dprt("pid[%d]: exiting with %d\n", gettid(),exit_val); \
+-			pthread_exit((void *)exit_val); \
++			pthread_exit((void *)&exit_val); \
+ 				} while (0)
+ 
+ #define OPT_MISSING(prog, opt)   do{\
+@@ -846,4 +846,4 @@ main(int	argc,		/* number of input parameters		      */
+         }
+     }
+     return(0);
+-}
+\ No newline at end of file
++}
+-- 
+1.7.1
 
 
-It should be better, thanks
--Wanlong Gao
+--------------040802010308020600060501
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Write once. Port to many.
@@ -61,7 +90,17 @@ Get the SDK and tools to simplify cross-platform app development. Create
 new or port existing apps to sell to consumers worldwide. Explore the 
 Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
 http://p.sf.net/sfu/intel-appdev
+--------------040802010308020600060501
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------040802010308020600060501--
+
+
