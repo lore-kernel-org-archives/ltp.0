@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RiU6p-00014z-Sy
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 16:54:39 +0000
-Date: Wed, 4 Jan 2012 18:05:27 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120104170526.GA19397@saboteur.suse.cz>
-References: <4F02CC46.9000106@imgtec.com>
-	<201201031356.11319.vapier@gentoo.org>
-	<20120104134651.GA14739@saboteur.suse.cz>
-	<CAGH67wRsHvHkdvPrC5y4Fm7TuYxs1dHytJnnK3d54PxG-vukYA@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RiB5v-0000E6-0w
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:36:27 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RiB5u-0004lp-9j
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:36:26 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 3 Jan 2012 15:36:32 -0500
+References: <4F03015B.5050700@imgtec.com>
+	<CAGH67wS6fUzsZS2AjEtCJVkJXTYM8==1wfSaT=G63wfdw-etVw@mail.gmail.com>
+In-Reply-To: <CAGH67wS6fUzsZS2AjEtCJVkJXTYM8==1wfSaT=G63wfdw-etVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAGH67wRsHvHkdvPrC5y4Fm7TuYxs1dHytJnnK3d54PxG-vukYA@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 03/21] test.h/tst_brkm: Drop
- __attribute__((noreturn)) since tst_brk can return to caller
+Message-Id: <201201031536.33830.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 18/21] network/lib6/asapi_06: pcmsg->cmsg_len is
+	of type size_t
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,105 +26,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7177235684779640342=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Markos Chandras <Markos.Chandras@imgtec.com>
+To: ltp-list@lists.sourceforge.net
+Cc: Markos Chandras <Markos.Chandras@imgtec.com>
 
-Hi!
-> 1. Create consistent code that matched what we wanted as far as style
-> and structure was concerned. A lot of the time Cyril and I (as well as
-> you and other folks in the past) were making modifications to files
-> and instead of it being just a "oh, I fixed this thing", it generally
-> turned into a full-scale rewrite of the testcase because we weren't
-> very restrained in how changes were done. Furthermore, without there
-> being better examples in the tree for developers to look at, it was
-> believed (at least by me) that people were following the wrong
-> examples when designing fixes and the like, and regardless of what the
-> style guide said, or whether or not they were told to run
-> check_patches.pl, contributors provided code that be more of a burden
-> in the long run. This also extended to proper design patterns as noted
-> in the style guide.
+--===============7177235684779640342==
+Content-Type: multipart/signed; boundary="nextPart1707337.FcZ4LhOgka";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Yes we have a problem with very unconsistent usage of the test
-interfaces but I don't see any other way than taking and fixing these
-tests one by one.
+--nextPart1707337.FcZ4LhOgka
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-And for that we need clear definitions and docummentation how to use the
-test interface. The style guide is good, but I'm thinking about
-something more detailed with actuall code examples.
+On Tuesday 03 January 2012 14:33:05 Garrett Cooper wrote:
+> On Tue, Jan 3, 2012 at 5:23 AM, Markos Chandras
+>=20
+> <Markos.Chandras@imgtec.com> wrote:
+> > Hi, please review the attached patch
+>=20
+>     This is ok. While the stance here has been to follow the PRI*
+> style format string qualifiers, this works and is pseudo standard
+> across BSD, Linux, and probably a few other printf(3) implementations.
 
-I would love to write such documment but so far I haven't had time for
-it.
+the PRI* stuff is for explicitly sized types (e.g. 8bit/16bit/32bit/64bit).=
+  it=20
+is not for [s]size_t types ... that's what the "z" length field of printf i=
+s=20
+designed for.
+=2Dmike
 
-> 2. Create a means where people could call "SAFE_*" macros instead of
-> doing ad hoc error checking (there was a lot of duplication in the LTP
-> tree, and there were a lot of gaps because test writers didn't write
-> their error codes and things would go downhill quickly and be hard to
-> troubleshoot if the issue was transient). In order to do this, we
-> needed a means to push 'Exceptions' on a stack and execute all of the
-> cleanup functions in order to ensure that everything was completed to
-> the best of the ability of the testcase. In python terms what I was
-> looking for was something like the following (basic pseudocode,
-> similar to what's done in unittest):
-> 
-> setup()
-> try:
->     test()
-> finally:
->     # Execute all of the cleanup tasks in order. If something fatal
-> occurs here, die.
->     map(lambda cleanup_task: cleanup_task(), cleanup_tasks.iteritems())
-> 
-> In order to do this, tst_brkm needed to become reentrant to avoid
-> rewriting everything to use a new API.
-> 
-> Like all things, I'm not 100% pleased with how things turned out
-> (things aren't cleanly formulated in the C code, similar to what I
-> show above in the python psuedocode), but if you have some suggestions
-> for how we should resolve this in a sane manner (maybe grow another
-> API that's reentrant, adjust the behavior of the current one to once
-> again be non-reentrant, etc?) -- I'm all ears.
+--nextPart1707337.FcZ4LhOgka
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Growing parallel API is not a good option, that way we would have to
-maintain two broken interfaces ;).
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-My only recipe for that is gradually fix tests one by one (And I'm
-working on that as fast as I can).
+iQIcBAABAgAGBQJPA2bRAAoJEEFjO5/oN/WBefEP/0Cm85IjOZ6LYjE3IYh1KVub
+deS+3xpQonhpCRyeddbW/CtRng1ZQZVEHNhYB3FOm4QKPdtC6ZHf1uHscGsaEGg4
+sVobxzB2T5gURZZirSGiFzh+DabJ2v4vWiC2A6cdsjlQaurbv699VToF7Muf8vcO
+Dn1znhpATJ1g2v3/S1fAUABZ5ARYN+IMdExxaw+QBg9VgvyIE0xGoKFM6yJ6Em2w
+gS4HLQW9wIXHfofyQEPsuFyP9gRkK4X08/S/X79vm2LJn1YBdSNc6SYNScZ2bpgG
+WLgvzLiPywb5fH3t6AFwVshAfGN2hG7W2vPPLEryUKbWwkLgRZn8n6Kza27Mlb8h
+bUqmBf5qvkdxz6857Bhk+p0DjNPT1q0+5TvQbSDViNeXtAnpw+Erz3g5n5N11E3a
+mVfD1tN1w8Czd/pTFNU8DZ8WLr3dHNLwO+COGBPlv82J+jqx4ma6BIDg0rE5im5h
+4fk5WbYQ+lFwsFjSLFJL0d3Uk2kuPx/hlN+ZDsBEIRPAs9DoNDQ5DAIXnkcjc2cA
+NHwpTY5EiCXyNvS/p+LZe75JtYg9Ok2MYWp7nLHtF7bFFPGVJldtidCvk9yC/PwO
+xvz0dZ3lxJSPaNj+p1uWo1SsjuFAKtI4PwEyKdks+sIQMSdwjkI25uJSosf/raOF
+/Q7GAqirccP3KXdIZ9zn
+=C6c/
+-----END PGP SIGNATURE-----
 
-> PS This work burned me out on LTP as I took on the tedious task of
-> changing a couple thousands of lines of code in all the testcases in
-> the period of a couple weeks (it was sometime between Thanksgiving and
-> somewhere around New Year's), originally by hand, then I tried to do
-> via script, then I went back and had to manually fix things the script
-> didn't catch the first go around. This was reiterated a few times. And
-> I didn't catch all the bugs (I've sighed in regret at a few commit
-> messages I've seen over the past year caused by my rototilling).
+--nextPart1707337.FcZ4LhOgka--
 
-Hey, that's not a big deal, so far I've managed to fix most of the
-problems caused by that. Mostly it caused broken things to broke even
-more and things that accidentally stopped working after they were
-accidentally working before.
 
-The git history is another story, but at least it's challenging and fun
-;).
-
-And one thing that I've learnt while maintaining LTP is that it's ok to
-try things and break something occasionally if you fix that later. If
-you are too afraid you wouldn't be able to do anything. 
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--===============7177235684779640342==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--===============7177235684779640342==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7177235684779640342==--
+
