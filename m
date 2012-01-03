@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri2OW-000211-Qi
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:19:04 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri2OW-0005la-1v
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:19:04 +0000
-Message-ID: <4F02E420.5040100@imgtec.com>
-Date: Tue, 3 Jan 2012 11:18:56 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RiB1Z-0002AH-Sw
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:31:57 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RiB1Z-0000RP-5i
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:31:57 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 3 Jan 2012 15:32:04 -0500
+References: <4F0300EC.7040201@imgtec.com>
+In-Reply-To: <4F0300EC.7040201@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020202060705010807060407"
-Subject: [LTP] [PATCH 12/21] syscalls/{getcontext,
- profil}: Move test.h header and TCID variable to the top
+Message-Id: <201201031532.04811.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 16/21] kernel/vma: Add missing return statement
+	for non-void functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,119 +25,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1341387315579688845=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Markos Chandras <Markos.Chandras@imgtec.com>
 
---------------020202060705010807060407
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+--===============1341387315579688845==
+Content-Type: multipart/signed; boundary="nextPart2056488.I6szMbSVL7";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
-Hi, please review the attached patch
+--nextPart2056488.I6szMbSVL7
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-markos
+On Tuesday 03 January 2012 08:21:48 Markos Chandras wrote:
+> Hi, please review the attached patch
 
---------------020202060705010807060407
-Content-Type: text/plain;
-	name="0012-syscalls-getcontext-profil-Move-test.h-header-and-TC.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0012-syscalls-getcontext-profil-Move-test.h-header-and-TC.pa";
-	filename*1="tch"
+two of these hunks are fallout of your tst_brkm() no attribute change.  tho=
+se=20
+don't actually return, so there shouldn't be a need to add explicit returns.
 
-From 12fe59ab99a573210f38ca6c40b41aa68504ad37 Mon Sep 17 00:00:00 2001
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Fri, 18 Nov 2011 16:08:21 +0000
-Subject: [PATCH 12/21] syscalls/{getcontext,profil}: Move test.h header and TCID variable to the top
+the 3rd hunk (adding a return after tst_exit) is wrong -- that is marked=20
+noreturn and isn't changing.
+=2Dmike
 
-The tst_brkm() function is used independently of UCLIBC macro so
-they need to be defined outside of #ifdef statement
+--nextPart2056488.I6szMbSVL7
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- .../kernel/syscalls/getcontext/getcontext01.c      |    8 +++++---
- testcases/kernel/syscalls/profil/profil01.c        |    8 +++++---
- 2 files changed, 10 insertions(+), 6 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c b/testcases/kernel/syscalls/getcontext/getcontext01.c
-index 7cadc67..aea0b1d 100644
---- a/testcases/kernel/syscalls/getcontext/getcontext01.c
-+++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
-@@ -34,6 +34,10 @@
-  **********************************************************/
- 
- #include <features.h>
-+#include "test.h"
-+
-+char *TCID = "getcontext01";	/* Test program identifier.    */
-+
- #if !defined(__UCLIBC__)
- 
- #include <stdio.h>
-@@ -41,13 +45,11 @@
- #include <errno.h>
- #include <ucontext.h>
- 
--#include "test.h"
- #include "usctest.h"
- 
- void setup();
- void cleanup();
- 
--char *TCID = "getcontext01";	/* Test program identifier.    */
- int TST_TOTAL = 1;		/* Total number of test cases. */
- 
- int exp_enos[] = { 0 };		/* must be a 0 terminated list */
-@@ -102,4 +104,4 @@ int main()
- {
- 	tst_brkm(TCONF, NULL, "system doesn't have getcontext support");
- }
--#endif
-\ No newline at end of file
-+#endif
-diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
-index 63bed83..1af7e5d 100644
---- a/testcases/kernel/syscalls/profil/profil01.c
-+++ b/testcases/kernel/syscalls/profil/profil01.c
-@@ -41,6 +41,10 @@
- #endif
- 
- #include <features.h>
-+#include "test.h"
-+
-+char *TCID = "profil01";
-+
- #ifndef __UCLIBC__
- 
- #ifdef __arm__
-@@ -58,7 +62,6 @@
- #include <errno.h>
- #include <sys/types.h>
- #include <sys/wait.h>
--#include "test.h"
- #include "usctest.h"
- #define FAILED 0
- #define PASSED 1
-@@ -73,7 +76,6 @@ volatile int t_flag;
- //char progname[]= "profil1()";
- 
- /*****	LTP Port	*****/
--char *TCID = "profil01";
- int local_flag = PASSED;
- int block_number;
- FILE *temp;
-@@ -310,4 +312,4 @@ int main(void)
- 	/* uClibc does not have profiling support */
- 	tst_exit();
- }
--#endif
-\ No newline at end of file
-+#endif
--- 
-1.7.1
+iQIcBAABAgAGBQJPA2XEAAoJEEFjO5/oN/WBwK4QAL4Wj0VmzTa+BTZsgvUkkEG5
+5Ckw6OvhEAcXOXolnQ1Gc906uadyFJklTfHs204pUgJfbEpc69pmtePEKb2PKpnP
+gTrH3oQi+8w2aO75kguNnnzKAec8YI4gmh/3qR4HV3T1JZtpxDzoAGSob8DO5ifX
+Q2jZWOiLrcKs0POLq9HjPHDOewlX4CG+/bRlHY27+9cnuJDakhycHKj/PZzOlMNb
+zzrU9ZUPy2ef9kDRypi7YzLVjayG4065wBpUighNuSFxYuyjX6jF0z6LQfBYcssa
+uv/c++nLGmRF6SgB1X96O7Z6YTCMz/lGInSqaW2dn06Jb90vZDQni3NQyCOrLIRh
+NZYzHLdDWK3kXOb328D5oMQjvGVYNgMSfLPD8RDVRGspgS3i3BnVFcmfQFND49Pt
+GQVJK2/vhf6aR6bh4Qkyp+OI3W2WMLeBRYRKWqsZKT5SSYnB2wiasCb3FXie8C6t
+K8HhmrQ2PO8TsoWD2jktPjCh09qsxXdebL/FimjyBucPDxjkyPSIq+D6LIZcC2FC
+tyLp6kIMDPZW175/X14rd5TXDM3CGa5rWwBtwyDcmcA2DYhApl1woSR1/ooYarxc
+CBugx34q9ersKxZm1iU0umfdX03lhwx+jzniH08vRv+8BPMmoC/uFOR5ZzZHHjIX
+qZNFUrx45/d3/7OsWkgA
+=DF7i
+-----END PGP SIGNATURE-----
+
+--nextPart2056488.I6szMbSVL7--
 
 
---------------020202060705010807060407
+--===============1341387315579688845==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -148,7 +88,7 @@ Get the SDK and tools to simplify cross-platform app development. Create
 new or port existing apps to sell to consumers worldwide. Explore the 
 Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
 http://p.sf.net/sfu/intel-appdev
---------------020202060705010807060407
+--===============1341387315579688845==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -159,6 +99,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------020202060705010807060407--
-
+--===============1341387315579688845==--
 
