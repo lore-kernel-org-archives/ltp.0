@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RkSPS-0001J9-NN
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:30:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RkSPR-00086e-IQ
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:30:02 +0000
-Message-ID: <4F0BB076.50605@cn.fujitsu.com>
-Date: Tue, 10 Jan 2012 11:28:54 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RiB6e-00047C-Hf
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:37:12 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RiB6c-0001yQ-8T
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:37:12 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 3 Jan 2012 15:37:17 -0500
+References: <4F02DBAF.5040202@imgtec.com>
+In-Reply-To: <4F02DBAF.5040202@imgtec.com>
 MIME-Version: 1.0
-References: <4F0A8E2D.8030305@cn.fujitsu.com>
-	<201201091220.17521.vapier@gentoo.org>
-	<4F0B9824.1080801@cn.fujitsu.com> <4F0BAFA9.50704@casparzhang.com>
-In-Reply-To: <4F0BAFA9.50704@casparzhang.com>
-Subject: Re: [LTP] [PATCH] fix getxattr02 case with errno EPERM
-Reply-To: gaowanlong@cn.fujitsu.com
+Message-Id: <201201031537.17888.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 05/21] syscalls: Cast st_nlink variables to proper
+	integers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,26 +25,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6774210519592217666=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net
+Cc: Markos Chandras <Markos.Chandras@imgtec.com>
 
-T24gMDEvMTAvMjAxMiAxMToyNSBBTSwgQ2FzcGFyIFpoYW5nIHdyb3RlOgoKPiBPbiAyMDEy5bm0
-MDHmnIgxMOaXpSAwOTo0NSwgUGVuZyBIYWl0YW8gd3JvdGU6Cj4+ICsgOTXCuyDCuyAvKsK3QmVm
-b3JlwrdrZXJuZWzCtzMuMC4wLMK3Z2V0eGF0dHIoMinCt3dpbGzCt3NldMK3ZXJybm/Ct3dpdGjC
-tydFUEVSTScKPj4gKyA5NsK7IMK7IMK3KsK3d2hlbsK3dGhlwrdmaWxlwrdpc8K3bm90wrdhwrdy
-ZWd1bGFywrdmaWxlwrdhbmTCt2RpcmVjdG9yeSzCt3JlZmVywrd0bwo+PiArIDk3wrsgwrsgwrcq
-wrdjb21taXRpZMK3NTViMjNiZAo+PiArIDk4wrsgwrsgwrcqLwo+IAo+IEZvciBtdWx0aXBsZS1s
-aW5lIGNvbW1lbnRzLCB3b3VsZCBpdCBiZSBiZXR0ZXIgdG8gYmU6Cj4gCj4gLyoKPiAgKiB4eHgK
-PiAgKiB4eHgKPiAgKi8KCgpTdXJlLCB5b3UgYXJlIHJpZ2h0LgoKPiAKPiBDYXNwYXIKPiAKCgoK
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCldyaXRlIG9uY2UuIFBvcnQgdG8gbWFueS4KR2V0IHRoZSBT
-REsgYW5kIHRvb2xzIHRvIHNpbXBsaWZ5IGNyb3NzLXBsYXRmb3JtIGFwcCBkZXZlbG9wbWVudC4g
-Q3JlYXRlIApuZXcgb3IgcG9ydCBleGlzdGluZyBhcHBzIHRvIHNlbGwgdG8gY29uc3VtZXJzIHdv
-cmxkd2lkZS4gRXhwbG9yZSB0aGUgCkludGVsIEFwcFVwU00gcHJvZ3JhbSBkZXZlbG9wZXIgb3Bw
-b3J0dW5pdHkuIGFwcGRldmVsb3Blci5pbnRlbC5jb20vam9pbgpodHRwOi8vcC5zZi5uZXQvc2Z1
-L2ludGVsLWFwcGRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+--===============6774210519592217666==
+Content-Type: multipart/signed; boundary="nextPart1633799.AbhPmfnPZC";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1633799.AbhPmfnPZC
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+On Tuesday 03 January 2012 05:42:55 Markos Chandras wrote:
+> Hi, please review the attached patch
+
+casting to a (long) would be better
+-mike
+
+--nextPart1633799.AbhPmfnPZC
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPA2b9AAoJEEFjO5/oN/WBIdAP/2k6F44OmZvtTPGE34BrHW4y
+0LeU2EeImT4xP2p21va2ftqGdexgSoVGLTIQGwODAbmEnhbM3R5GPOv/T5NY65IF
+tcoVEWNhbUl0MobAzIl3tZfBTpAuoMX6LBuazBW5O8+rwRj1uEezCQcaiuB4eI8S
+XkH8lr7sLmEo40y7Pnq0CB0jSZaZIcLaSjuvmL/leJh8XXnzCr0uD2CYvxQofIUU
+8YQCOFP/v2zfOuAjE9xVv4fJOaIcei9sbJRuKcvjGpa951nIsSec1yirBpAnLI1c
+r2It6xnaxDIoTvU7PPZ6TSJqkDoSuCSrfUH4vDYQ2x5i4asZlhO7Ad5eXm/XTkQi
+Igc+H1+9/PjjSD363Ws8aeIWkrt1PHYyWpSTwH/NFXeNquqtW6cz9JAvkLkzyFII
+7w6tQiAmFR9/SZ46KQ09kJLOFVQWclv9djDbysGvdO8CQl/I56YJXwnHjMroIywQ
+t62hVE80Y1Rw4jdFR/o0s/0KPXSCqAy6HR54cSr+hvNb9axcwHEeseO8o/5Gxw0M
+xxNuRH/NDD43QJpRGQsU5gtLloNE0wLddsqM60lFBnAZdXLyRkyIXO/zNdjmxlJB
+SinKVrLnSxKghYXPOjefnXzyVwp9gDNqAa5E+pESgKX0ZgrP4uwnI+6d93i652ib
+1+r+5Nhe6Jm3q21hMWHo
+=+Ar3
+-----END PGP SIGNATURE-----
+
+--nextPart1633799.AbhPmfnPZC--
+
+
+--===============6774210519592217666==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--===============6774210519592217666==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6774210519592217666==--
+
