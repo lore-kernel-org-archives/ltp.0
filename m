@@ -1,19 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Rn6XB-0002va-Dl
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jan 2012 10:44:57 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Rn6X5-0000Ng-Uc
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jan 2012 10:44:57 +0000
-Date: Tue, 17 Jan 2012 04:48:29 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <f5072a2e-749f-493e-9a29-995a035912b2@zmail16.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1303477727.18220.15.camel@moss-pluto>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1RiEAD-0000b5-7N
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 23:53:05 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RiEAC-0006a3-FV
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 23:53:05 +0000
+Received: by obcwn6 with SMTP id wn6so18559546obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Jan 2012 15:52:58 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [LTP] selinux-testsuite has moved
+In-Reply-To: <201201031834.45745.vapier@gentoo.org>
+References: <4F02DBAF.5040202@imgtec.com>
+	<201201031557.08072.vapier@gentoo.org>
+	<CAGH67wSrnkWdC8vYubfur6p2-Vs03F6LKvnZumtb-ZW-dWLy8g@mail.gmail.com>
+	<201201031834.45745.vapier@gentoo.org>
+Date: Tue, 3 Jan 2012 15:52:58 -0800
+Message-ID: <CAGH67wQD7miw85g3mBGrjnx3nCo=gy1vutqbTmM2LnrOOYfi5w@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 05/21] syscalls: Cast st_nlink variables to proper
+	integers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,47 +34,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
+On Tue, Jan 3, 2012 at 3:34 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Tuesday 03 January 2012 17:19:25 Garrett Cooper wrote:
+>> The 'solution' for the issues with
+>> format strings and long integers is generally cast to [u]intmax_t,
+>> then use %zd or %zu.
+>
+> eek, almost ;)
+>
+> ssize_t -> %zd
+> size_t -> %zu
+> intmax_t -> %jd
+> uintmax_t -> %ju
 
-
------ Original Message -----
-> From: "Stephen Smalley" <sds@tycho.nsa.gov>
-> To: "ltp-list" <ltp-list@lists.sf.net>
-> Sent: Friday, April 22, 2011 3:08:47 PM
-> Subject: [LTP] selinux-testsuite has moved
-> The selinux testsuite has been moved to a standalone testsuite
-> separate from the ltp.  You can obtain it via:
->  git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
-
-Hi,
-
-Is this still valid? I'm having troubles cloning from there.
-
-git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
-Initialized empty Git repository in /usr/src/selinux-testsuite/.git/
-fatal: The remote end hung up unexpectedly
-
-and also I can't see it listed here: http://git.kernel.org/
-
-Regards,
-Jan
-
-> 
-> Thanks.
-> 
-> --
-> Stephen Smalley
-> National Security Agency
-> 
+Yeah (lol)... thanks for the correction :)!
+-Garrett
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
