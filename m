@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Ri9zx-0004O3-F1
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:26:13 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Ri9zw-0006mV-Os
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:26:13 +0000
-Received: by obcwn6 with SMTP id wn6so18152557obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 11:26:07 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri187-00070N-4D
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:58:03 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri186-0006js-3a
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:58:03 +0000
+Message-ID: <4F02D122.7090704@imgtec.com>
+Date: Tue, 3 Jan 2012 09:57:54 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <4F0301F2.7070809@imgtec.com>
-References: <4F0301F2.7070809@imgtec.com>
-Date: Tue, 3 Jan 2012 11:26:07 -0800
-Message-ID: <CAGH67wRy_M2aAQRyq6esHb9r8TSBBd41CVaSmieEA6aLisqkWg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 21/21] network/nfsv4/acl: Second argument is execl
- should be a null-terminated array
+References: <4F02CBDE.70400@imgtec.com>
+	<CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
+In-Reply-To: <CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 02/21] lib/self_exec: Remove extra argument from
+ tst_resm function call
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,19 +29,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 3, 2012 at 5:26 AM, Markos Chandras
-<Markos.Chandras@imgtec.com> wrote:
-> Hi, please review the attached patch
+On 01/03/2012 09:50 AM, Garrett Cooper wrote:
+> On Tue, Jan 3, 2012 at 1:35 AM, Markos Chandras
+> <Markos.Chandras@imgtec.com>  wrote:
+>> Hi, please review the attached patch
+>
+>      Converting the function to tst_brkm and removing the tst_exit call
+> below it would be better.
+> Thanks!
+> -Garrett
+Agreed, but to make this consistent, all the tst_resm && tst_exit pairs 
+should be replaced with tst_brkm. I will prepare a patch
 
-You could always just do it like:
+-- 
+markos
 
-execl(..., { 0 }, ...);
-
-Thanks,
--Garrett
 
 ------------------------------------------------------------------------------
 Write once. Port to many.
