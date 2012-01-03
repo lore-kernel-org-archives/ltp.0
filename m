@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RoFig-0001Ar-1n
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 14:45:34 +0000
-Date: Fri, 20 Jan 2012 15:57:45 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120120145745.GB15964@saboteur.suse.cz>
-References: <CANoG8sUjtP3bMNjKNvwGO+Pb1GXJ6dYNDsYvjui=fd=fsYcQKw@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4JT-0001pb-8T
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:21:59 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri4JP-000879-CK
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:21:59 +0000
+Message-ID: <4F0300EC.7040201@imgtec.com>
+Date: Tue, 3 Jan 2012 13:21:48 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CANoG8sUjtP3bMNjKNvwGO+Pb1GXJ6dYNDsYvjui=fd=fsYcQKw@mail.gmail.com>
-Subject: Re: [LTP] mbind01 fails on 2.6.32 i386 kernel
+Content-Type: multipart/mixed; boundary="------------000709080208060409010901"
+Subject: [LTP] [PATCH 16/21] kernel/vma: Add missing return statement for
+ non-void functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,45 +24,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Romu <huruomu@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> mbind01 fails on 2.6.32 i386 kernel, see test log below.  I went
-> through http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08843.html
-> but couldn't get any clue.  Any idea?
-> 
-> <<<test_start>>>
-> tag=mbind01 stime=1326570882
-> cmdline="mbind01"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> mbind01     0  TINFO  :  (case00) START
-> EXPECT: return value(ret)=0 errno=0 (Success)
-> RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-> mbind01     1  TFAIL  :  (case00) END: errno=???(38): Function not implemented
+--------------000709080208060409010901
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hmm, the errno value suggests that the particular kernel doesn't have
-such syscall implemented. Perhaps it was disabled in kernel .config.
-
-Anyway the testcase should return TCONF rather than TFAIL in such case.
+Hi, please review the attached patch
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
+--------------000709080208060409010901
+Content-Type: text/plain;
+	name="0016-kernel-vma-Add-missing-return-statement-for-non-void.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0016-kernel-vma-Add-missing-return-statement-for-non-void.pa";
+	filename*1="tch"
+
+From b5bec4470a937d9d63b05798d34c0c33c19348d4 Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 22 Dec 2011 15:04:50 +0000
+Subject: [PATCH 16/21] kernel/vma: Add missing return statement for non-void functions
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ testcases/kernel/mem/vma/vma01.c |    2 ++
+ testcases/kernel/mem/vma/vma02.c |    5 +++++
+ 2 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
+index 398d7a1..14c0525 100644
+--- a/testcases/kernel/mem/vma/vma01.c
++++ b/testcases/kernel/mem/vma/vma01.c
+@@ -151,6 +151,8 @@ static void *get_end_addr(void *addr_s, char *mapfile)
+ 	}
+ 	fclose(fp);
+ 	tst_brkm(TBROK, cleanup, "no matched s = %p found.", addr_s);
++
++	return NULL;
+ }
+ 
+ static void check_status(int status)
+diff --git a/testcases/kernel/mem/vma/vma02.c b/testcases/kernel/mem/vma/vma02.c
+index a1c8f24..fe7cff6 100644
+--- a/testcases/kernel/mem/vma/vma02.c
++++ b/testcases/kernel/mem/vma/vma02.c
+@@ -152,6 +152,9 @@ int main(int argc, char** argv)
+ 			tst_brkm(TWARN|TERRNO, NULL, "munmap");
+ 	}
+ 	tst_exit();
++
++	/* We should never be here */
++	return 0;
+ }
+ 
+ void usage(void)
+@@ -166,5 +169,7 @@ int main(void) {
+ #else /* no NUMA */
+ int main(void) {
+ 	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
++	/* We should never be here */
++	return 0;
+ }
+ #endif
+-- 
+1.7.1
+
+
+--------------000709080208060409010901
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------000709080208060409010901
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------000709080208060409010901--
+
+
