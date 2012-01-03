@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rkxmz-0002BP-SF
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 13:00:25 +0000
-Date: Wed, 11 Jan 2012 14:11:54 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120111131154.GE7143@saboteur.suse.cz>
-References: <1326135670-18584-1-git-send-email-eguan@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri2GS-0005dd-Is
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:10:44 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri2GR-0005Mz-Q0
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:10:44 +0000
+Message-ID: <4F02E22D.3020802@imgtec.com>
+Date: Tue, 3 Jan 2012 11:10:37 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1326135670-18584-1-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/sendfile08: new test case for
- sendfile(2) syscall
+Content-Type: multipart/mixed; boundary="------------070408000209000009070509"
+Subject: [LTP] [PATCH 10/21] lib/parse_opts: Multiple fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,115 +23,94 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	int ret;
-> +	char *msg;
-> +	char buf[BUFSIZ];
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		TEST(sendfile(out_fd, in_fd, NULL, strlen(TEST_MSG_IN)));
-> +
-> +		if (TEST_RETURN == -1)
-> +			tst_brkm(TBROK | TTERRNO, cleanup, "sendfile() failed");
-> +
-> +		ret = lseek(out_fd, 0, SEEK_SET);
-> +		if (ret == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup, "lseek %s failed",
-> +			    out_file);
-> +		ret = read(out_fd, buf, BUFSIZ);
-> +		if (ret == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup, "read %s failed",
-> +			    out_file);
-> +
-> +		if (!strcmp(buf, TEST_MSG_OUT TEST_MSG_IN))
-> +			tst_resm(TPASS, "sendfile(2) copies data correctly");
-> +		else
-> +			tst_resm(TFAIL, "sendfile(2) copies data incorrectly."
-> +			    " Expect \"%s%s\", got \"%s\"", TEST_MSG_OUT,
-> +			    TEST_MSG_IN, buf);
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int ret;
-> +
-> +	TEST_PAUSE;
-> +
-> +	/* make a temporary directory and cd to it */
+--------------070408000209000009070509
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Please avoid such comments.
-
-Correct place for this information in include/test.h. Looking there, we
-should probably documment the test interface there at least a bit...
-
-> +	tst_tmpdir();
-> +
-> +	in_fd = creat(in_file, 0700);
-> +	if (in_fd == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Create %s failed", in_file);
-> +
-> +	ret = write(in_fd, TEST_MSG_IN, strlen(TEST_MSG_IN));
-> +	if (ret == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Write %s failed", in_file);
-> +	close(in_fd);
-> +
-> +	in_fd = open(in_file, O_RDONLY);
-> +	if (in_fd == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Open %s failed", in_file);
-> +
-> +	out_fd = open(out_file, O_TRUNC | O_CREAT | O_RDWR, 0777);
-> +	if (out_fd == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Open %s failed", out_file);
-> +	ret = write(out_fd, TEST_MSG_OUT, strlen(TEST_MSG_OUT));
-> +	if (ret == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Write %s failed", out_file);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	close(out_fd);
-> +	close(in_fd);
-> +
-> +	TEST_CLEANUP;
-> +
-> +	/* delete the test directory created in setup() */
-
-And this one as well.
-
-> +	tst_rmdir();
-> +
-> +}
+Hi, please review the attached patch
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
+--------------070408000209000009070509
+Content-Type: text/plain; name="0010-lib-parse_opts-Multiple-fixes.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0010-lib-parse_opts-Multiple-fixes.patch"
+
+From a1e992a25a19b7465c7a16dc317e10a104495b41 Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Mon, 21 Nov 2011 16:24:00 +0000
+Subject: [PATCH 10/21] lib/parse_opts: Multiple fixes
+
+- Fix TEST_RETURN definition
+- drop undefined TIMING option
+- Add missing argument for parse_opts when UNIT_TEST marco is used
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ lib/parse_opts.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/lib/parse_opts.c b/lib/parse_opts.c
+index 8a235b1..aa2433f 100644
+--- a/lib/parse_opts.c
++++ b/lib/parse_opts.c
+@@ -834,14 +834,13 @@ char *ptr;
+ 
+ struct usc_errno_t TEST_VALID_ENO[USC_MAX_ERRNO];
+ 
+-int TEST_RETURN;
++long TEST_RETURN;
+ int TEST_ERRNO;
+ 
+ /* for test specific parse_opts options */
+ option_t Options[] = {
+         { "help",  &Help2, NULL },      /* -help option */
+         { "h",  &Help, NULL },          /* -h option */
+- 	{ TIMING, NULL, NULL},		/* disable -timing option */
+ 
+ #if INVALID_TEST_CASES
+  	{ "missingflag", NULL, &ptr },  /* error */
+@@ -858,7 +857,7 @@ int main(int argc, char **argv)
+     struct timeval t;
+     int cnt;
+ 
+-    if ((msg = parse_opts(argc, argv, Options)) != NULL) {
++    if ((msg = parse_opts(argc, argv, Options, NULL)) != NULL) {
+ 	printf("ERROR: %s\n", msg);
+ 	exit(1);
+     }
+-- 
+1.7.1
+
+
+--------------070408000209000009070509
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------070408000209000009070509
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------070408000209000009070509--
+
+
