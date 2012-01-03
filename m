@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1RoDF6-0005DV-Cd
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 12:06:52 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RoDF2-0008NJ-6b
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 12:06:52 +0000
-Date: Fri, 20 Jan 2012 07:06:39 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <f1c1b1b8-3e46-4e00-9c9e-7e9ef02f4117@zmail16.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4F17D4D0.9090200@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RiB84-0000Oj-R1
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:38:40 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RiB84-0001AF-2r
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:38:40 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 3 Jan 2012 15:38:47 -0500
+References: <4F02E0C6.3090308@imgtec.com>
+In-Reply-To: <4F02E0C6.3090308@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v3 1/8] A library used to test memcg
+Message-Id: <201201031538.47749.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 08/21] syscalls/remap_file_pages: unsigned int is
+	always greater to zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,53 +25,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9044776941477926345=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Markos Chandras <Markos.Chandras@imgtec.com>
+
+--===============9044776941477926345==
+Content-Type: multipart/signed; boundary="nextPart2149756.10n3GxoMfl";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart2149756.10n3GxoMfl
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tuesday 03 January 2012 06:04:38 Markos Chandras wrote:
+> Hi, please review the attached patch
+
+you should add a local int variable, store getpagesize() into that, and the=
+n=20
+use that to initialize page_sz rather than call getpagesize() multiple time=
+s.
+=2Dmike
+
+--nextPart2149756.10n3GxoMfl
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPA2dXAAoJEEFjO5/oN/WBvmUP/ArkfS2bD6Wb+lIAWY3FfMoE
+JgJuV89z2PzgzPahyXYzfwVZMlyxX9cFLVd/pJvG3mnTYaG4zhx78nBLptktOoGp
+2I6XiwzGySkAK/LQHlEqIsry2Orgq4cyzdstJO/tWOdKdF2AspAM7fDSm1MiuHDq
++8li/xbQ7Sj2uJBkeKi4ANU2qAJitRpooNo3kLI06Ywqrvd9Hu6lsMm8bUAn80av
+fWsC19xKp0trVok+HbiUdoUvBxXieABIO8jOSWhKUDl+PKaRnmhRimnSNAVv2Kp+
+5Wz3fXZWt4FmaVnPurDqOcRINbQhSyTvyQ+1j0pPeSHGG4ZPxpcuIX+3cHzk34ek
+e7weTpMRRHhLOKiVaAuTg+fpvG6HTCmjcADS7IA/A2r6euLmZt8msizoS7/HoKgA
+EPzukBS3o7BT76X25HlGxm/t97GN5kX6jDzK818EtmOa4PhE+5JaPFsJ45ww9MaV
+YgpL8k4FMIhZiHp6skcD6zkxSq26/c9TfEsNmQqCwcvMH4/z9+/qaGPpQVNH5x4l
+RvLqO7i3Kil1wiqzqfTmV0tzvKWQSbB1cBqpndHDEBx5+fE3dk4aFJPxiLrxdLQH
+fV26u1gpcoxdMJI8RF53b+XUHkxG1DiptEjbM5v+BQNJAExqFje7Cr5hDQSy/kFc
+1Gv6eJ7p1TmOgBcg3l6K
+=SglP
+-----END PGP SIGNATURE-----
+
+--nextPart2149756.10n3GxoMfl--
 
 
-
------ Original Message -----
-> From: "Peng Haitao" <penght@cn.fujitsu.com>
-> To: "Cyril Hrubis" <chrubis@suse.cz>, "Garrett Cooper" <yanegomi@gmail.com>, "Jan Stancek" <jstancek@redhat.com>,
-> "Mike Frysinger" <vapier@gentoo.org>
-> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Thursday, January 19, 2012 9:31:12 AM
-> Subject: [LTP] [PATCH v3 1/8] A library used to test memcg
-> 
-
-Hi,
-
-last update of this series had different version on some patches,
-some were v2 and some v3. I'll be referring to it as 'v3'.
-
-I ran all v3 test cases. They worked fine, just 2 comments:
-
-1. file mode of new test cases is 644, existing one (memcg_function_test) is 755.
-I'm not sure if installation process takes care of this, I put them to testcases/bin
-directly (I was lazy), so I had to "chmod a+x" new ones to run them.
-
-2. memcg_use_hierarchy generates some errors, which are expected
-For example:
-ltp/testcases/bin/memcg_use_hierarchy_test.sh: line 53: echo: write error: Device or resource busy
-testcases/bin/memcg_use_hierarchy_test.sh: line 64: echo: write error: Invalid argument
-
-Just by reading log, it isn't obvious, that these errors are expected.
-I'd suggest "2> /dev/null" or if you want to keep it in log, then add
-some note, that these are expected.
-
-Regards,
-Jan
+--===============9044776941477926345==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--===============9044776941477926345==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9044776941477926345==--
+
