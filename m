@@ -2,20 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <carmelo.amoroso@st.com>) id 1RpGiP-00010X-RS
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jan 2012 10:01:29 +0000
-Received: from eu1sys200aog110.obsmtp.com ([207.126.144.129])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RpGiO-0005iS-Ut
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jan 2012 10:01:29 +0000
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Date: Mon, 23 Jan 2012 11:01:09 +0100
-Message-Id: <1327312869-17016-2-git-send-email-carmelo.amoroso@st.com>
-In-Reply-To: <1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
-References: <20120120134016.GG4024@saboteur.suse.cz>
-	<1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri1qj-0004do-9T
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 10:44:09 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri1qi-0000XB-8p
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 10:44:09 +0000
+Message-ID: <4F02DBF1.3090402@imgtec.com>
+Date: Tue, 3 Jan 2012 10:44:01 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/2 V3] profile01: fix build using uClibc runtime
+Content-Type: multipart/mixed; boundary="------------010005050702050905040705"
+Subject: [LTP] [PATCH 06/21] syscalls/unshare02: Replace ((int)NULL) with 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,61 +23,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net
 
-Rml4IGEgYnVpbGQgZXJyb3Igd2hlbiBfX1VDTElCQ19fIGlzIGRlZmluZWQgKHNlZSBsb2cgYmVs
-b3cpCmJ5IG1vdmluZyBhbGwgaGVhZGVycyBpbmNsdXNpb24gYW5kIFRDSUQgZGVmaW5pdGlvbiBv
-biB0b3Agb2YgZmlsZQphcyB0aGV5IGFyZSByZXF1aXJlZCBieSAndHN0X2Jya20nIGZ1bmN0aW9u
-IHRvby4KCnByb2ZpbDAxLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6CnByb2ZpbDAxLmM6MzEx
-OjI6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmHRzdF9leGl0
-4oCZCnByb2ZpbDAxLmM6MzEyOjE6IHdhcm5pbmc6IGNvbnRyb2wgcmVhY2hlcyBlbmQgb2Ygbm9u
-LXZvaWQgZnVuY3Rpb24KIC4uLy4uLy4uLy4uL2xpYi9saWJsdHAuYSh0c3RfcmVzLm8pOiBJbiBm
-dW5jdGlvbiBgY2F0X2ZpbGUnOgovc3RsaW51eC9hbW9yb3NvYy9naXQvc3RtL2x0cC9saWIvdHN0
-X3Jlcy5jOjczMzogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKLi4vLi4vLi4vLi4vbGli
-L2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGB0c3RfcmVzJzoKL3N0bGludXgvYW1v
-cm9zb2MvZ2l0L3N0bS9sdHAvbGliL3RzdF9yZXMuYzozMDA6IHVuZGVmaW5lZCByZWZlcmVuY2Ug
-dG8gYFRDSUQnCi9zdGxpbnV4L2Ftb3Jvc29jL2dpdC9zdG0vbHRwL2xpYi90c3RfcmVzLmM6Mjg0
-OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBUQ0lEJwovc3RsaW51eC9hbW9yb3NvYy9naXQvc3Rt
-L2x0cC9saWIvdHN0X3Jlcy5jOjMyMzogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKLi4v
-Li4vLi4vLi4vbGliL2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGB0c3RfYnJrJzoK
-L3N0bGludXgvYW1vcm9zb2MvZ2l0L3N0bS9sdHAvbGliL3RzdF9yZXMuYzo2MzQ6IHVuZGVmaW5l
-ZCByZWZlcmVuY2UgdG8gYFRDSUQnCmNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVz
-CgpTaWduZWQtb2ZmLWJ5OiBGcmFuY2VzY28gUnVuZG8gPGZyYW5jZXNjby5ydW5kb0BzdC5jb20+
-ClNpZ25lZC1vZmYtYnk6IENhcm1lbG8gQW1vcm9zbyA8Y2FybWVsby5hbW9yb3NvQHN0LmNvbT4K
-LS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Byb2ZpbC9wcm9maWwwMS5jIHwgICAyNCAr
-KysrKysrKysrKystLS0tLS0tLS0tLS0KIDEgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygr
-KSwgMTIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9wcm9maWwvcHJvZmlsMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHJvZmlsL3By
-b2ZpbDAxLmMKaW5kZXggNjNiZWQ4My4uOTllZWNkYiAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9wcm9maWwvcHJvZmlsMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL3Byb2ZpbC9wcm9maWwwMS5jCkBAIC00MSwxOCArNDEsOSBAQAogI2VuZGlmCiAKICNp
-bmNsdWRlIDxmZWF0dXJlcy5oPgotI2lmbmRlZiBfX1VDTElCQ19fCi0KLSNpZmRlZiBfX2FybV9f
-Ci0jZGVmaW5lIEFERFJFU1NfT0ZGU0VUIDB4ODAwMAotI2Vsc2UKLSNkZWZpbmUgQUREUkVTU19P
-RkZTRVQgMAotI2VuZGlmCi0KICNpbmNsdWRlIDxzdGRpby5oPgogI2luY2x1ZGUgPHNpZ25hbC5o
-PgogI2luY2x1ZGUgPGxpbWl0cy5oPgotLyoqKioqCUxUUCBQb3J0CSoqKioqLwogI2luY2x1ZGUg
-PHN0ZGxpYi5oPgogI2luY2x1ZGUgPHVuaXN0ZC5oPgogI2luY2x1ZGUgPGVycm5vLmg+CkBAIC02
-MCw5ICs1MSwxOSBAQAogI2luY2x1ZGUgPHN5cy93YWl0Lmg+CiAjaW5jbHVkZSAidGVzdC5oIgog
-I2luY2x1ZGUgInVzY3Rlc3QuaCIKKworY2hhciAqVENJRCA9ICJwcm9maWwwMSI7CisKKyNpZm5k
-ZWYgX19VQ0xJQkNfXworCisjaWZkZWYgX19hcm1fXworI2RlZmluZSBBRERSRVNTX09GRlNFVCAw
-eDgwMDAKKyNlbHNlCisjZGVmaW5lIEFERFJFU1NfT0ZGU0VUIDAKKyNlbmRpZgorCiAjZGVmaW5l
-IEZBSUxFRCAwCiAjZGVmaW5lIFBBU1NFRCAxCi0vKioqKioJKioJKioJKioqKiovCiAKICNkZWZp
-bmUgUF9USU1FCQkxMAkvKiBwcm9maWxlIGZvciB0aGlzIG1hbnkgIHNlY29uZHMgKi8KIApAQCAt
-NzMsNyArNzQsNiBAQCB2b2xhdGlsZSBpbnQgdF9mbGFnOwogLy9jaGFyIHByb2duYW1lW109ICJw
-cm9maWwxKCkiOwogCiAvKioqKioJTFRQIFBvcnQJKioqKiovCi1jaGFyICpUQ0lEID0gInByb2Zp
-bDAxIjsKIGludCBsb2NhbF9mbGFnID0gUEFTU0VEOwogaW50IGJsb2NrX251bWJlcjsKIEZJTEUg
-KnRlbXA7CkBAIC0zMTAsNCArMzEwLDQgQEAgaW50IG1haW4odm9pZCkKIAkvKiB1Q2xpYmMgZG9l
-cyBub3QgaGF2ZSBwcm9maWxpbmcgc3VwcG9ydCAqLwogCXRzdF9leGl0KCk7CiB9Ci0jZW5kaWYK
-XCBObyBuZXdsaW5lIGF0IGVuZCBvZiBmaWxlCisjZW5kaWYKLS0gCjEuNy40LjQKCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KVHJ5IGJlZm9yZSB5b3UgYnV5ID0gU2VlIG91ciBleHBlcnRzIGluIGFj
-dGlvbiEKVGhlIG1vc3QgY29tcHJlaGVuc2l2ZSBvbmxpbmUgbGVhcm5pbmcgbGlicmFyeSBmb3Ig
-TWljcm9zb2Z0IGRldmVsb3BlcnMKaXMganVzdCAkOTkuOTkhIFZpc3VhbCBTdHVkaW8sIFNoYXJl
-UG9pbnQsIFNRTCAtIHBsdXMgSFRNTDUsIENTUzMsIE1WQzMsCk1ldHJvIFN0eWxlIEFwcHMsIG1v
-cmUuIEZyZWUgZnV0dXJlIHJlbGVhc2VzIHdoZW4geW91IHN1YnNjcmliZSBub3chCmh0dHA6Ly9w
-LnNmLm5ldC9zZnUvbGVhcm5kZXZub3ctZGV2MgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+--------------010005050702050905040705
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi, please review the attached patch
+
+-- 
+markos
+
+--------------010005050702050905040705
+Content-Type: text/plain;
+	name="0006-syscalls-unshare02-Replace-int-NULL-with-0.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0006-syscalls-unshare02-Replace-int-NULL-with-0.patch"
+
+From 269402e0cf64392442196ecf6c79d35d9e93c1af Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 22 Dec 2011 11:57:17 +0000
+Subject: [PATCH 06/21] syscalls/unshare02: Replace ((int)NULL) with 0
+
+On non-32bit arches, casting a pointer to integer throws a compiler warning
+because integers and pointers have different sizes in these arches. Therefore,
+we replace the (int)NULL cast with 0 which has the same effect.
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ testcases/kernel/syscalls/unshare/unshare02.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/unshare/unshare02.c b/testcases/kernel/syscalls/unshare/unshare02.c
+index 9f7b436..1a93932 100644
+--- a/testcases/kernel/syscalls/unshare/unshare02.c
++++ b/testcases/kernel/syscalls/unshare/unshare02.c
+@@ -181,7 +181,7 @@ int main(int ac, char **av) {
+ 				tst_brkm(TFAIL|TTERRNO, cleanup,
+ 					"fork() failed.");
+ 			} else if (TEST_RETURN == 0) {
+-				TEST_RETURN = unshare((int)NULL);
++				TEST_RETURN = unshare(0);
+ 				if (TEST_RETURN == 0) {
+ 					tst_resm(TPASS, "Call succeeded");
+ 					rval = 0;
+-- 
+1.7.1
+
+
+--------------010005050702050905040705
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------010005050702050905040705
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------010005050702050905040705--
+
+
