@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RkRxp-0005Qv-Ek
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:01:29 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1RkRxo-0002zU-Bq
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:01:29 +0000
-Received: by yenm12 with SMTP id m12so2103959yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 09 Jan 2012 19:01:22 -0800 (PST)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 10 Jan 2012 11:01:10 +0800
-Message-Id: <1326164470-16612-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
-References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RiDsM-0007CL-4e
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 23:34:38 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RiDsL-0007N9-E5
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 23:34:38 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 3 Jan 2012 18:34:44 -0500
+References: <4F02DBAF.5040202@imgtec.com>
+	<201201031557.08072.vapier@gentoo.org>
+	<CAGH67wSrnkWdC8vYubfur6p2-Vs03F6LKvnZumtb-ZW-dWLy8g@mail.gmail.com>
+In-Reply-To: <CAGH67wSrnkWdC8vYubfur6p2-Vs03F6LKvnZumtb-ZW-dWLy8g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.1"
-Subject: [LTP] [PATCH v2] syscalls/xattr: fix compile when xattr.h not exist
+Message-Id: <201201031834.45745.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 05/21] syscalls: Cast st_nlink variables to proper
+	integers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,253 +27,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============5313719057798519657=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
-This is a multi-part message in MIME format.
---------------1.7.8.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+--===============5313719057798519657==
+Content-Type: multipart/signed; boundary="nextPart2723299.BpfVIv1BCM";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart2723299.BpfVIv1BCM
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+On Tuesday 03 January 2012 17:19:25 Garrett Cooper wrote:
+> The 'solution' for the issues with
+> format strings and long integers is generally cast to [u]intmax_t,
+> then use %zd or %zu.
+
+eek, almost ;)
+
+ssize_t -> %zd
+size_t -> %zu
+intmax_t -> %jd
+uintmax_t -> %ju
+-mike
+
+--nextPart2723299.BpfVIv1BCM
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPA5CVAAoJEEFjO5/oN/WBelMQAMFHlZeiq6VLg+oxdxtsSwHi
+mds3xRywxAsf2rAYHC4ISL6FmuO3YDoK+PNSrs0CKPpIqLtZ2NAN2onmUi3nOnJI
+8eQZ0rikDCymRNiYU+tuQl9Wtfarq6q+isB5xarLctZM5LOy7voRzr8MoIpxtp73
+jSKSZebx1PMnkS8FXlwgxKEyTQVK7MMKDV0/RKQeW36e8zUNOn4kJ12pq4dCzpD5
+6dn2mxhca96+vv9sxSlkQqRQIdwVIOH39LmA4DQmTcYSGmpS0b6SUPE71f2Klw3z
+x8r2jLLYaLbCOcr7QmVa1GGWkT+y+jzQO+Mr7eifavBWPr5wH5p09wUPQcXktlrO
+t2hj62u6ZLyA0JbNejJ5WQQ7hb7kacQ0Hdp09ngiACyghpgkJhhqEKGKGOVJKpNg
+lpDXdYCLDMtaZxgd2rA5ROwgLK+FNfgRFY87LYIJ/XTUg2utMTlDtntXQ/yjCUtt
+q8VSdKWnOM6BILpcsGUG2dH3PAjCWOy/1RlUVDsVOnPELnBDiBOBUHtoo1hZdnrh
+pxGx2lXYLkBZ6zo5J+Py1zJ3yo5L+Zh+bUs6Nu+KBFhgHNHmOTbczP1g23jm1ag5
+6jBXEGXb/z2Hg7+2VdWuK0jPzJVaPUyjGAAEqui0VCfmgys1Zj7ZCRfSF2Dl3+Ez
+Mr7KTqDHM5+68Jz4/zhq
+=P9AR
+-----END PGP SIGNATURE-----
+
+--nextPart2723299.BpfVIv1BCM--
 
 
-if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
-autotools level.
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- configure.ac                                    |    1 +
- testcases/kernel/syscalls/getxattr/getxattr01.c |   16 +++++++++++++---
- testcases/kernel/syscalls/getxattr/getxattr02.c |   17 +++++++++++++----
- testcases/kernel/syscalls/setxattr/setxattr01.c |   16 +++++++++++++---
- testcases/kernel/syscalls/setxattr/setxattr02.c |   17 +++++++++++++----
- 5 files changed, 53 insertions(+), 14 deletions(-)
-
-
---------------1.7.8.1
-Content-Type: text/x-patch;
-	name="0001-syscalls-xattr-fix-compile-when-xattr.h-not-exist.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-syscalls-xattr-fix-compile-when-xattr.h-not-exist.patch"
-
-diff --git a/configure.ac b/configure.ac
-index 00d3720..6b3870a 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -36,6 +36,7 @@ AC_CHECK_HEADERS([ \
-     libaio.h \
-     mm.h \
-     pthread.h \
-+    attr/xattr.h \
-     linux/genetlink.h \
-     linux/mempolicy.h \
-     linux/module.h \
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c b/testcases/kernel/syscalls/getxattr/getxattr01.c
-index 8db6743..de4824c 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr01.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
-@@ -35,19 +35,24 @@
-  * 4. Verify the attribute got by getxattr(2) is same as the value we set
-  */
- 
-+#include "config.h"
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <attr/xattr.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <unistd.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
--
-+#ifdef HAVE_ATTR_XATTR_H
-+#include <attr/xattr.h>
-+#endif
- #include "test.h"
- #include "usctest.h"
- 
-+char *TCID = "getxattr01";
-+
-+#ifdef HAVE_ATTR_XATTR_H
- #define XATTR_TEST_KEY "user.testkey"
- #define XATTR_TEST_VALUE "this is a test value"
- #define XATTR_TEST_VALUE_SIZE 20
-@@ -56,7 +61,6 @@
- static void setup(void);
- static void cleanup(void);
- 
--char *TCID = "getxattr01";
- char filename[BUFSIZ];
- 
- struct test_case {
-@@ -171,3 +175,9 @@ static void cleanup(void)
- 	TEST_CLEANUP;
- 	tst_rmdir();
- }
-+#else /* HAVE_ATTR_XATTR_H */
-+int main(int argc, char *argv[])
-+{
-+	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-+}
-+#endif
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c b/testcases/kernel/syscalls/getxattr/getxattr02.c
-index 54d8949..503fcd0 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr02.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
-@@ -38,10 +38,10 @@
-  *    return -1 and set errno to ENODATA
-  */
- 
-+#include "config.h"
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/wait.h>
--#include <attr/xattr.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <unistd.h>
-@@ -49,10 +49,15 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
--
-+#ifdef HAVE_ATTR_XATTR_H
-+#include <attr/xattr.h>
-+#endif
- #include "test.h"
- #include "usctest.h"
- 
-+char *TCID = "getxattr02";
-+
-+#ifdef HAVE_ATTR_XATTR_H
- #define XATTR_TEST_KEY "user.testkey"
- 
- #define FIFO "getxattr02fifo"
-@@ -63,8 +68,6 @@
- static void setup(void);
- static void cleanup(void);
- 
--char *TCID = "getxattr02";
--
- static char *tc[] = {
- 	FIFO,	/* case 00, get attr from fifo */
- 	CHR,	/* case 01, get attr from char special */
-@@ -150,3 +153,9 @@ static void cleanup(void)
- 	TEST_CLEANUP;
- 	tst_rmdir();
- }
-+#else /* HAVE_ATTR_XATTR_H */
-+int main(int argc, char *argv[])
-+{
-+	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-+}
-+#endif
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr01.c b/testcases/kernel/syscalls/setxattr/setxattr01.c
-index fedb777..425fcf3 100644
---- a/testcases/kernel/syscalls/setxattr/setxattr01.c
-+++ b/testcases/kernel/syscalls/setxattr/setxattr01.c
-@@ -43,10 +43,10 @@
-  *    setxattr(2) should succeed
-  */
- 
-+#include "config.h"
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/wait.h>
--#include <attr/xattr.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <unistd.h>
-@@ -54,10 +54,15 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
--
-+#ifdef HAVE_ATTR_XATTR_H
-+#include <attr/xattr.h>
-+#endif
- #include "test.h"
- #include "usctest.h"
- 
-+char *TCID = "setxattr01";
-+
-+#ifdef HAVE_ATTR_XATTR_H
- #define XATTR_NAME_MAX 255
- #define XATTR_NAME_LEN (XATTR_NAME_MAX + 2)
- #define XATTR_SIZE_MAX 65536
-@@ -68,7 +73,6 @@
- static void setup(void);
- static void cleanup(void);
- 
--char *TCID = "setxattr01";
- char filename[BUFSIZ];
- char long_key[XATTR_NAME_LEN];
- char *long_value;
-@@ -221,3 +225,9 @@ static void cleanup(void)
- 	TEST_CLEANUP;
- 	tst_rmdir();
- }
-+#else /* HAVE_ATTR_XATTR_H */
-+int main(int argc, char *argv[])
-+{
-+	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-+}
-+#endif
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr02.c b/testcases/kernel/syscalls/setxattr/setxattr02.c
-index f4ba566..465796c 100644
---- a/testcases/kernel/syscalls/setxattr/setxattr02.c
-+++ b/testcases/kernel/syscalls/setxattr/setxattr02.c
-@@ -42,10 +42,10 @@
-  *    return -1 and set errno to EPERM
-  */
- 
-+#include "config.h"
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/wait.h>
--#include <attr/xattr.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <unistd.h>
-@@ -53,10 +53,15 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
--
-+#ifdef HAVE_ATTR_XATTR_H
-+#include <attr/xattr.h>
-+#endif
- #include "test.h"
- #include "usctest.h"
- 
-+char *TCID = "setxattr02";
-+
-+#ifdef HAVE_ATTR_XATTR_H
- #define XATTR_TEST_KEY "user.testkey"
- #define XATTR_TEST_VALUE "this is a test value"
- #define XATTR_TEST_VALUE_SIZE 20
-@@ -72,8 +77,6 @@
- static void setup(void);
- static void cleanup(void);
- 
--char *TCID = "setxattr02";
--
- struct test_case {
- 	char *fname;
- 	char *key;
-@@ -233,3 +236,9 @@ static void cleanup(void)
- 	TEST_CLEANUP;
- 	tst_rmdir();
- }
-+#else /* HAVE_ATTR_XATTR_H */
-+int main(int argc, char *argv[])
-+{
-+	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-+}
-+#endif
-
---------------1.7.8.1
+--===============5313719057798519657==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -286,7 +92,7 @@ Get the SDK and tools to simplify cross-platform app development. Create
 new or port existing apps to sell to consumers worldwide. Explore the 
 Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
 http://p.sf.net/sfu/intel-appdev
---------------1.7.8.1
+--===============5313719057798519657==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -297,7 +103,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------1.7.8.1--
-
-
+--===============5313719057798519657==--
 
