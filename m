@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RipOw-0002o1-Mu
-	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 15:38:46 +0000
-Date: Thu, 5 Jan 2012 16:49:41 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120105154941.GE20860@saboteur.suse.cz>
-References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
-	<1325775471-19975-4-git-send-email-eguan@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri0oE-0000F5-0b
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:37:30 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri0oC-0005wi-T6
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:37:29 +0000
+Message-ID: <4F02CC46.9000106@imgtec.com>
+Date: Tue, 3 Jan 2012 09:37:10 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1325775471-19975-4-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH v3 3/4] syscalls/setxattr02: new testcase to test
- setxattr(2)
+Content-Type: multipart/mixed; boundary="------------040906040507050100000709"
+Subject: [LTP] [PATCH 03/21] test.h/tst_brkm: Drop __attribute__((noreturn))
+ since tst_brk can return to caller
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,60 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +#define XATTR_TEST_KEY "user.testkey"
-> +#define XATTR_TEST_VALUE "this is a test value"
-> +#define XATTR_TEST_VALUE_SIZE 20
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +char *TCID = "setxattr02";
-> +
-> +char file[] = "setxattr02testfile";
-> +char dir[] = "setxattr02testdir";
-> +char sym[] = "setxattr02symlink";
-> +char fifo[] = "setxattr02fifo";
-> +char chr[] = "setxattr02chr";
-> +char blk[] = "setxattr02blk";
-> +char sock[] = "setxattr02sock";
+--------------040906040507050100000709
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Just to be extra correct here, there is a difference between
-
-char *var = "foo";
-
-and 
-
-char var[] = "foo";
-
-The first one is const and thus not modifiable while the second
-is an array and as a such it may be modified at the runtime.
-
-I think we should rather use *var = "foo" here.
-
-Also I tend to declare global variables static as that way compiler
-prints warning when they became unused.
+Hi, please review the attached patch
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
+--------------040906040507050100000709
+Content-Type: text/plain;
+	name="0003-test.h-tst_brkm-Drop-__attribute__-noreturn-since-ts.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0003-test.h-tst_brkm-Drop-__attribute__-noreturn-since-ts.pa";
+	filename*1="tch"
+
+From ab2d6650577acb973f68ddfd8884fab0116e5470 Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 22 Dec 2011 11:42:10 +0000
+Subject: [PATCH 03/21] test.h/tst_brkm: Drop __attribute__((noreturn)) since tst_brk can return to caller
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ include/test.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/test.h b/include/test.h
+index 033fdbc..39bad72 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -189,7 +189,7 @@ void tst_resm(int ttype, char *arg_fmt, ...)
+ void tst_brk(int ttype, char *fname, void (*func)(void), char *arg_fmt, ...)
+ 	__attribute__ ((format (printf, 4, 5)));
+ void tst_brkm(int ttype, void (*func)(void), char *arg_fmt, ...)
+-	__attribute__ ((format (printf, 3, 4))) LTP_ATTRIBUTE_NORETURN;
++	__attribute__ ((format (printf, 3, 4)));
+ void tst_require_root(void (*func)(void));
+ int  tst_environ(void);
+ void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
+-- 
+1.7.1
+
+
+--------------040906040507050100000709
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------040906040507050100000709
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------040906040507050100000709--
+
+
