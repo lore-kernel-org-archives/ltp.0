@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RoFJo-00008J-F9
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 14:19:52 +0000
-Date: Fri, 20 Jan 2012 15:32:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120120143207.GB13447@saboteur.suse.cz>
-References: <1326184383-2268-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4F0E2948.3000800@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri0md-0006DN-74
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:35:51 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri0ma-0000tG-NF
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:35:51 +0000
+Message-ID: <4F02CBDE.70400@imgtec.com>
+Date: Tue, 3 Jan 2012 09:35:26 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F0E2948.3000800@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] hugemmap01: auto mount the tmp dir
+Content-Type: multipart/mixed; boundary="------------030801070400010100090300"
+Subject: [LTP] [PATCH 02/21] lib/self_exec: Remove extra argument from
+ tst_resm function call
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,205 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > Hi Cyril, Casper and folks :
-> > 
-> > I just cooked one patch to request for your comments,
-> > after your comments with this, I will cook patches on
-> > other hugemmap cases, and also with some code cleanup.
-> 
-> Any comments? the case now is sometime FAIL without this
-> patch,
+--------------030801070400010100090300
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Sorry for the delay, there is (again) quite a load of patches and work
-to do...
-
-Speaking of cleanups, you are welcome to delete all the useless comments
-like /* this is a loop variable */. And you could also run checkpatch on
-files too, as checkpatch -f file.c. And if you send the cleanups in
-separate patch, these would be applied right away.
-
-The changes in functionality looks reasonably straightforward to me more
-comments bellow. And I would definitly like to hear what Caspar thinks
-about this patch (as he was planing to do some cleanups in the mem/
-testcases).
-
-> > 1. auto mount can reduce bugs
-> > 2. add a option to change the default hugepages to be allocated
-> > 
-> > Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> > ---
-> >  runtest/hugetlb                                    |    2 +-
-> >  testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   12 +++++
-> >  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   49 ++++++++++++-------
-> >  3 files changed, 44 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/runtest/hugetlb b/runtest/hugetlb
-> > index a316043..2cbd410 100644
-> > --- a/runtest/hugetlb
-> > +++ b/runtest/hugetlb
-> > @@ -1,4 +1,4 @@
-> > -hugemmap01 hugemmap01 -H/tmp
-> > +hugemmap01 hugemmap01
-> >  hugemmap02 hugemmap02 -H/tmp -c10
-> >  hugemmap03 hugemmap03 -H/tmp -I2 -c10
-> >  hugemmap04 hugemmap04 -H/tmp
-> > diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> > index a1ba46e..98d0694 100644
-> > --- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> > @@ -24,4 +24,16 @@ top_srcdir              ?= ../../../../..
-> >  
-> >  include $(top_srcdir)/include/mk/testcases.mk
-> >  include $(abs_srcdir)/../Makefile.inc
-> > +
-> > +LIBMEMDIR		:= ../../lib
-> > +LIBMEM			:= $(LIBMEMDIR)/libmem.a
-> > +$(LIBMEM):
-> > +	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
-> > +
-> > +CPPFLAGS		+= -I$(abs_srcdir)/$(LIBMEMDIR)
-> > +LDFLAGS			+= -L$(abs_builddir)/$(LIBMEMDIR)
-> > +LDLIBS			+= -lmem
-> > +MAKE_DEPS		+= $(LIBMEM)
-> > +
-> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> > +#vim: syntax=make
-> > diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-> > index 874f736..5e2c962 100644
-> > --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-> > @@ -69,23 +69,27 @@
-> >  #include <sys/stat.h>
-> >  #include <sys/mman.h>
-> >  #include <sys/types.h>
-> > +#include <sys/mount.h>
-> >  
-> >  #include "test.h"
-> >  #include "usctest.h"
-> >  #include "system_specific_hugepages_info.h"
-> > +#include "../../include/mem.h"
-> >  
-> >  #define BUFFER_SIZE  256
-> >  
-> > -char* TEMPFILE="mmapfile";
-> > +char TEMPFILE[MAXPATHLEN];
-> >  
-> >  char *TCID="hugemmap01";	/* Test program identifier.    */
-> >  int TST_TOTAL=1;		/* Total number of test cases. */
-> >  long *addr;			/* addr of memory mapped region */
-> >  int fildes;			/* file descriptor for tempfile */
-> >  char *Hopt;                     /* location of hugetlbfs */
-> > +char *nr_opt;
-> >  int beforetest=0;		/* Amount of free huge pages before testing */
-> >  int aftertest=0;		/* Amount of free huge pages after testing */
-> >  int hugepagesmapped=0;		/* Amount of huge pages mapped after testing */
-> > +long hugepages = 1024;		/* Amount of allocated huge pages, default 1024 */
-> >  
-> >  void setup();			/* Main setup function of test */
-> >  void cleanup();			/* cleanup function for the test */
-> > @@ -100,12 +104,16 @@ main(int ac, char **av)
-> >  {
-> >  	int lc;			/* loop counter */
-> >  	char *msg;		/* message returned from parse_opts */
-> > -        int Hflag=0;              /* binary flag: opt or not */
-> > +        int Hflag=0;		/* binary flag: opt or not */
-> > +	int sflag=0;
-> >  	int page_sz=0;
-> >  
-> >         	option_t options[] = {
-> > -        	{ "H:",   &Hflag, &Hopt },    /* Required for location of hugetlbfs */
-> > -            	{ NULL, NULL, NULL }          /* NULL required to end array */
-> > +		/* Required for location of hugetlbfs */
-> > +        	{ "H:", &Hflag, &Hopt },
-> > +		{ "s:", &sflag, &nr_opt },
-> > +		/* NULL required to end array */
-> > +            	{ NULL, NULL, NULL }
-> >         	};
-> >  
-> >  	/* Parse standard options given to run the test. */
-> > @@ -115,11 +123,15 @@ main(int ac, char **av)
-> >  		tst_exit();
-> >  	}
-> >  
-> > -	if (Hflag == 0) {
-> > -		tst_brkm(TBROK, NULL, "-H option is REQUIRED for this test, use -h for options help");
-> > -		tst_exit();
-> > +	if (!Hflag) {
-> > +		tst_require_root(NULL);
-> > +		tst_tmpdir();
-> > +		Hopt = get_tst_tmpdir();
-> >  	}
-
-Isn't the tst_require_root(NULL) useless here as we do another one in
-setup? Or isn't the one in setup redundant?
-
-> > +	if (sflag)
-> > +		hugepages = strtol(nr_opt, NULL, 10);
-> > +
-> >  	setup();
-> >  
-> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> > @@ -189,17 +201,16 @@ main(int ac, char **av)
-> >   * 	     Write some known data into file and get the size of the file.
-> >   */
-> >  void
-> > -setup()
-> > +setup(void)
-> >  {
-> > -	char mypid[40];
-> > -
-> > -	sprintf(mypid,"/%d",getpid());
-> > -	TEMPFILE=strcat(mypid,TEMPFILE);
-> > -	TEMPFILE=strcat(Hopt,TEMPFILE);
-> > -
-> > -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> > -
-> > -	TEST_PAUSE;
-> > +	tst_require_root(NULL);
-> > +	if (mount("none", Hopt, "hugetlbfs", 0, NULL) < 0) {
-> > +		tst_brkm(TBROK|TERRNO, NULL,
-> > +			"mount failed on %s", Hopt);
-> > +	}
-> > +	set_sys_tune("nr_hugepages", hugepages, 1);
-> > +	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d",
-> > +		 Hopt, getpid());
-> >  }
-> >  
-> > @@ -209,7 +220,7 @@ setup()
-> >   * 	       Remove the temporary directory created.
-> >   */
-> >  void
-> > -cleanup()
-> > +cleanup(void)
-> >  {
-> >  	/*
-> >  	 * print timing stats if that option was specified.
-> > @@ -218,4 +229,6 @@ cleanup()
-> >  
-> >  	unlink(TEMPFILE);
-> >  
-> > +	umount(Hopt);
-> > +	tst_rmdir();
-> >  }
+Hi, please review the attached patch
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
+--------------030801070400010100090300
+Content-Type: text/plain;
+	name="0002-lib-self_exec-Remove-extra-argument-from-tst_resm-fu.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0002-lib-self_exec-Remove-extra-argument-from-tst_resm-fu.pa";
+	filename*1="tch"
+
+From 84228a0a49b1d2bbb256f71bd532ef3572b88b3a Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 22 Dec 2011 10:43:19 +0000
+Subject: [PATCH 02/21] lib/self_exec: Remove extra argument from tst_resm function call
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ lib/self_exec.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/self_exec.c b/lib/self_exec.c
+index a457468..c918e70 100644
+--- a/lib/self_exec.c
++++ b/lib/self_exec.c
+@@ -86,7 +86,7 @@ maybe_run_child(void (*child)(), char *fmt, ...)
+ 
+ 	child_dir = strtok(args, ",");
+ 	if (strlen(child_dir) == 0) {
+-	    tst_resm(TBROK, NULL, "Could not get directory from -C option");
++	    tst_resm(TBROK, "Could not get directory from -C option");
+ 	    tst_exit();
+ 	}
+ 
+-- 
+1.7.1
+
+
+--------------030801070400010100090300
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------030801070400010100090300
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030801070400010100090300--
+
+
