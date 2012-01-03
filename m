@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RipPX-0002qm-S4
-	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 15:39:23 +0000
-Date: Thu, 5 Jan 2012 16:50:18 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120105155018.GF20860@saboteur.suse.cz>
-References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
-	<1325775471-19975-5-git-send-email-eguan@redhat.com>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4KU-0008C6-Ct
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:23:02 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri4KT-0003T3-C1
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:23:02 +0000
+Message-ID: <4F03012E.40901@imgtec.com>
+Date: Tue, 3 Jan 2012 13:22:54 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1325775471-19975-5-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH v3 4/4] syscalls/getxattr02: new testcase to test
- getxattr(2)
+Content-Type: multipart/mixed; boundary="------------050706040508020709010801"
+Subject: [LTP] [PATCH 17/21] network/lib6/asapi_04: Cast pointer arithmetic
+ to proper integer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,31 +24,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +char fifo[] = "getxattr02fifo";
-> +char chr[] = "getxattr02chr";
-> +char blk[] = "getxattr02blk";
-> +char sock[] = "getxattr02sock";
+--------------050706040508020709010801
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Same here.
+Hi, please review the attached patch
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
+--------------050706040508020709010801
+Content-Type: text/plain;
+	name="0017-network-lib6-asapi_04-Cast-pointer-arithmetic-to-pro.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0017-network-lib6-asapi_04-Cast-pointer-arithmetic-to-pro.pa";
+	filename*1="tch"
+
+From a80f7d1ab66cb2385a67ad1860f4860be6955a6d Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 22 Dec 2011 15:08:39 +0000
+Subject: [PATCH 17/21] network/lib6/asapi_04: Cast pointer arithmetic to proper integer
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ testcases/network/lib6/asapi_04.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/network/lib6/asapi_04.c b/testcases/network/lib6/asapi_04.c
+index 9f7efbd..9c6ad3b 100644
+--- a/testcases/network/lib6/asapi_04.c
++++ b/testcases/network/lib6/asapi_04.c
+@@ -337,7 +337,7 @@ static int client(int prot, int sfd)
+ 			if (*p != 0xa5) {
+ 				tst_resm(TFAIL, "IPV6_CHECKSUM corrupt data "
+ 					"0x%02x != 0xa5 at offset %d in packet",
+-					*p, p - rpbuf);
++					*p, (int)(p - rpbuf));
+ 				rv = 0;
+ 				break;
+ 			}
+@@ -532,4 +532,4 @@ cleanup(void)
+ 	TEST_CLEANUP;
+ }
+ 
+-int TST_TOTAL = PTCOUNT + CSCOUNT;
+\ No newline at end of file
++int TST_TOTAL = PTCOUNT + CSCOUNT;
+-- 
+1.7.1
+
+
+--------------050706040508020709010801
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------050706040508020709010801
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------050706040508020709010801--
+
+
