@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri1qj-0004do-9T
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 10:44:09 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri28o-0002lH-Mw
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:02:50 +0000
 Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri1qi-0000XB-8p
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 10:44:09 +0000
-Message-ID: <4F02DBF1.3090402@imgtec.com>
-Date: Tue, 3 Jan 2012 10:44:01 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ri28o-0001Xw-09
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 11:02:50 +0000
+Message-ID: <4F02E053.3060600@imgtec.com>
+Date: Tue, 3 Jan 2012 11:02:43 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010005050702050905040705"
-Subject: [LTP] [PATCH 06/21] syscalls/unshare02: Replace ((int)NULL) with 0
+Content-Type: multipart/mixed; boundary="------------050704080904020500080101"
+Subject: [LTP] [PATCH 07/21] cgroup/getdelays: Squish uninitialized variable
+ warning for old GCC compilers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,54 +27,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---------------010005050702050905040705
+--------------050704080904020500080101
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi, please review the attached patch
+Hi, please review the attached patch. It is a trivial fix for slightly 
+old GCC versions.
 
 -- 
 markos
 
---------------010005050702050905040705
+--------------050704080904020500080101
 Content-Type: text/plain;
-	name="0006-syscalls-unshare02-Replace-int-NULL-with-0.patch"
+	name="0007-cgroup-getdelays-Squish-uninitialized-variable-warni.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
-	filename="0006-syscalls-unshare02-Replace-int-NULL-with-0.patch"
+	filename*0="0007-cgroup-getdelays-Squish-uninitialized-variable-warni.pa";
+	filename*1="tch"
 
-From 269402e0cf64392442196ecf6c79d35d9e93c1af Mon Sep 17 00:00:00 2001
+From 9a47290369456d5406845b0d5c37b1577e55ef11 Mon Sep 17 00:00:00 2001
 From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 22 Dec 2011 11:57:17 +0000
-Subject: [PATCH 06/21] syscalls/unshare02: Replace ((int)NULL) with 0
-
-On non-32bit arches, casting a pointer to integer throws a compiler warning
-because integers and pointers have different sizes in these arches. Therefore,
-we replace the (int)NULL cast with 0 which has the same effect.
+Date: Thu, 22 Dec 2011 12:07:30 +0000
+Subject: [PATCH 07/21] cgroup/getdelays: Squish uninitialized variable warning for old GCC compilers
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- testcases/kernel/syscalls/unshare/unshare02.c |    2 +-
+ testcases/kernel/controllers/cgroup/getdelays.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/unshare/unshare02.c b/testcases/kernel/syscalls/unshare/unshare02.c
-index 9f7b436..1a93932 100644
---- a/testcases/kernel/syscalls/unshare/unshare02.c
-+++ b/testcases/kernel/syscalls/unshare/unshare02.c
-@@ -181,7 +181,7 @@ int main(int ac, char **av) {
- 				tst_brkm(TFAIL|TTERRNO, cleanup,
- 					"fork() failed.");
- 			} else if (TEST_RETURN == 0) {
--				TEST_RETURN = unshare((int)NULL);
-+				TEST_RETURN = unshare(0);
- 				if (TEST_RETURN == 0) {
- 					tst_resm(TPASS, "Call succeeded");
- 					rval = 0;
+diff --git a/testcases/kernel/controllers/cgroup/getdelays.c b/testcases/kernel/controllers/cgroup/getdelays.c
+index da735b2..5c79423 100644
+--- a/testcases/kernel/controllers/cgroup/getdelays.c
++++ b/testcases/kernel/controllers/cgroup/getdelays.c
+@@ -263,7 +263,7 @@ void print_ioacct(struct taskstats *t)
+ 
+ int main(int argc, char *argv[])
+ {
+-	int c, rc, rep_len, aggr_len, len2, cmd_type;
++	int c, rc, rep_len, aggr_len, len2, cmd_type = 0;
+ 	__u16 id;
+ 	__u32 mypid;
+ 
 -- 
 1.7.1
 
 
---------------010005050702050905040705
+--------------050704080904020500080101
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -85,7 +84,7 @@ Get the SDK and tools to simplify cross-platform app development. Create
 new or port existing apps to sell to consumers worldwide. Explore the 
 Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
 http://p.sf.net/sfu/intel-appdev
---------------010005050702050905040705
+--------------050704080904020500080101
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -96,6 +95,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------010005050702050905040705--
+--------------050704080904020500080101--
 
 
