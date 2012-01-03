@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RnVUI-0002XA-Dq
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 13:23:38 +0000
-Date: Wed, 18 Jan 2012 14:16:40 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120118131640.GA4024@saboteur.suse.cz>
-References: <1303477727.18220.15.camel@moss-pluto>
-	<f5072a2e-749f-493e-9a29-995a035912b2@zmail16.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1Ri10j-0002ow-UX
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:50:25 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Ri10h-0001XI-6x
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:50:25 +0000
+Received: by obcwn6 with SMTP id wn6so17308857obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Jan 2012 01:50:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <f5072a2e-749f-493e-9a29-995a035912b2@zmail16.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] selinux-testsuite has moved
+In-Reply-To: <4F02CBDE.70400@imgtec.com>
+References: <4F02CBDE.70400@imgtec.com>
+Date: Tue, 3 Jan 2012 01:50:17 -0800
+Message-ID: <CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 02/21] lib/self_exec: Remove extra argument from
+ tst_resm function call
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,33 +31,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Stephen Smalley <sds@tycho.nsa.gov>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Is this still valid? I'm having troubles cloning from there.
-> 
-> git clone git://git.kernel.org/pub/scm/tests/selinux-testsuite
-> Initialized empty Git repository in /usr/src/selinux-testsuite/.git/
-> fatal: The remote end hung up unexpectedly
-> 
-> and also I can't see it listed here: http://git.kernel.org/
+On Tue, Jan 3, 2012 at 1:35 AM, Markos Chandras
+<Markos.Chandras@imgtec.com> wrote:
+> Hi, please review the attached patch
 
-Yes, it is.
-
-However some of the repositories on kernel.org haven't yet recovered
-from the security breach. I would expect this is the case here.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+    Converting the function to tst_brkm and removing the tst_exit call
+below it would be better.
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
