@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1RqMMX-0002Xa-Ln
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jan 2012 10:15:25 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RqMMS-0006LN-1R
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jan 2012 10:15:25 +0000
-Message-ID: <4F2127AE.6050906@imgtec.com>
-Date: Thu, 26 Jan 2012 10:15:10 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1RiChf-0000W7-Gu
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 22:19:31 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RiChe-00048G-T4
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 22:19:31 +0000
+Received: by obcwn6 with SMTP id wn6so18442718obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Jan 2012 14:19:25 -0800 (PST)
 MIME-Version: 1.0
-References: <1326106637-5173-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1326106637-5173-1-git-send-email-markos.chandras@imgtec.com>
-Subject: Re: [LTP] [PATCH] {tcp_cmds/echo,
- math/float}: Include missing usctest.h header
+In-Reply-To: <201201031557.08072.vapier@gentoo.org>
+References: <4F02DBAF.5040202@imgtec.com>
+	<201201031537.17888.vapier@gentoo.org>
+	<CAGH67wRYtWO91esDJ2KUF0Db4_K=M+N1q2+r7JiE-A2BOOeO9Q@mail.gmail.com>
+	<201201031557.08072.vapier@gentoo.org>
+Date: Tue, 3 Jan 2012 14:19:25 -0800
+Message-ID: <CAGH67wSrnkWdC8vYubfur6p2-Vs03F6LKvnZumtb-ZW-dWLy8g@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 05/21] syscalls: Cast st_nlink variables to proper
+	integers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,72 +31,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
-On 01/09/2012 10:57 AM, Markos Chandras wrote:
+On Tue, Jan 3, 2012 at 12:57 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Tuesday 03 January 2012 15:51:52 Garrett Cooper wrote:
+>> On Tue, Jan 3, 2012 at 12:37 PM, Mike Frysinger <vapier@gentoo.org> wrot=
+e:
+>> > On Tuesday 03 January 2012 05:42:55 Markos Chandras wrote:
+>> >> Hi, please review the attached patch
+>> >
+>> > casting to a (long) would be better
+>>
+>> Or uintmax_t...
+>
+> that would work too, and better. =A0i thought nlinks could be signed, but=
+ it
+> seems not, so any signed type would be not as good.
 
-> The tst_print function is using the TEST_ERRNO symbol which is declared
-> as 'extern int' on usctest.h header when _USC_LIB_ macro is used and as 'int'
-> when this macro is not defined. We need to include this header on float and
-> echoes tests to ensure that TEST_ERRNO has been defined before calling
-> the tst_print function. Without this header, the compilation will fail with
-> an undefined symbol error.
-> 
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
->  testcases/misc/math/float/main.c         |    1 +
->  testcases/network/tcp_cmds/echo/echoes.c |    3 ++-
->  2 files changed, 3 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/main.c
-> index 8998c33..870661b 100644
-> --- a/testcases/misc/math/float/main.c
-> +++ b/testcases/misc/math/float/main.c
-> @@ -26,6 +26,7 @@
->  #include "tfloat.h"
->  
->  #include "test.h"
-> +#include "usctest.h"
->  
->  #define SAFE_FREE(p) { if (p) { free(p); (p)=NULL; } }
->  /* LTP status reporting */
-> diff --git a/testcases/network/tcp_cmds/echo/echoes.c b/testcases/network/tcp_cmds/echo/echoes.c
-> index 877cfa5..2ce7968 100644
-> --- a/testcases/network/tcp_cmds/echo/echoes.c
-> +++ b/testcases/network/tcp_cmds/echo/echoes.c
-> @@ -29,6 +29,7 @@
->  #include <fcntl.h>
->  #include "test.h"
->  #include "netdefs.h"
-> +#include "usctest.h"
->  
->  #if INET6
->  char *TCID = "echoes6";
-> @@ -372,4 +373,4 @@ void
->  cleanup(int s)
->  {
->  	close(s);
-> -}
-> \ No newline at end of file
-> +}
+   FreeBSD seems to typedef it to uint32_t, so unsigned integers seems
+like the best way to go... yeah. The 'solution' for the issues with
+format strings and long integers is generally cast to [u]intmax_t,
+then use %zd or %zu.
+Cheers,
+-Garrett
 
-Ping?
+---------------------------------------------------------------------------=
+---
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create =
 
-Any comments on that? Compilation fails without that when using UCLINUX=1
+new or port existing apps to sell to consumers worldwide. Explore the =
 
--- 
-markos
-
-
-------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
