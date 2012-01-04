@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1RiOxL-00034j-9G
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 11:24:31 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1RiO4f-00087y-HH
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 10:28:01 +0000
 Received: from multi.imgtec.com ([194.200.65.239])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RiOxF-0003KC-Eb
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 11:24:31 +0000
-Message-ID: <4F0436E2.1040800@imgtec.com>
-Date: Wed, 4 Jan 2012 11:24:18 +0000
+	(Exim 4.76) id 1RiO4e-0008Oa-Hp
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 10:28:01 +0000
+Message-ID: <4F0429A9.4070000@imgtec.com>
+Date: Wed, 4 Jan 2012 10:27:53 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-References: <1325676128-15770-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1325676128-15770-1-git-send-email-markos.chandras@imgtec.com>
-Subject: Re: [LTP] [PATCH 05/21] syscalls: Cast st_nlink variables to
- uintmax_t type
+References: <4F02C765.5030408@imgtec.com>	<201201031528.08200.vapier@gentoo.org>
+	<CAGH67wTp4qK0ru641QOZx4OiD3=Unie6AP=uMq8J=fpT2=LqBw@mail.gmail.com>
+In-Reply-To: <CAGH67wTp4qK0ru641QOZx4OiD3=Unie6AP=uMq8J=fpT2=LqBw@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 01/21] lib/parse_opts: STD_LP_sbrk and
+ STD_start_break should only be defined when UCLINUX=0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,156 +29,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-On 01/04/2012 11:22 AM, Markos Chandras wrote:
-> st_nlink type is arch specific so it may not be a 32-bit integer everywhere.
-> We cast it to uintmax_t which is defined on every arch and use the %ju modifier
-> to print its value
+On 01/03/2012 10:17 PM, Garrett Cooper wrote:
+> On Tue, Jan 3, 2012 at 12:28 PM, Mike Frysinger<vapier@gentoo.org>  wrote:
+>> please use `git send-email` to properly post patches.  attaching them like
+>> this makes it a pita to review.
 >
-> Signed-off-by: Markos Chandras<markos.chandras@imgtec.com>
-> ---
->   testcases/kernel/syscalls/link/link02.c       |    7 ++++---
->   testcases/kernel/syscalls/link/link03.c       |   11 ++++++-----
->   testcases/kernel/syscalls/link/link05.c       |    9 +++++----
->   testcases/kernel/syscalls/symlink/symlink01.c |    6 +++---
->   4 files changed, 18 insertions(+), 15 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/link/link02.c b/testcases/kernel/syscalls/link/link02.c
-> index 4ddd818..0092868 100644
-> --- a/testcases/kernel/syscalls/link/link02.c
-> +++ b/testcases/kernel/syscalls/link/link02.c
-> @@ -115,6 +115,7 @@
->   #include<errno.h>
->   #include<string.h>
->   #include<signal.h>
-> +#include<stdint.h>
->   #include "test.h"
->   #include "usctest.h"
->
-> @@ -188,9 +189,9 @@ int main(int ac, char **av)
->   						 Fname, Lname, TEST_RETURN);
->   				else {
->   					tst_resm(TFAIL,
-> -						 "link(%s, %s) returned %ld, stat link cnts do not match %d %d",
-> +						 "link(%s, %s) returned %ld, stat link cnts do not match %ju %ju",
->   						 Fname, Lname, TEST_RETURN,
-> -						 fbuf.st_nlink, lbuf.st_nlink);
-> +						 (uintmax_t)fbuf.st_nlink, (uintmax_t)lbuf.st_nlink);
->   				}
->   			}
->   			if (unlink(Lname) == -1) {
-> @@ -249,4 +250,4 @@ void cleanup()
->
->   	tst_rmdir();
->
-> -}
-> \ No newline at end of file
-> +}
-> diff --git a/testcases/kernel/syscalls/link/link03.c b/testcases/kernel/syscalls/link/link03.c
-> index f2f85b5..f56b073 100644
-> --- a/testcases/kernel/syscalls/link/link03.c
-> +++ b/testcases/kernel/syscalls/link/link03.c
-> @@ -116,6 +116,7 @@
->   #include<errno.h>
->   #include<string.h>
->   #include<signal.h>
-> +#include<stdint.h>
->   #include "test.h"
->   #include "usctest.h"
->
-> @@ -229,18 +230,18 @@ int main(int ac, char **av)
->   				    (fbuf.st_nlink != lbuf.st_nlink)) {
->
->   					tst_resm(TFAIL,
-> -						 "link(%s, %s[1-%d]) ret %ld for %d files, stat values do not match %d %d",
-> +						 "link(%s, %s[1-%d]) ret %ld for %d files, stat values do not match %ju %ju",
->   						 Fname, Basename, nlinks,
->   						 TEST_RETURN, nlinks,
-> -						 fbuf.st_nlink, lbuf.st_nlink);
-> +						 (uintmax_t)fbuf.st_nlink, (uintmax_t)lbuf.st_nlink);
->   					break;
->   				}
->   			}
->   			if (cnt>= nlinks) {
->   				tst_resm(TPASS,
-> -					 "link(%s, %s[1-%d]) ret %ld for %d files, stat linkcounts match %d",
-> +					 "link(%s, %s[1-%d]) ret %ld for %ju files, stat linkcounts match %d",
->   					 Fname, Basename, nlinks, TEST_RETURN,
-> -					 nlinks, fbuf.st_nlink);
-> +					 nlinks, (uintmax_t)fbuf.st_nlink);
->   			}
->   		} else
->   			Tst_count++;
-> @@ -313,4 +314,4 @@ void cleanup()
->
->   	tst_rmdir();
->
-> -}
-> \ No newline at end of file
-> +}
-> diff --git a/testcases/kernel/syscalls/link/link05.c b/testcases/kernel/syscalls/link/link05.c
-> index 343db1b..91fb6c4 100644
-> --- a/testcases/kernel/syscalls/link/link05.c
-> +++ b/testcases/kernel/syscalls/link/link05.c
-> @@ -115,6 +115,7 @@
->   #include<errno.h>
->   #include<string.h>
->   #include<signal.h>
-> +#include<stdint.h>
->   #include "test.h"
->   #include "usctest.h"
->
-> @@ -214,10 +215,10 @@ int main(int ac, char **av)
->   				    (fbuf.st_nlink != lbuf.st_nlink)) {
->
->   					tst_resm(TFAIL,
-> -						 "link(%s, %s[1-%d]) ret %ld for %d files, stat values do not match %d %d",
-> +						 "link(%s, %s[1-%d]) ret %ld for %d files, stat values do not match %ju %ju",
->   						 Fname, Basename, nlinks,
->   						 TEST_RETURN, nlinks,
-> -						 fbuf.st_nlink, lbuf.st_nlink);
-> +						 (uintmax_t)fbuf.st_nlink, (uintmax_t)lbuf.st_nlink);
->   					break;
->   				}
->   			}
-> @@ -225,7 +226,7 @@ int main(int ac, char **av)
->   				tst_resm(TPASS,
->   					 "link(%s, %s[1-%d]) ret %ld for %d files, stat linkcounts match %d",
->   					 Fname, Basename, nlinks, TEST_RETURN,
-> -					 nlinks, fbuf.st_nlink);
-> +					 nlinks, (int)fbuf.st_nlink);
->   			}
->   		} else
->   			Tst_count++;
-> @@ -337,4 +338,4 @@ void cleanup()
->
->   	tst_rmdir();
->
-> -}
-> \ No newline at end of file
-> +}
-> diff --git a/testcases/kernel/syscalls/symlink/symlink01.c b/testcases/kernel/syscalls/symlink/symlink01.c
-> index c7be331..f09a9df 100644
-> --- a/testcases/kernel/syscalls/symlink/symlink01.c
-> +++ b/testcases/kernel/syscalls/symlink/symlink01.c
-> @@ -1555,9 +1555,9 @@ struct all_test_cases *tc_ptr;
->
->   						tst_resm(TFAIL,
->   							 "%slink(%s, %s) failed to adjust link count.\n\
-> -		count for nick is %d, count for %s is %d, count for %s is %d.",
-> -							 Buffer, tc_ptr->fn_arg[1], "nick", statter.st_nlink, tc_ptr->fn_arg[1], asymlink.st_nlink, tc_ptr->fn_arg[2],
-> -							 stbuf.st_nlink);
-> +		count for nick is %ju, count for %s is %ju, count for %s is %ju.",
-> +							 Buffer, tc_ptr->fn_arg[1], "nick", (uintmax_t)statter.st_nlink, tc_ptr->fn_arg[1], (uintmax_t)asymlink.st_nlink, tc_ptr->fn_arg[2],
-> +							(uintmax_t) stbuf.st_nlink);
->   					}
->   				} else {
->   					tst_resm(TFAIL, "%sA lstat of %s (ino:%jd) and of\n\t\t\
-
-
-This patch fixes the one I sent earlier. There was a typo (%jd instaed 
-of %ju on link03.c file )
+> +1. Or just use what's noted in the style guide as well for submitting
+> patches if you really want to go down this path of creating patch
+> review/commit request emails.
+> Thanks,
+> -Garrett
+Thanks. I will do that from now on.
 
 -- 
 markos
