@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiDdU-0006Mc-1u
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 23:19:16 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiDdT-00060M-IF
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 23:19:16 +0000
-Received: by obcwn6 with SMTP id wn6so18522569obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 15:19:10 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RiS27-0002yS-Cp
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 14:41:39 +0000
+Date: Wed, 4 Jan 2012 15:52:31 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120104145231.GH15845@saboteur.suse.cz>
+References: <4F02E28F.1080603@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <201201031529.03842.vapier@gentoo.org>
-References: <4F02CD36.2010600@imgtec.com>
-	<201201031529.03842.vapier@gentoo.org>
-Date: Tue, 3 Jan 2012 15:19:10 -0800
-Message-ID: <CAGH67wTawMPbNFgRrnkC=1rogn32-C36kJHERhZJSYKTvS-fFg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 04/21] syscalls: Use %zu modifier to print
- variables of type size_t
+Content-Disposition: inline
+In-Reply-To: <4F02E28F.1080603@imgtec.com>
+Subject: Re: [LTP] [PATCH 11/21] process_stress/process: Fix dprt() function
+ definition when DEBUG macro is used
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,25 +25,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 3, 2012 at 12:29 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Tuesday 03 January 2012 04:41:10 Markos Chandras wrote:
->> Hi, please review the attached patch
->
-> using %zu for size_t is good
+Hi!
+> Subject: [PATCH 11/21] process_stress/process: Fix dprt() function definition when DEBUG macro is used
 
-+1.
-Thanks,
--Garrett
+Commited, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
