@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rq37R-0003hJ-9X
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jan 2012 13:42:33 +0000
-Date: Wed, 25 Jan 2012 14:55:09 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RiSHf-0002vO-Pn
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 14:57:43 +0000
+Date: Wed, 4 Jan 2012 16:08:31 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120125135509.GA31162@saboteur.suse.cz>
-References: <20120120134016.GG4024@saboteur.suse.cz>
-	<1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
+Message-ID: <20120104150831.GI15845@saboteur.suse.cz>
+References: <4F030192.8030107@imgtec.com>
+	<201201031535.17342.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
-Subject: Re: [LTP] [PATCH 1/2 V3] getcontext01: fix build using uClibc C
- runtime
+In-Reply-To: <201201031535.17342.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 19/21] nfs/nfsstress/make_tree: Fix erroneous cast
+ to void pointer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,34 +23,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Cc: ltp-list@lists.sf.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
-SGkhCj4gRml4IGEgYnVpbGQgZXJyb3Igd2hlbiBfX1VDTElCQ19fIGlzIGRlZmluZWQgKHNlZSBs
-b2cgYmVsb3cpCj4gYnkgbW92aW5nIGFsbCBoZWFkZXJzIGluY2x1c2lvbiBhbmQgVENJRCBkZWZp
-bml0aW9uIG9uIHRvcCBvZiBmaWxlCj4gYXMgdGhleSBhcmUgcmVxdWlyZWQgYnkgJ3RzdF9icmtt
-JyBmdW5jdGlvbiB0b28uCj4gCj4gZ2V0Y29udGV4dDAxLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7i
-gJk6Cj4gZ2V0Y29udGV4dDAxLmM6MTAzOjI6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9u
-IG9mIGZ1bmN0aW9uIOKAmHRzdF9icmtt4oCZCj4gZ2V0Y29udGV4dDAxLmM6MTAzOjExOiBlcnJv
-cjog4oCYVENPTkbigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4g
-Z2V0Y29udGV4dDAxLmM6MTAzOjExOiBub3RlOiBlYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBp
-cyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbgo+IGdl
-dGNvbnRleHQwMS5jOjEwMzoxODogZXJyb3I6IOKAmE5VTEzigJkgdW5kZWNsYXJlZCAoZmlyc3Qg
-dXNlIGluIHRoaXMgZnVuY3Rpb24pCj4gZ2V0Y29udGV4dDAxLmM6MTA0OjE6IHdhcm5pbmc6IGNv
-bnRyb2wgcmVhY2hlcyBlbmQgb2Ygbm9uLXZvaWQgZnVuY3Rpb24KPiAKPiBTaWduZWQtb2ZmLWJ5
-OiBGcmFuY2VzY28gUnVuZG8gPGZyYW5jZXNjby5ydW5kb0BzdC5jb20+Cj4gU2lnbmVkLW9mZi1i
-eTogQ2FybWVsbyBBbW9yb3NvIDxjYXJtZWxvLmFtb3Jvc29Ac3QuY29tPgoKQm90aCBjb21taXRl
-ZCwgdGhhbmtzLgoKLS0gCkN5cmlsIEhydWJpcwpjaHJ1YmlzQHN1c2UuY3oKCi0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpLZWVwIFlvdXIgRGV2ZWxvcGVyIFNraWxscyBDdXJyZW50IHdpdGggTGVhcm5E
-ZXZOb3chClRoZSBtb3N0IGNvbXByZWhlbnNpdmUgb25saW5lIGxlYXJuaW5nIGxpYnJhcnkgZm9y
-IE1pY3Jvc29mdCBkZXZlbG9wZXJzCmlzIGp1c3QgJDk5Ljk5ISBWaXN1YWwgU3R1ZGlvLCBTaGFy
-ZVBvaW50LCBTUUwgLSBwbHVzIEhUTUw1LCBDU1MzLCBNVkMzLApNZXRybyBTdHlsZSBBcHBzLCBt
-b3JlLiBGcmVlIGZ1dHVyZSByZWxlYXNlcyB3aGVuIHlvdSBzdWJzY3JpYmUgbm93IQpodHRwOi8v
-cC5zZi5uZXQvc2Z1L2xlYXJuZGV2bm93LWQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+Hi!
+> NAK: this is how the pthread API works.  you aren't passing a value by 
+> reference.  they used a pointer rather than "long" or something as it's harder 
+> to fit a pointer into an integer rather than the other way around.
+> 
+> if you're getting a build time warning, try casting it to uintptr_t instead
+
+Pretty much, you would pass a pointer to thread stack as a return value
+with this patch which is wrong for several reasons (and the stackframe
+woudn't most likely there when somebody else would touch this value).
+
+The whole macro actually seems to be broken. It assigns local variable
+thread_exit which is defined as volatile and it looks to me like
+somebody had no clue how volatie works (at least at first sight).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
