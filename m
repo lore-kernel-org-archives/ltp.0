@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <YanFeng.Shang@windriver.com>) id 1RiGLY-0003TV-HC
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:12:56 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RiGLX-000309-CB
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:12:56 +0000
-From: Shang Yanfeng <YanFeng.Shang@windriver.com>
-Date: Wed, 4 Jan 2012 10:12:44 +0800
-Message-ID: <1325643164-15721-1-git-send-email-YanFeng.Shang@windriver.com>
+	(envelope-from <chrubis@suse.de>) id 1RiR0a-0007tu-FS
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 13:36:00 +0000
+Date: Wed, 4 Jan 2012 14:46:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120104134651.GA14739@saboteur.suse.cz>
+References: <4F02CC46.9000106@imgtec.com>
+	<201201031356.11319.vapier@gentoo.org>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] memory in mips with 32bit ELF is lower than 0x80000000
+Content-Disposition: inline
+In-Reply-To: <201201031356.11319.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 03/21] test.h/tst_brkm: Drop
+ __attribute__((noreturn)) since tst_brk can return to caller
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,38 +26,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, vapierfilter@gmail.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
-because userspace memory in mips with 32bit ELF is lower than 0x80000000, so mmap failed.
+Hi!
+> the tst_brk() API has gotten annoying.  it is designed to not return to the 
+> original caller which is why it had the "noreturn" attribute.  but Garret re-
+> rewrote it to be re-entrant presumably so the cleanup() func could itself call 
+> tst_brk().  but i'm not sure how useful that actually is in practice ...
 
-signed-off-by: YanFeng.Shang  <YanFeng.Shang@windriver.com>
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+The original problem here is that tests use tst_brkm() in cleanup
+functions where you don't want to exit before you do all the cleanups.
+That was previously working as tst_brkm() with cleanup set to NULL
+wasn't calling tst_exit() (and obviously you would never add cleanup
+pointer to tst_brkm() when you are in cleanup function otherwise you are
+in infinite loop).
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-index 45cddf7..1e59f1d 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-@@ -64,8 +64,13 @@
- #include "usctest.h"
- #include "system_specific_hugepages_info.h"
- 
--#define LOW_ADDR       (void *)(0x80000000)
--#define LOW_ADDR2      (void *)(0x90000000)
-+#if defined(__mips__) && __WORDSIZE == 32
-+#define LOW_ADDR (void *)(0x40000000)
-+#define LOW_ADDR2 (void *)(0x50000000)
-+#else
-+#define LOW_ADDR (void *)(0x80000000)
-+#define LOW_ADDR2 (void *)(0x90000000)
-+#endif
- 
- char TEMPFILE[MAXPATHLEN];
- 
+The original behavior was IMHO wrong and now it's little better. And I
+think that best solution would be to fix tests to use tst_resm() instead
+of tst_brkm() when the test doesn't want to exit immediately.
+
 -- 
-1.6.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
