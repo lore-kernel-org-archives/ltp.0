@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RlgfK-00073p-Qt
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 12:55:30 +0000
-Date: Fri, 13 Jan 2012 14:07:03 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120113130703.GA14943@saboteur.suse.cz>
-References: <20120111125642.GD7143@saboteur.suse.cz>
-	<aa1139e7-47d6-40d4-8406-4cef27343f29@zmail16.collab.prod.int.phx2.redhat.com>
-	<20120111143418.GB7146@saboteur.suse.cz>
-	<201201130101.06630.vapier@gentoo.org>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RiH45-0004lO-07
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:58:57 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RiH41-0003dj-IG
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:58:56 +0000
+Message-ID: <4F03C02A.8090304@cn.fujitsu.com>
+Date: Wed, 04 Jan 2012 10:57:46 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201201130101.06630.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
- duplicated output
+References: <4EFAF5BB.2030407@windriver.com> <4F03AD5E.4000003@jp.fujitsu.com>
+	<4F03B406.8050808@cn.fujitsu.com> <4F03BE7E.7060408@jp.fujitsu.com>
+In-Reply-To: <4F03BE7E.7060408@jp.fujitsu.com>
+Subject: Re: [LTP] Posix test case mmap/31-1 fails on Linux/eglibc
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,100 +29,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Kang Kai <Kai.Kang@windriver.com>
 
-Hi!
-> > There are two ways to fix this, either create tst_fork() that flushes
-> > the buffers before forking. This may be problematic as there is a need
-> > for replacing fork() with tst_fork() in several testcases.
+On 01/04/2012 10:50 AM, Yasuaki Ishimatsu wrote:
+
+> Hi Gao,
 > 
-> if we wanted to be lazy, it would be easy to catch.  in our test.h:
-> 	#define fork() tst_fork()
-> then in the single file defining tst_fork(), we do:
-> 	#undef fork
-> or forcing it via:
-> 	#define fork() __use_tst_fork()
+> 2012/01/04 11:05, Wanlong Gao wrote:
+>> On 01/04/2012 09:37 AM, Yasuaki Ishimatsu wrote:
+>>
+>>> Hi Kai,
+>>>
+>>> 2011/12/28 19:55, Kang Kai wrote:
+>>>> Hi all,
+>>>>
+>>>> I run mmap/31-1 failed with ENOMEM on linux, with error message:
+>>>> off: fffffffffffff000, len: fffffffffffff000
+>>>> Test FAIL: expect EOVERFLOW but get other error: Cannot allocate memory
+>>>>
+>>>> But compare to mmap/24-2, it mmap() the same length but pass. Its output:
+>>>> available memory: 18446744073709551615
+>>>> addr: 7f78c54fa000, len: ffffffffffffffff
+>>>> addr: 7f78c54fa000, len: fffffffffffff000
+>>>> Test Pass: mmap/24-2.c Get ENOMEM: Cannot allocate memory
+>>>>
+>>>> So I suppose that mmap/31-1 may need update, but I don't know how to
+>>>> make mmap() overflow as expect.
+>>>> Any suggestion is appreciated.
+>>>
+>>> I don't think mmap/31-1 need update since it is Linux Kernel's problem,
+>>> not the test's problem. The problem is being discussed on LKML.
+>>>
+>>> https://lkml.org/lkml/2011/12/22/85
+>>
+>>
+>> But it seems that the patch was not acceptable.
 > 
-> but we already have to track in the ltp tests where fork() is used since this 
-> breaks NOMMU builds (i.e. UCLINUX), so it's not like we don't already have 
-> this issue.
+> As you say, it has not been accepted yet.
+> But I think Linux will be fixed to return EOVERFLOW in mmap/31-1's test
+> in the near future.
 
-I don't like idea of defining fork to tst_fork that's exactly the
-magic that may take hours to figure out.
 
-Forcing it, in this case, is probably good idea.
+Yeah, agree, so we need not update this test case now and wait for a while
+to let the kernel bug to be fixed.
 
-> > Or we could flush the output after each test message is printed with
-> > tst_resm(). That is IMHO ideal solution. The only drawback is that this
-> > may interfere with timings in some testcases (but testcases that expects
-> > exacts timings are usually broken anyway).
 > 
-> i agree those tests are broken if the flushing causes issues due to a slow 
-> down.  however, slow downs in general are not a good thing, especially when 
-> these are only needed for apps that fork.  i'd like to think we could do 
-> better.
-
-Still I'm slighlty for this one. In general case, flushing the buffer
-often is bad, but considering relatively rare usage of tst_resm() the
-slowdowns woudn't be most likely measurable (and it's flushed after
-every '\n' when you run the test in the terminal anyway).
-
-Side effects of this are generally possitive too, the messages from
-parent and child, or several threads wouldn't be so badly intermixed in
-the output.
-
-> a third option would be to use pthread_atfork().  no tracking needed in random 
-> tests since we can call this in the common ltp init func.  downside is we'd 
-> have to use -pthread in our CFLAGS.
+> Regards,
+> Yasuaki Ishimatsu
 > 
-> $ cat test.c
-> #include <pthread.h>
-> #include <stdio.h>
-> void prep(void) { fflush(stdout); }
-> int main(){
-> 	printf("foo\n");
-> 	pthread_atfork(prep, NULL, NULL);
-> 	fork();fork();fork();fork();
-> 	return 0;
-> }
-> $ gcc -pthread test.c && ./a.out | cat
-> foo
+>>
+>> Thanks
+>> -Wanlong Gao
+>>
+>>>
+>>> Regards,
+>>> Yasuaki Ishimatsu
+>>>
+>>>>
+>>>> Regards,
+>>>> Kai
+>>
+>>
+>>
+>>
+> 
+> 
 
-The -phtread changes several definitions in glibc headers so adding it
-globally for all the tests seems wrong.
 
-> a fourth option would be to include <bits/libc-lock.h> and use 
-> __libc_atfork(), but this would be glibc specific :(.
-
-Yeah, another no go option.
-
-> a fifth option would be to use libdl, override the fork() symbol with our own 
-> and then dlsym() to the direct fork() symbol.  but like the pthread solution, 
-> this would require linking all apps with -ldl, and it would only work on ELF 
-> based systems (so it would break embedded things like FLAT on NOMMU).
-
-Not to mention, this is starting to fall into 'overcomplicated solutions'
-category. I would like to keep things as simple as possible.
-
-> so all in all, i think the tst_fork() is the best way to go.  if tracking 
-> really gets out of hand, since the compile+link steps are in common .mk code, 
-> it'd be easy to add a post-link test that looks to see if the ELF uses fork() 
-> without calling tst_fork() ...
-
-As I said above, I'm slightly for flushing buffers in the library code,
-but generally either of these two would do.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-RSA(R) Conference 2012
-Mar 27 - Feb 2
-Save $400 by Jan. 27
-Register now!
-http://p.sf.net/sfu/rsa-sfdev2dev2
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
