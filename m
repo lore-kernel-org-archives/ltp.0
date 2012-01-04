@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri0it-00063m-98
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:31:59 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri0ir-0000go-0W
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:31:59 +0000
-Message-ID: <4F02C765.5030408@imgtec.com>
-Date: Tue, 3 Jan 2012 09:16:21 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RiGGk-0004jo-If
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:07:58 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RiGGg-0005aq-U6
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:07:58 +0000
+Message-ID: <4F03B406.8050808@cn.fujitsu.com>
+Date: Wed, 04 Jan 2012 10:05:58 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090703040806060303030008"
-Subject: [LTP] [PATCH 01/21] lib/parse_opts: STD_LP_sbrk and STD_start_break
- should only be defined when UCLINUX=0
+References: <4EFAF5BB.2030407@windriver.com> <4F03AD5E.4000003@jp.fujitsu.com>
+In-Reply-To: <4F03AD5E.4000003@jp.fujitsu.com>
+Subject: Re: [LTP] Posix test case mmap/31-1 fails on Linux/eglibc
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,83 +25,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---------------090703040806060303030008
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-Please review the attached patch.
-
--- 
-markos
-
---------------090703040806060303030008
-Content-Type: text/plain;
-	name="0001-lib-parse_opts-STD_LP_sbrk-and-STD_start_break-shoul.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0001-lib-parse_opts-STD_LP_sbrk-and-STD_start_break-shoul.pa";
-	filename*1="tch"
-
-From 73d72d74229c0598b2e1d5e070418c5855159373 Mon Sep 17 00:00:00 2001
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 22 Dec 2011 10:36:35 +0000
-Subject: [PATCH 01/21] lib/parse_opts: STD_LP_sbrk and STD_start_break should only be defined when UCLINUX=0
-
-These variables are only used when the UCLINUX macro is not defined therefore it
-is better to declare them conditionally.
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- lib/parse_opts.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/lib/parse_opts.c b/lib/parse_opts.c
-index 358106e..8a235b1 100644
---- a/lib/parse_opts.c
-+++ b/lib/parse_opts.c
-@@ -139,8 +139,10 @@ static int  STD_LP_shmem=0; 	/* flag to do shmem_puts and gets during TEST_LOOPI
- static int  STD_LD_recfun=0;	/* do recressive function calls in loop delay */
- static int  STD_LP_recfun=0;	/* do recressive function calls in TEST_LOOPING */
- static int  STD_TP_sbrk=0;	/* do sbrk in TEST_PAUSE */
-+#ifndef UCLINUX
- static int  STD_LP_sbrk=0;	/* do sbrk in TEST_LOOPING */
- static char *STD_start_break=0; /* original sbrk size */
-+#endif
- static int  Debug=0;
- 
- struct std_option_t {
--- 
-1.7.1
-
-
---------------090703040806060303030008
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Kang Kai <Kai.Kang@windriver.com>
+
+On 01/04/2012 09:37 AM, Yasuaki Ishimatsu wrote:
+
+> Hi Kai,
+> 
+> 2011/12/28 19:55, Kang Kai wrote:
+>> Hi all,
+>>
+>> I run mmap/31-1 failed with ENOMEM on linux, with error message:
+>> off: fffffffffffff000, len: fffffffffffff000
+>> Test FAIL: expect EOVERFLOW but get other error: Cannot allocate memory
+>>
+>> But compare to mmap/24-2, it mmap() the same length but pass. Its output:
+>> available memory: 18446744073709551615
+>> addr: 7f78c54fa000, len: ffffffffffffffff
+>> addr: 7f78c54fa000, len: fffffffffffff000
+>> Test Pass: mmap/24-2.c Get ENOMEM: Cannot allocate memory
+>>
+>> So I suppose that mmap/31-1 may need update, but I don't know how to
+>> make mmap() overflow as expect.
+>> Any suggestion is appreciated.
+> 
+> I don't think mmap/31-1 need update since it is Linux Kernel's problem,
+> not the test's problem. The problem is being discussed on LKML.
+> 
+> https://lkml.org/lkml/2011/12/22/85
+
+
+But it seems that the patch was not acceptable.
+
+Thanks
+-Wanlong Gao
+
+> 
+> Regards,
+> Yasuaki Ishimatsu
+> 
+>>
+>> Regards,
+>> Kai
+
+
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------090703040806060303030008
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------090703040806060303030008--
-
-
