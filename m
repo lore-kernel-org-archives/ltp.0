@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RkREf-0007iR-Sj
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 02:14:49 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RkREe-00018K-Gw
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 02:14:49 +0000
-Message-ID: <4F0B9F0F.107@windriver.com>
-Date: Tue, 10 Jan 2012 10:14:39 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RiRWs-0001Qm-Va
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 14:09:22 +0000
+Date: Wed, 4 Jan 2012 15:20:10 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120104142010.GA15845@saboteur.suse.cz>
+References: <4F02CBDE.70400@imgtec.com>
+	<CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
+	<4F02D122.7090704@imgtec.com> <4F02DB32.1050503@imgtec.com>
 MIME-Version: 1.0
-References: <1325302366-375-1-git-send-email-kai.kang@windriver.com>
-	<4F0A78C4.30807@casparzhang.com>
-In-Reply-To: <4F0A78C4.30807@casparzhang.com>
-Subject: Re: [LTP] [PATCH] mq_timedsend/5-1: make parent has chance to sleep
+Content-Disposition: inline
+In-Reply-To: <4F02DB32.1050503@imgtec.com>
+Subject: Re: [LTP] [PATCH 02/21] lib/self_exec: Remove extra argument from
+ tst_resm function call
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,58 +24,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDAx5pyIMDnml6UgMTM6MTksIENhc3BhciBaaGFuZyB3cm90ZToKCkhpIENhc3Bh
-ciwKCj4gT24gMjAxMeW5tDEy5pyIMzHml6UgMTE6MzIsIEthbmcgS2FpIHdyb3RlOgo+PiBDaGls
-ZCBwcm9jZXNzIHNlbmRzIHRoZSBsYXN0IHNpZ25hbCBiZWZvcmUgcGFyZW50IHByb2Nlc3MgZW50
-ZXIgdGhlCj4+IGZpbmFsIHNsZWVwIHNvbWV0aW1lcywgc28gc2xlZXAgaW4gcGFyZW50IHdpbGwg
-bm90IGJlIGludGVycnVwdGVkIHRoZW4KPj4gdGhlIGNhc2UgZmFpbHMuCj4+IFNsZWVwIDEgc2Vj
-b25kIGJlZm9yZSBzZW5kIHRoZSBsYXN0IHNpZ25hbCBpbiBjaGlsZCB0byBtYWtlIHN1cmUgcGFy
-ZW50Cj4+IGVudGVyIHRoZSBmaW5hbCBzbGVlcC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogS2FuZyBL
-YWk8a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KPj4gLS0tCj4+ICAgLi4uL2NvbmZvcm1hbmNlL2lu
-dGVyZmFjZXMvbXFfdGltZWRzZW5kLzUtMS5jICAgICAgfCAgICA1ICsrKystCj4+ICAgMSBmaWxl
-cyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1n
-aXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
-cy9tcV90aW1lZHNlbmQvNS0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29u
-Zm9ybWFuY2UvaW50ZXJmYWNlcy9tcV90aW1lZHNlbmQvNS0xLmMKPj4gaW5kZXggOTZkYWY3Mi4u
-Mzc5OTNjOCAxMDA2NDQKPj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2Nv
-bmZvcm1hbmNlL2ludGVyZmFjZXMvbXFfdGltZWRzZW5kLzUtMS5jCj4+ICsrKyBiL3Rlc3RjYXNl
-cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX3RpbWVkc2Vu
-ZC81LTEuYwo+PiBAQCAtODIsNiArODIsOSBAQCBpbnQgbWFpbigpCj4+ICAgCQlzbGVlcCgxKTsg
-IC8vIGdpdmUgcGFyZW50IHRpbWUgdG8gc2V0IHVwIGhhbmRsZXIKPj4gICAJCWZvciAoaT0wOyBp
-PE1BWE1TRysxOyBpKyspIHsKPj4gICAgICAgICAgIAkJbXFfdGltZWRzZW5kKGdxdWV1ZSwgbXNn
-cHRyLCBzdHJsZW4obXNncHRyKSwgMSwmdHMpOwo+PiArICAgICAgICAgICAgLyogbWFrZSBzdXJl
-IHBhcmVudCBlbnRlciB0aGUgZmluYWwgc2xlZXAgKi8KPj4gKwkJCWlmIChpID09IE1BWE1TRykK
-Pj4gKyAgICAgICAgICAgICAgICBzbGVlcCgxKTsKPiBZb3Ugb25seSBtYWtlIHN1cmUgcGFyZW50
-IGVudGVycyB0byB0aGUgbGFzdCBpdGVyYXRpb24gYmVmb3JlIGNoaWxkCj4gZG9lcywgYnV0IHNh
-bWUgaXNzdWUgc3RpbGwgbWlnaHQgb2NjdXIgaW4gcHJldmlvdXMgaXRlcmF0aW9ucy4KSXQgbmVl
-ZG4ndCB0byBjYXJlIHRoZSBzbGVlcCBpbiBwYXJlbnQgaXRlcmF0aW9uLCBiZWNhdXNlIGF0IGxh
-c3QgCm1xX3RpbWVkc2VuZCgpIHdpbGwgbWFrZSBjaGlsZCBibG9jayB3aGVuIHRoZSBtZXNzYWdl
-IHF1ZXVlIGlzIGZ1bGwuClRoZW4gdGhlIGluIHBhcmVudCBpdGVyYXRpb24sIHNsZWVwKDMpIHdp
-bGwgcmV0dXJuIDAgdGhlbiBxdWl0IHRoZSAKaXRlcmF0aW9uLiBBZnRlciBtcV9yZWNlaXZlKCkg
-Y2hpbGQgd2lsbCBiZSB1bmJsb2NrZWQuCkluIG15IHRlc3QsIGF0IHRoaXMgcG9pbnQgdGhlIGNo
-aWxkIGlzIHNjaGVkdWxlZCBhbmQgY2FsbCBraWxsKCkgYmVmb3JlIApjYWxsIGxhc3Qgc2xlZXAo
-MykgaW4gcGFyZW50LCBzbyB0aGUgdGVzdCBmYWlscy4KVGhpcyBwYXRjaCBjb3VsZCBtYWtlIHBh
-cmVudCBjYWxsIGxhc3Qgc2xlZXAoKSBiZWZvcmUgY2hpbGQgY2FsbCBraWxsKCkuCgo+Cj4gQWxz
-bywgcGxlYXNlIHVzZSBoYXJkIHRhYiBpbnN0ZWFkIG9mIDQvOCBzcGFjZXMgZm9yIGluZGVudGF0
-aW9uLiBwYXRjaAo+IHN0eWxlLWd1aWRlIGNvdWxkIGJlIGZvdW5kIGF0OiBkb2Mvc3R5bGUtZ3Vp
-ZGUudHh0CgpTb3JyeSBhYm91dCB0aGUgaW5kZW50YXRpb24uCgpSZWdhcmRzLApLYWkKCj4KPiBU
-aGFua3MsCj4gQ2FzcGFyCj4KPj4gICAJCQkvKiBzZW5kIHNpZ25hbCB0byBwYXJlbnQgZWFjaCB0
-aW1lIG1lc3NhZ2UgaXMgc2VudCAqLwo+PiAgIAkJCWtpbGwoZ2V0cHBpZCgpLCBTSUdBQlJUKTsK
-Pj4gICAJCX0KPj4gQEAgLTEzOCw0ICsxNDEsNCBAQCBpbnQgbWFpbigpCj4+ICAgCX0KPj4KPj4g
-ICAJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+PiAtfQo+PiBcIE5vIG5ld2xpbmUgYXQgZW5kIG9m
-IGZpbGUKPj4gK30KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KV3JpdGUgb25jZS4gUG9ydCB0byBt
-YW55LgpHZXQgdGhlIFNESyBhbmQgdG9vbHMgdG8gc2ltcGxpZnkgY3Jvc3MtcGxhdGZvcm0gYXBw
-IGRldmVsb3BtZW50LiBDcmVhdGUgCm5ldyBvciBwb3J0IGV4aXN0aW5nIGFwcHMgdG8gc2VsbCB0
-byBjb25zdW1lcnMgd29ybGR3aWRlLiBFeHBsb3JlIHRoZSAKSW50ZWwgQXBwVXBTTSBwcm9ncmFt
-IGRldmVsb3BlciBvcHBvcnR1bml0eS4gYXBwZGV2ZWxvcGVyLmludGVsLmNvbS9qb2luCmh0dHA6
-Ly9wLnNmLm5ldC9zZnUvaW50ZWwtYXBwZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QK
+Hi!
+> On 01/03/2012 09:57 AM, Markos Chandras wrote:
+> >On 01/03/2012 09:50 AM, Garrett Cooper wrote:
+> >>On Tue, Jan 3, 2012 at 1:35 AM, Markos Chandras
+> >><Markos.Chandras@imgtec.com>   wrote:
+> >>>Hi, please review the attached patch
+> >>
+> >>      Converting the function to tst_brkm and removing the tst_exit call
+> >>below it would be better.
+> >>Thanks!
+> >>-Garrett
+> >Agreed, but to make this consistent, all the tst_resm&&  tst_exit pairs
+> >should be replaced with tst_brkm. I will prepare a patch
+> >
+> Here is a patch that converts all tst_resm && tst_exit calls to
+> tst_brkm. Please review it.
+
+Commited, thanks.
+
+And please add better patch description next time.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
