@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RnwLk-0006Qi-6s
-	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 18:04:36 +0000
-Date: Thu, 19 Jan 2012 19:16:46 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RiRt2-0002R1-Rp
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 14:32:16 +0000
+Date: Wed, 4 Jan 2012 15:43:05 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120119181646.GD4024@saboteur.suse.cz>
-References: <1326358488-15419-1-git-send-email-eguan@redhat.com>
-	<1326358488-15419-2-git-send-email-eguan@redhat.com>
+Message-ID: <20120104144305.GE15845@saboteur.suse.cz>
+References: <4F02E1B9.2090603@imgtec.com>
+	<CAGH67wRnBFxdBgQos0Px8GscXQ+Sn30JNmM-z2KU7-v6Vc7d3A@mail.gmail.com>
+	<4F043605.9050703@imgtec.com>
+	<CAGH67wR_qD3pc_k7qdeyRWq60V6qr6A7yeT9Q4zcYTLrJ-WBkA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1326358488-15419-2-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] syscalls/setxattr03: net testcase to test
- setxattr(2)
+In-Reply-To: <CAGH67wR_qD3pc_k7qdeyRWq60V6qr6A7yeT9Q4zcYTLrJ-WBkA@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 09/21] realtime/lib/Makefile: Fix path for
+ config.mk
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,283 +28,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
 Hi!
-> setxattr(2) to immutable and append-only files should get EPERM
+> >>> Hi, please review the attached patch
+> >>
+> >>
+> >> No -- this breaks out-of-tree compiles.
+> >> -Garrett
+> >
+> > But without this patch, the in-tree 'distclean' target is broken
 > 
-> There are 2 test cases:
-> 1. Set attribute to a immutable file, setxattr(2) should return -1
->    and set errno to EPERM
-> 2. Set attribute to a append-only file, setxattr(2) should return
->    -1 and set errno to EPERM
-> 
-> Signed-off-by: Eryu Guan <eguan@redhat.com>
-> ---
->  runtest/syscalls                                |    1 +
->  testcases/kernel/syscalls/setxattr/setxattr03.c |  222 +++++++++++++++++++++++
->  2 files changed, 223 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/setxattr/setxattr03.c
-> 
+>     Hmmm... it worked once upon a time. I'll look at this when I have a chance.
 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index d786746..37dfc7e 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1027,6 +1027,7 @@ setuid04_16 setuid04_16
->  
->  setxattr01 setxattr01
->  setxattr02 setxattr02
-> +setxattr03 setxattr03
->  
->  shmat01 shmat01
->  shmat02 shmat02
-> diff --git a/testcases/kernel/syscalls/setxattr/setxattr03.c b/testcases/kernel/syscalls/setxattr/setxattr03.c
-> new file mode 100644
-> index 0000000..223bff7
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/setxattr/setxattr03.c
-> @@ -0,0 +1,222 @@
-> +/*
-> + * Copyright (C) 2011 Red Hat, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +
-> +/*
-> + * setxattr(2) to immutable and append-only files should get EPERM
-> + *
-> + * There are 2 test cases:
-> + * 1. Set attribute to a immutable file, setxattr(2) should return -1
-> + *    and set errno to EPERM
-> + * 2. Set attribute to a append-only file, setxattr(2) should return
-> + *    -1 and set errno to EPERM
-> + */
-> +
-> +#include "config.h"
-> +#include <sys/ioctl.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +#include <signal.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#ifdef HAVE_ATTR_XATTR_H
-> +#include <attr/xattr.h>
-> +#endif
-> +#include <linux/fs.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +char *TCID = "setxattr03";
-> +
-> +#ifdef HAVE_ATTR_XATTR_H
-> +#define XATTR_TEST_KEY "user.testkey"
-> +#define XATTR_TEST_VALUE "this is a test value"
-> +#define XATTR_TEST_VALUE_SIZE 20
-
-This one could be defined as (sizeof(XATTR_TEST_VALUE) - 1) as well, or
-couldn't?
-
-> +#define IMMU_FILE "setxattr03immutable"
-> +#define APPEND_FILE  "setxattr03appendonly"
-> +
-> +#define set_immutable_on(fd) fsetflag(fd, 1, 1)
-> +#define set_immutable_off(fd) fsetflag(fd, 0, 1)
-> +#define set_append_on(fd) fsetflag(fd, 1, 0)
-> +#define set_append_off(fd) fsetflag(fd, 0, 0)
-> +
-> +struct test_case {
-> +	char *desc;
-> +	char *fname;
-> +	char *key;
-> +	char *value;
-> +	size_t size;
-> +	int flags;
-> +	int exp_err;
-> +};
-> +static struct test_case tc[] = {
-> +	{	/* case 00, set attr to immutable file */
-> +		.desc = "Set attr to immutable file",
-> +		.fname = IMMU_FILE,
-> +		.key = XATTR_TEST_KEY,
-> +		.value = XATTR_TEST_VALUE,
-> +		.size = XATTR_TEST_VALUE_SIZE,
-> +		.flags = XATTR_CREATE,
-> +		.exp_err = EPERM,
-> +	},
-> +	{	/* case 01, set attr to append-only file */
-> +		.desc = "Set attr to append-only file",
-> +		.fname = APPEND_FILE,
-> +		.key = XATTR_TEST_KEY,
-> +		.value = XATTR_TEST_VALUE,
-> +		.size = XATTR_TEST_VALUE_SIZE,
-> +		.flags = XATTR_CREATE,
-> +		.exp_err = EPERM,
-> +	},
-> +};
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +static int immu_fd;
-> +static int append_fd;
-> +
-> +int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	int i;
-> +	char *msg;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +
-> +		for (i = 0; i < TST_TOTAL; i++)	{
-> +			TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value,
-> +			    tc[i].size, tc[i].flags));
-> +
-> +			if (TEST_ERRNO == tc[i].exp_err) {
-> +				tst_resm(TPASS | TTERRNO, tc[i].desc);
-> +			} else {
-> +				tst_resm(TFAIL | TTERRNO, "%s - expected errno"
-> +				    " %d - Got", tc[i].desc, tc[i].exp_err);
-> +			}
-> +		}
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static int fsetflag(int fd, int on, int immutable)
-> +{
-> +	int fsflags = 0;
-> +	int fsfl;
-> +
-> +	if (ioctl(fd, FS_IOC_GETFLAGS, &fsflags) < 0)
-> +		return 1;
-> +
-> +	if (immutable)
-> +		fsfl = FS_IMMUTABLE_FL;
-> +	else
-> +		fsfl = FS_APPEND_FL;
-> +
-> +	if (on)
-> +		fsflags |= fsfl;
-> +	else
-> +		fsflags &= ~fsfl;
-> +
-> +	if (ioctl(fd, FS_IOC_SETFLAGS, &fsflags) < 0)
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int fd;
-> +
-> +	tst_require_root(NULL);
-> +
-> +	tst_tmpdir();
-> +
-> +	/* Test for xattr support */
-> +	fd = creat("testfile", 0644);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Create testfile failed");
-> +	close(fd);
-> +	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
-> +		if (errno == ENOTSUP)
-> +			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
-> +			    "mount without user_xattr option");
-
-Here as mounted well.
-
-> +	unlink("testfile");
-> +
-> +	/* Create test files and set file immutable or append-only */
-> +	immu_fd = creat(IMMU_FILE, 0644);
-> +	if (immu_fd == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
-> +		    IMMU_FILE);
-> +	if (set_immutable_on(immu_fd))
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Set %s immutable failed",
-> +		    IMMU_FILE);
-> +
-> +	append_fd = creat(APPEND_FILE, 0644);
-> +	if (append_fd == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
-> +		    APPEND_FILE);
-> +	if (set_append_on(append_fd))
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Set %s append-only failed",
-> +		    APPEND_FILE);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (set_immutable_off(immu_fd))
-> +		tst_resm(TWARN | TERRNO, "Unset %s immutable failed",
-> +		    IMMU_FILE);
-> +	if (set_append_off(append_fd))
-> +		tst_resm(TWARN | TERRNO, "Unset %s append-only failed",
-> +		    APPEND_FILE);
-> +	close(immu_fd);
-> +	close(append_fd);
-> +
-> +	TEST_CLEANUP;
-> +	tst_rmdir();
-> +}
-> +#else /* HAVE_ATTR_XATTR_H */
-> +int main(int argc, char *argv[])
-> +{
-> +	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-> +}
-> +#endif /* HAVE_ATTR_XATTR_H */
+It's broken since 21e14b79ce269f27be8ce49475dc49c5bc5838bd, reverting it
+fixed the build.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
