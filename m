@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4Ia-0007Cm-7o
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:21:04 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri4IZ-0008VN-H8
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:21:04 +0000
-Message-ID: <4F0300B8.7050704@imgtec.com>
-Date: Tue, 3 Jan 2012 13:20:56 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RiT18-00067S-Qx
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 15:44:42 +0000
+Date: Wed, 4 Jan 2012 16:55:28 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120104155528.GD17717@saboteur.suse.cz>
+References: <4F02E053.3060600@imgtec.com>
+	<CAGH67wTn_dDLax16e7aQK9JxPSrm01vFVXn+F4dkOU1cuXHWnQ@mail.gmail.com>
+	<20120104143030.GC15845@saboteur.suse.cz>
+	<4F046059.9000202@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080102030508070408000004"
-Subject: [LTP] [PATCH 15/21] fs/stream: ret variable is has an integer type
- not size_t
+Content-Disposition: inline
+In-Reply-To: <4F046059.9000202@imgtec.com>
+Subject: Re: [LTP] [PATCH 07/21] cgroup/getdelays: Squish uninitialized
+ variable warning for old GCC compilers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,92 +25,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---------------080102030508070408000004
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi, please review the attached patch
-
--- 
-markos
-
---------------080102030508070408000004
-Content-Type: text/plain;
-	name="0015-fs-stream-ret-variable-is-has-an-integer-type-not-si.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0015-fs-stream-ret-variable-is-has-an-integer-type-not-si.pa";
-	filename*1="tch"
-
-From fd8d55e8194f7e56d35c4a291e5a64aa09f24237 Mon Sep 17 00:00:00 2001
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 22 Dec 2011 14:53:01 +0000
-Subject: [PATCH 15/21] fs/stream: ret variable is has an integer type not size_t
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/kernel/fs/stream/stream04.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/fs/stream/stream04.c b/testcases/kernel/fs/stream/stream04.c
-index 6ecac08..f88e395 100644
---- a/testcases/kernel/fs/stream/stream04.c
-+++ b/testcases/kernel/fs/stream/stream04.c
-@@ -88,7 +88,7 @@ int main(int ac, char *av[])
- 		}
- 
- 		if ((size_t)ret != strlen(junk)) {
--			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fwrite = %zi", strlen(junk), ret);
-+			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fwrite = %d", strlen(junk), ret);
- 			local_flag = FAILED;
- 		}
- 
-@@ -109,7 +109,7 @@ int main(int ac, char *av[])
- 			tst_exit();
- 		}
- 		if ((size_t)ret != strlen(junk)) {
--			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fread = %zi", strlen(junk), ret);
-+			tst_resm(TFAIL,"strlen(junk) = %zi != return value from fread = %d", strlen(junk), ret);
- 			local_flag = FAILED;
- 		}
- 		fclose(stream);
-@@ -123,4 +123,4 @@ int main(int ac, char *av[])
- 	} /* end for */
- 	tst_rmdir();
- 	tst_exit();
--}
-\ No newline at end of file
-+}
--- 
-1.7.1
-
-
---------------080102030508070408000004
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> >If this is only to silence compiler warning I would commit this as it
+> >is.
+> >
+> I studied the code over and over and cmd_type is never used
+> uninitialized. So yes, it is just a simple fix to silence old
+> compilers.
+
+Seems so to me as well, commited.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------080102030508070408000004
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------080102030508070408000004--
-
-
