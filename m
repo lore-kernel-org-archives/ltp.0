@@ -2,19 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RiRWs-0001Qm-Va
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 14:09:22 +0000
-Date: Wed, 4 Jan 2012 15:20:10 +0100
+	(envelope-from <chrubis@suse.de>) id 1RiT45-0006J5-DL
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 15:47:45 +0000
+Date: Wed, 4 Jan 2012 16:58:33 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120104142010.GA15845@saboteur.suse.cz>
-References: <4F02CBDE.70400@imgtec.com>
-	<CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
-	<4F02D122.7090704@imgtec.com> <4F02DB32.1050503@imgtec.com>
+Message-ID: <20120104155833.GE17717@saboteur.suse.cz>
+References: <611ED426031E9E48A80D02BED70BC810570E4F83@ALA-MBA.corp.ad.wrs.com>
+	<201112311514.16549.vapier@gentoo.org>
+	<20120101205321.GA14840@saboteur.suse.cz>
+	<201201012038.24370.vapier@gentoo.org>
+	<20120104151306.GA17717@saboteur.suse.cz>
+	<CAGH67wQUjNbbHxRFeJw1cNZsigEHWMQeg+ptDRzYFaE1qrRdmQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4F02DB32.1050503@imgtec.com>
-Subject: Re: [LTP] [PATCH 02/21] lib/self_exec: Remove extra argument from
- tst_resm function call
+In-Reply-To: <CAGH67wQUjNbbHxRFeJw1cNZsigEHWMQeg+ptDRzYFaE1qrRdmQ@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] redefine NCPU = sysconf(_SC_NPROCESSORS_CONF)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,29 +29,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, "Shang,  YanFeng" <YanFeng.Shang@windriver.com>
 
 Hi!
-> On 01/03/2012 09:57 AM, Markos Chandras wrote:
-> >On 01/03/2012 09:50 AM, Garrett Cooper wrote:
-> >>On Tue, Jan 3, 2012 at 1:35 AM, Markos Chandras
-> >><Markos.Chandras@imgtec.com>   wrote:
-> >>>Hi, please review the attached patch
+> >> > Well, the open posix testsuite project seems to be dead for some time
+> >> > (at least four years) so having fork is only natural. Do you know some
+> >> > of the original authors? Maybe we can just ask them to update the
+> >> > sf.net pages to redirect people to LTP.
 > >>
-> >>      Converting the function to tst_brkm and removing the tst_exit call
-> >>below it would be better.
-> >>Thanks!
-> >>-Garrett
-> >Agreed, but to make this consistent, all the tst_resm&&  tst_exit pairs
-> >should be replaced with tst_brkm. I will prepare a patch
+> >> if the maintainers opened up access, i think it'd make more sense to divest
+> >> LTP of the testsuite and merge all our local changes back.
 > >
-> Here is a patch that converts all tst_resm && tst_exit calls to
-> tst_brkm. Please review it.
+> > I would disagree here. This would possibly add burden of maitaing the
+> > code in two places, simple redirect to forked project is better solution
+> > here.
+> 
+>     Except at one point in time the other SF project was considered
+> the defacto standard. Makes me wonder how many replicas of the project
+> there are out there...
 
-Commited, thanks.
-
-And please add better patch description next time.
+Anyway first thing to do is to try to contact the original authors and
+ask for their opinions.
 
 -- 
 Cyril Hrubis
