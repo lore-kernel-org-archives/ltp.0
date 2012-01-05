@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RkIse-0002bT-Jc
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:19:32 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RkIsY-0000AW-Vs
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:19:32 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 9 Jan 2012 12:19:20 -0500
-References: <4F0ACAC0.6010309@imgtec.com>
-In-Reply-To: <4F0ACAC0.6010309@imgtec.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eguan@redhat.com>) id 1RiomR-0001ef-73
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:59 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RiomQ-0005Q8-D3
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:59 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q05Ewq0q021542
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Jan 2012 09:58:53 -0500
+From: Eryu Guan <eguan@redhat.com>
+Date: Thu,  5 Jan 2012 22:57:51 +0800
+Message-Id: <1325775471-19975-5-git-send-email-eguan@redhat.com>
+In-Reply-To: <1325775471-19975-1-git-send-email-eguan@redhat.com>
+References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
-Message-Id: <201201091219.20817.vapier@gentoo.org>
-Subject: Re: [LTP] Split UCLIBC and UCLINUX test cases
+Content-Type: multipart/mixed; boundary="------------1.7.7.5"
+Subject: [LTP] [PATCH v3 4/4] syscalls/getxattr02: new testcase to test
+	getxattr(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,61 +31,216 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7651453600213862663=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Markos Chandras <Markos.Chandras@imgtec.com>
 
---===============7651453600213862663==
-Content-Type: multipart/signed; boundary="nextPart2793710.poSrvKqVb4";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2793710.poSrvKqVb4
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Monday 09 January 2012 06:08:48 Markos Chandras wrote:
-> Right now the use of UCLINUX implies the use of __UCLIBC__ as well. Even
-> though this is true from UCLINUX's perspective, it is not valid from the
-> uclibc's one. A non-uclinux system can perfectly work with uclibc. What
-> I suggest is to keep the UCLINUX option as is, but also add a new option
-> called UCLIBC which will enable us to avoid all the restrictions imposed
-> by the use of UCLINUX macro (especially the disabled tests in
-> testcases/kernel/systecall/Makefile).
-
-header/func tests should get moved to configure.  we should not introduce o=
-r=20
-rely on any new ifdefs like UCLIBC or __UCLIBC__.
-=2Dmike
-
---nextPart2793710.poSrvKqVb4
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPCyGYAAoJEEFjO5/oN/WBM3wQAMCw/ovVVa4SB22/Mses8h1r
-hIf3TDwDMwNlpydF3aur2e+rFykJjpzjp+FhvfxMr2UPg4R73bXBGmq70p2GdWg8
-2ox6kMU0kEYCbukLufcoQ09eu8dvIme7Z/M+hV/raJk8Awz1NKVFuqPYBqGeaXl7
-ILQCkqYj90hic4xXLZTD0Rdj1udUsUZOAjxLZX1YfljXsAlCIq2nGAbpM6Jx7/AV
-pP+RG9IiW9BeIbIXyclMbm7anNgsBA2aPbQ35Oeq8ph8lT6UBuDMzVuGdQJSvvax
-H0iI4IlcHRpi4KtwXf3CPm4+F8w78cg1NIXpmk8zq0JK9uuRyiVODMh+D3sU4miS
-Io7pISk/HZDPtRTL+Gn+xw2orj8alDwoVFUvppinKk5fb85MiCVVMxmVsYiXxJrG
-9PAUlP+M8QwfzLZ+5YFy6jKxvhP2WwUvkVyuKK59bmGFCBr8rnOzcJC1OyEKATAv
-Q5bylBiQ5TxY8MO3sr8onHzzo8256c0rvbABWvgu4FRy5DFmcNXyHzb8+AaVlN2R
-4i2CIIoihjQifWxperNiMwOAOoaVoG1JWs02OmcMBMVf3Sg3QNiPsGmqZhn1ZtpE
-PSh+nV3u2LeOgGY1tmS+3ROlnMXjL5xWX3WhLijEWuw5wBHWzCkmzolD67kZ4ply
-nhlVphCXI3PzcnXbpT95
-=ttnc
------END PGP SIGNATURE-----
-
---nextPart2793710.poSrvKqVb4--
+This is a multi-part message in MIME format.
+--------------1.7.7.5
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
---===============7651453600213862663==
+In the user.* namespace, only regular files and directories can
+have extended attributes. Otherwise getxattr(2) will return -1
+and set errno to ENODATA.
+
+There are 4 test cases:
+1. Get attribute from a FIFO, setxattr(2) should return -1 and
+   set errno to ENODATA
+2. Get attribute from a char special file, setxattr(2) should
+   return -1 and set errno to ENODATA
+3. Get attribute from a block special file, setxattr(2) should
+   return -1 and set errno to ENODATA
+4. Get attribute from a UNIX domain socket, setxattr(2) should
+   return -1 and set errno to ENODATA
+
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+ runtest/syscalls                                |    1 +
+ testcases/kernel/syscalls/getxattr/getxattr02.c |  152 +++++++++++++++++++++++
+ 2 files changed, 153 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/getxattr/getxattr02.c
+
+
+--------------1.7.7.5
+Content-Type: text/x-patch;
+	name="0004-syscalls-getxattr02-new-testcase-to-test-getxattr-2.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0004-syscalls-getxattr02-new-testcase-to-test-getxattr-2.patch"
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 8e36ec0..1442390 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -421,6 +421,7 @@ getuid03 getuid03
+ getuid03_16 getuid03_16
+ 
+ getxattr01 getxattr01
++getxattr02 getxattr02
+ 
+ #Needs tty device.
+ #ioctl01 ioctl01 -D /dev/tty0
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c b/testcases/kernel/syscalls/getxattr/getxattr02.c
+new file mode 100644
+index 0000000..06b279c
+--- /dev/null
++++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
+@@ -0,0 +1,152 @@
++/*
++ * Copyright (C) 2011 Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * In the user.* namespace, only regular files and directories can
++ * have extended attributes. Otherwise getxattr(2) will return -1
++ * and set errno to ENODATA.
++ *
++ * There are 4 test cases:
++ * 1. Get attribute from a FIFO, setxattr(2) should return -1 and
++ *    set errno to ENODATA
++ * 2. Get attribute from a char special file, setxattr(2) should
++ *    return -1 and set errno to ENODATA
++ * 3. Get attribute from a block special file, setxattr(2) should
++ *    return -1 and set errno to ENODATA
++ * 4. Get attribute from a UNIX domain socket, setxattr(2) should
++ *    return -1 and set errno to ENODATA
++ */
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <attr/xattr.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include "test.h"
++#include "usctest.h"
++
++#define XATTR_TEST_KEY "user.testkey"
++
++static void setup(void);
++static void cleanup(void);
++
++char *TCID = "getxattr02";
++
++char fifo[] = "getxattr02fifo";
++char chr[] = "getxattr02chr";
++char blk[] = "getxattr02blk";
++char sock[] = "getxattr02sock";
++
++char *tc[] = {
++	fifo,	/* case 00, get attr from fifo */
++	chr,	/* case 01, get attr from char special */
++	blk,	/* case 02, get attr from block special */
++	sock,	/* case 03, get attr from UNIX domain socket */
++};
++
++int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	int i;
++	char *msg;
++	char buf[BUFSIZ];
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)	{
++			TEST(getxattr(tc[0], XATTR_TEST_KEY, buf, BUFSIZ));
++
++			if (TEST_RETURN == -1 && TEST_ERRNO == ENODATA) {
++				tst_resm(TPASS | TTERRNO, "expected behavior");
++			} else {
++				tst_resm(TFAIL | TTERRNO, "unexpected behavior"
++				    " - expected errno %d - Got", ENODATA);
++			}
++		}
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	int fd;
++
++	tst_require_root(NULL);
++
++	tst_tmpdir();
++
++	/* Test for xattr support */
++	fd = creat("testfile", 0644);
++	if (fd == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create testfile failed");
++	close(fd);
++	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
++		if (errno == ENOTSUP)
++			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
++			    "mount without user_xattr option");
++	unlink("testfile");
++
++	/* Create test files */
++	if (mknod(fifo, S_IFIFO | 0777, 0) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create fifo(%s) failed",
++		    fifo);
++
++	if (mknod(chr, S_IFCHR | 0777, 0) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create char special(%s)"
++		    " failed", chr);
++
++	if (mknod(blk, S_IFBLK | 0777, 0) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create block special(%s)"
++		    " failed", blk);
++
++	if (mknod(sock, S_IFSOCK | 0777, 0) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create socket(%s) failed",
++		    sock);
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++	tst_rmdir();
++}
+
+--------------1.7.7.5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -90,7 +252,7 @@ infrastructure or vast IT resources to deliver seamless, secure access to
 virtual desktops. With this all-in-one solution, easily deploy virtual 
 desktops for less than the cost of PCs and save 60% on VDI infrastructure 
 costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
---===============7651453600213862663==
+--------------1.7.7.5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -101,5 +263,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============7651453600213862663==--
+--------------1.7.7.5--
+
+
 
