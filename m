@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <YanFeng.Shang@windriver.com>) id 1RnhZY-0002Su-47
-	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 02:17:52 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RnhZW-0004Sk-Rx
-	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 02:17:52 +0000
-From: Shang Yanfeng <YanFeng.Shang@windriver.com>
-Date: Thu, 19 Jan 2012 10:17:39 +0800
-Message-ID: <1326939459-24110-1-git-send-email-YanFeng.Shang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eguan@redhat.com>) id 1Riolm-0001YS-JR
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:18 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Riolh-0008Ve-5H
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:18 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q05Ew7dL001913
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Jan 2012 09:58:07 -0500
+From: Eryu Guan <eguan@redhat.com>
+Date: Thu,  5 Jan 2012 22:57:47 +0800
+Message-Id: <1325775471-19975-1-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] v2:updated mmap2.c for low memory target
+Content-Type: multipart/mixed; boundary="------------1.7.7.5"
+Subject: [LTP] [PATCH v3 0/4] new testcases to test setxattr(2)/getxattr(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,175 +28,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos.Chandras@imgtec.com, YanFeng.Shang@windriver.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-many low memory boards don't have 1G memory,so add get_free_mem function for
-low memory target,limit 1000M for n32 file system test.
+This is a multi-part message in MIME format.
+--------------1.7.7.5
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-signed-off-by: YanFeng.Shang  <YanFeng.Shang@windriver.com>
----
- testcases/kernel/mem/mtest06/mmap2.c |   50 ++++++++++++++++++++++++++-------
- 1 files changed, 39 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/kernel/mem/mtest06/mmap2.c b/testcases/kernel/mem/mtest06/mmap2.c
-index aa9dc33..d83ba54 100644
---- a/testcases/kernel/mem/mtest06/mmap2.c
-+++ b/testcases/kernel/mem/mtest06/mmap2.c
-@@ -69,13 +69,14 @@
- #include <signal.h>
- #include <sys/time.h>
- #include <sys/wait.h>
-+#include <sys/sysinfo.h>
- #include <signal.h>
- #include <string.h>
- #include "test.h"
- #include "usctest.h"
- 
- /* Defines								      */
--#define GB 1000000000
-+#define MB 1048576 
- #ifndef TRUE
- #define TRUE 1
- #endif
-@@ -96,7 +97,7 @@
- /*                                                                            */
- /******************************************************************************/
- static int
--mkfile(int size) 		/* size of the file to be generated in GB     */
-+mkfile(int size) 		/* size of the file to be generated in MB     */
- {
-     int  fd;			/* file descriptior of tmpfile		      */
-     int  index = 0;		/* index into the file, fill it with a's      */
-@@ -118,7 +119,7 @@ mkfile(int size) 		/* size of the file to be generated in GB     */
-     }
- 
-     /* fill the file with the character a */
--    while (index < (size * GB))
-+    while (index < (size * MB))
-     {
-         index += 4096;
-         if (write(fd, buff, 4096) == -1)
-@@ -165,6 +166,21 @@ sig_handler(int signal)         /* signal number, set to handle SIGALRM       */
-     exit(0);
- }
- 
-+/*******************************************************************************/
-+/* Function:	get_free_mem                                                   */
-+/* Description: get the free memory.                                          */ 
-+/* Return:	free memory with M					       */
-+/*******************************************************************************/
-+unsigned long get_free_mem()
-+{
-+	struct sysinfo board_sysinfo;
-+	unsigned long avail_mem;
-+	if(sysinfo(&board_sysinfo))
-+		perror("sysinfo failed\n");
-+	avail_mem = board_sysinfo.freeram/MB;
-+	return avail_mem;
-+}
-+
- /******************************************************************************//*								 	      */
- /* Function:	usage							      */
- /*									      */
-@@ -180,7 +196,7 @@ usage(char *progname)           /* name of this program                       */
- 	       "\t -a set map_flags to MAP_ANONYMOUS\n"
-                "\t -h help, usage message.\n"
-                "\t -p set map_flag to MAP_PRIVATE.\tdefault: MAP_SHARED\n"
--               "\t -s size of the file/memory to be mmaped.\tdefault: 1GB\n"
-+               "\t -s size of the file/memory to be mmaped.\tdefault: 1000MB\n"
-                "\t -x time for which test is to be run.\tdefault: 24 Hrs\n",
-                     progname);
-     exit(-1);
-@@ -204,7 +220,7 @@ int main(int argc,	    /* number of input parameters.		      */
-      char **argv)	    /* pointer to the command line arguments.         */
- {
-     int   fd;		    /* descriptor of temp file.		              */
--    int   fsize = 1;	    /* size of the temp file created. default 1GB     */
-+    unsigned long  fsize = 1000;	    /* size of the temp file created. default 1000MB     */
-     float exec_time = 24;    /* period of execution, default 24 hours.	      */
-     int   c;		    /* command line options			      */
-     int   sig_ndx;	    /* index into signal handler structure.	      */
-@@ -234,6 +250,13 @@ int main(int argc,	    /* number of input parameters.		      */
- 			   {-1,     "ENDSIG"}
- 		   };
- 
-+	fsize = get_free_mem()/2;
-+
-+#if __WORDSIZE==32
-+	if ( fsize > 1000 )
-+		fprintf(stderr, "Using default fsize %ld MB\n", fsize = 1000);
-+#endif
-+
-     while ((c =  getopt(argc, argv, "ahps:x:")) != -1)
-     {
-         switch(c)
-@@ -249,8 +272,13 @@ int main(int argc,	    /* number of input parameters.		      */
- 		map_flags = MAP_PRIVATE;
- 		break;
- 	    case 's':
-+#if __WORDSIZE==32
-+		if ((fsize = atoi(optarg)) == 0 || (fsize = atoi(optarg)) > 1000 )
-+		    fprintf(stderr, "Using default fsize %ld MB\n", fsize = 1000);
-+#else
- 		if ((fsize = atoi(optarg)) == 0)
--		    fprintf(stderr, "Using default fsize %d GB\n", fsize = 1);
-+			fprintf(stderr,"Using default fsize %ld MB\n", fsize = 1000);
-+#endif
- 		break;
-             case 'x':
- 		if ((exec_time = atof(optarg)) == 0)
-@@ -266,7 +294,7 @@ int main(int argc,	    /* number of input parameters.		      */
- 
-     fprintf(stdout, "MM Stress test, map/write/unmap large file\n"
- 		    "\tTest scheduled to run for:       %f\n"
--		    "\tSize of temp file in GB:         %d\n",
-+		    "\tSize of temp file in MB:         %ld\n",
- 			exec_time, fsize);
- 
-     /* set up time for which test has to be run */
-@@ -308,7 +336,7 @@ int main(int argc,	    /* number of input parameters.		      */
- 	    map_flags = map_flags|MAP_ANONYMOUS;
-         }
- 
--        if ((memptr = (char *)mmap(0,(fsize * GB), PROT_READ|PROT_WRITE,
-+        if ((memptr = (char *)mmap(0,(fsize * MB), PROT_READ|PROT_WRITE,
- 		     map_flags, fd, 0)) == (char *)-1)
-         {
-             perror("main(): mmap()");
-@@ -319,16 +347,16 @@ int main(int argc,	    /* number of input parameters.		      */
- 			    "changing file content to 'A'\n", memptr);
- 
-         /* Change the content of the file with A's, and commit changes */
--        memset(memptr, 'A', ((fsize * GB)/sizeof(char)));
-+        memset(memptr, 'A', ((fsize * MB)/sizeof(char)));
- 
--        if (msync(memptr, ((fsize * GB)/sizeof(char)),
-+        if (msync(memptr, ((fsize * MB)/sizeof(char)),
- 	                 MS_SYNC|MS_INVALIDATE) == -1)
-         {
-             perror("main(): msync()");
-             exit (-1);
-         }
- 
--        if (munmap(memptr, (fsize * GB)/sizeof(char)) == -1)
-+        if (munmap(memptr, (fsize * MB)/sizeof(char)) == -1)
-         {
-             perror("main(): munmap()");
-             exit (-1);
+Basic tests for setxattr(2)/getxattr(2) and make sure they handle error
+conditions correctly.
+
+v2 -> v3:
+	1. Remove unnecessary variables
+	2. Add setxattr02 and getxattr02 testcases
+v1 -> v2:
+	1. Statically initialize test case array
+	2. Use TTERRNO with TPASS and TFAIL to print TEST_ERRNO message
+
+Eryu Guan (4):
+  syscalls/setxattr01: new testcase to test setxattr(2) basic function
+  syscalls/getxattr01: new testcase to test getxattr(2) basic function
+  syscalls/setxattr02: new testcase to test setxattr(2)
+  syscalls/getxattr02: new testcase to test getxattr(2)
+
+ runtest/syscalls                                |    6 +
+ testcases/kernel/syscalls/getxattr/Makefile     |   23 +++
+ testcases/kernel/syscalls/getxattr/getxattr01.c |  173 +++++++++++++++++
+ testcases/kernel/syscalls/getxattr/getxattr02.c |  152 +++++++++++++++
+ testcases/kernel/syscalls/setxattr/Makefile     |   23 +++
+ testcases/kernel/syscalls/setxattr/setxattr01.c |  223 +++++++++++++++++++++
+ testcases/kernel/syscalls/setxattr/setxattr02.c |  235 +++++++++++++++++++++++
+ 7 files changed, 835 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/getxattr/Makefile
+ create mode 100644 testcases/kernel/syscalls/getxattr/getxattr01.c
+ create mode 100644 testcases/kernel/syscalls/getxattr/getxattr02.c
+ create mode 100644 testcases/kernel/syscalls/setxattr/Makefile
+ create mode 100644 testcases/kernel/syscalls/setxattr/setxattr01.c
+ create mode 100644 testcases/kernel/syscalls/setxattr/setxattr02.c
+
 -- 
-1.6.3.1
+1.7.7.5
 
+--------------1.7.7.5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+--------------1.7.7.5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.7.5--
+
