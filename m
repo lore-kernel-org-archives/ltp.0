@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RoFdY-0000wt-2c
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 14:40:16 +0000
-Date: Fri, 20 Jan 2012 15:52:28 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RipPX-0002qm-S4
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 15:39:23 +0000
+Date: Thu, 5 Jan 2012 16:50:18 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120120145228.GA15964@saboteur.suse.cz>
-References: <4F17D4D0.9090200@cn.fujitsu.com>
-	<f1c1b1b8-3e46-4e00-9c9e-7e9ef02f4117@zmail16.collab.prod.int.phx2.redhat.com>
+Message-ID: <20120105155018.GF20860@saboteur.suse.cz>
+References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
+	<1325775471-19975-5-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <f1c1b1b8-3e46-4e00-9c9e-7e9ef02f4117@zmail16.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH v3 1/8] A library used to test memcg
+In-Reply-To: <1325775471-19975-5-git-send-email-eguan@redhat.com>
+Subject: Re: [LTP] [PATCH v3 4/4] syscalls/getxattr02: new testcase to test
+ getxattr(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,29 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Eryu Guan <eguan@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> 1. file mode of new test cases is 644, existing one (memcg_function_test) is 755.
-> I'm not sure if installation process takes care of this, I put them to testcases/bin
-> directly (I was lazy), so I had to "chmod a+x" new ones to run them.
+> +char fifo[] = "getxattr02fifo";
+> +char chr[] = "getxattr02chr";
+> +char blk[] = "getxattr02blk";
+> +char sock[] = "getxattr02sock";
 
-The build system install files as 775 (see include/mk/env_post.mk)
-unless you set INSTALL_MODE to something else in the corresponding
-Makefile, but it's better to have correct permissions in the git
-repository as well.
+Same here.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
