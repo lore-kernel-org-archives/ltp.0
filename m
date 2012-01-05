@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Rk7da-0002SC-R0
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 05:19:14 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Rk7dY-0005dP-H3
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 05:19:14 +0000
-Received: by iakh37 with SMTP id h37so7199836iak.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 08 Jan 2012 21:19:07 -0800 (PST)
-Message-ID: <4F0A78C4.30807@casparzhang.com>
-Date: Mon, 09 Jan 2012 13:19:00 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RiooH-0001lv-Fl
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 15:00:53 +0000
+Date: Thu, 5 Jan 2012 16:11:45 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120105151145.GC20860@saboteur.suse.cz>
+References: <1A42CE6F5F474C41B63392A5F80372B212E02C95B5@shsmsx501.ccr.corp.intel.com>
 MIME-Version: 1.0
-References: <1325302366-375-1-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1325302366-375-1-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] mq_timedsend/5-1: make parent has chance to sleep
+Content-Disposition: inline
+In-Reply-To: <1A42CE6F5F474C41B63392A5F80372B212E02C95B5@shsmsx501.ccr.corp.intel.com>
+Subject: Re: [LTP] [Ltp-commits] [patch] perfcounter01: fix infinite loops
+ when no issues encountered
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,48 +22,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Xu, Anhua" <anhua.xu@intel.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "Song,  Youquan" <youquan.song@intel.com>
 
-T24gMjAxMeW5tDEy5pyIMzHml6UgMTE6MzIsIEthbmcgS2FpIHdyb3RlOgo+IENoaWxkIHByb2Nl
-c3Mgc2VuZHMgdGhlIGxhc3Qgc2lnbmFsIGJlZm9yZSBwYXJlbnQgcHJvY2VzcyBlbnRlciB0aGUK
-PiBmaW5hbCBzbGVlcCBzb21ldGltZXMsIHNvIHNsZWVwIGluIHBhcmVudCB3aWxsIG5vdCBiZSBp
-bnRlcnJ1cHRlZCB0aGVuCj4gdGhlIGNhc2UgZmFpbHMuCj4gU2xlZXAgMSBzZWNvbmQgYmVmb3Jl
-IHNlbmQgdGhlIGxhc3Qgc2lnbmFsIGluIGNoaWxkIHRvIG1ha2Ugc3VyZSBwYXJlbnQKPiBlbnRl
-ciB0aGUgZmluYWwgc2xlZXAuCj4gCj4gU2lnbmVkLW9mZi1ieTogS2FuZyBLYWkgPGthaS5rYW5n
-QHdpbmRyaXZlci5jb20+Cj4gLS0tCj4gIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX3Rp
-bWVkc2VuZC81LTEuYyAgICAgIHwgICAgNSArKysrLQo+ICAxIGZpbGVzIGNoYW5nZWQsIDQgaW5z
-ZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29w
-ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbXFfdGltZWRzZW5kLzUt
-MS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
-ZXMvbXFfdGltZWRzZW5kLzUtMS5jCj4gaW5kZXggOTZkYWY3Mi4uMzc5OTNjOCAxMDA2NDQKPiAt
-LS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
-cy9tcV90aW1lZHNlbmQvNS0xLmMKPiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tcV90aW1lZHNlbmQvNS0xLmMKPiBAQCAtODIsNiAr
-ODIsOSBAQCBpbnQgbWFpbigpCj4gIAkJc2xlZXAoMSk7ICAvLyBnaXZlIHBhcmVudCB0aW1lIHRv
-IHNldCB1cCBoYW5kbGVyCj4gIAkJZm9yIChpPTA7IGk8TUFYTVNHKzE7IGkrKykgewo+ICAgICAg
-ICAgIAkJbXFfdGltZWRzZW5kKGdxdWV1ZSwgbXNncHRyLCBzdHJsZW4obXNncHRyKSwgMSwgJnRz
-KTsKPiArICAgICAgICAgICAgLyogbWFrZSBzdXJlIHBhcmVudCBlbnRlciB0aGUgZmluYWwgc2xl
-ZXAgKi8KPiArCQkJaWYgKGkgPT0gTUFYTVNHKSAKPiArICAgICAgICAgICAgICAgIHNsZWVwKDEp
-OwoKWW91IG9ubHkgbWFrZSBzdXJlIHBhcmVudCBlbnRlcnMgdG8gdGhlIGxhc3QgaXRlcmF0aW9u
-IGJlZm9yZSBjaGlsZApkb2VzLCBidXQgc2FtZSBpc3N1ZSBzdGlsbCBtaWdodCBvY2N1ciBpbiBw
-cmV2aW91cyBpdGVyYXRpb25zLgoKQWxzbywgcGxlYXNlIHVzZSBoYXJkIHRhYiBpbnN0ZWFkIG9m
-IDQvOCBzcGFjZXMgZm9yIGluZGVudGF0aW9uLiBwYXRjaApzdHlsZS1ndWlkZSBjb3VsZCBiZSBm
-b3VuZCBhdDogZG9jL3N0eWxlLWd1aWRlLnR4dAoKVGhhbmtzLApDYXNwYXIKCj4gIAkJCS8qIHNl
-bmQgc2lnbmFsIHRvIHBhcmVudCBlYWNoIHRpbWUgbWVzc2FnZSBpcyBzZW50ICovCj4gIAkJCWtp
-bGwoZ2V0cHBpZCgpLCBTSUdBQlJUKTsKPiAgCQl9Cj4gQEAgLTEzOCw0ICsxNDEsNCBAQCBpbnQg
-bWFpbigpCj4gIAl9Cj4gIAo+ICAJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+IC19Cj4gXCBObyBu
-ZXdsaW5lIGF0IGVuZCBvZiBmaWxlCj4gK30KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KUmlkaWN1
-bG91c2x5IGVhc3kgVkRJLiBXaXRoIENpdHJpeCBWREktaW4tYS1Cb3gsIHlvdSBkb24ndCBuZWVk
-IGEgY29tcGxleAppbmZyYXN0cnVjdHVyZSBvciB2YXN0IElUIHJlc291cmNlcyB0byBkZWxpdmVy
-IHNlYW1sZXNzLCBzZWN1cmUgYWNjZXNzIHRvCnZpcnR1YWwgZGVza3RvcHMuIFdpdGggdGhpcyBh
-bGwtaW4tb25lIHNvbHV0aW9uLCBlYXNpbHkgZGVwbG95IHZpcnR1YWwgCmRlc2t0b3BzIGZvciBs
-ZXNzIHRoYW4gdGhlIGNvc3Qgb2YgUENzIGFuZCBzYXZlIDYwJSBvbiBWREkgaW5mcmFzdHJ1Y3R1
-cmUgCmNvc3RzLiBUcnkgaXQgZnJlZSEgaHR0cDovL3Auc2YubmV0L3NmdS9DaXRyaXgtVkRJaW5h
-Ym94Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1s
-aXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi!
+> In the original test, if no error upon perfcounter, this test will
+> never end. Add a "loop" variable to force stopping when no issues detected
+> 
+> Signed-off-by: Xu,Anhua <anhua.xu@intel.com>
+> ---
+>  .../performance_counters/performance_counter01.c   |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/performance_counters/performance_counter01.c b/testcases/kernel/performance_counters/performance_counter01.c
+> index 23cc31b..7ffd15a 100644
+> --- a/testcases/kernel/performance_counters/performance_counter01.c
+> +++ b/testcases/kernel/performance_counters/performance_counter01.c
+> @@ -67,7 +67,7 @@ void cleanup(void) { /* Stub function. */ }
+>  int
+>  main(void) {
+>  
+> -	unsigned long long count1, count2;
+> +	unsigned long long count1, count2, loop = 100;
+>  	int fd1, fd2, ret;
+>  
+>  	fd1 = syscall(__NR_perf_event_open,
+> @@ -103,7 +103,7 @@ main(void) {
+>  
+>  		}
+>  
+> -	} while (ret == sizeof(unsigned long long));
+> +	} while (ret == sizeof(unsigned long long) && loop--);
+>  
+>  	tst_exit();
+
+Hmm, and also the return value from read should be checked and
+the test should fail if read() has returned error.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
