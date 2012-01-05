@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RkIwQ-0002mO-Iu
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:23:26 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RkIwL-0004xu-1W
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:23:26 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 9 Jan 2012 12:23:13 -0500
-References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
-	<20120109105133.GB27172@eguan-t400.redhat.com>
-	<CAGH67wSHbU+1ptij7-X9ysU2CZXFOxtD7NYD9Yn0SuRtXThaUg@mail.gmail.com>
-In-Reply-To: <CAGH67wSHbU+1ptij7-X9ysU2CZXFOxtD7NYD9Yn0SuRtXThaUg@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eguan@redhat.com>) id 1Riolv-0000e3-Tr
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:27 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Riolq-0005zA-2C
+	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:27 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q05EwFFH001944
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Jan 2012 09:58:15 -0500
+From: Eryu Guan <eguan@redhat.com>
+Date: Thu,  5 Jan 2012 22:57:48 +0800
+Message-Id: <1325775471-19975-2-git-send-email-eguan@redhat.com>
+In-Reply-To: <1325775471-19975-1-git-send-email-eguan@redhat.com>
+References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
-Message-Id: <201201091223.14655.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] syscalls/xattr: fix compile when xattr.h not exist
+Content-Type: multipart/mixed; boundary="------------1.7.7.5"
+Subject: [LTP] [PATCH v3 1/4] syscalls/setxattr01: new testcase to test
+	setxattr(2) basic function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,141 +31,324 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2285297074402211346=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============2285297074402211346==
-Content-Type: multipart/signed; boundary="nextPart16584346.sYGpHNiN8C";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart16584346.sYGpHNiN8C
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Monday 09 January 2012 12:11:50 Garrett Cooper wrote:
-> On Mon, Jan 9, 2012 at 2:51 AM, Eryu Guan <eguan@redhat.com> wrote:
-> > On Mon, Jan 09, 2012 at 05:44:35PM +0800, Caspar Zhang wrote:
-> >> if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
-> >> autotools level.
-> > >
-> >> --- a/testcases/kernel/syscalls/getxattr/getxattr01.c
-> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
-> >> @@ -37,7 +37,6 @@
-> >>=20
-> >>  #include <sys/types.h>
-> >>  #include <sys/stat.h>
-> >> -#include <attr/xattr.h>
-> >>  #include <errno.h>
-> >>  #include <fcntl.h>
-> >>  #include <unistd.h>
-> >> @@ -45,9 +44,16 @@
-> >>  #include <stdlib.h>
-> >>  #include <string.h>
-> >>=20
-> >> +#include "config.h"
-> >>  #include "test.h"
-> >>  #include "usctest.h"
-> >>=20
-> >> +char *TCID =3D "getxattr01";
-> >> +
-> >> +#ifdef HAVE_ATTR_XATTR_H
-> >> +
-> >> +#include <attr/xattr.h>
-> >> +
-> >>  #define XATTR_TEST_KEY "user.testkey"
-> >>  #define XATTR_TEST_VALUE "this is a test value"
-> >>  #define XATTR_TEST_VALUE_SIZE 20
-> >> @@ -56,7 +62,6 @@
-> >>  static void setup(void);
-> >>  static void cleanup(void);
-> >>=20
-> >> -char *TCID =3D "getxattr01";
-> >>  char filename[BUFSIZ];
-> >>=20
-> >>  struct test_case {
-> >> @@ -171,3 +176,9 @@ static void cleanup(void)
-> >>       TEST_CLEANUP;
-> >>       tst_rmdir();
-> >>  }
-> >> +#else /* HAVE_ATTR_XATTR_H */
-> >> +int main(int argc, char *argv[])
-> >> +{
-> >> +     tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-> >> +}
-> >> +#endif
-> >> diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c
-> >> b/testcases/kernel/syscalls/getxattr/getxattr02.c index
-> >> 54d8949..52c5812 100644
-> >> --- a/testcases/kernel/syscalls/getxattr/getxattr02.c
-> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
-> >> @@ -41,7 +41,6 @@
-> >>  #include <sys/types.h>
-> >>  #include <sys/stat.h>
-> >>  #include <sys/wait.h>
-> >> -#include <attr/xattr.h>
-> >>  #include <errno.h>
-> >>  #include <fcntl.h>
-> >>  #include <unistd.h>
-> >> @@ -50,9 +49,16 @@
-> >>  #include <stdlib.h>
-> >>  #include <string.h>
-> >>=20
-> >> +#include "config.h"
-> >>  #include "test.h"
-> >>  #include "usctest.h"
-> >>=20
-> >> +char *TCID =3D "getxattr02";
-> >> +
-> >> +#ifdef HAVE_ATTR_XATTR_H
-> >> +
-> >> +#include <attr/xattr.h>
->=20
-> The only thing requested is that:
->=20
-> #ifdef HAVE_ATTR_XATTR_H
-> #include <attr/xattr.h>
-> #endif
->=20
-> (please note the whitespace difference) be moved further up in the
-> file to be sorted properly with the rest of the #includes, as noted in
-> the style guide.
-
-config.h should come before any include, and then the attr/xattr.h evaluati=
-on=20
-be in the normal location -- after C library includes and before LTP includ=
-es=20
-(like test.h).
-=2Dmike
-
---nextPart16584346.sYGpHNiN8C
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPCyKCAAoJEEFjO5/oN/WBCTsQAM/bXasDYRjdD5SXn4sNzNBB
-TJZPVEsLvcVhCedlWi78IPsnoV1NSmnrqwqiLDYEv56M87p2F0cFUcprqKodwg7X
-f63uVlDrJ80tuWjhsD1pNnS040JOGGVkm2W7QwyEmxuaxTZjkPR/veOzNRufQ7pI
-9Fr8ppxl54rVGf4Tv4wAbEuOot47VyFFFFJPqEQiKKCtNRp1ka2dRzkTPPhphfzv
-jICRUmtryH+cj9Fmv2EQMPztn8TuLElmkUIe4RbW3W52ybgTK/2h0+kt+3ISPomR
-Fkd66r6nL5zqg/DNQ0D7P0z1rqOcFPj8poyYXA0jGlntA3azxPIDjAvWJu+5d6UF
-GUId7+Sv1ijA21IlwndMMo/EwC4GVD2L720Dzmzqd7zbnF9pQz32ti0q2P8JkAYt
-CiEjD8w9Vmcy4YPyUCfpToZMjuMYCYPzAJ2BB6LXQQEEAQy2UOSX+6z8n33mhZP2
-Vys0NgZBZkhfa10v/wNK4pFnLDdP+gLf9/6K1jvolMGw6Msjq2ZiMSlSCfVOWvIS
-h0Ux/YoNWsCzOp0twq9xb2niz/P2N3fwB9+67okCzx5yPPahUmDN7xo0Mi09VeEO
-qieU0TZgcJtm9wYZ/fSLhNplDsIVI0wY7iksQV+jklemaZ/bKHb+MYmSUrGK4e5D
-rOPXF28a6yl/uSWogbRG
-=11pg
------END PGP SIGNATURE-----
-
---nextPart16584346.sYGpHNiN8C--
+This is a multi-part message in MIME format.
+--------------1.7.7.5
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
---===============2285297074402211346==
+Basic tests for setxattr(2) and make sure setxattr(2) handles error
+conditions correctly.
+
+There are 7 test cases:
+1. Any other flags being set except XATTR_CREATE and XATTR_REPLACE,
+   setxattr(2) should return -1 and set errno to EINVAL
+2. With XATTR_REPLACE flag set but the attribute does not exist,
+   setxattr(2) should return -1 and set errno to ENOATTR
+3. Create new attr with name length greater than XATTR_NAME_MAX(255)
+   setxattr(2) should return -1 and set errno to ERANGE
+4. Create new attr whose value length is greater than XATTR_SIZE_MAX(65536)
+   setxattr(2) should return -1 and set errno to E2BIG
+5. Create new attr whose value length is zero,
+   setxattr(2) should succeed
+6. Replace the attr value without XATTR_REPLACE flag being set,
+   setxattr(2) should return -1 and set errno to EEXIST
+7. Replace attr value with XATTR_REPLACE flag being set,
+   setxattr(2) should succeed
+
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+ runtest/syscalls                                |    2 +
+ testcases/kernel/syscalls/setxattr/Makefile     |   23 +++
+ testcases/kernel/syscalls/setxattr/setxattr01.c |  223 +++++++++++++++++++++++
+ 3 files changed, 248 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/setxattr/Makefile
+ create mode 100644 testcases/kernel/syscalls/setxattr/setxattr01.c
+
+
+--------------1.7.7.5
+Content-Type: text/x-patch;
+	name="0001-syscalls-setxattr01-new-testcase-to-test-setxattr-2-.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-syscalls-setxattr01-new-testcase-to-test-setxattr-2-.patch"
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 3755789..3056659 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1018,6 +1018,8 @@ setuid03_16 setuid03_16
+ setuid04 setuid04
+ setuid04_16 setuid04_16
+ 
++setxattr01 setxattr01
++
+ shmat01 shmat01
+ shmat02 shmat02
+ shmat03 shmat03
+diff --git a/testcases/kernel/syscalls/setxattr/Makefile b/testcases/kernel/syscalls/setxattr/Makefile
+new file mode 100644
+index 0000000..72544c1
+--- /dev/null
++++ b/testcases/kernel/syscalls/setxattr/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (c) Red Hat Inc., 2011
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/setxattr/setxattr01.c b/testcases/kernel/syscalls/setxattr/setxattr01.c
+new file mode 100644
+index 0000000..fedb777
+--- /dev/null
++++ b/testcases/kernel/syscalls/setxattr/setxattr01.c
+@@ -0,0 +1,223 @@
++/*
++ * Copyright (C) 2011 Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * Basic tests for setxattr(2) and make sure setxattr(2) handles error
++ * conditions correctly.
++ *
++ * There are 7 test cases:
++ * 1. Any other flags being set except XATTR_CREATE and XATTR_REPLACE,
++ *    setxattr(2) should return -1 and set errno to EINVAL
++ * 2. With XATTR_REPLACE flag set but the attribute does not exist,
++ *    setxattr(2) should return -1 and set errno to ENOATTR
++ * 3. Create new attr with name length greater than XATTR_NAME_MAX(255)
++ *    setxattr(2) should return -1 and set errno to ERANGE
++ * 4. Create new attr whose value length is greater than XATTR_SIZE_MAX(65536)
++ *    setxattr(2) should return -1 and set errno to E2BIG
++ * 5. Create new attr whose value length is zero,
++ *    setxattr(2) should succeed
++ * 6. Replace the attr value without XATTR_REPLACE flag being set,
++ *    setxattr(2) should return -1 and set errno to EEXIST
++ * 7. Replace attr value with XATTR_REPLACE flag being set,
++ *    setxattr(2) should succeed
++ */
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <attr/xattr.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include "test.h"
++#include "usctest.h"
++
++#define XATTR_NAME_MAX 255
++#define XATTR_NAME_LEN (XATTR_NAME_MAX + 2)
++#define XATTR_SIZE_MAX 65536
++#define XATTR_TEST_KEY "user.testkey"
++#define XATTR_TEST_VALUE "this is a test value"
++#define XATTR_TEST_VALUE_SIZE 20
++
++static void setup(void);
++static void cleanup(void);
++
++char *TCID = "setxattr01";
++char filename[BUFSIZ];
++char long_key[XATTR_NAME_LEN];
++char *long_value;
++
++struct test_case {
++	char *fname;
++	char *key;
++	char *value;
++	size_t size;
++	int flags;
++	int exp_err;
++};
++struct test_case tc[] = {
++	{	/* case 00, invalid flags */
++		.fname = filename,
++		.key = XATTR_TEST_KEY,
++		.value = XATTR_TEST_VALUE,
++		.size = XATTR_TEST_VALUE_SIZE,
++		.flags = ~0,
++		.exp_err = EINVAL,
++	},
++	{	/* case 01, replace non-existing attribute */
++		.fname = filename,
++		.key = XATTR_TEST_KEY,
++		.value = XATTR_TEST_VALUE,
++		.size = XATTR_TEST_VALUE_SIZE,
++		.flags = XATTR_REPLACE,
++		.exp_err = ENOATTR,
++	},
++	{	/* case 02, long key name, key will be set in setup() */
++		.fname = filename,
++		.key = NULL,
++		.value = XATTR_TEST_VALUE,
++		.size = XATTR_TEST_VALUE_SIZE,
++		.flags = XATTR_CREATE,
++		.exp_err = ERANGE,
++	},
++	{	/* case 03, long value, value will be set in setup() */
++		.fname = filename,
++		.key = XATTR_TEST_KEY,
++		.value = NULL,
++		.size = XATTR_SIZE_MAX + 1,
++		.flags = XATTR_CREATE,
++		.exp_err = E2BIG,
++	},
++	{	/* case 04, zero length value */
++		.fname = filename,
++		.key = XATTR_TEST_KEY,
++		.value = XATTR_TEST_VALUE,
++		.size = 0,
++		.flags = XATTR_CREATE,
++		.exp_err = 0,
++	},
++	{	/* case 05, create existing attribute */
++		.fname = filename,
++		.key = XATTR_TEST_KEY,
++		.value = XATTR_TEST_VALUE,
++		.size = XATTR_TEST_VALUE_SIZE,
++		.flags = XATTR_CREATE,
++		.exp_err = EEXIST,
++	},
++	{	/* case 06, replace existing attribute */
++		.fname = filename,
++		.key = XATTR_TEST_KEY,
++		.value = XATTR_TEST_VALUE,
++		.size = XATTR_TEST_VALUE_SIZE,
++		.flags = XATTR_REPLACE,
++		.exp_err = 0,
++	},
++};
++
++int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	int i;
++	char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)	{
++			TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value,
++			    tc[i].size, tc[i].flags));
++
++			if (TEST_ERRNO == tc[i].exp_err) {
++				tst_resm(TPASS | TTERRNO, "expected behavior");
++			} else {
++				tst_resm(TFAIL | TTERRNO, "unexpected behavior "
++				    "- expected errno %d - Got", tc[i].exp_err);
++			}
++		}
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	int fd;
++
++	tst_require_root(NULL);
++
++	tst_tmpdir();
++
++	/* Test for xattr support */
++	fd = creat("testfile", 0644);
++	if (fd == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create testfile failed");
++	close(fd);
++	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
++		if (errno == ENOTSUP)
++			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
++			    "mount without user_xattr option");
++
++	/* Create test file */
++	snprintf(filename, BUFSIZ, "setxattr01testfile");
++	fd = creat(filename, 0644);
++	if (fd == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
++		    filename);
++	close(fd);
++
++	/* Prepare test cases */
++	snprintf(long_key, 6, "%s", "user.");
++	memset(long_key + 5, 'k', XATTR_NAME_LEN - 5);
++	long_key[XATTR_NAME_LEN - 1] = '\0';
++	tc[2].key = long_key;
++
++	long_value = malloc(XATTR_SIZE_MAX + 2);
++	if (!long_value)
++		tst_brkm(TBROK | TERRNO, cleanup, "malloc failed");
++	memset(long_value, 'v', XATTR_SIZE_MAX + 2);
++	long_value[XATTR_SIZE_MAX + 1] = '\0';
++	tc[3].value = long_value;
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++	tst_rmdir();
++}
+
+--------------1.7.7.5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -172,7 +360,7 @@ infrastructure or vast IT resources to deliver seamless, secure access to
 virtual desktops. With this all-in-one solution, easily deploy virtual 
 desktops for less than the cost of PCs and save 60% on VDI infrastructure 
 costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
---===============2285297074402211346==
+--------------1.7.7.5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -183,5 +371,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============2285297074402211346==--
+--------------1.7.7.5--
+
+
 
