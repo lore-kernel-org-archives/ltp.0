@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri1ne-0008TA-Hj
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 10:40:58 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri1nd-00043m-Op
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 10:40:58 +0000
-Message-ID: <4F02DB32.1050503@imgtec.com>
-Date: Tue, 3 Jan 2012 10:40:50 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rj8Pw-0007Rr-O5
+	for ltp-list@lists.sourceforge.net; Fri, 06 Jan 2012 11:57:04 +0000
+Date: Fri, 6 Jan 2012 13:08:05 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120106120805.GA21376@saboteur.suse.cz>
+References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
+	<1325775471-19975-4-git-send-email-eguan@redhat.com>
+	<20120105154941.GE20860@saboteur.suse.cz>
+	<20120106035408.GI30803@eguan-t400>
 MIME-Version: 1.0
-References: <4F02CBDE.70400@imgtec.com>	<CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
-	<4F02D122.7090704@imgtec.com>
-In-Reply-To: <4F02D122.7090704@imgtec.com>
-Content-Type: multipart/mixed; boundary="------------010901090407060205070504"
-Subject: Re: [LTP] [PATCH 02/21] lib/self_exec: Remove extra argument from
- tst_resm function call
+Content-Disposition: inline
+In-Reply-To: <20120106035408.GI30803@eguan-t400>
+Subject: Re: [LTP] [PATCH v3 3/4] syscalls/setxattr02: new testcase to test
+ setxattr(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,163 +25,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---------------010901090407060205070504
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 01/03/2012 09:57 AM, Markos Chandras wrote:
-> On 01/03/2012 09:50 AM, Garrett Cooper wrote:
->> On Tue, Jan 3, 2012 at 1:35 AM, Markos Chandras
->> <Markos.Chandras@imgtec.com>   wrote:
->>> Hi, please review the attached patch
->>
->>       Converting the function to tst_brkm and removing the tst_exit call
->> below it would be better.
->> Thanks!
->> -Garrett
-> Agreed, but to make this consistent, all the tst_resm&&  tst_exit pairs
-> should be replaced with tst_brkm. I will prepare a patch
->
-Here is a patch that converts all tst_resm && tst_exit calls to 
-tst_brkm. Please review it.
-
--- 
-markos
-
---------------010901090407060205070504
-Content-Type: text/plain;
-	name="0002-lib-self_exec-Convert-tst_resm-tst_exit-calls-to-tst.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0002-lib-self_exec-Convert-tst_resm-tst_exit-calls-to-tst.pa";
-	filename*1="tch"
-
-From 9259c9318e099c84291afaa1de5279dfb26a763d Mon Sep 17 00:00:00 2001
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 22 Dec 2011 10:43:19 +0000
-Subject: [PATCH 02/21] lib/self_exec: Convert tst_resm && tst_exit calls to tst_brkm
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- lib/self_exec.c |   26 +++++++++-----------------
- 1 files changed, 9 insertions(+), 17 deletions(-)
-
-diff --git a/lib/self_exec.c b/lib/self_exec.c
-index a457468..abbfeb4 100644
---- a/lib/self_exec.c
-+++ b/lib/self_exec.c
-@@ -86,8 +86,7 @@ maybe_run_child(void (*child)(), char *fmt, ...)
- 
- 	child_dir = strtok(args, ",");
- 	if (strlen(child_dir) == 0) {
--	    tst_resm(TBROK, NULL, "Could not get directory from -C option");
--	    tst_exit();
-+	    tst_brkm(TBROK, NULL, "Could not get directory from -C option");
- 	}
- 
- 	va_start(ap, fmt);
-@@ -95,8 +94,7 @@ maybe_run_child(void (*child)(), char *fmt, ...)
- 	for (p = fmt; *p; p++) {
- 	    tok = strtok(NULL, ",");
- 	    if (!tok || strlen(tok) == 0) {
--		tst_resm(TBROK, "Invalid argument to -C option");
--		tst_exit();
-+		tst_brkm(TBROK, NULL, "Invalid argument to -C option");
- 	    }
- 
- 	    switch (*p) {
-@@ -104,8 +102,7 @@ maybe_run_child(void (*child)(), char *fmt, ...)
- 		iptr = va_arg(ap, int *);
- 		i = strtol(tok, &endptr, 10);
- 		if (*endptr != '\0') {
--		    tst_resm(TBROK, "Invalid argument to -C option");
--		    tst_exit();
-+		    tst_brkm(TBROK, NULL, "Invalid argument to -C option");
- 		}
- 		*iptr = i;
- 		break;
-@@ -113,8 +110,7 @@ maybe_run_child(void (*child)(), char *fmt, ...)
- 		j = va_arg(ap, int);
- 		i = strtol(tok, &endptr, 10);
- 		if (*endptr != '\0') {
--		    tst_resm(TBROK, "Invalid argument to -C option");
--		    tst_exit();
-+		    tst_brkm(TBROK, NULL, "Invalid argument to -C option");
- 		}
- 		if (j != i) {
- 		    va_end(ap);
-@@ -124,21 +120,18 @@ maybe_run_child(void (*child)(), char *fmt, ...)
- 	    case 's':
- 		s = va_arg(ap, char *);
- 		if (!strncpy(s, tok, strlen(tok)+1)) {
--		    tst_resm(TBROK, "Could not strncpy for -C option");
--		    tst_exit();
-+		    tst_brkm(TBROK, NULL, "Could not strncpy for -C option");
- 		}
- 		break;
- 	    case 'S':
- 		sptr = va_arg(ap, char **);
- 		*sptr = strdup(tok);
- 		if (!*sptr) {
--		    tst_resm(TBROK, "Could not strdup for -C option");
--		    tst_exit();
-+		    tst_brkm(TBROK, NULL, "Could not strdup for -C option");
- 		}
- 		break;
- 	    default:
--		tst_resm(TBROK, "Format string option %c not implemented", *p);
--		tst_exit();
-+		tst_brkm(TBROK, NULL, "Format string option %c not implemented", *p);
- 		break;
- 	    }
- 	}
-@@ -146,8 +139,7 @@ maybe_run_child(void (*child)(), char *fmt, ...)
- 	va_end(ap);
- 
- 	if (chdir(child_dir) < 0) {
--	    tst_resm(TBROK, "Could not change to %s for child", child_dir);
--	    tst_exit();
-+	    tst_brkm(TBROK, "Could not change to %s for child", child_dir);
- 	}
- 
- 	(*child)();
-@@ -215,4 +207,4 @@ self_exec(char *argv0, char *fmt, ...)
-     return execlp(argv0, argv0, "-C", arg, (char *) NULL);
- }
- 
--#endif /* UCLINUX */
-\ No newline at end of file
-+#endif /* UCLINUX */
--- 
-1.7.1
-
-
---------------010901090407060205070504
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Eryu Guan <eguan@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> Yes, I know the difference, but 'char *file = "foo"' will generate a
+> compiling error like:
+> 
+> setxattr02.c:88:3: error: initializer element is not constant
+> setxattr02.c:88:3: error: (near initialization for ???tc[0].fname???)
+> 
+> So I used 'char file[] = "foo"'.
+> 
+> That turns out to be a limitation of the C language. Quote the spec
+> 
+> "All the expressions in an initializer for an object that has static
+> storage duration shall be constant expressions or string literals."
+> 
+> Will macro be a better way? Like:
+> #define FILENAME "setxattr02testfile"
+> #define DIRNAME "setxattr02testdir"
+> 
+
+Ah, I see.
+
+I think macros are better option here.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------010901090407060205070504
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------010901090407060205070504--
-
-
