@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RkwmK-0007iY-H7
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 11:55:40 +0000
-Date: Wed, 11 Jan 2012 13:07:05 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rj9ag-0005FL-Lu
+	for ltp-list@lists.sourceforge.net; Fri, 06 Jan 2012 13:12:14 +0000
+Date: Fri, 6 Jan 2012 14:23:16 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120111120705.GB7143@saboteur.suse.cz>
-References: <CABhB_e-dCgn75mRkPE5LTb9-51RNK7ds=Tekaem85wkPyTu9Dw@mail.gmail.com>
+Message-ID: <20120106132316.GA23266@saboteur.suse.cz>
+References: <1320052884-11475-1-git-send-email-carmelo.amoroso@st.com>
+	<20111102172631.GA14582@saboteur.suse.cz>
+	<CAGH67wQu7Yx8=GMHxXWXsz=i9736jva89QNeobWku=0YJQwTQQ@mail.gmail.com>
+	<20111102180024.GB12153@saboteur.suse.cz> <4EB69D63.8080603@st.com>
+	<20111109091554.GA31394@saboteur.suse.cz> <4EBBE5C5.6000903@st.com>
+	<20111110154125.GB14190@saboteur.suse.cz> <4EBC0026.4030401@st.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CABhB_e-dCgn75mRkPE5LTb9-51RNK7ds=Tekaem85wkPyTu9Dw@mail.gmail.com>
-Subject: Re: [LTP] compiling LTP for Android on ARM target board
+In-Reply-To: <4EBC0026.4030401@st.com>
+Subject: Re: [LTP] [PATCH] runltp: fix printing of LTP Version
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,21 +29,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: tadimarri sarath <sarath.tadi@gmail.com>
+To: Carmelo AMOROSO <carmelo.amoroso@st.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I want to compile the LTP for android on ARM target board.
-> I tried the patch using the following link.
-> 
-> http://old.nabble.com/-LTP--Porting-of-LTP-on-Android---Patch-p32252920.html
-> 
-> 
-> As per the link, I applied the patch on ltp-full-20110228.
+I finally had a time to look at this again. The solution is not the
+cleanest but at least it works now. (See the git)
 
-As far as I remeber, the patch was not complete.
-
-You should probably ask the patch author.
+Now the Version file is generated either from 'git describe' if there is
+git repository found. And when there isn't, which is the case of a
+release tarball, VERSION file is used instead.
 
 -- 
 Cyril Hrubis
