@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiAEv-0008VI-7b
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:41:41 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiAEu-0007Zq-L1
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:41:41 +0000
-Received: by mail-tul01m020-f175.google.com with SMTP id wn6so18177194obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 11:41:40 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1RkD65-0003zJ-3H
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 11:09:01 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RkD5z-0002UJ-FB
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 11:09:01 +0000
+Message-ID: <4F0ACAC0.6010309@imgtec.com>
+Date: Mon, 9 Jan 2012 11:08:48 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <4F02E28F.1080603@imgtec.com>
-References: <4F02E28F.1080603@imgtec.com>
-Date: Tue, 3 Jan 2012 11:41:40 -0800
-Message-ID: <CAGH67wS9UfT5m3gB97Np9b+7ObDOFq9OWKmX=1bAk0-m1q3sFQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 11/21] process_stress/process: Fix dprt() function
- definition when DEBUG macro is used
+Subject: [LTP] Split UCLIBC and UCLINUX test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,21 +25,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 3, 2012 at 3:12 AM, Markos Chandras
-<Markos.Chandras@imgtec.com> wrote:
-> Hi, please review the attached patch
+Hello,
 
-Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
+Right now the use of UCLINUX implies the use of __UCLIBC__ as well. Even 
+though this is true from UCLINUX's perspective, it is not valid from the 
+uclibc's one. A non-uclinux system can perfectly work with uclibc. What 
+I suggest is to keep the UCLINUX option as is, but also add a new option 
+called UCLIBC which will enable us to avoid all the restrictions imposed 
+by the use of UCLINUX macro (especially the disabled tests in 
+testcases/kernel/systecall/Makefile).
+
+-- 
+markos
+
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
