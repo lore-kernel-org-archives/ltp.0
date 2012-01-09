@@ -2,20 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rnvpx-0001hv-6k
-	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 17:31:45 +0000
-Date: Thu, 19 Jan 2012 18:43:55 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120119174355.GF10302@saboteur.suse.cz>
-References: <20120111125642.GD7143@saboteur.suse.cz>
-	<201201131216.03211.vapier@gentoo.org>
-	<20120118161754.GA5353@saboteur.suse.cz>
-	<201201181139.19497.vapier@gentoo.org>
+	(envelope-from <vapier@gentoo.org>) id 1RkIu7-0002hT-3J
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:21:03 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RkIu5-0004ie-Vk
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:21:03 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 9 Jan 2012 12:20:54 -0500
+References: <4F0A8E2D.8030305@cn.fujitsu.com>
+	<20120109072905.GA27172@eguan-t400.redhat.com>
+In-Reply-To: <20120109072905.GA27172@eguan-t400.redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201201181139.19497.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
- duplicated output
+Message-Id: <201201091220.55745.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] fix getxattr02 case with errno EPERM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,83 +25,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6558078150233390905=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > > > I don't like idea of defining fork to tst_fork that's exactly the
-> > > > magic that may take hours to figure out.
-> > > > 
-> > > > Forcing it, in this case, is probably good idea.
-> > > 
-> > > tst_fork() would be the route i'd prefer to go, and i think since we
-> > > already take pains in this area to support NOMMU, it isn't an additional
-> > > burden.
-> > 
-> > Hmm, maybe we could get rid of the FORK_OR_VFORK macro and use
-> > tst_fork() to cover both flusing and no NOMMU target. That actually
-> > looks like good way to go. So let's fix this that way.
-> 
-> my concern with this is that by having "vfork" in the name people know they 
-> need to be aware of the vfork semantics.  there are places where vfork/fork 
-> are interchangeable (and hence we use FORK_OR_VFORK).  but there are places 
-> where they are not, and so we end up doing one of two things:
-> 	- rewrite it to use FORK_OR_VFORK and self_exec
-> 	- disable the test altogether
+--===============6558078150233390905==
+Content-Type: multipart/signed; boundary="nextPart2922294.QhBsLRuoAC";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Ah, I see, so vfork() doesn't do the copy on write thing with program
-memory. Hmm and it makes sense to use vfork() on non-mmu system as you
-can't implement copy on write approach there. I think I'm starting to
-uderstand this works.
+--nextPart2922294.QhBsLRuoAC
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> so i don't think we want to blindly have everyone get "fork or vfork" 
-> semantics.  the current methodology allows for mmu devs to contribute tests 
-> without worrying about these issues.  then the non-mmu peeps notice the new 
-> tests (because they get build failures due to fork() not being defined), and 
-> they get to go in and review each test to see what's needed.
+On Monday 09 January 2012 02:29:05 Eryu Guan wrote:
+> On Mon, Jan 09, 2012 at 02:50:21PM +0800, Peng Haitao wrote:
+> > +	if ((tst_kvercmp(3, 0, 0)) >=3D 0)
+> > +		exp_eno =3D ENODATA;
+> > +	else
+> > +		exp_eno =3D EPERM;
+>=20
+> I think some comments describing why the comparison is needed will be
+> better, the commit message will be fine here.
+>=20
+> Or you can put the reason at the beginning of the test case along with
+> the test descriptions.
 
-Okay, that makes sense.
+a comment right above this section of code would be best.  less likely to=20
+bitrot or get loss in the future.
+=2Dmike
 
-> certainly the existing FORK_OR_VFORK/self_exec api could do with a minor 
-> cleanup and unification.  i think the reason we have it do vfork+self-exec on 
-> nommu but fork on mmu is to keep things simpler for the main dev base, but i 
-> wouldn't be opposed to just always having tsts do vfork+self-exec so as to 
-> reduce the #ifdef ugliness in tests.
+--nextPart2922294.QhBsLRuoAC
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-I will meditate about that (I do not fully understand how exactly is
-maybe_run_child() and self_exec() working yet).
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-> > > does that happen ?  POSIX guarantees printf() and friends to be
-> > > multithreaded safe, so no lines would be inter-mingled, and they're
-> > > sharing the same FILE*, so i wouldn't see adding a fflush() making a
-> > > difference.
-> > 
-> > Looked at the code and there is yet another reason for this, the
-> > printing is done with more than one printf(), so rarely the lines could
-> > get intermixed. I'll fix that.
-> 
-> that would be good ... i think even if we had flushing, the multi-thread issue 
-> would still be there because of what you've found.
+iQIcBAABAgAGBQJPCyH3AAoJEEFjO5/oN/WB0Z4P/Aga6MYsmr/YcOs7z2ZwhQiK
+Sm0KF/Cn0QUlC7PLq5q9RwT4wkeSMaEAX8abrbjj/v4Hi8XJaxr7uYOS5k6aSpJP
+rwOZoT3tsP4aqdLep4XPEyv3cpCoOUOOI9vsC4fqR3noOof3/ytYQ/IE4A2AQ/qg
+7Gl9j4Kn5iuYzl+ndXQe4zw526+Rt9ERZ99BfdCMOAJ1PX5WCYmdjEBhT11hkL/I
+N3bgz1xZ+SY7qjPY/wUAC4F5gOiTMACuHOLUU9SyH4rCgS5McCgK3uAj38SoY98o
+SwKe40InUvaFd8iuR1IRJrw0xe9iVAOpbHmVGWRXlKwFd8Q6ZJSeciSCWe1psN8L
+5LSZ6scujhx70NaMh8juO4vLeYw8WJHu49SypW0M4T1EWWFG2Y8EX0aCFAtzjC+X
+0Vrtr+2ftwswyv1D0aJQ7Pq7ahrtKVVc97g8r5atWFvvfh0Kb0AmLDvzGNHrurcl
+nbw2YEIxJNAogLBWoxkO/c47wK8ZU3/EUhAukwUaNOFRJTCFlu0SgAf044DYjylf
+uhXiyCADDSK1NJljhqJWPc04kWbuWZc+JZbDob/ugda5ovkPuBt1RtZkEGpWKv74
+61oqIrSDWT2HOgPFuLo3Bx+c63vqf8lSXVFpSojxSCsHLT/SjX5Z4/5G2FfnM8QP
+RpqcjG2LwI19yr8Zf+4L
+=0s+K
+-----END PGP SIGNATURE-----
 
-I've just commited fix for this one. But there are some more problems,
-global buffer for composing warning messages for example, which is not
-likely to cause trouble as you would need to use the tst interface
-incorrectly from more threads at once, but still that could happen.
+--nextPart2922294.QhBsLRuoAC--
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+--===============6558078150233390905==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+--===============6558078150233390905==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6558078150233390905==--
+
