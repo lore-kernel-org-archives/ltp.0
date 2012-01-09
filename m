@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RqSWl-0005V2-OX
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jan 2012 16:50:23 +0000
-Date: Thu, 26 Jan 2012 18:03:10 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120126170310.GD6666@saboteur.suse.cz>
-References: <CANoG8sVidgJ-=eRjbk7L-NSajQzMqQr24wFAYSW3FU8ChzL4ow@mail.gmail.com>
-	<CAMgc3zMJMshA4Ahub0UyDoeOu+0PWDnEZkekgbk+Dmr6ryPR+w@mail.gmail.com>
-	<CAMgc3zN1g9eWXe2dRq=ihDK2tcS1D_0YubWd-6Bag8kb9rVTRw@mail.gmail.com>
-	<20120126151417.GC6666@saboteur.suse.cz>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RkIwQ-0002mO-Iu
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:23:26 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RkIwL-0004xu-1W
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:23:26 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 9 Jan 2012 12:23:13 -0500
+References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
+	<20120109105133.GB27172@eguan-t400.redhat.com>
+	<CAGH67wSHbU+1ptij7-X9ysU2CZXFOxtD7NYD9Yn0SuRtXThaUg@mail.gmail.com>
+In-Reply-To: <CAGH67wSHbU+1ptij7-X9ysU2CZXFOxtD7NYD9Yn0SuRtXThaUg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20120126151417.GC6666@saboteur.suse.cz>
-Subject: Re: [LTP] Strange output of fork13 testcase
+Message-Id: <201201091223.14655.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] syscalls/xattr: fix compile when xattr.h not exist
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,51 +26,162 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2285297074402211346=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shane Volpe <shanevolpe@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > The following patch fixes the problem but I'm not very knowledgeable
-> > on what fork13 does so this patch might not be a good approach.  Can
-> > someone more knowledgeable on it let me know if this is a valid
-> > approach?
-> 
-> Strange indeed. I could see the same errors in the log as well. I'll
-> look closer on this hopefully today.
+--===============2285297074402211346==
+Content-Type: multipart/signed; boundary="nextPart16584346.sYGpHNiN8C";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Okay, here is the cause:
+--nextPart16584346.sYGpHNiN8C
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The '-c 2' parameter of the test causes it to fork at the test very
-beginning (in the TEST_PAUSE macro that evaluates to call to
-usc_global_test_hook()). So two instances of the test are running.
+On Monday 09 January 2012 12:11:50 Garrett Cooper wrote:
+> On Mon, Jan 9, 2012 at 2:51 AM, Eryu Guan <eguan@redhat.com> wrote:
+> > On Mon, Jan 09, 2012 at 05:44:35PM +0800, Caspar Zhang wrote:
+> >> if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
+> >> autotools level.
+> > >
+> >> --- a/testcases/kernel/syscalls/getxattr/getxattr01.c
+> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
+> >> @@ -37,7 +37,6 @@
+> >>=20
+> >>  #include <sys/types.h>
+> >>  #include <sys/stat.h>
+> >> -#include <attr/xattr.h>
+> >>  #include <errno.h>
+> >>  #include <fcntl.h>
+> >>  #include <unistd.h>
+> >> @@ -45,9 +44,16 @@
+> >>  #include <stdlib.h>
+> >>  #include <string.h>
+> >>=20
+> >> +#include "config.h"
+> >>  #include "test.h"
+> >>  #include "usctest.h"
+> >>=20
+> >> +char *TCID =3D "getxattr01";
+> >> +
+> >> +#ifdef HAVE_ATTR_XATTR_H
+> >> +
+> >> +#include <attr/xattr.h>
+> >> +
+> >>  #define XATTR_TEST_KEY "user.testkey"
+> >>  #define XATTR_TEST_VALUE "this is a test value"
+> >>  #define XATTR_TEST_VALUE_SIZE 20
+> >> @@ -56,7 +62,6 @@
+> >>  static void setup(void);
+> >>  static void cleanup(void);
+> >>=20
+> >> -char *TCID =3D "getxattr01";
+> >>  char filename[BUFSIZ];
+> >>=20
+> >>  struct test_case {
+> >> @@ -171,3 +176,9 @@ static void cleanup(void)
+> >>       TEST_CLEANUP;
+> >>       tst_rmdir();
+> >>  }
+> >> +#else /* HAVE_ATTR_XATTR_H */
+> >> +int main(int argc, char *argv[])
+> >> +{
+> >> +     tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
+> >> +}
+> >> +#endif
+> >> diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c
+> >> b/testcases/kernel/syscalls/getxattr/getxattr02.c index
+> >> 54d8949..52c5812 100644
+> >> --- a/testcases/kernel/syscalls/getxattr/getxattr02.c
+> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
+> >> @@ -41,7 +41,6 @@
+> >>  #include <sys/types.h>
+> >>  #include <sys/stat.h>
+> >>  #include <sys/wait.h>
+> >> -#include <attr/xattr.h>
+> >>  #include <errno.h>
+> >>  #include <fcntl.h>
+> >>  #include <unistd.h>
+> >> @@ -50,9 +49,16 @@
+> >>  #include <stdlib.h>
+> >>  #include <string.h>
+> >>=20
+> >> +#include "config.h"
+> >>  #include "test.h"
+> >>  #include "usctest.h"
+> >>=20
+> >> +char *TCID =3D "getxattr02";
+> >> +
+> >> +#ifdef HAVE_ATTR_XATTR_H
+> >> +
+> >> +#include <attr/xattr.h>
+>=20
+> The only thing requested is that:
+>=20
+> #ifdef HAVE_ATTR_XATTR_H
+> #include <attr/xattr.h>
+> #endif
+>=20
+> (please note the whitespace difference) be moved further up in the
+> file to be sorted properly with the rest of the #includes, as noted in
+> the style guide.
 
-However the ltp-pan, as it executes the test, remebers pid of the test
-it has started (in this case first instance of the fork13 testcase) and
-then waits until this program exits, reports the test success/failure
-accordingly to it's return value etc... And also kills all lefover
-processes forked from the testcase (in this case, most likely the second
-instance of the test running and it's child).
+config.h should come before any include, and then the attr/xattr.h evaluati=
+on=20
+be in the normal location -- after C library includes and before LTP includ=
+es=20
+(like test.h).
+=2Dmike
 
-Moreover even if the second instance of the test finishes fine, it's
-return value is ignored.
+--nextPart16584346.sYGpHNiN8C
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-So the -c option is broken by design and should be removed, maybe even
-from LTP as whole.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+iQIcBAABAgAGBQJPCyKCAAoJEEFjO5/oN/WBCTsQAM/bXasDYRjdD5SXn4sNzNBB
+TJZPVEsLvcVhCedlWi78IPsnoV1NSmnrqwqiLDYEv56M87p2F0cFUcprqKodwg7X
+f63uVlDrJ80tuWjhsD1pNnS040JOGGVkm2W7QwyEmxuaxTZjkPR/veOzNRufQ7pI
+9Fr8ppxl54rVGf4Tv4wAbEuOot47VyFFFFJPqEQiKKCtNRp1ka2dRzkTPPhphfzv
+jICRUmtryH+cj9Fmv2EQMPztn8TuLElmkUIe4RbW3W52ybgTK/2h0+kt+3ISPomR
+Fkd66r6nL5zqg/DNQ0D7P0z1rqOcFPj8poyYXA0jGlntA3azxPIDjAvWJu+5d6UF
+GUId7+Sv1ijA21IlwndMMo/EwC4GVD2L720Dzmzqd7zbnF9pQz32ti0q2P8JkAYt
+CiEjD8w9Vmcy4YPyUCfpToZMjuMYCYPzAJ2BB6LXQQEEAQy2UOSX+6z8n33mhZP2
+Vys0NgZBZkhfa10v/wNK4pFnLDdP+gLf9/6K1jvolMGw6Msjq2ZiMSlSCfVOWvIS
+h0Ux/YoNWsCzOp0twq9xb2niz/P2N3fwB9+67okCzx5yPPahUmDN7xo0Mi09VeEO
+qieU0TZgcJtm9wYZ/fSLhNplDsIVI0wY7iksQV+jklemaZ/bKHb+MYmSUrGK4e5D
+rOPXF28a6yl/uSWogbRG
+=11pg
+-----END PGP SIGNATURE-----
+
+--nextPart16584346.sYGpHNiN8C--
+
+
+--===============2285297074402211346==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+--===============2285297074402211346==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2285297074402211346==--
+
