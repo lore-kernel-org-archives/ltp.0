@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4Mi-0006GH-W4
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:25:20 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri4Md-0003Xs-Mw
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:25:20 +0000
-Message-ID: <4F0301B5.7090006@imgtec.com>
-Date: Tue, 3 Jan 2012 13:25:09 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1RkEDZ-0006ff-Hs
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 12:20:49 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RkEDT-0002BJ-SP
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 12:20:49 +0000
+Date: Mon, 09 Jan 2012 07:20:37 -0500 (EST)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <ff2ef870-69f8-4f45-838e-cddcbc05ba0e@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4fbee0c2-b343-4fae-a25d-f1570bd6cd3b@zmail13.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090205080004000306060206"
-Subject: [LTP] [PATCH 20/21] nfs/nfsstress/make_tree: Replace integer cast
- to pointer with 0
+Subject: Re: [LTP] [PATCH 1/2] mem/tunable: new testcase about overcommiting
+	memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,99 +24,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---------------090205080004000306060206
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi, please review the attached patch
-
--- 
-markos
-
---------------090205080004000306060206
-Content-Type: text/plain;
-	name="0020-nfs-nfsstress-make_tree-Replace-integer-cast-to-poin.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0020-nfs-nfsstress-make_tree-Replace-integer-cast-to-poin.pa";
-	filename*1="tch"
-
-From ff5db5fee1bff9a29aca9cdeaf5fbe00b806d4ea Mon Sep 17 00:00:00 2001
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 22 Dec 2011 15:18:25 +0000
-Subject: [PATCH 20/21] nfs/nfsstress/make_tree: Replace integer cast to pointer with 0
-
-Because pointers are 64-bit on x86_64 architectures, casting a pointer to
-integer makes the compiler complain about casting pointer to integer of
-different size. We can easily fix this warning by simple replace (int)NULL with
-0.
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/network/nfs/nfsstress/make_tree.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/network/nfs/nfsstress/make_tree.c b/testcases/network/nfs/nfsstress/make_tree.c
-index c51e75e..c0b4d22 100644
---- a/testcases/network/nfs/nfsstress/make_tree.c
-+++ b/testcases/network/nfs/nfsstress/make_tree.c
-@@ -771,7 +771,7 @@ main(int	argc,		/* number of input parameters		      */
-         switch(c)
-         {
-             case 'd':		/* specify how deep the tree needs to grow    */
--	        if ((num_dirs = atoi(optarg)) == (int)NULL)
-+	        if ((num_dirs = atoi(optarg)) == 0)
- 		    OPT_MISSING(argv[0], optopt);
-                 else
-                 if (num_dirs < 0)
-@@ -782,7 +782,7 @@ main(int	argc,		/* number of input parameters		      */
-                 }
- 		break;
-             case 'f':		/* how many ".c" files in each directory.     */
--		if ((num_files = atoi(optarg)) == (int)NULL)
-+		if ((num_files = atoi(optarg)) == 0)
-                     OPT_MISSING(argv[0], optopt);
-                 else
- 	        if (num_files < 0)
-@@ -796,7 +796,7 @@ main(int	argc,		/* number of input parameters		      */
-                 usage(argv[0]);
-                 break;
-             case 't':
--		if ((num_thrd = atoi(optarg)) == (int)NULL)
-+		if ((num_thrd = atoi(optarg)) == 0)
- 	            OPT_MISSING(argv[0], optopt);
-                 else
-                 if (num_thrd < 0)
--- 
-1.7.1
-
-
---------------090205080004000306060206
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, Caspar Zhang <czhang@redhat.com>
+
+> 
+> hi,
+> please review the patch, any comments are welcome.
+> 
+>  There are two tunables overcommit_memory and overcommit_ratio under
+>  /proc/sys/vm/, which can control memory overcommitment.
+> 
+>  The overcommit_memory contains a flag that enables memory
+>  overcommitment, it has three values:
+>  - When this flag is 0, the kernel attempts to estimate the amount
+>    of free memory left when userspace requests more memory.
+>  - When this flag is 1, the kernel pretends there is always enough
+>    memory until it actually runs out.
+>  - When this flag is 2, the kernel uses a "never overcommit" policy
+>    that attempts to prevent any overcommit of memory.
+> 
+>  The overcommit_ratio tunable defines the amount by which the kernel
+>  overextends its memory resources in the event that overcommit_memory
+>  is set to the value of 2. The value in this file represents a
+>  percentage added to the amount of actual RAM in a system when
+>  considering whether to grant a particular memory request.
+>  The general formula for this tunable is:
+>  CommitLimit = SwapTotal + MemTotal overcommit_ratio
+>  CommitLimit, SwapTotal and MemTotal can read from /proc/meminfo.
+> 
+>  The program is designed to test the two tunables:
+>  When overcommit_memory = 0, allocatable memory can't overextends
+>  the amount of free memory. I choose the three cases:
+>  a. less than free_total:    free_total / 2, alloc should pass.
+>  b. greater than free_total: free_total * 2, alloc should fail.
+>  c. equal to sum_total:      sum_tatal,      alloc should fail
+> 
+>  When overcommit_memory = 1, it can alloc enough much memory, I
+>  choose the three cases:
+>  a. less than sum_total:    sum_total / 2, alloc should pass
+>  b. equal to sum_total:     sum_total,     alloc should pass
+>  c. greater than sum_total: sum_total * 2, alloc should pass
+>  * note: sum_total = SwapTotal + MemTotal
+> 
+>  When overcommit_memory = 2, the total virtual address space on
+>  the system is limited to CommitLimit(Swap+RAM*overcommit_ratio)
+>  commit_left(allocatable memory) = CommitLimit - Committed_AS
+>  a. less than commit_left:    commit_left / 2, alloc should pass
+>  b. greater than commit_left: commit_left * 2, alloc should fail
+>  c. overcommit limit:         CommitLimit,     alloc should fail
+>  * note: CommitLimit is the current overcommit limit.
+>         Committed_AS is the amount of memory that system has used.
+>  it couldn't choose 'equal to commit_left' as a case, because
+>  commit_left rely on Committed_AS, but the Committed_AS is not
+>  stable.
+> 
+>  References:
+>  - Documentation/sysctl/vm.txt
+>  - Documentation/vm/overcommit-accounting
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> ---
+>  testcases/kernel/mem/tunable/Makefile            |   42 ++++
+>  testcases/kernel/mem/tunable/overcommit_memory.c |  272
+>  ++++++++++++++++++++++
+>  2 files changed, 314 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/mem/tunable/Makefile
+>  create mode 100644 testcases/kernel/mem/tunable/overcommit_memory.c
+hi, anyone can comment the patch?
+
+Best,
+Zhouping
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------090205080004000306060206
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------090205080004000306060206--
-
-
