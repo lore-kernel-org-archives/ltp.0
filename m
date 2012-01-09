@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4KU-0008C6-Ct
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:23:02 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri4KT-0003T3-C1
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:23:02 +0000
-Message-ID: <4F03012E.40901@imgtec.com>
-Date: Tue, 3 Jan 2012 13:22:54 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	(envelope-from <caspar@casparzhang.com>) id 1Rk7da-0002SC-R0
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 05:19:14 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Rk7dY-0005dP-H3
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 05:19:14 +0000
+Received: by iakh37 with SMTP id h37so7199836iak.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 08 Jan 2012 21:19:07 -0800 (PST)
+Message-ID: <4F0A78C4.30807@casparzhang.com>
+Date: Mon, 09 Jan 2012 13:19:00 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050706040508020709010801"
-Subject: [LTP] [PATCH 17/21] network/lib6/asapi_04: Cast pointer arithmetic
- to proper integer
+References: <1325302366-375-1-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1325302366-375-1-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] mq_timedsend/5-1: make parent has chance to sleep
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,83 +27,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
---------------050706040508020709010801
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi, please review the attached patch
-
--- 
-markos
-
---------------050706040508020709010801
-Content-Type: text/plain;
-	name="0017-network-lib6-asapi_04-Cast-pointer-arithmetic-to-pro.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0017-network-lib6-asapi_04-Cast-pointer-arithmetic-to-pro.pa";
-	filename*1="tch"
-
-From a80f7d1ab66cb2385a67ad1860f4860be6955a6d Mon Sep 17 00:00:00 2001
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 22 Dec 2011 15:08:39 +0000
-Subject: [PATCH 17/21] network/lib6/asapi_04: Cast pointer arithmetic to proper integer
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/network/lib6/asapi_04.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/network/lib6/asapi_04.c b/testcases/network/lib6/asapi_04.c
-index 9f7efbd..9c6ad3b 100644
---- a/testcases/network/lib6/asapi_04.c
-+++ b/testcases/network/lib6/asapi_04.c
-@@ -337,7 +337,7 @@ static int client(int prot, int sfd)
- 			if (*p != 0xa5) {
- 				tst_resm(TFAIL, "IPV6_CHECKSUM corrupt data "
- 					"0x%02x != 0xa5 at offset %d in packet",
--					*p, p - rpbuf);
-+					*p, (int)(p - rpbuf));
- 				rv = 0;
- 				break;
- 			}
-@@ -532,4 +532,4 @@ cleanup(void)
- 	TEST_CLEANUP;
- }
- 
--int TST_TOTAL = PTCOUNT + CSCOUNT;
-\ No newline at end of file
-+int TST_TOTAL = PTCOUNT + CSCOUNT;
--- 
-1.7.1
-
-
---------------050706040508020709010801
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------050706040508020709010801
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------050706040508020709010801--
-
-
+T24gMjAxMeW5tDEy5pyIMzHml6UgMTE6MzIsIEthbmcgS2FpIHdyb3RlOgo+IENoaWxkIHByb2Nl
+c3Mgc2VuZHMgdGhlIGxhc3Qgc2lnbmFsIGJlZm9yZSBwYXJlbnQgcHJvY2VzcyBlbnRlciB0aGUK
+PiBmaW5hbCBzbGVlcCBzb21ldGltZXMsIHNvIHNsZWVwIGluIHBhcmVudCB3aWxsIG5vdCBiZSBp
+bnRlcnJ1cHRlZCB0aGVuCj4gdGhlIGNhc2UgZmFpbHMuCj4gU2xlZXAgMSBzZWNvbmQgYmVmb3Jl
+IHNlbmQgdGhlIGxhc3Qgc2lnbmFsIGluIGNoaWxkIHRvIG1ha2Ugc3VyZSBwYXJlbnQKPiBlbnRl
+ciB0aGUgZmluYWwgc2xlZXAuCj4gCj4gU2lnbmVkLW9mZi1ieTogS2FuZyBLYWkgPGthaS5rYW5n
+QHdpbmRyaXZlci5jb20+Cj4gLS0tCj4gIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX3Rp
+bWVkc2VuZC81LTEuYyAgICAgIHwgICAgNSArKysrLQo+ICAxIGZpbGVzIGNoYW5nZWQsIDQgaW5z
+ZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29w
+ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbXFfdGltZWRzZW5kLzUt
+MS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
+ZXMvbXFfdGltZWRzZW5kLzUtMS5jCj4gaW5kZXggOTZkYWY3Mi4uMzc5OTNjOCAxMDA2NDQKPiAt
+LS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
+cy9tcV90aW1lZHNlbmQvNS0xLmMKPiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
+dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tcV90aW1lZHNlbmQvNS0xLmMKPiBAQCAtODIsNiAr
+ODIsOSBAQCBpbnQgbWFpbigpCj4gIAkJc2xlZXAoMSk7ICAvLyBnaXZlIHBhcmVudCB0aW1lIHRv
+IHNldCB1cCBoYW5kbGVyCj4gIAkJZm9yIChpPTA7IGk8TUFYTVNHKzE7IGkrKykgewo+ICAgICAg
+ICAgIAkJbXFfdGltZWRzZW5kKGdxdWV1ZSwgbXNncHRyLCBzdHJsZW4obXNncHRyKSwgMSwgJnRz
+KTsKPiArICAgICAgICAgICAgLyogbWFrZSBzdXJlIHBhcmVudCBlbnRlciB0aGUgZmluYWwgc2xl
+ZXAgKi8KPiArCQkJaWYgKGkgPT0gTUFYTVNHKSAKPiArICAgICAgICAgICAgICAgIHNsZWVwKDEp
+OwoKWW91IG9ubHkgbWFrZSBzdXJlIHBhcmVudCBlbnRlcnMgdG8gdGhlIGxhc3QgaXRlcmF0aW9u
+IGJlZm9yZSBjaGlsZApkb2VzLCBidXQgc2FtZSBpc3N1ZSBzdGlsbCBtaWdodCBvY2N1ciBpbiBw
+cmV2aW91cyBpdGVyYXRpb25zLgoKQWxzbywgcGxlYXNlIHVzZSBoYXJkIHRhYiBpbnN0ZWFkIG9m
+IDQvOCBzcGFjZXMgZm9yIGluZGVudGF0aW9uLiBwYXRjaApzdHlsZS1ndWlkZSBjb3VsZCBiZSBm
+b3VuZCBhdDogZG9jL3N0eWxlLWd1aWRlLnR4dAoKVGhhbmtzLApDYXNwYXIKCj4gIAkJCS8qIHNl
+bmQgc2lnbmFsIHRvIHBhcmVudCBlYWNoIHRpbWUgbWVzc2FnZSBpcyBzZW50ICovCj4gIAkJCWtp
+bGwoZ2V0cHBpZCgpLCBTSUdBQlJUKTsKPiAgCQl9Cj4gQEAgLTEzOCw0ICsxNDEsNCBAQCBpbnQg
+bWFpbigpCj4gIAl9Cj4gIAo+ICAJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+IC19Cj4gXCBObyBu
+ZXdsaW5lIGF0IGVuZCBvZiBmaWxlCj4gK30KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KUmlkaWN1
+bG91c2x5IGVhc3kgVkRJLiBXaXRoIENpdHJpeCBWREktaW4tYS1Cb3gsIHlvdSBkb24ndCBuZWVk
+IGEgY29tcGxleAppbmZyYXN0cnVjdHVyZSBvciB2YXN0IElUIHJlc291cmNlcyB0byBkZWxpdmVy
+IHNlYW1sZXNzLCBzZWN1cmUgYWNjZXNzIHRvCnZpcnR1YWwgZGVza3RvcHMuIFdpdGggdGhpcyBh
+bGwtaW4tb25lIHNvbHV0aW9uLCBlYXNpbHkgZGVwbG95IHZpcnR1YWwgCmRlc2t0b3BzIGZvciBs
+ZXNzIHRoYW4gdGhlIGNvc3Qgb2YgUENzIGFuZCBzYXZlIDYwJSBvbiBWREkgaW5mcmFzdHJ1Y3R1
+cmUgCmNvc3RzLiBUcnkgaXQgZnJlZSEgaHR0cDovL3Auc2YubmV0L3NmdS9DaXRyaXgtVkRJaW5h
+Ym94Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1s
+aXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
