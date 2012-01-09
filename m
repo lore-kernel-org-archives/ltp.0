@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RiBPp-00054n-9k
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:57:01 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RiBPo-0002bF-Av
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:57:01 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 3 Jan 2012 15:57:07 -0500
-References: <4F02DBAF.5040202@imgtec.com>
-	<201201031537.17888.vapier@gentoo.org>
-	<CAGH67wRYtWO91esDJ2KUF0Db4_K=M+N1q2+r7JiE-A2BOOeO9Q@mail.gmail.com>
-In-Reply-To: <CAGH67wRYtWO91esDJ2KUF0Db4_K=M+N1q2+r7JiE-A2BOOeO9Q@mail.gmail.com>
+	(envelope-from <yanegomi@gmail.com>) id 1RkJ5j-0005sD-9v
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:33:03 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RkJ5f-0005Gp-JF
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:33:03 +0000
+Received: by obcwn6 with SMTP id wn6so5795376obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 09 Jan 2012 09:32:54 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <201201031557.08072.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 05/21] syscalls: Cast st_nlink variables to proper
-	integers
+In-Reply-To: <201201091223.14655.vapier@gentoo.org>
+References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
+	<20120109105133.GB27172@eguan-t400.redhat.com>
+	<CAGH67wSHbU+1ptij7-X9ysU2CZXFOxtD7NYD9Yn0SuRtXThaUg@mail.gmail.com>
+	<201201091223.14655.vapier@gentoo.org>
+Date: Mon, 9 Jan 2012 09:32:54 -0800
+Message-ID: <CAGH67wRU_PUrpmM06dsrZUeTr=DLG81ThKnExZS3_KoZsaOotg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] syscalls/xattr: fix compile when xattr.h not exist
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,82 +30,121 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6480960342812405524=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
-
---===============6480960342812405524==
-Content-Type: multipart/signed; boundary="nextPart1692106.g8Z8dXy9NK";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1692106.g8Z8dXy9NK
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tuesday 03 January 2012 15:51:52 Garrett Cooper wrote:
-> On Tue, Jan 3, 2012 at 12:37 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> > On Tuesday 03 January 2012 05:42:55 Markos Chandras wrote:
-> >> Hi, please review the attached patch
-> >=20
-> > casting to a (long) would be better
->=20
-> Or uintmax_t...
+On Mon, Jan 9, 2012 at 9:23 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Monday 09 January 2012 12:11:50 Garrett Cooper wrote:
+>> On Mon, Jan 9, 2012 at 2:51 AM, Eryu Guan <eguan@redhat.com> wrote:
+>> > On Mon, Jan 09, 2012 at 05:44:35PM +0800, Caspar Zhang wrote:
+>> >> if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
+>> >> autotools level.
+>> > >
+>> >> --- a/testcases/kernel/syscalls/getxattr/getxattr01.c
+>> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
+>> >> @@ -37,7 +37,6 @@
+>> >>
+>> >> =A0#include <sys/types.h>
+>> >> =A0#include <sys/stat.h>
+>> >> -#include <attr/xattr.h>
+>> >> =A0#include <errno.h>
+>> >> =A0#include <fcntl.h>
+>> >> =A0#include <unistd.h>
+>> >> @@ -45,9 +44,16 @@
+>> >> =A0#include <stdlib.h>
+>> >> =A0#include <string.h>
+>> >>
+>> >> +#include "config.h"
+>> >> =A0#include "test.h"
+>> >> =A0#include "usctest.h"
+>> >>
+>> >> +char *TCID =3D "getxattr01";
+>> >> +
+>> >> +#ifdef HAVE_ATTR_XATTR_H
+>> >> +
+>> >> +#include <attr/xattr.h>
+>> >> +
+>> >> =A0#define XATTR_TEST_KEY "user.testkey"
+>> >> =A0#define XATTR_TEST_VALUE "this is a test value"
+>> >> =A0#define XATTR_TEST_VALUE_SIZE 20
+>> >> @@ -56,7 +62,6 @@
+>> >> =A0static void setup(void);
+>> >> =A0static void cleanup(void);
+>> >>
+>> >> -char *TCID =3D "getxattr01";
+>> >> =A0char filename[BUFSIZ];
+>> >>
+>> >> =A0struct test_case {
+>> >> @@ -171,3 +176,9 @@ static void cleanup(void)
+>> >> =A0 =A0 =A0 TEST_CLEANUP;
+>> >> =A0 =A0 =A0 tst_rmdir();
+>> >> =A0}
+>> >> +#else /* HAVE_ATTR_XATTR_H */
+>> >> +int main(int argc, char *argv[])
+>> >> +{
+>> >> + =A0 =A0 tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
+>> >> +}
+>> >> +#endif
+>> >> diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c
+>> >> b/testcases/kernel/syscalls/getxattr/getxattr02.c index
+>> >> 54d8949..52c5812 100644
+>> >> --- a/testcases/kernel/syscalls/getxattr/getxattr02.c
+>> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
+>> >> @@ -41,7 +41,6 @@
+>> >> =A0#include <sys/types.h>
+>> >> =A0#include <sys/stat.h>
+>> >> =A0#include <sys/wait.h>
+>> >> -#include <attr/xattr.h>
+>> >> =A0#include <errno.h>
+>> >> =A0#include <fcntl.h>
+>> >> =A0#include <unistd.h>
+>> >> @@ -50,9 +49,16 @@
+>> >> =A0#include <stdlib.h>
+>> >> =A0#include <string.h>
+>> >>
+>> >> +#include "config.h"
+>> >> =A0#include "test.h"
+>> >> =A0#include "usctest.h"
+>> >>
+>> >> +char *TCID =3D "getxattr02";
+>> >> +
+>> >> +#ifdef HAVE_ATTR_XATTR_H
+>> >> +
+>> >> +#include <attr/xattr.h>
+>>
+>> The only thing requested is that:
+>>
+>> #ifdef HAVE_ATTR_XATTR_H
+>> #include <attr/xattr.h>
+>> #endif
+>>
+>> (please note the whitespace difference) be moved further up in the
+>> file to be sorted properly with the rest of the #includes, as noted in
+>> the style guide.
+>
+> config.h should come before any include, and then the attr/xattr.h evalua=
+tion
+> be in the normal location -- after C library includes and before LTP incl=
+udes
+> (like test.h).
 
-that would work too, and better.  i thought nlinks could be signed, but it=
-=20
-seems not, so any signed type would be not as good.
-=2Dmike
++1
+Thanks,
+-Garrett
 
---nextPart1692106.g8Z8dXy9NK
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+---------------------------------------------------------------------------=
+---
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+desktops for less than the cost of PCs and save 60% on VDI infrastructure =
 
-iQIcBAABAgAGBQJPA2ukAAoJEEFjO5/oN/WBD/wP/3o2vGnbpZftJCgKdGALhBnM
-8xZ0JgPu7rcw1I0P/z4H72ViDzeBeBidhH2q6szTmDL5BXohC53LxDzVKH70OrPL
-6dVo6GD9MVMHHho6Jz4DmKE6RVJBEKSVt1CQGZqW3XT1LUjh8mr7l+8nSGRwJuOP
-ZFLu8Z59+2H1AWXgzGScYuCP44iWYIICcrmS0OMEMw+HM9VWdiittrsJneoDLvBj
-cMN3ZAdB2J2M62a/9TvpWag6UhOzpxP5D/y4+rt0BjSkY9UtAvvGz2HRJvusbEbY
-Ohjx4Xtras7N/cGC3NKmhn8PK462vvlocuxtaFr5p9lQNMmlqJyecPMqUfKXBXCY
-QpAg852y3VZfw/N1MHFuTvibQbQZ7cs9ZdorrPdlxloX3CsD1tZMC3ygT6EwhVo5
-X9myZlhnOq9VhJVtGuDFjWmHRa0oEBiQjOzRK3AFfwBaZzn6MAnFOIj9KBeJ+VtI
-9Cqi8fqWGLTvNd4vqEKcqe+8qJp2zaygR9pgY9FBLLx+kbi4jBHg0TJHRpDPpWoe
-Yk/gnemQasDpqfVmGk36nGtrTxp6qwogVhUODhpbbTOU4sPQgfVFzqceNsgKncnD
-b/iA7HPvONOohnyfoznNDcgamYBCr+g1/qZ6h01JBXS2jZjXcEv5gVcuzMfRNNUA
-ZOLVVTl6GEKBGjyM3e59
-=ONWm
------END PGP SIGNATURE-----
-
---nextPart1692106.g8Z8dXy9NK--
-
-
---===============6480960342812405524==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---===============6480960342812405524==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6480960342812405524==--
-
