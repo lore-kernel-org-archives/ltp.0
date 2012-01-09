@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiAAX-0001Zu-K4
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:37:09 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiAAX-00078s-0n
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:37:09 +0000
-Received: by obcwn6 with SMTP id wn6so18171239obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 11:37:03 -0800 (PST)
+	(envelope-from <eguan@redhat.com>) id 1RkKTl-0001v0-Rm
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 19:01:57 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RkKTh-0000J1-UV
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 19:01:57 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q09J1lK7013725
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 9 Jan 2012 14:01:47 -0500
+From: Eryu Guan <eguan@redhat.com>
+Date: Tue, 10 Jan 2012 03:01:10 +0800
+Message-Id: <1326135670-18584-1-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4F02E0C6.3090308@imgtec.com>
-References: <4F02E0C6.3090308@imgtec.com>
-Date: Tue, 3 Jan 2012 11:37:03 -0800
-Message-ID: <CAGH67wRB9sDYmEjPtvLwqADOk-8g4_6GNP1FVS_WAKXh1wE=9Q@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 08/21] syscalls/remap_file_pages: unsigned int is
- always greater to zero
+Content-Type: multipart/mixed; boundary="------------1.7.7.5"
+Subject: [LTP] [PATCH] syscalls/sendfile08: new test case for sendfile(2)
+	syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +29,215 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 3, 2012 at 3:04 AM, Markos Chandras
-<Markos.Chandras@imgtec.com> wrote:
-> Hi, please review the attached patch
+This is a multi-part message in MIME format.
+--------------1.7.7.5
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
+
+A bug in the splice code had caused the file position on the write side
+of the sendfile system call to be incorrectly set to the read side file
+position. This can result in the data being written to an incorrect offset.
+
+This is a regression test for kernel commit
+2cb4b05e7647891b46b91c07c9a60304803d1688
+
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+ runtest/syscalls                                |    2 +
+ testcases/kernel/syscalls/sendfile/sendfile08.c |  134 +++++++++++++++++++++++
+ 2 files changed, 136 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/sendfile/sendfile08.c
+
+
+--------------1.7.7.5
+Content-Type: text/x-patch;
+	name="0001-syscalls-sendfile08-new-test-case-for-sendfile-2-sys.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-syscalls-sendfile08-new-test-case-for-sendfile-2-sys.patch"
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 5a201e1..4aac38c 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -891,6 +891,8 @@ sendfile06 sendfile06
+ sendfile06_64 sendfile06_64
+ sendfile07 sendfile07
+ sendfile07_64 sendfile07_64
++sendfile08 sendfile08
++sendfile08_64 sendfile08_64
+ 
+ 
+ sendmsg01 sendmsg01
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile08.c b/testcases/kernel/syscalls/sendfile/sendfile08.c
+new file mode 100644
+index 0000000..e5ee663
+--- /dev/null
++++ b/testcases/kernel/syscalls/sendfile/sendfile08.c
+@@ -0,0 +1,134 @@
++/*
++ * Copyright (C) 2012 Red Hat, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ */
++
++/*
++ * Bug in the splice code has caused the file position on the write side
++ * of the sendfile system call to be incorrectly set to the read side file
++ * position. This can result in the data being written to an incorrect offset.
++ *
++ * This is a regression test for kernel commit
++ * 2cb4b05e7647891b46b91c07c9a60304803d1688
++ */
++
++#include <sys/sendfile.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++
++#include "usctest.h"
++#include "test.h"
++
++#define TEST_MSG_IN "world"
++#define TEST_MSG_OUT "hello"
++
++TCID_DEFINE(sendfile08);
++int TST_TOTAL = 1;
++
++static int in_fd;
++static int out_fd;
++static char *in_file = "sendfile08.in";
++static char *out_file = "sendfile08.out";
++
++static void cleanup(void);
++static void setup(void);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	int ret;
++	char *msg;
++	char buf[BUFSIZ];
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		TEST(sendfile(out_fd, in_fd, NULL, strlen(TEST_MSG_IN)));
++
++		if (TEST_RETURN == -1)
++			tst_brkm(TBROK | TTERRNO, cleanup, "sendfile() failed");
++
++		ret = lseek(out_fd, 0, SEEK_SET);
++		if (ret == -1)
++			tst_brkm(TBROK | TERRNO, cleanup, "lseek %s failed",
++			    out_file);
++		ret = read(out_fd, buf, BUFSIZ);
++		if (ret == -1)
++			tst_brkm(TBROK | TERRNO, cleanup, "read %s failed",
++			    out_file);
++
++		if (!strcmp(buf, TEST_MSG_OUT TEST_MSG_IN))
++			tst_resm(TPASS, "sendfile(2) copies data correctly");
++		else
++			tst_resm(TFAIL, "sendfile(2) copies data incorrectly."
++			    " Expect \"%s%s\", got \"%s\"", TEST_MSG_OUT,
++			    TEST_MSG_IN, buf);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	int ret;
++
++	TEST_PAUSE;
++
++	/* make a temporary directory and cd to it */
++	tst_tmpdir();
++
++	in_fd = creat(in_file, 0700);
++	if (in_fd == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Create %s failed", in_file);
++
++	ret = write(in_fd, TEST_MSG_IN, strlen(TEST_MSG_IN));
++	if (ret == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Write %s failed", in_file);
++	close(in_fd);
++
++	in_fd = open(in_file, O_RDONLY);
++	if (in_fd == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Open %s failed", in_file);
++
++	out_fd = open(out_file, O_TRUNC | O_CREAT | O_RDWR, 0777);
++	if (out_fd == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Open %s failed", out_file);
++	ret = write(out_fd, TEST_MSG_OUT, strlen(TEST_MSG_OUT));
++	if (ret == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Write %s failed", out_file);
++}
++
++static void cleanup(void)
++{
++	close(out_fd);
++	close(in_fd);
++
++	TEST_CLEANUP;
++
++	/* delete the test directory created in setup() */
++	tst_rmdir();
++
++}
+
+--------------1.7.7.5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+--------------1.7.7.5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.7.5--
+
+
+
