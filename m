@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RnsXQ-0008A2-Ap
-	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 14:00:24 +0000
-Date: Thu, 19 Jan 2012 15:12:30 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120119141230.GC10302@saboteur.suse.cz>
-References: <1326966087-2009-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1RkRxp-0005Qv-Ek
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:01:29 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1RkRxo-0002zU-Bq
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:01:29 +0000
+Received: by yenm12 with SMTP id m12so2103959yen.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 09 Jan 2012 19:01:22 -0800 (PST)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Tue, 10 Jan 2012 11:01:10 +0800
+Message-Id: <1326164470-16612-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
+References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1326966087-2009-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] aio_suspend-8-1: cleanup coding style first
+Content-Type: multipart/mixed; boundary="------------1.7.8.1"
+Subject: [LTP] [PATCH v2] syscalls/xattr: fix compile when xattr.h not exist
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,228 +28,276 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Cleanup coding style first.
+This is a multi-part message in MIME format.
+--------------1.7.8.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Thanks for the cleanup.
 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  .../conformance/interfaces/aio_suspend/8-1.c       |   97 ++++++++++----------
->  1 files changed, 48 insertions(+), 49 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-> index bd58c9f..b31ad78 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-> @@ -94,18 +94,18 @@ main ()
->  
->  	unlink(tmpfname);
->  
-> -	bufs = (char *) malloc (NUM_AIOCBS*BUF_SIZE);
-> +	bufs = (char *)malloc(NUM_AIOCBS * BUF_SIZE);
+if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
+autotools level.
 
-This cast is useless, please remove the (char *) too.
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ configure.ac                                    |    1 +
+ testcases/kernel/syscalls/getxattr/getxattr01.c |   16 +++++++++++++---
+ testcases/kernel/syscalls/getxattr/getxattr02.c |   17 +++++++++++++----
+ testcases/kernel/syscalls/setxattr/setxattr01.c |   16 +++++++++++++---
+ testcases/kernel/syscalls/setxattr/setxattr02.c |   17 +++++++++++++----
+ 5 files changed, 53 insertions(+), 14 deletions(-)
 
->  	if (bufs == NULL) {
-> -		printf (TNAME " Error at malloc(): %s\n", strerror (errno));
-> -		close (fd);
-> +		printf(TNAME " Error at malloc(): %s\n", strerror(errno));
-> +		close(fd);
->  		exit(PTS_UNRESOLVED);
->  	}
->  
-> -	if (write (fd, bufs, NUM_AIOCBS*BUF_SIZE) != (NUM_AIOCBS*BUF_SIZE)) {
-> +	if (write(fd, bufs, NUM_AIOCBS * BUF_SIZE) != (NUM_AIOCBS * BUF_SIZE)) {
->  		printf(TNAME " Error at write(): %s\n", strerror(errno));
-> -		free (bufs);
-> -		close (fd);
-> +		free(bufs);
-> +		close(fd);
->  		exit(PTS_UNRESOLVED);
->  	}
->  
-> @@ -113,38 +113,37 @@ main ()
->  
->  	/* Queue up a bunch of aio reads */
->  	for (i = 0; i < NUM_AIOCBS; i++) {
-> -
->  		aiocbs[i] = (struct aiocb*)malloc(sizeof(struct aiocb));
->  		memset(aiocbs[i], 0, sizeof(struct aiocb));
 
-Here as well.
+--------------1.7.8.1
+Content-Type: text/x-patch;
+	name="0001-syscalls-xattr-fix-compile-when-xattr.h-not-exist.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-syscalls-xattr-fix-compile-when-xattr.h-not-exist.patch"
 
->  		aiocbs[i]->aio_fildes = fd;
->  		aiocbs[i]->aio_offset = i * BUF_SIZE;
-> -		aiocbs[i]->aio_buf = &bufs[i*BUF_SIZE];
-> +		aiocbs[i]->aio_buf = &bufs[i * BUF_SIZE];
->  		aiocbs[i]->aio_nbytes = BUF_SIZE;
->  		aiocbs[i]->aio_lio_opcode = LIO_READ;
->  
->  		/* Use SIRTMIN+1 for individual completions */
->  		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN+1;
-> +		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN + 1;
->  		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
->  	}
->  
->  	/* Use SIGRTMIN+2 for list completion */
->  	event.sigev_notify = SIGEV_SIGNAL;
-> -	event.sigev_signo = SIGRTMIN+2;
-> +	event.sigev_signo = SIGRTMIN + 2;
->  	event.sigev_value.sival_ptr = NULL;
->  
->  	/* Setup handler for individual operation completion */
->  	action.sa_sigaction = sigrt1_handler;
->  	sigemptyset(&action.sa_mask);
-> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
-> -	sigaction(SIGRTMIN+1, &action, NULL);
-> +	action.sa_flags = SA_SIGINFO | SA_RESTART;
-> +	sigaction(SIGRTMIN + 1, &action, NULL);
->  
->  	/* Setup handler for list completion */
->  	action.sa_sigaction = sigrt2_handler;
->  	sigemptyset(&action.sa_mask);
-> -	action.sa_flags = SA_SIGINFO|SA_RESTART;
-> -	sigaction(SIGRTMIN+2, &action, NULL);
-> +	action.sa_flags = SA_SIGINFO | SA_RESTART;
-> +	sigaction(SIGRTMIN + 2, &action, NULL);
->  
->  	/* Setup suspend list */
->  	plist[0] = NULL;
-> @@ -155,57 +154,57 @@ main ()
->  
->  	if (ret) {
->  		printf(TNAME " Error at lio_listio() %d: %s\n", errno, strerror(errno));
-> -		for (i=0; i<NUM_AIOCBS; i++)
-> -			free (aiocbs[i]);
-> -		free (bufs);
-> -		free (aiocbs);
-> -		close (fd);
-> -		exit (PTS_UNRESOLVED);
-> +		for (i = 0; i < NUM_AIOCBS; i++)
-> +			free(aiocbs[i]);
-> +		free(bufs);
-> +		free(aiocbs);
-> +		close(fd);
-> +		exit(PTS_UNRESOLVED);
->  	}
->  
->  	/* Check selected request has not completed yet */
->  	if (received_selected) {
-> -		printf (TNAME " Error : AIOCB %d already completed before suspend\n",
-> +		printf(TNAME " Error : AIOCB %d already completed before suspend\n",
->  			WAIT_FOR_AIOCB);
-> -		for (i=0; i<NUM_AIOCBS; i++)
-> +		for (i = 0; i < NUM_AIOCBS; i++)
->  			free (aiocbs[i]);
-> -		free (bufs);
-> -		free (aiocbs);
-> -		close (fd);
-> -		exit (PTS_FAIL);
-> +		free(bufs);
-> +		free(aiocbs);
-> +		close(fd);
-> +		exit(PTS_FAIL);
->  	}
->  
->  	/* Suspend on selected request */
->  	ret = aio_suspend((const struct aiocb **)plist, 2, NULL);
->  
->  	if (ret) {
-> -		printf (TNAME " Error at aio_suspend() %d: %s\n", errno, strerror (errno));
-> +		printf(TNAME " Error at aio_suspend() %d: %s\n", errno, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
-> -			free (aiocbs[i]);
-> -		free (bufs);
-> -		free (aiocbs);
-> -		close (fd);
-> -		exit (PTS_FAIL);
-> +			free(aiocbs[i]);
-> +		free(bufs);
-> +		free(aiocbs);
-> +		close(fd);
-> +		exit(PTS_FAIL);
->  	}
->  
->  	/* Check selected request has completed */
-> -	err = aio_error (aiocbs[WAIT_FOR_AIOCB]);
-> -	ret = aio_return (aiocbs[WAIT_FOR_AIOCB]);
-> +	err = aio_error(aiocbs[WAIT_FOR_AIOCB]);
-> +	ret = aio_return(aiocbs[WAIT_FOR_AIOCB]);
->  
-> -	if ((err != 0) && (ret !=  BUF_SIZE)) {
-> -		printf (TNAME " Error : AIOCB %d should have completed after suspend\n",
-> +	if ((err != 0) && (ret != BUF_SIZE)) {
-> +		printf(TNAME " Error : AIOCB %d should have completed after suspend\n",
->  			WAIT_FOR_AIOCB);
-> -		for (i=0; i<NUM_AIOCBS; i++)
-> -			free (aiocbs[i]);
-> -		free (bufs);
-> -		free (aiocbs);
-> -		close (fd);
-> -		exit (PTS_FAIL);
-> +		for (i = 0; i < NUM_AIOCBS; i++)
-> +			free(aiocbs[i]);
-> +		free(bufs);
-> +		free(aiocbs);
-> +		close(fd);
-> +		exit(PTS_FAIL);
->  	}
->  
->  	/* Wait for list processing completion */
->  	while (!received_all)
-> -		sleep (1);
-> +		sleep(1);
->  
->  	/* Check return code and free things */
->  	for (i = 0; i < NUM_AIOCBS; i++) {
-> @@ -220,18 +219,18 @@ main ()
->  			errors++;
->  		}
->  
-> -		free (aiocbs[i]);
-> +		free(aiocbs[i]);
->  	}
->  
-> -	free (bufs);
-> -	free (aiocbs);
-> +	free(bufs);
-> +	free(aiocbs);
->  
->  	close(fd);
->  
->  	if (errors != 0)
-> -		exit (PTS_FAIL);
-> +		exit(PTS_FAIL);
->  
-> -	printf (TNAME " PASSED\n");
-> +	printf(TNAME " PASSED\n");
+diff --git a/configure.ac b/configure.ac
+index 00d3720..6b3870a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -36,6 +36,7 @@ AC_CHECK_HEADERS([ \
+     libaio.h \
+     mm.h \
+     pthread.h \
++    attr/xattr.h \
+     linux/genetlink.h \
+     linux/mempolicy.h \
+     linux/module.h \
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c b/testcases/kernel/syscalls/getxattr/getxattr01.c
+index 8db6743..de4824c 100644
+--- a/testcases/kernel/syscalls/getxattr/getxattr01.c
++++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
+@@ -35,19 +35,24 @@
+  * 4. Verify the attribute got by getxattr(2) is same as the value we set
+  */
+ 
++#include "config.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <attr/xattr.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-
++#ifdef HAVE_ATTR_XATTR_H
++#include <attr/xattr.h>
++#endif
+ #include "test.h"
+ #include "usctest.h"
+ 
++char *TCID = "getxattr01";
++
++#ifdef HAVE_ATTR_XATTR_H
+ #define XATTR_TEST_KEY "user.testkey"
+ #define XATTR_TEST_VALUE "this is a test value"
+ #define XATTR_TEST_VALUE_SIZE 20
+@@ -56,7 +61,6 @@
+ static void setup(void);
+ static void cleanup(void);
+ 
+-char *TCID = "getxattr01";
+ char filename[BUFSIZ];
+ 
+ struct test_case {
+@@ -171,3 +175,9 @@ static void cleanup(void)
+ 	TEST_CLEANUP;
+ 	tst_rmdir();
+ }
++#else /* HAVE_ATTR_XATTR_H */
++int main(int argc, char *argv[])
++{
++	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
++}
++#endif
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c b/testcases/kernel/syscalls/getxattr/getxattr02.c
+index 54d8949..503fcd0 100644
+--- a/testcases/kernel/syscalls/getxattr/getxattr02.c
++++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
+@@ -38,10 +38,10 @@
+  *    return -1 and set errno to ENODATA
+  */
+ 
++#include "config.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+-#include <attr/xattr.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+@@ -49,10 +49,15 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-
++#ifdef HAVE_ATTR_XATTR_H
++#include <attr/xattr.h>
++#endif
+ #include "test.h"
+ #include "usctest.h"
+ 
++char *TCID = "getxattr02";
++
++#ifdef HAVE_ATTR_XATTR_H
+ #define XATTR_TEST_KEY "user.testkey"
+ 
+ #define FIFO "getxattr02fifo"
+@@ -63,8 +68,6 @@
+ static void setup(void);
+ static void cleanup(void);
+ 
+-char *TCID = "getxattr02";
+-
+ static char *tc[] = {
+ 	FIFO,	/* case 00, get attr from fifo */
+ 	CHR,	/* case 01, get attr from char special */
+@@ -150,3 +153,9 @@ static void cleanup(void)
+ 	TEST_CLEANUP;
+ 	tst_rmdir();
+ }
++#else /* HAVE_ATTR_XATTR_H */
++int main(int argc, char *argv[])
++{
++	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
++}
++#endif
+diff --git a/testcases/kernel/syscalls/setxattr/setxattr01.c b/testcases/kernel/syscalls/setxattr/setxattr01.c
+index fedb777..425fcf3 100644
+--- a/testcases/kernel/syscalls/setxattr/setxattr01.c
++++ b/testcases/kernel/syscalls/setxattr/setxattr01.c
+@@ -43,10 +43,10 @@
+  *    setxattr(2) should succeed
+  */
+ 
++#include "config.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+-#include <attr/xattr.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+@@ -54,10 +54,15 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-
++#ifdef HAVE_ATTR_XATTR_H
++#include <attr/xattr.h>
++#endif
+ #include "test.h"
+ #include "usctest.h"
+ 
++char *TCID = "setxattr01";
++
++#ifdef HAVE_ATTR_XATTR_H
+ #define XATTR_NAME_MAX 255
+ #define XATTR_NAME_LEN (XATTR_NAME_MAX + 2)
+ #define XATTR_SIZE_MAX 65536
+@@ -68,7 +73,6 @@
+ static void setup(void);
+ static void cleanup(void);
+ 
+-char *TCID = "setxattr01";
+ char filename[BUFSIZ];
+ char long_key[XATTR_NAME_LEN];
+ char *long_value;
+@@ -221,3 +225,9 @@ static void cleanup(void)
+ 	TEST_CLEANUP;
+ 	tst_rmdir();
+ }
++#else /* HAVE_ATTR_XATTR_H */
++int main(int argc, char *argv[])
++{
++	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
++}
++#endif
+diff --git a/testcases/kernel/syscalls/setxattr/setxattr02.c b/testcases/kernel/syscalls/setxattr/setxattr02.c
+index f4ba566..465796c 100644
+--- a/testcases/kernel/syscalls/setxattr/setxattr02.c
++++ b/testcases/kernel/syscalls/setxattr/setxattr02.c
+@@ -42,10 +42,10 @@
+  *    return -1 and set errno to EPERM
+  */
+ 
++#include "config.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+-#include <attr/xattr.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+@@ -53,10 +53,15 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-
++#ifdef HAVE_ATTR_XATTR_H
++#include <attr/xattr.h>
++#endif
+ #include "test.h"
+ #include "usctest.h"
+ 
++char *TCID = "setxattr02";
++
++#ifdef HAVE_ATTR_XATTR_H
+ #define XATTR_TEST_KEY "user.testkey"
+ #define XATTR_TEST_VALUE "this is a test value"
+ #define XATTR_TEST_VALUE_SIZE 20
+@@ -72,8 +77,6 @@
+ static void setup(void);
+ static void cleanup(void);
+ 
+-char *TCID = "setxattr02";
+-
+ struct test_case {
+ 	char *fname;
+ 	char *key;
+@@ -233,3 +236,9 @@ static void cleanup(void)
+ 	TEST_CLEANUP;
+ 	tst_rmdir();
+ }
++#else /* HAVE_ATTR_XATTR_H */
++int main(int argc, char *argv[])
++{
++	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
++}
++#endif
 
-I would like to unify these messages to "Test PASSED\n".
-
->  	return PTS_PASS;
-> -}
-> \ No newline at end of file
-> +}
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--------------1.7.8.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------1.7.8.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.1--
+
+
+
