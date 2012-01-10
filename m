@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RlZvN-0002P2-9X
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 05:43:37 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RlZvM-0002fm-DC
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 05:43:37 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 13 Jan 2012 00:43:40 -0500
+	(envelope-from <caspar@casparzhang.com>) id 1RkSZL-0002YD-8b
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:40:15 +0000
+Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RkSZK-0000MM-CA
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:40:15 +0000
+Received: by ggno1 with SMTP id o1so41694ggn.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 09 Jan 2012 19:40:08 -0800 (PST)
+Message-ID: <4F0BB312.5070009@casparzhang.com>
+Date: Tue, 10 Jan 2012 11:40:02 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
+MIME-Version: 1.0
 References: <1326166692-18276-1-git-send-email-caspar@casparzhang.com>
 In-Reply-To: <1326166692-18276-1-git-send-email-caspar@casparzhang.com>
-MIME-Version: 1.0
-Message-Id: <201201130043.41529.vapier@gentoo.org>
 Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
-	duplicated output
+ duplicated output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,77 +28,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0946485021136599913=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
---===============0946485021136599913==
-Content-Type: multipart/signed; boundary="nextPart2909815.3EnxPSdUEV";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2909815.3EnxPSdUEV
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Monday 09 January 2012 22:38:12 Caspar Zhang wrote:
-> when executing with `$BIN/runltp` command, getrusage03 puts out
-> duplicated information due to buffered stdout. Using fflush(stdout) to
-> solve this issue.
-
-NAK to this version.  it's a general issue with LTP and forking and should =
-be=20
-solved as such.
-=2Dmike
-
---nextPart2909815.3EnxPSdUEV
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPD8SNAAoJEEFjO5/oN/WBoLMP/1RspGHEwBqm27JUp7QJ4s1y
-bwKtrUTvu+tClApz8zNKtXa5cFETxMsHLMUIA/+0sw/BrpuskL8aBIuvZ7IfL4ri
-72eSPIeobP3qIVUgMBN00SKunugvdnNNSYlcx6mF8yG95Uq1sM90uZo5dtvvJaGb
-2rJBGWWa/lVoKYqdSDZl2BKEGl50lzZtUo5ThDs/oXG+1eTM3KDVG5nwtALzBL65
-Nwbh+8gjmnOtItyXhmxE2TYfvFwp1a0LgscmbD48Rufdo6116daUS4ES1UVZ0pOz
-GBN1fBe1LMmMdkLljBo/vz9Csk3T2AqFRTXu1HcHb9713nShjF44MovNC8yilaRB
-GTcVdK0IfZTdDc2atQUoV0bZkHF33PTpRwo/CWH/RkMVkZ91F2NqFbOVe/Uf8ijk
-VVTugyPsBpmzUuADZ+SoRQcyopmdEf+4wLCEzCl7z2Nj1npGT/KUDWHUwIu0OTcq
-6I8JhBZ4Nfk84oDzD0/ijb0CYddsm5lXWW/jhIH9el+B95ntw/5laclcZEHe9H7J
-mgjLPSeRjEjKP0nywSFo7vlk7UHlHnbU9noE6VZN6a40Ht63yH+UUUEWYQC94nHy
-xu5VrEBBZ1HGnGTfE9GCOUG7TvupgMRPpfGGfiXX8zBqXCru2eRqWD+LAm9yJh1H
-c5lsNnJoVEUQKe+G4rFr
-=DC1/
------END PGP SIGNATURE-----
-
---nextPart2909815.3EnxPSdUEV--
-
-
---===============0946485021136599913==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-RSA(R) Conference 2012
-Mar 27 - Feb 2
-Save $400 by Jan. 27
-Register now!
-http://p.sf.net/sfu/rsa-sfdev2dev2
---===============0946485021136599913==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0946485021136599913==--
-
+T24gMjAxMuW5tDAx5pyIMTDml6UgMTE6MzgsIENhc3BhciBaaGFuZyB3cm90ZToKPiAKPiB3aGVu
+IGV4ZWN1dGluZyB3aXRoIGAkQklOL3J1bmx0cGAgY29tbWFuZCwgZ2V0cnVzYWdlMDMgcHV0cyBv
+dXQKPiBkdXBsaWNhdGVkIGluZm9ybWF0aW9uIGR1ZSB0byBidWZmZXJlZCBzdGRvdXQuIFVzaW5n
+IGZmbHVzaChzdGRvdXQpIHRvCj4gc29sdmUgdGhpcyBpc3N1ZS4KPiAKPiBTaWduZWQtb2ZmLWJ5
+OiBDYXNwYXIgWmhhbmcgPGNhc3BhckBjYXNwYXJ6aGFuZy5jb20+Cj4gLS0tCj4gIHRlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTAzLmMgIHwgICAgNyArKysrKysr
+Cj4gIC4uLi9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTAzX2NoaWxkLmMgIHwg
+ICAgMSArCj4gIDIgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygt
+KQo+IAoKTm90IHN1cmUgaWYgd2UgaGF2ZSBhbnkgYmV0dGVyIHNvbHV0aW9uIHRvIGF2b2lkIHN1
+Y2ggYnVmZmVyZWQgSS9PIGlzc3VlLgoKQ2FzcGFyCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KV3Jp
+dGUgb25jZS4gUG9ydCB0byBtYW55LgpHZXQgdGhlIFNESyBhbmQgdG9vbHMgdG8gc2ltcGxpZnkg
+Y3Jvc3MtcGxhdGZvcm0gYXBwIGRldmVsb3BtZW50LiBDcmVhdGUgCm5ldyBvciBwb3J0IGV4aXN0
+aW5nIGFwcHMgdG8gc2VsbCB0byBjb25zdW1lcnMgd29ybGR3aWRlLiBFeHBsb3JlIHRoZSAKSW50
+ZWwgQXBwVXBTTSBwcm9ncmFtIGRldmVsb3BlciBvcHBvcnR1bml0eS4gYXBwZGV2ZWxvcGVyLmlu
+dGVsLmNvbS9qb2luCmh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtYXBwZGV2Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
+dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
