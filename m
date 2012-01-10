@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1RngGt-0000wC-F7
-	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 00:54:31 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RngGr-0005qH-Sw
-	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 00:54:31 +0000
-Message-ID: <4F1769B1.7080405@cn.fujitsu.com>
-Date: Thu, 19 Jan 2012 08:54:09 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <Kai.Kang@windriver.com>) id 1RkREf-0007iR-Sj
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 02:14:49 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RkREe-00018K-Gw
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 02:14:49 +0000
+Message-ID: <4F0B9F0F.107@windriver.com>
+Date: Tue, 10 Jan 2012 10:14:39 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <4F14F368.80507@cn.fujitsu.com>
-	<201201170001.13851.vapier@gentoo.org>
-	<201201180524.53760.vapier@gentoo.org>
-In-Reply-To: <201201180524.53760.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 8/8] Add test usage_in_bytes
+References: <1325302366-375-1-git-send-email-kai.kang@windriver.com>
+	<4F0A78C4.30807@casparzhang.com>
+In-Reply-To: <4F0A78C4.30807@casparzhang.com>
+Subject: Re: [LTP] [PATCH] mq_timedsend/5-1: make parent has chance to sleep
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,60 +25,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
+To: Caspar Zhang <caspar@casparzhang.com>
 Cc: ltp-list@lists.sourceforge.net
 
-
-Mike Frysinger said the following on 2012-1-18 18:24:
-> On Tuesday 17 January 2012 00:01:12 Mike Frysinger wrote:
->> On Monday 16 January 2012 23:04:56 Peng Haitao wrote:
->>> +. memcg_lib.sh || exit 1
->>
->> you have to use paths else the source searches $PATH.  relying on $PWD is
->> not portable.
->>
->> . ./memcg_lib.sh || exit 1
-> 
-> btw, i was talking about all your patches having this problem and not just 
-> this particular one.  you'll have to update them all.
-> -mike
-> 
-
-yeah, I know.
-Thanks for your reminder:)
-
--- 
-Best Regards,
-Peng
-
-> 
-> 
-> ------------------------------------------------------------------------------
-> Keep Your Developer Skills Current with LearnDevNow!
-> The most comprehensive online learning library for Microsoft developers
-> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-> Metro Style Apps, more. Free future releases when you subscribe now!
-> http://p.sf.net/sfu/learndevnow-d2d
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-
-------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDAx5pyIMDnml6UgMTM6MTksIENhc3BhciBaaGFuZyB3cm90ZToKCkhpIENhc3Bh
+ciwKCj4gT24gMjAxMeW5tDEy5pyIMzHml6UgMTE6MzIsIEthbmcgS2FpIHdyb3RlOgo+PiBDaGls
+ZCBwcm9jZXNzIHNlbmRzIHRoZSBsYXN0IHNpZ25hbCBiZWZvcmUgcGFyZW50IHByb2Nlc3MgZW50
+ZXIgdGhlCj4+IGZpbmFsIHNsZWVwIHNvbWV0aW1lcywgc28gc2xlZXAgaW4gcGFyZW50IHdpbGwg
+bm90IGJlIGludGVycnVwdGVkIHRoZW4KPj4gdGhlIGNhc2UgZmFpbHMuCj4+IFNsZWVwIDEgc2Vj
+b25kIGJlZm9yZSBzZW5kIHRoZSBsYXN0IHNpZ25hbCBpbiBjaGlsZCB0byBtYWtlIHN1cmUgcGFy
+ZW50Cj4+IGVudGVyIHRoZSBmaW5hbCBzbGVlcC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogS2FuZyBL
+YWk8a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KPj4gLS0tCj4+ICAgLi4uL2NvbmZvcm1hbmNlL2lu
+dGVyZmFjZXMvbXFfdGltZWRzZW5kLzUtMS5jICAgICAgfCAgICA1ICsrKystCj4+ICAgMSBmaWxl
+cyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1n
+aXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
+cy9tcV90aW1lZHNlbmQvNS0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29u
+Zm9ybWFuY2UvaW50ZXJmYWNlcy9tcV90aW1lZHNlbmQvNS0xLmMKPj4gaW5kZXggOTZkYWY3Mi4u
+Mzc5OTNjOCAxMDA2NDQKPj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2Nv
+bmZvcm1hbmNlL2ludGVyZmFjZXMvbXFfdGltZWRzZW5kLzUtMS5jCj4+ICsrKyBiL3Rlc3RjYXNl
+cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX3RpbWVkc2Vu
+ZC81LTEuYwo+PiBAQCAtODIsNiArODIsOSBAQCBpbnQgbWFpbigpCj4+ICAgCQlzbGVlcCgxKTsg
+IC8vIGdpdmUgcGFyZW50IHRpbWUgdG8gc2V0IHVwIGhhbmRsZXIKPj4gICAJCWZvciAoaT0wOyBp
+PE1BWE1TRysxOyBpKyspIHsKPj4gICAgICAgICAgIAkJbXFfdGltZWRzZW5kKGdxdWV1ZSwgbXNn
+cHRyLCBzdHJsZW4obXNncHRyKSwgMSwmdHMpOwo+PiArICAgICAgICAgICAgLyogbWFrZSBzdXJl
+IHBhcmVudCBlbnRlciB0aGUgZmluYWwgc2xlZXAgKi8KPj4gKwkJCWlmIChpID09IE1BWE1TRykK
+Pj4gKyAgICAgICAgICAgICAgICBzbGVlcCgxKTsKPiBZb3Ugb25seSBtYWtlIHN1cmUgcGFyZW50
+IGVudGVycyB0byB0aGUgbGFzdCBpdGVyYXRpb24gYmVmb3JlIGNoaWxkCj4gZG9lcywgYnV0IHNh
+bWUgaXNzdWUgc3RpbGwgbWlnaHQgb2NjdXIgaW4gcHJldmlvdXMgaXRlcmF0aW9ucy4KSXQgbmVl
+ZG4ndCB0byBjYXJlIHRoZSBzbGVlcCBpbiBwYXJlbnQgaXRlcmF0aW9uLCBiZWNhdXNlIGF0IGxh
+c3QgCm1xX3RpbWVkc2VuZCgpIHdpbGwgbWFrZSBjaGlsZCBibG9jayB3aGVuIHRoZSBtZXNzYWdl
+IHF1ZXVlIGlzIGZ1bGwuClRoZW4gdGhlIGluIHBhcmVudCBpdGVyYXRpb24sIHNsZWVwKDMpIHdp
+bGwgcmV0dXJuIDAgdGhlbiBxdWl0IHRoZSAKaXRlcmF0aW9uLiBBZnRlciBtcV9yZWNlaXZlKCkg
+Y2hpbGQgd2lsbCBiZSB1bmJsb2NrZWQuCkluIG15IHRlc3QsIGF0IHRoaXMgcG9pbnQgdGhlIGNo
+aWxkIGlzIHNjaGVkdWxlZCBhbmQgY2FsbCBraWxsKCkgYmVmb3JlIApjYWxsIGxhc3Qgc2xlZXAo
+MykgaW4gcGFyZW50LCBzbyB0aGUgdGVzdCBmYWlscy4KVGhpcyBwYXRjaCBjb3VsZCBtYWtlIHBh
+cmVudCBjYWxsIGxhc3Qgc2xlZXAoKSBiZWZvcmUgY2hpbGQgY2FsbCBraWxsKCkuCgo+Cj4gQWxz
+bywgcGxlYXNlIHVzZSBoYXJkIHRhYiBpbnN0ZWFkIG9mIDQvOCBzcGFjZXMgZm9yIGluZGVudGF0
+aW9uLiBwYXRjaAo+IHN0eWxlLWd1aWRlIGNvdWxkIGJlIGZvdW5kIGF0OiBkb2Mvc3R5bGUtZ3Vp
+ZGUudHh0CgpTb3JyeSBhYm91dCB0aGUgaW5kZW50YXRpb24uCgpSZWdhcmRzLApLYWkKCj4KPiBU
+aGFua3MsCj4gQ2FzcGFyCj4KPj4gICAJCQkvKiBzZW5kIHNpZ25hbCB0byBwYXJlbnQgZWFjaCB0
+aW1lIG1lc3NhZ2UgaXMgc2VudCAqLwo+PiAgIAkJCWtpbGwoZ2V0cHBpZCgpLCBTSUdBQlJUKTsK
+Pj4gICAJCX0KPj4gQEAgLTEzOCw0ICsxNDEsNCBAQCBpbnQgbWFpbigpCj4+ICAgCX0KPj4KPj4g
+ICAJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+PiAtfQo+PiBcIE5vIG5ld2xpbmUgYXQgZW5kIG9m
+IGZpbGUKPj4gK30KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KV3JpdGUgb25jZS4gUG9ydCB0byBt
+YW55LgpHZXQgdGhlIFNESyBhbmQgdG9vbHMgdG8gc2ltcGxpZnkgY3Jvc3MtcGxhdGZvcm0gYXBw
+IGRldmVsb3BtZW50LiBDcmVhdGUgCm5ldyBvciBwb3J0IGV4aXN0aW5nIGFwcHMgdG8gc2VsbCB0
+byBjb25zdW1lcnMgd29ybGR3aWRlLiBFeHBsb3JlIHRoZSAKSW50ZWwgQXBwVXBTTSBwcm9ncmFt
+IGRldmVsb3BlciBvcHBvcnR1bml0eS4gYXBwZGV2ZWxvcGVyLmludGVsLmNvbS9qb2luCmh0dHA6
+Ly9wLnNmLm5ldC9zZnUvaW50ZWwtYXBwZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
+Zm8vbHRwLWxpc3QK
