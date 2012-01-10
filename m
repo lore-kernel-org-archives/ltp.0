@@ -1,29 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <carmelo.amoroso@st.com>) id 1RrtQt-0000At-A7
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jan 2012 15:46:15 +0000
-Received: from eu1sys200aog108.obsmtp.com ([207.126.144.125])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RrtQr-0000SA-IO
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jan 2012 15:46:15 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1C887125
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1RkSXc-0006oS-TQ
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:38:28 +0000
+Received: from mail-yw0-f47.google.com ([209.85.213.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1RkSXc-0004RG-11
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jan 2012 03:38:28 +0000
+Received: by yhjj51 with SMTP id j51so696570yhj.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 30 Jan 2012 15:45:51 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CC65927A8
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 30 Jan 2012 15:45:51 +0000 (GMT)
-Message-ID: <4F26BB2C.9040307@st.com>
-Date: Mon, 30 Jan 2012 16:45:48 +0100
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+	Mon, 09 Jan 2012 19:38:22 -0800 (PST)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Tue, 10 Jan 2012 11:38:12 +0800
+Message-Id: <1326166692-18276-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1327481724-28367-1-git-send-email-salvatore.cro@st.com>
-	<4F1FEEEF.2080506@st.com> <4F1FF526.7030701@st.com>
-In-Reply-To: <4F1FF526.7030701@st.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix creat07 setup and argv to execve
+Content-Type: multipart/mixed; boundary="------------1.7.8.1"
+Subject: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
+	duplicated output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,124 +27,130 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 25/01/2012 13.27, Salvatore CRO' wrote:
-> On 1/25/2012 1:00 PM, Carmelo AMOROSO wrote:
->> On 25/01/2012 9.55, Salvatore CRO' wrote:
->>> Fix test_path variable logic in setup function.
->>> Also use a new argv variable to be passed to execve.
->>>
->>> Signed-off-by: Salvatore Cro<salvatore.cro@st.com>
->>> ---
->>>   testcases/kernel/syscalls/creat/creat07.c |   12 ++++++------
->>>   1 files changed, 6 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
->>> index 4ed2c22..43a6030 100644
->>> --- a/testcases/kernel/syscalls/creat/creat07.c
->>> +++ b/testcases/kernel/syscalls/creat/creat07.c
->>> @@ -90,9 +90,8 @@ int main(int ac, char **av)
->>>   			tst_brkm(TBROK|TERRNO, cleanup, "fork #1 failed");
->>>
->>>   		if (pid == 0) {
->>> -			char *av[1];
->>> -			av[0] = basename(test_app);
->>> -			(void)execve(test_app, av, NULL);
->>> +			char *argv[] = { test_app, NULL };
->>> +			(void)execve(test_app, argv, NULL);
->>>   			perror("execve failed");
->>>   			exit(1);
->>>   		}
->>> @@ -138,14 +137,15 @@ void setup(char *app)
->>>   	char *cmd, *pwd = NULL;
->>>   	char test_path[MAXPATHLEN];
->>>
->>> -	if (test_app[0] == '/')
->>> -		strncpy(test_path, test_app, sizeof(test_app));
->>> +	if (app[0] == '/')
->>> +		snprintf(test_path, sizeof(test_path), "%s/%s",
->>> +				dirname(app), test_app);
->>>   	else {
->>>   		if ((pwd = get_current_dir_name()) == NULL)
->>>   			tst_brkm(TBROK|TERRNO, NULL, "getcwd failed");
->>>
->>>   		snprintf(test_path, sizeof(test_path), "%s/%s",
->>> -		    pwd, basename(test_app));
->>> +		    pwd, test_app);
->>>
->>>   		free(pwd);
->>>   	}
->> Hi Salvo,
->> could you clarify why this change is needed ?
-> 
-> test_app is defined as follows :
-> 
-> #define test_app "test1"
-> 
-> so
-> 
-> if (test_app[0] == '/')
-> 
-> was a typo and segfaulting in uClibc.
-> 
-> The test (app) could have been invoked either from 1) <test path> or 2) 
-> from another path :
->   - 1) test_path for test_app is pwd/test_app (not pwd/basename(test_path))
->   - 2) test_path is dirname(app)/test_app (not test_app)
-> 
-> Furthermore change related to argv variable is mostly a tidy-up plus 
-> again drop of
-> basename(test_app).
-> 
-> Hope it's clear enough ;-)
-> 
-> 
+This is a multi-part message in MIME format.
+--------------1.7.8.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Hi Salvo,
-could you re-elaborate the patch description, and post it again.
-Great catch anyway !
 
-Cheers,
-Carmelo
+when executing with `$BIN/runltp` command, getrusage03 puts out
+duplicated information due to buffered stdout. Using fflush(stdout) to
+solve this issue.
 
->> cheers
->>
->> ------------------------------------------------------------------------------
->> Keep Your Developer Skills Current with LearnDevNow!
->> The most comprehensive online learning library for Microsoft developers
->> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
->> Metro Style Apps, more. Free future releases when you subscribe now!
->> http://p.sf.net/sfu/learndevnow-d2d
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> ------------------------------------------------------------------------------
-> Keep Your Developer Skills Current with LearnDevNow!
-> The most comprehensive online learning library for Microsoft developers
-> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-> Metro Style Apps, more. Free future releases when you subscribe now!
-> http://p.sf.net/sfu/learndevnow-d2d
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ testcases/kernel/syscalls/getrusage/getrusage03.c  |    7 +++++++
+ .../kernel/syscalls/getrusage/getrusage03_child.c  |    1 +
+ 2 files changed, 8 insertions(+), 0 deletions(-)
 
+
+--------------1.7.8.1
+Content-Type: text/x-patch;
+	name="0001-syscalls-getrusage03-flush-stdout-to-avoid-duplicate.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-syscalls-getrusage03-flush-stdout-to-avoid-duplicate.patch"
+
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+index 3ec5284..df25ff0 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+@@ -104,6 +104,7 @@ static void inherit_fork(void)
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+ 	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
+ 
++	fflush(stdout);
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK|TERRNO, cleanup, "fork #1");
+@@ -135,6 +136,7 @@ static void inherit_fork2(void)
+ 	else
+ 		tst_resm(TFAIL, "initial.children !~= 100MB");
+ 
++	fflush(stdout);
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK|TERRNO, cleanup, "fork #2");
+@@ -161,6 +163,7 @@ static void fork_malloc(void)
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+ 	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
+ 
++	fflush(stdout);
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK|TERRNO, cleanup, "fork #3");
+@@ -190,6 +193,7 @@ static void grandchild_maxrss(void)
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+ 
++	fflush(stdout);
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK|TERRNO, cleanup, "fork #4");
+@@ -225,6 +229,7 @@ static void zombie(void)
+ 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+ 	maxrss_init = ru.ru_maxrss;
+ 
++	fflush(stdout);
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK, cleanup, "fork #5");
+@@ -269,6 +274,7 @@ static void sig_ign(void)
+ 	signal(SIGCHLD, SIG_IGN);
+ 	maxrss_init = ru.ru_maxrss;
+ 
++	fflush(stdout);
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK, cleanup, "fork #6");
+@@ -306,6 +312,7 @@ static void exec_without_fork(void)
+ 	maxrss_child = ru.ru_maxrss;
+ 	tst_resm(TINFO, "initial.self = %ld, initial.children = %ld",
+ 		    maxrss_self, maxrss_child);
++	fflush(stdout);
+ 
+ 	sprintf(str_maxrss_self, "%ld", maxrss_self);
+ 	sprintf(str_maxrss_child, "%ld", maxrss_child);
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03_child.c b/testcases/kernel/syscalls/getrusage/getrusage03_child.c
+index a9c1d38..f5d2850 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03_child.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage03_child.c
+@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
+ 			grand_consume_nr = get_long(grand_consume_str);
+ 			tst_resm(TINFO, "grandchild allocate %ldMB",
+ 				    grand_consume_nr);
++			fflush(stdout);
+ 			switch (pid = fork()) {
+ 			case -1:
+ 				tst_brkm(TBROK, cleanup, "fork");
+
+--------------1.7.8.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+Write once. Port to many.
+Get the SDK and tools to simplify cross-platform app development. Create 
+new or port existing apps to sell to consumers worldwide. Explore the 
+Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
+http://p.sf.net/sfu/intel-appdev
+--------------1.7.8.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.1--
+
+
+
