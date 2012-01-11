@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiCg0-0000Sn-Lg
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 22:17:48 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiCg0-00045b-3h
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 22:17:48 +0000
-Received: by obcwn6 with SMTP id wn6so18440045obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 14:17:42 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RkxYN-0000fE-3E
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 12:45:19 +0000
+Date: Wed, 11 Jan 2012 13:56:42 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120111125642.GD7143@saboteur.suse.cz>
+References: <4F0BB312.5070009@casparzhang.com>
+	<974e6f10-853c-4e38-98ba-4bd6bdb6ac98@zmail16.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <201201031528.08200.vapier@gentoo.org>
-References: <4F02C765.5030408@imgtec.com>
-	<201201031528.08200.vapier@gentoo.org>
-Date: Tue, 3 Jan 2012 14:17:42 -0800
-Message-ID: <CAGH67wTp4qK0ru641QOZx4OiD3=Unie6AP=uMq8J=fpT2=LqBw@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 01/21] lib/parse_opts: STD_LP_sbrk and
- STD_start_break should only be defined when UCLINUX=0
+Content-Disposition: inline
+In-Reply-To: <974e6f10-853c-4e38-98ba-4bd6bdb6ac98@zmail16.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
+ duplicated output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +23,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Tue, Jan 3, 2012 at 12:28 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> please use `git send-email` to properly post patches. =A0attaching them l=
-ike
-> this makes it a pita to review.
+Hi!
+> > > when executing with `$BIN/runltp` command, getrusage03 puts out
+> > > duplicated information due to buffered stdout. Using fflush(stdout)
+> > > to
+> > > solve this issue.
+> > > 
+> > > Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> > > ---
+> > >  testcases/kernel/syscalls/getrusage/getrusage03.c  |    7 +++++++
+> > >  .../kernel/syscalls/getrusage/getrusage03_child.c  |    1 +
+> > >  2 files changed, 8 insertions(+), 0 deletions(-)
+> > > 
+> > 
+> > Not sure if we have any better solution to avoid such buffered I/O
+> > issue.
+> 
+> How about "setvbuf(stdout, NULL, _IOLBF, 0);"?
+> 
 
-+1. Or just use what's noted in the style guide as well for submitting
-patches if you really want to go down this path of creating patch
-review/commit request emails.
-Thanks,
--Garrett
+I still think that this is a workaround for something that should be
+either avoided or fixed on different level.
 
----------------------------------------------------------------------------=
----
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create =
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-new or port existing apps to sell to consumers worldwide. Explore the =
-
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+------------------------------------------------------------------------------
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
