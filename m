@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <salvatore.cro@st.com>) id 1Rpye5-0008Ou-4P
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jan 2012 08:55:57 +0000
-Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
-	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Rpye0-0006O4-W1
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jan 2012 08:55:57 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F3A91193
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 25 Jan 2012 08:55:31 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B79531CA5
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 25 Jan 2012 08:55:31 +0000 (GMT)
-From: "Salvatore CRO'" <salvatore.cro@st.com>
-Date: Wed, 25 Jan 2012 09:55:24 +0100
-Message-Id: <1327481724-28367-1-git-send-email-salvatore.cro@st.com>
-Subject: [LTP] [PATCH] syscalls: fix creat07 setup and argv to execve
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RkzrT-0007f9-Lb
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 15:13:11 +0000
+Date: Wed, 11 Jan 2012 16:24:35 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120111152435.GF7143@saboteur.suse.cz>
+References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
+	<1326164470-16612-1-git-send-email-caspar@casparzhang.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1326164470-16612-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH v2] syscalls/xattr: fix compile when xattr.h not
+ exist
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,65 +23,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Fix test_path variable logic in setup function.
-Also use a new argv variable to be passed to execve.
+Hi!
+> if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
+> autotools level.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  configure.ac                                    |    1 +
+>  testcases/kernel/syscalls/getxattr/getxattr01.c |   16 +++++++++++++---
+>  testcases/kernel/syscalls/getxattr/getxattr02.c |   17 +++++++++++++----
+>  testcases/kernel/syscalls/setxattr/setxattr01.c |   16 +++++++++++++---
+>  testcases/kernel/syscalls/setxattr/setxattr02.c |   17 +++++++++++++----
+>  5 files changed, 53 insertions(+), 14 deletions(-)
 
-Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
----
- testcases/kernel/syscalls/creat/creat07.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+Commited, thanks!
 
-diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
-index 4ed2c22..43a6030 100644
---- a/testcases/kernel/syscalls/creat/creat07.c
-+++ b/testcases/kernel/syscalls/creat/creat07.c
-@@ -90,9 +90,8 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK|TERRNO, cleanup, "fork #1 failed");
- 
- 		if (pid == 0) {
--			char *av[1];
--			av[0] = basename(test_app);
--			(void)execve(test_app, av, NULL);
-+			char *argv[] = { test_app, NULL };
-+			(void)execve(test_app, argv, NULL);
- 			perror("execve failed");
- 			exit(1);
- 		}
-@@ -138,14 +137,15 @@ void setup(char *app)
- 	char *cmd, *pwd = NULL;
- 	char test_path[MAXPATHLEN];
- 
--	if (test_app[0] == '/')
--		strncpy(test_path, test_app, sizeof(test_app));
-+	if (app[0] == '/')
-+		snprintf(test_path, sizeof(test_path), "%s/%s",
-+				dirname(app), test_app);
- 	else {
- 		if ((pwd = get_current_dir_name()) == NULL)
- 			tst_brkm(TBROK|TERRNO, NULL, "getcwd failed");
- 
- 		snprintf(test_path, sizeof(test_path), "%s/%s",
--		    pwd, basename(test_app));
-+		    pwd, test_app);
- 
- 		free(pwd);
- 	}
 -- 
-1.7.4.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
