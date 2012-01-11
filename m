@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RhoNP-0004oy-0P
-	for ltp-list@lists.sourceforge.net; Mon, 02 Jan 2012 20:20:59 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bounces@nabble.com>) id 1RkxgK-0001uD-Pc
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 12:53:32 +0000
+Received: from sam.nabble.com ([216.139.236.26])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RhoNO-0003Gm-3q
-	for ltp-list@lists.sourceforge.net; Mon, 02 Jan 2012 20:20:58 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 2 Jan 2012 15:20:57 -0500
-References: <1325235186-20625-1-git-send-email-gaowanlong@cn.fujitsu.com>
-In-Reply-To: <1325235186-20625-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	(Exim 4.76) id 1RkxgG-0007nF-V9
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 12:53:32 +0000
+Received: from isper.nabble.com ([192.168.236.156])
+	by sam.nabble.com with esmtp (Exim 4.72)
+	(envelope-from <bounces@nabble.com>) id 1RkxgB-00069m-Jn
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 04:53:23 -0800
+Message-ID: <33120710.post@talk.nabble.com>
+Date: Wed, 11 Jan 2012 04:53:23 -0800 (PST)
+From: "sarath.tadi" <sarath.tadi@gmail.com>
+In-Reply-To: <0F68B52D2432864190BC72F760407FE9118354BDE5@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
 MIME-Version: 1.0
-Message-Id: <201201021520.58152.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] gitignore: ignore the files compiled
+References: <0F68B52D2432864190BC72F760407FE9118354BDE5@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+Subject: Re: [LTP] Porting of LTP on Android - Patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,69 +28,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1542267897752141684=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Wanlong Gao <wanlong.gao@gmail.com>
-
---===============1542267897752141684==
-Content-Type: multipart/signed; boundary="nextPart2128875.xdHuRoSyqu";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2128875.xdHuRoSyqu
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Friday 30 December 2011 03:53:06 Wanlong Gao wrote:
-> +/testcases/kernel/syscalls/fork/fork13
-> +/testcases/kernel/syscalls/getrusage/getrusage03
-> +/testcases/kernel/syscalls/getrusage/getrusage03_child
-> +/testcases/kernel/syscalls/mlock/mlock04
-> +/testcases/kernel/syscalls/pwrite/pwrite01_64
-> +/testcases/kernel/syscalls/pwrite/pwrite02_64
-> +/testcases/kernel/syscalls/pwrite/pwrite03_64
-> +/testcases/kernel/syscalls/pwrite/pwrite04_64
-> +/testcases/kernel/syscalls/syslog/syslog11
-> +/testcases/kernel/syscalls/syslog/syslog12
-> +/testcases/kernel/syscalls/syslog/syslogtst
-
-i merged these into the testcases/kernel/syscalls/.gitignore file.  the oth=
-er=20
-testcases/kernel/ ignores should get split up accordingly.
-=2Dmike
-
---nextPart2128875.xdHuRoSyqu
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPAhGqAAoJEEFjO5/oN/WByWwQANynykuo5PqgfwiVEluT3qH5
-tlYtOJ8XsYOJh7kyYKrEWYZrJkKZAPFaO0d5PU4LO0R2xz5AyXZpuOOwlRDBkKnS
-+1/X4Odf2LBHus5PyWToxhm3YeeCgqXZBfzCKFc0Hg5AVdZZgi2VFHA3Zt9rGxtt
-4OUqVtT0RU8qWiAlOwoiXdZM+47J0UGz4leAYUsBYDYydnrmFI5ityZzIf9Rk2We
-Xe5xqabg+G5mGpuPIdxRqIBzYeg87ninnetpfHmDKwyaH1T2Jd8uiIX4Kq2vzqLS
-kO5mxtayKdsqPI91iMYyedj0D0o5zTSHFmA0YQYv9CztuwfbxZ2ayhQ9s4LdKAO2
-RUDMdSwJOlLInPtEpgbUo+Yh4a8y5LE9VwxrZWePekkNGRRXokxvLki8dcNBiyOm
-5St/x6FfAIxZfprfL1BLUwyeymxy9WpWHukxoj59TnuxGSGcfD39lNYDilG19g37
-pxYKXRqEiAfAAX0OA4s5LP9UjFBquvaDdQCynqeXDK3NJTMT6oXs19dza58fMLNP
-AWs5OQyQvSm9rKUz0ZKFHjtodTq5vf5bXTcXrA/WkVtQO1e9fXUg1nLUkD/vp6iR
-3L7ZVz1S4LKlLKNYeygNk783t4AMuUjOxZ7sjJRyWIedPVSYk+eKz8gJ6ud3joM5
-BHYiJBJYTp5CsfPf9meU
-=YmIK
------END PGP SIGNATURE-----
-
---nextPart2128875.xdHuRoSyqu--
 
 
---===============1542267897752141684==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hi Anupam , 
+
+This is with reference to the mail I have posted in LTP mailing list today. 
+
+http://sourceforge.net/mailarchive/message.php?msg_id=28658325
+
+
+Pls provide me the steps before applying the LTP android patch. 
+
+Regards,
+Sarath.
+
+
+
+Anupam Srivastava - ERS, HCL Tech wrote:
+> 
+> Hi,
+> 
+> This is in continuation of my last mail sent to you regarding the porting
+> of LTP on Android 2.2 Froyo dated Aug 04, 2010.
+> We have ported LTP open source (Version: ltp-full-20110228) on Android 2.2
+> Froyo. It will validate the reliability, robustness, and stability of
+> Android. We want to submit the same to open source community.
+> PFA patch for the same. Please let me know if I have to do anything else
+> regarding submission of this patch.
+> 
+> Thanks & Regards,
+> Anupam
+> +91-9717782727
+> 
+> 
+> ________________________________
+> ::DISCLAIMER::
+> -----------------------------------------------------------------------------------------------------------------------
+> 
+> The contents of this e-mail and any attachment(s) are confidential and
+> intended for the named recipient(s) only.
+> It shall not attach any liability on the originator or HCL or its
+> affiliates. Any views or opinions presented in
+> this email are solely those of the author and may not necessarily reflect
+> the opinions of HCL or its affiliates.
+> Any form of reproduction, dissemination, copying, disclosure,
+> modification, distribution and / or publication of
+> this message without the prior written consent of the author of this
+> e-mail is strictly prohibited. If you have
+> received this email in error please delete it and notify the sender
+> immediately. Before opening any mail and
+> attachments please check them for viruses and defect.
+> 
+> -----------------------------------------------------------------------------------------------------------------------
+> 
+>  
+> ------------------------------------------------------------------------------
+> FREE DOWNLOAD - uberSVN with Social Coding for Subversion.
+> Subversion made easy with a complete admin console. Easy 
+> to use, easy to manage, easy to install, easy to extend. 
+> Get a Free download of the new open ALM Subversion platform now.
+> http://p.sf.net/sfu/wandisco-dev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+
+-- 
+View this message in context: http://old.nabble.com/-LTP--Porting-of-LTP-on-Android---Patch-tp32252920p33120710.html
+Sent from the ltp-list mailing list archive at Nabble.com.
+
 
 ------------------------------------------------------------------------------
 Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
@@ -94,16 +110,7 @@ infrastructure or vast IT resources to deliver seamless, secure access to
 virtual desktops. With this all-in-one solution, easily deploy virtual 
 desktops for less than the cost of PCs and save 60% on VDI infrastructure 
 costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
---===============1542267897752141684==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1542267897752141684==--
-
