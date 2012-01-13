@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RiQ9w-0006uG-Hx
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 12:41:36 +0000
-Date: Wed, 4 Jan 2012 13:52:26 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120104125226.GA12086@saboteur.suse.cz>
-References: <1324869052-22433-1-git-send-email-jin.li@windriver.com>
-	<20111230143413.GA29431@saboteur.suse.cz>
-	<4F03B99B.4080500@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <huruomu@gmail.com>) id 1RljiN-0007xY-SV
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 16:10:51 +0000
+Received: from mail-qy0-f195.google.com ([209.85.216.195])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RljiI-0004RD-HM
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 16:10:51 +0000
+Received: by qcsr22 with SMTP id r22so53043qcs.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 13 Jan 2012 08:10:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F03B99B.4080500@windriver.com>
-Subject: Re: [LTP] [PATCH] This fix make sure the function "setpgid" get
- invoked in the right time in setpgid03 test02.
+Date: Sat, 14 Jan 2012 00:04:15 +0800
+Message-ID: <CANoG8sUjtP3bMNjKNvwGO+Pb1GXJ6dYNDsYvjui=fd=fsYcQKw@mail.gmail.com>
+From: Romu <huruomu@gmail.com>
+Subject: [LTP] mbind01 fails on 2.6.32 i386 kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,153 +28,127 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jin Li <Jin.Li@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-Could you please resend this without the html formatting.
-(it's commont nettiquete not to send these into mailing lists)
+Hi,
 
-> <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-> <html>
-> <head>
->   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-> </head>
-> <body bgcolor="#ffffff" text="#000000">
-> <font face="Helvetica, Arial, sans-serif">Hi Cyril <br>
-> <br>
-> Please see the feed back below.<br>
-> </font><br>
-> Cyril Hrubis &#20889;&#36947;:
-> <blockquote cite="mid:20111230143413.GA29431@saboteur.suse.cz"
->  type="cite">
->   <pre wrap="">Hi!
->   </pre>
->   <blockquote type="cite">
->     <pre wrap="">In setpgid03 test02, the function "setpgid" is likely to be invoked
-> in father process before the function "execlp" get invoked in child
-> process. Sometimes The performance or NFS file system may cause that
-> the switch of context could not be done even after the 1 second sleeping
-> of father process. In this case, the setpgid will get unexpected error
-> number. Add sync mechanism to insure the 'setpgid' get invoked in the right
-> order.
-> 
-> Signed-off-by: Jin Li <a class="moz-txt-link-rfc2396E" href="mailto:jin.li@windriver.com">&lt;jin.li@windriver.com&gt;</a>
-> ---
->  void do_child(void);
->  void setup(void);
-> @@ -60,6 +61,7 @@ int main(int ac, char **av)
->  
->  	int lc;			/* loop counter */
->  	char *msg;		/* message returned from parse_opts */
-> +	char cmd_line[1024];    /* command line for exec */
->     </pre>
->   </blockquote>
->   <pre wrap=""><!---->
-> Please don't add trivial comments (and remove trivial comments that are
-> in the code allready).
->   </pre>
-> </blockquote>
-> Accepted <br>
-> <blockquote cite="mid:20111230143413.GA29431@saboteur.suse.cz"
->  type="cite">
->   <pre wrap="">
->   </pre>
->   <blockquote type="cite">
->     <pre wrap=""> 	/* parse standard options */
->  	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-> @@ -74,6 +76,10 @@ int main(int ac, char **av)
->  	 */
->  	setup();
->  
-> +	sprintf(temp_file,"/tmp/%s_file",TCID);
->     </pre>
->   </blockquote>
->   <pre wrap=""><!---->
-> Maybe it would be better to use tst_tmpdir() so the test has it's own
-> and unique directory to create temp files instead of utlizing /tmp
-> directly. (several instances of the test could then run at once).
->   </pre>
-> </blockquote>
-> Accepted<br>
-> <blockquote cite="mid:20111230143413.GA29431@saboteur.suse.cz"
->  type="cite">
->   <pre wrap="">
->   </pre>
->   <blockquote type="cite">
->     <pre wrap="">+	sprintf(cmd_line,"touch %s;sleep 5s;rm -f %s", temp_file, temp_file);
->     </pre>
->   </blockquote>
->   <pre wrap=""><!---->
-> Hm, I still don't think the race is gone now. As once the shell calls
-> rm, it exits, so most likely when the parent calls setpgid() the process
-> is gone (and from the original source it seems that the process should
-> be running while the parent calls setpgid()). And moreover the file
-> doesn't need to be created when the parent tries access() for the first
-> time.
->   </pre>
-> </blockquote>
-> I'm afraid that I don't agree with you. The child and father get the
-> same schedule priority. <br>
-> So during the 5s sleeping of father, the child have enough time to run
-> "setpgid".<br>
-> Here is just a execution sync-up that make sure the "execlp" is
-> invoked&nbsp; just&nbsp; before&nbsp; <br>
-> the "setpgid" get invoked in father<br>
-> <br>
-> Thanks,<br>
-> <br>
-> Jin<br>
-> <br>
-> <blockquote cite="mid:20111230143413.GA29431@saboteur.suse.cz"
->  type="cite">
->   <pre wrap="">
->   </pre>
->   <blockquote type="cite">
->     <pre wrap=""> 	for (lc = 0; TEST_LOOPING(lc); lc++) {
->  
->  		/* reset Tst_count in case we are looping */
-> @@ -132,12 +138,15 @@ int main(int ac, char **av)
->  
->  		}
->  		if (pid == 0) {
-> -			if (execlp("sleep", "sleep", "3", NULL) &lt; 0) {
-> +			if (execlp("sh", "sh", "-c", cmd_line, NULL) &lt; 0) {
->  				perror("exec failed");
->  			}
->  			exit(127);
->  		} else {
-> -			sleep(1);
-> +			while ( access(temp_file, F_OK) != 0 ) {
-> +                            sleep(1);
-> +			}
-> +
->  			rval = setpgid(pid, getppid());
->  			if (errno == EACCES) {
->  				tst_resm(TPASS, "setpgid SUCCEEDED to set "
-> @@ -203,4 +212,4 @@ void cleanup(void)
->  	 */
->  	TEST_CLEANUP;
->     </pre>
->   </blockquote>
->   <pre wrap=""><!---->
-> And please use the checkpatch next time.
-> 
->   </pre>
-> </blockquote>
-> </body>
-> </html>
+mbind01 fails on 2.6.32 i386 kernel, see test log below.  I went
+through http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08843.html
+but couldn't get any clue.  Any idea?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+<<<test_start>>>
+tag=mbind01 stime=1326570882
+cmdline="mbind01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+mbind01     0  TINFO  :  (case00) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     1  TFAIL  :  (case00) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case01) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     2  TFAIL  :  (case01) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case02) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     3  TFAIL  :  (case02) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case03) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     4  TFAIL  :  (case03) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     5  TFAIL  :  (case04) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case05) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     6  TFAIL  :  (case05) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case06) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     7  TFAIL  :  (case06) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case07) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     8  TFAIL  :  (case07) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case08) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     9  TFAIL  :  (case08) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case09) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    10  TFAIL  :  (case09) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case10) START
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    11  TFAIL  :  (case10) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case00) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    12  TFAIL  :  (case00) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case01) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    13  TFAIL  :  (case01) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case02) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    14  TFAIL  :  (case02) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case03) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    15  TFAIL  :  (case03) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    16  TFAIL  :  (case04) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case05) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    17  TFAIL  :  (case05) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case06) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    18  TFAIL  :  (case06) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case07) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    19  TFAIL  :  (case07) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case08) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    20  TFAIL  :  (case08) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case09) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    21  TFAIL  :  (case09) END: errno=???(38): Function not implemented
+mbind01     0  TINFO  :  (case10) START
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01    22  TFAIL  :  (case10) END: errno=???(38): Function not implemented
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20120104
+
+
+Thanks
+Romu
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+RSA(R) Conference 2012
+Mar 27 - Feb 2
+Save $400 by Jan. 27
+Register now!
+http://p.sf.net/sfu/rsa-sfdev2dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
