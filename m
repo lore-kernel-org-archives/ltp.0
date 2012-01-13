@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rq5TR-00045h-Uf
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jan 2012 16:13:25 +0000
-Date: Wed, 25 Jan 2012 17:26:02 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RlgfK-00073p-Qt
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 12:55:30 +0000
+Date: Fri, 13 Jan 2012 14:07:03 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120125162602.GB28713@saboteur.suse.cz>
-References: <20120119143855.GD10302@saboteur.suse.cz>
-	<1327021862-26954-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20120113130703.GA14943@saboteur.suse.cz>
+References: <20120111125642.GD7143@saboteur.suse.cz>
+	<aa1139e7-47d6-40d4-8406-4cef27343f29@zmail16.collab.prod.int.phx2.redhat.com>
+	<20120111143418.GB7146@saboteur.suse.cz>
+	<201201130101.06630.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1327021862-26954-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 2/2] aio_suspend-8-1: use aio_error to check
- completion instead
+In-Reply-To: <201201130101.06630.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
+ duplicated output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,106 +28,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> ---
->  .../conformance/interfaces/aio_suspend/8-1.c       |   39 +++-----------------
->  1 files changed, 6 insertions(+), 33 deletions(-)
+> > There are two ways to fix this, either create tst_fork() that flushes
+> > the buffers before forking. This may be problematic as there is a need
+> > for replacing fork() with tst_fork() in several testcases.
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-> index e39581f..4023a42 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/8-1.c
-> @@ -51,13 +51,6 @@ int received_all	= 0;
->  void
->  sigrt1_handler(int signum, siginfo_t *info, void *context)
->  {
-> -	if (info->si_value.sival_int == WAIT_FOR_AIOCB)
-> -		received_selected = 1;
-> -}
-> -
-> -void
-> -sigrt2_handler(int signum, siginfo_t *info, void *context)
-> -{
->  	received_all = 1;
->  }
->  
-> @@ -121,30 +114,19 @@ main ()
->  		aiocbs[i]->aio_buf = &bufs[i * BUF_SIZE];
->  		aiocbs[i]->aio_nbytes = BUF_SIZE;
->  		aiocbs[i]->aio_lio_opcode = LIO_READ;
-> -
-> -		/* Use SIRTMIN+1 for individual completions */
-> -		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-> -		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN + 1;
-> -		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
->  	}
->  
-> -	/* Use SIGRTMIN+2 for list completion */
-> +	/* Use SIGRTMIN + 1 for list completion */
->  	event.sigev_notify = SIGEV_SIGNAL;
-> -	event.sigev_signo = SIGRTMIN + 2;
-> +	event.sigev_signo = SIGRTMIN + 1;
->  	event.sigev_value.sival_ptr = NULL;
->  
-> -	/* Setup handler for individual operation completion */
-> +	/* Setup handler for list completion */
->  	action.sa_sigaction = sigrt1_handler;
->  	sigemptyset(&action.sa_mask);
->  	action.sa_flags = SA_SIGINFO | SA_RESTART;
->  	sigaction(SIGRTMIN + 1, &action, NULL);
->  
-> -	/* Setup handler for list completion */
-> -	action.sa_sigaction = sigrt2_handler;
-> -	sigemptyset(&action.sa_mask);
-> -	action.sa_flags = SA_SIGINFO | SA_RESTART;
-> -	sigaction(SIGRTMIN + 2, &action, NULL);
-> -
->  	/* Setup suspend list */
->  	plist[0] = NULL;
->  	plist[1] = aiocbs[WAIT_FOR_AIOCB];
-> @@ -162,21 +144,12 @@ main ()
->  		exit(PTS_UNRESOLVED);
->  	}
->  
-> -	/* Check selected request has not completed yet */
-> -	if (received_selected) {
-> -		printf(TNAME " Error : AIOCB %d already completed before suspend\n",
-> -			WAIT_FOR_AIOCB);
-> -		for (i = 0; i < NUM_AIOCBS; i++)
-> -			free (aiocbs[i]);
-> -		free(bufs);
-> -		free(aiocbs);
-> -		close(fd);
-> -		exit(PTS_FAIL);
-> -	}
-> +	do {
-> +		ret = aio_error(aiocbs[WAIT_FOR_AIOCB]);
-> +	} while (ret != EINPROGRESS);
+> if we wanted to be lazy, it would be easy to catch.  in our test.h:
+> 	#define fork() tst_fork()
+> then in the single file defining tst_fork(), we do:
+> 	#undef fork
+> or forcing it via:
+> 	#define fork() __use_tst_fork()
+> 
+> but we already have to track in the ltp tests where fork() is used since this 
+> breaks NOMMU builds (i.e. UCLINUX), so it's not like we don't already have 
+> this issue.
 
-I think that the original code was trying to assert that the operation
-wasn't completed yet (in that case this would be infinite loop, or am I
-mistaken?).
- 
->  	/* Suspend on selected request */
->  	ret = aio_suspend((const struct aiocb **)plist, 2, NULL);
-> -
->  	if (ret) {
->  		printf(TNAME " Error at aio_suspend() %d: %s\n", errno, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
+I don't like idea of defining fork to tst_fork that's exactly the
+magic that may take hours to figure out.
+
+Forcing it, in this case, is probably good idea.
+
+> > Or we could flush the output after each test message is printed with
+> > tst_resm(). That is IMHO ideal solution. The only drawback is that this
+> > may interfere with timings in some testcases (but testcases that expects
+> > exacts timings are usually broken anyway).
+> 
+> i agree those tests are broken if the flushing causes issues due to a slow 
+> down.  however, slow downs in general are not a good thing, especially when 
+> these are only needed for apps that fork.  i'd like to think we could do 
+> better.
+
+Still I'm slighlty for this one. In general case, flushing the buffer
+often is bad, but considering relatively rare usage of tst_resm() the
+slowdowns woudn't be most likely measurable (and it's flushed after
+every '\n' when you run the test in the terminal anyway).
+
+Side effects of this are generally possitive too, the messages from
+parent and child, or several threads wouldn't be so badly intermixed in
+the output.
+
+> a third option would be to use pthread_atfork().  no tracking needed in random 
+> tests since we can call this in the common ltp init func.  downside is we'd 
+> have to use -pthread in our CFLAGS.
+> 
+> $ cat test.c
+> #include <pthread.h>
+> #include <stdio.h>
+> void prep(void) { fflush(stdout); }
+> int main(){
+> 	printf("foo\n");
+> 	pthread_atfork(prep, NULL, NULL);
+> 	fork();fork();fork();fork();
+> 	return 0;
+> }
+> $ gcc -pthread test.c && ./a.out | cat
+> foo
+
+The -phtread changes several definitions in glibc headers so adding it
+globally for all the tests seems wrong.
+
+> a fourth option would be to include <bits/libc-lock.h> and use 
+> __libc_atfork(), but this would be glibc specific :(.
+
+Yeah, another no go option.
+
+> a fifth option would be to use libdl, override the fork() symbol with our own 
+> and then dlsym() to the direct fork() symbol.  but like the pthread solution, 
+> this would require linking all apps with -ldl, and it would only work on ELF 
+> based systems (so it would break embedded things like FLAT on NOMMU).
+
+Not to mention, this is starting to fall into 'overcomplicated solutions'
+category. I would like to keep things as simple as possible.
+
+> so all in all, i think the tst_fork() is the best way to go.  if tracking 
+> really gets out of hand, since the compile+link steps are in common .mk code, 
+> it'd be easy to add a post-link test that looks to see if the ELF uses fork() 
+> without calling tst_fork() ...
+
+As I said above, I'm slightly for flushing buffers in the library code,
+but generally either of these two would do.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+RSA(R) Conference 2012
+Mar 27 - Feb 2
+Save $400 by Jan. 27
+Register now!
+http://p.sf.net/sfu/rsa-sfdev2dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
