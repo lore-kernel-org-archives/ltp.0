@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rikpl-0003i8-Gi
-	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 10:46:09 +0000
-Date: Thu, 5 Jan 2012 11:45:37 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120105104537.GA14623@saboteur.suse.cz>
-References: <4F02E0C6.3090308@imgtec.com>
-	<201201031538.47749.vapier@gentoo.org>
-	<20120104143426.GD15845@saboteur.suse.cz>
-	<201201041358.21225.vapier@gentoo.org>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RlZvN-0002P2-9X
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 05:43:37 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RlZvM-0002fm-DC
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jan 2012 05:43:37 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 13 Jan 2012 00:43:40 -0500
+References: <1326166692-18276-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1326166692-18276-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201201041358.21225.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 08/21] syscalls/remap_file_pages: unsigned int is
- always greater to zero
+Message-Id: <201201130043.41529.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
+	duplicated output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,38 +25,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0946485021136599913=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > And moreover isn't sizeof(char) == 1 by definition?
-> 
-> i don't know the ISO C spec well enough to say.  but it's probably safe to say 
-> that sizeof(char) will always be 1 on any system we ever care about.  
-> personally i wouldn't discourage the use of sizeof(char) when it makes sense.
+--===============0946485021136599913==
+Content-Type: multipart/signed; boundary="nextPart2909815.3EnxPSdUEV";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Looked that up:
+--nextPart2909815.3EnxPSdUEV
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-"It's fundamental to correct usage of functions such as malloc and fread
- that sizeof(char) be exactly one. In practise, this means that byte in
- C terms is the smallest unit of storage, even if this unit is 36 bits
- wide; and all objects are composed of an integer number of these
- smallest units."
+On Monday 09 January 2012 22:38:12 Caspar Zhang wrote:
+> when executing with `$BIN/runltp` command, getrusage03 puts out
+> duplicated information due to buffered stdout. Using fflush(stdout) to
+> solve this issue.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+NAK to this version.  it's a general issue with LTP and forking and should =
+be=20
+solved as such.
+=2Dmike
+
+--nextPart2909815.3EnxPSdUEV
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPD8SNAAoJEEFjO5/oN/WBoLMP/1RspGHEwBqm27JUp7QJ4s1y
+bwKtrUTvu+tClApz8zNKtXa5cFETxMsHLMUIA/+0sw/BrpuskL8aBIuvZ7IfL4ri
+72eSPIeobP3qIVUgMBN00SKunugvdnNNSYlcx6mF8yG95Uq1sM90uZo5dtvvJaGb
+2rJBGWWa/lVoKYqdSDZl2BKEGl50lzZtUo5ThDs/oXG+1eTM3KDVG5nwtALzBL65
+Nwbh+8gjmnOtItyXhmxE2TYfvFwp1a0LgscmbD48Rufdo6116daUS4ES1UVZ0pOz
+GBN1fBe1LMmMdkLljBo/vz9Csk3T2AqFRTXu1HcHb9713nShjF44MovNC8yilaRB
+GTcVdK0IfZTdDc2atQUoV0bZkHF33PTpRwo/CWH/RkMVkZ91F2NqFbOVe/Uf8ijk
+VVTugyPsBpmzUuADZ+SoRQcyopmdEf+4wLCEzCl7z2Nj1npGT/KUDWHUwIu0OTcq
+6I8JhBZ4Nfk84oDzD0/ijb0CYddsm5lXWW/jhIH9el+B95ntw/5laclcZEHe9H7J
+mgjLPSeRjEjKP0nywSFo7vlk7UHlHnbU9noE6VZN6a40Ht63yH+UUUEWYQC94nHy
+xu5VrEBBZ1HGnGTfE9GCOUG7TvupgMRPpfGGfiXX8zBqXCru2eRqWD+LAm9yJh1H
+c5lsNnJoVEUQKe+G4rFr
+=DC1/
+-----END PGP SIGNATURE-----
+
+--nextPart2909815.3EnxPSdUEV--
+
+
+--===============0946485021136599913==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+RSA(R) Conference 2012
+Mar 27 - Feb 2
+Save $400 by Jan. 27
+Register now!
+http://p.sf.net/sfu/rsa-sfdev2dev2
+--===============0946485021136599913==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0946485021136599913==--
+
