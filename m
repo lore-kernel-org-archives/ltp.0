@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RipxZ-0004wT-SA
-	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 16:14:33 +0000
-Date: Thu, 5 Jan 2012 17:25:26 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120105162526.GB22435@saboteur.suse.cz>
-References: <1324869052-22433-1-git-send-email-jin.li@windriver.com>
-	<20111230143413.GA29431@saboteur.suse.cz>
-	<4F050549.3060805@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1RmfwG-0001p5-Uy
+	for ltp-list@lists.sourceforge.net; Mon, 16 Jan 2012 06:21:04 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RmfwG-0003aE-3h
+	for ltp-list@lists.sourceforge.net; Mon, 16 Jan 2012 06:21:04 +0000
+Message-ID: <4F13C1C0.3050307@windriver.com>
+Date: Mon, 16 Jan 2012 14:20:48 +0800
+From: Jin Li <Jin.Li@windriver.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F050549.3060805@windriver.com>
-Subject: Re: [LTP] [PATCH] This fix make sure the function "setpgid" get
- invoked in the right time in setpgid03 test02.
+References: <4F13940B.8050209@windriver.com>
+	<201201160047.33401.vapier@gentoo.org>
+In-Reply-To: <201201160047.33401.vapier@gentoo.org>
+Subject: Re: [LTP] A question about mktemp in script runltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,33 +28,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jin Li <Jin.Li@windriver.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> I'm afraid that I don't agree with you. The child and father get the
-> same schedule priority. So during the 5s sleeping of father, the
-> child have enough time to run "setpgid". Here is just a execution
-> sync-up that make sure the "execlp" is invoked  just  before the
-> "setpgid" get invoked in father.
 
-Well yes and no. This is exactly the case where the tests would work
-fine most of the time, but may generate false regressions from time to
-time.
 
-You can't really say that some process will be schedulled during some
-time on multitasking system, you may only say that it's likely.
+Mike Frysinger wrote:
+> On Sunday 15 January 2012 22:05:47 Jin Li wrote:
+>> In runltp script, mktemp is used to create a temp directory. see below :
+>>
+>> mnt_pnt=`mktemp -d --tmpdir=${TMP} mnt_pnt.XXXXXX`
+>>
+>> But I have a little confused about the argument "--tmpdir"
+>>
+>> I prefer to use "-p ${TMP}" to replace "--tmpdir=${TMP}"
+> 
+> why ?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+o, I see the difference.
+
+I am using the mktemp from 30 September 2001.
+
+It is so old that can't recognize the argument "--tmpdir"
+
+It's time to update my Linux.
+
+Jin
+
+> -mike
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+RSA(R) Conference 2012
+Mar 27 - Feb 2
+Save $400 by Jan. 27
+Register now!
+http://p.sf.net/sfu/rsa-sfdev2dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
