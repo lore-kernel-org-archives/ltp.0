@@ -1,23 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Wei.Yang@windriver.com>) id 1Rj3TW-0007lo-QA
-	for ltp-list@lists.sourceforge.net; Fri, 06 Jan 2012 06:40:26 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Rj3TV-0004HQ-Bk
-	for ltp-list@lists.sourceforge.net; Fri, 06 Jan 2012 06:40:26 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q066eJRh011999
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 5 Jan 2012 22:40:19 -0800 (PST)
-From: <Wei.Yang@windriver.com>
-Date: Fri, 6 Jan 2012 14:40:19 +0800
-Message-ID: <1325832019-21537-1-git-send-email-Wei.Yang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Rn6u5-0005k0-CT
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jan 2012 11:08:37 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Rn6tz-0005UQ-Eu
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jan 2012 11:08:37 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q0HB8PLn022176
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jan 2012 06:08:25 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q0HB8ObB028906
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jan 2012 06:08:24 -0500
+Message-ID: <4F1556A5.9010604@redhat.com>
+Date: Tue, 17 Jan 2012 12:08:21 +0100
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH1/1][V2] shmat() returns -1 and errno is EINVAL on mips
+Content-Type: multipart/mixed; boundary="------------070504030101060104080000"
+Subject: [LTP] [PATCH] syslog-lib: support distros running systemd
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,108 +32,145 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: wei.yang@windriver.com
 
-From: Wei Yang <Wei.Yang@windriver.com>
-
-
-Hi, Please folks help me review the patch below.
-
-thanks
-
-The patch fixes upon the issue described by the subject above.
-The funciton shmget(shkey++, INT_SIZE,...) and shmat() only 
-ensure that a page linear address range is avaiable. 
-shmat() will return base_addr aligned on a page boundary, 
-For x86 and ppc, since SHMLBA is equal to PAGE_SIZE, so the 
-base_addr returned by shmat() is the same as the base_addr 
-is aligned to next SHMLBA. But for mips architecture, 
-SHMLBA is not equal to PAGE_SIZE(SHMLBA > PAGE_SIZE)
-so when base_addr is aligned to next SHMLBA address. base_addr will 
-expire a page range and the base_addr can already be used by the process,
-then shmat(shkey, base_addr....) will return -1.
-Therefore we should probe a bigger available virtual address space for 
-ensuring that base_addr aligned to next SHMLBA always is available. that is
-the base_addr aligned to next SHMLBA is not used by the process.
+This is a multi-part message in MIME format.
+--------------070504030101060104080000
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-Signed-off-by: Wei Yang <Wei.Yang@windriver.com>
+init.d/ scripts may not be available on distros
+using systemd, for example Fedora16.
+
+This patch is using 'systemctl' to restart syslog daemon
+on distros running systemd. If systemctl is not available
+it falls back to directly calling init script.
+
+Also it drops few upstart TODO comments, current code
+works OK with upstart (tested on RHEL6).
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/syscalls/ipc/shmat/shmat01.c |   27 +++++++++++++++++++++++-
- 1 files changed, 25 insertions(+), 2 deletions(-)
+  testcases/kernel/syscalls/syslog/syslog-lib.sh |   40 
++++++++++++++----------
+  1 files changed, 23 insertions(+), 17 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index 7c68459..344ad3f 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -65,6 +65,9 @@ void check_functionality(int);
- #define CASE1		20	/* memory location.                */
- 
- int shm_id_1 = -1;
-+#if defined(__mips__) || defined(__mips64)
-+int shm_id_2 = -1;
-+#endif
- 
- void *base_addr;		/* By probing this address first, we can make
- 				 * non-aligned addresses from it for different
-@@ -262,14 +265,34 @@ void setup(void)
- 		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
- 			 "resource 1 in setup()");
- 	}
--
- 	/* Probe an available linear address for attachment */
-+#if defined(__mips__) || defined(__mips64)
-+	/*
-+	 * For mips architecture, SHMLBA is not equal to PAGE_SIZE
-+	 * base_addr is not available address for process after 
-+	 * base_addr is aligned to next SHMLBA address
-+	 */
-+	if ((shm_id_2 = shmget(shmkey++, SHMLBA, SHM_RW | IPC_CREAT | IPC_EXCL)) == -1) {
-+		tst_brkm(TBROK, cleanup, "Failed to create shared memory ");
-+	}
-+	if ((base_addr = shmat(shm_id_2, NULL, 0)) == (void *) -1) {
-+		rm_shm(shm_id_2);
-+		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
-+	}
-+	if (shmdt((const void *)base_addr) == -1) {
-+		rm_shm(shm_id_2);
-+		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
-+	}
-+	rm_shm(shm_id_2);
-+#else
- 	if ((base_addr = shmat(shm_id_1, NULL, 0)) == (void *)-1) {
- 		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
- 	}
- 	if (shmdt((const void *)base_addr) == -1) {
- 		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
- 	}
-+#endif
-+	
- 
- 	/* some architectures (e.g. parisc) are strange, so better always align to
- 	 * next SHMLBA address. */
-@@ -299,4 +322,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
--}
-\ No newline at end of file
-+}
--- 
-1.7.0.2
 
+
+--------------070504030101060104080000
+Content-Type: text/x-patch;
+	name="0001-syslog-lib-support-distros-running-systemd.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0001-syslog-lib-support-distros-running-systemd.patch"
+
+diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+index 91a2e62..3d0c189 100755
+--- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
++++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+@@ -29,11 +29,15 @@ CONFIG_FILE=""
+ # rsyslogd .conf specific args.
+ RSYSLOG_CONFIG=
+ 
+-# Command for syslog daemon.
+-SYSLOG_COMMAND=
++# Command to restart syslog daemon.
++SYSLOG_RESTART_COMMAND=
+ 
+-# Args to pass to $SYSLOG_COMMAND when restarting the daemon.
+-SYSLOG_RESTART_COMMAND_ARGS=
++# running under systemd?
++if command -v systemctl >/dev/null 2>&1; then
++	HAVE_SYSTEMCTL=1
++else
++	HAVE_SYSTEMCTL=0
++fi
+ 
+ # number of seconds to wait for another syslog test to complete
+ WAIT_COUNT=60
+@@ -82,31 +86,33 @@ setup()
+ 		CONFIG_FILE="/etc/rsyslog.conf"
+ 		SYSLOG_INIT_SCRIPT="/etc/init.d/rsyslog"
+ 		RSYSLOG_CONFIG='$ModLoad imuxsock.so'
+-	#elif <detect-upstart-jobfile-here>; then
+-		# TODO: upstart
+ 	else
+ 		tst_resm TCONF "couldn't find syslogd, syslog-ng, or rsyslogd"
+ 		cleanup	0
+ 	fi
+ 
+-	if [ -z "$SYSLOG_INIT_SCRIPT" ]; then
+-		# TODO: upstart
+-		:
++	SVCNAME=$(basename $SYSLOG_INIT_SCRIPT)
++	if [ $HAVE_SYSTEMCTL == 1 ]; then
++		for svc in "$SVCNAME" "syslog"; do
++			if systemctl is-enabled $svc.service >/dev/null 2>&1; then
++				SYSLOG_RESTART_COMMAND="systemctl restart $svc.service"
++				break
++			fi
++		done
+ 	else
+ 		# Fallback to /etc/init.d/syslog if $SYSLOG_INIT_SCRIPT
+ 		# doesn't exist.
+ 		for SYSLOG_INIT_SCRIPT in "$SYSLOG_INIT_SCRIPT" "/etc/init.d/syslog"; do 
+ 			if [ -x "$SYSLOG_INIT_SCRIPT" ]; then
++				SYSLOG_RESTART_COMMAND="$SYSLOG_INIT_SCRIPT restart"
+ 				break
+ 			fi
+ 		done
+-		if [ ! -x "$SYSLOG_INIT_SCRIPT" ]; then
+-			tst_resm TBROK "$SYSLOG_INIT_SCRIPT - no such script"
+-			cleanup 1
+-		fi
++	fi
+ 
+-		SYSLOG_COMMAND=$SYSLOG_INIT_SCRIPT
+-		SYSLOG_RESTART_COMMAND_ARGS=restart
++	if [ -z "$SYSLOG_RESTART_COMMAND" ]; then
++		tst_resm TBROK "Don't know how to restart $SVCNAME"
++		cleanup 1
+ 	fi
+ 
+ 	# Back up configuration file
+@@ -146,9 +152,9 @@ restart_syslog_daemon()
+ 		cleanup_command=$1
+ 	fi
+ 
+-	tst_resm TINFO "restarting syslog daemon via $SYSLOG_COMMAND $SYSLOG_RESTART_COMMAND_ARGS"
++	tst_resm TINFO "restarting syslog daemon via $SYSLOG_RESTART_COMMAND"
+ 
+-	if $SYSLOG_COMMAND $SYSLOG_RESTART_COMMAND_ARGS >/dev/null 2>&1; then
++	if $SYSLOG_RESTART_COMMAND >/dev/null 2>&1; then
+ 		# XXX: this really shouldn't exist; if *syslogd isn't ready
+ 		# once the restart directive has been issued, then it needs to
+ 		# be fixed.
+
+
+--------------070504030101060104080000
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+--------------070504030101060104080000
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------070504030101060104080000--
+
