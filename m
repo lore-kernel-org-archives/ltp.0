@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1RiomR-0001ef-73
-	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:59 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RiomQ-0005Q8-D3
-	for ltp-list@lists.sourceforge.net; Thu, 05 Jan 2012 14:58:59 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q05Ewq0q021542
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 5 Jan 2012 09:58:53 -0500
-From: Eryu Guan <eguan@redhat.com>
-Date: Thu,  5 Jan 2012 22:57:51 +0800
-Message-Id: <1325775471-19975-5-git-send-email-eguan@redhat.com>
-In-Reply-To: <1325775471-19975-1-git-send-email-eguan@redhat.com>
-References: <1325775471-19975-1-git-send-email-eguan@redhat.com>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1RnCP5-0004an-GZ
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jan 2012 17:00:59 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RnCOz-0002Tr-VB
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jan 2012 17:00:59 +0000
+Message-ID: <4F15A93E.10405@imgtec.com>
+Date: Tue, 17 Jan 2012 17:00:46 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.7.5"
-Subject: [LTP] [PATCH v3 4/4] syscalls/getxattr02: new testcase to test
-	getxattr(2)
+References: <1325672810-5247-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1325672810-5247-1-git-send-email-markos.chandras@imgtec.com>
+Subject: Re: [LTP] [PATCH 12/21] syscalls/{getcontext,
+	profil}: Multiple fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,239 +25,108 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.7.7.5
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+On 01/04/2012 10:26 AM, Markos Chandras wrote:
+> - Include test.h header even when __UCLIBC__ is defined. It is required for the
+> tst_brkm function
+> - Move TCID variable definition to the top so I can be independent of whether
+>    __UCLIBC is used or not.
+>
+> Signed-off-by: Markos Chandras<markos.chandras@imgtec.com>
+> ---
+>   .../kernel/syscalls/getcontext/getcontext01.c      |    7 +++++--
+>   testcases/kernel/syscalls/profil/profil01.c        |    7 +++++--
+>   2 files changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c b/testcases/kernel/syscalls/getcontext/getcontext01.c
+> index 7cadc67..1cf2896 100644
+> --- a/testcases/kernel/syscalls/getcontext/getcontext01.c
+> +++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
+> @@ -34,6 +34,9 @@
+>    **********************************************************/
+>
+>   #include<features.h>
+> +
+> +char *TCID = "getcontext01";	/* Test program identifier.    */
+> +
+>   #if !defined(__UCLIBC__)
+>
+>   #include<stdio.h>
+> @@ -47,7 +50,6 @@
+>   void setup();
+>   void cleanup();
+>
+> -char *TCID = "getcontext01";	/* Test program identifier.    */
+>   int TST_TOTAL = 1;		/* Total number of test cases. */
+>
+>   int exp_enos[] = { 0 };		/* must be a 0 terminated list */
+> @@ -98,8 +100,9 @@ void cleanup()
+>   }
+>
+>   #else /* systems that dont support obsolete getcontext */
+> +#include "test.h"
+>   int main()
+>   {
+>   	tst_brkm(TCONF, NULL, "system doesn't have getcontext support");
+>   }
+> -#endif
+> \ No newline at end of file
+> +#endif
+> diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
+> index 63bed83..571e6f0 100644
+> --- a/testcases/kernel/syscalls/profil/profil01.c
+> +++ b/testcases/kernel/syscalls/profil/profil01.c
+> @@ -41,6 +41,9 @@
+>   #endif
+>
+>   #include<features.h>
+> +
+> +char *TCID = "profil01";
+> +
+>   #ifndef __UCLIBC__
+>
+>   #ifdef __arm__
+> @@ -73,7 +76,6 @@ volatile int t_flag;
+>   //char progname[]= "profil1()";
+>
+>   /*****	LTP Port	*****/
+> -char *TCID = "profil01";
+>   int local_flag = PASSED;
+>   int block_number;
+>   FILE *temp;
+> @@ -305,9 +307,10 @@ void fail_exit()
+>   /*****	**	**	*****/
+>
+>   #else
+> +#include "test.h"
+>   int main(void)
+>   {
+>   	/* uClibc does not have profiling support */
+>   	tst_exit();
+>   }
+> -#endif
+> \ No newline at end of file
+> +#endif
 
+Ping?
 
-In the user.* namespace, only regular files and directories can
-have extended attributes. Otherwise getxattr(2) will return -1
-and set errno to ENODATA.
+Any comments on this? It fixes a build failure on uClibc platforms.
 
-There are 4 test cases:
-1. Get attribute from a FIFO, setxattr(2) should return -1 and
-   set errno to ENODATA
-2. Get attribute from a char special file, setxattr(2) should
-   return -1 and set errno to ENODATA
-3. Get attribute from a block special file, setxattr(2) should
-   return -1 and set errno to ENODATA
-4. Get attribute from a UNIX domain socket, setxattr(2) should
-   return -1 and set errno to ENODATA
+-- 
+markos
 
-Signed-off-by: Eryu Guan <eguan@redhat.com>
----
- runtest/syscalls                                |    1 +
- testcases/kernel/syscalls/getxattr/getxattr02.c |  152 +++++++++++++++++++++++
- 2 files changed, 153 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/getxattr/getxattr02.c
-
-
---------------1.7.7.5
-Content-Type: text/x-patch;
-	name="0004-syscalls-getxattr02-new-testcase-to-test-getxattr-2.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0004-syscalls-getxattr02-new-testcase-to-test-getxattr-2.patch"
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 8e36ec0..1442390 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -421,6 +421,7 @@ getuid03 getuid03
- getuid03_16 getuid03_16
- 
- getxattr01 getxattr01
-+getxattr02 getxattr02
- 
- #Needs tty device.
- #ioctl01 ioctl01 -D /dev/tty0
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c b/testcases/kernel/syscalls/getxattr/getxattr02.c
-new file mode 100644
-index 0000000..06b279c
---- /dev/null
-+++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
-@@ -0,0 +1,152 @@
-+/*
-+ * Copyright (C) 2011 Red Hat, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+/*
-+ * In the user.* namespace, only regular files and directories can
-+ * have extended attributes. Otherwise getxattr(2) will return -1
-+ * and set errno to ENODATA.
-+ *
-+ * There are 4 test cases:
-+ * 1. Get attribute from a FIFO, setxattr(2) should return -1 and
-+ *    set errno to ENODATA
-+ * 2. Get attribute from a char special file, setxattr(2) should
-+ *    return -1 and set errno to ENODATA
-+ * 3. Get attribute from a block special file, setxattr(2) should
-+ *    return -1 and set errno to ENODATA
-+ * 4. Get attribute from a UNIX domain socket, setxattr(2) should
-+ *    return -1 and set errno to ENODATA
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <attr/xattr.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+
-+#define XATTR_TEST_KEY "user.testkey"
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+char *TCID = "getxattr02";
-+
-+char fifo[] = "getxattr02fifo";
-+char chr[] = "getxattr02chr";
-+char blk[] = "getxattr02blk";
-+char sock[] = "getxattr02sock";
-+
-+char *tc[] = {
-+	fifo,	/* case 00, get attr from fifo */
-+	chr,	/* case 01, get attr from char special */
-+	blk,	/* case 02, get attr from block special */
-+	sock,	/* case 03, get attr from UNIX domain socket */
-+};
-+
-+int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	int i;
-+	char *msg;
-+	char buf[BUFSIZ];
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++)	{
-+			TEST(getxattr(tc[0], XATTR_TEST_KEY, buf, BUFSIZ));
-+
-+			if (TEST_RETURN == -1 && TEST_ERRNO == ENODATA) {
-+				tst_resm(TPASS | TTERRNO, "expected behavior");
-+			} else {
-+				tst_resm(TFAIL | TTERRNO, "unexpected behavior"
-+				    " - expected errno %d - Got", ENODATA);
-+			}
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	int fd;
-+
-+	tst_require_root(NULL);
-+
-+	tst_tmpdir();
-+
-+	/* Test for xattr support */
-+	fd = creat("testfile", 0644);
-+	if (fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create testfile failed");
-+	close(fd);
-+	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
-+		if (errno == ENOTSUP)
-+			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
-+			    "mount without user_xattr option");
-+	unlink("testfile");
-+
-+	/* Create test files */
-+	if (mknod(fifo, S_IFIFO | 0777, 0) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create fifo(%s) failed",
-+		    fifo);
-+
-+	if (mknod(chr, S_IFCHR | 0777, 0) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create char special(%s)"
-+		    " failed", chr);
-+
-+	if (mknod(blk, S_IFBLK | 0777, 0) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create block special(%s)"
-+		    " failed", blk);
-+
-+	if (mknod(sock, S_IFSOCK | 0777, 0) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create socket(%s) failed",
-+		    sock);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+}
-
---------------1.7.7.5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
---------------1.7.7.5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.7.5--
-
-
-
