@@ -2,17 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RiRwP-0007xm-JG
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 14:35:45 +0000
-Date: Wed, 4 Jan 2012 15:46:37 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120104144637.GF15845@saboteur.suse.cz>
-References: <4F02E22D.3020802@imgtec.com>
-	<201201031540.46838.vapier@gentoo.org>
+	(envelope-from <carmelo.amoroso@st.com>) id 1RnX2O-0001u2-S0
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:02:56 +0000
+Received: from eu1sys200aog111.obsmtp.com ([207.126.144.131])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RnX2K-0000lb-PT
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:02:56 +0000
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Date: Wed, 18 Jan 2012 15:36:48 +0100
+Message-Id: <1326897408-26778-2-git-send-email-carmelo.amoroso@st.com>
+In-Reply-To: <1326897408-26778-1-git-send-email-carmelo.amoroso@st.com>
+References: <1326897408-26778-1-git-send-email-carmelo.amoroso@st.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201201031540.46838.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 10/21] lib/parse_opts: Multiple fixes
+Subject: [LTP] [PATCH 2/2] profile01: fix build using uClibc runtime
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,31 +24,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
+To: ltp-list@lists.sf.net
 
-Hi!
-> 
-> "- Fix TEST_RETURN definition" doesn't really tell much much.  it should say 
-> something like "Fix TEST_RETURN definition to match that of the exported API in 
-> usctest.h".
-
-+1.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Rml4IGEgYnVpbGQgZXJyb3Igd2hlbiBfX1VDTElCQ19fIGlzIGRlZmluZWQgKHNlZSBsb2cgYmVs
+b3cpCmJ5IG1vdmluZyAidGVzdC5oIiBhbmQgVENJRCBvbiB0b3Agb2YgZmlsZSBhcyByZXF1aXJl
+ZCBieSAndHN0X2Jya20nIGZ1bmN0aW9uLgoKLS0tCnByb2ZpbDAxLmM6IEluIGZ1bmN0aW9uIOKA
+mG1haW7igJk6CnByb2ZpbDAxLmM6MzExOjI6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9u
+IG9mIGZ1bmN0aW9uIOKAmHRzdF9leGl04oCZCnByb2ZpbDAxLmM6MzEyOjE6IHdhcm5pbmc6IGNv
+bnRyb2wgcmVhY2hlcyBlbmQgb2Ygbm9uLXZvaWQgZnVuY3Rpb24KLi4vLi4vLi4vLi4vbGliL2xp
+Ymx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGBjYXRfZmlsZSc6Ci9zdGxpbnV4L2Ftb3Jv
+c29jL2dpdC9zdG0vbHRwL2xpYi90c3RfcmVzLmM6NzMzOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRv
+IGBUQ0lEJwouLi8uLi8uLi8uLi9saWIvbGlibHRwLmEodHN0X3Jlcy5vKTogSW4gZnVuY3Rpb24g
+YHRzdF9yZXMnOgovc3RsaW51eC9hbW9yb3NvYy9naXQvc3RtL2x0cC9saWIvdHN0X3Jlcy5jOjMw
+MDogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKL3N0bGludXgvYW1vcm9zb2MvZ2l0L3N0
+bS9sdHAvbGliL3RzdF9yZXMuYzoyODQ6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYFRDSUQnCi9z
+dGxpbnV4L2Ftb3Jvc29jL2dpdC9zdG0vbHRwL2xpYi90c3RfcmVzLmM6MzIzOiB1bmRlZmluZWQg
+cmVmZXJlbmNlIHRvIGBUQ0lEJwouLi8uLi8uLi8uLi9saWIvbGlibHRwLmEodHN0X3Jlcy5vKTog
+SW4gZnVuY3Rpb24gYHRzdF9icmsnOgovc3RsaW51eC9hbW9yb3NvYy9naXQvc3RtL2x0cC9saWIv
+dHN0X3Jlcy5jOjYzNDogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKY29sbGVjdDI6IGxk
+IHJldHVybmVkIDEgZXhpdCBzdGF0dXMKLS0tCgpTaWduZWQtb2ZmLWJ5OiBGcmFuY2VzY28gUnVu
+ZG8gPGZyYW5jZXNjby5ydW5kb0BzdC5jb20+ClNpZ25lZC1vZmYtYnk6IENhcm1lbG8gQW1vcm9z
+byA8Y2FybWVsby5hbW9yb3NvQHN0LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3Byb2ZpbC9wcm9maWwwMS5jIHwgICAgNiArKystLS0KIDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvcHJvZmlsL3Byb2ZpbDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3By
+b2ZpbC9wcm9maWwwMS5jCmluZGV4IDYzYmVkODMuLjI0OGUwMTIgMTAwNjQ0Ci0tLSBhL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvcHJvZmlsL3Byb2ZpbDAxLmMKKysrIGIvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9wcm9maWwvcHJvZmlsMDEuYwpAQCAtNDEsNiArNDEsOCBAQAogI2VuZGlm
+CiAKICNpbmNsdWRlIDxmZWF0dXJlcy5oPgorI2luY2x1ZGUgInRlc3QuaCIKK2NoYXIgKlRDSUQg
+PSAicHJvZmlsMDEiOwogI2lmbmRlZiBfX1VDTElCQ19fCiAKICNpZmRlZiBfX2FybV9fCkBAIC01
+OCw3ICs2MCw2IEBACiAjaW5jbHVkZSA8ZXJybm8uaD4KICNpbmNsdWRlIDxzeXMvdHlwZXMuaD4K
+ICNpbmNsdWRlIDxzeXMvd2FpdC5oPgotI2luY2x1ZGUgInRlc3QuaCIKICNpbmNsdWRlICJ1c2N0
+ZXN0LmgiCiAjZGVmaW5lIEZBSUxFRCAwCiAjZGVmaW5lIFBBU1NFRCAxCkBAIC03Myw3ICs3NCw2
+IEBAIHZvbGF0aWxlIGludCB0X2ZsYWc7CiAvL2NoYXIgcHJvZ25hbWVbXT0gInByb2ZpbDEoKSI7
+CiAKIC8qKioqKglMVFAgUG9ydAkqKioqKi8KLWNoYXIgKlRDSUQgPSAicHJvZmlsMDEiOwogaW50
+IGxvY2FsX2ZsYWcgPSBQQVNTRUQ7CiBpbnQgYmxvY2tfbnVtYmVyOwogRklMRSAqdGVtcDsKQEAg
+LTMxMCw0ICszMTAsNCBAQCBpbnQgbWFpbih2b2lkKQogCS8qIHVDbGliYyBkb2VzIG5vdCBoYXZl
+IHByb2ZpbGluZyBzdXBwb3J0ICovCiAJdHN0X2V4aXQoKTsKIH0KLSNlbmRpZgpcIE5vIG5ld2xp
+bmUgYXQgZW5kIG9mIGZpbGUKKyNlbmRpZgotLSAKMS43LjQuNAoKCi0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpLZWVwIFlvdXIgRGV2ZWxvcGVyIFNraWxscyBDdXJyZW50IHdpdGggTGVhcm5EZXZOb3ch
+ClRoZSBtb3N0IGNvbXByZWhlbnNpdmUgb25saW5lIGxlYXJuaW5nIGxpYnJhcnkgZm9yIE1pY3Jv
+c29mdCBkZXZlbG9wZXJzCmlzIGp1c3QgJDk5Ljk5ISBWaXN1YWwgU3R1ZGlvLCBTaGFyZVBvaW50
+LCBTUUwgLSBwbHVzIEhUTUw1LCBDU1MzLCBNVkMzLApNZXRybyBTdHlsZSBBcHBzLCBtb3JlLiBG
+cmVlIGZ1dHVyZSByZWxlYXNlcyB3aGVuIHlvdSBzdWJzY3JpYmUgbm93IQpodHRwOi8vcC5zZi5u
+ZXQvc2Z1L2xlYXJuZGV2bm93LWQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
