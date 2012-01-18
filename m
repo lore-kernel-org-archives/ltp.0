@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiPa7-0004HN-C8
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 12:04:35 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiPa6-0007h1-Je
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 12:04:35 +0000
-Received: by obcwn6 with SMTP id wn6so19173887obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Jan 2012 04:04:29 -0800 (PST)
+	(envelope-from <vapier@gentoo.org>) id 1RnXIU-0001Z2-CS
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:19:34 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RnXIO-0005wF-Op
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:19:34 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 18 Jan 2012 10:19:29 -0500
+References: <1326899058-19175-1-git-send-email-carmelo.amoroso@st.com>
+In-Reply-To: <1326899058-19175-1-git-send-email-carmelo.amoroso@st.com>
 MIME-Version: 1.0
-In-Reply-To: <4F043605.9050703@imgtec.com>
-References: <4F02E1B9.2090603@imgtec.com>
-	<CAGH67wRnBFxdBgQos0Px8GscXQ+Sn30JNmM-z2KU7-v6Vc7d3A@mail.gmail.com>
-	<4F043605.9050703@imgtec.com>
-Date: Wed, 4 Jan 2012 04:04:29 -0800
-Message-ID: <CAGH67wR_qD3pc_k7qdeyRWq60V6qr6A7yeT9Q4zcYTLrJ-WBkA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 09/21] realtime/lib/Makefile: Fix path for
-	config.mk
+Message-Id: <201201181019.29693.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 1/2] cacheflush: enable cacheflush syscall for
+	other architectures.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,42 +25,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============2945604071202888679=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Jan 4, 2012 at 3:20 AM, Markos Chandras
-<Markos.Chandras@imgtec.com> wrote:
-> On 01/03/2012 07:24 PM, Garrett Cooper wrote:
->>
->> On Tue, Jan 3, 2012 at 3:08 AM, Markos Chandras
->> <Markos.Chandras@imgtec.com> =A0wrote:
->>>
->>> Hi, please review the attached patch
->>
->>
->> No -- this breaks out-of-tree compiles.
->> -Garrett
->
-> But without this patch, the in-tree 'distclean' target is broken
+--===============2945604071202888679==
+Content-Type: multipart/signed; boundary="nextPart3197368.4oUFWfkJ9l";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-    Hmmm... it worked once upon a time. I'll look at this when I have a cha=
-nce.
-Thanks,
--Garrett
+--nextPart3197368.4oUFWfkJ9l
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
----------------------------------------------------------------------------=
----
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual =
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+-mike
 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure =
+--nextPart3197368.4oUFWfkJ9l
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPFuMBAAoJEEFjO5/oN/WBg6cQAKqaDj4HscwKNcxqLvVyGMz9
+diakBNW1Ied/hwW475bF7E73V/ulBo5JSktTa6/3iB4r+CLUtLUqBI3cf20CtfTD
+ePONIEWrujokCctEjQNMuQE/x1RR175ZIhxJ6KbPfLrm7MBuHddo0r4Ri2MVd+tp
+3VCG/RJR5cfZeE3SYnqQvqoGkc333nlenBQYNrS+9AiSR3mfc8Pg3JRBXdAaCZN7
+jlq6XqTkTJrB9vaBnG2Yei7CtVvo0qDMLSsfAC9N412/TwZsqfbjcGIoaUHHzkaO
+y4ewYdKYJCVpM9adbkekoODJdlYk4CDKQGPhBeksg8eY+ASorof1WOZqcxlc1ZUV
+KOczYiCrOFaj7aU0cCqN/jKLBQYT+8zbp/WDDcCFqXCD7Cz+fIk5mXyUOobosYUm
++uk/rsq0FDF21+ondJb1CFtyIpy80VrFOlWQE1KJ/Lru0KG/24cwDSkzkuudQEzX
+/EPvobXJXiGqsIFhplR4Rx8ssiLhFOr4x/UqieaUF2BC17r2YR6W9GxtdkemB81J
+5SUAe55LfUZGBo1vUD2Nyt47HQkhFILiiGte5F+Pfcu5DTGglIUX08MiKom2Te2q
+syaxoqh9l99FkxbOfKkz1pfQIBfK1E1tv/DqT4X5bk5aeoofjppz84hTb+TOutui
+T99W5h4LwQrjHsQ3C1VM
+=UpYz
+-----END PGP SIGNATURE-----
+
+--nextPart3197368.4oUFWfkJ9l--
+
+
+--===============2945604071202888679==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+--===============2945604071202888679==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2945604071202888679==--
+
