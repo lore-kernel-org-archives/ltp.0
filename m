@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri4M6-0007Kg-03
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:24:42 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri4M5-0008GS-7L
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 13:24:41 +0000
-Message-ID: <4F030192.8030107@imgtec.com>
-Date: Tue, 3 Jan 2012 13:24:34 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1RnXh4-00031D-Ho
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:44:58 +0000
+Received: from eu1sys200aog102.obsmtp.com ([207.126.144.113])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RnXh0-0002fl-KY
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:44:58 +0000
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Date: Wed, 18 Jan 2012 16:44:39 +0100
+Message-Id: <1326901479-5679-1-git-send-email-carmelo.amoroso@st.com>
+In-Reply-To: <1326897408-26778-2-git-send-email-carmelo.amoroso@st.com>
+References: <1326897408-26778-2-git-send-email-carmelo.amoroso@st.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040802010308020600060501"
-Subject: [LTP] [PATCH 19/21] nfs/nfsstress/make_tree: Fix erroneous cast to
- void pointer
+Subject: [LTP] [PATCH 2/2 V2] profile01: fix build using uClibc runtime
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,83 +24,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sf.net
 
---------------040802010308020600060501
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi, please review the attached patch
-
--- 
-markos
-
---------------040802010308020600060501
-Content-Type: text/plain;
-	name="0019-nfs-nfsstress-make_tree-Fix-erroneous-cast-to-void-p.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0019-nfs-nfsstress-make_tree-Fix-erroneous-cast-to-void-p.pa";
-	filename*1="tch"
-
-From 3c4f375b923af0ddc64257afbecf1dd2c8efef17 Mon Sep 17 00:00:00 2001
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 22 Dec 2011 15:17:34 +0000
-Subject: [PATCH 19/21] nfs/nfsstress/make_tree: Fix erroneous cast to void pointer
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/network/nfs/nfsstress/make_tree.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/network/nfs/nfsstress/make_tree.c b/testcases/network/nfs/nfsstress/make_tree.c
-index 02d0304..c51e75e 100644
---- a/testcases/network/nfs/nfsstress/make_tree.c
-+++ b/testcases/network/nfs/nfsstress/make_tree.c
-@@ -202,7 +202,7 @@
- #define PTHREAD_EXIT(val)    do {\
- 			exit_val = val; \
-                         dprt("pid[%d]: exiting with %d\n", gettid(),exit_val); \
--			pthread_exit((void *)exit_val); \
-+			pthread_exit((void *)&exit_val); \
- 				} while (0)
- 
- #define OPT_MISSING(prog, opt)   do{\
-@@ -846,4 +846,4 @@ main(int	argc,		/* number of input parameters		      */
-         }
-     }
-     return(0);
--}
-\ No newline at end of file
-+}
--- 
-1.7.1
-
-
---------------040802010308020600060501
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---------------040802010308020600060501
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------040802010308020600060501--
-
-
+Rml4IGEgYnVpbGQgZXJyb3Igd2hlbiBfX1VDTElCQ19fIGlzIGRlZmluZWQgKHNlZSBsb2cgYmVs
+b3cpCmJ5IG1vdmluZyBhbGwgaGVhZGVycyBpbmNsdXNpb24gYW5kIFRDSUQgZGVmaW5pdGlvbiBv
+biB0b3Agb2YgZmlsZQphcyB0aGV5IGFyZSByZXF1aXJlZCBieSAndHN0X2Jya20nIGZ1bmN0aW9u
+IHRvby4KCi0tLQpwcm9maWwwMS5jOiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgpwcm9maWwwMS5j
+OjMxMToyOiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJh0c3Rf
+ZXhpdOKAmQpwcm9maWwwMS5jOjMxMjoxOiB3YXJuaW5nOiBjb250cm9sIHJlYWNoZXMgZW5kIG9m
+IG5vbi12b2lkIGZ1bmN0aW9uCiAuLi8uLi8uLi8uLi9saWIvbGlibHRwLmEodHN0X3Jlcy5vKTog
+SW4gZnVuY3Rpb24gYGNhdF9maWxlJzoKL3N0bGludXgvYW1vcm9zb2MvZ2l0L3N0bS9sdHAvbGli
+L3RzdF9yZXMuYzo3MzM6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYFRDSUQnCi4uLy4uLy4uLy4u
+L2xpYi9saWJsdHAuYSh0c3RfcmVzLm8pOiBJbiBmdW5jdGlvbiBgdHN0X3Jlcyc6Ci9zdGxpbnV4
+L2Ftb3Jvc29jL2dpdC9zdG0vbHRwL2xpYi90c3RfcmVzLmM6MzAwOiB1bmRlZmluZWQgcmVmZXJl
+bmNlIHRvIGBUQ0lEJwovc3RsaW51eC9hbW9yb3NvYy9naXQvc3RtL2x0cC9saWIvdHN0X3Jlcy5j
+OjI4NDogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKL3N0bGludXgvYW1vcm9zb2MvZ2l0
+L3N0bS9sdHAvbGliL3RzdF9yZXMuYzozMjM6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYFRDSUQn
+Ci4uLy4uLy4uLy4uL2xpYi9saWJsdHAuYSh0c3RfcmVzLm8pOiBJbiBmdW5jdGlvbiBgdHN0X2Jy
+ayc6Ci9zdGxpbnV4L2Ftb3Jvc29jL2dpdC9zdG0vbHRwL2xpYi90c3RfcmVzLmM6NjM0OiB1bmRl
+ZmluZWQgcmVmZXJlbmNlIHRvIGBUQ0lEJwpjb2xsZWN0MjogbGQgcmV0dXJuZWQgMSBleGl0IHN0
+YXR1cwogLS0tCgpTaWduZWQtb2ZmLWJ5OiBGcmFuY2VzY28gUnVuZG8gPGZyYW5jZXNjby5ydW5k
+b0BzdC5jb20+ClNpZ25lZC1vZmYtYnk6IENhcm1lbG8gQW1vcm9zbyA8Y2FybWVsby5hbW9yb3Nv
+QHN0LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Byb2ZpbC9wcm9maWwwMS5j
+IHwgICAyNCArKysrKysrKysrKystLS0tLS0tLS0tLS0KIDEgZmlsZXMgY2hhbmdlZCwgMTIgaW5z
+ZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9wcm9maWwvcHJvZmlsMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+cHJvZmlsL3Byb2ZpbDAxLmMKaW5kZXggNjNiZWQ4My4uOTllZWNkYiAxMDA2NDQKLS0tIGEvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wcm9maWwvcHJvZmlsMDEuYworKysgYi90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL3Byb2ZpbC9wcm9maWwwMS5jCkBAIC00MSwxOCArNDEsOSBAQAogI2Vu
+ZGlmCiAKICNpbmNsdWRlIDxmZWF0dXJlcy5oPgotI2lmbmRlZiBfX1VDTElCQ19fCi0KLSNpZmRl
+ZiBfX2FybV9fCi0jZGVmaW5lIEFERFJFU1NfT0ZGU0VUIDB4ODAwMAotI2Vsc2UKLSNkZWZpbmUg
+QUREUkVTU19PRkZTRVQgMAotI2VuZGlmCi0KICNpbmNsdWRlIDxzdGRpby5oPgogI2luY2x1ZGUg
+PHNpZ25hbC5oPgogI2luY2x1ZGUgPGxpbWl0cy5oPgotLyoqKioqCUxUUCBQb3J0CSoqKioqLwog
+I2luY2x1ZGUgPHN0ZGxpYi5oPgogI2luY2x1ZGUgPHVuaXN0ZC5oPgogI2luY2x1ZGUgPGVycm5v
+Lmg+CkBAIC02MCw5ICs1MSwxOSBAQAogI2luY2x1ZGUgPHN5cy93YWl0Lmg+CiAjaW5jbHVkZSAi
+dGVzdC5oIgogI2luY2x1ZGUgInVzY3Rlc3QuaCIKKworY2hhciAqVENJRCA9ICJwcm9maWwwMSI7
+CisKKyNpZm5kZWYgX19VQ0xJQkNfXworCisjaWZkZWYgX19hcm1fXworI2RlZmluZSBBRERSRVNT
+X09GRlNFVCAweDgwMDAKKyNlbHNlCisjZGVmaW5lIEFERFJFU1NfT0ZGU0VUIDAKKyNlbmRpZgor
+CiAjZGVmaW5lIEZBSUxFRCAwCiAjZGVmaW5lIFBBU1NFRCAxCi0vKioqKioJKioJKioJKioqKiov
+CiAKICNkZWZpbmUgUF9USU1FCQkxMAkvKiBwcm9maWxlIGZvciB0aGlzIG1hbnkgIHNlY29uZHMg
+Ki8KIApAQCAtNzMsNyArNzQsNiBAQCB2b2xhdGlsZSBpbnQgdF9mbGFnOwogLy9jaGFyIHByb2du
+YW1lW109ICJwcm9maWwxKCkiOwogCiAvKioqKioJTFRQIFBvcnQJKioqKiovCi1jaGFyICpUQ0lE
+ID0gInByb2ZpbDAxIjsKIGludCBsb2NhbF9mbGFnID0gUEFTU0VEOwogaW50IGJsb2NrX251bWJl
+cjsKIEZJTEUgKnRlbXA7CkBAIC0zMTAsNCArMzEwLDQgQEAgaW50IG1haW4odm9pZCkKIAkvKiB1
+Q2xpYmMgZG9lcyBub3QgaGF2ZSBwcm9maWxpbmcgc3VwcG9ydCAqLwogCXRzdF9leGl0KCk7CiB9
+Ci0jZW5kaWYKXCBObyBuZXdsaW5lIGF0IGVuZCBvZiBmaWxlCisjZW5kaWYKLS0gCjEuNy40LjQK
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KS2VlcCBZb3VyIERldmVsb3BlciBTa2lsbHMgQ3VycmVu
+dCB3aXRoIExlYXJuRGV2Tm93IQpUaGUgbW9zdCBjb21wcmVoZW5zaXZlIG9ubGluZSBsZWFybmlu
+ZyBsaWJyYXJ5IGZvciBNaWNyb3NvZnQgZGV2ZWxvcGVycwppcyBqdXN0ICQ5OS45OSEgVmlzdWFs
+IFN0dWRpbywgU2hhcmVQb2ludCwgU1FMIC0gcGx1cyBIVE1MNSwgQ1NTMywgTVZDMywKTWV0cm8g
+U3R5bGUgQXBwcywgbW9yZS4gRnJlZSBmdXR1cmUgcmVsZWFzZXMgd2hlbiB5b3Ugc3Vic2NyaWJl
+IG5vdyEKaHR0cDovL3Auc2YubmV0L3NmdS9sZWFybmRldm5vdy1kMmQKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0
+cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
