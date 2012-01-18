@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1RkxVA-0001FZ-5B
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 12:42:00 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RkxV4-0001Od-9f
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 12:42:00 +0000
-Date: Wed, 11 Jan 2012 07:41:47 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <974e6f10-853c-4e38-98ba-4bd6bdb6ac98@zmail16.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4F0BB312.5070009@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RnY1K-0004pD-00
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 16:05:54 +0000
+Date: Wed, 18 Jan 2012 17:17:54 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120118161754.GA5353@saboteur.suse.cz>
+References: <20120111125642.GD7143@saboteur.suse.cz>
+	<201201130101.06630.vapier@gentoo.org>
+	<20120113130703.GA14943@saboteur.suse.cz>
+	<201201131216.03211.vapier@gentoo.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <201201131216.03211.vapier@gentoo.org>
 Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
-	duplicated output
+ duplicated output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,36 +25,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkNhc3BhciBaaGFuZyIgPGNh
-c3BhckBjYXNwYXJ6aGFuZy5jb20+Cj4gVG86ICJMVFAgTGlzdCIgPGx0cC1saXN0QGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldD4KPiBTZW50OiBUdWVzZGF5LCBKYW51YXJ5IDEwLCAyMDEyIDQ6NDA6MDIg
-QU0KPiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENIXSBzeXNjYWxscy9nZXRydXNhZ2UwMzogZmx1
-c2ggc3Rkb3V0IHRvIGF2b2lkIGR1cGxpY2F0ZWQgb3V0cHV0Cj4gCj4gT24gMjAxMuW5tDAx5pyI
-MTDml6UgMTE6MzgsIENhc3BhciBaaGFuZyB3cm90ZToKPiA+IAo+ID4gd2hlbiBleGVjdXRpbmcg
-d2l0aCBgJEJJTi9ydW5sdHBgIGNvbW1hbmQsIGdldHJ1c2FnZTAzIHB1dHMgb3V0Cj4gPiBkdXBs
-aWNhdGVkIGluZm9ybWF0aW9uIGR1ZSB0byBidWZmZXJlZCBzdGRvdXQuIFVzaW5nIGZmbHVzaChz
-dGRvdXQpCj4gPiB0bwo+ID4gc29sdmUgdGhpcyBpc3N1ZS4KPiA+IAo+ID4gU2lnbmVkLW9mZi1i
-eTogQ2FzcGFyIFpoYW5nIDxjYXNwYXJAY2FzcGFyemhhbmcuY29tPgo+ID4gLS0tCj4gPiAgdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDMuYyAgfCAgICA3ICsr
-KysrKysKPiA+ICAuLi4va2VybmVsL3N5c2NhbGxzL2dldHJ1c2FnZS9nZXRydXNhZ2UwM19jaGls
-ZC5jICB8ICAgIDEgKwo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAwIGRl
-bGV0aW9ucygtKQo+ID4gCj4gCj4gTm90IHN1cmUgaWYgd2UgaGF2ZSBhbnkgYmV0dGVyIHNvbHV0
-aW9uIHRvIGF2b2lkIHN1Y2ggYnVmZmVyZWQgSS9PCj4gaXNzdWUuCgpIb3cgYWJvdXQgInNldHZi
-dWYoc3Rkb3V0LCBOVUxMLCBfSU9MQkYsIDApOyI/CgpSZWdhcmRzLApKYW4KCi0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpSaWRpY3Vsb3VzbHkgZWFzeSBWREkuIFdpdGggQ2l0cml4IFZESS1pbi1hLUJv
-eCwgeW91IGRvbid0IG5lZWQgYSBjb21wbGV4CmluZnJhc3RydWN0dXJlIG9yIHZhc3QgSVQgcmVz
-b3VyY2VzIHRvIGRlbGl2ZXIgc2VhbWxlc3MsIHNlY3VyZSBhY2Nlc3MgdG8KdmlydHVhbCBkZXNr
-dG9wcy4gV2l0aCB0aGlzIGFsbC1pbi1vbmUgc29sdXRpb24sIGVhc2lseSBkZXBsb3kgdmlydHVh
-bCAKZGVza3RvcHMgZm9yIGxlc3MgdGhhbiB0aGUgY29zdCBvZiBQQ3MgYW5kIHNhdmUgNjAlIG9u
-IFZESSBpbmZyYXN0cnVjdHVyZSAKY29zdHMuIFRyeSBpdCBmcmVlISBodHRwOi8vcC5zZi5uZXQv
-c2Z1L0NpdHJpeC1WRElpbmFib3gKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAt
-bGlzdAo=
+Hi!
+> > > if we wanted to be lazy, it would be easy to catch.  in our test.h:
+> > > 	#define fork() tst_fork()
+> > > 
+> > > then in the single file defining tst_fork(), we do:
+> > > 	#undef fork
+> > > 
+> > > or forcing it via:
+> > > 	#define fork() __use_tst_fork()
+> > > 
+> > > but we already have to track in the ltp tests where fork() is used since
+> > > this breaks NOMMU builds (i.e. UCLINUX), so it's not like we don't
+> > > already have this issue.
+> > 
+> > I don't like idea of defining fork to tst_fork that's exactly the
+> > magic that may take hours to figure out.
+> > 
+> > Forcing it, in this case, is probably good idea.
+> 
+> tst_fork() would be the route i'd prefer to go, and i think since we already 
+> take pains in this area to support NOMMU, it isn't an additional burden.
+
+Hmm, maybe we could get rid of the FORK_OR_VFORK macro and use
+tst_fork() to cover both flusing and no NOMMU target. That actually
+looks like good way to go. So let's fix this that way.
+
+> > > > Or we could flush the output after each test message is printed with
+> > > > tst_resm(). That is IMHO ideal solution. The only drawback is that this
+> > > > may interfere with timings in some testcases (but testcases that
+> > > > expects exacts timings are usually broken anyway).
+> > > 
+> > > i agree those tests are broken if the flushing causes issues due to a
+> > > slow down.  however, slow downs in general are not a good thing,
+> > > especially when these are only needed for apps that fork.  i'd like to
+> > > think we could do better.
+> > 
+> > Still I'm slighlty for this one. In general case, flushing the buffer
+> > often is bad, but considering relatively rare usage of tst_resm() the
+> > slowdowns woudn't be most likely measurable (and it's flushed after
+> > every '\n' when you run the test in the terminal anyway).
+> 
+> i just recall seeing some verbose tests in the past, and often times people 
+> are writing to logs.  maybe in that case, there would be a bit of test time 
+> slow down, and if there's one thing i learned from doing release engineering 
+> at my last job, testing causes the longest delays :(.
+
+I remeber some too, and also remember silecing some of them as the output
+was no more than forgotten debug output and was interfering with the
+testing as well (the realtime testcases that were printing someting in
+the ineer loops, etc...).
+
+And yes, careful testing takes time, a lot of it.
+
+> > Side effects of this are generally possitive too, the messages from
+> > parent and child, or several threads wouldn't be so badly intermixed in
+> > the output.
+> 
+> does that happen ?  POSIX guarantees printf() and friends to be multithreaded 
+> safe, so no lines would be inter-mingled, and they're sharing the same FILE*, 
+> so i wouldn't see adding a fflush() making a difference.
+
+Looked at the code and there is yet another reason for this, the
+printing is done with more than one printf(), so rarely the lines could
+get intermixed. I'll fix that.
+
+> > > a fifth option would be to use libdl, override the fork() symbol with our
+> > > own and then dlsym() to the direct fork() symbol.  but like the pthread
+> > > solution, this would require linking all apps with -ldl, and it would
+> > > only work on ELF based systems (so it would break embedded things like
+> > > FLAT on NOMMU).
+> > 
+> > Not to mention, this is starting to fall into 'overcomplicated solutions'
+> > category. I would like to keep things as simple as possible.
+> 
+> overcomplicated ?  absolutely.  a lot of fun and interesting to implement ?  
+> absolutely ;).
+
+Totally understand that, however I like to keep such fun out of the
+projects I need to maintain ;).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
