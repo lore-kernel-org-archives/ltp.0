@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Ri187-00070N-4D
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:58:03 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ri186-0006js-3a
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 09:58:03 +0000
-Message-ID: <4F02D122.7090704@imgtec.com>
-Date: Tue, 3 Jan 2012 09:57:54 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
-MIME-Version: 1.0
-References: <4F02CBDE.70400@imgtec.com>
-	<CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
-In-Reply-To: <CAGH67wSFbMM+3Dr_pe=_+w_B4Su6p6wZ42LpP5vUwVE1hiH6QQ@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 02/21] lib/self_exec: Remove extra argument from
- tst_resm function call
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1RnX4L-00023T-HM
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:04:57 +0000
+Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RnX4G-0001KS-1w
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:04:57 +0000
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Date: Wed, 18 Jan 2012 16:04:36 +0100
+Message-Id: <1326899076-19591-1-git-send-email-carmelo.amoroso@st.com>
+Subject: [LTP] [PATCH 2/2] buildsys: use short format for git describe
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,34 +21,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sf.net
 
-On 01/03/2012 09:50 AM, Garrett Cooper wrote:
-> On Tue, Jan 3, 2012 at 1:35 AM, Markos Chandras
-> <Markos.Chandras@imgtec.com>  wrote:
->> Hi, please review the attached patch
->
->      Converting the function to tst_brkm and removing the tst_exit call
-> below it would be better.
-> Thanks!
-> -Garrett
-Agreed, but to make this consistent, all the tst_resm && tst_exit pairs 
-should be replaced with tst_brkm. I will prepare a patch
+Suppress long format, only showing the closest tag, when creating
+the Version file under git
 
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+---
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 90f171e..fe244d9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -174,7 +174,7 @@ SRCDIR_INSTALL_TARGETS	:= $(SRCDIR_INSTALL_SCRIPTS) $(SRCDIR_INSTALL_READONLY)
+ .PHONY: Version
+ Version:
+ 	if git describe &> /dev/null; then \
+-		git describe > "$@"; \
++		git describe --abbrev=0 > "$@"; \
+ 	else \
+ 		cp VERSION "$@"; \
+ 	fi
 -- 
-markos
+1.7.4.4
 
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
