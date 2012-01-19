@@ -2,21 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RiH45-0004lO-07
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:58:57 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RiH41-0003dj-IG
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 02:58:56 +0000
-Message-ID: <4F03C02A.8090304@cn.fujitsu.com>
-Date: Wed, 04 Jan 2012 10:57:46 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1Rnvvs-0006Ze-Vm
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 17:37:52 +0000
+Date: Thu, 19 Jan 2012 18:50:00 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120119175000.GG10302@saboteur.suse.cz>
+References: <1326899076-19591-1-git-send-email-carmelo.amoroso@st.com>
+	<20120118162859.GB4024@saboteur.suse.cz> <4F18437F.8060500@st.com>
+	<201201191223.23289.vapier@gentoo.org>
 MIME-Version: 1.0
-References: <4EFAF5BB.2030407@windriver.com> <4F03AD5E.4000003@jp.fujitsu.com>
-	<4F03B406.8050808@cn.fujitsu.com> <4F03BE7E.7060408@jp.fujitsu.com>
-In-Reply-To: <4F03BE7E.7060408@jp.fujitsu.com>
-Subject: Re: [LTP] Posix test case mmap/31-1 fails on Linux/eglibc
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <201201191223.23289.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 2/2] buildsys: use short format for git describe
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,81 +26,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Kang Kai <Kai.Kang@windriver.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On 01/04/2012 10:50 AM, Yasuaki Ishimatsu wrote:
-
-> Hi Gao,
+Hi!
+> > > Actually that is intended, as you could exactly determine which code you
+> > > are running from the version. Perhaps we could remove the start of the
+> > > hash as the date + number of patches determines the version pretty well.
+> > > 
+> > > Or is there a good reason why to shadow the exact version here?
+> > 
+> > No, I just thought that we wanted the pure date of LTP in the Version file.
 > 
-> 2012/01/04 11:05, Wanlong Gao wrote:
->> On 01/04/2012 09:37 AM, Yasuaki Ishimatsu wrote:
->>
->>> Hi Kai,
->>>
->>> 2011/12/28 19:55, Kang Kai wrote:
->>>> Hi all,
->>>>
->>>> I run mmap/31-1 failed with ENOMEM on linux, with error message:
->>>> off: fffffffffffff000, len: fffffffffffff000
->>>> Test FAIL: expect EOVERFLOW but get other error: Cannot allocate memory
->>>>
->>>> But compare to mmap/24-2, it mmap() the same length but pass. Its output:
->>>> available memory: 18446744073709551615
->>>> addr: 7f78c54fa000, len: ffffffffffffffff
->>>> addr: 7f78c54fa000, len: fffffffffffff000
->>>> Test Pass: mmap/24-2.c Get ENOMEM: Cannot allocate memory
->>>>
->>>> So I suppose that mmap/31-1 may need update, but I don't know how to
->>>> make mmap() overflow as expect.
->>>> Any suggestion is appreciated.
->>>
->>> I don't think mmap/31-1 need update since it is Linux Kernel's problem,
->>> not the test's problem. The problem is being discussed on LKML.
->>>
->>> https://lkml.org/lkml/2011/12/22/85
->>
->>
->> But it seems that the patch was not acceptable.
+> i think when someone does a release, the new tag will be the closest thing, 
+> and so the output will be just the stamp ...
 > 
-> As you say, it has not been accepted yet.
-> But I think Linux will be fixed to return EOVERFLOW in mmap/31-1's test
-> in the near future.
+> but i don't make releases, so wtf do i know ;)
 
+This is implemented just now as:
 
-Yeah, agree, so we need not update this test case now and wait for a while
-to let the kernel bug to be fixed.
+1. look if we are in git repository
+2. if so -> use git describe to generate Version file
+3. if not fallback to VERSION file
+   (which is changed for every release and commit that changes
+    this file is tagged with release date)
 
-> 
-> Regards,
-> Yasuaki Ishimatsu
-> 
->>
->> Thanks
->> -Wanlong Gao
->>
->>>
->>> Regards,
->>> Yasuaki Ishimatsu
->>>
->>>>
->>>> Regards,
->>>> Kai
->>
->>
->>
->>
-> 
-> 
+So if you download tarball from sf.net VERSION is used and you get the
+correct version date.
 
+If you checked out the git, you get result from git describe. That if
+your HEAD points to the commit tagged with the Version is only the
+version date, othervise it's closest tag + number of commits + start of
+the git hash.
 
+Hope this makes sense.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
