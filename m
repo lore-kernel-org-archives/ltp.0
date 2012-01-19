@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <carmelo.amoroso@st.com>) id 1RnX2N-0001Rq-4Z
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:02:55 +0000
-Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RnX2H-0000ld-Dh
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:02:55 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1RnuiC-0003FD-Mu
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 16:19:40 +0000
+Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RnuiB-0002xB-Br
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 16:19:40 +0000
 From: Carmelo AMOROSO <carmelo.amoroso@st.com>
-Date: Wed, 18 Jan 2012 15:36:47 +0100
-Message-Id: <1326897408-26778-1-git-send-email-carmelo.amoroso@st.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] getcontext01: fix build using uClibc C runtime
+Date: Thu, 19 Jan 2012 17:19:19 +0100
+Message-Id: <1326989959-24434-1-git-send-email-carmelo.amoroso@st.com>
+Subject: [LTP] [PATCH] mount1234: invert the logic in handling failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,51 +21,155 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sf.net
 
-Rml4IGEgYnVpbGQgZXJyb3Igd2hlbiBfX1VDTElCQ19fIGlzIGRlZmluZWQgKHNlZSBsb2cgYmVs
-b3cpCmJ5IG1vdmluZyAidGVzdC5oIiwgInVuaXN0ZC5oIiBhbmQgVENJRCBvbiB0b3Agb2YgZmls
-ZSBhcyByZXF1aXJlZApieSAndHN0X2Jya20nIGZ1bmN0aW9uLgoKLS0tCmdldGNvbnRleHQwMS5j
-OiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgpnZXRjb250ZXh0MDEuYzoxMDM6Mjogd2FybmluZzog
-aW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYdHN0X2Jya23igJkKZ2V0Y29udGV4
-dDAxLmM6MTAzOjExOiBlcnJvcjog4oCYVENPTkbigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGlu
-IHRoaXMgZnVuY3Rpb24pCmdldGNvbnRleHQwMS5jOjEwMzoxMTogbm90ZTogZWFjaCB1bmRlY2xh
-cmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBvbmNlIGZvciBlYWNoIGZ1bmN0aW9uIGl0
-IGFwcGVhcnMgaW4KZ2V0Y29udGV4dDAxLmM6MTAzOjE4OiBlcnJvcjog4oCYTlVMTOKAmSB1bmRl
-Y2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKZ2V0Y29udGV4dDAxLmM6MTA0OjE6
-IHdhcm5pbmc6IGNvbnRyb2wgcmVhY2hlcyBlbmQgb2Ygbm9uLXZvaWQgZnVuY3Rpb24KLS0tCgpT
-aWduZWQtb2ZmLWJ5OiBGcmFuY2VzY28gUnVuZG8gPGZyYW5jZXNjby5ydW5kb0BzdC5jb20+ClNp
-Z25lZC1vZmYtYnk6IENhcm1lbG8gQW1vcm9zbyA8Y2FybWVsby5hbW9yb3NvQHN0LmNvbT4KLS0t
-CiAuLi4va2VybmVsL3N5c2NhbGxzL2dldGNvbnRleHQvZ2V0Y29udGV4dDAxLmMgICAgICB8ICAg
-IDkgKysrKystLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
-bnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldGNvbnRleHQv
-Z2V0Y29udGV4dDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldGNvbnRleHQvZ2V0
-Y29udGV4dDAxLmMKaW5kZXggN2NhZGM2Ny4uOGY2ZTkxOSAxMDA2NDQKLS0tIGEvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy9nZXRjb250ZXh0L2dldGNvbnRleHQwMS5jCisrKyBiL3Rlc3RjYXNl
-cy9rZXJuZWwvc3lzY2FsbHMvZ2V0Y29udGV4dC9nZXRjb250ZXh0MDEuYwpAQCAtMzQsMjAgKzM0
-LDIxIEBACiAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKi8KIAogI2luY2x1ZGUgPGZlYXR1cmVzLmg+CisjaW5jbHVkZSA8dW5pc3RkLmg+
-CisjaW5jbHVkZSAidGVzdC5oIgorY2hhciAqVENJRCA9ICJnZXRjb250ZXh0MDEiOwkvKiBUZXN0
-IHByb2dyYW0gaWRlbnRpZmllci4gICAgKi8KKwogI2lmICFkZWZpbmVkKF9fVUNMSUJDX18pCiAK
-ICNpbmNsdWRlIDxzdGRpby5oPgotI2luY2x1ZGUgPHVuaXN0ZC5oPgogI2luY2x1ZGUgPGVycm5v
-Lmg+CiAjaW5jbHVkZSA8dWNvbnRleHQuaD4KIAotI2luY2x1ZGUgInRlc3QuaCIKICNpbmNsdWRl
-ICJ1c2N0ZXN0LmgiCiAKIHZvaWQgc2V0dXAoKTsKIHZvaWQgY2xlYW51cCgpOwogCi1jaGFyICpU
-Q0lEID0gImdldGNvbnRleHQwMSI7CS8qIFRlc3QgcHJvZ3JhbSBpZGVudGlmaWVyLiAgICAqLwog
-aW50IFRTVF9UT1RBTCA9IDE7CQkvKiBUb3RhbCBudW1iZXIgb2YgdGVzdCBjYXNlcy4gKi8KIAog
-aW50IGV4cF9lbm9zW10gPSB7IDAgfTsJCS8qIG11c3QgYmUgYSAwIHRlcm1pbmF0ZWQgbGlzdCAq
-LwpAQCAtMTAyLDQgKzEwMyw0IEBAIGludCBtYWluKCkKIHsKIAl0c3RfYnJrbShUQ09ORiwgTlVM
-TCwgInN5c3RlbSBkb2Vzbid0IGhhdmUgZ2V0Y29udGV4dCBzdXBwb3J0Iik7CiB9Ci0jZW5kaWYK
-XCBObyBuZXdsaW5lIGF0IGVuZCBvZiBmaWxlCisjZW5kaWYKLS0gCjEuNy40LjQKCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KS2VlcCBZb3VyIERldmVsb3BlciBTa2lsbHMgQ3VycmVudCB3aXRoIExl
-YXJuRGV2Tm93IQpUaGUgbW9zdCBjb21wcmVoZW5zaXZlIG9ubGluZSBsZWFybmluZyBsaWJyYXJ5
-IGZvciBNaWNyb3NvZnQgZGV2ZWxvcGVycwppcyBqdXN0ICQ5OS45OSEgVmlzdWFsIFN0dWRpbywg
-U2hhcmVQb2ludCwgU1FMIC0gcGx1cyBIVE1MNSwgQ1NTMywgTVZDMywKTWV0cm8gU3R5bGUgQXBw
-cywgbW9yZS4gRnJlZSBmdXR1cmUgcmVsZWFzZXMgd2hlbiB5b3Ugc3Vic2NyaWJlIG5vdyEKaHR0
-cDovL3Auc2YubmV0L3NmdS9sZWFybmRldm5vdy1kMmQKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxp
-c3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9s
-aXN0aW5mby9sdHAtbGlzdAo=
+From: Francesco Rundo <francesco.rundo@st.com>
+
+mount is expected to fail if the device is a 'tty', so it seems that
+the original idea of this testcase were to test mount failures.
+If this is true, then the logic to handle the test results has to be inverted
+and consider the test case as PASSED if mount fails, while FAILED
+if mount erroneuosly succeeded to mount a tty device.
+
+It also fixes a syntax error in substring expansion ( ${parameter:offset} )
+
+The last check "mount04" has been removed as it does not cehck the device type
+but only the permission so that it is incosistent with the overall logic.
+
+That said, rename the test case as mount123
+
+Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+---
+ runtest/syscalls                           |    2 +-
+ testcases/kernel/syscalls/mount/test_mount |   43 ++++++---------------------
+ 2 files changed, 11 insertions(+), 34 deletions(-)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4aac38c..96e3690 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -575,7 +575,7 @@ mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
+ mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
+ mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
+ 
+-mount1234 test_mount
++mount123 test_mount
+ 
+ move_pages01 move_pages.sh 01
+ move_pages02 move_pages.sh 02
+diff --git a/testcases/kernel/syscalls/mount/test_mount b/testcases/kernel/syscalls/mount/test_mount
+index 855d417..dee8f3b 100755
+--- a/testcases/kernel/syscalls/mount/test_mount
++++ b/testcases/kernel/syscalls/mount/test_mount
+@@ -19,18 +19,13 @@
+ ##                                                                            ##
+ ################################################################################
+ 
+-export TCID=mount1234
++export TCID=mount123
+ export TST_TOTAL=2
+ export TST_COUNT=0
+ 
+-# 1. variables cannot be set from external processes, so tst_exit will always
+-# pass
+-# 2. I have no idea why this script is passing in /dev/tty* to the mount tests.
+-tst_resm TBROK "THIS TEST IS BROKEN"
+-
+ for tttype in `ls /dev/tty*`
+ do
+-device_no="${tttype}:8"
++device_no="${tttype:8}"
+ case "$device_no" in
+ [0-9]|[0-9][0-9])
+     tst_resm TINFO "Testing mount01 with $tttype"
+@@ -38,9 +33,9 @@ case "$device_no" in
+     RC=$?
+     if  [ $RC -eq 0 ]
+     then
+-     tst_resm TPASS "mount01 Passed with $tttype"
++     tst_resm TFAIL "got unexpected result: mount01 passed with $tttype"
+     else
+-     tst_resm TFAIL "mount01 Failed with $tttype"
++     tst_resm TPASS "got expected result: mount01 failed with $tttype"
+     fi
+ echo;;
+ esac
+@@ -49,7 +44,7 @@ done
+ 
+ for tttype in `ls /dev/tty*`
+ do
+-device_no="${tttype}:8"
++device_no="${tttype:8}"
+ case "$device_no" in
+ [0-9]|[0-9][0-9])
+     tst_resm TINFO "Testing mount02 with $tttype"
+@@ -57,9 +52,9 @@ case "$device_no" in
+     RC=$?
+     if  [ $RC -eq 0 ]
+     then
+-     tst_resm TPASS "mount02 Passed with $tttype"
++     tst_resm TFAIL "got unexpected result: mount02 passed with $tttype"
+     else
+-     tst_resm TFAIL "mount02 Failed with $tttype"
++     tst_resm TPASS "got expected result: mount02 failed with $tttype"
+     fi
+ echo;;
+ esac
+@@ -67,7 +62,7 @@ done
+ 
+ for tttype in `ls /dev/tty*`
+ do
+-device_no="${tttype}:8"
++device_no="${tttype:8}"
+ case "$device_no" in
+ [0-9]|[0-9][0-9])
+     tst_resm TINFO "Testing mount03 with $tttype"
+@@ -75,27 +70,9 @@ case "$device_no" in
+     RC=$?
+     if  [ $RC -eq 0 ]
+     then
+-     tst_resm TPASS "mount03 Passed with $tttype"
+-    else
+-     tst_resm TFAIL "mount03 Failed with $tttype"
+-    fi
+-echo;;
+-esac
+-done
+-
+-for tttype in `ls /dev/tty*`
+-do
+-device_no="${tttype}:8"
+-case "$device_no" in
+-[0-9]|[0-9][0-9])
+-    tst_resm TINFO "Testing mount04 with $tttype"
+-    mount04 -D $tttype
+-    RC=$?
+-    if  [ $RC -eq 0 ]
+-    then
+-     tst_resm TPASS "mount04 Passed with $tttype"
++     tst_resm TFAIL "got unexpected result: mount03 passed with $tttype"
+     else
+-     tst_resm TFAIL "mount04 Failed with $tttype"
++     tst_resm TPASS "got expected result: mount03 failed with $tttype"
+     fi
+ echo;;
+ esac
+-- 
+1.7.4.4
+
+
+------------------------------------------------------------------------------
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
