@@ -1,20 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RmfT2-00018z-Jw
-	for ltp-list@lists.sourceforge.net; Mon, 16 Jan 2012 05:50:52 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RmfT1-00056r-L9
-	for ltp-list@lists.sourceforge.net; Mon, 16 Jan 2012 05:50:52 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 16 Jan 2012 00:47:32 -0500
-References: <4F13940B.8050209@windriver.com>
-In-Reply-To: <4F13940B.8050209@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eguan@redhat.com>) id 1Rnlwp-0005oN-3z
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 06:58:11 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Rnlwo-0003nS-1P
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 06:58:11 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q0J6w3S1011904
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Jan 2012 01:58:04 -0500
+Received: from localhost ([10.66.13.13])
+	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id q0J6w2a8006527
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Jan 2012 01:58:03 -0500
+Date: Thu, 19 Jan 2012 14:58:01 +0800
+From: Eryu Guan <eguan@redhat.com>
+Message-ID: <20120119065801.GN27172@eguan-t400.redhat.com>
+References: <1326358488-15419-1-git-send-email-eguan@redhat.com>
+	<1326358488-15419-2-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
-Message-Id: <201201160047.33401.vapier@gentoo.org>
-Subject: Re: [LTP] A question about mktemp in script runltp
+Content-Disposition: inline
+In-Reply-To: <1326358488-15419-2-git-send-email-eguan@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] syscalls/setxattr03: net testcase to test
+	setxattr(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,79 +36,285 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3567064591020511390=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============3567064591020511390==
-Content-Type: multipart/signed; boundary="nextPart2768235.e2EmVRZZs8";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hi,
 
---nextPart2768235.e2EmVRZZs8
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 12, 2012 at 04:54:48PM +0800, Eryu Guan wrote:
+> 
+> setxattr(2) to immutable and append-only files should get EPERM
+> 
+> There are 2 test cases:
+> 1. Set attribute to a immutable file, setxattr(2) should return -1
+>    and set errno to EPERM
+> 2. Set attribute to a append-only file, setxattr(2) should return
+>    -1 and set errno to EPERM
 
-On Sunday 15 January 2012 22:05:47 Jin Li wrote:
-> In runltp script, mktemp is used to create a temp directory. see below :
->=20
-> mnt_pnt=3D`mktemp -d --tmpdir=3D${TMP} mnt_pnt.XXXXXX`
->=20
-> But I have a little confused about the argument "--tmpdir"
->=20
-> I prefer to use "-p ${TMP}" to replace "--tmpdir=3D${TMP}"
+Any comments on the two patches?
 
-why ?
-=2Dmike
+Thanks,
+Eryu Guan
+> 
+> Signed-off-by: Eryu Guan <eguan@redhat.com>
+> ---
+>  runtest/syscalls                                |    1 +
+>  testcases/kernel/syscalls/setxattr/setxattr03.c |  222 +++++++++++++++++++++++
+>  2 files changed, 223 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/setxattr/setxattr03.c
+> 
 
---nextPart2768235.e2EmVRZZs8
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index d786746..37dfc7e 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1027,6 +1027,7 @@ setuid04_16 setuid04_16
+>  
+>  setxattr01 setxattr01
+>  setxattr02 setxattr02
+> +setxattr03 setxattr03
+>  
+>  shmat01 shmat01
+>  shmat02 shmat02
+> diff --git a/testcases/kernel/syscalls/setxattr/setxattr03.c b/testcases/kernel/syscalls/setxattr/setxattr03.c
+> new file mode 100644
+> index 0000000..223bff7
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/setxattr/setxattr03.c
+> @@ -0,0 +1,222 @@
+> +/*
+> + * Copyright (C) 2011 Red Hat, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + */
+> +
+> +/*
+> + * setxattr(2) to immutable and append-only files should get EPERM
+> + *
+> + * There are 2 test cases:
+> + * 1. Set attribute to a immutable file, setxattr(2) should return -1
+> + *    and set errno to EPERM
+> + * 2. Set attribute to a append-only file, setxattr(2) should return
+> + *    -1 and set errno to EPERM
+> + */
+> +
+> +#include "config.h"
+> +#include <sys/ioctl.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <sys/wait.h>
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <unistd.h>
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#ifdef HAVE_ATTR_XATTR_H
+> +#include <attr/xattr.h>
+> +#endif
+> +#include <linux/fs.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +
+> +char *TCID = "setxattr03";
+> +
+> +#ifdef HAVE_ATTR_XATTR_H
+> +#define XATTR_TEST_KEY "user.testkey"
+> +#define XATTR_TEST_VALUE "this is a test value"
+> +#define XATTR_TEST_VALUE_SIZE 20
+> +
+> +#define IMMU_FILE "setxattr03immutable"
+> +#define APPEND_FILE  "setxattr03appendonly"
+> +
+> +#define set_immutable_on(fd) fsetflag(fd, 1, 1)
+> +#define set_immutable_off(fd) fsetflag(fd, 0, 1)
+> +#define set_append_on(fd) fsetflag(fd, 1, 0)
+> +#define set_append_off(fd) fsetflag(fd, 0, 0)
+> +
+> +struct test_case {
+> +	char *desc;
+> +	char *fname;
+> +	char *key;
+> +	char *value;
+> +	size_t size;
+> +	int flags;
+> +	int exp_err;
+> +};
+> +static struct test_case tc[] = {
+> +	{	/* case 00, set attr to immutable file */
+> +		.desc = "Set attr to immutable file",
+> +		.fname = IMMU_FILE,
+> +		.key = XATTR_TEST_KEY,
+> +		.value = XATTR_TEST_VALUE,
+> +		.size = XATTR_TEST_VALUE_SIZE,
+> +		.flags = XATTR_CREATE,
+> +		.exp_err = EPERM,
+> +	},
+> +	{	/* case 01, set attr to append-only file */
+> +		.desc = "Set attr to append-only file",
+> +		.fname = APPEND_FILE,
+> +		.key = XATTR_TEST_KEY,
+> +		.value = XATTR_TEST_VALUE,
+> +		.size = XATTR_TEST_VALUE_SIZE,
+> +		.flags = XATTR_CREATE,
+> +		.exp_err = EPERM,
+> +	},
+> +};
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +static int immu_fd;
+> +static int append_fd;
+> +
+> +int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +	int i;
+> +	char *msg;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		Tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; i++)	{
+> +			TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value,
+> +			    tc[i].size, tc[i].flags));
+> +
+> +			if (TEST_ERRNO == tc[i].exp_err) {
+> +				tst_resm(TPASS | TTERRNO, tc[i].desc);
+> +			} else {
+> +				tst_resm(TFAIL | TTERRNO, "%s - expected errno"
+> +				    " %d - Got", tc[i].desc, tc[i].exp_err);
+> +			}
+> +		}
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static int fsetflag(int fd, int on, int immutable)
+> +{
+> +	int fsflags = 0;
+> +	int fsfl;
+> +
+> +	if (ioctl(fd, FS_IOC_GETFLAGS, &fsflags) < 0)
+> +		return 1;
+> +
+> +	if (immutable)
+> +		fsfl = FS_IMMUTABLE_FL;
+> +	else
+> +		fsfl = FS_APPEND_FL;
+> +
+> +	if (on)
+> +		fsflags |= fsfl;
+> +	else
+> +		fsflags &= ~fsfl;
+> +
+> +	if (ioctl(fd, FS_IOC_SETFLAGS, &fsflags) < 0)
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int fd;
+> +
+> +	tst_require_root(NULL);
+> +
+> +	tst_tmpdir();
+> +
+> +	/* Test for xattr support */
+> +	fd = creat("testfile", 0644);
+> +	if (fd == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create testfile failed");
+> +	close(fd);
+> +	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
+> +		if (errno == ENOTSUP)
+> +			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
+> +			    "mount without user_xattr option");
+> +	unlink("testfile");
+> +
+> +	/* Create test files and set file immutable or append-only */
+> +	immu_fd = creat(IMMU_FILE, 0644);
+> +	if (immu_fd == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
+> +		    IMMU_FILE);
+> +	if (set_immutable_on(immu_fd))
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Set %s immutable failed",
+> +		    IMMU_FILE);
+> +
+> +	append_fd = creat(APPEND_FILE, 0644);
+> +	if (append_fd == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
+> +		    APPEND_FILE);
+> +	if (set_append_on(append_fd))
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Set %s append-only failed",
+> +		    APPEND_FILE);
+> +
+> +	TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (set_immutable_off(immu_fd))
+> +		tst_resm(TWARN | TERRNO, "Unset %s immutable failed",
+> +		    IMMU_FILE);
+> +	if (set_append_off(append_fd))
+> +		tst_resm(TWARN | TERRNO, "Unset %s append-only failed",
+> +		    APPEND_FILE);
+> +	close(immu_fd);
+> +	close(append_fd);
+> +
+> +	TEST_CLEANUP;
+> +	tst_rmdir();
+> +}
+> +#else /* HAVE_ATTR_XATTR_H */
+> +int main(int argc, char *argv[])
+> +{
+> +	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
+> +}
+> +#endif /* HAVE_ATTR_XATTR_H */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPE7n1AAoJEEFjO5/oN/WB2rYP/jXrEEqhdjngv+C7cJIuJu2v
-yI1YxjWoQtludcVeMdAD5S5kp4DDRPqAOa56drZEYrnbW+3ZYzpmKiv/p0rEfAuB
-bwFaeKmqIjkx+EFRbXwHnwhs09nMemhI0vy+NvFPr4cw/hhp3FRBohBTDSaRtXs/
-bXmyk16TebzhzA/wf1gM8kyq87bFlJZPMyUfa7/wg/evgV5JPj0YKjII+2a8ko0+
-ufT+iRq1cMsAjkeAVVBHwougvBNffWPDSc8Gt4qfoKTjIaXYiy4ZejZQmUcsqijk
-s8qusjInqMhHhQLZjSVpW6cNgxO3Q1JBgqaN/NuZFFrrLF54+o7cCQ3goXKubEN/
-wQ5ynuen9cK2ntzuUiEWBQdmYDug48zLpVtSqj/ThkPxE3Sh1HIg19r+D8n5xHOF
-4NhQwyqqEizlP7OHnmBQw1kFZgXGyIVfeSqe4COV+H/fOP8oLtV0PfF4RGlE4/qs
-fR8GvCx/2TG2RIzuxObIdecVG7kNAIzhbocQZAK46vJo5amSj998JBl4x3gdGjcn
-m/DRB6n1KqrHZvxAZmw7rYyt2slD4ur0Z0jPX9Y06ld07EuyiLTXXAIazA1/JBTH
-3NJ5FOI2NnOM2HJBufrFRozzJH5lYEVrPV/7sasAJBYSDWpxIrBXYOuSgqpUIDfu
-9bAMWhZ5RHQRqyUAqWsf
-=TEWg
------END PGP SIGNATURE-----
-
---nextPart2768235.e2EmVRZZs8--
-
-
---===============3567064591020511390==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-RSA(R) Conference 2012
-Mar 27 - Feb 2
-Save $400 by Jan. 27
-Register now!
-http://p.sf.net/sfu/rsa-sfdev2dev2
---===============3567064591020511390==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3567064591020511390==--
-
