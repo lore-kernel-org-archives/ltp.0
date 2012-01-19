@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RnXFz-0001rX-B1
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:16:59 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RnXFv-0001Ir-If
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:16:59 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 18 Jan 2012 10:16:55 -0500
-References: <1326897408-26778-1-git-send-email-carmelo.amoroso@st.com>
-	<1326897408-26778-2-git-send-email-carmelo.amoroso@st.com>
-In-Reply-To: <1326897408-26778-2-git-send-email-carmelo.amoroso@st.com>
+	(envelope-from <YanFeng.Shang@windriver.com>) id 1RnhZY-0002Su-47
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 02:17:52 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RnhZW-0004Sk-Rx
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 02:17:52 +0000
+From: Shang Yanfeng <YanFeng.Shang@windriver.com>
+Date: Thu, 19 Jan 2012 10:17:39 +0800
+Message-ID: <1326939459-24110-1-git-send-email-YanFeng.Shang@windriver.com>
 MIME-Version: 1.0
-Message-Id: <201201181016.56309.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 2/2] profile01: fix build using uClibc runtime
+Subject: [LTP] [PATCH] v2:updated mmap2.c for low memory target
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,53 +22,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5227155376316249565=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============5227155376316249565==
-Content-Type: multipart/signed; boundary="nextPart45785709.iDmgNu7WT3";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart45785709.iDmgNu7WT3
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
-same feedback as the getcontext01 patch
--mike
-
---nextPart45785709.iDmgNu7WT3
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPFuJoAAoJEEFjO5/oN/WB2L4P/ROJFDlrtNp/5EckiY7e/jbE
-bLl+P9t2uxUi/GdnQYSbSbrLJlvxGfRuXC6WTRkKOhge0V87W49K/9rMzrjNN5w5
-2bLoTVltN1d2kauTpmzhPvBnDIIx4EJT+7kSNN6ZwGPVWCh115KDkz2pCY3p7NWD
-lF3+SSrEGbUnXxm+aPldzaldObWCuFpMWyntm8XEgrR2IAAL2a/5nkQpwtNRB8++
-kBKH2HXlV+uv3jWr+rbJmdyMRlZ2/HPgtkTFCXpxQ06FozMO3CdsrGE3Dfegrgg8
-9oZq792bho8HDZUVQgpdoKJbmMAe+tf0nhdbRwyiwJRvzeqB7DcrXBJ3rWg7fwhq
-sVuR8q7el2WkC/O7iLHncaKcqmby40eJZAkTPunNYttJfRZBt+RX6JyxVITAWW+Y
-yDNTepQA4P37zPLCaPR0NDyDM+Tt0yXNHO26Ul70I8ycedDHqQbNDHRKpvCIyAJO
-rcgDHKaKXq0xJsOrl7kKrV8iMmYS73Z2LEXG9dw4KQ/gohTQoBOEY3VGzhZ+BzK4
-fL19P27G8W9sE0V74mo6/8L/Ub5+wC6p7Dwj+fleiZH4J2Hi+WIlsyDMUPBFPUa6
-peeHiYNZFknawQMkRgawImYSck9STdu6akxiMiHVXmMCi04pTzKr6F3JRFjQSO9K
-5WCX41CqitJdSp+YUfhB
-=uaOY
------END PGP SIGNATURE-----
-
---nextPart45785709.iDmgNu7WT3--
-
-
---===============5227155376316249565==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Markos.Chandras@imgtec.com, YanFeng.Shang@windriver.com, ltp-list@lists.sourceforge.net
+
+many low memory boards don't have 1G memory,so add get_free_mem function for
+low memory target,limit 1000M for n32 file system test.
+
+signed-off-by: YanFeng.Shang  <YanFeng.Shang@windriver.com>
+---
+ testcases/kernel/mem/mtest06/mmap2.c |   50 ++++++++++++++++++++++++++-------
+ 1 files changed, 39 insertions(+), 11 deletions(-)
+
+diff --git a/testcases/kernel/mem/mtest06/mmap2.c b/testcases/kernel/mem/mtest06/mmap2.c
+index aa9dc33..d83ba54 100644
+--- a/testcases/kernel/mem/mtest06/mmap2.c
++++ b/testcases/kernel/mem/mtest06/mmap2.c
+@@ -69,13 +69,14 @@
+ #include <signal.h>
+ #include <sys/time.h>
+ #include <sys/wait.h>
++#include <sys/sysinfo.h>
+ #include <signal.h>
+ #include <string.h>
+ #include "test.h"
+ #include "usctest.h"
+ 
+ /* Defines								      */
+-#define GB 1000000000
++#define MB 1048576 
+ #ifndef TRUE
+ #define TRUE 1
+ #endif
+@@ -96,7 +97,7 @@
+ /*                                                                            */
+ /******************************************************************************/
+ static int
+-mkfile(int size) 		/* size of the file to be generated in GB     */
++mkfile(int size) 		/* size of the file to be generated in MB     */
+ {
+     int  fd;			/* file descriptior of tmpfile		      */
+     int  index = 0;		/* index into the file, fill it with a's      */
+@@ -118,7 +119,7 @@ mkfile(int size) 		/* size of the file to be generated in GB     */
+     }
+ 
+     /* fill the file with the character a */
+-    while (index < (size * GB))
++    while (index < (size * MB))
+     {
+         index += 4096;
+         if (write(fd, buff, 4096) == -1)
+@@ -165,6 +166,21 @@ sig_handler(int signal)         /* signal number, set to handle SIGALRM       */
+     exit(0);
+ }
+ 
++/*******************************************************************************/
++/* Function:	get_free_mem                                                   */
++/* Description: get the free memory.                                          */ 
++/* Return:	free memory with M					       */
++/*******************************************************************************/
++unsigned long get_free_mem()
++{
++	struct sysinfo board_sysinfo;
++	unsigned long avail_mem;
++	if(sysinfo(&board_sysinfo))
++		perror("sysinfo failed\n");
++	avail_mem = board_sysinfo.freeram/MB;
++	return avail_mem;
++}
++
+ /******************************************************************************//*								 	      */
+ /* Function:	usage							      */
+ /*									      */
+@@ -180,7 +196,7 @@ usage(char *progname)           /* name of this program                       */
+ 	       "\t -a set map_flags to MAP_ANONYMOUS\n"
+                "\t -h help, usage message.\n"
+                "\t -p set map_flag to MAP_PRIVATE.\tdefault: MAP_SHARED\n"
+-               "\t -s size of the file/memory to be mmaped.\tdefault: 1GB\n"
++               "\t -s size of the file/memory to be mmaped.\tdefault: 1000MB\n"
+                "\t -x time for which test is to be run.\tdefault: 24 Hrs\n",
+                     progname);
+     exit(-1);
+@@ -204,7 +220,7 @@ int main(int argc,	    /* number of input parameters.		      */
+      char **argv)	    /* pointer to the command line arguments.         */
+ {
+     int   fd;		    /* descriptor of temp file.		              */
+-    int   fsize = 1;	    /* size of the temp file created. default 1GB     */
++    unsigned long  fsize = 1000;	    /* size of the temp file created. default 1000MB     */
+     float exec_time = 24;    /* period of execution, default 24 hours.	      */
+     int   c;		    /* command line options			      */
+     int   sig_ndx;	    /* index into signal handler structure.	      */
+@@ -234,6 +250,13 @@ int main(int argc,	    /* number of input parameters.		      */
+ 			   {-1,     "ENDSIG"}
+ 		   };
+ 
++	fsize = get_free_mem()/2;
++
++#if __WORDSIZE==32
++	if ( fsize > 1000 )
++		fprintf(stderr, "Using default fsize %ld MB\n", fsize = 1000);
++#endif
++
+     while ((c =  getopt(argc, argv, "ahps:x:")) != -1)
+     {
+         switch(c)
+@@ -249,8 +272,13 @@ int main(int argc,	    /* number of input parameters.		      */
+ 		map_flags = MAP_PRIVATE;
+ 		break;
+ 	    case 's':
++#if __WORDSIZE==32
++		if ((fsize = atoi(optarg)) == 0 || (fsize = atoi(optarg)) > 1000 )
++		    fprintf(stderr, "Using default fsize %ld MB\n", fsize = 1000);
++#else
+ 		if ((fsize = atoi(optarg)) == 0)
+-		    fprintf(stderr, "Using default fsize %d GB\n", fsize = 1);
++			fprintf(stderr,"Using default fsize %ld MB\n", fsize = 1000);
++#endif
+ 		break;
+             case 'x':
+ 		if ((exec_time = atof(optarg)) == 0)
+@@ -266,7 +294,7 @@ int main(int argc,	    /* number of input parameters.		      */
+ 
+     fprintf(stdout, "MM Stress test, map/write/unmap large file\n"
+ 		    "\tTest scheduled to run for:       %f\n"
+-		    "\tSize of temp file in GB:         %d\n",
++		    "\tSize of temp file in MB:         %ld\n",
+ 			exec_time, fsize);
+ 
+     /* set up time for which test has to be run */
+@@ -308,7 +336,7 @@ int main(int argc,	    /* number of input parameters.		      */
+ 	    map_flags = map_flags|MAP_ANONYMOUS;
+         }
+ 
+-        if ((memptr = (char *)mmap(0,(fsize * GB), PROT_READ|PROT_WRITE,
++        if ((memptr = (char *)mmap(0,(fsize * MB), PROT_READ|PROT_WRITE,
+ 		     map_flags, fd, 0)) == (char *)-1)
+         {
+             perror("main(): mmap()");
+@@ -319,16 +347,16 @@ int main(int argc,	    /* number of input parameters.		      */
+ 			    "changing file content to 'A'\n", memptr);
+ 
+         /* Change the content of the file with A's, and commit changes */
+-        memset(memptr, 'A', ((fsize * GB)/sizeof(char)));
++        memset(memptr, 'A', ((fsize * MB)/sizeof(char)));
+ 
+-        if (msync(memptr, ((fsize * GB)/sizeof(char)),
++        if (msync(memptr, ((fsize * MB)/sizeof(char)),
+ 	                 MS_SYNC|MS_INVALIDATE) == -1)
+         {
+             perror("main(): msync()");
+             exit (-1);
+         }
+ 
+-        if (munmap(memptr, (fsize * GB)/sizeof(char)) == -1)
++        if (munmap(memptr, (fsize * MB)/sizeof(char)) == -1)
+         {
+             perror("main(): munmap()");
+             exit (-1);
+-- 
+1.6.3.1
+
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
@@ -79,16 +190,7 @@ The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
 http://p.sf.net/sfu/learndevnow-d2d
---===============5227155376316249565==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5227155376316249565==--
-
