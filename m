@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiA51-0005XU-BT
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:31:27 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiA50-0007G5-Oi
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:31:27 +0000
-Received: by obcwn6 with SMTP id wn6so18161979obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 11:31:21 -0800 (PST)
+	(envelope-from <penght@cn.fujitsu.com>) id 1RngGt-0000wC-F7
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 00:54:31 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RngGr-0005qH-Sw
+	for ltp-list@lists.sourceforge.net; Thu, 19 Jan 2012 00:54:31 +0000
+Message-ID: <4F1769B1.7080405@cn.fujitsu.com>
+Date: Thu, 19 Jan 2012 08:54:09 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4F0301B5.7090006@imgtec.com>
-References: <4F0301B5.7090006@imgtec.com>
-Date: Tue, 3 Jan 2012 11:31:21 -0800
-Message-ID: <CAGH67wSmz4X10VT6ijHuhUarCtUKwaA066Fdvn_QNn8+-VKutA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 20/21] nfs/nfsstress/make_tree: Replace integer
- cast to pointer with 0
+References: <4F14F368.80507@cn.fujitsu.com>
+	<201201170001.13851.vapier@gentoo.org>
+	<201201180524.53760.vapier@gentoo.org>
+In-Reply-To: <201201180524.53760.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 8/8] Add test usage_in_bytes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,25 +29,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 3, 2012 at 5:25 AM, Markos Chandras
-<Markos.Chandras@imgtec.com> wrote:
-> Hi, please review the attached patch
 
-    It would be better if it was strtoll, but this works for now.
-Thanks!
--Garrett
+Mike Frysinger said the following on 2012-1-18 18:24:
+> On Tuesday 17 January 2012 00:01:12 Mike Frysinger wrote:
+>> On Monday 16 January 2012 23:04:56 Peng Haitao wrote:
+>>> +. memcg_lib.sh || exit 1
+>>
+>> you have to use paths else the source searches $PATH.  relying on $PWD is
+>> not portable.
+>>
+>> . ./memcg_lib.sh || exit 1
+> 
+> btw, i was talking about all your patches having this problem and not just 
+> this particular one.  you'll have to update them all.
+> -mike
+> 
 
-Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
+yeah, I know.
+Thanks for your reminder:)
+
+-- 
+Best Regards,
+Peng
+
+> 
+> 
+> ------------------------------------------------------------------------------
+> Keep Your Developer Skills Current with LearnDevNow!
+> The most comprehensive online learning library for Microsoft developers
+> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+> Metro Style Apps, more. Free future releases when you subscribe now!
+> http://p.sf.net/sfu/learndevnow-d2d
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
