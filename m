@@ -1,27 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1RoBCZ-0006j4-Iq
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 09:56:07 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RoBCT-0005Xt-Vz
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 09:56:07 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q0K9tuLQ027830
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Jan 2012 04:55:56 -0500
-From: Eryu Guan <eguan@redhat.com>
-Date: Fri, 20 Jan 2012 17:54:08 +0800
-Message-Id: <1327053248-18415-2-git-send-email-eguan@redhat.com>
-In-Reply-To: <1327053248-18415-1-git-send-email-eguan@redhat.com>
-References: <1327053248-18415-1-git-send-email-eguan@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RoFJo-00008J-F9
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 14:19:52 +0000
+Date: Fri, 20 Jan 2012 15:32:07 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120120143207.GB13447@saboteur.suse.cz>
+References: <1326184383-2268-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F0E2948.3000800@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.7.5"
-Subject: [LTP] [PATCH v2 2/2] syscalls/setxattr03: new testcase to test
-	setxattr(2)
+Content-Disposition: inline
+In-Reply-To: <4F0E2948.3000800@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] hugemmap01: auto mount the tmp dir
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,288 +22,197 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------1.7.7.5
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-setxattr(2) to immutable and append-only files should get EPERM
-
-There are 2 test cases:
-1. Set attribute to a immutable file, setxattr(2) should return -1
-   and set errno to EPERM
-2. Set attribute to a append-only file, setxattr(2) should return
-   -1 and set errno to EPERM
-
-Signed-off-by: Eryu Guan <eguan@redhat.com>
----
-v1->v2:                                                                                                                                                                
-	1. Use sizeof() instead of strlen to compute length of string at compile time                                                                                  
-	2. Use better described log message
-
- runtest/syscalls                                |    1 +
- testcases/kernel/syscalls/setxattr/setxattr03.c |  222 +++++++++++++++++++++++
- 2 files changed, 223 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/setxattr/setxattr03.c
-
-
---------------1.7.7.5
-Content-Type: text/x-patch;
-	name="0002-syscalls-setxattr03-new-testcase-to-test-setxattr-2.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0002-syscalls-setxattr03-new-testcase-to-test-setxattr-2.patch"
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index d786746..37dfc7e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1027,6 +1027,7 @@ setuid04_16 setuid04_16
- 
- setxattr01 setxattr01
- setxattr02 setxattr02
-+setxattr03 setxattr03
- 
- shmat01 shmat01
- shmat02 shmat02
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr03.c b/testcases/kernel/syscalls/setxattr/setxattr03.c
-new file mode 100644
-index 0000000..268e24e
---- /dev/null
-+++ b/testcases/kernel/syscalls/setxattr/setxattr03.c
-@@ -0,0 +1,222 @@
-+/*
-+ * Copyright (C) 2012 Red Hat, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+/*
-+ * setxattr(2) to immutable and append-only files should get EPERM
-+ *
-+ * There are 2 test cases:
-+ * 1. Set attribute to a immutable file, setxattr(2) should return -1
-+ *    and set errno to EPERM
-+ * 2. Set attribute to a append-only file, setxattr(2) should return
-+ *    -1 and set errno to EPERM
-+ */
-+
-+#include "config.h"
-+#include <sys/ioctl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#ifdef HAVE_ATTR_XATTR_H
-+#include <attr/xattr.h>
-+#endif
-+#include <linux/fs.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "setxattr03";
-+
-+#ifdef HAVE_ATTR_XATTR_H
-+#define XATTR_TEST_KEY "user.testkey"
-+#define XATTR_TEST_VALUE "this is a test value"
-+#define XATTR_TEST_VALUE_SIZE (sizeof(XATTR_TEST_VALUE) - 1)
-+
-+#define IMMU_FILE "setxattr03immutable"
-+#define APPEND_FILE  "setxattr03appendonly"
-+
-+#define set_immutable_on(fd) fsetflag(fd, 1, 1)
-+#define set_immutable_off(fd) fsetflag(fd, 0, 1)
-+#define set_append_on(fd) fsetflag(fd, 1, 0)
-+#define set_append_off(fd) fsetflag(fd, 0, 0)
-+
-+struct test_case {
-+	char *desc;
-+	char *fname;
-+	char *key;
-+	char *value;
-+	size_t size;
-+	int flags;
-+	int exp_err;
-+};
-+static struct test_case tc[] = {
-+	{	/* case 00, set attr to immutable file */
-+		.desc = "Set attr to immutable file",
-+		.fname = IMMU_FILE,
-+		.key = XATTR_TEST_KEY,
-+		.value = XATTR_TEST_VALUE,
-+		.size = XATTR_TEST_VALUE_SIZE,
-+		.flags = XATTR_CREATE,
-+		.exp_err = EPERM,
-+	},
-+	{	/* case 01, set attr to append-only file */
-+		.desc = "Set attr to append-only file",
-+		.fname = APPEND_FILE,
-+		.key = XATTR_TEST_KEY,
-+		.value = XATTR_TEST_VALUE,
-+		.size = XATTR_TEST_VALUE_SIZE,
-+		.flags = XATTR_CREATE,
-+		.exp_err = EPERM,
-+	},
-+};
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static int immu_fd;
-+static int append_fd;
-+
-+int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	int i;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++)	{
-+			TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value,
-+			    tc[i].size, tc[i].flags));
-+
-+			if (TEST_ERRNO == tc[i].exp_err) {
-+				tst_resm(TPASS | TTERRNO, tc[i].desc);
-+			} else {
-+				tst_resm(TFAIL | TTERRNO, "%s - expected errno"
-+				    " %d - Got", tc[i].desc, tc[i].exp_err);
-+			}
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static int fsetflag(int fd, int on, int immutable)
-+{
-+	int fsflags = 0;
-+	int fsfl;
-+
-+	if (ioctl(fd, FS_IOC_GETFLAGS, &fsflags) < 0)
-+		return 1;
-+
-+	if (immutable)
-+		fsfl = FS_IMMUTABLE_FL;
-+	else
-+		fsfl = FS_APPEND_FL;
-+
-+	if (on)
-+		fsflags |= fsfl;
-+	else
-+		fsflags &= ~fsfl;
-+
-+	if (ioctl(fd, FS_IOC_SETFLAGS, &fsflags) < 0)
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static void setup(void)
-+{
-+	int fd;
-+
-+	tst_require_root(NULL);
-+
-+	tst_tmpdir();
-+
-+	/* Test for xattr support */
-+	fd = creat("testfile", 0644);
-+	if (fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create testfile failed");
-+	close(fd);
-+	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
-+		if (errno == ENOTSUP)
-+			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
-+			    "fs mounted without user_xattr option");
-+	unlink("testfile");
-+
-+	/* Create test files and set file immutable or append-only */
-+	immu_fd = creat(IMMU_FILE, 0644);
-+	if (immu_fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
-+		    IMMU_FILE);
-+	if (set_immutable_on(immu_fd))
-+		tst_brkm(TBROK | TERRNO, cleanup, "Set %s immutable failed",
-+		    IMMU_FILE);
-+
-+	append_fd = creat(APPEND_FILE, 0644);
-+	if (append_fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
-+		    APPEND_FILE);
-+	if (set_append_on(append_fd))
-+		tst_brkm(TBROK | TERRNO, cleanup, "Set %s append-only failed",
-+		    APPEND_FILE);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (set_immutable_off(immu_fd))
-+		tst_resm(TWARN | TERRNO, "Unset %s immutable failed",
-+		    IMMU_FILE);
-+	if (set_append_off(append_fd))
-+		tst_resm(TWARN | TERRNO, "Unset %s append-only failed",
-+		    APPEND_FILE);
-+	close(immu_fd);
-+	close(append_fd);
-+
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+}
-+#else /* HAVE_ATTR_XATTR_H */
-+int main(int argc, char *argv[])
-+{
-+	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-+}
-+#endif /* HAVE_ATTR_XATTR_H */
-
---------------1.7.7.5
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> > Hi Cyril, Casper and folks :
+> > 
+> > I just cooked one patch to request for your comments,
+> > after your comments with this, I will cook patches on
+> > other hugemmap cases, and also with some code cleanup.
+> 
+> Any comments? the case now is sometime FAIL without this
+> patch,
+
+Sorry for the delay, there is (again) quite a load of patches and work
+to do...
+
+Speaking of cleanups, you are welcome to delete all the useless comments
+like /* this is a loop variable */. And you could also run checkpatch on
+files too, as checkpatch -f file.c. And if you send the cleanups in
+separate patch, these would be applied right away.
+
+The changes in functionality looks reasonably straightforward to me more
+comments bellow. And I would definitly like to hear what Caspar thinks
+about this patch (as he was planing to do some cleanups in the mem/
+testcases).
+
+> > 1. auto mount can reduce bugs
+> > 2. add a option to change the default hugepages to be allocated
+> > 
+> > Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> > ---
+> >  runtest/hugetlb                                    |    2 +-
+> >  testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   12 +++++
+> >  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   49 ++++++++++++-------
+> >  3 files changed, 44 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/runtest/hugetlb b/runtest/hugetlb
+> > index a316043..2cbd410 100644
+> > --- a/runtest/hugetlb
+> > +++ b/runtest/hugetlb
+> > @@ -1,4 +1,4 @@
+> > -hugemmap01 hugemmap01 -H/tmp
+> > +hugemmap01 hugemmap01
+> >  hugemmap02 hugemmap02 -H/tmp -c10
+> >  hugemmap03 hugemmap03 -H/tmp -I2 -c10
+> >  hugemmap04 hugemmap04 -H/tmp
+> > diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> > index a1ba46e..98d0694 100644
+> > --- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> > @@ -24,4 +24,16 @@ top_srcdir              ?= ../../../../..
+> >  
+> >  include $(top_srcdir)/include/mk/testcases.mk
+> >  include $(abs_srcdir)/../Makefile.inc
+> > +
+> > +LIBMEMDIR		:= ../../lib
+> > +LIBMEM			:= $(LIBMEMDIR)/libmem.a
+> > +$(LIBMEM):
+> > +	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
+> > +
+> > +CPPFLAGS		+= -I$(abs_srcdir)/$(LIBMEMDIR)
+> > +LDFLAGS			+= -L$(abs_builddir)/$(LIBMEMDIR)
+> > +LDLIBS			+= -lmem
+> > +MAKE_DEPS		+= $(LIBMEM)
+> > +
+> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> > +#vim: syntax=make
+> > diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> > index 874f736..5e2c962 100644
+> > --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> > @@ -69,23 +69,27 @@
+> >  #include <sys/stat.h>
+> >  #include <sys/mman.h>
+> >  #include <sys/types.h>
+> > +#include <sys/mount.h>
+> >  
+> >  #include "test.h"
+> >  #include "usctest.h"
+> >  #include "system_specific_hugepages_info.h"
+> > +#include "../../include/mem.h"
+> >  
+> >  #define BUFFER_SIZE  256
+> >  
+> > -char* TEMPFILE="mmapfile";
+> > +char TEMPFILE[MAXPATHLEN];
+> >  
+> >  char *TCID="hugemmap01";	/* Test program identifier.    */
+> >  int TST_TOTAL=1;		/* Total number of test cases. */
+> >  long *addr;			/* addr of memory mapped region */
+> >  int fildes;			/* file descriptor for tempfile */
+> >  char *Hopt;                     /* location of hugetlbfs */
+> > +char *nr_opt;
+> >  int beforetest=0;		/* Amount of free huge pages before testing */
+> >  int aftertest=0;		/* Amount of free huge pages after testing */
+> >  int hugepagesmapped=0;		/* Amount of huge pages mapped after testing */
+> > +long hugepages = 1024;		/* Amount of allocated huge pages, default 1024 */
+> >  
+> >  void setup();			/* Main setup function of test */
+> >  void cleanup();			/* cleanup function for the test */
+> > @@ -100,12 +104,16 @@ main(int ac, char **av)
+> >  {
+> >  	int lc;			/* loop counter */
+> >  	char *msg;		/* message returned from parse_opts */
+> > -        int Hflag=0;              /* binary flag: opt or not */
+> > +        int Hflag=0;		/* binary flag: opt or not */
+> > +	int sflag=0;
+> >  	int page_sz=0;
+> >  
+> >         	option_t options[] = {
+> > -        	{ "H:",   &Hflag, &Hopt },    /* Required for location of hugetlbfs */
+> > -            	{ NULL, NULL, NULL }          /* NULL required to end array */
+> > +		/* Required for location of hugetlbfs */
+> > +        	{ "H:", &Hflag, &Hopt },
+> > +		{ "s:", &sflag, &nr_opt },
+> > +		/* NULL required to end array */
+> > +            	{ NULL, NULL, NULL }
+> >         	};
+> >  
+> >  	/* Parse standard options given to run the test. */
+> > @@ -115,11 +123,15 @@ main(int ac, char **av)
+> >  		tst_exit();
+> >  	}
+> >  
+> > -	if (Hflag == 0) {
+> > -		tst_brkm(TBROK, NULL, "-H option is REQUIRED for this test, use -h for options help");
+> > -		tst_exit();
+> > +	if (!Hflag) {
+> > +		tst_require_root(NULL);
+> > +		tst_tmpdir();
+> > +		Hopt = get_tst_tmpdir();
+> >  	}
+
+Isn't the tst_require_root(NULL) useless here as we do another one in
+setup? Or isn't the one in setup redundant?
+
+> > +	if (sflag)
+> > +		hugepages = strtol(nr_opt, NULL, 10);
+> > +
+> >  	setup();
+> >  
+> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> > @@ -189,17 +201,16 @@ main(int ac, char **av)
+> >   * 	     Write some known data into file and get the size of the file.
+> >   */
+> >  void
+> > -setup()
+> > +setup(void)
+> >  {
+> > -	char mypid[40];
+> > -
+> > -	sprintf(mypid,"/%d",getpid());
+> > -	TEMPFILE=strcat(mypid,TEMPFILE);
+> > -	TEMPFILE=strcat(Hopt,TEMPFILE);
+> > -
+> > -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> > -
+> > -	TEST_PAUSE;
+> > +	tst_require_root(NULL);
+> > +	if (mount("none", Hopt, "hugetlbfs", 0, NULL) < 0) {
+> > +		tst_brkm(TBROK|TERRNO, NULL,
+> > +			"mount failed on %s", Hopt);
+> > +	}
+> > +	set_sys_tune("nr_hugepages", hugepages, 1);
+> > +	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d",
+> > +		 Hopt, getpid());
+> >  }
+> >  
+> > @@ -209,7 +220,7 @@ setup()
+> >   * 	       Remove the temporary directory created.
+> >   */
+> >  void
+> > -cleanup()
+> > +cleanup(void)
+> >  {
+> >  	/*
+> >  	 * print timing stats if that option was specified.
+> > @@ -218,4 +229,6 @@ cleanup()
+> >  
+> >  	unlink(TEMPFILE);
+> >  
+> > +	umount(Hopt);
+> > +	tst_rmdir();
+> >  }
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
@@ -320,18 +220,7 @@ The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
 http://p.sf.net/sfu/learndevnow-d2d
---------------1.7.7.5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.7.5--
-
-
-
