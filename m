@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RkJ5j-0005sD-9v
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:33:03 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RkJ5f-0005Gp-JF
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 17:33:03 +0000
-Received: by obcwn6 with SMTP id wn6so5795376obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 09 Jan 2012 09:32:54 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RoFP5-0000KW-AW
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 14:25:19 +0000
+Date: Fri, 20 Jan 2012 15:37:30 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120120143730.GC13447@saboteur.suse.cz>
+References: <20120111125642.GD7143@saboteur.suse.cz>
+	<201201181139.19497.vapier@gentoo.org>
+	<20120119174355.GF10302@saboteur.suse.cz>
+	<201201191334.47413.vapier@gentoo.org>
 MIME-Version: 1.0
-In-Reply-To: <201201091223.14655.vapier@gentoo.org>
-References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
-	<20120109105133.GB27172@eguan-t400.redhat.com>
-	<CAGH67wSHbU+1ptij7-X9ysU2CZXFOxtD7NYD9Yn0SuRtXThaUg@mail.gmail.com>
-	<201201091223.14655.vapier@gentoo.org>
-Date: Mon, 9 Jan 2012 09:32:54 -0800
-Message-ID: <CAGH67wRU_PUrpmM06dsrZUeTr=DLG81ThKnExZS3_KoZsaOotg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls/xattr: fix compile when xattr.h not exist
+Content-Disposition: inline
+In-Reply-To: <201201191334.47413.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] syscalls/getrusage03: flush stdout to avoid
+ duplicated output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,120 +25,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Jan 9, 2012 at 9:23 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Monday 09 January 2012 12:11:50 Garrett Cooper wrote:
->> On Mon, Jan 9, 2012 at 2:51 AM, Eryu Guan <eguan@redhat.com> wrote:
->> > On Mon, Jan 09, 2012 at 05:44:35PM +0800, Caspar Zhang wrote:
->> >> if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
->> >> autotools level.
->> > >
->> >> --- a/testcases/kernel/syscalls/getxattr/getxattr01.c
->> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
->> >> @@ -37,7 +37,6 @@
->> >>
->> >> =A0#include <sys/types.h>
->> >> =A0#include <sys/stat.h>
->> >> -#include <attr/xattr.h>
->> >> =A0#include <errno.h>
->> >> =A0#include <fcntl.h>
->> >> =A0#include <unistd.h>
->> >> @@ -45,9 +44,16 @@
->> >> =A0#include <stdlib.h>
->> >> =A0#include <string.h>
->> >>
->> >> +#include "config.h"
->> >> =A0#include "test.h"
->> >> =A0#include "usctest.h"
->> >>
->> >> +char *TCID =3D "getxattr01";
->> >> +
->> >> +#ifdef HAVE_ATTR_XATTR_H
->> >> +
->> >> +#include <attr/xattr.h>
->> >> +
->> >> =A0#define XATTR_TEST_KEY "user.testkey"
->> >> =A0#define XATTR_TEST_VALUE "this is a test value"
->> >> =A0#define XATTR_TEST_VALUE_SIZE 20
->> >> @@ -56,7 +62,6 @@
->> >> =A0static void setup(void);
->> >> =A0static void cleanup(void);
->> >>
->> >> -char *TCID =3D "getxattr01";
->> >> =A0char filename[BUFSIZ];
->> >>
->> >> =A0struct test_case {
->> >> @@ -171,3 +176,9 @@ static void cleanup(void)
->> >> =A0 =A0 =A0 TEST_CLEANUP;
->> >> =A0 =A0 =A0 tst_rmdir();
->> >> =A0}
->> >> +#else /* HAVE_ATTR_XATTR_H */
->> >> +int main(int argc, char *argv[])
->> >> +{
->> >> + =A0 =A0 tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
->> >> +}
->> >> +#endif
->> >> diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c
->> >> b/testcases/kernel/syscalls/getxattr/getxattr02.c index
->> >> 54d8949..52c5812 100644
->> >> --- a/testcases/kernel/syscalls/getxattr/getxattr02.c
->> >> +++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
->> >> @@ -41,7 +41,6 @@
->> >> =A0#include <sys/types.h>
->> >> =A0#include <sys/stat.h>
->> >> =A0#include <sys/wait.h>
->> >> -#include <attr/xattr.h>
->> >> =A0#include <errno.h>
->> >> =A0#include <fcntl.h>
->> >> =A0#include <unistd.h>
->> >> @@ -50,9 +49,16 @@
->> >> =A0#include <stdlib.h>
->> >> =A0#include <string.h>
->> >>
->> >> +#include "config.h"
->> >> =A0#include "test.h"
->> >> =A0#include "usctest.h"
->> >>
->> >> +char *TCID =3D "getxattr02";
->> >> +
->> >> +#ifdef HAVE_ATTR_XATTR_H
->> >> +
->> >> +#include <attr/xattr.h>
->>
->> The only thing requested is that:
->>
->> #ifdef HAVE_ATTR_XATTR_H
->> #include <attr/xattr.h>
->> #endif
->>
->> (please note the whitespace difference) be moved further up in the
->> file to be sorted properly with the rest of the #includes, as noted in
->> the style guide.
->
-> config.h should come before any include, and then the attr/xattr.h evalua=
-tion
-> be in the normal location -- after C library includes and before LTP incl=
-udes
-> (like test.h).
+Hi!
+> > > certainly the existing FORK_OR_VFORK/self_exec api could do with a minor
+> > > cleanup and unification.  i think the reason we have it do
+> > > vfork+self-exec on nommu but fork on mmu is to keep things simpler for
+> > > the main dev base, but i wouldn't be opposed to just always having tsts
+> > > do vfork+self-exec so as to reduce the #ifdef ugliness in tests.
+> > 
+> > I will meditate about that (I do not fully understand how exactly is
+> > maybe_run_child() and self_exec() working yet).
+> 
+> many tests want to fork a child to run some code.  and the parent watches that 
+> in parallel.  on no-mmu, we can't do that (vfork blocks the parent until the 
+> child exits or execs).  so instead, we vfork, then exec the test with special 
+> params.  the test code looks at its args to see if it is being executed like 
+> normal, or if it needs to execute in "child mode".  once it does, the test 
+> continues on like it would normally.
 
-+1
-Thanks,
--Garrett
+Ah, right, I expected something like that.
 
----------------------------------------------------------------------------=
----
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual =
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure =
-
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+------------------------------------------------------------------------------
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
