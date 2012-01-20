@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RiSHf-0002vO-Pn
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 14:57:43 +0000
-Date: Wed, 4 Jan 2012 16:08:31 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120104150831.GI15845@saboteur.suse.cz>
-References: <4F030192.8030107@imgtec.com>
-	<201201031535.17342.vapier@gentoo.org>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1RoBd2-0007fg-FZ
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 10:23:28 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RoBcy-0007QE-6P
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jan 2012 10:23:28 +0000
+Message-ID: <4F194094.7060504@imgtec.com>
+Date: Fri, 20 Jan 2012 10:23:16 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201201031535.17342.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 19/21] nfs/nfsstress/make_tree: Fix erroneous cast
- to void pointer
+References: <1325672810-5247-1-git-send-email-markos.chandras@imgtec.com>	<4F15A93E.10405@imgtec.com>
+	<4F184599.5040502@st.com>
+In-Reply-To: <4F184599.5040502@st.com>
+Subject: Re: [LTP] [PATCH 12/21] syscalls/{getcontext,
+	profil}: Multiple fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,34 +29,120 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> NAK: this is how the pthread API works.  you aren't passing a value by 
-> reference.  they used a pointer rather than "long" or something as it's harder 
-> to fit a pointer into an integer rather than the other way around.
-> 
-> if you're getting a build time warning, try casting it to uintptr_t instead
+On 01/19/2012 04:32 PM, Carmelo AMOROSO wrote:
+> On 17/01/2012 18.00, Markos Chandras wrote:
+>> On 01/04/2012 10:26 AM, Markos Chandras wrote:
+>>> - Include test.h header even when __UCLIBC__ is defined. It is required for the
+>>> tst_brkm function
+>>> - Move TCID variable definition to the top so I can be independent of whether
+>>>     __UCLIBC is used or not.
+>>>
+>>> Signed-off-by: Markos Chandras<markos.chandras@imgtec.com>
+>>> ---
+>>>    .../kernel/syscalls/getcontext/getcontext01.c      |    7 +++++--
+>>>    testcases/kernel/syscalls/profil/profil01.c        |    7 +++++--
+>>>    2 files changed, 10 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c b/testcases/kernel/syscalls/getcontext/getcontext01.c
+>>> index 7cadc67..1cf2896 100644
+>>> --- a/testcases/kernel/syscalls/getcontext/getcontext01.c
+>>> +++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
+>>> @@ -34,6 +34,9 @@
+>>>     **********************************************************/
+>>>
+>>>    #include<features.h>
+>>> +
+>>> +char *TCID = "getcontext01";	/* Test program identifier.    */
+>>> +
+>>>    #if !defined(__UCLIBC__)
+>>>
+>>>    #include<stdio.h>
+>>> @@ -47,7 +50,6 @@
+>>>    void setup();
+>>>    void cleanup();
+>>>
+>>> -char *TCID = "getcontext01";	/* Test program identifier.    */
+>>>    int TST_TOTAL = 1;		/* Total number of test cases. */
+>>>
+>>>    int exp_enos[] = { 0 };		/* must be a 0 terminated list */
+>>> @@ -98,8 +100,9 @@ void cleanup()
+>>>    }
+>>>
+>>>    #else /* systems that dont support obsolete getcontext */
+>>> +#include "test.h"
+>>>    int main()
+>>>    {
+>>>    	tst_brkm(TCONF, NULL, "system doesn't have getcontext support");
+>>>    }
+>>> -#endif
+>>> \ No newline at end of file
+>>> +#endif
+>>> diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
+>>> index 63bed83..571e6f0 100644
+>>> --- a/testcases/kernel/syscalls/profil/profil01.c
+>>> +++ b/testcases/kernel/syscalls/profil/profil01.c
+>>> @@ -41,6 +41,9 @@
+>>>    #endif
+>>>
+>>>    #include<features.h>
+>>> +
+>>> +char *TCID = "profil01";
+>>> +
+>>>    #ifndef __UCLIBC__
+>>>
+>>>    #ifdef __arm__
+>>> @@ -73,7 +76,6 @@ volatile int t_flag;
+>>>    //char progname[]= "profil1()";
+>>>
+>>>    /*****	LTP Port	*****/
+>>> -char *TCID = "profil01";
+>>>    int local_flag = PASSED;
+>>>    int block_number;
+>>>    FILE *temp;
+>>> @@ -305,9 +307,10 @@ void fail_exit()
+>>>    /*****	**	**	*****/
+>>>
+>>>    #else
+>>> +#include "test.h"
+>>>    int main(void)
+>>>    {
+>>>    	/* uClibc does not have profiling support */
+>>>    	tst_exit();
+>>>    }
+>>> -#endif
+>>> \ No newline at end of file
+>>> +#endif
+>>
+>> Ping?
+>>
+>> Any comments on this? It fixes a build failure on uClibc platforms.
+>>
+>
+> Hi,
+> I've posted two different patch with a different approach, that got the
+> Ack from Mike, so likely they will be included in master shortly.
+>
+> Adding twice the "test.h" in both code path is not so clean, IMO.
+>
+> cheers,
+> carmelo
+>
+Hi Carmelo,
 
-Pretty much, you would pass a pointer to thread stack as a return value
-with this patch which is wrong for several reasons (and the stackframe
-woudn't most likely there when somebody else would touch this value).
-
-The whole macro actually seems to be broken. It assigns local variable
-thread_exit which is defined as volatile and it looks to me like
-somebody had no clue how volatie works (at least at first sight).
+Yeah I saw it. I agree that your patch is better. Thanks for fixing it ;)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
