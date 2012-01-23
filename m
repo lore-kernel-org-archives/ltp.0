@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RiAxl-0001yX-UI
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:28:01 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RiAxl-0004SP-36
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 20:28:01 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 3 Jan 2012 15:28:07 -0500
-References: <4F02C765.5030408@imgtec.com>
-In-Reply-To: <4F02C765.5030408@imgtec.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1RpGiO-000816-8M
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jan 2012 10:01:28 +0000
+Received: from eu1sys200aog111.obsmtp.com ([207.126.144.131])
+	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RpGiJ-0000ri-St
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jan 2012 10:01:28 +0000
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Date: Mon, 23 Jan 2012 11:01:08 +0100
+Message-Id: <1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
+In-Reply-To: <20120120134016.GG4024@saboteur.suse.cz>
+References: <20120120134016.GG4024@saboteur.suse.cz>
 MIME-Version: 1.0
-Message-Id: <201201031528.08200.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 01/21] lib/parse_opts: STD_LP_sbrk and
-	STD_start_break should only be defined when UCLINUX=0
+Subject: [LTP] [PATCH 1/2 V3] getcontext01: fix build using uClibc C runtime
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,73 +24,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5306113733495264762=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Markos Chandras <Markos.Chandras@imgtec.com>
+To: ltp-list@lists.sf.net
 
---===============5306113733495264762==
-Content-Type: multipart/signed; boundary="nextPart3564760.Lvl2SENNPM";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3564760.Lvl2SENNPM
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-please use `git send-email` to properly post patches.  attaching them like=
-=20
-this makes it a pita to review.
-=2Dmike
-
---nextPart3564760.Lvl2SENNPM
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPA2TYAAoJEEFjO5/oN/WBaG4P/RfJkCWjAYRdNGEc04NhVeOP
-81kZIE1cP3vPYdTEGyDo/Zic8meR+t28KmZImNDaJqbT2GAM8EcVSrNOW+HAuONH
-Sme2qLhqaGPoGuCNOp+IxMJFRg0CCGnaxHVCcLE8CFHkgjZxbhinOQGPn5tVnRPN
-mQ96/mQgOixY/Ro2UBUZcmYMIJxMWbjQekqRbgsOtWIWBhXp5gv4zzVNV5W5jXk4
-l61zDnUzPs668tbS7IoT8LHUnvAiI0XRiQR7RqVaWWi2SA1SPyzVfwYGfWvDE5q9
-oOLz9H3hNKFgdogsTbe3sP2AKDx0iH4VYneB93y2IlPRrqQ2pG89wqqk/O8FVZw3
-CSMSPtY5R0aRwxRsJB8h9AgDAhcA0K7+pbeGl74E3YJHFHb/E/n/n9JIsHxzogMV
-LFRLQhzx23p/G4+kSv7OVuDnYhJ27e3jrZ7i0HeXo5S5g5lz7tc2YhRm/4lIaJsT
-mZioVt1swMy7aI2G4hcNZA7pN0Br16lEdkNWpmVBxVmfrXxgkMIUuwi7SIOc9gxS
-/EAIcFQoH5102gbmxhjbnWjwpbIIxkq+XLvaFi5LTFQ+Qi0d6LrlQAJT+HL2veW0
-Yu5FKvIEGzEwX59eZHsFMnMfON0Lvx7ut+yyHy71htlbOGXzfF5Yhoawdr7xVJFG
-ZbkpHJmH8gAVQQB8MRDm
-=xqTB
------END PGP SIGNATURE-----
-
---nextPart3564760.Lvl2SENNPM--
-
-
---===============5306113733495264762==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
---===============5306113733495264762==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5306113733495264762==--
-
+Rml4IGEgYnVpbGQgZXJyb3Igd2hlbiBfX1VDTElCQ19fIGlzIGRlZmluZWQgKHNlZSBsb2cgYmVs
+b3cpCmJ5IG1vdmluZyBhbGwgaGVhZGVycyBpbmNsdXNpb24gYW5kIFRDSUQgZGVmaW5pdGlvbiBv
+biB0b3Agb2YgZmlsZQphcyB0aGV5IGFyZSByZXF1aXJlZCBieSAndHN0X2Jya20nIGZ1bmN0aW9u
+IHRvby4KCmdldGNvbnRleHQwMS5jOiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgpnZXRjb250ZXh0
+MDEuYzoxMDM6Mjogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCY
+dHN0X2Jya23igJkKZ2V0Y29udGV4dDAxLmM6MTAzOjExOiBlcnJvcjog4oCYVENPTkbigJkgdW5k
+ZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCmdldGNvbnRleHQwMS5jOjEwMzox
+MTogbm90ZTogZWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBvbmNl
+IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4KZ2V0Y29udGV4dDAxLmM6MTAzOjE4OiBl
+cnJvcjog4oCYTlVMTOKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikK
+Z2V0Y29udGV4dDAxLmM6MTA0OjE6IHdhcm5pbmc6IGNvbnRyb2wgcmVhY2hlcyBlbmQgb2Ygbm9u
+LXZvaWQgZnVuY3Rpb24KClNpZ25lZC1vZmYtYnk6IEZyYW5jZXNjbyBSdW5kbyA8ZnJhbmNlc2Nv
+LnJ1bmRvQHN0LmNvbT4KU2lnbmVkLW9mZi1ieTogQ2FybWVsbyBBbW9yb3NvIDxjYXJtZWxvLmFt
+b3Jvc29Ac3QuY29tPgotLS0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvZ2V0Y29udGV4dC9nZXRjb250
+ZXh0MDEuYyAgICAgIHwgICAgOCArKysrKy0tLQogMSBmaWxlcyBjaGFuZ2VkLCA1IGluc2VydGlv
+bnMoKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9nZXRjb250ZXh0L2dldGNvbnRleHQwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9nZXRjb250ZXh0L2dldGNvbnRleHQwMS5jCmluZGV4IDdjYWRjNjcuLmU0NzlhNmEgMTAwNjQ0
+Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0Y29udGV4dC9nZXRjb250ZXh0MDEu
+YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldGNvbnRleHQvZ2V0Y29udGV4dDAx
+LmMKQEAgLTM0LDcgKzM0LDYgQEAKICAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqLwogCiAjaW5jbHVkZSA8ZmVhdHVyZXMuaD4KLSNpZiAh
+ZGVmaW5lZChfX1VDTElCQ19fKQogCiAjaW5jbHVkZSA8c3RkaW8uaD4KICNpbmNsdWRlIDx1bmlz
+dGQuaD4KQEAgLTQ0LDEwICs0MywxMyBAQAogI2luY2x1ZGUgInRlc3QuaCIKICNpbmNsdWRlICJ1
+c2N0ZXN0LmgiCiAKK2NoYXIgKlRDSUQgPSAiZ2V0Y29udGV4dDAxIjsJLyogVGVzdCBwcm9ncmFt
+IGlkZW50aWZpZXIuICAgICovCisKKyNpZiAhZGVmaW5lZChfX1VDTElCQ19fKQorCiB2b2lkIHNl
+dHVwKCk7CiB2b2lkIGNsZWFudXAoKTsKIAotY2hhciAqVENJRCA9ICJnZXRjb250ZXh0MDEiOwkv
+KiBUZXN0IHByb2dyYW0gaWRlbnRpZmllci4gICAgKi8KIGludCBUU1RfVE9UQUwgPSAxOwkJLyog
+VG90YWwgbnVtYmVyIG9mIHRlc3QgY2FzZXMuICovCiAKIGludCBleHBfZW5vc1tdID0geyAwIH07
+CQkvKiBtdXN0IGJlIGEgMCB0ZXJtaW5hdGVkIGxpc3QgKi8KQEAgLTEwMiw0ICsxMDQsNCBAQCBp
+bnQgbWFpbigpCiB7CiAJdHN0X2Jya20oVENPTkYsIE5VTEwsICJzeXN0ZW0gZG9lc24ndCBoYXZl
+IGdldGNvbnRleHQgc3VwcG9ydCIpOwogfQotI2VuZGlmClwgTm8gbmV3bGluZSBhdCBlbmQgb2Yg
+ZmlsZQorI2VuZGlmCi0tIAoxLjcuNC40CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRyeSBiZWZv
+cmUgeW91IGJ1eSA9IFNlZSBvdXIgZXhwZXJ0cyBpbiBhY3Rpb24hClRoZSBtb3N0IGNvbXByZWhl
+bnNpdmUgb25saW5lIGxlYXJuaW5nIGxpYnJhcnkgZm9yIE1pY3Jvc29mdCBkZXZlbG9wZXJzCmlz
+IGp1c3QgJDk5Ljk5ISBWaXN1YWwgU3R1ZGlvLCBTaGFyZVBvaW50LCBTUUwgLSBwbHVzIEhUTUw1
+LCBDU1MzLCBNVkMzLApNZXRybyBTdHlsZSBBcHBzLCBtb3JlLiBGcmVlIGZ1dHVyZSByZWxlYXNl
+cyB3aGVuIHlvdSBzdWJzY3JpYmUgbm93IQpodHRwOi8vcC5zZi5uZXQvc2Z1L2xlYXJuZGV2bm93
+LWRldjIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
+LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
+L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
