@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RkzrT-0007f9-Lb
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jan 2012 15:13:11 +0000
-Date: Wed, 11 Jan 2012 16:24:35 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120111152435.GF7143@saboteur.suse.cz>
-References: <1326102275-32485-1-git-send-email-caspar@casparzhang.com>
-	<1326164470-16612-1-git-send-email-caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1RpGiP-00010X-RS
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jan 2012 10:01:29 +0000
+Received: from eu1sys200aog110.obsmtp.com ([207.126.144.129])
+	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RpGiO-0005iS-Ut
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jan 2012 10:01:29 +0000
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Date: Mon, 23 Jan 2012 11:01:09 +0100
+Message-Id: <1327312869-17016-2-git-send-email-carmelo.amoroso@st.com>
+In-Reply-To: <1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
+References: <20120120134016.GG4024@saboteur.suse.cz>
+	<1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1326164470-16612-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH v2] syscalls/xattr: fix compile when xattr.h not
- exist
+Subject: [LTP] [PATCH 2/2 V3] profile01: fix build using uClibc runtime
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,38 +25,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sf.net
 
-Hi!
-> if <attr/xattr.h> doesn't exist, compliation will fail. Fix it in
-> autotools level.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  configure.ac                                    |    1 +
->  testcases/kernel/syscalls/getxattr/getxattr01.c |   16 +++++++++++++---
->  testcases/kernel/syscalls/getxattr/getxattr02.c |   17 +++++++++++++----
->  testcases/kernel/syscalls/setxattr/setxattr01.c |   16 +++++++++++++---
->  testcases/kernel/syscalls/setxattr/setxattr02.c |   17 +++++++++++++----
->  5 files changed, 53 insertions(+), 14 deletions(-)
-
-Commited, thanks!
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Rml4IGEgYnVpbGQgZXJyb3Igd2hlbiBfX1VDTElCQ19fIGlzIGRlZmluZWQgKHNlZSBsb2cgYmVs
+b3cpCmJ5IG1vdmluZyBhbGwgaGVhZGVycyBpbmNsdXNpb24gYW5kIFRDSUQgZGVmaW5pdGlvbiBv
+biB0b3Agb2YgZmlsZQphcyB0aGV5IGFyZSByZXF1aXJlZCBieSAndHN0X2Jya20nIGZ1bmN0aW9u
+IHRvby4KCnByb2ZpbDAxLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6CnByb2ZpbDAxLmM6MzEx
+OjI6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmHRzdF9leGl0
+4oCZCnByb2ZpbDAxLmM6MzEyOjE6IHdhcm5pbmc6IGNvbnRyb2wgcmVhY2hlcyBlbmQgb2Ygbm9u
+LXZvaWQgZnVuY3Rpb24KIC4uLy4uLy4uLy4uL2xpYi9saWJsdHAuYSh0c3RfcmVzLm8pOiBJbiBm
+dW5jdGlvbiBgY2F0X2ZpbGUnOgovc3RsaW51eC9hbW9yb3NvYy9naXQvc3RtL2x0cC9saWIvdHN0
+X3Jlcy5jOjczMzogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKLi4vLi4vLi4vLi4vbGli
+L2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGB0c3RfcmVzJzoKL3N0bGludXgvYW1v
+cm9zb2MvZ2l0L3N0bS9sdHAvbGliL3RzdF9yZXMuYzozMDA6IHVuZGVmaW5lZCByZWZlcmVuY2Ug
+dG8gYFRDSUQnCi9zdGxpbnV4L2Ftb3Jvc29jL2dpdC9zdG0vbHRwL2xpYi90c3RfcmVzLmM6Mjg0
+OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBUQ0lEJwovc3RsaW51eC9hbW9yb3NvYy9naXQvc3Rt
+L2x0cC9saWIvdHN0X3Jlcy5jOjMyMzogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKLi4v
+Li4vLi4vLi4vbGliL2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGB0c3RfYnJrJzoK
+L3N0bGludXgvYW1vcm9zb2MvZ2l0L3N0bS9sdHAvbGliL3RzdF9yZXMuYzo2MzQ6IHVuZGVmaW5l
+ZCByZWZlcmVuY2UgdG8gYFRDSUQnCmNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVz
+CgpTaWduZWQtb2ZmLWJ5OiBGcmFuY2VzY28gUnVuZG8gPGZyYW5jZXNjby5ydW5kb0BzdC5jb20+
+ClNpZ25lZC1vZmYtYnk6IENhcm1lbG8gQW1vcm9zbyA8Y2FybWVsby5hbW9yb3NvQHN0LmNvbT4K
+LS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Byb2ZpbC9wcm9maWwwMS5jIHwgICAyNCAr
+KysrKysrKysrKystLS0tLS0tLS0tLS0KIDEgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygr
+KSwgMTIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9wcm9maWwvcHJvZmlsMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHJvZmlsL3By
+b2ZpbDAxLmMKaW5kZXggNjNiZWQ4My4uOTllZWNkYiAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9wcm9maWwvcHJvZmlsMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL3Byb2ZpbC9wcm9maWwwMS5jCkBAIC00MSwxOCArNDEsOSBAQAogI2VuZGlmCiAKICNp
+bmNsdWRlIDxmZWF0dXJlcy5oPgotI2lmbmRlZiBfX1VDTElCQ19fCi0KLSNpZmRlZiBfX2FybV9f
+Ci0jZGVmaW5lIEFERFJFU1NfT0ZGU0VUIDB4ODAwMAotI2Vsc2UKLSNkZWZpbmUgQUREUkVTU19P
+RkZTRVQgMAotI2VuZGlmCi0KICNpbmNsdWRlIDxzdGRpby5oPgogI2luY2x1ZGUgPHNpZ25hbC5o
+PgogI2luY2x1ZGUgPGxpbWl0cy5oPgotLyoqKioqCUxUUCBQb3J0CSoqKioqLwogI2luY2x1ZGUg
+PHN0ZGxpYi5oPgogI2luY2x1ZGUgPHVuaXN0ZC5oPgogI2luY2x1ZGUgPGVycm5vLmg+CkBAIC02
+MCw5ICs1MSwxOSBAQAogI2luY2x1ZGUgPHN5cy93YWl0Lmg+CiAjaW5jbHVkZSAidGVzdC5oIgog
+I2luY2x1ZGUgInVzY3Rlc3QuaCIKKworY2hhciAqVENJRCA9ICJwcm9maWwwMSI7CisKKyNpZm5k
+ZWYgX19VQ0xJQkNfXworCisjaWZkZWYgX19hcm1fXworI2RlZmluZSBBRERSRVNTX09GRlNFVCAw
+eDgwMDAKKyNlbHNlCisjZGVmaW5lIEFERFJFU1NfT0ZGU0VUIDAKKyNlbmRpZgorCiAjZGVmaW5l
+IEZBSUxFRCAwCiAjZGVmaW5lIFBBU1NFRCAxCi0vKioqKioJKioJKioJKioqKiovCiAKICNkZWZp
+bmUgUF9USU1FCQkxMAkvKiBwcm9maWxlIGZvciB0aGlzIG1hbnkgIHNlY29uZHMgKi8KIApAQCAt
+NzMsNyArNzQsNiBAQCB2b2xhdGlsZSBpbnQgdF9mbGFnOwogLy9jaGFyIHByb2duYW1lW109ICJw
+cm9maWwxKCkiOwogCiAvKioqKioJTFRQIFBvcnQJKioqKiovCi1jaGFyICpUQ0lEID0gInByb2Zp
+bDAxIjsKIGludCBsb2NhbF9mbGFnID0gUEFTU0VEOwogaW50IGJsb2NrX251bWJlcjsKIEZJTEUg
+KnRlbXA7CkBAIC0zMTAsNCArMzEwLDQgQEAgaW50IG1haW4odm9pZCkKIAkvKiB1Q2xpYmMgZG9l
+cyBub3QgaGF2ZSBwcm9maWxpbmcgc3VwcG9ydCAqLwogCXRzdF9leGl0KCk7CiB9Ci0jZW5kaWYK
+XCBObyBuZXdsaW5lIGF0IGVuZCBvZiBmaWxlCisjZW5kaWYKLS0gCjEuNy40LjQKCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KVHJ5IGJlZm9yZSB5b3UgYnV5ID0gU2VlIG91ciBleHBlcnRzIGluIGFj
+dGlvbiEKVGhlIG1vc3QgY29tcHJlaGVuc2l2ZSBvbmxpbmUgbGVhcm5pbmcgbGlicmFyeSBmb3Ig
+TWljcm9zb2Z0IGRldmVsb3BlcnMKaXMganVzdCAkOTkuOTkhIFZpc3VhbCBTdHVkaW8sIFNoYXJl
+UG9pbnQsIFNRTCAtIHBsdXMgSFRNTDUsIENTUzMsIE1WQzMsCk1ldHJvIFN0eWxlIEFwcHMsIG1v
+cmUuIEZyZWUgZnV0dXJlIHJlbGVhc2VzIHdoZW4geW91IHN1YnNjcmliZSBub3chCmh0dHA6Ly9w
+LnNmLm5ldC9zZnUvbGVhcm5kZXZub3ctZGV2MgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
+c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
+bmZvL2x0cC1saXN0Cg==
