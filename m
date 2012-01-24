@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RkDZ9-0004Mw-7b
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 11:39:03 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RkDZ4-0004C3-Pj
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jan 2012 11:39:03 +0000
-Received: by iakh37 with SMTP id h37so7549223iak.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 09 Jan 2012 03:38:53 -0800 (PST)
-Message-ID: <4F0AD1C4.9070708@casparzhang.com>
-Date: Mon, 09 Jan 2012 19:38:44 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1RpUsT-00061T-6I
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jan 2012 01:08:49 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RpUsS-0002Vi-7W
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jan 2012 01:08:49 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 23 Jan 2012 20:09:12 -0500
+References: <20120120134016.GG4024@saboteur.suse.cz>
+	<1327312869-17016-1-git-send-email-carmelo.amoroso@st.com>
+	<1327312869-17016-2-git-send-email-carmelo.amoroso@st.com>
+In-Reply-To: <1327312869-17016-2-git-send-email-carmelo.amoroso@st.com>
 MIME-Version: 1.0
-References: <4F0A57D2.7010706@cn.fujitsu.com>
-In-Reply-To: <4F0A57D2.7010706@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ChangeLog should be replaced with VERSION
+Message-Id: <201201232009.13602.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 2/2 V3] profile01: fix build using uClibc runtime
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,57 +26,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2003501369439480048=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDAx5pyIMDnml6UgMTA6NTgsIFBlbmcgSGFpdGFvIHdyb3RlOgo+IAo+IENoYW5n
-ZUxvZyBpcyBkZWxldGVkLCBzbyBDaGFuZ2VMb2cgc2hvdWxkIGJlIHJlcGxhY2VkIHdpdGggVkVS
-U0lPTi4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBQZW5nIEhhaXRhbyA8cGVuZ2h0QGNuLmZ1aml0c3Uu
-Y29tPgoKQ29tbWl0dGVkLiBUaGFua3MhCgpDYXNwYXIKCj4gLS0tCj4gIFJFQURNRSAgICAgICAg
-ICAgICAgICAgfCAgICA1ICsrLS0tCj4gIGluY2x1ZGUvbWsvYXV0b21ha2UubWsgfCAgICAyICst
-Cj4gIHRvb2xzL2F1dG9sdHAgICAgICAgICAgfCAgICAyICstCj4gIHRvb2xzL2x0cHJ1biAgICAg
-ICAgICAgfCAgICAyICstCj4gIDQgZmlsZXMgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA2IGRl
-bGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9SRUFETUUgYi9SRUFETUUKPiBpbmRleCBlYzU1
-MThjLi41MmE1OTc5IDEwMDY0NAo+IC0tLSBhL1JFQURNRQo+ICsrKyBiL1JFQURNRQo+IEBAIC02
-Miw5ICs2Miw4IEBAIENSRURJVFMKPiAgQ09QWUlORwo+ICAJR05VIEdlbmVyYWwgUHVibGljIExp
-Y2Vuc2UKPiAgCj4gLUNoYW5nZUxvZwo+IC0JQW4gaW5jb21wbGV0ZSBsaXN0IG9mIGNoYW5nZXMg
-dG8gdGhlIHByb2plY3QuICBXZSB3aWxsIHRyeSBoYXJkZXIgdG8KPiAtCWtlZXAgdGhpcyB1cCB0
-byBkYXRlLgo+ICtWRVJTSU9OCj4gKwlMVFAgVmVyc2lvbi4KPiAgCj4gIE1ha2VmaWxlCj4gIAlU
-b3AgbGV2ZWwgbWFrZSBmaWxlIGZvciBMVFAuCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbWsvYXV0
-b21ha2UubWsgYi9pbmNsdWRlL21rL2F1dG9tYWtlLm1rCj4gaW5kZXggZTVhNGZlMC4uOTg5M2Nm
-NiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL21rL2F1dG9tYWtlLm1rCj4gKysrIGIvaW5jbHVkZS9t
-ay9hdXRvbWFrZS5tawo+IEBAIC01Nyw3ICs1Nyw3IEBAIGF1dG9oZWFkZXI6IGNvbmZpZ3VyZS5h
-YyAkKHdpbGRjYXJkIG00LyoubTQpIG00L2x0cC12ZXJzaW9uLm00IGFjbG9jYWwubTQKPiAgaW5j
-bHVkZToKPiAgCW1rZGlyIC1wICIkQCIKPiAgCj4gLW00L2x0cC12ZXJzaW9uLm00OiBDaGFuZ2VM
-b2cKPiArbTQvbHRwLXZlcnNpb24ubTQ6IFZFUlNJT04KPiAgCXNlZCAtbiAnMXtzOkxUUC06bTRf
-ZGVmaW5lKFtMVFBfVkVSU0lPTl0sWzo7czokJDpdKTo7cDtxfScgJDwgPiAkQAo+ICAKPiAgLlBI
-T05ZOiBhdXRvbWFrZQo+IGRpZmYgLS1naXQgYS90b29scy9hdXRvbHRwIGIvdG9vbHMvYXV0b2x0
-cAo+IGluZGV4IGY4YzNiMTAuLmFlY2U2NTkgMTAwNzU1Cj4gLS0tIGEvdG9vbHMvYXV0b2x0cAo+
-ICsrKyBiL3Rvb2xzL2F1dG9sdHAKPiBAQCAtODcsNyArODcsNyBAQCBmb3IoJGk9MDsgJGkgPD0g
-JCNob3N0czsgJGkrKykgewo+ICAgICAgICB9Cj4gIAo+ICAgICAgICAjdGhpcyBsb29rcyBsYW1l
-LCBidXQgbHRwX2NoZWNrIG5lZWRzIGx0cHJ1bi5vdXQgdG8gZ3JhYiB0aGUgbHRwIHZlcnNpb24g
-ICAgICAKPiAtICAgICAgJHNzaC0+Y21kKCdlY2hvIHZlcnNpb246ICQoaGVhZCAtbjEgbHRwL0No
-YW5nZUxvZykgPiBsdHBydW4ub3V0Jyk7Cj4gKyAgICAgICRzc2gtPmNtZCgnZWNobyB2ZXJzaW9u
-OiAkKGNhdCBWRVJTSU9OKSA+IGx0cHJ1bi5vdXQnKTsKPiAgCj4gICAgICAgICNzdG9wIHNhciBv
-biBjbGllbnQocykKPiAgICAgICAgaWYoJHNzaC0+Y21kKCJraWxsYWxsIHNhciAmJiBraWxsYWxs
-IHNhZGMiKSkgewo+IGRpZmYgLS1naXQgYS90b29scy9sdHBydW4gYi90b29scy9sdHBydW4KPiBp
-bmRleCA5NWZiNWJkLi41ZmFlNjNkIDEwMDc1NQo+IC0tLSBhL3Rvb2xzL2x0cHJ1bgo+ICsrKyBi
-L3Rvb2xzL2x0cHJ1bgo+IEBAIC02Nyw3ICs2Nyw3IEBAIHVudGFyX2x0cCgpCj4gIGJ1aWxkX2x0
-cCgpCj4gIHsKPiAgICAgY2Qgfi9sdHAKPiAtICAgZWNobyAiQnVpbGRpbmcgTFRQIFRlc3RzdWl0
-ZSB2ZXJzaW9uOiBgaGVhZCAtbjEgQ2hhbmdlTG9nYCI7Cj4gKyAgIGVjaG8gIkJ1aWxkaW5nIExU
-UCBUZXN0c3VpdGUgdmVyc2lvbjogYGNhdCBWRVJTSU9OYCI7Cj4gICAgIG1ha2UgY2xlYW4gaW5z
-dGFsbCAmPiAvZGV2L251bGwKPiAgICAgaWYgWyAkPyAhPSAiMCIgXTsgdGhlbgo+ICAgICAgICBl
-Y2hvICJGQUlMRUQgICBMVFAgVGVzdHN1aXRlIGNvbXBpbGF0aW9uIjsgcmV0dXJuIDA7CgoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClJpZGljdWxvdXNseSBlYXN5IFZESS4gV2l0aCBDaXRyaXggVkRJ
-LWluLWEtQm94LCB5b3UgZG9uJ3QgbmVlZCBhIGNvbXBsZXgKaW5mcmFzdHJ1Y3R1cmUgb3IgdmFz
-dCBJVCByZXNvdXJjZXMgdG8gZGVsaXZlciBzZWFtbGVzcywgc2VjdXJlIGFjY2VzcyB0bwp2aXJ0
-dWFsIGRlc2t0b3BzLiBXaXRoIHRoaXMgYWxsLWluLW9uZSBzb2x1dGlvbiwgZWFzaWx5IGRlcGxv
-eSB2aXJ0dWFsIApkZXNrdG9wcyBmb3IgbGVzcyB0aGFuIHRoZSBjb3N0IG9mIFBDcyBhbmQgc2F2
-ZSA2MCUgb24gVkRJIGluZnJhc3RydWN0dXJlIApjb3N0cy4gVHJ5IGl0IGZyZWUhIGh0dHA6Ly9w
-LnNmLm5ldC9zZnUvQ2l0cml4LVZESWluYWJveApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+--===============2003501369439480048==
+Content-Type: multipart/signed; boundary="nextPart102135724.CtuNoniZyd";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart102135724.CtuNoniZyd
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+-mike
+
+--nextPart102135724.CtuNoniZyd
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPHgS5AAoJEEFjO5/oN/WBKjcP/2oXbCElLhtFY9kFwFYAc+/I
+rP5fzD7sEVoXry8I5omFlHMIN600lKnYnbBdz2embcDvVVkQBSdksGCEFScL9beJ
++8hvXowJe0nB2Ql2jzDFrjvtyGePUehkGsIp74PSKCd7bH4VZWSQTWOadMzd+djn
+DLQgZbocagSByqFf/XLrND1fPcZ6eR0nULSJkVBE8M+1X6TQftKEGUlFulFcHTQp
+51WwFKA8mSugNV9C/G9+qu81/8nb+iwZRyDwDlw2gdwrJ6Hwu90qIQhGPXZBqyMb
+ux0CwRKqkLraXa03IydtMa+Hr2D863x+6kKryZCdFuDpVhdGoJxb1zPGSBIQ2ws0
+FjSTlxswGUVyA5fkHcyJ8I1lpZPQtDEdGMOc92Ni6AQLPEcLk1hAy9ROC591p7y4
+6ncFlKsOd2n1KS3f2BpLUJK7JUPuwTGHTqy30o6hfEqD48/IJJzG6hEHgaPBTS0F
+bdexllldFOJwFt0kT1PlUvswZxZRYoA6Gsf0Wp2pCzCTy1WRCrWCsKv0VZFElhey
+9ZmKEN81UWYU7N0AwA9CDwAaqv7FJfkAhnSMPLNwvcEBMxBajH9IDAwNPrOOiyvn
+KuaqmYDkOm3NEYlXGJMPoEyuopsYvpk+4JTpCqz7T1K9JTYFE5+ZVCFrAVr4+yzf
+uDqjcDSbb8b62D/Vn5HU
+=kh9Q
+-----END PGP SIGNATURE-----
+
+--nextPart102135724.CtuNoniZyd--
+
+
+--===============2003501369439480048==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+--===============2003501369439480048==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2003501369439480048==--
+
