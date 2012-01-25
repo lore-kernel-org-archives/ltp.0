@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1RiOtk-0002Hc-CS
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 11:20:48 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RiOtg-0004g5-7m
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 11:20:48 +0000
-Message-ID: <4F043605.9050703@imgtec.com>
-Date: Wed, 4 Jan 2012 11:20:37 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
-MIME-Version: 1.0
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rq7Lc-0001N6-4Y
+	for ltp-list@lists.sourceforge.net; Wed, 25 Jan 2012 18:13:28 +0000
+Date: Wed, 25 Jan 2012 19:26:06 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120125182606.GA11236@saboteur.suse.cz>
 References: <4F02E1B9.2090603@imgtec.com>
 	<CAGH67wRnBFxdBgQos0Px8GscXQ+Sn30JNmM-z2KU7-v6Vc7d3A@mail.gmail.com>
-In-Reply-To: <CAGH67wRnBFxdBgQos0Px8GscXQ+Sn30JNmM-z2KU7-v6Vc7d3A@mail.gmail.com>
+	<4F043605.9050703@imgtec.com>
+	<CAGH67wR_qD3pc_k7qdeyRWq60V6qr6A7yeT9Q4zcYTLrJ-WBkA@mail.gmail.com>
+	<20120104144305.GE15845@saboteur.suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20120104144305.GE15845@saboteur.suse.cz>
 Subject: Re: [LTP] [PATCH 09/21] realtime/lib/Makefile: Fix path for
-	config.mk
+ config.mk
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,27 +30,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
-On 01/03/2012 07:24 PM, Garrett Cooper wrote:
-> On Tue, Jan 3, 2012 at 3:08 AM, Markos Chandras
-> <Markos.Chandras@imgtec.com>  wrote:
->> Hi, please review the attached patch
->
-> No -- this breaks out-of-tree compiles.
-> -Garrett
-But without this patch, the in-tree 'distclean' target is broken
+Hi!
+> > >>> Hi, please review the attached patch
+> > >>
+> > >>
+> > >> No -- this breaks out-of-tree compiles.
+> > >> -Garrett
+> > >
+> > > But without this patch, the in-tree 'distclean' target is broken
+> > 
+> >     Hmmm... it worked once upon a time. I'll look at this when I have a chance.
+> 
+> It's broken since 21e14b79ce269f27be8ce49475dc49c5bc5838bd, reverting it
+> fixed the build.
+
+Ping. Any chance you will look at this, the out of tree build is broken
+without that patch and the in tree with.
 
 -- 
-markos
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
