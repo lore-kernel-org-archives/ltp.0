@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1RiAEX-0005up-Rd
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:41:17 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RiAEX-0007Zq-7n
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jan 2012 19:41:17 +0000
-Received: by mail-tul01m020-f175.google.com with SMTP id wn6so18177194obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jan 2012 11:41:17 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RqQnj-00055L-Bf
+	for ltp-list@lists.sourceforge.net; Thu, 26 Jan 2012 14:59:47 +0000
+Date: Thu, 26 Jan 2012 16:12:34 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120126151234.GB6666@saboteur.suse.cz>
+References: <1326989959-24434-1-git-send-email-carmelo.amoroso@st.com>
 MIME-Version: 1.0
-In-Reply-To: <4F03012E.40901@imgtec.com>
-References: <4F03012E.40901@imgtec.com>
-Date: Tue, 3 Jan 2012 11:41:17 -0800
-Message-ID: <CAGH67wSkZqMJJ9u_o-LGVKzx-gnTb7ydd6U9s=tCa8x6Uwq_FA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 17/21] network/lib6/asapi_04: Cast pointer
- arithmetic to proper integer
+Content-Disposition: inline
+In-Reply-To: <1326989959-24434-1-git-send-email-carmelo.amoroso@st.com>
+Subject: Re: [LTP] [PATCH] mount1234: invert the logic in handling failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,23 +24,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Carmelo AMOROSO <carmelo.amoroso@st.com>
+Cc: ltp-list@lists.sf.net
 
-On Tue, Jan 3, 2012 at 5:22 AM, Markos Chandras
-<Markos.Chandras@imgtec.com> wrote:
-> Hi, please review the attached patch
+Hi!
+> mount is expected to fail if the device is a 'tty', so it seems that
+> the original idea of this testcase were to test mount failures.
+> If this is true, then the logic to handle the test results has to be inverted
+> and consider the test case as PASSED if mount fails, while FAILED
+> if mount erroneuosly succeeded to mount a tty device.
+> 
+> It also fixes a syntax error in substring expansion ( ${parameter:offset} )
+> 
+> The last check "mount04" has been removed as it does not cehck the device type
+> but only the permission so that it is incosistent with the overall logic.
+> 
+> That said, rename the test case as mount123
 
-    "%p" is better.
-Thanks,
--Garrett
+Hmm, still the output of the testcases would say FAILED from the
+respective mount testcases and then PASSED from the test script. My
+guess is that this was some leftover testing script for testing the
+testcase failures. What about removing it entirely?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
