@@ -1,22 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1RiO4f-00087y-HH
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 10:28:01 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RiO4e-0008Oa-Hp
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jan 2012 10:28:01 +0000
-Message-ID: <4F0429A9.4070000@imgtec.com>
-Date: Wed, 4 Jan 2012 10:27:53 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1RrtQt-0000At-A7
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jan 2012 15:46:15 +0000
+Received: from eu1sys200aog108.obsmtp.com ([207.126.144.125])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RrtQr-0000SA-IO
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jan 2012 15:46:15 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1C887125
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 30 Jan 2012 15:45:51 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CC65927A8
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 30 Jan 2012 15:45:51 +0000 (GMT)
+Message-ID: <4F26BB2C.9040307@st.com>
+Date: Mon, 30 Jan 2012 16:45:48 +0100
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
 MIME-Version: 1.0
-References: <4F02C765.5030408@imgtec.com>	<201201031528.08200.vapier@gentoo.org>
-	<CAGH67wTp4qK0ru641QOZx4OiD3=Unie6AP=uMq8J=fpT2=LqBw@mail.gmail.com>
-In-Reply-To: <CAGH67wTp4qK0ru641QOZx4OiD3=Unie6AP=uMq8J=fpT2=LqBw@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 01/21] lib/parse_opts: STD_LP_sbrk and
- STD_start_break should only be defined when UCLINUX=0
+References: <1327481724-28367-1-git-send-email-salvatore.cro@st.com>
+	<4F1FEEEF.2080506@st.com> <4F1FF526.7030701@st.com>
+In-Reply-To: <4F1FF526.7030701@st.com>
+Subject: Re: [LTP] [PATCH] syscalls: fix creat07 setup and argv to execve
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,31 +36,120 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net
 
-On 01/03/2012 10:17 PM, Garrett Cooper wrote:
-> On Tue, Jan 3, 2012 at 12:28 PM, Mike Frysinger<vapier@gentoo.org>  wrote:
->> please use `git send-email` to properly post patches.  attaching them like
->> this makes it a pita to review.
->
-> +1. Or just use what's noted in the style guide as well for submitting
-> patches if you really want to go down this path of creating patch
-> review/commit request emails.
-> Thanks,
-> -Garrett
-Thanks. I will do that from now on.
+On 25/01/2012 13.27, Salvatore CRO' wrote:
+> On 1/25/2012 1:00 PM, Carmelo AMOROSO wrote:
+>> On 25/01/2012 9.55, Salvatore CRO' wrote:
+>>> Fix test_path variable logic in setup function.
+>>> Also use a new argv variable to be passed to execve.
+>>>
+>>> Signed-off-by: Salvatore Cro<salvatore.cro@st.com>
+>>> ---
+>>>   testcases/kernel/syscalls/creat/creat07.c |   12 ++++++------
+>>>   1 files changed, 6 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
+>>> index 4ed2c22..43a6030 100644
+>>> --- a/testcases/kernel/syscalls/creat/creat07.c
+>>> +++ b/testcases/kernel/syscalls/creat/creat07.c
+>>> @@ -90,9 +90,8 @@ int main(int ac, char **av)
+>>>   			tst_brkm(TBROK|TERRNO, cleanup, "fork #1 failed");
+>>>
+>>>   		if (pid == 0) {
+>>> -			char *av[1];
+>>> -			av[0] = basename(test_app);
+>>> -			(void)execve(test_app, av, NULL);
+>>> +			char *argv[] = { test_app, NULL };
+>>> +			(void)execve(test_app, argv, NULL);
+>>>   			perror("execve failed");
+>>>   			exit(1);
+>>>   		}
+>>> @@ -138,14 +137,15 @@ void setup(char *app)
+>>>   	char *cmd, *pwd = NULL;
+>>>   	char test_path[MAXPATHLEN];
+>>>
+>>> -	if (test_app[0] == '/')
+>>> -		strncpy(test_path, test_app, sizeof(test_app));
+>>> +	if (app[0] == '/')
+>>> +		snprintf(test_path, sizeof(test_path), "%s/%s",
+>>> +				dirname(app), test_app);
+>>>   	else {
+>>>   		if ((pwd = get_current_dir_name()) == NULL)
+>>>   			tst_brkm(TBROK|TERRNO, NULL, "getcwd failed");
+>>>
+>>>   		snprintf(test_path, sizeof(test_path), "%s/%s",
+>>> -		    pwd, basename(test_app));
+>>> +		    pwd, test_app);
+>>>
+>>>   		free(pwd);
+>>>   	}
+>> Hi Salvo,
+>> could you clarify why this change is needed ?
+> 
+> test_app is defined as follows :
+> 
+> #define test_app "test1"
+> 
+> so
+> 
+> if (test_app[0] == '/')
+> 
+> was a typo and segfaulting in uClibc.
+> 
+> The test (app) could have been invoked either from 1) <test path> or 2) 
+> from another path :
+>   - 1) test_path for test_app is pwd/test_app (not pwd/basename(test_path))
+>   - 2) test_path is dirname(app)/test_app (not test_app)
+> 
+> Furthermore change related to argv variable is mostly a tidy-up plus 
+> again drop of
+> basename(test_app).
+> 
+> Hope it's clear enough ;-)
+> 
+> 
 
--- 
-markos
+Hi Salvo,
+could you re-elaborate the patch description, and post it again.
+Great catch anyway !
+
+Cheers,
+Carmelo
+
+>> cheers
+>>
+>> ------------------------------------------------------------------------------
+>> Keep Your Developer Skills Current with LearnDevNow!
+>> The most comprehensive online learning library for Microsoft developers
+>> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+>> Metro Style Apps, more. Free future releases when you subscribe now!
+>> http://p.sf.net/sfu/learndevnow-d2d
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> ------------------------------------------------------------------------------
+> Keep Your Developer Skills Current with LearnDevNow!
+> The most comprehensive online learning library for Microsoft developers
+> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+> Metro Style Apps, more. Free future releases when you subscribe now!
+> http://p.sf.net/sfu/learndevnow-d2d
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
 ------------------------------------------------------------------------------
-Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
-infrastructure or vast IT resources to deliver seamless, secure access to
-virtual desktops. With this all-in-one solution, easily deploy virtual 
-desktops for less than the cost of PCs and save 60% on VDI infrastructure 
-costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
