@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1RnXFj-0002Wf-K4
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:16:43 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RnXFe-0005qC-2P
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jan 2012 15:16:43 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 18 Jan 2012 10:16:38 -0500
-References: <1326897408-26778-1-git-send-email-carmelo.amoroso@st.com>
-In-Reply-To: <1326897408-26778-1-git-send-email-carmelo.amoroso@st.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Rrgat-0000GT-QS
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jan 2012 02:03:43 +0000
+Received: from mail-yw0-f47.google.com ([209.85.213.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Rrgas-0007EL-Vt
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jan 2012 02:03:43 +0000
+Received: by yhfq46 with SMTP id q46so1616825yhf.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 29 Jan 2012 18:03:37 -0800 (PST)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Mon, 30 Jan 2012 10:03:14 +0800
+Message-Id: <1327888994-4884-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Message-Id: <201201181016.39003.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 1/2] getcontext01: fix build using uClibc C runtime
+Content-Type: multipart/mixed; boundary="------------1.7.8.4"
+Subject: [LTP] [PATCH] mm/vma03: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,86 +26,209 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6609782250763620073=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
---===============6609782250763620073==
-Content-Type: multipart/signed; boundary="nextPart1894166.PcpJhphxxH";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1894166.PcpJhphxxH
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday 18 January 2012 09:36:47 Carmelo AMOROSO wrote:
-> --- a/testcases/kernel/syscalls/getcontext/getcontext01.c
-> +++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
->=20
->  #include <features.h>
-> +#include <unistd.h>
-> +#include "test.h"
-> +char *TCID =3D "getcontext01";	/* Test program identifier.    */
-> +
->  #if !defined(__UCLIBC__)
->=20
->  #include <stdio.h>
-> -#include <unistd.h>
->  #include <errno.h>
->  #include <ucontext.h>
->=20
-> -#include "test.h"
->  #include "usctest.h"
-
-all of the system includes should come before LTP includes.  i would just m=
-ove=20
-the whole block above the #ifdef check.
-
-also, checking __UCLIBC__ is a bit broken now ... we should use configure.a=
-c to=20
-test for the func and change this test accordingly.
-=2Dmike
-
---nextPart1894166.PcpJhphxxH
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPFuJWAAoJEEFjO5/oN/WBqLoQAJcOxuNiz4aur5QOnSrUGlcy
-MV+PjLNsW5i8l4CrGEO+Ntyo4zBNWc2PLmgmQmLdXA4cwgtN7h2qYNu/2IUhyRoO
-s1Ow3+AIs7m0Rg87QlZJvkbrLfT5S5yA1D+/8hrHr78x7bjuVKWMNNuFDDKWlR7S
-wi9XswtcKX6tv8Owwt4BRSQVfdzExK5j2pp+nTVfQ1Qii0FSFrNEdqD0gXRFIDIs
-gkGkCvv2RAp8u2p/yhKvwzhdS6uR/XbZnpZwabtomwbLUVR+v0nTuFqISaaVBU97
-L0gy3CNiMRL5bHIzu10vSEo8Ov4EFZA3Ln5fKegEk53MRmPvBYzrwzzaXWzBu2AG
-biUXdFEHRDNzRrANPdlgCdysbQU4GJABIYlWKTdSyLAqXennFWzll/o6Fpuu5lZ2
-kR4zMNSm6ZKlTkXZvwWHdBxb/CSKI8aAGE6lXIljEGO8HTR2CuvfURtEQ55uwFR9
-B0bQ2pMO50X+ljN/bvPy5jWZhwOhqq7BfJZ2APOVLDHZbOSUxLAGa/WdQ7gawB8o
-8oIFv+8dehRhpaCUA6QZHe6g+6sFOTy8mOgJWtxFmN+itBbuH6tfMdRFOO/a3rEr
-VZsx7EtTqp/w4Gc3TeFEfGOSAE5S94ZS7hbN5cmZAjH0pbJff+I7pzznLsdj88n2
-E7l9Cr70G2IcLDPh+29O
-=Yiir
------END PGP SIGNATURE-----
-
---nextPart1894166.PcpJhphxxH--
+This is a multi-part message in MIME format.
+--------------1.7.8.4
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
---===============6609782250763620073==
+vma03 - CVE-2011-2496 avoid wrapping vm_pgoff in mremap()
+
+This is a reproducer for CVE-2011-2496.
+
+The normal mmap paths all avoid creating a mapping where the pgoff
+inside the mapping could wrap around due to overflow.  However, an
+expanding mremap() can take such a non-wrapping mapping and make it
+bigger and cause a wrapping condition. There is also another case
+where we expand mappings hiding in plain sight: the automatic stack
+expansion.
+
+This program tries to remap a mapping with a new size that would
+wrap pgoff. Notice that it only works on 32-bit arch for now.
+
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ testcases/kernel/mem/vma/vma03.c |  148 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 148 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/mem/vma/vma03.c
+
+
+--------------1.7.8.4
+Content-Type: text/x-patch; name="0001-mm-vma03-new-testcase.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment; filename="0001-mm-vma03-new-testcase.patch"
+
+diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
+new file mode 100644
+index 0000000..4fb321c
+--- /dev/null
++++ b/testcases/kernel/mem/vma/vma03.c
+@@ -0,0 +1,148 @@
++/*
++ * Copyright (C) 2012 Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++/*
++ * This is a reproducer for CVE-2011-2496.
++ *
++ * The normal mmap paths all avoid creating a mapping where the pgoff
++ * inside the mapping could wrap around due to overflow.  However, an
++ * expanding mremap() can take such a non-wrapping mapping and make it
++ * bigger and cause a wrapping condition. There is also another case
++ * where we expand mappings hiding in plain sight: the automatic stack
++ * expansion.
++ *
++ * This program tries to remap a mapping with a new size that would
++ * wrap pgoff. Notice that it only works on 32-bit arch for now.
++ */
++
++#define _GNU_SOURCE
++#include "config.h"
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++
++#include "test.h"
++#include "usctest.h"
++
++char *TCID = "vma03";
++int TST_TOTAL = 1;
++
++#ifdef __NR_mmap2
++#define TESTFILE "testfile"
++
++static size_t pgsz;
++static int fd;
++
++static void *mmap2(void *addr, size_t length, int prot,
++		int flags, int fd, off_t pgoffset);
++static void setup(void);
++static void cleanup(void);
++
++int main(int argc, char *argv[])
++{
++	char *msg;
++	int lc;
++	void *map, *remap;
++	off_t pgoff;
++
++#if __WORDSIZE != 32
++	tst_brkm(TCONF, NULL, "test is designed for 32-bit system only.");
++#endif
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	pgsz = sysconf(_SC_PAGE_SIZE);
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		fd = open(TESTFILE, O_RDWR);
++		if (fd == -1)
++			tst_brkm(TBROK|TCONF, NULL, "open %s", TESTFILE);
++
++		pgoff = ULONG_MAX - 1;
++		map = mmap2(NULL, pgsz, PROT_READ|PROT_WRITE, MAP_PRIVATE,
++				fd, pgoff);
++		if (map == MAP_FAILED)
++			tst_brkm(TBROK|TERRNO, cleanup, "mmap2");
++
++		remap = mremap(map, pgsz, 2 * pgsz, 0);
++		if (remap == MAP_FAILED) {
++			if (errno == EINVAL)
++				tst_resm(TPASS,	"mremap failed as expected.");
++			else
++				tst_resm(TFAIL|TERRNO, "mremap");
++		} else {
++			tst_resm(TFAIL, "mremap succeeded unexpectedly.");
++		}
++
++		close(fd);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void *mmap2(void *addr, size_t length, int prot,
++		int flags, int fd, off_t pgoffset)
++{
++	return (void *)syscall(SYS_mmap2, addr, length, prot,
++			flags, fd, pgoffset);
++}
++
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	tst_tmpdir();
++
++	fd = creat(TESTFILE, 0644);
++	if (fd == -1)
++		tst_brkm(TBROK|TCONF, NULL, "creat %s", TESTFILE);
++	close(fd);
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++
++	tst_rmdir();
++}
++#else /* __NR_mmap2 */
++int main(int argc, char *argv[])
++{
++	tst_brkm(TCONF, NULL, "this test only runs on kernels that implements"
++			" mmap2 syscall");
++}
++#endif
+
+--------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
+Try before you buy = See our experts in action!
 The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
---===============6609782250763620073==
+http://p.sf.net/sfu/learndevnow-dev2
+--------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -114,5 +239,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6609782250763620073==--
+--------------1.7.8.4--
+
+
 
