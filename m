@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RvVrC-0003EG-Ok
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 15:24:22 +0000
-Date: Thu, 9 Feb 2012 16:38:17 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RsY9v-0000Mz-C6
+	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 11:15:27 +0000
+Date: Wed, 1 Feb 2012 12:28:40 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120209153817.GC29442@saboteur.suse.cz>
-References: <20120125162602.GB28713@saboteur.suse.cz>
-	<1327564464-27350-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20120201112840.GA25391@saboteur.suse.cz>
+References: <1328090070-15140-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1327564464-27350-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 2/2] aio_suspend-8-1: use aio_error to check
- completion instead
+In-Reply-To: <1328090070-15140-1-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] sigaction/16-1.c: make build pass on mips arch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,43 +24,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
->  	if (ret) {
->  		printf(TNAME " Error at aio_suspend() %d: %s\n", errno, strerror(errno));
->  		for (i=0; i<NUM_AIOCBS; i++)
-> @@ -211,7 +180,9 @@ main ()
->  		if (i == WAIT_FOR_AIOCB)
->  			continue;
->  
-> -	  	err = aio_error(aiocbs[i]);
-> +		do {
-> +			err = aio_error(aiocbs[i]);
-> +		} while (err == EINPROGRESS);
+> Signed-off-by: Kang Kai <kai.kang@windriver.com>
+> ---
+>  .../conformance/interfaces/sigaction/16-1.c        |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
+> index 1eda711..213bda0 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
+> @@ -67,7 +67,9 @@ static struct sig_info sigs[] = {
+>  	{SIGPIPE, "SIGPIPE", 0},
+>  	{SIGALRM, "SIGALRM", 0},
+>  	{SIGTERM, "SIGTERM", 0},
+> +#ifndef __mips__
+>  	{SIGSTKFLT, "SIGSTKFLT", 0},
+> +#endif
+>  	{SIGCHLD, "SIGCHLD", 0},
+>  	{SIGCONT, "SIGCONT", 0},
+>  	{SIGTSTP, "SIGTSTP", 0},
 
-I've looked carefully through the test and this part shouldn't be needed
-as when we got here, the singnal handler for list completion was
-allready called, or not?
+What about?
 
-I think that simple err = aio_error(aiocbs[i]) should work in this case.
+#ifdef SIGSTKFLT
+  	{SIGSTKFLT, "SIGSTKFLT", 0},
+#endif
 
-The rest of the patch seems to be correct.
-
->  		ret = aio_return(aiocbs[i]);
->  
->  		if ((err != 0) && (ret != BUF_SIZE)) {
+Which should fix all possible systems without this signal.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
