@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RsbJi-0006jP-1d
-	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 14:37:46 +0000
-Date: Wed, 1 Feb 2012 15:50:59 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120201145059.GB30390@saboteur.suse.cz>
-References: <1328097104-25615-1-git-send-email-salvatore.cro@st.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1RsUYs-0003Wa-33
+	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 07:24:58 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RsUYq-000372-Vt
+	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 07:24:58 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q117Oo2A008398
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 31 Jan 2012 23:24:50 -0800 (PST)
+From: Jin Li <jin.li@windriver.com>
+Date: Wed, 1 Feb 2012 15:24:48 +0800
+Message-ID: <1328081088-21735-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1328097104-25615-1-git-send-email-salvatore.cro@st.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix creat07 setup and arg to execve
+Subject: [LTP] [PATCH] Fix for msgctl test case msgctl11 on the target with
+	more than 4G memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,56 +31,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Salvatore CRO' <salvatore.cro@st.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: haotian.zhang@windriver.com, jin.li@windriver.com
 
-Hi!
-> Fix typo in setup function as app[0] should be
-> checked instead of test_app[0].
-> Fix test_path concatenating the absolute
-> path to test_app when required (app[0] == '/').
-> Finally fix execve (returning Bad address - EFAULT)
-> argument av[1] as it requires argument
-> array to be terminated by a null pointer.
-> 
-> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
-> ---
->  testcases/kernel/syscalls/creat/creat07.c |    6 ++++--
->  1 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
-> index 4ed2c22..edaa182 100644
-> --- a/testcases/kernel/syscalls/creat/creat07.c
-> +++ b/testcases/kernel/syscalls/creat/creat07.c
-> @@ -92,6 +92,7 @@ int main(int ac, char **av)
->  		if (pid == 0) {
->  			char *av[1];
->  			av[0] = basename(test_app);
-> +			av[1] = NULL;
+The test msgctl11 will fail with log as follows once it is on the
+target with more than 4G memory and use default maximum pid value 32768.
+Because in this case, the maxnkids is always 0 which will cause fail
+and exit.
 
-Hmm, shouldn't then the array be declared as char *av[2] and moreover I
-would chose a differnet name for it as at first sight it seems to be
-modifying the parameter passed to main.
+maxnkids = ((free_pids / 4) / MSGMNI);
 
->  			(void)execve(test_app, av, NULL);
->  			perror("execve failed");
->  			exit(1);
-> @@ -138,8 +139,9 @@ void setup(char *app)
->  	char *cmd, *pwd = NULL;
->  	char test_path[MAXPATHLEN];
->  
-> -	if (test_app[0] == '/')
-> -		strncpy(test_path, test_app, sizeof(test_app));
-> +	if (app[0] == '/')
-> +		snprintf(test_path, sizeof(test_path), "%s/%s",
-> +				dirname(app), test_app);
->  	else {
->  		if ((pwd = get_current_dir_name()) == NULL)
->  			tst_brkm(TBROK|TERRNO, NULL, "getcwd failed");
+The fix will update the maximum pid value to meet the basic need of
+free pids on the target with more than 4G memory.
 
+Test msgctl11 fail log
+
+"msgctl11    1  TBROK  :  Not enough free pids"
+---
+ lib/system_specific_process_info.c              |   27 ++++++++++++++++++++++
+ testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   28 +++++++++++++++++++++-
+ 2 files changed, 53 insertions(+), 2 deletions(-)
+
+diff --git a/lib/system_specific_process_info.c b/lib/system_specific_process_info.c
+index d3c9638..aaa7f8b 100644
+--- a/lib/system_specific_process_info.c
++++ b/lib/system_specific_process_info.c
+@@ -59,6 +59,33 @@ int get_max_pids(void)
+ }
+ 
+ 
++int set_max_pids(int pids_max)
++{
++#ifdef __linux__
++
++        FILE *f;
++        char buf[BUFSIZE]={0};
++
++	snprintf(buf, sizeof(buf), "%d\n", pids_max);
++
++        f = fopen("/proc/sys/kernel/pid_max", "w+");
++        if (!f) {
++                tst_resm(TBROK, "Could not open /proc/sys/kernel/pid_max");
++                return -1;
++        }
++        if (!(fwrite(buf, BUFSIZE,1,f))) {
++                fclose(f);
++                tst_resm(TBROK, "Could not write /proc/sys/kernel/pid_max");
++                return -1;
++        }
++        fclose(f);
++        return atoi(buf);
++#else
++        return SHRT_MAX;
++#endif
++}
++
++
+ int get_free_pids(void)
+ {
+ 	FILE *f;
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+index 57bd184..eb6cb71 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
++++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+@@ -79,6 +79,9 @@ int TST_TOTAL = 1;		/* Total number of test cases. */
+ 
+ int exp_enos[] = { 0 };		/* List must end with 0 */
+ int maxnkids = MAXNKIDS;	/* Used if pid_max is exceeded */
++int max_pids;
++int adjust_max_pids = 0 ;
++
+ 
+ key_t keyarray[MAXNPROCS];
+ 
+@@ -641,14 +644,29 @@ void setup()
+ 		tst_exit();
+ 	}
+ 
++	max_pids = get_max_pids();
+ 	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
++            if ( nr_msgqs < 8192 ) {
+ 		maxnkids = ((free_pids / 4) / MSGMNI);
+ 		if (!maxnkids) {
+ 			tst_resm(TBROK, "Not enough free pids");
+ 			tst_exit();
+ 		}
+-	}
++	    } else  {
++		maxnkids = 1;
++
++		/* After the update of maximum pid number, the free pids
++                 * will be MSGMNI * 2 * 2.
++                 */
++                adjust_max_pids = MSGMNI * 2 * 2 + max_pids - free_pids ;
++		if ( (set_max_pids (adjust_max_pids)) < 0 ) {
++                    tst_resm(TBROK, "cannot adjust max pids");
++		    tst_exit();
++		}
++                free_pids = get_free_pids();
++            }
+ 
++        }
+ 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
+ }
+ 
+@@ -682,4 +700,10 @@ void cleanup()
+ 	fflush(stdout);
+ 	tst_rmdir();
+ 
+-}
+\ No newline at end of file
++	if ( adjust_max_pids > max_pids ) {
++	    if ( ! set_max_pids(max_pids) ) {
++                tst_resm(TBROK, "cannot restore the max pids");
++                tst_exit();
++	    }
++        }
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.6.3.1
+
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
