@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RwwmV-0007MI-4M
-	for ltp-list@lists.sourceforge.net; Mon, 13 Feb 2012 14:21:27 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RwwmN-00016W-Mr
-	for ltp-list@lists.sourceforge.net; Mon, 13 Feb 2012 14:21:27 +0000
-Received: by iaby12 with SMTP id y12so5290000iab.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1RsUcm-0000Lh-4C
+	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 07:29:00 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RsUch-0007pk-QG
+	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 07:29:00 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q117Sni7008976
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 13 Feb 2012 06:21:14 -0800 (PST)
-Message-ID: <4F391C35.5030508@casparzhang.com>
-Date: Mon, 13 Feb 2012 22:20:37 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Tue, 31 Jan 2012 23:28:50 -0800 (PST)
+From: Jin Li <jin.li@windriver.com>
+Date: Wed, 1 Feb 2012 15:28:45 +0800
+Message-ID: <1328081325-22028-2-git-send-email-jin.li@windriver.com>
+In-Reply-To: <1328081325-22028-1-git-send-email-jin.li@windriver.com>
+References: <1328081325-22028-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
-References: <863d9faeb5d714aa6c06a7a33fd5f2649b8bdb3f.1329134279.git.zliu@redhat.com>
-In-Reply-To: <863d9faeb5d714aa6c06a7a33fd5f2649b8bdb3f.1329134279.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v2] mem/tunable: new testcase about overcommiting
- memory
+Subject: [LTP] [PATCH] Fix for msgctl test case msgctl11 on the target with
+	more than 4G memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,83 +34,134 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: haotian.zhang@windriver.com, jin.li@windriver.com
 
-On 02/13/2012 08:07 PM, Zhouping Liu wrote:
-> 
-> There are two tunables overcommit_memory and overcommit_ratio under
-> /proc/sys/vm/, which can control memory overcommitment.
-> 
-> The overcommit_memory contains a flag that enables memory
-> overcommitment, it has three values:
-> - When this flag is 0, the kernel attempts to estimate the amount
->  of free memory left when userspace requests more memory.
-> - When this flag is 1, the kernel pretends there is always enough
->  memory until it actually runs out.
-> - When this flag is 2, the kernel uses a "never overcommit" policy
->  that attempts to prevent any overcommit of memory.
-> 
-> The overcommit_ratio tunable defines the amount by which the kernel
-> overextends its memory resources in the event that overcommit_memory
-> is set to the value of 2. The value in this file represents a
-> percentage added to the amount of actual RAM in a system when
-> considering whether to grant a particular memory request.
-> The general formula for this tunable is:
-> CommitLimit = SwapTotal + MemTotal * overcommit_ratio
-> CommitLimit, SwapTotal and MemTotal can read from /proc/meminfo.
-> 
-> The program is designed to test the two tunables:
-> 
-> When overcommit_memory = 0, allocatable memory can't overextends
-> the amount of free memory. I choose the three cases:
-> a. less than free_total:    free_total / 2, alloc should pass.
-> b. greater than free_total: free_total * 2, alloc should fail.
-> c. equal to sum_total:      sum_tatal,      alloc should fail
-> 
-> When overcommit_memory = 1, it can alloc enough much memory, I
-> choose the three cases:
-> a. less than sum_total:    sum_total / 2, alloc should pass
-> b. equal to sum_total:     sum_total,     alloc should pass
-> c. greater than sum_total: sum_total * 2, alloc should pass
-> *note: sum_total = SwapTotal + MemTotal
-> 
-> When overcommit_memory = 2, the total virtual address space on
-> the system is limited to CommitLimit(Swap+RAM*overcommit_ratio)
-> commit_left(allocatable memory) = CommitLimit - Committed_AS
-> a. less than commit_left:    commit_left / 2, alloc should pass
-> b. greater than commit_left: commit_left * 2, alloc should fail
-> c. overcommit limit:         CommitLimit,     alloc should fail
-> *note: CommitLimit is the current overcommit limit.
->       Committed_AS is the amount of memory that system has used.
-> it couldn't choose 'equal to commit_left' as a case, because
-> commit_left rely on Committed_AS, but the Committed_AS is not stable.
-> 
-> References:
-> - Documentation/sysctl/vm.txt
-> - Documentation/vm/overcommit-accounting
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
-> hi, all
-> 
-> v1 -> v2: used SAFE_STRTOL macro.
-> 
-> please review the patch, any comments are welcome.
-> 
->  runtest/mm                                       |    7 +
->  testcases/kernel/mem/tunable/Makefile            |   43 ++++
->  testcases/kernel/mem/tunable/overcommit_memory.c |  275 ++++++++++++++++++++++
->  3 files changed, 325 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/mem/tunable/Makefile
->  create mode 100644 testcases/kernel/mem/tunable/overcommit_memory.c
-> 
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
+The test msgctl11 will fail with log as follows once it is on the
+target with more than 4G memory and use default maximum pid value 32768.
+Because in this case, the maxnkids is always 0 which will cause fail
+and exit.
+
+maxnkids = ((free_pids / 4) / MSGMNI);
+
+The fix will update the maximum pid value to meet the basic need of
+free pids on the target with more than 4G memory.
+
+Test msgctl11 fail log
+
+"msgctl11    1  TBROK  :  Not enough free pids"
+
+Signed-off-by: Jin Li <jin.li@windriver.com>
+---
+ lib/system_specific_process_info.c              |   27 ++++++++++++++++++++++
+ testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   28 +++++++++++++++++++++-
+ 2 files changed, 53 insertions(+), 2 deletions(-)
+
+diff --git a/lib/system_specific_process_info.c b/lib/system_specific_process_info.c
+index d3c9638..aaa7f8b 100644
+--- a/lib/system_specific_process_info.c
++++ b/lib/system_specific_process_info.c
+@@ -59,6 +59,33 @@ int get_max_pids(void)
+ }
+ 
+ 
++int set_max_pids(int pids_max)
++{
++#ifdef __linux__
++
++        FILE *f;
++        char buf[BUFSIZE]={0};
++
++	snprintf(buf, sizeof(buf), "%d\n", pids_max);
++
++        f = fopen("/proc/sys/kernel/pid_max", "w+");
++        if (!f) {
++                tst_resm(TBROK, "Could not open /proc/sys/kernel/pid_max");
++                return -1;
++        }
++        if (!(fwrite(buf, BUFSIZE,1,f))) {
++                fclose(f);
++                tst_resm(TBROK, "Could not write /proc/sys/kernel/pid_max");
++                return -1;
++        }
++        fclose(f);
++        return atoi(buf);
++#else
++        return SHRT_MAX;
++#endif
++}
++
++
+ int get_free_pids(void)
+ {
+ 	FILE *f;
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+index 57bd184..eb6cb71 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
++++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+@@ -79,6 +79,9 @@ int TST_TOTAL = 1;		/* Total number of test cases. */
+ 
+ int exp_enos[] = { 0 };		/* List must end with 0 */
+ int maxnkids = MAXNKIDS;	/* Used if pid_max is exceeded */
++int max_pids;
++int adjust_max_pids = 0 ;
++
+ 
+ key_t keyarray[MAXNPROCS];
+ 
+@@ -641,14 +644,29 @@ void setup()
+ 		tst_exit();
+ 	}
+ 
++	max_pids = get_max_pids();
+ 	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
++            if ( nr_msgqs < 8192 ) {
+ 		maxnkids = ((free_pids / 4) / MSGMNI);
+ 		if (!maxnkids) {
+ 			tst_resm(TBROK, "Not enough free pids");
+ 			tst_exit();
+ 		}
+-	}
++	    } else  {
++		maxnkids = 1;
++
++		/* After the update of maximum pid number, the free pids
++                 * will be MSGMNI * 2 * 2.
++                 */
++                adjust_max_pids = MSGMNI * 2 * 2 + max_pids - free_pids ;
++		if ( (set_max_pids (adjust_max_pids)) < 0 ) {
++                    tst_resm(TBROK, "cannot adjust max pids");
++		    tst_exit();
++		}
++                free_pids = get_free_pids();
++            }
+ 
++        }
+ 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
+ }
+ 
+@@ -682,4 +700,10 @@ void cleanup()
+ 	fflush(stdout);
+ 	tst_rmdir();
+ 
+-}
+\ No newline at end of file
++	if ( adjust_max_pids > max_pids ) {
++	    if ( ! set_max_pids(max_pids) ) {
++                tst_resm(TBROK, "cannot restore the max pids");
++                tst_exit();
++	    }
++        }
++}
+-- 
+1.6.3.1
+
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
+Keep Your Developer Skills Current with LearnDevNow!
 The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
