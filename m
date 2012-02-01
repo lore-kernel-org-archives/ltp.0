@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RvV5P-0008DI-Ef
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 14:34:59 +0000
-Date: Thu, 9 Feb 2012 15:48:54 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rschv-0000eK-OY
+	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 16:06:51 +0000
+Date: Wed, 1 Feb 2012 17:20:05 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120209144854.GB29442@saboteur.suse.cz>
-References: <1328692433-24296-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4F323FCD.1090203@casparzhang.com>
-	<4F33C2D0.9070801@cn.fujitsu.com>
-	<20120209133519.GB27782@saboteur.suse.cz>
-	<4F33D159.2030807@cn.fujitsu.com>
+Message-ID: <20120201162005.GB29203@saboteur.suse.cz>
+References: <1326106637-5173-1-git-send-email-markos.chandras@imgtec.com>
+	<4F2127AE.6050906@imgtec.com>
+	<20120126141035.GA6666@saboteur.suse.cz>
+	<4F22B4CA.8060507@imgtec.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4F33D159.2030807@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v4 0/4] hugemmap: auto mount fix
+In-Reply-To: <4F22B4CA.8060507@imgtec.com>
+Subject: Re: [LTP] [PATCH] {tcp_cmds/echo,
+ math/float}: Include missing usctest.h header
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +28,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
+> > Strange, I've been unable to locate the original patch in the mailing
+> > list...
+> > 
 > 
-> I send a v5 just for 1/4 that fix this, able to be committed now?
+> Hi Cyril,
 > 
+> The patch was sent on the 9th of January 2012. If you want me to send it
+> again let me know.
 
-Done, thanks.
+Looking at the archives, there isn't one, wasn't that mail been eaten by
+some spam filter?
+
+http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list&max_rows=25&style=ultimate&viewmonth=201201&viewday=9
+
+Anyway just resend it (and possibly other patches that haven't been
+commented/applied yet).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
