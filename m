@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rv6pg-000248-Lf
-	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 12:41:08 +0000
-Date: Wed, 8 Feb 2012 13:54:57 +0100
+	(envelope-from <chrubis@suse.de>) id 1RsbJi-0006jP-1d
+	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 14:37:46 +0000
+Date: Wed, 1 Feb 2012 15:50:59 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120208125457.GA23425@saboteur.suse.cz>
-References: <CAKixpbg+XNuaaojb91dnOCXjCeSObRY33obhKSQd94qsp0eE-A@mail.gmail.com>
-	<CAKixpbivQ0wDWw4MXJjkcZwhfiT5UG44gqBQk7EBJNbw25Q=GQ@mail.gmail.com>
-	<CAKixpbgaRepTEBE-9jZ4cEjt0EC7GP3EzLKb3n7Lo_q3KKAaGQ@mail.gmail.com>
+Message-ID: <20120201145059.GB30390@saboteur.suse.cz>
+References: <1328097104-25615-1-git-send-email-salvatore.cro@st.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAKixpbgaRepTEBE-9jZ4cEjt0EC7GP3EzLKb3n7Lo_q3KKAaGQ@mail.gmail.com>
-Subject: Re: [LTP] Proper way to build from LTP tarball
+In-Reply-To: <1328097104-25615-1-git-send-email-salvatore.cro@st.com>
+Subject: Re: [LTP] [PATCH] syscalls: fix creat07 setup and arg to execve
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,25 +24,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vinson Lee <vlee@twitter.com>
+To: Salvatore CRO' <salvatore.cro@st.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I am using LTP through the Autotest framework. Autotest unpackages a
-> LTP tarball, calls 'make autotools', 'configure', and then 'make'. On
-> newer distros with more recent versions of autoconf, the 'make
-> autotools' step fails. However, the build works if I completely skip
-> the 'make autotools' step.
+> Fix typo in setup function as app[0] should be
+> checked instead of test_app[0].
+> Fix test_path concatenating the absolute
+> path to test_app when required (app[0] == '/').
+> Finally fix execve (returning Bad address - EFAULT)
+> argument av[1] as it requires argument
+> array to be terminated by a null pointer.
+> 
+> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+> ---
+>  testcases/kernel/syscalls/creat/creat07.c |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
+> index 4ed2c22..edaa182 100644
+> --- a/testcases/kernel/syscalls/creat/creat07.c
+> +++ b/testcases/kernel/syscalls/creat/creat07.c
+> @@ -92,6 +92,7 @@ int main(int ac, char **av)
+>  		if (pid == 0) {
+>  			char *av[1];
+>  			av[0] = basename(test_app);
+> +			av[1] = NULL;
 
-On which distros/autconf version do the 'make autotools' fails?
+Hmm, shouldn't then the array be declared as char *av[2] and moreover I
+would chose a differnet name for it as at first sight it seems to be
+modifying the parameter passed to main.
 
-> What is the expected way to build a released LTP tarball? Is a user
-> expected to call 'make autotools' before 'configure' or is just
-> running 'configure' enough?
-
-Running configure from relased tarball should be enough, calling
-autoconf to (re)generate configure script should be needed only when you
-change some of the autoconf/automake m4 files. 
+>  			(void)execve(test_app, av, NULL);
+>  			perror("execve failed");
+>  			exit(1);
+> @@ -138,8 +139,9 @@ void setup(char *app)
+>  	char *cmd, *pwd = NULL;
+>  	char test_path[MAXPATHLEN];
+>  
+> -	if (test_app[0] == '/')
+> -		strncpy(test_path, test_app, sizeof(test_app));
+> +	if (app[0] == '/')
+> +		snprintf(test_path, sizeof(test_path), "%s/%s",
+> +				dirname(app), test_app);
+>  	else {
+>  		if ((pwd = get_current_dir_name()) == NULL)
+>  			tst_brkm(TBROK|TERRNO, NULL, "getcwd failed");
 
 -- 
 Cyril Hrubis
