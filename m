@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0a8H-0008IF-6i
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 14:58:57 +0000
-Date: Thu, 23 Feb 2012 15:59:11 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rswgh-0001t2-K6
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 13:26:55 +0000
+Date: Thu, 2 Feb 2012 14:40:13 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120223145911.GB20855@saboteur.suse.cz>
-References: <4F432EF6.40601@cn.fujitsu.com>
-	<20120223141737.GA20855@saboteur.suse.cz>
+Message-ID: <20120202134013.GB28620@saboteur.suse.cz>
+References: <1328150233-16532-1-git-send-email-kai.kang@windriver.com>
+	<1328150233-16532-2-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20120223141737.GA20855@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH v3 2/2] shmem_2nstest: fix a bug of hang
+In-Reply-To: <1328150233-16532-2-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] sigaction/16-1.c: check whether SIGTLKFLT is
+	defined
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,28 +26,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Looked in the code, the stack for cloned process is four pages in size
-> (see ltp_clone_quick()). And when the tst_resm() is called, the buffer
-> created on stack to store the message most likely overflows the stack
-> which results in hang in snprintf(). So I would rather remove this
-> tst_resm() entirely.
-
-Hmm, or we could add a page or two to the ltp_clone_quick(), which
-should be quite safe...
+Commited, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
