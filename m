@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0Ga5-000584-NQ
-	for ltp-list@lists.sourceforge.net; Wed, 22 Feb 2012 18:06:21 +0000
-Date: Wed, 22 Feb 2012 19:06:47 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rsz6D-0006ux-6N
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 16:01:25 +0000
+Date: Thu, 2 Feb 2012 17:14:42 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120222180646.GA4018@saboteur.suse.cz>
-References: <4F20EB81.4030109@cn.fujitsu.com> <4F33277F.3050905@cn.fujitsu.com>
-	<20120222150948.GA32698@saboteur.suse.cz>
-	<4F45071E.20209@cn.fujitsu.com>
+Message-ID: <20120202161442.GC3605@saboteur.suse.cz>
+References: <1324980149-29612-1-git-send-email-YanFeng.Shang@windriver.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4F45071E.20209@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v4 1/8] A library used to test memcg
+In-Reply-To: <1324980149-29612-1-git-send-email-YanFeng.Shang@windriver.com>
+Subject: Re: [LTP] [PATCH] hugeshmat01 isn't adapt to mips with 64bit ELF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,39 +24,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Shang Yanfeng <YanFeng.Shang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Haotian.Zhang@windriver.com, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
+> Because userspace memory in mips with 64bit ELF is lower than 2^40,
+> so shmat failed.
 > 
-> Sure, agree. Please merge this. :)
+> signed-off-by: YanFeng.Shang  <YanFeng.Shang@windriver.com>
+> ---
+>  .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |    6 +++++-
+>  1 files changed, 5 insertions(+), 1 deletions(-)
 > 
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> index 6f270ce..67bd4b0 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> @@ -67,7 +67,11 @@ unsigned long huge_pages_shm_to_be_allocated;
+>  #define CASE1		20		/* memory location.		   */
+>  
+>  #if __WORDSIZE==64
+> +#if defined(__mips__)
+> +#define UNALIGNED      0x1000000eee
+> +#else
+>  #define UNALIGNED      0x10000000eee
+> +#endif
+>  #else
+>  #define UNALIGNED      0x60000eee
+>  #endif
 
-Hmm, somehow these patches fail to apply on latest git
+I wonder why we need such #ifdef for 64 bit systems in the first place,
+or is the unaligned address 0x60000eee too low for 64 bit system?
 
-...
-Applying: A library used to test memcg
-Applying: Modify memcg_function_test.sh to use lib
-error: patch failed:
-testcases/kernel/controllers/memcg/functional/memcg_function_test.sh:25
-error:
-testcases/kernel/controllers/memcg/functional/memcg_function_test.sh:
-patch does not apply
-Patch failed at 0002 Modify memcg_function_test.sh to use lib
-When you have resolved this problem run "git am --resolved".
-If you would prefer to skip this patch, instead run "git am --skip".
-To restore the original branch and stop patching run "git am --abort".
-...
+Garrett, Mike any clue?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
