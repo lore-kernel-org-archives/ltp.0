@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0bMs-0005gO-4x
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 16:18:06 +0000
-Date: Thu, 23 Feb 2012 17:18:34 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120223161834.GC5960@saboteur.suse.cz>
-References: <1324980149-29612-1-git-send-email-YanFeng.Shang@windriver.com>
-	<201202021133.54143.vapier@gentoo.org>
-	<20120223150127.GA5960@saboteur.suse.cz>
-	<201202231012.11543.vapier@gentoo.org>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Rst7I-000467-Ca
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 09:38:08 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Rst7E-0006ZV-MM
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 09:38:08 +0000
+Received: by iaby12 with SMTP id y12so3901418iab.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 02 Feb 2012 01:37:59 -0800 (PST)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Thu,  2 Feb 2012 17:37:33 +0800
+Message-Id: <1328175453-10106-2-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1328175453-10106-1-git-send-email-caspar@casparzhang.com>
+References: <1328175453-10106-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <4F2A5185.6060008@casparzhang.com>
+References: <4F2A5185.6060008@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201202231012.11543.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] hugeshmat01 isn't adapt to mips with 64bit ELF
+Content-Type: multipart/mixed; boundary="------------1.7.8.4"
+Subject: [LTP] [PATCH v2 2/2] mm/thp02: add runtest entry
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,41 +30,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Shang Yanfeng <YanFeng.Shang@windriver.com>, Haotian.Zhang@windriver.com, ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > > > I wonder why we need such #ifdef for 64 bit systems in the first place,
-> > > > or is the unaligned address 0x60000eee too low for 64 bit system?
-> > > > 
-> > > > Garrett, Mike any clue?
-> > > 
-> > > i can only guess that the author was attempting to locate a
-> > > highly-unlikely- to-be-used memory location
-> > 
-> > Hmm, okay. So what we need is to create library function that returns
-> > highly-unlikely memory location (I've seen this code in several places
-> > and I would like to avoid the duplication).
-> 
-> adding a helper to libltp sounds reasonable
+This is a multi-part message in MIME format.
+--------------1.7.8.4
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Hmm, couldn't find the other places, maybe my memory is just playing
-tricks with me. I guess I will commit this as it is and create a library
-when I get around other usages.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+adding thp02 entry to runtest/mm
+
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ runtest/mm |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+
+--------------1.7.8.4
+Content-Type: text/x-patch; name="0002-mm-thp02-add-runtest-entry.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0002-mm-thp02-add-runtest-entry.patch"
+
+diff --git a/runtest/mm b/runtest/mm
+index 73fd13c..26fe534 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -79,6 +79,7 @@ oom03 oom03
+ oom04 oom04
+ 
+ thp01 thp01 -I 120
++thp02 thp02
+ 
+ vma01 vma01
+ vma02 vma02
+
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.4--
+
+
+
