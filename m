@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RvRZS-0001TG-4K
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 10:49:46 +0000
-Date: Thu, 9 Feb 2012 12:03:40 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RsyU3-0001S6-Ka
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 15:21:59 +0000
+Date: Thu, 2 Feb 2012 16:35:23 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120209110340.GB22173@saboteur.suse.cz>
-References: <4F2CF088.3030001@cn.fujitsu.com>
+Message-ID: <20120202153523.GG28620@saboteur.suse.cz>
+References: <1327888994-4884-1-git-send-email-caspar@casparzhang.com>
+	<1328174935-9294-1-git-send-email-caspar@casparzhang.com>
+	<20120202151900.GB3605@saboteur.suse.cz>
+	<4F2AA8A1.1010303@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4F2CF088.3030001@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] m4/ltp-cap.m4: CAPSET should be replaced with
- SETCAP
+In-Reply-To: <4F2AA8A1.1010303@redhat.com>
+Subject: Re: [LTP] [PATCH v2 1/2] mm/vma03: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,27 +27,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Caspar Zhang <czhang@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Commit 4f71cae rename setcap to capset in m4/ltp-cap.m4, this is wrong.
-> Commit 183c6e4 rename HAVE_SETCAP to CAPSET in in m4/ltp-cap.m4, this also is wrong.
-> so CAPSET should be replaced with SETCAP m4/ltp-cap.m4.
+> >> +
+> >> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> >> +		Tst_count = 0;
+> >> +
+> >> +		fd = open(TESTFILE, O_RDWR);
+> >> +		if (fd == -1)
+> >> +			tst_brkm(TBROK|TCONF, NULL, "open %s", TESTFILE);
+> > 
+> > I know that we don't have a clear definition for these particular
+> > bitflags (which I would like to fix), however TCONF|TBROK seems strange
+> > to me. As TCONF is "testcase not appropriate for your system" and TBROK
+> > "testcase broken". I think that only TRBOK is better result here.
+> > 
+> > Other than that it's ready for commit.
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> Oops.. I was meant `TBROK|TERRNO` :-(
 
-Commited, thanks.
+Ah, right, that makes more sense. :)
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
