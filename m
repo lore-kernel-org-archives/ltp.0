@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Jin.Li@windriver.com>) id 1Rsnmm-0004iZ-JK
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 03:56:36 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Rsnml-00005y-NL
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 03:56:36 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q123uTmY009423
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 1 Feb 2012 19:56:29 -0800 (PST)
-From: Jin Li <jin.li@windriver.com>
-Date: Thu, 2 Feb 2012 11:56:23 +0800
-Message-ID: <1328154984-1484-1-git-send-email-jin.li@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RsxfN-0006ka-Ni
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 14:29:37 +0000
+Date: Thu, 2 Feb 2012 15:43:00 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120202144300.GE28620@saboteur.suse.cz>
+References: <1327642218-27034-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<1327642218-27034-6-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F24EE30.5040103@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] Fix for msgctl test case msgctl11 on the target with more
-	than 4G memory
+Content-Disposition: inline
+In-Reply-To: <4F24EE30.5040103@casparzhang.com>
+Subject: Re: [LTP] [PATCH 5/5] hugemmap05: code cleanups
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,35 +26,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: jin.li@windriver.com
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> 
+> ACK this one.
+> 
 
-Hi Cyril 
+Feel free to commit cleanup patches that are good enough ;).
 
-This is the version 2 patch.
-
-According to your advice, I made the following change :
-
-1. use the checkpatch.pl to improve the code style.
-
-2. use fprintf to simplify the function  set_max_pids and return 0 for ok.
-
-3. add prototype for set_max_pids
-
-This fix actully increase the maximum pids value for the targets with more than
-4G memory.
-
-In theses target, the test case need at least 8192 *2 pids to create message
-queue write/read child process and want to make sure that there is enought pids
-, as twice as pids value to creat message queue read/write, to be used.
-
-So the fix will increase the max pids value and re-set once the test finish.
-
-Thanks,
-
-Jin
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
