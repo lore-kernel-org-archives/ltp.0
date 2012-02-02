@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1S0kxL-0007Ok-28
-	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:32:23 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S0kxI-0002w6-RR
-	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:32:22 +0000
-Message-ID: <4F46F6A8.3050600@cn.fujitsu.com>
-Date: Fri, 24 Feb 2012 10:32:08 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1Rsnmm-0004iZ-JK
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 03:56:36 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Rsnml-00005y-NL
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 03:56:36 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q123uTmY009423
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 1 Feb 2012 19:56:29 -0800 (PST)
+From: Jin Li <jin.li@windriver.com>
+Date: Thu, 2 Feb 2012 11:56:23 +0800
+Message-ID: <1328154984-1484-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
-References: <4F33254B.9080204@cn.fujitsu.com>
-	<20120223162841.GD5960@saboteur.suse.cz>
-	<4F46DFBE.60208@cn.fujitsu.com> <4F46F2DF.7030001@casparzhang.com>
-In-Reply-To: <4F46F2DF.7030001@casparzhang.com>
-Subject: Re: [LTP] [PATCH] aio02: runfstests.sh should be deleted
+Subject: [LTP] Fix for msgctl test case msgctl11 on the target with more
+	than 4G memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,87 +31,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: jin.li@windriver.com
 
 
-Caspar Zhang said the following on 2012-2-24 10:15:
-> On 02/24/2012 08:54 AM, Peng Haitao wrote:
->>
->> Cyril Hrubis said the following on 2012-2-24 0:28:
->>> Hi!
->>>> runfstests.sh is creating temporary directory, which could be easily done
->>>> withing the test itself by using tst_tmpdir(), So runfstests.sh should be
->>>> deleted.
->>>
->>> This patch doesn't apply as well, probably mangled by your mail cliend
->>> too. Please resend.
->>>
->>
->> Sorry:(
->>
->> I resend the patch of v2, please apply.
->> Thanks. 
->>
-> Still no luck with v2 :-(
-> 
-> $ git am -3 ~/Desktop/\[LTP\]\ \[PATCH\]\ aio02\:\ runfstests.sh\
-> should\ be\ deleted.eml
+Hi Cyril 
 
-maybe you are wrong?  The patch is really v2.
+This is the version 2 patch.
 
-# git am -3 /home/pht/\[LTP\]\ \[PATCH\ v2\]\ aio02\ \ runfstests.sh\ should\ be\ deleted.eml
-Applying: aio02: runfstests.sh should be deleted
-#
+According to your advice, I made the following change :
 
-Thanks.
+1. use the checkpatch.pl to improve the code style.
 
--- 
-Best Regards,
-Peng
+2. use fprintf to simplify the function  set_max_pids and return 0 for ok.
 
-> Applying: aio02: runfstests.sh should be deleted
-> Using index info to reconstruct a base tree...
-> error: patch failed: runtest/io:1
-> error: runtest/io: patch does not apply
-> error: patch failed: testcases/kernel/io/aio/aio02/Makefile:27
-> error: testcases/kernel/io/aio/aio02/Makefile: patch does not apply
-> error: patch failed: testcases/kernel/io/aio/aio02/README:2
-> error: testcases/kernel/io/aio/aio02/README: patch does not apply
-> error: patch failed: testcases/kernel/io/aio/aio02/aio_tio.c:17
-> error: testcases/kernel/io/aio/aio02/aio_tio.c: patch does not apply
-> error: testcases/kernel/io/aio/aio02/cases/common.h: has been
-> deleted/renamed
-> error: patch failed: testcases/kernel/io/aio/aio02/main.c:23
-> error: testcases/kernel/io/aio/aio02/main.c: patch does not apply
-> error: testcases/kernel/io/aio/aio02/runfstests.sh: has been deleted/renamed
-> Did you hand edit your patch?
-> It does not apply to blobs recorded in its index.
-> Cannot fall back to three-way merge.
-> Patch failed at 0001 aio02: runfstests.sh should be deleted
-> When you have resolved this problem run "git am --resolved".
-> If you would prefer to skip this patch, instead run "git am --skip".
-> To restore the original branch and stop patching run "git am --abort".
-> 
-> 
-> ------------------------------------------------------------------------------
-> Virtualization & Cloud Management Using Capacity Planning
-> Cloud computing makes use of virtualization - but cloud computing 
-> also focuses on allowing computing to be delivered as a service.
-> http://www.accelacomm.com/jaw/sfnl/114/51521223/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
+3. add prototype for set_max_pids
+
+This fix actully increase the maximum pids value for the targets with more than
+4G memory.
+
+In theses target, the test case need at least 8192 *2 pids to create message
+queue write/read child process and want to make sure that there is enought pids
+, as twice as pids value to creat message queue read/write, to be used.
+
+So the fix will increase the max pids value and re-set once the test finish.
+
+Thanks,
+
+Jin
 
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
