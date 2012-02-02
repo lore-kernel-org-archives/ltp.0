@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Ry5K7-00086e-Q1
-	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 17:40:51 +0000
-Date: Thu, 16 Feb 2012 18:40:45 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120216174045.GA6793@saboteur.suse.cz>
-References: <1329209618-20920-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1329210855-23074-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1RsvPi-0000W9-SL
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 12:05:18 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RsvPd-0002Vq-7Y
+	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 12:05:18 +0000
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 2 Feb 2012 12:04:38 +0000
+Message-ID: <1328184278-19777-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1329210855-23074-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH-v2] aio_suspend: cleanup the coding style
+Subject: [LTP] [PATCH] {tcp_cmds/echo,
+	math/float}: Include missing usctest.h header
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,25 +26,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> -	aiocbs = (struct aiocb**)malloc(sizeof(struct aiocb *) * NUM_AIOCBS);
-> +	aiocbs = (struct aiocb **)malloc(sizeof(struct aiocb *) * NUM_AIOCBS);
+The tst_print function is using the TEST_ERRNO symbol which is declared
+as 'extern int' on usctest.h header when _USC_LIB_ macro is used and as 'int'
+when this macro is not defined. We need to include this header on float and
+echoes tests to ensure that TEST_ERRNO has been defined before calling
+the tst_print function. Without this header, the compilation will fail with
+an undefined symbol error.
 
-Casting pointers returned from malloc is not needed so please remove
-these too. Other than that it looks good.
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ testcases/misc/math/float/main.c         |    1 +
+ testcases/network/tcp_cmds/echo/echoes.c |    3 ++-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/main.c
+index 8998c33..870661b 100644
+--- a/testcases/misc/math/float/main.c
++++ b/testcases/misc/math/float/main.c
+@@ -26,6 +26,7 @@
+ #include "tfloat.h"
+
+ #include "test.h"
++#include "usctest.h"
+
+ #define SAFE_FREE(p) { if (p) { free(p); (p)=NULL; } }
+ /* LTP status reporting */
+diff --git a/testcases/network/tcp_cmds/echo/echoes.c b/testcases/network/tcp_cmds/echo/echoes.c
+index 877cfa5..2ce7968 100644
+--- a/testcases/network/tcp_cmds/echo/echoes.c
++++ b/testcases/network/tcp_cmds/echo/echoes.c
+@@ -29,6 +29,7 @@
+ #include <fcntl.h>
+ #include "test.h"
+ #include "netdefs.h"
++#include "usctest.h"
+
+ #if INET6
+ char *TCID = "echoes6";
+@@ -372,4 +373,4 @@ void
+ cleanup(int s)
+ {
+ 	close(s);
+-}
+\ No newline at end of file
++}
+--
+1.7.1
+
+
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
