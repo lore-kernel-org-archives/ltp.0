@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Ry71x-0007Hs-Gu
-	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 19:30:13 +0000
-Date: Thu, 16 Feb 2012 20:30:08 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120216193008.GC6790@saboteur.suse.cz>
-References: <541a69a479af6ba8c2ce0af8ab890851dfed4caa.1329113234.git.zliu@redhat.com>
-	<1cf48238f2cc23c9e93310ca22617296cb8a8f51.1329113234.git.zliu@redhat.com>
-	<4F391C27.2040905@casparzhang.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RuG3v-0002vD-Nh
+	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 04:20:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RuG3u-0001I2-D7
+	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 04:20:19 +0000
+Message-ID: <4F2F54C3.1090208@cn.fujitsu.com>
+Date: Mon, 06 Feb 2012 12:19:15 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F391C27.2040905@casparzhang.com>
-Subject: Re: [LTP] [PATCH] mem/tunable: new testcase about max_map_count
- tunable
+References: <1328498186-14768-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F2F5392.5010502@casparzhang.com>
+In-Reply-To: <4F2F5392.5010502@casparzhang.com>
+Subject: Re: [LTP] [PATCH v5 0/4] hugemmap: code cleanups
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +32,49 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Caspar Zhang <caspar@casparzhang.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > ---
-> >  runtest/mm                                   |    2 +
-> >  testcases/kernel/mem/tunable/max_map_count.c |  197 ++++++++++++++++++++++++++
-> >  2 files changed, 199 insertions(+), 0 deletions(-)
-> >  create mode 100644 testcases/kernel/mem/tunable/max_map_count.c
-> > 
+On 02/06/2012 12:14 PM, Caspar Zhang wrote:
+
+> On 02/06/2012 11:16 AM, Wanlong Gao wrote:
+>>
+>> Hi Caspar, Cyril:
+>> This is the v5 of the hugemmmap cleanups.
+>>
+>> Thanks
+>> -Wanlong Gao
+>>
+>> Wanlong Gao (4):
+>>   hugemmap01: code cleanups
+>>   hugemmap02: code cleanups
+>>   hugemmap03: code cleanups
+>>   hugemmap04: code cleanups
+>>
+>>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |  177 +++++++-----------
+>>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |  190 ++++++++-----------
+>>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |  133 +++++--------
+>>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |  199 ++++++++------------
+>>  4 files changed, 276 insertions(+), 423 deletions(-)
+>>
 > 
-> Acked-by: Caspar Zhang <caspar@casparzhang.com>
+> Hi, all patches committed.
+
+
+Glad to hear that, thank you.
+
+-Wanlong Gao
+
+> 
+> Thanks,
+> Caspar
 > 
 
-Looks good, feel free to commit.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
