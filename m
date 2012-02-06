@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RvQbA-0007Mz-N8
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 09:47:28 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RvQb6-0000b9-V2
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 09:47:28 +0000
-Received: by iaby12 with SMTP id y12so2843231iab.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Feb 2012 01:47:19 -0800 (PST)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Feb 2012 17:46:47 +0800
-Message-Id: <1328780807-14132-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
-References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1RuLGT-0005BV-Jh
+	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 09:53:37 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RuLGR-0002wv-34
+	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 09:53:37 +0000
+From: Kang Kai <kai.kang@windriver.com>
+Date: Mon, 6 Feb 2012 17:52:56 +0800
+Message-ID: <1328521976-810-2-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1328521976-810-1-git-send-email-kai.kang@windriver.com>
+References: <1328521976-810-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH v2] safe_macros: add SAFE_STRTOL
+Subject: [LTP] [PATCH] mq_timedsend/5-1: make parent has chance to sleep
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,119 +24,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-usage: SAFE_STRTOL(cleanup_fn, string, min, max);
-when no specific range required, min could be LONG_MIN and max could be
-LONG_MAX;
-
-return: converted long int type value.
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- include/safe_macros.h |    5 +++++
- lib/safe_macros.c     |   24 +++++++++++++++++++++++-
- 2 files changed, 28 insertions(+), 1 deletions(-)
-
-
---------------1.7.8.4
-Content-Type: text/x-patch; name="0001-safe_macros-add-SAFE_STRTOL.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-safe_macros-add-SAFE_STRTOL.patch"
-
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index 12f03ef..fbfe6cd 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -146,5 +146,10 @@ int safe_truncate(const char *file, const int lineno,
- #define SAFE_TRUNCATE(cleanup_fn, fd, length) \
- 	safe_truncate(__FILE__, __LINE__, cleanup_fn, (path), (length))
- 
-+long safe_strtol(const char *file, const int lineno,
-+	    void (cleanup_fn)(void), char *str, long min, long max);
-+#define SAFE_STRTOL(cleanup_fn, str, min, max) \
-+	safe_strtol(__FILE__, __LINE__, cleanup_fn, (str), (min), (max))
-+
- #endif
- #endif
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 569952d..c6280c6 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -4,6 +4,7 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <libgen.h>
-+#include <limits.h>
- #include <pwd.h>
- #include <stdarg.h>
- #include <stdlib.h>
-@@ -315,7 +316,7 @@ int safe_ftruncate(const char *file, const int lineno,
- 	    void (cleanup_fn)(void), int fd, off_t length)
- {
- 	int rval;
--	
-+
- 	rval = ftruncate(fd, length);
- 	if (rval == -1) {
- 		tst_brkm(TBROK|TERRNO, cleanup_fn, "ftruncate failed at %s:%d",
-@@ -338,3 +339,24 @@ int safe_truncate(const char *file, const int lineno,
- 
- 	return rval;
- }
-+
-+long safe_strtol(const char *file, const int lineno,
-+	    void (cleanup_fn)(void), char *str, long min, long max)
-+{
-+	int rval;
-+	char *endptr;
-+
-+	rval = strtol(str, &endptr, 10);
-+	if ((errno == ERANGE && (rval == LONG_MAX || rval == LONG_MIN))
-+		    || (errno != 0 && rval == 0))
-+		tst_brkm(TBROK|TERRNO, cleanup_fn, "strtol failed at %s:%d",
-+			 file, lineno);
-+	if (rval >= max || rval <= min)
-+		tst_brkm(TBROK, cleanup_fn,
-+			 "converted value out of range: %ld - %ld",
-+			 min, max);
-+	if (endptr == str || (*endptr != '\0' && *endptr != '\n'))
-+		tst_brkm(TBROK, cleanup_fn, "Invalid value: %s", str);
-+
-+	return rval;
-+}
-
---------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, caspar@casparzhang.com
+
+Child process sends the last signal before parent process enter the
+final sleep sometimes, so sleep in parent will not be interrupted then
+the case fails.
+Sleep 1 second before send the last signal in child to make sure parent
+enter the final sleep.
+
+Signed-off-by: Kang Kai <kai.kang@windriver.com>
+---
+ .../conformance/interfaces/mq_timedsend/5-1.c      |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
+index 96daf72..77fe2e0 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
+@@ -82,6 +82,9 @@ int main()
+ 		sleep(1);  // give parent time to set up handler
+ 		for (i=0; i<MAXMSG+1; i++) {
+         		mq_timedsend(gqueue, msgptr, strlen(msgptr), 1, &ts);
++			/* make sure parent enter the final sleep */
++			if (i == MAXMSG)
++				sleep(1);
+ 			/* send signal to parent each time message is sent */
+ 			kill(getppid(), SIGABRT);
+ 		}
+@@ -138,4 +141,4 @@ int main()
+ 	}
+ 
+ 	return PTS_UNRESOLVED;
+-}
+\ No newline at end of file
++}
+-- 
+1.7.5.4
+
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.4--
-
-
-
