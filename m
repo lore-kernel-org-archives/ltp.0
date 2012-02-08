@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S0lK0-0000MD-03
-	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:55:48 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S0lJz-0003wk-14
-	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:55:47 +0000
-Received: by pbbrp12 with SMTP id rp12so203235pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 23 Feb 2012 18:55:41 -0800 (PST)
-Message-ID: <4F46FBFB.4090702@casparzhang.com>
-Date: Fri, 24 Feb 2012 10:54:51 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rv7dj-0005X5-II
+	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 13:32:51 +0000
+Date: Wed, 8 Feb 2012 14:46:44 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120208134644.GD17568@saboteur.suse.cz>
+References: <1328673253-23856-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F320A18.9020308@casparzhang.com>
 MIME-Version: 1.0
-References: <4F33254B.9080204@cn.fujitsu.com>
-	<20120223162841.GD5960@saboteur.suse.cz>
-	<4F46DFBE.60208@cn.fujitsu.com> <4F46F2DF.7030001@casparzhang.com>
-	<4F46F6A8.3050600@cn.fujitsu.com>
-In-Reply-To: <4F46F6A8.3050600@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] aio02: runfstests.sh should be deleted
+Content-Disposition: inline
+In-Reply-To: <4F320A18.9020308@casparzhang.com>
+Subject: Re: [LTP] [PATCH v2 0/4] hugemmap: auto mount the temporary dir
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,29 +25,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: Caspar Zhang <caspar@casparzhang.com>, ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 02/24/2012 10:32 AM, Peng Haitao wrote:
-> 
-> Caspar Zhang said the following on 2012-2-24 10:15:
->>
->> $ git am -3 ~/Desktop/\[LTP\]\ \[PATCH\]\ aio02\:\ runfstests.sh\
->> should\ be\ deleted.eml
-> 
-> maybe you are wrong?  The patch is really v2
+Hi!
+> Hi, I want to know the test status of your patches before we commit the
+> changes, after that, you can reply with adding a `Tested-by` line. Also,
+> I'd like to know Cyril's comments to this version of patchset.
 
-oops... you're right.
+Looks reasonable.
 
-Committed, thanks.
+> Cyril, I'm not sure which is the best place to put such wrapper
+> functions like string_to_long() I mentioned in previous mail, any ideas?
 
-Caspar
+See reply to previous mail ;).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
