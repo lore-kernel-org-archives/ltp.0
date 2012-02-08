@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Rzj0L-0003UI-PW
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 06:15:13 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Rzj0G-0003yV-DT
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 06:15:13 +0000
-Received: by pbcum15 with SMTP id um15so7067122pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 20 Feb 2012 22:15:02 -0800 (PST)
-Message-ID: <4F43363D.5020806@casparzhang.com>
-Date: Tue, 21 Feb 2012 14:14:21 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rv8nS-0001tq-GX
+	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 14:46:58 +0000
+Date: Wed, 8 Feb 2012 16:00:49 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120208150049.GF17568@saboteur.suse.cz>
+References: <4F2BA78D.5090301@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4F20EB81.4030109@cn.fujitsu.com> <4F433123.80702@cn.fujitsu.com>
-In-Reply-To: <4F433123.80702@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v4 1/8] A library used to test memcg
+Content-Disposition: inline
+In-Reply-To: <4F2BA78D.5090301@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] runfstests.sh: fix error exit code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,24 +27,33 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 02/21/2012 01:52 PM, Peng Haitao wrote:
+Hi!
+> The exit code of runfstests.sh should be not 0 when aio02 test fail.
 > 
-> Peng Haitao said the following on 2012-1-26 13:58:
->>
->> This library includes a set of functions used to test memcg.
->>
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> ---
+>  testcases/kernel/io/aio/aio02/runfstests.sh |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
 > 
-> Hi, Can you comment or commit the following patch?
-> 
+> diff --git a/testcases/kernel/io/aio/aio02/runfstests.sh b/testcases/kernel/io/aio/aio02/runfstests.sh
+> index 07a40ad..005299a 100755
+> --- a/testcases/kernel/io/aio/aio02/runfstests.sh
+> +++ b/testcases/kernel/io/aio/aio02/runfstests.sh
+> @@ -56,3 +56,5 @@ echo "Pass: $passes Fail: $fails"
+>  echo "Test run complete at" `date`
+>  
+>  rm -rf testdir
+> +
+> +exit $fails
 
-The patch looks good to me. Yet I'm not familiar with this part of
-codes, so I want to listen to others' opinion if possible.
+Good catch, however the only thing that the script does is creating
+temporary directory, which could be easily done withing the test itself
+by using tst_tmpdir(), then we could drop this script and run the
+testcase directly...
 
-Also, could you please provide a result log for your updated controller
-tests?
-
-Thanks,
-Caspar
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
