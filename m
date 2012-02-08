@@ -2,23 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Jin.Li@windriver.com>) id 1RsUcl-0000wy-QG
-	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 07:28:59 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RsUcg-0006Zl-BD
-	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 07:28:59 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q117SmGS021244
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 31 Jan 2012 23:28:48 -0800 (PST)
-From: Jin Li <jin.li@windriver.com>
-Date: Wed, 1 Feb 2012 15:28:44 +0800
-Message-ID: <1328081325-22028-1-git-send-email-jin.li@windriver.com>
+	(envelope-from <chrubis@suse.de>) id 1Rv73E-0002kn-HF
+	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 12:55:08 +0000
+Date: Wed, 8 Feb 2012 14:09:02 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120208130902.GB23425@saboteur.suse.cz>
+References: <CABX9GEBGv4PHve2qZW7EqXnBt5SP6bwKMhBDhJzMxLMoZQAO2A@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] Fix for msgctl test case msgctl11 on the target with more
-	than 4G memory
+Content-Disposition: inline
+In-Reply-To: <CABX9GEBGv4PHve2qZW7EqXnBt5SP6bwKMhBDhJzMxLMoZQAO2A@mail.gmail.com>
+Subject: Re: [LTP] Regarding LTP test failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,15 +24,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: haotian.zhang@windriver.com, jin.li@windriver.com
+To: Shivamurthy Shastri <shiva.linuxworks@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> I am testing LTP on mips64 architecture.
+> Some tests are failing on it.
+> Please let me know LTP is supported on mips64 or not.
 
-Hi all 
+Generally LTP should run on any linux, however some of the tests may not
+work on some platforms. (and if you look on mails on this list, there
+are even patches pending to fix some of the tests on mips64)
 
-Please ignore the last email which miss the  signiture 
-
-Thanks
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
