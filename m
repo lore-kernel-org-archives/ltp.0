@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <filippo.arcidiacono@st.com>) id 1S0VoY-0007ew-RP
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 10:22:18 +0000
-Received: from eu1sys200aog119.obsmtp.com ([207.126.144.147])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S0VoU-0005Yo-KG
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 10:22:18 +0000
-From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
-References: <y> <1329985431-27567-1-git-send-email-y>
-	<4F4609F6.5060008@cn.fujitsu.com>
-In-Reply-To: <4F4609F6.5060008@cn.fujitsu.com>
-Date: Thu, 23 Feb 2012 11:21:51 +0100
-Message-ID: <016501ccf214$f5f05da0$e1d118e0$@arcidiacono@st.com>
+	(envelope-from <vinson@twitter.com>) id 1Ruvo0-00042e-9L
+	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 00:54:40 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Ruvnz-0005Co-Km
+	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 00:54:40 +0000
+Received: by wgbdr12 with SMTP id dr12so20549wgb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 07 Feb 2012 16:54:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: en-us
-Subject: Re: [LTP] [PATCH] getrusage04: add opportunity to increase the max
-	[us]time increment
+In-Reply-To: <CAKixpbivQ0wDWw4MXJjkcZwhfiT5UG44gqBQk7EBJNbw25Q=GQ@mail.gmail.com>
+References: <CAKixpbg+XNuaaojb91dnOCXjCeSObRY33obhKSQd94qsp0eE-A@mail.gmail.com>
+	<CAKixpbivQ0wDWw4MXJjkcZwhfiT5UG44gqBQk7EBJNbw25Q=GQ@mail.gmail.com>
+Date: Tue, 7 Feb 2012 16:27:08 -0800
+Message-ID: <CAKixpbgaRepTEBE-9jZ4cEjt0EC7GP3EzLKb3n7Lo_q3KKAaGQ@mail.gmail.com>
+From: Vinson Lee <vlee@twitter.com>
+Subject: [LTP] Proper way to build from LTP tarball
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,161 +31,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: David Mackey <tdmackey@twitter.com>
 
+Hello.
 
+I am using LTP through the Autotest framework. Autotest unpackages a
+LTP tarball, calls 'make autotools', 'configure', and then 'make'. On
+newer distros with more recent versions of autoconf, the 'make
+autotools' step fails. However, the build works if I completely skip
+the 'make autotools' step.
 
-> -----Original Message-----
-> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
-> Sent: Thursday, February 23, 2012 10:42 AM
-> To: Filippo ARCIDIACONO
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH] getrusage04: add opportunity to increase the
-> max [us]time increment
-> 
-> On 02/23/2012 04:23 PM, Filippo ARCIDIACONO wrote:
-> 
-> > From: Filippo Arcidiacono <filippo.arcidiacono@st.com>
-> >
-> > On slow systems it could be needed to increase the max value [us]time
-> > increment beetween two getrusage calls.
-> >
-> > Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
-> > Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
-> > ---
-> >  testcases/kernel/syscalls/getrusage/getrusage04.c |   42
-> +++++++++++++++++---
-> >  1 files changed, 35 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c
-> b/testcases/kernel/syscalls/getrusage/getrusage04.c
-> > index 3bdd3b0..92f8361 100644
-> > --- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-> > +++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-> > @@ -54,11 +54,22 @@ int TST_TOTAL = 1;
-> >
-> >  #define BIAS_MAX      1000
-> >  #define RECORD_MAX    20
-> > +#define FACTOR_MAX    10
-> >
-> >  #ifndef RUSAGE_THREAD
-> >  #define RUSAGE_THREAD 1
-> >  #endif
-> >
-> > +static int opt_factor;
-> > +static char *factor_str;
-> > +static long factor_nr = 1;
-> > +
-> > +option_t child_options[] = {
-> > +	{ "m:", &opt_factor, &factor_str },
-> > +	{ NULL, NULL,         NULL }
-> > +};
-> > +
-> > +static void fusage(void);
-> >  static void busyloop(long wait);
-> >  static void setup(void);
-> >  static void cleanup(void);
-> > @@ -69,8 +80,9 @@ int main(int argc, char *argv[])
-> >  	unsigned long ulast, udelta, slast, sdelta;
-> >  	int i, lc;
-> >  	char *msg;
-> > +	char msg_string[BUFSIZ];
-> >
-> > -	msg = parse_opts(argc, argv, NULL, NULL);
-> > +	msg = parse_opts(argc, argv, child_options, fusage);
-> >  	if (msg != NULL)
-> >  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> >
-> > @@ -80,6 +92,11 @@ int main(int argc, char *argv[])
-> >
-> >  	setup();
-> >
-> > +	if (opt_factor)
-> > +		factor_nr = SAFE_STRTOL(cleanup, factor_str, 0,
-> FACTOR_MAX);
-> > +
-> > +	tst_resm(TINFO, "Using %ld as multiply factor for max [us]time
-> increment (1000+%ldus)!", factor_nr, BIAS_MAX * factor_nr);
-> 
-> 
-> Could you please fix the over 80 characters warning?
+What is the expected way to build a released LTP tarball? Is a user
+expected to call 'make autotools' before 'configure' or is just
+running 'configure' enough?
 
-Ok.
-> 
-> > +
-> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> >  		Tst_count = 0; i = 0;
-> >  		ulast = 0, slast = 0;
-> > @@ -95,14 +112,20 @@ int main(int argc, char *argv[])
-> >  				tst_resm(TINFO, "utime:%12luus;
-stime:%12luus",
-> >  					    usage.ru_utime.tv_usec,
-> >  					    usage.ru_stime.tv_usec);
-> > -				if (udelta > 1000+BIAS_MAX)
-> > -					tst_brkm(TFAIL, cleanup,
-> > -						    "utime increased >
-1000us:"
-> > +				if (udelta > 1000+(BIAS_MAX * factor_nr)) {
-> > +					sprintf(msg_string,
-> > +						"utime increased > %ldus:",
-> > +						1000 + BIAS_MAX *
-factor_nr);
-> > +					tst_brkm(TFAIL, cleanup, msg_string,
-> >  						    " delta = %luus",
-udelta);
-> > -				if (sdelta > 1000+BIAS_MAX)
-> > -					tst_brkm(TFAIL, cleanup,
-> > -						    "stime increased >
-1000us:"
-> > +				}
-> > +				if (sdelta > 1000+(BIAS_MAX * factor_nr)) {
-> > +					sprintf(msg_string,
-> > +						"stime increased > %ldus:",
-> > +						1000 + BIAS_MAX *
-factor_nr);
-> > +					tst_brkm(TFAIL, cleanup, msg_string,
-> >  						    " delta = %luus",
-sdelta);
-> > +				}
-> >  			}
-> >  			ulast = usage.ru_utime.tv_usec;
-> >  			slast = usage.ru_stime.tv_usec;
-> > @@ -113,6 +136,11 @@ int main(int argc, char *argv[])
-> >  	tst_exit();
-> >  }
-> >
-> > +static void fusage(void)
-> > +{
-> > +	printf("  -m n    use n as multiply factor for max [us]time
-> increment (1000+(1000*n)us), default value is 1\n");
-> 
-> 
-> ditto
-> 
-> 
-> Thanks
-> -Wanlong Gao
-
-I'll post a new version.
-Thanks for the review.
-
-Filippo.
-> 
-> > +}
-> > +
-> >  static void busyloop(long wait)
-> >  {
-> >  	while (wait--)
-> 
-
-
+Cheers,
+Vinson
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
