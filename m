@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0DYB-00045r-OO
-	for ltp-list@lists.sourceforge.net; Wed, 22 Feb 2012 14:52:11 +0000
-Date: Wed, 22 Feb 2012 15:52:37 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Rv7bu-0007fM-4U
+	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 13:30:58 +0000
+Date: Wed, 8 Feb 2012 14:44:46 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120222145237.GD16723@saboteur.suse.cz>
-References: <1329879488-29578-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20120208134446.GC17568@saboteur.suse.cz>
+References: <1328581235-8304-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<1328581235-8304-2-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F30D3F3.6030709@casparzhang.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1329879488-29578-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] pthread_detach:4-3: code cleanups
+In-Reply-To: <4F30D3F3.6030709@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/4] hugemmap01: auto mount the temporary dir for
+ testing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,26 +27,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Caspar Zhang <caspar@casparzhang.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> cleanup the code
+> I think we need some error check mechanism here.
 > 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> (@Cyril: Looks like we need a strtol wrapper in LTP lib? we have several
+> examples before, like:
+> 
+>     val = strtol(str, &endptr, 10);
+>     if (((val == LONG_MAX || val == LONG_MIN) && errno == ERANGE) ||
+>             (errno != 0 && val == 0))
+>         tst_brkm(TBROK|TERRNO, cleanup, "strtol");
+>     if (endptr == str || *endptr != '\0')
+>         tst_brkm(TBROK, cleanup, "Invalid number parameter: %s", str);
+> 
 
-In this case, if you agree, I would like to get rid of the ugly testfrmw
-entirely (could be in incremental patch).
+Hmm, that sounds reasonable, the code to handle strtol is too
+compilcated to be written again and again.
+
+I would do something similar to the safe macros, perhaps:
+
+SAFE_STRTOL(cleanup_fn, str, min, max)
+
+Which would assert that string was converted correctly and is between
+min and max value.
+
+see include/safe_macros.h
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
