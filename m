@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1RxrHb-00087u-LM
-	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 02:41:19 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RxrHX-0005vM-RY
-	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 02:41:19 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q1G2f9Z6011003
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 15 Feb 2012 18:41:09 -0800 (PST)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Thu, 16 Feb 2012 10:41:07 +0800
-Message-ID: <1329360067-14421-1-git-send-email-kai.kang@windriver.com>
+	(envelope-from <chrubis@suse.de>) id 1RvTwC-00086s-4y
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 13:21:24 +0000
+Date: Thu, 9 Feb 2012 14:35:19 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120209133519.GB27782@saboteur.suse.cz>
+References: <1328692433-24296-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F323FCD.1090203@casparzhang.com>
+	<4F33C2D0.9070801@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] aio_cancel/3-1: call aio_read before aio_cancel
+Content-Disposition: inline
+In-Reply-To: <4F33C2D0.9070801@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4 0/4] hugemmap: auto mount fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,41 +26,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The case calls aio_error() with an invalid aiocbp, but it should do
-some asynchronous I/O operations first, so call aio_read() and then
-test the aio_error().
+Hi!
+> >>   hugemmap01: auto mount the temporary dir for testing
+> >>   hugemmap02: auto mount the temporary dir for testing
+> >>   hugemmap03: auto mount the temporary dir for testing
+> >>   hugemmap04: auto mount the temporary dir for testing
+> >>
+> >>  runtest/hugetlb                                    |    8 ++--
+> >>  testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   11 ++++
+> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   55 +++++++++++++-------
+> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |   50 ++++++++++++------
+> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |   55 +++++++++++++-------
+> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |   53 ++++++++++++-------
+> >>  6 files changed, 155 insertions(+), 77 deletions(-)
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../conformance/interfaces/aio_error/3-1.c         |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+I've got:
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
-index 8b6c2f5..6665da1 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
-@@ -68,6 +68,9 @@ int main()
- 	aiocb.aio_reqprio = -1;
- 	aiocb.aio_nbytes = BUF_SIZE;
- 
-+	/* Just do aio_read() or aio_write */
-+	aio_read(&aiocb);
-+
- 	ret = aio_error(&aiocb);
- 
- 	if (ret != EINVAL)
-@@ -80,4 +83,4 @@ int main()
- 	close(fd);
- 	printf ("Test PASSED\n");
- 	return PTS_PASS;
--}
-\ No newline at end of file
-+}
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/home/metan/Work/git/ltp-dev/testcases/kernel/include -I/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../lib -I/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../../lib -I../../../../../include -I../../../../../include   -L/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../lib -L/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../../lib -L../../../../../lib  hugemmap04.c   -lltp -lipc_hugetlb -lmem -o hugemmap04
+/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../../lib/libmem.a(mem.o): In function `oom':
+/home/metan/Work/git/ltp-dev/testcases/kernel/mem/lib/mem.c:37: undefined reference to `set_mempolicy'
+collect2: ld returned 1 exit status
+make: *** [hugemmap04] Error 1
+
+Which looks like forgotten $(NUMA_LIBS) in LDFLAGS when you have numa devel libs installed.
+
 -- 
-1.7.5.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
