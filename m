@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RvP8c-0001bd-2C
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 08:13:54 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RvP8Y-0002Dh-4Z
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 08:13:54 +0000
-Received: by iaby12 with SMTP id y12so2719521iab.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Feb 2012 00:13:44 -0800 (PST)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Feb 2012 16:13:14 +0800
-Message-Id: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RvTXT-00041M-Ke
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 12:55:51 +0000
+Date: Thu, 9 Feb 2012 14:09:45 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120209130945.GA27782@saboteur.suse.cz>
+References: <1A42CE6F5F474C41B63392A5F80372B212E02C95C4@shsmsx501.ccr.corp.intel.com>
+	<CAGH67wTKz+VPzN_-+7uKfeBguhuKZK_mj-m8oy2kY6pyKNihzw@mail.gmail.com>
+	<1A42CE6F5F474C41B63392A5F80372B212E050913C@shsmsx501.ccr.corp.intel.com>
+	<20120125183628.GD8067@saboteur.suse.cz>
+	<D908B1B9E708C047A32444772B58AE880414C8@SHSMSX101.ccr.corp.intel.com>
+	<CAGH67wSw9nGvHOg_Ywp5p0CsjJgycpF1NNfXiG38pFyLyNSQTw@mail.gmail.com>
+	<D908B1B9E708C047A32444772B58AE88041512@SHSMSX101.ccr.corp.intel.com>
+	<20120201152611.GA29203@saboteur.suse.cz>
+	<D908B1B9E708C047A32444772B58AE88043030@SHSMSX101.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH] safe_macros: add SAFE_STRTOL
+Content-Disposition: inline
+In-Reply-To: <D908B1B9E708C047A32444772B58AE88043030@SHSMSX101.ccr.corp.intel.com>
+Subject: Re: [LTP] [Ltp-commits] [patch] Power Management: add notification
+ once 'sched_debug' not in boot cmdline
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,118 +30,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-usage: SAFE_STRTOL(cleanup_fn, string, min, max);
-when no specific range required, min could be LONG_MIN and max could be
-LONG_MAX;
-
-return: converted long int type value.
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- include/safe_macros.h |    5 +++++
- lib/safe_macros.c     |   23 ++++++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletions(-)
-
-
---------------1.7.8.4
-Content-Type: text/x-patch; name="0001-safe_macros-add-SAFE_STRTOL.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-safe_macros-add-SAFE_STRTOL.patch"
-
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index 12f03ef..fbfe6cd 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -146,5 +146,10 @@ int safe_truncate(const char *file, const int lineno,
- #define SAFE_TRUNCATE(cleanup_fn, fd, length) \
- 	safe_truncate(__FILE__, __LINE__, cleanup_fn, (path), (length))
- 
-+long safe_strtol(const char *file, const int lineno,
-+	    void (cleanup_fn)(void), char *str, long min, long max);
-+#define SAFE_STRTOL(cleanup_fn, str, min, max) \
-+	safe_strtol(__FILE__, __LINE__, cleanup_fn, (str), (min), (max))
-+
- #endif
- #endif
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 569952d..ddb7da4 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -4,6 +4,7 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <libgen.h>
-+#include <limits.h>
- #include <pwd.h>
- #include <stdarg.h>
- #include <stdlib.h>
-@@ -315,7 +316,7 @@ int safe_ftruncate(const char *file, const int lineno,
- 	    void (cleanup_fn)(void), int fd, off_t length)
- {
- 	int rval;
--	
-+
- 	rval = ftruncate(fd, length);
- 	if (rval == -1) {
- 		tst_brkm(TBROK|TERRNO, cleanup_fn, "ftruncate failed at %s:%d",
-@@ -338,3 +339,23 @@ int safe_truncate(const char *file, const int lineno,
- 
- 	return rval;
- }
-+
-+long safe_strtol(const char *file, const int lineno,
-+	    void (cleanup_fn)(void), char *str, long min, long max)
-+{
-+	int rval;
-+	char *endptr;
-+
-+	rval = strtol(str, &endptr, 10);
-+	if (rval == LONG_MAX || rval == LONG_MIN)
-+		tst_brkm(TBROK|TERRNO, cleanup_fn, "strtol failed at %s:%d",
-+			 file, lineno);
-+	if (rval >= max || rval <= min)
-+		tst_brkm(TBROK, cleanup_fn,
-+			 "converted value out of range: %ld - %ld",
-+			 min, max);
-+	if (endptr == str || (*endptr != '\0' && *endptr != '\n'))
-+		tst_brkm(TBROK, cleanup_fn, "Invalid value: %s", str);
-+
-+	return rval;
-+}
-
---------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "Xu, Anhua" <anhua.xu@intel.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+Hi!
+> commit bb43a35ce70ad638f72ae7dcd8c198ca95dac43f
+> Author: Xu,Anhua <anhua.xu@intel.com>
+> Date:   Wed Feb 8 11:04:33 2012 +0800
+> 
+>     Power Management: fix configuration check for sched_domain.py
+>     
+>     Add checking for "sched_debug" in kernel cmdline parameter.
+>     Without this option, power policy change via sched_mc/smt_power_savings
+>     will not cause any output from dmesg that is needed for sched_domain.py
+
+The signed-off-by line is missing here. Could you please resend with it.
+
+> diff --git a/testcases/kernel/power_management/runpwtests.sh b/testcases/kernel/power_management/runpwtests.sh
+> index c4a1d39..ab4536f 100755
+> --- a/testcases/kernel/power_management/runpwtests.sh
+> +++ b/testcases/kernel/power_management/runpwtests.sh
+> @@ -188,8 +188,11 @@ fi
+>  
+>  # sched_domain test
+>  if ! type python > /dev/null ; then
+> -	tst_resm TCONF "Python is not installed, CPU Consoldation\
+> +	tst_resm TCONF "Python is not installed, CPU Consolidation\
+>  test cannot run"
+> +elif ! grep sched_debug -qw /proc/cmdline ; then
+> +	tst_resm TCONF "Kernel cmdline parameter 'sched_debug' needed,\
+> +CPU Consolidation test cannot run" 
+>  else
+>  	if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
+>      		echo "max sched mc $max_sched_mc"
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
 Cloud computing makes use of virtualization - but cloud computing 
 also focuses on allowing computing to be delivered as a service.
 http://www.accelacomm.com/jaw/sfnl/114/51521223/
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.4--
-
-
-
