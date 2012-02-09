@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1RzSWE-00059y-V3
-	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 12:39:02 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RzSW9-0003Bm-Cr
-	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 12:39:02 +0000
-Message-ID: <4F423ED9.2040303@imgtec.com>
-Date: Mon, 20 Feb 2012 12:38:49 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RvVrC-0003EG-Ok
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 15:24:22 +0000
+Date: Thu, 9 Feb 2012 16:38:17 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120209153817.GC29442@saboteur.suse.cz>
+References: <20120125162602.GB28713@saboteur.suse.cz>
+	<1327564464-27350-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH 1/2] mm/lib: change count_numa() behavior
+Content-Disposition: inline
+In-Reply-To: <1327564464-27350-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 2/2] aio_suspend-8-1: use aio_error to check
+ completion instead
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,44 +26,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
 
-On 02/20/2012 10:55 AM, Caspar Zhang wrote:
+Hi!
+>  	if (ret) {
+>  		printf(TNAME " Error at aio_suspend() %d: %s\n", errno, strerror(errno));
+>  		for (i=0; i<NUM_AIOCBS; i++)
+> @@ -211,7 +180,9 @@ main ()
+>  		if (i == WAIT_FOR_AIOCB)
+>  			continue;
+>  
+> -	  	err = aio_error(aiocbs[i]);
+> +		do {
+> +			err = aio_error(aiocbs[i]);
+> +		} while (err == EINPROGRESS);
 
-> 
-> this patch fixes two problems.
-> 
-> 1) avoid using functions from numactl package, so compilation would pass
-> w/ and w/o numactl development package installed.
-> 
-> 2) count_numa() functions now has a parameter, which stores the array of
-> each nodes on the system. This is because some systems doesn't have
-> continuous nodes or the node sequence does not start from zero, when we
-> want to test specific node, we should make sure the node does exist.
-> Thus, an array for node numbers is necessary. Follow-up patches will
-> update count_numa() with new parameters accordingly.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  testcases/kernel/mem/include/mem.h |    2 +-
->  testcases/kernel/mem/lib/mem.c     |   12 +++++-------
->  2 files changed, 6 insertions(+), 8 deletions(-)
+I've looked carefully through the test and this part shouldn't be needed
+as when we got here, the singnal handler for list completion was
+allready called, or not?
 
+I think that simple err = aio_error(aiocbs[i]) should work in this case.
 
-That works for me (same for the other 2 patches of this series)
+The rest of the patch seems to be correct.
 
-Tested-by: Markos Chandras <markos.chandras@imgtec.com>
+>  		ret = aio_return(aiocbs[i]);
+>  
+>  		if ((err != 0) && (ret != BUF_SIZE)) {
 
 -- 
-markos
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
