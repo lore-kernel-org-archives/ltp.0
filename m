@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RvQLg-0004rE-59
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 09:31:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RvQLZ-0003fS-R8
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 09:31:28 +0000
-Message-ID: <4F339228.7000708@cn.fujitsu.com>
-Date: Thu, 09 Feb 2012 17:30:16 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RvV5P-0008DI-Ef
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 14:34:59 +0000
+Date: Thu, 9 Feb 2012 15:48:54 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120209144854.GB29442@saboteur.suse.cz>
+References: <1328692433-24296-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F323FCD.1090203@casparzhang.com>
+	<4F33C2D0.9070801@cn.fujitsu.com>
+	<20120209133519.GB27782@saboteur.suse.cz>
+	<4F33D159.2030807@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH] safe_macros: add SAFE_STRTOL
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <4F33D159.2030807@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4 0/4] hugemmap: auto mount fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,40 +28,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 02/09/2012 04:13 PM, Caspar Zhang wrote:
+Hi!
+> 
+> I send a v5 just for 1/4 that fix this, able to be committed now?
+> 
 
-> +
-> +long safe_strtol(const char *file, const int lineno,
-> +	    void (cleanup_fn)(void), char *str, long min, long max)
-> +{
-> +	int rval;
-> +	char *endptr;
-> +
-> +	rval = strtol(str, &endptr, 10);
-> +	if (rval == LONG_MAX || rval == LONG_MIN)
+Done, thanks.
 
-
-Shouldn't we check the errno here?
-
-Thanks
--Wanlong Gao
-
-> +		tst_brkm(TBROK|TERRNO, cleanup_fn, "strtol failed at %s:%d",
-> +			 file, lineno);
-> +	if (rval >= max || rval <= min)
-> +		tst_brkm(TBROK, cleanup_fn,
-> +			 "converted value out of range: %ld - %ld",
-> +			 min, max);
-> +	if (endptr == str || (*endptr != '\0' && *endptr != '\n'))
-> +		tst_brkm(TBROK, cleanup_fn, "Invalid value: %s", str);
-> +
-> +	return rval;
-> +}
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
