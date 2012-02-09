@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RuExE-0000pU-SF
-	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 03:09:20 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1RuExD-0005bw-Jk
-	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 03:09:20 +0000
-Received: by iaby12 with SMTP id y12so10221873iab.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 05 Feb 2012 19:09:14 -0800 (PST)
-Message-ID: <4F2F4444.6040105@casparzhang.com>
-Date: Mon, 06 Feb 2012 11:08:52 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RvQLg-0004rE-59
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 09:31:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RvQLZ-0003fS-R8
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 09:31:28 +0000
+Message-ID: <4F339228.7000708@cn.fujitsu.com>
+Date: Thu, 09 Feb 2012 17:30:16 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1328493428-7929-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1328493428-7929-4-git-send-email-gaowanlong@cn.fujitsu.com>
-In-Reply-To: <1328493428-7929-4-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v4 3/4] hugemmap03: code cleanups
+References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH] safe_macros: add SAFE_STRTOL
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,83 +28,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 02/06/2012 09:57 AM, Wanlong Gao wrote:
-> cleanup the code
-> 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
-
-[snip]
+On 02/09/2012 04:13 PM, Caspar Zhang wrote:
 
 > +
-> +		/*
-> +		 * Attempt to mmap using normal pages and
-> +		 * a high memory address
-> +		 */
->  		addr = mmap(HIGH_ADDR, page_sz, PROT_READ,
->  			    MAP_SHARED | MAP_FIXED, fildes, 0);
->  		if (addr != MAP_FAILED) {
-> -			tst_resm(TFAIL, "Normal mmap() into high region unexpectedly succeeded on %s, errno=%d : %s",
-> -				 TEMPFILE, errno, strerror(errno));
-> +			tst_resm(TFAIL|TERRNO, "Normal mmap() into high region"
-> +				 " unexpectedly succeeded on %s, TEMPFILE");
->  			continue;
-> -		} else {
-> -			tst_resm(TPASS, "Normal mmap() into high region failed correctly");
-> +		} else { tst_resm(TPASS, "Normal mmap() into high region" " failed correctly");
-
-Hmmm... several returns are missing here.
-
->  			break;
->  		}
->  
-> @@ -138,24 +120,13 @@ main(int ac, char **av)
->  	tst_exit();
->  }
->  
-
-[snip]
-
->  
-> -/*
-> - * cleanup() - performs all ONE TIME cleanup for this test at
-> - *             completion or premature exit.
-> - * 	       Remove the temporary directory created.
-> - */
-> -void
-> -cleanup()
-> +static void cleanup(void)
->  {
->  	/*
->  	 * print timing stats if that option was specified.
-
-And better remove this comment too.
-
-Others look good.
-
-Thanks,
-Caspar
-
-> @@ -179,3 +144,8 @@ cleanup()
->  	unlink(TEMPFILE);
->  
->  }
-> +
-> +static void help(void)
+> +long safe_strtol(const char *file, const int lineno,
+> +	    void (cleanup_fn)(void), char *str, long min, long max)
 > +{
-> +	printf("  -H /..  Location of hugetlbfs, i.e. -H /var/hugetlbfs\n");
+> +	int rval;
+> +	char *endptr;
+> +
+> +	rval = strtol(str, &endptr, 10);
+> +	if (rval == LONG_MAX || rval == LONG_MIN)
+
+
+Shouldn't we check the errno here?
+
+Thanks
+-Wanlong Gao
+
+> +		tst_brkm(TBROK|TERRNO, cleanup_fn, "strtol failed at %s:%d",
+> +			 file, lineno);
+> +	if (rval >= max || rval <= min)
+> +		tst_brkm(TBROK, cleanup_fn,
+> +			 "converted value out of range: %ld - %ld",
+> +			 min, max);
+> +	if (endptr == str || (*endptr != '\0' && *endptr != '\n'))
+> +		tst_brkm(TBROK, cleanup_fn, "Invalid value: %s", str);
+> +
+> +	return rval;
 > +}
 
 
+
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
