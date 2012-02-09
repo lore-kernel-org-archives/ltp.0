@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S0kiM-0004y7-Od
-	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:16:54 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S0kiL-0008Vs-RH
-	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:16:54 +0000
-Received: by daln34 with SMTP id n34so2024426dal.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 23 Feb 2012 18:16:47 -0800 (PST)
-Message-ID: <4F46F2DF.7030001@casparzhang.com>
-Date: Fri, 24 Feb 2012 10:15:59 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	(envelope-from <chrubis@suse.de>) id 1RvRZS-0001TG-4K
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 10:49:46 +0000
+Date: Thu, 9 Feb 2012 12:03:40 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120209110340.GB22173@saboteur.suse.cz>
+References: <4F2CF088.3030001@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4F33254B.9080204@cn.fujitsu.com>
-	<20120223162841.GD5960@saboteur.suse.cz>
-	<4F46DFBE.60208@cn.fujitsu.com>
-In-Reply-To: <4F46DFBE.60208@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] aio02: runfstests.sh should be deleted
+Content-Disposition: inline
+In-Reply-To: <4F2CF088.3030001@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] m4/ltp-cap.m4: CAPSET should be replaced with
+ SETCAP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,52 +25,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 02/24/2012 08:54 AM, Peng Haitao wrote:
+Hi!
+> Commit 4f71cae rename setcap to capset in m4/ltp-cap.m4, this is wrong.
+> Commit 183c6e4 rename HAVE_SETCAP to CAPSET in in m4/ltp-cap.m4, this also is wrong.
+> so CAPSET should be replaced with SETCAP m4/ltp-cap.m4.
 > 
-> Cyril Hrubis said the following on 2012-2-24 0:28:
->> Hi!
->>> runfstests.sh is creating temporary directory, which could be easily done
->>> withing the test itself by using tst_tmpdir(), So runfstests.sh should be
->>> deleted.
->>
->> This patch doesn't apply as well, probably mangled by your mail cliend
->> too. Please resend.
->>
-> 
-> Sorry:(
-> 
-> I resend the patch of v2, please apply.
-> Thanks. 
-> 
-Still no luck with v2 :-(
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
-$ git am -3 ~/Desktop/\[LTP\]\ \[PATCH\]\ aio02\:\ runfstests.sh\
-should\ be\ deleted.eml
-Applying: aio02: runfstests.sh should be deleted
-Using index info to reconstruct a base tree...
-error: patch failed: runtest/io:1
-error: runtest/io: patch does not apply
-error: patch failed: testcases/kernel/io/aio/aio02/Makefile:27
-error: testcases/kernel/io/aio/aio02/Makefile: patch does not apply
-error: patch failed: testcases/kernel/io/aio/aio02/README:2
-error: testcases/kernel/io/aio/aio02/README: patch does not apply
-error: patch failed: testcases/kernel/io/aio/aio02/aio_tio.c:17
-error: testcases/kernel/io/aio/aio02/aio_tio.c: patch does not apply
-error: testcases/kernel/io/aio/aio02/cases/common.h: has been
-deleted/renamed
-error: patch failed: testcases/kernel/io/aio/aio02/main.c:23
-error: testcases/kernel/io/aio/aio02/main.c: patch does not apply
-error: testcases/kernel/io/aio/aio02/runfstests.sh: has been deleted/renamed
-Did you hand edit your patch?
-It does not apply to blobs recorded in its index.
-Cannot fall back to three-way merge.
-Patch failed at 0001 aio02: runfstests.sh should be deleted
-When you have resolved this problem run "git am --resolved".
-If you would prefer to skip this patch, instead run "git am --skip".
-To restore the original branch and stop patching run "git am --abort".
+Commited, thanks.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
