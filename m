@@ -1,28 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <salvatore.cro@st.com>) id 1RxGB4-0007Qp-Pm
-	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 11:04:06 +0000
-Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RxGB0-0001SY-Gt
-	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 11:04:06 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 78D7C17C
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Feb 2012 11:03:55 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3598123BA
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Feb 2012 11:03:55 +0000 (GMT)
-Message-ID: <4F3A3F98.6000808@st.com>
-Date: Tue, 14 Feb 2012 12:03:52 +0100
-From: "Salvatore CRO'" <salvatore.cro@st.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RvQoR-0007ko-RZ
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 10:01:11 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RvQoP-0006Ag-FA
+	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 10:01:11 +0000
+Message-ID: <4F339925.3090801@cn.fujitsu.com>
+Date: Thu, 09 Feb 2012 18:00:05 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1329215581-26357-1-git-send-email-salvatore.cro@st.com>
-In-Reply-To: <1329215581-26357-1-git-send-email-salvatore.cro@st.com>
-Subject: [LTP] Fwd: [PATCH] clone06: legitimate zero as sprintf return value
+References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+	<1328780807-14132-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1328780807-14132-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH v2] safe_macros: add SAFE_STRTOL
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,60 +29,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-To be honest I don't see any reason to have the sprintf at all.
-I will refine my patch to directly evaluate string var to getenv...
+On 02/09/2012 05:46 PM, Caspar Zhang wrote:
 
--------- Original Message --------
-Return-Path: 	<salvatore.cro@st.com>
-Received: 	from localhost (lxmcdt5.ctn.st.com [164.130.129.175]) by 
-mail7.sgp.st.com (MOS 4.3.3-GA) with ESMTP id ALM11201 (AUTH cros); Tue, 
-14 Feb 2012 11:33:12 +0100
-From: 	Salvatore CRO' <salvatore.cro@st.com>
-To: 	ltp-list@lists.sourceforge.net
-Cc: 	Salvatore Cro <salvatore.cro@st.com>
-Subject: 	[PATCH] clone06: legitimate zero as sprintf return value
-Date: 	Tue, 14 Feb 2012 11:33:01 +0100
-Message-Id: 	<1329215581-26357-1-git-send-email-salvatore.cro@st.com>
-X-Mailer: 	git-send-email 1.7.4.4
+> +
+> +long safe_strtol(const char *file, const int lineno,
+> +	    void (cleanup_fn)(void), char *str, long min, long max)
+> +{
+> +	int rval;
 
 
+Ah, long rval?
 
-A return value of 0 for sprintf is acceptable as
-it means zero byte read.
-Indeed errno is not set in this case thus no warning
-messages must be issued.
+> +	char *endptr;
+> +
+> +	rval = strtol(str, &endptr, 10);
+> +	if ((errno == ERANGE && (rval == LONG_MAX || rval == LONG_MIN))
+> +		    || (errno != 0 && rval == 0))
+> +		tst_brkm(TBROK|TERRNO, cleanup_fn, "strtol failed at %s:%d",
+> +			 file, lineno);
+> +	if (rval >= max || rval <= min)
 
-Signed-off-by: Salvatore Cro<salvatore.cro@st.com>
----
-  testcases/kernel/syscalls/clone/clone06.c |    2 +-
-  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/clone/clone06.c b/testcases/kernel/syscalls/clone/clone06.c
-index 5db183b..8ba7c13 100644
---- a/testcases/kernel/syscalls/clone/clone06.c
-+++ b/testcases/kernel/syscalls/clone/clone06.c
-@@ -199,7 +199,7 @@ int child_environ(void)
-  		tst_brkm(TBROK|TERRNO, cleanup, "close(pfd[0]) failed");
-  	}
+I'm not sure with this check. ;)
 
--	if ((sprintf(var, "%s", getenv("TERM") ? : ""))<= 0) {
-+	if ((sprintf(var, "%s", getenv("TERM") ? : ""))<  0) {
-  		tst_resm(TWARN|TERRNO, "sprintf() failed");
-  	}
+Thanks
+-Wanlong Gao
 
--- 
-1.7.4.4
+> +		tst_brkm(TBROK, cleanup_fn,
+> +			 "converted value out of range: %ld - %ld",
+> +			 min, max);
+> +	if (endptr == str || (*endptr != '\0' && *endptr != '\n'))
+> +		tst_brkm(TBROK, cleanup_fn, "Invalid value: %s", str);
+> +
+> +	return rval;
+> +}
 
 
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
