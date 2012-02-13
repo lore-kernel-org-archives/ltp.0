@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rsxe8-0005hQ-7e
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 14:28:20 +0000
-Date: Thu, 2 Feb 2012 15:41:38 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120202144138.GD28620@saboteur.suse.cz>
-References: <1327642218-27034-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1327642218-27034-2-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4F24EDCB.3070904@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1RwwmV-0007MI-4M
+	for ltp-list@lists.sourceforge.net; Mon, 13 Feb 2012 14:21:27 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RwwmN-00016W-Mr
+	for ltp-list@lists.sourceforge.net; Mon, 13 Feb 2012 14:21:27 +0000
+Received: by iaby12 with SMTP id y12so5290000iab.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 13 Feb 2012 06:21:14 -0800 (PST)
+Message-ID: <4F391C35.5030508@casparzhang.com>
+Date: Mon, 13 Feb 2012 22:20:37 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F24EDCB.3070904@casparzhang.com>
-Subject: Re: [LTP] [PATCH 1/5] hugemmap01: code cleanups
+References: <863d9faeb5d714aa6c06a7a33fd5f2649b8bdb3f.1329134279.git.zliu@redhat.com>
+In-Reply-To: <863d9faeb5d714aa6c06a7a33fd5f2649b8bdb3f.1329134279.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH v2] mem/tunable: new testcase about overcommiting
+ memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,36 +31,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >  
-> >  void help()
+On 02/13/2012 08:07 PM, Zhouping Liu wrote:
 > 
-> I personally like to put it after main() function, Cyril, what's your
-> opinion?
-
-Either way is fine with me.
-
-> >  {
-> > -	printf("  -H /..  Location of hugetlbfs, i.e. -H /var/hugetlbfs \n");
-> > +	printf("    -H /..  Location of hugetlbfs, i.e. -H /var/hugetlbfs\n");
-> >  }
-> >  
-> >  int
-> >  main(int ac, char **av)
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> There are two tunables overcommit_memory and overcommit_ratio under
+> /proc/sys/vm/, which can control memory overcommitment.
+> 
+> The overcommit_memory contains a flag that enables memory
+> overcommitment, it has three values:
+> - When this flag is 0, the kernel attempts to estimate the amount
+>  of free memory left when userspace requests more memory.
+> - When this flag is 1, the kernel pretends there is always enough
+>  memory until it actually runs out.
+> - When this flag is 2, the kernel uses a "never overcommit" policy
+>  that attempts to prevent any overcommit of memory.
+> 
+> The overcommit_ratio tunable defines the amount by which the kernel
+> overextends its memory resources in the event that overcommit_memory
+> is set to the value of 2. The value in this file represents a
+> percentage added to the amount of actual RAM in a system when
+> considering whether to grant a particular memory request.
+> The general formula for this tunable is:
+> CommitLimit = SwapTotal + MemTotal * overcommit_ratio
+> CommitLimit, SwapTotal and MemTotal can read from /proc/meminfo.
+> 
+> The program is designed to test the two tunables:
+> 
+> When overcommit_memory = 0, allocatable memory can't overextends
+> the amount of free memory. I choose the three cases:
+> a. less than free_total:    free_total / 2, alloc should pass.
+> b. greater than free_total: free_total * 2, alloc should fail.
+> c. equal to sum_total:      sum_tatal,      alloc should fail
+> 
+> When overcommit_memory = 1, it can alloc enough much memory, I
+> choose the three cases:
+> a. less than sum_total:    sum_total / 2, alloc should pass
+> b. equal to sum_total:     sum_total,     alloc should pass
+> c. greater than sum_total: sum_total * 2, alloc should pass
+> *note: sum_total = SwapTotal + MemTotal
+> 
+> When overcommit_memory = 2, the total virtual address space on
+> the system is limited to CommitLimit(Swap+RAM*overcommit_ratio)
+> commit_left(allocatable memory) = CommitLimit - Committed_AS
+> a. less than commit_left:    commit_left / 2, alloc should pass
+> b. greater than commit_left: commit_left * 2, alloc should fail
+> c. overcommit limit:         CommitLimit,     alloc should fail
+> *note: CommitLimit is the current overcommit limit.
+>       Committed_AS is the amount of memory that system has used.
+> it couldn't choose 'equal to commit_left' as a case, because
+> commit_left rely on Committed_AS, but the Committed_AS is not stable.
+> 
+> References:
+> - Documentation/sysctl/vm.txt
+> - Documentation/vm/overcommit-accounting
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> ---
+> hi, all
+> 
+> v1 -> v2: used SAFE_STRTOL macro.
+> 
+> please review the patch, any comments are welcome.
+> 
+>  runtest/mm                                       |    7 +
+>  testcases/kernel/mem/tunable/Makefile            |   43 ++++
+>  testcases/kernel/mem/tunable/overcommit_memory.c |  275 ++++++++++++++++++++++
+>  3 files changed, 325 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/mem/tunable/Makefile
+>  create mode 100644 testcases/kernel/mem/tunable/overcommit_memory.c
+> 
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
+Try before you buy = See our experts in action!
 The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
