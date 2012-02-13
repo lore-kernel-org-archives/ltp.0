@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0aja-0004j7-Tg
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 15:37:30 +0000
-Date: Thu, 23 Feb 2012 16:38:03 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120223153803.GC20855@saboteur.suse.cz>
-References: <1329991018-26230-1-git-send-email-markos.chandras@imgtec.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1RwwmK-0003uw-Ka
+	for ltp-list@lists.sourceforge.net; Mon, 13 Feb 2012 14:21:16 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RwwmE-00015Q-TI
+	for ltp-list@lists.sourceforge.net; Mon, 13 Feb 2012 14:21:16 +0000
+Received: by mail-iy0-f175.google.com with SMTP id y12so5289050iab.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 13 Feb 2012 06:21:10 -0800 (PST)
+Message-ID: <4F391C27.2040905@casparzhang.com>
+Date: Mon, 13 Feb 2012 22:20:23 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1329991018-26230-1-git-send-email-markos.chandras@imgtec.com>
-Subject: Re: [LTP] [PATCH] creat07: Drop basename() function call from
- read-only variable
+References: <541a69a479af6ba8c2ce0af8ab890851dfed4caa.1329113234.git.zliu@redhat.com>
+	<1cf48238f2cc23c9e93310ca22617296cb8a8f51.1329113234.git.zliu@redhat.com>
+In-Reply-To: <1cf48238f2cc23c9e93310ca22617296cb8a8f51.1329113234.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH] mem/tunable: new testcase about max_map_count
+	tunable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,46 +32,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <markos.chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> test_app is a read-only variable because it is defined as a preprocessor macro.
-> Using basename() on this variable, it will most certainly lead to a segmentation
-> fault in uClibc code. Moreover, there is no need to use basename() at all since
-> the test_app variable is a single string and it does not contain any leading
-> paths.
+On 02/13/2012 02:18 PM, Zhouping Liu wrote:
 > 
-> Quote from uClibc's include/libgen.h header:
+> The program is designed to test max_map_count tunable file
 > 
-> "Return final component of PATH.
-> 	This is the weird XPG version of this function.  It sometimes will
-> 	modify its argument.  Therefore we normally use the GNU version (in
-> 	<string.h>) and only if this header is included make the XPG
-> 	version available under the real name.
+> The kernel Documentation say that:
+> /proc/sys/vm/max_map_count contains the maximum number of memory map
+> areas a process may have. Memory map areas are used as a side-effect
+> of calling malloc, directly by mmap and mprotect, and also when
+> loading shared libraries.
 > 
-> 	extern char *__xpg_basename (char *__path) __THROW;
-> 	#define basename        __xpg_basename"
+> Each process has his own maps file: /proc/[pid]/maps, and each line
+> indicates a map entry, so it can caculate the amount of maps by reading
+> the file lines' number to check the tunable performance.
+> 
+> The program trys to invoke mmap() endless until triggering MAP_FAILED,
+> then read the process's maps file /proc/[pid]/maps, save the line number
+> to map_count variable, and compare it with /proc/sys/vm/max_map_count,
+> map_count should less than max_map_count.
+> Note: There are two special vmas VDSO and VSYSCALL, which are allocated
+> via install_special_mapping(), install_specail_mapping() allows the VMAs
+> to be allocated and inserted without checking the sysctl_map_map_count,
+> and each /proc/<pid>/maps has both at the end:
+> ...
+> ...
+> 7fff7b9ff000-7fff7ba00000 r-xp 00000000 00:00 0           [vdso]
+> ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0   [vsyscall]
+> 
+> so during comparing with map_count and /proc/sys/vm/max_map_count,
+> we should except the two special vmas from map_count:
+> map_count -= 2;
+> 
+> While most applications need less than a thousand maps, and the tunable
+> default value is 65530.
+> When the value is too large or too little, the system would hang, so I
+> choose four special value to test, which can coverage most situation:
+> a) Default value / 100
+> b) Default value / 10
+> c) Default value
+> d) Default value * 10
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> ---
+>  runtest/mm                                   |    2 +
+>  testcases/kernel/mem/tunable/max_map_count.c |  197 ++++++++++++++++++++++++++
+>  2 files changed, 199 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/mem/tunable/max_map_count.c
+> 
 
-Well in glibc you get version that is not reentrant but doesn't modify
-the source string when _GNU_SOURCE is defined (which is defined in
-creat07.c), so this may be bug in uClibc compatibility.
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
-And I think that there is no reason to segfault when the argument
-doesn't need to be modified, which should be the case here. Or did the
-segfault occured in your enviroment?
-
-However commit this as the call is useless here.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
