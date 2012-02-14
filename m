@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RuG3v-0002vD-Nh
-	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 04:20:19 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RuG3u-0001I2-D7
-	for ltp-list@lists.sourceforge.net; Mon, 06 Feb 2012 04:20:19 +0000
-Message-ID: <4F2F54C3.1090208@cn.fujitsu.com>
-Date: Mon, 06 Feb 2012 12:19:15 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <salvatore.cro@st.com>) id 1RxFEL-00062D-V0
+	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 10:03:25 +0000
+Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
+	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RxFEF-0003Qy-Ta
+	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 10:03:25 +0000
+Message-ID: <4F3A3159.8000407@st.com>
+Date: Tue, 14 Feb 2012 11:03:05 +0100
+From: "Salvatore CRO'" <salvatore.cro@st.com>
 MIME-Version: 1.0
-References: <1328498186-14768-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4F2F5392.5010502@casparzhang.com>
-In-Reply-To: <4F2F5392.5010502@casparzhang.com>
-Subject: Re: [LTP] [PATCH v5 0/4] hugemmap: code cleanups
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <4F3A1342.5030109@st.com> <4F3A158D.8070403@st.com>
+	<4F3A18B8.5060506@cn.fujitsu.com> <4F3A1AE8.9050905@st.com>
+	<4F3A1FC1.5040103@cn.fujitsu.com>
+In-Reply-To: <4F3A1FC1.5040103@cn.fujitsu.com>
+Subject: Re: [LTP] Fwd: Re: [PATCH] clone06: fix error of TERM environment
+ variable is not available
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,56 +27,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>, ltp-list@lists.sourceforge.net, cristian@regolo.cc
 
-On 02/06/2012 12:14 PM, Caspar Zhang wrote:
-
-> On 02/06/2012 11:16 AM, Wanlong Gao wrote:
->>
->> Hi Caspar, Cyril:
->> This is the v5 of the hugemmmap cleanups.
->>
->> Thanks
->> -Wanlong Gao
->>
->> Wanlong Gao (4):
->>   hugemmap01: code cleanups
->>   hugemmap02: code cleanups
->>   hugemmap03: code cleanups
->>   hugemmap04: code cleanups
->>
->>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |  177 +++++++-----------
->>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |  190 ++++++++-----------
->>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |  133 +++++--------
->>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |  199 ++++++++------------
->>  4 files changed, 276 insertions(+), 423 deletions(-)
->>
-> 
-> Hi, all patches committed.
-
-
-Glad to hear that, thank you.
-
--Wanlong Gao
-
-> 
-> Thanks,
-> Caspar
-> 
-
-
-
-------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMi8xNC8yMDEyIDk6NDggQU0sIFBlbmcgSGFpdGFvIHdyb3RlOgo+IFNhbHZhdG9yZSBDUk8n
+IHNhaWQgdGhlIGZvbGxvd2luZyBvbiAyMDEyLTItMTQgMTY6Mjc6Cj4+IE9uIDIvMTQvMjAxMiA5
+OjE4IEFNLCBQZW5nIEhhaXRhbyB3cm90ZToKPj4+IFNhbHZhdG9yZSBDUk8nIHNhaWQgdGhlIGZv
+bGxvd2luZyBvbiAyMDEyLTItMTQgMTY6MDQ6Cj4+Pj4gU29ycnkgZm9yICIuLi4uIiBpbiB0aGUg
+Zmlyc3Qgc2VudGVuY2Ugb2YgbXkgcmVwbHkuCj4+Pj4KPj4+PiBJIHdhcyBsb29raW5nIGZvciB0
+aGUgcmlnaHQgd29yZCB0byBjb21wbGV0ZSB0aGUgc2VudGVuY2UgYW5kIHB1dCAiLi4uIiBpbiB0
+aGUgbWVhbndoaWxlLgo+Pj4+IFRoZW4gSSBmb3Jnb3QgdG8gZG8gdGhlIHRleHQgcmVwbGFjaW5n
+IQo+Pj4+Cj4+PiA6KQo+Pj4KPj4+PiBJIGRpZG4ndCBtZWFuIGluIGFueSB3YXkgdG8gYmUgb2Zm
+ZW5zaXZlLgo+Pj4+Cj4+PiBZZWFo77yMbm8gcHJvYmxlbS4KPj4gVGhhbmsgeW91Lgo+Pgo+Pj4+
+IEFueWhvdyBJIHRoaW5rIHlvdXIgc29sdXRpb24gY291bGQgbm90IGJlIHRoZSBwcm9wZXIgb25l
+Lgo+Pj4+Cj4+PiBXaGVuIFRFUk0gZW52IHZhcmlhYmxlIGlzIGRlZmluZWQsIGZpcnN0IHVuc2V0
+ZW52KCksIHRoZW4gY2FsbCBzZXRlbnYoKSB0byBzZXQgaXQuCj4+PiBXaGVuIFRFUk0gZW52IHZh
+cmlhYmxlIGlzIG5vdCBkZWZpbmVkLCB0aGVuIGNhbGwgc2V0ZW52KCJURVJNIiwgInh0ZXJtIiwg
+MSkgdG8gc2V0IGl0Lgo+Pj4KPj4+IFRoaXMgaGFzIGEgcHJvYmxlbT8KPj4+Cj4+IEkgZG9uJ3Qg
+c2VlIGFueXRoaW5nIHdyb25nIHdpdGggeW91ciBpbXBsZW1lbnRhdGlvbi4gT24gdGhlIG90aGVy
+IGhhbmQgaWYgdGhlIHZhcmlhYmxlIGlzIG5vdCBzZXQgd2Ugc2hvdWxkIG5vdAo+PiBmb3JjZSBp
+dCBpbiBteSBvcGluaW9uIGFuZCBrZWVwIHRlc3QgbG9naWMgY29uc2lzdGVudC4KPj4gSWYgdmFy
+IGlzIE5EIGJvdGggY2hpbGQgYW5kIHBhcmVudCB3aWxsIGV2YWx1YXRlIHJlc3BlY3RpdmUgdmFy
+aWFibGUgdG8gIiIgYW5kIHRoZSB0ZXN0IHdpbGwgcGFzcy4KPj4gV2hhdCB3ZSBjb3VsZCBhcmd1
+ZSBvbiBpcyB3aGV0aGVyIHRvIHN0aWxsIHRyZWF0IHRoZSBzYW1lIHdheSB0aGUgdHdvIGNhc2Vz
+IHdoZW4gc3ByaW50ZiByZXR1cm5zIDAgb3IgbmVnYXRpdmUgbnVtYmVyLgo+PiBJTU8sIGl0IHNo
+b3VsZCBub3QgYmUgdGhlIGNhc2UuCj4+Cj4gVGhlIGNhc2UgdGVzdCB0byB2ZXJpZnkgaW5oZXJp
+dGFuY2Ugb2YgZW52aXJvbm1lbnQgdmFyaWFibGVzIGJ5IGNoaWxkLgo+IElmIGVudmlyb25tZW50
+IHZhcmlhYmxlIGlzIG5vdCBzZXQsIEkgdGhpbmsgdGhlIGNhc2Ugc2hvdWxkIGJlIGV4aXQuCj4K
+PiBJIG1vZGlmeSB0aGUgY2FzZSB3aXRoIHRoZSBzb2x1dGlvbiwgYmVjYXVzZSBHYXJyZXR0IENv
+b3BlciBzYWlkIHRoZSBzdGVwczopCj4gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC9tYWlsYXJjaGl2
+ZS9tZXNzYWdlLnBocD9tc2dfaWQ9MjcxMDQwMjgKCkl0IGRvZXMgbm90IGNvbnZpbmNlIG1lIGVp
+dGhlci4gVGhlIHByb2JsZW0gQ3Jpc3RpYW4gcmVwb3J0ZWQgcmVmZXJzIHRvIApob3cgc3NoIGhh
+bmRsZXMgdXNlciBwcm9maWxlIGluaXRpYWxpemF0aW9uLgpJIGhhZCB0aGUgc2FtZSBwcm9ibGVt
+IGFzIEkgcnVuIGx0cCBvbiBhbiBlbWJlZGRlZCBzeXN0ZW0gZnJvbSBsaW51eCAKaG9zdCB2aWEg
+c3NoIGFuZCBJIGRpZCBub3QgbW9kaWZpeSB0aGUgdGVzdCBhdCBhbGwuClRoZSBhcHByb2FjaCBH
+YXJldHQgcHJvcG9zZWQgdG8gQ3Jpc3RpYW4gaXMgbm90IGFwcGxpY2FibGUgYXMgaXQgCm1vZGlm
+aWVzIHRoZSB0ZXN0IHRvIG92ZXJjb21lIGEgc3NoIHNwZWNpZmljIGlzc3VlLgpJbnN0ZWFkIEkg
+dXNlZCBzc2ggLXQgLXQgKHR3aWNlISkgd2hlbiBleGVjdXRpbmcgbHRwIHRvIGVuc3VyZSBURVJN
+IAp2YXJpYWJsZSBpcyBkZWZpbmVkIGluIGNvbnNvbGUgaW5pdGlhbGl6ZWQgYnkgc3NoLgoKRnVy
+dGhlcm1vcmUgc3Vic2VxdWVudCBjb21taXQgNjBlZGRmODM3YTljNDE0ZmUxOGRkZWQ0YjA3NTIy
+ZDBkMjA2Njc2MSAKbWFkZSB0aGUgdGVzdCBzYWZlciBhZ2FpbnN0CnRoaXMgc2l0dWF0aW9uLgoK
+QmFzZWQgb24gdGhpcyByYXRpb25hbGUgSSB3aWxsIHByb3Bvc2UgdGhlIHBhdGNoIHRvIG1vZGlm
+eSBzcHJpbnRmIGNoZWNrLgoKQlIsClNhbHZvLgoKCgo+Cj4gQmVzdCBSZWdhcmRzLAo+IFBlbmcK
+PgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpLZWVwIFlvdXIgRGV2ZWxvcGVyIFNraWxscyBDdXJy
+ZW50IHdpdGggTGVhcm5EZXZOb3chClRoZSBtb3N0IGNvbXByZWhlbnNpdmUgb25saW5lIGxlYXJu
+aW5nIGxpYnJhcnkgZm9yIE1pY3Jvc29mdCBkZXZlbG9wZXJzCmlzIGp1c3QgJDk5Ljk5ISBWaXN1
+YWwgU3R1ZGlvLCBTaGFyZVBvaW50LCBTUUwgLSBwbHVzIEhUTUw1LCBDU1MzLCBNVkMzLApNZXRy
+byBTdHlsZSBBcHBzLCBtb3JlLiBGcmVlIGZ1dHVyZSByZWxlYXNlcyB3aGVuIHlvdSBzdWJzY3Jp
+YmUgbm93IQpodHRwOi8vcC5zZi5uZXQvc2Z1L2xlYXJuZGV2bm93LWQyZApfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QK
+THRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
