@@ -1,23 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Rxus4-0007Qw-Pe
-	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 06:31:12 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Rxus0-0007fb-PN
-	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 06:31:12 +0000
-Received: by pbcum15 with SMTP id um15so2271240pbc.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <salvatore.cro@st.com>) id 1RxGB4-0007Qp-Pm
+	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 11:04:06 +0000
+Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RxGB0-0001SY-Gt
+	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 11:04:06 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 78D7C17C
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 15 Feb 2012 22:31:02 -0800 (PST)
-Message-ID: <4F3CA283.3090607@casparzhang.com>
-Date: Thu, 16 Feb 2012 14:30:27 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Tue, 14 Feb 2012 11:03:55 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3598123BA
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 14 Feb 2012 11:03:55 +0000 (GMT)
+Message-ID: <4F3A3F98.6000808@st.com>
+Date: Tue, 14 Feb 2012 12:03:52 +0100
+From: "Salvatore CRO'" <salvatore.cro@st.com>
 MIME-Version: 1.0
-References: <1329372380-18378-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1329372380-18378-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH] mm/vma04: new testcase
+References: <1329215581-26357-1-git-send-email-salvatore.cro@st.com>
+In-Reply-To: <1329215581-26357-1-git-send-email-salvatore.cro@st.com>
+Subject: [LTP] Fwd: [PATCH] clone06: legitimate zero as sprintf return value
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,54 +35,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 02/16/2012 02:06 PM, Caspar Zhang wrote:
-> 
-> vma04: corner cases for mbind vma merge issue
-> 
-> There are several corner cases (documented in mm/mmap.c) for mbind
-> vma merge issue, which makes commit 8aacc9f550 slightly incorrect.
-> KOSAKI Motohiro made a patch for it (commit e26a511) and composed
-> a reproducer containing these corner cases. Now I backport it to
-> LTP.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  runtest/mm                       |    1 +
->  testcases/kernel/mem/vma/vma04.c |  320 ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 321 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/mem/vma/vma04.c
-> 
+To be honest I don't see any reason to have the sprintf at all.
+I will refine my patch to directly evaluate string var to getenv...
 
-Test Status:
+-------- Original Message --------
+Return-Path: 	<salvatore.cro@st.com>
+Received: 	from localhost (lxmcdt5.ctn.st.com [164.130.129.175]) by 
+mail7.sgp.st.com (MOS 4.3.3-GA) with ESMTP id ALM11201 (AUTH cros); Tue, 
+14 Feb 2012 11:33:12 +0100
+From: 	Salvatore CRO' <salvatore.cro@st.com>
+To: 	ltp-list@lists.sourceforge.net
+Cc: 	Salvatore Cro <salvatore.cro@st.com>
+Subject: 	[PATCH] clone06: legitimate zero as sprintf return value
+Date: 	Tue, 14 Feb 2012 11:33:01 +0100
+Message-Id: 	<1329215581-26357-1-git-send-email-salvatore.cro@st.com>
+X-Mailer: 	git-send-email 1.7.4.4
 
-On a unpatched kernel:
 
-# ./vma04
-vma04       1  TFAIL  :  case4: failed. expect '2,4', actual '1,4'
-vma04       2  TPASS  :  case5: passed.
-vma04       3  TPASS  :  case6: passed.
-vma04       4  TPASS  :  case7: passed.
-vma04       5  TPASS  :  case8: passed.
 
-On a patched kernel:
+A return value of 0 for sprintf is acceptable as
+it means zero byte read.
+Indeed errno is not set in this case thus no warning
+messages must be issued.
 
-# ./vma04
-vma04       1  TPASS  :  case4: passed.
-vma04       2  TPASS  :  case5: passed.
-vma04       3  TPASS  :  case6: passed.
-vma04       4  TPASS  :  case7: passed.
-vma04       5  TPASS  :  case8: passed.
+Signed-off-by: Salvatore Cro<salvatore.cro@st.com>
+---
+  testcases/kernel/syscalls/clone/clone06.c |    2 +-
+  1 files changed, 1 insertions(+), 1 deletions(-)
 
-Thanks,
-Caspar
+diff --git a/testcases/kernel/syscalls/clone/clone06.c b/testcases/kernel/syscalls/clone/clone06.c
+index 5db183b..8ba7c13 100644
+--- a/testcases/kernel/syscalls/clone/clone06.c
++++ b/testcases/kernel/syscalls/clone/clone06.c
+@@ -199,7 +199,7 @@ int child_environ(void)
+  		tst_brkm(TBROK|TERRNO, cleanup, "close(pfd[0]) failed");
+  	}
+
+-	if ((sprintf(var, "%s", getenv("TERM") ? : ""))<= 0) {
++	if ((sprintf(var, "%s", getenv("TERM") ? : ""))<  0) {
+  		tst_resm(TWARN|TERRNO, "sprintf() failed");
+  	}
+
+-- 
+1.7.4.4
+
+
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
