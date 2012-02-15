@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0DUs-0003ue-5c
-	for ltp-list@lists.sourceforge.net; Wed, 22 Feb 2012 14:48:46 +0000
-Date: Wed, 22 Feb 2012 15:49:11 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120222144911.GC16723@saboteur.suse.cz>
-References: <1329718943-5239-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1329718943-5239-2-git-send-email-gaowanlong@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1RxWCB-0005LD-Bk
+	for ltp-list@lists.sourceforge.net; Wed, 15 Feb 2012 04:10:19 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RxWCA-0006kq-5e
+	for ltp-list@lists.sourceforge.net; Wed, 15 Feb 2012 04:10:19 +0000
+Received: by iaby12 with SMTP id y12so1153783iab.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 14 Feb 2012 20:10:12 -0800 (PST)
+Message-ID: <4F3B2FFD.3020408@casparzhang.com>
+Date: Wed, 15 Feb 2012 12:09:33 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1329718943-5239-2-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] aio_suspend-9-1: use aio_error to check
- completion instead
+References: <1329233615-16625-1-git-send-email-filippo.arcidiacono@st.com>
+In-Reply-To: <1329233615-16625-1-git-send-email-filippo.arcidiacono@st.com>
+Subject: Re: [LTP] [PATCH] getrusage03: add opportunity to reduce memory
+ allocation's size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,19 +31,222 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Also reduced the timeout from 10ms to 1ms.
+On 02/14/2012 11:33 PM, Filippo ARCIDIACONO wrote:
+> To use this test also in embedded systems it needs to reduce the memory
+> allocation to avoid the test failing when it check the ru_maxrss field
+> expecting a value close to the allocated one.
+> The ru_maxrss field contains the total amount of resident set memory
+> used, so this field doesn't take into account of the swapped memory.
+> Passing [num] parameter at command line the test is executed using the
+> input parameter as multiply factor instead of 10, that is the default
+> value when no argument is passed.
 > 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+> ---
+>  testcases/kernel/syscalls/getrusage/getrusage03.c |   75 ++++++++++++++------
+>  1 files changed, 52 insertions(+), 23 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+> index 3ec5284..87c5987 100644
+> --- a/testcases/kernel/syscalls/getrusage/getrusage03.c
+> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+> @@ -52,6 +52,7 @@ static struct rusage ru;
+>  static long maxrss_init;
+>  static int retval, status;
+>  static pid_t pid;
+> +int size, factor_nr = 10;
+>  
+>  static void inherit_fork(void);
+>  static void inherit_fork2(void);
+> @@ -77,11 +78,23 @@ int main(int argc, char *argv[])
+>  
+>  	setup();
+>  
+> +	if (argc > 2)
+> +		tst_brkm(TBROK, cleanup, " Too many arguments - Usage: %s [factor]", argv[0]);
+> +
+> +	if (argv[1])
+> +		factor_nr = atoi(argv[1]);
+> +
+> +	if (factor_nr == 0)
+> +		tst_brkm(TBROK, cleanup, "Input factor must be != 0");
 
-Commited, thanks.
+Here I want to use an LTP way to pass parameters, i.e. use option_t and
+parse_opts.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Please take a look at getrusage03_child.c as example.
+
+> +
+> +	tst_resm(TINFO, "Using %d as factor allocation mamory!", factor_nr);
+> +
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>  		Tst_count = 0;
+>  
+> -		tst_resm(TINFO, "allocate 100MB");
+> -		consume(100);
+> +		size = 10 * factor_nr;
+> +		tst_resm(TINFO, "allocate %dMB", size);
+> +		consume(size);
+>  
+>  		inherit_fork();
+>  		inherit_fork2();
+> @@ -123,17 +136,17 @@ static void inherit_fork(void)
+>  }
+>  
+>  /* Testcase #02: fork inherit (cont.)
+> - * expect: initial.children ~= 100MB, child.children = 0 */
+> + * expect: initial.children ~= (10 * factor_nr)MB, child.children = 0 */
+>  static void inherit_fork2(void)
+>  {
+>  	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
+>  
+>  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+>  	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+> -	if (is_in_delta(ru.ru_maxrss - 102400))
+> -		tst_resm(TPASS, "initial.children ~= 100MB");
+> +	if (is_in_delta(ru.ru_maxrss - (10240 * factor_nr)))
+> +		tst_resm(TPASS, "initial.children ~= %dMB", size);
+
+`size` in this function is not initialized?
+
+>  	else
+> -		tst_resm(TFAIL, "initial.children !~= 100MB");
+> +		tst_resm(TFAIL, "initial.children !~= %dMB", size);
+>  
+>  	switch (pid = fork()) {
+>  	case -1:
+> @@ -153,9 +166,11 @@ static void inherit_fork2(void)
+>  }
+>  
+>  /* Testcase #03: fork + malloc
+> - * expect: initial.self + 50MB ~= child.self */
+> + * expect: initial.self + (5 * factor_nr)MB ~= child.self */
+>  static void fork_malloc(void)
+>  {
+> +	char pass_msg[BUFSIZ], fail_msg[BUFSIZ];
+> +
+>  	tst_resm(TINFO, "Testcase #03: fork + malloc");
+>  
+>  	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+> @@ -166,25 +181,29 @@ static void fork_malloc(void)
+>  		tst_brkm(TBROK|TERRNO, cleanup, "fork #3");
+>  	case 0:
+>  		maxrss_init = ru.ru_maxrss;
+> -		tst_resm(TINFO, "child allocate +50MB");
+> -		consume(50);
+> +		size = 5 * factor_nr;
+> +		tst_resm(TINFO, "child allocate + %dMB", size);
+> +		consume(size);
+>  		SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+>  		tst_resm(TINFO, "child.self = %ld", ru.ru_maxrss);
+> -		exit(is_in_delta(maxrss_init + 51200 - ru.ru_maxrss));
+> +		exit(is_in_delta(maxrss_init + (5120 * factor_nr) - ru.ru_maxrss));
+>  	default:
+>  		break;
+>  	}
+>  
+>  	if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
+>  		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> -	check_return(WEXITSTATUS(status), "initial.self + 50MB ~= child.self",
+> -		    "initial.self + 50MB !~= child.self");
+> +	sprintf(pass_msg, "initial.self + %dMB ~= child.self", size);
+> +	sprintf(fail_msg, "initial.self + %dMB !~= child.self", size);
+> +	check_return(WEXITSTATUS(status), pass_msg, fail_msg);
+>  }
+>  
+>  /* Testcase #04: grandchild maxrss
+> - * expect: post_wait.children ~= 300MB */
+> + * expect: post_wait.children ~= (30 * factor_nr)MB */
+>  static void grandchild_maxrss(void)
+>  {
+> +	char cmd_system[BUFSIZ];
+> +
+>  	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
+>  
+>  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+> @@ -194,7 +213,9 @@ static void grandchild_maxrss(void)
+>  	case -1:
+>  		tst_brkm(TBROK|TERRNO, cleanup, "fork #4");
+>  	case 0:
+> -		retval = system("getrusage03_child -g 300");
+> +		size = 30 * factor_nr;
+> +		sprintf(cmd_system, "getrusage03_child -g %d", size);
+> +		retval = system(cmd_system);
+>  		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
+>  			tst_brkm(TBROK|TERRNO, cleanup, "system");
+>  		exit(0);
+> @@ -209,16 +230,18 @@ static void grandchild_maxrss(void)
+>  
+>  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+>  	tst_resm(TINFO, "post_wait.children = %ld", ru.ru_maxrss);
+> -	if (is_in_delta(ru.ru_maxrss - 307200))
+> -		tst_resm(TPASS, "child.children ~= 300MB");
+> +	if (is_in_delta(ru.ru_maxrss - (30720 * factor_nr)))
+> +		tst_resm(TPASS, "child.children ~= %dMB", size);
+>  	else
+> -		tst_resm(TFAIL, "child.children !~= 300MB");
+> +		tst_resm(TFAIL, "child.children !~= %dMB", size);
+>  }
+>  
+>  /* Testcase #05: zombie
+> - * expect: initial ~= pre_wait, post_wait ~= 400MB */
+> + * expect: initial ~= pre_wait, post_wait ~= (40 * factor_nr)MB */
+>  static void zombie(void)
+>  {
+> +	char cmd_system[BUFSIZ];
+> +
+>  	tst_resm(TINFO, "Testcase #05: zombie");
+>  
+>  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+> @@ -229,7 +252,9 @@ static void zombie(void)
+>  	case -1:
+>  		tst_brkm(TBROK, cleanup, "fork #5");
+>  	case 0:
+> -		retval = system("getrusage03_child -n 400");
+> +		size = 40 * factor_nr;
+> +		sprintf(cmd_system, "getrusage03_child -n %d", size);
+> +		retval = system(cmd_system);
+>  		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
+>  			tst_brkm(TBROK|TERRNO, cleanup, "system");
+>  		exit(0);
+> @@ -252,16 +277,18 @@ static void zombie(void)
+>  
+>  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+>  	tst_resm(TINFO, "post_wait.children = %ld", ru.ru_maxrss);
+> -	if (is_in_delta(ru.ru_maxrss - 409600))
+> -		tst_resm(TPASS, "post_wait.children ~= 400MB");
+> +	if (is_in_delta(ru.ru_maxrss - (40960 * factor_nr)))
+> +		tst_resm(TPASS, "post_wait.children ~= %dMB", size);
+>  	else
+> -		tst_resm(TFAIL, "post_wait.children !~= 400MB");
+> +		tst_resm(TFAIL, "post_wait.children !~= %dMB", size);
+>  }
+>  
+>  /* Testcase #06: SIG_IGN
+>   * expect: initial ~= after_zombie */
+>  static void sig_ign(void)
+>  {
+> +	char cmd_system[BUFSIZ];
+> +
+>  	tst_resm(TINFO, "Testcase #06: SIG_IGN");
+>  
+>  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+> @@ -273,7 +300,9 @@ static void sig_ign(void)
+>  	case -1:
+>  		tst_brkm(TBROK, cleanup, "fork #6");
+>  	case 0:
+> -		retval = system("getrusage03_child -n 500");
+> +		size = 50 * factor_nr;
+> +		sprintf(cmd_system, "getrusage03_child -n %d", size);
+> +		retval = system(cmd_system);
+>  		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
+>  			tst_brkm(TBROK|TERRNO, cleanup, "system");
+>  		exit(0);
+
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
