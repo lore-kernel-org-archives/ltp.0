@@ -1,17 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rsz6D-0006ux-6N
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 16:01:25 +0000
-Date: Thu, 2 Feb 2012 17:14:42 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120202161442.GC3605@saboteur.suse.cz>
-References: <1324980149-29612-1-git-send-email-YanFeng.Shang@windriver.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1324980149-29612-1-git-send-email-YanFeng.Shang@windriver.com>
-Subject: Re: [LTP] [PATCH] hugeshmat01 isn't adapt to mips with 64bit ELF
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <filippo.arcidiacono@st.com>) id 1RxeXs-0007Qp-VN
+	for ltp-list@lists.sourceforge.net; Wed, 15 Feb 2012 13:05:16 +0000
+Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RxeXm-0002co-Hh
+	for ltp-list@lists.sourceforge.net; Wed, 15 Feb 2012 13:05:16 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2DC2D302
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 15 Feb 2012 13:05:02 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 60DDD2425
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 15 Feb 2012 13:05:02 +0000 (GMT)
+From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+Date: Wed, 15 Feb 2012 14:04:48 +0100
+Message-Id: <1329311088-2093-1-git-send-email-filippo.arcidiacono@st.com>
+Subject: [LTP] [PATCH v2] getrusage03: add opportunity to reduce memory
+	allocation's size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,53 +30,262 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shang Yanfeng <YanFeng.Shang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Haotian.Zhang@windriver.com, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Because userspace memory in mips with 64bit ELF is lower than 2^40,
-> so shmat failed.
-> 
-> signed-off-by: YanFeng.Shang  <YanFeng.Shang@windriver.com>
-> ---
->  .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |    6 +++++-
->  1 files changed, 5 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-> index 6f270ce..67bd4b0 100644
-> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-> @@ -67,7 +67,11 @@ unsigned long huge_pages_shm_to_be_allocated;
->  #define CASE1		20		/* memory location.		   */
->  
->  #if __WORDSIZE==64
-> +#if defined(__mips__)
-> +#define UNALIGNED      0x1000000eee
-> +#else
->  #define UNALIGNED      0x10000000eee
-> +#endif
->  #else
->  #define UNALIGNED      0x60000eee
->  #endif
+To use this test also in embedded systems it needs to reduce the memory
+allocation to avoid the test failing when it check the ru_maxrss field
+expecting a value close to the allocated one.
+The ru_maxrss field contains the total amount of resident set memory
+used, so this field doesn't take into account of the swapped memory.
+Passing [num] parameter at command line the test is executed using the
+input parameter as multiply factor instead of 10, that is the default
+value when no argument is passed.
 
-I wonder why we need such #ifdef for 64 bit systems in the first place,
-or is the unaligned address 0x60000eee too low for 64 bit system?
+Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+---
+ testcases/kernel/syscalls/getrusage/getrusage03.c |   96 ++++++++++++++------
+ 1 files changed, 67 insertions(+), 29 deletions(-)
 
-Garrett, Mike any clue?
-
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+index 3ec5284..1a7f05d 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+@@ -50,11 +50,19 @@ int TST_TOTAL = 1;
+ 
+ static struct rusage ru;
+ static long maxrss_init;
+-static int retval, status;
++static int retval, status, opt_factor;
+ static pid_t pid;
++static char *factor_str;
++int factor_nr = 10;
+ 
++option_t child_options[] = {
++	{ "m:", &opt_factor, &factor_str },
++	{ NULL, NULL,         NULL }
++};
++
++static void usage(void);
+ static void inherit_fork(void);
+-static void inherit_fork2(void);
++static void inherit_fork2(const int size);
+ static void fork_malloc(void);
+ static void grandchild_maxrss(void);
+ static void zombie(void);
+@@ -68,23 +76,33 @@ static void cleanup(void);
+ 
+ int main(int argc, char *argv[])
+ {
+-	int lc;
++	int lc, size;
+ 	char *msg;
+ 
+-	msg = parse_opts(argc, argv, NULL, NULL);
++	msg = parse_opts(argc, argv, child_options, usage);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	setup();
+ 
++	if (opt_factor)
++		factor_nr = atoi(factor_str);
++
++	if (factor_nr == 0)
++		tst_brkm(TBROK, cleanup, "Input factor must be != 0");
++
++	tst_resm(TINFO, "Using %d as factor allocation mamory!", factor_nr);
++
++	size = 10 * factor_nr;
++
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		Tst_count = 0;
+ 
+-		tst_resm(TINFO, "allocate 100MB");
+-		consume(100);
++		tst_resm(TINFO, "allocate %dMB", size);
++		consume(size);
+ 
+ 		inherit_fork();
+-		inherit_fork2();
++		inherit_fork2(size);
+ 		fork_malloc();
+ 		grandchild_maxrss();
+ 		zombie();
+@@ -95,6 +113,11 @@ int main(int argc, char *argv[])
+ 	tst_exit();
+ }
+ 
++static void usage(void)
++{
++	printf("  -m n    use n as multiply factor, default value is 10\n");
++}
++
+ /* Testcase #01: fork inherit
+  * expect: initial.self ~= child.self */
+ static void inherit_fork(void)
+@@ -123,17 +146,17 @@ static void inherit_fork(void)
+ }
+ 
+ /* Testcase #02: fork inherit (cont.)
+- * expect: initial.children ~= 100MB, child.children = 0 */
+-static void inherit_fork2(void)
++ * expect: initial.children ~= (10 * factor_nr)MB, child.children = 0 */
++static void inherit_fork2(const int size)
+ {
+ 	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+-	if (is_in_delta(ru.ru_maxrss - 102400))
+-		tst_resm(TPASS, "initial.children ~= 100MB");
++	if (is_in_delta(ru.ru_maxrss - (10240 * factor_nr)))
++		tst_resm(TPASS, "initial.children ~= %dMB", size);
+ 	else
+-		tst_resm(TFAIL, "initial.children !~= 100MB");
++		tst_resm(TFAIL, "initial.children !~= %dMB", size);
+ 
+ 	switch (pid = fork()) {
+ 	case -1:
+@@ -153,9 +176,12 @@ static void inherit_fork2(void)
+ }
+ 
+ /* Testcase #03: fork + malloc
+- * expect: initial.self + 50MB ~= child.self */
++ * expect: initial.self + (5 * factor_nr)MB ~= child.self */
+ static void fork_malloc(void)
+ {
++	char pass_msg[BUFSIZ], fail_msg[BUFSIZ];
++	const int size = 5 * factor_nr;
++
+ 	tst_resm(TINFO, "Testcase #03: fork + malloc");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+@@ -166,25 +192,29 @@ static void fork_malloc(void)
+ 		tst_brkm(TBROK|TERRNO, cleanup, "fork #3");
+ 	case 0:
+ 		maxrss_init = ru.ru_maxrss;
+-		tst_resm(TINFO, "child allocate +50MB");
+-		consume(50);
++		tst_resm(TINFO, "child allocate + %dMB", size);
++		consume(size);
+ 		SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+ 		tst_resm(TINFO, "child.self = %ld", ru.ru_maxrss);
+-		exit(is_in_delta(maxrss_init + 51200 - ru.ru_maxrss));
++		exit(is_in_delta(maxrss_init + (5120 * factor_nr) - ru.ru_maxrss));
+ 	default:
+ 		break;
+ 	}
+ 
+ 	if (waitpid(pid, &status, WUNTRACED|WCONTINUED) == -1)
+ 		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+-	check_return(WEXITSTATUS(status), "initial.self + 50MB ~= child.self",
+-		    "initial.self + 50MB !~= child.self");
++	sprintf(pass_msg, "initial.self + %dMB ~= child.self", size);
++	sprintf(fail_msg, "initial.self + %dMB !~= child.self", size);
++	check_return(WEXITSTATUS(status), pass_msg, fail_msg);
+ }
+ 
+ /* Testcase #04: grandchild maxrss
+- * expect: post_wait.children ~= 300MB */
++ * expect: post_wait.children ~= (30 * factor_nr)MB */
+ static void grandchild_maxrss(void)
+ {
++	char cmd_system[BUFSIZ];
++	const int size = 30 * factor_nr;
++
+ 	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+@@ -194,7 +224,8 @@ static void grandchild_maxrss(void)
+ 	case -1:
+ 		tst_brkm(TBROK|TERRNO, cleanup, "fork #4");
+ 	case 0:
+-		retval = system("getrusage03_child -g 300");
++		sprintf(cmd_system, "getrusage03_child -g %d", size);
++		retval = system(cmd_system);
+ 		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
+ 			tst_brkm(TBROK|TERRNO, cleanup, "system");
+ 		exit(0);
+@@ -209,16 +240,19 @@ static void grandchild_maxrss(void)
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "post_wait.children = %ld", ru.ru_maxrss);
+-	if (is_in_delta(ru.ru_maxrss - 307200))
+-		tst_resm(TPASS, "child.children ~= 300MB");
++	if (is_in_delta(ru.ru_maxrss - (30720 * factor_nr)))
++		tst_resm(TPASS, "child.children ~= %dMB", size);
+ 	else
+-		tst_resm(TFAIL, "child.children !~= 300MB");
++		tst_resm(TFAIL, "child.children !~= %dMB", size);
+ }
+ 
+ /* Testcase #05: zombie
+- * expect: initial ~= pre_wait, post_wait ~= 400MB */
++ * expect: initial ~= pre_wait, post_wait ~= (40 * factor_nr)MB */
+ static void zombie(void)
+ {
++	char cmd_system[BUFSIZ];
++	const int size = 40 * factor_nr;
++
+ 	tst_resm(TINFO, "Testcase #05: zombie");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+@@ -229,7 +263,8 @@ static void zombie(void)
+ 	case -1:
+ 		tst_brkm(TBROK, cleanup, "fork #5");
+ 	case 0:
+-		retval = system("getrusage03_child -n 400");
++		sprintf(cmd_system, "getrusage03_child -n %d", size);
++		retval = system(cmd_system);
+ 		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
+ 			tst_brkm(TBROK|TERRNO, cleanup, "system");
+ 		exit(0);
+@@ -252,16 +287,18 @@ static void zombie(void)
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "post_wait.children = %ld", ru.ru_maxrss);
+-	if (is_in_delta(ru.ru_maxrss - 409600))
+-		tst_resm(TPASS, "post_wait.children ~= 400MB");
++	if (is_in_delta(ru.ru_maxrss - (40960 * factor_nr)))
++		tst_resm(TPASS, "post_wait.children ~= %dMB", size);
+ 	else
+-		tst_resm(TFAIL, "post_wait.children !~= 400MB");
++		tst_resm(TFAIL, "post_wait.children !~= %dMB", size);
+ }
+ 
+ /* Testcase #06: SIG_IGN
+  * expect: initial ~= after_zombie */
+ static void sig_ign(void)
+ {
++	char cmd_system[BUFSIZ];
++
+ 	tst_resm(TINFO, "Testcase #06: SIG_IGN");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+@@ -273,7 +310,8 @@ static void sig_ign(void)
+ 	case -1:
+ 		tst_brkm(TBROK, cleanup, "fork #6");
+ 	case 0:
+-		retval = system("getrusage03_child -n 500");
++		sprintf(cmd_system, "getrusage03_child -n %d", 50 * factor_nr);
++		retval = system(cmd_system);
+ 		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
+ 			tst_brkm(TBROK|TERRNO, cleanup, "system");
+ 		exit(0);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.5.5.6
+
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
