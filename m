@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <filippo.arcidiacono@st.com>) id 1RxcNl-0001VL-FL
-	for ltp-list@lists.sourceforge.net; Wed, 15 Feb 2012 10:46:41 +0000
-Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RxcNf-0001iV-QA
-	for ltp-list@lists.sourceforge.net; Wed, 15 Feb 2012 10:46:41 +0000
-From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
-References: <1329233615-16625-1-git-send-email-filippo.arcidiacono@st.com>
-	<4F3B2FFD.3020408@casparzhang.com>
-	<4f3b6c8d.c1cb0e0a.3e38.354dSMTPIN_ADDED@mx.google.com>
-	<4F3B87D7.4090700@casparzhang.com>
-In-Reply-To: <4F3B87D7.4090700@casparzhang.com>
-Date: Wed, 15 Feb 2012 11:46:26 +0100
-Message-ID: <01e601ccebcf$11c89f20$3559dd60$@arcidiacono@st.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Rxv10-0006wU-Ho
+	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 06:40:26 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Rxv0z-0007tU-Q3
+	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 06:40:26 +0000
+Received: by daln34 with SMTP id n34so1820855dal.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 15 Feb 2012 22:40:20 -0800 (PST)
+Message-ID: <4F3CA4B0.9000401@casparzhang.com>
+Date: Thu, 16 Feb 2012 14:39:44 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Language: en-us
-Subject: Re: [LTP] [PATCH] getrusage03: add opportunity to reduce memory
-	allocation's size
+References: <1329311088-2093-1-git-send-email-filippo.arcidiacono@st.com>
+In-Reply-To: <1329311088-2093-1-git-send-email-filippo.arcidiacono@st.com>
+Subject: Re: [LTP] [PATCH v2] getrusage03: add opportunity to reduce memory
+ allocation's size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,45 +31,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Caspar Zhang' <caspar@casparzhang.com>
+To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi,
 
+On 02/15/2012 09:04 PM, Filippo ARCIDIACONO wrote:
+>  static struct rusage ru;
+>  static long maxrss_init;
+> -static int retval, status;
+> +static int retval, status, opt_factor;
+>  static pid_t pid;
+> +static char *factor_str;
+> +int factor_nr = 10;
 
-> -----Original Message-----
-> From: Caspar Zhang [mailto:caspar@casparzhang.com]
-> Sent: Wednesday, February 15, 2012 11:24 AM
-> To: Filippo ARCIDIACONO
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH] getrusage03: add opportunity to reduce
-> memory allocation's size
-> 
-> On 02/15/2012 04:27 PM, Filippo ARCIDIACONO wrote:
-> >>> > >  static void inherit_fork2(void)
-> >>> > >  {
-> >>> > >  	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
-> >>> > >
-> >>> > >  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
-> >>> > >  	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> >>> > > -	if (is_in_delta(ru.ru_maxrss - 102400))
-> >>> > > -		tst_resm(TPASS, "initial.children ~= 100MB");
-> >>> > > +	if (is_in_delta(ru.ru_maxrss - (10240 * factor_nr)))
-> >>> > > +		tst_resm(TPASS, "initial.children ~= %dMB", size);
-> >> >
-> >> > `size` in this function is not initialized?
-> > 'size' is globally defined, it is initialized in the main().
-> >
-> 
-> Yes, but seems that you missed a "size = 10240 * factor_nr" here.
+missing `static`?
 
+>  
+> +option_t child_options[] = {
+> +	{ "m:", &opt_factor, &factor_str },
+> +	{ NULL, NULL,         NULL }
+> +};
+> +
+> +static void usage(void);
+>  static void inherit_fork(void);
+> -static void inherit_fork2(void);
+> +static void inherit_fork2(const int size);
+>  static void fork_malloc(void);
+>  static void grandchild_maxrss(void);
+>  static void zombie(void);
+> @@ -68,23 +76,33 @@ static void cleanup(void);
+>  
+>  int main(int argc, char *argv[])
+>  {
+> -	int lc;
+> +	int lc, size;
+>  	char *msg;
+>  
+> -	msg = parse_opts(argc, argv, NULL, NULL);
+> +	msg = parse_opts(argc, argv, child_options, usage);
+>  	if (msg != NULL)
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>  
+>  	setup();
+>  
+> +	if (opt_factor)
+> +		factor_nr = atoi(factor_str);
+> +
+> +	if (factor_nr == 0)
+> +		tst_brkm(TBROK, cleanup, "Input factor must be != 0");
 
-No, size is in MB. What I'm doing is pass to inherit_fork2() 'size' as parameter,
-In this function is used only to format the output string.
-I'm going to repost the reworked patch shortly.
+Hi, I guess factor_nr should not be < 0 too? If so, you might want to use
 
-> 
-> Thanks,
-> Caspar
+    factor_nr = SAFE_STRTOL(NULL, factor_str, 1, LONG_MAX);
+
+where SAFE_STRTOL is defined in safe_macros.h, of course you should make
+factor_nr to be long int.
+
+Rest looks good to me.
+
+Thanks,
+Caspar
 
 
 ------------------------------------------------------------------------------
