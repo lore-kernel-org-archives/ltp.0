@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Rsyq2-0005y0-GK
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 15:44:42 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Rsypw-0004ED-WC
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 15:44:42 +0000
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 2 Feb 2012 15:44:13 +0000
-Message-ID: <1328197453-21108-1-git-send-email-markos.chandras@imgtec.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Ry6lv-00059L-DJ
+	for ltp-list@lists.sourceforge.net; Thu, 16 Feb 2012 19:13:39 +0000
+Date: Thu, 16 Feb 2012 20:13:33 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120216191333.GB6790@saboteur.suse.cz>
+References: <1329372380-18378-1-git-send-email-caspar@casparzhang.com>
+	<1329375744-20369-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] mtest07/shm_test: Use unique key when allocating new
-	shared memory region
+Content-Disposition: inline
+In-Reply-To: <1329375744-20369-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH v2] mm/vma04: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,57 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-We use a unique key for every allocation instead of a static one which may have
-already been used by another process. In the case where a key has been assigned to a
-memory region with a different size compared to the one we currently
-want to allocate, shmget() will fail with -EINVAL error code.
+Hi!
+> vma04: corner cases for mbind vma merge issue
+> 
+> There are several corner cases (documented in mm/mmap.c) for mbind
+> vma merge issue, which makes commit 8aacc9f550 slightly incorrect.
+> KOSAKI Motohiro made a patch for it (commit e26a511) and composed
+> a reproducer containing these corner cases. Now I backport it to
+> LTP.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/kernel/mem/mtest07/shm_test.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+I think that backport is not correctly used here, backport generally
+means that you pulled something out of newer version of package and
+added it to older version. Simple ported should be better. 
 
-diff --git a/testcases/kernel/mem/mtest07/shm_test.c b/testcases/kernel/mem/mtest07/shm_test.c
-index 29c626a..4e88ebc 100644
---- a/testcases/kernel/mem/mtest07/shm_test.c
-+++ b/testcases/kernel/mem/mtest07/shm_test.c
-@@ -290,7 +290,6 @@ main(int	argc,		/* number of input parameters		      */
-     int		thrd_ndx;	/* index into the array of thread ids         */
-     int		th_status;	/* exit status of LWP's	                      */
-     int		map_size;	/* size of the file mapped.                   */
--    int		shmkey   = 1969;/* key used to generate shmid by shmget()     */
-     pthread_t	thrdid[30];	/* maxinum of 30 threads allowed              */
-     long	chld_args[4];   /* arguments to the thread function           */
-     char        *map_address=NULL;
-@@ -339,7 +338,7 @@ main(int	argc,		/* number of input parameters		      */
-         srand(time(NULL)%100);
-         map_size = (1 + (int)(1000.0*rand()/(RAND_MAX+1.0))) * 4096;
+The rest seems to be fine.
 
--        chld_args[1] = shmkey++;
-+        chld_args[1] = IPC_PRIVATE;
-         chld_args[2] = map_size;
-
- 	dprt("main(): thrd_ndx = %d map_address = %#x map_size = %d\n",
-@@ -384,4 +383,4 @@ main(int	argc,		/* number of input parameters		      */
-         }
-     }
-     exit(0);
--}
-\ No newline at end of file
-+}
---
-1.7.1
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
