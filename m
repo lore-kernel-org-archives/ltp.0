@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0bWg-00088U-0i
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 16:28:14 +0000
-Date: Thu, 23 Feb 2012 17:28:41 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120223162841.GD5960@saboteur.suse.cz>
-References: <4F33254B.9080204@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1RyQmz-0007Ia-Re
+	for ltp-list@lists.sourceforge.net; Fri, 17 Feb 2012 16:36:05 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RyQmv-0006uX-Il
+	for ltp-list@lists.sourceforge.net; Fri, 17 Feb 2012 16:36:05 +0000
+Message-ID: <4F3E81EA.8040404@imgtec.com>
+Date: Fri, 17 Feb 2012 16:35:54 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F33254B.9080204@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] aio02: runfstests.sh should be deleted
+References: <cbed67486755eab955f21fcaf82f5351f14e6ead.1329458810.git.zliu@redhat.com>
+In-Reply-To: <cbed67486755eab955f21fcaf82f5351f14e6ead.1329458810.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH] lib/mem.c: add HAVE_NUMA_H to avoid compiling
+	error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,20 +28,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> runfstests.sh is creating temporary directory, which could be easily done
-> withing the test itself by using tst_tmpdir(), So runfstests.sh should be
-> deleted.
+On 02/17/2012 06:09 AM, Zhouping Liu wrote:
 
-This patch doesn't apply as well, probably mangled by your mail cliend
-too. Please resend.
+> In the patch<9b70f0970>, I used numa_max_node(), which's included in <numa.h>,
+> but I forgot to add precompiled header: HAVE_NUMA_H, the patch fixed it.
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> ---
+>  testcases/kernel/mem/lib/mem.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index 25cdfd4..3843785 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -148,6 +148,7 @@ void testoom(int mempolicy, int lite, int numa)
+>  	oom(KSM, mempolicy, lite);
+>  }
+>  
+> +#ifdef HAVE_NUMA_H
+>  long count_numa(void)
+>  {
+>  	int nnodes = 0;
+> @@ -161,6 +162,7 @@ long count_numa(void)
+>  
+>  	return nnodes;
+>  }
+> +#endif
+>  
+>  int path_exist(const char *path, ...)
+>  {
+
+
+Yes, that works for me
+
+Tested-by: Markos Chandras <markos.chandras@imgtec.com>
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
