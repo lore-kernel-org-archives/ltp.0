@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RsyU3-0001S6-Ka
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 15:21:59 +0000
-Date: Thu, 2 Feb 2012 16:35:23 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1RyMDV-0001xj-60
+	for ltp-list@lists.sourceforge.net; Fri, 17 Feb 2012 11:43:09 +0000
+Date: Fri, 17 Feb 2012 12:43:04 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120202153523.GG28620@saboteur.suse.cz>
-References: <1327888994-4884-1-git-send-email-caspar@casparzhang.com>
-	<1328174935-9294-1-git-send-email-caspar@casparzhang.com>
-	<20120202151900.GB3605@saboteur.suse.cz>
-	<4F2AA8A1.1010303@redhat.com>
+Message-ID: <20120217114304.GA9992@saboteur.suse.cz>
+References: <1329406279-5989-1-git-send-email-filippo.arcidiacono@st.com>
+	<4F3DB9FD.7080103@casparzhang.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4F2AA8A1.1010303@redhat.com>
-Subject: Re: [LTP] [PATCH v2 1/2] mm/vma03: new testcase
+In-Reply-To: <4F3DB9FD.7080103@casparzhang.com>
+Subject: Re: [LTP] [PATCH v3] getrusage03: add opportunity to reduce memory
+ allocation's size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +26,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> +
-> >> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> >> +		Tst_count = 0;
-> >> +
-> >> +		fd = open(TESTFILE, O_RDWR);
-> >> +		if (fd == -1)
-> >> +			tst_brkm(TBROK|TCONF, NULL, "open %s", TESTFILE);
+> > To use this test also in embedded systems it needs to reduce the memory
+> > allocation to avoid the test failing when it check the ru_maxrss field
+> > expecting a value close to the allocated one.
+> > The ru_maxrss field contains the total amount of resident set memory
+> > used, so this field doesn't take into account of the swapped memory.
+> > Passing [num] parameter at command line the test is executed using the
+> > input parameter as multiply factor instead of 10, that is the default
+> > value when no argument is passed.
 > > 
-> > I know that we don't have a clear definition for these particular
-> > bitflags (which I would like to fix), however TCONF|TBROK seems strange
-> > to me. As TCONF is "testcase not appropriate for your system" and TBROK
-> > "testcase broken". I think that only TRBOK is better result here.
-> > 
-> > Other than that it's ready for commit.
+> > Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> > Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
 > 
-> Oops.. I was meant `TBROK|TERRNO` :-(
+> This version looks good to me. @Cyril?
 
-Ah, right, that makes more sense. :)
+Yes, looks good. I usually use snprintf() to be extra sure not to
+rewrite memory, but as far as the BUFSIZ is big enough, this shouldn't
+be a problem.
+
+And I would like to have some mechanism how to get free system memory
+and compute this automatically in the future (as more tests are failing
+when there is not enough memory)...
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
