@@ -1,23 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <salvatore.cro@st.com>) id 1RxFEL-00062D-V0
-	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 10:03:25 +0000
-Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RxFEF-0003Qy-Ta
-	for ltp-list@lists.sourceforge.net; Tue, 14 Feb 2012 10:03:25 +0000
-Message-ID: <4F3A3159.8000407@st.com>
-Date: Tue, 14 Feb 2012 11:03:05 +0100
-From: "Salvatore CRO'" <salvatore.cro@st.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1RyQwW-0007mG-DK
+	for ltp-list@lists.sourceforge.net; Fri, 17 Feb 2012 16:45:56 +0000
+Received: from eu1sys200aog107.obsmtp.com ([207.126.144.123])
+	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RyQwS-0008JG-Fr
+	for ltp-list@lists.sourceforge.net; Fri, 17 Feb 2012 16:45:56 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3D0F2236
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Feb 2012 16:45:44 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D40D929AB
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 17 Feb 2012 16:45:44 +0000 (GMT)
+Message-ID: <4F3E8435.8020401@st.com>
+Date: Fri, 17 Feb 2012 17:45:41 +0100
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
 MIME-Version: 1.0
-References: <4F3A1342.5030109@st.com> <4F3A158D.8070403@st.com>
-	<4F3A18B8.5060506@cn.fujitsu.com> <4F3A1AE8.9050905@st.com>
-	<4F3A1FC1.5040103@cn.fujitsu.com>
-In-Reply-To: <4F3A1FC1.5040103@cn.fujitsu.com>
-Subject: Re: [LTP] Fwd: Re: [PATCH] clone06: fix error of TERM environment
- variable is not available
+References: <cbed67486755eab955f21fcaf82f5351f14e6ead.1329458810.git.zliu@redhat.com>
+	<4F3E81EA.8040404@imgtec.com>
+In-Reply-To: <4F3E81EA.8040404@imgtec.com>
+Subject: Re: [LTP] [PATCH] lib/mem.c: add HAVE_NUMA_H to avoid compiling
+	error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,57 +34,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>, ltp-list@lists.sourceforge.net, cristian@regolo.cc
+To: ltp-list@lists.sourceforge.net
 
-T24gMi8xNC8yMDEyIDk6NDggQU0sIFBlbmcgSGFpdGFvIHdyb3RlOgo+IFNhbHZhdG9yZSBDUk8n
-IHNhaWQgdGhlIGZvbGxvd2luZyBvbiAyMDEyLTItMTQgMTY6Mjc6Cj4+IE9uIDIvMTQvMjAxMiA5
-OjE4IEFNLCBQZW5nIEhhaXRhbyB3cm90ZToKPj4+IFNhbHZhdG9yZSBDUk8nIHNhaWQgdGhlIGZv
-bGxvd2luZyBvbiAyMDEyLTItMTQgMTY6MDQ6Cj4+Pj4gU29ycnkgZm9yICIuLi4uIiBpbiB0aGUg
-Zmlyc3Qgc2VudGVuY2Ugb2YgbXkgcmVwbHkuCj4+Pj4KPj4+PiBJIHdhcyBsb29raW5nIGZvciB0
-aGUgcmlnaHQgd29yZCB0byBjb21wbGV0ZSB0aGUgc2VudGVuY2UgYW5kIHB1dCAiLi4uIiBpbiB0
-aGUgbWVhbndoaWxlLgo+Pj4+IFRoZW4gSSBmb3Jnb3QgdG8gZG8gdGhlIHRleHQgcmVwbGFjaW5n
-IQo+Pj4+Cj4+PiA6KQo+Pj4KPj4+PiBJIGRpZG4ndCBtZWFuIGluIGFueSB3YXkgdG8gYmUgb2Zm
-ZW5zaXZlLgo+Pj4+Cj4+PiBZZWFo77yMbm8gcHJvYmxlbS4KPj4gVGhhbmsgeW91Lgo+Pgo+Pj4+
-IEFueWhvdyBJIHRoaW5rIHlvdXIgc29sdXRpb24gY291bGQgbm90IGJlIHRoZSBwcm9wZXIgb25l
-Lgo+Pj4+Cj4+PiBXaGVuIFRFUk0gZW52IHZhcmlhYmxlIGlzIGRlZmluZWQsIGZpcnN0IHVuc2V0
-ZW52KCksIHRoZW4gY2FsbCBzZXRlbnYoKSB0byBzZXQgaXQuCj4+PiBXaGVuIFRFUk0gZW52IHZh
-cmlhYmxlIGlzIG5vdCBkZWZpbmVkLCB0aGVuIGNhbGwgc2V0ZW52KCJURVJNIiwgInh0ZXJtIiwg
-MSkgdG8gc2V0IGl0Lgo+Pj4KPj4+IFRoaXMgaGFzIGEgcHJvYmxlbT8KPj4+Cj4+IEkgZG9uJ3Qg
-c2VlIGFueXRoaW5nIHdyb25nIHdpdGggeW91ciBpbXBsZW1lbnRhdGlvbi4gT24gdGhlIG90aGVy
-IGhhbmQgaWYgdGhlIHZhcmlhYmxlIGlzIG5vdCBzZXQgd2Ugc2hvdWxkIG5vdAo+PiBmb3JjZSBp
-dCBpbiBteSBvcGluaW9uIGFuZCBrZWVwIHRlc3QgbG9naWMgY29uc2lzdGVudC4KPj4gSWYgdmFy
-IGlzIE5EIGJvdGggY2hpbGQgYW5kIHBhcmVudCB3aWxsIGV2YWx1YXRlIHJlc3BlY3RpdmUgdmFy
-aWFibGUgdG8gIiIgYW5kIHRoZSB0ZXN0IHdpbGwgcGFzcy4KPj4gV2hhdCB3ZSBjb3VsZCBhcmd1
-ZSBvbiBpcyB3aGV0aGVyIHRvIHN0aWxsIHRyZWF0IHRoZSBzYW1lIHdheSB0aGUgdHdvIGNhc2Vz
-IHdoZW4gc3ByaW50ZiByZXR1cm5zIDAgb3IgbmVnYXRpdmUgbnVtYmVyLgo+PiBJTU8sIGl0IHNo
-b3VsZCBub3QgYmUgdGhlIGNhc2UuCj4+Cj4gVGhlIGNhc2UgdGVzdCB0byB2ZXJpZnkgaW5oZXJp
-dGFuY2Ugb2YgZW52aXJvbm1lbnQgdmFyaWFibGVzIGJ5IGNoaWxkLgo+IElmIGVudmlyb25tZW50
-IHZhcmlhYmxlIGlzIG5vdCBzZXQsIEkgdGhpbmsgdGhlIGNhc2Ugc2hvdWxkIGJlIGV4aXQuCj4K
-PiBJIG1vZGlmeSB0aGUgY2FzZSB3aXRoIHRoZSBzb2x1dGlvbiwgYmVjYXVzZSBHYXJyZXR0IENv
-b3BlciBzYWlkIHRoZSBzdGVwczopCj4gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC9tYWlsYXJjaGl2
-ZS9tZXNzYWdlLnBocD9tc2dfaWQ9MjcxMDQwMjgKCkl0IGRvZXMgbm90IGNvbnZpbmNlIG1lIGVp
-dGhlci4gVGhlIHByb2JsZW0gQ3Jpc3RpYW4gcmVwb3J0ZWQgcmVmZXJzIHRvIApob3cgc3NoIGhh
-bmRsZXMgdXNlciBwcm9maWxlIGluaXRpYWxpemF0aW9uLgpJIGhhZCB0aGUgc2FtZSBwcm9ibGVt
-IGFzIEkgcnVuIGx0cCBvbiBhbiBlbWJlZGRlZCBzeXN0ZW0gZnJvbSBsaW51eCAKaG9zdCB2aWEg
-c3NoIGFuZCBJIGRpZCBub3QgbW9kaWZpeSB0aGUgdGVzdCBhdCBhbGwuClRoZSBhcHByb2FjaCBH
-YXJldHQgcHJvcG9zZWQgdG8gQ3Jpc3RpYW4gaXMgbm90IGFwcGxpY2FibGUgYXMgaXQgCm1vZGlm
-aWVzIHRoZSB0ZXN0IHRvIG92ZXJjb21lIGEgc3NoIHNwZWNpZmljIGlzc3VlLgpJbnN0ZWFkIEkg
-dXNlZCBzc2ggLXQgLXQgKHR3aWNlISkgd2hlbiBleGVjdXRpbmcgbHRwIHRvIGVuc3VyZSBURVJN
-IAp2YXJpYWJsZSBpcyBkZWZpbmVkIGluIGNvbnNvbGUgaW5pdGlhbGl6ZWQgYnkgc3NoLgoKRnVy
-dGhlcm1vcmUgc3Vic2VxdWVudCBjb21taXQgNjBlZGRmODM3YTljNDE0ZmUxOGRkZWQ0YjA3NTIy
-ZDBkMjA2Njc2MSAKbWFkZSB0aGUgdGVzdCBzYWZlciBhZ2FpbnN0CnRoaXMgc2l0dWF0aW9uLgoK
-QmFzZWQgb24gdGhpcyByYXRpb25hbGUgSSB3aWxsIHByb3Bvc2UgdGhlIHBhdGNoIHRvIG1vZGlm
-eSBzcHJpbnRmIGNoZWNrLgoKQlIsClNhbHZvLgoKCgo+Cj4gQmVzdCBSZWdhcmRzLAo+IFBlbmcK
-PgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpLZWVwIFlvdXIgRGV2ZWxvcGVyIFNraWxscyBDdXJy
-ZW50IHdpdGggTGVhcm5EZXZOb3chClRoZSBtb3N0IGNvbXByZWhlbnNpdmUgb25saW5lIGxlYXJu
-aW5nIGxpYnJhcnkgZm9yIE1pY3Jvc29mdCBkZXZlbG9wZXJzCmlzIGp1c3QgJDk5Ljk5ISBWaXN1
-YWwgU3R1ZGlvLCBTaGFyZVBvaW50LCBTUUwgLSBwbHVzIEhUTUw1LCBDU1MzLCBNVkMzLApNZXRy
-byBTdHlsZSBBcHBzLCBtb3JlLiBGcmVlIGZ1dHVyZSByZWxlYXNlcyB3aGVuIHlvdSBzdWJzY3Jp
-YmUgbm93IQpodHRwOi8vcC5zZi5uZXQvc2Z1L2xlYXJuZGV2bm93LWQyZApfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QK
-THRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On 17/02/2012 17.35, Markos Chandras wrote:
+> On 02/17/2012 06:09 AM, Zhouping Liu wrote:
+> 
+>> In the patch<9b70f0970>, I used numa_max_node(), which's included in <numa.h>,
+>> but I forgot to add precompiled header: HAVE_NUMA_H, the patch fixed it.
+>>
+>> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+>> ---
+>>  testcases/kernel/mem/lib/mem.c |    2 ++
+>>  1 files changed, 2 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+>> index 25cdfd4..3843785 100644
+>> --- a/testcases/kernel/mem/lib/mem.c
+>> +++ b/testcases/kernel/mem/lib/mem.c
+>> @@ -148,6 +148,7 @@ void testoom(int mempolicy, int lite, int numa)
+>>  	oom(KSM, mempolicy, lite);
+>>  }
+>>  
+>> +#ifdef HAVE_NUMA_H
+>>  long count_numa(void)
+>>  {
+>>  	int nnodes = 0;
+>> @@ -161,6 +162,7 @@ long count_numa(void)
+>>  
+>>  	return nnodes;
+>>  }
+>> +#endif
+>>  
+>>  int path_exist(const char *path, ...)
+>>  {
+> 
+> 
+> Yes, that works for me
+> 
+> Tested-by: Markos Chandras <markos.chandras@imgtec.com>
+> 
+
+confirmed, works for me too
+
+carmelo
+
+------------------------------------------------------------------------------
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
