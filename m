@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1RufZT-00019R-Ak
-	for ltp-list@lists.sourceforge.net; Tue, 07 Feb 2012 07:34:35 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RufZP-0001Kr-F8
-	for ltp-list@lists.sourceforge.net; Tue, 07 Feb 2012 07:34:35 +0000
-Message-ID: <4F30D3C7.5080303@cn.fujitsu.com>
-Date: Tue, 07 Feb 2012 15:33:27 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1RzTfn-0002tr-1y
+	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 13:52:59 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RzTfi-0005rN-Rd
+	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 13:52:59 +0000
+Date: Mon, 20 Feb 2012 08:52:47 -0500 (EST)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <2a06c812-84d8-40f7-ba3f-271da9fbb81a@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1329735301-17676-2-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1328521976-810-1-git-send-email-kai.kang@windriver.com>
-	<1328521976-810-2-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1328521976-810-2-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] mq_timedsend/5-1: make parent has chance to sleep
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH 2/2] mm/ksm,oom: fix count_numa()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,59 +26,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
-
-On 02/06/2012 05:52 PM, Kang Kai wrote:
-
-> Child process sends the last signal before parent process enter the
-> final sleep sometimes, so sleep in parent will not be interrupted then
-> the case fails.
-> Sleep 1 second before send the last signal in child to make sure parent
-> enter the final sleep.
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 
-So many sleep() makes me confused.
-Anyway, your patch makes sense. so,
 
-Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "Zhouping Liu" <zliu@redhat.com>, "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Monday, February 20, 2012 6:55:01 PM
+> Subject: [PATCH 2/2] mm/ksm,oom: fix count_numa()
 > 
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
+> 
+> This patch makes ksm on oom tests use the new count_numa() function.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 > ---
->  .../conformance/interfaces/mq_timedsend/5-1.c      |    5 ++++-
->  1 files changed, 4 insertions(+), 1 deletions(-)
+>  testcases/kernel/mem/ksm/ksm02.c |    7 ++++---
+>  testcases/kernel/mem/ksm/ksm04.c |    7 ++++---
+>  testcases/kernel/mem/oom/oom02.c |    3 ++-
+>  testcases/kernel/mem/oom/oom04.c |    5 +++--
+>  4 files changed, 13 insertions(+), 9 deletions(-)
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
-> index 96daf72..77fe2e0 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/5-1.c
-> @@ -82,6 +82,9 @@ int main()
->  		sleep(1);  // give parent time to set up handler
->  		for (i=0; i<MAXMSG+1; i++) {
->          		mq_timedsend(gqueue, msgptr, strlen(msgptr), 1, &ts);
-> +			/* make sure parent enter the final sleep */
-> +			if (i == MAXMSG)
-> +				sleep(1);
->  			/* send signal to parent each time message is sent */
->  			kill(getppid(), SIGABRT);
->  		}
-> @@ -138,4 +141,4 @@ int main()
->  	}
->  
->  	return PTS_UNRESOLVED;
-> -}
-> \ No newline at end of file
-> +}
+> 
+tested in my system, it's good.
 
-
+thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
+Try before you buy = See our experts in action!
 The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
