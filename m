@@ -1,28 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <glt-ltp-list@m.gmane.org>) id 1S2JnO-0008Cw-CN
-	for ltp-list@lists.sourceforge.net; Tue, 28 Feb 2012 09:56:34 +0000
-Received: from plane.gmane.org ([80.91.229.3])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S2JnI-0006mW-Ks
-	for ltp-list@lists.sourceforge.net; Tue, 28 Feb 2012 09:56:34 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glt-ltp-list@m.gmane.org>) id 1S2JnA-0007tk-Oq
-	for ltp-list@lists.sourceforge.net; Tue, 28 Feb 2012 10:56:21 +0100
-Received: from 220.227.207.220 ([220.227.207.220])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 Feb 2012 10:56:20 +0100
-Received: from rejish.rajagopala by 220.227.207.220 with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 Feb 2012 10:56:20 +0100
-From: rejish <rejish.rajagopala@sasken.com>
-Date: Tue, 28 Feb 2012 09:56:07 +0000 (UTC)
-Message-ID: <loom.20120228T103647-261@post.gmane.org>
-Mime-Version: 1.0
-Subject: [LTP] Need help in cross compiling LTP for android
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1RzSWE-00059y-V3
+	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 12:39:02 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RzSW9-0003Bm-Cr
+	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 12:39:02 +0000
+Message-ID: <4F423ED9.2040303@imgtec.com>
+Date: Mon, 20 Feb 2012 12:38:49 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+MIME-Version: 1.0
+References: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/2] mm/lib: change count_numa() behavior
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,56 +24,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-SGksCkkgbmVlZCB0byBjcm9zcyBjb21waWxlIExUUCAodHAtZnVsbC0yMDEyMDEwNCkgZm9yIGFu
-ZHJvaWQuIApJIGFtIHVzaW5nIGFuZHJvaWQgTkRLIHRvb2wgY2hhaW4gKGFuZHJvaWQtbmRrLXI1
-Yi1saW51eC14ODYpIGZvciAKY3Jvc3MgY29tcGlsaW5nLgoKSSBhbSB1c2luZyB0aGUgYmVsb3cg
-ZW52aXJvbm1lbnRhbCB2YXJpYWJsZXMgZm9yIGNvbmZpZ3VyaW5nIExUUDoKCmV4cG9ydCBBUkNI
-PWFybTpleHBvcnQgQ1JPU1NfQ09NUElMRT1hcm0tZWFiaS0KZXhwb3J0IE5ES19ST09UPS91L2Fu
-ZHJvaWQtbmRrLXI1YgpleHBvcnQKUEFUSD0kUEFUSDokTkRLX1JPT1QvdG9vbGNoYWlucy9hcm0t
-ZWFiaS00LjQuMC9wcmVidWlsdC9saW51eC14ODYvYXJtLWVhYmkvYmluCgouL2NvbmZpZ3VyZSAt
-LWhvc3Q9YXJtLWVhYmkgLS10YXJnZXQ9ZW11bGF0b3ItNTU1NCAtLWJ1aWxkPXg4Nl82NC1saW51
-eC1nbnUKLS1wcmVmaXg9L3UvYW5kcm9pZC1uZGstcjViL21ha2VfMjgwMl8wMl8yMDEyCgpleHBv
-cnQgQ0M9L3UvYW5kcm9pZC1uZGstcjViL3Rvb2xjaGFpbnMvYXJtLWVhYmktNC40LjAvCnByZWJ1
-aWx0L2xpbnV4LXg4Ni9iaW4vYXJtLWVhYmktZ2NjCgpleHBvcnQgTEQ9L3UvYW5kcm9pZC1uZGst
-cjViL3Rvb2xjaGFpbnMvYXJtLWVhYmktNC40LjAvCnByZWJ1aWx0L2xpbnV4LXg4Ni9iaW4vYXJt
-LWVhYmktbGQKCmV4cG9ydCBBUj0vdS9hbmRyb2lkLW5kay1yNWIvdG9vbGNoYWlucy9hcm0tZWFi
-aS00LjQuMC8KcHJlYnVpbHQvbGludXgteDg2L2Jpbi9hcm0tZWFiaS1hcgoKZXhwb3J0IFNUUklQ
-PS91L2FuZHJvaWQtbmRrLXI1Yi90b29sY2hhaW5zL2FybS1lYWJpLTQuNC4wLwpwcmVidWlsdC9s
-aW51eC14ODYvYmluL2FybS1lYWJpLXN0cmlwCgpleHBvcnQgUkFOTElCPS91L2FuZHJvaWQtbmRr
-LXI1Yi90b29sY2hhaW5zL2FybS1lYWJpLTQuNC4wLwpwcmVidWlsdC9saW51eC14ODYvYmluL2Fy
-bS1lYWJpLXJhbmxpYgoKZXhwb3J0IENYWD0vdS9hbmRyb2lkLW5kay1yNWIvdG9vbGNoYWlucy9h
-cm0tZWFiaS00LjQuMC8KcHJlYnVpbHQvbGludXgteDg2L2Jpbi9hcm0tZWFiaS1jKysKCmV4cG9y
-dCBBUz0vdS9hbmRyb2lkLW5kay1yNWIvdG9vbGNoYWlucy9hcm0tZWFiaS00LjQuMC8KcHJlYnVp
-bHQvbGludXgteDg2L2Jpbi9hcm0tZWFiaS1hcwoKZXhwb3J0IEdYWD0vdS9hbmRyb2lkLW5kay1y
-NWIvdG9vbGNoYWlucy9hcm0tZWFiaS00LjQuMC8KcHJlYnVpbHQvbGludXgteDg2L2Jpbi9hcm0t
-ZWFiaS1nKysKCmV4cG9ydApHQ0M9L3UvYW5kcm9pZC1uZGstcjViL3Rvb2xjaGFpbnMvYXJtLWVh
-YmktNC40LjAvCnByZWJ1aWx0L2xpbnV4LXg4Ni9iaW4vYXJtLWVhYmktZ2NjCgpleHBvcnQKTk09
-L3UvYW5kcm9pZC1uZGstcjViL3Rvb2xjaGFpbnMvYXJtLWVhYmktNC40LjAvCnByZWJ1aWx0L2xp
-bnV4LXg4Ni9iaW4vYXJtLWVhYmktbm0KCmV4cG9ydCBDUFBGTEFHUz3igJ0tSS91L2FuZHJvaWQt
-bmRrLXI1Yi9wbGF0Zm9ybXMvYW5kcm9pZC0zLwphcmNoLWFybS91c3IvaW5jbHVkZS/igJ0KCmV4
-cG9ydCBDRkxBR1M94oCdLW5vc3RkbGli4oCdCgpleHBvcnQKTERGTEFHUz0tV2ws4oCTZW50cnk9
-bWFpbizigJNuby11bmRlZmluZWQsLXJwYXRoLWxpbms9L3UvYW5kcm9pZC1uZGstcjViLwpwbGF0
-Zm9ybXMvYW5kcm9pZC0zL2FyY2gtYXJtL3Vzci9saWIvLUwvdS9hbmRyb2lkLW5kay1yNWIvcGxh
-dGZvcm1zLwphbmRyb2lkLTMvYXJjaC1hcm0vdXNyL2xpYi8KCmV4cG9ydCBMSUJTPS1sYwoKV2l0
-aCB0aGUgYWJvdmUgdmFyaWFibGVzIGFtIGFibGUgdG8gY3Jvc3MgY29tcGlsZSBMVFAuIAoKQnV0
-IGFmdGVyIHB1c2hpbmcgdGhlIGNyb3NzIGNvbXBpbGVkIG1ha2UgZmlsZSwgY3Jvc3MgY29tcGls
-ZWQgYnVzeWJveCBhbmQgCmNyb3NzIGNvbXBpbGVkIGJhc2g0LjEgdG8gdGFyZ2V0LCBhbSBub3Qg
-YWJsZSB0byBleGVjdXRlIHJ1bmx0cC4KCkkgYW0gZ2V0dGluZyB0aGUgYmVsb3cgZXJyb3IgOgpS
-dW5uaW5nIHRlc3RzLi4uLi4uLgovZGF0YS9sdHAvbWFrZV8yODAyXzAyXzIwMTIvYmluL2x0cC1w
-YW46IElsbGVnYWwgbnVtYmVyOgoKUGxlYXNlIGd1aWRlIG1lIHdoZXJlIEkgYW0gZ29pbmcgd3Jv
-bmcgb3Igd2hhdCBpcyB0aGUgc29sdXRpb24gZm9yIHRoaXMgZXJyb3IuCgpUaGFua3MgaW4gYWR2
-YW5jZSAuCgpSZWdhcmRzLApSZWppc2gKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KS2VlcCBZb3Vy
-IERldmVsb3BlciBTa2lsbHMgQ3VycmVudCB3aXRoIExlYXJuRGV2Tm93IQpUaGUgbW9zdCBjb21w
-cmVoZW5zaXZlIG9ubGluZSBsZWFybmluZyBsaWJyYXJ5IGZvciBNaWNyb3NvZnQgZGV2ZWxvcGVy
-cwppcyBqdXN0ICQ5OS45OSEgVmlzdWFsIFN0dWRpbywgU2hhcmVQb2ludCwgU1FMIC0gcGx1cyBI
-VE1MNSwgQ1NTMywgTVZDMywKTWV0cm8gU3R5bGUgQXBwcywgbW9yZS4gRnJlZSBmdXR1cmUgcmVs
-ZWFzZXMgd2hlbiB5b3Ugc3Vic2NyaWJlIG5vdyEKaHR0cDovL3Auc2YubmV0L3NmdS9sZWFybmRl
-dm5vdy1kMmQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On 02/20/2012 10:55 AM, Caspar Zhang wrote:
+
+> 
+> this patch fixes two problems.
+> 
+> 1) avoid using functions from numactl package, so compilation would pass
+> w/ and w/o numactl development package installed.
+> 
+> 2) count_numa() functions now has a parameter, which stores the array of
+> each nodes on the system. This is because some systems doesn't have
+> continuous nodes or the node sequence does not start from zero, when we
+> want to test specific node, we should make sure the node does exist.
+> Thus, an array for node numbers is necessary. Follow-up patches will
+> update count_numa() with new parameters accordingly.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/mem/include/mem.h |    2 +-
+>  testcases/kernel/mem/lib/mem.c     |   12 +++++-------
+>  2 files changed, 6 insertions(+), 8 deletions(-)
+
+
+That works for me (same for the other 2 patches of this series)
+
+Tested-by: Markos Chandras <markos.chandras@imgtec.com>
+
+-- 
+markos
+
+
+------------------------------------------------------------------------------
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
