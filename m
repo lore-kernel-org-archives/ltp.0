@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RvTXT-00041M-Ke
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 12:55:51 +0000
-Date: Thu, 9 Feb 2012 14:09:45 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120209130945.GA27782@saboteur.suse.cz>
-References: <1A42CE6F5F474C41B63392A5F80372B212E02C95C4@shsmsx501.ccr.corp.intel.com>
-	<CAGH67wTKz+VPzN_-+7uKfeBguhuKZK_mj-m8oy2kY6pyKNihzw@mail.gmail.com>
-	<1A42CE6F5F474C41B63392A5F80372B212E050913C@shsmsx501.ccr.corp.intel.com>
-	<20120125183628.GD8067@saboteur.suse.cz>
-	<D908B1B9E708C047A32444772B58AE880414C8@SHSMSX101.ccr.corp.intel.com>
-	<CAGH67wSw9nGvHOg_Ywp5p0CsjJgycpF1NNfXiG38pFyLyNSQTw@mail.gmail.com>
-	<D908B1B9E708C047A32444772B58AE88041512@SHSMSX101.ccr.corp.intel.com>
-	<20120201152611.GA29203@saboteur.suse.cz>
-	<D908B1B9E708C047A32444772B58AE88043030@SHSMSX101.ccr.corp.intel.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1RziVY-0000tE-98
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 05:43:24 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RziVW-00015b-OV
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 05:43:24 +0000
+Message-ID: <4F432EF6.40601@cn.fujitsu.com>
+Date: Tue, 21 Feb 2012 13:43:18 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <D908B1B9E708C047A32444772B58AE88043030@SHSMSX101.ccr.corp.intel.com>
-Subject: Re: [LTP] [Ltp-commits] [patch] Power Management: add notification
- once 'sched_debug' not in boot cmdline
+Subject: [LTP] [PATCH v3 2/2] shmem_2nstest: fix a bug of hang
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,50 +25,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Xu, Anhua" <anhua.xu@intel.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> commit bb43a35ce70ad638f72ae7dcd8c198ca95dac43f
-> Author: Xu,Anhua <anhua.xu@intel.com>
-> Date:   Wed Feb 8 11:04:33 2012 +0800
-> 
->     Power Management: fix configuration check for sched_domain.py
->     
->     Add checking for "sched_debug" in kernel cmdline parameter.
->     Without this option, power policy change via sched_mc/smt_power_savings
->     will not cause any output from dmesg that is needed for sched_domain.py
 
-The signed-off-by line is missing here. Could you please resend with it.
+commit d2e9f84 replace fprintf() with snprintf() in tst_print(), but this will
+cause container_test.sh hang in case shmem_2nstest.
 
-> diff --git a/testcases/kernel/power_management/runpwtests.sh b/testcases/kernel/power_management/runpwtests.sh
-> index c4a1d39..ab4536f 100755
-> --- a/testcases/kernel/power_management/runpwtests.sh
-> +++ b/testcases/kernel/power_management/runpwtests.sh
-> @@ -188,8 +188,11 @@ fi
->  
->  # sched_domain test
->  if ! type python > /dev/null ; then
-> -	tst_resm TCONF "Python is not installed, CPU Consoldation\
-> +	tst_resm TCONF "Python is not installed, CPU Consolidation\
->  test cannot run"
-> +elif ! grep sched_debug -qw /proc/cmdline ; then
-> +	tst_resm TCONF "Kernel cmdline parameter 'sched_debug' needed,\
-> +CPU Consolidation test cannot run" 
->  else
->  	if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
->      		echo "max sched mc $max_sched_mc"
-> 
+If compile tst_res.c without -O[level], the case will not hang.
+
+When I test the following cases:
+# ./shmem_2nstest none
+shmem_2nstest    0  TINFO  :  Shared Memory namespace test : none
+shmem_2nstest    0  TINFO  :  Cont1: Able to create shared mem segment
+shmem_2nstest    1  TPASS  :  Plain cloned process able to access shmem segment created
+# ./shmem_2nstest unshare
+shmem_2nstest    0  TINFO  :  Shared Memory namespace test : unshare
+shmem_2nstest    0  TINFO  :  Cont1: Able to create shared mem segment
+shmem_2nstest    0  TINFO  :  Cont2: Able to allocate shmem seg with the same key
+shmem_2nstest    1  TPASS  :  unshare : In namespace2 unable to access the shmem seg created in Namespace1
+# ./shmem_2nstest clone
+shmem_2nstest    0  TINFO  :  Shared Memory namespace test : clone
+
+this will hang up.
+
+So I think tst_resm("Cont1") will cause hang.
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ .../kernel/containers/sysvipc/shmem_2nstest.c      |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/containers/sysvipc/shmem_2nstest.c b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
+index 7a468ad..28e91ff 100644
+--- a/testcases/kernel/containers/sysvipc/shmem_2nstest.c
++++ b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
+@@ -69,8 +69,8 @@ int check_shmem1(void *vtest)
+ 	if (id1 == -1)
+ 		tst_brkm(TFAIL|TERRNO, NULL, "shmget failed");
+ 
+-	tst_resm(TINFO, "Cont1: Able to create shared mem segment");
+ 	write(p1[1], "done", 5);
++	tst_resm(TINFO, "Cont1: Able to create shared mem segment");
+ 	tst_exit();
+ }
+ 
+-- 
+1.7.1
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Best Regards,
+Peng
+
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
