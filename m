@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RsyED-0007cF-Cf
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 15:05:37 +0000
-Date: Thu, 2 Feb 2012 16:19:00 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120202151900.GB3605@saboteur.suse.cz>
-References: <1327888994-4884-1-git-send-email-caspar@casparzhang.com>
-	<1328174935-9294-1-git-send-email-caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Rzilp-0001lO-AU
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 06:00:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Rzilj-0008Iw-L0
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 06:00:13 +0000
+Message-ID: <4F4330B6.4080102@cn.fujitsu.com>
+Date: Tue, 21 Feb 2012 13:50:46 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1328174935-9294-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH v2 1/2] mm/vma03: new testcase
+References: <4F432EF6.40601@cn.fujitsu.com>
+In-Reply-To: <4F432EF6.40601@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 2/2] shmem_2nstest: fix a bug of hang
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,88 +28,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +
-> +		fd = open(TESTFILE, O_RDWR);
-> +		if (fd == -1)
-> +			tst_brkm(TBROK|TCONF, NULL, "open %s", TESTFILE);
+On 02/21/2012 01:43 PM, Peng Haitao wrote:
 
-I know that we don't have a clear definition for these particular
-bitflags (which I would like to fix), however TCONF|TBROK seems strange
-to me. As TCONF is "testcase not appropriate for your system" and TBROK
-"testcase broken". I think that only TRBOK is better result here.
+> 
+> commit d2e9f84 replace fprintf() with snprintf() in tst_print(), but this will
+> cause container_test.sh hang in case shmem_2nstest.
+> 
+> If compile tst_res.c without -O[level], the case will not hang.
+> 
+> When I test the following cases:
+> # ./shmem_2nstest none
+> shmem_2nstest    0  TINFO  :  Shared Memory namespace test : none
+> shmem_2nstest    0  TINFO  :  Cont1: Able to create shared mem segment
+> shmem_2nstest    1  TPASS  :  Plain cloned process able to access shmem segment created
+> # ./shmem_2nstest unshare
+> shmem_2nstest    0  TINFO  :  Shared Memory namespace test : unshare
+> shmem_2nstest    0  TINFO  :  Cont1: Able to create shared mem segment
+> shmem_2nstest    0  TINFO  :  Cont2: Able to allocate shmem seg with the same key
+> shmem_2nstest    1  TPASS  :  unshare : In namespace2 unable to access the shmem seg created in Namespace1
+> # ./shmem_2nstest clone
+> shmem_2nstest    0  TINFO  :  Shared Memory namespace test : clone
+> 
+> this will hang up.
+> 
+> So I think tst_resm("Cont1") will cause hang.
 
-Other than that it's ready for commit.
 
-> +		pgoff = ULONG_MAX - 1;
-> +		map = mmap2(NULL, pgsz, PROT_READ|PROT_WRITE, MAP_PRIVATE,
-> +				fd, pgoff);
-> +		if (map == MAP_FAILED)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "mmap2");
-> +
-> +		remap = mremap(map, pgsz, 2 * pgsz, 0);
-> +		if (remap == MAP_FAILED) {
-> +			if (errno == EINVAL)
-> +				tst_resm(TPASS,	"mremap failed as expected.");
-> +			else
-> +				tst_resm(TFAIL|TERRNO, "mremap");
-> +		} else {
-> +			tst_resm(TFAIL, "mremap succeeded unexpectedly.");
-> +		}
-> +
-> +		close(fd);
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void *mmap2(void *addr, size_t length, int prot,
-> +		int flags, int fd, off_t pgoffset)
-> +{
-> +	return (void *)syscall(SYS_mmap2, addr, length, prot,
-> +			flags, fd, pgoffset);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	tst_tmpdir();
-> +
-> +	fd = creat(TESTFILE, 0644);
-> +	if (fd == -1)
-> +		tst_brkm(TBROK|TCONF, NULL, "creat %s", TESTFILE);
+Tested OK to me. 
 
-Here as well.
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-> +	close(fd);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	tst_rmdir();
-> +}
-> +#else /* __NR_mmap2 */
-> +int main(int argc, char *argv[])
-> +{
-> +	tst_brkm(TCONF, NULL, "__NR_mmap2 is not defined on your system");
-> +}
-> +#endif
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> ---
+>  .../kernel/containers/sysvipc/shmem_2nstest.c      |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/sysvipc/shmem_2nstest.c b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
+> index 7a468ad..28e91ff 100644
+> --- a/testcases/kernel/containers/sysvipc/shmem_2nstest.c
+> +++ b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
+> @@ -69,8 +69,8 @@ int check_shmem1(void *vtest)
+>  	if (id1 == -1)
+>  		tst_brkm(TFAIL|TERRNO, NULL, "shmget failed");
+>  
+> -	tst_resm(TINFO, "Cont1: Able to create shared mem segment");
+>  	write(p1[1], "done", 5);
+> +	tst_resm(TINFO, "Cont1: Able to create shared mem segment");
+>  	tst_exit();
+>  }
+>  
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
