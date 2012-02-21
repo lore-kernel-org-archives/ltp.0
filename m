@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RvTwC-00086s-4y
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 13:21:24 +0000
-Date: Thu, 9 Feb 2012 14:35:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120209133519.GB27782@saboteur.suse.cz>
-References: <1328692433-24296-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4F323FCD.1090203@casparzhang.com>
-	<4F33C2D0.9070801@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1Rzg3g-0004AF-1K
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 03:06:28 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Rzg3f-0003Ei-0i
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 03:06:27 +0000
+Received: by daln34 with SMTP id n34so6467502dal.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 20 Feb 2012 19:06:21 -0800 (PST)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Tue, 21 Feb 2012 11:05:35 +0800
+Message-Id: <1329793535-27208-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
+References: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F33C2D0.9070801@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v4 0/4] hugemmap: auto mount fix
+Content-Type: multipart/mixed; boundary="------------1.7.8.4"
+Subject: [LTP] [PATCH 3/2 v2] mm: fix possible node missing in write_cpusets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,46 +28,207 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> >>   hugemmap01: auto mount the temporary dir for testing
-> >>   hugemmap02: auto mount the temporary dir for testing
-> >>   hugemmap03: auto mount the temporary dir for testing
-> >>   hugemmap04: auto mount the temporary dir for testing
-> >>
-> >>  runtest/hugetlb                                    |    8 ++--
-> >>  testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   11 ++++
-> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   55 +++++++++++++-------
-> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |   50 ++++++++++++------
-> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |   55 +++++++++++++-------
-> >>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |   53 ++++++++++++-------
-> >>  6 files changed, 155 insertions(+), 77 deletions(-)
+This is a multi-part message in MIME format.
+--------------1.7.8.4
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-I've got:
 
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/home/metan/Work/git/ltp-dev/testcases/kernel/include -I/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../lib -I/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../../lib -I../../../../../include -I../../../../../include   -L/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../lib -L/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../../lib -L../../../../../lib  hugemmap04.c   -lltp -lipc_hugetlb -lmem -o hugemmap04
-/home/metan/Work/git/ltp-dev/testcases/kernel/mem/hugetlb/hugemmap/../../lib/libmem.a(mem.o): In function `oom':
-/home/metan/Work/git/ltp-dev/testcases/kernel/mem/lib/mem.c:37: undefined reference to `set_mempolicy'
-collect2: ld returned 1 exit status
-make: *** [hugemmap04] Error 1
+If a system has noncontinuous nodes, or the node doesn't start from 0,
+write_cpusets() function may fail because it hard-coded second node as
+"node1". This patch fixes the function by fetching second node number
+from the stored array.
 
-Which looks like forgotten $(NUMA_LIBS) in LDFLAGS when you have numa devel libs installed.
+Tested-by: Caspar Zhang <caspar@casparzhang.com>
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ testcases/kernel/mem/include/mem.h |    4 ++--
+ testcases/kernel/mem/ksm/ksm02.c   |    6 ++----
+ testcases/kernel/mem/ksm/ksm04.c   |    6 ++----
+ testcases/kernel/mem/lib/mem.c     |   24 +++++++++++++++---------
+ 4 files changed, 21 insertions(+), 19 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+--------------1.7.8.4
+Content-Type: text/x-patch;
+	name="0001-mm-fix-possible-node-missing-in-write_cpusets.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-mm-fix-possible-node-missing-in-write_cpusets.patch"
+
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 4319a90..b40c0bc 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -52,8 +52,8 @@ void check_ksm_options(int *size, int *num, int *unit);
+ void ksm_usage(void);
+ 
+ /* For mm/oom* and mm/ksm* tests*/
+-void _gather_cpus(char *cpus);
+-void write_cpusets(void);
++void _gather_cpus(char *cpus, long nd);
++void write_cpusets(long nd);
+ void umount_mem(char *path, char *path_new);
+ void mount_mem(char *name, char *fs, char *options, char *path, char *path_new);
+ 
+diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+index 4cd1fab..7bed72b 100644
+--- a/testcases/kernel/mem/ksm/ksm02.c
++++ b/testcases/kernel/mem/ksm/ksm02.c
+@@ -85,7 +85,6 @@ int main(int argc, char *argv[])
+ 	int lc;
+ 	char *msg;
+ 	int size = 128, num = 3, unit = 1;
+-	unsigned long nnodes;
+ 	unsigned long nmask = 2;
+ 	long nodes[MAXNODES];
+ 
+@@ -93,8 +92,7 @@ int main(int argc, char *argv[])
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+-	nnodes = count_numa(nodes);
+-	if (nnodes <= 1)
++	if (count_numa(nodes) <= 1)
+ 		tst_brkm(TCONF, NULL, "required a NUMA system.");
+ 
+ 	setup();
+@@ -114,7 +112,7 @@ int main(int argc, char *argv[])
+ 		}
+ 		create_same_memory(size, num, unit);
+ 
+-		write_cpusets();
++		write_cpusets(nodes[1]);
+ 		create_same_memory(size, num, unit);
+ 	}
+ 	cleanup();
+diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+index de76db7..2f97712 100644
+--- a/testcases/kernel/mem/ksm/ksm04.c
++++ b/testcases/kernel/mem/ksm/ksm04.c
+@@ -85,7 +85,6 @@ int main(int argc, char *argv[])
+ 	int lc;
+ 	char *msg;
+ 	int size = 128, num = 3, unit = 1;
+-	unsigned long nnodes;
+ 	unsigned long nmask = 2;
+ 	long nodes[MAXNODES];
+ 
+@@ -93,8 +92,7 @@ int main(int argc, char *argv[])
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+-	nnodes = count_numa(nodes);
+-	if (nnodes <= 1)
++	if (count_numa(nodes) <= 1)
+ 		tst_brkm(TCONF, NULL, "required a NUMA system.");
+ 
+ 	setup();
+@@ -116,7 +114,7 @@ int main(int argc, char *argv[])
+ 		}
+ 		create_same_memory(size, num, unit);
+ 
+-		write_cpusets();
++		write_cpusets(nodes[1]);
+ 		create_same_memory(size, num, unit);
+ 	}
+ 	cleanup();
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 9a1d5f2..337833a 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -101,8 +101,14 @@ void oom(int testcase, int mempolicy, int lite)
+ 
+ void testoom(int mempolicy, int lite, int numa)
+ {
+-	if (numa && !mempolicy)
+-		write_cpusets();
++	long nodes[MAXNODES];
++
++	if (numa && !mempolicy) {
++		if (count_numa(nodes) <= 1)
++			tst_brkm(TCONF, cleanup, "required a NUMA system.");
++		/* write cpusets to 2nd node */
++		write_cpusets(nodes[1]);
++	}
+ 
+ 	tst_resm(TINFO, "start normal OOM testing.");
+ 	oom(NORMAL, mempolicy, lite);
+@@ -586,7 +592,7 @@ void ksm_usage(void)
+ 
+ /* For mm/oom* and mm/ksm* tests */
+ 
+-void _gather_cpus(char *cpus)
++void _gather_cpus(char *cpus, long nd)
+ {
+ 	int ncpus = 0;
+ 	int i;
+@@ -596,8 +602,7 @@ void _gather_cpus(char *cpus)
+ 		ncpus++;
+ 
+ 	for (i = 0; i < ncpus; i++)
+-		/* FIXME: possible non-existed node1 */
+-		if (path_exist(PATH_SYS_SYSTEM "/node/node1/cpu%d", i)) {
++		if (path_exist(PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i)) {
+ 			sprintf(buf, "%d,", i);
+ 			strcat(cpus, buf);
+ 		}
+@@ -605,14 +610,14 @@ void _gather_cpus(char *cpus)
+ 	cpus[strlen(cpus) - 1] = '\0';
+ }
+ 
+-void write_cpusets(void)
++void write_cpusets(long nd)
+ {
+ 	char cpus[BUFSIZ] = "";
+ 	char buf[BUFSIZ] = "";
+ 	int fd;
+ 
+-	_gather_cpus(cpus);
+-	tst_resm(TINFO, "CPU list for 2nd node is %s.", cpus);
++	_gather_cpus(cpus, nd);
++	tst_resm(TINFO, "CPU list for node%ld is: %s.", nd, cpus);
+ 
+ 	/*
+ 	 * try either '/dev/cpuset/mems' or '/dev/cpuset/cpuset.mems'
+@@ -628,7 +633,8 @@ void write_cpusets(void)
+ 		} else
+ 			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
+ 	}
+-	if (write(fd, "1", 1) != 1)
++	snprintf(buf, BUFSIZ, "%ld", nd);
++	if (write(fd, buf, strlen(buf)) != strlen(buf))
+ 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
+ 	close(fd);
+ 
+
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.4--
+
+
+
