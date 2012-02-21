@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Rst7I-000467-Ca
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 09:38:08 +0000
-Received: from mail-iy0-f175.google.com ([209.85.210.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Rst7E-0006ZV-MM
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 09:38:08 +0000
-Received: by iaby12 with SMTP id y12so3901418iab.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1RziI0-0005Aa-6T
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 05:29:24 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1RziHz-0006NH-5e
+	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 05:29:24 +0000
+Received: by pbcum15 with SMTP id um15so7032975pbc.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 02 Feb 2012 01:37:59 -0800 (PST)
+	Mon, 20 Feb 2012 21:29:17 -0800 (PST)
+Message-ID: <4F432B83.2010409@casparzhang.com>
+Date: Tue, 21 Feb 2012 13:28:35 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  2 Feb 2012 17:37:33 +0800
-Message-Id: <1328175453-10106-2-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1328175453-10106-1-git-send-email-caspar@casparzhang.com>
-References: <1328175453-10106-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <4F2A5185.6060008@casparzhang.com>
-References: <4F2A5185.6060008@casparzhang.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH v2 2/2] mm/thp02: add runtest entry
+References: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/2] mm/lib: change count_numa() behavior
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,47 +27,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: LTP List <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+On 02/20/2012 06:55 PM, Caspar Zhang wrote:
+> 
+> this patch fixes two problems.
+> 
+> 1) avoid using functions from numactl package, so compilation would pass
+> w/ and w/o numactl development package installed.
+> 
+> 2) count_numa() functions now has a parameter, which stores the array of
+> each nodes on the system. This is because some systems doesn't have
+> continuous nodes or the node sequence does not start from zero, when we
+> want to test specific node, we should make sure the node does exist.
+> Thus, an array for node numbers is necessary. Follow-up patches will
+> update count_numa() with new parameters accordingly.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/mem/include/mem.h |    2 +-
+>  testcases/kernel/mem/lib/mem.c     |   12 +++++-------
+>  2 files changed, 6 insertions(+), 8 deletions(-)
+> 
 
+FYI. the patch series has been tested on several systems and confirmed
+to be working. Thanks for reviewing. Committed.
 
-adding thp02 entry to runtest/mm
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- runtest/mm |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-
---------------1.7.8.4
-Content-Type: text/x-patch; name="0002-mm-thp02-add-runtest-entry.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0002-mm-thp02-add-runtest-entry.patch"
-
-diff --git a/runtest/mm b/runtest/mm
-index 73fd13c..26fe534 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -79,6 +79,7 @@ oom03 oom03
- oom04 oom04
- 
- thp01 thp01 -I 120
-+thp02 thp02
- 
- vma01 vma01
- vma02 vma02
-
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
 Keep Your Developer Skills Current with LearnDevNow!
@@ -78,18 +65,7 @@ The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
 http://p.sf.net/sfu/learndevnow-d2d
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.4--
-
-
-
