@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1S0VQX-0006ID-VQ
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 09:57:29 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S0VQS-0001F8-2a
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 09:57:29 +0000
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Thu, 23 Feb 2012 09:56:58 +0000
-Message-ID: <1329991018-26230-1-git-send-email-markos.chandras@imgtec.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1S0Doo-0005bm-TJ
+	for ltp-list@lists.sourceforge.net; Wed, 22 Feb 2012 15:09:22 +0000
+Date: Wed, 22 Feb 2012 16:09:48 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120222150948.GA32698@saboteur.suse.cz>
+References: <4F20EB81.4030109@cn.fujitsu.com> <4F33277F.3050905@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] creat07: Drop basename() function call from read-only
-	variable
+Content-Disposition: inline
+In-Reply-To: <4F33277F.3050905@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4 1/8] A library used to test memcg
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,56 +24,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-test_app is a read-only variable because it is defined as a preprocessor macro.
-Using basename() on this variable, it will most certainly lead to a segmentation
-fault in uClibc code. Moreover, there is no need to use basename() at all since
-the test_app variable is a single string and it does not contain any leading
-paths.
+Hi!
+> > 
+> > This library includes a set of functions used to test memcg.
+> > 
+> 
+> hi, anyone can comment the patch?
 
-Quote from uClibc's include/libgen.h header:
+Sorry for the delay.
 
-"Return final component of PATH.
-	This is the weird XPG version of this function.  It sometimes will
-	modify its argument.  Therefore we normally use the GNU version (in
-	<string.h>) and only if this header is included make the XPG
-	version available under the real name.
+Generally the code looks good, I guess we could merge this and wait for
+feedback from testers or has anybody any objections?
 
-	extern char *__xpg_basename (char *__path) __THROW;
-	#define basename        __xpg_basename"
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/kernel/syscalls/creat/creat07.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
-index 3bb1288..294f998 100644
---- a/testcases/kernel/syscalls/creat/creat07.c
-+++ b/testcases/kernel/syscalls/creat/creat07.c
-@@ -91,7 +91,7 @@ int main(int ac, char **av)
- 
- 		if (pid == 0) {
- 			char *av[2];
--			av[0] = basename(test_app);
-+			av[0] = test_app;
- 			av[1] = NULL;
- 			(void)execve(test_app, av, NULL);
- 			perror("execve failed");
-@@ -147,7 +147,7 @@ void setup(char *app)
- 			tst_brkm(TBROK|TERRNO, NULL, "getcwd failed");
- 
- 		snprintf(test_path, sizeof(test_path), "%s/%s",
--		    pwd, basename(test_app));
-+		    pwd, test_app);
- 
- 		free(pwd);
- 	}
 -- 
-1.7.1
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
