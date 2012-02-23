@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <filippo.arcidiacono@st.com>) id 1S0TyZ-0003S5-FU
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 08:24:31 +0000
-Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
-	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S0TyV-0006de-LK
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 08:24:31 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 126AD193
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 23 Feb 2012 08:24:07 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 450671A43
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 23 Feb 2012 08:24:07 +0000 (GMT)
+	(envelope-from <filippo.arcidiacono@st.com>) id 1S0VoY-0007ew-RP
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 10:22:18 +0000
+Received: from eu1sys200aog119.obsmtp.com ([207.126.144.147])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S0VoU-0005Yo-KG
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 10:22:18 +0000
 From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
-Date: Thu, 23 Feb 2012 09:23:51 +0100
-Message-Id: <1329985431-27567-1-git-send-email-y>
-In-Reply-To: <y>
-References: <y>
-Subject: [LTP] [PATCH] getrusage04: add opportunity to increase the max
+References: <y> <1329985431-27567-1-git-send-email-y>
+	<4F4609F6.5060008@cn.fujitsu.com>
+In-Reply-To: <4F4609F6.5060008@cn.fujitsu.com>
+Date: Thu, 23 Feb 2012 11:21:51 +0100
+Message-ID: <016501ccf214$f5f05da0$e1d118e0$@arcidiacono@st.com>
+MIME-Version: 1.0
+Content-Language: en-us
+Subject: Re: [LTP] [PATCH] getrusage04: add opportunity to increase the max
 	[us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -32,114 +27,157 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-From: Filippo Arcidiacono <filippo.arcidiacono@st.com>
 
-On slow systems it could be needed to increase the max value [us]time
-increment beetween two getrusage calls.
 
-Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
-Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
----
- testcases/kernel/syscalls/getrusage/getrusage04.c |   42 +++++++++++++++++---
- 1 files changed, 35 insertions(+), 7 deletions(-)
+> -----Original Message-----
+> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+> Sent: Thursday, February 23, 2012 10:42 AM
+> To: Filippo ARCIDIACONO
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] [PATCH] getrusage04: add opportunity to increase the
+> max [us]time increment
+> 
+> On 02/23/2012 04:23 PM, Filippo ARCIDIACONO wrote:
+> 
+> > From: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> >
+> > On slow systems it could be needed to increase the max value [us]time
+> > increment beetween two getrusage calls.
+> >
+> > Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> > Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+> > ---
+> >  testcases/kernel/syscalls/getrusage/getrusage04.c |   42
+> +++++++++++++++++---
+> >  1 files changed, 35 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c
+> b/testcases/kernel/syscalls/getrusage/getrusage04.c
+> > index 3bdd3b0..92f8361 100644
+> > --- a/testcases/kernel/syscalls/getrusage/getrusage04.c
+> > +++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+> > @@ -54,11 +54,22 @@ int TST_TOTAL = 1;
+> >
+> >  #define BIAS_MAX      1000
+> >  #define RECORD_MAX    20
+> > +#define FACTOR_MAX    10
+> >
+> >  #ifndef RUSAGE_THREAD
+> >  #define RUSAGE_THREAD 1
+> >  #endif
+> >
+> > +static int opt_factor;
+> > +static char *factor_str;
+> > +static long factor_nr = 1;
+> > +
+> > +option_t child_options[] = {
+> > +	{ "m:", &opt_factor, &factor_str },
+> > +	{ NULL, NULL,         NULL }
+> > +};
+> > +
+> > +static void fusage(void);
+> >  static void busyloop(long wait);
+> >  static void setup(void);
+> >  static void cleanup(void);
+> > @@ -69,8 +80,9 @@ int main(int argc, char *argv[])
+> >  	unsigned long ulast, udelta, slast, sdelta;
+> >  	int i, lc;
+> >  	char *msg;
+> > +	char msg_string[BUFSIZ];
+> >
+> > -	msg = parse_opts(argc, argv, NULL, NULL);
+> > +	msg = parse_opts(argc, argv, child_options, fusage);
+> >  	if (msg != NULL)
+> >  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> >
+> > @@ -80,6 +92,11 @@ int main(int argc, char *argv[])
+> >
+> >  	setup();
+> >
+> > +	if (opt_factor)
+> > +		factor_nr = SAFE_STRTOL(cleanup, factor_str, 0,
+> FACTOR_MAX);
+> > +
+> > +	tst_resm(TINFO, "Using %ld as multiply factor for max [us]time
+> increment (1000+%ldus)!", factor_nr, BIAS_MAX * factor_nr);
+> 
+> 
+> Could you please fix the over 80 characters warning?
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
-index 3bdd3b0..92f8361 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-@@ -54,11 +54,22 @@ int TST_TOTAL = 1;
- 
- #define BIAS_MAX      1000
- #define RECORD_MAX    20
-+#define FACTOR_MAX    10
- 
- #ifndef RUSAGE_THREAD
- #define RUSAGE_THREAD 1
- #endif
- 
-+static int opt_factor;
-+static char *factor_str;
-+static long factor_nr = 1;
-+
-+option_t child_options[] = {
-+	{ "m:", &opt_factor, &factor_str },
-+	{ NULL, NULL,         NULL }
-+};
-+
-+static void fusage(void);
- static void busyloop(long wait);
- static void setup(void);
- static void cleanup(void);
-@@ -69,8 +80,9 @@ int main(int argc, char *argv[])
- 	unsigned long ulast, udelta, slast, sdelta;
- 	int i, lc;
- 	char *msg;
-+	char msg_string[BUFSIZ];
- 
--	msg = parse_opts(argc, argv, NULL, NULL);
-+	msg = parse_opts(argc, argv, child_options, fusage);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
-@@ -80,6 +92,11 @@ int main(int argc, char *argv[])
- 
- 	setup();
- 
-+	if (opt_factor)
-+		factor_nr = SAFE_STRTOL(cleanup, factor_str, 0, FACTOR_MAX);
-+
-+	tst_resm(TINFO, "Using %ld as multiply factor for max [us]time increment (1000+%ldus)!", factor_nr, BIAS_MAX * factor_nr);
-+
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		Tst_count = 0; i = 0;
- 		ulast = 0, slast = 0;
-@@ -95,14 +112,20 @@ int main(int argc, char *argv[])
- 				tst_resm(TINFO, "utime:%12luus; stime:%12luus",
- 					    usage.ru_utime.tv_usec,
- 					    usage.ru_stime.tv_usec);
--				if (udelta > 1000+BIAS_MAX)
--					tst_brkm(TFAIL, cleanup,
--						    "utime increased > 1000us:"
-+				if (udelta > 1000+(BIAS_MAX * factor_nr)) {
-+					sprintf(msg_string,
-+						"utime increased > %ldus:",
-+						1000 + BIAS_MAX * factor_nr);
-+					tst_brkm(TFAIL, cleanup, msg_string,
- 						    " delta = %luus", udelta);
--				if (sdelta > 1000+BIAS_MAX)
--					tst_brkm(TFAIL, cleanup,
--						    "stime increased > 1000us:"
-+				}
-+				if (sdelta > 1000+(BIAS_MAX * factor_nr)) {
-+					sprintf(msg_string,
-+						"stime increased > %ldus:",
-+						1000 + BIAS_MAX * factor_nr);
-+					tst_brkm(TFAIL, cleanup, msg_string,
- 						    " delta = %luus", sdelta);
-+				}
- 			}
- 			ulast = usage.ru_utime.tv_usec;
- 			slast = usage.ru_stime.tv_usec;
-@@ -113,6 +136,11 @@ int main(int argc, char *argv[])
- 	tst_exit();
- }
- 
-+static void fusage(void)
-+{
-+	printf("  -m n    use n as multiply factor for max [us]time increment (1000+(1000*n)us), default value is 1\n");
-+}
-+
- static void busyloop(long wait)
- {
- 	while (wait--)
--- 
-1.5.5.6
+Ok.
+> 
+> > +
+> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> >  		Tst_count = 0; i = 0;
+> >  		ulast = 0, slast = 0;
+> > @@ -95,14 +112,20 @@ int main(int argc, char *argv[])
+> >  				tst_resm(TINFO, "utime:%12luus;
+stime:%12luus",
+> >  					    usage.ru_utime.tv_usec,
+> >  					    usage.ru_stime.tv_usec);
+> > -				if (udelta > 1000+BIAS_MAX)
+> > -					tst_brkm(TFAIL, cleanup,
+> > -						    "utime increased >
+1000us:"
+> > +				if (udelta > 1000+(BIAS_MAX * factor_nr)) {
+> > +					sprintf(msg_string,
+> > +						"utime increased > %ldus:",
+> > +						1000 + BIAS_MAX *
+factor_nr);
+> > +					tst_brkm(TFAIL, cleanup, msg_string,
+> >  						    " delta = %luus",
+udelta);
+> > -				if (sdelta > 1000+BIAS_MAX)
+> > -					tst_brkm(TFAIL, cleanup,
+> > -						    "stime increased >
+1000us:"
+> > +				}
+> > +				if (sdelta > 1000+(BIAS_MAX * factor_nr)) {
+> > +					sprintf(msg_string,
+> > +						"stime increased > %ldus:",
+> > +						1000 + BIAS_MAX *
+factor_nr);
+> > +					tst_brkm(TFAIL, cleanup, msg_string,
+> >  						    " delta = %luus",
+sdelta);
+> > +				}
+> >  			}
+> >  			ulast = usage.ru_utime.tv_usec;
+> >  			slast = usage.ru_stime.tv_usec;
+> > @@ -113,6 +136,11 @@ int main(int argc, char *argv[])
+> >  	tst_exit();
+> >  }
+> >
+> > +static void fusage(void)
+> > +{
+> > +	printf("  -m n    use n as multiply factor for max [us]time
+> increment (1000+(1000*n)us), default value is 1\n");
+> 
+> 
+> ditto
+> 
+> 
+> Thanks
+> -Wanlong Gao
+
+I'll post a new version.
+Thanks for the review.
+
+Filippo.
+> 
+> > +}
+> > +
+> >  static void busyloop(long wait)
+> >  {
+> >  	while (wait--)
+> 
+
 
 
 ------------------------------------------------------------------------------
