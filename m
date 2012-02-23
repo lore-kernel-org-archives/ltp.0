@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1RsY9v-0000Mz-C6
-	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 11:15:27 +0000
-Date: Wed, 1 Feb 2012 12:28:40 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1S0b1d-0004Fu-UZ
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 15:56:09 +0000
+Date: Thu, 23 Feb 2012 16:56:39 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120201112840.GA25391@saboteur.suse.cz>
-References: <1328090070-15140-1-git-send-email-kai.kang@windriver.com>
+Message-ID: <20120223155639.GB5960@saboteur.suse.cz>
+References: <1329991018-26230-1-git-send-email-markos.chandras@imgtec.com>
+	<20120223153803.GC20855@saboteur.suse.cz>
+	<4F465F43.8010503@imgtec.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1328090070-15140-1-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] sigaction/16-1.c: make build pass on mips arch
+In-Reply-To: <4F465F43.8010503@imgtec.com>
+Subject: Re: [LTP] [PATCH] creat07: Drop basename() function call from
+ read-only variable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,48 +27,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
-> ---
->  .../conformance/interfaces/sigaction/16-1.c        |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
+> > Well in glibc you get version that is not reentrant but doesn't modify
+> > the source string when _GNU_SOURCE is defined (which is defined in
+> > creat07.c), so this may be bug in uClibc compatibility.
+> > 
+> > And I think that there is no reason to segfault when the argument
+> > doesn't need to be modified, which should be the case here. Or did the
+> > segfault occured in your enviroment?
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
-> index 1eda711..213bda0 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/16-1.c
-> @@ -67,7 +67,9 @@ static struct sig_info sigs[] = {
->  	{SIGPIPE, "SIGPIPE", 0},
->  	{SIGALRM, "SIGALRM", 0},
->  	{SIGTERM, "SIGTERM", 0},
-> +#ifndef __mips__
->  	{SIGSTKFLT, "SIGSTKFLT", 0},
-> +#endif
->  	{SIGCHLD, "SIGCHLD", 0},
->  	{SIGCONT, "SIGCONT", 0},
->  	{SIGTSTP, "SIGTSTP", 0},
+> 
+> It segfaults if it modifies the argument because the argument is
+> read-only. I don't remember when this function modifies the argument but
+> it certainly is a bit dangerous to use a read-only variable when this
+> function has known "weird" behaviour
 
-What about?
-
-#ifdef SIGSTKFLT
-  	{SIGSTKFLT, "SIGSTKFLT", 0},
-#endif
-
-Which should fix all possible systems without this signal.
+Okay, commited.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
