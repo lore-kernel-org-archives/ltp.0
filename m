@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rschv-0000eK-OY
-	for ltp-list@lists.sourceforge.net; Wed, 01 Feb 2012 16:06:51 +0000
-Date: Wed, 1 Feb 2012 17:20:05 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1S0bWg-00088U-0i
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 16:28:14 +0000
+Date: Thu, 23 Feb 2012 17:28:41 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120201162005.GB29203@saboteur.suse.cz>
-References: <1326106637-5173-1-git-send-email-markos.chandras@imgtec.com>
-	<4F2127AE.6050906@imgtec.com>
-	<20120126141035.GA6666@saboteur.suse.cz>
-	<4F22B4CA.8060507@imgtec.com>
+Message-ID: <20120223162841.GD5960@saboteur.suse.cz>
+References: <4F33254B.9080204@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4F22B4CA.8060507@imgtec.com>
-Subject: Re: [LTP] [PATCH] {tcp_cmds/echo,
- math/float}: Include missing usctest.h header
+In-Reply-To: <4F33254B.9080204@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] aio02: runfstests.sh should be deleted
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,37 +24,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > Strange, I've been unable to locate the original patch in the mailing
-> > list...
-> > 
-> 
-> Hi Cyril,
-> 
-> The patch was sent on the 9th of January 2012. If you want me to send it
-> again let me know.
+> runfstests.sh is creating temporary directory, which could be easily done
+> withing the test itself by using tst_tmpdir(), So runfstests.sh should be
+> deleted.
 
-Looking at the archives, there isn't one, wasn't that mail been eaten by
-some spam filter?
-
-http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list&max_rows=25&style=ultimate&viewmonth=201201&viewday=9
-
-Anyway just resend it (and possibly other patches that haven't been
-commented/applied yet).
+This patch doesn't apply as well, probably mangled by your mail cliend
+too. Please resend.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
