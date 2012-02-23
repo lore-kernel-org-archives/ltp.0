@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1RzTKV-00020k-W2
-	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 13:30:59 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RzTKR-0001rM-P6
-	for ltp-list@lists.sourceforge.net; Mon, 20 Feb 2012 13:30:59 +0000
-Date: Mon, 20 Feb 2012 08:30:48 -0500 (EST)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <86099ec9-9ecb-40ae-a00c-f97991edf4f0@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1S0VQX-0006ID-VQ
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 09:57:29 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S0VQS-0001F8-2a
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 09:57:29 +0000
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Thu, 23 Feb 2012 09:56:58 +0000
+Message-ID: <1329991018-26230-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/2] mm/lib: change count_numa() behavior
+Subject: [LTP] [PATCH] creat07: Drop basename() function call from read-only
+	variable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,46 +26,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-hi, 
-> 
-> this patch fixes two problems.
-> 
-> 1) avoid using functions from numactl package, so compilation would
-> pass
-> w/ and w/o numactl development package installed.
-> 
-> 2) count_numa() functions now has a parameter, which stores the array
-> of
-> each nodes on the system. This is because some systems doesn't have
-> continuous nodes or the node sequence does not start from zero, when
-> we
-> want to test specific node, we should make sure the node does exist.
-> Thus, an array for node numbers is necessary. Follow-up patches will
-> update count_numa() with new parameters accordingly.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  testcases/kernel/mem/include/mem.h |    2 +-
->  testcases/kernel/mem/lib/mem.c     |   12 +++++-------
->  2 files changed, 6 insertions(+), 8 deletions(-)
-> 
+test_app is a read-only variable because it is defined as a preprocessor macro.
+Using basename() on this variable, it will most certainly lead to a segmentation
+fault in uClibc code. Moreover, there is no need to use basename() at all since
+the test_app variable is a single string and it does not contain any leading
+paths.
 
-It's good for me.
+Quote from uClibc's include/libgen.h header:
 
-Acked-by: Zhouping Liu <zliu@redhat.com>
+"Return final component of PATH.
+	This is the weird XPG version of this function.  It sometimes will
+	modify its argument.  Therefore we normally use the GNU version (in
+	<string.h>) and only if this header is included make the XPG
+	version available under the real name.
 
-Thanks,
-Zhouping
+	extern char *__xpg_basename (char *__path) __THROW;
+	#define basename        __xpg_basename"
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ testcases/kernel/syscalls/creat/creat07.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
+index 3bb1288..294f998 100644
+--- a/testcases/kernel/syscalls/creat/creat07.c
++++ b/testcases/kernel/syscalls/creat/creat07.c
+@@ -91,7 +91,7 @@ int main(int ac, char **av)
+ 
+ 		if (pid == 0) {
+ 			char *av[2];
+-			av[0] = basename(test_app);
++			av[0] = test_app;
+ 			av[1] = NULL;
+ 			(void)execve(test_app, av, NULL);
+ 			perror("execve failed");
+@@ -147,7 +147,7 @@ void setup(char *app)
+ 			tst_brkm(TBROK|TERRNO, NULL, "getcwd failed");
+ 
+ 		snprintf(test_path, sizeof(test_path), "%s/%s",
+-		    pwd, basename(test_app));
++		    pwd, test_app);
+ 
+ 		free(pwd);
+ 	}
+-- 
+1.7.1
+
+
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
