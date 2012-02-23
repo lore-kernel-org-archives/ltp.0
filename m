@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Rzfiy-0005i8-3Z
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 02:45:04 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Rzfiv-0004YW-Pi
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 02:45:04 +0000
-Received: by pbcum15 with SMTP id um15so6909540pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 20 Feb 2012 18:44:55 -0800 (PST)
-Message-ID: <4F4304FE.50606@casparzhang.com>
-Date: Tue, 21 Feb 2012 10:44:14 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1S0bst-0000lc-CI
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 16:51:11 +0000
+Date: Thu, 23 Feb 2012 17:51:40 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120223165140.GF20855@saboteur.suse.cz>
+References: <4F432EF6.40601@cn.fujitsu.com>
+	<20120223141737.GA20855@saboteur.suse.cz>
+	<20120223145911.GB20855@saboteur.suse.cz>
 MIME-Version: 1.0
-References: <bb215812-518c-4d08-971d-7ed628347f4b@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <bb215812-518c-4d08-971d-7ed628347f4b@zmail13.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH 3/2] mm: fix possible node missing in write_cpusets
+Content-Disposition: inline
+In-Reply-To: <20120223145911.GB20855@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH v3 2/2] shmem_2nstest: fix a bug of hang
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,67 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 02/20/2012 09:49 PM, Zhouping Liu wrote:
-> hi, caspar
->>
->>
->> If a system has noncontinuous nodes, or the node doesn't start from
->> 0,
->> write_cpusets() function may fail because it hard-coded second node
->> as
->> "node1". This patch fixes the function by fetching second node number
->> from the stored array.
->>
->> Tested-by: Caspar Zhang <caspar@casparzhang.com>
->> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
->> ---
->>  testcases/kernel/mem/include/mem.h |    4 ++--
->>  testcases/kernel/mem/ksm/ksm02.c   |    6 ++----
->>  testcases/kernel/mem/ksm/ksm04.c   |    6 ++----
->>  testcases/kernel/mem/lib/mem.c     |   21 +++++++++++++--------
->>  4 files changed, 19 insertions(+), 18 deletions(-)
->>
->>
-> inside write_cpusets(),
->> 	fd = open(CPATH_NEW "/mems", O_WRONLY);
->> 	if (fd == -1) {
->> 		if (errno == ENOENT) {
->> 			fd = open(CPATH_NEW "/cpuset.mems", O_WRONLY);
->> 			if (fd == -1)
->> 				tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
->> 		} else
->> 			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
->> 	}
->> 	if (write(fd, "1", 1) != 1)
-> you maybe missed here, it should be:
-> 
-> snprintf(buf, BUFSIZ, "%ld", nd);
-> if (wirte(fd, buf, strlen(buf)) !=strlen(buf))
+Hi!
+> Hmm, or we could add a page or two to the ltp_clone_quick(), which
+> should be quite safe...
 
-you're right.
+I've commited a patch that increases the cloned process stack size from
+four to six pages (which seems to be enough to work here). Please test
+that this works also for you and if that change hasn't breaked anything
+else.
 
-Thanks,
-Caspar
-
-> 
->> 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
->> 	close(fd);
-> 
-> others is okay for me.
-> 
-> thanks,
-> Zhouping
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
