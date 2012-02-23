@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Rv7bu-0007fM-4U
-	for ltp-list@lists.sourceforge.net; Wed, 08 Feb 2012 13:30:58 +0000
-Date: Wed, 8 Feb 2012 14:44:46 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120208134446.GC17568@saboteur.suse.cz>
-References: <1328581235-8304-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1328581235-8304-2-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4F30D3F3.6030709@casparzhang.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F30D3F3.6030709@casparzhang.com>
-Subject: Re: [LTP] [PATCH 1/4] hugemmap01: auto mount the temporary dir for
- testing
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <filippo.arcidiacono@st.com>) id 1S0WNb-0000Zm-3M
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 10:58:31 +0000
+Received: from eu1sys200aog110.obsmtp.com ([207.126.144.129])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S0WNV-0006W0-85
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 10:58:31 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4003F23F
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 23 Feb 2012 10:58:18 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EA9F7104C
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 23 Feb 2012 10:58:17 +0000 (GMT)
+From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+Date: Thu, 23 Feb 2012 11:57:58 +0100
+Message-Id: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+Subject: [LTP] [PATCH v2] getrusage04: add opportunity to increase the max
+	[us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,48 +30,121 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> I think we need some error check mechanism here.
-> 
-> (@Cyril: Looks like we need a strtol wrapper in LTP lib? we have several
-> examples before, like:
-> 
->     val = strtol(str, &endptr, 10);
->     if (((val == LONG_MAX || val == LONG_MIN) && errno == ERANGE) ||
->             (errno != 0 && val == 0))
->         tst_brkm(TBROK|TERRNO, cleanup, "strtol");
->     if (endptr == str || *endptr != '\0')
->         tst_brkm(TBROK, cleanup, "Invalid number parameter: %s", str);
-> 
+On slow systems it could be needed to increase the max value [us]time
+increment beetween two getrusage calls.
 
-Hmm, that sounds reasonable, the code to handle strtol is too
-compilcated to be written again and again.
+Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+---
+ testcases/kernel/syscalls/getrusage/getrusage04.c |   44 +++++++++++++++++---
+ 1 files changed, 37 insertions(+), 7 deletions(-)
 
-I would do something similar to the safe macros, perhaps:
-
-SAFE_STRTOL(cleanup_fn, str, min, max)
-
-Which would assert that string was converted correctly and is between
-min and max value.
-
-see include/safe_macros.h
-
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+index 3bdd3b0..e142d22 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage04.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+@@ -54,11 +54,22 @@ int TST_TOTAL = 1;
+ 
+ #define BIAS_MAX      1000
+ #define RECORD_MAX    20
++#define FACTOR_MAX    10
+ 
+ #ifndef RUSAGE_THREAD
+ #define RUSAGE_THREAD 1
+ #endif
+ 
++static int opt_factor;
++static char *factor_str;
++static long factor_nr = 1;
++
++option_t child_options[] = {
++	{ "m:", &opt_factor, &factor_str },
++	{ NULL, NULL,         NULL }
++};
++
++static void fusage(void);
+ static void busyloop(long wait);
+ static void setup(void);
+ static void cleanup(void);
+@@ -69,8 +80,9 @@ int main(int argc, char *argv[])
+ 	unsigned long ulast, udelta, slast, sdelta;
+ 	int i, lc;
+ 	char *msg;
++	char msg_string[BUFSIZ];
+ 
+-	msg = parse_opts(argc, argv, NULL, NULL);
++	msg = parse_opts(argc, argv, child_options, fusage);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+@@ -80,6 +92,12 @@ int main(int argc, char *argv[])
+ 
+ 	setup();
+ 
++	if (opt_factor)
++		factor_nr = SAFE_STRTOL(cleanup, factor_str, 0, FACTOR_MAX);
++
++	tst_resm(TINFO, "Using %ld as multiply factor for max [us]time "
++		 "increment (1000+%ldus)!", factor_nr, BIAS_MAX * factor_nr);
++
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		Tst_count = 0; i = 0;
+ 		ulast = 0, slast = 0;
+@@ -95,14 +113,20 @@ int main(int argc, char *argv[])
+ 				tst_resm(TINFO, "utime:%12luus; stime:%12luus",
+ 					    usage.ru_utime.tv_usec,
+ 					    usage.ru_stime.tv_usec);
+-				if (udelta > 1000+BIAS_MAX)
+-					tst_brkm(TFAIL, cleanup,
+-						    "utime increased > 1000us:"
++				if (udelta > 1000+(BIAS_MAX * factor_nr)) {
++					sprintf(msg_string,
++						"utime increased > %ldus:",
++						1000 + BIAS_MAX * factor_nr);
++					tst_brkm(TFAIL, cleanup, msg_string,
+ 						    " delta = %luus", udelta);
+-				if (sdelta > 1000+BIAS_MAX)
+-					tst_brkm(TFAIL, cleanup,
+-						    "stime increased > 1000us:"
++				}
++				if (sdelta > 1000+(BIAS_MAX * factor_nr)) {
++					sprintf(msg_string,
++						"stime increased > %ldus:",
++						1000 + BIAS_MAX * factor_nr);
++					tst_brkm(TFAIL, cleanup, msg_string,
+ 						    " delta = %luus", sdelta);
++				}
+ 			}
+ 			ulast = usage.ru_utime.tv_usec;
+ 			slast = usage.ru_stime.tv_usec;
+@@ -113,6 +137,12 @@ int main(int argc, char *argv[])
+ 	tst_exit();
+ }
+ 
++static void fusage(void)
++{
++	printf("  -m n    use n as multiply factor for max [us]time "
++	       "increment (1000+(1000*n)us),\n          default value is 1\n");
++}
++
+ static void busyloop(long wait)
+ {
+ 	while (wait--)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.5.5.6
+
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
