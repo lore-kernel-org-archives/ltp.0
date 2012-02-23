@@ -2,23 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Rzg3g-0004AF-1K
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 03:06:28 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1Rzg3f-0003Ei-0i
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 03:06:27 +0000
-Received: by daln34 with SMTP id n34so6467502dal.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 20 Feb 2012 19:06:21 -0800 (PST)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 21 Feb 2012 11:05:35 +0800
-Message-Id: <1329793535-27208-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
-References: <1329735301-17676-1-git-send-email-caspar@casparzhang.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S0VCw-0004dG-T2
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 09:43:26 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S0VCq-0002tq-8q
+	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 09:43:26 +0000
+Message-ID: <4F4609F6.5060008@cn.fujitsu.com>
+Date: Thu, 23 Feb 2012 17:42:14 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH 3/2 v2] mm: fix possible node missing in write_cpusets
+References: <y> <1329985431-27567-1-git-send-email-y>
+In-Reply-To: <1329985431-27567-1-git-send-email-y>
+Subject: Re: [LTP] [PATCH] getrusage04: add opportunity to increase the max
+ [us]time increment
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,207 +26,135 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-If a system has noncontinuous nodes, or the node doesn't start from 0,
-write_cpusets() function may fail because it hard-coded second node as
-"node1". This patch fixes the function by fetching second node number
-from the stored array.
-
-Tested-by: Caspar Zhang <caspar@casparzhang.com>
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- testcases/kernel/mem/include/mem.h |    4 ++--
- testcases/kernel/mem/ksm/ksm02.c   |    6 ++----
- testcases/kernel/mem/ksm/ksm04.c   |    6 ++----
- testcases/kernel/mem/lib/mem.c     |   24 +++++++++++++++---------
- 4 files changed, 21 insertions(+), 19 deletions(-)
-
-
---------------1.7.8.4
-Content-Type: text/x-patch;
-	name="0001-mm-fix-possible-node-missing-in-write_cpusets.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-mm-fix-possible-node-missing-in-write_cpusets.patch"
-
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 4319a90..b40c0bc 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -52,8 +52,8 @@ void check_ksm_options(int *size, int *num, int *unit);
- void ksm_usage(void);
- 
- /* For mm/oom* and mm/ksm* tests*/
--void _gather_cpus(char *cpus);
--void write_cpusets(void);
-+void _gather_cpus(char *cpus, long nd);
-+void write_cpusets(long nd);
- void umount_mem(char *path, char *path_new);
- void mount_mem(char *name, char *fs, char *options, char *path, char *path_new);
- 
-diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
-index 4cd1fab..7bed72b 100644
---- a/testcases/kernel/mem/ksm/ksm02.c
-+++ b/testcases/kernel/mem/ksm/ksm02.c
-@@ -85,7 +85,6 @@ int main(int argc, char *argv[])
- 	int lc;
- 	char *msg;
- 	int size = 128, num = 3, unit = 1;
--	unsigned long nnodes;
- 	unsigned long nmask = 2;
- 	long nodes[MAXNODES];
- 
-@@ -93,8 +92,7 @@ int main(int argc, char *argv[])
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	nnodes = count_numa(nodes);
--	if (nnodes <= 1)
-+	if (count_numa(nodes) <= 1)
- 		tst_brkm(TCONF, NULL, "required a NUMA system.");
- 
- 	setup();
-@@ -114,7 +112,7 @@ int main(int argc, char *argv[])
- 		}
- 		create_same_memory(size, num, unit);
- 
--		write_cpusets();
-+		write_cpusets(nodes[1]);
- 		create_same_memory(size, num, unit);
- 	}
- 	cleanup();
-diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
-index de76db7..2f97712 100644
---- a/testcases/kernel/mem/ksm/ksm04.c
-+++ b/testcases/kernel/mem/ksm/ksm04.c
-@@ -85,7 +85,6 @@ int main(int argc, char *argv[])
- 	int lc;
- 	char *msg;
- 	int size = 128, num = 3, unit = 1;
--	unsigned long nnodes;
- 	unsigned long nmask = 2;
- 	long nodes[MAXNODES];
- 
-@@ -93,8 +92,7 @@ int main(int argc, char *argv[])
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	nnodes = count_numa(nodes);
--	if (nnodes <= 1)
-+	if (count_numa(nodes) <= 1)
- 		tst_brkm(TCONF, NULL, "required a NUMA system.");
- 
- 	setup();
-@@ -116,7 +114,7 @@ int main(int argc, char *argv[])
- 		}
- 		create_same_memory(size, num, unit);
- 
--		write_cpusets();
-+		write_cpusets(nodes[1]);
- 		create_same_memory(size, num, unit);
- 	}
- 	cleanup();
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 9a1d5f2..337833a 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -101,8 +101,14 @@ void oom(int testcase, int mempolicy, int lite)
- 
- void testoom(int mempolicy, int lite, int numa)
- {
--	if (numa && !mempolicy)
--		write_cpusets();
-+	long nodes[MAXNODES];
-+
-+	if (numa && !mempolicy) {
-+		if (count_numa(nodes) <= 1)
-+			tst_brkm(TCONF, cleanup, "required a NUMA system.");
-+		/* write cpusets to 2nd node */
-+		write_cpusets(nodes[1]);
-+	}
- 
- 	tst_resm(TINFO, "start normal OOM testing.");
- 	oom(NORMAL, mempolicy, lite);
-@@ -586,7 +592,7 @@ void ksm_usage(void)
- 
- /* For mm/oom* and mm/ksm* tests */
- 
--void _gather_cpus(char *cpus)
-+void _gather_cpus(char *cpus, long nd)
- {
- 	int ncpus = 0;
- 	int i;
-@@ -596,8 +602,7 @@ void _gather_cpus(char *cpus)
- 		ncpus++;
- 
- 	for (i = 0; i < ncpus; i++)
--		/* FIXME: possible non-existed node1 */
--		if (path_exist(PATH_SYS_SYSTEM "/node/node1/cpu%d", i)) {
-+		if (path_exist(PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i)) {
- 			sprintf(buf, "%d,", i);
- 			strcat(cpus, buf);
- 		}
-@@ -605,14 +610,14 @@ void _gather_cpus(char *cpus)
- 	cpus[strlen(cpus) - 1] = '\0';
- }
- 
--void write_cpusets(void)
-+void write_cpusets(long nd)
- {
- 	char cpus[BUFSIZ] = "";
- 	char buf[BUFSIZ] = "";
- 	int fd;
- 
--	_gather_cpus(cpus);
--	tst_resm(TINFO, "CPU list for 2nd node is %s.", cpus);
-+	_gather_cpus(cpus, nd);
-+	tst_resm(TINFO, "CPU list for node%ld is: %s.", nd, cpus);
- 
- 	/*
- 	 * try either '/dev/cpuset/mems' or '/dev/cpuset/cpuset.mems'
-@@ -628,7 +633,8 @@ void write_cpusets(void)
- 		} else
- 			tst_brkm(TBROK|TERRNO, cleanup, "open %s", buf);
- 	}
--	if (write(fd, "1", 1) != 1)
-+	snprintf(buf, BUFSIZ, "%ld", nd);
-+	if (write(fd, buf, strlen(buf)) != strlen(buf))
- 		tst_brkm(TBROK|TERRNO, cleanup, "write %s", buf);
- 	close(fd);
- 
-
---------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 02/23/2012 04:23 PM, Filippo ARCIDIACONO wrote:
+
+> From: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> 
+> On slow systems it could be needed to increase the max value [us]time
+> increment beetween two getrusage calls.
+> 
+> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+> ---
+>  testcases/kernel/syscalls/getrusage/getrusage04.c |   42 +++++++++++++++++---
+>  1 files changed, 35 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+> index 3bdd3b0..92f8361 100644
+> --- a/testcases/kernel/syscalls/getrusage/getrusage04.c
+> +++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+> @@ -54,11 +54,22 @@ int TST_TOTAL = 1;
+>  
+>  #define BIAS_MAX      1000
+>  #define RECORD_MAX    20
+> +#define FACTOR_MAX    10
+>  
+>  #ifndef RUSAGE_THREAD
+>  #define RUSAGE_THREAD 1
+>  #endif
+>  
+> +static int opt_factor;
+> +static char *factor_str;
+> +static long factor_nr = 1;
+> +
+> +option_t child_options[] = {
+> +	{ "m:", &opt_factor, &factor_str },
+> +	{ NULL, NULL,         NULL }
+> +};
+> +
+> +static void fusage(void);
+>  static void busyloop(long wait);
+>  static void setup(void);
+>  static void cleanup(void);
+> @@ -69,8 +80,9 @@ int main(int argc, char *argv[])
+>  	unsigned long ulast, udelta, slast, sdelta;
+>  	int i, lc;
+>  	char *msg;
+> +	char msg_string[BUFSIZ];
+>  
+> -	msg = parse_opts(argc, argv, NULL, NULL);
+> +	msg = parse_opts(argc, argv, child_options, fusage);
+>  	if (msg != NULL)
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>  
+> @@ -80,6 +92,11 @@ int main(int argc, char *argv[])
+>  
+>  	setup();
+>  
+> +	if (opt_factor)
+> +		factor_nr = SAFE_STRTOL(cleanup, factor_str, 0, FACTOR_MAX);
+> +
+> +	tst_resm(TINFO, "Using %ld as multiply factor for max [us]time increment (1000+%ldus)!", factor_nr, BIAS_MAX * factor_nr);
+
+
+Could you please fix the over 80 characters warning?
+
+> +
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>  		Tst_count = 0; i = 0;
+>  		ulast = 0, slast = 0;
+> @@ -95,14 +112,20 @@ int main(int argc, char *argv[])
+>  				tst_resm(TINFO, "utime:%12luus; stime:%12luus",
+>  					    usage.ru_utime.tv_usec,
+>  					    usage.ru_stime.tv_usec);
+> -				if (udelta > 1000+BIAS_MAX)
+> -					tst_brkm(TFAIL, cleanup,
+> -						    "utime increased > 1000us:"
+> +				if (udelta > 1000+(BIAS_MAX * factor_nr)) {
+> +					sprintf(msg_string,
+> +						"utime increased > %ldus:",
+> +						1000 + BIAS_MAX * factor_nr);
+> +					tst_brkm(TFAIL, cleanup, msg_string,
+>  						    " delta = %luus", udelta);
+> -				if (sdelta > 1000+BIAS_MAX)
+> -					tst_brkm(TFAIL, cleanup,
+> -						    "stime increased > 1000us:"
+> +				}
+> +				if (sdelta > 1000+(BIAS_MAX * factor_nr)) {
+> +					sprintf(msg_string,
+> +						"stime increased > %ldus:",
+> +						1000 + BIAS_MAX * factor_nr);
+> +					tst_brkm(TFAIL, cleanup, msg_string,
+>  						    " delta = %luus", sdelta);
+> +				}
+>  			}
+>  			ulast = usage.ru_utime.tv_usec;
+>  			slast = usage.ru_stime.tv_usec;
+> @@ -113,6 +136,11 @@ int main(int argc, char *argv[])
+>  	tst_exit();
+>  }
+>  
+> +static void fusage(void)
+> +{
+> +	printf("  -m n    use n as multiply factor for max [us]time increment (1000+(1000*n)us), default value is 1\n");
+
+
+ditto
+
+
+Thanks
+-Wanlong Gao
+
+> +}
+> +
+>  static void busyloop(long wait)
+>  {
+>  	while (wait--)
+
+
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.4--
-
-
-
