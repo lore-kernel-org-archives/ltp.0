@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Jin.Li@windriver.com>) id 1Rsrds-0000TI-BM
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 08:03:40 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Rsrdm-0001bZ-B6
-	for ltp-list@lists.sourceforge.net; Thu, 02 Feb 2012 08:03:40 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q1283R7t008522
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 2 Feb 2012 00:03:28 -0800 (PST)
-From: Jin Li <jin.li@windriver.com>
-Date: Thu, 2 Feb 2012 16:03:23 +0800
-Message-ID: <1328169803-12022-1-git-send-email-jin.li@windriver.com>
+	(envelope-from <penght@cn.fujitsu.com>) id 1S0kxL-0007Ok-28
+	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:32:23 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S0kxI-0002w6-RR
+	for ltp-list@lists.sourceforge.net; Fri, 24 Feb 2012 02:32:22 +0000
+Message-ID: <4F46F6A8.3050600@cn.fujitsu.com>
+Date: Fri, 24 Feb 2012 10:32:08 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] Fix for msgctl test case msgctl11 on the target with
-	more than 4G memory
+References: <4F33254B.9080204@cn.fujitsu.com>
+	<20120223162841.GD5960@saboteur.suse.cz>
+	<4F46DFBE.60208@cn.fujitsu.com> <4F46F2DF.7030001@casparzhang.com>
+In-Reply-To: <4F46F2DF.7030001@casparzhang.com>
+Subject: Re: [LTP] [PATCH] aio02: runfstests.sh should be deleted
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,157 +29,87 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: jin.li@windriver.com
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The test msgctl11 will fail with log as follows once it is on the
-target with more than 4G memory and use default maximum pid value 32768.
-Because in this case, the maxnkids is always 0 which will cause fail
-and exit.
 
-maxnkids = ((free_pids / 4) / MSGMNI);
+Caspar Zhang said the following on 2012-2-24 10:15:
+> On 02/24/2012 08:54 AM, Peng Haitao wrote:
+>>
+>> Cyril Hrubis said the following on 2012-2-24 0:28:
+>>> Hi!
+>>>> runfstests.sh is creating temporary directory, which could be easily done
+>>>> withing the test itself by using tst_tmpdir(), So runfstests.sh should be
+>>>> deleted.
+>>>
+>>> This patch doesn't apply as well, probably mangled by your mail cliend
+>>> too. Please resend.
+>>>
+>>
+>> Sorry:(
+>>
+>> I resend the patch of v2, please apply.
+>> Thanks. 
+>>
+> Still no luck with v2 :-(
+> 
+> $ git am -3 ~/Desktop/\[LTP\]\ \[PATCH\]\ aio02\:\ runfstests.sh\
+> should\ be\ deleted.eml
 
-Test msgctl11 fail log
+maybe you are wrong?  The patch is really v2.
 
-"msgctl11    1  TBROK  :  Not enough free pids"
+# git am -3 /home/pht/\[LTP\]\ \[PATCH\ v2\]\ aio02\ \ runfstests.sh\ should\ be\ deleted.eml
+Applying: aio02: runfstests.sh should be deleted
+#
 
-This fix will update the maximum pid value to meet the need of
-free pids on the target with more than 4G memory.
+Thanks.
 
-For example, on the target with 16G memory
-
-nprocs = MSGMNI = 32768
-
-and every message queue need read and write child process.
-
-So need MSGMNI * 2 pids.
-
-when nkids = maxnkids = 1,
-
-the max pids will be updated to MSGMNI * 2 * 2 and give enought pids to
-
-the test.
-
-Signed-off-by: Jin Li <jin.li@windriver.com>
----
- include/system_specific_process_info.h          |    3 ++
- lib/system_specific_process_info.c              |   22 +++++++++++++++
- testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   32 ++++++++++++++++++----
- 3 files changed, 51 insertions(+), 6 deletions(-)
-
-diff --git a/include/system_specific_process_info.h b/include/system_specific_process_info.h
-index 956d90f..dddcac0 100644
---- a/include/system_specific_process_info.h
-+++ b/include/system_specific_process_info.h
-@@ -26,4 +26,7 @@ int get_max_pids(void);
- /* Returns number of free pids */
- int get_free_pids(void);
- 
-+/* Set max pid count to /proc/sys/kernel/pid_max */
-+int set_max_pids(int);
-+
- #endif
-diff --git a/lib/system_specific_process_info.c b/lib/system_specific_process_info.c
-index d3c9638..d631340 100644
---- a/lib/system_specific_process_info.c
-+++ b/lib/system_specific_process_info.c
-@@ -59,6 +59,28 @@ int get_max_pids(void)
- }
- 
- 
-+int set_max_pids(int pids_max)
-+{
-+	FILE *f;
-+
-+	f = fopen("/proc/sys/kernel/pid_max", "w+");
-+	if (!f) {
-+		tst_resm(TBROK, "Could not open /proc/sys/kernel/pid_max");
-+		return -1;
-+	}
-+	if (!fprintf(f, "%d", pids_max)) {
-+		fclose(f);
-+		tst_resm(TBROK, "Could not write to /proc/sys/kernel/pid_max");
-+		return -1;
-+	}
-+	if (fclose(f)) {
-+		tst_resm(TBROK, "Fail to close file /proc/sys/kernel/pid_max");
-+		return -1;
-+	}
-+	return 0;
-+}
-+
-+
- int get_free_pids(void)
- {
- 	FILE *f;
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-index 57bd184..d587376 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-@@ -79,6 +79,9 @@ int TST_TOTAL = 1;		/* Total number of test cases. */
- 
- int exp_enos[] = { 0 };		/* List must end with 0 */
- int maxnkids = MAXNKIDS;	/* Used if pid_max is exceeded */
-+int max_pids;
-+int adjust_max_pids;
-+
- 
- key_t keyarray[MAXNPROCS];
- 
-@@ -641,14 +644,27 @@ void setup()
- 		tst_exit();
- 	}
- 
-+	max_pids = get_max_pids();
-+	adjust_max_pids = 0;
- 	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
--		maxnkids = ((free_pids / 4) / MSGMNI);
--		if (!maxnkids) {
--			tst_resm(TBROK, "Not enough free pids");
--			tst_exit();
-+		if (nr_msgqs < 8192) {
-+			maxnkids = ((free_pids / 4) / MSGMNI);
-+			if (!maxnkids)
-+				tst_brkm(TBROK, cleanup, "No enough free pids");
-+		} else  {
-+			maxnkids = 1;
-+
-+			/* After the update of maximum pid number, the free
-+			 * pids will be MSGMNI * 2 * 2
-+			 */
-+			adjust_max_pids = MSGMNI * 2 * 2 + max_pids - free_pids;
-+			if ((set_max_pids(adjust_max_pids)) < 0) {
-+				tst_brkm(TBROK, cleanup, "cannot adjust"
-+								" max pids");
-+			}
-+			free_pids = get_free_pids();
- 		}
- 	}
--
- 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
- }
- 
-@@ -682,4 +698,8 @@ void cleanup()
- 	fflush(stdout);
- 	tst_rmdir();
- 
--}
-\ No newline at end of file
-+	if (adjust_max_pids > max_pids) {
-+		if (set_max_pids(max_pids) < 0)
-+			tst_brkm(TBROK, NULL, "cannot restore the max pids");
-+	}
-+}
 -- 
-1.6.3.1
+Best Regards,
+Peng
+
+> Applying: aio02: runfstests.sh should be deleted
+> Using index info to reconstruct a base tree...
+> error: patch failed: runtest/io:1
+> error: runtest/io: patch does not apply
+> error: patch failed: testcases/kernel/io/aio/aio02/Makefile:27
+> error: testcases/kernel/io/aio/aio02/Makefile: patch does not apply
+> error: patch failed: testcases/kernel/io/aio/aio02/README:2
+> error: testcases/kernel/io/aio/aio02/README: patch does not apply
+> error: patch failed: testcases/kernel/io/aio/aio02/aio_tio.c:17
+> error: testcases/kernel/io/aio/aio02/aio_tio.c: patch does not apply
+> error: testcases/kernel/io/aio/aio02/cases/common.h: has been
+> deleted/renamed
+> error: patch failed: testcases/kernel/io/aio/aio02/main.c:23
+> error: testcases/kernel/io/aio/aio02/main.c: patch does not apply
+> error: testcases/kernel/io/aio/aio02/runfstests.sh: has been deleted/renamed
+> Did you hand edit your patch?
+> It does not apply to blobs recorded in its index.
+> Cannot fall back to three-way merge.
+> Patch failed at 0001 aio02: runfstests.sh should be deleted
+> When you have resolved this problem run "git am --resolved".
+> If you would prefer to skip this patch, instead run "git am --skip".
+> To restore the original branch and stop patching run "git am --abort".
+> 
+> 
+> ------------------------------------------------------------------------------
+> Virtualization & Cloud Management Using Capacity Planning
+> Cloud computing makes use of virtualization - but cloud computing 
+> also focuses on allowing computing to be delivered as a service.
+> http://www.accelacomm.com/jaw/sfnl/114/51521223/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
 
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
