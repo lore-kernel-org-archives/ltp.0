@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Rzhsu-00081V-Q8
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 05:03:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Rzhsp-0001sW-Um
-	for ltp-list@lists.sourceforge.net; Tue, 21 Feb 2012 05:03:28 +0000
-Message-ID: <4F43259A.4020009@cn.fujitsu.com>
-Date: Tue, 21 Feb 2012 13:03:22 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4F4315C1.3080302@cn.fujitsu.com>
-	<4F431666.9060601@casparzhang.com>
-	<4F431D1E.4050201@cn.fujitsu.com> <4F432127.3080100@redhat.com>
-In-Reply-To: <4F432127.3080100@redhat.com>
-Subject: Re: [LTP] [PATCH v3 1/2] shmem_2nstest.c: coding style cleanups
+	(envelope-from <glt-ltp-list@m.gmane.org>) id 1S2JnO-0008Cw-CN
+	for ltp-list@lists.sourceforge.net; Tue, 28 Feb 2012 09:56:34 +0000
+Received: from plane.gmane.org ([80.91.229.3])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S2JnI-0006mW-Ks
+	for ltp-list@lists.sourceforge.net; Tue, 28 Feb 2012 09:56:34 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glt-ltp-list@m.gmane.org>) id 1S2JnA-0007tk-Oq
+	for ltp-list@lists.sourceforge.net; Tue, 28 Feb 2012 10:56:21 +0100
+Received: from 220.227.207.220 ([220.227.207.220])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 Feb 2012 10:56:20 +0100
+Received: from rejish.rajagopala by 220.227.207.220 with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 Feb 2012 10:56:20 +0100
+From: rejish <rejish.rajagopala@sasken.com>
+Date: Tue, 28 Feb 2012 09:56:07 +0000 (UTC)
+Message-ID: <loom.20120228T103647-261@post.gmane.org>
+Mime-Version: 1.0
+Subject: [LTP] Need help in cross compiling LTP for android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,204 +32,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-
-Caspar Zhang said the following on 2012-2-21 12:44:
->>> seems there's still something wrong here.. return 0 would never be reached.
->>>
->>
->> Thanks.
-> 
-> please put some dashes here next time, or the commit message will
-> include comments above.
-> 
-
-Yeah.
-
-> Committed.
-> 
-
-Thanks.
-
--- 
-Best Regards,
-Peng
-
-> Thanks,
-> Caspar
-> 
->>
->>
->> cleanup the coding style
->>
->> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
->> ---
->>  .../kernel/containers/sysvipc/shmem_2nstest.c      |   86 +++++++++-----------
->>  1 files changed, 38 insertions(+), 48 deletions(-)
->>
->> diff --git a/testcases/kernel/containers/sysvipc/shmem_2nstest.c b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
->> index 6033991..7a468ad 100644
->> --- a/testcases/kernel/containers/sysvipc/shmem_2nstest.c
->> +++ b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
->> @@ -64,18 +64,14 @@ int check_shmem1(void *vtest)
->>  	int id1;
->>  	close(p1[0]);
->>  
->> -		/* first create the key */
->> -		id1 = shmget(TESTKEY, 100, IPC_CREAT);
->> -		if (id1 == -1) {
->> -			perror("shmget");
->> -			tst_resm(TFAIL, "shmget failed\n");
->> -			tst_exit();
->> -		}
->> +	/* first create the key */
->> +	id1 = shmget(TESTKEY, 100, IPC_CREAT);
->> +	if (id1 == -1)
->> +		tst_brkm(TFAIL|TERRNO, NULL, "shmget failed");
->>  
->>  	tst_resm(TINFO, "Cont1: Able to create shared mem segment");
->>  	write(p1[1], "done", 5);
->>  	tst_exit();
->> -	return 0;
->>  }
->>  
->>  /*
->> @@ -83,29 +79,26 @@ int check_shmem1(void *vtest)
->>   */
->>  int check_shmem2(void *vtest)
->>  {
->> -		char buf[3];
->> -		int id2;
->> -		close(p1[1]);
->> -		close(p2[0]);
->> -
->> -		read(p1[0], buf, 3);
->> -		/* Trying to access shmem, if not existing create new shmem */
->> -		id2 = shmget(TESTKEY, 100, 0);
->> -		if (id2 == -1) {
->> -			id2 = shmget(TESTKEY, 100, IPC_CREAT);
->> -			if (id2 == -1) {
->> -				perror("shmget");
->> -				tst_resm(TFAIL, "shmget failed\n");
->> -			} else
->> -				tst_resm(TINFO, "Cont2: Able to allocate shmem seg with "
->> -								"the same key");
->> -			write(p2[1], "notfnd", 7);
->> -
->> -		} else
->> -			write(p2[1], "exists", 7);
->> +	char buf[3];
->> +	int id2;
->> +	close(p1[1]);
->> +	close(p2[0]);
->> +
->> +	read(p1[0], buf, 3);
->> +	/* Trying to access shmem, if not existing create new shmem */
->> +	id2 = shmget(TESTKEY, 100, 0);
->> +	if (id2 == -1) {
->> +		id2 = shmget(TESTKEY, 100, IPC_CREAT);
->> +		if (id2 == -1)
->> +			tst_resm(TFAIL|TERRNO, "shmget failed");
->> +		else
->> +			tst_resm(TINFO, "Cont2: Able to allocate shmem seg with "
->> +					"the same key");
->> +		write(p2[1], "notfnd", 7);
->> +	} else
->> +		write(p2[1], "exists", 7);
->>  
->> -		tst_exit();
->> -		return 0;
->> +	tst_exit();
->>  }
->>  
->>  int main(int argc, char *argv[])
->> @@ -118,13 +111,15 @@ int main(int argc, char *argv[])
->>  	if (argc != 2) {
->>  		tst_resm(TINFO, "Usage: %s <clone| unshare| none>", argv[0]);
->>  		tst_resm(TINFO, " where clone, unshare, or fork specifies"
->> -				" unshare method.\n");
->> +				" unshare method.");
->>  		tst_exit();
->>  	}
->>  
->>  	/* Using PIPE's to sync between containers and Parent */
->> -	if (pipe(p1) == -1) { tst_resm(TBROK, "pipe1 error"); tst_exit(); }
->> -	if (pipe(p2) == -1) { tst_resm(TBROK, "pipe2 error"); tst_exit(); }
->> +	if (pipe(p1) == -1)
->> +		tst_brkm(TBROK|TERRNO, NULL, "pipe1 error");
->> +	if (pipe(p2) == -1)
->> +		tst_brkm(TBROK|TERRNO, NULL, "pipe2 error");
->>  
->>  	if (strcmp(argv[1], "clone") == 0) {
->>  		use_clone = T_CLONE;
->> @@ -138,39 +133,34 @@ int main(int argc, char *argv[])
->>  
->>  	/* Create 2 containers */
->>  	ret = do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_shmem1, NULL);
->> -	if (ret < 0) {
->> -		tst_resm(TFAIL, "clone/unshare failed\n");
->> -		tst_exit();
->> -	}
->> +	if (ret < 0)
->> +		tst_brkm(TFAIL, NULL, "clone/unshare failed");
->>  
->>  	ret = do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_shmem2, NULL);
->> -	if (ret < 0) {
->> -		tst_resm(TFAIL, "clone/unshare failed\n");
->> -		tst_exit();
->> -	}
->> -	close(p2[1]);
->> +	if (ret < 0)
->> +		tst_brkm(TFAIL, NULL, "clone/unshare failed");
->>  
->> +	close(p2[1]);
->>  	read(p2[0], buf, 7);
->>  
->>  	if (strcmp(buf, "exists") == 0) {
->>  		if (use_clone == T_NONE)
->>  			tst_resm(TPASS, "Plain cloned process able to access shmem "
->> -							"segment created\n");
->> +					"segment created");
->>  		else
->>  			tst_resm(TFAIL, "%s : In namespace2 found the shmem segment "
->> -							"created in Namespace1\n", tsttype);
->> +					"created in Namespace1", tsttype);
->>  	} else {
->>  		if (use_clone == T_NONE)
->> -			tst_resm(TFAIL, "Plain cloned process didn't find shmem seg\n");
->> +			tst_resm(TFAIL, "Plain cloned process didn't find shmem seg");
->>  		else
->>  			tst_resm(TPASS, "%s : In namespace2 unable to access the shmem seg "
->> -							"created in Namespace1\n", tsttype);
->> +					"created in Namespace1", tsttype);
->>  	}
->>  	/* destroy the key */
->>  
->>  	id = shmget(TESTKEY, 100, 0);
->>  	shmctl(id, IPC_RMID, NULL);
->> -	tst_exit();
->>  
->>  	tst_exit();
->> -}
->> \ No newline at end of file
->> +}
-> 
-> 
-> 
-
-
-------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksCkkgbmVlZCB0byBjcm9zcyBjb21waWxlIExUUCAodHAtZnVsbC0yMDEyMDEwNCkgZm9yIGFu
+ZHJvaWQuIApJIGFtIHVzaW5nIGFuZHJvaWQgTkRLIHRvb2wgY2hhaW4gKGFuZHJvaWQtbmRrLXI1
+Yi1saW51eC14ODYpIGZvciAKY3Jvc3MgY29tcGlsaW5nLgoKSSBhbSB1c2luZyB0aGUgYmVsb3cg
+ZW52aXJvbm1lbnRhbCB2YXJpYWJsZXMgZm9yIGNvbmZpZ3VyaW5nIExUUDoKCmV4cG9ydCBBUkNI
+PWFybTpleHBvcnQgQ1JPU1NfQ09NUElMRT1hcm0tZWFiaS0KZXhwb3J0IE5ES19ST09UPS91L2Fu
+ZHJvaWQtbmRrLXI1YgpleHBvcnQKUEFUSD0kUEFUSDokTkRLX1JPT1QvdG9vbGNoYWlucy9hcm0t
+ZWFiaS00LjQuMC9wcmVidWlsdC9saW51eC14ODYvYXJtLWVhYmkvYmluCgouL2NvbmZpZ3VyZSAt
+LWhvc3Q9YXJtLWVhYmkgLS10YXJnZXQ9ZW11bGF0b3ItNTU1NCAtLWJ1aWxkPXg4Nl82NC1saW51
+eC1nbnUKLS1wcmVmaXg9L3UvYW5kcm9pZC1uZGstcjViL21ha2VfMjgwMl8wMl8yMDEyCgpleHBv
+cnQgQ0M9L3UvYW5kcm9pZC1uZGstcjViL3Rvb2xjaGFpbnMvYXJtLWVhYmktNC40LjAvCnByZWJ1
+aWx0L2xpbnV4LXg4Ni9iaW4vYXJtLWVhYmktZ2NjCgpleHBvcnQgTEQ9L3UvYW5kcm9pZC1uZGst
+cjViL3Rvb2xjaGFpbnMvYXJtLWVhYmktNC40LjAvCnByZWJ1aWx0L2xpbnV4LXg4Ni9iaW4vYXJt
+LWVhYmktbGQKCmV4cG9ydCBBUj0vdS9hbmRyb2lkLW5kay1yNWIvdG9vbGNoYWlucy9hcm0tZWFi
+aS00LjQuMC8KcHJlYnVpbHQvbGludXgteDg2L2Jpbi9hcm0tZWFiaS1hcgoKZXhwb3J0IFNUUklQ
+PS91L2FuZHJvaWQtbmRrLXI1Yi90b29sY2hhaW5zL2FybS1lYWJpLTQuNC4wLwpwcmVidWlsdC9s
+aW51eC14ODYvYmluL2FybS1lYWJpLXN0cmlwCgpleHBvcnQgUkFOTElCPS91L2FuZHJvaWQtbmRr
+LXI1Yi90b29sY2hhaW5zL2FybS1lYWJpLTQuNC4wLwpwcmVidWlsdC9saW51eC14ODYvYmluL2Fy
+bS1lYWJpLXJhbmxpYgoKZXhwb3J0IENYWD0vdS9hbmRyb2lkLW5kay1yNWIvdG9vbGNoYWlucy9h
+cm0tZWFiaS00LjQuMC8KcHJlYnVpbHQvbGludXgteDg2L2Jpbi9hcm0tZWFiaS1jKysKCmV4cG9y
+dCBBUz0vdS9hbmRyb2lkLW5kay1yNWIvdG9vbGNoYWlucy9hcm0tZWFiaS00LjQuMC8KcHJlYnVp
+bHQvbGludXgteDg2L2Jpbi9hcm0tZWFiaS1hcwoKZXhwb3J0IEdYWD0vdS9hbmRyb2lkLW5kay1y
+NWIvdG9vbGNoYWlucy9hcm0tZWFiaS00LjQuMC8KcHJlYnVpbHQvbGludXgteDg2L2Jpbi9hcm0t
+ZWFiaS1nKysKCmV4cG9ydApHQ0M9L3UvYW5kcm9pZC1uZGstcjViL3Rvb2xjaGFpbnMvYXJtLWVh
+YmktNC40LjAvCnByZWJ1aWx0L2xpbnV4LXg4Ni9iaW4vYXJtLWVhYmktZ2NjCgpleHBvcnQKTk09
+L3UvYW5kcm9pZC1uZGstcjViL3Rvb2xjaGFpbnMvYXJtLWVhYmktNC40LjAvCnByZWJ1aWx0L2xp
+bnV4LXg4Ni9iaW4vYXJtLWVhYmktbm0KCmV4cG9ydCBDUFBGTEFHUz3igJ0tSS91L2FuZHJvaWQt
+bmRrLXI1Yi9wbGF0Zm9ybXMvYW5kcm9pZC0zLwphcmNoLWFybS91c3IvaW5jbHVkZS/igJ0KCmV4
+cG9ydCBDRkxBR1M94oCdLW5vc3RkbGli4oCdCgpleHBvcnQKTERGTEFHUz0tV2ws4oCTZW50cnk9
+bWFpbizigJNuby11bmRlZmluZWQsLXJwYXRoLWxpbms9L3UvYW5kcm9pZC1uZGstcjViLwpwbGF0
+Zm9ybXMvYW5kcm9pZC0zL2FyY2gtYXJtL3Vzci9saWIvLUwvdS9hbmRyb2lkLW5kay1yNWIvcGxh
+dGZvcm1zLwphbmRyb2lkLTMvYXJjaC1hcm0vdXNyL2xpYi8KCmV4cG9ydCBMSUJTPS1sYwoKV2l0
+aCB0aGUgYWJvdmUgdmFyaWFibGVzIGFtIGFibGUgdG8gY3Jvc3MgY29tcGlsZSBMVFAuIAoKQnV0
+IGFmdGVyIHB1c2hpbmcgdGhlIGNyb3NzIGNvbXBpbGVkIG1ha2UgZmlsZSwgY3Jvc3MgY29tcGls
+ZWQgYnVzeWJveCBhbmQgCmNyb3NzIGNvbXBpbGVkIGJhc2g0LjEgdG8gdGFyZ2V0LCBhbSBub3Qg
+YWJsZSB0byBleGVjdXRlIHJ1bmx0cC4KCkkgYW0gZ2V0dGluZyB0aGUgYmVsb3cgZXJyb3IgOgpS
+dW5uaW5nIHRlc3RzLi4uLi4uLgovZGF0YS9sdHAvbWFrZV8yODAyXzAyXzIwMTIvYmluL2x0cC1w
+YW46IElsbGVnYWwgbnVtYmVyOgoKUGxlYXNlIGd1aWRlIG1lIHdoZXJlIEkgYW0gZ29pbmcgd3Jv
+bmcgb3Igd2hhdCBpcyB0aGUgc29sdXRpb24gZm9yIHRoaXMgZXJyb3IuCgpUaGFua3MgaW4gYWR2
+YW5jZSAuCgpSZWdhcmRzLApSZWppc2gKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KS2VlcCBZb3Vy
+IERldmVsb3BlciBTa2lsbHMgQ3VycmVudCB3aXRoIExlYXJuRGV2Tm93IQpUaGUgbW9zdCBjb21w
+cmVoZW5zaXZlIG9ubGluZSBsZWFybmluZyBsaWJyYXJ5IGZvciBNaWNyb3NvZnQgZGV2ZWxvcGVy
+cwppcyBqdXN0ICQ5OS45OSEgVmlzdWFsIFN0dWRpbywgU2hhcmVQb2ludCwgU1FMIC0gcGx1cyBI
+VE1MNSwgQ1NTMywgTVZDMywKTWV0cm8gU3R5bGUgQXBwcywgbW9yZS4gRnJlZSBmdXR1cmUgcmVs
+ZWFzZXMgd2hlbiB5b3Ugc3Vic2NyaWJlIG5vdyEKaHR0cDovL3Auc2YubmV0L3NmdS9sZWFybmRl
+dm5vdy1kMmQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
