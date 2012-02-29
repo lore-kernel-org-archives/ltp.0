@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1RvUEO-0000XQ-Qe
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 13:40:12 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1RvUEI-00084D-Ts
-	for ltp-list@lists.sourceforge.net; Thu, 09 Feb 2012 13:40:12 +0000
-Received: by pbcum15 with SMTP id um15so1471397pbc.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1S2ghy-0000yh-NN
+	for ltp-list@lists.sourceforge.net; Wed, 29 Feb 2012 10:24:30 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S2ght-0001pe-5k
+	for ltp-list@lists.sourceforge.net; Wed, 29 Feb 2012 10:24:30 +0000
+Received: by daln34 with SMTP id n34so7665940dal.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Feb 2012 05:40:00 -0800 (PST)
+	Wed, 29 Feb 2012 02:24:19 -0800 (PST)
 From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Feb 2012 21:12:01 +0800
-Message-Id: <1328793121-20852-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
-References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+Date: Wed, 29 Feb 2012 18:23:20 +0800
+Message-Id: <1330511000-24198-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH v4] safe_macros: add SAFE_STRTOL
+Subject: [LTP] [PATCH] lib: fix -I option to accept larger number
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,91 +35,48 @@ Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-usage: SAFE_STRTOL(cleanup_fn, string, min, max);
-when no specific range required, min could be LONG_MIN and max could be
-LONG_MAX;
+previous discussion on this issue:
 
-return: converted long int type value.
+    http://marc.info/?l=ltp-list&m=129585256906986&w=2
+
+This patch uses uint64_t to make -I option accept larger numbers to
+get rid of overflow.
 
 Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 ---
-
-v3->v4: clear errno before invoking strtol(); better output
-
- include/safe_macros.h |    5 +++++
- lib/safe_macros.c     |   26 +++++++++++++++++++++++++-
- 2 files changed, 30 insertions(+), 1 deletions(-)
+ lib/parse_opts.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 
 --------------1.7.8.4
-Content-Type: text/x-patch; name="0001-safe_macros-add-SAFE_STRTOL.patch"
+Content-Type: text/x-patch;
+	name="0001-lib-fix-I-option-to-accept-larger-number.patch"
 Content-Transfer-Encoding: 8bit
 Content-Disposition: attachment;
-	filename="0001-safe_macros-add-SAFE_STRTOL.patch"
+	filename="0001-lib-fix-I-option-to-accept-larger-number.patch"
 
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index 12f03ef..fbfe6cd 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -146,5 +146,10 @@ int safe_truncate(const char *file, const int lineno,
- #define SAFE_TRUNCATE(cleanup_fn, fd, length) \
- 	safe_truncate(__FILE__, __LINE__, cleanup_fn, (path), (length))
- 
-+long safe_strtol(const char *file, const int lineno,
-+	    void (cleanup_fn)(void), char *str, long min, long max);
-+#define SAFE_STRTOL(cleanup_fn, str, min, max) \
-+	safe_strtol(__FILE__, __LINE__, cleanup_fn, (str), (min), (max))
-+
- #endif
- #endif
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 569952d..4c8cbb7 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -4,6 +4,7 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <libgen.h>
-+#include <limits.h>
- #include <pwd.h>
- #include <stdarg.h>
- #include <stdlib.h>
-@@ -315,7 +316,7 @@ int safe_ftruncate(const char *file, const int lineno,
- 	    void (cleanup_fn)(void), int fd, off_t length)
+diff --git a/lib/parse_opts.c b/lib/parse_opts.c
+index fd49cfa..2159d22 100644
+--- a/lib/parse_opts.c
++++ b/lib/parse_opts.c
+@@ -708,7 +708,7 @@ static int get_current_time()
+ int usc_test_looping(int counter)
  {
- 	int rval;
--	
-+
- 	rval = ftruncate(fd, length);
- 	if (rval == -1) {
- 		tst_brkm(TBROK|TERRNO, cleanup_fn, "ftruncate failed at %s:%d",
-@@ -338,3 +339,26 @@ int safe_truncate(const char *file, const int lineno,
+     static int first_time = 1;
+-    static int stop_time = 0;	/* stop time in rtc or usecs */
++    static uint64_t stop_time;	/* stop time in rtc or usecs */
+     static int delay;		/* delay in clocks or usecs  */
+     int hertz = 0;		/* clocks per second or usecs per second */
+     int ct, end;		/* current time, end delay time */
+@@ -733,7 +733,7 @@ int usc_test_looping(int counter)
  
- 	return rval;
- }
-+
-+long safe_strtol(const char *file, const int lineno,
-+	    void (cleanup_fn)(void), char *str, long min, long max)
-+{
-+	long rval;
-+	char *endptr;
-+
-+	errno = 0;
-+	rval = strtol(str, &endptr, 10);
-+	if ((errno == ERANGE && (rval == LONG_MAX || rval == LONG_MIN))
-+		    || (errno != 0 && rval == 0))
-+		tst_brkm(TBROK|TERRNO, cleanup_fn,
-+			 "strtol failed at %s:%d", file, lineno);
-+	if (rval > max || rval < min)
-+		tst_brkm(TBROK, cleanup_fn,
-+			 "converted value out of range (%ld - %ld) at %s:%d",
-+			 min, max, file, lineno);
-+	if (endptr == str || (*endptr != '\0' && *endptr != '\n'))
-+		tst_brkm(TBROK, cleanup_fn,
-+			 "Invalid value: '%s' at %s:%d", str, file, lineno);
-+
-+	return rval;
-+}
+ 	if (STD_LOOP_DURATION) {
+ 	    ct=get_current_time();
+-	    stop_time = (int)((float)hertz * STD_LOOP_DURATION) + ct;
++	    stop_time = (uint64_t)((float)hertz * STD_LOOP_DURATION) + ct;
+ 	}
+ 
+ 	/*
 
 --------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
