@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S0bst-0000lc-CI
-	for ltp-list@lists.sourceforge.net; Thu, 23 Feb 2012 16:51:11 +0000
-Date: Thu, 23 Feb 2012 17:51:40 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120223165140.GF20855@saboteur.suse.cz>
-References: <4F432EF6.40601@cn.fujitsu.com>
-	<20120223141737.GA20855@saboteur.suse.cz>
-	<20120223145911.GB20855@saboteur.suse.cz>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1S2gZs-0005fi-G6
+	for ltp-list@lists.sourceforge.net; Wed, 29 Feb 2012 10:16:08 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S2gZm-00084w-Py
+	for ltp-list@lists.sourceforge.net; Wed, 29 Feb 2012 10:16:08 +0000
+Date: Wed, 29 Feb 2012 05:15:55 -0500 (EST)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <6fa463f5-2ebf-444f-ae9c-c144f76991c4@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4F4DF6DA.1030506@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20120223145911.GB20855@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH v3 2/2] shmem_2nstest: fix a bug of hang
+Subject: Re: [LTP] [PATCH] fix the -I option and enable a larger numble to I
+	option
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,21 +27,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Hmm, or we could add a page or two to the ltp_clone_quick(), which
-> should be quite safe...
+> > wrote:
+> >> Hi,Garrett,
+> >>
+> >> could you please review the patch, and give me your comments.
+> >> any suggestions are welcome.
+> > 
+> >     Wow, someone really lacked foresight when producing this API.
+> >     Yes, there's a problem, but I disagree with your solution (in
+> > particular because long long isn't necessarily going to remain
+> > 64-bit
+> > in the future). I think that a fixed size type applied to all of
+> > these
+> > affect areas would be better (uint64_t -- the POSIX defined
+> > unsigned
+> > 64-bit integer [1]).
+> > Thanks,
+> > -Garrett
+> 
+> /me bringing up with an old topic here...
+> 
+> This problem comes out again (in cpuset01 test). I think we need
+> someone
+> to fix it.
 
-I've commited a patch that increases the cloned process stack size from
-four to six pages (which seems to be enough to work here). Please test
-that this works also for you and if that change hasn't breaked anything
-else.
+let me have a try again, I will make a patch later.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
