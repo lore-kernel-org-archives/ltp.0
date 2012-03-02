@@ -1,24 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S7JoP-00020P-75
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:17 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S7JoO-0005Lk-71
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:17 +0000
-Received: by dado14 with SMTP id o14so271995dad.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <filippo.arcidiacono@st.com>) id 1S3Te4-0001dP-3S
+	for ltp-list@lists.sourceforge.net; Fri, 02 Mar 2012 14:39:44 +0000
+Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
+	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S3Te0-000154-6A
+	for ltp-list@lists.sourceforge.net; Fri, 02 Mar 2012 14:39:44 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DB97E1CB
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 12 Mar 2012 21:58:10 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 13 Mar 2012 12:56:36 +0800
-Message-Id: <1331614605-30347-3-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
-References: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
+	Fri,  2 Mar 2012 14:39:24 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5E79523EB
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  2 Mar 2012 14:39:24 +0000 (GMT)
+From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+In-Reply-To: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+Date: Fri, 2 Mar 2012 15:39:01 +0100
+Message-ID: <032901ccf882$36775950$a3660bf0$@arcidiacono@st.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH 02/11] hugetlb/hugeshmat: set nr_hugepages in tests
+Content-Language: en-us
+Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
+	max [us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,337 +34,148 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-Like hugemmap tests, this patch enables nr_hugepages set/restore in each
-test of hugeshmat, so that we don't need to set the values with external
-commands.
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- testcases/kernel/mem/hugetlb/Makefile.inc          |   16 +++++-----
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |   28 +++++++++++++++-----
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |   28 +++++++++++++++-----
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |   26 ++++++++++++++----
- testcases/kernel/mem/hugetlb/lib/ipcshm.h          |    5 +++
- testcases/kernel/mem/hugetlb/lib/libipc.c          |    7 ++++-
- 6 files changed, 81 insertions(+), 29 deletions(-)
-
-
---------------1.7.8.4
-Content-Type: text/x-patch;
-	name="0002-hugetlb-hugeshmat-set-nr_hugepages-in-tests.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0002-hugetlb-hugeshmat-set-nr_hugepages-in-tests.patch"
-
-diff --git a/testcases/kernel/mem/hugetlb/Makefile.inc b/testcases/kernel/mem/hugetlb/Makefile.inc
-index bb352e5..274bd7c 100644
---- a/testcases/kernel/mem/hugetlb/Makefile.inc
-+++ b/testcases/kernel/mem/hugetlb/Makefile.inc
-@@ -23,19 +23,19 @@
- # DO NOT USE THIS FILE FOR hugetlb / lib!!!
- LIBIPCDIR		:= ../lib
- LIBIPC			:= $(LIBIPCDIR)/libipc_hugetlb.a
--
- $(LIBIPCDIR):
- 	mkdir -p "$@"
--
- $(LIBIPC): $(LIBIPCDIR)
- 	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
- 
--CPPFLAGS		+= -I$(abs_srcdir)/$(LIBIPCDIR)
--
--LDFLAGS			+= -L$(abs_builddir)/$(LIBIPCDIR)
--
--LDLIBS			+= -lipc_hugetlb
-+LIBMEMDIR		:= ../../lib
-+LIBMEM			:= $(LIBMEMDIR)/libmem.a
-+$(LIBMEM): $(LIBMEMDIR)
-+	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIBIPC)
-+CPPFLAGS		+= -I$(abs_srcdir)/$(LIBIPCDIR) -I$(abs_srcdir)/../../include
-+LDFLAGS			+= -L$(abs_builddir)/$(LIBIPCDIR) -L$(abs_builddir)/$(LIBMEMDIR)
-+LDLIBS			+= $(NUMA_LIBS) -lmem -lltp -lipc_hugetlb
-+MAKE_DEPS		+= $(LIBMEM) $(LIBIPC)
- 
- # vim: syntax=make
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-index b92f6eb..e46ae12 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-@@ -57,7 +57,8 @@
-  */
- 
- #include "ipcshm.h"
--#include "system_specific_hugepages_info.h"
-+#include "safe_macros.h"
-+#include "mem.h"
- 
- char *TCID = "hugeshmat01";
- int TST_TOTAL = 3;
-@@ -79,6 +80,12 @@ static size_t shm_size;
- static int    shm_id_1 = -1;
- static void   *addr;
- 
-+static long hugepages = 128;
-+static option_t options[] = {
-+	{ "s:",	&sflag,	&nr_opt	},
-+	{ NULL,	NULL,	NULL	}
-+};
-+
- struct test_case_t {
- 	int  *shmid;
- 	void *addr;
-@@ -101,14 +108,11 @@ int main(int ac, char **av)
- 	int lc, i;
- 	char *msg;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, &help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--
--	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
--		tst_brkm(TCONF, NULL, "Not enough available Hugepages");
--	else
--		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
-+	if (sflag)
-+		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
- 
- 	setup();
- 
-@@ -205,9 +209,17 @@ static void check_functionality(int i)
- 
- void setup(void)
- {
-+	long hpage_size;
-+
-+	tst_require_root(NULL);
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	shm_size = hpage_size * hugepages / 2;
- 	shmkey = getipckey();
- 	shm_id_1 = shmget(shmkey++, shm_size,
- 		    SHM_HUGETLB|SHM_RW|IPC_CREAT|IPC_EXCL);
-@@ -223,5 +235,7 @@ void cleanup(void)
- 
- 	rm_shm(shm_id_1);
- 
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+
- 	tst_rmdir();
- }
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-index 6697436..0d00a34 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-@@ -52,7 +52,8 @@
- 
- #include <pwd.h>
- #include "ipcshm.h"
--#include "system_specific_hugepages_info.h"
-+#include "safe_macros.h"
-+#include "mem.h"
- 
- char *TCID = "hugeshmat02";
- int TST_TOTAL = 2;
-@@ -68,6 +69,12 @@ static int    shm_id_1 = -1;
- static int    shm_id_2 = -1;
- static void   *addr;
- 
-+static long hugepages = 128;
-+static option_t options[] = {
-+	{ "s:",	&sflag,	&nr_opt	},
-+	{ NULL,	NULL,	NULL	}
-+};
-+
- struct test_case_t {
- 	int  *shmid;
- 	void *addr;
-@@ -85,14 +92,11 @@ int main(int ac, char **av)
- 	int lc, i;
- 	char *msg;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, &help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--
--	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
--		tst_brkm(TCONF, NULL, "Not enough available Hugepages");
--	else
--		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
-+	if (sflag)
-+		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
- 
- 	setup();
- 
-@@ -121,9 +125,17 @@ int main(int ac, char **av)
- 
- void setup(void)
- {
-+	long hpage_size;
-+
-+	tst_require_root(NULL);
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	shm_size = hpage_size * hugepages / 2;
- 	shmkey = getipckey();
- 
- 	/* create a shared memory resource with read and write permissions */
-@@ -142,5 +154,7 @@ void cleanup(void)
- 
- 	rm_shm(shm_id_2);
- 
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+
- 	tst_rmdir();
- }
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-index 938ddfa..22832dd 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-@@ -58,7 +58,8 @@
-  */
- 
- #include "ipcshm.h"
--#include "system_specific_hugepages_info.h"
-+#include "safe_macros.h"
-+#include "mem.h"
- 
- char *TCID = "hugeshmat03";
- int TST_TOTAL = 1;
-@@ -69,6 +70,12 @@ static void   *addr;
- static uid_t  ltp_uid;
- static char   *ltp_user = "nobody";
- 
-+static long hugepages = 128;
-+static option_t options[] = {
-+	{ "s:",	&sflag,	&nr_opt	},
-+	{ NULL,	NULL,	NULL	}
-+};
-+
- static void do_child(void);
- 
- int main(int ac, char **av)
-@@ -77,14 +84,12 @@ int main(int ac, char **av)
- 	int status;
- 	pid_t pid;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, &help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
--		tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
--	else
--		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
-+	if (sflag)
-+		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
- 
- 	setup();
- 
-@@ -128,10 +133,17 @@ static void do_child(void)
- 
- void setup(void)
- {
-+	long hpage_size;
-+
- 	tst_require_root(NULL);
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	shm_size = hpage_size * hugepages / 2;
- 	shmkey = getipckey();
- 	shm_id_1 = shmget(shmkey, shm_size,
- 		    SHM_HUGETLB|SHM_RW|IPC_CREAT|IPC_EXCL);
-@@ -149,5 +161,7 @@ void cleanup(void)
- 
- 	rm_shm(shm_id_1);
- 
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+
- 	tst_rmdir();
- }
-diff --git a/testcases/kernel/mem/hugetlb/lib/ipcshm.h b/testcases/kernel/mem/hugetlb/lib/ipcshm.h
-index caac9af..1e9edbe 100644
---- a/testcases/kernel/mem/hugetlb/lib/ipcshm.h
-+++ b/testcases/kernel/mem/hugetlb/lib/ipcshm.h
-@@ -54,4 +54,9 @@ void check_root();
- int getipckey();
- int getuserid(char*);
- 
-+char *nr_opt;
-+int sflag;
-+long orig_hugepages;
-+void help(void);
-+
- #endif /* ipcshm.h */
-diff --git a/testcases/kernel/mem/hugetlb/lib/libipc.c b/testcases/kernel/mem/hugetlb/lib/libipc.c
-index a5d609c..cc3ca02 100644
---- a/testcases/kernel/mem/hugetlb/lib/libipc.c
-+++ b/testcases/kernel/mem/hugetlb/lib/libipc.c
-@@ -198,4 +198,9 @@ rm_shm(int shm_id)
- 		tst_resm(TINFO, "This could lead to IPC resource problems.");
- 		tst_resm(TINFO, "id = %d", shm_id);
- 	}
--}
-\ No newline at end of file
-+}
-+
-+void help(void)
-+{
-+	printf("    -s NUM  Set the number of hugepages to be allocated\n");
-+}
-
---------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: 'Filippo ARCIDIACONO' <filippo.arcidiacono@st.com>, ltp-list@lists.sourceforge.net
+
+> -----Original Message-----
+> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
+> Sent: Thursday, February 23, 2012 11:58 AM
+> To: ltp-list@lists.sourceforge.net
+> Cc: Filippo Arcidiacono; Salvatore Cro
+> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
+> [us]time increment
+> 
+> On slow systems it could be needed to increase the max value [us]time
+> increment beetween two getrusage calls.
+> 
+> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+> ---
+>  testcases/kernel/syscalls/getrusage/getrusage04.c |   44
+> +++++++++++++++++---
+>  1 files changed, 37 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c
+> b/testcases/kernel/syscalls/getrusage/getrusage04.c
+> index 3bdd3b0..e142d22 100644
+> --- a/testcases/kernel/syscalls/getrusage/getrusage04.c
+> +++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+> @@ -54,11 +54,22 @@ int TST_TOTAL = 1;
+> 
+>  #define BIAS_MAX      1000
+>  #define RECORD_MAX    20
+> +#define FACTOR_MAX    10
+> 
+>  #ifndef RUSAGE_THREAD
+>  #define RUSAGE_THREAD 1
+>  #endif
+> 
+> +static int opt_factor;
+> +static char *factor_str;
+> +static long factor_nr = 1;
+> +
+> +option_t child_options[] = {
+> +	{ "m:", &opt_factor, &factor_str },
+> +	{ NULL, NULL,         NULL }
+> +};
+> +
+> +static void fusage(void);
+>  static void busyloop(long wait);
+>  static void setup(void);
+>  static void cleanup(void);
+> @@ -69,8 +80,9 @@ int main(int argc, char *argv[])
+>  	unsigned long ulast, udelta, slast, sdelta;
+>  	int i, lc;
+>  	char *msg;
+> +	char msg_string[BUFSIZ];
+> 
+> -	msg = parse_opts(argc, argv, NULL, NULL);
+> +	msg = parse_opts(argc, argv, child_options, fusage);
+>  	if (msg != NULL)
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> 
+> @@ -80,6 +92,12 @@ int main(int argc, char *argv[])
+> 
+>  	setup();
+> 
+> +	if (opt_factor)
+> +		factor_nr = SAFE_STRTOL(cleanup, factor_str, 0,
+> FACTOR_MAX);
+> +
+> +	tst_resm(TINFO, "Using %ld as multiply factor for max [us]time "
+> +		 "increment (1000+%ldus)!", factor_nr, BIAS_MAX *
+> factor_nr);
+> +
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>  		Tst_count = 0; i = 0;
+>  		ulast = 0, slast = 0;
+> @@ -95,14 +113,20 @@ int main(int argc, char *argv[])
+>  				tst_resm(TINFO, "utime:%12luus;
+stime:%12luus",
+>  					    usage.ru_utime.tv_usec,
+>  					    usage.ru_stime.tv_usec);
+> -				if (udelta > 1000+BIAS_MAX)
+> -					tst_brkm(TFAIL, cleanup,
+> -						    "utime increased >
+1000us:"
+> +				if (udelta > 1000+(BIAS_MAX * factor_nr)) {
+> +					sprintf(msg_string,
+> +						"utime increased > %ldus:",
+> +						1000 + BIAS_MAX *
+factor_nr);
+> +					tst_brkm(TFAIL, cleanup, msg_string,
+>  						    " delta = %luus",
+udelta);
+> -				if (sdelta > 1000+BIAS_MAX)
+> -					tst_brkm(TFAIL, cleanup,
+> -						    "stime increased >
+1000us:"
+> +				}
+> +				if (sdelta > 1000+(BIAS_MAX * factor_nr)) {
+> +					sprintf(msg_string,
+> +						"stime increased > %ldus:",
+> +						1000 + BIAS_MAX *
+factor_nr);
+> +					tst_brkm(TFAIL, cleanup, msg_string,
+>  						    " delta = %luus",
+sdelta);
+> +				}
+>  			}
+>  			ulast = usage.ru_utime.tv_usec;
+>  			slast = usage.ru_stime.tv_usec;
+> @@ -113,6 +137,12 @@ int main(int argc, char *argv[])
+>  	tst_exit();
+>  }
+> 
+> +static void fusage(void)
+> +{
+> +	printf("  -m n    use n as multiply factor for max [us]time "
+> +	       "increment (1000+(1000*n)us),\n          default value is
+> 1\n");
+> +}
+> +
+>  static void busyloop(long wait)
+>  {
+>  	while (wait--)
+> --
+> 1.5.5.6
+
+Is this version ok for you, or there are any other comments?
+
+Thanks,
+Filippo.
+
+
+
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.4--
-
-
-
