@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SCAnK-0003kw-3D
-	for ltp-list@lists.sourceforge.net; Mon, 26 Mar 2012 14:21:14 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SCAnJ-0007Ya-Ai
-	for ltp-list@lists.sourceforge.net; Mon, 26 Mar 2012 14:21:14 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q2QEL7Ga028374
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Mar 2012 10:21:07 -0400
-Message-ID: <4F707B51.4090306@redhat.com>
-Date: Mon, 26 Mar 2012 16:21:05 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	(envelope-from <chrubis@suse.de>) id 1S3S3J-0002qu-F7
+	for ltp-list@lists.sourceforge.net; Fri, 02 Mar 2012 12:57:41 +0000
+Date: Fri, 2 Mar 2012 13:58:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120302125851.GA8394@saboteur.suse.cz>
+References: <loom.20120228T103647-261@post.gmane.org>
+	<20120229162236.GA29987@saboteur.suse.cz>
+	<6F91E0FFDA542149961F7BDED2D2B94B549365C4B6@EXGMBX01.sasken.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000809090700070707060502"
-Subject: [LTP] [PATCH] mremap: fix dependency on ipc subdir
+Content-Disposition: inline
+In-Reply-To: <6F91E0FFDA542149961F7BDED2D2B94B549365C4B6@EXGMBX01.sasken.com>
+Subject: Re: [LTP] Need help in cross compiling LTP for android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,75 +23,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
-
-This is a multi-part message in MIME format.
---------------000809090700070707060502
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-We need to use MAKE_DEPS to declare the ipc subdir depend otherwise
-attempting to do `make mremap01` without building in the ipc subdir
-will fail, and we can hit race conditions in the overall `make`.
-
-This is same change as in commit:
-commit 7103d3e8e0f9dc1804ba06ee66ee02753e8ce50e
-Author: Mike Frysinger <vapier@gentoo.org>
-Date:   Fri Mar 23 12:27:13 2012 -0400
-     kill: fix dependency on ipc subdir
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-  testcases/kernel/syscalls/mremap/Makefile |    2 +-
-  1 files changed, 1 insertions(+), 1 deletions(-)
-
-
-
---------------000809090700070707060502
-Content-Type: text/x-patch;
-	name="0001-mremap-fix-dependency-on-ipc-subdir.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="0001-mremap-fix-dependency-on-ipc-subdir.patch"
-
-diff --git a/testcases/kernel/syscalls/mremap/Makefile b/testcases/kernel/syscalls/mremap/Makefile
-index 63e7485..102e473 100644
---- a/testcases/kernel/syscalls/mremap/Makefile
-+++ b/testcases/kernel/syscalls/mremap/Makefile
-@@ -32,7 +32,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--all: | $(LIB)
-+MAKE_DEPS		:= $(LIB)
- 
- CPPFLAGS                += -I$(abs_srcdir)/$(LIBDIR)
- 
-
-
---------------000809090700070707060502
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Rejish Rajagopala <rejish.rajagopala@sasken.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+Hi!
+> + LOGFILE_NAME=2012_Mar_02-14h_25m_52s
+> + LOGFILE=-l /data/ltp/make_2802_02_2012/results/LTP_RUN_ON-2012_Mar_02-14h_25m_52s.log
+> + ALT_DIR_RES=1
+> + PRETTY_PRT= -p
+> + [ !  ]
+> + ALT_DIR_OUT=1
+> + [ !  ]
+> + [ ! -l /data/ltp/make_2802_02_2012/results/LTP_RUN_ON-2012_Mar_02-14h_25m_52s.log ]
+> + basename 2012_Mar_02-14h_25m_52s
+> + FAILED_FILE_NAME=2012_Mar_02-14h_25m_52s
+> + FAILCMDFILE=-C /data/ltp/make_2802_02_2012/output/LTP_RUN_ON-2012_Mar_02-14h_25m_52s.failed
+> + [ 0 -eq 1 ]
+> + [ 1 -eq 1 ]
+> + [ ! -d /data/ltp/make_2802_02_2012/output ]
+> + [ 1 -eq 1 ]
+> + echo INFO: creating /data/ltp/make_2802_02_2012/results directory
+> INFO: creating /data/ltp/make_2802_02_2012/results directory
+> + [ ! -d /data/ltp/make_2802_02_2012/results ]
+> + mkdir -m 777 -p /data/ltp/make_2802_02_2012/tmp
+> mkdir failed for -m, File exists
+> + echo FATAL: Unable to make temporary directory /data/ltp/make_2802_02_2012/tmp
+> FATAL: Unable to make temporary directory /data/ltp/make_2802_02_2012/tmp
+
+Hmm, this is strange, mkdir -p must not fail with 'File exists'. 
+
+> + export TMPTEMPLATE=/data/ltp/make_2802_02_2012/tmp/ltp-XXXXXXXXXX
+> + mktemp -d /data/ltp/make_2802_02_2012/tmp/ltp-XXXXXXXXXX
+> + TMP=/data/ltp/make_2802_02_2012/tmp/ltp-hYXbVD3460
+> + export TMP
+> + export TMPDIR=/data/ltp/make_2802_02_2012/tmp/ltp-hYXbVD3460
+> + chmod 777 /data/ltp/make_2802_02_2012/tmp/ltp-hYXbVD3460
+> + cd /data/ltp/make_2802_02_2012/tmp/ltp-hYXbVD3460
+> + [ -n  ]
+> + [ 0 -eq 1 ]
+> + [ -z  ]
+> + [ -z  ]
+> + cat
+> + + cat /data/ltp/make_2802_02_2012/scenario_groups/default
+> tr \012
+
+...
+
+> + rm -f /data/ltp/make_2802_02_2012/tmp/ltp-hYXbVD3460/cat_ok.3443
+> rm failed for -f, No such file or directory
+
+And this is even much more wrong.
+
+I'm not familiar with android but this sugests that you have very
+crippled busybox or whatever is installed there to provide basic
+commands like rm, mkdir and so.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
---------------000809090700070707060502
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------000809090700070707060502--
-
