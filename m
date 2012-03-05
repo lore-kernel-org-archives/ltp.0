@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S86zi-00037f-Mr
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 09:29:14 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S86zc-0003LO-K4
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 09:29:14 +0000
-Message-ID: <4F61B620.8010300@cn.fujitsu.com>
-Date: Thu, 15 Mar 2012 17:28:00 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1S4UcK-0001Zp-7S
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:54:08 +0000
+Received: from mail-pz0-f46.google.com ([209.85.210.46])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S4UcE-0000YF-Jg
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:54:08 +0000
+Received: by dajr28 with SMTP id r28so6165621daj.33
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 05 Mar 2012 01:53:56 -0800 (PST)
+Message-ID: <4F548CFC.8040704@casparzhang.com>
+Date: Mon, 05 Mar 2012 17:53:00 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <4F61B34B.6040100@redhat.com>
-In-Reply-To: <4F61B34B.6040100@redhat.com>
-Subject: Re: [LTP] [PATCH v2] io_submit: uninitialized iocb may not return
- -EINVAL
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
+	<4F547158.7050501@casparzhang.com>
+	<4f5487be.50640e0a.6a60.4e49SMTPIN_ADDED@mx.google.com>
+In-Reply-To: <4f5487be.50640e0a.6a60.4e49SMTPIN_ADDED@mx.google.com>
+Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
+ max [us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,69 +34,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/15/2012 05:15 PM, Jan Stancek wrote:
+On 03/05/2012 05:30 PM, Filippo ARCIDIACONO wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Caspar Zhang [mailto:caspar@casparzhang.com]
+>> Sent: Monday, March 05, 2012 8:55 AM
+>> To: Filippo ARCIDIACONO
+>> Cc: ltp-list@lists.sourceforge.net
+>> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
+>> the max [us]time increment
+>>
+>> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
+>>>> -----Original Message-----
+>>>> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
+>>>> Sent: Thursday, February 23, 2012 11:58 AM
+>>>> To: ltp-list@lists.sourceforge.net
+>>>> Cc: Filippo Arcidiacono; Salvatore Cro
+>>>> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
+>>>> [us]time increment
+>>>>
+>>>> On slow systems it could be needed to increase the max value
+>> [us]time
+>>>> increment beetween two getrusage calls.
+>>>>
+>>>> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+>>>> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+>>>> ---
+>>
+>> ...
+>>
+>>> Is this version ok for you, or there are any other comments?
+>>
+>> I meet some `DOS line endings` errors when I am trying to merge this
+>> patch. Could you double check your patch with checkpatch.pl from kernel
+>> source tree? (or my mail client is broken :-(...
+> 
+> I checked the patch with checkpatch.pl and no issue are raised.
+> I sent the patch by means of "git send-email".
 
-> 
-> Testcase 1.3 - EINVAL: uninitialized iocb
-> is about submitting uninitialized iocb structure.
-> 
-> Test is expecting to get -EINVAL, but other values are also
-> possible as uninitialized struct can contain any values.
-> 
-> For example following data fails with -EBADF:
-> --- snip ---
-> unsigned char bad_iocb[64] = {
->     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->     0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x84, 0xa5,
->     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->     0x00, 0x00, 0x0f, 0xff, 0xe0, 0x10, 0x0c, 0x30,
->     0x00, 0x00, 0x0f, 0xff, 0xe0, 0x10, 0x0c, 0x40,
->     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-> memcpy(&iocb, bad_iocb, sizeof(iocb));
-> iocbs[0] = &iocb;
-> TEST(io_submit(ctx, 1, iocbs));
-> check_result(-EINVAL, TEST_RETURN);
-> --- snip ---
-> 
-> This patch accepts also few other errno codes as valid return value.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Committed. Thanks.
 
-
-Thanks Jan, I will take this.
-
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
-> ---
->  testcases/kernel/syscalls/io_submit/io_submit01.c |   15 ++++++++++++++-
->  1 files changed, 14 insertions(+), 1 deletions(-)
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> This SF email is sponsosred by:
-> Try Windows Azure free for 90 days Click Here 
-> http://p.sf.net/sfu/sfd2d-msazure
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
+Caspar
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
