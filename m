@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1S8U3D-0007eL-8q
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 10:06:23 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S4UJA-0004wv-0o
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:34:20 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S8U38-0005Ra-2Y
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 10:06:23 +0000
-Message-ID: <4F6310E3.2000403@cn.fujitsu.com>
-Date: Fri, 16 Mar 2012 18:07:31 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S4UJ3-0008UV-DY
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:34:19 +0000
+Message-ID: <4F548854.9030403@cn.fujitsu.com>
+Date: Mon, 05 Mar 2012 17:33:08 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4F62A9E1.2040502@cn.fujitsu.com>
-	<1331884731-11231-1-git-send-email-penght@cn.fujitsu.com>
-	<4F62F3F8.5080707@cn.fujitsu.com>
-	<42CC829C-0CD7-4CDB-A713-80BE6DA95EC5@gmail.com>
-In-Reply-To: <42CC829C-0CD7-4CDB-A713-80BE6DA95EC5@gmail.com>
-Subject: Re: [LTP] [PATCH v4] aio_read:8-1.c: Forget initializing struct
- aiocb before using it
+References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
+	<4F547158.7050501@casparzhang.com>
+	<034c01ccfab2$8b7b7b70$a2727250$@arcidiacono@st.com>
+In-Reply-To: <034c01ccfab2$8b7b7b70$a2727250$@arcidiacono@st.com>
+Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
+ max [us]time increment
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,90 +29,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-CkdhcnJldHQgQ29vcGVyIHNhaWQgdGhlIGZvbGxvd2luZyBvbiAyMDEyLTMtMTYgMTc6NDg6Cj4g
-T24gTWFyIDE2LCAyMDEyLCBhdCAxOjA0IEFNLCBXYW5sb25nIEdhbyA8Z2Fvd2FubG9uZ0Bjbi5m
-dWppdHN1LmNvbT4gd3JvdGU6Cj4gCj4+IE9uIDAzLzE2LzIwMTIgMDM6NTggUE0sIFBlbmcgSGFp
-dGFvIHdyb3RlOgo+Pgo+Pj4gVGhlcmUgYXJlIDIgY2hhbmdlcyBpbiB0aGlzIHBhdGNoLgo+Pj4g
-MS4gSW5pdGlhbGl6ZSB0aGUgYWlvY2Igc3RydWN0IGJlZm9yZSB1c2luZyBpdC4KPj4+IDIuIElm
-IFByaW9yaXRpemVkIElucHV0IGFuZCBPdXRwdXQgb3B0aW9uIGlzIHN1cHBvcnRlZCwgc3VibWl0
-IHRoZQo+Pj4gICAgYWlvY2Igd2l0aCBpbnZhbGlkIGFpb19yZXFwcmlvLCBlbHNlIHN1Ym1pdCB0
-aGUgYWlvY2Igd2l0aCBpbnZhbGlkCj4+PiAgICBhaW9fZmlsZGVzCj4+Pgo+Pj4gU2lnbmVkLW9m
-Zi1ieTogUGVuZyBIYWl0YW8gPHBlbmdodEBjbi5mdWppdHN1LmNvbT4KPj4KPj4KPj4gTG9va3Mg
-Z29vZCB0byBtZSAsIEN5cmlsPwo+IAo+IFdoeSBub3QgYWx3YXlzIHNldCBmaWxkZXMgPT0gLTEg
-YW5kIHRlc3QgdGhhdCB3YXk/Cj4gCgpXaGVuIFByaW9yaXRpemVkIElucHV0IGFuZCBPdXRwdXQg
-b3B0aW9uIGlzIHN1cHBvcnRlZO+8jGFuZCBhaW9fZmlsZGVzIGlzCnNldCAtMSwgdGhlIGFpb19y
-ZWFkKCkgd2lsbCBzdWNjZXNzOiggT25seSBhaW9jYi5haW9fcmVxcHJpbyBpcyBzZXQgLTEsCnRo
-ZSBhaW9fcmVhZCgpIHdpbGwgZmFpbC4KCldoZW4gUHJpb3JpdGl6ZWQgSW5wdXQgYW5kIE91dHB1
-dCBvcHRpb24gaXMgbm90IHN1cHBvcnRlZO+8jGFuZCBhaW9fZmlsZGVzCmlzIHNldCAtMSwgdGhl
-IHJlc3VsdCBvZiBhaW9fcmVhZCgpIGlzIG5vdCB0ZXN0ZWQuIApCdXQgSSB0aGluayBpdCBpcyB3
-cm9uZyB3aGVuIGFpb19maWxkZXMgaXMgc2V0IC0xLgoKLS0gCkJlc3QgUmVnYXJkcywKUGVuZwoK
-Pj4+IC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19yZWFkLzgtMS5jICAgICAgICAgICAg
-ICB8ICAgMTQgKysrKysrKystLS0tLS0KPj4+IC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fp
-b193cml0ZS82LTEuYyAgICAgICAgICAgICB8ICAgMTYgKysrKysrKysrLS0tLS0tLQo+Pj4gMiBm
-aWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkKPj4+Cj4+PiBk
-aWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2lu
-dGVyZmFjZXMvYWlvX3JlYWQvOC0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUv
-Y29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fcmVhZC84LTEuYwo+Pj4gaW5kZXggODA1NGVlYi4u
-MDA5YWViMiAxMDA2NDQKPj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9j
-b25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19yZWFkLzgtMS5jCj4+PiArKysgYi90ZXN0Y2FzZXMv
-b3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fcmVhZC84LTEu
-Ywo+Pj4gQEAgLTE0LDcgKzE0LDkgQEAKPj4+ICAqCj4+PiAgKiBtZXRob2Q6Cj4+PiAgKgo+Pj4g
-LSAqICAgIC0gZmlsbCBpbiBhbiBhaW9jYiB3aXRoIGEgTlVMTCBhaW9fYnVmCj4+PiArICogICAg
-LSBpZiBQcmlvcml0aXplZCBJbnB1dCBhbmQgT3V0cHV0IG9wdGlvbiBpcyBzdXBwb3J0ZWQsIGZp
-bGwgaW4gYW4KPj4+ICsgKiAgICAgIGFpb2NiIHdpdGggaW52YWxpZCBhaW9fcmVxcHJpbywgZWxz
-ZSBzdWJtaXQgdGhlIGFpb2NiIHdpdGggaW52YWxpZAo+Pj4gKyAqICAgICAgYWlvX2ZpbGRlcwo+
-Pj4gICogICAgLSBjYWxsIGFpb19yZWFkCj4+PiAgKiAgICAtIGNoZWNrIGFpb19yZWFkIHJldHVy
-biB2YWx1ZQo+Pj4gICovCj4+PiBAQCAtNDEsMTEgKzQzLDExIEBAIGludCBtYWluKCkKPj4+ICAg
-IGlmIChzeXNjb25mKF9TQ19BU1lOQ0hST05PVVNfSU8pIDwgMjAwMTEyTCkKPj4+ICAgICAgICBy
-ZXR1cm4gUFRTX1VOU1VQUE9SVEVEOwo+Pj4KPj4+IC0gICAgLyogc3VibWl0IGEgcmVxdWVzdCB3
-aXRoIGEgTlVMTCBidWZmZXIgKi8KPj4+IC0gICAgYWlvY2IuYWlvX2ZpbGRlcyA9IDA7Cj4+PiAt
-ICAgIGFpb2NiLmFpb19idWYgPSBOVUxMOwo+Pj4gLSAgICBhaW9jYi5haW9fbmJ5dGVzID0gMDsK
-Pj4+IC0gICAgYWlvY2IuYWlvX29mZnNldCA9IDA7Cj4+PiArICAgIG1lbXNldCgmYWlvY2IsIDAs
-IHNpemVvZihzdHJ1Y3QgYWlvY2IpKTsKPj4+ICsgICAgaWYgKHN5c2NvbmYoX1NDX1BSSU9SSVRJ
-WkVEX0lPKSA8IDIwMDExMkwpCj4+PiArICAgICAgICBhaW9jYi5haW9fZmlsZGVzID0gLTE7Cj4+
-PiArICAgIGVsc2UKPj4+ICsgICAgICAgIGFpb2NiLmFpb19yZXFwcmlvID0gLTE7Cj4+Pgo+Pj4g
-ICAgaWYgKGFpb19yZWFkKCZhaW9jYikgIT0gLTEpIHsKPj4+ICAgICAgICBwcmludGYoVE5BTUUg
-IiBhaW9fcmVhZCgpIHNob3VsZCBmYWlsIVxuIik7Cj4+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
-L29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3dyaXRlLzYt
-MS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
-ZXMvYWlvX3dyaXRlLzYtMS5jCj4+PiBpbmRleCA5OGI4ZDBkLi45MjM0ZmU2IDEwMDY0NAo+Pj4g
-LS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
-ZXMvYWlvX3dyaXRlLzYtMS5jCj4+PiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fd3JpdGUvNi0xLmMKPj4+IEBAIC0xNCw3ICsx
-NCw5IEBACj4+PiAgKgo+Pj4gICogbWV0aG9kOgo+Pj4gICoKPj4+IC0gKiAgICAtIGZpbGwgaW4g
-YW4gYWlvY2Igd2l0aCBhIE5VTEwgYWlvX2J1Zgo+Pj4gKyAqICAgIC0gaWYgUHJpb3JpdGl6ZWQg
-SW5wdXQgYW5kIE91dHB1dCBvcHRpb24gaXMgc3VwcG9ydGVkLCBmaWxsIGluIGFuCj4+PiArICog
-ICAgICBhaW9jYiB3aXRoIGludmFsaWQgYWlvX3JlcXByaW8sIGVsc2Ugc3VibWl0IHRoZSBhaW9j
-YiB3aXRoIGludmFsaWQKPj4+ICsgKiAgICAgIGFpb19maWxkZXMKPj4+ICAqICAgIC0gY2FsbCBh
-aW9fd3JpdGUKPj4+ICAqICAgIC0gY2hlY2sgYWlvX3dyaXRlIHJldHVybiB2YWx1ZQo+Pj4gICoK
-Pj4+IEBAIC00MiwxMSArNDQsMTEgQEAgaW50IG1haW4oKQo+Pj4gICAgaWYgKHN5c2NvbmYoX1ND
-X0FTWU5DSFJPTk9VU19JTykgPCAyMDAxMTJMKQo+Pj4gICAgICAgIHJldHVybiBQVFNfVU5TVVBQ
-T1JURUQ7Cj4+Pgo+Pj4gLSAgICAvKiBzdWJtaXQgYSByZXF1ZXN0IHdpdGggYSBOVUxMIGJ1ZmZl
-ciAqLwo+Pj4gLSAgICBhaW9jYi5haW9fZmlsZGVzID0gMDsKPj4+IC0gICAgYWlvY2IuYWlvX2J1
-ZiA9IE5VTEw7Cj4+PiAtICAgIGFpb2NiLmFpb19uYnl0ZXMgPSAwOwo+Pj4gLSAgICBhaW9jYi5h
-aW9fb2Zmc2V0ID0gMDsKPj4+ICsgICAgbWVtc2V0KCZhaW9jYiwgMCwgc2l6ZW9mKHN0cnVjdCBh
-aW9jYikpOwo+Pj4gKyAgICBpZiAoc3lzY29uZihfU0NfUFJJT1JJVElaRURfSU8pIDwgMjAwMTEy
-TCkKPj4+ICsgICAgICAgIGFpb2NiLmFpb19maWxkZXMgPSAtMTsKPj4+ICsgICAgZWxzZQo+Pj4g
-KyAgICAgICAgYWlvY2IuYWlvX3JlcXByaW8gPSAtMTsKPj4+Cj4+PiAgICBpZiAoYWlvX3dyaXRl
-KCZhaW9jYikgIT0gLTEpCj4+PiAgICB7Cj4+PiBAQCAtNjIsNCArNjQsNCBAQCBpbnQgbWFpbigp
-Cj4+Pgo+Pj4gICAgcHJpbnRmICgiVGVzdCBQQVNTRURcbiIpOwo+Pj4gICAgcmV0dXJuIFBUU19Q
-QVNTOwo+Pj4gLX0KPj4+IFwgTm8gbmV3bGluZSBhdCBlbmQgb2YgZmlsZQo+Pj4gK30KPj4KPj4K
-Pj4KPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+IFRoaXMgU0YgZW1haWwgaXMgc3BvbnNvc3Jl
-ZCBieToKPj4gVHJ5IFdpbmRvd3MgQXp1cmUgZnJlZSBmb3IgOTAgZGF5cyBDbGljayBIZXJlIAo+
-PiBodHRwOi8vcC5zZi5uZXQvc2Z1L3NmZDJkLW1zYXp1cmUKPj4gX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4+
-IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+PiBodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+IAo+IAoKCi0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQpUaGlzIFNGIGVtYWlsIGlzIHNwb25zb3NyZWQgYnk6ClRyeSBXaW5kb3dzIEF6dXJlIGZy
-ZWUgZm9yIDkwIGRheXMgQ2xpY2sgSGVyZSAKaHR0cDovL3Auc2YubmV0L3NmdS9zZmQyZC1tc2F6
-dXJlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1s
-aXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+On 03/05/2012 05:30 PM, Filippo ARCIDIACONO wrote:
+
+> 
+> 
+>> -----Original Message-----
+>> From: Caspar Zhang [mailto:caspar@casparzhang.com]
+>> Sent: Monday, March 05, 2012 8:55 AM
+>> To: Filippo ARCIDIACONO
+>> Cc: ltp-list@lists.sourceforge.net
+>> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
+>> the max [us]time increment
+>>
+>> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
+>>>> -----Original Message-----
+>>>> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
+>>>> Sent: Thursday, February 23, 2012 11:58 AM
+>>>> To: ltp-list@lists.sourceforge.net
+>>>> Cc: Filippo Arcidiacono; Salvatore Cro
+>>>> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
+>>>> [us]time increment
+>>>>
+>>>> On slow systems it could be needed to increase the max value
+>> [us]time
+>>>> increment beetween two getrusage calls.
+>>>>
+>>>> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+>>>> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+>>>> ---
+>>
+>> ...
+>>
+>>> Is this version ok for you, or there are any other comments?
+>>
+>> I meet some `DOS line endings` errors when I am trying to merge this
+>> patch. Could you double check your patch with checkpatch.pl from kernel
+>> source tree? (or my mail client is broken :-(...
+> 
+> I checked the patch with checkpatch.pl and no issue are raised.
+> I sent the patch by means of "git send-email".
+
+
+Yes, it's all right. 
+see here: https://github.com/gaowanlong/ltp/commit/9d12e835fdcd3624619be8b47e0f109343fc35e4
+
+Thanks
+-Wanlong Gao
+
+> 
+>>
+>> Thanks,
+>> Caspar
+> 
+> 
+> ------------------------------------------------------------------------------
+> Try before you buy = See our experts in action!
+> The most comprehensive online learning library for Microsoft developers
+> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+> Metro Style Apps, more. Free future releases when you subscribe now!
+> http://p.sf.net/sfu/learndevnow-dev2
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+
+
+------------------------------------------------------------------------------
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
