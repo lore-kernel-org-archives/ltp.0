@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S8095-0002We-Pc
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 02:10:27 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S8093-0007Op-VP
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 02:10:27 +0000
-Message-ID: <4F614F52.6010104@cn.fujitsu.com>
-Date: Thu, 15 Mar 2012 10:09:22 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <filippo.arcidiacono@st.com>) id 1S4VkM-0000iG-2u
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 11:06:30 +0000
+Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S4VkH-00032r-Rr
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 11:06:30 +0000
+From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
+	<4F547158.7050501@casparzhang.com>
+	<034c01ccfab2$8b7b7b70$a2727250$@arcidiacono@st.com>
+	<4F548854.9030403@cn.fujitsu.com>
+	<4F549AC2.7040108@casparzhang.com>
+In-Reply-To: <4F549AC2.7040108@casparzhang.com>
+Date: Mon, 5 Mar 2012 12:05:44 +0100
+Message-ID: <035001ccfabf$e98cad30$bca60790$@arcidiacono@st.com>
 MIME-Version: 1.0
-References: <4F60B0CC.606@redhat.com> <4F61415C.6090201@cn.fujitsu.com>
-In-Reply-To: <4F61415C.6090201@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not return
-	-EINVAL
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Language: en-us
+Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
+	max [us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,122 +34,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: 'Caspar Zhang' <caspar@casparzhang.com>, gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Jan,
 
-> Hi Jan,
+
+> -----Original Message-----
+> From: Caspar Zhang [mailto:caspar@casparzhang.com]
+> Sent: Monday, March 05, 2012 11:52 AM
+> To: gaowanlong@cn.fujitsu.com
+> Cc: Filippo ARCIDIACONO; ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
+> the max [us]time increment
 > 
->>
->> Testcase 1.3 - EINVAL: uninitialized iocb
->> is about submitting uninitialized iocb structure.
->>
->> Test is expecting to get -EINVAL, but other values are also
->> possible as uninitialized struct can contain any values.
->>
->> For example following data fails with -EBADF:
->> --- snip ---
->> unsigned char bad_iocb[64] = {
->>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->>     0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x84, 0xa5,
->>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->>     0x00, 0x00, 0x0f, 0xff, 0xe0, 0x10, 0x0c, 0x30,
->>     0x00, 0x00, 0x0f, 0xff, 0xe0, 0x10, 0x0c, 0x40,
->>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
->> memcpy(&iocb, bad_iocb, sizeof(iocb));
->> iocbs[0] = &iocb;
->> TEST(io_submit(ctx, 1, iocbs));
->> check_result(-EINVAL, TEST_RETURN);
->> --- snip ---
->>
->> This patch accepts also few other errno codes as valid return value.
->>
->> Signed-off-by: Jan Stancek <jstancek@redhat.com>
->> ---
->>  testcases/kernel/syscalls/io_submit/io_submit01.c |   16 +++++++++++++++-
->>  1 files changed, 15 insertions(+), 1 deletions(-)
->>
->>
->>
->> 0001-io_submit-uninitialized-iocb-may-not-return-EINVAL.patch
->>
->>
->> diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
->> index da15aa0..3983fa4 100644
->> --- a/testcases/kernel/syscalls/io_submit/io_submit01.c
->> +++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
->> @@ -126,7 +126,21 @@ int main(int argc, char *argv[])
->>  		/* 1.3 - EINVAL: uninitialized iocb */
->>  		iocbs[0] = &iocb;
->>  		TEST(io_submit(ctx, 1, iocbs));
->> -		check_result(-EINVAL, TEST_RETURN);
->> +		switch(TEST_RETURN) {
->> +			case -EINVAL:
->> +			case -EBADF:
-
-
-Here the coding style should like:
-
-	switch() {
-	case xx:
-	case xx:
-
-but not:
-	switch() {
-		case xx:
-		case xx:
-
-Thanks,
-Wanlong Gao
-
->> +			case -EFAULT:
->> +			case -EPERM:
+> On 03/05/2012 05:33 PM, Wanlong Gao wrote:
+> > On 03/05/2012 05:30 PM, Filippo ARCIDIACONO wrote:
+> >
+> >>
+> >>
+> >>> -----Original Message-----
+> >>> From: Caspar Zhang [mailto:caspar@casparzhang.com]
+> >>> Sent: Monday, March 05, 2012 8:55 AM
+> >>> To: Filippo ARCIDIACONO
+> >>> Cc: ltp-list@lists.sourceforge.net
+> >>> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to
+> increase
+> >>> the max [us]time increment
+> >>>
+> >>> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
+> >>>>> -----Original Message-----
+> >>>>> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
+> >>>>> Sent: Thursday, February 23, 2012 11:58 AM
+> >>>>> To: ltp-list@lists.sourceforge.net
+> >>>>> Cc: Filippo Arcidiacono; Salvatore Cro
+> >>>>> Subject: [PATCH v2] getrusage04: add opportunity to increase the
+> max
+> >>>>> [us]time increment
+> >>>>>
+> >>>>> On slow systems it could be needed to increase the max value
+> >>> [us]time
+> >>>>> increment beetween two getrusage calls.
+> >>>>>
+> >>>>> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> >>>>> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+> >>>>> ---
+> >>>
+> >>> ...
+> >>>
+> >>>> Is this version ok for you, or there are any other comments?
+> >>>
+> >>> I meet some `DOS line endings` errors when I am trying to merge
+> this
+> >>> patch. Could you double check your patch with checkpatch.pl from
+> kernel
+> >>> source tree? (or my mail client is broken :-(...
+> >>
+> >> I checked the patch with checkpatch.pl and no issue are raised.
+> >> I sent the patch by means of "git send-email".
+> >
+> >
+> > Yes, it's all right.
+> > see here:
+> https://github.com/gaowanlong/ltp/commit/9d12e835fdcd3624619be8b47e0f10
+> 9343fc35e4
+> >
 > 
+> Yup, my thunderbird should be blamed :-(
 > 
-> I don't think io_submit(2) can return -EPERM.
-> 
-> Do you think so?
+> BTW, according to the style guide, it's recommended to send patches in
+> attachment format, you can generate such patches by adding --attach
+> option with `git format-patch` command.
+
+Thanks for the  suggestion.
+I'll take into account next time.
+
 > 
 > Thanks,
-> Wanlong Gao
-> 
->> +				tst_resm(TPASS, "expected failure - "
->> +						"returned value = %ld : %s",
->> +						TEST_RETURN, strerror(-1 * TEST_RETURN));
->> +				break;
->> +			default:
->> +				tst_resm(TFAIL, "unexpected failure - "
->> +						"returned value = %ld : %s, "
->> +						"expected one of -EINVAL, -EBADF, -EFAULT, -EPERM",
->> +						TEST_RETURN, strerror(-1 * TEST_RETURN));
->> +		}
->>  
->>  		/* 2 - EFAULT: iocb points to invalid data */
->>  		TEST(io_submit(ctx, 1, (struct iocb **)-1));
->>
->>
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> This SF email is sponsosred by:
-> Try Windows Azure free for 90 days Click Here 
-> http://p.sf.net/sfu/sfd2d-msazure
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+> Caspar
 
+Thanks,
+Filippo
 
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
