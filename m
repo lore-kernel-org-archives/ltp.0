@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S85Z0-0003ef-Py
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 07:57:34 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S85Yw-0003dU-2A
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 07:57:34 +0000
-Message-ID: <4F61A0A7.1030402@cn.fujitsu.com>
-Date: Thu, 15 Mar 2012 15:56:23 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1S4SmB-0006Km-2f
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 07:56:11 +0000
+Received: from mail-pz0-f46.google.com ([209.85.210.46])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S4Sm6-0001Hy-VG
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 07:56:11 +0000
+Received: by dajr28 with SMTP id r28so6023674daj.33
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 04 Mar 2012 23:56:01 -0800 (PST)
+Message-ID: <4F547158.7050501@casparzhang.com>
+Date: Mon, 05 Mar 2012 15:55:04 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <dfd33bd8-1212-4dd8-b7a9-87ea6d05760c@zmail17.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <dfd33bd8-1212-4dd8-b7a9-87ea6d05760c@zmail17.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not return
-	-EINVAL
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
+In-Reply-To: <4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
+Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
+ max [us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,32 +29,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-SGkgSmFu77yMCgo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb19zdWJtaXQv
-aW9fc3VibWl0MDEuYwo+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb19zdWJt
-aXQvaW9fc3VibWl0MDEuYwo+Pj4gQEAgLTEyNiw3ICsxMjYsMjEgQEAgaW50IG1haW4oaW50IGFy
-Z2MsIGNoYXIgKmFyZ3ZbXSkKPj4+ICAJCS8qIDEuMyAtIEVJTlZBTDogdW5pbml0aWFsaXplZCBp
-b2NiICovCj4+PiAgCQlpb2Nic1swXSA9ICZpb2NiOwo+Pj4gIAkJVEVTVChpb19zdWJtaXQoY3R4
-LCAxLCBpb2NicykpOwo+Pj4gLQkJY2hlY2tfcmVzdWx0KC1FSU5WQUwsIFRFU1RfUkVUVVJOKTsK
-Pj4+ICsJCXN3aXRjaChURVNUX1JFVFVSTikgewo+Pj4gKwkJCWNhc2UgLUVJTlZBTDoKPj4+ICsJ
-CQljYXNlIC1FQkFERjoKPj4+ICsJCQljYXNlIC1FRkFVTFQ6Cj4+PiArCQkJY2FzZSAtRVBFUk06
-Cj4+Cj4+Cj4+IEkgZG9uJ3QgdGhpbmsgaW9fc3VibWl0KDIpIGNhbiByZXR1cm4gLUVQRVJNLgo+
-Pgo+PiBEbyB5b3UgdGhpbmsgc28/Cj4gCj4gSSB3YXMgdHJ5aW5nIGFsbCBzb3J0cyBvZiByYW5k
-b20gZGF0YSBhbmQgSSByZW1lbWJlciBzZWVpbmcgb25jZSAiLTEiLgo+IEknbSBmYWlsaW5nIHRv
-IHJlcHJvZHVjZSBpdCB0b2RheSwgc28gSSBjb3VsZCBiZSB3cm9uZy4gSWYgSSBmYWlsIHRvIGZp
-bmQKPiBkYXRhIHRoYXQgZ2l2ZXMgLUVQRVJNLCBJJ2xsIHJlbW92ZSBpdCBpbiB2Mi4KCgpJIGxv
-b2tlZCBpbnRvIHRoZSBpb19zdWJtaXQoMikgY29kZSBpbiBrZXJuZWwgYW5kIGRpZG4ndCBzZWUg
-YW55IHBhdGggY2FuCnJldHVybiAtRVBFUk0sIHNvIEkgdGhpbmsgeW91IHNob3VsZCBjb25maXJt
-IG9uIGl0IGFnYWluLgoKVGhhbmtzLApXYW5sb25nIEdhbwoKPiAKPiBSZWdhcmRzLAo+IEphbgo+
-IAo+Pgo+PiBUaGFua3MsCj4+IFdhbmxvbmcgR2FvCj4+Cj4gCj4gCgoKCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpUaGlzIFNGIGVtYWlsIGlzIHNwb25zb3NyZWQgYnk6ClRyeSBXaW5kb3dzIEF6dXJl
-IGZyZWUgZm9yIDkwIGRheXMgQ2xpY2sgSGVyZSAKaHR0cDovL3Auc2YubmV0L3NmdS9zZmQyZC1t
-c2F6dXJlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0
-cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6
-Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
+>> -----Original Message-----
+>> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
+>> Sent: Thursday, February 23, 2012 11:58 AM
+>> To: ltp-list@lists.sourceforge.net
+>> Cc: Filippo Arcidiacono; Salvatore Cro
+>> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
+>> [us]time increment
+>>
+>> On slow systems it could be needed to increase the max value [us]time
+>> increment beetween two getrusage calls.
+>>
+>> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+>> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+>> ---
+
+...
+
+> Is this version ok for you, or there are any other comments?
+
+I meet some `DOS line endings` errors when I am trying to merge this
+patch. Could you double check your patch with checkpatch.pl from kernel
+source tree? (or my mail client is broken :-(...
+
+Thanks,
+Caspar
+
+------------------------------------------------------------------------------
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
