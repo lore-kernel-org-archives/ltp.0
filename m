@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jubitaneja@gmail.com>) id 1S9V6N-0006Nd-MY
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 05:25:51 +0000
-Received: from mail-vx0-f175.google.com ([209.85.220.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S9V6N-0006YS-4I
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 05:25:51 +0000
-Received: by vcbfl13 with SMTP id fl13so9341020vcb.34
+	(envelope-from <caspar@casparzhang.com>) id 1S4VXD-0007aL-F4
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 10:52:55 +0000
+Received: from mail-pz0-f46.google.com ([209.85.210.46])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S4VX7-0008AV-Q2
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 10:52:55 +0000
+Received: by dajr28 with SMTP id r28so6236024daj.33
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 18 Mar 2012 22:25:45 -0700 (PDT)
+	Mon, 05 Mar 2012 02:52:43 -0800 (PST)
+Message-ID: <4F549AC2.7040108@casparzhang.com>
+Date: Mon, 05 Mar 2012 18:51:46 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Date: Mon, 19 Mar 2012 10:55:45 +0530
-Message-ID: <CABxY-SJqTBTDJQimvByQT3GEnk021YtHggPgw9F5NWk9ec8uXg@mail.gmail.com>
-From: Jubi Taneja <jubitaneja@gmail.com>
-Subject: [LTP] Query regarding Open Posix fail Test Case
+References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
+	<4F547158.7050501@casparzhang.com>
+	<034c01ccfab2$8b7b7b70$a2727250$@arcidiacono@st.com>
+	<4F548854.9030403@cn.fujitsu.com>
+In-Reply-To: <4F548854.9030403@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
+ max [us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,71 +32,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7819978026899099683=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
---===============7819978026899099683==
-Content-Type: multipart/alternative; boundary=20cf307ac769503dc704bb91caea
+On 03/05/2012 05:33 PM, Wanlong Gao wrote:
+> On 03/05/2012 05:30 PM, Filippo ARCIDIACONO wrote:
+> 
+>>
+>>
+>>> -----Original Message-----
+>>> From: Caspar Zhang [mailto:caspar@casparzhang.com]
+>>> Sent: Monday, March 05, 2012 8:55 AM
+>>> To: Filippo ARCIDIACONO
+>>> Cc: ltp-list@lists.sourceforge.net
+>>> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
+>>> the max [us]time increment
+>>>
+>>> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
+>>>>> -----Original Message-----
+>>>>> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
+>>>>> Sent: Thursday, February 23, 2012 11:58 AM
+>>>>> To: ltp-list@lists.sourceforge.net
+>>>>> Cc: Filippo Arcidiacono; Salvatore Cro
+>>>>> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
+>>>>> [us]time increment
+>>>>>
+>>>>> On slow systems it could be needed to increase the max value
+>>> [us]time
+>>>>> increment beetween two getrusage calls.
+>>>>>
+>>>>> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+>>>>> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+>>>>> ---
+>>>
+>>> ...
+>>>
+>>>> Is this version ok for you, or there are any other comments?
+>>>
+>>> I meet some `DOS line endings` errors when I am trying to merge this
+>>> patch. Could you double check your patch with checkpatch.pl from kernel
+>>> source tree? (or my mail client is broken :-(...
+>>
+>> I checked the patch with checkpatch.pl and no issue are raised.
+>> I sent the patch by means of "git send-email".
+> 
+> 
+> Yes, it's all right. 
+> see here: https://github.com/gaowanlong/ltp/commit/9d12e835fdcd3624619be8b47e0f109343fc35e4
+> 
 
---20cf307ac769503dc704bb91caea
-Content-Type: text/plain; charset=ISO-8859-1
+Yup, my thunderbird should be blamed :-(
 
-Hi
-
-In LTP(Jan 2012 release) Open Posix Test Suite, the test case
-"aio-suspend/1-1.c" passes
-successfully for Linux Kernel 2.6.35 for Target ARM but the same test case
-fails for Kernel
-version: 3.0.18.
-
-It throws error as :
-aio_suspend/1-1.c Error at write(): No such file or directory.
-
-Can any one please point out the reason for the failure in kernel 3.0.18
-for target ARM?
-
-The exact path of the test case is :
-LTP/testcases/open_posix_testsuite/conformance/
-interfaces/aio_suspend/1-1.c
-
-Looking forward to your reply.
+BTW, according to the style guide, it's recommended to send patches in
+attachment format, you can generate such patches by adding --attach
+option with `git format-patch` command.
 
 Thanks,
-Jubi
-
---20cf307ac769503dc704bb91caea
-Content-Type: text/html; charset=ISO-8859-1
-
-Hi<br><br>In LTP(Jan 2012 release) Open Posix Test Suite, the test case &quot;aio-suspend/1-1.c&quot; passes <br>
-successfully for Linux Kernel 2.6.35 for Target ARM but the same test case fails for Kernel <br>version: 3.0.18.<br>
-<br>It throws error as : <br>aio_suspend/1-1.c Error at write(): No such file or directory. <br><br>Can any one please point out the reason for the failure in kernel 3.0.18 for target ARM? <br><br>The exact path of the test case is : <br>
-
-LTP/testcases/open_posix_testsuite/conformance/<div>interfaces/aio_suspend/1-1.c<br><br>Looking forward to your reply.<br><br>Thanks,<br>Jubi<br></div>
-
---20cf307ac769503dc704bb91caea--
-
-
---===============7819978026899099683==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Caspar
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
---===============7819978026899099683==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7819978026899099683==--
-
