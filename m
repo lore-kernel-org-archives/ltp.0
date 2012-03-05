@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SAhlH-0003A3-7h
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 13:09:03 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SAhlA-0006qf-PK
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 13:09:03 +0000
-Message-ID: <4F6B2429.40103@cn.fujitsu.com>
-Date: Thu, 22 Mar 2012 21:07:53 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <filippo.arcidiacono@st.com>) id 1S4UFe-0000Xs-5d
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:30:42 +0000
+Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
+	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S4UFa-0008Mz-43
+	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:30:42 +0000
+From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
+	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
+	<4F547158.7050501@casparzhang.com>
+In-Reply-To: <4F547158.7050501@casparzhang.com>
+Date: Mon, 5 Mar 2012 10:30:01 +0100
+Message-ID: <034c01ccfab2$8b7b7b70$a2727250$@arcidiacono@st.com>
 MIME-Version: 1.0
-References: <4F6310E3.2000403@cn.fujitsu.com>
-	<1332319408-18331-1-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1332319408-18331-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v5] aio_read:8-1.c: Forget initializing struct
- aiocb before using it
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Language: en-us
+Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
+	max [us]time increment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,104 +31,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: 'Caspar Zhang' <caspar@casparzhang.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 03/21/2012 04:43 PM, Peng Haitao wrote:
-
-> There are 2 changes in this patch.
->  1. Initialize the aiocb struct before using it.
->  2. If Prioritized Input and Output option is supported, submit the
->     aiocb with invalid aio_reqprio, else return untested.
 
 
-pushed, thanks,
+> -----Original Message-----
+> From: Caspar Zhang [mailto:caspar@casparzhang.com]
+> Sent: Monday, March 05, 2012 8:55 AM
+> To: Filippo ARCIDIACONO
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
+> the max [us]time increment
+> 
+> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
+> >> -----Original Message-----
+> >> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
+> >> Sent: Thursday, February 23, 2012 11:58 AM
+> >> To: ltp-list@lists.sourceforge.net
+> >> Cc: Filippo Arcidiacono; Salvatore Cro
+> >> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
+> >> [us]time increment
+> >>
+> >> On slow systems it could be needed to increase the max value
+> [us]time
+> >> increment beetween two getrusage calls.
+> >>
+> >> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+> >> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+> >> ---
+> 
+> ...
+> 
+> > Is this version ok for you, or there are any other comments?
+> 
+> I meet some `DOS line endings` errors when I am trying to merge this
+> patch. Could you double check your patch with checkpatch.pl from kernel
+> source tree? (or my mail client is broken :-(...
 
-Wanlong Gao
+I checked the patch with checkpatch.pl and no issue are raised.
+I sent the patch by means of "git send-email".
 
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> ---
->  .../conformance/interfaces/aio_read/8-1.c               |   13 +++++++------
->  .../conformance/interfaces/aio_write/6-1.c              |   15 ++++++++-------
->  2 files changed, 15 insertions(+), 13 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
-> index 8054eeb..ea0538e 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
-> @@ -14,7 +14,8 @@
->   *
->   * method:
->   *
-> - *	- fill in an aiocb with a NULL aio_buf
-> + *	- if Prioritized Input and Output option is supported, fill in an
-> + *	  aiocb with invalid aio_reqprio.
->   *	- call aio_read
->   *	- check aio_read return value
->   */
-> @@ -41,11 +42,11 @@ int main()
->  	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
->  		return PTS_UNSUPPORTED;
->  
-> -	/* submit a request with a NULL buffer */
-> -	aiocb.aio_fildes = 0;
-> -	aiocb.aio_buf = NULL;
-> -	aiocb.aio_nbytes = 0;
-> -	aiocb.aio_offset = 0;
-> +	if (sysconf(_SC_PRIORITIZED_IO) < 200112L)
-> +		return PTS_UNTESTED;
-> +
-> +	memset(&aiocb, 0, sizeof(struct aiocb));
-> +	aiocb.aio_reqprio = -1;
->  
->  	if (aio_read(&aiocb) != -1) {
->  		printf(TNAME " aio_read() should fail!\n");
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
-> index 98b8d0d..744c82c 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
-> @@ -14,7 +14,8 @@
->   *
->   * method:
->   *
-> - *	- fill in an aiocb with a NULL aio_buf
-> + *	- if Prioritized Input and Output option is supported, fill in an
-> + *	  aiocb with invalid aio_reqprio
->   *	- call aio_write
->   *	- check aio_write return value
->   *
-> @@ -42,11 +43,11 @@ int main()
->  	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
->  		return PTS_UNSUPPORTED;
->  
-> -	/* submit a request with a NULL buffer */
-> -	aiocb.aio_fildes = 0;
-> -	aiocb.aio_buf = NULL;
-> -	aiocb.aio_nbytes = 0;
-> -	aiocb.aio_offset = 0;
-> +	if (sysconf(_SC_PRIORITIZED_IO) < 200112L)
-> +		return PTS_UNTESTED;
-> +
-> +	memset(&aiocb, 0, sizeof(struct aiocb));
-> +	aiocb.aio_reqprio = -1;
->  
->  	if (aio_write(&aiocb) != -1)
->  	{
-> @@ -62,4 +63,4 @@ int main()
->  
->  	printf ("Test PASSED\n");
->  	return PTS_PASS;
-> -}
-> \ No newline at end of file
-> +}
-
+> Thanks,
+> Caspar
 
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Try before you buy = See our experts in action!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-dev2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
