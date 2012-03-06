@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <filippo.arcidiacono@st.com>) id 1S4UFe-0000Xs-5d
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:30:42 +0000
-Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
-	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S4UFa-0008Mz-43
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:30:42 +0000
-From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
-References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
-	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
-	<4F547158.7050501@casparzhang.com>
-In-Reply-To: <4F547158.7050501@casparzhang.com>
-Date: Mon, 5 Mar 2012 10:30:01 +0100
-Message-ID: <034c01ccfab2$8b7b7b70$a2727250$@arcidiacono@st.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Anupam_Srivastava@hcl.com>) id 1S4mzm-0005jy-5o
+	for ltp-list@lists.sourceforge.net; Tue, 06 Mar 2012 05:31:34 +0000
+Received: from gws06.hcl.com ([203.105.185.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S4mzj-00038k-Cr
+	for ltp-list@lists.sourceforge.net; Tue, 06 Mar 2012 05:31:34 +0000
+From: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
+Date: Tue, 6 Mar 2012 11:01:00 +0530
+Message-ID: <0F68B52D2432864190BC72F760407FE9317D00DE57@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Language: en-us
-Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
-	max [us]time increment
+Subject: [LTP] Required git repository
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,62 +23,166 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8399986327358519513=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Caspar Zhang' <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+--===============8399986327358519513==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_0F68B52D2432864190BC72F760407FE9317D00DE57NDAHCLTEVS04H_"
+
+--_000_0F68B52D2432864190BC72F760407FE9317D00DE57NDAHCLTEVS04H_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I want to check out LTP (Version: ltp-full-20110228) source code form git r=
+epository. Please share the path so that I can check out the ltp code.
+
+Regards,
+Anupam
+
+________________________________
+::DISCLAIMER::
+---------------------------------------------------------------------------=
+--------------------------------------------
+
+The contents of this e-mail and any attachment(s) are confidential and inte=
+nded for the named recipient(s) only.
+It shall not attach any liability on the originator or HCL or its affiliate=
+s. Any views or opinions presented in
+this email are solely those of the author and may not necessarily reflect t=
+he opinions of HCL or its affiliates.
+Any form of reproduction, dissemination, copying, disclosure, modification,=
+ distribution and / or publication of
+this message without the prior written consent of the author of this e-mail=
+ is strictly prohibited. If you have
+received this email in error please delete it and notify the sender immedia=
+tely. Before opening any mail and
+attachments please check them for viruses and defect.
+
+---------------------------------------------------------------------------=
+--------------------------------------------
+
+--_000_0F68B52D2432864190BC72F760407FE9317D00DE57NDAHCLTEVS04H_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 12 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Calibri","sans-serif";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext=3D"edit">
+  <o:idmap v:ext=3D"edit" data=3D"1" />
+ </o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-IN" link=3D"blue" vlink=3D"purple">
+<div class=3D"Section1">
+<p class=3D"MsoNormal">Hi,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I want to check out LTP <b>(Version: ltp-full-201102=
+28) </b>
+source code form git repository. Please share the path so that I can check =
+out the ltp code.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Regards,<o:p></o:p></p>
+<p class=3D"MsoNormal">Anupam<o:p></o:p></p>
+</div>
+<br>
+<hr>
+<font face=3D"Arial" color=3D"Gray" size=3D"1">::DISCLAIMER::<br>
+---------------------------------------------------------------------------=
+--------------------------------------------<br>
+<br>
+The contents of this e-mail and any attachment(s) are confidential and inte=
+nded for the named recipient(s) only.<br>
+It shall not attach any liability on the originator or HCL or its affiliate=
+s. Any views or opinions presented in<br>
+this email are solely those of the author and may not necessarily reflect t=
+he opinions of HCL or its affiliates.<br>
+Any form of reproduction, dissemination, copying, disclosure, modification,=
+ distribution and / or publication of<br>
+this message without the prior written consent of the author of this e-mail=
+ is strictly prohibited. If you have<br>
+received this email in error please delete it and notify the sender immedia=
+tely. Before opening any mail and<br>
+attachments please check them for viruses and defect.<br>
+<br>
+---------------------------------------------------------------------------=
+--------------------------------------------<br>
+</font>
+</body>
+</html>
+
+--_000_0F68B52D2432864190BC72F760407FE9317D00DE57NDAHCLTEVS04H_--
 
 
-
-> -----Original Message-----
-> From: Caspar Zhang [mailto:caspar@casparzhang.com]
-> Sent: Monday, March 05, 2012 8:55 AM
-> To: Filippo ARCIDIACONO
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
-> the max [us]time increment
-> 
-> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
-> >> -----Original Message-----
-> >> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
-> >> Sent: Thursday, February 23, 2012 11:58 AM
-> >> To: ltp-list@lists.sourceforge.net
-> >> Cc: Filippo Arcidiacono; Salvatore Cro
-> >> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
-> >> [us]time increment
-> >>
-> >> On slow systems it could be needed to increase the max value
-> [us]time
-> >> increment beetween two getrusage calls.
-> >>
-> >> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
-> >> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
-> >> ---
-> 
-> ...
-> 
-> > Is this version ok for you, or there are any other comments?
-> 
-> I meet some `DOS line endings` errors when I am trying to merge this
-> patch. Could you double check your patch with checkpatch.pl from kernel
-> source tree? (or my mail client is broken :-(...
-
-I checked the patch with checkpatch.pl and no issue are raised.
-I sent the patch by means of "git send-email".
-
-> 
-> Thanks,
-> Caspar
-
+--===============8399986327358519513==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
+Keep Your Developer Skills Current with LearnDevNow!
 The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+http://p.sf.net/sfu/learndevnow-d2d
+--===============8399986327358519513==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8399986327358519513==--
+
