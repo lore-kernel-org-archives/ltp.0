@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S7Joj-0000QG-FH
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:37 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <a2zpavani@gmail.com>) id 1S4wnQ-0001fr-4p
+	for ltp-list@lists.sourceforge.net; Tue, 06 Mar 2012 15:59:28 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S7Joi-0008Uv-FM
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:37 +0000
-Received: by mail-pz0-f47.google.com with SMTP id o14so271940dad.34
+	(Exim 4.76) id 1S4wnN-0001YC-Ty
+	for ltp-list@lists.sourceforge.net; Tue, 06 Mar 2012 15:59:28 +0000
+Received: by obqv19 with SMTP id v19so8378658obq.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 12 Mar 2012 21:58:36 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 13 Mar 2012 12:56:45 +0800
-Message-Id: <1331614605-30347-12-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
-References: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
+	Tue, 06 Mar 2012 07:59:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH 11/11] libltp: remove system_specific_hugepages_info
+Date: Tue, 6 Mar 2012 21:29:20 +0530
+Message-ID: <CAB_zjmVhfAKzJLE7q0eogRtaV6UoZvkgjH20EepDtykmg+e7kw@mail.gmail.com>
+From: pavani pavani <a2zpavani@gmail.com>
+Subject: [LTP] mail test failure on kernel 3.2.6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,359 +25,150 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1635483709560888185=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+--===============1635483709560888185==
+Content-Type: multipart/alternative; boundary=14dae9399cad399c8a04ba952035
+
+--14dae9399cad399c8a04ba952035
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi All,
+      Executed  the the Jan release of LTP ( 20120104 )  on kernel 3.2.6
+kernel , getting the  error below .
+.
+mail_tests::mail01    0  TINFO  :  Test #1: user on local machine.
+mail_tests::mail01    1  TPASS  :  Test #1: Mail was sent to root & was
+received
+mail_tests::mail02    0  TINFO  :  Test #2: mail user@bad-domain will
+result in failure
+mail_tests::mail02    0  TINFO  :  Test #2: to deliver the mail. Mailer
+daemon should
+mail_tests::mail02    0  TINFO  :  Test #2: report this failure.
+mail_tests::mail02    2  TFAIL  :  Test #2: No new mail for root. Reason:
+No mail for root
+mail_tests::mail03    0  TINFO  :  Test #3: mail
+non_existent_user@localhostwill fail
+
+mail_tests::mail03    0  TINFO  :  Test #3: to deliver the mail. Mailer
+daemon should
+mail_tests::mail03    0  TINFO  :  Test #3: report this failure.
+Heirloom mailx version 12.2 01/07/07.  Type ? for help.
+mail_tests::mail03    3  TFAIL  :  Test #3: Mailer-Daemon failed to report
+delivery failure. Reason:
+Heirloom mailx version 12.2 01/07/07.  Type ? for help.
+"/var/mail/root": 1 message 1 new
+>N  1 MAILER-DAEMON@linu Wed Mar  7 01:17   72/2352  Undelivered Mail
+Returned
+mail_tests::mail04    0  TINFO  :  Test #4: Test that mail -c user@domainwill
+
+mail_tests::mail04    0  TINFO  :  Test #4: carbon copy user@domain
+mail_tests::mail04    4  TPASS  :  Test #4: Mail was carbon copied to user
+mail_test
+mail_tests::mail05    0  TINFO  :  Test #5: Test that mail -b user@domainwill
+
+mail_tests::mail05    0  TINFO  :  Test #5: blind carbon copy user@domain
+mail_tests::mail05    5  TPASS  :  Test #5: Mail was blind copied to user
+mail_test
+mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary files
+from /tmp
+mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary user
+mail_test
+<<<execution_status>>>
+initiation_status="ok"
+duration=30 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20120104
+
+Wondering did anyone has come across this problem ?
+
+Regards,
+Pavani
+
+--14dae9399cad399c8a04ba952035
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi All,=A0<div>=A0 =A0 =A0 Executed =A0the the Jan release of LTP ( 2012010=
+4 ) =A0on kernel 3.2.6 kernel , getting the =A0error below . =A0</div><div>=
+.</div><div><font face=3D"sans-serif" style>mail_tests::mail01 =A0 =A00 =A0=
+TINFO =A0: =A0Test #1: user on local machine.</font><span style>=A0</span><=
+br style>
+<font face=3D"sans-serif" style>mail_tests::mail01 =A0 =A01 =A0TPASS =A0: =
+=A0Test #1: Mail was sent to root &amp; was received</font><span style>=A0<=
+/span><br style><font face=3D"sans-serif" style>mail_tests::mail02 =A0 =A00=
+ =A0TINFO =A0: =A0Test #2: mail user@bad-domain will result in failure</fon=
+t><span style>=A0</span><br style>
+<font face=3D"sans-serif" style>mail_tests::mail02 =A0 =A00 =A0TINFO =A0: =
+=A0Test #2: to deliver the mail. Mailer daemon should</font><span style>=A0=
+</span><br style><font face=3D"sans-serif" style>mail_tests::mail02 =A0 =A0=
+0 =A0TINFO =A0: =A0Test #2: report this failure.</font><span style>=A0</spa=
+n><br style>
+<font face=3D"sans-serif" style>mail_tests::mail02 =A0 =A02 =A0TFAIL =A0: =
+=A0Test #2: No new mail for root. Reason:</font><span style>=A0</span><br s=
+tyle><font face=3D"sans-serif" style>No mail for root</font><span style>=A0=
+</span><br style>
+<font face=3D"sans-serif" style>mail_tests::mail03 =A0 =A00 =A0TINFO =A0: =
+=A0Test #3: mail non_existent_user@localhost will fail</font><span style>=
+=A0</span><br style><font face=3D"sans-serif" style>mail_tests::mail03 =A0 =
+=A00 =A0TINFO =A0: =A0Test #3: to deliver the mail. Mailer daemon should</f=
+ont><span style>=A0</span><br style>
+<font face=3D"sans-serif" style>mail_tests::mail03 =A0 =A00 =A0TINFO =A0: =
+=A0Test #3: report this failure.</font><span style>=A0</span><br style><fon=
+t face=3D"sans-serif" style>Heirloom mailx version 12.2 01/07/07. =A0Type ?=
+ for help.</font><span style>=A0</span><br style>
+<font face=3D"sans-serif" style>mail_tests::mail03 =A0 =A03 =A0TFAIL =A0: =
+=A0Test #3: Mailer-Daemon failed to report delivery failure. Reason:</font>=
+<span style>=A0</span><br style><font face=3D"sans-serif" style>Heirloom ma=
+ilx version 12.2 01/07/07. =A0Type ? for help.</font><span style>=A0</span>=
+<br style>
+<font face=3D"sans-serif" style>&quot;/var/mail/root&quot;: 1 message 1 new=
+</font><span style>=A0</span><br style><font face=3D"sans-serif" style>&gt;=
+N =A01 MAILER-DAEMON@linu Wed Mar =A07 01:17 =A0 72/2352 =A0Undelivered Mai=
+l Returned</font><span style>=A0</span><br style>
+<font face=3D"sans-serif" style>mail_tests::mail04 =A0 =A00 =A0TINFO =A0: =
+=A0Test #4: Test that mail -c user@domain will</font><span style>=A0</span>=
+<br style><font face=3D"sans-serif" style>mail_tests::mail04 =A0 =A00 =A0TI=
+NFO =A0: =A0Test #4: carbon copy user@domain</font><span style>=A0</span><b=
+r style>
+<font face=3D"sans-serif" style>mail_tests::mail04 =A0 =A04 =A0TPASS =A0: =
+=A0Test #4: Mail was carbon copied to user mail_test</font><span style>=A0<=
+/span><br style><font face=3D"sans-serif" style>mail_tests::mail05 =A0 =A00=
+ =A0TINFO =A0: =A0Test #5: Test that mail -b user@domain will</font><span s=
+tyle>=A0</span><br style>
+<font face=3D"sans-serif" style>mail_tests::mail05 =A0 =A00 =A0TINFO =A0: =
+=A0Test #5: blind carbon copy user@domain</font><span style>=A0</span><br s=
+tyle><font face=3D"sans-serif" style>mail_tests::mail05 =A0 =A05 =A0TPASS =
+=A0: =A0Test #5: Mail was blind copied to user mail_test</font><span style>=
+=A0</span><br style>
+<font face=3D"sans-serif" style>mail_tests::cleanup =A0 =A00 =A0TINFO =A0: =
+=A0Test CLEAN: Removing temporary files from /tmp</font><span style>=A0</sp=
+an><br style><font face=3D"sans-serif" style>mail_tests::cleanup =A0 =A00 =
+=A0TINFO =A0: =A0Test CLEAN: Removing temporary user mail_test</font><span =
+style>=A0</span><br style>
+<font face=3D"sans-serif" style>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</f=
+ont><span style>=A0</span><br style><font face=3D"sans-serif" style>initiat=
+ion_status=3D&quot;ok&quot;</font><span style>=A0</span><br style><font fac=
+e=3D"sans-serif" style>duration=3D30 termination_type=3Dexited termination_=
+id=3D2 corefile=3Dno</font><span style>=A0</span><br style>
+<font face=3D"sans-serif" style>cutime=3D0 cstime=3D2</font><span style>=A0=
+</span><br style><font face=3D"sans-serif" style>&lt;&lt;&lt;test_end&gt;&g=
+t;&gt;</font><span style>=A0</span><br style><font face=3D"sans-serif" styl=
+e>INFO: ltp-pan reported some tests FAIL</font><span style>=A0</span><br st=
+yle>
+<font face=3D"sans-serif" style>LTP Version: LTP-20120104</font>
+</div><div><br></div><div>Wondering did anyone has come across this problem=
+ ?</div><div><br></div><div>Regards,</div><div>Pavani</div><div><br></div><=
+div><br></div><div><br></div><div><br></div>
+
+--14dae9399cad399c8a04ba952035--
 
 
-system_specific_hugepages_info is not well-implemented and has been
-deprecated, all functions in it can be replaced with libmem. So removing
-it.
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- include/system_specific_hugepages_info.h           |   30 ------
- lib/system_specific_hugepages_info.c               |   93 --------------------
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   19 ++--
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |    5 +-
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |    1 -
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |   24 ++---
- 6 files changed, 21 insertions(+), 151 deletions(-)
- delete mode 100644 include/system_specific_hugepages_info.h
- delete mode 100644 lib/system_specific_hugepages_info.c
-
-
---------------1.7.8.4
-Content-Type: text/x-patch;
-	name="0011-libltp-remove-system_specific_hugepages_info.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0011-libltp-remove-system_specific_hugepages_info.patch"
-
-diff --git a/include/system_specific_hugepages_info.h b/include/system_specific_hugepages_info.h
-deleted file mode 100644
-index f5e3c46..0000000
---- a/include/system_specific_hugepages_info.h
-+++ /dev/null
-@@ -1,30 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2009
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-- */
--
--#ifndef _SYS_SPECIFIC_HUGEPAGES_INFO_H_
--#define _SYS_SPECIFIC_HUGEPAGES_INFO_H_
--
--/*Returns Total No. of available Hugepages in the system from /proc/meminfo*/
--int get_no_of_hugepages(void);
--/*Returns No. of Hugepages_Free  from /proc/meminfo*/
--int get_no_of_free_hugepages(void);
--/*Returns Hugepages Size from /proc/meminfo*/
--int hugepages_size(void);
--
--#endif
-diff --git a/lib/system_specific_hugepages_info.c b/lib/system_specific_hugepages_info.c
-deleted file mode 100644
-index 2344add..0000000
---- a/lib/system_specific_hugepages_info.c
-+++ /dev/null
-@@ -1,93 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2009
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-- */
--
--/*
-- *   DESCRIPTION
-- *               get_no_of_hugepages() --> Return No. of hugepages for this systems
-- *                                         from /proc/meminfo
-- *               hugepages_size()      --> Return Hugepages Size for this system
-- *                                         from /proc/meminfo
-- */
--
--#include <fcntl.h>
--#include <sys/types.h>
--#include <test.h>
--
--int get_no_of_hugepages() {
-- #ifdef __linux__
--       FILE *f;
--       char buf[BUFSIZ];
--
--       f = popen("grep 'HugePages_Total' /proc/meminfo | cut -d ':' -f2 | tr -d ' \n'", "r");
--       if (!f)
--              tst_brkm(TBROK, NULL,
--                     "Could not get info about Total_Hugepages from /proc/meminfo");
--       if (!fgets(buf, 10, f)) {
--               fclose(f);
--               tst_brkm(TBROK, NULL,
--                     "Could not read Total_Hugepages from /proc/meminfo");
--       }
--       pclose(f);
--       return(atoi(buf));
-- #else
--        return -1;
-- #endif
--}
--
--int get_no_of_free_hugepages() {
-- #ifdef __linux__
--       FILE *f;
--       char buf[BUFSIZ];
--
--       f = popen("grep 'HugePages_Free' /proc/meminfo | cut -d ':' -f2 | tr -d ' \n'", "r");
--       if (!f)
--               tst_brkm(TBROK, NULL,
--                     "Could not get info about HugePages_Free from /proc/meminfo");
--       if (!fgets(buf, 10, f)) {
--               fclose(f);
--               tst_brkm(TBROK, NULL,
--                     "Could not read HugePages_Free from /proc/meminfo");
--       }
--       pclose(f);
--       return(atoi(buf));
-- #else
--        return -1;
-- #endif
--}
--
--int hugepages_size() {
-- #ifdef __linux__
--       FILE *f;
--       char buf[BUFSIZ];
--
--       f = popen("grep 'Hugepagesize' /proc/meminfo | cut -d ':' -f2 | tr -d 'kB \n'", "r");
--       if (!f)
--               tst_brkm(TBROK, NULL,
--                     "Could not get info about HugePages_Size from /proc/meminfo");
--       if (!fgets(buf, 10, f)) {
--               fclose(f);
--               tst_brkm(TBROK, NULL,
--                     "Could not read HugePages_Size from /proc/meminfo");
--       }
--       pclose(f);
--       return(atoi(buf));
-- #else
--        return -1;
-- #endif
--}
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-index 90f28c8..1140d8b 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-@@ -62,7 +62,6 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
--#include "system_specific_hugepages_info.h"
- #include "mem.h"
- 
- static char TEMPFILE[MAXPATHLEN];
-@@ -73,9 +72,9 @@ static long *addr;
- static int fildes;
- static char *Hopt;
- static char *nr_opt;
--static int beforetest;
--static int aftertest;
--static int hugepagesmapped;
-+static long beforetest;
-+static long aftertest;
-+static long hugepagesmapped;
- static long hugepages = 128;
- static long orig_hugepages;
- 
-@@ -86,7 +85,7 @@ int main(int ac, char **av)
- 	int lc;
- 	char *msg;
- 	int Hflag = 0;
--	int page_sz = 0;
-+	long page_sz = 0;
- 	int sflag = 0;
- 
- 	option_t options[] = {
-@@ -119,12 +118,12 @@ int main(int ac, char **av)
- 		Tst_count = 0;
- 
- 		/* Note the number of free huge pages BEFORE testing */
--		beforetest = get_no_of_free_hugepages();
-+		beforetest = read_meminfo("HugePages_Free:");
- 
- 		/* Note the size of huge page size BEFORE testing */
--		page_sz = hugepages_size();
-+		page_sz = read_meminfo("Hugepagesize:") * 1024;
- 
--		addr = mmap(NULL, page_sz*1024, PROT_READ | PROT_WRITE,
-+		addr = mmap(NULL, page_sz, PROT_READ | PROT_WRITE,
- 			    MAP_SHARED, fildes, 0);
- 		if (addr == MAP_FAILED) {
- 			tst_resm(TFAIL|TERRNO, "mmap() Failed on %s", TEMPFILE);
-@@ -141,7 +140,7 @@ int main(int ac, char **av)
- 		 * Make sure the number of free huge pages
- 		 * AFTER testing decreased
- 		 */
--		aftertest = get_no_of_free_hugepages();
-+		aftertest = read_meminfo("HugePages_Free:");
- 		hugepagesmapped = beforetest - aftertest;
- 		if (hugepagesmapped < 1)
- 			tst_resm(TWARN, "Number of HUGEPAGES_FREE stayed the"
-@@ -150,7 +149,7 @@ int main(int ac, char **av)
- 
- 		/* Clean up things in case we are looping */
- 		/* Unmap the mapped memory */
--		if (munmap(addr, page_sz*1024) != 0)
-+		if (munmap(addr, page_sz) != 0)
- 			tst_brkm(TFAIL|TERRNO, NULL, "munmap failed");
- 
- 		close(fildes);
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-index 5a96146..7b2fb68 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-@@ -55,7 +55,6 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
--#include "system_specific_hugepages_info.h"
- #include "mem.h"
- 
- #define LOW_ADDR       (void *)(0x80000000)
-@@ -83,7 +82,7 @@ int main(int ac, char **av)
- 	int lc;
- 	char *msg;
- 	int Hflag = 0;
--	int page_sz, map_sz;
-+	long page_sz, map_sz;
- 	int sflag = 0;
- 
- 	option_t options[] = {
-@@ -105,7 +104,7 @@ int main(int ac, char **av)
- 		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
- 
- 	page_sz = getpagesize();
--	map_sz = 2 * 1024 * hugepages_size();
-+	map_sz = read_meminfo("Hugepagesize:") * 1024 * 2;
- 
- 	setup();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
-index 50fe707..4b75601 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
-@@ -46,7 +46,6 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
--#include "system_specific_hugepages_info.h"
- #include "mem.h"
- 
- #define HIGH_ADDR      (void *)(0x1000000000000)
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-index f313c60..554eaae 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-@@ -63,7 +63,6 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
--#include "system_specific_hugepages_info.h"
- #include "mem.h"
- 
- static char TEMPFILE[MAXPATHLEN];
-@@ -73,10 +72,10 @@ int TST_TOTAL = 1;
- static long *addr;
- static long long mapsize;
- static int fildes;
--static int freepages;
--static int beforetest;
--static int aftertest;
--static int hugepagesmapped;
-+static long freepages;
-+static long beforetest;
-+static long aftertest;
-+static long hugepagesmapped;
- static long hugepages = 128;
- static long orig_hugepages;
- static char *Hopt;
-@@ -112,10 +111,6 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--	/* Check number of hugepages */
--	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
--		tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		/* Creat a temporary file used for huge mapping */
- 		fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666);
-@@ -126,11 +121,11 @@ int main(int ac, char **av)
- 		Tst_count = 0;
- 
- 		/* Note the number of free huge pages BEFORE testing */
--		freepages = get_no_of_free_hugepages();
-+		freepages = read_meminfo("HugePages_Free:");
- 		beforetest = freepages;
- 
- 		/* Note the size of huge page size BEFORE testing */
--		huge_pagesize = hugepages_size();
-+		huge_pagesize = read_meminfo("Hugepagesize:");
- 		tst_resm(TINFO, "Size of huge pages is %d KB", huge_pagesize);
- 
- #if __WORDSIZE == 32
-@@ -150,8 +145,9 @@ int main(int ac, char **av)
- 			close(fildes);
- 			continue;
- 		} else {
--			tst_resm(TPASS, "Succeeded mapping file using %d pages",
--				 freepages);
-+			tst_resm(TPASS,
-+				"Succeeded mapping file using %ld pages",
-+				freepages);
- 			/* force to allocate page and change HugePages_Free */
- 			*(int *)addr = 0;
- 		}
-@@ -160,7 +156,7 @@ int main(int ac, char **av)
- 		 * Make sure the number of free huge pages
- 		 * AFTER testing decreased
- 		 */
--		aftertest = get_no_of_free_hugepages();
-+		aftertest = read_meminfo("HugePages_Free:");
- 		hugepagesmapped = beforetest - aftertest;
- 		if (hugepagesmapped < 1)
- 			tst_resm(TWARN, "Number of HUGEPAGES_FREE stayed the"
-
---------------1.7.8.4
+--===============1635483709560888185==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -392,7 +180,7 @@ The most comprehensive online learning library for Microsoft developers
 is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
 Metro Style Apps, more. Free future releases when you subscribe now!
 http://p.sf.net/sfu/learndevnow-d2d
---------------1.7.8.4
+--===============1635483709560888185==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -403,7 +191,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------1.7.8.4--
-
-
+--===============1635483709560888185==--
 
