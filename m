@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S7pFq-0005d1-2H
-	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 14:32:42 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S5A35-0008UC-Fm
+	for ltp-list@lists.sourceforge.net; Wed, 07 Mar 2012 06:08:31 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S7pFk-0001Fq-D5
-	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 14:32:41 +0000
-Message-ID: <4F60A555.1030100@cn.fujitsu.com>
-Date: Wed, 14 Mar 2012 22:04:05 +0800
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S5A31-0006Cp-Dy
+	for ltp-list@lists.sourceforge.net; Wed, 07 Mar 2012 06:08:31 +0000
+Message-ID: <4F56FB1A.8090601@cn.fujitsu.com>
+Date: Wed, 07 Mar 2012 14:07:22 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <389bdf61-8e14-45b2-adbf-66c1d0ac3a96@zmail17.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <389bdf61-8e14-45b2-adbf-66c1d0ac3a96@zmail17.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] readlink03: fix expected errno for kernel >=3.2
+References: <CAB_zjmVhfAKzJLE7q0eogRtaV6UoZvkgjH20EepDtykmg+e7kw@mail.gmail.com>
+In-Reply-To: <CAB_zjmVhfAKzJLE7q0eogRtaV6UoZvkgjH20EepDtykmg+e7kw@mail.gmail.com>
+Subject: Re: [LTP] mail test failure on kernel 3.2.6
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,59 +28,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: pavani pavani <a2zpavani@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/14/2012 09:57 PM, Jan Stancek wrote:
+On 03/06/2012 11:59 PM, pavani pavani wrote:
 
-> 
-> 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: ltp-list@lists.sourceforge.net, "Jeffrey Burke" <jburke@redhat.com>
->> Sent: Wednesday, March 14, 2012 1:50:56 PM
->> Subject: Re: [LTP] [PATCH] readlink03: fix expected errno for kernel >=3.2
->>
->> Hi Jan,
->>
->>>
->>> This kernel commit restored original behavior:
->>> commit 1fa1e7f615f4d3ae436fa319af6e4eebdd4026a8
->>> Author: Andy Whitcroft <apw@canonical.com>
->>> Date:   Wed Nov 2 09:44:39 2011 +0100
->>>     readlinkat: ensure we return ENOENT for the empty pathname for
->>> normal lookups
->>>
->>> For kernel >= 3.2, ENOENT should be expected errno code.
->>
->>
->> I had posted a patch long time ago, you can see here
->> http://marc.info/?l=ltp-list&m=132063831228321&w=2
->>
->> This is a kernel bug, and already fixed in 3.0 and 3.1
->> stable tree, so, just test the kernel version like this
->> is not the best method.
->>
->> What do you think?
-> 
-> Agreed, version check doesn't make much sense.
-> 
-> I think if this patch was important enough to be backported to stable
-> trees, we can be sure it's a bug and we can drop that version
-> check entirely - which is what your patch does.
+> Hi All, 
+>       Executed  the the Jan release of LTP ( 20120104 )  on kernel 3.2.6 kernel , getting the  error below .  
+> .
+> mail_tests::mail01    0  TINFO  :  Test #1: user on local machine. 
+> mail_tests::mail01    1  TPASS  :  Test #1: Mail was sent to root & was received 
+> mail_tests::mail02    0  TINFO  :  Test #2: mail user@bad-domain will result in failure 
+> mail_tests::mail02    0  TINFO  :  Test #2: to deliver the mail. Mailer daemon should 
+> mail_tests::mail02    0  TINFO  :  Test #2: report this failure. 
+> mail_tests::mail02    2  TFAIL  :  Test #2: No new mail for root. Reason: 
+> No mail for root 
+> mail_tests::mail03    0  TINFO  :  Test #3: mail non_existent_user@localhost will fail 
+> mail_tests::mail03    0  TINFO  :  Test #3: to deliver the mail. Mailer daemon should 
+> mail_tests::mail03    0  TINFO  :  Test #3: report this failure. 
+> Heirloom mailx version 12.2 01/07/07.  Type ? for help. 
+> mail_tests::mail03    3  TFAIL  :  Test #3: Mailer-Daemon failed to report delivery failure. Reason: 
+> Heirloom mailx version 12.2 01/07/07.  Type ? for help. 
+> "/var/mail/root": 1 message 1 new 
+>>N  1 MAILER-DAEMON@linu Wed Mar  7 01:17   72/2352  Undelivered Mail Returned 
 
 
-Yeah, so let me resend it with your Ack.
+The "MAILER-DAEMON@linu" here seems odd.
 
 Thanks,
 Wanlong Gao
 
+> mail_tests::mail04    0  TINFO  :  Test #4: Test that mail -c user@domain will 
+> mail_tests::mail04    0  TINFO  :  Test #4: carbon copy user@domain 
+> mail_tests::mail04    4  TPASS  :  Test #4: Mail was carbon copied to user mail_test 
+> mail_tests::mail05    0  TINFO  :  Test #5: Test that mail -b user@domain will 
+> mail_tests::mail05    0  TINFO  :  Test #5: blind carbon copy user@domain 
+> mail_tests::mail05    5  TPASS  :  Test #5: Mail was blind copied to user mail_test 
+> mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary files from /tmp 
+> mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary user mail_test 
+> <<<execution_status>>> 
+> initiation_status="ok" 
+> duration=30 termination_type=exited termination_id=2 corefile=no 
+> cutime=0 cstime=2 
+> <<<test_end>>> 
+> INFO: ltp-pan reported some tests FAIL 
+> LTP Version: LTP-20120104
+> 
+> Wondering did anyone has come across this problem ?
 > 
 > Regards,
-> Jan
+> Pavani
 > 
 > 
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Keep Your Developer Skills Current with LearnDevNow!
+> The most comprehensive online learning library for Microsoft developers
+> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+> Metro Style Apps, more. Free future releases when you subscribe now!
+> http://p.sf.net/sfu/learndevnow-d2d
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 
