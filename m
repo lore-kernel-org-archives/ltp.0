@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S9umx-0007xQ-OX
-	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:51:31 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S9ums-0005mV-71
-	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:51:31 +0000
-Received: by dado14 with SMTP id o14so12313668dad.34
+	(envelope-from <Kai.Kang@windriver.com>) id 1S5WOo-00026W-Fn
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 06:00:26 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S5WOn-0007h1-Fo
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 06:00:26 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q2860JSD003936
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 20 Mar 2012 01:51:20 -0700 (PDT)
-Message-ID: <4F6844B0.2090605@casparzhang.com>
-Date: Tue, 20 Mar 2012 16:49:52 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Wed, 7 Mar 2012 22:00:19 -0800 (PST)
+Message-ID: <4F584AF1.3010909@windriver.com>
+Date: Thu, 8 Mar 2012 14:00:17 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
-	<1328793121-20852-1-git-send-email-caspar@casparzhang.com>
-	<33516012.post@talk.nabble.com>
-In-Reply-To: <33516012.post@talk.nabble.com>
-Subject: Re: [LTP] [PATCH v4] safe_macros: add SAFE_STRTOL
+Subject: [LTP] aio_read/8-1.c fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,27 +27,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Gopal Kalita <gopal.kalita@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-T24gMDMvMTYvMjAxMiAwNTo1OCBQTSwgR29wYWwgS2FsaXRhIHdyb3RlOgo+IAo+IEluIHRoZSBm
-aWxlIC0tIGxpYi9zYWZlX21hY3Jvcy5jICwgdGhlIGhlYWRlciBmaWxlIGVycm5vLmggbmVlZHMg
-dG8gYmUKPiBpbmNsdWRlZC4KPiAjaW5jbHVkZSA8ZXJybm8uaD4KPiAKPiBPdGhlcndpc2UsIGl0
-IGdpdmVzIHRoZSBGb2xsb3dpbmcgZXJyb3IgICh3aGlsZSBjb21waWxpbmcpLS0KPiBzYWZlX21h
-Y3Jvcy5jOiBJbiBmdW5jdGlvbiDigJhzYWZlX3N0cnRvbOKAmToKPiBzYWZlX21hY3Jvcy5jOjM1
-MDogZXJyb3I6IOKAmGVycm5v4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0
-aW9uKQo+IHNhZmVfbWFjcm9zLmM6MzUwOiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlm
-aWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQo+IHNhZmVfbWFjcm9zLmM6MzUwOiBlcnJvcjogZm9y
-IGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbi4pCj4gc2FmZV9tYWNyb3MuYzozNTI6IGVycm9y
-OiDigJhFUkFOR0XigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4g
-CgpIaSwgdGhpcyBzaG91bGQgaGF2ZSBiZWVuIGZpeGVkIGluIGNvbW1pdCA5YWYwYmQ3YgoKVGhh
-bmtzLApDYXNwYXIKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGIGVtYWlsIGlzIHNwb25z
-b3NyZWQgYnk6ClRyeSBXaW5kb3dzIEF6dXJlIGZyZWUgZm9yIDkwIGRheXMgQ2xpY2sgSGVyZSAK
-aHR0cDovL3Auc2YubmV0L3NmdS9zZmQyZC1tc2F6dXJlCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+Hi All,
+
+aio_read/8-1.c "fills in an aiocb with a NULL aio_buf" and then expect 
+that the operation is not succesfully queued.
+It fails that aio_read() always return 0. And I checked the posix spec 
+and didn't find that an aiocb with NULL aio_buf will cause enqueue fails.
+So is this case valid?
+
+Thanks,
+Kai
+
+------------------------------------------------------------------------------
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
