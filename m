@@ -1,23 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SCMHU-0003ef-RJ
-	for ltp-list@lists.sourceforge.net; Tue, 27 Mar 2012 02:37:08 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SCMHU-0003FH-3O
-	for ltp-list@lists.sourceforge.net; Tue, 27 Mar 2012 02:37:08 +0000
-Received: by pbcum15 with SMTP id um15so7564518pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Mar 2012 19:37:02 -0700 (PDT)
-Message-ID: <4F71276B.4090302@casparzhang.com>
-Date: Tue, 27 Mar 2012 10:35:23 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	(envelope-from <chrubis@suse.de>) id 1S5cja-0002uV-NS
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 12:46:18 +0000
+Date: Thu, 8 Mar 2012 13:48:00 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120308124800.GD31640@saboteur.suse.cz>
 MIME-Version: 1.0
-References: <4F707B51.4090306@redhat.com>
-In-Reply-To: <4F707B51.4090306@redhat.com>
-Subject: Re: [LTP] [PATCH] mremap: fix dependency on ipc subdir
+Content-Disposition: inline
+Subject: [LTP] LTP git repositories
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,29 +22,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: ltp-list@lists.sourceforge.net
+Cc: Mike Frysinger <vapier@gentoo.org>
 
-On 03/26/2012 10:21 PM, Jan Stancek wrote:
-> 
-> We need to use MAKE_DEPS to declare the ipc subdir depend otherwise
-> attempting to do `make mremap01` without building in the ipc subdir
-> will fail, and we can hit race conditions in the overall `make`.
-> 
-> This is same change as in commit:
-> commit 7103d3e8e0f9dc1804ba06ee66ee02753e8ce50e
-> Author: Mike Frysinger <vapier@gentoo.org>
-> Date:   Fri Mar 23 12:27:13 2012 -0400
->      kill: fix dependency on ipc subdir
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Hi!
+Good news everyone. After some discussion we (Me, Caspar and Wanlong)
+prepared official LTP repository on github.com.
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+It's located at https://github.com/linux-test-project/ltp
+
+The resons for such move are obvious, github provides more natural way
+to handle development using git (not to mention that their servers are
+much faster than sourceforge).
+
+So now everyone can fork the repo with a few clicks and send a pull
+request to this mailing list. Let's see how that will work in real
+usage.
+
+Now there are few things to settle and I we would like to hear from you
+(especially people who are developers in the ltp.sf.net project).
+
+With the current setup we have git repo both on sf.net and github, my
+plan is to make one of them mirror of the other one (for now I have
+prepared sync script to be run every hour via cron).
+
+I would personally preffer the sf.net repo becoming mirror of the github
+one, but that means nobody but the sync script would commit to the
+sf.net repo and all commits would go to the github one. But that
+shouldn't be the problem as we would add people who needs commit acces
+to the github project.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
