@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <takeuchi.akr@jp.panasonic.com>) id 1SAeRj-0001VP-NG
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 09:36:39 +0000
-Received: from smtp.mei.co.jp ([133.183.100.20])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SAeRc-00027g-Ra
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 09:36:39 +0000
-Date: Thu, 22 Mar 2012 18:36:40 +0900
-From: Akira Takeuchi <takeuchi.akr@jp.panasonic.com>
-In-Reply-To: <4F6AE07A.4050509@cn.fujitsu.com>
-References: <20120322132353.AB97.38390934@jp.panasonic.com>
-	<4F6AE07A.4050509@cn.fujitsu.com>
-Message-Id: <20120322183640.ABAE.38390934@jp.panasonic.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1S5cOh-0000pw-9z
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 12:24:43 +0000
+Date: Thu, 8 Mar 2012 13:26:26 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120308122626.GA29867@saboteur.suse.cz>
+References: <4F578418.2060100@redhat.com> <4F581E1B.60208@casparzhang.com>
+	<4F582C39.10307@cn.fujitsu.com>
+	<20120308122426.GA26903@saboteur.suse.cz>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mq_timedreceive: 10-2.c: check timeout error
-	rather than invalid parameter error
+Content-Disposition: inline
+In-Reply-To: <20120308122426.GA26903@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH] getrusage04: initialise [us]last to current values
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,39 +26,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Thank you for replying.
-
-On Thu, 22 Mar 2012 16:19:06 +0800
-Peng Haitao <penght@cn.fujitsu.com> wrote:
-
-> > On the other hand, actually, timeout error should not be returned when message
-> > can be performed immediately.
-> > 
+Hi!
+> > I can't see that linux-test-project/ltp auto sync from sf since you commit
+> > this patch, so I guess Cyril set the auto sync from linux-test-project/ltp
+> > to sf, so, maybe you should commit to github and it'll auto sync to sf, right?
 > 
-> POSIX spec does not say this, so I think it is not necessary to check timeout error.
+> The auto sync is prepared but not yet running. I'll will start that once
+> we discuss this change on LTP mailing list and make sure everybody
+> understand the change. Till that sync is done by hand.
 
-Really ? POSIX spec describes as below:
+And FYI, I've just verifed that the script is working and synced the
+github repo with the sf one.
 
-  Under no circumstance shall the operation fail with a timeout
-  if a message can be removed from the message queue immediately.
-
-  http://pubs.opengroup.org/onlinepubs/009604499/functions/mq_receive.html
-
-My reading of this is that timeout error must not be returned
-when message can be performed immediately. What do you think of it ?
-
-
-Regards,
-Akira Takeuchi
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
