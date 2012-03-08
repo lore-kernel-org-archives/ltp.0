@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S7R6V-0008Jk-BH
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 12:45:27 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S7R6N-0000zh-LY
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 12:45:27 +0000
-Received: by dado14 with SMTP id o14so904543dad.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1S5YjW-00014n-Ix
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 08:29:58 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S5YjS-0004KI-9m
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 08:29:58 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q288Tmi0020726
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Mar 2012 05:45:13 -0700 (PDT)
-Message-ID: <4F5F4112.2040309@casparzhang.com>
-Date: Tue, 13 Mar 2012 20:44:02 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Thu, 8 Mar 2012 00:29:48 -0800 (PST)
+Message-ID: <4F586DF8.1030008@windriver.com>
+Date: Thu, 8 Mar 2012 16:29:44 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
-	<1331614605-30347-11-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1331614605-30347-11-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH 10/11] hugetlb/hugeshmget03: fix broken testcase
+References: <4F584AF1.3010909@windriver.com>
+In-Reply-To: <4F584AF1.3010909@windriver.com>
+Subject: Re: [LTP] aio_read/8-1.c fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,45 +29,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 03/13/2012 12:56 PM, Caspar Zhang wrote:
-> 
-> hugeshmget03 often returns ENOMEM, so that causes test fails. This patch
-> fixes the problem by making the following changes:
-> 
-> 1) reduce shm_size to minimum (1 hugepage);
-> 2) reduce shmmni to 1/2 * nr_hugepages.
-> 
-> so that when all shmids taken, memory allocated ~=
-> 
->     1/2 * nr_hugepages * hugepagesize < free memory
-> 
-> Which means there will be no ENOMEM occurs, but ENOSPC as expected.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |   14 ++++++++++++--
->  1 files changed, 12 insertions(+), 2 deletions(-)
-> 
-
-Wanlong, thanks for review.
-
-All: FYI, all the other patches except this one (10/11) pushed after
-successful testing for enough times.
-
-Caspar
-
-------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDAz5pyIMDjml6UgMTQ6MDAsIEthbmcgS2FpIHdyb3RlOgo+IEhpIEFsbCwKPgo+
+IGFpb19yZWFkLzgtMS5jICJmaWxscyBpbiBhbiBhaW9jYiB3aXRoIGEgTlVMTCBhaW9fYnVmIiBh
+bmQgdGhlbiBleHBlY3QKPiB0aGF0IHRoZSBvcGVyYXRpb24gaXMgbm90IHN1Y2Nlc2Z1bGx5IHF1
+ZXVlZC4KPiBJdCBmYWlscyB0aGF0IGFpb19yZWFkKCkgYWx3YXlzIHJldHVybiAwLiBBbmQgSSBj
+aGVja2VkIHRoZSBwb3NpeCBzcGVjCj4gYW5kIGRpZG4ndCBmaW5kIHRoYXQgYW4gYWlvY2Igd2l0
+aCBOVUxMIGFpb19idWYgd2lsbCBjYXVzZSBlbnF1ZXVlIGZhaWxzLgo+IFNvIGlzIHRoaXMgY2Fz
+ZSB2YWxpZD8KU28gZG9lcyB0aGUgY2FzZSBhaW9fd3JpdGUvNi0xLmMuCgo+Cj4gVGhhbmtzLAo+
+IEthaQo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVmlydHVhbGl6YXRpb24mICBDbG91ZCBN
+YW5hZ2VtZW50IFVzaW5nIENhcGFjaXR5IFBsYW5uaW5nCj4gQ2xvdWQgY29tcHV0aW5nIG1ha2Vz
+IHVzZSBvZiB2aXJ0dWFsaXphdGlvbiAtIGJ1dCBjbG91ZCBjb21wdXRpbmcKPiBhbHNvIGZvY3Vz
+ZXMgb24gYWxsb3dpbmcgY29tcHV0aW5nIHRvIGJlIGRlbGl2ZXJlZCBhcyBhIHNlcnZpY2UuCj4g
+aHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZubC8xMTQvNTE1MjEyMjMvCj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWls
+aW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3Rz
+LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQpWaXJ0dWFsaXphdGlvbiAmIENsb3VkIE1hbmFnZW1lbnQgVXNpbmcgQ2FwYWNpdHkg
+UGxhbm5pbmcKQ2xvdWQgY29tcHV0aW5nIG1ha2VzIHVzZSBvZiB2aXJ0dWFsaXphdGlvbiAtIGJ1
+dCBjbG91ZCBjb21wdXRpbmcgCmFsc28gZm9jdXNlcyBvbiBhbGxvd2luZyBjb21wdXRpbmcgdG8g
+YmUgZGVsaXZlcmVkIGFzIGEgc2VydmljZS4KaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcv
+c2ZubC8xMTQvNTE1MjEyMjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxp
+c3QK
