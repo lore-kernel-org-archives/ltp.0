@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <serge.hallyn@canonical.com>) id 1S8Y03-0000ia-70
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 14:19:23 +0000
-Received: from youngberry.canonical.com ([91.189.89.112])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S8Xzx-0006Z2-O4
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 14:19:23 +0000
-Date: Fri, 16 Mar 2012 09:19:06 -0500
-From: Serge Hallyn <serge.hallyn@canonical.com>
-Message-ID: <20120316141906.GB2897@peqn>
-References: <OFEC1872A7.8CB8CA8C-ON652579C3.004D1716-652579C3.004DAE00@in.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1S5TQe-0008Rn-8c
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 02:50:08 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S5TQd-00047Q-Hg
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 02:50:08 +0000
+Received: by obqv19 with SMTP id v19so55536obq.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 07 Mar 2012 18:50:01 -0800 (PST)
+Message-ID: <4F581E1B.60208@casparzhang.com>
+Date: Thu, 08 Mar 2012 10:48:59 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <OFEC1872A7.8CB8CA8C-ON652579C3.004D1716-652579C3.004DAE00@in.ibm.com>
-Subject: Re: [LTP] Are you still maintaining Selinux testsuite
+References: <4F578418.2060100@redhat.com>
+In-Reply-To: <4F578418.2060100@redhat.com>
+Subject: Re: [LTP] [PATCH] getrusage04: initialise [us]last to current values
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,35 +30,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <Poornima.Nayak@in.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Stephen Smalley <sds@tycho.nsa.gov>, James Morris <jmorris@namei.org>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-Quoting Poornima Nayak (Poornima.Nayak@in.ibm.com):
-> Hi Serge
+On 03/07/2012 11:51 PM, Jan Stancek wrote:
 > 
-> I was looking out for selinux test suite after the call was taken to move 
-> it out of LTP. Latest discussion is this 
-> http://permalink.gmane.org/gmane.linux.ltp/15301. Any progress beyond this 
-> ?
+> On slower machines, startup can take some time,
+> set last values to current [us]time before actual test.
+> 
+> This caused test to fail, because first delta contained
+> time spent by test starting up:
+> getrusage04    0  TINFO  :  utime:         999us; stime:        6998us
+> getrusage04    0  TINFO  :  utime:         999us; stime:        6998us
+> getrusage04    1  TFAIL  :  stime increased > 1000us: delta = 6998us
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>   testcases/kernel/syscalls/getrusage/getrusage04.c |    4 +++-
+>   1 files changed, 3 insertions(+), 1 deletions(-)
 
-Hi Poornima,
+Hi Jan, committed.
 
-yes, I'm sorry it's taken this long, but I finally got a copy up at:
-
-http://git.selinuxproject.org/git/?p=users/serge/selinux-testsuite.git;a=summary
-
-Thanks James for the account, and Stephen for the copy of the git tree.
-
-Now I should get back to getting this to pass on Ubuntu - unfortunately
-the changes I"d been staging for that were the victim of a hard drive
-crash.
-
--serge
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
