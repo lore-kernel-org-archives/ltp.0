@@ -1,30 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <filippo.arcidiacono@st.com>) id 1S3Te4-0001dP-3S
-	for ltp-list@lists.sourceforge.net; Fri, 02 Mar 2012 14:39:44 +0000
-Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
-	by sog-mx-1.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S3Te0-000154-6A
-	for ltp-list@lists.sourceforge.net; Fri, 02 Mar 2012 14:39:44 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DB97E1CB
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  2 Mar 2012 14:39:24 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5E79523EB
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  2 Mar 2012 14:39:24 +0000 (GMT)
-From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
-References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
-In-Reply-To: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
-Date: Fri, 2 Mar 2012 15:39:01 +0100
-Message-ID: <032901ccf882$36775950$a3660bf0$@arcidiacono@st.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1S5crI-0002DA-3x
+	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 12:54:16 +0000
+Date: Thu, 8 Mar 2012 13:55:55 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120308125554.GE31640@saboteur.suse.cz>
+References: <20120308124800.GD31640@saboteur.suse.cz>
 MIME-Version: 1.0
-Content-Language: en-us
-Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
-	max [us]time increment
+Content-Disposition: inline
+In-Reply-To: <20120308124800.GD31640@saboteur.suse.cz>
+Subject: Re: [LTP] LTP git repositories
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,138 +24,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Filippo ARCIDIACONO' <filippo.arcidiacono@st.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Mike Frysinger <vapier@gentoo.org>
 
-> -----Original Message-----
-> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
-> Sent: Thursday, February 23, 2012 11:58 AM
-> To: ltp-list@lists.sourceforge.net
-> Cc: Filippo Arcidiacono; Salvatore Cro
-> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
-> [us]time increment
+> Hi!
+> Good news everyone. After some discussion we (Me, Caspar and Wanlong)
+> prepared official LTP repository on github.com.
 > 
-> On slow systems it could be needed to increase the max value [us]time
-> increment beetween two getrusage calls.
+> It's located at https://github.com/linux-test-project/ltp
 > 
-> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
-> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
-> ---
->  testcases/kernel/syscalls/getrusage/getrusage04.c |   44
-> +++++++++++++++++---
->  1 files changed, 37 insertions(+), 7 deletions(-)
+> The resons for such move are obvious, github provides more natural way
+> to handle development using git (not to mention that their servers are
+> much faster than sourceforge).
 > 
-> diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c
-> b/testcases/kernel/syscalls/getrusage/getrusage04.c
-> index 3bdd3b0..e142d22 100644
-> --- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-> +++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-> @@ -54,11 +54,22 @@ int TST_TOTAL = 1;
+> So now everyone can fork the repo with a few clicks and send a pull
+> request to this mailing list. Let's see how that will work in real
+> usage.
 > 
->  #define BIAS_MAX      1000
->  #define RECORD_MAX    20
-> +#define FACTOR_MAX    10
+> Now there are few things to settle and I we would like to hear from you
+> (especially people who are developers in the ltp.sf.net project).
 > 
->  #ifndef RUSAGE_THREAD
->  #define RUSAGE_THREAD 1
->  #endif
+> With the current setup we have git repo both on sf.net and github, my
+> plan is to make one of them mirror of the other one (for now I have
+> prepared sync script to be run every hour via cron).
 > 
-> +static int opt_factor;
-> +static char *factor_str;
-> +static long factor_nr = 1;
-> +
-> +option_t child_options[] = {
-> +	{ "m:", &opt_factor, &factor_str },
-> +	{ NULL, NULL,         NULL }
-> +};
-> +
-> +static void fusage(void);
->  static void busyloop(long wait);
->  static void setup(void);
->  static void cleanup(void);
-> @@ -69,8 +80,9 @@ int main(int argc, char *argv[])
->  	unsigned long ulast, udelta, slast, sdelta;
->  	int i, lc;
->  	char *msg;
-> +	char msg_string[BUFSIZ];
-> 
-> -	msg = parse_opts(argc, argv, NULL, NULL);
-> +	msg = parse_opts(argc, argv, child_options, fusage);
->  	if (msg != NULL)
->  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> 
-> @@ -80,6 +92,12 @@ int main(int argc, char *argv[])
-> 
->  	setup();
-> 
-> +	if (opt_factor)
-> +		factor_nr = SAFE_STRTOL(cleanup, factor_str, 0,
-> FACTOR_MAX);
-> +
-> +	tst_resm(TINFO, "Using %ld as multiply factor for max [us]time "
-> +		 "increment (1000+%ldus)!", factor_nr, BIAS_MAX *
-> factor_nr);
-> +
->  	for (lc = 0; TEST_LOOPING(lc); lc++) {
->  		Tst_count = 0; i = 0;
->  		ulast = 0, slast = 0;
-> @@ -95,14 +113,20 @@ int main(int argc, char *argv[])
->  				tst_resm(TINFO, "utime:%12luus;
-stime:%12luus",
->  					    usage.ru_utime.tv_usec,
->  					    usage.ru_stime.tv_usec);
-> -				if (udelta > 1000+BIAS_MAX)
-> -					tst_brkm(TFAIL, cleanup,
-> -						    "utime increased >
-1000us:"
-> +				if (udelta > 1000+(BIAS_MAX * factor_nr)) {
-> +					sprintf(msg_string,
-> +						"utime increased > %ldus:",
-> +						1000 + BIAS_MAX *
-factor_nr);
-> +					tst_brkm(TFAIL, cleanup, msg_string,
->  						    " delta = %luus",
-udelta);
-> -				if (sdelta > 1000+BIAS_MAX)
-> -					tst_brkm(TFAIL, cleanup,
-> -						    "stime increased >
-1000us:"
-> +				}
-> +				if (sdelta > 1000+(BIAS_MAX * factor_nr)) {
-> +					sprintf(msg_string,
-> +						"stime increased > %ldus:",
-> +						1000 + BIAS_MAX *
-factor_nr);
-> +					tst_brkm(TFAIL, cleanup, msg_string,
->  						    " delta = %luus",
-sdelta);
-> +				}
->  			}
->  			ulast = usage.ru_utime.tv_usec;
->  			slast = usage.ru_stime.tv_usec;
-> @@ -113,6 +137,12 @@ int main(int argc, char *argv[])
->  	tst_exit();
->  }
-> 
-> +static void fusage(void)
-> +{
-> +	printf("  -m n    use n as multiply factor for max [us]time "
-> +	       "increment (1000+(1000*n)us),\n          default value is
-> 1\n");
-> +}
-> +
->  static void busyloop(long wait)
->  {
->  	while (wait--)
-> --
-> 1.5.5.6
+> I would personally preffer the sf.net repo becoming mirror of the github
+> one, but that means nobody but the sync script would commit to the
+> sf.net repo and all commits would go to the github one. But that
+> shouldn't be the problem as we would add people who needs commit acces
+> to the github project.
 
-Is this version ok for you, or there are any other comments?
+Sorry for mailing again, somewhere between the mail client and smtp part
+of the CC list was eaten. :(
 
-Thanks,
-Filippo.
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
