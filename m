@@ -2,26 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <filippo.arcidiacono@st.com>) id 1S4VkM-0000iG-2u
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 11:06:30 +0000
-Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S4VkH-00032r-Rr
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 11:06:30 +0000
-From: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
-References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
-	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
-	<4F547158.7050501@casparzhang.com>
-	<034c01ccfab2$8b7b7b70$a2727250$@arcidiacono@st.com>
-	<4F548854.9030403@cn.fujitsu.com>
-	<4F549AC2.7040108@casparzhang.com>
-In-Reply-To: <4F549AC2.7040108@casparzhang.com>
-Date: Mon, 5 Mar 2012 12:05:44 +0100
-Message-ID: <035001ccfabf$e98cad30$bca60790$@arcidiacono@st.com>
+	(envelope-from <chrubis@suse.de>) id 1S600E-0001NS-2v
+	for ltp-list@lists.sourceforge.net; Fri, 09 Mar 2012 13:37:02 +0000
+Date: Fri, 9 Mar 2012 14:38:48 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120309133848.GA3751@saboteur.suse.cz>
+References: <4F584AF1.3010909@windriver.com>
+	<20120308115410.GC31640@saboteur.suse.cz>
+	<4F5969C9.2020508@windriver.com>
 MIME-Version: 1.0
-Content-Language: en-us
-Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
-	max [us]time increment
+Content-Disposition: inline
+In-Reply-To: <4F5969C9.2020508@windriver.com>
+Subject: Re: [LTP] aio_read/8-1.c fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,94 +26,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Caspar Zhang' <caspar@casparzhang.com>, gaowanlong@cn.fujitsu.com
+To: Kang Kai <Kai.Kang@windriver.com>
 Cc: ltp-list@lists.sourceforge.net
 
-
-
-> -----Original Message-----
-> From: Caspar Zhang [mailto:caspar@casparzhang.com]
-> Sent: Monday, March 05, 2012 11:52 AM
-> To: gaowanlong@cn.fujitsu.com
-> Cc: Filippo ARCIDIACONO; ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
-> the max [us]time increment
-> 
-> On 03/05/2012 05:33 PM, Wanlong Gao wrote:
-> > On 03/05/2012 05:30 PM, Filippo ARCIDIACONO wrote:
+Hi!
+> >The testcase passes here. However looking at the sources it tries to
+> >read zero bytes to NULL buffer, which is wrong as the behavior in such
+> >case is undefied by POSIX. I guess this is just another case where the
+> >testcase was coded with "It works so it must be right" attitude.
 > >
-> >>
-> >>
-> >>> -----Original Message-----
-> >>> From: Caspar Zhang [mailto:caspar@casparzhang.com]
-> >>> Sent: Monday, March 05, 2012 8:55 AM
-> >>> To: Filippo ARCIDIACONO
-> >>> Cc: ltp-list@lists.sourceforge.net
-> >>> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to
-> increase
-> >>> the max [us]time increment
-> >>>
-> >>> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
-> >>>>> -----Original Message-----
-> >>>>> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
-> >>>>> Sent: Thursday, February 23, 2012 11:58 AM
-> >>>>> To: ltp-list@lists.sourceforge.net
-> >>>>> Cc: Filippo Arcidiacono; Salvatore Cro
-> >>>>> Subject: [PATCH v2] getrusage04: add opportunity to increase the
-> max
-> >>>>> [us]time increment
-> >>>>>
-> >>>>> On slow systems it could be needed to increase the max value
-> >>> [us]time
-> >>>>> increment beetween two getrusage calls.
-> >>>>>
-> >>>>> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
-> >>>>> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
-> >>>>> ---
-> >>>
-> >>> ...
-> >>>
-> >>>> Is this version ok for you, or there are any other comments?
-> >>>
-> >>> I meet some `DOS line endings` errors when I am trying to merge
-> this
-> >>> patch. Could you double check your patch with checkpatch.pl from
-> kernel
-> >>> source tree? (or my mail client is broken :-(...
-> >>
-> >> I checked the patch with checkpatch.pl and no issue are raised.
-> >> I sent the patch by means of "git send-email".
-> >
-> >
-> > Yes, it's all right.
-> > see here:
-> https://github.com/gaowanlong/ltp/commit/9d12e835fdcd3624619be8b47e0f10
-> 9343fc35e4
-> >
+> >And out of curiosity, which libc library makes the testcase fail?
+> Yes, aio_read() return 0, and the case fails.
 > 
-> Yup, my thunderbird should be blamed :-(
+> In posix spec Line 19887:
+> RETURN VALUE
+> The aio_read( ) function shall return the value zero if the I/O
+> operation is successfully queued;
+> otherwise, the function shall return the value ???1 and set errno to
+> indicate the error.
 > 
-> BTW, according to the style guide, it's recommended to send patches in
-> attachment format, you can generate such patches by adding --attach
-> option with `git format-patch` command.
+> So when the I/O operation enqueued, aio_read() return 0, then that
+> the I/O operation will be processing.
+> I still doubt the case is invalid.
 
-Thanks for the  suggestion.
-I'll take into account next time.
+Well, the POSIX explicitly says that if the pointer to the buffer
+becames illegal prior the I/O completion the behavior is undefined. So
+strictly speaking when you pass NULL buffer to aio_read() the behavior
+is undefined to begin with. At least that is how I understand the
+standard.
 
-> 
-> Thanks,
-> Caspar
-
-Thanks,
-Filippo
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
