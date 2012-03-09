@@ -2,16 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S5GK8-0000di-U5
-	for ltp-list@lists.sourceforge.net; Wed, 07 Mar 2012 12:50:32 +0000
-Date: Wed, 7 Mar 2012 13:52:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120307125207.GB31640@saboteur.suse.cz>
-References: <1330511000-24198-1-git-send-email-caspar@casparzhang.com>
+	(envelope-from <caspar@casparzhang.com>) id 1S5vU8-0005rk-IC
+	for ltp-list@lists.sourceforge.net; Fri, 09 Mar 2012 08:47:36 +0000
+Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S5vU7-0007xg-NK
+	for ltp-list@lists.sourceforge.net; Fri, 09 Mar 2012 08:47:36 +0000
+Received: by obqv19 with SMTP id v19so2442967obq.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 09 Mar 2012 00:47:30 -0800 (PST)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Fri,  9 Mar 2012 16:46:21 +0800
+Message-Id: <1331282781-31469-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1330511000-24198-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH] lib: fix -I option to accept larger number
+Content-Type: multipart/mixed; boundary="------------1.7.8.4"
+Subject: [LTP] [PATCH 2/2] get_mempolicy: enable libnuma API == 2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,61 +26,204 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> previous discussion on this issue:
-> 
->     http://marc.info/?l=ltp-list&m=129585256906986&w=2
-> 
-> This patch uses uint64_t to make -I option accept larger numbers to
-> get rid of overflow.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  lib/parse_opts.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
+This is a multi-part message in MIME format.
+--------------1.7.8.4
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-> diff --git a/lib/parse_opts.c b/lib/parse_opts.c
-> index fd49cfa..2159d22 100644
-> --- a/lib/parse_opts.c
-> +++ b/lib/parse_opts.c
-> @@ -708,7 +708,7 @@ static int get_current_time()
->  int usc_test_looping(int counter)
->  {
->      static int first_time = 1;
-> -    static int stop_time = 0;	/* stop time in rtc or usecs */
-> +    static uint64_t stop_time;	/* stop time in rtc or usecs */
->      static int delay;		/* delay in clocks or usecs  */
->      int hertz = 0;		/* clocks per second or usecs per second */
->      int ct, end;		/* current time, end delay time */
-> @@ -733,7 +733,7 @@ int usc_test_looping(int counter)
->  
->  	if (STD_LOOP_DURATION) {
->  	    ct=get_current_time();
-> -	    stop_time = (int)((float)hertz * STD_LOOP_DURATION) + ct;
-> +	    stop_time = (uint64_t)((float)hertz * STD_LOOP_DURATION) + ct;
->  	}
 
-Looking at the code, there are more problems than that. The
-get_current_time() return value as well as ct and end would overflow
-too. I will look at the code and fix it correctly.
+This patch enables get_mempolicy01 test when libnuma API version is 2.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |   73 +++++++++++++-------
+ 1 files changed, 47 insertions(+), 26 deletions(-)
+
+
+--------------1.7.8.4
+Content-Type: text/x-patch;
+	name="0002-get_mempolicy-enable-libnuma-API-2.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0002-get_mempolicy-enable-libnuma-API-2.patch"
+
+diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+index bea681b..75164d0 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
++++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+@@ -70,14 +70,8 @@ int  TST_TOTAL = 1;		   /* total number of tests in this file.   */
+ 
+ #if HAVE_NUMA_H && HAVE_NUMAIF_H && HAVE_MPOL_CONSTANTS
+ 
+-#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+-
+ #define MEM_LENGTH	(4 * 1024 * 1024)
+ 
+-static int  do_test(struct test_case *tc);
+-static void setup(void);
+-static void cleanup(void);
+-
+ static int  testno;
+ 
+ enum test_type {
+@@ -198,6 +192,10 @@ static struct test_case tcase[] = {
+ 	},
+ };
+ 
++static int  do_test(struct test_case *tc);
++static void setup(void);
++static void cleanup(void);
++
+ int main(int argc, char **argv)
+ {
+ 	int i, ret, lc;
+@@ -225,16 +223,23 @@ static int do_test(struct test_case *tc)
+ {
+ 	int ret, err, result, cmp_ok;
+ 	int policy, flags;
+-	nodemask_t nodemask, getnodemask;
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++	nodemask_t *nodemask, *getnodemask;
+ 	unsigned long maxnode = NUMA_NUM_NODES;
++#else
++	struct bitmask *nodemask = numa_allocate_nodemask();
++	struct bitmask *getnodemask = numa_allocate_nodemask();
++#endif
+ 	char *p = NULL;
+ 	unsigned long len = MEM_LENGTH;
+ 
+-	/* We assume that there is only one node(node0). */
+-	nodemask_zero(&nodemask); /* Segfaults here with libnuma v2. */
+-	nodemask_set(&nodemask, 0);
+-	nodemask_zero(&getnodemask);
+-
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++	nodemask_zero(nodemask);
++	nodemask_set(nodemask, 0);
++	nodemask_zero(getnodemask);
++#else
++	numa_bitmask_setbit(nodemask, 0);
++#endif
+ 	switch (tc->ttype) {
+ 	case DEFAULT:
+ 		flags = 0;
+@@ -243,12 +248,18 @@ static int do_test(struct test_case *tc)
+ 			TEST(syscall(__NR_set_mempolicy, tc->policy,
+ 					    NULL, 0));
+ 		else
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++			TEST(syscall(__NR_set_mempolicy, tc->policy,
++					    nodemask, maxnode));
++#else
+ 			TEST(syscall(__NR_set_mempolicy, tc->policy,
+-					    &nodemask, maxnode));
+-		if (TESET_RETURN < 0) {
++					    nodemask->maskp, nodemask->size));
++#endif
++		if (TEST_RETURN < 0) {
+ 			tst_resm(TBROK|TERRNO, "set_mempolicy");
+ 			return -1;
+ 		}
++
+ 		break;
+ 	default:
+ 		flags = MPOL_F_ADDR;
+@@ -260,32 +271,49 @@ static int do_test(struct test_case *tc)
+ 			TEST(syscall(__NR_mbind, p, len, tc->policy,
+ 					    NULL, 0, 0));
+ 		else
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++			TEST(syscall(__NR_mbind, p, len, tc->policy,
++					    nodemask, maxnode, 0));
++#else
+ 			TEST(syscall(__NR_mbind, p, len, tc->policy,
+-					    &nodemask, maxnode, 0));
++					    nodemask->maskp, nodemask->size,
++					    0));
++#endif
+ 		if (TEST_RETURN < 0) {
+ 			tst_brkm(TBROK|TERRNO, cleanup, "mbind");
+ 			return -1;
+ 		}
+ 
+ 		if (tc->ttype == INVALID_POINTER)
+-			p = NULL;
++			p = 0;
+ 
+ 		if (tc->ttype == INVALID_FLAGS)
+ 			flags = -1;
+ 	}
+ 	errno  = 0;
+ 	cmp_ok = 1;
+-	TEST(ret = syscall(__NR_get_mempolicy, &policy, &getnodemask,
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++	TEST(ret = syscall(__NR_get_mempolicy, &policy, getnodemask,
+ 			    maxnode, p, flags));
++#else
++	TEST(ret = syscall(__NR_get_mempolicy, &policy, getnodemask->maskp,
++			    getnodemask->size, p, flags));
++#endif
+ 	err = errno;
+ 	if (ret < 0)
+ 		goto TEST_END;
+ 
+ 	/* if policy == MPOL_DEFAULT, get_mempolicy doesn't return nodemask */
+ 	if (tc->policy == MPOL_DEFAULT)
+-		nodemask_zero(&nodemask);
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++		nodemask_zero(nodemask);
++	cmp_ok = (tc->policy == policy && (tc->from_node == NONE ||
++			    nodemask_equal(nodemask, getnodemask)));
++#else
++		numa_bitmask_clearall(nodemask);
+ 	cmp_ok = (tc->policy == policy && (tc->from_node == NONE ||
+-			    nodemask_equal(&nodemask, &getnodemask)));
++			    numa_bitmask_equal(nodemask, getnodemask)));
++#endif
+ TEST_END:
+ 	result = (err != tc->err) || !cmp_ok;
+ 	PRINT_RESULT_CMP(0, tc->ret, tc->err, ret, err, cmp_ok);
+@@ -307,13 +335,6 @@ static void setup(void)
+ #else
+ int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "XXX: test is broken on libnuma v2 "
+-			"(read numa_helpers.h for more details).");
+-}
+-#endif
+-#else
+-int main(void)
+-{
+ 	tst_brkm(TCONF, NULL, "System doesn't have required numa support");
+ }
+ #endif
+
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
 Cloud computing makes use of virtualization - but cloud computing 
 also focuses on allowing computing to be delivered as a service.
 http://www.accelacomm.com/jaw/sfnl/114/51521223/
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.4--
+
+
+
