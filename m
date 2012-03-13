@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S7JoS-00020r-AS
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:20 +0000
+	(envelope-from <caspar@casparzhang.com>) id 1S7MZU-0007KW-2V
+	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 07:55:04 +0000
 Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S7JoR-0008Uq-FV
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:20 +0000
-Received: by mail-pz0-f47.google.com with SMTP id o14so271895dad.34
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S7MZO-0003Jg-Fy
+	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 07:55:04 +0000
+Received: by dado14 with SMTP id o14so455468dad.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 12 Mar 2012 21:58:19 -0700 (PDT)
+	Tue, 13 Mar 2012 00:54:52 -0700 (PDT)
 From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 13 Mar 2012 12:56:38 +0800
-Message-Id: <1331614605-30347-5-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
-References: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
+Date: Tue, 13 Mar 2012 15:53:38 +0800
+Message-Id: <1331625218-5731-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH 04/11] hugetlb/hugeshmctl: set nr_hugepages in tests
+Subject: [LTP] [PATCH] hugetlb/hugeshmat01: don't use hard-coded unaligned
+	addr
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,237 +36,80 @@ Content-Type: text/plain; charset=UTF-8; format=fixed
 Content-Transfer-Encoding: 8bit
 
 
-This patch enables nr_hugepages set/restore in each test of hugeshmctl,
-so that we don't need to set the values with external commands.
+An usable unaligned addr various on different platforms, it's better to
+generate the addr dynamically instead of using a hard-coded one. This
+patch generate this unaligned addr based on first run.
 
 Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 ---
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |   28 +++++++++++++++-----
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |   28 +++++++++++++++-----
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   |   27 ++++++++++++++-----
- 3 files changed, 62 insertions(+), 21 deletions(-)
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |   29 ++++++++++---------
+ 1 files changed, 15 insertions(+), 14 deletions(-)
 
 
 --------------1.7.8.4
 Content-Type: text/x-patch;
-	name="0004-hugetlb-hugeshmctl-set-nr_hugepages-in-tests.patch"
+	name="0001-hugetlb-hugeshmat01-don-t-use-hard-coded-unaligned-a.patch"
 Content-Transfer-Encoding: 8bit
 Content-Disposition: attachment;
-	filename="0004-hugetlb-hugeshmctl-set-nr_hugepages-in-tests.patch"
+	filename="0001-hugetlb-hugeshmat01-don-t-use-hard-coded-unaligned-a.patch"
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-index ce8d89a..4577c30 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-@@ -62,7 +62,8 @@
-  */
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+index e46ae12..54d8aeb 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+@@ -66,16 +66,6 @@ int TST_TOTAL = 3;
+ #define CASE0		10		/* values to write into the shared */
+ #define CASE1		20		/* memory location.		   */
  
- #include "ipcshm.h"
--#include "system_specific_hugepages_info.h"
-+#include "safe_macros.h"
-+#include "mem.h"
- 
- char *TCID = "hugeshmctl01";
- int TST_TOTAL = 4;
-@@ -89,6 +90,12 @@ static void func_set(void);
- static void func_rmid(void);
- static void *set_shmat(void);
- 
-+static long hugepages = 128;
-+static option_t options[] = {
-+	{ "s:",	&sflag,	&nr_opt	},
-+	{ NULL,	NULL,	NULL	}
-+};
-+
- struct test_case_t {
- 	int  cmd;
- 	void (*func_test)(void);
-@@ -105,14 +112,11 @@ int main(int ac, char **av)
- 	int lc, i;
- 	char *msg;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, &help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-#if __WORDSIZE == 64
+-#if defined(__mips__)
+-#define UNALIGNED      0x1000000eee
+-#else
+-#define UNALIGNED      0x10000000eee
+-#endif
+-#else
+-#define UNALIGNED      0x60000eee
+-#endif
 -
--	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
--		tst_brkm(TCONF, NULL, "Not enough available Hugepages");
--	else
--		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
-+	if (sflag)
-+		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+ static size_t shm_size;
+ static int    shm_id_1 = -1;
+ static void   *addr;
+@@ -92,13 +82,16 @@ struct test_case_t {
+ 	int  flags;
+ } TC[] = {
+ 	/* a straight forward read/write attach */
+-	{ &shm_id_1,	0,			0 },
++	{ &shm_id_1,	0,		0 },
  
- 	setup();
+-	/* an attach using non aligned memory */
+-	{ &shm_id_1,	(void *)UNALIGNED,	SHM_RND },
++	/*
++	 * an attach using non aligned memory
++	 * -1 will be replaced with an unaligned addr
++	 */
++	{ &shm_id_1,	(void *)-1,	SHM_RND },
  
-@@ -397,9 +401,17 @@ static void sighandler(int sig)
+ 	/* a read only attach */
+-	{ &shm_id_1,	0,			SHM_RDONLY }
++	{ &shm_id_1,	0,		SHM_RDONLY }
+ };
  
- void setup(void)
- {
-+	long hpage_size;
+ static void check_functionality(int i);
+@@ -130,6 +123,14 @@ int main(int ac, char **av)
+ 					tst_resm(TPASS, "shmat call succeeded");
+ 			}
+ 
++			/*
++			 * addr in TC[0] will be used to generate an unaligned
++			 * address for TC[1]
++			 */
++			if (i == 0 && addr != (void *)-1)
++				TC[i+1].addr = (void *)((unsigned long)addr/
++					    SHMLBA*SHMLBA) + SHMLBA -1;
 +
-+	tst_require_root(NULL);
- 	tst_sig(FORK, sighandler, cleanup);
- 	tst_tmpdir();
- 
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	shm_size = hpage_size * hugepages / 2;
- 	shmkey = getipckey();
- 
- 	TEST_PAUSE;
-@@ -411,5 +423,7 @@ void cleanup(void)
- 
- 	rm_shm(shm_id_1);
- 
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+
- 	tst_rmdir();
- }
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-index 15cadb0..568f790 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-@@ -54,7 +54,8 @@
- 
- #include <pwd.h>
- #include "ipcshm.h"
--#include "system_specific_hugepages_info.h"
-+#include "safe_macros.h"
-+#include "mem.h"
- 
- char *TCID = "hugeshmctl02";
- int TST_TOTAL = 4;
-@@ -65,6 +66,12 @@ static int shm_id_2 = -1;
- static int shm_id_3 = -1;
- static struct shmid_ds buf;
- 
-+static long hugepages = 128;
-+static option_t options[] = {
-+	{ "s:",	&sflag,	&nr_opt	},
-+	{ NULL,	NULL,	NULL	}
-+};
-+
- struct test_case_t {
- 	int *shmid;
- 	int cmd;
-@@ -89,14 +96,11 @@ int main(int ac, char **av)
- 	int lc, i;
- 	char *msg;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, &help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--
--	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
--		tst_brkm(TCONF, NULL, "Not enough available Hugepages");
--	else
--		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
-+	if (sflag)
-+		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
- 
- 	setup();
- 
-@@ -119,9 +123,17 @@ int main(int ac, char **av)
- 
- void setup(void)
- {
-+	long hpage_size;
-+
-+	tst_require_root(NULL);
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	shm_size = hpage_size * hugepages / 2;
- 	shmkey = getipckey();
- 
- 	/* create a shared memory segment without read or write permissions */
-@@ -145,5 +157,7 @@ void cleanup(void)
- 	rm_shm(shm_id_1);
- 	rm_shm(shm_id_2);
- 
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+
- 	tst_rmdir();
- }
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-index 30353b8..e0e8606 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-@@ -61,7 +61,8 @@
- #include <sys/types.h>
- #include <sys/wait.h>
- #include "ipcshm.h"
--#include "system_specific_hugepages_info.h"
-+#include "safe_macros.h"
-+#include "mem.h"
- 
- char *TCID = "hugeshmctl03";
- int TST_TOTAL = 3;
-@@ -72,6 +73,12 @@ static struct shmid_ds buf;
- static uid_t ltp_uid;
- static char *ltp_user = "nobody";
- 
-+static long hugepages = 128;
-+static option_t options[] = {
-+	{ "s:",	&sflag,	&nr_opt	},
-+	{ NULL,	NULL,	NULL	}
-+};
-+
- struct test_case_t {
- 	int *shmid;
- 	int cmd;
-@@ -96,14 +103,11 @@ int main(int ac, char **av)
- 	pid_t pid;
- 	int status;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, &help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--
--	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
--		tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
--	else
--		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
-+	if (sflag)
-+		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
- 
- 	setup();
- 
-@@ -145,10 +149,17 @@ static void do_child(void)
- 
- void setup(void)
- {
-+	long hpage_size;
-+
- 	tst_require_root(NULL);
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	shm_size = hpage_size * hugepages / 2;
- 	shmkey = getipckey();
- 	shm_id_1 = shmget(shmkey, shm_size,
- 		    SHM_HUGETLB|IPC_CREAT|IPC_EXCL|SHM_RW);
-@@ -167,5 +178,7 @@ void cleanup(void)
- 
- 	rm_shm(shm_id_1);
- 
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+
- 	tst_rmdir();
- }
+ 			if (shmdt(addr) == -1)
+ 				tst_brkm(TBROK|TERRNO, cleanup, "shmdt");
+ 		}
 
 --------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
