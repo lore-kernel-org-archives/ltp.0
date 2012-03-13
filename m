@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S56zO-0005CH-FE
-	for ltp-list@lists.sourceforge.net; Wed, 07 Mar 2012 02:52:30 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S56zN-0006X7-N9
-	for ltp-list@lists.sourceforge.net; Wed, 07 Mar 2012 02:52:30 +0000
-Received: by obqv19 with SMTP id v19so9387115obq.34
+	(envelope-from <caspar@casparzhang.com>) id 1S7R6V-0008Jk-BH
+	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 12:45:27 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S7R6N-0000zh-LY
+	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 12:45:27 +0000
+Received: by dado14 with SMTP id o14so904543dad.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 06 Mar 2012 18:52:24 -0800 (PST)
-Message-ID: <4F56CD2B.8060308@casparzhang.com>
-Date: Wed, 07 Mar 2012 10:51:23 +0800
+	Tue, 13 Mar 2012 05:45:13 -0700 (PDT)
+Message-ID: <4F5F4112.2040309@casparzhang.com>
+Date: Tue, 13 Mar 2012 20:44:02 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1331029739-32353-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1331029739-32353-1-git-send-email-markos.chandras@imgtec.com>
-Subject: Re: [LTP] [PATCH] runltp: Remove excess quotes from final message
+References: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
+	<1331614605-30347-11-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1331614605-30347-11-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 10/11] hugetlb/hugeshmget03: fix broken testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,45 +31,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <markos.chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 03/06/2012 06:28 PM, Markos Chandras wrote:
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
->  runltp |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
+On 03/13/2012 12:56 PM, Caspar Zhang wrote:
 > 
-> diff --git a/runltp b/runltp
-> index 4ef8b38..fc3515b 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -948,11 +948,11 @@ main()
->      {
->      cat <<-EOF >&1
->          
-> -       ###############################################################"
-> +       ###############################################################
->          
-> -            Done executing testcases."
-> +            Done executing testcases.
->              LTP Version:  $version_date
-> -       ###############################################################"
-> +       ###############################################################
->         
->  	EOF
->      }
+> hugeshmget03 often returns ENOMEM, so that causes test fails. This patch
+> fixes the problem by making the following changes:
+> 
+> 1) reduce shm_size to minimum (1 hugepage);
+> 2) reduce shmmni to 1/2 * nr_hugepages.
+> 
+> so that when all shmids taken, memory allocated ~=
+> 
+>     1/2 * nr_hugepages * hugepagesize < free memory
+> 
+> Which means there will be no ENOMEM occurs, but ENOSPC as expected.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |   14 ++++++++++++--
+>  1 files changed, 12 insertions(+), 2 deletions(-)
+> 
 
-Hi, Committed.
+Wanlong, thanks for review.
 
-Thanks,
+All: FYI, all the other patches except this one (10/11) pushed after
+successful testing for enough times.
+
 Caspar
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
