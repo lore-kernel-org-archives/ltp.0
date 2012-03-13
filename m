@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1SAdEz-00072S-8e
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 08:19:25 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SAdEs-0001MT-SM
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 08:19:25 +0000
-Message-ID: <4F6AE07A.4050509@cn.fujitsu.com>
-Date: Thu, 22 Mar 2012 16:19:06 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1S7Joa-00053w-NQ
+	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:28 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S7JoZ-0008Uv-UB
+	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:28 +0000
+Received: by mail-pz0-f47.google.com with SMTP id o14so271940dad.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 12 Mar 2012 21:58:27 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Tue, 13 Mar 2012 12:56:42 +0800
+Message-Id: <1331614605-30347-9-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
+References: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <20120322132353.AB97.38390934@jp.panasonic.com>
-In-Reply-To: <20120322132353.AB97.38390934@jp.panasonic.com>
-Subject: Re: [LTP] [PATCH] mq_timedreceive: 10-2.c: check timeout error
- rather than invalid parameter error
+Content-Type: multipart/mixed; boundary="------------1.7.8.4"
+Subject: [LTP] [PATCH 08/11] hugetlb/hugeshmget: set nr_hugepages in tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,115 +28,358 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Akira Takeuchi <takeuchi.akr@jp.panasonic.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+
+This is a multi-part message in MIME format.
+--------------1.7.8.4
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
-Akira Takeuchi said the following on 2012-3-22 12:23:
-> 10-2.c now passes the invalid parameter to mq_timedreceive by specifying
-> a negative value to nanoseconds field, and checks whether EINVAL is not
-> returned when a message can be removed from the queue immediately.
-> 
-> However, this may not be a appropriate testing of mq_timedreceive.
-> POSIX spec of mq_timedreceive says:
->     The validity of the abstime parameter need not be checked
->     if a message can be removed from the message queue immediately.
-> 
-> This is open for interpretation of POSIX spec, and it was argued about in LKML.
->     https://lkml.org/lkml/2012/3/14/589
-> 
-> The conclusion in LKML was that what POSIX spec says is "you don't *have*
-> to check validity". That is, it is allowed to check the validity.
-> 
+This patch enables nr_hugepages set/restore in each test of hugeshmget,
+so that we don't need to set the values with external commands.
 
-Yeah.
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |   32 ++++++++++++-----
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |   28 +++++++++++----
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |   36 ++++++++++++-------
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   |   27 +++++++++++----
+ 4 files changed, 86 insertions(+), 37 deletions(-)
 
-> On the other hand, actually, timeout error should not be returned when message
-> can be performed immediately.
-> 
 
-POSIX spec does not say this, so I think it is not necessary to check timeout error.
+--------------1.7.8.4
+Content-Type: text/x-patch;
+	name="0008-hugetlb-hugeshmget-set-nr_hugepages-in-tests.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0008-hugetlb-hugeshmget-set-nr_hugepages-in-tests.patch"
 
-> Therefore, I modify the testcase to check timeout error rather than invalid
-> parameter error.
-> 
-> Signed-off-by: Akira Takeuchi <takeuchi.akr@jp.panasonic.com>
-> Signed-off-by: Kiyoshi Owada <owada.kiyoshi@jp.panasonic.com>
-> ---
->  .../conformance/interfaces/mq_timedreceive/10-2.c  |   20 +++++++++-----------
->  1 files changed, 9 insertions(+), 11 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
-> index 49ee4f2..1cbb5b6 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
-> @@ -8,12 +8,11 @@
->  
->  /*
->   * If the message can be removed from the message queue immedietely,
-> - * the operation will never fail and the validity of abs_timeout
-> - * need not be checked.
-> + * the operation will not fail even if abs_timeout is the past time.
->   * Test Steps:
-> - * 1. Set the abs_timeout to be invalid, when there is message
-> + * 1. Set the abs_timeout to be a past time, when there is message
->   *    than can be removed from the message queue immediately.
-> - * 2. The validity of abs_timeout will not be checked.
-> + * 2. Timeout error is not occured.
->   */
->  
->  #include <stdio.h>
-> @@ -27,7 +26,7 @@
->  #include <errno.h>
->  #include "posixtest.h"
->  
-> -#define TEST "10-1"
-> +#define TEST "10-2"
->  #define FUNCTION "mq_timedreceive"
->  #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
->  
-> @@ -61,12 +60,11 @@ int main()
->          }
->  
->  	sleep(1); /* wait for a while */
-> -	ts.tv_sec = time(NULL) -1; /* No wait */
-> -	ts.tv_nsec = -1; /* Invalid */
-> +	ts.tv_sec = time(NULL) -1; /* Past time */
-> +	ts.tv_nsec = 0;
->          if (mq_timedreceive(mqdes, msgrv, BUFFER, &rvprio, &ts) == -1) {
-> -		if (errno == EINVAL)
-> -			printf("FAIL: the validity of abs_timeout "
-> -				"is checked\n");
-> +		if (errno == ETIMEDOUT)
-> +			printf("FAIL: mq_timedreceive returned timeout error\n");
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+index 9bdf029..36492ef 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+@@ -59,30 +59,32 @@
+  */
+ 
+ #include "ipcshm.h"
+-#include "system_specific_hugepages_info.h"
++#include "safe_macros.h"
++#include "mem.h"
+ 
+ char *TCID = "hugeshmget01";
+ int TST_TOTAL = 1;
+ 
++static size_t shm_size;
+ static int shm_id_1 = -1;
+ 
++static long hugepages = 128;
++static option_t options[] = {
++	{ "s:",	&sflag,	&nr_opt	},
++	{ NULL,	NULL,	NULL	}
++};
++
+ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	char *msg;
+ 	struct shmid_ds buf;
+-	size_t shm_size;
+-
+-	shm_size = 0;
+ 
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, &help);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-
+-	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
+-		tst_brkm(TCONF, NULL, "Not enough available Hugepages");
+-	else
+-		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
++	if (sflag)
++		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+ 
+ 	setup();
+ 
+@@ -143,9 +145,17 @@ int main(int ac, char **av)
+ 
+ void setup(void)
+ {
++	long hpage_size;
++
++	tst_require_root(NULL);
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 	tst_tmpdir();
+ 
++	orig_hugepages = get_sys_tune("nr_hugepages");
++	set_sys_tune("nr_hugepages", hugepages, 1);
++	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++
++	shm_size = hpage_size * hugepages / 2;
+ 	shmkey = getipckey();
+ 
+ 	TEST_PAUSE;
+@@ -157,5 +167,7 @@ void cleanup(void)
+ 
+ 	rm_shm(shm_id_1);
+ 
++	set_sys_tune("nr_hugepages", orig_hugepages, 0);
++
+ 	tst_rmdir();
+ }
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+index a2f3a51..503cef2 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+@@ -52,7 +52,8 @@
+  */
+ 
+ #include "ipcshm.h"
+-#include "system_specific_hugepages_info.h"
++#include "safe_macros.h"
++#include "mem.h"
+ 
+ char *TCID = "hugeshmget02";
+ int TST_TOTAL = 4;
+@@ -62,6 +63,12 @@ static int shm_id_1 = -1;
+ static int shm_id_2 = -1;
+ static key_t shmkey2;
+ 
++static long hugepages = 128;
++static option_t options[] = {
++	{ "s:",	&sflag,	&nr_opt	},
++	{ NULL,	NULL,	NULL	}
++};
++
+ struct test_case_t {
+ 	int *skey;
+ 	int size_coe;
+@@ -84,14 +91,11 @@ int main(int ac, char **av)
+ 	int lc, i;
+ 	char *msg;
+ 
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, &help);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-
+-	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
+-		tst_brkm(TCONF, NULL, "Not enough available Hugepages");
+-	else
+-		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
++	if (sflag)
++		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+ 
+ 	setup();
+ 
+@@ -115,9 +119,17 @@ int main(int ac, char **av)
+ 
+ void setup(void)
+ {
++	long hpage_size;
++
++	tst_require_root(NULL);
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 	tst_tmpdir();
+ 
++	orig_hugepages = get_sys_tune("nr_hugepages");
++	set_sys_tune("nr_hugepages", hugepages, 1);
++	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++
++	shm_size = hpage_size * hugepages / 2;
+ 	shmkey = getipckey();
+ 	shmkey2 = shmkey + 1;
+ 	shm_id_1 = shmget(shmkey, shm_size, IPC_CREAT|IPC_EXCL|SHM_RW);
+@@ -133,5 +145,7 @@ void cleanup(void)
+ 
+ 	rm_shm(shm_id_1);
+ 
++	set_sys_tune("nr_hugepages", orig_hugepages, 0);
++
+ 	tst_rmdir();
+ }
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+index dfaecc5..57e80e3 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+@@ -53,7 +53,8 @@
+  */
+ 
+ #include "ipcshm.h"
+-#include "system_specific_hugepages_info.h"
++#include "safe_macros.h"
++#include "mem.h"
+ 
+ char *TCID = "hugeshmget03";
+ int TST_TOTAL = 1;
+@@ -64,30 +65,29 @@ int TST_TOTAL = 1;
+  */
+ #define MAXIDS	8192
+ 
++static size_t shm_size;
+ static int shm_id_1 = -1;
+ static int num_shms;
+ static int shm_id_arr[MAXIDS];
+ 
+-static void setup2(size_t shm_size);
++static long hugepages = 128;
++static option_t options[] = {
++	{ "s:",	&sflag,	&nr_opt	},
++	{ NULL,	NULL,	NULL	}
++};
+ 
+ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	char *msg;
+-	size_t shm_size;
+ 
+-	shm_size = 0;
+-
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, &help);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++	if (sflag)
++		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+ 
+-	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
+-		tst_brkm(TCONF, NULL, "Not enough available Hugepages");
+-	else
+-		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
+-
+-	setup2(shm_size);
++	setup();
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		Tst_count = 0;
+@@ -108,11 +108,19 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
+ 
+-static void setup2(size_t shm_size)
++void setup(void)
+ {
++	long hpage_size;
++
++	tst_require_root(NULL);
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 	tst_tmpdir();
+ 
++	orig_hugepages = get_sys_tune("nr_hugepages");
++	set_sys_tune("nr_hugepages", hugepages, 1);
++	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++
++	shm_size = hpage_size * hugepages / 2;
+ 	shmkey = getipckey();
+ 
+ 	/*
+@@ -147,5 +155,7 @@ void cleanup(void)
+ 	for (i = 0; i < num_shms; i++)
+ 		rm_shm(shm_id_arr[i]);
+ 
++	set_sys_tune("nr_hugepages", orig_hugepages, 0);
++
+ 	tst_rmdir();
+ }
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+index 9242a34..7d8afd2 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+@@ -61,7 +61,8 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include "ipcshm.h"
+-#include "system_specific_hugepages_info.h"
++#include "safe_macros.h"
++#include "mem.h"
+ 
+ char *TCID = "hugeshmget05";
+ int TST_TOTAL = 1;
+@@ -71,6 +72,12 @@ static int shm_id_1 = -1;
+ static uid_t ltp_uid;
+ static char *ltp_user = "nobody";
+ 
++static long hugepages = 128;
++static option_t options[] = {
++	{ "s:",	&sflag,	&nr_opt	},
++	{ NULL,	NULL,	NULL	}
++};
++
+ static void do_child(void);
+ 
+ int main(int ac, char **av)
+@@ -79,14 +86,11 @@ int main(int ac, char **av)
+ 	pid_t pid;
+ 	int status;
+ 
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, &help);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-
+-	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
+-		tst_brkm(TCONF, cleanup, "Not enough available Hugepages");
+-	else
+-		shm_size = (get_no_of_hugepages()*hugepages_size()*1024) / 2;
++	if (sflag)
++		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+ 
+ 	setup();
+ 
+@@ -130,10 +134,17 @@ static void do_child(void)
+ 
+ void setup(void)
+ {
++	long hpage_size;
++
+ 	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	tst_tmpdir();
+ 
++	orig_hugepages = get_sys_tune("nr_hugepages");
++	set_sys_tune("nr_hugepages", hugepages, 1);
++	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++
++	shm_size = hpage_size * hugepages / 2;
+ 	shmkey = getipckey();
+ 	shm_id_1 = shmget(shmkey, shm_size,
+ 		    SHM_HUGETLB|SHM_RW|IPC_CREAT|IPC_EXCL);
+@@ -152,5 +163,7 @@ void cleanup(void)
+ 
+ 	rm_shm(shm_id_1);
+ 
++	set_sys_tune("nr_hugepages", orig_hugepages, 0);
++
+ 	tst_rmdir();
+ }
 
-The lines need not to be added.
-timeout error can be as Unexpected error.
-
--- 
-Best Regards,
-Peng
-
->  		else
->  			perror("Unexpected error at mq_timedreceive");
->  		failure = 1;
-> @@ -94,4 +92,4 @@ int main()
->  
->          printf("Test PASSED\n");
->          return PTS_PASS;
-> -}
-> \ No newline at end of file
-> +}
-
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
+--------------1.7.8.4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.4--
+
+
+
