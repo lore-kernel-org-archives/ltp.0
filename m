@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sandeep.mahato@sasken.com>) id 1S9bFf-0000Fb-Cx
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 11:59:51 +0000
-Received: from mta-blr1.sasken.com ([203.200.200.72])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S9bFd-0007zy-NI
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 11:59:51 +0000
-From: Sandeep Mahato <sandeep.mahato@sasken.com>
-Date: Mon, 19 Mar 2012 17:29:40 +0530
-Message-ID: <653A85C7F32C4741880F71219266EA02612A3E578E@EXGMBX01.sasken.com>
-Content-Language: en-US
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1S7nxL-0001Zn-VE
+	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 13:09:31 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S7nxG-0003jL-7x
+	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 13:09:31 +0000
+Received: by dado14 with SMTP id o14so3090525dad.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Mar 2012 06:09:20 -0700 (PDT)
+Message-ID: <4F609836.1070109@casparzhang.com>
+Date: Wed, 14 Mar 2012 21:08:06 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] cannot find -lpthread error in ltp cross compilation for
-	Android
+References: <4F608484.30205@redhat.com>
+In-Reply-To: <4F608484.30205@redhat.com>
+Subject: Re: [LTP] [PATCH] readlink03: fix expected errno for kernel >=3.2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,52 +30,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-Hi,
-  I am trying to cross compile LTP using NDK toolchain for Android . while executing the "make all" I am facing the below error.
+On 03/14/2012 07:44 PM, Jan Stancek wrote:
+> 
+> This kernel commit restored original behavior:
+> commit 1fa1e7f615f4d3ae436fa319af6e4eebdd4026a8
+> Author: Andy Whitcroft <apw@canonical.com>
+> Date:   Wed Nov 2 09:44:39 2011 +0100
+>      readlinkat: ensure we return ENOENT for the empty pathname for
+> normal lookups
+> 
+> For kernel >= 3.2, ENOENT should be expected errno code.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-pcb-msandeep:/u/ltp14032012/ltp-full-20120104# make all
-make -C "lib" \
-                -f "/u/ltp14032012/ltp-full-20120104/lib/Makefile" all
-make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/lib'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/lib'
-make -C "pan" \
-                -f "/u/ltp14032012/ltp-full-20120104/pan/Makefile" all
-make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/pan'
-/u/ltp14032012/ltp-full-20120104/pan/Makefile:43: ltp-scanner will not be built because a working copy of lex was not found
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/pan'
-make -C "utils" \
-                -f "/u/ltp14032012/ltp-full-20120104/utils/Makefile" all
-make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils'
-make[2]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark'
-make[3]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark/ebizzy-0.3'
-arm-linux-androideabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../../../include -I../../../include   -L../../../lib  ebizzy.c   -lpthread -o ebizzy
-/usr/local/android-ndk-r7/my-android-toolchain/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/bin/ld: cannot find -lpthread
-collect2: ld returned 1 exit status
-make[3]: *** [ebizzy] Error 1
-make[3]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark/ebizzy-0.3'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils'
-make: *** [utils-all] Error 2
+looks good to me.
 
-Can anybody please tell me why this "cannot find -lpthread" error is coming and how to resolve that.
-
-
-Regards
-Sandeep
-
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
