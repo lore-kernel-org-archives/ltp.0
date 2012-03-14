@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SDVgO-0007Da-1g
-	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 06:51:36 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SDVgJ-0005rk-Id
-	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 06:51:36 +0000
-Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2U6pM3u017210
-	for <ltp-list@lists.sourceforge.net>; Fri, 30 Mar 2012 14:51:23 +0800
-Message-ID: <4F7557B2.2090608@cn.fujitsu.com>
-Date: Fri, 30 Mar 2012 14:50:26 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1S7mcm-0003hv-Su
+	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 11:44:12 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S7mcl-0000qw-SK
+	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 11:44:12 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q2EBi5IC010302
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Mar 2012 07:44:06 -0400
+Message-ID: <4F608484.30205@redhat.com>
+Date: Wed, 14 Mar 2012 12:44:04 +0100
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <4F73BD76.7050505@cn.fujitsu.com>
-In-Reply-To: <4F73BD76.7050505@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH]pthread_join:4-1.c:ignore detached thread
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------070009030507060805020102"
+Subject: [LTP] [PATCH] readlink03: fix expected errno for kernel >=3.2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +28,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: lidan <li.dan@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
 
-On 03/29/2012 09:40 AM, lidan wrote:
-
-> Case pthread_join/4-1.c aims to check the following assertion
-> "If the thread calling pthread_join is canceled, the joined 
-> thread remains joinable."
-> It uses array scenarii defined in "threads_scenarii.c" which
-> sets attribute of some threads as detached.
-> This patch ignores the detached threads since once
-> a thread has been detached, it can't be joined with
-> pthread_join(3) or be made joinable again.
+This is a multi-part message in MIME format.
+--------------070009030507060805020102
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-pushed, thanks,
+This kernel commit restored original behavior:
+commit 1fa1e7f615f4d3ae436fa319af6e4eebdd4026a8
+Author: Andy Whitcroft <apw@canonical.com>
+Date:   Wed Nov 2 09:44:39 2011 +0100
+     readlinkat: ensure we return ENOENT for the empty pathname for
+normal lookups
 
-Wanlong Gao
+For kernel >= 3.2, ENOENT should be expected errno code.
 
-> 
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-> ---
->  .../conformance/interfaces/pthread_join/4-1.c      |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
-> index fb8c8d3..16ac7e8 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
-> @@ -91,6 +91,9 @@ int main(int argc, char *argv[])
->  	scenar_init();
->  
->  	for (sc = 0; sc < NSCENAR; sc++) {
-> +		if (scenarii[sc].detached == 1)
-> +			continue;
-> +
->  #if VERBOSE > 0
->  		output("-----\n");
->  		output("Starting test with scenario (%i): %s\n",
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+  testcases/kernel/syscalls/readlink/readlink03.c |    3 ++-
+  1 files changed, 2 insertions(+), 1 deletions(-)
 
 
+
+--------------070009030507060805020102
+Content-Type: text/x-patch;
+	name="0001-readlink03-fix-expected-errno-for-kernel-3.2.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0001-readlink03-fix-expected-errno-for-kernel-3.2.patch"
+
+diff --git a/testcases/kernel/syscalls/readlink/readlink03.c b/testcases/kernel/syscalls/readlink/readlink03.c
+index 370bf7d..85141f9 100644
+--- a/testcases/kernel/syscalls/readlink/readlink03.c
++++ b/testcases/kernel/syscalls/readlink/readlink03.c
+@@ -174,7 +174,8 @@ int main(int ac, char **av)
+ 			}
+ 
+ 			if (strncmp(test_desc, "Symlink Pathname is empty", 25) == 0) {
+-				if ((tst_kvercmp(2, 6, 39)) >= 0)
++				if (tst_kvercmp(2, 6, 39) >= 0
++					&& tst_kvercmp(3, 2, 0) < 0)
+ 					Test_cases[i].exp_errno = EINVAL;
+ 			}
+ 
+
+
+--------------070009030507060805020102
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
+--------------070009030507060805020102
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------070009030507060805020102--
+
