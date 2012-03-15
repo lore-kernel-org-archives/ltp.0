@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1S5J9q-0004qe-PK
-	for ltp-list@lists.sourceforge.net; Wed, 07 Mar 2012 15:52:06 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S5J9l-0001oG-1Q
-	for ltp-list@lists.sourceforge.net; Wed, 07 Mar 2012 15:52:06 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q27Fpt9b025911
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 7 Mar 2012 10:51:55 -0500
-Message-ID: <4F578418.2060100@redhat.com>
-Date: Wed, 07 Mar 2012 16:51:52 +0100
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1S81uM-00025V-K8
+	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 04:03:22 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S81uK-0000uV-Dk
+	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 04:03:22 +0000
+Received: by dado14 with SMTP id o14so4332385dad.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Mar 2012 21:03:14 -0700 (PDT)
+Message-ID: <4F6169B5.9020205@casparzhang.com>
+Date: Thu, 15 Mar 2012 12:01:57 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040008040001070609050109"
-Subject: [LTP] [PATCH] getrusage04: initialise [us]last to current values
+References: <4F61650D.2060308@casparzhang.com>
+	<1331783585-18980-1-git-send-email-gaowanlong@cn.fujitsu.com>
+In-Reply-To: <1331783585-18980-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V3] readlink03: fix return value for the syscall
+	readlink()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,80 +29,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
-
-This is a multi-part message in MIME format.
---------------040008040001070609050109
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-On slower machines, startup can take some time,
-set last values to current [us]time before actual test.
-
-This caused test to fail, because first delta contained
-time spent by test starting up:
-getrusage04    0  TINFO  :  utime:         999us; stime:        6998us
-getrusage04    0  TINFO  :  utime:         999us; stime:        6998us
-getrusage04    1  TFAIL  :  stime increased > 1000us: delta = 6998us
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-  testcases/kernel/syscalls/getrusage/getrusage04.c |    4 +++-
-  1 files changed, 3 insertions(+), 1 deletions(-)
-
-
-
---------------040008040001070609050109
-Content-Type: text/x-patch;
-	name="0001-getrusage04-initialise-us-last-to-current-values.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0001-getrusage04-initialise-us-last-to-current-values.patch"
-
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
-index e142d22..9801192 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-@@ -100,10 +100,12 @@ int main(int argc, char *argv[])
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		Tst_count = 0; i = 0;
--		ulast = 0, slast = 0;
- 		SAFE_GETRUSAGE(cleanup, RUSAGE_THREAD, &usage);
- 		tst_resm(TINFO, "utime:%12luus; stime:%12luus",
- 			usage.ru_utime.tv_usec, usage.ru_stime.tv_usec);
-+		ulast = usage.ru_utime.tv_usec;
-+		slast = usage.ru_stime.tv_usec;
-+
- 		while (i < RECORD_MAX) {
- 			SAFE_GETRUSAGE(cleanup, RUSAGE_THREAD, &usage);
- 			udelta = usage.ru_utime.tv_usec - ulast;
-
-
---------------040008040001070609050109
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
+
+Hi,
+
+On 03/15/2012 11:53 AM, Wanlong Gao wrote:
+> Since commit http://git.kernel.org/linus/65cfc672
+> which added O_PATH support to the *at() calls, the error return for readlink/readlinkat
+> for the empty pathname has switched from ENOENT to EINVAL. And this patch merged to linux v2.6.39,
+> So LTP commit https://github.com/linux-test-project/ltp/commit/0cc7514
+> fix this with the kernel version v2.6.39 compared.
+> 
+> But recently, commit http://git.kernel.org/linus/1fa1e7f6
+> which ensure we return ENOENT for the empty pathname for normal lookups.
+> 
+> Now, the patch whitch switch the return value back again is already queued for
+> 3.0 and 3.1 stable release.
+> 
+> So, if the return value is EINVAL for empty pathname, it may be a kernel bug, so we
+> needn't to check the kernel version but return the "kernel bug" INFO to LTP the users.
+
+Hmmm, picky advice: wrapper the line <= 73 character in commit message.
+
+> 
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> Acked-by: Jan Stancek <jstancek@redhat.com>
+> ---
+
+[snip]
+
+> +				if ((strncmp(test_desc, "Symlink Pathname is empty", 25) == 0) &&
+> +				     TEST_ERRNO == EINVAL)
+> +					tst_resm(TWARN, "It may be a Kernel Bug, see the patch:\n"
+
+picky advice #2: I think without this \n we can still get a good-looking
+warning message.
+
+> +						 "http://git.kernel.org/linus/1fa1e7f6\n");
+
+I guess \n in this line should be removed.
+
+How do you think?
+
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
---------------040008040001070609050109
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------040008040001070609050109--
-
