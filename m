@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S9VMe-0004gs-Vp
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 05:42:40 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S8095-0002We-Pc
+	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 02:10:27 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S9VMd-00072a-B5
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 05:42:40 +0000
-Message-ID: <4F66C70F.80503@cn.fujitsu.com>
-Date: Mon, 19 Mar 2012 13:41:35 +0800
+	id 1S8093-0007Op-VP
+	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 02:10:27 +0000
+Message-ID: <4F614F52.6010104@cn.fujitsu.com>
+Date: Thu, 15 Mar 2012 10:09:22 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <CABxY-SJqTBTDJQimvByQT3GEnk021YtHggPgw9F5NWk9ec8uXg@mail.gmail.com>
-In-Reply-To: <CABxY-SJqTBTDJQimvByQT3GEnk021YtHggPgw9F5NWk9ec8uXg@mail.gmail.com>
-Subject: Re: [LTP] Query regarding Open Posix fail Test Case
+References: <4F60B0CC.606@redhat.com> <4F61415C.6090201@cn.fujitsu.com>
+In-Reply-To: <4F61415C.6090201@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not return
+	-EINVAL
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,52 +29,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jubi Taneja <jubitaneja@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-On 03/19/2012 01:25 PM, Jubi Taneja wrote:
+Hi Jan,
 
-> Hi
+> Hi Jan,
 > 
-> In LTP(Jan 2012 release) Open Posix Test Suite, the test case "aio-suspend/1-1.c" passes
-> successfully for Linux Kernel 2.6.35 for Target ARM but the same test case fails for Kernel
-> version: 3.0.18.
-> 
-> It throws error as :
-> aio_suspend/1-1.c Error at write(): No such file or directory.
+>>
+>> Testcase 1.3 - EINVAL: uninitialized iocb
+>> is about submitting uninitialized iocb structure.
+>>
+>> Test is expecting to get -EINVAL, but other values are also
+>> possible as uninitialized struct can contain any values.
+>>
+>> For example following data fails with -EBADF:
+>> --- snip ---
+>> unsigned char bad_iocb[64] = {
+>>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+>>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+>>     0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x84, 0xa5,
+>>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+>>     0x00, 0x00, 0x0f, 0xff, 0xe0, 0x10, 0x0c, 0x30,
+>>     0x00, 0x00, 0x0f, 0xff, 0xe0, 0x10, 0x0c, 0x40,
+>>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+>>     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+>> memcpy(&iocb, bad_iocb, sizeof(iocb));
+>> iocbs[0] = &iocb;
+>> TEST(io_submit(ctx, 1, iocbs));
+>> check_result(-EINVAL, TEST_RETURN);
+>> --- snip ---
+>>
+>> This patch accepts also few other errno codes as valid return value.
+>>
+>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>> ---
+>>  testcases/kernel/syscalls/io_submit/io_submit01.c |   16 +++++++++++++++-
+>>  1 files changed, 15 insertions(+), 1 deletions(-)
+>>
+>>
+>>
+>> 0001-io_submit-uninitialized-iocb-may-not-return-EINVAL.patch
+>>
+>>
+>> diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
+>> index da15aa0..3983fa4 100644
+>> --- a/testcases/kernel/syscalls/io_submit/io_submit01.c
+>> +++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
+>> @@ -126,7 +126,21 @@ int main(int argc, char *argv[])
+>>  		/* 1.3 - EINVAL: uninitialized iocb */
+>>  		iocbs[0] = &iocb;
+>>  		TEST(io_submit(ctx, 1, iocbs));
+>> -		check_result(-EINVAL, TEST_RETURN);
+>> +		switch(TEST_RETURN) {
+>> +			case -EINVAL:
+>> +			case -EBADF:
 
 
-I haven't seen this error before, so weird.
-Can you try to debug on your ARM target and submit a patch?
+Here the coding style should like:
+
+	switch() {
+	case xx:
+	case xx:
+
+but not:
+	switch() {
+		case xx:
+		case xx:
 
 Thanks,
 Wanlong Gao
 
-
+>> +			case -EFAULT:
+>> +			case -EPERM:
 > 
-> Can any one please point out the reason for the failure in kernel 3.0.18 for target ARM?
 > 
-> The exact path of the test case is :
-> LTP/testcases/open_posix_testsuite/conformance/
-> interfaces/aio_suspend/1-1.c
+> I don't think io_submit(2) can return -EPERM.
 > 
-> Looking forward to your reply.
+> Do you think so?
 > 
 > Thanks,
-> Jubi
+> Wanlong Gao
+> 
+>> +				tst_resm(TPASS, "expected failure - "
+>> +						"returned value = %ld : %s",
+>> +						TEST_RETURN, strerror(-1 * TEST_RETURN));
+>> +				break;
+>> +			default:
+>> +				tst_resm(TFAIL, "unexpected failure - "
+>> +						"returned value = %ld : %s, "
+>> +						"expected one of -EINVAL, -EBADF, -EFAULT, -EPERM",
+>> +						TEST_RETURN, strerror(-1 * TEST_RETURN));
+>> +		}
+>>  
+>>  		/* 2 - EFAULT: iocb points to invalid data */
+>>  		TEST(io_submit(ctx, 1, (struct iocb **)-1));
+>>
+>>
+> 
 > 
 > 
 > ------------------------------------------------------------------------------
 > This SF email is sponsosred by:
 > Try Windows Azure free for 90 days Click Here 
 > http://p.sf.net/sfu/sfd2d-msazure
-> 
-> 
-> 
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
 
