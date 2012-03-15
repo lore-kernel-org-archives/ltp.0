@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1SAIh4-0002vk-DU
-	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 10:23:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SAIgz-0000lJ-Ld
-	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 10:23:02 +0000
-Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2LAMot1009074
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Mar 2012 18:22:51 +0800
-Message-ID: <4F69AC25.5020301@cn.fujitsu.com>
-Date: Wed, 21 Mar 2012 18:23:33 +0800
-From: lidan <li.dan@cn.fujitsu.com>
+	(envelope-from <rishikesh.rajak@hp.com>) id 1S8BYE-0007iQ-Vn
+	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 14:21:10 +0000
+Received: from g4t0014.houston.hp.com ([15.201.24.17])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S8BY7-0003MH-4G
+	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 14:21:10 +0000
+From: "Rajak, Rishikesh Kumar (FEL/PQSi)" <rishikesh.rajak@hp.com>
+Date: Thu, 15 Mar 2012 14:19:56 +0000
+Message-ID: <80145D4278C2654ABC4879063FB2FFA9530ACB12@G4W3231.americas.hpqcorp.net>
+References: <1331820621-10095-1-git-send-email-gaowanlong@cn.fujitsu.com>
+In-Reply-To: <1331820621-10095-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]testfrmw:disable thread cancelability while output is
- running
+Subject: Re: [LTP] [PATCH] MAINTAINERS: update the maintain-ship of LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,57 +28,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "vapier@gentoo.org" <vapier@gentoo.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "risrajak@linux.vnet.ibm.com" <risrajak@linux.vnet.ibm.com>
 
-Function output can be canceled by pthread_cancel(), which,
-maybe, leads to a deadlock as it calls pthread_mutex_lock().
-That's catched in case "pthread_join/4-1.c".
+Hi Wanlong,
 
-So,disable thread cancelability until output finishes.
+Review-By: Rishikesh K Rajak <rishikesh.rajak@hp.com>
 
+No issue with me. But still I am closely watching this place though my responsibilities have changed.
 
-Signed-off-by: LIDAN<li.dan@cn.fujitsu.com>
+Regards
+Rishi
+
+-----Original Message-----
+From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+Sent: Thursday, March 15, 2012 7:40 PM
+To: akpm@linux-foundation.org
+Cc: ltp-list@lists.sourceforge.net; vapier@gentoo.org; linux-kernel@vger.kernel.org; risrajak@linux.vnet.ibm.com
+Subject: [LTP] [PATCH] MAINTAINERS: update the maintain-ship of LTP
+
+The maintain-ship of LTP is out of date, so update it.
+
+Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 ---
-.../conformance/interfaces/testfrmw/testfrmw.c | 4 ++++
-1 files changed, 4 insertions(+), 0 deletions(-)
+ MAINTAINERS |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git
-a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-index 034faa9..fb54ee9 100644
----
-a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-+++
-b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-@@ -28,6 +28,7 @@
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 95e4e43..3e10e6f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4173,12 +4173,14 @@ F:      Documentation/hwmon/ltc4261
+ F:     drivers/hwmon/ltc4261.c
 
-#include <time.h>
-#include <sys/types.h>
-+#include <pthread.h>
+ LTP (Linux Test Project)
+-M:     Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+-M:     Garrett Cooper <yanegomi@gmail.com>
++M:     Shubham Goyal <shubham@linux.vnet.ibm.com>
+ M:     Mike Frysinger <vapier@gentoo.org>
+-M:     Subrata Modak <subrata@linux.vnet.ibm.com>
++M:     Cyril Hrubis <chrubis@suse.cz>
++M:     Caspar Zhang <caspar@casparzhang.com>
++M:     Wanlong Gao <gaowanlong@cn.fujitsu.com>
+ L:     ltp-list@lists.sourceforge.net (subscribers-only)
+ W:     http://ltp.sourceforge.net/
++T:     git git://github.com/linux-test-project/ltp.git
+ T:     git git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev
+ S:     Maintained
 
-/* We use a mutex to avoid conflicts in traces */
-static pthread_mutex_t m_trace = PTHREAD_MUTEX_INITIALIZER;
-@@ -43,7 +44,9 @@ void output(char *string, ...)
-char *ts = "[??:??:??]";
-struct tm *now;
-time_t nw;
-+ int oldstate;
-
-+ pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,&oldstate);
-pthread_mutex_lock(&m_trace);
-nw = time(NULL);
-now = localtime(&nw);
-@@ -56,6 +59,7 @@ void output(char *string, ...)
-vprintf(string, ap);
-va_end(ap);
-pthread_mutex_unlock(&m_trace);
-+ pthread_setcancelstate(oldstate,NULL);
-}
-
-void output_fini(void)
 --
-1.7.1
+1.7.10.rc1
 
+
+------------------------------------------------------------------------------
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here
+http://p.sf.net/sfu/sfd2d-msazure
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
