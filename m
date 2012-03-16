@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1SAZ8y-0008Dq-Eb
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 03:56:56 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SAZ8w-0002US-NJ
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 03:56:56 +0000
-Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2M3uZgS007441
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Mar 2012 11:56:35 +0800
-Message-ID: <4F6AA2EF.9030403@cn.fujitsu.com>
-Date: Thu, 22 Mar 2012 11:56:31 +0800
-From: lidan <li.dan@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bounces@nabble.com>) id 1S8Tw4-0004jB-Sl
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 09:59:00 +0000
+Received: from sam.nabble.com ([216.139.236.26])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S8Tw3-0006fV-Vz
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 09:59:00 +0000
+Received: from isper.nabble.com ([192.168.236.156])
+	by sam.nabble.com with esmtp (Exim 4.72)
+	(envelope-from <bounces@nabble.com>) id 1S8Tvy-0008JD-K4
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 02:58:54 -0700
+Message-ID: <33516012.post@talk.nabble.com>
+Date: Fri, 16 Mar 2012 02:58:54 -0700 (PDT)
+From: Gopal Kalita <gopal.kalita@gmail.com>
+In-Reply-To: <1328793121-20852-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCHv2]testfrmw:disable thread cancelability while output
- is running
+References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+	<1328793121-20852-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH v4] safe_macros: add SAFE_STRTOL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,61 +29,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Function output can be canceled by pthread_cancel(), which,
-maybe, leads to a deadlock as it calls pthread_mutex_lock().
-That's catched in case "pthread_join/4-1.c".
-
-So,disable thread cancelability until output finishes.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- .../conformance/interfaces/testfrmw/testfrmw.c     |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-index 034faa9..a9cfbef 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-@@ -28,6 +28,7 @@
- 
- #include <time.h>
- #include <sys/types.h>
-+#include <pthread.h>
- 
- /* We use a mutex to avoid conflicts in traces */
- static pthread_mutex_t m_trace = PTHREAD_MUTEX_INITIALIZER;
-@@ -43,7 +44,9 @@ void output(char *string, ...)
- 	char *ts = "[??:??:??]";
- 	struct tm *now;
- 	time_t nw;
-+	int oldstate;
- 
-+	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &oldstate);
- 	pthread_mutex_lock(&m_trace);
- 	nw = time(NULL);
- 	now = localtime(&nw);
-@@ -56,6 +59,7 @@ void output(char *string, ...)
- 	vprintf(string, ap);
- 	va_end(ap);
- 	pthread_mutex_unlock(&m_trace);
-+	pthread_setcancelstate(oldstate, NULL);
- }
- 
- void output_fini(void)
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CkluIHRoZSBmaWxlIC0tIGxpYi9zYWZlX21hY3Jvcy5jICwgdGhlIGhlYWRlciBmaWxlIGVycm5v
+LmggbmVlZHMgdG8gYmUKaW5jbHVkZWQuCiNpbmNsdWRlIDxlcnJuby5oPgoKT3RoZXJ3aXNlLCBp
+dCBnaXZlcyB0aGUgRm9sbG93aW5nIGVycm9yICAod2hpbGUgY29tcGlsaW5nKS0tCnNhZmVfbWFj
+cm9zLmM6IEluIGZ1bmN0aW9uIOKAmHNhZmVfc3RydG9s4oCZOgpzYWZlX21hY3Jvcy5jOjM1MDog
+ZXJyb3I6IOKAmGVycm5v4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9u
+KQpzYWZlX21hY3Jvcy5jOjM1MDogZXJyb3I6IChFYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBp
+cyByZXBvcnRlZCBvbmx5IG9uY2UKc2FmZV9tYWNyb3MuYzozNTA6IGVycm9yOiBmb3IgZWFjaCBm
+dW5jdGlvbiBpdCBhcHBlYXJzIGluLikKc2FmZV9tYWNyb3MuYzozNTI6IGVycm9yOiDigJhFUkFO
+R0XigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCgotLSAKVmlldyB0
+aGlzIG1lc3NhZ2UgaW4gY29udGV4dDogaHR0cDovL29sZC5uYWJibGUuY29tLy1MVFAtLS1QQVRD
+SC0tc2FmZV9tYWNyb3MlM0EtYWRkLVNBRkVfU1RSVE9MLXRwMzMyOTE1MjlwMzM1MTYwMTIuaHRt
+bApTZW50IGZyb20gdGhlIGx0cC1saXN0IG1haWxpbmcgbGlzdCBhcmNoaXZlIGF0IE5hYmJsZS5j
+b20uCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YgZW1haWwgaXMgc3BvbnNvc3JlZCBi
+eToKVHJ5IFdpbmRvd3MgQXp1cmUgZnJlZSBmb3IgOTAgZGF5cyBDbGljayBIZXJlIApodHRwOi8v
+cC5zZi5uZXQvc2Z1L3NmZDJkLW1zYXp1cmUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNv
+dXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
+by9sdHAtbGlzdAo=
