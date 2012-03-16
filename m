@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SAZLO-0003Es-Kp
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 04:09:46 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SAZLN-0002pE-PT
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 04:09:46 +0000
-Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2M49bK8008026
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Mar 2012 12:09:38 +0800
-Message-ID: <4F6AA5CA.40603@cn.fujitsu.com>
-Date: Thu, 22 Mar 2012 12:08:42 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4F6AA2EF.9030403@cn.fujitsu.com>
-In-Reply-To: <4F6AA2EF.9030403@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCHv2]testfrmw:disable thread cancelability while
- output is running
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1S8TrP-0008MN-NX
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 09:54:11 +0000
+Received: from mail-gy0-f175.google.com ([209.85.160.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1S8TrJ-000261-TO
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 09:54:11 +0000
+Received: by ghbz2 with SMTP id z2so4764539ghb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 16 Mar 2012 02:54:00 -0700 (PDT)
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+In-Reply-To: <4F62EB70.7010400@casparzhang.com>
+Mime-Version: 1.0 (1.0)
+Message-Id: <3985A069-7EF2-4014-9016-E0B2BB9288EE@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Date: Fri, 16 Mar 2012 02:53:54 -0700
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,62 +32,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: lidan <li.dan@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: "andi.kleen@intel.com" <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>, "ying.huang@intel.com" <ying.huang@intel.com>
 
-On 03/22/2012 11:56 AM, lidan wrote:
+On Mar 16, 2012, at 12:27 AM, Caspar Zhang <caspar@casparzhang.com> wrote:
 
-> Function output can be canceled by pthread_cancel(), which,
-> maybe, leads to a deadlock as it calls pthread_mutex_lock().
-> That's catched in case "pthread_join/4-1.c".
+> Hi all, I'll merge this change to master if I don't hear any objections
+> from you by today.
 > 
-> So,disable thread cancelability until output finishes.
-
-
-Looks good.
-
-Thanks,
-Wanlong Gao
-
 > 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-> ---
->  .../conformance/interfaces/testfrmw/testfrmw.c     |    4 ++++
->  1 files changed, 4 insertions(+), 0 deletions(-)
+> On 03/09/2012 08:25 AM, Wanlong Gao wrote:
+>> On 03/09/2012 12:50 AM, Caspar Zhang wrote:
+>> 
+>>> Hi Garrett, Andi, and all:
+>>> 
+>>> When I looked into current LTP tree, I found it a little messy due to
+>>> some mce-test stuff, such as
+>>> 
+>>>  - mce-test docs goes to $TOPDIR/README, and
+>>>  - some mce-test files still lying under testcase/mce-test/.
+>>> 
+>>> I think we need a cleanup for it.
+>> 
+>> 
+>> yes, I think so.
+>> 
+>>> 
+>>> Also an idea comes to my mind, that we can try to make mce-test a
+>>> submodule of LTP.
+>> 
+>> 
+>> Not a bad idea.
+>> 
+>>> 
+>>> I am also thinking about the pros and cons:
+>>> 
+>>> pro(s):
+>>>  - easier for code maintenance, no need to sync periodically from
+>>> maintainer side
+>>> 
+>>> con(s):
+>>>  - two extra steps added for LTP users, they have to do:
+>>>    $ git submodule init
+>>>    $ git submodule update
+>>> to enable using mce-test.
+>>> 
+>>> mce-test could no longer be found at kernel.org, so I cloned it from
+>>> Andi's github repo, not sure if it is the right place:
+>>> 
+>>>    git://github.com/andikleen/mce-test.git
+>> 
+>> 
+>> The tree seems just a few update every month now, I wonder why intel guys
+>> didn't sync the commits to LTP ?
+>> 
+>>> 
+>>> I have made this change to my personal LTP fork, you can review it here:
+>>> 
+>>>    https://github.com/casparant/ltp/commit/5cca17f633
+>> 
+>> 
+>> The patch loooks good.
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-> index 034faa9..a9cfbef 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-> @@ -28,6 +28,7 @@
->  
->  #include <time.h>
->  #include <sys/types.h>
-> +#include <pthread.h>
->  
->  /* We use a mutex to avoid conflicts in traces */
->  static pthread_mutex_t m_trace = PTHREAD_MUTEX_INITIALIZER;
-> @@ -43,7 +44,9 @@ void output(char *string, ...)
->  	char *ts = "[??:??:??]";
->  	struct tm *now;
->  	time_t nw;
-> +	int oldstate;
->  
-> +	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &oldstate);
->  	pthread_mutex_lock(&m_trace);
->  	nw = time(NULL);
->  	now = localtime(&nw);
-> @@ -56,6 +59,7 @@ void output(char *string, ...)
->  	vprintf(string, ap);
->  	va_end(ap);
->  	pthread_mutex_unlock(&m_trace);
-> +	pthread_setcancelstate(oldstate, NULL);
->  }
->  
->  void output_fini(void)
+> Wanlong, thanks for review.
 
+The goals for the patch are good and what I briefly looked over looked ok too. Can you pull certain versions of the mce-test submodule, or is it always HEAD?
 
-
+Thanks!
+-Garrett
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
 Try Windows Azure free for 90 days Click Here 
