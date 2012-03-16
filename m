@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <carmelo.amoroso@st.com>) id 1S9uX0-0007WR-KK
-	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:35:02 +0000
-Received: from eu1sys200aog112.obsmtp.com ([207.126.144.133])
-	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S9uWu-0002y7-SI
-	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:35:02 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 96D3217C
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 20 Mar 2012 08:34:34 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A94018DD
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 20 Mar 2012 08:34:34 +0000 (GMT)
-Message-ID: <4F6840EB.5000306@st.com>
-Date: Tue, 20 Mar 2012 09:33:47 +0100
-From: Carmelo AMOROSO <carmelo.amoroso@st.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S8TxC-0002tW-NU
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 10:00:10 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S8Tx6-0002Gp-Ld
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 10:00:10 +0000
+Message-ID: <4F630EE2.60108@cn.fujitsu.com>
+Date: Fri, 16 Mar 2012 17:58:58 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <653A85C7F32C4741880F71219266EA02612A3E578E@EXGMBX01.sasken.com>
-In-Reply-To: <653A85C7F32C4741880F71219266EA02612A3E578E@EXGMBX01.sasken.com>
-Subject: Re: [LTP] cannot find -lpthread error in ltp cross compilation for
- Android
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<3985A069-7EF2-4014-9016-E0B2BB9288EE@gmail.com>
+In-Reply-To: <3985A069-7EF2-4014-9016-E0B2BB9288EE@gmail.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,66 +31,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "andi.kleen@intel.com" <andi.kleen@intel.com>, "ying.huang@intel.com" <ying.huang@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-On 19/03/2012 12.59, Sandeep Mahato wrote:
-> Hi,
->   I am trying to cross compile LTP using NDK toolchain for Android . while executing the "make all" I am facing the below error.
+On 03/16/2012 05:53 PM, Garrett Cooper wrote:
+
+> On Mar 16, 2012, at 12:27 AM, Caspar Zhang <caspar@casparzhang.com> wrote:
 > 
-> pcb-msandeep:/u/ltp14032012/ltp-full-20120104# make all
-> make -C "lib" \
->                 -f "/u/ltp14032012/ltp-full-20120104/lib/Makefile" all
-> make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/lib'
-> make[1]: Nothing to be done for `all'.
-> make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/lib'
-> make -C "pan" \
->                 -f "/u/ltp14032012/ltp-full-20120104/pan/Makefile" all
-> make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/pan'
-> /u/ltp14032012/ltp-full-20120104/pan/Makefile:43: ltp-scanner will not be built because a working copy of lex was not found
-> make[1]: Nothing to be done for `all'.
-> make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/pan'
-> make -C "utils" \
->                 -f "/u/ltp14032012/ltp-full-20120104/utils/Makefile" all
-> make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils'
-> make[2]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark'
-> make[3]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark/ebizzy-0.3'
-> arm-linux-androideabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../../../include -I../../../include   -L../../../lib  ebizzy.c   -lpthread -o ebizzy
-> /usr/local/android-ndk-r7/my-android-toolchain/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/bin/ld: cannot find -lpthread
-> collect2: ld returned 1 exit status
-> make[3]: *** [ebizzy] Error 1
-> make[3]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark/ebizzy-0.3'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils'
-> make: *** [utils-all] Error 2
+>> Hi all, I'll merge this change to master if I don't hear any objections
+>> from you by today.
+>>
+>>
+>> On 03/09/2012 08:25 AM, Wanlong Gao wrote:
+>>> On 03/09/2012 12:50 AM, Caspar Zhang wrote:
+>>>
+>>>> Hi Garrett, Andi, and all:
+>>>>
+>>>> When I looked into current LTP tree, I found it a little messy due to
+>>>> some mce-test stuff, such as
+>>>>
+>>>>  - mce-test docs goes to $TOPDIR/README, and
+>>>>  - some mce-test files still lying under testcase/mce-test/.
+>>>>
+>>>> I think we need a cleanup for it.
+>>>
+>>>
+>>> yes, I think so.
+>>>
+>>>>
+>>>> Also an idea comes to my mind, that we can try to make mce-test a
+>>>> submodule of LTP.
+>>>
+>>>
+>>> Not a bad idea.
+>>>
+>>>>
+>>>> I am also thinking about the pros and cons:
+>>>>
+>>>> pro(s):
+>>>>  - easier for code maintenance, no need to sync periodically from
+>>>> maintainer side
+>>>>
+>>>> con(s):
+>>>>  - two extra steps added for LTP users, they have to do:
+>>>>    $ git submodule init
+>>>>    $ git submodule update
+>>>> to enable using mce-test.
+>>>>
+>>>> mce-test could no longer be found at kernel.org, so I cloned it from
+>>>> Andi's github repo, not sure if it is the right place:
+>>>>
+>>>>    git://github.com/andikleen/mce-test.git
+>>>
+>>>
+>>> The tree seems just a few update every month now, I wonder why intel guys
+>>> didn't sync the commits to LTP ?
+>>>
+>>>>
+>>>> I have made this change to my personal LTP fork, you can review it here:
+>>>>
+>>>>    https://github.com/casparant/ltp/commit/5cca17f633
+>>>
+>>>
+>>> The patch loooks good.
+>>
+>> Wanlong, thanks for review.
 > 
-> Can anybody please tell me why this "cannot find -lpthread" error is coming and how to resolve that.
+> The goals for the patch are good and what I briefly looked over looked ok too. Can you pull certain versions of the mce-test submodule, or is it always HEAD?
 > 
 
-bionic (the Android C runtime library) does provide pthreads into libc,
-so you don't need to link against libpthread.
 
-> 
-> Regards
-> Sandeep
-> 
+I think the submodule head should be pulled by hand every time the mce tree updated.
 
-cheers,
-carmelo
+Thanks,
+Wanlong Gao
 
-> SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
-> Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
-> 
-> ------------------------------------------------------------------------------
-> This SF email is sponsosred by:
-> Try Windows Azure free for 90 days Click Here 
-> http://p.sf.net/sfu/sfd2d-msazure
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+> Thanks!
+> -Garrett
+
 
 
 ------------------------------------------------------------------------------
