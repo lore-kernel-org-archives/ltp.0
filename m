@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S5crI-0002DA-3x
-	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 12:54:16 +0000
-Date: Thu, 8 Mar 2012 13:55:55 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120308125554.GE31640@saboteur.suse.cz>
-References: <20120308124800.GD31640@saboteur.suse.cz>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <serge.hallyn@canonical.com>) id 1S8ZTA-00051Y-0V
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 15:53:32 +0000
+Received: from youngberry.canonical.com ([91.189.89.112])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S8ZT7-0001QC-FR
+	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 15:53:31 +0000
+Date: Fri, 16 Mar 2012 10:53:19 -0500
+From: Serge Hallyn <serge.hallyn@canonical.com>
+Message-ID: <20120316155319.GB8571@peqn>
+References: <20120316141906.GB2897@peqn>
+	<47a39b80-c735-45af-aee5-075ca9080323@zmail17.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20120308124800.GD31640@saboteur.suse.cz>
-Subject: Re: [LTP] LTP git repositories
+In-Reply-To: <47a39b80-c735-45af-aee5-075ca9080323@zmail17.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] Are you still maintaining Selinux testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,48 +29,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Mike Frysinger <vapier@gentoo.org>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: Poornima Nayak <Poornima.Nayak@in.ibm.com>, ltp-list <ltp-list@lists.sf.net>, Jeffrey Burke <jburke@redhat.com>, Stephen Smalley <sds@tycho.nsa.gov>, James Morris <jmorris@namei.org>
 
-> Hi!
-> Good news everyone. After some discussion we (Me, Caspar and Wanlong)
-> prepared official LTP repository on github.com.
+Quoting Jan Stancek (jstancek@redhat.com):
 > 
-> It's located at https://github.com/linux-test-project/ltp
 > 
-> The resons for such move are obvious, github provides more natural way
-> to handle development using git (not to mention that their servers are
-> much faster than sourceforge).
+> ----- Original Message -----
+> > From: "Serge Hallyn" <serge.hallyn@canonical.com>
+> > To: "Poornima Nayak" <Poornima.Nayak@in.ibm.com>
+> > Cc: "ltp-list" <ltp-list@lists.sf.net>, "Stephen Smalley" <sds@tycho.nsa.gov>, "James Morris" <jmorris@namei.org>
+> > Sent: Friday, March 16, 2012 3:19:06 PM
+> > Subject: Re: [LTP] Are you still maintaining Selinux testsuite
+> > 
+> > Quoting Poornima Nayak (Poornima.Nayak@in.ibm.com):
+> > > Hi Serge
+> > > 
+> > > I was looking out for selinux test suite after the call was taken
+> > > to move
+> > > it out of LTP. Latest discussion is this
+> > > http://permalink.gmane.org/gmane.linux.ltp/15301. Any progress
+> > > beyond this
+> > > ?
+> > 
+> > Hi Poornima,
+> > 
+> > yes, I'm sorry it's taken this long, but I finally got a copy up at:
+> > 
+> > http://git.selinuxproject.org/git/?p=users/serge/selinux-testsuite.git;a=summary
+> > 
+> > Thanks James for the account, and Stephen for the copy of the git
+> > tree.
+> > 
+> > Now I should get back to getting this to pass on Ubuntu -
+> > unfortunately
+> > the changes I"d been staging for that were the victim of a hard drive
+> > crash.
 > 
-> So now everyone can fork the repo with a few clicks and send a pull
-> request to this mailing list. Let's see how that will work in real
-> usage.
+> Hi,
 > 
-> Now there are few things to settle and I we would like to hear from you
-> (especially people who are developers in the ltp.sf.net project).
+> what is the preffered way of contributing?
 > 
-> With the current setup we have git repo both on sf.net and github, my
-> plan is to make one of them mirror of the other one (for now I have
-> prepared sync script to be run every hour via cron).
-> 
-> I would personally preffer the sf.net repo becoming mirror of the github
-> one, but that means nobody but the sync script would commit to the
-> sf.net repo and all commits would go to the github one. But that
-> shouldn't be the problem as we would add people who needs commit acces
-> to the github project.
+> I have some patches, which allow testsuite to run on latest RHEL (7 Alpha atm.)
+> and F16 in automated env (Beaker). These also include some previous fixes made in LTP,
+> which probably didn't make it back to upstream.
 
-Sorry for mailing again, somewhere between the mail client and smtp part
-of the CC list was eaten. :(
+Feel free to send me a patchset or a pointer to a git tree to merge.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I"m not sure which lists would want to see them.  If you send them to selinux
+list (selinux@tycho.nsa.gov)  and cc: serge@hallyn.com, that would be ideal
+from my pov.
+
+thanks,
+-serge
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
