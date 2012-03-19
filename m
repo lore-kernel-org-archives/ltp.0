@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sds@tycho.nsa.gov>) id 1S8a0l-0006TC-Hl
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 16:28:15 +0000
-Received: from emvm-gh1-uea08.nsa.gov ([63.239.67.9] helo=nsa.gov)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S8a0f-0006ZR-VJ
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 16:28:15 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <OFCE0DCA3A.339E9729-ON652579C3.00562D02-652579C3.0057D91F@in.ibm.com>
-References: <OFEC1872A7.8CB8CA8C-ON652579C3.004D1716-652579C3.004DAE00@in.ibm.com>
-	<20120316141906.GB2897@peqn>
-	<OFCE0DCA3A.339E9729-ON652579C3.00562D02-652579C3.0057D91F@in.ibm.com>
-Date: Fri, 16 Mar 2012 12:13:19 -0400
-Message-ID: <1331914399.22861.38.camel@moss-pluto>
-Mime-Version: 1.0
-Subject: Re: [LTP] Are you still maintaining Selinux testsuite
+	(envelope-from <zliu@redhat.com>) id 1S9Xn0-0002h3-5g
+	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 08:18:02 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S9Xmw-00028L-80
+	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 08:18:02 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q2J8HqQx024421
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Mar 2012 04:17:52 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Mon, 19 Mar 2012 16:17:26 +0800
+Message-Id: <465d054c01aef04f1adb43e0aaee4023a76c2bc3.1332143157.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2] mem/oom: avoid unexpected error when no memcg swap
+	accounting
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,25 +27,100 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <Poornima.Nayak@in.ibm.com>
-Cc: James Morris <jmorris@namei.org>, ltp-list <ltp-list@lists.sf.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>, Cai Qian <caiqian@redhat.com>
 
-On Fri, 2012-03-16 at 21:29 +0530, Poornima Nayak wrote:
-> Thanks Serge for a quick reply. Can you share git url which I can
-> clone, I am getting following error 
-> git clone
-> git://git.selinuxproject.org/git/?p=users/serge/selinux-testsuite.git;a=tree 
-> Cloning into selinux-testsuite... 
-> fatal: The remote end hung up unexpectedly 
+Since commit http://git.kernel.org/linus/a42c390cfa0c,
+which added an option to control memcg swap, when kernel
+neither set CGROUP_MEM_RES_CTLR_SWAP_ENABLED nor add
+'swapaccount=1' kernel parameter, that indicates memcg swap
+accounting is disabled, it will have no such file:
+memory.memsw.*, then oom03 & oom04 cases will fail.
 
-git clone git://git.selinuxproject.org/~serge/selinux-testsuite
+The patch fixed it: removed memsw cases when memcg swap
+accounting is disabled, and added a TINFO:
+tst_resm(TINFO,"memcg swap accounting disabled");
 
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/oom/oom03.c |   14 ++++++++++++--
+ testcases/kernel/mem/oom/oom04.c |   32 ++++++++++++++++++++++----------
+ 2 files changed, 34 insertions(+), 12 deletions(-)
+
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index b90d4d7..d5e598b 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -66,8 +66,18 @@ int main(int argc, char *argv[])
+ 		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
+ 		testoom(0, 0, 0);
+ 
+-		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
+-		testoom(0, 1, 0);
++		if (access(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes",
++		    F_OK) == -1) {
++			if (errno == ENOENT)
++				tst_resm(TINFO,
++				    "memcg swap accounting disabled");
++			else
++				tst_brkm(TBROK|TERRNO, NULL, "access");
++		} else {
++			write_file(MEMCG_PATH_NEW
++			     "/memory.memsw.limit_in_bytes", mem);
++			testoom(0, 1, 0);
++		}
+ 	}
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index fb35f96..2bbf4f1 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -76,16 +76,28 @@ int main(int argc, char *argv[])
+ 		tst_resm(TINFO, "process mempolicy.");
+ 		testoom(1, 0, 1);
+ 
+-		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
+-		testoom(1, 1, 1);
+-
+-		tst_resm(TINFO, "process cpuset.");
+-
+-		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", "-1");
+-		testoom(0, 0, 1);
+-
+-		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
+-		testoom(0, 1, 1);
++		if (access(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes",
++		    F_OK) == -1) {
++			if (errno == ENOENT)
++				tst_resm(TINFO,
++				    "memcg swap accounting disabled");
++			else
++				tst_brkm(TBROK|TERRNO, NULL, "access");
++		} else {
++			write_file(MEMCG_PATH_NEW
++			    "/memory.memsw.limit_in_bytes", mem);
++			testoom(1, 1, 1);
++
++			tst_resm(TINFO, "process cpuset.");
++
++			write_file(MEMCG_PATH_NEW
++			    "/memory.memsw.limit_in_bytes", "-1");
++			testoom(0, 0, 1);
++
++			write_file(MEMCG_PATH_NEW
++			    "/memory.memsw.limit_in_bytes", mem);
++			testoom(0, 1, 1);
++		}
+ 	}
+ 	cleanup();
+ 	tst_exit();
 -- 
-Stephen Smalley
-National Security Agency
+1.7.7.6
 
 
 ------------------------------------------------------------------------------
