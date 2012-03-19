@@ -2,22 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S7MZU-0007KW-2V
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 07:55:04 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S7MZO-0003Jg-Fy
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 07:55:04 +0000
-Received: by dado14 with SMTP id o14so455468dad.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Mar 2012 00:54:52 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 13 Mar 2012 15:53:38 +0800
-Message-Id: <1331625218-5731-1-git-send-email-caspar@casparzhang.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S9VMe-0004gs-Vp
+	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 05:42:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S9VMd-00072a-B5
+	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 05:42:40 +0000
+Message-ID: <4F66C70F.80503@cn.fujitsu.com>
+Date: Mon, 19 Mar 2012 13:41:35 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH] hugetlb/hugeshmat01: don't use hard-coded unaligned
-	addr
+References: <CABxY-SJqTBTDJQimvByQT3GEnk021YtHggPgw9F5NWk9ec8uXg@mail.gmail.com>
+In-Reply-To: <CABxY-SJqTBTDJQimvByQT3GEnk021YtHggPgw9F5NWk9ec8uXg@mail.gmail.com>
+Subject: Re: [LTP] Query regarding Open Posix fail Test Case
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,114 +25,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-An usable unaligned addr various on different platforms, it's better to
-generate the addr dynamically instead of using a hard-coded one. This
-patch generate this unaligned addr based on first run.
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |   29 ++++++++++---------
- 1 files changed, 15 insertions(+), 14 deletions(-)
-
-
---------------1.7.8.4
-Content-Type: text/x-patch;
-	name="0001-hugetlb-hugeshmat01-don-t-use-hard-coded-unaligned-a.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-hugetlb-hugeshmat01-don-t-use-hard-coded-unaligned-a.patch"
-
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-index e46ae12..54d8aeb 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-@@ -66,16 +66,6 @@ int TST_TOTAL = 3;
- #define CASE0		10		/* values to write into the shared */
- #define CASE1		20		/* memory location.		   */
- 
--#if __WORDSIZE == 64
--#if defined(__mips__)
--#define UNALIGNED      0x1000000eee
--#else
--#define UNALIGNED      0x10000000eee
--#endif
--#else
--#define UNALIGNED      0x60000eee
--#endif
--
- static size_t shm_size;
- static int    shm_id_1 = -1;
- static void   *addr;
-@@ -92,13 +82,16 @@ struct test_case_t {
- 	int  flags;
- } TC[] = {
- 	/* a straight forward read/write attach */
--	{ &shm_id_1,	0,			0 },
-+	{ &shm_id_1,	0,		0 },
- 
--	/* an attach using non aligned memory */
--	{ &shm_id_1,	(void *)UNALIGNED,	SHM_RND },
-+	/*
-+	 * an attach using non aligned memory
-+	 * -1 will be replaced with an unaligned addr
-+	 */
-+	{ &shm_id_1,	(void *)-1,	SHM_RND },
- 
- 	/* a read only attach */
--	{ &shm_id_1,	0,			SHM_RDONLY }
-+	{ &shm_id_1,	0,		SHM_RDONLY }
- };
- 
- static void check_functionality(int i);
-@@ -130,6 +123,14 @@ int main(int ac, char **av)
- 					tst_resm(TPASS, "shmat call succeeded");
- 			}
- 
-+			/*
-+			 * addr in TC[0] will be used to generate an unaligned
-+			 * address for TC[1]
-+			 */
-+			if (i == 0 && addr != (void *)-1)
-+				TC[i+1].addr = (void *)((unsigned long)addr/
-+					    SHMLBA*SHMLBA) + SHMLBA -1;
-+
- 			if (shmdt(addr) == -1)
- 				tst_brkm(TBROK|TERRNO, cleanup, "shmdt");
- 		}
-
---------------1.7.8.4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jubi Taneja <jubitaneja@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 03/19/2012 01:25 PM, Jubi Taneja wrote:
+
+> Hi
+> 
+> In LTP(Jan 2012 release) Open Posix Test Suite, the test case "aio-suspend/1-1.c" passes
+> successfully for Linux Kernel 2.6.35 for Target ARM but the same test case fails for Kernel
+> version: 3.0.18.
+> 
+> It throws error as :
+> aio_suspend/1-1.c Error at write(): No such file or directory.
+
+
+I haven't seen this error before, so weird.
+Can you try to debug on your ARM target and submit a patch?
+
+Thanks,
+Wanlong Gao
+
+
+> 
+> Can any one please point out the reason for the failure in kernel 3.0.18 for target ARM?
+> 
+> The exact path of the test case is :
+> LTP/testcases/open_posix_testsuite/conformance/
+> interfaces/aio_suspend/1-1.c
+> 
+> Looking forward to your reply.
+> 
+> Thanks,
+> Jubi
+> 
+> 
+> ------------------------------------------------------------------------------
+> This SF email is sponsosred by:
+> Try Windows Azure free for 90 days Click Here 
+> http://p.sf.net/sfu/sfd2d-msazure
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.4--
-
-
-
