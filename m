@@ -1,15 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S5cja-0002uV-NS
-	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 12:46:18 +0000
-Date: Thu, 8 Mar 2012 13:48:00 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120308124800.GD31640@saboteur.suse.cz>
+	(envelope-from <zliu@redhat.com>) id 1S9Xdh-000269-2u
+	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 08:08:25 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S9Xdb-0004Jl-Ov
+	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 08:08:25 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q2J88Ewe032421
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Mar 2012 04:08:14 -0400
+Message-ID: <4F66E954.8010409@redhat.com>
+Date: Mon, 19 Mar 2012 16:07:48 +0800
+From: ZhoupingLiu <zliu@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] LTP git repositories
+References: <465d054c01aef04f1adb43e0aaee4023a76c2bc3.1332143157.git.zliu@redhat.com>
+In-Reply-To: <465d054c01aef04f1adb43e0aaee4023a76c2bc3.1332143157.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH] mem/oom: avoid unexpected error when no memcg
+ swap accounting
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,45 +33,103 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Mike Frysinger <vapier@gentoo.org>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>, Cai Qian <caiqian@redhat.com>
 
-Hi!
-Good news everyone. After some discussion we (Me, Caspar and Wanlong)
-prepared official LTP repository on github.com.
+On 03/19/2012 04:03 PM, Zhouping Liu wrote:
+> Since commit http://git.kernel.org/linus/a42c390cfa0c,
+> which added an option to control memcg swap, when kernel
+> neither set CGROUP_MEM_RES_CTLR_SWAP_ENABLED nor add
+> 'swapcount=1' kernel parameter, that indicates memcg swap
+sorry, it has a typo, it should be 'swapaccount=1'
+I'll resend a new patch.
+> accounting is disabled, it will have no such file:
+> memory.memsw.*, then oom03&  oom04 cases will fail.
+>
+> The patch fixed it, removed memsw cases when memcg swap
+> accounting is disabled, and add a TINFO:
+> tst_resm(TINFO,"memcg swap accounting disabled");
+>
+> Signed-off-by: Zhouping Liu<zliu@redhat.com>
+> ---
+>   testcases/kernel/mem/oom/oom03.c |   14 ++++++++++++--
+>   testcases/kernel/mem/oom/oom04.c |   32 ++++++++++++++++++++++----------
+>   2 files changed, 34 insertions(+), 12 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+> index b90d4d7..d5e598b 100644
+> --- a/testcases/kernel/mem/oom/oom03.c
+> +++ b/testcases/kernel/mem/oom/oom03.c
+> @@ -66,8 +66,18 @@ int main(int argc, char *argv[])
+>   		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
+>   		testoom(0, 0, 0);
+>
+> -		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
+> -		testoom(0, 1, 0);
+> +		if (access(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes",
+> +		    F_OK) == -1) {
+> +			if (errno == ENOENT)
+> +				tst_resm(TINFO,
+> +				    "memcg swap accounting disabled");
+> +			else
+> +				tst_brkm(TBROK|TERRNO, NULL, "access");
+> +		} else {
+> +			write_file(MEMCG_PATH_NEW
+> +			     "/memory.memsw.limit_in_bytes", mem);
+> +			testoom(0, 1, 0);
+> +		}
+>   	}
+>   	cleanup();
+>   	tst_exit();
+> diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+> index fb35f96..2bbf4f1 100644
+> --- a/testcases/kernel/mem/oom/oom04.c
+> +++ b/testcases/kernel/mem/oom/oom04.c
+> @@ -76,16 +76,28 @@ int main(int argc, char *argv[])
+>   		tst_resm(TINFO, "process mempolicy.");
+>   		testoom(1, 0, 1);
+>
+> -		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
+> -		testoom(1, 1, 1);
+> -
+> -		tst_resm(TINFO, "process cpuset.");
+> -
+> -		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", "-1");
+> -		testoom(0, 0, 1);
+> -
+> -		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
+> -		testoom(0, 1, 1);
+> +		if (access(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes",
+> +		    F_OK) == -1) {
+> +			if (errno == ENOENT)
+> +				tst_resm(TINFO,
+> +				    "memcg swap accounting disabled");
+> +			else
+> +				tst_brkm(TBROK|TERRNO, NULL, "access");
+> +		} else {
+> +			write_file(MEMCG_PATH_NEW
+> +			    "/memory.memsw.limit_in_bytes", mem);
+> +			testoom(1, 1, 1);
+> +
+> +			tst_resm(TINFO, "process cpuset.");
+> +
+> +			write_file(MEMCG_PATH_NEW
+> +			    "/memory.memsw.limit_in_bytes", "-1");
+> +			testoom(0, 0, 1);
+> +
+> +			write_file(MEMCG_PATH_NEW
+> +			    "/memory.memsw.limit_in_bytes", mem);
+> +			testoom(0, 1, 1);
+> +		}
+>   	}
+>   	cleanup();
+>   	tst_exit();
 
-It's located at https://github.com/linux-test-project/ltp
-
-The resons for such move are obvious, github provides more natural way
-to handle development using git (not to mention that their servers are
-much faster than sourceforge).
-
-So now everyone can fork the repo with a few clicks and send a pull
-request to this mailing list. Let's see how that will work in real
-usage.
-
-Now there are few things to settle and I we would like to hear from you
-(especially people who are developers in the ltp.sf.net project).
-
-With the current setup we have git repo both on sf.net and github, my
-plan is to make one of them mirror of the other one (for now I have
-prepared sync script to be run every hour via cron).
-
-I would personally preffer the sf.net repo becoming mirror of the github
-one, but that means nobody but the sync script would commit to the
-sf.net repo and all commits would go to the github one. But that
-shouldn't be the problem as we would add people who needs commit acces
-to the github project.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
