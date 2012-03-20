@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S7oJi-0002Eh-O5
-	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 13:32:38 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S7oJe-0007XD-VJ
-	for ltp-list@lists.sourceforge.net; Wed, 14 Mar 2012 13:32:38 +0000
-Message-ID: <4F609430.20506@cn.fujitsu.com>
-Date: Wed, 14 Mar 2012 20:50:56 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4F608484.30205@redhat.com>
-In-Reply-To: <4F608484.30205@redhat.com>
-Subject: Re: [LTP] [PATCH] readlink03: fix expected errno for kernel >=3.2
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <salvatore.cro@st.com>) id 1SA1AP-0004Ks-2K
+	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 15:40:09 +0000
+Received: from eu1sys200aog113.obsmtp.com ([207.126.144.135])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SA1AJ-0008AJ-CP
+	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 15:40:09 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 82ADE114
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 20 Mar 2012 15:39:55 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B764425BD
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 20 Mar 2012 15:39:54 +0000 (GMT)
+From: "Salvatore CRO'" <salvatore.cro@st.com>
+Date: Tue, 20 Mar 2012 16:39:49 +0100
+Message-Id: <1332257989-22829-1-git-send-email-salvatore.cro@st.com>
+Subject: [LTP] [PATCH] setrlimit01: wait for all children to exit in test3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,67 +29,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi Jan,
+In test3, parent just wait for one child to exit but it
+actually has 10.
+As it could happen there may be other children around that
+didn't get yet the chance to exit, they will get signaled
+by ltp-pan (SIGTERM) and pollute the output of subsequent
+test (setrlimit02).
+Parent definitely needs to wait for all children to exit.
 
-> 
-> This kernel commit restored original behavior:
-> commit 1fa1e7f615f4d3ae436fa319af6e4eebdd4026a8
-> Author: Andy Whitcroft <apw@canonical.com>
-> Date:   Wed Nov 2 09:44:39 2011 +0100
->     readlinkat: ensure we return ENOENT for the empty pathname for
-> normal lookups
-> 
-> For kernel >= 3.2, ENOENT should be expected errno code.
+Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
+---
+ testcases/kernel/syscalls/setrlimit/setrlimit01.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-
-I had posted a patch long time ago, you can see here
-http://marc.info/?l=ltp-list&m=132063831228321&w=2
-
-This is a kernel bug, and already fixed in 3.0 and 3.1
-stable tree, so, just test the kernel version like this
-is not the best method.
-
-What do you think?
-
-Thanks,
-Wanlong Gao
-
-> 
-
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/readlink/readlink03.c |    3 ++-
->  1 files changed, 2 insertions(+), 1 deletions(-)
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Virtualization & Cloud Management Using Capacity Planning
-> Cloud computing makes use of virtualization - but cloud computing 
-> also focuses on allowing computing to be delivered as a service.
-> http://www.accelacomm.com/jaw/sfnl/114/51521223/
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index ac32450..430835c 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -267,7 +267,7 @@ void test3()
+ 			exit(0);
+ 		}
+ 	}
+-	waitpid(pid, &status, 0);
++	while(wait(&status) > 0) { /* no-op */ ; }
+ 	if (WEXITSTATUS(status) != 0) {
+ 		tst_resm(TFAIL, "RLIMIT_NPROC functionality is not correct");
+ 	} else {
+-- 
+1.7.4.4
 
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
