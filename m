@@ -1,25 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S4SmB-0006Km-2f
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 07:56:11 +0000
-Received: from mail-pz0-f46.google.com ([209.85.210.46])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S4Sm6-0001Hy-VG
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 07:56:11 +0000
-Received: by dajr28 with SMTP id r28so6023674daj.33
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <carmelo.amoroso@st.com>) id 1S9uX0-0007WR-KK
+	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:35:02 +0000
+Received: from eu1sys200aog112.obsmtp.com ([207.126.144.133])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S9uWu-0002y7-SI
+	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:35:02 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 96D3217C
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 04 Mar 2012 23:56:01 -0800 (PST)
-Message-ID: <4F547158.7050501@casparzhang.com>
-Date: Mon, 05 Mar 2012 15:55:04 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Tue, 20 Mar 2012 08:34:34 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A94018DD
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 20 Mar 2012 08:34:34 +0000 (GMT)
+Message-ID: <4F6840EB.5000306@st.com>
+Date: Tue, 20 Mar 2012 09:33:47 +0100
+From: Carmelo AMOROSO <carmelo.amoroso@st.com>
 MIME-Version: 1.0
-References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
-	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
-Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
- max [us]time increment
+References: <653A85C7F32C4741880F71219266EA02612A3E578E@EXGMBX01.sasken.com>
+In-Reply-To: <653A85C7F32C4741880F71219266EA02612A3E578E@EXGMBX01.sasken.com>
+Subject: Re: [LTP] cannot find -lpthread error in ltp cross compilation for
+ Android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,42 +36,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
->> -----Original Message-----
->> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
->> Sent: Thursday, February 23, 2012 11:58 AM
->> To: ltp-list@lists.sourceforge.net
->> Cc: Filippo Arcidiacono; Salvatore Cro
->> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
->> [us]time increment
->>
->> On slow systems it could be needed to increase the max value [us]time
->> increment beetween two getrusage calls.
->>
->> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
->> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
->> ---
+On 19/03/2012 12.59, Sandeep Mahato wrote:
+> Hi,
+>   I am trying to cross compile LTP using NDK toolchain for Android . while executing the "make all" I am facing the below error.
+> 
+> pcb-msandeep:/u/ltp14032012/ltp-full-20120104# make all
+> make -C "lib" \
+>                 -f "/u/ltp14032012/ltp-full-20120104/lib/Makefile" all
+> make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/lib'
+> make[1]: Nothing to be done for `all'.
+> make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/lib'
+> make -C "pan" \
+>                 -f "/u/ltp14032012/ltp-full-20120104/pan/Makefile" all
+> make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/pan'
+> /u/ltp14032012/ltp-full-20120104/pan/Makefile:43: ltp-scanner will not be built because a working copy of lex was not found
+> make[1]: Nothing to be done for `all'.
+> make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/pan'
+> make -C "utils" \
+>                 -f "/u/ltp14032012/ltp-full-20120104/utils/Makefile" all
+> make[1]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils'
+> make[2]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark'
+> make[3]: Entering directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark/ebizzy-0.3'
+> arm-linux-androideabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../../../include -I../../../include   -L../../../lib  ebizzy.c   -lpthread -o ebizzy
+> /usr/local/android-ndk-r7/my-android-toolchain/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/bin/ld: cannot find -lpthread
+> collect2: ld returned 1 exit status
+> make[3]: *** [ebizzy] Error 1
+> make[3]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark/ebizzy-0.3'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils/benchmark'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/u/ltp14032012/ltp-full-20120104/utils'
+> make: *** [utils-all] Error 2
+> 
+> Can anybody please tell me why this "cannot find -lpthread" error is coming and how to resolve that.
+> 
 
-...
+bionic (the Android C runtime library) does provide pthreads into libc,
+so you don't need to link against libpthread.
 
-> Is this version ok for you, or there are any other comments?
+> 
+> Regards
+> Sandeep
+> 
 
-I meet some `DOS line endings` errors when I am trying to merge this
-patch. Could you double check your patch with checkpatch.pl from kernel
-source tree? (or my mail client is broken :-(...
+cheers,
+carmelo
 
-Thanks,
-Caspar
+> SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
+> Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+> 
+> ------------------------------------------------------------------------------
+> This SF email is sponsosred by:
+> Try Windows Azure free for 90 days Click Here 
+> http://p.sf.net/sfu/sfd2d-msazure
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
