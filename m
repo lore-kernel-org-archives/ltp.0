@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1S4veU-0003Py-43
-	for ltp-list@lists.sourceforge.net; Tue, 06 Mar 2012 14:46:10 +0000
-Received: from mail-tul01m020-f175.google.com ([209.85.214.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S4veO-00011d-N7
-	for ltp-list@lists.sourceforge.net; Tue, 06 Mar 2012 14:46:10 +0000
-Received: by obqv19 with SMTP id v19so8261190obq.34
+	(envelope-from <caspar@casparzhang.com>) id 1S9umx-0007xQ-OX
+	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:51:31 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1S9ums-0005mV-71
+	for ltp-list@lists.sourceforge.net; Tue, 20 Mar 2012 08:51:31 +0000
+Received: by dado14 with SMTP id o14so12313668dad.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 06 Mar 2012 06:45:59 -0800 (PST)
+	Tue, 20 Mar 2012 01:51:20 -0700 (PDT)
+Message-ID: <4F6844B0.2090605@casparzhang.com>
+Date: Tue, 20 Mar 2012 16:49:52 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-In-Reply-To: <1331029739-32353-1-git-send-email-markos.chandras@imgtec.com>
-References: <1331029739-32353-1-git-send-email-markos.chandras@imgtec.com>
-Date: Tue, 6 Mar 2012 06:45:59 -0800
-Message-ID: <CAGH67wTM0b+USqri2yCpUOcnKi2ma7OamuOM81dRP5YGCm6poA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] runltp: Remove excess quotes from final message
+References: <1328775194-10631-1-git-send-email-caspar@casparzhang.com>
+	<1328793121-20852-1-git-send-email-caspar@casparzhang.com>
+	<33516012.post@talk.nabble.com>
+In-Reply-To: <33516012.post@talk.nabble.com>
+Subject: Re: [LTP] [PATCH v4] safe_macros: add SAFE_STRTOL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,53 +29,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <markos.chandras@imgtec.com>
+To: Gopal Kalita <gopal.kalita@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Mar 6, 2012 at 2:28 AM, Markos Chandras
-<markos.chandras@imgtec.com> wrote:
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
-> =A0runltp | =A0 =A06 +++---
-> =A01 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/runltp b/runltp
-> index 4ef8b38..fc3515b 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -948,11 +948,11 @@ main()
-> =A0 =A0 {
-> =A0 =A0 cat <<-EOF >&1
->
-> - =A0 =A0 =A0 ###########################################################=
-####"
-> + =A0 =A0 =A0 ###########################################################=
-####
->
-> - =A0 =A0 =A0 =A0 =A0 =A0Done executing testcases."
-> + =A0 =A0 =A0 =A0 =A0 =A0Done executing testcases.
-> =A0 =A0 =A0 =A0 =A0 =A0 LTP Version: =A0$version_date
-> - =A0 =A0 =A0 ###########################################################=
-####"
-> + =A0 =A0 =A0 ###########################################################=
-####
->
-> =A0 =A0 =A0 =A0EOF
-> =A0 =A0 }
-
-Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
-
----------------------------------------------------------------------------=
----
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDMvMTYvMjAxMiAwNTo1OCBQTSwgR29wYWwgS2FsaXRhIHdyb3RlOgo+IAo+IEluIHRoZSBm
+aWxlIC0tIGxpYi9zYWZlX21hY3Jvcy5jICwgdGhlIGhlYWRlciBmaWxlIGVycm5vLmggbmVlZHMg
+dG8gYmUKPiBpbmNsdWRlZC4KPiAjaW5jbHVkZSA8ZXJybm8uaD4KPiAKPiBPdGhlcndpc2UsIGl0
+IGdpdmVzIHRoZSBGb2xsb3dpbmcgZXJyb3IgICh3aGlsZSBjb21waWxpbmcpLS0KPiBzYWZlX21h
+Y3Jvcy5jOiBJbiBmdW5jdGlvbiDigJhzYWZlX3N0cnRvbOKAmToKPiBzYWZlX21hY3Jvcy5jOjM1
+MDogZXJyb3I6IOKAmGVycm5v4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0
+aW9uKQo+IHNhZmVfbWFjcm9zLmM6MzUwOiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlm
+aWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQo+IHNhZmVfbWFjcm9zLmM6MzUwOiBlcnJvcjogZm9y
+IGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbi4pCj4gc2FmZV9tYWNyb3MuYzozNTI6IGVycm9y
+OiDigJhFUkFOR0XigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4g
+CgpIaSwgdGhpcyBzaG91bGQgaGF2ZSBiZWVuIGZpeGVkIGluIGNvbW1pdCA5YWYwYmQ3YgoKVGhh
+bmtzLApDYXNwYXIKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGIGVtYWlsIGlzIHNwb25z
+b3NyZWQgYnk6ClRyeSBXaW5kb3dzIEF6dXJlIGZyZWUgZm9yIDkwIGRheXMgQ2xpY2sgSGVyZSAK
+aHR0cDovL3Auc2YubmV0L3NmdS9zZmQyZC1tc2F6dXJlCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vbHRwLWxpc3QK
