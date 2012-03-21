@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S4UcK-0001Zp-7S
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:54:08 +0000
-Received: from mail-pz0-f46.google.com ([209.85.210.46])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S4UcE-0000YF-Jg
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 09:54:08 +0000
-Received: by dajr28 with SMTP id r28so6165621daj.33
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 05 Mar 2012 01:53:56 -0800 (PST)
-Message-ID: <4F548CFC.8040704@casparzhang.com>
-Date: Mon, 05 Mar 2012 17:53:00 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SAI3X-0008RE-BZ
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 09:42:11 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SAI3T-0001qG-5b
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 09:42:11 +0000
+Message-ID: <4F69A24D.6030903@redhat.com>
+Date: Wed, 21 Mar 2012 17:41:33 +0800
+From: ZhoupingLiu <zliu@redhat.com>
 MIME-Version: 1.0
-References: <1329994678-10121-1-git-send-email-filippo.arcidiacono@st.com>
-	<4f50dbc8.a868320a.04b0.03b4SMTPIN_ADDED@mx.google.com>
-	<4F547158.7050501@casparzhang.com>
-	<4f5487be.50640e0a.6a60.4e49SMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4f5487be.50640e0a.6a60.4e49SMTPIN_ADDED@mx.google.com>
-Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase the
- max [us]time increment
+References: <1332257989-22829-1-git-send-email-salvatore.cro@st.com>
+In-Reply-To: <1332257989-22829-1-git-send-email-salvatore.cro@st.com>
+Subject: Re: [LTP] [PATCH] setrlimit01: wait for all children to exit in
+	test3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,58 +28,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Filippo ARCIDIACONO <filippo.arcidiacono@st.com>
+To: Salvatore CRO' <salvatore.cro@st.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 03/05/2012 05:30 PM, Filippo ARCIDIACONO wrote:
-> 
-> 
->> -----Original Message-----
->> From: Caspar Zhang [mailto:caspar@casparzhang.com]
->> Sent: Monday, March 05, 2012 8:55 AM
->> To: Filippo ARCIDIACONO
->> Cc: ltp-list@lists.sourceforge.net
->> Subject: Re: [LTP] [PATCH v2] getrusage04: add opportunity to increase
->> the max [us]time increment
->>
->> On 03/02/2012 10:39 PM, Filippo ARCIDIACONO wrote:
->>>> -----Original Message-----
->>>> From: Filippo ARCIDIACONO [mailto:filippo.arcidiacono@st.com]
->>>> Sent: Thursday, February 23, 2012 11:58 AM
->>>> To: ltp-list@lists.sourceforge.net
->>>> Cc: Filippo Arcidiacono; Salvatore Cro
->>>> Subject: [PATCH v2] getrusage04: add opportunity to increase the max
->>>> [us]time increment
->>>>
->>>> On slow systems it could be needed to increase the max value
->> [us]time
->>>> increment beetween two getrusage calls.
->>>>
->>>> Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
->>>> Signed-off-by: Salvatore Cro <salvatore.cro@st.com>
->>>> ---
->>
->> ...
->>
->>> Is this version ok for you, or there are any other comments?
->>
->> I meet some `DOS line endings` errors when I am trying to merge this
->> patch. Could you double check your patch with checkpatch.pl from kernel
->> source tree? (or my mail client is broken :-(...
-> 
-> I checked the patch with checkpatch.pl and no issue are raised.
-> I sent the patch by means of "git send-email".
+On 03/20/2012 11:39 PM, Salvatore CRO' wrote:
+> In test3, parent just wait for one child to exit but it
+> actually has 10.
+hi, Salvatore
 
-Committed. Thanks.
+yes, you are right, but your patch didn't resolve the issue completely.
+comments in-line.
 
-Caspar
+> As it could happen there may be other children around that
+> didn't get yet the chance to exit, they will get signaled
+> by ltp-pan (SIGTERM) and pollute the output of subsequent
+> test (setrlimit02).
+> Parent definitely needs to wait for all children to exit.
+>
+> Signed-off-by: Salvatore Cro<salvatore.cro@st.com>
+> ---
+>   testcases/kernel/syscalls/setrlimit/setrlimit01.c |    2 +-
+>   1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+> index ac32450..430835c 100644
+> --- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+> @@ -267,7 +267,7 @@ void test3()
+>   			exit(0);
+>   		}
+>   	}
+> -	waitpid(pid,&status, 0);
+> +	while(wait(&status)>  0) { /* no-op */ ; }
+>   	if (WEXITSTATUS(status) != 0) {
+>   		tst_resm(TFAIL, "RLIMIT_NPROC functionality is not correct");
+>   	} else {
+if one child exit unexpectedly, e.g: exit(9);
+the case can't catch it. how about this patch set:
+
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c 
+b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index ac32450..ec3e54e 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -226,6 +226,8 @@ void test2()
+   */
+  void test3()
+  {
++       int flag = 0;
++
+         if (getrlimit(RLIMIT_NPROC, &save_rlim) < 0) {
+                 tst_brkm(TBROK, cleanup, "getrlimit failed, errno: %d", 
+errno);
+         }
+@@ -267,12 +269,16 @@ void test3()
+                         exit(0);
+                 }
+         }
+-       waitpid(pid, &status, 0);
+-       if (WEXITSTATUS(status) != 0) {
+-               tst_resm(TFAIL, "RLIMIT_NPROC functionality is not 
+correct");
+-       } else {
+-               tst_resm(TPASS, "RLIMIT_NPROC functionality is correct");
++       while (wait(&status) > 0) {
++               if (WEXITSTATUS(status) != 0) {
++                       tst_resm(TFAIL,
++                           "RLIMIT_NPROC functionality is not correct");
++                       flag = 1;
++               }
+         }
++
++       if (flag == 0)
++               tst_resm(TPASS, "RLIMIT_NPROC functionality is correct");
+  }
+
+  /*
+
 
 ------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
