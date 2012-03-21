@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S63pS-0003uG-LG
-	for ltp-list@lists.sourceforge.net; Fri, 09 Mar 2012 17:42:10 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S63pO-00085W-Rb
-	for ltp-list@lists.sourceforge.net; Fri, 09 Mar 2012 17:42:10 +0000
-Received: by pbcum15 with SMTP id um15so2886844pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 09 Mar 2012 09:42:00 -0800 (PST)
-Message-ID: <4F5A40A7.1080700@casparzhang.com>
-Date: Sat, 10 Mar 2012 01:40:55 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SAHC7-0003gn-1z
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 08:46:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SAHC1-0007cE-8k
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 08:46:59 +0000
+Message-ID: <4F69953D.5060007@cn.fujitsu.com>
+Date: Wed, 21 Mar 2012 16:45:49 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1331282781-31469-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1331282781-31469-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH 2/2] get_mempolicy: enable libnuma API == 2
+References: <4F6310E3.2000403@cn.fujitsu.com>
+	<1332319408-18331-1-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1332319408-18331-1-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v5] aio_read:8-1.c: Forget initializing struct
+ aiocb before using it
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,29 +30,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/09/2012 04:46 PM, Caspar Zhang wrote:
+On 03/21/2012 04:43 PM, Peng Haitao wrote:
+
+> There are 2 changes in this patch.
+>  1. Initialize the aiocb struct before using it.
+>  2. If Prioritized Input and Output option is supported, submit the
+>     aiocb with invalid aio_reqprio, else return untested.
 > 
-> This patch enables get_mempolicy01 test when libnuma API version is 2.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+
+thanks Peng.
+
+ACK.
+
 > ---
->  .../syscalls/get_mempolicy/get_mempolicy01.c       |   73 +++++++++++++-------
->  1 files changed, 47 insertions(+), 26 deletions(-)
+>  .../conformance/interfaces/aio_read/8-1.c               |   13 +++++++------
+>  .../conformance/interfaces/aio_write/6-1.c              |   15 ++++++++-------
+>  2 files changed, 15 insertions(+), 13 deletions(-)
 > 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
+> index 8054eeb..ea0538e 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
+> @@ -14,7 +14,8 @@
+>   *
+>   * method:
+>   *
+> - *	- fill in an aiocb with a NULL aio_buf
+> + *	- if Prioritized Input and Output option is supported, fill in an
+> + *	  aiocb with invalid aio_reqprio.
+>   *	- call aio_read
+>   *	- check aio_read return value
+>   */
+> @@ -41,11 +42,11 @@ int main()
+>  	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+>  		return PTS_UNSUPPORTED;
+>  
+> -	/* submit a request with a NULL buffer */
+> -	aiocb.aio_fildes = 0;
+> -	aiocb.aio_buf = NULL;
+> -	aiocb.aio_nbytes = 0;
+> -	aiocb.aio_offset = 0;
+> +	if (sysconf(_SC_PRIORITIZED_IO) < 200112L)
+> +		return PTS_UNTESTED;
+> +
+> +	memset(&aiocb, 0, sizeof(struct aiocb));
+> +	aiocb.aio_reqprio = -1;
+>  
+>  	if (aio_read(&aiocb) != -1) {
+>  		printf(TNAME " aio_read() should fail!\n");
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
+> index 98b8d0d..744c82c 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
+> @@ -14,7 +14,8 @@
+>   *
+>   * method:
+>   *
+> - *	- fill in an aiocb with a NULL aio_buf
+> + *	- if Prioritized Input and Output option is supported, fill in an
+> + *	  aiocb with invalid aio_reqprio
+>   *	- call aio_write
+>   *	- check aio_write return value
+>   *
+> @@ -42,11 +43,11 @@ int main()
+>  	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+>  		return PTS_UNSUPPORTED;
+>  
+> -	/* submit a request with a NULL buffer */
+> -	aiocb.aio_fildes = 0;
+> -	aiocb.aio_buf = NULL;
+> -	aiocb.aio_nbytes = 0;
+> -	aiocb.aio_offset = 0;
+> +	if (sysconf(_SC_PRIORITIZED_IO) < 200112L)
+> +		return PTS_UNTESTED;
+> +
+> +	memset(&aiocb, 0, sizeof(struct aiocb));
+> +	aiocb.aio_reqprio = -1;
+>  
+>  	if (aio_write(&aiocb) != -1)
+>  	{
+> @@ -62,4 +63,4 @@ int main()
+>  
+>  	printf ("Test PASSED\n");
+>  	return PTS_PASS;
+> -}
+> \ No newline at end of file
+> +}
 
-FYI, updated the patch and tested in RHEL5 and RHEL6, both libnuma v1
-and v2 work well. Also fixed mbind01, both patches committed.
 
-Thanks,
-Caspar
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
