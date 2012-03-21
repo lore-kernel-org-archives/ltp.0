@@ -2,17 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1S9Zpe-0005DL-MV
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 10:28:54 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1SAIh4-0002vk-DU
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 10:23:02 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S9Zpa-0006nu-Gk
-	for ltp-list@lists.sourceforge.net; Mon, 19 Mar 2012 10:28:54 +0000
-From: Zhouping Liu <zliu@redhat.com>
-Date: Mon, 19 Mar 2012 18:28:15 +0800
-Message-Id: <2fb866f36188a32158e9cb402adb5d59d9df27d2.1332151930.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v3] mem/oom: avoid unexpected error when no memcg swap
-	accounting
+	id 1SAIgz-0000lJ-Ld
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 10:23:02 +0000
+Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2LAMot1009074
+	for <ltp-list@lists.sourceforge.net>; Wed, 21 Mar 2012 18:22:51 +0800
+Message-ID: <4F69AC25.5020301@cn.fujitsu.com>
+Date: Wed, 21 Mar 2012 18:23:33 +0800
+From: lidan <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH]testfrmw:disable thread cancelability while output is
+ running
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,124 +26,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>, Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>, Cai Qian <caiqian@redhat.com>
+To: ltp-list@lists.sourceforge.net
 
-Since commit http://git.kernel.org/linus/a42c390cfa0c,
-which added an option to control memcg swap, when kernel
-neither set CGROUP_MEM_RES_CTLR_SWAP_ENABLED nor add
-'swapaccount=1' kernel parameter, that indicates memcg swap
-accounting is disabled, it will have no such file:
-memory.memsw.*, then oom03 & oom04 cases will fail.
+Function output can be canceled by pthread_cancel(), which,
+maybe, leads to a deadlock as it calls pthread_mutex_lock().
+That's catched in case "pthread_join/4-1.c".
 
-The patch fixed it: removed memsw cases when memcg swap
-accounting is disabled, and added a TCONF:
-tst_resm(TCONF,"memcg swap accounting is disabled");
+So,disable thread cancelability until output finishes.
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
-Reviewed-by: Caspar Zhang <czhang@redhat.com>
 
-v2 -> v3: added MEMCG_SW_LIMIT to instead of
-          'MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes"'
-          and updated TINFO to TCONF, which made more sense.
+Signed-off-by: LIDAN<li.dan@cn.fujitsu.com>
 ---
- testcases/kernel/mem/include/mem.h |    1 +
- testcases/kernel/mem/oom/oom03.c   |   12 ++++++++++--
- testcases/kernel/mem/oom/oom04.c   |   25 ++++++++++++++++++++-----
- 3 files changed, 31 insertions(+), 7 deletions(-)
+.../conformance/interfaces/testfrmw/testfrmw.c | 4 ++++
+1 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 00bb139..4c568cd 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -50,6 +50,7 @@ void ksm_usage(void);
- #define CPATH_NEW		CPATH "/1"
- #define MEMCG_PATH		"/dev/cgroup"
- #define MEMCG_PATH_NEW		MEMCG_PATH "/1"
-+#define MEMCG_SW_LIMIT		MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes"
- #if HAVE_SYS_EVENTFD_H
- #define PATH_OOMCTRL		MEMCG_PATH_NEW "/memory.oom_control"
- #define PATH_EVTCTRL		MEMCG_PATH_NEW "/cgroup.event_control"
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index b90d4d7..6de68b0 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -66,8 +66,16 @@ int main(int argc, char *argv[])
- 		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
- 		testoom(0, 0, 0);
- 
--		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
--		testoom(0, 1, 0);
-+		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-+			if (errno == ENOENT)
-+				tst_resm(TCONF,
-+				    "memcg swap accounting is disabled");
-+			else
-+				tst_brkm(TBROK|TERRNO, cleanup, "access");
-+		} else {
-+			write_file(MEMCG_SW_LIMIT, mem);
-+			testoom(0, 1, 0);
-+		}
- 	}
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index fb35f96..00030b9 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
- {
- 	char *msg;
- 	int lc;
-+	int swap_acc_on = 1;
- 	long nodes[MAXNODES];
- 	char buf[BUFSIZ], mem[BUFSIZ];
- 
-@@ -73,19 +74,33 @@ int main(int argc, char *argv[])
- 		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
- 		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
- 
-+		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-+			if (errno == ENOENT) {
-+				tst_resm(TCONF,
-+				    "memcg swap accounting is disabled");
-+				swap_acc_on = 0;
-+			} else
-+				tst_brkm(TBROK|TERRNO, cleanup, "access");
-+		}
-+
- 		tst_resm(TINFO, "process mempolicy.");
- 		testoom(1, 0, 1);
- 
--		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
--		testoom(1, 1, 1);
-+		if (swap_acc_on) {
-+			write_file(MEMCG_SW_LIMIT, mem);
-+			testoom(1, 1, 1);
-+		}
- 
- 		tst_resm(TINFO, "process cpuset.");
- 
--		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", "-1");
-+		if (swap_acc_on)
-+			write_file(MEMCG_SW_LIMIT, "-1");
- 		testoom(0, 0, 1);
- 
--		write_file(MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes", mem);
--		testoom(0, 1, 1);
-+		if (swap_acc_on) {			
-+			write_file(MEMCG_SW_LIMIT, mem);
-+			testoom(0, 1, 1);
-+		}
- 	}
- 	cleanup();
- 	tst_exit();
--- 
-1.7.7.6
+diff --git
+a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
+b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
+index 034faa9..fb54ee9 100644
+---
+a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
++++
+b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
+@@ -28,6 +28,7 @@
+
+#include <time.h>
+#include <sys/types.h>
++#include <pthread.h>
+
+/* We use a mutex to avoid conflicts in traces */
+static pthread_mutex_t m_trace = PTHREAD_MUTEX_INITIALIZER;
+@@ -43,7 +44,9 @@ void output(char *string, ...)
+char *ts = "[??:??:??]";
+struct tm *now;
+time_t nw;
++ int oldstate;
+
++ pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,&oldstate);
+pthread_mutex_lock(&m_trace);
+nw = time(NULL);
+now = localtime(&nw);
+@@ -56,6 +59,7 @@ void output(char *string, ...)
+vprintf(string, ap);
+va_end(ap);
+pthread_mutex_unlock(&m_trace);
++ pthread_setcancelstate(oldstate,NULL);
+}
+
+void output_fini(void)
+--
+1.7.1
 
 
 ------------------------------------------------------------------------------
