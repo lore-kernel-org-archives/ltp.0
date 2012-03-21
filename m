@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S83Xu-0005K0-I2
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 05:48:18 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SAKfA-00084I-9l
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 12:29:12 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S83Xr-0004Tv-Q1
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 05:48:18 +0000
-Message-ID: <4F6180BB.4020800@cn.fujitsu.com>
-Date: Thu, 15 Mar 2012 13:40:11 +0800
+	id 1SAKf4-0006sC-60
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 12:29:12 +0000
+Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2LCSw7f013003
+	for <ltp-list@lists.sourceforge.net>; Wed, 21 Mar 2012 20:28:58 +0800
+Message-ID: <4F69C951.10101@cn.fujitsu.com>
+Date: Wed, 21 Mar 2012 20:28:01 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4F6169B5.9020205@casparzhang.com>
-	<1331785975-20452-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<4F617C80.1080604@redhat.com>
-In-Reply-To: <4F617C80.1080604@redhat.com>
-Subject: Re: [LTP] [PATCH V4] readlink03: fix return value for the syscall
- readlink()
+References: <4F69AC25.5020301@cn.fujitsu.com>
+In-Reply-To: <4F69AC25.5020301@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]testfrmw:disable thread cancelability while output
+ is running
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -31,75 +32,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, jburke@redhat.com
+To: lidan <li.dan@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/15/2012 01:22 PM, Caspar Zhang wrote:
+On 03/21/2012 06:23 PM, lidan wrote:
 
-> On 03/15/2012 12:32 PM, Wanlong Gao wrote:
->> Since commit http://git.kernel.org/linus/65cfc672
->> which added O_PATH support to the *at() calls,
->> the error return for readlink/readlinkat
->> for the empty pathname has switched from
->> ENOENT to EINVAL. And this patch merged to linux v2.6.39,
->> So LTP commit https://github.com/linux-test-project/ltp/commit/0cc7514
->> fix this with the kernel version v2.6.39 compared.
->>
->> But recently, commit http://git.kernel.org/linus/1fa1e7f6
->> which ensure we return ENOENT for the empty pathname
->> for normal lookups.
->>
->> Now, the patch whitch switch the return value back again
->> is already queued for 3.0 and 3.1 stable release.
->>
->> So, if the return value is EINVAL for empty pathname,
->> it may be a kernel bug, so we needn't to check the kernel
->> version but return the "kernel bug" warning  to LTP the users.
->>
->> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
->> Acked-by: Jan Stancek <jstancek@redhat.com>
+> Function output can be canceled by pthread_cancel(), which,
+> maybe, leads to a deadlock as it calls pthread_mutex_lock().
+> That's catched in case "pthread_join/4-1.c".
 > 
-> Acked-by: Caspar Zhang <caspar@casparzhang.com>
+> So,disable thread cancelability until output finishes.
 
 
-pushed, thanks for your review Caspar.
+The concept seems OK, but you should follow the coding style
+and patch format.
 
-Regards,
+
+Thanks,
 Wanlong Gao
 
 > 
->> ---
->>  testcases/kernel/syscalls/readlink/readlink03.c |    9 ++++-----
->>  1 file changed, 4 insertions(+), 5 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/readlink/readlink03.c b/testcases/kernel/syscalls/readlink/readlink03.c
->> index 370bf7d..5ae8513 100644
->> --- a/testcases/kernel/syscalls/readlink/readlink03.c
->> +++ b/testcases/kernel/syscalls/readlink/readlink03.c
->> @@ -173,11 +173,6 @@ int main(int ac, char **av)
->>  				buf_size = sizeof(buffer);
->>  			}
->>  
->> -			if (strncmp(test_desc, "Symlink Pathname is empty", 25) == 0) {
->> -				if ((tst_kvercmp(2, 6, 39)) >= 0)
->> -					Test_cases[i].exp_errno = EINVAL;
->> -			}
->> -
->>  			/*
->>  			 * Call readlink(2) to test different test conditions.
->>  			 * verify that it fails with -1 return value and sets
->> @@ -204,6 +199,10 @@ int main(int ac, char **av)
->>  					 "errno=%d, expected errno=%d",
->>  					 test_desc, TEST_ERRNO,
->>  					 Test_cases[i].exp_errno);
->> +				if ((strncmp(test_desc, "Symlink Pathname is empty", 25) == 0) &&
->> +				     TEST_ERRNO == EINVAL)
->> +					tst_resm(TWARN, "It may be a Kernel Bug, see the patch:"
->> +						 "http://git.kernel.org/linus/1fa1e7f6");
->>  			}
->>  		}
->>  	}
 > 
+> Signed-off-by: LIDAN<li.dan@cn.fujitsu.com>
+> ---
+> .../conformance/interfaces/testfrmw/testfrmw.c | 4 ++++
+> 1 files changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git
+> a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
+> index 034faa9..fb54ee9 100644
+> ---
+> a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
+> +++
+> b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
+> @@ -28,6 +28,7 @@
+> 
+> #include <time.h>
+> #include <sys/types.h>
+> +#include <pthread.h>
+> 
+> /* We use a mutex to avoid conflicts in traces */
+> static pthread_mutex_t m_trace = PTHREAD_MUTEX_INITIALIZER;
+> @@ -43,7 +44,9 @@ void output(char *string, ...)
+> char *ts = "[??:??:??]";
+> struct tm *now;
+> time_t nw;
+> + int oldstate;
+> 
+> + pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,&oldstate);
+> pthread_mutex_lock(&m_trace);
+> nw = time(NULL);
+> now = localtime(&nw);
+> @@ -56,6 +59,7 @@ void output(char *string, ...)
+> vprintf(string, ap);
+> va_end(ap);
+> pthread_mutex_unlock(&m_trace);
+> + pthread_setcancelstate(oldstate,NULL);
+> }
+> 
+> void output_fini(void)
+> --
+> 1.7.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> This SF email is sponsosred by:
+> Try Windows Azure free for 90 days Click Here 
+> http://p.sf.net/sfu/sfd2d-msazure
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
 
 
