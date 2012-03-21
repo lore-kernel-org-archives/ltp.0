@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S7JoI-0007lP-Rl
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:10 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S7JoI-0008Uq-05
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 04:58:10 +0000
-Received: by dado14 with SMTP id o14so271895dad.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 12 Mar 2012 21:58:04 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 13 Mar 2012 12:56:34 +0800
-Message-Id: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.4"
-Subject: [LTP] [PATCH 00/11] hugetlb multiple fixes
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1SAH9v-0005tj-5n
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 08:44:43 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SAH9p-0007VM-1W
+	for ltp-list@lists.sourceforge.net; Wed, 21 Mar 2012 08:44:43 +0000
+From: Peng Haitao <penght@cn.fujitsu.com>
+Date: Wed, 21 Mar 2012 16:43:28 +0800
+Message-Id: <1332319408-18331-1-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <4F6310E3.2000403@cn.fujitsu.com>
+References: <4F6310E3.2000403@cn.fujitsu.com>
+Subject: [LTP] [PATCH v5] aio_read:8-1.c: Forget initializing struct aiocb
+	before using it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,99 +24,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-This patchset makes the following changes:
-
-01 - 08: set and restore nr_hugepages values automatically in 
-         hugeshm* tests.
-
-09,11  : code cleanups, remove unused files and functions
-
-10     : fix a hugeshmget03 bug.
-
-patchset has been tested on my system, both with large free memory 
-and tight memory environment.
-
-Caspar Zhang (11):
-  hugetlb/hugeshmat: cleanup codes
-  hugetlb/hugeshmat: set nr_hugepages in tests
-  hugetlb/hugeshmctl: cleanup codes
-  hugetlb/hugeshmctl: set nr_hugepages in tests
-  hugetlb/hugeshmdt: cleanup codes
-  hugetlb/hugeshmdt: set nr_hugepages in tests
-  hugetlb/hugeshmget: cleanup codes
-  hugetlb/hugeshmget: set nr_hugepages in tests
-  hugetlb/lib: cleanup codes
-  hugetlb/hugeshmget03: fix broken testcase
-  libltp: remove system_specific_hugepages_info
-
- include/system_specific_hugepages_info.h           |   30 --
- lib/system_specific_hugepages_info.c               |   93 ------
- testcases/kernel/mem/hugetlb/Makefile.inc          |   16 +-
- testcases/kernel/mem/hugetlb/hugemmap/Makefile     |    1 -
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |   19 +-
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |    5 +-
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |    1 -
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |   24 +-
- testcases/kernel/mem/hugetlb/hugeshmat/Makefile    |    2 +-
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |  173 ++++-------
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |  167 ++++-------
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |  171 ++++-------
- testcases/kernel/mem/hugetlb/hugeshmctl/Makefile   |    2 +-
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |  327 ++++++++------------
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |  150 ++++------
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   |  192 +++++-------
- testcases/kernel/mem/hugetlb/hugeshmdt/Makefile    |    2 +-
- .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c     |  169 ++++------
- testcases/kernel/mem/hugetlb/hugeshmget/Makefile   |    2 +-
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |  124 +++-----
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |  164 ++++------
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |  160 ++++------
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   |  165 ++++-------
- testcases/kernel/mem/hugetlb/lib/ipcmsg.h          |   58 ----
- testcases/kernel/mem/hugetlb/lib/ipcsem.h          |   60 ----
- testcases/kernel/mem/hugetlb/lib/ipcshm.h          |   33 ++-
- testcases/kernel/mem/hugetlb/lib/libipc.c          |  143 ++-------
- 27 files changed, 823 insertions(+), 1630 deletions(-)
- delete mode 100644 include/system_specific_hugepages_info.h
- delete mode 100644 lib/system_specific_hugepages_info.c
- delete mode 100644 testcases/kernel/mem/hugetlb/lib/ipcmsg.h
- delete mode 100644 testcases/kernel/mem/hugetlb/lib/ipcsem.h
-
--- 
-1.7.8.4
-
-
-
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com, yanegomi@gmail.com
+Cc: ltp-list@lists.sourceforge.net
+
+There are 2 changes in this patch.
+ 1. Initialize the aiocb struct before using it.
+ 2. If Prioritized Input and Output option is supported, submit the
+    aiocb with invalid aio_reqprio, else return untested.
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ .../conformance/interfaces/aio_read/8-1.c               |   13 +++++++------
+ .../conformance/interfaces/aio_write/6-1.c              |   15 ++++++++-------
+ 2 files changed, 15 insertions(+), 13 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
+index 8054eeb..ea0538e 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/8-1.c
+@@ -14,7 +14,8 @@
+  *
+  * method:
+  *
+- *	- fill in an aiocb with a NULL aio_buf
++ *	- if Prioritized Input and Output option is supported, fill in an
++ *	  aiocb with invalid aio_reqprio.
+  *	- call aio_read
+  *	- check aio_read return value
+  */
+@@ -41,11 +42,11 @@ int main()
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
+ 
+-	/* submit a request with a NULL buffer */
+-	aiocb.aio_fildes = 0;
+-	aiocb.aio_buf = NULL;
+-	aiocb.aio_nbytes = 0;
+-	aiocb.aio_offset = 0;
++	if (sysconf(_SC_PRIORITIZED_IO) < 200112L)
++		return PTS_UNTESTED;
++
++	memset(&aiocb, 0, sizeof(struct aiocb));
++	aiocb.aio_reqprio = -1;
+ 
+ 	if (aio_read(&aiocb) != -1) {
+ 		printf(TNAME " aio_read() should fail!\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
+index 98b8d0d..744c82c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/6-1.c
+@@ -14,7 +14,8 @@
+  *
+  * method:
+  *
+- *	- fill in an aiocb with a NULL aio_buf
++ *	- if Prioritized Input and Output option is supported, fill in an
++ *	  aiocb with invalid aio_reqprio
+  *	- call aio_write
+  *	- check aio_write return value
+  *
+@@ -42,11 +43,11 @@ int main()
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
+ 
+-	/* submit a request with a NULL buffer */
+-	aiocb.aio_fildes = 0;
+-	aiocb.aio_buf = NULL;
+-	aiocb.aio_nbytes = 0;
+-	aiocb.aio_offset = 0;
++	if (sysconf(_SC_PRIORITIZED_IO) < 200112L)
++		return PTS_UNTESTED;
++
++	memset(&aiocb, 0, sizeof(struct aiocb));
++	aiocb.aio_reqprio = -1;
+ 
+ 	if (aio_write(&aiocb) != -1)
+ 	{
+@@ -62,4 +63,4 @@ int main()
+ 
+ 	printf ("Test PASSED\n");
+ 	return PTS_PASS;
+-}
+\ No newline at end of file
++}
+-- 
+1.7.10.rc1
+
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
---------------1.7.8.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.4--
