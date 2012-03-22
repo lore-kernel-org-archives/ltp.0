@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SDQJs-0004H2-2d
-	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 01:08:00 +0000
-Received: from mail-vb0-f47.google.com ([209.85.212.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SDQJr-0003LF-G8
-	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 01:08:00 +0000
-Received: by vbbfr13 with SMTP id fr13so139416vbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 29 Mar 2012 18:07:54 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1SAdEz-00072S-8e
+	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 08:19:25 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SAdEs-0001MT-SM
+	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 08:19:25 +0000
+Message-ID: <4F6AE07A.4050509@cn.fujitsu.com>
+Date: Thu, 22 Mar 2012 16:19:06 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1333069515-4899-1-git-send-email-penght@cn.fujitsu.com>
-References: <CAGH67wR9ZGjypQbE_oWb1pM=U4=oetNFrberWD66sZj4o9Lm3g@mail.gmail.com>
-	<1333069515-4899-1-git-send-email-penght@cn.fujitsu.com>
-Date: Thu, 29 Mar 2012 18:07:54 -0700
-Message-ID: <CAGH67wQ9xgA2f_t=524My2uzyeRnuMWTyZfDQQU_zkMhuca8Vg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v2] cron02: fix a bug of /etc/init.d/crond is
-	nonexistent
+References: <20120322132353.AB97.38390934@jp.panasonic.com>
+In-Reply-To: <20120322132353.AB97.38390934@jp.panasonic.com>
+Subject: Re: [LTP] [PATCH] mq_timedreceive: 10-2.c: check timeout error
+ rather than invalid parameter error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,63 +25,113 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Akira Takeuchi <takeuchi.akr@jp.panasonic.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Mar 29, 2012 at 6:05 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
-> /etc/init.d/crond is nonexistent in fedora16, so should use systemctl.
->
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+Akira Takeuchi said the following on 2012-3-22 12:23:
+> 10-2.c now passes the invalid parameter to mq_timedreceive by specifying
+> a negative value to nanoseconds field, and checks whether EINVAL is not
+> returned when a message can be removed from the queue immediately.
+> 
+> However, this may not be a appropriate testing of mq_timedreceive.
+> POSIX spec of mq_timedreceive says:
+>     The validity of the abstime parameter need not be checked
+>     if a message can be removed from the message queue immediately.
+> 
+> This is open for interpretation of POSIX spec, and it was argued about in LKML.
+>     https://lkml.org/lkml/2012/3/14/589
+> 
+> The conclusion in LKML was that what POSIX spec says is "you don't *have*
+> to check validity". That is, it is allowed to check the validity.
+> 
+
+Yeah.
+
+> On the other hand, actually, timeout error should not be returned when message
+> can be performed immediately.
+> 
+
+POSIX spec does not say this, so I think it is not necessary to check timeout error.
+
+> Therefore, I modify the testcase to check timeout error rather than invalid
+> parameter error.
+> 
+> Signed-off-by: Akira Takeuchi <takeuchi.akr@jp.panasonic.com>
+> Signed-off-by: Kiyoshi Owada <owada.kiyoshi@jp.panasonic.com>
 > ---
-> =A0testcases/commands/cron/cron02 | =A0 14 ++++++++++++++
-> =A01 file changed, 14 insertions(+)
->
-> diff --git a/testcases/commands/cron/cron02 b/testcases/commands/cron/cro=
-n02
-> index 0c05c95..d348936 100755
-> --- a/testcases/commands/cron/cron02
-> +++ b/testcases/commands/cron/cron02
-> @@ -52,12 +52,26 @@ do_setup(){
-> =A0 =A0 =A0 =A0 }
-> =A0 =A0 =A0 =A0 fi
->
-> + =A0 =A0 =A0 # running under systemd?
-> + =A0 =A0 =A0 if command -v systemctl >/dev/null 2>&1; then
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 HAVE_SYSTEMCTL=3Dtrue
-> + =A0 =A0 =A0 else
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 HAVE_SYSTEMCTL=3Dfalse
-> + =A0 =A0 =A0 fi
-> +
-> =A0 =A0 =A0 =A0# restart cron daemon
-> =A0 =A0 =A0 =A0# Red Hat uses crond, SuSE/Other uses cron.
-> =A0 =A0 =A0 =A0if [ -x /etc/init.d/crond ]; then
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/etc/init.d/crond restart
-> =A0 =A0 =A0 =A0elif [ -x /etc/init.d/cron ]; then
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/etc/init.d/cron restart
-> + =A0 =A0 =A0 elif $HAVE_SYSTEMCTL; then
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 for crond in "crond" "cron"; do
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if systemctl is-enabled $cr=
-ond.service >/dev/null 2>&1; then
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 systemctl r=
-estart $crond.service
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 fi
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 done
-> =A0 =A0 =A0 =A0else
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "Could not determine cron init.d scri=
-pt."
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0exit 1
+>  .../conformance/interfaces/mq_timedreceive/10-2.c  |   20 +++++++++-----------
+>  1 files changed, 9 insertions(+), 11 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
+> index 49ee4f2..1cbb5b6 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
+> @@ -8,12 +8,11 @@
+>  
+>  /*
+>   * If the message can be removed from the message queue immedietely,
+> - * the operation will never fail and the validity of abs_timeout
+> - * need not be checked.
+> + * the operation will not fail even if abs_timeout is the past time.
+>   * Test Steps:
+> - * 1. Set the abs_timeout to be invalid, when there is message
+> + * 1. Set the abs_timeout to be a past time, when there is message
+>   *    than can be removed from the message queue immediately.
+> - * 2. The validity of abs_timeout will not be checked.
+> + * 2. Timeout error is not occured.
+>   */
+>  
+>  #include <stdio.h>
+> @@ -27,7 +26,7 @@
+>  #include <errno.h>
+>  #include "posixtest.h"
+>  
+> -#define TEST "10-1"
+> +#define TEST "10-2"
+>  #define FUNCTION "mq_timedreceive"
+>  #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+>  
+> @@ -61,12 +60,11 @@ int main()
+>          }
+>  
+>  	sleep(1); /* wait for a while */
+> -	ts.tv_sec = time(NULL) -1; /* No wait */
+> -	ts.tv_nsec = -1; /* Invalid */
+> +	ts.tv_sec = time(NULL) -1; /* Past time */
+> +	ts.tv_nsec = 0;
+>          if (mq_timedreceive(mqdes, msgrv, BUFFER, &rvprio, &ts) == -1) {
+> -		if (errno == EINVAL)
+> -			printf("FAIL: the validity of abs_timeout "
+> -				"is checked\n");
+> +		if (errno == ETIMEDOUT)
+> +			printf("FAIL: mq_timedreceive returned timeout error\n");
 
-Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
+The lines need not to be added.
+timeout error can be as Unexpected error.
 
----------------------------------------------------------------------------=
----
+-- 
+Best Regards,
+Peng
+
+>  		else
+>  			perror("Unexpected error at mq_timedreceive");
+>  		failure = 1;
+> @@ -94,4 +92,4 @@ int main()
+>  
+>          printf("Test PASSED\n");
+>          return PTS_PASS;
+> -}
+> \ No newline at end of file
+> +}
+
+
+------------------------------------------------------------------------------
 This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here =
-
+Try Windows Azure free for 90 days Click Here 
 http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
