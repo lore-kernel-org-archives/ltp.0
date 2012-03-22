@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S7LHl-0004Ra-Ue
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 06:32:41 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SAhk9-0007QE-SL
+	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 13:07:53 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S7LHk-0005zQ-Rj
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 06:32:41 +0000
-Message-ID: <4F5EE65B.9080707@cn.fujitsu.com>
-Date: Tue, 13 Mar 2012 14:16:59 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SAhk5-0006oq-Tg
+	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 13:07:53 +0000
+Message-ID: <4F6B23E4.6040101@cn.fujitsu.com>
+Date: Thu, 22 Mar 2012 21:06:44 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1331614605-30347-1-git-send-email-caspar@casparzhang.com>
-	<1331614605-30347-3-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1331614605-30347-3-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH 02/11] hugetlb/hugeshmat: set nr_hugepages in tests
+References: <20120322132353.AB97.38390934@jp.panasonic.com>
+In-Reply-To: <20120322132353.AB97.38390934@jp.panasonic.com>
+Subject: Re: [LTP] [PATCH] mq_timedreceive: 10-2.c: check timeout error
+ rather than invalid parameter error
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,57 +29,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Akira Takeuchi <takeuchi.akr@jp.panasonic.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/13/2012 12:56 PM, Caspar Zhang wrote:
+On 03/22/2012 12:23 PM, Akira Takeuchi wrote:
+
+> 10-2.c now passes the invalid parameter to mq_timedreceive by specifying
+> a negative value to nanoseconds field, and checks whether EINVAL is not
+> returned when a message can be removed from the queue immediately.
+> 
+> However, this may not be a appropriate testing of mq_timedreceive.
+> POSIX spec of mq_timedreceive says:
+>     The validity of the abstime parameter need not be checked
+>     if a message can be removed from the message queue immediately.
+> 
+> This is open for interpretation of POSIX spec, and it was argued about in LKML.
+>     https://lkml.org/lkml/2012/3/14/589
+> 
+> The conclusion in LKML was that what POSIX spec says is "you don't *have*
+> to check validity". That is, it is allowed to check the validity.
+> 
+> On the other hand, actually, timeout error should not be returned when message
+> can be performed immediately.
+> 
+> Therefore, I modify the testcase to check timeout error rather than invalid
+> parameter error.
+
+
+pushed, thanks.
+
+Wanlong Gao
 
 > 
-> Like hugemmap tests, this patch enables nr_hugepages set/restore in each
-> test of hugeshmat, so that we don't need to set the values with external
-> commands.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-
-
-Looks good to me.
-
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
+> Signed-off-by: Akira Takeuchi <takeuchi.akr@jp.panasonic.com>
+> Signed-off-by: Kiyoshi Owada <owada.kiyoshi@jp.panasonic.com>
 > ---
->  testcases/kernel/mem/hugetlb/Makefile.inc          |   16 +++++-----
->  .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |   28 +++++++++++++++-----
->  .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |   28 +++++++++++++++-----
->  .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |   26 ++++++++++++++----
->  testcases/kernel/mem/hugetlb/lib/ipcshm.h          |    5 +++
->  testcases/kernel/mem/hugetlb/lib/libipc.c          |    7 ++++-
->  6 files changed, 81 insertions(+), 29 deletions(-)
+>  .../conformance/interfaces/mq_timedreceive/10-2.c  |   20 +++++++++-----------
+>  1 files changed, 9 insertions(+), 11 deletions(-)
 > 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Keep Your Developer Skills Current with LearnDevNow!
-> The most comprehensive online learning library for Microsoft developers
-> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-> Metro Style Apps, more. Free future releases when you subscribe now!
-> http://p.sf.net/sfu/learndevnow-d2d
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
+> index 49ee4f2..1cbb5b6 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/10-2.c
+> @@ -8,12 +8,11 @@
+>  
+>  /*
+>   * If the message can be removed from the message queue immedietely,
+> - * the operation will never fail and the validity of abs_timeout
+> - * need not be checked.
+> + * the operation will not fail even if abs_timeout is the past time.
+>   * Test Steps:
+> - * 1. Set the abs_timeout to be invalid, when there is message
+> + * 1. Set the abs_timeout to be a past time, when there is message
+>   *    than can be removed from the message queue immediately.
+> - * 2. The validity of abs_timeout will not be checked.
+> + * 2. Timeout error is not occured.
+>   */
+>  
+>  #include <stdio.h>
+> @@ -27,7 +26,7 @@
+>  #include <errno.h>
+>  #include "posixtest.h"
+>  
+> -#define TEST "10-1"
+> +#define TEST "10-2"
+>  #define FUNCTION "mq_timedreceive"
+>  #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+>  
+> @@ -61,12 +60,11 @@ int main()
+>          }
+>  
+>  	sleep(1); /* wait for a while */
+> -	ts.tv_sec = time(NULL) -1; /* No wait */
+> -	ts.tv_nsec = -1; /* Invalid */
+> +	ts.tv_sec = time(NULL) -1; /* Past time */
+> +	ts.tv_nsec = 0;
+>          if (mq_timedreceive(mqdes, msgrv, BUFFER, &rvprio, &ts) == -1) {
+> -		if (errno == EINVAL)
+> -			printf("FAIL: the validity of abs_timeout "
+> -				"is checked\n");
+> +		if (errno == ETIMEDOUT)
+> +			printf("FAIL: mq_timedreceive returned timeout error\n");
+>  		else
+>  			perror("Unexpected error at mq_timedreceive");
+>  		failure = 1;
+> @@ -94,4 +92,4 @@ int main()
+>  
+>          printf("Test PASSED\n");
+>          return PTS_PASS;
+> -}
+> \ No newline at end of file
+> +}
 
 
 
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
