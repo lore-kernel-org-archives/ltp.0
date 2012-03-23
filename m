@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1S8TrP-0008MN-NX
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 09:54:11 +0000
-Received: from mail-gy0-f175.google.com ([209.85.160.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1S8TrJ-000261-TO
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 09:54:11 +0000
-Received: by ghbz2 with SMTP id z2so4764539ghb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 16 Mar 2012 02:54:00 -0700 (PDT)
-References: <4F58E36E.5000306@casparzhang.com>
-	<4F594DE2.4040603@cn.fujitsu.com>
-	<4F62EB70.7010400@casparzhang.com>
-In-Reply-To: <4F62EB70.7010400@casparzhang.com>
-Mime-Version: 1.0 (1.0)
-Message-Id: <3985A069-7EF2-4014-9016-E0B2BB9288EE@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Date: Fri, 16 Mar 2012 02:53:54 -0700
-Subject: Re: [LTP] [RFC] make mce-test a submodule
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SB5IG-00017Z-Vm
+	for ltp-list@lists.sourceforge.net; Fri, 23 Mar 2012 14:16:40 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SB5IB-0006O5-AF
+	for ltp-list@lists.sourceforge.net; Fri, 23 Mar 2012 14:16:40 +0000
+Message-ID: <4F6C85B7.4040604@redhat.com>
+Date: Fri, 23 Mar 2012 22:16:23 +0800
+From: ZhoupingLiu <zliu@redhat.com>
+MIME-Version: 1.0
+References: <87ae50f292bc2e82ecdd1fefe2db0dd41d6026a4.1332395878.git.zliu@redhat.com>
+	<4F6B2A08.5070709@cn.fujitsu.com>
+In-Reply-To: <4F6B2A08.5070709@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] mm/tunable: add a new testcase min_free_kbytes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,74 +28,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: "andi.kleen@intel.com" <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>, "ying.huang@intel.com" <ying.huang@intel.com>
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Mar 16, 2012, at 12:27 AM, Caspar Zhang <caspar@casparzhang.com> wrote:
+On 03/22/2012 09:32 PM, Wanlong Gao wrote:
+> On 03/22/2012 02:35 PM, Zhouping Liu wrote:
+>
+>> The case is designed to test min_free_kbytes tunable file.
+>>
+>> The tune is used to control free memory, and system always
+>> reserve min_free_kbytes memory at least.
+>>
+>> Since the tune is not too large or too little, which will
+>> lead to the system hang, so I choose two cases, and test them
+>> on all overcommit_memory policy, at the same time, compare
+>> the current free memory with the tunable value repeatedly.
+>>
+>> a) default min_free_kbytes with all overcommit memory policy
+>> b) half of mem_free with all overcommit memory policy
+>
+> Looks good and test OK to me. thanks,
+>
+> Reviewed-by: Wanlong Gao<gaowanlong@cn.fujitsu.com>
+>
 
-> Hi all, I'll merge this change to master if I don't hear any objections
-> from you by today.
-> 
-> 
-> On 03/09/2012 08:25 AM, Wanlong Gao wrote:
->> On 03/09/2012 12:50 AM, Caspar Zhang wrote:
->> 
->>> Hi Garrett, Andi, and all:
->>> 
->>> When I looked into current LTP tree, I found it a little messy due to
->>> some mce-test stuff, such as
->>> 
->>>  - mce-test docs goes to $TOPDIR/README, and
->>>  - some mce-test files still lying under testcase/mce-test/.
->>> 
->>> I think we need a cleanup for it.
->> 
->> 
->> yes, I think so.
->> 
->>> 
->>> Also an idea comes to my mind, that we can try to make mce-test a
->>> submodule of LTP.
->> 
->> 
->> Not a bad idea.
->> 
->>> 
->>> I am also thinking about the pros and cons:
->>> 
->>> pro(s):
->>>  - easier for code maintenance, no need to sync periodically from
->>> maintainer side
->>> 
->>> con(s):
->>>  - two extra steps added for LTP users, they have to do:
->>>    $ git submodule init
->>>    $ git submodule update
->>> to enable using mce-test.
->>> 
->>> mce-test could no longer be found at kernel.org, so I cloned it from
->>> Andi's github repo, not sure if it is the right place:
->>> 
->>>    git://github.com/andikleen/mce-test.git
->> 
->> 
->> The tree seems just a few update every month now, I wonder why intel guys
->> didn't sync the commits to LTP ?
->> 
->>> 
->>> I have made this change to my personal LTP fork, you can review it here:
->>> 
->>>    https://github.com/casparant/ltp/commit/5cca17f633
->> 
->> 
->> The patch loooks good.
-> 
-> Wanlong, thanks for review.
+hi, Wanlong
+Thanks for your reviewing :)
+I sent a new version, please review it again.
 
-The goals for the patch are good and what I briefly looked over looked ok too. Can you pull certain versions of the mce-test submodule, or is it always HEAD?
+Thanks,
+Zhouping
 
-Thanks!
--Garrett
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
 Try Windows Azure free for 90 days Click Here 
