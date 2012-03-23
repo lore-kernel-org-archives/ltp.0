@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <poornima.nayak@in.ibm.com>) id 1S8ZvS-0004DU-Al
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 16:22:46 +0000
-Received: from e28smtp04.in.ibm.com ([122.248.162.4])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S8ZvO-0006Kq-0O
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 16:22:46 +0000
-In-Reply-To: <1331914399.22861.38.camel@moss-pluto>
-References: <OFEC1872A7.8CB8CA8C-ON652579C3.004D1716-652579C3.004DAE00@in.ibm.com>	
-	<20120316141906.GB2897@peqn>
-	<OFCE0DCA3A.339E9729-ON652579C3.00562D02-652579C3.0057D91F@in.ibm.com>
-	<1331914399.22861.38.camel@moss-pluto>
+	(envelope-from <salvatore.cro@st.com>) id 1SAyhX-0006RD-T0
+	for ltp-list@lists.sourceforge.net; Fri, 23 Mar 2012 07:14:19 +0000
+Received: from eu1sys200aog112.obsmtp.com ([207.126.144.133])
+	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SAyhW-0006s8-Gn
+	for ltp-list@lists.sourceforge.net; Fri, 23 Mar 2012 07:14:19 +0000
+Message-ID: <4F6C2287.9020103@st.com>
+Date: Fri, 23 Mar 2012 08:13:11 +0100
+From: "Salvatore CRO'" <salvatore.cro@st.com>
 MIME-Version: 1.0
-Message-ID: <OF8DABE602.1AF53C92-ON652579C3.0059EC21-652579C3.0059F2F1@in.ibm.com>
-From: Poornima Nayak <Poornima.Nayak@in.ibm.com>
-Date: Fri, 16 Mar 2012 21:52:28 +0530
-Subject: Re: [LTP] Are you still maintaining Selinux testsuite
+References: <1332257989-22829-1-git-send-email-salvatore.cro@st.com>
+	<4F69A24D.6030903@redhat.com>
+	<4F69A35A.7060109@casparzhang.com> <4F69B734.1070504@st.com>
+In-Reply-To: <4F69B734.1070504@st.com>
+Subject: Re: [LTP] [PATCH] setrlimit01: wait for all children to exit in
+	test3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,143 +27,126 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8693688866332432555=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list <ltp-list@lists.sf.net>, James Morris <jmorris@namei.org>
-
-This is a multipart message in MIME format.
---===============8693688866332432555==
-Content-Type: multipart/alternative;
-	boundary="=_alternative 0059F2EF652579C3_="
-
-This is a multipart message in MIME format.
---=_alternative 0059F2EF652579C3_=
-Content-Type: text/plain; charset="US-ASCII"
-
-Thanks a lot. It worked.
-
-Regards
-Poornima
-
-
-
-Stephen Smalley <sds@tycho.nsa.gov> 
-03/16/2012 09:43 PM
-
-To
-Poornima Nayak/India/IBM@IBMIN
-cc
-Serge Hallyn <serge.hallyn@canonical.com>, James Morris 
-<jmorris@namei.org>, ltp-list <ltp-list@lists.sf.net>
-Subject
-Re: Are you still maintaining Selinux testsuite
-
-
-
-
-
-
-On Fri, 2012-03-16 at 21:29 +0530, Poornima Nayak wrote:
-> Thanks Serge for a quick reply. Can you share git url which I can
-> clone, I am getting following error 
-> git clone
-> 
-git://git.selinuxproject.org/git/?p=users/serge/selinux-testsuite.git;a=tree 
-
-> Cloning into selinux-testsuite... 
-> fatal: The remote end hung up unexpectedly 
-
-git clone git://git.selinuxproject.org/~serge/selinux-testsuite
-
--- 
-Stephen Smalley
-National Security Agency
-
-
-
---=_alternative 0059F2EF652579C3_=
-Content-Type: text/html; charset="US-ASCII"
-
-<font size=2 face="sans-serif">Thanks a lot. It worked.</font>
-<br>
-<br><font size=2 face="sans-serif">Regards</font>
-<br><font size=2 face="sans-serif">Poornima</font>
-<br>
-<br>
-<br>
-<table width=100%>
-<tr valign=top>
-<td width=40%><font size=1 face="sans-serif"><b>Stephen Smalley &lt;sds@tycho.nsa.gov&gt;</b>
-</font>
-<p><font size=1 face="sans-serif">03/16/2012 09:43 PM</font>
-<td width=59%>
-<table width=100%>
-<tr valign=top>
-<td>
-<div align=right><font size=1 face="sans-serif">To</font></div>
-<td><font size=1 face="sans-serif">Poornima Nayak/India/IBM@IBMIN</font>
-<tr valign=top>
-<td>
-<div align=right><font size=1 face="sans-serif">cc</font></div>
-<td><font size=1 face="sans-serif">Serge Hallyn &lt;serge.hallyn@canonical.com&gt;,
-James Morris &lt;jmorris@namei.org&gt;, ltp-list &lt;ltp-list@lists.sf.net&gt;</font>
-<tr valign=top>
-<td>
-<div align=right><font size=1 face="sans-serif">Subject</font></div>
-<td><font size=1 face="sans-serif">Re: Are you still maintaining Selinux
-testsuite</font></table>
-<br>
-<table>
-<tr valign=top>
-<td>
-<td></table>
-<br></table>
-<br>
-<br>
-<br><tt><font size=2>On Fri, 2012-03-16 at 21:29 +0530, Poornima Nayak
-wrote:<br>
-&gt; Thanks Serge for a quick reply. Can you share git url which I can<br>
-&gt; clone, I am getting following error <br>
-&gt; git clone<br>
-&gt; git://git.selinuxproject.org/git/?p=users/serge/selinux-testsuite.git;a=tree
-<br>
-&gt; Cloning into selinux-testsuite... <br>
-&gt; fatal: The remote end hung up unexpectedly <br>
-<br>
-git clone git://git.selinuxproject.org/~serge/selinux-testsuite<br>
-<br>
--- <br>
-Stephen Smalley<br>
-National Security Agency<br>
-<br>
-</font></tt>
-<br>
---=_alternative 0059F2EF652579C3_=--
-
-
-
---===============8693688866332432555==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 3/21/2012 12:10 PM, Salvatore CRO' wrote:
+> On 3/21/2012 10:46 AM, Caspar Zhang wrote:
+>> On 03/21/2012 05:41 PM, ZhoupingLiu wrote:
+>>> On 03/20/2012 11:39 PM, Salvatore CRO' wrote:
+>>>> In test3, parent just wait for one child to exit but it
+>>>> actually has 10.
+>>> hi, Salvatore
+>>>
+>>> yes, you are right, but your patch didn't resolve the issue completely.
+>>> comments in-line.
+>>>
+>>>> As it could happen there may be other children around that
+>>>> didn't get yet the chance to exit, they will get signaled
+>>>> by ltp-pan (SIGTERM) and pollute the output of subsequent
+>>>> test (setrlimit02).
+>>>> Parent definitely needs to wait for all children to exit.
+>>>>
+>>>> Signed-off-by: Salvatore Cro<salvatore.cro@st.com>
+>>>> ---
+>>>>    testcases/kernel/syscalls/setrlimit/setrlimit01.c |    2 +-
+>>>>    1 files changed, 1 insertions(+), 1 deletions(-)
+>>>>
+>>>> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c 
+>>>> b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+>>>> index ac32450..430835c 100644
+>>>> --- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+>>>> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+>>>> @@ -267,7 +267,7 @@ void test3()
+>>>>                exit(0);
+>>>>            }
+>>>>        }
+>>>> -    waitpid(pid,&status, 0);
+>>>> +    while(wait(&status)>   0) { /* no-op */ ; }
+>>>>        if (WEXITSTATUS(status) != 0) {
+>>>>            tst_resm(TFAIL, "RLIMIT_NPROC functionality is not 
+>>>> correct");
+>>>>        } else {
+>>> if one child exit unexpectedly, e.g: exit(9);
+>>> the case can't catch it. how about this patch set:
+>
+> Question is, do we care about prematurely ended child?
+> We could just test for this condition ( if may use WIFEXITED in this 
+> case)
+> and emit a TWARN.
+>
+>>> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+>>> b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+>>> index ac32450..ec3e54e 100644
+>>> --- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+>>> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+>>> @@ -226,6 +226,8 @@ void test2()
+>>>     */
+>>>    void test3()
+>>>    {
+>>> +       int flag = 0;
+>>> +
+>>>           if (getrlimit(RLIMIT_NPROC,&save_rlim)<  0) {
+>>>                   tst_brkm(TBROK, cleanup, "getrlimit failed, errno: 
+>>> %d",
+>>> errno);
+>>>           }
+>>> @@ -267,12 +269,16 @@ void test3()
+>>>                           exit(0);
+>>>                   }
+>>>           }
+>>> -       waitpid(pid,&status, 0);
+>>> -       if (WEXITSTATUS(status) != 0) {
+>>> -               tst_resm(TFAIL, "RLIMIT_NPROC functionality is not
+>>> correct");
+>>> -       } else {
+>>> -               tst_resm(TPASS, "RLIMIT_NPROC functionality is 
+>>> correct");
+>>> +       while (wait(&status)>  0) {
+>>> +               if (WEXITSTATUS(status) != 0) {
+>>> +                       tst_resm(TFAIL,
+>>> +                           "RLIMIT_NPROC functionality is not 
+>>> correct");
+>>> +                       flag = 1;
+>>> +               }
+>>>           }
+>>> +
+>>> +       if (flag == 0)
+>>> +               tst_resm(TPASS, "RLIMIT_NPROC functionality is 
+>>> correct");
+>> flag is not necessary. no TFAIL means TPASS. Rest looks good for your 
+>> patch.
+>
+> Anyhow, in my opinion, this condition is not suitable to decide for 
+> test pass/fail.
+> Test is supposed to fail when the fork from 11th child on does not 
+> fail or fail with
+> an errno != EAGAIN.
+> If so, the test logic wasn't actually accurate independently of my patch.
+>
+> BR,
+> Salvo.
+>
+
+What about above analysis ? Any comment is welcome.
+
+BR,
+Salvo.
+
+
+>> Thanks,
+>> Caspar
+>
+
 
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
 Try Windows Azure free for 90 days Click Here 
 http://p.sf.net/sfu/sfd2d-msazure
---===============8693688866332432555==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8693688866332432555==--
-
-
