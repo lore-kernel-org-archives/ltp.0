@@ -2,21 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SFbgv-00034I-Nk
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:40:49 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SFbgu-0005rd-Er
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:40:49 +0000
-Message-ID: <4F7CF7DB.2080802@cn.fujitsu.com>
-Date: Thu, 05 Apr 2012 09:39:39 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <shhuiw@gmail.com>) id 1SBUnE-0006K9-TV
+	for ltp-list@lists.sourceforge.net; Sat, 24 Mar 2012 17:30:20 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SBUnE-0006Jj-BO
+	for ltp-list@lists.sourceforge.net; Sat, 24 Mar 2012 17:30:20 +0000
+Received: by mail-iy0-f175.google.com with SMTP id g37so7647805iaa.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 24 Mar 2012 10:30:20 -0700 (PDT)
+Message-ID: <4F6E04A0.10305@gmail.com>
+Date: Sun, 25 Mar 2012 01:30:08 +0800
+From: Wang Sheng-Hui <shhuiw@gmail.com>
 MIME-Version: 1.0
-References: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
-In-Reply-To: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
-Subject: Re: [LTP] [PATCH 2/2] Replace struct event_t with struct
-	inotify_event
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] [PATCH] testcases/kernel/mem/vma/vma01.c: fix the right
+ start/end memory address
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,83 +26,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, shubham@linux.vnet.ibm.com
 
-T24gMDQvMDUvMjAxMiAwODo0MiBBTSwgR2FycmV0dCBDb29wZXIgd3JvdGU6Cgo+IFJlcGxhY2Ug
-c3RydWN0IGV2ZW50X3Qgd2l0aCBzdHJ1Y3QgaW5vdGlmeV9ldmVudAo+IAo+IEFsc28gZG8gc29t
-ZSBtaW5vciB3aGl0ZXNwYWNlIGNsZWFudXAgd2hpbGUgSSdtCj4gaW4gdGhlIG5laWdoYm9yaG9v
-ZC4KCgpDb29wZXIsCgp0aGVyZSdzIHNvbWV0aGluZyB3cm9uZyB3aXRoIHRoaXMgcGF0Y2gsIHBs
-ZWFzZSB0YWtlIGEgbG9vayBhdCB0aGUgIi5uYW1lIi4KCmlub3RpZnkwMiAgICAxICBUUEFTUyAg
-OiAgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9NDAwMDAwMDQgY29va2llPTAgbGVuPTAgbmFtZT0iASIK
-aW5vdGlmeTAyICAgIDIgIFRGQUlMICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0xMDAgKGV4cGVj
-dGVkIDEwMCkgY29va2llPTAgbGVuPTE2IG5hbWU9InRlc3RfZmlsZTEiIChleHBlY3RlZCAidGVz
-dCAiKSAtNjMKaW5vdGlmeTAyICAgIDMgIFRGQUlMICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0y
-MCAoZXhwZWN0ZWQgMjApIGNvb2tpZT0wIGxlbj0xNiBuYW1lPSJ0ZXN0X2ZpbGUxIiAoZXhwZWN0
-ZWQgInRlcyIpIC04Nwppbm90aWZ5MDIgICAgNCAgVEZBSUwgIDogIGdldCBldmVudDogd2Q9MSBt
-YXNrPTggKGV4cGVjdGVkIDgpIGNvb2tpZT0wIGxlbj0xNiBuYW1lPSJ0ZXN0X2ZpbGUxIiAoZXhw
-ZWN0ZWQgInRlc3RAIikgLTMxCmlub3RpZnkwMiAgICA1ICBURkFJTCAgOiAgZ2V0IGV2ZW50OiB3
-ZD0xIG1hc2s9NDAgKGV4cGVjdGVkIDQwKSBjb29raWU9MTk1MCBsZW49MTYgbmFtZT0idGVzdF9m
-aWxlMSIgKGV4cGVjdGVkICJ0ZXN077+9IikgMzMKaW5vdGlmeTAyICAgIDYgIFRGQUlMICA6ICBn
-ZXQgZXZlbnQ6IHdkPTEgbWFzaz04MCAoZXhwZWN0ZWQgODApIGNvb2tpZT0xOTUwIGxlbj0xNiBu
-YW1lPSJ0ZXN0X2ZpbGUyIiAoZXhwZWN0ZWQgInRlc3QiKSAtOTUKaW5vdGlmeTAyICAgIDcgIFRQ
-QVNTICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz04MDAgY29va2llPTAgbGVuPTAgbmFtZT0iASIK
-aW5vdGlmeTAyICAgIDggIFRGQUlMICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0yMDAgKGV4cGVj
-dGVkIDIwMCkgY29va2llPTAgbGVuPTE2IG5hbWU9InRlc3RfZmlsZTIiIChleHBlY3RlZCAidGVz
-dCIpIC05NQppbm90aWZ5MDIgICAgOSAgVFBBU1MgIDogIGdldCBldmVudDogd2Q9MSBtYXNrPTgw
-MCBjb29raWU9MCBsZW49MCBuYW1lPSIiCgoKVGhhbmtzLApXYW5sb25nIEdhbwoKCj4gCj4gU2ln
-bmVkLW9mZi1ieTogR2FycmV0dCBDb29wZXIgPHlhbmVnb21pQGdtYWlsLmNvbT4KPiAKPiAtLS0K
-PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pbm90aWZ5L2lub3RpZnkwMi5jIHwgICAxMyAr
-KysrLS0tLS0tLS0tCj4gIDEgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA5IGRlbGV0
-aW9ucygtKQo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tMS43LjIuNQo+IENvbnRlbnQtVHlwZTogdGV4
-dC94LXBhdGNoOyBuYW1lPSIwMDAyLVJlcGxhY2Utc3RydWN0LWV2ZW50X3Qtd2l0aC1zdHJ1Y3Qt
-aW5vdGlmeV9ldmVudC5wYXRjaCIKPiBDb250ZW50LVRyYW5zZmVyLUVuY29kaW5nOiA4Yml0Cj4g
-Q29udGVudC1EaXNwb3NpdGlvbjogYXR0YWNobWVudDsgZmlsZW5hbWU9IjAwMDItUmVwbGFjZS1z
-dHJ1Y3QtZXZlbnRfdC13aXRoLXN0cnVjdC1pbm90aWZ5X2V2ZW50LnBhdGNoIgo+IAo+IGRpZmYg
-LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lub3RpZnkvaW5vdGlmeTAyLmMgYi90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lub3RpZnkvaW5vdGlmeTAyLmMKPiBpbmRleCA1OWY4
-M2JhLi5jODc3OTdmIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW5v
-dGlmeS9pbm90aWZ5MDIuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW5vdGlm
-eS9pbm90aWZ5MDIuYwo+IEBAIC04MSwxNSArODEsMTAgQEAgY2hhciBidWZbQlVGX1NJWkVdOwo+
-ICBpbnQgZmQsIGZkX25vdGlmeTsKPiAgaW50IHdkOwo+IAo+IC1zdHJ1Y3QgZXZlbnRfdCB7Cj4g
-LSAgICBjaGFyIG5hbWVbQlVGX1NJWkVdOwo+IC0gICAgaW50IG1hc2s7Cj4gLSAgICBpbnQgbGVu
-Owo+IC19Owo+ICAjZGVmaW5lIEZJTEVfTkFNRTEgInRlc3RfZmlsZTEiCj4gICNkZWZpbmUgRklM
-RV9OQU1FMiAidGVzdF9maWxlMiIKPiAKPiAtc3RydWN0IGV2ZW50X3QgZXZlbnRfc2V0W0VWRU5U
-X01BWF07Cj4gK3N0cnVjdCBpbm90aWZ5X2V2ZW50IGV2ZW50X3NldFtFVkVOVF9NQVhdOwo+IAo+
-ICBjaGFyIGV2ZW50X2J1ZltFVkVOVF9CVUZfTEVOXTsKPiAKPiBAQCAtMjM5LDcgKzIzNCw3IEBA
-IGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IjFjMTdkMThlMzc3NTQ4NWJmMWUwY2U3OTU3NWViNjM3YTk0NDk0YTIuIik7Cj4gICAgICAgICAg
-ICAgICAgICB0c3RfcmVzbShURkFJTCwKPiAgICAgICAgICAgICAgICAgICAgICAgImdldCB1bm5l
-Y2Vzc2FyeSBldmVudDogIgo+IC0gICAgICAgICAgICAgICAgICAgICAid2Q9JWQgbWFzaz0leCBj
-b29raWU9JXUgbGVuPSV1Igo+ICsgICAgICAgICAgICAgICAgICAgICAid2Q9JWQgbWFzaz0leCBj
-b29raWU9JXUgbGVuPSV1ICIKPiAgICAgICAgICAgICAgICAgICAgICAgIm5hbWU9XCIlc1wiIiwg
-ZXZlbnQtPndkLCBldmVudC0+bWFzaywKPiAgICAgICAgICAgICAgICAgICAgICAgZXZlbnQtPmNv
-b2tpZSwgZXZlbnQtPmxlbiwKPiAgICAgICAgICAgICAgICAgICAgICAgZXZlbnQtPm5hbWUpOwo+
-IEBAIC0yNTAsOCArMjQ1LDggQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4gICAgICAg
-ICAgICAgICAgICAgICAgKGV2ZW50X3NldFt0ZXN0X251bV0ubmFtZSwgZXZlbnQtPm5hbWUsCj4g
-ICAgICAgICAgICAgICAgICAgICAgIGV2ZW50LT5sZW4pKSkgewo+ICAgICAgICAgICAgICAgICAg
-dHN0X3Jlc20oVFBBU1MsCj4gLSAgICAgICAgICAgICAgICAgICAgICJnZXQgZXZlbnQ6IHdkPSVk
-IG1hc2s9JXgiCj4gLSAgICAgICAgICAgICAgICAgICAgICIgY29va2llPSV1IGxlbj0ldSBuYW1l
-PVwiJXNcIiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICJnZXQgZXZlbnQ6IHdkPSVkIG1hc2s9
-JXggIgo+ICsgICAgICAgICAgICAgICAgICAgICAiY29va2llPSV1IGxlbj0ldSBuYW1lPVwiJXNc
-IiIsCj4gICAgICAgICAgICAgICAgICAgICAgIGV2ZW50LT53ZCwgZXZlbnQtPm1hc2ssIGV2ZW50
-LT5jb29raWUsCj4gICAgICAgICAgICAgICAgICAgICAgIGV2ZW50LT5sZW4sIGV2ZW50LT5uYW1l
-KTsKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBCZXR0ZXIgdGhhbiBzZWM/IE5vdGhp
-bmcgaXMgYmV0dGVyIHRoYW4gc2VjIHdoZW4gaXQgY29tZXMgdG8KPiBtb25pdG9yaW5nIEJpZyBE
-YXRhIGFwcGxpY2F0aW9ucy4gVHJ5IEJvdW5kYXJ5IG9uZS1zZWNvbmQgCj4gcmVzb2x1dGlvbiBh
-cHAgbW9uaXRvcmluZyB0b2RheS4gRnJlZS4KPiBodHRwOi8vcC5zZi5uZXQvc2Z1L0JvdW5kYXJ5
-LWRldjJkZXYKPiAKPiAKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCZXR0ZXIgdGhhbiBzZWM/IE5vdGhp
-bmcgaXMgYmV0dGVyIHRoYW4gc2VjIHdoZW4gaXQgY29tZXMgdG8KbW9uaXRvcmluZyBCaWcgRGF0
-YSBhcHBsaWNhdGlvbnMuIFRyeSBCb3VuZGFyeSBvbmUtc2Vjb25kIApyZXNvbHV0aW9uIGFwcCBt
-b25pdG9yaW5nIHRvZGF5LiBGcmVlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L0JvdW5kYXJ5LWRldjJk
-ZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxp
-c3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xp
-c3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+For a VMA with memory range 6*ps, regardless of it's two 3*ps or
+one single 6*ps, t is the start addr of the vma, u = t + 3*ps, and
+the end addr is t + 6*ps.
+
+For the check process, x should start from t, not u, and later check
+for the second 3*ps should resume from u.
+
+Signed-off-by: Wang Sheng-Hui <shhuiw@gmail.com>
+---
+ testcases/kernel/mem/vma/vma01.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
+index 398d7a1..4b66121 100644
+--- a/testcases/kernel/mem/vma/vma01.c
++++ b/testcases/kernel/mem/vma/vma01.c
+@@ -112,12 +112,12 @@ static void check_vma(void)
+ 		printf("child : u = %p\n", u);
+ 		memset(u, 2, ps);
+ 
+-		x = get_end_addr(u, MAPS_FILE);
+-		if (x == u + 6*ps)
++		x = get_end_addr(t, MAPS_FILE);
++		if (x == t + 6*ps)
+ 			exit(1);
+-		if (x == u + 3*ps) {
+-			y = get_end_addr(x, MAPS_FILE);
+-			if (y == x + 3*ps)
++		if (x == u) {
++			y = get_end_addr(u, MAPS_FILE);
++			if (y == u + 3*ps)
+ 				exit(0);
+ 		}
+ 		exit(255);
+-- 
+1.7.1
+
+------------------------------------------------------------------------------
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
