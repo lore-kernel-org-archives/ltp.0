@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <andi.kleen@intel.com>) id 1S8YFi-0007ui-TT
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 14:35:34 +0000
-Received: from mga03.intel.com ([143.182.124.21])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S8YFd-0007E0-C1
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 14:35:34 +0000
-Date: Fri, 16 Mar 2012 07:35:22 -0700
-From: Andi Kleen <andi.kleen@intel.com>
-Message-ID: <20120316143522.GB19604@alboin.amr.corp.intel.com>
-References: <4F58E36E.5000306@casparzhang.com>
-	<4F594DE2.4040603@cn.fujitsu.com>
-	<4F62EB70.7010400@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SCMHU-0003ef-RJ
+	for ltp-list@lists.sourceforge.net; Tue, 27 Mar 2012 02:37:08 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SCMHU-0003FH-3O
+	for ltp-list@lists.sourceforge.net; Tue, 27 Mar 2012 02:37:08 +0000
+Received: by pbcum15 with SMTP id um15so7564518pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 26 Mar 2012 19:37:02 -0700 (PDT)
+Message-ID: <4F71276B.4090302@casparzhang.com>
+Date: Tue, 27 Mar 2012 10:35:23 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F62EB70.7010400@casparzhang.com>
-Subject: Re: [LTP] [RFC] make mce-test a submodule
+References: <4F707B51.4090306@redhat.com>
+In-Reply-To: <4F707B51.4090306@redhat.com>
+Subject: Re: [LTP] [PATCH] mremap: fix dependency on ipc subdir
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,80 +30,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Chen Gong <gong.chen@linux.intel.com>, ying.huang@intel.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-On Fri, Mar 16, 2012 at 03:27:44PM +0800, Caspar Zhang wrote:
-> Hi all, I'll merge this change to master if I don't hear any objections
-> from you by today.
+On 03/26/2012 10:21 PM, Jan Stancek wrote:
+> 
+> We need to use MAKE_DEPS to declare the ipc subdir depend otherwise
+> attempting to do `make mremap01` without building in the ipc subdir
+> will fail, and we can hit race conditions in the overall `make`.
+> 
+> This is same change as in commit:
+> commit 7103d3e8e0f9dc1804ba06ee66ee02753e8ce50e
+> Author: Mike Frysinger <vapier@gentoo.org>
+> Date:   Fri Mar 23 12:27:13 2012 -0400
+>      kill: fix dependency on ipc subdir
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Fine for me. Copying Gong Chen who did most of the mce-test work recently
-too.
-
--Andi
-
-> 
-> 
-> On 03/09/2012 08:25 AM, Wanlong Gao wrote:
-> > On 03/09/2012 12:50 AM, Caspar Zhang wrote:
-> > 
-> >> Hi Garrett, Andi, and all:
-> >>
-> >> When I looked into current LTP tree, I found it a little messy due to
-> >> some mce-test stuff, such as
-> >>
-> >>   - mce-test docs goes to $TOPDIR/README, and
-> >>   - some mce-test files still lying under testcase/mce-test/.
-> >>
-> >> I think we need a cleanup for it.
-> > 
-> > 
-> > yes, I think so.
-> > 
-> >>
-> >> Also an idea comes to my mind, that we can try to make mce-test a
-> >> submodule of LTP.
-> > 
-> > 
-> > Not a bad idea.
-> > 
-> >>
-> >> I am also thinking about the pros and cons:
-> >>
-> >> pro(s):
-> >>   - easier for code maintenance, no need to sync periodically from
-> >> maintainer side
-> >>
-> >> con(s):
-> >>   - two extra steps added for LTP users, they have to do:
-> >>     $ git submodule init
-> >>     $ git submodule update
-> >> to enable using mce-test.
-> >>
-> >> mce-test could no longer be found at kernel.org, so I cloned it from
-> >> Andi's github repo, not sure if it is the right place:
-> >>
-> >>     git://github.com/andikleen/mce-test.git
-> > 
-> > 
-> > The tree seems just a few update every month now, I wonder why intel guys
-> > didn't sync the commits to LTP ?
-> > 
-> >>
-> >> I have made this change to my personal LTP fork, you can review it here:
-> >>
-> >>     https://github.com/casparant/ltp/commit/5cca17f633
-> > 
-> > 
-> > The patch loooks good.
-> 
-> Wanlong, thanks for review.
-> 
-> Thanks,
-> Caspar
-> 
-> 
-> 
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
