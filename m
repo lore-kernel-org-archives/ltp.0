@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S7UsB-0001Ck-49
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 16:46:55 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S7Us9-0005jJ-T7
-	for ltp-list@lists.sourceforge.net; Tue, 13 Mar 2012 16:46:55 +0000
-Received: by dado14 with SMTP id o14so1244450dad.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Mar 2012 09:46:48 -0700 (PDT)
-Message-ID: <4F5F79AD.2070202@casparzhang.com>
-Date: Wed, 14 Mar 2012 00:45:33 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SCmdR-0005OG-PN
+	for ltp-list@lists.sourceforge.net; Wed, 28 Mar 2012 06:45:33 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SCmdM-0008Cv-2y
+	for ltp-list@lists.sourceforge.net; Wed, 28 Mar 2012 06:45:33 +0000
+Message-ID: <4F72B346.5060002@cn.fujitsu.com>
+Date: Wed, 28 Mar 2012 14:44:22 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4F5F756E.4010808@redhat.com>
-In-Reply-To: <4F5F756E.4010808@redhat.com>
-Subject: Re: [LTP] [PATCH/RFC] mtest01: add option to limit max swap usage
+References: <4F72AB56.2090209@cn.fujitsu.com>
+	<4F72ACF5.1090101@casparzhang.com>
+In-Reply-To: <4F72ACF5.1090101@casparzhang.com>
+Subject: Re: [LTP] [PATCH]pthread_join:4-1.c: clean up code
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,119 +29,338 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Caspar Zhang <caspar@casparzhang.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 03/14/2012 12:27 AM, Jan Stancek wrote:
-> On large machines (with dozens of gigabytes of swap)
-> it can take significant time until it completes,
-> unless you specify "-p" parameter to set percent of total
-> memory to use. It is difficult to find value, that would fit
-> all setups. If the value is low, it won't exercise
-> conditions when memory is low. If the value is high it turns
-> into stress test, which can be swapping memory for hours.
-> 
-> This patch adds new option '-s', which stops test if swap
-> usage goes beyoned <s> MBytes. By default it is 0 - no limit.
-> 
-> For example:
->      mtest01 -p 95 -w -s 4096
-> will keep allocating memory until 95% of total memory is used,
-> or swap usage is > 4GB.
-> 
-> This parameter is meant to be used in sanity tests, so that
-> malloc is exercised in situations with high/low memory
-> until system resorts to swapping, but ends when swap usage
-> is high enough.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->   testcases/kernel/mem/mtest01/mtest01.c |   17 +++++++++++++++--
->   1 files changed, 15 insertions(+), 2 deletions(-)
+On 03/28/2012 02:17 PM, Caspar Zhang wrote:
 
-I wish to see a better mtest01.c with libltp and good format, but it's a
-tough work, hmmm...
+> On 03/28/2012 02:10 PM, lidan wrote:
+>> code cleanup for pthread_join/4-1.c
+>>
+>>
+>> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> 
+> After applied the package, I use -f option with checkpatch.pl, it still
+> shows some warnings:
+> 
+> $ ckp -f 4-1.c
+> WARNING: Avoid line continuations in quoted strings
+> #168: FILE: 4-1.c:168:
+> +				UNRESOLVED(-1, "An error was expected \
+> 
+> WARNING: Avoid line continuations in quoted strings
+> #178: FILE: 4-1.c:178:
+> +				output("Thread has been created \
+> 
+> WARNING: Avoid line continuations in quoted strings
+> #181: FILE: 4-1.c:181:
+> +				output("Thread creation failed with the error:\
+> 
+> WARNING: Avoid line continuations in quoted strings
+> #196: FILE: 4-1.c:196:
+> +				UNRESOLVED(ret, "Failed to create the \
+> 
+> WARNING: Avoid line continuations in quoted strings
+> #212: FILE: 4-1.c:212:
+> +				UNRESOLVED(ret, "Failed to join \
+> 
+> total: 0 errors, 5 warnings, 245 lines checked
+> 
+> 4-1.c has style problems, please review.
+> 
+> If any of these errors are false positives, please report
+> them to the maintainer, see CHECKPATCH in MAINTAINERS.
+> 
+> I'd suggest you do the same when you make code cleanup patches.
 
-The patch itself looks good.
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+yes, to avoid line continuations is the right thing.
+
+Li, please fix as the warnings.
+
+Thanks,
+Wanlong Gao
 
 > 
+> Thanks,
+> Caspar
 > 
-> 
-> 
-> 0001-mtest01-add-option-to-limit-max-swap-usage.patch
-> 
-> 
-> diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
-> index dc960a8..54bda70 100644
-> --- a/testcases/kernel/mem/mtest01/mtest01.c
-> +++ b/testcases/kernel/mem/mtest01/mtest01.c
-> @@ -67,6 +67,7 @@ int main(int argc, char* argv[])
->  	unsigned long long original_maxbytes, maxbytes = 0;
->  	unsigned long long pre_mem = 0, post_mem = 0;
->  	unsigned long long total_ram, total_free, D, C;
-> +	unsigned long long used_swap, swap_max = 0;
->  	int chunksize = 1024*1024; /* one meg at a time by default */
->  	struct sysinfo sstats;
->  	int i, pid_cntr;
-> @@ -78,7 +79,7 @@ int main(int argc, char* argv[])
->  	sigemptyset(&act.sa_mask);
->  	sigaction(SIGRTMIN,  &act, 0);
->  	
-> -	while ((c = getopt(argc, argv, "c:b:p:wvh")) != -1) {
-> +	while ((c = getopt(argc, argv, "c:b:p:s:wvh")) != -1) {
->  		switch(c) {
->  		case 'c':
->  			chunksize = atoi(optarg);
-> @@ -105,6 +106,10 @@ int main(int argc, char* argv[])
->  				    "ERROR: -p option cannot be greater than "
->  				    "99");
->  			break;
-> +		case 's':
-> +			swap_max = atoi(optarg);
-> +			swap_max = swap_max * 1024 * 1024;
-> +			break;
->  		case 'w':
->  			dowrite = 1;
->  			break;
-> @@ -116,7 +121,8 @@ int main(int argc, char* argv[])
->  			printf("usage: %s [-c <bytes>] [-b <bytes>|-p <percent>] [-v]\n", argv[0]);
->  			printf("\t-c <num>\tsize of chunk in bytes to malloc on each pass\n");
->  			printf("\t-b <bytes>\tmaximum number of bytes to allocate before stopping\n");
-> -			printf("\t-p <bytes>\tpercent of total memory used at which the program stops\n");
-> +			printf("\t-p <percent>\tpercent of total memory used at which the program stops\n");
-> +			printf("\t-s <MBytes>\tstop when used swap is higher than <s> MB, default: 0 - no limit\n");
->  			printf("\t-w\t\twrite to the memory after allocating\n");
->  			printf("\t-v\t\tverbose\n");
->  			printf("\t-h\t\tdisplay usage\n");
-> @@ -262,6 +268,13 @@ int main(int argc, char* argv[])
->  				sysinfo(&sstats);
->  				post_mem = (unsigned long long)sstats.mem_unit * sstats.freeram;
->  				post_mem = post_mem + (unsigned long long)sstats.mem_unit * sstats.freeswap;
-> +
-> +				used_swap = sstats.mem_unit * (sstats.totalswap - sstats.freeswap);
-> +				if (swap_max > 0 && used_swap > swap_max) {
-> +					tst_resm(TINFO, "Reached max swap usage: %llu Mbytes > %llu MBytes",
-> +							used_swap / 1024 / 1024, swap_max / 1024 / 1024);
-> +					break;
-> +				}
->  			}
->  		}
->  		while (pid_list[i] != 0) {
-> 
-> 
+>> ---
+>>  .../conformance/interfaces/pthread_join/4-1.c      |  134 +++++++++-----------
+>>  1 files changed, 58 insertions(+), 76 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+>> index baf0992..7ee4870 100644
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+>> @@ -16,7 +16,8 @@
+>>  
+>>  * This sample test aims to check the following assertion:
+>>  *
+>> -* If the thread calling pthread_join is canceled, the joined thread remains joinable.
+>> +* If the thread calling pthread_join is canceled, the joined thread
+>> +* remains joinable.
+>>  
+>>  * The steps are:
+>>  * -> create a thread blocked on a mutex.
+>> @@ -31,9 +32,9 @@
+>>  /* We are testing conformance to IEEE Std 1003.1, 2003 Edition */
+>>  #define _POSIX_C_SOURCE 200112L
+>>  
+>> -/********************************************************************************************/
+>> -/****************************** standard includes *****************************************/
+>> -/********************************************************************************************/
+>> +/**************************************************************/
+>> +/********************** standard includes *********************/
+>> +/**************************************************************/
+>>  #include <pthread.h>
+>>  #include <stdarg.h>
+>>  #include <stdio.h>
+>> @@ -44,14 +45,15 @@
+>>  
+>>  #include <errno.h>
+>>  
+>> -/********************************************************************************************/
+>> -/******************************   Test framework   *****************************************/
+>> -/********************************************************************************************/
+>> +/***************************************************************/
+>> +/*********************   Test framework   **********************/
+>> +/***************************************************************/
+>>  #include "../testfrmw/testfrmw.h"
+>>  #include "../testfrmw/testfrmw.c"
+>>  /* This header is responsible for defining the following macros:
+>>   * UNRESOLVED(ret, descr);
+>> - *    where descr is a description of the error and ret is an int (error code for example)
+>> + *    where descr is a description of the error and ret is an int
+>> + *    (error code for example)
+>>   * FAILED(descr);
+>>   *    where descr is a short text saying why the test has failed.
+>>   * PASSED();
+>> @@ -67,16 +69,16 @@
+>>   * Those may be used to output information.
+>>   */
+>>  
+>> -/********************************************************************************************/
+>> -/********************************** Configuration ******************************************/
+>> -/********************************************************************************************/
+>> +/***************************************************************/
+>> +/************************ Configuration ************************/
+>> +/***************************************************************/
+>>  #ifndef VERBOSE
+>>  #define VERBOSE 1
+>>  #endif
+>>  
+>> -/********************************************************************************************/
+>> -/***********************************     Helper     *****************************************/
+>> -/********************************************************************************************/
+>> +/***************************************************************/
+>> +/***********************     Helper     ************************/
+>> +/***************************************************************/
+>>  #include "../testfrmw/threads_scenarii.c"
+>>  /* this file defines:
+>>  * scenarii: array of struct __scenario type.
+>> @@ -85,14 +87,14 @@
+>>  * scenar_fini(): function to call after end of use of the scenarii array.
+>>  */
+>>  
+>> -/********************************************************************************************/
+>> -/***********************************    Test case   *****************************************/
+>> -/********************************************************************************************/
+>> +/***************************************************************/
+>> +/***********************    Test case   ************************/
+>> +/***************************************************************/
+>>  
+>>  pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
+>>  
+>>  /* 1st thread function */
+>> -void * threaded (void * arg)
+>> +void *threaded(void *arg)
+>>  {
+>>  	int ret = 0;
+>>  
+>> @@ -101,22 +103,18 @@ void * threaded (void * arg)
+>>  	ret = pthread_mutex_lock(&mtx);
+>>  
+>>  	if (ret != 0)
+>> -	{
+>>  		UNRESOLVED(ret, "Failed to lock mutex");
+>> -	}
+>>  
+>>  	ret = pthread_mutex_unlock(&mtx);
+>>  
+>>  	if (ret != 0)
+>> -	{
+>>  		UNRESOLVED(ret, "Failed to unlock mutex");
+>> -	}
+>>  
+>>  	return NULL;
+>>  }
+>>  
+>>  /* Canceled thread */
+>> -void * joiner_func(void * arg)
+>> +void *joiner_func(void *arg)
+>>  {
+>>  	(void) pthread_join(*(pthread_t *) arg, NULL);
+>>  
+>> @@ -139,70 +137,64 @@ int main(int argc, char *argv[])
+>>  	/* Initialize thread attribute objects */
+>>  	scenar_init();
+>>  
+>> -	for (sc = 0; sc < NSCENAR; sc++)
+>> -	{
+>> +	for (sc = 0; sc < NSCENAR; sc++) {
+>>  #if VERBOSE > 0
+>>  		output("-----\n");
+>> -		output("Starting test with scenario (%i): %s\n", sc, scenarii[ sc ].descr);
+>> +		output("Starting test with scenario (%i): %s\n",
+>> +					sc, scenarii[sc].descr);
+>>  #endif
+>>  
+>>  		/* Lock the mutex */
+>>  		ret = pthread_mutex_lock(&mtx);
+>>  
+>>  		if (ret != 0)
+>> -		{
+>>  			UNRESOLVED(ret, "failed to lock the mutex");
+>> -		}
+>> -
+>> -		ret = pthread_create(&child, &scenarii[ sc ].ta, threaded, NULL);
+>>  
+>> -		switch (scenarii[ sc ].result)
+>> -		{
+>> -				case 0:                                       /* Operation was expected to succeed */
+>> +		ret = pthread_create(&child, &scenarii[sc].ta, threaded,
+>> +									NULL);
+>>  
+>> -				if (ret != 0)
+>> -				{
+>> -					UNRESOLVED(ret, "Failed to create this thread");
+>> -				}
+>> +		switch (scenarii[sc].result) {
+>> +		/* Operation was expected to succeed */
+>> +		case 0:
+>>  
+>> -				break;
+>> -
+>> -				case 1:                                       /* Operation was expected to fail */
+>> +			if (ret != 0)
+>> +				UNRESOLVED(ret, "Failed to create this thread");
+>>  
+>> -				if (ret == 0)
+>> -				{
+>> -					UNRESOLVED(-1, "An error was expected but the thread creation succeeded");
+>> -				}
+>> +			break;
+>> +		/* Operation was expected to fail */
+>> +		case 1:
+>>  
+>> -				break;
+>> +			if (ret == 0)
+>> +				UNRESOLVED(-1, "An error was expected \
+>> +					but the thread creation succeeded");
+>>  
+>> -				case 2:                                       /* We did not know the expected result */
+>> -				default:
+>> +			break;
+>> +		/* We did not know the expected result */
+>> +		case 2:
+>> +		default:
+>>  #if VERBOSE > 0
+>>  
+>> -				if (ret == 0)
+>> -				{
+>> -					output("Thread has been created successfully for this scenario\n");
+>> -				}
+>> -				else
+>> -				{
+>> -					output("Thread creation failed with the error: %s\n", strerror(ret));
+>> -				}
+>> +			if (ret == 0) {
+>> +				output("Thread has been created \
+>> +					successfully for this scenario\n");
+>> +			} else {
+>> +				output("Thread creation failed with the error:\
+>> +							%s\n", strerror(ret));
+>> +			}
+>>  
+>>  #endif
+>>  
+>>  		}
+>> -
+>> -		if (ret == 0)                                       /* The new thread is running */
+>> -		{
+>> +		/* The new thread is running */
+>> +		if (ret == 0) {
+>>  
+>>  			/* Now create the joiner thread */
+>> -			ret = pthread_create(&joiner, NULL, joiner_func, &child);
+>> +			ret = pthread_create(&joiner, NULL, joiner_func,
+>> +								&child);
+>>  
+>>  			if (ret != 0)
+>> -			{
+>> -				UNRESOLVED(ret, "Failed to create the joiner thread");
+>> -			}
+>> +				UNRESOLVED(ret, "Failed to create the \
+>> +								joiner thread");
+>>  
+>>  			/* Let it enter pthread_join */
+>>  			sched_yield();
+>> @@ -211,44 +203,34 @@ int main(int argc, char *argv[])
+>>  			ret = pthread_cancel(joiner);
+>>  
+>>  			if (ret != 0)
+>> -			{
+>>  				UNRESOLVED(ret, "Failed to cancel the thread");
+>> -			}
+>>  
+>>  			/* Join the canceled thread */
+>>  			ret = pthread_join(joiner, NULL);
+>>  
+>>  			if (ret != 0)
+>> -			{
+>> -				UNRESOLVED(ret, "Failed to join the canceled thread");
+>> -			}
+>> +				UNRESOLVED(ret, "Failed to join \
+>> +							the canceled thread");
+>>  
+>>  			/* Unblock the child thread */
+>>  			ret = pthread_mutex_unlock(&mtx);
+>>  
+>>  			if (ret != 0)
+>> -			{
+>>  				UNRESOLVED(ret, "Failed to unlock the mutex");
+>> -			}
+>>  
+>>  			/* Check the first thread is still joinable */
+>>  			ret = pthread_join(child, NULL);
+>>  
+>> -			if (ret != 0)
+>> -			{
+>> +			if (ret != 0) {
+>>  				output("Error returned: %d\n");
+>>  				FAILED("The thread is no more joinable");
+>>  			}
+>>  
+>> -		}
+>> -		else
+>> -		{
+>> +		} else {
+>>  			ret = pthread_mutex_unlock(&mtx);
+>>  
+>>  			if (ret != 0)
+>> -			{
+>>  				UNRESOLVED(ret, "Failed to unlock the mutex");
+>> -			}
+>>  		}
+>>  	}
+>>  
 > 
 > 
 > ------------------------------------------------------------------------------
-> Keep Your Developer Skills Current with LearnDevNow!
-> The most comprehensive online learning library for Microsoft developers
-> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-> Metro Style Apps, more. Free future releases when you subscribe now!
-> http://p.sf.net/sfu/learndevnow-d2d
-> 
-> 
-> 
+> This SF email is sponsosred by:
+> Try Windows Azure free for 90 days Click Here 
+> http://p.sf.net/sfu/sfd2d-msazure
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
@@ -150,12 +368,11 @@ Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 > 
 
 
+
 ------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
