@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1S8YOR-0006Mp-QV
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 14:44:35 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SDC6Z-0007uZ-PL
+	for ltp-list@lists.sourceforge.net; Thu, 29 Mar 2012 09:57:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S8YOL-0006Q6-W7
-	for ltp-list@lists.sourceforge.net; Fri, 16 Mar 2012 14:44:35 +0000
-Date: Fri, 16 Mar 2012 10:44:09 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <47a39b80-c735-45af-aee5-075ca9080323@zmail17.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <20120316141906.GB2897@peqn>
+	id 1SDC6U-0001k3-2o
+	for ltp-list@lists.sourceforge.net; Thu, 29 Mar 2012 09:57:19 +0000
+Message-ID: <4F7431B3.5020304@cn.fujitsu.com>
+Date: Thu, 29 Mar 2012 17:56:03 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Are you still maintaining Selinux testsuite
+References: <4F72AB56.2090209@cn.fujitsu.com>
+	<4F72ACF5.1090101@casparzhang.com>
+	<4F72BE67.6010602@cn.fujitsu.com>
+	<4F73FC0E.7030809@casparzhang.com>
+In-Reply-To: <4F73FC0E.7030809@casparzhang.com>
+Subject: Re: [LTP] [PATCHv2]pthread_join:4-1.c: clean up code
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,65 +31,333 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Serge Hallyn <serge.hallyn@canonical.com>
-Cc: Poornima Nayak <Poornima.Nayak@in.ibm.com>, ltp-list <ltp-list@lists.sf.net>, Jeffrey Burke <jburke@redhat.com>, Stephen Smalley <sds@tycho.nsa.gov>, James Morris <jmorris@namei.org>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
+On 03/29/2012 02:07 PM, Caspar Zhang wrote:
 
-
------ Original Message -----
-> From: "Serge Hallyn" <serge.hallyn@canonical.com>
-> To: "Poornima Nayak" <Poornima.Nayak@in.ibm.com>
-> Cc: "ltp-list" <ltp-list@lists.sf.net>, "Stephen Smalley" <sds@tycho.nsa.gov>, "James Morris" <jmorris@namei.org>
-> Sent: Friday, March 16, 2012 3:19:06 PM
-> Subject: Re: [LTP] Are you still maintaining Selinux testsuite
+> On 03/28/2012 03:31 PM, lidan wrote:
+>>
+>> sorry for using old version checkpatch.pl.
+>>
+>> code cleanup for pthread_join/4-1.c
+>>
+>> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 > 
-> Quoting Poornima Nayak (Poornima.Nayak@in.ibm.com):
-> > Hi Serge
-> > 
-> > I was looking out for selinux test suite after the call was taken
-> > to move
-> > it out of LTP. Latest discussion is this
-> > http://permalink.gmane.org/gmane.linux.ltp/15301. Any progress
-> > beyond this
-> > ?
+> Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 > 
-> Hi Poornima,
-> 
-> yes, I'm sorry it's taken this long, but I finally got a copy up at:
-> 
-> http://git.selinuxproject.org/git/?p=users/serge/selinux-testsuite.git;a=summary
-> 
-> Thanks James for the account, and Stephen for the copy of the git
-> tree.
-> 
-> Now I should get back to getting this to pass on Ubuntu -
-> unfortunately
-> the changes I"d been staging for that were the victim of a hard drive
-> crash.
+> Wanlong, feel free to commit.
 
-Hi,
 
-what is the preffered way of contributing?
+pushed, thanks Li and Caspar ;)
 
-I have some patches, which allow testsuite to run on latest RHEL (7 Alpha atm.)
-and F16 in automated env (Beaker). These also include some previous fixes made in LTP,
-which probably didn't make it back to upstream.
-
-Regards,
-Jan
+Wanlong Gao
 
 > 
-> -serge
+> Thanks,
+> Caspar
+> 
+>> ---
+>>  .../conformance/interfaces/pthread_join/4-1.c      |  159 ++++++--------------
+>>  1 file changed, 43 insertions(+), 116 deletions(-)
+>>
+>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+>> index baf0992..fb8c8d3 100644
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+>> @@ -1,7 +1,7 @@
+>>  /*
+>>  * Copyright (c) 2005, Bull S.A..  All rights reserved.
+>>  * Created by: Sebastien Decugis
+>> -
+>> +*
+>>  * This program is free software; you can redistribute it and/or modify it
+>>  * under the terms of version 2 of the GNU General Public License as
+>>  * published by the Free Software Foundation.
+>> @@ -13,27 +13,23 @@
+>>  * You should have received a copy of the GNU General Public License along
+>>  * with this program; if not, write the Free Software Foundation, Inc., 59
+>>  * Temple Place - Suite 330, Boston MA 02111-1307, USA.
+>> -
+>> +*
+>>  * This sample test aims to check the following assertion:
+>>  *
+>> -* If the thread calling pthread_join is canceled, the joined thread remains joinable.
+>> -
+>> +* If the thread calling pthread_join is canceled, the joined thread
+>> +* remains joinable.
+>> +*
+>>  * The steps are:
+>>  * -> create a thread blocked on a mutex.
+>>  * -> create another thread which tries and join the first thread.
+>>  * -> cancel the 2nd thread.
+>>  * -> unblock the semaphore then join the 1st thread
+>> -
+>>  * The test fails if the main thread is unable to join the 1st thread.
+>> -
+>>  */
+>>  
+>>  /* We are testing conformance to IEEE Std 1003.1, 2003 Edition */
+>>  #define _POSIX_C_SOURCE 200112L
+>>  
+>> -/********************************************************************************************/
+>> -/****************************** standard includes *****************************************/
+>> -/********************************************************************************************/
+>>  #include <pthread.h>
+>>  #include <stdarg.h>
+>>  #include <stdio.h>
+>> @@ -41,82 +37,37 @@
+>>  #include <string.h>
+>>  #include <unistd.h>
+>>  #include <semaphore.h>
+>> -
+>>  #include <errno.h>
+>>  
+>> -/********************************************************************************************/
+>> -/******************************   Test framework   *****************************************/
+>> -/********************************************************************************************/
+>>  #include "../testfrmw/testfrmw.h"
+>>  #include "../testfrmw/testfrmw.c"
+>> -/* This header is responsible for defining the following macros:
+>> - * UNRESOLVED(ret, descr);
+>> - *    where descr is a description of the error and ret is an int (error code for example)
+>> - * FAILED(descr);
+>> - *    where descr is a short text saying why the test has failed.
+>> - * PASSED();
+>> - *    No parameter.
+>> - *
+>> - * Both three macros shall terminate the calling process.
+>> - * The testcase shall not terminate in any other maneer.
+>> - *
+>> - * The other file defines the functions
+>> - * void output_init()
+>> - * void output(char * string, ...)
+>> - *
+>> - * Those may be used to output information.
+>> - */
+>> -
+>> -/********************************************************************************************/
+>> -/********************************** Configuration ******************************************/
+>> -/********************************************************************************************/
+>>  #ifndef VERBOSE
+>>  #define VERBOSE 1
+>>  #endif
+>>  
+>> -/********************************************************************************************/
+>> -/***********************************     Helper     *****************************************/
+>> -/********************************************************************************************/
+>>  #include "../testfrmw/threads_scenarii.c"
+>> -/* this file defines:
+>> -* scenarii: array of struct __scenario type.
+>> -* NSCENAR : macro giving the total # of scenarii
+>> -* scenar_init(): function to call before use the scenarii array.
+>> -* scenar_fini(): function to call after end of use of the scenarii array.
+>> -*/
+>> -
+>> -/********************************************************************************************/
+>> -/***********************************    Test case   *****************************************/
+>> -/********************************************************************************************/
+>>  
+>>  pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
+>>  
+>>  /* 1st thread function */
+>> -void * threaded (void * arg)
+>> +void *threaded(void *arg)
+>>  {
+>>  	int ret = 0;
+>>  
+>>  	/* Try and lock the mutex, then exit */
+>> -
+>>  	ret = pthread_mutex_lock(&mtx);
+>> -
+>>  	if (ret != 0)
+>> -	{
+>>  		UNRESOLVED(ret, "Failed to lock mutex");
+>> -	}
+>>  
+>>  	ret = pthread_mutex_unlock(&mtx);
+>> -
+>>  	if (ret != 0)
+>> -	{
+>>  		UNRESOLVED(ret, "Failed to unlock mutex");
+>> -	}
+>>  
+>>  	return NULL;
+>>  }
+>>  
+>>  /* Canceled thread */
+>> -void * joiner_func(void * arg)
+>> +void *joiner_func(void *arg)
+>>  {
+>>  	(void) pthread_join(*(pthread_t *) arg, NULL);
+>>  
+>> @@ -139,116 +90,92 @@ int main(int argc, char *argv[])
+>>  	/* Initialize thread attribute objects */
+>>  	scenar_init();
+>>  
+>> -	for (sc = 0; sc < NSCENAR; sc++)
+>> -	{
+>> +	for (sc = 0; sc < NSCENAR; sc++) {
+>>  #if VERBOSE > 0
+>>  		output("-----\n");
+>> -		output("Starting test with scenario (%i): %s\n", sc, scenarii[ sc ].descr);
+>> +		output("Starting test with scenario (%i): %s\n",
+>> +		       sc, scenarii[sc].descr);
+>>  #endif
+>>  
+>>  		/* Lock the mutex */
+>>  		ret = pthread_mutex_lock(&mtx);
+>> -
+>>  		if (ret != 0)
+>> -		{
+>>  			UNRESOLVED(ret, "failed to lock the mutex");
+>> -		}
+>>  
+>> -		ret = pthread_create(&child, &scenarii[ sc ].ta, threaded, NULL);
+>> +		ret = pthread_create(&child, &scenarii[sc].ta,
+>> +				     threaded, NULL);
+>>  
+>> -		switch (scenarii[ sc ].result)
+>> -		{
+>> -				case 0:                                       /* Operation was expected to succeed */
+>> +		switch (scenarii[sc].result) {
+>> +		/* Operation was expected to succeed */
+>> +		case 0:
+>>  
+>> -				if (ret != 0)
+>> -				{
+>> -					UNRESOLVED(ret, "Failed to create this thread");
+>> -				}
+>> -
+>> -				break;
+>> -
+>> -				case 1:                                       /* Operation was expected to fail */
+>> +			if (ret != 0)
+>> +				UNRESOLVED(ret, "Failed to create this thread");
+>>  
+>> -				if (ret == 0)
+>> -				{
+>> -					UNRESOLVED(-1, "An error was expected but the thread creation succeeded");
+>> -				}
+>> +			break;
+>> +		/* Operation was expected to fail */
+>> +		case 1:
+>>  
+>> -				break;
+>> +			if (ret == 0)
+>> +				UNRESOLVED(-1, "An error was expected "
+>> +					   "but the thread creation succeeded");
+>>  
+>> -				case 2:                                       /* We did not know the expected result */
+>> -				default:
+>> +			break;
+>> +		/* We did not know the expected result */
+>> +		case 2:
+>> +		default:
+>>  #if VERBOSE > 0
+>>  
+>> -				if (ret == 0)
+>> -				{
+>> -					output("Thread has been created successfully for this scenario\n");
+>> -				}
+>> -				else
+>> -				{
+>> -					output("Thread creation failed with the error: %s\n", strerror(ret));
+>> -				}
+>> +			if (ret == 0)
+>> +				output("Thread has been created "
+>> +				       "successfully for this scenario\n");
+>> +			else
+>> +				output("Thread creation failed with the error: "
+>> +				       "%s\n", strerror(ret));
+>>  
+>>  #endif
+>>  
+>>  		}
+>> -
+>> -		if (ret == 0)                                       /* The new thread is running */
+>> -		{
+>> -
+>> +		/* The new thread is running */
+>> +		if (ret == 0) {
+>>  			/* Now create the joiner thread */
+>> -			ret = pthread_create(&joiner, NULL, joiner_func, &child);
+>> +			ret = pthread_create(&joiner, NULL,
+>> +					     joiner_func, &child);
+>>  
+>>  			if (ret != 0)
+>> -			{
+>> -				UNRESOLVED(ret, "Failed to create the joiner thread");
+>> -			}
+>> +				UNRESOLVED(ret, "Failed to create the "
+>> +					   "joiner thread");
+>>  
+>>  			/* Let it enter pthread_join */
+>>  			sched_yield();
+>>  
+>>  			/* Cancel the joiner thread */
+>>  			ret = pthread_cancel(joiner);
+>> -
+>>  			if (ret != 0)
+>> -			{
+>>  				UNRESOLVED(ret, "Failed to cancel the thread");
+>> -			}
+>>  
+>>  			/* Join the canceled thread */
+>>  			ret = pthread_join(joiner, NULL);
+>> -
+>>  			if (ret != 0)
+>> -			{
+>> -				UNRESOLVED(ret, "Failed to join the canceled thread");
+>> -			}
+>> +				UNRESOLVED(ret, "Failed to join the "
+>> +					   "canceled thread");
+>>  
+>>  			/* Unblock the child thread */
+>>  			ret = pthread_mutex_unlock(&mtx);
+>> -
+>>  			if (ret != 0)
+>> -			{
+>>  				UNRESOLVED(ret, "Failed to unlock the mutex");
+>> -			}
+>>  
+>>  			/* Check the first thread is still joinable */
+>>  			ret = pthread_join(child, NULL);
+>> -
+>> -			if (ret != 0)
+>> -			{
+>> +			if (ret != 0) {
+>>  				output("Error returned: %d\n");
+>>  				FAILED("The thread is no more joinable");
+>>  			}
+>>  
+>> -		}
+>> -		else
+>> -		{
+>> +		} else {
+>>  			ret = pthread_mutex_unlock(&mtx);
+>> -
+>>  			if (ret != 0)
+>> -			{
+>>  				UNRESOLVED(ret, "Failed to unlock the mutex");
+>> -			}
+>>  		}
+>>  	}
+>>  
+> 
 > 
 > ------------------------------------------------------------------------------
 > This SF email is sponsosred by:
-> Try Windows Azure free for 90 days Click Here
+> Try Windows Azure free for 90 days Click Here 
 > http://p.sf.net/sfu/sfd2d-msazure
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
+
+
 
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
