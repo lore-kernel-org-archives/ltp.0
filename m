@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1S8Bi8-0007tQ-TK
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 14:31:24 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SDVgO-0007Da-1g
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 06:51:36 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S8Bi4-0003lC-LK
-	for ltp-list@lists.sourceforge.net; Thu, 15 Mar 2012 14:31:24 +0000
-Message-ID: <4F61FCF8.1040304@cn.fujitsu.com>
-Date: Thu, 15 Mar 2012 22:30:16 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SDVgJ-0005rk-Id
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 06:51:36 +0000
+Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2U6pM3u017210
+	for <ltp-list@lists.sourceforge.net>; Fri, 30 Mar 2012 14:51:23 +0800
+Message-ID: <4F7557B2.2090608@cn.fujitsu.com>
+Date: Fri, 30 Mar 2012 14:50:26 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1331820621-10095-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<80145D4278C2654ABC4879063FB2FFA9530ACB12@G4W3231.americas.hpqcorp.net>
-In-Reply-To: <80145D4278C2654ABC4879063FB2FFA9530ACB12@G4W3231.americas.hpqcorp.net>
-Subject: Re: [LTP] [PATCH] MAINTAINERS: update the maintain-ship of LTP
+References: <4F73BD76.7050505@cn.fujitsu.com>
+In-Reply-To: <4F73BD76.7050505@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]pthread_join:4-1.c:ignore detached thread
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,78 +31,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Rajak, Rishikesh Kumar (FEL/PQSi)" <rishikesh.rajak@hp.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "vapier@gentoo.org" <vapier@gentoo.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "risrajak@linux.vnet.ibm.com" <risrajak@linux.vnet.ibm.com>
+To: lidan <li.dan@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/15/2012 10:19 PM, Rajak, Rishikesh Kumar (FEL/PQSi) wrote:
+On 03/29/2012 09:40 AM, lidan wrote:
 
-> Hi Wanlong,
-> 
-> Review-By: Rishikesh K Rajak <rishikesh.rajak@hp.com>
-> 
-> No issue with me. But still I am closely watching this place though my responsibilities have changed.
+> Case pthread_join/4-1.c aims to check the following assertion
+> "If the thread calling pthread_join is canceled, the joined 
+> thread remains joinable."
+> It uses array scenarii defined in "threads_scenarii.c" which
+> sets attribute of some threads as detached.
+> This patch ignores the detached threads since once
+> a thread has been detached, it can't be joined with
+> pthread_join(3) or be made joinable again.
 
 
-Thank you for your previous great work, Rishikesh.
+pushed, thanks,
 
-Regards,
 Wanlong Gao
 
 > 
-> Regards
-> Rishi
 > 
-> -----Original Message-----
-> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
-> Sent: Thursday, March 15, 2012 7:40 PM
-> To: akpm@linux-foundation.org
-> Cc: ltp-list@lists.sourceforge.net; vapier@gentoo.org; linux-kernel@vger.kernel.org; risrajak@linux.vnet.ibm.com
-> Subject: [LTP] [PATCH] MAINTAINERS: update the maintain-ship of LTP
-> 
-> The maintain-ship of LTP is out of date, so update it.
-> 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 > ---
->  MAINTAINERS |    8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  .../conformance/interfaces/pthread_join/4-1.c      |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 95e4e43..3e10e6f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4173,12 +4173,14 @@ F:      Documentation/hwmon/ltc4261
->  F:     drivers/hwmon/ltc4261.c
-> 
->  LTP (Linux Test Project)
-> -M:     Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-> -M:     Garrett Cooper <yanegomi@gmail.com>
-> +M:     Shubham Goyal <shubham@linux.vnet.ibm.com>
->  M:     Mike Frysinger <vapier@gentoo.org>
-> -M:     Subrata Modak <subrata@linux.vnet.ibm.com>
-> +M:     Cyril Hrubis <chrubis@suse.cz>
-> +M:     Caspar Zhang <caspar@casparzhang.com>
-> +M:     Wanlong Gao <gaowanlong@cn.fujitsu.com>
->  L:     ltp-list@lists.sourceforge.net (subscribers-only)
->  W:     http://ltp.sourceforge.net/
-> +T:     git git://github.com/linux-test-project/ltp.git
->  T:     git git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev
->  S:     Maintained
-> 
-> --
-> 1.7.10.rc1
-> 
-> 
-> ------------------------------------------------------------------------------
-> This SF email is sponsosred by:
-> Try Windows Azure free for 90 days Click Here
-> http://p.sf.net/sfu/sfd2d-msazure
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+> index fb8c8d3..16ac7e8 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/4-1.c
+> @@ -91,6 +91,9 @@ int main(int argc, char *argv[])
+>  	scenar_init();
+>  
+>  	for (sc = 0; sc < NSCENAR; sc++) {
+> +		if (scenarii[sc].detached == 1)
+> +			continue;
+> +
+>  #if VERBOSE > 0
+>  		output("-----\n");
+>  		output("Starting test with scenario (%i): %s\n",
 
 
 
