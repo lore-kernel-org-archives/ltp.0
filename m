@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SAhke-0007RL-FE
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 13:08:24 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SDcqF-0006Zm-Jm
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 14:30:15 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SAhkd-0000Qy-G8
-	for ltp-list@lists.sourceforge.net; Thu, 22 Mar 2012 13:08:24 +0000
-Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q2MD8EoF004941
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Mar 2012 21:08:15 +0800
-Message-ID: <4F6B2407.3090604@cn.fujitsu.com>
-Date: Thu, 22 Mar 2012 21:07:19 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1SDcqA-0003f0-0b
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 14:30:15 +0000
+From: Zhouping Liu <zliu@redhat.com>
+Date: Fri, 30 Mar 2012 22:29:58 +0800
+Message-Id: <aef1be3a718b56357b90b2a7f06f583c2a3c240d.1333117443.git.zliu@redhat.com>
 MIME-Version: 1.0
-References: <4F6AA2EF.9030403@cn.fujitsu.com>
-In-Reply-To: <4F6AA2EF.9030403@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCHv2]testfrmw:disable thread cancelability while
- output is running
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------1.7.7.6"
+Subject: [LTP] [PATCH] mm/tunable: fix unexpected error log in
+	min_free_kbytes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,69 +24,109 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: lidan <li.dan@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 03/22/2012 11:56 AM, lidan wrote:
-
-> Function output can be canceled by pthread_cancel(), which,
-> maybe, leads to a deadlock as it calls pthread_mutex_lock().
-> That's catched in case "pthread_join/4-1.c".
-> 
-> So,disable thread cancelability until output finishes.
+This is a multi-part message in MIME format.
+--------------1.7.7.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
-pushed, thanks,
+when overcommit_memory=0, mmap() will be destroyed in two below scenario:
+ 1) MAP_FAILED with ENOMEM,
+ 2) oom_killer kill it.
+without the patch, it just catched oom_killer scenario,
+the patch fixed it.
 
-Wanlong Gao
-
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-> ---
->  .../conformance/interfaces/testfrmw/testfrmw.c     |    4 ++++
->  1 files changed, 4 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-> index 034faa9..a9cfbef 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/testfrmw.c
-> @@ -28,6 +28,7 @@
->  
->  #include <time.h>
->  #include <sys/types.h>
-> +#include <pthread.h>
->  
->  /* We use a mutex to avoid conflicts in traces */
->  static pthread_mutex_t m_trace = PTHREAD_MUTEX_INITIALIZER;
-> @@ -43,7 +44,9 @@ void output(char *string, ...)
->  	char *ts = "[??:??:??]";
->  	struct tm *now;
->  	time_t nw;
-> +	int oldstate;
->  
-> +	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &oldstate);
->  	pthread_mutex_lock(&m_trace);
->  	nw = time(NULL);
->  	now = localtime(&nw);
-> @@ -56,6 +59,7 @@ void output(char *string, ...)
->  	vprintf(string, ap);
->  	va_end(ap);
->  	pthread_mutex_unlock(&m_trace);
-> +	pthread_setcancelstate(oldstate, NULL);
->  }
->  
->  void output_fini(void)
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/tunable/min_free_kbytes.c |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
 
 
+--------------1.7.7.6
+Content-Type: text/x-patch;
+	name="0001-mm-tunable-fix-unexpected-error-log-in-min_free_kbyt.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-mm-tunable-fix-unexpected-error-log-in-min_free_kbyt.patch"
+
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index a69e129..00ead04 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -92,7 +92,6 @@ int main(int argc, char *argv[])
+ 		exit(0);
+ 	}
+ 
+-
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		Tst_count = 0;
+ 
+@@ -101,7 +100,6 @@ int main(int argc, char *argv[])
+ 		test_tune(1);
+ 	}
+ 
+-
+ 	if (kill(pid, SIGUSR1) == -1)
+ 		tst_brkm(TBROK|TERRNO, cleanup, "kill %d", pid);
+ 	if (waitpid(pid, &status, WUNTRACED|WCONTINUED)  == -1)
+@@ -150,10 +148,21 @@ static void test_tune(unsigned long overcommit_policy)
+ 			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+ 				tst_resm(TFAIL,
+ 				    "child unexpectedly failed: %d", status);
+-		} else {
++		} else if (overcommit_policy == 1) {
+ 			if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
+ 				tst_resm(TFAIL,
+ 				    "child unexpectedly failed: %d", status);
++		} else {
++			if (WIFEXITED(status)) {
++				if (WEXITSTATUS(status) != 0) {
++					tst_resm(TFAIL, "child unexpectedly "
++					    "failed: %d", status);
++				}
++			} else if (!WIFSIGNALED(status) ||
++				    WTERMSIG(status) != SIGKILL) {
++				tst_resm(TFAIL,
++				    "child unexpectedly failed: %d", status);
++			}
+ 		}
+ 	}
+ }
+@@ -178,7 +187,7 @@ static int eatup_mem(unsigned long overcommit_policy)
+ 		addrs[i] = mmap(NULL, MAP_SIZE, PROT_READ|PROT_WRITE,
+ 		    MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
+ 		if (addrs[i] == MAP_FAILED) {
+-			if (overcommit_policy != 2 || errno != ENOMEM) {
++			if (overcommit_policy != 1 && errno != ENOMEM) {
+ 				perror("mmap");
+ 				ret = -1;
+ 			}
+
+--------------1.7.7.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
 Try Windows Azure free for 90 days Click Here 
 http://p.sf.net/sfu/sfd2d-msazure
+--------------1.7.7.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.7.6--
+
+
+
