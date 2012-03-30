@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1S5cOh-0000pw-9z
-	for ltp-list@lists.sourceforge.net; Thu, 08 Mar 2012 12:24:43 +0000
-Date: Thu, 8 Mar 2012 13:26:26 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120308122626.GA29867@saboteur.suse.cz>
-References: <4F578418.2060100@redhat.com> <4F581E1B.60208@casparzhang.com>
-	<4F582C39.10307@cn.fujitsu.com>
-	<20120308122426.GA26903@saboteur.suse.cz>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SDQQ6-0005S6-Ar
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 01:14:26 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SDQQ4-0003W1-Bp
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 01:14:26 +0000
+Message-ID: <4F7508AF.6070408@cn.fujitsu.com>
+Date: Fri, 30 Mar 2012 09:13:19 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20120308122426.GA26903@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH] getrusage04: initialise [us]last to current values
+References: <CAGH67wR9ZGjypQbE_oWb1pM=U4=oetNFrberWD66sZj4o9Lm3g@mail.gmail.com>
+	<1333069515-4899-1-git-send-email-penght@cn.fujitsu.com>
+	<CAGH67wQ9xgA2f_t=524My2uzyeRnuMWTyZfDQQU_zkMhuca8Vg@mail.gmail.com>
+In-Reply-To: <CAGH67wQ9xgA2f_t=524My2uzyeRnuMWTyZfDQQU_zkMhuca8Vg@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v2] cron02: fix a bug of /etc/init.d/crond is
+	nonexistent
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,30 +31,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > I can't see that linux-test-project/ltp auto sync from sf since you commit
-> > this patch, so I guess Cyril set the auto sync from linux-test-project/ltp
-> > to sf, so, maybe you should commit to github and it'll auto sync to sf, right?
+On 03/30/2012 09:07 AM, Garrett Cooper wrote:
+
+> On Thu, Mar 29, 2012 at 6:05 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+>> /etc/init.d/crond is nonexistent in fedora16, so should use systemctl.
+>>
+>> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+>> ---
+>>  testcases/commands/cron/cron02 |   14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/testcases/commands/cron/cron02 b/testcases/commands/cron/cron02
+>> index 0c05c95..d348936 100755
+>> --- a/testcases/commands/cron/cron02
+>> +++ b/testcases/commands/cron/cron02
+>> @@ -52,12 +52,26 @@ do_setup(){
+>>         }
+>>         fi
+>>
+>> +       # running under systemd?
+>> +       if command -v systemctl >/dev/null 2>&1; then
+>> +               HAVE_SYSTEMCTL=true
+>> +       else
+>> +               HAVE_SYSTEMCTL=false
+>> +       fi
+>> +
+>>        # restart cron daemon
+>>        # Red Hat uses crond, SuSE/Other uses cron.
+>>        if [ -x /etc/init.d/crond ]; then
+>>                /etc/init.d/crond restart
+>>        elif [ -x /etc/init.d/cron ]; then
+>>                /etc/init.d/cron restart
+>> +       elif $HAVE_SYSTEMCTL; then
+>> +               for crond in "crond" "cron"; do
+>> +                       if systemctl is-enabled $crond.service >/dev/null 2>&1; then
+>> +                               systemctl restart $crond.service
+>> +                               break
+>> +                       fi
+>> +               done
+>>        else
+>>                echo "Could not determine cron init.d script."
+>>                exit 1
 > 
-> The auto sync is prepared but not yet running. I'll will start that once
-> we discuss this change on LTP mailing list and make sure everybody
-> understand the change. Till that sync is done by hand.
+> Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
 
-And FYI, I've just verifed that the script is working and synced the
-github repo with the sf one.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+pushed, thanks Peng, Garrett,
+
+Wanlong Gao
+
+> 
+> ------------------------------------------------------------------------------
+> This SF email is sponsosred by:
+> Try Windows Azure free for 90 days Click Here 
+> http://p.sf.net/sfu/sfd2d-msazure
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
