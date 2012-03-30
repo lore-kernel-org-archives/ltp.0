@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1S4SsI-0001S4-DP
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 08:02:30 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1S4SsH-0004Yx-3c
-	for ltp-list@lists.sourceforge.net; Mon, 05 Mar 2012 08:02:30 +0000
-Received: by pbbrp12 with SMTP id rp12so4378436pbb.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SDQJs-0004H2-2d
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 01:08:00 +0000
+Received: from mail-vb0-f47.google.com ([209.85.212.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SDQJr-0003LF-G8
+	for ltp-list@lists.sourceforge.net; Fri, 30 Mar 2012 01:08:00 +0000
+Received: by vbbfr13 with SMTP id fr13so139416vbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 05 Mar 2012 00:02:23 -0800 (PST)
-Message-ID: <4F5472D7.20109@casparzhang.com>
-Date: Mon, 05 Mar 2012 16:01:27 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Thu, 29 Mar 2012 18:07:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <76754072b02d384e53bff8c46b248377fb38c71c.1330687921.git.zliu@redhat.com>
-In-Reply-To: <76754072b02d384e53bff8c46b248377fb38c71c.1330687921.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH] numa/numa_node_size: removed HAS_NUMA_H macro
+In-Reply-To: <1333069515-4899-1-git-send-email-penght@cn.fujitsu.com>
+References: <CAGH67wR9ZGjypQbE_oWb1pM=U4=oetNFrberWD66sZj4o9Lm3g@mail.gmail.com>
+	<1333069515-4899-1-git-send-email-penght@cn.fujitsu.com>
+Date: Thu, 29 Mar 2012 18:07:54 -0700
+Message-ID: <CAGH67wQ9xgA2f_t=524My2uzyeRnuMWTyZfDQQU_zkMhuca8Vg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v2] cron02: fix a bug of /etc/init.d/crond is
+	nonexistent
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,83 +29,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/02/2012 07:32 PM, Zhouping Liu wrote:
-> HAS_NUMA_H should be HAVE_NUMA_H, and HAVE_NUMA_H is defined
-> in config.h, so added the header file.
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+On Thu, Mar 29, 2012 at 6:05 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> /etc/init.d/crond is nonexistent in fedora16, so should use systemctl.
+>
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 > ---
->  testcases/kernel/numa/numa_node_size.c |   11 +++++++----
->  1 files changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/numa/numa_node_size.c b/testcases/kernel/numa/numa_node_size.c
-> index 3d71ff2..5992f56 100644
-> --- a/testcases/kernel/numa/numa_node_size.c
-> +++ b/testcases/kernel/numa/numa_node_size.c
-> @@ -31,9 +31,12 @@
->  /*                                                                            */
->  /******************************************************************************/
->  
-> +#include "config.h"
+> =A0testcases/commands/cron/cron02 | =A0 14 ++++++++++++++
+> =A01 file changed, 14 insertions(+)
+>
+> diff --git a/testcases/commands/cron/cron02 b/testcases/commands/cron/cro=
+n02
+> index 0c05c95..d348936 100755
+> --- a/testcases/commands/cron/cron02
+> +++ b/testcases/commands/cron/cron02
+> @@ -52,12 +52,26 @@ do_setup(){
+> =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0 fi
+>
+> + =A0 =A0 =A0 # running under systemd?
+> + =A0 =A0 =A0 if command -v systemctl >/dev/null 2>&1; then
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 HAVE_SYSTEMCTL=3Dtrue
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 HAVE_SYSTEMCTL=3Dfalse
+> + =A0 =A0 =A0 fi
 > +
+> =A0 =A0 =A0 =A0# restart cron daemon
+> =A0 =A0 =A0 =A0# Red Hat uses crond, SuSE/Other uses cron.
+> =A0 =A0 =A0 =A0if [ -x /etc/init.d/crond ]; then
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/etc/init.d/crond restart
+> =A0 =A0 =A0 =A0elif [ -x /etc/init.d/cron ]; then
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/etc/init.d/cron restart
+> + =A0 =A0 =A0 elif $HAVE_SYSTEMCTL; then
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 for crond in "crond" "cron"; do
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if systemctl is-enabled $cr=
+ond.service >/dev/null 2>&1; then
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 systemctl r=
+estart $crond.service
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 fi
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 done
+> =A0 =A0 =A0 =A0else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "Could not determine cron init.d scri=
+pt."
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0exit 1
 
-no need to put a new line here ...
+Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
 
->  #include <stdio.h>
->  #include <stdlib.h>
-> -#if HAS_NUMA_H
-> +
+---------------------------------------------------------------------------=
+---
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here =
 
-here as well.
-
-Anyway, I committed this patch with removing the 2 blank lines.
-
-Thanks,
-Caspar
-
-> +#if HAVE_NUMA_H
->  #include <numa.h>
->  #endif
->  
-> @@ -48,7 +51,7 @@ char *fmt_mem(unsigned long long mem, char *buf)
->  }
->  void hardware(void)
->  {
-> -#if HAS_NUMA_H
-> +#if HAVE_NUMA_H
->          int i;
->          int maxnode = numa_max_node();
->          printf("available: %d nodes (0-%d)\n", 1+maxnode, maxnode);
-> @@ -64,7 +67,7 @@ void hardware(void)
->  }
->  int main()
->  {
-> -#if HAS_NUMA_H
-> +#if HAVE_NUMA_H
->          nodemask_t nodemask;
->          void hardware();
->          if (numa_available() < 0)
-> @@ -83,4 +86,4 @@ int main()
->          printf("NUMA is not available\n");
->          return 1;
->  #endif
-> -}
-> \ No newline at end of file
-> +}
-
-
-------------------------------------------------------------------------------
-Try before you buy = See our experts in action!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-dev2
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
