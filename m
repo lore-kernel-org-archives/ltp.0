@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <andreas@digitalplaywright.com>) id 1SMCG6-0008GM-Td
-	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 05:56:22 +0000
-Received: from mail-bk0-f47.google.com ([209.85.214.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SMCG5-000336-Su
-	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 05:56:22 +0000
-Received: by bkcjk7 with SMTP id jk7so3397002bkc.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SEHsk-0007r7-Je
+	for ltp-list@lists.sourceforge.net; Sun, 01 Apr 2012 10:19:34 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SEHsj-0007BE-GK
+	for ltp-list@lists.sourceforge.net; Sun, 01 Apr 2012 10:19:34 +0000
+Received: by pbcum15 with SMTP id um15so3571950pbc.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 22 Apr 2012 22:56:14 -0700 (PDT)
+	Sun, 01 Apr 2012 03:19:27 -0700 (PDT)
+Message-ID: <4F782B3E.105@casparzhang.com>
+Date: Sun, 01 Apr 2012 18:17:34 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Date: Sun, 22 Apr 2012 22:29:49 -0700
-Message-ID: <CAFkf=XoJnHYOZ3gVoyDjekjd3xp_YGQ==A7zvPqgMtgkdzzmnw@mail.gmail.com>
-From: Andreas Saebjoernsen <andreas@digitalplaywright.com>
-Subject: [LTP] Test for linux syscall 240 cc sys_futex
+References: <4F6E04A0.10305@gmail.com>
+In-Reply-To: <4F6E04A0.10305@gmail.com>
+Subject: Re: [LTP] [PATCH] testcases/kernel/mem/vma/vma01.c: fix the right
+ start/end memory address
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,81 +28,105 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0817392465137433064=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============0817392465137433064==
-Content-Type: multipart/alternative; boundary=000e0cdfd900476dcf04be51edc6
-
---000e0cdfd900476dcf04be51edc6
-Content-Type: text/plain; charset=ISO-8859-1
-
-We are implementing a binary analysis tool that need to marshal Linux
-system calls, and we've been using LTP to guide our implementation. We need
-tests for syscall 240 sys_futex, and we can not find a test for this in
-LTP. Please let us know if you have any advice on where to find tests for
-syscalls 240 sys_futex.
-
-I was able to locate an old thread about futex tests:
-  - http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg07268.html
-
-There is some futex tests in the Linux Checkpoint Restart Testsuite, but I
-am not sure if these are sufficient. Please let us know what the best
-solution is for testing syscall 240 sys_futex.
-
-Thank you.
-
-Best,
-Andeas
-
---000e0cdfd900476dcf04be51edc6
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-We are implementing a binary analysis tool that need to marshal Linux syste=
-m calls, and we&#39;ve been using LTP to guide our=A0implementation. We nee=
-d tests for syscall 240=A0sys_futex, and we can not find a test for this in=
- LTP. Please let us know if you have any advice on where to find tests for =
-syscalls 240 sys_futex.<div>
-
-
-<br></div><div>I was able to locate an old thread about futex tests:</div><=
-div>=A0 -=A0<a href=3D"http://www.mail-archive.com/ltp-list@lists.sourcefor=
-ge.net/msg07268.html" target=3D"_blank">http://www.mail-archive.com/ltp-lis=
-t@lists.sourceforge.net/msg07268.html</a></div>
-
-<div><br></div><div>There is some futex tests in the Linux Checkpoint Resta=
-rt Testsuite, but I am not sure if these are sufficient. Please let us know=
- what the best solution is for testing syscall 240 sys_futex.</div>
-<div><br></div><div>Thank you.</div><div><br><div>Best,</div><div>Andeas</d=
-iv></div>
-
---000e0cdfd900476dcf04be51edc6--
-
-
---===============0817392465137433064==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Wang Sheng-Hui <shhuiw@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 03/25/2012 01:30 AM, Wang Sheng-Hui wrote:
+> For a VMA with memory range 6*ps, regardless of it's two 3*ps or
+> one single 6*ps, t is the start addr of the vma, u = t + 3*ps, and
+> the end addr is t + 6*ps.
+> 
+> For the check process, x should start from t, not u, and later check
+> for the second 3*ps should resume from u.
+
+Hi Shenghui, thanks for the patch.
+
+However, your patch doesn't work in some situation, e.g.: when t mmapped
+at highest addr (it is the most common situation), which makes t+3*ps
+over boundary, so mmap will map to another addr near t+3*ps. So I
+propose for the following increment fix:
+
+ static void check_vma(void)
+ {
+        int status;
+-       void *t, *u, *x, *y;
++       void *t, *u, *v, *x, *y;
+
+-       t = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
++       v = mmap(NULL, ps, PROT_READ, MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
++       if (v == MAP_FAILED)
++               tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++       t = mmap(v - 6*ps, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE,
+0, 0);
+        if (t == MAP_FAILED)
+                tst_brkm(TBROK|TERRNO, cleanup, "mmap");
+        memset(t, 1, ps);
+
+A new addr v introduced before other mappings, used to locate the
+highest addr. And in order not to be merged with other mappings, v is
+mapped with READ-only prot.
+
+result using your patch w/o my increment patch:
+
+# ./vma01
+parent: t = 0x7f82dd437000
+child : u = 0x7f82dd434000
+vma01       0  TINFO  :  s = 0x7f82dd437000, t = 0x7f82dd43a000
+vma01       1  TBROK  :  unexpected VMA found.
+vma01       2  TBROK  :  Remaining cases broken
+
+result using your patch w/ my increment patch:
+
+# ./vma01
+parent: t = 0x7f418066f000
+child : u = 0x7f4180672000
+vma01       0  TINFO  :  s = 0x7f418066f000, t = 0x7f4180672000
+vma01       0  TINFO  :  s = 0x7f4180672000, t = 0x7f4180675000
+vma01       1  TPASS  :  two 3*ps VMAs found.
+
+Thoughts?
+
+Thanks,
+Caspar
+
+> 
+> Signed-off-by: Wang Sheng-Hui <shhuiw@gmail.com>
+> ---
+>  testcases/kernel/mem/vma/vma01.c |   10 +++++-----
+>  1 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
+> index 398d7a1..4b66121 100644
+> --- a/testcases/kernel/mem/vma/vma01.c
+> +++ b/testcases/kernel/mem/vma/vma01.c
+> @@ -112,12 +112,12 @@ static void check_vma(void)
+>  		printf("child : u = %p\n", u);
+>  		memset(u, 2, ps);
+>  
+> -		x = get_end_addr(u, MAPS_FILE);
+> -		if (x == u + 6*ps)
+> +		x = get_end_addr(t, MAPS_FILE);
+> +		if (x == t + 6*ps)
+>  			exit(1);
+> -		if (x == u + 3*ps) {
+> -			y = get_end_addr(x, MAPS_FILE);
+> -			if (y == x + 3*ps)
+> +		if (x == u) {
+> +			y = get_end_addr(u, MAPS_FILE);
+> +			if (y == u + 3*ps)
+>  				exit(0);
+>  		}
+>  		exit(255);
+
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============0817392465137433064==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0817392465137433064==--
-
