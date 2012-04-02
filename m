@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SHubl-0008VL-TB
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 10:17:01 +0000
-Received: from mail-pz0-f46.google.com ([209.85.210.46])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SHubl-0007qA-51
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 10:17:01 +0000
-Received: by dadz9 with SMTP id z9so1151769dad.33
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 11 Apr 2012 03:16:55 -0700 (PDT)
-Message-ID: <4F855A0D.9010308@casparzhang.com>
-Date: Wed, 11 Apr 2012 18:16:45 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SEchw-0006ln-Dq
+	for ltp-list@lists.sourceforge.net; Mon, 02 Apr 2012 08:33:48 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SEchp-0004VE-Ru
+	for ltp-list@lists.sourceforge.net; Mon, 02 Apr 2012 08:33:48 +0000
+Message-ID: <4F7957FD.4070002@cn.fujitsu.com>
+Date: Mon, 02 Apr 2012 15:40:45 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1334133622-24512-1-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1334133622-24512-1-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] aio_cancel/3-1: increase BUF_SIZE
+References: <4F794D8B.6050505@cn.fujitsu.com>
+	<4F79566F.2020808@casparzhang.com>
+In-Reply-To: <4F79566F.2020808@casparzhang.com>
+Subject: Re: [LTP] ksm03
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,22 +29,102 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/11/2012 04:40 PM, Kang Kai wrote:
-> When do aio_cancel, all the aio_write operations have finished on some
-> platforms. That cause the case return UNRESOLVED. So increase the BUF_SIZE
-> to delay aio_write finish that make one aio_write operation can be
-> cancelled at least.
+On 04/02/2012 03:34 PM, Caspar Zhang wrote:
+
+> On 04/02/2012 02:56 PM, Wanlong Gao wrote:
+>> Hi Caspar,
+>>
+>> Have you ever seen like below? It happens on ksm03,
+>> the page_sharing numbers is always incorrect, it
+>> occurs on RHEL7-Alpha, any ides?
 > 
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+> Have you turned off ksm & ksmtuned services (I'm not sure about the
+
+
+I'm sure that I turned off ksm and ksmtuned.
+
+> names in RHEL7 since they're systemd services now)? I didn't receive any
+> ksm03 failures on RHEL7 so far. I (or Zhouping) will take a look at it
+> when we're back from vacation.
+
+
+OK,  thanks,
+
+Wanlong Gao
+
+> 
+> Thanks,
+> Caspar
+> 
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>> ---
+>>
+>> ksm03       0  TINFO  :  child 0 stops.
+>> ksm03       0  TINFO  :  child 1 stops.
+>> ksm03       0  TINFO  :  KSM merging...
+>> ksm03       0  TINFO  :  child 2 stops.
+>> ksm03       0  TINFO  :  wait for all children to stop.
+>> ksm03       0  TINFO  :  resume all children.
+>> ksm03       0  TINFO  :  child 0 continues...
+>> ksm03       0  TINFO  :  child 0 allocates 128 MB filled with 'c'.
+>> ksm03       0  TINFO  :  child 1 continues...
+>> ksm03       0  TINFO  :  child 1 allocates 128 MB filled with 'a'.
+>> ksm03       0  TINFO  :  child 2 continues...
+>> ksm03       0  TINFO  :  child 2 allocates 128 MB filled with 'a'.
+>> ksm03       0  TINFO  :  child 1 stops.
+>> ksm03       0  TINFO  :  child 0 stops.
+>> ksm03       0  TINFO  :  child 2 stops.
+>> ksm03       0  TINFO  :  check!
+>> ksm03       0  TINFO  :  run is 1.
+>> ksm03       0  TINFO  :  pages_shared is 2.
+>> ksm03       0  TINFO  :  pages_sharing is 95998.
+>> ksm03       1  TFAIL  :  pages_sharing is not 98302.
+>> ksm03       0  TINFO  :  pages_volatile is 0.
+>> ksm03       0  TINFO  :  pages_unshared is 0.
+>> ksm03       0  TINFO  :  sleep_millisecs is 0.
+>> ksm03       0  TINFO  :  pages_to_scan is 98304.
+>> ksm03       0  TINFO  :  wait for child 1 to stop.
+>> ksm03       0  TINFO  :  resume child 1.
+>> ksm03       0  TINFO  :  child 1 continues...
+>> ksm03       0  TINFO  :  child 1 verifies memory content.
+>> ksm03       0  TINFO  :  child 1 changes memory content to 'b'.
+>> ksm03       0  TINFO  :  child 1 stops.
+>> ksm03       0  TINFO  :  check!
+>> ksm03       0  TINFO  :  run is 1.
+>> ksm03       0  TINFO  :  pages_shared is 3.
+>> ksm03       0  TINFO  :  pages_sharing is 96528.
+>> ksm03       2  TFAIL  :  pages_sharing is not 98301.
+>> ksm03       0  TINFO  :  pages_volatile is 0.
+>> ksm03       0  TINFO  :  pages_unshared is 0.
+>> ksm03       0  TINFO  :  sleep_millisecs is 0.
+>> ksm03       0  TINFO  :  pages_to_scan is 98304.
+>> ksm03       0  TINFO  :  wait for child 1 to stop.
+>> ksm03       0  TINFO  :  resume all children.
+>> ksm03       0  TINFO  :  child 1 continues...
+>> ksm03       0  TINFO  :  child 0 continues...
+>> ksm03       0  TINFO  :  child 0 verifies memory content.
+>> ksm03       0  TINFO  :  child 1 verifies memory content.
+>> ksm03       0  TINFO  :  child 2 continues...
+>> ksm03       0  TINFO  :  child 2 changes memory content to 'd'
+>> ksm03       0  TINFO  :  child 2 stops.
+>> ksm03       0  TINFO  :  child 1 changes memory content to 'd'
+>> ksm03       0  TINFO  :  child 0 changes memory content to 'd'.
+>> ksm03       0  TINFO  :  child 0 stops.
+> 
+> 
+
+
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
