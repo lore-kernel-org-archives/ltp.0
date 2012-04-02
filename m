@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1SHt6K-00063B-Ve
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 08:40:28 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SHt6E-0004O3-TJ
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 08:40:28 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q3B8eHEe001401
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SEd2r-0003eL-81
+	for ltp-list@lists.sourceforge.net; Mon, 02 Apr 2012 08:55:25 +0000
+Received: from mail-vb0-f47.google.com ([209.85.212.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SEd2l-0005iQ-P5
+	for ltp-list@lists.sourceforge.net; Mon, 02 Apr 2012 08:55:25 +0000
+Received: by vbbfr13 with SMTP id fr13so2387433vbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 11 Apr 2012 01:40:17 -0700 (PDT)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Wed, 11 Apr 2012 16:40:22 +0800
-Message-ID: <1334133622-24512-1-git-send-email-kai.kang@windriver.com>
+	Mon, 02 Apr 2012 01:55:14 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] aio_cancel/3-1: increase BUF_SIZE
+In-Reply-To: <4F7965EA.5080102@casparzhang.com>
+References: <1333355659-14252-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F7965EA.5080102@casparzhang.com>
+Date: Mon, 2 Apr 2012 01:55:14 -0700
+Message-ID: <CAGH67wTN73cEYCe3Ms21HXyAr32guaa2q-4jngEDfNfB0CMGoQ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 1/4] hugetlb: add lib-clean in makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,40 +31,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
-When do aio_cancel, all the aio_write operations have finished on some
-platforms. That cause the case return UNRESOLVED. So increase the BUF_SIZE
-to delay aio_write finish that make one aio_write operation can be
-cancelled at least.
+On Mon, Apr 2, 2012 at 1:40 AM, Caspar Zhang <caspar@casparzhang.com> wrote:
+> On 04/02/2012 04:34 PM, Wanlong Gao wrote:
+>> make sure we can do lib-clean in hugetlb.
+>>
+>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>
+> Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../conformance/interfaces/aio_cancel/3-1.c        |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c
-index 5b09d47..ebaa468 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c
-@@ -44,7 +44,7 @@
- #define TNAME "aio_cancel/3-1.c"
- 
- #define BUF_NB		128
--#define BUF_SIZE	1024
-+#define BUF_SIZE	(1024 * 1024)
- 
- static volatile int countdown = BUF_NB;
- static volatile int canceled = 0;
--- 
-1.7.5.4
-
+Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
