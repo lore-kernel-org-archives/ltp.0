@@ -1,27 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SHu49-0006j3-4k
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:42:17 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SHu43-0006gu-GB
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:42:17 +0000
-Received: by pbcum15 with SMTP id um15so1090901pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 11 Apr 2012 02:42:05 -0700 (PDT)
-References: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
-	<4F7CF7DB.2080802@cn.fujitsu.com>
-	<CAGH67wRSAKEkn=MNn2HHivnPNjuP_tqE8+S1-ND_Z69VrBm9Ow@mail.gmail.com>
-	<4F84F212.9070408@cn.fujitsu.com>
-In-Reply-To: <4F84F212.9070408@cn.fujitsu.com>
-Mime-Version: 1.0 (1.0)
-Message-Id: <8DB64E3B-1B6D-4C27-85E8-11817A41F879@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Date: Wed, 11 Apr 2012 02:18:51 -0700
-Subject: Re: [LTP] [PATCH 2/2] Replace struct event_t with struct
-	inotify_event
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SEbCi-0003Cw-31
+	for ltp-list@lists.sourceforge.net; Mon, 02 Apr 2012 06:57:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SEbCg-00011p-1K
+	for ltp-list@lists.sourceforge.net; Mon, 02 Apr 2012 06:57:28 +0000
+Message-ID: <4F794D8B.6050505@cn.fujitsu.com>
+Date: Mon, 02 Apr 2012 14:56:11 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] ksm03
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,37 +26,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "gaowanlong@cn.fujitsu.com" <gaowanlong@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Apr 10, 2012, at 7:53 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+Hi Caspar,
 
-> On 04/05/2012 10:10 AM, Garrett Cooper wrote:
-> 
->> On Wed, Apr 4, 2012 at 6:39 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
->>> On 04/05/2012 08:42 AM, Garrett Cooper wrote:
->>> 
->>>> Replace struct event_t with struct inotify_event
->>>> 
->>>> Also do some minor whitespace cleanup while I'm
->>>> in the neighborhood.
->>> 
->>> there's something wrong with this patch, please take a look at the ".name".
->> 
->> Yeah... let me get back to you on that...
-> 
-> 
-> Any update on this?
+Have you ever seen like below? It happens on ksm03,
+the page_sharing numbers is always incorrect, it
+occurs on RHEL7-Alpha, any ides?
 
-I'm moving from CA to WA, but I'll try to get back to you sometime mid next week once I get settled in.
+Thanks,
+Wanlong Gao
 
-Thanks!
--Garrett
+---
+
+ksm03       0  TINFO  :  child 0 stops.
+ksm03       0  TINFO  :  child 1 stops.
+ksm03       0  TINFO  :  KSM merging...
+ksm03       0  TINFO  :  child 2 stops.
+ksm03       0  TINFO  :  wait for all children to stop.
+ksm03       0  TINFO  :  resume all children.
+ksm03       0  TINFO  :  child 0 continues...
+ksm03       0  TINFO  :  child 0 allocates 128 MB filled with 'c'.
+ksm03       0  TINFO  :  child 1 continues...
+ksm03       0  TINFO  :  child 1 allocates 128 MB filled with 'a'.
+ksm03       0  TINFO  :  child 2 continues...
+ksm03       0  TINFO  :  child 2 allocates 128 MB filled with 'a'.
+ksm03       0  TINFO  :  child 1 stops.
+ksm03       0  TINFO  :  child 0 stops.
+ksm03       0  TINFO  :  child 2 stops.
+ksm03       0  TINFO  :  check!
+ksm03       0  TINFO  :  run is 1.
+ksm03       0  TINFO  :  pages_shared is 2.
+ksm03       0  TINFO  :  pages_sharing is 95998.
+ksm03       1  TFAIL  :  pages_sharing is not 98302.
+ksm03       0  TINFO  :  pages_volatile is 0.
+ksm03       0  TINFO  :  pages_unshared is 0.
+ksm03       0  TINFO  :  sleep_millisecs is 0.
+ksm03       0  TINFO  :  pages_to_scan is 98304.
+ksm03       0  TINFO  :  wait for child 1 to stop.
+ksm03       0  TINFO  :  resume child 1.
+ksm03       0  TINFO  :  child 1 continues...
+ksm03       0  TINFO  :  child 1 verifies memory content.
+ksm03       0  TINFO  :  child 1 changes memory content to 'b'.
+ksm03       0  TINFO  :  child 1 stops.
+ksm03       0  TINFO  :  check!
+ksm03       0  TINFO  :  run is 1.
+ksm03       0  TINFO  :  pages_shared is 3.
+ksm03       0  TINFO  :  pages_sharing is 96528.
+ksm03       2  TFAIL  :  pages_sharing is not 98301.
+ksm03       0  TINFO  :  pages_volatile is 0.
+ksm03       0  TINFO  :  pages_unshared is 0.
+ksm03       0  TINFO  :  sleep_millisecs is 0.
+ksm03       0  TINFO  :  pages_to_scan is 98304.
+ksm03       0  TINFO  :  wait for child 1 to stop.
+ksm03       0  TINFO  :  resume all children.
+ksm03       0  TINFO  :  child 1 continues...
+ksm03       0  TINFO  :  child 0 continues...
+ksm03       0  TINFO  :  child 0 verifies memory content.
+ksm03       0  TINFO  :  child 1 verifies memory content.
+ksm03       0  TINFO  :  child 2 continues...
+ksm03       0  TINFO  :  child 2 changes memory content to 'd'
+ksm03       0  TINFO  :  child 2 stops.
+ksm03       0  TINFO  :  child 1 changes memory content to 'd'
+ksm03       0  TINFO  :  child 0 changes memory content to 'd'.
+ksm03       0  TINFO  :  child 0 stops.
+
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
