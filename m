@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SO2Nz-0005CF-2J
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:48:07 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SO2Nx-00073f-QU
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:48:07 +0000
-From: Zhouping Liu <zliu@redhat.com>
-Date: Sat, 28 Apr 2012 15:48:40 +0800
-Message-Id: <66ac99257dc97775fbb2b44287874ad43d408b4c.1335599279.git.zliu@redhat.com>
-In-Reply-To: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-References: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-In-Reply-To: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-References: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-Subject: [LTP] [PATCH 2/3] syscalls/move_pages: modified HAS_NUMA_H as
-	HAVE_NUMA_H
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1SFTud-0002yN-0o
+	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:22:27 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SFTua-0000zZ-QR
+	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:22:26 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 4 Apr 2012 13:22:38 -0400
+References: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
+In-Reply-To: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
+MIME-Version: 1.0
+Message-Id: <201204041322.39735.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 0/4] Replace commonly used perl tools with awk
+	equivalents
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,107 +25,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8177737311141778217=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-HAS_NUMA_H should be HAVE_NUMA_H, and most functions are defined
-in numa.h and numaif.h, so added the include headers into
-move_pages_support.h
+--===============8177737311141778217==
+Content-Type: multipart/signed; boundary="nextPart3542117.M0WAvDYdij";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- testcases/kernel/syscalls/move_pages/move_pages_support.c |   12 ++++++------
- testcases/kernel/syscalls/move_pages/move_pages_support.h |    7 +++++++
- 2 files changed, 13 insertions(+), 6 deletions(-)
+--nextPart3542117.M0WAvDYdij
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.c b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-index 168805e..6bd95d3 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages_support.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-@@ -37,7 +37,7 @@ long get_page_size()
- void free_pages(void **pages, unsigned int num)
- {
- 
--#if HAS_NUMA_H
-+#if HAVE_NUMA_H
- 	int i;
- 	size_t onepage = get_page_size();
- 
-@@ -112,7 +112,7 @@ int alloc_pages_linear(void **pages, unsigned int num)
- {
- 	int nodes[num];
- 
--#if HAS_NUMA_H
-+#if HAVE_NUMA_H
- 	unsigned int i;
- 	unsigned int n;
- 
-@@ -208,7 +208,7 @@ verify_pages_on_nodes(void **pages, int *status, unsigned int num, int *nodes)
-  */
- void verify_pages_linear(void **pages, int *status, unsigned int num)
- {
--#if HAS_NUMA_H
-+#if HAVE_NUMA_H
- 	unsigned int i;
- 	unsigned int n;
- 	int nodes[num];
-@@ -257,7 +257,7 @@ void verify_pages_on_node(void **pages, int *status, unsigned int num, int node)
-  */
- int alloc_shared_pages_on_node(void **pages, unsigned int num, int node)
- {
--#if HAS_NUMA_H
-+#if HAVE_NUMA_H
- 	char *shared;
- 	unsigned int i;
- 	int nodes[num];
-@@ -380,7 +380,7 @@ void free_sem(sem_t * sem, int num)
-  */
- void check_config(unsigned int min_nodes)
- {
--#if HAS_NUMA_H
-+#if HAVE_NUMA_H && HAVE_NUMAIF_H
- 	if (numa_available() < 0) {
- 		tst_resm(TCONF, "NUMA support is not available");
- 	} else if (numa_max_node() < (min_nodes - 1)) {
-@@ -392,4 +392,4 @@ void check_config(unsigned int min_nodes)
- 	tst_resm(TCONF, "NUMA support not provided");
- #endif
- 	tst_exit();
--}
-\ No newline at end of file
-+}
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.h b/testcases/kernel/syscalls/move_pages/move_pages_support.h
-index 4081625..fd78572 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages_support.h
-+++ b/testcases/kernel/syscalls/move_pages/move_pages_support.h
-@@ -19,6 +19,13 @@
- #ifndef MOVE_PAGES_SUPPORT_H
- #define MOVE_PAGES_SUPPORT_H
- 
-+#include "config.h"
-+#if HAVE_NUMA_H
-+#include <numa.h>
-+#endif
-+#if HAVE_NUMAIF_H
-+#include <numaif.h>
-+#endif
- #include <semaphore.h>
- 
- long get_page_size();
--- 
-1.7.10
+On Wednesday 04 April 2012 01:23:43 Garrett Cooper wrote:
+> The intent behind these changes are to remove unnecessary perl
+> dependencies in LTP by using awk in its stead. It was something that was
+> discussed a while ago on ltp-list@.
 
+i like awk over perl a lot.  my only concern is non-POSIX stuff slipping in=
+=20
+(such as people who have gawk installed).  should we add a local wrapper=20
+script that sees if the awk accepts a --posix flag and automatically pass i=
+t ?
+=2Dmike
+
+--nextPart3542117.M0WAvDYdij
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPfINfAAoJEEFjO5/oN/WBx0wQAJC+cxLLBOtTgvvoj7MU9xgg
+gZI+F1pGIrrHxzXe/mMJxNGxJOzCxlxn6ctIuUofDsZL9VKHxLIOvVgBVatqUu3F
+iG5Qs6oBzPBpOh96RaZo1MuqNHMZzkIi+YLXcZoXMzktbI1JsvEPEdAzFlcbo9gB
+ohVqATjGMKPF57jOjvOdNkAGPS6fDodznkEMFnHGBBtKK+ia9IxFt9mAfNKGgoqj
+Y8GUEDKHv/cfNsdHgI+7Vz+O4Z3bjS8kGs7fp/NDUoAebE/ewlWE27CIPmul3B6X
+xqOSQ3zZBTK6RR6MHK7vVlOe9z1U97iE4R7aN+2VhfmNkoLxTpmLzu93D4rlkl8e
+JZVbngehOkQBszQjcD97WLFSJ7MCCi+A4oUmv/eG/Nw8L6/lgkNrYJhDE5bmtUC1
+5iL6KLEGWERywrsqP4LDeIvK4GM1yG/U+6xLR4k+PBhNaUnkJOGNKI18WihVZ+Sg
+qq0mjXSLc+sF52NasDB/YZJ+fq/+ZvmOYsr8wgHEkHKAMhpypUateHsXqe1O2nQ0
++BAZs44s0pnWg0fDMYOIm3w++Hh1xH7Yc+/O47f3c+JyTZ2hx4HfM7ilf+4lTGwo
+hiDcMhKzgqje+WfPit2JIk2JdmgXJdcAzbf+xm0pZEusN6n4Dm9k/Dk7B6/Et0n+
+X0Yqat7FuEjzqbAQPUJX
+=1fig
+-----END PGP SIGNATURE-----
+
+--nextPart3542117.M0WAvDYdij--
+
+
+--===============8177737311141778217==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
+--===============8177737311141778217==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8177737311141778217==--
+
