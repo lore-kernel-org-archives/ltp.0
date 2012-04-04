@@ -2,22 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SMIBy-0002VH-IR
-	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 12:16:30 +0000
-Received: from mail-bk0-f47.google.com ([209.85.214.47])
+	(envelope-from <yanegomi@gmail.com>) id 1SFVff-0001uj-BD
+	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 19:15:07 +0000
+Received: from mail-vb0-f47.google.com ([209.85.212.47])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SMIBt-0000IM-1k
-	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 12:16:30 +0000
-Received: by bkcjk7 with SMTP id jk7so3697129bkc.34
+	(Exim 4.76) id 1SFVfe-0003B5-NT
+	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 19:15:07 +0000
+Received: by vbbfr13 with SMTP id fr13so728652vbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 23 Apr 2012 05:16:18 -0700 (PDT)
-Message-ID: <4F953947.5060204@casparzhang.com>
-Date: Mon, 23 Apr 2012 19:13:11 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Wed, 04 Apr 2012 12:15:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <4F952FBC.7040000@redhat.com>
-In-Reply-To: <4F952FBC.7040000@redhat.com>
-Subject: Re: [LTP] [PATCH 3/3] syscalls/cma: add errno tests
+Date: Wed, 4 Apr 2012 12:15:01 -0700
+Message-ID: <CAGH67wR5EdvGqHN60n=gRYXz0qV5MWQ2PX_mTdE4e5DssZ4cvw@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=20cf3071c7e06f559704bcdf3da0
+Subject: [LTP] [PATCH 2/4 v2]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,78 +26,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 04/23/2012 06:32 PM, Jan Stancek wrote:
-> Based on proposed man page:
-> http://ozlabs.org/~cyeoh/cma/process_vm_readv.txt
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/cma/cma01.c              |  434 ++++++++++++++++++++
->  .../kernel/syscalls/cma/process_vm_readv/Makefile  |    7 +
->  .../kernel/syscalls/cma/process_vm_writev/Makefile |    7 +
+--20cf3071c7e06f559704bcdf3da0
+Content-Type: text/plain; charset=ISO-8859-1
 
-[snip]
+Install .awk files
 
-> +static void cma_test_params_read(struct process_vm_params *params)
-> +{
-> +#if (HAVE_PROCESS_VM_READV==1)
-> +	TEST(process_vm_readv(params->pid,
-> +	    params->lvec, params->liovcnt,
-> +	    params->rvec, params->riovcnt,
-> +	    params->flags));
-> +#elif defined(__NR_process_vm_readv)
-> +	TEST(syscall(__NR_process_vm_readv, params->pid,
-> +	    params->lvec, params->liovcnt,
-> +	    params->rvec, params->riovcnt,
-> +	    params->flags));
-> +#else
-> +	tst_brkm(TCONF, cleanup, "process_vm_readv does not exist on"
-> +	    " your system");
-> +#endif
+The previous patch would have globbed all files that ended in ``awk``.
 
-omit other parts since looking good to me.
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+---
+ tools/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Still the question left for open-discussion: isn't syscall-only testing
-enough, do we need to test glibc wrapper in higher priority?
 
-Thanks,
-Caspar
+--------------1.7.2.5
+Content-Type: text/x-patch; name="0001-Install-.awk-files.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment; filename="0001-Install-.awk-files.patch"
 
-> +}
-> +
-> +static void cma_test_params_write(struct process_vm_params *params)
-> +{
-> +#if (HAVE_PROCESS_VM_WRITEV==1)
-> +	TEST(process_vm_writev(params->pid,
-> +	    params->lvec, params->liovcnt,
-> +	    params->rvec, params->riovcnt,
-> +	    params->flags));
-> +#elif defined(__NR_process_vm_writev)
-> +	TEST(syscall(__NR_process_vm_writev, params->pid,
-> +	    params->lvec, params->liovcnt,
-> +	    params->rvec, params->riovcnt,
-> +	    params->flags));
-> +#else
-> +	tst_brkm(TCONF, cleanup, "process_vm_writev does not exist on"
-> +	    " your system");
-> +#endif
-> +}
+diff --git a/tools/Makefile b/tools/Makefile
+index bbc2c0b..efd68a0 100644
+--- a/tools/Makefile
++++ b/tools/Makefile
+@@ -28,7 +28,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+ # reorganization..
+ FILTER_OUT_DIRS		:= netpipe% pounder21 top-LTP
 
-[snip]
+-INSTALL_TARGETS		:= *.pl *.sh html_report_header.txt
++INSTALL_TARGETS		:= *.awk *.pl *.sh html_report_header.txt
 
+ INSTALL_DIR		:= bin
+
+--20cf3071c7e06f559704bcdf3da0
+Content-Type: application/octet-stream; name="0002-Install-.awk-files.patch"
+Content-Disposition: attachment; filename="0002-Install-.awk-files.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h0mra2u30
+
+RnJvbSA0MjVlOGYxN2Y5NjllOWQwMjJiN2Y1YTI3MTRiZmFmZGVhMDQwODRmIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlAZ21haWwuY29tPgpE
+YXRlOiBUdWUsIDMgQXByIDIwMTIgMjA6MTM6MjIgLTA3MDAKU3ViamVjdDogW1BBVENIIDEvM10g
+SW5zdGFsbCAuYXdrIGZpbGVzCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRlbnQtVHlwZTogbXVsdGlw
+YXJ0L21peGVkOyBib3VuZGFyeT0iLS0tLS0tLS0tLS0tMS43LjIuNSIKClRoaXMgaXMgYSBtdWx0
+aS1wYXJ0IG1lc3NhZ2UgaW4gTUlNRSBmb3JtYXQuCi0tLS0tLS0tLS0tLS0tMS43LjIuNQpDb250
+ZW50LVR5cGU6IHRleHQvcGxhaW47IGNoYXJzZXQ9VVRGLTg7IGZvcm1hdD1maXhlZApDb250ZW50
+LVRyYW5zZmVyLUVuY29kaW5nOiA4Yml0CgoKU2lnbmVkLW9mZi1ieTogR2FycmV0dCBDb29wZXIg
+PHlhbmVnb21pQGdtYWlsLmNvbT4KLS0tCiB0b29scy9NYWtlZmlsZSB8ICAgIDIgKy0KIDEgZmls
+ZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKCi0tLS0tLS0tLS0t
+LS0tMS43LjIuNQpDb250ZW50LVR5cGU6IHRleHQveC1wYXRjaDsgbmFtZT0iMDAwMS1JbnN0YWxs
+LS5hd2stZmlsZXMucGF0Y2giCkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rpbmc6IDhiaXQKQ29udGVu
+dC1EaXNwb3NpdGlvbjogYXR0YWNobWVudDsgZmlsZW5hbWU9IjAwMDEtSW5zdGFsbC0uYXdrLWZp
+bGVzLnBhdGNoIgoKZGlmZiAtLWdpdCBhL3Rvb2xzL01ha2VmaWxlIGIvdG9vbHMvTWFrZWZpbGUK
+aW5kZXggYmJjMmMwYi4uZWZkNjhhMCAxMDA2NDQKLS0tIGEvdG9vbHMvTWFrZWZpbGUKKysrIGIv
+dG9vbHMvTWFrZWZpbGUKQEAgLTI4LDcgKzI4LDcgQEAgaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2lu
+Y2x1ZGUvbWsvdGVzdGNhc2VzLm1rCiAjIHJlb3JnYW5pemF0aW9uLi4KIEZJTFRFUl9PVVRfRElS
+UwkJOj0gbmV0cGlwZSUgcG91bmRlcjIxIHRvcC1MVFAKIAotSU5TVEFMTF9UQVJHRVRTCQk6PSAq
+LnBsICouc2ggaHRtbF9yZXBvcnRfaGVhZGVyLnR4dAorSU5TVEFMTF9UQVJHRVRTCQk6PSAqLmF3
+ayAqLnBsICouc2ggaHRtbF9yZXBvcnRfaGVhZGVyLnR4dAogCiBJTlNUQUxMX0RJUgkJOj0gYmlu
+CiAKCi0tLS0tLS0tLS0tLS0tMS43LjIuNS0tCgoK
+--20cf3071c7e06f559704bcdf3da0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-For Developers, A Lot Can Happen In A Second.
-Boundary is the first to Know...and Tell You.
-Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
-http://p.sf.net/sfu/Boundary-d2dvs2
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
+--20cf3071c7e06f559704bcdf3da0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--20cf3071c7e06f559704bcdf3da0--
+
