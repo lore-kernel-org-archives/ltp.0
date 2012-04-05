@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SEFbh-0006DF-3e
-	for ltp-list@lists.sourceforge.net; Sun, 01 Apr 2012 07:53:49 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SEFbg-0002Hl-EQ
-	for ltp-list@lists.sourceforge.net; Sun, 01 Apr 2012 07:53:49 +0000
-Received: by pbcum15 with SMTP id um15so3513225pbc.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SFbBF-0005ka-Lh
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:08:05 +0000
+Received: from mail-vb0-f47.google.com ([209.85.212.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SFbBF-0004ne-2b
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:08:05 +0000
+Received: by vbbfr13 with SMTP id fr13so1113646vbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 01 Apr 2012 00:53:42 -0700 (PDT)
-Message-ID: <4F780917.3080604@casparzhang.com>
-Date: Sun, 01 Apr 2012 15:51:51 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Wed, 04 Apr 2012 18:07:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <aef1be3a718b56357b90b2a7f06f583c2a3c240d.1333117443.git.zliu@redhat.com>
-In-Reply-To: <aef1be3a718b56357b90b2a7f06f583c2a3c240d.1333117443.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH] mm/tunable: fix unexpected error log in
-	min_free_kbytes
+In-Reply-To: <1333587726-8962-1-git-send-email-penght@cn.fujitsu.com>
+References: <1333587726-8962-1-git-send-email-penght@cn.fujitsu.com>
+Date: Wed, 4 Apr 2012 18:07:59 -0700
+Message-ID: <CAGH67wRCFcJO8Nhz+at-6MTGJAqqm0JGBRQEuj=hpAxhcdKZRw@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] at_deny01: fix a bug of /etc/init.d/atd is
+	nonexistent
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,28 +31,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/30/2012 10:29 PM, Zhouping Liu wrote:
-> 
-> when overcommit_memory=0, mmap() will be destroyed in two below scenario:
->  1) MAP_FAILED with ENOMEM,
->  2) oom_killer kill it.
-> without the patch, it just catched oom_killer scenario,
-> the patch fixed it.
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
->  testcases/kernel/mem/tunable/min_free_kbytes.c |   17 +++++++++++++----
->  1 files changed, 13 insertions(+), 4 deletions(-)
-> 
-pushed. thanks.
+On Wed, Apr 4, 2012 at 6:02 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+> /etc/init.d/atd is nonexistent in fedora16, so should use systemctl.
+>
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
 
 ------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
