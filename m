@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SHtos-0002iA-FE
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:26:30 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SHtoo-0002F6-Fs
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:26:30 +0000
-Message-ID: <4F854DFA.20704@cn.fujitsu.com>
-Date: Wed, 11 Apr 2012 17:25:14 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SFajO-0007Qc-7w
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 00:39:18 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SFajL-00042f-UC
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 00:39:18 +0000
+Received: by pbcum15 with SMTP id um15so940158pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 04 Apr 2012 17:39:10 -0700 (PDT)
+Date: Wed, 4 Apr 2012 17:35:16 -0700 (PDT)
+From: Garrett Cooper <yanegomi@gmail.com>
+Message-ID: <alpine.BSF.2.00.1204041734030.25027@toaster.local>
 MIME-Version: 1.0
-References: <alpine.BSF.2.00.1204041735200.25027@toaster.local>
-	<201204042152.56885.vapier@gentoo.org>
-	<4F84F1E1.7000602@cn.fujitsu.com>
-	<45B655E5-9D04-457E-ADD6-4B79761A3B68@gmail.com>
-In-Reply-To: <45B655E5-9D04-457E-ADD6-4B79761A3B68@gmail.com>
-Subject: Re: [LTP] [PATCH 1/2] Clean up inotify(7) wrappers
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] [PATCH 0/2] Minor inotify(7) testcase cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,44 +28,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net
 
-On 04/11/2012 05:21 PM, Garrett Cooper wrote:
+The attached changes consolidate some duplicated wrapper APIs and
+remove a homegrown struct for dealing with inotify events.
 
-> On Apr 10, 2012, at 7:52 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
-> 
->> On 04/05/2012 09:52 AM, Mike Frysinger wrote:
->>
->>> On Wednesday 04 April 2012 20:38:31 Garrett Cooper wrote:
->>>> +/*
->>>> + * ``junk`` is needed to make the macro function like a void argument
->>>> + * function.
->>>> + */
->>>> +#define    myinotify_init(junk)    syscall(__NR_inotify_init)
->>>
->>> you lost me.  how does this make it work like a (void) func ?  i think this 
->>> should drop the "junk" and just do:
->>>    #define myinotify_init() ...
->>
->>
->> Cooper,
->>
->> Any update on what Mike said?
-> 
-> Simply put, his method is cleaner/better. I need to produce a new patch with his suggested change.
+Garrett Cooper (2):
+   Clean up inotify(7) wrappers
+   Replace struct event_t with struct inotify_event
 
-
-That's great!
-
-Thanks,
-Wanlong Gao
-
-> 
-> Thanks!
-> -Garrett
-> 
-
+  testcases/kernel/syscalls/inotify/inotify.h   |   45 
++++++++++++++++++++++++++
+  testcases/kernel/syscalls/inotify/inotify01.c |   16 +--------
+  testcases/kernel/syscalls/inotify/inotify02.c |   29 +++-------------
+  testcases/kernel/syscalls/inotify/inotify03.c |   16 +--------
+  4 files changed, 52 insertions(+), 54 deletions(-)
+  create mode 100644 testcases/kernel/syscalls/inotify/inotify.h
 
 
 ------------------------------------------------------------------------------
