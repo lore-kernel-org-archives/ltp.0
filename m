@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SFbeC-0005eb-3F
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:38:00 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SFbgv-00034I-Nk
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:40:49 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SFbeA-0006rd-9g
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:38:00 +0000
-Message-ID: <4F7CF730.30909@cn.fujitsu.com>
-Date: Thu, 05 Apr 2012 09:36:48 +0800
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SFbgu-0005rd-Er
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:40:49 +0000
+Message-ID: <4F7CF7DB.2080802@cn.fujitsu.com>
+Date: Thu, 05 Apr 2012 09:39:39 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <alpine.BSF.2.00.1204041735200.25027@toaster.local>
-In-Reply-To: <alpine.BSF.2.00.1204041735200.25027@toaster.local>
-Subject: Re: [LTP] [PATCH 1/2] Clean up inotify(7) wrappers
+References: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
+In-Reply-To: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
+Subject: Re: [LTP] [PATCH 2/2] Replace struct event_t with struct
+	inotify_event
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -25,218 +26,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 04/05/2012 08:38 AM, Garrett Cooper wrote:
-
-> Clean up inotify(7) wrappers
-> 
-> As a side-effect this also fixes the return code passed back
-> by the wrappers as the value should be an integer, not longs
-> [this fixes compile errors on platforms where
-> sizeof(int) != sizeof(long)].
-
-
-Looks OK to me. 
-
-Thanks,
-Wanlong Gao
-
-> 
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> ---
->  testcases/kernel/syscalls/inotify/inotify.h   |   45 +++++++++++++++++++++++++
->  testcases/kernel/syscalls/inotify/inotify01.c |   16 +--------
->  testcases/kernel/syscalls/inotify/inotify02.c |   16 +--------
->  testcases/kernel/syscalls/inotify/inotify03.c |   16 +--------
->  4 files changed, 48 insertions(+), 45 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/inotify/inotify.h
-> 
-> 
-> --------------1.7.2.5
-> Content-Type: text/x-patch; name="0001-Clean-up-inotify-7-wrappers.patch"
-> Content-Transfer-Encoding: 8bit
-> Content-Disposition: attachment; filename="0001-Clean-up-inotify-7-wrappers.patch"
-> 
-> diff --git a/testcases/kernel/syscalls/inotify/inotify.h b/testcases/kernel/syscalls/inotify/inotify.h
-> new file mode 100644
-> index 0000000..ab7f812
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/inotify/inotify.h
-> @@ -0,0 +1,45 @@
-> +/*
-> + * inotify testcase common definitions.
-> + *
-> + * Copyright (c) 2012 Linux Test Project.  All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it is
-> + * free of the rightful claim of any third person regarding infringement
-> + * or the like.  Any license provided herein, whether implied or
-> + * otherwise, applies only to this software file.  Patent licenses, if
-> + * any, provided herein do not apply to combinations of this program with
-> + * other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc., 59
-> + * Temple Place - Suite 330, Boston MA 02111-1307, USA.
-> + *
-> + * Garrett Cooper, April 2012
-> + */
-> +
-> +#ifndef    _INOTIFY_H
-> +#define    _INOTIFY_H
-> +
-> +/* inotify(7) wrappers */
-> +
-> +/*
-> + * ``junk`` is needed to make the macro function like a void argument
-> + * function.
-> + */
-> +#define    myinotify_init(junk)    syscall(__NR_inotify_init)
-> +
-> +#define    myinotify_add_watch(fd, pathname, mask)    \
-> +    syscall(__NR_inotify_add_watch, fd, pathname, mask)
-> +
-> +#define    myinotify_rm_watch(fd, wd) \
-> +    syscall(__NR_inotify_rm_watch, fd, wd)
-> +
-> +#endif /* _INOTIFY_H */
-> diff --git a/testcases/kernel/syscalls/inotify/inotify01.c b/testcases/kernel/syscalls/inotify/inotify01.c
-> index 4168c0e..8205f82 100644
-> --- a/testcases/kernel/syscalls/inotify/inotify01.c
-> +++ b/testcases/kernel/syscalls/inotify/inotify01.c
-> @@ -50,6 +50,7 @@
->  #include "test.h"
->  #include "usctest.h"
->  #include "linux_syscall_numbers.h"
-> +#include "inotify.h"
-> 
->  #if defined(HAVE_SYS_INOTIFY_H)
->  #include <sys/inotify.h>
-> @@ -76,21 +77,6 @@ int event_set[EVENT_MAX];
-> 
->  char event_buf[EVENT_BUF_LEN];
-> 
-> -static long myinotify_init()
-> -{
-> -    return syscall(__NR_inotify_init);
-> -}
-> -
-> -static long myinotify_add_watch(int fd, const char *pathname, int mask)
-> -{
-> -    return syscall(__NR_inotify_add_watch, fd, pathname, mask);
-> -}
-> -
-> -static long myinotify_rm_watch(int fd, int wd)
-> -{
-> -    return syscall(__NR_inotify_rm_watch, fd, wd);
-> -}
-> -
->  int main(int ac, char **av)
->  {
->      int lc;            /* loop counter */
-> diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
-> index 4ffc00c..59f83ba 100644
-> --- a/testcases/kernel/syscalls/inotify/inotify02.c
-> +++ b/testcases/kernel/syscalls/inotify/inotify02.c
-> @@ -54,6 +54,7 @@
->  #include "test.h"
->  #include "usctest.h"
->  #include "linux_syscall_numbers.h"
-> +#include "inotify.h"
-> 
->  #if defined(HAVE_SYS_INOTIFY_H)
->  #include <sys/inotify.h>
-> @@ -92,21 +93,6 @@ struct event_t event_set[EVENT_MAX];
-> 
->  char event_buf[EVENT_BUF_LEN];
-> 
-> -static long myinotify_init()
-> -{
-> -    return syscall(__NR_inotify_init);
-> -}
-> -
-> -static long myinotify_add_watch(int fd, const char *pathname, int mask)
-> -{
-> -    return syscall(__NR_inotify_add_watch, fd, pathname, mask);
-> -}
-> -
-> -static long myinotify_rm_watch(int fd, int wd)
-> -{
-> -    return syscall(__NR_inotify_rm_watch, fd, wd);
-> -}
-> -
->  int main(int ac, char **av)
->  {
->      int lc;            /* loop counter */
-> diff --git a/testcases/kernel/syscalls/inotify/inotify03.c b/testcases/kernel/syscalls/inotify/inotify03.c
-> index d3c3e7b..d8caa83 100644
-> --- a/testcases/kernel/syscalls/inotify/inotify03.c
-> +++ b/testcases/kernel/syscalls/inotify/inotify03.c
-> @@ -49,6 +49,7 @@
->  #include "test.h"
->  #include "usctest.h"
->  #include "linux_syscall_numbers.h"
-> +#include "inotify.h"
-> 
->  #if defined(HAVE_SYS_INOTIFY_H)
->  #include <sys/inotify.h>
-> @@ -76,21 +77,6 @@ int event_set[EVENT_MAX];
-> 
->  char event_buf[EVENT_BUF_LEN];
-> 
-> -static long myinotify_init()
-> -{
-> -    return syscall(__NR_inotify_init);
-> -}
-> -
-> -static long myinotify_add_watch(int fd, const char *pathname, int mask)
-> -{
-> -    return syscall(__NR_inotify_add_watch, fd, pathname, mask);
-> -}
-> -
-> -static long myinotify_rm_watch(int fd, int wd)
-> -{
-> -    return syscall(__NR_inotify_rm_watch, fd, wd);
-> -}
-> -
->  #define DEFAULT_FSTYPE    "ext2"
->  #define DIR_MODE    S_IRWXU | S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP
-> 
-> 
-> ------------------------------------------------------------------------------
-> Better than sec? Nothing is better than sec when it comes to
-> monitoring Big Data applications. Try Boundary one-second 
-> resolution app monitoring today. Free.
-> http://p.sf.net/sfu/Boundary-dev2dev
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-
-------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDQvMDUvMjAxMiAwODo0MiBBTSwgR2FycmV0dCBDb29wZXIgd3JvdGU6Cgo+IFJlcGxhY2Ug
+c3RydWN0IGV2ZW50X3Qgd2l0aCBzdHJ1Y3QgaW5vdGlmeV9ldmVudAo+IAo+IEFsc28gZG8gc29t
+ZSBtaW5vciB3aGl0ZXNwYWNlIGNsZWFudXAgd2hpbGUgSSdtCj4gaW4gdGhlIG5laWdoYm9yaG9v
+ZC4KCgpDb29wZXIsCgp0aGVyZSdzIHNvbWV0aGluZyB3cm9uZyB3aXRoIHRoaXMgcGF0Y2gsIHBs
+ZWFzZSB0YWtlIGEgbG9vayBhdCB0aGUgIi5uYW1lIi4KCmlub3RpZnkwMiAgICAxICBUUEFTUyAg
+OiAgZ2V0IGV2ZW50OiB3ZD0xIG1hc2s9NDAwMDAwMDQgY29va2llPTAgbGVuPTAgbmFtZT0iASIK
+aW5vdGlmeTAyICAgIDIgIFRGQUlMICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0xMDAgKGV4cGVj
+dGVkIDEwMCkgY29va2llPTAgbGVuPTE2IG5hbWU9InRlc3RfZmlsZTEiIChleHBlY3RlZCAidGVz
+dCAiKSAtNjMKaW5vdGlmeTAyICAgIDMgIFRGQUlMICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0y
+MCAoZXhwZWN0ZWQgMjApIGNvb2tpZT0wIGxlbj0xNiBuYW1lPSJ0ZXN0X2ZpbGUxIiAoZXhwZWN0
+ZWQgInRlcyIpIC04Nwppbm90aWZ5MDIgICAgNCAgVEZBSUwgIDogIGdldCBldmVudDogd2Q9MSBt
+YXNrPTggKGV4cGVjdGVkIDgpIGNvb2tpZT0wIGxlbj0xNiBuYW1lPSJ0ZXN0X2ZpbGUxIiAoZXhw
+ZWN0ZWQgInRlc3RAIikgLTMxCmlub3RpZnkwMiAgICA1ICBURkFJTCAgOiAgZ2V0IGV2ZW50OiB3
+ZD0xIG1hc2s9NDAgKGV4cGVjdGVkIDQwKSBjb29raWU9MTk1MCBsZW49MTYgbmFtZT0idGVzdF9m
+aWxlMSIgKGV4cGVjdGVkICJ0ZXN077+9IikgMzMKaW5vdGlmeTAyICAgIDYgIFRGQUlMICA6ICBn
+ZXQgZXZlbnQ6IHdkPTEgbWFzaz04MCAoZXhwZWN0ZWQgODApIGNvb2tpZT0xOTUwIGxlbj0xNiBu
+YW1lPSJ0ZXN0X2ZpbGUyIiAoZXhwZWN0ZWQgInRlc3QiKSAtOTUKaW5vdGlmeTAyICAgIDcgIFRQ
+QVNTICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz04MDAgY29va2llPTAgbGVuPTAgbmFtZT0iASIK
+aW5vdGlmeTAyICAgIDggIFRGQUlMICA6ICBnZXQgZXZlbnQ6IHdkPTEgbWFzaz0yMDAgKGV4cGVj
+dGVkIDIwMCkgY29va2llPTAgbGVuPTE2IG5hbWU9InRlc3RfZmlsZTIiIChleHBlY3RlZCAidGVz
+dCIpIC05NQppbm90aWZ5MDIgICAgOSAgVFBBU1MgIDogIGdldCBldmVudDogd2Q9MSBtYXNrPTgw
+MCBjb29raWU9MCBsZW49MCBuYW1lPSIiCgoKVGhhbmtzLApXYW5sb25nIEdhbwoKCj4gCj4gU2ln
+bmVkLW9mZi1ieTogR2FycmV0dCBDb29wZXIgPHlhbmVnb21pQGdtYWlsLmNvbT4KPiAKPiAtLS0K
+PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pbm90aWZ5L2lub3RpZnkwMi5jIHwgICAxMyAr
+KysrLS0tLS0tLS0tCj4gIDEgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA5IGRlbGV0
+aW9ucygtKQo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tMS43LjIuNQo+IENvbnRlbnQtVHlwZTogdGV4
+dC94LXBhdGNoOyBuYW1lPSIwMDAyLVJlcGxhY2Utc3RydWN0LWV2ZW50X3Qtd2l0aC1zdHJ1Y3Qt
+aW5vdGlmeV9ldmVudC5wYXRjaCIKPiBDb250ZW50LVRyYW5zZmVyLUVuY29kaW5nOiA4Yml0Cj4g
+Q29udGVudC1EaXNwb3NpdGlvbjogYXR0YWNobWVudDsgZmlsZW5hbWU9IjAwMDItUmVwbGFjZS1z
+dHJ1Y3QtZXZlbnRfdC13aXRoLXN0cnVjdC1pbm90aWZ5X2V2ZW50LnBhdGNoIgo+IAo+IGRpZmYg
+LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lub3RpZnkvaW5vdGlmeTAyLmMgYi90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lub3RpZnkvaW5vdGlmeTAyLmMKPiBpbmRleCA1OWY4
+M2JhLi5jODc3OTdmIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW5v
+dGlmeS9pbm90aWZ5MDIuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW5vdGlm
+eS9pbm90aWZ5MDIuYwo+IEBAIC04MSwxNSArODEsMTAgQEAgY2hhciBidWZbQlVGX1NJWkVdOwo+
+ICBpbnQgZmQsIGZkX25vdGlmeTsKPiAgaW50IHdkOwo+IAo+IC1zdHJ1Y3QgZXZlbnRfdCB7Cj4g
+LSAgICBjaGFyIG5hbWVbQlVGX1NJWkVdOwo+IC0gICAgaW50IG1hc2s7Cj4gLSAgICBpbnQgbGVu
+Owo+IC19Owo+ICAjZGVmaW5lIEZJTEVfTkFNRTEgInRlc3RfZmlsZTEiCj4gICNkZWZpbmUgRklM
+RV9OQU1FMiAidGVzdF9maWxlMiIKPiAKPiAtc3RydWN0IGV2ZW50X3QgZXZlbnRfc2V0W0VWRU5U
+X01BWF07Cj4gK3N0cnVjdCBpbm90aWZ5X2V2ZW50IGV2ZW50X3NldFtFVkVOVF9NQVhdOwo+IAo+
+ICBjaGFyIGV2ZW50X2J1ZltFVkVOVF9CVUZfTEVOXTsKPiAKPiBAQCAtMjM5LDcgKzIzNCw3IEBA
+IGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IjFjMTdkMThlMzc3NTQ4NWJmMWUwY2U3OTU3NWViNjM3YTk0NDk0YTIuIik7Cj4gICAgICAgICAg
+ICAgICAgICB0c3RfcmVzbShURkFJTCwKPiAgICAgICAgICAgICAgICAgICAgICAgImdldCB1bm5l
+Y2Vzc2FyeSBldmVudDogIgo+IC0gICAgICAgICAgICAgICAgICAgICAid2Q9JWQgbWFzaz0leCBj
+b29raWU9JXUgbGVuPSV1Igo+ICsgICAgICAgICAgICAgICAgICAgICAid2Q9JWQgbWFzaz0leCBj
+b29raWU9JXUgbGVuPSV1ICIKPiAgICAgICAgICAgICAgICAgICAgICAgIm5hbWU9XCIlc1wiIiwg
+ZXZlbnQtPndkLCBldmVudC0+bWFzaywKPiAgICAgICAgICAgICAgICAgICAgICAgZXZlbnQtPmNv
+b2tpZSwgZXZlbnQtPmxlbiwKPiAgICAgICAgICAgICAgICAgICAgICAgZXZlbnQtPm5hbWUpOwo+
+IEBAIC0yNTAsOCArMjQ1LDggQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4gICAgICAg
+ICAgICAgICAgICAgICAgKGV2ZW50X3NldFt0ZXN0X251bV0ubmFtZSwgZXZlbnQtPm5hbWUsCj4g
+ICAgICAgICAgICAgICAgICAgICAgIGV2ZW50LT5sZW4pKSkgewo+ICAgICAgICAgICAgICAgICAg
+dHN0X3Jlc20oVFBBU1MsCj4gLSAgICAgICAgICAgICAgICAgICAgICJnZXQgZXZlbnQ6IHdkPSVk
+IG1hc2s9JXgiCj4gLSAgICAgICAgICAgICAgICAgICAgICIgY29va2llPSV1IGxlbj0ldSBuYW1l
+PVwiJXNcIiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICJnZXQgZXZlbnQ6IHdkPSVkIG1hc2s9
+JXggIgo+ICsgICAgICAgICAgICAgICAgICAgICAiY29va2llPSV1IGxlbj0ldSBuYW1lPVwiJXNc
+IiIsCj4gICAgICAgICAgICAgICAgICAgICAgIGV2ZW50LT53ZCwgZXZlbnQtPm1hc2ssIGV2ZW50
+LT5jb29raWUsCj4gICAgICAgICAgICAgICAgICAgICAgIGV2ZW50LT5sZW4sIGV2ZW50LT5uYW1l
+KTsKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBCZXR0ZXIgdGhhbiBzZWM/IE5vdGhp
+bmcgaXMgYmV0dGVyIHRoYW4gc2VjIHdoZW4gaXQgY29tZXMgdG8KPiBtb25pdG9yaW5nIEJpZyBE
+YXRhIGFwcGxpY2F0aW9ucy4gVHJ5IEJvdW5kYXJ5IG9uZS1zZWNvbmQgCj4gcmVzb2x1dGlvbiBh
+cHAgbW9uaXRvcmluZyB0b2RheS4gRnJlZS4KPiBodHRwOi8vcC5zZi5uZXQvc2Z1L0JvdW5kYXJ5
+LWRldjJkZXYKPiAKPiAKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2x0cC1saXN0CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCZXR0ZXIgdGhhbiBzZWM/IE5vdGhp
+bmcgaXMgYmV0dGVyIHRoYW4gc2VjIHdoZW4gaXQgY29tZXMgdG8KbW9uaXRvcmluZyBCaWcgRGF0
+YSBhcHBsaWNhdGlvbnMuIFRyeSBCb3VuZGFyeSBvbmUtc2Vjb25kIApyZXNvbHV0aW9uIGFwcCBt
+b25pdG9yaW5nIHRvZGF5LiBGcmVlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L0JvdW5kYXJ5LWRldjJk
+ZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxp
+c3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xp
+c3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
