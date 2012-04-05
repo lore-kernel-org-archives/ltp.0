@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1SNfsM-0007Ay-5d
-	for ltp-list@lists.sourceforge.net; Fri, 27 Apr 2012 07:45:58 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SNfsK-0001yj-Tj
-	for ltp-list@lists.sourceforge.net; Fri, 27 Apr 2012 07:45:58 +0000
-Received: from /spool/local
-	by e23smtp07.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
-	Fri, 27 Apr 2012 07:38:29 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	q3R7coAS1687562
-	for <ltp-list@lists.sourceforge.net>; Fri, 27 Apr 2012 17:38:50 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	q3R7jZKS016060
-	for <ltp-list@lists.sourceforge.net>; Fri, 27 Apr 2012 17:45:35 +1000
-Message-ID: <4F9A4F06.4070106@linux.vnet.ibm.com>
-Date: Fri, 27 Apr 2012 13:17:18 +0530
-From: Shubham Goyal <shubham@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SFf94-0004Zh-C3
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 05:22:06 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SFf93-00059T-F8
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 05:22:06 +0000
+Message-ID: <4F7D2BF7.6070201@redhat.com>
+Date: Thu, 05 Apr 2012 13:21:59 +0800
+From: ZhoupingLiu <zliu@redhat.com>
 MIME-Version: 1.0
-References: <20120426143135.GA9424@saboteur.suse.cz>
-	<CAMYrgfR6StoOvo8CNSFFXB6foctU2itACuQwAtxBsAJ1wDK0Ow@mail.gmail.com>
-In-Reply-To: <CAMYrgfR6StoOvo8CNSFFXB6foctU2itACuQwAtxBsAJ1wDK0Ow@mail.gmail.com>
-Subject: Re: [LTP] LTP and GSOC
+References: <4F794D8B.6050505@cn.fujitsu.com> <4F7D26DC.5090605@redhat.com>
+	<4F7D27D5.9080006@cn.fujitsu.com>
+In-Reply-To: <4F7D27D5.9080006@cn.fujitsu.com>
+Subject: Re: [LTP] ksm03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,62 +28,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Marioh mrs <marios.makris@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Welcome to LTP Marios.. Please let us know for any help/cooperation.
-
-Cyril - This is really great. Thanks a lot for that!!
-
---Shubham
-
-
-On Friday 27 April 2012 12:40 AM, Marioh mrs wrote:
->> So let me introduce you to Marios Makris who will be working on LTP
->> during this summer. The plan is to code cleanup and documentation for
->> LTP test interface as well as implementing/cleanup syscall tests. Be
->> nice to him ;).
+On 04/05/2012 01:04 PM, Wanlong Gao wrote:
+> On 04/05/2012 01:00 PM, ZhoupingLiu wrote:
+>
+>> On 04/02/2012 02:56 PM, Wanlong Gao wrote:
+>>> Hi Caspar,
+>>>
+>>> Have you ever seen like below? It happens on ksm03,
+>>> the page_sharing numbers is always incorrect, it
+>>> occurs on RHEL7-Alpha, any ides?
+>> hi, Wanlong
 >>
->> Also CCing him directly so he could introduce himself.
->>
->> --
->> Cyril Hrubis
-> Hey everyone,
+>> I caught this error, but it just only occurred in s390x,
+>> and not 100% occurred, I will check the reason.
+>> could you tell me which arches do you met the issue?
 >
-> To begin with, great work everyone :)
->
-> I am Marios, a level 6 BSc CS student at uni of Hertfordshire and will
-> be working on ltp through GSoC for the summer (hopefully after the
-> GSoC aswell :)).
-> The plan is to cleanup and document the test interface as well as
-> cleanup and implementation of syscalls tests. The outcome of the
-> project will hopefully make the maintenance a little easier :)
->
-> I hope for the best cooperation, please feel free if you want to ask
-> me anything.
->
-> PS1. Thanks Cyril for the introduction :)
-> PS2. Sorry for my late responce just got back from uni.
->
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond. Discussions
-> will include endpoint security, mobile security and the latest in malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
+> Not fortunately, I met on x86_64 :(
+> and the case can't finish then.
 
+Okay, I'll dig it deeper, thanks for your info.
+
+--
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
