@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SO2XA-0002tn-OS
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:57:36 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SO2XA-0002Th-2q
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:57:36 +0000
-Received: by mail-pb0-f47.google.com with SMTP id rq2so1866550pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 28 Apr 2012 00:57:35 -0700 (PDT)
-Message-ID: <4F9BA2D3.9040705@casparzhang.com>
-Date: Sat, 28 Apr 2012 15:57:07 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SFet2-0004HX-P0
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 05:05:32 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SFet1-0003ED-55
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 05:05:32 +0000
+Message-ID: <4F7D27D5.9080006@cn.fujitsu.com>
+Date: Thu, 05 Apr 2012 13:04:21 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-In-Reply-To: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] m4/ltp-numa.m4: fixed numa config
+References: <4F794D8B.6050505@cn.fujitsu.com> <4F7D26DC.5090605@redhat.com>
+In-Reply-To: <4F7D26DC.5090605@redhat.com>
+Subject: Re: [LTP] ksm03
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,52 +28,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
+To: ZhoupingLiu <zliu@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/28/2012 03:48 PM, Zhouping Liu wrote:
-> numa_alloc_onnode() and numa_move_pages() all need numa lib '-lnuma',
-> but in ltp-numa.m4, we just checked the two functions using
-> AC_CHECK_FUNCS, without the patch, it always report such error
-> log in numa system: "undefined reference to `numa_alloc_onnode`",
-> which blocked syscalls/move_pages/* cases, the patch fixed it.
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+On 04/05/2012 01:00 PM, ZhoupingLiu wrote:
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
-
-> ---
->  m4/ltp-numa.m4 |    9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+> On 04/02/2012 02:56 PM, Wanlong Gao wrote:
+>> Hi Caspar,
+>>
+>> Have you ever seen like below? It happens on ksm03,
+>> the page_sharing numbers is always incorrect, it
+>> occurs on RHEL7-Alpha, any ides?
 > 
-> diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
-> index bcc5e6b..d03bc80 100644
-> --- a/m4/ltp-numa.m4
-> +++ b/m4/ltp-numa.m4
-> @@ -26,7 +26,14 @@ AC_DEFUN([LTP_CHECK_SYSCALL_NUMA],
->  [dnl
->  AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
->  	LTP_SYSCALL_NUMA_HEADERS=yes
-> -	AC_CHECK_FUNCS(numa_alloc_onnode,numa_move_pages)
-> +	AC_CHECK_LIB(numa,numa_alloc_onnode,[have_numa_alloc_onnode="yes"])
-> +	if  test "x$have_numa_alloc_onnode" = "xyes"; then
-> +		AC_DEFINE(HAVE_NUMA_ALLOC_ONNODE,1,[define to 1 if you have 'numa_alloc_onnode' function])
-> +	fi
-> +	AC_CHECK_LIB(numa,numa_move_pages,[have_numa_move_pages="yes"])
-> +	if  test "x$have_numa_move_pages" = "xyes"; then
-> +		AC_DEFINE(HAVE_NUMA_MOVE_PAGES,1,[define to 1 if you have 'numa_move_pages' function])
-> +	fi
->  ]
->  	AC_CHECK_LIB(numa,numa_available,[
->  NUMA_CPPFLAGS="-DNUMA_VERSION1_COMPATIBILITY"
+> hi, Wanlong
+> 
+> I caught this error, but it just only occurred in s390x,
+> and not 100% occurred, I will check the reason.
+> could you tell me which arches do you met the issue?
+
+
+Not fortunately, I met on x86_64 :(
+and the case can't finish then.
+
+Thanks,
+Wanlong Gao
+
+> 
+> Thanks,
+> Zhouping
+> 
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>> ---
+>>
+>> ksm03       0  TINFO  :  child 0 stops.
+>> ksm03       0  TINFO  :  child 1 stops.
+>> ksm03       0  TINFO  :  KSM merging...
+>> ksm03       0  TINFO  :  child 2 stops.
+>> ksm03       0  TINFO  :  wait for all children to stop.
+>> ksm03       0  TINFO  :  resume all children.
+>> ksm03       0  TINFO  :  child 0 continues...
+>> ksm03       0  TINFO  :  child 0 allocates 128 MB filled with 'c'.
+>> ksm03       0  TINFO  :  child 1 continues...
+>> ksm03       0  TINFO  :  child 1 allocates 128 MB filled with 'a'.
+>> ksm03       0  TINFO  :  child 2 continues...
+>> ksm03       0  TINFO  :  child 2 allocates 128 MB filled with 'a'.
+>> ksm03       0  TINFO  :  child 1 stops.
+>> ksm03       0  TINFO  :  child 0 stops.
+>> ksm03       0  TINFO  :  child 2 stops.
+>> ksm03       0  TINFO  :  check!
+>> ksm03       0  TINFO  :  run is 1.
+>> ksm03       0  TINFO  :  pages_shared is 2.
+>> ksm03       0  TINFO  :  pages_sharing is 95998.
+>> ksm03       1  TFAIL  :  pages_sharing is not 98302.
+>> ksm03       0  TINFO  :  pages_volatile is 0.
+>> ksm03       0  TINFO  :  pages_unshared is 0.
+>> ksm03       0  TINFO  :  sleep_millisecs is 0.
+>> ksm03       0  TINFO  :  pages_to_scan is 98304.
+>> ksm03       0  TINFO  :  wait for child 1 to stop.
+>> ksm03       0  TINFO  :  resume child 1.
+>> ksm03       0  TINFO  :  child 1 continues...
+>> ksm03       0  TINFO  :  child 1 verifies memory content.
+>> ksm03       0  TINFO  :  child 1 changes memory content to 'b'.
+>> ksm03       0  TINFO  :  child 1 stops.
+>> ksm03       0  TINFO  :  check!
+>> ksm03       0  TINFO  :  run is 1.
+>> ksm03       0  TINFO  :  pages_shared is 3.
+>> ksm03       0  TINFO  :  pages_sharing is 96528.
+>> ksm03       2  TFAIL  :  pages_sharing is not 98301.
+>> ksm03       0  TINFO  :  pages_volatile is 0.
+>> ksm03       0  TINFO  :  pages_unshared is 0.
+>> ksm03       0  TINFO  :  sleep_millisecs is 0.
+>> ksm03       0  TINFO  :  pages_to_scan is 98304.
+>> ksm03       0  TINFO  :  wait for child 1 to stop.
+>> ksm03       0  TINFO  :  resume all children.
+>> ksm03       0  TINFO  :  child 1 continues...
+>> ksm03       0  TINFO  :  child 0 continues...
+>> ksm03       0  TINFO  :  child 0 verifies memory content.
+>> ksm03       0  TINFO  :  child 1 verifies memory content.
+>> ksm03       0  TINFO  :  child 2 continues...
+>> ksm03       0  TINFO  :  child 2 changes memory content to 'd'
+>> ksm03       0  TINFO  :  child 2 stops.
+>> ksm03       0  TINFO  :  child 1 changes memory content to 'd'
+>> ksm03       0  TINFO  :  child 0 changes memory content to 'd'.
+>> ksm03       0  TINFO  :  child 0 stops.
+>>
+>> ------------------------------------------------------------------------------
+>> This SF email is sponsosred by:
+>> Try Windows Azure free for 90 days Click Here
+>> http://p.sf.net/sfu/sfd2d-msazure
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+
 
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
