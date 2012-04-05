@@ -2,22 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SMGYv-0005Os-Dj
-	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 10:32:05 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SFbNF-0000Nf-G8
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:20:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SMGYr-00084P-3D
-	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 10:32:05 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q3NAVtMs003075
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 23 Apr 2012 06:31:55 -0400
-Message-ID: <4F952F99.4010407@redhat.com>
-Date: Mon, 23 Apr 2012 12:31:53 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	id 1SFbND-0000UA-4y
+	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:20:29 +0000
+Message-ID: <4F7CF202.50307@cn.fujitsu.com>
+Date: Thu, 05 Apr 2012 09:14:42 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 0/3] add CMA test
+References: <1333587726-8962-1-git-send-email-penght@cn.fujitsu.com>
+	<CAGH67wRCFcJO8Nhz+at-6MTGJAqqm0JGBRQEuj=hpAxhcdKZRw@mail.gmail.com>
+In-Reply-To: <CAGH67wRCFcJO8Nhz+at-6MTGJAqqm0JGBRQEuj=hpAxhcdKZRw@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] at_deny01: fix a bug of /etc/init.d/atd is
+	nonexistent
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,55 +30,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-CMA (cross memory attach) feature introduced 2 new syscalls:
-process_vm_readv
-process_vm_writev
+On 04/05/2012 09:07 AM, Garrett Cooper wrote:
 
-commit fcf634098c00dd9cd247447368495f0b79be12d1
-Author: Christopher Yeoh <cyeoh@au1.ibm.com>
-Date: Mon Oct 31 17:06:39 2011 -0700
-Cross Memory Attach
-
-"The basic idea behind cross memory attach is to allow MPI programs doing
-intra-node communication to do a single copy of the message rather than
-a double copy of the message via shared memory." [1]
-
-This patch series is introducing the initial structure under syscalls/cma
-and first test to check various errno codes as described in proposed man
-page [2].
-
-[1] http://lwn.net/Articles/451188/
-[2] http://ozlabs.org/~cyeoh/cma/process_vm_readv.txt
+> On Wed, Apr 4, 2012 at 6:02 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+>> /etc/init.d/atd is nonexistent in fedora16, so should use systemctl.
+>>
+>> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> 
+> Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
+> 
 
 
-Jan Stancek (3):
-  configure: check if process_vm_read/write is supported
-  add testcases/kernel/syscalls/cma
-  syscalls/cma: add errno tests
+pushed, thanks,
 
- configure.ac                                       |    1 +
- m4/ltp-cma.m4                                      |   67 +++
- testcases/kernel/syscalls/cma/Makefile             |   22 +
- testcases/kernel/syscalls/cma/cma01.c              |  434 ++++++++++++++++++++
- .../kernel/syscalls/cma/process_vm_readv/Makefile  |   29 ++
- .../kernel/syscalls/cma/process_vm_writev/Makefile |   29 ++
- 6 files changed, 582 insertions(+)
- create mode 100644 m4/ltp-cma.m4
- create mode 100644 testcases/kernel/syscalls/cma/Makefile
- create mode 100644 testcases/kernel/syscalls/cma/cma01.c
- create mode 100644 testcases/kernel/syscalls/cma/process_vm_readv/Makefile
- create mode 100644 testcases/kernel/syscalls/cma/process_vm_writev/Makefile
-
--- 1.7.9.3 
+Wanlong Gao
 
 ------------------------------------------------------------------------------
-For Developers, A Lot Can Happen In A Second.
-Boundary is the first to Know...and Tell You.
-Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
-http://p.sf.net/sfu/Boundary-d2dvs2
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
