@@ -1,27 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gong.chen@linux.intel.com>) id 1SJyJ0-00023p-40
-	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 02:38:10 +0000
-Received: from mga14.intel.com ([143.182.124.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SJyIz-0004P3-2f
-	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 02:38:10 +0000
-Message-ID: <4F8CCF86.2010409@linux.intel.com>
-Date: Tue, 17 Apr 2012 10:03:50 +0800
-From: Chen Gong <gong.chen@linux.intel.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SFzwR-0000aw-7l
+	for ltp-list@lists.sourceforge.net; Fri, 06 Apr 2012 03:34:27 +0000
+Received: from mail-gx0-f175.google.com ([209.85.161.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SFzwQ-0006sg-Ip
+	for ltp-list@lists.sourceforge.net; Fri, 06 Apr 2012 03:34:27 +0000
+Received: by ggcy3 with SMTP id y3so1403990ggc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 05 Apr 2012 20:34:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <4F58E36E.5000306@casparzhang.com>
-	<4F594DE2.4040603@cn.fujitsu.com>
-	<4F62EB70.7010400@casparzhang.com>
-	<20120316143522.GB19604@alboin.amr.corp.intel.com>
-	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
-	<4F825325.3030308@linux.intel.com>
-	<4F825F9D.3020608@casparzhang.com>
-	<4F827B6A.3020204@linux.intel.com>
-In-Reply-To: <4F827B6A.3020204@linux.intel.com>
-Subject: Re: [LTP] [RFC] make mce-test a submodule
+In-Reply-To: <201204042149.20439.vapier@gentoo.org>
+References: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
+	<201204042028.52373.vapier@gentoo.org>
+	<alpine.BSF.2.00.1204041732320.25027@toaster.local>
+	<201204042149.20439.vapier@gentoo.org>
+Date: Thu, 5 Apr 2012 20:34:21 -0700
+Message-ID: <CAGH67wQcNtAkP4aMmGELSyEavEx-AbWqhjJxd_M-mh-u6qdn+w@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 0/4] Replace commonly used perl tools with awk
+	equivalents
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,56 +31,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-5LqOIDIwMTIvNC85IDE0OjAyLCBDaGVuIEdvbmcg5YaZ6YGTOgo+IOS6jiAyMDEyLzQvOSAxMjow
-MywgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPj4gT24gMDQvMDkvMjAxMiAxMToxMCBBTSwgQ2hlbiBH
-b25nIHdyb3RlOgo+Pj4g5LqOIDIwMTIvNC82IDIyOjMzLCBDYXNwYXIgWmhhbmcg5YaZ6YGTOgo+
-Pj4+IE9uIDAzLzIxLzIwMTIgMDU6MTggUE0sIENoZW4gR29uZyB3cm90ZToKPj4+Pj4g5LqOIDIw
-MTIvMy8xNiAyMjozNSwgQW5kaSBLbGVlbiDlhpnpgZM6Cj4+Pj4+PiBPbiBGcmksIE1hciAxNiwg
-MjAxMiBhdCAwMzoyNzo0NFBNICswODAwLCBDYXNwYXIgWmhhbmcgd3JvdGU6Cj4+Pj4+Pj4gSGkg
-YWxsLCBJJ2xsIG1lcmdlIHRoaXMgY2hhbmdlIHRvIG1hc3RlciBpZiBJIGRvbid0IGhlYXIgYW55
-IAo+Pj4+Pj4+IG9iamVjdGlvbnMKPj4+Pj4+PiBmcm9tIHlvdSBieSB0b2RheS4KPj4+Pj4+IEZp
-bmUgZm9yIG1lLiBDb3B5aW5nIEdvbmcgQ2hlbiB3aG8gZGlkIG1vc3Qgb2YgdGhlIG1jZS10ZXN0
-IHdvcmsgCj4+Pj4+PiByZWNlbnRseQo+Pj4+Pj4gdG9vLgo+Pj4+Pj4KPj4+Pj4+IC1BbmRpCj4+
-Pj4+IE9oLCB5ZXMuIFJlY2VudGx5IEkgbWFrZSBhIGJpZyBjaGFuZ2Ugb24gbWNlLXRlc3QgcHJv
-amVjdCBhbmQgb2xkCj4+Pj4+IHN0cnVjdHVyZSB3aWxsIGJlIHJlb3JnYW5pemVkLgo+Pj4+PiBB
-bmQgSSBldmVyIGxvb2tlZCB0aHJvdWdoIHRoZSBtY2UtdGVzdCBwYXJ0IGluIExUUC4gVW5mb3J0
-dW5hdGVseSAKPj4+Pj4gaXQgaXMKPj4+Pj4gdmVyeSBvbGQgYW5kIGNhbid0IHJ1biBvbgo+Pj4+
-PiBuZXdlciBrZXJuZWwuIEkgaG9wZSB5b3UgY2FuIGtlZXAgY3VycmVudCBkaXNhYmxlZCBzdGF0
-dXMgaW4gTFRQIGFuZAo+Pj4+PiB3YWl0IG15IG5ldyB3b3JrIGlzIG1lcmdlZC4KPj4+Pj4gV2Ug
-Y2FuIHRhbGsgYXQgdGhhdCB0aW1lLiBJcyBpdCBPSyB0byB5b3U/Cj4+Pj4gSGkgQ2hlbiBHb25n
-LCBzb3JyeSBmb3IgbGF0ZSByZXBseSwgd2UncmUgcGxhbm5pbmcgdG8gcmVtb3ZlIG9sZCAKPj4+
-PiBzdGF0aWMKPj4+PiBjb2RlZCBtY2UtdGVzdCBmcm9tIExUUCwgYW5kIHVzZSBpdCBhcyBhIHN1
-Ym1vZHVsZSwgd2hpY2ggbWVhbnMsCj4+Pj4gbWNlLXRlc3Qgd29uJ3QgYmUgc3RhdGljLWNvZGVk
-IGFueSBtb3JlLCBpdCdzIGFsd2F5cyBzeW5jZWQgdXAgd2l0aCAKPj4+PiB5b3VyCj4+Pj4gdXBz
-dHJlYW0gdmVyc2lvbiwgd2UganVzdCBuZWVkIHRvIGRvIHNvbWUgbWFudWFsIGBgc3VibW9kdWxl
-IHVwZGF0ZWBgCj4+Pj4gb3BlcmF0aW9ucyB0byBjaGVja291dCB5b3VyIHZlcnNpb24gd2hlbiBk
-b2luZyBhIExUUCByZWxlYXNlLiBTbyBJJ2xsCj4+Pj4gbWVyZ2UgdGhpcyBwYXRjaCBpbiwgcmVt
-b3ZlIGFsbCBjdXJyZW50IG91dC1vZi1kYXRlIGNvZGVzLCBhbmQgd2FpdCAKPj4+PiBmb3IKPj4+
-PiB5b3VyIG5vdGljZSBvZiBtY2UtdGVzdCdzIG5leHQgdmVyc2lvbiwgc28gdGhhdCB3ZSBjYW4g
-aW5jbHVkZSBpdCAKPj4+PiBpbiBvdXIKPj4+PiBuZXh0IExUUCBzdGFibGUgcmVsZWFzZS4KPj4+
-Pgo+Pj4+IFRoYW5rcywKPj4+PiBDYXNwYXIKPj4+Pgo+Pj4gSXQncyBmaW5lIHRvIG1lLiBTbyBk
-byB5b3Ugd2FudCB0byBnZXQgYSBub3RpY2UgZnJvbSBtZSBhZnRlciB0aGUgY29kZXMKPj4+IGFy
-ZSBtZXJnZWQgb3IgeW91Cj4+PiBtb25pdG9yIHRoZSB1cHN0cmVhbSBzdGF0dXMgYnkgeW91cnNl
-bGY/Cj4+IEknZCBhcHByZWNpYXRlIGl0IGlmIHlvdSBjYW4gc2VuZCBtZSBhIG1haWwgd2hlbiB0
-aGUgY29kZXMgZ2V0IG1lcmdlZCwKPj4gYnV0IEknbGwgY2hlY2sgdXBzdHJlYW0gc3RhdHVzIGFz
-IHdlbGwgZnJvbSB0aW1lIHRvIHRpbWUuCj4+Cj4+IFRoYW5rcywKPj4gQ2FzcGFyCj4+Cj4gT0ss
-IEkgd2lsbC4gTm93IHBhdGNoIGlzIGluIHRoZSByZXZpZXcgc3RhdHVzLCBzbyBJIHdpbGwgdGVs
-bCB5b3UgQVNBUCAKPiBhZnRlciBtZXJnZWQuClRoZSBuZXcgcGF0Y2ggZm9yIG1jZS10ZXN0IGhh
-cyBiZWVuIG1lcmdlZCwgYnV0IGl0IGxvb2tzIGEgbGl0dGxlIGJpdCB3cm9uZwpkdXJpbmcgdGhl
-IG1lcmdlIHByb2NlZHVyZSAoYWxsIHNoZWxsIHNjcmlwdHMgZXhlY3V0aW9uIHJpZ2h0IGFyZSBt
-aXNzZWQpLgpJJ20gcHVzaGluZyBBbmRpIHRvIGZpeCBpdCwgc28gcGxlYXNlIGRvbid0IGFkZCBt
-Y2UtdGVzdCBhdCBjdXJyZW50IHN0YWdlLgpJIHdpbGwgdGVsbCB5b3Ugd2hlbiBpdCBpcyByZWFk
-eS4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCZXR0ZXIgdGhhbiBzZWM/IE5vdGhpbmcgaXMgYmV0
-dGVyIHRoYW4gc2VjIHdoZW4gaXQgY29tZXMgdG8KbW9uaXRvcmluZyBCaWcgRGF0YSBhcHBsaWNh
-dGlvbnMuIFRyeSBCb3VuZGFyeSBvbmUtc2Vjb25kIApyZXNvbHV0aW9uIGFwcCBtb25pdG9yaW5n
-IHRvZGF5LiBGcmVlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L0JvdW5kYXJ5LWRldjJkZXYKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGlu
-ZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Wed, Apr 4, 2012 at 6:49 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Wednesday 04 April 2012 20:33:40 Garrett Cooper wrote:
+>> On Wed, 4 Apr 2012, Mike Frysinger wrote:
+>> > On Wednesday 04 April 2012 15:18:53 Garrett Cooper wrote:
+>> >> On Wed, Apr 4, 2012 at 10:54 AM, Mike Frysinger wrote:
+>> >>> On Wednesday 04 April 2012 13:31:10 Garrett Cooper wrote:
+>> >>>> On Wed, Apr 4, 2012 at 10:22 AM, Mike Frysinger wrote:
+>> >>>>> On Wednesday 04 April 2012 01:23:43 Garrett Cooper wrote:
+>> >>>>>> The intent behind these changes are to remove unnecessary perl
+>> >>>>>> dependencies in LTP by using awk in its stead. It was something t=
+hat
+>> >>>>>> was discussed a while ago on ltp-list@.
+>> >>>>>
+>> >>>>> i like awk over perl a lot. =A0my only concern is non-POSIX stuff
+>> >>>>> slipping in (such as people who have gawk installed). =A0should we=
+ add
+>> >>>>> a local wrapper script that sees if the awk accepts a --posix flag
+>> >>>>> and automatically pass it ?
+>> >>>>
+>> >>>> That's actually a gawk-ism :)...
+>> >>>
+>> >>> yes, that's why i phrased it "if the awk accepts"
+>> >>>
+>> >>> awk --help | grep -q -e --posix && args=3D"${args} --posix"
+>> >>
+>> >> This makes sense and it would protect against gawk'isms, but not other
+>> >> *awk-isms.
+>> >
+>> > sure, but some protection is better than none. =A0if other awks have
+>> > similar knobs, we can leverage them too.
+>>
+>> Agreed, but this should be handled in other commits, right?
+>
+> sure, i'm not saying let's hold up the conversion from perl. =A0but we sh=
+ould do
+> it at some point imo.
+
+    Are there any objections to the proposed [final?] patches I
+submitted for this patch set?
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+For Developers, A Lot Can Happen In A Second.
+Boundary is the first to Know...and Tell You.
+Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
+http://p.sf.net/sfu/Boundary-d2dvs2
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
