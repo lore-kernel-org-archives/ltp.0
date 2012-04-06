@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SFIpw-0006XE-Ca
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 05:32:52 +0000
-Received: from mail-vb0-f47.google.com ([209.85.212.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SFIpv-0007M5-Rv
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 05:32:52 +0000
-Received: by vbbfr13 with SMTP id fr13so497022vbb.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SGBsh-0007Uz-IW
+	for ltp-list@lists.sourceforge.net; Fri, 06 Apr 2012 16:19:23 +0000
+Received: from mail-pz0-f46.google.com ([209.85.210.46])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SGBsg-0006Nb-ON
+	for ltp-list@lists.sourceforge.net; Fri, 06 Apr 2012 16:19:23 +0000
+Received: by dadz9 with SMTP id z9so3485075dad.33
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Apr 2012 22:32:46 -0700 (PDT)
+	Fri, 06 Apr 2012 09:19:16 -0700 (PDT)
+Message-ID: <4F7F177C.50100@casparzhang.com>
+Date: Sat, 07 Apr 2012 00:19:08 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Date: Tue, 3 Apr 2012 22:32:46 -0700
-Message-ID: <CAGH67wT8LYA6XnFWphZ2qfrg48hToXr0DpbsHmD-4=1YidrWww@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 4/4] Replace
- create_kernel_faults_in_loops_and_probability.pl with an awk equivalent
+References: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
+	<201204042028.52373.vapier@gentoo.org>
+	<alpine.BSF.2.00.1204041732320.25027@toaster.local>
+	<201204042149.20439.vapier@gentoo.org>
+	<CAGH67wQcNtAkP4aMmGELSyEavEx-AbWqhjJxd_M-mh-u6qdn+w@mail.gmail.com>
+In-Reply-To: <CAGH67wQcNtAkP4aMmGELSyEavEx-AbWqhjJxd_M-mh-u6qdn+w@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 0/4] Replace commonly used perl tools with awk
+	equivalents
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,39 +32,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-On Tue, Apr 3, 2012 at 10:27 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> Replace create_kernel_faults_in_loops_and_probability.pl with an awk
-> equivalent
->
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> ---
-> =A0runltp =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 | =A0 24 +++--
-> =A0...eate_kernel_faults_in_loops_and_probability.awk | =A0 40 ++++++++
-> =A0...reate_kernel_faults_in_loops_and_probability.pl | =A0100
-> --------------------
-> =A03 files changed, 58 insertions(+), 106 deletions(-)
-> =A0create mode 100644 tools/create_kernel_faults_in_loops_and_probability=
-.awk
-> =A0delete mode 100755 tools/create_kernel_faults_in_loops_and_probability=
-.pl
+On 04/06/2012 11:34 AM, Garrett Cooper wrote:
+> On Wed, Apr 4, 2012 at 6:49 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+>> On Wednesday 04 April 2012 20:33:40 Garrett Cooper wrote:
+>>> On Wed, 4 Apr 2012, Mike Frysinger wrote:
+>>>> On Wednesday 04 April 2012 15:18:53 Garrett Cooper wrote:
+>>>>> On Wed, Apr 4, 2012 at 10:54 AM, Mike Frysinger wrote:
+>>>>>> On Wednesday 04 April 2012 13:31:10 Garrett Cooper wrote:
+>>>>>>> On Wed, Apr 4, 2012 at 10:22 AM, Mike Frysinger wrote:
+>>>>>>>> On Wednesday 04 April 2012 01:23:43 Garrett Cooper wrote:
+>>>>>>>>> The intent behind these changes are to remove unnecessary perl
+>>>>>>>>> dependencies in LTP by using awk in its stead. It was something that
+>>>>>>>>> was discussed a while ago on ltp-list@.
+>>>>>>>>
+>>>>>>>> i like awk over perl a lot.  my only concern is non-POSIX stuff
+>>>>>>>> slipping in (such as people who have gawk installed).  should we add
+>>>>>>>> a local wrapper script that sees if the awk accepts a --posix flag
+>>>>>>>> and automatically pass it ?
+>>>>>>>
+>>>>>>> That's actually a gawk-ism :)...
+>>>>>>
+>>>>>> yes, that's why i phrased it "if the awk accepts"
+>>>>>>
+>>>>>> awk --help | grep -q -e --posix && args="${args} --posix"
+>>>>>
+>>>>> This makes sense and it would protect against gawk'isms, but not other
+>>>>> *awk-isms.
+>>>>
+>>>> sure, but some protection is better than none.  if other awks have
+>>>> similar knobs, we can leverage them too.
+>>>
+>>> Agreed, but this should be handled in other commits, right?
+>>
+>> sure, i'm not saying let's hold up the conversion from perl.  but we should do
+>> it at some point imo.
+> 
+>     Are there any objections to the proposed [final?] patches I
+> submitted for this patch set?
+> Thanks!
 
-    The subject line has been corrected.
-Thanks!
--Garrett
+looks good to me.
 
----------------------------------------------------------------------------=
----
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second =
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+------------------------------------------------------------------------------
+For Developers, A Lot Can Happen In A Second.
+Boundary is the first to Know...and Tell You.
+Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
+http://p.sf.net/sfu/Boundary-d2dvs2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
