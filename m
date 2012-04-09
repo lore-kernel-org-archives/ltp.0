@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SO5xj-0001Ur-AY
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 11:37:15 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SO5xg-0001aK-Vm
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 11:37:15 +0000
-Message-ID: <4F9BD61D.8010705@cn.fujitsu.com>
-Date: Sat, 28 Apr 2012 19:35:57 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1SH5pf-0000AU-FZ
+	for ltp-list@lists.sourceforge.net; Mon, 09 Apr 2012 04:03:59 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SH5pc-0003J3-LQ
+	for ltp-list@lists.sourceforge.net; Mon, 09 Apr 2012 04:03:59 +0000
+Received: by pbcum15 with SMTP id um15so4452165pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 08 Apr 2012 21:03:50 -0700 (PDT)
+Message-ID: <4F825F9D.3020608@casparzhang.com>
+Date: Mon, 09 Apr 2012 12:03:41 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-In-Reply-To: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] m4/ltp-numa.m4: fixed numa config
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<20120316143522.GB19604@alboin.amr.corp.intel.com>
+	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
+	<4F825325.3030308@linux.intel.com>
+In-Reply-To: <4F825325.3030308@linux.intel.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,62 +32,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Chen Gong <gong.chen@linux.intel.com>
+Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-On 04/28/2012 03:48 PM, Zhouping Liu wrote:
-
-> numa_alloc_onnode() and numa_move_pages() all need numa lib '-lnuma',
-> but in ltp-numa.m4, we just checked the two functions using
-> AC_CHECK_FUNCS, without the patch, it always report such error
-> log in numa system: "undefined reference to `numa_alloc_onnode`",
-> which blocked syscalls/move_pages/* cases, the patch fixed it.
-
-
-
-pushed the series, thanks
-
-Wanlong Gao
-
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
->  m4/ltp-numa.m4 |    9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
-> index bcc5e6b..d03bc80 100644
-> --- a/m4/ltp-numa.m4
-> +++ b/m4/ltp-numa.m4
-> @@ -26,7 +26,14 @@ AC_DEFUN([LTP_CHECK_SYSCALL_NUMA],
->  [dnl
->  AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
->  	LTP_SYSCALL_NUMA_HEADERS=yes
-> -	AC_CHECK_FUNCS(numa_alloc_onnode,numa_move_pages)
-> +	AC_CHECK_LIB(numa,numa_alloc_onnode,[have_numa_alloc_onnode="yes"])
-> +	if  test "x$have_numa_alloc_onnode" = "xyes"; then
-> +		AC_DEFINE(HAVE_NUMA_ALLOC_ONNODE,1,[define to 1 if you have 'numa_alloc_onnode' function])
-> +	fi
-> +	AC_CHECK_LIB(numa,numa_move_pages,[have_numa_move_pages="yes"])
-> +	if  test "x$have_numa_move_pages" = "xyes"; then
-> +		AC_DEFINE(HAVE_NUMA_MOVE_PAGES,1,[define to 1 if you have 'numa_move_pages' function])
-> +	fi
->  ]
->  	AC_CHECK_LIB(numa,numa_available,[
->  NUMA_CPPFLAGS="-DNUMA_VERSION1_COMPATIBILITY"
-
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDQvMDkvMjAxMiAxMToxMCBBTSwgQ2hlbiBHb25nIHdyb3RlOgo+IOS6jiAyMDEyLzQvNiAy
+MjozMywgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPj4gT24gMDMvMjEvMjAxMiAwNToxOCBQTSwgQ2hl
+biBHb25nIHdyb3RlOgo+Pj4g5LqOIDIwMTIvMy8xNiAyMjozNSwgQW5kaSBLbGVlbiDlhpnpgZM6
+Cj4+Pj4gT24gRnJpLCBNYXIgMTYsIDIwMTIgYXQgMDM6Mjc6NDRQTSArMDgwMCwgQ2FzcGFyIFpo
+YW5nIHdyb3RlOgo+Pj4+PiBIaSBhbGwsIEknbGwgbWVyZ2UgdGhpcyBjaGFuZ2UgdG8gbWFzdGVy
+IGlmIEkgZG9uJ3QgaGVhciBhbnkgb2JqZWN0aW9ucwo+Pj4+PiBmcm9tIHlvdSBieSB0b2RheS4K
+Pj4+PiBGaW5lIGZvciBtZS4gQ29weWluZyBHb25nIENoZW4gd2hvIGRpZCBtb3N0IG9mIHRoZSBt
+Y2UtdGVzdCB3b3JrIHJlY2VudGx5Cj4+Pj4gdG9vLgo+Pj4+Cj4+Pj4gLUFuZGkKPj4+IE9oLCB5
+ZXMuIFJlY2VudGx5IEkgbWFrZSBhIGJpZyBjaGFuZ2Ugb24gbWNlLXRlc3QgcHJvamVjdCBhbmQg
+b2xkCj4+PiBzdHJ1Y3R1cmUgd2lsbCBiZSByZW9yZ2FuaXplZC4KPj4+IEFuZCBJIGV2ZXIgbG9v
+a2VkIHRocm91Z2ggdGhlIG1jZS10ZXN0IHBhcnQgaW4gTFRQLiBVbmZvcnR1bmF0ZWx5IGl0IGlz
+Cj4+PiB2ZXJ5IG9sZCBhbmQgY2FuJ3QgcnVuIG9uCj4+PiBuZXdlciBrZXJuZWwuIEkgaG9wZSB5
+b3UgY2FuIGtlZXAgY3VycmVudCBkaXNhYmxlZCBzdGF0dXMgaW4gTFRQIGFuZAo+Pj4gd2FpdCBt
+eSBuZXcgd29yayBpcyBtZXJnZWQuCj4+PiBXZSBjYW4gdGFsayBhdCB0aGF0IHRpbWUuIElzIGl0
+IE9LIHRvIHlvdT8KPj4gSGkgQ2hlbiBHb25nLCBzb3JyeSBmb3IgbGF0ZSByZXBseSwgd2UncmUg
+cGxhbm5pbmcgdG8gcmVtb3ZlIG9sZCBzdGF0aWMKPj4gY29kZWQgbWNlLXRlc3QgZnJvbSBMVFAs
+IGFuZCB1c2UgaXQgYXMgYSBzdWJtb2R1bGUsIHdoaWNoIG1lYW5zLAo+PiBtY2UtdGVzdCB3b24n
+dCBiZSBzdGF0aWMtY29kZWQgYW55IG1vcmUsIGl0J3MgYWx3YXlzIHN5bmNlZCB1cCB3aXRoIHlv
+dXIKPj4gdXBzdHJlYW0gdmVyc2lvbiwgd2UganVzdCBuZWVkIHRvIGRvIHNvbWUgbWFudWFsIGBg
+c3VibW9kdWxlIHVwZGF0ZWBgCj4+IG9wZXJhdGlvbnMgdG8gY2hlY2tvdXQgeW91ciB2ZXJzaW9u
+IHdoZW4gZG9pbmcgYSBMVFAgcmVsZWFzZS4gU28gSSdsbAo+PiBtZXJnZSB0aGlzIHBhdGNoIGlu
+LCByZW1vdmUgYWxsIGN1cnJlbnQgb3V0LW9mLWRhdGUgY29kZXMsIGFuZCB3YWl0IGZvcgo+PiB5
+b3VyIG5vdGljZSBvZiBtY2UtdGVzdCdzIG5leHQgdmVyc2lvbiwgc28gdGhhdCB3ZSBjYW4gaW5j
+bHVkZSBpdCBpbiBvdXIKPj4gbmV4dCBMVFAgc3RhYmxlIHJlbGVhc2UuCj4+Cj4+IFRoYW5rcywK
+Pj4gQ2FzcGFyCj4+Cj4gSXQncyBmaW5lIHRvIG1lLiBTbyBkbyB5b3Ugd2FudCB0byBnZXQgYSBu
+b3RpY2UgZnJvbSBtZSBhZnRlciB0aGUgY29kZXMgCj4gYXJlIG1lcmdlZCBvciB5b3UKPiBtb25p
+dG9yIHRoZSB1cHN0cmVhbSBzdGF0dXMgYnkgeW91cnNlbGY/CgpJJ2QgYXBwcmVjaWF0ZSBpdCBp
+ZiB5b3UgY2FuIHNlbmQgbWUgYSBtYWlsIHdoZW4gdGhlIGNvZGVzIGdldCBtZXJnZWQsCmJ1dCBJ
+J2xsIGNoZWNrIHVwc3RyZWFtIHN0YXR1cyBhcyB3ZWxsIGZyb20gdGltZSB0byB0aW1lLgoKVGhh
+bmtzLApDYXNwYXIKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpGb3IgRGV2ZWxvcGVycywgQSBMb3Qg
+Q2FuIEhhcHBlbiBJbiBBIFNlY29uZC4KQm91bmRhcnkgaXMgdGhlIGZpcnN0IHRvIEtub3cuLi5h
+bmQgVGVsbCBZb3UuCk1vbml0b3IgWW91ciBBcHBsaWNhdGlvbnMgaW4gVWx0cmEtRmluZSBSZXNv
+bHV0aW9uLiBUcnkgaXQgRlJFRSEKaHR0cDovL3Auc2YubmV0L3NmdS9Cb3VuZGFyeS1kMmR2czIK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
+bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
+LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
