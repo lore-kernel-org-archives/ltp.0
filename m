@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SFf94-0004Zh-C3
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 05:22:06 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SFf93-00059T-F8
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 05:22:06 +0000
-Message-ID: <4F7D2BF7.6070201@redhat.com>
-Date: Thu, 05 Apr 2012 13:21:59 +0800
-From: ZhoupingLiu <zliu@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SH7ky-0006qf-JE
+	for ltp-list@lists.sourceforge.net; Mon, 09 Apr 2012 06:07:16 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SH7kx-0006cJ-Sy
+	for ltp-list@lists.sourceforge.net; Mon, 09 Apr 2012 06:07:16 +0000
+Received: by pbcum15 with SMTP id um15so4534118pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 08 Apr 2012 23:07:08 -0700 (PDT)
+Message-ID: <4F827C85.7090001@casparzhang.com>
+Date: Mon, 09 Apr 2012 14:07:01 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <4F794D8B.6050505@cn.fujitsu.com> <4F7D26DC.5090605@redhat.com>
-	<4F7D27D5.9080006@cn.fujitsu.com>
-In-Reply-To: <4F7D27D5.9080006@cn.fujitsu.com>
-Subject: Re: [LTP] ksm03
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<20120316143522.GB19604@alboin.amr.corp.intel.com>
+	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
+	<4F825325.3030308@linux.intel.com>
+	<4F825F9D.3020608@casparzhang.com>
+	<4F827B6A.3020204@linux.intel.com>
+In-Reply-To: <4F827B6A.3020204@linux.intel.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,38 +37,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Chen Gong <gong.chen@linux.intel.com>
+Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-On 04/05/2012 01:04 PM, Wanlong Gao wrote:
-> On 04/05/2012 01:00 PM, ZhoupingLiu wrote:
->
->> On 04/02/2012 02:56 PM, Wanlong Gao wrote:
->>> Hi Caspar,
->>>
->>> Have you ever seen like below? It happens on ksm03,
->>> the page_sharing numbers is always incorrect, it
->>> occurs on RHEL7-Alpha, any ides?
->> hi, Wanlong
+On 04/09/2012 02:02 PM, Chen Gong wrote:
+>>> It's fine to me. So do you want to get a notice from me after the codes
+>>> are merged or you
+>>> monitor the upstream status by yourself?
+>> I'd appreciate it if you can send me a mail when the codes get merged,
+>> but I'll check upstream status as well from time to time.
 >>
->> I caught this error, but it just only occurred in s390x,
->> and not 100% occurred, I will check the reason.
->> could you tell me which arches do you met the issue?
->
-> Not fortunately, I met on x86_64 :(
-> and the case can't finish then.
+>> Thanks,
+>> Caspar
+>>
+> OK, I will. Now patch is in the review status, so I will tell you ASAP 
+> after merged.
 
-Okay, I'll dig it deeper, thanks for your info.
+Thanks very much!
 
---
-Thanks,
-Zhouping
+Caspar
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+For Developers, A Lot Can Happen In A Second.
+Boundary is the first to Know...and Tell You.
+Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
+http://p.sf.net/sfu/Boundary-d2dvs2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
