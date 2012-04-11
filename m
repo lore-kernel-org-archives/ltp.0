@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1SFTud-0002yN-0o
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:22:27 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SFTua-0000zZ-QR
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:22:26 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 4 Apr 2012 13:22:38 -0400
-References: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
-In-Reply-To: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SHvlu-0002LD-8C
+	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 11:31:34 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SHvlp-0007Py-GJ
+	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 11:31:34 +0000
+Message-ID: <4F856B48.2060101@cn.fujitsu.com>
+Date: Wed, 11 Apr 2012 19:30:16 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-Id: <201204041322.39735.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 0/4] Replace commonly used perl tools with awk
-	equivalents
+References: <1334133622-24512-1-git-send-email-kai.kang@windriver.com>
+	<4F855A0D.9010308@casparzhang.com>
+In-Reply-To: <4F855A0D.9010308@casparzhang.com>
+Subject: Re: [LTP] [PATCH] aio_cancel/3-1: increase BUF_SIZE
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,78 +26,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8177737311141778217=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============8177737311141778217==
-Content-Type: multipart/signed; boundary="nextPart3542117.M0WAvDYdij";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3542117.M0WAvDYdij
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday 04 April 2012 01:23:43 Garrett Cooper wrote:
-> The intent behind these changes are to remove unnecessary perl
-> dependencies in LTP by using awk in its stead. It was something that was
-> discussed a while ago on ltp-list@.
-
-i like awk over perl a lot.  my only concern is non-POSIX stuff slipping in=
-=20
-(such as people who have gawk installed).  should we add a local wrapper=20
-script that sees if the awk accepts a --posix flag and automatically pass i=
-t ?
-=2Dmike
-
---nextPart3542117.M0WAvDYdij
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPfINfAAoJEEFjO5/oN/WBx0wQAJC+cxLLBOtTgvvoj7MU9xgg
-gZI+F1pGIrrHxzXe/mMJxNGxJOzCxlxn6ctIuUofDsZL9VKHxLIOvVgBVatqUu3F
-iG5Qs6oBzPBpOh96RaZo1MuqNHMZzkIi+YLXcZoXMzktbI1JsvEPEdAzFlcbo9gB
-ohVqATjGMKPF57jOjvOdNkAGPS6fDodznkEMFnHGBBtKK+ia9IxFt9mAfNKGgoqj
-Y8GUEDKHv/cfNsdHgI+7Vz+O4Z3bjS8kGs7fp/NDUoAebE/ewlWE27CIPmul3B6X
-xqOSQ3zZBTK6RR6MHK7vVlOe9z1U97iE4R7aN+2VhfmNkoLxTpmLzu93D4rlkl8e
-JZVbngehOkQBszQjcD97WLFSJ7MCCi+A4oUmv/eG/Nw8L6/lgkNrYJhDE5bmtUC1
-5iL6KLEGWERywrsqP4LDeIvK4GM1yG/U+6xLR4k+PBhNaUnkJOGNKI18WihVZ+Sg
-qq0mjXSLc+sF52NasDB/YZJ+fq/+ZvmOYsr8wgHEkHKAMhpypUateHsXqe1O2nQ0
-+BAZs44s0pnWg0fDMYOIm3w++Hh1xH7Yc+/O47f3c+JyTZ2hx4HfM7ilf+4lTGwo
-hiDcMhKzgqje+WfPit2JIk2JdmgXJdcAzbf+xm0pZEusN6n4Dm9k/Dk7B6/Et0n+
-X0Yqat7FuEjzqbAQPUJX
-=1fig
------END PGP SIGNATURE-----
-
---nextPart3542117.M0WAvDYdij--
-
-
---===============8177737311141778217==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 04/11/2012 06:16 PM, Caspar Zhang wrote:
+
+> On 04/11/2012 04:40 PM, Kang Kai wrote:
+>> When do aio_cancel, all the aio_write operations have finished on some
+>> platforms. That cause the case return UNRESOLVED. So increase the BUF_SIZE
+>> to delay aio_write finish that make one aio_write operation can be
+>> cancelled at least.
+>>
+>> Signed-off-by: Kang Kai <kai.kang@windriver.com>
+> Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+
+
+pushed, thanks all,
+
+Wanlong Gao
+
+> 
+> ------------------------------------------------------------------------------
+> Better than sec? Nothing is better than sec when it comes to
+> monitoring Big Data applications. Try Boundary one-second 
+> resolution app monitoring today. Free.
+> http://p.sf.net/sfu/Boundary-dev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+
 
 ------------------------------------------------------------------------------
 Better than sec? Nothing is better than sec when it comes to
 monitoring Big Data applications. Try Boundary one-second 
 resolution app monitoring today. Free.
 http://p.sf.net/sfu/Boundary-dev2dev
---===============8177737311141778217==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8177737311141778217==--
-
