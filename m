@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1SMt4r-0006Im-Gy
-	for ltp-list@lists.sourceforge.net; Wed, 25 Apr 2012 03:39:37 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SHtos-0002iA-FE
+	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:26:30 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SMt4p-0006V0-RY
-	for ltp-list@lists.sourceforge.net; Wed, 25 Apr 2012 03:39:37 +0000
-Message-ID: <4F9771EA.3000409@cn.fujitsu.com>
-Date: Wed, 25 Apr 2012 11:39:22 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SHtoo-0002F6-Fs
+	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:26:30 +0000
+Message-ID: <4F854DFA.20704@cn.fujitsu.com>
+Date: Wed, 11 Apr 2012 17:25:14 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1335253407-17318-1-git-send-email-penght@cn.fujitsu.com>
-	<4F976A4E.6070006@cn.fujitsu.com>
-	<4F977041.9070607@casparzhang.com>
-In-Reply-To: <4F977041.9070607@casparzhang.com>
-Subject: Re: [LTP] [PATCH] memcg_move_charge_at_immigrate_test: fix a bug of
- usage_in_bytes is not 'exact'
+References: <alpine.BSF.2.00.1204041735200.25027@toaster.local>
+	<201204042152.56885.vapier@gentoo.org>
+	<4F84F1E1.7000602@cn.fujitsu.com>
+	<45B655E5-9D04-457E-ADD6-4B79761A3B68@gmail.com>
+In-Reply-To: <45B655E5-9D04-457E-ADD6-4B79761A3B68@gmail.com>
+Subject: Re: [LTP] [PATCH 1/2] Clean up inotify(7) wrappers
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,83 +28,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-CkNhc3BhciBaaGFuZyBzYWlkIHRoZSBmb2xsb3dpbmcgb24gMjAxMi00LTI1IDExOjMyOgo+Pj4g
-SW4gbWVtb3J5LnR4dCBzYXlzOgo+Pj4gIHVzYWdlX2luX2J5dGVzIGlzIGFmZmVjdGVkIGJ5IHRo
-ZSBtZXRob2QgYW5kIGRvZXNuJ3Qgc2hvdyAnZXhhY3QnIHZhbHVlIG9mIG1lbW9yeShhbmQgc3dh
-cCkgdXNhZ2UsIGl0J3MgYW4gZnV6eiB2YWx1ZSBmb3IgZWZmaWNpZW50IGFjY2Vzcy4gKE9mIGNv
-dXJzZSwgd2hlbiBuZWNlc3NhcnksIGl0J3Mgc3luY2hyb25pemVkLikgSWYgeW91IHdhbnQgdG8g
-a25vdyBtb3JlIGV4YWN0IG1lbW9yeSB1c2FnZSwgeW91IHNob3VsZCB1c2UgUlNTK0NBQ0hFKCtT
-V0FQKSB2YWx1ZSBpbiBtZW1vcnkuc3RhdChzZWUgNS4yKS4KPj4+Cj4+PiBTbyBtZW1vcnkudXNh
-Z2VfaW5fYnl0ZXMgc2hvdWxkIGJlIHJlcGxhY2VkIHdpdGggbWVtb3J5LnN0YXQgaW4gdGhlIGNh
-c2Ugb2YKPj4+IG1lbWNnX21vdmVfY2hhcmdlX2F0X2ltbWlncmF0ZV90ZXN0Lgo+IAo+IEhpLCBQ
-bGVhc2UgYnJlYWsgeW91ciBjb21taXQgbWVzc2FnZSBpbnRvIDw9IDczIHdvcmRzIHBlciBsaW5l
-IChleGNlcHQKPiBzb21lIHJ1bm5pbmcgb3V0cHV0KSBuZXh0IHRpbWUuCj4gCgpTb3Jyee+8jEkg
-c2Vl44CCCgpUaGFua3PjgIIKCi0tIApCZXN0IFJlZ2FyZHMsClBlbmcKCj4gVGhhbmtzLAo+IENh
-c3Bhcgo+IAo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFBlbmcgSGFpdGFvIDxwZW5naHRAY24uZnVq
-aXRzdS5jb20+Cj4+Cj4+Cj4+IHB1c2hlZCwgdGhhbmtzIFBlbmcsCj4+Cj4+IFdhbmxvbmcgR2Fv
-Cj4+Cj4+PiAtLS0KPj4+ICB0ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2Z1bmN0
-aW9uYWwvbWVtY2dfbGliLnNoICAgICB8ICAgIDYgKysrKy0tCj4+PiAgLi4uL21lbWNnL2Z1bmN0
-aW9uYWwvbWVtY2dfbW92ZV9jaGFyZ2VfYXRfaW1taWdyYXRlX3Rlc3Quc2ggICAgfCAgICA4ICsr
-KystLS0tCj4+PiAgMiBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25z
-KC0pCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVt
-Y2cvZnVuY3Rpb25hbC9tZW1jZ19saWIuc2ggYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJz
-L21lbWNnL2Z1bmN0aW9uYWwvbWVtY2dfbGliLnNoCj4+PiBpbmRleCA0NzA5MzJkLi5mZDJjN2Zk
-IDEwMDc1NQo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9mdW5j
-dGlvbmFsL21lbWNnX2xpYi5zaAo+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVy
-cy9tZW1jZy9mdW5jdGlvbmFsL21lbWNnX2xpYi5zaAo+Pj4gQEAgLTM4MCw5ICszODAsMTEgQEAg
-dGVzdF9tb3ZlX2NoYXJnZSgpCj4+PiAgCWVjaG8gJCEgPiBzdWJncm91cF9iL3Rhc2tzCj4+PiAg
-Cj4+PiAgCWNkIHN1Ymdyb3VwX2IKPj4+IC0JY2hlY2tfbWVtX3N0YXQgbWVtb3J5LnVzYWdlX2lu
-X2J5dGVzICQ0Cj4+PiArCWNoZWNrX21lbV9zdGF0ICJyc3MiICQ0Cj4+PiArCWNoZWNrX21lbV9z
-dGF0ICJjYWNoZSIgJDUKPj4+ICAJY2QgLi4vc3ViZ3JvdXBfYQo+Pj4gLQljaGVja19tZW1fc3Rh
-dCBtZW1vcnkudXNhZ2VfaW5fYnl0ZXMgJDUKPj4+ICsJY2hlY2tfbWVtX3N0YXQgInJzcyIgJDYK
-Pj4+ICsJY2hlY2tfbWVtX3N0YXQgImNhY2hlIiAkNwo+Pj4gIAo+Pj4gIAljZCAuLgo+Pj4gIAll
-Y2hvICQhID4gdGFza3MKPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xs
-ZXJzL21lbWNnL2Z1bmN0aW9uYWwvbWVtY2dfbW92ZV9jaGFyZ2VfYXRfaW1taWdyYXRlX3Rlc3Qu
-c2ggYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2Z1bmN0aW9uYWwvbWVtY2df
-bW92ZV9jaGFyZ2VfYXRfaW1taWdyYXRlX3Rlc3Quc2gKPj4+IGluZGV4IGZiNjM5YzcuLmNmMmM2
-MDMgMTAwNzU1Cj4+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2Z1
-bmN0aW9uYWwvbWVtY2dfbW92ZV9jaGFyZ2VfYXRfaW1taWdyYXRlX3Rlc3Quc2gKPj4+ICsrKyBi
-L3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvZnVuY3Rpb25hbC9tZW1jZ19tb3Zl
-X2NoYXJnZV9hdF9pbW1pZ3JhdGVfdGVzdC5zaAo+Pj4gQEAgLTM1LDI3ICszNSwyNyBAQCBleHBv
-cnQgVFNUX0NPVU5UPTAKPj4+ICAjIFRlc3QgZGlzYWJsZSBtb3ZpbmcgY2hhcmdlcwo+Pj4gIHRl
-c3RjYXNlXzEoKQo+Pj4gIHsKPj4+IC0JdGVzdF9tb3ZlX2NoYXJnZSAiLS1tbWFwLWFub24iICRQ
-QUdFU0laRSAgMCAwICRQQUdFU0laRQo+Pj4gKwl0ZXN0X21vdmVfY2hhcmdlICItLW1tYXAtYW5v
-biIgJFBBR0VTSVpFICAwIDAgMCAkUEFHRVNJWkUgMAo+Pj4gIH0KPj4+ICAKPj4+ICAjIFRlc3Qg
-bW92ZSBhbm9uCj4+PiAgdGVzdGNhc2VfMigpCj4+PiAgewo+Pj4gIAl0ZXN0X21vdmVfY2hhcmdl
-ICItLW1tYXAtYW5vbiAtLXNobSAtLW1tYXAtZmlsZSIgJFBBR0VTSVpFIDEgXAo+Pj4gLQkJJFBB
-R0VTSVpFICQoKFBBR0VTSVpFKjIpKQo+Pj4gKwkJJFBBR0VTSVpFIDAgMCAkKChQQUdFU0laRSoy
-KSkKPj4+ICB9Cj4+PiAgCj4+PiAgIyBUZXN0IG1vdmUgZmlsZQo+Pj4gIHRlc3RjYXNlXzMoKQo+
-Pj4gIHsKPj4+ICAJdGVzdF9tb3ZlX2NoYXJnZSAiLS1tbWFwLWFub24gLS1zaG0gLS1tbWFwLWZp
-bGUiICRQQUdFU0laRSAyIFwKPj4+IC0JCSQoKFBBR0VTSVpFKjIpKSAkUEFHRVNJWkUKPj4+ICsJ
-CTAgJCgoUEFHRVNJWkUqMikpICRQQUdFU0laRSAwCj4+PiAgfQo+Pj4gIAo+Pj4gICMgVGVzdCBt
-b3ZlIGFub24gYW5kIGZpbGUKPj4+ICB0ZXN0Y2FzZV80KCkKPj4+ICB7Cj4+PiAtCXRlc3RfbW92
-ZV9jaGFyZ2UgIi0tbW1hcC1hbm9uIC0tc2htIiAkUEFHRVNJWkUgMyAkKChQQUdFU0laRSoyKSkg
-MAo+Pj4gKwl0ZXN0X21vdmVfY2hhcmdlICItLW1tYXAtYW5vbiAtLXNobSIgJFBBR0VTSVpFIDMg
-JFBBR0VTSVpFICRQQUdFU0laRSAwIDAKPj4+ICB9Cj4+PiAgCj4+PiAgIyBSdW4gYWxsIHRoZSB0
-ZXN0IGNhc2VzCj4+Cj4+Cj4+Cj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+PiBMaXZlIFNlY3Vy
-aXR5IFZpcnR1YWwgQ29uZmVyZW5jZQo+PiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVy
-IGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKPj4gdGhyZWF0IGxhbmRzY2FwZSBo
-YXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAK
-Pj4gd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRo
-ZSBsYXRlc3QgaW4gbWFsd2FyZSAKPj4gdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNv
-bS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCj4+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+PiBM
-dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPiAKPiAKPiAKCgoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCkxpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2
-ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQg
-bGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERp
-c2N1c3Npb25zIAp3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0
-eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNv
-bW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1s
-aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
-aXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On 04/11/2012 05:21 PM, Garrett Cooper wrote:
+
+> On Apr 10, 2012, at 7:52 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+> 
+>> On 04/05/2012 09:52 AM, Mike Frysinger wrote:
+>>
+>>> On Wednesday 04 April 2012 20:38:31 Garrett Cooper wrote:
+>>>> +/*
+>>>> + * ``junk`` is needed to make the macro function like a void argument
+>>>> + * function.
+>>>> + */
+>>>> +#define    myinotify_init(junk)    syscall(__NR_inotify_init)
+>>>
+>>> you lost me.  how does this make it work like a (void) func ?  i think this 
+>>> should drop the "junk" and just do:
+>>>    #define myinotify_init() ...
+>>
+>>
+>> Cooper,
+>>
+>> Any update on what Mike said?
+> 
+> Simply put, his method is cleaner/better. I need to produce a new patch with his suggested change.
+
+
+That's great!
+
+Thanks,
+Wanlong Gao
+
+> 
+> Thanks!
+> -Garrett
+> 
+
+
+
+------------------------------------------------------------------------------
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
