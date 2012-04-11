@@ -2,20 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1SMaQV-0000tl-J8
-	for ltp-list@lists.sourceforge.net; Tue, 24 Apr 2012 07:44:43 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SHt29-0000oC-Gm
+	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 08:36:09 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SMaQT-0000Cv-TZ
-	for ltp-list@lists.sourceforge.net; Tue, 24 Apr 2012 07:44:43 +0000
-Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q3O7iXGv027382
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Apr 2012 15:44:34 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-Date: Tue, 24 Apr 2012 15:43:27 +0800
-Message-Id: <1335253407-17318-1-git-send-email-penght@cn.fujitsu.com>
-Subject: [LTP] [PATCH] memcg_move_charge_at_immigrate_test: fix a bug of
-	usage_in_bytes is not 'exact'
+	id 1SHt23-0007z6-R7
+	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 08:36:09 +0000
+Message-ID: <4F85422C.5000400@cn.fujitsu.com>
+Date: Wed, 11 Apr 2012 16:34:52 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1334030557-24170-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4F853592.1010407@cn.fujitsu.com> <4F85407A.9050204@windriver.com>
+In-Reply-To: <4F85407A.9050204@windriver.com>
+Subject: Re: [LTP] [PATCH] mq_timedreceive:5-2: reduce the timeout to be
+	compared
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,89 +27,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-In memory.txt says:
- usage_in_bytes is affected by the method and doesn't show 'exact' value of memory(and swap) usage, it's an fuzz value for efficient access. (Of course, when necessary, it's synchronized.) If you want to know more exact memory usage, you should use RSS+CACHE(+SWAP) value in memory.stat(see 5.2).
-
-So memory.usage_in_bytes should be replaced with memory.stat in the case of
-memcg_move_charge_at_immigrate_test.
-
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/kernel/controllers/memcg/functional/memcg_lib.sh     |    6 ++++--
- .../memcg/functional/memcg_move_charge_at_immigrate_test.sh    |    8 ++++----
- 2 files changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index 470932d..fd2c7fd 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -380,9 +380,11 @@ test_move_charge()
- 	echo $! > subgroup_b/tasks
- 
- 	cd subgroup_b
--	check_mem_stat memory.usage_in_bytes $4
-+	check_mem_stat "rss" $4
-+	check_mem_stat "cache" $5
- 	cd ../subgroup_a
--	check_mem_stat memory.usage_in_bytes $5
-+	check_mem_stat "rss" $6
-+	check_mem_stat "cache" $7
- 
- 	cd ..
- 	echo $! > tasks
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
-index fb639c7..cf2c603 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
-@@ -35,27 +35,27 @@ export TST_COUNT=0
- # Test disable moving charges
- testcase_1()
- {
--	test_move_charge "--mmap-anon" $PAGESIZE  0 0 $PAGESIZE
-+	test_move_charge "--mmap-anon" $PAGESIZE  0 0 0 $PAGESIZE 0
- }
- 
- # Test move anon
- testcase_2()
- {
- 	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE 1 \
--		$PAGESIZE $((PAGESIZE*2))
-+		$PAGESIZE 0 0 $((PAGESIZE*2))
- }
- 
- # Test move file
- testcase_3()
- {
- 	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE 2 \
--		$((PAGESIZE*2)) $PAGESIZE
-+		0 $((PAGESIZE*2)) $PAGESIZE 0
- }
- 
- # Test move anon and file
- testcase_4()
- {
--	test_move_charge "--mmap-anon --shm" $PAGESIZE 3 $((PAGESIZE*2)) 0
-+	test_move_charge "--mmap-anon --shm" $PAGESIZE 3 $PAGESIZE $PAGESIZE 0 0
- }
- 
- # Run all the test cases
--- 
-1.7.10
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDQvMTEvMjAxMiAwNDoyNyBQTSwgS2FuZyBLYWkgd3JvdGU6Cgo+IE9uIDIwMTLlubQwNOac
+iDEx5pelIDE1OjQxLCBXYW5sb25nIEdhbyB3cm90ZToKPj4gT24gMDQvMTAvMjAxMiAxMjowMiBQ
+TSwgV2FubG9uZyBHYW8gd3JvdGU6Cj4+Cj4+PiBXZSB1c2UgKG5ld3RpbWUtb2xkdGltZSkgdG8g
+Y29tcGFyZSB3aXRoIHRoZSBUSU1FT1VUIGhlcmUsCj4+PiBidXQgdGhlIGRpZmYtdGltZSB3ZSBn
+ZXQgaGVyZSBpcyBub3QgYWNjdXJhdGUsIHRoZSByZXN0cmljdAo+Pj4gY29tcGFyaW5nIGlzIG5v
+dCByZWFzb25hYmxlLgo+Pgo+PiBBbnlvbmUgY2FuIGhlbHAgcmV2aWV3aW5nIG9yIHRlc3Rpbmc/
+Cj4gCj4gVGVzdCBZb2N0byBMaW51eCAxLjIgb24gYXJjaCB4ODYtNjQgcHBjIGFuZCBtaXBzIFBB
+U1MuCgoKVGhhbmtzIGEgYnVuY2ggZm9yIHRlc3RpbmchICBBbnkgb3RoZXIgY29tbWVudHMgb3Ig
+b2JqZWN0aW9ucyA/CgpXYW5sb25nIEdhbwoKPiAKPiBSZWdhcmRzLAo+IEthaQo+IAo+Pgo+PiBU
+aGFua3MsCj4+IFdhbmxvbmcgR2FvCj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBXYW5sb25nIEdhbzxn
+YW93YW5sb25nQGNuLmZ1aml0c3UuY29tPgo+Pj4gLS0tCj4+PiAgIC4uLi9jb25mb3JtYW5jZS9p
+bnRlcmZhY2VzL21xX3RpbWVkcmVjZWl2ZS81LTIuYyAgICAgICAgICAgICAgICAgICB8ICAgIDQg
+KystLQo+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygt
+KQo+Pj4KPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29u
+Zm9ybWFuY2UvaW50ZXJmYWNlcy9tcV90aW1lZHJlY2VpdmUvNS0yLmMgYi90ZXN0Y2FzZXMvb3Bl
+bl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tcV90aW1lZHJlY2VpdmUv
+NS0yLmMKPj4+IGluZGV4IGU4MWQ4ZDUuLjkzNDIxYzAgMTAwNjQ0Cj4+PiAtLS0gYS90ZXN0Y2Fz
+ZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tcV90aW1lZHJl
+Y2VpdmUvNS0yLmMKPj4+ICsrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25m
+b3JtYW5jZS9pbnRlcmZhY2VzL21xX3RpbWVkcmVjZWl2ZS81LTIuYwo+Pj4gQEAgLTMyLDcgKzMy
+LDcgQEAKPj4+Cj4+PiAgICNkZWZpbmUgTkFNRVNJWkUgNTAKPj4+ICAgI2RlZmluZSBCVUZGRVIg
+NDAKPj4+IC0jZGVmaW5lIFRJTUVPVVQJMwo+Pj4gKyNkZWZpbmUgVElNRU9VVAkyCj4+Pgo+Pj4g
+ICBpbnQgYmxvY2tpbmc7Cj4+PiAgIHZvaWQgZXhpdF9oYW5kbGVyKGludCBzaWdubykKPj4+IEBA
+IC03MCw3ICs3MCw3IEBAIGludCBtYWluKCkKPj4+ICAgCQlzaWdlbXB0eXNldCgmYWN0LnNhX21h
+c2spOwo+Pj4gICAJCXNpZ2FjdGlvbihTSUdBQlJULCZhY3QsIDApOwo+Pj4KPj4+IC0JCXRzLnR2
+X3NlYyA9IHRpbWUoTlVMTCkgKyBUSU1FT1VUOwo+Pj4gKwkJdHMudHZfc2VjID0gdGltZShOVUxM
+KSArIFRJTUVPVVQgKyAxOwo+Pj4gICAJCXRzLnR2X25zZWMgPSAwOwo+Pj4gICAJCW9sZHRpbWUg
+PSB0aW1lKE5VTEwpOwo+Pj4gICAJCW1xX3RpbWVkcmVjZWl2ZShtcWRlcywgbXNncnYsIEJVRkZF
+UiwgTlVMTCwmdHMpOwo+Pgo+Pgo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gQmV0dGVyIHRo
+YW4gc2VjPyBOb3RoaW5nIGlzIGJldHRlciB0aGFuIHNlYyB3aGVuIGl0IGNvbWVzIHRvCj4+IG1v
+bml0b3JpbmcgQmlnIERhdGEgYXBwbGljYXRpb25zLiBUcnkgQm91bmRhcnkgb25lLXNlY29uZAo+
+PiByZXNvbHV0aW9uIGFwcCBtb25pdG9yaW5nIHRvZGF5LiBGcmVlLgo+PiBodHRwOi8vcC5zZi5u
+ZXQvc2Z1L0JvdW5kYXJ5LWRldjJkZXYKPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4+IEx0cC1saXN0QGxp
+c3RzLnNvdXJjZWZvcmdlLm5ldAo+PiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0
+cy9saXN0aW5mby9sdHAtbGlzdAo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IEJldHRl
+ciB0aGFuIHNlYz8gTm90aGluZyBpcyBiZXR0ZXIgdGhhbiBzZWMgd2hlbiBpdCBjb21lcyB0bwo+
+IG1vbml0b3JpbmcgQmlnIERhdGEgYXBwbGljYXRpb25zLiBUcnkgQm91bmRhcnkgb25lLXNlY29u
+ZCAKPiByZXNvbHV0aW9uIGFwcCBtb25pdG9yaW5nIHRvZGF5LiBGcmVlLgo+IGh0dHA6Ly9wLnNm
+Lm5ldC9zZnUvQm91bmRhcnktZGV2MmRldgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vbHRwLWxpc3QKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkJldHRlciB0aGFuIHNl
+Yz8gTm90aGluZyBpcyBiZXR0ZXIgdGhhbiBzZWMgd2hlbiBpdCBjb21lcyB0bwptb25pdG9yaW5n
+IEJpZyBEYXRhIGFwcGxpY2F0aW9ucy4gVHJ5IEJvdW5kYXJ5IG9uZS1zZWNvbmQgCnJlc29sdXRp
+b24gYXBwIG1vbml0b3JpbmcgdG9kYXkuIEZyZWUuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvQm91bmRh
+cnktZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
