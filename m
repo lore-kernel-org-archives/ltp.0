@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SFVff-0001uj-BD
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 19:15:07 +0000
-Received: from mail-vb0-f47.google.com ([209.85.212.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SFVfe-0003B5-NT
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 19:15:07 +0000
-Received: by vbbfr13 with SMTP id fr13so728652vbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Apr 2012 12:15:01 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gong.chen@linux.intel.com>) id 1SJyJ0-00023p-40
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 02:38:10 +0000
+Received: from mga14.intel.com ([143.182.124.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SJyIz-0004P3-2f
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 02:38:10 +0000
+Message-ID: <4F8CCF86.2010409@linux.intel.com>
+Date: Tue, 17 Apr 2012 10:03:50 +0800
+From: Chen Gong <gong.chen@linux.intel.com>
 MIME-Version: 1.0
-Date: Wed, 4 Apr 2012 12:15:01 -0700
-Message-ID: <CAGH67wR5EdvGqHN60n=gRYXz0qV5MWQ2PX_mTdE4e5DssZ4cvw@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=20cf3071c7e06f559704bcdf3da0
-Subject: [LTP] [PATCH 2/4 v2]
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<20120316143522.GB19604@alboin.amr.corp.intel.com>
+	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
+	<4F825325.3030308@linux.intel.com>
+	<4F825F9D.3020608@casparzhang.com>
+	<4F827B6A.3020204@linux.intel.com>
+In-Reply-To: <4F827B6A.3020204@linux.intel.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,88 +31,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
---20cf3071c7e06f559704bcdf3da0
-Content-Type: text/plain; charset=ISO-8859-1
-
-Install .awk files
-
-The previous patch would have globbed all files that ended in ``awk``.
-
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
----
- tools/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-
---------------1.7.2.5
-Content-Type: text/x-patch; name="0001-Install-.awk-files.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment; filename="0001-Install-.awk-files.patch"
-
-diff --git a/tools/Makefile b/tools/Makefile
-index bbc2c0b..efd68a0 100644
---- a/tools/Makefile
-+++ b/tools/Makefile
-@@ -28,7 +28,7 @@ include $(top_srcdir)/include/mk/testcases.mk
- # reorganization..
- FILTER_OUT_DIRS		:= netpipe% pounder21 top-LTP
-
--INSTALL_TARGETS		:= *.pl *.sh html_report_header.txt
-+INSTALL_TARGETS		:= *.awk *.pl *.sh html_report_header.txt
-
- INSTALL_DIR		:= bin
-
---20cf3071c7e06f559704bcdf3da0
-Content-Type: application/octet-stream; name="0002-Install-.awk-files.patch"
-Content-Disposition: attachment; filename="0002-Install-.awk-files.patch"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h0mra2u30
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-RnJvbSA0MjVlOGYxN2Y5NjllOWQwMjJiN2Y1YTI3MTRiZmFmZGVhMDQwODRmIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlAZ21haWwuY29tPgpE
-YXRlOiBUdWUsIDMgQXByIDIwMTIgMjA6MTM6MjIgLTA3MDAKU3ViamVjdDogW1BBVENIIDEvM10g
-SW5zdGFsbCAuYXdrIGZpbGVzCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRlbnQtVHlwZTogbXVsdGlw
-YXJ0L21peGVkOyBib3VuZGFyeT0iLS0tLS0tLS0tLS0tMS43LjIuNSIKClRoaXMgaXMgYSBtdWx0
-aS1wYXJ0IG1lc3NhZ2UgaW4gTUlNRSBmb3JtYXQuCi0tLS0tLS0tLS0tLS0tMS43LjIuNQpDb250
-ZW50LVR5cGU6IHRleHQvcGxhaW47IGNoYXJzZXQ9VVRGLTg7IGZvcm1hdD1maXhlZApDb250ZW50
-LVRyYW5zZmVyLUVuY29kaW5nOiA4Yml0CgoKU2lnbmVkLW9mZi1ieTogR2FycmV0dCBDb29wZXIg
-PHlhbmVnb21pQGdtYWlsLmNvbT4KLS0tCiB0b29scy9NYWtlZmlsZSB8ICAgIDIgKy0KIDEgZmls
-ZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKCi0tLS0tLS0tLS0t
-LS0tMS43LjIuNQpDb250ZW50LVR5cGU6IHRleHQveC1wYXRjaDsgbmFtZT0iMDAwMS1JbnN0YWxs
-LS5hd2stZmlsZXMucGF0Y2giCkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rpbmc6IDhiaXQKQ29udGVu
-dC1EaXNwb3NpdGlvbjogYXR0YWNobWVudDsgZmlsZW5hbWU9IjAwMDEtSW5zdGFsbC0uYXdrLWZp
-bGVzLnBhdGNoIgoKZGlmZiAtLWdpdCBhL3Rvb2xzL01ha2VmaWxlIGIvdG9vbHMvTWFrZWZpbGUK
-aW5kZXggYmJjMmMwYi4uZWZkNjhhMCAxMDA2NDQKLS0tIGEvdG9vbHMvTWFrZWZpbGUKKysrIGIv
-dG9vbHMvTWFrZWZpbGUKQEAgLTI4LDcgKzI4LDcgQEAgaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2lu
-Y2x1ZGUvbWsvdGVzdGNhc2VzLm1rCiAjIHJlb3JnYW5pemF0aW9uLi4KIEZJTFRFUl9PVVRfRElS
-UwkJOj0gbmV0cGlwZSUgcG91bmRlcjIxIHRvcC1MVFAKIAotSU5TVEFMTF9UQVJHRVRTCQk6PSAq
-LnBsICouc2ggaHRtbF9yZXBvcnRfaGVhZGVyLnR4dAorSU5TVEFMTF9UQVJHRVRTCQk6PSAqLmF3
-ayAqLnBsICouc2ggaHRtbF9yZXBvcnRfaGVhZGVyLnR4dAogCiBJTlNUQUxMX0RJUgkJOj0gYmlu
-CiAKCi0tLS0tLS0tLS0tLS0tMS43LjIuNS0tCgoK
---20cf3071c7e06f559704bcdf3da0
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
---20cf3071c7e06f559704bcdf3da0
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---20cf3071c7e06f559704bcdf3da0--
-
+5LqOIDIwMTIvNC85IDE0OjAyLCBDaGVuIEdvbmcg5YaZ6YGTOgo+IOS6jiAyMDEyLzQvOSAxMjow
+MywgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPj4gT24gMDQvMDkvMjAxMiAxMToxMCBBTSwgQ2hlbiBH
+b25nIHdyb3RlOgo+Pj4g5LqOIDIwMTIvNC82IDIyOjMzLCBDYXNwYXIgWmhhbmcg5YaZ6YGTOgo+
+Pj4+IE9uIDAzLzIxLzIwMTIgMDU6MTggUE0sIENoZW4gR29uZyB3cm90ZToKPj4+Pj4g5LqOIDIw
+MTIvMy8xNiAyMjozNSwgQW5kaSBLbGVlbiDlhpnpgZM6Cj4+Pj4+PiBPbiBGcmksIE1hciAxNiwg
+MjAxMiBhdCAwMzoyNzo0NFBNICswODAwLCBDYXNwYXIgWmhhbmcgd3JvdGU6Cj4+Pj4+Pj4gSGkg
+YWxsLCBJJ2xsIG1lcmdlIHRoaXMgY2hhbmdlIHRvIG1hc3RlciBpZiBJIGRvbid0IGhlYXIgYW55
+IAo+Pj4+Pj4+IG9iamVjdGlvbnMKPj4+Pj4+PiBmcm9tIHlvdSBieSB0b2RheS4KPj4+Pj4+IEZp
+bmUgZm9yIG1lLiBDb3B5aW5nIEdvbmcgQ2hlbiB3aG8gZGlkIG1vc3Qgb2YgdGhlIG1jZS10ZXN0
+IHdvcmsgCj4+Pj4+PiByZWNlbnRseQo+Pj4+Pj4gdG9vLgo+Pj4+Pj4KPj4+Pj4+IC1BbmRpCj4+
+Pj4+IE9oLCB5ZXMuIFJlY2VudGx5IEkgbWFrZSBhIGJpZyBjaGFuZ2Ugb24gbWNlLXRlc3QgcHJv
+amVjdCBhbmQgb2xkCj4+Pj4+IHN0cnVjdHVyZSB3aWxsIGJlIHJlb3JnYW5pemVkLgo+Pj4+PiBB
+bmQgSSBldmVyIGxvb2tlZCB0aHJvdWdoIHRoZSBtY2UtdGVzdCBwYXJ0IGluIExUUC4gVW5mb3J0
+dW5hdGVseSAKPj4+Pj4gaXQgaXMKPj4+Pj4gdmVyeSBvbGQgYW5kIGNhbid0IHJ1biBvbgo+Pj4+
+PiBuZXdlciBrZXJuZWwuIEkgaG9wZSB5b3UgY2FuIGtlZXAgY3VycmVudCBkaXNhYmxlZCBzdGF0
+dXMgaW4gTFRQIGFuZAo+Pj4+PiB3YWl0IG15IG5ldyB3b3JrIGlzIG1lcmdlZC4KPj4+Pj4gV2Ug
+Y2FuIHRhbGsgYXQgdGhhdCB0aW1lLiBJcyBpdCBPSyB0byB5b3U/Cj4+Pj4gSGkgQ2hlbiBHb25n
+LCBzb3JyeSBmb3IgbGF0ZSByZXBseSwgd2UncmUgcGxhbm5pbmcgdG8gcmVtb3ZlIG9sZCAKPj4+
+PiBzdGF0aWMKPj4+PiBjb2RlZCBtY2UtdGVzdCBmcm9tIExUUCwgYW5kIHVzZSBpdCBhcyBhIHN1
+Ym1vZHVsZSwgd2hpY2ggbWVhbnMsCj4+Pj4gbWNlLXRlc3Qgd29uJ3QgYmUgc3RhdGljLWNvZGVk
+IGFueSBtb3JlLCBpdCdzIGFsd2F5cyBzeW5jZWQgdXAgd2l0aCAKPj4+PiB5b3VyCj4+Pj4gdXBz
+dHJlYW0gdmVyc2lvbiwgd2UganVzdCBuZWVkIHRvIGRvIHNvbWUgbWFudWFsIGBgc3VibW9kdWxl
+IHVwZGF0ZWBgCj4+Pj4gb3BlcmF0aW9ucyB0byBjaGVja291dCB5b3VyIHZlcnNpb24gd2hlbiBk
+b2luZyBhIExUUCByZWxlYXNlLiBTbyBJJ2xsCj4+Pj4gbWVyZ2UgdGhpcyBwYXRjaCBpbiwgcmVt
+b3ZlIGFsbCBjdXJyZW50IG91dC1vZi1kYXRlIGNvZGVzLCBhbmQgd2FpdCAKPj4+PiBmb3IKPj4+
+PiB5b3VyIG5vdGljZSBvZiBtY2UtdGVzdCdzIG5leHQgdmVyc2lvbiwgc28gdGhhdCB3ZSBjYW4g
+aW5jbHVkZSBpdCAKPj4+PiBpbiBvdXIKPj4+PiBuZXh0IExUUCBzdGFibGUgcmVsZWFzZS4KPj4+
+Pgo+Pj4+IFRoYW5rcywKPj4+PiBDYXNwYXIKPj4+Pgo+Pj4gSXQncyBmaW5lIHRvIG1lLiBTbyBk
+byB5b3Ugd2FudCB0byBnZXQgYSBub3RpY2UgZnJvbSBtZSBhZnRlciB0aGUgY29kZXMKPj4+IGFy
+ZSBtZXJnZWQgb3IgeW91Cj4+PiBtb25pdG9yIHRoZSB1cHN0cmVhbSBzdGF0dXMgYnkgeW91cnNl
+bGY/Cj4+IEknZCBhcHByZWNpYXRlIGl0IGlmIHlvdSBjYW4gc2VuZCBtZSBhIG1haWwgd2hlbiB0
+aGUgY29kZXMgZ2V0IG1lcmdlZCwKPj4gYnV0IEknbGwgY2hlY2sgdXBzdHJlYW0gc3RhdHVzIGFz
+IHdlbGwgZnJvbSB0aW1lIHRvIHRpbWUuCj4+Cj4+IFRoYW5rcywKPj4gQ2FzcGFyCj4+Cj4gT0ss
+IEkgd2lsbC4gTm93IHBhdGNoIGlzIGluIHRoZSByZXZpZXcgc3RhdHVzLCBzbyBJIHdpbGwgdGVs
+bCB5b3UgQVNBUCAKPiBhZnRlciBtZXJnZWQuClRoZSBuZXcgcGF0Y2ggZm9yIG1jZS10ZXN0IGhh
+cyBiZWVuIG1lcmdlZCwgYnV0IGl0IGxvb2tzIGEgbGl0dGxlIGJpdCB3cm9uZwpkdXJpbmcgdGhl
+IG1lcmdlIHByb2NlZHVyZSAoYWxsIHNoZWxsIHNjcmlwdHMgZXhlY3V0aW9uIHJpZ2h0IGFyZSBt
+aXNzZWQpLgpJJ20gcHVzaGluZyBBbmRpIHRvIGZpeCBpdCwgc28gcGxlYXNlIGRvbid0IGFkZCBt
+Y2UtdGVzdCBhdCBjdXJyZW50IHN0YWdlLgpJIHdpbGwgdGVsbCB5b3Ugd2hlbiBpdCBpcyByZWFk
+eS4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCZXR0ZXIgdGhhbiBzZWM/IE5vdGhpbmcgaXMgYmV0
+dGVyIHRoYW4gc2VjIHdoZW4gaXQgY29tZXMgdG8KbW9uaXRvcmluZyBCaWcgRGF0YSBhcHBsaWNh
+dGlvbnMuIFRyeSBCb3VuZGFyeSBvbmUtc2Vjb25kIApyZXNvbHV0aW9uIGFwcCBtb25pdG9yaW5n
+IHRvZGF5LiBGcmVlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L0JvdW5kYXJ5LWRldjJkZXYKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGlu
+ZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
+ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
