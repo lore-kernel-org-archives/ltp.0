@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SFTtH-0003eJ-Df
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:21:03 +0000
-Received: from mail-vb0-f47.google.com ([209.85.212.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SFTtG-0007tO-Os
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:21:03 +0000
-Received: by vbbfr13 with SMTP id fr13so533069vbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Apr 2012 10:20:57 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SJzIA-00049Q-ES
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 03:41:22 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SJzI6-00079z-8S
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 03:41:22 +0000
+Message-ID: <4F8CE612.40003@cn.fujitsu.com>
+Date: Tue, 17 Apr 2012 11:40:02 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <201204041320.51396.vapier@gentoo.org>
-References: <alpine.BSF.2.00.1204032220270.25027@toaster.local>
-	<201204041320.51396.vapier@gentoo.org>
-Date: Wed, 4 Apr 2012 10:20:57 -0700
-Message-ID: <CAGH67wSBMFA4kQi+QZMuD8W39UGvD5QwOn+=yFE+4ntrPRfBkA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 2/4] Install .awk files
+References: <0F68B52D2432864190BC72F760407FE9317D00DE57@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+	<4F55EF19.30000@cn.fujitsu.com>
+	<0F68B52D2432864190BC72F760407FE93254B6D20E@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+In-Reply-To: <0F68B52D2432864190BC72F760407FE93254B6D20E@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+Subject: Re: [LTP] Required git repository
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,31 +27,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wed, Apr 4, 2012 at 10:20 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Wednesday 04 April 2012 01:22:25 Garrett Cooper wrote:
->> --- a/tools/Makefile
->> +++ b/tools/Makefile
+On 04/16/2012 05:57 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+
+> Hi,
+> 
+> When I am checking out the code of LTP, it's giving the latest version. I am looking for "ltp-full-20110228" version.
+> Please let me know that how to do the same.
+
+
+Since you don't want to get the log, it's not necessary to clone the git repo,
+you can just get the source here,
+http://sourceforge.net/projects/ltp/files/LTP%20Source/
+
+Thanks,
+Wanlong Gao
+
+> 
+> Regards,
+> Anupam
+> 
+> -----Original Message-----
+> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+> Sent: 06 March 2012 16:34
+> To: Anupam Srivastava - ERS, HCL Tech
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] Required git repository
+> 
+> On 03/06/2012 01:31 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+> 
+>> Hi,
 >>
->> -INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D *.pl *.sh html_report_h=
-eader.txt
->> +INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D *awk *.pl *.sh html_rep=
-ort_header.txt
->
-> *.awk ?
+>>  
+>>
+>> I want to check out LTP *(Version: ltp-full-20110228) * source code form git repository. Please share the path so that I can check out the ltp code.
+>>
+> 
+> 
+> git://ltp.git.sourceforge.net/gitroot/ltp/ltp master
+> OR
+> git://github.com/gaowanlong/ltp.git master
+> 
+> Thanks,
+> Wanlong Gao
+> 
+>>  
+>>
+>> Regards,
+>>
+>> Anupam
+>>
+>>
+>> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+>> ::DISCLAIMER::
+>> -----------------------------------------------------------------------------------------------------------------------
+>>
+>> The contents of this e-mail and any attachment(s) are confidential and intended for the named recipient(s) only.
+>> It shall not attach any liability on the originator or HCL or its affiliates. Any views or opinions presented in
+>> this email are solely those of the author and may not necessarily reflect the opinions of HCL or its affiliates.
+>> Any form of reproduction, dissemination, copying, disclosure, modification, distribution and / or publication of
+>> this message without the prior written consent of the author of this e-mail is strictly prohibited. If you have
+>> received this email in error please delete it and notify the sender immediately. Before opening any mail and
+>> attachments please check them for viruses and defect.
+>>
+>> -----------------------------------------------------------------------------------------------------------------------
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> Keep Your Developer Skills Current with LearnDevNow!
+>> The most comprehensive online learning library for Microsoft developers
+>> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+>> Metro Style Apps, more. Free future releases when you subscribe now!
+>> http://p.sf.net/sfu/learndevnow-d2d
+>>
+>>
+>>
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> 
 
-Good catch! Will resubmit.
 
----------------------------------------------------------------------------=
----
+
+------------------------------------------------------------------------------
 Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second =
-
+monitoring Big Data applications. Try Boundary one-second 
 resolution app monitoring today. Free.
 http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
