@@ -1,25 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SFU3E-0003wC-1S
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:31:20 +0000
-Received: from mail-vb0-f47.google.com ([209.85.212.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SFU3A-00083a-D9
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:31:20 +0000
-Received: by vbbfr13 with SMTP id fr13so549291vbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Apr 2012 10:31:10 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Anupam_Srivastava@hcl.com>) id 1SK0vI-0005We-Tj
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 05:25:52 +0000
+Received: from gws05.hcl.com ([203.105.185.23])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SK0vD-0007gH-JJ
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 05:25:52 +0000
+From: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
+Date: Tue, 17 Apr 2012 10:55:32 +0530
+Message-ID: <0F68B52D2432864190BC72F760407FE93254B6D4F8@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+References: <0F68B52D2432864190BC72F760407FE9317D00DE57@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+	<4F55EF19.30000@cn.fujitsu.com>
+	<0F68B52D2432864190BC72F760407FE93254B6D20E@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+	<4F8CE612.40003@cn.fujitsu.com>
+	<0F68B52D2432864190BC72F760407FE93254B6D493@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>,
+	<4F8CFA32.700@cn.fujitsu.com>
+	<6F91E0FFDA542149961F7BDED2D2B94B568B9DE821@EXGMBX01.sasken.com>
+In-Reply-To: <6F91E0FFDA542149961F7BDED2D2B94B568B9DE821@EXGMBX01.sasken.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <201204041322.39735.vapier@gentoo.org>
-References: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
-	<201204041322.39735.vapier@gentoo.org>
-Date: Wed, 4 Apr 2012 10:31:10 -0700
-Message-ID: <CAGH67wR-2oyoiqiP1mBzinJ_AokW4Ce0yj5riuih1KTO0kUBcA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 0/4] Replace commonly used perl tools with awk
-	equivalents
+Subject: Re: [LTP] Required git repository
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,68 +31,202 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: Rejish Rajagopala <rejish.rajagopala@sasken.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wed, Apr 4, 2012 at 10:22 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Wednesday 04 April 2012 01:23:43 Garrett Cooper wrote:
->> The intent behind these changes are to remove unnecessary perl
->> dependencies in LTP by using awk in its stead. It was something that was
->> discussed a while ago on ltp-list@.
+Hi,
+
+We have ported LTP version ltp-full-20110228 on Andriod. I'm analysing the same and get back to you once I'll get info for the same.
+
+Regards,
+Anupam
+
+-----Original Message-----
+From: Rejish Rajagopala [mailto:rejish.rajagopala@sasken.com] 
+Sent: 17 April 2012 10:47
+To: Anupam Srivastava - ERS, HCL Tech
+Cc: LTP List
+Subject: RE: [LTP] Required git repository
+
+Hi Anupam,
+
+From the below mail chain, I could see that you have ported LTP on Android.
+
+Even  I am also trying to port LTP on Android. But I am facing some issues can you please help me out.
+
+Am using LTP (ltp-full-20120104) and Android NDK r-7b. While cross compiling IO module I am getting below error as:
+
+-14/arch-arm/usr/lib/crtend_android.o -L/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib -lltp -o rand_lines
+../lib/libltp.a(random_range.o): In function `random_range':
+/u/ltp/ltp-full-20120104/lib/random_range.c:336: undefined reference to `__aeabi_idivmod'
+/u/ltp/ltp-full-20120104/lib/random_range.c:339: undefined reference to `__aeabi_idivmod'
+/u/ltp/ltp-full-20120104/lib/random_range.c:373: undefined reference to `__aeabi_idiv'
+/u/ltp/ltp-full-20120104/lib/random_range.c:373: undefined reference to `__aeabi_idivmod'
+collect2: ld returned 1 exit status
+make[1]: *** [rand_lines] Error 1
+make[1]: Leaving directory `/u/ltp/ltp-full-20120104/tools'
+make: *** [tools-all] Error 2
+
+Also attached is my LTP configure script
+
+Looking forward for your reply.
+
+Thanks & Regards,
+Rejish
+________________________________________
+From: Wanlong Gao [gaowanlong@cn.fujitsu.com]
+Sent: Tuesday, April 17, 2012 10:35 AM
+To: Anupam Srivastava - ERS, HCL Tech
+Cc: LTP List
+Subject: Re: [LTP] Required git repository
+
+On 04/17/2012 12:31 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+
+> Hi Wanlong,
 >
-> i like awk over perl a lot. =A0my only concern is non-POSIX stuff slippin=
-g in
-> (such as people who have gawk installed). =A0should we add a local wrapper
-> script that sees if the awk accepts a --posix flag and automatically pass=
- it ?
+> We want to contribute to open source community. We have ported LTP on Android.
+> I want to follow the below procedure to submit my code:
+>
+> 1) First clone the code from GIT repository
+> 2) Changed the code as required
+> 3) Commit the changes.
 
-That's actually a gawk-ism :)...
 
-$ uname -a
-FreeBSD bayonetta.local 9.0-STABLE FreeBSD 9.0-STABLE #7 r233759M: Sun
-Apr  1 11:35:59 PDT 2012
-gcooper@bayonetta.local:/usr/obj/store/freebsd/stable/9/sys/BAYONETTA
-amd64
-$ man awk | grep -- --posix || echo 'not found'
-not found
+Then send patches to LTP List <ltp-list@lists.sourceforge.net> for reviewing, you are welcome.
 
-Seeing how Android and some other Linux distros like borrowing bits
-and pieces from BSD, I think that using --posix might not guarantee
-much (on the bright side it doesn't error out either with 'the
-one-true-awk'):
+Thanks,
+Wanlong Gao
 
-$ man awk | awk --posix 'END { exit 0 }'
-$ echo $?
-0
 
-Debian's awk really cares though:
+>
+> Let me know the procedure for the same if above are not correct.
+>
+> Regards,
+> Anupam
+>
+>
+> -----Original Message-----
+> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+> Sent: 17 April 2012 09:10
+> To: Anupam Srivastava - ERS, HCL Tech
+> Cc: LTP List
+> Subject: Re: [LTP] Required git repository
+>
+> On 04/16/2012 05:57 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+>
+>> Hi,
+>>
+>> When I am checking out the code of LTP, it's giving the latest version. I am looking for "ltp-full-20110228" version.
+>> Please let me know that how to do the same.
+>
+>
+> Since you don't want to get the log, it's not necessary to clone the 
+> git repo, you can just get the source here, 
+> http://sourceforge.net/projects/ltp/files/LTP%20Source/
+>
+> Thanks,
+> Wanlong Gao
+>
+>>
+>> Regards,
+>> Anupam
+>>
+>> -----Original Message-----
+>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+>> Sent: 06 March 2012 16:34
+>> To: Anupam Srivastava - ERS, HCL Tech
+>> Cc: ltp-list@lists.sourceforge.net
+>> Subject: Re: [LTP] Required git repository
+>>
+>> On 03/06/2012 01:31 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+>>
+>>> Hi,
+>>>
+>>>
+>>>
+>>> I want to check out LTP *(Version: ltp-full-20110228) * source code form git repository. Please share the path so that I can check out the ltp code.
+>>>
+>>
+>>
+>> git://ltp.git.sourceforge.net/gitroot/ltp/ltp master OR 
+>> git://github.com/gaowanlong/ltp.git master
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>>>
+>>>
+>>> Regards,
+>>>
+>>> Anupam
+>>>
+>>>
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> --------------------------------------------------------------------
+>>> ----------------------------------------
+>>> ::DISCLAIMER::
+>>> --------------------------------------------------------------------
+>>> ---------------------------------------------------
+>>>
+>>> The contents of this e-mail and any attachment(s) are confidential and intended for the named recipient(s) only.
+>>> It shall not attach any liability on the originator or HCL or its 
+>>> affiliates. Any views or opinions presented in this email are solely those of the author and may not necessarily reflect the opinions of HCL or its affiliates.
+>>> Any form of reproduction, dissemination, copying, disclosure, 
+>>> modification, distribution and / or publication of this message 
+>>> without the prior written consent of the author of this e-mail is 
+>>> strictly prohibited. If you have received this email in error please delete it and notify the sender immediately. Before opening any mail and attachments please check them for viruses and defect.
+>>>
+>>> --------------------------------------------------------------------
+>>> ---------------------------------------------------
+>>>
+>>>
+>>> --------------------------------------------------------------------
+>>> ---------- Keep Your Developer Skills Current with LearnDevNow!
+>>> The most comprehensive online learning library for Microsoft 
+>>> developers is just $99.99! Visual Studio, SharePoint, SQL - plus 
+>>> HTML5, CSS3, MVC3, Metro Style Apps, more. Free future releases when you subscribe now!
+>>> http://p.sf.net/sfu/learndevnow-d2d
+>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+>>
+>>
+>
+>
+>
 
-# cat /etc/debian_version
-6.0.4
-# awk --posix
-awk: not an option: --posix
-# echo $?
-2
 
-I understand the goals, but looking at the manpage on opengroup and
-through one-true-awk's source, there's nothing consistent that
-guarantees that POSIX is adhered to in awk (but there probably should
-be a flag, environment variable, etc).
 
-The constructs I used are simple though and should work on all variants of =
-awk.
+------------------------------------------------------------------------------
+Better than sec? Nothing is better than sec when it comes to monitoring Big Data applications. Try Boundary one-second resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-Thanks!
--Garrett
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
 
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second =
-
+monitoring Big Data applications. Try Boundary one-second 
 resolution app monitoring today. Free.
 http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
