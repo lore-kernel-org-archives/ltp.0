@@ -1,19 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SO0YZ-0000Je-A9
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 05:50:55 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SO0YY-0004C5-0y
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 05:50:55 +0000
-Date: Sat, 28 Apr 2012 01:50:43 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <438a0d13-6bc5-4a0e-9d35-c475e6c54ede@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4F98DAC5.8020708@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SK0y2-0005KH-H4
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 05:28:42 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SK0y1-0007m2-4l
+	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 05:28:42 +0000
+Message-ID: <4F8CFF3E.2000309@cn.fujitsu.com>
+Date: Tue, 17 Apr 2012 13:27:26 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [BUG] I'm reporting a bug about file
+References: <0F68B52D2432864190BC72F760407FE9317D00DE57@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+	<4F55EF19.30000@cn.fujitsu.com>
+	<0F68B52D2432864190BC72F760407FE93254B6D20E@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+	<4F8CE612.40003@cn.fujitsu.com>
+	<0F68B52D2432864190BC72F760407FE93254B6D493@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+	<4F8CFA32.700@cn.fujitsu.com>
+	<0F68B52D2432864190BC72F760407FE93254B6D4E3@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+In-Reply-To: <0F68B52D2432864190BC72F760407FE93254B6D4E3@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+Subject: Re: [LTP] Required git repository
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,36 +34,161 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>, file@mx.gw.com
+To: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-> 
-> Resend! The file command mail list kicked my mail out since I'm not
-> in the list.
-> Now, I'm in.
-> 
-> > Hi folks,
-> > 
-> > Here, I'm reporting a bug, maybe it is solved upstream,
-> > but it's already on Fedora 16. Below shows the bug,
+On 04/17/2012 01:15 PM, Anupam Srivastava - ERS, HCL Tech wrote:
 
-hi, Wanlong
+> I have send the patched to the LTP List but didn't get reply from there.
 
-I checked the issue one weeks ago, downloaded different version
-from ftp://ftp.astron.com/pub/file/, then I found the issue just occurred
-in 5.07, 5.08, 5.09, 5.10 upstream version, and fixed
-in 5.11, and I'm sure fedora 17 Beta(file version is 5.10) have fixed the issue.
 
---
+Sorry, I didn't see your patches, please send them to ltp-list@lists.sourceforge.net 
+again, note that you should make patches against the upstream git tree,
+
+git://github.com/linux-test-project/ltp.git
+
 Thanks,
-Zhouping
+Wanlong Gao
+
+> 
+> Regards,
+> Anupam
+> 
+> -----Original Message-----
+> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+> Sent: 17 April 2012 10:36
+> To: Anupam Srivastava - ERS, HCL Tech
+> Cc: LTP List
+> Subject: Re: [LTP] Required git repository
+> 
+> On 04/17/2012 12:31 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+> 
+>> Hi Wanlong,
+>>
+>> We want to contribute to open source community. We have ported LTP on Android.
+>> I want to follow the below procedure to submit my code:
+>>
+>> 1) First clone the code from GIT repository
+>> 2) Changed the code as required
+>> 3) Commit the changes.
+> 
+> 
+> Then send patches to LTP List <ltp-list@lists.sourceforge.net> for
+> reviewing, you are welcome.
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> 
+>>
+>> Let me know the procedure for the same if above are not correct.
+>>
+>> Regards,
+>> Anupam
+>>
+>>
+>> -----Original Message-----
+>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+>> Sent: 17 April 2012 09:10
+>> To: Anupam Srivastava - ERS, HCL Tech
+>> Cc: LTP List
+>> Subject: Re: [LTP] Required git repository
+>>
+>> On 04/16/2012 05:57 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+>>
+>>> Hi,
+>>>
+>>> When I am checking out the code of LTP, it's giving the latest version. I am looking for "ltp-full-20110228" version.
+>>> Please let me know that how to do the same.
+>>
+>>
+>> Since you don't want to get the log, it's not necessary to clone the git repo,
+>> you can just get the source here,
+>> http://sourceforge.net/projects/ltp/files/LTP%20Source/
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>>>
+>>> Regards,
+>>> Anupam
+>>>
+>>> -----Original Message-----
+>>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+>>> Sent: 06 March 2012 16:34
+>>> To: Anupam Srivastava - ERS, HCL Tech
+>>> Cc: ltp-list@lists.sourceforge.net
+>>> Subject: Re: [LTP] Required git repository
+>>>
+>>> On 03/06/2012 01:31 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+>>>
+>>>> Hi,
+>>>>
+>>>>  
+>>>>
+>>>> I want to check out LTP *(Version: ltp-full-20110228) * source code form git repository. Please share the path so that I can check out the ltp code.
+>>>>
+>>>
+>>>
+>>> git://ltp.git.sourceforge.net/gitroot/ltp/ltp master
+>>> OR
+>>> git://github.com/gaowanlong/ltp.git master
+>>>
+>>> Thanks,
+>>> Wanlong Gao
+>>>
+>>>>  
+>>>>
+>>>> Regards,
+>>>>
+>>>> Anupam
+>>>>
+>>>>
+>>>> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+>>>> ::DISCLAIMER::
+>>>> -----------------------------------------------------------------------------------------------------------------------
+>>>>
+>>>> The contents of this e-mail and any attachment(s) are confidential and intended for the named recipient(s) only.
+>>>> It shall not attach any liability on the originator or HCL or its affiliates. Any views or opinions presented in
+>>>> this email are solely those of the author and may not necessarily reflect the opinions of HCL or its affiliates.
+>>>> Any form of reproduction, dissemination, copying, disclosure, modification, distribution and / or publication of
+>>>> this message without the prior written consent of the author of this e-mail is strictly prohibited. If you have
+>>>> received this email in error please delete it and notify the sender immediately. Before opening any mail and
+>>>> attachments please check them for viruses and defect.
+>>>>
+>>>> -----------------------------------------------------------------------------------------------------------------------
+>>>>
+>>>>
+>>>> ------------------------------------------------------------------------------
+>>>> Keep Your Developer Skills Current with LearnDevNow!
+>>>> The most comprehensive online learning library for Microsoft developers
+>>>> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+>>>> Metro Style Apps, more. Free future releases when you subscribe now!
+>>>> http://p.sf.net/sfu/learndevnow-d2d
+>>>>
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> Ltp-list mailing list
+>>>> Ltp-list@lists.sourceforge.net
+>>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>
+>>>
+>>>
+>>
+>>
+>>
+> 
+> 
+> 
+
+
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
