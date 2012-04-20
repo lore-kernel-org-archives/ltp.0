@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1SFb6a-0004iY-Gn
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:03:16 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SFb6Z-0004fr-83
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:03:16 +0000
-From: Peng Haitao <penght@cn.fujitsu.com>
-Date: Thu, 5 Apr 2012 09:02:06 +0800
-Message-Id: <1333587726-8962-1-git-send-email-penght@cn.fujitsu.com>
-Subject: [LTP] [PATCH] at_deny01: fix a bug of /etc/init.d/atd is nonexistent
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1SL4X6-00070d-16
+	for ltp-list@lists.sourceforge.net; Fri, 20 Apr 2012 03:29:16 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SL4X5-0007XH-0a
+	for ltp-list@lists.sourceforge.net; Fri, 20 Apr 2012 03:29:15 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q3K3T8nS028938
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 19 Apr 2012 20:29:08 -0700 (PDT)
+Message-ID: <4F90D809.7050809@windriver.com>
+Date: Fri, 20 Apr 2012 11:29:13 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
+MIME-Version: 1.0
+Subject: [LTP] Pls. help on POSIX test case mlockall/3-6 on MIPS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,80 +27,30 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com, gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-/etc/init.d/atd is nonexistent in fedora16, so should use systemctl.
+Hi,
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/commands/at/at_allow01 |   13 ++++++++++++-
- testcases/commands/at/at_deny01  |   13 ++++++++++++-
- 2 files changed, 24 insertions(+), 2 deletions(-)
+The POSIX cases mlockall/3-6 3-7 fail on routerstation(arch MIPS), and 
+the OS is linux 3.0.24.
+It seems that after mlockall() that not all the share memories have been 
+set LOCK flag.
+Does anyone meet the question before or know what is the root cause?
 
-diff --git a/testcases/commands/at/at_allow01 b/testcases/commands/at/at_allow01
-index b08a2d9..5ada6a6 100755
---- a/testcases/commands/at/at_allow01
-+++ b/testcases/commands/at/at_allow01
-@@ -80,8 +80,19 @@ do_setup()
- 		exit 1
- 	fi
- 
-+	# running under systemd?
-+	if command -v systemctl >/dev/null 2>&1; then
-+		HAVE_SYSTEMCTL=true
-+	else
-+		HAVE_SYSTEMCTL=false
-+	fi
-+
- 	# Restart atd daemon.
--	/etc/init.d/atd restart
-+	if $HAVE_SYSTEMCTL; then
-+		systemctl restart atd.service
-+	else
-+		/etc/init.d/atd restart
-+	fi
- }
- 
- #-----------------------------------------------------------------------
-diff --git a/testcases/commands/at/at_deny01 b/testcases/commands/at/at_deny01
-index 9f9f433..b43ea34 100755
---- a/testcases/commands/at/at_deny01
-+++ b/testcases/commands/at/at_deny01
-@@ -86,8 +86,19 @@ do_setup()
- 		exit 1
- 	fi
- 
-+	# running under systemd?
-+	if command -v systemctl >/dev/null 2>&1; then
-+		HAVE_SYSTEMCTL=true
-+	else
-+		HAVE_SYSTEMCTL=false
-+	fi
-+
- 	# Restart atd daemon.
--	/etc/init.d/atd restart
-+	if $HAVE_SYSTEMCTL; then
-+		systemctl restart atd.service
-+	else
-+		/etc/init.d/atd restart
-+	fi
- }
- 
- #-----------------------------------------------------------------------
--- 
-1.7.10.rc3
+Thanks a lot.
+
+Regards,
+Kai
 
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+For Developers, A Lot Can Happen In A Second.
+Boundary is the first to Know...and Tell You.
+Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
+http://p.sf.net/sfu/Boundary-d2dvs2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
