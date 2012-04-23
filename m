@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SO3a1-0007Si-4g
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:04:37 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SMI4k-0000WC-Jv
+	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 12:09:02 +0000
 Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SO3a0-00066S-8b
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:04:37 +0000
-Date: Sat, 28 Apr 2012 05:04:28 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <f6483acf-f911-471e-877c-74bd68237520@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <2F2D931F-792A-425D-9BFE-D97AD02CDEF7@gmail.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SMI4g-0003Vr-91
+	for ltp-list@lists.sourceforge.net; Mon, 23 Apr 2012 12:09:02 +0000
+Date: Mon, 23 Apr 2012 08:08:51 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1d285433-80be-43a0-bcc7-27254e53a0cd@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4F953947.5060204@casparzhang.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/3] syscalls/move_pages: removed tst_exit in
-	check_config()
+Subject: Re: [LTP] [PATCH 3/3] syscalls/cma: add errno tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,41 +26,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
 
 
 ----- Original Message -----
-> From: "Garrett Cooper" <yanegomi@gmail.com>
-> To: "Zhouping Liu" <zliu@redhat.com>
-> Sent: Saturday, April 28, 2012 3:53:54 PM
-> Subject: Re: [LTP] [PATCH 3/3] syscalls/move_pages: removed tst_exit in check_config()
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net, "Jeffrey Burke" <jburke@redhat.com>
+> Sent: Monday, 23 April, 2012 1:13:11 PM
+> Subject: Re: [LTP] [PATCH 3/3] syscalls/cma: add errno tests
 > 
-> On Apr 28, 2012, at 12:48 AM, Zhouping Liu wrote:
-> 
-> > removed tst_exit in check_config(), as it's always involked
-> > at any time, instead, using tst_brkm to displace tst_resm,
-> > since TCONF should be called by tst_brkm.
+> On 04/23/2012 06:32 PM, Jan Stancek wrote:
+> > Based on proposed man page:
+> > http://ozlabs.org/~cyeoh/cma/process_vm_readv.txt
 > > 
-> > Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> >  testcases/kernel/syscalls/cma/cma01.c              |  434
+> >  ++++++++++++++++++++
+> >  .../kernel/syscalls/cma/process_vm_readv/Makefile  |    7 +
+> >  .../kernel/syscalls/cma/process_vm_writev/Makefile |    7 +
 > 
-> Reviewed-by: Garrett Cooper <yanegomi@gmail.com
+> [snip]
 > 
+> > +static void cma_test_params_read(struct process_vm_params *params)
+> > +{
+> > +#if (HAVE_PROCESS_VM_READV==1)
+> > +	TEST(process_vm_readv(params->pid,
+> > +	    params->lvec, params->liovcnt,
+> > +	    params->rvec, params->riovcnt,
+> > +	    params->flags));
+> > +#elif defined(__NR_process_vm_readv)
+> > +	TEST(syscall(__NR_process_vm_readv, params->pid,
+> > +	    params->lvec, params->liovcnt,
+> > +	    params->rvec, params->riovcnt,
+> > +	    params->flags));
+> > +#else
+> > +	tst_brkm(TCONF, cleanup, "process_vm_readv does not exist on"
+> > +	    " your system");
+> > +#endif
+> 
+> omit other parts since looking good to me.
+> 
+> Still the question left for open-discussion: isn't syscall-only
+> testing
+> enough, do we need to test glibc wrapper in higher priority?
 
-Hi, Garrett,
-you missed to CC ltp-list.
+When looking at other tests, my impression was that LTP uses
+glibc wrappers if available. That interface is what users will most
+likely use in the end.
 
--- 
-Thanks,
-Zhouping
+Since this is new syscall, glibc wrapper may not be available,
+in which case it tries syscall(2).
+
+Regards,
+Jan
+
+> 
+> Thanks,
+> Caspar
+> 
+> > +}
+> > +
+> > +static void cma_test_params_write(struct process_vm_params
+> > *params)
+> > +{
+> > +#if (HAVE_PROCESS_VM_WRITEV==1)
+> > +	TEST(process_vm_writev(params->pid,
+> > +	    params->lvec, params->liovcnt,
+> > +	    params->rvec, params->riovcnt,
+> > +	    params->flags));
+> > +#elif defined(__NR_process_vm_writev)
+> > +	TEST(syscall(__NR_process_vm_writev, params->pid,
+> > +	    params->lvec, params->liovcnt,
+> > +	    params->rvec, params->riovcnt,
+> > +	    params->flags));
+> > +#else
+> > +	tst_brkm(TCONF, cleanup, "process_vm_writev does not exist on"
+> > +	    " your system");
+> > +#endif
+> > +}
+> 
+> [snip]
+> 
+> 
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+For Developers, A Lot Can Happen In A Second.
+Boundary is the first to Know...and Tell You.
+Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
+http://p.sf.net/sfu/Boundary-d2dvs2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
