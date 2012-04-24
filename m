@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1SFUPH-0005KK-NG
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:54:07 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SFUPD-0000kx-Iu
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 17:54:07 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 4 Apr 2012 13:54:17 -0400
-References: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
-	<201204041322.39735.vapier@gentoo.org>
-	<CAGH67wR-2oyoiqiP1mBzinJ_AokW4Ce0yj5riuih1KTO0kUBcA@mail.gmail.com>
-In-Reply-To: <CAGH67wR-2oyoiqiP1mBzinJ_AokW4Ce0yj5riuih1KTO0kUBcA@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <201204041354.18403.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 0/4] Replace commonly used perl tools with awk
-	equivalents
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1SMaQV-0000tl-J8
+	for ltp-list@lists.sourceforge.net; Tue, 24 Apr 2012 07:44:43 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SMaQT-0000Cv-TZ
+	for ltp-list@lists.sourceforge.net; Tue, 24 Apr 2012 07:44:43 +0000
+Received: from mailserver.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q3O7iXGv027382
+	for <ltp-list@lists.sourceforge.net>; Tue, 24 Apr 2012 15:44:34 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
+Date: Tue, 24 Apr 2012 15:43:27 +0800
+Message-Id: <1335253407-17318-1-git-send-email-penght@cn.fujitsu.com>
+Subject: [LTP] [PATCH] memcg_move_charge_at_immigrate_test: fix a bug of
+	usage_in_bytes is not 'exact'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,115 +25,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4061904129251348466=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
---===============4061904129251348466==
-Content-Type: multipart/signed; boundary="nextPart1934724.IFqATFoORq";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1934724.IFqATFoORq
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday 04 April 2012 13:31:10 Garrett Cooper wrote:
-> On Wed, Apr 4, 2012 at 10:22 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> > On Wednesday 04 April 2012 01:23:43 Garrett Cooper wrote:
-> >> The intent behind these changes are to remove unnecessary perl
-> >> dependencies in LTP by using awk in its stead. It was something that w=
-as
-> >> discussed a while ago on ltp-list@.
-> >=20
-> > i like awk over perl a lot.  my only concern is non-POSIX stuff slipping
-> > in (such as people who have gawk installed).  should we add a local
-> > wrapper script that sees if the awk accepts a --posix flag and
-> > automatically pass it ?
->=20
-> That's actually a gawk-ism :)...
-
-yes, that's why i phrased it "if the awk accepts"
-
-awk --help | grep -q -e --posix && args=3D"${args} --posix"
-
-> Seeing how Android and some other Linux distros like borrowing bits
-> and pieces from BSD, I think that using --posix might not guarantee
-> much (on the bright side it doesn't error out either with 'the
-> one-true-awk'):
-
-perhaps, but gawk provides a lot of useful funcs that i know i use that are=
-n't=20
-in POSIX, and we want to make sure these things don't slip in.  telling peo=
-ple=20
-"make sure you test with XXX awk" is certain to be error prone.
-
-plus, there are certain edge conditions which are very subtle.  consider th=
-e=20
-handling of substr() and the starting position of "0":
-	echo abc | mawk '{print substr($0, 0, 2)}'  -> a
-	echo abc | gawk '{print substr($0, 0, 2)}'  -> ab
-	echo abc | mawk '{print substr($0, 1, 2)}'  -> ab
-	echo abc | gawk '{print substr($0, 1, 2)}'  -> ab
-
-> I understand the goals, but looking at the manpage on opengroup and
-> through one-true-awk's source, there's nothing consistent that
-> guarantees that POSIX is adhered to in awk (but there probably should
-> be a flag, environment variable, etc).
-
-POSIX should be the LCD we work with without accidentally using something t=
-hat=20
-is specific to a single awk
-=2Dmike
-
---nextPart1934724.IFqATFoORq
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPfIrKAAoJEEFjO5/oN/WBa6UP+wUq/kH11MV+ee6ZfJGJcdOZ
-N1LZsdRks9GEqJ9KrCbYBW3Q3whtd+oQJHJIlHAhGXen93wI5PqdVZuFrElU/LAx
-thAVYDeZW+MsX0/cmqugW/zK5z7FWrjnhua+k3/HF4RDVLI/Vmr+nP1ocUvsjEu+
-d7u64vRrRztOw1hk4eaZAdrwio+8DhR75GRgaQLNP2JHoRU0mYzclv6qqp3detcs
-x2TDguFNB9rFlBaasmP4v5jXKEo95YWWTh3HIlMi8UPkSRVnZAsS3jyyXA1/ORGR
-M+Pm1LBJk27RUjneuoT2MEDDw5XhLprXXGnsq8je0Bw6SdgCQB6P30kHClqT0Mrx
-7h4Y3fX9dpCvioioM5p+UBcZAa3RhAyn2N2ojL+LjG6x/bJPyrAcD6MGiVVaKxMD
-NHkooEEN62ZfKpqFMANGiy+ibVZYdCZCpNgjDcqjFCy3SbWPzXX3bY90FgK20eR1
-OuLmEJ7Tu5iCvNKGLNygzXhtvR7WWRLvCGzd+Gaq1v2XyNCwvwgTK1JwUMqyQVEY
-wMoyWSoVu0AHWU1U7j3Qm9eDzwORBJFsfUbvRZNuBzLGRh7pL8EElqMBG04SSvjz
-duqxTbUDRccu6dqSD5MqEoMTUmwbR9HoM/ZtyyV66vAe+IpdOGoMFew9xItxX4x/
-cNtTs4asAT/k8A1SZ5ir
-=58t/
------END PGP SIGNATURE-----
-
---nextPart1934724.IFqATFoORq--
-
-
---===============4061904129251348466==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+In memory.txt says:
+ usage_in_bytes is affected by the method and doesn't show 'exact' value of memory(and swap) usage, it's an fuzz value for efficient access. (Of course, when necessary, it's synchronized.) If you want to know more exact memory usage, you should use RSS+CACHE(+SWAP) value in memory.stat(see 5.2).
+
+So memory.usage_in_bytes should be replaced with memory.stat in the case of
+memcg_move_charge_at_immigrate_test.
+
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/controllers/memcg/functional/memcg_lib.sh     |    6 ++++--
+ .../memcg/functional/memcg_move_charge_at_immigrate_test.sh    |    8 ++++----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index 470932d..fd2c7fd 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -380,9 +380,11 @@ test_move_charge()
+ 	echo $! > subgroup_b/tasks
+ 
+ 	cd subgroup_b
+-	check_mem_stat memory.usage_in_bytes $4
++	check_mem_stat "rss" $4
++	check_mem_stat "cache" $5
+ 	cd ../subgroup_a
+-	check_mem_stat memory.usage_in_bytes $5
++	check_mem_stat "rss" $6
++	check_mem_stat "cache" $7
+ 
+ 	cd ..
+ 	echo $! > tasks
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
+index fb639c7..cf2c603 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
+@@ -35,27 +35,27 @@ export TST_COUNT=0
+ # Test disable moving charges
+ testcase_1()
+ {
+-	test_move_charge "--mmap-anon" $PAGESIZE  0 0 $PAGESIZE
++	test_move_charge "--mmap-anon" $PAGESIZE  0 0 0 $PAGESIZE 0
+ }
+ 
+ # Test move anon
+ testcase_2()
+ {
+ 	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE 1 \
+-		$PAGESIZE $((PAGESIZE*2))
++		$PAGESIZE 0 0 $((PAGESIZE*2))
+ }
+ 
+ # Test move file
+ testcase_3()
+ {
+ 	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE 2 \
+-		$((PAGESIZE*2)) $PAGESIZE
++		0 $((PAGESIZE*2)) $PAGESIZE 0
+ }
+ 
+ # Test move anon and file
+ testcase_4()
+ {
+-	test_move_charge "--mmap-anon --shm" $PAGESIZE 3 $((PAGESIZE*2)) 0
++	test_move_charge "--mmap-anon --shm" $PAGESIZE 3 $PAGESIZE $PAGESIZE 0 0
+ }
+ 
+ # Run all the test cases
+-- 
+1.7.10
+
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
---===============4061904129251348466==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4061904129251348466==--
-
