@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SGAEu-0005Jx-Gm
-	for ltp-list@lists.sourceforge.net; Fri, 06 Apr 2012 14:34:12 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SGAEq-0003S0-3y
-	for ltp-list@lists.sourceforge.net; Fri, 06 Apr 2012 14:34:12 +0000
-Received: by pbcum15 with SMTP id um15so2708750pbc.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SMt0O-0008Cy-9P
+	for ltp-list@lists.sourceforge.net; Wed, 25 Apr 2012 03:35:00 +0000
+Received: from mail-pz0-f46.google.com ([209.85.210.46])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SMt0L-0007F0-HG
+	for ltp-list@lists.sourceforge.net; Wed, 25 Apr 2012 03:35:00 +0000
+Received: by dadz9 with SMTP id z9so2140939dad.33
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 06 Apr 2012 07:34:02 -0700 (PDT)
-Message-ID: <4F7EFED0.4040405@casparzhang.com>
-Date: Fri, 06 Apr 2012 22:33:52 +0800
+	Tue, 24 Apr 2012 20:34:47 -0700 (PDT)
+Message-ID: <4F9770BF.5050609@casparzhang.com>
+Date: Wed, 25 Apr 2012 11:34:23 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <4F58E36E.5000306@casparzhang.com>
-	<4F594DE2.4040603@cn.fujitsu.com>
-	<4F62EB70.7010400@casparzhang.com>
-	<20120316143522.GB19604@alboin.amr.corp.intel.com>
-	<4F699CDD.606@linux.intel.com>
-In-Reply-To: <4F699CDD.606@linux.intel.com>
-Subject: Re: [LTP] [RFC] make mce-test a submodule
+References: <1335253407-17318-1-git-send-email-penght@cn.fujitsu.com>
+	<4F976A4E.6070006@cn.fujitsu.com>
+	<4F977041.9070607@casparzhang.com>
+In-Reply-To: <4F977041.9070607@casparzhang.com>
+Subject: Re: [LTP] [PATCH] memcg_move_charge_at_immigrate_test: fix a bug of
+ usage_in_bytes is not 'exact'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,39 +30,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chen Gong <gong.chen@linux.intel.com>
-Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gMDMvMjEvMjAxMiAwNToxOCBQTSwgQ2hlbiBHb25nIHdyb3RlOgo+IOS6jiAyMDEyLzMvMTYg
-MjI6MzUsIEFuZGkgS2xlZW4g5YaZ6YGTOgo+PiBPbiBGcmksIE1hciAxNiwgMjAxMiBhdCAwMzoy
-Nzo0NFBNICswODAwLCBDYXNwYXIgWmhhbmcgd3JvdGU6Cj4+PiBIaSBhbGwsIEknbGwgbWVyZ2Ug
-dGhpcyBjaGFuZ2UgdG8gbWFzdGVyIGlmIEkgZG9uJ3QgaGVhciBhbnkgb2JqZWN0aW9ucwo+Pj4g
-ZnJvbSB5b3UgYnkgdG9kYXkuCj4+IEZpbmUgZm9yIG1lLiBDb3B5aW5nIEdvbmcgQ2hlbiB3aG8g
-ZGlkIG1vc3Qgb2YgdGhlIG1jZS10ZXN0IHdvcmsgcmVjZW50bHkKPj4gdG9vLgo+Pgo+PiAtQW5k
-aQo+IE9oLCB5ZXMuIFJlY2VudGx5IEkgbWFrZSBhIGJpZyBjaGFuZ2Ugb24gbWNlLXRlc3QgcHJv
-amVjdCBhbmQgb2xkIAo+IHN0cnVjdHVyZSB3aWxsIGJlIHJlb3JnYW5pemVkLgo+IEFuZCBJIGV2
-ZXIgbG9va2VkIHRocm91Z2ggdGhlIG1jZS10ZXN0IHBhcnQgaW4gTFRQLiBVbmZvcnR1bmF0ZWx5
-IGl0IGlzIAo+IHZlcnkgb2xkIGFuZCBjYW4ndCBydW4gb24KPiBuZXdlciBrZXJuZWwuIEkgaG9w
-ZSB5b3UgY2FuIGtlZXAgY3VycmVudCBkaXNhYmxlZCBzdGF0dXMgaW4gTFRQIGFuZCAKPiB3YWl0
-IG15IG5ldyB3b3JrIGlzIG1lcmdlZC4KPiBXZSBjYW4gdGFsayBhdCB0aGF0IHRpbWUuIElzIGl0
-IE9LIHRvIHlvdT8KCkhpIENoZW4gR29uZywgc29ycnkgZm9yIGxhdGUgcmVwbHksIHdlJ3JlIHBs
-YW5uaW5nIHRvIHJlbW92ZSBvbGQgc3RhdGljCmNvZGVkIG1jZS10ZXN0IGZyb20gTFRQLCBhbmQg
-dXNlIGl0IGFzIGEgc3VibW9kdWxlLCB3aGljaCBtZWFucywKbWNlLXRlc3Qgd29uJ3QgYmUgc3Rh
-dGljLWNvZGVkIGFueSBtb3JlLCBpdCdzIGFsd2F5cyBzeW5jZWQgdXAgd2l0aCB5b3VyCnVwc3Ry
-ZWFtIHZlcnNpb24sIHdlIGp1c3QgbmVlZCB0byBkbyBzb21lIG1hbnVhbCBgYHN1Ym1vZHVsZSB1
-cGRhdGVgYApvcGVyYXRpb25zIHRvIGNoZWNrb3V0IHlvdXIgdmVyc2lvbiB3aGVuIGRvaW5nIGEg
-TFRQIHJlbGVhc2UuIFNvIEknbGwKbWVyZ2UgdGhpcyBwYXRjaCBpbiwgcmVtb3ZlIGFsbCBjdXJy
-ZW50IG91dC1vZi1kYXRlIGNvZGVzLCBhbmQgd2FpdCBmb3IKeW91ciBub3RpY2Ugb2YgbWNlLXRl
-c3QncyBuZXh0IHZlcnNpb24sIHNvIHRoYXQgd2UgY2FuIGluY2x1ZGUgaXQgaW4gb3VyCm5leHQg
-TFRQIHN0YWJsZSByZWxlYXNlLgoKVGhhbmtzLApDYXNwYXIKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQpGb3IgRGV2ZWxvcGVycywgQSBMb3QgQ2FuIEhhcHBlbiBJbiBBIFNlY29uZC4KQm91bmRhcnkg
-aXMgdGhlIGZpcnN0IHRvIEtub3cuLi5hbmQgVGVsbCBZb3UuCk1vbml0b3IgWW91ciBBcHBsaWNh
-dGlvbnMgaW4gVWx0cmEtRmluZSBSZXNvbHV0aW9uLiBUcnkgaXQgRlJFRSEKaHR0cDovL3Auc2Yu
-bmV0L3NmdS9Cb3VuZGFyeS1kMmR2czIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo=
+On 04/25/2012 11:32 AM, Caspar Zhang wrote:
+> On 04/25/2012 11:06 AM, Wanlong Gao wrote:
+>> On 04/24/2012 03:43 PM, Peng Haitao wrote:
+>>
+>>> In memory.txt says:
+>>>  usage_in_bytes is affected by the method and doesn't show 'exact' value of memory(and swap) usage, it's an fuzz value for efficient access. (Of course, when necessary, it's synchronized.) If you want to know more exact memory usage, you should use RSS+CACHE(+SWAP) value in memory.stat(see 5.2).
+>>>
+>>> So memory.usage_in_bytes should be replaced with memory.stat in the case of
+>>> memcg_move_charge_at_immigrate_test.
+> 
+> Hi, Please break your commit message into <= 73 words per line (except
+
+sorry, s/words/characters...
+
+> some running output) next time.
+> 
+> Thanks,
+> Caspar
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
