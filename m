@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SNGQY-0004t2-Sg
-	for ltp-list@lists.sourceforge.net; Thu, 26 Apr 2012 04:35:34 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SNGQX-0003oC-45
-	for ltp-list@lists.sourceforge.net; Thu, 26 Apr 2012 04:35:34 +0000
-Message-ID: <4F98C68E.9050809@cn.fujitsu.com>
-Date: Thu, 26 Apr 2012 11:52:46 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <marios.makris@gmail.com>) id 1SNUCb-0006pI-UD
+	for ltp-list@lists.sourceforge.net; Thu, 26 Apr 2012 19:18:05 +0000
+Received: from mail-wg0-f53.google.com ([74.125.82.53])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SNUCY-0004Ut-7J
+	for ltp-list@lists.sourceforge.net; Thu, 26 Apr 2012 19:18:05 +0000
+Received: by wgbfm10 with SMTP id fm10so1531169wgb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 26 Apr 2012 12:17:56 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [BUG] I'm reporting a bug about file
-Reply-To: gaowanlong@cn.fujitsu.com
+In-Reply-To: <CAMYrgfR6StoOvo8CNSFFXB6foctU2itACuQwAtxBsAJ1wDK0Ow@mail.gmail.com>
+References: <20120426143135.GA9424@saboteur.suse.cz>
+	<CAMYrgfR6StoOvo8CNSFFXB6foctU2itACuQwAtxBsAJ1wDK0Ow@mail.gmail.com>
+Date: Thu, 26 Apr 2012 22:17:55 +0300
+Message-ID: <CAMYrgfQTFQVOc+35Ot6LPXhGkKXaT314GLBmTasUo-z3wos4aQ@mail.gmail.com>
+From: Marioh mrs <marios.makris@gmail.com>
+Subject: Re: [LTP] LTP and GSOC
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,53 +31,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: file@mx.gw.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi folks,
+On 26 April 2012 22:10, Marioh mrs <marios.makris@gmail.com> wrote:
 
-Here, I'm reporting a bug, maybe it is solved upstream,
-but it's already on Fedora 16. Below shows the bug,
-
-It appears when testing https://github.com/linux-test-project/ltp/blob/master/testcases/commands/ade/file/file_test.sh#L292
-
-the file command can't recognize below file as a "C program" file but just a ASSCII text.
-
-> cat > $LTPTMP/cprog.c <<EOF
-> #include <stdio.h>
-> 
-> main()
-> {
-> printf("Hello Hell\n");
-> exit(0);
-> }
-> EOF
-
-
-
-
-
-But when I add a line like "#include <stdlib.h>", it can recognize to a "C program" file,
-this problem doesn't appear on RHEL6 but appears recently.
-
-And just test use the files under the source of "file" command like,
-
-> $ file src/file.c 
-> src/file.c: ASCII English text
-
-
-
-
-
-
-Do you think this is a bug, or I missed something?
-
-Can you file command guys give me some idea about this?
-
-
-
-Thanks in advance,
-Wanlong Gao
+> The outcome of the
+> project will hopefully make the maintenance a little easier :)
+*And a few new/missing syscalls implementations
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
