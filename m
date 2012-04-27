@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SHtxF-0006VL-2f
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:35:09 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SHtxB-0006WV-25
-	for ltp-list@lists.sourceforge.net; Wed, 11 Apr 2012 09:35:09 +0000
-Message-ID: <4F854F21.5070208@cn.fujitsu.com>
-Date: Wed, 11 Apr 2012 17:30:09 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SNcH7-0004lL-Iv
+	for ltp-list@lists.sourceforge.net; Fri, 27 Apr 2012 03:55:17 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SNcH2-0007yx-Rl
+	for ltp-list@lists.sourceforge.net; Fri, 27 Apr 2012 03:55:17 +0000
+Received: by pbbrq2 with SMTP id rq2so510591pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 26 Apr 2012 20:55:06 -0700 (PDT)
+Message-ID: <4F9A187E.5090307@casparzhang.com>
+Date: Fri, 27 Apr 2012 11:54:38 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
-	<4F7CF7DB.2080802@cn.fujitsu.com>
-	<CAGH67wRSAKEkn=MNn2HHivnPNjuP_tqE8+S1-ND_Z69VrBm9Ow@mail.gmail.com>
-	<4F84F212.9070408@cn.fujitsu.com>
-	<8DB64E3B-1B6D-4C27-85E8-11817A41F879@gmail.com>
-In-Reply-To: <8DB64E3B-1B6D-4C27-85E8-11817A41F879@gmail.com>
-Subject: Re: [LTP] [PATCH 2/2] Replace struct event_t with struct
-	inotify_event
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <20120426143135.GA9424@saboteur.suse.cz>
+In-Reply-To: <20120426143135.GA9424@saboteur.suse.cz>
+Subject: Re: [LTP] LTP and GSOC
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,49 +30,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: marios.makris@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-On 04/11/2012 05:18 PM, Garrett Cooper wrote:
-
-> On Apr 10, 2012, at 7:53 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+On 04/26/2012 10:31 PM, Cyril Hrubis wrote:
+> Good news everyone.
+> I'm happy to tell you that LTP is participating in the GSOC this year
+> (the proposal and student are enlisted under the openSUSE organization
+> though).
 > 
->> On 04/05/2012 10:10 AM, Garrett Cooper wrote:
->>
->>> On Wed, Apr 4, 2012 at 6:39 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
->>>> On 04/05/2012 08:42 AM, Garrett Cooper wrote:
->>>>
->>>>> Replace struct event_t with struct inotify_event
->>>>>
->>>>> Also do some minor whitespace cleanup while I'm
->>>>> in the neighborhood.
->>>>
->>>> there's something wrong with this patch, please take a look at the ".name".
->>>
->>> Yeah... let me get back to you on that...
->>
->>
->> Any update on this?
+> So let me introduce you to Marios Makris who will be working on LTP
+> during this summer. The plan is to code cleanup and documentation for
+> LTP test interface as well as implementing/cleanup syscall tests. Be
+> nice to him ;).
 > 
-> I'm moving from CA to WA, but I'll try to get back to you sometime mid next week once I get settled in.
+> Also CCing him directly so he could introduce himself.
+> 
 
-
-That's great! I wonder what do CA and WA stand for?
+Welcome Marios!
 
 Thanks,
-Wanlong Gao
-
-> 
-> Thanks!
-> -Garrett
-
-
+Caspar
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
