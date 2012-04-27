@@ -2,21 +2,33 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SFIkx-0005nk-Fw
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 05:27:43 +0000
-Received: from mail-pz0-f46.google.com ([209.85.210.46])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SFIkw-00041W-Pc
-	for ltp-list@lists.sourceforge.net; Wed, 04 Apr 2012 05:27:43 +0000
-Received: by dadz9 with SMTP id z9so552504dad.33
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Apr 2012 22:27:37 -0700 (PDT)
-Date: Tue, 3 Apr 2012 22:23:43 -0700 (PDT)
-From: Garrett Cooper <yanegomi@gmail.com>
-Message-ID: <alpine.BSF.2.00.1204032222300.25027@toaster.local>
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1SNfsM-0007Ay-5d
+	for ltp-list@lists.sourceforge.net; Fri, 27 Apr 2012 07:45:58 +0000
+Received: from e23smtp07.au.ibm.com ([202.81.31.140])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SNfsK-0001yj-Tj
+	for ltp-list@lists.sourceforge.net; Fri, 27 Apr 2012 07:45:58 +0000
+Received: from /spool/local
+	by e23smtp07.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
+	Fri, 27 Apr 2012 07:38:29 +1000
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	q3R7coAS1687562
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Apr 2012 17:38:50 +1000
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	q3R7jZKS016060
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Apr 2012 17:45:35 +1000
+Message-ID: <4F9A4F06.4070106@linux.vnet.ibm.com>
+Date: Fri, 27 Apr 2012 13:17:18 +0530
+From: Shubham Goyal <shubham@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 0/4] Replace commonly used perl tools with awk
-	equivalents
+References: <20120426143135.GA9424@saboteur.suse.cz>
+	<CAMYrgfR6StoOvo8CNSFFXB6foctU2itACuQwAtxBsAJ1wDK0Ow@mail.gmail.com>
+In-Reply-To: <CAMYrgfR6StoOvo8CNSFFXB6foctU2itACuQwAtxBsAJ1wDK0Ow@mail.gmail.com>
+Subject: Re: [LTP] LTP and GSOC
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,40 +41,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Marioh mrs <marios.makris@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The intent behind these changes are to remove unnecessary perl
-dependencies in LTP by using awk in its stead. It was something that was
-discussed a while ago on ltp-list@.
+Welcome to LTP Marios.. Please let us know for any help/cooperation.
 
-Garrett Cooper (4):
-   Replace create_valgrind_check.pl with an awk equivalent
-   Install .awk files
-   Replace create_dmesg_entries_for_each_test.pl with an awk equivalent
-   Replace create_kernel_faults_in_loops_and_probability.pl with an awk
-     equivalent
+Cyril - This is really great. Thanks a lot for that!!
 
-  runltp                                             |   50 +++++----
-  tools/Makefile                                     |    2 +-
-  tools/create_dmesg_entries_for_each_test.awk       |   32 ++++++
-  tools/create_dmesg_entries_for_each_test.pl        |   74 --------------
-  ...eate_kernel_faults_in_loops_and_probability.awk |   40 ++++++++
-  ...reate_kernel_faults_in_loops_and_probability.pl |  100 ------------------
-  tools/create_valgrind_check.awk                    |   42 ++++++++
-  tools/create_valgrind_check.pl                     |  106 --------------------
-  8 files changed, 146 insertions(+), 300 deletions(-)
-  create mode 100644 tools/create_dmesg_entries_for_each_test.awk
-  delete mode 100644 tools/create_dmesg_entries_for_each_test.pl
-  create mode 100644 tools/create_kernel_faults_in_loops_and_probability.awk
-  delete mode 100755 tools/create_kernel_faults_in_loops_and_probability.pl
-  create mode 100644 tools/create_valgrind_check.awk
-  delete mode 100755 tools/create_valgrind_check.pl
+--Shubham
+
+
+On Friday 27 April 2012 12:40 AM, Marioh mrs wrote:
+>> So let me introduce you to Marios Makris who will be working on LTP
+>> during this summer. The plan is to code cleanup and documentation for
+>> LTP test interface as well as implementing/cleanup syscall tests. Be
+>> nice to him ;).
+>>
+>> Also CCing him directly so he could introduce himself.
+>>
+>> --
+>> Cyril Hrubis
+> Hey everyone,
+>
+> To begin with, great work everyone :)
+>
+> I am Marios, a level 6 BSc CS student at uni of Hertfordshire and will
+> be working on ltp through GSoC for the summer (hopefully after the
+> GSoC aswell :)).
+> The plan is to cleanup and document the test interface as well as
+> cleanup and implementation of syscalls tests. The outcome of the
+> project will hopefully make the maintenance a little easier :)
+>
+> I hope for the best cooperation, please feel free if you want to ask
+> me anything.
+>
+> PS1. Thanks Cyril for the introduction :)
+> PS2. Sorry for my late responce just got back from uni.
+>
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond. Discussions
+> will include endpoint security, mobile security and the latest in malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
