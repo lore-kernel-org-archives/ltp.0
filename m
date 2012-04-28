@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SFbNF-0000Nf-G8
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:20:29 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SFbND-0000UA-4y
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 01:20:29 +0000
-Message-ID: <4F7CF202.50307@cn.fujitsu.com>
-Date: Thu, 05 Apr 2012 09:14:42 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SO3b8-0007Ua-I5
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:05:46 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SO3b7-00081s-LK
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:05:46 +0000
+Date: Sat, 28 Apr 2012 05:05:38 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <e673722d-9ed0-4943-b6bf-5ebda472b7bd@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <5f459a2d-8dca-42ca-bff1-bd96d9e019a4@zmail13.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-References: <1333587726-8962-1-git-send-email-penght@cn.fujitsu.com>
-	<CAGH67wRCFcJO8Nhz+at-6MTGJAqqm0JGBRQEuj=hpAxhcdKZRw@mail.gmail.com>
-In-Reply-To: <CAGH67wRCFcJO8Nhz+at-6MTGJAqqm0JGBRQEuj=hpAxhcdKZRw@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] at_deny01: fix a bug of /etc/init.d/atd is
-	nonexistent
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH 1/3] m4/ltp-numa.m4: fixed numa config
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,28 +27,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/05/2012 09:07 AM, Garrett Cooper wrote:
 
-> On Wed, Apr 4, 2012 at 6:02 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
->> /etc/init.d/atd is nonexistent in fedora16, so should use systemctl.
->>
->> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+----- Original Message -----
+> From: "Zhouping Liu" <zliu@redhat.com>
+> To: "Garrett Cooper" <yanegomi@gmail.com>
+> Sent: Saturday, April 28, 2012 4:58:52 PM
+> Subject: Re: [LTP]  [PATCH 1/3] m4/ltp-numa.m4: fixed numa config
 > 
-> Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
 > 
+> 
+> > On Apr 28, 2012, at 12:48 AM, Zhouping Liu wrote:
+> > 
+> > > numa_alloc_onnode() and numa_move_pages() all need numa lib
+> > > '-lnuma',
+> > > but in ltp-numa.m4, we just checked the two functions using
+> > > AC_CHECK_FUNCS, without the patch, it always report such error
+> > > log in numa system: "undefined reference to `numa_alloc_onnode`",
+> > > which blocked syscalls/move_pages/* cases, the patch fixed it.
+> > > 
+> > > Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> > 
+> > I believe the real bug was that AC_CHECK_FUNCS accepts a list like:
+> 
+> I don't think so.
+> 
+> as AC_CHECK_FUNCS checks for the existence of functions in the C
+> standard library,
+> but numa_alloc_onnode and numa_move_pages are not in C standard
+> library, they
+> need '-lnuma', so AC_CHECK_FUNCS can't detect the two functions even
+> though they
+> are available.
+> 
+> I'm not practised to m4, please correct me if I'm wrong :(
+> 
+> > 
+> > AC_CHECK_FUNCS([printf scanf])
+> > 
+> > The other format implemented in the code was for:
+> > 
+> > funcs,if-found,if-not-found
+> > 
+> > Thanks!
+> > -Garrett
+> > 
 
+Forgot to CC ltp-list :(
 
-pushed, thanks,
-
-Wanlong Gao
+-- 
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
