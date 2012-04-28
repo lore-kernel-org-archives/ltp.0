@@ -2,26 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SK0y2-0005KH-H4
-	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 05:28:42 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SK0y1-0007m2-4l
-	for ltp-list@lists.sourceforge.net; Tue, 17 Apr 2012 05:28:42 +0000
-Message-ID: <4F8CFF3E.2000309@cn.fujitsu.com>
-Date: Tue, 17 Apr 2012 13:27:26 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1SO2We-0004z6-Cl
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:57:04 +0000
+Received: from mail-pz0-f46.google.com ([209.85.210.46])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SO2Wb-0002TA-CQ
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:57:04 +0000
+Received: by dadz9 with SMTP id z9so2150767dad.33
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 28 Apr 2012 00:56:55 -0700 (PDT)
+Message-ID: <4F9BA2A9.3000709@casparzhang.com>
+Date: Sat, 28 Apr 2012 15:56:25 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <0F68B52D2432864190BC72F760407FE9317D00DE57@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-	<4F55EF19.30000@cn.fujitsu.com>
-	<0F68B52D2432864190BC72F760407FE93254B6D20E@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-	<4F8CE612.40003@cn.fujitsu.com>
-	<0F68B52D2432864190BC72F760407FE93254B6D493@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-	<4F8CFA32.700@cn.fujitsu.com>
-	<0F68B52D2432864190BC72F760407FE93254B6D4E3@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-In-Reply-To: <0F68B52D2432864190BC72F760407FE93254B6D4E3@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-Subject: Re: [LTP] Required git repository
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
+	<66ac99257dc97775fbb2b44287874ad43d408b4c.1335599279.git.zliu@redhat.com>
+In-Reply-To: <66ac99257dc97775fbb2b44287874ad43d408b4c.1335599279.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH 2/3] syscalls/move_pages: modified HAS_NUMA_H as
+ HAVE_NUMA_H
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,161 +32,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
+To: Zhouping Liu <zliu@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/17/2012 01:15 PM, Anupam Srivastava - ERS, HCL Tech wrote:
+On 04/28/2012 03:48 PM, Zhouping Liu wrote:
+> HAS_NUMA_H should be HAVE_NUMA_H, and most functions are defined
+> in numa.h and numaif.h, so added the include headers into
+> move_pages_support.h
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
 
-> I have send the patched to the LTP List but didn't get reply from there.
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
-
-Sorry, I didn't see your patches, please send them to ltp-list@lists.sourceforge.net 
-again, note that you should make patches against the upstream git tree,
-
-git://github.com/linux-test-project/ltp.git
-
-Thanks,
-Wanlong Gao
-
+> ---
+>  testcases/kernel/syscalls/move_pages/move_pages_support.c |   12 ++++++------
+>  testcases/kernel/syscalls/move_pages/move_pages_support.h |    7 +++++++
+>  2 files changed, 13 insertions(+), 6 deletions(-)
 > 
-> Regards,
-> Anupam
-> 
-> -----Original Message-----
-> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
-> Sent: 17 April 2012 10:36
-> To: Anupam Srivastava - ERS, HCL Tech
-> Cc: LTP List
-> Subject: Re: [LTP] Required git repository
-> 
-> On 04/17/2012 12:31 PM, Anupam Srivastava - ERS, HCL Tech wrote:
-> 
->> Hi Wanlong,
->>
->> We want to contribute to open source community. We have ported LTP on Android.
->> I want to follow the below procedure to submit my code:
->>
->> 1) First clone the code from GIT repository
->> 2) Changed the code as required
->> 3) Commit the changes.
-> 
-> 
-> Then send patches to LTP List <ltp-list@lists.sourceforge.net> for
-> reviewing, you are welcome.
-> 
-> Thanks,
-> Wanlong Gao
-> 
-> 
->>
->> Let me know the procedure for the same if above are not correct.
->>
->> Regards,
->> Anupam
->>
->>
->> -----Original Message-----
->> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
->> Sent: 17 April 2012 09:10
->> To: Anupam Srivastava - ERS, HCL Tech
->> Cc: LTP List
->> Subject: Re: [LTP] Required git repository
->>
->> On 04/16/2012 05:57 PM, Anupam Srivastava - ERS, HCL Tech wrote:
->>
->>> Hi,
->>>
->>> When I am checking out the code of LTP, it's giving the latest version. I am looking for "ltp-full-20110228" version.
->>> Please let me know that how to do the same.
->>
->>
->> Since you don't want to get the log, it's not necessary to clone the git repo,
->> you can just get the source here,
->> http://sourceforge.net/projects/ltp/files/LTP%20Source/
->>
->> Thanks,
->> Wanlong Gao
->>
->>>
->>> Regards,
->>> Anupam
->>>
->>> -----Original Message-----
->>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
->>> Sent: 06 March 2012 16:34
->>> To: Anupam Srivastava - ERS, HCL Tech
->>> Cc: ltp-list@lists.sourceforge.net
->>> Subject: Re: [LTP] Required git repository
->>>
->>> On 03/06/2012 01:31 PM, Anupam Srivastava - ERS, HCL Tech wrote:
->>>
->>>> Hi,
->>>>
->>>>  
->>>>
->>>> I want to check out LTP *(Version: ltp-full-20110228) * source code form git repository. Please share the path so that I can check out the ltp code.
->>>>
->>>
->>>
->>> git://ltp.git.sourceforge.net/gitroot/ltp/ltp master
->>> OR
->>> git://github.com/gaowanlong/ltp.git master
->>>
->>> Thanks,
->>> Wanlong Gao
->>>
->>>>  
->>>>
->>>> Regards,
->>>>
->>>> Anupam
->>>>
->>>>
->>>> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
->>>> ::DISCLAIMER::
->>>> -----------------------------------------------------------------------------------------------------------------------
->>>>
->>>> The contents of this e-mail and any attachment(s) are confidential and intended for the named recipient(s) only.
->>>> It shall not attach any liability on the originator or HCL or its affiliates. Any views or opinions presented in
->>>> this email are solely those of the author and may not necessarily reflect the opinions of HCL or its affiliates.
->>>> Any form of reproduction, dissemination, copying, disclosure, modification, distribution and / or publication of
->>>> this message without the prior written consent of the author of this e-mail is strictly prohibited. If you have
->>>> received this email in error please delete it and notify the sender immediately. Before opening any mail and
->>>> attachments please check them for viruses and defect.
->>>>
->>>> -----------------------------------------------------------------------------------------------------------------------
->>>>
->>>>
->>>> ------------------------------------------------------------------------------
->>>> Keep Your Developer Skills Current with LearnDevNow!
->>>> The most comprehensive online learning library for Microsoft developers
->>>> is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
->>>> Metro Style Apps, more. Free future releases when you subscribe now!
->>>> http://p.sf.net/sfu/learndevnow-d2d
->>>>
->>>>
->>>>
->>>> _______________________________________________
->>>> Ltp-list mailing list
->>>> Ltp-list@lists.sourceforge.net
->>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>>
->>>
->>>
->>
->>
->>
-> 
-> 
-> 
-
+> diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.c b/testcases/kernel/syscalls/move_pages/move_pages_support.c
+> index 168805e..6bd95d3 100644
+> --- a/testcases/kernel/syscalls/move_pages/move_pages_support.c
+> +++ b/testcases/kernel/syscalls/move_pages/move_pages_support.c
+> @@ -37,7 +37,7 @@ long get_page_size()
+>  void free_pages(void **pages, unsigned int num)
+>  {
+>  
+> -#if HAS_NUMA_H
+> +#if HAVE_NUMA_H
+>  	int i;
+>  	size_t onepage = get_page_size();
+>  
+> @@ -112,7 +112,7 @@ int alloc_pages_linear(void **pages, unsigned int num)
+>  {
+>  	int nodes[num];
+>  
+> -#if HAS_NUMA_H
+> +#if HAVE_NUMA_H
+>  	unsigned int i;
+>  	unsigned int n;
+>  
+> @@ -208,7 +208,7 @@ verify_pages_on_nodes(void **pages, int *status, unsigned int num, int *nodes)
+>   */
+>  void verify_pages_linear(void **pages, int *status, unsigned int num)
+>  {
+> -#if HAS_NUMA_H
+> +#if HAVE_NUMA_H
+>  	unsigned int i;
+>  	unsigned int n;
+>  	int nodes[num];
+> @@ -257,7 +257,7 @@ void verify_pages_on_node(void **pages, int *status, unsigned int num, int node)
+>   */
+>  int alloc_shared_pages_on_node(void **pages, unsigned int num, int node)
+>  {
+> -#if HAS_NUMA_H
+> +#if HAVE_NUMA_H
+>  	char *shared;
+>  	unsigned int i;
+>  	int nodes[num];
+> @@ -380,7 +380,7 @@ void free_sem(sem_t * sem, int num)
+>   */
+>  void check_config(unsigned int min_nodes)
+>  {
+> -#if HAS_NUMA_H
+> +#if HAVE_NUMA_H && HAVE_NUMAIF_H
+>  	if (numa_available() < 0) {
+>  		tst_resm(TCONF, "NUMA support is not available");
+>  	} else if (numa_max_node() < (min_nodes - 1)) {
+> @@ -392,4 +392,4 @@ void check_config(unsigned int min_nodes)
+>  	tst_resm(TCONF, "NUMA support not provided");
+>  #endif
+>  	tst_exit();
+> -}
+> \ No newline at end of file
+> +}
+> diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.h b/testcases/kernel/syscalls/move_pages/move_pages_support.h
+> index 4081625..fd78572 100644
+> --- a/testcases/kernel/syscalls/move_pages/move_pages_support.h
+> +++ b/testcases/kernel/syscalls/move_pages/move_pages_support.h
+> @@ -19,6 +19,13 @@
+>  #ifndef MOVE_PAGES_SUPPORT_H
+>  #define MOVE_PAGES_SUPPORT_H
+>  
+> +#include "config.h"
+> +#if HAVE_NUMA_H
+> +#include <numa.h>
+> +#endif
+> +#if HAVE_NUMAIF_H
+> +#include <numaif.h>
+> +#endif
+>  #include <semaphore.h>
+>  
+>  long get_page_size();
 
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
