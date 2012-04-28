@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SFajO-0007Qc-7w
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 00:39:18 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SFajL-00042f-UC
-	for ltp-list@lists.sourceforge.net; Thu, 05 Apr 2012 00:39:18 +0000
-Received: by pbcum15 with SMTP id um15so940158pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Apr 2012 17:39:10 -0700 (PDT)
-Date: Wed, 4 Apr 2012 17:35:16 -0700 (PDT)
-From: Garrett Cooper <yanegomi@gmail.com>
-Message-ID: <alpine.BSF.2.00.1204041734030.25027@toaster.local>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SO3a1-0007Si-4g
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:04:37 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SO3a0-00066S-8b
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:04:37 +0000
+Date: Sat, 28 Apr 2012 05:04:28 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <f6483acf-f911-471e-877c-74bd68237520@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <2F2D931F-792A-425D-9BFE-D97AD02CDEF7@gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 0/2] Minor inotify(7) testcase cleanup
+Subject: Re: [LTP] [PATCH 3/3] syscalls/move_pages: removed tst_exit in
+	check_config()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,29 +27,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-The attached changes consolidate some duplicated wrapper APIs and
-remove a homegrown struct for dealing with inotify events.
 
-Garrett Cooper (2):
-   Clean up inotify(7) wrappers
-   Replace struct event_t with struct inotify_event
 
-  testcases/kernel/syscalls/inotify/inotify.h   |   45 
-+++++++++++++++++++++++++
-  testcases/kernel/syscalls/inotify/inotify01.c |   16 +--------
-  testcases/kernel/syscalls/inotify/inotify02.c |   29 +++-------------
-  testcases/kernel/syscalls/inotify/inotify03.c |   16 +--------
-  4 files changed, 52 insertions(+), 54 deletions(-)
-  create mode 100644 testcases/kernel/syscalls/inotify/inotify.h
+----- Original Message -----
+> From: "Garrett Cooper" <yanegomi@gmail.com>
+> To: "Zhouping Liu" <zliu@redhat.com>
+> Sent: Saturday, April 28, 2012 3:53:54 PM
+> Subject: Re: [LTP] [PATCH 3/3] syscalls/move_pages: removed tst_exit in check_config()
+> 
+> On Apr 28, 2012, at 12:48 AM, Zhouping Liu wrote:
+> 
+> > removed tst_exit in check_config(), as it's always involked
+> > at any time, instead, using tst_brkm to displace tst_resm,
+> > since TCONF should be called by tst_brkm.
+> > 
+> > Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> 
+> Reviewed-by: Garrett Cooper <yanegomi@gmail.com
+> 
 
+Hi, Garrett,
+you missed to CC ltp-list.
+
+-- 
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
