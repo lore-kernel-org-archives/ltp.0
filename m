@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SO3b8-0007Ua-I5
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:05:46 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SO3b7-00081s-LK
-	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 09:05:46 +0000
-Date: Sat, 28 Apr 2012 05:05:38 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <e673722d-9ed0-4943-b6bf-5ebda472b7bd@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <5f459a2d-8dca-42ca-bff1-bd96d9e019a4@zmail13.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SO2XA-0002tn-OS
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:57:36 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SO2XA-0002Th-2q
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 07:57:36 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rq2so1866550pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 28 Apr 2012 00:57:35 -0700 (PDT)
+Message-ID: <4F9BA2D3.9040705@casparzhang.com>
+Date: Sat, 28 Apr 2012 15:57:07 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
+References: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
+In-Reply-To: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
 Subject: Re: [LTP] [PATCH 1/3] m4/ltp-numa.m4: fixed numa config
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -26,60 +30,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Zhouping Liu <zliu@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
+On 04/28/2012 03:48 PM, Zhouping Liu wrote:
+> numa_alloc_onnode() and numa_move_pages() all need numa lib '-lnuma',
+> but in ltp-numa.m4, we just checked the two functions using
+> AC_CHECK_FUNCS, without the patch, it always report such error
+> log in numa system: "undefined reference to `numa_alloc_onnode`",
+> which blocked syscalls/move_pages/* cases, the patch fixed it.
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
 
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 
------ Original Message -----
-> From: "Zhouping Liu" <zliu@redhat.com>
-> To: "Garrett Cooper" <yanegomi@gmail.com>
-> Sent: Saturday, April 28, 2012 4:58:52 PM
-> Subject: Re: [LTP]  [PATCH 1/3] m4/ltp-numa.m4: fixed numa config
+> ---
+>  m4/ltp-numa.m4 |    9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> 
-> 
-> > On Apr 28, 2012, at 12:48 AM, Zhouping Liu wrote:
-> > 
-> > > numa_alloc_onnode() and numa_move_pages() all need numa lib
-> > > '-lnuma',
-> > > but in ltp-numa.m4, we just checked the two functions using
-> > > AC_CHECK_FUNCS, without the patch, it always report such error
-> > > log in numa system: "undefined reference to `numa_alloc_onnode`",
-> > > which blocked syscalls/move_pages/* cases, the patch fixed it.
-> > > 
-> > > Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> > 
-> > I believe the real bug was that AC_CHECK_FUNCS accepts a list like:
-> 
-> I don't think so.
-> 
-> as AC_CHECK_FUNCS checks for the existence of functions in the C
-> standard library,
-> but numa_alloc_onnode and numa_move_pages are not in C standard
-> library, they
-> need '-lnuma', so AC_CHECK_FUNCS can't detect the two functions even
-> though they
-> are available.
-> 
-> I'm not practised to m4, please correct me if I'm wrong :(
-> 
-> > 
-> > AC_CHECK_FUNCS([printf scanf])
-> > 
-> > The other format implemented in the code was for:
-> > 
-> > funcs,if-found,if-not-found
-> > 
-> > Thanks!
-> > -Garrett
-> > 
+> diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
+> index bcc5e6b..d03bc80 100644
+> --- a/m4/ltp-numa.m4
+> +++ b/m4/ltp-numa.m4
+> @@ -26,7 +26,14 @@ AC_DEFUN([LTP_CHECK_SYSCALL_NUMA],
+>  [dnl
+>  AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
+>  	LTP_SYSCALL_NUMA_HEADERS=yes
+> -	AC_CHECK_FUNCS(numa_alloc_onnode,numa_move_pages)
+> +	AC_CHECK_LIB(numa,numa_alloc_onnode,[have_numa_alloc_onnode="yes"])
+> +	if  test "x$have_numa_alloc_onnode" = "xyes"; then
+> +		AC_DEFINE(HAVE_NUMA_ALLOC_ONNODE,1,[define to 1 if you have 'numa_alloc_onnode' function])
+> +	fi
+> +	AC_CHECK_LIB(numa,numa_move_pages,[have_numa_move_pages="yes"])
+> +	if  test "x$have_numa_move_pages" = "xyes"; then
+> +		AC_DEFINE(HAVE_NUMA_MOVE_PAGES,1,[define to 1 if you have 'numa_move_pages' function])
+> +	fi
+>  ]
+>  	AC_CHECK_LIB(numa,numa_available,[
+>  NUMA_CPPFLAGS="-DNUMA_VERSION1_COMPATIBILITY"
 
-Forgot to CC ltp-list :(
-
--- 
-Thanks,
-Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
