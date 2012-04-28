@@ -2,19 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SNH7o-0004Yo-Na
-	for ltp-list@lists.sourceforge.net; Thu, 26 Apr 2012 05:20:16 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SO5xj-0001Ur-AY
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 11:37:15 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SNH7n-0004ue-EV
-	for ltp-list@lists.sourceforge.net; Thu, 26 Apr 2012 05:20:16 +0000
-Message-ID: <4F98DAC5.8020708@cn.fujitsu.com>
-Date: Thu, 26 Apr 2012 13:19:01 +0800
+	id 1SO5xg-0001aK-Vm
+	for ltp-list@lists.sourceforge.net; Sat, 28 Apr 2012 11:37:15 +0000
+Message-ID: <4F9BD61D.8010705@cn.fujitsu.com>
+Date: Sat, 28 Apr 2012 19:35:57 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4F98C68E.9050809@cn.fujitsu.com>
-In-Reply-To: <4F98C68E.9050809@cn.fujitsu.com>
-Subject: Re: [LTP] [BUG] I'm reporting a bug about file
+References: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
+In-Reply-To: <9f6a3874d522c848218b164f61ff207760ed2b22.1335599279.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] m4/ltp-numa.m4: fixed numa config
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,56 +28,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: file@mx.gw.com
+To: Zhouping Liu <zliu@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Resend! The file command mail list kicked my mail out since I'm not in the list.
-Now, I'm in.
+On 04/28/2012 03:48 PM, Zhouping Liu wrote:
 
-> Hi folks,
+> numa_alloc_onnode() and numa_move_pages() all need numa lib '-lnuma',
+> but in ltp-numa.m4, we just checked the two functions using
+> AC_CHECK_FUNCS, without the patch, it always report such error
+> log in numa system: "undefined reference to `numa_alloc_onnode`",
+> which blocked syscalls/move_pages/* cases, the patch fixed it.
+
+
+
+pushed the series, thanks
+
+Wanlong Gao
+
 > 
-> Here, I'm reporting a bug, maybe it is solved upstream,
-> but it's already on Fedora 16. Below shows the bug,
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> ---
+>  m4/ltp-numa.m4 |    9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> It appears when testing https://github.com/linux-test-project/ltp/blob/master/testcases/commands/ade/file/file_test.sh#L292
-> 
-> the file command can't recognize below file as a "C program" file but just a ASSCII text.
-> 
->> cat > $LTPTMP/cprog.c <<EOF
->> #include <stdio.h>
->>
->> main()
->> {
->> printf("Hello Hell\n");
->> exit(0);
->> }
->> EOF
-> 
-> 
-> 
-> 
-> 
-> But when I add a line like "#include <stdlib.h>", it can recognize to a "C program" file,
-> this problem doesn't appear on RHEL6 but appears recently.
-> 
-> And just test use the files under the source of "file" command like,
-> 
->> $ file src/file.c 
->> src/file.c: ASCII English text
-> 
-> 
-> 
-> 
-> 
-> 
-> Do you think this is a bug, or I missed something?
-> 
-> Can you file command guys give me some idea about this?
-> 
-> 
-> 
-> Thanks in advance,
-> Wanlong Gao
+> diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
+> index bcc5e6b..d03bc80 100644
+> --- a/m4/ltp-numa.m4
+> +++ b/m4/ltp-numa.m4
+> @@ -26,7 +26,14 @@ AC_DEFUN([LTP_CHECK_SYSCALL_NUMA],
+>  [dnl
+>  AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
+>  	LTP_SYSCALL_NUMA_HEADERS=yes
+> -	AC_CHECK_FUNCS(numa_alloc_onnode,numa_move_pages)
+> +	AC_CHECK_LIB(numa,numa_alloc_onnode,[have_numa_alloc_onnode="yes"])
+> +	if  test "x$have_numa_alloc_onnode" = "xyes"; then
+> +		AC_DEFINE(HAVE_NUMA_ALLOC_ONNODE,1,[define to 1 if you have 'numa_alloc_onnode' function])
+> +	fi
+> +	AC_CHECK_LIB(numa,numa_move_pages,[have_numa_move_pages="yes"])
+> +	if  test "x$have_numa_move_pages" = "xyes"; then
+> +		AC_DEFINE(HAVE_NUMA_MOVE_PAGES,1,[define to 1 if you have 'numa_move_pages' function])
+> +	fi
+>  ]
+>  	AC_CHECK_LIB(numa,numa_available,[
+>  NUMA_CPPFLAGS="-DNUMA_VERSION1_COMPATIBILITY"
 
 
 
