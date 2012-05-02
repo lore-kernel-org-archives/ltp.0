@@ -1,26 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <marios.makris@gmail.com>) id 1SUGHh-0003NP-Oe
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 11:51:21 +0000
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SUGHh-0006TP-2Z
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 11:51:21 +0000
-Received: by wibhn6 with SMTP id hn6so3101724wib.10
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 May 2012 04:51:15 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SPYGu-0002bX-8Z
+	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 12:03:04 +0000
+Date: Wed, 2 May 2012 14:01:12 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120502120112.GA366@saboteur.suse.cz>
+References: <B7E6FC224F02D64480BFC86AA60E9566267B9332@SZXEML511-MBS.china.huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <4FB0B348.3020601@cn.fujitsu.com>
-References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
-	<1336655089-26941-3-git-send-email-marios.makris@gmail.com>
-	<4FB0B348.3020601@cn.fujitsu.com>
-Date: Tue, 15 May 2012 14:51:14 +0300
-Message-ID: <CAMYrgfQUi_LziMsMsAkSnQdYS6FAryf71dHx6CHX_z5xJDPQmg@mail.gmail.com>
-From: Marioh mrs <marios.makris@gmail.com>
-Subject: Re: [LTP] [PATCH 3/3] Changed nconv variable from long to int in
-	/lib/bytes_by_prefix.c
+Content-Disposition: inline
+In-Reply-To: <B7E6FC224F02D64480BFC86AA60E9566267B9332@SZXEML511-MBS.china.huawei.com>
+Subject: Re: [LTP] Why LTP expect to get EFAULT error on sigtimedwait01 case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,41 +24,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Maxiansheng (Max)" <max.maxiansheng@huawei.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On 14 May 2012 10:24, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
->
->
-> But Marios,
->
-> In the previous patch, you changed the library function
-> from str_to_bytes to bytes_by_prefix, if you'd prefer
-> the latter name, please also replace the using of str_to_bytes
-> with the new name, if not, it'll not be compiled.
->
-> Thanks,
-> Wanlong Gao
->
+Hi!
+> We are testing several embedded Linux. When we use LTP to test these Linux, we find that the testcase sigtimedwait01 always failed with Segment Fault.
+> 
+> As the testcase failed on x86_64, i586 and arm, we found that maybe glibc doesn??t deal with the bad address
+> 
+> The testcase C program file is : testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo.c
+> 
+> The result is :
+> sigtimedwait01    6  TPASS  :  Test passed
+> sigtimedwait01    0  TINFO  :  0x80493c0, 10
+> sigtimedwait01    7  TBROK  :  unexpected signal 11 received (pid = 4057).
+> sigtimedwait01    8  TBROK  :  Remaining cases broken
+> 
+> it always fail after line 334, because of Segment Fault
+> 332 void test_bad_address2(swi_func sigwaitinfo, int signo)
+> 333 {
+> 334         TEST(sigwaitinfo((void*)1, NULL, NULL);
+> 335         REPORT_SUCCESS(-1, EFAULT);
+> 336 }
+> 
+> We can see that, here, we do
+> 
+> Sigtimedwait((void*)1, NULL, NULL));
+> 
+> And the parameter (void *)1 is a bad address.
+> 
+> This test can make things easier.
+> 
+> #include <stdio.h>
+> #include <signal.h>
+> 
+> int main()
+> {
+>         int ret;
+>         ret = sigtimedwait((void*)1, NULL, NULL);
+>         printf("test end\n");
+>         return 0;
+> }
+> 
+> Why LTP expect to get the EFAULT error?
 
-Hello Wanlong,
+Hmm, that is dumbious test indeed, as the EFAULT isn't specified in
+manual page as possible errno. Moreover if you look into the
+corresponding glibc source (sysdeps/unix/sysv/linux/sigtimedwait.c) the
+first parameter is dereferenced before the actual syscall is done.
 
-The replacement of usages of the str_to_bytes (now bytes_by_prefix)
-is already done and are part of the previous patch as well.
+Digging in glibc git log the checks for SIGCANCEL and SIGSETXID were
+added around year 2003. I suspect that the test was working fine
+beforehand.
 
-Quoting that part from the previous patch:
-> Furthermore any call to the file or its functions by other functions,
-> manpages etc. have been modified to comply with the new names.
+My conclusion is that the test for bad address is wrong and should be
+removed.
 
-Furthermore i have tested compiling it (clean compile of the repo and then
-applying the patches and recompiling as well as clean compilation with
-my commits) on two computers and it compiled well.
-
-I hope i didn't misunderstand your comment, please tell me where i am
-wrong if that is the case.
-
-Thanks a lot for reviewing.
 -- 
-Marios Makris
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
