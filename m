@@ -1,29 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gong.chen@linux.intel.com>) id 1SX0l4-0000NQ-Vr
-	for ltp-list@lists.sourceforge.net; Wed, 23 May 2012 01:53:02 +0000
-Received: from mga02.intel.com ([134.134.136.20])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SX0l3-0002vP-Rb
-	for ltp-list@lists.sourceforge.net; Wed, 23 May 2012 01:53:02 +0000
-Message-ID: <4FBC42F5.508@linux.intel.com>
-Date: Wed, 23 May 2012 09:52:53 +0800
-From: Chen Gong <gong.chen@linux.intel.com>
+	(envelope-from <chrubis@suse.de>) id 1SPYN7-0002yp-VH
+	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 12:09:29 +0000
+Date: Wed, 2 May 2012 14:07:42 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120502120742.GB366@saboteur.suse.cz>
+References: <20120229162236.GA29987@saboteur.suse.cz>
+	<6F91E0FFDA542149961F7BDED2D2B94B549365C4B6@EXGMBX01.sasken.com>
+	<20120302125851.GA8394@saboteur.suse.cz>
+	<6F91E0FFDA542149961F7BDED2D2B94B549F7328E7@EXGMBX01.sasken.com>
+	<CAMhs6YzaQ_1gKqCskOX1F8db-nKg=P_Zsy-FgHYnhczDvm9UhQ@mail.gmail.com>
+	<6F91E0FFDA542149961F7BDED2D2B94B56372F8DCD@EXGMBX01.sasken.com>
+	<CAMhs6Yyv_-v_TWKpVxv6tVeyg=jnH_VDZpaOQYnkZxF5C-O2fQ@mail.gmail.com>
+	<6F91E0FFDA542149961F7BDED2D2B94B56372F8DEA@EXGMBX01.sasken.com>
+	<3319EDD9-0FB3-4DB6-9251-ACFC01032122@gmail.com>
+	<6F91E0FFDA542149961F7BDED2D2B94B56372F8DFE@EXGMBX01.sasken.com>
 MIME-Version: 1.0
-References: <4F58E36E.5000306@casparzhang.com>
-	<4F594DE2.4040603@cn.fujitsu.com>
-	<4F62EB70.7010400@casparzhang.com>
-	<20120316143522.GB19604@alboin.amr.corp.intel.com>
-	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
-	<4F825325.3030308@linux.intel.com>
-	<4F825F9D.3020608@casparzhang.com>
-	<4F827B6A.3020204@linux.intel.com>
-	<4F8CCF86.2010409@linux.intel.com>
-	<4F8CD7AC.3050000@casparzhang.com>
-In-Reply-To: <4F8CD7AC.3050000@casparzhang.com>
-Subject: Re: [LTP] [RFC] make mce-test a submodule
+Content-Disposition: inline
+In-Reply-To: <6F91E0FFDA542149961F7BDED2D2B94B56372F8DFE@EXGMBX01.sasken.com>
+Subject: Re: [LTP] Need help in cross compiling LTP for android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,70 +30,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
+To: Rejish Rajagopala <rejish.rajagopala@sasken.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-5LqOIDIwMTIvNC8xNyAxMDozOCwgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPiBPbiAwNC8xNy8yMDEy
-IDEwOjAzIEFNLCBDaGVuIEdvbmcgd3JvdGU6Cj4+IOS6jiAyMDEyLzQvOSAxNDowMiwgQ2hlbiBH
-b25nIOWGmemBkzoKPj4+IOS6jiAyMDEyLzQvOSAxMjowMywgQ2FzcGFyIFpoYW5nIOWGmemBkzoK
-Pj4+PiBPbiAwNC8wOS8yMDEyIDExOjEwIEFNLCBDaGVuIEdvbmcgd3JvdGU6Cj4+Pj4+IOS6jiAy
-MDEyLzQvNiAyMjozMywgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPj4+Pj4+IE9uIDAzLzIxLzIwMTIg
-MDU6MTggUE0sIENoZW4gR29uZyB3cm90ZToKPj4+Pj4+PiDkuo4gMjAxMi8zLzE2IDIyOjM1LCBB
-bmRpIEtsZWVuIOWGmemBkzoKPj4+Pj4+Pj4gT24gRnJpLCBNYXIgMTYsIDIwMTIgYXQgMDM6Mjc6
-NDRQTSArMDgwMCwgQ2FzcGFyCj4+Pj4+Pj4+IFpoYW5nIHdyb3RlOgo+Pj4+Pj4+Pj4gSGkgYWxs
-LCBJJ2xsIG1lcmdlIHRoaXMgY2hhbmdlIHRvIG1hc3RlciBpZiBJIGRvbid0Cj4+Pj4+Pj4+PiBo
-ZWFyIGFueSBvYmplY3Rpb25zIGZyb20geW91IGJ5IHRvZGF5Lgo+Pj4+Pj4+PiBGaW5lIGZvciBt
-ZS4gQ29weWluZyBHb25nIENoZW4gd2hvIGRpZCBtb3N0IG9mIHRoZQo+Pj4+Pj4+PiBtY2UtdGVz
-dCB3b3JrIHJlY2VudGx5IHRvby4KPj4+Pj4+Pj4gCj4+Pj4+Pj4+IC1BbmRpCj4+Pj4+Pj4gT2gs
-IHllcy4gUmVjZW50bHkgSSBtYWtlIGEgYmlnIGNoYW5nZSBvbiBtY2UtdGVzdAo+Pj4+Pj4+IHBy
-b2plY3QgYW5kIG9sZCBzdHJ1Y3R1cmUgd2lsbCBiZSByZW9yZ2FuaXplZC4gQW5kIEkKPj4+Pj4+
-PiBldmVyIGxvb2tlZCB0aHJvdWdoIHRoZSBtY2UtdGVzdCBwYXJ0IGluIExUUC4KPj4+Pj4+PiBV
-bmZvcnR1bmF0ZWx5IGl0IGlzIHZlcnkgb2xkIGFuZCBjYW4ndCBydW4gb24gbmV3ZXIKPj4+Pj4+
-PiBrZXJuZWwuIEkgaG9wZSB5b3UgY2FuIGtlZXAgY3VycmVudCBkaXNhYmxlZCBzdGF0dXMgaW4K
-Pj4+Pj4+PiBMVFAgYW5kIHdhaXQgbXkgbmV3IHdvcmsgaXMgbWVyZ2VkLiBXZSBjYW4gdGFsayBh
-dCB0aGF0Cj4+Pj4+Pj4gdGltZS4gSXMgaXQgT0sgdG8geW91Pwo+Pj4+Pj4gSGkgQ2hlbiBHb25n
-LCBzb3JyeSBmb3IgbGF0ZSByZXBseSwgd2UncmUgcGxhbm5pbmcgdG8KPj4+Pj4+IHJlbW92ZSBv
-bGQgc3RhdGljIGNvZGVkIG1jZS10ZXN0IGZyb20gTFRQLCBhbmQgdXNlIGl0IGFzCj4+Pj4+PiBh
-IHN1Ym1vZHVsZSwgd2hpY2ggbWVhbnMsIG1jZS10ZXN0IHdvbid0IGJlIHN0YXRpYy1jb2RlZAo+
-Pj4+Pj4gYW55IG1vcmUsIGl0J3MgYWx3YXlzIHN5bmNlZCB1cCB3aXRoIHlvdXIgdXBzdHJlYW0K
-Pj4+Pj4+IHZlcnNpb24sIHdlIGp1c3QgbmVlZCB0byBkbyBzb21lIG1hbnVhbCBgYHN1Ym1vZHVs
-ZQo+Pj4+Pj4gdXBkYXRlYGAgb3BlcmF0aW9ucyB0byBjaGVja291dCB5b3VyIHZlcnNpb24gd2hl
-biBkb2luZyBhCj4+Pj4+PiBMVFAgcmVsZWFzZS4gU28gSSdsbCBtZXJnZSB0aGlzIHBhdGNoIGlu
-LCByZW1vdmUgYWxsCj4+Pj4+PiBjdXJyZW50IG91dC1vZi1kYXRlIGNvZGVzLCBhbmQgd2FpdCBm
-b3IgeW91ciBub3RpY2Ugb2YKPj4+Pj4+IG1jZS10ZXN0J3MgbmV4dCB2ZXJzaW9uLCBzbyB0aGF0
-IHdlIGNhbiBpbmNsdWRlIGl0IGluCj4+Pj4+PiBvdXIgbmV4dCBMVFAgc3RhYmxlIHJlbGVhc2Uu
-Cj4+Pj4+PiAKPj4+Pj4+IFRoYW5rcywgQ2FzcGFyCj4+Pj4+PiAKPj4+Pj4gSXQncyBmaW5lIHRv
-IG1lLiBTbyBkbyB5b3Ugd2FudCB0byBnZXQgYSBub3RpY2UgZnJvbSBtZQo+Pj4+PiBhZnRlciB0
-aGUgY29kZXMgYXJlIG1lcmdlZCBvciB5b3UgbW9uaXRvciB0aGUgdXBzdHJlYW0KPj4+Pj4gc3Rh
-dHVzIGJ5IHlvdXJzZWxmPwo+Pj4+IEknZCBhcHByZWNpYXRlIGl0IGlmIHlvdSBjYW4gc2VuZCBt
-ZSBhIG1haWwgd2hlbiB0aGUgY29kZXMKPj4+PiBnZXQgbWVyZ2VkLCBidXQgSSdsbCBjaGVjayB1
-cHN0cmVhbSBzdGF0dXMgYXMgd2VsbCBmcm9tIHRpbWUKPj4+PiB0byB0aW1lLgo+Pj4+IAo+Pj4+
-IFRoYW5rcywgQ2FzcGFyCj4+Pj4gCj4+PiBPSywgSSB3aWxsLiBOb3cgcGF0Y2ggaXMgaW4gdGhl
-IHJldmlldyBzdGF0dXMsIHNvIEkgd2lsbCB0ZWxsCj4+PiB5b3UgQVNBUCBhZnRlciBtZXJnZWQu
-Cj4+IFRoZSBuZXcgcGF0Y2ggZm9yIG1jZS10ZXN0IGhhcyBiZWVuIG1lcmdlZCwgYnV0IGl0IGxv
-b2tzIGEgbGl0dGxlCj4+IGJpdCB3cm9uZyBkdXJpbmcgdGhlIG1lcmdlIHByb2NlZHVyZSAoYWxs
-IHNoZWxsIHNjcmlwdHMgZXhlY3V0aW9uCj4+IHJpZ2h0IGFyZSBtaXNzZWQpLiBJJ20gcHVzaGlu
-ZyBBbmRpIHRvIGZpeCBpdCwgc28gcGxlYXNlIGRvbid0Cj4+IGFkZCBtY2UtdGVzdCBhdCBjdXJy
-ZW50IHN0YWdlLiBJIHdpbGwgdGVsbCB5b3Ugd2hlbiBpdCBpcyByZWFkeS4KPiAKPiBOb3RlZC4g
-VGhhbmtzIGZvciB0aGUgdXBkYXRlLgo+IAo+IFRoYW5rcywgQ2FzcGFyCj4gCk5vdyBJJ3ZlIGdv
-dHRlbiB0aGUgYWNjb3VudCBvbiBsa21sIGFuZCBjcmVhdGUgYSBwcm9qZWN0IGJ5IG15IG93bi4g
-U28Kbm93IHdlIGNhbiBiZWdpbiB0aGUgbWVyZ2Ugd29yay4gSWYgeW91IGhhdmUgYW55IHN1Z2dl
-c3Rpb24sIGp1c3QgbGV0Cm1lIGtub3cuIFRoZSBuZXcgcHJvamVjdCBpcyB1bmRlcgoKZ2l0Oi8v
-Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2dvbmcuY2hlbi9tY2UtdGVz
-dC5naXQKaHR0cDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9nb25n
-LmNoZW4vbWNlLXRlc3QuZ2l0Cmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9r
-ZXJuZWwvZ2l0L2dvbmcuY2hlbi9tY2UtdGVzdC5naXQKClRoZSBjdXJyZW50IHN0YXR1cyBpcyBy
-ZWFkeSB0byBiZSBtZXJnZWQuCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBW
-aXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhl
-IHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQg
-YW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVk
-ZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1h
-bHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIw
-MTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
-Cg==
+Hi!
+> + /u/ltp/android-ndk-r7b/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/arm-linux-androideabi-gcc -march=armv7-a -mtune=xscale -msoft-float -fpic -mthumb-interwork -ffunction-sections -funwind-tables -fstack-protector -fno-short-enums -O2 -fomit-frame-pointer -funswitch-loops -finline-limit=300 -g -O2 -fno-strict-aliasing -pipe -Wall -I/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/include -D__ARM_ARCH_7__ -D__ARM_ARCH_7A__ -D__ARM_ARCH_7R__ -D__ARM_ARCH_7M__ -DANDROID -D__linux__ -DDEV_BSIZE=512 -DSIGCLD=SIGCHLD -D_FILE_OFFSET_BITS=64 -I/u/ltp/ltp-full-20120104/testcases/kernel/include -D_GNU_SOURCE -I/u/ltp/ltp-full-20120104/testcases/kernel/timers/clock_gettime/../include -I../../../../include -I../../../../include -nostdlib -Bdynamic -Wl,-dynamic-linker,/system/bin/linker -Wl,--gc-sections -Wl,-z,nocopyreloc -L/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib -L../../../../lib clock_gettime02.c /u/ltp/android-ndk-r7b/platforms/android
+ -1
+>  4/arch-arm/usr/lib/crtbegin_dynamic.o -Wl,-rpath-link=/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib /u/ltp/android-ndk-r7b/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.4.3/libgcc.a -lc /u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib/crtend_android.o -L/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib -lltp -o clock_gettime02
+> ../../../../lib/libltp.a(parse_opts.o): In function `usc_test_looping':
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:716: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:725: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:734: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:735: undefined reference to `__aeabi_i2f'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:735: undefined reference to `__aeabi_fmul'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:735: undefined reference to `__aeabi_f2iz'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:746: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:772: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:716: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:727: undefined reference to `__aeabi_fmul'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:727: undefined reference to `__aeabi_f2iz'
+> ../../../../lib/libltp.a(parse_opts.o): In function `parse_opts':
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:289: undefined reference to `__aeabi_d2f'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:293: undefined reference to `__aeabi_d2f'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:294: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:438: undefined reference to `__aeabi_fcmpge'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:441: undefined reference to `__aeabi_f2d'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:421: undefined reference to `__aeabi_fcmpge'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:425: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:408: undefined reference to `__aeabi_fcmpge'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:413: undefined reference to `__aeabi_fcmpeq'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:424: undefined reference to `__aeabi_f2d'
+> /u/ltp/ltp-full-20120104/lib/parse_opts.c:411: undefined reference to `__aeabi_f2d'
+> collect2: ld returned 1 exit status
+
+That suggets that the linker wasn't been able to pick up symbols from
+libgcc.a, possibly because linker flags and static libraries are passed
+to it in the wrong order.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
