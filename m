@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SWOL1-0000MB-Ix
-	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 08:51:35 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SWOKv-0007hY-Nb
-	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 08:51:35 +0000
-Received: by pbbrq2 with SMTP id rq2so6837658pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 May 2012 01:51:23 -0700 (PDT)
-Message-ID: <4FBA01CE.5000407@casparzhang.com>
-Date: Mon, 21 May 2012 16:50:22 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	(envelope-from <chrubis@suse.de>) id 1SPZp7-0006oC-3J
+	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 13:42:29 +0000
+Date: Wed, 2 May 2012 15:40:37 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120502134037.GD366@saboteur.suse.cz>
+References: <CABxY-SJqTBTDJQimvByQT3GEnk021YtHggPgw9F5NWk9ec8uXg@mail.gmail.com>
 MIME-Version: 1.0
-References: <1337589516-9731-1-git-send-email-gaowanlong@cn.fujitsu.com>
-In-Reply-To: <1337589516-9731-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] getcpu: remove the useless and improper kernel
- version check
+Content-Disposition: inline
+In-Reply-To: <CABxY-SJqTBTDJQimvByQT3GEnk021YtHggPgw9F5NWk9ec8uXg@mail.gmail.com>
+Subject: Re: [LTP] Query regarding Open Posix fail Test Case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,53 +24,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Jubi Taneja <jubitaneja@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 05/21/2012 04:38 PM, Wanlong Gao wrote:
-> Now, kernel version up to 3.x, check for 2.6.x is useless.
-
-The fix makes sense, however, "checking for 2.6.x" is still valid for
-old kernels (does LTP still support 2.4.x? I'm not sure...)
-
-Anyway,
-
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
-
-> Additionally, we already checked the kernel version in the
-> program itself.
-> Meanwhile, check the kernel version at compiling time is wrong,
-> we may not do testing on the same machine as compiling.
+Hi!
+> In LTP(Jan 2012 release) Open Posix Test Suite, the test case
+> "aio-suspend/1-1.c" passes
+> successfully for Linux Kernel 2.6.35 for Target ARM but the same test case
+> fails for Kernel
+> version: 3.0.18.
 > 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/getcpu/Makefile |   14 --------------
->  1 file changed, 14 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/getcpu/Makefile b/testcases/kernel/syscalls/getcpu/Makefile
-> index b8bf68b..7a1a87a 100644
-> --- a/testcases/kernel/syscalls/getcpu/Makefile
-> +++ b/testcases/kernel/syscalls/getcpu/Makefile
-> @@ -19,18 +19,4 @@
->  top_srcdir		?= ../../../..
->  
->  include $(top_srcdir)/include/mk/testcases.mk
-> -
-> -ifneq ($(shell uname -r | grep -c "^2\.6\.*"), 1)
-> -
-> -MAKE_TARGETS		:=
-> -
-> -.PHONY: no-all-install
-> -
-> -all install: no-all-install
-> -
-> -no-all-install:
-> -	@echo "Warning: Kernel doesn't support this test case"
-> -
-> -endif
-> -
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> It throws error as :
+> aio_suspend/1-1.c Error at write(): No such file or directory.
 
+That pretty much looks like problem on your side. All the test does
+prior to this error message is open a file and try to write into it.
+
+The file is created in /tmp so look for problems with creating files on
+your /tmp.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
