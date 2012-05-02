@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SXxkg-0007xy-4D
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 16:52:34 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SXxkf-0005Bp-Jv
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 16:52:34 +0000
-Received: by yenl13 with SMTP id l13so602528yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 25 May 2012 09:52:28 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SPYgH-0005o7-Mc
+	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 12:29:17 +0000
+Date: Wed, 2 May 2012 14:27:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120502122730.GC366@saboteur.suse.cz>
+References: <1331270886-22153-1-git-send-email-caspar@casparzhang.com>
+	<1B7D43CE-92E4-4D04-BBEF-97CEE3AB1D69@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4FBF4CF3.1020905@redhat.com>
-References: <4FBF4CF3.1020905@redhat.com>
-Date: Fri, 25 May 2012 09:52:28 -0700
-Message-ID: <CAGH67wRVCnjtseVvFFdu8ibJtVoWor_seiiiHHVzVzsrVVekyg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/2] move_pages_support: use only allowed nodes
+Content-Disposition: inline
+In-Reply-To: <1B7D43CE-92E4-4D04-BBEF-97CEE3AB1D69@gmail.com>
+Subject: Re: [LTP] [PATCH] sched_getaffinity: fix possible fail in negative
+ case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,49 +23,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Fri, May 25, 2012 at 2:12 AM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> Some setups can lack memory on arbitrary nodes, use only nodes
-> returned by get_mempolicy(..., MPOL_F_MEMS_ALLOWED).
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
-> =A0.../syscalls/move_pages/move_pages_support.c =A0 =A0 =A0 | =A0 74 ++++=
-++++++++++++----
-> =A0.../syscalls/move_pages/move_pages_support.h =A0 =A0 =A0 | =A0 =A01 +
-> =A02 files changed, 62 insertions(+), 13 deletions(-)
+Hi!
+> > in negative case:
+> > 
+> >    QUICK_TEST(sched_getaffinity(getpid()+1, len, mask));
+> > 
+> > sometimes getpid()+1 will exist if there're other processes running.
+> > This patch uses a different way to make sure the required pid doesn't
+> > exist by forking a child and terminating it. The pid of the terminated
+> > child will not be used for a short time and it's enough for the test to
+> > continue.
+> 
+> 	pid_t is signed on FreeBSD and Linux, so it's safe to assume that a pid of -1 won't work. It all depends on what you're trying to achieve (the EINVAL or the ESRCH requirement).
+> 	Testing to make sure that a pid isn't running via kill(pid, 0) is another semi-viable method, but it's also racy.
 
-+	if (syscall(__NR_get_mempolicy, NULL, allowed_nodemask->maskp,
-+		allowed_nodemask->size, 0, MPOL_F_MEMS_ALLOWED) < 0)
-+		tst_resm(TFAIL|TERRNO, "get_mempolicy: MPOL_F_MEMS_ALLOWED");
-+
+On Linux we could use /proc/sys/kernel/pid_max value + 1 value too. But
+that would probably lead to EINVAL as well as -1.
 
-Would tst_brkm be better here? Also, what happens in the negative case
-(HAVE_NUMA_H is not defined)? Wouldn't that segfault accessing random
-memory or something along those lines?
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-I think it would be better to design the API (get_allowed_nodes) to
-return an integer value to denote success or failure, then test for
-that in main and report errors there.
-
-Thanks!
--Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
