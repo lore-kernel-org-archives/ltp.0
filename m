@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SZ4ew-0004cL-3J
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 18:27:14 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SZ4ev-0004Wu-GE
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 18:27:14 +0000
-Received: by obhx4 with SMTP id x4so867956obh.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 May 2012 11:27:08 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1SPwOw-0007SE-TK
+	for ltp-list@lists.sourceforge.net; Thu, 03 May 2012 13:48:58 +0000
+Date: Thu, 3 May 2012 14:46:06 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120503124606.GA9999@saboteur.suse.cz>
+References: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
+	<4F7CF7DB.2080802@cn.fujitsu.com>
+	<CAGH67wRSAKEkn=MNn2HHivnPNjuP_tqE8+S1-ND_Z69VrBm9Ow@mail.gmail.com>
+	<4F84F212.9070408@cn.fujitsu.com>
+	<8DB64E3B-1B6D-4C27-85E8-11817A41F879@gmail.com>
+	<4F854F21.5070208@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4FC363DD.3080303@redhat.com>
-References: <4FC363DD.3080303@redhat.com>
-Date: Mon, 28 May 2012 11:27:07 -0700
-Message-ID: <CAGH67wQGm+enSKVpCu9jb0ton6J2Q7VyqVUdA5MUp0SFRwQuNg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/4] add libnuma_helper
+Content-Disposition: inline
+In-Reply-To: <4F854F21.5070208@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/2] Replace struct event_t with struct
+ inotify_event
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +30,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Mon, May 28, 2012 at 4:39 AM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> A library to share NUMA helper functions shared by
-> multiple testcases.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Hi!
+> >>>
+> >>> Yeah... let me get back to you on that...
+> >>
+> >>
+> >> Any update on this?
+> > 
+> > I'm moving from CA to WA, but I'll try to get back to you sometime mid next week once I get settled in.
+> 
+> 
+> That's great! I wonder what do CA and WA stand for?
 
-One comment...
+I would guess that these are city names or something like that... ;)
 
-+			tst_resm(TFAIL, "get_allowed_nodes, i >= num_allowed_nodes: "
-+			    "%d > %d", i, num_nodes);
+And of course the patch is wrong, the event_t structure is used only to
+record what have you done for sake of comparing the sequence to the
+inotify events read later.
 
-1. I would just remove this because it's obvious from the API
-definition what's going on when it sets ret to -3.
-2. I would add a break there so it doesn't iterate through the loop
-more than necessary.
-
-Cheers,
--Garrett
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
