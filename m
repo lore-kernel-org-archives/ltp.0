@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SYQnw-00044W-SY
-	for ltp-list@lists.sourceforge.net; Sat, 26 May 2012 23:53:52 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SYQnw-0003BO-8D
-	for ltp-list@lists.sourceforge.net; Sat, 26 May 2012 23:53:52 +0000
-Received: by obhx4 with SMTP id x4so4336781obh.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 26 May 2012 16:53:46 -0700 (PDT)
+	(envelope-from <jstancek@redhat.com>) id 1SS5RA-0002m5-7h
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 11:52:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SS5R6-0001bp-BV
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 11:52:08 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q49Bpwm3017459
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 May 2012 07:51:58 -0400
+Message-ID: <4FAA5A5B.1030704@redhat.com>
+Date: Wed, 09 May 2012 13:51:55 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Date: Sat, 26 May 2012 16:53:46 -0700
-Message-ID: <CAGH67wR4WAyLTm1CN-nV3hSt_qZ5OGq3ZnqgL2yJ3wX_SyOY7Q@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [PATCH] Fix clock_settime/4-2
+Content-Type: multipart/mixed; boundary="------------000105030900070709080301"
+Subject: [LTP] [PATCH v2] move_pages09: move_pages returns 0 if nothing got
+	migrated
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,110 +29,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
 
-1. The threshold was too low; setting it to 10 seconds and adding an
-   overlap of 5 seconds ensures that the SIGALRM handler fires.
-2. Add a perror call when clock_settime fails.
-3. Remove spurious newlines in perror calls.
+This is a multi-part message in MIME format.
+--------------000105030900070709080301
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+Following commit changed the behavior to return 0 when no pages
+require migration.
+
+commit e78bbfa8262424417a29349a8064a535053912b9
+Author: Brice Goglin <Brice.Goglin@inria.fr>
+Date:   Sat Oct 18 20:27:15 2008 -0700
+    mm: stop returning -ENOENT from sys_move_pages() if nothing got
+migrated
+
+So testing for ENOENT in move_pages09, makes sense only for
+kernel < 2.6.28.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../conformance/interfaces/clock_settime/4-2.c     |   36 +++++++++++---------
- 1 file changed, 20 insertions(+), 16 deletions(-)
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-2.c
-b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-2.c
-index 75756fa..373aefd 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-2.c
-@@ -28,18 +28,17 @@
- #define TIMEROFFSET 9
- #define CLOCKOFFSET 4
+ .../kernel/syscalls/move_pages/move_pages09.c      |   27 ++++++++++++++-----
+ 1 files changed, 20 insertions(+), 7 deletions(-)
 
--#define SHORTTIME 1
-+#define SHORTTIME 10
 
- #define SIGTOTEST SIGALRM
 
-+int test_passed;
+--------------000105030900070709080301
+Content-Type: text/x-patch;
+	name="0002-move_pages09-move_pages-returns-0-if-nothing-got-mig.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0002-move_pages09-move_pages-returns-0-if-nothing-got-mig.pa";
+	filename*1="tch"
+
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages09.c b/testcases/kernel/syscalls/move_pages/move_pages09.c
+index 4cedb6a..85e3547 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages09.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages09.c
+@@ -105,12 +105,25 @@ int main(int argc, char **argv)
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+ 		TEST_ERRNO = errno;
+-		if (ret == -1 && errno == ENOENT)
+-			tst_resm(TPASS, "move_pages failed with "
+-				 "ENOENT as expected");
+-		else
+-			tst_resm(TFAIL, "move pages did not fail "
+-				 "with ENOENT");
 +
- struct timespec tpreset;
-
- void handler(int signo)
- {
--       printf("Caught signal\n");
--       printf("Test PASSED\n");
--       setBackTime(tpreset);
--       exit(PTS_PASS);
-+       test_passed = 1;
- }
-
- int main(int argc, char *argv[])
-@@ -62,22 +61,22 @@ int main(int argc, char *argv[])
-        act.sa_flags=0;
-
-        if (sigemptyset(&act.sa_mask) != 0) {
--               perror("sigemptyset() was not successful\n");
-+               perror("sigemptyset() was not successful");
-                return PTS_UNRESOLVED;
-        }
-
-        if (sigaction(SIGTOTEST, &act, 0) != 0) {
--               perror("sigaction() was not successful\n");
-+               perror("sigaction() was not successful");
-                return PTS_UNRESOLVED;
-        }
-
-        if (clock_gettime(CLOCK_REALTIME, &tpT0) != 0) {
--               perror("clock_gettime() was not successful\n");
-+               perror("clock_gettime() was not successful");
-                return PTS_UNRESOLVED;
-        }
-
-        if (timer_create(CLOCK_REALTIME, &ev, &tid) != 0) {
--               perror("timer_create() did not return success\n");
-+               perror("timer_create() did not return success");
-                return PTS_UNRESOLVED;
-        }
-
-@@ -87,7 +86,7 @@ int main(int argc, char *argv[])
-        its.it_value.tv_sec = tpT0.tv_sec + TIMEROFFSET;
-        its.it_value.tv_nsec = tpT0.tv_nsec;
-        if (timer_settime(tid, flags, &its, NULL) != 0) {
--               perror("timer_settime() did not return success\n");
-+               perror("timer_settime() did not return success");
-                return PTS_UNRESOLVED;
-        }
-
-@@ -95,13 +94,18 @@ int main(int argc, char *argv[])
-        tpclock.tv_nsec = its.it_value.tv_nsec;
-        getBeforeTime(&tpreset);
-        if (clock_settime(CLOCK_REALTIME, &tpclock) != 0) {
--               printf("clock_settime() was not successful\n");
-+               perror("clock_settime() was not successful");
-                return PTS_UNRESOLVED;
-        }
-
--       sleep(SHORTTIME);
--       printf("timer should have expired _immediately_\n");
--       tpreset.tv_sec += SHORTTIME;
-+       sleep(1.5*SHORTTIME);
-+       if (test_passed) {
-+               printf("Caught signal\n");
-+               printf("Test PASSED\n");
-+       } else {
-+               printf("timer should have expired _immediately_\n");
-+               tpreset.tv_sec += SHORTTIME;
-+       }
-        setBackTime(tpreset);
--       return PTS_FAIL;
--}
++		/*
++		 * commit e78bbfa8262424417a29349a8064a535053912b9
++		 * Author: Brice Goglin <Brice.Goglin@inria.fr>
++		 * Date:   Sat Oct 18 20:27:15 2008 -0700
++		 *     mm: stop returning -ENOENT from sys_move_pages() if nothing got migrated
++		 */
++		if ((tst_kvercmp(2, 6, 28)) >= 0) {
++			if (ret == 0)
++				tst_resm(TPASS, "move_pages succeeded");
++			else
++				tst_resm(TFAIL|TERRNO, "move_pages");
++		} else {
++			if (ret == -1 && errno == ENOENT)
++				tst_resm(TPASS, "move_pages failed with "
++				    "ENOENT as expected");
++			else
++				tst_resm(TFAIL|TERRNO, "move_pages");
++		}
+ 
+ 		free_pages(pages, TEST_PAGES);
+ 	}
+@@ -150,4 +163,4 @@ void cleanup(void)
+ 	 */
+ 	TEST_CLEANUP;
+ 
+- }
 \ No newline at end of file
-+       exit(test_passed ? PTS_PASS : PTS_FAIL);
-+}
++ }
+
+
+--------------000105030900070709080301
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -136,7 +123,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------000105030900070709080301
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------000105030900070709080301--
+
