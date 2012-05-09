@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SWpu7-0001s7-Q7
-	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:17:39 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SWpu2-0000Du-2e
-	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:17:39 +0000
-Message-ID: <4FBB9FF2.2070507@redhat.com>
-Date: Tue, 22 May 2012 16:17:22 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SS5rd-00048T-8r
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:29 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SS5rX-0001K6-FO
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:29 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rq2so407048pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 09 May 2012 05:19:23 -0700 (PDT)
+Message-ID: <4FAA60A0.2070503@casparzhang.com>
+Date: Wed, 09 May 2012 20:18:40 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 0/3] add CMA test
+References: <4FAA5A5B.1030704@redhat.com>
+In-Reply-To: <4FAA5A5B.1030704@redhat.com>
+Subject: Re: [LTP] [PATCH v2] move_pages09: move_pages returns 0 if nothing
+ got migrated
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,50 +31,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-changes in v2
-- dropped configure check as glibc wrapper calls syscall directly,
-  and using syscall(2) we can test also when glibc wrappers are missing
-- added simplified process_vm.h
+On 05/09/2012 07:51 PM, Jan Stancek wrote:
+> 
+> Following commit changed the behavior to return 0 when no pages
+> require migration.
+> 
+> commit e78bbfa8262424417a29349a8064a535053912b9
+> Author: Brice Goglin <Brice.Goglin@inria.fr>
+> Date:   Sat Oct 18 20:27:15 2008 -0700
+>     mm: stop returning -ENOENT from sys_move_pages() if nothing got
+> migrated
+> 
+> So testing for ENOENT in move_pages09, makes sense only for
+> kernel < 2.6.28.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
 
-CMA (cross memory attach) feature introduced 2 new syscalls:
-process_vm_readv
-process_vm_writev
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
-commit fcf634098c00dd9cd247447368495f0b79be12d1
-Author: Christopher Yeoh <cyeoh@au1.ibm.com>
-Date: Mon Oct 31 17:06:39 2011 -0700
-Cross Memory Attach
 
-"The basic idea behind cross memory attach is to allow MPI programs doing
-intra-node communication to do a single copy of the message rather than
-a double copy of the message via shared memory." [1]
-
-This patch series is introducing the initial structure under syscalls/cma
-and first test to check various errno codes as described in proposed man
-page [2].
-
-[1] http://lwn.net/Articles/451188/
-[2] http://ozlabs.org/~cyeoh/cma/process_vm_readv.txt
-
-Jan Stancek (3):
-  add testcases/kernel/syscalls/cma
-  cma: add process_vm.h
-  syscalls/cma: add errno tests
-
- runtest/syscalls                                   |    3 +
- testcases/kernel/syscalls/cma/Makefile             |   22 +
- testcases/kernel/syscalls/cma/cma01.c              |  421 ++++++++++++++++++++
- testcases/kernel/syscalls/cma/process_vm.h         |   58 +++
- .../kernel/syscalls/cma/process_vm_readv/Makefile  |   29 ++
- .../kernel/syscalls/cma/process_vm_writev/Makefile |   29 ++
- 6 files changed, 562 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/cma/Makefile
- create mode 100644 testcases/kernel/syscalls/cma/cma01.c
- create mode 100644 testcases/kernel/syscalls/cma/process_vm.h
- create mode 100644 testcases/kernel/syscalls/cma/process_vm_readv/Makefile
- create mode 100644 testcases/kernel/syscalls/cma/process_vm_writev/Makefile
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
