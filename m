@@ -2,23 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SYyIR-00041M-6Y
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:35 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SS6EG-0003PS-5Q
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:42:52 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SYyIN-000681-6V
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:35 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4SBdPWS008176
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 May 2012 07:39:25 -0400
-Message-ID: <4FC363EA.7050504@redhat.com>
-Date: Mon, 28 May 2012 13:39:22 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	id 1SS6EA-00089F-CL
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:42:52 +0000
+Message-ID: <4FAA65F8.1060604@cn.fujitsu.com>
+Date: Wed, 09 May 2012 20:41:28 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080906040903060202060109"
-Subject: [LTP] [PATCH 4/4] move_pages: dont use hardcoded NUMA node ids
+References: <4FAA5A5B.1030704@redhat.com>
+In-Reply-To: <4FAA5A5B.1030704@redhat.com>
+Subject: Re: [LTP] [PATCH v2] move_pages09: move_pages returns 0 if nothing
+ got migrated
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,485 +26,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
-
-This is a multi-part message in MIME format.
---------------080906040903060202060109
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/move_pages/Makefile      |    5 +--
- .../kernel/syscalls/move_pages/move_pages02.c      |   12 +++++--
- .../kernel/syscalls/move_pages/move_pages03.c      |   12 +++++--
- .../kernel/syscalls/move_pages/move_pages04.c      |   12 +++++--
- .../kernel/syscalls/move_pages/move_pages05.c      |   12 +++++--
- .../kernel/syscalls/move_pages/move_pages06.c      |   10 ++++--
- .../kernel/syscalls/move_pages/move_pages07.c      |   12 +++++--
- .../kernel/syscalls/move_pages/move_pages08.c      |   10 ++++--
- .../kernel/syscalls/move_pages/move_pages09.c      |    8 +++-
- .../kernel/syscalls/move_pages/move_pages10.c      |   12 +++++--
- .../kernel/syscalls/move_pages/move_pages11.c      |   12 +++++--
- .../syscalls/move_pages/move_pages_support.c       |   34 ++++++++++++-------
- .../syscalls/move_pages/move_pages_support.h       |    1 +
- 13 files changed, 100 insertions(+), 52 deletions(-)
-
-
-
---------------080906040903060202060109
-Content-Type: text/x-patch;
-	name="0004-move_pages-dont-use-hardcoded-NUMA-node-ids.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="0004-move_pages-dont-use-hardcoded-NUMA-node-ids.patch"
-
-diff --git a/testcases/kernel/syscalls/move_pages/Makefile b/testcases/kernel/syscalls/move_pages/Makefile
-index d233378..cf2b83f 100644
---- a/testcases/kernel/syscalls/move_pages/Makefile
-+++ b/testcases/kernel/syscalls/move_pages/Makefile
-@@ -22,8 +22,6 @@ include $(top_srcdir)/include/mk/testcases.mk
- 
- CPPFLAGS		+= -I$(abs_srcdir)/../utils
- 
--LDLIBS			+= $(NUMA_LIBS)
--
- INSTALL_TARGETS		:= move_pages.sh
- 
- MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
-@@ -35,6 +33,7 @@ move_pages_support.o: CFLAGS += -Wno-unused-function
- 
- $(MAKE_TARGETS): %: %.o move_pages_support.o
- 
--LDLIBS			+= $(NUMA_LIBS) -lpthread -lrt
-+LDLIBS			+= -lpthread -lrt
- 
-+include $(abs_srcdir)/../numa/Makefile.inc
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages02.c b/testcases/kernel/syscalls/move_pages/move_pages02.c
-index cd0e914..75c8caf 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages02.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages02.c
-@@ -83,15 +83,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
-@@ -156,4 +160,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages03.c b/testcases/kernel/syscalls/move_pages/move_pages03.c
-index 791835b..3169235 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages03.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages03.c
-@@ -122,15 +122,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 		pid_t cpid;
- 		sem_t *sem;
- 
-@@ -223,4 +227,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages04.c b/testcases/kernel/syscalls/move_pages/move_pages04.c
-index 4de116b..8fdea00 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages04.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages04.c
-@@ -89,15 +89,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 		unsigned long onepage = get_page_size();
- 
- 		/* reset Tst_count in case we are looping */
-@@ -175,4 +179,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages05.c b/testcases/kernel/syscalls/move_pages/move_pages05.c
-index 6b2334b..dd7925a 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages05.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages05.c
-@@ -123,15 +123,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[N_TEST_PAGES] = { 0 };
- 		int nodes[N_TEST_PAGES];
- 		int status[N_TEST_PAGES];
--		int ret;
- 		pid_t cpid;
- 		sem_t *sem;
- 
-@@ -237,4 +241,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages06.c b/testcases/kernel/syscalls/move_pages/move_pages06.c
-index 16e8206..650508a 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages06.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages06.c
-@@ -83,15 +83,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
-+	unsigned int from_node;
- 	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(1, &from_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
-@@ -152,4 +156,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages07.c b/testcases/kernel/syscalls/move_pages/move_pages07.c
-index 2d2b1d8..3177590 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages07.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages07.c
-@@ -83,15 +83,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 		int ipid;
- 
- 		/* reset Tst_count in case we are looping */
-@@ -163,4 +167,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages08.c b/testcases/kernel/syscalls/move_pages/move_pages08.c
-index 44c9acc..2d10c37 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages08.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages08.c
-@@ -81,15 +81,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages09.c b/testcases/kernel/syscalls/move_pages/move_pages09.c
-index 3a626e8..d7e8b66 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages09.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages09.c
-@@ -81,14 +81,18 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
-+	unsigned int from_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(1, &from_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages10.c b/testcases/kernel/syscalls/move_pages/move_pages10.c
-index 7af861b..cf1c44e 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages10.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages10.c
-@@ -83,15 +83,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
-@@ -151,4 +155,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages11.c b/testcases/kernel/syscalls/move_pages/move_pages11.c
-index 747b9f0..86ed7bf 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages11.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages11.c
-@@ -122,15 +122,19 @@ int main(int argc, char **argv)
- #if HAVE_NUMA_MOVE_PAGES
- 	unsigned int i;
- 	int lc;			/* loop counter */
--	unsigned int from_node = 0;
--	unsigned int to_node = 1;
-+	unsigned int from_node;
-+	unsigned int to_node;
-+	int ret;
-+
-+	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		void *pages[TEST_PAGES] = { 0 };
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
--		int ret;
- 		pid_t cpid;
- 		sem_t *sem;
- 
-@@ -241,4 +245,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.c b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-index 320486f..540e22a 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages_support.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-@@ -97,6 +97,7 @@ int alloc_pages_on_nodes(void **pages, unsigned int num, int *nodes)
- 	return -1;
- }
- 
-+
- /*
-  * alloc_pages_linear() - allocate pages in each NUMA node
-  * @pages: array in which the page pointers will be stored
-@@ -114,16 +115,18 @@ int alloc_pages_linear(void **pages, unsigned int num)
- 
- #if HAVE_NUMA_H
- 	unsigned int i;
--	unsigned int n;
-+	unsigned int n = 0;
-+	int num_allowed_nodes;
-+	int *allowed_nodes;
- 
--	n = 0;
-+	get_allowed_nodes_arr(&num_allowed_nodes, &allowed_nodes);
- 	for (i = 0; i < num; i++) {
--		nodes[i] = n;
--
-+		nodes[i] = allowed_nodes[n];
- 		n++;
--		if (n > numa_max_node())
-+		if (n >= num_allowed_nodes)
- 			n = 0;
- 	}
-+	free(allowed_nodes);
- #endif
- 
- 	return alloc_pages_on_nodes(pages, num, nodes);
-@@ -210,18 +213,19 @@ void verify_pages_linear(void **pages, int *status, unsigned int num)
- {
- #if HAVE_NUMA_H
- 	unsigned int i;
--	unsigned int n;
-+	unsigned int n = 0;
- 	int nodes[num];
-+	int num_allowed_nodes;
-+	int *allowed_nodes;
- 
--	n = 0;
--
-+	get_allowed_nodes_arr(&num_allowed_nodes, &allowed_nodes);
- 	for (i = 0; i < num; i++) {
--		nodes[i] = i;
--
-+		nodes[i] = allowed_nodes[n];
- 		n++;
--		if (n > numa_max_node())
-+		if (n >= num_allowed_nodes)
- 			n = 0;
- 	}
-+	free(allowed_nodes);
- 
- 	verify_pages_on_nodes(pages, status, num, nodes);
- #endif
-@@ -381,10 +385,14 @@ void free_sem(sem_t * sem, int num)
- void check_config(unsigned int min_nodes)
- {
- #if HAVE_NUMA_H && HAVE_NUMAIF_H
-+	int num_allowed_nodes;
-+	get_allowed_nodes_arr(&num_allowed_nodes, NULL);
-+
- 	if (numa_available() < 0) {
- 		tst_brkm(TCONF, NULL, "NUMA support is not available");
--	} else if (numa_max_node() < (min_nodes - 1)) {
--		tst_brkm(TCONF, NULL, "atleast 2 NUMA nodes are required");
-+	} else if (num_allowed_nodes < min_nodes) {
-+		tst_brkm(TCONF, NULL, "at least %d allowed NUMA nodes"
-+		    " are required", min_nodes);
- 	} else if (tst_kvercmp(2, 6, 18) < 0) {
- 		tst_brkm(TCONF, NULL, "2.6.18 or greater kernel required");
- 	}
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.h b/testcases/kernel/syscalls/move_pages/move_pages_support.h
-index fd78572..bb8f636 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages_support.h
-+++ b/testcases/kernel/syscalls/move_pages/move_pages_support.h
-@@ -27,6 +27,7 @@
- #include <numaif.h>
- #endif
- #include <semaphore.h>
-+#include "numa_helper.h"
- 
- long get_page_size();
- 
-
-
---------------080906040903060202060109
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+
+On 05/09/2012 07:51 PM, Jan Stancek wrote:
+
+> 
+> Following commit changed the behavior to return 0 when no pages
+> require migration.
+> 
+> commit e78bbfa8262424417a29349a8064a535053912b9
+> Author: Brice Goglin <Brice.Goglin@inria.fr>
+> Date:   Sat Oct 18 20:27:15 2008 -0700
+>     mm: stop returning -ENOENT from sys_move_pages() if nothing got
+> migrated
+> 
+> So testing for ENOENT in move_pages09, makes sense only for
+> kernel < 2.6.28.
+
+
+
+pushed, thanks all,
+
+Wanlong Gao
+
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  .../kernel/syscalls/move_pages/move_pages09.c      |   27 ++++++++++++++-----
+>  1 files changed, 20 insertions(+), 7 deletions(-)
+> 
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -514,16 +85,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------080906040903060202060109
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------080906040903060202060109--
-
