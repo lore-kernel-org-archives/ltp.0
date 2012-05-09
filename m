@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Sa6V3-0006ce-Hj
-	for ltp-list@lists.sourceforge.net; Thu, 31 May 2012 14:37:17 +0000
-Date: Thu, 31 May 2012 16:35:31 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120531143531.GB3926@saboteur.suse.cz>
-References: <4FBBA012.2010005@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SS71d-0001c2-7e
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 13:33:53 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SS71X-0008Ca-CU
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 13:33:53 +0000
+Date: Wed, 09 May 2012 09:33:30 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <32d00f4f-1cc6-480b-a4b8-48824cbe23b1@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FAA67FF.6090808@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4FBBA012.2010005@redhat.com>
-Subject: Re: [LTP] [PATCH v2 3/3] syscalls/cma: add errno tests
+Subject: Re: [LTP] mm: move_pages syscall can't return ENOENT when pages are
+	not present
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,469 +27,189 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: Xiaotian Feng <xtfeng@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> +process_vm_readv01 process_vm_readv01
-> +process_vm_writev01 process_vm_writev01
-> +
->  pselect01 pselect01
->  pselect01_64 pselect01_64
->
-> +static char TCID_readv[] = "process_vm_readv";
-> +static char TCID_writev[] = "process_vm_writev";
-> +char *TCID = "cma01";
-> +int  TST_TOTAL = 1;
-> +static void (*cma_test_params)(struct process_vm_params *params) = NULL;
-> +
-> +static void setup(char *argv[]);
-> +static void cleanup(void);
-> +
-> +static void cma_test_params_read(struct process_vm_params *params);
-> +static void cma_test_params_write(struct process_vm_params *params);
-> +static void cma_test_errnos();
 
-Forgotten void in the cma_test_errnos() parameters.
 
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	char *msg;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-> +	setup(argv);
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Xiaotian Feng" <xtfeng@gmail.com>
+> Cc: "Zhouping Liu" <zliu@redhat.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, "LTP List"
+> <ltp-list@lists.sourceforge.net>
+> Sent: Wednesday, May 9, 2012 8:50:07 PM
+> Subject: Re: mm: move_pages syscall can't return ENOENT when pages are not present
+> 
+> On 05/09/2012 05:28 PM, Xiaotian Feng wrote:
+> 
+> > On Wed, May 9, 2012 at 4:58 PM, Zhouping Liu <zliu@redhat.com>
+> > wrote:
+> >> hi, all
+> >>
+> >> Recently, I found an error in move_pages syscall:
+> >>
+> >> depending on move_pages(2), when page is not present,
+> >> it should fail with ENOENT, in fact, it's ok without
+> >> any errno.
+> >>
+> >> the following reproducer can easily reproduce
+> >> the issue, suggest you get more details by strace.
+> >> inside reproducer, I try to move a non-exist page from
+> >> node 1 to node 0.
+> >>
+> >> I have tested it on the latest kernel 3.4-rc5 with 2 and 4 numa
+> >> nodes.
+> >> [zliu@ZhoupingLiu ~]$ gcc -o reproducer reproducer.c -lnuma
+> >> [zliu@ZhoupingLiu ~]$ ./reproducer
+> >> from_node is 1, to_node is 0
+> >> ERROR: move_pages expected FAIL.
+> >>
+> > 
+> > " If nodes is not NULL, move_pages returns the number of valid
+> > migration requests which could not currently be performed.
+> >  Otherwise
+> > it returns 0."
+> 
+> 
+> FYI, actually,
+> commit e78bbfa8262424417a29349a8064a535053912b9
+> Author: Brice Goglin <Brice.Goglin@inria.fr>
+> Date:   Sat Oct 18 20:27:15 2008 -0700
+> 
+>     mm: stop returning -ENOENT from sys_move_pages() if nothing got
+>     migrated
 
-Ah, branching on program name is not really clean solution. I would add
-switch that would do basically the same, but that would be explicit
-behavior. That is the reason why we do have a testcase name followed by
-the testcase command line in runtest files. You can then have following
-lines in the runtest file:
+maybe you missed my thought :(
+if I'm wrong, please correct me.
 
-process_vm_read01 process_vm -r
-process_vm_write01 process_vm -w
+IMO, the issue is different with the patch.
+apparently, in the case(reproducer), I tried to move 4 pages from node 1 to node 0,
+and the 4th page is an invalid page(absent and not aligned)
+     pages[TEST_PAGES - 1] = pages[TEST_PAGES - 2] - onepage * 4 + 1;
+but the reproducer passed with any errors, I think it's not common.
 
-Or something similar.
+in the case, numa_free() return EINVAL, but we can't catch the err:
+[root@ZhoupingLiu zliu]# strace ./reproducer 
+...
+move_pages(0, 4, {0x7f029c459000, 0x7f029c458000, 0x7f029c457000, 0x7f029c453001}, {0, 0, 0, 0}, {0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffff2}, MPOL_MF_MOVE) = 0
+write(1, "ERROR: move_pages expected FAIL."..., 33ERROR: move_pages expected FAIL.
+) = 33
+munmap(0x7f029c459000, 4096)            = 0
+munmap(0x7f029c458000, 4096)            = 0
+munmap(0x7f029c457000, 4096)            = 0
+munmap(0x7f029c453001, 4096)            = -1 EINVAL (Invalid argument)
+...
 
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +		cma_test_errnos();
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(char *argv[])
-> +{
-> +	tst_require_root(NULL);
-> +
-> +	if (strstr(argv[0], "read") != NULL) {
-> +		TCID = TCID_readv;
-> +#if defined(__NR_process_vm_readv)
-> +		cma_test_params = cma_test_params_read;
-> +#else
-> +		tst_brkm(TCONF, NULL, "process_vm_readv does not"
-> +		    "exist on your system");
-> +#endif
-> +	} else if (strstr(argv[0], "write") != NULL) {
-> +		TCID = TCID_writev;
-> +#if defined(__NR_process_vm_writev)
-> +		cma_test_params = cma_test_params_write;
-> +#else
-> +		tst_brkm(TCONF, NULL, "process_vm_writev does not"
-> +		    "exist on your system");
-> +#endif
-> +	} else
-> +		tst_brkm(TBROK, NULL, "executable name expected"
-> +				" to contain either 'read' or 'write'");
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +}
-> +
-> +static void cma_test_params_read(struct process_vm_params *params)
-> +{
-> +	TEST(test_process_vm_readv(params->pid,
-> +	    params->lvec, params->liovcnt,
-> +	    params->rvec, params->riovcnt,
-> +	    params->flags));
-> +}
-> +
-> +static void cma_test_params_write(struct process_vm_params *params)
-> +{
-> +	TEST(test_process_vm_writev(params->pid,
-> +	    params->lvec, params->liovcnt,
-> +	    params->rvec, params->riovcnt,
-> +	    params->flags));
-> +}
-> +
-> +static int cma_check_ret(long expected_ret, long act_ret)
-> +{
-> +	int ret = 0;
-> +	if (expected_ret == act_ret) {
-> +		tst_resm(TPASS, "expected ret success - "
-> +		    "returned value = %ld", act_ret);
-> +	} else {
-> +		tst_resm(TFAIL, "unexpected failure - "
-> +		    "returned value = %ld, expected: %ld",
-> +		    act_ret, expected_ret);
-> +		ret = 1;
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int cma_check_errno(long expected_errno, long act_errno)
-> +{
-> +	int ret = 0;
-> +	if (act_errno == expected_errno)
-> +		tst_resm(TPASS, "expected failure - "
-> +		    "returned value = %ld : %s",
-> +		    act_errno, strerror(act_errno));
-> +	else if (act_errno == 0) {
-> +		tst_resm(TFAIL, "call succeeded unexpectedly");
-> +		ret = 1;
-> +	} else {
-> +		tst_resm(TFAIL, "unexpected failure - "
-> +		    "returned value = %ld : %s, "
-> +		    "expected value = %ld : %s",
-> +		    act_errno, strerror(act_errno),
-> +		    expected_errno, strerror(expected_errno));
-> +		ret = 2;
-> +	}
-> +	return ret;
-> +}
+so I suggest we check pages' validity before move pages, if they are invalid, it should return
+relevant error number to userspace, maybe it's other errno, not ENOENT, correct?
 
-This part is a little confusing. Doing return right in place instead of
-setting ret variable and returning at the end of the function would make
-it a little better.
+I'm trying to make a patch, but I'm a newer to the part :(
 
-Also you don't need to pass TEST_ERRNO as a parameter and it's better
-printed by adding TTERRNO flag to tst_*().
-
-> +static struct process_vm_params *cma_alloc_sane_params()
-> +{
-> +	struct process_vm_params *sane_params = NULL;
-> +	int len;
-> +
-> +	len = getpagesize();
-> +	sane_params = SAFE_MALLOC(tst_exit, sizeof(struct process_vm_params));
-> +	sane_params->len = len;
-> +	sane_params->ldummy = SAFE_MALLOC(tst_exit, len);
-> +	sane_params->rdummy = SAFE_MALLOC(tst_exit, len);
-> +
-> +	sane_params->lvec = SAFE_MALLOC(tst_exit, sizeof(struct iovec));
-> +	sane_params->lvec->iov_base = sane_params->ldummy;
-> +	sane_params->lvec->iov_len = len;
-> +	sane_params->liovcnt = 1;
-> +
-> +	sane_params->rvec = SAFE_MALLOC(tst_exit, sizeof(struct iovec));
-> +	sane_params->rvec->iov_base = sane_params->rdummy;
-> +	sane_params->rvec->iov_len = len;
-> +	sane_params->riovcnt = 1;
-> +
-> +	sane_params->flags = 0;
-> +	sane_params->pid = getpid();
-> +
-> +	return sane_params;
-> +}
-
-There is no need to pass tst_exit as cleanup fn to SAFE_*() macros.
-
-> +static void cma_free_params(struct process_vm_params *params)
-> +{
-> +	if (params) {
-> +		free(params->ldummy);
-> +		free(params->rdummy);
-> +		free(params->lvec);
-> +		free(params->rvec);
-> +		free(params);
-> +	}
-> +}
-> +
-> +static void cma_test_sane_params(void)
-> +{
-> +	struct process_vm_params *sane_params = NULL;
-> +
-> +	sane_params = cma_alloc_sane_params();
-> +	tst_resm(TINFO, "test_sane_params");
-> +	cma_test_params(sane_params);
-> +	cma_check_ret(sane_params->len, TEST_RETURN);
-> +	cma_free_params(sane_params);
-> +}
-> +
-> +static void cma_test_flags(void)
-> +{
-> +	struct process_vm_params *params = NULL;
-> +	long flags[] = { -INT_MAX, -1, 1, INT_MAX, 0 };
-> +	int flags_size = sizeof(flags)/sizeof(flags[0]);
-> +	int i;
-> +
-> +	params = cma_alloc_sane_params();
-> +	for (i = 0; i < flags_size; i++) {
-> +		params->flags = flags[i];
-> +		tst_resm(TINFO, "test_flags, flags=%ld", flags[i]);
-> +		cma_test_params(params);
-> +		/* atm. only flags == 0 is allowed, everything else
-> +		 * should fail with EINVAL */
-> +		if (flags[i] != 0) {
-> +			cma_check_ret(-1, TEST_RETURN);
-> +			cma_check_errno(EINVAL, TEST_ERRNO);
-> +		} else {
-> +			cma_check_ret(params->len, TEST_RETURN);
-> +		}
-> +	}
-> +	cma_free_params(params);
-> +}
-
-If I understand this correctly, this test may break in the future, once
-somebody makes use of the flags?
-
-> +static void cma_test_iov_len_overflow(void)
-> +{
-> +	struct process_vm_params *params = NULL;
-
-Why are you initalizing something that gets assigned two lines of code
-later? (which gets repeated in most of the tests).
-
-> +	ssize_t maxlen = -1;
-> +	params = cma_alloc_sane_params();
-> +
-> +	params->lvec->iov_len = maxlen;
-> +	params->rvec->iov_len = maxlen;
-> +	tst_resm(TINFO, "test_iov_len_overflow");
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(EINVAL, TEST_ERRNO);
-> +	cma_free_params(params);
-> +}
-> +
-> +static void cma_test_iov_invalid(void)
-> +{
-> +	struct process_vm_params *sane_params = NULL;
-> +	struct process_vm_params *params;
-> +	struct process_vm_params params_copy;
-> +
-> +	sane_params = cma_alloc_sane_params();
-> +	/* make a shallow copy we can 'damage' */
-> +	params = &params_copy;
-> +
-> +	*params = *sane_params;
-
-Ufff, this indirection shouldn't be needed. You could do:
-
-params_copy = *sane_params;
-
-And then pass &params_copy to the fuctions.
-
-> +	tst_resm(TINFO, "test_iov_invalid - lvec->iov_base");
-> +	params->lvec->iov_base = (void *)-1;
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(EFAULT, TEST_ERRNO);
-> +
-> +	*params = *sane_params;
-> +	tst_resm(TINFO, "test_iov_invalid - rvec->iov_base");
-> +	params->rvec->iov_base = (void *)-1;
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(EFAULT, TEST_ERRNO);
-> +
-> +	*params = *sane_params;
-> +	tst_resm(TINFO, "test_iov_invalid - lvec");
-> +	params->lvec = (void *)-1;
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(EFAULT, TEST_ERRNO);
-> +
-> +	*params = *sane_params;
-> +	tst_resm(TINFO, "test_iov_invalid - rvec");
-> +	params->rvec = (void *)-1;
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(EFAULT, TEST_ERRNO);
-> +
-> +	cma_free_params(sane_params);
-> +}
-> +
-> +static void cma_test_invalid_pid(void)
-> +{
-> +	int status;
-> +	struct process_vm_params *params = NULL;
-> +	pid_t child_pid;
-> +
-> +	params = cma_alloc_sane_params();
-> +	tst_resm(TINFO, "test_invalid_pid");
-> +	params->pid = -1;
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(ESRCH, TEST_ERRNO);
-> +	cma_free_params(params);
-> +
-> +	child_pid = fork();
-> +	switch (child_pid) {
-> +		case -1:
-> +			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +			break;
-> +		case 0:
-> +			exit(0);
-> +		default:
-> +			if (waitpid(child_pid, &status, 0) == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> +				tst_resm(TFAIL, "child returns %d", status);
-> +
-> +			params = cma_alloc_sane_params();
-> +			params->pid = child_pid;
-> +			cma_test_params(params);
-> +			cma_check_ret(-1, TEST_RETURN);
-> +			cma_check_errno(ESRCH, TEST_ERRNO);
-> +			cma_free_params(params);
-
-So you expect that pid is not reused right after child has exited?
-
-While not guaranteed, this would probably work.
-
-Maybe even better would be to read /proc/sys/kernel/pid_max and try
-value greater that that.
-
-> +	}
-> +}
-> +
-> +static void cma_test_invalid_perm(void)
-> +{
-> +	char nobody_uid[] = "nobody";
-> +	struct passwd *ltpuser;
-> +	int status;
-> +	struct process_vm_params *params = NULL;
-> +	pid_t child_pid;
-> +	pid_t parent_pid;
-> +	int ret = 0;
-> +
-> +	tst_resm(TINFO, "test_invalid_perm");
-> +	parent_pid = getpid();
-> +	child_pid = fork();
-> +	switch (child_pid) {
-> +		case -1:
-> +			tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +			break;
-> +		case 0:
-> +			ltpuser = getpwnam(nobody_uid);
-> +			if (ltpuser == NULL)
-> +				tst_brkm(TBROK|TERRNO, NULL,
-> +				    "getpwnam failed");
-> +			if (setuid(ltpuser->pw_uid) == -1)
-> +				tst_brkm(TBROK|TERRNO, NULL,
-> +				    "setuid(%u) failed", ltpuser->pw_uid);
-> +
-> +			params = cma_alloc_sane_params();
-> +			params->pid = parent_pid;
-> +			cma_test_params(params);
-> +			ret |= cma_check_ret(-1, TEST_RETURN);
-> +			ret |= cma_check_errno(EPERM, TEST_ERRNO);
-> +			cma_free_params(params);
-> +			exit(ret);
-> +		default:
-> +			if (waitpid(child_pid, &status, 0) == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> +				tst_resm(TFAIL, "child returns %d", status);
-> +	}
-> +}
-> +
-> +static void cma_test_invalid_protection(void)
-> +{
-> +	struct process_vm_params *sane_params = NULL;
-> +	struct process_vm_params *params;
-> +	struct process_vm_params params_copy;
-> +	void *p;
-> +
-> +	sane_params = cma_alloc_sane_params();
-> +	/* make a shallow copy we can 'damage' */
-> +	params = &params_copy;
-> +
-> +	p = mmap(NULL, getpagesize(), PROT_NONE,
-> +			MAP_PRIVATE|MAP_ANONYMOUS, 0, 0);
-> +	if (p == MAP_FAILED)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-> +
-> +	*params = *sane_params;
-> +	params->lvec->iov_base = p;
-> +	tst_resm(TINFO, "test_invalid_protection lvec");
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(EFAULT, TEST_ERRNO);
-> +
-> +	*params = *sane_params;
-> +	params->rvec->iov_base = p;
-> +	tst_resm(TINFO, "test_invalid_protection rvec");
-> +	cma_test_params(params);
-> +	cma_check_ret(-1, TEST_RETURN);
-> +	cma_check_errno(EFAULT, TEST_ERRNO);
-> +
-> +	cma_free_params(sane_params);
-> +}
-
-Once again the indirection, and you aren't unmapping the memory, which
-is a minor issue...
-
-> +static void cma_test_errnos()
-> +{
-> +	cma_test_sane_params();
-> +	cma_test_flags();
-> +	cma_test_iov_len_overflow();
-> +	cma_test_iov_invalid();
-> +	cma_test_invalid_pid();
-> +	cma_test_invalid_perm();
-> +	cma_test_invalid_protection();
-> +}
-> diff --git a/testcases/kernel/syscalls/cma/process_vm_readv/Makefile b/testcases/kernel/syscalls/cma/process_vm_readv/Makefile
-> index f10cac2..4e4633c 100644
-> --- a/testcases/kernel/syscalls/cma/process_vm_readv/Makefile
-> +++ b/testcases/kernel/syscalls/cma/process_vm_readv/Makefile
-> @@ -19,4 +19,11 @@
->  top_srcdir              ?= ../../../../..
->  
->  include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +MAKE_DEPS               := ../cma01
-> +MAKE_TARGETS            += process_vm_readv01
-> +
-> +process_vm_readv01: ../cma01.c
-> +	cp -f ../cma01 ./process_vm_readv01
-> +
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/cma/process_vm_writev/Makefile b/testcases/kernel/syscalls/cma/process_vm_writev/Makefile
-> index f10cac2..6f255ec 100644
-> --- a/testcases/kernel/syscalls/cma/process_vm_writev/Makefile
-> +++ b/testcases/kernel/syscalls/cma/process_vm_writev/Makefile
-> @@ -19,4 +19,11 @@
->  top_srcdir              ?= ../../../../..
->  
->  include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +MAKE_DEPS               := ../cma01
-> +MAKE_TARGETS            += process_vm_writev01
-> +
-> +process_vm_writev01: ../cma01.c
-> +	cp -f ../cma01 ./process_vm_writev01
-> +
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-
-And that is exactly thing I don't like to see, directories only with
-Makefiles and binaries magically created somewhere else.
-
-Either create one test that does different thigs when given different
-parameters or split the tests in several files (and put most of the
-common code in file included in both tests).
+> 
+> this commit changed the behaviour.
+> 
+> And the LTP has fixed to be consistent with this,
+> https://github.com/linux-test-project/ltp/commit/338299da1ff27c7815183c1b07eb91e705f117ce
+> 
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> > 
+> >> I'm not in mail list, please CC me.
+> >>
+> >> /*
+> >>  * Copyright (C) 2012  Red Hat, Inc.
+> >>  *
+> >>  * This work is licensed under the terms of the GNU GPL, version
+> >>  2. See
+> >>  * the COPYING file in the top-level directory.
+> >>  *
+> >>  * Compiled: gcc -o reproducer reproducer.c -lnuma
+> >>  * Description:
+> >>  * it's designed to check move_pages syscall, when
+> >>  * page is not present, it should fail with ENOENT.
+> >>  */
+> >>
+> >> #include <sys/mman.h>
+> >> #include <sys/types.h>
+> >> #include <sys/wait.h>
+> >> #include <stdio.h>
+> >> #include <unistd.h>
+> >> #include <errno.h>
+> >> #include <numa.h>
+> >> #include <numaif.h>
+> >>
+> >> #define TEST_PAGES 4
+> >>
+> >> int main(int argc, char **argv)
+> >> {
+> >>        void *pages[TEST_PAGES];
+> >>        int onepage;
+> >>        int nodes[TEST_PAGES];
+> >>        int status, ret;
+> >>        int i, from_node = 1, to_node = 0;
+> >>
+> >>        onepage = getpagesize();
+> >>
+> >>        for (i = 0; i < TEST_PAGES - 1; i++) {
+> >>                pages[i] = numa_alloc_onnode(onepage, from_node);
+> >>                nodes[i] = to_node;
+> >>        }
+> >>
+> >>        nodes[TEST_PAGES - 1] = to_node;
+> >>
+> >>        /*
+> >>         * the follow page is not available, also not aligned,
+> >>         * depend on move_pages(2), it can't be moved, and should
+> >>         * return ENOENT errno.
+> >>         */
+> >>        pages[TEST_PAGES - 1] = pages[TEST_PAGES - 2] - onepage * 4
+> >>        + 1;
+> >>
+> >>        printf("from_node is %u, to_node is %u\n", from_node,
+> >>        to_node);
+> >>        ret = move_pages(0, TEST_PAGES, pages, nodes, &status,
+> >>        MPOL_MF_MOVE);
+> >>        if (ret == -1) {
+> >>                if (errno != ENOENT)
+> >>                        perror("move_pages expected ENOENT errno,
+> >>                        but it's");
+> >>                else
+> >>                        printf("Succeed\n");
+> >>        } else {
+> >>                printf("ERROR: move_pages expected FAIL.\n");
+> >>        }
+> >>
+> >>        for (i = 0; i < TEST_PAGES; i++)
+> >>                numa_free(pages[i], onepage);
+> >>
+> >>        return 0;
+> >> }
+> >>
+> >> --
+> >> Thanks,
+> >> Zhouping
+> >> --
+> >> To unsubscribe from this list: send the line "unsubscribe
+> >> linux-kernel" in
+> >> the body of a message to majordomo@vger.kernel.org
+> >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> >> Please read the FAQ at  http://www.tux.org/lkml/
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe
+> > linux-kernel" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > Please read the FAQ at  http://www.tux.org/lkml/
+> > 
+> 
+> 
+> 
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
