@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SWWGa-0006ta-Ro
-	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 17:19:32 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SWWGX-0002B4-2R
-	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 17:19:32 +0000
-Received: by yenl13 with SMTP id l13so5467195yen.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SS5rP-000477-9b
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:15 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SS5rJ-0001K6-Nf
+	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:15 +0000
+Received: by pbbrq2 with SMTP id rq2so407048pbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 May 2012 10:19:23 -0700 (PDT)
+	Wed, 09 May 2012 05:19:03 -0700 (PDT)
+Message-ID: <4FAA608C.40905@casparzhang.com>
+Date: Wed, 09 May 2012 20:18:20 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Date: Mon, 21 May 2012 10:19:23 -0700
-Message-ID: <CAGH67wSN3uk5v5F=ZBsEGuNCZgEsfwNnQZmEjVPmCjY6fdRtqw@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] "more-syscalls" branch
+References: <4FAA5A59.8070707@redhat.com>
+In-Reply-To: <4FAA5A59.8070707@redhat.com>
+Subject: Re: [LTP] [PATCH v2] move_pages08: E2BIG was removed in 2.6.29
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +30,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-    In order to get LTP more up to date and expand breadth of syscall
-requirements testing, I'm going to be working on adding more syscall
-tests to LTP over the next couple weeks. I started out with
-inotify(7), but I want to move on to newer syscalls that exercise MI
-(machine independent) functionality, while at the same time do not
-want to duplicate work being done by others elsewhere.
-    The long and short of it is that I want to update Linux compat in
-FreeBSD (or at least provide the tests to do that) and in order to
-achieve that, I need up-to-date testcases that pass on an older
-version of Fedora running 2.6 (say Fedora 10) and Fedora 17 (runs
-3.3). The current testcases are ok, but not exhaustive in all areas
-and that's what I'm aiming to improve.
-    Thoughts on this and also an idea of where we need to add more
-exhaustive testcases (otherwise I'll have to work through the list and
-pore over manpages looking for my next "target" :)..)?
-Thanks!
--Garrett
+On 05/09/2012 07:51 PM, Jan Stancek wrote:
+> 
+> Following commit reworked do_pages_move() to work by page-sized
+> chunks and also removed E2BIG:
+> 
+> commit 3140a2273009c01c27d316f35ab76a37e105fdd8
+> Author: Brice Goglin <Brice.Goglin@inria.fr>
+> Date:   Tue Jan 6 14:38:57 2009 -0800
+>     mm: rework do_pages_move() to work on page_sized chunks
+> 
+> So, move_pages08 makes sense only for kernels < 2.6.29.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
