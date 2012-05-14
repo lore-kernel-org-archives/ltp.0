@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SYYlR-0006Sn-4d
-	for ltp-list@lists.sourceforge.net; Sun, 27 May 2012 08:23:49 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SYYlO-0002Qt-Jb
-	for ltp-list@lists.sourceforge.net; Sun, 27 May 2012 08:23:49 +0000
-Received: by obhx4 with SMTP id x4so4878646obh.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 27 May 2012 01:23:41 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1STpWr-0007Rg-LI
+	for ltp-list@lists.sourceforge.net; Mon, 14 May 2012 07:17:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1STpWo-0002di-Nf
+	for ltp-list@lists.sourceforge.net; Mon, 14 May 2012 07:17:13 +0000
+Message-ID: <4FB0B125.3020808@cn.fujitsu.com>
+Date: Mon, 14 May 2012 15:15:49 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4FC1E248.6040008@cn.fujitsu.com>
-References: <CAGH67wQmnoUVOftT8=hL_T7Tv28WdGaQpmL09YQ5LWWqf=9U2w@mail.gmail.com>
-	<4FC1D8C5.4050804@cn.fujitsu.com>
-	<CAGH67wQw2j6AMgKxs0JwynQYT7JB0mjVkiB+hztWUSnLRneS9w@mail.gmail.com>
-	<4FC1E248.6040008@cn.fujitsu.com>
-Date: Sun, 27 May 2012 01:23:40 -0700
-Message-ID: <CAGH67wT3etJ-v7sA4ygKpXZNeX=0quNQkXmCp_PC9No2wxu4kA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix the fork/11-1 conformance testcase
+References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
+In-Reply-To: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
+Subject: Re: [LTP] [PATCH 1/3] Indentation and coding style fixes on
+ /lib/str_to_bytes.c as well as /include/str_to_bytes.h
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,87 +26,278 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Marios Makris <marios.makris@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Sun, May 27, 2012 at 1:14 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wr=
-ote:
-> On 05/27/2012 04:00 PM, Garrett Cooper wrote:
->
->> On Sun, May 27, 2012 at 12:33 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com=
-> wrote:
->>> On 05/26/2012 10:15 PM, Garrett Cooper wrote:
->>>
->>>> The testcase tests to see whether or not locks are successfully
->>>> inherited across forking processes, as the requirements for fork state
->>>> that they should not be. The problem is that the test tests the negati=
-ve
->>>> case for ftrylockfile (!=3D 0) instead of the positive case, which cre=
-ates
->>>
->>> The ftrylockfile() function returns zero for success (the lock was obta=
-ined),
->>> and nonzero for failure.
->>> So I think the origin is right.
->>
->> =A0 =A0 My description might be wrong, but the fix is right. ftrylockfile
->> should fail in the testcase (not succeed) because the file lock isn't
->> owned by the forked process. It succeeds simply because the delay is
->
->
-> But on my system ftrylockfile() always return 0, and the test PASSED.
-> and with your patch, it fails.
+On 05/10/2012 09:04 PM, Marios Makris wrote:
 
-Then that's a Linux/POSIX bug then. From fork(2) on OpenGroup [1]:
+> Fixed broken identation as well as replaced the old K&R
+> function declarations.
+> 
+> Signed-off-by: Marios Makris <marios.makris@gmail.com>
 
-"File locks set by the parent process are not inherited by the child proces=
-s."
 
-And from flockfile(2) on OpenGroup [2]:
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-"   The flockfile() function is used by a thread to acquire ownership
-of a ( FILE *) object.
+> ---
+>  include/str_to_bytes.h |    6 +-
+>  lib/str_to_bytes.c     |  162 +++++++++++++++++++++++-------------------------
+>  2 files changed, 80 insertions(+), 88 deletions(-)
+> 
+> diff --git a/include/str_to_bytes.h b/include/str_to_bytes.h
+> index 977a6b1..314eb88 100644
+> --- a/include/str_to_bytes.h
+> +++ b/include/str_to_bytes.h
+> @@ -32,8 +32,8 @@
+>  #ifndef _STR_TO_BYTES_
+>  #define _STR_TO_BYTES_
+>  
+> -int       str_to_bytes  ( char * );
+> -long      str_to_lbytes ( char * );
+> -long long str_to_llbytes( char * );
+> +int str_to_bytes(char *);
+> +long str_to_lbytes(char *);
+> +long long str_to_llbytes(char *);
+>  
+>  #endif
+> diff --git a/lib/str_to_bytes.c b/lib/str_to_bytes.c
+> index 26e4897..f18291c 100644
+> --- a/lib/str_to_bytes.c
+> +++ b/lib/str_to_bytes.c
+> @@ -67,144 +67,136 @@
+>  #define B_MULT UBSIZE
+>  #endif
+>  
+> -
+>  #define K_MULT	1024		/* Kilo or 2^10 */
+>  #define M_MULT	1048576		/* Mega or 2^20 */
+>  #define G_MULT	1073741824	/* Giga or 2^30 */
+>  #define T_MULT	1099511627776	/* tera or 2^40 */
+>  
+> -int
+> -str_to_bytes(s)
+> -char    *s;
+> +int str_to_bytes(char *s)
+>  {
+> -    char    mult, junk;
+> -    int	    nconv;
+> -    float   num;
+> +	char mult, junk;
+> +	int nconv;
+> +	float num;
+>  
+> -    nconv = sscanf(s, "%f%c%c", &num, &mult, &junk);
+> -    if (nconv == 0 || nconv == 3)
+> -	return -1;
+> +	nconv = sscanf(s, "%f%c%c", &num, &mult, &junk);
+> +	if (nconv == 0 || nconv == 3)
+> +		return -1;
+>  
+> -    if (nconv == 1)
+> -	return num;
+> +	if (nconv == 1)
+> +		return num;
+>  
+> -    switch (mult) {
+> -    case 'b':
+> +	switch (mult) {
+> +	case 'b':
+>  		return (int)(num * (float)B_MULT);
+> -    case 'k':
+> +	case 'k':
+>  		return (int)(num * (float)K_MULT);
+> -    case 'K':
+> +	case 'K':
+>  		return (int)((num * (float)K_MULT) * sizeof(long));
+> -    case 'm':
+> +	case 'm':
+>  		return (int)(num * (float)M_MULT);
+> -    case 'M':
+> +	case 'M':
+>  		return (int)((num * (float)M_MULT) * sizeof(long));
+> -    case 'g':
+> +	case 'g':
+>  		return (int)(num * (float)G_MULT);
+> -    case 'G':
+> -    		return (int)((num * (float)G_MULT) * sizeof(long));
+> -    default:
+> -	return -1;
+> -    }
+> +	case 'G':
+> +		return (int)((num * (float)G_MULT) * sizeof(long));
+> +	default:
+> +		return -1;
+> +	}
+>  }
+>  
+> -long
+> -str_to_lbytes(s)
+> -char    *s;
+> +long str_to_lbytes(char *s)
+>  {
+> -    char    mult, junk;
+> -    long    nconv;
+> -    float   num;
+> +	char mult, junk;
+> +	long nconv;
+> +	float num;
+>  
+> -    nconv = sscanf(s, "%f%c%c", &num, &mult, &junk);
+> -    if (nconv == 0 || nconv == 3)
+> -	return -1;
+> +	nconv = sscanf(s, "%f%c%c", &num, &mult, &junk);
+> +	if (nconv == 0 || nconv == 3)
+> +		return -1;
+>  
+> -    if (nconv == 1)
+> -	return (long)num;
+> +	if (nconv == 1)
+> +		return (long)num;
+>  
+> -    switch (mult) {
+> -    case 'b':
+> +	switch (mult) {
+> +	case 'b':
+>  		return (long)(num * (float)B_MULT);
+> -    case 'k':
+> +	case 'k':
+>  		return (long)(num * (float)K_MULT);
+> -    case 'K':
+> +	case 'K':
+>  		return (long)((num * (float)K_MULT) * sizeof(long));
+> -    case 'm':
+> +	case 'm':
+>  		return (long)(num * (float)M_MULT);
+> -    case 'M':
+> +	case 'M':
+>  		return (long)((num * (float)M_MULT) * sizeof(long));
+> -    case 'g':
+> +	case 'g':
+>  		return (long)(num * (float)G_MULT);
+> -    case 'G':
+> -    		return (long)((num * (float)G_MULT) * sizeof(long));
+> -    default:
+> -	return -1;
+> -    }
+> +	case 'G':
+> +		return (long)((num * (float)G_MULT) * sizeof(long));
+> +	default:
+> +		return -1;
+> +	}
+>  }
+>  
+>  /*
+>   * Force 64 bits number when compiled as 32 IRIX binary.
+>   * This allows for a number bigger than 2G.
+>   */
+> -
+> -long long
+> -str_to_llbytes(s)
+> -char    *s;
+> +long long str_to_llbytes(char *s)
+>  {
+> -    char    mult, junk;
+> -    long    nconv;
+> -    double  num;
+> +	char mult, junk;
+> +	long nconv;
+> +	double num;
+>  
+> -    nconv = sscanf(s, "%lf%c%c", &num, &mult, &junk);
+> -    if (nconv == 0 || nconv == 3)
+> -	return -1;
+> +	nconv = sscanf(s, "%lf%c%c", &num, &mult, &junk);
+> +	if (nconv == 0 || nconv == 3)
+> +		return -1;
+>  
+> -    if (nconv == 1)
+> -	return (long long)num;
+> +	if (nconv == 1)
+> +		return (long long)num;
+>  
+> -    switch (mult) {
+> -    case 'b':
+> +	switch (mult) {
+> +	case 'b':
+>  		return (long long)(num * (float)B_MULT);
+> -    case 'k':
+> +	case 'k':
+>  		return (long long)(num * (float)K_MULT);
+> -    case 'K':
+> +	case 'K':
+>  		return (long long)((num * (float)K_MULT) * sizeof(long long));
+> -    case 'm':
+> +	case 'm':
+>  		return (long long)(num * (float)M_MULT);
+> -    case 'M':
+> +	case 'M':
+>  		return (long long)((num * (float)M_MULT) * sizeof(long long));
+> -    case 'g':
+> +	case 'g':
+>  		return (long long)(num * (float)G_MULT);
+> -    case 'G':
+> -    		return (long long)((num * (float)G_MULT) * sizeof(long long));
+> -    default:
+> -	return -1;
+> -    }
+> +	case 'G':
+> +		return (long long)((num * (float)G_MULT) * sizeof(long long));
+> +	default:
+> +		return -1;
+> +	}
+>  }
+>  
+>  #ifdef UNIT_TEST
+>  
+>  main(int argc, char **argv)
+>  {
+> -    int ind;
+> +	int ind;
+>  
+> -    if (argc == 1) {
+> -	fprintf(stderr, "missing str_to_bytes() parameteres\n");
+> -	exit(1);
+> -    }
+> +	if (argc == 1) {
+> +		fprintf(stderr, "missing str_to_bytes() parameteres\n");
+> +		exit(1);
+> +	}
+>  
+> -    for (ind=1; ind<argc; ind++) {
+> +	for (ind = 1; ind < argc; ind++) {
+>  
+> -	printf("str_to_bytes(%s) returned %d\n",
+> -	    argv[ind], str_to_bytes(argv[ind]));
+> +		printf("str_to_bytes(%s) returned %d\n",
+> +		       argv[ind], str_to_bytes(argv[ind]));
+>  
+> -	printf("str_to_lbytes(%s) returned %ld\n",
+> -	    argv[ind], str_to_lbytes(argv[ind]));
+> +		printf("str_to_lbytes(%s) returned %ld\n",
+> +		       argv[ind], str_to_lbytes(argv[ind]));
+>  
+> -	printf("str_to_llbytes(%s) returned %lld\n",
+> -	    argv[ind], str_to_llbytes(argv[ind]));
+> -    }
+> +		printf("str_to_llbytes(%s) returned %lld\n",
+> +		       argv[ind], str_to_llbytes(argv[ind]));
+> +	}
+>  }
+>  
+> -#endif
+> \ No newline at end of file
+> +#endif
 
-    The ftrylockfile() function is used by a thread to acquire
-ownership of a ( FILE *) object if the object is available;
-ftrylockfile() is a non-blocking version of flockfile().
 
-...
 
-    None for flockfile() and funlockfile(). The function
-ftrylockfile() returns zero for success and non-zero to indicate that
-the lock cannot be acquired."
-
-The goal/algorithm as stated at the top of the testcase was...
-
-"* The steps are:
-* -> lock stdout
-* -> fork
-* -> child creates a thread
-* -> child thread trylock stdout
-* -> join the child
-
-* The test fails if the child thread cannot lock the file
-* -- this would mean the child process got stdout file lock ownership."
-
-Thanks!
--Garrett
-
-1. http://pubs.opengroup.org/onlinepubs/009695399/functions/fork.html
-2. http://pubs.opengroup.org/onlinepubs/009695399/functions/flockfile.html
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
