@@ -1,35 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cyeoh@au1.ibm.com>) id 1SVIfJ-0004H7-Ml
-	for ltp-list@lists.sourceforge.net; Fri, 18 May 2012 08:36:01 +0000
-Received: from e23smtp05.au.ibm.com ([202.81.31.147])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SVIfE-000849-1Q
-	for ltp-list@lists.sourceforge.net; Fri, 18 May 2012 08:36:01 +0000
-Received: from /spool/local
-	by e23smtp05.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <cyeoh@au1.ibm.com>;
-	Fri, 18 May 2012 08:30:32 +1000
-Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	q4I8SOid3146136
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 May 2012 18:28:24 +1000
-Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
-	by d23av01.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	q4I8ZaFF004869
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 May 2012 18:35:36 +1000
-Date: Fri, 18 May 2012 18:05:34 +0930
-From: Christopher Yeoh <cyeoh@au1.ibm.com>
-Message-ID: <20120518180534.088a07b2@Gantu>
-In-Reply-To: <4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
-References: <4FAA6A83.8010100@casparzhang.com>
-	<4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Simple tests for cross memory attach
- (process_vm_[readv|writev] syscalls)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SUGTe-0003wr-9w
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 12:03:42 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SUGTY-0003Cr-2z
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 12:03:42 +0000
+Message-ID: <4FB245C8.2040801@cn.fujitsu.com>
+Date: Tue, 15 May 2012 20:02:16 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
+	<1336655089-26941-3-git-send-email-marios.makris@gmail.com>
+	<4FB0B348.3020601@cn.fujitsu.com>
+	<CAMYrgfQUi_LziMsMsAkSnQdYS6FAryf71dHx6CHX_z5xJDPQmg@mail.gmail.com>
+In-Reply-To: <CAMYrgfQUi_LziMsMsAkSnQdYS6FAryf71dHx6CHX_z5xJDPQmg@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 3/3] Changed nconv variable from long to int in
+ /lib/bytes_by_prefix.c
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,65 +32,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, Caspar Zhang <caspar@casparzhang.com>
+To: Marioh mrs <marios.makris@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 15 May 2012 10:56:17 -0400 (EDT)
-Jan Stancek <jstancek@redhat.com> wrote:
+On 05/15/2012 07:51 PM, Marioh mrs wrote:
+
+> On 14 May 2012 10:24, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+>>
+>>
+>> But Marios,
+>>
+>> In the previous patch, you changed the library function
+>> from str_to_bytes to bytes_by_prefix, if you'd prefer
+>> the latter name, please also replace the using of str_to_bytes
+>> with the new name, if not, it'll not be compiled.
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
 > 
-> Hi,
+> Hello Wanlong,
 > 
-> I looked at testcases sent by Chris. Good news is, they
-> do not overlap (in terms of functionality) with mine :-).
+> The replacement of usages of the str_to_bytes (now bytes_by_prefix)
+> is already done and are part of the previous patch as well.
 > 
-> The patch need some polishing to match the style guide:
-> - indentation
-> - I think output should be TINFO, rather than plain printf
-> - single statement if without { }
-> - I would split some code to more functions, for example
-> process_vm_writev01.c main function seems complex
-
-Thanks for the feedback. I'll have a go at reworking them.
-
-> As for test organization, I think we need to decide 2 issues:
-> 1. directory structure
-> a)
->   testcases/kernel/syscalls/cma/
->   testcases/kernel/syscalls/cma/process_vm_readv
->   testcases/kernel/syscalls/cma/process_vm_writev
-> b)
->   testcases/kernel/syscalls/process_vm_readv
->   testcases/kernel/syscalls/process_vm_writev
+> Quoting that part from the previous patch:
+>> Furthermore any call to the file or its functions by other functions,
+>> manpages etc. have been modified to comply with the new names.
 > 
-> I'm preferring a) as these 2 syscalls are closely related,
-> and we already have need to share code.
-
-that would be fine with me.
-
-> 2. how to invoke new syscalls
-> a)
-> Patch from Chris is defining new syscall numbers in test and
-> using syscall(2).
+> Furthermore i have tested compiling it (clean compile of the repo and then
+> applying the patches and recompiling as well as clean compilation with
+> my commits) on two computers and it compiled well.
 > 
-> b)
-> My patch adds configure check for glibc wrappers
-> process_vm_readv/writev and if those does not exists it checks for
-> __NR_process_vm_readv.
+> I hope i didn't misunderstand your comment, please tell me where i am
+> wrong if that is the case.
 > 
-> I think we should not define syscall numbers in tests directly,
-> but I'm relying on LTP maintainers to provide guidance here.
+> Thanks a lot for reviewing.
 
-I agree - the configure check is much better. I was just trying to get
-something working :-)
 
-Regards,
+At least you can take a look at here ./testcases/kernel/fs/doio/iogen.c
 
-Chris
--- 
-cyeoh@au.ibm.com
-
--- 
-cyeoh@au.ibm.com
+Thanks,
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
