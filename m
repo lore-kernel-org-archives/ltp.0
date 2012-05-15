@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SPwOw-0007SE-TK
-	for ltp-list@lists.sourceforge.net; Thu, 03 May 2012 13:48:58 +0000
-Date: Thu, 3 May 2012 14:46:06 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120503124606.GA9999@saboteur.suse.cz>
-References: <alpine.BSF.2.00.1204041738350.25027@toaster.local>
-	<4F7CF7DB.2080802@cn.fujitsu.com>
-	<CAGH67wRSAKEkn=MNn2HHivnPNjuP_tqE8+S1-ND_Z69VrBm9Ow@mail.gmail.com>
-	<4F84F212.9070408@cn.fujitsu.com>
-	<8DB64E3B-1B6D-4C27-85E8-11817A41F879@gmail.com>
-	<4F854F21.5070208@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SU8gG-0002ta-H2
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 03:44:12 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SU8gF-00007e-6C
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 03:44:12 +0000
+Message-ID: <4FB1D0BA.1020301@cn.fujitsu.com>
+Date: Tue, 15 May 2012 11:42:50 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F854F21.5070208@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] Replace struct event_t with struct
- inotify_event
+References: <659b63f6-b191-4e73-84f7-37e33d4c9873@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <659b63f6-b191-4e73-84f7-37e33d4c9873@zmail13.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] ksm03
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,30 +28,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> >>>
-> >>> Yeah... let me get back to you on that...
-> >>
-> >>
-> >> Any update on this?
-> > 
-> > I'm moving from CA to WA, but I'll try to get back to you sometime mid next week once I get settled in.
+On 05/15/2012 11:18 AM, Zhouping Liu wrote:
+
 > 
 > 
-> That's great! I wonder what do CA and WA stand for?
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "ZhoupingLiu" <zliu@redhat.com>
+>> Cc: "Caspar Zhang" <caspar@casparzhang.com>, "LTP List" <ltp-list@lists.sourceforge.net>
+>> Sent: Tuesday, May 15, 2012 10:56:37 AM
+>> Subject: Re: [LTP] ksm03
+>>
+>> On 04/05/2012 01:21 PM, ZhoupingLiu wrote:
+>>
+>>> On 04/05/2012 01:04 PM, Wanlong Gao wrote:
+>>>> On 04/05/2012 01:00 PM, ZhoupingLiu wrote:
+>>>>
+>>>>> On 04/02/2012 02:56 PM, Wanlong Gao wrote:
+>>>>>> Hi Caspar,
+>>>>>>
+>>>>>> Have you ever seen like below? It happens on ksm03,
+>>>>>> the page_sharing numbers is always incorrect, it
+>>>>>> occurs on RHEL7-Alpha, any ides?
+>>>>> hi, Wanlong
+>>>>>
+>>>>> I caught this error, but it just only occurred in s390x,
+>>>>> and not 100% occurred, I will check the reason.
+>>>>> could you tell me which arches do you met the issue?
+>>>>
+>>>> Not fortunately, I met on x86_64 :(
+>>>> and the case can't finish then.
+>>>
+>>> Okay, I'll dig it deeper, thanks for your info.
+>>
+>>
+>> Got any idea? :-)
+> 
+> Wanlong, as the case is not always occurred in my testing boxes,
+> I'm sorry I don't find the real reason now, but I'll speed up
+> to find the murderer, if you have any info, please let me know :)
 
-I would guess that these are city names or something like that... ;)
 
-And of course the patch is wrong, the event_t structure is used only to
-record what have you done for sake of comparing the sequence to the
-inotify events read later.
+OK, can you test on RHEL7-Alpha1-x86_64 using below control file?
+It may help you.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+#cd /opt/ltp
+#cat <<EOF > runtest/ksm
+>ksm01 ksm01
+>ksm01_1 ksm01 -u 128
+>ksm02 ksm02
+>ksm02_1 ksm02 -u 128
+>ksm03 ksm03
+>ksm03_1 ksm03 -u 128
+>ksm04 ksm04
+>ksm04_1 ksm04 -u 128
+>ksm05 ksm05 -I 10
+>EOF
+#./runltp -f ksm
+
+Thanks,
+Wanlong Gao
+
+> 
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
