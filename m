@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SS8LE-0004On-Eo
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 14:58:12 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SS8L9-0004R8-9V
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 14:58:12 +0000
-Message-ID: <4FAA85AF.3060401@cn.fujitsu.com>
-Date: Wed, 09 May 2012 22:56:47 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <32d00f4f-1cc6-480b-a4b8-48824cbe23b1@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <32d00f4f-1cc6-480b-a4b8-48824cbe23b1@zmail13.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] mm: move_pages syscall can't return ENOENT when pages are
- not present
-Reply-To: gaowanlong@cn.fujitsu.com
+	(envelope-from <zliu@redhat.com>) id 1SUFKu-0007RU-Av
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 10:50:36 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SUFKq-0005x4-CT
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 10:50:36 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4FAoQYc017568
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 May 2012 06:50:26 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 15 May 2012 18:47:37 +0800
+Message-Id: <1337078857-6487-1-git-send-email-zliu@redhat.com>
+Subject: [LTP] [PATCH] mm: fixed nodemask args in set_mempolicy()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,201 +26,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: Xiaotian Feng <xtfeng@gmail.com>, linux-mm@kvack.org, Brice.Goglin@inria.fr, linux-kernel@vger.kernel.org, LTP List <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 05/09/2012 09:33 PM, Zhouping Liu wrote:
+inside oom0[2|4], ksm0[2|4] cases, they are running under
+numa system, and allocte memory in the second numa node,
+set nodemask 2, which indicates all memory allocated in
+node1, but when a numa system don't have node1, these cases
+will failed, such like the box, available nodes: (0,2,4,7)
 
-> 
-> 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "Xiaotian Feng" <xtfeng@gmail.com>
->> Cc: "Zhouping Liu" <zliu@redhat.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, "LTP List"
->> <ltp-list@lists.sourceforge.net>
->> Sent: Wednesday, May 9, 2012 8:50:07 PM
->> Subject: Re: mm: move_pages syscall can't return ENOENT when pages are not present
->>
->> On 05/09/2012 05:28 PM, Xiaotian Feng wrote:
->>
->>> On Wed, May 9, 2012 at 4:58 PM, Zhouping Liu <zliu@redhat.com>
->>> wrote:
->>>> hi, all
->>>>
->>>> Recently, I found an error in move_pages syscall:
->>>>
->>>> depending on move_pages(2), when page is not present,
->>>> it should fail with ENOENT, in fact, it's ok without
->>>> any errno.
->>>>
->>>> the following reproducer can easily reproduce
->>>> the issue, suggest you get more details by strace.
->>>> inside reproducer, I try to move a non-exist page from
->>>> node 1 to node 0.
->>>>
->>>> I have tested it on the latest kernel 3.4-rc5 with 2 and 4 numa
->>>> nodes.
->>>> [zliu@ZhoupingLiu ~]$ gcc -o reproducer reproducer.c -lnuma
->>>> [zliu@ZhoupingLiu ~]$ ./reproducer
->>>> from_node is 1, to_node is 0
->>>> ERROR: move_pages expected FAIL.
->>>>
->>>
->>> " If nodes is not NULL, move_pages returns the number of valid
->>> migration requests which could not currently be performed.
->>>  Otherwise
->>> it returns 0."
->>
->>
->> FYI, actually,
->> commit e78bbfa8262424417a29349a8064a535053912b9
->> Author: Brice Goglin <Brice.Goglin@inria.fr>
->> Date:   Sat Oct 18 20:27:15 2008 -0700
->>
->>     mm: stop returning -ENOENT from sys_move_pages() if nothing got
->>     migrated
-> 
-> maybe you missed my thought :(
-> if I'm wrong, please correct me.
-> 
-> IMO, the issue is different with the patch.
-> apparently, in the case(reproducer), I tried to move 4 pages from node 1 to node 0,
-> and the 4th page is an invalid page(absent and not aligned)
->      pages[TEST_PAGES - 1] = pages[TEST_PAGES - 2] - onepage * 4 + 1;
-> but the reproducer passed with any errors, I think it's not common.
-> 
-> in the case, numa_free() return EINVAL, but we can't catch the err:
+ [root@hp-magnycours-01 oom]# ./oom02
+ oom02       0  TINFO  :  set overcommit_memory to 1
+ oom02       0  TINFO  :  process mempolicy.
+ oom02       0  TINFO  :  start normal OOM testing.
+ oom02       0  TINFO  :  expected victim is 9112.
+ oom02       1  TBROK  :  set_mempolicy: errno=EINVAL(22): Invalid argument
+ oom02       2  TBROK  :  Remaining cases broken
+ oom02       0  TINFO  :  set overcommit_memory to 0
+ oom02       1  TFAIL  :  the victim unexpectedly failed: 512
+ oom02       0  TINFO  :  start OOM testing for mlocked pages.
+ ...
 
+the patch fixed the above issue.
 
-So, as Brice said, if you want to catch error, you should check your status array after
-doing move_pages.
+Also inside cpuset01 case, depend on the reproducer, mem hog thread
+allocated memory on *all* nodes, but 'nmask += exp2f(i);' can't
+do that, and the patch fixed it.
 
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/cpuset/cpuset01.c |    2 +-
+ testcases/kernel/mem/ksm/ksm02.c       |    3 ++-
+ testcases/kernel/mem/ksm/ksm04.c       |    3 ++-
+ testcases/kernel/mem/lib/mem.c         |    5 ++++-
+ 4 files changed, 9 insertions(+), 4 deletions(-)
 
-Thanks,
-Wanlong Gao
-
-> [root@ZhoupingLiu zliu]# strace ./reproducer 
-> ...
-> move_pages(0, 4, {0x7f029c459000, 0x7f029c458000, 0x7f029c457000, 0x7f029c453001}, {0, 0, 0, 0}, {0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffff2}, MPOL_MF_MOVE) = 0
-> write(1, "ERROR: move_pages expected FAIL."..., 33ERROR: move_pages expected FAIL.
-> ) = 33
-> munmap(0x7f029c459000, 4096)            = 0
-> munmap(0x7f029c458000, 4096)            = 0
-> munmap(0x7f029c457000, 4096)            = 0
-> munmap(0x7f029c453001, 4096)            = -1 EINVAL (Invalid argument)
-> ...
-> 
-> so I suggest we check pages' validity before move pages, if they are invalid, it should return
-> relevant error number to userspace, maybe it's other errno, not ENOENT, correct?
-> 
-> I'm trying to make a patch, but I'm a newer to the part :(
-> 
->>
->> this commit changed the behaviour.
->>
->> And the LTP has fixed to be consistent with this,
->> https://github.com/linux-test-project/ltp/commit/338299da1ff27c7815183c1b07eb91e705f117ce
->>
->>
->> Thanks,
->> Wanlong Gao
->>
->>>
->>>> I'm not in mail list, please CC me.
->>>>
->>>> /*
->>>>  * Copyright (C) 2012  Red Hat, Inc.
->>>>  *
->>>>  * This work is licensed under the terms of the GNU GPL, version
->>>>  2. See
->>>>  * the COPYING file in the top-level directory.
->>>>  *
->>>>  * Compiled: gcc -o reproducer reproducer.c -lnuma
->>>>  * Description:
->>>>  * it's designed to check move_pages syscall, when
->>>>  * page is not present, it should fail with ENOENT.
->>>>  */
->>>>
->>>> #include <sys/mman.h>
->>>> #include <sys/types.h>
->>>> #include <sys/wait.h>
->>>> #include <stdio.h>
->>>> #include <unistd.h>
->>>> #include <errno.h>
->>>> #include <numa.h>
->>>> #include <numaif.h>
->>>>
->>>> #define TEST_PAGES 4
->>>>
->>>> int main(int argc, char **argv)
->>>> {
->>>>        void *pages[TEST_PAGES];
->>>>        int onepage;
->>>>        int nodes[TEST_PAGES];
->>>>        int status, ret;
->>>>        int i, from_node = 1, to_node = 0;
->>>>
->>>>        onepage = getpagesize();
->>>>
->>>>        for (i = 0; i < TEST_PAGES - 1; i++) {
->>>>                pages[i] = numa_alloc_onnode(onepage, from_node);
->>>>                nodes[i] = to_node;
->>>>        }
->>>>
->>>>        nodes[TEST_PAGES - 1] = to_node;
->>>>
->>>>        /*
->>>>         * the follow page is not available, also not aligned,
->>>>         * depend on move_pages(2), it can't be moved, and should
->>>>         * return ENOENT errno.
->>>>         */
->>>>        pages[TEST_PAGES - 1] = pages[TEST_PAGES - 2] - onepage * 4
->>>>        + 1;
->>>>
->>>>        printf("from_node is %u, to_node is %u\n", from_node,
->>>>        to_node);
->>>>        ret = move_pages(0, TEST_PAGES, pages, nodes, &status,
->>>>        MPOL_MF_MOVE);
->>>>        if (ret == -1) {
->>>>                if (errno != ENOENT)
->>>>                        perror("move_pages expected ENOENT errno,
->>>>                        but it's");
->>>>                else
->>>>                        printf("Succeed\n");
->>>>        } else {
->>>>                printf("ERROR: move_pages expected FAIL.\n");
->>>>        }
->>>>
->>>>        for (i = 0; i < TEST_PAGES; i++)
->>>>                numa_free(pages[i], onepage);
->>>>
->>>>        return 0;
->>>> }
->>>>
->>>> --
->>>> Thanks,
->>>> Zhouping
->>>> --
->>>> To unsubscribe from this list: send the line "unsubscribe
->>>> linux-kernel" in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>> Please read the FAQ at  http://www.tux.org/lkml/
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe
->>> linux-kernel" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>> Please read the FAQ at  http://www.tux.org/lkml/
->>>
->>
->>
->>
-> 
-
+diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
+index 09159f2..b20485f 100644
+--- a/testcases/kernel/mem/cpuset/cpuset01.c
++++ b/testcases/kernel/mem/cpuset/cpuset01.c
+@@ -108,7 +108,7 @@ static void testcpuset(void)
+ 		tst_brkm(TBROK|TERRNO, cleanup, "fork");
+ 	case 0:
+ 		for (i = 0; i < nnodes; i++)
+-			nmask += exp2f(i);
++			nmask += 1 << nodes[i];
+ 		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
+ 			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
+ 		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
+diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+index 3bfcaa6..92f1493 100644
+--- a/testcases/kernel/mem/ksm/ksm02.c
++++ b/testcases/kernel/mem/ksm/ksm02.c
+@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
+ 	int lc;
+ 	char *msg;
+ 	int size = 128, num = 3, unit = 1;
+-	unsigned long nmask = 2;
++	unsigned long nmask = 0;
+ 	long nodes[MAXNODES];
+ 
+ 	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
+@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
+ 		Tst_count = 0;
+ 		check_ksm_options(&size, &num, &unit);
+ 
++		nmask = 1 << nodes[1];
+ 		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
+ 			if (errno != ENOSYS)
+ 				tst_brkm(TBROK|TERRNO, cleanup,
+diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+index 8bbf067..8a31051 100644
+--- a/testcases/kernel/mem/ksm/ksm04.c
++++ b/testcases/kernel/mem/ksm/ksm04.c
+@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
+ 	int lc;
+ 	char *msg;
+ 	int size = 128, num = 3, unit = 1;
+-	unsigned long nmask = 2;
++	unsigned long nmask = 0;
+ 	long nodes[MAXNODES];
+ 
+ 	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
+@@ -105,6 +105,7 @@ int main(int argc, char *argv[])
+ 
+ 		write_memcg();
+ 
++		nmask = 1 << nodes[1];
+ 		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
+ 			if (errno != ENOSYS)
+ 				tst_brkm(TBROK|TERRNO, cleanup,
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 7289812..b031184 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -66,7 +66,8 @@ void oom(int testcase, int mempolicy, int lite)
+ 	int status;
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+ 	&& HAVE_MPOL_CONSTANTS
+-	unsigned long nmask = 2;
++	unsigned long nmask = 0;
++	long nodes[MAXNODES];
+ #endif
+ 
+ 	switch (pid = fork()) {
+@@ -75,6 +76,8 @@ void oom(int testcase, int mempolicy, int lite)
+ 	case 0:
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+ 	&& HAVE_MPOL_CONSTANTS
++		count_numa(nodes);
++		nmask += 1 << nodes[1];
+ 		if (mempolicy)
+ 			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
+ 				tst_brkm(TBROK|TERRNO, cleanup,
+-- 
+1.7.10.1
 
 
 ------------------------------------------------------------------------------
