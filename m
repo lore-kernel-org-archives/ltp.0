@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SS3Mu-0005ks-7X
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 09:39:36 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SU8Hu-0005WP-VV
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 03:19:02 +0000
 Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SS3Mo-0005qD-EP
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 09:39:36 +0000
-Date: Wed, 09 May 2012 05:39:24 -0400 (EDT)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SU8Ht-0002bE-TY
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 03:19:02 +0000
+Date: Mon, 14 May 2012 23:18:50 -0400 (EDT)
 From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <a0c94f50-c325-42c8-91f4-f97472d3e84c@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4FAA34CF.6050809@redhat.com>
+Message-ID: <659b63f6-b191-4e73-84f7-37e33d4c9873@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FB1C5E5.10407@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] move_pages08: E2BIG was removed in 2.6.29
+Subject: Re: [LTP] ksm03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,32 +26,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 
 
 ----- Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Jeffrey Burke" <jburke@redhat.com>
-> Sent: Wednesday, May 9, 2012 5:11:43 PM
-> Subject: [LTP] [PATCH] move_pages08: E2BIG was removed in 2.6.29
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "ZhoupingLiu" <zliu@redhat.com>
+> Cc: "Caspar Zhang" <caspar@casparzhang.com>, "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Tuesday, May 15, 2012 10:56:37 AM
+> Subject: Re: [LTP] ksm03
+> 
+> On 04/05/2012 01:21 PM, ZhoupingLiu wrote:
+> 
+> > On 04/05/2012 01:04 PM, Wanlong Gao wrote:
+> >> On 04/05/2012 01:00 PM, ZhoupingLiu wrote:
+> >>
+> >>> On 04/02/2012 02:56 PM, Wanlong Gao wrote:
+> >>>> Hi Caspar,
+> >>>>
+> >>>> Have you ever seen like below? It happens on ksm03,
+> >>>> the page_sharing numbers is always incorrect, it
+> >>>> occurs on RHEL7-Alpha, any ides?
+> >>> hi, Wanlong
+> >>>
+> >>> I caught this error, but it just only occurred in s390x,
+> >>> and not 100% occurred, I will check the reason.
+> >>> could you tell me which arches do you met the issue?
+> >>
+> >> Not fortunately, I met on x86_64 :(
+> >> and the case can't finish then.
+> > 
+> > Okay, I'll dig it deeper, thanks for your info.
 > 
 > 
-> Following commit reworked do_pages_move() to work by page-sized
-> chunks and also removed E2BIG:
-> 
-> commit 3140a2273009c01c27d316f35ab76a37e105fdd8
-> Author: Brice Goglin <Brice.Goglin@inria.fr>
-> Date:   Tue Jan 6 14:38:57 2009 -0800
->     mm: rework do_pages_move() to work on page_sized chunks
-> 
-> So, move_pages08 makes sense only for kernels < 2.6.29.
+> Got any idea? :-)
 
-Looks good for me.
-
-Acked-by: Zhouping Liu <zliu@redhat.com> 
+Wanlong, as the case is not always occurred in my testing boxes,
+I'm sorry I don't find the real reason now, but I'll speed up
+to find the murderer, if you have any info, please let me know :)
 
 -- 
 Thanks,
