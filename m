@@ -1,32 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SUtdD-00064f-Us
-	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 05:52:11 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SUtdD-0006kI-5n
-	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 05:52:11 +0000
-Received: by obhx4 with SMTP id x4so2760161obh.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <marios.makris@gmail.com>) id 1SUGHh-0003NP-Oe
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 11:51:21 +0000
+Received: from mail-wi0-f175.google.com ([209.85.212.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SUGHh-0006TP-2Z
+	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 11:51:21 +0000
+Received: by wibhn6 with SMTP id hn6so3101724wib.10
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 16 May 2012 22:52:05 -0700 (PDT)
+	Tue, 15 May 2012 04:51:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4FB486F5.3040100@cn.fujitsu.com>
-References: <20120516145353.GA12228@saboteur.suse.cz>
-	<1337219962-5782-1-git-send-email-penght@cn.fujitsu.com>
-	<4FB45E98.3010506@cn.fujitsu.com>
-	<CAGH67wSxwhPXQ_j5ryRQe4-en-wYf3iLUgrn9xtcQ54dR1FsaA@mail.gmail.com>
-	<4FB46381.2010400@cn.fujitsu.com>
-	<CAGH67wTa2Y6mXP9Wv229s8Wdzp57uN=hcB63eEvW6Ud0osdUOw@mail.gmail.com>
-	<CAGH67wStJk_mqT46zqJ5FPNHLEeBjcyPo6i050xMwmpCm5aoBQ@mail.gmail.com>
-	<4FB466B6.8060508@cn.fujitsu.com>
-	<CAGH67wSv02CxLFBDDuO8dRWNp03AmHmnYqTd3UN2mQkF8SO8ZQ@mail.gmail.com>
-	<4FB486F5.3040100@cn.fujitsu.com>
-Date: Wed, 16 May 2012 22:52:05 -0700
-Message-ID: <CAGH67wQdy=J==-Z_rEYZ-Ja1qG5aoxZ9gYHhKuHt5QZCBZB0SA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v2] ltp-pan.c: fix error of Total Tests
+In-Reply-To: <4FB0B348.3020601@cn.fujitsu.com>
+References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
+	<1336655089-26941-3-git-send-email-marios.makris@gmail.com>
+	<4FB0B348.3020601@cn.fujitsu.com>
+Date: Tue, 15 May 2012 14:51:14 +0300
+Message-ID: <CAMYrgfQUi_LziMsMsAkSnQdYS6FAryf71dHx6CHX_z5xJDPQmg@mail.gmail.com>
+From: Marioh mrs <marios.makris@gmail.com>
+Subject: Re: [LTP] [PATCH 3/3] Changed nconv variable from long to int in
+	/lib/bytes_by_prefix.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,57 +30,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, May 16, 2012 at 10:04 PM, Peng Haitao <penght@cn.fujitsu.com> wrote:
+On 14 May 2012 10:24, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
 >
-> Garrett Cooper said the following on 2012-5-17 12:39:
->>> <<<test_start>>>
->>> tag=3Dexit_quickly stime=3D1337251363
->>> cmdline=3D"exit 1"
->>> contacts=3D""
->>> analysis=3Dexit
->>> <<<test_output>>>
->>> <<<execution_status>>>
->>> initiation_status=3D"pan(17520): execvp of 'exit' (tag exit_quickly) fa=
-iled. =A0errn =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 o:2 =A0No such file or directory"
->>
->> I suppose it would have worked, had this actually been a command and
->> not a shell built-in. Could you please replace 'exit 1' with 'false'?
->>
 >
-> The log is as follows:
+> But Marios,
 >
-> <<<test_start>>>
-> tag=3Dexit_quickly stime=3D1337259686
-> cmdline=3D"false"
-> contacts=3D""
-> analysis=3Dexit
-> <<<test_output>>>
-> <<<execution_status>>>
-> initiation_status=3D"ok"
-> duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno
-> cutime=3D0 cstime=3D0
-> <<<test_end>>>
+> In the previous patch, you changed the library function
+> from str_to_bytes to bytes_by_prefix, if you'd prefer
+> the latter name, please also replace the using of str_to_bytes
+> with the new name, if not, it'll not be compiled.
+>
+> Thanks,
+> Wanlong Gao
+>
 
-LGTM!
+Hello Wanlong,
 
-Acked-by: Garrett Cooper <yanegomi@gmail.com>
+The replacement of usages of the str_to_bytes (now bytes_by_prefix)
+is already done and are part of the previous patch as well.
 
----------------------------------------------------------------------------=
----
+Quoting that part from the previous patch:
+> Furthermore any call to the file or its functions by other functions,
+> manpages etc. have been modified to comply with the new names.
+
+Furthermore i have tested compiling it (clean compile of the repo and then
+applying the patches and recompiling as well as clean compilation with
+my commits) on two computers and it compiled well.
+
+I hope i didn't misunderstand your comment, please tell me where i am
+wrong if that is the case.
+
+Thanks a lot for reviewing.
+-- 
+Marios Makris
+
+------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
