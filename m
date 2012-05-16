@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SUhGl-0003Yx-DN
-	for ltp-list@lists.sourceforge.net; Wed, 16 May 2012 16:40:11 +0000
-Date: Wed, 16 May 2012 18:37:07 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SUfeq-0004KM-5v
+	for ltp-list@lists.sourceforge.net; Wed, 16 May 2012 14:56:56 +0000
+Date: Wed, 16 May 2012 16:53:53 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120516163707.GA15018@saboteur.suse.cz>
-References: <0F68B52D2432864190BC72F760407FE93254CA39D1@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-	<20120502144228.GF366@saboteur.suse.cz>
-	<0F68B52D2432864190BC72F760407FE934CE5FCDEC@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+Message-ID: <20120516145353.GA12228@saboteur.suse.cz>
+References: <4F2CE53D.9030908@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0F68B52D2432864190BC72F760407FE934CE5FCDEC@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-Subject: Re: [LTP] Porting of LTP on Android - Patch
+In-Reply-To: <4F2CE53D.9030908@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] ltp-pan.c: fix error of Total Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,13 +24,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-Garrett asked you if you could send him steps how set up LTP on android.
-Have you done so? Given that he is the author of LTP build system he is
-the best person to aprroach in this case.
+> When execvp() fails, the testcases is counted in Total Tests, but not added in
+> logfile. In fact the testcases result should be added in logfile.
+>  static pid_t
+> -run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode)
+> +run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
+> +	  int *failcnt, int fmt_print, FILE * logfile)
+>  {
+>      ssize_t errlen;
+>      int cpid;
+> @@ -978,6 +982,26 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode)
+>  	    termtype = "unknown";
+>  	}
+>  	time(&end_time);
+> +	if (logfile != NULL) {
+> +		if (!fmt_print)
+> +			fprintf(logfile,
+> +				"tag=%s stime=%d dur=%d exit=%s "
+> +				"stat=%d core=%s cu=%d cs=%d\n",
+> +				colle->name, (int)(active->mystime),
+> +				(int) (end_time - active->mystime), termtype,
+> +				termid, (status & 0200) ? "yes" : "no",
+> +				0, 0);
+> +		else {
+
+I suggest to add curly brackets around the multiline fprintf too.
+
+> +			if (termid != 0)
+> +				++*failcnt;
+> +
+> +			fprintf(logfile, "%-30.30s %-10.10s %-5d\n",
+> +				colle->name, ((termid != 0) ? "FAIL" : "PASS"),
+> +				termid);
+> +		}
+> +		fflush(logfile);
+> +	}
+> +
+>  	if (!quiet_mode)
+>  	{
+>  		//write_test_start(active, errbuf);
+
+Otherwise I don't have any objection to adding this into the ltp-pan.
+Although I don't understand the messy pan code that much (and I don't
+have any intentions to study it more closely).
+
+Do have anybody else an opinion?
 
 -- 
 Cyril Hrubis
