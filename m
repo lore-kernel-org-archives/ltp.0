@@ -1,30 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <marios.makris@gmail.com>) id 1SUHKP-0003nI-1M
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 12:58:13 +0000
-Received: from mail-we0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SUHKJ-0001yr-JR
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 12:58:12 +0000
-Received: by werg55 with SMTP id g55so3245351wer.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 May 2012 05:58:01 -0700 (PDT)
+	(envelope-from <chrubis@suse.de>) id 1SUyZY-0000an-4Z
+	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 11:08:44 +0000
+Date: Thu, 17 May 2012 13:05:42 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120517110542.GA5585@saboteur.suse.cz>
+References: <1337219962-5782-1-git-send-email-penght@cn.fujitsu.com>
+	<4FB45E98.3010506@cn.fujitsu.com>
+	<CAGH67wSxwhPXQ_j5ryRQe4-en-wYf3iLUgrn9xtcQ54dR1FsaA@mail.gmail.com>
+	<4FB46381.2010400@cn.fujitsu.com>
+	<CAGH67wTa2Y6mXP9Wv229s8Wdzp57uN=hcB63eEvW6Ud0osdUOw@mail.gmail.com>
+	<CAGH67wStJk_mqT46zqJ5FPNHLEeBjcyPo6i050xMwmpCm5aoBQ@mail.gmail.com>
+	<4FB466B6.8060508@cn.fujitsu.com>
+	<CAGH67wSv02CxLFBDDuO8dRWNp03AmHmnYqTd3UN2mQkF8SO8ZQ@mail.gmail.com>
+	<4FB486F5.3040100@cn.fujitsu.com>
+	<CAGH67wQdy=J==-Z_rEYZ-Ja1qG5aoxZ9gYHhKuHt5QZCBZB0SA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4FB25100.7030505@cn.fujitsu.com>
-References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
-	<1336655089-26941-3-git-send-email-marios.makris@gmail.com>
-	<4FB0B348.3020601@cn.fujitsu.com>
-	<CAMYrgfQUi_LziMsMsAkSnQdYS6FAryf71dHx6CHX_z5xJDPQmg@mail.gmail.com>
-	<4FB245C8.2040801@cn.fujitsu.com>
-	<CAMYrgfQTx7hYF4MJr-FfxwjW_Ce+iVJON4eowdfoo97pB8YH2Q@mail.gmail.com>
-	<4FB25100.7030505@cn.fujitsu.com>
-Date: Tue, 15 May 2012 15:58:01 +0300
-Message-ID: <CAMYrgfTRonUTZFTn9ky1-Y-rHH2eFR1pVQECYkjiNr-yxHF3-g@mail.gmail.com>
-From: Marioh mrs <marios.makris@gmail.com>
-Subject: Re: [LTP] [PATCH 3/3] Changed nconv variable from long to int in
-	/lib/bytes_by_prefix.c
+Content-Disposition: inline
+In-Reply-To: <CAGH67wQdy=J==-Z_rEYZ-Ja1qG5aoxZ9gYHhKuHt5QZCBZB0SA@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v2] ltp-pan.c: fix error of Total Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,27 +33,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
->
-> Oh, sorry I missed.
->
-> Any other comments?
->
->
-> Thanks,
-> Wanlong Gao
->
-
-Well it's totally ok so long the misunderstanding is solved :)
-
-Well that's all for now i think, unless there is some other
-problem with the current patches?
-
-Thanks for your patience.
+Hi!
+Commited, thanks everyone involved ;).
 
 -- 
-Marios Makris
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
