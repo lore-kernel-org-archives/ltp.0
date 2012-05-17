@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SWOOo-0000N2-5h
-	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 08:55:30 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SWOOk-0006pI-CZ
-	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 08:55:30 +0000
-Received: by pbbrq2 with SMTP id rq2so6841767pbb.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SUqcZ-0003OA-Mo
+	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 02:39:19 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SUqcY-0000Bh-Vr
+	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 02:39:19 +0000
+Received: by obhx4 with SMTP id x4so2514918obh.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 May 2012 01:55:20 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v1257)
+	Wed, 16 May 2012 19:39:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4FB46381.2010400@cn.fujitsu.com>
+References: <20120516145353.GA12228@saboteur.suse.cz>
+	<1337219962-5782-1-git-send-email-penght@cn.fujitsu.com>
+	<4FB45E98.3010506@cn.fujitsu.com>
+	<CAGH67wSxwhPXQ_j5ryRQe4-en-wYf3iLUgrn9xtcQ54dR1FsaA@mail.gmail.com>
+	<4FB46381.2010400@cn.fujitsu.com>
+Date: Wed, 16 May 2012 19:39:13 -0700
+Message-ID: <CAGH67wTa2Y6mXP9Wv229s8Wdzp57uN=hcB63eEvW6Ud0osdUOw@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <1337589516-9731-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Date: Mon, 21 May 2012 01:55:17 -0700
-Message-Id: <DC37D748-ECAA-4E0D-886F-7119C7F007CE@gmail.com>
-References: <1337589516-9731-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] getcpu: remove the useless and improper kernel
-	version check
+Subject: Re: [LTP] [PATCH v2] ltp-pan.c: fix error of Total Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,34 +31,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: gaowanlong@cn.fujitsu.com
 Cc: ltp-list@lists.sourceforge.net
 
-On May 21, 2012, at 1:38 AM, Wanlong Gao wrote:
+On Wed, May 16, 2012 at 7:33 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wr=
+ote:
+> On 05/17/2012 10:31 AM, Garrett Cooper wrote:
+>
+>> On Wed, May 16, 2012 at 7:12 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com>=
+ wrote:
+>>> On 05/17/2012 09:59 AM, Peng Haitao wrote:
+>>>
+>>>> When execvp() fails, the testcases is counted in Total Tests, but not
+>>>> added in logfile. In fact the testcases result should be added in logf=
+ile.
+>>>
+>>> I prefer adding this for matching the Total Tests amount.
+>>> So,
+>>>
+>>> Acked-by: Wanlong Gao <gaownalong@cn.fujitsu.com>
+>>
+>> =A0 =A0 It's nice that this is finally being fixed. This is one issue th=
+at
+>> has been outstanding for several years that needed to be resolved (I
+>> noticed it during/after I developed the execltp python script).
+>
+>
+> So, Garrett, you can ACK this?
 
-> Now, kernel version up to 3.x, check for 2.6.x is useless.
+I will ACK the sentiment, but I prefer to test it in order to ensure
+that it actually works...
 
-I don't agree with this statement. LTP needs to be usable on 2.6.x for at least 2 years after 3.x's inception.
+You can easily trigger this problem with the following spoofed runtest scen=
+ario:
 
-> Additionally, we already checked the kernel version in the
-> program itself.
-> Meanwhile, check the kernel version at compiling time is wrong,
-> we may not do testing on the same machine as compiling.
+aok echo "hello"
+donotexist donotexist
+exit_quickly exit 1
+true true
 
-Agreed. I think that this check was incorrectly implemented. Furthermore, this causes confusion when the test case doesn't exist; it's better to stub out the test case in the source.
+The first will fail success with "hello" output, the second should
+fail with ENOENT, the third will fail without output, and the fourth
+should success with output.
 
-I would just remove the first line -- the rest of the info is valid.
+If this functions as I described above, I'll be more than happy to ACK
+the patch.
 
-Cheers!
+Thanks!
 -Garrett
-------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
