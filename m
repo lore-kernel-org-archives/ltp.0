@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SUfBC-00058S-49
-	for ltp-list@lists.sourceforge.net; Wed, 16 May 2012 14:26:18 +0000
-Date: Wed, 16 May 2012 16:23:13 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120516142313.GA12182@saboteur.suse.cz>
-References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
-	<4FB0B125.3020808@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SUqVD-0000Hk-OZ
+	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 02:31:43 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SUqVD-0005Ch-3T
+	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 02:31:43 +0000
+Received: by obhx4 with SMTP id x4so2504964obh.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 16 May 2012 19:31:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4FB0B125.3020808@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/3] Indentation and coding style fixes on
- /lib/str_to_bytes.c as well as /include/str_to_bytes.h
+In-Reply-To: <4FB45E98.3010506@cn.fujitsu.com>
+References: <20120516145353.GA12228@saboteur.suse.cz>
+	<1337219962-5782-1-git-send-email-penght@cn.fujitsu.com>
+	<4FB45E98.3010506@cn.fujitsu.com>
+Date: Wed, 16 May 2012 19:31:37 -0700
+Message-ID: <CAGH67wSxwhPXQ_j5ryRQe4-en-wYf3iLUgrn9xtcQ54dR1FsaA@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH v2] ltp-pan.c: fix error of Total Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,15 +32,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Marios Makris <marios.makris@gmail.com>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-FYI: patchset commited.
+On Wed, May 16, 2012 at 7:12 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+> On 05/17/2012 09:59 AM, Peng Haitao wrote:
+>
+>> When execvp() fails, the testcases is counted in Total Tests, but not
+>> added in logfile. In fact the testcases result should be added in logfile.
+>
+> I prefer adding this for matching the Total Tests amount.
+> So,
+>
+> Acked-by: Wanlong Gao <gaownalong@cn.fujitsu.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+    It's nice that this is finally being fixed. This is one issue that
+has been outstanding for several years that needed to be resolved (I
+noticed it during/after I developed the execltp python script).
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
