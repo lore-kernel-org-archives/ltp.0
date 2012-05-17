@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SS71d-0001c2-7e
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 13:33:53 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SS71X-0008Ca-CU
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 13:33:53 +0000
-Date: Wed, 09 May 2012 09:33:30 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <32d00f4f-1cc6-480b-a4b8-48824cbe23b1@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4FAA67FF.6090808@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1SV1fW-0007Cm-5b
+	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 14:27:06 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SV1fT-0003f4-TH
+	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 14:27:06 +0000
+Message-ID: <4FB50AAB.8020002@redhat.com>
+Date: Thu, 17 May 2012 16:26:51 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] mm: move_pages syscall can't return ENOENT when pages are
-	not present
+References: <4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
+Content-Type: multipart/mixed; boundary="------------030709000806060000040703"
+Subject: Re: [LTP] [PATCH] Simple tests for cross memory attach
+ (process_vm_[readv|writev] syscalls)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,192 +26,205 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: Xiaotian Feng <xtfeng@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>, Christopher Yeoh <cyeoh@au1.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
+
+This is a multi-part message in MIME format.
+--------------030709000806060000040703
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 05/15/2012 04:56 PM, Jan Stancek wrote:
+> 
+> 
+> ----- Original Message -----
+>> From: "Caspar Zhang" <caspar@casparzhang.com>
+>> To: "Christopher Yeoh" <cyeoh@au1.ibm.com>
+>> Cc: ltp-list@lists.sourceforge.net, "Jan Stancek" <jstancek@redhat.com>
+>> Sent: Wednesday, 9 May, 2012 3:00:51 PM
+>> Subject: Re: [LTP] [PATCH] Simple tests for cross memory attach (process_vm_[readv|writev] syscalls)
+>> Hi Chris, thanks very much for the patch, I tried to backport your
+>> testcases in http://ozlabs.org/~cyeoh/cma/ to LTP and composed an
+>> unfinished version, then I was busy for other things. I'm happy to
+>> see
+>> you can backport it by yourself :) There are some more new cma
+>> patches
+>> (aims on testing retcode and errnos) sent by Jan Stancek (cc-ed) [1],
+>> I
+>> think we need to discuss the testcase organization..
+>>
+>> And I will review the testcases when I get more free time.
+> 
+> Hi,
+> 
+> I looked at testcases sent by Chris. Good news is, they
+> do not overlap (in terms of functionality) with mine :-).
+> 
+> The patch need some polishing to match the style guide:
+> - indentation
+> - I think output should be TINFO, rather than plain printf
+> - single statement if without { }
+> - I would split some code to more functions, for example process_vm_writev01.c
+>   main function seems complex
+> 
+> As for test organization, I think we need to decide 2 issues:
+> 1. directory structure
+> a)
+>   testcases/kernel/syscalls/cma/
+>   testcases/kernel/syscalls/cma/process_vm_readv
+>   testcases/kernel/syscalls/cma/process_vm_writev
+> b)
+>   testcases/kernel/syscalls/process_vm_readv
+>   testcases/kernel/syscalls/process_vm_writev
+> 
+> I'm preferring a) as these 2 syscalls are closely related,
+> and we already have need to share code.
+> 
+> 2. how to invoke new syscalls
+> a)
+> Patch from Chris is defining new syscall numbers in test and
+> using syscall(2).
+> 
+> b)
+> My patch adds configure check for glibc wrappers process_vm_readv/writev
+> and if those does not exists it checks for __NR_process_vm_readv.
+> 
+> I think we should not define syscall numbers in tests directly,
+> but I'm relying on LTP maintainers to provide guidance here.
+> In any case, if you run it on older kernel it should end with TCONF.
+> 
+> I would go with using Chris' process_vm.h, but remove syscall number
+> defines and use names that wont conflict with glibc wrappers:
+> test_process_vm_readv
+> test_process_vm_writev
+> 
+> These could be function pointers, that would get initialized with
+> function using glibc wrapper
+> function using syscall(__NR_process_vm_readv,..)
+> or NULL
+> 
+> each testcase could check in setup for NULL, and end with TCONF,
+> if there is no way invoke that syscall.
+> 
+> There was question from Caspar, if we should check for both glibc wrapper
+> and syscall number (http://thread.gmane.org/gmane.linux.ltp/16055).
+> I think we should, as we use glibc wrappers by default.
+> 
+> Any thoughts?
+
+I'm attaching sample process_vm.h for illustration.
+This would go on top of:
+http://thread.gmane.org/gmane.linux.ltp/16053
+http://thread.gmane.org/gmane.linux.ltp/16054
+
+each test would include that, check ltp_process_vm_readv/writev for NULL
+and optionally end with TCONF or continue.
+
+Regards,
+Jan
+
+> 
+> Regards,
+> Jan
+> 
+>>
+>> Thanks,
+>> Caspar
+>>
+>> [1]
+>> http://thread.gmane.org/gmane.linux.ltp/16052
+>> http://thread.gmane.org/gmane.linux.ltp/16053
+>> http://thread.gmane.org/gmane.linux.ltp/16054
+>> http://thread.gmane.org/gmane.linux.ltp/16055
+>>
 
 
+--------------030709000806060000040703
+Content-Type: text/x-chdr;
+ name="process_vm.h"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="process_vm.h"
 
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Xiaotian Feng" <xtfeng@gmail.com>
-> Cc: "Zhouping Liu" <zliu@redhat.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, "LTP List"
-> <ltp-list@lists.sourceforge.net>
-> Sent: Wednesday, May 9, 2012 8:50:07 PM
-> Subject: Re: mm: move_pages syscall can't return ENOENT when pages are not present
-> 
-> On 05/09/2012 05:28 PM, Xiaotian Feng wrote:
-> 
-> > On Wed, May 9, 2012 at 4:58 PM, Zhouping Liu <zliu@redhat.com>
-> > wrote:
-> >> hi, all
-> >>
-> >> Recently, I found an error in move_pages syscall:
-> >>
-> >> depending on move_pages(2), when page is not present,
-> >> it should fail with ENOENT, in fact, it's ok without
-> >> any errno.
-> >>
-> >> the following reproducer can easily reproduce
-> >> the issue, suggest you get more details by strace.
-> >> inside reproducer, I try to move a non-exist page from
-> >> node 1 to node 0.
-> >>
-> >> I have tested it on the latest kernel 3.4-rc5 with 2 and 4 numa
-> >> nodes.
-> >> [zliu@ZhoupingLiu ~]$ gcc -o reproducer reproducer.c -lnuma
-> >> [zliu@ZhoupingLiu ~]$ ./reproducer
-> >> from_node is 1, to_node is 0
-> >> ERROR: move_pages expected FAIL.
-> >>
-> > 
-> > " If nodes is not NULL, move_pages returns the number of valid
-> > migration requests which could not currently be performed.
-> >  Otherwise
-> > it returns 0."
-> 
-> 
-> FYI, actually,
-> commit e78bbfa8262424417a29349a8064a535053912b9
-> Author: Brice Goglin <Brice.Goglin@inria.fr>
-> Date:   Sat Oct 18 20:27:15 2008 -0700
-> 
->     mm: stop returning -ENOENT from sys_move_pages() if nothing got
->     migrated
+/*
+ * Copyright (C) 2012 Linux Test Project, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it would be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Further, this software is distributed without any warranty that it
+ * is free of the rightful claim of any third person regarding
+ * infringement or the like.  Any license provided herein, whether
+ * implied or otherwise, applies only to this software file.  Patent
+ * licenses, if any, provided herein do not apply to combinations of
+ * this program with other software, or any other product whatsoever.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+ */
 
-maybe you missed my thought :(
-if I'm wrong, please correct me.
+#ifndef _PROCESS_VM_H_
+#define _PROCESS_VM_H_
 
-IMO, the issue is different with the patch.
-apparently, in the case(reproducer), I tried to move 4 pages from node 1 to node 0,
-and the 4th page is an invalid page(absent and not aligned)
-     pages[TEST_PAGES - 1] = pages[TEST_PAGES - 2] - onepage * 4 + 1;
-but the reproducer passed with any errors, I think it's not common.
+#include <sys/syscall.h>
+#include <sys/uio.h>
+#include <unistd.h>
 
-in the case, numa_free() return EINVAL, but we can't catch the err:
-[root@ZhoupingLiu zliu]# strace ./reproducer 
-...
-move_pages(0, 4, {0x7f029c459000, 0x7f029c458000, 0x7f029c457000, 0x7f029c453001}, {0, 0, 0, 0}, {0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffff2}, MPOL_MF_MOVE) = 0
-write(1, "ERROR: move_pages expected FAIL."..., 33ERROR: move_pages expected FAIL.
-) = 33
-munmap(0x7f029c459000, 4096)            = 0
-munmap(0x7f029c458000, 4096)            = 0
-munmap(0x7f029c457000, 4096)            = 0
-munmap(0x7f029c453001, 4096)            = -1 EINVAL (Invalid argument)
-...
+#define CMA_PARAMS pid, lvec, liovcnt, rvec, riovcnt, flags
+#define CMA_PARAMS_TYPES pid_t pid, const struct iovec *lvec, unsigned long liovcnt,\
+        const struct iovec *rvec, unsigned long riovcnt, unsigned long flags
+#define CMA_FUNC_PROTO(func_name) ssize_t func_name(CMA_PARAMS_TYPES)
+#define CMA_FUNCP_PROTO(func_name) ssize_t (*func_name)(CMA_PARAMS_TYPES)
 
-so I suggest we check pages' validity before move pages, if they are invalid, it should return
-relevant error number to userspace, maybe it's other errno, not ENOENT, correct?
+/* 
+ * process_vm_readv 
+ */
+#if (HAVE_PROCESS_VM_READV==1)
+static inline CMA_FUNC_PROTO(ltp_process_vm_readv)
+{
+    return process_vm_readv(CMA_PARAMS);
+}
+#elif defined(__NR_process_vm_readv)
+static inline CMA_FUNC_PROTO(ltp_process_vm_readv)
+{
+    return syscall(__NR_process_vm_readv, CMA_PARAMS);
+}
+#else
+CMA_FUNCP_PROTO(ltp_process_vm_readv) = NULL;
+#endif
 
-I'm trying to make a patch, but I'm a newer to the part :(
+/* 
+ * process_vm_writev 
+ */
+#if (HAVE_PROCESS_VM_WRITEV==1)
+static inline CMA_FUNC_PROTO(ltp_process_vm_writev)
+{
+    return process_vm_writev(CMA_PARAMS);
+}
+#elif defined(__NR_process_vm_writev)
+static inline CMA_FUNC_PROTO(ltp_process_vm_writev)
+{
+    return syscall(__NR_process_vm_writev, CMA_PARAMS);
+}
+#else
+CMA_FUNCP_PROTO(ltp_process_vm_writev) = NULL;
+#endif
 
-> 
-> this commit changed the behaviour.
-> 
-> And the LTP has fixed to be consistent with this,
-> https://github.com/linux-test-project/ltp/commit/338299da1ff27c7815183c1b07eb91e705f117ce
-> 
-> 
-> Thanks,
-> Wanlong Gao
-> 
-> > 
-> >> I'm not in mail list, please CC me.
-> >>
-> >> /*
-> >>  * Copyright (C) 2012  Red Hat, Inc.
-> >>  *
-> >>  * This work is licensed under the terms of the GNU GPL, version
-> >>  2. See
-> >>  * the COPYING file in the top-level directory.
-> >>  *
-> >>  * Compiled: gcc -o reproducer reproducer.c -lnuma
-> >>  * Description:
-> >>  * it's designed to check move_pages syscall, when
-> >>  * page is not present, it should fail with ENOENT.
-> >>  */
-> >>
-> >> #include <sys/mman.h>
-> >> #include <sys/types.h>
-> >> #include <sys/wait.h>
-> >> #include <stdio.h>
-> >> #include <unistd.h>
-> >> #include <errno.h>
-> >> #include <numa.h>
-> >> #include <numaif.h>
-> >>
-> >> #define TEST_PAGES 4
-> >>
-> >> int main(int argc, char **argv)
-> >> {
-> >>        void *pages[TEST_PAGES];
-> >>        int onepage;
-> >>        int nodes[TEST_PAGES];
-> >>        int status, ret;
-> >>        int i, from_node = 1, to_node = 0;
-> >>
-> >>        onepage = getpagesize();
-> >>
-> >>        for (i = 0; i < TEST_PAGES - 1; i++) {
-> >>                pages[i] = numa_alloc_onnode(onepage, from_node);
-> >>                nodes[i] = to_node;
-> >>        }
-> >>
-> >>        nodes[TEST_PAGES - 1] = to_node;
-> >>
-> >>        /*
-> >>         * the follow page is not available, also not aligned,
-> >>         * depend on move_pages(2), it can't be moved, and should
-> >>         * return ENOENT errno.
-> >>         */
-> >>        pages[TEST_PAGES - 1] = pages[TEST_PAGES - 2] - onepage * 4
-> >>        + 1;
-> >>
-> >>        printf("from_node is %u, to_node is %u\n", from_node,
-> >>        to_node);
-> >>        ret = move_pages(0, TEST_PAGES, pages, nodes, &status,
-> >>        MPOL_MF_MOVE);
-> >>        if (ret == -1) {
-> >>                if (errno != ENOENT)
-> >>                        perror("move_pages expected ENOENT errno,
-> >>                        but it's");
-> >>                else
-> >>                        printf("Succeed\n");
-> >>        } else {
-> >>                printf("ERROR: move_pages expected FAIL.\n");
-> >>        }
-> >>
-> >>        for (i = 0; i < TEST_PAGES; i++)
-> >>                numa_free(pages[i], onepage);
-> >>
-> >>        return 0;
-> >> }
-> >>
-> >> --
-> >> Thanks,
-> >> Zhouping
-> >> --
-> >> To unsubscribe from this list: send the line "unsubscribe
-> >> linux-kernel" in
-> >> the body of a message to majordomo@vger.kernel.org
-> >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> >> Please read the FAQ at  http://www.tux.org/lkml/
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe
-> > linux-kernel" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > Please read the FAQ at  http://www.tux.org/lkml/
-> > 
-> 
-> 
-> 
+#endif /* _PROCESS_VM_H_ */
 
--- 
-Thanks,
-Zhouping
+--------------030709000806060000040703
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -217,7 +232,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------030709000806060000040703
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030709000806060000040703--
+
