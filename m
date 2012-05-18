@@ -1,26 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SPYN7-0002yp-VH
-	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 12:09:29 +0000
-Date: Wed, 2 May 2012 14:07:42 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SVMRs-0004tX-HS
+	for ltp-list@lists.sourceforge.net; Fri, 18 May 2012 12:38:24 +0000
+Date: Fri, 18 May 2012 14:35:34 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120502120742.GB366@saboteur.suse.cz>
-References: <20120229162236.GA29987@saboteur.suse.cz>
-	<6F91E0FFDA542149961F7BDED2D2B94B549365C4B6@EXGMBX01.sasken.com>
-	<20120302125851.GA8394@saboteur.suse.cz>
-	<6F91E0FFDA542149961F7BDED2D2B94B549F7328E7@EXGMBX01.sasken.com>
-	<CAMhs6YzaQ_1gKqCskOX1F8db-nKg=P_Zsy-FgHYnhczDvm9UhQ@mail.gmail.com>
-	<6F91E0FFDA542149961F7BDED2D2B94B56372F8DCD@EXGMBX01.sasken.com>
-	<CAMhs6Yyv_-v_TWKpVxv6tVeyg=jnH_VDZpaOQYnkZxF5C-O2fQ@mail.gmail.com>
-	<6F91E0FFDA542149961F7BDED2D2B94B56372F8DEA@EXGMBX01.sasken.com>
-	<3319EDD9-0FB3-4DB6-9251-ACFC01032122@gmail.com>
-	<6F91E0FFDA542149961F7BDED2D2B94B56372F8DFE@EXGMBX01.sasken.com>
+Message-ID: <20120518123534.GA21982@saboteur.suse.cz>
+References: <4FAA6A83.8010100@casparzhang.com>
+	<4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6F91E0FFDA542149961F7BDED2D2B94B56372F8DFE@EXGMBX01.sasken.com>
-Subject: Re: [LTP] Need help in cross compiling LTP for android
+In-Reply-To: <4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] Simple tests for cross memory attach
+ (process_vm_[readv|writev] syscalls)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,42 +26,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rejish Rajagopala <rejish.rajagopala@sasken.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> + /u/ltp/android-ndk-r7b/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/arm-linux-androideabi-gcc -march=armv7-a -mtune=xscale -msoft-float -fpic -mthumb-interwork -ffunction-sections -funwind-tables -fstack-protector -fno-short-enums -O2 -fomit-frame-pointer -funswitch-loops -finline-limit=300 -g -O2 -fno-strict-aliasing -pipe -Wall -I/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/include -D__ARM_ARCH_7__ -D__ARM_ARCH_7A__ -D__ARM_ARCH_7R__ -D__ARM_ARCH_7M__ -DANDROID -D__linux__ -DDEV_BSIZE=512 -DSIGCLD=SIGCHLD -D_FILE_OFFSET_BITS=64 -I/u/ltp/ltp-full-20120104/testcases/kernel/include -D_GNU_SOURCE -I/u/ltp/ltp-full-20120104/testcases/kernel/timers/clock_gettime/../include -I../../../../include -I../../../../include -nostdlib -Bdynamic -Wl,-dynamic-linker,/system/bin/linker -Wl,--gc-sections -Wl,-z,nocopyreloc -L/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib -L../../../../lib clock_gettime02.c /u/ltp/android-ndk-r7b/platforms/android
- -1
->  4/arch-arm/usr/lib/crtbegin_dynamic.o -Wl,-rpath-link=/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib /u/ltp/android-ndk-r7b/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.4.3/libgcc.a -lc /u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib/crtend_android.o -L/u/ltp/android-ndk-r7b/platforms/android-14/arch-arm/usr/lib -lltp -o clock_gettime02
-> ../../../../lib/libltp.a(parse_opts.o): In function `usc_test_looping':
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:716: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:725: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:734: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:735: undefined reference to `__aeabi_i2f'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:735: undefined reference to `__aeabi_fmul'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:735: undefined reference to `__aeabi_f2iz'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:746: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:772: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:716: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:727: undefined reference to `__aeabi_fmul'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:727: undefined reference to `__aeabi_f2iz'
-> ../../../../lib/libltp.a(parse_opts.o): In function `parse_opts':
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:289: undefined reference to `__aeabi_d2f'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:293: undefined reference to `__aeabi_d2f'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:294: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:438: undefined reference to `__aeabi_fcmpge'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:441: undefined reference to `__aeabi_f2d'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:421: undefined reference to `__aeabi_fcmpge'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:425: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:408: undefined reference to `__aeabi_fcmpge'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:413: undefined reference to `__aeabi_fcmpeq'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:424: undefined reference to `__aeabi_f2d'
-> /u/ltp/ltp-full-20120104/lib/parse_opts.c:411: undefined reference to `__aeabi_f2d'
-> collect2: ld returned 1 exit status
+> I looked at testcases sent by Chris. Good news is, they
+> do not overlap (in terms of functionality) with mine :-).
+> 
+> The patch need some polishing to match the style guide:
+> - indentation
+> - I think output should be TINFO, rather than plain printf
+> - single statement if without { }
+> - I would split some code to more functions, for example process_vm_writev01.c
+>   main function seems complex
+> 
+> As for test organization, I think we need to decide 2 issues:
+> 1. directory structure
+> a)
+>   testcases/kernel/syscalls/cma/
+>   testcases/kernel/syscalls/cma/process_vm_readv
+>   testcases/kernel/syscalls/cma/process_vm_writev
+> b)
+>   testcases/kernel/syscalls/process_vm_readv
+>   testcases/kernel/syscalls/process_vm_writev
+> 
+> I'm preferring a) as these 2 syscalls are closely related,
+> and we already have need to share code.
 
-That suggets that the linker wasn't been able to pick up symbols from
-libgcc.a, possibly because linker flags and static libraries are passed
-to it in the wrong order.
+Also please omit meaningless comments like:
+
+/******************************************************
+ * main
+ ******************************************************/
+
+I'm also not a friend of keeping the HISTORY, FILENAME and others inside
+of the file. We do have git that keeps this information in more
+structured and useful manner. So this is a relict from a times
+developers were distributing source code in tarballs. Simple credits
+with your name in the top comment should be enough ;).
+
+We use LKML coding style for LTP so you can use checkpatch.pl[1] to
+check that your platches are okay.
+
+1. https://github.com/torvalds/linux/blob/master/scripts/checkpatch.pl
+
+> 2. how to invoke new syscalls
+> a)
+> Patch from Chris is defining new syscall numbers in test and
+> using syscall(2).
+
+Don't do that, use testcases/kernel/include/linux_syscall_numbers.h
+instead (note that this file is generated and doesn't exists in the git
+repo).
+
+> b)
+> My patch adds configure check for glibc wrappers process_vm_readv/writev
+> and if those does not exists it checks for __NR_process_vm_readv.
+
+That is generally what we should do, although sometimes there is a
+difference between the libc wrapper and doing the syscall manually. In
+some of the cases you can't get EFAULT because the pointer is
+dereferenced in the userspace before it's passed to the kernel... Just
+keep that in mind.
+
+> I think we should not define syscall numbers in tests directly,
+> but I'm relying on LTP maintainers to provide guidance here.
+> In any case, if you run it on older kernel it should end with TCONF.
+
+Yes, please use the generated header. ;)
+
+> I would go with using Chris' process_vm.h, but remove syscall number
+> defines and use names that wont conflict with glibc wrappers:
+> test_process_vm_readv
+> test_process_vm_writev
+> 
+> These could be function pointers, that would get initialized with
+> function using glibc wrapper
+> function using syscall(__NR_process_vm_readv,..)
+> or NULL
+>
+> each testcase could check in setup for NULL, and end with TCONF,
+> if there is no way invoke that syscall.
+
+Once you actually _did_ the configure check, this complications aren't
+really needed. Or have I missed something?
+
+> There was question from Caspar, if we should check for both glibc wrapper
+> and syscall number (http://thread.gmane.org/gmane.linux.ltp/16055).
+> I think we should, as we use glibc wrappers by default.
+> 
+> Any thoughts?
+
+As I said, once you are sure that glibc wrapper and bare syscall do the
+same in your case preffering glibc wrapper is good idea as this covers
+the codepath as whole. Otherwise just do the syscall and it either works
+or you get ENOSYS.
 
 -- 
 Cyril Hrubis
