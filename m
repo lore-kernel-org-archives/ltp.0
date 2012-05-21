@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SUJAu-0005Mj-2o
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 14:56:32 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SUJAo-0006ab-8f
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 14:56:32 +0000
-Date: Tue, 15 May 2012 10:56:17 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4FAA6A83.8010100@casparzhang.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Simple tests for cross memory attach
-	(process_vm_[readv|writev] syscalls)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SWOOo-0000N2-5h
+	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 08:55:30 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SWOOk-0006pI-CZ
+	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 08:55:30 +0000
+Received: by pbbrq2 with SMTP id rq2so6841767pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 21 May 2012 01:55:20 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1257)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <1337589516-9731-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Date: Mon, 21 May 2012 01:55:17 -0700
+Message-Id: <DC37D748-ECAA-4E0D-886F-7119C7F007CE@gmail.com>
+References: <1337589516-9731-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] getcpu: remove the useless and improper kernel
+	version check
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,100 +31,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>, Christopher Yeoh <cyeoh@au1.ibm.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
+On May 21, 2012, at 1:38 AM, Wanlong Gao wrote:
 
+> Now, kernel version up to 3.x, check for 2.6.x is useless.
 
------ Original Message -----
-> From: "Caspar Zhang" <caspar@casparzhang.com>
-> To: "Christopher Yeoh" <cyeoh@au1.ibm.com>
-> Cc: ltp-list@lists.sourceforge.net, "Jan Stancek" <jstancek@redhat.com>
-> Sent: Wednesday, 9 May, 2012 3:00:51 PM
-> Subject: Re: [LTP] [PATCH] Simple tests for cross memory attach (process_vm_[readv|writev] syscalls)
-> Hi Chris, thanks very much for the patch, I tried to backport your
-> testcases in http://ozlabs.org/~cyeoh/cma/ to LTP and composed an
-> unfinished version, then I was busy for other things. I'm happy to
-> see
-> you can backport it by yourself :) There are some more new cma
-> patches
-> (aims on testing retcode and errnos) sent by Jan Stancek (cc-ed) [1],
-> I
-> think we need to discuss the testcase organization..
-> 
-> And I will review the testcases when I get more free time.
+I don't agree with this statement. LTP needs to be usable on 2.6.x for at least 2 years after 3.x's inception.
 
-Hi,
+> Additionally, we already checked the kernel version in the
+> program itself.
+> Meanwhile, check the kernel version at compiling time is wrong,
+> we may not do testing on the same machine as compiling.
 
-I looked at testcases sent by Chris. Good news is, they
-do not overlap (in terms of functionality) with mine :-).
+Agreed. I think that this check was incorrectly implemented. Furthermore, this causes confusion when the test case doesn't exist; it's better to stub out the test case in the source.
 
-The patch need some polishing to match the style guide:
-- indentation
-- I think output should be TINFO, rather than plain printf
-- single statement if without { }
-- I would split some code to more functions, for example process_vm_writev01.c
-  main function seems complex
+I would just remove the first line -- the rest of the info is valid.
 
-As for test organization, I think we need to decide 2 issues:
-1. directory structure
-a)
-  testcases/kernel/syscalls/cma/
-  testcases/kernel/syscalls/cma/process_vm_readv
-  testcases/kernel/syscalls/cma/process_vm_writev
-b)
-  testcases/kernel/syscalls/process_vm_readv
-  testcases/kernel/syscalls/process_vm_writev
-
-I'm preferring a) as these 2 syscalls are closely related,
-and we already have need to share code.
-
-2. how to invoke new syscalls
-a)
-Patch from Chris is defining new syscall numbers in test and
-using syscall(2).
-
-b)
-My patch adds configure check for glibc wrappers process_vm_readv/writev
-and if those does not exists it checks for __NR_process_vm_readv.
-
-I think we should not define syscall numbers in tests directly,
-but I'm relying on LTP maintainers to provide guidance here.
-In any case, if you run it on older kernel it should end with TCONF.
-
-I would go with using Chris' process_vm.h, but remove syscall number
-defines and use names that wont conflict with glibc wrappers:
-test_process_vm_readv
-test_process_vm_writev
-
-These could be function pointers, that would get initialized with
-function using glibc wrapper
-function using syscall(__NR_process_vm_readv,..)
-or NULL
-
-each testcase could check in setup for NULL, and end with TCONF,
-if there is no way invoke that syscall.
-
-There was question from Caspar, if we should check for both glibc wrapper
-and syscall number (http://thread.gmane.org/gmane.linux.ltp/16055).
-I think we should, as we use glibc wrappers by default.
-
-Any thoughts?
-
-Regards,
-Jan
-
-> 
-> Thanks,
-> Caspar
-> 
-> [1]
-> http://thread.gmane.org/gmane.linux.ltp/16052
-> http://thread.gmane.org/gmane.linux.ltp/16053
-> http://thread.gmane.org/gmane.linux.ltp/16054
-> http://thread.gmane.org/gmane.linux.ltp/16055
-> 
-
+Cheers!
+-Garrett
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
 Exclusive live event will cover all the ways today's security and 
