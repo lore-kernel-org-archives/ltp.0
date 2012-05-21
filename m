@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SZgBV-0001wz-6K
-	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:31:21 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SZgBP-0001Tg-Rq
-	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:31:21 +0000
-Received: by dalh21 with SMTP id h21so6645501dal.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 30 May 2012 03:31:10 -0700 (PDT)
-Message-ID: <4FC5F69E.1090405@casparzhang.com>
-Date: Wed, 30 May 2012 18:29:50 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SWOTF-0000hg-Uf
+	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 09:00:05 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SWOTE-0006yu-IR
+	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 09:00:05 +0000
+Message-ID: <4FBA03C4.7020408@cn.fujitsu.com>
+Date: Mon, 21 May 2012 16:58:44 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1338373734-21691-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1338373734-21691-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH] gitmodules: update mce-test repo URL
+References: <1337589516-9731-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<4FBA01CE.5000407@casparzhang.com>
+In-Reply-To: <4FBA01CE.5000407@casparzhang.com>
+Subject: Re: [LTP] [PATCH] getcpu: remove the useless and improper kernel
+ version check
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,24 +30,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chen Gong <gong.chen@linux.intel.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 05/30/2012 06:28 PM, Caspar Zhang wrote:
-> 
-> According to mce-test maintainer Chen Gong, the project repo URL has
-> been moved to git.kernel.org, so update the URL.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  .gitmodules |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
+On 05/21/2012 04:50 PM, Caspar Zhang wrote:
 
-Hi Chen Gong, please review the patch.
+> On 05/21/2012 04:38 PM, Wanlong Gao wrote:
+>> Now, kernel version up to 3.x, check for 2.6.x is useless.
+> 
+> The fix makes sense, however, "checking for 2.6.x" is still valid for
+> old kernels (does LTP still support 2.4.x? I'm not sure...)
+
+
+yes, you are right, as I said, the program itself already checked the
+kernel version, check the kernel version at Makefile is conceptual wrong.
 
 Thanks,
-Caspar
+Wanlong Gao
+
+> 
+> Anyway,
+> 
+> Acked-by: Caspar Zhang <caspar@casparzhang.com>
+> 
+>> Additionally, we already checked the kernel version in the
+>> program itself.
+>> Meanwhile, check the kernel version at compiling time is wrong,
+>> we may not do testing on the same machine as compiling.
+>>
+>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>> ---
+>>  testcases/kernel/syscalls/getcpu/Makefile |   14 --------------
+>>  1 file changed, 14 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/getcpu/Makefile b/testcases/kernel/syscalls/getcpu/Makefile
+>> index b8bf68b..7a1a87a 100644
+>> --- a/testcases/kernel/syscalls/getcpu/Makefile
+>> +++ b/testcases/kernel/syscalls/getcpu/Makefile
+>> @@ -19,18 +19,4 @@
+>>  top_srcdir		?= ../../../..
+>>  
+>>  include $(top_srcdir)/include/mk/testcases.mk
+>> -
+>> -ifneq ($(shell uname -r | grep -c "^2\.6\.*"), 1)
+>> -
+>> -MAKE_TARGETS		:=
+>> -
+>> -.PHONY: no-all-install
+>> -
+>> -all install: no-all-install
+>> -
+>> -no-all-install:
+>> -	@echo "Warning: Kernel doesn't support this test case"
+>> -
+>> -endif
+>> -
+>>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> 
+> 
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
