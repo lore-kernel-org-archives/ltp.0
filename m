@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SYyIA-0002lL-Cz
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:18 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SYyI9-0002Mk-3K
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:18 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4SBdBSN002948
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 May 2012 07:39:11 -0400
-Message-ID: <4FC363DD.3080303@redhat.com>
-Date: Mon, 28 May 2012 13:39:09 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SWWGa-0006ta-Ro
+	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 17:19:32 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SWWGX-0002B4-2R
+	for ltp-list@lists.sourceforge.net; Mon, 21 May 2012 17:19:32 +0000
+Received: by yenl13 with SMTP id l13so5467195yen.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 21 May 2012 10:19:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000907090602060600040600"
-Subject: [LTP] [PATCH 1/4] add libnuma_helper
+Date: Mon, 21 May 2012 10:19:23 -0700
+Message-ID: <CAGH67wSN3uk5v5F=ZBsEGuNCZgEsfwNnQZmEjVPmCjY6fdRtqw@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] "more-syscalls" branch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,323 +25,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
-
-This is a multi-part message in MIME format.
---------------000907090602060600040600
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-
-A library to share NUMA helper functions shared by
-multiple testcases.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/numa/Makefile          |   22 ++++
- testcases/kernel/syscalls/numa/Makefile.inc      |   27 +++++
- testcases/kernel/syscalls/numa/lib/Makefile      |   26 ++++
- testcases/kernel/syscalls/numa/lib/numa_helper.c |  135 ++++++++++++++++++++++
- testcases/kernel/syscalls/numa/lib/numa_helper.h |   34 ++++++
- 5 files changed, 244 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/numa/Makefile
- create mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
- create mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
- create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
- create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
-
-
-
---------------000907090602060600040600
-Content-Type: text/x-patch;
- name="0001-add-libnuma_helper.a.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-add-libnuma_helper.a.patch"
-
-diff --git a/testcases/kernel/syscalls/numa/Makefile b/testcases/kernel/syscalls/numa/Makefile
-new file mode 100644
-index 0000000..b38c5b2
---- /dev/null
-+++ b/testcases/kernel/syscalls/numa/Makefile
-@@ -0,0 +1,22 @@
-+#
-+#  Copyright (C) 2012 Linux Test Project, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/syscalls/numa/Makefile.inc b/testcases/kernel/syscalls/numa/Makefile.inc
-new file mode 100644
-index 0000000..59c2f9e
---- /dev/null
-+++ b/testcases/kernel/syscalls/numa/Makefile.inc
-@@ -0,0 +1,27 @@
-+#
-+#  Copyright (C) 2012 Linux Test Project, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../numa/lib/
-+LIBDIR			:= ../numa/lib
-+LIB			:= $(LIBDIR)/libnuma_helper.a
-+MAKE_DEPS		+= $(LIB)
-+LDLIBS			+= $(NUMA_LIBS) -lnuma_helper -lltp
-+LDFLAGS			+= -L$(LIBDIR)
-+
-+$(LIB): $(LIBDIR)
-+		$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
-diff --git a/testcases/kernel/syscalls/numa/lib/Makefile b/testcases/kernel/syscalls/numa/lib/Makefile
-new file mode 100644
-index 0000000..d4a6f41
---- /dev/null
-+++ b/testcases/kernel/syscalls/numa/lib/Makefile
-@@ -0,0 +1,26 @@
-+#
-+#  Copyright (C) 2012 Linux Test Project, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+CPPFLAGS		+= -I../../../include
-+LIB			:= libnuma_helper.a
-+
-+include $(top_srcdir)/include/mk/lib.mk
-diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.c b/testcases/kernel/syscalls/numa/lib/numa_helper.c
-new file mode 100644
-index 0000000..441d4eb
---- /dev/null
-+++ b/testcases/kernel/syscalls/numa/lib/numa_helper.c
-@@ -0,0 +1,135 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include "config.h"
-+#include <errno.h>
-+#if HAVE_NUMA_H
-+#include <numa.h>
-+#endif
-+#if HAVE_NUMAIF_H
-+#include <numaif.h>
-+#endif
-+#include <stdarg.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <unistd.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "numa_helper.h"
-+#include "linux_syscall_numbers.h"
-+
-+/*
-+ * get_allowed_nodes_arr - get number and array of available nodes
-+ * @num_allowed_nodes: pointer where number of available nodes will be stored
-+ * @allowed_nodes: array of available node ids, this is MPOL_F_MEMS_ALLOWED
-+ *                 node bitmask compacted (without holes), so that each field
-+ *                 contains node number. If NULL only num_allowed_nodes is
-+ *                 returned, otherwise it cotains new allocated array,
-+ *                 which caller is responsible to free.
-+ * RETURNS:
-+ *     0 on success
-+ *    -1 on allocation failure
-+ *    -2 on get_mempolicy failure
-+ */
-+int get_allowed_nodes_arr(int *num_allowed_nodes, int **allowed_nodes)
-+{
-+#if HAVE_NUMA_H
-+	int i;
-+	struct bitmask *allowed_nodemask = NULL;
-+#endif
-+	*num_allowed_nodes = 0;
-+	if (allowed_nodes)
-+		*allowed_nodes = NULL;
-+
-+#if HAVE_NUMA_H
-+	if ((allowed_nodemask = numa_allocate_nodemask()) == NULL)
-+		return -1;
-+
-+	if (allowed_nodes) {
-+		*allowed_nodes = malloc(sizeof(int)*allowed_nodemask->size);
-+		if (*allowed_nodes == NULL)
-+			return -1;
-+	}
-+
-+	/*
-+	 * avoid numa_get_mems_allowed(), because of bug in getpol()
-+	 * utility function in older versions:
-+	 * http://www.spinics.net/lists/linux-numa/msg00849.html
-+	 */
-+	if (syscall(__NR_get_mempolicy, NULL, allowed_nodemask->maskp,
-+		allowed_nodemask->size, 0, MPOL_F_MEMS_ALLOWED) < 0) {
-+		numa_bitmask_free(allowed_nodemask);
-+		if (allowed_nodes) {
-+			free(*allowed_nodes);
-+			*allowed_nodes = NULL;
-+		}
-+		return -2;
-+	}
-+
-+	for (i = 0; i <	allowed_nodemask->size; i++) {
-+		if (numa_bitmask_isbitset(allowed_nodemask, i)) {
-+			if (allowed_nodes)
-+				(*allowed_nodes)[*num_allowed_nodes] = i;
-+			(*num_allowed_nodes)++;
-+		}
-+	}
-+	numa_bitmask_free(allowed_nodemask);
-+#endif
-+	return 0;
-+}
-+
-+/*
-+ * get_allowed_nodes - convenience function to get fixed number of nodes
-+ * @count: how many nodes to get
-+ * @...: int pointers, where node ids will be stored
-+ * RETURNS:
-+ *     0 on success
-+ *    -1 on allocation failure
-+ *    -2 on get_mempolicy failure
-+ *    -3 on not enough allowed nodes
-+ */
-+int get_allowed_nodes(int count, ...)
-+{
-+	int ret;
-+	int i, *nodep;
-+	va_list ap;
-+	int num_nodes = 0;
-+	int *nodes = NULL;
-+
-+	if ((ret = get_allowed_nodes_arr(&num_nodes, &nodes)) < 0)
-+		return ret;
-+
-+	va_start(ap, count);
-+	for (i = 0; i < count; i++) {
-+		nodep = va_arg(ap, int *);
-+		if (i < num_nodes) {
-+			*nodep = nodes[i];
-+		} else {
-+			*nodep = -1;
-+			ret = -3;
-+			tst_resm(TFAIL, "get_allowed_nodes, i >= num_allowed_nodes: "
-+			    "%d > %d", i, num_nodes);
-+		}
-+	}
-+	free(nodes);
-+	va_end(ap);
-+
-+	return ret;
-+}
-diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.h b/testcases/kernel/syscalls/numa/lib/numa_helper.h
-new file mode 100644
-index 0000000..73b6513
---- /dev/null
-+++ b/testcases/kernel/syscalls/numa/lib/numa_helper.h
-@@ -0,0 +1,34 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#ifndef NUMA_HELPER_H
-+#define NUMA_HELPER_H
-+
-+#include "config.h"
-+#if HAVE_NUMA_H
-+#include <numa.h>
-+#endif
-+#if HAVE_NUMAIF_H
-+#include <numaif.h>
-+#endif
-+
-+int get_allowed_nodes_arr(int *num_allowed_nodes, int **allowed_nodes);
-+int get_allowed_nodes(int count, ...);
-+
-+#endif
-+
-
-
---------------000907090602060600040600
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
+
+    In order to get LTP more up to date and expand breadth of syscall
+requirements testing, I'm going to be working on adding more syscall
+tests to LTP over the next couple weeks. I started out with
+inotify(7), but I want to move on to newer syscalls that exercise MI
+(machine independent) functionality, while at the same time do not
+want to duplicate work being done by others elsewhere.
+    The long and short of it is that I want to update Linux compat in
+FreeBSD (or at least provide the tests to do that) and in order to
+achieve that, I need up-to-date testcases that pass on an older
+version of Fedora running 2.6 (say Fedora 10) and Fedora 17 (runs
+3.3). The current testcases are ok, but not exhaustive in all areas
+and that's what I'm aiming to improve.
+    Thoughts on this and also an idea of where we need to add more
+exhaustive testcases (otherwise I'll have to work through the list and
+pore over manpages looking for my next "target" :)..)?
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -352,16 +54,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------000907090602060600040600
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------000907090602060600040600--
-
