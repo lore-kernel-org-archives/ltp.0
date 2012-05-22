@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SS6EG-0003PS-5Q
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:42:52 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SWpua-0003Ae-FJ
+	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:18:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SS6EA-00089F-CL
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:42:52 +0000
-Message-ID: <4FAA65F8.1060604@cn.fujitsu.com>
-Date: Wed, 09 May 2012 20:41:28 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1SWpuV-0000Ej-4X
+	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:18:08 +0000
+Message-ID: <4FBBA010.4020307@redhat.com>
+Date: Tue, 22 May 2012 16:17:52 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <4FAA5A5B.1030704@redhat.com>
-In-Reply-To: <4FAA5A5B.1030704@redhat.com>
-Subject: Re: [LTP] [PATCH v2] move_pages09: move_pages returns 0 if nothing
- got migrated
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------030801070901070907050304"
+Subject: [LTP] [PATCH v2 2/3] cma: add process_vm.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,58 +23,105 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: ltp-list@lists.sourceforge.net
 
-On 05/09/2012 07:51 PM, Jan Stancek wrote:
-
-> 
-> Following commit changed the behavior to return 0 when no pages
-> require migration.
-> 
-> commit e78bbfa8262424417a29349a8064a535053912b9
-> Author: Brice Goglin <Brice.Goglin@inria.fr>
-> Date:   Sat Oct 18 20:27:15 2008 -0700
->     mm: stop returning -ENOENT from sys_move_pages() if nothing got
-> migrated
-> 
-> So testing for ENOENT in move_pages09, makes sense only for
-> kernel < 2.6.28.
+This is a multi-part message in MIME format.
+--------------030801070901070907050304
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
+header file shared by tests, defines:
+test_process_vm_readv
+test_process_vm_writev
 
-pushed, thanks all,
-
-Wanlong Gao
-
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  .../kernel/syscalls/move_pages/move_pages09.c      |   27 ++++++++++++++-----
->  1 files changed, 20 insertions(+), 7 deletions(-)
-> 
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/cma/process_vm.h |   58 ++++++++++++++++++++++++++++
+ 1 files changed, 58 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm.h
 
 
+
+--------------030801070901070907050304
+Content-Type: text/x-patch;
+ name="0002-cma-add-process_vm.h.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0002-cma-add-process_vm.h.patch"
+
+diff --git a/testcases/kernel/syscalls/cma/process_vm.h b/testcases/kernel/syscalls/cma/process_vm.h
+new file mode 100644
+index 0000000..04176c9
+--- /dev/null
++++ b/testcases/kernel/syscalls/cma/process_vm.h
+@@ -0,0 +1,58 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#ifndef _PROCESS_VM_H_
++#define _PROCESS_VM_H_
++
++#include <sys/syscall.h>
++#include <sys/uio.h>
++#include <unistd.h>
++
++static inline ssize_t test_process_vm_readv(pid_t pid,
++		const struct iovec *lvec, unsigned long liovcnt,
++		const struct iovec *rvec, unsigned long riovcnt,
++		unsigned long flags)
++{
++#if defined(__NR_process_vm_readv)
++	return syscall(__NR_process_vm_readv, pid, lvec, liovcnt,
++			rvec, riovcnt, flags);
++#else
++	return syscall(-1);
++#endif
++}
++
++static inline ssize_t test_process_vm_writev(pid_t pid,
++		const struct iovec *lvec, unsigned long liovcnt,
++		const struct iovec *rvec, unsigned long riovcnt,
++		unsigned long flags)
++{
++#if defined(__NR_process_vm_writev)
++	return syscall(__NR_process_vm_writev, pid, lvec, liovcnt,
++			rvec, riovcnt, flags);
++#else
++	return syscall(-1);
++#endif
++}
++
++#endif /* _PROCESS_VM_H_ */
+
+
+--------------030801070901070907050304
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -85,7 +129,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------030801070901070907050304
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030801070901070907050304--
+
