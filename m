@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1STpfh-00089q-Nn
-	for ltp-list@lists.sourceforge.net; Mon, 14 May 2012 07:26:21 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SWpuY-0003AF-H7
+	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:18:06 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1STpfb-0007AG-Sy
-	for ltp-list@lists.sourceforge.net; Mon, 14 May 2012 07:26:21 +0000
-Message-ID: <4FB0B348.3020601@cn.fujitsu.com>
-Date: Mon, 14 May 2012 15:24:56 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1SWpuU-0002s6-M3
+	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:18:06 +0000
+Message-ID: <4FBBA00E.2060606@redhat.com>
+Date: Tue, 22 May 2012 16:17:50 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
-	<1336655089-26941-3-git-send-email-marios.makris@gmail.com>
-In-Reply-To: <1336655089-26941-3-git-send-email-marios.makris@gmail.com>
-Subject: Re: [LTP] [PATCH 3/3] Changed nconv variable from long to int in
- /lib/bytes_by_prefix.c
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------090506020803000404090203"
+Subject: [LTP] [PATCH v2 1/3] add testcases/kernel/syscalls/cma
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,91 +23,128 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Marios Makris <marios.makris@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 05/10/2012 09:04 PM, Marios Makris wrote:
-
-> According to sscanf man page the return value is int
-> therefore the holding variable should be int as well.
-> 
-> Also changed the loop variable name of the main method
-> from ind to i in order to better represent that it is
-> just a loop variable.
-> 
-> Signed-off-by: Marios Makris <marios.makris@gmail.com>
+This is a multi-part message in MIME format.
+--------------090506020803000404090203
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-But Marios,
+add directory structure for tests related to syscalls:
+process_vm_readv
+process_vm_writev
 
-In the previous patch, you changed the library function
-from str_to_bytes to bytes_by_prefix, if you'd prefer
-the latter name, please also replace the using of str_to_bytes
-with the new name, if not, it'll not be compiled.
-
-Thanks,
-Wanlong Gao
-
-> ---
->  lib/bytes_by_prefix.c |   14 +++++++-------
->  1 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/lib/bytes_by_prefix.c b/lib/bytes_by_prefix.c
-> index b9ac565..eebff83 100644
-> --- a/lib/bytes_by_prefix.c
-> +++ b/lib/bytes_by_prefix.c
-> @@ -108,7 +108,7 @@ int bytes_by_prefix(char *s)
->  long lbytes_by_prefix(char *s)
->  {
->  	char mult, junk;
-> -	long nconv;
-> +	int nconv;
->  	float num;
->  
->  	nconv = sscanf(s, "%f%c%c", &num, &mult, &junk);
-> @@ -145,7 +145,7 @@ long lbytes_by_prefix(char *s)
->  long long llbytes_by_prefix(char *s)
->  {
->  	char mult, junk;
-> -	long nconv;
-> +	int nconv;
->  	double num;
->  
->  	nconv = sscanf(s, "%lf%c%c", &num, &mult, &junk);
-> @@ -179,23 +179,23 @@ long long llbytes_by_prefix(char *s)
->  
->  main(int argc, char **argv)
->  {
-> -	int ind;
-> +	int i;
->  
->  	if (argc == 1) {
->  		fprintf(stderr, "missing bytes_by_prefix() parameteres\n");
->  		exit(1);
->  	}
->  
-> -	for (ind = 1; ind < argc; ind++) {
-> +	for (i = 1; i < argc; i++) {
->  
->  		printf("bytes_by_prefix(%s) returned %d\n",
-> -		       argv[ind], bytes_by_prefix(argv[ind]));
-> +		       argv[i], bytes_by_prefix(argv[i]));
->  
->  		printf("lbytes_by_prefix(%s) returned %ld\n",
-> -		       argv[ind], lbytes_by_prefix(argv[ind]));
-> +		       argv[i], lbytes_by_prefix(argv[i]));
->  
->  		printf("llbytes_by_prefix(%s) returned %lld\n",
-> -		       argv[ind], llbytes_by_prefix(argv[ind]));
-> +		       argv[i], llbytes_by_prefix(argv[i]));
->  	}
->  }
->  
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/cma/Makefile             |   22 ++++++++++++++++++++
+ .../kernel/syscalls/cma/process_vm_readv/Makefile  |   22 ++++++++++++++++++++
+ .../kernel/syscalls/cma/process_vm_writev/Makefile |   22 ++++++++++++++++++++
+ 3 files changed, 66 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/cma/Makefile
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm_readv/Makefile
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm_writev/Makefile
 
 
+
+--------------090506020803000404090203
+Content-Type: text/x-patch; name="0001-add-testcases-kernel-syscalls-cma.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0001-add-testcases-kernel-syscalls-cma.patch"
+
+diff --git a/testcases/kernel/syscalls/cma/Makefile b/testcases/kernel/syscalls/cma/Makefile
+new file mode 100644
+index 0000000..39d4657
+--- /dev/null
++++ b/testcases/kernel/syscalls/cma/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv/Makefile b/testcases/kernel/syscalls/cma/process_vm_readv/Makefile
+new file mode 100644
+index 0000000..f10cac2
+--- /dev/null
++++ b/testcases/kernel/syscalls/cma/process_vm_readv/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir              ?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/cma/process_vm_writev/Makefile b/testcases/kernel/syscalls/cma/process_vm_writev/Makefile
+new file mode 100644
+index 0000000..f10cac2
+--- /dev/null
++++ b/testcases/kernel/syscalls/cma/process_vm_writev/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir              ?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+
+--------------090506020803000404090203
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -119,7 +152,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------090506020803000404090203
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------090506020803000404090203--
+
