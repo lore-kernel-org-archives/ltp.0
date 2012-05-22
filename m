@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SXude-0005zL-4X
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 13:33:06 +0000
-Date: Fri, 25 May 2012 15:30:50 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120525133050.GA32516@saboteur.suse.cz>
-References: <0cf106de-47ab-4f1a-a92d-c5183ab90af0@zmail17.collab.prod.int.phx2.redhat.com>
-	<4FBF5672.5090306@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SWpu7-0001s7-Q7
+	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:17:39 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SWpu2-0000Du-2e
+	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:17:39 +0000
+Message-ID: <4FBB9FF2.2070507@redhat.com>
+Date: Tue, 22 May 2012 16:17:22 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4FBF5672.5090306@redhat.com>
-Subject: Re: [LTP] [PATCH 0/2] move_pages: dont use hardcoded node numbers
+Subject: [LTP] [PATCH v2 0/3] add CMA test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,49 +25,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >>>   move_pages_support: use only allowed nodes
-> >>>   move_pages: dont use hardcoded node numbers
-> >>>
-> >>>  .../kernel/syscalls/move_pages/move_pages02.c      |   13 +++-
-> >>>  .../kernel/syscalls/move_pages/move_pages03.c      |   13 +++-
-> >>>  .../kernel/syscalls/move_pages/move_pages04.c      |   13 +++-
-> >>>  .../kernel/syscalls/move_pages/move_pages05.c      |   13 +++-
-> >>>  .../kernel/syscalls/move_pages/move_pages06.c      |   10 ++-
-> >>>  .../kernel/syscalls/move_pages/move_pages07.c      |   13 +++-
-> >>>  .../kernel/syscalls/move_pages/move_pages08.c      |   12 +++-
-> >>>  .../kernel/syscalls/move_pages/move_pages09.c      |    8 ++-
-> >>>  .../kernel/syscalls/move_pages/move_pages10.c      |   13 +++-
-> >>>  .../kernel/syscalls/move_pages/move_pages11.c      |   13 +++-
-> >>>  .../syscalls/move_pages/move_pages_support.c       |   74
-> >>>  ++++++++++++++++----
-> >>>  .../syscalls/move_pages/move_pages_support.h       |    1 +
-> >>>  12 files changed, 157 insertions(+), 39 deletions(-)
-> >>>
-> >>
-> >> Looks like many duplications here... wondering if any chance putting
-> >> them into a common function or something?
-> >>
-> > 
-> > That is probably good idea, because we may still find new places where can use it.
-> > I'm thinking about something like numa_helper.a, which we could link with
-> 
-> I have no objection doing that.
-> 
-> Cyril, suggestions?
+changes in v2
+- dropped configure check as glibc wrapper calls syscall directly,
+  and using syscall(2) we can test also when glibc wrappers are missing
+- added simplified process_vm.h
 
-Yes, that is always a good idea. The easiest thing to do is to create a
-common.c file and include it in each of the tests (which I would do if
-the amount of shared code is relatively small and is used only by the
-tests in current directory). Otherwise you may do the usual library
-thing with actual headers and link tests against it...
+CMA (cross memory attach) feature introduced 2 new syscalls:
+process_vm_readv
+process_vm_writev
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+commit fcf634098c00dd9cd247447368495f0b79be12d1
+Author: Christopher Yeoh <cyeoh@au1.ibm.com>
+Date: Mon Oct 31 17:06:39 2011 -0700
+Cross Memory Attach
+
+"The basic idea behind cross memory attach is to allow MPI programs doing
+intra-node communication to do a single copy of the message rather than
+a double copy of the message via shared memory." [1]
+
+This patch series is introducing the initial structure under syscalls/cma
+and first test to check various errno codes as described in proposed man
+page [2].
+
+[1] http://lwn.net/Articles/451188/
+[2] http://ozlabs.org/~cyeoh/cma/process_vm_readv.txt
+
+Jan Stancek (3):
+  add testcases/kernel/syscalls/cma
+  cma: add process_vm.h
+  syscalls/cma: add errno tests
+
+ runtest/syscalls                                   |    3 +
+ testcases/kernel/syscalls/cma/Makefile             |   22 +
+ testcases/kernel/syscalls/cma/cma01.c              |  421 ++++++++++++++++++++
+ testcases/kernel/syscalls/cma/process_vm.h         |   58 +++
+ .../kernel/syscalls/cma/process_vm_readv/Makefile  |   29 ++
+ .../kernel/syscalls/cma/process_vm_writev/Makefile |   29 ++
+ 6 files changed, 562 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/cma/Makefile
+ create mode 100644 testcases/kernel/syscalls/cma/cma01.c
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm.h
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm_readv/Makefile
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm_writev/Makefile
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
