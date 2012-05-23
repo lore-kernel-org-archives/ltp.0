@@ -1,23 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SZ4gP-0004KS-El
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 18:28:45 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SZ4gO-0007H1-Q8
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 18:28:45 +0000
-Received: by obhx4 with SMTP id x4so870293obh.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 May 2012 11:28:39 -0700 (PDT)
+	(envelope-from <gong.chen@linux.intel.com>) id 1SX0l4-0000NQ-Vr
+	for ltp-list@lists.sourceforge.net; Wed, 23 May 2012 01:53:02 +0000
+Received: from mga02.intel.com ([134.134.136.20])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SX0l3-0002vP-Rb
+	for ltp-list@lists.sourceforge.net; Wed, 23 May 2012 01:53:02 +0000
+Message-ID: <4FBC42F5.508@linux.intel.com>
+Date: Wed, 23 May 2012 09:52:53 +0800
+From: Chen Gong <gong.chen@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <4FC363E1.8020702@redhat.com>
-References: <4FC363E1.8020702@redhat.com>
-Date: Mon, 28 May 2012 11:28:39 -0700
-Message-ID: <CAGH67wRQ0rd1gZreTExEwcPLwF752ssa3nN40Xm4359Hn_mdLg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 2/4] mbind01: dont use hardcoded NUMA node ids
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<20120316143522.GB19604@alboin.amr.corp.intel.com>
+	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
+	<4F825325.3030308@linux.intel.com>
+	<4F825F9D.3020608@casparzhang.com>
+	<4F827B6A.3020204@linux.intel.com>
+	<4F8CCF86.2010409@linux.intel.com>
+	<4F8CD7AC.3050000@casparzhang.com>
+In-Reply-To: <4F8CD7AC.3050000@casparzhang.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +33,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-On Mon, May 28, 2012 at 4:39 AM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
-> =A0testcases/kernel/syscalls/mbind/Makefile =A0| =A0 =A03 +--
-> =A0testcases/kernel/syscalls/mbind/mbind01.c | =A0 10 ++++++++--
-> =A02 files changed, 9 insertions(+), 4 deletions(-)
-
-+	if ((ret =3D get_allowed_nodes(1, &test_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
-
-    Is this always guaranteed to set errno to a sane value?
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+5LqOIDIwMTIvNC8xNyAxMDozOCwgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPiBPbiAwNC8xNy8yMDEy
+IDEwOjAzIEFNLCBDaGVuIEdvbmcgd3JvdGU6Cj4+IOS6jiAyMDEyLzQvOSAxNDowMiwgQ2hlbiBH
+b25nIOWGmemBkzoKPj4+IOS6jiAyMDEyLzQvOSAxMjowMywgQ2FzcGFyIFpoYW5nIOWGmemBkzoK
+Pj4+PiBPbiAwNC8wOS8yMDEyIDExOjEwIEFNLCBDaGVuIEdvbmcgd3JvdGU6Cj4+Pj4+IOS6jiAy
+MDEyLzQvNiAyMjozMywgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPj4+Pj4+IE9uIDAzLzIxLzIwMTIg
+MDU6MTggUE0sIENoZW4gR29uZyB3cm90ZToKPj4+Pj4+PiDkuo4gMjAxMi8zLzE2IDIyOjM1LCBB
+bmRpIEtsZWVuIOWGmemBkzoKPj4+Pj4+Pj4gT24gRnJpLCBNYXIgMTYsIDIwMTIgYXQgMDM6Mjc6
+NDRQTSArMDgwMCwgQ2FzcGFyCj4+Pj4+Pj4+IFpoYW5nIHdyb3RlOgo+Pj4+Pj4+Pj4gSGkgYWxs
+LCBJJ2xsIG1lcmdlIHRoaXMgY2hhbmdlIHRvIG1hc3RlciBpZiBJIGRvbid0Cj4+Pj4+Pj4+PiBo
+ZWFyIGFueSBvYmplY3Rpb25zIGZyb20geW91IGJ5IHRvZGF5Lgo+Pj4+Pj4+PiBGaW5lIGZvciBt
+ZS4gQ29weWluZyBHb25nIENoZW4gd2hvIGRpZCBtb3N0IG9mIHRoZQo+Pj4+Pj4+PiBtY2UtdGVz
+dCB3b3JrIHJlY2VudGx5IHRvby4KPj4+Pj4+Pj4gCj4+Pj4+Pj4+IC1BbmRpCj4+Pj4+Pj4gT2gs
+IHllcy4gUmVjZW50bHkgSSBtYWtlIGEgYmlnIGNoYW5nZSBvbiBtY2UtdGVzdAo+Pj4+Pj4+IHBy
+b2plY3QgYW5kIG9sZCBzdHJ1Y3R1cmUgd2lsbCBiZSByZW9yZ2FuaXplZC4gQW5kIEkKPj4+Pj4+
+PiBldmVyIGxvb2tlZCB0aHJvdWdoIHRoZSBtY2UtdGVzdCBwYXJ0IGluIExUUC4KPj4+Pj4+PiBV
+bmZvcnR1bmF0ZWx5IGl0IGlzIHZlcnkgb2xkIGFuZCBjYW4ndCBydW4gb24gbmV3ZXIKPj4+Pj4+
+PiBrZXJuZWwuIEkgaG9wZSB5b3UgY2FuIGtlZXAgY3VycmVudCBkaXNhYmxlZCBzdGF0dXMgaW4K
+Pj4+Pj4+PiBMVFAgYW5kIHdhaXQgbXkgbmV3IHdvcmsgaXMgbWVyZ2VkLiBXZSBjYW4gdGFsayBh
+dCB0aGF0Cj4+Pj4+Pj4gdGltZS4gSXMgaXQgT0sgdG8geW91Pwo+Pj4+Pj4gSGkgQ2hlbiBHb25n
+LCBzb3JyeSBmb3IgbGF0ZSByZXBseSwgd2UncmUgcGxhbm5pbmcgdG8KPj4+Pj4+IHJlbW92ZSBv
+bGQgc3RhdGljIGNvZGVkIG1jZS10ZXN0IGZyb20gTFRQLCBhbmQgdXNlIGl0IGFzCj4+Pj4+PiBh
+IHN1Ym1vZHVsZSwgd2hpY2ggbWVhbnMsIG1jZS10ZXN0IHdvbid0IGJlIHN0YXRpYy1jb2RlZAo+
+Pj4+Pj4gYW55IG1vcmUsIGl0J3MgYWx3YXlzIHN5bmNlZCB1cCB3aXRoIHlvdXIgdXBzdHJlYW0K
+Pj4+Pj4+IHZlcnNpb24sIHdlIGp1c3QgbmVlZCB0byBkbyBzb21lIG1hbnVhbCBgYHN1Ym1vZHVs
+ZQo+Pj4+Pj4gdXBkYXRlYGAgb3BlcmF0aW9ucyB0byBjaGVja291dCB5b3VyIHZlcnNpb24gd2hl
+biBkb2luZyBhCj4+Pj4+PiBMVFAgcmVsZWFzZS4gU28gSSdsbCBtZXJnZSB0aGlzIHBhdGNoIGlu
+LCByZW1vdmUgYWxsCj4+Pj4+PiBjdXJyZW50IG91dC1vZi1kYXRlIGNvZGVzLCBhbmQgd2FpdCBm
+b3IgeW91ciBub3RpY2Ugb2YKPj4+Pj4+IG1jZS10ZXN0J3MgbmV4dCB2ZXJzaW9uLCBzbyB0aGF0
+IHdlIGNhbiBpbmNsdWRlIGl0IGluCj4+Pj4+PiBvdXIgbmV4dCBMVFAgc3RhYmxlIHJlbGVhc2Uu
+Cj4+Pj4+PiAKPj4+Pj4+IFRoYW5rcywgQ2FzcGFyCj4+Pj4+PiAKPj4+Pj4gSXQncyBmaW5lIHRv
+IG1lLiBTbyBkbyB5b3Ugd2FudCB0byBnZXQgYSBub3RpY2UgZnJvbSBtZQo+Pj4+PiBhZnRlciB0
+aGUgY29kZXMgYXJlIG1lcmdlZCBvciB5b3UgbW9uaXRvciB0aGUgdXBzdHJlYW0KPj4+Pj4gc3Rh
+dHVzIGJ5IHlvdXJzZWxmPwo+Pj4+IEknZCBhcHByZWNpYXRlIGl0IGlmIHlvdSBjYW4gc2VuZCBt
+ZSBhIG1haWwgd2hlbiB0aGUgY29kZXMKPj4+PiBnZXQgbWVyZ2VkLCBidXQgSSdsbCBjaGVjayB1
+cHN0cmVhbSBzdGF0dXMgYXMgd2VsbCBmcm9tIHRpbWUKPj4+PiB0byB0aW1lLgo+Pj4+IAo+Pj4+
+IFRoYW5rcywgQ2FzcGFyCj4+Pj4gCj4+PiBPSywgSSB3aWxsLiBOb3cgcGF0Y2ggaXMgaW4gdGhl
+IHJldmlldyBzdGF0dXMsIHNvIEkgd2lsbCB0ZWxsCj4+PiB5b3UgQVNBUCBhZnRlciBtZXJnZWQu
+Cj4+IFRoZSBuZXcgcGF0Y2ggZm9yIG1jZS10ZXN0IGhhcyBiZWVuIG1lcmdlZCwgYnV0IGl0IGxv
+b2tzIGEgbGl0dGxlCj4+IGJpdCB3cm9uZyBkdXJpbmcgdGhlIG1lcmdlIHByb2NlZHVyZSAoYWxs
+IHNoZWxsIHNjcmlwdHMgZXhlY3V0aW9uCj4+IHJpZ2h0IGFyZSBtaXNzZWQpLiBJJ20gcHVzaGlu
+ZyBBbmRpIHRvIGZpeCBpdCwgc28gcGxlYXNlIGRvbid0Cj4+IGFkZCBtY2UtdGVzdCBhdCBjdXJy
+ZW50IHN0YWdlLiBJIHdpbGwgdGVsbCB5b3Ugd2hlbiBpdCBpcyByZWFkeS4KPiAKPiBOb3RlZC4g
+VGhhbmtzIGZvciB0aGUgdXBkYXRlLgo+IAo+IFRoYW5rcywgQ2FzcGFyCj4gCk5vdyBJJ3ZlIGdv
+dHRlbiB0aGUgYWNjb3VudCBvbiBsa21sIGFuZCBjcmVhdGUgYSBwcm9qZWN0IGJ5IG15IG93bi4g
+U28Kbm93IHdlIGNhbiBiZWdpbiB0aGUgbWVyZ2Ugd29yay4gSWYgeW91IGhhdmUgYW55IHN1Z2dl
+c3Rpb24sIGp1c3QgbGV0Cm1lIGtub3cuIFRoZSBuZXcgcHJvamVjdCBpcyB1bmRlcgoKZ2l0Oi8v
+Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2dvbmcuY2hlbi9tY2UtdGVz
+dC5naXQKaHR0cDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9nb25n
+LmNoZW4vbWNlLXRlc3QuZ2l0Cmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9r
+ZXJuZWwvZ2l0L2dvbmcuY2hlbi9tY2UtdGVzdC5naXQKClRoZSBjdXJyZW50IHN0YXR1cyBpcyBy
+ZWFkeSB0byBiZSBtZXJnZWQuCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBW
+aXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhl
+IHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQg
+YW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVk
+ZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1h
+bHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIw
+MTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
