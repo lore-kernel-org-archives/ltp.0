@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SShFI-0005Rg-IN
-	for ltp-list@lists.sourceforge.net; Fri, 11 May 2012 04:14:24 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SShFH-0008WS-FB
-	for ltp-list@lists.sourceforge.net; Fri, 11 May 2012 04:14:24 +0000
-Received: by pbbrq2 with SMTP id rq2so2976392pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 May 2012 21:14:17 -0700 (PDT)
-Message-ID: <4FAC91DE.70203@casparzhang.com>
-Date: Fri, 11 May 2012 12:13:18 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SX8bh-0008Sl-II
+	for ltp-list@lists.sourceforge.net; Wed, 23 May 2012 10:15:53 +0000
+Date: Wed, 23 May 2012 12:13:19 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120523101319.GB23311@saboteur.suse.cz>
+References: <CAGH67wSN3uk5v5F=ZBsEGuNCZgEsfwNnQZmEjVPmCjY6fdRtqw@mail.gmail.com>
 MIME-Version: 1.0
-References: <1336703855-15408-1-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1336703855-15408-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] logrotate01: fix a bug of config file's
- permission is wrong
+Content-Disposition: inline
+In-Reply-To: <CAGH67wSN3uk5v5F=ZBsEGuNCZgEsfwNnQZmEjVPmCjY6fdRtqw@mail.gmail.com>
+Subject: Re: [LTP] "more-syscalls" branch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,34 +24,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 05/11/2012 10:37 AM, Peng Haitao wrote:
-> config file's permission should be 644, please refer to:
-> https://fedorahosted.org/logrotate/changeset/302
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+Hi!
+>     In order to get LTP more up to date and expand breadth of syscall
+> requirements testing, I'm going to be working on adding more syscall
+> tests to LTP over the next couple weeks. I started out with
+> inotify(7), but I want to move on to newer syscalls that exercise MI
+> (machine independent) functionality, while at the same time do not
+> want to duplicate work being done by others elsewhere.
+>     The long and short of it is that I want to update Linux compat in
+> FreeBSD (or at least provide the tests to do that) and in order to
+> achieve that, I need up-to-date testcases that pass on an older
+> version of Fedora running 2.6 (say Fedora 10) and Fedora 17 (runs
+> 3.3). The current testcases are ok, but not exhaustive in all areas
+> and that's what I'm aiming to improve.
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+That is really good news. It kind of clashes with what Marios is doing
+during GSOC, but I guess that there is enough room for both of you and
+Marios will be, for a next couple of weeks, still working on cleaning up
+the lib/*.
 
-> ---
->  testcases/commands/logrotate/logrotate_tests.sh |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
-> index 827dd5f..55ef0b3 100755
-> --- a/testcases/commands/logrotate/logrotate_tests.sh
-> +++ b/testcases/commands/logrotate/logrotate_tests.sh
-> @@ -192,6 +192,7 @@ test01()
->  		rm -f $files > /dev/null 2>&1
->  	done
->  
-> +	chmod 644 $LTPTMP/tst_logrotate.conf
->  	logrotate -fv $LTPTMP/tst_logrotate.conf > $LTPTMP/tst_logrotate.out 2>&1 \
->  		|| RC=$?
->  	if [ $RC -eq 0 ]
+>     Thoughts on this and also an idea of where we need to add more
+> exhaustive testcases (otherwise I'll have to work through the list and
+> pore over manpages looking for my next "target" :)..)?
 
+Hmm, I would start by fixing what is broken. We do have some testcases
+that are very poorly implemented and even aren't executed in default run
+(diff of runtest files and list of created binaries may help).
+
+For example sig{timed}wait{info} testcases seems to be confused if they
+are testing syscall or libcall (you can't get ENOSYS in case of libcall
+as the arguments are dereferenced in userspace before passed to the
+kernel). And the way several tests are created from one source depending
+on -Dxxx passed on commandline is really confusing...
+
+Also it may be better for you to fork the LTP repo on github for your
+own development and pull changes to the main repo once you are sure it's
+clean enough and working.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
