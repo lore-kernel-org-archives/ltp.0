@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SS5rd-00048T-8r
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:29 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SS5rX-0001K6-FO
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:29 +0000
-Received: by mail-pb0-f47.google.com with SMTP id rq2so407048pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 09 May 2012 05:19:23 -0700 (PDT)
-Message-ID: <4FAA60A0.2070503@casparzhang.com>
-Date: Wed, 09 May 2012 20:18:40 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SXXgp-00063g-8i
+	for ltp-list@lists.sourceforge.net; Thu, 24 May 2012 13:02:51 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SXXgj-000519-E1
+	for ltp-list@lists.sourceforge.net; Thu, 24 May 2012 13:02:51 +0000
+Date: Thu, 24 May 2012 09:02:34 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <3260b6d6-ee3a-4c87-a51a-424c96f62514@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FBE2804.6020204@casparzhang.com>
 MIME-Version: 1.0
-References: <4FAA5A5B.1030704@redhat.com>
-In-Reply-To: <4FAA5A5B.1030704@redhat.com>
-Subject: Re: [LTP] [PATCH v2] move_pages09: move_pages returns 0 if nothing
- got migrated
+Subject: Re: [LTP] [PATCH] mbind01,
+	get_mempolicy01: dont use hardcoded node 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,29 +27,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
-
-On 05/09/2012 07:51 PM, Jan Stancek wrote:
-> 
-> Following commit changed the behavior to return 0 when no pages
-> require migration.
-> 
-> commit e78bbfa8262424417a29349a8064a535053912b9
-> Author: Brice Goglin <Brice.Goglin@inria.fr>
-> Date:   Sat Oct 18 20:27:15 2008 -0700
->     mm: stop returning -ENOENT from sys_move_pages() if nothing got
-> migrated
-> 
-> So testing for ENOENT in move_pages09, makes sense only for
-> kernel < 2.6.28.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
-
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
+To: Caspar Zhang <caspar@casparzhang.com>, Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
+
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net, "Jeffrey Burke" <jburke@redhat.com>
+> Sent: Thursday, 24 May, 2012 2:22:28 PM
+> Subject: Re: [LTP] [PATCH] mbind01, get_mempolicy01: dont use hardcoded node 0
+> 
+> On 05/23/2012 07:02 PM, Jan Stancek wrote:
+> > 
+> > These tests are failing on following setup:
+> >   # numactl -H
+> >   available: 2 nodes (0-1)
+> >   node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+> >   21 22
+> >   23 24 25 26 27 28 29 30 31
+> >   node 0 size: 0 MB
+> >   node 0 free: 0 MB
+> >   node 1 cpus:
+> >   node 1 size: 12288 MB
+> >   node 1 free: 9998 MB
+> >   node distances:
+> >   node   0   1
+> >     0:  10  40
+> >     1:  40  10
+> > 
+> > Avoid hardcoded node 0 by using numa_get_mems_allowed().
+> > 
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+> 
+> 
+
+Please hold off from comitting this patch,
+I just found it breaks on larger NUMA systems in get_mempolicy.
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
