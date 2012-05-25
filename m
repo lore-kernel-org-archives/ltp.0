@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SXqZF-0000A9-0q
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 09:12:17 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SXoaU-0006LY-6v
+	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 07:05:26 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SXqZ9-0003Ru-90
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 09:12:16 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4P9C5pQ011251
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SXoaO-0003nV-Lb
+	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 07:05:26 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4P75EK8029557
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 May 2012 05:12:05 -0400
-Message-ID: <4FBF4CE3.30800@redhat.com>
-Date: Fri, 25 May 2012 11:12:03 +0200
+	for <ltp-list@lists.sourceforge.net>; Fri, 25 May 2012 03:05:14 -0400
+Message-ID: <4FBF2F29.6030603@redhat.com>
+Date: Fri, 25 May 2012 09:05:13 +0200
 From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 0/2] move_pages: dont use hardcoded node numbers
+Content-Type: multipart/mixed; boundary="------------060901070608050100010204"
+Subject: [LTP] [PATCH v3] mbind01, get_mempolicy01: dont use hardcoded node 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,127 +28,139 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: Jeffrey Burke <jburke@redhat.com>
 
-Similar to previous patch for mbind01 and get_mempolicy01,
-move_pages tests are also using hardcoded nodes 0/1.
-
-This patch series is introducing get_allowed_nodes() function
-to move_pages_support, which is using
-    get_mempolicy(..., MPOL_F_MEMS_ALLOWED)
-to obtain list of nodes tests can use.
-
-I tested it with following setups. Note that setup 4 and 5 will
-end with TCONF as there is only 1 node with memory.
-
-1.
-# numactl -H
-available: 8 nodes (2,4-10)
-node 2 cpus: 0
-node 2 size: 127 MB
-node 2 free: 9 MB
-node 4 cpus:
-node 4 size: 128 MB
-node 4 free: 9 MB
-node 5 cpus:
-node 5 size: 128 MB
-node 5 free: 64 MB
-node 6 cpus:
-node 6 size: 128 MB
-node 6 free: 121 MB
-node 7 cpus:
-node 7 size: 128 MB
-node 7 free: 121 MB
-node 8 cpus:
-node 8 size: 128 MB
-node 8 free: 121 MB
-node 9 cpus:
-node 9 size: 128 MB
-node 9 free: 121 MB
-node 10 cpus:
-node 10 size: 127 MB
-node 10 free: 123 MB
-
-2.
-# numactl -H
-available: 4 nodes (0-3)
-node 0 cpus: 0 1 2 3 4 5
-node 0 size: 2047 MB
-node 0 free: 564 MB
-node 1 cpus: 6 7 8 9 10 11
-node 1 size: 2046 MB
-node 1 free: 451 MB
-node 2 cpus: 18 19 20 21 22 23
-node 2 size: 2048 MB
-node 2 free: 595 MB
-node 3 cpus: 12 13 14 15 16 17
-node 3 size: 2048 MB
-node 3 free: 236 MB
-node distances:
-node   0   1   2   3 
-  0:  10  16  16  16 
-  1:  16  10  16  16 
-  2:  16  16  10  16 
-  3:  16  16  16  10
-
-3.
-# numactl -H
-available: 2 nodes (2-3)
-node 2 cpus: 0
-node 2 size: 511 MB
-node 2 free: 154 MB
-node 3 cpus:
-node 3 size: 511 MB
-node 3 free: 490 MB
+This is a multi-part message in MIME format.
+--------------060901070608050100010204
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-4.
-# numactl -H
-available: 2 nodes (0-1)
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-node 0 size: 0 MB
-node 0 free: 0 MB
-node 1 cpus:
-node 1 size: 12288 MB
-node 1 free: 9689 MB
-node distances:
-node   0   1 
-  0:  10  40 
-  1:  40  10 
+These tests are failing on following setup:
+  # numactl -H
+  available: 2 nodes (0-1)
+  node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
+  23 24 25 26 27 28 29 30 31
+  node 0 size: 0 MB
+  node 0 free: 0 MB
+  node 1 cpus:
+  node 1 size: 12288 MB
+  node 1 free: 9998 MB
+  node distances:
+  node   0   1
+    0:  10  40
+    1:  40  10
 
-5.
-# numactl -H
-available: 1 nodes (0)
-node 0 cpus: 0
-node 0 size: 1023 MB
-node 0 free: 654 MB
-node distances:
-node   0 
-  0:  10 
+Avoid hardcoded node 0 by picking first available node obtained using
+get_mempolicy(..., MPOL_F_MEMS_ALLOWED);
+
+Using whole nodemask doesn't work with MPOL_PREFERRED, because set_mempolicy
+will use only first node and subsequent check for bitmask equality fails.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |   22 ++++++++++++++++++-
+ testcases/kernel/syscalls/mbind/mbind01.c          |   22 ++++++++++++++++++-
+ 2 files changed, 40 insertions(+), 4 deletions(-)
 
 
-Jan Stancek (2):
-  move_pages_support: use only allowed nodes
-  move_pages: dont use hardcoded node numbers
 
- .../kernel/syscalls/move_pages/move_pages02.c      |   13 +++-
- .../kernel/syscalls/move_pages/move_pages03.c      |   13 +++-
- .../kernel/syscalls/move_pages/move_pages04.c      |   13 +++-
- .../kernel/syscalls/move_pages/move_pages05.c      |   13 +++-
- .../kernel/syscalls/move_pages/move_pages06.c      |   10 ++-
- .../kernel/syscalls/move_pages/move_pages07.c      |   13 +++-
- .../kernel/syscalls/move_pages/move_pages08.c      |   12 +++-
- .../kernel/syscalls/move_pages/move_pages09.c      |    8 ++-
- .../kernel/syscalls/move_pages/move_pages10.c      |   13 +++-
- .../kernel/syscalls/move_pages/move_pages11.c      |   13 +++-
- .../syscalls/move_pages/move_pages_support.c       |   74 ++++++++++++++++----
- .../syscalls/move_pages/move_pages_support.h       |    1 +
- 12 files changed, 157 insertions(+), 39 deletions(-)
+--------------060901070608050100010204
+Content-Type: text/x-patch;
+	name="0001-mbind01-get_mempolicy01-dont-use-hardcoded-node-0.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0001-mbind01-get_mempolicy01-dont-use-hardcoded-node-0.patch"
 
+diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+index 0565d6f..d2de92b 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
++++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+@@ -231,15 +231,33 @@ static int do_test(struct test_case *tc)
+ #endif
+ 	char *p = NULL;
+ 	unsigned long len = MEM_LENGTH;
++	struct bitmask *allowed = NULL;
++	int i, test_node = -1;
++
++	allowed = numa_allocate_nodemask();
++	/*
++	 * avoid numa_get_mems_allowed(), because of bug in getpol()
++	 * utility function in older versions:
++	 * http://www.spinics.net/lists/linux-numa/msg00849.html
++	 */
++	TEST(syscall(__NR_get_mempolicy, NULL, allowed->maskp,
++		allowed->size, 0, MPOL_F_MEMS_ALLOWED));
++	if (TEST_RETURN < 0)
++		tst_resm(TFAIL|TERRNO, "get_mempolicy: MPOL_F_MEMS_ALLOWED");
++	for (i = 0; i < allowed->size; i++)
++		if (numa_bitmask_isbitset(allowed, i)) {
++			test_node = i;
++			break;
++		}
+ 
+ #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+ 	nodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(nodemask);
+-	nodemask_set(nodemask, 0);
++	nodemask_set(nodemask, test_node);
+ 	getnodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(getnodemask);
+ #else
+-	numa_bitmask_setbit(nodemask, 0);
++	numa_bitmask_setbit(nodemask, test_node);
+ #endif
+ 	switch (tc->ttype) {
+ 	case DEFAULT:
+diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
+index 4b25db0..cdc1721 100644
+--- a/testcases/kernel/syscalls/mbind/mbind01.c
++++ b/testcases/kernel/syscalls/mbind/mbind01.c
+@@ -217,15 +217,33 @@ static int do_test(struct test_case *tc)
+ 	unsigned long maxnode = NUMA_NUM_NODES;
+ 	unsigned long len = MEM_LENGTH;
+ 	unsigned long *invalid_nodemask;
++	struct bitmask *allowed = NULL;
++	int i, test_node = -1;
++
++	allowed = numa_allocate_nodemask();
++	/*
++	 * avoid numa_get_mems_allowed(), because of bug in getpol()
++	 * utility function in older versions:
++	 * http://www.spinics.net/lists/linux-numa/msg00849.html
++	 */
++	TEST(syscall(__NR_get_mempolicy, NULL, allowed->maskp,
++		allowed->size, 0, MPOL_F_MEMS_ALLOWED));
++	if (TEST_RETURN < 0)
++		tst_resm(TFAIL|TERRNO, "get_mempolicy: MPOL_F_MEMS_ALLOWED");
++	for (i = 0; i < allowed->size; i++)
++		if (numa_bitmask_isbitset(allowed, i)) {
++			test_node = i;
++			break;
++		}
+ 
+ #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+ 	nodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(nodemask);
+-	nodemask_set(nodemask, 0);
++	nodemask_set(nodemask, test_node);
+ 	getnodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(getnodemask);
+ #else
+-	numa_bitmask_setbit(nodemask, 0);
++	numa_bitmask_setbit(nodemask, test_node);
+ #endif
+ 	p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+ 		    0, 0);
+
+
+--------------060901070608050100010204
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -155,7 +168,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------060901070608050100010204
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------060901070608050100010204--
+
