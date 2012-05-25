@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SS5RA-0002m5-7h
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 11:52:08 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SS5R6-0001bp-BV
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 11:52:08 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q49Bpwm3017459
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 May 2012 07:51:58 -0400
-Message-ID: <4FAA5A5B.1030704@redhat.com>
-Date: Wed, 09 May 2012 13:51:55 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SXude-0005zL-4X
+	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 13:33:06 +0000
+Date: Fri, 25 May 2012 15:30:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120525133050.GA32516@saboteur.suse.cz>
+References: <0cf106de-47ab-4f1a-a92d-c5183ab90af0@zmail17.collab.prod.int.phx2.redhat.com>
+	<4FBF5672.5090306@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000105030900070709080301"
-Subject: [LTP] [PATCH v2] move_pages09: move_pages returns 0 if nothing got
-	migrated
+Content-Disposition: inline
+In-Reply-To: <4FBF5672.5090306@redhat.com>
+Subject: Re: [LTP] [PATCH 0/2] move_pages: dont use hardcoded node numbers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,93 +22,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
-
-This is a multi-part message in MIME format.
---------------000105030900070709080301
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-
-Following commit changed the behavior to return 0 when no pages
-require migration.
-
-commit e78bbfa8262424417a29349a8064a535053912b9
-Author: Brice Goglin <Brice.Goglin@inria.fr>
-Date:   Sat Oct 18 20:27:15 2008 -0700
-    mm: stop returning -ENOENT from sys_move_pages() if nothing got
-migrated
-
-So testing for ENOENT in move_pages09, makes sense only for
-kernel < 2.6.28.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../kernel/syscalls/move_pages/move_pages09.c      |   27 ++++++++++++++-----
- 1 files changed, 20 insertions(+), 7 deletions(-)
-
-
-
---------------000105030900070709080301
-Content-Type: text/x-patch;
-	name="0002-move_pages09-move_pages-returns-0-if-nothing-got-mig.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0002-move_pages09-move_pages-returns-0-if-nothing-got-mig.pa";
-	filename*1="tch"
-
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages09.c b/testcases/kernel/syscalls/move_pages/move_pages09.c
-index 4cedb6a..85e3547 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages09.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages09.c
-@@ -105,12 +105,25 @@ int main(int argc, char **argv)
- 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
- 				      status, MPOL_MF_MOVE);
- 		TEST_ERRNO = errno;
--		if (ret == -1 && errno == ENOENT)
--			tst_resm(TPASS, "move_pages failed with "
--				 "ENOENT as expected");
--		else
--			tst_resm(TFAIL, "move pages did not fail "
--				 "with ENOENT");
-+
-+		/*
-+		 * commit e78bbfa8262424417a29349a8064a535053912b9
-+		 * Author: Brice Goglin <Brice.Goglin@inria.fr>
-+		 * Date:   Sat Oct 18 20:27:15 2008 -0700
-+		 *     mm: stop returning -ENOENT from sys_move_pages() if nothing got migrated
-+		 */
-+		if ((tst_kvercmp(2, 6, 28)) >= 0) {
-+			if (ret == 0)
-+				tst_resm(TPASS, "move_pages succeeded");
-+			else
-+				tst_resm(TFAIL|TERRNO, "move_pages");
-+		} else {
-+			if (ret == -1 && errno == ENOENT)
-+				tst_resm(TPASS, "move_pages failed with "
-+				    "ENOENT as expected");
-+			else
-+				tst_resm(TFAIL|TERRNO, "move_pages");
-+		}
- 
- 		free_pages(pages, TEST_PAGES);
- 	}
-@@ -150,4 +163,4 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-- }
-\ No newline at end of file
-+ }
-
-
---------------000105030900070709080301
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> >>>   move_pages_support: use only allowed nodes
+> >>>   move_pages: dont use hardcoded node numbers
+> >>>
+> >>>  .../kernel/syscalls/move_pages/move_pages02.c      |   13 +++-
+> >>>  .../kernel/syscalls/move_pages/move_pages03.c      |   13 +++-
+> >>>  .../kernel/syscalls/move_pages/move_pages04.c      |   13 +++-
+> >>>  .../kernel/syscalls/move_pages/move_pages05.c      |   13 +++-
+> >>>  .../kernel/syscalls/move_pages/move_pages06.c      |   10 ++-
+> >>>  .../kernel/syscalls/move_pages/move_pages07.c      |   13 +++-
+> >>>  .../kernel/syscalls/move_pages/move_pages08.c      |   12 +++-
+> >>>  .../kernel/syscalls/move_pages/move_pages09.c      |    8 ++-
+> >>>  .../kernel/syscalls/move_pages/move_pages10.c      |   13 +++-
+> >>>  .../kernel/syscalls/move_pages/move_pages11.c      |   13 +++-
+> >>>  .../syscalls/move_pages/move_pages_support.c       |   74
+> >>>  ++++++++++++++++----
+> >>>  .../syscalls/move_pages/move_pages_support.h       |    1 +
+> >>>  12 files changed, 157 insertions(+), 39 deletions(-)
+> >>>
+> >>
+> >> Looks like many duplications here... wondering if any chance putting
+> >> them into a common function or something?
+> >>
+> > 
+> > That is probably good idea, because we may still find new places where can use it.
+> > I'm thinking about something like numa_helper.a, which we could link with
+> 
+> I have no objection doing that.
+> 
+> Cyril, suggestions?
+
+Yes, that is always a good idea. The easiest thing to do is to create a
+common.c file and include it in each of the tests (which I would do if
+the amount of shared code is relatively small and is used only by the
+tests in current directory). Otherwise you may do the usual library
+thing with actual headers and link tests against it...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -123,16 +75,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------000105030900070709080301
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------000105030900070709080301--
-
