@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SWpua-0003Ae-FJ
-	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:18:08 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SXqtl-0004bR-JG
+	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 09:33:29 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SWpuV-0000Ej-4X
-	for ltp-list@lists.sourceforge.net; Tue, 22 May 2012 14:18:08 +0000
-Message-ID: <4FBBA010.4020307@redhat.com>
-Date: Tue, 22 May 2012 16:17:52 +0200
+	id 1SXqtf-0001mG-Po
+	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 09:33:29 +0000
+Date: Fri, 25 May 2012 05:33:16 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <0cf106de-47ab-4f1a-a92d-c5183ab90af0@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FBF4DD9.6090803@casparzhang.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030801070901070907050304"
-Subject: [LTP] [PATCH v2 2/3] cma: add process_vm.h
+Subject: Re: [LTP] [PATCH 0/2] move_pages: dont use hardcoded node numbers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,105 +23,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------030801070901070907050304
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-
-header file shared by tests, defines:
-test_process_vm_readv
-test_process_vm_writev
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/cma/process_vm.h |   58 ++++++++++++++++++++++++++++
- 1 files changed, 58 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/cma/process_vm.h
-
-
-
---------------030801070901070907050304
-Content-Type: text/x-patch;
- name="0002-cma-add-process_vm.h.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0002-cma-add-process_vm.h.patch"
-
-diff --git a/testcases/kernel/syscalls/cma/process_vm.h b/testcases/kernel/syscalls/cma/process_vm.h
-new file mode 100644
-index 0000000..04176c9
---- /dev/null
-+++ b/testcases/kernel/syscalls/cma/process_vm.h
-@@ -0,0 +1,58 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#ifndef _PROCESS_VM_H_
-+#define _PROCESS_VM_H_
-+
-+#include <sys/syscall.h>
-+#include <sys/uio.h>
-+#include <unistd.h>
-+
-+static inline ssize_t test_process_vm_readv(pid_t pid,
-+		const struct iovec *lvec, unsigned long liovcnt,
-+		const struct iovec *rvec, unsigned long riovcnt,
-+		unsigned long flags)
-+{
-+#if defined(__NR_process_vm_readv)
-+	return syscall(__NR_process_vm_readv, pid, lvec, liovcnt,
-+			rvec, riovcnt, flags);
-+#else
-+	return syscall(-1);
-+#endif
-+}
-+
-+static inline ssize_t test_process_vm_writev(pid_t pid,
-+		const struct iovec *lvec, unsigned long liovcnt,
-+		const struct iovec *rvec, unsigned long riovcnt,
-+		unsigned long flags)
-+{
-+#if defined(__NR_process_vm_writev)
-+	return syscall(__NR_process_vm_writev, pid, lvec, liovcnt,
-+			rvec, riovcnt, flags);
-+#else
-+	return syscall(-1);
-+#endif
-+}
-+
-+#endif /* _PROCESS_VM_H_ */
-
-
---------------030801070901070907050304
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
+
+
+
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Friday, 25 May, 2012 11:16:09 AM
+> Subject: Re: [LTP] [PATCH 0/2] move_pages: dont use hardcoded node numbers
+> 
+> > Jan Stancek (2):
+> >   move_pages_support: use only allowed nodes
+> >   move_pages: dont use hardcoded node numbers
+> > 
+> >  .../kernel/syscalls/move_pages/move_pages02.c      |   13 +++-
+> >  .../kernel/syscalls/move_pages/move_pages03.c      |   13 +++-
+> >  .../kernel/syscalls/move_pages/move_pages04.c      |   13 +++-
+> >  .../kernel/syscalls/move_pages/move_pages05.c      |   13 +++-
+> >  .../kernel/syscalls/move_pages/move_pages06.c      |   10 ++-
+> >  .../kernel/syscalls/move_pages/move_pages07.c      |   13 +++-
+> >  .../kernel/syscalls/move_pages/move_pages08.c      |   12 +++-
+> >  .../kernel/syscalls/move_pages/move_pages09.c      |    8 ++-
+> >  .../kernel/syscalls/move_pages/move_pages10.c      |   13 +++-
+> >  .../kernel/syscalls/move_pages/move_pages11.c      |   13 +++-
+> >  .../syscalls/move_pages/move_pages_support.c       |   74
+> >  ++++++++++++++++----
+> >  .../syscalls/move_pages/move_pages_support.h       |    1 +
+> >  12 files changed, 157 insertions(+), 39 deletions(-)
+> > 
+> 
+> Looks like many duplications here... wondering if any chance putting
+> them into a common function or something?
+> 
+
+That is probably good idea, because we may still find new places where can use it.
+I'm thinking about something like numa_helper.a, which we could link with
+mbind01, get_mempolicy01, move_pages, etc.
+
+Or can you think of any better place where to put it?
+
+Regards,
+Jan
+
+> Thanks,
+> Caspar
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond.
+> Discussions
+> will include endpoint security, mobile security and the latest in
+> malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -129,16 +93,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------030801070901070907050304
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------030801070901070907050304--
-
