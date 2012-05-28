@@ -1,17 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SPan1-0004uS-2l
-	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 14:44:23 +0000
-Date: Wed, 2 May 2012 16:42:28 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120502144228.GF366@saboteur.suse.cz>
-References: <0F68B52D2432864190BC72F760407FE93254CA39D1@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SYpgS-0004ne-HV
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 02:27:48 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SYpgQ-0005wV-Sq
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 02:27:48 +0000
+Message-ID: <4FC2E263.6080701@cn.fujitsu.com>
+Date: Mon, 28 May 2012 10:26:43 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0F68B52D2432864190BC72F760407FE93254CA39D1@NDA-HCLT-EVS04.HCLT.CORP.HCL.IN>
-Subject: Re: [LTP] Porting of LTP on Android - Patch
+References: <CAGH67wQmnoUVOftT8=hL_T7Tv28WdGaQpmL09YQ5LWWqf=9U2w@mail.gmail.com>
+	<4FC1D8C5.4050804@cn.fujitsu.com>
+	<CAGH67wQw2j6AMgKxs0JwynQYT7JB0mjVkiB+hztWUSnLRneS9w@mail.gmail.com>
+	<4FC1E248.6040008@cn.fujitsu.com>
+	<CAGH67wT3etJ-v7sA4ygKpXZNeX=0quNQkXmCp_PC9No2wxu4kA@mail.gmail.com>
+	<4FC1EE9E.8020503@cn.fujitsu.com>
+	<CAGH67wSgF4U+FZ-S_LSmyYd4TOk7MMYT=+_S=H7aEWjiFzvovQ@mail.gmail.com>
+In-Reply-To: <CAGH67wSgF4U+FZ-S_LSmyYd4TOk7MMYT=+_S=H7aEWjiFzvovQ@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Fix the fork/11-1 conformance testcase
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,116 +34,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Anupam Srivastava - ERS, HCL Tech" <Anupam_Srivastava@hcl.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> We have ported LTP open source (Version: ltp-full-20110228) on Android
-> 2.2 Froyo. It will validate the reliability, robustness, and stability
-> of Android. We want to submit the same to open source community.  PFA
-> patch for the same. Please let me know if I have to do anything else
-> regarding submission of this patch.
+On 05/28/2012 02:19 AM, Garrett Cooper wrote:
 
-First of all, you should use lastest LTP in order to aviod collisions.
-The best fit for development would be a git checkout and please use
-unified diff format (diff -u) from now on.
-
-
-diff -crB ltp-full-20110228//Android.mk ltp//Android.mk
-*** ltp-full-20110228//Android.mk	2011-04-26 03:28:58.000000000 -0400
---- ltp//Android.mk	2011-06-10 07:11:04.000000000 -0400
-***************
-*** 10,16 ****
-  export LTP_SCRIPTS_DIR := $(LTP_ROOT_DIR)/scripts
-  export LTP_TESTCASES_DIR := $(LTP_ROOT_DIR)/testcases
-  
-! 
-  
-  subdirs := \
-  	external/ltp/lib/Android.mk \
---- 10,16 ----
-  export LTP_SCRIPTS_DIR := $(LTP_ROOT_DIR)/scripts
-  export LTP_TESTCASES_DIR := $(LTP_ROOT_DIR)/testcases
-  
-! LOCAL_CFLAGS := -D_ANDROID
-  
-  subdirs := \
-  	external/ltp/lib/Android.mk \
-
-Hmm, that seems to be incomplete, we don't have Android.mk in our
-sources.
-
-diff -crB ltp-full-20110228//include/ltp_signal.h ltp//include/ltp_signal.h
-*** ltp-full-20110228//include/ltp_signal.h	2011-06-09 05:00:49.000000000 -0400
---- ltp//include/ltp_signal.h	2011-08-02 07:11:21.000000000 -0400
-***************
-*** 23,28 ****
---- 23,30 ----
-   *
-   * Author: Liu Bo <liubo2009@cn.fujitsu.com>
-   * Author: Garrett Cooper <yanegomi@gmail.com>
-+  * 08/01/11 - Updated: Anupam Srivastava, anupam_srivastava@hcl.com
-+  *			   - Config.h is not supported by Android
-   *
-   */
-
-Please don't write dates and comments here. We use git to track this
-informations. If you have changed a file just add simple line with your
-name there.
-
-Also the diff shows only change in the commend, is it incomplete too?
-
-diff -crB ltp-full-20110228//include/tlibio.h ltp//include/tlibio.h
-*** ltp-full-20110228//include/tlibio.h	2011-06-09 05:01:54.000000000 -0400
---- ltp//include/tlibio.h	2011-08-02 07:12:37.000000000 -0400
-***************
-*** 28,33 ****
---- 28,35 ----
-   * For further information regarding this notice, see:
-   *
-   * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-+  * 08/01/11 - Updated: Anupam Srivastava, anupam_srivastava@hcl.com
-+  *			   - aio.h is not supported by Android
-   */
-  
-  #define LIO_IO_SYNC             00001   /* read/write */
-
-The same problem as well.
-
-
-... snip ...
-
-
-diff -crB ltp-full-20110228//testcases/kernel/connectors/Android.mk ltp//testcases/kernel/connectors/Android.mk
-*** ltp-full-20110228//testcases/kernel/connectors/Android.mk	2011-06-29 00:58:03.000000000 -0400
---- ltp//testcases/kernel/connectors/Android.mk	2011-06-29 01:37:34.000000000 -0400
-***************
-*** 1,19 ****
-! ifneq ($(TARGET_SIMULATOR),true)
-! LOCAL_PATH:= $(call my-dir)
-! 
-! include $(CLEAR_VARS)
-! 
-! subdirs := \
-! 	external/ltp/testcases/kernel/pec/Android.mk
-! 
-! LOCAL_C_INCLUDES += $(LOCAL_PATH)
-! LOCAL_C_INCLUDES += include
-! 
-
-This file has windows line ends, remove them.
+> On Sun, May 27, 2012 at 2:06 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+>> On 05/27/2012 04:23 PM, Garrett Cooper wrote:
+>>
+>>> On Sun, May 27, 2012 at 1:14 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+>>>> On 05/27/2012 04:00 PM, Garrett Cooper wrote:
+>>>>
+>>>>> On Sun, May 27, 2012 at 12:33 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+>>>>>> On 05/26/2012 10:15 PM, Garrett Cooper wrote:
+>>>>>>
+>>>>>>> The testcase tests to see whether or not locks are successfully
+>>>>>>> inherited across forking processes, as the requirements for fork state
+>>>>>>> that they should not be. The problem is that the test tests the negative
+>>>>>>> case for ftrylockfile (!= 0) instead of the positive case, which creates
+>>>>>>
+>>>>>> The ftrylockfile() function returns zero for success (the lock was obtained),
+>>>>>> and nonzero for failure.
+>>>>>> So I think the origin is right.
+>>>>>
+>>>>>     My description might be wrong, but the fix is right. ftrylockfile
+>>>>> should fail in the testcase (not succeed) because the file lock isn't
+>>>>> owned by the forked process. It succeeds simply because the delay is
+>>>>
+>>>>
+>>>> But on my system ftrylockfile() always return 0, and the test PASSED.
+>>>> and with your patch, it fails.
+>>>
+>>> Then that's a Linux/POSIX bug then. From fork(2) on OpenGroup [1]:
+>>>
+>>> "File locks set by the parent process are not inherited by the child process."
+>>>
+>>> And from flockfile(2) on OpenGroup [2]:
+>>>
+>>> "   The flockfile() function is used by a thread to acquire ownership
+>>> of a ( FILE *) object.
+>>>
+>>>     The ftrylockfile() function is used by a thread to acquire
+>>> ownership of a ( FILE *) object if the object is available;
+>>> ftrylockfile() is a non-blocking version of flockfile().
+>>>
+>>> ...
+>>>
+>>>     None for flockfile() and funlockfile(). The function
+>>> ftrylockfile() returns zero for success and non-zero to indicate that
+>>> the lock cannot be acquired."
+>>
+>>>
+>>
+>>> The goal/algorithm as stated at the top of the testcase was...
+>>>
+>>> "* The steps are:
+>>> * -> lock stdout
+>>> * -> fork
+>>> * -> child creates a thread
+>>> * -> child thread trylock stdout
+>>> * -> join the child
+>>>
+>>> * The test fails if the child thread cannot lock the file
+>>> * -- this would mean the child process got stdout file lock ownership."
+>>
+>>
+>> Yes, if trylock can't get the lock, it should return nonzero, I think
+>> the concept is right.
+>> But you mean if trylock() can't get the lock, it should return zero?
+> 
+> No.
+> 
+> Looking into the implementation of ftrylockfile further, it looks like
+> the locking is not advisory locking in the traditional sense, but
+> instead thread-based locking -- this matches the description in the
+> FreeBSD and OpenGroup manpage.
+> 
+> The problem that I see is multi-fold:
+> 1. The testcase's original test for success was right as the testcase
+> is using fork, not forkall.
+> 2. There's a bug in FreeBSD that I need to investigate and fix.
+> 
+> I think that the testcase should test another stream than stdout
+> though (say, open up /dev/null via fopen?). It would at least allow
+> the test to return immediately instead of blocking indefinitely.
+> 
+> Do you object to the other changes?
 
 
-The rest of the patch, if I understand it correctly mostly removes
-subdirectories, which is simply wrong. There should be something similar
-to ifeq(UCLINUX,1) to skip these tests.
+I think I have no more objection.
 
-You should also split the patch in several smaller so that each of them
-changes one thing at a time.
+Thanks,
+Wanlong Gao 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> Thanks!
+> -Garrett
+> 
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
