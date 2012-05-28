@@ -1,28 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1SUstg-0005YM-GR
-	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 05:05:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SUstf-0001hG-5O
-	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 05:05:08 +0000
-Message-ID: <4FB486F5.3040100@cn.fujitsu.com>
-Date: Thu, 17 May 2012 13:04:53 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1SYyHe-000762-Lv
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:38:46 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SYyHd-0005Ko-QV
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:38:46 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4SBcd3V015185
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 May 2012 07:38:39 -0400
+Message-ID: <4FC363BD.9070009@redhat.com>
+Date: Mon, 28 May 2012 13:38:37 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <20120516145353.GA12228@saboteur.suse.cz>
-	<1337219962-5782-1-git-send-email-penght@cn.fujitsu.com>
-	<4FB45E98.3010506@cn.fujitsu.com>
-	<CAGH67wSxwhPXQ_j5ryRQe4-en-wYf3iLUgrn9xtcQ54dR1FsaA@mail.gmail.com>
-	<4FB46381.2010400@cn.fujitsu.com>
-	<CAGH67wTa2Y6mXP9Wv229s8Wdzp57uN=hcB63eEvW6Ud0osdUOw@mail.gmail.com>
-	<CAGH67wStJk_mqT46zqJ5FPNHLEeBjcyPo6i050xMwmpCm5aoBQ@mail.gmail.com>
-	<4FB466B6.8060508@cn.fujitsu.com>
-	<CAGH67wSv02CxLFBDDuO8dRWNp03AmHmnYqTd3UN2mQkF8SO8ZQ@mail.gmail.com>
-In-Reply-To: <CAGH67wSv02CxLFBDDuO8dRWNp03AmHmnYqTd3UN2mQkF8SO8ZQ@mail.gmail.com>
-Subject: Re: [LTP] [PATCH v2] ltp-pan.c: fix error of Total Tests
+Subject: [LTP] [PATCH 0/4] dont use hardcoded NUMA node ids
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,62 +30,141 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
+
+This patch series is a combination of:
+[PATCH v3] mbind01, get_mempolicy01: dont use hardcoded node 0
+[PATCH 1/2] move_pages_support: use only allowed nodes
+[PATCH 2/2] move_pages: dont use hardcoded node numbers
+
+so that all testcases use same shared code, which resides in libnuma_helper.a.
+This library defines get_allowed_nodes() and get_allowed_nodes_arr() functions
+to obtain list of nodes tests can use.
+
+I tested it with following setups. Note that setup 4 and 5 will
+end with TCONF as there is only 1 node with memory.
+
+1.
+# numactl -H
+available: 8 nodes (2,4-10)
+node 2 cpus: 0
+node 2 size: 127 MB
+node 2 free: 9 MB
+node 4 cpus:
+node 4 size: 128 MB
+node 4 free: 9 MB
+node 5 cpus:
+node 5 size: 128 MB
+node 5 free: 64 MB
+node 6 cpus:
+node 6 size: 128 MB
+node 6 free: 121 MB
+node 7 cpus:
+node 7 size: 128 MB
+node 7 free: 121 MB
+node 8 cpus:
+node 8 size: 128 MB
+node 8 free: 121 MB
+node 9 cpus:
+node 9 size: 128 MB
+node 9 free: 121 MB
+node 10 cpus:
+node 10 size: 127 MB
+node 10 free: 123 MB
+
+2.
+# numactl -H
+available: 4 nodes (0-3)
+node 0 cpus: 0 1 2 3 4 5
+node 0 size: 2047 MB
+node 0 free: 564 MB
+node 1 cpus: 6 7 8 9 10 11
+node 1 size: 2046 MB
+node 1 free: 451 MB
+node 2 cpus: 18 19 20 21 22 23
+node 2 size: 2048 MB
+node 2 free: 595 MB
+node 3 cpus: 12 13 14 15 16 17
+node 3 size: 2048 MB
+node 3 free: 236 MB
+node distances:
+node   0   1   2   3 
+  0:  10  16  16  16 
+  1:  16  10  16  16 
+  2:  16  16  10  16 
+  3:  16  16  16  10
+
+3.
+# numactl -H
+available: 2 nodes (2-3)
+node 2 cpus: 0
+node 2 size: 511 MB
+node 2 free: 154 MB
+node 3 cpus:
+node 3 size: 511 MB
+node 3 free: 490 MB
 
 
-Garrett Cooper said the following on 2012-5-17 12:39:
->> <<<test_start>>>
->> tag=exit_quickly stime=1337251363
->> cmdline="exit 1"
->> contacts=""
->> analysis=exit
->> <<<test_output>>>
->> <<<execution_status>>>
->> initiation_status="pan(17520): execvp of 'exit' (tag exit_quickly) failed.  errn                                                 o:2  No such file or directory"
-> 
-> I suppose it would have worked, had this actually been a command and
-> not a shell built-in. Could you please replace 'exit 1' with 'false'?
-> 
+4.
+# numactl -H
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+node 0 size: 0 MB
+node 0 free: 0 MB
+node 1 cpus:
+node 1 size: 12288 MB
+node 1 free: 9689 MB
+node distances:
+node   0   1 
+  0:  10  40 
+  1:  40  10 
 
-The log is as follows:
-
-<<<test_start>>>
-tag=exit_quickly stime=1337259686
-cmdline="false"
-contacts=""
-analysis=exit
-<<<test_output>>>
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-
-# cat /opt/ltp/results/LTP_RUN_ON-2012_May_17-21h_01m_26s.log
-Test Start Time: Thu May 17 21:01:26 2012
------------------------------------------
-Testcase                       Result     Exit Value
---------                       ------     ----------
-aok                            PASS       0
-donotexist                     FAIL       2
-exit_quickly                   FAIL       1
-true                           PASS       0
-
------------------------------------------------
-Total Tests: 4
-Total Failures: 2
-Kernel Version: 2.6.32-220.el6.x86_64
-Machine Architecture: x86_64
-Hostname: RHEL6U2-x86-64
+5.
+# numactl -H
+available: 1 nodes (0)
+node 0 cpus: 0
+node 0 size: 1023 MB
+node 0 free: 654 MB
+node distances:
+node   0 
+  0:  10 
 
 
-Thanks.
+Jan Stancek (4):
+  add libnuma_helper.a
+  mbind01: dont use hardcoded NUMA node ids
+  get_mempolicy01: dont use hardcoded NUMA node ids
+  move_pages: dont use hardcoded NUMA node ids
 
--- 
-Best Regards,
-Peng Haitao
-
+ testcases/kernel/syscalls/get_mempolicy/Makefile   |    7 +-
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |    9 +-
+ testcases/kernel/syscalls/mbind/Makefile           |    3 +-
+ testcases/kernel/syscalls/mbind/mbind01.c          |   10 +-
+ testcases/kernel/syscalls/move_pages/Makefile      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages02.c      |   12 +-
+ .../kernel/syscalls/move_pages/move_pages03.c      |   12 +-
+ .../kernel/syscalls/move_pages/move_pages04.c      |   12 +-
+ .../kernel/syscalls/move_pages/move_pages05.c      |   12 +-
+ .../kernel/syscalls/move_pages/move_pages06.c      |   10 +-
+ .../kernel/syscalls/move_pages/move_pages07.c      |   12 +-
+ .../kernel/syscalls/move_pages/move_pages08.c      |   10 +-
+ .../kernel/syscalls/move_pages/move_pages09.c      |    8 +-
+ .../kernel/syscalls/move_pages/move_pages10.c      |   12 +-
+ .../kernel/syscalls/move_pages/move_pages11.c      |   12 +-
+ .../syscalls/move_pages/move_pages_support.c       |   34 +++--
+ .../syscalls/move_pages/move_pages_support.h       |    1 +
+ .../syscalls/{get_mempolicy => numa}/Makefile      |   13 +--
+ .../{get_mempolicy/Makefile => numa/Makefile.inc}  |   20 ++--
+ .../syscalls/{get_mempolicy => numa/lib}/Makefile  |   15 +--
+ testcases/kernel/syscalls/numa/lib/numa_helper.c   |  135 ++++++++++++++++++++
+ testcases/kernel/syscalls/numa/lib/numa_helper.h   |   34 +++++
+ 22 files changed, 305 insertions(+), 93 deletions(-)
+ copy testcases/kernel/syscalls/{get_mempolicy => numa}/Makefile (73%)
+ copy testcases/kernel/syscalls/{get_mempolicy/Makefile => numa/Makefile.inc} (69%)
+ copy testcases/kernel/syscalls/{get_mempolicy => numa/lib}/Makefile (71%)
+ create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+ create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
