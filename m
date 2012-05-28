@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SPwdk-0002i4-PD
-	for ltp-list@lists.sourceforge.net; Thu, 03 May 2012 14:04:16 +0000
-Date: Thu, 3 May 2012 15:12:44 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120503131244.GB9999@saboteur.suse.cz>
-References: <CAFkf=XoJnHYOZ3gVoyDjekjd3xp_YGQ==A7zvPqgMtgkdzzmnw@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SZ4gP-0004KS-El
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 18:28:45 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SZ4gO-0007H1-Q8
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 18:28:45 +0000
+Received: by obhx4 with SMTP id x4so870293obh.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 May 2012 11:28:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFkf=XoJnHYOZ3gVoyDjekjd3xp_YGQ==A7zvPqgMtgkdzzmnw@mail.gmail.com>
-Subject: Re: [LTP] Test for linux syscall 240 cc sys_futex
+In-Reply-To: <4FC363E1.8020702@redhat.com>
+References: <4FC363E1.8020702@redhat.com>
+Date: Mon, 28 May 2012 11:28:39 -0700
+Message-ID: <CAGH67wRQ0rd1gZreTExEwcPLwF752ssa3nN40Xm4359Hn_mdLg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 2/4] mbind01: dont use hardcoded NUMA node ids
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,25 +27,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andreas Saebjoernsen <andreas@digitalplaywright.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
 
-Hi!
-Sorry I'm not aware of any tests directly for futex systcall in LTP. I
-guess that these are covered indirectly by glibc mutex and lock tests.
+On Mon, May 28, 2012 at 4:39 AM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+> =A0testcases/kernel/syscalls/mbind/Makefile =A0| =A0 =A03 +--
+> =A0testcases/kernel/syscalls/mbind/mbind01.c | =A0 10 ++++++++--
+> =A02 files changed, 9 insertions(+), 4 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
++	if ((ret =3D get_allowed_nodes(1, &test_node)) < 0) {
++		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
++	}
 
-------------------------------------------------------------------------------
+    Is this always guaranteed to set errno to a sane value?
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
