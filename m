@@ -1,28 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1SYi3z-00015X-3w
-	for ltp-list@lists.sourceforge.net; Sun, 27 May 2012 18:19:35 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SYi3w-0001kD-CA
-	for ltp-list@lists.sourceforge.net; Sun, 27 May 2012 18:19:35 +0000
-Received: by obhx4 with SMTP id x4so5595427obh.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 27 May 2012 11:19:26 -0700 (PDT)
+	(envelope-from <jstancek@redhat.com>) id 1SYyIA-0002lL-Cz
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:18 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SYyI9-0002Mk-3K
+	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:18 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4SBdBSN002948
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 May 2012 07:39:11 -0400
+Message-ID: <4FC363DD.3080303@redhat.com>
+Date: Mon, 28 May 2012 13:39:09 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4FC1EE9E.8020503@cn.fujitsu.com>
-References: <CAGH67wQmnoUVOftT8=hL_T7Tv28WdGaQpmL09YQ5LWWqf=9U2w@mail.gmail.com>
-	<4FC1D8C5.4050804@cn.fujitsu.com>
-	<CAGH67wQw2j6AMgKxs0JwynQYT7JB0mjVkiB+hztWUSnLRneS9w@mail.gmail.com>
-	<4FC1E248.6040008@cn.fujitsu.com>
-	<CAGH67wT3etJ-v7sA4ygKpXZNeX=0quNQkXmCp_PC9No2wxu4kA@mail.gmail.com>
-	<4FC1EE9E.8020503@cn.fujitsu.com>
-Date: Sun, 27 May 2012 11:19:26 -0700
-Message-ID: <CAGH67wSgF4U+FZ-S_LSmyYd4TOk7MMYT=+_S=H7aEWjiFzvovQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix the fork/11-1 conformance testcase
+Content-Type: multipart/mixed; boundary="------------000907090602060600040600"
+Subject: [LTP] [PATCH 1/4] add libnuma_helper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,117 +28,340 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
 
-On Sun, May 27, 2012 at 2:06 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wr=
-ote:
-> On 05/27/2012 04:23 PM, Garrett Cooper wrote:
->
->> On Sun, May 27, 2012 at 1:14 AM, Wanlong Gao <gaowanlong@cn.fujitsu.com>=
- wrote:
->>> On 05/27/2012 04:00 PM, Garrett Cooper wrote:
->>>
->>>> On Sun, May 27, 2012 at 12:33 AM, Wanlong Gao <gaowanlong@cn.fujitsu.c=
-om> wrote:
->>>>> On 05/26/2012 10:15 PM, Garrett Cooper wrote:
->>>>>
->>>>>> The testcase tests to see whether or not locks are successfully
->>>>>> inherited across forking processes, as the requirements for fork sta=
-te
->>>>>> that they should not be. The problem is that the test tests the nega=
-tive
->>>>>> case for ftrylockfile (!=3D 0) instead of the positive case, which c=
-reates
->>>>>
->>>>> The ftrylockfile() function returns zero for success (the lock was ob=
-tained),
->>>>> and nonzero for failure.
->>>>> So I think the origin is right.
->>>>
->>>> =A0 =A0 My description might be wrong, but the fix is right. ftrylockf=
-ile
->>>> should fail in the testcase (not succeed) because the file lock isn't
->>>> owned by the forked process. It succeeds simply because the delay is
->>>
->>>
->>> But on my system ftrylockfile() always return 0, and the test PASSED.
->>> and with your patch, it fails.
->>
->> Then that's a Linux/POSIX bug then. From fork(2) on OpenGroup [1]:
->>
->> "File locks set by the parent process are not inherited by the child pro=
-cess."
->>
->> And from flockfile(2) on OpenGroup [2]:
->>
->> " =A0 The flockfile() function is used by a thread to acquire ownership
->> of a ( FILE *) object.
->>
->> =A0 =A0 The ftrylockfile() function is used by a thread to acquire
->> ownership of a ( FILE *) object if the object is available;
->> ftrylockfile() is a non-blocking version of flockfile().
->>
->> ...
->>
->> =A0 =A0 None for flockfile() and funlockfile(). The function
->> ftrylockfile() returns zero for success and non-zero to indicate that
->> the lock cannot be acquired."
->
->>
->
->> The goal/algorithm as stated at the top of the testcase was...
->>
->> "* The steps are:
->> * -> lock stdout
->> * -> fork
->> * -> child creates a thread
->> * -> child thread trylock stdout
->> * -> join the child
->>
->> * The test fails if the child thread cannot lock the file
->> * -- this would mean the child process got stdout file lock ownership."
->
->
-> Yes, if trylock can't get the lock, it should return nonzero, I think
-> the concept is right.
-> But you mean if trylock() can't get the lock, it should return zero?
+This is a multi-part message in MIME format.
+--------------000907090602060600040600
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-No.
 
-Looking into the implementation of ftrylockfile further, it looks like
-the locking is not advisory locking in the traditional sense, but
-instead thread-based locking -- this matches the description in the
-FreeBSD and OpenGroup manpage.
+A library to share NUMA helper functions shared by
+multiple testcases.
 
-The problem that I see is multi-fold:
-1. The testcase's original test for success was right as the testcase
-is using fork, not forkall.
-2. There's a bug in FreeBSD that I need to investigate and fix.
-
-I think that the testcase should test another stream than stdout
-though (say, open up /dev/null via fopen?). It would at least allow
-the test to return immediately instead of blocking indefinitely.
-
-Do you object to the other changes?
-
-Thanks!
--Garrett
-
----------------------------------------------------------------------------=
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
+ testcases/kernel/syscalls/numa/Makefile          |   22 ++++
+ testcases/kernel/syscalls/numa/Makefile.inc      |   27 +++++
+ testcases/kernel/syscalls/numa/lib/Makefile      |   26 ++++
+ testcases/kernel/syscalls/numa/lib/numa_helper.c |  135 ++++++++++++++++++++++
+ testcases/kernel/syscalls/numa/lib/numa_helper.h |   34 ++++++
+ 5 files changed, 244 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/numa/Makefile
+ create mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
+ create mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
+ create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+ create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+
+
+
+--------------000907090602060600040600
+Content-Type: text/x-patch;
+ name="0001-add-libnuma_helper.a.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-add-libnuma_helper.a.patch"
+
+diff --git a/testcases/kernel/syscalls/numa/Makefile b/testcases/kernel/syscalls/numa/Makefile
+new file mode 100644
+index 0000000..b38c5b2
+--- /dev/null
++++ b/testcases/kernel/syscalls/numa/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/numa/Makefile.inc b/testcases/kernel/syscalls/numa/Makefile.inc
+new file mode 100644
+index 0000000..59c2f9e
+--- /dev/null
++++ b/testcases/kernel/syscalls/numa/Makefile.inc
+@@ -0,0 +1,27 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../numa/lib/
++LIBDIR			:= ../numa/lib
++LIB			:= $(LIBDIR)/libnuma_helper.a
++MAKE_DEPS		+= $(LIB)
++LDLIBS			+= $(NUMA_LIBS) -lnuma_helper -lltp
++LDFLAGS			+= -L$(LIBDIR)
++
++$(LIB): $(LIBDIR)
++		$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+diff --git a/testcases/kernel/syscalls/numa/lib/Makefile b/testcases/kernel/syscalls/numa/lib/Makefile
+new file mode 100644
+index 0000000..d4a6f41
+--- /dev/null
++++ b/testcases/kernel/syscalls/numa/lib/Makefile
+@@ -0,0 +1,26 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++CPPFLAGS		+= -I../../../include
++LIB			:= libnuma_helper.a
++
++include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.c b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+new file mode 100644
+index 0000000..441d4eb
+--- /dev/null
++++ b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+@@ -0,0 +1,135 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#include "config.h"
++#include <errno.h>
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++#include <stdarg.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "numa_helper.h"
++#include "linux_syscall_numbers.h"
++
++/*
++ * get_allowed_nodes_arr - get number and array of available nodes
++ * @num_allowed_nodes: pointer where number of available nodes will be stored
++ * @allowed_nodes: array of available node ids, this is MPOL_F_MEMS_ALLOWED
++ *                 node bitmask compacted (without holes), so that each field
++ *                 contains node number. If NULL only num_allowed_nodes is
++ *                 returned, otherwise it cotains new allocated array,
++ *                 which caller is responsible to free.
++ * RETURNS:
++ *     0 on success
++ *    -1 on allocation failure
++ *    -2 on get_mempolicy failure
++ */
++int get_allowed_nodes_arr(int *num_allowed_nodes, int **allowed_nodes)
++{
++#if HAVE_NUMA_H
++	int i;
++	struct bitmask *allowed_nodemask = NULL;
++#endif
++	*num_allowed_nodes = 0;
++	if (allowed_nodes)
++		*allowed_nodes = NULL;
++
++#if HAVE_NUMA_H
++	if ((allowed_nodemask = numa_allocate_nodemask()) == NULL)
++		return -1;
++
++	if (allowed_nodes) {
++		*allowed_nodes = malloc(sizeof(int)*allowed_nodemask->size);
++		if (*allowed_nodes == NULL)
++			return -1;
++	}
++
++	/*
++	 * avoid numa_get_mems_allowed(), because of bug in getpol()
++	 * utility function in older versions:
++	 * http://www.spinics.net/lists/linux-numa/msg00849.html
++	 */
++	if (syscall(__NR_get_mempolicy, NULL, allowed_nodemask->maskp,
++		allowed_nodemask->size, 0, MPOL_F_MEMS_ALLOWED) < 0) {
++		numa_bitmask_free(allowed_nodemask);
++		if (allowed_nodes) {
++			free(*allowed_nodes);
++			*allowed_nodes = NULL;
++		}
++		return -2;
++	}
++
++	for (i = 0; i <	allowed_nodemask->size; i++) {
++		if (numa_bitmask_isbitset(allowed_nodemask, i)) {
++			if (allowed_nodes)
++				(*allowed_nodes)[*num_allowed_nodes] = i;
++			(*num_allowed_nodes)++;
++		}
++	}
++	numa_bitmask_free(allowed_nodemask);
++#endif
++	return 0;
++}
++
++/*
++ * get_allowed_nodes - convenience function to get fixed number of nodes
++ * @count: how many nodes to get
++ * @...: int pointers, where node ids will be stored
++ * RETURNS:
++ *     0 on success
++ *    -1 on allocation failure
++ *    -2 on get_mempolicy failure
++ *    -3 on not enough allowed nodes
++ */
++int get_allowed_nodes(int count, ...)
++{
++	int ret;
++	int i, *nodep;
++	va_list ap;
++	int num_nodes = 0;
++	int *nodes = NULL;
++
++	if ((ret = get_allowed_nodes_arr(&num_nodes, &nodes)) < 0)
++		return ret;
++
++	va_start(ap, count);
++	for (i = 0; i < count; i++) {
++		nodep = va_arg(ap, int *);
++		if (i < num_nodes) {
++			*nodep = nodes[i];
++		} else {
++			*nodep = -1;
++			ret = -3;
++			tst_resm(TFAIL, "get_allowed_nodes, i >= num_allowed_nodes: "
++			    "%d > %d", i, num_nodes);
++		}
++	}
++	free(nodes);
++	va_end(ap);
++
++	return ret;
++}
+diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.h b/testcases/kernel/syscalls/numa/lib/numa_helper.h
+new file mode 100644
+index 0000000..73b6513
+--- /dev/null
++++ b/testcases/kernel/syscalls/numa/lib/numa_helper.h
+@@ -0,0 +1,34 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#ifndef NUMA_HELPER_H
++#define NUMA_HELPER_H
++
++#include "config.h"
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++
++int get_allowed_nodes_arr(int *num_allowed_nodes, int **allowed_nodes);
++int get_allowed_nodes(int count, ...);
++
++#endif
++
+
+
+--------------000907090602060600040600
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------000907090602060600040600
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------000907090602060600040600--
+
