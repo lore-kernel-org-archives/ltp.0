@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SS6Mc-00085t-Tg
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:51:30 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SS6MX-0003TZ-9G
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:51:30 +0000
-Message-ID: <4FAA67FF.6090808@cn.fujitsu.com>
-Date: Wed, 09 May 2012 20:50:07 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1SZHpT-0008Pc-4s
+	for ltp-list@lists.sourceforge.net; Tue, 29 May 2012 08:30:59 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SZHpN-0003Om-R3
+	for ltp-list@lists.sourceforge.net; Tue, 29 May 2012 08:30:59 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4T8Ulmd005129
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 29 May 2012 04:30:47 -0400
+Message-ID: <4FC48935.6040109@redhat.com>
+Date: Tue, 29 May 2012 10:30:45 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <50e8b720-2459-4cf4-bfbd-fcc4cd408249@zmail13.collab.prod.int.phx2.redhat.com>
-	<85e08d38-234a-4bc6-8c4f-6c92b50dc9b1@zmail13.collab.prod.int.phx2.redhat.com>
-	<CAJn8CcGGyPNOZH2g+2FaFCtg70P4QOVvzhWYDcGoJta3-ikr8Q@mail.gmail.com>
-In-Reply-To: <CAJn8CcGGyPNOZH2g+2FaFCtg70P4QOVvzhWYDcGoJta3-ikr8Q@mail.gmail.com>
-Subject: Re: [LTP] mm: move_pages syscall can't return ENOENT when pages are
- not present
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------050205090601080104080105"
+Subject: [LTP] [PATCH v2 2/4] mbind01: dont use hardcoded NUMA node ids
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,139 +28,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaotian Feng <xtfeng@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
 
-On 05/09/2012 05:28 PM, Xiaotian Feng wrote:
-
-> On Wed, May 9, 2012 at 4:58 PM, Zhouping Liu <zliu@redhat.com> wrote:
->> hi, all
->>
->> Recently, I found an error in move_pages syscall:
->>
->> depending on move_pages(2), when page is not present,
->> it should fail with ENOENT, in fact, it's ok without
->> any errno.
->>
->> the following reproducer can easily reproduce
->> the issue, suggest you get more details by strace.
->> inside reproducer, I try to move a non-exist page from
->> node 1 to node 0.
->>
->> I have tested it on the latest kernel 3.4-rc5 with 2 and 4 numa nodes.
->> [zliu@ZhoupingLiu ~]$ gcc -o reproducer reproducer.c -lnuma
->> [zliu@ZhoupingLiu ~]$ ./reproducer
->> from_node is 1, to_node is 0
->> ERROR: move_pages expected FAIL.
->>
-> 
-> " If nodes is not NULL, move_pages returns the number of valid
-> migration requests which could not currently be performed.  Otherwise
-> it returns 0."
+This is a multi-part message in MIME format.
+--------------050205090601080104080105
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-FYI, actually, 
-commit e78bbfa8262424417a29349a8064a535053912b9
-Author: Brice Goglin <Brice.Goglin@inria.fr>
-Date:   Sat Oct 18 20:27:15 2008 -0700
-
-    mm: stop returning -ENOENT from sys_move_pages() if nothing got migrated
-
-this commit changed the behaviour.
-
-And the LTP has fixed to be consistent with this,
-https://github.com/linux-test-project/ltp/commit/338299da1ff27c7815183c1b07eb91e705f117ce
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/mbind/Makefile  |    3 +--
+ testcases/kernel/syscalls/mbind/mbind01.c |    9 +++++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
 
-Thanks,
-Wanlong Gao
 
-> 
->> I'm not in mail list, please CC me.
->>
->> /*
->>  * Copyright (C) 2012  Red Hat, Inc.
->>  *
->>  * This work is licensed under the terms of the GNU GPL, version 2. See
->>  * the COPYING file in the top-level directory.
->>  *
->>  * Compiled: gcc -o reproducer reproducer.c -lnuma
->>  * Description:
->>  * it's designed to check move_pages syscall, when
->>  * page is not present, it should fail with ENOENT.
->>  */
->>
->> #include <sys/mman.h>
->> #include <sys/types.h>
->> #include <sys/wait.h>
->> #include <stdio.h>
->> #include <unistd.h>
->> #include <errno.h>
->> #include <numa.h>
->> #include <numaif.h>
->>
->> #define TEST_PAGES 4
->>
->> int main(int argc, char **argv)
->> {
->>        void *pages[TEST_PAGES];
->>        int onepage;
->>        int nodes[TEST_PAGES];
->>        int status, ret;
->>        int i, from_node = 1, to_node = 0;
->>
->>        onepage = getpagesize();
->>
->>        for (i = 0; i < TEST_PAGES - 1; i++) {
->>                pages[i] = numa_alloc_onnode(onepage, from_node);
->>                nodes[i] = to_node;
->>        }
->>
->>        nodes[TEST_PAGES - 1] = to_node;
->>
->>        /*
->>         * the follow page is not available, also not aligned,
->>         * depend on move_pages(2), it can't be moved, and should
->>         * return ENOENT errno.
->>         */
->>        pages[TEST_PAGES - 1] = pages[TEST_PAGES - 2] - onepage * 4 + 1;
->>
->>        printf("from_node is %u, to_node is %u\n", from_node, to_node);
->>        ret = move_pages(0, TEST_PAGES, pages, nodes, &status, MPOL_MF_MOVE);
->>        if (ret == -1) {
->>                if (errno != ENOENT)
->>                        perror("move_pages expected ENOENT errno, but it's");
->>                else
->>                        printf("Succeed\n");
->>        } else {
->>                printf("ERROR: move_pages expected FAIL.\n");
->>        }
->>
->>        for (i = 0; i < TEST_PAGES; i++)
->>                numa_free(pages[i], onepage);
->>
->>        return 0;
->> }
->>
->> --
->> Thanks,
->> Zhouping
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> Please read the FAQ at  http://www.tux.org/lkml/
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> 
+--------------050205090601080104080105
+Content-Type: text/x-patch;
+	name="0002-mbind01-dont-use-hardcoded-NUMA-node-ids.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0002-mbind01-dont-use-hardcoded-NUMA-node-ids.patch"
+
+diff --git a/testcases/kernel/syscalls/mbind/Makefile b/testcases/kernel/syscalls/mbind/Makefile
+index bc50178..932037f 100644
+--- a/testcases/kernel/syscalls/mbind/Makefile
++++ b/testcases/kernel/syscalls/mbind/Makefile
+@@ -31,6 +31,5 @@ endif
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils/
+ 
+-LDLIBS			+= $(NUMA_LIBS)
+-
++include $(abs_srcdir)/../numa/Makefile.inc
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
+index 4b25db0..1148324 100644
+--- a/testcases/kernel/syscalls/mbind/mbind01.c
++++ b/testcases/kernel/syscalls/mbind/mbind01.c
+@@ -63,6 +63,7 @@
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
+ #include "include_j_h.h"
++#include "numa_helper.h"
+ 
+ char *TCID = "mbind01";
+ int  TST_TOTAL = 2;
+@@ -217,15 +218,19 @@ static int do_test(struct test_case *tc)
+ 	unsigned long maxnode = NUMA_NUM_NODES;
+ 	unsigned long len = MEM_LENGTH;
+ 	unsigned long *invalid_nodemask;
++	int test_node = -1;
++
++	if ((ret = get_allowed_nodes(1, &test_node)) < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
+ 
+ #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+ 	nodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(nodemask);
+-	nodemask_set(nodemask, 0);
++	nodemask_set(nodemask, test_node);
+ 	getnodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(getnodemask);
+ #else
+-	numa_bitmask_setbit(nodemask, 0);
++	numa_bitmask_setbit(nodemask, test_node);
+ #endif
+ 	p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+ 		    0, 0);
 
 
+--------------050205090601080104080105
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -168,7 +113,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------050205090601080104080105
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------050205090601080104080105--
+
