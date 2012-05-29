@@ -1,28 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <marios.makris@gmail.com>) id 1SUGzM-0005gS-4r
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 12:36:28 +0000
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1SUGzG-0004IQ-Qu
-	for ltp-list@lists.sourceforge.net; Tue, 15 May 2012 12:36:28 +0000
-Received: by wibhn14 with SMTP id hn14so4338036wib.4
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 15 May 2012 05:36:16 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SZHpS-0006uy-7x
+	for ltp-list@lists.sourceforge.net; Tue, 29 May 2012 08:30:58 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SZHpR-00074I-Ie
+	for ltp-list@lists.sourceforge.net; Tue, 29 May 2012 08:30:58 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4T8UqIh032309
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 29 May 2012 04:30:52 -0400
+Message-ID: <4FC4893A.6030909@redhat.com>
+Date: Tue, 29 May 2012 10:30:50 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4FB245C8.2040801@cn.fujitsu.com>
-References: <1336655089-26941-1-git-send-email-marios.makris@gmail.com>
-	<1336655089-26941-3-git-send-email-marios.makris@gmail.com>
-	<4FB0B348.3020601@cn.fujitsu.com>
-	<CAMYrgfQUi_LziMsMsAkSnQdYS6FAryf71dHx6CHX_z5xJDPQmg@mail.gmail.com>
-	<4FB245C8.2040801@cn.fujitsu.com>
-Date: Tue, 15 May 2012 15:36:16 +0300
-Message-ID: <CAMYrgfQTx7hYF4MJr-FfxwjW_Ce+iVJON4eowdfoo97pB8YH2Q@mail.gmail.com>
-From: Marioh mrs <marios.makris@gmail.com>
-Subject: Re: [LTP] [PATCH 3/3] Changed nconv variable from long to int in
-	/lib/bytes_by_prefix.c
+Content-Type: multipart/mixed; boundary="------------050501050306020901090306"
+Subject: [LTP] [PATCH v2 3/4] get_mempolicy01: dont use hardcoded NUMA node
+	ids
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,83 +29,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
 
->
-> At least you can take a look at here ./testcases/kernel/fs/doio/iogen.c
->
-> Thanks,
-> Wanlong Gao
->
-
-Hello again,
-
-This file usages have been replaced in the 2nd patch:
-[PATCH 2/3] Renamed /lib/str_to_bytes.c and /include str_to bytes.h
-
-Below i have pasted the diff from the patch only for that particular file
-from the contents of the patch as sent in the list.
-
-Thanks again :)
+This is a multi-part message in MIME format.
+--------------050501050306020901090306
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-diff --git a/testcases/kernel/fs/doio/iogen.c b/testcases/kernel/fs/doio/iogen.c
-index 167edbd..f594007 100644
---- a/testcases/kernel/fs/doio/iogen.c
-+++ b/testcases/kernel/fs/doio/iogen.c
-@@ -61,7 +61,7 @@
- #include "libkern.h"
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/get_mempolicy/Makefile   |    7 ++-----
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |    8 ++++++--
+ 2 files changed, 8 insertions(+), 7 deletions(-)
+
+
+
+--------------050501050306020901090306
+Content-Type: text/x-patch;
+	name="0003-get_mempolicy01-dont-use-hardcoded-NUMA-node-ids.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0003-get_mempolicy01-dont-use-hardcoded-NUMA-node-ids.patch"
+
+diff --git a/testcases/kernel/syscalls/get_mempolicy/Makefile b/testcases/kernel/syscalls/get_mempolicy/Makefile
+index 2791e85..333ad21 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/Makefile
++++ b/testcases/kernel/syscalls/get_mempolicy/Makefile
+@@ -20,10 +20,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-CPPFLAGS		+= -g
+-
+-CPPFLAGS		+= -I$(abs_srcdir)/../utils $(NUMA_CPPFLAGS)
+-
+-LDLIBS			+= $(NUMA_LIBS)
++CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ 
++include $(abs_srcdir)/../numa/Makefile.inc
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+index 0565d6f..9011980 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
++++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+@@ -63,6 +63,7 @@
+ #include "linux_syscall_numbers.h"
+ #include "include_j_h.h"
+ #include "common_j_h.c"
++#include "numa_helper.h"
+ 
+ char *TCID = "get_mempolicy01";  /* Test program identifier.*/
+ int  TST_TOTAL = 1;		   /* total number of tests in this file.   */
+@@ -231,15 +232,18 @@ static int do_test(struct test_case *tc)
  #endif
- #include "doio.h"
--#include "str_to_bytes.h"
-+#include "bytes_by_prefix.h"
- #include "string_to_tokens.h"
- #include "open_flags.h"
- #include "random_range.h"
-@@ -1555,7 +1555,7 @@ parse_cmdline(int argc, char **argv, char *opts)
-          break;
+ 	char *p = NULL;
+ 	unsigned long len = MEM_LENGTH;
++	int test_node = -1;
+ 
++	if ((ret = get_allowed_nodes(1, &test_node)) < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
+ #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+ 	nodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(nodemask);
+-	nodemask_set(nodemask, 0);
++	nodemask_set(nodemask, test_node);
+ 	getnodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(getnodemask);
+ #else
+-	numa_bitmask_setbit(nodemask, 0);
++	numa_bitmask_setbit(nodemask, test_node);
+ #endif
+ 	switch (tc->ttype) {
+ 	case DEFAULT:
 
-      case 'r':
--           if ((Rawmult = str_to_bytes(optarg)) == -1 ||
-+           if ((Rawmult = bytes_by_prefix(optarg)) == -1 ||
-                        Rawmult < 11 || Rawmult % BSIZE) {
-              fprintf(stderr, "iogen%s:  Illegal -r arg (%s).  Must
-be > 0 and multipe of BSIZE (%d)\n",
-                      TagName, optarg, BSIZE);
-@@ -1587,7 +1587,7 @@ parse_cmdline(int argc, char **argv, char *opts)
-          break;
 
-      case 't':
--           if ((Mintrans = str_to_bytes(optarg)) == -1) {
-+           if ((Mintrans = bytes_by_prefix(optarg)) == -1) {
-              fprintf(stderr, "iogen%s:  Illegal -t arg (%s):  Must
-have the form num[bkm]\n", TagName, optarg);
-              exit(1);
-          }
-@@ -1595,7 +1595,7 @@ parse_cmdline(int argc, char **argv, char *opts)
-          break;
-
-      case 'T':
--           if ((Maxtrans = str_to_bytes(optarg)) == -1) {
-+           if ((Maxtrans = bytes_by_prefix(optarg)) == -1) {
-              fprintf(stderr, "iogen%s:  Illegal -T arg (%s):  Must
-have the form num[bkm]\n", TagName, optarg);
-              exit(1);
-          }
-@@ -1740,7 +1740,7 @@ parse_cmdline(int argc, char **argv, char *opts)
-
-          if ((cp = strchr(argv[optind], ':')) != NULL) {
-              *cp = '\0';
--               if ((len = str_to_bytes(argv[optind])) == -1) {
-+               if ((len = bytes_by_prefix(argv[optind])) == -1) {
-                  fprintf(stderr,
-                          "iogen%s:  illegal file length (%s) for file %s\n",
-                          TagName, argv[optind], cp+1);
--- 
-Marios Makris
+--------------050501050306020901090306
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -116,7 +118,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------050501050306020901090306
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------050501050306020901090306--
+
