@@ -1,24 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SYyII-00078K-3s
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:26 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SYyIC-0005Lf-NB
-	for ltp-list@lists.sourceforge.net; Mon, 28 May 2012 11:39:26 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4SBdF2b016201
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 May 2012 07:39:15 -0400
-Message-ID: <4FC363E1.8020702@redhat.com>
-Date: Mon, 28 May 2012 13:39:13 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SZg7X-0007mm-Dc
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:27:15 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SZg7R-0001Mw-K0
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:27:15 +0000
+Received: by dalh21 with SMTP id h21so6641445dal.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 30 May 2012 03:27:03 -0700 (PDT)
+Message-ID: <4FC5F5A6.5020606@casparzhang.com>
+Date: Wed, 30 May 2012 18:25:42 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050201020905010509050500"
-Subject: [LTP] [PATCH 2/4] mbind01: dont use hardcoded NUMA node ids
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<20120316143522.GB19604@alboin.amr.corp.intel.com>
+	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
+	<4F825325.3030308@linux.intel.com>
+	<4F825F9D.3020608@casparzhang.com>
+	<4F827B6A.3020204@linux.intel.com>
+	<4F8CCF86.2010409@linux.intel.com>
+	<4F8CD7AC.3050000@casparzhang.com> <4FBC42F5.508@linux.intel.com>
+	<4FC5EA65.4040709@linux.intel.com>
+In-Reply-To: <4FC5EA65.4040709@linux.intel.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,85 +37,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
-
-This is a multi-part message in MIME format.
---------------050201020905010509050500
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/mbind/Makefile  |    3 +--
- testcases/kernel/syscalls/mbind/mbind01.c |   10 ++++++++--
- 2 files changed, 9 insertions(+), 4 deletions(-)
-
-
-
---------------050201020905010509050500
-Content-Type: text/x-patch;
-	name="0002-mbind01-dont-use-hardcoded-NUMA-node-ids.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="0002-mbind01-dont-use-hardcoded-NUMA-node-ids.patch"
-
-diff --git a/testcases/kernel/syscalls/mbind/Makefile b/testcases/kernel/syscalls/mbind/Makefile
-index bc50178..932037f 100644
---- a/testcases/kernel/syscalls/mbind/Makefile
-+++ b/testcases/kernel/syscalls/mbind/Makefile
-@@ -31,6 +31,5 @@ endif
- 
- CPPFLAGS		+= -I$(abs_srcdir)/../utils/
- 
--LDLIBS			+= $(NUMA_LIBS)
--
-+include $(abs_srcdir)/../numa/Makefile.inc
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 4b25db0..e836bc8 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -63,6 +63,7 @@
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
- #include "include_j_h.h"
-+#include "numa_helper.h"
- 
- char *TCID = "mbind01";
- int  TST_TOTAL = 2;
-@@ -217,15 +218,20 @@ static int do_test(struct test_case *tc)
- 	unsigned long maxnode = NUMA_NUM_NODES;
- 	unsigned long len = MEM_LENGTH;
- 	unsigned long *invalid_nodemask;
-+	int test_node = -1;
-+
-+	if ((ret = get_allowed_nodes(1, &test_node)) < 0) {
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	}
- 
- #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
- 	nodemask = malloc(sizeof(nodemask_t));
- 	nodemask_zero(nodemask);
--	nodemask_set(nodemask, 0);
-+	nodemask_set(nodemask, test_node);
- 	getnodemask = malloc(sizeof(nodemask_t));
- 	nodemask_zero(getnodemask);
- #else
--	numa_bitmask_setbit(nodemask, 0);
-+	numa_bitmask_setbit(nodemask, test_node);
- #endif
- 	p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
- 		    0, 0);
-
-
---------------050201020905010509050500
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Chen Gong <gong.chen@linux.intel.com>
+Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
+
+On 05/30/2012 05:37 PM, Chen Gong wrote:
+> http://git.kernel.org/pub/scm/linux/kernel/git/gong.chen/mce-test.git
+>> > https://git.kernel.org/pub/scm/linux/kernel/git/gong.chen/mce-test.git
+>> >
+>> >  The current status is ready to be merged.
+>> > 
+> ping again
+> 
+> 
+Sorry for delaying. Thanks for the update! I'll update git URL soon.
+
+Just an FYI, we won't merge the actual codes to our git repo, we will
+only do one-time pull & update when do a LTP release.
+
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -114,16 +66,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------050201020905010509050500
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------050201020905010509050500--
-
