@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SS5rP-000477-9b
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:15 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SS5rJ-0001K6-Nf
-	for ltp-list@lists.sourceforge.net; Wed, 09 May 2012 12:19:15 +0000
-Received: by pbbrq2 with SMTP id rq2so407048pbb.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SZgBV-0001wz-6K
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:31:21 +0000
+Received: from mail-pz0-f47.google.com ([209.85.210.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SZgBP-0001Tg-Rq
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:31:21 +0000
+Received: by dalh21 with SMTP id h21so6645501dal.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 09 May 2012 05:19:03 -0700 (PDT)
-Message-ID: <4FAA608C.40905@casparzhang.com>
-Date: Wed, 09 May 2012 20:18:20 +0800
+	Wed, 30 May 2012 03:31:10 -0700 (PDT)
+Message-ID: <4FC5F69E.1090405@casparzhang.com>
+Date: Wed, 30 May 2012 18:29:50 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <4FAA5A59.8070707@redhat.com>
-In-Reply-To: <4FAA5A59.8070707@redhat.com>
-Subject: Re: [LTP] [PATCH v2] move_pages08: E2BIG was removed in 2.6.29
+References: <1338373734-21691-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1338373734-21691-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH] gitmodules: update mce-test repo URL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,24 +30,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Chen Gong <gong.chen@linux.intel.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 05/09/2012 07:51 PM, Jan Stancek wrote:
+On 05/30/2012 06:28 PM, Caspar Zhang wrote:
 > 
-> Following commit reworked do_pages_move() to work by page-sized
-> chunks and also removed E2BIG:
+> According to mce-test maintainer Chen Gong, the project repo URL has
+> been moved to git.kernel.org, so update the URL.
 > 
-> commit 3140a2273009c01c27d316f35ab76a37e105fdd8
-> Author: Brice Goglin <Brice.Goglin@inria.fr>
-> Date:   Tue Jan 6 14:38:57 2009 -0800
->     mm: rework do_pages_move() to work on page_sized chunks
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  .gitmodules |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> So, move_pages08 makes sense only for kernels < 2.6.29.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
+Hi Chen Gong, please review the patch.
+
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
