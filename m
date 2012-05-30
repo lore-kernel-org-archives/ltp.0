@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SVMp3-0006k3-M1
-	for ltp-list@lists.sourceforge.net; Fri, 18 May 2012 13:02:21 +0000
-Date: Fri, 18 May 2012 14:59:29 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120518125929.GA23311@saboteur.suse.cz>
-References: <alpine.BSF.2.00.1204041743120.25027@toaster.local>
+	(envelope-from <caspar@casparzhang.com>) id 1SZgAa-0003Y7-Go
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:30:24 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SZgAZ-0001SI-JA
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 10:30:24 +0000
+Received: by pbbrq2 with SMTP id rq2so7205959pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 30 May 2012 03:30:17 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Wed, 30 May 2012 18:28:54 +0800
+Message-Id: <1338373734-21691-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <alpine.BSF.2.00.1204041743120.25027@toaster.local>
-Subject: Re: [LTP] [PATCH] Add a functional test for the IN_DELETE_SELF event
+Content-Type: multipart/mixed; boundary="------------1.7.8.6"
+Subject: [LTP] [PATCH] gitmodules: update mce-test repo URL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,39 +26,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> +/****************************************************************************
-> + * NAME
-> + *     inotify04
-> + *
-> + * DESCRIPTION
-> + *     verify that IN_DELETE_SELF functions as expected
-> + *
-> + * ALGORITHM
-> + *     Create a temporary directory, then add watches to a predefined file and
-> + *     directory, and delete the file and directory to ensure that the
-> + *     IN_DELETE_SELF event is captured properly.
-> + *
-> + *     Because of how the inotify(7) API is designed, we also need to catch the
-> + *     IN_ATTRIB and IN_IGNORED events.
-> + *
-> + * HISTORY
-> + *
-> + * ***************************************************************************/
+This is a multi-part message in MIME format.
+--------------1.7.8.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Looks good, but runtest entry is missing. And (as I said in different
-mail allready) I would remove the NAME and HISTORY from the comment
-above.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+According to mce-test maintainer Chen Gong, the project repo URL has
+been moved to git.kernel.org, so update the URL.
+
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ .gitmodules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+--------------1.7.8.6
+Content-Type: text/x-patch;
+	name="0001-gitmodules-update-mce-test-repo-URL.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-gitmodules-update-mce-test-repo-URL.patch"
+
+diff --git a/.gitmodules b/.gitmodules
+index e9eefdb..1c9e9c3 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -1,3 +1,3 @@
+ [submodule "testcases/kernel/mce-test"]
+ 	path = testcases/kernel/mce-test
+-	url = git://github.com/andikleen/mce-test.git
++	url = git://git.kernel.org/pub/scm/linux/kernel/git/gong.chen/mce-test.git
+
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -61,7 +73,18 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.6--
+
+
+
