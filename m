@@ -1,22 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SXoke-0006jj-N4
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 07:15:56 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gong.chen@linux.intel.com>) id 1SZfLm-0005MH-Qf
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 09:37:54 +0000
+Received: from mga09.intel.com ([134.134.136.24])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SXokd-0001fs-Dz
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 07:15:56 +0000
-Message-ID: <4FBF3170.80901@cn.fujitsu.com>
-Date: Fri, 25 May 2012 15:14:56 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1SZfLh-0006P9-9L
+	for ltp-list@lists.sourceforge.net; Wed, 30 May 2012 09:37:54 +0000
+Message-ID: <4FC5EA65.4040709@linux.intel.com>
+Date: Wed, 30 May 2012 17:37:41 +0800
+From: Chen Gong <gong.chen@linux.intel.com>
 MIME-Version: 1.0
-References: <4FBF2F29.6030603@redhat.com>
-In-Reply-To: <4FBF2F29.6030603@redhat.com>
-Subject: Re: [LTP] [PATCH v3] mbind01,
- get_mempolicy01: dont use hardcoded node 0
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<20120316143522.GB19604@alboin.amr.corp.intel.com>
+	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
+	<4F825325.3030308@linux.intel.com>
+	<4F825F9D.3020608@casparzhang.com>
+	<4F827B6A.3020204@linux.intel.com>
+	<4F8CCF86.2010409@linux.intel.com>
+	<4F8CD7AC.3050000@casparzhang.com> <4FBC42F5.508@linux.intel.com>
+In-Reply-To: <4FBC42F5.508@linux.intel.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,75 +33,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jeffrey Burke <jburke@redhat.com>
+To: Chen Gong <gong.chen@linux.intel.com>
+Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-On 05/25/2012 03:05 PM, Jan Stancek wrote:
-
-> 
-> These tests are failing on following setup:
->   # numactl -H
->   available: 2 nodes (0-1)
->   node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
->   23 24 25 26 27 28 29 30 31
->   node 0 size: 0 MB
->   node 0 free: 0 MB
->   node 1 cpus:
->   node 1 size: 12288 MB
->   node 1 free: 9998 MB
->   node distances:
->   node   0   1
->     0:  10  40
->     1:  40  10
-> 
-> Avoid hardcoded node 0 by picking first available node obtained using
-> get_mempolicy(..., MPOL_F_MEMS_ALLOWED);
-> 
-> Using whole nodemask doesn't work with MPOL_PREFERRED, because set_mempolicy
-> will use only first node and subsequent check for bitmask equality fails.
-> 
-
-
-Thank you Jan,
-
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  .../syscalls/get_mempolicy/get_mempolicy01.c       |   22 ++++++++++++++++++-
->  testcases/kernel/syscalls/mbind/mbind01.c          |   22 ++++++++++++++++++-
->  2 files changed, 40 insertions(+), 4 deletions(-)
-> 
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+5LqOIDIwMTIvNS8yMyA5OjUyLCBDaGVuIEdvbmcg5YaZ6YGTOgo+IOS6jiAyMDEyLzQvMTcgMTA6
+MzgsIENhc3BhciBaaGFuZyDlhpnpgZM6Cj4+IE9uIDA0LzE3LzIwMTIgMTA6MDMgQU0sIENoZW4g
+R29uZyB3cm90ZToKPj4+IOS6jiAyMDEyLzQvOSAxNDowMiwgQ2hlbiBHb25nIOWGmemBkzoKPj4+
+PiDkuo4gMjAxMi80LzkgMTI6MDMsIENhc3BhciBaaGFuZyDlhpnpgZM6Cj4+Pj4+IE9uIDA0LzA5
+LzIwMTIgMTE6MTAgQU0sIENoZW4gR29uZyB3cm90ZToKPj4+Pj4+IOS6jiAyMDEyLzQvNiAyMjoz
+MywgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPj4+Pj4+PiBPbiAwMy8yMS8yMDEyIDA1OjE4IFBNLCBD
+aGVuIEdvbmcgd3JvdGU6Cj4+Pj4+Pj4+IOS6jiAyMDEyLzMvMTYgMjI6MzUsIEFuZGkgS2xlZW4g
+5YaZ6YGTOgo+Pj4+Pj4+Pj4gT24gRnJpLCBNYXIgMTYsIDIwMTIgYXQgMDM6Mjc6NDRQTSArMDgw
+MCwgQ2FzcGFyIAo+Pj4+Pj4+Pj4gWmhhbmcgd3JvdGU6Cj4+Pj4+Pj4+Pj4gSGkgYWxsLCBJJ2xs
+IG1lcmdlIHRoaXMgY2hhbmdlIHRvIG1hc3RlciBpZiBJCj4+Pj4+Pj4+Pj4gZG9uJ3QgaGVhciBh
+bnkgb2JqZWN0aW9ucyBmcm9tIHlvdSBieSB0b2RheS4KPj4+Pj4+Pj4+IEZpbmUgZm9yIG1lLiBD
+b3B5aW5nIEdvbmcgQ2hlbiB3aG8gZGlkIG1vc3Qgb2YgdGhlIAo+Pj4+Pj4+Pj4gbWNlLXRlc3Qg
+d29yayByZWNlbnRseSB0b28uCj4+Pj4+Pj4+PiAKPj4+Pj4+Pj4+IC1BbmRpCj4+Pj4+Pj4+IE9o
+LCB5ZXMuIFJlY2VudGx5IEkgbWFrZSBhIGJpZyBjaGFuZ2Ugb24gbWNlLXRlc3QgCj4+Pj4+Pj4+
+IHByb2plY3QgYW5kIG9sZCBzdHJ1Y3R1cmUgd2lsbCBiZSByZW9yZ2FuaXplZC4gQW5kIEkgCj4+
+Pj4+Pj4+IGV2ZXIgbG9va2VkIHRocm91Z2ggdGhlIG1jZS10ZXN0IHBhcnQgaW4gTFRQLiAKPj4+
+Pj4+Pj4gVW5mb3J0dW5hdGVseSBpdCBpcyB2ZXJ5IG9sZCBhbmQgY2FuJ3QgcnVuIG9uIG5ld2Vy
+IAo+Pj4+Pj4+PiBrZXJuZWwuIEkgaG9wZSB5b3UgY2FuIGtlZXAgY3VycmVudCBkaXNhYmxlZCBz
+dGF0dXMKPj4+Pj4+Pj4gaW4gTFRQIGFuZCB3YWl0IG15IG5ldyB3b3JrIGlzIG1lcmdlZC4gV2Ug
+Y2FuIHRhbGsgYXQKPj4+Pj4+Pj4gdGhhdCB0aW1lLiBJcyBpdCBPSyB0byB5b3U/Cj4+Pj4+Pj4g
+SGkgQ2hlbiBHb25nLCBzb3JyeSBmb3IgbGF0ZSByZXBseSwgd2UncmUgcGxhbm5pbmcgdG8gCj4+
+Pj4+Pj4gcmVtb3ZlIG9sZCBzdGF0aWMgY29kZWQgbWNlLXRlc3QgZnJvbSBMVFAsIGFuZCB1c2Ug
+aXQKPj4+Pj4+PiBhcyBhIHN1Ym1vZHVsZSwgd2hpY2ggbWVhbnMsIG1jZS10ZXN0IHdvbid0IGJl
+Cj4+Pj4+Pj4gc3RhdGljLWNvZGVkIGFueSBtb3JlLCBpdCdzIGFsd2F5cyBzeW5jZWQgdXAgd2l0
+aCB5b3VyCj4+Pj4+Pj4gdXBzdHJlYW0gdmVyc2lvbiwgd2UganVzdCBuZWVkIHRvIGRvIHNvbWUg
+bWFudWFsCj4+Pj4+Pj4gYGBzdWJtb2R1bGUgdXBkYXRlYGAgb3BlcmF0aW9ucyB0byBjaGVja291
+dCB5b3VyCj4+Pj4+Pj4gdmVyc2lvbiB3aGVuIGRvaW5nIGEgTFRQIHJlbGVhc2UuIFNvIEknbGwg
+bWVyZ2UgdGhpcwo+Pj4+Pj4+IHBhdGNoIGluLCByZW1vdmUgYWxsIGN1cnJlbnQgb3V0LW9mLWRh
+dGUgY29kZXMsIGFuZAo+Pj4+Pj4+IHdhaXQgZm9yIHlvdXIgbm90aWNlIG9mIG1jZS10ZXN0J3Mg
+bmV4dCB2ZXJzaW9uLCBzbwo+Pj4+Pj4+IHRoYXQgd2UgY2FuIGluY2x1ZGUgaXQgaW4gb3VyIG5l
+eHQgTFRQIHN0YWJsZSByZWxlYXNlLgo+Pj4+Pj4+IAo+Pj4+Pj4+IFRoYW5rcywgQ2FzcGFyCj4+
+Pj4+Pj4gCj4+Pj4+PiBJdCdzIGZpbmUgdG8gbWUuIFNvIGRvIHlvdSB3YW50IHRvIGdldCBhIG5v
+dGljZSBmcm9tIG1lIAo+Pj4+Pj4gYWZ0ZXIgdGhlIGNvZGVzIGFyZSBtZXJnZWQgb3IgeW91IG1v
+bml0b3IgdGhlIHVwc3RyZWFtIAo+Pj4+Pj4gc3RhdHVzIGJ5IHlvdXJzZWxmPwo+Pj4+PiBJJ2Qg
+YXBwcmVjaWF0ZSBpdCBpZiB5b3UgY2FuIHNlbmQgbWUgYSBtYWlsIHdoZW4gdGhlIGNvZGVzIAo+
+Pj4+PiBnZXQgbWVyZ2VkLCBidXQgSSdsbCBjaGVjayB1cHN0cmVhbSBzdGF0dXMgYXMgd2VsbCBm
+cm9tCj4+Pj4+IHRpbWUgdG8gdGltZS4KPj4+Pj4gCj4+Pj4+IFRoYW5rcywgQ2FzcGFyCj4+Pj4+
+IAo+Pj4+IE9LLCBJIHdpbGwuIE5vdyBwYXRjaCBpcyBpbiB0aGUgcmV2aWV3IHN0YXR1cywgc28g
+SSB3aWxsCj4+Pj4gdGVsbCB5b3UgQVNBUCBhZnRlciBtZXJnZWQuCj4+PiBUaGUgbmV3IHBhdGNo
+IGZvciBtY2UtdGVzdCBoYXMgYmVlbiBtZXJnZWQsIGJ1dCBpdCBsb29rcyBhCj4+PiBsaXR0bGUg
+Yml0IHdyb25nIGR1cmluZyB0aGUgbWVyZ2UgcHJvY2VkdXJlIChhbGwgc2hlbGwgc2NyaXB0cwo+
+Pj4gZXhlY3V0aW9uIHJpZ2h0IGFyZSBtaXNzZWQpLiBJJ20gcHVzaGluZyBBbmRpIHRvIGZpeCBp
+dCwgc28KPj4+IHBsZWFzZSBkb24ndCBhZGQgbWNlLXRlc3QgYXQgY3VycmVudCBzdGFnZS4gSSB3
+aWxsIHRlbGwgeW91Cj4+PiB3aGVuIGl0IGlzIHJlYWR5Lgo+PiAKPj4gTm90ZWQuIFRoYW5rcyBm
+b3IgdGhlIHVwZGF0ZS4KPj4gCj4+IFRoYW5rcywgQ2FzcGFyCj4+IAo+IE5vdyBJJ3ZlIGdvdHRl
+biB0aGUgYWNjb3VudCBvbiBsa21sIGFuZCBjcmVhdGUgYSBwcm9qZWN0IGJ5IG15IG93bi4KPiBT
+byBub3cgd2UgY2FuIGJlZ2luIHRoZSBtZXJnZSB3b3JrLiBJZiB5b3UgaGF2ZSBhbnkgc3VnZ2Vz
+dGlvbiwKPiBqdXN0IGxldCBtZSBrbm93LiBUaGUgbmV3IHByb2plY3QgaXMgdW5kZXIKPiAKPiBn
+aXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvZ29uZy5jaGVuL21j
+ZS10ZXN0LmdpdAo+Cj4gCmh0dHA6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5l
+bC9naXQvZ29uZy5jaGVuL21jZS10ZXN0LmdpdAo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L2dvbmcuY2hlbi9tY2UtdGVzdC5naXQKPgo+ICBUaGUgY3Vy
+cmVudCBzdGF0dXMgaXMgcmVhZHkgdG8gYmUgbWVyZ2VkLgo+IApwaW5nIGFnYWluCgoKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNp
+dmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFu
+ZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiBy
+ZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2Jp
+bGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3
+dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
+bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
