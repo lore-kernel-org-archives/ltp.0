@@ -2,16 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SPYGu-0002bX-8Z
-	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 12:03:04 +0000
-Date: Wed, 2 May 2012 14:01:12 +0200
+	(envelope-from <chrubis@suse.de>) id 1Sa4rS-0002Gy-DS
+	for ltp-list@lists.sourceforge.net; Thu, 31 May 2012 12:52:18 +0000
+Date: Thu, 31 May 2012 14:50:29 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120502120112.GA366@saboteur.suse.cz>
-References: <B7E6FC224F02D64480BFC86AA60E9566267B9332@SZXEML511-MBS.china.huawei.com>
+Message-ID: <20120531125029.GA3926@saboteur.suse.cz>
+References: <CAGH67wR4WAyLTm1CN-nV3hSt_qZ5OGq3ZnqgL2yJ3wX_SyOY7Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <B7E6FC224F02D64480BFC86AA60E9566267B9332@SZXEML511-MBS.china.huawei.com>
-Subject: Re: [LTP] Why LTP expect to get EFAULT error on sigtimedwait01 case
+In-Reply-To: <CAGH67wR4WAyLTm1CN-nV3hSt_qZ5OGq3ZnqgL2yJ3wX_SyOY7Q@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Fix clock_settime/4-2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,61 +24,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Maxiansheng (Max)" <max.maxiansheng@huawei.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> We are testing several embedded Linux. When we use LTP to test these Linux, we find that the testcase sigtimedwait01 always failed with Segment Fault.
-> 
-> As the testcase failed on x86_64, i586 and arm, we found that maybe glibc doesn??t deal with the bad address
-> 
-> The testcase C program file is : testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo.c
-> 
-> The result is :
-> sigtimedwait01    6  TPASS  :  Test passed
-> sigtimedwait01    0  TINFO  :  0x80493c0, 10
-> sigtimedwait01    7  TBROK  :  unexpected signal 11 received (pid = 4057).
-> sigtimedwait01    8  TBROK  :  Remaining cases broken
-> 
-> it always fail after line 334, because of Segment Fault
-> 332 void test_bad_address2(swi_func sigwaitinfo, int signo)
-> 333 {
-> 334         TEST(sigwaitinfo((void*)1, NULL, NULL);
-> 335         REPORT_SUCCESS(-1, EFAULT);
-> 336 }
-> 
-> We can see that, here, we do
-> 
-> Sigtimedwait((void*)1, NULL, NULL));
-> 
-> And the parameter (void *)1 is a bad address.
-> 
-> This test can make things easier.
-> 
-> #include <stdio.h>
-> #include <signal.h>
-> 
-> int main()
-> {
->         int ret;
->         ret = sigtimedwait((void*)1, NULL, NULL);
->         printf("test end\n");
->         return 0;
-> }
-> 
-> Why LTP expect to get the EFAULT error?
+> 1. The threshold was too low; setting it to 10 seconds and adding an
+>    overlap of 5 seconds ensures that the SIGALRM handler fires.
 
-Hmm, that is dumbious test indeed, as the EFAULT isn't specified in
-manual page as possible errno. Moreover if you look into the
-corresponding glibc source (sysdeps/unix/sysv/linux/sigtimedwait.c) the
-first parameter is dereferenced before the actual syscall is done.
+I do not agree with this part. The system time is set four seconds after
+the created timer expiration time and because of that the signal hanlder
+must be called immediately after that change (unless machine is under
+heavy load, of course).
 
-Digging in glibc git log the checks for SIGCANCEL and SIGSETXID were
-added around year 2003. I suspect that the test was working fine
-beforehand.
-
-My conclusion is that the test for bad address is wrong and should be
-removed.
+Looking at the code more closely, I'm not sure if it's a good idea to
+mix sleep() (which may be implemented via SIGALRM) and timers that cause
+SIGALRM too. The POSIX seems to say that it's not specified if signal
+handler will be called in such case, only the interruption of sleep() is
+guaranteed. 
 
 -- 
 Cyril Hrubis
