@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SXoaU-0006LY-6v
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 07:05:26 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SXoaO-0003nV-Lb
-	for ltp-list@lists.sourceforge.net; Fri, 25 May 2012 07:05:26 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q4P75EK8029557
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 May 2012 03:05:14 -0400
-Message-ID: <4FBF2F29.6030603@redhat.com>
-Date: Fri, 25 May 2012 09:05:13 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gong.chen@linux.intel.com>) id 1SZuml-0005SZ-CQ
+	for ltp-list@lists.sourceforge.net; Thu, 31 May 2012 02:06:47 +0000
+Received: from mga11.intel.com ([192.55.52.93])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SZumk-0000XZ-9j
+	for ltp-list@lists.sourceforge.net; Thu, 31 May 2012 02:06:47 +0000
+Message-ID: <4FC6D22E.3040905@linux.intel.com>
+Date: Thu, 31 May 2012 10:06:38 +0800
+From: Chen Gong <gong.chen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060901070608050100010204"
-Subject: [LTP] [PATCH v3] mbind01, get_mempolicy01: dont use hardcoded node 0
+References: <4F58E36E.5000306@casparzhang.com>
+	<4F594DE2.4040603@cn.fujitsu.com>
+	<4F62EB70.7010400@casparzhang.com>
+	<20120316143522.GB19604@alboin.amr.corp.intel.com>
+	<4F699CDD.606@linux.intel.com> <4F7EFED0.4040405@casparzhang.com>
+	<4F825325.3030308@linux.intel.com>
+	<4F825F9D.3020608@casparzhang.com>
+	<4F827B6A.3020204@linux.intel.com>
+	<4F8CCF86.2010409@linux.intel.com>
+	<4F8CD7AC.3050000@casparzhang.com> <4FBC42F5.508@linux.intel.com>
+	<4FC5EA65.4040709@linux.intel.com>
+	<4FC5F5A6.5020606@casparzhang.com>
+In-Reply-To: <4FC5F5A6.5020606@casparzhang.com>
+Subject: Re: [LTP] [RFC] make mce-test a submodule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,156 +35,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jeffrey Burke <jburke@redhat.com>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: Andi Kleen <andi.kleen@intel.com>, LTP list <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------060901070608050100010204
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-
-These tests are failing on following setup:
-  # numactl -H
-  available: 2 nodes (0-1)
-  node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
-  23 24 25 26 27 28 29 30 31
-  node 0 size: 0 MB
-  node 0 free: 0 MB
-  node 1 cpus:
-  node 1 size: 12288 MB
-  node 1 free: 9998 MB
-  node distances:
-  node   0   1
-    0:  10  40
-    1:  40  10
-
-Avoid hardcoded node 0 by picking first available node obtained using
-get_mempolicy(..., MPOL_F_MEMS_ALLOWED);
-
-Using whole nodemask doesn't work with MPOL_PREFERRED, because set_mempolicy
-will use only first node and subsequent check for bitmask equality fails.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../syscalls/get_mempolicy/get_mempolicy01.c       |   22 ++++++++++++++++++-
- testcases/kernel/syscalls/mbind/mbind01.c          |   22 ++++++++++++++++++-
- 2 files changed, 40 insertions(+), 4 deletions(-)
-
-
-
---------------060901070608050100010204
-Content-Type: text/x-patch;
-	name="0001-mbind01-get_mempolicy01-dont-use-hardcoded-node-0.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0001-mbind01-get_mempolicy01-dont-use-hardcoded-node-0.patch"
-
-diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-index 0565d6f..d2de92b 100644
---- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-+++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-@@ -231,15 +231,33 @@ static int do_test(struct test_case *tc)
- #endif
- 	char *p = NULL;
- 	unsigned long len = MEM_LENGTH;
-+	struct bitmask *allowed = NULL;
-+	int i, test_node = -1;
-+
-+	allowed = numa_allocate_nodemask();
-+	/*
-+	 * avoid numa_get_mems_allowed(), because of bug in getpol()
-+	 * utility function in older versions:
-+	 * http://www.spinics.net/lists/linux-numa/msg00849.html
-+	 */
-+	TEST(syscall(__NR_get_mempolicy, NULL, allowed->maskp,
-+		allowed->size, 0, MPOL_F_MEMS_ALLOWED));
-+	if (TEST_RETURN < 0)
-+		tst_resm(TFAIL|TERRNO, "get_mempolicy: MPOL_F_MEMS_ALLOWED");
-+	for (i = 0; i < allowed->size; i++)
-+		if (numa_bitmask_isbitset(allowed, i)) {
-+			test_node = i;
-+			break;
-+		}
- 
- #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
- 	nodemask = malloc(sizeof(nodemask_t));
- 	nodemask_zero(nodemask);
--	nodemask_set(nodemask, 0);
-+	nodemask_set(nodemask, test_node);
- 	getnodemask = malloc(sizeof(nodemask_t));
- 	nodemask_zero(getnodemask);
- #else
--	numa_bitmask_setbit(nodemask, 0);
-+	numa_bitmask_setbit(nodemask, test_node);
- #endif
- 	switch (tc->ttype) {
- 	case DEFAULT:
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 4b25db0..cdc1721 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -217,15 +217,33 @@ static int do_test(struct test_case *tc)
- 	unsigned long maxnode = NUMA_NUM_NODES;
- 	unsigned long len = MEM_LENGTH;
- 	unsigned long *invalid_nodemask;
-+	struct bitmask *allowed = NULL;
-+	int i, test_node = -1;
-+
-+	allowed = numa_allocate_nodemask();
-+	/*
-+	 * avoid numa_get_mems_allowed(), because of bug in getpol()
-+	 * utility function in older versions:
-+	 * http://www.spinics.net/lists/linux-numa/msg00849.html
-+	 */
-+	TEST(syscall(__NR_get_mempolicy, NULL, allowed->maskp,
-+		allowed->size, 0, MPOL_F_MEMS_ALLOWED));
-+	if (TEST_RETURN < 0)
-+		tst_resm(TFAIL|TERRNO, "get_mempolicy: MPOL_F_MEMS_ALLOWED");
-+	for (i = 0; i < allowed->size; i++)
-+		if (numa_bitmask_isbitset(allowed, i)) {
-+			test_node = i;
-+			break;
-+		}
- 
- #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
- 	nodemask = malloc(sizeof(nodemask_t));
- 	nodemask_zero(nodemask);
--	nodemask_set(nodemask, 0);
-+	nodemask_set(nodemask, test_node);
- 	getnodemask = malloc(sizeof(nodemask_t));
- 	nodemask_zero(getnodemask);
- #else
--	numa_bitmask_setbit(nodemask, 0);
-+	numa_bitmask_setbit(nodemask, test_node);
- #endif
- 	p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
- 		    0, 0);
-
-
---------------060901070608050100010204
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------060901070608050100010204
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------060901070608050100010204--
-
+5LqOIDIwMTIvNS8zMCAxODoyNSwgQ2FzcGFyIFpoYW5nIOWGmemBkzoKPiBPbiAwNS8zMC8yMDEy
+IDA1OjM3IFBNLCBDaGVuIEdvbmcgd3JvdGU6Cj4+IGh0dHA6Ly9naXQua2VybmVsLm9yZy9wdWIv
+c2NtL2xpbnV4L2tlcm5lbC9naXQvZ29uZy5jaGVuL21jZS10ZXN0LmdpdAo+Pj4+Cj4+IApodHRw
+czovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9nb25nLmNoZW4vbWNl
+LXRlc3QuZ2l0Cj4+Pj4gCj4+Pj4gVGhlIGN1cnJlbnQgc3RhdHVzIGlzIHJlYWR5IHRvIGJlIG1l
+cmdlZC4KPj4+PiAKPj4gcGluZyBhZ2Fpbgo+PiAKPj4gCj4gU29ycnkgZm9yIGRlbGF5aW5nLiBU
+aGFua3MgZm9yIHRoZSB1cGRhdGUhIEknbGwgdXBkYXRlIGdpdCBVUkwKPiBzb29uLgo+IAo+IEp1
+c3QgYW4gRllJLCB3ZSB3b24ndCBtZXJnZSB0aGUgYWN0dWFsIGNvZGVzIHRvIG91ciBnaXQgcmVw
+bywgd2UKPiB3aWxsIG9ubHkgZG8gb25lLXRpbWUgcHVsbCAmIHVwZGF0ZSB3aGVuIGRvIGEgTFRQ
+IHJlbGVhc2UuCj4gCj4gVGhhbmtzLCBDYXNwYXIKPiAKT0ssIHRoeCBhIGxvdCEKCi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUg
+bGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAK
+dGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNw
+b25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUg
+c2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5h
+Y2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
+dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
