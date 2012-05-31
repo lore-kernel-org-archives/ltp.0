@@ -2,18 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SPZtW-0007BE-Fr
-	for ltp-list@lists.sourceforge.net; Wed, 02 May 2012 13:47:02 +0000
-Date: Wed, 2 May 2012 15:45:10 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120502134510.GE366@saboteur.suse.cz>
-References: <CABxY-SKB1ebi1xEfp_-MysXWQ_d_fh3knfPphoW1c9r5ucWU5w@mail.gmail.com>
-	<4F68400F.9080702@windriver.com> <4F684453.2060003@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1SZzq3-0004QY-1x
+	for ltp-list@lists.sourceforge.net; Thu, 31 May 2012 07:30:31 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SZzpz-00014k-8e
+	for ltp-list@lists.sourceforge.net; Thu, 31 May 2012 07:30:31 +0000
+Received: by pbbrq2 with SMTP id rq2so1081553pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 31 May 2012 00:30:21 -0700 (PDT)
+Message-ID: <4FC71DB7.2050808@casparzhang.com>
+Date: Thu, 31 May 2012 15:28:55 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F684453.2060003@cn.fujitsu.com>
-Subject: Re: [LTP] Query regarding Open Posix Test Case failure
- (pthread_rwlock_rdlock)
+References: <1338373734-21691-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1338373734-21691-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH] gitmodules: update mce-test repo URL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,21 +30,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Kang Kai <Kai.Kang@windriver.com>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> This's a glibc's bug.
-
-http://sourceware.org/bugzilla/show_bug.cgi?id=13701
-
-(for example)
-
-But nobody cared enough to fix it yet.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 05/30/2012 06:28 PM, Caspar Zhang wrote:
+> 
+> According to mce-test maintainer Chen Gong, the project repo URL has
+> been moved to git.kernel.org, so update the URL.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  .gitmodules |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+Pushed.
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
