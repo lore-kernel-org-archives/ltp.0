@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Sj0Gv-0000xE-41
-	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 03:47:29 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1Sj0Gr-00057J-8h
-	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 03:47:29 +0000
-Received: by pbbrq2 with SMTP id rq2so5516479pbb.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sarath.tadi@gmail.com>) id 1SaVED-0000WD-9Z
+	for ltp-list@lists.sourceforge.net; Fri, 01 Jun 2012 17:01:33 +0000
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SaVE9-0005Kv-9J
+	for ltp-list@lists.sourceforge.net; Fri, 01 Jun 2012 17:01:33 +0000
+Received: by wgbds1 with SMTP id ds1so733949wgb.4
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 24 Jun 2012 20:47:19 -0700 (PDT)
-Message-ID: <4FE7DF2A.4010208@casparzhang.com>
-Date: Mon, 25 Jun 2012 11:46:50 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Fri, 01 Jun 2012 10:01:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <1340594555-32059-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1340594555-32059-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH] mm/vma01: consider topdown and bottomup allocation
+In-Reply-To: <CANoG8sX9dk4ztf=pK0JtFtn=qMMknociKAnN+_VEeQjCT8Wc6w@mail.gmail.com>
+References: <CANoG8sX9dk4ztf=pK0JtFtn=qMMknociKAnN+_VEeQjCT8Wc6w@mail.gmail.com>
+Date: Fri, 1 Jun 2012 22:31:22 +0530
+Message-ID: <CABhB_e-14DNvY-033pOhqW5wUsqAZeEZ21YUwsy8XfZLMUXEWA@mail.gmail.com>
+From: tadimarri sarath <sarath.tadi@gmail.com>
+Subject: Re: [LTP] LTP filesystem related tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,57 +27,114 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5285903427000820860=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hejianet@linux.vnet.ibm.com, Wang Sheng-Hui <shhuiw@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Romu <huruomu@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 06/25/2012 11:22 AM, Caspar Zhang wrote:
-> 
-> When calculating VMAs, results differ in topdown and bottomup memory
-> allocation mechanisms. This patch fix the potential failures and should
-> work like below:
-> 
-> In topdown allocation, the start addr in second VMA should be smaller
-> than first one, i.e.:
-> 
->     u======t------(t+3*ps)
->       2nd    1st
-> 
-> Thus, in buggy kernel, if we find a VMA mapping entry in child like:
-> 
->     start_addr == u && end_addr == t+3*ps;
-> 
-> the test would go fail. Otherwise, in good kernel, we should see
-> 
->     start_addr1 == u && end_addr1 == t;
->     start_addr2 == t && end_addr2 == t+3*ps;
-> 
-> While in bottomup allocation, it's different:
-> 
->     t------u======(t+6*ps)
->       1st    2nd
-> 
-> Here in buggy kernel, we can see VMA mapping entry like this:
-> 
->     start_addr == t && end_addr == t+6*ps;
-> 
-> And in good kernel:
-> 
->     start_addr1 == t && end_addr1 == u;
->     start_addr2 == u && end_addr2 == t+6*ps;
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  testcases/kernel/mem/vma/vma01.c |   35 ++++++++++++++++++++++-------------
->  1 files changed, 22 insertions(+), 13 deletions(-)
-> 
+--===============5285903427000820860==
+Content-Type: multipart/alternative; boundary=0016e6d7eaed4d03a804c16c22ac
 
-The patch itself passes my test, yet I give it a self-NAK for now. Needs
-one more patch to resolve the issue hejianet brought up.
+--0016e6d7eaed4d03a804c16c22ac
+Content-Type: text/plain; charset=ISO-8859-1
 
-Caspar
+Hi Romu,
+you can use "syscalls" test in addition to that.
+
+
+On Fri, Jun 1, 2012 at 9:09 PM, Romu <huruomu@gmail.com> wrote:
+
+> Hi,
+>
+> 1) What option should I use with runltp to test different filesystems?
+>  -d TMPDIR and with TMPDIR on different filesystems?
+>
+> 2) Which tests should I use to test if filesystem is working fine?
+> I'm using the following:
+>
+> filecaps
+> fs
+> fs_bind
+> fs_perms_simple
+> fs_readonly
+> fsx
+>
+> Are the above tests a good test suite for filesystem test?  Any other
+> tests (e.g. aio, dio)?
+>
+> Thanks
+> Romu
+>
+>
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond. Discussions
+> will include endpoint security, mobile security and the latest in malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+
+--0016e6d7eaed4d03a804c16c22ac
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi Romu, <br>you can use &quot;syscalls&quot; test in addition to that. <br=
+><br><br><div class=3D"gmail_quote">On Fri, Jun 1, 2012 at 9:09 PM, Romu <s=
+pan dir=3D"ltr">&lt;<a href=3D"mailto:huruomu@gmail.com" target=3D"_blank">=
+huruomu@gmail.com</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex">Hi,<br>
+<br>
+1) What option should I use with runltp to test different filesystems?<br>
+=A0-d TMPDIR and with TMPDIR on different filesystems?<br>
+<br>
+2) Which tests should I use to test if filesystem is working fine?<br>
+I&#39;m using the following:<br>
+<br>
+filecaps<br>
+fs<br>
+fs_bind<br>
+fs_perms_simple<br>
+fs_readonly<br>
+fsx<br>
+<br>
+Are the above tests a good test suite for filesystem test? =A0Any other<br>
+tests (e.g. aio, dio)?<br>
+<br>
+Thanks<br>
+Romu<br>
+<br>
+---------------------------------------------------------------------------=
+---<br>
+Live Security Virtual Conference<br>
+Exclusive live event will cover all the ways today&#39;s security and<br>
+threat landscape has changed and how IT managers can respond. Discussions<b=
+r>
+will include endpoint security, mobile security and the latest in malware<b=
+r>
+threats. <a href=3D"http://www.accelacomm.com/jaw/sfrnl04242012/114/5012226=
+3/" target=3D"_blank">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122=
+263/</a><br>
+_______________________________________________<br>
+Ltp-list mailing list<br>
+<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
+e.net</a><br>
+<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
+"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
+</blockquote></div><br>
+
+--0016e6d7eaed4d03a804c16c22ac--
+
+
+--===============5285903427000820860==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -85,7 +142,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============5285903427000820860==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5285903427000820860==--
+
