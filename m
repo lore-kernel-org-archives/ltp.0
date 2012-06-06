@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <huruomu@gmail.com>) id 1SaTxM-0003XA-8j
-	for ltp-list@lists.sourceforge.net; Fri, 01 Jun 2012 15:40:04 +0000
-Received: from mail-qa0-f47.google.com ([209.85.216.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SaTxL-0003HJ-On
-	for ltp-list@lists.sourceforge.net; Fri, 01 Jun 2012 15:40:04 +0000
-Received: by qabg1 with SMTP id g1so464916qab.13
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 01 Jun 2012 08:39:58 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1ScGoi-0005c0-I1
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jun 2012 14:02:32 +0000
+Date: Wed, 6 Jun 2012 16:01:15 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120606140115.GA20261@saboteur.suse.cz>
+References: <1338483832-20468-1-git-send-email-marios.makris@gmail.com>
 MIME-Version: 1.0
-Date: Fri, 1 Jun 2012 23:39:58 +0800
-Message-ID: <CANoG8sX9dk4ztf=pK0JtFtn=qMMknociKAnN+_VEeQjCT8Wc6w@mail.gmail.com>
-From: Romu <huruomu@gmail.com>
-Subject: [LTP] LTP filesystem related tests
+Content-Disposition: inline
+In-Reply-To: <1338483832-20468-1-git-send-email-marios.makris@gmail.com>
+Subject: Re: [LTP] [PATCH] Return -1 on negative input/output
+ (/lib/bytes_by_prefix.c)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,28 +25,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Marios Makris <marios.makris@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
 
-1) What option should I use with runltp to test different filesystems?
- -d TMPDIR and with TMPDIR on different filesystems?
+Both commited, thanks.
 
-2) Which tests should I use to test if filesystem is working fine?
-I'm using the following:
-
-filecaps
-fs
-fs_bind
-fs_perms_simple
-fs_readonly
-fsx
-
-Are the above tests a good test suite for filesystem test?  Any other
-tests (e.g. aio, dio)?
-
-Thanks
-Romu
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
