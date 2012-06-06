@@ -1,25 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1Sjnaz-0003aS-Rb
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:29 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sjnau-0004Be-63
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:29 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q5R8RIf0014481
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jun 2012 01:27:18 -0700 (PDT)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Wed, 27 Jun 2012 16:26:59 +0800
-Message-ID: <1340785620-4444-3-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
-References: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1ScHRi-0001FE-Ry
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jun 2012 14:42:50 +0000
+Date: Wed, 6 Jun 2012 16:41:36 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20120606144136.GC20162@saboteur.suse.cz>
+References: <CANoG8sX9dk4ztf=pK0JtFtn=qMMknociKAnN+_VEeQjCT8Wc6w@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/3] aio_read/9-1: check aio resource limitation
+Content-Disposition: inline
+In-Reply-To: <CANoG8sX9dk4ztf=pK0JtFtn=qMMknociKAnN+_VEeQjCT8Wc6w@mail.gmail.com>
+Subject: Re: [LTP] LTP filesystem related tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,34 +24,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Romu <huruomu@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This case try to overflow the aio queue by call NUM_AIOCBS times
-aio_read.
-But for some system, the queue has no limit. So check the _SC_AIO_MAX,
-if no limit then return UNSUPPORT.
+Hi!
+> 1) What option should I use with runltp to test different filesystems?
+>  -d TMPDIR and with TMPDIR on different filesystems?
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../conformance/interfaces/aio_read/9-1.c          |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Yes, that is pretty much how to do it.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-index 746225a..413bdca 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-@@ -50,7 +50,7 @@ int main()
- 	int err;
- 	int ret;
- 
--	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
-+	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L || sysconf(_SC_AIO_MAX) == -1)
- 		return PTS_UNSUPPORTED;
- 
- 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_write_4_1_%d",
+I do remeber that some of the tests weren't utilizing TMPDIR and used
+/tmp/ directly but that should be hopefully fixed now.
+
+> 2) Which tests should I use to test if filesystem is working fine?
+> I'm using the following:
+> 
+> filecaps
+> fs
+> fs_bind
+> fs_perms_simple
+> fs_readonly
+> fsx
+> 
+> Are the above tests a good test suite for filesystem test?  Any other
+> tests (e.g. aio, dio)?
+
+Are you looking for stress tests or functionality tests or both?
+
+As allready said, quite a lot of the tests in the syscalls runtest file
+do something filesystem related.
+
+Then there are some stress tests as growfiles and dio_* and aiodio_*
+etc.
+
 -- 
-1.7.5.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
