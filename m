@@ -1,24 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SUqYL-0003AD-Jw
-	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 02:34:57 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SUqYK-0005ie-IB
-	for ltp-list@lists.sourceforge.net; Thu, 17 May 2012 02:34:57 +0000
-Message-ID: <4FB46381.2010400@cn.fujitsu.com>
-Date: Thu, 17 May 2012 10:33:37 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <20120516145353.GA12228@saboteur.suse.cz>
-	<1337219962-5782-1-git-send-email-penght@cn.fujitsu.com>
-	<4FB45E98.3010506@cn.fujitsu.com>
-	<CAGH67wSxwhPXQ_j5ryRQe4-en-wYf3iLUgrn9xtcQ54dR1FsaA@mail.gmail.com>
-In-Reply-To: <CAGH67wSxwhPXQ_j5ryRQe4-en-wYf3iLUgrn9xtcQ54dR1FsaA@mail.gmail.com>
-Subject: Re: [LTP] [PATCH v2] ltp-pan.c: fix error of Total Tests
-Reply-To: gaowanlong@cn.fujitsu.com
+	(envelope-from <glt-ltp-list@m.gmane.org>) id 1SdO5L-00051B-E5
+	for ltp-list@lists.sourceforge.net; Sat, 09 Jun 2012 16:00:19 +0000
+Received: from plane.gmane.org ([80.91.229.3])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SdO5J-0007bG-2S
+	for ltp-list@lists.sourceforge.net; Sat, 09 Jun 2012 16:00:19 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glt-ltp-list@m.gmane.org>) id 1SdO55-0002ja-DL
+	for ltp-list@lists.sourceforge.net; Sat, 09 Jun 2012 18:00:03 +0200
+Received: from 125.19.39.117 ([125.19.39.117])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <ltp-list@lists.sourceforge.net>; Sat, 09 Jun 2012 18:00:03 +0200
+Received: from v.bhav.shinde by 125.19.39.117 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <ltp-list@lists.sourceforge.net>; Sat, 09 Jun 2012 18:00:03 +0200
+From: vaibhav <v.bhav.shinde@gmail.com>
+Date: Sat, 9 Jun 2012 12:38:39 +0000 (UTC)
+Message-ID: <loom.20120609T143221-953@post.gmane.org>
+References: <4753F3FA.3010601@suse.de> <200712032347.17105.vapier@gentoo.org>
+Mime-Version: 1.0
+Subject: Re: [LTP] Openposix: pthread create, testcase  1-6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,34 +36,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 05/17/2012 10:31 AM, Garrett Cooper wrote:
 
-> On Wed, May 16, 2012 at 7:12 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
->> On 05/17/2012 09:59 AM, Peng Haitao wrote:
->>
->>> When execvp() fails, the testcases is counted in Total Tests, but not
->>> added in logfile. In fact the testcases result should be added in logfile.
->>
->> I prefer adding this for matching the Total Tests amount.
->> So,
->>
->> Acked-by: Wanlong Gao <gaownalong@cn.fujitsu.com>
+
+Mike Frysinger <vapier@...> writes:
+
 > 
->     It's nice that this is finally being fixed. This is one issue that
-> has been outstanding for several years that needed to be resolved (I
-> noticed it during/after I developed the execltp python script).
+> On Monday 03 December 2007, Patrick Kirsch wrote:
+> > I have a question on testcase pthread_create/1-1.c :
+> > there is shared variable "int *ctrl = (int *) arg;" in function
+> > "hp_func" which should be protected through pthread_mutex or similar,
+> > right? As I understand this shared variable should always be protected?
+> > So is there a reason why there are no pthread synchronisation calls?
+> >
+> > As you can see in the suggested temporary patch below, is it possible to
+> > add volatile-statement to the shared variables?
+> >
+> > I'm asking, because sometimes this testcase fails on s390x.
+> 
+> perhaps look at the generated assembly code and see if gcc is incorrectly 
+> optimizing away memory loads ?  adding volatile sounds like you're ignoring a 
+> deeper problem ...
+> -mike
 
+Hi Mike
 
-So, Garrett, you can ACK this?
+This test case is released with volatile variable usage in LTP january release. 
+I tested it for MIPS target, it FAILS giving error : 
+
+volatile int *ctrl = (int *) arg; 
+
+Can you please point out whats could be the exact issue? 
+
+Looking forward to your reply. 
 
 Thanks,
-Wanlong Gao
-
-> Thanks!
-> -Garrett
+Vaibhav 
+> 
+> 
+> -------------------------------------------------------------------------
+> SF.Net email is sponsored by: The Future of Linux Business White Paper
+> from Novell.  From the desktop to the data center, Linux is going
+> mainstream.  Let it simplify your IT future.
+> http://altfarm.mediaplex.com/ad/ck/8857-50307-18918-4
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@...
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
 
 
