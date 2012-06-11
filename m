@@ -1,23 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SkQsQ-00037Y-99
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 02:24:06 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SkQsP-0001kn-3A
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 02:24:06 +0000
-Received: from zmail13.collab.prod.int.phx2.redhat.com
-	(zmail13.collab.prod.int.phx2.redhat.com [10.5.83.15])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id q5T2Nxla017262
-	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jun 2012 22:23:59 -0400
-Date: Thu, 28 Jun 2012 22:23:59 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <bb4e2b8f-5051-46ed-9d60-617309f57b64@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <07c5b43ada5e852c8c1edaedeb89aff563bdc50c.1340725605.git.zliu@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Se5JZ-0001Lh-Em
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jun 2012 14:09:53 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Se5JT-0003GH-Ok
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jun 2012 14:09:53 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q5BE9f9h019316
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jun 2012 10:09:41 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q5BE9efn029731
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jun 2012 10:09:40 -0400
+Message-ID: <4FD5FC23.3090806@redhat.com>
+Date: Mon, 11 Jun 2012 16:09:39 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+References: <cover.1339421791.git.jstancek@redhat.com>
+In-Reply-To: <cover.1339421791.git.jstancek@redhat.com>
+Content-Type: multipart/mixed; boundary="------------050504070407060102070807"
+Subject: [LTP] [PATCH v3 1/3] add testcases/kernel/syscalls/cma
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,212 +34,128 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi,
+This is a multi-part message in MIME format.
+--------------050504070407060102070807
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
------ Original Message -----
-> From: "Zhouping Liu" <zliu@redhat.com>
-> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Tuesday, June 26, 2012 11:57:35 PM
-> Subject: [LTP]  [PATCH] mm/oom05: new testcase
-> 
-> add a new testcase to test OOM on each NUMA node
 
-I have tested it in several systems with 2 NUMA nodes and 8 NUMA nodes,
-they are all good, any comment?
+add directory structure for tests related to syscalls:
+process_vm_readv
+process_vm_writev
 
-Thanks,
-Zhouping
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/cma/Makefile             |   22 ++++++++++++++++++++
+ .../kernel/syscalls/cma/process_vm_readv/Makefile  |   22 ++++++++++++++++++++
+ .../kernel/syscalls/cma/process_vm_writev/Makefile |   22 ++++++++++++++++++++
+ 3 files changed, 66 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/cma/Makefile
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm_readv/Makefile
+ create mode 100644 testcases/kernel/syscalls/cma/process_vm_writev/Makefile
 
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
->  runtest/mm                       |    1 +
->  testcases/kernel/mem/oom/oom05.c |  131
->  ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 132 insertions(+)
->  create mode 100644 testcases/kernel/mem/oom/oom05.c
-> 
-> diff --git a/runtest/mm b/runtest/mm
-> index 2dd66f0..a60c04b 100644
-> --- a/runtest/mm
-> +++ b/runtest/mm
-> @@ -77,6 +77,7 @@ oom01 oom01
->  oom02 oom02
->  oom03 oom03
->  oom04 oom04
-> +oom05 oom05
->  
->  swapping01 swapping01 -i 5
->  
-> diff --git a/testcases/kernel/mem/oom/oom05.c
-> b/testcases/kernel/mem/oom/oom05.c
-> new file mode 100644
-> index 0000000..046ddbb
-> --- /dev/null
-> +++ b/testcases/kernel/mem/oom/oom05.c
-> @@ -0,0 +1,131 @@
-> +/*
-> + * Out Of Memory (OOM) on Each NUMA nodes
-> + *
-> + * The program is designed to cope with unpredictable like amount
-> and
-> + * system physical memory, swap size and other VMM technology like
-> KSM,
-> + * memcg, memory hotplug and so on which may affect the OOM
-> + * behaviours. It simply increase the memory consumption 3G each
-> time
-> + * until all the available memory is consumed and OOM is triggered.
-> + *
-> + * Copyright (C) 2012  Red Hat, Inc.
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that
-> it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product
-> whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +#include "usctest.h"
-> +#include "mem.h"
-> +
-> +char *TCID = "oom05";
-> +int TST_TOTAL = 1;
-> +
-> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> +	&& HAVE_MPOL_CONSTANTS
-> +#include <numa.h>
-> +#include <numaif.h>
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	char *msg;
-> +	int lc;
-> +	long nodes[MAXNODES];
-> +	int nnodes, i;
-> +	pid_t pids[MAXNODES];
-> +	int status;
-> +	unsigned long nmasks[MAXNODES];
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +#if __WORDSIZE == 32
-> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
-> +#endif
-> +	nnodes = count_numa(nodes);
-> +	if (nnodes <= 1)
-> +		tst_brkm(TCONF, NULL, "required a NUMA system.");
-> +
-> +	setup();
-> +
-> +	set_sys_tune("overcommit_memory", 1, 1);
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +
-> +		for (i = 0; i < nnodes; i++) {
-> +			nmasks[i] = 1 << nodes[i];
-> +			switch (pids[i] = fork()) {
-> +			case -1:
-> +				tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +			case 0:
-> +				if (set_mempolicy(MPOL_BIND, &nmasks[i],
-> +				    MAXNODES) == -1)
-> +					tst_brkm(TBROK|TERRNO, cleanup,
-> +					    "set_mempolicy");
-> +				tst_resm(TINFO, "start oom on numa node%lu",
-> +				    nodes[i]);
-> +				oom(NORMAL, 0, 0);
-> +				exit(0);
-> +			}
-> +		}
-> +
-> +		for (i = 0; i < nnodes; i++) {
-> +			if (waitpid(pids[i], &status, WUNTRACED|WCONTINUED) == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +
-> +			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-> +				tst_resm(TFAIL, "child[%d] exit with "
-> +				    "status: %d", pids[i], status);
-> +		}
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +void setup(void)
-> +{
-> +	tst_require_root(NULL);
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +
-> +	overcommit = get_sys_tune("overcommit_memory");
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	set_sys_tune("overcommit_memory", overcommit, 0);
-> +
-> +	TEST_CLEANUP;
-> +}
-> +
-> +#else /* no NUMA */
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-> +}
-> +#endif
-> --
-> 1.7.10.2
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
--- 
-Thanks,
-Zhouping
+
+--------------050504070407060102070807
+Content-Type: text/x-patch; name="0001-add-testcases-kernel-syscalls-cma.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0001-add-testcases-kernel-syscalls-cma.patch"
+
+diff --git a/testcases/kernel/syscalls/cma/Makefile b/testcases/kernel/syscalls/cma/Makefile
+new file mode 100644
+index 0000000..39d4657
+--- /dev/null
++++ b/testcases/kernel/syscalls/cma/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv/Makefile b/testcases/kernel/syscalls/cma/process_vm_readv/Makefile
+new file mode 100644
+index 0000000..f10cac2
+--- /dev/null
++++ b/testcases/kernel/syscalls/cma/process_vm_readv/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir              ?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/cma/process_vm_writev/Makefile b/testcases/kernel/syscalls/cma/process_vm_writev/Makefile
+new file mode 100644
+index 0000000..f10cac2
+--- /dev/null
++++ b/testcases/kernel/syscalls/cma/process_vm_writev/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir              ?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+
+--------------050504070407060102070807
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -240,7 +163,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------050504070407060102070807
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------050504070407060102070807--
+
