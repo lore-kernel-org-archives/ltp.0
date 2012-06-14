@@ -1,28 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SbrxP-0005cG-2A
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jun 2012 11:29:51 +0000
+	(envelope-from <zliu@redhat.com>) id 1Sf1Dy-0006kD-Ih
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jun 2012 03:59:58 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SbrxJ-0007e7-Dh
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jun 2012 11:29:51 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q55BTdLo027926
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jun 2012 07:29:39 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id q55BTc6g022349
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jun 2012 07:29:38 -0400
-Message-ID: <4FCDEDA1.8090709@redhat.com>
-Date: Tue, 05 Jun 2012 13:29:37 +0200
-From: Jan Stancek <jstancek@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020906010901060403010208"
-Subject: [LTP] [PATCH] dio_sparse: prevent race between kill and signal
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sf1Dw-00085k-C7
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jun 2012 03:59:58 +0000
+From: Zhouping Liu <zliu@redhat.com>
+Date: Thu, 14 Jun 2012 12:01:29 +0800
+Message-Id: <4a17ab14caea979b15264705158a639e0879cb96.1339645403.git.zliu@redhat.com>
+Subject: [LTP] [PATCH 1/2] lib/mem.c: add _wait_ksmd_done func to wait ksmd
+	finish his job
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,141 +22,137 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Cai Qian <caiqian@redhat.com>, LTP List <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------020906010901060403010208
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+without the patch, ksm/ksm0* always failed like such below:
 
+  ...
+  ksm03       0  TINFO  :  check!
+  ksm03       0  TINFO  :  run is 1.
+  ksm03       0  TINFO  :  pages_shared is 2.
+  ksm03       0  TINFO  :  pages_sharing is 95998.
+  ksm03       1  TFAIL  :  pages_sharing is not 98302.
+  ksm03       0  TINFO  :  pages_volatile is 0.
+  ksm03       0  TINFO  :  pages_unshared is 0.
+  ksm03       0  TINFO  :  sleep_millisecs is 0.
+  ksm03       0  TINFO  :  pages_to_scan is 98304.
+  ...
 
-If child gets killed before it completes signal(SIGTERM, SIG_DFL),
-then kill(childpid, SIGTERM) causes testcase to fail, because
-it is caught by LTP def_handler.
+This failure is because of ksm daemon can't finish to scan all
+mergeable pages, especially occurred in a small/dull system,
+and commit 366a92805fc9a5b0 ever did partially repair, but
+can't completely fix the issue, so I added _wait_ksmd_done
+function, which can give enough time to ksmd scan all mergeable
+pages.
 
-For example:
-dio_sparse    0  TINFO  :  Dirtying free blocks
-dio_sparse    0  TINFO  :  Starting I/O tests
-dio_sparse    1  TBROK  :  unexpected signal 15 received (pid = 10319).
-dio_sparse    2  TBROK  :  Remaining cases broken
-...
-
-Fix this by adding semaphore to wait until all children complete
-signal() before killing them.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
 ---
- testcases/kernel/io/ltp-aiodio/dio_sparse.c |   43 +++++++++++++++++++++++++-
- 1 files changed, 41 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/lib/mem.c |   72 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 57 insertions(+), 15 deletions(-)
 
+Hi, Wanlong
 
+I have tested the patch set in my lab, and I can't find the issue again:
+ http://sourceforge.net/mailarchive/message.php?msg_id=29088640 
+could you test/have a look at the patch?
 
---------------020906010901060403010208
-Content-Type: text/x-patch;
-	name="0001-dio_sparse-prevent-race-between-kill-and-signal.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0001-dio_sparse-prevent-race-between-kill-and-signal.patch"
-
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-index e93dcd9..376da33 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-@@ -30,7 +30,10 @@
- #include <stdio.h>
- #include <unistd.h>
- #include <memory.h>
-+#include <sys/ipc.h>
- #include <sys/mman.h>
-+#include <sys/sem.h>
-+#include <sys/types.h>
- #include <sys/wait.h>
- #include <limits.h>
- #include <getopt.h>
-@@ -110,6 +113,13 @@ int main(int argc, char **argv)
- 	int c;
- 	int children_errors = 0;
- 	int ret;
-+	int sem_id;
-+	struct sembuf sem_op;
-+	union semun {
-+		int val;
-+		struct semid_ds *buf;
-+		unsigned short int *array;
-+	} u;
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index b031184..5ead938 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -147,27 +147,69 @@ static void _check(char *path, long int value)
+ 		tst_resm(TFAIL, "%s is not %ld.", path, value);
+ }
  
- 	while ((c = getopt(argc, argv, "dw:n:a:s:")) != -1) {
- 		char *endp;
-@@ -145,6 +155,15 @@ int main(int argc, char **argv)
+-static void _group_check(int run, int pages_shared, int pages_sharing,
+-		int pages_volatile, int pages_unshared,
+-		int sleep_millisecs, int pages_to_scan)
++static void _wait_ksmd_done(void)
+ {
+ 	char buf[BUFSIZ];
+-	long old_num, new_num;
++	long run, pages_shared, pages_sharing, pages_volatile, pages_unshared;
++	long old_run = 0, old_pages_shared = 0, old_pages_sharing = 0,
++	     old_pages_volatile = 0, old_pages_unshared = 0;
++	long tmp;
++	int changed = 1, count = 0;
++
++	while(changed) {
++		while(sleep(5))
++			continue;
++
++		changed = 0;
++		count++;
++
++		read_file(PATH_KSM "run", buf);
++		run = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
++		if (run != old_run) {
++			old_run = run;
++			changed = 1;
++		}
+ 
+-	/* 1 seconds for ksm to scan pages. */
+-	while (sleep(1) == 1)
+-		continue;
++		read_file(PATH_KSM "pages_shared", buf);
++		pages_shared = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
++		if (pages_shared != old_pages_shared) {
++			old_pages_shared = pages_shared;
++			changed = 1;
++		}
++
++		read_file(PATH_KSM "pages_sharing", buf);
++		pages_sharing = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
++		if (pages_sharing != old_pages_sharing) {
++			old_pages_sharing = pages_sharing;
++			changed = 1;
++		}
++
++		read_file(PATH_KSM "pages_volatile", buf);
++		pages_volatile = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
++		if (pages_volatile != old_pages_volatile) {
++			old_pages_volatile = pages_volatile;
++			changed = 1;
++		}
+ 
+-	read_file(PATH_KSM "full_scans", buf);
+-	/* wait 3 increments of full_scans */
+-	old_num = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
+-	new_num = old_num;
+-	while (new_num < old_num * 3) {
+-		sleep(1);
+-		read_file(PATH_KSM "full_scans", buf);
+-		new_num = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
++		read_file(PATH_KSM "pages_unshared", buf);
++		pages_unshared = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
++		if (pages_unshared != old_pages_unshared) {
++			old_pages_unshared = pages_unshared;
++			changed = 1;
++		}
  	}
  
- 	setup();
++	tst_resm(TINFO, "ksm daemon takes %ds to scan all "
++		    "mergeable pages", count * 5);
++}
 +
-+	if ((sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT|S_IRWXU)) == -1)
-+		tst_brkm(TBROK|TERRNO, NULL, "allocate semaphore");
++static void _group_check(int run, int pages_shared, int pages_sharing,
++		int pages_volatile, int pages_unshared,
++		int sleep_millisecs, int pages_to_scan)
++{
++	/* wait for ksm daemon to scan all mergeable pages. */
++	_wait_ksmd_done();
 +
-+	/* semaphore to hold off killing children */
-+	u.val = 0;
-+	if (semctl(sem_id, 0, SETVAL, u) == -1)
-+		tst_brkm(TBROK|TERRNO, NULL, "init semaphore");
-+
- 	tst_resm(TINFO, "Dirtying free blocks");
- 	dirty_freeblocks(filesize);
- 
-@@ -153,7 +172,15 @@ int main(int argc, char **argv)
- 		switch (pid[i] = fork()) {
- 		case 0:
- 			signal(SIGTERM, SIG_DFL);
-+			sem_op = (struct sembuf) {
-+				.sem_num = 0,
-+				.sem_op = 1,
-+				.sem_flg = 0
-+			};
-+			if (semop(sem_id, &sem_op, 1) == -1)
-+				tst_brkm(TBROK|TERRNO, NULL, "raise semaphore");
- 			read_sparse(filename, filesize);
-+			/* shouldn't be reached, read_sparse calls exit() */
- 		break;
- 		case -1:
- 			while (i-- > 0)
-@@ -168,7 +195,16 @@ int main(int argc, char **argv)
- 	ret = dio_sparse(filename, alignment, writesize, filesize);
- 
- 	tst_resm(TINFO, "Killing childrens(s)");
--	
-+
-+	/* parent waits until all children complete signal() */
-+	sem_op = (struct sembuf) {
-+		.sem_num = 0,
-+		.sem_op = -num_children,
-+		.sem_flg = 0
-+	};
-+	if (semop(sem_id, &sem_op, 1) == -1)
-+		tst_brkm(TBROK|TERRNO, NULL, "lower semaphore");
-+
- 	for (i = 0; i < num_children; i++)
- 		kill(pid[i], SIGTERM);
- 
-@@ -191,7 +227,10 @@ int main(int argc, char **argv)
- 		
- 	if (!children_errors && !ret)
- 		tst_resm(TPASS, "Test passed");
--	
-+
-+	if (semctl(sem_id, 0, IPC_RMID) == -1)
-+		tst_brkm(TBROK|TERRNO, NULL, "remove semaphore");
-+
- 	cleanup();
- 	tst_exit();
- }
+ 	tst_resm(TINFO, "check!");
+ 	_check("run", run);
+ 	_check("pages_shared", pages_shared);
+-- 
+1.7.10.2
 
-
---------------020906010901060403010208
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -174,16 +160,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------020906010901060403010208
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------020906010901060403010208--
-
