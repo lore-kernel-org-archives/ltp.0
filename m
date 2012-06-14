@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SkWoX-0003B3-65
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 08:44:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SkWoW-0003EZ-7X
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 08:44:29 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q5T8iMi2016074
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Jun 2012 04:44:22 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id q5T8iL3b001432
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Jun 2012 04:44:21 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 29 Jun 2012 10:44:11 +0200
-Message-Id: <1c21689296e79eb48004e2f9eb879d717481cf73.1340959271.git.jstancek@redhat.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SfJxT-0004Fh-CX
+	for ltp-list@lists.sourceforge.net; Fri, 15 Jun 2012 00:00:11 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SfJxR-0006Kd-NZ
+	for ltp-list@lists.sourceforge.net; Fri, 15 Jun 2012 00:00:11 +0000
+Message-ID: <4FDA75C6.2090000@cn.fujitsu.com>
+Date: Fri, 15 Jun 2012 07:37:42 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.1"
-Subject: [LTP] [PATCH/RFC] style-guide: sending patch series
+References: <969F26A8BAB325438E7EB80D3C3134FB16155EEE@IRSMSX102.ger.corp.intel.com>
+In-Reply-To: <969F26A8BAB325438E7EB80D3C3134FB16155EEE@IRSMSX102.ger.corp.intel.com>
+Subject: Re: [LTP] ltp: Add patch to correct failing build from archive
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,69 +25,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------1.7.1
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-Add paragraph about sending patch series,
-what is the preferred format and sample git config.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- doc/style-guide.txt |   25 +++++++++++++++++++++++++
- 1 files changed, 25 insertions(+), 0 deletions(-)
-
-
---------------1.7.1
-Content-Type: text/x-patch; name="0001-style-guide-sending-patch-series.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-style-guide-sending-patch-series.patch"
-
-diff --git a/doc/style-guide.txt b/doc/style-guide.txt
-index 414e70e..b3bfd8c 100644
---- a/doc/style-guide.txt
-+++ b/doc/style-guide.txt
-@@ -440,3 +440,28 @@ blah blah blah blah blah.
- 
- Signed-off-by: John Smith <dev@null>
- -------------------------------------------------------------------
-+
-+Sending patch series
-+
-+Preferred format is shallow thread:
-+[PATCH 0/X] XXXXXX
-+  |_ [PATCH 1/X] YYYYYYYY
-+  |_ [PATCH 2/X] ZZZZZZZZ
-+
-+Configure your git:
-+cd <local copy of ltp repo>
-+git config sendemail.thread false
-+git config format.thread shallow
-+git config format.numbered auto
-+git config sendemail.signoffbycc false
-+git config sendemail.suppresscc all
-+git config sendemail.suppressfrom true
-+git config sendemail.smtpserver "your.smtp.server"
-+git config sendemail.confirm always
-+
-+Example, sending series consisting of 2 patches with git send-email:
-+1. git format-patch --attach -2 --cover-letter
-+2. edit subject and body of cover letter: 0000-cover-letter.patch
-+3. git send-email --to ltp-list@lists.sourceforge.net \
-+   0000-cover-letter.patch 0001-part1.patch 0002-part2.patch
-+
-
---------------1.7.1
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "Iorga, Cristian" <cristian.iorga@intel.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+On 06/06/2012 03:29 PM, Iorga, Cristian wrote:
+> ltp: Add patch to correct failing build from archive
+> 
+>  
+> 
+> Signed-off-by: Cristian Iorga <cristian.iorga@intel.com>
+
+Thanks Cristian, this already fixed in upstream.
+refer to, 
+https://github.com/linux-test-project/ltp/commit/dbd8b819c293d001b6ee6cb879871833ab23af8b
+
+Wanlong Gao
+
+> 
+> 
+> fix_building_fom_archive.patch
+> 
+> 
+> ltp: Add patch to correct failing build
+>     
+>     ltp makefile does not interpret correctly the result of git describe
+>     command and assumes that it is working with a git repo, while in fact
+>     working with a source code archive.
+>     Added a patch to corect makefile system.
+>     Tested using dash as shell.
+> 
+> Signed-off-by: Cristian Iorga <cristian.iorga@intel.com>
+> 
+> Index: ltp-20120401/Makefile
+> ===================================================================
+> --- ltp-20120401.orig/Makefile
+> +++ ltp-20120401/Makefile
+> @@ -173,7 +173,7 @@ SRCDIR_INSTALL_TARGETS	:= $(SRCDIR_INSTA
+>  #
+>  .PHONY: Version
+>  Version:
+> -	if git describe &> /dev/null; then \
+> +	if git describe > /dev/null 2>&1; then \
+>  		git describe > "$@"; \
+>  	else \
+>  		cp VERSION "$@"; \
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -102,18 +81,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.1--
-
-
-
