@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <luobingjiun@gmail.com>) id 1SjovO-0002oc-TB
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 09:52:38 +0000
-Received: from mail-lb0-f175.google.com ([209.85.217.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SjovJ-0002jp-1Z
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 09:52:38 +0000
-Received: by lbol5 with SMTP id l5so1522379lbo.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jun 2012 02:52:26 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1Sf1KT-00033Q-2I
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jun 2012 04:06:41 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sf1KS-0008MP-BI
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jun 2012 04:06:41 +0000
+Date: Thu, 14 Jun 2012 00:06:28 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <610ffc1b-4965-4332-8776-f68f4e5ce659@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FB1C5E5.10407@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Wed, 27 Jun 2012 17:52:26 +0800
-Message-ID: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
-From: =?UTF-8?B?576F56eJ6Yie?= <luobingjiun@gmail.com>
-Subject: [LTP] crashme:fork12 test may kill other process that is not forked
-	child
+Subject: Re: [LTP] ksm03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,93 +23,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Dear All,
+Hi, Wanlong
+ 
+> 
+> Got any idea? :-)
+> 
 
-fork12 test forks as many child process as possible until
-the system out of memory. And kernel OOM killer is
-triggered to select candidate process to be killed.
+sorry for late, please see the previous patches.
 
-fork12 expected one of its forked child process to be chosen,
-but what if any other process is chosen. Even the worst,
-shell script("/bin/sh") or parent process was chosen to be killed.
-No way return and the system really crashed. But this is not
-what fork12 wants.
+-- 
+Thanks,
+Zhouping
 
-I proposed the solution for this is disable the OOM killer of=A0parent
-process and adjust child process's oom_score_adj to 500(or any
-other number larger than 0), this purpose just to make child process
-can be easily chosen.
-
-Do you have better idea? Thank you.
-
----------------------------------------------------------------------------=
------------------
-
-From: Luo,BingJiun <bjluo@faraday-tech.com>
----
- .../testcases/kernel/syscalls/fork/fork12.c        |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
-
-diff --git a/ltp-full-20120401/testcases/kernel/syscalls/fork/fork12.c
-b/ltp-full-20120401/testcases/kernel/syscalls/fork/fork12.c
-index d052fba..c3d7cb5 100644
---- a/ltp-full-20120401/testcases/kernel/syscalls/fork/fork12.c
-+++ b/ltp-full-20120401/testcases/kernel/syscalls/fork/fork12.c
-@@ -63,6 +63,7 @@ int main(int ac, char **av)
-        int ret, status;
-        int lc;                 /* loop counter */
-        char *msg;              /* message returned from parse_opts */
-+       char cmd[40];
-
-        /*
-         * parse standard options
-@@ -76,6 +77,11 @@ int main(int ac, char **av)
-         */
-        setup();
-
-+       /* adjust parent process so not be killed when out of memory */
-+       sprintf(cmd,"echo -1000 > /proc/%d/oom_score_adj", getppid());
-+       printf("%s\n", cmd);
-+       system(cmd);
-+
-        /*
-         * check looping state if -i option is given
-         */
-@@ -92,6 +98,9 @@ int main(int ac, char **av)
-                                pause();
-                                exit(0);
-                        }
-+                       /* adjust child process so it is killed first
-when out of memory */
-+                       sprintf(cmd,"echo 500 > /proc/%d/oom_score_adj", pi=
-d1);
-+                       system(cmd);
-                        forks++;
-                        ret =3D waitpid(-1, &status, WNOHANG);
-                        if (ret < 0)
--- =
-
-1.7.0.4
-
-
-
-Best Regards,
-Bing-Jiun
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
