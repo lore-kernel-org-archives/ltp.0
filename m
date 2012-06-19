@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SkQQ5-00025t-Ka
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 01:54:49 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Sh09x-0007fn-Oh
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jun 2012 15:16:01 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SkQQ4-0000x0-AL
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 01:54:49 +0000
-Message-ID: <4FED0ADE.3020601@cn.fujitsu.com>
-Date: Fri, 29 Jun 2012 09:54:38 +0800
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sh09w-0001q1-9o
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jun 2012 15:16:01 +0000
+Message-ID: <4FE097BA.8040703@cn.fujitsu.com>
+Date: Tue, 19 Jun 2012 23:16:10 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <cover.1340872565.git.jstancek@redhat.com>
-In-Reply-To: <cover.1340872565.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2 0/4] dont use hardcoded NUMA node ids
+References: <4FD9D1DC.9010004@linux.vnet.ibm.com>
+	<1340117836.2512.24.camel@freedom>
+In-Reply-To: <1340117836.2512.24.camel@freedom>
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JUNE 2012.
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,157 +30,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Lucas Meneghel Rodrigues <lmr@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 06/28/2012 05:03 PM, Jan Stancek wrote:
+On 06/19/2012 10:57 PM, Lucas Meneghel Rodrigues wrote:
+> On Thu, 2012-06-14 at 17:28 +0530, Shubham Goyal wrote:
+>> Hi,
+>>
+>> The Linux Test Project test suite has been released for the month of
+>> JUNE 2012.
+>>
+>> The latest version of the test-suite contains 3000+ tests for the Linux
+>> OS and can be found at:
+>> http://ltp.sourceforge.net/,
+>> Latest happenings in LTP can also be found at:
+>> http://ltp.sourceforge.net/wiki/,
+>> http://ltp.sourceforge.net/wikiArchives.php, and,
+>> IRC: irc.freenode.org #ltp.
+>>
+>> Our web site also contains other information such as:
+>> - A Linux test tools matrix
+>> - Technical papers
+>> - How To's on Linux testing
+>> - Code coverage analysis tool.
 > 
-> Changes in v2:
-> get_allowed_pages()
-> - removed tst_resm(TFAIL,..)
-> - added break
-> - for ret == -3, set errno to EINVAL
-> move_pages_support.c
-> - check return value from get_allowed_nodes_arr()
-> mbind, get_mempolicy, move_pages
-> - removed curly brackets in single statement ifs
+> The wiki front page references some pretty old events. Some options that
+> comes into my mind:
+> 
+> 1) Remove the sourceforge site, port the relevant documentation to a
+> github wiki [1], and move the site to be hosted under the github
+> infrastructure, ltp.github.com
 
-pushed, thank you Jan.
+It's a good idea, I wonder that our github user is linux-test-project,
+because user ltp was occupied, can we get a ltp.github.com domain to
+hold our pages?
 
+Thanks,
 Wanlong Gao
 
+> 2) Just heavily clean up and organize the existing sourceforge wiki.
 > 
-> This patch series is a combination of:
-> [PATCH v3] mbind01, get_mempolicy01: dont use hardcoded node 0
-> [PATCH 1/2] move_pages_support: use only allowed nodes
-> [PATCH 2/2] move_pages: dont use hardcoded node numbers
+> Obviously this is just a suggestion, please don't be mad at me :) I find
+> useful to keep disciplined and try to keep the online documentation tidy
+> and up to date (although this is a difficult goal indeed).
 > 
-> so that all testcases use same shared code, which resides in libnuma_helper.a.
-> This library defines get_allowed_nodes() and get_allowed_nodes_arr() functions
-> to obtain list of nodes tests can use.
+> [1] It's a wiki repo with text files, that can be in several different
+> formats, such as reStructuredText
 > 
-> I tested it with following setups. Note that setup 4 and 5 will
-> end with TCONF as there is only 1 node with memory.
-> 
-> 1.
-> # numactl -H
-> available: 8 nodes (2,4-10)
-> node 2 cpus: 0
-> node 2 size: 127 MB
-> node 2 free: 9 MB
-> node 4 cpus:
-> node 4 size: 128 MB
-> node 4 free: 9 MB
-> node 5 cpus:
-> node 5 size: 128 MB
-> node 5 free: 64 MB
-> node 6 cpus:
-> node 6 size: 128 MB
-> node 6 free: 121 MB
-> node 7 cpus:
-> node 7 size: 128 MB
-> node 7 free: 121 MB
-> node 8 cpus:
-> node 8 size: 128 MB
-> node 8 free: 121 MB
-> node 9 cpus:
-> node 9 size: 128 MB
-> node 9 free: 121 MB
-> node 10 cpus:
-> node 10 size: 127 MB
-> node 10 free: 123 MB
-> 
-> 2.
-> # numactl -H
-> available: 4 nodes (0-3)
-> node 0 cpus: 0 1 2 3 4 5
-> node 0 size: 2047 MB
-> node 0 free: 564 MB
-> node 1 cpus: 6 7 8 9 10 11
-> node 1 size: 2046 MB
-> node 1 free: 451 MB
-> node 2 cpus: 18 19 20 21 22 23
-> node 2 size: 2048 MB
-> node 2 free: 595 MB
-> node 3 cpus: 12 13 14 15 16 17
-> node 3 size: 2048 MB
-> node 3 free: 236 MB
-> node distances:
-> node   0   1   2   3 
->   0:  10  16  16  16 
->   1:  16  10  16  16 
->   2:  16  16  10  16 
->   3:  16  16  16  10
-> 
-> 3.
-> # numactl -H
-> available: 2 nodes (2-3)
-> node 2 cpus: 0
-> node 2 size: 511 MB
-> node 2 free: 154 MB
-> node 3 cpus:
-> node 3 size: 511 MB
-> node 3 free: 490 MB
-> 
-> 
-> 4.
-> # numactl -H
-> available: 2 nodes (0-1)
-> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-> node 0 size: 0 MB
-> node 0 free: 0 MB
-> node 1 cpus:
-> node 1 size: 12288 MB
-> node 1 free: 9689 MB
-> node distances:
-> node   0   1 
->   0:  10  40 
->   1:  40  10 
-> 
-> 5.
-> # numactl -H
-> available: 1 nodes (0)
-> node 0 cpus: 0
-> node 0 size: 1023 MB
-> node 0 free: 654 MB
-> node distances:
-> node   0 
->   0:  10 
-> 
-> Jan Stancek (4):
->   add libnuma_helper
->   mbind01: dont use hardcoded NUMA node ids
->   get_mempolicy01: dont use hardcoded NUMA node ids
->   move_pages: dont use hardcoded NUMA node ids
-> 
->  testcases/kernel/syscalls/get_mempolicy/Makefile   |    7 +-
->  .../syscalls/get_mempolicy/get_mempolicy01.c       |    8 +-
->  testcases/kernel/syscalls/mbind/Makefile           |    3 +-
->  testcases/kernel/syscalls/mbind/mbind01.c          |    9 +-
->  testcases/kernel/syscalls/move_pages/Makefile      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages02.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages03.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages04.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages05.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages06.c      |    9 +-
->  .../kernel/syscalls/move_pages/move_pages07.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages08.c      |    9 +-
->  .../kernel/syscalls/move_pages/move_pages09.c      |    7 +-
->  .../kernel/syscalls/move_pages/move_pages10.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages11.c      |   11 +-
->  .../syscalls/move_pages/move_pages_support.c       |   44 +++++--
->  .../syscalls/move_pages/move_pages_support.h       |    1 +
->  testcases/kernel/syscalls/numa/Makefile            |   22 +++
->  testcases/kernel/syscalls/numa/Makefile.inc        |   27 ++++
->  testcases/kernel/syscalls/numa/lib/Makefile        |   26 ++++
->  testcases/kernel/syscalls/numa/lib/numa_helper.c   |  135 ++++++++++++++++++++
->  testcases/kernel/syscalls/numa/lib/numa_helper.h   |   34 +++++
->  22 files changed, 361 insertions(+), 62 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/numa/Makefile
->  create mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
->  create mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
->  create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
->  create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+>> We would encourage the community to post results to
+>> ltp-results@lists.sf.net,
+>>
+>> patches, new tests, bugs or comments/questions to ltp-list@lists.sf.net,
+>>
+>> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=103382  (for
+>> New Bug(s)),
+>> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=303382  (for
+>> New Patch(s)),
+>> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=353382  (for
+>> New Feature Request(s))
+>>
+>> **Note: Some pending patches will be checked in for next release.
+>>
+>> --Shubham
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> Live Security Virtual Conference
+>> Exclusive live event will cover all the ways today's security and 
+>> threat landscape has changed and how IT managers can respond. Discussions 
+>> will include endpoint security, mobile security and the latest in malware 
+>> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
 > 
 > 
@@ -188,9 +113,6 @@ Wanlong Gao
 > threat landscape has changed and how IT managers can respond. Discussions 
 > will include endpoint security, mobile security and the latest in malware 
 > threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> 
-> 
-> 
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
