@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1ScH9B-0004h0-5J
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jun 2012 14:23:41 +0000
-Date: Wed, 6 Jun 2012 16:22:28 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20120606142228.GB20162@saboteur.suse.cz>
-References: <71A259335A19824B8A3068CE7F5662403D907C2E@HYDHTCMBX13.ad.infosys.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <71A259335A19824B8A3068CE7F5662403D907C2E@HYDHTCMBX13.ad.infosys.com>
-Subject: Re: [LTP] LTP  support on Linux3.1
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lmr@redhat.com>) id 1Sgzs5-0002UK-1d
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jun 2012 14:57:33 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sgzs2-0000DT-9Z
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jun 2012 14:57:33 +0000
+Message-ID: <1340117836.2512.24.camel@freedom>
+From: Lucas Meneghel Rodrigues <lmr@redhat.com>
+Date: Tue, 19 Jun 2012 11:57:16 -0300
+In-Reply-To: <4FD9D1DC.9010004@linux.vnet.ibm.com>
+References: <4FD9D1DC.9010004@linux.vnet.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JUNE 2012.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,22 +28,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Pramod Gajula <pramod_gajula@infosys.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Shubham Goyal <shubham@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Can you please confirm if the latest available LTP  and LTP-DDT works well/ compatible with Linux 3.2 kernel version.
+On Thu, 2012-06-14 at 17:28 +0530, Shubham Goyal wrote:
+> Hi,
+> 
+> The Linux Test Project test suite has been released for the month of
+> JUNE 2012.
+> 
+> The latest version of the test-suite contains 3000+ tests for the Linux
+> OS and can be found at:
+> http://ltp.sourceforge.net/,
+> Latest happenings in LTP can also be found at:
+> http://ltp.sourceforge.net/wiki/,
+> http://ltp.sourceforge.net/wikiArchives.php, and,
+> IRC: irc.freenode.org #ltp.
+> 
+> Our web site also contains other information such as:
+> - A Linux test tools matrix
+> - Technical papers
+> - How To's on Linux testing
+> - Code coverage analysis tool.
 
-For LTP itself, yes it should work at least as good as previous
-releases. The 3.x kernel series are not that special after all and Linus
-made it quite clear that it's just change in version scheme...
+The wiki front page references some pretty old events. Some options that
+comes into my mind:
 
-For LTP-DDT I can't say. It's project that is based on LTP and to be
-clear I've newer heard a word about it till today.
+1) Remove the sourceforge site, port the relevant documentation to a
+github wiki [1], and move the site to be hosted under the github
+infrastructure, ltp.github.com
+2) Just heavily clean up and organize the existing sourceforge wiki.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Obviously this is just a suggestion, please don't be mad at me :) I find
+useful to keep disciplined and try to keep the online documentation tidy
+and up to date (although this is a difficult goal indeed).
+
+[1] It's a wiki repo with text files, that can be in several different
+formats, such as reStructuredText
+
+> We would encourage the community to post results to
+> ltp-results@lists.sf.net,
+> 
+> patches, new tests, bugs or comments/questions to ltp-list@lists.sf.net,
+> 
+> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=103382  (for
+> New Bug(s)),
+> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=303382  (for
+> New Patch(s)),
+> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=353382  (for
+> New Feature Request(s))
+> 
+> **Note: Some pending patches will be checked in for next release.
+> 
+> --Shubham
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
