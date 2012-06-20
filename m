@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SjRG2-0007QD-Mk
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jun 2012 08:36:22 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SjRFy-0000P3-Px
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jun 2012 08:36:22 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q5Q8aBg7031408
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Jun 2012 16:36:12 +0800
-Message-ID: <4FE97480.3040007@cn.fujitsu.com>
-Date: Tue, 26 Jun 2012 16:36:16 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1ShL9I-0000Wh-2V
+	for ltp-list@lists.sourceforge.net; Wed, 20 Jun 2012 13:40:44 +0000
+Date: Wed, 20 Jun 2012 14:57:16 +0200
+From: chrubis@suse.cz
+Message-ID: <20120620125716.GH24041@saboteur.suse.cz>
+References: <4FD9D1DC.9010004@linux.vnet.ibm.com>
+	<1340117836.2512.24.camel@freedom>
+	<20120620091354.GE16073@saboteur.suse.cz>
+	<1340199221.2424.4.camel@freedom>
 MIME-Version: 1.0
-References: <1340593602-5462-1-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1340593602-5462-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] dummy.c: fix a bug of TCONF fail
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1340199221.2424.4.camel@freedom>
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JUNE 2012.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,59 +28,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Lucas Meneghel Rodrigues <lmr@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 06/25/2012 11:06 AM, Peng Haitao wrote:
-> When HAVE_LIBCAP or HAVE_SYS_CAPABILITY_H is not defined, 
-> the case should not be fail.
 
-pushed, thanks Peng.
-
-Wanlong Gao
-
+Hi!
+> > > The wiki front page references some pretty old events. Some options that
+> > > comes into my mind:
+> >  
+> > Yes, I know that, and this is something that's on my long TODO. The
+> > priority is quite low though.
+> > 
+> > > 1) Remove the sourceforge site, port the relevant documentation to a
+> > > github wiki [1], and move the site to be hosted under the github
+> > > infrastructure, ltp.github.com
+> > > 2) Just heavily clean up and organize the existing sourceforge wiki.
+> > 
+> > Well I think that github wiki is improvement so I would personaly would
+> > vote for number 1.
+> > 
+> > Also note that we do have some relevant docs under doc/ directory in our
+> > git tree currently in asciidoc format. So maybe having sf.net pages with
+> > content generated form asciidoc by typing make in doc directory would be
+> > sufficient. That way we would have git backend wiki, the only
+> > unconvinient part is that somebody needs to upload the pages (but that
+> > could be backed up by the git syncing script that's allready runing as
+> > well).
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> ---
->  testcases/kernel/security/cap_bound/dummy.c |   10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/security/cap_bound/dummy.c b/testcases/kernel/security/cap_bound/dummy.c
-> index 3ee7c9b..d161efd 100644
-> --- a/testcases/kernel/security/cap_bound/dummy.c
-> +++ b/testcases/kernel/security/cap_bound/dummy.c
-> @@ -1,10 +1,14 @@
->  #include <stdio.h>
->  #include "config.h"
-> +#include "test.h"
->  
->  #if HAVE_SYS_CAPABILITY_H
->  #include <sys/capability.h>
->  #endif
->  
-> +char *TCID = "dummy";
-> +int TST_TOTAL=1;
-> +
->  int main(void)
->  {
->  #if HAVE_SYS_CAPABILITY_H
-> @@ -15,11 +19,9 @@ int main(void)
->  	cap_free(cur);
->  	return 0;
->  #else /* libcap */
-> -	printf("System doesn't support POSIX capabilities.\n");
-> -	return 1;
-> +	tst_brkm(TCONF, NULL, "System doesn't support POSIX capabilities.");
->  #endif
->  #else /* capability_h */
-> -	printf("System doesn't support sys/capability.h\n");
-> -	return 1;
-> +	tst_brkm(TCONF, NULL, "System doesn't support sys/capability.h.");
->  #endif
->  }
-> 
+> I have quite some experience of migrating/cleaning project documentation
+> to github, so yeah, I believe I can help with it. A good thing about
+> github wikis is that they are git repos, and the wiki engine is open
+> source, you can run it on your own machine.
 
+Great!
 
+> > > Obviously this is just a suggestion, please don't be mad at me :) I find
+> > > useful to keep disciplined and try to keep the online documentation tidy
+> > > and up to date (although this is a difficult goal indeed).
+> > 
+> > I'm not mad at all, quite contrary. I know that having good
+> > documentation is important, unfortunately it looks like nobody has time
+> > to write it. Are you volunteering? I would be happy to give you commit
+> > access ;).
+> 
+> I will help with it. I'll start to sketch a new LTP page using twitter
+> bootstrap and will look at the process that could be used to do semi
+> automated translation of the current documentation to restructured text.
+
+The automatic translation is probably not worth the effort, there is
+IMHO not enough of relevant docs for this to pay off.
+
+Let me know if you need help with anything.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
