@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SbtTv-0007JG-RA
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jun 2012 13:07:31 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SbtTp-00031i-PJ
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jun 2012 13:07:31 +0000
-Received: from zmail17.collab.prod.int.phx2.redhat.com
-	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id q55D7Jg0024111
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jun 2012 09:07:19 -0400
-Date: Tue, 05 Jun 2012 09:07:19 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <f9d3d9fa-c3af-4ad5-a6a2-d56d949fcdfe@zmail17.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4FCDEDA1.8090709@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1ShHfB-0000Ok-Rz
+	for ltp-list@lists.sourceforge.net; Wed, 20 Jun 2012 09:57:25 +0000
+Date: Wed, 20 Jun 2012 11:13:54 +0200
+From: chrubis@suse.cz
+Message-ID: <20120620091354.GE16073@saboteur.suse.cz>
+References: <4FD9D1DC.9010004@linux.vnet.ibm.com>
+	<1340117836.2512.24.camel@freedom>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] dio_sparse: prevent race between kill and signal
+Content-Disposition: inline
+In-Reply-To: <1340117836.2512.24.camel@freedom>
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JUNE 2012.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,65 +26,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Lucas Meneghel Rodrigues <lmr@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-I just came across this commit:
+Hi!
+> > The Linux Test Project test suite has been released for the month of
+> > JUNE 2012.
+> > 
+> > The latest version of the test-suite contains 3000+ tests for the Linux
+> > OS and can be found at:
+> > http://ltp.sourceforge.net/,
+> > Latest happenings in LTP can also be found at:
+> > http://ltp.sourceforge.net/wiki/,
+> > http://ltp.sourceforge.net/wikiArchives.php, and,
+> > IRC: irc.freenode.org #ltp.
+> > 
+> > Our web site also contains other information such as:
+> > - A Linux test tools matrix
+> > - Technical papers
+> > - How To's on Linux testing
+> > - Code coverage analysis tool.
+> 
+> The wiki front page references some pretty old events. Some options that
+> comes into my mind:
+ 
+Yes, I know that, and this is something that's on my long TODO. The
+priority is quite low though.
 
-commit d8f1292181b486b2073cc6fe1ec226f5cedea342
-Author: Cyril Hrubis <chrubis@suse.cz>
-Date:   Fri Mar 2 13:37:47 2012 +0100
+> 1) Remove the sourceforge site, port the relevant documentation to a
+> github wiki [1], and move the site to be hosted under the github
+> infrastructure, ltp.github.com
+> 2) Just heavily clean up and organize the existing sourceforge wiki.
 
-    ltp-aiodio: aiodio_sparse fix race condition
+Well I think that github wiki is improvement so I would personaly would
+vote for number 1.
 
-which is patch for same situation but in 'aiodio_sparse.c' file.
-So, it makes sense to fix both in same style.
+Also note that we do have some relevant docs under doc/ directory in our
+git tree currently in asciidoc format. So maybe having sf.net pages with
+content generated form asciidoc by typing make in doc directory would be
+sufficient. That way we would have git backend wiki, the only
+unconvinient part is that somebody needs to upload the pages (but that
+could be backed up by the git syncing script that's allready runing as
+well).
 
-Regards,
-Jan
+> Obviously this is just a suggestion, please don't be mad at me :) I find
+> useful to keep disciplined and try to keep the online documentation tidy
+> and up to date (although this is a difficult goal indeed).
 
------ Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 5 June, 2012 1:29:37 PM
-> Subject: [LTP] [PATCH] dio_sparse: prevent race between kill and signal
-> 
-> 
-> If child gets killed before it completes signal(SIGTERM, SIG_DFL),
-> then kill(childpid, SIGTERM) causes testcase to fail, because
-> it is caught by LTP def_handler.
-> 
-> For example:
-> dio_sparse    0  TINFO  :  Dirtying free blocks
-> dio_sparse    0  TINFO  :  Starting I/O tests
-> dio_sparse    1  TBROK  :  unexpected signal 15 received (pid =
-> 10319).
-> dio_sparse    2  TBROK  :  Remaining cases broken
-> ...
-> 
-> Fix this by adding semaphore to wait until all children complete
-> signal() before killing them.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/io/ltp-aiodio/dio_sparse.c |   43
->  +++++++++++++++++++++++++-
->  1 files changed, 41 insertions(+), 2 deletions(-)
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+I'm not mad at all, quite contrary. I know that having good
+documentation is important, unfortunately it looks like nobody has time
+to write it. Are you volunteering? I would be happy to give you commit
+access ;).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
