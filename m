@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Nitin.Yadav@mphasis.com>) id 1SkX92-0006M1-3x
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 09:05:40 +0000
-Received: from mpmulip3.mphasis.com ([203.12.222.67])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SkX8v-0004Xt-1y
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 09:05:40 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1ShgQX-0004cB-HX
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jun 2012 12:23:57 +0000
+Date: Thu, 21 Jun 2012 13:40:34 +0200
+From: chrubis@suse.cz
+Message-ID: <20120621114034.GA25933@saboteur.suse.cz>
+References: <4FE2CCE3.1030500@windriver.com>
 MIME-Version: 1.0
-Content-class: urn:content-classes:message
-Date: Fri, 29 Jun 2012 14:33:15 +0530
-Message-ID: <E351E450E8B9F54684A699D42DC5ADF222236C0E@MPBAGVEX02.corp.mphasis.com>
-In-Reply-To: <4FED6D23.5060500@casparzhang.com>
-References: <1c21689296e79eb48004e2f9eb879d717481cf73.1340959271.git.jstancek@redhat.com>
-	<4FED6D23.5060500@casparzhang.com>
-From: "Nitin Yadav" <Nitin.Yadav@mphasis.com>
-Subject: [LTP] getrusage04  FAIL  :  stime increased > 2000us
+Content-Disposition: inline
+In-Reply-To: <4FE2CCE3.1030500@windriver.com>
+Subject: Re: [LTP] [bug report] a typo in runltp script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,31 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Li, Jin" <Jin.Li@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
-I am getting below error after applying the patch (getrusage04: add
-opportunity to increase the max [us]time increment) while running the
-getrusage system call in Linux 3.2 kernel.
+Hi!
+> When I use runltp with the option [-b DEVICE], notice the typo as follows:
+> 
+> sed -i "" -e "s|DEVICE_FS_TYPE|$DEVICE_FS_TYPE|"  ${TMP}/alltests
+> 
+> The runltp will hit error and exit.
+> 
+> Is it a typo or I miss something else ?
 
-./getrusage04
-getrusage04    0  TINFO  :  Using 1 as multiply factor for max [us]time
-increment (1000+1000us)!
-getrusage04    0  TINFO  :  utime:           0us; stime:           0us
-getrusage04    0  TINFO  :  utime:           0us; stime:        4000us
-getrusage04    1  TFAIL  :  stime increased > 2000us:
+That line went in with Garrett's patch to improve the script. I guess he
+was using slightly different version of sed (or just typed the line
+wrong). (CCed him in case he remebers).
 
+And in any case we should fix that. Do you care to send a patch?
 
-Please provide some pointers and suggestions.
-Thanks!
-Nitin Yadav
-
-Information transmitted by this e-mail is proprietary to MphasiS, its associated companies and/ or its customers and is intended 
-for use only by the individual or entity to which it is addressed, and may contain information that is privileged, confidential or 
-exempt from disclosure under applicable law. If you are not the intended recipient or it appears that this mail has been forwarded 
-to you without proper authority, you are notified that any use or dissemination of this information in any manner is strictly 
-prohibited. In such cases, please notify us immediately at mailmaster@mphasis.com and delete this mail from your records.
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
