@@ -1,29 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Sk9Ao-0003Q9-4n
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 07:29:54 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sk9Ak-0005yj-36
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 07:29:54 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q5S7TiGW029415
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jun 2012 03:29:44 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id q5S7TgAD021820
-	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jun 2012 03:29:43 -0400
-Message-ID: <4FEC07E6.6030308@redhat.com>
-Date: Thu, 28 Jun 2012 09:29:42 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	(envelope-from <yanegomi@gmail.com>) id 1Shu07-0001Fv-4j
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jun 2012 02:53:35 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Shu06-0007nS-Ci
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jun 2012 02:53:35 +0000
+Received: by obcva7 with SMTP id va7so1356016obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Jun 2012 19:53:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <4FC48906.6030109@redhat.com>
-In-Reply-To: <4FC48906.6030109@redhat.com>
-Subject: Re: [LTP] [PATCH v2 0/4] dont use hardcoded NUMA node ids
+In-Reply-To: <4FE2CCE3.1030500@windriver.com>
+References: <4FE2CCE3.1030500@windriver.com>
+Date: Thu, 21 Jun 2012 19:53:28 -0700
+Message-ID: <CAGH67wTJ1Ya76eAWoUd-wy=Lg2xy+ShvtRG-3AP4V65goSaEAQ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [bug report] a typo in runltp script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,180 +27,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Li, Jin" <Jin.Li@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Thu, Jun 21, 2012 at 12:27 AM, Li, Jin <Jin.Li@windriver.com> wrote:
+> Hi,
+>
+> When I use runltp with the option [-b DEVICE], notice the typo as follows:
+>
+> sed -i "" -e "s|DEVICE_FS_TYPE|$DEVICE_FS_TYPE|" =A0${TMP}/alltests
+>
+> The runltp will hit error and exit.
+>
+> Is it a typo or I miss something else ?
 
-any thoughts on this version?
+    It wasn't an intentional "typo". It's an inconsistency between BSD
+sed and GNU sed (something that irritates me from time to time). The
+above form works with BSD sed.
+    Replacing `-i ""` with `-i '.bk'` should work.
+Thanks,
+-Garrett
 
-Regards,
-Jan
-
-On 05/29/2012 10:29 AM, Jan Stancek wrote:
-> Changes in v2:
-> get_allowed_pages()
-> - removed tst_resm(TFAIL,..)
-> - added break
-> - for ret == -3, set errno to EINVAL
-> move_pages_support.c
-> - check return value from get_allowed_nodes_arr()
-> mbind, get_mempolicy, move_pages
-> - removed curly brackets in single statement ifs
-> 
-> This patch series is a combination of:
-> [PATCH v3] mbind01, get_mempolicy01: dont use hardcoded node 0
-> [PATCH 1/2] move_pages_support: use only allowed nodes
-> [PATCH 2/2] move_pages: dont use hardcoded node numbers
-> 
-> so that all testcases use same shared code, which resides in libnuma_helper.a.
-> This library defines get_allowed_nodes() and get_allowed_nodes_arr() functions
-> to obtain list of nodes tests can use.
-> 
-> I tested it with following setups. Note that setup 4 and 5 will
-> end with TCONF as there is only 1 node with memory.
-> 
-> 1.
-> # numactl -H
-> available: 8 nodes (2,4-10)
-> node 2 cpus: 0
-> node 2 size: 127 MB
-> node 2 free: 9 MB
-> node 4 cpus:
-> node 4 size: 128 MB
-> node 4 free: 9 MB
-> node 5 cpus:
-> node 5 size: 128 MB
-> node 5 free: 64 MB
-> node 6 cpus:
-> node 6 size: 128 MB
-> node 6 free: 121 MB
-> node 7 cpus:
-> node 7 size: 128 MB
-> node 7 free: 121 MB
-> node 8 cpus:
-> node 8 size: 128 MB
-> node 8 free: 121 MB
-> node 9 cpus:
-> node 9 size: 128 MB
-> node 9 free: 121 MB
-> node 10 cpus:
-> node 10 size: 127 MB
-> node 10 free: 123 MB
-> 
-> 2.
-> # numactl -H
-> available: 4 nodes (0-3)
-> node 0 cpus: 0 1 2 3 4 5
-> node 0 size: 2047 MB
-> node 0 free: 564 MB
-> node 1 cpus: 6 7 8 9 10 11
-> node 1 size: 2046 MB
-> node 1 free: 451 MB
-> node 2 cpus: 18 19 20 21 22 23
-> node 2 size: 2048 MB
-> node 2 free: 595 MB
-> node 3 cpus: 12 13 14 15 16 17
-> node 3 size: 2048 MB
-> node 3 free: 236 MB
-> node distances:
-> node   0   1   2   3 
->   0:  10  16  16  16 
->   1:  16  10  16  16 
->   2:  16  16  10  16 
->   3:  16  16  16  10
-> 
-> 3.
-> # numactl -H
-> available: 2 nodes (2-3)
-> node 2 cpus: 0
-> node 2 size: 511 MB
-> node 2 free: 154 MB
-> node 3 cpus:
-> node 3 size: 511 MB
-> node 3 free: 490 MB
-> 
-> 
-> 4.
-> # numactl -H
-> available: 2 nodes (0-1)
-> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-> node 0 size: 0 MB
-> node 0 free: 0 MB
-> node 1 cpus:
-> node 1 size: 12288 MB
-> node 1 free: 9689 MB
-> node distances:
-> node   0   1 
->   0:  10  40 
->   1:  40  10 
-> 
-> 5.
-> # numactl -H
-> available: 1 nodes (0)
-> node 0 cpus: 0
-> node 0 size: 1023 MB
-> node 0 free: 654 MB
-> node distances:
-> node   0 
->   0:  10 
-> 
-> 
-> Jan Stancek (4):
->   add libnuma_helper.a
->   mbind01: dont use hardcoded NUMA node ids
->   get_mempolicy01: dont use hardcoded NUMA node ids
->   move_pages: dont use hardcoded NUMA node ids
-> 
->  testcases/kernel/syscalls/get_mempolicy/Makefile   |    7 +-
->  .../syscalls/get_mempolicy/get_mempolicy01.c       |    8 +-
->  testcases/kernel/syscalls/mbind/Makefile           |    3 +-
->  testcases/kernel/syscalls/mbind/mbind01.c          |    9 +-
->  testcases/kernel/syscalls/move_pages/Makefile      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages02.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages03.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages04.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages05.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages06.c      |    9 +-
->  .../kernel/syscalls/move_pages/move_pages07.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages08.c      |    9 +-
->  .../kernel/syscalls/move_pages/move_pages09.c      |    7 +-
->  .../kernel/syscalls/move_pages/move_pages10.c      |   11 +-
->  .../kernel/syscalls/move_pages/move_pages11.c      |   11 +-
->  .../syscalls/move_pages/move_pages_support.c       |   44 +++++--
->  .../syscalls/move_pages/move_pages_support.h       |    1 +
->  .../syscalls/{get_mempolicy => numa}/Makefile      |   13 +--
->  .../{get_mempolicy/Makefile => numa/Makefile.inc}  |   20 ++--
->  .../syscalls/{get_mempolicy => numa/lib}/Makefile  |   15 +--
->  testcases/kernel/syscalls/numa/lib/numa_helper.c   |  135 ++++++++++++++++++++
->  testcases/kernel/syscalls/numa/lib/numa_helper.h   |   34 +++++
->  22 files changed, 304 insertions(+), 92 deletions(-)
->  copy testcases/kernel/syscalls/{get_mempolicy => numa}/Makefile (73%)
->  copy testcases/kernel/syscalls/{get_mempolicy/Makefile => numa/Makefile.inc} (69%)
->  copy testcases/kernel/syscalls/{get_mempolicy => numa/lib}/Makefile (71%)
->  create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
->  create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
