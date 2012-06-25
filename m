@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SkH17-00007h-Rw
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 15:52:25 +0000
-Date: Thu, 28 Jun 2012 17:09:40 +0200
-From: chrubis@suse.cz
-Message-ID: <20120628150940.GA10274@saboteur.suse.cz>
-References: <4F02E1B9.2090603@imgtec.com>
-	<CAGH67wRnBFxdBgQos0Px8GscXQ+Sn30JNmM-z2KU7-v6Vc7d3A@mail.gmail.com>
-	<4F043605.9050703@imgtec.com>
-	<CAGH67wR_qD3pc_k7qdeyRWq60V6qr6A7yeT9Q4zcYTLrJ-WBkA@mail.gmail.com>
-	<20120104144305.GE15845@saboteur.suse.cz>
-	<20120125182606.GA11236@saboteur.suse.cz>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Sj0Gv-0000xE-41
+	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 03:47:29 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Sj0Gr-00057J-8h
+	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 03:47:29 +0000
+Received: by pbbrq2 with SMTP id rq2so5516479pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 24 Jun 2012 20:47:19 -0700 (PDT)
+Message-ID: <4FE7DF2A.4010208@casparzhang.com>
+Date: Mon, 25 Jun 2012 11:46:50 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="PEIAKu/WMn1b1Hv9"
-Content-Disposition: inline
-In-Reply-To: <20120125182606.GA11236@saboteur.suse.cz>
-Subject: Re: [LTP] [PATCH 09/21] realtime/lib/Makefile: Fix path for
- config.mk
+References: <1340594555-32059-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1340594555-32059-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH] mm/vma01: consider topdown and bottomup allocation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,69 +27,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
-
-
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-What about attached patch?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---PEIAKu/WMn1b1Hv9
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-Fix-realtime-build.patch"
-
-From 36ae7233c9606b78edcb2ca0eaf1a0a926cbd470 Mon Sep 17 00:00:00 2001
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Jun 2012 17:14:57 +0200
-Subject: [PATCH 1/3] Fix realtime build.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/realtime/lib/Makefile |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/realtime/lib/Makefile b/testcases/realtime/lib/Makefile
-index 8860549..fc4784b 100644
---- a/testcases/realtime/lib/Makefile
-+++ b/testcases/realtime/lib/Makefile
-@@ -2,6 +2,7 @@
- #    realtime/lib Makefile.
- #
- #    Copyright (C) 2009, Cisco Systems Inc.
-+#    Copyright (C) 2012  Cyril Hrubis <chrubis@suse.cz>
- #
- #    This program is free software; you can redistribute it and/or modify
- #    it under the terms of the GNU General Public License as published by
-@@ -22,9 +23,9 @@
- 
- top_srcdir		?= ../../..
- 
--include $(top_srcdir)/../config.mk
-+include $(top_srcdir)/include/mk/env_pre.mk
- 
--CFLAGS			+= -D_GNU_SOURCE
-+CFLAGS			+= -D_GNU_SOURCE -I../include/
- 
- LDLIBS			+= -lpthread -lrt -lm
- 
--- 
-1.7.3.4
-
-
---PEIAKu/WMn1b1Hv9
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: hejianet@linux.vnet.ibm.com, Wang Sheng-Hui <shhuiw@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
+
+On 06/25/2012 11:22 AM, Caspar Zhang wrote:
+> 
+> When calculating VMAs, results differ in topdown and bottomup memory
+> allocation mechanisms. This patch fix the potential failures and should
+> work like below:
+> 
+> In topdown allocation, the start addr in second VMA should be smaller
+> than first one, i.e.:
+> 
+>     u======t------(t+3*ps)
+>       2nd    1st
+> 
+> Thus, in buggy kernel, if we find a VMA mapping entry in child like:
+> 
+>     start_addr == u && end_addr == t+3*ps;
+> 
+> the test would go fail. Otherwise, in good kernel, we should see
+> 
+>     start_addr1 == u && end_addr1 == t;
+>     start_addr2 == t && end_addr2 == t+3*ps;
+> 
+> While in bottomup allocation, it's different:
+> 
+>     t------u======(t+6*ps)
+>       1st    2nd
+> 
+> Here in buggy kernel, we can see VMA mapping entry like this:
+> 
+>     start_addr == t && end_addr == t+6*ps;
+> 
+> And in good kernel:
+> 
+>     start_addr1 == t && end_addr1 == u;
+>     start_addr2 == u && end_addr2 == t+6*ps;
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/mem/vma/vma01.c |   35 ++++++++++++++++++++++-------------
+>  1 files changed, 22 insertions(+), 13 deletions(-)
+> 
+
+The patch itself passes my test, yet I give it a self-NAK for now. Needs
+one more patch to resolve the issue hejianet brought up.
+
+Caspar
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -98,16 +85,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---PEIAKu/WMn1b1Hv9--
-
