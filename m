@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SeMQz-00010A-7l
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jun 2012 08:26:41 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SeMQt-0000d3-2m
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jun 2012 08:26:41 +0000
-Message-ID: <4FD6FCE4.6080700@cn.fujitsu.com>
-Date: Tue, 12 Jun 2012 16:25:08 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Sj3nx-0005gy-Dd
+	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 07:33:49 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1Sj3nt-0005TU-B7
+	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 07:33:49 +0000
+Received: by pbbrq2 with SMTP id rq2so5709608pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 25 Jun 2012 00:33:39 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Mon, 25 Jun 2012 15:33:03 +0800
+Message-Id: <1340609583-8300-2-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
+References: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1339464445-21694-1-git-send-email-vlee@twitter.com>
-In-Reply-To: <1339464445-21694-1-git-send-email-vlee@twitter.com>
-Subject: Re: [LTP] [PATCH] filecaps: Fix build.
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------1.7.8.6"
+Subject: [LTP] [PATCH 2/2] mm/vma01: create a bighole
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,48 +28,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vinson Lee <vlee@twitter.com>
-Cc: ltp-list@lists.sourceforge.net
+To: hejianet@linux.vnet.ibm.com, Wang Sheng-Hui <shhuiw@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 06/12/2012 09:27 AM, Vinson Lee wrote:
-> Fix build error that was introduced at commit
-> 66ad27e08d774c572e99e97cc9b885295ec0aa55.
-> 
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/tmp/ltp/testcases/kernel/include -D_GNU_SOURCE -I../../../../include
-> -I../../../../include -L../../../../lib c.c -lltp -o c c.c:22:28: fatal
-> error: sys/capability.h: No such file or directory
-> 
-> Signed-off-by: Vinson Lee <vlee@twitter.com>
-
-pushed, thanks Vinson.
-
-Wanlong Gao
-
-> ---
->  testcases/kernel/security/filecaps/c.c |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/testcases/kernel/security/filecaps/c.c b/testcases/kernel/security/filecaps/c.c
-> index 38c1516..fbd0365 100644
-> --- a/testcases/kernel/security/filecaps/c.c
-> +++ b/testcases/kernel/security/filecaps/c.c
-> @@ -19,7 +19,9 @@
->  /******************************************************************************/
->  
->  #include <stdio.h>
-> +#if HAVE_SYS_CAPABILITY_H
->  #include <sys/capability.h>
-> +#endif
->  
->  int main()
->  {
-> 
+This is a multi-part message in MIME format.
+--------------1.7.8.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
+There are two mmaps in vma01, sometimes first mmap succeeds while
+second mmap might fail due to a small hole (3*ps <= hole < 6*ps)
+produced by /etc/ld.so.cache and /etc/libc.so.6, I created a big hole
+and then munmap it to make sure both allocations can succeed.
+
+    |-3*ps-|
+	|------|------|------| hole
+	t      p
+	|======|------|        top-down alloc
+	       |------|======| bottom-up alloc
+
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ testcases/kernel/mem/vma/vma01.c |   25 ++++++++++++++++++++++++-
+ 1 files changed, 24 insertions(+), 1 deletions(-)
+
+
+--------------1.7.8.6
+Content-Type: text/x-patch; name="0002-mm-vma01-create-a-bighole.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0002-mm-vma01-create-a-bighole.patch"
+
+diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
+index 16ee078..3d00b97 100644
+--- a/testcases/kernel/mem/vma/vma01.c
++++ b/testcases/kernel/mem/vma/vma01.c
+@@ -59,12 +59,14 @@ char *TCID = "vma01";
+ int TST_TOTAL = 1;
+ 
+ static void check_vma(void);
++static void create_bighole(void);
+ static void *get_end_addr(void *addr_s);
+ static void check_status(int status);
+ static void setup(void);
+ static void cleanup(void);
+ 
+ static unsigned long ps;
++static void *p;
+ 
+ int main(int argc, char **argv)
+ {
+@@ -93,7 +95,8 @@ static void check_vma(void)
+ 	int topdown;
+ 	void *t, *u, *x;
+ 
+-	t = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++	create_bighole();
++	t = mmap(p, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
+ 	if (t == MAP_FAILED)
+ 		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
+ 	memset(t, 1, ps);
+@@ -140,6 +143,26 @@ static void check_vma(void)
+ 	}
+ }
+ 
++static void create_bighole(void)
++{
++	void *t;
++
++	/*
++	 * |-3*ps-|
++	 * |------|------|------| hole
++	 * t      p
++	 * |======|------|        top-down alloc
++	 *        |------|======| bottom-up alloc
++	 */
++	t = mmap(NULL, 9*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++	if (t == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++	memset(t, 'a', ps);
++	p = t + 3*ps;
++	if (munmap(t, 9*ps) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "munmap");
++}
++
+ static void *get_end_addr(void *addr_s)
+ {
+ 	FILE *fp;
+
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -74,7 +130,18 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.6--
+
+
+
