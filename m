@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SkR7x-0007kS-0F
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 02:40:09 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SjRG2-0007QD-Mk
+	for ltp-list@lists.sourceforge.net; Tue, 26 Jun 2012 08:36:22 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SkR7v-0006A5-4H
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 02:40:08 +0000
-Message-ID: <4FED157D.3050703@cn.fujitsu.com>
-Date: Fri, 29 Jun 2012 10:39:57 +0800
+	id 1SjRFy-0000P3-Px
+	for ltp-list@lists.sourceforge.net; Tue, 26 Jun 2012 08:36:22 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q5Q8aBg7031408
+	for <ltp-list@lists.sourceforge.net>; Tue, 26 Jun 2012 16:36:12 +0800
+Message-ID: <4FE97480.3040007@cn.fujitsu.com>
+Date: Tue, 26 Jun 2012 16:36:16 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <bb4e2b8f-5051-46ed-9d60-617309f57b64@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <bb4e2b8f-5051-46ed-9d60-617309f57b64@zmail13.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+References: <1340593602-5462-1-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1340593602-5462-1-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] dummy.c: fix a bug of TCONF fail
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,215 +31,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 06/29/2012 10:23 AM, Zhouping Liu wrote:
-> Hi,
-> 
-> ----- Original Message -----
->> From: "Zhouping Liu" <zliu@redhat.com>
->> To: "LTP List" <ltp-list@lists.sourceforge.net>
->> Sent: Tuesday, June 26, 2012 11:57:35 PM
->> Subject: [LTP]  [PATCH] mm/oom05: new testcase
->>
->> add a new testcase to test OOM on each NUMA node
-> 
-> I have tested it in several systems with 2 NUMA nodes and 8 NUMA nodes,
-> they are all good, any comment?
-> 
-> Thanks,
-> Zhouping
-> 
->>
->> Signed-off-by: Zhouping Liu <zliu@redhat.com>
->> ---
->>  runtest/mm                       |    1 +
->>  testcases/kernel/mem/oom/oom05.c |  131
->>  ++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 132 insertions(+)
->>  create mode 100644 testcases/kernel/mem/oom/oom05.c
->>
->> diff --git a/runtest/mm b/runtest/mm
->> index 2dd66f0..a60c04b 100644
->> --- a/runtest/mm
->> +++ b/runtest/mm
->> @@ -77,6 +77,7 @@ oom01 oom01
->>  oom02 oom02
->>  oom03 oom03
->>  oom04 oom04
->> +oom05 oom05
->>  
->>  swapping01 swapping01 -i 5
->>  
->> diff --git a/testcases/kernel/mem/oom/oom05.c
->> b/testcases/kernel/mem/oom/oom05.c
->> new file mode 100644
->> index 0000000..046ddbb
->> --- /dev/null
->> +++ b/testcases/kernel/mem/oom/oom05.c
->> @@ -0,0 +1,131 @@
->> +/*
->> + * Out Of Memory (OOM) on Each NUMA nodes
->> + *
->> + * The program is designed to cope with unpredictable like amount
->> and
->> + * system physical memory, swap size and other VMM technology like
->> KSM,
->> + * memcg, memory hotplug and so on which may affect the OOM
->> + * behaviours. It simply increase the memory consumption 3G each
->> time
->> + * until all the available memory is consumed and OOM is triggered.
->> + *
->> + * Copyright (C) 2012  Red Hat, Inc.
->> + * This program is free software; you can redistribute it and/or
->> + * modify it under the terms of version 2 of the GNU General Public
->> + * License as published by the Free Software Foundation.
->> + *
->> + * This program is distributed in the hope that it would be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->> + *
->> + * Further, this software is distributed without any warranty that
->> it
->> + * is free of the rightful claim of any third person regarding
->> + * infringement or the like.  Any license provided herein, whether
->> + * implied or otherwise, applies only to this software file.  Patent
->> + * licenses, if any, provided herein do not apply to combinations of
->> + * this program with other software, or any other product
->> whatsoever.
->> + *
->> + * You should have received a copy of the GNU General Public License
->> + * along with this program; if not, write the Free Software
->> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
->> + * 02110-1301, USA.
->> + */
->> +#include <sys/types.h>
->> +#include <sys/stat.h>
->> +#include <sys/wait.h>
->> +#include <errno.h>
->> +#include <fcntl.h>
->> +#include <stdio.h>
->> +#include <stdlib.h>
->> +#include <unistd.h>
->> +#include "test.h"
->> +#include "safe_macros.h"
->> +#include "usctest.h"
->> +#include "mem.h"
->> +
->> +char *TCID = "oom05";
->> +int TST_TOTAL = 1;
->> +
->> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
->> +	&& HAVE_MPOL_CONSTANTS
->> +#include <numa.h>
->> +#include <numaif.h>
->> +
->> +int main(int argc, char *argv[])
->> +{
->> +	char *msg;
->> +	int lc;
->> +	long nodes[MAXNODES];
->> +	int nnodes, i;
->> +	pid_t pids[MAXNODES];
->> +	int status;
->> +	unsigned long nmasks[MAXNODES];
->> +
->> +	msg = parse_opts(argc, argv, NULL, NULL);
->> +	if (msg != NULL)
->> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
->> +
->> +#if __WORDSIZE == 32
->> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
->> +#endif
->> +	nnodes = count_numa(nodes);
->> +	if (nnodes <= 1)
->> +		tst_brkm(TCONF, NULL, "required a NUMA system.");
->> +
->> +	setup();
->> +
->> +	set_sys_tune("overcommit_memory", 1, 1);
->> +
->> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
->> +		Tst_count = 0;
->> +
->> +		for (i = 0; i < nnodes; i++) {
->> +			nmasks[i] = 1 << nodes[i];
->> +			switch (pids[i] = fork()) {
->> +			case -1:
->> +				tst_brkm(TBROK|TERRNO, cleanup, "fork");
->> +			case 0:
->> +				if (set_mempolicy(MPOL_BIND, &nmasks[i],
->> +				    MAXNODES) == -1)
->> +					tst_brkm(TBROK|TERRNO, cleanup,
->> +					    "set_mempolicy");
->> +				tst_resm(TINFO, "start oom on numa node%lu",
->> +				    nodes[i]);
->> +				oom(NORMAL, 0, 0);
->> +				exit(0);
->> +			}
->> +		}
+On 06/25/2012 11:06 AM, Peng Haitao wrote:
+> When HAVE_LIBCAP or HAVE_SYS_CAPABILITY_H is not defined, 
+> the case should not be fail.
 
-Hi Zhouping,
+pushed, thanks Peng.
 
-Does it need get_allowed_nodes() that Jan added?
-
-Thanks,
 Wanlong Gao
 
->> +
->> +		for (i = 0; i < nnodes; i++) {
->> +			if (waitpid(pids[i], &status, WUNTRACED|WCONTINUED) == -1)
->> +				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
->> +
->> +			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
->> +				tst_resm(TFAIL, "child[%d] exit with "
->> +				    "status: %d", pids[i], status);
->> +		}
->> +	}
->> +	cleanup();
->> +	tst_exit();
->> +}
->> +
->> +void setup(void)
->> +{
->> +	tst_require_root(NULL);
->> +	tst_sig(FORK, DEF_HANDLER, cleanup);
->> +	TEST_PAUSE;
->> +
->> +	overcommit = get_sys_tune("overcommit_memory");
->> +}
->> +
->> +void cleanup(void)
->> +{
->> +	set_sys_tune("overcommit_memory", overcommit, 0);
->> +
->> +	TEST_CLEANUP;
->> +}
->> +
->> +#else /* no NUMA */
->> +int main(void)
->> +{
->> +	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
->> +}
->> +#endif
->> --
->> 1.7.10.2
->>
->>
->> ------------------------------------------------------------------------------
->> Live Security Virtual Conference
->> Exclusive live event will cover all the ways today's security and
->> threat landscape has changed and how IT managers can respond.
->> Discussions
->> will include endpoint security, mobile security and the latest in
->> malware
->> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> ---
+>  testcases/kernel/security/cap_bound/dummy.c |   10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/security/cap_bound/dummy.c b/testcases/kernel/security/cap_bound/dummy.c
+> index 3ee7c9b..d161efd 100644
+> --- a/testcases/kernel/security/cap_bound/dummy.c
+> +++ b/testcases/kernel/security/cap_bound/dummy.c
+> @@ -1,10 +1,14 @@
+>  #include <stdio.h>
+>  #include "config.h"
+> +#include "test.h"
+>  
+>  #if HAVE_SYS_CAPABILITY_H
+>  #include <sys/capability.h>
+>  #endif
+>  
+> +char *TCID = "dummy";
+> +int TST_TOTAL=1;
+> +
+>  int main(void)
+>  {
+>  #if HAVE_SYS_CAPABILITY_H
+> @@ -15,11 +19,9 @@ int main(void)
+>  	cap_free(cur);
+>  	return 0;
+>  #else /* libcap */
+> -	printf("System doesn't support POSIX capabilities.\n");
+> -	return 1;
+> +	tst_brkm(TCONF, NULL, "System doesn't support POSIX capabilities.");
+>  #endif
+>  #else /* capability_h */
+> -	printf("System doesn't support sys/capability.h\n");
+> -	return 1;
+> +	tst_brkm(TCONF, NULL, "System doesn't support sys/capability.h.");
+>  #endif
+>  }
 > 
 
 
