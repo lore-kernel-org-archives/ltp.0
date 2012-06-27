@@ -1,28 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ScFM6-00008z-TR
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jun 2012 12:28:54 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ScFM2-0006Sb-Vh
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jun 2012 12:28:54 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q56CSj5v025752
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jun 2012 08:28:45 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id q56CSiuo020825
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jun 2012 08:28:44 -0400
-Message-ID: <4FCF4CFC.2010100@redhat.com>
-Date: Wed, 06 Jun 2012 14:28:44 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1Sjnax-0007Sr-IV
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:27 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Sjnar-000449-VR
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:27 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q5R8RFaW014478
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 27 Jun 2012 01:27:15 -0700 (PDT)
+From: Kang Kai <kai.kang@windriver.com>
+Date: Wed, 27 Jun 2012 16:26:57 +0800
+Message-ID: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010304050400040806070703"
-Subject: [LTP] [PATCH v2] dio_sparse: prevent race between kill and signal
+Subject: [LTP] [PATCH 0/3] some fix for aio related cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,69 +27,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------010304050400040806070703
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Hi,
 
+These patches are for aio cases.
 
-This is same change as in:
-  commit d8f1292181b486b2073cc6fe1ec226f5cedea342
-  Author: Cyril Hrubis <chrubis@suse.cz>
-  Date:   Fri Mar 2 13:37:47 2012 +0100
-      ltp-aiodio: aiodio_sparse fix race condition
+Regards,
+Kai
 
-but for dio_sparse.c, which is also prone to race
-between kill() and signal().
+Kang Kai (3):
+  aio_cancel/4-1: fails on routerstation randomly
+  aio_read/9-1: check aio resource limitation
+  aio_write/7-1: check aio resource limitation
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/io/ltp-aiodio/dio_sparse.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ .../conformance/interfaces/aio_cancel/4-1.c        |    5 +++--
+ .../conformance/interfaces/aio_read/9-1.c          |    2 +-
+ .../conformance/interfaces/aio_write/7-1.c         |    4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
+-- 
+1.7.5.4
 
-
---------------010304050400040806070703
-Content-Type: text/x-patch;
-	name="0001-dio_sparse-prevent-race-between-kill-and-signal.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename*0="0001-dio_sparse-prevent-race-between-kill-and-signal.patch"
-
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-index e93dcd9..97dbef8 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-@@ -149,10 +149,10 @@ int main(int argc, char **argv)
- 	dirty_freeblocks(filesize);
- 
- 	tst_resm(TINFO, "Starting I/O tests");
-+	signal(SIGTERM, SIG_DFL);
- 	for (i = 0; i < num_children; i++) {
- 		switch (pid[i] = fork()) {
- 		case 0:
--			signal(SIGTERM, SIG_DFL);
- 			read_sparse(filename, filesize);
- 		break;
- 		case -1:
-@@ -164,6 +164,7 @@ int main(int argc, char **argv)
- 			continue;
- 		}
- 	}
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	
- 	ret = dio_sparse(filename, alignment, writesize, filesize);
- 
-
-
---------------010304050400040806070703
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -102,16 +59,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------010304050400040806070703
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------010304050400040806070703--
-
