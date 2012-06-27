@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ShFiV-00058B-6I
-	for ltp-list@lists.sourceforge.net; Wed, 20 Jun 2012 07:52:43 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ShFiP-0006j0-4N
-	for ltp-list@lists.sourceforge.net; Wed, 20 Jun 2012 07:52:43 +0000
-Date: Wed, 20 Jun 2012 03:52:28 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <543d8876-f65c-4dab-8f7e-ced6f4798346@zmail17.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1340158615-5623-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1Sjnaw-0003a4-Ef
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:26 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Sjnas-00044F-OD
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:26 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q5R8RH9H009430
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 27 Jun 2012 01:27:17 -0700 (PDT)
+From: Kang Kai <kai.kang@windriver.com>
+Date: Wed, 27 Jun 2012 16:26:58 +0800
+Message-ID: <1340785620-4444-2-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
+References: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] get_robust_list: change seteuid to setuid
+Subject: [LTP] [PATCH 1/3] aio_cancel/4-1: fails on routerstation randomly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,126 +32,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+The case fails on routerstation(MIPS) board randomly. The root cause
+is that the aio_write() calls already complete before call aio_cancel().
+Fix it by increase BUF_SIZE.
 
+Fill every struct aiocb with 0 at same time.
 
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 20 June, 2012 4:16:55 AM
-> Subject: [LTP] [PATCH] get_robust_list: change seteuid to setuid
-> 
-> Since kernel commit bdbb776f changed the permission check
-> from euid to uid, so, we should also change our code to
-> be consistent with it.
-> 
-> commit bdbb776f882f5ad431aa1e694c69c1c3d6a4a5b8
-> Author: Kees Cook <keescook@chromium.org>
-> Date:   Mon Mar 19 16:12:53 2012 -0700
-> 
->     futex: Do not leak robust list to unprivileged process
-> 
->     It was possible to extract the robust list head address from a
->     setuid
->     process if it had used set_robust_list(), allowing an ASLR info
->     leak. This
->     changes the permission checks to be the same as those used for
->     similar
->     info that comes out of /proc.
-> 
->     Running a setuid program that uses robust futexes would have had:
->       cred->euid != pcred->euid
->       cred->euid == pcred->uid
->     so the old permissions check would allow it. I'm not aware of any
->     setuid
->     programs that use robust futexes, so this is just a preventative
->     measure.
-> 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  .../syscalls/get_robust_list/get_robust_list01.c   | 28
->  ++++++++++------------
->  1 file changed, 12 insertions(+), 16 deletions(-)
-> 
-> diff --git
-> a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-> b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-> index 27c0be6..b8e9797 100644
-> --- a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-> +++ b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-> @@ -152,7 +152,17 @@ int main(int argc, char **argv)
->  			tst_resm(TFAIL,
->  			    "get_robust_list succeeded unexpectedly");
->  
-> -		if (seteuid(1) == -1)
-> +		TEST(retval = syscall(__NR_get_robust_list, 0,
-> +				      (struct robust_list_head **)&head,
-> +				      &len_ptr));
-> +
-> +		if (TEST_RETURN == 0)
-> +			tst_resm(TPASS, "get_robust_list succeeded");
-> +		else
-> +			tst_resm(TFAIL|TTERRNO,
-> +				 "get_robust_list failed unexpectedly");
-> +
-> +		if (setuid(1) == -1)
->  			tst_brkm(TBROK|TERRNO, cleanup, "seteuid(1) failed");
+Signed-off-by: Kang Kai <kai.kang@windriver.com>
+---
+ .../conformance/interfaces/aio_cancel/4-1.c        |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-error above still says "seteuid",
-other than that it looks OK and still works on kernels older than 3.4
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
+index 75bed8c..69cc512 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
+@@ -42,7 +42,7 @@
+ #define TNAME "aio_cancel/4-1.c"
+ 
+ #define BUF_NB		128
+-#define BUF_SIZE	1024
++#define BUF_SIZE	(1024*1024)
+ 
+ int main()
+ {
+@@ -80,6 +80,7 @@ int main()
+ 		       		strerror(errno));
+ 			return PTS_UNRESOLVED;
+ 		}
++		memset(aiocb[i], 0, sizeof(struct aiocb));
+ 		aiocb[i]->aio_fildes = fd;
+ 		aiocb[i]->aio_buf = malloc(BUF_SIZE);
+ 		if (aiocb[i]->aio_buf == NULL)
+@@ -144,4 +145,4 @@ int main()
+ 	} while (in_progress);
+ 
+ 	return PTS_UNRESOLVED;
+-}
+\ No newline at end of file
++}
+-- 
+1.7.5.4
 
-Regards,
-Jan
-
->  
->  		TEST(retval = syscall(__NR_get_robust_list, 1,
-> @@ -170,20 +180,6 @@ int main(int argc, char **argv)
->  		} else
->  			tst_resm(TFAIL,
->  			    "get_robust_list succeeded unexpectedly");
-> -
-> -		if (seteuid(0) == -1)
-> -			tst_brkm(TBROK|TERRNO, cleanup, "seteuid(0) failed");
-> -
-> -		TEST(retval = syscall(__NR_get_robust_list, 0,
-> -				      (struct robust_list_head **)&head,
-> -				      &len_ptr));
-> -
-> -		if (TEST_RETURN == 0)
-> -			tst_resm(TPASS, "get_robust_list succeeded");
-> -		else
-> -			tst_resm(TFAIL|TTERRNO,
-> -				 "get_robust_list failed unexpectedly");
-> -
->  	}
->  
->  	cleanup();
-> @@ -203,4 +199,4 @@ void setup(void)
->  void cleanup(void)
->  {
->  	TEST_CLEANUP;
-> -}
-> \ No newline at end of file
-> +}
-> --
-> 1.7.11.rc0
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
