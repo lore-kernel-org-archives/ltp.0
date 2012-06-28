@@ -1,14 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <noreply@sourceforge.net>) id 1SX6JM-00034U-2D
-	for ltp-list@lists.sourceforge.net; Wed, 23 May 2012 07:48:48 +0000
-From: SourceForge.net <noreply@sourceforge.net>
-Date: Wed, 23 May 2012 00:48:47 -0700
-Content-Disposition: inline
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SkH17-00007h-Rw
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 15:52:25 +0000
+Date: Thu, 28 Jun 2012 17:09:40 +0200
+From: chrubis@suse.cz
+Message-ID: <20120628150940.GA10274@saboteur.suse.cz>
+References: <4F02E1B9.2090603@imgtec.com>
+	<CAGH67wRnBFxdBgQos0Px8GscXQ+Sn30JNmM-z2KU7-v6Vc7d3A@mail.gmail.com>
+	<4F043605.9050703@imgtec.com>
+	<CAGH67wR_qD3pc_k7qdeyRWq60V6qr6A7yeT9Q4zcYTLrJ-WBkA@mail.gmail.com>
+	<20120104144305.GE15845@saboteur.suse.cz>
+	<20120125182606.GA11236@saboteur.suse.cz>
 MIME-Version: 1.0
-Subject: [LTP] [ ltp-Patches-1908313 ] Fix broken POSIX shell compliance
+Content-Type: multipart/mixed; boundary="PEIAKu/WMn1b1Hv9"
+Content-Disposition: inline
+In-Reply-To: <20120125182606.GA11236@saboteur.suse.cz>
+Subject: Re: [LTP] [PATCH 09/21] realtime/lib/Makefile: Fix path for
+ config.mk
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -18,128 +28,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1SfHSQ-0006EV-4d@sfs-ml-1.v29.ch3.sourceforge.com>
-To: "SourceForge.net" <noreply@sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
-Patches item #1908313, was opened at 2008-03-05 13:13
-Message generated for change (Comment added) made by nobody
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=1908313&group_id=3382
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Testscripts
-Group: Miscellaneous
-Status: Closed
-Resolution: Accepted
-Priority: 5
-Private: No
-Submitted By: Dustin Kirkland (dustin_kirkland)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: Fix broken POSIX shell compliance
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Initial Comment:
-runltp will not execute on a POSIX-compliant shell (dash).
+Hi!
+What about attached patch?
 
-I found this thread, and a patch that to fixes my issues:
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg00510.html
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-In the last message in the thread, it's claimed that the changes were
-committed to CVS.
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg00521.html
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Fix-realtime-build.patch"
 
-This patch is an adaptation of the original by Matthew Wilcox.  I changed '= "0"' to '-eq 0', at the request of George Kraft.  I also dropped the sh -> bash change in generate.sh, as Mike Frysinger seemed to object to that part.
+From 36ae7233c9606b78edcb2ca0eaf1a0a926cbd470 Mon Sep 17 00:00:00 2001
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 20 Jun 2012 17:14:57 +0200
+Subject: [PATCH 1/3] Fix realtime build.
 
-:-Dustin
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/realtime/lib/Makefile |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-Dustin Kirkland
-Ubuntu Server Team
-Canonical, LTD
+diff --git a/testcases/realtime/lib/Makefile b/testcases/realtime/lib/Makefile
+index 8860549..fc4784b 100644
+--- a/testcases/realtime/lib/Makefile
++++ b/testcases/realtime/lib/Makefile
+@@ -2,6 +2,7 @@
+ #    realtime/lib Makefile.
+ #
+ #    Copyright (C) 2009, Cisco Systems Inc.
++#    Copyright (C) 2012  Cyril Hrubis <chrubis@suse.cz>
+ #
+ #    This program is free software; you can redistribute it and/or modify
+ #    it under the terms of the GNU General Public License as published by
+@@ -22,9 +23,9 @@
+ 
+ top_srcdir		?= ../../..
+ 
+-include $(top_srcdir)/../config.mk
++include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CFLAGS			+= -D_GNU_SOURCE
++CFLAGS			+= -D_GNU_SOURCE -I../include/
+ 
+ LDLIBS			+= -lpthread -lrt -lm
+ 
+-- 
+1.7.3.4
 
-----------------------------------------------------------------------
 
-Comment By: Nobody/Anonymous (nobody)
-Date: 2012-05-23 00:48
-
-Message:
-LQZJik  <a href="http://lxdmsauluqdo.com/">lxdmsauluqdo</a>,
-[url=http://lawtkxucdvbv.com/]lawtkxucdvbv[/url],
-[link=http://wipjuoxaevou.com/]wipjuoxaevou[/link],
-http://lkegsnjqyprp.com/
-
-----------------------------------------------------------------------
-
-Comment By: Nobody/Anonymous (nobody)
-Date: 2011-07-30 21:13
-
-Message:
-A5gsqS  <a href="http://igckxqylcmlj.com/">igckxqylcmlj</a>,
-[url=http://gfabihntgbag.com/]gfabihntgbag[/url],
-[link=http://yoohvvzjvdlj.com/]yoohvvzjvdlj[/link],
-http://ehkcgrjiwkzg.com/
-
-----------------------------------------------------------------------
-
-Comment By: Nobody/Anonymous (nobody)
-Date: 2011-06-06 06:44
-
-Message:
-iuyPHW  <a href="http://uesqnepdqnzj.com/">uesqnepdqnzj</a>,
-[url=http://ovubwqmrymqg.com/]ovubwqmrymqg[/url],
-[link=http://wdfgmvlplodt.com/]wdfgmvlplodt[/link],
-http://dwcioccqmbsr.com/
-
-----------------------------------------------------------------------
-
-Comment By: Nobody/Anonymous (nobody)
-Date: 2008-11-27 19:01
-
-Message:
-X7Rcs9  <a href="http://xeapefuszrpn.com/">xeapefuszrpn</a>,
-[url=http://hhpzcgzhequk.com/]hhpzcgzhequk[/url],
-[link=http://dpzcpkpkqyqp.com/]dpzcpkpkqyqp[/link],
-http://tizfxaqpgenv.com/
-
-----------------------------------------------------------------------
-
-Comment By: Subrata Modak (subrata_modak)
-Date: 2008-03-27 04:16
-
-Message:
-Logged In: YES 
-user_id=1737361
-Originator: NO
-
-Mike already implemented this.
-
-Regards--
-Subrata
-
-----------------------------------------------------------------------
-
-Comment By: Mike Frysinger (vapier)
-Date: 2008-03-08 04:50
-
-Message:
-Logged In: YES 
-user_id=114429
-Originator: NO
-
-i used = in IDcheck.sh as it meshes better with the rest of the code in
-that file ... if one gets converted to -eq, they all should
-
-i added your -a => -e changes to runltp and runltplite.sh
-
-cheers
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=1908313&group_id=3382
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -147,7 +98,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--PEIAKu/WMn1b1Hv9--
+
