@@ -2,21 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SjY70-0005Nh-Qg
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jun 2012 15:55:30 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	(envelope-from <jstancek@redhat.com>) id 1Sk9YN-0002Jc-0b
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 07:54:15 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SjY6w-0000Dj-Sf
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jun 2012 15:55:30 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q5QFtKgV002805
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Jun 2012 11:55:20 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Tue, 26 Jun 2012 23:57:35 +0800
-Message-Id: <07c5b43ada5e852c8c1edaedeb89aff563bdc50c.1340725605.git.zliu@redhat.com>
-Subject: [LTP]  [PATCH] mm/oom05: new testcase
+	id 1Sk9YH-00088F-40
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 07:54:14 +0000
+Date: Thu, 28 Jun 2012 03:53:58 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <e356f107-8e36-4600-9939-9889542ff1f2@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FEC0991.7010602@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2 0/4] dont use hardcoded NUMA node ids
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,173 +23,239 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-add a new testcase to test OOM on each NUMA node
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- runtest/mm                       |    1 +
- testcases/kernel/mem/oom/oom05.c |  131 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 132 insertions(+)
- create mode 100644 testcases/kernel/mem/oom/oom05.c
 
-diff --git a/runtest/mm b/runtest/mm
-index 2dd66f0..a60c04b 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -77,6 +77,7 @@ oom01 oom01
- oom02 oom02
- oom03 oom03
- oom04 oom04
-+oom05 oom05
- 
- swapping01 swapping01 -i 5
- 
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-new file mode 100644
-index 0000000..046ddbb
---- /dev/null
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -0,0 +1,131 @@
-+/*
-+ * Out Of Memory (OOM) on Each NUMA nodes
-+ *
-+ * The program is designed to cope with unpredictable like amount and
-+ * system physical memory, swap size and other VMM technology like KSM,
-+ * memcg, memory hotplug and so on which may affect the OOM
-+ * behaviours. It simply increase the memory consumption 3G each time
-+ * until all the available memory is consumed and OOM is triggered.
-+ *
-+ * Copyright (C) 2012  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "usctest.h"
-+#include "mem.h"
-+
-+char *TCID = "oom05";
-+int TST_TOTAL = 1;
-+
-+#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-+	&& HAVE_MPOL_CONSTANTS
-+#include <numa.h>
-+#include <numaif.h>
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	int lc;
-+	long nodes[MAXNODES];
-+	int nnodes, i;
-+	pid_t pids[MAXNODES];
-+	int status;
-+	unsigned long nmasks[MAXNODES];
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+#if __WORDSIZE == 32
-+	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
-+#endif
-+	nnodes = count_numa(nodes);
-+	if (nnodes <= 1)
-+		tst_brkm(TCONF, NULL, "required a NUMA system.");
-+
-+	setup();
-+
-+	set_sys_tune("overcommit_memory", 1, 1);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+
-+		for (i = 0; i < nnodes; i++) {
-+			nmasks[i] = 1 << nodes[i];
-+			switch (pids[i] = fork()) {
-+			case -1:
-+				tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+			case 0:
-+				if (set_mempolicy(MPOL_BIND, &nmasks[i],
-+				    MAXNODES) == -1)
-+					tst_brkm(TBROK|TERRNO, cleanup,
-+					    "set_mempolicy");
-+				tst_resm(TINFO, "start oom on numa node%lu",
-+				    nodes[i]);
-+				oom(NORMAL, 0, 0);
-+				exit(0);
-+			}
-+		}
-+
-+		for (i = 0; i < nnodes; i++) {
-+			if (waitpid(pids[i], &status, WUNTRACED|WCONTINUED) == -1)
-+				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+
-+			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+				tst_resm(TFAIL, "child[%d] exit with "
-+				    "status: %d", pids[i], status);
-+		}
-+	}
-+	cleanup();
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	tst_require_root(NULL);
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+
-+	overcommit = get_sys_tune("overcommit_memory");
-+}
-+
-+void cleanup(void)
-+{
-+	set_sys_tune("overcommit_memory", overcommit, 0);
-+
-+	TEST_CLEANUP;
-+}
-+
-+#else /* no NUMA */
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-+}
-+#endif
--- 
-1.7.10.2
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 28 June, 2012 9:36:49 AM
+> Subject: Re: [LTP] [PATCH v2 0/4] dont use hardcoded NUMA node ids
+> 
+> On 06/28/2012 03:29 PM, Jan Stancek wrote:
+> > Hi,
+> > 
+> > any thoughts on this version?
+> 
+> Hi Jan,
+> 
+> you sent many series of patches, but it's hard to find out that
+> which patch belongs to this series.
 
+My apologies, I kept merging them together as same pattern
+was repeating in different syscall testcases.
+
+> 
+> So, can you send patch set like this.
+> [0]-xxxxxxxxxxxxxxxxxxxxxxx
+>   |_[1]xxxxxxxxxxxxxxxxxxxxxxxxx
+>   |_[2]xxxxxxxxxxxxxxxxxxxxxxxx
+> 
+> I mean, one series in one thread ?
+
+Sure, I'll resend (once I check that my client does the right thing).
+
+Regards,
+Jan
+
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> > 
+> > Regards,
+> > Jan
+> > 
+> > On 05/29/2012 10:29 AM, Jan Stancek wrote:
+> >> Changes in v2:
+> >> get_allowed_pages()
+> >> - removed tst_resm(TFAIL,..)
+> >> - added break
+> >> - for ret == -3, set errno to EINVAL
+> >> move_pages_support.c
+> >> - check return value from get_allowed_nodes_arr()
+> >> mbind, get_mempolicy, move_pages
+> >> - removed curly brackets in single statement ifs
+> >>
+> >> This patch series is a combination of:
+> >> [PATCH v3] mbind01, get_mempolicy01: dont use hardcoded node 0
+> >> [PATCH 1/2] move_pages_support: use only allowed nodes
+> >> [PATCH 2/2] move_pages: dont use hardcoded node numbers
+> >>
+> >> so that all testcases use same shared code, which resides in
+> >> libnuma_helper.a.
+> >> This library defines get_allowed_nodes() and
+> >> get_allowed_nodes_arr() functions
+> >> to obtain list of nodes tests can use.
+> >>
+> >> I tested it with following setups. Note that setup 4 and 5 will
+> >> end with TCONF as there is only 1 node with memory.
+> >>
+> >> 1.
+> >> # numactl -H
+> >> available: 8 nodes (2,4-10)
+> >> node 2 cpus: 0
+> >> node 2 size: 127 MB
+> >> node 2 free: 9 MB
+> >> node 4 cpus:
+> >> node 4 size: 128 MB
+> >> node 4 free: 9 MB
+> >> node 5 cpus:
+> >> node 5 size: 128 MB
+> >> node 5 free: 64 MB
+> >> node 6 cpus:
+> >> node 6 size: 128 MB
+> >> node 6 free: 121 MB
+> >> node 7 cpus:
+> >> node 7 size: 128 MB
+> >> node 7 free: 121 MB
+> >> node 8 cpus:
+> >> node 8 size: 128 MB
+> >> node 8 free: 121 MB
+> >> node 9 cpus:
+> >> node 9 size: 128 MB
+> >> node 9 free: 121 MB
+> >> node 10 cpus:
+> >> node 10 size: 127 MB
+> >> node 10 free: 123 MB
+> >>
+> >> 2.
+> >> # numactl -H
+> >> available: 4 nodes (0-3)
+> >> node 0 cpus: 0 1 2 3 4 5
+> >> node 0 size: 2047 MB
+> >> node 0 free: 564 MB
+> >> node 1 cpus: 6 7 8 9 10 11
+> >> node 1 size: 2046 MB
+> >> node 1 free: 451 MB
+> >> node 2 cpus: 18 19 20 21 22 23
+> >> node 2 size: 2048 MB
+> >> node 2 free: 595 MB
+> >> node 3 cpus: 12 13 14 15 16 17
+> >> node 3 size: 2048 MB
+> >> node 3 free: 236 MB
+> >> node distances:
+> >> node   0   1   2   3
+> >>   0:  10  16  16  16
+> >>   1:  16  10  16  16
+> >>   2:  16  16  10  16
+> >>   3:  16  16  16  10
+> >>
+> >> 3.
+> >> # numactl -H
+> >> available: 2 nodes (2-3)
+> >> node 2 cpus: 0
+> >> node 2 size: 511 MB
+> >> node 2 free: 154 MB
+> >> node 3 cpus:
+> >> node 3 size: 511 MB
+> >> node 3 free: 490 MB
+> >>
+> >>
+> >> 4.
+> >> # numactl -H
+> >> available: 2 nodes (0-1)
+> >> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+> >> 21 22 23 24 25 26 27 28 29 30 31
+> >> node 0 size: 0 MB
+> >> node 0 free: 0 MB
+> >> node 1 cpus:
+> >> node 1 size: 12288 MB
+> >> node 1 free: 9689 MB
+> >> node distances:
+> >> node   0   1
+> >>   0:  10  40
+> >>   1:  40  10
+> >>
+> >> 5.
+> >> # numactl -H
+> >> available: 1 nodes (0)
+> >> node 0 cpus: 0
+> >> node 0 size: 1023 MB
+> >> node 0 free: 654 MB
+> >> node distances:
+> >> node   0
+> >>   0:  10
+> >>
+> >>
+> >> Jan Stancek (4):
+> >>   add libnuma_helper.a
+> >>   mbind01: dont use hardcoded NUMA node ids
+> >>   get_mempolicy01: dont use hardcoded NUMA node ids
+> >>   move_pages: dont use hardcoded NUMA node ids
+> >>
+> >>  testcases/kernel/syscalls/get_mempolicy/Makefile   |    7 +-
+> >>  .../syscalls/get_mempolicy/get_mempolicy01.c       |    8 +-
+> >>  testcases/kernel/syscalls/mbind/Makefile           |    3 +-
+> >>  testcases/kernel/syscalls/mbind/mbind01.c          |    9 +-
+> >>  testcases/kernel/syscalls/move_pages/Makefile      |    5 +-
+> >>  .../kernel/syscalls/move_pages/move_pages02.c      |   11 +-
+> >>  .../kernel/syscalls/move_pages/move_pages03.c      |   11 +-
+> >>  .../kernel/syscalls/move_pages/move_pages04.c      |   11 +-
+> >>  .../kernel/syscalls/move_pages/move_pages05.c      |   11 +-
+> >>  .../kernel/syscalls/move_pages/move_pages06.c      |    9 +-
+> >>  .../kernel/syscalls/move_pages/move_pages07.c      |   11 +-
+> >>  .../kernel/syscalls/move_pages/move_pages08.c      |    9 +-
+> >>  .../kernel/syscalls/move_pages/move_pages09.c      |    7 +-
+> >>  .../kernel/syscalls/move_pages/move_pages10.c      |   11 +-
+> >>  .../kernel/syscalls/move_pages/move_pages11.c      |   11 +-
+> >>  .../syscalls/move_pages/move_pages_support.c       |   44 +++++--
+> >>  .../syscalls/move_pages/move_pages_support.h       |    1 +
+> >>  .../syscalls/{get_mempolicy => numa}/Makefile      |   13 +--
+> >>  .../{get_mempolicy/Makefile => numa/Makefile.inc}  |   20 ++--
+> >>  .../syscalls/{get_mempolicy => numa/lib}/Makefile  |   15 +--
+> >>  testcases/kernel/syscalls/numa/lib/numa_helper.c   |  135
+> >>  ++++++++++++++++++++
+> >>  testcases/kernel/syscalls/numa/lib/numa_helper.h   |   34 +++++
+> >>  22 files changed, 304 insertions(+), 92 deletions(-)
+> >>  copy testcases/kernel/syscalls/{get_mempolicy => numa}/Makefile
+> >>  (73%)
+> >>  copy testcases/kernel/syscalls/{get_mempolicy/Makefile =>
+> >>  numa/Makefile.inc} (69%)
+> >>  copy testcases/kernel/syscalls/{get_mempolicy =>
+> >>  numa/lib}/Makefile (71%)
+> >>  create mode 100644
+> >>  testcases/kernel/syscalls/numa/lib/numa_helper.c
+> >>  create mode 100644
+> >>  testcases/kernel/syscalls/numa/lib/numa_helper.h
+> >>
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Live Security Virtual Conference
+> >> Exclusive live event will cover all the ways today's security and
+> >> threat landscape has changed and how IT managers can respond.
+> >> Discussions
+> >> will include endpoint security, mobile security and the latest in
+> >> malware
+> >> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Live Security Virtual Conference
+> > Exclusive live event will cover all the ways today's security and
+> > threat landscape has changed and how IT managers can respond.
+> > Discussions
+> > will include endpoint security, mobile security and the latest in
+> > malware
+> > threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
