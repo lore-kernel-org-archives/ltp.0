@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Sh09x-0007fn-Oh
-	for ltp-list@lists.sourceforge.net; Tue, 19 Jun 2012 15:16:01 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sh09w-0001q1-9o
-	for ltp-list@lists.sourceforge.net; Tue, 19 Jun 2012 15:16:01 +0000
-Message-ID: <4FE097BA.8040703@cn.fujitsu.com>
-Date: Tue, 19 Jun 2012 23:16:10 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SkAdZ-0004YZ-5N
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 09:03:41 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SkAdV-00009h-FV
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jun 2012 09:03:41 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q5S93V5e020949
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jun 2012 05:03:31 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q5S93RGm029832
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jun 2012 05:03:31 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 28 Jun 2012 11:03:17 +0200
+Message-Id: <10b5827ef5155e868614f3ca04ef1f464d301447.1340872565.git.jstancek@redhat.com>
+In-Reply-To: <cover.1340872565.git.jstancek@redhat.com>
+References: <cover.1340872565.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <4FD9D1DC.9010004@linux.vnet.ibm.com>
-	<1340117836.2512.24.camel@freedom>
-In-Reply-To: <1340117836.2512.24.camel@freedom>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
- JUNE 2012.
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------1.7.1"
+Subject: [LTP] [PATCH v2 3/4] get_mempolicy01: dont use hardcoded NUMA node
+	ids
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,99 +35,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Lucas Meneghel Rodrigues <lmr@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 06/19/2012 10:57 PM, Lucas Meneghel Rodrigues wrote:
-> On Thu, 2012-06-14 at 17:28 +0530, Shubham Goyal wrote:
->> Hi,
->>
->> The Linux Test Project test suite has been released for the month of
->> JUNE 2012.
->>
->> The latest version of the test-suite contains 3000+ tests for the Linux
->> OS and can be found at:
->> http://ltp.sourceforge.net/,
->> Latest happenings in LTP can also be found at:
->> http://ltp.sourceforge.net/wiki/,
->> http://ltp.sourceforge.net/wikiArchives.php, and,
->> IRC: irc.freenode.org #ltp.
->>
->> Our web site also contains other information such as:
->> - A Linux test tools matrix
->> - Technical papers
->> - How To's on Linux testing
->> - Code coverage analysis tool.
-> 
-> The wiki front page references some pretty old events. Some options that
-> comes into my mind:
-> 
-> 1) Remove the sourceforge site, port the relevant documentation to a
-> github wiki [1], and move the site to be hosted under the github
-> infrastructure, ltp.github.com
-
-It's a good idea, I wonder that our github user is linux-test-project,
-because user ltp was occupied, can we get a ltp.github.com domain to
-hold our pages?
-
-Thanks,
-Wanlong Gao
-
-> 2) Just heavily clean up and organize the existing sourceforge wiki.
-> 
-> Obviously this is just a suggestion, please don't be mad at me :) I find
-> useful to keep disciplined and try to keep the online documentation tidy
-> and up to date (although this is a difficult goal indeed).
-> 
-> [1] It's a wiki repo with text files, that can be in several different
-> formats, such as reStructuredText
-> 
->> We would encourage the community to post results to
->> ltp-results@lists.sf.net,
->>
->> patches, new tests, bugs or comments/questions to ltp-list@lists.sf.net,
->>
->> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=103382  (for
->> New Bug(s)),
->> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=303382  (for
->> New Patch(s)),
->> http://sourceforge.net/tracker/?func=add&group_id=3382&atid=353382  (for
->> New Feature Request(s))
->>
->> **Note: Some pending patches will be checked in for next release.
->>
->> --Shubham
->>
->>
->> ------------------------------------------------------------------------------
->> Live Security Virtual Conference
->> Exclusive live event will cover all the ways today's security and 
->> threat landscape has changed and how IT managers can respond. Discussions 
->> will include endpoint security, mobile security and the latest in malware 
->> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+This is a multi-part message in MIME format.
+--------------1.7.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/get_mempolicy/Makefile   |    7 ++-----
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |    8 ++++++--
+ 2 files changed, 8 insertions(+), 7 deletions(-)
+
+
+--------------1.7.1
+Content-Type: text/x-patch;
+	name="0003-get_mempolicy01-dont-use-hardcoded-NUMA-node-ids.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0003-get_mempolicy01-dont-use-hardcoded-NUMA-node-ids.patch"
+
+diff --git a/testcases/kernel/syscalls/get_mempolicy/Makefile b/testcases/kernel/syscalls/get_mempolicy/Makefile
+index 2791e85..333ad21 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/Makefile
++++ b/testcases/kernel/syscalls/get_mempolicy/Makefile
+@@ -20,10 +20,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-CPPFLAGS		+= -g
+-
+-CPPFLAGS		+= -I$(abs_srcdir)/../utils $(NUMA_CPPFLAGS)
+-
+-LDLIBS			+= $(NUMA_LIBS)
++CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ 
++include $(abs_srcdir)/../numa/Makefile.inc
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+index 0565d6f..9011980 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
++++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+@@ -63,6 +63,7 @@
+ #include "linux_syscall_numbers.h"
+ #include "include_j_h.h"
+ #include "common_j_h.c"
++#include "numa_helper.h"
+ 
+ char *TCID = "get_mempolicy01";  /* Test program identifier.*/
+ int  TST_TOTAL = 1;		   /* total number of tests in this file.   */
+@@ -231,15 +232,18 @@ static int do_test(struct test_case *tc)
+ #endif
+ 	char *p = NULL;
+ 	unsigned long len = MEM_LENGTH;
++	int test_node = -1;
+ 
++	if ((ret = get_allowed_nodes(1, &test_node)) < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
+ #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+ 	nodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(nodemask);
+-	nodemask_set(nodemask, 0);
++	nodemask_set(nodemask, test_node);
+ 	getnodemask = malloc(sizeof(nodemask_t));
+ 	nodemask_zero(getnodemask);
+ #else
+-	numa_bitmask_setbit(nodemask, 0);
++	numa_bitmask_setbit(nodemask, test_node);
+ #endif
+ 	switch (tc->ttype) {
+ 	case DEFAULT:
+
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -127,7 +121,18 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.1--
+
+
+
