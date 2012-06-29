@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SkRU2-0007aT-Fr
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 03:02:58 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SkRU1-00074s-6k
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 03:02:58 +0000
-Message-ID: <4FED1AD5.9070101@cn.fujitsu.com>
-Date: Fri, 29 Jun 2012 11:02:45 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Nitin.Yadav@mphasis.com>) id 1SkX92-0006M1-3x
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 09:05:40 +0000
+Received: from mpmulip3.mphasis.com ([203.12.222.67])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SkX8v-0004Xt-1y
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 09:05:40 +0000
 MIME-Version: 1.0
-References: <4FBB9FF2.2070507@redhat.com>
-In-Reply-To: <4FBB9FF2.2070507@redhat.com>
-Subject: Re: [LTP] [PATCH v2 0/3] add CMA test
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-class: urn:content-classes:message
+Date: Fri, 29 Jun 2012 14:33:15 +0530
+Message-ID: <E351E450E8B9F54684A699D42DC5ADF222236C0E@MPBAGVEX02.corp.mphasis.com>
+In-Reply-To: <4FED6D23.5060500@casparzhang.com>
+References: <1c21689296e79eb48004e2f9eb879d717481cf73.1340959271.git.jstancek@redhat.com>
+	<4FED6D23.5060500@casparzhang.com>
+From: "Nitin Yadav" <Nitin.Yadav@mphasis.com>
+Subject: [LTP] getrusage04  FAIL  :  stime increased > 2000us
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,73 +29,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 05/22/2012 10:17 PM, Jan Stancek wrote:
-> changes in v2
-> - dropped configure check as glibc wrapper calls syscall directly,
->   and using syscall(2) we can test also when glibc wrappers are missing
-> - added simplified process_vm.h
-> 
-> CMA (cross memory attach) feature introduced 2 new syscalls:
-> process_vm_readv
-> process_vm_writev
+Hi,
+I am getting below error after applying the patch (getrusage04: add
+opportunity to increase the max [us]time increment) while running the
+getrusage system call in Linux 3.2 kernel.
 
-Hi Jan,
+./getrusage04
+getrusage04    0  TINFO  :  Using 1 as multiply factor for max [us]time
+increment (1000+1000us)!
+getrusage04    0  TINFO  :  utime:           0us; stime:           0us
+getrusage04    0  TINFO  :  utime:           0us; stime:        4000us
+getrusage04    1  TFAIL  :  stime increased > 2000us:
 
-This series is also lost, please send in one thread for reviewing if you can.
 
-Thanks,
-Wanlong Gao
+Please provide some pointers and suggestions.
+Thanks!
+Nitin Yadav
 
-> 
-> commit fcf634098c00dd9cd247447368495f0b79be12d1
-> Author: Christopher Yeoh <cyeoh@au1.ibm.com>
-> Date: Mon Oct 31 17:06:39 2011 -0700
-> Cross Memory Attach
-> 
-> "The basic idea behind cross memory attach is to allow MPI programs doing
-> intra-node communication to do a single copy of the message rather than
-> a double copy of the message via shared memory." [1]
-> 
-> This patch series is introducing the initial structure under syscalls/cma
-> and first test to check various errno codes as described in proposed man
-> page [2].
-> 
-> [1] http://lwn.net/Articles/451188/
-> [2] http://ozlabs.org/~cyeoh/cma/process_vm_readv.txt
-> 
-> Jan Stancek (3):
->   add testcases/kernel/syscalls/cma
->   cma: add process_vm.h
->   syscalls/cma: add errno tests
-> 
->  runtest/syscalls                                   |    3 +
->  testcases/kernel/syscalls/cma/Makefile             |   22 +
->  testcases/kernel/syscalls/cma/cma01.c              |  421 ++++++++++++++++++++
->  testcases/kernel/syscalls/cma/process_vm.h         |   58 +++
->  .../kernel/syscalls/cma/process_vm_readv/Makefile  |   29 ++
->  .../kernel/syscalls/cma/process_vm_writev/Makefile |   29 ++
->  6 files changed, 562 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/cma/Makefile
->  create mode 100644 testcases/kernel/syscalls/cma/cma01.c
->  create mode 100644 testcases/kernel/syscalls/cma/process_vm.h
->  create mode 100644 testcases/kernel/syscalls/cma/process_vm_readv/Makefile
->  create mode 100644 testcases/kernel/syscalls/cma/process_vm_writev/Makefile
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
+Information transmitted by this e-mail is proprietary to MphasiS, its associated companies and/ or its customers and is intended 
+for use only by the individual or entity to which it is addressed, and may contain information that is privileged, confidential or 
+exempt from disclosure under applicable law. If you are not the intended recipient or it appears that this mail has been forwarded 
+to you without proper authority, you are notified that any use or dissemination of this information in any manner is strictly 
+prohibited. In such cases, please notify us immediately at mailmaster@mphasis.com and delete this mail from your records.
 
 
 ------------------------------------------------------------------------------
