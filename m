@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1Sjnb0-0007U3-6z
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:30 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sjnau-0004Bf-UI
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:30 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q5R8RJoa009436
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jun 2012 01:27:19 -0700 (PDT)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Wed, 27 Jun 2012 16:27:00 +0800
-Message-ID: <1340785620-4444-4-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
-References: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SkW3R-0001DB-WE
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 07:55:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SkW3L-0003fZ-Jd
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 07:55:49 +0000
+Message-ID: <4FED5CFD.7040406@cn.fujitsu.com>
+Date: Fri, 29 Jun 2012 15:45:01 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/3] aio_write/7-1: check aio resource limitation
+References: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
+In-Reply-To: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
+Subject: Re: [LTP] crashme:fork12 test may kill other process that is not
+ forked child
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,52 +26,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: =?UTF-8?B?576F56eJ6Yie?= <luobingjiun@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Similiar with aio_read/9-1, this case try to overflow the aio queue by
-call NUM_AIOCBS times aio_write.
-But for some system, the queue has no limit. So check the _SC_AIO_MAX,
-if no limit then return UNSUPPORT.
-
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../conformance/interfaces/aio_write/7-1.c         |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-index 164e9ae..3857136 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-@@ -50,7 +50,7 @@ int main()
- 	int err;
- 	int ret;
- 
--	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
-+	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L || sysconf(_SC_AIO_MAX) == -1)
- 		return PTS_UNSUPPORTED;
- 
- 	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_write_4_1_%d",
-@@ -106,4 +106,4 @@ int main()
- 	printf (TNAME " PASSED\n");
- 
- 	return PTS_PASS;
--}
-\ No newline at end of file
-+}
--- 
-1.7.5.4
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDYvMjcvMjAxMiAwNTo1MiBQTSwg576F56eJ6YieIHdyb3RlOgo+IERlYXIgQWxsLAo+IAo+
+IGZvcmsxMiB0ZXN0IGZvcmtzIGFzIG1hbnkgY2hpbGQgcHJvY2VzcyBhcyBwb3NzaWJsZSB1bnRp
+bAo+IHRoZSBzeXN0ZW0gb3V0IG9mIG1lbW9yeS4gQW5kIGtlcm5lbCBPT00ga2lsbGVyIGlzCj4g
+dHJpZ2dlcmVkIHRvIHNlbGVjdCBjYW5kaWRhdGUgcHJvY2VzcyB0byBiZSBraWxsZWQuCj4gCj4g
+Zm9yazEyIGV4cGVjdGVkIG9uZSBvZiBpdHMgZm9ya2VkIGNoaWxkIHByb2Nlc3MgdG8gYmUgY2hv
+c2VuLAo+IGJ1dCB3aGF0IGlmIGFueSBvdGhlciBwcm9jZXNzIGlzIGNob3Nlbi4gRXZlbiB0aGUg
+d29yc3QsCj4gc2hlbGwgc2NyaXB0KCIvYmluL3NoIikgb3IgcGFyZW50IHByb2Nlc3Mgd2FzIGNo
+b3NlbiB0byBiZSBraWxsZWQuCj4gTm8gd2F5IHJldHVybiBhbmQgdGhlIHN5c3RlbSByZWFsbHkg
+Y3Jhc2hlZC4gQnV0IHRoaXMgaXMgbm90Cj4gd2hhdCBmb3JrMTIgd2FudHMuCj4gCj4gSSBwcm9w
+b3NlZCB0aGUgc29sdXRpb24gZm9yIHRoaXMgaXMgZGlzYWJsZSB0aGUgT09NIGtpbGxlciBvZiBw
+YXJlbnQKPiBwcm9jZXNzIGFuZCBhZGp1c3QgY2hpbGQgcHJvY2VzcydzIG9vbV9zY29yZV9hZGog
+dG8gNTAwKG9yIGFueQo+IG90aGVyIG51bWJlciBsYXJnZXIgdGhhbiAwKSwgdGhpcyBwdXJwb3Nl
+IGp1c3QgdG8gbWFrZSBjaGlsZCBwcm9jZXNzCj4gY2FuIGJlIGVhc2lseSBjaG9zZW4uCj4gCj4g
+RG8geW91IGhhdmUgYmV0dGVyIGlkZWE/IFRoYW5rIHlvdS4KCkkgaGF2ZSBubyBvYmplY3Rpb24g
+YWJvdXQgdGhpcyBpZGVhLgoKc29tZSBjb21tZW50cyBiZWxvdywKCj4gCj4gLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAKPiBGcm9tOiBMdW8sQmluZ0ppdW4gPGJqbHVvQGZh
+cmFkYXktdGVjaC5jb20+Cj4gLS0tCj4gIC4uLi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zv
+cmsvZm9yazEyLmMgICAgICAgIHwgICAgOSArKysrKysrKysKPiAgMSBmaWxlcyBjaGFuZ2VkLCA5
+IGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2x0cC1mdWxs
+LTIwMTIwNDAxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZm9yay9mb3JrMTIuYwo+IGIvbHRw
+LWZ1bGwtMjAxMjA0MDEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mb3JrL2ZvcmsxMi5jCj4g
+aW5kZXggZDA1MmZiYS4uYzNkN2NiNSAxMDA2NDQKPiAtLS0gYS9sdHAtZnVsbC0yMDEyMDQwMS90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZvcmsvZm9yazEyLmMKPiArKysgYi9sdHAtZnVsbC0y
+MDEyMDQwMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZvcmsvZm9yazEyLmMKPiBAQCAtNjMs
+NiArNjMsNyBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPiAgICAgICAgIGludCByZXQs
+IHN0YXR1czsKPiAgICAgICAgIGludCBsYzsgICAgICAgICAgICAgICAgIC8qIGxvb3AgY291bnRl
+ciAqLwo+ICAgICAgICAgY2hhciAqbXNnOyAgICAgICAgICAgICAgLyogbWVzc2FnZSByZXR1cm5l
+ZCBmcm9tIHBhcnNlX29wdHMgKi8KPiArICAgICAgIGNoYXIgY21kWzQwXTsKPiAKPiAgICAgICAg
+IC8qCj4gICAgICAgICAgKiBwYXJzZSBzdGFuZGFyZCBvcHRpb25zCj4gQEAgLTc2LDYgKzc3LDEx
+IEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+ICAgICAgICAgICovCj4gICAgICAgICBz
+ZXR1cCgpOwo+IAo+ICsgICAgICAgLyogYWRqdXN0IHBhcmVudCBwcm9jZXNzIHNvIG5vdCBiZSBr
+aWxsZWQgd2hlbiBvdXQgb2YgbWVtb3J5ICovCj4gKyAgICAgICBzcHJpbnRmKGNtZCwiZWNobyAt
+MTAwMCA+IC9wcm9jLyVkL29vbV9zY29yZV9hZGoiLCBnZXRwcGlkKCkpOwo+ICsgICAgICAgcHJp
+bnRmKCIlc1xuIiwgY21kKTsKPiArICAgICAgIHN5c3RlbShjbWQpOwoKV2h5IG5vdCB3cml0ZSgp
+PwpBbmQgImVjaG8iIGFsd2F5cyB1c2UgdGhlIGFic29sdXRlIHBhdGggIi9iaW4vZWNobyIgLgoK
+VGhhbmtzLApXYW5sb25nIEdhbwoKPiArCj4gICAgICAgICAvKgo+ICAgICAgICAgICogY2hlY2sg
+bG9vcGluZyBzdGF0ZSBpZiAtaSBvcHRpb24gaXMgZ2l2ZW4KPiAgICAgICAgICAqLwo+IEBAIC05
+Miw2ICs5OCw5IEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgcGF1c2UoKTsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGV4aXQoMCk7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgfQo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIC8qIGFkanVzdCBjaGlsZCBwcm9jZXNzIHNvIGl0IGlzIGtpbGxlZCBmaXJzdAo+
+IHdoZW4gb3V0IG9mIG1lbW9yeSAqLwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHNwcmludGYo
+Y21kLCJlY2hvIDUwMCA+IC9wcm9jLyVkL29vbV9zY29yZV9hZGoiLCBwaWQxKTsKPiArICAgICAg
+ICAgICAgICAgICAgICAgICBzeXN0ZW0oY21kKTsKPiAgICAgICAgICAgICAgICAgICAgICAgICBm
+b3JrcysrOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldCA9IHdhaXRwaWQoLTEsICZzdGF0
+dXMsIFdOT0hBTkcpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChyZXQgPCAwKQo+IAoK
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UK
+RXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1
+cml0eSBhbmQgCnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2Vy
+cyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0
+eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCnRocmVhdHMuIGh0
+dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
