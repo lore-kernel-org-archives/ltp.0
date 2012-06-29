@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cristian.iorga@intel.com>) id 1ScAge-00040M-EE
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jun 2012 07:29:48 +0000
-Received: from mga09.intel.com ([134.134.136.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ScAga-0005tQ-F9
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jun 2012 07:29:48 +0000
-From: "Iorga, Cristian" <cristian.iorga@intel.com>
-Date: Wed, 6 Jun 2012 07:29:00 +0000
-Message-ID: <969F26A8BAB325438E7EB80D3C3134FB16155EEE@IRSMSX102.ger.corp.intel.com>
-Content-Language: en-US
-Content-Type: multipart/mixed;
-	boundary="_004_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_"
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SkQQ5-00025t-Ka
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 01:54:49 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SkQQ4-0000x0-AL
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 01:54:49 +0000
+Message-ID: <4FED0ADE.3020601@cn.fujitsu.com>
+Date: Fri, 29 Jun 2012 09:54:38 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] ltp: Add patch to correct failing build from archive
+References: <cover.1340872565.git.jstancek@redhat.com>
+In-Reply-To: <cover.1340872565.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2 0/4] dont use hardcoded NUMA node ids
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,114 +25,179 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
---_004_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_
-Content-Type: multipart/alternative;
-	boundary="_000_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_"
-
---_000_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-ltp: Add patch to correct failing build from archive
-
-Signed-off-by: Cristian Iorga <cristian.iorga@intel.com>
-
---_000_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
-osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
-//www.w3.org/TR/REC-html40">
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
->
-<meta name=3D"Generator" content=3D"Microsoft Word 12 (filtered medium)">
-<style><!--
-/* Font Definitions */
-@font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
-/* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri","sans-serif";}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:"Calibri","sans-serif";
-	color:windowtext;}
-.MsoChpDefault
-	{mso-style-type:export-only;}
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
---></style><!--[if gte mso 9]><xml>
-<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
-<o:shapelayout v:ext=3D"edit">
-<o:idmap v:ext=3D"edit" data=3D"1" />
-</o:shapelayout></xml><![endif]-->
-</head>
-<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple">
-<div class=3D"WordSection1">
-<p class=3D"MsoNormal">ltp: Add patch to correct failing build from archive=
-<o:p></o:p></p>
-<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
-<p class=3D"MsoNormal">Signed-off-by: Cristian Iorga &lt;cristian.iorga@int=
-el.com&gt;<o:p></o:p></p>
-</div>
-</body>
-</html>
-
---_000_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_--
-
---_004_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_
-Content-Type: application/octet-stream; name="fix_building_fom_archive.patch"
-Content-Description: fix_building_fom_archive.patch
-Content-Disposition: attachment; filename="fix_building_fom_archive.patch";
-	size=752; creation-date="Wed, 06 Jun 2012 07:26:58 GMT";
-	modification-date="Wed, 06 Jun 2012 07:24:23 GMT"
-Content-Transfer-Encoding: base64
-
-bHRwOiBBZGQgcGF0Y2ggdG8gY29ycmVjdCBmYWlsaW5nIGJ1aWxkCiAgICAKICAgIGx0cCBtYWtl
-ZmlsZSBkb2VzIG5vdCBpbnRlcnByZXQgY29ycmVjdGx5IHRoZSByZXN1bHQgb2YgZ2l0IGRlc2Ny
-aWJlCiAgICBjb21tYW5kIGFuZCBhc3N1bWVzIHRoYXQgaXQgaXMgd29ya2luZyB3aXRoIGEgZ2l0
-IHJlcG8sIHdoaWxlIGluIGZhY3QKICAgIHdvcmtpbmcgd2l0aCBhIHNvdXJjZSBjb2RlIGFyY2hp
-dmUuCiAgICBBZGRlZCBhIHBhdGNoIHRvIGNvcmVjdCBtYWtlZmlsZSBzeXN0ZW0uCiAgICBUZXN0
-ZWQgdXNpbmcgZGFzaCBhcyBzaGVsbC4KClNpZ25lZC1vZmYtYnk6IENyaXN0aWFuIElvcmdhIDxj
-cmlzdGlhbi5pb3JnYUBpbnRlbC5jb20+CgpJbmRleDogbHRwLTIwMTIwNDAxL01ha2VmaWxlCj09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT0KLS0tIGx0cC0yMDEyMDQwMS5vcmlnL01ha2VmaWxlCisrKyBsdHAtMjAxMjA0MDEv
-TWFrZWZpbGUKQEAgLTE3Myw3ICsxNzMsNyBAQCBTUkNESVJfSU5TVEFMTF9UQVJHRVRTCTo9ICQo
-U1JDRElSX0lOU1RBCiAjCiAuUEhPTlk6IFZlcnNpb24KIFZlcnNpb246Ci0JaWYgZ2l0IGRlc2Ny
-aWJlICY+IC9kZXYvbnVsbDsgdGhlbiBcCisJaWYgZ2l0IGRlc2NyaWJlID4gL2Rldi9udWxsIDI+
-JjE7IHRoZW4gXAogCQlnaXQgZGVzY3JpYmUgPiAiJEAiOyBcCiAJZWxzZSBcCiAJCWNwIFZFUlNJ
-T04gIiRAIjsgXAo=
-
---_004_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 06/28/2012 05:03 PM, Jan Stancek wrote:
+> 
+> Changes in v2:
+> get_allowed_pages()
+> - removed tst_resm(TFAIL,..)
+> - added break
+> - for ret == -3, set errno to EINVAL
+> move_pages_support.c
+> - check return value from get_allowed_nodes_arr()
+> mbind, get_mempolicy, move_pages
+> - removed curly brackets in single statement ifs
+
+pushed, thank you Jan.
+
+Wanlong Gao
+
+> 
+> This patch series is a combination of:
+> [PATCH v3] mbind01, get_mempolicy01: dont use hardcoded node 0
+> [PATCH 1/2] move_pages_support: use only allowed nodes
+> [PATCH 2/2] move_pages: dont use hardcoded node numbers
+> 
+> so that all testcases use same shared code, which resides in libnuma_helper.a.
+> This library defines get_allowed_nodes() and get_allowed_nodes_arr() functions
+> to obtain list of nodes tests can use.
+> 
+> I tested it with following setups. Note that setup 4 and 5 will
+> end with TCONF as there is only 1 node with memory.
+> 
+> 1.
+> # numactl -H
+> available: 8 nodes (2,4-10)
+> node 2 cpus: 0
+> node 2 size: 127 MB
+> node 2 free: 9 MB
+> node 4 cpus:
+> node 4 size: 128 MB
+> node 4 free: 9 MB
+> node 5 cpus:
+> node 5 size: 128 MB
+> node 5 free: 64 MB
+> node 6 cpus:
+> node 6 size: 128 MB
+> node 6 free: 121 MB
+> node 7 cpus:
+> node 7 size: 128 MB
+> node 7 free: 121 MB
+> node 8 cpus:
+> node 8 size: 128 MB
+> node 8 free: 121 MB
+> node 9 cpus:
+> node 9 size: 128 MB
+> node 9 free: 121 MB
+> node 10 cpus:
+> node 10 size: 127 MB
+> node 10 free: 123 MB
+> 
+> 2.
+> # numactl -H
+> available: 4 nodes (0-3)
+> node 0 cpus: 0 1 2 3 4 5
+> node 0 size: 2047 MB
+> node 0 free: 564 MB
+> node 1 cpus: 6 7 8 9 10 11
+> node 1 size: 2046 MB
+> node 1 free: 451 MB
+> node 2 cpus: 18 19 20 21 22 23
+> node 2 size: 2048 MB
+> node 2 free: 595 MB
+> node 3 cpus: 12 13 14 15 16 17
+> node 3 size: 2048 MB
+> node 3 free: 236 MB
+> node distances:
+> node   0   1   2   3 
+>   0:  10  16  16  16 
+>   1:  16  10  16  16 
+>   2:  16  16  10  16 
+>   3:  16  16  16  10
+> 
+> 3.
+> # numactl -H
+> available: 2 nodes (2-3)
+> node 2 cpus: 0
+> node 2 size: 511 MB
+> node 2 free: 154 MB
+> node 3 cpus:
+> node 3 size: 511 MB
+> node 3 free: 490 MB
+> 
+> 
+> 4.
+> # numactl -H
+> available: 2 nodes (0-1)
+> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+> node 0 size: 0 MB
+> node 0 free: 0 MB
+> node 1 cpus:
+> node 1 size: 12288 MB
+> node 1 free: 9689 MB
+> node distances:
+> node   0   1 
+>   0:  10  40 
+>   1:  40  10 
+> 
+> 5.
+> # numactl -H
+> available: 1 nodes (0)
+> node 0 cpus: 0
+> node 0 size: 1023 MB
+> node 0 free: 654 MB
+> node distances:
+> node   0 
+>   0:  10 
+> 
+> Jan Stancek (4):
+>   add libnuma_helper
+>   mbind01: dont use hardcoded NUMA node ids
+>   get_mempolicy01: dont use hardcoded NUMA node ids
+>   move_pages: dont use hardcoded NUMA node ids
+> 
+>  testcases/kernel/syscalls/get_mempolicy/Makefile   |    7 +-
+>  .../syscalls/get_mempolicy/get_mempolicy01.c       |    8 +-
+>  testcases/kernel/syscalls/mbind/Makefile           |    3 +-
+>  testcases/kernel/syscalls/mbind/mbind01.c          |    9 +-
+>  testcases/kernel/syscalls/move_pages/Makefile      |    5 +-
+>  .../kernel/syscalls/move_pages/move_pages02.c      |   11 +-
+>  .../kernel/syscalls/move_pages/move_pages03.c      |   11 +-
+>  .../kernel/syscalls/move_pages/move_pages04.c      |   11 +-
+>  .../kernel/syscalls/move_pages/move_pages05.c      |   11 +-
+>  .../kernel/syscalls/move_pages/move_pages06.c      |    9 +-
+>  .../kernel/syscalls/move_pages/move_pages07.c      |   11 +-
+>  .../kernel/syscalls/move_pages/move_pages08.c      |    9 +-
+>  .../kernel/syscalls/move_pages/move_pages09.c      |    7 +-
+>  .../kernel/syscalls/move_pages/move_pages10.c      |   11 +-
+>  .../kernel/syscalls/move_pages/move_pages11.c      |   11 +-
+>  .../syscalls/move_pages/move_pages_support.c       |   44 +++++--
+>  .../syscalls/move_pages/move_pages_support.h       |    1 +
+>  testcases/kernel/syscalls/numa/Makefile            |   22 +++
+>  testcases/kernel/syscalls/numa/Makefile.inc        |   27 ++++
+>  testcases/kernel/syscalls/numa/lib/Makefile        |   26 ++++
+>  testcases/kernel/syscalls/numa/lib/numa_helper.c   |  135 ++++++++++++++++++++
+>  testcases/kernel/syscalls/numa/lib/numa_helper.h   |   34 +++++
+>  22 files changed, 361 insertions(+), 62 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/numa/Makefile
+>  create mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
+>  create mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
+>  create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+>  create mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -140,16 +205,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---_004_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---_004_969F26A8BAB325438E7EB80D3C3134FB16155EEEIRSMSX102gercor_--
-
