@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Sj3nv-0005gi-0s
-	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 07:33:47 +0000
-Received: from mail-pz0-f47.google.com ([209.85.210.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.76) id 1Sj3nq-0004cK-Q9
-	for ltp-list@lists.sourceforge.net; Mon, 25 Jun 2012 07:33:47 +0000
-Received: by dalh21 with SMTP id h21so4499166dal.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 25 Jun 2012 00:33:36 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Mon, 25 Jun 2012 15:33:02 +0800
-Message-Id: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SkViQ-0005eK-D5
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 07:34:06 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SkViM-0006ws-69
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 07:34:06 +0000
+Date: Fri, 29 Jun 2012 03:33:51 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <f706d745-82b7-4c67-875b-da6ed84d5e2e@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FED157D.3050703@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH 1/2] mm/vma01: consider topdown and bottomup allocation
+Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,148 +23,266 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hejianet@linux.vnet.ibm.com, Wang Sheng-Hui <shhuiw@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-When calculating VMAs, results differ in topdown and bottomup memory
-allocation mechanisms. This patch fix the potential failures and should
-work like below:
-
-In topdown allocation, the start addr in second VMA should be smaller
-than first one, i.e.:
-
-    u======t------(t+3*ps)
-      2nd    1st
-
-Thus, in buggy kernel, if we find a VMA mapping entry in child like:
-
-    start_addr == u && end_addr == t+3*ps;
-
-the test would go fail. Otherwise, in good kernel, we should see
-
-    start_addr1 == u && end_addr1 == t;
-    start_addr2 == t && end_addr2 == t+3*ps;
-
-While in bottomup allocation, it's different:
-
-    t------u======(t+6*ps)
-      1st    2nd
-
-Here in buggy kernel, we can see VMA mapping entry like this:
-
-    start_addr == t && end_addr == t+6*ps;
-
-And in good kernel:
-
-    start_addr1 == t && end_addr1 == u;
-    start_addr2 == u && end_addr2 == t+6*ps;
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- testcases/kernel/mem/vma/vma01.c |   35 ++++++++++++++++++++++-------------
- 1 files changed, 22 insertions(+), 13 deletions(-)
-
-
---------------1.7.8.6
-Content-Type: text/x-patch;
-	name="0001-mm-vma01-consider-topdown-and-bottomup-allocation.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-mm-vma01-consider-topdown-and-bottomup-allocation.patch"
-
-diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
-index 398d7a1..16ee078 100644
---- a/testcases/kernel/mem/vma/vma01.c
-+++ b/testcases/kernel/mem/vma/vma01.c
-@@ -59,7 +59,7 @@ char *TCID = "vma01";
- int TST_TOTAL = 1;
- 
- static void check_vma(void);
--static void *get_end_addr(void *addr_s, char *mapfile);
-+static void *get_end_addr(void *addr_s);
- static void check_status(int status);
- static void setup(void);
- static void cleanup(void);
-@@ -90,9 +90,10 @@ int main(int argc, char **argv)
- static void check_vma(void)
- {
- 	int status;
--	void *t, *u, *x, *y;
-+	int topdown;
-+	void *t, *u, *x;
- 
--	t = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
-+	t = mmap(NULL, 3*ps, PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
- 	if (t == MAP_FAILED)
- 		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
- 	memset(t, 1, ps);
-@@ -103,21 +104,29 @@ static void check_vma(void)
- 	case 0:
- 		memset(t, 2, ps);
- 		u = mmap(t + 3*ps, 3*ps, PROT_WRITE,
--			    MAP_ANONYMOUS|MAP_PRIVATE, 0, 0);
-+			    MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
- 		if (u == MAP_FAILED) {
--			perror("mmap failed.\n");
-+			perror("mmap");
- 			exit(255);
- 		}
-+		topdown = (u > t) ? 0 : 1;
- 		printf("parent: t = %p\n", t);
- 		printf("child : u = %p\n", u);
- 		memset(u, 2, ps);
- 
--		x = get_end_addr(u, MAPS_FILE);
--		if (x == u + 6*ps)
--			exit(1);
--		if (x == u + 3*ps) {
--			y = get_end_addr(x, MAPS_FILE);
--			if (y == x + 3*ps)
-+		if (topdown) {
-+			x = get_end_addr(u);
-+			printf("child : x = %p\n", x);
-+			if (x == t + 3*ps)
-+				exit(1);
-+			else if (x == t && get_end_addr(x) == t + 3*ps)
-+				exit(0);
-+		} else {
-+			x = get_end_addr(t);
-+			printf("child : x = %p\n", x);
-+			if (x == t + 6*ps)
-+				exit(1);
-+			else if (x == u && get_end_addr(x) == t + 6*ps)
- 				exit(0);
- 		}
- 		exit(255);
-@@ -131,13 +140,13 @@ static void check_vma(void)
- 	}
- }
- 
--static void *get_end_addr(void *addr_s, char *mapfile)
-+static void *get_end_addr(void *addr_s)
- {
- 	FILE *fp;
- 	void *s, *t;
- 	char buf[BUFSIZ];
- 
--	fp = fopen(mapfile, "r");
-+	fp = fopen(MAPS_FILE, "r");
- 	if (fp == NULL)
- 		tst_brkm(TBROK|TERRNO, cleanup, "fopen");
- 	while (fgets(buf, BUFSIZ, fp) != NULL) {
-
---------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
+
+
+
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Zhouping Liu" <zliu@redhat.com>
+> Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek" <jstancek@redhat.com>
+> Sent: Friday, 29 June, 2012 4:39:57 AM
+> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+> 
+> On 06/29/2012 10:23 AM, Zhouping Liu wrote:
+> > Hi,
+> > 
+> > ----- Original Message -----
+> >> From: "Zhouping Liu" <zliu@redhat.com>
+> >> To: "LTP List" <ltp-list@lists.sourceforge.net>
+> >> Sent: Tuesday, June 26, 2012 11:57:35 PM
+> >> Subject: [LTP]  [PATCH] mm/oom05: new testcase
+> >>
+> >> add a new testcase to test OOM on each NUMA node
+> > 
+> > I have tested it in several systems with 2 NUMA nodes and 8 NUMA
+> > nodes,
+> > they are all good, any comment?
+> > 
+> > Thanks,
+> > Zhouping
+> > 
+> >>
+> >> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> >> ---
+> >>  runtest/mm                       |    1 +
+> >>  testcases/kernel/mem/oom/oom05.c |  131
+> >>  ++++++++++++++++++++++++++++++++++++++
+> >>  2 files changed, 132 insertions(+)
+> >>  create mode 100644 testcases/kernel/mem/oom/oom05.c
+> >>
+> >> diff --git a/runtest/mm b/runtest/mm
+> >> index 2dd66f0..a60c04b 100644
+> >> --- a/runtest/mm
+> >> +++ b/runtest/mm
+> >> @@ -77,6 +77,7 @@ oom01 oom01
+> >>  oom02 oom02
+> >>  oom03 oom03
+> >>  oom04 oom04
+> >> +oom05 oom05
+> >>  
+> >>  swapping01 swapping01 -i 5
+> >>  
+> >> diff --git a/testcases/kernel/mem/oom/oom05.c
+> >> b/testcases/kernel/mem/oom/oom05.c
+> >> new file mode 100644
+> >> index 0000000..046ddbb
+> >> --- /dev/null
+> >> +++ b/testcases/kernel/mem/oom/oom05.c
+> >> @@ -0,0 +1,131 @@
+> >> +/*
+> >> + * Out Of Memory (OOM) on Each NUMA nodes
+> >> + *
+> >> + * The program is designed to cope with unpredictable like amount
+> >> and
+> >> + * system physical memory, swap size and other VMM technology
+> >> like
+> >> KSM,
+> >> + * memcg, memory hotplug and so on which may affect the OOM
+> >> + * behaviours. It simply increase the memory consumption 3G each
+> >> time
+> >> + * until all the available memory is consumed and OOM is
+> >> triggered.
+> >> + *
+> >> + * Copyright (C) 2012  Red Hat, Inc.
+> >> + * This program is free software; you can redistribute it and/or
+> >> + * modify it under the terms of version 2 of the GNU General
+> >> Public
+> >> + * License as published by the Free Software Foundation.
+> >> + *
+> >> + * This program is distributed in the hope that it would be
+> >> useful,
+> >> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> >> + *
+> >> + * Further, this software is distributed without any warranty
+> >> that
+> >> it
+> >> + * is free of the rightful claim of any third person regarding
+> >> + * infringement or the like.  Any license provided herein,
+> >> whether
+> >> + * implied or otherwise, applies only to this software file.
+> >>  Patent
+> >> + * licenses, if any, provided herein do not apply to combinations
+> >> of
+> >> + * this program with other software, or any other product
+> >> whatsoever.
+> >> + *
+> >> + * You should have received a copy of the GNU General Public
+> >> License
+> >> + * along with this program; if not, write the Free Software
+> >> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> >> + * 02110-1301, USA.
+> >> + */
+> >> +#include <sys/types.h>
+> >> +#include <sys/stat.h>
+> >> +#include <sys/wait.h>
+> >> +#include <errno.h>
+> >> +#include <fcntl.h>
+> >> +#include <stdio.h>
+> >> +#include <stdlib.h>
+> >> +#include <unistd.h>
+> >> +#include "test.h"
+> >> +#include "safe_macros.h"
+> >> +#include "usctest.h"
+> >> +#include "mem.h"
+> >> +
+> >> +char *TCID = "oom05";
+> >> +int TST_TOTAL = 1;
+> >> +
+> >> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+> >> +	&& HAVE_MPOL_CONSTANTS
+> >> +#include <numa.h>
+> >> +#include <numaif.h>
+> >> +
+> >> +int main(int argc, char *argv[])
+> >> +{
+> >> +	char *msg;
+> >> +	int lc;
+> >> +	long nodes[MAXNODES];
+> >> +	int nnodes, i;
+> >> +	pid_t pids[MAXNODES];
+> >> +	int status;
+> >> +	unsigned long nmasks[MAXNODES];
+> >> +
+> >> +	msg = parse_opts(argc, argv, NULL, NULL);
+> >> +	if (msg != NULL)
+> >> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> >> +
+> >> +#if __WORDSIZE == 32
+> >> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit
+> >> system.");
+> >> +#endif
+> >> +	nnodes = count_numa(nodes);
+> >> +	if (nnodes <= 1)
+> >> +		tst_brkm(TCONF, NULL, "required a NUMA system.");
+> >> +
+> >> +	setup();
+> >> +
+> >> +	set_sys_tune("overcommit_memory", 1, 1);
+> >> +
+> >> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> >> +		Tst_count = 0;
+> >> +
+> >> +		for (i = 0; i < nnodes; i++) {
+> >> +			nmasks[i] = 1 << nodes[i];
+> >> +			switch (pids[i] = fork()) {
+> >> +			case -1:
+> >> +				tst_brkm(TBROK|TERRNO, cleanup, "fork");
+> >> +			case 0:
+> >> +				if (set_mempolicy(MPOL_BIND, &nmasks[i],
+> >> +				    MAXNODES) == -1)
+> >> +					tst_brkm(TBROK|TERRNO, cleanup,
+> >> +					    "set_mempolicy");
+> >> +				tst_resm(TINFO, "start oom on numa node%lu",
+> >> +				    nodes[i]);
+> >> +				oom(NORMAL, 0, 0);
+> >> +				exit(0);
+> >> +			}
+> >> +		}
+> 
+> Hi Zhouping,
+> 
+> Does it need get_allowed_nodes() that Jan added?
+
+count_numa goes over nodes in /sys/devices/system/node/, so I'm guessing
+it will find 2 nodes on this setup:
+
+ 4.
+ # numactl -H
+ available: 2 nodes (0-1)
+ node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+ node 0 size: 0 MB
+ node 0 free: 0 MB
+ node 1 cpus:
+ node 1 size: 12288 MB
+ node 1 free: 9689 MB
+ node distances:
+ node   0   1
+   0:  10  40
+   1:  40  10 
+
+I'll provision that host and check it.
+
+Regards,
+Jan
+
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> >> +
+> >> +		for (i = 0; i < nnodes; i++) {
+> >> +			if (waitpid(pids[i], &status, WUNTRACED|WCONTINUED) == -1)
+> >> +				tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> >> +
+> >> +			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> >> +				tst_resm(TFAIL, "child[%d] exit with "
+> >> +				    "status: %d", pids[i], status);
+> >> +		}
+> >> +	}
+> >> +	cleanup();
+> >> +	tst_exit();
+> >> +}
+> >> +
+> >> +void setup(void)
+> >> +{
+> >> +	tst_require_root(NULL);
+> >> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> >> +	TEST_PAUSE;
+> >> +
+> >> +	overcommit = get_sys_tune("overcommit_memory");
+> >> +}
+> >> +
+> >> +void cleanup(void)
+> >> +{
+> >> +	set_sys_tune("overcommit_memory", overcommit, 0);
+> >> +
+> >> +	TEST_CLEANUP;
+> >> +}
+> >> +
+> >> +#else /* no NUMA */
+> >> +int main(void)
+> >> +{
+> >> +	tst_brkm(TCONF, NULL, "no NUMA development packages
+> >> installed.");
+> >> +}
+> >> +#endif
+> >> --
+> >> 1.7.10.2
+> >>
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Live Security Virtual Conference
+> >> Exclusive live event will cover all the ways today's security and
+> >> threat landscape has changed and how IT managers can respond.
+> >> Discussions
+> >> will include endpoint security, mobile security and the latest in
+> >> malware
+> >> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >>
+> > 
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -175,18 +290,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
-
-
-
