@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1Sjnaw-0003a4-Ef
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:26 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sjnas-00044F-OD
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jun 2012 08:27:26 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q5R8RH9H009430
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jun 2012 01:27:17 -0700 (PDT)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Wed, 27 Jun 2012 16:26:58 +0800
-Message-ID: <1340785620-4444-2-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
-References: <1340785620-4444-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1Skeck-0000o8-A3
+	for ltp-list@lists.sourceforge.net; Fri, 29 Jun 2012 17:04:50 +0000
+Date: Fri, 29 Jun 2012 18:22:15 +0200
+From: chrubis@suse.cz
+Message-ID: <20120629162215.GA18851@saboteur.suse.cz>
+References: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/3] aio_cancel/4-1: fails on routerstation randomly
+Content-Disposition: inline
+In-Reply-To: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
+Subject: Re: [LTP] crashme:fork12 test may kill other process that is not
+ forked child
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,59 +22,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ????????? <luobingjiun@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The case fails on routerstation(MIPS) board randomly. The root cause
-is that the aio_write() calls already complete before call aio_cancel().
-Fix it by increase BUF_SIZE.
+Hi!
+> I proposed the solution for this is disable the OOM killer of=A0parent
+> process and adjust child process's oom_score_adj to 500(or any
+> other number larger than 0), this purpose just to make child process
+> can be easily chosen.
 
-Fill every struct aiocb with 0 at same time.
+I wouldn't do the increase in oom_score for the parent that doesn't help
+much, because the test runs under pan which is started from a script
+etc... So if any of the processes in the chain gets killed the testing
+is done anyway.
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
+Adjusting the child oom_score on the other hand is good idea is this
+enough for the test to work okay?
+
+And for the implementation, simple write would be far better solution
+and please run you patch through checkpatch.pl before submitting next
+time.
+
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
+
+---------------------------------------------------------------------------=
 ---
- .../conformance/interfaces/aio_cancel/4-1.c        |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
-index 75bed8c..69cc512 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
-@@ -42,7 +42,7 @@
- #define TNAME "aio_cancel/4-1.c"
- 
- #define BUF_NB		128
--#define BUF_SIZE	1024
-+#define BUF_SIZE	(1024*1024)
- 
- int main()
- {
-@@ -80,6 +80,7 @@ int main()
- 		       		strerror(errno));
- 			return PTS_UNRESOLVED;
- 		}
-+		memset(aiocb[i], 0, sizeof(struct aiocb));
- 		aiocb[i]->aio_fildes = fd;
- 		aiocb[i]->aio_buf = malloc(BUF_SIZE);
- 		if (aiocb[i]->aio_buf == NULL)
-@@ -144,4 +145,4 @@ int main()
- 	} while (in_progress);
- 
- 	return PTS_UNRESOLVED;
--}
-\ No newline at end of file
-+}
--- 
-1.7.5.4
-
-
-------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
