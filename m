@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SuOB2-0003B4-H9
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 13:32:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SuOAx-0005NU-VJ
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 13:32:28 +0000
-Message-ID: <501146AA.7060809@cn.fujitsu.com>
-Date: Thu, 26 Jul 2012 21:31:22 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vannigenua@gmail.com>) id 1SliXY-0000R8-8Z
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 15:27:52 +0000
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SliXX-0002YZ-Ho
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 15:27:52 +0000
+Received: by wgbds1 with SMTP id ds1so2878750wgb.4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 02 Jul 2012 08:27:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <1343270673-8363-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<5010D13F.6020006@casparzhang.com>
-In-Reply-To: <5010D13F.6020006@casparzhang.com>
-Subject: Re: [LTP] [PATCH] file: add the new output format of C program file
-Reply-To: gaowanlong@cn.fujitsu.com
+Date: Mon, 2 Jul 2012 15:27:45 +0000
+Message-ID: <CAO8ONPyEzsnxpivfG-Jw=5YyzmPdzW2JyVCJrH0i8PkSqDX7tg@mail.gmail.com>
+From: Vanni Genua <vannigenua@gmail.com>
+Subject: [LTP] LTP on ARMV7
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,61 +25,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8766725452663488594=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 07/26/2012 01:10 PM, Caspar Zhang wrote:
-> On 07/26/2012 10:44 AM, Wanlong Gao wrote:
->> New output format of file command for C program file is like below,
->> $ file src/guestfs.c
->> src/guestfs.c: C source, ASCII text
->>
->> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> 
-> Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+--===============8766725452663488594==
+Content-Type: multipart/alternative; boundary=000e0cd47f6c8d5cfe04c3da70b8
 
-Thanks for your review, pushed.
+--000e0cd47f6c8d5cfe04c3da70b8
+Content-Type: text/plain; charset=ISO-8859-1
 
-Wanlong Gao
+Hi there,
+anybody know if LTP support ARMv7 and not only x86 architecture?
 
-> 
->> ---
->>   testcases/commands/ade/file/file_test.sh | 14 ++++++++++----
->>   1 file changed, 10 insertions(+), 4 deletions(-)
->>
->> diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/ade/file/file_test.sh
->> index 70420e3..8a4e9b5 100755
->> --- a/testcases/commands/ade/file/file_test.sh
->> +++ b/testcases/commands/ade/file/file_test.sh
->> @@ -314,10 +314,16 @@ then
->>           $LTPBIN/tst_resm TPASS "file: Recognised C program text correctly"
->>           rm -f $LTPTMP/cprog.c
->>       else
->> -        $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
->> -             "file: Failed to Recognize C program text correctly. Reason:"
->> -        TFAILCNT=$(( $TFAILCNT+1 ))
->> -
->> +        grep "C source, ASCII text" $LTPTMP/file.out > /dev/null 2>&1
->> +        if [ $? -eq 0 ]
->> +        then
->> +            $LTPBIN/tst_resm TPASS "file: Recognised C program text correctly"
->> +            rm -f $LTPTMP/cprog.c
->> +        else
->> +            $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
->> +                 "file: Failed to Recognize C program text correctly. Reason:"
->> +            TFAILCNT=$(( $TFAILCNT+1 ))
->> +        fi
->>       fi
->>   else
->>       $LTPBIN/tst_resm TFAIL "file: Failed to recognize C programi text"
->>
-> 
-> 
-> 
+--000e0cd47f6c8d5cfe04c3da70b8
+Content-Type: text/html; charset=ISO-8859-1
 
+Hi there,<br>anybody know if LTP support ARMv7 and not only x86 architecture?<br><br>
+
+--000e0cd47f6c8d5cfe04c3da70b8--
+
+
+--===============8766725452663488594==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -88,7 +58,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============8766725452663488594==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8766725452663488594==--
+
