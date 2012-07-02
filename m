@@ -1,17 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1Soxv6-0006eV-9H
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 14:29:36 +0000
-Date: Wed, 11 Jul 2012 15:44:55 +0200
-From: chrubis@suse.cz
-Message-ID: <20120711134455.GA13301@saboteur.suse.cz>
-References: <FFB336710AC24540A4636F71A9A3C38B17DFA7E41A@EXMB03.eu.tieto.com>
+	(envelope-from <eguan@redhat.com>) id 1SleG7-00010P-Tp
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 10:53:35 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SleG7-00031N-3S
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 10:53:35 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q62ArUVf024974
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Jul 2012 06:53:30 -0400
+From: Eryu Guan <eguan@redhat.com>
+Date: Mon,  2 Jul 2012 18:53:10 +0800
+Message-Id: <1341226390-16789-1-git-send-email-eguan@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <FFB336710AC24540A4636F71A9A3C38B17DFA7E41A@EXMB03.eu.tieto.com>
-Subject: Re: [LTP] WiFi test harness
+Content-Type: multipart/mixed; boundary="------------1.7.10.2"
+Subject: [LTP] [PATCH] syscalls/setxattr03: turn off immutable and append
+	bit only if already set
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,63 +29,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: filip.matusiak@tieto.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Our organization is planning to implement some kind of WiFi test
-> harness. It's going to be and FOSS therefore using LTP comes as one of
-> the obvious choices. For beginning we're planning to use
-> mac80211_hwsim. I was browsing the archive of LTP in search for
-> anything related for WiFi/WLAN and found rather little information -
-> most recent one dated 2009.
+This is a multi-part message in MIME format.
+--------------1.7.10.2
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-That is great news. I would be happy to help with the integration with
-the LTP internals.
 
-> Latest post on WiFi in LTP list I've found is this:
-> 
-> (1)    http://sourceforge.net/mailarchive/forum.php?thread_name=43e72e890909271252r12459df1vc3ef263139889dc8%40mail.gmail.com&forum_name=ltp-list
-> The only other thread I've found on WiFi is the one about mesh (but it has some information on proposed way forward for wireless as whole):
->
-> (2)    http://sourceforge.net/mailarchive/message.php?msg_id=20189102
-> 
-> We may be able to extend the hostapd's mac80211_hwsim/tests proposed by Jouni (http://w1.fi/gitweb/gitweb.cgi?p=hostap.git;a=tree;f=mac80211_hwsim/tests) and integrate it to LTP.
->
-> Q1) We must know if it is work that community would benefit from(?).
-> * Since there's not much about this for last 3 years it was presumably not too important.
+Turn off immutable and append-only attribute in cleanup() only if they
+are already turned on. Otherwise bogus WARNING would fail test case when
+no xattr support in fs or mount without user_xattr option.
 
-Well, if these testcases were integrated into the LTP and fully
-automated they will be, once they are inside relesed LTP, executed on
-several major distributions including SUSE.
+setxattr03    1  TCONF  :  No xattr support in fs or fs mounted without user_xattr option
+setxattr03    2  TCONF  :  Remaining cases not appropriate for configuration
+setxattr03    0  TWARN  :  Unset setxattr03immutable immutable failed: errno=EINVAL(22): Invalid argument
+setxattr03    0  TWARN  :  Unset setxattr03appendonly append-only failed: errno=EINVAL(22): Invalid argument
 
-I think that the prohlem here is that everybody knowledable enough to
-create these testcases haven't had enough time to do so, as testing is
-not as much popular as development.
+(The check-fd-value way is not perfect, but I think it's much more
+easier and could cover the most common case.)
 
-> Q2) Is the latest message from Subrata Modak on the second thread above the way to go?
-> * (http://sourceforge.net/mailarchive/message.php?msg_id=20192822)
-> Q3) If not then what would be the preferred way forward?
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+ testcases/kernel/syscalls/setxattr/setxattr03.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ideally the testing would be as easy as running a script that prepares
-the environment, runs the tests and reports result.
 
-If manual intervention is needed the actual testing coudn't be done as
-much as possible (which is the case for daily kernel testing for
-example).
+--------------1.7.10.2
+Content-Type: text/x-patch;
+	name="0001-syscalls-setxattr03-turn-off-immutable-and-append-bi.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-syscalls-setxattr03-turn-off-immutable-and-append-bi.patch"
 
-> I'd be thankful for any information with regards to LTP WiFi related
-> matters, especially if there was any off-record follow-up for any of
-> the two discussions referred to above.
+diff --git a/testcases/kernel/syscalls/setxattr/setxattr03.c b/testcases/kernel/syscalls/setxattr/setxattr03.c
+index fa97a6b..47a82b0 100644
+--- a/testcases/kernel/syscalls/setxattr/setxattr03.c
++++ b/testcases/kernel/syscalls/setxattr/setxattr03.c
+@@ -202,10 +202,10 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	if (set_immutable_off(immu_fd))
++	if ((immu_fd > 0) && set_immutable_off(immu_fd))
+ 		tst_resm(TWARN | TERRNO, "Unset %s immutable failed",
+ 		    IMMU_FILE);
+-	if (set_append_off(append_fd))
++	if ((append_fd > 0) && set_append_off(append_fd))
+ 		tst_resm(TWARN | TERRNO, "Unset %s append-only failed",
+ 		    APPEND_FILE);
+ 	close(immu_fd);
 
-Sorry I couldn't help much here.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--------------1.7.10.2
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -85,7 +93,18 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.10.2
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.10.2--
+
+
+
