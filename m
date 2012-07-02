@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1So3jf-00054r-Ts
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:30:03 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1So3je-0001uj-NR
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:30:03 +0000
-Message-ID: <4FFA4210.607@cn.fujitsu.com>
-Date: Mon, 09 Jul 2012 10:29:36 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shivam.mehta@sasken.com>) id 1SlfwK-0001kT-Kv
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 12:41:16 +0000
+Received: from mta-blr1.sasken.com ([203.200.200.72])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SlfwE-0006xx-NO
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 12:41:16 +0000
+From: Shivam Mehta <shivam.mehta@sasken.com>
+Date: Mon, 2 Jul 2012 18:11:01 +0530
+Message-ID: <2316A524B7DB8C4AB39B9EDEDF597C8F015B606E6C05@EXGMBX01.sasken.com>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <2e6144c3-13ca-4b3b-8b02-cd7cee9f25d0@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <2e6144c3-13ca-4b3b-8b02-cd7cee9f25d0@zmail13.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] hugetlb: add a new function
-	get_available_hugepages
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] Fallocate test failing in Zoom-3 board .
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,76 +26,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On 07/07/2012 11:30 PM, Zhouping Liu wrote:
-> Hi,
-> 
->> From: "Zhouping Liu" <zliu@redhat.com>
->> To: "LTP list" sourceforge.net>
->> Sent: Saturday, July 7, 2012 11:14:38 PM
->> Subject: [LTP] [PATCH] hugetlb: add a new function get_available_hugepages
->>
->> on some systems with small RAM, there aren't enough memory
->> to set as specific hugepages, such as 128 hugepages, it will
->> fail like this:
->>  [root@localhost hugemmap]# ./hugemmap01
->>  hugemmap01    0  TINFO  :  set nr_hugepages to 128
->>  hugemmap01    1  TBROK  :  nr_hugepages = 55, but expect 128
->>  hugemmap01    2  TBROK  :  Remaining cases broken
->>  hugemmap01    0  TINFO  :  set nr_hugepages to 54
->>
->> we can detect whether the system has the power to get the specific
->> hugepages through the following commands:
->>
->>  [root@localhost hugemmap]# echo 128 > /proc/sys/vm/nr_hugepages
->>  [root@localhost hugemmap]# cat /proc/sys/vm/nr_hugepages
->>  55
->>
->> as we know, on this system, there are 55 available hugepages, so we
->> can set 55 hugepages to continue the case, but to exit the case,
->> and this is desinged into get_available_hugepages() functions.
-> 
-> I have tested on some systems.
->  a. test on a low memory:
-> [root@localhost hugemmap]# ./hugemmap01 
-> hugemmap01    0  TINFO  :  set nr_hugepages to 128
-> hugemmap01    0  TINFO  :  There're 56 available hugepages
-> hugemmap01    0  TINFO  :  set nr_hugepages to 56
-> hugemmap01    1  TPASS  :  call succeeded
-> hugemmap01    0  TINFO  :  set nr_hugepages to 0
-> 
->  b. try to set overcommit hugepages:
-> [root@localhost hugemmap]# ./hugemmap01 -s 1000
-> hugemmap01    0  TINFO  :  set nr_hugepages to 1000
-> hugemmap01    0  TINFO  :  There're 363 available hugepages
-> hugemmap01    0  TINFO  :  set nr_hugepages to 363
-> hugemmap01    1  TPASS  :  call succeeded
-> hugemmap01    0  TINFO  :  set nr_hugepages to 0
+Hi ,
 
 
-pushed, thank you.
+I am working on the fallocate01  test case it is giving the following error , i actually build the binary executable with android ndk-7b toolchain and my zoom-3 is running with arm-2010q1,may be this may leading to failure if not please give me solution so that i can proceed .
 
-Wanlong Gao
+output:
+./fallocate01
+-------------- blocksize = 86132 =----------------------
+--------------  expected size = 65176 =----------------------
+-------------- blocksize = 3 =----------------------
+-------------- offset = 49152 =----------------------
+ ----------------in other-----------------------
+-------------- test return is =-1  ---------------------
+fallocate01    1  TFAIL  :  fallocate(3, 0, 49152, 4096) failed returned -1: TEST_ERRNO=EFBIG(27): File too large
+-------------- blocksize = 86128 =----------------------
+--------------  expected size =65176 =----------------------
+-------------- blocksize = 4 =----------------------
+-------------- offset = 49152 =----------------------
+ ----------------in other-----------------------
+-------------- test return is =-1  ---------------------
+fallocate01    2  TFAIL  :  fallocate(4, 1, 49152, 4096) failed returned -1: TEST_ERRNO=EFBIG(27): File too large
+TESTDIR checking ..... /tmp/falB20085
 
-> 
-> Thanks,
-> Zhouping
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 
+
+Thanks & Regards
+
+Shivam Mehta
+
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
