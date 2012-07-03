@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SrQEt-0000GR-KW
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:08:11 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Slyth-00025g-KA
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 08:55:49 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SrQEs-0007of-Et
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:08:11 +0000
-Message-ID: <50067CCD.9050403@cn.fujitsu.com>
-Date: Wed, 18 Jul 2012 17:07:25 +0800
+	id 1Slyta-0002KJ-Us
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 08:55:49 +0000
+Message-ID: <4FF2B37E.6090800@cn.fujitsu.com>
+Date: Tue, 03 Jul 2012 16:55:26 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <cd2c28ba71de86eba7b5348d6372a240b835be22.1342601407.git.zliu@redhat.com>
-In-Reply-To: <cd2c28ba71de86eba7b5348d6372a240b835be22.1342601407.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH] mm/lib: correct the log messages
+References: <8f888fa5-849f-44d8-972c-cfb1ea59eeb0@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <8f888fa5-849f-44d8-972c-cfb1ea59eeb0@zmail13.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,35 +29,283 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+Cc: LTP List <ltp-list@lists.sourceforge.net>, CAI Qian <caiqian@redhat.com>
 
-On 07/18/2012 04:51 PM, Zhouping Liu wrote:
-> commit 5ad42f6cae increased the sleep time of ksmd scanning
-> inside _wait_ksm_done(), but it forgot to update the log messages.
+On 07/03/2012 04:43 PM, Zhouping Liu wrote:
 > 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> 
+> ----- Original Message -----
+>> From: "Jan Stancek" <jstancek@redhat.com>
+>> To: "Zhouping Liu" <zliu@redhat.com>
+>> Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Caspar Zhang" <caspar@casparzhang.com>, "CAI Qian"
+>> <caiqian@redhat.com>, gaowanlong@cn.fujitsu.com
+>> Sent: Tuesday, July 3, 2012 4:03:00 PM
+>> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+>>
+>>
+>>
+>> ----- Original Message -----
+>>> From: "Zhouping Liu" <zliu@redhat.com>
+>>> To: gaowanlong@cn.fujitsu.com
+>>> Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek"
+>>> <jstancek@redhat.com>, "Caspar Zhang"
+>>> <caspar@casparzhang.com>, "CAI Qian" <caiqian@redhat.com>
+>>> Sent: Friday, 29 June, 2012 6:37:19 AM
+>>> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+>>>
+>>> Hi,
+>>>
+>>> ----- Original Message -----
+>>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>>> To: "Zhouping Liu" <zliu@redhat.com>
+>>>> Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek"
+>>>> <jstancek@redhat.com>
+>>>> Sent: Friday, June 29, 2012 10:39:57 AM
+>>>> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+>>>>
+>>>> On 06/29/2012 10:23 AM, Zhouping Liu wrote:
+>>>>> Hi,
+>>>>>
+>>>>> ----- Original Message -----
+>>>>>> From: "Zhouping Liu" <zliu@redhat.com>
+>>>>>> To: "LTP List" <ltp-list@lists.sourceforge.net>
+>>>>>> Sent: Tuesday, June 26, 2012 11:57:35 PM
+>>>>>> Subject: [LTP]  [PATCH] mm/oom05: new testcase
+>>>>>>
+>>>>>> add a new testcase to test OOM on each NUMA node
+>>>>>
+>>>>> I have tested it in several systems with 2 NUMA nodes and 8
+>>>>> NUMA
+>>>>> nodes,
+>>>>> they are all good, any comment?
+>>>>>
+>>>>> Thanks,
+>>>>> Zhouping
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+>>>>>> ---
+>>>>>>  runtest/mm                       |    1 +
+>>>>>>  testcases/kernel/mem/oom/oom05.c |  131
+>>>>>>  ++++++++++++++++++++++++++++++++++++++
+>>>>>>  2 files changed, 132 insertions(+)
+>>>>>>  create mode 100644 testcases/kernel/mem/oom/oom05.c
+>>>>>>
+>>>>>> diff --git a/runtest/mm b/runtest/mm
+>>>>>> index 2dd66f0..a60c04b 100644
+>>>>>> --- a/runtest/mm
+>>>>>> +++ b/runtest/mm
+>>>>>> @@ -77,6 +77,7 @@ oom01 oom01
+>>>>>>  oom02 oom02
+>>>>>>  oom03 oom03
+>>>>>>  oom04 oom04
+>>>>>> +oom05 oom05
+>>>>>>  
+>>>>>>  swapping01 swapping01 -i 5
+>>>>>>  
+>>>>>> diff --git a/testcases/kernel/mem/oom/oom05.c
+>>>>>> b/testcases/kernel/mem/oom/oom05.c
+>>>>>> new file mode 100644
+>>>>>> index 0000000..046ddbb
+>>>>>> --- /dev/null
+>>>>>> +++ b/testcases/kernel/mem/oom/oom05.c
+>>>>>> @@ -0,0 +1,131 @@
+>>>>>> +/*
+>>>>>> + * Out Of Memory (OOM) on Each NUMA nodes
+>>>>>> + *
+>>>>>> + * The program is designed to cope with unpredictable like
+>>>>>> amount
+>>>>>> and
+>>>>>> + * system physical memory, swap size and other VMM technology
+>>>>>> like
+>>>>>> KSM,
+>>>>>> + * memcg, memory hotplug and so on which may affect the OOM
+>>>>>> + * behaviours. It simply increase the memory consumption 3G
+>>>>>> each
+>>>>>> time
+>>>>>> + * until all the available memory is consumed and OOM is
+>>>>>> triggered.
+>>>>>> + *
+>>>>>> + * Copyright (C) 2012  Red Hat, Inc.
+>>>>>> + * This program is free software; you can redistribute it
+>>>>>> and/or
+>>>>>> + * modify it under the terms of version 2 of the GNU General
+>>>>>> Public
+>>>>>> + * License as published by the Free Software Foundation.
+>>>>>> + *
+>>>>>> + * This program is distributed in the hope that it would be
+>>>>>> useful,
+>>>>>> + * but WITHOUT ANY WARRANTY; without even the implied
+>>>>>> warranty
+>>>>>> of
+>>>>>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>>>>>> + *
+>>>>>> + * Further, this software is distributed without any warranty
+>>>>>> that
+>>>>>> it
+>>>>>> + * is free of the rightful claim of any third person
+>>>>>> regarding
+>>>>>> + * infringement or the like.  Any license provided herein,
+>>>>>> whether
+>>>>>> + * implied or otherwise, applies only to this software file.
+>>>>>>  Patent
+>>>>>> + * licenses, if any, provided herein do not apply to
+>>>>>> combinations
+>>>>>> of
+>>>>>> + * this program with other software, or any other product
+>>>>>> whatsoever.
+>>>>>> + *
+>>>>>> + * You should have received a copy of the GNU General Public
+>>>>>> License
+>>>>>> + * along with this program; if not, write the Free Software
+>>>>>> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+>>>>>> MA
+>>>>>> + * 02110-1301, USA.
+>>>>>> + */
+>>>>>> +#include <sys/types.h>
+>>>>>> +#include <sys/stat.h>
+>>>>>> +#include <sys/wait.h>
+>>>>>> +#include <errno.h>
+>>>>>> +#include <fcntl.h>
+>>>>>> +#include <stdio.h>
+>>>>>> +#include <stdlib.h>
+>>>>>> +#include <unistd.h>
+>>>>>> +#include "test.h"
+>>>>>> +#include "safe_macros.h"
+>>>>>> +#include "usctest.h"
+>>>>>> +#include "mem.h"
+>>>>>> +
+>>>>>> +char *TCID = "oom05";
+>>>>>> +int TST_TOTAL = 1;
+>>>>>> +
+>>>>>> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+>>>>>> +	&& HAVE_MPOL_CONSTANTS
+>>>>>> +#include <numa.h>
+>>>>>> +#include <numaif.h>
+>>>>>> +
+>>>>>> +int main(int argc, char *argv[])
+>>>>>> +{
+>>>>>> +	char *msg;
+>>>>>> +	int lc;
+>>>>>> +	long nodes[MAXNODES];
+>>>>>> +	int nnodes, i;
+>>>>>> +	pid_t pids[MAXNODES];
+>>>>>> +	int status;
+>>>>>> +	unsigned long nmasks[MAXNODES];
+>>>>>> +
+>>>>>> +	msg = parse_opts(argc, argv, NULL, NULL);
+>>>>>> +	if (msg != NULL)
+>>>>>> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>>>>>> +
+>>>>>> +#if __WORDSIZE == 32
+>>>>>> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit
+>>>>>> system.");
+>>>>>> +#endif
+>>>>>> +	nnodes = count_numa(nodes);
+>>>>>> +	if (nnodes <= 1)
+>>>>>> +		tst_brkm(TCONF, NULL, "required a NUMA system.");
+>>>>>> +
+>>>>>> +	setup();
+>>>>>> +
+>>>>>> +	set_sys_tune("overcommit_memory", 1, 1);
+>>>>>> +
+>>>>>> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>>>>>> +		Tst_count = 0;
+>>>>>> +
+>>>>>> +		for (i = 0; i < nnodes; i++) {
+>>>>>> +			nmasks[i] = 1 << nodes[i];
+>>>>>> +			switch (pids[i] = fork()) {
+>>>>>> +			case -1:
+>>>>>> +				tst_brkm(TBROK|TERRNO, cleanup, "fork");
+>>>>>> +			case 0:
+>>>>>> +				if (set_mempolicy(MPOL_BIND, &nmasks[i],
+>>>>>> +				    MAXNODES) == -1)
+>>>>>> +					tst_brkm(TBROK|TERRNO, cleanup,
+>>>>>> +					    "set_mempolicy");
+>>>>>> +				tst_resm(TINFO, "start oom on numa node%lu",
+>>>>>> +				    nodes[i]);
+>>>>>> +				oom(NORMAL, 0, 0);
+>>>>>> +				exit(0);
+>>>>>> +			}
+>>>>>> +		}
+>>>>
+>>>> Hi Zhouping,
+>>>>
+>>>> Does it need get_allowed_nodes() that Jan added?
+>>>>
+>>>
+>>> yes, I met some errors when the system has unbalance NUMA system:
+>>>
+>>> the follow test machine has 2 numa nodes 0-1, I offline all node1's
+>>> cpu
+>>> # echo 0 > /sys/devices/system/node1/cpu*/online
+>>>
+>>> then you will find node1 don't contain any available cpus:
+>>>
+>>> # numactl -H
+>>> available: 2 nodes (0-1)
+>>> node 0 cpus: 0 1 2 3
+>>> node 0 size: 4084 MB
+>>> node 0 free: 2929 MB
+>>> node 1 cpus:
+>>> node 1 size: 4096 MB
+>>> node 1 free: 3949 MB
+>>> node distances:
+>>> node   0   1
+>>>   0:  10  21
+>>>   1:  21  10
+>>>
+>>> under such above setup, oom[2|4] will failed:
+>>>
+>>> ...
+>>> oom02       0  TINFO  :  process cpuset.
+>>> oom02       1  TBROK  :  write /dev/cpuset/1/cpuset.cpus:
+>>> errno=EINVAL(22): Invalid argument
+>>> oom02       2  TBROK  :  Remaining cases broken
+>>> oom02       0  TINFO  :  set overcommit_memory to 0
+>>> oom02       0  TWARN  :  umount /dev/cpuset: errno=EBUSY(16):
+>>> Device
+>>> or resource busy
+>>> oom02       0  TWARN  :  rmdir /dev/cpuset: errno=EBUSY(16): Device
+>>> or resource busy
+>>>
+>>> the failure is because node1 didn't have available cpus, but it
+>>> tried
+>>> to write node1's cpus to /dev/cpuset/1/cpuset.cpus.
+>>>
+>>> and I tested get_allowed_nodes(), it didn't fix the error,
+>>> with above setup, I expected get_allowed_nodes_arr() can mark node1
+>>> is a unavailable node,
+>>> but in actual it didn't, and it's the similar with count_numa()
+>>> inside testcase/kernel/mem/lib/mem.c.
+>>> so, Jan, do you have any thoughts to avoid the issues? if
+>>> get-allowed_nodes* can fix these issues, I also suggest we can
+>>> define them in ltp/include/numa_helper.h or other file name,
+>>> comments?
+>>
+>> Zhouping,
+>>
+>> Are other tests, such as move_pages also failing on this setup?
+> 
+> no, I tested move_pages* on the setup, all passed, so this setup didn't affect move_pages.
+> but it blocked oom0[2|4] & ksm0[2|4] cases, I will prepare a patch for it,
+> 
+> BTW, I'm interested in the various different NUMA setups in previous mail[1],
+> I'm not sure these setups are faked or real, if they are faked, could you tell me
+> how you can setup? (I have only one NUMA machine in my hands, and it's an normal one,
+> if I can imitate more special NUMA setup, it will be big help for me to test other cases.
+> and I tried kernel cmdline 'numa=fake=N', but I couldn't get what I expected,
+> so please share your ideas if you have different methods, many thanks!)
 
-Pushed, thank you.
+Maybe you can use qemu-kvm to emulator one numa machine?
 
 Wanlong Gao
 
-> ---
->  testcases/kernel/mem/lib/mem.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index 9ec0454..81410d8 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -183,7 +183,7 @@ static void _wait_ksmd_done(void)
->  	}
->  
->  	tst_resm(TINFO, "ksm daemon takes %ds to scan all mergeable pages",
-> -		    count * 5);
-> +		    count * 10);
->  }
->  
->  static void _group_check(int run, int pages_shared, int pages_sharing,
+> [1] http://sourceforge.net/mailarchive/forum.php?thread_name=4FC48906.6030109%40redhat.com&forum_name=ltp-list
+> 
+> Thanks,
+> Zhouping
 > 
 
 
