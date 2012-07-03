@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Jin.Li@windriver.com>) id 1SmKPN-0000Kz-6l
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jul 2012 07:53:57 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SmKPH-000372-Ii
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jul 2012 07:53:57 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q647rjE0006120
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 4 Jul 2012 00:53:45 -0700 (PDT)
-From: Jin Li <jin.li@windriver.com>
-Date: Wed, 4 Jul 2012 15:53:42 +0800
-Message-ID: <1341388422-28133-2-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1341388422-28133-1-git-send-email-jin.li@windriver.com>
-References: <1341388422-28133-1-git-send-email-jin.li@windriver.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Slxz3-0002V7-C9
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:57:17 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Slxyz-0001n9-57
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:57:17 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q637v5H6010087
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Jul 2012 15:57:06 +0800
+Message-ID: <4FF2A5C8.2060806@cn.fujitsu.com>
+Date: Tue, 03 Jul 2012 15:56:56 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] Add test case path in
-	testcases/kernel/hotplug/cpu_hotplug/runtests.sh
+References: <4FF29C81.9040600@cn.fujitsu.com>
+In-Reply-To: <4FF29C81.9040600@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]pthread_cond_broadcast/1-2.c
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,38 +31,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com, ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Fail to invoke cpuhotplug via:
+On 07/03/2012 03:17 PM, DAN LI wrote:
+> Case pthread_cond_broadcast/1-2.c trys to create as many threads and 
+> processes as possible which will wait on a condition variable.
+> 
+> Unfortunately,if some thread or child process waits overtime(180s) 
+> since maybe memory is not enough or whatever, it will call FAILED() and 
+> exit without unlocking a global mutex.
+> 
+> Above-mentioned matter leads to a deadlock when parent process trys to
+> pthread_mutex_lock the global mutex,and obviously status FAILED cannot 
+> be reahed by parent process.
+> 
+> This patch fixes the deadlock problem.
+> 
 
-./runltp -f cpuhotplug
+pushed, thanks,
 
-<<<test_output>>>
-incrementing stop
-CPU:        1
-LOOPS:      1
-LHCS_PATH:  /opt/ltp/testcases/bin/cpu_hotplug
-/opt/ltp/testcases/bin/cpu_hotplug/runtests.sh: line 15: functional/hotplug??.sh: No such file or directory
+Wanlong Gao
 
-Signed-off-by: Jin Li <jin.li@windriver.com>
----
- testcases/kernel/hotplug/cpu_hotplug/runtests.sh |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> ---
+>  .../interfaces/pthread_cond_broadcast/1-2.c        |    6 +++++-
+>  1 files changed, 5 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+> index af826ba..f6ad9df 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+> @@ -189,9 +189,13 @@ static void *child(void *arg)
+>  			timed, td->predicate, ret);
+>  		#endif
+>  	} while ((ret == 0) && (td->predicate == 0));
+> -	if (ret == ETIMEDOUT)
+> +	if (ret == ETIMEDOUT) {
+> +		ret = pthread_mutex_unlock(&td->mtx);
+> +		if (ret != 0)
+> +			UNRESOLVED(ret, "Failed to unlock the mutex.");
+>  		FAILED("Timeout occured. This means a cond signal was lost -- "
+>  		       "or parent died");
+> +	}
+>  	if (ret != 0)
+>  		UNRESOLVED(ret, "Failed to wait for the cond");
+>  
+> -- 1.7.7.2 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/runtests.sh b/testcases/kernel/hotplug/cpu_hotplug/runtests.sh
-index 2803508..1943f83 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/runtests.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/runtests.sh
-@@ -11,6 +11,6 @@ echo "LOOPS:      $LOOPS"
- echo "LHCS_PATH:  $LHCS_PATH"
- 
- 
--for case in functional/hotplug??.sh; do
-+for case in $LHCS_PATH/functional/hotplug??.sh; do
- 	$case $CPU_TO_TEST
- done
--- 
-1.6.0.4
 
 
 ------------------------------------------------------------------------------
