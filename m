@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SrQGX-0002VM-SH
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:09:53 +0000
-Received: from mail-gh0-f175.google.com ([209.85.160.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SrQGW-0002nL-Qv
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:09:53 +0000
-Received: by mail-gh0-f175.google.com with SMTP id z2so1379309ghb.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Slxk8-00018f-LB
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:41:52 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Slxk3-0005mq-4p
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:41:52 +0000
+Received: by pbbrq2 with SMTP id rq2so8547972pbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 18 Jul 2012 02:09:52 -0700 (PDT)
-Message-ID: <50067C18.6070001@casparzhang.com>
-Date: Wed, 18 Jul 2012 17:04:24 +0800
+	Tue, 03 Jul 2012 00:41:41 -0700 (PDT)
+Message-ID: <4FF2A225.7070304@casparzhang.com>
+Date: Tue, 03 Jul 2012 15:41:25 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <cd2c28ba71de86eba7b5348d6372a240b835be22.1342601407.git.zliu@redhat.com>
-In-Reply-To: <cd2c28ba71de86eba7b5348d6372a240b835be22.1342601407.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH] mm/lib: correct the log messages
+References: <dce1058c-b9d4-4670-aee2-c39c7cf970a1@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <dce1058c-b9d4-4670-aee2-c39c7cf970a1@zmail13.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,33 +31,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+Cc: LTP List <ltp-list@lists.sourceforge.net>, CAI Qian <caiqian@redhat.com>
 
-On 07/18/2012 04:51 PM, Zhouping Liu wrote:
-> commit 5ad42f6cae increased the sleep time of ksmd scanning
-> inside _wait_ksm_done(), but it forgot to update the log messages.
->
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
->   testcases/kernel/mem/lib/mem.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index 9ec0454..81410d8 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -183,7 +183,7 @@ static void _wait_ksmd_done(void)
->   	}
->
->   	tst_resm(TINFO, "ksm daemon takes %ds to scan all mergeable pages",
-> -		    count * 5);
-> +		    count * 10);
->   }
->
->   static void _group_check(int run, int pages_shared, int pages_sharing,
->
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
+On 06/29/2012 12:37 PM, Zhouping Liu wrote:
+> and I tested get_allowed_nodes(), it didn't fix the error,
+> with above setup, I expected get_allowed_nodes_arr() can mark node1 is a unavailable node,
+> but in actual it didn't, and it's the similar with count_numa() inside testcase/kernel/mem/lib/mem.c.
+> so, Jan, do you have any thoughts to avoid the issues? if get-allowed_nodes* can fix these issues, I also suggest we can
+> define them in ltp/include/numa_helper.h or other file name, comments?
 
+Hi Zhouping, can you propose a patch for this?
+
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
