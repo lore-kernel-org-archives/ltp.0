@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Sw725-0007ND-64
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 07:38:21 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sw71z-00023S-BB
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 07:38:21 +0000
-Date: Tue, 31 Jul 2012 03:38:08 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <402709823.5725690.1343720288429.JavaMail.root@redhat.com>
-In-Reply-To: <ba9ec47929d3aa8783905c1e9061536e515ca9f6.1343703433.git.caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1SmJqa-0007Hh-D0
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jul 2012 07:18:00 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SmJqW-0000gb-CY
+	for ltp-list@lists.sourceforge.net; Wed, 04 Jul 2012 07:18:00 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q647Ho88005671
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 4 Jul 2012 00:17:50 -0700 (PDT)
+Message-ID: <4FF3EE1B.1060508@windriver.com>
+Date: Wed, 4 Jul 2012 15:17:47 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
+Subject: [LTP] POSIX: does case mmap/27-1 valid?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,119 +27,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2966031348150960273=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi Caspar,
+--===============2966031348150960273==
+Content-Type: multipart/alternative;
+	boundary="------------080104050009010608040506"
 
-------- snip --------
-+	ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 2, &nd1, &nd2);
+--------------080104050009010608040506
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-+	switch (ret) {
+Hi All,
 
-+	case 0:
+The posix test case mmap/27-1 try to test c lib implementation which 
+doesn't support MAP_FIXED and MAP_PRIVATE.
+When MAP_FIXED is defined then the case quits  with  UNTESTED.
+If MAP_FIXED and other flags are not defined, then the case try to test 
+mmap with MAP_FIXED.
+But at this time MAP_FIXED is not defined, how the case can be compiled? 
+Then I suppose this case is NOT valid.
 
-+		tst_resm(TINFO, "get node%lu.", nd2);
-
-+		return nd2;
-
-+	case -3:
-
-+		/*
-
-+		 * for unbalanced NUMA systems, at least 1 available node is
-
-+		 * required.
-
-+		 */
-
-+		ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 1, &nd1);
-
-+		switch (ret) {
-
-+		case 0:
-
-+			tst_resm(TINFO, "get node%lu.", nd1);
-
-+			return nd1;
-
-+		case -3:
-
-+			tst_brkm(TCONF, cleanup_fn, "require a NUMA system "
-
-+				    "that has at least one node with both "
-
-+				    "memory and cpu available.");
-
-+		default:
-
-+			tst_brkm(TBROK|TERRNO, cleanup_fn,
-
-+				    "3rd get_allowed_nodes");
-
-+		}
-
-+	}
-
-+	tst_brkm(TBROK|TERRNO, cleanup_fn, "2nd get_allowed_nodes");
-------- snip --------
-
-I'm not sure I follow this snippet.
-So if there are 2+ nodes, it takes second one. If there is just one, it will take that one.
-Can't it take always first one?
+What's your opinions? Thanks.
 
 Regards,
-Jan
+Kai
 
 
------ Original Message -----
-> From: "Caspar Zhang" <caspar@casparzhang.com>
-> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Tuesday, 31 July, 2012 4:57:19 AM
-> Subject: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
-> 
-> 
-> This patch makes the tests in mem/ dir use numa_helper in
-> libkerntest.
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  testcases/kernel/mem/cpuset/Makefile           |    1 +
->  testcases/kernel/mem/cpuset/cpuset01.c         |   16 +++---
->  testcases/kernel/mem/hugetlb/Makefile.inc      |    1 +
->  testcases/kernel/mem/hugetlb/hugemmap/Makefile |    1 +
->  testcases/kernel/mem/include/mem.h             |    2 +-
->  testcases/kernel/mem/ksm/Makefile              |    1 +
->  testcases/kernel/mem/ksm/ksm02.c               |    9 ++--
->  testcases/kernel/mem/ksm/ksm04.c               |    9 ++--
->  testcases/kernel/mem/lib/Makefile              |    1 +
->  testcases/kernel/mem/lib/mem.c                 |   61
->  +++++++++++++++++------
->  testcases/kernel/mem/oom/Makefile              |    1 +
->  testcases/kernel/mem/oom/oom02.c               |    4 --
->  testcases/kernel/mem/oom/oom04.c               |    4 --
->  testcases/kernel/mem/swapping/Makefile         |    1 +
->  testcases/kernel/mem/thp/Makefile              |    1 +
->  testcases/kernel/mem/tunable/Makefile          |    1 +
->  16 files changed, 71 insertions(+), 43 deletions(-)
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+
+--------------080104050009010608040506
+Content-Type: text/html; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <font size="+1">Hi All, <br>
+      <br>
+      The posix test case mmap/27-1 try to test c lib implementation
+      which doesn't support MAP_FIXED and MAP_PRIVATE. <br>
+      When MAP_FIXED is defined then the case quits&nbsp; with&nbsp; UNTESTED.<br>
+      If MAP_FIXED and other flags are not defined, then the case try to
+      test mmap with </font><font size="+1">MAP_FIXED.<br>
+      But at this time </font><font size="+1">MAP_FIXED is not defined,
+      how the case can be compiled? Then I suppose this case is NOT
+      valid.<br>
+      <br>
+      What's your opinions? Thanks.<br>
+      <br>
+      Regards,<br>
+      Kai<br>
+      <br>
+      <br>
+    </font>
+  </body>
+</html>
+
+--------------080104050009010608040506--
+
+
+--===============2966031348150960273==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -143,7 +102,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============2966031348150960273==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2966031348150960273==--
+
