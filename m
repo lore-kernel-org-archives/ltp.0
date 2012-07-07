@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SoDDc-0000y6-B4
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 12:37:36 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SoDDW-0005YT-Og
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 12:37:36 +0000
-Received: by pbbrq2 with SMTP id rq2so18121985pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 09 Jul 2012 05:37:24 -0700 (PDT)
-Message-ID: <4FFAD07D.6010703@casparzhang.com>
-Date: Mon, 09 Jul 2012 20:37:17 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SnWy8-0000dU-87
+	for ltp-list@lists.sourceforge.net; Sat, 07 Jul 2012 15:30:48 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SnWy7-0001jb-Ar
+	for ltp-list@lists.sourceforge.net; Sat, 07 Jul 2012 15:30:48 +0000
+Received: from zmail13.collab.prod.int.phx2.redhat.com
+	(zmail13.collab.prod.int.phx2.redhat.com [10.5.83.15])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id q67FUfPK027611
+	for <ltp-list@lists.sourceforge.net>; Sat, 7 Jul 2012 11:30:41 -0400
+Date: Sat, 07 Jul 2012 11:30:41 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <2e6144c3-13ca-4b3b-8b02-cd7cee9f25d0@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <9c35b37017094c338a1aced217ef21645db4dd00.1341673870.git.zliu@redhat.com>
 MIME-Version: 1.0
-References: <1341827513-21908-1-git-send-email-caspar@casparzhang.com>
-	<1341827513-21908-2-git-send-email-caspar@casparzhang.com>
-	<4FFAC130.2090707@cn.fujitsu.com>
-In-Reply-To: <4FFAC130.2090707@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] mm/lib: increase sleep time in ksm scanning
+Subject: Re: [LTP] [PATCH] hugetlb: add a new function
+	get_available_hugepages
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,30 +31,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/09/2012 07:32 PM, Wanlong Gao wrote:
-> On 07/09/2012 05:51 PM, Caspar Zhang wrote:
->>
->> for some systems under pressure, we've observed that sleeping 5 seconds
->> is not sufficient for completing ksm scanning, to fix this, we should
->> give ksmd more time to scan the mergable pages by increasing sleeping
->> time to 10s.
->
-> If 5s is not enough, isn't we waiting here already?
+Hi,
 
-Sorry, I'm not catching you... :-( the problem currently we encounter is 
-that if 5s given, all ksm values (pages_sharing, pages_shared, etc) 
-might remain the same between before and after sleeping, so the 
-wait_ksmd function could exit. But in fact the kernel could be busy 
-under pressure and it just needs more than 5s to merge the same page. 
-Using 10s as polling interval can make sure if ksm values remains the 
-same between each loop, it should indicates that ksmd has done scanning 
-correctly.
+> From: "Zhouping Liu" <zliu@redhat.com>
+> To: "LTP list" sourceforge.net>
+> Sent: Saturday, July 7, 2012 11:14:38 PM
+> Subject: [LTP] [PATCH] hugetlb: add a new function get_available_hugepages
+> 
+> on some systems with small RAM, there aren't enough memory
+> to set as specific hugepages, such as 128 hugepages, it will
+> fail like this:
+>  [root@localhost hugemmap]# ./hugemmap01
+>  hugemmap01    0  TINFO  :  set nr_hugepages to 128
+>  hugemmap01    1  TBROK  :  nr_hugepages = 55, but expect 128
+>  hugemmap01    2  TBROK  :  Remaining cases broken
+>  hugemmap01    0  TINFO  :  set nr_hugepages to 54
+> 
+> we can detect whether the system has the power to get the specific
+> hugepages through the following commands:
+> 
+>  [root@localhost hugemmap]# echo 128 > /proc/sys/vm/nr_hugepages
+>  [root@localhost hugemmap]# cat /proc/sys/vm/nr_hugepages
+>  55
+> 
+> as we know, on this system, there are 55 available hugepages, so we
+> can set 55 hugepages to continue the case, but to exit the case,
+> and this is desinged into get_available_hugepages() functions.
+
+I have tested on some systems.
+ a. test on a low memory:
+[root@localhost hugemmap]# ./hugemmap01 
+hugemmap01    0  TINFO  :  set nr_hugepages to 128
+hugemmap01    0  TINFO  :  There're 56 available hugepages
+hugemmap01    0  TINFO  :  set nr_hugepages to 56
+hugemmap01    1  TPASS  :  call succeeded
+hugemmap01    0  TINFO  :  set nr_hugepages to 0
+
+ b. try to set overcommit hugepages:
+[root@localhost hugemmap]# ./hugemmap01 -s 1000
+hugemmap01    0  TINFO  :  set nr_hugepages to 1000
+hugemmap01    0  TINFO  :  There're 363 available hugepages
+hugemmap01    0  TINFO  :  set nr_hugepages to 363
+hugemmap01    1  TPASS  :  call succeeded
+hugemmap01    0  TINFO  :  set nr_hugepages to 0
 
 Thanks,
-Caspar
+Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
