@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Sw2b5-0003pt-DX
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 02:54:11 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sw2b4-0007PH-Cp
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 02:54:11 +0000
-Received: by yhjj56 with SMTP id j56so5599200yhj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 30 Jul 2012 19:54:04 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Tue, 31 Jul 2012 10:53:45 +0800
-Message-Id: <6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
-In-Reply-To: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
-References: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lxiang@redhat.com>) id 1So3eT-0004x1-3Q
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:24:41 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1So3eR-0001nG-Oj
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:24:41 +0000
+Message-ID: <4FFA40DD.3030408@redhat.com>
+Date: Mon, 09 Jul 2012 10:24:29 +0800
+From: Lingzhu Xiang <lxiang@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH] syscalls/numa: check syscall availability
+References: <1e99528971ce08cfebd0bd9c2b3333295dc9efe4.1341705843.git.lxiang@redhat.com>
+	<4FF8D306.5090401@redhat.com> <4FF6B720.3040705@casparzhang.com>
+In-Reply-To: <4FF6B720.3040705@casparzhang.com>
+Subject: Re: [LTP] [PATCH] timers: add a new test case leapsec_timer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,71 +25,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Caspar Zhang <caspar@casparzhang.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+On 07/06/2012 06:00 PM, Caspar Zhang wrote:
+> On 07/08/2012 08:23 AM, Lingzhu Xiang wrote:
+>> Note that this test case might cause kernel freeze. Running with -c 5 will
+>> highly increase the likelihood of that.
+>
+> IIRC, -c is broken, is `-i 5` able to freeze the kernel? If yes, it
+> would be better to add a new entry to $LTPROOT/runtest/timers or update
+> the original entry w/ `-i 5` option.
 
+Nope. It seems the hard hang caused by concurrent leap second is unresolved
+in upstream "NOTE: Some reports have been of a hard hang right at or before
+the leapsecond. I've not been able to reproduce or diagnose this..." [1]
 
-some NUMA related syscalls: mbind, get_mempolicy are not supported on
-some arches (e.g. i386), I use TEST macro to test the syscall in setup()
-function, if the syscall is not implemented on the system, a TCONF
-message will given like this:
-
-get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- .../syscalls/get_mempolicy/get_mempolicy01.c       |    3 +++
- testcases/kernel/syscalls/mbind/mbind01.c          |    3 +++
- 2 files changed, 6 insertions(+), 0 deletions(-)
-
-
---------------1.7.8.6
-Content-Type: text/x-patch;
-	name="0001-syscalls-numa-check-syscall-availability.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-syscalls-numa-check-syscall-availability.patch"
-
-diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-index d0e372c..9179c60 100644
---- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-+++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-@@ -339,6 +339,9 @@ static void cleanup(void)
- 
- static void setup(void)
- {
-+	/* check syscall availability */
-+	TEST(syscall(__NR_get_mempolicy, NULL, NULL, 0, NULL, 0));
-+
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 2fc6f5a..3f31970 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -300,6 +300,9 @@ TEST_END:
- 
- static void setup(void)
- {
-+	/* check syscall availability */
-+	TEST(syscall(__NR_mbind, NULL, 0, 0, NULL, 0, 0));
-+
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
-
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+[1]: https://lkml.org/lkml/2012/7/4/78
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -100,18 +52,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
-
-
-
