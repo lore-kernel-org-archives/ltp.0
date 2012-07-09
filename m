@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SugB3-0005bB-W1
-	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 08:45:41 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SugAy-0008Mb-IL
-	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 08:45:41 +0000
-Received: by yenl13 with SMTP id l13so2977083yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 27 Jul 2012 01:45:31 -0700 (PDT)
-Message-ID: <50125514.7080607@casparzhang.com>
-Date: Fri, 27 Jul 2012 16:45:08 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SoCCh-0007q9-JN
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 11:32:35 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SoCCd-0004mL-1p
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 11:32:35 +0000
+Message-ID: <4FFAC130.2090707@cn.fujitsu.com>
+Date: Mon, 09 Jul 2012 19:32:00 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <500952EC.6050504@redhat.com> <500957D7.8000600@redhat.com>
-In-Reply-To: <500957D7.8000600@redhat.com>
-Subject: Re: [LTP] Broken kernel/mem/ksm01 test
+References: <1341827513-21908-1-git-send-email-caspar@casparzhang.com>
+	<1341827513-21908-2-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1341827513-21908-2-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 2/2] mm/lib: increase sleep time in ksm scanning
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,57 +26,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: =?UTF-8?B?THVrw6HFoSBEb2t0b3I=?= <ldoktor@redhat.com>, ltp-list@lists.sourceforge.net, Cleber Rosa <crosa@redhat.com>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-WmhvdXBpbmcsIHdvdWxkIHlvdSBsaWtlIHRvIGhhdmUgYSBsb29rIGF0IHRoZSBpc3N1ZSBiZWxv
-dz8KCkNhc3BhcgoKT24gMDcvMjAvMjAxMiAwOTowNiBQTSwgTHVrw6HFoSBEb2t0b3Igd3JvdGU6
-Cj4gT24gMDcvMjAvMjAxMiAwMjo0NSBQTSwgTHVrw6HFoSBEb2t0b3Igd3JvdGU6Cj4+IEhpIGd1
-eXMsCj4+Cj4+IEknbSB0ZXN0aW5nIExUUC0yMDEyMDYxNCBvbiBGZWRvcmEgMTcgYW5kIGl0IGFs
-d2F5cyBzdHVjayBvbiBrc20wMSB0ZXN0Lgo+Pgo+PiBJIHdlbnQgdGhyb3VnaCBzb3VyY2VzIGFu
-ZCB0aGUgcHJvYmxlbSBpcyBJIGhhdmUgS1NNIGFscmVhZHkgZW5hYmxlZAo+PiBzbyB0aGUgZnVs
-bF9zY2FucyBpcyBhIGh1Z2UgbnVtYmVyLiBUaGUgZnVuY3Rpb24gX2dyb3VwX2NoZWNrIHdhaXRz
-Cj4+IHRpbGwgS1NNIGRvZXMgMyAqIGZ1bGxfc2NhbnMgd2hpY2ggaW4gbXkgY2FzZSBuZXZlciBl
-bmRzICh3ZWxsIGl0Cj4+IG1pZ2h0IGZpbmlzaCBpbiBhIGNvdXBsZSBvZiB5ZWFycykuCj4+Cj4+
-IFRvIG1lIGl0IGRvZXNuJ3QgZXZlbiBtYWtlIHNlbnNlIHRvIHdhaXQgMyAqIGZ1bGxfc2NhbnMg
-YXMgaW4gdGhlCj4+IGZpcnN0IGNoZWNrIGl0IHdhaXRzIDEtMiBzZWNvbmRzLCBpbiBzZWNvbmQg
-Y2hlY2sgaXQgd2FpdHMgZmV3IHNlY29uZHMKPj4gYW5kIGl0IGtlZXBzIGdyb3dpbmcgZnVydGhl
-ciB5b3UgZ29lcy4KPj4KPj4gV291bGQgeW91IHBsZWFzZSB0YWtlIGxvb2sgb24gdGhpcyBpc3N1
-ZT8gSSdkIHJlYWxseSBhcHByZWNpYXRlIGl0Lgo+Pgo+PiBLaW5kIHJlZ2FyZHMsCj4+IEx1a8Oh
-xaEgRG9rdG9yCj4KPiBBbnl3YXkgaWYgeW91IHRoaW5rIGl0IHNob3VsZCBzdGF5IDMgKiBmdWxs
-X3NjYW5zIHdvdWxkIHlvdSBwbGVhc2UgYXQKPiBsZWFzdCByZXNldCB0aGUgY291bnRlciBiZWZv
-cmUgdGhlIHRlc3Qgc3RhcnQ/Cj4KPiAtLS0gX21lbS5jICAgICAgMjAxMi0wNy0yMCAxMzozOToy
-MC4zNTE3Mzg4NzMgKzAyMDAKPiArKysgbWVtLmMgICAgICAgMjAxMi0wNy0yMCAxNDo1ODo1Mi4x
-OTIxNTcxNjcgKzAyMDAKPiBAQCAtNDE1LDYgKzQxNSw3IEBAIHZvaWQgY3JlYXRlX3NhbWVfbWVt
-b3J5KGludCBzaXplLCBpbnQgbnUKPiAgICAgICAgICAgICAgICAgICB9Cj4gICAgICAgICAgIH0K
-PiAgICAgICAgICAgdHN0X3Jlc20oVElORk8sICJLU00gbWVyZ2luZy4uLiIpOwo+ICsgICAgICAg
-d3JpdGVfZmlsZShQQVRIX0tTTSAicnVuIiwgIjIiKTsKPiAgICAgICAgICAgd3JpdGVfZmlsZShQ
-QVRIX0tTTSAicnVuIiwgIjEiKTsKPiAgICAgICAgICAgc25wcmludGYoYnVmLCBCVUZTSVosICIl
-bGQiLCBzaXplICogcGFnZXMgKiBudW0pOwo+ICAgICAgICAgICB3cml0ZV9maWxlKFBBVEhfS1NN
-ICJwYWdlc190b19zY2FuIiwgYnVmKTsKPgo+IEkgdGVzdGVkIGl0IGFuZCBpdCB3b3JrcyBiZXR0
-ZXIgKGl0IGZhaWxzLCBidXQgYXQgbGVhc3QgaXQgZmluaXNoZXMpLgo+IEFueXdheSBJTU8gaXQg
-d291bGQgYmUgYmV0dGVyIHRvIGNhbGN1bGF0ZSB0aGUgbnVtYmVyIG9mIG5lY2Vzc2FyaWx5Cj4g
-c2NhbnMgZGlmZmVyZW50bHkuCj4KPiByZWdhcmRzLAo+IEx1a8OhxaEKPgo+IC0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQo+IExpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCj4gRXhjbHVzaXZl
-IGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQK
-PiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJl
-c3BvbmQuIERpc2N1c3Npb25zCj4gd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2Jp
-bGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZQo+IHRocmVhdHMuIGh0dHA6Ly93
-d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwo+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFp
-bGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0
-cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPgoKCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxp
-dmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRo
-cmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9u
-ZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNl
-Y3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNj
-ZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QK
-THRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On 07/09/2012 05:51 PM, Caspar Zhang wrote:
+> 
+> for some systems under pressure, we've observed that sleeping 5 seconds
+> is not sufficient for completing ksm scanning, to fix this, we should
+> give ksmd more time to scan the mergable pages by increasing sleeping
+> time to 10s.
+
+If 5s is not enough, isn't we waiting here already?
+
+Thanks,
+Wanlong Gao
+
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/mem/lib/mem.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
