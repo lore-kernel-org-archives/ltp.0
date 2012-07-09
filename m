@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SuiWS-0002TZ-K9
-	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 11:15:56 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SuiWR-00015N-IV
-	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 11:15:56 +0000
-Date: Fri, 27 Jul 2012 07:15:49 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <36213450.4314745.1343387749585.JavaMail.root@redhat.com>
-In-Reply-To: <500952EC.6050504@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1So3pB-0001yO-UH
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:35:45 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1So3pB-0002Qk-3v
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:35:45 +0000
+Message-ID: <4FFA435B.2030808@cn.fujitsu.com>
+Date: Mon, 09 Jul 2012 10:35:07 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Broken kernel/mem/ksm01 test
+References: <1341309599-10008-1-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1341309599-10008-1-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] pthread_cond_signal/1-1: fails on routerstation
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,59 +25,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?utf-8?B?THVrw6HFoQ==?= Doktor <ldoktor@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Cleber Rosa <crosa@redhat.com>
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkx1a8OhxaEgRG9rdG9yIiA8
-bGRva3RvckByZWRoYXQuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQs
-ICJDbGViZXIgUm9zYSIgPGNyb3NhQHJlZGhhdC5jb20+LCB2bGVlQHR3aXR0ZXIuY29tCj4gU2Vu
-dDogRnJpZGF5LCBKdWx5IDIwLCAyMDEyIDg6NDU6MzIgUE0KPiBTdWJqZWN0OiBbTFRQXSBCcm9r
-ZW4ga2VybmVsL21lbS9rc20wMSB0ZXN0Cj4gCj4gSGkgZ3V5cywKPiAKPiBJJ20gdGVzdGluZyBM
-VFAtMjAxMjA2MTQgb24gRmVkb3JhIDE3IGFuZCBpdCBhbHdheXMgc3R1Y2sgb24ga3NtMDEKPiB0
-ZXN0LgoKSSBndWVzcyBrc20gc2VydmljZSh1c2VyIHNwYWNlKSBpcyBvbiwgd2hpY2ggd2lsbCBz
-ZXQKL3N5cy9rZXJuZWwvbW0va3NtL3J1biB0byAwLCB0aGVuIGZ1bGxfc2NhbnMgd2lsbCBzdG9w
-IHRvIGNvdW50LAp0aGlzIGxlYWQgdG8gdGhlIHByb2Nlc3Moa3NtMDEpIHN0YXkgaW4gdGhlIGZv
-bGxvd2luZyAnd2hpbGUoKScgYWxsIHRoZSB0aW1lLgoKICAgICAgICB3aGlsZSAobmV3X251bSA8
-IG9sZF9udW0gKiAzKSB7CiAgICAgICAgICAgICAgICBzbGVlcCgxKTsKICAgICAgICAgICAgICAg
-IHJlYWRfZmlsZShQQVRIX0tTTSAiZnVsbF9zY2FucyIsIGJ1Zik7CiAgICAgICAgICAgICAgICBu
-ZXdfbnVtID0gU0FGRV9TVFJUT0woY2xlYW51cCwgYnVmLCAwLCBMT05HX01BWCk7CiAgICAgICAg
-fQoKdGhhdCdzIHdoeSB0aGUgdGVzdGluZyBzdHVjayBvbiBrc20wMS4KCnNvIHlvdSBuZWVkIHRv
-IHN0b3Aga3NtIHNlcnZpY2U6CiAjIHN5c3RlbWN0bCBzdG9wIGtzbS5zZXJ2aWNlCgphZnRlciB0
-aGUga3NtLnNlcnZpY2UgaXMgc3RvcHBlZCwgSSdtIHN1cmUga3NtMDEgY2FuIGZpbmlzaCBpdHMg
-am9iIGF0IGxlYXN0LgphbHNvIHRoZSBrc20wKiBjYXNlcyBoYXZlIHNvbWUgZXJyb3JbMV0sIHRo
-ZSBsYXRlc3QgdmVyc2lvbiBoYXMgZml4ZWQgdGhlbS4KSSBzdWdnZXN0IHlvdSB1c2UgZ2l0IHZl
-cnNpb24sIHdoaWNoIGluY2x1ZGVzIHRoZSBmaXgoY29tbWl0IDYwYzQxYTU0NjVjYzUpCgpbMV0g
-aHR0cDovL3NvdXJjZWZvcmdlLm5ldC9tYWlsYXJjaGl2ZS9tZXNzYWdlLnBocD9tc2dfaWQ9Mjkw
-ODg2NDAKCj4gCj4gSSB3ZW50IHRocm91Z2ggc291cmNlcyBhbmQgdGhlIHByb2JsZW0gaXMgSSBo
-YXZlIEtTTSBhbHJlYWR5IGVuYWJsZWQKPiBzbwo+IHRoZSBmdWxsX3NjYW5zIGlzIGEgaHVnZSBu
-dW1iZXIuIFRoZSBmdW5jdGlvbiBfZ3JvdXBfY2hlY2sgd2FpdHMgdGlsbAo+IEtTTSBkb2VzIDMg
-KiBmdWxsX3NjYW5zIHdoaWNoIGluIG15IGNhc2UgbmV2ZXIgZW5kcyAod2VsbCBpdCBtaWdodAo+
-IGZpbmlzaCBpbiBhIGNvdXBsZSBvZiB5ZWFycykuCj4gCj4gVG8gbWUgaXQgZG9lc24ndCBldmVu
-IG1ha2Ugc2Vuc2UgdG8gd2FpdCAzICogZnVsbF9zY2FucyBhcyBpbiB0aGUKPiBmaXJzdAo+IGNo
-ZWNrIGl0IHdhaXRzIDEtMiBzZWNvbmRzLCBpbiBzZWNvbmQgY2hlY2sgaXQgd2FpdHMgZmV3IHNl
-Y29uZHMgYW5kCj4gaXQKPiBrZWVwcyBncm93aW5nIGZ1cnRoZXIgeW91IGdvZXMuCj4gCj4gV291
-bGQgeW91IHBsZWFzZSB0YWtlIGxvb2sgb24gdGhpcyBpc3N1ZT8gSSdkIHJlYWxseSBhcHByZWNp
-YXRlIGl0Lgo+IAo+IEtpbmQgcmVnYXJkcywKPiBMdWvDocWhIERva3Rvcgo+IAo+IC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQo+IExpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCj4gRXhjbHVz
-aXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBh
-bmQKPiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2Fu
-IHJlc3BvbmQuCj4gRGlzY3Vzc2lvbnMKPiB3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHks
-IG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbgo+IG1hbHdhcmUKPiB0aHJlYXRzLiBo
-dHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8K
-PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1s
-aXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gCgotLSAK
-VGhhbmtzLApaaG91cGluZwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxpdmUgU2VjdXJpdHkgVmly
-dHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3
-YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFu
-ZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAp3aWxsIGluY2x1ZGUg
-ZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3
-YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEy
-LzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On 07/03/2012 05:59 PM, Kang Kai wrote:
+> Case pthread_cond_signal/1-1 fails on routerstation. The OS is Yocto
+> linux 1.2 with kernel 3.0.24, and c library is eglibc 2.15.
+> 
+> The fail log:
+>   [Thread 0x0x2c56d4b0] started and locked the mutex
+>   [Thread 0x0x2c56d4b0] is waiting for the cond
+>   [Thread 0x0x2bd6d4b0] started and locked the mutex
+>   [Thread 0x0x2bd6d4b0] is waiting for the cond
+>   [Thread 0x0x2b56d4b0] started and locked the mutex
+>   [Thread 0x0x2b56d4b0] is waiting for the cond
+>   [Main thread] signals a condition
+>   [Thread 0x0x2c56d4b0] was wakened and acquired the mutex again
+>   [Thread 0x0x2c56d4b0] released the mutex
+>   [Main thread] 1 waiters were wakened
+>   [Main thread] signals to wake up the next thread
+>   [Thread 0x0x2bd6d4b0] was wakened and acquired the mutex again
+>   [Thread 0x0x2bd6d4b0] released the mutex
+>   [Main thread] signals to wake up the next thread
+>   [Main thread] signals to wake up the next thread
+>   [Main thread] signals to wake up the next thread
+>   [Main thread] signals to wake up the next thread
+>   [Main thread] signals to wake up the next thread
+>   [Thread 0x0x2b56d4b0] was wakened and acquired the mutex again
+>   [Main thread] had to signal the condition 7 times
+>   [Main thread] to wake up 3 threads
+>   . Test FAILED.
+> 
+> The main thread call pthread_cond_signal try to signal the child threads
+> those are waiting on the condition, then call usleep(100) to relinquish
+> the cpu. But 100 useconds is not enough and the main thread continue to
+> run. So the case fails.
+> 
+> Increase the sleep timeto 1000 useconds to make the case pass.
+> 
+> Signed-off-by: Kang Kai <kai.kang@windriver.com>
+> ---
+>  .../interfaces/pthread_cond_signal/1-1.c           |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
+> index bf55b31..910931d 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
+> @@ -142,7 +142,7 @@ int main()
+>  			fprintf(stderr,"Main failed to signal the condition\n");
+>  			exit(PTS_UNRESOLVED);
+>  		}
+> -		usleep(100);
+> +		usleep(1000);
+
+Anyway, just add the hard sleep time can resolve nothing.
+Maybe you can find a better way.
+
+Thanks,
+Wanlong Gao
+
+>  	}
+>  
+>  	if (i >= THREAD_NUM) {
+> @@ -160,4 +160,4 @@ int main()
+>  	}
+>  	printf("Test PASSED\n");
+>  	return PTS_PASS;
+> -}
+> \ No newline at end of file
+> +}
+> 
+
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
