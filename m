@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1So3N1-0005BL-74
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:06:39 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1So3Mz-0001c2-TS
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:06:39 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id q6926VJB023541
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SoAdp-0007rx-VF
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 09:52:29 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SoAdk-0007I3-6p
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 09:52:29 +0000
+Received: by pbbrq2 with SMTP id rq2so17930142pbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 8 Jul 2012 19:06:31 -0700 (PDT)
-Message-ID: <4FFA3CA6.8000404@windriver.com>
-Date: Mon, 9 Jul 2012 10:06:30 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	Mon, 09 Jul 2012 02:52:18 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Mon,  9 Jul 2012 17:51:52 +0800
+Message-Id: <1341827513-21908-1-git-send-email-caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1341309599-10008-1-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1341309599-10008-1-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] pthread_cond_signal/1-1: fails on routerstation
+Content-Type: multipart/mixed; boundary="------------1.7.8.6"
+Subject: [LTP] [PATCH 1/2] mm/lib: ksm code style fixes.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,176 +26,149 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4525918092145005998=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
---===============4525918092145005998==
-Content-Type: multipart/alternative;
-	boundary="------------040300000706030505010006"
+This is a multi-part message in MIME format.
+--------------1.7.8.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
---------------040300000706030505010006
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 2012?07?03? 17:59, Kang Kai wrote:
-> Case pthread_cond_signal/1-1 fails on routerstation. The OS is Yocto
-> linux 1.2 with kernel 3.0.24, and c library is eglibc 2.15.
->
-> The fail log:
->    [Thread 0x0x2c56d4b0] started and locked the mutex
->    [Thread 0x0x2c56d4b0] is waiting for the cond
->    [Thread 0x0x2bd6d4b0] started and locked the mutex
->    [Thread 0x0x2bd6d4b0] is waiting for the cond
->    [Thread 0x0x2b56d4b0] started and locked the mutex
->    [Thread 0x0x2b56d4b0] is waiting for the cond
->    [Main thread] signals a condition
->    [Thread 0x0x2c56d4b0] was wakened and acquired the mutex again
->    [Thread 0x0x2c56d4b0] released the mutex
->    [Main thread] 1 waiters were wakened
->    [Main thread] signals to wake up the next thread
->    [Thread 0x0x2bd6d4b0] was wakened and acquired the mutex again
->    [Thread 0x0x2bd6d4b0] released the mutex
->    [Main thread] signals to wake up the next thread
->    [Main thread] signals to wake up the next thread
->    [Main thread] signals to wake up the next thread
->    [Main thread] signals to wake up the next thread
->    [Main thread] signals to wake up the next thread
->    [Thread 0x0x2b56d4b0] was wakened and acquired the mutex again
->    [Main thread] had to signal the condition 7 times
->    [Main thread] to wake up 3 threads
->    . Test FAILED.
->
-> The main thread call pthread_cond_signal try to signal the child threads
-> those are waiting on the condition, then call usleep(100) to relinquish
-> the cpu. But 100 useconds is not enough and the main thread continue to
-> run. So the case fails.
->
-> Increase the sleep timeto 1000 useconds to make the case pass.
->
-> Signed-off-by: Kang Kai<kai.kang@windriver.com>
-> ---
->   .../interfaces/pthread_cond_signal/1-1.c           |    4 ++--
->   1 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> index bf55b31..910931d 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> @@ -142,7 +142,7 @@ int main()
->   			fprintf(stderr,"Main failed to signal the condition\n");
->   			exit(PTS_UNRESOLVED);
->   		}
-> -		usleep(100);
-> +		usleep(1000);
->   	}
->
->   	if (i>= THREAD_NUM) {
-> @@ -160,4 +160,4 @@ int main()
->   	}
->   	printf("Test PASSED\n");
->   	return PTS_PASS;
-> -}
-> \ No newline at end of file
-> +}
-Hi,
+This patch gives some minor fixes to the following two commits:
 
-Could anyone help me to review this patch?
-Thanks a lot.
+f9ae09a lib/mem.c: using read_file to replace the redundant code
+60c41a5 lib/mem.c: add _wait_ksmd_done func to wait ksmd finish his job
 
-Regards,
-Kai
+to make the codes cleaner and easier to understand.
 
---------------040300000706030505010006
-Content-Type: text/html; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    On 2012&#24180;07&#26376;03&#26085; 17:59, Kang Kai wrote:
-    <blockquote
-      cite="mid:1341309599-10008-1-git-send-email-kai.kang@windriver.com"
-      type="cite">
-      <pre wrap="">Case pthread_cond_signal/1-1 fails on routerstation. The OS is Yocto
-linux 1.2 with kernel 3.0.24, and c library is eglibc 2.15.
-
-The fail log:
-  [Thread 0x0x2c56d4b0] started and locked the mutex
-  [Thread 0x0x2c56d4b0] is waiting for the cond
-  [Thread 0x0x2bd6d4b0] started and locked the mutex
-  [Thread 0x0x2bd6d4b0] is waiting for the cond
-  [Thread 0x0x2b56d4b0] started and locked the mutex
-  [Thread 0x0x2b56d4b0] is waiting for the cond
-  [Main thread] signals a condition
-  [Thread 0x0x2c56d4b0] was wakened and acquired the mutex again
-  [Thread 0x0x2c56d4b0] released the mutex
-  [Main thread] 1 waiters were wakened
-  [Main thread] signals to wake up the next thread
-  [Thread 0x0x2bd6d4b0] was wakened and acquired the mutex again
-  [Thread 0x0x2bd6d4b0] released the mutex
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Thread 0x0x2b56d4b0] was wakened and acquired the mutex again
-  [Main thread] had to signal the condition 7 times
-  [Main thread] to wake up 3 threads
-  . Test FAILED.
-
-The main thread call pthread_cond_signal try to signal the child threads
-those are waiting on the condition, then call usleep(100) to relinquish
-the cpu. But 100 useconds is not enough and the main thread continue to
-run. So the case fails.
-
-Increase the sleep timeto 1000 useconds to make the case pass.
-
-Signed-off-by: Kang Kai <a class="moz-txt-link-rfc2396E" href="mailto:kai.kang@windriver.com">&lt;kai.kang@windriver.com&gt;</a>
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 ---
- .../interfaces/pthread_cond_signal/1-1.c           |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/lib/mem.c |   69 +++++++++++++++------------------------
+ 1 files changed, 27 insertions(+), 42 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-index bf55b31..910931d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-@@ -142,7 +142,7 @@ int main()
- 			fprintf(stderr,"Main failed to signal the condition\n");
- 			exit(PTS_UNRESOLVED);
+
+--------------1.7.8.6
+Content-Type: text/x-patch; name="0001-mm-lib-ksm-code-style-fixes.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-mm-lib-ksm-code-style-fixes.patch"
+
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index f746d06..6283f25 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -133,72 +133,57 @@ static void _check(char *path, long int value)
+ {
+ 	FILE *fp;
+ 	char buf[BUFSIZ], fullpath[BUFSIZ];
+-	long tmp;
++	long actual_val;
+ 
+ 
+ 	snprintf(fullpath, BUFSIZ, "%s%s", PATH_KSM, path);
+ 	read_file(fullpath, buf);
+-	tmp = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
++	actual_val = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
+ 
+-	tst_resm(TINFO, "%s is %ld.", path, tmp);
+-	if (tmp != value)
++	tst_resm(TINFO, "%s is %ld.", path, actual_val);
++	if (actual_val != value)
+ 		tst_resm(TFAIL, "%s is not %ld.", path, value);
+ }
+ 
+ static void _wait_ksmd_done(void)
+ {
+ 	char buf[BUFSIZ];
+-	long run, pages_shared, pages_sharing, pages_volatile, pages_unshared;
+-	long old_run = 0, old_pages_shared = 0, old_pages_sharing = 0,
+-	     old_pages_volatile = 0, old_pages_unshared = 0;
+-	long tmp;
+-	int changed = 1, count = 0;
++	long pages_shared, pages_sharing, pages_volatile, pages_unshared;
++	long old_pages_shared = 0, old_pages_sharing = 0;
++	long old_pages_volatile = 0, old_pages_unshared = 0;
++	int changing = 1, count = 0;
+ 
+-	while(changed) {
+-		while(sleep(5))
+-			continue;
+-
+-		changed = 0;
++	while (changing) {
++		sleep(5);
+ 		count++;
+ 
+-		read_file(PATH_KSM "run", buf);
+-		run = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
+-		if (run != old_run) {
+-			old_run = run;
+-			changed = 1;
+-		}
+-
+ 		read_file(PATH_KSM "pages_shared", buf);
+-		pages_shared = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
+-		if (pages_shared != old_pages_shared) {
+-			old_pages_shared = pages_shared;
+-			changed = 1;
+-		}
++		pages_shared = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
+ 
+ 		read_file(PATH_KSM "pages_sharing", buf);
+-		pages_sharing = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
+-		if (pages_sharing != old_pages_sharing) {
+-			old_pages_sharing = pages_sharing;
+-			changed = 1;
+-		}
++		pages_sharing = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
+ 
+ 		read_file(PATH_KSM "pages_volatile", buf);
+-		pages_volatile = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
+-		if (pages_volatile != old_pages_volatile) {
+-			old_pages_volatile = pages_volatile;
+-			changed = 1;
+-		}
++		pages_volatile = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
+ 
+ 		read_file(PATH_KSM "pages_unshared", buf);
+-		pages_unshared = SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
+-		if (pages_unshared != old_pages_unshared) {
++		pages_unshared = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
++
++		if (pages_shared != old_pages_shared ||
++		    pages_sharing != old_pages_sharing ||
++		    pages_volatile != old_pages_volatile ||
++		    pages_unshared != old_pages_unshared) {
++			old_pages_shared   = pages_shared;
++			old_pages_sharing  = pages_sharing;
++			old_pages_volatile = pages_volatile;
+ 			old_pages_unshared = pages_unshared;
+-			changed = 1;
++		} else {
++			changing = 0;
  		}
--		usleep(100);
-+		usleep(1000);
  	}
  
- 	if (i &gt;= THREAD_NUM) {
-@@ -160,4 +160,4 @@ int main()
- 	}
- 	printf("Test PASSED\n");
- 	return PTS_PASS;
--}
-\ No newline at end of file
-+}
-</pre>
-    </blockquote>
-    <font size="+1">Hi,<br>
-      <br>
-      Could anyone help me to review this patch?<br>
-      Thanks a lot.<br>
-      <br>
-      Regards,<br>
-      Kai<br>
-    </font>
-  </body>
-</html>
+-	tst_resm(TINFO, "ksm daemon takes %ds to scan all "
+-		    "mergeable pages", count * 5);
++	tst_resm(TINFO, "ksm daemon takes %ds to scan all mergeable pages",
++		    count * 5);
+ }
+ 
+ static void _group_check(int run, int pages_shared, int pages_sharing,
+@@ -736,7 +721,7 @@ long count_numa(long nodes[])
+ 
+ 	nnodes = 0;
+ 	for (i = 0; i <= MAXNODES; i++)
+-		if(path_exist(PATH_SYS_SYSTEM "/node/node%d", i))
++		if (path_exist(PATH_SYS_SYSTEM "/node/node%d", i))
+ 			nodes[nnodes++] = i;
+ 
+ 	return nnodes;
 
---------------040300000706030505010006--
-
-
---===============4525918092145005998==
+--------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -210,7 +180,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============4525918092145005998==
+--------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -221,5 +191,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4525918092145005998==--
+--------------1.7.8.6--
+
+
 
