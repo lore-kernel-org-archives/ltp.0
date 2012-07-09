@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SuGLW-0001lm-Al
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 05:10:46 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SuGLV-0005XT-4T
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 05:10:46 +0000
-Received: by pbbrq2 with SMTP id rq2so2462940pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 25 Jul 2012 22:10:39 -0700 (PDT)
-Message-ID: <5010D13F.6020006@casparzhang.com>
-Date: Thu, 26 Jul 2012 13:10:23 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SoECv-0001fK-D0
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 13:40:57 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SoECp-0000OO-DD
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 13:40:57 +0000
+Message-ID: <4FFAD885.5070107@cn.fujitsu.com>
+Date: Mon, 09 Jul 2012 21:11:33 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1343270673-8363-1-git-send-email-gaowanlong@cn.fujitsu.com>
-In-Reply-To: <1343270673-8363-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] file: add the new output format of C program file
+References: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
+	<4FFAC93A.6080407@cn.fujitsu.com>
+	<4FFACE16.5080500@casparzhang.com>
+In-Reply-To: <4FFACE16.5080500@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/2] mm/vma01: consider topdown and bottomup
+	allocation
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,48 +31,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Wang Sheng-Hui <shhuiw@gmail.com>
 
-On 07/26/2012 10:44 AM, Wanlong Gao wrote:
-> New output format of file command for C program file is like below,
-> $ file src/guestfs.c
-> src/guestfs.c: C source, ASCII text
->
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+On 07/09/2012 08:27 PM, Caspar Zhang wrote:
+> On 07/09/2012 08:06 PM, Wanlong Gao wrote:
+>> On 06/25/2012 03:33 PM, Caspar Zhang wrote:
+>>> +        if (topdown) {
+>>> +            x = get_end_addr(u);
+>>> +            printf("child : x = %p\n", x);
+>>> +            if (x == t + 3*ps)
+>>> +                exit(1);
+>>> +            else if (x == t && get_end_addr(x) == t + 3*ps)
+>>> +                exit(0);
+>>> +        } else {
+>>> +            x = get_end_addr(t);
+>>> +            printf("child : x = %p\n", x);
+>>> +            if (x == t + 6*ps)
+>>> +                exit(1);
+>>> +            else if (x == u && get_end_addr(x) == t + 6*ps)
+>>>                   exit(0);
+>>>           }
+>>
+>> Looks good to me.
+>>
+>> Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>>
+>> But why not use tst_resm(TINFO, ) instead?
+> 
+> This is in child process. We'd avoid potential race on libltp between child and parent. (see style-guide.txt)
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+OK, I see, thank you.
 
-> ---
->   testcases/commands/ade/file/file_test.sh | 14 ++++++++++----
->   1 file changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/ade/file/file_test.sh
-> index 70420e3..8a4e9b5 100755
-> --- a/testcases/commands/ade/file/file_test.sh
-> +++ b/testcases/commands/ade/file/file_test.sh
-> @@ -314,10 +314,16 @@ then
->           $LTPBIN/tst_resm TPASS "file: Recognised C program text correctly"
->           rm -f $LTPTMP/cprog.c
->       else
-> -        $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
-> -             "file: Failed to Recognize C program text correctly. Reason:"
-> -        TFAILCNT=$(( $TFAILCNT+1 ))
-> -
-> +        grep "C source, ASCII text" $LTPTMP/file.out > /dev/null 2>&1
-> +        if [ $? -eq 0 ]
-> +        then
-> +            $LTPBIN/tst_resm TPASS "file: Recognised C program text correctly"
-> +            rm -f $LTPTMP/cprog.c
-> +        else
-> +            $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
-> +                 "file: Failed to Recognize C program text correctly. Reason:"
-> +            TFAILCNT=$(( $TFAILCNT+1 ))
-> +        fi
->       fi
->   else
->       $LTPBIN/tst_resm TFAIL "file: Failed to recognize C programi text"
->
+Wanlong Gao
+
+> 
+> Caspar
+> 
 
 
 
