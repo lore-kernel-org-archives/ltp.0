@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SsAzN-0000we-7h
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 11:03:17 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SoAhF-0003Z4-HD
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 09:56:01 +0000
 Received: from mail-pb0-f47.google.com ([209.85.160.47])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SsAzL-0002HM-Jv
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 11:03:17 +0000
-Received: by pbbrq2 with SMTP id rq2so5703683pbb.34
+	(Exim 4.76) id 1SoAhE-0001WN-GR
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 09:56:01 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rq2so17934038pbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 20 Jul 2012 04:03:09 -0700 (PDT)
-Message-ID: <50093AD7.9040602@casparzhang.com>
-Date: Fri, 20 Jul 2012 19:02:47 +0800
+	Mon, 09 Jul 2012 02:55:59 -0700 (PDT)
+Message-ID: <4FFAAAA6.4020607@casparzhang.com>
+Date: Mon, 09 Jul 2012 17:55:50 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <cover.1342777340.git.jstancek@redhat.com>
-In-Reply-To: <cover.1342777340.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 0/2] numa_helper: get nodes with mem/cpu/both
+References: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/2] mm/vma01: consider topdown and bottomup
+	allocation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,76 +31,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: hejianet@linux.vnet.ibm.com, Wang Sheng-Hui <shhuiw@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/20/2012 06:19 PM, Jan Stancek wrote:
-> numa_helper has been used for syscalls testcases, which
-> care about nodes with memory. Based on discussion here:
-> http://article.gmane.org/gmane.linux.ltp/16325
-> it was deemed, that 'flag' extension would be useful,
-> to allow tests to ask for nodes with memory/cpu/both.
->
-> This patch series is introducing flag to get_allowed_nodes().
->
-> For example, a config like this one:
->    # numactl -H
->    available: 3 nodes (2,4-5)
->    node 2 cpus: 0
->    node 2 size: 511 MB
->    node 2 free: 88 MB
->    node 4 cpus:
->    node 4 size: 256 MB
->    node 4 free: 34 MB
->    node 5 cpus:
->    node 5 size: 255 MB
->    node 5 free: 59 MB
->
-> would return:
->    nodes (flag=0): 2 4 5 (any)
->    nodes (flag=1): 2 4 5 (mem)
->    nodes (flag=2): 2     (cpus)
->    nodes (flag=3): 2     (mem and cpus)
->
-> Tested with:
-> numactl-devel-0.9.8-7.el5
-> numactl-devel-2.0.3-9.el6
-> numactl-devel-2.0.7-6.el7
->
-> numa_node_to_cpus() is broken in older libnuma < 1, so cpumap
-> is used instead.
->
-> Next step (not part of this series) is to move it outside
-> syscalls area, so it can be used by other testcases.
->
-> Jan Stancek (2):
->    numa_helper: add flag to get_allowed_nodes()
->    update testcases to use flag for get_allowed_nodes()
->
->   .../syscalls/get_mempolicy/get_mempolicy01.c       |    5 +-
->   testcases/kernel/syscalls/mbind/mbind01.c          |    5 +-
->   .../kernel/syscalls/move_pages/move_pages02.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages03.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages04.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages05.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages06.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages07.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages08.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages09.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages10.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages11.c      |    5 +-
->   .../syscalls/move_pages/move_pages_support.c       |    8 +-
->   testcases/kernel/syscalls/numa/lib/numa_helper.c   |  211 +++++++++++++++-----
->   testcases/kernel/syscalls/numa/lib/numa_helper.h   |    8 +-
->   15 files changed, 203 insertions(+), 84 deletions(-)
->
->
+On 06/25/2012 03:33 PM, Caspar Zhang wrote:
+> 
+> When calculating VMAs, results differ in topdown and bottomup memory
+> allocation mechanisms. This patch fix the potential failures and should
+> work like below:
+> 
+> In topdown allocation, the start addr in second VMA should be smaller
+> than first one, i.e.:
+> 
+>     u======t------(t+3*ps)
+>       2nd    1st
+> 
+> Thus, in buggy kernel, if we find a VMA mapping entry in child like:
+> 
+>     start_addr == u && end_addr == t+3*ps;
+> 
+> the test would go fail. Otherwise, in good kernel, we should see
+> 
+>     start_addr1 == u && end_addr1 == t;
+>     start_addr2 == t && end_addr2 == t+3*ps;
+> 
+> While in bottomup allocation, it's different:
+> 
+>     t------u======(t+6*ps)
+>       1st    2nd
+> 
+> Here in buggy kernel, we can see VMA mapping entry like this:
+> 
+>     start_addr == t && end_addr == t+6*ps;
+> 
+> And in good kernel:
+> 
+>     start_addr1 == t && end_addr1 == u;
+>     start_addr2 == u && end_addr2 == t+6*ps;
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/mem/vma/vma01.c |   35 ++++++++++++++++++++++-------------
+>  1 files changed, 22 insertions(+), 13 deletions(-)
+> 
 
-Thanks Jan for your patches! I want to test the patchset on all arches 
-and on major releases, so would you mind if I hold on pushing until I 
-finish the testing next week?
-
-Also during that period, any comments from anyone is welcomed.
+Both patches worked on my systems including: i386/x86_64, powerpc,
+s/390x. I'll commit it in next a few days if I hear no objection for this.
 
 Thanks,
 Caspar
