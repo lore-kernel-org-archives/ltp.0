@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <marios.makris@gmail.com>) id 1SrUKD-0003kn-1D
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 13:29:57 +0000
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SrUK7-00027a-9S
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 13:29:56 +0000
-Received: by wibhm2 with SMTP id hm2so3704809wib.10
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 18 Jul 2012 06:29:45 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SoGFa-0001Ec-Bl
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 15:51:50 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SoGFW-0007E4-AH
+	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 15:51:50 +0000
+Date: Mon, 09 Jul 2012 11:51:35 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <1ab75ea0-ace3-4553-8ab6-ead97938046c@zmail13.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4FFAE775.1020809@casparzhang.com>
 MIME-Version: 1.0
-In-Reply-To: <5006829C.7080308@cn.fujitsu.com>
-References: <1342194676-15275-1-git-send-email-marios.makris@gmail.com>
-	<1342194676-15275-4-git-send-email-marios.makris@gmail.com>
-	<5006829C.7080308@cn.fujitsu.com>
-Date: Wed, 18 Jul 2012 16:29:44 +0300
-Message-ID: <CAMYrgfQP3WbVWeT_qVOAbiGUsZnSeLGY6LY03juBYbEWqZckHA@mail.gmail.com>
-From: "marios.makris" <marios.makris@gmail.com>
-Subject: Re: [LTP] [PATCH 4/6] /lib/tst_tmpdir.c removed / and * checks
+Subject: Re: [LTP] [PATCH 2/2] mm/lib: increase sleep time in ksm scanning
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,64 +26,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-On 18 July 2012 12:32, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
-> On 07/13/2012 11:51 PM, Marios Makris wrote:
->> These checks are implemented in the rmobj.c file therefore there is no
->> need to repeat them here since rmobj() is called for deletions.
->>
->> Signed-off-by: Marios Makris <marios.makris@gmail.com>
->> ---
->>  lib/tst_tmpdir.c |   17 -----------------
->>  1 file changed, 17 deletions(-)
->>
->> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
->> index b6f4d2e..a9dd78c 100644
->> --- a/lib/tst_tmpdir.c
->> +++ b/lib/tst_tmpdir.c
->> @@ -194,8 +194,6 @@ void tst_tmpdir(void)
->>
->>  void tst_rmdir(void)
->>  {
->> -     struct stat buf1;
->> -     struct stat buf2;
->>       char current_dir[PATH_MAX];
->>       char *errmsg;
->>       char *parent_dir;
->> @@ -229,21 +227,6 @@ void tst_rmdir(void)
->>       }
->>
->>       /*
->> -      * Check that the value of TESTDIR is not "*" or "/".  These could
->> -      * have disastrous effects in a test run by root.
->> -      */
->> -     if (stat(TESTDIR, &buf1) == 0 && stat("/", &buf2) == 0 &&
->> -             buf1.st_ino == buf2.st_ino) {
->> -             tst_resm(TWARN, "%s: will not remove /", __func__);
->> -             return;
->> -     }
->> -
->> -     if (strchr(TESTDIR, '*') != NULL) {
->> -             tst_resm(TWARN, "%s: will not remove *", __func__);
->> -             return;
->> -     }
->
-> Seems that rmobj() doesn't check the "*" there?
->
-> Thanks,
-> Wanlong Gao
->
-
-Hi and thanks for reviewing.
-
-Well rmobj doesn't check for "*", but it uses remove and unlink and
-if i am not wrong they don't do the "*" expansion?
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 
+
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: gaowanlong@cn.fujitsu.com
+> Cc: "Zhouping Liu" <zliu@redhat.com>, "LTP list" sourceforge.net>
+> Sent: Monday, July 9, 2012 10:15:17 PM
+> Subject: Re: [LTP] [PATCH 2/2] mm/lib: increase sleep time in ksm scanning
+> 
+> On 07/09/2012 09:10 PM, Wanlong Gao wrote:
+> > On 07/09/2012 08:37 PM, Caspar Zhang wrote:
+> >> On 07/09/2012 07:32 PM, Wanlong Gao wrote:
+> >>> On 07/09/2012 05:51 PM, Caspar Zhang wrote:
+> >>>>
+> >>>> for some systems under pressure, we've observed that sleeping 5
+> >>>> seconds is not sufficient for completing ksm scanning, to fix
+> >>>> this, we should give ksmd more time to scan the mergable pages
+> >>>> by increasing sleeping time to 10s.
+> >>>
+> >>> If 5s is not enough, isn't we waiting here already?
+> >>
+> >> Sorry, I'm not catching you... :-( the problem currently we
+> >> encounter is that if 5s given, all ksm values (pages_sharing,
+> >> pages_shared, etc) might remain the same between before and after
+> >> sleeping, so the wait_ksmd function could exit. But in fact the
+> >> kernel could be busy under pressure and it just needs more than 5s
+> >> to merge the same page. Using 10s as polling interval can make
+> >> sure
+> >> if ksm values remains the same between each loop, it should
+> >> indicates that ksmd has done scanning correctly.
+> >>
+> >
+> > Oops, it's a serious problem, so can we first wait for changing and
+> > then wait for not changing? I'm afraid that hard coded sleep time
+> > can't do the right thing on some systems.
+> 
+> IMO the current implementation does the same thing as you suggested.
+> We
+> wait for certain interval (5s for now, 10s proposed), and check if
+> ksm
+> values increased, if still changing, continue next sleep interval.
+> Adding a "wait-for-not-changing" in fact has the same effect as
+> increasing the original sleep time.
+> 
+> theoretically, sleeping interval should be as larger as possible, but
+> it
+> will cost unnecessary running time if the interval is set too big in
+> the
+> this case. I'd say 10s is a "for-now-best-practice" during my several
+> running (both w/ and w/o pressure). Besides, I'm not sure how ksm
+> developers think of current ksm performance, but I think if ksmd
+> takes
+> more than 10s to merge two same pages, it will be a big performance
+> issue.
+
+yes, I think so.
+
+and 5s interval is enough, I tested it on several low-memory/dull systems
+during composing the patch, it's all OK.
+But in order to cover more different systems, IMO, I also proposed 10s,
+and it shouldn't be more bigger, or it will be a defect of ksm performance.
 
 -- 
-Marios Makris
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
