@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SrQkg-0003nj-4I
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:41:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SrQke-0004Rt-MX
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:41:02 +0000
-Message-ID: <50068480.1060602@cn.fujitsu.com>
-Date: Wed, 18 Jul 2012 17:40:16 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SoYGi-000106-L0
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jul 2012 11:06:12 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SoYGc-0006E8-Q6
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jul 2012 11:06:12 +0000
+Received: by pbbrq2 with SMTP id rq2so108563pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 10 Jul 2012 04:06:00 -0700 (PDT)
+Message-ID: <4FFC0C8E.70409@casparzhang.com>
+Date: Tue, 10 Jul 2012 19:05:50 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1342194676-15275-1-git-send-email-marios.makris@gmail.com>
-	<1342194676-15275-5-git-send-email-marios.makris@gmail.com>
-In-Reply-To: <1342194676-15275-5-git-send-email-marios.makris@gmail.com>
-Subject: Re: [LTP] [PATCH 5/6] /lib/tst_tmpdir.c removed the TDIRECTORY part
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <9ca66c91-9f15-4493-8bca-1bd64feb6828@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <9ca66c91-9f15-4493-8bca-1bd64feb6828@zmail17.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,152 +30,265 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Marios Makris <marios.makris@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>, CAI Qian <caiqian@redhat.com>
 
-On 07/13/2012 11:51 PM, Marios Makris wrote:
-> After recent question to the list, it seems that the TDIRECTORY PART is not
-> used by anyone, therefore it is removed.
+On 07/10/2012 06:49 PM, Jan Stancek wrote:
+>
+>
+> ----- Original Message -----
+>> From: "Caspar Zhang" <caspar@casparzhang.com>
+>> To: "Zhouping Liu" <zliu@redhat.com>
+>> Cc: gaowanlong@cn.fujitsu.com, "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek" <jstancek@redhat.com>, "CAI
+>> Qian" <caiqian@redhat.com>
+>> Sent: Tuesday, 10 July, 2012 12:37:10 PM
+>> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+>>
+>> On 06/29/2012 12:37 PM, Zhouping Liu wrote:
+>>> Hi,
+>>>
+>>> ----- Original Message -----
+>>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>>> To: "Zhouping Liu" <zliu@redhat.com>
+>>>> Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek"
+>>>> <jstancek@redhat.com>
+>>>> Sent: Friday, June 29, 2012 10:39:57 AM
+>>>> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+>>>>
+>>>> On 06/29/2012 10:23 AM, Zhouping Liu wrote:
+>>>>> Hi,
+>>>>>
+>>>>> ----- Original Message -----
+>>>>>> From: "Zhouping Liu" <zliu@redhat.com>
+>>>>>> To: "LTP List" <ltp-list@lists.sourceforge.net>
+>>>>>> Sent: Tuesday, June 26, 2012 11:57:35 PM
+>>>>>> Subject: [LTP]  [PATCH] mm/oom05: new testcase
+>>>>>>
+>>>>>> add a new testcase to test OOM on each NUMA node
+>>>>>
+>>>>> I have tested it in several systems with 2 NUMA nodes and 8 NUMA
+>>>>> nodes,
+>>>>> they are all good, any comment?
+>>>>>
+>>>>> Thanks,
+>>>>> Zhouping
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+>>>>>> ---
+>>>>>>    runtest/mm                       |    1 +
+>>>>>>    testcases/kernel/mem/oom/oom05.c |  131
+>>>>>>    ++++++++++++++++++++++++++++++++++++++
+>>>>>>    2 files changed, 132 insertions(+)
+>>>>>>    create mode 100644 testcases/kernel/mem/oom/oom05.c
+>>>>>>
+>>>>>> diff --git a/runtest/mm b/runtest/mm
+>>>>>> index 2dd66f0..a60c04b 100644
+>>>>>> --- a/runtest/mm
+>>>>>> +++ b/runtest/mm
+>>>>>> @@ -77,6 +77,7 @@ oom01 oom01
+>>>>>>    oom02 oom02
+>>>>>>    oom03 oom03
+>>>>>>    oom04 oom04
+>>>>>> +oom05 oom05
+>>>>>>
+>>>>>>    swapping01 swapping01 -i 5
+>>>>>>
+>>>>>> diff --git a/testcases/kernel/mem/oom/oom05.c
+>>>>>> b/testcases/kernel/mem/oom/oom05.c
+>>>>>> new file mode 100644
+>>>>>> index 0000000..046ddbb
+>>>>>> --- /dev/null
+>>>>>> +++ b/testcases/kernel/mem/oom/oom05.c
+>>>>>> @@ -0,0 +1,131 @@
+>>>>>> +/*
+>>>>>> + * Out Of Memory (OOM) on Each NUMA nodes
+>>>>>> + *
+>>>>>> + * The program is designed to cope with unpredictable like
+>>>>>> amount
+>>>>>> and
+>>>>>> + * system physical memory, swap size and other VMM technology
+>>>>>> like
+>>>>>> KSM,
+>>>>>> + * memcg, memory hotplug and so on which may affect the OOM
+>>>>>> + * behaviours. It simply increase the memory consumption 3G
+>>>>>> each
+>>>>>> time
+>>>>>> + * until all the available memory is consumed and OOM is
+>>>>>> triggered.
+>>>>>> + *
+>>>>>> + * Copyright (C) 2012  Red Hat, Inc.
+>>>>>> + * This program is free software; you can redistribute it
+>>>>>> and/or
+>>>>>> + * modify it under the terms of version 2 of the GNU General
+>>>>>> Public
+>>>>>> + * License as published by the Free Software Foundation.
+>>>>>> + *
+>>>>>> + * This program is distributed in the hope that it would be
+>>>>>> useful,
+>>>>>> + * but WITHOUT ANY WARRANTY; without even the implied warranty
+>>>>>> of
+>>>>>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>>>>>> + *
+>>>>>> + * Further, this software is distributed without any warranty
+>>>>>> that
+>>>>>> it
+>>>>>> + * is free of the rightful claim of any third person regarding
+>>>>>> + * infringement or the like.  Any license provided herein,
+>>>>>> whether
+>>>>>> + * implied or otherwise, applies only to this software file.
+>>>>>>    Patent
+>>>>>> + * licenses, if any, provided herein do not apply to
+>>>>>> combinations
+>>>>>> of
+>>>>>> + * this program with other software, or any other product
+>>>>>> whatsoever.
+>>>>>> + *
+>>>>>> + * You should have received a copy of the GNU General Public
+>>>>>> License
+>>>>>> + * along with this program; if not, write the Free Software
+>>>>>> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+>>>>>> MA
+>>>>>> + * 02110-1301, USA.
+>>>>>> + */
+>>>>>> +#include <sys/types.h>
+>>>>>> +#include <sys/stat.h>
+>>>>>> +#include <sys/wait.h>
+>>>>>> +#include <errno.h>
+>>>>>> +#include <fcntl.h>
+>>>>>> +#include <stdio.h>
+>>>>>> +#include <stdlib.h>
+>>>>>> +#include <unistd.h>
+>>>>>> +#include "test.h"
+>>>>>> +#include "safe_macros.h"
+>>>>>> +#include "usctest.h"
+>>>>>> +#include "mem.h"
+>>>>>> +
+>>>>>> +char *TCID = "oom05";
+>>>>>> +int TST_TOTAL = 1;
+>>>>>> +
+>>>>>> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+>>>>>> +	&& HAVE_MPOL_CONSTANTS
+>>>>>> +#include <numa.h>
+>>>>>> +#include <numaif.h>
+>>>>>> +
+>>>>>> +int main(int argc, char *argv[])
+>>>>>> +{
+>>>>>> +	char *msg;
+>>>>>> +	int lc;
+>>>>>> +	long nodes[MAXNODES];
+>>>>>> +	int nnodes, i;
+>>>>>> +	pid_t pids[MAXNODES];
+>>>>>> +	int status;
+>>>>>> +	unsigned long nmasks[MAXNODES];
+>>>>>> +
+>>>>>> +	msg = parse_opts(argc, argv, NULL, NULL);
+>>>>>> +	if (msg != NULL)
+>>>>>> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>>>>>> +
+>>>>>> +#if __WORDSIZE == 32
+>>>>>> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit
+>>>>>> system.");
+>>>>>> +#endif
+>>>>>> +	nnodes = count_numa(nodes);
+>>>>>> +	if (nnodes <= 1)
+>>>>>> +		tst_brkm(TCONF, NULL, "required a NUMA system.");
+>>>>>> +
+>>>>>> +	setup();
+>>>>>> +
+>>>>>> +	set_sys_tune("overcommit_memory", 1, 1);
+>>>>>> +
+>>>>>> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>>>>>> +		Tst_count = 0;
+>>>>>> +
+>>>>>> +		for (i = 0; i < nnodes; i++) {
+>>>>>> +			nmasks[i] = 1 << nodes[i];
+>>>>>> +			switch (pids[i] = fork()) {
+>>>>>> +			case -1:
+>>>>>> +				tst_brkm(TBROK|TERRNO, cleanup, "fork");
+>>>>>> +			case 0:
+>>>>>> +				if (set_mempolicy(MPOL_BIND, &nmasks[i],
+>>>>>> +				    MAXNODES) == -1)
+>>>>>> +					tst_brkm(TBROK|TERRNO, cleanup,
+>>>>>> +					    "set_mempolicy");
+>>>>>> +				tst_resm(TINFO, "start oom on numa node%lu",
+>>>>>> +				    nodes[i]);
+>>>>>> +				oom(NORMAL, 0, 0);
+>>>>>> +				exit(0);
+>>>>>> +			}
+>>>>>> +		}
+>>>>
+>>>> Hi Zhouping,
+>>>>
+>>>> Does it need get_allowed_nodes() that Jan added?
+>>>>
+>>>
+>>> yes, I met some errors when the system has unbalance NUMA system:
+>>>
+>>> the follow test machine has 2 numa nodes 0-1, I offline all node1's
+>>> cpu
+>>> # echo 0 > /sys/devices/system/node1/cpu*/online
+>>>
+>>> then you will find node1 don't contain any available cpus:
+>>>
+>>> # numactl -H
+>>> available: 2 nodes (0-1)
+>>> node 0 cpus: 0 1 2 3
+>>> node 0 size: 4084 MB
+>>> node 0 free: 2929 MB
+>>> node 1 cpus:
+>>> node 1 size: 4096 MB
+>>> node 1 free: 3949 MB
+>>> node distances:
+>>> node   0   1
+>>>     0:  10  21
+>>>     1:  21  10
+>>>
+>>> under such above setup, oom[2|4] will failed:
+>>>
+>>> ...
+>>> oom02       0  TINFO  :  process cpuset.
+>>> oom02       1  TBROK  :  write /dev/cpuset/1/cpuset.cpus:
+>>> errno=EINVAL(22): Invalid argument
+>>> oom02       2  TBROK  :  Remaining cases broken
+>>> oom02       0  TINFO  :  set overcommit_memory to 0
+>>> oom02       0  TWARN  :  umount /dev/cpuset: errno=EBUSY(16):
+>>> Device or resource busy
+>>> oom02       0  TWARN  :  rmdir /dev/cpuset: errno=EBUSY(16): Device
+>>> or resource busy
+>>>
+>>> the failure is because node1 didn't have available cpus, but it
+>>> tried to write node1's cpus to /dev/cpuset/1/cpuset.cpus.
+>>>
+>>> and I tested get_allowed_nodes(), it didn't fix the error,
+>>> with above setup, I expected get_allowed_nodes_arr() can mark node1
+>>> is a unavailable node,
+>>> but in actual it didn't, and it's the similar with count_numa()
+>>> inside testcase/kernel/mem/lib/mem.c.
+>>> so, Jan, do you have any thoughts to avoid the issues? if
+>>> get-allowed_nodes* can fix these issues, I also suggest we can
+>>> define them in ltp/include/numa_helper.h or other file name,
+>>> comments?
+>>
+>> Looks like get_allowed_nodes* functions only check allowed memories,
+>> but
+>> doesn't check cpus, maybe adding a numa_node_to_cpus() check can
+>> solve this?
+>
+> I was thinking the same:
+> http://article.gmane.org/gmane.linux.ltp/16348
 
-OK, we can also use "-d TMPDIR" option, so no objection with removing this.
- 
-> 
-> Signed-off-by: Marios Makris <marios.makris@gmail.com>
+oops... my eyes just skipped this post!
 
-Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>
+> but considering, if we apply that everywhere or introduce some kind of flag,
+> so the test could specify what nodes it is interested in (memory/cpu/both).
+
+it sounds a good idea to me if we allow the test to choose checking 
+memory, cpu or both.
 
 Thanks,
-Wanlong Gao
-
-> ---
->  lib/tst_tmpdir.c |   93 ++++++++++++++++--------------------------------------
->  1 file changed, 28 insertions(+), 65 deletions(-)
-> 
-> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-> index a9dd78c..080e09a 100644
-> --- a/lib/tst_tmpdir.c
-> +++ b/lib/tst_tmpdir.c
-> @@ -110,58 +110,35 @@ char *get_tst_tmpdir(void)
->  void tst_tmpdir(void)
->  {
->  	char template[PATH_MAX];
-> -	int  no_cleanup = 0;	/* !0 means TDIRECTORY env var was set */
->  	char *env_tmpdir;	/* temporary storage for TMPDIR env var */
-> +	char *errmsg;
->  
->  	/*
-> -	 * If the TDIRECTORY env variable is not set, a temp dir will be
-> -	 * created.
-> +	 * Create a template for the temporary directory.  Use the
-> +	 * environment variable TMPDIR if it is available, otherwise
-> +	 * use our default TEMPDIR.
->  	 */
-> -	if ((TESTDIR = getenv(TDIRECTORY)) != NULL) {
-> -		/*
-> -		 * The TDIRECTORY env. variable is set, so no temp dir is created.
-> -		 */
-> -		if (mkdir(TESTDIR, DIR_MODE) == -1 && errno != EEXIST) {
-> -			tst_brkm(TBROK, NULL, "mkdir(%s, %o) failed",
-> -				TESTDIR, DIR_MODE);
-> -		}
-> -		/*
-> -		 * Try to create the directory if it does not exist already;
-> -		 * user might forget to create one before exporting TDIRECTORY.
-> -		 */
-> -		no_cleanup++;
-> -#if UNIT_TEST
-> -		printf("TDIRECTORY env var is set\n");
-> -#endif
-> -	} else {
-> -		/*
-> -		 * Create a template for the temporary directory.  Use the
-> -		 * environment variable TMPDIR if it is available, otherwise
-> -		 * use our default TEMPDIR.
-> -		 */
-> -		if ((env_tmpdir = getenv("TMPDIR")))
-> -			snprintf(template, PATH_MAX, "%s/%.3sXXXXXX",
-> -				env_tmpdir, TCID);
-> -		else
-> -			snprintf(template, PATH_MAX, "%s/%.3sXXXXXX",
-> -				TEMPDIR, TCID);
-> -
-> -		/* Make the temporary directory in one shot using mkdtemp. */
-> -		if (mkdtemp(template) == NULL)
-> -			tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> -				"%s: mkdtemp(%s) failed", __func__, template);
-> -		if ((TESTDIR = strdup(template)) == NULL) {
-> -			tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> -				"%s: strdup(%s) failed", __func__, template);
-> -		}
-> -
-> -		if (chown(TESTDIR, -1, getgid()) == -1)
-> -			tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> -				"chown(%s, -1, %d) failed", TESTDIR, getgid());
-> -		if (chmod(TESTDIR, DIR_MODE) == -1)
-> -			tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> -				"chmod(%s, %#o) failed", TESTDIR, DIR_MODE);
-> -	}
-> +	if ((env_tmpdir = getenv("TMPDIR")))
-> +		snprintf(template, PATH_MAX, "%s/%.3sXXXXXX",
-> +			env_tmpdir, TCID);
-> +	else
-> +		snprintf(template, PATH_MAX, "%s/%.3sXXXXXX",
-> +			TEMPDIR, TCID);
-> +
-> +	/* Make the temporary directory in one shot using mkdtemp. */
-> +	if (mkdtemp(template) == NULL)
-> +		tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> +			"%s: mkdtemp(%s) failed", __func__, template);
-> +	if ((TESTDIR = strdup(template)) == NULL)
-> +		tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> +			"%s: strdup(%s) failed", __func__, template);
-> +
-> +	if (chown(TESTDIR, -1, getgid()) == -1)
-> +		tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> +			"chown(%s, -1, %d) failed", TESTDIR, getgid());
-> +	if (chmod(TESTDIR, DIR_MODE) == -1)
-> +		tst_brkm(TBROK|TERRNO, tmpdir_cleanup,
-> +			"chmod(%s, %#o) failed", TESTDIR, DIR_MODE);
->  
->  #if UNIT_TEST
->  	printf("TESTDIR = %s\n", TESTDIR);
-> @@ -178,10 +155,9 @@ void tst_tmpdir(void)
->  			__func__, TESTDIR);
->  
->  		/* Try to remove the directory */
-> -		if (!no_cleanup && rmdir(TESTDIR) == -1) {
-> -			tst_resm(TWARN|TERRNO, "%s: rmdir(%s) failed",
-> -				__func__, TESTDIR);
-> -		}
-> +		if (rmobj(TESTDIR, &errmsg) == -1)
-> +			tst_resm(TWARN, "%s: rmobj(%s) failed: %s",
-> +			__func__, TESTDIR, errmsg);
->  
->  		tmpdir_cleanup();
->  	}
-> @@ -197,19 +173,6 @@ void tst_rmdir(void)
->  	char current_dir[PATH_MAX];
->  	char *errmsg;
->  	char *parent_dir;
-> -	char *tdirectory;
-> -
-> -	/*
-> -	 * If the TDIRECTORY env variable is set, this indicates that no
-> -	 * temp dir was created by tst_tmpdir().  Thus no cleanup will be
-> -	 * necessary.
-> -	 */
-> -	if ((tdirectory = getenv(TDIRECTORY)) != NULL) {
-> -#if UNIT_TEST
-> -		printf("\"TDIRECORY\" env variable is set; no cleanup was performed\n");
-> -#endif
-> -		return;
-> -	}
->  
->  	/*
->  	 * Check that TESTDIR is not NULL.
-> 
-
-
+Caspar
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
