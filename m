@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Soq3Z-00058C-9n
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 06:05:49 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vlee@twitter.com>) id 1Sor3D-0005JS-9R
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 07:09:31 +0000
 Received: from mail-pb0-f47.google.com ([209.85.160.47])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Soq3U-0005yz-W5
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 06:05:49 +0000
-Received: by pbbrq2 with SMTP id rq2so1474834pbb.34
+	(Exim 4.76) id 1Sor37-00080t-T9
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 07:09:31 +0000
+Received: by pbbrq2 with SMTP id rq2so1548013pbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 10 Jul 2012 23:05:38 -0700 (PDT)
-Message-ID: <4FFD17A8.4080305@casparzhang.com>
-Date: Wed, 11 Jul 2012 14:05:28 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
-MIME-Version: 1.0
-References: <4FFD1202.2020903@gmail.com>
-In-Reply-To: <4FFD1202.2020903@gmail.com>
-Subject: Re: [LTP] I want to make contribution for ltp
+	Wed, 11 Jul 2012 00:09:19 -0700 (PDT)
+From: Vinson Lee <vlee@twitter.com>
+Date: Wed, 11 Jul 2012 00:09:09 -0700
+Message-Id: <1341990549-30278-1-git-send-email-vlee@twitter.com>
+Subject: [LTP] [PATCH] tools/t0: Use version of setpgrp that takes no
+	arguments.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,42 +25,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Miles Xu <miles.xu3@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 07/11/2012 01:41 PM, Miles Xu wrote:
-> Hi Casper,
->
-> I want to write some new cases for ltp. My issue is whether this is a
-> todo list for reference.
-> Please give me a document or link related to todo list.
->
->
-> thanks,
->
-> Miles
->
+IEEE Std 1003.1, 2004 Edition and IEEE Std 1003.1-2008 only have the
+version of setpgrp that takes no arguments.
 
-Hi Miles, thanks for your interests in LTP, new cases are always 
-welcomed! There is a TODO list under $LTPROOT, but 1) it's kind of 
-out-of-date and 2) it doesn't describe what kind of *new* test cases we 
-need, so I wonder if it can be used for your reference.
+http://pubs.opengroup.org/onlinepubs/009695299/functions/setpgrp.html
+http://pubs.opengroup.org/onlinepubs/9699919799/functions/setpgrp.html
 
-If you have codes for LTP already, you can send it to the list for 
-review (of course don't forget to take a look at 
-$LTPROOT/doc/style-guide.txt first :)), if you are just seeking for some 
-cases to be implemented in LTP, I'd suggest you can search upstream 
-kernel tree, there might be some test codes in commit logs, you can see 
-if you can port it to LTP. We always encourage kernel developers provide 
-such cases to LTP, but very few people do that so far... And as we have 
-ported some of them to LTP already, please take a look at the git commit 
-log in case of overlaps.
+Also fixes build error on Mac OS X 10.7.
 
-HTH,
-Caspar
+Signed-off-by: Vinson Lee <vlee@twitter.com>
+---
+ testcases/open_posix_testsuite/tools/t0.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/tools/t0.c b/testcases/open_posix_testsuite/tools/t0.c
+index d8ac328..96bae9f 100644
+--- a/testcases/open_posix_testsuite/tools/t0.c
++++ b/testcases/open_posix_testsuite/tools/t0.c
+@@ -101,7 +101,7 @@ int main (int argc, char * argv[])
+ 		perror("fork failed");
+ 		exit(1);
+ 	case 0:
+-		setpgrp(0, 0);
++		setpgrp();
+ 		execvp(argv[2], &argv[2]);
+ 		perror("execvp failed");
+ 		exit(1);
+-- 
+1.7.7.5 (Apple Git-26)
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
