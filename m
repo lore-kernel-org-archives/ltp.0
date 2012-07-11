@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Slxk8-00018f-LB
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:41:52 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Slxk3-0005mq-4p
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:41:52 +0000
-Received: by pbbrq2 with SMTP id rq2so8547972pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 03 Jul 2012 00:41:41 -0700 (PDT)
-Message-ID: <4FF2A225.7070304@casparzhang.com>
-Date: Tue, 03 Jul 2012 15:41:25 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SolHU-0000pe-Bh
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 00:59:52 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SolHS-0008OQ-Mb
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 00:59:52 +0000
+Message-ID: <4FFCCFE7.3030204@cn.fujitsu.com>
+Date: Wed, 11 Jul 2012 08:59:19 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <dce1058c-b9d4-4670-aee2-c39c7cf970a1@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <dce1058c-b9d4-4670-aee2-c39c7cf970a1@zmail13.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+References: <1341827513-21908-1-git-send-email-caspar@casparzhang.com>
+In-Reply-To: <1341827513-21908-1-git-send-email-caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/2] mm/lib: ksm code style fixes.
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,20 +28,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>, CAI Qian <caiqian@redhat.com>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 06/29/2012 12:37 PM, Zhouping Liu wrote:
-> and I tested get_allowed_nodes(), it didn't fix the error,
-> with above setup, I expected get_allowed_nodes_arr() can mark node1 is a unavailable node,
-> but in actual it didn't, and it's the similar with count_numa() inside testcase/kernel/mem/lib/mem.c.
-> so, Jan, do you have any thoughts to avoid the issues? if get-allowed_nodes* can fix these issues, I also suggest we can
-> define them in ltp/include/numa_helper.h or other file name, comments?
+On 07/09/2012 05:51 PM, Caspar Zhang wrote:
+> 
+> This patch gives some minor fixes to the following two commits:
+> 
+> f9ae09a lib/mem.c: using read_file to replace the redundant code
+> 60c41a5 lib/mem.c: add _wait_ksmd_done func to wait ksmd finish his job
+> 
+> to make the codes cleaner and easier to understand.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 
-Hi Zhouping, can you propose a patch for this?
+Pushed this series. Thank you.
 
-Thanks,
-Caspar
+Wanlong Gao
+
+> ---
+>  testcases/kernel/mem/lib/mem.c |   69 +++++++++++++++------------------------
+>  1 files changed, 27 insertions(+), 42 deletions(-)
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
