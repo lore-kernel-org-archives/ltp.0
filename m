@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SuFdF-0003l8-N0
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 04:25:01 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SuFdD-0000sP-DW
-	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 04:25:01 +0000
-Date: Thu, 26 Jul 2012 00:24:49 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1169487867.3185873.1343276689455.JavaMail.root@redhat.com>
-In-Reply-To: <1343270673-8363-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	(envelope-from <chrubis@suse.de>) id 1Soyb0-0000ZF-2u
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 15:12:54 +0000
+Date: Wed, 11 Jul 2012 16:28:15 +0200
+From: chrubis@suse.cz
+Message-ID: <20120711142815.GC13301@saboteur.suse.cz>
+References: <1341990549-30278-1-git-send-email-vlee@twitter.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] file: add the new output format of C program file
+Content-Disposition: inline
+In-Reply-To: <1341990549-30278-1-git-send-email-vlee@twitter.com>
+Subject: Re: [LTP] [PATCH] tools/t0: Use version of setpgrp that takes no
+ arguments.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,83 +25,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Vinson Lee <vlee@twitter.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "LTP" <ltp-list@lists.sourceforge.net>
-> Sent: Thursday, July 26, 2012 10:44:33 AM
-> Subject: [LTP] [PATCH] file: add the new output format of C program file
+Hi!
+> IEEE Std 1003.1, 2004 Edition and IEEE Std 1003.1-2008 only have the
+> version of setpgrp that takes no arguments.
 > 
-> New output format of file command for C program file is like below,
-> $ file src/guestfs.c
-> src/guestfs.c: C source, ASCII text
+> http://pubs.opengroup.org/onlinepubs/009695299/functions/setpgrp.html
+> http://pubs.opengroup.org/onlinepubs/9699919799/functions/setpgrp.html
 > 
-
-Looks good for me.
-Reviewed-by: Zhouping Liu <zliu@redhat.com>
-
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> Also fixes build error on Mac OS X 10.7.
+> 
+> Signed-off-by: Vinson Lee <vlee@twitter.com>
 > ---
->  testcases/commands/ade/file/file_test.sh | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
+>  testcases/open_posix_testsuite/tools/t0.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> diff --git a/testcases/commands/ade/file/file_test.sh
-> b/testcases/commands/ade/file/file_test.sh
-> index 70420e3..8a4e9b5 100755
-> --- a/testcases/commands/ade/file/file_test.sh
-> +++ b/testcases/commands/ade/file/file_test.sh
-> @@ -314,10 +314,16 @@ then
->          $LTPBIN/tst_resm TPASS "file: Recognised C program text
->          correctly"
->          rm -f $LTPTMP/cprog.c
->      else
-> -        $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
-> -             "file: Failed to Recognize C program text correctly.
-> Reason:"
-> -        TFAILCNT=$(( $TFAILCNT+1 ))
-> -
-> +        grep "C source, ASCII text" $LTPTMP/file.out > /dev/null
-> 2>&1
-> +        if [ $? -eq 0 ]
-> +        then
-> +            $LTPBIN/tst_resm TPASS "file: Recognised C program text
-> correctly"
-> +            rm -f $LTPTMP/cprog.c
-> +        else
-> +            $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
-> +                 "file: Failed to Recognize C program text
-> correctly. Reason:"
-> +            TFAILCNT=$(( $TFAILCNT+1 ))
-> +        fi
->      fi
->  else
->      $LTPBIN/tst_resm TFAIL "file: Failed to recognize C programi
->      text"
-> --
-> 1.7.12.rc0
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+> diff --git a/testcases/open_posix_testsuite/tools/t0.c b/testcases/open_posix_testsuite/tools/t0.c
+> index d8ac328..96bae9f 100644
+> --- a/testcases/open_posix_testsuite/tools/t0.c
+> +++ b/testcases/open_posix_testsuite/tools/t0.c
+> @@ -101,7 +101,7 @@ int main (int argc, char * argv[])
+>  		perror("fork failed");
+>  		exit(1);
+>  	case 0:
+> -		setpgrp(0, 0);
+> +		setpgrp();
+>  		execvp(argv[2], &argv[2]);
+>  		perror("execvp failed");
+>  		exit(1);
+
+Hmm, that is not enough to make it work in Linux, appereantly glibc
+doesn't expose any of the setpgrp() definitions unless you specify which
+one you want. And it's market as obsolete even in POSIX what about
+replacing it with with more up to date interface?
 
 -- 
-Thanks,
-Zhouping
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
