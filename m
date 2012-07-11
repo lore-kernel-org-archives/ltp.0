@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Sw3a7-0006MZ-L8
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 03:57:15 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sw3a5-0003j8-6Y
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 03:57:15 +0000
-Received: by obcva7 with SMTP id va7so10397484obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 30 Jul 2012 20:57:07 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1SoyPJ-0008E8-0j
+	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 15:00:49 +0000
+Date: Wed, 11 Jul 2012 16:16:10 +0200
+From: chrubis@suse.cz
+Message-ID: <20120711141610.GB13301@saboteur.suse.cz>
+References: <4FFD1202.2020903@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
-References: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
-	<6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
-Date: Mon, 30 Jul 2012 20:57:07 -0700
-Message-ID: <CAGH67wQHxhA0XwEjjA+E9NRE-Mh6bh2DmuLXz4ory5XZPTN4DQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls/numa: check syscall availability
+Content-Disposition: inline
+In-Reply-To: <4FFD1202.2020903@gmail.com>
+Subject: Re: [LTP] I want to make contribution for ltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,23 +24,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Miles Xu <miles.xu3@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Mon, Jul 30, 2012 at 7:53 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
->
-> some NUMA related syscalls: mbind, get_mempolicy are not supported on
-> some arches (e.g. i386), I use TEST macro to test the syscall in setup()
-> function, if the syscall is not implemented on the system, a TCONF
-> message will given like this:
->
-> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
+Hi!
+> Please give me a document or link related to todo list.
 
-    Using TEST isn't necessary to be honest: the syscall wrapper
-handles the (if you add a comment as to why things are being done in a
-single line, untested, that should be ok).
-Thanks!
--Garrett
+As already said, there is no TODO list, you need to go through the
+testcases yourself and find out what is missing. If you look, for an
+example on the syscalls tests, there are, for sure some syscalls
+missing. And the open_posix_testsuite is not finished either...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
