@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <huruomu@gmail.com>) id 1SvgBS-0003ee-Gc
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jul 2012 02:58:14 +0000
-Received: from mail-vb0-f47.google.com ([209.85.212.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SvgBR-0003Sa-Mn
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jul 2012 02:58:14 +0000
-Received: by vbbfr13 with SMTP id fr13so4423397vbb.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SpYjW-0005sH-7o
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jul 2012 05:48:06 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SpYjT-0005Jd-VN
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jul 2012 05:48:06 +0000
+Received: by pbbrq2 with SMTP id rq2so4830981pbb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 29 Jul 2012 19:58:08 -0700 (PDT)
+	Thu, 12 Jul 2012 22:47:58 -0700 (PDT)
+Message-ID: <4FFFB681.9000803@casparzhang.com>
+Date: Fri, 13 Jul 2012 13:47:45 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Date: Mon, 30 Jul 2012 10:58:08 +0800
-Message-ID: <CANoG8sX7V5VFgHdm7O2r1E4DXrfFM9jDeP2WDyD7roMXkGe-RA@mail.gmail.com>
-From: Romu <huruomu@gmail.com>
-Subject: [LTP] =?windows-1252?q?/usr/include/linux/capability=2Eh=3A70=3A_?=
-	=?windows-1252?q?error=3A_expected_specifier-qualifier-list_before?=
-	=?windows-1252?q?_=91=5F=5Fle32=92?=
+References: <0fbd4f879e0452245a9b4dc3ba7abc878d4161bd.1342102159.git.jstancek@redhat.com>
+In-Reply-To: <0fbd4f879e0452245a9b4dc3ba7abc878d4161bd.1342102159.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] numa_helper: fix compatibility with older libnuma
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,93 +27,159 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On 07/12/2012 10:09 PM, Jan Stancek wrote:
+> numa_helper relied on functions that do not exist
+> in old libnuma (<1), which caused that it couldn't be
+> compiled on old distros, for example RHEL 5.3.
+>
+> Old libnuma and kernel also do not support MPOL_F_MEMS_ALLOWED,
+> in which case it will assume that any node with memory > 0 can
+> be used.
+>
+> This patch adds compatibility for older versions, I tested it with:
+> numactl-0.9.8-7.el5
+> numactl-2.0.3-9.el6
+> numactl-2.0.7-6.el7
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>   testcases/kernel/syscalls/numa/lib/Makefile      |    2 +-
+>   testcases/kernel/syscalls/numa/lib/numa_helper.c |   52 +++++++++++++++++-----
+>   2 files changed, 41 insertions(+), 13 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/numa/lib/Makefile b/testcases/kernel/syscalls/numa/lib/Makefile
+> index d4a6f41..ba2fb48 100644
+> --- a/testcases/kernel/syscalls/numa/lib/Makefile
+> +++ b/testcases/kernel/syscalls/numa/lib/Makefile
+> @@ -20,7 +20,7 @@ top_srcdir		?= ../../../../..
+>
+>   include $(top_srcdir)/include/mk/env_pre.mk
+>
+> -CPPFLAGS		+= -I../../../include
+> +CPPFLAGS		+= -I../../../include $(NUMA_CPPFLAGS)
+>   LIB			:= libnuma_helper.a
+>
+>   include $(top_srcdir)/include/mk/lib.mk
+> diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.c b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+> index 855ee2c..20b06ca 100644
+> --- a/testcases/kernel/syscalls/numa/lib/numa_helper.c
+> +++ b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+> @@ -53,46 +53,74 @@ int get_allowed_nodes_arr(int *num_allowed_nodes, int **allowed_nodes)
+>   {
+>   #if HAVE_NUMA_H
+>   	int i;
+> -	struct bitmask *allowed_nodemask = NULL;
+> +	nodemask_t *allowed_nodemask = NULL;
+> +	unsigned long max_node;
+> +
+> +#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+> +	max_node = NUMA_NUM_NODES;
+> +	/*
+> +	 * NUMA_NUM_NODES is not reliable, libnuma >=2 is looking
+> +	 * at /proc/self/status to figure out correct number.
+> +	 * If buffer is not large enough get_mempolicy will fail with EINVAL.
+> +	 */
+> +	if (max_node < 1024)
+> +		max_node = 1024;
+> +#else
+> +	max_node = numa_max_possible_node() + 1;
+>   #endif
+> +#endif /* HAVE_NUMA_H */
+> +
+>   	*num_allowed_nodes = 0;
+>   	if (allowed_nodes)
+>   		*allowed_nodes = NULL;
+>
+> -#if HAVE_NUMA_H && HAVE_MPOL_CONSTANTS
+> -	if ((allowed_nodemask = numa_allocate_nodemask()) == NULL)
+> +#if HAVE_NUMA_H
+> +	if ((allowed_nodemask = malloc(max_node/8+1)) == NULL)
 
-I tried building LTP-20120614 on CentOS5 but it always failed (see
-error message below).  LTP-20120401 builds fine on CentOS5.
+Better not use assignment in if condition, you need use:
 
-make[3]: Entering directory
-`/dev/shm/ltp-full-20120614/testcases/kernel/security'
-make[4]: Entering directory
-`/dev/shm/ltp-full-20120614/testcases/kernel/security/cap_bound'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/dev/shm/ltp-full-20120614/testcases/kernel/include
--I../../../../include -I../../../../include   -L../../../../lib
-cap_bounds_r.c   -lltp  -o cap_bounds_r
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/dev/shm/ltp-full-20120614/testcases/kernel/include
--I../../../../include -I../../../../include   -L../../../../lib
-cap_bounds_rw.c   -lltp  -o cap_bounds_rw
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/dev/shm/ltp-full-20120614/testcases/kernel/include
--I../../../../include -I../../../../include   -L../../../../lib
-cap_bset_inh_bounds.c   -lltp  -o cap_bset_inh_bounds
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/dev/shm/ltp-full-20120614/testcases/kernel/include
--I../../../../include -I../../../../include   -L../../../../lib
-check_pe.c   -lltp  -o check_pe
-In file included from /usr/include/sys/capability.h:34,
-                 from cap_bset_inh_bounds.c:32:
-/usr/include/linux/capability.h:70: error: expected
-specifier-qualifier-list before =91__le32=92
-In file included from /usr/include/sys/capability.h:34,
-                 from cap_bounds_rw.c:29:
-/usr/include/linux/capability.h:70: error: expected
-specifier-qualifier-list before =91__le32=92
-In file included from /usr/include/sys/capability.h:34,
-                 from cap_bounds_r.c:30:
-/usr/include/linux/capability.h:70: error: expected
-specifier-qualifier-list before =91__le32=92
-In file included from /usr/include/sys/capability.h:34,
-                 from check_pe.c:33:
-/usr/include/linux/capability.h:70: error: expected
-specifier-qualifier-list before =91__le32=92
-cap_bset_inh_bounds.c:128:2: warning: no newline at end of file
-make[4]: *** [cap_bset_inh_bounds] Error 1
-make[4]: *** Waiting for unfinished jobs....
-cap_bounds_rw.c: In function =91main=92:
-cap_bounds_rw.c:82: warning: unused variable =91i=92
-cap_bounds_rw.c:81: warning: unused variable =91ret=92
-make[4]: *** [cap_bounds_rw] Error 1
-make[4]: *** [cap_bounds_r] Error 1
-check_pe.c:88:2: warning: no newline at end of file
-make[4]: *** [check_pe] Error 1
-make[4]: Leaving directory
-`/dev/shm/ltp-full-20120614/testcases/kernel/security/cap_bound'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory
-`/dev/shm/ltp-full-20120614/testcases/kernel/security'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/dev/shm/ltp-full-20120614/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/dev/shm/ltp-full-20120614/testcases'
-make: *** [testcases-all] Error 2
+allowed_nodemask = malloc(max_node/8+1);
+if (allowed_nodemask == NULL)
+     ....
+
+Else checkpatch.pl will complain.
+
+Rest looks good to me.
+
+Thanks,
+Caspar
+
+>   		return -1;
+> +	nodemask_zero(allowed_nodemask);
+>
+>   	if (allowed_nodes) {
+> -		*allowed_nodes = malloc(sizeof(int)*allowed_nodemask->size);
+> -		if (*allowed_nodes == NULL)
+> +		*allowed_nodes = malloc(sizeof(int)*max_node);
+> +		if (*allowed_nodes == NULL) {
+> +			free(allowed_nodemask);
+>   			return -1;
+> +		}
+>   	}
+>
+> +#if MPOL_F_MEMS_ALLOWED
+>   	/*
+>   	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+>   	 * utility function in older versions:
+>   	 * http://www.spinics.net/lists/linux-numa/msg00849.html
+>   	 */
+> -	if (syscall(__NR_get_mempolicy, NULL, allowed_nodemask->maskp,
+> -		allowed_nodemask->size, 0, MPOL_F_MEMS_ALLOWED) < 0) {
+> -		numa_bitmask_free(allowed_nodemask);
+> +	if (syscall(__NR_get_mempolicy, NULL, allowed_nodemask->n,
+> +		max_node, 0, MPOL_F_MEMS_ALLOWED) < 0) {
+> +		free(allowed_nodemask);
+>   		if (allowed_nodes) {
+>   			free(*allowed_nodes);
+>   			*allowed_nodes = NULL;
+>   		}
+>   		return -2;
+>   	}
+> +#else
+> +	/*
+> +	 * old libnuma/kernel don't have MPOL_F_MEMS_ALLOWED, so let's assume
+> +	 * that we can use any node with memory > 0
+> +	 */
+> +	for (i = 0; i < max_node; i++)
+> +		if (numa_node_size64(i, NULL) > 0)
+> +			nodemask_set(allowed_nodemask, i);
+>
+> -	for (i = 0; i <	allowed_nodemask->size; i++) {
+> -		if (numa_bitmask_isbitset(allowed_nodemask, i)) {
+> +#endif /* MPOL_F_MEMS_ALLOWED */
+> +	for (i = 0; i < max_node; i++) {
+> +		if (nodemask_isset(allowed_nodemask, i)) {
+>   			if (allowed_nodes)
+>   				(*allowed_nodes)[*num_allowed_nodes] = i;
+>   			(*num_allowed_nodes)++;
+>   		}
+>   	}
+> -	numa_bitmask_free(allowed_nodemask);
+> -#endif
+> +	free(allowed_nodemask);
+> +#endif /* HAVE_NUMA_H */
+>   	return 0;
+>   }
+>
+>
 
 
-I found:
-http://osdir.com/ml/debian-bugs-dist/2009-12/msg00664.html
-https://bugs.gentoo.org/show_bug.cgi?id=3D264770
 
-But still can't figure out how to fix the issue.
-Any idea?
-
-Thanks
-Romu
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
