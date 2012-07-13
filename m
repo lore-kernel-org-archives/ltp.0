@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SlyiA-0004CL-VV
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 08:43:54 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Slyi4-0005M0-Tv
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 08:43:54 +0000
-Date: Tue, 03 Jul 2012 04:43:35 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <8f888fa5-849f-44d8-972c-cfb1ea59eeb0@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <0ca795c6-6a2b-46b3-a1e5-b9057cafd331@zmail17.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SpZxM-0008GL-7l
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jul 2012 07:06:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SpZxJ-00064o-UZ
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jul 2012 07:06:28 +0000
+Message-ID: <4FFFC8CD.2020601@cn.fujitsu.com>
+Date: Fri, 13 Jul 2012 15:05:49 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+References: <0fbd4f879e0452245a9b4dc3ba7abc878d4161bd.1342102159.git.jstancek@redhat.com>
+	<4FFFB681.9000803@casparzhang.com>
+In-Reply-To: <4FFFB681.9000803@casparzhang.com>
+Subject: Re: [LTP] [PATCH] numa_helper: fix compatibility with older libnuma
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,277 +30,169 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>, CAI Qian <caiqian@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+On 07/13/2012 01:47 PM, Caspar Zhang wrote:
+> On 07/12/2012 10:09 PM, Jan Stancek wrote:
+>> numa_helper relied on functions that do not exist
+>> in old libnuma (<1), which caused that it couldn't be
+>> compiled on old distros, for example RHEL 5.3.
+>>
+>> Old libnuma and kernel also do not support MPOL_F_MEMS_ALLOWED,
+>> in which case it will assume that any node with memory > 0 can
+>> be used.
+>>
+>> This patch adds compatibility for older versions, I tested it with:
+>> numactl-0.9.8-7.el5
+>> numactl-2.0.3-9.el6
+>> numactl-2.0.7-6.el7
+>>
+>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
+Pushed with the style fixed. Thank you.
 
------ Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: "Zhouping Liu" <zliu@redhat.com>
-> Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Caspar Zhang" <caspar@casparzhang.com>, "CAI Qian"
-> <caiqian@redhat.com>, gaowanlong@cn.fujitsu.com
-> Sent: Tuesday, July 3, 2012 4:03:00 PM
-> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+Wanlong Gao
+
+>> ---
+>>   testcases/kernel/syscalls/numa/lib/Makefile      |    2 +-
+>>   testcases/kernel/syscalls/numa/lib/numa_helper.c |   52 +++++++++++++++++-----
+>>   2 files changed, 41 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/numa/lib/Makefile b/testcases/kernel/syscalls/numa/lib/Makefile
+>> index d4a6f41..ba2fb48 100644
+>> --- a/testcases/kernel/syscalls/numa/lib/Makefile
+>> +++ b/testcases/kernel/syscalls/numa/lib/Makefile
+>> @@ -20,7 +20,7 @@ top_srcdir		?= ../../../../..
+>>
+>>   include $(top_srcdir)/include/mk/env_pre.mk
+>>
+>> -CPPFLAGS		+= -I../../../include
+>> +CPPFLAGS		+= -I../../../include $(NUMA_CPPFLAGS)
+>>   LIB			:= libnuma_helper.a
+>>
+>>   include $(top_srcdir)/include/mk/lib.mk
+>> diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.c b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+>> index 855ee2c..20b06ca 100644
+>> --- a/testcases/kernel/syscalls/numa/lib/numa_helper.c
+>> +++ b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+>> @@ -53,46 +53,74 @@ int get_allowed_nodes_arr(int *num_allowed_nodes, int **allowed_nodes)
+>>   {
+>>   #if HAVE_NUMA_H
+>>   	int i;
+>> -	struct bitmask *allowed_nodemask = NULL;
+>> +	nodemask_t *allowed_nodemask = NULL;
+>> +	unsigned long max_node;
+>> +
+>> +#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+>> +	max_node = NUMA_NUM_NODES;
+>> +	/*
+>> +	 * NUMA_NUM_NODES is not reliable, libnuma >=2 is looking
+>> +	 * at /proc/self/status to figure out correct number.
+>> +	 * If buffer is not large enough get_mempolicy will fail with EINVAL.
+>> +	 */
+>> +	if (max_node < 1024)
+>> +		max_node = 1024;
+>> +#else
+>> +	max_node = numa_max_possible_node() + 1;
+>>   #endif
+>> +#endif /* HAVE_NUMA_H */
+>> +
+>>   	*num_allowed_nodes = 0;
+>>   	if (allowed_nodes)
+>>   		*allowed_nodes = NULL;
+>>
+>> -#if HAVE_NUMA_H && HAVE_MPOL_CONSTANTS
+>> -	if ((allowed_nodemask = numa_allocate_nodemask()) == NULL)
+>> +#if HAVE_NUMA_H
+>> +	if ((allowed_nodemask = malloc(max_node/8+1)) == NULL)
+> 
+> Better not use assignment in if condition, you need use:
+> 
+> allowed_nodemask = malloc(max_node/8+1);
+> if (allowed_nodemask == NULL)
+>      ....
+> 
+> Else checkpatch.pl will complain.
+> 
+> Rest looks good to me.
+> 
+> Thanks,
+> Caspar
+> 
+>>   		return -1;
+>> +	nodemask_zero(allowed_nodemask);
+>>
+>>   	if (allowed_nodes) {
+>> -		*allowed_nodes = malloc(sizeof(int)*allowed_nodemask->size);
+>> -		if (*allowed_nodes == NULL)
+>> +		*allowed_nodes = malloc(sizeof(int)*max_node);
+>> +		if (*allowed_nodes == NULL) {
+>> +			free(allowed_nodemask);
+>>   			return -1;
+>> +		}
+>>   	}
+>>
+>> +#if MPOL_F_MEMS_ALLOWED
+>>   	/*
+>>   	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+>>   	 * utility function in older versions:
+>>   	 * http://www.spinics.net/lists/linux-numa/msg00849.html
+>>   	 */
+>> -	if (syscall(__NR_get_mempolicy, NULL, allowed_nodemask->maskp,
+>> -		allowed_nodemask->size, 0, MPOL_F_MEMS_ALLOWED) < 0) {
+>> -		numa_bitmask_free(allowed_nodemask);
+>> +	if (syscall(__NR_get_mempolicy, NULL, allowed_nodemask->n,
+>> +		max_node, 0, MPOL_F_MEMS_ALLOWED) < 0) {
+>> +		free(allowed_nodemask);
+>>   		if (allowed_nodes) {
+>>   			free(*allowed_nodes);
+>>   			*allowed_nodes = NULL;
+>>   		}
+>>   		return -2;
+>>   	}
+>> +#else
+>> +	/*
+>> +	 * old libnuma/kernel don't have MPOL_F_MEMS_ALLOWED, so let's assume
+>> +	 * that we can use any node with memory > 0
+>> +	 */
+>> +	for (i = 0; i < max_node; i++)
+>> +		if (numa_node_size64(i, NULL) > 0)
+>> +			nodemask_set(allowed_nodemask, i);
+>>
+>> -	for (i = 0; i <	allowed_nodemask->size; i++) {
+>> -		if (numa_bitmask_isbitset(allowed_nodemask, i)) {
+>> +#endif /* MPOL_F_MEMS_ALLOWED */
+>> +	for (i = 0; i < max_node; i++) {
+>> +		if (nodemask_isset(allowed_nodemask, i)) {
+>>   			if (allowed_nodes)
+>>   				(*allowed_nodes)[*num_allowed_nodes] = i;
+>>   			(*num_allowed_nodes)++;
+>>   		}
+>>   	}
+>> -	numa_bitmask_free(allowed_nodemask);
+>> -#endif
+>> +	free(allowed_nodemask);
+>> +#endif /* HAVE_NUMA_H */
+>>   	return 0;
+>>   }
+>>
+>>
 > 
 > 
 > 
-> ----- Original Message -----
-> > From: "Zhouping Liu" <zliu@redhat.com>
-> > To: gaowanlong@cn.fujitsu.com
-> > Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek"
-> > <jstancek@redhat.com>, "Caspar Zhang"
-> > <caspar@casparzhang.com>, "CAI Qian" <caiqian@redhat.com>
-> > Sent: Friday, 29 June, 2012 6:37:19 AM
-> > Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
-> > 
-> > Hi,
-> > 
-> > ----- Original Message -----
-> > > From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> > > To: "Zhouping Liu" <zliu@redhat.com>
-> > > Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek"
-> > > <jstancek@redhat.com>
-> > > Sent: Friday, June 29, 2012 10:39:57 AM
-> > > Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
-> > > 
-> > > On 06/29/2012 10:23 AM, Zhouping Liu wrote:
-> > > > Hi,
-> > > > 
-> > > > ----- Original Message -----
-> > > >> From: "Zhouping Liu" <zliu@redhat.com>
-> > > >> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> > > >> Sent: Tuesday, June 26, 2012 11:57:35 PM
-> > > >> Subject: [LTP]  [PATCH] mm/oom05: new testcase
-> > > >>
-> > > >> add a new testcase to test OOM on each NUMA node
-> > > > 
-> > > > I have tested it in several systems with 2 NUMA nodes and 8
-> > > > NUMA
-> > > > nodes,
-> > > > they are all good, any comment?
-> > > > 
-> > > > Thanks,
-> > > > Zhouping
-> > > > 
-> > > >>
-> > > >> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> > > >> ---
-> > > >>  runtest/mm                       |    1 +
-> > > >>  testcases/kernel/mem/oom/oom05.c |  131
-> > > >>  ++++++++++++++++++++++++++++++++++++++
-> > > >>  2 files changed, 132 insertions(+)
-> > > >>  create mode 100644 testcases/kernel/mem/oom/oom05.c
-> > > >>
-> > > >> diff --git a/runtest/mm b/runtest/mm
-> > > >> index 2dd66f0..a60c04b 100644
-> > > >> --- a/runtest/mm
-> > > >> +++ b/runtest/mm
-> > > >> @@ -77,6 +77,7 @@ oom01 oom01
-> > > >>  oom02 oom02
-> > > >>  oom03 oom03
-> > > >>  oom04 oom04
-> > > >> +oom05 oom05
-> > > >>  
-> > > >>  swapping01 swapping01 -i 5
-> > > >>  
-> > > >> diff --git a/testcases/kernel/mem/oom/oom05.c
-> > > >> b/testcases/kernel/mem/oom/oom05.c
-> > > >> new file mode 100644
-> > > >> index 0000000..046ddbb
-> > > >> --- /dev/null
-> > > >> +++ b/testcases/kernel/mem/oom/oom05.c
-> > > >> @@ -0,0 +1,131 @@
-> > > >> +/*
-> > > >> + * Out Of Memory (OOM) on Each NUMA nodes
-> > > >> + *
-> > > >> + * The program is designed to cope with unpredictable like
-> > > >> amount
-> > > >> and
-> > > >> + * system physical memory, swap size and other VMM technology
-> > > >> like
-> > > >> KSM,
-> > > >> + * memcg, memory hotplug and so on which may affect the OOM
-> > > >> + * behaviours. It simply increase the memory consumption 3G
-> > > >> each
-> > > >> time
-> > > >> + * until all the available memory is consumed and OOM is
-> > > >> triggered.
-> > > >> + *
-> > > >> + * Copyright (C) 2012  Red Hat, Inc.
-> > > >> + * This program is free software; you can redistribute it
-> > > >> and/or
-> > > >> + * modify it under the terms of version 2 of the GNU General
-> > > >> Public
-> > > >> + * License as published by the Free Software Foundation.
-> > > >> + *
-> > > >> + * This program is distributed in the hope that it would be
-> > > >> useful,
-> > > >> + * but WITHOUT ANY WARRANTY; without even the implied
-> > > >> warranty
-> > > >> of
-> > > >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> > > >> + *
-> > > >> + * Further, this software is distributed without any warranty
-> > > >> that
-> > > >> it
-> > > >> + * is free of the rightful claim of any third person
-> > > >> regarding
-> > > >> + * infringement or the like.  Any license provided herein,
-> > > >> whether
-> > > >> + * implied or otherwise, applies only to this software file.
-> > > >>  Patent
-> > > >> + * licenses, if any, provided herein do not apply to
-> > > >> combinations
-> > > >> of
-> > > >> + * this program with other software, or any other product
-> > > >> whatsoever.
-> > > >> + *
-> > > >> + * You should have received a copy of the GNU General Public
-> > > >> License
-> > > >> + * along with this program; if not, write the Free Software
-> > > >> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-> > > >> MA
-> > > >> + * 02110-1301, USA.
-> > > >> + */
-> > > >> +#include <sys/types.h>
-> > > >> +#include <sys/stat.h>
-> > > >> +#include <sys/wait.h>
-> > > >> +#include <errno.h>
-> > > >> +#include <fcntl.h>
-> > > >> +#include <stdio.h>
-> > > >> +#include <stdlib.h>
-> > > >> +#include <unistd.h>
-> > > >> +#include "test.h"
-> > > >> +#include "safe_macros.h"
-> > > >> +#include "usctest.h"
-> > > >> +#include "mem.h"
-> > > >> +
-> > > >> +char *TCID = "oom05";
-> > > >> +int TST_TOTAL = 1;
-> > > >> +
-> > > >> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> > > >> +	&& HAVE_MPOL_CONSTANTS
-> > > >> +#include <numa.h>
-> > > >> +#include <numaif.h>
-> > > >> +
-> > > >> +int main(int argc, char *argv[])
-> > > >> +{
-> > > >> +	char *msg;
-> > > >> +	int lc;
-> > > >> +	long nodes[MAXNODES];
-> > > >> +	int nnodes, i;
-> > > >> +	pid_t pids[MAXNODES];
-> > > >> +	int status;
-> > > >> +	unsigned long nmasks[MAXNODES];
-> > > >> +
-> > > >> +	msg = parse_opts(argc, argv, NULL, NULL);
-> > > >> +	if (msg != NULL)
-> > > >> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> > > >> +
-> > > >> +#if __WORDSIZE == 32
-> > > >> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit
-> > > >> system.");
-> > > >> +#endif
-> > > >> +	nnodes = count_numa(nodes);
-> > > >> +	if (nnodes <= 1)
-> > > >> +		tst_brkm(TCONF, NULL, "required a NUMA system.");
-> > > >> +
-> > > >> +	setup();
-> > > >> +
-> > > >> +	set_sys_tune("overcommit_memory", 1, 1);
-> > > >> +
-> > > >> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> > > >> +		Tst_count = 0;
-> > > >> +
-> > > >> +		for (i = 0; i < nnodes; i++) {
-> > > >> +			nmasks[i] = 1 << nodes[i];
-> > > >> +			switch (pids[i] = fork()) {
-> > > >> +			case -1:
-> > > >> +				tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> > > >> +			case 0:
-> > > >> +				if (set_mempolicy(MPOL_BIND, &nmasks[i],
-> > > >> +				    MAXNODES) == -1)
-> > > >> +					tst_brkm(TBROK|TERRNO, cleanup,
-> > > >> +					    "set_mempolicy");
-> > > >> +				tst_resm(TINFO, "start oom on numa node%lu",
-> > > >> +				    nodes[i]);
-> > > >> +				oom(NORMAL, 0, 0);
-> > > >> +				exit(0);
-> > > >> +			}
-> > > >> +		}
-> > > 
-> > > Hi Zhouping,
-> > > 
-> > > Does it need get_allowed_nodes() that Jan added?
-> > > 
-> > 
-> > yes, I met some errors when the system has unbalance NUMA system:
-> > 
-> > the follow test machine has 2 numa nodes 0-1, I offline all node1's
-> > cpu
-> > # echo 0 > /sys/devices/system/node1/cpu*/online
-> > 
-> > then you will find node1 don't contain any available cpus:
-> > 
-> > # numactl -H
-> > available: 2 nodes (0-1)
-> > node 0 cpus: 0 1 2 3
-> > node 0 size: 4084 MB
-> > node 0 free: 2929 MB
-> > node 1 cpus:
-> > node 1 size: 4096 MB
-> > node 1 free: 3949 MB
-> > node distances:
-> > node   0   1
-> >   0:  10  21
-> >   1:  21  10
-> > 
-> > under such above setup, oom[2|4] will failed:
-> > 
-> > ...
-> > oom02       0  TINFO  :  process cpuset.
-> > oom02       1  TBROK  :  write /dev/cpuset/1/cpuset.cpus:
-> > errno=EINVAL(22): Invalid argument
-> > oom02       2  TBROK  :  Remaining cases broken
-> > oom02       0  TINFO  :  set overcommit_memory to 0
-> > oom02       0  TWARN  :  umount /dev/cpuset: errno=EBUSY(16):
-> > Device
-> > or resource busy
-> > oom02       0  TWARN  :  rmdir /dev/cpuset: errno=EBUSY(16): Device
-> > or resource busy
-> > 
-> > the failure is because node1 didn't have available cpus, but it
-> > tried
-> > to write node1's cpus to /dev/cpuset/1/cpuset.cpus.
-> > 
-> > and I tested get_allowed_nodes(), it didn't fix the error,
-> > with above setup, I expected get_allowed_nodes_arr() can mark node1
-> > is a unavailable node,
-> > but in actual it didn't, and it's the similar with count_numa()
-> > inside testcase/kernel/mem/lib/mem.c.
-> > so, Jan, do you have any thoughts to avoid the issues? if
-> > get-allowed_nodes* can fix these issues, I also suggest we can
-> > define them in ltp/include/numa_helper.h or other file name,
-> > comments?
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
-> Zhouping,
-> 
-> Are other tests, such as move_pages also failing on this setup?
 
-no, I tested move_pages* on the setup, all passed, so this setup didn't affect move_pages.
-but it blocked oom0[2|4] & ksm0[2|4] cases, I will prepare a patch for it,
 
-BTW, I'm interested in the various different NUMA setups in previous mail[1],
-I'm not sure these setups are faked or real, if they are faked, could you tell me
-how you can setup? (I have only one NUMA machine in my hands, and it's an normal one,
-if I can imitate more special NUMA setup, it will be big help for me to test other cases.
-and I tried kernel cmdline 'numa=fake=N', but I couldn't get what I expected,
-so please share your ideas if you have different methods, many thanks!)
-
-[1] http://sourceforge.net/mailarchive/forum.php?thread_name=4FC48906.6030109%40redhat.com&forum_name=ltp-list
-
-Thanks,
-Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
