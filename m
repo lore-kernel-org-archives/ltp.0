@@ -1,23 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1Slzu8-0007Bz-J2
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 10:00:20 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Slzu4-0002Ph-1p
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 10:00:20 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.3/8.14.3) with ESMTP id q63A0APa018870
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 3 Jul 2012 03:00:10 -0700 (PDT)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Tue, 3 Jul 2012 17:59:59 +0800
-Message-ID: <1341309599-10008-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <preeti@linux.vnet.ibm.com>) id 1Sr5LV-0008Pk-5Y
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jul 2012 10:49:37 +0000
+Received: from e28smtp01.in.ibm.com ([122.248.162.1])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Sr5LT-0006YY-So
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jul 2012 10:49:37 +0000
+Received: from /spool/local
+	by e28smtp01.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <preeti@linux.vnet.ibm.com>; 
+	Tue, 17 Jul 2012 16:19:27 +0530
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+	by d28relay04.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	q6HAnHAo46137596
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jul 2012 16:19:17 +0530
+Received: from d28av04.in.ibm.com (loopback [127.0.0.1])
+	by d28av04.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	q6HGJ5D9007613
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Jul 2012 02:19:05 +1000
+Received: from [9.124.35.203] (preeti.in.ibm.com [9.124.35.203] (may be
+	forged))
+	by d28av04.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	q6HGJ5EN007581
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Jul 2012 02:19:05 +1000
+Message-ID: <500545CA.2020208@linux.vnet.ibm.com>
+Date: Tue, 17 Jul 2012 16:30:26 +0530
+From: preeti <preeti@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] pthread_cond_signal/1-1: fails on routerstation
+Subject: [LTP] [RFC] cpu_hotplug: Adding a cpu hotplug stress test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,69 +43,123 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Case pthread_cond_signal/1-1 fails on routerstation. The OS is Yocto
-linux 1.2 with kernel 3.0.24, and c library is eglibc 2.15.
+Hi
 
-The fail log:
-  [Thread 0x0x2c56d4b0] started and locked the mutex
-  [Thread 0x0x2c56d4b0] is waiting for the cond
-  [Thread 0x0x2bd6d4b0] started and locked the mutex
-  [Thread 0x0x2bd6d4b0] is waiting for the cond
-  [Thread 0x0x2b56d4b0] started and locked the mutex
-  [Thread 0x0x2b56d4b0] is waiting for the cond
-  [Main thread] signals a condition
-  [Thread 0x0x2c56d4b0] was wakened and acquired the mutex again
-  [Thread 0x0x2c56d4b0] released the mutex
-  [Main thread] 1 waiters were wakened
-  [Main thread] signals to wake up the next thread
-  [Thread 0x0x2bd6d4b0] was wakened and acquired the mutex again
-  [Thread 0x0x2bd6d4b0] released the mutex
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Main thread] signals to wake up the next thread
-  [Thread 0x0x2b56d4b0] was wakened and acquired the mutex again
-  [Main thread] had to signal the condition 7 times
-  [Main thread] to wake up 3 threads
-  . Test FAILED.
+The test case included is a simple case for cpu hotplug.It does offlines the cpus that are online and does an online of the offlined cpus in a loop
 
-The main thread call pthread_cond_signal try to signal the child threads
-those are waiting on the condition, then call usleep(100) to relinquish
-the cpu. But 100 useconds is not enough and the main thread continue to
-run. So the case fails.
+This stress test had failed on certain distros when the loop was run infinite times.This test is presented here for review of correctness and necessity,as this is the first attempt at contributing test cases to LTP from this end.
 
-Increase the sleep timeto 1000 useconds to make the case pass.
+The test is meant to be included under the testcases/kernel/hotplug/cpu_hotplug/functional directory.
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
+Regards
+Preeti
 ---
- .../interfaces/pthread_cond_signal/1-1.c           |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-index bf55b31..910931d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-@@ -142,7 +142,7 @@ int main()
- 			fprintf(stderr,"Main failed to signal the condition\n");
- 			exit(PTS_UNRESOLVED);
- 		}
--		usleep(100);
-+		usleep(1000);
- 	}
- 
- 	if (i >= THREAD_NUM) {
-@@ -160,4 +160,4 @@ int main()
- 	}
- 	printf("Test PASSED\n");
- 	return PTS_PASS;
--}
-\ No newline at end of file
-+}
--- 
-1.7.5.4
+# File		:	stress_cpu_hotplug.sh
+# Description	:	Switches the online state of all the cpus in  a
+# 			loop to test the robustness of cpu hotplug
+#		:	The loop iteration of 20 is a randomly chosen number
+
+#! /bin/bash
+
+# Includes:
+LHCS_PATH=${LHCS_PATH:-$LTPROOT/testcases/bin/cpu_hotplug}
+. $LHCS_PATH/include/hotplug.fns
+. $LHCS_PATH/include/testsuite.fns
+
+setup()
+{
+	export TST_TOTAL=1
+	export TCID="setup"
+	export TST_COUNT=0
+
+	trap "cleanup" 0
+	RC=0
+
+	return $RC
+
+}
+cleanup()
+{
+	set_all_cpu_state "$STATE"
+}
+
+test01()
+{
+
+	TCID="stress_cpu_hotplug"
+	TST_COUNT=1
+	RC=0
+
+	NUMBER_OF_CPUS=`ls -d /sys/devices/system/cpu/cpu[0-9]* | wc -l`
+
+	cd /sys/devices/system/cpu
+
+	for ARRAY_INDEX in `seq 20`
+	do
+		for ((i=1; i < NUMBER_OF_CPUS; i++ ))
+		do
+			#skip the boot cpu;cannot offline it
+			if [ $i -eq 0 ]
+			then
+				continue
+			fi
+
+        		state=`cat cpu$i/online`
+		        if [ $state -eq 0 ]
+        		then
+				RC=online_cpu $i
+        		else
+                		RC=offline_cpu $i
+        		fi
+
+			if [ $RC -ne 0 ]
+			then
+				test_brkm TBROK NULL "stress_cpu_hotplug:
+							cpu$i failed to hotplug"
+				return $RC
+			fi
+		done
+
+		if [ `expr $ARRAY_INDEX % 10` == 0 ]
+		then
+			echo "stress test successfully completed
+				"$ARRAY_INDEX" times">$LTPTMP/test_file.out
+		fi
+	done
+	test_res TPASS $LTPTMP/test_file.out "stress_cpu_hotplug:SUCCESS"
+	return $RC
+}
+
+#main
+
+RC=0
+LTPTMP=${TMP}
+
+#create output file to dump test results
+touch $LTPTMP/test_file.out || RC=$?
+
+if [ $RC -ne 0 ]
+then
+	test_resm TFAIL "Failed to create output file under temp directory"
+	exit $RC
+fi
+
+if ! get_all_cpus >/dev/null 2>$RC;
+then
+	tst_brkm TCONF "system does not have required cpu hotplug support"
+	exit $RC
+fi
+
+setup || exit $RC
+
+#capture the initial state of the cpus
+state=`cd /sys/devices/system/cpu/ && grep '' */online | sed -e
+'s/\/online//g' -e 's/\ /\n/g'`
+
+test01 || exit $RC
 
 
 ------------------------------------------------------------------------------
