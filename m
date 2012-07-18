@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <miles.xu3@gmail.com>) id 1SopgB-0002aH-9a
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 05:41:39 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SopgA-0005Jw-N1
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 05:41:39 +0000
-Received: by pbbrq2 with SMTP id rq2so1447405pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 10 Jul 2012 22:41:32 -0700 (PDT)
-Message-ID: <4FFD1202.2020903@gmail.com>
-Date: Wed, 11 Jul 2012 13:41:22 +0800
-From: Miles Xu <miles.xu3@gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SrKY4-0000tW-Uu
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 03:03:36 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SrKY3-0006za-7W
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 03:03:36 +0000
+Message-ID: <50062757.1000304@cn.fujitsu.com>
+Date: Wed, 18 Jul 2012 11:02:47 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] I want to make contribution for ltp
+References: <500545CA.2020208@linux.vnet.ibm.com>
+In-Reply-To: <500545CA.2020208@linux.vnet.ibm.com>
+Subject: Re: [LTP] [RFC] cpu_hotplug: Adding a cpu hotplug stress test
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,19 +28,166 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: preeti <preeti@linux.vnet.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi Casper,
+Hi Preeti,
 
-I want to write some new cases for ltp. My issue is whether this is a 
-todo list for reference.
-Please give me a document or link related to todo list.
+> Hi
+> 
+> The test case included is a simple case for cpu hotplug.It does offlines the cpus that are online and does an online of the offlined cpus in a loop
+> 
+> This stress test had failed on certain distros when the loop was run infinite times.This test is presented here for review of correctness and necessity,as this is the first attempt at contributing test cases to LTP from this end.
+> 
+> The test is meant to be included under the testcases/kernel/hotplug/cpu_hotplug/functional directory.
+
+Why didn't you send this as a patch format?
+Some comments below.
+
+> 
+> Regards
+> Preeti
+> ---
+> 
+> # File		:	stress_cpu_hotplug.sh
+> # Description	:	Switches the online state of all the cpus in  a
+> # 			loop to test the robustness of cpu hotplug
+> #		:	The loop iteration of 20 is a randomly chosen number
+> 
+> #! /bin/bash
+> 
+> # Includes:
+> LHCS_PATH=${LHCS_PATH:-$LTPROOT/testcases/bin/cpu_hotplug}
+> . $LHCS_PATH/include/hotplug.fns
+> . $LHCS_PATH/include/testsuite.fns
+> 
+> setup()
+> {
+> 	export TST_TOTAL=1
+> 	export TCID="setup"
+> 	export TST_COUNT=0
+> 
+> 	trap "cleanup" 0
+> 	RC=0
+> 
+> 	return $RC
+> 
+> }
+> cleanup()
+> {
+> 	set_all_cpu_state "$STATE"
+
+I can't find the definition of "$STATE" in your test script.
+
+> }
+> 
+> test01()
+> {
+> 
+> 	TCID="stress_cpu_hotplug"
+> 	TST_COUNT=1
+> 	RC=0
+> 
+> 	NUMBER_OF_CPUS=`ls -d /sys/devices/system/cpu/cpu[0-9]* | wc -l`
+> 
+> 	cd /sys/devices/system/cpu
+> 
+> 	for ARRAY_INDEX in `seq 20`
+> 	do
+> 		for ((i=1; i < NUMBER_OF_CPUS; i++ ))
+> 		do
+> 			#skip the boot cpu;cannot offline it
+> 			if [ $i -eq 0 ]
+> 			then
+> 				continue
+> 			fi
+> 
+>         		state=`cat cpu$i/online`
+> 		        if [ $state -eq 0 ]
+>         		then
+> 				RC=online_cpu $i
+>         		else
+>                 		RC=offline_cpu $i
+>         		fi
+
+Can it always success? I suppose that it need a bit sleep for the online/offline time delay.
+
+> 
+> 			if [ $RC -ne 0 ]
+> 			then
+> 				test_brkm TBROK NULL "stress_cpu_hotplug:
+> 							cpu$i failed to hotplug"
+> 				return $RC
+> 			fi
+> 		done
+> 
+> 		if [ `expr $ARRAY_INDEX % 10` == 0 ]
+> 		then
+> 			echo "stress test successfully completed
+> 				"$ARRAY_INDEX" times">$LTPTMP/test_file.out
+
+Every 10 times means a successful test?
+
+> 		fi
+> 	done
+> 	test_res TPASS $LTPTMP/test_file.out "stress_cpu_hotplug:SUCCESS"
+> 	return $RC
+> }
+> 
+> #main
+> 
+> RC=0
+> LTPTMP=${TMP}
+> 
+> #create output file to dump test results
+> touch $LTPTMP/test_file.out || RC=$?
+> 
+> if [ $RC -ne 0 ]
+> then
+> 	test_resm TFAIL "Failed to create output file under temp directory"
+> 	exit $RC
+> fi
+> 
+> if ! get_all_cpus >/dev/null 2>$RC;
+> then
+> 	tst_brkm TCONF "system does not have required cpu hotplug support"
+> 	exit $RC
+> fi
+> 
+> setup || exit $RC
+> 
+> #capture the initial state of the cpus
+> state=`cd /sys/devices/system/cpu/ && grep '' */online | sed -e
+> 's/\/online//g' -e 's/\ /\n/g'`
+
+This is the "STATE"?
+
+Does the output of get_all_cpu_states() not suit the set_all_cpu_states()? 
+if not, please fix it.
+
+> 
+> test01 || exit $RC
+
+Don't you want to cleanup and reset the cpu state after the test?
+
+Thanks,
+Wanlong Gao
+
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
-thanks,
-
-Miles
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
