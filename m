@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SlepE-00006N-HF
-	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 11:29:52 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SlepA-00011Q-6E
-	for ltp-list@lists.sourceforge.net; Mon, 02 Jul 2012 11:29:52 +0000
-Message-ID: <4FF18618.3040509@cn.fujitsu.com>
-Date: Mon, 02 Jul 2012 19:29:28 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1341226390-16789-1-git-send-email-eguan@redhat.com>
-In-Reply-To: <1341226390-16789-1-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/setxattr03: turn off immutable and
- append bit only if already set
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SrQ2U-0008C3-GB
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 08:55:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SrQ2T-0007Hp-IQ
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 08:55:22 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q6I8tFPG012527
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Jul 2012 04:55:15 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Wed, 18 Jul 2012 16:51:14 +0800
+Message-Id: <cd2c28ba71de86eba7b5348d6372a240b835be22.1342601407.git.zliu@redhat.com>
+Subject: [LTP]  [PATCH] mm/lib: correct the log messages
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,54 +26,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/02/2012 06:53 PM, Eryu Guan wrote:
-> 
-> Turn off immutable and append-only attribute in cleanup() only if they
-> are already turned on. Otherwise bogus WARNING would fail test case when
-> no xattr support in fs or mount without user_xattr option.
-> 
-> setxattr03    1  TCONF  :  No xattr support in fs or fs mounted without user_xattr option
-> setxattr03    2  TCONF  :  Remaining cases not appropriate for configuration
-> setxattr03    0  TWARN  :  Unset setxattr03immutable immutable failed: errno=EINVAL(22): Invalid argument
-> setxattr03    0  TWARN  :  Unset setxattr03appendonly append-only failed: errno=EINVAL(22): Invalid argument
-> 
-> (The check-fd-value way is not perfect, but I think it's much more
-> easier and could cover the most common case.)
+commit 5ad42f6cae increased the sleep time of ksmd scanning
+inside _wait_ksm_done(), but it forgot to update the log messages.
 
-pushed, thanks,
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Wanlong Gao
-
-> 
-> Signed-off-by: Eryu Guan <eguan@redhat.com>
-> ---
->  testcases/kernel/syscalls/setxattr/setxattr03.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 9ec0454..81410d8 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -183,7 +183,7 @@ static void _wait_ksmd_done(void)
+ 	}
+ 
+ 	tst_resm(TINFO, "ksm daemon takes %ds to scan all mergeable pages",
+-		    count * 5);
++		    count * 10);
+ }
+ 
+ static void _group_check(int run, int pages_shared, int pages_sharing,
+-- 
+1.7.10.4
 
 
 ------------------------------------------------------------------------------
