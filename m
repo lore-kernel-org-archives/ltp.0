@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Sly4s-0008De-IK
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 08:03:18 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SrLA2-0007R3-Ic
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 03:42:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sly4k-00077c-EX
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 08:03:18 +0000
-Date: Tue, 03 Jul 2012 04:03:00 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <0ca795c6-6a2b-46b3-a1e5-b9057cafd331@zmail17.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <dce1058c-b9d4-4670-aee2-c39c7cf970a1@zmail13.collab.prod.int.phx2.redhat.com>
+	id 1SrLA0-00014o-LI
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 03:42:50 +0000
+Message-ID: <5006308A.7050206@cn.fujitsu.com>
+Date: Wed, 18 Jul 2012 11:42:02 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
+References: <500545CA.2020208@linux.vnet.ibm.com>
+	<50062757.1000304@cn.fujitsu.com>
+	<50063075.80905@linux.vnet.ibm.com>
+In-Reply-To: <50063075.80905@linux.vnet.ibm.com>
+Subject: Re: [LTP] [RFC] cpu_hotplug: Adding a cpu hotplug stress test
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,255 +30,229 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>, CAI Qian <caiqian@redhat.com>
+To: preeti <preeti@linux.vnet.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Mailing list for the Energy Management India Team <ltc-india-em@lists.linux.ibm.com>
 
+On 07/18/2012 11:41 AM, preeti wrote:
+> On 07/18/2012 08:32 AM, Wanlong Gao wrote:
+>> Hi Preeti,
+>>
+>>> Hi
+>>>
+>>> The test case included is a simple case for cpu hotplug.It does offlines the cpus that are online and does an online of the offlined cpus in a loop
+>>>
+>>> This stress test had failed on certain distros when the loop was run infinite times.This test is presented here for review of correctness and necessity,as this is the first attempt at contributing test cases to LTP from this end.
+>>>
+>>> The test is meant to be included under the testcases/kernel/hotplug/cpu_hotplug/functional directory.
+>>
+>> Why didn't you send this as a patch format?
+> 
+> This was a frst attempt at sending test cases to LTP,so thought would get it
+> reviewed as an RFC first.
 
-
------ Original Message -----
-> From: "Zhouping Liu" <zliu@redhat.com>
-> To: gaowanlong@cn.fujitsu.com
-> Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek" <jstancek@redhat.com>, "Caspar Zhang"
-> <caspar@casparzhang.com>, "CAI Qian" <caiqian@redhat.com>
-> Sent: Friday, 29 June, 2012 6:37:19 AM
-> Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
-> 
-> Hi,
-> 
-> ----- Original Message -----
-> > From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> > To: "Zhouping Liu" <zliu@redhat.com>
-> > Cc: "LTP List" <ltp-list@lists.sourceforge.net>, "Jan Stancek"
-> > <jstancek@redhat.com>
-> > Sent: Friday, June 29, 2012 10:39:57 AM
-> > Subject: Re: [LTP] [PATCH] mm/oom05: new testcase
-> > 
-> > On 06/29/2012 10:23 AM, Zhouping Liu wrote:
-> > > Hi,
-> > > 
-> > > ----- Original Message -----
-> > >> From: "Zhouping Liu" <zliu@redhat.com>
-> > >> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> > >> Sent: Tuesday, June 26, 2012 11:57:35 PM
-> > >> Subject: [LTP]  [PATCH] mm/oom05: new testcase
-> > >>
-> > >> add a new testcase to test OOM on each NUMA node
-> > > 
-> > > I have tested it in several systems with 2 NUMA nodes and 8 NUMA
-> > > nodes,
-> > > they are all good, any comment?
-> > > 
-> > > Thanks,
-> > > Zhouping
-> > > 
-> > >>
-> > >> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> > >> ---
-> > >>  runtest/mm                       |    1 +
-> > >>  testcases/kernel/mem/oom/oom05.c |  131
-> > >>  ++++++++++++++++++++++++++++++++++++++
-> > >>  2 files changed, 132 insertions(+)
-> > >>  create mode 100644 testcases/kernel/mem/oom/oom05.c
-> > >>
-> > >> diff --git a/runtest/mm b/runtest/mm
-> > >> index 2dd66f0..a60c04b 100644
-> > >> --- a/runtest/mm
-> > >> +++ b/runtest/mm
-> > >> @@ -77,6 +77,7 @@ oom01 oom01
-> > >>  oom02 oom02
-> > >>  oom03 oom03
-> > >>  oom04 oom04
-> > >> +oom05 oom05
-> > >>  
-> > >>  swapping01 swapping01 -i 5
-> > >>  
-> > >> diff --git a/testcases/kernel/mem/oom/oom05.c
-> > >> b/testcases/kernel/mem/oom/oom05.c
-> > >> new file mode 100644
-> > >> index 0000000..046ddbb
-> > >> --- /dev/null
-> > >> +++ b/testcases/kernel/mem/oom/oom05.c
-> > >> @@ -0,0 +1,131 @@
-> > >> +/*
-> > >> + * Out Of Memory (OOM) on Each NUMA nodes
-> > >> + *
-> > >> + * The program is designed to cope with unpredictable like
-> > >> amount
-> > >> and
-> > >> + * system physical memory, swap size and other VMM technology
-> > >> like
-> > >> KSM,
-> > >> + * memcg, memory hotplug and so on which may affect the OOM
-> > >> + * behaviours. It simply increase the memory consumption 3G
-> > >> each
-> > >> time
-> > >> + * until all the available memory is consumed and OOM is
-> > >> triggered.
-> > >> + *
-> > >> + * Copyright (C) 2012  Red Hat, Inc.
-> > >> + * This program is free software; you can redistribute it
-> > >> and/or
-> > >> + * modify it under the terms of version 2 of the GNU General
-> > >> Public
-> > >> + * License as published by the Free Software Foundation.
-> > >> + *
-> > >> + * This program is distributed in the hope that it would be
-> > >> useful,
-> > >> + * but WITHOUT ANY WARRANTY; without even the implied warranty
-> > >> of
-> > >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> > >> + *
-> > >> + * Further, this software is distributed without any warranty
-> > >> that
-> > >> it
-> > >> + * is free of the rightful claim of any third person regarding
-> > >> + * infringement or the like.  Any license provided herein,
-> > >> whether
-> > >> + * implied or otherwise, applies only to this software file.
-> > >>  Patent
-> > >> + * licenses, if any, provided herein do not apply to
-> > >> combinations
-> > >> of
-> > >> + * this program with other software, or any other product
-> > >> whatsoever.
-> > >> + *
-> > >> + * You should have received a copy of the GNU General Public
-> > >> License
-> > >> + * along with this program; if not, write the Free Software
-> > >> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-> > >> MA
-> > >> + * 02110-1301, USA.
-> > >> + */
-> > >> +#include <sys/types.h>
-> > >> +#include <sys/stat.h>
-> > >> +#include <sys/wait.h>
-> > >> +#include <errno.h>
-> > >> +#include <fcntl.h>
-> > >> +#include <stdio.h>
-> > >> +#include <stdlib.h>
-> > >> +#include <unistd.h>
-> > >> +#include "test.h"
-> > >> +#include "safe_macros.h"
-> > >> +#include "usctest.h"
-> > >> +#include "mem.h"
-> > >> +
-> > >> +char *TCID = "oom05";
-> > >> +int TST_TOTAL = 1;
-> > >> +
-> > >> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> > >> +	&& HAVE_MPOL_CONSTANTS
-> > >> +#include <numa.h>
-> > >> +#include <numaif.h>
-> > >> +
-> > >> +int main(int argc, char *argv[])
-> > >> +{
-> > >> +	char *msg;
-> > >> +	int lc;
-> > >> +	long nodes[MAXNODES];
-> > >> +	int nnodes, i;
-> > >> +	pid_t pids[MAXNODES];
-> > >> +	int status;
-> > >> +	unsigned long nmasks[MAXNODES];
-> > >> +
-> > >> +	msg = parse_opts(argc, argv, NULL, NULL);
-> > >> +	if (msg != NULL)
-> > >> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> > >> +
-> > >> +#if __WORDSIZE == 32
-> > >> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit
-> > >> system.");
-> > >> +#endif
-> > >> +	nnodes = count_numa(nodes);
-> > >> +	if (nnodes <= 1)
-> > >> +		tst_brkm(TCONF, NULL, "required a NUMA system.");
-> > >> +
-> > >> +	setup();
-> > >> +
-> > >> +	set_sys_tune("overcommit_memory", 1, 1);
-> > >> +
-> > >> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> > >> +		Tst_count = 0;
-> > >> +
-> > >> +		for (i = 0; i < nnodes; i++) {
-> > >> +			nmasks[i] = 1 << nodes[i];
-> > >> +			switch (pids[i] = fork()) {
-> > >> +			case -1:
-> > >> +				tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> > >> +			case 0:
-> > >> +				if (set_mempolicy(MPOL_BIND, &nmasks[i],
-> > >> +				    MAXNODES) == -1)
-> > >> +					tst_brkm(TBROK|TERRNO, cleanup,
-> > >> +					    "set_mempolicy");
-> > >> +				tst_resm(TINFO, "start oom on numa node%lu",
-> > >> +				    nodes[i]);
-> > >> +				oom(NORMAL, 0, 0);
-> > >> +				exit(0);
-> > >> +			}
-> > >> +		}
-> > 
-> > Hi Zhouping,
-> > 
-> > Does it need get_allowed_nodes() that Jan added?
-> > 
-> 
-> yes, I met some errors when the system has unbalance NUMA system:
-> 
-> the follow test machine has 2 numa nodes 0-1, I offline all node1's
-> cpu
-> # echo 0 > /sys/devices/system/node1/cpu*/online
-> 
-> then you will find node1 don't contain any available cpus:
-> 
-> # numactl -H
-> available: 2 nodes (0-1)
-> node 0 cpus: 0 1 2 3
-> node 0 size: 4084 MB
-> node 0 free: 2929 MB
-> node 1 cpus:
-> node 1 size: 4096 MB
-> node 1 free: 3949 MB
-> node distances:
-> node   0   1
->   0:  10  21
->   1:  21  10
-> 
-> under such above setup, oom[2|4] will failed:
-> 
-> ...
-> oom02       0  TINFO  :  process cpuset.
-> oom02       1  TBROK  :  write /dev/cpuset/1/cpuset.cpus:
-> errno=EINVAL(22): Invalid argument
-> oom02       2  TBROK  :  Remaining cases broken
-> oom02       0  TINFO  :  set overcommit_memory to 0
-> oom02       0  TWARN  :  umount /dev/cpuset: errno=EBUSY(16): Device
-> or resource busy
-> oom02       0  TWARN  :  rmdir /dev/cpuset: errno=EBUSY(16): Device
-> or resource busy
-> 
-> the failure is because node1 didn't have available cpus, but it tried
-> to write node1's cpus to /dev/cpuset/1/cpuset.cpus.
-> 
-> and I tested get_allowed_nodes(), it didn't fix the error,
-> with above setup, I expected get_allowed_nodes_arr() can mark node1
-> is a unavailable node,
-> but in actual it didn't, and it's the similar with count_numa()
-> inside testcase/kernel/mem/lib/mem.c.
-> so, Jan, do you have any thoughts to avoid the issues? if
-> get-allowed_nodes* can fix these issues, I also suggest we can
-> define them in ltp/include/numa_helper.h or other file name,
-> comments?
-
-Zhouping,
-
-Are other tests, such as move_pages also failing on this setup?
-
-Regards,
-Jan
+Yeah, but you can also send a patch titled like [RFC PATCH] xxx.
 
 > 
-> Thansk,
-> Zhuoping
+>> Some comments below.
+>>
+>>>
+>>> Regards
+>>> Preeti
+>>> ---
+>>>
+>>> # File		:	stress_cpu_hotplug.sh
+>>> # Description	:	Switches the online state of all the cpus in  a
+>>> # 			loop to test the robustness of cpu hotplug
+>>> #		:	The loop iteration of 20 is a randomly chosen number
+>>>
+>>> #! /bin/bash
+>>>
+>>> # Includes:
+>>> LHCS_PATH=${LHCS_PATH:-$LTPROOT/testcases/bin/cpu_hotplug}
+>>> . $LHCS_PATH/include/hotplug.fns
+>>> . $LHCS_PATH/include/testsuite.fns
+>>>
+>>> setup()
+>>> {
+>>> 	export TST_TOTAL=1
+>>> 	export TCID="setup"
+>>> 	export TST_COUNT=0
+>>>
+>>> 	trap "cleanup" 0
+>>> 	RC=0
+>>>
+>>> 	return $RC
+>>>
+>>> }
+>>> cleanup()
+>>> {
+>>> 	set_all_cpu_state "$STATE"
+>>
+>> I can't find the definition of "$STATE" in your test script.
 > 
+> I apologise for this typo.It needs to be $state as you have pointed out
+> below.
+>>
+>>> }
+>>>
+>>> test01()
+>>> {
+>>>
+>>> 	TCID="stress_cpu_hotplug"
+>>> 	TST_COUNT=1
+>>> 	RC=0
+>>>
+>>> 	NUMBER_OF_CPUS=`ls -d /sys/devices/system/cpu/cpu[0-9]* | wc -l`
+>>>
+>>> 	cd /sys/devices/system/cpu
+>>>
+>>> 	for ARRAY_INDEX in `seq 20`
+>>> 	do
+>>> 		for ((i=1; i < NUMBER_OF_CPUS; i++ ))
+>>> 		do
+>>> 			#skip the boot cpu;cannot offline it
+>>> 			if [ $i -eq 0 ]
+>>> 			then
+>>> 				continue
+>>> 			fi
+>>>
+>>>         		state=`cat cpu$i/online`
+>>> 		        if [ $state -eq 0 ]
+>>>         		then
+>>> 				RC=online_cpu $i
+>>>         		else
+>>>                 		RC=offline_cpu $i
+>>>         		fi
+>>
+>> Can it always success? I suppose that it need a bit sleep for the online/offline time delay.
+> 
+> It does not need a sleep because we are doing an online and offline of
+> different cpus in one loop.i.e.for example:cpu1->1,cpu2->0,cpu3->1. so it
+> takes one complete loop for cpu1->0 to occur which is enough time for an
+> online or an offline operation for a cpu.
+> 
+> Besides this,the test has been carried out on RHEL distros before and they have
+> succeeded.Only the snapshot 5 of RHEL 6.3 is failing after running for a few seconds which
+> is equivalent to nearly two loops.
+
+Did you investigate this problem? Why does it fail? Kernel problem or any others?
+
+>>
+>>>
+>>> 			if [ $RC -ne 0 ]
+>>> 			then
+>>> 				test_brkm TBROK NULL "stress_cpu_hotplug:
+>>> 							cpu$i failed to hotplug"
+>>> 				return $RC
+>>> 			fi
+>>> 		done
+>>>
+>>> 		if [ `expr $ARRAY_INDEX % 10` == 0 ]
+>>> 		then
+>>> 			echo "stress test successfully completed
+>>> 				"$ARRAY_INDEX" times">$LTPTMP/test_file.out
+>>
+>> Every 10 times means a successful test?
+> 
+> Not really.This message is intended to tell us after how many runs of the cpu
+> hotplug operation on all the cpus, is the machine failing to withstand the
+> stress.It might fail after running the loop 100 times or fail within 50 times
+> itself. Also 20 is a very small number for this stress test.It should
+> typically run 100 times.
+> 
+> I have captured the state of the stress test for every 10 iterations,instead
+> of logging for every iteration.So for example if the test is meant to run 100
+> times,but fails on some distro after 30 loops,the above message logging tells
+> us that the distro withstood the test for 30 loops atleast if not for the
+> entire duration.
+
+Yeah, so the message "stress test successfully completed" need to be fixed ?
+
+>>
+>>> 		fi
+>>> 	done
+>>> 	test_res TPASS $LTPTMP/test_file.out "stress_cpu_hotplug:SUCCESS"
+>>> 	return $RC
+>>> }
+>>>
+>>> #main
+>>>
+>>> RC=0
+>>> LTPTMP=${TMP}
+>>>
+>>> #create output file to dump test results
+>>> touch $LTPTMP/test_file.out || RC=$?
+>>>
+>>> if [ $RC -ne 0 ]
+>>> then
+>>> 	test_resm TFAIL "Failed to create output file under temp directory"
+>>> 	exit $RC
+>>> fi
+>>>
+>>> if ! get_all_cpus >/dev/null 2>$RC;
+>>> then
+>>> 	tst_brkm TCONF "system does not have required cpu hotplug support"
+>>> 	exit $RC
+>>> fi
+>>>
+>>> setup || exit $RC
+>>>
+>>> #capture the initial state of the cpus
+>>> state=`cd /sys/devices/system/cpu/ && grep '' */online | sed -e
+>>> 's/\/online//g' -e 's/\ /\n/g'`
+>>
+>> This is the "STATE"?
+> Yes this is the one.
+>>
+>> Does the output of get_all_cpu_states() not suit the set_all_cpu_states()? 
+>> if not, please fix it.
+> 
+> No, get_all_cpu_states(),simply echos the states of the cpus onto the screen in
+> a single line.while the set_all_cpu_states() requires it as a variable with
+> the cpu states printed on multiple lines.Sure will fix this up.
+
+OK, please.
+
+>>
+>>>
+>>> test01 || exit $RC
+>>
+>> Don't you want to cleanup and reset the cpu state after the test?
+> 
+> yes that is done in the cleanup function,except that it should be
+> set_all_cpu_states "$state"
+
+You didn't call cleanup() after the test.
+
+Thanks,
+Wanlong Gao
+
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>>>
+> Thank you,
+> Preeti
+>>>
+>>> ------------------------------------------------------------------------------
+>>> Live Security Virtual Conference
+>>> Exclusive live event will cover all the ways today's security and 
+>>> threat landscape has changed and how IT managers can respond. Discussions 
+>>> will include endpoint security, mobile security and the latest in malware 
+>>> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>
+>>
+>>
+> 
+> 
+> 
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
