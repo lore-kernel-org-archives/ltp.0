@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1So4AB-0002Zu-Lr
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:57:27 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1So4AA-0003Nt-GE
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:57:27 +0000
-Message-ID: <4FFA487A.4000907@cn.fujitsu.com>
-Date: Mon, 09 Jul 2012 10:56:58 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SrQGX-0002VM-SH
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:09:53 +0000
+Received: from mail-gh0-f175.google.com ([209.85.160.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SrQGW-0002nL-Qv
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 09:09:53 +0000
+Received: by mail-gh0-f175.google.com with SMTP id z2so1379309ghb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 18 Jul 2012 02:09:52 -0700 (PDT)
+Message-ID: <50067C18.6070001@casparzhang.com>
+Date: Wed, 18 Jul 2012 17:04:24 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1341388422-28133-1-git-send-email-jin.li@windriver.com>
-	<1341388422-28133-2-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1341388422-28133-2-git-send-email-jin.li@windriver.com>
-Subject: Re: [LTP] [PATCH] Add test case path in
-	testcases/kernel/hotplug/cpu_hotplug/runtests.sh
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <cd2c28ba71de86eba7b5348d6372a240b835be22.1342601407.git.zliu@redhat.com>
+In-Reply-To: <cd2c28ba71de86eba7b5348d6372a240b835be22.1342601407.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH] mm/lib: correct the log messages
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,45 +30,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jin Li <jin.li@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/04/2012 03:53 PM, Jin Li wrote:
-> Fail to invoke cpuhotplug via:
-> 
-> ./runltp -f cpuhotplug
-> 
-> <<<test_output>>>
-> incrementing stop
-> CPU:        1
-> LOOPS:      1
-> LHCS_PATH:  /opt/ltp/testcases/bin/cpu_hotplug
-> /opt/ltp/testcases/bin/cpu_hotplug/runtests.sh: line 15: functional/hotplug??.sh: No such file or directory
-> 
-
-pushed, thank you.
-
-Wanlong Gao
-
-> Signed-off-by: Jin Li <jin.li@windriver.com>
+On 07/18/2012 04:51 PM, Zhouping Liu wrote:
+> commit 5ad42f6cae increased the sleep time of ksmd scanning
+> inside _wait_ksm_done(), but it forgot to update the log messages.
+>
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
 > ---
->  testcases/kernel/hotplug/cpu_hotplug/runtests.sh |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/runtests.sh b/testcases/kernel/hotplug/cpu_hotplug/runtests.sh
-> index 2803508..1943f83 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/runtests.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/runtests.sh
-> @@ -11,6 +11,6 @@ echo "LOOPS:      $LOOPS"
->  echo "LHCS_PATH:  $LHCS_PATH"
->  
->  
-> -for case in functional/hotplug??.sh; do
-> +for case in $LHCS_PATH/functional/hotplug??.sh; do
->  	$case $CPU_TO_TEST
->  done
-> 
-
+>   testcases/kernel/mem/lib/mem.c |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index 9ec0454..81410d8 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -183,7 +183,7 @@ static void _wait_ksmd_done(void)
+>   	}
+>
+>   	tst_resm(TINFO, "ksm daemon takes %ds to scan all mergeable pages",
+> -		    count * 5);
+> +		    count * 10);
+>   }
+>
+>   static void _group_check(int run, int pages_shared, int pages_sharing,
+>
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
 
 
 ------------------------------------------------------------------------------
