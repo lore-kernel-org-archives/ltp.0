@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1So3pB-0001yO-UH
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:35:45 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1So3pB-0002Qk-3v
-	for ltp-list@lists.sourceforge.net; Mon, 09 Jul 2012 02:35:45 +0000
-Message-ID: <4FFA435B.2030808@cn.fujitsu.com>
-Date: Mon, 09 Jul 2012 10:35:07 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <marios.makris@gmail.com>) id 1SrUMj-0004Tj-LU
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 13:32:33 +0000
+Received: from mail-we0-f175.google.com ([74.125.82.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SrUMi-0002CN-SW
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 13:32:33 +0000
+Received: by weyr6 with SMTP id r6so1037799wey.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 18 Jul 2012 06:32:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <1341309599-10008-1-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1341309599-10008-1-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] pthread_cond_signal/1-1: fails on routerstation
-Reply-To: gaowanlong@cn.fujitsu.com
+In-Reply-To: <500671C4.5020609@cn.fujitsu.com>
+References: <1342194676-15275-1-git-send-email-marios.makris@gmail.com>
+	<500671C4.5020609@cn.fujitsu.com>
+Date: Wed, 18 Jul 2012 16:32:25 +0300
+Message-ID: <CAMYrgfTJbK+HmzZ2bRssQSuE2Bz_V5RzFY2ZL8Auy-LQWfYBOQ@mail.gmail.com>
+From: "marios.makris" <marios.makris@gmail.com>
+Subject: Re: [LTP] [PATCH 1/6] /lib/tst_tmpdir indentation and coding style
+	fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,79 +32,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 07/03/2012 05:59 PM, Kang Kai wrote:
-> Case pthread_cond_signal/1-1 fails on routerstation. The OS is Yocto
-> linux 1.2 with kernel 3.0.24, and c library is eglibc 2.15.
-> 
-> The fail log:
->   [Thread 0x0x2c56d4b0] started and locked the mutex
->   [Thread 0x0x2c56d4b0] is waiting for the cond
->   [Thread 0x0x2bd6d4b0] started and locked the mutex
->   [Thread 0x0x2bd6d4b0] is waiting for the cond
->   [Thread 0x0x2b56d4b0] started and locked the mutex
->   [Thread 0x0x2b56d4b0] is waiting for the cond
->   [Main thread] signals a condition
->   [Thread 0x0x2c56d4b0] was wakened and acquired the mutex again
->   [Thread 0x0x2c56d4b0] released the mutex
->   [Main thread] 1 waiters were wakened
->   [Main thread] signals to wake up the next thread
->   [Thread 0x0x2bd6d4b0] was wakened and acquired the mutex again
->   [Thread 0x0x2bd6d4b0] released the mutex
->   [Main thread] signals to wake up the next thread
->   [Main thread] signals to wake up the next thread
->   [Main thread] signals to wake up the next thread
->   [Main thread] signals to wake up the next thread
->   [Main thread] signals to wake up the next thread
->   [Thread 0x0x2b56d4b0] was wakened and acquired the mutex again
->   [Main thread] had to signal the condition 7 times
->   [Main thread] to wake up 3 threads
->   . Test FAILED.
-> 
-> The main thread call pthread_cond_signal try to signal the child threads
-> those are waiting on the condition, then call usleep(100) to relinquish
-> the cpu. But 100 useconds is not enough and the main thread continue to
-> run. So the case fails.
-> 
-> Increase the sleep timeto 1000 useconds to make the case pass.
-> 
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
-> ---
->  .../interfaces/pthread_cond_signal/1-1.c           |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> index bf55b31..910931d 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> @@ -142,7 +142,7 @@ int main()
->  			fprintf(stderr,"Main failed to signal the condition\n");
->  			exit(PTS_UNRESOLVED);
->  		}
-> -		usleep(100);
-> +		usleep(1000);
+On 18 July 2012 11:20, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+> On 07/13/2012 11:51 PM, Marios Makris wrote:
+>> Identation and coding style fixes as well as moved the function descriptions
+>> to the header file (/include/test.h)
+>>
+>> Signed-off-by: Marios Makris <marios.makris@gmail.com>
+>> ---
+>>  include/test.h   |   26 +++++++++++++++
+>>  lib/tst_tmpdir.c |   97 ++++++++++++++++++------------------------------------
+>>  2 files changed, 58 insertions(+), 65 deletions(-)
+>>
+>> diff --git a/include/test.h b/include/test.h
+>> index 033fdbc..934585e 100644
+>> --- a/include/test.h
+>> +++ b/include/test.h
+>> @@ -201,8 +201,34 @@ extern int Tst_count;
+>>  void tst_sig(int fork_flag, void (*handler)(), void (*cleanup)());
+>>
+>>  /* lib/tst_tmpdir.c */
+>> +
+>> +/* tst_tmpdir()
+>> + *
+>> + * Create a unique temporary directory and chdir() to it. It expects the caller
+>
+> It's better to keep the comments lines within 73 characters.
+>
+> Thanks,
+> Wanlong Gao
+>
 
-Anyway, just add the hard sleep time can resolve nothing.
-Maybe you can find a better way.
+Well i thought that the line limit was 80 characters(columns) ?
 
-Thanks,
-Wanlong Gao
+Thanks
 
->  	}
->  
->  	if (i >= THREAD_NUM) {
-> @@ -160,4 +160,4 @@ int main()
->  	}
->  	printf("Test PASSED\n");
->  	return PTS_PASS;
-> -}
-> \ No newline at end of file
-> +}
-> 
-
-
+-- 
+Marios Makris
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
