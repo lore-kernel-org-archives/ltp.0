@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1SpG3r-00030n-Vy
-	for ltp-list@lists.sourceforge.net; Thu, 12 Jul 2012 09:51:51 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SpG3q-0006u1-PL
-	for ltp-list@lists.sourceforge.net; Thu, 12 Jul 2012 09:51:51 +0000
-From: Kang Kai <kai.kang@windriver.com>
-Date: Thu, 12 Jul 2012 17:51:27 +0800
-Message-ID: <1342086687-5242-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SrPNA-0000SQ-7W
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 08:12:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SrPN5-0005LQ-Ca
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 08:12:40 +0000
+Message-ID: <50066FBF.9080209@cn.fujitsu.com>
+Date: Wed, 18 Jul 2012 16:11:43 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] pthread_cond_signal/1-1: use sched_yield to schedule
-	child threads
+References: <1342194676-15275-1-git-send-email-marios.makris@gmail.com>
+	<1342194676-15275-2-git-send-email-marios.makris@gmail.com>
+In-Reply-To: <1342194676-15275-2-git-send-email-marios.makris@gmail.com>
+Subject: Re: [LTP] [PATCH 2/6] Add mkdtemp check.
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,138 +29,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Marios Makris <marios.makris@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Cyril Hrubis <metan@ucw.cz>
 
-This case fails on mips board routerstation randomly. The root cause is
-that when main thread call usleep(100) after signal the child threads,
-no child thread is scheduled to run.  So the case fails.
+On 07/13/2012 11:51 PM, Marios Makris wrote:
+> From: Cyril Hrubis <metan@ucw.cz>
+> 
+> Added an m4 macro checking for mkdtemp()
+> 
+> Signed-off-by: Cyril Hrubis <metan@ucw.cz>
+> Signed-off-by: Marios Makris <marios.makris@gmail.com>
 
-I update it to set main thread with a lower priority and child threads
-with a higher one, then when sched_yield is called in main thread, one
-of the child threads will be scheduled and run.
+Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../interfaces/pthread_cond_signal/1-1.c           |   55 ++++++++++++++++++--
- 1 files changed, 50 insertions(+), 5 deletions(-)
+> ---
+>  configure.ac      |    1 +
+>  m4/ltp-mkdtemp.m4 |    2 ++
+>  2 files changed, 3 insertions(+)
+>  create mode 100644 m4/ltp-mkdtemp.m4
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 1696df0..f217f50 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -145,6 +145,7 @@ fi
+>  
+>  # END testsuites knobs
+>  
+> +LTP_CHECK_MKDTEMP
+>  LTP_CHECK_CAPABILITY_SUPPORT
+>  LTP_CHECK_CRYPTO
+>  LTP_CHECK_LINUX_PTRACE
+> diff --git a/m4/ltp-mkdtemp.m4 b/m4/ltp-mkdtemp.m4
+> new file mode 100644
+> index 0000000..94a6d49
+> --- /dev/null
+> +++ b/m4/ltp-mkdtemp.m4
+> @@ -0,0 +1,2 @@
+> +AC_DEFUN([LTP_CHECK_MKDTEMP],[
+> +AC_CHECK_FUNCS(mkdtemp,[],AC_MSG_ERROR(mkdtemp() not found!))])
+> 
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-index bf55b31..51c0cfb 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-@@ -11,6 +11,7 @@
-  */
- 
- #define _XOPEN_SOURCE 600
-+#define _GNU_SOURCE
- 
- #include <pthread.h>
- #include <stdio.h>
-@@ -18,6 +19,7 @@
- #include <unistd.h>
- #include <signal.h>
- #include "posixtest.h"
-+#include "affinity.h"
- 
- #define THREAD_NUM  3
- 
-@@ -77,6 +79,18 @@ int main()
- {
- 	int i, rc;
- 	struct sigaction act;
-+	int pid;
-+	int policy;
-+	struct sched_param param;
-+	pthread_attr_t attr;
-+
-+	if (getuid() != 0)
-+	{
-+		fprintf(stderr, "Run this test as root, not as a Regular User\n");
-+		return PTS_UNTESTED;
-+	}
-+
-+	set_affinity(0);
- 
- 	if (pthread_mutex_init(&td.mutex, NULL) != 0) {
- 		fprintf(stderr,"Fail to initialize mutex\n");
-@@ -87,14 +101,41 @@ int main()
- 		return PTS_UNRESOLVED;
- 	}
- 
-+	pid = getpid();
-+	param.sched_priority = sched_get_priority_min(SCHED_FIFO);
-+	if (sched_setscheduler(pid, SCHED_FIFO, &param) != 0) {
-+		fprintf(stderr, "Fail to set main thread scheduler.\n");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	if (pthread_attr_init(&attr) != 0) {
-+		fprintf(stderr, "Fail to init child thread attribute.\n");
-+		return PTS_UNRESOLVED;
-+	}
-+	if (pthread_attr_setschedpolicy(&attr, SCHED_FIFO) != 0) {
-+		fprintf(stderr, "Fail to set child thread schedule policy attribute.\n");
-+		return PTS_UNRESOLVED;
-+	}
-+	param.sched_priority += 10;
-+	if (pthread_attr_setschedparam(&attr, &param) != 0) {
-+		fprintf(stderr, "Fail to set child thread schedule priority attribute.\n");
-+		return PTS_UNRESOLVED;
-+	}
-+	if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED) != 0) {
-+		fprintf(stderr, "Fail to set child thread inheritace attribute.\n");
-+		return PTS_UNRESOLVED;
-+	}
-+
- 	for (i=0; i<THREAD_NUM; i++) {	/* create THREAD_NUM threads */
--	    	if (pthread_create(&thread[i], NULL, thr_func, NULL) != 0) {
-+		if (pthread_create(&thread[i], &attr, thr_func, NULL) != 0) {
- 			fprintf(stderr,"Fail to create thread[%d]\n", i);
- 			exit(PTS_UNRESOLVED);
- 		}
- 	}
- 	while (start_num < THREAD_NUM)	/* waiting for all threads started */
--		usleep(100);
-+		sched_yield();
-+
-+	pthread_attr_destroy(&attr);
- 
- 	/* Acquire the mutex to make sure that all waiters are currently
- 	   blocked on pthread_cond_wait */
-@@ -114,7 +155,7 @@ int main()
- 		fprintf(stderr,"[Main thread] failed to signal the condition\n");
- 		exit(PTS_UNRESOLVED);
- 	}
--	sleep(1);
-+	sched_yield();
- 	if (waken_num <= 0) {
- 		fprintf(stderr,"[Main thread] but no waiters were wakened\n");
-                 printf("Test FAILED\n");
-@@ -142,7 +183,7 @@ int main()
- 			fprintf(stderr,"Main failed to signal the condition\n");
- 			exit(PTS_UNRESOLVED);
- 		}
--		usleep(100);
-+		sched_yield();
- 	}
- 
- 	if (i >= THREAD_NUM) {
-@@ -158,6 +199,10 @@ int main()
- 			exit(PTS_UNRESOLVED);
- 		}
- 	}
-+
-+	pthread_mutex_destroy(&td.mutex);
-+	pthread_cond_destroy(&td.cond);;
-+
- 	printf("Test PASSED\n");
- 	return PTS_PASS;
--}
-\ No newline at end of file
-+}
--- 
-1.7.5.4
 
 
 ------------------------------------------------------------------------------
