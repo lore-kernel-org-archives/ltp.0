@@ -2,26 +2,26 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1StXtw-00061W-M1
-	for ltp-list@lists.sourceforge.net; Tue, 24 Jul 2012 05:43:20 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	(envelope-from <marios.makris@gmail.com>) id 1SrVSx-0007jg-I8
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 14:43:03 +0000
+Received: from mail-wg0-f53.google.com ([74.125.82.53])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1StXtu-0004Zf-AO
-	for ltp-list@lists.sourceforge.net; Tue, 24 Jul 2012 05:43:20 +0000
-Received: by pbbrq2 with SMTP id rq2so11330497pbb.34
+	(Exim 4.76) id 1SrVSs-0004sd-7a
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 14:43:03 +0000
+Received: by wgbfm10 with SMTP id fm10so1198428wgb.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 23 Jul 2012 22:43:12 -0700 (PDT)
-References: <1343098694-8295-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1343098694-8295-2-git-send-email-gaowanlong@cn.fujitsu.com>
-	<500E1B37.2060309@casparzhang.com>
-	<500E1E39.3050704@cn.fujitsu.com>
-In-Reply-To: <500E1E39.3050704@cn.fujitsu.com>
-Mime-Version: 1.0 (1.0)
-Message-Id: <241B7B02-77E9-4181-B4BA-F2276F1DCBE2@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Date: Mon, 23 Jul 2012 22:42:51 -0700
-Subject: Re: [LTP] [PATCH 2/2] open_posix:aio_fsync:14-1: wait for aio_write
-	completion
+	Wed, 18 Jul 2012 07:42:52 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <5006BF53.2080607@casparzhang.com>
+References: <1342194676-15275-1-git-send-email-marios.makris@gmail.com>
+	<500671C4.5020609@cn.fujitsu.com>
+	<CAMYrgfTJbK+HmzZ2bRssQSuE2Bz_V5RzFY2ZL8Auy-LQWfYBOQ@mail.gmail.com>
+	<5006BF53.2080607@casparzhang.com>
+Date: Wed, 18 Jul 2012 17:42:51 +0300
+Message-ID: <CAMYrgfTnXvjm2ynCGZS8aa+O1LM0k55=CprUcXTBAviQAZEXkA@mail.gmail.com>
+From: "marios.makris" <marios.makris@gmail.com>
+Subject: Re: [LTP] [PATCH 1/6] /lib/tst_tmpdir indentation and coding style
+	fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,76 +34,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "gaowanlong@cn.fujitsu.com" <gaowanlong@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Sent from my iPhone
+On 18 July 2012 16:51, Caspar Zhang <caspar@casparzhang.com> wrote:
+> On 07/18/2012 09:32 PM, marios.makris wrote:
+>>
+>> On 18 July 2012 11:20, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+>>>
+>>> On 07/13/2012 11:51 PM, Marios Makris wrote:
+>>>>
+>>>> Identation and coding style fixes as well as moved the function
+>>>> descriptions
+>>>> to the header file (/include/test.h)
+>>>>
+>>>> Signed-off-by: Marios Makris <marios.makris@gmail.com>
+>>>> ---
+>>>>   include/test.h   |   26 +++++++++++++++
+>>>>   lib/tst_tmpdir.c |   97
+>>>> ++++++++++++++++++------------------------------------
+>>>>   2 files changed, 58 insertions(+), 65 deletions(-)
+>>>>
+>>>> diff --git a/include/test.h b/include/test.h
+>>>> index 033fdbc..934585e 100644
+>>>> --- a/include/test.h
+>>>> +++ b/include/test.h
+>>>> @@ -201,8 +201,34 @@ extern int Tst_count;
+>>>>   void tst_sig(int fork_flag, void (*handler)(), void (*cleanup)());
+>>>>
+>>>>   /* lib/tst_tmpdir.c */
+>>>> +
+>>>> +/* tst_tmpdir()
+>>>> + *
+>>>> + * Create a unique temporary directory and chdir() to it. It expects
+>>>> the caller
+>>>
+>>>
+>>> It's better to keep the comments lines within 73 characters.
+>>>
+>>> Thanks,
+>>> Wanlong Gao
+>>>
+>>
+>> Well i thought that the line limit was 80 characters(columns) ?
+>>
+>> Thanks
+>>
+>
+> I think it's 80 characters. (it should be OK if checkpatch.pl doesn't
+> complain...)
+>
+> Caspar
+>
 
-On Jul 23, 2012, at 9:02 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+Well there are 2 lines slightly over 80 characters but they are completely
+removed in 5th patch with the TDIRECTORY part...
 
-> On 07/24/2012 11:49 AM, Caspar Zhang wrote:
->> On 07/24/2012 10:58 AM, Wanlong Gao wrote:
->>> Wait for aio_write() completion.
->>> If aio_fsync() sync the fd without the previous aio_write()
->>> completion, it will cause Segment Fault.
->>> 
->>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
->>> ---
->>>  .../open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c | 9 +++++++++
->>>  1 file changed, 9 insertions(+)
->>> 
->>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
->>> index a9cd3bf..e15f084 100644
->>> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
->>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
->>> @@ -27,6 +27,7 @@ int main()
->>>  #define BUF_SIZE 111
->>>      char buf[BUF_SIZE];
->>>      int fd;
->>> +    int ret;
->>>      struct aiocb aiocb_write;
->>>      struct aiocb aiocb_fsync;
->>> 
->>> @@ -57,6 +58,14 @@ int main()
->>>          exit(PTS_FAIL);
->>>      }
->>> 
->>> +    while ((ret = aio_error(&aiocb_write) == EINPROGRESS))
->> 
->> I think checkpatch.pl would complain here.
-> 
-> Not really.
-> It should be assigned in while() here, can't be split to two lines.
+I could fix them in the first patch as-well if you think it would be better
+but the end result (if all patches are applied) is the same.
 
-Or you could use a do-while..
+Thanks
 
->> 
->>> +        usleep(10000);
->>> +    if (ret < 0) {
->>> +        printf(TNAME " Error at aio_error() : %s\n", strerror(ret));
->>> +        exit(PTS_FAIL);
->>> +    }
->>> +
->>> +
->>>      memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
->>>      aiocb_fsync.aio_fildes = fd;
->>> 
->>> 
->> 
->> 
->> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+-- 
+Marios Makris
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
