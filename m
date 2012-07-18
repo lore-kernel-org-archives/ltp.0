@@ -1,18 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SpgI6-0007cS-5O
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jul 2012 13:52:18 +0000
-Date: Fri, 13 Jul 2012 15:07:45 +0200
-From: chrubis@suse.cz
-Message-ID: <20120713130745.GA8634@saboteur.suse.cz>
-References: <1342086687-5242-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <preeti@linux.vnet.ibm.com>) id 1SrMqk-0005jw-C4
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 05:31:02 +0000
+Received: from e28smtp02.in.ibm.com ([122.248.162.2])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SrMqi-0002xY-E1
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 05:31:02 +0000
+Received: from /spool/local
+	by e28smtp02.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <preeti@linux.vnet.ibm.com>; 
+	Wed, 18 Jul 2012 11:00:51 +0530
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	q6I5UlTa14287126
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Jul 2012 11:00:47 +0530
+Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	q6IB1MVe006249
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Jul 2012 21:01:22 +1000
+Message-ID: <50064CA3.6070003@linux.vnet.ibm.com>
+Date: Wed, 18 Jul 2012 11:11:55 +0530
+From: preeti <preeti@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1342086687-5242-1-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] pthread_cond_signal/1-1: use sched_yield to
- schedule child threads
+References: <500545CA.2020208@linux.vnet.ibm.com>
+	<50062757.1000304@cn.fujitsu.com>
+	<50063075.80905@linux.vnet.ibm.com>
+	<5006308A.7050206@cn.fujitsu.com>
+In-Reply-To: <5006308A.7050206@cn.fujitsu.com>
+Subject: Re: [LTP] [RFC] cpu_hotplug: Adding a cpu hotplug stress test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,172 +43,253 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: gaowanlong@cn.fujitsu.com
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Mailing list for the Energy Management India Team <ltc-india-em@lists.linux.ibm.com>
 
-Hi!
-> This case fails on mips board routerstation randomly. The root cause is
-> that when main thread call usleep(100) after signal the child threads,
-> no child thread is scheduled to run.  So the case fails.
+On 07/18/2012 09:12 AM, Wanlong Gao wrote:
+> On 07/18/2012 11:41 AM, preeti wrote:
+>> On 07/18/2012 08:32 AM, Wanlong Gao wrote:
+>>> Hi Preeti,
+>>>
+>>>> Hi
+>>>>
+>>>> The test case included is a simple case for cpu hotplug.It does offlines the cpus that are online and does an online of the offlined cpus in a loop
+>>>>
+>>>> This stress test had failed on certain distros when the loop was run infinite times.This test is presented here for review of correctness and necessity,as this is the first attempt at contributing test cases to LTP from this end.
+>>>>
+>>>> The test is meant to be included under the testcases/kernel/hotplug/cpu_hotplug/functional directory.
+>>>
+>>> Why didn't you send this as a patch format?
+>>
+>> This was a frst attempt at sending test cases to LTP,so thought would get it
+>> reviewed as an RFC first.
 > 
-> I update it to set main thread with a lower priority and child threads
-> with a higher one, then when sched_yield is called in main thread, one
-> of the child threads will be scheduled and run.
+> Yeah, but you can also send a patch titled like [RFC PATCH] xxx.
+
+Ok.
 > 
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
-> ---
->  .../interfaces/pthread_cond_signal/1-1.c           |   55 ++++++++++++++++++--
->  1 files changed, 50 insertions(+), 5 deletions(-)
+>>
+>>> Some comments below.
+>>>
+>>>>
+>>>> Regards
+>>>> Preeti
+>>>> ---
+>>>>
+>>>> # File		:	stress_cpu_hotplug.sh
+>>>> # Description	:	Switches the online state of all the cpus in  a
+>>>> # 			loop to test the robustness of cpu hotplug
+>>>> #		:	The loop iteration of 20 is a randomly chosen number
+>>>>
+>>>> #! /bin/bash
+>>>>
+>>>> # Includes:
+>>>> LHCS_PATH=${LHCS_PATH:-$LTPROOT/testcases/bin/cpu_hotplug}
+>>>> . $LHCS_PATH/include/hotplug.fns
+>>>> . $LHCS_PATH/include/testsuite.fns
+>>>>
+>>>> setup()
+>>>> {
+>>>> 	export TST_TOTAL=1
+>>>> 	export TCID="setup"
+>>>> 	export TST_COUNT=0
+>>>>
+>>>> 	trap "cleanup" 0
+>>>> 	RC=0
+>>>>
+>>>> 	return $RC
+>>>>
+>>>> }
+>>>> cleanup()
+>>>> {
+>>>> 	set_all_cpu_state "$STATE"
+>>>
+>>> I can't find the definition of "$STATE" in your test script.
+>>
+>> I apologise for this typo.It needs to be $state as you have pointed out
+>> below.
+>>>
+>>>> }
+>>>>
+>>>> test01()
+>>>> {
+>>>>
+>>>> 	TCID="stress_cpu_hotplug"
+>>>> 	TST_COUNT=1
+>>>> 	RC=0
+>>>>
+>>>> 	NUMBER_OF_CPUS=`ls -d /sys/devices/system/cpu/cpu[0-9]* | wc -l`
+>>>>
+>>>> 	cd /sys/devices/system/cpu
+>>>>
+>>>> 	for ARRAY_INDEX in `seq 20`
+>>>> 	do
+>>>> 		for ((i=1; i < NUMBER_OF_CPUS; i++ ))
+>>>> 		do
+>>>> 			#skip the boot cpu;cannot offline it
+>>>> 			if [ $i -eq 0 ]
+>>>> 			then
+>>>> 				continue
+>>>> 			fi
+>>>>
+>>>>         		state=`cat cpu$i/online`
+>>>> 		        if [ $state -eq 0 ]
+>>>>         		then
+>>>> 				RC=online_cpu $i
+>>>>         		else
+>>>>                 		RC=offline_cpu $i
+>>>>         		fi
+>>>
+>>> Can it always success? I suppose that it need a bit sleep for the online/offline time delay.
+>>
+>> It does not need a sleep because we are doing an online and offline of
+>> different cpus in one loop.i.e.for example:cpu1->1,cpu2->0,cpu3->1. so it
+>> takes one complete loop for cpu1->0 to occur which is enough time for an
+>> online or an offline operation for a cpu.
+>>
+>> Besides this,the test has been carried out on RHEL distros before and they have
+>> succeeded.Only the snapshot 5 of RHEL 6.3 is failing after running for a few seconds which
+>> is equivalent to nearly two loops.
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> index bf55b31..51c0cfb 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> @@ -11,6 +11,7 @@
->   */
->  
->  #define _XOPEN_SOURCE 600
-> +#define _GNU_SOURCE
+> Did you investigate this problem? Why does it fail? Kernel problem or any others?
 
-This is open posix testsuite keep that in mind so inserting _GNU_SOURCE
-is not allowed here.
+Yes,it is a kernel problem.The dmesg output showed that the cpu hotplug operation hangs at
+synchronize_sched().The scheduler is waiting for some rcu read side critical
+section to complete,and is either not notified of the completion of the task
+or there is some rcu section which is actually not completed.
 
->  #include <pthread.h>
->  #include <stdio.h>
-> @@ -18,6 +19,7 @@
->  #include <unistd.h>
->  #include <signal.h>
->  #include "posixtest.h"
-> +#include "affinity.h"
->  
->  #define THREAD_NUM  3
->  
-> @@ -77,6 +79,18 @@ int main()
->  {
->  	int i, rc;
->  	struct sigaction act;
-> +	int pid;
-> +	int policy;
-> +	struct sched_param param;
-> +	pthread_attr_t attr;
-> +
-> +	if (getuid() != 0)
-> +	{
-> +		fprintf(stderr, "Run this test as root, not as a Regular User\n");
-> +		return PTS_UNTESTED;
-> +	}
+The machine is responsive,in the sense that it responds to the ping
+packets,but is too slow to perform any operation on.But slowly recovers back
+to the original state.We have opened a bug on this.
+> 
+>>>
+>>>>
+>>>> 			if [ $RC -ne 0 ]
+>>>> 			then
+>>>> 				test_brkm TBROK NULL "stress_cpu_hotplug:
+>>>> 							cpu$i failed to hotplug"
+>>>> 				return $RC
+>>>> 			fi
+>>>> 		done
+>>>>
+>>>> 		if [ `expr $ARRAY_INDEX % 10` == 0 ]
+>>>> 		then
+>>>> 			echo "stress test successfully completed
+>>>> 				"$ARRAY_INDEX" times">$LTPTMP/test_file.out
+>>>
+>>> Every 10 times means a successful test?
+>>
+>> Not really.This message is intended to tell us after how many runs of the cpu
+>> hotplug operation on all the cpus, is the machine failing to withstand the
+>> stress.It might fail after running the loop 100 times or fail within 50 times
+>> itself. Also 20 is a very small number for this stress test.It should
+>> typically run 100 times.
+>>
+>> I have captured the state of the stress test for every 10 iterations,instead
+>> of logging for every iteration.So for example if the test is meant to run 100
+>> times,but fails on some distro after 30 loops,the above message logging tells
+>> us that the distro withstood the test for 30 loops atleast if not for the
+>> entire duration.
+> 
+> Yeah, so the message "stress test successfully completed" need to be fixed ?
+no the code statement is:
 
-Wrong coding style. The opening brace should be at the end of the if
-statement. Please use checkpatch.pl on your patches.
+echo "stress test successfully completed "$ARRAY_INDEX" times">$LTPTMP/test_file.out
+where $ARRAY_INDEX contains the loop number.
+> 
+>>>
+>>>> 		fi
+>>>> 	done
+>>>> 	test_res TPASS $LTPTMP/test_file.out "stress_cpu_hotplug:SUCCESS"
+>>>> 	return $RC
+>>>> }
+>>>>
+>>>> #main
+>>>>
+>>>> RC=0
+>>>> LTPTMP=${TMP}
+>>>>
+>>>> #create output file to dump test results
+>>>> touch $LTPTMP/test_file.out || RC=$?
+>>>>
+>>>> if [ $RC -ne 0 ]
+>>>> then
+>>>> 	test_resm TFAIL "Failed to create output file under temp directory"
+>>>> 	exit $RC
+>>>> fi
+>>>>
+>>>> if ! get_all_cpus >/dev/null 2>$RC;
+>>>> then
+>>>> 	tst_brkm TCONF "system does not have required cpu hotplug support"
+>>>> 	exit $RC
+>>>> fi
+>>>>
+>>>> setup || exit $RC
+>>>>
+>>>> #capture the initial state of the cpus
+>>>> state=`cd /sys/devices/system/cpu/ && grep '' */online | sed -e
+>>>> 's/\/online//g' -e 's/\ /\n/g'`
+>>>
+>>> This is the "STATE"?
+>> Yes this is the one.
+>>>
+>>> Does the output of get_all_cpu_states() not suit the set_all_cpu_states()? 
+>>> if not, please fix it.
+>>
+>> No, get_all_cpu_states(),simply echos the states of the cpus onto the screen in
+>> a single line.while the set_all_cpu_states() requires it as a variable with
+>> the cpu states printed on multiple lines.Sure will fix this up.
+> 
+> OK, please.
+> 
+>>>
+>>>>
+>>>> test01 || exit $RC
+>>>
+>>> Don't you want to cleanup and reset the cpu state after the test?
+>>
+>> yes that is done in the cleanup function,except that it should be
+>> set_all_cpu_states "$state"
+> 
+> You didn't call cleanup() after the test.
 
-And also I think that the check is not 100% correct, the POSIX says that
-schedulling priorities and so may be changed "if calling process has
-permission to...", there are capabilities and other mechanisms to check
-for that. The rest of the testcases seems to deal with this just by
-printing a hint after first call has that may need the priviledge
-failed, for example:
+Notice the statement trap "cleanup" 0 under setup.This will call the
+cleanup() function on exit,where 0 is the code for exit.This is declared when
+setup() is called.
+> 
+> Thanks,
+> Wanlong Gao
+> 
+>>>
+>>> Thanks,
+>>> Wanlong Gao
+>>>
+>>>>
+>> Thank you,
+>> Preeti
+>>>>
+Thanks
+Preeti
+>>>> ------------------------------------------------------------------------------
+>>>> Live Security Virtual Conference
+>>>> Exclusive live event will cover all the ways today's security and 
+>>>> threat landscape has changed and how IT managers can respond. Discussions 
+>>>> will include endpoint security, mobile security and the latest in malware 
+>>>> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>>>> _______________________________________________
+>>>> Ltp-list mailing list
+>>>> Ltp-list@lists.sourceforge.net
+>>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>>
+>>>
+>>>
+>>
+>>
+>>
+> 
+> 
 
-"foo failed with -1: are you root?"
 
-> +	set_affinity(0);
-
-I setting affinity really needed here? (I'm just asking before it wasn't
-described in the commit description).
-
->  	if (pthread_mutex_init(&td.mutex, NULL) != 0) {
->  		fprintf(stderr,"Fail to initialize mutex\n");
-> @@ -87,14 +101,41 @@ int main()
->  		return PTS_UNRESOLVED;
->  	}
->  
-> +	pid = getpid();
-> +	param.sched_priority = sched_get_priority_min(SCHED_FIFO);
-> +	if (sched_setscheduler(pid, SCHED_FIFO, &param) != 0) {
-> +		fprintf(stderr, "Fail to set main thread scheduler.\n");
-> +		return PTS_UNRESOLVED;
-> +	}
-> +
-> +	if (pthread_attr_init(&attr) != 0) {
-> +		fprintf(stderr, "Fail to init child thread attribute.\n");
-> +		return PTS_UNRESOLVED;
-> +	}
-> +	if (pthread_attr_setschedpolicy(&attr, SCHED_FIFO) != 0) {
-> +		fprintf(stderr, "Fail to set child thread schedule policy attribute.\n");
-> +		return PTS_UNRESOLVED;
-> +	}
-> +	param.sched_priority += 10;
-> +	if (pthread_attr_setschedparam(&attr, &param) != 0) {
-> +		fprintf(stderr, "Fail to set child thread schedule priority attribute.\n");
-> +		return PTS_UNRESOLVED;
-> +	}
-> +	if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED) != 0) {
-> +		fprintf(stderr, "Fail to set child thread inheritace attribute.\n");
-> +		return PTS_UNRESOLVED;
-> +	}
-> +
->  	for (i=0; i<THREAD_NUM; i++) {	/* create THREAD_NUM threads */
-> -	    	if (pthread_create(&thread[i], NULL, thr_func, NULL) != 0) {
-> +		if (pthread_create(&thread[i], &attr, thr_func, NULL) != 0) {
->  			fprintf(stderr,"Fail to create thread[%d]\n", i);
->  			exit(PTS_UNRESOLVED);
->  		}
->  	}
->  	while (start_num < THREAD_NUM)	/* waiting for all threads started */
-> -		usleep(100);
-> +		sched_yield();
-
-Hmm, I've been burned by:
-
-while (xxx)
-	sched_yield();
-
-code before. In certain situations this translates just to bussy loops,
-so most of the time small sleep or both sleep and sched_yield may be
-better.
-
-> +	pthread_attr_destroy(&attr);
->  
->  	/* Acquire the mutex to make sure that all waiters are currently
->  	   blocked on pthread_cond_wait */
-> @@ -114,7 +155,7 @@ int main()
->  		fprintf(stderr,"[Main thread] failed to signal the condition\n");
->  		exit(PTS_UNRESOLVED);
->  	}
-> -	sleep(1);
-> +	sched_yield();
->  	if (waken_num <= 0) {
->  		fprintf(stderr,"[Main thread] but no waiters were wakened\n");
->                  printf("Test FAILED\n");
-> @@ -142,7 +183,7 @@ int main()
->  			fprintf(stderr,"Main failed to signal the condition\n");
->  			exit(PTS_UNRESOLVED);
->  		}
-> -		usleep(100);
-> +		sched_yield();
->  	}
->  
->  	if (i >= THREAD_NUM) {
-> @@ -158,6 +199,10 @@ int main()
->  			exit(PTS_UNRESOLVED);
->  		}
->  	}
-> +
-> +	pthread_mutex_destroy(&td.mutex);
-> +	pthread_cond_destroy(&td.cond);;
-> +
->  	printf("Test PASSED\n");
->  	return PTS_PASS;
-> -}
-> \ No newline at end of file
-> +}
-
-And as far as I remeber the original problem was that some of the
-threads failed to wake up because the while loop that wakes them was too
-tight. Does inserting sched_yield() there help?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
