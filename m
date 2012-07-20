@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rejish.rajagopala@sasken.com>) id 1Sqkzo-0000nY-OH
-	for ltp-list@lists.sourceforge.net; Mon, 16 Jul 2012 13:05:52 +0000
-Received: from mta-blr1.sasken.com ([203.200.200.72])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sqkzi-0003Di-KZ
-	for ltp-list@lists.sourceforge.net; Mon, 16 Jul 2012 13:05:52 +0000
-From: Rejish Rajagopala <rejish.rajagopala@sasken.com>
-Date: Mon, 16 Jul 2012 18:35:36 +0530
-Message-ID: <6F91E0FFDA542149961F7BDED2D2B94B568E0DED0D@EXGMBX01.sasken.com>
-Content-Language: en-US
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ldoktor@redhat.com>) id 1SsCaS-0004Bv-Jw
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 12:45:40 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SsCaR-00064z-Ra
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 12:45:40 +0000
+Message-ID: <500952EC.6050504@redhat.com>
+Date: Fri, 20 Jul 2012 14:45:32 +0200
+From: =?windows-1252?Q?Luk=E1=9A_Doktor?= <ldoktor@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] Executing LTP one test at a time
+Subject: [LTP] Broken kernel/mem/ksm01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,29 +22,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net, Cleber Rosa <crosa@redhat.com>, vlee@twitter.com
 
-Hi,
+Hi guys,
 
-Please let me know is there way to execute single test using runltp script.
+I'm testing LTP-20120614 on Fedora 17 and it always stuck on ksm01 test.
 
-That is, I know we can execute user defined test cases through the command "runltp -f pty" but  is there a way so that I can run ltp like "runltp pty01" that is the test case directly through runltp script.
+I went through sources and the problem is I have KSM already enabled so =
 
+the full_scans is a huge number. The function _group_check waits till =
 
-Regards,
-Rejish
+KSM does 3 * full_scans which in my case never ends (well it might =
 
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+finish in a couple of years).
 
-------------------------------------------------------------------------------
+To me it doesn't even make sense to wait 3 * full_scans as in the first =
+
+check it waits 1-2 seconds, in second check it waits few seconds and it =
+
+keeps growing further you goes.
+
+Would you please take look on this issue? I'd really appreciate it.
+
+Kind regards,
+Luk=E1=9A Doktor
+
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
