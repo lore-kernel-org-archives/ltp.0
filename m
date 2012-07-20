@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1SrTSO-0000DJ-N5
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 12:34:20 +0000
-Date: Wed, 18 Jul 2012 13:50:17 +0200
-From: chrubis@suse.cz
-Message-ID: <20120718115017.GB10102@saboteur.suse.cz>
-References: <1342086687-5242-1-git-send-email-kai.kang@windriver.com>
-	<20120713130745.GA8634@saboteur.suse.cz>
-	<50066129.7030802@windriver.com>
+	(envelope-from <ldoktor@redhat.com>) id 1SsCur-000839-6g
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 13:06:45 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SsCul-0006BS-P2
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 13:06:45 +0000
+Message-ID: <500957D7.8000600@redhat.com>
+Date: Fri, 20 Jul 2012 15:06:31 +0200
+From: =?windows-1252?Q?Luk=E1=9A_Doktor?= <ldoktor@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <50066129.7030802@windriver.com>
-Subject: Re: [LTP] [PATCH] pthread_cond_signal/1-1: use sched_yield to
- schedule child threads
+References: <500952EC.6050504@redhat.com>
+In-Reply-To: <500952EC.6050504@redhat.com>
+Subject: Re: [LTP] Broken kernel/mem/ksm01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,71 +24,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: ltp-list@lists.sourceforge.net, Cleber Rosa <crosa@redhat.com>, vlee@twitter.com
 
-Hi!
-> >>This case fails on mips board routerstation randomly. The root cause is
-> >>that when main thread call usleep(100) after signal the child threads,
-> >>no child thread is scheduled to run.  So the case fails.
-> >>
-> >>I update it to set main thread with a lower priority and child threads
-> >>with a higher one, then when sched_yield is called in main thread, one
-> >>of the child threads will be scheduled and run.
-> >>
-> >>Signed-off-by: Kang Kai<kai.kang@windriver.com>
-> >>---
-> >>  .../interfaces/pthread_cond_signal/1-1.c           |   55 ++++++++++++++++++--
-> >>  1 files changed, 50 insertions(+), 5 deletions(-)
-> >>
-> >>diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> >>index bf55b31..51c0cfb 100644
-> >>--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> >>+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
-> >>@@ -11,6 +11,7 @@
-> >>   */
-> >>
-> >>  #define _XOPEN_SOURCE 600
-> >>+#define _GNU_SOURCE
-> >This is open posix testsuite keep that in mind so inserting _GNU_SOURCE
-> >is not allowed here.
-> 
-> _GNU_SOURCE is needed by set_affinity().
-> I once thought multi-processor will break the sync between main
-> thread and children threads. Maybe I am wrong that set_affinity() is
-> not needed.
+On 07/20/2012 02:45 PM, Luk=E1=9A Doktor wrote:
+> Hi guys,
+>
+> I'm testing LTP-20120614 on Fedora 17 and it always stuck on ksm01 test.
+>
+> I went through sources and the problem is I have KSM already enabled =
 
-Ah, then we are missing the _GNU_SOUCE in the affinity.h.
+> so the full_scans is a huge number. The function _group_check waits =
 
-> >And as far as I remeber the original problem was that some of the
-> >threads failed to wake up because the while loop that wakes them was too
-> >tight. Does inserting sched_yield() there help?
-> >
-> 
-> Only insert sched_yield() can NOT make sure the main thread really
-> sleep. In my test increase usleep to 1000 works.
-> I still hope the last patch which increase the usleep value can be
-> accept. If can't, I'll send a V2.
+> till KSM does 3 * full_scans which in my case never ends (well it =
 
-Hmm, complicated. What about calling sched_yield() and then doing the
-usleep with slightly increased time?
+> might finish in a couple of years).
+>
+> To me it doesn't even make sense to wait 3 * full_scans as in the =
 
-Ideal solution would of course be synchronization of the main thread
-with the children so that the main thread would wait until the some
-child has been scheduled, but that would require more complex code.
+> first check it waits 1-2 seconds, in second check it waits few seconds =
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> and it keeps growing further you goes.
+>
+> Would you please take look on this issue? I'd really appreciate it.
+>
+> Kind regards,
+> Luk=E1=9A Doktor
 
-------------------------------------------------------------------------------
+Anyway if you think it should stay 3 * full_scans would you please at =
+
+least reset the counter before the test start?
+
+--- _mem.c      2012-07-20 13:39:20.351738873 +0200
++++ mem.c       2012-07-20 14:58:52.192157167 +0200
+@@ -415,6 +415,7 @@ void create_same_memory(int size, int nu
+                 }
+         }
+         tst_resm(TINFO, "KSM merging...");
++       write_file(PATH_KSM "run", "2");
+         write_file(PATH_KSM "run", "1");
+         snprintf(buf, BUFSIZ, "%ld", size * pages * num);
+         write_file(PATH_KSM "pages_to_scan", buf);
+
+I tested it and it works better (it fails, but at least it finishes). =
+
+Anyway IMO it would be better to calculate the number of necessarily =
+
+scans differently.
+
+regards,
+Luk=E1=9A
+
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
