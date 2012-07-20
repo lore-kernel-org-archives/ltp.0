@@ -1,28 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SrX02-0006Ig-78
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 16:21:18 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SrWzy-0000uj-KI
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 16:21:18 +0000
-Received: by pbbrq2 with SMTP id rq2so2667013pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 18 Jul 2012 09:21:08 -0700 (PDT)
-Message-ID: <5006E252.1090800@casparzhang.com>
-Date: Thu, 19 Jul 2012 00:20:34 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SsBNQ-0003iV-Fk
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 11:28:08 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SsBNP-00035e-2u
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jul 2012 11:28:08 +0000
+Date: Fri, 20 Jul 2012 07:28:00 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <e2a79814-ece4-4bbd-b8f8-fadd3970a10a@zmail17.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <50093AD7.9040602@casparzhang.com>
 MIME-Version: 1.0
-References: <1342194676-15275-1-git-send-email-marios.makris@gmail.com>
-	<500671C4.5020609@cn.fujitsu.com>
-	<CAMYrgfTJbK+HmzZ2bRssQSuE2Bz_V5RzFY2ZL8Auy-LQWfYBOQ@mail.gmail.com>
-	<5006BF53.2080607@casparzhang.com>
-	<CAMYrgfTnXvjm2ynCGZS8aa+O1LM0k55=CprUcXTBAviQAZEXkA@mail.gmail.com>
-In-Reply-To: <CAMYrgfTnXvjm2ynCGZS8aa+O1LM0k55=CprUcXTBAviQAZEXkA@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 1/6] /lib/tst_tmpdir indentation and coding style
- fixes
+Subject: Re: [LTP] [PATCH 0/2] numa_helper: get nodes with mem/cpu/both
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,76 +26,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "marios.makris" <marios.makris@gmail.com>
+To: Caspar Zhang <caspar@casparzhang.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 07/18/2012 10:42 PM, marios.makris wrote:
-> On 18 July 2012 16:51, Caspar Zhang <caspar@casparzhang.com> wrote:
->> On 07/18/2012 09:32 PM, marios.makris wrote:
->>>
->>> On 18 July 2012 11:20, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
->>>>
->>>> On 07/13/2012 11:51 PM, Marios Makris wrote:
->>>>>
->>>>> Identation and coding style fixes as well as moved the function
->>>>> descriptions
->>>>> to the header file (/include/test.h)
->>>>>
->>>>> Signed-off-by: Marios Makris <marios.makris@gmail.com>
->>>>> ---
->>>>>    include/test.h   |   26 +++++++++++++++
->>>>>    lib/tst_tmpdir.c |   97
->>>>> ++++++++++++++++++------------------------------------
->>>>>    2 files changed, 58 insertions(+), 65 deletions(-)
->>>>>
->>>>> diff --git a/include/test.h b/include/test.h
->>>>> index 033fdbc..934585e 100644
->>>>> --- a/include/test.h
->>>>> +++ b/include/test.h
->>>>> @@ -201,8 +201,34 @@ extern int Tst_count;
->>>>>    void tst_sig(int fork_flag, void (*handler)(), void (*cleanup)());
->>>>>
->>>>>    /* lib/tst_tmpdir.c */
->>>>> +
->>>>> +/* tst_tmpdir()
->>>>> + *
->>>>> + * Create a unique temporary directory and chdir() to it. It expects
->>>>> the caller
->>>>
->>>>
->>>> It's better to keep the comments lines within 73 characters.
->>>>
->>>> Thanks,
->>>> Wanlong Gao
->>>>
->>>
->>> Well i thought that the line limit was 80 characters(columns) ?
->>>
->>> Thanks
->>>
->>
->> I think it's 80 characters. (it should be OK if checkpatch.pl doesn't
->> complain...)
->>
->> Caspar
->>
->
-> Well there are 2 lines slightly over 80 characters but they are completely
-> removed in 5th patch with the TDIRECTORY part...
->
-> I could fix them in the first patch as-well if you think it would be better
-> but the end result (if all patches are applied) is the same.
-
-either is ok for me. your choice.
-
-Caspar
-
->
-> Thanks
->
->
 
 
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, 20 July, 2012 1:02:47 PM
+> Subject: Re: [LTP] [PATCH 0/2] numa_helper: get nodes with mem/cpu/both
+> 
+> On 07/20/2012 06:19 PM, Jan Stancek wrote:
+> > numa_helper has been used for syscalls testcases, which
+> > care about nodes with memory. Based on discussion here:
+> > http://article.gmane.org/gmane.linux.ltp/16325
+> > it was deemed, that 'flag' extension would be useful,
+> > to allow tests to ask for nodes with memory/cpu/both.
+> >
+> > This patch series is introducing flag to get_allowed_nodes().
+> >
+> > For example, a config like this one:
+> >    # numactl -H
+> >    available: 3 nodes (2,4-5)
+> >    node 2 cpus: 0
+> >    node 2 size: 511 MB
+> >    node 2 free: 88 MB
+> >    node 4 cpus:
+> >    node 4 size: 256 MB
+> >    node 4 free: 34 MB
+> >    node 5 cpus:
+> >    node 5 size: 255 MB
+> >    node 5 free: 59 MB
+> >
+> > would return:
+> >    nodes (flag=0): 2 4 5 (any)
+> >    nodes (flag=1): 2 4 5 (mem)
+> >    nodes (flag=2): 2     (cpus)
+> >    nodes (flag=3): 2     (mem and cpus)
+> >
+> > Tested with:
+> > numactl-devel-0.9.8-7.el5
+> > numactl-devel-2.0.3-9.el6
+> > numactl-devel-2.0.7-6.el7
+> >
+> > numa_node_to_cpus() is broken in older libnuma < 1, so cpumap
+> > is used instead.
+> >
+> > Next step (not part of this series) is to move it outside
+> > syscalls area, so it can be used by other testcases.
+> >
+> > Jan Stancek (2):
+> >    numa_helper: add flag to get_allowed_nodes()
+> >    update testcases to use flag for get_allowed_nodes()
+> >
+> >   .../syscalls/get_mempolicy/get_mempolicy01.c       |    5 +-
+> >   testcases/kernel/syscalls/mbind/mbind01.c          |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages02.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages03.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages04.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages05.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages06.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages07.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages08.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages09.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages10.c      |    5 +-
+> >   .../kernel/syscalls/move_pages/move_pages11.c      |    5 +-
+> >   .../syscalls/move_pages/move_pages_support.c       |    8 +-
+> >   testcases/kernel/syscalls/numa/lib/numa_helper.c   |  211
+> >   +++++++++++++++-----
+> >   testcases/kernel/syscalls/numa/lib/numa_helper.h   |    8 +-
+> >   15 files changed, 203 insertions(+), 84 deletions(-)
+> >
+> >
+> 
+> Thanks Jan for your patches! I want to test the patchset on all
+> arches
+> and on major releases, so would you mind if I hold on pushing until I
+> finish the testing next week?
+Sure, no time pressure here.
+
+Thank you,
+Jan
+
+> 
+> Also during that period, any comments from anyone is welcomed.
+> 
+> Thanks,
+> Caspar
+> 
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
