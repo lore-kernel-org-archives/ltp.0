@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Sotwk-0004Sn-5h
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 10:15:02 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sotwg-0003wV-Az
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 10:15:02 +0000
-Received: by pbbrq2 with SMTP id rq2so1756180pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 11 Jul 2012 03:14:52 -0700 (PDT)
-Message-ID: <4FFD5210.1070305@casparzhang.com>
-Date: Wed, 11 Jul 2012 18:14:40 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1StaLw-00064V-5r
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jul 2012 08:20:24 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1StaLp-00046j-Vl
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jul 2012 08:20:24 +0000
+Message-ID: <500E5A89.7090102@cn.fujitsu.com>
+Date: Tue, 24 Jul 2012 16:19:21 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <4FAA6A83.8010100@casparzhang.com>
-	<4f473639-dcf2-43c7-ba27-be826fbb81d2@zmail17.collab.prod.int.phx2.redhat.com>
-	<20120518180534.088a07b2@Gantu>
-In-Reply-To: <20120518180534.088a07b2@Gantu>
-Subject: Re: [LTP] [PATCH] Simple tests for cross memory attach
- (process_vm_[readv|writev] syscalls)
+References: <241B7B02-77E9-4181-B4BA-F2276F1DCBE2@gmail.com>
+	<1343109556-12022-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<E351E450E8B9F54684A699D42DC5ADF2230115EB@MPBAGVEX02.corp.mphasis.com>
+In-Reply-To: <E351E450E8B9F54684A699D42DC5ADF2230115EB@MPBAGVEX02.corp.mphasis.com>
+Subject: Re: [LTP] [PATCH V2] open_posix:aio_fsync:14-1: wait for
+	aio_writecompletion
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,68 +31,103 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Christopher Yeoh <cyeoh@au1.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Nitin Yadav <Nitin.Yadav@mphasis.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On 05/18/2012 04:35 PM, Christopher Yeoh wrote:
-> On Tue, 15 May 2012 10:56:17 -0400 (EDT)
-> Jan Stancek <jstancek@redhat.com> wrote:
->>
->> Hi,
->>
->> I looked at testcases sent by Chris. Good news is, they
->> do not overlap (in terms of functionality) with mine :-).
->>
->> The patch need some polishing to match the style guide:
->> - indentation
->> - I think output should be TINFO, rather than plain printf
->> - single statement if without { }
->> - I would split some code to more functions, for example
->> process_vm_writev01.c main function seems complex
->
-> Thanks for the feedback. I'll have a go at reworking them.
->
->> As for test organization, I think we need to decide 2 issues:
->> 1. directory structure
->> a)
->>    testcases/kernel/syscalls/cma/
->>    testcases/kernel/syscalls/cma/process_vm_readv
->>    testcases/kernel/syscalls/cma/process_vm_writev
->> b)
->>    testcases/kernel/syscalls/process_vm_readv
->>    testcases/kernel/syscalls/process_vm_writev
->>
->> I'm preferring a) as these 2 syscalls are closely related,
->> and we already have need to share code.
->
-> that would be fine with me.
->
->> 2. how to invoke new syscalls
->> a)
->> Patch from Chris is defining new syscall numbers in test and
->> using syscall(2).
->>
->> b)
->> My patch adds configure check for glibc wrappers
->> process_vm_readv/writev and if those does not exists it checks for
->> __NR_process_vm_readv.
->>
->> I think we should not define syscall numbers in tests directly,
->> but I'm relying on LTP maintainers to provide guidance here.
->
-> I agree - the configure check is much better. I was just trying to get
-> something working :-)
->
-> Regards,
->
-> Chris
->
+On 07/24/2012 03:16 PM, Nitin Yadav wrote:
+> Hi Wanlong,
+>  Even I am getting error io_fsync write: Invalid argument, while running
+> io test cases on linux 3.2 kernel.Below are the outputs for error.
+> 
+> aio02/aio_tio    0  TINFO  :  Running test 1
+> 
+> aio02/aio_tio    0  TINFO  :  Running test 2
+> 
+> aio02/aio_tio    0  TINFO  :  Running test 3
+> 
+> aio02/aio_tio    0  TINFO  :  Running test 4
+> 
+> aio02/aio_tio    0  TINFO  :  Running test 5
+> 
+> aio02/aio_tio    0  TINFO  :  Running test 6
+> 
+> aio02/aio_tio    0  TINFO  :  Running test 7
+> 
+> io_fsync write: Invalid argument 
+> 
 
-Hi Chris, not sure if you're working on a v2 to these CMA simple tests, 
-if not, mind /me doing some update based on your version?
+io_fsync() calls the syscall io_submit().
+when doing IO_CMD_FSYNC and IO_CMD_FDSYNC, Linux kernel
+will involve the filesystem's aio_fsync and aio_fdsync
+operations, and if the filesystem doesn't implement
+these two operations, it will return -EINVAL, this is
+the error you meet here.
+In fact, the syscall io_submit() in kernel is asynchronous,
+and the performance is better than adding a outstanding
+asynchronous aio_* operations.
+In general, this CMD is not implemented in Linux kernel.
 
 Thanks,
-Caspar
+Wanlong Gao
+
+
+> 
+> Could you please suggest me some pointer.
+> 
+> Thanks!
+> Nitin yadav
+> 
+> -----Original Message-----
+> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+> Sent: Tuesday, July 24, 2012 11:29 AM
+> To: LTP
+> Subject: [LTP] [PATCH V2] open_posix:aio_fsync:14-1: wait for
+> aio_writecompletion
+> 
+> Wait for aio_write() completion.
+> If aio_fsync() sync the fd without the previous aio_write()
+> completion, it will cause Segment Fault.
+> 
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> ---
+>  .../conformance/interfaces/aio_fsync/14-1.c                    | 10
+> ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git
+> a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+> index a9cd3bf..02ba8a5 100644
+> ---
+> a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+> +++
+> b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+> @@ -27,6 +27,7 @@ int main()
+>  #define BUF_SIZE 111
+>  	char buf[BUF_SIZE];
+>  	int fd;
+> +	int ret;
+>  	struct aiocb aiocb_write;
+>  	struct aiocb aiocb_fsync;
+>  
+> @@ -57,6 +58,15 @@ int main()
+>  		exit(PTS_FAIL);
+>  	}
+>  
+> +	do {
+> +		usleep(10000);
+> +		ret = aio_error(&aiocb_write);
+> +	} while (ret == EINPROGRESS);
+> +	if (ret < 0) {
+> +		printf(TNAME " Error at aio_error() : %s\n",
+> strerror(ret));
+> +		exit(PTS_FAIL);
+> +	}
+> +
+>  	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+>  	aiocb_fsync.aio_fildes = fd;
+>  
+> 
 
 
 ------------------------------------------------------------------------------
