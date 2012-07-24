@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jeff.science@gmail.com>) id 1SmXqk-0006NG-Vx
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jul 2012 22:15:06 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SmXqj-00061T-TY
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jul 2012 22:15:06 +0000
-Received: by yhjj56 with SMTP id j56so8528485yhj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 04 Jul 2012 15:15:00 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Nitin.Yadav@mphasis.com>) id 1StZPZ-00064f-LP
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jul 2012 07:20:05 +0000
+Received: from mpmulip3.mphasis.com ([203.12.222.67])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1StZPS-0000rx-KI
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jul 2012 07:20:05 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-From: Jeff Hammond <jhammond@alcf.anl.gov>
-Date: Wed, 4 Jul 2012 17:14:38 -0500
-Message-ID: <CAGKz=u+6VcdDMGyMq02ZkL3J-75TkSvyjQ78Jz2_UEHp_jgMjg@mail.gmail.com>
-Subject: [LTP] present but cannot be compiled
+Date: Tue, 24 Jul 2012 12:46:34 +0530
+Message-ID: <E351E450E8B9F54684A699D42DC5ADF2230115EB@MPBAGVEX02.corp.mphasis.com>
+In-Reply-To: <1343109556-12022-1-git-send-email-gaowanlong@cn.fujitsu.com>
+References: <241B7B02-77E9-4181-B4BA-F2276F1DCBE2@gmail.com>
+	<1343109556-12022-1-git-send-email-gaowanlong@cn.fujitsu.com>
+From: "Nitin Yadav" <Nitin.Yadav@mphasis.com>
+Subject: Re: [LTP] [PATCH V2] open_posix:aio_fsync:14-1: wait for
+	aio_writecompletion
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,51 +30,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>, LTP <ltp-list@lists.sourceforge.net>
 
-I'm trying to use LTP on Blue Gene/Q after being told that Open POSIX
-Test was dead.  This is not a Linux kernel but is supposed to be
-Linux-like and POSIX-compliant.  I am using GCC 4.4.6 and GNU
-binutils.
+Hi Wanlong,
+ Even I am getting error io_fsync write: Invalid argument, while running
+io test cases on linux 3.2 kernel.Below are the outputs for error.
 
-What kind of information do you want to deal with these issues?
+aio02/aio_tio    0  TINFO  :  Running test 1
 
-configure: WARNING: linux/genetlink.h: present but cannot be compiled
-configure: WARNING: linux/genetlink.h:     check for missing
-prerequisite headers?
-configure: WARNING: linux/genetlink.h: see the Autoconf documentation
-configure: WARNING: linux/genetlink.h:     section "Present But Cannot
-Be Compiled"
-configure: WARNING: linux/genetlink.h: proceeding with the preprocessor's result
-configure: WARNING: linux/genetlink.h: in the future, the compiler
-will take precedence
-configure: WARNING:     ## --------------------------------------------- ##
-configure: WARNING:     ## Report this to ltp-list@lists.sourceforge.net ##
-configure: WARNING:     ## --------------------------------------------- ##
-..
-configure: WARNING: linux/netlink.h: present but cannot be compiled
-configure: WARNING: linux/netlink.h:     check for missing prerequisite headers?
-configure: WARNING: linux/netlink.h: see the Autoconf documentation
-configure: WARNING: linux/netlink.h:     section "Present But Cannot
-Be Compiled"
-configure: WARNING: linux/netlink.h: proceeding with the preprocessor's result
-configure: WARNING: linux/netlink.h: in the future, the compiler will
-take precedence
-configure: WARNING:     ## --------------------------------------------- ##
-configure: WARNING:     ## Report this to ltp-list@lists.sourceforge.net ##
-configure: WARNING:     ## --------------------------------------------- ##
+aio02/aio_tio    0  TINFO  :  Running test 2
 
-Thanks,
+aio02/aio_tio    0  TINFO  :  Running test 3
 
-Jeff
+aio02/aio_tio    0  TINFO  :  Running test 4
 
+aio02/aio_tio    0  TINFO  :  Running test 5
+
+aio02/aio_tio    0  TINFO  :  Running test 6
+
+aio02/aio_tio    0  TINFO  :  Running test 7
+
+io_fsync write: Invalid argument 
+
+
+Could you please suggest me some pointer.
+
+Thanks!
+Nitin yadav
+
+-----Original Message-----
+From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+Sent: Tuesday, July 24, 2012 11:29 AM
+To: LTP
+Subject: [LTP] [PATCH V2] open_posix:aio_fsync:14-1: wait for
+aio_writecompletion
+
+Wait for aio_write() completion.
+If aio_fsync() sync the fd without the previous aio_write()
+completion, it will cause Segment Fault.
+
+Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+---
+ .../conformance/interfaces/aio_fsync/14-1.c                    | 10
+++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git
+a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+index a9cd3bf..02ba8a5 100644
+---
+a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
++++
+b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/14-1.c
+@@ -27,6 +27,7 @@ int main()
+ #define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+ 	int fd;
++	int ret;
+ 	struct aiocb aiocb_write;
+ 	struct aiocb aiocb_fsync;
+ 
+@@ -57,6 +58,15 @@ int main()
+ 		exit(PTS_FAIL);
+ 	}
+ 
++	do {
++		usleep(10000);
++		ret = aio_error(&aiocb_write);
++	} while (ret == EINPROGRESS);
++	if (ret < 0) {
++		printf(TNAME " Error at aio_error() : %s\n",
+strerror(ret));
++		exit(PTS_FAIL);
++	}
++
+ 	memset(&aiocb_fsync, 0, sizeof(aiocb_fsync));
+ 	aiocb_fsync.aio_fildes = fd;
+ 
 -- 
-Jeff Hammond
-Argonne Leadership Computing Facility
-University of Chicago Computation Institute
-jhammond@alcf.anl.gov / (630) 252-5381
-http://www.linkedin.com/in/jeffhammond
-https://wiki.alcf.anl.gov/parts/index.php/User:Jhammond
+1.7.11.3.287.ge771946
+
+
+------------------------------------------------------------------------
+------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond.
+Discussions 
+will include endpoint security, mobile security and the latest in
+malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+Information transmitted by this e-mail is proprietary to MphasiS, its associated companies and/ or its customers and is intended 
+for use only by the individual or entity to which it is addressed, and may contain information that is privileged, confidential or 
+exempt from disclosure under applicable law. If you are not the intended recipient or it appears that this mail has been forwarded 
+to you without proper authority, you are notified that any use or dissemination of this information in any manner is strictly 
+prohibited. In such cases, please notify us immediately at mailmaster@mphasis.com and delete this mail from your records.
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
