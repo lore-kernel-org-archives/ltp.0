@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <marios.makris@gmail.com>) id 1SrUMj-0004Tj-LU
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 13:32:33 +0000
-Received: from mail-we0-f175.google.com ([74.125.82.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SrUMi-0002CN-SW
-	for ltp-list@lists.sourceforge.net; Wed, 18 Jul 2012 13:32:33 +0000
-Received: by weyr6 with SMTP id r6so1037799wey.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 18 Jul 2012 06:32:26 -0700 (PDT)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SuOB2-0003B4-H9
+	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 13:32:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SuOAx-0005NU-VJ
+	for ltp-list@lists.sourceforge.net; Thu, 26 Jul 2012 13:32:28 +0000
+Message-ID: <501146AA.7060809@cn.fujitsu.com>
+Date: Thu, 26 Jul 2012 21:31:22 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <500671C4.5020609@cn.fujitsu.com>
-References: <1342194676-15275-1-git-send-email-marios.makris@gmail.com>
-	<500671C4.5020609@cn.fujitsu.com>
-Date: Wed, 18 Jul 2012 16:32:25 +0300
-Message-ID: <CAMYrgfTJbK+HmzZ2bRssQSuE2Bz_V5RzFY2ZL8Auy-LQWfYBOQ@mail.gmail.com>
-From: "marios.makris" <marios.makris@gmail.com>
-Subject: Re: [LTP] [PATCH 1/6] /lib/tst_tmpdir indentation and coding style
-	fixes
+References: <1343270673-8363-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<5010D13F.6020006@casparzhang.com>
+In-Reply-To: <5010D13F.6020006@casparzhang.com>
+Subject: Re: [LTP] [PATCH] file: add the new output format of C program file
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,44 +29,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On 18 July 2012 11:20, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
-> On 07/13/2012 11:51 PM, Marios Makris wrote:
->> Identation and coding style fixes as well as moved the function descriptions
->> to the header file (/include/test.h)
+On 07/26/2012 01:10 PM, Caspar Zhang wrote:
+> On 07/26/2012 10:44 AM, Wanlong Gao wrote:
+>> New output format of file command for C program file is like below,
+>> $ file src/guestfs.c
+>> src/guestfs.c: C source, ASCII text
 >>
->> Signed-off-by: Marios Makris <marios.makris@gmail.com>
+>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> 
+> Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+
+Thanks for your review, pushed.
+
+Wanlong Gao
+
+> 
 >> ---
->>  include/test.h   |   26 +++++++++++++++
->>  lib/tst_tmpdir.c |   97 ++++++++++++++++++------------------------------------
->>  2 files changed, 58 insertions(+), 65 deletions(-)
+>>   testcases/commands/ade/file/file_test.sh | 14 ++++++++++----
+>>   1 file changed, 10 insertions(+), 4 deletions(-)
 >>
->> diff --git a/include/test.h b/include/test.h
->> index 033fdbc..934585e 100644
->> --- a/include/test.h
->> +++ b/include/test.h
->> @@ -201,8 +201,34 @@ extern int Tst_count;
->>  void tst_sig(int fork_flag, void (*handler)(), void (*cleanup)());
+>> diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/ade/file/file_test.sh
+>> index 70420e3..8a4e9b5 100755
+>> --- a/testcases/commands/ade/file/file_test.sh
+>> +++ b/testcases/commands/ade/file/file_test.sh
+>> @@ -314,10 +314,16 @@ then
+>>           $LTPBIN/tst_resm TPASS "file: Recognised C program text correctly"
+>>           rm -f $LTPTMP/cprog.c
+>>       else
+>> -        $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
+>> -             "file: Failed to Recognize C program text correctly. Reason:"
+>> -        TFAILCNT=$(( $TFAILCNT+1 ))
+>> -
+>> +        grep "C source, ASCII text" $LTPTMP/file.out > /dev/null 2>&1
+>> +        if [ $? -eq 0 ]
+>> +        then
+>> +            $LTPBIN/tst_resm TPASS "file: Recognised C program text correctly"
+>> +            rm -f $LTPTMP/cprog.c
+>> +        else
+>> +            $LTPBIN/tst_res TFAIL $LTPTMP/file.out \
+>> +                 "file: Failed to Recognize C program text correctly. Reason:"
+>> +            TFAILCNT=$(( $TFAILCNT+1 ))
+>> +        fi
+>>       fi
+>>   else
+>>       $LTPBIN/tst_resm TFAIL "file: Failed to recognize C programi text"
 >>
->>  /* lib/tst_tmpdir.c */
->> +
->> +/* tst_tmpdir()
->> + *
->> + * Create a unique temporary directory and chdir() to it. It expects the caller
->
-> It's better to keep the comments lines within 73 characters.
->
-> Thanks,
-> Wanlong Gao
->
+> 
+> 
+> 
 
-Well i thought that the line limit was 80 characters(columns) ?
-
-Thanks
-
--- 
-Marios Makris
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
