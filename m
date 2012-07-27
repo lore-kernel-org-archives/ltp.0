@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SuhsR-0006sb-Uh
-	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 10:34:35 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SuiWS-0002TZ-K9
+	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 11:15:56 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SuhsL-0004J8-TJ
-	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 10:34:35 +0000
-Date: Fri, 27 Jul 2012 06:34:23 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <736154694.4219510.1343385263338.JavaMail.root@redhat.com>
-In-Reply-To: <3ED83A9DB3B6D94CA68BF7C03F2981D35CDEA2A664@EXDCVYMBSTM006.EQ1STM.local>
+	id 1SuiWR-00015N-IV
+	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 11:15:56 +0000
+Date: Fri, 27 Jul 2012 07:15:49 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <36213450.4314745.1343387749585.JavaMail.root@redhat.com>
+In-Reply-To: <500952EC.6050504@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Failure of syscalls in kernel version 3.4
+Subject: Re: [LTP] Broken kernel/mem/ksm01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,173 +23,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Om Prakash PAL <omprakash.pal@stericsson.com>
-Cc: ltp-list@lists.sourceforge.net
+To: =?utf-8?B?THVrw6HFoQ==?= Doktor <ldoktor@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Cleber Rosa <crosa@redhat.com>
 
-
-
------ Original Message -----
-> From: "Om Prakash PAL" <omprakash.pal@stericsson.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, 27 July, 2012 11:12:24 AM
-> Subject: RE: [LTP] Failure of syscalls in kernel version 3.4
-> 
-> Hi Jan,
-> Thanks for your reply.
-> I have moved to latest LTP.
-> After that some test cases are failing like:
->  
-> [1].
->  shmat01
->  shmat01     1  TFAIL  :  shmat call failed: TEST_ERRNO=EINVAL(22):
->  Invalid argument
-
-I could reproduce this issue with following change:
-----------------------------------------------------
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index 7c68459..5d6e79c 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -271,6 +271,8 @@ void setup(void)
-                tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
-        }
- 
-+        printf(" ");
-+
-        /* some architectures (e.g. parisc) are strange, so better always align to
-         * next SHMLBA address. */
-        base_addr =
-----------------------------------------------------
-
-What happens in setup() is that shared memory is attached/detached, and that
-address is used in the rest of the test. In case above glibc needs
-extra page and mmaps one at same exact spot:
-----------------------------------------------------
-shmget(0x61008d5b, 4, IPC_CREAT|IPC_EXCL|0600) = 2260995
-shmat(2260995, 0, 0)                    = ?
-shmdt(0x7ffabd573000)                   = 0
-fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7ffabd573000
-shmat(2260995, 0x7ffabd573000, 0)       = -1 EINVAL (Invalid argument)
-----------------------------------------------------
-
-I'm assuming something like this happens in your case too,
-output from "strace ./shmat01" would be helpful.
-
-Regards,
-Jan
-
-> 
-> 
-> any idea about this one?.
-> 
-> Best Regards,
-> Om Prakash Pal
-> 
-> -----Original Message-----
-> From: Jan Stancek [mailto:jstancek@redhat.com]
-> Sent: Friday, July 27, 2012 2:30 PM
-> To: Om Prakash PAL
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] Failure of syscalls in kernel version 3.4
-> 
-> 
-> ----- Original Message -----
-> > From: "Om Prakash PAL" <omprakash.pal@stericsson.com>
-> > To: ltp-list@lists.sourceforge.net
-> > Sent: Monday, 2 July, 2012 8:49:20 AM
-> > Subject: [LTP] Failure of syscalls in kernel version 3.4
-> >
-> > Hi,
-> >
-> > I am currently using ltp-full-20110915.bz2.
-> > When I switched to  kernel 3.4(from kernel 3.0)  then these
-> > syscalls ltp are failing.
-> 
-> I'd suggest you try latest LTP from git. Some of these failures
-> should be already fixed.
-> (Latest I ran was kernel 3.3 and it ran fine for the ones you listed)
-> 
-> > [1]. get_robust_list01
-> > get_robust_list01    1  TPASS  :  get_robust_list failed as
-> > expected with EFAULT
-> > get_robust_list01    2  TPASS  :  get_robust_list failed as
-> > expected with EFAULT
-> > get_robust_list01    3  TPASS  :  get_robust_list failed as
-> > expected with ESRCH
-> > get_robust_list01    4  TFAIL  :  get_robust_list succeeded
-> > unexpectedly
-> > get_robust_list01    5  TPASS  :  get_robust_list succeeded
-> > 
-> > [2]. gettimeofday02
-> > gettimeofday02    0  TINFO  :  checking if gettimeofday is
-> > monotonous, takes 30s
-> > gettimeofday02    1  TFAIL  :  Time is going backwards: old 946
-> >  
-> > 
-> > [3]. lseek03
-> > lseek03     1  TFAIL  :  lseek(tfile_16887, 1, 4) Failed, errno=6
-> > No such device or address, expected 22(EINVAL)
-> > lseek03     2  TPASS  :  lseek(tfile_16887, 1, -1) Failed, errno=22
-> > : Invalid argument
-> > lseek03     3  TPASS  :  lseek(tfile_16887, 1, 7) Failed, errno=22
-> > : Invalid argument
-> 
-> > [4]. readlink03
-> > readlink03    1  TPASS  :  readlink(), No Search permissions to
-> > process, returned errno 13
-> > readlink03    2  TPASS  :  readlink(), No Search permissions to
-> > process, returned errno 13
-> > readlink03    3  TPASS  :  readlink(), Buffer size is not positive,
-> > returned errno 22
-> > readlink03    4  TPASS  :  readlink(), Buffer size is not positive,
-> > returned errno 22
-> > readlink03    5  TPASS  :  readlink(), File is not symbolic link,
-> > returned errno 22
-> > readlink03    6  TPASS  :  readlink(), File is not symbolic link,
-> > returned errno 22
-> > readlink03    7  TPASS  :  readlink(), Symlink path too long,
-> > returned errno 36
-> > readlink03    8  TPASS  :  readlink(), Symlink path too long,
-> > returned errno 36
-> > readlink03    9  TFAIL  :  readlink() failed, Symlink Pathname is
-> > empty, errno=2, expected errno=22
-> > 
-> > [5] shmat01
-> > shmat01     1  TFAIL  :  shmat call failed: TEST_ERRNO=EINVAL(22):
-> > Invalid argument
-> > 
-> > [6] sysctl01
-> > sysctl01    1  TFAIL  :  sysctl(2) failed unexpectedly errno:38
-> > sysctl01    2  TFAIL  :  sysctl(2) failed unexpectedly errno:38
-> > sysctl01    3  TFAIL  :  sysctl(2) failed unexpectedly errno:38
-> 38 is ENOSYS, this works only if your kernel supports it
-> (CONFIG_SYSCTL=y).
-> 
-> > 
-> > any idea why these testcases are failing now?.
-> Kernel implementation moved forward, your LTP is almost year old.
-> 
-> Regards,
-> Jan
-> 
-> > How can I resolve it?.
-> > 
-> > Best Regards,
-> > Om Prakash Pal
-> 
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkx1a8OhxaEgRG9rdG9yIiA8
+bGRva3RvckByZWRoYXQuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQs
+ICJDbGViZXIgUm9zYSIgPGNyb3NhQHJlZGhhdC5jb20+LCB2bGVlQHR3aXR0ZXIuY29tCj4gU2Vu
+dDogRnJpZGF5LCBKdWx5IDIwLCAyMDEyIDg6NDU6MzIgUE0KPiBTdWJqZWN0OiBbTFRQXSBCcm9r
+ZW4ga2VybmVsL21lbS9rc20wMSB0ZXN0Cj4gCj4gSGkgZ3V5cywKPiAKPiBJJ20gdGVzdGluZyBM
+VFAtMjAxMjA2MTQgb24gRmVkb3JhIDE3IGFuZCBpdCBhbHdheXMgc3R1Y2sgb24ga3NtMDEKPiB0
+ZXN0LgoKSSBndWVzcyBrc20gc2VydmljZSh1c2VyIHNwYWNlKSBpcyBvbiwgd2hpY2ggd2lsbCBz
+ZXQKL3N5cy9rZXJuZWwvbW0va3NtL3J1biB0byAwLCB0aGVuIGZ1bGxfc2NhbnMgd2lsbCBzdG9w
+IHRvIGNvdW50LAp0aGlzIGxlYWQgdG8gdGhlIHByb2Nlc3Moa3NtMDEpIHN0YXkgaW4gdGhlIGZv
+bGxvd2luZyAnd2hpbGUoKScgYWxsIHRoZSB0aW1lLgoKICAgICAgICB3aGlsZSAobmV3X251bSA8
+IG9sZF9udW0gKiAzKSB7CiAgICAgICAgICAgICAgICBzbGVlcCgxKTsKICAgICAgICAgICAgICAg
+IHJlYWRfZmlsZShQQVRIX0tTTSAiZnVsbF9zY2FucyIsIGJ1Zik7CiAgICAgICAgICAgICAgICBu
+ZXdfbnVtID0gU0FGRV9TVFJUT0woY2xlYW51cCwgYnVmLCAwLCBMT05HX01BWCk7CiAgICAgICAg
+fQoKdGhhdCdzIHdoeSB0aGUgdGVzdGluZyBzdHVjayBvbiBrc20wMS4KCnNvIHlvdSBuZWVkIHRv
+IHN0b3Aga3NtIHNlcnZpY2U6CiAjIHN5c3RlbWN0bCBzdG9wIGtzbS5zZXJ2aWNlCgphZnRlciB0
+aGUga3NtLnNlcnZpY2UgaXMgc3RvcHBlZCwgSSdtIHN1cmUga3NtMDEgY2FuIGZpbmlzaCBpdHMg
+am9iIGF0IGxlYXN0LgphbHNvIHRoZSBrc20wKiBjYXNlcyBoYXZlIHNvbWUgZXJyb3JbMV0sIHRo
+ZSBsYXRlc3QgdmVyc2lvbiBoYXMgZml4ZWQgdGhlbS4KSSBzdWdnZXN0IHlvdSB1c2UgZ2l0IHZl
+cnNpb24sIHdoaWNoIGluY2x1ZGVzIHRoZSBmaXgoY29tbWl0IDYwYzQxYTU0NjVjYzUpCgpbMV0g
+aHR0cDovL3NvdXJjZWZvcmdlLm5ldC9tYWlsYXJjaGl2ZS9tZXNzYWdlLnBocD9tc2dfaWQ9Mjkw
+ODg2NDAKCj4gCj4gSSB3ZW50IHRocm91Z2ggc291cmNlcyBhbmQgdGhlIHByb2JsZW0gaXMgSSBo
+YXZlIEtTTSBhbHJlYWR5IGVuYWJsZWQKPiBzbwo+IHRoZSBmdWxsX3NjYW5zIGlzIGEgaHVnZSBu
+dW1iZXIuIFRoZSBmdW5jdGlvbiBfZ3JvdXBfY2hlY2sgd2FpdHMgdGlsbAo+IEtTTSBkb2VzIDMg
+KiBmdWxsX3NjYW5zIHdoaWNoIGluIG15IGNhc2UgbmV2ZXIgZW5kcyAod2VsbCBpdCBtaWdodAo+
+IGZpbmlzaCBpbiBhIGNvdXBsZSBvZiB5ZWFycykuCj4gCj4gVG8gbWUgaXQgZG9lc24ndCBldmVu
+IG1ha2Ugc2Vuc2UgdG8gd2FpdCAzICogZnVsbF9zY2FucyBhcyBpbiB0aGUKPiBmaXJzdAo+IGNo
+ZWNrIGl0IHdhaXRzIDEtMiBzZWNvbmRzLCBpbiBzZWNvbmQgY2hlY2sgaXQgd2FpdHMgZmV3IHNl
+Y29uZHMgYW5kCj4gaXQKPiBrZWVwcyBncm93aW5nIGZ1cnRoZXIgeW91IGdvZXMuCj4gCj4gV291
+bGQgeW91IHBsZWFzZSB0YWtlIGxvb2sgb24gdGhpcyBpc3N1ZT8gSSdkIHJlYWxseSBhcHByZWNp
+YXRlIGl0Lgo+IAo+IEtpbmQgcmVnYXJkcywKPiBMdWvDocWhIERva3Rvcgo+IAo+IC0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQo+IExpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCj4gRXhjbHVz
+aXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBh
+bmQKPiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2Fu
+IHJlc3BvbmQuCj4gRGlzY3Vzc2lvbnMKPiB3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHks
+IG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbgo+IG1hbHdhcmUKPiB0aHJlYXRzLiBo
+dHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8K
+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1s
+aXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBz
+Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gCgotLSAK
+VGhhbmtzLApaaG91cGluZwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxpdmUgU2VjdXJpdHkgVmly
+dHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3
+YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFu
+ZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAp3aWxsIGluY2x1ZGUg
+ZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3
+YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEy
+LzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
