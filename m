@@ -1,31 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lxiang@redhat.com>) id 1Sn57S-0002Wq-7h
-	for ltp-list@lists.sourceforge.net; Fri, 06 Jul 2012 09:46:34 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sn57M-0001bG-Hb
-	for ltp-list@lists.sourceforge.net; Fri, 06 Jul 2012 09:46:34 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q669kMrx025246
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Jul 2012 05:46:22 -0400
-Received: from wlan-5-140.nay.redhat.com (wlan-5-140.nay.redhat.com
-	[10.66.12.140] (may be forged))
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id q669kKxc019351
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Jul 2012 05:46:22 -0400
-Message-ID: <4FF8D306.5090401@redhat.com>
-Date: Sun, 08 Jul 2012 08:23:34 +0800
-From: Lingzhu Xiang <lxiang@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SugB3-0005bB-W1
+	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 08:45:41 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SugAy-0008Mb-IL
+	for ltp-list@lists.sourceforge.net; Fri, 27 Jul 2012 08:45:41 +0000
+Received: by yenl13 with SMTP id l13so2977083yen.34
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 27 Jul 2012 01:45:31 -0700 (PDT)
+Message-ID: <50125514.7080607@casparzhang.com>
+Date: Fri, 27 Jul 2012 16:45:08 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1e99528971ce08cfebd0bd9c2b3333295dc9efe4.1341705843.git.lxiang@redhat.com>
-In-Reply-To: <1e99528971ce08cfebd0bd9c2b3333295dc9efe4.1341705843.git.lxiang@redhat.com>
-Subject: Re: [LTP] [PATCH] timers: add a new test case leapsec_timer
+References: <500952EC.6050504@redhat.com> <500957D7.8000600@redhat.com>
+In-Reply-To: <500957D7.8000600@redhat.com>
+Subject: Re: [LTP] Broken kernel/mem/ksm01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,95 +27,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: =?UTF-8?B?THVrw6HFoSBEb2t0b3I=?= <ldoktor@redhat.com>, ltp-list@lists.sourceforge.net, Cleber Rosa <crosa@redhat.com>
 
-On 07/08/2012 08:09 AM, Lingzhu Xiang wrote:
-> A bug in the hrtimer subsystem caused all TIMER_ABSTIME CLOCK_REALTIME
-> timers to expire one second early during and after leap seconds, thus
-> such sub-second timers expire immediately, causing load spikes if used
-> in fast loops. Calling clock_was_set() reverts this state. See [1].
->
-> [1]: http://lwn.net/Articles/504658/.
->
-> This patch is a regression test for the bug, based on the test case
-> provided by John Stultz from the above link, and also tries to recover
-> from inconsistency caused by reproduction of the bug.
-
-A sample test run looks like this:
-
-leapsec_timer    0  TINFO  :  test start at 2012-07-08 
-08:02:32.996771295 +0800
-leapsec_timer    0  TINFO  :  now is     2012-07-08 08:02:32.996929883 +0800
-leapsec_timer    0  TINFO  :  sleep till 2012-07-08 08:02:33.996929883 +0800
-leapsec_timer    0  TINFO  :  now is     2012-07-08 08:02:33.996975957 +0800
-leapsec_timer    0  TINFO  :  hrtimer early expiration is not detected.
-leapsec_timer    0  TINFO  :  scheduling leap second 2012-07-09 
-08:00:00.000000000 +0800
-leapsec_timer    0  TINFO  :  setting time to        2012-07-09 
-07:59:58.000000000 +0800
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:58.000080000 +0800 
-adjtimex: clock synchronized
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:58.000101000 +0800 
-adjtimex: clock synchronized
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:58.000119000 +0800 
-adjtimex: insert leap second
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:58.000138000 +0800 
-adjtimex: insert leap second
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:58.500174000 +0800 
-adjtimex: insert leap second
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:59.000246000 +0800 
-adjtimex: insert leap second
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:59.500320000 +0800 
-adjtimex: insert leap second
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:59.000368000 +0800 
-adjtimex: leap second in progress
-leapsec_timer    0  TINFO  :  2012-07-09 07:59:59.500403000 +0800 
-adjtimex: leap second in progress
-leapsec_timer    0  TINFO  :  2012-07-09 08:00:00.000432000 +0800 
-adjtimex: leap second has occurred
-leapsec_timer    0  TINFO  :  2012-07-09 08:00:00.500457000 +0800 
-adjtimex: leap second has occurred
-leapsec_timer    0  TINFO  :  2012-07-09 08:00:01.000475000 +0800 
-adjtimex: leap second has occurred
-leapsec_timer    0  TINFO  :  2012-07-09 08:00:01.500489000 +0800 
-adjtimex: leap second has occurred
-leapsec_timer    0  TINFO  :  2012-07-09 08:00:02.000506000 +0800 
-adjtimex: leap second has occurred
-leapsec_timer    0  TINFO  :  now is     2012-07-09 08:00:02.500524432 +0800
-leapsec_timer    0  TINFO  :  sleep till 2012-07-09 08:00:03.500524432 +0800
-leapsec_timer    0  TINFO  :  now is     2012-07-09 08:00:02.500550236 +0800
-leapsec_timer    1  TFAIL  :  hrtimer early expiration is detected.
-leapsec_timer    0  TINFO  :  2012-07-09 08:00:02.500561000 +0800 
-adjtimex: clock synchronized
-leapsec_timer    0  TINFO  :  2012-07-09 08:00:02.500568000 +0800 
-adjtimex: clock synchronized
-leapsec_timer    0  TINFO  :  restoring time to 2012-07-08 
-08:02:37.497346606 +0800
-leapsec_timer    0  TINFO  :  now is     2012-07-08 08:02:37.497351161 +0800
-leapsec_timer    0  TINFO  :  sleep till 2012-07-08 08:02:38.497351161 +0800
-leapsec_timer    0  TINFO  :  now is     2012-07-08 08:02:38.497391392 +0800
-leapsec_timer    0  TINFO  :  hrtimer early expiration is not detected.
-
-
-As can be observed, the first timer before the leap second and third timer
-after resetting time state worked as expected (early expiration not 
-detected),
-but the second timer after the leap second before resetting time state
-returned unexpectedly early. Thus the above bug was reproduced.
-
-Note that this test case might cause kernel freeze. Running with -c 5 will
-highly increase the likelihood of that.
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+WmhvdXBpbmcsIHdvdWxkIHlvdSBsaWtlIHRvIGhhdmUgYSBsb29rIGF0IHRoZSBpc3N1ZSBiZWxv
+dz8KCkNhc3BhcgoKT24gMDcvMjAvMjAxMiAwOTowNiBQTSwgTHVrw6HFoSBEb2t0b3Igd3JvdGU6
+Cj4gT24gMDcvMjAvMjAxMiAwMjo0NSBQTSwgTHVrw6HFoSBEb2t0b3Igd3JvdGU6Cj4+IEhpIGd1
+eXMsCj4+Cj4+IEknbSB0ZXN0aW5nIExUUC0yMDEyMDYxNCBvbiBGZWRvcmEgMTcgYW5kIGl0IGFs
+d2F5cyBzdHVjayBvbiBrc20wMSB0ZXN0Lgo+Pgo+PiBJIHdlbnQgdGhyb3VnaCBzb3VyY2VzIGFu
+ZCB0aGUgcHJvYmxlbSBpcyBJIGhhdmUgS1NNIGFscmVhZHkgZW5hYmxlZAo+PiBzbyB0aGUgZnVs
+bF9zY2FucyBpcyBhIGh1Z2UgbnVtYmVyLiBUaGUgZnVuY3Rpb24gX2dyb3VwX2NoZWNrIHdhaXRz
+Cj4+IHRpbGwgS1NNIGRvZXMgMyAqIGZ1bGxfc2NhbnMgd2hpY2ggaW4gbXkgY2FzZSBuZXZlciBl
+bmRzICh3ZWxsIGl0Cj4+IG1pZ2h0IGZpbmlzaCBpbiBhIGNvdXBsZSBvZiB5ZWFycykuCj4+Cj4+
+IFRvIG1lIGl0IGRvZXNuJ3QgZXZlbiBtYWtlIHNlbnNlIHRvIHdhaXQgMyAqIGZ1bGxfc2NhbnMg
+YXMgaW4gdGhlCj4+IGZpcnN0IGNoZWNrIGl0IHdhaXRzIDEtMiBzZWNvbmRzLCBpbiBzZWNvbmQg
+Y2hlY2sgaXQgd2FpdHMgZmV3IHNlY29uZHMKPj4gYW5kIGl0IGtlZXBzIGdyb3dpbmcgZnVydGhl
+ciB5b3UgZ29lcy4KPj4KPj4gV291bGQgeW91IHBsZWFzZSB0YWtlIGxvb2sgb24gdGhpcyBpc3N1
+ZT8gSSdkIHJlYWxseSBhcHByZWNpYXRlIGl0Lgo+Pgo+PiBLaW5kIHJlZ2FyZHMsCj4+IEx1a8Oh
+xaEgRG9rdG9yCj4KPiBBbnl3YXkgaWYgeW91IHRoaW5rIGl0IHNob3VsZCBzdGF5IDMgKiBmdWxs
+X3NjYW5zIHdvdWxkIHlvdSBwbGVhc2UgYXQKPiBsZWFzdCByZXNldCB0aGUgY291bnRlciBiZWZv
+cmUgdGhlIHRlc3Qgc3RhcnQ/Cj4KPiAtLS0gX21lbS5jICAgICAgMjAxMi0wNy0yMCAxMzozOToy
+MC4zNTE3Mzg4NzMgKzAyMDAKPiArKysgbWVtLmMgICAgICAgMjAxMi0wNy0yMCAxNDo1ODo1Mi4x
+OTIxNTcxNjcgKzAyMDAKPiBAQCAtNDE1LDYgKzQxNSw3IEBAIHZvaWQgY3JlYXRlX3NhbWVfbWVt
+b3J5KGludCBzaXplLCBpbnQgbnUKPiAgICAgICAgICAgICAgICAgICB9Cj4gICAgICAgICAgIH0K
+PiAgICAgICAgICAgdHN0X3Jlc20oVElORk8sICJLU00gbWVyZ2luZy4uLiIpOwo+ICsgICAgICAg
+d3JpdGVfZmlsZShQQVRIX0tTTSAicnVuIiwgIjIiKTsKPiAgICAgICAgICAgd3JpdGVfZmlsZShQ
+QVRIX0tTTSAicnVuIiwgIjEiKTsKPiAgICAgICAgICAgc25wcmludGYoYnVmLCBCVUZTSVosICIl
+bGQiLCBzaXplICogcGFnZXMgKiBudW0pOwo+ICAgICAgICAgICB3cml0ZV9maWxlKFBBVEhfS1NN
+ICJwYWdlc190b19zY2FuIiwgYnVmKTsKPgo+IEkgdGVzdGVkIGl0IGFuZCBpdCB3b3JrcyBiZXR0
+ZXIgKGl0IGZhaWxzLCBidXQgYXQgbGVhc3QgaXQgZmluaXNoZXMpLgo+IEFueXdheSBJTU8gaXQg
+d291bGQgYmUgYmV0dGVyIHRvIGNhbGN1bGF0ZSB0aGUgbnVtYmVyIG9mIG5lY2Vzc2FyaWx5Cj4g
+c2NhbnMgZGlmZmVyZW50bHkuCj4KPiByZWdhcmRzLAo+IEx1a8OhxaEKPgo+IC0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQo+IExpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCj4gRXhjbHVzaXZl
+IGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQK
+PiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJl
+c3BvbmQuIERpc2N1c3Npb25zCj4gd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2Jp
+bGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZQo+IHRocmVhdHMuIGh0dHA6Ly93
+d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwo+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFp
+bGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPgoKCgotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxp
+dmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRo
+cmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9u
+ZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNl
+Y3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNj
+ZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QK
+THRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
