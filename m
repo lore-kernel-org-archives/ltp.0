@@ -2,21 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SolIa-0000NN-RH
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 01:01:00 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SolIZ-0005tU-8P
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jul 2012 01:01:00 +0000
-Message-ID: <4FFCD02B.5020103@cn.fujitsu.com>
-Date: Wed, 11 Jul 2012 09:00:27 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <huruomu@gmail.com>) id 1SvgBS-0003ee-Gc
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jul 2012 02:58:14 +0000
+Received: from mail-vb0-f47.google.com ([209.85.212.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SvgBR-0003Sa-Mn
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jul 2012 02:58:14 +0000
+Received: by vbbfr13 with SMTP id fr13so4423397vbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 29 Jul 2012 19:58:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
-In-Reply-To: <1340609583-8300-1-git-send-email-caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH 1/2] mm/vma01: consider topdown and bottomup
-	allocation
-Reply-To: gaowanlong@cn.fujitsu.com
+Date: Mon, 30 Jul 2012 10:58:08 +0800
+Message-ID: <CANoG8sX7V5VFgHdm7O2r1E4DXrfFM9jDeP2WDyD7roMXkGe-RA@mail.gmail.com>
+From: Romu <huruomu@gmail.com>
+Subject: [LTP] =?windows-1252?q?/usr/include/linux/capability=2Eh=3A70=3A_?=
+	=?windows-1252?q?error=3A_expected_specifier-qualifier-list_before?=
+	=?windows-1252?q?_=91=5F=5Fle32=92?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,81 +27,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Wang Sheng-Hui <shhuiw@gmail.com>
+To: ltp-list@lists.sourceforge.net
 
-On 06/25/2012 03:33 PM, Caspar Zhang wrote:
-> 
-> When calculating VMAs, results differ in topdown and bottomup memory
-> allocation mechanisms. This patch fix the potential failures and should
-> work like below:
-> 
-> In topdown allocation, the start addr in second VMA should be smaller
-> than first one, i.e.:
-> 
->     u======t------(t+3*ps)
->       2nd    1st
-> 
-> Thus, in buggy kernel, if we find a VMA mapping entry in child like:
-> 
->     start_addr == u && end_addr == t+3*ps;
-> 
-> the test would go fail. Otherwise, in good kernel, we should see
-> 
->     start_addr1 == u && end_addr1 == t;
->     start_addr2 == t && end_addr2 == t+3*ps;
-> 
-> While in bottomup allocation, it's different:
-> 
->     t------u======(t+6*ps)
->       1st    2nd
-> 
-> Here in buggy kernel, we can see VMA mapping entry like this:
-> 
->     start_addr == t && end_addr == t+6*ps;
-> 
-> And in good kernel:
-> 
->     start_addr1 == t && end_addr1 == u;
->     start_addr2 == u && end_addr2 == t+6*ps;
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+Hi,
 
-Pushed this series without objection, thank you.
+I tried building LTP-20120614 on CentOS5 but it always failed (see
+error message below).  LTP-20120401 builds fine on CentOS5.
 
-Wanlong Gao
-
-> ---
->  testcases/kernel/mem/vma/vma01.c |   35 ++++++++++++++++++++++-------------
->  1 files changed, 22 insertions(+), 13 deletions(-)
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
+make[3]: Entering directory
+`/dev/shm/ltp-full-20120614/testcases/kernel/security'
+make[4]: Entering directory
+`/dev/shm/ltp-full-20120614/testcases/kernel/security/cap_bound'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/dev/shm/ltp-full-20120614/testcases/kernel/include
+-I../../../../include -I../../../../include   -L../../../../lib
+cap_bounds_r.c   -lltp  -o cap_bounds_r
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/dev/shm/ltp-full-20120614/testcases/kernel/include
+-I../../../../include -I../../../../include   -L../../../../lib
+cap_bounds_rw.c   -lltp  -o cap_bounds_rw
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/dev/shm/ltp-full-20120614/testcases/kernel/include
+-I../../../../include -I../../../../include   -L../../../../lib
+cap_bset_inh_bounds.c   -lltp  -o cap_bset_inh_bounds
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/dev/shm/ltp-full-20120614/testcases/kernel/include
+-I../../../../include -I../../../../include   -L../../../../lib
+check_pe.c   -lltp  -o check_pe
+In file included from /usr/include/sys/capability.h:34,
+                 from cap_bset_inh_bounds.c:32:
+/usr/include/linux/capability.h:70: error: expected
+specifier-qualifier-list before =91__le32=92
+In file included from /usr/include/sys/capability.h:34,
+                 from cap_bounds_rw.c:29:
+/usr/include/linux/capability.h:70: error: expected
+specifier-qualifier-list before =91__le32=92
+In file included from /usr/include/sys/capability.h:34,
+                 from cap_bounds_r.c:30:
+/usr/include/linux/capability.h:70: error: expected
+specifier-qualifier-list before =91__le32=92
+In file included from /usr/include/sys/capability.h:34,
+                 from check_pe.c:33:
+/usr/include/linux/capability.h:70: error: expected
+specifier-qualifier-list before =91__le32=92
+cap_bset_inh_bounds.c:128:2: warning: no newline at end of file
+make[4]: *** [cap_bset_inh_bounds] Error 1
+make[4]: *** Waiting for unfinished jobs....
+cap_bounds_rw.c: In function =91main=92:
+cap_bounds_rw.c:82: warning: unused variable =91i=92
+cap_bounds_rw.c:81: warning: unused variable =91ret=92
+make[4]: *** [cap_bounds_rw] Error 1
+make[4]: *** [cap_bounds_r] Error 1
+check_pe.c:88:2: warning: no newline at end of file
+make[4]: *** [check_pe] Error 1
+make[4]: Leaving directory
+`/dev/shm/ltp-full-20120614/testcases/kernel/security/cap_bound'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory
+`/dev/shm/ltp-full-20120614/testcases/kernel/security'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/dev/shm/ltp-full-20120614/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/dev/shm/ltp-full-20120614/testcases'
+make: *** [testcases-all] Error 2
 
 
-------------------------------------------------------------------------------
+I found:
+http://osdir.com/ml/debian-bugs-dist/2009-12/msg00664.html
+https://bugs.gentoo.org/show_bug.cgi?id=3D264770
+
+But still can't figure out how to fix the issue.
+Any idea?
+
+Thanks
+Romu
+
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
