@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SoOHQ-0005tQ-Fn
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jul 2012 00:26:16 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SoOHO-000253-Q1
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jul 2012 00:26:16 +0000
-Message-ID: <4FFB7686.3020303@cn.fujitsu.com>
-Date: Tue, 10 Jul 2012 08:25:42 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <yanegomi@gmail.com>) id 1Sw3a7-0006MZ-L8
+	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 03:57:15 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Sw3a5-0003j8-6Y
+	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 03:57:15 +0000
+Received: by obcva7 with SMTP id va7so10397484obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 30 Jul 2012 20:57:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <1ab75ea0-ace3-4553-8ab6-ead97938046c@zmail13.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1ab75ea0-ace3-4553-8ab6-ead97938046c@zmail13.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] mm/lib: increase sleep time in ksm scanning
-Reply-To: gaowanlong@cn.fujitsu.com
+In-Reply-To: <6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
+References: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
+	<6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
+Date: Mon, 30 Jul 2012 20:57:07 -0700
+Message-ID: <CAGH67wQHxhA0XwEjjA+E9NRE-Mh6bh2DmuLXz4ory5XZPTN4DQ@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] syscalls/numa: check syscall availability
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,79 +31,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 07/09/2012 11:51 PM, Zhouping Liu wrote:
-> 
-> 
-> ----- Original Message -----
->> From: "Caspar Zhang" <caspar@casparzhang.com>
->> To: gaowanlong@cn.fujitsu.com
->> Cc: "Zhouping Liu" <zliu@redhat.com>, "LTP list" sourceforge.net>
->> Sent: Monday, July 9, 2012 10:15:17 PM
->> Subject: Re: [LTP] [PATCH 2/2] mm/lib: increase sleep time in ksm scanning
->>
->> On 07/09/2012 09:10 PM, Wanlong Gao wrote:
->>> On 07/09/2012 08:37 PM, Caspar Zhang wrote:
->>>> On 07/09/2012 07:32 PM, Wanlong Gao wrote:
->>>>> On 07/09/2012 05:51 PM, Caspar Zhang wrote:
->>>>>>
->>>>>> for some systems under pressure, we've observed that sleeping 5
->>>>>> seconds is not sufficient for completing ksm scanning, to fix
->>>>>> this, we should give ksmd more time to scan the mergable pages
->>>>>> by increasing sleeping time to 10s.
->>>>>
->>>>> If 5s is not enough, isn't we waiting here already?
->>>>
->>>> Sorry, I'm not catching you... :-( the problem currently we
->>>> encounter is that if 5s given, all ksm values (pages_sharing,
->>>> pages_shared, etc) might remain the same between before and after
->>>> sleeping, so the wait_ksmd function could exit. But in fact the
->>>> kernel could be busy under pressure and it just needs more than 5s
->>>> to merge the same page. Using 10s as polling interval can make
->>>> sure
->>>> if ksm values remains the same between each loop, it should
->>>> indicates that ksmd has done scanning correctly.
->>>>
->>>
->>> Oops, it's a serious problem, so can we first wait for changing and
->>> then wait for not changing? I'm afraid that hard coded sleep time
->>> can't do the right thing on some systems.
->>
->> IMO the current implementation does the same thing as you suggested.
->> We
->> wait for certain interval (5s for now, 10s proposed), and check if
->> ksm
->> values increased, if still changing, continue next sleep interval.
->> Adding a "wait-for-not-changing" in fact has the same effect as
->> increasing the original sleep time.
->>
->> theoretically, sleeping interval should be as larger as possible, but
->> it
->> will cost unnecessary running time if the interval is set too big in
->> the
->> this case. I'd say 10s is a "for-now-best-practice" during my several
->> running (both w/ and w/o pressure). Besides, I'm not sure how ksm
->> developers think of current ksm performance, but I think if ksmd
->> takes
->> more than 10s to merge two same pages, it will be a big performance
->> issue.
-> 
-> yes, I think so.
-> 
-> and 5s interval is enough, I tested it on several low-memory/dull systems
-> during composing the patch, it's all OK.
-> But in order to cover more different systems, IMO, I also proposed 10s,
-> and it shouldn't be more bigger, or it will be a defect of ksm performance.
+On Mon, Jul 30, 2012 at 7:53 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
+>
+> some NUMA related syscalls: mbind, get_mempolicy are not supported on
+> some arches (e.g. i386), I use TEST macro to test the syscall in setup()
+> function, if the syscall is not implemented on the system, a TCONF
+> message will given like this:
+>
+> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
 
-Ok, no objection.
-
-Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
-> 
-
-
+    Using TEST isn't necessary to be honest: the syscall wrapper
+handles the (if you add a comment as to why things are being done in a
+single line, untested, that should be ok).
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
